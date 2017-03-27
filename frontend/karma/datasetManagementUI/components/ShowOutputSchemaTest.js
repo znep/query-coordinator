@@ -7,7 +7,7 @@ import * as Selectors from 'selectors';
 import {
   insertFromServer, insertMultipleFromServer, updateFromServer, batch
 } from 'actions/database';
-import { normal } from 'components/Table/displayState';
+import { normal } from 'lib/displayState';
 
 describe('components/ShowOutputSchema', () => {
 

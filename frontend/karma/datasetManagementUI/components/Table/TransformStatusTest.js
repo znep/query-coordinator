@@ -1,5 +1,5 @@
 import TransformStatus from 'components/Table/TransformStatus';
-import { normal } from 'components/Table/displayState';
+import { normal } from 'lib/displayState';
 
 describe('components/Table/TransformStatus', () => {
 

@@ -10,6 +10,39 @@ import ProgressBar from '../ProgressBar';
 import TypeIcon from '../TypeIcon';
 import { commaify } from '../../../common/formatNumber';
 
+function getFlyoutId(transform) {
+  return `transform-status-flyout-${transform.id}`;
+}
+
+function ErrorFlyout({ transform }) {
+  const SubI18n = I18n.show_output_schema.column_header;
+  const flyoutId = getFlyoutId(transform);
+  const msgTemplate = singularOrPlural(
+    transform.num_transform_errors,
+    SubI18n.column_status_flyout.error_msg_singular,
+    SubI18n.column_status_flyout.error_msg_plural
+  );
+  return (
+    <div
+      id={flyoutId}
+      className="transform-status-flyout flyout flyout-hidden">
+      <section className="flyout-content">
+        {msgTemplate.format({
+          num_errors: commaify(transform.num_transform_errors),
+          type: SubI18n.type_display_names[transform.output_soql_type]
+        })}
+        <TypeIcon type={transform.output_soql_type} />
+        <br />
+        <span className="click-to-view">{I18n.show_output_schema.click_to_view}</span>
+      </section>
+    </div>
+  );
+}
+
+ErrorFlyout.propTypes = {
+  transform: PropTypes.object.isRequired
+};
+
 class TransformStatus extends Component {
   componentDidMount() {
     this.attachFlyouts();
@@ -23,13 +56,9 @@ class TransformStatus extends Component {
     this.attachFlyouts();
   }
 
-  getFlyoutId() {
-    return `transform-status-flyout-${this.props.transform.id}`;
-  }
-
   attachFlyouts() {
-    if (this.flyoutEl) {
-      styleguide.attachTo(this.flyoutEl.parentNode);
+    if (this.flyoutParentEl) {
+      styleguide.attachTo(this.flyoutParentEl);
     }
   }
 
@@ -60,32 +89,9 @@ class TransformStatus extends Component {
       </div>
     );
 
-    let errorFlyout = null;
-    let flyoutId = null;
-    if (transform.num_transform_errors > 0 && !inErrorMode) {
-      flyoutId = this.getFlyoutId();
-      const msgTemplate = singularOrPlural(
-        transform.num_transform_errors,
-        SubI18n.column_status_flyout.error_msg_singular,
-        SubI18n.column_status_flyout.error_msg_plural
-      );
-      errorFlyout = (
-        <div
-          id={flyoutId}
-          ref={(flyoutEl) => { this.flyoutEl = flyoutEl; }}
-          className="transform-status-flyout flyout flyout-hidden">
-          <section className="flyout-content">
-            {msgTemplate.format({
-              num_errors: commaify(transform.num_transform_errors),
-              type: SubI18n.type_display_names[transform.output_soql_type]
-            })}
-            <TypeIcon type={transform.output_soql_type} />
-            <br />
-            <span className="click-to-view">{I18n.show_output_schema.click_to_view}</span>
-          </section>
-        </div>
-      );
-    }
+    const errorFlyout = (transform.num_transform_errors > 0 && !inErrorMode) ?
+      <ErrorFlyout transform={transform} /> :
+      null;
 
     if (transform.num_transform_errors > 0) {
       const msg = thisColumnDone ?
@@ -98,9 +104,10 @@ class TransformStatus extends Component {
       return (
         <th
           key={transform.id}
+          ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}
           className={classNames('col-errors', { 'col-errors-selected': inErrorMode })}>
           {progressBar}
-          <Link to={linkPath} data-flyout={flyoutId}>
+          <Link to={linkPath} data-flyout={getFlyoutId(transform)}>
             <div className="column-status-text">
               <span className="err-info error">{commaify(transform.num_transform_errors)}</span>
               {msg}

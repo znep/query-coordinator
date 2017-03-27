@@ -99,7 +99,8 @@ locales:
 metadata:
   description: This holds the values from /admin/metadata.
   discourage_in_creation_ui:
-    reason: :deprecation
+    reason: :not_intended_for_direct_manipulation
+    instead: :metadata_administration
 nbe_timezone:
   description: Configures which time zone your datasets are presumed to be in when ingressing.
   known_properties:

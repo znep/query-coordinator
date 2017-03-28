@@ -97,8 +97,14 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
 }
 
 .search-box-static {
+  @extend .search-box-base;
   width: 289px !important;
   padding-right: 5px !important;
+}
+
+.search-box-static-mobile {
+  @extend .search-box-static;
+  width: 275px !important;
 }
 
 .icon-container-base {
@@ -177,4 +183,10 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
 
   margin-top: 6px;
   margin-left: 0;
+}
+
+.icon-container-static-mobile {
+  @extend .icon-container-static;
+
+  margin-top: 12px;
 }

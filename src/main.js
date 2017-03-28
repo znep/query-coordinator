@@ -12,10 +12,12 @@ const autocompleteContainers = document.querySelectorAll('[data-catalog-autocomp
 autocompleteContainers.forEach((container) => {
   const collapsible = container.dataset.catalogAutocompleteCollapsible === 'true';
   const animate = container.dataset.catalogAutocompleteDisableAnimation !== 'true';
+  const mobile = container.dataset.catalogAutocompleteMobile === 'true';
 
   const options = {
     collapsible,
-    animate
+    animate,
+    mobile
   };
 
   const defaultState = {

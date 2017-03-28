@@ -43,11 +43,15 @@ class SearchBox extends React.Component {
   }
 
   getIconStyleName() {
-    const { collapsible, animate } = this.props;
+    const { collapsible, animate, mobile } = this.props;
     const { focused } = this.state;
 
     if (animate === false) {
-      return 'icon-container-static';
+      if (mobile === true) {
+        return 'icon-container-static-mobile';
+      } else {
+        return 'icon-container-static';
+      }
     } else if (_.isUndefined(focused)) {
       return 'icon-container-base';
     } else if (collapsible) {
@@ -60,11 +64,15 @@ class SearchBox extends React.Component {
   }
 
   getInputStyleName() {
-    const { collapsible, animate } = this.props;
+    const { collapsible, animate, mobile } = this.props;
     const { focused } = this.state;
 
     if (animate === false) {
-      return 'search-box-static';
+      if (mobile === true) {
+        return 'search-box-static-mobile';
+      } else {
+        return 'search-box-static';
+      }
     } else if (_.isUndefined(focused)) {
       return 'search-box-base';
     } else if (collapsible) {
@@ -165,6 +173,7 @@ SearchBox.propTypes = {
   currentQuery: PropTypes.string,
   collapsible: PropTypes.bool,
   animate: PropTypes.bool,
+  mobile: PropTypes.bool,
 
   // need to know this since if it's undefined, it means on form submission and
   // we search for what's in the textbox instead of for the selected result

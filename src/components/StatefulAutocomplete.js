@@ -19,7 +19,7 @@ class StatefulAutocomplete extends React.Component {
     // we only want to set the query to the current one if we're NOT collapsible and if we're animating
     // (the static, non-animated version is used in the header bar)
     if (!_.isEmpty(props.options) &&
-      (props.options.collapsible === false || props.options.animate === true)) {
+      (props.options.collapsible === false && props.options.animate === true)) {
       // grab the current search query from the URL
       const parsedUrl = url.parse(window.location.href, true);
       const currentQuery = _.get(parsedUrl, 'query.q', '');
@@ -42,7 +42,8 @@ class StatefulAutocomplete extends React.Component {
       getSearchResults,
       millisecondsBeforeSearch,
       collapsible,
-      animate
+      animate,
+      mobile
     } = this.props.options;
 
     const milliseconds =
@@ -61,7 +62,8 @@ class StatefulAutocomplete extends React.Component {
           getSearchResults={getResults}
           millisecondsBeforeSearch={milliseconds}
           collapsible={collapsible}
-          animate={animate} />
+          animate={animate}
+          mobile={mobile} />
       </Provider>
     );
   }
@@ -73,7 +75,8 @@ StatefulAutocomplete.propTypes = {
     getSearchResults: PropTypes.func,
     millisecondsBeforeSearch: PropTypes.number,
     collapsible: PropTypes.bool,
-    animate: PropTypes.bool
+    animate: PropTypes.bool,
+    mobile: PropTypes.bool
   }),
   defaultState: PropTypes.shape({
     query: PropTypes.string
@@ -85,7 +88,8 @@ StatefulAutocomplete.defaultProps = {
     numberOfResults: 7,
     getSearchResults: getCeteraResults,
     millisecondsBeforeSearch: 60,
-    collapsible: false
+    collapsible: false,
+    mobile: false
   },
   defaultState: {
     query: '',

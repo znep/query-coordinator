@@ -34,6 +34,7 @@ class Autocomplete extends React.Component {
       animate,
       collapsible,
       collapsed,
+      mobile,
       onResultVisibilityChanged,
       getSearchResults,
       millisecondsBeforeSearch
@@ -52,7 +53,8 @@ class Autocomplete extends React.Component {
             getSearchResults={getSearchResults}
             millisecondsBeforeSearch={millisecondsBeforeSearch}
             collapsible={collapsible}
-            animate={animate} />
+            animate={animate}
+            mobile={mobile} />
           <Results collapsible={collapsible} />
         </div>
       );
@@ -66,7 +68,8 @@ Autocomplete.propTypes = {
   millisecondsBeforeSearch: PropTypes.number.isRequired,
   collapsible: PropTypes.bool,
   collapsed: PropTypes.bool,
-  animate: PropTypes.bool
+  animate: PropTypes.bool,
+  mobile: PropTypes.bool
 };
 
 const mapStateToProps = (state) => ({

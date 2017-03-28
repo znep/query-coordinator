@@ -15,7 +15,7 @@ class CatalogLandingPage
     RequestStore[:catalog_landing_page] ||= {}
   end
 
-  PARAMS_WHITELIST = %w(category limitTo provenance)
+  PARAMS_WHITELIST = %w(category limitTo provenance federation_filter)
   def self.valid_params
     request_store[:valid_params] ||= PARAMS_WHITELIST + CurrentDomain.custom_facets
   end

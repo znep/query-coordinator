@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
 import { push } from 'react-router-redux';
@@ -9,6 +9,7 @@ import * as Links from '../links';
 import * as Selectors from '../selectors';
 import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
+import * as LoadDataActions from '../actions/loadData';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
 import * as DisplayState from '../lib/displayState';
@@ -37,112 +38,128 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   };
 }
 
-export function ShowOutputSchema({
-  db,
-  upload,
-  inputSchema,
-  outputSchema,
-  columns,
-  displayState,
-  canApplyUpdate,
-  goHome,
-  updateColumnType,
-  applyUpdate }) {
+class ShowOutputSchema extends Component {
 
-  const path = {
-    uploadId: upload.id,
-    inputSchemaId: inputSchema.id,
-    outputSchemaId: outputSchema.id
-  };
+  componentDidMount() {
+    this.updateDisplayState();
+  }
 
-  const modalProps = {
-    fullScreen: true,
-    onDismiss: goHome
-  };
-  // TODO: a good candidate for a component since reused elsewhere
-  const headerProps = {
-    title: (
-      <ol className={styles.list}>
-        <li>
-          <Link to={Links.uploads}>
-            {I18n.home_pane.data}
-          </Link>
-          <SocrataIcon name="arrow-right" className={styles.icon} />
-        </li>
-        <li className={styles.active}>
-          {I18n.home_pane.preview}
-        </li>
-      </ol>
-    ),
-    onDismiss: goHome
-  };
+  componentDidUpdate() {
+    this.updateDisplayState();
+  }
 
-  const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
+  updateDisplayState() {
+    this.props.dispatch(LoadDataActions.loadVisibleData(this.props.displayState));
+  }
 
-  return (
-    <div className={styles.outputSchemaContainer}>
-      <Modal {...modalProps}>
-        <ModalHeader {...headerProps} />
+  render() {
+    const {
+      db,
+      upload,
+      inputSchema,
+      outputSchema,
+      columns,
+      displayState,
+      canApplyUpdate,
+      goHome,
+      updateColumnType,
+      applyUpdate
+    } = this.props;
 
-        <ModalContent>
-          <div>
-            <div className={styles.dataPreview}>
-              <div>
-                <h3>Data Preview</h3>
-              </div>
-              <div className={styles.datasetAttribute}>
-                <div className={styles.datasetAttribute}>
-                  <p>Rows</p>
-                  <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
-                </div>
-                <div className={styles.datasetAttribute}>
-                  <p>Columns</p>
-                  <p className={styles.attribute}>{columns.length}</p>
-                </div>
-              </div>
-            </div>
+    const path = {
+      uploadId: upload.id,
+      inputSchemaId: inputSchema.id,
+      outputSchemaId: outputSchema.id
+    };
 
-            <div className={styles.tableWrap}>
-              <Table
-                db={db}
-                path={path}
-                columns={columns}
-                inputSchema={inputSchema}
-                outputSchema={outputSchema}
-                displayState={displayState}
-                updateColumnType={updateColumnType} />
-            </div>
-          </div>
-
-
-        </ModalContent>
-
-        <ModalFooter>
-          {canApplyUpdate ?
-            <ReadyToImport
-              db={db}
-              outputSchema={outputSchema} /> :
-            <div />}
-
-          <div>
-            <Link to={Links.home}>
-              <button
-                className={styles.saveBtn}>
-                {I18n.home_pane.save_for_later}
-              </button>
+    const modalProps = {
+      fullScreen: true,
+      onDismiss: goHome
+    };
+    // TODO: a good candidate for a component since reused elsewhere
+    const headerProps = {
+      title: (
+        <ol className={styles.list}>
+          <li>
+            <Link to={Links.uploads}>
+              {I18n.home_pane.data}
             </Link>
+            <SocrataIcon name="arrow-right" className={styles.icon} />
+          </li>
+          <li className={styles.active}>
+            {I18n.home_pane.preview}
+          </li>
+        </ol>
+      ),
+      onDismiss: goHome
+    };
 
-            <button
-              onClick={applyUpdate}
-              disabled={!canApplyUpdate}
-              className={styles.processBtn}>
-              {I18n.home_pane.process_data}
-            </button>
-          </div>
-        </ModalFooter>
-      </Modal>
-    </div>
-  );
+    const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
+
+    return (
+      <div className={styles.outputSchemaContainer}>
+        <Modal {...modalProps}>
+          <ModalHeader {...headerProps} />
+
+          <ModalContent>
+            <div>
+              <div className={styles.dataPreview}>
+                <div>
+                  <h3>Data Preview</h3>
+                </div>
+                <div className={styles.datasetAttribute}>
+                  <div className={styles.datasetAttribute}>
+                    <p>Rows</p>
+                    <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
+                  </div>
+                  <div className={styles.datasetAttribute}>
+                    <p>Columns</p>
+                    <p className={styles.attribute}>{columns.length}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.tableWrap}>
+                <Table
+                  db={db}
+                  path={path}
+                  columns={columns}
+                  inputSchema={inputSchema}
+                  outputSchema={outputSchema}
+                  displayState={displayState}
+                  updateColumnType={updateColumnType} />
+              </div>
+            </div>
+          </ModalContent>
+
+          <ModalFooter>
+            {canApplyUpdate ?
+              <ReadyToImport
+                db={db}
+                outputSchema={outputSchema} /> :
+              <div />}
+
+            <div>
+              <Link to={Links.home}>
+                <button
+                  className={styles.saveBtn}>
+                  {I18n.home_pane.save_for_later}
+                </button>
+              </Link>
+
+              <button
+                onClick={applyUpdate}
+                disabled={!canApplyUpdate}
+                className={styles.processBtn}>
+                {I18n.home_pane.process_data}
+              </button>
+            </div>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  }
+
 }
 
 ShowOutputSchema.propTypes = {
@@ -154,6 +171,7 @@ ShowOutputSchema.propTypes = {
   goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
   displayState: PropTypes.object.isRequired,
   canApplyUpdate: PropTypes.bool.isRequired
 };
@@ -182,7 +200,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     applyUpdate: () => (
       dispatch(ApplyActions.applyUpdate(_.toNumber(ownProps.params.outputSchemaId)))
-    )
+    ),
+    dispatch
   };
 }
 

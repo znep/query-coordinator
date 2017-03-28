@@ -1,0 +1,29 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.rowErrorsCount {
+  border-top: 2px solid $light-grey-4;
+
+  th {
+    font-size: 10px;
+    background-color: $white;
+    font-weight: normal;
+    display: block;
+    width: 100%;
+
+    a {
+      color: $grey;
+      text-decoration: none;
+      display: block;
+    }
+  }
+}
+
+.malformedRowsStatusText {
+  max-width: 300px;
+}
+
+.rowErrorsCountSelected {
+  box-shadow: inset 0 0 10px -2px $black;
+}

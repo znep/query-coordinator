@@ -3,7 +3,6 @@ import ColumnHeader from './ColumnHeader';
 import TransformStatus from './TransformStatus';
 import TableBody from './TableBody';
 import RowErrorsLink from './RowErrorsLink';
-import classNames from 'classnames';
 import * as DisplayState from '../../lib/displayState';
 import styles from 'styles/Table/Table.scss';
 
@@ -43,18 +42,11 @@ export default function Table({
           )}
         </tr>
         {(numRowErrors > 0) &&
-          <tr className="row-errors-count">
-            <th
-              className={classNames(
-                'row-errors-count',
-                { 'row-errors-count-selected': inRowErrorMode }
-              )}>
-              <RowErrorsLink
-                path={path}
-                displayState={displayState}
-                numRowErrors={numRowErrors} />
-            </th>
-          </tr>}
+          <RowErrorsLink
+            path={path}
+            displayState={displayState}
+            numRowErrors={numRowErrors}
+            inRowErrorMode={inRowErrorMode} />}
       </thead>
       <TableBody
         db={db}

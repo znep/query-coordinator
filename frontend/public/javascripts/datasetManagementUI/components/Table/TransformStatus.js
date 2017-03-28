@@ -25,17 +25,15 @@ function ErrorFlyout({ transform }) {
     SubI18n.column_status_flyout.error_msg_plural
   );
   return (
-    <div
-      id={flyoutId}
-      className="transform-status-flyout flyout flyout-hidden">
-      <section className="flyout-content">
+    <div id={flyoutId} className={styles.transformStatusFlyout}>
+      <section className={styles.flyoutContent}>
         {msgTemplate.format({
           num_errors: commaify(transform.num_transform_errors),
           type: SubI18n.type_display_names[transform.output_soql_type]
         })}
         <TypeIcon type={transform.output_soql_type} />
         <br />
-        <span className="click-to-view">{I18n.show_output_schema.click_to_view}</span>
+        <span className={styles.clickToView}>{SubI18n.column_status_flyout.click_to_view}</span>
       </section>
     </div>
   );
@@ -91,29 +89,6 @@ class TransformStatus extends Component {
       </div>
     );
 
-    // let errorFlyout = null;
-    // let flyoutId = null;
-    // if (transform.num_transform_errors > 0 && !inErrorMode) {
-    //   flyoutId = this.getFlyoutId();
-    //   const msgTemplate = singularOrPlural(
-    //     transform.num_transform_errors,
-    //     SubI18n.column_status_flyout.error_msg_singular,
-    //     SubI18n.column_status_flyout.error_msg_plural
-    //   );
-    //   errorFlyout = (
-    //     <div id={flyoutId} className={styles.transformStatusFlyout}>
-    //       <section className={styles.flyoutContent}>
-    //         {msgTemplate.format({
-    //           num_errors: commaify(transform.num_transform_errors),
-    //           type: SubI18n.type_display_names[transform.output_soql_type]
-    //         })}
-    //         <TypeIcon type={transform.output_soql_type} />
-    //         <br />
-    //         <span className={styles.clickToView}>{SubI18n.column_status_flyout.click_to_view}</span>
-    //       </section>
-    //     </div>
-    //   );
-    // }
     const errorFlyout = (transform.num_transform_errors > 0 && !inErrorMode) ?
       <ErrorFlyout transform={transform} /> :
       null;
@@ -134,14 +109,14 @@ class TransformStatus extends Component {
           className={classNames(styles.colErrors, { [styles.colErrorsSelected]: inErrorMode })}>
           {progressBar}
           <Link to={linkPath}>
-            <div className="column-status-text">
-              <span className="err-info error">{commaify(transform.num_transform_errors)}</span>
+            <div className={styles.statusText}>
+              <span className={styles.error}>{commaify(transform.num_transform_errors)}</span>
               {msg}
             </div>
           </Link>
           <div className={styles.statusText}>
             <span className={styles.error}>{commaify(transform.num_transform_errors)}</span>
-            <Link to={linkPath} data-flyout={flyoutId}>{msg}</Link>
+            <Link to={linkPath} data-flyout={getFlyoutId(transform)}>{msg}</Link>
           </div>
           {errorFlyout}
         </th>

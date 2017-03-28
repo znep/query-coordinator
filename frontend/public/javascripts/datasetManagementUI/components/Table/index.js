@@ -30,7 +30,7 @@ export default function Table({
               updateColumnType={updateColumnType} />
           )}
         </tr>
-        <tr className="column-statuses">
+        <tr className={styles.columnStatuses}>
           {columns.map(column =>
             <TransformStatus
               key={column.transform.id}

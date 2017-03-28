@@ -18,7 +18,8 @@ module.exports = {
     preLoaders: _.compact([
       common.isProduction ? null : { test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/ },
       ...common.getStyleguidePreLoaders()
-    ])
+    ]),
+    loaders: [ common.getBabelLoader() ]
   },
   sassLoader: {
     includePaths: [
@@ -32,6 +33,6 @@ module.exports = {
     modulesDirectories: [ path.resolve(common.root, 'node_modules') ]
   },
   resolve: {
-    modulesDirectories: [ 'node_modules' ]
+    modulesDirectories: [ path.resolve(common.root, 'node_modules') ]
   }
 };

@@ -6,7 +6,7 @@ import mockRelatedView from 'data/mockRelatedView';
 import { getDefaultStore } from 'testStore';
 import datasetLandingPage from 'reducers';
 import { createStore } from 'redux';
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 
 describe('App', function() {
   before(function() {

@@ -102,7 +102,6 @@
     "rx-core-testing": "3.0.0",
     "sass-loader": "3.1.2",
     "script-loader": "0.6.1",
-    "socrata-utils": "3.2.0",
     "style-loader": "0.13.0",
     "url-loader": "0.5.7",
     "webpack": "1.13.1",

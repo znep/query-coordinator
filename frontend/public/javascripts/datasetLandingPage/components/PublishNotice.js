@@ -1,4 +1,4 @@
-import 'socrata-utils';
+import 'common/js_utils'; // Side effect: Set string.format, which is used by this file.
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { PropTypes, Component } from 'react';
@@ -9,6 +9,7 @@ import { isUserAdminOrPublisher } from '../../common/user';
 import { publishView, clearViewPublishError } from '../actions/view';
 import { localizeLink } from '../../common/locale';
 
+// TODO: Make an example page for this component.
 export class PublishNotice extends Component {
   renderPublishErrorAlert() {
     const { view, onDismissError } = this.props;

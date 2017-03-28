@@ -1,9 +1,7 @@
-'use strict';
+import _ from 'lodash';
 
-var _ = require('lodash');
-
-var FeatureFlags = {
-  source: function(/*key*/) {
+export var FeatureFlags = {
+  source: function() {
     throw new Error('Reserved for future use (FFS).');
   },
 
@@ -14,11 +12,12 @@ var FeatureFlags = {
     }
     if (featureFlags === undefined) {
       throw new Error(
-        'FeatureFlags requires window.socrata.featureFlags or window.serverConfig.featureFlags to be defined. Please see README.md in frontend-utils.'
+        `FeatureFlags requires window.socrata.featureFlags or window.serverConfig.featureFlags to be defined.
+        Please see README.md in frontend-utils.`
       );
     }
     if (Object.keys(featureFlags).indexOf(key) === -1) {
-      throw new Error('Invalid feature flag: ' + key);
+      throw new Error(`Invalid feature flag: ${key}`);
     } else {
       return featureFlags[key];
     }
@@ -33,6 +32,3 @@ var FeatureFlags = {
   }
 };
 
-module.exports = {
-  FeatureFlags: FeatureFlags
-};

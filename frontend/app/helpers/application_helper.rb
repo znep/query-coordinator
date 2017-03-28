@@ -292,15 +292,17 @@ module ApplicationHelper
   end
 
   def include_webpack_bundle(resource)
+    resource_name = "#{resource}#{'.js' unless resource.end_with?('.js')}"
+
     if Rails.configuration.webpack[:use_dev_server]
-      src = "/javascripts/webpack/#{resource}?#{asset_revision_key}"
+      src = "/javascripts/webpack/#{resource_name}?#{asset_revision_key}"
     else
       # use compiled asset
       src = if Rails.configuration.webpack[:use_manifest]
         manifest = Rails.configuration.webpack[:asset_manifest]
-        "build/#{manifest[resource]}?#{asset_revision_key}"
+        "build/#{manifest.fetch(resource_name)}?#{asset_revision_key}"
       else
-        "build/#{resource}?#{asset_revision_key}"
+        "build/#{resource_name}?#{asset_revision_key}"
       end
     end
     javascript_include_tag(src)

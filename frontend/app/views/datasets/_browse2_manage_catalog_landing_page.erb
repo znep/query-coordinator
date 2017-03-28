@@ -2,7 +2,7 @@
 <div class="alert info browse2-manage-catalog-landing-page">
   <%- activation_params = { controller: :catalog_landing_page, action: :manage }.
         merge(params.only(*CatalogLandingPage.valid_params)).
-        merge(custom_path: params[:custom_path])
+        merge(custom_path: params[:custom_path] || '/browse')
       activation_link = link_to(capture do %>
     <button class="btn btn-primary">
       <%= translation.call('action') %>

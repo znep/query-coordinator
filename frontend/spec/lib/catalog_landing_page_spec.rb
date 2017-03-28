@@ -51,7 +51,7 @@ describe CatalogLandingPage do
     end
 
     context 'when it is just /browse' do
-      let(:params) { { custom_path: 'browse' } }
+      let(:path) { '/browse' }
 
       it 'should return true' do
         expect(CatalogLandingPage.may_activate?(request)).to eq(true)
@@ -92,9 +92,10 @@ describe CatalogLandingPage do
     let(:configuration) { double(:config, properties: properties) }
     let(:properties) { {} }
     let(:params) { {} }
+    let(:path) { '/' }
     let(:request) do
       double(:request, params: ActionController::Parameters.new(params),
-             query_parameters: params)
+             query_parameters: params, path: path)
     end
 
     context 'when the configuration does not exist' do

@@ -5,8 +5,8 @@ const Header = (props) => {
   var { headline, description } = props;
 
   let managementPageHref;
-  if (_.isString(props.query)) {
-    managementPageHref = `/catalog_landing_page/manage?custom_path=${props.query}`;
+  if (_.get(props, 'query.custom_path')) {
+    managementPageHref = `/catalog_landing_page/manage?custom_path=${props.query.custom_path}`;
   } else {
     managementPageHref = `/catalog_landing_page/manage${window.location.search}`;
   }
@@ -37,7 +37,7 @@ const Header = (props) => {
 Header.propTypes = {
   headline: PropTypes.string.isRequired,
   description: PropTypes.string,
-  query: PropTypes.string
+  query: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => {

@@ -4,12 +4,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { defaultHeaders } from '../../common/http';
 import format from 'stringformat';
-import CategoryStat from './CategoryStat';
 import FeaturedContentManager from './FeaturedContentManager';
+import StatCounts from './StatCounts';
 import * as Actions from '../actions/header';
 import airbrake from '../../common/airbrake';
 
-class Manager extends React.Component {
+export class Manager extends React.Component {
   constructor(props) {
     super(props);
 
@@ -26,7 +26,7 @@ class Manager extends React.Component {
 
   onDismiss() {
     this.setState({ isDismissing: true });
-    window.location.href = `/browse?category=${this.props.category}`;
+    window.location.href = this.props.catalogPath;
   }
 
   metadataForSave() {
@@ -42,7 +42,13 @@ class Manager extends React.Component {
 
       if (featuredContentItem.contentType === 'external') {
         featuredContentPayload[key].contentType = 'external';
-        featuredContentPayload[key].previewImageBase64 = featuredContentItem.imageUrl;
+
+        const validBase64ImagePrefixRegex = new RegExp('^data:image/[jpe?g|png|gif];base64');
+        // EN-15002: If a new image has been uploaded, it will have a base64 encoding as its `imageUrl`,
+        // and we want to send it in the payload to core to turn it into a URL.
+        if (validBase64ImagePrefixRegex.test(featuredContentItem.imageUrl)) {
+          featuredContentPayload[key].previewImageBase64 = featuredContentItem.imageUrl;
+        }
       } else {
         featuredContentPayload[key].contentType = 'internal';
         featuredContentPayload[key].featuredLensUid = featuredContentItem.uid;
@@ -55,10 +61,8 @@ class Manager extends React.Component {
   handleSave() {
     this.setState({ isSaving: true });
 
-    const data = {
-      catalog_query: {
-        category: this.props.category
-      },
+    const payloadBody = {
+      catalog_query: this.props.catalogQuery,
       metadata: this.metadataForSave(),
       featured_content: this.featuredContentForSave()
     };
@@ -67,7 +71,7 @@ class Manager extends React.Component {
       method: 'PUT',
       credentials: 'same-origin',
       headers: defaultHeaders,
-      body: JSON.stringify(data)
+      body: JSON.stringify(payloadBody)
     };
 
     const redirectIfNeeded = function(response) {
@@ -129,9 +133,9 @@ class Manager extends React.Component {
       return <h6 className="h6 styleguide-subheader">{text}</h6>;
     };
 
-    const formatWithCategory = (translationKey) => {
+    const formatWithCategory = (translationKey, translationKeyNoCategory = translationKey) => {
       return format(
-        _.get(I18n, translationKey),
+        _.get(I18n, this.props.category ? translationKey : translationKeyNoCategory),
         { category: this.props.category }
       );
     };
@@ -161,20 +165,9 @@ class Manager extends React.Component {
     const renderCategoryStats = () => {
       const { categoryStats } = this.props;
 
-      // Filters out zero-valued results, then sorts the remaining results by category name.
-      const outputStats = _(categoryStats).toPairs().reject([1, 0]).sortBy(0).fromPairs().value();
-
-      if (_.isEmpty(outputStats)) { return null; }
-
       return (
         <div className="catalog-landing-page-stats">
-          <div className="stat-counts">
-            {_.map(outputStats, (count, name) => {
-              const countKey = count === 1 ? 'singular' : 'plural';
-              const nameTranslation = _.get(I18n, `category_stats.${name}.${countKey}`);
-              return <CategoryStat key={name} name={nameTranslation} count={count} />;
-            })}
-          </div>
+          <StatCounts categoryStats={categoryStats} />
         </div>
       );
     };
@@ -211,7 +204,8 @@ class Manager extends React.Component {
               type="text"
               aria-label={formatWithCategory('manager.description.placeholder')}
               maxLength="320"
-              placeholder={formatWithCategory('manager.description.placeholder')}
+              placeholder={formatWithCategory('manager.description.placeholder',
+                  'manager.description.placeholder_no_category')}
               onChange={this.handleInputChange}
               value={this.props.header.description} />
 
@@ -222,7 +216,8 @@ class Manager extends React.Component {
             {renderShowStatsCheckbox()}
             {renderCategoryStats()}
 
-            {headingHtml(formatWithCategory('manager.featured_content.label'))}
+            {headingHtml(formatWithCategory('manager.featured_content.label',
+                  'manager.featured_content.label_no_category'))}
             <p className="small explanation">
               {_.get(I18n, 'manager.featured_content.explanation')}
             </p>
@@ -232,11 +227,11 @@ class Manager extends React.Component {
 
         <footer>
           <div>
-            <button className="btn btn-default" onClick={this.onDismiss}>
+            <button className="btn btn-default cancel-button" onClick={this.onDismiss}>
               {isDismissing ? spinner : _.get(I18n, 'manager.cancel')}
             </button>
             &nbsp;
-            <button className="btn btn-primary" onClick={this.handleSave} disabled={!isDirty}>
+            <button className="btn btn-primary save-button" onClick={this.handleSave} disabled={!isDirty}>
               {isSaving ? spinner : _.get(I18n, 'manager.save')}
             </button>
           </div>
@@ -247,7 +242,9 @@ class Manager extends React.Component {
 }
 
 Manager.propTypes = {
-  category: PropTypes.string.isRequired,
+  category: PropTypes.string,
+  catalogPath: PropTypes.string.isRequired,
+  catalogQuery: PropTypes.object,
   categoryStats: PropTypes.object,
   featuredContent: PropTypes.object,
   header: PropTypes.shape({
@@ -261,6 +258,10 @@ Manager.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  catalogPath: state.catalog.path,
+  catalogQuery: _.isString(state.catalog.query) ?
+    { custom_path: state.catalog.query } :
+    state.catalog.query,
   category: state.category,
   categoryStats: state.categoryStats,
   featuredContent: state.featuredContent,

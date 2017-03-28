@@ -1,17 +1,15 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
 import { FieldDescriptor } from '../../lib/sharedPropTypes';
+import styles from 'styles/MetadataFields/TextInput.scss';
 
 const TextInput = ({ descriptor, onChange, value, isValid }) => {
-  const classes = classNames('text-input', { 'text-input-error': !isValid });
-
   return (
     <input
       type="text"
       id={descriptor.key}
       aria-label={descriptor.label}
       aria-required={descriptor.required}
-      className={classes}
+      className={isValid ? styles.textInput : styles.textInputError}
       value={value}
       placeholder={descriptor.placeholder}
       onChange={(evt) => onChange(evt.target.value)} />

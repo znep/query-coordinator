@@ -4,7 +4,12 @@ import { connect } from 'react-redux';
 const Header = (props) => {
   var { headline, description } = props;
 
-  const managementPageHref = `/catalog_landing_page/manage${window.location.search}`;
+  let managementPageHref;
+  if (_.isString(props.query)) {
+    managementPageHref = `/catalog_landing_page/manage?custom_path=${props.query}`;
+  } else {
+    managementPageHref = `/catalog_landing_page/manage${window.location.search}`;
+  }
 
   const toggleThrobber = () => {
     $('.management-button .throbber-icon,.management-button .socrata-icon-arrow-right').toggle();
@@ -31,11 +36,12 @@ const Header = (props) => {
 
 Header.propTypes = {
   headline: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired
+  description: PropTypes.string,
+  query: PropTypes.string
 };
 
 const mapStateToProps = (state) => {
-  return state.header;
+  return _.assign({}, state.header, { query: state.catalog.query });
 };
 
 export default connect(mapStateToProps)(Header);

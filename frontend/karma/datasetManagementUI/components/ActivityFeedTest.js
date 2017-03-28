@@ -119,7 +119,7 @@ describe('components/ActivityFeed', () => {
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(1);
-    expect(element.querySelector('.activity.update .created-by').innerText).to.eql('rozap');
+    expect(element.querySelector('.createdBy').innerText).to.eql('rozap');
   });
 
   it('renders an upload when there is an upload', () => {
@@ -130,7 +130,7 @@ describe('components/ActivityFeed', () => {
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(2);
-    expect(element.querySelector('.activity.upload .created-by').innerText).to.eql('bob');
+    expect(element.querySelector('[data-activity-type=upload] .createdBy').innerText).to.eql('bob');
   });
 
   it('renders an output schema when there is an output schema', () => {
@@ -142,7 +142,7 @@ describe('components/ActivityFeed', () => {
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(3);
-    expect(element.querySelector('.activity.output-schema .created-by').innerText).to.eql('fred');
+    expect(element.querySelector('[data-activity-type=outputschema] .createdBy').innerText).to.eql('fred');
   });
 
   it('renders an upsert job when there is an upsert job in progress', () => {
@@ -155,7 +155,7 @@ describe('components/ActivityFeed', () => {
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(4);
-    expect(element.querySelector('.activity.upsert-in-progress .created-by').innerText).to.eql('foo');
+    expect(element.querySelector('[data-activity-type=upsert] .createdBy').innerText).to.eql('foo');
   });
 
   it('renders an upsert job when there is an upsert job in complete', () => {
@@ -168,7 +168,7 @@ describe('components/ActivityFeed', () => {
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(5);
-    expect(element.querySelector('.activity.upsert-complete')).to.exist
+    expect(element.querySelector('[data-activity-type=upsertcompleted]')).to.exist
   });
 
   it('renders an upsert job when there is an upsert job in complete', () => {
@@ -181,7 +181,7 @@ describe('components/ActivityFeed', () => {
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(5);
-    expect(element.querySelector('.activity.upsert-failed')).to.exist
+    expect(element.querySelector('[data-activity-type=upsertfailed]')).to.exist
   });
 
 });

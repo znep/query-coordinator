@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Notification from './NotificationList/Notification';
 import { UPLOAD_NOTIFICATION, UPSERT_JOB_NOTIFICATION } from '../lib/notifications';
+import styles from 'styles/NotificationList.scss';
 
 function NotificationList({ notifications }) {
   const idForNotification = (notification) => {
@@ -25,9 +26,14 @@ function NotificationList({ notifications }) {
   ));
 
   return (
-    <div id="dsmui-notifications-list">
+    <div className={styles.list}>
       <ReactCSSTransitionGroup
-        transitionName="dsmui-notification-transition"
+        transitionName={{
+          enter: styles.enter,
+          enterActive: styles.enterActive,
+          leave: styles.leave,
+          leaveActive: styles.leaveActive
+        }}
         transitionEnterTimeout={500}
         transitionLeaveTimeout={500}>
         {items}

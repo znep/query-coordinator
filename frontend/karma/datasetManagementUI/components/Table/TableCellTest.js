@@ -22,7 +22,7 @@ describe('components/Table/TableCell', () => {
   it('renders not loaded', () => {
     const element = renderInTable(<TableCell cell={null} />);
     expect(element).to.not.be.null;
-    expect(element.querySelector('.not-yet-loaded')).to.not.be.null;
+    expect(element.querySelector('.notYetLoaded')).to.not.be.null;
   });
 
   it('renders text', () => {

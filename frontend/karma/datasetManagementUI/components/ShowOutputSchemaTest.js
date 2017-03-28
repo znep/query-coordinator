@@ -26,9 +26,9 @@ describe('components/ShowOutputSchema', () => {
   it('renders a table without data', () => {
     const store = getStoreWithOutputSchema();
     const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-    expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
+    expect(_.map(element.querySelectorAll('.colName'), 'innerText')).to.eql(['arrest', 'block']);
     expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
-    expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
+    expect(_.map(element.querySelectorAll('.colErrors'), 'innerText')).to.eql([
       I18n.show_output_schema.column_header.scanning,
       I18n.show_output_schema.column_header.scanning
     ]);
@@ -64,7 +64,7 @@ describe('components/ShowOutputSchema', () => {
     expect(_.map(rows[0].querySelectorAll('td'), 'innerText')).to.eql(['foo', 'bleep']);
     expect(_.map(rows[1].querySelectorAll('td'), 'innerText')).to.eql(['bar', '']);
     expect(_.map(rows[2].querySelectorAll('td'), 'innerText')).to.eql(['baz', 'blorp']);
-    expect(_.map(element.querySelectorAll('.col-errors'), 'innerText')).to.eql([
+    expect(_.map(element.querySelectorAll('.colErrors'), 'innerText')).to.eql([
       I18n.show_output_schema.column_header.no_errors_exist,
       I18n.show_output_schema.column_header.no_errors_exist
     ]);
@@ -226,9 +226,9 @@ describe('components/ShowOutputSchema', () => {
       }));
 
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
+      expect(_.map(element.querySelectorAll('.colName'), 'innerText')).to.eql(['arrest', 'block']);
       expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
-      expect(_.map(element.querySelectorAll('.column-status-text'), 'innerText')).to.eql([
+      expect(_.map(element.querySelectorAll('.statusText'), 'innerText')).to.eql([
         '1' + I18n.show_output_schema.column_header.error_exists,
         '42' + I18n.show_output_schema.column_header.errors_exist
       ]);
@@ -250,13 +250,13 @@ describe('components/ShowOutputSchema', () => {
       }));
 
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(_.map(element.querySelectorAll('.col-name'), 'innerText')).to.eql(['arrest', 'block']);
+      expect(_.map(element.querySelectorAll('.colName'), 'innerText')).to.eql(['arrest', 'block']);
       expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
-      expect(_.map(element.querySelectorAll('.column-status-text'), 'innerText')).to.eql([
+      expect(_.map(element.querySelectorAll('.statusText'), 'innerText')).to.eql([
         '1' + SubI18n.error_exists_scanning,
         '42' + SubI18n.errors_exist_scanning
       ]);
-      expect(_.map(element.querySelectorAll('.col-errors .flyout'), 'innerText')).to.eql([
+      expect(_.map(element.querySelectorAll('.colErrors .flyout'), 'innerText')).to.eql([
         SubI18n.column_status_flyout.error_msg_singular.format({
           num_errors: 1,
           type: 'Text'
@@ -285,7 +285,7 @@ describe('components/ShowOutputSchema', () => {
         contiguous_rows_processed: 3
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.total-row-count').innerText).to.eql('2');
+      expect(element.querySelector('.attribute').innerText).to.eql('2');
     });
 
     it('shows the row count before the file has finished uploading', () => {
@@ -295,7 +295,7 @@ describe('components/ShowOutputSchema', () => {
         total_rows: 50
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.total-row-count').innerText).to.eql('50');
+      expect(element.querySelector('.attribute').innerText).to.eql('50');
     });
 
   });
@@ -313,7 +313,7 @@ describe('components/ShowOutputSchema', () => {
         contiguous_rows_processed: 3
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.btn.apply-update').disabled).to.be.true;
+      expect(element.querySelector('.processBtn').disabled).to.be.true;
     });
 
     it('is disabled when the upload is done but not all columns have caught up', () => {
@@ -331,7 +331,7 @@ describe('components/ShowOutputSchema', () => {
         contiguous_rows_processed: 3
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.btn.apply-update').disabled).to.be.true;
+      expect(element.querySelector('.processBtn').disabled).to.be.true;
     });
 
     it('is enabled when the upload is done and all columns have caught up', () => {
@@ -349,7 +349,7 @@ describe('components/ShowOutputSchema', () => {
         contiguous_rows_processed: 50
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.btn.apply-update').disabled).to.be.false;
+      expect(element.querySelector('.processBtn').disabled).to.be.false;
     });
 
   });
@@ -359,7 +359,7 @@ describe('components/ShowOutputSchema', () => {
     it('isn\'t shown when the file is still transforming', () => {
       const store = getStoreWithOutputSchema();
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.ready-to-import')).to.be.null;
+      expect(element.querySelector('.readyToImport')).to.be.null;
     });
 
     it('is shown when the file is done transforming', () => {
@@ -381,8 +381,8 @@ describe('components/ShowOutputSchema', () => {
         contiguous_rows_processed: 42
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.ready-to-import')).to.not.be.null;
-      const paragraphs = element.querySelectorAll('.ready-to-import p');
+      expect(element.querySelector('.readyToImport')).to.not.be.null;
+      const paragraphs = element.querySelectorAll('.readyToImport p');
       expect(paragraphs[0].innerText).to.eql('Ready to import 39 rows');
       expect(paragraphs[1].innerText).to.eql('Rows that will not be imported 3');
     });
@@ -408,7 +408,7 @@ describe('components/ShowOutputSchema', () => {
           contiguous_rows_processed: 42
         }));
         const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-        const exportButton = element.querySelector('.btn.export-errors');
+        const exportButton = element.querySelector('.errorsBtn');
         expect(exportButton.parentNode.href.endsWith('/api/publishing/v1/upload/5/schema/4/errors/18')).to.be.true;
         expect(exportButton).to.not.be.null;
         expect(exportButton.disabled).to.be.false;
@@ -433,7 +433,7 @@ describe('components/ShowOutputSchema', () => {
           contiguous_rows_processed: 42
         }));
         const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-        const exportButton = element.querySelector('.btn.export-errors');
+        const exportButton = element.querySelector('.errorsBtn');
         expect(exportButton).to.not.be.null;
         expect(exportButton.disabled).to.be.true;
       });

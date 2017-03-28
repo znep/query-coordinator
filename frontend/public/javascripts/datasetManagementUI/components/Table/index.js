@@ -5,6 +5,7 @@ import TableBody from './TableBody';
 import RowErrorsLink from './RowErrorsLink';
 import classNames from 'classnames';
 import * as DisplayState from '../../lib/displayState';
+import styles from 'styles/Table/Table.scss';
 
 export default function Table({
   db,
@@ -19,7 +20,7 @@ export default function Table({
   const numRowErrors = inputSchema.num_row_errors;
   const transforms = _.map(columns, 'transform');
   return (
-    <table className="table table-condensed">
+    <table className={styles.table}>
       <thead>
         <tr>
           {columns.map(column =>

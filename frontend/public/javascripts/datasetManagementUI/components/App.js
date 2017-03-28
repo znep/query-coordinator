@@ -1,17 +1,19 @@
 import React, { PropTypes } from 'react';
 import AppBar from './AppBar';
 import NotificationList from './NotificationList';
+import styles from 'styles/App.scss';
 
-export default function App({ children }) {
-  return (
-    <div className="dataset-management-ui">
-      <AppBar />
-      {children}
-      <NotificationList />
-    </div>
-  );
-}
+const classNames = `dataset-management-ui ${styles.datasetManagementUi}`;
+
+const App = ({ children }) =>
+  <div className={classNames}>
+    <AppBar />
+    {children}
+    <NotificationList />
+  </div>;
 
 App.propTypes = {
   children: PropTypes.element
 };
+
+export default App;

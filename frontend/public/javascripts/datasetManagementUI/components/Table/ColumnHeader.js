@@ -3,6 +3,8 @@ import { Link } from 'react-router';
 import TypeIcon from '../TypeIcon';
 import { soqlTypes, soqlProperties } from '../../lib/soqlTypes';
 import * as Links from '../../links';
+import SocrataIcon from '../../../common/components/SocrataIcon';
+import styles from 'styles/Table/ColumnHeader.scss';
 
 class ColumnHeader extends Component {
 
@@ -26,11 +28,14 @@ class ColumnHeader extends Component {
     const columnType = column.transform.output_soql_type;
 
     return (
-      <th key={column.id} className="column-header">
+      <th key={column.id} className={styles.columnHeader}>
         <Link to={Links.columnMetadataEditor(column.id)}>
-          <span className="col-name" id={`column-display-name-${column.id}`} title={column.display_name}>
+          <span
+            className={styles.colName}
+            id={`column-display-name-${column.id}`}
+            title={column.display_name}>
             {column.display_name}
-            <span className="socrata-icon-edit" />
+            <SocrataIcon name="edit" className={styles.icon} />
           </span>
         </Link>
         <br />

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
+import styles from 'styles/Table/TableCell.scss';
 
 class TableCell extends Component {
 
@@ -10,18 +11,18 @@ class TableCell extends Component {
   render() {
     const cell = this.props.cell;
     if (!cell) {
-      return (<td className="not-yet-loaded" />);
+      return (<td className={styles.notYetLoaded} />);
     } else if (cell.error) {
       const inputs = cell.error.inputs;
       const input = _.first(_.map(inputs, (value) => value)).ok;
       return (
-        <td className="error" title={cell.error.message}>
+        <td className={styles.error} title={cell.error.message}>
           <div>{input}</div>
         </td>
       );
     } else if (cell.ok === null) {
       return (
-        <td className="empty"><div /></td>
+        <td className={styles.empty}><div /></td>
       );
     } else {
       return (

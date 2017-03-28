@@ -1,0 +1,56 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.container {
+  height: 100%;
+  width: 100%;
+}
+
+.progressBar {
+  height: 100%;
+  transition: width 1s;
+}
+
+.progressBarSuccess {
+  composes: progressBar;
+  background-color: $success-base;
+}
+
+.progressBarError {
+  composes: progressBar;
+  background-color: $error-base;
+}
+
+.progressBarDefault {
+  composes: progressBar;
+  background-color: $primary-base;
+}
+
+.progressBarDone {
+  composes: progressBar;
+  background-color: $light-grey-3;
+  transition: background-color 1s;
+}
+
+.progressBarInProgress {
+  composes: progressBar;
+  animation: slide 10s infinite linear forwards;
+  $semi-transparent-white: rgba(255,255,255,.15);
+  background: $primary-base linear-gradient(
+  -45deg,
+  $semi-transparent-white 25%,
+  transparent 25%,
+  transparent 50%,
+  $semi-transparent-white 50%,
+  $semi-transparent-white 75%,
+  transparent 75%,
+  transparent
+  );
+  background-size: 20px 20px;
+}
+
+@keyframes slide {
+  0% { background-position: 0% 0; }
+  100% { background-position: 100% 0; }
+}

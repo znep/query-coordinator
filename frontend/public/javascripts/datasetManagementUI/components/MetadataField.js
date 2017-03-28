@@ -4,6 +4,7 @@ import TextInput from './MetadataFields/TextInput';
 import TextArea from './MetadataFields/TextArea';
 import Select from './MetadataFields/Select';
 import TagsInput from 'components/MetadataFields/TagsInput';
+import styles from 'styles/MetadataField.scss';
 
 const MetadataField = (props) => {
   let element = null;
@@ -16,9 +17,9 @@ const MetadataField = (props) => {
 
   const newProps = Object.assign({}, props, { tags: props.descriptor.tags }, { isValid: isValid });
 
-  const labelClassNames = ['block-label'];
+  const labelClassNames = [styles.label];
 
-  props.descriptor.required && labelClassNames.push('required'); // eslint-disable-line
+  props.descriptor.required && labelClassNames.push(styles.labelRequired); // eslint-disable-line
 
   switch (props.descriptor.type) {
     case 'text':

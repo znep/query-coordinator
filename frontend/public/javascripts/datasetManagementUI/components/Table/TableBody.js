@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import TableCell from './TableCell';
 import RowError from './RowError';
 import * as DisplayState from '../../lib/displayState';
+import styles from 'styles/Table/TableBody.scss';
 
 const RENDER_ROWS = 50;
 
@@ -71,7 +72,7 @@ class TableBody extends Component {
     ));
 
     return (
-      <tbody tabIndex="0">
+      <tbody className={styles.tableBody} tabIndex="0">
         {rows}
       </tbody>
     );

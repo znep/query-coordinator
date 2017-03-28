@@ -2,25 +2,24 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { EditBar } from 'socrata-components';
+import SocrataIcon from '../../common/components/SocrataIcon';
+import styles from '../styles/AppBar.scss';
 import * as ApplyUpdate from '../actions/applyUpdate';
 
-function AppBar({ name, showPreviewLink }) {
-  const previewLink = (
-    <div className="primer-preview">
-      <a
-        href={`/d/${window.initialState.view.id}`}
-        target="_blank">
-        Preview Primer<span className="socrata-icon-preview" />
-      </a>
-    </div>
-  );
+const PreviewLink = () =>
+  <div className={styles.primerPreview}>
+    <a
+      href={`/d/${window.initialState.view.id}`}
+      target="_blank">
+      Preview Primer
+      <SocrataIcon name="preview" className={styles.previewIcon} />
+    </a>
+  </div>;
 
-  return (
-    <EditBar name={name} >
-      {showPreviewLink ? previewLink : null}
-    </EditBar>
-  );
-}
+const AppBar = ({ name, showPreviewLink }) =>
+  <EditBar name={name} >
+    {showPreviewLink && <PreviewLink />}
+  </EditBar>;
 
 AppBar.propTypes = {
   name: PropTypes.string.isRequired,

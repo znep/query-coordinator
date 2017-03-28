@@ -1,0 +1,18 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.primerPreview {
+  width: 100%;
+  text-align: right;
+  margin-right: 3em;
+
+  a {
+    color: $white;
+    text-decoration: none;
+  }
+}
+
+.previewIcon {
+  margin-left: 0.5em;
+}

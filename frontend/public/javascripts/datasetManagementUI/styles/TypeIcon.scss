@@ -1,0 +1,28 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.date {
+  color: #B26B00;
+}
+.text {
+  color: #204490;
+}
+.number {
+  color: #0098C8;
+}
+.boolean {
+  color: #894BAA;
+}
+.fixedTimestamp {
+  color: #B26B00;
+}
+.floatingTimestamp {
+  color: #B26B00;
+}
+.location {
+  color: #006A01;
+}
+.point {
+  color: #006A01;
+}

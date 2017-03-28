@@ -15,6 +15,7 @@ module BrowseActions
 
   def standard_view_types
     [
+      { text: t('controls.browse.facets.view_types.data_lens'), value: 'new_view', class: 'typeDataLens', icon_font_class: 'icon-cards' },
       { text: t('controls.browse.facets.view_types.datasets'), value: 'datasets', class: 'typeBlist' },
       { text: t('controls.browse.facets.view_types.charts'), value: 'charts', class: 'typeChart' },
       { text: t('controls.browse.facets.view_types.maps'), value: 'maps', class: 'typeMap' },
@@ -39,7 +40,6 @@ module BrowseActions
   def view_types_facet
     view_types = standard_view_types
 
-    add_data_lens_view_type_if_enabled!(view_types)
     add_stories_view_type_if_enabled!(view_types)
     add_pulse_view_type_if_enabled!(view_types)
 
@@ -280,7 +280,7 @@ module BrowseActions
     if options[:force_default]
       user_params = {}
     else
-      user_params = request.params.dup.to_hash.deep_symbolize_keys
+      user_params = request.params.except('custom_path').to_hash.deep_symbolize_keys
     end
 
     # grab configured params
@@ -685,53 +685,6 @@ module BrowseActions
     @@cutoff_store.delete(cname || CurrentDomain.cname)
   end
 
-  def data_lens_transition_state
-    # Ignore feature flags defined in the view metadata (first argument) but
-    # allow feature flag overrides in the query string (second argument)
-    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:data_lens_transition_state]
-  end
-
-  def data_lens_phase_beta?
-    data_lens_transition_state == 'beta'
-  end
-
-  def data_lens_phase_post_beta?
-    data_lens_transition_state == 'post_beta'
-  end
-
-  def current_user_can_edit_others_datasets?
-    defined?(current_user) && CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS)
-  end
-
-  def add_data_lens_view_type?
-    should_show_data_lenses = false
-
-    if data_lens_phase_beta?
-      should_show_data_lenses = current_user_can_edit_others_datasets?
-    elsif data_lens_phase_post_beta?
-      should_show_data_lenses = true
-    end
-
-    should_show_data_lenses
-  end
-
-  # TODO: All the add with pluck should be made immutable merges and sorted
-
-  def add_data_lens_view_type_if_enabled!(view_type_list)
-    if add_data_lens_view_type?
-      data_lens_option = {
-        :text => ::I18n.t('controls.browse.facets.view_types.data_lens'),
-        :value => 'new_view',
-        :class => 'typeDataLens',
-        :icon_font_class => 'icon-cards'
-      }
-
-      # Data lens pages are the new way to look at datasets, so insert above datasets
-      datasets_index = view_type_list.pluck(:value).index('datasets') || 0
-      view_type_list.insert(datasets_index, data_lens_option)
-    end
-  end
-
   def pulse_catalog_entries_enabled?
     FeatureFlags.derive(nil, defined?(request) ? request : nil)[:enable_pulse]
   end
@@ -749,7 +702,7 @@ module BrowseActions
         }
       }
 
-      # Position the pulse page similarily to Stories and Data Lens - Above the dataset entry
+      # Position the pulse page similarily to Stories - Above the Datalens entry
 
       datasets_index = view_type_list.pluck(:value).index('datasets') || 0
       view_type_list.insert(datasets_index, pulse_view_type)

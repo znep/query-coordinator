@@ -30,6 +30,17 @@ module.exports = _.defaultsDeep({
           path.resolve(common.root, 'node_modules/socrata-components/common')
         ],
         loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
+      },
+      {
+        test: /\.global.scss$/,
+        include: [
+          path.resolve(common.root, 'public/javascripts/datasetManagementUI')
+        ],
+        loader: 'style?sourceMap!css!postcss!sass'
+      },
+      {
+        test: /^((?!\.global).)*(scss|css)$/,
+        loader: 'style?sourceMap!css?modules&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=1!postcss!sass'
       }
     ]
   },
@@ -38,5 +49,10 @@ module.exports = _.defaultsDeep({
       path.resolve(common.root, 'public/javascripts/datasetManagementUI')
     ]
   },
-  plugins: plugins
+  plugins: plugins,
+  postcss: function() {
+    return [
+      require('autoprefixer')
+    ];
+  }
 }, require('./base'));

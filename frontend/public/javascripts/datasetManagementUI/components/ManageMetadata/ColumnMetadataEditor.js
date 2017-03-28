@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import MetadataField from '../MetadataField';
 import * as Selectors from '../../selectors';
 import * as Links from '../../links';
+import styles from 'styles/ManageMetadata/ColumnMetadataEditor.scss';
 
 function ColumnMetadataEditor({ db, onEdit }) {
   const currentSchema = Selectors.latestOutputSchema(db);
@@ -22,7 +23,7 @@ function ColumnMetadataEditor({ db, onEdit }) {
       },
       descriptor: {
         type: 'text',
-        className: 'column-name',
+        className: styles.columnName,
         key: idForColumnNameField(column.id),
         required: true,
         validator: (name) => _.trim(name).length > 0,
@@ -44,7 +45,7 @@ function ColumnMetadataEditor({ db, onEdit }) {
       descriptor: {
         type: 'textarea',
         rows: 1,
-        className: 'column-description',
+        className: styles.columnDescription,
         key: `col-desc-${column.id}`,
         required: false,
         validator: () => true,
@@ -63,7 +64,7 @@ function ColumnMetadataEditor({ db, onEdit }) {
         });
       },
       descriptor: {
-        className: 'column-field-name',
+        className: styles.columnFieldName,
         type: 'text',
         key: `field-name-${column.id}`,
         required: false,
@@ -75,7 +76,7 @@ function ColumnMetadataEditor({ db, onEdit }) {
     };
 
     return (
-      <div className="metadata-row" key={column.id}>
+      <div className={styles.metadataRow} key={column.id}>
         <MetadataField {...colNameProps} />
         <MetadataField {...colDescProps} />
         <MetadataField {...fieldNameProps} />
@@ -91,15 +92,15 @@ function ColumnMetadataEditor({ db, onEdit }) {
   );
 
   const columnEditors = (
-    <form id="column-metadata-editor">
-      <div id="metadata-header">
-        <label className="block-label column-name required">
+    <form className={styles.columnMetadataEditor}>
+      <div className={styles.metadataHeader}>
+        <label className={styles.headerColumnName}>
           {I18n.metadata_manage.column_tab.name}
         </label>
-        <label className="block-label column-description">
+        <label className={styles.headerColumnDescription}>
           {I18n.metadata_manage.column_tab.description}
         </label>
-        <label className="block-label column-field-name">
+        <label className={styles.headerColumnFieldName}>
           {I18n.metadata_manage.column_tab.field_name}
         </label>
       </div>
@@ -108,10 +109,11 @@ function ColumnMetadataEditor({ db, onEdit }) {
   );
 
   return (
-    <div id="metadata-content">
-      <h2 id="tab-title">{I18n.metadata_manage.column_tab.title}</h2>
-      <span id="tab-subtitle">{I18n.metadata_manage.column_tab.subtitle}</span>
-      <div id="required-note">{I18n.metadata_manage.required_note}</div>
+    // TODO: abstract metadata content into own component
+    <div className={styles.metadataContent}>
+      <h2 className={styles.tabTitle}>{I18n.metadata_manage.column_tab.title}</h2>
+      <span className={styles.tabSubtitle}>{I18n.metadata_manage.column_tab.subtitle}</span>
+      <div className={styles.requiredNote}>{I18n.metadata_manage.required_note}</div>
       <br />
       {_.isEmpty(currentColumns) ? noColumnsMessage : columnEditors}
     </div>

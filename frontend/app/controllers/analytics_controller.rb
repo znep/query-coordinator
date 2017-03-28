@@ -45,16 +45,8 @@ class AnalyticsController < ApplicationController
   end
 
   def log_error(error, metric)
-    Rails.logger.error "Analytics Controller Metric Error: #{error}. Returning 207 with 400 inside."
-    Airbrake.notify(
-      :error_class => 'Javascript Metric Error',
-      :error_message => "Metric: #{metric.to_json} Error Message: #{error}",
-      :session => { :domain => CurrentDomain.cname },
-      :request => {
-        :params => params,
-        :referrer_path => URI(request.referer).path
-      }
-    )
+    Rails.logger.error "Analytics Controller Metric Error: #{error} - referrer: #{URI(request.referer).path}\n" +
+                           "Returning 207 with 400 inside.\n#{metric.to_json}"
   end
 
   def parse_metrics_from_request(request)

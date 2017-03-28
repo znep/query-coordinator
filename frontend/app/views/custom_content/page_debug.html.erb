@@ -1,5 +1,5 @@
 <% content_for :head do %>
-<title><%= @page.name %></title>
+<title><%= [ @page.name, get_site_title ].reject(&:blank?).join(' | ') %></title>
 <%= rendered_stylesheet_tag 'components' %>
 <% end %>
 <h2>Error</h2>

@@ -24,8 +24,8 @@ describe('components/MetadataFields/Tag', () => {
 
   it('inserts a close button inside the list item', () => {
     const closeButton = component.props.children[1];
-    expect(closeButton.props.className).to.eq('socrata-icon-close-2');
-    expect(closeButton.type).to.eq('span');
+    expect(closeButton.type.name).to.eq('SocrataIcon');
+    expect(closeButton.props.name).to.eq('close-2');
   });
 
   it('calls the onTagClick callback when tag is clicked', () => {

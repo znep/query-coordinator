@@ -440,23 +440,23 @@ en:
     category_stats:
       about: About this Category
       calendars:
-        singular: Calendar
-        plural: Calendars
+        one: Calendar
+        other: Calendars
       charts:
-        singular: Chart
-        plural: Charts
+        one: Chart
+        other: Charts
       datasets:
-        singular: Dataset
-        plural: Datasets
+        one: Dataset
+        other: Datasets
       forms:
-        singular: Form
-        plural: Forms
+        one: Form
+        other: Forms
       maps:
-        singular: Map
-        plural: Maps
+        one: Map
+        other: Maps
       tables:
-        singular: Table
-        plural: Tables
+        one: Table
+        other: Tables
     featured_content:
       label: Featured Content in this Category
     manager:
@@ -474,12 +474,13 @@ en:
       description:
         label: Description
         placeholder: Write a description for your {category} content
+        placeholder_no_category: Write a description for your content
       show_stats:
-        label: Show {category} Stats
         label: Show Stats
         explanation: Choose to show some basic statistics around this category, such as how many datasets, visualizations and stories it contains.
       featured_content:
         label: Featured Content in {category}
+        label_no_category: Featured Content
         explanation: Promote up to 3 assets for this category.
     search:
       hint: Search
@@ -758,8 +759,9 @@ en:
             title: Find more data like this on the Open Data Network
           prompt: Find Data Like This
         results:
-          cetera_count: Showing %{start}-%{end} of %{total} results
-          cetera_count_singular: Showing 1 result
+          cetera_count:
+            one: Showing 1 result
+            other: Showing %{start}-%{end} of %{count} results
           count: Showing %{this} of %{total} results
         search:
           clear:
@@ -2009,16 +2011,16 @@ en:
       save: Save
       title: Page Settings
   date:
-    time_in_distance:
-      ago: "%{distance} ago"
-      from_now: "%{distance} from now"
-    formats:
-      short: '%d %b %Y'
-      long: '%B %d, %Y'
-      short_with_time: '%Y/%m/%d %I:%M%p'
-      long_with_time: '%d %b %Y at %H:%M:%S %Z'
+    abbr_day_names:
+    - Sun
+    - Mon
+    - Tue
+    - Wed
+    - Thu
+    - Fri
+    - Sat
     abbr_month_names:
-    -
+    - 
     - Jan
     - Feb
     - Mar
@@ -2031,8 +2033,22 @@ en:
     - Oct
     - Nov
     - Dec
+    day_names:
+    - Sunday
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    - Saturday
+    formats:
+      default: "%m-%d-%Y"
+      long: '%B %d, %Y'
+      long_with_time: '%d %b %Y at %H:%M:%S %Z'
+      short: '%d %b %Y'
+      short_with_time: '%Y/%m/%d %I:%M%p'
     month_names:
-    -
+    - 
     - January
     - February
     - March
@@ -2045,6 +2061,13 @@ en:
     - October
     - November
     - December
+    order:
+    - :month
+    - :day
+    - :year
+    time_in_distance:
+      ago: "%{distance} ago"
+      from_now: "%{distance} from now"
   datetime:
     distance_in_words:
       about_x_hours:
@@ -2091,9 +2114,6 @@ en:
       month: Month
       second: Seconds
       year: Year
-  time:
-    formats:
-      short: '%H:%M:%S'
   error:
     back: Back
     error_400:
@@ -2121,6 +2141,93 @@ en:
       no_permission: Error
       were_sorry: The current user doesn't have access to this resource.
     to_whence_you_came: to where you came from.
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      accepted: must be accepted
+      blank: can't be blank
+      present: must be blank
+      confirmation: doesn't match %{attribute}
+      empty: can't be empty
+      equal_to: must be equal to %{count}
+      even: must be even
+      exclusion: is reserved
+      greater_than: must be greater than %{count}
+      greater_than_or_equal_to: must be greater than or equal to %{count}
+      inclusion: is not included in the list
+      invalid: is invalid
+      less_than: must be less than %{count}
+      less_than_or_equal_to: must be less than or equal to %{count}
+      model_invalid: "Validation failed: %{errors}"
+      not_a_number: is not a number
+      not_an_integer: must be an integer
+      odd: must be odd
+      required: must exist
+      taken: has already been taken
+      too_long:
+        one: is too long (maximum is 1 character)
+        other: is too long (maximum is %{count} characters)
+      too_short:
+        one: is too short (minimum is 1 character)
+        other: is too short (minimum is %{count} characters)
+      wrong_length:
+        one: is the wrong length (should be 1 character)
+        other: is the wrong length (should be %{count} characters)
+      other_than: must be other than %{count}
+    template:
+      body: 'There were problems with the following fields:'
+      header:
+        one: 1 error prohibited this %{model} from being saved
+        other: "%{count} errors prohibited this %{model} from being saved"
+  helpers:
+    select:
+      prompt: Please select
+    submit:
+      create: Create %{model}
+      submit: Save %{model}
+      update: Update %{model}
+  number:
+    currency:
+      format:
+        delimiter: ","
+        format: "%u%n"
+        precision: 2
+        separator: "."
+        significant: false
+        strip_insignificant_zeros: false
+        unit: "$"
+    format:
+      delimiter: ","
+      precision: 3
+      separator: "."
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: "%n %u"
+        units:
+          billion: Billion
+          million: Million
+          quadrillion: Quadrillion
+          thousand: Thousand
+          trillion: Trillion
+      format:
+        precision: 3
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one: Byte
+            other: Bytes
+          gb: GB
+          kb: KB
+          mb: MB
+          tb: TB
+    percentage:
+      format:
+        format: "%n%"
   govstat:
     admin:
       bulk_edit:
@@ -3159,6 +3266,7 @@ en:
         metadata_explain2: Fields can be configured in multiple ways. They can be <span class="code">required</span>, which will be enforced when publishers create new datasets and update existing metadata. They can also be <span class="code">private</span>, meaning that the values entered will not be visible to the public.
         metadata_explain3: Finally, you can choose to pre-define the options for your <span class="code">fields</span> if you wish to have values chosen from a list rather than entered as free-form text.
         metadata_field_table_description: Metadata Fields for '%{name}'
+        no: No
         no_data: No custom dataset fields have been defined for your domain yet. Enter a name below and click 'Create' to begin.
         no_fields_defined: This field set does not have any fields defined yet
         page_title: Manage Dataset Metadata
@@ -3168,6 +3276,7 @@ en:
         title: Manage Metadata
         'true': true
         up: Up
+        yes: Yes
       new_story:
         background_color: Background Color
         background_image: Background Image
@@ -5350,7 +5459,7 @@ en:
       browse:
         owned_datasets: Owned By Me
         shared_datasets: Shared To Me
-        title: "%{user}'s Datasets"
+        title: "%{user}'s Assets"
       contact:
         message: Message
         message_prompt: Enter your message
@@ -5752,12 +5861,21 @@ en:
     array:
       last_word_connector: ", and "
       two_words_connector: " and "
+      words_connector: ", "
     array_or:
       last_word_connector: ", or "
       two_words_connector: " or "
+      words_connector: ", "
   table:
     no_summary_available: No Summary Available
     summary: This table of %{data_description} has %{column_heading_count} column heading(s) %{column_headings} for each of %{row_heading_count} description row headings %{row_headings}
+  time:
+    am: am
+    formats:
+      default: "%a, %d %b %Y %I:%M:%S %p %Z"
+      long: "%B %d, %Y %I:%M %p"
+      short: "%H:%M:%S"
+    pm: pm
   visualization_canvas:
     add_visualization: Add Visualization
     default_row_label: row

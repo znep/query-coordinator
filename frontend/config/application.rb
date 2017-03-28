@@ -37,6 +37,7 @@ module Frontend
 
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += %W(#{config.root}/lib/refinements)
     config.autoload_paths += %W(#{Rails.root}/app/models/external_configs)
 
     # Only load the plugins named here, in the order given (default is alphabetical).

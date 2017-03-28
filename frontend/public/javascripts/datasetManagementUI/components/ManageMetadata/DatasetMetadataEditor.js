@@ -6,6 +6,7 @@ import Fieldset from 'components/MetadataFields/Fieldset';
 import isEmail from 'validator/lib/isEmail';
 import isURL from 'validator/lib/isURL';
 import { STATUS_DIRTY } from 'lib/database/statuses';
+import styles from 'styles/ManageMetadata/DatasetMetadataEditor.scss';
 
 // TODO: smarter validations, prob on form submit, and allow multiple messages (EN-14789)
 export function DatasetMetadataEditor({ view, onEdit, tags }) {
@@ -53,7 +54,7 @@ export function DatasetMetadataEditor({ view, onEdit, tags }) {
       label: I18n.edit_metadata.category,
       key: 'category',
       required: false,
-      className: 'half-size',
+      className: styles.halfSize,
       validator: _.constant(true),
       defaultValue: '',
       options: window.initialState.datasetCategories
@@ -63,7 +64,7 @@ export function DatasetMetadataEditor({ view, onEdit, tags }) {
       label: I18n.edit_metadata.tags_keywords,
       key: 'tags',
       required: false,
-      className: 'half-size',
+      className: styles.halfSize,
       tags: tags,
       validator: _.constant(true),
       placeholder: I18n.edit_metadata.dataset_tags,
@@ -82,7 +83,7 @@ export function DatasetMetadataEditor({ view, onEdit, tags }) {
       label: I18n.edit_metadata.license_type,
       key: 'licenseId',
       required: false,
-      className: 'half-size',
+      className: styles.halfSize,
       validator: _.constant(true),
       defaultValue: '',
       options: window.initialState.datasetLicenses
@@ -92,7 +93,7 @@ export function DatasetMetadataEditor({ view, onEdit, tags }) {
       label: I18n.edit_metadata.attribution,
       key: 'attribution',
       required: false,
-      className: 'half-size',
+      className: styles.halfSize,
       validator: _.constant(true),
       placeholder: I18n.edit_metadata.dataset_attribution,
       defaultValue: ''
@@ -123,8 +124,8 @@ export function DatasetMetadataEditor({ view, onEdit, tags }) {
   ].map(schemaToFormfield);
 
   return (
-    <div id="metadata-content">
-      <div id="required-note">{I18n.metadata_manage.required_note}</div>
+    <div className={styles.metadataContent}>
+      <div className={styles.requiredNote}>{I18n.metadata_manage.required_note}</div>
       <form id="dataset-metadata-editor">
         <Fieldset
           title={I18n.metadata_manage.dataset_tab.titles.dataset_title}

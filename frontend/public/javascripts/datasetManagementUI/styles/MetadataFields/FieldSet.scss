@@ -1,0 +1,28 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.fieldset {
+  border: 0;
+  padding-top: 0;
+  margin-bottom: 1em;
+  max-width: 700px;
+}
+
+.tabTitle {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 23px;
+  margin-top: 0.5em;
+}
+
+.tabSubtitle {
+  display: block;
+  font-size: 13px;
+  color: $grey;
+  padding-bottom: 1em;
+}
+
+.icon {
+  margin-left: 0.2em;
+}

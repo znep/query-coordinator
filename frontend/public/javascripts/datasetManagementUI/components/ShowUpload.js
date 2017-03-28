@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'socrata-components';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
+import SocrataIcon from '../../common/components/SocrataIcon';
+import styles from 'styles/ShowUpload.scss';
 
 function query(db, uploadId) {
   const upload = db.uploads[_.toNumber(uploadId)];
@@ -22,8 +24,8 @@ function ShowUpload({ upload, latestOutputSchema, goHome }) {
   let body;
   if (!latestOutputSchema) {
     body = (
-      <div className="centered-container">
-        <span className="spinner-default spinner-large"></span>
+      <div className={styles.centeredContainer}>
+        <span className={styles.spinner}></span>
       </div>
     );
   } else {
@@ -56,12 +58,12 @@ function ShowUpload({ upload, latestOutputSchema, goHome }) {
   // Not going to style these breadcrumbs because this page is going to go away.
   const headerProps = {
     title: (
-      <ol>
-        <li className="active">
+      <ol className={styles.list}>
+        <li className={styles.active}>
           <Link to={Links.uploads}>
             {I18n.home_pane.data}
           </Link>
-          <span className="socrata-icon-arrow-right" />
+          <SocrataIcon name="arrow-right" className={styles.icon} />
         </li>
         <li>
           {I18n.home_pane.preview}
@@ -72,7 +74,7 @@ function ShowUpload({ upload, latestOutputSchema, goHome }) {
   };
 
   return (
-    <div id="show-upload">
+    <div className={styles.showUpload}>
       <Modal {...modalProps}>
         <ModalHeader {...headerProps} />
 

@@ -37,6 +37,10 @@ catalog_federations:
   description: Used by core server. Not sure for what.
   discourage_in_creation_ui:
     reason: :poorly_understood
+catalog_landing_page:
+  description: The Discovery team is using this to manage metadata for Catalog Landing Pages.
+  discourage_in_creation_ui:
+    reason: :not_intended_for_direct_manipulation
 custom_content:
   description: Appears to be for oldest DataSlate? Not sure what this actually does.
   deprecation: "Let's just... not use this, yeah?"
@@ -99,7 +103,8 @@ locales:
 metadata:
   description: This holds the values from /admin/metadata.
   discourage_in_creation_ui:
-    reason: :deprecation
+    reason: :not_intended_for_direct_manipulation
+    instead: :metadata_administration
 nbe_timezone:
   description: Configures which time zone your datasets are presumed to be in when ingressing.
   known_properties:

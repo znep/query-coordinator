@@ -15,6 +15,7 @@ import { bootstrap } from './bootstrap';
 import * as Selectors from './selectors';
 import Airbrake from '../common/airbrake';
 import rootRoute from './routes';
+import styleguide from './styles/style.global.scss'; //eslint-disable-line
 
 const viewId = window.initialState.view.id;
 window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/publishing/v1/socket', {

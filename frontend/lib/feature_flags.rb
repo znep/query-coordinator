@@ -7,7 +7,7 @@ class FeatureFlags
     def merge(base = {}, other = {})
       flags = Hashie::Mash.new
       other_with_indifferent_access = other.with_indifferent_access
-      ExternalConfig.for(:feature_flag).each do |flag, config|
+      descriptions.each do |flag, config|
         expected_values = if config['expectedValues'].nil?
           nil
         else
@@ -97,20 +97,24 @@ class FeatureFlags
       Signaller.for(flag: flag).report
     end
 
+    def each(&block)
+      descriptions.each(&block)
+    end
+
     def list
-      ExternalConfig.for(:feature_flag).keys
+      descriptions.keys
     end
 
     def has?(key)
-      ExternalConfig.for(:feature_flag).key?(key)
+      descriptions.key?(key)
     end
 
     def categories
-      ExternalConfig.for(:feature_flag).categories
+      descriptions.categories
     end
 
     def config_for(flag)
-      ExternalConfig.for(:feature_flag)[flag]
+      descriptions[flag]
     end
 
     def description_for(flag)
@@ -118,7 +122,7 @@ class FeatureFlags
     end
 
     def default_for(flag)
-      process_value((ExternalConfig.for(:feature_flag)[flag] || {})['defaultValue'])
+      process_value(descriptions.dig(flag, 'defaultValue'))
     end
 
     def derive(view = nil, request = nil, is_iframe = false)

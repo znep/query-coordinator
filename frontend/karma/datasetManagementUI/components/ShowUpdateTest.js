@@ -127,7 +127,7 @@ describe('components/ShowUpdate', () => {
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
-    expect(element.querySelector('.view-output-schema')).to.exist;
+    expect(element.querySelector('.reviewBtn')).to.exist;
   });
 
   it('renders in progress when upsert is in progress', () => {
@@ -140,8 +140,8 @@ describe('components/ShowUpdate', () => {
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
-    expect(element.querySelector('.upsert-in-progress')).to.exist;
-    expect(element.querySelector('.btn.btn-primary.btn-inverse.email-interest-btn')).to.exist;
+    expect(element.querySelector('.tableInfo')).to.exist;
+    expect(element.querySelector('.emailBtnRequest')).to.exist;
   });
 
   it('tries to add an email interest when the email me button is pressed', (done) => {
@@ -155,10 +155,10 @@ describe('components/ShowUpdate', () => {
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
-    expect(element.querySelector('.upsert-in-progress')).to.exist;
+    expect(element.querySelector('.tableInfo')).to.exist;
 
-    expect(element.querySelector('.btn.btn-primary.btn-inverse.email-interest-btn')).to.exist;
-    expect(element.querySelector('.btn.btn-success.email-interest-btn')).to.not.exist;
+    expect(element.querySelector('.emailBtnRequest')).to.exist;
+    expect(element.querySelector('.emailBtnSuccess')).to.not.exist;
     const { unmockFetch } = mockFetch({
       '/users/asdf-1234/email_interests.json': {
         POST: {
@@ -166,12 +166,12 @@ describe('components/ShowUpdate', () => {
         }
       }
     });
-    ReactTestUtils.Simulate.click(element.querySelector('.btn.btn-primary.btn-inverse.email-interest-btn'));
-    expect(element.querySelector('.btn.btn-primary.btn-busy.email-interest-btn')).to.exist;
+    ReactTestUtils.Simulate.click(element.querySelector('.emailBtnRequest'));
+    expect(element.querySelector('.emailBtnBusy')).to.exist;
     setTimeout(() => {
-      expect(element.querySelector('.btn.btn-primary.btn-inverse.email-interest-btn')).to.not.exist;
+      expect(element.querySelector('.emailBtnRequest')).to.not.exist;
 
-      expect(element.querySelector('.btn.btn-success.email-interest-btn')).to.exist;
+      expect(element.querySelector('.emailBtnSuccess')).to.exist;
       unmockFetch();
       done();
     }, 0);
@@ -188,10 +188,10 @@ describe('components/ShowUpdate', () => {
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
     expect(element).to.exist;
-    expect(element.querySelector('.upsert-in-progress')).to.exist;
+    expect(element.querySelector('.tableInfo')).to.exist;
 
-    expect(element.querySelector('.btn.btn-primary.btn-inverse.email-interest-btn')).to.exist;
-    expect(element.querySelector('.btn.btn-error.email-interest-btn')).to.not.exist;
+    expect(element.querySelector('.emailBtnRequest')).to.exist;
+    expect(element.querySelector('.emailBtnError')).to.not.exist;
     const { unmockFetch } = mockFetch({
       '/users/asdf-1234/email_interests.json': {
         POST: {
@@ -200,10 +200,10 @@ describe('components/ShowUpdate', () => {
         }
       }
     });
-    ReactTestUtils.Simulate.click(element.querySelector('.btn.btn-primary.btn-inverse.email-interest-btn'));
+    ReactTestUtils.Simulate.click(element.querySelector('.emailBtnRequest'));
     setTimeout(() => {
-      expect(element.querySelector('.btn.btn-primary.btn-inverse.email-interest-btn')).to.not.exist;
-      expect(element.querySelector('.btn.btn-error.email-interest-btn')).to.exist;
+      expect(element.querySelector('.emailBtnRequest')).to.not.exist;
+      expect(element.querySelector('.emailBtnError')).to.exist;
       unmockFetch();
       done();
     }, 0);

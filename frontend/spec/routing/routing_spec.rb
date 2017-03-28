@@ -208,7 +208,7 @@ RSpec.describe 'routes for Data Lens' do
   describe 'catalog landing page routing' do
     let(:clp_configuration) do
       double('clp config', properties: {
-        CGI.escape('category=Fun') => {},
+        'category%3DFun' => {},
         '/salt-lake-city' => {}
       })
     end
@@ -233,16 +233,16 @@ RSpec.describe 'routes for Data Lens' do
       expect(get: '/browse?category=Fun').to route_to(
         controller: 'catalog_landing_page',
         action: 'show',
-        path: 'browse',
+        custom_path: 'browse',
         category: 'Fun'
       )
     end
 
-    it 'routes a vanity url with a catalog query to the CLP controller' do
+    it 'routes a custom url with a catalog query to the CLP controller' do
       expect(get: '/salt-lake-city').to route_to(
         controller: 'catalog_landing_page',
         action: 'show',
-        path: 'salt-lake-city'
+        custom_path: '/salt-lake-city'
       )
     end
 

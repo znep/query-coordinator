@@ -41,7 +41,7 @@ describe 'FeatureFlags' do
 
   describe '.merge' do
     before :each do
-      allow(ExternalConfig).to receive(:for).and_return(test_flags)
+      allow(FeatureFlags).to receive(:descriptions).and_return(test_flags)
     end
 
     describe 'with no expected values' do
@@ -158,7 +158,7 @@ describe 'FeatureFlags' do
 
   describe '.derive' do
     before :each do
-      allow(ExternalConfig).to receive(:for).and_return(config_defaults)
+      allow(FeatureFlags).to receive(:descriptions).and_return(config_defaults)
       allow(CurrentDomain).to receive(:feature_flags).and_return(domain_flags)
     end
 
@@ -282,15 +282,6 @@ describe 'FeatureFlags' do
       allow(FeatureFlags).to receive(:derive).and_return(derived_flags)
 
       expect(FeatureFlags.value_for(:test_method)).to eq('foo mutated')
-    end
-  end
-
-  describe '#set_value' do
-    context 'FFS is not enabled' do
-      it 'should not raise' do
-        allow(FeatureFlags).to receive(:using_signaller?).and_return(false)
-        FeatureFlags.set_value(:disable_site_chrome_header_footer_on_dataslate_pages, false, CurrentDomain.cname)
-      end
     end
   end
 end

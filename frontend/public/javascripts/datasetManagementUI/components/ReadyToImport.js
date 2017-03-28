@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { commaify } from '../../common/formatNumber';
 import * as dsmapiLinks from '../dsmapiLinks';
+import SocrataIcon from '../../common/components/SocrataIcon';
+import styles from 'styles/ReadyToImport.scss';
 
 function query(db, outputSchema) {
   const inputSchema = db.input_schemas[outputSchema.input_schema_id];
@@ -22,8 +24,9 @@ export default function ReadyToImport({ db, outputSchema }) {
 
   let errorExportButton;
   const errorExportActualButton = (
-    <button className="btn btn-default export-errors" disabled={!(outputSchema.error_count > 0)}>
-      {I18n.export_errors} <span className="socrata-icon-download" />
+    <button className={styles.errorsBtn} disabled={!(outputSchema.error_count > 0)}>
+      {I18n.export_errors}
+      <SocrataIcon name="download" />
     </button>
   );
   if (outputSchema.error_count > 0) {
@@ -38,15 +41,16 @@ export default function ReadyToImport({ db, outputSchema }) {
   }
 
   return (
-    <div className="ready-to-import">
+    <div className={styles.readyToImport}>
       <p>
         {SubI18n.ready_to_import}{' '}
-        <span className="importable-rows">{commaify(importableRows)}</span>{' '}
+        <span className={styles.importableRows}>{commaify(importableRows)}</span>{' '}
         {SubI18n.rows}
       </p>
       <p>
-        {SubI18n.will_not_be_imported} <span className="error-rows">{commaify(errorRows)}</span>
-        <span className="errors-help socrata-icon-question" />
+        {SubI18n.will_not_be_imported}{' '}
+        <span className={styles.errorRows}>{commaify(errorRows)}</span>
+        <SocrataIcon name="question" className={styles.errorsHelp} />
       </p>
       {errorExportButton}
     </div>

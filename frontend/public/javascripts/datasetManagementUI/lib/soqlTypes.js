@@ -17,7 +17,7 @@ export const soqlProperties = {
     icon: 'boolean'
   },
   SoQLFloatingTimestamp: {
-    canonicalName: 'floating_timestamp',
+    canonicalName: 'floatingTimestamp',
     conversionTarget: true,
     icon: 'date'
   },

@@ -58,11 +58,6 @@ class AdministrationController < ApplicationController
         }
     }
     if asset_inventory.blank?
-      Airbrake.notify(:error_class => 'Asset Inventory missing for domain',
-        :error_message => 'Asset Inventory feature flag is enabled but no dataset of display type assetinventory is found.',
-        :session => { :domain => CurrentDomain.cname },
-        :request => { :params => params }
-      )
      Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
     end
 

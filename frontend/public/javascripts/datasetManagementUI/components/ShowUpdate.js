@@ -13,60 +13,49 @@ import { latestOutputSchema } from '../selectors';
 import * as Actions from '../actions/manageUploads';
 import * as ApplyUpdate from '../actions/applyUpdate';
 import { STATUS_INSERTING, STATUS_SAVED } from '../lib/database/statuses';
+import SocrataIcon from '../../common/components/SocrataIcon';
+import styles from 'styles/ShowUpdate.scss';
 
-function wrapDataTablePlaceholder(result) {
-  return (
-    <div className="result-card">
-      <div className="entry-main data-table">
-        {result}
-      </div>
-    </div>
-  );
-}
+const noDataYetView = (createUpload) =>
+  <div className={styles.tableInfo}>
+    <h3 className={styles.previewAreaHeader}>
+      {I18n.home_pane.no_data_yet}
+    </h3>
+    <p>
+      {I18n.home_pane.adding_data_is_easy_and_fun}
+    </p>
 
-function noDataYetView(createUpload) {
-  return wrapDataTablePlaceholder(
-    <div className="entry-description table-info no-data-yet">
-      <h3 className="h5">
-        {I18n.home_pane.no_data_yet}
-      </h3>
-      <p>
-        {I18n.home_pane.adding_data_is_easy_and_fun}
-      </p>
+    <label
+      id="upload-label"
+      className={styles.uploadButton}
+      htmlFor="file">
+      {I18n.manage_uploads.new_file}&nbsp;
+    </label>
+    <input
+      id="file"
+      name="file"
+      type="file"
+      aria-labelledby="upload-label"
+      onChange={(evt) => (createUpload(evt.target.files[0]))} />
 
-      <label
-        id="upload-label"
-        className="btn btn-alternate-2"
-        htmlFor="file">
-        {I18n.manage_uploads.new_file}&nbsp;
-      </label>
-      <input
-        id="file"
-        name="file"
-        type="file"
-        aria-labelledby="upload-label"
-        onChange={(evt) => (createUpload(evt.target.files[0]))} />
+    <p className={styles.fileTypes}>
+      {I18n.home_pane.supported_uploads}
+    </p>
+  </div>;
 
-      <p className="small supported-file-types">
-        {I18n.home_pane.supported_uploads}
-      </p>
-    </div>
-  );
-}
-
-function outputSchemaView(db, outputSchema) {
+const outputSchemaView = (db, outputSchema) => {
   const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
   if (!inputSchema) return;
-  return wrapDataTablePlaceholder(
-    <div className="entry-description table-info view-output-schema">
-      <h3 className="h5">{I18n.home_pane.data_uploaded}</h3>
+  return (
+    <div className={styles.tableInfo}>
+      <h3 className={styles.previewAreaHeader}>{I18n.home_pane.data_uploaded}</h3>
       <p>
         {I18n.home_pane.data_uploaded_blurb}
       </p>
       <p>
         <Link to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}>
           <button
-            className="no-data-yet-btn btn btn-sm btn-alternate-2"
+            className={styles.reviewBtn}
             tabIndex="-1">
             {I18n.home_pane.review_data}
           </button>
@@ -74,9 +63,9 @@ function outputSchemaView(db, outputSchema) {
       </p>
     </div>
   );
-}
+};
 
-function upsertInProgressView(db, addEmailInterest) {
+const upsertInProgressView = (db, addEmailInterest) => {
   const upsertJob = _.find(db.upsert_jobs, { status: null });
 
   let notifyButton;
@@ -86,22 +75,22 @@ function upsertInProgressView(db, addEmailInterest) {
     if (emailInterest) {
       if (emailInterest.__status__.type === STATUS_INSERTING) {
         notifyButton = (
-          <button className="btn btn-primary btn-busy email-interest-btn">
-            <span className="spinner-default spinner-btn-primary email-interest-spinner"></span>
+          <button className={styles.emailBtnBusy}>
+            <span className={styles.spinner}></span>
           </button>
         );
       } else if (emailInterest.__status__.type === STATUS_SAVED) {
         notifyButton = (
           <button
-            className="btn btn-success email-interest-btn">
-            <span className="socrata-icon-checkmark3 email-success-check" />
+            className={styles.emailBtnSuccess}>
+            <SocrataIcon name="checkmark3" className={styles.icon} />
             {I18n.home_pane.email_me_success}
           </button>
         );
       } else {
         notifyButton = (
           <button
-            className="btn btn-error email-interest-btn">
+            className={styles.emailBtnError}>
             {I18n.home_pane.email_me_error}
           </button>
         );
@@ -109,7 +98,7 @@ function upsertInProgressView(db, addEmailInterest) {
     } else {
       notifyButton = (
         <button
-          className="btn btn-primary btn-inverse email-interest-btn"
+          className={styles.emailBtnRequest}
           onClick={() => { addEmailInterest(upsertJobUuid); }}>
           {I18n.home_pane.email_me}
         </button>
@@ -117,18 +106,45 @@ function upsertInProgressView(db, addEmailInterest) {
     }
   }
 
-  return wrapDataTablePlaceholder(
-    <div className="entry-description table-info upsert-in-progress">
-      <h3 className="h6">{I18n.home_pane.being_processed}</h3>
+  return (
+    <div className={styles.tableInfo}>
+      <h3 className={styles.previewAreaHeader}>{I18n.home_pane.being_processed}</h3>
       <p>{I18n.home_pane.being_processed_detail}</p>
       <div>{notifyButton}</div>
     </div>
   );
-}
+};
+
+// WRAPPER COMPONENT
+const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, db, addEmailInterest, createUpload }) => {
+  let child;
+
+  if (upsertExists) {
+    child = upsertInProgressView(db, addEmailInterest);
+  } else if (outputSchema) {
+    child = outputSchemaView(db, outputSchema);
+  } else {
+    child = noDataYetView(createUpload);
+  }
+
+  return (
+    <div className={styles.resultCard}>
+       {child}
+    </div>
+  );
+};
+
+WrapDataTablePlaceholder.propTypes = {
+  upsertExists: PropTypes.number.isRequired,
+  outputSchema: PropTypes.object,
+  db: PropTypes.object,
+  addEmailInterest: PropTypes.func,
+  createUpload: PropTypes.func
+};
 
 function upsertCompleteView(view, outputSchema) {
   return (
-    <div className="table-preview" key="upsert-complete-view">
+    <div>
       <DatasetPreview view={view} outputSchema={outputSchema} />
     </div>
   );
@@ -166,8 +182,8 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
   };
 
   metadataSection = (
-    <div id="metadata-section">
-      <div id="info-pane-container">
+    <div className={styles.metadataContainer}>
+      <div className={styles.infoPaneContainer}>
         <InfoPane {...paneProps} />
       </div>
       <MetadataTable {...tableProps} />
@@ -186,33 +202,36 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
     dataTable = [(
       <Link
         to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}
-        key={'manage-data-button'}
-        className="header-btn-wrapper" >
+        className={styles.manageDataLink} >
         <button
-          className="btn btn-sm btn-alternate-2"
+          className={styles.manageDataBtn}
           tabIndex="-1">
           {I18n.home_pane.data_manage_button}
         </button>
       </Link>),
       upsertCompleteView(view, outputSchema)];
-  } else if (doesUpsertExist) {
-    dataTable = upsertInProgressView(db, addEmailInterest);
-  } else if (outputSchema) {
-    dataTable = outputSchemaView(db, outputSchema);
   } else {
-    dataTable = noDataYetView(createUpload);
+    dataTable = (
+      <WrapDataTablePlaceholder
+        upsertExists={doesUpsertExist}
+        outputSchema={outputSchema}
+        db={db}
+        addEmailInterest={addEmailInterest}
+        createUpload={createUpload} />
+    );
   }
 
   return (
-    <div id="home-pane">
-      <div className="home-content container">
+    <div className={styles.homeContainer}>
+      <div className={styles.homeContent}>
         {metadataSection}
-        <SchemaPreview db={db} />
+        <div className={styles.schemaPreviewContainer}>
+          <SchemaPreview db={db} />
+          <RowDetails />
+        </div>
 
-        <RowDetails />
-
-        <section className="management-ui-section table-preview">
-          <h2 className="landing-page-section-header">{I18n.home_pane.table_preview}</h2>
+        <section className={styles.tableContainer}>
+          <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
 
           {dataTable}
         </section>

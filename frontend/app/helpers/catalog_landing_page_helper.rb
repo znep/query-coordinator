@@ -68,7 +68,11 @@ module CatalogLandingPageHelper
   def render_catalog_landing_page_initial_state
     javascript_tag(%Q(
       var initialState = {
-        category: #{@category.to_json},
+        category: #{View.category_display(@category).to_s.to_json},
+        catalog: {
+          query: #{@catalog_landing_page.to_query.to_json},
+          path: #{@catalog_landing_page.to_uri.to_s.to_json}
+        },
         categoryStats: #{@category_stats.to_json},
         featuredContent: #{@featured_content.to_json},
         header: #{@metadata.camelize_keys.to_json},
@@ -77,12 +81,14 @@ module CatalogLandingPageHelper
     ))
   end
 
-  def should_render_catalog_landing_page?
-    params[:category].present? && can_manage_catalog_landing_page?
+  def should_render_catalog_landing_page_activator?
+    FeatureFlags.value_for(:enable_catalog_landing_page, request: request) &&
+      CatalogLandingPage.may_activate?(request) &&
+      can_manage_catalog_landing_page?
   end
 
   def can_manage_catalog_landing_page?
-    current_user.try(:is_administrator?) || current_user.try(:is_superadmin?)
+    current_user.try(:is_any?, :publisher, :administrator, :superadmin)
   end
 
 end

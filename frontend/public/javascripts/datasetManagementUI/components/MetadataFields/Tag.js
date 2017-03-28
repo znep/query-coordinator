@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react';
+import SocrataIcon from '../../../common/components/SocrataIcon';
+import styles from 'styles/MetadataFields/Tag.scss';
 
 const Tag = ({ tagName, onTagClick }) =>
-  <li className="tag cf" onClick={onTagClick}>
+  <li className={styles.tag} onClick={onTagClick}>
     {tagName}
-    <span className="socrata-icon-close-2"></span>
+    <SocrataIcon name="close-2" className={styles.icon} />
   </li>;
 
 Tag.propTypes = {

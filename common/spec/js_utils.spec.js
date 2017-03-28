@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var $ = jQuery = require('jquery');
-var utils = require('common/jsUtils');
+var utils = require('common/js_utils');
 
 describe('utils.js', function() {
 

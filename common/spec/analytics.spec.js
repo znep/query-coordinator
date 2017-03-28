@@ -1,7 +1,7 @@
 var $ = require('jquery');
-var Analytics = require('common/Analytics').Analytics;
+var Analytics = require('common/analytics').Analytics;
 
-describe('Anatlyics.js', function() {
+describe('analytics.js', function() {
 
   var analytics;
   var server;

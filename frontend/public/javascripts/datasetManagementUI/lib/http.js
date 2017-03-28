@@ -36,7 +36,7 @@ export function checkStatus(response) {
 export function checkStatusForPoll(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
-  } else if (response.status === 503) {
+  } else if (response.status === 502 || response.status === 503) {
     return null; // We want to retry these but not actually try to process them.
   } else {
     const error = new Error(response.statusText);

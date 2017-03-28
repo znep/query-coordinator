@@ -18,6 +18,7 @@ export class Search extends Component {
     return (
       <div className="catalog-landing-page-search">
         <Searchbox
+          autoFocus={true}
           defaultQuery={term}
           onChange={updateSearchTerm}
           onClear={clearSearch}

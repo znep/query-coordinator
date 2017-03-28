@@ -5,6 +5,7 @@ describe('components/Manager', () => {
   const getProps = (props = {}) => {
     return {
       category: 'Fun',
+      catalogPath: '/browse',
       categoryStats: {
         datasets: 2,
         charts: 1

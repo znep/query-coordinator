@@ -15,7 +15,7 @@
             <%= divider %>
           <% end %>
 
-          <div class="collapsible-search">
+          <div class="collapsible-search" data-catalog-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>" data-catalog-autocomplete-collapsible="true">
             <span class="socrata-icon-search collapsible-search-toggle"
               title="<%= t('header.search') %>" onclick="toggleCollapsibleSearch(this)" role="button">
             </span>

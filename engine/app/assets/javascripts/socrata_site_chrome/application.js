@@ -12,3 +12,4 @@
 //
 //= require_tree .
 //= require socrata-notifications/socrata-notifications.js
+//= require socrata-autocomplete/socrata-autocomplete.js

@@ -1,4 +1,8 @@
-<div class="searchbox">
+<div
+  class="searchbox"
+  data-catalog-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>"
+  data-catalog-autocomplete-disable-animation="true"
+  data-catalog-autocomplete-mobile="<%= local_assigns[:mobile] == true %>">
   <form action="<%= path %>" method="get">
     <% unless local_assigns[:mobile] %><span class="socrata-icon-search" title="<%= t('header.search') %>"></span><% end %>
     <label>

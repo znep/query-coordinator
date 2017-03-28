@@ -5,4 +5,5 @@ Rails.application.routes.draw do
 
   root 'demo#index'
   get '/notifications', :to => 'notifications#index'
+  get '/cetera/autocomplete', :to => 'cetera#autocomplete'
 end

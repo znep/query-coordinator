@@ -104,7 +104,7 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
 
 .search-box-static-mobile {
   @extend .search-box-static;
-  width: 275px !important;
+  width: calc(100% - 43px) !important;
 }
 
 .icon-container-base {

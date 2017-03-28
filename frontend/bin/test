@@ -52,9 +52,8 @@ if [[ $? != 0 ]]; then
   exit $?
 fi
 
-# JavaScript lint and tests
-if ! [[ -z $JAVASCRIPT_FILES ]] || ! [[ -z $JSON_FILES ]]; then
-
+# JavaScript lint
+if ! [[ -z $JAVASCRIPT_FILES ]]; then
   # Run eslint on the collection of javascript files, ignoring certain files that we do not lint
   # and ignoring warnings.  Ensure the command always succeeds by using || true to give us an
   # opportunity to print a nicer list of lint errors.
@@ -78,9 +77,14 @@ if ! [[ -z $JAVASCRIPT_FILES ]] || ! [[ -z $JSON_FILES ]]; then
   else
     echo "No JavaScript lint errors"
   fi
+else
+  echo "No JavaScript files changed, skipping JavaScript linting."
+fi
 
+# JavaScript tests
+if ! [[ -z $JAVASCRIPT_FILES ]] || ! [[ -z $JSON_FILES ]]; then
   echo "If the karma tests hang after success, go ahead and merge since they are the last test suite."
   bundle exec rake test:karma[,,dots]
 else
-  echo "No JavaScript files changed, skipping JavaScript linting."
+  echo "No JavaScript/JSON files changed, skipping JavaScript tests."
 fi

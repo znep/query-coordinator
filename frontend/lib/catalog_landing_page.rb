@@ -27,8 +27,8 @@ class CatalogLandingPage
     ].max
 
     params = request.params.slice(*valid_params)
-    return true if params.size <= max_params_to_accept
-    return true if params.empty? && custom_path(request) == '/browse'
+    return true if (1..max_params_to_accept).include?(params.size)
+    return true if params.empty? && request.path == '/browse'
 
     false
   end
@@ -69,7 +69,7 @@ class CatalogLandingPage
   end
 
   def to_query
-    @query.presence || @id
+    @query.presence || { custom_path: @id }
   end
 
   def to_path

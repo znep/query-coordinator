@@ -259,9 +259,7 @@ Manager.propTypes = {
 
 const mapStateToProps = state => ({
   catalogPath: state.catalog.path,
-  catalogQuery: _.isString(state.catalog.query) ?
-    { custom_path: state.catalog.query } :
-    state.catalog.query,
+  catalogQuery: state.catalog.query,
   category: state.category,
   categoryStats: state.categoryStats,
   featuredContent: state.featuredContent,

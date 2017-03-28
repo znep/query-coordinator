@@ -42,12 +42,5 @@
     <%= site_chrome_javascript_tag %>
 
     <%= yield :scripts %>
-
-    <%- if FeatureFlags.derive(@view, request).browse_autocomplete -%>
-      <%#
-        Note that when this bundle is included it automatically replaces the header/footer search box
-      %>
-      <%= include_webpack_bundle 'autocomplete/main.js' %>
-    <%- end -%>
   <% end # end of body %>
 </html>

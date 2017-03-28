@@ -30,7 +30,6 @@ namespace :test do
       'importWizard' => 'update_import_wizard_translations',
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
-      'autocomplete' => nil,
       'signin' => 'update_signin_translations',
       'oldUx' => nil
     }.each do |task_name, dependency|
@@ -177,7 +176,6 @@ namespace :test do
     desc 'run all the karma tasks'
     task :all, [:watch, :browser, :reporter] => [
       'karma:adminGoals',
-      'karma:autocomplete',
       'karma:catalogLandingPage',
       'karma:common',
       'karma:dataCards',

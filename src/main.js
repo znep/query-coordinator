@@ -4,7 +4,31 @@ import _ from 'lodash';
 import 'babel-polyfill-safe';
 import StatefulAutocomplete from './components/StatefulAutocomplete';
 
-/**
+/*
+ * Any elements that add data-catalog-autocomplete="true" will automatically be given the autocomplete treatment
+ */
+const autocompleteContainers = document.querySelectorAll('[data-catalog-autocomplete="true"]');
+
+autocompleteContainers.forEach((container) => {
+  const collapsible = container.dataset.catalogAutocompleteCollapsible === 'true';
+  const animate = container.dataset.catalogAutocompleteDisableAnimation !== 'true';
+
+  const options = {
+    collapsible,
+    animate
+  };
+
+  const defaultState = {
+    collapsed: collapsible
+  };
+
+  ReactDOM.render(
+    <StatefulAutocomplete defaultState={defaultState} options={options} />,
+    container
+  );
+});
+
+/*
  * This throws the autocomplete function on window,
  * so that external consumers can create autocomplete components
  */

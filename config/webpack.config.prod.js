@@ -40,7 +40,7 @@ var env = getClientEnvironment(publicUrl);
 module.exports = {
   context: root,
   devtool: 'source-map',
-  entry: `${root}/src/window.js`,
+  entry: `${root}/src/main.js`,
   output: {
     path: `${root}/build`,
     filename: 'socrata-autocomplete.js',

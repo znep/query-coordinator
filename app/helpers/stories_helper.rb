@@ -133,6 +133,7 @@ module StoriesHelper
   def embed_code_iframe_sandbox_allowances
     %w(
       allow-popups
+      allow-popups-to-escape-sandbox
       allow-scripts
       allow-same-origin
       allow-forms

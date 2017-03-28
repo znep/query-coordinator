@@ -21,49 +21,45 @@
     border-color: $light-grey-4;
   }
 
-  :global {
-    thead {
-      height: 89px; // TODO: not sure if this is the exact right number
-      display: block;
-      border-top: 1px solid $light-grey-4;
-      box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
-      position: relative;
-      z-index: 100;
+  thead {
+    height: 89px; // TODO: not sure if this is the exact right number
+    display: block;
+    border-top: 1px solid $light-grey-4;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 100;
 
-      tr {
-        border-top-width: 0;
-        border-bottom-width: 0;
-        background-color: #f6f6f6;
-      }
-
-      .col-processed {
-        font-weight: normal;
-        font-size: 7pt;
-      }
+    tr {
+      border-top-width: 0;
+      border-bottom-width: 0;
+      background-color: #f6f6f6;
     }
 
-    th, td {
-      min-height: 29px;
-      display: inline-block;
-      width: 250px;
-      border-style: solid;
-      border-color: $light-grey-4;
-      white-space: nowrap;
+    .col-processed {
+      font-weight: normal;
+      font-size: 7pt;
     }
-
-    th {
-      padding: 5px;
-      border-width: 0 1px 0 0;
-    }
-  } //end global
-}
-
-.columnStatuses {
-  padding: 0;
-  background-color: $white;
-
-  a {
-    display: inline-block;
-    width: 90%;
   }
+
+  td, th {
+    min-height: 29px;
+    display: inline-block;
+    border-style: solid;
+    border-color: $light-grey-4;
+    white-space: nowrap;
+  }
+
+  td {
+    width: 250px;
+  }
+
+  th {
+    border-width: 0 1px 0 0;
+  }
+
+  .columnStatuses {
+    padding: 0;
+    background-color: $white;
+  }
+
 }

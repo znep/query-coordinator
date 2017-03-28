@@ -106,7 +106,7 @@ class TransformStatus extends Component {
           key={transform.id}
           ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}
           data-flyout={getFlyoutId(transform)}
-          className={classNames(styles.colErrors, { [styles.colErrorsSelected]: inErrorMode })}>
+          className={classNames(styles.transformStatus, { [styles.transformStatusSelected]: inErrorMode })}>
           {progressBar}
           <Link to={linkPath}>
             <div className={styles.statusText}>
@@ -124,7 +124,7 @@ class TransformStatus extends Component {
     } else {
       if (thisColumnDone) {
         return (
-          <th key={transform.id} className={styles.colErrors}>
+          <th key={transform.id} className={styles.transformStatus}>
             {progressBar}
             <div className={styles.statusText}>
               <SocrataIcon name="checkmark3" className={styles.successIcon} />
@@ -134,7 +134,7 @@ class TransformStatus extends Component {
         );
       } else {
         return (
-          <th key={transform.id} className={styles.colErrors}>
+          <th key={transform.id} className={styles.transformStatus}>
             {progressBar}
             <div className={styles.statusText}>
               <span className={styles.spinner}></span>

@@ -2,6 +2,24 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
+.transformStatus {
+  font-weight: normal;
+  font-size: 10px;
+  color: $grey;
+  padding: 0;
+  width: 250px;
+
+  &.transformStatusSelected {
+    box-shadow: inset 0 0 10px -2px $black;
+  }
+
+  a {
+    color: $grey;
+    text-decoration: none;
+    display: inline-block;
+    width: 90%;
+  }
+}
 
 .statusText {
   padding: 5px 5px;
@@ -9,21 +27,6 @@
   display: relative;
   z-index: 100;
   text-align: left;
-}
-
-.colErrors {
-  font-weight: normal;
-  font-size: 10px;
-  color: $grey;
-
-  &.colErrorsSelected {
-    box-shadow: inset 0 0 10px -2px $black;
-  }
-
-  a {
-    color: $grey;
-    text-decoration: none;
-  }
 }
 
 .transformStatusFlyout {

@@ -4,8 +4,8 @@ This repo houses the Socrata Platform UI (Frontend for now), and shortly Storyte
 
 ## Quick Links
 
-[Frontend](https://github.com/socrata/frontend/blob/master/frontend/README.md)
-[common](https://github.com/socrata/frontend/blob/master/common/README.md)
+* [Frontend](https://github.com/socrata/frontend/blob/master/frontend/README.md)
+* [common](https://github.com/socrata/frontend/blob/master/common/README.md)
 
 ## Organization
 

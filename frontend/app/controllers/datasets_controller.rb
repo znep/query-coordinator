@@ -5,8 +5,8 @@ class DatasetsController < ApplicationController
   include CommonMetadataMethods
 
   prepend_before_filter :check_chrome, :only => [:show, :alt]
-  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner, :form_success, :form_error, :external, :external_download, :download, :about]
-  skip_before_filter :disable_frame_embedding, :only => [:form_success, :form_error]
+  skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner, :form_success, :external, :external_download, :download, :about]
+  skip_before_filter :disable_frame_embedding, :only => [:form_success]
   # When CSRF token validation is skipped for this method (see skip_before_filter above), the
   # verify_recaptcha test in the 'create' method is our only protection against abuse.
   skip_before_filter :verify_authenticity_token,
@@ -673,14 +673,6 @@ class DatasetsController < ApplicationController
       # Do nothing; if there is no view, render a generic message
     end
 
-    respond_to do |format|
-      format.html { render(:layout => 'plain') }
-    end
-  end
-
-  def form_error
-    @suppress_chrome = true
-    @view = ::View.find(params[:id])
     respond_to do |format|
       format.html { render(:layout => 'plain') }
     end

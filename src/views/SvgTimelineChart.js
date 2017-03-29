@@ -995,8 +995,10 @@ function SvgTimelineChart($element, vif) {
       append($title);
     const $labelValueRows = flyoutData.data.
       map((datum, seriesIndex) => {
+        const labelMatcher = new RegExp(I18n.translate('visualizations.common.unlabeled_measure_prefix') + seriesIndex);
+        const label = labelMatcher.test(datum.label) ? '' : datum.label;
         const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
-          text(datum.label).
+          text(label).
           css('color', getColorByVariantAndSeriesIndex('primary', seriesIndex));
 
         let datumValueString;

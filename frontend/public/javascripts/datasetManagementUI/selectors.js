@@ -47,3 +47,14 @@ export function rowsTransformed(outputColumns) {
     outputColumns.map((col) => col.transform.contiguous_rows_processed)
   ) || 0;
 }
+
+export function pathForOutputSchema(db, outputSchemaId) {
+  const outputSchema = db.output_schemas[outputSchemaId];
+  const inputSchema = db.input_schemas[outputSchema.input_schema_id];
+  const upload = db.uploads[inputSchema.upload_id];
+  return {
+    outputSchema,
+    inputSchema,
+    upload
+  };
+}

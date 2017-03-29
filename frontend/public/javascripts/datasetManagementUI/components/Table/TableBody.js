@@ -10,20 +10,20 @@ const RENDER_ROWS = 50;
 
 class TableBody extends Component {
 
-  shouldComponentUpdate(nextProps) {
-    return !_.isEqual(
-      {
-        columns: nextProps.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
-        displayState: nextProps.displayState,
-        numRowErrors: _.size(nextProps.db.row_errors)
-      },
-      {
-        columns: this.props.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
-        displayState: this.props.displayState,
-        numRowErrors: _.size(this.props.db.row_errors)
-      }
-    );
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   return !_.isEqual(
+  //     {
+  //       columns: nextProps.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
+  //       displayState: nextProps.displayState,
+  //       numRowErrors: _.size(nextProps.db.row_errors)
+  //     },
+  //     {
+  //       columns: this.props.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
+  //       displayState: this.props.displayState,
+  //       numRowErrors: _.size(this.props.db.row_errors)
+  //     }
+  //   );
+  // }
 
   getData() {
     const props = this.props;

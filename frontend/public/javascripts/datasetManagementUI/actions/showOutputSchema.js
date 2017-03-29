@@ -8,9 +8,7 @@ import {
   insertStarted,
   insertSucceeded,
   insertFailed,
-  updateFromServer,
-  updateImmutableStarted,
-  insertMultipleFromServer
+  updateImmutableStarted
 } from './database';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import {
@@ -93,93 +91,5 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
     newOutputSchema,
     newOutputColumns,
     oldOutputColIds
-  };
-}
-
-export function loadColumnErrors(nextState) {
-  const {
-    uploadId,
-    inputSchemaId,
-    outputSchemaId,
-    errorsTransformId: errorsTransformIdStr
-  } = nextState.params;
-  const errorsTransformId = _.toNumber(errorsTransformIdStr);
-  return (dispatch, getState) => {
-    const limit = 50;
-    const fetchOffset = 0;
-    const errorsColumnId = _.find(getState().db.output_columns, { transform_id: errorsTransformId }).id;
-    const path = dsmapiLinks.columnErrors(
-      uploadId, inputSchemaId, outputSchemaId, errorsColumnId, limit, fetchOffset
-    );
-    socrataFetch(path).
-      then(checkStatus).
-      then(getJson).
-      then((resp) => {
-        const outputSchema = resp[0];
-        const withoutSchemaRow = resp.slice(1);
-        const newRecordsByTransform = [];
-        _.range(outputSchema.output_columns.length).forEach(() => {
-          newRecordsByTransform.push({});
-        });
-        withoutSchemaRow.forEach(({ row, offset }) => {
-          if (_.isArray(row)) { // as opposed to row errors, which are not
-            row.forEach((colResult, colIdx) => {
-              newRecordsByTransform[colIdx][offset] = colResult;
-            });
-          }
-        });
-        dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
-          const theTransformId = outputSchema.output_columns[idx].transform.id;
-          return insertMultipleFromServer(`transform_${theTransformId}`, newRecords, {
-            ifNotExists: true
-          });
-        })));
-        dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
-          const errorIndices = _.map(newRecords,
-            (newRecord, index) => ({
-              ...newRecord,
-              index
-            })).
-            filter((newRecord) => newRecord.error).
-            map((newRecord) => newRecord.index);
-          // TODO: how to make this a set which gets merged when we update?
-          // maybe update should just take a primary key and a function
-          // that would be SQL-like
-          // not supposed to have functions in actions though
-          // boo
-          const transform = outputSchema.output_columns[idx].transform;
-          return updateFromServer('transforms', {
-            id: transform.id,
-            error_indices: errorIndices
-          });
-        })));
-      }).
-      catch((error) => {
-        // TODO: maybe add a notification
-        console.error('failed to load column errors', error);
-      });
-  };
-}
-
-
-export function loadRowErrors(inputSchemaId, offset, limit) {
-  return (dispatch, getState) => {
-    const uploadId = getState().db.input_schemas[inputSchemaId].upload_id;
-    socrataFetch(dsmapiLinks.rowErrors(uploadId, inputSchemaId, offset, limit)).
-      then(checkStatus).
-      then(getJson).
-      then((rowErrors) => {
-        const rowErrorsWithId = rowErrors.map((rowError) => ({
-          ...rowError,
-          input_schema_id: inputSchemaId,
-          id: `${inputSchemaId}-${rowError.offset}`
-        }));
-        const rowErrorsKeyedById = _.keyBy(rowErrorsWithId, 'id');
-        dispatch(insertMultipleFromServer('row_errors', rowErrorsKeyedById, { ifNotExists: true }));
-      }).
-      catch((error) => {
-        // TODO: maybe add a notification
-        console.error('failed to load row errors', error);
-      });
   };
 }

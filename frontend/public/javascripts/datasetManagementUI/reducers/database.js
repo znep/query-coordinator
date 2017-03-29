@@ -32,7 +32,10 @@ import {
   statusInsertFailed,
   statusUpdating,
   statusUpdatingImmutable,
-  statusUpdateFailed
+  statusUpdateFailed,
+  statusLoadInProgress,
+  statusLoadSucceeded,
+  statusLoadFailed
 } from '../lib/database/statuses';
 import { emptyDB } from '../bootstrap';
 import uuidV4 from 'uuid/v4';
@@ -225,17 +228,49 @@ export default function dbReducer(db = emptyDB, action) {
           ...db.__loads__,
           [loadId]: {
             id: loadId,
-            tableName: action.tableName,
-            params: action.params
+            status: statusLoadInProgress,
+            url: action.url
           }
         }
       };
     }
-    case LOAD_SUCCEEDED:
-      return db;
-
-    case LOAD_FAILED:
-      return db;
+    case LOAD_SUCCEEDED: {
+      // maybe it should just delete them? idk
+      const key = _.findKey(
+        db.__loads__,
+        (tableRecord) => (
+          tableRecord.url === action.url
+        )
+      );
+      return {
+        ...db,
+        __loads__: {
+          ...db.__loads__,
+          [key]: {
+            ...db.__loads__[key],
+            status: statusLoadSucceeded
+          }
+        }
+      };
+    }
+    case LOAD_FAILED: {
+      const key = _.findKey(
+        db.__loads__,
+        (tableRecord) => (
+          tableRecord.url === action.url
+        )
+      );
+      return {
+        ...db,
+        __loads__: {
+          ...db.__loads__,
+          [key]: {
+            ...db.__loads__[key],
+            status: statusLoadFailed(action.error)
+          }
+        }
+      };
+    }
 
     default:
       return db;

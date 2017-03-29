@@ -42,14 +42,14 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
 class ShowOutputSchema extends Component {
 
   componentDidMount() {
-    this.updateDisplayState();
+    this.dispatchDataLoad();
   }
 
-  componentDidUpdate() {
-    this.updateDisplayState();
+  componentWillReceiveProps() {
+    this.dispatchDataLoad();
   }
 
-  updateDisplayState() {
+  dispatchDataLoad() {
     this.props.dispatch(
       LoadDataActions.loadVisibleData(this.props.outputSchema.id, this.props.displayState)
     );
@@ -64,7 +64,6 @@ class ShowOutputSchema extends Component {
       columns,
       displayState,
       canApplyUpdate,
-      pageNo,
       goHome,
       updateColumnType,
       applyUpdate
@@ -143,7 +142,7 @@ class ShowOutputSchema extends Component {
                 outputSchema={outputSchema} /> :
               <div />}
 
-            <Pager path={path} currentPage={pageNo} />
+            <Pager path={path} currentPage={displayState.pageNo} />
 
             <div>
               <Link to={Links.home}>
@@ -176,7 +175,6 @@ ShowOutputSchema.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   displayState: PropTypes.object.isRequired,
   canApplyUpdate: PropTypes.bool.isRequired,
-  pageNo: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
@@ -185,7 +183,6 @@ ShowOutputSchema.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
-  console.log('SOS params', params);
   const queryResults = query(
     state.db,
     _.toNumber(params.uploadId),
@@ -194,7 +191,6 @@ function mapStateToProps(state, ownProps) {
   );
   return {
     ...queryResults,
-    pageNo: _.toNumber(params.pageNo || '0'),
     displayState: DisplayState.fromUrl(_.pick(ownProps, ['params', 'route']))
   };
 }

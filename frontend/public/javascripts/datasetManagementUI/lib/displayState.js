@@ -18,11 +18,12 @@ export const rowErrors = (pageNo = 0) => ({
 });
 
 export function fromUrl({ params, route }) {
+  const pageNo = _.toNumber(params.pageNo || '0');
   if (params.errorsTransformId) {
-    return columnErrors(_.toNumber(params.errorsTransformId));
+    return columnErrors(_.toNumber(params.errorsTransformId), pageNo);
   } else if (route.path.indexOf('row_errors') > 0) {
-    return rowErrors();
+    return rowErrors(pageNo);
   } else {
-    return normal();
+    return normal(pageNo);
   }
 }

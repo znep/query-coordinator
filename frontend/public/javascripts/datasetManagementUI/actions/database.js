@@ -126,23 +126,20 @@ export const createTable = (name) => ({
 // no delete actions because we never delete anything lol
 
 export const LOAD_STARTED = 'LOAD_STARTED';
-export const loadStarted = (tableName, params) => ({
+export const loadStarted = (url) => ({
   type: LOAD_STARTED,
-  tableName,
-  params
+  url
 });
 
 export const LOAD_SUCCEEDED = 'LOAD_SUCCEEDED';
-export const loadSucceeded = (tableName, params) => ({
+export const loadSucceeded = (url) => ({
   type: LOAD_SUCCEEDED,
-  tableName,
-  params
+  url
 });
 
 export const LOAD_FAILED = 'STATUS_LOAD_FAILED';
-export const loadFailed = (tableName, params, error) => ({
+export const loadFailed = (url, error) => ({
   type: LOAD_FAILED,
-  tableName,
-  params,
+  url,
   error
 });

@@ -103,6 +103,7 @@
     "sass-loader": "3.1.2",
     "script-loader": "0.6.1",
     "style-loader": "0.13.0",
+    "socrata-utils": "3.2.0",
     "url-loader": "0.5.7",
     "webpack": "1.13.1",
     "webpack-dev-server": "1.14.0",

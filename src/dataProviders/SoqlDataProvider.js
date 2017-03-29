@@ -66,8 +66,8 @@ function SoqlDataProvider(config) {
 
   this.getRowCount = function(whereClauseComponents) {
     var alias = '__count_alias__'; // lowercase in order to deal with OBE norms
-    var whereClause = (whereClauseComponents) ?
-      '&$where={0}'.format(whereClauseComponents) :
+    var whereClause = whereClauseComponents ?
+      `&$where=${encodeURIComponent(whereClauseComponents)}` :
       '';
     var url = urlForQuery(
       '$select=count(*) as {0}{1}'.
@@ -168,10 +168,10 @@ function SoqlDataProvider(config) {
       format(
         columnNames.map(escapeColumnName).join(','),
         order[0].columnName,
-        (order[0].ascending ? 'ASC' : 'DESC'),
+        order[0].ascending ? 'ASC' : 'DESC',
         limit,
         offset,
-        whereClauseComponents ? '&$where=' + whereClauseComponents : ''
+        whereClauseComponents ? '&$where=' + encodeURIComponent(whereClauseComponents) : ''
       );
     url = urlForQuery(queryString);
 
@@ -236,7 +236,7 @@ function SoqlDataProvider(config) {
   this.match = function(columnName, term) {
     const escapedColumnName = escapeColumnName(columnName);
     const select = `${escapedColumnName}`;
-    const where = `${escapedColumnName}="${term}"`;
+    const where = encodeURIComponent(`${escapedColumnName}="${term}"`);
     const queryString = `$select=${select}&$where=${where}&$limit=1`;
     const url = urlForQuery(queryString);
 

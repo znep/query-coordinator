@@ -47,6 +47,7 @@ module.exports = function ( karma ) {
       resolve: {
         root: [
           path.resolve('.'),
+          path.resolve('public/javascripts'),
           path.resolve('public/javascripts/catalogLandingPage'),
           path.resolve('karma/catalogLandingPage')
         ]

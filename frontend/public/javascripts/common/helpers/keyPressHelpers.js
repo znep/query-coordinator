@@ -13,3 +13,15 @@ export const handleKeyPress = (handler, preventDefault) => (
     }
   }
 );
+
+export const handleEnter = (handler, preventDefault) => (
+  (event) => {
+    if (event.keyCode === ENTER_KEY_CODE) {
+      if (preventDefault) {
+        event.preventDefault();
+      }
+
+      return handler(event);
+    }
+  }
+);

@@ -1,29 +1,39 @@
 import _ from 'lodash';
+import { redirectToQueryString, urlParams } from '../../common/http';
 
-export default function(state, action) {
-  const clearSearchAndRedirect = () => document.location.search = '';
+export default (state, action) => {
+  // Takes existing search query string, modifes the `q` to equal the provided query,
+  // then rebuilds the query string and redirects to it.
+  const changeSearchQueryAndRedirect = (newQuery = null) => {
+    const newUrlParams = urlParams();
+    if (newQuery) {
+      newUrlParams.q = newQuery;
+    } else {
+      delete newUrlParams.q;
+    }
+
+    const newUrlParamString = _(newUrlParams).
+      toPairs().
+      map((param) => param.join('=')).
+      value().
+      join('&');
+
+    redirectToQueryString(`?${newUrlParamString}`);
+  };
 
   if (_.isUndefined(state)) {
-    var term = _.fromPairs(_.compact(_.map(location.search.slice(1).split('&'), (item) => {
-      if (item) return item.split('=');
-    }))).q;
-
     // The default is needed because null or undefined results in "changing an uncontrolled input..." warning
     return {
-      term: term || ''
+      term: urlParams().q || ''
     };
   }
 
   if (action.type === 'CLEAR_SEARCH') {
-    clearSearchAndRedirect();
+    changeSearchQueryAndRedirect();
   }
 
   if (action.type === 'PERFORM_SEARCH') {
-    if (action.term.length === 0) {
-      clearSearchAndRedirect();
-    } else {
-      document.location = `?q=${action.term}`;
-    }
+    changeSearchQueryAndRedirect(state.term);
   }
 
   if (action.type === 'UPDATE_SEARCH_TERM') {
@@ -34,4 +44,4 @@ export default function(state, action) {
   }
 
   return state;
-}
+};

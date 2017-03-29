@@ -17,3 +17,16 @@ export function checkStatus(response) {
   error.response = response;
   throw error;
 }
+
+// Object mapping of the current url params
+export const urlParams = () => (
+  _(document.location.search.slice(1).split('&')).
+    map((item) => (item ? item.split('=') : null)).
+    compact().
+    fromPairs().
+    value()
+);
+
+export const redirectToQueryString = (queryString) => {
+  document.location.search = queryString;
+};

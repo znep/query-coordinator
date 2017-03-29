@@ -11,6 +11,7 @@ import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import * as LoadDataActions from '../actions/loadData';
 import * as DisplayState from '../lib/displayState';
+import { PAGE_SIZE } from '../actions/loadData';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
 import Pager from './Table/Pager';
@@ -109,7 +110,10 @@ class ShowOutputSchema extends Component {
             <div>
               <div className={styles.dataPreview}>
                 <div>
-                  <h3>Data Preview {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}</h3>
+                  <h3>
+                    Data Preview
+                    {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}
+                  </h3>
                 </div>
                 <div className={styles.datasetAttribute}>
                   <div className={styles.datasetAttribute}>
@@ -143,7 +147,10 @@ class ShowOutputSchema extends Component {
                 outputSchema={outputSchema} /> :
               <div />}
 
-            <Pager path={path} currentPage={displayState.pageNo} />
+            <Pager
+              path={path}
+              currentPage={displayState.pageNo}
+              numPages={Math.ceil(rowsTransformed / PAGE_SIZE)} />
 
             <div>
               <Link to={Links.home}>

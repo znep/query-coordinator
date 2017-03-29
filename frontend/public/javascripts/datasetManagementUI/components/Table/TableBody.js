@@ -4,9 +4,8 @@ import classNames from 'classnames';
 import TableCell from './TableCell';
 import RowError from './RowError';
 import * as DisplayState from '../../lib/displayState';
+import { PAGE_SIZE } from '../../actions/loadData';
 import styles from 'styles/Table/TableBody.scss';
-
-const RENDER_ROWS = 50;
 
 class TableBody extends Component {
 
@@ -33,12 +32,13 @@ class TableBody extends Component {
     let rowIndices;
     if (props.displayState.type === DisplayState.COLUMN_ERRORS) {
       const errorsTransform = props.db.transforms[props.displayState.transformId];
-      rowIndices = errorsTransform.error_indices || _.range(RENDER_ROWS);
+      rowIndices = errorsTransform.error_indices || _.range(PAGE_SIZE);
     } else if (props.displayState.type === DisplayState.ROW_ERRORS) {
       rowIndices = _.filter(props.db.row_errors, { input_schema_id: props.inputSchemaId }).
         map((rowError) => rowError.offset);
     } else {
-      rowIndices = _.range(0, RENDER_ROWS);
+      const startRow = props.displayState.pageNo * PAGE_SIZE;
+      rowIndices = _.range(startRow, startRow + PAGE_SIZE);
     }
     return rowIndices.map((rowIdx) => ({
       rowIdx,

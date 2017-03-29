@@ -11,7 +11,7 @@ import * as DisplayState from '../lib/displayState';
 import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
 
-const PAGE_SIZE = 50;
+export const PAGE_SIZE = 50;
 
 function getLoadPlan(db, outputSchemaId, displayState) {
   // TODO: don't load anything if we've already loaded it or started to load it!!
@@ -112,9 +112,11 @@ function loadNormalPreview(outputSchemaId, pageNo) {
               id: row.offset,
               ...row.row[colIdx]
             }));
-          return insertMultipleFromServer(`transform_${transformId}`, rowsForColumn, {
-            ifNotExists: true
-          });
+          return insertMultipleFromServer(
+            `transform_${transformId}`,
+            _.keyBy(rowsForColumn, 'id'),
+            { ifNotExists: true }
+          );
           // console.warn('TODO: insert row error');
           // return insertFromServer('row_errors', {
           //   id: `${inputSchemaId}`

@@ -25,15 +25,21 @@ export default function rootRoute(store) {
       <Route path="uploads/:uploadId" component={ShowUpload} />
       <Route
         path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId"
-        component={ShowOutputSchema} />
+        component={ShowOutputSchema}>
+        <Route path="page/:pageNo" component={ShowOutputSchema} />
+      </Route>
       <Route
         path={'uploads/:uploadId/schemas/:inputSchemaId/output/' +
                 ':outputSchemaId/column_errors/:errorsTransformId'}
         component={ShowOutputSchema}
-        onEnter={(nextState) => store.dispatch(loadColumnErrors(nextState))} />
+        onEnter={(nextState) => store.dispatch(loadColumnErrors(nextState))}>
+        <Route path="page/:pageNo" component={ShowOutputSchema} />
+      </Route>
       <Route
         path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors"
-        component={ShowOutputSchema} />
+        component={ShowOutputSchema}>
+        <Route path="page/:pageNo" component={ShowOutputSchema} />
+      </Route>
       <Route path="*" component={NoMatch} />
     </Route>
   );

@@ -1,14 +1,14 @@
 import { socrataFetch } from '../lib/http';
 import * as DisplayState from '../lib/displayState';
 
-function whatShouldWeLoad(db, displayState) {
+function getLoadPlan(db, outputSchemaId, displayState) {
   switch (displayState.type) {
     case DisplayState.COLUMN_ERRORS:
-      console.log('load column errors', displayState);
+      console.log('load column errors', outputSchemaId, displayState);
       break;
 
     case DisplayState.ROW_ERRORS:
-      console.log('load row errors', displayState);
+      console.log('load row errors', outputSchemaId, displayState);
       break;
 
     case DisplayState.NORMAL:
@@ -17,14 +17,24 @@ function whatShouldWeLoad(db, displayState) {
       // I just don't want to have to think though... I just want indexed tables.
       // it's not a lot to ask for. I should really just write a live-graphql-on-indexed-tables
       // lib in JS
-      console.log('load normal', displayState);
-      break;
+      console.log('load normal', outputSchemaId, displayState);
+      return {
+        type: 'NORMAL',
+        pageNo: displayState.pageNo
+      };
   }
 }
 
-export function loadVisibleData(displayState) {
+export function loadVisibleData(outputSchemaId, displayState) {
   return (dispatch, getState) => {
-    const toLoad = whatShouldWeLoad(getState().db, displayState);
+    const loadPlan = getLoadPlan(getState().db, outputSchemaId, displayState);
+    dispatch(doLoadPlan(loadPlan));
+  };
+}
+
+function doLoadPlan(loadPlan) {
+  return (dispatch) => {
+    console.log('loadPlan', loadPlan);
   };
 }
 

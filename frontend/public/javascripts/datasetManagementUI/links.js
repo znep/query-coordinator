@@ -24,8 +24,10 @@ export const showUpload = (uploadId) => (
   (routing) => `${home(routing)}/uploads/${uploadId}`
 );
 
-export const showOutputSchema = (uploadId, inputSchemaId, outputSchemaId) => (
-  (routing) => `${home(routing)}/uploads/${uploadId}/schemas/${inputSchemaId}/output/${outputSchemaId}`
+export const showOutputSchema = (uploadId, inputSchemaId, outputSchemaId, pageNo) => (
+  (routing) =>
+    `${home(routing)}/uploads/${uploadId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
+      (pageNo ? `/page/${pageNo}` : '')
 );
 
 export const showColumnErrors = (uploadId, inputSchemaId, outputSchemaId, errorsTransformId) => (

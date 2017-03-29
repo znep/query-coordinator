@@ -15,7 +15,10 @@ import {
   UPDATE_FROM_SERVER,
   UPDATE_FAILED,
   CREATE_TABLE,
-  BATCH
+  BATCH,
+  LOAD_STARTED,
+  LOAD_SUCCEEDED,
+  LOAD_FAILED
 } from '../actions/database';
 import {
   STATUS_DIRTY,
@@ -213,6 +216,26 @@ export default function dbReducer(db = emptyDB, action) {
         ...db,
         [action.name]: {}
       };
+
+    case LOAD_STARTED: {
+      const loadId = uuidV4();
+      return {
+        ...db,
+        __loads__: {
+          ...db.__loads__,
+          [loadId]: {
+            id: loadId,
+            tableName: action.tableName,
+            params: action.params
+          }
+        }
+      };
+    }
+    case LOAD_SUCCEEDED:
+      return db;
+
+    case LOAD_FAILED:
+      return db;
 
     default:
       return db;

@@ -10,9 +10,10 @@ import * as Selectors from '../selectors';
 import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import * as LoadDataActions from '../actions/loadData';
+import * as DisplayState from '../lib/displayState';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
-import * as DisplayState from '../lib/displayState';
+import Pager from './Table/Pager';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ShowOutputSchema.scss';
 
@@ -49,7 +50,9 @@ class ShowOutputSchema extends Component {
   }
 
   updateDisplayState() {
-    this.props.dispatch(LoadDataActions.loadVisibleData(this.props.displayState));
+    this.props.dispatch(
+      LoadDataActions.loadVisibleData(this.props.outputSchema.id, this.props.displayState)
+    );
   }
 
   render() {
@@ -61,6 +64,7 @@ class ShowOutputSchema extends Component {
       columns,
       displayState,
       canApplyUpdate,
+      pageNo,
       goHome,
       updateColumnType,
       applyUpdate
@@ -139,6 +143,8 @@ class ShowOutputSchema extends Component {
                 outputSchema={outputSchema} /> :
               <div />}
 
+            <Pager path={path} currentPage={pageNo} />
+
             <div>
               <Link to={Links.home}>
                 <button
@@ -168,16 +174,18 @@ ShowOutputSchema.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
+  displayState: PropTypes.object.isRequired,
+  canApplyUpdate: PropTypes.bool.isRequired,
+  pageNo: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  displayState: PropTypes.object.isRequired,
-  canApplyUpdate: PropTypes.bool.isRequired
+  dispatch: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
+  console.log('SOS params', params);
   const queryResults = query(
     state.db,
     _.toNumber(params.uploadId),
@@ -186,6 +194,7 @@ function mapStateToProps(state, ownProps) {
   );
   return {
     ...queryResults,
+    pageNo: _.toNumber(params.pageNo || '0'),
     displayState: DisplayState.fromUrl(_.pick(ownProps, ['params', 'route']))
   };
 }

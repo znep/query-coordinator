@@ -1,10 +1,11 @@
+var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
   'import-wizard.config.js',
   [ 'karma/importWizard' ]
 );
 
 module.exports = function(karma) {
-  karma.set({
+  karma.set(karmaConfig({
     basePath: '../../',
 
     singleRun: true,
@@ -21,34 +22,6 @@ module.exports = function(karma) {
 
     reporters: ['mocha', 'dots'],
 
-    webpack: webpackConfig,
-
-    webpackMiddleware: {
-      noInfo: true
-    },
-
-    mochaReporter: {
-      showDiff: true
-    },
-
-    colors: true,
-    logLevel: 'INFO',
-
-    browsers: [
-      'Chrome',
-      'Firefox',
-      'PhantomJS'
-    ],
-    browserNoActivityTimeout: 1000 * 55,
-    browserDisconnectTimeout: 1000 * 10,
-    browserDisconnectTolerance: 5,
-    phantomjsLauncher: {
-      options: {
-        viewportSize: {
-          width: 1024,
-          height: 768
-        }
-      }
-    }
-  });
+    webpack: webpackConfig
+  }));
 };

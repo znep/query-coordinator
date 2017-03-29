@@ -7,7 +7,7 @@ class CatalogLandingPageController < ApplicationController
   include Socrata::CookieHelper
 
   before_action :require_administrator, :except => [:show]
-  before_action :require_clp_feature_flag
+  before_action :require_clp_feature_flag, :check_lockdown
   skip_before_action :require_user, :only => [:show]
 
   before_filter :fetch_catalog_landing_page, :only => [:show, :manage]

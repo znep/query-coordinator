@@ -89,9 +89,7 @@ class TransformStatus extends Component {
       </div>
     );
 
-    const errorFlyout = (transform.num_transform_errors > 0 && !inErrorMode) ?
-      <ErrorFlyout transform={transform} /> :
-      null;
+    const errorFlyout = <ErrorFlyout transform={transform} />;
 
     if (transform.num_transform_errors > 0) {
       const msg = thisColumnDone ?
@@ -108,12 +106,6 @@ class TransformStatus extends Component {
           data-flyout={getFlyoutId(transform)}
           className={classNames(styles.transformStatus, { [styles.transformStatusSelected]: inErrorMode })}>
           {progressBar}
-          <Link to={linkPath}>
-            <div className={styles.statusText}>
-              <span className={styles.error}>{commaify(transform.num_transform_errors)}</span>
-              {msg}
-            </div>
-          </Link>
           <div className={styles.statusText}>
             <span className={styles.error}>{commaify(transform.num_transform_errors)}</span>
             <Link to={linkPath} data-flyout={getFlyoutId(transform)}>{msg}</Link>

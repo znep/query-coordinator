@@ -772,6 +772,7 @@ function SvgVisualization($element, vif) {
     self.$element.on('mouseover', '.socrata-visualization-left-axis-title', showFlyout);
     self.$element.on('mouseout', '.socrata-visualization-left-axis-title', hideFlyout);
 
+    // The download button is not currently rendered anywhere, but may be in the future
     self.$element.on('click', '.socrata-visualization-download-button', handleDownload);
   }
 
@@ -799,7 +800,9 @@ function SvgVisualization($element, vif) {
   }
 
   function showFlyout(event) {
-    const element = event.originalEvent.target;
+    // event.originalEvent doesn't exist for manually triggered events, so
+    // event.target was added as a fall back for testing
+    const element = _.get(event, 'originalEvent.target', event.target);
     const content = element.getAttribute('data-full-text');
 
     if (content) {

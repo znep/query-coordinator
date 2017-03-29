@@ -22,7 +22,7 @@ Each directory within `common` defines a reusable code module in either Ruby, Ja
 
 ## File Structure
 
-All files and folder in the `common` project must be underscorized (example: `common/feature_flags/flag_helpers.js`).
+All files and folders in the `common` project must be snake_case (example: `common/feature_flags/flag_helpers.js`).
 This is the least-surprising compromise between our rails-centric ruby codebase and our javascript codebase.
 
 Important: A module's file structure is part of its public API! Keep this in mind when you are deciding your
@@ -51,7 +51,7 @@ those existing modules.*
 All modules, regardless of technology used, must satisfy these conditions:
 
 0. Have a clear reason for being shared.
-1. Have a clear underscorized name. For instance, `feature_flags`.
+1. Have a clear snake_case name. For instance, `feature_flags`.
 2. Define their implementation in `common/${MODULE_NAME}`.
 3. Have a README.md in their folder.
 4. Run a suite of tests when the `test` task is invoked from the shared Rakefile (`common/Rakefile`).

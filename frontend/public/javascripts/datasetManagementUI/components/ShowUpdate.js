@@ -191,7 +191,8 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
   );
 
   const outputSchema = latestOutputSchema(db);
-  const doesUpsertExist = _.size(db.upsert_jobs);
+  const doesUpsertExist = _.size(_.filter(db.upsert_jobs,
+                                          uj => uj.status !== ApplyUpdate.UPSERT_JOB_FAILURE));
   const isUpsertComplete = doesUpsertExist &&
     _.map(db.upsert_jobs, (uj) => uj.status === ApplyUpdate.UPSERT_JOB_SUCCESSFUL).
     reduce((acc, success) => success || acc, false);

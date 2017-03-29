@@ -64,6 +64,7 @@ class ShowOutputSchema extends Component {
       columns,
       displayState,
       canApplyUpdate,
+      numLoadsInProgress,
       goHome,
       updateColumnType,
       applyUpdate
@@ -108,7 +109,7 @@ class ShowOutputSchema extends Component {
             <div>
               <div className={styles.dataPreview}>
                 <div>
-                  <h3>Data Preview</h3>
+                  <h3>Data Preview {numLoadsInProgress > 0 ? '...' : ''}</h3>
                 </div>
                 <div className={styles.datasetAttribute}>
                   <div className={styles.datasetAttribute}>
@@ -175,6 +176,7 @@ ShowOutputSchema.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   displayState: PropTypes.object.isRequired,
   canApplyUpdate: PropTypes.bool.isRequired,
+  numLoadsInProgress: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
@@ -191,6 +193,7 @@ function mapStateToProps(state, ownProps) {
   );
   return {
     ...queryResults,
+    numLoadsInProgress: Selectors.numLoadsInProgress(state.db),
     displayState: DisplayState.fromUrl(_.pick(ownProps, ['params', 'route']))
   };
 }

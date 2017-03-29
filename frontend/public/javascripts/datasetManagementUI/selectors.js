@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { STATUS_UPDATING } from './lib/database/statuses';
+import { STATUS_UPDATING, STATUS_LOAD_IN_PROGRESS } from './lib/database/statuses';
 
 // TODO: if perf becomes an issue, use reselect for memoization
 
@@ -57,4 +57,11 @@ export function pathForOutputSchema(db, outputSchemaId) {
     inputSchema,
     upload
   };
+}
+
+export function numLoadsInProgress(db) {
+  return _.filter(
+    db.__loads__,
+    (load) => (load.status.type === STATUS_LOAD_IN_PROGRESS)
+  ).length;
 }

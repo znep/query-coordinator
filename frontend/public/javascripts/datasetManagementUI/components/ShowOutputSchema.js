@@ -46,7 +46,6 @@ class ShowOutputSchema extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('willreceiveprops');
     this.dispatchDataLoad(nextProps);
   }
 
@@ -110,7 +109,7 @@ class ShowOutputSchema extends Component {
             <div>
               <div className={styles.dataPreview}>
                 <div>
-                  <h3>Data Preview {numLoadsInProgress > 0 ? '...' : ''}</h3>
+                  <h3>Data Preview {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}</h3>
                 </div>
                 <div className={styles.datasetAttribute}>
                   <div className={styles.datasetAttribute}>

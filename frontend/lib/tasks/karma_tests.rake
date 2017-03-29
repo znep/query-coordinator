@@ -21,6 +21,7 @@ namespace :test do
       fail($?.exitstatus) unless system(cmd)
     end
 
+    # ADD NEW TEST SUITES HERE
     {
       'catalogLandingPage' => 'update_catalog_landing_page_translations',
       'common' => 'update_common_translations',
@@ -31,7 +32,8 @@ namespace :test do
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
       'signin' => 'update_signin_translations',
-      'oldUx' => nil
+      'oldUx' => nil,
+      'exampleTestSuite' => nil
     }.each do |task_name, dependency|
       desc task_name
       task_args = { %i(watch browser reporter) => "translations:#{dependency}" }

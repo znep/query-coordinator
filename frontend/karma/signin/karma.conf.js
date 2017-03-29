@@ -1,8 +1,23 @@
-var path = require('path');
-
-var root = path.resolve(__dirname, '../..');
 var webpack = require('webpack');
-var common = require(path.resolve(root, 'config/webpack/common'));
+var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+  'signin.config.js',
+  [ 'karma/signin' ]
+);
+webpackConfig.externals = {
+  'cheerio': 'window',
+  'react/addons': true,
+  'react/lib/ExecutionEnvironment': true,
+  'react/lib/ReactContext': true
+};
+webpackConfig.plugins.push(
+  new webpack.ProvidePlugin({
+    Promise: 'imports?this=>global!exports?global.Promise!es6-promise',
+    fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch',
+    $: 'jquery',
+    jQuery: 'jquery'
+  })
+);
+
 
 module.exports = function ( karma ) {
   karma.set({
@@ -22,65 +37,7 @@ module.exports = function ( karma ) {
 
     reporters: ['dots', 'mocha'],
 
-    webpack: {
-      cache: true,
-      devtool: 'inline-source-map',
-      module: {
-        preLoaders: [
-          ...common.getStyleguidePreLoaders()
-        ],
-        loaders: [
-          {
-            test: /\.jsx?$/,
-            include: [
-              path.resolve('public/javascripts/signin'),
-              path.resolve('karma/signin')
-            ],
-            loader: 'babel',
-            query: {
-              presets: ['react', 'es2015']
-            }
-          },
-          {
-            test: /\.scss$/,
-            loaders: [
-              'style',
-              'css?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
-              'sass'
-            ]
-          }
-        ]
-      },
-      externals: {
-        'cheerio': 'window',
-        'react/addons': true,
-        'react/lib/ExecutionEnvironment': true,
-        'react/lib/ReactContext': true
-      },
-      plugins: [
-        new webpack.ProvidePlugin({
-          Promise: 'imports?this=>global!exports?global.Promise!es6-promise',
-          fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch',
-          $: 'jquery',
-          jQuery: 'jquery'
-        })
-      ],
-      sassLoader: {
-        includePaths: [
-          ...common.getStyleguideIncludePaths()
-        ]
-      },
-      resolveLoader: {
-        modulesDirectories: [ path.resolve(root, 'node_modules') ]
-      },
-      resolve: {
-        root: [
-          path.resolve('.'),
-          path.resolve('public/javascripts/signin'),
-          path.resolve('karma/signin')
-        ]
-      }
-    },
+    webpack: webpackConfig,
 
     webpackMiddleware: {
       noInfo: true

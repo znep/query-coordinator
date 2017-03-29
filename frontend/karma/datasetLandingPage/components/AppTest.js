@@ -10,7 +10,9 @@ import { FeatureFlags } from 'common/feature_flags';
 
 describe('App', function() {
   before(function() {
-    FeatureFlags.useTestFixture();
+    FeatureFlags.useTestFixture({
+      disableAuthorityBadge: false
+    });
   });
 
   function getProps(props) {

@@ -1,9 +1,10 @@
-var path = require('path');
-var webpack = require('webpack');
-var WebpackFailurePlugin = require('../helpers/WebpackFailurePlugin.js');
-
-var root = path.resolve(__dirname, '../..');
-var common = require(path.resolve(root, 'config/webpack/common'));
+var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+  'visualization-canvas.config.js',
+  [ 'karma/visualizationCanvas' ]
+);
+webpackConfig.externals = {
+  jquery: 'jQuery'
+};
 
 module.exports = function ( karma ) {
   karma.set({
@@ -24,46 +25,7 @@ module.exports = function ( karma ) {
 
     reporters: ['dots', 'mocha'],
 
-    webpack: {
-      cache: true,
-      devtool: 'inline-source-map',
-      externals: {
-        jquery: 'jQuery'
-      },
-      module: {
-        preLoaders: [
-          ...common.getStyleguidePreLoaders()
-        ],
-        loaders: [
-          {
-            test: /\.jsx?$/,
-            include: [
-              path.resolve(root, 'public/javascripts'),
-              path.resolve(root, 'node_modules/socrata-components/common'),
-              path.resolve(root, 'karma/visualizationCanvas')
-            ],
-            loader: 'babel'
-          }
-        ]
-      },
-      plugins: [
-        new WebpackFailurePlugin(),
-        new webpack.ProvidePlugin({
-          $: 'jquery',
-          jQuery: 'jquery'
-        })
-      ],
-      resolveLoader: {
-        modulesDirectories: [ path.resolve(root, 'node_modules') ]
-      },
-      resolve: {
-        root: [
-          path.resolve('.'),
-          path.resolve('public/javascripts/visualizationCanvas'),
-          path.resolve('karma/visualizationCanvas')
-        ]
-      }
-    },
+    webpack: webpackConfig,
 
     webpackMiddleware: {
       noInfo: true

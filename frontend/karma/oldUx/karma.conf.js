@@ -1,8 +1,7 @@
-var path = require('path');
-var fs = require('fs');
-var _ = require('lodash');
-
-var projectRoot = path.resolve(__dirname, '../..');
+var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+  'base',
+  [ 'public/javascripts/common', 'public/javascripts/src', 'karma/oldUx' ]
+);
 
 module.exports = function ( karma ) {
   karma.set({
@@ -133,21 +132,7 @@ module.exports = function ( karma ) {
     browserDisconnectTimeout: 1000 * 10,
     browserDisconnectTolerance: 5,
     captureTimeout: 1000 * 80,
-    webpack: {
-      module: {
-        loaders: [
-          {
-            test: /\.jsx?$/,
-            exclude: /node_modules/,
-            loader: 'babel'
-          }
-        ]
-      },
-      resolve: {
-        modulesDirectories: [ 'node_modules', projectRoot + '/public/javascripts/src' ]
-      }
-
-    },
+    webpack: webpackConfig,
     webpackMiddleware: {
       noInfo: true
     },

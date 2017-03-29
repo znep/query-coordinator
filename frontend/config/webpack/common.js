@@ -176,8 +176,15 @@ function getStandardResolve(extraRoots) {
     roots.push(path.resolve(root, extraRoot));
   });
 
-  return { root: roots };
+  return {
+    modulesDirectories: [ path.resolve(root, 'node_modules') ],
+    root: roots
+  };
 }
+
+function resolvePath(relativePath) {
+  return path.resolve(root, relativePath);
+};
 
 module.exports = {
   devServerPort: packageJson.config.webpackDevServerPort,
@@ -194,5 +201,6 @@ module.exports = {
   isProduction: isProduction,
   packageJson: packageJson,
   plugins: plugins,
+  resolvePath: resolvePath,
   root: root
 };

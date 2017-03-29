@@ -1,7 +1,7 @@
-var path = require('path');
-
-var root = path.resolve(__dirname, '../..');
-var webpack = require('webpack');
+var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+  'admin-goals.config.js',
+  [ 'karma/adminGoals' ]
+);
 
 module.exports = function ( karma ) {
   karma.set({
@@ -21,48 +21,7 @@ module.exports = function ( karma ) {
 
     reporters: ['dots', 'mocha'],
 
-    webpack: {
-      cache: true,
-      devtool: 'inline-source-map',
-      module: {
-        loaders: [
-          {
-            test: /\.jsx?$/,
-            exclude: /node_modules/,
-            loader: 'babel',
-            query: {
-              presets: ['react', 'es2015']
-            }
-          },
-          {
-            test: /\.scss|\.css$/,
-            loader: 'style!css!autoprefixer-loader!sass'
-          },
-          {
-            test: /\.svg/,
-            loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
-          },
-          {
-            test: /\.png$/,
-            loader: 'url-loader?limit=100000'
-          }
-        ]
-      },
-      resolve: {
-        alias: {},
-        root: [
-          path.resolve('.'),
-          path.resolve('public/javascripts/adminGoals'),
-          path.resolve('karma/adminGoals')
-        ]
-      },
-      plugins: [
-        new webpack.ProvidePlugin({
-          Promise: 'imports?this=>global!exports?global.Promise!es6-promise',
-          fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch'
-        })
-      ]
-    },
+    webpack: webpackConfig,
 
     webpackMiddleware: {
       noInfo: true

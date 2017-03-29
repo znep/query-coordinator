@@ -1,7 +1,7 @@
-var path = require('path');
-var webpack = require('webpack');
-
-var root = path.resolve(__dirname, '../..');
+var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+  'import-wizard.config.js',
+  [ 'karma/importWizard' ]
+);
 
 module.exports = function(karma) {
   karma.set({
@@ -21,45 +21,7 @@ module.exports = function(karma) {
 
     reporters: ['mocha', 'dots'],
 
-    webpack: {
-      cache: true,
-      devtool: 'inline-source-map',
-      module: {
-        loaders: [
-          {
-            test: /\.jsx?$/,
-            exclude: /(node_modules)/,
-            loader: 'babel',
-            query: { compact: false }
-          }
-        ]
-      },
-      resolve: {
-        alias: {
-          '_': 'lodash',
-          'jquery.awesomereorder': path.resolve(root, 'public/javascripts/plugins/jquery.awesomereorder.js')
-        },
-        root: [
-          path.resolve('.'),
-          path.resolve('public/javascripts/importWizard'),
-          path.resolve('karma/importWizard')
-        ]
-      },
-      externals: {
-        'datasetCategories': 'datasetCategories',
-        'importableTypes': 'importableTypes',
-        'issActivities': 'issActivities',
-        'enabledModules': 'enabledModules',
-        'customMetadataSchema': 'customMetadataSchema',
-        'licenses': 'licenses',
-        'blistLicenses': 'blistLicenses'
-      },
-      plugins: [
-        new webpack.ProvidePlugin({
-          Promise: 'imports?this=>global!exports?global.Promise!es6-promise'
-        })
-      ]
-    },
+    webpack: webpackConfig,
 
     webpackMiddleware: {
       noInfo: true

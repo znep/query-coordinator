@@ -1,4 +1,4 @@
-var FeatureFlags = require('common/feature_flags').FeatureFlags;
+import { FeatureFlags } from 'common/feature_flags';
 
 describe('FeatureFlags', function() {
 

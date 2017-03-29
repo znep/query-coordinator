@@ -1,11 +1,28 @@
-var fs = require('fs');
-var path = require('path');
-var WebpackFailurePlugin = require('../helpers/WebpackFailurePlugin.js');
+var _ = require('lodash');
+var common = require('../../config/webpack/common');
 
-var root = path.resolve(__dirname, '../..');
-var templateDir = path.resolve(root, 'public/angular_templates');
-var common = require(path.resolve(root, 'config/webpack/common'));
-var socrataComponentsPath = fs.realpathSync(path.resolve(root, 'node_modules/socrata-components'));
+var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+  'data-cards.config.js',
+  [ 'karma/dataCards', '.', 'public/javascripts' ]
+);
+
+// The style and template paths don't quite match up with what the runtime
+// webpack config expects (not 100% sure why).
+_.set(webpackConfig, 'sassLoader.includePaths', [ 'app/styles' ]);
+_.set(webpackConfig, 'resolve.alias.angular_templates', common.resolvePath('public/angular_templates'));
+
+// Allows us to load json fixture files.
+webpackConfig.module.loaders.push( {
+  test: /\.json$/,
+  loader: 'json-loader'
+});
+
+webpackConfig.module.loaders.push( {
+  test: /angular\-mocks/,
+  loader: 'imports-loader',
+  query: { angular: 'angular' }
+});
+
 
 module.exports = function ( karma ) {
   karma.set({
@@ -43,65 +60,7 @@ module.exports = function ( karma ) {
 
     reporters: ['dots', 'mocha'],
 
-    webpack: {
-      cache: true,
-      devtool: 'inline-source-map',
-      externals: {
-        jquery: 'jQuery'
-      },
-      module: {
-        preLoaders: [
-          ...common.getStyleguidePreLoaders()
-        ],
-        loaders: [
-          {
-            test: /\.jsx?$/,
-            exclude: /node_modules/,
-            loader: 'babel'
-          },
-          {
-            test: /\.html$/,
-            loaders: [
-              'ngtemplate?requireAngular&module=dataCards&relativeTo=' + templateDir,
-              'html'
-            ]
-          },
-          {
-            test: /\.scss|\.css$/,
-            loader: 'style!css!autoprefixer-loader!sass'
-          },
-          {
-            test: /\.png$/,
-            loader: 'url-loader?limit=100000'
-          },
-          {
-            test: /\.json$/,
-            loader: 'json-loader'
-          },
-          {
-            test: /angular\-mocks/,
-            loader: 'imports-loader',
-            query: { angular: 'angular' }
-          }
-        ]
-      },
-      plugins: [ new WebpackFailurePlugin() ],
-      resolveLoader: {
-        modulesDirectories: [ path.resolve(root, 'node_modules') ]
-      },
-      resolve: {
-        alias: {
-          angular_templates: templateDir,
-          'lodash': path.resolve(root, 'node_modules/lodash'),
-          'leaflet': path.resolve(root, 'node_modules/leaflet')
-        },
-        root: [ path.resolve('.') ],
-        modulesDirectories: [ 'node_modules' ]
-      },
-      sassLoader: {
-        includePaths: ['app/styles']
-      }
-    },
+    webpack: webpackConfig,
 
     webpackMiddleware: {
       noInfo: true

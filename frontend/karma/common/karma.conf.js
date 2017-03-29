@@ -1,10 +1,7 @@
-var _ = require('lodash');
-var path = require('path');
-var WebpackFailurePlugin = require('../helpers/WebpackFailurePlugin.js');
-
-var root = path.resolve(__dirname, '../..');
-var webpackBase = require('../../config/webpack/base');
-var webpackCommon = require('../../config/webpack/common');
+var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+  'base',
+  [ 'public/javascripts/common', 'karma/common' ]
+);
 
 module.exports = function ( karma ) {
   karma.set({
@@ -22,12 +19,7 @@ module.exports = function ( karma ) {
 
     reporters: ['dots', 'mocha'],
 
-    webpack: _.defaultsDeep({
-      cache: true,
-      devtool: 'inline-source-map',
-      plugins: [ new WebpackFailurePlugin() ],
-      resolve: webpackCommon.getStandardResolve([ 'karma/common', 'public/javascripts/common' ])
-    }, webpackBase),
+    webpack: webpackConfig,
 
     webpackMiddleware: {
       noInfo: true

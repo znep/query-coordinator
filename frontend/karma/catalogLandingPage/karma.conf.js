@@ -1,12 +1,13 @@
-var _ = require('lodash');
-var path = require('path');
-var WebpackFailurePlugin = require('../helpers/WebpackFailurePlugin.js');
+var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+  'catalog-landing-page.config.js',
+  [ 'karma/catalogLandingPage' ]
+);
 
-var root = path.resolve(__dirname, '../..');
-
-var webpackCommon = require('../../config/webpack/common');
-var webpackBase = require('../../config/webpack/base'); // TODO: Use catalog-landing-page.config.js
-var webpackConfig = require('../../config/webpack/catalog-landing-page.config.js'); // TODO: Use catalog-landing-page.config.js
+// In Rails, some modules are handled specially. We don't want that for tests.
+delete webpackConfig.resolve.alias;
+webpackConfig.externals = {
+  jquery: 'jQuery'
+};
 
 module.exports = function ( karma ) {
   karma.set({
@@ -26,18 +27,7 @@ module.exports = function ( karma ) {
 
     reporters: ['dots', 'mocha'],
 
-    webpack: _.defaultsDeep({
-      cache: true,
-      devtool: 'inline-source-map',
-      plugins: [ new WebpackFailurePlugin() ],
-      externals: {
-        jquery: 'jQuery'
-      },
-      resolve: webpackCommon.getStandardResolve([
-        'karma/catalogLandingPage',
-        'public/javascripts/catalogLandingPage'
-      ])
-    }, webpackBase),
+    webpack: webpackConfig,
 
     webpackMiddleware: {
       noInfo: true

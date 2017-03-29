@@ -1,7 +1,18 @@
-var path = require('path');
-var WebpackFailurePlugin = require('../helpers/WebpackFailurePlugin.js');
+var _ = require('lodash');
+var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
+  'dataset-management-ui.config.js',
+  [ 'karma/datasetManagementUI', '.' ]
+);
 
-var root = path.resolve(__dirname, '../..');
+webpackConfig.externals = {
+  jquery: 'jQuery'
+};
+
+// To make tests easier to write, we disable auto scss class prefixes.
+var styleLoader = _(webpackConfig.module.loaders).find((loader) =>
+  loader.loader.indexOf('localIdentName') >= 0
+);
+styleLoader.loader = 'style?sourceMap!css?modules&localIdentName=[local]&importLoaders=1!postcss!sass';
 
 module.exports = function ( karma ) {
   karma.set({
@@ -21,50 +32,7 @@ module.exports = function ( karma ) {
 
     reporters: ['dots', 'mocha'],
 
-    webpack: {
-      cache: true,
-      devtool: 'inline-source-map',
-      module: {
-        loaders: [
-          {
-            test: /\.jsx?$/,
-            include: [
-              path.resolve(root, 'public/javascripts'),
-              path.resolve(root, 'node_modules/socrata-components/common'),
-              path.resolve(root, 'karma/datasetManagementUI')
-            ],
-            loader: 'babel'
-          },
-          {
-            test: /\.global.scss$/,
-            include: [
-              path.resolve(root, 'public/javascripts/datasetManagementUI')
-            ],
-            loader: 'style?sourceMap!css!postcss!sass'
-          },
-          {
-            test: /^((?!\.global).)*(scss|css)$/,
-            include: [
-              path.resolve(root, 'public/javascripts/datasetManagementUI')
-            ],
-            loader: 'style?sourceMap!css?modules&localIdentName=[local]&importLoaders=1!postcss!sass'
-          }
-        ]
-      },
-      plugins: [ new WebpackFailurePlugin() ],
-      postcss: function() {
-        return [
-          require('autoprefixer')
-        ];
-      },
-      resolve: {
-        root: [
-          path.resolve('.'),
-          path.resolve('public/javascripts/datasetManagementUI'),
-          path.resolve('karma/datasetManagementUI')
-        ]
-      }
-    },
+    webpack: webpackConfig,
 
     webpackMiddleware: {
       noInfo: true

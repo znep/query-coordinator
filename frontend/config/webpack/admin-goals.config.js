@@ -33,7 +33,7 @@ module.exports = _.defaultsDeep({
         'styleguide': 'socrata-components/dist/js/styleguide.js'
       }
     },
-    common.getStandardResolve()
+    common.getStandardResolve([ 'public/javascripts/adminGoals' ])
   ),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

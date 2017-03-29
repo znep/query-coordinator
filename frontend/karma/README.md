@@ -1,26 +1,26 @@
-= Frontend Karma Tests
+# Frontend Karma Tests
 
 JavaScript tests for the frontend project.
 
-== Organization
+## Organization
 
   Each test suite is represented as a folder within `frontend/karma/`).
 
-== Configuration
+## Configuration
 
   Test suites pull configuration from the following sources:
 
-  === Webpack configuration
+### Webpack configuration
 
   * Project's webpack configuration in `frontend/config/webpack'
   * Karma-specific overrides in `frontend/karma/helpers/webpack.js`
 
-  === Karma configuration
+### Karma configuration
 
   * Global karma configuration in `frontend/karma/helpers/karma_config.js`
   * Project-specific overrides in `frontend/karma/PROJ_DIR/karma.conf.js`
 
-== Adding a new test suite
+## Adding a new test suite
 
   Assumptions: Your project is building correctly via webpack.
 

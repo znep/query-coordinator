@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import cssModules from 'react-css-modules';
+import 'babel-polyfill-safe';
 import { getNotifications, updateNotificationLastSeen } from './Util';
 import Bell from './Bell';
 import NotificationList from './NotificationList';

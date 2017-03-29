@@ -93,6 +93,7 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
+    "babel-polyfill-safe": "1.0.1",
     "browser-cookies": "^1.1.0",
     "element-closest": "^2.0.2",
     "react": "^15.4.2",

@@ -42,16 +42,17 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
 class ShowOutputSchema extends Component {
 
   componentDidMount() {
-    this.dispatchDataLoad();
+    this.dispatchDataLoad(this.props);
   }
 
-  componentWillReceiveProps() {
-    this.dispatchDataLoad();
+  componentWillReceiveProps(nextProps) {
+    console.log('willreceiveprops');
+    this.dispatchDataLoad(nextProps);
   }
 
-  dispatchDataLoad() {
-    this.props.dispatch(
-      LoadDataActions.loadVisibleData(this.props.outputSchema.id, this.props.displayState)
+  dispatchDataLoad(props) {
+    props.dispatch(
+      LoadDataActions.loadVisibleData(props.outputSchema.id, props.displayState)
     );
   }
 

@@ -1,114 +1,47 @@
-import {
-  statusSaved,
-  statusDirty,
-  statusDirtyImmutable,
-  statusUpdating,
-  statusUpdatingImmutable
-} from 'lib/database/statuses';
+import React from 'react';
+import { shallow, mount } from 'enzyme';
 import SaveButton from 'components/ManageMetadata/SaveButton';
 
 describe('components/ManageMetadata/SaveButton', () => {
-
-  const defaultProps = {
-    onSave: _.noop,
-    view: {
-      __status__: statusSaved
-    },
-    outputSchema: {
-      __status__: statusSaved
-    },
-    outputColumns: [
-      {
-        __status__: statusSaved
-      }
-    ]
+  const props = {
+    onSaveClick: sinon.spy(),
+    isDirty: {
+      form: false
+    }
   };
 
-  it('is disabled when nothing is dirty', () => {
-    const element = renderPureComponent(SaveButton(defaultProps));
-    expect(element.disabled).to.be.true;
+  const dirtyProps = {
+    ...props,
+    isDirty: {
+      form: true
+    }
+  };
+
+  it('is disabled when form is clean', () => {
+    const component = shallow(<SaveButton {...props} />);
+
+    expect(component.props().disabled).to.eq(true);
   });
 
-  it('is enabled when the view is dirty', () => {
-    const element = renderPureComponent(SaveButton({
-      ...defaultProps,
-      view: {
-        ...defaultProps.view,
-        __status__: statusDirty({})
-      }
-    }));
-    expect(element.disabled).to.be.false;
+  it('is enabled when form is dirty', () => {
+    const component = shallow(<SaveButton {...dirtyProps} />);
+
+    expect(component.props().disabled).to.eq(false);
   });
 
-  it('is enabled when a column is dirty', () => {
-    const element = renderPureComponent(SaveButton({
-      ...defaultProps,
-      outputColumns: [
-        {
-          ...defaultProps.outputColumns[0],
-          __status__: statusDirtyImmutable({})
-        }
-      ]
-    }));
-    expect(element.disabled).to.be.false;
+  it('calls its onSaveClick callback when clicked and dirty', () => {
+    const component = mount(<SaveButton {...dirtyProps} />);
+
+    component.simulate('click');
+
+    expect(component.props().onSaveClick.calledOnce).to.eq(true);
   });
 
-  it('is enabled when view and column are dirty', () => {
-    const element = renderPureComponent(SaveButton({
-      ...defaultProps,
-      view: {
-        ...defaultProps.view,
-        __status__: statusDirty({})
-      },
-      outputColumns: [
-        {
-          ...defaultProps.outputColumns[0],
-          __status__: statusDirtyImmutable({})
-        }
-      ]
-    }));
-    expect(element.disabled).to.be.false;
-  });
+  it('doesn\'t call it\'s onSaveClick callback when clicked and clean', () => {
+    const component = mount(<SaveButton {...props} />);
 
-  it('renders a spinner when view is updating', () => {
-    const element = renderPureComponent(SaveButton({
-      ...defaultProps,
-      view: {
-        ...defaultProps.view,
-        __status__: statusUpdating({})
-      }
-    }));
-    expect(element.querySelector('.spinner-default')).to.not.be.null;
-  });
+    component.simulate('click');
 
-  it('renders a spinner when columns are updating', () => {
-    const element = renderPureComponent(SaveButton({
-      ...defaultProps,
-      outputColumns: [
-        {
-          ...defaultProps.outputColumns[0],
-          __status__: statusUpdatingImmutable()
-        }
-      ]
-    }));
-    expect(element.querySelector('.spinner-default')).to.not.be.null;
+    expect(component.props().onSaveClick.calledOnce).to.eq(true);
   });
-
-  it('renders a spinner when view and columns are updating', () => {
-    const element = renderPureComponent(SaveButton({
-      ...defaultProps,
-      view: {
-        ...defaultProps.view,
-        __status__: statusUpdating({})
-      },
-      outputColumns: [
-        {
-          ...defaultProps.outputColumns[0],
-          __status__: statusUpdatingImmutable()
-        }
-      ]
-    }));
-    expect(element.querySelector('.spinner-default')).to.not.be.null;
-  });
-
 });

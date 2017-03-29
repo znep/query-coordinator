@@ -48,6 +48,10 @@ module.exports = function ( karma ) {
               path.resolve(root, 'public/javascripts/datasetManagementUI')
             ],
             loader: 'style?sourceMap!css?modules&localIdentName=[local]&importLoaders=1!postcss!sass'
+          },
+          {
+            test: /\.json$/,
+            loader: 'json'
           }
         ]
       },
@@ -57,7 +61,13 @@ module.exports = function ( karma ) {
           require('autoprefixer')
         ];
       },
+      externals: {
+        'react/addons': true,
+        'react/lib/ExecutionEnvironment': true,
+        'react/lib/ReactContext': 'window'
+      },
       resolve: {
+        extensions: ['', '.js', '.scss', '.json'],
         root: [
           path.resolve('.'),
           path.resolve('public/javascripts/datasetManagementUI'),

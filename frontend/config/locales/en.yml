@@ -2010,7 +2010,7 @@ en:
     - Fri
     - Sat
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mar
@@ -2038,7 +2038,7 @@ en:
       short: '%d %b %Y'
       short_with_time: '%Y/%m/%d %I:%M%p'
     month_names:
-    - 
+    -
     - January
     - February
     - March
@@ -5248,6 +5248,7 @@ en:
       unable_to_find_dataset_page: We were unable to find a Data Lens page for this dataset.
     edit_metadata:
       about: About
+      add_btn: Add +
       add_link: Add link
       add_source: Add source
       additional_source: Additional Source
@@ -5342,6 +5343,12 @@ en:
       upload_image: Upload Image
       upload_new_attachment: Upload New Attachment
       url: URL
+      validation_error_email: Please enter a valid email address
+      validation_error_maxlength: '{0} must not have more than {1} characters'
+      validation_error_minlength: '{0} must have at least {1} characters'
+      validation_error_required: '{0} is required'
+      validation_error_type: '{0} must be of type {1}, but got {2}'
+      validation_error_url: Please enter a valid url
     forgot_password:
       already_authenticated: 'Unable to reset password: you are already logged in.'
       failed: There was a problem submitting your password reset request. Please try again.

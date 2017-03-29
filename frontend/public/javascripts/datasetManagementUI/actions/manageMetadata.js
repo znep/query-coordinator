@@ -15,7 +15,6 @@ import {
   insertFailed
 } from './database';
 import {
-  STATUS_SAVED,
   STATUS_DIRTY_IMMUTABLE
 } from '../lib/database/statuses';
 import { insertChildrenAndSubscribeToOutputSchema } from './manageUploads';
@@ -23,52 +22,53 @@ import { idForColumnNameField } from '../components/ManageMetadata/ColumnMetadat
 import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
 
-export function saveMetadata() {
-  return (dispatch, getState) => {
-    const db = getState().db;
-    saveDatasetMetadata(dispatch, db);
-    saveColumnMetadata(dispatch, db);
-  };
-}
+export const saveDatasetMetadata = () => (dispatch, getState) => {
+  const { db, fourfour } = getState();
 
-function saveDatasetMetadata(dispatch, db) {
-  const viewStatus = _.values(db.views)[0].__status__.type;
+  const model = _.get(db, `views.${fourfour}.model`);
 
-  if (viewStatus !== STATUS_SAVED) {
-    const nonprivateMetadata = _.pick(
-      _.values(db.views)[0],
-      [
-        'id',
-        'name',
-        'description',
-        'category',
-        'licenseId',
-        'attribution',
-        'attributionLink',
-        'tags'
-      ]
-    );
+  const publicMetadata = _.pick(
+    model,
+    [
+      'id',
+      'name',
+      'description',
+      'category',
+      'licenseId',
+      'attribution',
+      'attributionLink',
+      'tags'
+    ]
+  );
 
-    // TODO: don't like this, can improve when we revise form dataflow hopefully
-    const privateMetadata = _.pick(_.values(db.views)[0], ['email']);
+  const privateMetadata = _.pick(model, ['email']);
 
-    const datasetMetadata = _.assign({}, nonprivateMetadata, { privateMetadata });
+  const datasetMetadata = _.assign({}, publicMetadata, { privateMetadata });
 
-    dispatch(updateStarted('views', datasetMetadata));
-    socrataFetch(`/api/views/${window.initialState.view.id}`, {
-      method: 'PUT',
-      body: JSON.stringify(datasetMetadata)
-    }).
-    then(checkStatus).
-    then(() => {
-      dispatch(updateSucceeded('views', datasetMetadata));
-      dispatch(redirectAfterInterval());
-    }).
-    catch((error) => {
-      dispatch(updateFailed('views', datasetMetadata, error));
-    });
-  }
-}
+  dispatch(updateStarted('views', datasetMetadata));
+
+  // TODO: switch this to read from redux store
+  socrataFetch(`/api/views/${window.initialState.view.id}`, {
+    method: 'PUT',
+    body: JSON.stringify(datasetMetadata)
+  }).
+  then(checkStatus).
+  then(() => {
+    dispatch(updateSucceeded('views', datasetMetadata));
+    dispatch(redirectAfterInterval());
+  }).
+  catch(error => {
+    dispatch(updateFailed('views', datasetMetadata, error));
+  });
+};
+
+export const saveMetadata = () => (dispatch, getState) => {
+  dispatch(saveDatasetMetadata());
+
+  // TODO: convert this to a thunk
+  const { db } = getState();
+  saveColumnMetadata(dispatch, db);
+};
 
 function saveColumnMetadata(dispatch, db) {
   const currentOutputSchema = Selectors.latestOutputSchema(db);

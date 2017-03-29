@@ -7,6 +7,7 @@ class CatalogLandingPageController < ApplicationController
   include Socrata::CookieHelper
 
   before_action :require_administrator, :except => [:show]
+  before_action :require_clp_feature_flag, :check_lockdown
   skip_before_action :require_user, :only => [:show]
 
   before_filter :fetch_catalog_landing_page, :only => [:show, :manage]
@@ -87,7 +88,11 @@ class CatalogLandingPageController < ApplicationController
     unless can_manage_catalog_landing_page?
       flash.now[:error] = 'You do not have permission to view this page'
       render 'shared/error', :status => :forbidden
-end
+    end
+  end
+
+  def require_clp_feature_flag
+    return render_404 unless FeatureFlags.derive(nil, request).enable_catalog_landing_page
   end
 
   def fetch_catalog_landing_page

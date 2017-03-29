@@ -95,6 +95,7 @@ class TransformStatus extends Component {
       return (
         <th
           key={transform.id}
+          data-cheetah-hook="col-errors"
           className={classNames(styles.colErrors, { [styles.colErrorsSelected]: inErrorMode })}>
           {progressBar}
           <div className={styles.statusText}>
@@ -107,7 +108,7 @@ class TransformStatus extends Component {
     } else {
       if (thisColumnDone) {
         return (
-          <th key={transform.id} className={styles.colErrors}>
+          <th key={transform.id} data-cheetah-hook="col-errors" className={styles.colErrors}>
             {progressBar}
             <div className={styles.statusText}>
               <SocrataIcon name="checkmark3" className={styles.successIcon} />
@@ -117,7 +118,7 @@ class TransformStatus extends Component {
         );
       } else {
         return (
-          <th key={transform.id} className={styles.colErrors}>
+          <th key={transform.id} data-cheetah-hook="col-errors" className={styles.colErrors}>
             {progressBar}
             <div className={styles.statusText}>
               <span className={styles.spinner}></span>

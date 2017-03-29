@@ -9,11 +9,18 @@ describe CatalogLandingPageController do
     init_current_domain
     init_signaller
     rspec_stub_feature_flags_with(cetera_search: true)
+    rspec_stub_feature_flags_with(enable_catalog_landing_page: true)
     allow(subject).to receive(:get_site_title).and_return('site title')
   end
 
   # Note, these specs do NOT exercise the CatalogLandingPageConstraint.
   describe 'GET #show' do
+    it '404s when enable_catalog_landing_page is false' do
+      rspec_stub_feature_flags_with(enable_catalog_landing_page: false)
+      get :show, :category => 'Government'
+      expect(response).to have_http_status(404)
+    end
+
     it 'should render show with the catalog_landing_page layout' do
       VCR.use_cassette('catalog_landing_page_controller_show') do
         get :show, :category => 'Government'
@@ -55,6 +62,12 @@ describe CatalogLandingPageController do
       before(:each) do
         init_current_user(controller)
         stub_administrator_user
+      end
+
+      it '404s when enable_catalog_landing_page is false' do
+        rspec_stub_feature_flags_with(enable_catalog_landing_page: false)
+        get :manage, :category => 'Government'
+        expect(response).to have_http_status(404)
       end
 
       it 'should render show with the catalog_landing_page layout' do
@@ -126,6 +139,12 @@ describe CatalogLandingPageController do
       before(:each) do
         init_current_user(controller)
         stub_administrator_user
+      end
+
+      it '404s when enable_catalog_landing_page is false' do
+        rspec_stub_feature_flags_with(enable_catalog_landing_page: false)
+        post :manage_write, post_body
+        expect(response).to have_http_status(404)
       end
 
       it 'should save the updated information' do

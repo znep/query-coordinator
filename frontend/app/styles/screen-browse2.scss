@@ -15,6 +15,8 @@ $loading-spinner-size: 28px;
 $loading-spinner-color-1: $white;
 $loading-spinner-color-2: $light-grey-2;
 
+$facet-pane-width: 14.5rem;
+
 $wide-desktop-width: 1450px;
 
 @mixin wide-desktop {
@@ -416,7 +418,7 @@ html {
 
   .browse2-manage-catalog-landing-page {
     @include desktop {
-      margin-left: 15em;
+      margin-left: $facet-pane-width;
     }
 
     margin-bottom: 1em;
@@ -910,7 +912,7 @@ html {
 
   .browse2-results-pane {
     @include desktop {
-      margin-left: 23em;
+      margin-left: $facet-pane-width;
       display: block !important;
     }
     position: relative;

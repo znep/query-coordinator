@@ -18,7 +18,7 @@ export class Search extends Component {
     return (
       <div className="catalog-landing-page-search">
         <Searchbox
-          autoFocus={true}
+          autoFocus
           defaultQuery={term}
           onChange={updateSearchTerm}
           onClear={clearSearch}
@@ -44,7 +44,7 @@ function mapDispatchToProps(dispatch) {
         name: 'Catalog landing page clear search',
         term: term
       }));
-      dispatch(search.clearSearch(term));
+      dispatch(search.clearSearch());
     },
     performSearch: function(term) {
       dispatch(emitMixpanelEvent({
@@ -52,7 +52,7 @@ function mapDispatchToProps(dispatch) {
         term: term
       }));
 
-      dispatch(search.performSearch(term));
+      dispatch(search.performSearch());
     },
     updateSearchTerm: function(term) {
       dispatch(search.updateSearchTerm(term));

@@ -1,56 +1,68 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import Tag from 'components/MetadataFields/Tag';
+import classNames from 'classnames';
 import styles from 'styles/MetadataFields/TagsInput.scss';
 
 class TagsInput extends Component {
   constructor() {
     super();
 
-    this.state = {
-      tagName: ''
-    };
-
-    _.bindAll(this, ['handleChange', 'resetState', 'handleKeyPress', 'addTag', 'removeTag']);
-  }
-
-  resetState() {
-    this.setState({
-      tagName: ''
-    });
+    _.bindAll(this, ['handleChange', 'handleKeyPress', 'addTag', 'removeTag']);
   }
 
   handleChange(e) {
     e.preventDefault();
 
-    this.setState({
-      tagName: e.target.value
-    });
+    const { name, value } = e.target;
+
+    const { setProperty, setDirtyProperty } = this.props;
+
+    setProperty(name, value);
+
+    setDirtyProperty(name);
   }
 
   addTag(e) {
     e.preventDefault();
-    const { tags: currentTags } = this.props;
 
-    // if textbox is empty or contains value that is already in list of tags
-    // TODO: this currently fails silently, which is bad. Need to overhaul validations
-    if (!this.state.tagName || currentTags.find(tag => tag === this.state.tagName)) {
-      return false;
+    const {
+      removeDirtyProperty,
+      setDirtyProperty,
+      setModel,
+      model,
+      subName,
+      schema,
+      name
+    } = this.props;
+
+    // defaults to true if value does not exist, since that happens if no validation
+    // exists for this field in the schema
+    const isValid = _.get(schema, `fields.${name}.isValid`, true);
+
+    if (!model[name] || !isValid) {
+      return;
     }
 
-    this.props.onChange(this.props.tags.concat([this.state.tagName]));
-
-    this.resetState();
+    removeDirtyProperty(name);
+    setDirtyProperty(subName);
+    setModel({
+      ...model,
+      [subName]: model[subName].concat(model.tag),
+      [name]: ''
+    });
   }
 
   removeTag(tagName) {
-    const { tags } = this.props;
+    const { model, setModel, subName } = this.props;
 
-    const newTags = tags.filter(tag => tag !== tagName);
+    const newTags = model.tags.filter(tag => tag !== tagName);
 
-    this.props.onChange(newTags);
-
-    this.resetState();
+    setModel({
+      ...model,
+      [subName]: newTags,
+      [name]: ''
+    });
   }
 
   handleKeyPress(e) {
@@ -62,22 +74,32 @@ class TagsInput extends Component {
   }
 
   render() {
-    const tags = this.props.tags || [];
-    const { placeholder } = this.props;
+    const { placeholder, model, name, inErrorState, showErrors } = this.props;
 
-    const listItems = tags.map((tag, idx) =>
-      <Tag key={idx} tagName={tag} onTagClick={() => this.removeTag(tag)} />);
+    const classes = classNames(styles.textInput, { [styles.validationError]: inErrorState });
+
+    const buttonClasses = classNames(styles.button, { [styles.validationError]: inErrorState });
+
+    const listItems = model.tags
+      ? model.tags.map((tag, idx) =>
+        <Tag key={idx} tagName={tag} onTagClick={() => this.removeTag(tag)} />)
+      : null;
 
     return (
       <div>
         <div className={styles.container}>
           <input
-            onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
-            value={this.state.tagName}
             placeholder={placeholder}
-            type="text" />
-          <button onClick={this.addTag} className={styles.button}>Add +</button>
+            type="text"
+            value={model[name] || ''}
+            name={name}
+            onBlur={showErrors}
+            className={classes}
+            onChange={this.handleChange} />
+          <button onClick={this.addTag} className={buttonClasses}>
+            {I18n.edit_metadata.add_btn}
+          </button>
         </div>
         <ul className={styles.tagList}>
           {listItems}
@@ -88,9 +110,20 @@ class TagsInput extends Component {
 }
 
 TagsInput.propTypes = {
-  onChange: PropTypes.func.isRequired,
+  setProperty: PropTypes.func.isRequired,
+  setModel: PropTypes.func.isRequired,
+  setDirtyProperty: PropTypes.func.isRequired,
+  removeDirtyProperty: PropTypes.func.isRequired,
+  model: PropTypes.object.isRequired,
+  schema: PropTypes.shape({
+    fields: PropTypes.object,
+    isValid: PropTypes.bool
+  }),
   placeholder: PropTypes.string,
-  tags: PropTypes.arrayOf(PropTypes.string)
+  name: PropTypes.string.isRequired,
+  subName: PropTypes.string.isRequired,
+  showErrors: PropTypes.func,
+  inErrorState: PropTypes.bool
 };
 
 export default TagsInput;

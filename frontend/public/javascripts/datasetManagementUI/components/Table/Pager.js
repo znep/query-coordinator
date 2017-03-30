@@ -25,6 +25,7 @@ function numItemsToPaginate(db, outputSchemaId, displayState) {
 }
 
 function Pager({ path, displayState, numPages }) {
+  // TODO: generate these based on display state
   const prevPageUrl = Links.showOutputSchema(
     path.uploadId,
     path.inputSchemaId,

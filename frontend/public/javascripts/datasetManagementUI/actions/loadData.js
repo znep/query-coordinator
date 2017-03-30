@@ -5,7 +5,8 @@ import {
   insertMultipleFromServer,
   loadStarted,
   loadSucceeded,
-  loadFailed
+  loadFailed,
+  updateFromServer
 } from '../actions/database';
 import * as DisplayState from '../lib/displayState';
 import * as Selectors from '../selectors';
@@ -13,18 +14,29 @@ import * as dsmapiLinks from '../dsmapiLinks';
 
 export const PAGE_SIZE = 50;
 
+// TODO: refactor: the URL is the load plan, duh
 function getLoadPlan(db, outputSchemaId, displayState) {
-  // TODO: don't load anything if we've already loaded it or started to load it!!
   switch (displayState.type) {
-    case DisplayState.COLUMN_ERRORS:
-      return {
-        type: 'COLUMN_ERRORS',
-        outputSchemaId,
-        pageNo: displayState.pageNo
-      };
-
+    case DisplayState.COLUMN_ERRORS: {
+      const { upload, inputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
+      const columnId = _.find(db.output_columns, { transform_id: displayState.transformId }).id;
+      const url = dsmapiLinks.columnErrors(
+        upload.id, inputSchema.id, outputSchemaId, columnId, PAGE_SIZE, displayState.pageNo * PAGE_SIZE
+      );
+      const load = _.find(db.__loads__, { url });
+      if (!load) {
+        return {
+          type: 'COLUMN_ERRORS',
+          transformId: displayState.transformId,
+          outputSchemaId,
+          pageNo: displayState.pageNo
+        };
+      } else {
+        return null;
+      }
+    }
     case DisplayState.ROW_ERRORS: {
-      // kind of seems easier to only forumlate the url once...
+      // kind of seems easier to only formulate the url once...
       // do a "here's the url, fetch it if we haven't already fetched it" kind of thing
       const { upload, inputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
       const url = dsmapiLinks.rowErrors(
@@ -41,7 +53,6 @@ function getLoadPlan(db, outputSchemaId, displayState) {
         return null;
       }
     }
-
     case DisplayState.NORMAL: {
       const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
       const minRowsProcessed = Selectors.rowsTransformed(columns);
@@ -86,6 +97,7 @@ function executeLoadPlan(loadPlan) {
         dispatch(loadRowErrors(loadPlan.inputSchemaId, loadPlan.pageNo));
         break;
       case 'COLUMN_ERRORS':
+        dispatch(loadColumnErrors(loadPlan.transformId, loadPlan.outputSchemaId, loadPlan.pageNo));
         break;
       default:
         console.error('unknown load plan type', loadPlan.type);
@@ -147,71 +159,66 @@ function loadNormalPreview(outputSchemaId, pageNo) {
   };
 }
 
-// export function loadColumnErrors(nextState) {
-//   const {
-//     uploadId,
-//     inputSchemaId,
-//     outputSchemaId,
-//     errorsTransformId: errorsTransformIdStr
-//   } = nextState.params;
-//   const errorsTransformId = _.toNumber(errorsTransformIdStr);
-//   return (dispatch, getState) => {
-//     const limit = 50;
-//     const fetchOffset = 0;
-//     const errorsColumnId = _.find(getState().db.output_columns, { transform_id: errorsTransformId }).id;
-//     const path = dsmapiLinks.columnErrors(
-//       uploadId, inputSchemaId, outputSchemaId, errorsColumnId, limit, fetchOffset
-//     );
-//     socrataFetch(path).
-//     then(checkStatus).
-//     then(getJson).
-//     then((resp) => {
-//       const outputSchema = resp[0];
-//       const withoutSchemaRow = resp.slice(1);
-//       const newRecordsByTransform = [];
-//       _.range(outputSchema.output_columns.length).forEach(() => {
-//         newRecordsByTransform.push({});
-//       });
-//       withoutSchemaRow.forEach(({ row, offset }) => {
-//         if (_.isArray(row)) { // as opposed to row errors, which are not
-//           row.forEach((colResult, colIdx) => {
-//             newRecordsByTransform[colIdx][offset] = colResult;
-//           });
-//         }
-//       });
-//       dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
-//         const theTransformId = outputSchema.output_columns[idx].transform.id;
-//         return insertMultipleFromServer(`transform_${theTransformId}`, newRecords, {
-//           ifNotExists: true
-//         });
-//       })));
-//       dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
-//         const errorIndices = _.map(newRecords,
-//           (newRecord, index) => ({
-//             ...newRecord,
-//             index
-//           })).
-//         filter((newRecord) => newRecord.error).
-//         map((newRecord) => newRecord.index);
-//         // TODO: how to make this a set which gets merged when we update?
-//         // maybe update should just take a primary key and a function
-//         // that would be SQL-like
-//         // not supposed to have functions in actions though
-//         // boo
-//         const transform = outputSchema.output_columns[idx].transform;
-//         return updateFromServer('transforms', {
-//           id: transform.id,
-//           error_indices: errorIndices
-//         });
-//       })));
-//     }).
-//     catch((error) => {
-//       // TODO: maybe add a notification
-//       console.error('failed to load column errors', error);
-//     });
-//   };
-// }
-
+export function loadColumnErrors(transformId, outputSchemaId, pageNo) {
+  return (dispatch, getState) => {
+    const db = getState().db;
+    const { upload, inputSchema, outputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
+    const errorsColumnId = _.find(getState().db.output_columns, { transform_id: transformId }).id;
+    const url = dsmapiLinks.columnErrors(
+      upload.id, inputSchema.id, outputSchema.id, errorsColumnId, PAGE_SIZE, pageNo * PAGE_SIZE
+    );
+    dispatch(loadStarted(url));
+    socrataFetch(url).
+      then(checkStatus).
+      then(getJson).
+      then((resp) => {
+        dispatch(loadSucceeded(url));
+        const outputSchemaResp = resp[0];
+        const withoutSchemaRow = resp.slice(1);
+        const newRecordsByTransform = [];
+        _.range(outputSchemaResp.output_columns.length).forEach(() => {
+          newRecordsByTransform.push({});
+        });
+        withoutSchemaRow.forEach(({ row, offset }) => {
+          if (_.isArray(row)) { // as opposed to row errors, which are not
+            row.forEach((colResult, colIdx) => {
+              newRecordsByTransform[colIdx][offset] = colResult;
+            });
+          }
+        });
+        dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
+          const theTransformId = outputSchemaResp.output_columns[idx].transform.id;
+          return insertMultipleFromServer(`transform_${theTransformId}`, newRecords, {
+            ifNotExists: true
+          });
+        })));
+        dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
+          const errorIndices = _.map(newRecords,
+            (newRecord, index) => ({
+              ...newRecord,
+              index
+            })).
+          filter((newRecord) => newRecord.error).
+          map((newRecord) => newRecord.index);
+          // TODO: how to make this a set which gets merged when we update?
+          // maybe update should just take a primary key and a function
+          // that would be SQL-like
+          // not supposed to have functions in actions though
+          // boo
+          const transform = outputSchemaResp.output_columns[idx].transform;
+          return updateFromServer('transforms', {
+            id: transform.id,
+            error_indices: errorIndices
+          });
+        })));
+      }).
+      catch((error) => {
+        dispatch(loadFailed(url, error));
+        // TODO: maybe add a notification
+        console.error('failed to load column errors', error);
+      });
+  };
+}
 
 export function loadRowErrors(inputSchemaId, pageNo) {
   return (dispatch, getState) => {

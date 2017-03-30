@@ -1,16 +1,13 @@
-var webpackCommon = require('../../config/webpack/common');
-
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'base',
-  [ 'public/javascripts/common', 'karma/common' ]
+  'example.config.js', // UPDATE
+  [ 'karma/exampleTestSuite' ] // UPDATE
 );
-webpackConfig.module.loaders = [ webpackCommon.getBabelLoader() ];
 
 module.exports = function (karma) {
   karma.set(karmaConfig({
     files: [
-      'karma/common/index.js'
+      'karma/exampleTestSuite/index.js' // UPDATE
     ],
     webpack: webpackConfig
   }));

@@ -13,7 +13,7 @@ import EditMenu from './components/EditMenu';
 import Visualizations from './components/Visualizations';
 import Table from './components/Table';
 import FilterBar from './components/FilterBar';
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 
 const SHARE_BUTTON_ENABLED = {
   view: FeatureFlags.value('visualization_canvas_embed_button') === 'always',

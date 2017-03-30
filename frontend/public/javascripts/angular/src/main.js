@@ -1,6 +1,6 @@
 window._ = require('lodash'); // eslint-disable-line angular/window-service
 window.socrata = window.socrata || {}; // eslint-disable-line angular/window-service
-window.socrata.utils = require('socrata-utils'); // eslint-disable-line angular/window-service
+window.socrata.utils = require('common/js_utils'); // eslint-disable-line angular/window-service
 
 require('babel-polyfill-safe');
 require('script!plugins/url');

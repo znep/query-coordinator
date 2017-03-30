@@ -31,7 +31,5 @@ module.exports = {
   resolveLoader: {
     modulesDirectories: [ path.resolve(common.root, 'node_modules') ]
   },
-  resolve: {
-    modulesDirectories: [ 'node_modules' ]
-  }
+  resolve: common.getStandardResolve()
 };

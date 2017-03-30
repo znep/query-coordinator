@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 import * as React from 'react';
 import * as ReactRedux from 'react-redux';
 import * as State from '../../state';

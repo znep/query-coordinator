@@ -22,23 +22,19 @@ module.exports = _.defaultsDeep({
   eslint: common.getEslintConfig('public/javascripts/siteAppearance/.eslintrc.json'),
   module: {
     loaders: [
-      {
-        test: /\.jsx?$/,
-        include: path.resolve(common.root, 'public/javascripts'),
-        loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
-      },
+      common.getBabelLoader(),
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'url-loader?limit=10000' }
     ]
   },
-  resolve: {
-    alias: {
-      'react': path.resolve(common.root, 'node_modules/react'),
-      'react-dom': path.resolve(common.root, 'node_modules/react-dom')
+  resolve: _.extend(
+    {
+      alias: {
+        'react': path.resolve(common.root, 'node_modules/react'),
+        'react-dom': path.resolve(common.root, 'node_modules/react-dom')
+      }
     },
-    root: [
-      path.resolve(common.root, 'public/javascripts/siteAppearance')
-    ]
-  },
+    common.getStandardResolve([ 'public/javascripts/siteAppearance' ])
+  ),
   plugins: plugins
 }, require('./base'));

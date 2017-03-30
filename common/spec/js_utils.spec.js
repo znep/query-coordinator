@@ -1,6 +1,6 @@
-var _ = require('lodash');
-var $ = jQuery = require('jquery');
-var utils = require('common/jsUtils');
+import _ from 'lodash';
+import $ from 'jquery';
+import utils from 'common/js_utils';
 
 describe('utils.js', function() {
 
@@ -759,7 +759,7 @@ describe('utils.js', function() {
       var originalEventData = { preventDefault: _.noop };
       originalEventData[propertyName] = testDeltaY;
 
-      return jQuery.Event(eventName, {originalEvent: originalEventData}); //eslint-disable-line new-cap
+      return $.Event(eventName, {originalEvent: originalEventData}); //eslint-disable-line new-cap
     }
 
     describe('mousewheel (IE, Safari, Chrome)', function() {

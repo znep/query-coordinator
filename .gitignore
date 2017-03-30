@@ -35,3 +35,4 @@ node_modules
 npm-debug.log
 socrata-node/DEPEND
 socrata-node/node_modules
+packages/**/dist

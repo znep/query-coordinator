@@ -1,4 +1,8 @@
-'use strict';
+// TODO: Make this file pass lint. It is ancient.
+/* eslint-disable prefer-rest-params */
+/* eslint-disable prefer-template */
+/* eslint-disable global-require */
+/* eslint-disable padded-blocks */
 
 var _ = require('lodash');
 var $ = require('jquery');
@@ -236,7 +240,7 @@ var utils = {
     var newValue;
     var symbolIndex;
 
-    if (absVal < .001) {
+    if (absVal < 0.001) {
 
       return val.toString();
 
@@ -526,7 +530,9 @@ var utils = {
 };
 
 if (String.prototype.format && console && console.warn) {
-  console.warn('Warning: String.prototype.format was already set somewhere else. It may not function as expected.');
+  console.warn(
+    'Warning: String.prototype.format was already set somewhere else. It may not function as expected.'
+  );
 }
 
 /* eslint-disable no-extend-native */

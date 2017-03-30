@@ -3,10 +3,25 @@
 // Karma configuration for common code.
 var path = require('path');
 
-// TODO When this gets into the monorepo, consolidate
-// with other test projects webpack configs.
+// TODO Move base webpack config from frontend/webpack into common, then use here.
 var webpackConfig = {
   context: __dirname,
+  module: {
+    loaders: [
+      {
+        test: /\.jsx?$/,
+        loader: 'babel-loader',
+        query: {
+          presets: [
+            'babel-preset-es2015'
+          ].map(require.resolve),
+          plugins: [
+            'babel-plugin-transform-object-rest-spread'
+          ].map(require.resolve)
+        }
+      }
+    ]
+  },
   resolve: {
     modules: [
       // Let tests import modules (i.e, import FeatureFlags from 'common/FeatureFlags')

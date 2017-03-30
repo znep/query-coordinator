@@ -158,7 +158,6 @@ leverage existing solutions to problems. Major libraries currently in use includ
 We also pull in a few internal libraries that allow us to share JavaScript code throughout the
 company:
 
-- [socrata-utils](https://github.com/socrata/frontend-utils), a library containing small utility functions.
 - [socrata-visualizations](https://github.com/socrata/frontend-visualizations), a library of jQuery components that render visualizations.
 - [socrata-components](https://github.com/socrata/styleguide), a library of React components used to render user interface elements.
 

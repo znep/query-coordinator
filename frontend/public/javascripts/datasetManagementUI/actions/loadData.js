@@ -23,12 +23,24 @@ function getLoadPlan(db, outputSchemaId, displayState) {
         pageNo: displayState.pageNo
       };
 
-    case DisplayState.ROW_ERRORS:
-      return {
-        type: 'ROW_ERRORS',
-        outputSchemaId,
-        pageNo: displayState.pageNo
-      };
+    case DisplayState.ROW_ERRORS: {
+      // kind of seems easier to only forumlate the url once...
+      // do a "here's the url, fetch it if we haven't already fetched it" kind of thing
+      const { upload, inputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
+      const url = dsmapiLinks.rowErrors(
+        upload.id, inputSchema.id, displayState.pageNo * PAGE_SIZE, PAGE_SIZE
+      );
+      const load = _.find(db.__loads__, { url });
+      if (!load) {
+        return {
+          type: 'ROW_ERRORS',
+          inputSchemaId: inputSchema.id,
+          pageNo: displayState.pageNo
+        };
+      } else {
+        return null;
+      }
+    }
 
     case DisplayState.NORMAL: {
       const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
@@ -71,6 +83,7 @@ function executeLoadPlan(loadPlan) {
         dispatch(loadNormalPreview(loadPlan.outputSchemaId, loadPlan.pageNo));
         break;
       case 'ROW_ERRORS':
+        dispatch(loadRowErrors(loadPlan.inputSchemaId, loadPlan.pageNo));
         break;
       case 'COLUMN_ERRORS':
         break;
@@ -196,26 +209,31 @@ function loadNormalPreview(outputSchemaId, pageNo) {
 //     });
 //   };
 // }
-//
-//
-// export function loadRowErrors(inputSchemaId, offset, limit) {
-//   return (dispatch, getState) => {
-//     const uploadId = getState().db.input_schemas[inputSchemaId].upload_id;
-//     socrataFetch(dsmapiLinks.rowErrors(uploadId, inputSchemaId, offset, limit)).
-//     then(checkStatus).
-//     then(getJson).
-//     then((rowErrors) => {
-//       const rowErrorsWithId = rowErrors.map((rowError) => ({
-//         ...rowError,
-//         input_schema_id: inputSchemaId,
-//         id: `${inputSchemaId}-${rowError.offset}`
-//       }));
-//       const rowErrorsKeyedById = _.keyBy(rowErrorsWithId, 'id');
-//       dispatch(insertMultipleFromServer('row_errors', rowErrorsKeyedById, { ifNotExists: true }));
-//     }).
-//     catch((error) => {
-//       // TODO: maybe add a notification
-//       console.error('failed to load row errors', error);
-//     });
-//   };
-// }
+
+
+export function loadRowErrors(inputSchemaId, pageNo) {
+  return (dispatch, getState) => {
+    const uploadId = getState().db.input_schemas[inputSchemaId].upload_id;
+    const url = dsmapiLinks.rowErrors(uploadId, inputSchemaId, pageNo * PAGE_SIZE, PAGE_SIZE);
+    dispatch(loadStarted(url));
+    socrataFetch(url).
+      then(checkStatus).
+      then(getJson).
+      then((rows) => {
+        dispatch(loadSucceeded(url));
+        const rowErrorsWithId = rows.map((row) => ({
+          ...row.error,
+          id: `${inputSchemaId}-${row.offset}`,
+          input_schema_id: inputSchemaId,
+          offset: row.offset
+        }));
+        const rowErrorsKeyedById = _.keyBy(rowErrorsWithId, 'id');
+        dispatch(insertMultipleFromServer('row_errors', rowErrorsKeyedById, { ifNotExists: true }));
+      }).
+      catch((error) => {
+        dispatch(loadFailed(url, error));
+        // TODO: maybe add a notification
+        console.error('failed to load row errors', error);
+      });
+  };
+}

@@ -8,7 +8,7 @@ export default function LocalizedText(props, context) {
   const translation = localization.translate(localeKey);
   const spanProps = _.omit(props, ['localeKey']);
 
-  return <span {...spanProps}>{translation}</span>;
+  return <span {...spanProps} dangerouslySetInnerHTML={{__html: translation}}/>;
 }
 
 LocalizedText.propTypes = {

@@ -1,7 +1,9 @@
 export const types = {
   setActivities: 'SET_ACTIVITIES',
   setPagination: 'SET_PAGINATION',
-  dismissError: 'DISMISS_ERROR'
+  dismissError: 'DISMISS_ERROR',
+  showDetailsModal: 'SHOW_DETAILS_MODAL',
+  dismissDetailsModal: 'DISMISS_DETAILS_MODAL'
 };
 
 export const setActivities = (activities) => ({
@@ -30,4 +32,13 @@ export const loadActivities = () => {
 
 export const dismissError = () => ({
   type: types.dismissError
+});
+
+export const showDetailsModal = (activity) => ({
+  type: types.showDetailsModal,
+  activity
+});
+
+export const dismissDetailsModal = () => ({
+  type: types.dismissDetailsModal
 });

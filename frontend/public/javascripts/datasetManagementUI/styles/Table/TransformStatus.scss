@@ -9,6 +9,10 @@
   padding: 0;
   width: 250px;
 
+  &:hover {
+    background-color: $alternate-3-light;
+  }
+
   &.transformStatusSelected {
     box-shadow: inset 0 0 10px -2px $black;
   }
@@ -16,13 +20,13 @@
   a {
     color: $grey;
     text-decoration: none;
-    display: inline-block;
-    width: 90%;
+    display: block;
+    width: 100%;
   }
 }
 
 .statusText {
-  padding: 5px 5px;
+  padding: 5px;
   border-bottom: 1px solid $light-grey-4;
   text-align: left;
 }

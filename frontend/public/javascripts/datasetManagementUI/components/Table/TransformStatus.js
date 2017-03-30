@@ -108,10 +108,12 @@ class TransformStatus extends Component {
           data-flyout={getFlyoutId(transform)}
           className={classNames(styles.transformStatus, { [styles.transformStatusSelected]: inErrorMode })}>
           {progressBar}
-          <div className={styles.statusText}>
+          <Link
+            className={styles.statusText}
+            to={linkPath} data-flyout={getFlyoutId(transform)}>
             <span className={styles.error}>{commaify(transform.num_transform_errors)}</span>
-            <Link to={linkPath} data-flyout={getFlyoutId(transform)}>{msg}</Link>
-          </div>
+            {msg}
+          </Link>
           {errorFlyout}
         </th>
       );

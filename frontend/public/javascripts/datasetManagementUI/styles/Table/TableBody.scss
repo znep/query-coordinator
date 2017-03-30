@@ -8,7 +8,6 @@
   overflow-y: auto;
   width: 100%;
   height: calc(100% - 88px);
-  border-bottom: 1px solid $light-grey-4;
 
   tr {
     height: 29px;
@@ -22,7 +21,7 @@
     }
 
     &:last-child {
-      td, div {
+      td {
         border-bottom-width: 0;
       }
     }

@@ -4662,6 +4662,48 @@
         });
       }
     };
+    var extractFilterConditionOperators = function(filterCondition) {
+      var operators = [];
+      var recursivelyExtractActualFilterConditionOperators = function(children) {
+        children.forEach(function(child) {
+
+          if (child.hasOwnProperty('children')) {
+            var atLeastOneOperatorGrandchild = _.include(
+              _.compact(
+                child.children.map(function(grandchild) {
+                  return grandchild.type;
+                })
+              ),
+              'operator'
+            );
+
+            if (child.type === 'operator' && !atLeastOneOperatorGrandchild) {
+              operators.push(_.cloneDeep(child));
+            } else {
+              recursivelyExtractActualFilterConditionOperators(child.children);
+            }
+          }
+        });
+      };
+
+      if (
+        _.isObject(filterCondition) &&
+        _.get(filterCondition, 'children', []).length > 0
+      ) {
+        recursivelyExtractActualFilterConditionOperators(filterCondition.children);
+      }
+
+      return operators;
+    };
+    var assignNewFiltersForJsonQuery = function(dataset, filters) {
+      if (filters.length === 1) {
+        dataset.metadata.jsonQuery.where = filters[0];
+      } else if (filters.length > 1) {
+        dataset.metadata.jsonQuery.where.children = filters;
+      } else {
+        dataset.metadata.jsonQuery.where = undefined;
+      }
+    };
     var originalDatasetGrouping = _.get(
       originalDataset,
       'query.groupBys',
@@ -4713,17 +4755,51 @@
         convertStringifiedNumberLiteralsToNumbers
       );
 
-      var newFiltersForQuery = newQueryFilterCondition.children.
+      var newQueryFilterConditionIsSingleFilterClause = newQueryFilterCondition.
+        children.
         filter(function(newFilter) {
-          var matchingOldFilter = modifiedOriginalFilterCondition.children.
-            filter(function(oldFilter) {
-              return _.isEqual(newFilter, oldFilter);
-            });
+          return _.get(newFilter, 'type') !== 'operator';
+        }).length > 0;
 
-          return matchingOldFilter.length === 0;
+      // If the children of newQueryFilterCondition constitute a single filter
+      // condition (e.g. they are a pair of 'column' and 'literal' types as
+      // opposed to a pair of 'operator' types each with their own 'column' and
+      // 'literal' children) then we just need to check if the single new filter
+      // condition matches any of the old ones.
+      if (newQueryFilterConditionIsSingleFilterClause) {
+        var newFilterExistsInOldFilterCondition = false;
+        var filterConditionOperators = extractFilterConditionOperators(
+          modifiedOriginalFilterCondition
+        );
+
+        filterConditionOperators.forEach(function(oldFilter) {
+          if (_.isEqual(oldFilter, newQueryFilterCondition)) {
+            newFilterExistsInOldFilterCondition = true;
+          }
         });
 
-      newDataset.query.filterCondition.children = newFiltersForQuery;
+        if (newFilterExistsInOldFilterCondition) {
+          delete newDataset.query.filterCondition;
+        }
+      // Otherwise, we can actually iterate over newQueryFilterCondition's
+      // children and compare them to the existing filters.
+      } else {
+        var newFiltersForQuery = newQueryFilterCondition.children.
+          filter(function(newFilter) {
+            var matchingOldFilter = modifiedOriginalFilterCondition.children.
+              filter(function(oldFilter) {
+                return _.isEqual(newFilter, oldFilter);
+              });
+
+            return matchingOldFilter.length === 0;
+          });
+
+        if (newFiltersForQuery.length > 0) {
+          newDataset.query.filterCondition.children = newFiltersForQuery;
+        } else {
+          delete newDataset.query.filterCondition;
+        }
+      }
     }
 
     // We also need to remove any filters that are present in the other place
@@ -4733,20 +4809,73 @@
     // metadata.jsonQuery.where does not differ between the original and new
     // copies of the dataset, so we can compare them directly without having to
     // mutate the original dataset.
+    //
+    // Fun fact: the jsonQuery where object only has a 'children' property if
+    // there is more than one filter. Otherwise, it stores the filter parameters
+    // at the root of the object.
     if (shouldModifyJsonQueryWhere) {
-      var newJsonQueryWhere = newDataset.metadata.jsonQuery.where;
       var originalJsonQueryWhere = originalDataset.metadata.jsonQuery.where;
-      var newFiltersForJsonQuery = newJsonQueryWhere.children.
-        filter(function(newFilter) {
-            var matchingOldFilter = originalJsonQueryWhere.children.
-              filter(function(oldFilter) {
-                return _.isEqual(newFilter, oldFilter);
+      var newJsonQueryWhere = newDataset.metadata.jsonQuery.where;
+      var moreThanOneFilterPresent = (
+        originalJsonQueryWhere.hasOwnProperty('children') ||
+        newJsonQueryWhere.hasOwnProperty('children')
+      );
+
+      if (moreThanOneFilterPresent) {
+
+        // If there is more than one filter on the original jsonQuery where and
+        // there is more than one filter on the new jsonQuery where, then we
+        // need to only persist filters that are present on the new jsonQuery
+        // where but not the old one.
+        if (
+          originalJsonQueryWhere.hasOwnProperty('children') &&
+          newJsonQueryWhere.hasOwnProperty('children')
+        ) {
+          var newFiltersForJsonQuery = newJsonQueryWhere.children.
+            filter(function(newFilter) {
+                var matchingOldFilter = originalJsonQueryWhere.children.
+                  filter(function(oldFilter) {
+                    return _.isEqual(newFilter, oldFilter);
+                  });
+
+                return matchingOldFilter.length === 0;
               });
 
-            return matchingOldFilter.length === 0;
+          assignNewFiltersForJsonQuery(newDataset, newFiltersForJsonQuery);
+        } else if (originalJsonQueryWhere.hasOwnProperty('children')) {
+          // Only save the single filter on newJsonQueryWhere if it does not
+          // also exist in originalJsonQueryWhere.
+          var singleNewFilterExistsInOriginalJsonQueryWhere = false;
+
+          originalJsonQueryWhere.children.forEach(function(oldFilter) {
+            if (_.isEqual(oldFilter, newJsonQueryWhere)) {
+              singleNewFilterExistsInOriginalJsonQueryWhere = true;
+            }
           });
 
-      newDataset.metadata.jsonQuery.where.children = newFiltersForJsonQuery;
+          if (singleNewFilterExistsInOriginalJsonQueryWhere) {
+            newDataset.metadata.jsonQuery.where = undefined;
+          }
+        } else if (newJsonQueryWhere.hasOwnProperty('children')) {
+          // Save all filters on the new jsonQuery where that are not equal to
+          // the original jsonQuery where.
+          var newFiltersForJsonQuery = newJsonQueryWhere.children.
+            filter(function(newFilter) {
+              return !_.isEqual(originalJsonQueryWhere, newFilter);
+            });
+
+          assignNewFiltersForJsonQuery(newDataset, newFiltersForJsonQuery);
+        }
+
+
+      } else {
+        // If the filter is not the one that was taken from the saved view, then
+        // we can just use that filter verbatim since the modifying-lens-id
+        // inheritance wouldn't apply in any case.
+        if (!_.isEqual(originalJsonQueryWhere, newJsonQueryWhere)) {
+          newDataset.metadata.jsonQuery.where = newJsonQueryWhere;
+        }
+      }
     }
 
     return newDataset;

@@ -117,11 +117,17 @@ function loadNormalPreview(outputSchemaId, pageNo) {
             _.keyBy(rowsForColumn, 'id'),
             { ifNotExists: true }
           );
-          // console.warn('TODO: insert row error');
-          // return insertFromServer('row_errors', {
-          //   id: `${inputSchemaId}`
-          // })
         })));
+        const inputSchemaId = db.output_schemas[outputSchemaId].input_schema_id;
+        const rowErrors = withoutHeader.
+          filter((row) => row.error).
+          map((row) => ({
+            ...row.error,
+            id: `${inputSchemaId}-${row.offset}`,
+            input_schema_id: inputSchemaId,
+            offset: row.offset
+          }));
+        dispatch(insertMultipleFromServer('row_errors', _.keyBy(rowErrors, 'id')));
       });
   };
 }

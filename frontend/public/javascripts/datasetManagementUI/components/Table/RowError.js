@@ -8,13 +8,13 @@ export default function RowError({ rowError }) {
       <span className={styles.malformedRowTag}>!</span>
       <span className={styles.malformedRowLocation}>{SubI18n.row} {rowError.offset}:</span>
       <span className={styles.malformedRowError}>
-        {SubI18n.expected} <span className={styles.rowErrorNumber}>{rowError.error.wanted}</span>&nbsp;
+        {SubI18n.expected} <span className={styles.rowErrorNumber}>{rowError.wanted}</span>&nbsp;
         {SubI18n.columns_found}&nbsp;
-        <span className={styles.rowErrorNumber}>{rowError.error.got}</span>
+        <span className={styles.rowErrorNumber}>{rowError.got}</span>
       </span>
       <span className={styles.malformedRowContents}>
         <span className={styles.rowContentLabel}>{SubI18n.row_content}:</span>&nbsp;
-        {rowError.error.contents.map((cell) => `"${cell.replace('"', '\\"')}"`).join(',')}
+        {rowError.contents.map((cell) => `"${cell.replace('"', '\\"')}"`).join(',')}
       </span>
     </td>
   );

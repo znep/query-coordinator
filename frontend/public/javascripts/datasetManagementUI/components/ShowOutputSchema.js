@@ -11,7 +11,6 @@ import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import * as LoadDataActions from '../actions/loadData';
 import * as DisplayState from '../lib/displayState';
-import { PAGE_SIZE } from '../actions/loadData';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
 import Pager from './Table/Pager';
@@ -150,7 +149,7 @@ class ShowOutputSchema extends Component {
             <Pager
               path={path}
               currentPage={displayState.pageNo}
-              numPages={Math.ceil(rowsTransformed / PAGE_SIZE)} />
+              numPages={Math.ceil(rowsTransformed / LoadDataActions.PAGE_SIZE)} />
 
             <div>
               <Link to={Links.home}>

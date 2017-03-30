@@ -32,7 +32,7 @@ echo ${SERVICE_SHA} > "$WORKSPACE/REVISION"
 
 echo "AUTO_DEPLOY=${AUTO_DEPLOY}"
 if [ "${AUTO_DEPLOY}" = "true" ]; then
-  ops-tools/jenkins/dockerize/dockerize-marathon dockerize.properties
+  ../ops-tools/jenkins/dockerize/dockerize-marathon dockerize.properties
 else
-  ops-tools/jenkins/dockerize/dockerize dockerize.properties
+  ../ops-tools/jenkins/dockerize/dockerize dockerize.properties
 fi

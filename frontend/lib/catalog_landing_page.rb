@@ -28,9 +28,13 @@ class CatalogLandingPage
 
     params = request.params.slice(*valid_params)
     return true if (1..max_params_to_accept).include?(params.size)
-    return true if params.empty? && request.path == '/browse'
+    return true if special_case_browse?(request)
 
     false
+  end
+
+  def self.special_case_browse?(request)
+    request.params.slice(*valid_params).empty? && request.path == '/browse'
   end
 
   def self.exists?(request)
@@ -44,6 +48,8 @@ class CatalogLandingPage
     pages.include?(catalog_query(params))
   end
 
+  # We have to do CGI escaping here because for some reason the FeaturedContent class decided
+  # not to perform any escaping, so we have to do it for it in order to maintain consistency.
   def self.catalog_query(params)
     CGI.escape!(params.map do |key, value|
       case value
@@ -53,10 +59,12 @@ class CatalogLandingPage
     end.flatten.sort.join('&'))
   end
 
+  # We have to do CGI escaping here because for some reason the FeaturedContent class decided
+  # not to perform any escaping, so we have to do it for it in order to maintain consistency.
   def self.custom_path(request_or_params)
-    request_or_params.attempt(:params)[:custom_path].tap do |path|
+    CGI.escape!(request_or_params.attempt(:params)[:custom_path].tap do |path|
       path.prepend('/') unless path.nil? || path.starts_with?('/')
-    end
+    end.to_s)
   end
 
   # 'domain_or_cname' is either a Domain instance or the cname string.
@@ -69,12 +77,13 @@ class CatalogLandingPage
   end
 
   def to_query
-    @query.presence || { custom_path: @id }
+    @query.presence || { custom_path: CGI.unescape(@id) }
   end
 
   def to_path
-    return id if id.starts_with?('/')
-    "/browse?#{CGI.unescape(id)}"
+    unescaped_id = CGI.unescape(id)
+    return unescaped_id if unescaped_id.starts_with?('/')
+    "/browse?#{unescaped_id}"
   end
 
   def to_uri

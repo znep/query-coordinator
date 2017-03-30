@@ -425,12 +425,17 @@ html {
     padding: 0.5em;
 
     &.hidden {
+      padding: 2px;
+
       .browse2-manage-clp-header {
-        button {
-          display: block;
-          margin-top: -0.4em;
-        }
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         border-bottom: none;
+
+        button.manage-button {
+          display: block;
+        }
       }
 
       .browse2-manage-clp-info {
@@ -442,9 +447,9 @@ html {
       border-bottom: solid 1px $light-grey-1;
       padding: 0.2em;
 
-      button {
-        float: right;
+      button.manage-button {
         display: none;
+        min-width: 215px;
       }
     }
 
@@ -465,11 +470,13 @@ html {
       .manage-clp-info-text {
 
         .info-header {
-          font-size: 120%;
+          font-size: 18px;
           padding: 0.5rem 0;
+          font-weight: 700;
         }
 
         .info-description {
+          font-size: 13px;
           padding-bottom: 0.5rem;
         }
       }

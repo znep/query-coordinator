@@ -425,7 +425,7 @@ en:
             title: Try it yourself!
   catalog_landing_page:
     activation:
-      action: Manage This Category
+      action: Manage this Category
       dismiss: Not now, hide this info
       header: Highlight the best content within this category
       explanation_0:
@@ -462,7 +462,7 @@ en:
     manager:
       cancel: Cancel
       change: Change
-      manage_this_category: Manage This Category
+      manage_this_category: Manage this Category
       unexpected_error: An unexpected error has occurred. Please reload and try again.
       you_must_login_first: You must login first in order to save your changes.
       remove: Remove

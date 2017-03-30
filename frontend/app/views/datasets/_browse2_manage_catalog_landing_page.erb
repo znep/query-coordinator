@@ -4,15 +4,15 @@
         merge(params.only(*CatalogLandingPage.valid_params)).
         merge(custom_path: params[:custom_path] || '/browse')
       activation_link = link_to(capture do %>
-    <button class="btn btn-primary">
+    <button class="btn btn-primary manage-button">
       <%= translation.call('action') %>
       <i id="socrata-icon-arrow-right" class="socrata-icon-arrow-right"></i>
     </button>
   <%- end, activation_params) %>
 
   <div class="browse2-manage-clp-header">
-    <%= activation_link %>
     <h3><%= translation.call('header') %></h3>
+    <%= activation_link %>
   </div>
 
   <div class="browse2-manage-clp-info">

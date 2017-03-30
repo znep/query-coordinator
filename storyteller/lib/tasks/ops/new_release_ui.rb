@@ -339,6 +339,6 @@ Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit_sha} and try again
   end
 
   def open_git_repo
-    Git.open(Rake.application.original_dir)
+    Git.open(File.expand_path('../', Rake.application.original_dir))
   end
 end

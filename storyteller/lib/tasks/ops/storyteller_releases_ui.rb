@@ -169,6 +169,6 @@ under the heading Deploy To Production. Continue?')
   end
 
   def open_git_repo
-    Git.open(Rake.application.original_dir)
+    Git.open(File.expand_path('../', Rake.application.original_dir))
   end
 end

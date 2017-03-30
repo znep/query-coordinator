@@ -148,8 +148,7 @@ class ShowOutputSchema extends Component {
 
             <Pager
               path={path}
-              currentPage={displayState.pageNo}
-              numPages={Math.ceil(rowsTransformed / LoadDataActions.PAGE_SIZE)} />
+              displayState={displayState} />
 
             <div>
               <Link to={Links.home}>

@@ -140,7 +140,9 @@ function loadNormalPreview(outputSchemaId, pageNo) {
             input_schema_id: inputSchemaId,
             offset: row.offset
           }));
-        dispatch(insertMultipleFromServer('row_errors', _.keyBy(rowErrors, 'id')));
+        dispatch(insertMultipleFromServer(
+          'row_errors', _.keyBy(rowErrors, 'id'), { ifNotExists: true }
+        ));
       });
   };
 }

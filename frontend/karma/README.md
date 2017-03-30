@@ -4,7 +4,7 @@ JavaScript tests for the frontend project.
 
 ## Organization
 
-  Each test suite is represented as a folder within `frontend/karma/`).
+  Each test suite is represented as a folder within `frontend/karma/`.
 
 ## Configuration
 

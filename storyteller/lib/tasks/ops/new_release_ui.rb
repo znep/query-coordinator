@@ -10,7 +10,7 @@ require_relative 'jenkins'
 class NewReleaseUi
   MAX_MANIFEST_COMMITS = 1000 # This must be provided to the git library.
   MANIFEST_FILE = 'manifest.txt'
-  RELEASE_BRANCH_NAME = 'release'
+  RELEASE_BRANCH_NAME = 'storyteller/release'
   ACTUALLY_PUSH_TAG = true # Set this to false if you're debugging
 
   attr_reader :dialog, :git, :new_release_commit, :new_semver, :jenkins_build_number, :last_released_commit_sha, :current_master_commit, :merge_instead_of_reset
@@ -90,10 +90,11 @@ Aborted.'
 
     # 3- Apply tag.
     dialog.infobox('Tagging release...')
-    git.add_tag(new_semver.to_s.tr('v', ''))
+    tag_name = "storyteller-#{new_semver.to_s.tr('v', '')}"
+    git.add_tag(tag_name)
 
     # 4- Push origin
-    dialog.infobox('Pushing to origin/release...')
+    dialog.infobox("Pushing to origin/#{RELEASE_BRANCH_NAME}...")
     git.push('origin', RELEASE_BRANCH_NAME, tags: ACTUALLY_PUSH_TAG, force: true)
 
     # 5- Merge release back to master

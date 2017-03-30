@@ -1,8 +1,10 @@
+var webpackCommon = require('../../config/webpack/common');
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
   'base',
   [ 'public/javascripts/common', 'public/javascripts/src', 'karma/oldUx' ]
 );
+webpackConfig.module.loaders = [ webpackCommon.getBabelLoader() ];
 
 module.exports = function (karma) {
   karma.set(karmaConfig({

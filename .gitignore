@@ -13,11 +13,11 @@ node_modules/
 !/log/.keep
 
 # Webpacked JS
-public/js
+storyteller/public/js
 webpack-assets.json
 
 # Ignore local database settings
-config/database.yml
+storyteller/config/database.yml
 
 # IDE settings
 *.sublime-project
@@ -34,10 +34,10 @@ zeus.json
 manifest.txt
 
 # Other
-/tmp
-REVISION
+storyteller/tmp
+storyteller/REVISION
 marathon.properties
-/coverage
+storyteller/coverage
 .sass-cache
 
 # Build-related stuff

@@ -70,7 +70,7 @@ class RowErrorsLink extends Component {
           <div ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}>
             <Link to={linkPath}>
               <div className={styles.malformedRowsStatusText} data-flyout={FLYOUT_ID}>
-                <span className="err-info error">{commaify(numRowErrors)}</span>
+                <span className={styles.error}>{commaify(numRowErrors)}</span>
                 {singularOrPlural(numRowErrors, SubI18n.malformed_row, SubI18n.malformed_rows)}
               </div>
               <ErrorFlyout numRowErrors={numRowErrors} />

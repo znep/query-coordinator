@@ -23,6 +23,11 @@ module.exports = _.defaultsDeep({
   externals: {
     jquery: true
   },
+  module: {
+    loaders: [
+      common.getBabelLoader()
+    ]
+  },
   resolve: _.extend(
     {
       alias: {

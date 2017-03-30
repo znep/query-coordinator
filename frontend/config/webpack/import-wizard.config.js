@@ -11,6 +11,11 @@ module.exports = _.defaultsDeep({
   entry: './main',
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/importWizard/.eslintrc.json'),
+  module: {
+    loaders: [
+      common.getBabelLoader()
+    ]
+  },
   resolve: _.extend(
     {
       alias: {

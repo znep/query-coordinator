@@ -106,11 +106,12 @@ class TransformStatus extends Component {
           key={transform.id}
           ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}
           data-flyout={getFlyoutId(transform)}
-          className={classNames(styles.transformStatus, { [styles.transformStatusSelected]: inErrorMode })}>
+          className={styles.transformStatus}>
           {progressBar}
           <Link
-            className={styles.statusText}
-            to={linkPath} data-flyout={getFlyoutId(transform)}>
+            className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}
+            to={linkPath}
+            data-flyout={getFlyoutId(transform)}>
             <span className={styles.error}>{commaify(transform.num_transform_errors)}</span>
             {msg}
           </Link>

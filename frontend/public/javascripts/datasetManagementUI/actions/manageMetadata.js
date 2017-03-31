@@ -21,11 +21,26 @@ import { insertChildrenAndSubscribeToOutputSchema } from './manageUploads';
 import { idForColumnNameField } from '../components/ManageMetadata/ColumnMetadataEditor';
 import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
+import { showFlashMessage } from 'actions/flashMessage';
+import { getLocalizedErrorMessage } from 'lib/util';
 
 export const saveDatasetMetadata = () => (dispatch, getState) => {
   const { db, fourfour } = getState();
 
   const model = _.get(db, `views.${fourfour}.model`);
+  const schema = _.get(db, `views.${fourfour}.schema`);
+
+  // Careful here. We don't want to ping the server if the validation schema says
+  // the form is invalid. But for validations we don't do client-side, there might
+  // not be a schema period, since there are on client side validation rules to
+  // generate one. So right now if there is no schema, we assume the form is valid
+  // and allow it to hit server. If the server kicks it back for some reason, we
+  // still display the error in a flash message. Maybe we can look into putting
+  // a default empty schema that is valid into the store later.
+  if (schema && !schema.isValid) {
+    dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
+    return;
+  }
 
   const publicMetadata = _.pick(
     model,
@@ -59,6 +74,11 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   }).
   catch(error => {
     dispatch(updateFailed('views', datasetMetadata, error));
+
+    error.response.json().then(({ message }) => {
+      const localizedMessage = getLocalizedErrorMessage(message);
+      dispatch(showFlashMessage('error', localizedMessage));
+    });
   });
 };
 

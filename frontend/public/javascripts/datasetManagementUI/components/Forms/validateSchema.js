@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { getComponentName } from 'lib/util';
@@ -19,26 +19,30 @@ const getValidationErrors = (schema, model) => Object.keys(schema).reduce((acc, 
   }
 
   if (rules.required && !value) {
-    errors.push(I18n.edit_metadata.validation_error_required.format(key));
+    errors.push(I18n.edit_metadata.validation_error_required.format(_.upperFirst(key)));
   }
 
   if (rules.type && typeof value !== rules.type) {
     const expectedType = rules.type;
     const receivedType = typeof value;
-    errors.push(I18n.edit_metadata.validation_error_type.format(key, expectedType, receivedType));
+    errors.push(
+      I18n.edit_metadata.validation_error_type.format(_.upperFirst(key), expectedType, receivedType)
+    );
   }
 
   if (rules.minLength) {
     if (!value || value.length < rules.minLength) {
       const minLength = rules.minLength;
-      errors.push(I18n.edit_metadata.validation_error_minlength.format(key, minLength));
+      errors.push(
+        I18n.edit_metadata.validation_error_minlength.format(_.upperFirst(key), minLength)
+      );
     }
   }
 
   if (rules.maxLength) {
     if (value && value.length > rules.maxLength) {
       const maxLength = rules.maxLength;
-      errors.push(I18n.edit_metadata.validation_error_maxlength.format(key, maxLength));
+      errors.push(I18n.edit_metadata.validation_error_maxlength.format(_.upperFirst(key), maxLength));
     }
   }
 
@@ -63,21 +67,65 @@ const getValidationErrors = (schema, model) => Object.keys(schema).reduce((acc, 
 }, { isValid: true, fields: {} });
 
 const validateSchema = schema => (WrappedComponent) => {
-  const validated = props => {
-    const validationErrors = getValidationErrors(schema, props.model);
+  class Validated extends Component {
+    constructor() {
+      super();
+      this.state = {
+        schema: {
+          isValid: true,
+          fields: {}
+        }
+      };
+    }
 
-    return React.createElement(WrappedComponent, _.assign({}, props, {
-      schema: validationErrors
-    }));
+    // Called once right before initial render. We calculate an initial schema here.
+    componentWillMount() {
+      const { model } = this.props;
+
+      this.setState({
+        schema: getValidationErrors(schema, model)
+      });
+    }
+
+    // Called on every prop change (in this case, the form's data-model changing from
+    // user input). Calculate a new schema
+    componentWillReceiveProps(nextProps) {
+      const { model: newModel } = nextProps;
+      const { model: oldModel } = this.props;
+
+      if (!_.isEqual(oldModel, newModel)) {
+        this.setState({
+          schema: getValidationErrors(schema, newModel)
+        });
+      }
+    }
+
+    // Gets syncToStore as a prop from reformed HOC. Not required, but if available,
+    // will put schema in store.
+    componentWillUpdate(nextProps, nextState) {
+      const { syncToStore, fourfour } = this.props;
+
+      if (syncToStore && fourfour && !_.isEqual(this.state.schema, nextState.schema)) {
+        syncToStore(fourfour, 'schema', nextState.schema);
+      }
+    }
+
+    render() {
+      return React.createElement(WrappedComponent, _.assign({}, this.props, {
+        schema: this.state.schema
+      }));
+    }
+  }
+
+  Validated.displayName = `ValidateSchema(${getComponentName(WrappedComponent)})`;
+
+  Validated.propTypes = {
+    model: PropTypes.object.isRequired,
+    syncToStore: PropTypes.func,
+    fourfour: PropTypes.string
   };
 
-  validated.displayName = `ValidateSchema(${getComponentName(WrappedComponent)})`;
-
-  validated.propTypes = {
-    model: PropTypes.object.isRequired
-  };
-
-  return hoistNonReactStatics(validated, WrappedComponent);
+  return hoistNonReactStatics(Validated, WrappedComponent);
 };
 
 export default validateSchema;

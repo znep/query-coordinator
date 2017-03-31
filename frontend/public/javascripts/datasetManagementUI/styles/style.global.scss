@@ -13,6 +13,10 @@ body {
   flex-grow: 1;
   flex-basis: fill;
   flex-direction: column;
+
+  .modal-header {
+    z-index: 1;
+  }
 }
 
 #app.no-chrome-header {

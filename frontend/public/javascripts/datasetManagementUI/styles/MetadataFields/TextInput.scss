@@ -12,5 +12,5 @@
 .textInputError {
   composes: textInput;
   composes: text-input-error from global;
-  margin-bottom: 5px;
+  margin-bottom: 2px !important;
 }

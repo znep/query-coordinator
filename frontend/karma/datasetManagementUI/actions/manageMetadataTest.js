@@ -8,7 +8,6 @@ import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import { getDefaultStore } from '../testStore';
 
 describe('actions/manageMetadata', () => {
-
   const responses = {
     '/api/views/hehe-hehe': {
       PUT: {
@@ -77,5 +76,4 @@ describe('actions/manageMetadata', () => {
     }, 0);
     // TODO: assert against database state
   });
-
 });

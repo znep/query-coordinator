@@ -21,7 +21,6 @@ export default function MetadataContent(props) {
               <Link to={Links.columnMetadataEditor()}>{I18n.metadata_manage.column_metadata_label}</Link>
             </li>
           </ul>
-
           <DatasetMetadataEditor view={props.view} />
         </div>
       );

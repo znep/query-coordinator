@@ -2,7 +2,7 @@ namespace :manifest do
   %w[staging release].each do |environment|
     desc "Create a changelog between the last two #{environment} releases"
     task environment.to_sym, [:output_file, :auto] do |_, args|
-      tags = `git tag -l #{environment}/*`.split.sort.reverse.first((ENV['RELEASE_TAGS'] || 10).to_i)
+      tags = `git tag -l frontend-#{environment}/*`.split.sort.reverse.first((ENV['RELEASE_TAGS'] || 10).to_i)
 
       # Find your tags to compare
       to_tag = ENV['TO_TAG'] || tags[0]
@@ -29,7 +29,10 @@ namespace :manifest do
       manifest_output << "\n\nGit diff: https://github.com/socrata/frontend/compare/#{from_tag}...#{to_tag}"
 
       manifest_output << "\nDiff Command: `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`\n"
-      git_log_output = `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`
+
+      # TODO: Remove this list once all intended repositories are merged into platform-ui.
+      ignore_list = %w(069316e2ea2be425925863b58c3653da54d50a84)
+      git_log_output = `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag} ^#{ignore_list.join(' ^')}`
 
       manifest_output << "\n\nLink to Jira query for current issues...\n"
       manifest_output << jira_query(git_log_output)
@@ -59,7 +62,7 @@ namespace :manifest do
     end
   end
 
-  # output all commit messages that mention a Jira id or pull request id.  
+  # output all commit messages that mention a Jira id or pull request id.
   # this is useful for prepping the Test Matrix for test pods
   # this step gets ran after first running 'FROM_TAG=<tag> TO_TAG=<tag> rake manifest:release[manifest.txt]'
   namespace :commits do

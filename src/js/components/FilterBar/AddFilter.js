@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import SearchablePicklist from './SearchablePicklist';
+import SearchablePicklist from './addFilterSearchablePicklist';
 import _ from 'lodash';
 import { getIconForDataType } from '../../common/icons';
 import { translate as t } from '../../common/I18n';

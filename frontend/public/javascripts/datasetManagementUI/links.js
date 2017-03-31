@@ -30,14 +30,17 @@ export const showOutputSchema = (uploadId, inputSchemaId, outputSchemaId, pageNo
       `${(pageNo ? `/page/${pageNo}` : '')}`
 );
 
-export const showColumnErrors = (uploadId, inputSchemaId, outputSchemaId, errorsTransformId) => (
+export const showColumnErrors = (uploadId, inputSchemaId,
+                                 outputSchemaId, errorsTransformId, pageNo) => (
   (routing) =>
     `${home(routing)}/uploads/${uploadId}/schemas/${inputSchemaId}/output/` +
-      `${outputSchemaId}/column_errors/${errorsTransformId}`
+      `${outputSchemaId}/column_errors/${errorsTransformId}` +
+        `${(pageNo ? `/page/${pageNo}` : '')}`
 );
 
-export const showRowErrors = (uploadId, inputSchemaId, outputSchemaId) => (
+export const showRowErrors = (uploadId, inputSchemaId, outputSchemaId, pageNo) => (
   (routing) =>
     `${home(routing)}/uploads/${uploadId}/schemas/${inputSchemaId}/output/` +
-      `${outputSchemaId}/row_errors`
+      `${outputSchemaId}/row_errors` +
+        `${(pageNo ? `/page/${pageNo}` : '')}`
 );

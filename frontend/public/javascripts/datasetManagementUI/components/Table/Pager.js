@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import * as Links from '../../links';
 import { connect } from 'react-redux';
 import * as DisplayState from '../../lib/displayState';
 import { PAGE_SIZE } from '../../actions/loadData';
@@ -25,24 +24,23 @@ function numItemsToPaginate(db, outputSchemaId, displayState) {
 }
 
 function Pager({ path, displayState, numPages }) {
-  // TODO: generate these based on display state
-  const prevPageUrl = Links.showOutputSchema(
-    path.uploadId,
-    path.inputSchemaId,
-    path.outputSchemaId,
-    displayState.pageNo - 1
-  );
-  const nextPageUrl = Links.showOutputSchema(
-    path.uploadId,
-    path.inputSchemaId,
-    path.outputSchemaId,
-    displayState.pageNo + 1
-  );
+  const prevDisplayState = (displayState.pageNo > 0) ?
+    { ...displayState, pageNo: displayState.pageNo - 1 } :
+    null;
+  const nextDisplayState = (displayState.pageNo < numPages - 1) ?
+    { ...displayState, pageNo: displayState.pageNo + 1 } :
+    null;
+  const prevPageLink = prevDisplayState ?
+    <Link to={DisplayState.toUiUrl(path, prevDisplayState)}>&lt;</Link> :
+    (<span>&lt;</span>);
+  const nextPageLink = nextDisplayState ?
+    <Link to={DisplayState.toUiUrl(path, nextDisplayState)}>&gt;</Link> :
+    (<span>&gt;</span>);
   return (
     <div>
-      <Link to={prevPageUrl}>&lt;</Link>
+      {prevPageLink}
       {displayState.pageNo + 1} of {numPages}
-      <Link to={nextPageUrl}>&gt;</Link>
+      {nextPageLink}
     </div>
   );
 }

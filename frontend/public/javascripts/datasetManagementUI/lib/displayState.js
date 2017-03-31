@@ -1,3 +1,5 @@
+import * as Links from '../links';
+
 export const NORMAL = 'NORMAL';
 export const normal = (pageNo = 0) => ({
   type: NORMAL,
@@ -25,5 +27,26 @@ export function fromUrl({ params, route }) {
     return rowErrors(pageNo);
   } else {
     return normal(pageNo);
+  }
+}
+
+export function toUiUrl(path, displayState) {
+  switch (displayState.type) {
+    case NORMAL:
+      return Links.showOutputSchema(
+        path.uploadId, path.inputSchemaId, path.outputSchemaId, displayState.pageNo
+      );
+
+    case ROW_ERRORS:
+      return Links.showRowErrors(
+        path.uploadId, path.inputSchemaId, path.outputSchemaId,
+        displayState.pageNo
+      );
+
+    case COLUMN_ERRORS:
+      return Links.showColumnErrors(
+        path.uploadId, path.inputSchemaId, path.outputSchemaId, displayState.transformId,
+        displayState.pageNo
+      );
   }
 }

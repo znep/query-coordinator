@@ -58,3 +58,8 @@ tr.rowErrorsCount {
   composes: error from global;
   padding: 0 0.7em 1px;
 }
+
+.clickToView {
+  font-size: 10px;
+  color: $grey;
+}

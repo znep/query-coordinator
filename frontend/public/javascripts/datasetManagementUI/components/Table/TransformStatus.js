@@ -33,7 +33,7 @@ function ErrorFlyout({ transform }) {
         })}
         <TypeIcon type={transform.output_soql_type} />
         <br />
-        <span className={styles.clickToView}>{SubI18n.column_status_flyout.click_to_view}</span>
+        <span className={styles.clickToView}>{I18n.show_output_schema.click_to_view}</span>
       </section>
     </div>
   );

@@ -63,4 +63,11 @@
     background-color: $white;
   }
 
+  :global {
+    #malformed-rows-flyout {
+      color: $dark-grey-2;
+      font-size: 13px;
+      white-space: normal;
+    }
+  }
 }

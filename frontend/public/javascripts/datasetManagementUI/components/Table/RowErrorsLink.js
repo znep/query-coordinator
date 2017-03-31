@@ -24,7 +24,7 @@ function ErrorFlyout({ numRowErrors }) {
       <section className="flyout-content">
         {message} {SubI18n.flyout_message_explanation}
         <br />
-        <span className="click-to-view">{I18n.show_output_schema.click_to_view}</span>
+        <span className={styles.clickToView}>{I18n.show_output_schema.click_to_view}</span>
       </section>
     </div>
   );

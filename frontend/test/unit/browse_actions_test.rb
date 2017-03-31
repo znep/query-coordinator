@@ -260,7 +260,20 @@ class BrowseActionsTest3 < Minitest::Test
     stub_request(:get, url).to_return(status: 200, body: '', headers: {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'localhost', 'X-Socrata-Requestid'=>''})
   end
 
-  def stub_cetera_for_categories_and_browse(categories, datatypes = nil)
+  def stub_core_for_category_and_browse(category, datatypes = nil, extra_params = {})
+    core_views_url = 'http://localhost:8080/search/views.json'
+    core_views_params = {
+      category: category,
+      limit: 10,
+      page: 1,
+      limitTo: datatypes,
+      sortBy: 'relevance',
+    }.merge(extra_params).reject { |_, v| v.blank? }
+    url = core_views_url + '?' + core_views_params.to_query
+    stub_request(:get, url).to_return(status: 200, body: '', headers: {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'localhost', 'X-Socrata-Requestid'=>''})
+  end
+
+  def stub_cetera_for_categories_and_browse(categories, datatypes = nil, extra_params = {})
     cetera_url = 'localhost:5704/catalog/v1'
     cetera_params = {
       categories: categories,
@@ -274,7 +287,7 @@ class BrowseActionsTest3 < Minitest::Test
       public: true,
       published: true,
       explicitly_hidden: false
-    }.reject { |_, v| v.nil? }
+    }.merge(extra_params).reject { |_, v| v.nil? }
     url = cetera_url + '?' + cetera_params.to_query
     stub_request(:get, url).to_return(status: 200, body: '', headers: {'Content-Type'=>'application/json', 'X-Socrata-Host'=>'localhost', 'X-Socrata-Requestid'=>''})
   end
@@ -298,6 +311,71 @@ class BrowseActionsTest3 < Minitest::Test
     request = OpenStruct.new(:params => { category: category })
     browse_options = @browse_controller.send(:process_browse, request)
     browse_options[:search_options][:categories]
+  end
+
+  ##################################################
+  # Lots of tests around official boost
+  #
+  # - if cetera is enabled
+  #   - if the feature flag `cetera_search_boost_official_assets` is true
+  #     - if the catalog configuration doesn't have an official boost specified
+  #       => search_options[boostOfficial] should be 2.0
+  #     - if `official_boost` is set to a number > 0
+  #       => search_options[boostOfficial] should be that number
+  #     - if `official_boost` is set to a non-number or a number < 0
+  #       => search_options[boostOfficial] should be 2.0
+  #   - else if feature flag off or none
+  #     => no boostOfficial
+  # - else if we're in cly-land
+  #   => no boostOfficial
+  ##################################################
+  DEFAULT_OFFICIAL_BOOST = 2.0
+
+  def cetera_official_boost(using_cetera, boost_official, official_boost_amt, expected_boost)
+    stub_feature_flags_with(:cetera_search_boost_official_assets => boost_official)
+    @browse_controller.stubs(:using_cetera? => using_cetera)
+    request = OpenStruct.new(:params => { category: 'Test Category 4' })
+    options = {limitTo: 'tables'}
+    if using_cetera
+      if boost_official
+        amt = official_boost_amt || DEFAULT_OFFICIAL_BOOST
+        stub_cetera_for_categories_and_browse(category_4_categories, 'datasets',
+                                              { :boostOfficial => amt })
+      else
+        stub_cetera_for_categories_and_browse(category_4_categories, 'datasets')
+      end
+    else
+      # don't stub boosts -- we don't expect boost to ever be called from the cly fork
+      stub_core_for_category_and_browse('Test Category 4', 'tables')
+    end
+    browse_options = @browse_controller.send(:process_browse, request, options)
+    if expected_boost == nil
+      refute browse_options[:search_options].key?(:boostOfficial)
+    else
+      assert_equal expected_boost, browse_options[:search_options][:boostOfficial]
+    end
+  end
+
+  def test_process_browse_official_boost
+    expectations = {
+      # [using_cetera, boost_official, official_boost_amt] => expected_boost
+      [true, true, nil] => DEFAULT_OFFICIAL_BOOST,
+      [true, true, 'foo'] => DEFAULT_OFFICIAL_BOOST,
+      [true, true, '5.0'] => 5.0,
+      [true, false, nil] => nil,
+      [true, false, 'foo'] => nil,
+      [true, false, '5.0'] => nil,
+      [false, true, nil] => nil,
+      [false, true, 'foo'] => nil,
+      [false, true, '5.0'] => nil,
+      [false, false, nil] => nil,
+      [false, false, 'foo'] => nil,
+      [false, false, '5.0'] => nil,
+    }
+    expectations.each do |(uc, bo, oba), eb|
+      CurrentDomain.stubs(:property).with(:official_boost, :catalog).returns(oba)
+      cetera_official_boost(uc, bo, oba, eb)
+    end
   end
 
   def test_process_browse_unpublished_includes_drafts_if_feature_flag_enabled

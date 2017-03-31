@@ -1,0 +1,104 @@
+
+{
+  "id" : 1,
+  "name" : "Socrata Website",
+  "aliases" : "local.dev",
+  "cname" : "localhost",
+  "httpsEnforced" : false,
+  "organizationId" : 1,
+  "parentDomainId" : 2,
+  "shortName" : "socrata",
+  "accountModules" : [ {
+    "name" : "govStat",
+    "description" : "Makes this domain GovStat"
+  }, {
+    "name" : "canvas2",
+    "description" : "Enable DataSlate"
+  }, {
+    "name" : "govstat_target_tolerance",
+    "description" : "Enable goal tolerance logic in GovStat."
+  }, {
+    "name" : "canvas_designer",
+    "description" : "Enable the interactive DataSlate designer"
+  }, {
+    "name" : "geospatial",
+    "description" : "Geospatial datasets and features"
+  } ],
+  "accountTier" : {
+    "id" : 3,
+    "name" : "Ultimate",
+    "accountModules" : [ {
+      "name" : "sdp_customizer",
+      "description" : "Access is granted to the SDP customizer"
+    }, {
+      "name" : "basic_visualization",
+      "description" : "Bar, Pie, Line Charts, Heat Maps, Point Maps"
+    }, {
+      "name" : "advanced_visualization",
+      "description" : "Combo Charts, Bubble Charts, County-level Heatmaps"
+    }, {
+      "name" : "basic_metrics",
+      "description" : "Aggregate usage counts, web propagation summary, day-old metrics"
+    }, {
+      "name" : "advanced_metrics",
+      "description" : "Detailed usage counts, web prop details, > 30 days, real-time"
+    }, {
+      "name" : "community_comment_moderation",
+      "description" : "Comments can be community moderated"
+    }, {
+      "name" : "dataset_append",
+      "description" : "Datasets can be appended to"
+    }, {
+      "name" : "dataset_refresh",
+      "description" : "Datasets can be refreshed replaced"
+    }, {
+      "name" : "dataset_nomination",
+      "description" : "Visitors can nominate datasets for inclusion"
+    }, {
+      "name" : "dataset_approval",
+      "description" : "Publishers can set up a signoff process for datasets"
+    }, {
+      "name" : "discovery_module",
+      "description" : "The Data tab"
+    }, {
+      "name" : "community_module",
+      "description" : "The Community tab"
+    }, {
+      "name" : "community_creation",
+      "description" : "Allow community members to create datasets"
+    }, {
+      "name" : "openid_login",
+      "description" : "Allow users to log in via OpenID"
+    }, {
+      "name" : "allow_comments",
+      "description" : "Allow users to comment on datasets"
+    }, {
+      "name" : "form_publish",
+      "description" : "Ability to publish forms"
+    }, {
+      "name" : "map_publish",
+      "description" : "Ability to publish maps"
+    }, {
+      "name" : "digital_signatures",
+      "description" : "Create digital signatures for datasets to prove integrity"
+    }, {
+      "name" : "federations",
+      "description" : "Share datasets across domains"
+    }, {
+      "name" : "esri_integration",
+      "description" : "ESRI map layer datasets"
+    }, {
+      "name" : "cell_comments",
+      "description" : "Allow commenting on individual cells"
+    }, {
+      "name" : "use_soda2",
+      "description" : "Force the domain to use SODA2 API"
+    } ],
+    "config" : {
+      "administrator_cap" : 10,
+      "account_lockout_minutes" : 30,
+      "metering.monthly.limit" : 5368709120000,
+      "snapshots" : 20
+    }
+  }
+}

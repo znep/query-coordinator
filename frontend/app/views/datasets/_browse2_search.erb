@@ -1,6 +1,6 @@
 <%- unless opts[:disable][:search] -%>
 
-  <div id="browse2-search-container">
+  <div id="browse2-search-container" data-catalog-autocomplete="<%= FeatureFlags.derive(@view, request).browse_autocomplete %>">
     <form class="browse2-search">
       <span class="browse2-search-icon icon-search"></span>
       <input class="browse2-search-control searchBox" type="text" name="browseSearch" value="<%= opts[:q] %>" title="<%= t('controls.browse.browse2.search.title') %>" placeholder="<%= t('controls.browse.browse2.search.placeholder') %>" />
@@ -12,13 +12,4 @@
       <%- end -%>
     </form>
   </div>
-
-  <%- if FeatureFlags.derive(@view, request).browse_autocomplete -%>
-    <%= include_webpack_bundle 'autocomplete/main.js' %>
-
-    <script>
-      window.autocomplete('#browse2-search-container', { query: '<%= opts[:q] %>' });
-    </script>
-  <% end %>
-
 <%- end -%>

@@ -12,13 +12,7 @@ module.exports = _.defaultsDeep({
   eslint: common.getEslintConfig(common.isProduction ? '.eslintrc.json' : '.eslintrc-dev.json'),
   module: {
     loaders: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loaders: [
-          'babel'
-        ]
-      },
+      common.getBabelLoader(),
       {
         test: /\.html$/,
         exclude: /node_modules/,
@@ -45,15 +39,15 @@ module.exports = _.defaultsDeep({
       }
     ]
   },
-  resolve: {
-    root: [
-      path.resolve(common.root, 'node_modules')
-    ],
-    alias: {
-      'angular_templates': path.resolve(common.root, 'public/angular_templates'),
-      plugins: path.resolve(common.root, 'public/javascripts/plugins'),
-      'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js')
-    }
-  },
+  resolve: _.extend(
+    {
+      alias: {
+        'angular_templates': path.resolve(common.root, 'public/angular_templates'),
+        plugins: path.resolve(common.root, 'public/javascripts/plugins'),
+        'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js')
+      }
+    },
+    common.getStandardResolve()
+  ),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

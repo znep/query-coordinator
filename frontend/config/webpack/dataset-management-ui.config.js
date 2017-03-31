@@ -23,14 +23,7 @@ module.exports = _.defaultsDeep({
   },
   module: {
     loaders: [
-      {
-        test: /\.jsx?$/,
-        include: [
-          path.resolve(common.root, 'public/javascripts'),
-          path.resolve(common.root, 'node_modules/socrata-components/common')
-        ],
-        loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
-      },
+      common.getBabelLoader(),
       {
         test: /\.global.scss$/,
         include: [
@@ -44,11 +37,7 @@ module.exports = _.defaultsDeep({
       }
     ]
   },
-  resolve: {
-    root: [
-      path.resolve(common.root, 'public/javascripts/datasetManagementUI')
-    ]
-  },
+  resolve: common.getStandardResolve([ 'public/javascripts/datasetManagementUI' ]),
   plugins: plugins,
   postcss: function() {
     return [

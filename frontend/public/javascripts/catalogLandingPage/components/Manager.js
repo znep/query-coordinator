@@ -43,7 +43,7 @@ export class Manager extends React.Component {
       if (featuredContentItem.contentType === 'external') {
         featuredContentPayload[key].contentType = 'external';
 
-        const validBase64ImagePrefixRegex = new RegExp('^data:image/[jpe?g|png|gif];base64');
+        const validBase64ImagePrefixRegex = new RegExp('^data:image/(jpe?g|png|gif);base64', 'i');
         // EN-15002: If a new image has been uploaded, it will have a base64 encoding as its `imageUrl`,
         // and we want to send it in the payload to core to turn it into a URL.
         if (validBase64ImagePrefixRegex.test(featuredContentItem.imageUrl)) {
@@ -259,9 +259,7 @@ Manager.propTypes = {
 
 const mapStateToProps = state => ({
   catalogPath: state.catalog.path,
-  catalogQuery: _.isString(state.catalog.query) ?
-    { custom_path: state.catalog.query } :
-    state.catalog.query,
+  catalogQuery: state.catalog.query,
   category: state.category,
   categoryStats: state.categoryStats,
   featuredContent: state.featuredContent,

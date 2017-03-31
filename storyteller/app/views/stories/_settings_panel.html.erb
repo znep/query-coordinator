@@ -1,0 +1,182 @@
+<div id="settings-panel-container">
+  <div class="settings-panel">
+    <%- if current_user.present? && !open_performance_enabled? %>
+      <a class="back-to-profile-btn" href="/profile/<%= current_user['id'] %>?limitTo=story">
+        <span class="socrata-icon-arrow-prev back-to-profile-icon"></span>
+        <span class="back-to-profile-label" title="<%= t('editor.settings_panel.back_to_profile') %>">
+          <%= t('editor.settings_panel.back_to_profile') %>
+        </span>
+      </a>
+    <%- end %>
+    <button class="close-side-panel-btn" data-panel-toggle="settings-panel">
+      <span class="socrata-icon-close-2 close-panel-icon"></span>
+    </button>
+
+    <header>
+      <h4 class="settings-main-title text-center"><%= t('editor.settings_panel.panel_title') %></h4>
+    </header>
+
+    <section class="settings-panel-errors warning-bar hidden">
+      <p><span class="socrata-icon-warning"></span></p>
+      <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.generic_error') %></p>
+    </section>
+
+    <ul class="menu-list">
+
+      <li id="settings-panel-story-metadata" class="menu-list-item">
+        <button class="menu-list-item-header expandable">
+          <span class="socrata-icon-edit"></span>
+          <%- if @story_metadata.goal? -%>
+          <span><%= t('editor.settings_panel.displaying_section.section_title_when_goal') %></span>
+          <%- else -%>
+          <span><%= t('editor.settings_panel.displaying_section.section_title') %></span>
+          <%- end -%>
+        </button>
+        <div class="menu-list-item-content settings-panel-displaying collapsed">
+          <div>
+            <%- unless can_edit_title_and_description? -%>
+              <section class="warning-bar">
+                <p><span class="socrata-icon-warning"></span></p>
+                <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_edit_title_and_description') %></p>
+              </section>
+            <%- end %>
+
+            <form>
+              <label for="title" class="block-label"><%= t('editor.settings_panel.displaying_section.title_label') %></label>
+              <input id="title" class="text-input" name="title" type="text" maxlength="254"<%= ' disabled' unless can_edit_title_and_description? %>>
+              <%- unless @story_metadata.goal? -%>
+                <label for="description" class="block-label"><%= t('editor.settings_panel.displaying_section.description_label') %></label>
+                <textarea id="description" class="text-area" name="description" <%= ' disabled' unless can_edit_title_and_description? %>></textarea>
+              <%- end -%>
+            </form>
+
+            <div class="settings-save-failure-message alert error">
+              <p><%= t('editor.settings_panel.errors.generic_save_failure_message') %></p>
+            </div>
+            <button class="btn btn-default btn-dark settings-save-btn">
+              <%- if @story_metadata.goal? -%>
+              <span><%= t('editor.settings_panel.displaying_section.save_button_label_when_goal') %></span>
+              <%- else -%>
+              <span><%= t('editor.settings_panel.displaying_section.save_button_label') %></span>
+              <%- end -%>
+            </button>
+          </div>
+        </div>
+      </li>
+
+      <li id="settings-panel-copy-story" class="menu-list-item">
+        <button class="menu-list-item-header" data-action="STORY_MAKE_COPY_MODAL_OPEN"<%= ' disabled' unless can_make_copy? %>>
+          <span class="socrata-icon-copy-document"></span>
+          <span><%= t('editor.settings_panel.copy_section.section_title') %></span>
+          <%- unless can_make_copy? -%>
+            <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>
+          <%- end %>
+        </button>
+      </li>
+
+      <%- unless @story_metadata.goal? -%>
+      <li id="settings-panel-collaborators" class="menu-list-item">
+        <button class="menu-list-item-header" data-action="COLLABORATORS_OPEN"<%= ' disabled' unless can_manage_collaborators? %>>
+          <span class="socrata-icon-add-collaborator"></span>
+          <span><%= t('editor.settings_panel.collaborators_section.section_title') %></span>
+          <%- unless can_manage_collaborators? -%>
+            <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>
+          <%- end %>
+        </button>
+      </li>
+      <%- end -%>
+
+      <li id="settings-panel-publishing" class="menu-list-item">
+        <button class="menu-list-item-header expandable">
+          <span class="socrata-icon-eye"></span>
+          <span><%= t('editor.settings_panel.publishing_section.section_title') %></span>
+        </button>
+        <div class="menu-list-item-content settings-panel-publishing collapsed">
+          <div>
+            <%- unless can_manage_story_visibility? && can_publish_story? -%>
+              <section class="warning-bar">
+                <p><span class="socrata-icon-warning"></span></p>
+                <%- if @story_metadata.public? -%>
+                  <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_change_visibility_or_update_public_version') %></p>
+                <%- else -%>
+                  <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_change_visibility') %></p>
+                <%- end -%>
+              </section>
+            <%- end %>
+
+            <div class="settings-panel-story-visibility">
+              <div>
+                <h2><%= t('editor.settings_panel.publishing_section.visibility.title') %></h2>
+                <h3><%= t('editor.settings_panel.publishing_section.visibility.private') %></h3>
+              </div>
+              <div>
+                <button class="btn btn-alternate-2 btn-dark" <%= ' disabled' unless can_manage_story_visibility? %>>
+                  <span><%= t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
+                </button>
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="settings-panel-story-status hidden">
+              <div>
+                <h2><%= t('editor.settings_panel.publishing_section.status.title') %></h2>
+                <h3><%= t('editor.settings_panel.publishing_section.status.draft') %></h3>
+              </div>
+              <div>
+                <button class="btn btn-primary btn-dark" disabled>
+                  <span><%= t('editor.settings_panel.publishing_section.status.update_public_version') %></span>
+                </button>
+              </div>
+            </div>
+
+            <p class="settings-panel-story-publishing-help-text">
+              <%=
+                if @story_metadata.goal?
+                  t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly_goals')
+                else
+                  t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly')
+                end
+              %>
+            </p>
+          </div>
+        </div>
+      </li>
+
+      <%- unless @story_metadata.goal? -%>
+      <li id="settings-panel-share" class="menu-list-item">
+        <button class="menu-list-item-header" data-action="SHARE_AND_EMBED_MODAL_OPEN">
+          <span class="socrata-icon-share"></span>
+          <span><%= t('editor.settings_panel.story_tile_embed_section.section_title') %></span>
+        </button>
+      </li>
+      <%- end -%>
+
+      <li id="settings-panel-print-story" class="menu-list-item">
+        <%= settings_panel_print_story_link do %>
+          <span class="socrata-icon-copy-document"></span>
+          <span><%= t('editor.settings_panel.print_story_section.section_title') %></span>
+        <% end -%>
+      </li>
+
+      <%- unless @story_metadata.goal? -%>
+      <li id="settings-panel-story-stats" class="menu-list-item">
+        <%= settings_panel_story_stats_link do %>
+          <span class="socrata-icon-bar-chart"></span>
+          <span><%= t('editor.settings_panel.story_stats_section.section_title') %></span>
+          <%- unless can_see_story_stats? -%>
+            <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>
+          <%- end %>
+        <% end -%>
+      </li>
+      <% end -%>
+    </ul>
+
+    <footer class="menu-footer">
+      <%= settings_panel_help_link do %>
+        <span><%= t('editor.help') %></span>
+      <% end -%>
+    </footer>
+  </div>
+  <div id="settings-panel-overlay" data-panel-toggle="settings-panel"></div>
+</div>

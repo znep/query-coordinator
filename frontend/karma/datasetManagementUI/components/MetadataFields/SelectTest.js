@@ -1,49 +1,60 @@
 import Select from 'components/MetadataFields/Select';
-import genericFieldDescriptor from 'data/fieldDescriptor';
+import React from 'react';
+import { shallow, mount } from 'enzyme';
 
-describe('Select', function() {
-  let shallow;
+const changeListener = sinon.spy();
 
-  beforeEach(() => {
-    shallow = TestUtils.createRenderer();
-  });
-
-  const defaultProps = {
-    descriptor: {
-      ...genericFieldDescriptor,
-      type: 'select',
-      options: [
-        {title: 'Foo', value: 'foo'},
-        {title: 'Bar', value: 'bar'},
-      ]
+const props = {
+  bindInput: name => ({
+    name,
+    onChange: changeListener
+  }),
+  "options": [
+    {
+      "title": "Business",
+      "value": "Business"
     },
-    onChange: _.noop,
-    value: 'bar',
-    isValid: true
-  };
+    {
+      "title": "Government",
+      "value": "Government"
+    },
+    {
+      "title": "Personal",
+      "value": "Personal"
+    }
+  ],
+  name: "category",
+  required: false,
+  showErrors: sinon.spy()
+}
 
-  it('renders an element', function() {
-    const element = shallow.render(<Select {...defaultProps}/>);
+describe('Select', () => {
+  it('renders a select element', () => {
+    const element = shallow(<Select {...props} />);
 
-    expect(element.type).to.eq('select');
+    expect(element.find('select')).to.have.length(1);
   });
 
-  it('renders the provided value', function() {
-    const element = renderStatelessComponent(<Select {...defaultProps}/>);
+  it('renders options as option tags', () => {
+    const element = shallow(<Select {...props} />);
 
-    expect(element.querySelector('select').value).to.eq(defaultProps.value);
+    expect(element.find('option')).to.have.length(3);
   });
 
-  it('invokes the onChange handler', function() {
-    const spy = sinon.spy();
-    const newProps = {...defaultProps, onChange: spy};
-    const element = renderStatelessComponent(<Select {...newProps}/>);
+  it('calls showErrors callback on blur', () => {
+    const element = mount(<Select {...props} />);
 
-    const input = element.querySelector('select');
-    input.value = 'foo';
-    TestUtils.Simulate.change(input);
+    element.simulate('blur');
 
-    expect(spy.calledWith('foo')).to.eq(true);
+    expect(element.props().showErrors.calledOnce).to.eq(true);
   });
 
+
+  it('calls bindInput-supplied callback on change', () => {
+    const element = mount(<Select {...props} />);
+
+    element.simulate('change');
+
+    expect(changeListener.calledOnce).to.eq(true);
+  });
 });

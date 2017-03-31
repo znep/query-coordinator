@@ -961,4 +961,28 @@ window.socrata.featureFlags =
     end
   end
 
+  describe 'include_webpack_bundle' do
+    let(:asset_manifest) { {'main.js' => 'main.js'} }
+
+    before do
+      expect(Rails.configuration.webpack).to receive(:[]).with(:use_dev_server).and_return(false)
+      expect(Rails.configuration.webpack).to receive(:[]).with(:use_manifest).and_return(true)
+    end
+
+    it 'raises when the resource cannot be found' do
+      expect(Rails.configuration.webpack).to receive(:[]).with(:asset_manifest).and_return(asset_manifest)
+      expect { helper.include_webpack_bundle('missing') }.to raise_error(KeyError)
+    end
+
+    it 'renders a script tag with the appropriate resource' do
+      expect(Rails.configuration.webpack).to receive(:[]).with(:asset_manifest).and_return(asset_manifest)
+      expect(helper.include_webpack_bundle('main.js')).to match(%r{javascripts/build/main.js\?.*\d+"})
+    end
+
+    it 'handles resource names without the file extension' do
+      expect(Rails.configuration.webpack).to receive(:[]).with(:asset_manifest).and_return(asset_manifest)
+      expect(helper.include_webpack_bundle('main')).to match(%r{javascripts/build/main.js\?.*\d+"})
+    end
+  end
+
 end

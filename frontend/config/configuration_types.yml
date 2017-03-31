@@ -31,8 +31,11 @@ catalog:
   - facet_cutoffs
   - view_types_facet
   - federation_filter
+  - data-json-schema-version
+  - official_boost
   property_type_checking:
     custom_facets: Array
+    official_boost: Number
 catalog_federations:
   description: Used by core server. Not sure for what.
   discourage_in_creation_ui:

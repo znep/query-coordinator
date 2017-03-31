@@ -477,6 +477,17 @@ module BrowseActions
 
             browse_options[:search_options][:domain_boosts] = Federation.federated_search_boosts
             browse_options[:search_options][:categories] = selected_category_and_any_children(browse_options)
+
+            if boost_official_views?
+              official_boost = CurrentDomain.property(:official_boost, :catalog).to_f
+              if official_boost > 0
+                boost = official_boost
+              else
+                boost = 2.0
+              end
+              browse_options[:search_options][:boostOfficial] = boost
+            end
+
             browse_options[:search_options][:default_sort] = CurrentDomain.property(:sortBy, :catalog)
 
             # localize catalog links if locale is present

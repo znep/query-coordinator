@@ -1,0 +1,16 @@
+#!/bin/bash
+
+npm update eslint > /dev/null
+
+NEW_PROBLEMS=`./node_modules/.bin/eslint -c package.json -f compact app | sort | tail -n +3`
+NEW_PROBLEMS_COUNT=`wc -l <(echo -n "$NEW_PROBLEMS") | awk '{print $1}'`
+
+if [ "$NEW_PROBLEMS_COUNT" -gt 0 ]; then
+  echo
+  echo "New errors:"
+  echo "$NEW_PROBLEMS"
+  echo
+  false
+else
+  true
+fi

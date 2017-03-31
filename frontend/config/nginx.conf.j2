@@ -30,6 +30,8 @@ http {
     listen 3000 default deferred;
     root /opt/frontend/public;
 
+    client_max_body_size {{NGINX_CLIENT_MAX_BODY_SIZE | default(0)}};
+
     location ^~ /packages/ {
       gzip_static on;
       expires 1h;

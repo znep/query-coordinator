@@ -4,8 +4,8 @@ namespace :assets do
     unless File.exist?('./node_modules/.bin/babel')
       raise RuntimeError.new('Unable to find babel binary. Install babel with "npm install"')
     end
-    cmd = 'npm run build:prod'
-    puts cmd
-    fail($?.exitstatus) unless system(cmd)
+    command = 'npm run build:prod'
+    puts("Running NPM command: #{command}")
+    fail($?.exitstatus) unless system(command)
   end
 end

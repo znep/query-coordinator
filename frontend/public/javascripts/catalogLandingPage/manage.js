@@ -8,7 +8,7 @@ import airbrake from '../common/airbrake';
 import reducer from './reducers';
 import Manager from './components/Manager';
 
-var middleware = [thunk];
+const middleware = [thunk];
 
 if (window.serverConfig.environment === 'development') {
   middleware.push(createLogger({
@@ -20,7 +20,7 @@ if (window.serverConfig.environment === 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
-var store = createStore(reducer, applyMiddleware(...middleware));
+const store = createStore(reducer, applyMiddleware(...middleware));
 
 ReactDOM.render(
   <Provider store={store}>
@@ -28,3 +28,9 @@ ReactDOM.render(
   </Provider>,
   document.querySelector('#catalog-landing-page-manage')
 );
+
+// Show the footer
+const footer = document.querySelector('#site-chrome-footer');
+if (footer) {
+  footer.style.visibility = 'visible';
+}

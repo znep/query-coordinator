@@ -1,70 +1,23 @@
-import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import {
-  STATUS_DIRTY,
-  STATUS_DIRTY_IMMUTABLE,
-  STATUS_SAVED,
-  STATUS_UPDATING,
-  STATUS_UPDATING_IMMUTABLE
-} from '../../lib/database/statuses';
+import _ from 'lodash';
 import styles from 'styles/ManageMetadata/SaveButton.scss';
 
-export default function SaveButton({ onSave, view, outputSchema, outputColumns }) {
-  const metadataRecords = [
-    view,
-    ...outputColumns
-  ];
-  if (outputSchema) {
-    metadataRecords.push(outputSchema);
-  }
-  const metadataRecordStatuses = metadataRecords.map((record) => record.__status__.type);
+const SaveButton = ({ isDirty, onSaveClick }) => {
+  const isFormDirty = isDirty && isDirty.form;
+  const handler = isFormDirty ? onSaveClick : _.noop;
 
-  let overallStatus;
-  if (_.some(metadataRecordStatuses,
-      (status) => status === STATUS_DIRTY_IMMUTABLE || status === STATUS_DIRTY)) {
-    overallStatus = STATUS_DIRTY;
-  } else if (_.some(metadataRecordStatuses, (status) =>
-        status === STATUS_UPDATING_IMMUTABLE || status === STATUS_UPDATING)) {
-    overallStatus = STATUS_UPDATING;
-  } else {
-    overallStatus = STATUS_SAVED;
-  }
-
-  switch (overallStatus) {
-    case STATUS_SAVED:
-      return (
-        <button
-          id="save"
-          className={styles.savedBtn}
-          disabled="true">
-          {I18n.common.save}
-        </button>
-      );
-
-    case STATUS_UPDATING:
-      return (
-        <button
-          id="save"
-          className={styles.updatingBtn}>
-          <span className={styles.spinner} />
-        </button>
-      );
-
-    default: // STATUS_DIRTY
-      return (
-        <button
-          id="save"
-          className={styles.baseBtn}
-          onClick={onSave}>
-          {I18n.common.save}
-        </button>
-      );
-  }
-}
+  return (
+    <button id="save" className={styles.baseBtn} onClick={handler} disabled={!isFormDirty}>
+      {I18n.common.save}
+    </button>
+  );
+};
 
 SaveButton.propTypes = {
-  onSave: PropTypes.func.isRequired,
-  view: PropTypes.object.isRequired,
-  outputSchema: PropTypes.object.isRequired,
-  outputColumns: PropTypes.array.isRequired
+  isDirty: PropTypes.shape({
+    form: PropTypes.bool
+  }),
+  onSaveClick: PropTypes.func
 };
+
+export default SaveButton;

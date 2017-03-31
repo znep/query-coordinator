@@ -39,9 +39,10 @@ describe CatalogLandingPage do
   end
 
   describe '.may_activate?' do
+    let(:path) { '/browse' }
     let(:request) do
       double(:request, params: ActionController::Parameters.new(params),
-             query_parameters: params)
+             query_parameters: params, path: path)
     end
     let(:max_param_overlap) { 1 }
     before(:each) do
@@ -51,10 +52,19 @@ describe CatalogLandingPage do
     end
 
     context 'when it is just /browse' do
-      let(:params) { { custom_path: 'browse' } }
+      let(:params) { {} }
 
       it 'should return true' do
         expect(CatalogLandingPage.may_activate?(request)).to eq(true)
+      end
+    end
+
+    context 'when it is just /' do
+      let(:path) { '/' }
+      let(:params) { {} }
+
+      it 'should return false' do
+        expect(CatalogLandingPage.may_activate?(request)).to eq(false)
       end
     end
 
@@ -92,9 +102,10 @@ describe CatalogLandingPage do
     let(:configuration) { double(:config, properties: properties) }
     let(:properties) { {} }
     let(:params) { {} }
+    let(:path) { '/' }
     let(:request) do
       double(:request, params: ActionController::Parameters.new(params),
-             query_parameters: params)
+             query_parameters: params, path: path)
     end
 
     context 'when the configuration does not exist' do
@@ -112,7 +123,7 @@ describe CatalogLandingPage do
     end
 
     context 'when the configuration has a custom path' do
-      let(:properties) { { '/something-completely-weird' => {} } }
+      let(:properties) { { '%2Fsomething-completely-weird' => {} } }
 
       context 'and it is being requested' do
         let(:params) { { custom_path: 'something-completely-weird' } }

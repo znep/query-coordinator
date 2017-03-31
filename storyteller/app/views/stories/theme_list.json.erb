@@ -1,0 +1,59 @@
+<%#
+Responsible for:
+- Storing data for sidebar theme samples
+
+This is .json.erb so that we can translate the default content
+and use asset path helpers.
+-%>
+{
+  "themes": [
+    {
+      "description": "<%= I18n.t('style_and_presentation_panel.classic_theme_description') %>",
+      "id": "classic",
+      "css_variables": {
+        "$body-font-stack": "'Georgia', sans-serif",
+        "$heading-font-stack": "'Helvetica', serif",
+        "$default-type-color": "#252525",
+        "$heading-type-color": "#333"
+        },
+      "google_font_code": "",
+      "title": "Classic"
+    },
+    {
+      "description": "<%= I18n.t('style_and_presentation_panel.sans_theme_description') %>",
+      "id": "sans",
+      "css_variables": {
+        "$body-font-stack": "'PT Sans', sans-serif",
+        "$heading-font-stack": "'Titillium Web', serif",
+        "$default-type-color": "#444",
+        "$heading-type-color": "#5d950f"
+        },
+      "google_font_code": "",
+      "title": "Sans"
+    },
+    {
+      "description": "<%= I18n.t('style_and_presentation_panel.serif_theme_description') %>",
+      "id": "serif",
+      "css_variables": {
+        "$body-font-stack": "'Merriweather', sans-serif",
+        "$heading-font-stack": "'Lusitana', serif",
+        "$default-type-color": "#252525",
+        "$heading-type-color": "#5590ba"
+        },
+      "google_font_code": "",
+      "title": "Serif"
+    },
+    {
+      "description": "<%= I18n.t('style_and_presentation_panel.slab_theme_description') %>",
+      "id": "slab",
+      "css_variables": {
+        "$body-font-stack": "'Open Sans', sans-serif",
+        "$heading-font-stack": "'Roboto Slab', serif",
+        "$default-type-color": "#252525",
+        "$heading-type-color": "#E24816"
+        },
+      "google_font_code": "",
+      "title": "Slab"
+    }
+  ]
+}

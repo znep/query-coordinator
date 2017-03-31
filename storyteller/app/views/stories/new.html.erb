@@ -1,0 +1,23 @@
+<div id="modal" class="storyteller-modal">
+
+  <div class="modal-overlay"></div>
+
+  <div class="modal-dialog">
+    <h1 class="modal-title">Create a New Story</h1>
+
+      <form action="/stories/s/<%= params[:uid] -%>/create" method="POST">
+        <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+
+        <div class="asset-selector-input-group">
+          <h2 class="modal-input-label">To get started, choose a name for your story.</h2>
+          <input id="create-story-title-input" class="asset-selector-text-input" type="text" name="title" autofocus="autofocus" placeholder="Choose a name for your story..." value="<%= @story_title %>" />
+        </div>
+        <div class="modal-button-group r-to-l">
+          <button id="create-story-submit-btn" class="btn btn-primary" type="submit">Create Story</button>
+        </div>
+      </form>
+
+    </div>
+
+  </div>
+</div>

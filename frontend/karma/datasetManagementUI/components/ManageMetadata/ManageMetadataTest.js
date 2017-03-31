@@ -1,6 +1,8 @@
 /* eslint new-cap: 0 */
 import _ from 'lodash';
 import { ManageMetadata } from 'components/ManageMetadata';
+import React from 'react';
+import { mount, shallow, render } from 'enzyme';
 import { statusSavedOnServer, STATUS_SAVED_ON_SERVER, statusDirty } from 'lib/database/statuses';
 
 
@@ -9,19 +11,24 @@ describe('components/ManageMetadata', () => {
   const columnPath = 'metadata/columns';
 
   const defaultProps = {
-    view: {
-      __status__: statusSavedOnServer,
-      id: 'hehe-hehe',
-      name: 'a name',
-      description: 'a description',
-      category: 'category',
-      tags: ['a tag'],
-      rowLabel: 'row label'
+    views: {
+      'hehe-hehe': {
+        __status__: statusSavedOnServer,
+        id: 'hehe-hehe',
+        name: 'a name',
+        description: 'a description',
+        category: 'category',
+        tags: ['a tag'],
+        rowLabel: 'row label',
+        isDirty: {
+          form: false
+        }
+      }
     },
+    fourfour: 'hehe-hehe',
     onChange: _.noop,
     onSave: _.noop,
     onDismiss: _.noop,
-    onEditDatasetMetadata: _.noop,
     onEditColumnMetadata: _.noop,
     outputColumns: [],
     outputSchema: {
@@ -95,70 +102,32 @@ describe('components/ManageMetadata', () => {
   });
 
   describe('onSave handling', () => {
-    it('isn\'t invoked when you click save if the view isn\'t dirty', () => {
-      const datasetStub = sinon.stub();
-      const datasetMeta = renderComponentWithStore(ManageMetadata, {
-        ...defaultColumnProps,
-        onSave: datasetStub
-      });
+    // rather than test save funcitonality here, just test that it passes the correct
+    // data; test saving behavior in SaveButton tests
+    it('passes the correct prop to SaveButton when form isn\'t dirty', () => {
+      const component = shallow(<ManageMetadata {...defaultDatasetProps}/>);
 
-      TestUtils.Simulate.click(datasetMeta.querySelector('#save'));
-      expect(datasetStub.called).to.eq(false);
-
-      const columnStub = sinon.stub();
-      const columnMeta = renderComponentWithStore(ManageMetadata, {
-        ...defaultColumnProps,
-        onSave: columnStub
-      });
-
-      TestUtils.Simulate.click(columnMeta.querySelector('#save'));
-      expect(columnStub.called).to.eq(false);
+      expect(component.find('SaveButton').props().isDirty.form).to.eq(false);
     });
 
-    it('is invoked when you click save if the view is dirty', () => {
-      const stub = sinon.stub();
-
+    it('passes the correct prop to SaveButton when form is dirty', () => {
       const dirtyView = {
-        ...defaultDatasetProps.view,
-        __status__: statusDirty(defaultProps.view)
+        ...defaultProps.views[defaultProps.fourfour],
+        isDirty: {
+          form: true
+        }
       };
 
-      const propsWithDirtyView = {
+      const dirtyProps = {
         ...defaultDatasetProps,
-        view: dirtyView
+        views: {
+          [defaultProps.fourfour]: dirtyView
+        }
       };
 
-      const element = renderComponentWithStore(ManageMetadata, {
-        ...propsWithDirtyView,
-        onSave: stub
-      });
+      const component = shallow(<ManageMetadata {...dirtyProps} />);
 
-      TestUtils.Simulate.click(element.querySelector('#save'));
-      expect(stub.called).to.eq(true);
-    });
-
-    it('is invoked when you click save if a column is dirty', () => {
-      const stub = sinon.stub();
-
-      const oldColumn = {
-        name: 'Tiny Hands',
-        field_name: 'the_president'
-      };
-
-      const propsWithDirtyColumn = {
-        ...defaultColumnProps,
-        outputColumns: [{
-          name: 'Supreme Leader',
-          field_name: 'the_president',
-          __status__: statusDirty(oldColumn)
-        }],
-        onSave: stub
-      };
-
-      const element = renderComponentWithStore(ManageMetadata, propsWithDirtyColumn);
-
-      TestUtils.Simulate.click(element.querySelector('#save'));
-      expect(stub.called).to.eq(true);
+      expect(component.find('SaveButton').props().isDirty.form).to.eq(true);
     });
   });
 });

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+
+ <head>
+    <title><%= @tile_properties[:title] %></title>
+    <%= default_meta_tags() %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= stylesheet_link_tag 'tile', media: 'all' %>
+
+    <%= storyteller_javascript_include_tag 'tile' %>
+    <%= google_font_code_embed %>
+    <%= render 'shared/google_analytics_script' %>
+  </head>
+
+  <body>
+
+    <%= yield %>
+
+  </body>
+
+</html>

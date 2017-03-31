@@ -93,8 +93,16 @@ export function ShowOutputSchema({
                 <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
               </div>
               <div className={styles.datasetAttribute}>
-                <p>Columns</p>
-                <p className={styles.attribute}>{columns.length}</p>
+                <div className={styles.datasetAttribute}>
+                  <p>Rows</p>
+                  <p
+                    className={styles.attribute}
+                    data-cheetah-hook="total-rows-transformed">{commaify(rowsTransformed)}</p>
+                </div>
+                <div className={styles.datasetAttribute}>
+                  <p>Columns</p>
+                  <p className={styles.attribute}>{columns.length}</p>
+                </div>
               </div>
             </div>
           </div>

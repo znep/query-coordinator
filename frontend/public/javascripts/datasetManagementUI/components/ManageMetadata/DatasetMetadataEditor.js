@@ -1,165 +1,64 @@
-import _ from 'lodash';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import React, { PropTypes } from 'react';
-import MetadataField from '../MetadataField';
-import Fieldset from 'components/MetadataFields/Fieldset';
-import isEmail from 'validator/lib/isEmail';
-import isURL from 'validator/lib/isURL';
-import { STATUS_DIRTY } from 'lib/database/statuses';
+import _ from 'lodash';
+
+import DatasetForm from 'components/ManageMetadata/DatasetForm';
+import FlashMessage from 'components/FlashMessage/FlashMessage';
 import styles from 'styles/ManageMetadata/DatasetMetadataEditor.scss';
 
-// TODO: smarter validations, prob on form submit, and allow multiple messages (EN-14789)
-export function DatasetMetadataEditor({ view, onEdit, tags }) {
-  const schemaToFormfield = descriptor => {
-    const fieldProps = {
-      onChange: (newValue) => {
-        onEdit('views', {
-          id: view.id,
-          [descriptor.key]: newValue
-        });
-      },
-      descriptor,
-      isPristine: view.__status__.type !== STATUS_DIRTY,
-      placeholder: descriptor.placeholder,
-      value: _.defaultTo(view[descriptor.key], descriptor.defaultValue)
+class DatasetMetadataEditor extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      flashHeight: 0
     };
-    return <MetadataField key={descriptor.key} {...fieldProps} />;
-  };
 
-  const titleDescription = [
-    {
-      type: 'text',
-      label: I18n.edit_metadata.dataset_title,
-      key: 'name',
-      required: true,
-      validator: name => _.trim(name).length > 0,
-      errorMsg: I18n.metadata_manage.dataset_tab.errors.missing_name,
-      placeholder: I18n.edit_metadata.dataset_title,
-      defaultValue: ''
-    },
-    {
-      type: 'textarea',
-      label: I18n.edit_metadata.brief_description,
-      key: 'description',
-      required: false,
-      validator: _.constant(true),
-      placeholder: I18n.edit_metadata.brief_description_prompt,
-      defaultValue: ''
+    _.bindAll('getHeight');
+  }
+
+  getHeight(node) {
+    if (!node) {
+      return;
     }
-  ].map(schemaToFormfield);
 
-  const categoriesTags = [
-    {
-      type: 'select',
-      label: I18n.edit_metadata.category,
-      key: 'category',
-      required: false,
-      className: styles.halfSize,
-      validator: _.constant(true),
-      defaultValue: '',
-      options: window.initialState.datasetCategories
-    },
-    {
-      type: 'tagsinput',
-      label: I18n.edit_metadata.tags_keywords,
-      key: 'tags',
-      required: false,
-      className: styles.halfSize,
-      tags: tags,
-      validator: _.constant(true),
-      placeholder: I18n.edit_metadata.dataset_tags,
-      onChange: (newValue) => {
-        onEdit('views', {
-          id: view.id,
-          tags: newValue
-        });
-      }
+    if (node.offsetHeight !== this.state.flashHeight) {
+      this.setState({
+        flashHeight: node.offsetHeight
+      });
     }
-  ].map(schemaToFormfield);
+  }
 
-  const licensing = [
-    {
-      type: 'select',
-      label: I18n.edit_metadata.license_type,
-      key: 'licenseId',
-      required: false,
-      className: styles.halfSize,
-      validator: _.constant(true),
-      defaultValue: '',
-      options: window.initialState.datasetLicenses
-    },
-    {
-      type: 'text',
-      label: I18n.edit_metadata.attribution,
-      key: 'attribution',
-      required: false,
-      className: styles.halfSize,
-      validator: _.constant(true),
-      placeholder: I18n.edit_metadata.dataset_attribution,
-      defaultValue: ''
-    },
-    {
-      type: 'text',
-      label: I18n.edit_metadata.attribution_link,
-      key: 'attributionLink',
-      required: false,
-      validator: isURL,
-      errorMsg: I18n.metadata_manage.dataset_tab.errors.invalid_url,
-      placeholder: I18n.edit_metadata.dataset_url,
-      defaultValue: ''
-    }
-  ].map(schemaToFormfield);
+  render() {
+    const { flashVisible } = this.props;
 
-  const contact = [
-    {
-      type: 'text',
-      label: I18n.edit_metadata.email_address,
-      key: 'email',
-      required: false,
-      validator: isEmail,
-      errorMsg: I18n.metadata_manage.dataset_tab.errors.invalid_email,
-      placeholder: I18n.edit_metadata.dataset_email,
-      defaultValue: ''
-    }
-  ].map(schemaToFormfield);
+    // push form down to make room for flash notification if it's visible
+    let formPadding = {
+      paddingTop: flashVisible ? this.state.flashHeight + 12 : 0
+    };
 
-  return (
-    <div className={styles.metadataContent}>
-      <div className={styles.requiredNote}>{I18n.metadata_manage.required_note}</div>
-      <form id="dataset-metadata-editor">
-        <Fieldset
-          title={I18n.metadata_manage.dataset_tab.titles.dataset_title}
-          subtitle={I18n.metadata_manage.dataset_tab.subtitles.dataset_subtitle}>
-          {titleDescription}
-        </Fieldset>
-        <Fieldset
-          title={I18n.metadata_manage.dataset_tab.titles.tags_title}
-          subtitle={I18n.metadata_manage.dataset_tab.subtitles.tags_subtitle}>
-          {categoriesTags}
-        </Fieldset>
-        <Fieldset
-          title={I18n.metadata_manage.dataset_tab.titles.licenses_title}>
-          {licensing}
-        </Fieldset>
-        <Fieldset
-          title={I18n.metadata_manage.dataset_tab.titles.contact_title}
-          subtitle={I18n.metadata_manage.dataset_tab.subtitles.contact_subtitle}
-          isPrivate>
-          {contact}
-        </Fieldset>
-      </form>
-    </div>
-  );
+    return (
+      <div className={styles.container}>
+        <div className={styles.flashContainer} ref={flash => this.getHeight(flash)}>
+          <FlashMessage />
+        </div>
+        <div className={styles.formContainer} style={formPadding}>
+          <DatasetForm />
+        </div>
+        <div className={styles.requiredNote} style={formPadding}>
+          {I18n.metadata_manage.required_note}
+        </div>
+      </div>
+    );
+  }
 }
 
 DatasetMetadataEditor.propTypes = {
-  view: PropTypes.object.isRequired,
-  onEdit: PropTypes.func.isRequired,
-  tags: PropTypes.arrayOf(PropTypes.string)
+  flashVisible: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = ({ db }, { view }) => ({
-  tags: db.views[view.id].tags || []
+const mapStateToProps = ({ flashMessage }) => ({
+  flashVisible: flashMessage.visible
 });
 
 export default connect(mapStateToProps)(DatasetMetadataEditor);

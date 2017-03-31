@@ -1,14 +1,10 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import "node_modules/socrata-components/styles/variables/_colors.scss";
+
 .container {
   display: flex;
   width: 100%;
-
-  input[type=text] {
-    flex: 1;
-    margin: 0;
-    padding-left: 1em;
-    border: 1px solid #c8c8c8;
-    border-right-width: 0px;
-  }
 }
 
 .button {
@@ -22,4 +18,19 @@
   padding: 0;
   list-style-type: none;
   margin-top: 0.5em;
+}
+
+.textInput {
+  flex: 1;
+  margin: 0;
+  padding-left: 1em;
+  border: 1px solid $light-grey-3;
+  border-right-width: 0px;
+}
+
+.validationError {
+  border-color: $error;
+  outline-color: $error;
+  background-color: lighten($error, 38%);
+  box-shadow: inset 0 0 10px lighten($error, 35%);
 }

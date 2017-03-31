@@ -106,7 +106,8 @@ class TransformStatus extends Component {
           key={transform.id}
           ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}
           data-flyout={getFlyoutId(transform)}
-          className={styles.transformStatus}>
+          data-cheetah-hook="col-errors"
+          className={classNames(styles.colErrors, { [styles.colErrorsSelected]: inErrorMode })}>
           {progressBar}
           <Link
             className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}
@@ -121,7 +122,7 @@ class TransformStatus extends Component {
     } else {
       if (thisColumnDone) {
         return (
-          <th key={transform.id} className={styles.transformStatus}>
+          <th key={transform.id} data-cheetah-hook="col-errors" className={styles.colErrors}>
             {progressBar}
             <div className={styles.statusText}>
               <SocrataIcon name="checkmark3" className={styles.successIcon} />
@@ -131,7 +132,7 @@ class TransformStatus extends Component {
         );
       } else {
         return (
-          <th key={transform.id} className={styles.transformStatus}>
+          <th key={transform.id} data-cheetah-hook="col-errors" className={styles.colErrors}>
             {progressBar}
             <div className={styles.statusText}>
               <span className={styles.spinner}></span>

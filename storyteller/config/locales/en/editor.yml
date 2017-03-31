@@ -1,0 +1,389 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. The 'js' key
+# in this file is also added to the window for use in .js files.
+#
+# Usage:
+#
+#     I18n['editor']['empty_story_warning']
+
+en:
+  editor:
+    help: 'Get Help and Support'
+    default_page_title: 'Socrata Perspectives - Create a Story'
+    empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
+    remove_block_confirmation: 'Are you sure you want to remove this block?'
+    page_close_confirmation: 'You have unsaved changes to this story.'
+    generic_error: 'Error'
+    goal_save_error_conflict: 'Hmm, it looks like someone else is working on this goal at the same time. Any edits you make will be lost!'
+    goal_save_error_conflict_detail_1: 'Your goal is currently being edited by'
+    goal_save_error_conflict_detail_2: 'in another window. Any changes you make here will not be saved. Reload this page to see the latest version of the goal.'
+    goal_save_error_conflict_generic_user_name: 'another user'
+    story_save_error_try_again: 'Try again.'
+    story_save_error_generic: 'There was an error saving.'
+    story_save_error_conflict: 'Hmm, it looks like someone else is working on this story at the same time. Any edits you make will be lost!'
+    story_save_error_conflict_detail_1: 'Your story is currently being edited by'
+    story_save_error_conflict_detail_2: 'in another window. Any changes you make here will not be saved. Reload this page to see the latest version of the story.'
+    story_save_error_conflict_generic_user_name: 'another user'
+    story_save_error_reload: 'Reload the page'
+    story_save_error_login_button: 'Log in now'
+    user_session_timeout: Oh no! It appears that you're offline. Make sure you're logged in and check your Internet connection.
+    invalid_link_message: 'This looks like an invalid link. Try adding http:// to the beginning of your link.'
+    app_bar:
+      back_to_dashboard: 'Back to Dashboard'
+      preview: 'Preview'
+      add_content: 'Add Content'
+      style_and_presentation: 'Style & Presentation'
+    block_edit_controls:
+      presentation_hide_flyout: 'Hide in presentation view'
+      presentation_show_flyout: 'Show in presentation view'
+      move_block_down_flyout: 'Move block down'
+      move_block_up_flyout: 'Move block up'
+    modal:
+      buttons:
+        cancel: 'Cancel'
+        insert: 'Insert'
+        ok: 'OK'
+        save: 'Save'
+        saved: 'Saved!'
+        save_and_close: 'Save & Close'
+        done: 'Done'
+        reload: 'Reload'
+    collaborators:
+      modal:
+        heading: 'Manage Collaborators'
+        email_placeholder: 'Enter email address'
+        add_contributor: 'Add Collaborator'
+        collaborator: 'Collaborator'
+        access_level: 'Access Level'
+        keep: 'Keep'
+        remove: 'Remove'
+        invite_collaborators: 'Invite Collaborators'
+        who_has_access: 'Who Has Access'
+        owner: 'Co-Owner'
+        owner_description: 'Can control all aspects of the story, including sharing and publishing'
+        contributor: 'Contributor'
+        contributor_description: 'Can edit the content on the story canvas'
+        viewer: 'Viewer'
+        viewer_description: 'Can view the story, even if it is not published'
+        no_collaborators: 'There are no collaborators for this story.'
+        licenses: 'Only individuals with a Perspectives license can be the Co-Owner of a story. <a href="https://support.socrata.com/hc/en-us/articles/216288698" target="_blank">Learn more</a>'
+        errors:
+          already_added: 'This collaborator already has access.'
+          user_has_no_account: 'Sorry! This email address is not associated with a Socrata account. Ask the user to register at https://{domain}/signup and then try again.'
+          invalid_email: 'Please use a valid email address.'
+          unknown_error: 'Looks like an unknown error occurred. Our engineers have been notified.'
+    share_and_embed:
+      modal:
+        embed_and_preview:
+          preview_label: 'Preview'
+          tab_title: 'Embed and Preview'
+        errors:
+          unknown_error: 'Looks like an unknown error occurred. Our engineers have been notified.'
+        heading: 'Share and Embed Your Story'
+        options:
+          description_label: 'Embed Description'
+          notice: 'These options override the default story title and description when the story is embedded. Text is truncated to fit the story tile.'
+          tab_title: 'Options'
+          title_label: 'Embed Headline'
+        story_url_label: 'Story URL'
+    rich_text_toolbar:
+      link_modal:
+        heading: 'Add a Link'
+        display_label: 'Text to Display'
+        link_label: 'Link Destination'
+        test_link: 'Test Link'
+        open_in_new_window: 'Open in New Window'
+      link_tip:
+        remove: 'Remove'
+        edit: 'Edit'
+    components:
+      edit_controls:
+        button: 'Edit'
+        cancel: 'Cancel'
+        groups:
+          actions: 'Actions'
+        reset: 'Clear Contents'
+        swap: 'Swap'
+        swap_here: 'Swap Here'
+      asset_selector:
+        insert_btn: 'Insert'
+      hero:
+        set_cover_image: 'Set Cover Image'
+      goal_embed:
+        edit_btn: 'Edit'
+        edit_title: 'Edit Goal'
+        unsaved_goal_changes: 'You have unsaved changes. Are you sure you want to close this window?'
+        unsaved_goal_warning:
+          warning: 'Warning!'
+          explanation: 'If this goal is public, changes made to the prevailing measure will immediately be reflected on the public-facing goal page. If this goal is private, changes will remain private.'
+          link: 'Learn more...'
+    settings_panel:
+      panel_title: 'Menu'
+      back_to_profile: 'Back to Profile'
+      errors:
+        generic_error: 'There was an unexpected error.'
+        generic_save_failure_message: 'Oh no! There was a problem saving. Please try again.'
+        cannot_edit_title_and_description: 'Sorry, you need to be a story owner to edit the "Title" and "Description".'
+        cannot_invite_and_manage_collaborators: 'Sorry, you need to be a story owner to "Invite and Manage Collaborators".'
+        cannot_change_visibility: 'Sorry, you need to be a story owner to toggle "Visibility".'
+        cannot_change_visibility_or_update_public_version: 'Sorry, you need to be a story owner to toggle "Visibility" or "Update Public Version".'
+      warnings:
+        unsaved_collaborators_changes: 'You have unsaved changes. Are you sure you want to close this window?'
+        permissions: 'You must be a story owner to perform this action'
+      displaying_section:
+        section_title: 'Edit Title and Description'
+        section_title_when_goal: 'Edit Title'
+        title_label: 'Title'
+        description_label: 'Description'
+        save_button_label: 'Update Title and Description'
+        save_button_label_when_goal: 'Update Title'
+        errors:
+          title_too_long: 'Sorry, this title is too long. Please shorten it.'
+      collaborators_section:
+        section_title: 'Invite and Manage Collaborators...'
+      copy_section:
+        section_title: 'Make a Copy...'
+      publishing_section:
+        section_title: 'Manage Publishing and Visibility'
+        saved: 'Saved'
+        visibility:
+          title: 'Visibility'
+          private: 'Private'
+          private_goals: 'Private'
+          public: 'Public'
+          public_goals: 'Public'
+          make_story_public: 'Make Public'
+          make_story_public_goals: 'Make Public'
+          make_story_private: 'Make Private'
+          make_story_private_goals: 'Make Private'
+        status:
+          title: 'Status'
+          published: 'Published'
+          published_goals: 'Published'
+          draft: 'Draft'
+          draft_goals: 'Draft'
+          update_public_version: 'Update Public Version'
+        messages:
+          can_be_shared_publicly: 'Stories can be shared publicly. Once they are public, you can continue to make changes to your story and those changes are only visible to you until you update the public version. This way, you can decide when to share your changes with the world.'
+          can_be_shared_publicly_goals: 'Goals can be shared publicly. Once they are public, you can continue to make changes to your story and those changes are only visible to you until you update the public version. This way, you can decide when to share your changes with the world.'
+          has_been_published: 'This story has been published.'
+          has_been_published_goals: 'This goal has been published.'
+          previously_published: 'There is a previously published version of this story. Updating will make your changes visible to everyone.'
+          previously_published_goals: 'There is a previously published version of the narrative. Updating will make your changes visible to everyone.'
+        errors:
+          not_published_not_updated: 'Your story has not been published and cannot be updated.'
+          not_published_not_updated_goals: 'Your goal has not been published; therefore, the narrative cannot be updated.'
+      story_tile_embed_section:
+        section_title: 'Share and Embed...'
+      print_story_section:
+        section_title: 'Print'
+      story_stats_section:
+        section_title: 'View Stats'
+    make_a_copy:
+      cancel: 'Cancel'
+      copy: 'Copy'
+      copy_placeholder: 'Copy of {0}'
+      copy_warning_goal: 'When a goal is copied, Publishing and Visibility settings are set to private even if the current goal is published.'
+      copy_warning_story: 'When a story is copied, Publishing and Visibility settings are set to private even if the current story is published.'
+      dashboard: Dashboard
+      dashboard_choose: 'Choose a Dashboard'
+      title_goal: 'Make a Copy of This Goal'
+      title_story: 'Make a Copy of This Story'
+    asset_selector:
+      choose_provider_heading: 'Select Data or Media Provider'
+      back_button_text: 'Back'
+      insert_button_text: 'Insert'
+      update_button_text: 'Update'
+      cancel_button_text: 'Cancel'
+      select_button_text: 'Select'
+      try_again_button_text: 'Try again'
+      youtube:
+        name: 'YouTube'
+        description: 'Add a video from a YouTube link.'
+        heading: 'Add a YouTube Video'
+        input_label: 'Link to video'
+        invalid_message_title_1: 'Oh No!'
+        invalid_message_title_2: 'Something went wrong.'
+        invalid_message_description: 'Try using a valid link to a YouTube video.'
+        title_label: 'Title Attribute (optional)'
+        title_attribute_tooltip: 'A title attribute is used by screen reader software to describe the video so that users of assistive technology can interact with the elements of the page.'
+      visualization:
+        name: 'Socrata Visualization'
+        description: 'Create or insert a chart, map, or table.'
+        preview_label: 'Preview'
+        choose_dataset_heading: 'Choose a Dataset to Visualize'
+        choose_dataset_error: 'There was an error retrieving information about this dataset.'
+        choose_dataset_unsupported_error: 'This asset utilizes platform features that are not yet supported by Perspectives.'
+        choose_map_or_chart_heading: 'Choose a Chart or Map'
+        choose_map_or_chart_error: 'Sorry, only charts or maps can be chosen at this time.'
+        choose_visualization_mode: 'How would you like to visualize this data?'
+        preview_table_heading: 'Table Preview'
+        choose_chart: 'Chart, Graph, or Map'
+        choose_table: 'Data Table'
+        choose_visualization_option_heading: 'Select Visualization Option'
+        choose_insert_visualization_heading: 'Insert Chart or Map'
+        choose_insert_visualization_description: 'Choose an existing chart or map from your public catalog'
+        choose_insert_table_heading: 'Insert Table'
+        choose_insert_table_description: 'Create a table built on a public dataset or filtered view'
+        choose_create_visualization_heading: 'Create New Visualization'
+        choose_create_visualization_description: 'Create a new chart or map based on a public dataset'
+        authoring_visualization_back_button: 'Back to Dataset Selection'
+      image_upload:
+        name: 'Image'
+        description: 'Upload an image from your computer up to 10MB.'
+        description_with_getty_images: 'Add an image from Getty Images or upload an image from your computer (up to 10MB).'
+        search_instructions: 'Search and hit "Enter".'
+        search: 'Search'
+        tab_upload: 'Upload'
+        tab_getty: 'Photos by Getty'
+        drag_label: 'Drag an image here to upload it.'
+        input_label: 'Images can be JPG, PNG, or GIF format and up to 10MB file size.'
+        input_button_text: 'Or choose an image'
+        uploading_message: 'Uploading...'
+        show_more: 'Show More'
+        thats_everything: "That's everything!"
+        getty_image_terms: By clicking <em>{0}</em> below, you are agreeing to Socrata's <a href="https://www.socrata.com/terms-of-service/#getty" title="Stock Media Terms" target="_blank">stock media terms</a>.
+        errors:
+          validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
+          validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png.'
+          upload_timeout: 'Looks like the uploading is taking longer than it should. Please try again.'
+          exception: "We're really sorry! There was an unexpected problem with your upload. Please try again."
+          image_search: "We can't complete your search right now. Try different keywords."
+          cancelled: "Looks like the upload was canceled!"
+      image_preview:
+        confirm_cancel: 'Closing this dialog will cancel your upload. Are you sure?'
+        preview_label: 'Preview & Crop'
+        description_label: 'Alt Attribute (optional)'
+        alt_attribute_tooltip: 'An alt attribute (short for alternative) is the text displayed in place of an image in the event that the image cannot be loaded.  It’s also used by screen reader software to describe the image so that users of assistive technology can interact with the elements of the page.'
+        url_wrapper_label: 'Hyperlink (optional)'
+        url_wrapper_tooltip: 'This field makes your image behave like a link to the URL you provide.'
+        open_in_new_window: 'Open in New Window'
+        crop: 'Crop'
+        reset_image: 'Reset Image'
+        loading:
+          optimizing_mobile: 'Optimizing image size for mobile.'
+          optimizing_mobile_with_cropping: 'Cropping and optimizing image for mobile.'
+          retrieving_image: 'Retrieving image.'
+          uploading_image: 'Uploading image.'
+        errors:
+          cropping: 'Sorry! It looks like cropping failed. Please try again later.'
+          cannot_render_image: 'Sorry! There was a problem showing your image. Try uploading it again.'
+      story_tile:
+        name: 'Socrata Story Tile'
+        description: 'Insert a preview of a story.'
+        heading: 'Add a Preview of a Story'
+        input_label: 'Link to story'
+        invalid_message_title_1: 'Oh No!'
+        invalid_message_title_2: 'Something went wrong.'
+        invalid_message_description: 'Try using a valid link to a Socrata Perspectives Story.'
+        invalid_permissions: "Oh no!  It looks like you don't have permission to view this story."
+        open_in_new_window: 'Open in New Window'
+      goal_tile:
+        name: 'Socrata Open Performance Goal Tile'
+        description: 'Insert a preview of a Socrata Open Performance Goal.'
+        heading: 'Add a Preview of a Socrata Open Performance Goal'
+        input_label: 'Link to goal page'
+        invalid_message_title_1: 'Oh No!'
+        invalid_message_title_2: 'Something went wrong.'
+        invalid_message_description: 'Try using a valid link to a Socrata Open Performance Goal.'
+        invalid_permissions: "Oh no!  It looks like you don't have permission to view this goal."
+        open_in_new_window: 'Open in New Window'
+        url_tooltip: 'Use the link (URL) to your goal page to generate a goal tile. You can find this by visiting one of your goal pages and copying the link from the browser.'
+      embed_code:
+        name: 'HTML Embed'
+        description: 'Insert embed code to include external web content.'
+        heading: 'HTML Embed'
+        input_label: 'Paste or type HTML code'
+        preview_label: 'Preview'
+        invalid_message_title_1: 'Oh No!'
+        invalid_message_title_2: 'Something went wrong.'
+        insecure_html_warning: 'This HTML includes some insecure content. Try replacing HTTP with HTTPS.'
+        errors:
+          validation_file_size: "Whoa! That's too much HTML. Try trimming the content down."
+          exception: "We're really sorry! There was an unexpected problem with your upload.<br>Our engineers have been notified."
+        title_label: 'Title Attribute (optional)'
+        title_attribute_tooltip: 'A title attribute is used by screen reader software to describe the contents of the HTML block so that users of assistive technology can interact with the elements of the page.'
+    story_save_button:
+      saved: 'Saved!'
+      saving: 'Saving...'
+      unsaved: 'Save'
+      idle: 'Save'
+    story_tile:
+      view_story_prompt: 'Read More'
+      invalid_permissions: "Oh no!  It looks like you don't have permission to view this story."
+    goal_tile:
+      view_goal_prompt: 'View Goal'
+      render_error: 'This goal is not available or cannot be displayed'
+      public_label: 'Public'
+      private_label: 'Private'
+      # Also see the open_performance key elsewhere in this file.
+    visualizations:
+      no_value_placeholder: '(No value)'
+      default_unit:
+        one: 'record'
+        other: 'records'
+      flyout:
+        unfiltered_amount_label: 'Total: '
+        filtered_amount_label: 'Filtered: '
+        datum_selected_label: 'This column is currently selected.'
+      feature_map:
+        flyout_filter_notice: 'There are too many points at this location'
+        flyout_filter_or_zoom_notice: 'Zoom in to see details'
+        flyout_dense_data_notice: 'Numerous'
+        flyout_click_to_inspect_notice: 'Click to see details'
+        flyout_click_to_locate_user_title: 'Click to show your position on the map'
+        flyout_click_to_locate_user_notice: 'You may have to give your browser permission to share your current location'
+        flyout_locating_user_title: 'Your position is being determined'
+        flyout_locate_user_error_title: 'There was an error determining your location'
+        flyout_locate_user_error_notice: 'Click to try again'
+        flyout_pan_zoom_disabled_warning_title: 'Panning and zooming has been disabled'
+        row_inspector_row_data_query_failed: 'Detailed information about these points cannot be loaded at this time'
+        user_current_position: 'Your current location (estimated)'
+        column_incompatibility_error: 'The data column is incompatible with this visualization'
+        feature_extent_query_error: 'An error occurred when rendering this chart.'
+    time:
+      full_month_1: 'January'
+      full_month_2: 'February'
+      full_month_3: 'March'
+      full_month_4: 'April'
+      full_month_5: 'May'
+      full_month_6: 'June'
+      full_month_7: 'July'
+      full_month_8: 'August'
+      full_month_9: 'September'
+      full_month_10: 'October'
+      full_month_11: 'November'
+      full_month_12: 'December'
+    downtime: 'This Socrata-powered site may be unavailable for routine maintenance<br>from {0} to {1}.'
+    op_migration:
+      error: 'Oh no! Something went wrong while updating this goal. Please contact Socrata support.'
+      in_progress: 'Updating your experience...'
+      welcome_close: 'OK, thanks!'
+      welcome_close_forever: "Don't show this message again"
+      welcome_content: "<p>Have a look around! You'll notice some pretty big improvements, including:</p><ul><li>access to the new Socrata visualization library</li><li>a library of 71 million high-quality images</li><li>ability to add videos and other third-party embeds</li><li>easy-to-use drag-and-drop components</li><li>customizable typefaces and font colors</li></ul><p>Need help getting started? Check out our performance <a href=\"https://support.socrata.com/hc/en-us/categories/200161248-Open-Performance\" target=\"_blank\">support materials</a> or attend a Socrata Performance <a href=\"https://support.socrata.com/hc/en-us/sections/204221087-Education-Courses\" target=\"_blank\">education course</a>.</p>"
+      welcome_title: 'Welcome to Your New Goal Editing Experience'
+    # Translations common with OpenPerformance
+    open_performance:
+      measure:
+        unit_percent: 'percent'
+        progress:
+          no_judgement: 'Measuring'
+          none: 'Needs More Data'
+          needs_more_data: 'Needs More Data'
+          within_tolerance: 'Near Target'
+          good: 'On Track'
+          progressing: 'In Progress'
+          poor: 'Needs Improvement'
+          bad: 'Needs Improvement'
+          no_status: 'No Status'
+        end_progress:
+          no_judgement: 'Measured'
+          none: 'Needed More Data'
+          needs_more_data: 'Needed More Data'
+          within_tolerance: 'Almost met target'
+          good: 'Achieved Goal'
+          progressing: 'Almost met target'
+          poor: 'Did not meet target'
+          bad: 'Did not meet target'
+        # {0} -> goal name, {1} -> goal unit
+        subheadline: 'This goal is measured by tracking {0} in {1}.'

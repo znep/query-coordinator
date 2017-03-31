@@ -12,14 +12,7 @@ module.exports = _.defaultsDeep({
   eslint: common.getEslintConfig('public/javascripts/adminGoals/.eslintrc.json'),
   module: {
     loaders: [
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: 'babel',
-        query: {
-          presets: ['react', 'es2015']
-        }
-      },
+      common.getBabelLoader(),
       {
         test: /\.scss|\.css$/,
         loader: 'style!css!autoprefixer-loader!sass'
@@ -34,10 +27,13 @@ module.exports = _.defaultsDeep({
       }
     ]
   },
-  resolve: {
-    alias: {
-      'styleguide': 'socrata-components/dist/js/styleguide.js'
-    }
-  },
+  resolve: _.extend(
+    {
+      alias: {
+        'styleguide': 'socrata-components/dist/js/styleguide.js'
+      }
+    },
+    common.getStandardResolve([ 'public/javascripts/adminGoals' ])
+  ),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

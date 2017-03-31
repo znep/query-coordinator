@@ -1,39 +1,48 @@
+import React from 'react';
+import { shallow, mount } from 'enzyme';
+import formAPI from '../../testHelpers/mockFormAPI';
 import TextInput from 'components/MetadataFields/TextInput';
-import genericFieldDescriptor from 'data/fieldDescriptor';
 
-describe('TextInput', function() {
-  const defaultProps = {
-    descriptor: {
-      ...genericFieldDescriptor,
-      type: 'text'
-    },
-    onChange: _.noop,
-    value: 'Hello world',
-    isValid: true
-  };
+const onChangeHandler = sinon.spy();
 
-  it('renders an element', function() {
-    const element = renderStatelessComponent(<TextInput {...defaultProps} />);
+const props = {
+  model: {
+    name: 'seattle crimes',
+    tags: [],
+    email: '',
+    description: ''
+  },
+  name: 'name',
+  required: false,
+  inErrorState: false,
+  showErrors: sinon.spy(),
+  bindInput: name => ({
+    name: 'description',
+    value: '',
+    onChange: onChangeHandler
+  }),
+  ...formAPI
+};
 
-    expect(element).to.exist;
-    expect(element.querySelector('input')).to.exist;
+describe('MetadtaFields/TextInput', () => {
+  it('renders an input field', () => {
+    const component = shallow(<TextInput {...props}/>);
+    expect(component.find('input')).to.have.length(1);
   });
 
-  it('renders the provided value', function() {
-    const element = renderStatelessComponent(<TextInput {...defaultProps} />);
+  it('calls showErrors callback on blur', () => {
+    const component = mount(<TextInput {...props}/>);
 
-    expect(element.querySelector('input').value).to.eq(defaultProps.value);
+    component.find('input').simulate('blur');
+
+    expect(component.props().showErrors.calledOnce).to.eq(true);
   });
 
-  it('invokes the onChange handler', function() {
-    const spy = sinon.spy();
-    const newProps = {...defaultProps, onChange: spy};
-    const element = renderStatelessComponent(<TextInput {...newProps} />);
+  it('calls its onChange callback on change', () => {
+    const component = mount(<TextInput {...props}/>);
 
-    const input = element.querySelector('input');
-    input.value = 'new value';
-    TestUtils.Simulate.change(input);
+    component.find('input').simulate('change');
 
-    expect(spy.calledWith('new value')).to.eq(true);
+    expect(onChangeHandler.calledOnce).to.eq(true);
   });
 });

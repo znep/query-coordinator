@@ -1,7 +1,7 @@
 // Miscellaneous dependencies that require global scope
 window._ = require('lodash');
 window.socrata = window.socrata || {};
-window.socrata.utils = require('socrata-utils');
+window.socrata.utils = require('common/js_utils');
 require('angular-mocks');
 require('imports?Rx=rx!script!rx-core-testing');
 require('script!dotdotdot');

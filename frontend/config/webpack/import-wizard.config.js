@@ -13,18 +13,17 @@ module.exports = _.defaultsDeep({
   eslint: common.getEslintConfig('public/javascripts/importWizard/.eslintrc.json'),
   module: {
     loaders: [
-      {
-        test: /\.jsx?$/,
-        include: path.resolve(common.root, 'public/javascripts'),
-        loader: 'babel'
-      }
+      common.getBabelLoader()
     ]
   },
-  resolve: {
-    alias: {
-      'jquery.awesomereorder': path.resolve(common.root, 'public/javascripts/plugins/jquery.awesomereorder.js')
-    }
-  },
+  resolve: _.extend(
+    {
+      alias: {
+        'jquery.awesomereorder': path.resolve(common.root, 'public/javascripts/plugins/jquery.awesomereorder.js')
+      }
+    },
+    common.getStandardResolve([ 'public/javascripts/importWizard' ])
+  ),
   externals: {
     // TODO: compress these down to one...
     'importableTypes': 'importableTypes',

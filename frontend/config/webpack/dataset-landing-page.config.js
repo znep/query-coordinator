@@ -22,18 +22,8 @@ module.exports = _.defaultsDeep({
     jquery: true
   },
   module: {
-    loaders: [
-      {
-        test: /\.jsx?$/,
-        include: [ path.resolve(common.root, 'public/javascripts') ],
-        loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
-      }
-    ]
+    loaders: common.getStandardLoaders()
   },
-  resolve: {
-    root: [
-      path.resolve(common.root, 'public/javascripts/datasetLandingPage')
-    ]
-  },
+  resolve: common.getStandardResolve([ 'public/javascripts/datasetLandingPage' ]),
   plugins: plugins
 }, require('./base'));

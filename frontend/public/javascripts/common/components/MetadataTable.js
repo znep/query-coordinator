@@ -4,11 +4,12 @@ import velocity from 'velocity-animate';
 import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import formatDate from '../formatDate';
-import utils from 'socrata-utils';
+import utils from 'common/js_utils';
 import { handleKeyPress } from '../a11yHelpers';
 import { localizeLink } from '../locale';
 import Linkify from 'react-linkify';
 
+// TODO: Make an example page for this component.
 class MetadataTable extends Component {
   constructor(props) {
     super(props);

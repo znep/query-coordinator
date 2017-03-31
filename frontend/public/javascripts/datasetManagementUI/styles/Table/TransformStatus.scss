@@ -18,6 +18,10 @@
     &:hover {
       background-color: $alternate-3-light;
     }
+
+    &:active {
+      box-shadow: inset 0 0 10px -2px $black;
+    }
   }
 }
 
@@ -28,7 +32,7 @@
 }
 
 .transformStatusSelected {
-  box-shadow: inset 0 0 10px -2px $black;
+  box-shadow: inset 0 0 10px -2px $dark-grey-1;
 }
 
 .transformStatusFlyout {

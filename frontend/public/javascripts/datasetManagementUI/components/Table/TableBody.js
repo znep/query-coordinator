@@ -54,21 +54,16 @@ class TableBody extends Component {
   }
 
   renderNormalRow(row) {
-    return row.transforms.map((transform) => (
-      <TableCell
-        key={transform.id}
-        cell={transform.cell} />
-    ));
+    return (
+      <tr key={row.rowIdx}>
+        {row.transforms.map(transform => <TableCell key={transform.id} cell={transform.cell} />)}
+      </tr>);
   }
 
   render() {
     const data = this.getData();
-    const rows = data.map((row) => (
-      <tr key={row.rowIdx} className={classNames({ 'malformed-row': !!row.rowError })}>
-        {row.rowError ?
-          <RowError rowError={row.rowError} /> :
-          this.renderNormalRow(row)}
-      </tr>
+    const rows = data.map(row => (
+      row.rowError ? <RowError rowError={row.rowError} rowIdx={row.rowIdx} /> : this.renderNormalRow(row)
     ));
 
     return (

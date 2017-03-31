@@ -17,7 +17,7 @@ tr.rowErrorsCount {
     min-height: 0;
 
     background-color: $white;
-    
+
     &:hover {
       background-color: $alternate-3-light;
     }
@@ -27,6 +27,10 @@ tr.rowErrorsCount {
       text-decoration: none;
       display: inline-block;
       width: 100%;
+
+      &:active {
+        box-shadow: inset 0 0 10px -2px $black;
+      }
     }
   }
 }
@@ -40,7 +44,7 @@ tr.rowErrorsCount {
 }
 
 .rowErrorsCountSelected {
-  box-shadow: inset 0 0 10px -2px $black;
+  box-shadow: inset 0 0 10px -2px $dark-grey-1;
 }
 
 .errorInfo {

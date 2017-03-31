@@ -1886,14 +1886,13 @@ en:
         rows: rows
         will_not_be_imported: Rows that will not be imported
       row_errors:
-        columns_found: columns, found
-        expected: Expected
+        error_message: "Expected {0} columns, found {1}"
         flyout_message_singular: 1 row is malformed.
-        flyout_message_plural: "{numRowErrors} rows are malformed."
+        flyout_message_plural: "{0} rows are malformed."
         flyout_message_explanation: They might have too many, or not enough columns.
         malformed_row: Malformed row
         malformed_rows: Malformed rows
-        row: Row
+        row: "Error Row {0}"
         row_content: Row content
       rows_so_far: rows so far
       rows_total: rows total
@@ -2020,7 +2019,7 @@ en:
     - Fri
     - Sat
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mar
@@ -2048,7 +2047,7 @@ en:
       short: '%d %b %Y'
       short_with_time: '%Y/%m/%d %I:%M%p'
     month_names:
-    - 
+    -
     - January
     - February
     - March

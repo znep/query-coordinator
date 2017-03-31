@@ -15,7 +15,7 @@ function ErrorFlyout({ numRowErrors }) {
   const message = singularOrPlural(
     numRowErrors,
     SubI18n.flyout_message_singular,
-    SubI18n.flyout_message_plural.format({ numRowErrors: commaify(numRowErrors) })
+    SubI18n.flyout_message_plural.format(commaify(numRowErrors))
   );
   return (
     <div

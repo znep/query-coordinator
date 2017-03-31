@@ -29,16 +29,21 @@ class TableBody extends Component {
     const transformTables = props.transforms.map((transform) => (
       props.db[`transform_${transform.id}`]
     ));
+    const startRow = props.displayState.pageNo * PAGE_SIZE;
+    const endRow = startRow + PAGE_SIZE;
     let rowIndices;
     if (props.displayState.type === DisplayState.COLUMN_ERRORS) {
       const errorsTransform = props.db.transforms[props.displayState.transformId];
-      rowIndices = errorsTransform.error_indices || _.range(PAGE_SIZE);
+      if (errorsTransform.error_indices) {
+        rowIndices = errorsTransform.error_indices.slice(startRow, endRow);
+      } else {
+        rowIndices = [];
+      }
     } else if (props.displayState.type === DisplayState.ROW_ERRORS) {
       rowIndices = _.filter(props.db.row_errors, { input_schema_id: props.inputSchemaId }).
         map((rowError) => rowError.offset);
     } else {
-      const startRow = props.displayState.pageNo * PAGE_SIZE;
-      rowIndices = _.range(startRow, startRow + PAGE_SIZE);
+      rowIndices = _.range(startRow, endRow);
     }
     return rowIndices.map((rowIdx) => ({
       rowIdx,

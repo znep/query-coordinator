@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import uuidV4 from 'uuid/v4';
 import {
   EDIT,
   EDIT_IMMUTABLE,
@@ -38,7 +39,6 @@ import {
   statusLoadFailed
 } from '../lib/database/statuses';
 import { emptyDB } from '../bootstrap';
-import uuidV4 from 'uuid/v4';
 
 // TODO: use ImmutableJS instead of Object Spread? It may shorten repetitive code here & improve speed
 export default function dbReducer(db = emptyDB, action) {
@@ -196,7 +196,7 @@ export default function dbReducer(db = emptyDB, action) {
           ...record,
           __status__: statusSavedOnServer
         };
-        return _.merge({}, withUpdatedStatus, action.updates);
+        return updateWithFunctions(withUpdatedStatus, action.updates);
       });
 
     case UPDATE_PROGRESS:
@@ -320,4 +320,16 @@ function updateRecord(db, tableName, id, updater) {
       [id]: updater(record)
     }
   };
+}
+
+function updateWithFunctions(record, updates) {
+  const cloned = _.clone(record);
+  _.forEach(updates, (value, key) => {
+    if (_.isFunction(value)) {
+      cloned[key] = value(cloned[key]);
+    } else {
+      cloned[key] = value;
+    }
+  });
+  return cloned;
 }

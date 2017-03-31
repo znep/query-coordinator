@@ -129,7 +129,7 @@ function loadNormalPreview(outputSchemaId, pageNo) {
         dispatch(loadSucceeded(url));
         const transformIds = resp[0].output_columns.map((col) => col.transform.id);
         const withoutHeader = resp.slice(1);
-        dispatch(batch(transformIds.map((transformId, colIdx) => {
+        dispatch(batch(_.flatten(transformIds.map((transformId, colIdx) => {
           // transpose row-oriented response to columnar data structure
           const rowsForColumn = withoutHeader.
             filter((row) => row.row).
@@ -137,12 +137,25 @@ function loadNormalPreview(outputSchemaId, pageNo) {
               id: row.offset,
               ...row.row[colIdx]
             }));
-          return insertMultipleFromServer(
+          const actions = [];
+          const columnErrorIndices = withoutHeader.
+            filter((cell) => (cell.error)).
+            map((cell) => (cell.id));
+          if (columnErrorIndices.length > 0) {
+            actions.push(updateFromServer('transforms', {
+              id: transformId,
+              error_indices: (existingErrorIndices) => (
+                _.union(existingErrorIndices, columnErrorIndices)
+              )
+            }));
+          }
+          actions.push(insertMultipleFromServer(
             `transform_${transformId}`,
             _.keyBy(rowsForColumn, 'id'),
             { ifNotExists: true }
-          );
-        })));
+          ));
+          return actions;
+        }))));
         const inputSchemaId = db.output_schemas[outputSchemaId].input_schema_id;
         const rowErrors = withoutHeader.
           filter((row) => row.error).
@@ -200,15 +213,10 @@ export function loadColumnErrors(transformId, outputSchemaId, pageNo) {
             })).
           filter((newRecord) => newRecord.error).
           map((newRecord) => newRecord.index);
-          // TODO: how to make this a set which gets merged when we update?
-          // maybe update should just take a primary key and a function
-          // that would be SQL-like
-          // not supposed to have functions in actions though
-          // boo
           const transform = outputSchemaResp.output_columns[idx].transform;
           return updateFromServer('transforms', {
             id: transform.id,
-            error_indices: errorIndices
+            error_indices: (existingErrorIndices) => (_.union(existingErrorIndices, errorIndices))
           });
         })));
       }).

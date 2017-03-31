@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css" />
     <%= rendered_stylesheet_tag 'administration-screen' %>
-    <title><%= t("#{activity_feed_prefix}.index_page.title") %> | <%= get_site_title %></title>
+    <title><%= t("screens.admin.jobs.index_page.title") %> | <%= get_site_title %></title>
     <%= render_admin_session_data %>
     <%= render_admin_server_config %>
     <%= render_admin_activity_feed_initial_data %>
@@ -16,7 +16,6 @@
   <%= render_translations LocalePart.table %>
 <% end %>
 
-<div id="app">
-</div>
+<div id="app" data-error="<%= @error %>"></div>
 
 <%= include_webpack_bundle 'admin-activity-feed/main.js' %>

@@ -7,13 +7,15 @@ import thunk from 'redux-thunk';
 
 import HttpClient from './frontendApi/HttpClient';
 import ActivityFeedApi from './frontendApi/ActivityFeedApi';
-import Localization from './components/localization/Localization';
+import Localization from './components/Localization/Localization';
 import serviceLocator from './middlewares/serviceLocator';
 
 import App from './App';
 
 import reducer from './reducer';
 import * as actions from './actions';
+
+const containerElement = document.querySelector('#app');
 
 const initialState = immutable.fromJS({
   activities: [],
@@ -24,7 +26,8 @@ const initialState = immutable.fromJS({
     dateFrom: null,
     dateTo: null
   },
-  pagination: null
+  pagination: null,
+  error: containerElement.getAttribute('data-error')
 });
 
 const httpClient = new HttpClient();
@@ -53,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <App />
       </Provider>
     </Localization>,
-    document.querySelector('#app'),
+    containerElement,
     () => {
       if (window.initialData && window.initialData.activities && window.initialData.pager_info) {
         store.dispatch(actions.setActivities(window.initialData.activities));

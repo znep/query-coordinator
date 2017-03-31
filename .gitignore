@@ -36,3 +36,27 @@ npm-debug.log
 socrata-node/DEPEND
 socrata-node/node_modules
 packages/**/dist
+
+# Webpacked JS
+storyteller/public/js
+webpack-assets.json
+
+# Ignore local database settings
+storyteller/config/database.yml
+
+# IDE settings
+*.sublime-project
+*.sublime-workspace
+
+# Zeus configs
+custom_plan.rb
+zeus.json
+
+# Other
+storyteller/tmp
+marathon.properties
+storyteller/coverage
+
+# Build-related stuff
+/ops-tools
+dockerize.properties

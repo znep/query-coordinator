@@ -1,0 +1,592 @@
+
+[ {
+  "id" : 1,
+  "name" : "View categories",
+  "default" : true,
+  "domainCName" : "dontuse.ly",
+  "type" : "view_categories",
+  "properties" : [ {
+    "name" : "personal",
+    "value" : {
+      "enabled" : true
+    }
+  }, {
+    "name" : "fun",
+    "value" : {
+      "enabled" : true
+    }
+  }, {
+    "name" : "government",
+    "value" : {
+      "enabled" : true
+    }
+  }, {
+    "name" : "education",
+    "value" : {
+      "enabled" : true
+    }
+  }, {
+    "name" : "business",
+    "value" : {
+      "enabled" : true
+    }
+  } ]
+}, {
+  "id" : 2,
+  "name" : "User rights mappings",
+  "default" : true,
+  "domainCName" : "dontuse.ly",
+  "type" : "user_rights",
+  "properties" : [ {
+    "name" : "editor",
+    "value" : {
+      "enabled" : [ "create_datasets", "view_domain", "create_pages", "view_goals", "view_dashboards" ]
+    }
+  }, {
+    "name" : "administrator",
+    "value" : {
+      "enabled" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards" ]
+    }
+  }, {
+    "name" : "designer",
+    "value" : {
+      "enabled" : [ "create_datasets", "edit_sdp", "edit_site_theme", "feature_items", "change_configurations", "view_domain", "view_others_datasets", "create_pages" ]
+    }
+  }, {
+    "name" : "viewer",
+    "value" : {
+      "enabled" : [ "view_others_datasets", "view_goals", "view_dashboards" ]
+    }
+  }, {
+    "name" : "publisher",
+    "value" : {
+      "enabled" : [ "create_datasets", "edit_others_datasets", "edit_nominations", "approve_nominations", "moderate_comments", "manage_stories", "feature_items", "change_configurations", "view_domain", "view_others_datasets", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards" ]
+    }
+  } ]
+}, {
+  "id" : 6,
+  "name" : "Canvas Configuration",
+  "default" : true,
+  "domainCName" : "dontuse.ly",
+  "type" : "custom_content",
+  "properties" : [ {
+    "name" : "homepages",
+    "value" : {
+      "homepage" : {
+        "default_homepage" : true
+      }
+    }
+  } ]
+}, {
+  "id" : 7,
+  "name" : "Default Email Interests",
+  "default" : true,
+  "domainCName" : "dontuse.ly",
+  "type" : "email_interests",
+  "properties" : [ {
+    "name" : "moderate_comments",
+    "value" : [ "MAIL.COMMENT_NEEDS_MODERATION" ]
+  }, {
+    "name" : "chown_datasets",
+    "value" : [ "MAIL.ACCOUNT_CREATED_FROM_FUTURE_ACCOUNT", "MAIL.FUTURE_ACCOUNT_CREATED" ]
+  }, {
+    "name" : "approve_nominations",
+    "value" : [ "MAIL.NEW_NOMINATION" ]
+  } ]
+}, {
+  "id" : 8,
+  "name" : "Default Locales",
+  "default" : true,
+  "domainCName" : "dontuse.ly",
+  "type" : "locales",
+  "properties" : [ {
+    "name" : "*",
+    "value" : "en"
+  } ]
+}, {
+  "id" : 9,
+  "name" : "Default SODA2 switch table rows threshold",
+  "default" : true,
+  "domainCName" : "dontuse.ly",
+  "type" : "soda2",
+  "properties" : [ {
+    "name" : "switch_table_rows_threshold",
+    "value" : "10000"
+  } ]
+}, {
+  "id" : 4,
+  "name" : "Current Theme",
+  "default" : true,
+  "domainCName" : "localhost",
+  "parentId" : 3,
+  "type" : "site_theme",
+  "updatedAt" : 1431975098,
+  "properties" : [ {
+    "name" : "sdp_template",
+    "value" : "dffn-ags6"
+  }, {
+    "name" : "strings.site_title",
+    "value" : "Socrata"
+  }, {
+    "name" : "strings.company",
+    "value" : "Socrata"
+  }, {
+    "name" : "templates_v2b.header",
+    "value" : "<div class=\"clearfix\">{{main_logo}}<ul class=\"siteUserNav\">{{account_link}}{{admin_link}}{{urls.headerUser}}{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}</ul></div>"
+  }, {
+    "name" : "templates_v2b.footer",
+    "value" : "<a href=\"/\" class=\"footerLogo\">Socrata</a><ul class=\"siteFooterNav\">{{urls.footer}}</ul>"
+  }, {
+    "name" : "templates_v2b.header_full",
+    "value" : "<div class=\"clearfix\">{{main_logo}}<ul class=\"siteUserNav\">{{account_link}}{{admin_link}}{{urls.headerUser}}{{sign_up_link}}{{sign_in_link}}{{sign_out_link}}</ul></div>"
+  }, {
+    "name" : "strings.sign_up",
+    "value" : "Sign Up"
+  }, {
+    "name" : "rating_types",
+    "value" : [ "rating" ]
+  }, {
+    "name" : "theme_v2b",
+    "value" : {
+      "text" : {
+        "error" : "b01e2d"
+      },
+      "stories" : {
+        "pager" : {
+          "position" : "center",
+          "type" : "bullets",
+          "disposition" : "light"
+        },
+        "orientation" : "left",
+        "height" : {
+          "unit" : "em",
+          "value" : 25
+        },
+        "box" : {
+          "headline" : {
+            "color" : "f7f7f7",
+            "font_family" : "Georgia",
+            "shadow" : {
+              "alpha" : 0.6,
+              "radius" : {
+                "unit" : "px",
+                "value" : 3
+              }
+            },
+            "font_size" : {
+              "unit" : "em",
+              "value" : 1.8
+            }
+          },
+          "body" : {
+            "color" : "dddddd",
+            "font_family" : "Helvetica Neue",
+            "shadow" : {
+              "alpha" : 0.3,
+              "radius" : {
+                "unit" : "px",
+                "value" : 2
+              }
+            },
+            "font_size" : {
+              "unit" : "em",
+              "value" : 1.4
+            }
+          },
+          "color" : "000000",
+          "shadow" : 0,
+          "width" : {
+            "unit" : "em",
+            "value" : 35
+          },
+          "alpha" : 0.8,
+          "margin" : {
+            "unit" : "em",
+            "value" : 1
+          }
+        },
+        "autoAdvance" : 7
+      },
+      "urls" : {
+        "footer" : [ {
+          "text" : "What is Socrata?",
+          "href" : "http://www.socrata.com/about"
+        }, {
+          "text" : "Blog",
+          "class" : "rss",
+          "href" : "http://blog.socrata.com/"
+        }, {
+          "text" : "Company Info",
+          "rel" : "nofollow",
+          "href" : "http://www.socrata.com/company-info"
+        }, {
+          "text" : "Terms of Service",
+          "rel" : "nofollow",
+          "href" : "http://www.socrata.com/terms-of-service"
+        }, {
+          "text" : "Privacy",
+          "rel" : "nofollow",
+          "href" : "http://www.socrata.com/privacy"
+        }, {
+          "text" : "Contact Us",
+          "rel" : "nofollow",
+          "href" : "http://www.socrata.com/contact-us"
+        } ],
+        "headerUser" : [ {
+          "text" : "What is Socrata?",
+          "href" : "http://www.socrata.com/about"
+        }, {
+          "text" : "Help",
+          "href" : "http://www.getsatisfaction.com/socrata"
+        } ],
+        "headerMain" : [ {
+          "text" : "Home",
+          "href" : "/"
+        }, {
+          "text" : "Community",
+          "href" : "/community",
+          "ifModuleEnabled" : "community_module"
+        }, {
+          "text" : "My Socrata",
+          "href" : "/home"
+        } ],
+        "signup" : [ {
+          "text" : "Terms of Service",
+          "href" : "/terms-of-service"
+        }, {
+          "text" : "Privacy Policy",
+          "href" : "/privacy"
+        } ]
+      },
+      "chrome" : {
+        "box_border" : "cecece",
+        "nav_buttons" : {
+          "background" : [ {
+            "color" : "19538b"
+          }, {
+            "color" : "042656"
+          } ],
+          "border" : "042656"
+        },
+        "background" : "f7f7f7",
+        "margin" : {
+          "outer" : {
+            "unit" : "em",
+            "value" : 2
+          },
+          "inner" : {
+            "unit" : "em",
+            "value" : 2
+          }
+        },
+        "sidebar" : {
+          "text" : "666",
+          "background" : "f7f7f7"
+        }
+      },
+      "images" : {
+        "logo_footer" : {
+          "height" : "20",
+          "width" : "89",
+          "type" : "static",
+          "href" : "/stylesheets/images/common/socrata_logo_footer.png"
+        },
+        "logo_header" : {
+          "height" : "34",
+          "width" : "129",
+          "type" : "static",
+          "href" : "/stylesheets/images/common/socrata_logo.png"
+        },
+        "favicon" : {
+          "type" : "static",
+          "href" : "/stylesheets/images/common/favicon.ico"
+        },
+        "logo_square" : {
+          "height" : 110,
+          "width" : 94,
+          "type" : "static",
+          "href" : "/stylesheets/images/common/socrata_logo_square.png"
+        }
+      },
+      "buttons" : {
+        "default" : {
+          "text" : "ffffff",
+          "background" : [ {
+            "color" : "ff3333"
+          }, {
+            "color" : "993333"
+          } ],
+          "border" : "993333"
+        },
+        "default_disabled" : {
+          "text" : "eeeeee",
+          "background" : [ {
+            "color" : "ff8888"
+          }, {
+            "color" : "cc6666"
+          } ],
+          "border" : "cc6666"
+        },
+        "active" : {
+          "text" : "666666",
+          "shadow" : "rgba(0,0,0,0.2)",
+          "background" : [ {
+            "color" : "fefefe"
+          }, {
+            "color" : "f2f2f2"
+          } ],
+          "border" : "999999"
+        },
+        "disabled" : {
+          "text" : "888888",
+          "background" : [ {
+            "color" : "fcfcfc"
+          }, {
+            "color" : "f8f8f8"
+          } ],
+          "border" : "dddddd"
+        }
+      },
+      "links" : {
+        "visited" : "253A60",
+        "normal" : "3B5998"
+      },
+      "table" : {
+        "header" : {
+          "inactive" : "e0e4e9",
+          "active" : "c5ccd5"
+        }
+      }
+    }
+  }, {
+    "name" : "templates_v2b.footer_full",
+    "value" : "<a href=\"/\" class=\"footerLogo\">Socrata</a><ul class=\"siteFooterNav\">{{urls.footer}}</ul>"
+  }, {
+    "name" : "strings.sign_in",
+    "value" : "Sign In"
+  }, {
+    "name" : "strings.sign_out",
+    "value" : "Sign out"
+  } ]
+}, {
+  "id" : 10,
+  "name" : "Feature Flags",
+  "default" : true,
+  "domainCName" : "localhost",
+  "type" : "feature_flags",
+  "updatedAt" : 1446500496,
+  "properties" : [ {
+    "name" : "asteroids",
+    "value" : "false"
+  }, {
+    "name" : "enable_data_lens_other_views",
+    "value" : "false"
+  }, {
+    "name" : "data_lens_whats_this_href",
+    "value" : ""
+  }, {
+    "name" : "enable_png_download_ui",
+    "value" : "true"
+  }, {
+    "name" : "feature_map_features_per_tile",
+    "value" : "50000"
+  }, {
+    "name" : "force_redirect_to_data_lens",
+    "value" : "false"
+  }, {
+    "name" : "include_sr_in_esri",
+    "value" : "false"
+  }, {
+    "name" : "enable_search_suggestions",
+    "value" : "true"
+  }, {
+    "name" : "app-dataCards",
+    "value" : "true"
+  }, {
+    "name" : "disable_legacy_types",
+    "value" : "false"
+  }, {
+    "name" : "display_catalog_lens_delete_button",
+    "value" : "false"
+  }, {
+    "name" : "standalone_lens_chart",
+    "value" : "true"
+  }, {
+    "name" : "ingress_strategy",
+    "value" : "delta-importer"
+  }, {
+    "name" : "hide_decimal_tick_lines",
+    "value" : "true"
+  }, {
+    "name" : "default_imports_to_nbe",
+    "value" : "false"
+  }, {
+    "name" : "use_soql_for_clustering",
+    "value" : "false"
+  }, {
+    "name" : "enable_feedback",
+    "value" : "false"
+  }, {
+    "name" : "show_newux_page_header",
+    "value" : "true"
+  }, {
+    "name" : "current_page_metadata_version",
+    "value" : "1"
+  }, {
+    "name" : "enable_stories",
+    "value" : "true"
+  }, {
+    "name" : "data_lens_transition_state",
+    "value" : "beta"
+  }, {
+    "name" : "bubble",
+    "value" : "old"
+  }, {
+    "name" : "enable_newux_page_view_count",
+    "value" : "false"
+  }, {
+    "name" : "enable_airbrake_js",
+    "value" : "false"
+  }, {
+    "name" : "field_names_to_avoid_during_bootstrap",
+    "value" : "[\"latitude\", \"longitude\", \"lat\", \"lng\", \"x\", \"y\"]"
+  }, {
+    "name" : "current_dataset_metadata_version",
+    "value" : "1"
+  }, {
+    "name" : "debug_assets",
+    "value" : "true"
+  }, {
+    "name" : "enable_data_lens_save_as_button",
+    "value" : "true"
+  }, {
+    "name" : "hide_interpolated_nulls",
+    "value" : "false"
+  }, {
+    "name" : "timeline",
+    "value" : "old"
+  }, {
+    "name" : "feature_map_default_extent",
+    "value" : ""
+  }, {
+    "name" : "enable_bounding_boxes",
+    "value" : "false"
+  }, {
+    "name" : "secondary_group_identifier",
+    "value" : "spandex3"
+  }, {
+    "name" : "odux_enable_histogram",
+    "value" : "false"
+  }, {
+    "name" : "govstat_progress_settings",
+    "value" : "true"
+  }, {
+    "name" : "use_auth0",
+    "value" : "false"
+  }, {
+    "name" : "feature_map_disable_pan_zoom",
+    "value" : "false"
+  }, {
+    "name" : "stamen",
+    "value" : "false"
+  }, {
+    "name" : "enable_export_service",
+    "value" : "false"
+  }, {
+    "name" : "exit_tech_preview",
+    "value" : "false"
+  }, {
+    "name" : "dataset_count_v2",
+    "value" : "true"
+  }, {
+    "name" : "enable_api_foundry_pane",
+    "value" : "false"
+  }, {
+    "name" : "shape_file_region_query_limit",
+    "value" : "5000"
+  }, {
+    "name" : "data_cards_app_token",
+    "value" : "zvQamMSTi4GNuZWWDwjLdLPhW"
+  }, {
+    "name" : "debug_data_lens",
+    "value" : "false"
+  }, {
+    "name" : "field_names_that_cannot_be_aggregated",
+    "value" : "[\"latitude\", \"longitude\", \"lat\", \"lng\", \"x\", \"y\"]"
+  }, {
+    "name" : "odux_enable_feature_map",
+    "value" : "false"
+  }, {
+    "name" : "kill_esri_reprojection_and_pass_different_webm",
+    "value" : "false"
+  }, {
+    "name" : "enable_fullstory_tracking",
+    "value" : "false"
+  }, {
+    "name" : "use_catalog_lens_permissions",
+    "value" : "true"
+  }, {
+    "name" : "d3_metrics",
+    "value" : "true"
+  }, {
+    "name" : "nbe_bucket_size",
+    "value" : "false"
+  }, {
+    "name" : "useSoda2",
+    "value" : "never"
+  }, {
+    "name" : "domain_decommissioning",
+    "value" : "false"
+  }, {
+    "name" : "metadata_transition_phase",
+    "value" : "3"
+  }, {
+    "name" : "govstat_missing_locale_crash",
+    "value" : "false"
+  }, {
+    "name" : "feature_map_zoom_debounce",
+    "value" : "500"
+  }, {
+    "name" : "enable_newux_bootstrap_link",
+    "value" : "true"
+  }, {
+    "name" : "create_v2_data_lens",
+    "value" : "true"
+  }, {
+    "name" : "disable_dataset_search_box",
+    "value" : "false"
+  } ]
+}, {
+  "id" : 5,
+  "name" : "Feature set",
+  "default" : true,
+  "domainCName" : "localhost",
+  "type" : "feature_set",
+  "updatedAt" : 1445444151,
+  "properties" : [ {
+    "name" : "geospatial",
+    "value" : true
+  }, {
+    "name" : "govstat_target_tolerance",
+    "value" : true
+  }, {
+    "name" : "canvas2",
+    "value" : true
+  }, {
+    "name" : "govStat",
+    "value" : true
+  }, {
+    "name" : "govstat_15",
+    "value" : true
+  }, {
+    "name" : "canvas_designer",
+    "value" : true
+  } ]
+}, {
+  "id" : 21,
+  "name" : "haha",
+  "default" : true,
+  "domainCName" : "localhost",
+  "type" : "blue",
+  "updatedAt" : 1446500522
+} ]

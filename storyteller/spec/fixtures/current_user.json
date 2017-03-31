@@ -1,0 +1,19 @@
+{
+  "id" : "vkji-3zrf",
+  "createdAt" : 1424892536,
+  "displayName" : "stanrawrysz",
+  "email" : "stan.rawrysz@socrata.com",
+  "emailUnsubscribed" : false,
+  "lastLogin" : 1436975102,
+  "login" : "s",
+  "numberOfFollowers" : 0,
+  "numberOfFriends" : 0,
+  "oid" : 2,
+  "profileLastModified" : 1424892536,
+  "publicTables" : 0,
+  "publicViews" : 0,
+  "roleName" : "administrator",
+  "screenName" : "stanrawrysz",
+  "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards" ],
+  "flags" : [ "admin" ]
+}

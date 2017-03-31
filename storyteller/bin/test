@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+rbenv install -s `cat .ruby-version`
+
+# TODO maybe have to create a new db to use for
+#      these tests since we're also running in the
+#    storyteller pull request builder.
+bin/test_setup
+HEADLESS=true bundle exec rake test

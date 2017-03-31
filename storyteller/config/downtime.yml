@@ -1,0 +1,14 @@
+# This is a sample downtime configuration which will only load in development
+# (so the top-level key should not be changed).
+#
+# See test fixtures for example formats.
+
+development:
+  - message_start:  2015-01-01t00:00:00-08:00
+    message_end:    2020-01-01t00:00:00-08:00
+    downtime_start: 2015-01-01t00:00:00-08:00
+    downtime_end:   2020-01-01t00:00:00-08:00
+  - message_start:  2015-02-02t00:00:00-08:00
+    message_end:    2020-02-02t00:00:00-08:00
+    downtime_start: 2015-02-02t00:00:00-08:00
+    downtime_end:   2020-02-02t00:00:00-08:00

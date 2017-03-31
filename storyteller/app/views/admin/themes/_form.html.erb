@@ -1,0 +1,159 @@
+<% form_action = theme.persisted? ? admin_theme_path : { action: 'create' } -%>
+<%= form_for(theme, url: form_action) do |form| %>
+  <header>
+    <div class="heading">
+      <h2>Customize Style</h2>
+    </div>
+    <div class="actions">
+      <%= link_to 'Cancel', admin_themes_path, class: 'btn btn-link' %>
+      <%= form.submit 'Save', class: 'btn btn-primary' %>
+    </div>
+  </header>
+
+  <div class="form-section">
+    <div class="wide form-fields-label-above">
+      <div class="form-group">
+        <%= form.label :title %>
+        <%= form.text_field :title, class: 'text-input' %>
+      </div>
+    </div>
+    <div class="wide form-fields-label-above">
+      <div class="form-group">
+        <%= form.label :description %>
+        <%= form.text_field :description, class: 'text-input' %>
+      </div>
+    </div>
+  </div>
+
+  <h4 class="border-below">Type Size and Line Height</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'type-size-and-line-height',
+                theme: theme,
+                theme_variables: %w( $std-type-size $std-line-height ),
+                help_text: 'Standard Type size is used for tablet, mobile, and small desktop displays. This is your
+                           "mobile-first type size and line height"'
+              } %>
+
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'type-size-line-height',
+                theme: theme,
+                theme_variables: %w( $lg-type-size $lg-line-height ),
+                help_text: 'Large type size is the type for large displays.'
+              } %>
+
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'type-size-font-weight',
+                theme: theme,
+                theme_variables: %w( $heading-font-weight ),
+                help_text: 'The heading font weight (i.e: 300, 400, 500, 600, 700, 800)'
+              } %>
+
+  <h4 class="border-below">Page Width</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                field_options: %w( Normal Expanded ),
+                section_name: 'story-width-mode',
+                theme: theme,
+                theme_variables: %w( $story-width-mode ),
+                help_text: 'Selecting Expanded mode will increase the maximum page width for stories using this theme. This setting is useful for pages that contain large embedded media elements.'
+              } %>
+
+
+  <h4 class="border-below">Typeface</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'typeface',
+                theme: theme,
+                theme_variables: %w( $heading-font-stack $body-font-stack ),
+                help_text: '<p><a href="https://developer.mozilla.org/en-US/Learn/CSS/Howto/style_text#Web_safe_fonts">Click here</a> for a list of web-safe fonts and additional guidance. <br><b>Example Heading Font Stack:</b> <code>Georgia, serif</code><br><b>Example Body Font Stack:</b> <code>"Trebuchet MS", Helvetica, sans-serif</code></p>'
+              } -%>
+
+  <!-- This form section is odd in that it doesn't deal directly with CSS variables. -->
+
+  <%=
+    render partial: 'form_section_checkbox',
+      locals: {
+        section_name: 'google-font-code',
+        collapse_checkbox_title_text: 'Use Google fonts',
+        collapse_checkbox_help_text: 'Check this box to use a Google Font collection.',
+        theme: theme
+    }
+  %>
+
+  <div class="form-section google-font-code" data-section-name="google-font-code">
+    <div class="form-fields form-fields-label-above">
+      <div class="form-group">
+        <%= form.label :google_font_code, "Google Font Code" %>
+        <%= form.text_field :google_font_code, class: 'text-input' %>
+      </div>
+    </div>
+
+    <div class="help" id="google_font_code_help_text">
+      <p>Visit <a href="https://www.google.com/fonts" target="_blank">Google Fonts</a> and follow the on-screen prompts to add fonts to a collection. Note: as more fonts are added to a collection, the slower the page will load. Select Normal, Normal Italic, Bold, and Bold Italic for each font.  Paste the generated code into the Google Font textbox to the left, and paste the generated font families into the header and body font stack text boxes above.</p>
+      <b>Example Google Font Code:</b> <code>&lt;link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"&gt;</code>
+    </div>
+  </div>
+
+  <!-- End odd section -->
+
+  <h4 class="border-below">Colors</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'colors',
+                theme: theme,
+                theme_variables: %w( $heading-type-color $default-type-color )
+              } %>
+
+  <h4 class="border-below">Hyperlinks</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'hyperlinks',
+                theme: theme,
+                theme_variables: %w( $link-color $link-text-decoration $link-hover )
+              } %>
+
+  <h4 class="border-below">Blockquote</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'blockquote',
+                theme: theme,
+                theme_variables: %w( $blockquote-font-style $blockquote-border-left $blockquote-padding-left $blockquote-margin-left )
+              } %>
+
+  <h4 class="border-below">Lists</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'lists',
+                theme: theme,
+                theme_variables: %w( $list-padding-left $ul-list-style-type $ol-list-style-type )
+              } %>
+
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'list-custom-bullet',
+                theme: theme,
+                theme_variables: %w( $list-bullet-character $list-bullet-color $list-margin-adjustment ),
+                help_text: 'Bullet Character can either be a literal character (examples: • or ►), or Unicode hexadecimal codes (examples: \\2022 or \\25BA).',
+                collapsible: true,
+                collapse_checkbox_title_text: "Use Custom Bullet",
+                collapse_checkbox_help_text: "Check this box to use a custom bullet style."
+              } %>
+
+
+  <h4 class="border-below">Rule</h4>
+  <%= render  partial: 'form_section',
+              locals: {
+                section_name: 'rule',
+                theme: theme,
+                theme_variables: %w( $hr-border-top )
+              } %>
+
+  <div class="form-section">
+    <%= form.submit 'Save', class: 'btn btn-primary' %>
+  </div>
+<% end -%>
+
+

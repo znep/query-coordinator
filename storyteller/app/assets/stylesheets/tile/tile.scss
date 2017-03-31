@@ -1,0 +1,148 @@
+@import 'lib/variables';
+@import 'edit/tool-classes';
+
+@include keyframes(spin) {
+  100% {
+    @include transform(rotate(360deg));
+  }
+}
+
+html {
+  font-size: 10px;
+
+  body {
+    background-color: transparent;
+    overflow: scroll;
+    text-align: center;
+
+    .tile {
+      position: relative;
+      display: block;
+      margin: 0.2rem auto;
+      width: 590px;
+      height: 340px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 0.25rem;
+      font-family: 'Open Sans', sans-serif !important;
+      overflow: hidden;
+
+      .tile-title,
+      .tile-description,
+      .tile-no-description,
+      .tile-image,
+      .tile-link-container {
+        opacity: 0;
+        transition: opacity $transition-duration;
+      }
+
+      .tile-title {
+        margin: 0 !important;
+        padding: 1rem;
+        color: #2c2c2c;
+        font-size: 2.3rem;
+        font-weight: 500;
+        letter-spacing: -0.5px;
+      }
+
+      .tile-image {
+        position: absolute;
+        width: 100%;
+        height: 16.5rem;
+        top: 5rem;
+        background-color: #e0e0e0;
+        background-image: image-url('default-tile-image.png');
+        background-size: cover, cover;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .tile-description,
+      .tile-no-description {
+        position: absolute;
+        top: 22.75rem;
+        margin: 0;
+        padding: 0 1rem !important;
+        color: #2c2c2c;
+        font-size: 1.5rem !important;
+        line-height: 2.5rem;
+        text-align: left;
+      }
+
+      .tile-no-description {
+        font-style: oblique;
+        color: #aaa;
+      }
+
+      .tile-link-container {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        border-top: 1px solid #ddd;
+
+        .tile-link {
+          margin: 0;
+          padding: 0.25rem 1rem;
+          height: 2rem;
+          font-family: 'Open Sans', sans-serif !important;
+          font-size: 1.25rem;
+          line-height: 2rem;
+          text-align: right;
+          white-space: nowrap;
+          color: #2c2c2c;
+
+          a {
+            display: inline;
+            margin: 0;
+            padding: 0;
+            color: #2c97de;
+
+            &:hover,
+            &:active,
+            &:visited {
+              color: #2c97de;
+            }
+          }
+        }
+      }
+
+      .tile-loading {
+        position: absolute;
+        display: block;
+        left: 50%;
+        top: 50%;
+        width: 3.6rem;
+        height: 3.6rem;
+        transform: translate(-50%, -50%);
+
+        .tile-loading-spinner {
+          @include spinner;
+
+          width: 3rem;
+          height: 3rem;
+        }
+      }
+
+      &.typeset {
+        font-size: 1rem;
+      }
+
+      &.rendered {
+
+        .tile-title,
+        .tile-image,
+        .tile-description,
+        .tile-no-description,
+        .tile-link-container {
+          opacity: 1;
+        }
+
+        .tile-loading {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}

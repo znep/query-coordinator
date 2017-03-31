@@ -1,0 +1,14 @@
+@import 'lib/variables';
+
+.block-edit {
+  position: absolute;
+  display: block;
+  width: 100%;
+  top: 0;
+  left: 0;
+  transition: transform $transition-duration;
+
+  .block {
+    @include clearfix();
+  }
+}

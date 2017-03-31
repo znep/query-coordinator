@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="166px" height="59px" viewBox="0 0 166 59" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g id="Blocks" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-202.000000, -876.000000)" id="element-rule">
+            <g transform="translate(202.000000, 876.000000)">
+                <g id="Block-Frame---Half" fill="#FFFFFF">
+                    <rect id="Block-Border-Half-Add-in-CSS" x="0" y="0" width="165.236842" height="58.5540492"></rect>
+                </g>
+                <path d="M11,27 L155,27 L155,30 L30.0009843,30 L11,30 L11,27 Z" id="Rectangle-10-Copy-20" fill="#C2C2C2"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,34 @@
+<%#
+Component format:
+{
+  type: "image",
+  value: {
+    documentId: "1234",
+    url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg",
+    link: "http://this-image-is-a-link.example.com",
+    openInNewWindow: false
+  }
+}
+%>
+<% image_component = ImageComponent.new(component) -%>
+<% image = image_tag(
+      image_component.url(:xlarge),
+      alt: image_component.alt_text,
+      srcset: image_srcset_from_component(image_component),
+      sizes: image_sizes_from_number_of_columns(columns)
+    ) %>
+
+<% if component['value']['link'].present? -%>
+
+<%= content_tag(
+      'a',
+      image,
+      href: component['value']['link'],
+      target: component['value']['openInNewWindow'] ? '_blank' : '_self'
+    ) %>
+
+<% else -%>
+
+<%= image %>
+
+<% end -%>

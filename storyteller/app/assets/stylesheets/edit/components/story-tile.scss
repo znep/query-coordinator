@@ -1,0 +1,145 @@
+@import 'lib/variables';
+
+.component-story-tile,
+.component-story-widget {
+  width: 100%;
+  height: 42rem;
+
+  &.component-error {
+    display: flex;
+    border: 1px solid $story-tile-border-color;
+
+    p {
+      margin: auto;
+      padding: 1rem;
+      color: $story-tile-error-text-color;
+      background-color: $story-tile-error-background-color;
+      border: solid 1px $story-tile-error-border-color;
+    }
+  }
+
+  .story-tile-container {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 1px solid $story-tile-border-color;
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+
+    .story-tile {
+      width: 100%;
+      height: 100%;
+
+      .story-tile-title,
+      .story-tile-image,
+      .story-tile-description {
+        font-family: 'Open Sans', sans-serif;
+        opacity: 0;
+        transition: opacity $transition-duration;
+      }
+
+      .story-tile-title-container {
+        width: 100%;
+        height: 9.5rem;
+      }
+
+      &.typeset .story-tile-title {
+        @include selectable();
+
+        margin: 0;
+        padding: 0.75rem 1rem;
+        color: $story-tile-text-color;
+        font-size: 2.3rem;
+        font-weight: 500;
+        letter-spacing: -0.5px;
+        line-height: 4rem;
+      }
+
+      .story-tile-image {
+        margin: 0;
+        width: 100%;
+        height: 20rem;
+        background-color: $story-tile-image-background-color;
+        background-image: image-url('default-tile-image.png');
+        background-size: cover, cover;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        border-top: 1px solid $story-tile-image-border-color;
+        border-bottom: 1px solid $story-tile-image-border-color;
+      }
+
+      .story-tile-description {
+        @include selectable();
+
+        margin: 0;
+        padding: 0.75rem 1rem;
+        color: $story-tile-text-color;
+        font-size: 1.5rem;
+        line-height: 2.5rem;
+      }
+
+      .story-tile-view-story {
+        position: absolute;
+        display: block;
+        margin: 0;
+        width: 100%;
+        height: 3.5rem;
+        left: 0;
+        bottom: 0;
+        color: $story-tile-view-story-text-color;
+        font-size: 1.5rem;
+        line-height: 3.5rem;
+        text-align: center;
+        border-top: 1px solid $story-tile-view-story-border-color;
+      }
+    }
+
+    &.rendered {
+
+      .story-tile {
+
+        .story-tile-title,
+        .story-tile-image,
+        .story-tile-description {
+          opacity: 1;
+        }
+      }
+    }
+
+    &:hover {
+
+      .story-tile-view-story {
+        color: $btn-primary-color;
+        background-color: $btn-primary-background-color;
+      }
+    }
+  }
+}
+
+@media print {
+  .component-story-tile {
+    height: 37rem;
+
+    .story-tile-container {
+      .story-tile {
+        .story-tile-title-container {
+          .story-tile-title {
+            font-size: 18.5px;
+            line-height: 28px;
+          }
+        }
+
+        .story-tile-description {
+          font-size: 11.8px;
+          line-height: 18.172px;
+        }
+
+        .story-tile-view-story {
+          display: none;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,177 @@
+@import 'lib/variables';
+@import 'bourbon';
+
+#print-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  z-index: $print-overlay-z-index;
+  text-align: center;
+  padding-top: 20%;
+  color: $modal-title-color;
+
+  .spinner-default {
+    margin-bottom: 5rem;
+  }
+
+  h3 {
+    margin-bottom: 1rem;
+  }
+
+  .progress-bar {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0.5rem;
+    background-color: #288dc1;
+  }
+}
+
+#story-view {
+
+  .user-story-container {
+    font-size: 16px; //adjust back from 10px font-size, to match text iframes
+    z-index: $user-story-container-z-index;
+    padding-top: 0;
+
+    .user-story {
+      @include selectable(); // remove unselectable from edit mode
+
+      padding-bottom: $user-story-padding-bottom;
+
+      &.presentation-mode {
+        font-size: $presentation-mode-font-size;
+        @include align-items(stretch);
+        @include display(flex);
+        @include flex-direction(column);
+        @include justify-content(space-around);
+
+        &.large {
+          max-width: $presentation-mode-large-max-width;
+        }
+
+        &.medium {
+          max-width: $presentation-mode-medium-max-width;
+        }
+
+        &.small {
+          max-width: $presentation-mode-small-max-width;
+          width: $presentation-mode-small-width;
+        }
+      }
+    }
+  }
+
+  #site-chrome-footer {
+    // we position the footer absolutely
+    width: 100%;
+
+    &.presentation-mode {
+      display: none;
+    }
+  }
+
+  .block {
+    margin: 0 2.5rem;
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  .actions-bar {
+    position: fixed;
+    bottom: $view-mode-button-width;
+    right: 10px;
+    z-index: 10;
+  }
+
+  .actions-bar {
+    box-shadow: 0 0 10px $actions-bar-box-shadow-color;
+
+    .btn-edit {
+      border-bottom: none;
+    }
+  }
+
+  .btn-edit,
+  .btn-presentation-mode,
+  .btn-presentation-next,
+  .btn-presentation-previous {
+    display: block;
+    background-color: $view-mode-button-background-color;
+    color: $view-mode-button-color;
+    border: solid 1px $view-mode-button-border-color;
+    width: $view-mode-button-width;
+    height: $view-mode-button-width;
+    padding: 0;
+    font-size: $presentation-mode-button-font-size;
+    border-radius: 0;
+    text-align: center;
+    transition: color 0.2s;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover {
+      background-color: darken($view-mode-button-background-color, 8%);
+    }
+  }
+
+  .btn-edit,
+  .btn-presentation-previous,
+  .btn-presentation-next {
+    opacity: 1;
+    transition: opacity 0.15s;
+
+    &.hidden {
+      &::before {
+        display: none;
+      }
+
+      display: block !important;
+      border: 0 !important;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+      opacity: 0;
+    }
+  }
+
+  .btn-presentation-next,
+  .btn-presentation-previous {
+    display: inline-block;
+    background-color: $view-mode-button-navigation-background-color;
+    border-color: $view-mode-button-navigation-background-color;
+    border-top: solid 1px $view-mode-button-navigation-background-color;
+    color: $view-mode-button-navigation-color;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: $view-mode-button-navigation-hover-background-color;
+    }
+  }
+
+  .btn-presentation-mode {
+    &.socrata-icon-close-2 {
+      display: inline-block;
+      float: right;
+      border-top: solid 1px $view-mode-button-border-color;
+      border-left: solid 1px $view-mode-button-navigation-background-color;
+    }
+  }
+
+  .btn-presentation-previous {
+    float: left;
+  }
+
+  .profiler-results {
+    top: 0 !important;
+  }
+}

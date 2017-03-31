@@ -1,0 +1,10 @@
+@import 'lib/variables';
+
+.component-socrata-visualization-histogram {
+  .component-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: $component-content-z-index;
+  }
+}

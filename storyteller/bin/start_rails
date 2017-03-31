@@ -1,0 +1,8 @@
+#!/bin/sh
+echo "==========================================================================="
+echo "Starting rails (unicorn) on port 3010"
+echo "If you want to start the entire stack run:"
+echo " bundle exec foreman start"
+echo ""
+
+bundle exec unicorn_rails -p 3010 -c ./config/unicorn.rb

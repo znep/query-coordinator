@@ -199,7 +199,7 @@ function mapStateToProps(state, ownProps) {
   return {
     ...queryResults,
     numLoadsInProgress: Selectors.numLoadsInProgress(state.db),
-    displayState: DisplayState.fromUrl(_.pick(ownProps, ['params', 'route']))
+    displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route']))
   };
 }
 

@@ -25,8 +25,16 @@ div.clp-manager {
     margin-bottom: 13px;
   }
 
-  input.text-input {
+  .text-input {
     width: 100%;
+
+    &::placeholder {
+      font-style: italic;
+    }
+  }
+
+  button.cancel-button {
+    margin-right: 10px;
   }
 
   .media-results {

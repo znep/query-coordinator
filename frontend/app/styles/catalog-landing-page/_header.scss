@@ -6,10 +6,13 @@
     font-weight: normal;
     color: $primary-base;
     margin-bottom: 0;
+
+    display: flex;
   }
 
   .description {
     color: $dark-grey-1;
+    margin-top: 0.5rem;
     line-height: 1.25rem;
     font-size: 0.9rem;
 
@@ -18,8 +21,44 @@
     }
   }
 
+  .management-button-anchor {
+    display: inline-flex;
+  }
+
+  .no-headline .management-button {
+    margin-left: 0;
+  }
+
   .management-button {
-    float: right;
+    align-self: center;
+    margin-left: 10px;
+    padding: 3px;
+    font-size: 13px;
+    cursor: pointer;
+
+    .hoverText {
+      display: none;
+    }
+
+    @include desktop {
+      &:hover {
+        padding-right: 9px;
+        font-size: 13px;
+
+        i {
+          font-size: 15px;
+          margin-right: 4px;
+        }
+
+        .hoverText {
+          display: inline;
+        }
+      }
+    }
+
+    i {
+      font-size: 15px;
+    }
 
     .throbber-icon {
       @include throbber-icon;

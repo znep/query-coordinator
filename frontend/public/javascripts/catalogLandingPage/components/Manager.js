@@ -163,7 +163,7 @@ export class Manager extends React.Component {
               value={this.props.header.headline} />
 
             {headingHtml(_.get(I18n, 'manager.description.label'))}
-            <input
+            <textarea
               className="text-input input-description"
               name="description"
               type="text"
@@ -188,7 +188,6 @@ export class Manager extends React.Component {
             <button className="btn btn-default cancel-button" onClick={this.onDismiss}>
               {isDismissing ? spinner : _.get(I18n, 'manager.cancel')}
             </button>
-            &nbsp;
             <button className="btn btn-primary save-button" onClick={this.handleSave} disabled={!isDirty}>
               {isSaving ? spinner : _.get(I18n, 'manager.save')}
             </button>

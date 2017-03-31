@@ -57,7 +57,7 @@ function getData(vif, options) {
       whereClause,
       `GROUP BY \`${state.columnName}\``,
       `ORDER BY ${aliasForOrderByParameter} ${orderBySort}`,
-      `NULL LAST`,
+      'NULL LAST',
       `LIMIT ${limit + 1}`
     ].join(' ');
 

@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const $ = require('jquery');
+const d3 = require('d3');
 const rewire = require('rewire');
 const I18n = require('../../src/I18n');
 const VifHelpers = require('../../src/helpers/VifHelpers');
@@ -39,14 +40,7 @@ describe('SvgVisualization', () => {
     let viz;
     const templateElementClasses = [
       '.socrata-visualization-title',
-      '.socrata-visualization-description',
-      // TODO: A change was made to axis title rendering in EN-11686 (frontend-visualizations/pull/495)
-      //      that kept these axis elements but broke the flyouts. Need to update these
-      //      tests when that is fixed (EN-15077).
-      // '.socrata-visualization-top-axis-title',
-      // '.socrata-visualization-right-axis-title',
-      // '.socrata-visualization-bottom-axis-title',
-      // '.socrata-visualization-left-axis-title'
+      '.socrata-visualization-description'
     ];
 
     beforeEach(() => {
@@ -208,40 +202,50 @@ describe('SvgVisualization', () => {
     });
   });
 
-  // TODO: A change was made to axis title rendering in EN-11686 (frontend-visualizations/pull/495)
-  //      that moved axis title rendering to the svg but kept the original axis title elements in place.
-  //      Need to fix these tests when that is updated (EN-15077).
-  xdescribe('#renderAxisLabels', () => {
+  describe('#renderAxisLabels', () => {
     let viz;
+    let $viz;
+    let svgContainer;
+    let copiedVif;
+    let viewport = { x: 0, y: 0, width: 100, height: 100 };
 
     beforeEach(() => {
       viz = new SvgVisualization($element, mockVif);
+      copiedVif = _.cloneDeep(viz.getVif());
+      svgContainer = d3.select(document.createElementNS('http://www.w3.org/2000/svg', 'svg'));
+      $viz = getViz();
+      $viz.append(svgContainer.node());
     });
 
-    it('does not render axis labels if they are not specified in the vif', () => {
-      const viz = new SvgVisualization($element, mockVif);
+    it('only renders specified axis labels', () => {
+      const newVif = _.merge({}, copiedVif, {
+        configuration: {
+          axisLabels: {
+            top: 'Top Title',
+            left: 'Left Title'
+          }
+        }
+      });
 
-      const topAxisTitle = getVizChildElement('.socrata-visualization-top-axis-title').innerHTML;
-      const rightAxisTitle = getVizChildElement('.socrata-visualization-right-axis-title').innerHTML;
-      const bottomAxisTitle = getVizChildElement('.socrata-visualization-bottom-axis-title').innerHTML;
-      const leftAxisTitle = getVizChildElement('.socrata-visualization-left-axis-title').innerHTML;
+      const $viz = getViz();
 
-      assert.isNotTrue(getViz().hasClass('socrata-visualization-top-axis-title'));
-      assert.isNotTrue(getViz().hasClass('socrata-visualization-right-axis-title'));
-      assert.isNotTrue(getViz().hasClass('socrata-visualization-bottom-axis-title'));
-      assert.isNotTrue(getViz().hasClass('socrata-visualization-left-axis-title'));
-      assert.equal(topAxisTitle, '');
-      assert.equal(rightAxisTitle, '');
-      assert.equal(bottomAxisTitle, '');
-      assert.equal(leftAxisTitle, '');
+      $viz.append(svgContainer.node());
+      viz.updateVif(newVif);
+      viz.renderAxisLabels(svgContainer, viewport);
+
+      const $rightAxis = $viz.find('.socrata-visualization-right-axis-title');
+      const $bottomAxis = $viz.find('.socrata-visualization-bottom-axis-title');
+
+      const topAxisTitle = $viz.find('.socrata-visualization-top-axis-title').text();
+      const leftAxisTitle = $viz.find('.socrata-visualization-left-axis-title').text();
+
+      assert.lengthOf($rightAxis, 0);
+      assert.lengthOf($bottomAxis, 0);
+      assert.equal(topAxisTitle, 'Top Title');
+      assert.equal(leftAxisTitle, 'Left Title');
     });
 
     it('renders axis labels if they are specified in the vif', () => {
-      const topAxisTitle = getVizChildElement('.socrata-visualization-top-axis-title').innerHTML;
-      const rightAxisTitle = getVizChildElement('.socrata-visualization-right-axis-title').innerHTML;
-      const bottomAxisTitle = getVizChildElement('.socrata-visualization-bottom-axis-title').innerHTML;
-      const leftAxisTitle = getVizChildElement('.socrata-visualization-left-axis-title').innerHTML;
-      const copiedVif = _.cloneDeep(viz.getVif());
       const newVif = _.merge({}, copiedVif, {
         configuration: {
           axisLabels: {
@@ -252,12 +256,15 @@ describe('SvgVisualization', () => {
           }
         }
       });
-      viz.updateVif(newVif);
 
-      assert.isTrue(getViz().hasClass('socrata-visualization-top-axis-title'));
-      assert.isTrue(getViz().hasClass('socrata-visualization-right-axis-title'));
-      assert.isTrue(getViz().hasClass('socrata-visualization-bottom-axis-title'));
-      assert.isTrue(getViz().hasClass('socrata-visualization-left-axis-title'));
+      viz.updateVif(newVif);
+      viz.renderAxisLabels(svgContainer, viewport);
+
+      const topAxisTitle = $viz.find('.socrata-visualization-top-axis-title').text();
+      const rightAxisTitle = $viz.find('.socrata-visualization-right-axis-title').text();
+      const bottomAxisTitle = $viz.find('.socrata-visualization-bottom-axis-title').text();
+      const leftAxisTitle = $viz.find('.socrata-visualization-left-axis-title').text();
+
       assert.equal(topAxisTitle, 'Top Title');
       assert.equal(rightAxisTitle, 'Right Title');
       assert.equal(bottomAxisTitle, 'Bottom Title');

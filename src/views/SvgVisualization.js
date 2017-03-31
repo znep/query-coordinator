@@ -156,6 +156,7 @@ function SvgVisualization($element, vif) {
       containerSvg,
       leftAxisLabelElement,
       axisLabels.left,
+      'socrata-visualization-left-axis-title',
       (element) => {
         const left = axisLabelTextSizes.left.height + AXIS_LABEL_TEXT_MARGIN;
         element.attr('transform', `translate(${left}, ${chartMidY}) rotate(-90)`);
@@ -167,6 +168,7 @@ function SvgVisualization($element, vif) {
       containerSvg,
       bottomAxisLabelElement,
       axisLabels.bottom,
+      'socrata-visualization-bottom-axis-title',
       (element) => {
         const top = chartMaxY + AXIS_LABEL_MARGIN - AXIS_LABEL_TEXT_MARGIN;
         element.attr('transform', `translate(${chartMidX}, ${top})`);
@@ -178,6 +180,7 @@ function SvgVisualization($element, vif) {
       containerSvg,
       topAxisLabelElement,
       axisLabels.top,
+      'socrata-visualization-top-axis-title',
       (element) => {
         const top = axisLabelTextSizes.top.height + AXIS_LABEL_TEXT_MARGIN;
         element.attr('transform', `translate(${chartMidX}, ${top})`);
@@ -189,6 +192,7 @@ function SvgVisualization($element, vif) {
       containerSvg,
       rightAxisLabelElement,
       axisLabels.right,
+      'socrata-visualization-right-axis-title',
       (element) => {
         const left = chartMaxX - (AXIS_LABEL_MARGIN - AXIS_LABEL_TEXT_MARGIN);
         element.attr('transform', `translate(${left}, ${chartMidY}) rotate(90)`);
@@ -196,25 +200,30 @@ function SvgVisualization($element, vif) {
     );
   };
 
-  function createAxisLabelGroup(containerSvg) {
+  function createAxisLabelGroup(containerSvg, className) {
     const group = containerSvg.append('g');
 
     group.
       append('text').
+      attr('class', className).
       attr('text-anchor', 'middle').
       attr('font-family', AXIS_LABEL_FONT_FAMILY).
       attr('font-size', AXIS_LABEL_FONT_SIZE).
       attr('fill', AXIS_LABEL_COLOR);
 
+    group.
+      on('mouseover', showFlyout).
+      on('mouseout', hideFlyout);
+
     return group;
   }
 
-  function updateAxisLabel(parentElement, axisLabelElement, title, nodeUpdateFn) {
+  function updateAxisLabel(parentElement, axisLabelElement, title, className, nodeUpdateFn) {
     let element = axisLabelElement;
 
     if (title) {
       if (element === null) {
-        element = createAxisLabelGroup(parentElement);
+        element = createAxisLabelGroup(parentElement, className);
       }
 
       nodeUpdateFn(element);
@@ -715,13 +724,7 @@ function SvgVisualization($element, vif) {
                 append(
                   $('<div>', {'class': 'socrata-visualization-description'})
                 ),
-              $('<div>', {'class': 'socrata-visualization-container'}).
-                append([
-                  $('<div>', {'class': 'socrata-visualization-top-axis-title'}),
-                  $('<div>', {'class': 'socrata-visualization-right-axis-title'}),
-                  $('<div>', {'class': 'socrata-visualization-bottom-axis-title'}),
-                  $('<div>', {'class': 'socrata-visualization-left-axis-title'})
-                ]),
+              $('<div>', {'class': 'socrata-visualization-container'}),
               $('<div>', {'class': 'socrata-visualization-info'}).
                 append([
                   $('<div>', {'class': 'socrata-visualization-view-source-data'}).append(
@@ -747,6 +750,7 @@ function SvgVisualization($element, vif) {
   }
 
   function attachEvents() {
+    const $visualization = self.$element.find('.socrata-visualization');
 
     // Destroy on (only the first) 'SOCRATA_VISUALIZATION_DESTROY' event.
     self.$element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
@@ -754,76 +758,53 @@ function SvgVisualization($element, vif) {
       detachEvents();
     });
 
-    self.$element.on('mouseover', '.socrata-visualization-title', showFlyout);
-    self.$element.on('mouseout', '.socrata-visualization-title', hideFlyout);
-
-    self.$element.on('mouseover', '.socrata-visualization-description', showFlyout);
-    self.$element.on('mouseout', '.socrata-visualization-description', hideFlyout);
-
-    self.$element.on('mouseover', '.socrata-visualization-top-axis-title', showFlyout);
-    self.$element.on('mouseout', '.socrata-visualization-top-axis-title', hideFlyout);
-
-    self.$element.on('mouseover', '.socrata-visualization-right-axis-title', showFlyout);
-    self.$element.on('mouseout', '.socrata-visualization-right-axis-title', hideFlyout);
-
-    self.$element.on('mouseover', '.socrata-visualization-bottom-axis-title', showFlyout);
-    self.$element.on('mouseout', '.socrata-visualization-bottom-axis-title', hideFlyout);
-
-    self.$element.on('mouseover', '.socrata-visualization-left-axis-title', showFlyout);
-    self.$element.on('mouseout', '.socrata-visualization-left-axis-title', hideFlyout);
-
     // The download button is not currently rendered anywhere, but may be in the future
-    self.$element.on('click', '.socrata-visualization-download-button', handleDownload);
+    $visualization.on('click', '.socrata-visualization-download-button', handleDownload);
+
+    $visualization.on('mouseover', '.socrata-visualization-title', showFlyout);
+    $visualization.on('mouseout', '.socrata-visualization-title', hideFlyout);
+
+    $visualization.on('mouseover', '.socrata-visualization-description', showFlyout);
+    $visualization.on('mouseout', '.socrata-visualization-description', hideFlyout);
   }
 
   function detachEvents() {
-
-    self.$element.off('mouseover', '.socrata-visualization-title', showFlyout);
-    self.$element.off('mouseout', '.socrata-visualization-title', hideFlyout);
-
-    self.$element.off('mouseover', '.socrata-visualization-description', showFlyout);
-    self.$element.off('mouseout', '.socrata-visualization-description', hideFlyout);
-
-    self.$element.off('mouseover', '.socrata-visualization-top-axis-title', showFlyout);
-    self.$element.off('mouseout', '.socrata-visualization-top-axis-title', hideFlyout);
-
-    self.$element.off('mouseover', '.socrata-visualization-right-axis-title', showFlyout);
-    self.$element.off('mouseout', '.socrata-visualization-right-axis-title', hideFlyout);
-
-    self.$element.off('mouseover', '.socrata-visualization-bottom-axis-title', showFlyout);
-    self.$element.off('mouseout', '.socrata-visualization-bottom-axis-title', hideFlyout);
-
-    self.$element.off('mouseover', '.socrata-visualization-left-axis-title', showFlyout);
-    self.$element.off('mouseout', '.socrata-visualization-left-axis-title', hideFlyout);
+    const $visualization = self.$element.find('.socrata-visualization');
 
     self.$element.off('click', '.socrata-visualization-download-button', handleDownload);
+
+    $visualization.off('mouseover', '.socrata-visualization-title', showFlyout);
+    $visualization.off('mouseout', '.socrata-visualization-title', hideFlyout);
+
+    $visualization.off('mouseover', '.socrata-visualization-description', showFlyout);
+    $visualization.off('mouseout', '.socrata-visualization-description', hideFlyout);
+  }
+
+  function getTextContent(context, event) {
+    const element = context instanceof Element ? context : event.originalEvent.target;
+    const content = element.querySelector('text')
+      ? element.querySelector('text').textContent
+      : element.getAttribute('data-full-text');
+
+    return [ element, content ];
   }
 
   function showFlyout(event) {
-    // event.originalEvent doesn't exist for manually triggered events, so
-    // event.target was added as a fall back for testing
-    const element = _.get(event, 'originalEvent.target', event.target);
-    const content = element.getAttribute('data-full-text');
+    const [ element, content ] = getTextContent(this, event);
 
     if (content) {
+      const customEvent = new window.CustomEvent('SOCRATA_VISUALIZATION_FLYOUT', {
+        detail: {
+          element,
+          content:  $('<div>', {'class': 'socrata-flyout-title'}).text(content),
+          rightSideHint: false,
+          belowTarget: false,
+          dark: true
+        },
+        bubbles: true
+      });
 
-      let flyoutPayload = {
-        element: element,
-        content:  $('<div>', {'class': 'socrata-flyout-title'}).text(content),
-        rightSideHint: false,
-        belowTarget: false,
-        dark: true
-      };
-
-      self.$element[0].dispatchEvent(
-        new window.CustomEvent(
-          'SOCRATA_VISUALIZATION_FLYOUT',
-          {
-            detail: flyoutPayload,
-            bubbles: true
-          }
-        )
-      );
+      self.$element[0].dispatchEvent(customEvent);
     }
   }
 

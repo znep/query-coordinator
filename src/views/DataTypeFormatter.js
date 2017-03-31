@@ -136,7 +136,8 @@ module.exports = {
   renderPhotoCellHTML: renderPhotoCellHTML,
   renderDocumentCellHTML: renderDocumentCellHTML,
   renderMultipleChoiceCell: renderMultipleChoiceCell,
-  renderTimestampCell: renderTimestampCell
+  renderTimestampCell: renderTimestampCell,
+  getCellAlignment: getCellAlignment
 };
 
 function renderCell(cellContent, column, domain, datasetUid) {
@@ -602,6 +603,26 @@ function renderTimestampCell(cellContent, column) {
     }
   }
   return '';
+}
+
+function getCellAlignment(column) {
+  if (column.format && column.format.align) {
+    return column.format.align;
+  }
+
+  switch (column.renderTypeName) {
+    case 'number':
+    case 'money':
+    case 'percent':
+    case 'star':
+      return 'right';
+
+    case 'checkbox':
+      return 'center';
+
+    default:
+      return 'left';
+  }
 }
 
 /**

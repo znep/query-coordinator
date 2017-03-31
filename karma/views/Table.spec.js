@@ -502,4 +502,64 @@ describe('Table', function() {
       });
     });
   });
+
+  describe('cell alignment', function() {
+    beforeEach(function() {
+      table = createTable();
+      render(table, {
+        columns: [
+          { fieldName: 'number', name: 'number', renderTypeName: 'number' },
+          { fieldName: 'numberAligned', name: 'numberAligned', renderTypeName: 'number', format: { align: 'center' } },
+          { fieldName: 'money', name: 'money', renderTypeName: 'money' },
+          { fieldName: 'moneyAligned', name: 'moneyAligned', renderTypeName: 'money', format: { align: 'center' } },
+          { fieldName: 'percent', name: 'percent', renderTypeName: 'percent' },
+          { fieldName: 'percentAligned', name: 'percentAligned', renderTypeName: 'percent', format: { align: 'center' } },
+          { fieldName: 'star', name: 'star', renderTypeName: 'star' },
+          { fieldName: 'starAligned', name: 'starAligned', renderTypeName: 'star', format: { align: 'center' } },
+          { fieldName: 'check', name: 'check', renderTypeName: 'checkbox' },
+          { fieldName: 'checkAligned', name: 'checkAligned', renderTypeName: 'checkbox', format: { align: 'right' } },
+          { fieldName: 'text', name: 'text', renderTypeName: 'text' },
+          { fieldName: 'textAligned', name: 'textAligned', renderTypeName: 'text', format: { align: 'right' } }
+        ]
+      });
+    });
+
+    afterEach(function() {
+      removeTable(table);
+    });
+
+    it('should align number types to right if the alignment is not set explicitly', function() {
+      const columns = table.element.find('tbody tr:first-child td');
+
+      // number default and explicitly aligned
+      expect(columns[0].getAttribute('data-cell-alignment')).to.equal('right');
+      expect(columns[1].getAttribute('data-cell-alignment')).to.equal('center');
+
+      // money default and explicitly aligned
+      expect(columns[2].getAttribute('data-cell-alignment')).to.equal('right');
+      expect(columns[3].getAttribute('data-cell-alignment')).to.equal('center');
+
+      // percent default and explicitly aligned
+      expect(columns[4].getAttribute('data-cell-alignment')).to.equal('right');
+      expect(columns[5].getAttribute('data-cell-alignment')).to.equal('center');
+
+      // star default and explicitly aligned
+      expect(columns[6].getAttribute('data-cell-alignment')).to.equal('right');
+      expect(columns[7].getAttribute('data-cell-alignment')).to.equal('center');
+    });
+
+    it('should align checkboxes to center if the alignment is not set explicitly', function() {
+      const checkboxColumns = table.element.find('tbody tr:first-child td[data-cell-render-type="checkbox"]');
+
+      expect(checkboxColumns[0].getAttribute('data-cell-alignment')).to.equal('center');
+      expect(checkboxColumns[1].getAttribute('data-cell-alignment')).to.equal('right');
+    });
+
+    it('should align others to left if the alignment is not set explicitly', function() {
+      const textColumns = table.element.find('tbody tr:first-child td[data-cell-render-type="text"]');
+
+      expect(textColumns[0].getAttribute('data-cell-alignment')).to.equal('left');
+      expect(textColumns[1].getAttribute('data-cell-alignment')).to.equal('right');
+    });
+  });
 });

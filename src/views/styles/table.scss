@@ -185,12 +185,19 @@ $highlighted-row-background-color: #f6f6f6;
       line-height: $data-cell-height;
       background-color: $row-background-color;
 
-      &[data-cell-render-type="checkbox"] {
+      &[data-cell-alignment="left"] {
+        text-align: left;
+      }
+
+      &[data-cell-alignment="right"] {
+        text-align: right;
+      }
+
+      &[data-cell-alignment="center"] {
         text-align: center;
       }
 
       div {
-        max-width: 300px;
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

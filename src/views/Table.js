@@ -142,8 +142,10 @@ module.exports = function Table(element, originalVif) {
       _.get(vifToRender, 'series[0].dataSource.datasetUid')
     );
 
+    const cellAlignment = DataTypeFormatter.getCellAlignment(column);
+
     return `
-      <td data-cell-render-type="${column.renderTypeName}">
+      <td data-cell-render-type="${column.renderTypeName}" data-cell-alignment="${cellAlignment}">
         <div>
           ${cellData}
         </div>

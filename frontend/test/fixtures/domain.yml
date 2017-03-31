@@ -8,7 +8,6 @@ data:
   organizationId: 1
   parentDomainId: 2
   shortName: socrata
-  aliases: socrata-staging-lb1.cloudapp.net,opendata-it.test-socrata.com
   accountModules:
   - name: basic_visualization
     description: Bar, Pie, Line Charts, Heat Maps, Point Maps

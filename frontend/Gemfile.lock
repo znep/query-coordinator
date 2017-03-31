@@ -59,7 +59,7 @@ GEM
       rubyzip (>= 0.9.5)
     builder (3.2.3)
     byebug (9.0.6)
-    cetera-ruby (0.4.4)
+    cetera-ruby (0.5.0)
       addressable (~> 2.3)
       httparty (~> 0.13)
     chroma (0.1.0)

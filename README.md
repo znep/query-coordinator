@@ -1,11 +1,12 @@
 # Socrata Platform UI
 
-This repo houses the Socrata Platform UI (Frontend for now), and shortly Storyteller and shared UI code.
+This repo houses the Socrata Platform UI: Frontend, Storyteller and shared UI code.
 
 ## Quick Links
 
-* [Frontend](https://github.com/socrata/frontend/blob/master/frontend/README.md)
-* [common](https://github.com/socrata/frontend/blob/master/common/README.md)
+* [Frontend](https://github.com/socrata/platform-ui/blob/master/frontend/README.md)
+* [Storyteller](https://github.com/socrata/platform-ui/blob/master/storyteller/README.md)
+* [common](https://github.com/socrata/platform-ui/blob/master/common/README.md)
 
 ## Organization
 

@@ -71,8 +71,7 @@ To start the webpack-dev-server:
 
     npm run watch
 
-> You *must* run the NGINX configuration in 
-[frontend](https://github.com/socrata/frontend) for the dev-server to work.
+> Note: You **must** run the nginx configuration in ../dev-server.
 
 We also have a delayed job queue for processing uploaded files. Everything but
 uploading files (which also requires AWS S3 credentials) will work without this.

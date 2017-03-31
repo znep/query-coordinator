@@ -13,3 +13,5 @@ namespace :lint do
     run_eslint
   end
 end
+
+task lint: %w(lint:js)

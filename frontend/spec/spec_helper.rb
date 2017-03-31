@@ -1,6 +1,5 @@
 require 'webmock/rspec'
 require 'time_extensions'
-require 'action_dispatch'
 
 Dir['./spec/support/**/*.rb'].sort.each {|f| require f}
 
@@ -136,8 +135,4 @@ end
 
 def json_fixture(file)
   JSON.parse(fixture(file).read).with_indifferent_access
-end
-
-def mock_request(path, options = {})
-  ActionDispatch::Request.new(Rack::MockRequest.env_for(path).merge(options))
 end

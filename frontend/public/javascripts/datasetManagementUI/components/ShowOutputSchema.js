@@ -85,36 +85,30 @@ export function ShowOutputSchema({
         <ModalHeader {...headerProps} />
 
         <ModalContent>
-          <div>
-            <div className={styles.dataPreview}>
-              <div>
-                <h3>Data Preview</h3>
+          <div className={styles.dataPreview}>
+            <h3>Data Preview</h3>
+            <div className={styles.datasetAttribute}>
+              <div className={styles.datasetAttribute}>
+                <p>Rows</p>
+                <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
               </div>
               <div className={styles.datasetAttribute}>
-                <div className={styles.datasetAttribute}>
-                  <p>Rows</p>
-                  <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
-                </div>
-                <div className={styles.datasetAttribute}>
-                  <p>Columns</p>
-                  <p className={styles.attribute}>{columns.length}</p>
-                </div>
+                <p>Columns</p>
+                <p className={styles.attribute}>{columns.length}</p>
               </div>
-            </div>
-
-            <div className={styles.tableWrap}>
-              <Table
-                db={db}
-                path={path}
-                columns={columns}
-                inputSchema={inputSchema}
-                outputSchema={outputSchema}
-                displayState={displayState}
-                updateColumnType={updateColumnType} />
             </div>
           </div>
 
-
+          <div className={styles.tableWrap}>
+            <Table
+              db={db}
+              path={path}
+              columns={columns}
+              inputSchema={inputSchema}
+              outputSchema={outputSchema}
+              displayState={displayState}
+              updateColumnType={updateColumnType} />
+          </div>
         </ModalContent>
 
         <ModalFooter>

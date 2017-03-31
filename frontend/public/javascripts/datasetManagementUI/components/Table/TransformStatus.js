@@ -67,7 +67,7 @@ class TransformStatus extends Component {
     const SubI18n = I18n.show_output_schema.column_header;
     const uploadDone = _.isNumber(totalRows);
     const thisColumnDone = _.isNumber(totalRows) &&
-      transform.contiguous_rows_processed === totalRows;
+                           transform.contiguous_rows_processed === totalRows;
 
     const inErrorMode = displayState.type === DisplayState.COLUMN_ERRORS &&
       transform.id === displayState.transformId;

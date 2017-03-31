@@ -3,11 +3,11 @@
 @import 'app/styles/styleguide-colors';
 
 .tableBody {
+  flex-grow: 1;
   display: block;
   overflow-x: hidden;
   overflow-y: auto;
   width: 100%;
-  height: calc(100% - 88px);
 
   tr {
     height: 29px;

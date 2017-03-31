@@ -3,9 +3,11 @@
 @import 'app/styles/styleguide-colors';
 
 .table {
+  display: inline-flex;
+  flex-direction: column;
+
   composes: table-condensed from global;
   overflow: visible;
-  display: inline-block;
   table-layout: fixed;
   min-width: auto;
   white-space: nowrap;
@@ -25,6 +27,7 @@
     border-top: 1px solid $light-grey-4;
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
     position: relative;
+    margin-bottom: 1px;
     z-index: 100;
 
     tr {

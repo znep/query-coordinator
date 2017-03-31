@@ -367,7 +367,6 @@ GEM
       equalizer (~> 0.0.9)
       parser (~> 2.3.0)
       procto (~> 0.0.2)
-    user_agent_parser (2.3.0)
     vcr (3.0.3)
     webmock (2.1.0)
       addressable (>= 2.3.6)
@@ -453,7 +452,6 @@ DEPENDENCIES
   unicorn-worker-killer
   unicorn_metrics (~> 0.2.3)
   unparser (~> 0.2.5)
-  user_agent_parser (~> 2.3.0)
   vcr
   webmock
   xray

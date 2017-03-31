@@ -40,7 +40,7 @@ describe AnalyticsController do
         },
         {
           :entity => 'domain',
-          :metric => 'js-page-view-story',
+          :metric => 'js-page-view-browse',
           :increment => 1
         },
         {
@@ -97,7 +97,7 @@ describe AnalyticsController do
         },
         {
           :entity => 'domain',
-          :metric => 'js-page-view-story',
+          :metric => 'js-page-view-browse',
           :increment => 1
         },
         {
@@ -153,7 +153,7 @@ describe AnalyticsController do
       },
       {
         :status => '200',
-        :metric => 'js-page-view-story',
+        :metric => 'js-page-view-browse',
         :message => 'OK'
       },
       {
@@ -211,7 +211,7 @@ describe AnalyticsController do
         MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'browser-chrome', 1)
         MetricQueue.instance.should_receive(:push_metric).with('1', 'browser-chrome-55', 1)
         MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'browser-chrome-55', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1', 'js-page-view-story', 1)
+        MetricQueue.instance.should_receive(:push_metric).with('1', 'js-page-view-browse', 1)
         MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-samples', 1)
         MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-time', 2615)
         MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-tz-480-time', 2615)
@@ -228,7 +228,7 @@ describe AnalyticsController do
         MetricQueue.instance.should_receive(:push_metric).with('1', 'js-page-view', 1)
         MetricQueue.instance.should_receive(:push_metric).with('1', 'browser-chrome-55', 1)
         MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'browser-chrome-55', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1', 'js-page-view-story', 1)
+        MetricQueue.instance.should_receive(:push_metric).with('1', 'js-page-view-browse', 1)
         MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-samples', 1)
         MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-time', 2615)
         MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-tz-480-time', 2615)

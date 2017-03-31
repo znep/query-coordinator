@@ -2,13 +2,13 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
-.malformedRow {
+tbody tr.malformedRow {
   color: $error-text;
-  background-color: $error-light;
+  background: $error-light;
 
   td {
     border-width: 0px;
-    padding: 5px 7px 4px;
+    padding: 5px 3px 4px 7px;
   }
 
   .location {
@@ -23,6 +23,8 @@
   }
 
   .contents {
+    overflow: visible;
+
     span {
       color: $dark-grey-1;
       font-style: italic;

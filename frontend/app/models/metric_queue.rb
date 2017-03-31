@@ -14,14 +14,13 @@ class MetricQueue
 
   def initialize
     @batch_size = METRICS_BATCH_SIZE
+    @random = Random.new
 
     at_exit do
       flush(true)
       # Yes, @, not @@, because we're in the class scope now
       @client.close if @client.present?
     end
-
-    @random = Random.new
   end
 
   def flush(synchronous = false)

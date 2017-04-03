@@ -42,7 +42,9 @@ export default {
       is: 'is',
       is_not: 'is not',
       keyword_not_found: "Your input wasn't found in this column's data. Please try again with the exact value including case.",
-      single_value_negated: 'Excluded {0}'
+      single_value_negated: 'Excluded {0}',
+      exact_search_prompt_main: "Don't see your search below? Try an ",
+      exact_search_prompt_link: "exact match search"
     },
     to: 'To'
   },

@@ -61,7 +61,8 @@ function getLoadPlan(db, outputSchemaId, displayState) {
       const load = _.find(db.__loads__, {
         url: urlForNormalPreview(db, outputSchemaId, displayState.pageNo)
       });
-      if (minRowsProcessed >= lastRowNeeded && !load) {
+
+      if ((minRowsProcessed >= lastRowNeeded || minRowsProcessed < PAGE_SIZE) && !load) {
         return {
           type: 'NORMAL',
           outputSchemaId,

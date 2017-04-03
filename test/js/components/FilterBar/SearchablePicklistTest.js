@@ -19,11 +19,20 @@ describe('SearchablePicklist', () => {
     });
   }
 
+  function simulateTextInput(element, searchTerm = "fuzzy bunnies") {
+    const searchInput = getSearchInput(element);
+    searchInput.value = searchTerm;
+    Simulate.change(searchInput);
+  }
+
   const getSearchInput = (element) => element.querySelector('.searchable-picklist-input');
+  const getSearchButton = (element) => element.querySelector('.input-group-btn button');
+  const getSearchLink = (element) => element.querySelector('.alert.info a');
   const getPicklist = (element) => element.querySelector('.picklist');
   const getSelectedOptions = (element) => element.querySelector('.searchable-picklist-selected-options');
   const getSearchInputSpinner = (element) => element.querySelector('.spinner-default');
   const getSearchWarning = (element) => element.querySelector('.alert.warning');
+  const getSearchPrompt = (element) => element.querySelector('.alert.info');
 
   it('renders an element', () => {
     const element = renderComponent(SearchablePicklist, getProps());
@@ -115,6 +124,125 @@ describe('SearchablePicklist', () => {
         }, 10);
       });
     });
+
+    describe('when adding an arbitrary value using the search button', () => {
+      it('invokes canAddSearch', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => done()
+        }));
+        simulateTextInput(element);
+
+        Simulate.click(getSearchButton(element));
+      });
+
+      it('adds a loading spinner', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => {
+            return new Promise((resolve, reject) => {
+              _.defer(() => {
+                expect(getSearchInputSpinner(element)).to.not.eq(null);
+                done();
+              });
+            });
+          }
+        }));
+
+        Simulate.click(getSearchButton(element));
+      });
+
+      it('hides the loading spinner after canAddSearchTerm resolves', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => {
+            return new Promise((resolve, reject) => {
+              _.delay(resolve, 10);
+              _.delay(() => expect(getSearchInputSpinner(element)).to.not.eq(null), 5);
+              _.delay(() => {
+                expect(getSearchInputSpinner(element)).to.eq(null);
+                done();
+              }, 15)
+            });
+          }
+        }));
+
+        Simulate.click(getSearchButton(element));
+      });
+
+      it('shows an error if the search term cannot be added', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => {
+            return Promise.reject();
+          }
+        }));
+
+        Simulate.click(getSearchButton(element));
+
+        _.delay(() => {
+          expect(getSearchWarning(element)).to.not.eq(null);
+          done();
+        }, 10);
+      });
+    });
+
+    describe('when adding an arbitrary value using the search link', () => {
+      it('invokes canAddSearch', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => done()
+        }));
+        simulateTextInput(element);
+
+        Simulate.click(getSearchLink(element));
+      });
+
+      it('adds a loading spinner', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => {
+            return new Promise((resolve, reject) => {
+              _.defer(() => {
+                expect(getSearchInputSpinner(element)).to.not.eq(null);
+                done();
+              });
+            });
+          }
+        }));
+        simulateTextInput(element);
+
+        Simulate.click(getSearchLink(element));
+      });
+
+      it('hides the loading spinner after canAddSearchTerm resolves', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => {
+            return new Promise((resolve, reject) => {
+              _.delay(resolve, 10);
+              _.delay(() => expect(getSearchInputSpinner(element)).to.not.eq(null), 5);
+              _.delay(() => {
+                expect(getSearchInputSpinner(element)).to.eq(null);
+                done();
+              }, 15)
+            });
+          }
+        }));
+        simulateTextInput(element);
+
+        Simulate.click(getSearchLink(element));
+      });
+
+      it('shows an error if the search term cannot be added', (done) => {
+        const element = renderComponent(SearchablePicklist, getProps({
+          canAddSearchTerm: (term) => {
+            return Promise.reject();
+          }
+        }));
+        simulateTextInput(element);
+
+        Simulate.click(getSearchLink(element));
+
+        _.delay(() => {
+          expect(getSearchWarning(element)).to.not.eq(null);
+          done();
+        }, 10);
+      });
+    });
   });
 
   describe('picklist', () => {
@@ -128,6 +256,39 @@ describe('SearchablePicklist', () => {
         options: []
       }));
       expect(element.querySelector('.alert')).to.have.class('warning');
+    });
+
+    it('displays the exact search prompt if input is entered', () => {
+      const element = renderComponent(SearchablePicklist, getProps());
+      assert.equal(getSearchPrompt(element), null);
+
+      simulateTextInput(element);
+      assert.notEqual(getSearchPrompt(element), null);
+    });
+
+    it('hides the exact search prompt if input is removed', () => {
+      const element = renderComponent(SearchablePicklist, getProps());
+      simulateTextInput(element);
+      assert.notEqual(getSearchPrompt(element), null);
+
+      simulateTextInput(element, '');
+      assert.equal(getSearchPrompt(element), null);
+    });
+
+    it('hides the exact search prompt if the no options message is visible', (done) => {
+      const element = renderComponent(SearchablePicklist, getProps({
+        canAddSearchTerm: (term) => {
+          return Promise.reject();
+        }
+      }));
+      simulateTextInput(element);
+      Simulate.click(getSearchLink(element));
+
+      _.delay(() => {
+        assert.notEqual(getSearchWarning(element), null);
+        assert.equal(getSearchPrompt(element), null);
+        done();
+      }, 10);
     });
 
     it('highlights the value in the picklist if provided and available', () => {

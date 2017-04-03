@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
-import classNames from 'classnames';
 import TableCell from './TableCell';
 import RowError from './RowError';
 import * as DisplayState from '../../lib/displayState';

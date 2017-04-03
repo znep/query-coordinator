@@ -6,7 +6,10 @@ var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
 );
 
 webpackConfig.externals = {
-  jquery: 'jQuery'
+  jquery: 'jQuery',
+  'react/addons': true,
+  'react/lib/ExecutionEnvironment': true,
+  'react/lib/ReactContext': 'window'
 };
 
 // Allows us to load json fixture files.
@@ -21,7 +24,9 @@ var styleLoader = _(webpackConfig.module.loaders).find((loader) =>
 );
 styleLoader.loader = 'style?sourceMap!css?modules&localIdentName=[local]&importLoaders=1!postcss!sass';
 
-module.exports = function (karma) {
+webpackConfig.resolve.extensions = ['', '.js', '.scss', '.json'];
+
+module.exports = function(karma) {
   karma.set(karmaConfig({
     files: [
       'karma/datasetManagementUI/index.js'

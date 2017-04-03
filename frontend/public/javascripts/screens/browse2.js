@@ -623,7 +623,8 @@ $(function() {
   }
 
   function hideCLPManager() {
-    $('.browse2-manage-catalog-landing-page').addClass('hidden');
+    $.cookies.set('hide-clp-manager', true);
+    $('.browse2-manage-catalog-landing-page').hide();
   }
 
   var $browse = $('.browse2');
@@ -781,5 +782,5 @@ $(function() {
   $('.browse2-result-make-private-button').on('click', makeResultPrivate);
   $('.browse2-result-delete-button').on('click', deleteResult);
   $('.browse2-result-delete-button').on('click', deleteResult);
-  $('.browse2-manage-clp-info .manage-clp-hide-action button').on('click', hideCLPManager);
+  $('.manage-clp-hide-action').on('click', hideCLPManager);
 });

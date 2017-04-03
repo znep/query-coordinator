@@ -425,18 +425,9 @@ en:
             title: Try it yourself!
   catalog_landing_page:
     activation:
-      action: Manage this Category
-      dismiss: Not now, hide this info
-      header: Highlight the best content within this category
-      explanation_0:
-        header: Create a Headline and Introduction
-        description: Introduce the category with a headline, introduction and optional statistics.
-      explanation_1:
-        header: Share stats in 'About this Category'
-        description: Show summary level category stats for exploration.
-      explanation_2:
-        header: Display Featured Content
-        description: Choose up to 3 Socrata or External assets to feature for this category.
+      action: Feature Content
+      header: Feature your best content.
+      explanation: Write an introduction and promote up to 3 assets from this category
     category_stats:
       about: About this Category
       calendars:

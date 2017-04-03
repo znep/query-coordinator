@@ -56,16 +56,16 @@ describe('AddFilter', () => {
   });
 
   describe('column options', () => {
-    it('renders a searchable picklist', () => {
+    it('renders an add filter searchable picklist', () => {
       clickAddFilter(element);
-      const searchablePicklist = element.querySelector('.searchable-picklist');
+      const addFilterPicklist = element.querySelector('.add-filter-picklist');
 
-      expect(searchablePicklist).to.exist;
+      expect(addFilterPicklist).to.exist;
     });
 
-    it('renders a searchable picklist with warning with no columns', () => {
+    it('renders an add filter searchable picklist with warning with no columns', () => {
       clickAddFilter(element);
-      const warning = element.querySelector('.searchable-picklist .alert');
+      const warning = element.querySelector('.add-filter-picklist .alert');
 
       expect(warning).to.exist;
     });
@@ -108,7 +108,7 @@ describe('AddFilter', () => {
       }));
       clickAddFilter(element);
 
-      const input = element.querySelector('.searchable-picklist-input');
+      const input = element.querySelector('.add-filter-picklist-input');
       input.value = 'word';
       Simulate.change(input);
 

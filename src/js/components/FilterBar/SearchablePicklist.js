@@ -50,11 +50,11 @@ export const SearchablePicklist = React.createClass({
 
   onKeyUpSearch(event) {
     if (event.keyCode === ENTER) {
-      this.onSearch();
+      this.onSearch(event);
     }
   },
 
-  onSearch() {
+  onSearch(event) {
     const { canAddSearchTerm } = this.props;
     event.preventDefault();
 

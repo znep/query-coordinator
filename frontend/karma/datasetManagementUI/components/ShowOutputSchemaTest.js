@@ -5,10 +5,11 @@ import ShowOutputSchema from 'components/ShowOutputSchema';
 import { ShowOutputSchema as ShowOutputSchemaUnConnected } from 'components/ShowOutputSchema';
 import * as Selectors from 'selectors';
 import {
-  insertFromServer, insertMultipleFromServer, updateFromServer, batch
+  insertFromServer, insertMultipleFromServer, updateFromServer
 } from 'actions/database';
 import { normal } from 'lib/displayState';
 
+/* eslint-disable new-cap */
 describe('components/ShowOutputSchema', () => {
 
   const defaultProps = {
@@ -20,7 +21,7 @@ describe('components/ShowOutputSchema', () => {
     route: {
       path: '' // just used by mapStateToProps to determine whether we're in a "viewing row errors" state
     },
-    updateColumnType: _.noop,
+    updateColumnType: _.noop
   };
 
   it('renders a table without data', () => {
@@ -123,7 +124,7 @@ describe('components/ShowOutputSchema', () => {
       assert.equal(element.querySelector('malformed-rows-status-text', '3Malformed row'));
       assert.deepEqual(
         _.map(element.querySelectorAll('table tbody tr'), (tr) => tr.getAttribute('class')).slice(0, 3),
-        ['', 'malformed-row', '']
+        [null, 'malformedRow', null]
       );
     });
 
@@ -162,11 +163,11 @@ describe('components/ShowOutputSchema', () => {
       assert.equal(element.querySelector('malformed-rows-status-text', '1Malformed row'));
       assert.deepEqual(
         _.map(element.querySelectorAll('table tbody tr'), (tr) => tr.getAttribute('class')),
-        ['malformed-row']
+        ['malformedRow']
       );
       assert.equal(
-        element.querySelector('.malformed-row').innerText,
-        '!Row 0:Expected 3 columns, found 2Row content: "boop","zoop"'
+        element.querySelector('.malformedRow').innerText,
+        'Error Row 1Expected 3 columns, found 2Row content: "boop","zoop"'
       );
     });
 
@@ -313,7 +314,7 @@ describe('components/ShowOutputSchema', () => {
         contiguous_rows_processed: 3
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.processBtn').disabled).to.be.true;
+      expect(element.querySelector('.processBtn').disabled).to.equal(true);
     });
 
     it('is disabled when the upload is done but not all columns have caught up', () => {
@@ -331,7 +332,7 @@ describe('components/ShowOutputSchema', () => {
         contiguous_rows_processed: 3
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.processBtn').disabled).to.be.true;
+      expect(element.querySelector('.processBtn').disabled).to.equal(true);
     });
 
     it('is enabled when the upload is done and all columns have caught up', () => {
@@ -349,9 +350,8 @@ describe('components/ShowOutputSchema', () => {
         contiguous_rows_processed: 50
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.processBtn').disabled).to.be.false;
+      expect(element.querySelector('.processBtn').disabled).to.equal(false);
     });
-
   });
 
   describe('ReadyToImport indicator', () => {
@@ -359,7 +359,7 @@ describe('components/ShowOutputSchema', () => {
     it('isn\'t shown when the file is still transforming', () => {
       const store = getStoreWithOutputSchema();
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.readyToImport')).to.be.null;
+      expect(element.querySelector('.readyToImport')).to.equal(null);
     });
 
     it('is shown when the file is done transforming', () => {
@@ -381,7 +381,7 @@ describe('components/ShowOutputSchema', () => {
         contiguous_rows_processed: 42
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.readyToImport')).to.not.be.null;
+      expect(element.querySelector('.readyToImport')).to.not.equal(null);
       const paragraphs = element.querySelectorAll('.readyToImport p');
       expect(paragraphs[0].innerText).to.eql('Ready to import 39 rows');
       expect(paragraphs[1].innerText).to.eql('Rows that will not be imported 3');
@@ -409,9 +409,9 @@ describe('components/ShowOutputSchema', () => {
         }));
         const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
         const exportButton = element.querySelector('.errorsBtn');
-        expect(exportButton.parentNode.href.endsWith('/api/publishing/v1/upload/5/schema/4/errors/18')).to.be.true;
-        expect(exportButton).to.not.be.null;
-        expect(exportButton.disabled).to.be.false;
+        expect(exportButton.parentNode.href.endsWith('/api/publishing/v1/upload/5/schema/4/errors/18')).to.equal(true);
+        expect(exportButton).to.not.equal(null);
+        expect(exportButton.disabled).to.equal(false);
       });
 
       it('is greyed out when there are no errors', () => {
@@ -434,12 +434,9 @@ describe('components/ShowOutputSchema', () => {
         }));
         const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
         const exportButton = element.querySelector('.errorsBtn');
-        expect(exportButton).to.not.be.null;
-        expect(exportButton.disabled).to.be.true;
+        expect(exportButton).to.not.equal(null);
+        expect(exportButton.disabled).to.equal(true);
       });
-
     });
-
   });
-
 });

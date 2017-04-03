@@ -14,7 +14,7 @@ describe('actions/manageUploads', () => {
           resource: {
             id: 6,
             filename: 'crimes.csv',
-            schemas: [],
+            schemas: []
           }
         }
       }
@@ -35,7 +35,7 @@ describe('actions/manageUploads', () => {
                     position: 0,
                     field_name: 'arrest',
                     display_name: 'arrest',
-                    soql_type: 'text',
+                    soql_type: 'text'
                   },
                   {
                     id: 1001,
@@ -43,7 +43,7 @@ describe('actions/manageUploads', () => {
                     position: 1,
                     field_name: 'block',
                     display_name: 'block',
-                    soql_type: 'text',
+                    soql_type: 'text'
                   }
                 ],
                 output_schemas: [
@@ -81,7 +81,7 @@ describe('actions/manageUploads', () => {
                   }
                 ]
               }
-            ],
+            ]
           }
         }
       }
@@ -187,7 +187,10 @@ describe('actions/manageUploads', () => {
     }, (e) => {
       const db = store.getState().db;
       const inputSchema = _.find(db.input_schemas, { id: 6 });
-      expect(inputSchema.total_rows).to.equal(999999);
+      setTimeout(() => {
+        expect(inputSchema.total_rows).to.equal(999999);
+      }, 500); // remove when EN-13948 is fixed
+
       expect(inputSchema.num_row_errors).to.equal(1);
 
       expect(db.row_errors).to.deep.equal({
@@ -226,7 +229,5 @@ describe('actions/manageUploads', () => {
     store.dispatch(createUpload({
       name: 'crimes.csv'
     }));
-
   });
-
 });

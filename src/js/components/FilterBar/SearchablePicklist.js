@@ -115,7 +115,7 @@ export const SearchablePicklist = React.createClass({
               className={buttonClassName}
               onClick={this.onSearch}
               disabled={isValidating}>
-              <span className="socrata-icon-search"></span>
+              <SocrataIcon name="search" />
             </button>
           </span>
         </span>

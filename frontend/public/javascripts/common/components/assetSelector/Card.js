@@ -14,7 +14,7 @@ export class Card extends React.Component {
       hovering: false
     };
 
-    _.bindAll(this, ['onSelect', 'setHovering', 'viewCardProps']);
+    _.bindAll(this, ['onSelect', 'ceteraResultProps', 'setHovering', 'viewCardProps']);
   }
 
   onSelect(cardProps) {
@@ -24,6 +24,18 @@ export class Card extends React.Component {
 
   setHovering(hoveringState) {
     this.setState({ hovering: hoveringState });
+  }
+
+  // This is what will be returned (onSelect) when a user selects a Card.
+  ceteraResultProps() {
+    return _.merge(
+      _.pick(this.props, 'name', 'description', 'id', 'updatedAt', 'viewCount'),
+      {
+        displayType: this.props.type,
+        isPrivate: !this.props.isPublic,
+        url: this.props.link
+      }
+    );
   }
 
   viewCardProps() {
@@ -47,13 +59,12 @@ export class Card extends React.Component {
   }
 
   render() {
-    const cardProps = this.viewCardProps();
     const cardOverlayClasses = classNames('overlay', {
       hidden: !this.state.hovering
     });
 
     return (
-      <ViewCard {...cardProps}>
+      <ViewCard {...this.viewCardProps()}>
         <div
           className="hover-target"
           role="button"
@@ -62,8 +73,8 @@ export class Card extends React.Component {
           onFocus={() => this.setHovering(true)}
           onMouseOut={() => this.setHovering(false)}
           onBlur={() => this.setHovering(false)}
-          onClick={() => this.onSelect(cardProps)}
-          onKeyDown={handleKeyPress(() => this.onSelect(cardProps))}>
+          onClick={() => this.onSelect(this.ceteraResultProps())}
+          onKeyDown={handleKeyPress(() => this.onSelect(this.ceteraResultProps()))}>
           <div className={cardOverlayClasses}>
             <button className="select-button btn btn-primary">
               {_.get(I18n, 'common.asset_selector.action_buttons.select')}

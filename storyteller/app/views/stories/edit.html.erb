@@ -1,0 +1,108 @@
+<header class="header-main">
+  <button data-panel-toggle="settings-panel" class="socrata-icon-stories-menu settings-panel-btn"></button>
+  <%- if @story_metadata.goal? && @dashboard_uid -%>
+    <a class="link-header story-dashboard-link" href="/stat/goals/<%= @dashboard_uid %>/edit" aria-labelledby="story-dashboard-link-text">
+      <span class="story-dashboard-link-icon socrata-icon-arrow-prev"></span>
+      <span class="story-dashboard-link-text" id="story-dashboard-link-text"><%= t('editor.app_bar.back_to_dashboard') %></span>
+    </a>
+    <div class="menu-divider"></div>
+  <%- end -%>
+  <button class="link-header story-title" role="button" data-panel-toggle="settings-panel"></button>
+  <div class="menu-divider"></div>
+  <div id="story-publication-status" class="status-indicator"></div>
+  <div id="story-saving-indicator" class="status-indicator"></div>
+  <div class="header-right">
+    <ul class="quick-action-menu">
+      <li>
+        <button class="btn btn-transparent undo-btn" disabled="disabled" title="undo">
+          <span class="socrata-icon-undo"></span>
+        </button>
+      </li>
+      <li>
+        <button class="btn btn-transparent redo-btn" disabled="disabled" title="redo">
+          <span class="socrata-icon-redo"></span>
+        </button>
+      </li>
+      <li class="menu-divider"></li>
+      <li>
+        <button class="btn btn-transparent preview-btn" role="button" data-href="<%= @story_url_for_preview %>" target="_blank"><%= t('editor.app_bar.preview') %> <span class="socrata-icon-preview"></span></button>
+      </li>
+      <li>
+        <button class="btn btn-transparent panel-btn content-panel-btn" data-panel-toggle="add-content-panel"><%= t('editor.app_bar.add_content') %></button>
+      </li>
+      <li>
+        <button class="btn btn-transparent panel-btn style-panel-btn" data-panel-toggle="style-and-presentation-panel"><%= t('editor.app_bar.style_and_presentation') %></button>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<%= render 'settings_panel' %>
+<%= render 'add_content_panel' %>
+<%= render 'style_and_presentation_panel' %>
+
+<div id="downtime-notice-bar"></div>
+<div id="story-save-error-bar"></div>
+<div id="rich-text-editor-toolbar-wrapper">
+  <section id="rich-text-editor-toolbar"></section>
+</div>
+
+<div id="moving-cancel-header">
+  <span class="moving-cancel-header-icon icon-close-2"></span>
+  <span class="moving-cancel-header-text"><%= t('editor.components.edit_controls.cancel') %></span>
+</div>
+
+<main class="user-story-container">
+  <div class="user-story">
+    <p class="message-warning"></p>
+  </div>
+
+  <div id="story-insertion-hint" class="hidden"></div>
+</main>
+
+<div id="asset-selector-container"></div>
+<div id="make-a-copy-container"></div>
+<div id="error-modal-container" class="hidden">
+  <div class="modal-warning">
+    <span class="error-warning-message"></span>
+  </div>
+  <div class="modal-button-group r-to-l">
+    <button class="btn btn-reload btn-primary"><%= t('editor.story_save_error_reload') %></button>
+    <button class="btn btn-login btn-primary"><%= t('editor.story_save_error_login_button') %></button>
+  </div>
+</div>
+
+<form id="link-modal" class="hidden">
+  <div class="modal-input-group">
+    <label for="display-text" class="block-label"><%= t('editor.rich_text_toolbar.link_modal.display_label') %></label>
+    <input type="text" id="display-text" class="text-input" placeholder="Text to Link">
+  </div>
+
+  <div class="modal-input-group">
+    <label for="link-text" class="block-label">
+      <%= t('editor.rich_text_toolbar.link_modal.link_label') %>
+      <a href="" class="link-test-link-action"><%= t('editor.rich_text_toolbar.link_modal.test_link') %></a>
+    </label>
+    <input type="text" id="link-text" class="text-input" placeholder="http://example.com">
+    <span class="link-warning invisible">
+      <span class="socrata-icon-warning"></span>
+      <%= t('editor.invalid_link_message') %>
+    </span>
+  </div>
+
+  <div class="checkbox">
+    <input type="checkbox" id="open-in-new-window">
+    <label for="open-in-new-window">
+      <span class="fake-checkbox"><span class="socrata-icon-checkmark3"></span></span>
+      <%= t('editor.rich_text_toolbar.link_modal.open_in_new_window') %>
+    </label>
+  </div>
+
+  <div class="modal-button-group r-to-l">
+    <button class="btn btn-default" data-action="LINK_MODAL_CLOSE"><%= t('editor.modal.buttons.cancel') %></button>
+    <input class="btn btn-primary" type="submit" data-action="LINK_MODAL_ACCEPT" value="<%= t('editor.modal.buttons.ok') %>">
+  </div>
+</form>
+
+<div id="block-ghost" class="block hidden"></div>
+<div id="authoring-workflow"></div>

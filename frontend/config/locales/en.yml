@@ -425,7 +425,7 @@ en:
             title: Try it yourself!
   catalog_landing_page:
     activation:
-      action: Manage This Category
+      action: Manage this Category
       dismiss: Not now, hide this info
       header: Highlight the best content within this category
       explanation_0:
@@ -462,7 +462,7 @@ en:
     manager:
       cancel: Cancel
       change: Change
-      manage_this_category: Manage This Category
+      manage_this_category: Manage this Category
       unexpected_error: An unexpected error has occurred. Please reload and try again.
       you_must_login_first: You must login first in order to save your changes.
       remove: Remove
@@ -1886,14 +1886,13 @@ en:
         rows: rows
         will_not_be_imported: Rows that will not be imported
       row_errors:
-        columns_found: columns, found
-        expected: Expected
+        error_message: "Expected {0} columns, found {1}"
         flyout_message_singular: 1 row is malformed.
-        flyout_message_plural: "{numRowErrors} rows are malformed."
+        flyout_message_plural: "{0} rows are malformed."
         flyout_message_explanation: They might have too many, or not enough columns.
         malformed_row: Malformed row
         malformed_rows: Malformed rows
-        row: Row
+        row: "Error Row {0}"
         row_content: Row content
       rows_so_far: rows so far
       rows_total: rows total
@@ -2020,7 +2019,7 @@ en:
     - Fri
     - Sat
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mar
@@ -2048,7 +2047,7 @@ en:
       short: '%d %b %Y'
       short_with_time: '%Y/%m/%d %I:%M%p'
     month_names:
-    - 
+    -
     - January
     - February
     - March
@@ -5258,6 +5257,7 @@ en:
       unable_to_find_dataset_page: We were unable to find a Data Lens page for this dataset.
     edit_metadata:
       about: About
+      add_btn: Add +
       add_link: Add link
       add_source: Add source
       additional_source: Additional Source
@@ -5352,6 +5352,14 @@ en:
       upload_image: Upload Image
       upload_new_attachment: Upload New Attachment
       url: URL
+      validation_error_attribution_required: License type requires attribution. Please complete 'Data Provided By' field.
+      validation_error_email: Please enter a valid email address
+      validation_error_general: Couldn't submit metadata. Review your inputs and try again.
+      validation_error_maxlength: '{0} must not have more than {1} characters'
+      validation_error_minlength: '{0} must have at least {1} characters'
+      validation_error_required: '{0} is required'
+      validation_error_type: '{0} must be of type {1}, but got {2}'
+      validation_error_url: Please enter a valid url
     forgot_password:
       already_authenticated: 'Unable to reset password: you are already logged in.'
       failed: There was a problem submitting your password reset request. Please try again.

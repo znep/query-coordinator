@@ -1,0 +1,87 @@
+@import 'bourbon';
+@import 'neat';
+@import 'dist/css/styleguide';
+
+@import 'lib/variables/layout.scss';
+@import 'lib/variables/mixin.scss';
+
+.body-wrapper {
+  @include outer-container;
+  @include padding(2rem 0);
+  margin-top: $site-chrome-admin-header-height;
+}
+
+.alert {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.border-below {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+.btn-link {
+  color: #999;
+}
+
+header {
+  .heading {
+    @include span-columns(10);
+  }
+
+  .actions {
+    @include span-columns(2);
+    text-align: right;
+  }
+}
+
+.form-fields-label-above {
+  label, input {
+    display: block;
+  }
+
+  input {
+    margin-top: 0;
+  }
+}
+
+.form-section, .form-section-checkbox {
+  @include outer-container;
+  margin-bottom: 2rem;
+
+  &[data-section-name="google-font-code"] {
+    margin-top: 1rem;
+    margin-bottom: 0;
+  }
+
+  .wide {
+    @include span-columns(12);
+  }
+
+  .form-fields, .checkbox {
+    @include span-columns(4);
+  }
+
+  .help {
+    @include span-columns(8);
+  }
+}
+
+.checkbox {
+  label {
+    @include unselectable();
+  }
+}
+
+.wide input {
+  @include span-columns(6);
+}
+
+.invisible {
+  display: none;
+}
+
+div.form-section.typeface {
+  margin-bottom: 0;
+}

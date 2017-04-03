@@ -15,11 +15,7 @@ module.exports = _.defaultsDeep({
   },
   module: {
     loaders: [
-      {
-        test: /\.jsx?$/,
-        include: [ path.resolve(common.root, 'public/javascripts') ],
-        loader: 'babel'
-      },
+      common.getBabelLoader(),
       {
         test: /\.scss|\.css$/,
         loader: 'style!css!autoprefixer-loader!sass'
@@ -30,10 +26,6 @@ module.exports = _.defaultsDeep({
       }
     ]
   },
-  resolve: {
-    root: [
-      path.resolve(common.root, 'public/javascripts/visualizationCanvas')
-    ]
-  },
+  resolve: common.getStandardResolve([ 'public/javascripts/visualizationCanvas' ]),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

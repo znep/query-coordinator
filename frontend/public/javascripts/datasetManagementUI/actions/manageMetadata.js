@@ -15,60 +15,80 @@ import {
   insertFailed
 } from './database';
 import {
-  STATUS_SAVED,
   STATUS_DIRTY_IMMUTABLE
 } from '../lib/database/statuses';
 import { insertChildrenAndSubscribeToOutputSchema } from './manageUploads';
 import { idForColumnNameField } from '../components/ManageMetadata/ColumnMetadataEditor';
 import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
+import { showFlashMessage } from 'actions/flashMessage';
+import { getLocalizedErrorMessage } from 'lib/util';
 
-export function saveMetadata() {
-  return (dispatch, getState) => {
-    const db = getState().db;
-    saveDatasetMetadata(dispatch, db);
-    saveColumnMetadata(dispatch, db);
-  };
-}
+export const saveDatasetMetadata = () => (dispatch, getState) => {
+  const { db, fourfour } = getState();
 
-function saveDatasetMetadata(dispatch, db) {
-  const viewStatus = _.values(db.views)[0].__status__.type;
+  const model = _.get(db, `views.${fourfour}.model`);
+  const schema = _.get(db, `views.${fourfour}.schema`);
 
-  if (viewStatus !== STATUS_SAVED) {
-    const nonprivateMetadata = _.pick(
-      _.values(db.views)[0],
-      [
-        'id',
-        'name',
-        'description',
-        'category',
-        'licenseId',
-        'attribution',
-        'attributionLink',
-        'tags'
-      ]
-    );
-
-    // TODO: don't like this, can improve when we revise form dataflow hopefully
-    const privateMetadata = _.pick(_.values(db.views)[0], ['email']);
-
-    const datasetMetadata = _.assign({}, nonprivateMetadata, { privateMetadata });
-
-    dispatch(updateStarted('views', datasetMetadata));
-    socrataFetch(`/api/views/${window.initialState.view.id}`, {
-      method: 'PUT',
-      body: JSON.stringify(datasetMetadata)
-    }).
-    then(checkStatus).
-    then(() => {
-      dispatch(updateSucceeded('views', datasetMetadata));
-      dispatch(redirectAfterInterval());
-    }).
-    catch((error) => {
-      dispatch(updateFailed('views', datasetMetadata, error));
-    });
+  // Careful here. We don't want to ping the server if the validation schema says
+  // the form is invalid. But for validations we don't do client-side, there might
+  // not be a schema period, since there are on client side validation rules to
+  // generate one. So right now if there is no schema, we assume the form is valid
+  // and allow it to hit server. If the server kicks it back for some reason, we
+  // still display the error in a flash message. Maybe we can look into putting
+  // a default empty schema that is valid into the store later.
+  if (schema && !schema.isValid) {
+    dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
+    return;
   }
-}
+
+  const publicMetadata = _.pick(
+    model,
+    [
+      'id',
+      'name',
+      'description',
+      'category',
+      'licenseId',
+      'attribution',
+      'attributionLink',
+      'tags'
+    ]
+  );
+
+  const privateMetadata = _.pick(model, ['email']);
+
+  const datasetMetadata = _.assign({}, publicMetadata, { privateMetadata });
+
+  dispatch(updateStarted('views', datasetMetadata));
+
+  // TODO: switch this to read from redux store
+  socrataFetch(`/api/views/${window.initialState.view.id}`, {
+    method: 'PUT',
+    body: JSON.stringify(datasetMetadata)
+  }).
+  then(checkStatus).
+  then(() => {
+    dispatch(updateSucceeded('views', datasetMetadata));
+    dispatch(redirectAfterInterval());
+  }).
+  catch(error => {
+    dispatch(updateFailed('views', datasetMetadata, error));
+
+    error.response.json().then(({ message }) => {
+      const localizedMessage = getLocalizedErrorMessage(message);
+      dispatch(showFlashMessage('error', localizedMessage));
+    });
+  });
+};
+
+export const saveMetadata = () => (dispatch, getState) => {
+  dispatch(saveDatasetMetadata());
+
+  // TODO: convert this to a thunk
+  const { db } = getState();
+  saveColumnMetadata(dispatch, db);
+};
 
 function saveColumnMetadata(dispatch, db) {
   const currentOutputSchema = Selectors.latestOutputSchema(db);

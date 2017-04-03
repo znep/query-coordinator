@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 
 import * as React from 'react';
 import * as Redux from 'redux';

@@ -3,21 +3,21 @@ import styles from 'styles/Table/RowError.scss';
 
 export default function RowError({ rowError }) {
   const SubI18n = I18n.show_output_schema.row_errors;
+
+  const malformedRowContents = rowError.error.contents.map(cell => `"${cell.replace('"', '\\"')}"`).join(',');
+  const malformedRowMessage = {
+    __html: SubI18n.error_message.format(
+      `<span>${rowError.error.wanted}</span>`,
+      `<span>${rowError.error.got}</span>`
+    )
+  };
+
   return (
-    <td className={styles.container} style={{ width: '100%' }}>
-      <span className={styles.malformedRowTag}>!</span>
-      <span className={styles.malformedRowLocation}>{SubI18n.row} {rowError.offset}:</span>
-      <span className={styles.malformedRowError}>
-        {SubI18n.expected} <span className={styles.rowErrorNumber}>{rowError.wanted}</span>&nbsp;
-        {SubI18n.columns_found}&nbsp;
-        <span className={styles.rowErrorNumber}>{rowError.got}</span>
-      </span>
-      <span className={styles.malformedRowContents}>
-        <span className={styles.rowContentLabel}>{SubI18n.row_content}:</span>&nbsp;
-        {rowError.contents.map((cell) => `"${cell.replace('"', '\\"')}"`).join(',')}
-      </span>
-    </td>
-  );
+    <tr className={styles.malformedRow}>
+      <td className={styles.location}>{SubI18n.row.format(rowError.offset + 1)}</td>
+      <td className={styles.message} dangerouslySetInnerHTML={malformedRowMessage}></td>
+      <td className={styles.contents}>{SubI18n.row_content}: <span>{malformedRowContents}</span></td>
+    </tr>);
 }
 
 RowError.propTypes = {

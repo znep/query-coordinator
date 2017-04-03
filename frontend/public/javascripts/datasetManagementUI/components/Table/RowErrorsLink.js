@@ -15,7 +15,7 @@ function ErrorFlyout({ numRowErrors }) {
   const message = singularOrPlural(
     numRowErrors,
     SubI18n.flyout_message_singular,
-    SubI18n.flyout_message_plural.format({ numRowErrors: commaify(numRowErrors) })
+    SubI18n.flyout_message_plural.format(commaify(numRowErrors))
   );
   return (
     <div
@@ -24,7 +24,7 @@ function ErrorFlyout({ numRowErrors }) {
       <section className="flyout-content">
         {message} {SubI18n.flyout_message_explanation}
         <br />
-        <span className="click-to-view">{I18n.show_output_schema.click_to_view}</span>
+        <span className={styles.clickToView}>{I18n.show_output_schema.click_to_view}</span>
       </section>
     </div>
   );
@@ -70,7 +70,7 @@ class RowErrorsLink extends Component {
           <div ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}>
             <Link to={linkPath}>
               <div className={styles.malformedRowsStatusText} data-flyout={FLYOUT_ID}>
-                <span className="err-info error">{commaify(numRowErrors)}</span>
+                <span className={styles.error}>{commaify(numRowErrors)}</span>
                 {singularOrPlural(numRowErrors, SubI18n.malformed_row, SubI18n.malformed_rows)}
               </div>
               <ErrorFlyout numRowErrors={numRowErrors} />

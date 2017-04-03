@@ -45,9 +45,9 @@ describe('Searchbox', () => {
       assert.isNotNull(element.querySelector('.clear-search'));
     });
 
-    it('clears the search query and calls onSearch when clicked', () => {
+    it('clears the search query and calls onClear when clicked', () => {
       const spy = sinon.spy();
-      const element = renderComponent(Searchbox, getProps({ onSearch: spy }));
+      const element = renderComponent(Searchbox, getProps({ onClear: spy }));
       const input = element.querySelector('input');
       input.value = 'barf chair';
       TestUtils.Simulate.change(input);

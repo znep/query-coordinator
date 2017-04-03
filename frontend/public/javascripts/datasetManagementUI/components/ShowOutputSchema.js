@@ -39,6 +39,7 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   };
 }
 
+
 class ShowOutputSchema extends Component {
 
   componentDidMount() {
@@ -106,23 +107,19 @@ class ShowOutputSchema extends Component {
           <ModalHeader {...headerProps} />
 
           <ModalContent>
-            <div>
-              <div className={styles.dataPreview}>
-                <div>
-                  <h3>
-                    Data Preview
-                    {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}
-                  </h3>
+            <div className={styles.dataPreview}>
+              <h3>
+                Data Preview
+                {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}
+              </h3>
+              <div className={styles.datasetAttribute}>
+                <div className={styles.datasetAttribute}>
+                  <p>Rows</p>
+                  <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
                 </div>
                 <div className={styles.datasetAttribute}>
-                  <div className={styles.datasetAttribute}>
-                    <p>Rows</p>
-                    <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
-                  </div>
-                  <div className={styles.datasetAttribute}>
-                    <p>Columns</p>
-                    <p className={styles.attribute}>{columns.length}</p>
-                  </div>
+                  <p>Columns</p>
+                  <p className={styles.attribute}>{columns.length}</p>
                 </div>
               </div>
 
@@ -170,7 +167,6 @@ class ShowOutputSchema extends Component {
       </div>
     );
   }
-
 }
 
 ShowOutputSchema.propTypes = {

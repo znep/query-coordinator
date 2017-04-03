@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { InfoPane } from 'socrata-components';
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 
 // This higher order component implements the business logic that interprets FeatureFlags to ensure
 // that the display of the authority badge respects the business logic expressed in the feature flag.
@@ -17,7 +17,6 @@ class InfoPaneComponent extends Component {
       return null;
     }
   }
-
   // Hide if there is no provenance or if the provenanceIcon is either 'all', 'official2', or 'community'
   hideProvenance() {
     return this.props.provenance === null ||

@@ -1,4 +1,4 @@
-import { socrataFetch, checkStatus, getJson } from '../lib/http';
+import { socrataFetch, checkStatus, checkStatusForPoll, getJson } from '../lib/http';
 import { push } from 'react-router-redux';
 import {
   insertStarted,
@@ -52,20 +52,28 @@ const UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS = 1000;
 export function pollForUpsertJobProgress(upsertJobId) {
   return (dispatch) => {
     socrataFetch(dsmapiLinks.revisionBase).
-      then(checkStatus).
+      then(checkStatusForPoll).
       then(getJson).
-      then((resp) => {
-        const update = resp.resource;
-        update.upsert_jobs.forEach((upsertJob) => {
-          dispatch(updateFromServer('upsert_jobs', {
-            ...upsertJob,
-            finished_at: parseDate(upsertJob.finished_at)
-          }));
-          if (upsertJob.status === UPSERT_JOB_SUCCESSFUL) {
-            dispatch(removeNotificationAfterTimeout(upsertJobNotification(upsertJob.id)));
+      then(resp => {
+        if (resp) {
+          const update = resp.resource;
+          update.upsert_jobs.forEach((upsertJob) => {
+            dispatch(updateFromServer('upsert_jobs', {
+              ...upsertJob,
+              finished_at: parseDate(upsertJob.finished_at)
+            }));
+            if (upsertJob.status === UPSERT_JOB_SUCCESSFUL) {
+              dispatch(removeNotificationAfterTimeout(upsertJobNotification(upsertJob.id)));
+            }
+          });
+          if (_.map(update.upsert_jobs, 'status').some((status) => status === UPSERT_JOB_IN_PROGRESS)) {
+            setTimeout(() => {
+              dispatch(pollForUpsertJobProgress(upsertJobId));
+            }, UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS);
           }
-        });
-        if (_.map(update.upsert_jobs, 'status').some((status) => status === UPSERT_JOB_IN_PROGRESS)) {
+        } else {
+          console.warn('Backend service appears to be down presently.');
+
           setTimeout(() => {
             dispatch(pollForUpsertJobProgress(upsertJobId));
           }, UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS);

@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { defaultHeaders } from '../../common/http';
 import format from 'stringformat';
 import FeaturedContentManager from './FeaturedContentManager';
-import StatCounts from './StatCounts';
 import * as Actions from '../actions/header';
 import airbrake from '../../common/airbrake';
 
@@ -30,7 +29,7 @@ export class Manager extends React.Component {
   }
 
   metadataForSave() {
-    return _.pick(this.props.header, 'headline', 'description', 'showStats');
+    return _.pick(this.props.header, 'headline', 'description');
   }
 
   featuredContentForSave() {
@@ -43,7 +42,7 @@ export class Manager extends React.Component {
       if (featuredContentItem.contentType === 'external') {
         featuredContentPayload[key].contentType = 'external';
 
-        const validBase64ImagePrefixRegex = new RegExp('^data:image/[jpe?g|png|gif];base64');
+        const validBase64ImagePrefixRegex = new RegExp('^data:image/(jpe?g|png|gif);base64', 'i');
         // EN-15002: If a new image has been uploaded, it will have a base64 encoding as its `imageUrl`,
         // and we want to send it in the payload to core to turn it into a URL.
         if (validBase64ImagePrefixRegex.test(featuredContentItem.imageUrl)) {
@@ -121,8 +120,6 @@ export class Manager extends React.Component {
       this.props.updateHeadline(value);
     } else if (name === 'description') {
       this.props.updateDescription(value);
-    } else if (name === 'showStats') {
-      this.props.toggleStats(value);
     }
   }
 
@@ -137,38 +134,6 @@ export class Manager extends React.Component {
       return format(
         _.get(I18n, this.props.category ? translationKey : translationKeyNoCategory),
         { category: this.props.category }
-      );
-    };
-
-    const renderShowStatsCheckbox = () => {
-      const name = 'showStats';
-      const label = _.get(I18n, 'manager.show_stats.label');
-
-      return (
-        <div className="checkbox show-stats">
-          <input
-            id={name}
-            name={name}
-            type="checkbox"
-            aria-label="Show stats"
-            checked={this.props.header.showStats}
-            onChange={this.handleInputChange} />
-          <label htmlFor={name}>
-            <span className="fake-checkbox">
-              <span className="socrata-icon-checkmark3"></span>
-            </span>
-            {label}
-          </label>
-        </div>);
-    };
-
-    const renderCategoryStats = () => {
-      const { categoryStats } = this.props;
-
-      return (
-        <div className="catalog-landing-page-stats">
-          <StatCounts categoryStats={categoryStats} />
-        </div>
       );
     };
 
@@ -209,13 +174,6 @@ export class Manager extends React.Component {
               onChange={this.handleInputChange}
               value={this.props.header.description} />
 
-            {headingHtml(formatWithCategory('manager.show_stats.label'))}
-            <p className="small explanation">
-              {_.get(I18n, 'manager.show_stats.explanation')}
-            </p>
-            {renderShowStatsCheckbox()}
-            {renderCategoryStats()}
-
             {headingHtml(formatWithCategory('manager.featured_content.label',
                   'manager.featured_content.label_no_category'))}
             <p className="small explanation">
@@ -245,31 +203,24 @@ Manager.propTypes = {
   category: PropTypes.string,
   catalogPath: PropTypes.string.isRequired,
   catalogQuery: PropTypes.object,
-  categoryStats: PropTypes.object,
   featuredContent: PropTypes.object,
   header: PropTypes.shape({
     headline: PropTypes.string,
-    description: PropTypes.string,
-    showStats: PropTypes.bool
+    description: PropTypes.string
   }),
-  toggleStats: PropTypes.func.isRequired,
   updateDescription: PropTypes.func.isRequired,
   updateHeadline: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   catalogPath: state.catalog.path,
-  catalogQuery: _.isString(state.catalog.query) ?
-    { custom_path: state.catalog.query } :
-    state.catalog.query,
+  catalogQuery: state.catalog.query,
   category: state.category,
-  categoryStats: state.categoryStats,
   featuredContent: state.featuredContent,
   header: state.header
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleStats: (checked) => dispatch(Actions.toggleStats(checked)),
   updateDescription: (text) => dispatch(Actions.updateDescription(text)),
   updateHeadline: (text) => dispatch(Actions.updateHeadline(text))
 });

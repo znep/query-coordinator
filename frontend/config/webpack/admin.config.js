@@ -16,11 +16,10 @@ module.exports = _.defaultsDeep({
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/src/.eslintrc.json'),
   module: {
-    loaders: [{
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loaders: ['babel']
-    }]
+    loaders: [
+      common.getBabelLoader()
+    ]
   },
+  resolve: common.getStandardResolve(),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

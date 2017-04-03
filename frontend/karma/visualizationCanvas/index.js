@@ -3,7 +3,7 @@ import 'babel-polyfill-safe';
 import { Provider } from 'react-redux';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 
 window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');

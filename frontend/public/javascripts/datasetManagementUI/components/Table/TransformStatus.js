@@ -33,7 +33,7 @@ function ErrorFlyout({ transform }) {
         })}
         <TypeIcon type={transform.output_soql_type} />
         <br />
-        <span className={styles.clickToView}>{SubI18n.column_status_flyout.click_to_view}</span>
+        <span className={styles.clickToView}>{I18n.show_output_schema.click_to_view}</span>
       </section>
     </div>
   );
@@ -67,7 +67,7 @@ class TransformStatus extends Component {
     const SubI18n = I18n.show_output_schema.column_header;
     const uploadDone = _.isNumber(totalRows);
     const thisColumnDone = _.isNumber(totalRows) &&
-      transform.contiguous_rows_processed === totalRows;
+                           transform.contiguous_rows_processed === totalRows;
 
     const inErrorMode = displayState.type === DisplayState.COLUMN_ERRORS &&
       transform.id === displayState.transformId;
@@ -104,19 +104,23 @@ class TransformStatus extends Component {
           key={transform.id}
           ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}
           data-flyout={getFlyoutId(transform)}
-          className={classNames(styles.transformStatus, { [styles.transformStatusSelected]: inErrorMode })}>
+          data-cheetah-hook="col-errors"
+          className={classNames(styles.colErrors, { [styles.colErrorsSelected]: inErrorMode })}>
           {progressBar}
-          <div className={styles.statusText}>
+          <Link
+            className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}
+            to={linkPath}
+            data-flyout={getFlyoutId(transform)}>
             <span className={styles.error}>{commaify(transform.num_transform_errors)}</span>
-            <Link to={linkPath} data-flyout={getFlyoutId(transform)}>{msg}</Link>
-          </div>
+            {msg}
+          </Link>
           {errorFlyout}
         </th>
       );
     } else {
       if (thisColumnDone) {
         return (
-          <th key={transform.id} className={styles.transformStatus}>
+          <th key={transform.id} data-cheetah-hook="col-errors" className={styles.colErrors}>
             {progressBar}
             <div className={styles.statusText}>
               <SocrataIcon name="checkmark3" className={styles.successIcon} />
@@ -126,7 +130,7 @@ class TransformStatus extends Component {
         );
       } else {
         return (
-          <th key={transform.id} className={styles.transformStatus}>
+          <th key={transform.id} data-cheetah-hook="col-errors" className={styles.colErrors}>
             {progressBar}
             <div className={styles.statusText}>
               <span className={styles.spinner}></span>

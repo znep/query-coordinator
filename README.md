@@ -1,10 +1,12 @@
 # Socrata Platform UI
 
-This repo houses the Socrata Platform UI (Frontend for now), and shortly Storyteller and shared UI code.
+This repo houses the Socrata Platform UI: Frontend, Storyteller and shared UI code.
 
 ## Quick Links
 
-[Frontend](https://github.com/socrata/frontend/blob/master/frontend/README.md)
+* [Frontend](https://github.com/socrata/platform-ui/blob/master/frontend/README.md)
+* [Storyteller](https://github.com/socrata/platform-ui/blob/master/storyteller/README.md)
+* [common](https://github.com/socrata/platform-ui/blob/master/common/README.md)
 
 ## Organization
 
@@ -12,7 +14,8 @@ Each root-level directory in this repository contains either a service (i.e., St
 
 ## Contributing
 
-Until more services are added to this repository, please see the frontend service's [README](https://github.com/socrata/frontend/blob/master/frontend/README.md).
+Guidelines vary slightly depending on which codebase you are modifying (storyteller vs frontend vs common).
+Please see the relevant READMEs in the Quick Links section.
 
 ## Starting up
 
@@ -23,3 +26,17 @@ sudo nginx -c ${PWD}/dev-server/nginx.conf
 ```
 
 Please refer to the specific service READMEs for specific setup instructions.
+
+## Run all the tests
+
+To run all tests:
+
+```bash
+rake test
+```
+
+To lint everything:
+
+```bash
+rake lint
+```

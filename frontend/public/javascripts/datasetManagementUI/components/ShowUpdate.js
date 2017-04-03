@@ -144,7 +144,7 @@ WrapDataTablePlaceholder.propTypes = {
 
 function upsertCompleteView(view, outputSchema) {
   return (
-    <div>
+    <div key="upsertCompleteView">
       <DatasetPreview view={view} outputSchema={outputSchema} />
     </div>
   );
@@ -191,7 +191,8 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
   );
 
   const outputSchema = latestOutputSchema(db);
-  const doesUpsertExist = _.size(db.upsert_jobs);
+  const doesUpsertExist = _.size(_.filter(db.upsert_jobs,
+                                          uj => uj.status !== ApplyUpdate.UPSERT_JOB_FAILURE));
   const isUpsertComplete = doesUpsertExist &&
     _.map(db.upsert_jobs, (uj) => uj.status === ApplyUpdate.UPSERT_JOB_SUCCESSFUL).
     reduce((acc, success) => success || acc, false);
@@ -201,6 +202,7 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
     const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
     dataTable = [(
       <Link
+        key="manage-data-button"
         to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}
         className={styles.manageDataLink} >
         <button

@@ -138,6 +138,21 @@ jQuery.metrics = {
     });
   },
   collectPageTimings: function() {
+
+    $.metrics.mark('domain', 'js-page-view');
+    $.metrics.mark('domain', 'browser-' + $.metrics.browser_name());
+    $.metrics.mark('domain-intern', 'browser-' + $.metrics.browser_name());
+    $.metrics.mark('domain', 'browser-' + $.metrics.browser_name() + '-' + $.browser.majorVersion);
+    $.metrics.mark('domain-intern', 'browser-' + $.metrics.browser_name() +
+      '-' + $.browser.majorVersion);
+
+    var pageType = $.metrics.determinePageType();
+    if ($.metrics.in_iframe()) {
+      $.metrics.mark('domain', 'js-page-view-embed-{0}'.format(pageType));
+    } else {
+      $.metrics.mark('domain', 'js-page-view-{0}'.format(pageType));
+    }
+
     // NavigationTiming not supported by safari
     // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming
     if (window.performance !== undefined) {
@@ -149,7 +164,6 @@ jQuery.metrics = {
         var tz = new Date().getTimezoneOffset();
         var jsPageLoadTime = domComplete - navStart;
         var jsDomLoadTime = domComplete - performance.timing.domLoading;
-        var pageType = $.metrics.determinePageType();
 
         $.metrics.mark('domain-intern', 'js-page-load-samples');
         $.metrics.increment('domain-intern', 'js-page-load-time', jsPageLoadTime);
@@ -183,6 +197,13 @@ jQuery.metrics = {
       }
     }
     $.metrics.flush_metrics();
+  },
+  in_iframe: function() {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true;
+    }
   },
   determinePageType: function() {
     var pageType = 'other';
@@ -232,6 +253,10 @@ jQuery.metrics = {
     }
 
     return pageType;
+  },
+  browser_name: function() {
+    return $.browser.msie ? 'ie' : $.browser.mozilla ? 'firefox' : $.browser.chrome ? 'chrome' :
+      $.browser.safari ? 'safari' : 'other';
   }
 };
 

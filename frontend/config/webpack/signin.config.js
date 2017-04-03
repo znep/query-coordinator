@@ -12,14 +12,7 @@ module.exports = _.defaultsDeep({
   eslint: common.getEslintConfig('public/javascripts/signin/.eslintrc.json'),
   module: {
     loaders: [
-      {
-        test: /\.jsx?$/,
-        include: [ path.resolve(common.root, 'public/javascripts/signin') ],
-        loader: 'babel',
-        query: {
-          presets: ['react', 'es2015']
-        }
-      },
+      common.getBabelLoader(),
       {
         test: /\.(css|scss)$/,
         loaders: [
@@ -31,5 +24,6 @@ module.exports = _.defaultsDeep({
       }
     ]
   },
+  resolve: common.getStandardResolve([ 'public/javascripts/signin' ]),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

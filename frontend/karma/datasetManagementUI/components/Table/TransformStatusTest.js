@@ -1,4 +1,4 @@
-import TransformStatus from 'components/Table/TransformStatus';
+import TransformStatus from 'components/Table/TransformStatus'; // eslint-disable-line no-unused-vars
 import { normal } from 'lib/displayState';
 
 describe('components/Table/TransformStatus', () => {
@@ -35,8 +35,8 @@ describe('components/Table/TransformStatus', () => {
           columnId={50}
           totalRows={5000} />
       );
-      expect(element.querySelector('.success')).to.not.be.null;
-      expect(element.querySelectorAll('.progressBar')).to.not.be.null;
+      expect(element.querySelector('.success')).to.not.equal(null);
+      expect(element.querySelectorAll('.progressBar')).to.not.equal(null);
       expect(element.innerText).to.equal(I18n.show_output_schema.column_header.no_errors_exist);
     });
 
@@ -68,7 +68,7 @@ describe('components/Table/TransformStatus', () => {
           totalRows={undefined} />
       );
       expect(element.innerText).to.equal(I18n.show_output_schema.column_header.scanning);
-      expect(element.querySelectorAll('.progress-bar-done')).to.not.be.null;
+      expect(element.querySelectorAll('.progress-bar-done')).to.not.equal(null);
       // TODO: ^^ think of a better class name. really means bar is not visible
       // can be because it's done or we're not showing it because the upload is in progress
     });
@@ -85,7 +85,7 @@ describe('components/Table/TransformStatus', () => {
           totalRows={undefined} />
       );
       expect(element.innerText).to.equal(I18n.show_output_schema.column_header.scanning);
-      expect(element.querySelectorAll('.progress-bar-done')).to.not.be.null;
+      expect(element.querySelectorAll('.progress-bar-done')).to.not.equal(null);
       // TODO: ^^ think of a better class name. really means bar is not visible
       // can be because it's done or we're not showing it because the upload is in progress
     });
@@ -106,9 +106,9 @@ describe('components/Table/TransformStatus', () => {
           columnId={50}
           totalRows={5000} />
       );
-      expect(element.querySelector('.error')).to.not.be.null;
-      expect(element.querySelectorAll('.progress-bar-done')).to.not.be.null;
-      expect(element.querySelector('.column-status-text').innerText).to.equal(
+      expect(element.querySelector('.error')).to.not.equal(null);
+      expect(element.querySelectorAll('.progress-bar-done')).to.not.equal(null);
+      expect(element.querySelector('.statusText').innerText).to.equal(
         `5${I18n.show_output_schema.column_header.errors_exist}`
       );
     });
@@ -125,11 +125,15 @@ describe('components/Table/TransformStatus', () => {
           columnId={50}
           totalRows={5000} />
       );
-      expect(element.querySelector('.column-status-text').innerText).to.equal(
+
+
+      expect(element.querySelector('.statusText').innerText).to.equal(
         `5${I18n.show_output_schema.column_header.errors_exist_scanning}`
       );
-      const progressBar = element.querySelector('.progress-bar');
-      expect(element.innerText).to.equal(`5${I18n.show_output_schema.column_header.errors_exist_scanning}`);
+
+      const sos = I18n.show_output_schema;
+      expect(element.innerText).to.equal(`5${sos.column_header.errors_exist_scanning}${sos.column_header.column_status_flyout.error_msg_plural.format({num_errors: 5, type: 'Text'})}\n${sos.click_to_view}`);
+
       const progressBar = element.querySelector('.progressBar');
       expect(progressBar.style.width).to.equal('50%');
     });
@@ -146,10 +150,10 @@ describe('components/Table/TransformStatus', () => {
           columnId={50}
           totalRows={undefined} />
       );
-      expect(element.querySelector('.column-status-text').innerText).to.equal(
+      expect(element.querySelector('.statusText').innerText).to.equal(
         `5${I18n.show_output_schema.column_header.errors_exist_scanning}`
       );
-      expect(element.querySelectorAll('.progress-bar-done')).to.not.be.null;
+      expect(element.querySelectorAll('.progress-bar-done')).to.not.equal(null);
       // TODO: ^^ think of a better class name. really means bar is not visible
       // can be because it's done or we're not showing it because the upload is in progress
     });

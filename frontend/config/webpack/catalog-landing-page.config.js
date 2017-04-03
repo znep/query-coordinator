@@ -25,24 +25,17 @@ module.exports = _.defaultsDeep({
   },
   module: {
     loaders: [
-      {
-        test: /\.jsx?$/,
-        include: [
-          path.resolve(common.root, 'public/javascripts'),
-          path.resolve(common.root, 'node_modules/socrata-components/common')
-        ],
-        loaders: (common.isProduction ? ['babel'] : ['react-hot', 'babel'])
+      common.getBabelLoader()
+    ]
+  },
+  resolve: _.extend(
+    {
+      alias: {
+        'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',
+        'jquery': 'jQuery'
       }
-    ]
-  },
-  resolve: {
-    alias: {
-      'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',
-      'jquery': 'jQuery'
     },
-    root: [
-      path.resolve(common.root, 'public/javascripts/catalogLandingPage')
-    ]
-  },
+    common.getStandardResolve([ 'public/javascripts/catalogLandingPage' ])
+  ),
   plugins: plugins
 }, require('./base'));

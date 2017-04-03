@@ -10,7 +10,7 @@ import reducer from './reducers';
 import App from './App';
 import Search from './components/Search';
 
-var middleware = [thunk];
+const middleware = [thunk];
 
 if (_.get(window, 'serverConfig.environment') === 'development') {
   middleware.push(createLogger({
@@ -22,7 +22,7 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
-var store = createStore(reducer, applyMiddleware(...middleware));
+const store = createStore(reducer, applyMiddleware(...middleware));
 
 // Render the search bar
 ReactDOM.render(
@@ -38,5 +38,13 @@ ReactDOM.render(
   </Provider>,
   document.querySelector('#catalog-landing-page')
 );
+
+// Show the footer
+const footer = document.querySelector('#site-chrome-footer');
+if (footer) {
+  footer.style.visibility = 'visible';
+}
+
+document.querySelector('#catalog-landing-page-spinner').style.display = 'none';
 
 require('./catalog');

@@ -1,0 +1,70 @@
+@import 'lib/variables';
+@import 'dist/fonts/socrata-icons';
+@import 'bourbon';
+
+#make-a-copy-container{
+
+  .make-a-copy-button-group {
+
+    margin-top: 2rem;
+
+    &.r-to-l {
+      text-align: right;
+
+      [class^="btn-"], [class*=" btn-"] {
+        margin-left: 1rem;
+      }
+    }
+  }
+
+  .make-a-copy-copy-warning {
+    text-align: center;
+    font-size: 1.2rem;
+    color: $modal-button-list-description-color;
+    width: 80%;
+    margin: 0 auto;
+    line-height: $modal-title-line-height;
+  }
+
+  .make-a-copy-title-input {
+    width: 100%;
+  }
+
+  .modal-select {
+    position: relative;
+    display: inline-block;
+    font-size: 1.5rem;
+    margin-left: 1px;
+    margin-bottom: 1rem;
+
+    &::after {
+      @extend .icon-arrow-down::before;
+
+      display: block;
+      position: absolute;
+      color: $collaborators-select-arrow-color;
+      right: 1rem;
+      top: calc(2.5rem / 2);
+      pointer-events: none;
+    }
+
+    select {
+      padding: 0.75rem;
+      padding-right: 3.5rem;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      font-size: 1.5rem;
+      border-radius: 0.1rem;
+      background-color: $collaborators-select-background-color;
+      border: 1px solid $collaborators-select-border-color;
+      color: $collaborators-select-color;
+      line-height: normal;
+
+      &:disabled {
+        color: $collaborators-select-disabled-color;
+        background-color: $collaborators-select-disabled-background-color;
+      }
+    }
+  }
+
+}

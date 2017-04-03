@@ -650,7 +650,7 @@ class InternalController < ApplicationController
       end
 
       if config.properties.keys.include? feature
-        config.update_proeprty(feature, enabled)
+        config.update_property(feature, enabled)
         notices << "Updated feature `#{feature}` as `#{enabled}` successfully."
       else
         config.create_property(feature, enabled)

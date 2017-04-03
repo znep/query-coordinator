@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { handleKeyPress } from '../../helpers/keyPressHelpers';
+import { handleEnter } from '../../helpers/keyPressHelpers';
 
 export class Searchbox extends React.Component {
   constructor(props) {
@@ -14,8 +14,7 @@ export class Searchbox extends React.Component {
 
   clearQuery(event) {
     event.preventDefault();
-    this.props.onClear(this.state.query);
-    this.setState({ query: '' }, this.handleSearch());
+    this.setState({ query: '' }, this.props.onClear(this.state.query));
   }
 
   handleChange(query) {
@@ -44,7 +43,7 @@ export class Searchbox extends React.Component {
       autoFocus,
       className: 'text-input',
       onChange: (event) => this.handleChange(event.target.value),
-      onKeyDown: handleKeyPress((event) => this.handleSearch(event.target.value)),
+      onKeyDown: handleEnter((event) => this.handleSearch(event.target.value)),
       placeholder,
       type: 'text',
       value: query

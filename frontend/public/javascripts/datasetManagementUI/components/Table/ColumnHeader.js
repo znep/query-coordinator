@@ -32,6 +32,7 @@ class ColumnHeader extends Component {
         <Link to={Links.columnMetadataEditor(column.id)}>
           <span
             className={styles.colName}
+            data-cheetah-hook="col-name"
             id={`column-display-name-${column.id}`}
             title={column.display_name}>
             {column.display_name}

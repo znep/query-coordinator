@@ -209,7 +209,7 @@ RSpec.describe 'routes for Data Lens' do
     let(:clp_configuration) do
       double('clp config', properties: {
         'category%3DFun' => {},
-        '/salt-lake-city' => {}
+        '%2Fsalt-lake-city' => {}
       })
     end
     let(:custom_facets) { nil }

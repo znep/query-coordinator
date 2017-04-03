@@ -111,7 +111,6 @@ module Cetera
       def translate_domains(domains)
         domains.present? && domains.join(',') # Cetera does not yet support domains[]
       end
-
       # Translate FE 'display_type' to Cetera 'type' (as used in limitTo/only)
       # NOTE: the camelCase mirrors the FE params
       def translate_display_type(limitTo, datasetView)
@@ -172,9 +171,10 @@ module Cetera
       # Anything not explicitly supported here will be dropped
       def valid_cetera_keys
         Set.new(%i(boostCalendars boostCharts boostDatalenses boostDatasets boostDomains boostFiles
-                   boostFilters boostForms boostHrefs boostMaps boostPulses boostStories categories
-                   derived_from domains for_user limit locale offset only order q search_context tags
-                   shared_to provenance public published approval_status explicitly_hidden))
+                   boostFilters boostForms boostHrefs boostMaps boostOfficial boostPulses
+                   boostStories categories derived_from domains for_user limit locale offset only
+                   order q search_context tags shared_to provenance public published
+                   approval_status explicitly_hidden))
       end
     end
   end

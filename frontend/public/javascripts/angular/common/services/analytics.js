@@ -64,6 +64,8 @@ module.exports = function Analytics($log, $window, http, ServerConfig, $rootScop
     if (_.isNaN(timeDelta)) {
       $log.debug('timeDelta was NaN');
     }
+    sendMetric('domain', 'js-page-view', 1);
+    sendMetric('domain', 'js-page-view-newux', 1);
     sendPerformanceMetric(jsCardsViewBaseName.format('page-load'), timeDelta);
 
     // final flush of all known metrics

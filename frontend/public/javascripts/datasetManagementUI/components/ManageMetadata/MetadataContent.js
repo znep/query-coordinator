@@ -21,8 +21,7 @@ export default function MetadataContent(props) {
               <Link to={Links.columnMetadataEditor()}>{I18n.metadata_manage.column_metadata_label}</Link>
             </li>
           </ul>
-
-          <DatasetMetadataEditor view={props.view} onEdit={props.onEditDatasetMetadata} />
+          <DatasetMetadataEditor view={props.view} />
         </div>
       );
     case 'metadata/columns':
@@ -47,7 +46,6 @@ export default function MetadataContent(props) {
 
 MetadataContent.propTypes = {
   path: PropTypes.string.isRequired,
-  onEditDatasetMetadata: PropTypes.func.isRequired,
   onEditColumnMetadata: PropTypes.func.isRequired,
   view: PropTypes.object.isRequired
 };

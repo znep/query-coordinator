@@ -21,6 +21,7 @@ namespace :test do
       fail($?.exitstatus) unless system(cmd)
     end
 
+    # ADD NEW TEST SUITES HERE
     {
       'catalogLandingPage' => 'update_catalog_landing_page_translations',
       'common' => 'update_common_translations',
@@ -30,9 +31,9 @@ namespace :test do
       'importWizard' => 'update_import_wizard_translations',
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
-      'autocomplete' => nil,
       'signin' => 'update_signin_translations',
-      'oldUx' => nil
+      'oldUx' => nil,
+      'exampleTestSuite' => nil
     }.each do |task_name, dependency|
       desc task_name
       task_args = { %i(watch browser reporter) => "translations:#{dependency}" }
@@ -177,7 +178,6 @@ namespace :test do
     desc 'run all the karma tasks'
     task :all, [:watch, :browser, :reporter] => [
       'karma:adminGoals',
-      'karma:autocomplete',
       'karma:catalogLandingPage',
       'karma:common',
       'karma:dataCards',

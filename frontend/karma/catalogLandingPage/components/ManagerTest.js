@@ -5,19 +5,14 @@ describe('components/Manager', () => {
   const getProps = (props = {}) => {
     return {
       category: 'Fun',
-      categoryStats: {
-        datasets: 2,
-        charts: 1
-      },
+      catalogPath: '/browse',
       featuredContent: {
         item0: { position: 0, name: 'featured fun thing' }
       },
       header: {
         headline: 'Some fun stuff',
-        description: 'Some stuff that is fun',
-        showStats: true
+        description: 'Some stuff that is fun'
       },
-      toggleStats: _.noop,
       updateDescription: _.noop,
       updateHeadline: _.noop,
       ...props
@@ -66,24 +61,6 @@ describe('components/Manager', () => {
       }));
 
       TestUtils.Simulate.change(element.querySelector('.input-description'), { value: 'wu tang' });
-
-      sinon.assert.called(spy);
-    });
-  });
-
-  describe('stats checkbox', () => {
-    it('renders', () => {
-      const element = renderComponentWithStore(Manager, getProps());
-      assert.isNotNull(element.querySelector('div.show-stats'));
-    });
-
-    it('calls toggleStats when changed', () => {
-      const spy = sinon.spy();
-      const element = renderComponentWithStore(Manager, getProps({
-        toggleStats: spy
-      }));
-
-      TestUtils.Simulate.change(element.querySelector('.show-stats input#showStats'), { checked: true });
 
       sinon.assert.called(spy);
     });

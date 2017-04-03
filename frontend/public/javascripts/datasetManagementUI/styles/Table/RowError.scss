@@ -2,41 +2,32 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
-.container {
-  display: block;
-  width: 100%;
-  background-color: $error-light;
+tbody tr.malformedRow {
   color: $error-text;
-  padding: 5px 7px 4px;
-}
+  background: $error-light;
 
-.malformedRowTag {
-  color: $white;
-  border-radius: 0.7em;
-  padding: 0 0.7em 0;
-  font-size: 7px;
-  vertical-align: middle;
-  composes: error from global;
-}
+  td {
+    border-width: 0px;
+    padding: 5px 3px 4px 7px;
+  }
 
-.malformedRowLocation {
-  padding-left: 5px;
-}
+  .location {
+    color: $error-text;
+    font-weight: 600;
+  }
 
-.malformedRowError {
-  padding-left: 20px;
-}
+  .message {
+    span {
+      font-weight: 600;
+    }
+  }
 
-.malformedRowContents {
-  color: darken(#767676, 10%);
-  padding-left: 20px;
-  font-size: 10px;
-}
+  .contents {
+    overflow: visible;
 
-.rowErrorNumber {
-  font-weight: bold;
-}
-
-.rowContentLabel {
-  font-weight: bold;
+    span {
+      color: $dark-grey-1;
+      font-style: italic;
+    }
+  }
 }

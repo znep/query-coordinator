@@ -1,0 +1,22 @@
+module StoryAsJson
+  extend ActiveSupport::Concern
+
+  included do
+
+    def as_json(options = nil)
+      serializable_attributes.transform_keys do |key|
+        key.to_s.camelize(:lower)
+      end
+    end
+
+    private
+
+    def serializable_attributes
+      attributes.
+        except('id', 'block_ids', 'deleted_at').
+        merge(:blocks => blocks.map do |block|
+          block.serializable_attributes
+        end)
+    end
+  end
+end

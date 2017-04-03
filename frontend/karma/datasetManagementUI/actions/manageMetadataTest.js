@@ -1,13 +1,13 @@
 import { saveMetadata } from 'actions/manageMetadata';
 import { STATUS_DIRTY, STATUS_DIRTY_IMMUTABLE, STATUS_SAVED } from 'lib/database/statuses';
 import { edit, editImmutable } from 'actions/database';
+import { setFourfour } from 'actions/routing';
 import { mockFetch } from '../testHelpers/mockHTTP';
 import mockPhx from '../testHelpers/mockPhoenixSocket';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import { getDefaultStore } from '../testStore';
 
 describe('actions/manageMetadata', () => {
-
   const responses = {
     '/api/views/hehe-hehe': {
       PUT: {
@@ -35,18 +35,23 @@ describe('actions/manageMetadata', () => {
   it('saves metadata when there are no output schemas', (done) => {
     const { unmockFetch } = mockFetch(responses, done);
     const store = getDefaultStore();
+    store.dispatch(setFourfour('hehe-hehe'));
+    const fourfour = store.getState().fourfour;
     store.dispatch(edit('views', {
-      id: 'hehe-hehe',
-      name: 'New Name',
-      description: 'New description'
+      id: fourfour,
+      model: {
+        id: fourfour,
+        name: 'New Name',
+        description: 'New description'
+      }
     }));
-    expect(_.values(store.getState().db.views)[0].__status__.type).to.equal(STATUS_DIRTY);
+    expect(store.getState().db.views[fourfour].__status__.type).to.equal(STATUS_DIRTY);
     store.dispatch(saveMetadata());
     setTimeout(() => {
-      expect(_.values(store.getState().db.views)[0].__status__.type).to.equal(STATUS_SAVED);
+      expect(store.getState().db.views[fourfour].__status__.type).to.equal(STATUS_SAVED);
       unmockFetch();
       done();
-    }, 0);
+    }, 100);
     // TODO: assert against database state
   });
 
@@ -71,5 +76,4 @@ describe('actions/manageMetadata', () => {
     }, 0);
     // TODO: assert against database state
   });
-
 });

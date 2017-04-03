@@ -29,6 +29,18 @@ var plugins = _.compact([
   })
 ]);
 
+// Base `test` and `include` config for loaders
+// operating on javascript/JSX code.
+var jsLoaderBaseConfig = {
+  test: /\.jsx?$/,
+  include: [
+    path.resolve(root, 'public/javascripts'),
+    path.resolve(root, 'karma'),
+    path.resolve(root, '../common'),
+    path.resolve(root, 'node_modules/socrata-components/common')
+  ]
+};
+
 function withHotModuleEntries(entry) {
   var hotModuleEntries = getHotModuleEntries();
 
@@ -114,17 +126,81 @@ function getStyleguideIncludePaths() {
   ];
 }
 
+function getBabelLoader() {
+  return _.extend({}, jsLoaderBaseConfig, {
+    loader: 'babel',
+    query: {
+      presets: [
+        'babel-preset-es2015',
+        'babel-preset-react'
+      ].map(require.resolve),
+      plugins: [
+        'babel-plugin-transform-object-rest-spread'
+      ].map(require.resolve)
+    }
+  });
+}
+
+function getReactHotLoader() {
+  return _.extend({}, jsLoaderBaseConfig, {
+    loader: 'react-hot'
+  });
+}
+
+function getStandardLoaders() {
+  var loaders = [];
+
+  if (!isProduction) {
+    loaders.push(getReactHotLoader());
+  }
+
+  loaders.push(getBabelLoader());
+
+  return loaders;
+}
+
+// Returns the standard resolve config, with
+// an option to include extra roots.
+// Example:
+//
+// var myWebpackConfig = {
+//   resolve: getStandardResolve([ 'public/javascripts/datasetLandingPage' ])
+// };
+function getStandardResolve(extraRoots) {
+  extraRoots = extraRoots || [];
+  var roots = [
+    path.resolve(root, '..')
+  ];
+
+  _.each(extraRoots, function(extraRoot) {
+    roots.push(path.resolve(root, extraRoot));
+  });
+
+  return {
+    modulesDirectories: [ path.resolve(root, 'node_modules') ],
+    root: roots
+  };
+}
+
+function resolvePath(relativePath) {
+  return path.resolve(root, relativePath);
+};
+
 module.exports = {
   devServerPort: packageJson.config.webpackDevServerPort,
   getEslintConfig: getEslintConfig,
   withHotModuleEntries: withHotModuleEntries,
+  getBabelLoader: getBabelLoader,
   getHotModuleEntries: getHotModuleEntries,
   getManifestPlugin: getManifestPlugin,
   getOutput: getOutput,
+  getStandardLoaders: getStandardLoaders,
   getStyleguideIncludePaths: getStyleguideIncludePaths,
   getStyleguidePreLoaders: getStyleguidePreLoaders,
+  getStandardResolve: getStandardResolve,
   isProduction: isProduction,
   packageJson: packageJson,
   plugins: plugins,
+  resolvePath: resolvePath,
   root: root
 };

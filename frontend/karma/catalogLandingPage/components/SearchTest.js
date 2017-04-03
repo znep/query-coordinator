@@ -20,15 +20,6 @@ describe('components/Search', function() {
     var element = renderComponent(Search, searchProps({term: 'find me'}));
     var input = element.querySelector('input');
     assert.isNotNull(input);
-    expect(input.value).to.equal('find me');
-  });
-
-  it('focuses the search input', function() {
-    var element = renderComponent(Search, searchProps());
-    var input = element.querySelector('input');
-    assert.isNotNull(input);
-    _.defer(function() {
-      expect(input).to.equal(document.activeElement);
-    })
+    assert.equal('find me', input.value, 'Value of search input should be "find me"');
   });
 });

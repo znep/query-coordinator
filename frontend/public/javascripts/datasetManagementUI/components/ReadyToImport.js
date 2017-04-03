@@ -49,7 +49,7 @@ export default function ReadyToImport({ db, outputSchema }) {
       </p>
       <p>
         {SubI18n.will_not_be_imported}{' '}
-        <span className={styles.errorRows}>{commaify(errorRows)}</span>
+        <span data-cheetah-hook="error-rows" className={styles.errorRows}>{commaify(errorRows)}</span>
         <SocrataIcon name="question" className={styles.errorsHelp} />
       </p>
       {errorExportButton}

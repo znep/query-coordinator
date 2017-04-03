@@ -67,7 +67,7 @@ export const SearchablePicklist = React.createClass({
       canAddSearchTerm(this.search.value).
         then(() => {
           if (this.isMounted) {
-            this.setState({ isValidating: false });
+            this.setState({ isValidating: false, textEntered: false });
           }
         }).
         catch(() => {
@@ -186,13 +186,13 @@ export const SearchablePicklist = React.createClass({
   },
 
   renderPrompt() {
-    const promptHTML = {__html:
-      `${t('filter_bar.text_filter.exact_search_prompt_main')}` +
-      `<a href='#filter-bar' onclick="" > ${t('filter_bar.text_filter.exact_search_prompt_link')} </a> .`
-    }
-
     return (this.state.textEntered && !this.state.isError) ?
-      <div className="alert info" dangerouslySetInnerHTML={promptHTML} /> :
+      <div className="alert info">
+        {t('filter_bar.text_filter.exact_search_prompt_main')}
+        <a href='#filter-bar' onClick={this.onSearch}>
+          {t('filter_bar.text_filter.exact_search_prompt_link')}
+        </a>
+      </div> :
       null;
   },
 

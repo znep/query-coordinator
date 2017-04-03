@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
-import { findDOMNode } from 'react-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { updateNameAndDescription, closeEditMenu } from '../actions';
@@ -29,16 +28,24 @@ export class EditMenu extends Component {
     ]);
   }
 
-  // Select the title field when the menu is opened
-  componentDidUpdate(oldProps) {
+  componentWillReceiveProps(nextProps) {
     const { isActive } = this.props;
 
-    if (!oldProps.isActive && isActive) {
-      findDOMNode(this).querySelector('#edit-title-field').select();
-
+    if (!isActive && nextProps.isActive) {
       this.setState({
         isMetadataMenuOpen: true
       });
+    }
+  }
+
+  // TODO: Remvove this when EN-15238 is addressed. We have to manually select the title because
+  // the SideMenu has two things trying to manage focus and hitting it hard with a hammer here is
+  // what we decided to do as a bandaid.
+  componentDidUpdate(oldProps) {
+    const { isActive } = this.props;
+
+    if (!oldProps.isActive && isActive && this.title) {
+      this.title.select();
     }
   }
 
@@ -74,7 +81,8 @@ export class EditMenu extends Component {
       className: 'text-input',
       type: 'text',
       value: name,
-      onChange: this.onNameChange
+      onChange: this.onNameChange,
+      ref: (el) => this.title = el
     };
 
     return (

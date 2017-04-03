@@ -1,0 +1,65 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+tr.rowErrorsCount {
+  border-style: solid;
+  border-color: $light-grey-4;
+  border-width: 1px 0 0 1px; // Need to stick the border and/or shadow on the <thead>.
+
+  th {
+    padding: 0px;
+    font-size: 10px;
+    font-weight: normal;
+    display: block;
+    max-width: 100vw;
+    text-align: left;
+    min-height: 0;
+
+    background-color: $white;
+
+    &:hover {
+      background-color: $alternate-3-light;
+    }
+
+    a {
+      color: $grey;
+      text-decoration: none;
+      display: inline-block;
+      width: 100%;
+
+      &:active {
+        box-shadow: inset 0 0 10px -2px $black;
+      }
+    }
+  }
+}
+
+// Currently set to the width of a single column.
+// TODO: Replace this with a less awful tooltip (CSS 3 based?) that can be positioned more precisely.
+.malformedRowsStatusText {
+  padding: 5px;
+  width: 250px;
+  max-width: 100vw;
+}
+
+.rowErrorsCountSelected {
+  box-shadow: inset 0 0 10px -2px $dark-grey-1;
+}
+
+.errorInfo {
+  color: $white;
+  border-radius: 1.1em;
+  margin-right: 0.5em;
+}
+
+.error {
+  composes: errorInfo;
+  composes: error from global;
+  padding: 0 0.7em 1px;
+}
+
+.clickToView {
+  font-size: 10px;
+  color: $grey;
+}

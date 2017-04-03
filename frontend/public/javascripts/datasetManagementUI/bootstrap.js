@@ -20,7 +20,8 @@ export const emptyDB = {
   output_schema_columns: {},
   transforms: {},
   upsert_jobs: {},
-  email_interests: {}
+  email_interests: {},
+  row_errors: {}
 };
 
 const millis = 1000;

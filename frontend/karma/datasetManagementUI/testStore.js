@@ -2,10 +2,15 @@ import rootReducer from 'reducers';
 import { applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { bootstrap } from 'bootstrap';
+import mockPhx from './testHelpers/mockPhoenixSocket';
 
 export function getDefaultStore() {
+  const unmockPhx = mockPhx({
+    'row_errors:4': []
+  }, () => {});
   const store = getEmptyStore();
   bootstrap(store, window.initialState.view, window.initialState.update);
+  unmockPhx();
   return store;
 }
 

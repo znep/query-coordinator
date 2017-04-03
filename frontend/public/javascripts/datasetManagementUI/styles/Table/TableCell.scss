@@ -16,3 +16,51 @@
 .empty {
   composes: empty from global;
 }
+
+td {
+  font-size: 12px;
+  vertical-align: top;
+  overflow: visible;
+  padding: 0;
+  border-width: 0 1px 1px 0;
+
+  &:last-child {
+    div {
+      &:hover {
+        width: auto;
+      }
+    }
+  }
+  div {
+    width: 250px;
+    min-height: 29px;
+    padding: 5px 7px 4px;
+    display: block;
+    position: relative;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    background-color: $white;
+    border-style: solid;
+    border-color: $light-grey-4;
+    border-width: 0 1px 1px 0;
+
+    &:hover {
+      min-width: 250px;
+      max-width: 350px;
+      /* This uses max-content which is in working draft,
+      if this doesn't get approved the cells will only
+      expand vertically which isn't the end of the world. */
+      width: auto; // For IE.
+      width: -moz-max-content; // For Firefox.
+      width: -webkit-max-content; // For Safari.
+      width: max-content; // For Chrome.
+
+      height: auto;
+      white-space: normal;
+
+      z-index: 99;
+    }
+  }
+}

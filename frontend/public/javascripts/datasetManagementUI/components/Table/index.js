@@ -2,17 +2,21 @@ import React, { PropTypes } from 'react';
 import ColumnHeader from './ColumnHeader';
 import TransformStatus from './TransformStatus';
 import TableBody from './TableBody';
+import RowErrorsLink from './RowErrorsLink';
+import * as DisplayState from '../../lib/displayState';
 import styles from 'styles/Table/Table.scss';
 
 export default function Table({
   db,
   path,
+  inputSchema,
   outputSchema,
-  totalRows,
   columns,
-  errorsTransformId,
+  displayState,
   updateColumnType }) {
 
+  const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
+  const numRowErrors = inputSchema.num_row_errors;
   const transforms = _.map(columns, 'transform');
   return (
     <table className={styles.table}>
@@ -26,22 +30,29 @@ export default function Table({
               updateColumnType={updateColumnType} />
           )}
         </tr>
-        <tr>
+        <tr className={styles.columnStatuses}>
           {columns.map(column =>
             <TransformStatus
               key={column.transform.id}
               path={path}
               transform={column.transform}
-              errorsTransformId={errorsTransformId}
+              displayState={displayState}
               columnId={column.id}
-              totalRows={totalRows} />
+              totalRows={inputSchema.total_rows} />
           )}
         </tr>
+        {(numRowErrors > 0) &&
+          <RowErrorsLink
+            path={path}
+            displayState={displayState}
+            numRowErrors={numRowErrors}
+            inRowErrorMode={inRowErrorMode} />}
       </thead>
       <TableBody
         db={db}
         transforms={transforms}
-        errorsTransformId={errorsTransformId} />
+        displayState={displayState}
+        inputSchemaId={inputSchema.id} />
     </table>
   );
 }
@@ -49,9 +60,9 @@ export default function Table({
 Table.propTypes = {
   db: PropTypes.object.isRequired,
   path: PropTypes.object.isRequired,
-  totalRows: PropTypes.number,
+  inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   updateColumnType: PropTypes.func.isRequired,
-  errorsTransformId: PropTypes.number
+  displayState: PropTypes.object.isRequired
 };

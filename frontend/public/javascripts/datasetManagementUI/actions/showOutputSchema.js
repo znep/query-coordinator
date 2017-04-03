@@ -96,7 +96,7 @@ export function getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType) 
   };
 }
 
-export function loadErrorTable(nextState) {
+export function loadColumnErrors(nextState) {
   const {
     uploadId,
     inputSchemaId,
@@ -108,7 +108,7 @@ export function loadErrorTable(nextState) {
     const limit = 50;
     const fetchOffset = 0;
     const errorsColumnId = _.find(getState().db.output_columns, { transform_id: errorsTransformId }).id;
-    const path = dsmapiLinks.errorTable(
+    const path = dsmapiLinks.columnErrors(
       uploadId, inputSchemaId, outputSchemaId, errorsColumnId, limit, fetchOffset
     );
     socrataFetch(path).
@@ -156,7 +156,30 @@ export function loadErrorTable(nextState) {
       }).
       catch((error) => {
         // TODO: maybe add a notification
-        console.error('failed to load error table', error);
+        console.error('failed to load column errors', error);
+      });
+  };
+}
+
+
+export function loadRowErrors(inputSchemaId, offset, limit) {
+  return (dispatch, getState) => {
+    const uploadId = getState().db.input_schemas[inputSchemaId].upload_id;
+    socrataFetch(dsmapiLinks.rowErrors(uploadId, inputSchemaId, offset, limit)).
+      then(checkStatus).
+      then(getJson).
+      then((rowErrors) => {
+        const rowErrorsWithId = rowErrors.map((rowError) => ({
+          ...rowError,
+          input_schema_id: inputSchemaId,
+          id: `${inputSchemaId}-${rowError.offset}`
+        }));
+        const rowErrorsKeyedById = _.keyBy(rowErrorsWithId, 'id');
+        dispatch(insertMultipleFromServer('row_errors', rowErrorsKeyedById, { ifNotExists: true }));
+      }).
+      catch((error) => {
+        // TODO: maybe add a notification
+        console.error('failed to load row errors', error);
       });
   };
 }

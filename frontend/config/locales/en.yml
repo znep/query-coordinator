@@ -1862,9 +1862,9 @@ en:
       upload_failed: Upload Failed
       uploading: Uploading
     show_output_schema:
+      click_to_view: Click to view
       column_header:
         column_status_flyout:
-          click_to_view: Click to view
           error_msg_plural: "{num_errors} rows didn't match the type {type}"
           error_msg_singular: "{num_errors} row didn't match the type {type}"
         error_exists: Error total
@@ -1885,6 +1885,15 @@ en:
         ready_to_import: Ready to import
         rows: rows
         will_not_be_imported: Rows that will not be imported
+      row_errors:
+        error_message: "Expected {0} columns, found {1}"
+        flyout_message_singular: 1 row is malformed.
+        flyout_message_plural: "{0} rows are malformed."
+        flyout_message_explanation: They might have too many, or not enough columns.
+        malformed_row: Malformed row
+        malformed_rows: Malformed rows
+        row: "Error Row {0}"
+        row_content: Row content
       rows_so_far: rows so far
       rows_total: rows total
       upload_done: Upload Done

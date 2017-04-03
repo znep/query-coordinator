@@ -43,7 +43,7 @@ function Pager({ path, displayState, numPages }) {
     return (
       <div>
         {prevPageLink}
-        {displayState.pageNo + 1} of {numPages}
+        {displayState.pageNo + 1} of {Math.max(numPages, displayState.pageNo + 1)}
         {nextPageLink}
       </div>
     );

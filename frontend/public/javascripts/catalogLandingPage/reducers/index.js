@@ -4,7 +4,6 @@ import mixpanel from './mixpanel';
 import header from './header';
 import category from './category';
 import catalog from './catalog';
-import categoryStats from './categoryStats';
 import featuredContent from './featuredContent';
 
 export default combineReducers({
@@ -13,6 +12,5 @@ export default combineReducers({
   header,
   category,
   catalog,
-  categoryStats,
   featuredContent
 });

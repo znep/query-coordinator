@@ -17,11 +17,6 @@ export default (state, action) => {
       ...state,
       description: action.text
     };
-  } else if (action.type === 'TOGGLE_STATS') {
-    return {
-      ...state,
-      showStats: !!action.checked
-    };
   }
 
   return state;

@@ -63,7 +63,7 @@ class TableBody extends Component {
   render() {
     const data = this.getData();
     const rows = data.map(row => (
-      row.rowError ? <RowError rowError={row.rowError} rowIdx={row.rowIdx} /> : this.renderNormalRow(row)
+      row.rowError ? <RowError key={row.rowIdx} rowError={row.rowError} /> : this.renderNormalRow(row)
     ));
 
     return (

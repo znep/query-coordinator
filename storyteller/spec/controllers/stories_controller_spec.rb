@@ -162,6 +162,12 @@ RSpec.describe StoriesController, type: :controller do
           expect(::RequestStore.store[:current_domain]).to eq(mock_domain['cname'])
         end
 
+        it 'assigns @story_url_for_view to the correct show story URL' do
+          get :show, uid: story_revision.uid
+
+          expect(assigns(:story_url_for_view)).to eq('https://test.host/s/test-story/test-test/')
+        end
+
         describe 'google analytics' do
           render_views
 
@@ -987,6 +993,12 @@ RSpec.describe StoriesController, type: :controller do
 
           expect(::RequestStore.store[:current_user]).to eq(mock_valid_user)
           expect(::RequestStore.store[:current_domain]).to eq(mock_domain['cname'])
+        end
+
+        it 'assigns @story_url_for_view to the correct show story URL' do
+          get :edit, uid: draft_story.uid
+
+          expect(assigns(:story_url_for_view)).to eq('https://test.host/s/test-story/test-test/')
         end
 
         context 'when rendering a view' do

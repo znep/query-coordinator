@@ -4,6 +4,11 @@
   <%= default_meta_tags() %>
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <title><%= page_title %></title>
+
+  <% if action_name == 'show' %>
+    <link rel="canonical" href="<%= @story_url_for_view %>">
+  <% end %>
+
   <%= site_chrome_favicon_tag %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>

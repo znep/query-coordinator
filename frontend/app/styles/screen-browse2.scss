@@ -416,6 +416,13 @@ html {
     }
   }
 
+  #catalog-landing-page-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+  }
+
   .browse2-manage-catalog-landing-page {
     @include desktop {
       margin-left: $facet-pane-width;

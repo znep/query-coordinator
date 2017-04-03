@@ -45,4 +45,6 @@ if (footer) {
   footer.style.visibility = 'visible';
 }
 
+document.querySelector('#catalog-landing-page-spinner').style.display = 'none';
+
 require('./catalog');

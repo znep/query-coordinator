@@ -36,19 +36,23 @@ function Pager({ path, displayState, numPages }) {
   const nextPageLink = nextDisplayState ?
     <Link to={DisplayState.toUiUrl(path, nextDisplayState)}>&gt;</Link> :
     (<span>&gt;</span>);
-  return (
-    <div>
-      {prevPageLink}
-      {displayState.pageNo + 1} of {numPages}
-      {nextPageLink}
-    </div>
-  );
+
+  if (_.isNaN(numPages)) {
+    return <div></div>;
+  } else {
+    return (
+      <div>
+        {prevPageLink}
+        {displayState.pageNo + 1} of {numPages}
+        {nextPageLink}
+      </div>
+    );
+  }
 }
 
 Pager.propTypes = {
   path: PropTypes.object.isRequired,
   displayState: PropTypes.object.isRequired,
-  currentPage: PropTypes.number.isRequired,
   numPages: PropTypes.number.isRequired
 };
 

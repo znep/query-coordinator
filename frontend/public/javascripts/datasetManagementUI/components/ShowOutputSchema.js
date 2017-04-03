@@ -122,17 +122,17 @@ class ShowOutputSchema extends Component {
                   <p className={styles.attribute}>{columns.length}</p>
                 </div>
               </div>
+            </div>
 
-              <div className={styles.tableWrap}>
-                <Table
-                  db={db}
-                  path={path}
-                  columns={columns}
-                  inputSchema={inputSchema}
-                  outputSchema={outputSchema}
-                  displayState={displayState}
-                  updateColumnType={updateColumnType} />
-              </div>
+            <div className={styles.tableWrap}>
+              <Table
+                db={db}
+                path={path}
+                columns={columns}
+                inputSchema={inputSchema}
+                outputSchema={outputSchema}
+                displayState={displayState}
+                updateColumnType={updateColumnType} />
             </div>
           </ModalContent>
 

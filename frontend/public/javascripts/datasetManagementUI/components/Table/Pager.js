@@ -30,8 +30,9 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     changePage: (targetPage) => {
       if (targetPage) {
-        const targetDisplayState = { ...displayState, pageNo: targetPage - 1 };
+        const targetDisplayState = { ...displayState, pageNo: targetPage };
         const targetPageUrl = DisplayState.toUiUrl(path, targetDisplayState);
+
         dispatch(push(targetPageUrl(routing)));
       }
     }
@@ -40,7 +41,7 @@ function mapDispatchToProps(dispatch, ownProps) {
 
 function mapStateToProps(state, ownProps) {
   const resultsPerPage = PAGE_SIZE;
-  const currentPage = ownProps.displayState.pageNo + 1;
+  const currentPage = ownProps.displayState.pageNo;
   const resultCount = numItemsToPaginate(state.db,
                                          ownProps.path.outputSchemaId,
                                          ownProps.displayState);

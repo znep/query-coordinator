@@ -21,7 +21,7 @@ function getLoadPlan(db, outputSchemaId, displayState) {
       const { upload, inputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
       const columnId = _.find(db.output_columns, { transform_id: displayState.transformId }).id;
       const url = dsmapiLinks.columnErrors(
-        upload.id, inputSchema.id, outputSchemaId, columnId, PAGE_SIZE, displayState.pageNo * PAGE_SIZE
+        upload.id, inputSchema.id, outputSchemaId, columnId, PAGE_SIZE, (displayState.pageNo - 1) * PAGE_SIZE
       );
       const load = _.find(db.__loads__, { url });
       if (!load) {
@@ -40,7 +40,7 @@ function getLoadPlan(db, outputSchemaId, displayState) {
       // do a "here's the url, fetch it if we haven't already fetched it" kind of thing
       const { upload, inputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
       const url = dsmapiLinks.rowErrors(
-        upload.id, inputSchema.id, displayState.pageNo * PAGE_SIZE, PAGE_SIZE
+        upload.id, inputSchema.id, (displayState.pageNo - 1) * PAGE_SIZE, PAGE_SIZE
       );
       const load = _.find(db.__loads__, { url });
       if (!load) {
@@ -54,15 +54,20 @@ function getLoadPlan(db, outputSchemaId, displayState) {
       }
     }
     case DisplayState.NORMAL: {
+      const { inputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
       const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
       const minRowsProcessed = Selectors.rowsTransformed(columns);
-      const firstRowNeeded = displayState.pageNo * PAGE_SIZE;
+      const firstRowNeeded = (displayState.pageNo - 1) * PAGE_SIZE;
       const lastRowNeeded = firstRowNeeded + PAGE_SIZE;
-      const load = _.find(db.__loads__, {
+      const alreadyLoaded = _.find(db.__loads__, {
         url: urlForNormalPreview(db, outputSchemaId, displayState.pageNo)
       });
 
-      if ((minRowsProcessed >= lastRowNeeded || minRowsProcessed < PAGE_SIZE) && !load) {
+      const haveWholePage = minRowsProcessed >= lastRowNeeded;
+      const doneLoadingThisPage = minRowsProcessed === inputSchema.total_rows &&
+                                  minRowsProcessed >= firstRowNeeded;
+
+      if ((haveWholePage || doneLoadingThisPage) && !alreadyLoaded) {
         return {
           type: 'NORMAL',
           outputSchemaId,
@@ -110,7 +115,7 @@ function executeLoadPlan(loadPlan) {
 function urlForNormalPreview(db, outputSchemaId, pageNo) {
   const { upload, inputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
   return dsmapiLinks.rows(
-    upload.id, inputSchema.id, outputSchemaId, PAGE_SIZE, pageNo * PAGE_SIZE
+    upload.id, inputSchema.id, outputSchemaId, PAGE_SIZE, (pageNo - 1) * PAGE_SIZE
   );
 }
 
@@ -179,7 +184,7 @@ export function loadColumnErrors(transformId, outputSchemaId, pageNo) {
     const { upload, inputSchema, outputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
     const errorsColumnId = _.find(getState().db.output_columns, { transform_id: transformId }).id;
     const url = dsmapiLinks.columnErrors(
-      upload.id, inputSchema.id, outputSchema.id, errorsColumnId, PAGE_SIZE, pageNo * PAGE_SIZE
+      upload.id, inputSchema.id, outputSchema.id, errorsColumnId, PAGE_SIZE, (pageNo - 1) * PAGE_SIZE
     );
     dispatch(loadStarted(url));
     socrataFetch(url).

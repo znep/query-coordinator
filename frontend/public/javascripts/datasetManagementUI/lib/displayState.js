@@ -1,26 +1,26 @@
 import * as Links from '../links';
 
 export const NORMAL = 'NORMAL';
-export const normal = (pageNo = 0) => ({
+export const normal = (pageNo = 1) => ({
   type: NORMAL,
   pageNo
 });
 
 export const COLUMN_ERRORS = 'COLUMN_ERRORS';
-export const columnErrors = (transformId, pageNo = 0) => ({
+export const columnErrors = (transformId, pageNo = 1) => ({
   type: COLUMN_ERRORS,
   transformId,
   pageNo
 });
 
 export const ROW_ERRORS = 'ROW_ERRORS';
-export const rowErrors = (pageNo = 0) => ({
+export const rowErrors = (pageNo = 1) => ({
   type: ROW_ERRORS,
   pageNo
 });
 
 export function fromUiUrl({ params, route }) {
-  const pageNo = _.toNumber(params.pageNo || '0');
+  const pageNo = _.toNumber(params.pageNo || '1');
   if (params.errorsTransformId) {
     return columnErrors(_.toNumber(params.errorsTransformId), pageNo);
   } else if (route.path.indexOf('row_errors') > 0) {

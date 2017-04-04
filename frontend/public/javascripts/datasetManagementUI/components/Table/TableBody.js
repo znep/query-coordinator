@@ -28,7 +28,7 @@ class TableBody extends Component {
     const transformTables = props.transforms.map((transform) => (
       props.db[`transform_${transform.id}`]
     ));
-    const startRow = props.displayState.pageNo * PAGE_SIZE;
+    const startRow = (props.displayState.pageNo - 1) * PAGE_SIZE;
     const endRow = startRow + PAGE_SIZE;
     let rowIndices;
     if (props.displayState.type === DisplayState.COLUMN_ERRORS) {

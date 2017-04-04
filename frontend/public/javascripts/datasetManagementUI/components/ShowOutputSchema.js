@@ -68,7 +68,8 @@ class ShowOutputSchema extends Component {
       numLoadsInProgress,
       goHome,
       updateColumnType,
-      applyUpdate
+      applyUpdate,
+      routing
     } = this.props;
 
     const path = {
@@ -138,6 +139,7 @@ class ShowOutputSchema extends Component {
             </div>
             <Pager
               path={path}
+              routing={routing}
               displayState={displayState} />
           </ModalContent>
 
@@ -182,7 +184,8 @@ ShowOutputSchema.propTypes = {
   goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
+  routing: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state, ownProps) {
@@ -196,7 +199,8 @@ function mapStateToProps(state, ownProps) {
   return {
     ...queryResults,
     numLoadsInProgress: Selectors.numLoadsInProgress(state.db),
-    displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route']))
+    displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
+    routing: ownProps.location
   };
 }
 

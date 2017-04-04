@@ -1,9 +1,10 @@
-import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
+import { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import * as DisplayState from '../../lib/displayState';
 import { PAGE_SIZE } from '../../actions/loadData';
 import * as Selectors from '../../selectors';
+import { Pager as CommonPager } from '../../../common/components/Pager';
 
 function numItemsToPaginate(db, outputSchemaId, displayState) {
   switch (displayState.type) {
@@ -23,46 +24,36 @@ function numItemsToPaginate(db, outputSchemaId, displayState) {
   }
 }
 
-function Pager({ path, displayState, numPages }) {
-  const prevDisplayState = (displayState.pageNo > 0) ?
-    { ...displayState, pageNo: displayState.pageNo - 1 } :
-    null;
-  const nextDisplayState = (displayState.pageNo < numPages - 1) ?
-    { ...displayState, pageNo: displayState.pageNo + 1 } :
-    null;
-  const prevPageLink = prevDisplayState ?
-    <Link to={DisplayState.toUiUrl(path, prevDisplayState)}>&lt;</Link> :
-    (<span>&lt;</span>);
-  const nextPageLink = nextDisplayState ?
-    <Link to={DisplayState.toUiUrl(path, nextDisplayState)}>&gt;</Link> :
-    (<span>&gt;</span>);
+function mapDispatchToProps(dispatch, ownProps) {
+  const { displayState, path, routing } = ownProps;
 
-  if (_.isNaN(numPages)) {
-    return <div></div>;
-  } else {
-    return (
-      <div>
-        {prevPageLink}
-        {displayState.pageNo + 1} of {Math.max(numPages, displayState.pageNo + 1)}
-        {nextPageLink}
-      </div>
-    );
-  }
-}
-
-Pager.propTypes = {
-  path: PropTypes.object.isRequired,
-  displayState: PropTypes.object.isRequired,
-  numPages: PropTypes.number.isRequired
-};
-
-// how am I supposed to declare that the connected component takes a
-// `displayState` prop, but the internal component doesn't?
-function mapStateToProps(state, ownProps) {
-  const items = numItemsToPaginate(state.db, ownProps.path.outputSchemaId, ownProps.displayState);
   return {
-    numPages: Math.ceil(items / PAGE_SIZE)
+    changePage: (targetPage) => {
+      if (targetPage) {
+        const targetDisplayState = { ...displayState, pageNo: targetPage - 1 };
+        const targetPageUrl = DisplayState.toUiUrl(path, targetDisplayState);
+        dispatch(push(targetPageUrl(routing)));
+      }
+    }
   };
 }
 
-export default connect(mapStateToProps)(Pager);
+function mapStateToProps(state, ownProps) {
+  const resultsPerPage = PAGE_SIZE;
+  const currentPage = ownProps.displayState.pageNo + 1;
+  const resultCount = numItemsToPaginate(state.db,
+                                         ownProps.path.outputSchemaId,
+                                         ownProps.displayState);
+
+  return { resultsPerPage, currentPage, resultCount };
+}
+
+const Pager = connect(mapStateToProps, mapDispatchToProps)(CommonPager);
+
+Pager.propTypes = {
+  path: PropTypes.object.isRequired,
+  routing: PropTypes.object.isRequired,
+  displayState: PropTypes.object.isRequired
+};
+
+export default Pager;

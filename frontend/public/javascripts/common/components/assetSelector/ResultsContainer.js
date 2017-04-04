@@ -4,7 +4,7 @@ import ceteraUtils from '../../ceteraUtils';
 import BackButton from '../BackButton';
 import Card from './Card';
 import NoResults from './NoResults';
-import Pager from './Pager';
+import Pager from '../Pager';
 import ResultCount from './ResultCount';
 import Searchbox from '../searchbox/Searchbox';
 import SortDropdown from './SortDropdown';

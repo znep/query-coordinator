@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
-import $ from 'jquery';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { ENTER } from 'socrata-components/common/keycodes';
-import { handleKeyPress } from '../../helpers/keyPressHelpers';
+import { handleKeyPress } from '../helpers/keyPressHelpers';
 
 export class Pager extends React.Component {
   constructor(props) {
@@ -60,7 +59,7 @@ export class Pager extends React.Component {
 
   pageInputKeyDown(e) {
     if (e.keyCode === ENTER) {
-      $(e.target).trigger('blur');
+      e.target.blur();
     }
   }
 

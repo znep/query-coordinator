@@ -1,4 +1,4 @@
-import { Pager } from 'components/assetSelector/Pager';
+import { Pager } from 'components/Pager';
 import _ from 'lodash';
 
 describe('Pager', function() {

@@ -211,7 +211,7 @@ class StoriesController < ApplicationController
   end
 
   def story_url_for_view
-    story_url(uid: params[:uid], vanity_text: title_to_vanity_text(@story_metadata.title))
+    story_url(uid: params[:uid], vanity_text: title_to_vanity_text(@story_metadata.title)) + '/'
   end
 
   def story_url_for_preview
@@ -289,6 +289,8 @@ class StoriesController < ApplicationController
     @story = story
 
     if @story
+      @story_url_for_view = story_url_for_view
+
       StoryAccessLogger.log_story_view_access(story) unless @story_metadata.goal?
       respond_to do |format|
         format.html { render 'stories/show' }

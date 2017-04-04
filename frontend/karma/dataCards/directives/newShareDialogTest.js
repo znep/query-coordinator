@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('newShareDialog', function() {
@@ -96,11 +97,11 @@ describe('newShareDialog', function() {
 
     it('should have class disabled there is only one share', function() {
       var element = createElement();
-      expect(element.find('button.remove-button').hasClass('disabled')).to.be.true;
+      assert.isTrue(element.find('button.remove-button').hasClass('disabled'));
       element.find('button.add-more-button').click();
-      expect(element.find('button.remove-button').hasClass('disabled')).to.be.false;
+      assert.isFalse(element.find('button.remove-button').hasClass('disabled'));
       element.find('button.remove-button').click();
-      expect(element.find('button.remove-button').hasClass('disabled')).to.be.true;
+      assert.isTrue(element.find('button.remove-button').hasClass('disabled'));
     });
   });
 

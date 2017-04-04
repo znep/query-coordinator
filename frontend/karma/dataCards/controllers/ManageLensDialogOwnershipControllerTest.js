@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -111,7 +113,7 @@ describe('ManageLensDialogOwnershipController', function() {
     createController();
     $scope.$apply();
     _.defer(function() {
-      expect($scope.hasPermission).to.be.false;
+      assert.isFalse($scope.hasPermission);
       done();
     })
   });
@@ -120,7 +122,7 @@ describe('ManageLensDialogOwnershipController', function() {
     createController();
     $scope.$apply();
     _.defer(function() {
-      expect($scope.hasPermission).to.be.true;
+      assert.isTrue($scope.hasPermission);
       expect($scope.ownerInput).to.equal('Orange Dino');
       done();
     });
@@ -147,10 +149,10 @@ describe('ManageLensDialogOwnershipController', function() {
     $scope.$emit('intractableList:selectedItem', listItemText, 1);
 
     _.defer(function() {
-      expect($scope.showWarning).to.be.false;
+      assert.isFalse($scope.showWarning);
       expect($scope.ownerInput).to.equal(USERS[2].displayName);
-      expect($scope.components.ownership.hasErrors).to.be.false;
-      expect($scope.components.ownership.hasChanges).to.be.true;
+      assert.isFalse($scope.components.ownership.hasErrors);
+      assert.isTrue($scope.components.ownership.hasChanges);
       done();
     });
   });

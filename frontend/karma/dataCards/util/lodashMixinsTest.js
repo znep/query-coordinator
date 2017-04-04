@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 describe('lodash mixins', function() {
   'use strict';
 

@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('searchCard', function() {
@@ -211,7 +213,7 @@ describe('searchCard', function() {
 
         it('should submit when you click the search button', function() {
           cardData.element.find('button[type="submit"]').submit();
-          expect(toggleExpandedSpy.calledOnce).to.equal(true);
+          sinon.assert.calledOnce(toggleExpandedSpy);
           expect(cardData.element.find('.search-card-results').is(':visible')).to.equal(true);
         });
 
@@ -223,7 +225,7 @@ describe('searchCard', function() {
           });
 
           it('should respond to submit by expanding the card', function() {
-            expect(toggleExpandedSpy.calledOnce).to.equal(true);
+            sinon.assert.calledOnce(toggleExpandedSpy);
             expect(cardData.element.find('.search-card-results').is(':visible')).to.equal(true);
             expect(cardData.element.find('.search-card-text.no-results').is(':visible')).to.equal(false);
           });
@@ -270,7 +272,7 @@ describe('searchCard', function() {
             cardData.element.find('form').triggerHandler('submit');
           });
 
-          expect(toggleExpandedSpy).to.not.be.called;
+          sinon.assert.notCalled(toggleExpandedSpy);
         });
       });
 
@@ -283,7 +285,7 @@ describe('searchCard', function() {
 
         it('should dim the initial help text when the panel should show', function() {
           setSearchText(VALID_SEARCH_TERM);
-          expect(cardData.element.find('.card-example-text')).to.have.class('dimmed');
+          assert.isTrue($(cardData.element.find('.card-example-text')).hasClass('dimmed'));
         });
 
         describe('when selected', function() {
@@ -292,10 +294,10 @@ describe('searchCard', function() {
               suggestionToolPanelScope.$emit('suggestionToolPanel:selectedItem', 'FOO');
             });
 
-            expect(toggleExpandedSpy).to.be.calledOnce;
+            sinon.assert.calledOnce(toggleExpandedSpy);
             var $results = cardData.element.find('.search-card-results');
 
-            expect($results).to.be.visible;
+            assert.isTrue($results.is(':visible'));
           });
 
           it('should apply the filter', function() {
@@ -415,7 +417,7 @@ describe('searchCard', function() {
           cardData.scope.$apply(function() {
             cardData.element.find('form').triggerHandler('submit');
           });
-          expect(toggleExpandedSpy.calledOnce).to.equal(true);
+          sinon.assert.calledOnce(toggleExpandedSpy);
           expect(cardData.element.find('.search-card-text.invalid-value').is(':visible')).to.equal(false);
         });
 
@@ -430,7 +432,7 @@ describe('searchCard', function() {
           cardData.scope.$apply(function() {
             cardData.element.find('form').triggerHandler('submit');
           });
-          expect(toggleExpandedSpy.calledOnce).to.equal(true);
+          sinon.assert.calledOnce(toggleExpandedSpy);
           expect(cardData.element.find('.search-card-text.invalid-value').is(':visible')).to.equal(true);
         });
 
@@ -450,7 +452,7 @@ describe('searchCard', function() {
 
         it('should not dim the initial help text when a search is in progress', function() {
           setSearchText(VALID_SEARCH_TERM);
-          expect(cardData.element.find('.card-example-text')).not.to.have.class('dimmed');
+          assert.isFalse($(cardData.element.find('.card-example-text')).hasClass('dimmed'));
         });
 
         describe('flag to show or hide the suggestionToolPanel', function() {

@@ -1,3 +1,5 @@
+window.fetch = null;
+
 import 'script!jquery';
 import { Provider } from 'react-redux';
 import { FeatureFlags } from 'common/feature_flags';

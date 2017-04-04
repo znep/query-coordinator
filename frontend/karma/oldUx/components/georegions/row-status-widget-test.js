@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React from 'react';
 import TestUtils, {
   scryRenderedDOMComponentsWithTag as scryByTag,
@@ -34,13 +36,13 @@ describe('RowStatusWidget', function() {
   });
 
   it('exists', function() {
-    expect(this.createElement({status: Status.ENABLED})).to.be.a.reactElement;
+    assert.isNotNull(this.createElement({status: Status.ENABLED}));
   });
 
   it('renders', function() {
     this.shallowRenderer.render(this.createElement({status: Status.ENABLED}));
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result).to.be.an.elementOfType('div');
+    assert.isNotNull(result);
   });
 
   describe('when enabled', function() {

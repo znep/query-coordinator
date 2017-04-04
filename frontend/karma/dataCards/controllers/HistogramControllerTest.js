@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('HistogramController', function() {
@@ -114,7 +116,7 @@ describe('HistogramController', function() {
     };
 
     var histogram = createHistogram();
-    expect(histogram.$scope.histogramRenderError).to.exist;
+    assert.isString(histogram.$scope.histogramRenderError);
   });
 
   it('should display an error if obtaining the column domain returns an empty object', function() {
@@ -132,14 +134,14 @@ describe('HistogramController', function() {
     };
 
     var histogram = createHistogram();
-    expect(histogram.$scope.histogramRenderError).to.exist;
+    assert.isString(histogram.$scope.histogramRenderError);
   });
 
   it('should display an error if bucketing the data fails', function() {
     sinon.stub(HistogramService, 'bucketData').throws();
 
     var histogram = createHistogram();
-    expect(histogram.$scope.histogramRenderError).to.exist;
+    assert.isString(histogram.$scope.histogramRenderError);
   });
 
   it('should display an error if no data is returned', function() {
@@ -148,7 +150,7 @@ describe('HistogramController', function() {
     };
 
     var histogram = createHistogram();
-    expect(histogram.$scope.histogramRenderError).to.exist;
+    assert.isString(histogram.$scope.histogramRenderError);
   });
 
   it('should render with an undefined where clause', function() {
@@ -243,7 +245,7 @@ describe('HistogramController', function() {
       testValues.model.page.set('activeFilters', [{}]);
     });
 
-    expect(bucketDataSpy).to.have.been.calledTwice;
+    sinon.assert.calledTwice(bucketDataSpy);
   });
 
   it('should use the logarithmic bucketing method if the absolute value of the min or max is above a threshold', function() {

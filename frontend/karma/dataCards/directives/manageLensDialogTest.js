@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('manageLensDialog', function() {
@@ -229,7 +231,7 @@ describe('manageLensDialog', function() {
       $scope.save();
       $scope.$digest();
 
-      expect($scope.saveStatus === 'failed').to.be.true;
+      assert.isTrue($scope.saveStatus === 'failed');
       expect($scope.errorType).to.match(/An unknown error occurred. Please contact Socrata support./);
     });
 
@@ -257,7 +259,7 @@ describe('manageLensDialog', function() {
       $scope.save();
       $scope.$digest();
 
-      expect($scope.saveStatus === 'failed').to.be.true;
+      assert.isTrue($scope.saveStatus === 'failed');
       expect($scope.errorType).to.match(/Visibility could not be updated./);
     });
 
@@ -285,7 +287,7 @@ describe('manageLensDialog', function() {
       $scope.save();
       $scope.$digest();
 
-      expect($scope.saveStatus === 'failed').to.be.true;
+      assert.isTrue($scope.saveStatus === 'failed');
       expect($scope.errorType).to.match(/Role and sharing settings could not be updated./);
     });
 
@@ -313,7 +315,7 @@ describe('manageLensDialog', function() {
       $scope.save();
       $scope.$digest();
 
-      expect($scope.saveStatus === 'failed').to.be.true;
+      assert.isTrue($scope.saveStatus === 'failed');
       expect($scope.errorType).to.match(/The owner could not be changed./);
     });
   });
@@ -341,11 +343,11 @@ describe('manageLensDialog', function() {
 
       buttonSelectors.forEach(function(selector) {
         var button = element.find(selector);
-        expect(button).not.to.be.disabled;
+        assert.isFalse(button.prop('disabled'));
       });
 
       var saveButton = element.find('.controls button.manage-lens-dialog-save');
-      expect(saveButton).not.to.have.class('disabled');
+      assert.isFalse($(saveButton).hasClass('disabled'));
     });
 
     it('is disabled when saving', function() {
@@ -360,11 +362,11 @@ describe('manageLensDialog', function() {
 
       buttonSelectors.forEach(function(selector) {
         var button = element.find(selector);
-        expect(button).to.be.disabled;
+        assert.isTrue(button.prop('disabled'));
       });
 
       var saveButton = element.find('.controls button.manage-lens-dialog-save');
-      expect(saveButton).to.have.class('disabled');
+      assert.isTrue($(saveButton).hasClass('disabled'));
     });
   });
 });

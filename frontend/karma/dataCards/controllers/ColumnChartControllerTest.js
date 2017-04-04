@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 // Some of these tests already exist in frontend-visualizations and should be removed. The rest
@@ -112,7 +113,7 @@ xdescribe('ColumnChartController', function() {
     it('should toggle a BinaryOperatorFilter for a non-null value', function() {
       var chart = createChart();
 
-      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(chart.model.getCurrentValue('activeFilters'), 0);
 
       testHelpers.fireEvent(
         chart.element.find('card-visualization-column-chart')[0],
@@ -129,13 +130,13 @@ xdescribe('ColumnChartController', function() {
         { detail: { name: 'testname' } }
       );
 
-      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(chart.model.getCurrentValue('activeFilters'), 0);
     });
 
     it('should toggle a BinaryOperatorFilter for a boolean value', function() {
       var chart = createChart();
 
-      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(chart.model.getCurrentValue('activeFilters'), 0);
 
       testHelpers.fireEvent(
         chart.element.find('card-visualization-column-chart')[0],
@@ -152,13 +153,13 @@ xdescribe('ColumnChartController', function() {
         { detail: { name: false } }
       );
 
-      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(chart.model.getCurrentValue('activeFilters'), 0);
     });
 
     it('should toggle a IsNullFilter for a null value', function() {
       var chart = createChart();
 
-      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(chart.model.getCurrentValue('activeFilters'), 0);
 
       testHelpers.fireEvent(
         chart.element.find('card-visualization-column-chart')[0],
@@ -175,13 +176,13 @@ xdescribe('ColumnChartController', function() {
         { detail: { name: null } }
       );
 
-      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(chart.model.getCurrentValue('activeFilters'), 0);
     });
 
     it('should replace a IsNullFilter with BinaryOperatorFilter and vice versa for appropriate value', function() {
       var chart = createChart();
 
-      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(chart.model.getCurrentValue('activeFilters'), 0);
 
       testHelpers.fireEvent(
         chart.element.find('card-visualization-column-chart')[0],
@@ -220,11 +221,11 @@ xdescribe('ColumnChartController', function() {
     it('should not add an active filter when a bar is clicked', function() {
       var chart = createChart('', false);
 
-      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(chart.model.getCurrentValue('activeFilters'), 0);
 
       $('.bar-group .bar').eq(0).trigger('click');
 
-      expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(chart.model.getCurrentValue('activeFilters'), 0);
     });
   });
 });

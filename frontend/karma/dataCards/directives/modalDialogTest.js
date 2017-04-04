@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('modalDialog', function() {
@@ -32,22 +33,22 @@ describe('modalDialog', function() {
 
   it('should open when the scope state.show is set to true', function() {
     var modal = createModal(false);
-    expect(modal.element.find('.modal-container').is(':visible')).to.be.false;
+    assert.isFalse(modal.element.find('.modal-container').is(':visible'));
 
     modal.outerScope.$apply(function() {
       modal.outerScope.state.show = true;
     });
 
-    expect(modal.element.find('.modal-container').is(':visible')).to.be.true;
+    assert.isTrue(modal.element.find('.modal-container').is(':visible'));
   });
 
   it('should close an open modal dialog when the "x" button is clicked', function() {
     var modal = createModal(true);
-    expect(modal.element.find('.modal-container').is(':visible')).to.be.true;
+    assert.isTrue(modal.element.find('.modal-container').is(':visible'));
 
     testHelpers.fireEvent(modal.element.find('.modal-close-button')[0], 'click');
 
-    expect(modal.element.find('.modal-container').is(':visible')).to.be.false;
+    assert.isFalse(modal.element.find('.modal-container').is(':visible'));
   });
 
   it('should close an open modal dialog when the area outside the dialog is clicked', function() {
@@ -66,11 +67,11 @@ describe('modalDialog', function() {
 
     modal.scope.state.disableCloseDialog = true;
     modal.scope.$digest();
-    expect(modal.element.find('.modal-close-button').hasClass('disabled')).to.be.true;
+    assert.isTrue(modal.element.find('.modal-close-button').hasClass('disabled'));
 
     modal.scope.state.disableCloseDialog = false;
     modal.scope.$digest();
-    expect(modal.element.find('.modal-close-button').hasClass('disabled')).to.be.false;
+    assert.isFalse(modal.element.find('.modal-close-button').hasClass('disabled'));
   });
 
   it('should not close the modal when dialogState.disableCloseDialog is true', function() {
@@ -95,20 +96,20 @@ describe('modalDialog', function() {
     // TODO: Randy offers $40 bounty to make this test pass IN ALL BROWSERS... even LYNX
     var modal = createModal(true);
 
-    expect(modal.element.find('.modal-container').is(':visible')).to.be.true;
+    assert.isTrue(modal.element.find('.modal-container').is(':visible'));
 
     // Try some normal keys first and make sure they don't trigger the close
     $('body').trigger($.Event('keydown', { which: 'a'.charCodeAt(0) }));
     modal.scope.$digest();
-    expect(modal.element.find('.modal-container').is(':visible')).to.be.true;
+    assert.isTrue(modal.element.find('.modal-container').is(':visible'));
     $('body').trigger($.Event('keydown', { which: '~'.charCodeAt(0) }));
     modal.scope.$digest();
-    expect(modal.element.find('.modal-container').is(':visible')).to.be.true;
+    assert.isTrue(modal.element.find('.modal-container').is(':visible'));
 
     $('body').trigger($.Event('keydown', { which: 27 }));
     modal.scope.$digest();
 
-    expect(modal.element.find('.modal-container').is(':visible')).to.be.false;
+    assert.isFalse(modal.element.find('.modal-container').is(':visible'));
   });
 
   describe('two dialogs at once', function() {
@@ -123,20 +124,20 @@ describe('modalDialog', function() {
       expect(parseInt(overlay1.css('z-index'), 10)).
         to.be.below(parseInt(overlay2.css('z-index'), 10));
 
-      expect(overlay1.is(':visible')).to.be.true;
-      expect(overlay2.is(':visible')).to.be.true;
+      assert.isTrue(overlay1.is(':visible'));
+      assert.isTrue(overlay2.is(':visible'));
 
       $('body').trigger($.Event('keydown', { which: 27 }));
       modal1.outerScope.$digest();
 
-      expect(overlay1.is(':visible')).to.be.true;
-      expect(overlay2.is(':visible')).to.be.false;
+      assert.isTrue(overlay1.is(':visible'));
+      assert.isFalse(overlay2.is(':visible'));
 
       $('body').trigger($.Event('keydown', { which: 27 }));
       modal1.outerScope.$digest();
 
-      expect(overlay1.is(':visible')).to.be.false;
-      expect(overlay2.is(':visible')).to.be.false;
+      assert.isFalse(overlay1.is(':visible'));
+      assert.isFalse(overlay2.is(':visible'));
     });
 
     it('should close only the topmost when the modal overlay is clicked', function() {
@@ -150,20 +151,20 @@ describe('modalDialog', function() {
       expect(parseInt(overlay1.css('z-index'), 10)).
         to.be.below(parseInt(overlay2.css('z-index'), 10));
 
-      expect(overlay1.is(':visible')).to.be.true;
-      expect(overlay2.is(':visible')).to.be.true;
+      assert.isTrue(overlay1.is(':visible'));
+      assert.isTrue(overlay2.is(':visible'));
 
       overlay2.click();
       modal1.outerScope.$digest();
 
-      expect(overlay1.is(':visible')).to.be.true;
-      expect(overlay2.is(':visible')).to.be.false;
+      assert.isTrue(overlay1.is(':visible'));
+      assert.isFalse(overlay2.is(':visible'));
 
       overlay1.click();
       modal1.outerScope.$digest();
 
-      expect(overlay1.is(':visible')).to.be.false;
-      expect(overlay2.is(':visible')).to.be.false;
+      assert.isFalse(overlay1.is(':visible'));
+      assert.isFalse(overlay2.is(':visible'));
     });
   });
 });

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { saveMetadata } from 'actions/manageMetadata';
 import { STATUS_DIRTY, STATUS_DIRTY_IMMUTABLE, STATUS_SAVED } from 'lib/database/statuses';
 import { edit, editImmutable } from 'actions/database';

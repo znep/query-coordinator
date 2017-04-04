@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import Table from 'components/Table';
 
 describe('Table', () => {
@@ -8,10 +9,10 @@ describe('Table', () => {
   });
 
   it('renders an element', () => {
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('renders a table', () => {
-    expect(element.querySelector('.socrata-table')).to.exist;
+    assert.ok(element.querySelector('.socrata-table'));
   });
 });

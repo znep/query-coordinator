@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('Card model', function() {
@@ -71,9 +72,9 @@ describe('Card model', function() {
 
     _.each(requiredKeys, function(field) {
       if (field === 'fieldName') { // fieldName isn't observable.
-        expect(instance[field]).to.exist;
+        assert.property(instance, field);
       } else {
-        expect(instance.observe(field)).to.exist;
+        assert.isDefined(instance.observe(field));
         instance.observe(field).subscribe(function(v) {
           readBackProperties[field] = v;
         });
@@ -164,7 +165,7 @@ describe('Card model', function() {
     });
 
     it('should exist', function() {
-      expect(instance.getCurrentValue('customTitle')).to.not.be.undefined;
+      assert.isDefined(instance.getCurrentValue('customTitle'));
     });
 
     it('should default to null', function() {

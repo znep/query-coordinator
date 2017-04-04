@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { getDefaultStore } from 'testStore';
 import mockRelatedView from 'data/mockRelatedView';
 import reducer from 'reducers/relatedViews';

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { SchemaPreview } from 'components/SchemaPreview';
 import mockView from 'data/mockView';
 
@@ -13,13 +14,13 @@ describe('components/SchemaPreview', function() {
   it('renders an element', function() {
     var element = renderComponent(SchemaPreview, getProps());
 
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('does not render an element if the view has no columns', function() {
     var element = renderComponent(SchemaPreview, getProps({
       columns: []
     }));
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 });

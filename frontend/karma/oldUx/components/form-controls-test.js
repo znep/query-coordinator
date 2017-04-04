@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React from 'react';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag,
@@ -27,13 +29,13 @@ describe('FormControls', function() {
   });
 
   it('exists', function() {
-    expect(FormControls).to.exist;
+    assert.isNotNull(FormControls);
   });
 
   it('renders', function() {
     this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result).to.be.an.elementOfType('div');
+    assert.isNotNull(result);
   });
 
   describe('cancel button', function() {
@@ -48,8 +50,8 @@ describe('FormControls', function() {
 
     it('renders with the appropriate text', function() {
       var button = findByTag(this.node, 'button');
-      expect(button).to.have.className('button').
-        and.to.have.textContent('Translation for: core.dialogs.cancel');
+      assert.isTrue(button.classList.contains('button'));
+      assert.equal(button.textContent, 'Translation for: core.dialogs.cancel');
     });
   });
 
@@ -65,14 +67,13 @@ describe('FormControls', function() {
 
     it('renders with the appropriate text', function() {
       var button = findByTag(this.node, 'button');
-      expect(button).to.have.className('button').
-        and.to.have.textContent('Translation for: core.dialogs.save').
-        and.to.not.have.className('disabled');
+      assert.isTrue(button.classList.contains('button'));
+      assert.isFalse(button.classList.contains('disabled'));
     });
 
     it('should not be disabled', function() {
       var button = findByTag(this.node, 'button');
-      expect(button.attributes.disabled).to.not.exist;
+      assert.notOk(button.attributes.disabled);
     });
 
     describe('disabled', function() {
@@ -85,11 +86,11 @@ describe('FormControls', function() {
       });
 
       it('renders with disabled attribute', function() {
-        expect(this.button.attributes.disabled).to.exist;
+        assert.property(this.button.attributes, 'disabled');
       });
 
       it('renders with disabled class', function() {
-        expect(this.button).to.have.className('disabled');
+        assert.isTrue(this.button.classList.contains('disabled'));
       });
     });
   });

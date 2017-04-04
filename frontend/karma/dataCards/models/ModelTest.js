@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -83,11 +84,11 @@ describe('Model', function() {
     };
 
     model.defineObservableProperty('myProp', 5, promiseGenerator);
-    expect(promiseGenerated).to.be.false;
+    assert.isFalse(promiseGenerated);
     model.observe('myProp').subscribe(function(d) {
       seen.push(d);
     });
-    expect(promiseGenerated).to.be.true;
+    assert.isTrue(promiseGenerated);
 
     expect(model.getCurrentValue('myProp')).to.equal(5);
     expect(seen).to.deep.equal([5]);
@@ -434,14 +435,14 @@ describe('Model', function() {
         });
         expect(changes).to.deep.equal(expectedChanges);
 
-        expect(generatedPromise).to.be.false;
+        assert.isFalse(generatedPromise);
 
         // Pretend we're interested in using the property.
         model.observe('myProp').subscribe(function(d) {});
 
         // Still no more updates, as we haven't resolved the promise.
         // However, the promise should be generated.
-        expect(generatedPromise).to.be.true;
+        assert.isTrue(generatedPromise);
         expect(changes).to.deep.equal(expectedChanges);
 
         // Resolve the default. Now we should have a change.
@@ -481,14 +482,14 @@ describe('Model', function() {
         });
         expect(changes).to.deep.equal(expectedChanges);
 
-        expect(generatedPromise).to.be.false;
+        assert.isFalse(generatedPromise);
 
         // Pretend we're interested in using the property.
         model.observe('myProp').subscribe(function(d) {});
 
         // Still no more updates, as we haven't resolved the promise.
         // However, the promise should be generated.
-        expect(generatedPromise).to.be.true;
+        assert.isTrue(generatedPromise);
         expect(changes).to.deep.equal(expectedChanges);
 
         // Set the value manually. The change should be reflected.
@@ -1179,20 +1180,20 @@ describe('Model', function() {
     it('should be false for non-lazy properties with no initial value', function() {
       var model = new Model();
       model.defineObservableProperty('noInitialValue');
-      expect(model.isSet('noInitialValue')).to.be.false;
+      assert.isFalse(model.isSet('noInitialValue'));
     });
 
     it('should be true for non-lazy properties with an initial value', function() {
       var model = new Model();
       model.defineObservableProperty('initialValue', 5);
-      expect(model.isSet('initialValue')).to.be.true;
+      assert.isTrue(model.isSet('initialValue'));
     });
 
     it('should become true after calling set() on non-lazy properties with no initial value', function() {
       var model = new Model();
       model.defineObservableProperty('noInitialValue');
       model.set('noInitialValue', 123);
-      expect(model.isSet('noInitialValue')).to.be.true;
+      assert.isTrue(model.isSet('noInitialValue'));
     });
 
     it('should become false after calling unset()', function() {
@@ -1205,12 +1206,12 @@ describe('Model', function() {
 
       model.set('noInitialValue', 123);
 
-      expect(model.isSet('noInitialValue')).to.be.true;
+      assert.isTrue(model.isSet('noInitialValue'));
       expect(newestValue).to.equal(123);
 
       model.unset('noInitialValue');
 
-      expect(model.isSet('noInitialValue')).to.be.false;
+      assert.isFalse(model.isSet('noInitialValue'));
       // Should still emit
       expect(newestValue).to.equal(undefined);
     });
@@ -1222,7 +1223,7 @@ describe('Model', function() {
       };
 
       model.defineObservableProperty('noInitialValue', undefined, promiseGenerator);
-      expect(model.isSet('noInitialValue')).to.be.false;
+      assert.isFalse(model.isSet('noInitialValue'));
     });
 
     it('should become true for lazy properties with no initial value when set() is called.', function() {
@@ -1233,7 +1234,7 @@ describe('Model', function() {
 
       model.defineObservableProperty('noInitialValue', undefined, promiseGenerator);
       model.set('noInitialValue', 'value');
-      expect(model.isSet('noInitialValue')).to.be.true;
+      assert.isTrue(model.isSet('noInitialValue'));
     });
 
     it('should be true for lazy properties with an initial value', function() {
@@ -1243,7 +1244,7 @@ describe('Model', function() {
       };
 
       model.defineObservableProperty('noInitialValue', 'a value', promiseGenerator);
-      expect(model.isSet('noInitialValue')).to.be.true;
+      assert.isTrue(model.isSet('noInitialValue'));
     });
 
     it('should become true after the lazy evaluator fulfills for lazy properties with no initial value', function(done) {
@@ -1256,11 +1257,11 @@ describe('Model', function() {
       };
 
       model.defineObservableProperty('noInitialValue', undefined, promiseGenerator);
-      expect(model.isSet('noInitialValue')).to.be.false; // No subscribers yet, so promise shouldn't be resolved yet.
+      assert.isFalse(model.isSet('noInitialValue')); // No subscribers yet, so promise shouldn't be resolved yet.
 
       model.observe('noInitialValue').subscribe(function(value){
         if (value === 132) {
-          expect(model.isSet('noInitialValue')).to.be.true;
+          assert.isTrue(model.isSet('noInitialValue'));
           done();
         }
       });

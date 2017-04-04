@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { StoryForm } from 'components/FeaturedContentModal/StoryForm';
 import { Simulate } from 'react-addons-test-utils';
 
@@ -26,7 +28,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
 
   it('renders', function() {
     var element = renderComponent(StoryForm, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   describe('markup', function() {
@@ -37,21 +39,21 @@ describe('components/FeaturedContentModal/StoryForm', function() {
     });
 
     it('renders a form', function() {
-      expect(element.querySelector('form')).to.exist;
+      assert.ok(element.querySelector('form'));
     });
 
     it('renders a labelled input field', function() {
-      expect(element.querySelector('label#story-url-label')).to.exist;
-      expect(element.querySelector('input#story-url')).to.exist;
+      assert.ok(element.querySelector('label#story-url-label'));
+      assert.ok(element.querySelector('input#story-url'));
     });
 
     it('renders a back button', function() {
-      expect(element.querySelector('.back-button')).to.exist;
+      assert.ok(element.querySelector('.back-button'));
     });
 
     describe('preview card', function() {
       it('renders', function() {
-        expect(element.querySelector('.view-card')).to.exist;
+        assert.ok(element.querySelector('.view-card'));
       });
 
       it('renders the title', function() {
@@ -82,7 +84,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
       field.value = 'Bashful Dinosaurs';
       Simulate.change(field);
 
-      expect(spy).to.have.been.called;
+      sinon.assert.called(spy);
     });
 
     it('disables the save button if the form can not be saved', function() {
@@ -90,7 +92,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
         canSave: false
       }));
 
-      expect(element.querySelector('.save-button')).to.be.disabled;
+      assert.isTrue($(element).find('.save-button').prop('disabled'));
     });
 
     it('enables the save button if the form can be saved', function() {
@@ -98,7 +100,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
         canSave: true
       }));
 
-      expect(element.querySelector('.save-button')).to.not.be.disabled;
+      assert.isFalse($(element).find('.save-button').prop('disabled'));
     });
 
     it('displays a warning message when there is a validation error', function() {
@@ -107,7 +109,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
       }));
       var warning = element.querySelector('.alert.warning')
 
-      expect(warning).to.exist;
+      assert.ok(warning);
       expect(warning.innerText).to.eq(I18n.featured_content_modal.story_form.invalid_url_message);
     });
 
@@ -118,7 +120,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
         shouldLoadStory: false
       }));
 
-      expect(spy).to.not.have.been.called;
+      sinon.assert.notCalled(spy);
     });
 
     it('invokes loadRequestedStory when it should load the story', function() {
@@ -128,7 +130,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
         shouldLoadStory: true
       }));
 
-      expect(spy).to.have.been.called;
+      sinon.assert.called(spy);
     });
   });
 
@@ -141,7 +143,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
 
       Simulate.click(element.querySelector('.back-button'));
 
-      expect(spy).to.have.been.called;
+      sinon.assert.called(spy);
     });
 
     it('invokes onClickCancel when clicking the cancel button', function() {
@@ -152,7 +154,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
 
       Simulate.click(element.querySelector('.cancel-button'));
 
-      expect(spy).to.have.been.called;
+      sinon.assert.called(spy);
     });
 
     it('invokes onClickSave when clicking the save button', function() {
@@ -163,7 +165,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
 
       Simulate.click(element.querySelector('.save-button'));
 
-      expect(spy).to.have.been.called;
+      sinon.assert.called(spy);
     });
 
     it('displays an error message if hasSaveError is true', function() {
@@ -171,7 +173,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
         hasSaveError: true
       }));
 
-      expect(element.querySelector('.alert.error')).to.exist;
+      assert.ok(element.querySelector('.alert.error'));
     });
   });
 });

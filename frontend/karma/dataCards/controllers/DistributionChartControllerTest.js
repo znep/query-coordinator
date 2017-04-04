@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('DistributionChartController', function() {

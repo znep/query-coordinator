@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { classNames } from 'components/utils';
 
 describe('blist.components.utils', function() {

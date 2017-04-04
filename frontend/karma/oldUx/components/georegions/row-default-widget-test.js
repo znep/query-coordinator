@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils, {
@@ -29,7 +30,7 @@ describe('RowDefaultWidget', function() {
   });
 
   it('exists', function() {
-    expect(this.createElement()).to.be.a.reactElement;
+    assert.ok(this.createElement());
   });
 
   it('renders', function() {

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('Page model', function() {
@@ -117,9 +118,9 @@ describe('Page model', function() {
       instance.set('cards', [ card ]);
 
       instance.toggleExpanded(card);
-      expect(card.getCurrentValue('expanded')).to.be.true;
+      assert.isTrue(card.getCurrentValue('expanded'));
       instance.toggleExpanded(card);
-      expect(card.getCurrentValue('expanded')).to.be.false;
+      assert.isFalse(card.getCurrentValue('expanded'));
     });
 
     it('should only allow expanded on one card', function() {

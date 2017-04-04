@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 // Taken from es-collections polyfill https://github.com/WebReflection/es6-collections/blob/master/test/index.js
 describe('polyfills', function() {
   'use strict';
@@ -6,7 +7,7 @@ describe('polyfills', function() {
     var Map = polyfills.Map;
 
     it('should exist', function () {
-      expect(Map).to.exist.and.to.equal(polyfills.Map);
+      expect(Map).to.equal(polyfills.Map);
     });
 
     it('should be able to be constructed', function() {

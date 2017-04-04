@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('removeAllCards', function() {
@@ -49,18 +50,18 @@ describe('removeAllCards', function() {
       var context = createElement({ enabled: false });
       var button = context.element.find('.remove-all-cards-button');
       var panel = context.element.find('.tool-panel-main');
-      expect(button).to.have.class('disabled');
+      assert.isTrue($(button).hasClass('disabled'));
       button.click();
-      expect(panel).to.not.have.class('active');
+      assert.isFalse($(panel).hasClass('active'));
     });
 
     it('should be enabled if the scope says so', function() {
       var context = createElement({ enabled: true });
       var button = context.element.find('.remove-all-cards-button');
       var panel = context.element.find('.tool-panel-main');
-      expect(button).to.not.have.class('disabled');
+      assert.isFalse($(button).hasClass('disabled'));
       button.click();
-      expect(panel).to.have.class('active');
+      assert.isTrue($(panel).hasClass('active'));
     });
   });
 
@@ -75,12 +76,12 @@ describe('removeAllCards', function() {
       });
 
       button.click();
-      expect(panel).to.have.class('active');
+      assert.isTrue($(panel).hasClass('active'));
 
       context.element.find('[data-action="cancel"]').click();
 
-      expect(panel).to.not.have.class('active');
-      expect(didSignal).to.be.false;
+      assert.isFalse($(panel).hasClass('active'));
+      assert.isFalse(didSignal);
 
     });
 
@@ -94,12 +95,12 @@ describe('removeAllCards', function() {
       });
 
       button.click();
-      expect(panel).to.have.class('active');
+      assert.isTrue($(panel).hasClass('active'));
 
       context.element.find('[data-action="removeAll"]').click();
 
-      expect(panel).to.not.have.class('active');
-      expect(didSignal).to.be.true;
+      assert.isFalse($(panel).hasClass('active'));
+      assert.isTrue(didSignal);
     });
   });
 });

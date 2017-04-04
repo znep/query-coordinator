@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { StatCounts } from 'components/StatCounts';
 
 describe('components/StatCounts', () => {

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('selectionLabel', function() {
@@ -28,7 +29,7 @@ describe('selectionLabel', function() {
     scope.myTestContent = TEST_CONTENT;
     var element = testHelpers.TestDom.compileAndAppend(
       '<selection-label content="myTestContent"></selection-label>', scope);
-    expect(element.is(':contains({0})'.format(TEST_CONTENT))).to.be.true;
+    assert.isTrue(element.is(':contains({0})'.format(TEST_CONTENT)));
     expect(element.isolateScope().content).to.equal(TEST_CONTENT);
   });
 

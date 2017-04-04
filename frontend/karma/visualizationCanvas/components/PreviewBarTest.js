@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { PreviewBar } from 'components/PreviewBar';
 
 describe('PreviewBar', () => {
@@ -10,28 +12,28 @@ describe('PreviewBar', () => {
   });
 
   it('renders', () => {
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   describe('back button', () => {
     it('renders', () => {
-      expect(element.querySelector('.btn-back')).to.exist;
+      assert.ok(element.querySelector('.btn-back'));
     });
 
     it('invokes onClickExit on click', () => {
       TestUtils.Simulate.click(element.querySelector('.btn-back'));
-      expect(onClickSpy).to.have.been.called;
+      sinon.assert.called(onClickSpy);
     });
   });
 
   describe('exit button', () => {
     it('renders', () => {
-      expect(element.querySelector('.btn-exit')).to.exist;
+      assert.ok(element.querySelector('.btn-exit'));
     });
 
     it('invokes onClickExit on click', () => {
       TestUtils.Simulate.click(element.querySelector('.btn-exit'));
-      expect(onClickSpy).to.have.been.called;
+      sinon.assert.called(onClickSpy);
     });
   });
 

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('ellipsify filter', function() {
@@ -40,7 +41,7 @@ describe('ellipsify filter', function() {
 
       // NaN !== NaN
       if (_.isNaN(badValue)) {
-        expect(_.isNaN(ellipsify(badValue, 1))).to.be.true;
+        assert.isTrue(_.isNaN(ellipsify(badValue, 1)));
       } else {
         expect(ellipsify(badValue, 1)).to.equal(badValue);
       }

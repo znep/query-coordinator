@@ -10,7 +10,7 @@ module.exports = function (karma) {
   karma.set(karmaConfig({
     preprocessors: {
        'karma/oldUx/**/*-test.js': ['webpack'],
-       'karma/helpers/chai-dom-assertions.js': ['webpack']
+       'karma/oldUx/**/*Test.js': ['webpack']
     },
 
     /**
@@ -26,8 +26,6 @@ module.exports = function (karma) {
 
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */
-
-      'karma/helpers/chai-dom-assertions.js',
 
       /* Old UX */
       // Began implementing this for dataset-show-test, but its dependencies were breaking
@@ -49,9 +47,6 @@ module.exports = function (karma) {
       'public/javascripts/plugins/html2markdown.js',
       'public/javascripts/component/util/html-sanitizer-utils.js',
 
-      // Test Configuration
-      'karma/chai-configuration.js',
-
       // Test Files
       'karma/oldUx/**/*.js',
       // https://github.com/karma-runner/karma/issues/1532
@@ -64,7 +59,7 @@ module.exports = function (karma) {
       '/stylesheets/images/common/': `http://localhost:${karma.port}/base/public/stylesheets/images/common/`
     },
 
-    frameworks: [ 'mocha', 'chai', 'chai-as-promised', 'chai-jquery', 'sinon-chai' ],
+    frameworks: [ 'mocha' ],
 
     webpack: webpackConfig
   }));

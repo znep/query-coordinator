@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import _ from 'lodash';
 import ColumnHeader from 'components/Table/ColumnHeader';
 import ReactDOM from 'react-dom';
@@ -20,7 +22,7 @@ describe('components/Table/ColumnHeader', () => {
   it('renders without errors', () => {
     const container = document.createElement('tr');
     const element = ReactDOM.render(<ColumnHeader {...defaultProps} />, container);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
   });
 
   it('handles column type changing', () => {

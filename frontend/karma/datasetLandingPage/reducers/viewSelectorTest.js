@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { getDefaultStore } from 'testStore';
 import reducer from 'reducers/featuredContent/viewSelector.js';
 import {

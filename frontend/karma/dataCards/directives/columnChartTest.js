@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('columnChart', function() {
@@ -189,9 +190,9 @@ describe('columnChart', function() {
       var flyout = $('#uber-flyout');
       var barGroup = $('.bar-group').get(0);
 
-      expect(flyout).to.not.be.visible;
+      assert.isFalse(flyout.is(':visible'));
       testHelpers.fireMouseEvent(barGroup, 'mousemove');
-      expect(flyout).to.be.visible;
+      assert.isTrue(flyout.is(':visible'));
     });
 
     it('should appear on mouseover of a bar\'s label', function() {
@@ -199,9 +200,9 @@ describe('columnChart', function() {
       var flyout = $('#uber-flyout');
       var barLabel = $(labelContents).eq(0);
 
-      expect(flyout).to.not.be.visible;
+      assert.isFalse(flyout.is(':visible'));
       testHelpers.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
-      expect(flyout).to.be.visible;
+      assert.isTrue(flyout.is(':visible'));
     });
 
     it('should have the correct title', function() {
@@ -297,9 +298,9 @@ describe('columnChart', function() {
       var barGroup = $('.bar-group').get(0);
 
       testHelpers.fireMouseEvent(barGroup, 'mousemove');
-      expect(flyout).to.be.visible;
+      assert.isTrue(flyout.is(':visible'));
       testHelpers.fireMouseEvent(flyout.get(0), 'mousemove');
-      expect(flyout).to.not.be.visible;
+      assert.isFalse(flyout.is(':visible'));
     });
   });
 });

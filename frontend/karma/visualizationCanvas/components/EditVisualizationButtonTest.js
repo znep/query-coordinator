@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { EditVisualizationButton } from 'components/EditVisualizationButton';
 
 describe('EditVisualizationButton', () => {
@@ -11,7 +13,7 @@ describe('EditVisualizationButton', () => {
 
   it('renders an element', () => {
     const element = renderComponent(EditVisualizationButton, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('invokes openAuthoringWorkflowModal on click', () => {
@@ -22,6 +24,6 @@ describe('EditVisualizationButton', () => {
 
     TestUtils.Simulate.click(element);
 
-    expect(onClickSpy).to.have.been.called;
+    sinon.assert.called(onClickSpy);
   });
 });

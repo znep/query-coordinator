@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import * as IC from 'components/importColumns';
 import * as ED from 'components/exampleData';
 import * as UF from 'components/uploadFile';

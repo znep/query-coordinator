@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import Immutable from 'immutable';
 import configureStore from 'redux-mock-store';
 import notifyUser from 'middlewares/notifyUser';

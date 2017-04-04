@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('Request ID service', function() {
@@ -15,10 +16,9 @@ describe('Request ID service', function() {
 
   describe('generate()', function() {
     it('should return a valid Socrata request ID /[a-z0-9]{32}/', function() {
-      expect(RequestId.generate).to.exist.and.to.be.a('function');
       var id = RequestId.generate();
-      expect(id).to.have.length(32);
-      expect(id).to.exist.and.to.match(/[a-z0-9]{32}/)
+      assert.lengthOf(id, 32);
+      assert.match(id, /[a-z0-9]{32}/)
     });
 
     it('should return a different request ID every call', function() {

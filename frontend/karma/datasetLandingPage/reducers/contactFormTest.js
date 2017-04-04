@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { getDefaultStore } from 'testStore';
 import reducer from 'reducers/contactForm';
 import {
@@ -87,7 +88,7 @@ describe('reducers/contactForm', function() {
       state.resetRecaptcha = false;
 
       var result = reducer(state, handleContactFormRecaptchaError());
-      expect(result.resetRecaptcha).to.be.true;
+      assert.isTrue(result.resetRecaptcha);
     });
   });
 
@@ -96,7 +97,7 @@ describe('reducers/contactForm', function() {
       state.resetRecaptcha = true;
 
       var result = reducer(state, handleContactFormRecaptchaReset());
-      expect(result.resetRecaptcha).to.be.false;
+      assert.isFalse(result.resetRecaptcha);
     });
   });
 });

@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -117,21 +119,21 @@ describe('suggestionToolPanel', function() {
 
   it('should exist in the dom', function() {
     suggestionToolPanel = createElement();
-    expect(suggestionToolPanel.element.find('.suggestion-tool-panel')).to.exist;
+    assert.lengthOf(suggestionToolPanel.element.find('.suggestion-tool-panel'), 1);
   });
 
   it('should show when shouldShow is true', function() {
     suggestionToolPanel = createElement({
       shouldShow: true
     });
-    expect(suggestionToolPanel.element.find('.suggestion-tool-panel .suggestion-examples')).to.be.visible;
+    assert.isTrue(suggestionToolPanel.element.find('.suggestion-tool-panel .suggestion-examples').is(':visible'));
   });
 
   it('should be hidden when shouldShow is false', function() {
     suggestionToolPanel = createElement({
       shouldShow: false
     });
-    expect(suggestionToolPanel.element.find('.suggestion-tool-panel *')).to.not.be.visible;
+    assert.isFalse(suggestionToolPanel.element.find('.suggestion-tool-panel *').is(':visible'));
   });
 
   describe('item selection', function() {
@@ -181,7 +183,7 @@ describe('suggestionToolPanel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestions-status')).
+    expect(suggestionToolPanel.element.find('.suggestions-status').text()).
       to.contain('An error was encountered');
   });
 
@@ -198,7 +200,7 @@ describe('suggestionToolPanel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestions-status')).
+    expect(suggestionToolPanel.element.find('.suggestions-status').text()).
       to.contain(I18n.suggestionToolPanel.noSuggestions);
   });
 
@@ -215,7 +217,7 @@ describe('suggestionToolPanel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestions-status')).
+    expect(suggestionToolPanel.element.find('.suggestions-status').text()).
       to.contain(I18n.suggestionToolPanel.onlySuggestion);
   });
 
@@ -234,7 +236,7 @@ describe('suggestionToolPanel', function() {
     suggestionToolPanel.scope.$apply();
 
     // Format with 3 because there are 3 results in the above array.
-    expect(suggestionToolPanel.element.find('.suggestions-status')).
+    expect(suggestionToolPanel.element.find('.suggestions-status').text()).
       to.contain(I18n.suggestionToolPanel.allSuggestions.format(3));
   });
 
@@ -251,7 +253,7 @@ describe('suggestionToolPanel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestions-status')).
+    expect(suggestionToolPanel.element.find('.suggestions-status').text()).
       to.contain(I18n.suggestionToolPanel.maxSuggestions.format(Constants.MAX_NUMBER_OF_SUGGESTIONS));
   });
 
@@ -268,7 +270,7 @@ describe('suggestionToolPanel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestion-examples')).
+    expect(suggestionToolPanel.element.find('.suggestion-examples').text()).
       to.contain(I18n.searchCard.promptText);
   })
 
@@ -287,7 +289,7 @@ describe('suggestionToolPanel', function() {
     suggestionToolPanel.scope.$apply();
 
     var examples = suggestionToolPanel.element.find('.suggestion-examples');
-    expect(examples).
+    expect(examples.text()).
       to.contain(I18n.suggestionToolPanel.noSuggestionsHint);
     expect(examples.text()).
       to.contain(I18n.searchCard.twoExamples.format('Sample 1', 'Sample 2'));
@@ -307,7 +309,7 @@ describe('suggestionToolPanel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestion-examples')).
+    expect(suggestionToolPanel.element.find('.suggestion-examples').text()).
       to.contain(I18n.suggestionToolPanel.someSuggestionsHint);
   });
 
@@ -322,7 +324,7 @@ describe('suggestionToolPanel', function() {
       fieldName: fakeFieldName
     });
 
-    expect(suggestionToolPanel.element.find('.suggestion-examples')).
+    expect(suggestionToolPanel.element.find('.suggestion-examples').text()).
       to.contain(I18n.suggestionToolPanel.loadingSuggestionsHint);
   });
 

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('columnAndVisualizationSelectorTest', function() {
@@ -250,11 +251,11 @@ describe('columnAndVisualizationSelectorTest', function() {
     });
 
     it('should display the preview', function() {
-      expect(directive.element.find('.classic-visualization-preview')).to.be.visible;
+      assert.isTrue(directive.element.find('.classic-visualization-preview').is(':visible'));
     });
 
     it('should hide the card preview placeholder', function() {
-      expect(directive.element.find('.add-card-preview-placeholder')).to.not.be.visible;
+      assert.isFalse(directive.element.find('.add-card-preview-placeholder').is(':visible'));
     });
   });
 
@@ -364,7 +365,7 @@ describe('columnAndVisualizationSelectorTest', function() {
 
         customizeButton = findButton();
         expect(customizeButton).to.have.length(1);
-        expect(customizeButton).to.be.visible;
+        assert.isTrue(customizeButton.is(':visible'));
 
         /* Technically, there should be a flyout here. But since we're using the same mechanism to give
          * this button a flyout, as we are for the other card-controls in a card-layout, the flyout is
@@ -403,7 +404,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         getCurrentValue('dataset').
         set('columns', newColumns);
 
-      expect(directive.scope.availableColumns).to.be.empty;
+      assert.lengthOf(directive.scope.availableColumns, 0);
     });
 
     it('should not include system columns', function() {
@@ -445,7 +446,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         it('should include no columns', function() {
           var currentColumnFieldNames = _.keys(currentColumns);
           setSupportedCardTypes([]);
-          expect(directive.scope.availableColumns.sort()).to.be.empty;
+          assert.lengthOf(directive.scope.availableColumns.sort(), 0);
         });
       });
 
@@ -491,7 +492,7 @@ describe('columnAndVisualizationSelectorTest', function() {
 
     it('should not include columns with a defaultCardType that is not `invalid`', function() {
       // All default columns are supported.
-      expect(directive.scope.unsupportedColumns).to.be.empty;
+      assert.lengthOf(directive.scope.unsupportedColumns, 0);
     });
 
     it('should include columns with a defaultCardType of `invalid`', function() {
@@ -519,7 +520,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         getCurrentValue('dataset').
         set('columns', newColumns);
 
-      expect(directive.scope.unsupportedColumns).to.be.empty;
+      assert.lengthOf(directive.scope.unsupportedColumns, 0);
     });
 
     describe('if supportedCardTypes is set', function() {
@@ -583,7 +584,7 @@ describe('columnAndVisualizationSelectorTest', function() {
       var directive = createDirective();
       var cardAggregationSelector = directive.element.find('card-aggregation-selector');
 
-      expect(cardAggregationSelector).to.not.exist;
+      assert.lengthOf(cardAggregationSelector, 0);
     });
 
     it('should not show card aggregation when card type is blacklisted', function() {
@@ -592,7 +593,7 @@ describe('columnAndVisualizationSelectorTest', function() {
       directive.element.find('.icon-search').trigger('click');
       var cardAggregationSelector = directive.element.find('card-aggregation-selector');
 
-      expect(cardAggregationSelector).to.not.exist;
+      assert.lengthOf(cardAggregationSelector, 0);
     });
 
     it('should show card aggregation when column is selected', function() {
@@ -601,7 +602,7 @@ describe('columnAndVisualizationSelectorTest', function() {
       directive.element.find('.icon-bar-chart').trigger('click');
       var cardAggregationSelector = directive.element.find('card-aggregation-selector');
 
-      expect(cardAggregationSelector).to.exist;
+      assert.lengthOf(cardAggregationSelector, 1);
     });
   });
 });

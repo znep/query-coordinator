@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('Dataset model', function() {
@@ -67,7 +68,7 @@ describe('Dataset model', function() {
 
   it('should have an undefined obeId property if migrationMetadata is not available', function() {
     var instance = new Dataset(minimalDatasetMetadata);
-    expect(instance.obeId).to.be.undefined;
+    assert.isUndefined(instance.obeId);
   });
 
   describe('column metadata', function() {
@@ -116,13 +117,13 @@ describe('Dataset model', function() {
 
       instance.observe('columns').subscribe(function(columns) {
         if (!_.isEmpty(columns)) {
-          expect(columns['normal_column'].isSystemColumn).to.be.false;
-          expect(columns['normal_column_2'].isSystemColumn).to.be.false;
+          assert.isFalse(columns['normal_column'].isSystemColumn);
+          assert.isFalse(columns['normal_column_2'].isSystemColumn);
           // Note that :@computed_column will incorrectly be labeled as
           // a system column by Dataset.js at the time of writing.
           // TODO: Let's fix that.
-          //expect(columns[':@computed_column'].isSystemColumn).to.be.false;
-          expect(columns[':system_column'].isSystemColumn).to.be.true;
+          //assert.isFalse(columns[':@computed_column'].isSystemColumn);
+          assert.isTrue(columns[':system_column'].isSystemColumn);
           done();
         }
       });

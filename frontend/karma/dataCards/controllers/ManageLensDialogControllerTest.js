@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('ManageLensDialogController', function() {
@@ -37,13 +38,13 @@ describe('ManageLensDialogController', function() {
   });
 
   it('should add a components object to the scope', function() {
-    expect($scope.components).to.be.an.object;
+    assert.isObject($scope.components);
   });
 
   it('should add various properties related to newShares to the scope', function() {
-    expect($scope.newSharesState).to.be.an.object;
+    assert.isObject($scope.newSharesState);
     expect($scope.newSharesState.show).to.equal(false);
-    expect($scope.newShares).to.be.an.object;
+    assert.isObject($scope.newShares);
     expect($scope.saveNewShares).to.be.a('function');
   });
 

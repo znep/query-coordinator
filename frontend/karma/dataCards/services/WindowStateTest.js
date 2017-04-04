@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('WindowState service', function() {
@@ -33,35 +35,35 @@ describe('WindowState service', function() {
     }
 
     it('should react to left mousedown', function() {
-      expect(WindowState.mouseLeftButtonPressed$.value).to.be.false;
+      assert.isFalse(WindowState.mouseLeftButtonPressed$.value);
 
       var body = document.getElementsByTagName('body')[0];
 
       body.dispatchEvent(generateFakeMouseDown(1));
 
-      expect(WindowState.mouseLeftButtonPressed$.value).to.be.true;
+      assert.isTrue(WindowState.mouseLeftButtonPressed$.value);
     });
 
     it('should not react to right mousedown', function() {
-      expect(WindowState.mouseLeftButtonPressed$.value).to.be.false;
+      assert.isFalse(WindowState.mouseLeftButtonPressed$.value);
 
       var body = document.getElementsByTagName('body')[0];
 
       body.dispatchEvent(generateFakeMouseDown(3));
 
-      expect(WindowState.mouseLeftButtonPressed$.value).to.be.false;
+      assert.isFalse(WindowState.mouseLeftButtonPressed$.value);
     });
 
     it('should react to left mouseup after left mousedown', function() {
-      expect(WindowState.mouseLeftButtonPressed$.value).to.be.false;
+      assert.isFalse(WindowState.mouseLeftButtonPressed$.value);
 
       var body = document.getElementsByTagName('body')[0];
 
       body.dispatchEvent(generateFakeMouseDown(1));
-      expect(WindowState.mouseLeftButtonPressed$.value).to.be.true;
+      assert.isTrue(WindowState.mouseLeftButtonPressed$.value);
 
       body.dispatchEvent(generateFakeMouseUp(1));
-      expect(WindowState.mouseLeftButtonPressed$.value).to.be.false;
+      assert.isFalse(WindowState.mouseLeftButtonPressed$.value);
     });
 
   });
@@ -113,47 +115,17 @@ describe('WindowState service', function() {
     it('should react to resize events on window', function() {
       var handler = sinon.spy();
       WindowState.windowSize$.subscribe(handler);
-      expect(handler.calledOnce).to.be.true;
+      assert.isTrue(handler.calledOnce);
 
       var ev = document.createEvent('HTMLEvents');
       ev.initEvent('resize', true, true);
       window.dispatchEvent(ev);
 
-      expect(handler.calledTwice).to.be.true;
+      assert.isTrue(handler.calledTwice);
 
       var currentWindowDimensions = $(window).dimensions();
-      expect(handler.alwaysCalledWithExactly(currentWindowDimensions)).to.be.true;
+      assert.isTrue(handler.alwaysCalledWithExactly(currentWindowDimensions));
     });
 
-  });
-
-  describe('scrollPosition$', function() {
-    var fakeContentYPosition = 100000;
-    $('body').append('<div id="scrollPositionSubjectFakeContent" style="position: absolute; height: ' + fakeContentYPosition + 'px">LOL JQUERY</div>');
-
-    after(function() {
-      $('#scrollPositionSubjectFakeContent').remove();
-    });
-    // NOTE: PhantomJS accomodates its window size to the content (with no upper bound).
-    // So this test is not going to work in PhantomJS. Detect that here.
-    var skipTest = $(window).height() >= fakeContentYPosition;
-
-    // Conditionally skip the test if the browser does not have a height that would allow scrolling.
-    // (i.e. if the test is being run by Phantom).
-    (skipTest ? it.skip : it)('should report the correct scrollY position on page scroll event', function(done) {
-      $(window).scrollTop(0);
-      expect(WindowState.scrollPosition$.value).to.equal(0);
-
-      var handler = sinon.spy(function(scrollTop) {
-        if (handler.calledOnce) {
-          expect(scrollTop).to.equal(0);
-        } else if (handler.calledTwice) {
-          expect(scrollTop).to.equal(1337);
-          done();
-        }
-      });
-      WindowState.scrollPosition$.subscribe(handler);
-      $(window).scrollTop(1337);
-    });
   });
 });

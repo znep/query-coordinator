@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { AuthoringWorkflowModal } from 'components/AuthoringWorkflowModal';
 import mockVif from 'data/mockVif';
 
@@ -28,24 +29,24 @@ describe('AuthoringWorkflowModal', () => {
     });
 
     it('does not render when isActive is false', () => {
-      expect(element).to.not.exist;
+      assert.isNull(element);
     });
 
     it('does not initialize the AuthoringWorkflow if isActive is false', () => {
       // the element is null, this is assert makes sure that it is not present at all
-      expect(document.querySelector('.authoring-modal')).to.not.exist;
+      assert.isNull(document.querySelector('.authoring-modal'));
     });
   });
 
   describe('when isActive is true', () => {
     it('renders', () => {
       const element = renderComponent(AuthoringWorkflowModal, getProps());
-      expect(element).to.exist;
+      assert.ok(element);
     });
 
     it('initializes the AuthoringWorkflow if isActive is true and VIFs are present', () => {
       const element = renderComponent(AuthoringWorkflowModal, getProps());
-      expect(element.querySelector('.authoring-modal')).to.exist;
+      assert.ok(element.querySelector('.authoring-modal'));
     });
 
     it('does not initialize the AuthoringWorkflow when VIF is missing', () => {
@@ -56,7 +57,7 @@ describe('AuthoringWorkflowModal', () => {
           isActive: true
         }
       }));
-      expect(element.querySelector('.authoring-modal')).to.not.exist;
+      assert.isNull(element.querySelector('.authoring-modal'));
     });
   });
 
@@ -68,6 +69,6 @@ describe('AuthoringWorkflowModal', () => {
     element.componentWillUnmount();
 
     // double check it's nowhere on the document
-    expect(document.querySelector('.authoring-modal')).to.not.exist;
+    assert.isNull(document.querySelector('.authoring-modal'));
   });
 });

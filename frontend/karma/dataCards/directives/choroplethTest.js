@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -112,9 +113,9 @@ describe('Choropleth', function() {
       var flyout = $('#uber-flyout');
       var feature = $(featureGeometrySelector).get(0);
 
-      expect(flyout).to.not.be.visible;
+      assert.isFalse(flyout.is(':visible'));
       testHelpers.fireMouseEvent(feature, 'mousemove');
-      expect(flyout).to.be.visible;
+      assert.isTrue(flyout.is(':visible'));
 
       expect(flyout.find('.flyout-row').length).to.equal(1);
     });
@@ -129,9 +130,9 @@ describe('Choropleth', function() {
       var flyout = $('#uber-flyout');
       var feature = $(featureGeometrySelector).get(0);
 
-      expect(flyout).to.not.be.visible;
+      assert.isFalse(flyout.is(':visible'));
       testHelpers.fireMouseEvent(feature, 'mousemove');
-      expect(flyout).to.be.visible;
+      assert.isTrue(flyout.is(':visible'));
 
       expect(flyout.find('.flyout-row .emphasis').length).to.equal(2);
     });
@@ -142,9 +143,9 @@ describe('Choropleth', function() {
       var flyout = $('#uber-flyout');
       var feature = $(featureGeometrySelector).get(0);
 
-      expect(flyout).to.not.be.visible;
+      assert.isFalse(flyout.is(':visible'));
       testHelpers.fireMouseEvent(feature, 'mousemove');
-      expect(flyout).to.be.visible;
+      assert.isTrue(flyout.is(':visible'));
       expect(flyout.find('.flyout-row .is-selected').length).to.equal(2);
     });
   });
@@ -155,14 +156,14 @@ describe('Choropleth', function() {
         createChoropleth({ geojsonAggregateData: testData });
         var selectionBox = $(selectionBoxSelector);
 
-        expect(selectionBox).to.not.be.visible;
+        assert.isFalse(selectionBox.is(':visible'));
       });
 
       it('should display selection box when a feature selected', function() {
         createChoropleth({ geojsonAggregateData: selectedTestData });
         var selectionBox = $(selectionBoxSelector);
 
-        expect(selectionBox).to.be.visible;
+        assert.isTrue(selectionBox.is(':visible'));
       });
 
       it('should display flyout on hover', function() {
@@ -170,9 +171,9 @@ describe('Choropleth', function() {
         var selectionBox = $(selectionBoxSelector);
         var flyout = $('#uber-flyout');
 
-        expect(flyout).to.not.be.visible;
+        assert.isFalse(flyout.is(':visible'));
         testHelpers.fireMouseEvent(selectionBox[0], 'mousemove');
-        expect(flyout).to.be.visible;
+        assert.isTrue(flyout.is(':visible'));
       });
     });
   });
@@ -186,7 +187,7 @@ describe('Choropleth', function() {
       createChoropleth(scopeData);
       var selectionBox = $(selectionBoxSelector);
 
-      expect(selectionBox).to.not.be.visible;
+      assert.isFalse(selectionBox.is(':visible'));
     });
   });
 });

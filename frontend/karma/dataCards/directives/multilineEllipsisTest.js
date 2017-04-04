@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -74,7 +76,7 @@ describe('multilineEllipsis directive', function(FlyoutService) {
 
         it('should not have title text', function() {
           ensure();
-          expect(el.find('.content').attr('title')).to.be.empty;
+          assert.lengthOf(el.find('.content').attr('title'), 0);
         });
       });
 
@@ -98,7 +100,7 @@ describe('multilineEllipsis directive', function(FlyoutService) {
 
         it('should not have title text', function() {
           ensure();
-          expect(el.find('.content').attr('title')).to.be.empty;
+          assert.lengthOf(el.find('.content').attr('title'), 0);
         });
       });
     });
@@ -125,7 +127,7 @@ describe('multilineEllipsis directive', function(FlyoutService) {
           var el = testHelpers.TestDom.compileAndAppend(html, scope);
           testTimeoutScheduler.advanceTo(1000);
           expect(el.text()).to.equal(lotsOfText);
-          expect(el.find('.content').attr('title')).to.be.empty;
+          assert.lengthOf(el.find('.content').attr('title'), 0);
         });
       });
 
@@ -144,8 +146,8 @@ describe('multilineEllipsis directive', function(FlyoutService) {
           testTimeoutScheduler.advanceTo(1000);
 
           expect(content.text()).to.contain('...');
-          expect(content.attr('title')).to.be.empty;
-          expect(registrationSpy.calledOnce, 'FlyoutService.register never called').to.be.true;
+          assert.lengthOf(content.attr('title'), 0);
+          assert.isTrue(registrationSpy.calledOnce, 'FlyoutService.register never called');
           expect(registrationSpy.getCall(0).args[0].selector).to.match(/\.multiline-ellipsis-flyout-\d?/);
           mockFlyoutService.register.restore();
           done();
@@ -168,8 +170,8 @@ describe('multilineEllipsis directive', function(FlyoutService) {
         testTimeoutScheduler.advanceTo(1000);
 
         expect(content.text()).to.contain('...');
-        expect(content.attr('title')).to.be.empty;
-        expect(registrationSpy.called, 'FlyoutService.register never called').to.be.false;
+        assert.lengthOf(content.attr('title'), 0);
+        assert.isFalse(registrationSpy.called, 'FlyoutService.register never called');
         mockFlyoutService.register.restore();
       });
     });

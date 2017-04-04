@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import 'babel-polyfill';
 import _ from 'lodash';
 import { ResultsContainer } from 'components/assetSelector/ResultsContainer';

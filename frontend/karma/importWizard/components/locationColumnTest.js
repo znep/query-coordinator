@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import * as LocationColumn from 'components/importColumns/locationColumn';
 
 describe('LocationColumns', () => {

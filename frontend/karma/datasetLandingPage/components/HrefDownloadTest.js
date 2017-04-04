@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import _ from 'lodash';
 import { HrefDownload } from 'components/HrefDownload';
 import mockServerConfig from 'data/mockServerConfig';
@@ -34,9 +35,9 @@ describe('components/HrefDownload', function() {
 
   it('renders an element if the view is an href', function() {
     var element = renderComponent(HrefDownload, getProps());
-    expect(element).to.exist;
-    expect(element.querySelector('h2')).to.exist;
-    expect(element.querySelector('.section-content')).to.exist;
+    assert.ok(element);
+    assert.ok(element.querySelector('h2'));
+    assert.ok(element.querySelector('.section-content'));
   });
 
   it('does not render an element if the view is not an href', function() {
@@ -46,7 +47,7 @@ describe('components/HrefDownload', function() {
       }
     }));
 
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   describe('edit prompt', function() {
@@ -57,13 +58,13 @@ describe('components/HrefDownload', function() {
     it('is hidden if the user is not a publisher or an admin', function() {
       window.serverConfig.currentUser = null;
       var element = renderComponent(HrefDownload, getProps());
-      expect(element.querySelector('.edit-prompt')).to.not.exist;
+      assert.isNull(element.querySelector('.edit-prompt'));
     });
 
     it('is visible if the user is a publisher or an admin', function() {
       window.serverConfig.currentUser = { roleName: 'publisher' };
       var element = renderComponent(HrefDownload, getProps());
-      expect(element.querySelector('.edit-prompt')).to.exist;
+      assert.ok(element.querySelector('.edit-prompt'));
     });
 
     it('has a button that links to the edit page', function() {
@@ -81,8 +82,8 @@ describe('components/HrefDownload', function() {
         }
       }));
 
-      expect(element).to.exist;
-      expect(element.querySelector('.section-content')).to.not.exist;
+      assert.ok(element);
+      assert.isNull(element.querySelector('.section-content'));
     });
 
     it('contains information about each download', function() {
@@ -102,8 +103,8 @@ describe('components/HrefDownload', function() {
     it('renders the data dictionary button for access points that have a describedBy key', function() {
       var element = renderComponent(HrefDownload, getProps());
       var accessPoints = element.querySelectorAll('.section-content .download-object');
-      expect(accessPoints[0].querySelector('.btn[href="bulbapedia"]')).to.exist;
-      expect(accessPoints[1].querySelector('.btn[href="bulbapedia"]')).to.not.exist;
+      assert.ok(accessPoints[0].querySelector('.btn[href="bulbapedia"]'));
+      assert.isNull(accessPoints[1].querySelector('.btn[href="bulbapedia"]'));
     });
   });
 });

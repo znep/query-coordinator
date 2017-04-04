@@ -79,5 +79,8 @@ export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
     dispatch(SharedActions.showGlobalMessage('goals', successMessage, 'success'));
 
     return updatedGoals;
-  }).catch(() => dispatch(SharedActions.showModalMessage('goals', 'bulkEdit', failureMessage))); // eslint-disable-line dot-notation
+  }).catch(() => {
+    console.log(arguments)
+    return dispatch(SharedActions.showModalMessage('goals', 'bulkEdit', failureMessage))
+  }); // eslint-disable-line dot-notation
 };

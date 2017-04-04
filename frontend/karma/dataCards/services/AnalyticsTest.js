@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -309,14 +311,14 @@ describe('Analytics service', function() {
         var removeEventListenerStub = sinon.stub(mockWindowService.document, 'removeEventListener');
 
         Analytics.measureDomReady();
-        expect(addEventListenerStub.calledOnce).to.be.true;
+        assert.isTrue(addEventListenerStub.calledOnce);
         expect($httpBackend.flush).to.throw(/No pending request/);
         addEventListenerStub.yield();
         expect($httpBackend.flush).to.throw(/No pending request/);
         mockWindowService.document.readyState = 'complete';
         addEventListenerStub.yield();
         expect($httpBackend.flush).to.not.throw(/No pending request/);
-        expect(removeEventListenerStub.calledOnce).to.be.true;
+        assert.isTrue(removeEventListenerStub.calledOnce);
       });
 
       it('should track the dom-ready time for a page load', function() {

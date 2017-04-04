@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { getEmptyStore } from './testStore';
 import { bootstrap } from 'bootstrap';
 import { mockFetch } from './testHelpers/mockHTTP';

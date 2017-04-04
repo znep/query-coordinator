@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('quickFilterBar', function() {
@@ -74,14 +75,14 @@ describe('quickFilterBar', function() {
     it('should be empty if no card filters are applied and no base filter is applied', function() {
       createQuickFilterBar();
       setCards('field1', 'field2');
-      expect(self.element.scope().appliedFiltersForDisplay).to.be.empty;
+      assert.lengthOf(self.element.scope().appliedFiltersForDisplay, 0);
     });
 
     it('should be empty if a base filter is applied', function() {
       createQuickFilterBar();
       setCards('field1', 'field2');
       self.$scope.page.set('baseSoqlFilter', 'something=nothing');
-      expect(self.element.scope().appliedFiltersForDisplay).to.be.empty;
+      assert.lengthOf(self.element.scope().appliedFiltersForDisplay, 0);
     });
 
     it('should clear filters when clearAllFilters is called', function() {
@@ -101,9 +102,9 @@ describe('quickFilterBar', function() {
       // Clear filters
       self.element.scope().clearAllFilters();
 
-      expect(self.element.scope().appliedFiltersForDisplay).to.be.empty;
-      expect(cards[0].getCurrentValue('activeFilters')).to.be.empty;
-      expect(cards[1].getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(self.element.scope().appliedFiltersForDisplay, 0);
+      assert.lengthOf(cards[0].getCurrentValue('activeFilters'), 0);
+      assert.lengthOf(cards[1].getCurrentValue('activeFilters'), 0);
     });
 
     it('should register a flyout for the "Clear All" button', function() {
@@ -117,12 +118,12 @@ describe('quickFilterBar', function() {
       testHelpers.fireMouseEvent(self.element.find('.clear-all-filters-button')[0], 'mousemove');
 
       var flyout = $('.flyout-title');
-      expect(flyout).to.exist;
+      assert.lengthOf(flyout, 1);
       expect(flyout.text()).to.contain('Click to reset all filters');
 
       testHelpers.fireMouseEvent(self.element.find('.clear-all-filters-button .icon-close')[0], 'mousemove');
 
-      expect(flyout).to.exist;
+      assert.lengthOf(flyout, 1);
       expect(flyout.text()).to.contain('Click to reset all filters');
     });
 

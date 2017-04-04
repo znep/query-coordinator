@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React from 'react';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag,
@@ -34,13 +36,13 @@ describe('FormSelectInput', function() {
   });
 
   it('exists', function() {
-    expect(this.createElement()).to.be.a.reactElement;
+    assert.isNotNull(this.createElement());
   });
 
   it('renders', function() {
     this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result).to.be.an.elementOfType(FormInput);
+    assert.isNotNull(result);
   });
 
   it('shows validation errors', function() {
@@ -58,7 +60,7 @@ describe('FormSelectInput', function() {
       initialOption: 'Choose something'
     });
     var option = findByTag(node, 'option');
-    expect(option).to.have.textContent('Choose something');
+    assert.equal(option.textContent, 'Choose something');
   });
 
   it('renders the options passed to it', function() {
@@ -71,7 +73,7 @@ describe('FormSelectInput', function() {
     var options = findAllByTag(node, 'option');
     expect(options).to.have.length(2);
     var option1 = options[0];
-    expect(option1).to.have.textContent('one');
+    assert.equal(option1.textContent, 'one');
     expect(option1.value).to.eq('uno');
   });
 
@@ -85,7 +87,7 @@ describe('FormSelectInput', function() {
     });
     var options = findAllByTag(node, 'option');
     var option2 = options[1];
-    expect(option2).to.have.textContent('two');
+    assert.equal(option2.textContent, 'two');
     expect(option2.value).to.eq('dos');
     expect(option2.selected).to.eq(true);
   });

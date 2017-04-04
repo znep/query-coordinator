@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 (function() {
   'use strict';
   /**

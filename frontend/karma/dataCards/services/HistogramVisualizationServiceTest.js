@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const d3 = require('d3');
 
@@ -49,8 +50,8 @@ describe('HistogramVisualizationService', function() {
 
   describe('setupScale', function() {
     it('should return an object with x and y keys', function() {
-      expect(scale.x).to.exist;
-      expect(scale.y).to.exist;
+      assert.property(scale, 'x');
+      assert.property(scale, 'y');
     });
   });
 
@@ -61,8 +62,8 @@ describe('HistogramVisualizationService', function() {
     });
 
     it('should return an object with x and y keys', function() {
-      expect(axis.x).to.exist;
-      expect(axis.y).to.exist;
+      assert.property(axis, 'x');
+      assert.property(axis, 'y');
     });
 
     it('should associate the axes with the appropriate scales', function() {
@@ -90,10 +91,10 @@ describe('HistogramVisualizationService', function() {
     });
 
     it('should create an object with a D3 brush control, a brushDispatcher, and flyouts', function() {
-      expect(brush.control).to.exist;
-      expect(brush.brushDispatcher).to.exist;
-      expect(brush.selectionClearFlyout).to.exist;
-      expect(brush.brushDragFlyout).to.exist;
+      assert.property(brush, 'control');
+      assert.property(brush, 'brushDispatcher');
+      assert.property(brush, 'selectionClearFlyout');
+      assert.property(brush, 'brushDragFlyout');
     });
 
     describe('bisectPath', function() {
@@ -213,10 +214,10 @@ describe('HistogramVisualizationService', function() {
 
   describe('setupSVG', function() {
     it('should create an object with line and area keys for each filter type', function() {
-      expect(svg.unfiltered.area).to.exist;
-      expect(svg.unfiltered.line).to.exist;
-      expect(svg.filtered.area).to.exist;
-      expect(svg.filtered.line).to.exist;
+      assert.property(svg.unfiltered, 'line');
+      assert.property(svg.unfiltered, 'area');
+      assert.property(svg.filtered, 'line');
+      assert.property(svg.filtered, 'area');
     });
   });
 

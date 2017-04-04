@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { Simulate } from 'react-addons-test-utils';
 import { SaveButton } from 'components/SaveButton';
 import { SaveStates } from 'lib/constants';
@@ -21,7 +23,7 @@ describe('SaveButton', () => {
   });
 
   it('renders a button', () => {
-    expect(element).to.exist;
+    assert.ok(element);
     expect(element.className).to.match(/btn/);
   });
 
@@ -35,7 +37,7 @@ describe('SaveButton', () => {
 
   it('renders a spinner if the save state is saving', () => {
     element = renderComponent(SaveButton, getProps({ saveState: SaveStates.SAVING }));
-    expect(getSpinner(element)).to.exist;
+    assert.ok(getSpinner(element));
   });
 
   it('calls onClick when the button is clicked', () => {

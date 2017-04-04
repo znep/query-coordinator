@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('axisRescalingToggle', function() {
@@ -45,20 +46,20 @@ describe('axisRescalingToggle', function() {
   it('is hidden when enableAxisRescaling is null', function() {
     ServerConfig.override('enableDataLensAxisRescaling', null);
     var context = createElement();
-    expect(context.element.find('.axis-rescaling-toggle')).to.have.class('ng-hide');
+    assert.isTrue($(context.element.find('.axis-rescaling-toggle')).hasClass('ng-hide'));
   });
 
   it('is visible and unchecked when enableAxisRescaling is false', function() {
     ServerConfig.override('enableDataLensAxisRescaling', false);
     var context = createElement();
-    expect(context.element.find('.axis-rescaling-toggle')).to.not.have.class('ng-hide');
+    assert.isFalse($(context.element.find('.axis-rescaling-toggle')).hasClass('ng-hide'));
     expect(context.element.find('input:checked')).to.have.length(0);
   });
 
   it('is visible and checked when enableAxisRescaling is true', function() {
     ServerConfig.override('enableDataLensAxisRescaling', true);
     var context = createElement();
-    expect(context.element.find('.axis-rescaling-toggle')).to.not.have.class('ng-hide');
+    assert.isFalse($(context.element.find('.axis-rescaling-toggle')).hasClass('ng-hide'));
     expect(context.element.find('input:checked')).to.have.length(1);
   });
 });

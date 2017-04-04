@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import * as SocrataModal from 'components/SocrataModal';
 
 describe('components/SocrataModal', function () {
@@ -13,6 +14,6 @@ describe('components/SocrataModal', function () {
     const modalNode = renderPureComponent(modalComponent);
 
     TestUtils.Simulate.click(modalNode.querySelector('.modal-header-dismiss'));
-    callback.should.have.been.calledOnce;
+    sinon.assert.calledOnce(callback);
   });
 });

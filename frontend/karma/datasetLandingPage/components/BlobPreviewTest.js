@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { BlobPreview } from 'components/BlobPreview';
 
 describe('components/BlobPreview', function() {
@@ -13,7 +14,7 @@ describe('components/BlobPreview', function() {
 
   it('renders an element if the view is blobby', function() {
     var element = renderComponent(BlobPreview, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('does not render an element if the view is not blobby', function() {
@@ -23,7 +24,7 @@ describe('components/BlobPreview', function() {
       }
     }));
 
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   it('does not render an element if the blob has an unknown type', function() {
@@ -33,14 +34,14 @@ describe('components/BlobPreview', function() {
       }
     }));
 
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   describe('preview', function() {
     it('renders an image if the blob is an image', function() {
       var element = renderComponent(BlobPreview, getProps());
       var image = element.querySelector('img');
-      expect(image).to.exist;
+      assert.ok(image);
       expect(image.getAttribute('src')).to.contain('guid');
     });
 
@@ -52,7 +53,7 @@ describe('components/BlobPreview', function() {
       }));
 
       var iframe = element.querySelector('iframe');
-      expect(iframe).to.exist;
+      assert.ok(iframe);
       expect(iframe.getAttribute('src')).to.contain('docs.google.com');
       expect(iframe.getAttribute('src')).to.contain('guid');
     });

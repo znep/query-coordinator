@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('Socrata config service', function() {
@@ -20,11 +21,11 @@ describe('Socrata config service', function() {
 
   describe('socrataConfig object present', function() {
     it('should allow for fetching a value by key', function() {
-      expect(configService.get('testKey')).to.exist.and.to.equal('testValue');
+      assert.equal(configService.get('testKey'), 'testValue');
     });
 
     it('should return undefined for undefined keys', function() {
-      expect(configService.get('notHere')).to.be.undefined;
+      assert.isUndefined(configService.get('notHere'));
     });
 
     describe('getTheme', function() {
@@ -125,7 +126,7 @@ describe('Socrata config service', function() {
       configService.get('key');
     }).to.not.throw();
 
-    expect(configService.get('key')).to.be.undefined;
+    assert.isUndefined(configService.get('key'));
   });
 
 });

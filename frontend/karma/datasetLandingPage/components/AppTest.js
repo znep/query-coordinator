@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import App from 'App';
 import $ from 'jquery';
 import mockView from 'data/mockView';
@@ -50,19 +52,19 @@ describe('App', function() {
     });
 
     it('does not render BlobPreview', function() {
-      expect(element.querySelector('.blob-preview')).to.not.exist;
+      assert.isNull(element.querySelector('.blob-preview'));
     });
 
     it('does not render BlobDownload', function() {
-      expect(element.querySelector('.blob-download')).to.not.exist;
+      assert.isNull(element.querySelector('.blob-download'));
     });
 
     it('renders RowDetails', function() {
-      expect(element.querySelector('.dataset-contents')).to.exist;
+      assert.ok(element.querySelector('.dataset-contents'));
     });
 
     it('renders SchemaPreview', function() {
-      expect(element.querySelector('.schema-preview')).to.exist;
+      assert.ok(element.querySelector('.schema-preview'));
     });
   });
 
@@ -83,23 +85,23 @@ describe('App', function() {
     });
 
     it('renders BlobPreview', function() {
-      expect(element.querySelector('.blob-preview')).to.exist;
+      assert.ok(element.querySelector('.blob-preview'));
     });
 
     it('renders BlobDownload', function() {
-      expect(element.querySelector('.blob-download')).to.exist;
+      assert.ok(element.querySelector('.blob-download'));
     });
 
     it('does not render RowDetails', function() {
-      expect(element.querySelector('.dataset-contents')).to.not.exist;
+      assert.isNull(element.querySelector('.dataset-contents'));
     });
 
     it('does not render SchemaPreview', function() {
-      expect(element.querySelector('.schema-preview')).to.not.exist;
+      assert.isNull(element.querySelector('.schema-preview'));
     });
 
     it('does not render DatasetPreview', function() {
-      expect(element.querySelector('.dataset-preview')).to.not.exist;
+      assert.isNull(element.querySelector('.dataset-preview'));
     });
   });
 });

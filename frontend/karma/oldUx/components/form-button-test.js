@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React from 'react';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag
@@ -32,13 +34,13 @@ describe('FormButton', function() {
   });
 
   it('exists', function() {
-    expect(this.createElement()).to.be.a.reactElement;
+    assert.isNotNull(this.createElement());
   });
 
   it('renders', function() {
     this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result).to.be.an.elementOfType('form');
+    assert.isNotNull(result);
   });
 
   describe('rendered', function() {
@@ -56,10 +58,8 @@ describe('FormButton', function() {
 
     it('makes an ajax call on submit', function() {
       TestUtils.Simulate.submit(findByTag(this.node, 'form'));
-      expect($.ajax).to.have.been.calledOnce;
-      expect(this.onSuccessStub).to.have.been.calledOnce;
+      sinon.assert.calledOnce($.ajax);
+      sinon.assert.calledOnce(this.onSuccessStub);
     });
-
   });
-
 });

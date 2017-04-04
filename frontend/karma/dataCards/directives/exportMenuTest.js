@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('Export Menu', function() {
@@ -95,13 +97,13 @@ describe('Export Menu', function() {
       it('disables the filtered radio button if the row counts are the same', function() {
         stubRowCounts(50000, 50000);
         context = createElement();
-        expect(context.element.find('input[type="radio"]:disabled')).to.exist;
+        assert.lengthOf(context.element.find('input[type="radio"]:disabled'), 1);
       });
 
       it('enables the filtered radio button if the row counts are different', function() {
         stubRowCounts(50000, 30000);
         context = createElement();
-        expect(context.element.find('input[type="radio"]:disabled')).to.not.exist;
+        assert.lengthOf(context.element.find('input[type="radio"]:disabled'), 0);
       });
 
       it('sets the url of the download button based on the current filter', function() {
@@ -153,8 +155,8 @@ describe('Export Menu', function() {
         context = createElement();
 
         testHelpers.fireMouseEvent(context.element.find('button')[0], 'click');
-        expect(context.element.scope().showPolaroidButton).to.not.be.ok;
-        expect(context.element.find('[data-action="export-polaroid"]')).to.not.exist;
+        assert.notOk(context.element.scope().showPolaroidButton);
+        assert.lengthOf(context.element.find('[data-action="export-polaroid"]'), 0);
       });
 
       it('should be visible if the config setting is enabled', function() {
@@ -162,8 +164,8 @@ describe('Export Menu', function() {
         context = createElement();
 
         testHelpers.fireMouseEvent(context.element.find('button')[0], 'click');
-        expect(context.element.scope().showPolaroidButton).to.be.ok;
-        expect(context.element.find('[data-action="export-polaroid"]')).to.exist;
+        assert.ok(context.element.scope().showPolaroidButton);
+        assert.lengthOf(context.element.find('[data-action="export-polaroid"]'), 1);
       });
 
       it('should trigger card selection mode on click', function(done) {
@@ -171,8 +173,8 @@ describe('Export Menu', function() {
         context = createElement();
 
         context.scope.$on('enter-export-card-visualization-mode', function(e) {
-          expect(context.element.scope().allowChooserModeCancel).to.be.true;
-          expect(context.element.scope().panelActive).to.be.false;
+          assert.isTrue(context.element.scope().allowChooserModeCancel);
+          assert.isFalse(context.element.scope().panelActive);
           done();
         });
 
@@ -187,8 +189,8 @@ describe('Export Menu', function() {
       context = createElement();
 
       context.scope.$on('exit-export-card-visualization-mode', function() {
-        expect(context.element.scope().allowChooserModeCancel).to.be.false;
-        expect(context.element.scope().panelActive).to.be.false;
+        assert.isFalse(context.element.scope().allowChooserModeCancel);
+        assert.isFalse(context.element.scope().panelActive);
         done();
       });
 
@@ -203,8 +205,8 @@ describe('Export Menu', function() {
       context = createElement();
 
       context.scope.$on('exit-export-card-visualization-mode', function() {
-        expect(context.element.scope().allowChooserModeCancel).to.be.false;
-        expect(context.element.scope().panelActive).to.be.false;
+        assert.isFalse(context.element.scope().allowChooserModeCancel);
+        assert.isFalse(context.element.scope().panelActive);
         done();
       });
 
@@ -223,12 +225,12 @@ describe('Export Menu', function() {
     });
 
     it('should give the export button class "disabled"', function() {
-       expect(context.element.find('button').hasClass('disabled')).to.be.true;
+       assert.isTrue(context.element.find('button').hasClass('disabled'));
     });
 
     it('should not open the panel on click', function() {
       testHelpers.fireMouseEvent(context.element.find('button')[0], 'click');
-      expect(context.element.find('.tool-panel-main')).to.not.have.class('active');
+      assert.isFalse($(context.element.find('.tool-panel-main')).hasClass('active'));
     });
   });
 });

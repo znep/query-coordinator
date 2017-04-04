@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 
@@ -36,8 +37,8 @@ xdescribe('admin-georegions-screen', function() {
 
     it('renders the configure boundary modal', function() {
       georegionsSelected('four-four', 'My Boundary');
-      expect(this.clearFlashMessageStub).to.have.been.calledOnce;
-      expect($.fn.jqmShow).to.have.been.calledOnce;
+      sinon.assert.calledOnce(this.clearFlashMessageStub);
+      sinon.assert.calledOnce($.fn.jqmShow);
       expect($(this.target)).to.contain('')
     });
 

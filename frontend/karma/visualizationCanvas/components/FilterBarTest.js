@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import _ from 'lodash';
 import { mapStateToProps, mapDispatchToProps } from 'components/FilterBar';
 import parentView from 'data/mockParentView';
@@ -19,41 +21,41 @@ describe('FilterBar', () => {
     });
 
     it('omits number columns without column stats', () => {
-      expect(_.find(view.columns, ['fieldName', 'cnidarian_age'])).to.exist;
-      expect(_.find(props.columns, ['fieldName', 'cnidarian_age'])).to.not.exist;
+      assert.ok(_.find(view.columns, ['fieldName', 'cnidarian_age']));
+      assert.notOk(_.find(props.columns, ['fieldName', 'cnidarian_age']));
     });
 
     it('returns calendar_date columns', () => {
-      expect(_.find(view.columns, ['fieldName', 'marsupial_birthday'])).to.exist;
+      assert.ok(_.find(view.columns, ['fieldName', 'marsupial_birthday']));
     });
 
     it('omits photo column types', () => {
-      expect(_.find(view.columns, ['dataTypeName', 'photo'])).to.exist;
-      expect(_.find(props.columns, ['dataTypeName', 'photo'])).to.not.exist;
+      assert.ok(_.find(view.columns, ['dataTypeName', 'photo']));
+      assert.notOk(_.find(props.columns, ['dataTypeName', 'photo']));
     });
 
     it('omits point column types', () => {
-      expect(_.find(view.columns, ['dataTypeName', 'point'])).to.exist;
-      expect(_.find(props.columns, ['dataTypeName', 'point'])).to.not.exist;
+      assert.ok(_.find(view.columns, ['dataTypeName', 'point']));
+      assert.notOk(_.find(props.columns, ['dataTypeName', 'point']));
     });
 
     it('omits location subcolumns', () => {
-      expect(_.find(props.columns, ['fieldName', 'marsupial_location_state'])).to.not.exist;
-      expect(_.find(props.columns, ['fieldName', 'marsupial_location_city'])).to.not.exist;
-      expect(_.find(props.columns, ['fieldName', 'marsupial_location_zip'])).to.not.exist;
+      assert.notOk(_.find(props.columns, ['fieldName', 'marsupial_location_state']));
+      assert.notOk(_.find(props.columns, ['fieldName', 'marsupial_location_city']));
+      assert.notOk(_.find(props.columns, ['fieldName', 'marsupial_location_zip']));
     });
 
     it('omits url subcolumns', () => {
-      expect(_.find(props.columns, ['fieldName', 'marsupial_website_description'])).to.not.exist;
+      assert.notOk(_.find(props.columns, ['fieldName', 'marsupial_website_description']));
     });
 
     it('omits phone subcolumns', () => {
-      expect(_.find(props.columns, ['fieldName', 'marsupial_phone_type'])).to.not.exist;
+      assert.notOk(_.find(props.columns, ['fieldName', 'marsupial_phone_type']));
     });
 
     it('omits internal columns', () => {
-      expect(_.find(view.columns, ['fieldName', ':internal_column'])).to.exist;
-      expect(_.find(props.columns, ['fieldName', ':internal_column'])).to.not.exist;
+      assert.ok(_.find(view.columns, ['fieldName', ':internal_column']));
+      assert.notOk(_.find(props.columns, ['fieldName', ':internal_column']));
     });
 
     it('returns filters', () => {
@@ -91,7 +93,7 @@ describe('FilterBar', () => {
 
     it('dispatches setFilters when onUpdate is called', () => {
       props.onUpdate(filters);
-      expect(spy).to.have.been.calledWith(setFilters(filters));
+      sinon.assert.calledWith(spy, setFilters(filters));
     });
   });
 });

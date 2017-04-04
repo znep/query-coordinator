@@ -5,12 +5,13 @@ namespace :test do
 
     def run_karma(dir, args = {})
       watch = args.watch == 'true'
-      browser = args.browser || 'PhantomJS'
+      browser = args.browser || 'ChromeNoSandboxHeadless'
       reporter = args.reporter || 'mocha'
 
-      if browser =~ /^phantom/i then
-        browser = 'PhantomJS'
-      elsif browser =~ /^chrome/i then
+      # Normalize case.
+      if browser =~ /^chromenosandboxheadless$/i then
+        browser = 'ChromeNoSandboxHeadless'
+      elsif browser =~ /^chrome$/i then
         browser = 'Chrome'
       elsif browser =~ /^firefox/i then
         browser = 'Firefox'
@@ -18,7 +19,7 @@ namespace :test do
 
       cmd = "./node_modules/karma/bin/karma start karma/#{dir}/karma.conf.js --singleRun #{!watch} --browsers #{browser} --reporters #{reporter}"
       puts cmd
-      fail($?.exitstatus) unless system(cmd)
+      fail("Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
     end
 
     # ADD NEW TEST SUITES HERE

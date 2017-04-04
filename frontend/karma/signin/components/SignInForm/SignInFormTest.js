@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import _ from 'lodash';
@@ -85,13 +86,13 @@ describe('<SignInForm />', () => {
     it('blanks out connection', () => {
       wrapperWithSocrataEmail.instance().onEmailChange('@example.com');
       expect(wrapperWithSocrataEmail.state().email).to.equal('@example.com');
-      expect(wrapperWithSocrataEmail.state().connectionName).to.not.exist;
+      assert.notProperty(wrapperWithSocrataEmail.state(), 'connectionName');
     });
 
     it('blanks out email when invalid', () => {
       wrapperWithSocrataEmail.instance().onEmailChange('garbage');
-      expect(wrapperWithSocrataEmail.state().email).to.not.exist;
-      expect(wrapperWithSocrataEmail.state().connectionName).to.not.exist;
+      assert.propertyVal(wrapperWithSocrataEmail.state(), 'email', null);
+      assert.propertyVal(wrapperWithSocrataEmail.state(), 'connectionName', null);
     });
 
     it('renders "SSO Enabled" when a connection is found', () => {
@@ -104,7 +105,7 @@ describe('<SignInForm />', () => {
 
     it('renders password field when no connection is found', () => {
       wrapperWithSocrataEmail.instance().onEmailChange('garbage');
-      expect(wrapperWithSocrataEmail.state().connectionName).to.not.exist;
+      assert.propertyVal(wrapperWithSocrataEmail.state(), 'connectionName', null);
 
       const passwordInput = wrapperWithSocrataEmail.find(PasswordInput).shallow();
       expect(passwordInput.find('.signin-password-sso-enabled-text')).to.have.length(0);

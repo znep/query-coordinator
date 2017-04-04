@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('tableCard', function() {
@@ -626,15 +627,15 @@ describe('tableCard', function() {
       describe('sort hint caret', function() {
 
         it('should be correct for numbers', function() {
-          expect(immutableTable.find('.th').eq(idColumnIndex).find('.caret')).to.not.have.class('sortUp');
+          assert.isFalse($(immutableTable.find('.th').eq(idColumnIndex).find('.caret')).hasClass('sortUp'));
         });
 
         it('should be correct for text', function() {
-          expect(immutableTable.find('.th').eq(beatColumnIndex).find('.caret')).to.have.class('sortUp');
+          assert.isTrue(immutableTable.find('.th').eq(beatColumnIndex).find('.caret').hasClass('sortUp'));
         });
 
         it('should be correct for dates', function() {
-          expect(immutableTable.find('.th').eq(dateColumnIndex).find('.caret')).to.not.have.class('sortUp');
+          assert.isFalse($(immutableTable.find('.th').eq(dateColumnIndex).find('.caret')).hasClass('sortUp'));
         });
 
       });
@@ -776,7 +777,7 @@ describe('tableCard', function() {
       var el = createTableCard(true, _.constant($q.when([])), 103, false);
       var rowCountLabel = el.find('.table-label');
       expect(rowCountLabel.length).to.not.equal(0);
-      expect(rowCountLabel.is(':visible')).to.be.false;
+      assert.isFalse(rowCountLabel.is(':visible'));
     });
 
     it('should escape rowDisplayUnit', function() {
@@ -866,25 +867,25 @@ describe('tableCard', function() {
     xit('should add hidden class if scrolling down and the page is not at the bottom', function() {
       el.css('top', 900);
       tableBody.trigger(scrollEvent(-10));
-      expect(tableBody.hasClass('vertically-hidden')).to.be.true;
+      assert.isTrue(tableBody.hasClass('vertically-hidden'));
     });
 
     xit('should not add hidden class if scrolling down and the page is at the bottom', function() {
       tableBody.trigger(scrollEvent(-10));
-      expect(tableBody.hasClass('vertically-hidden')).to.be.false;
+      assert.isFalse(tableBody.hasClass('vertically-hidden'));
     });
 
     xit('should not add hidden class if scrolling up and the page is not at the bottom', function() {
       tableBody.scrollTop(100);
       el.css('top', 1000);
       tableBody.trigger(scrollEvent(10));
-      expect(tableBody.hasClass('vertically-hidden')).to.be.false;
+      assert.isFalse(tableBody.hasClass('vertically-hidden'));
     });
 
     xit('should not add hidden class if scrolling up and the page is at the bottom', function() {
       tableBody.scrollTop(100);
       tableBody.trigger(scrollEvent(10));
-      expect(tableBody.hasClass('vertically-hidden')).to.be.false;
+      assert.isFalse(tableBody.hasClass('vertically-hidden'));
     });
   });
 });

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('SuggestionService', function() {
@@ -44,7 +45,7 @@ describe('SuggestionService', function() {
     it('should return an empty array when no suggestions are fetched', function(done) {
       var response = SuggestionService.suggest(fake4x4, fakeFieldName, fakeQuery);
       response.then(function(data) {
-        expect(data).to.be.an('array').and.to.be.empty;
+        assert.deepEqual(data, []);
         done();
       });
       $httpBackend.flush();
@@ -70,7 +71,7 @@ describe('SuggestionService', function() {
       it('should return null', function(done) {
         var response = SuggestionService.suggest(fake4x4, fakeFieldName, fakeQuery);
         response.then(function(data) {
-          expect(data).to.be.null;
+          assert.isNull(data);
           done();
         });
         $httpBackend.flush();

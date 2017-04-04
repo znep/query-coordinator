@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React from 'react';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag,
@@ -47,19 +49,19 @@ describe('ConfigureBoundaryForm', function() {
   });
 
   it('exists', function() {
-    expect(this.createElement()).to.be.a.reactElement;
+    assert.isNotNull(this.createElement());
   });
 
   it('renders', function() {
     this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result).to.be.an.elementOfType('div');
+    assert.isNotNull(result);
   });
 
   it('has a title', function() {
     var node = this.renderIntoDocument();
     var title = findByTag(node, 'h2');
-    expect(title).to.have.textContent('my title');
+    assert.equal(title.textContent, 'my title');
   });
 
   it('fetches initial state on mount', function() {
@@ -67,7 +69,7 @@ describe('ConfigureBoundaryForm', function() {
     this.renderIntoDocument({
       fetchInitialState: fetchStub
     });
-    expect(fetchStub).to.have.been.calledOnce;
+    sinon.assert.calledOnce(fetchStub);
   });
 
   it('shows the spinner when loading', function() {
@@ -140,7 +142,7 @@ describe('ConfigureBoundaryForm', function() {
 
     var form = findByTag(node, 'form');
     TestUtils.Simulate.submit(form);
-    expect(saveStub).to.have.been.calledOnce;
+    sinon.assert.calledOnce(saveStub);
   });
 
   describe('when setting up a new boundary', function() {
@@ -157,8 +159,8 @@ describe('ConfigureBoundaryForm', function() {
 
       var form = findByTag(node, 'form');
       TestUtils.Simulate.submit(form);
-      expect(saveStub).to.not.have.been.called;
-      expect(node.state.isConfigured).to.be.true;
+      sinon.assert.notCalled(saveStub);
+      assert.isTrue(node.state.isConfigured);
       expect(node.state.backActions).to.have.length(1);
     });
 
@@ -175,7 +177,7 @@ describe('ConfigureBoundaryForm', function() {
 
       var backBtn = findAllByTag(node, 'button')[0];
       TestUtils.Simulate.click(backBtn);
-      expect(node.state.isConfigured).to.be.false;
+      assert.isFalse(node.state.isConfigured);
       expect(node.state.backActions).to.have.length(0);
     });
   });

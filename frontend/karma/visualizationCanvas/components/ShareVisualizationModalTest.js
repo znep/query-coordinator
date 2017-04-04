@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { ShareVisualizationModal } from 'components/ShareVisualizationModal';
 import mockVif from 'data/mockVif';
 
@@ -26,7 +27,7 @@ describe('ShareVisualizationModal', () => {
     });
 
     it('does not render when isActive is false', () => {
-      expect(element).to.not.exist;
+      assert.isNull(element);
     });
   });
 

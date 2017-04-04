@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
+
 describe('blist.dataset', function () {
   beforeEach(function() {
     blist.configuration = {};
@@ -169,6 +172,7 @@ describe('blist.dataset', function () {
   });
 
   describe('getDownloadType', function() {
+    var dataset;
 
     beforeEach(function() {
       dataset = new Dataset({id: 'four-four'});

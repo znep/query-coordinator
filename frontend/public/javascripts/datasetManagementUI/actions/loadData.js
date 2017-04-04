@@ -145,8 +145,8 @@ function loadNormalPreview(outputSchemaId, pageNo) {
             }));
           const actions = [];
           const columnErrorIndices = withoutHeader.
-            filter((cell) => (cell.error)).
-            map((cell) => (cell.id));
+            filter(cell => cell.error).
+            map(cell => cell.offset);
           if (columnErrorIndices.length > 0) {
             actions.push(updateFromServer('transforms', {
               id: transformId,
@@ -164,8 +164,8 @@ function loadNormalPreview(outputSchemaId, pageNo) {
         }))));
         const inputSchemaId = db.output_schemas[outputSchemaId].input_schema_id;
         const rowErrors = withoutHeader.
-          filter((row) => row.error).
-          map((row) => ({
+          filter(row => row.error).
+          map(row => ({
             ...row.error,
             id: `${inputSchemaId}-${row.offset}`,
             input_schema_id: inputSchemaId,
@@ -212,17 +212,19 @@ export function loadColumnErrors(transformId, outputSchemaId, pageNo) {
           });
         })));
         dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
-          const errorIndices = _.map(newRecords,
-            (newRecord, index) => ({
-              ...newRecord,
-              index
-            })).
-          filter((newRecord) => newRecord.error).
-          map((newRecord) => newRecord.index);
+          const errorIndices = _.map(newRecords, (newRecord, index) => ({
+            ...newRecord,
+            index
+          })).
+          filter(newRecord => newRecord.error).
+          map(newRecord => newRecord.index);
+
           const transform = outputSchemaResp.output_columns[idx].transform;
           return updateFromServer('transforms', {
             id: transform.id,
-            error_indices: (existingErrorIndices) => (_.union(existingErrorIndices, errorIndices))
+            error_indices: (existingErrorIndices) => (
+              _.union(existingErrorIndices, errorIndices)
+            )
           });
         })));
       }).
@@ -237,7 +239,7 @@ export function loadColumnErrors(transformId, outputSchemaId, pageNo) {
 export function loadRowErrors(inputSchemaId, pageNo) {
   return (dispatch, getState) => {
     const uploadId = getState().db.input_schemas[inputSchemaId].upload_id;
-    const url = dsmapiLinks.rowErrors(uploadId, inputSchemaId, pageNo * PAGE_SIZE, PAGE_SIZE);
+    const url = dsmapiLinks.rowErrors(uploadId, inputSchemaId, (pageNo - 1) * PAGE_SIZE, PAGE_SIZE);
     dispatch(loadStarted(url));
     socrataFetch(url).
       then(checkStatus).

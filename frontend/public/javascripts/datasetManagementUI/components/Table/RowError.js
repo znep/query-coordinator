@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import styles from 'styles/Table/RowError.scss';
 
-export default function RowError({ rowError }) {
+export default function RowError({ row }) {
+  const { rowError, rowIdx } = row;
   const SubI18n = I18n.show_output_schema.row_errors;
 
   const malformedRowContents = rowError.contents.map(cell => `"${cell.replace('"', '\\"')}"`).join(',');
@@ -22,7 +23,7 @@ export default function RowError({ rowError }) {
   }
 
   return (
-    <tr className={styles.malformedRow}>
+    <tr key={rowIdx} className={styles.malformedRow}>
       <td className={styles.location}>{SubI18n.row.format(rowError.offset + 1)}</td>
       <td className={styles.message} dangerouslySetInnerHTML={malformedRowMessage}></td>
       <td className={styles.contents}>{SubI18n.row_content}: <span>{malformedRowContents}</span></td>
@@ -30,5 +31,5 @@ export default function RowError({ rowError }) {
 }
 
 RowError.propTypes = {
-  rowError: PropTypes.object.isRequired
+  row: PropTypes.object.isRequired
 };

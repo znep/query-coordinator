@@ -137,10 +137,12 @@ class ShowOutputSchema extends Component {
                 displayState={displayState}
                 updateColumnType={updateColumnType} />
             </div>
-            <Pager
-              path={path}
-              routing={routing}
-              displayState={displayState} />
+            <div className={styles.pagerWrap}>
+              <Pager
+                path={path}
+                routing={routing}
+                displayState={displayState} />
+            </div>
           </ModalContent>
 
           <ModalFooter>

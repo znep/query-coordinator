@@ -40,7 +40,7 @@ class TableBody extends Component {
       }
     } else if (props.displayState.type === DisplayState.ROW_ERRORS) {
       rowIndices = _.filter(props.db.row_errors, { input_schema_id: props.inputSchemaId }).
-        map((rowError) => rowError.offset);
+                     map((rowError) => rowError.offset);
     } else {
       rowIndices = _.range(startRow, endRow);
     }
@@ -67,7 +67,7 @@ class TableBody extends Component {
   render() {
     const data = this.getData();
     const rows = data.map(row => (
-      row.rowError ? <RowError key={row.rowIdx} rowError={row.rowError} /> : this.renderNormalRow(row)
+      row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row)
     ));
 
     return (

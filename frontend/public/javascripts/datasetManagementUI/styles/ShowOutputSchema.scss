@@ -91,13 +91,27 @@ li.active {
 .dataPreview {
   height: 44px;
   padding: 0.5em 0.7em 0 0.7em;
-  display: flex;
-  justify-content: space-between;
+  display: block;
+
+  .titleWrapper {
+    h3 {
+      margin-right: 0.3em;
+      float: left;
+    }
+
+    span {
+      display: block;
+      margin-top: 8px;
+      float: left;
+    }
+  }
 
   .datasetAttribute {
     display: inline-block;
     text-align: right;
     margin: 0px 0px 0px 1em;
+    float: right;
+
     p {
       margin: 0px 0px;
       line-height: 120%;

@@ -260,19 +260,19 @@ describe('SearchablePicklist', () => {
 
     it('displays the exact search prompt if input is entered', () => {
       const element = renderComponent(SearchablePicklist, getProps());
-      assert.equal(getSearchPrompt(element), null);
+      expect(getSearchPrompt(element)).to.equal(null);
 
       simulateTextInput(element);
-      assert.notEqual(getSearchPrompt(element), null);
+      expect(getSearchPrompt(element)).to.not.equal(null);
     });
 
     it('hides the exact search prompt if input is removed', () => {
       const element = renderComponent(SearchablePicklist, getProps());
       simulateTextInput(element);
-      assert.notEqual(getSearchPrompt(element), null);
+      expect(getSearchPrompt(element)).to.not.equal(null);
 
       simulateTextInput(element, '');
-      assert.equal(getSearchPrompt(element), null);
+      expect(getSearchPrompt(element)).to.equal(null);
     });
 
     it('hides the exact search prompt if the no options message is visible', (done) => {
@@ -285,8 +285,8 @@ describe('SearchablePicklist', () => {
       Simulate.click(getSearchLink(element));
 
       _.delay(() => {
-        assert.notEqual(getSearchWarning(element), null);
-        assert.equal(getSearchPrompt(element), null);
+        expect(getSearchWarning(element)).to.not.equal(null);
+        expect(getSearchPrompt(element)).to.equal(null);
         done();
       }, 10);
     });

@@ -25,6 +25,10 @@ section.landing-page-section.featured-content {
 
       .entry-title h3 {
         font-weight: 700;
+
+        a:focus {
+          text-decoration: underline;
+        }
       }
     }
   }

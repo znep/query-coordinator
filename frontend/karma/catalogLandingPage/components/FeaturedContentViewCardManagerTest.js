@@ -49,14 +49,6 @@ describe('components/FeaturedContentViewCardManager', () => {
     assert.match(element.querySelector('.overlay').className, /hidden/);
   });
 
-  it('adds the "hidden" class on blur', () => {
-    const element = renderComponent(FeaturedContentViewCardManager, getProps());
-    TestUtils.Simulate.focus(element.querySelector('.hover-target'));
-    assert.notMatch(element.querySelector('.overlay').className, /hidden/);
-    TestUtils.Simulate.blur(element.querySelector('.hover-target'));
-    assert.match(element.querySelector('.overlay').className, /hidden/);
-  });
-
   it('calls the openManager prop on change button click', () => {
     var spy = sinon.spy();
     const element = renderComponent(FeaturedContentViewCardManager, getProps({
@@ -66,12 +58,22 @@ describe('components/FeaturedContentViewCardManager', () => {
     sinon.assert.called(spy);
   });
 
-  it('calls the removeFeaturedContentItem prop on remove button click', () => {
-    var spy = sinon.spy();
-    const element = renderComponent(FeaturedContentViewCardManager, getProps({
-      removeFeaturedContentItem: spy
-    }));
-    TestUtils.Simulate.click(element.querySelector('.remove-button'));
-    sinon.assert.called(spy);
+  describe('remove button', () => {
+    it('adds the "hidden" class on blur', () => {
+      const element = renderComponent(FeaturedContentViewCardManager, getProps());
+      TestUtils.Simulate.focus(element.querySelector('.hover-target'));
+      assert.notMatch(element.querySelector('.overlay').className, /hidden/);
+      TestUtils.Simulate.blur(element.querySelector('.remove-button'));
+      assert.match(element.querySelector('.overlay').className, /hidden/);
+    });
+
+    it('calls the removeFeaturedContentItem prop on click', () => {
+      var spy = sinon.spy();
+      const element = renderComponent(FeaturedContentViewCardManager, getProps({
+        removeFeaturedContentItem: spy
+      }));
+      TestUtils.Simulate.click(element.querySelector('.remove-button'));
+      sinon.assert.called(spy);
+    });
   });
 });

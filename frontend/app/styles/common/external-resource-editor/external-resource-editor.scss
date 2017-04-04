@@ -84,4 +84,10 @@ $view-card-preview-height: 300px;
       }
     }
   }
+
+  .modal-footer {
+    button:first-of-type {
+      margin-right: 0.5rem;
+    }
+  }
 }

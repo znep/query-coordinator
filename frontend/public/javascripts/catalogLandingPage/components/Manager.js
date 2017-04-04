@@ -3,6 +3,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { defaultHeaders } from '../../common/http';
+import { handleEnter } from '../../common/helpers/keyPressHelpers';
 import format from 'stringformat';
 import FeaturedContentManager from './FeaturedContentManager';
 import * as Actions from '../actions/header';
@@ -19,7 +20,8 @@ export class Manager extends React.Component {
       'handleInputChange',
       'metadataForSave',
       'onDismiss',
-      'handleSave'
+      'handleSave',
+      'saveOnEnter'
     ]);
   }
 
@@ -55,6 +57,12 @@ export class Manager extends React.Component {
     });
 
     return featuredContentPayload;
+  }
+
+  saveOnEnter(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.handleSave();
   }
 
   handleSave() {
@@ -160,6 +168,7 @@ export class Manager extends React.Component {
               maxLength="140"
               placeholder={_.get(I18n, 'manager.headline.placeholder')}
               onChange={this.handleInputChange}
+              onKeyDown={handleEnter(this.saveOnEnter)}
               value={this.props.header.headline} />
 
             {headingHtml(_.get(I18n, 'manager.description.label'))}
@@ -172,6 +181,7 @@ export class Manager extends React.Component {
               placeholder={formatWithCategory('manager.description.placeholder',
                   'manager.description.placeholder_no_category')}
               onChange={this.handleInputChange}
+              onKeyDown={handleEnter(this.saveOnEnter)}
               value={this.props.header.description} />
 
             {headingHtml(formatWithCategory('manager.featured_content.label',

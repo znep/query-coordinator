@@ -12,6 +12,18 @@ export class Searchbox extends React.Component {
     _.bindAll(this, ['clearQuery', 'handleChange', 'handleSearch']);
   }
 
+  componentDidMount() {
+    if (this.props.autoFocus) {
+      this.searchInput.focus();
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.autoFocus) {
+      this.searchInput.focus();
+    }
+  }
+
   clearQuery(event) {
     event.preventDefault();
     this.setState({ query: '' }, this.props.onClear(this.state.query));
@@ -22,12 +34,14 @@ export class Searchbox extends React.Component {
     this.setState({ query });
   }
 
-  handleSearch(query = '') {
-    this.props.onSearch(query);
+  handleSearch(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onSearch(event.target.value);
   }
 
   render() {
-    const { autoFocus, placeholder } = this.props;
+    const { placeholder } = this.props;
     const { query } = this.state;
 
     const clearSearchButton = (query ?
@@ -40,11 +54,11 @@ export class Searchbox extends React.Component {
 
     const inputProps = {
       'aria-label': placeholder,
-      autoFocus,
       className: 'text-input',
       onChange: (event) => this.handleChange(event.target.value),
-      onKeyDown: handleEnter((event) => this.handleSearch(event.target.value)),
+      onKeyDown: handleEnter(this.handleSearch),
       placeholder,
+      ref: (input) => { this.searchInput = input; },
       type: 'text',
       value: query
     };

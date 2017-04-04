@@ -58,6 +58,7 @@ export class ExternalResourceEditor extends React.Component {
 
     const externalResourceFormProps = {
       description,
+      onEnter: this.returnExternalResource,
       onFieldChange: this.updateField,
       previewImage,
       title,

@@ -91,9 +91,10 @@ RSpec.describe StoriesHelper, type: :helper do
     end
 
     it 'returns the anchor element for the story stats page with an href' do
+      @story_url_for_preview = 'https://example.com/a_link'
       allow(self).to receive(:should_launch_print_dialog_on_page_load?).and_return(true)
 
-      expect(settings_panel_print_story_link).to eq('<a href="/stories/s/test-test/preview?print=true" class="menu-list-item-header" role="button" target="_blank"></a>')
+      expect(settings_panel_print_story_link).to eq('<a href="https://example.com/a_link?print=true" class="menu-list-item-header" role="button" target="_blank"></a>')
     end
   end
 

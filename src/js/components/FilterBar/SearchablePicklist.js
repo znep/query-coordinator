@@ -41,7 +41,8 @@ export const SearchablePicklist = React.createClass({
   onChangeSearchTerm(event) {
     this.props.onChangeSearchTerm(event.target.value);
     this.setState({ isError: false });
-    event.target.value === '' ? this.setState({ textEntered: false }) : this.setState({ textEntered: true });
+    const textEntered = event.target.value !== '';
+    this.setState({ textEntered: textEntered });
   },
 
   onClickSelectedOption(selectedOption) {
@@ -93,32 +94,32 @@ export const SearchablePicklist = React.createClass({
 
     const buttonClassName = classNames('btn btn-default', {
       'btn-highlighted': textEntered
-    })
+    });
 
     return (
       <div className="searchable-picklist-input-container">
         <form>
-        <span className="input-group">
-          <input
-            className="searchable-picklist-input"
-            type="text"
-            aria-label={t('filter_bar.search')}
-            value={value || ''}
-            ref={(el) => this.search = el}
-            onKeyUp={this.onKeyUpSearch}
-            onChange={this.onChangeSearchTerm}
-            aria-invalid={isError}
-            disabled={isValidating} />
-          {loadingSpinner}
-          <span className="input-group-btn">
-            <button
-              className={buttonClassName}
-              onClick={this.onSearch}
-              disabled={isValidating}>
-              <SocrataIcon name="search" />
-            </button>
+          <span className="input-group">
+            <input
+              className="searchable-picklist-input"
+              type="text"
+              aria-label={t('filter_bar.search')}
+              value={value || ''}
+              ref={(el) => this.search = el}
+              onKeyUp={this.onKeyUpSearch}
+              onChange={this.onChangeSearchTerm}
+              aria-invalid={isError}
+              disabled={isValidating} />
+            {loadingSpinner}
+            <span className="input-group-btn">
+              <button
+                className={buttonClassName}
+                onClick={this.onSearch}
+                disabled={isValidating}>
+                <SocrataIcon name="search" />
+              </button>
+            </span>
           </span>
-        </span>
         </form>
       </div>
     );
@@ -189,7 +190,7 @@ export const SearchablePicklist = React.createClass({
     return (this.state.textEntered && !this.state.isError) ?
       <div className="alert info">
         {t('filter_bar.text_filter.exact_search_prompt_main')}
-        <a href='#filter-bar' onClick={this.onSearch}>
+        <a href="" onClick={this.onSearch}>
           {t('filter_bar.text_filter.exact_search_prompt_link')}
         </a>
       </div> :

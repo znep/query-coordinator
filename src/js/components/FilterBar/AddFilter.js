@@ -117,7 +117,7 @@ export const AddFilter = React.createClass({
         this.onClickColumn(column);
       },
       onBlur: () => this.setState({ isChoosingColumn: false }),
-      value: searchTerm,
+      value: searchTerm
     };
 
     if (_.isEmpty(picklistOptions)) {
@@ -146,7 +146,7 @@ export const AddFilter = React.createClass({
           type="text"
           aria-label={t('filter_bar.search')}
           value={searchTerm || ''}
-          autoFocus={true}
+          autoFocus
           onChange={this.onChangeSearchTerm} />
       </div>
     );

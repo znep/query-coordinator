@@ -1,36 +1,16 @@
-<%- translation = lambda { |key, *args| t("catalog_landing_page.activation.#{key}", *args) } %>
+<%- unless cookies['hide-clp-manager'] %>
 <div class="alert info browse2-manage-catalog-landing-page">
-  <%- activation_params = { controller: :catalog_landing_page, action: :manage }.
-        merge(params.only(*CatalogLandingPage.valid_params)).
-        merge(custom_path: params[:custom_path])
-      activation_params.merge!(custom_path: '/browse') if CatalogLandingPage.special_case_browse?(request)
-      activation_link = link_to(capture do %>
-    <button class="btn btn-primary manage-button">
-      <%= translation.call('action') %>
-      <i id="socrata-icon-arrow-right" class="socrata-icon-arrow-right"></i>
-    </button>
-  <%- end, activation_params) %>
-
-  <div class="browse2-manage-clp-header">
-    <h3><%= translation.call('header') %></h3>
-    <%= activation_link %>
+  <%-
+    activation_params = { controller: :catalog_landing_page, action: :manage }.
+      merge(params.only(*CatalogLandingPage.valid_params)).
+      merge(custom_path: params[:custom_path])
+    activation_params.merge!(custom_path: '/browse') if CatalogLandingPage.special_case_browse?(request)
+  %>
+  <div class="close-action manage-clp-hide-action">
+    <i id="socrata-icon-close" class="socrata-icon-close"></i>
   </div>
-
-  <div class="browse2-manage-clp-info">
-    <div class="manage-clp-info-text">
-      <%- 3.times do |i| %>
-        <div class="info-header"><%= translation.call("explanation_#{i}.header") %></div>
-        <div class="info-description"><%= translation.call("explanation_#{i}.description") %></div>
-      <%- end %>
-    </div>
-
-    <div class="manage-clp-action-buttons">
-      <div class="manage-clp-activate-action">
-        <%= activation_link %>
-      </div>
-      <div class="manage-clp-hide-action">
-        <button class="btn btn-simple"><%= translation.call('dismiss') %> <i id="socrata-icon-arrow-up" class="socrata-icon-arrow-up"></i></button>
-      </div>
-    </div>
-  </div>
+  <span class="header"><%= t('catalog_landing_page.activation.header') %></span>
+  <%= t('catalog_landing_page.activation.explanation') %>:
+  <%= link_to(t('catalog_landing_page.activation.action'), activation_params) %>
 </div>
+<%- end %>

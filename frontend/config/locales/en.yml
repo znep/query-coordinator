@@ -425,18 +425,9 @@ en:
             title: Try it yourself!
   catalog_landing_page:
     activation:
-      action: Manage this Category
-      dismiss: Not now, hide this info
-      header: Highlight the best content within this category
-      explanation_0:
-        header: Create a Headline and Introduction
-        description: Introduce the category with a headline, introduction and optional statistics.
-      explanation_1:
-        header: Share stats in 'About this Category'
-        description: Show summary level category stats for exploration.
-      explanation_2:
-        header: Display Featured Content
-        description: Choose up to 3 Socrata or External assets to feature for this category.
+      action: Feature Content
+      header: Feature your best content.
+      explanation: Write an introduction and promote up to 3 assets from this category
     category_stats:
       about: About this Category
       calendars:
@@ -462,26 +453,26 @@ en:
     manager:
       cancel: Cancel
       change: Change
-      manage_this_category: Manage this Category
+      edit_action: Edit Featured Content
       unexpected_error: An unexpected error has occurred. Please reload and try again.
       you_must_login_first: You must login first in order to save your changes.
       remove: Remove
       save: Save
-      title: Manage %{category}
+      title: Feature Content
       headline:
         label: Headline
-        placeholder: Create a headline
+        placeholder: Create a headline; maximum characters = 140
       description:
         label: Description
-        placeholder: Write a description for your {category} content
-        placeholder_no_category: Write a description for your content
+        placeholder: Write a description for your {category} content; maximum characters = 320 (this field accepts Markdown syntax)
+        placeholder_no_category: Write a description for your content; maximum characters = 320 (this field accepts Markdown syntax)
       show_stats:
         label: Show Stats
         explanation: Choose to show some basic statistics around this category, such as how many datasets, visualizations and stories it contains.
       featured_content:
         label: Featured Content in {category}
         label_no_category: Featured Content
-        explanation: Promote up to 3 assets for this category.
+        explanation: Promote up to 3 assets.
     search:
       hint: Search
     title: Search & Browse | %{category}
@@ -498,6 +489,7 @@ en:
         no_results: No results
         of: of
         pager:
+          invalid_page_error: Invalid page number. Please enter a value between {first} and {last}.
           last_page: Last page
           next_page: Next page
           page: Page
@@ -526,7 +518,7 @@ en:
         select: Select
       form:
         description:
-          create_a_link: Create a link to an external resource for this category.
+          create_a_link: Create a link to an external resource.
           for_example: For example, this could be a visualization on the web, a blog post, or a link to another part of your site.
         fields:
           description:

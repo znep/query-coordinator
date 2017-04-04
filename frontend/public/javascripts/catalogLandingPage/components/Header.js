@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import marked from 'marked';
 
 const Header = (props) => {
   var { headline, description } = props;
@@ -16,26 +17,34 @@ const Header = (props) => {
   };
 
   const managementButton = (
-    <a href={managementPageHref} onClick={toggleThrobber}>
-      <button className="management-button btn btn-primary">
-        {_.get(I18n, 'manager.manage_this_category', 'Manage This Category')}
-        <i id="socrata-icon-arrow-right" className="socrata-icon-arrow-right"></i>
+    <a className="management-button-anchor" href={managementPageHref} onClick={toggleThrobber}>
+      <button className="management-button alert info">
+        <i id="socrata-icon-edit" className="socrata-icon-edit"></i>
+        <span className="hoverText">
+          {_.get(I18n, 'manager.edit_action', 'Edit Featured Content')}
+        </span>
         <span className="throbber-icon"></span>
       </button>
     </a>
   );
 
+  const markedDescription = { __html: marked(description || '', { sanitize: true }) };
+
+  const headerClassname = _.isEmpty(headline) ? 'no-headline' : '';
+
   return (
     <div className="catalog-landing-page-header">
-      {window.serverConfig.currentUserMayManage && managementButton}
-      <h1>{headline}</h1>
-      <div className="description">{description}</div>
+      <h1 className={headerClassname}>
+        {headline}
+        {window.serverConfig.currentUserMayManage && managementButton}
+      </h1>
+      <div className="description" dangerouslySetInnerHTML={markedDescription} />
     </div>
   );
 };
 
 Header.propTypes = {
-  headline: PropTypes.string.isRequired,
+  headline: PropTypes.string,
   description: PropTypes.string,
   query: PropTypes.object.isRequired
 };

@@ -30,7 +30,6 @@ describe CatalogLandingPageController do
         expect(assigns(:category)).to eq('Government')
         expect(assigns(:featured_content).length).to eq(2)
         expect(assigns(:metadata).keys).to eq(%w(show_stats description headline))
-        expect(assigns(:category_stats).sort).to eq({'datasets' => 1, 'maps' => 0, 'charts' => 0}.sort)
         expect(assigns(:processed_browse)[:sidebar_config].search).to eq(false)
 
         expect(response).to have_http_status(:success)
@@ -79,7 +78,6 @@ describe CatalogLandingPageController do
           expect(assigns(:category)).to eq('Government')
           expect(assigns(:featured_content).length).to eq(2)
           expect(assigns(:metadata).keys.sort).to eq(%w(description headline show_stats))
-          expect(assigns(:category_stats)).to eq('datasets' => 1, 'maps' => 0, 'charts' => 0)
 
           expect(response).to have_http_status(:success)
         end

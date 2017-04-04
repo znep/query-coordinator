@@ -309,7 +309,37 @@
         }
 
         mapObj.$dom().append(mapObj._children[index].$dom);
-        var query = $.deepGet(mapObj, '_primaryView', 'metadata', 'query', ds.id);
+
+        // EN-14839: This is to fix a bug with map layers that have filters and conditional
+        // formatting. When the ignore_metadata_query_in_tabular_map_layer feature flag is true,
+        // we don't fetch the query from mapObj's metadata and instead use the query from the view
+        // that was added as a layer.
+        //
+        // We want to use the layer view's query because the mapObj's metadata is not updated by
+        // Core the same way that derived views are updated. Because we save the query in the
+        // metadata, the query references column ids, which can get quickly out of sync with the
+        // base dataset. For instance, if the dataset goes through a publication cycle (i.e. a
+        // working copy is made and then published), the column ids change, causing the query saved
+        // in metadata to be invalid, which causes Core to return a 400 when you ask for data for
+        // that layer. Meanwhile, the map that the layer was based on continues to load fine,
+        // because it's query is managed by Core and is updated appropriately when the base dataset
+        // changes.
+        //
+        // We're using a feature flag here because this saving and referencing was explicitly added
+        // in a commit that has no details about the bug it was fixing and references a ticket in a
+        // ticketing system we no longer have access to. (commit sha, for reference:
+        // 2fe7c3196cda7128ec8b83fd5c5a93cfaebcd7e3)
+        //
+        // If we are eventually confident that we don't need to keep this code around, we should
+        // also remove saveQuery, or at least any parts that save the layer's query under its uid
+        // in mapObj's metadata. As of 3/2017, there were also references to metadata.query in
+        // util/dataset/map.js and screens/dataset-show.js that might also need to be updated if we
+        // stop saving query in metadata.
+        var query;
+        if (!blist.feature_flags.ignore_metadata_query_in_tabular_map_layer) {
+          query = $.deepGet(mapObj, '_primaryView', 'metadata', 'query', ds.id);
+        }
+
         try {
           mapObj._children[index] = $(mapObj._children[index].$dom)
             .socrataDataLayer($.extend({}, mapObj.layerSettings, {
@@ -743,6 +773,10 @@
       }
     },
 
+    // TODO: If we ever decide that it is save to remove ignore_metadata_query_in_tabular_map_layer
+    // and use its behavior by default, we should also remove this function. All it does is save
+    // a layer's query into the primary view's metadata, which isn't used when
+    // ignore_metadata_query_in_tabular_map_layer is true.
     saveQuery: function(uid, query) {
       if ((blist.debug || {}).events && (console || {}).trace) {
         console.groupCollapsed('saveQuery');

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
+import { handleEnter } from '../../helpers/keyPressHelpers';
 
 export class ExternalResourceForm extends React.Component {
   constructor(props) {
@@ -7,7 +8,7 @@ export class ExternalResourceForm extends React.Component {
 
     this.state = { isImageValid: true, initialProps: props };
 
-    _.bindAll(this, ['onChange', 'renderInputField']);
+    _.bindAll(this, ['onChange', 'onKeyDown', 'renderInputField']);
   }
 
   onChange(inputName, event) {
@@ -42,6 +43,12 @@ export class ExternalResourceForm extends React.Component {
     }
   }
 
+  onKeyDown(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onEnter();
+  }
+
   renderInputField(inputName, inputProps, button = null) {
     const prefix = 'external-resource';
     const value = this.props[inputName];
@@ -52,7 +59,8 @@ export class ExternalResourceForm extends React.Component {
       className: `text-input ${kebabKey}`,
       type: 'text',
       'aria-labelledby': `${prefix}-${kebabKey}-label`,
-      onChange: (event) => { this.onChange(inputName, event); }
+      onChange: (event) => { this.onChange(inputName, event); },
+      onKeyDown: handleEnter(this.onKeyDown)
     });
 
     if (inputProps.type !== 'file') {
@@ -134,6 +142,7 @@ export class ExternalResourceForm extends React.Component {
 
 ExternalResourceForm.propTypes = {
   description: PropTypes.string.isRequired,
+  onEnter: PropTypes.func,
   onFieldChange: PropTypes.func.isRequired,
   previewImage: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
@@ -141,11 +150,7 @@ ExternalResourceForm.propTypes = {
 };
 
 ExternalResourceForm.defaultProps = {
-  description: '',
-  onFieldChange: _.noop,
-  previewImage: '',
-  title: '',
-  url: ''
+  onEnter: _.noop
 };
 
 export default ExternalResourceForm;

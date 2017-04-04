@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react';
-import $ from 'jquery';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { ENTER } from 'socrata-components/common/keycodes';
-import { handleKeyPress } from '../../helpers/keyPressHelpers';
+import { handleKeyPress } from '../helpers/keyPressHelpers';
 
 export class Pager extends React.Component {
   constructor(props) {
@@ -15,7 +14,8 @@ export class Pager extends React.Component {
       'nextLinkClick',
       'lastLinkClick',
       'pageInputChange',
-      'pageInputKeyDown'
+      'pageInputKeyDown',
+      'renderPagerLink'
     ]);
 
     this.state = {
@@ -60,58 +60,66 @@ export class Pager extends React.Component {
 
   pageInputKeyDown(e) {
     if (e.keyCode === ENTER) {
-      $(e.target).trigger('blur');
+      e.target.blur();
     }
+  }
+
+  renderPagerLink(options) {
+    const linkClasses = classNames('inline-block', options.className, {
+      disabled: options.linkIsDisabled
+    });
+
+    return (
+      <a
+        href="#"
+        className={linkClasses}
+        onClick={options.onClick}
+        onKeyDown={options.onKeyDown}
+        role="button"
+        aria-label={options.text}
+        tabIndex={options.linkTabIndex}
+        title={options.text}>
+        <span className={options.iconClass}></span>
+        <span className="accessible">
+          {options.text}
+        </span>
+      </a>
+    );
   }
 
   render() {
     const prevLinkDisabled = this.props.currentPage === 1;
-    const prevLinkClasses = classNames('prev-link', 'inline-block', {
-      disabled: prevLinkDisabled
+    const prevLink = this.renderPagerLink({
+      className: 'prev-link',
+      iconClass: 'socrata-icon-arrow-left',
+      linkIsDisabled: prevLinkDisabled,
+      linkTabIndex: prevLinkDisabled ? -1 : 1,
+      onClick: (e) => this.prevLinkClick(e),
+      onKeyDown: handleKeyPress((e) => this.prevLinkClick(e)),
+      text: _.get(I18n, 'common.asset_selector.results_container.pager.previous_page')
     });
-
-    const prevPageText = _.get(I18n, 'common.asset_selector.results_container.pager.previous_page');
-
-    const prevLink = (
-      <a
-        href="#"
-        className={prevLinkClasses}
-        onClick={(e) => this.prevLinkClick(e)}
-        onKeyDown={handleKeyPress((e) => this.prevLinkClick(e))}
-        role="button"
-        aria-label={prevPageText}
-        title={prevPageText}>
-        <span className="socrata-icon-arrow-left"></span>
-        <span className="accessible">
-          {prevPageText}
-        </span>
-      </a>
-    );
 
     const nextLinkDisabled = this.props.currentPage === this.lastPage();
-    const nextLinkClasses = classNames('next-link', 'inline-block', {
-      disabled: nextLinkDisabled
+    const nextLink = this.renderPagerLink({
+      className: 'next-link',
+      iconClass: 'socrata-icon-arrow-right',
+      linkIsDisabled: nextLinkDisabled,
+      linkTabIndex: nextLinkDisabled ? -1 : 1,
+      onClick: (e) => this.nextLinkClick(e),
+      onKeyDown: handleKeyPress((e) => this.nextLinkClick(e)),
+      text: _.get(I18n, 'common.asset_selector.results_container.pager.next_page')
     });
-
-    const nextPageText = _.get(I18n, 'common.asset_selector.results_container.pager.next_page');
-
-    const nextLink = (
-      <a
-        href="#"
-        className={nextLinkClasses}
-        onClick={(e) => this.nextLinkClick(e)}
-        onKeyDown={handleKeyPress((e) => this.nextLinkClick(e))}
-        role="button"
-        aria-label={nextPageText}
-        title={nextPageText}>
-        <span className="socrata-icon-arrow-right"></span>
-        <span className="accessible">{nextPageText}</span>
-      </a>
-    );
 
     const currentPageInputClasses = classNames('current-page-input', 'inline-block', {
       error: this.state.pageIsInvalid
     });
+
+    const errorAltText = this.state.pageIsInvalid &&
+      _.get(I18n, 'common.asset_selector.results_container.pager.invalid_page_error').
+        format({
+          first: 1,
+          last: this.lastPage()
+        });
 
     const pageNumberText =
       `${_.get(I18n, 'common.asset_selector.results_container.pager.page')} ${this.props.currentPage}`;
@@ -120,6 +128,7 @@ export class Pager extends React.Component {
       <div className={currentPageInputClasses}>
         <input
           type="text"
+          alt={errorAltText}
           aria-label={pageNumberText}
           defaultValue={this.props.currentPage}
           onBlur={this.pageInputChange}

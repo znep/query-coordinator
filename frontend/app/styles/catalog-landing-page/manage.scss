@@ -3,8 +3,6 @@
 @import "common/mixins";
 @import "catalog-landing-page/search";
 @import "catalog-landing-page/header";
-@import "catalog-landing-page/category_stats";
-@import "catalog-landing-page/category_stat";
 @import "catalog-landing-page/featured_content";
 
 div.clp-manager {
@@ -25,8 +23,16 @@ div.clp-manager {
     margin-bottom: 13px;
   }
 
-  input.text-input {
+  .text-input {
     width: 100%;
+
+    &::placeholder {
+      font-style: italic;
+    }
+  }
+
+  button.cancel-button {
+    margin-right: 10px;
   }
 
   .media-results {
@@ -39,7 +45,7 @@ div.clp-manager {
 
     .result-card {
       flex: 0 0 auto;
-      width: 31.9%;
+      width: 32%;
       height: 300px;
       margin-right: 2%;
 
@@ -126,6 +132,10 @@ div.clp-manager {
     display: flex;
     justify-content: flex-end;
     margin-top: 1rem;
+
+    button:first-of-type {
+      margin-right: 0.5rem;
+    }
   }
 }
 

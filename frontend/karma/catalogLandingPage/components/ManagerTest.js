@@ -51,7 +51,7 @@ describe('components/Manager', () => {
   describe('description input', () => {
     it('renders', () => {
       const element = renderComponentWithStore(Manager, getProps());
-      assert.isNotNull(element.querySelector('input.text-input.input-description'));
+      assert.isNotNull(element.querySelector('textarea.text-input.input-description'));
     });
 
     it('calls updateDescription when changed', () => {

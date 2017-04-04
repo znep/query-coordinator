@@ -108,17 +108,19 @@ class ShowOutputSchema extends Component {
 
           <ModalContent>
             <div className={styles.dataPreview}>
-              <h3>
-                Data Preview
+              <div className={styles.titleWrapper}>
+                <h3>
+                  {I18n.data_preview.title}
+                </h3>
                 {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}
-              </h3>
+              </div>
               <div className={styles.datasetAttribute}>
                 <div className={styles.datasetAttribute}>
-                  <p>Rows</p>
+                  <p>{I18n.data_preview.rows}</p>
                   <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
                 </div>
                 <div className={styles.datasetAttribute}>
-                  <p>Columns</p>
+                  <p>{I18n.data_preview.columns}</p>
                   <p className={styles.attribute}>{columns.length}</p>
                 </div>
               </div>
@@ -134,6 +136,9 @@ class ShowOutputSchema extends Component {
                 displayState={displayState}
                 updateColumnType={updateColumnType} />
             </div>
+            <Pager
+              path={path}
+              displayState={displayState} />
           </ModalContent>
 
           <ModalFooter>
@@ -142,10 +147,6 @@ class ShowOutputSchema extends Component {
                 db={db}
                 outputSchema={outputSchema} /> :
               <div />}
-
-            <Pager
-              path={path}
-              displayState={displayState} />
 
             <div>
               <Link to={Links.home}>

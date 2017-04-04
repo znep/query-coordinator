@@ -1752,6 +1752,10 @@ en:
       header: Create a New Dataset
       placeholder: Dataset Name
       title: Create Dataset
+    data_preview:
+      title: Data Preview
+      rows: Rows
+      columns: Columns
     export_errors: Export Errors
     home_pane:
       add_column_metadata: Add Column Metadata
@@ -1806,7 +1810,6 @@ en:
       table_preview: Table Preview
       upload_done: Upload Done
       uploading: Uploading {filename}...
-    manage: Manage
     manage_uploads:
       failed: "{filename} (failed: {status})"
       new_file: Upload a New File

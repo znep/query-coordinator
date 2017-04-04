@@ -17,25 +17,19 @@ FeaturedContentViewCard.propTypes = {
   children: PropTypes.object,
   contentType: PropTypes.string.isRequired,
   description: PropTypes.string,
-  displayType: PropTypes.string,
   icon: PropTypes.string,
   imageUrl: PropTypes.string,
   isPrivate: PropTypes.bool,
+  linkProps: PropTypes.object,
+  metadataLeft: PropTypes.string,
+  metadataRight: PropTypes.string,
   name: PropTypes.string.isRequired,
-  position: PropTypes.number,
-  previewImage: PropTypes.string,
   resource_id: PropTypes.number,
-  rowsUpdatedAt: PropTypes.number,
-  uid: PropTypes.string,
-  url: PropTypes.string,
-  viewCount: PropTypes.number
+  url: PropTypes.string
 };
 
 FeaturedContentViewCard.defaultProps = {
-  contentType: '',
   description: '',
-  displayType: '',
-  icon: '',
   isPrivate: false,
   position: 0,
   name: '',

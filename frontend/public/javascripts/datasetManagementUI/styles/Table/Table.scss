@@ -3,9 +3,11 @@
 @import 'app/styles/styleguide-colors';
 
 .table {
+  display: inline-flex;
+  flex-direction: column;
+
   composes: table-condensed from global;
   overflow: visible;
-  display: inline-block;
   table-layout: fixed;
   min-width: auto;
   white-space: nowrap;
@@ -15,105 +17,57 @@
 
   tr {
     display: block;
-    position: relative;
     border-width: 1px 0 0 1px;
     border-style: solid;
     border-color: $light-grey-4;
   }
 
+  thead {
+    display: block;
+    border-top: 1px solid $light-grey-4;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin-bottom: 1px;
+    z-index: 100;
+
+    tr {
+      border-top-width: 0;
+      border-bottom-width: 0;
+      background-color: #f6f6f6;
+    }
+
+    .col-processed {
+      font-weight: normal;
+      font-size: 7pt;
+    }
+  }
+
+  td, th {
+    min-height: 29px;
+    display: inline-block;
+    border-style: solid;
+    border-color: $light-grey-4;
+    white-space: nowrap;
+  }
+
+  td {
+    width: 250px;
+  }
+
+  th {
+    border-width: 0 1px 0 0;
+  }
+
+  .columnStatuses {
+    padding: 0;
+    background-color: $white;
+  }
+
   :global {
-    thead {
-      height: 89px; // TODO: not sure if this is the exact right number
-      display: block;
-      border-top: 1px solid $light-grey-4;
-      box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
-      position: relative;
-      z-index: 100;
-
-      tr {
-        border-top-width: 0;
-        border-bottom-width: 0;
-        background-color: #f6f6f6;
-
-        &:last-child {
-          th {
-            padding: 0;
-            background-color: $white;
-
-            a {
-              display: inline-block;
-              width: 90%;
-            }
-          }
-        }
-      }
-
-      .col-processed {
-        font-weight: normal;
-        font-size: 7pt;
-      }
+    #malformed-rows-flyout {
+      color: $dark-grey-2;
+      font-size: 13px;
+      white-space: normal;
     }
-
-    th, td {
-      min-height: 29px;
-      display: inline-block;
-      width: 250px;
-      border-style: solid;
-      border-color: $light-grey-4;
-      white-space: nowrap;
-    }
-
-    th {
-      padding: 5px;
-      border-width: 0 1px 0 0;
-    }
-
-    td {
-      font-size: 12px;
-      vertical-align: top;
-      overflow: visible;
-      padding: 0;
-      border-width: 0 1px 1px 0;
-
-      &:last-child {
-        div {
-          &:hover {
-            width: auto;
-          }
-        }
-      }
-      div {
-        width: 250px;
-        min-height: 29px;
-        padding: 5px 7px 4px;
-        display: block;
-        position: relative;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
-
-        background-color: $white;
-        border-style: solid;
-        border-color: $light-grey-4;
-        border-width: 0 1px 1px 0;
-
-        &:hover {
-          min-width: 250px;
-          max-width: 350px;
-          /* This uses max-content which is in working draft,
-          if this doesn't get approved the cells will only
-          expand vertically which isn't the end of the world. */
-          width: auto; // For IE.
-          width: -moz-max-content; // For Firefox.
-          width: -webkit-max-content; // For Safari.
-          width: max-content; // For Chrome.
-
-          height: auto;
-          white-space: normal;
-
-          z-index: 99;
-        }
-      }
-    }
-  } //end global
+  }
 }

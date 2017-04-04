@@ -3,6 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router';
 import * as Links from '../../links';
+import * as DisplayState from '../../lib/displayState';
 import { singularOrPlural } from '../../lib/util';
 import styleguide from 'socrata-components';
 import ProgressBar from '../ProgressBar';
@@ -10,6 +11,37 @@ import TypeIcon from '../TypeIcon';
 import { commaify } from '../../../common/formatNumber';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Table/TransformStatus.scss';
+
+function getFlyoutId(transform) {
+  return `transform-status-flyout-${transform.id}`;
+}
+
+function ErrorFlyout({ transform }) {
+  const SubI18n = I18n.show_output_schema.column_header;
+  const flyoutId = getFlyoutId(transform);
+  const msgTemplate = singularOrPlural(
+    transform.num_transform_errors,
+    SubI18n.column_status_flyout.error_msg_singular,
+    SubI18n.column_status_flyout.error_msg_plural
+  );
+  return (
+    <div id={flyoutId} className={styles.transformStatusFlyout}>
+      <section className={styles.flyoutContent}>
+        {msgTemplate.format({
+          num_errors: commaify(transform.num_transform_errors),
+          type: SubI18n.type_display_names[transform.output_soql_type]
+        })}
+        <TypeIcon type={transform.output_soql_type} />
+        <br />
+        <span className={styles.clickToView}>{I18n.show_output_schema.click_to_view}</span>
+      </section>
+    </div>
+  );
+}
+
+ErrorFlyout.propTypes = {
+  transform: PropTypes.object.isRequired
+};
 
 class TransformStatus extends Component {
   componentDidMount() {
@@ -24,28 +56,25 @@ class TransformStatus extends Component {
     this.attachFlyouts();
   }
 
-  getFlyoutId() {
-    return `transform-status-flyout-${this.props.transform.id}`;
-  }
-
   attachFlyouts() {
-    const element = document.getElementById(this.getFlyoutId());
-    if (element) {
-      styleguide.attachTo(element.parentNode);
+    if (this.flyoutParentEl) {
+      styleguide.attachTo(this.flyoutParentEl);
     }
   }
 
   render() {
-    const { transform, totalRows, path, errorsTransformId, columnId } = this.props;
+    const { transform, totalRows, path, displayState, columnId } = this.props;
     const SubI18n = I18n.show_output_schema.column_header;
     const uploadDone = _.isNumber(totalRows);
     const thisColumnDone = _.isNumber(totalRows) &&
-      transform.contiguous_rows_processed === totalRows;
+                           transform.contiguous_rows_processed === totalRows;
 
-    const inErrorMode = transform.id === errorsTransformId;
+    const inErrorMode = displayState.type === DisplayState.COLUMN_ERRORS &&
+      transform.id === displayState.transformId;
+
     const linkPath = inErrorMode ?
       Links.showOutputSchema(path.uploadId, path.inputSchemaId, path.outputSchemaId) :
-      Links.showErrorTableForColumn(path.uploadId, path.inputSchemaId, path.outputSchemaId, transform.id);
+      Links.showColumnErrors(path.uploadId, path.inputSchemaId, path.outputSchemaId, transform.id);
 
     const rowsProcessed = transform.contiguous_rows_processed || 0;
     const percentage = Math.round(rowsProcessed / totalRows * 100);
@@ -60,29 +89,9 @@ class TransformStatus extends Component {
       </div>
     );
 
-    let errorFlyout = null;
-    let flyoutId = null;
-    if (transform.num_transform_errors > 0 && !inErrorMode) {
-      flyoutId = this.getFlyoutId();
-      const msgTemplate = singularOrPlural(
-        transform.num_transform_errors,
-        SubI18n.column_status_flyout.error_msg_singular,
-        SubI18n.column_status_flyout.error_msg_plural
-      );
-      errorFlyout = (
-        <div id={flyoutId} className={styles.transformStatusFlyout}>
-          <section className={styles.flyoutContent}>
-            {msgTemplate.format({
-              num_errors: commaify(transform.num_transform_errors),
-              type: SubI18n.type_display_names[transform.output_soql_type]
-            })}
-            <TypeIcon type={transform.output_soql_type} />
-            <br />
-            <span className={styles.clickToView}>{SubI18n.column_status_flyout.click_to_view}</span>
-          </section>
-        </div>
-      );
-    }
+    const errorFlyout = (transform.num_transform_errors > 0 && !inErrorMode) ?
+      <ErrorFlyout transform={transform} /> :
+      null;
 
     if (transform.num_transform_errors > 0) {
       const msg = thisColumnDone ?
@@ -95,13 +104,18 @@ class TransformStatus extends Component {
       return (
         <th
           key={transform.id}
+          ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}
+          data-flyout={getFlyoutId(transform)}
           data-cheetah-hook="col-errors"
           className={classNames(styles.colErrors, { [styles.colErrorsSelected]: inErrorMode })}>
           {progressBar}
-          <div className={styles.statusText}>
+          <Link
+            className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}
+            to={linkPath}
+            data-flyout={getFlyoutId(transform)}>
             <span className={styles.error}>{commaify(transform.num_transform_errors)}</span>
-            <Link to={linkPath} data-flyout={flyoutId}>{msg}</Link>
-          </div>
+            {msg}
+          </Link>
           {errorFlyout}
         </th>
       );
@@ -134,7 +148,7 @@ class TransformStatus extends Component {
 TransformStatus.propTypes = {
   transform: PropTypes.object.isRequired,
   columnId: PropTypes.number.isRequired,
-  errorsTransformId: PropTypes.number,
+  displayState: PropTypes.object.isRequired,
   path: PropTypes.object.isRequired,
   totalRows: PropTypes.number
 };

@@ -1,19 +1,19 @@
 import { FeaturedContentViewCard } from 'components/FeaturedContentViewCard';
 
 describe('components/FeaturedContentViewCard', () => {
-  function getProps(props = {}) {
+  const getProps = (props = {}) => {
     return {
       contentType: 'internal',
       description: 'Dino Nuggets',
-      displayType: 'table',
       isPrivate: false,
+      metadataLeft: 'March 13, 2017',
+      metadataRight: '1,000 Views',
       name: 'Dinosaurs',
-      position: 0,
       resource_id: 0,
-      viewCount: 100,
+      url: '/view/test',
       ...props
     };
-  }
+  };
 
   it('renders an internal ViewCard with the supplied props', () => {
     const element = renderComponent(FeaturedContentViewCard, getProps());
@@ -27,5 +27,19 @@ describe('components/FeaturedContentViewCard', () => {
     }));
     assert.isNotNull(element);
     assert.isNotNull(element.querySelector('a[rel~="external"]'));
+  });
+
+  describe('internal ViewCards', () => {
+    it('renders a title and description', () => {
+      const element = renderComponent(FeaturedContentViewCard, getProps());
+      assert.equal(element.querySelector('h3.entry-name').textContent, 'Dinosaurs');
+      assert.equal(element.querySelector('div.entry-description').textContent, 'Dino Nuggets');
+    });
+
+    it('renders the date and view count', () => {
+      const element = renderComponent(FeaturedContentViewCard, getProps());
+      assert.equal(element.querySelector('.entry-meta .first').textContent, 'March 13, 2017');
+      assert.equal(element.querySelector('.entry-meta .second').textContent, '1,000 Views');
+    });
   });
 });

@@ -7,7 +7,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { handleKeyPress } from '../../common/helpers/keyPressHelpers';
+import { handleEnter } from '../../common/helpers/keyPressHelpers';
 import * as Actions from '../actions/featuredContent';
 
 import FeaturedContentViewCard from './FeaturedContentViewCard';
@@ -20,11 +20,23 @@ export class FeaturedContentViewCardManager extends React.Component {
       hovering: false
     };
 
-    _.bindAll(this, ['setHovering', 'renderViewCardOverlay']);
+    _.bindAll(this, ['openManager', 'removeFeaturedContentItem', 'setHovering', 'renderViewCardOverlay']);
   }
 
   setHovering(hoveringState) {
     this.setState({ hovering: hoveringState });
+  }
+
+  openManager(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.openManager(this.props.position);
+  }
+
+  removeFeaturedContentItem(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.removeFeaturedContentItem(this.props.position);
   }
 
   renderViewCardOverlay() {
@@ -32,38 +44,35 @@ export class FeaturedContentViewCardManager extends React.Component {
       hidden: !this.state.hovering
     });
 
+    const focusableButtonProps = {
+      role: 'button',
+      tabIndex: 0,
+      onFocus: () => this.setHovering(true)
+    };
+
     return (
       <div
+        {...focusableButtonProps}
         className="hover-target"
-        role="button"
-        tabIndex={0}
+        onClick={this.openManager}
         onMouseOver={() => this.setHovering(true)}
-        onFocus={() => this.setHovering(true)}
-        onMouseOut={() => this.setHovering(false)}
-        onBlur={() => this.setHovering(false)}
-        onClick={(e) => {
-          e.preventDefault();
-          this.props.openManager(this.props.position);
-        }}
-        onKeyDown={handleKeyPress(() => this.props.openManager(this.props.position))}>
+        onMouseOut={() => this.setHovering(false)}>
         <div className={cardOverlayClasses}>
           <div className="buttons">
             <button
+              {...focusableButtonProps}
               className="change-button btn btn-primary"
-              onClick={(e) => {
-                e.preventDefault();
-                this.props.openManager(this.props.position);
-              }}>
+              onClick={this.openManager}
+              onKeyDown={handleEnter(this.openManager)}>
               <span className="socrata-icon-edit"></span>
               {_.get(I18n, 'manager.change')}
             </button>
             <button
+              {...focusableButtonProps}
               className="remove-button btn btn-alternate-1"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.props.removeFeaturedContentItem(this.props.position);
-              }}>
+              onBlur={() => this.setHovering(false)}
+              onClick={this.removeFeaturedContentItem}
+              onKeyDown={handleEnter(this.removeFeaturedContentItem)}>
               <span className="socrata-icon-close"></span>
               {_.get(I18n, 'manager.remove')}
             </button>
@@ -89,8 +98,12 @@ FeaturedContentViewCardManager.propTypes = {
   contentType: PropTypes.string,
   description: PropTypes.string,
   displayType: PropTypes.string,
+  icon: PropTypes.string,
   imageUrl: PropTypes.string,
   isPrivate: PropTypes.bool,
+  linkProps: PropTypes.object,
+  metadataLeft: PropTypes.string,
+  metadataRight: PropTypes.string,
   name: PropTypes.string.isRequired,
   openManager: PropTypes.func.isRequired,
   position: PropTypes.number,

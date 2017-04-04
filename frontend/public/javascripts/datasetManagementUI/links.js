@@ -28,8 +28,14 @@ export const showOutputSchema = (uploadId, inputSchemaId, outputSchemaId) => (
   (routing) => `${home(routing)}/uploads/${uploadId}/schemas/${inputSchemaId}/output/${outputSchemaId}`
 );
 
-export const showErrorTableForColumn = (uploadId, inputSchemaId, outputSchemaId, errorsTransformId) => (
+export const showColumnErrors = (uploadId, inputSchemaId, outputSchemaId, errorsTransformId) => (
   (routing) =>
     `${home(routing)}/uploads/${uploadId}/schemas/${inputSchemaId}/output/` +
-      `${outputSchemaId}/errors/${errorsTransformId}`
+      `${outputSchemaId}/column_errors/${errorsTransformId}`
+);
+
+export const showRowErrors = (uploadId, inputSchemaId, outputSchemaId) => (
+  (routing) =>
+    `${home(routing)}/uploads/${uploadId}/schemas/${inputSchemaId}/output/` +
+      `${outputSchemaId}/row_errors`
 );

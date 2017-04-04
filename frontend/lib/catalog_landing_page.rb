@@ -121,10 +121,6 @@ class CatalogLandingPage
     end
   end
 
-  def category_stats(category, req_id, cookies = nil)
-    Cetera::Utils.get_lens_counts_for_category(category, req_id, cookies)
-  end
-
   # See spec/fixtures/vcr_cassettes/clp/featured_content.json
   def featured_content
     result = {}

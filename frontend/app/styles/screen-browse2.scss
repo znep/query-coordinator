@@ -416,95 +416,31 @@ html {
     }
   }
 
+  #catalog-landing-page-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+  }
+
   .browse2-manage-catalog-landing-page {
     @include desktop {
       margin-left: $facet-pane-width;
     }
 
     margin-bottom: 1em;
-    padding: 0.5em;
 
-    &.hidden {
-      padding: 2px;
-
-      .browse2-manage-clp-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: none;
-
-        button.manage-button {
-          display: block;
-        }
-      }
-
-      .browse2-manage-clp-info {
-        display: none;
-      }
+    .header {
+      font-weight: bold;
     }
 
-    .browse2-manage-clp-header {
-      border-bottom: solid 1px $light-grey-1;
-      padding: 0.2em;
-
-      button.manage-button {
-        display: none;
-        min-width: 215px;
-      }
+    a {
+      text-decoration: underline;
     }
 
-    .browse2-manage-clp-info {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.2em;
-      padding-bottom: 0.5em;
-
-      @include desktop {
-        margin-left: 1em;
-      }
-
-      @include mobile {
-        flex-direction: column;
-      }
-
-      .manage-clp-info-text {
-
-        .info-header {
-          font-size: 18px;
-          padding: 0.5rem 0;
-          font-weight: 700;
-        }
-
-        .info-description {
-          font-size: 13px;
-          padding-bottom: 0.5rem;
-        }
-      }
-
-      .manage-clp-action-buttons {
-        position: relative;
-        min-width: 225px;
-
-        .manage-clp-activate-action {
-          margin-top: 1em;
-          position: absolute;
-          top: 0;
-          right: 0;
-        }
-
-        .manage-clp-hide-action {
-          position: absolute;
-          bottom: 0;
-          right: 0;
-        }
-
-        @include mobile {
-          .manage-clp-activate-action, .manage-clp-hide-action {
-            position: relative;
-            display: inline-block;
-          }
-        }
-      }
+    .close-action {
+      float: right;
+      cursor: pointer;
     }
   }
 

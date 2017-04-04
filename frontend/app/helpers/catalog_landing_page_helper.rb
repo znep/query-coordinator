@@ -73,7 +73,6 @@ module CatalogLandingPageHelper
           query: #{@catalog_landing_page.to_query.to_json},
           path: #{@catalog_landing_page.to_uri.to_s.to_json}
         },
-        categoryStats: #{@category_stats.to_json},
         featuredContent: #{@featured_content.to_json},
         header: #{@metadata.camelize_keys.to_json},
         search: ''

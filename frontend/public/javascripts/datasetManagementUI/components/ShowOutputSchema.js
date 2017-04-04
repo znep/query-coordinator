@@ -11,6 +11,7 @@ import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
+import * as DisplayState from '../lib/displayState';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ShowOutputSchema.scss';
 
@@ -42,7 +43,7 @@ export function ShowOutputSchema({
   inputSchema,
   outputSchema,
   columns,
-  errorsTransformId,
+  displayState,
   canApplyUpdate,
   goHome,
   updateColumnType,
@@ -84,10 +85,12 @@ export function ShowOutputSchema({
         <ModalHeader {...headerProps} />
 
         <ModalContent>
-          <div>
-            <div className={styles.dataPreview}>
-              <div>
-                <h3>Data Preview</h3>
+          <div className={styles.dataPreview}>
+            <h3>Data Preview</h3>
+            <div className={styles.datasetAttribute}>
+              <div className={styles.datasetAttribute}>
+                <p>Rows</p>
+                <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
               </div>
               <div className={styles.datasetAttribute}>
                 <div className={styles.datasetAttribute}>
@@ -102,20 +105,18 @@ export function ShowOutputSchema({
                 </div>
               </div>
             </div>
-
-            <div className={styles.tableWrap}>
-              <Table
-                db={db}
-                path={path}
-                columns={columns}
-                totalRows={inputSchema.total_rows}
-                outputSchema={outputSchema}
-                errorsTransformId={errorsTransformId}
-                updateColumnType={updateColumnType} />
-            </div>
           </div>
 
-
+          <div className={styles.tableWrap}>
+            <Table
+              db={db}
+              path={path}
+              columns={columns}
+              inputSchema={inputSchema}
+              outputSchema={outputSchema}
+              displayState={displayState}
+              updateColumnType={updateColumnType} />
+          </div>
         </ModalContent>
 
         <ModalFooter>
@@ -155,7 +156,7 @@ ShowOutputSchema.propTypes = {
   goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
-  errorsTransformId: PropTypes.number,
+  displayState: PropTypes.object.isRequired,
   canApplyUpdate: PropTypes.bool.isRequired
 };
 
@@ -169,7 +170,7 @@ function mapStateToProps(state, ownProps) {
   );
   return {
     ...queryResults,
-    errorsTransformId: params.errorsTransformId ? _.toNumber(params.errorsTransformId) : null
+    displayState: DisplayState.fromUrl(_.pick(ownProps, ['params', 'route']))
   };
 }
 

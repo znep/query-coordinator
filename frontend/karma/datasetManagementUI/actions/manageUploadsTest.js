@@ -14,7 +14,7 @@ describe('actions/manageUploads', () => {
           resource: {
             id: 6,
             filename: 'crimes.csv',
-            schemas: [],
+            schemas: []
           }
         }
       }
@@ -35,7 +35,7 @@ describe('actions/manageUploads', () => {
                     position: 0,
                     field_name: 'arrest',
                     display_name: 'arrest',
-                    soql_type: 'text',
+                    soql_type: 'text'
                   },
                   {
                     id: 1001,
@@ -43,7 +43,7 @@ describe('actions/manageUploads', () => {
                     position: 1,
                     field_name: 'block',
                     display_name: 'block',
-                    soql_type: 'text',
+                    soql_type: 'text'
                   }
                 ],
                 output_schemas: [
@@ -81,7 +81,7 @@ describe('actions/manageUploads', () => {
                   }
                 ]
               }
-            ],
+            ]
           }
         }
       }
@@ -106,6 +106,21 @@ describe('actions/manageUploads', () => {
             'values'
           ]
         }
+      }
+    },
+    '/api/publishing/v1/upload/6/schema/6/errors?limit=1&offset=0': {
+      GET: {
+        response: [
+          {
+            offset: 1,
+            error: {
+              wanted: 3,
+              got: 2,
+              type: 'too_long',
+              contents: ['foo', 'bar']
+            }
+          }
+        ]
       }
     }
   };
@@ -160,11 +175,44 @@ describe('actions/manageUploads', () => {
             error_count: 3
           }
         }
+      ],
+      'row_errors:6': [
+        {
+          event: 'errors',
+          payload: {
+            errors: 1
+          }
+        }
       ]
     }, (e) => {
       const db = store.getState().db;
-      const inputSchema = _.find(db.input_schemas, { id: 4 });
-      expect(inputSchema.total_rows).to.equal(999999);
+      const inputSchema = _.find(db.input_schemas, { id: 6 });
+      setTimeout(() => {
+        expect(inputSchema.total_rows).to.equal(999999);
+      }, 500); // remove when EN-13948 is fixed
+
+      expect(inputSchema.num_row_errors).to.equal(1);
+
+      expect(db.row_errors).to.deep.equal({
+        '6-1': {
+          offset: 1,
+          error: {
+            wanted: 3,
+            got: 2,
+            type: 'too_long',
+            contents: [
+              'foo',
+              'bar'
+            ]
+          },
+          input_schema_id: 6,
+          id: '6-1',
+          __status__: {
+            type: 'SAVED',
+            savedAt: 'ON_SERVER'
+          }
+        }
+      });
 
       const transform0 = _.find(db.transforms, { id: 0 });
       expect(transform0.contiguous_rows_processed).to.equal(9999);
@@ -181,7 +229,5 @@ describe('actions/manageUploads', () => {
     store.dispatch(createUpload({
       name: 'crimes.csv'
     }));
-
   });
-
 });

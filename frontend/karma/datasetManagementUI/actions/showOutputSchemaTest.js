@@ -5,7 +5,7 @@ import errorTableResponse from '../data/errorTableResponse';
 import {
   getNewOutputSchemaAndColumns,
   updateActions,
-  loadErrorTable
+  loadColumnErrors
 } from 'actions/showOutputSchema';
 import {
   batch,
@@ -54,7 +54,7 @@ describe('actions/showOutputSchema', () => {
 
   });
 
-  describe('loadErrorTable', () => {
+  describe('loadColumnErrors', () => {
 
     it('fetches errors, inserts them into column tables, and updates error_indices in columns table', (done) => {
       const store = getStoreWithOutputSchema();
@@ -74,7 +74,7 @@ describe('actions/showOutputSchema', () => {
           }
         }
       });
-      store.dispatch(loadErrorTable(nextRouterState));
+      store.dispatch(loadColumnErrors(nextRouterState));
       setTimeout(() => {
         unmockFetch();
         const db = store.getState().db;

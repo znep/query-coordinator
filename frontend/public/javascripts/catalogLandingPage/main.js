@@ -46,5 +46,6 @@ if (footer) {
 }
 
 document.querySelector('#catalog-landing-page-spinner').style.display = 'none';
+document.querySelector('.catalog .browse2-results-pane').style.visibility = 'visible';
 
 require('./catalog');

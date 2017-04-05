@@ -8,7 +8,6 @@ export class Search extends Component {
   render() {
     var { term, clearSearch, performSearch, updateSearchTerm } = this.props;
 
-    // var { defaultToCatalogLandingPage } = window.serverConfig.featureFlags;
     var defaultToCatalogLandingPage = true;
 
     if (!defaultToCatalogLandingPage) {

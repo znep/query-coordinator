@@ -7,10 +7,15 @@
     position: relative;
     margin: 8px;
 
+    form {
+      margin: 0;
+    }
+
     .searchable-picklist-input {
       width: 100%;
+      height: 31px;
       border: 1px solid $light-grey-3;
-      padding: 8px 28px;
+      padding: 8px 28px 8px 8px;
 
       &:focus {
         border-color: $alternate-3-light;
@@ -23,23 +28,33 @@
       }
     }
 
-    .socrata-icon {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      left: 6px;
-      top: 6px;
-      color: $light-grey-4;
-    }
-
     .spinner-default {
       position: absolute;
-      right: 8px;
+      right: 38px;
       top: 8px;
       animation-duration: 0.5s;
       border-width: 1px;
       border-color: $alternate-3;
       border-right-color: $alternate-3-light;
+    }
+
+    .btn {
+      height: 31px;
+      width: 31px;
+
+      &.btn-highlighted {
+        background-color: $alternate-2;
+        border-color: $alternate-3;
+      }
+    }
+
+    .socrata-icon-search {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      top: 7px;
+      right: 7px;
+      color: $light-grey-4;
     }
   }
 

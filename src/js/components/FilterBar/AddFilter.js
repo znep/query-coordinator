@@ -1,7 +1,8 @@
+import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import SearchablePicklist from './SearchablePicklist';
-import _ from 'lodash';
+import Picklist from '../Picklist';
+import SocrataIcon from '../SocrataIcon';
 import { getIconForDataType } from '../../common/icons';
 import { translate as t } from '../../common/I18n';
 import { ESCAPE, ENTER, SPACE, isOneOfKeys, isolateEventByKeys } from '../../common/keycodes';
@@ -43,8 +44,8 @@ export const AddFilter = React.createClass({
     document.body.removeEventListener('keyup', this.bodyEscapeHandler);
   },
 
-  onChangeSearchTerm(searchTerm) {
-    this.setState({ searchTerm });
+  onChangeSearchTerm(event) {
+    this.setState({ searchTerm: event.target.value });
   },
 
   onClickColumn(column) {
@@ -78,12 +79,27 @@ export const AddFilter = React.createClass({
   },
 
   renderColumnContainer() {
-    const { columns } = this.props;
-    const { isChoosingColumn, searchTerm } = this.state;
+    const { isChoosingColumn } = this.state;
 
     if (!isChoosingColumn) {
       return;
     }
+
+    return (
+      <div className="column-container">
+        <div className="add-filter-picklist">
+          {this.renderSearch()}
+          <div className="add-filter-picklist-options">
+            {this.renderPicklist()}
+          </div>
+        </div>
+      </div>
+    );
+  },
+
+  renderPicklist() {
+    const { columns } = this.props;
+    const { searchTerm } = this.state;
 
     const picklistOptions = _.chain(columns).
       filter((column) => _.toLower(column.name).match(_.toLower(searchTerm))).
@@ -96,7 +112,6 @@ export const AddFilter = React.createClass({
 
     const picklistProps = {
       options: picklistOptions,
-      onChangeSearchTerm: this.onChangeSearchTerm,
       onSelection: (option) => {
         const column = _.find(columns, ['fieldName', option.value]);
         this.onClickColumn(column);
@@ -105,9 +120,34 @@ export const AddFilter = React.createClass({
       value: searchTerm
     };
 
+    if (_.isEmpty(picklistOptions)) {
+      return (
+        <div className="alert warning">
+          {t('filter_bar.no_options_found')}
+        </div>
+      );
+    } else {
+      return (
+        <div className="add-filter-picklist-suggested-options">
+          <Picklist {...picklistProps} />
+        </div>
+      );
+    }
+  },
+
+  renderSearch() {
+    const { searchTerm } = this.state;
+
     return (
-      <div className="column-container">
-        <SearchablePicklist {...picklistProps} />
+      <div className="add-filter-picklist-input-container">
+        <SocrataIcon name="search" />
+        <input
+          className="add-filter-picklist-input"
+          type="text"
+          aria-label={t('filter_bar.search')}
+          value={searchTerm || ''}
+          autoFocus
+          onChange={this.onChangeSearchTerm} />
       </div>
     );
   },

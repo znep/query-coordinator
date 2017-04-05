@@ -13,7 +13,7 @@ const Header = (props) => {
   }
 
   const toggleThrobber = () => {
-    $('.management-button .throbber-icon,.management-button .socrata-icon-arrow-right').toggle();
+    $('.management-button .throbber-icon, .management-button .socrata-icon-arrow-right').toggle();
   };
 
   const managementButton = (

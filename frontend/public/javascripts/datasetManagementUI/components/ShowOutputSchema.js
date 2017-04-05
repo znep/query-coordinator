@@ -13,7 +13,7 @@ import * as LoadDataActions from '../actions/loadData';
 import * as DisplayState from '../lib/displayState';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
-import Pager from './Table/Pager';
+import PagerBar from './Table/PagerBar';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ShowOutputSchema.scss';
 
@@ -117,12 +117,12 @@ class ShowOutputSchema extends Component {
               </div>
               <div className={styles.datasetAttribute}>
                 <div className={styles.datasetAttribute}>
-                  <p>{I18n.data_preview.rows}</p>
-                  <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
-                </div>
-                <div className={styles.datasetAttribute}>
                   <p>{I18n.data_preview.columns}</p>
                   <p className={styles.attribute}>{columns.length}</p>
+                </div>
+                <div className={styles.datasetAttribute}>
+                  <p>{I18n.data_preview.rows}</p>
+                  <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
                 </div>
               </div>
             </div>
@@ -137,12 +137,10 @@ class ShowOutputSchema extends Component {
                 displayState={displayState}
                 updateColumnType={updateColumnType} />
             </div>
-            <div className={styles.pagerWrap}>
-              <Pager
-                path={path}
-                routing={routing}
-                displayState={displayState} />
-            </div>
+            <PagerBar
+              path={path}
+              routing={routing}
+              displayState={displayState} />
           </ModalContent>
 
           <ModalFooter>

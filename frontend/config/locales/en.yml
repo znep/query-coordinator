@@ -1776,6 +1776,7 @@ en:
       metadata_manage_button: Manage Metadata
       no_data_yet: No data has been added yet!
       no_description_how_to: No description yet, set one by clicking the 'Edit Metadata' button
+      of: of
       only_layer: "(Only Layer)"
       percent_uploaded: "{0}% Uploaded"
       preview: Preview

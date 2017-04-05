@@ -129,14 +129,3 @@ li.active {
   flex-grow: 1;
   overflow-x: auto;
 }
-
-.pagerWrap {
-  border-top: 1px solid $light-grey-4;
-  padding: 5px 0px;
-
-  :global {
-    .pager {
-      margin-bottom: 0;
-    }
-  }
-}

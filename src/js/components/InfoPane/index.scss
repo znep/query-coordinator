@@ -48,11 +48,15 @@
       flex: 0 1 auto;
     }
 
-    .collapse-info-pane-btn {
-      color: $dark-grey-1;
-      vertical-align: text-top;
-      font-size: 10pt;
-      height: 24px;
+    .collapse-info-pane-wrapper {
+      width: 100%;
+      
+      .collapse-info-pane-btn {
+        color: $dark-grey-1;
+        vertical-align: text-top;
+        font-size: 10pt;
+        height: 24px;
+      }
     }
   }
 

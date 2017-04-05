@@ -202,7 +202,7 @@ const InfoPane = React.createClass({
       <span>{t('info_pane.less_info')} <SocrataIcon name="arrow-up" /> </span>;
 
     return (
-      <div>
+      <div className="collapse-info-pane-wrapper">
         <button
           className={buttonClassName}
           ref={(el) => this.togglePaneButton = el}

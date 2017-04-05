@@ -144,17 +144,6 @@ function loadNormalPreview(outputSchemaId, pageNo) {
               ...row.row[colIdx]
             }));
           const actions = [];
-          const columnErrorIndices = withoutHeader.
-            filter(cell => cell.error).
-            map(cell => cell.offset);
-          if (columnErrorIndices.length > 0) {
-            actions.push(updateFromServer('transforms', {
-              id: transformId,
-              error_indices: (existingErrorIndices) => (
-                _.union(existingErrorIndices, columnErrorIndices)
-              )
-            }));
-          }
           actions.push(insertMultipleFromServer(
             `transform_${transformId}`,
             _.keyBy(rowsForColumn, 'id'),

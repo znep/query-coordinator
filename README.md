@@ -94,6 +94,34 @@ There are two artifacts that are used in the embed process:
 
 Embed codes are generated via a helper in `embedCodeGenerator.js`.
 
+### Deploying Updates
+
+The active embed version is managed by frontend via a marathon configuration. Staging is always on the latest
+version (master branch). Production and RC are fixed to a particular version.
+
+To update the version of embeds in RC or production, edit [frontend.json](https://github.com/socrata/apps-marathon/blob/master/resources/frontend.json) in `apps-marathon`. Update the version numbers at the end of the URLs
+specified in these keys:
+
+* `SOCRATA_VISUALIZATIONS_V1_EMBED_URL`
+* `SOCRATA_VISUALIZATIONS_V1_LOADER_URL`
+
+For example, to use version 1.2.3, use:
+
+```json
+    "SOCRATA_VISUALIZATIONS_V1_EMBED_URL": "https://s3.amazonaws.com/sa-frontend-static-assets-us-east-1-fedramp-prod/socrata-visualizations/socrata-visualizations-embed-1.2.3.js",
+    "SOCRATA_VISUALIZATIONS_V1_LOADER_URL": "https://s3.amazonaws.com/sa-frontend-static-assets-us-east-1-fedramp-prod/socrata-visualizations/socrata-visualizations-loader-1.2.3.js",
+```
+
+Verify the URLs load in your browser. Once you are confident you don't have any typos, refresh the frontend
+configuration in your target environment. For instance, to refresh RC, do the following from `apps-marathon`:
+```sh
+rake "marathon:app:refresh[frontend, rc]"
+```
+
+Once the deploy is complete, commit and push your changes to `apps-marathon`.
+
+You can verify embeds against RC on this [demo page](http://socrata-embed-testing.blogspot.com/2017/02/blog-post.html).
+
 ### Debugging Embeds
 
 If you need to debug or work on embeds on a 3rd party site, you can cause the embeds to be sourced from your local stack by following these steps:

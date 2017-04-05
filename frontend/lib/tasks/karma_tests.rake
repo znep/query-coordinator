@@ -19,7 +19,8 @@ namespace :test do
 
       cmd = "./node_modules/karma/bin/karma start karma/#{dir}/karma.conf.js --singleRun #{!watch} --browsers #{browser} --reporters #{reporter}"
       puts cmd
-      fail("Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
+      fail("#{dir} Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
+      puts "#{dir} Karma tests completed without failure."
     end
 
     # ADD NEW TEST SUITES HERE

@@ -26,7 +26,7 @@
               $(this).validate();
             });
 
-            if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
+            if (!blist.currentUserId) {
               $sect.find('.yourRating').socrataTip($.t('screens.about.tooltips.rating_disabled'));
             }
 

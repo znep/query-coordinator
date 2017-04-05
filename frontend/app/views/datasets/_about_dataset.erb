@@ -167,15 +167,11 @@
         <%- unless action_name == 'alt' %>
           <dt><%= t('screens.about.your') %></dt>
           <dd class="clearfix">
-            <%- unless FeatureFlags.derive(nil, request).enable_inline_login %>
-              <%- if current_user %>
-                <%= stars_control_interactive(rating_type, @view.user_rating(rating_type), @view, 'yourRating') %>
-              <%- else %>
-                <%= stars_control('yourRating', 0) %>
-              <%- end %>
-            <%- else %>
-              <%= stars_control_interactive(rating_type, @view.user_rating(rating_type), @view, 'yourRating') %>
-            <%- end %>
+          <%- if current_user %>
+            <%= stars_control_interactive(rating_type, @view.user_rating(rating_type), @view, 'yourRating') %>
+          <%- else %>
+            <%= stars_control('yourRating', 0) %>
+          <%- end %>
           </dd>
         <%- end %>
       <%- end -%>

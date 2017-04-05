@@ -16,11 +16,6 @@
 <% content_for :templates do %>
   <%= render :partial => 'flag_message' %>
 <% end %>
-<%- unless current_user -%>
-  <% content_for :modals do %>
-    <%= render :partial => 'modals/inline_login' %>
-  <% end %>
-<%- end -%>
 <% content_for :translations do %>
   <%= render_translations LocalePart.screens.ds.dataset_contact %>
   <%= render_translations LocalePart.screens.about %>

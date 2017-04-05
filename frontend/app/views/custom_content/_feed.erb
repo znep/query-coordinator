@@ -6,9 +6,6 @@
   <%- allow_once do -%>
     <%= include_webpack_bundle 'open-data/feed-list.js' %>
   <%- end -%>
-  <%- allow_once :inline_login do -%>
-    <%= include_webpack_bundle 'open-data/inline-login.js' %>
-  <%- end -%>
 
   <script type="text/javascript">
     // activator for feed widget <%= widget.elem_id %>

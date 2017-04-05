@@ -728,20 +728,7 @@
             cpObj._finish(data, $button.attr('data-value'), finalCallback);
           };
 
-          if (blist.feature_flags.enable_inline_login && !$.isBlank(blist.util.inlineLogin) && $button.is('.requiresLogin')) {
-            var msg = $button.attr('data-loginMsg') || cpObj.settings.defaultLoginMessage;
-            blist.util.inlineLogin.verifyUser(
-              function(isSuccess, successCallback) {
-                if (isSuccess) {
-                  doCallback(successCallback);
-                } else {
-                  $pane.find('.mainError').text(msg);
-                  cpObj._finishProcessing();
-                }
-              }, msg);
-          } else {
-            doCallback();
-          }
+          doCallback();
         });
 
         // Once we've hooked up everything standard, render any custom content.

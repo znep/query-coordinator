@@ -103,8 +103,8 @@ blist.datasetControls.unsavedViewPrompt = function() {
 
 blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
   dontSaveCallback, cancelCallback, newViewData) {
-  // If inline-login is disabled, and user is not signed in, then the save view dialog is useless
-  if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
+  // If user is not signed in, then the save view dialog is useless
+  if (!blist.currentUserId) {
       if (_.isFunction(dontSaveCallback)) {
         dontSaveCallback();
       }
@@ -193,19 +193,7 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
       }
     };
 
-    if (blist.feature_flags.enable_inline_login && !$.isBlank(blist.util.inlineLogin)) {
-      var msg = $.t('screens.ds.save_dialog.validation.auth_required');
-      blist.util.inlineLogin.verifyUser(
-        function(isSuccess) {
-          if (isSuccess) {
-            doSave();
-          } else {
-            $dialog.find('.mainError').text(msg);
-          }
-        }, msg);
-    } else {
-      doSave();
-    }
+    doSave();
   };
 
   if ($.isBlank(dialogObj._hookedEvents)) {

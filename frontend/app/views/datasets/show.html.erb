@@ -234,10 +234,6 @@
   <%= render :partial => 'save_view_dialog' %>
 
   <%= render :partial => 'modals/select_dataset' %>
-
-  <%- unless current_user -%>
-    <%= render :partial => 'modals/inline_login' %>
-  <%- end -%>
 <%- end -%>
 
 <%= render_translations LocalePart.support %>

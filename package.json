@@ -1,6 +1,6 @@
 {
   "name": "socrata-styleguide",
-  "version": "12.0.2",
+  "version": "12.0.3",
   "description": "Socrata's Product Styleguide",
   "main": "styleguide.js",
   "private": true,
@@ -88,6 +88,7 @@
     "prismjs": "1.4.1",
     "raw-loader": "0.5.1",
     "react": "15.4.2",
+    "react-addons-css-transition-group": "15.4.2",
     "react-addons-test-utils": "15.4.2",
     "react-datepicker": "0.39.0",
     "react-dom": "15.4.2",
@@ -113,6 +114,7 @@
     "lodash": "4.14.2",
     "moment": "2.14.1",
     "react": "15.4.2",
+    "react-addons-css-transition-group": "15.4.2",
     "react-datepicker": "0.39.0",
     "react-dom": "15.4.2",
     "react-input-range": "0.9.2",

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { translate as t } from '../../common/I18n';
@@ -117,7 +118,7 @@ export const FilterBar = React.createClass({
     const { maxVisibleFilters } = this.state;
     const newFilters = _.cloneDeep(filters);
 
-    newFilters.unshift(filter);
+    newFilters.push(filter);
     onUpdate(newFilters);
 
     if (_.size(newFilters) > maxVisibleFilters) {
@@ -132,6 +133,7 @@ export const FilterBar = React.createClass({
     const newFilters = _.cloneDeep(filters);
 
     newFilters.splice(index, 1);
+
     onUpdate(newFilters);
   },
 
@@ -251,22 +253,32 @@ export const FilterBar = React.createClass({
     const { maxVisibleFilters } = this.state;
     const filters = _.take(filterItems, maxVisibleFilters);
 
-    return _.isEmpty(filters) ?
-      null :
+    return (
       <div className="visible-filters-container">
-        {filters}
-      </div>;
+        <ReactCSSTransitionGroup
+          transitionName="filters"
+          transitionEnterTimeout={1000}
+          transitionLeaveTimeout={1}>
+          {filters}
+        </ReactCSSTransitionGroup>
+      </div>
+    );
   },
 
   renderCollapsedFilters(filterItems) {
     const { maxVisibleFilters } = this.state;
     const filters = _.drop(filterItems, maxVisibleFilters);
 
-    return _.isEmpty(filters) ?
-      null :
+    return (
       <div className="collapsed-filters-container">
-        {filters}
-      </div>;
+        <ReactCSSTransitionGroup
+          transitionName="filters"
+          transitionEnterTimeout={1000}
+          transitionLeaveTimeout={1}>
+          {filters}
+        </ReactCSSTransitionGroup>
+      </div>
+    );
   },
 
   render() {

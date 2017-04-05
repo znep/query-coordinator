@@ -82,6 +82,24 @@ $filter-bar-container-padding: 20px;
     }
   }
 
+  .visible-filters-container,
+  .collapsed-filter-container {
+    .filters-enter {
+      .filter-control-toggle,
+      .filter-config-toggle {
+        background-color: $alternate-3-light;
+      }
+
+      &.filters-enter-active {
+        .filter-control-toggle,
+        .filter-config-toggle {
+          background-color: $white;
+          transition: background-color 1s ease-out;
+        }
+      }
+    }
+  }
+
   &.filter-bar-expanded {
     .collapsed-filters-container {
       visibility: visible;

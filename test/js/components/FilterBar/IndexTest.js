@@ -36,6 +36,7 @@ describe('FilterBar', () => {
   const getFilters = (element) => element.querySelectorAll('.filter-bar-filter');
   const getVisibleFilters = (element) => element.querySelectorAll('.visible-filters-container .filter-bar-filter');
   const getCollapsedFilters = (element) => element.querySelectorAll('.collapsed-filters-container .filter-bar-filter');
+  const getRemovedFilters = (element) => element.querySelectorAll('.filters-leave');
   const getExpandControl = (element) => element.querySelector('.btn-expand-control');
 
   const getWrappedComponent = (component) => <div style={{ width: '450px' }}>{component}</div>;
@@ -76,7 +77,17 @@ describe('FilterBar', () => {
       filters: [ mockValueRangeFilter ]
     });
 
-    expect(getFilters(element).length).to.eq(1);
+    const filters = getFilters(element);
+    /*
+    We are fetching removed filters because
+    react-addons-css-transition-group keeps removed filters
+    on the DOM until a callback happens.
+    To make sure tests pass, a workaround is to make sure
+    we don't count any elements that are removed from the list of filters
+    but that may still be on the page but hidden
+    */
+    const removedFilters = getRemovedFilters(element);
+    expect(filters.length - removedFilters.length).to.eq(1);
   });
 
   it('renders a hidden expand control', () => {
@@ -158,7 +169,17 @@ describe('FilterBar', () => {
     });
 
     it('renders the hidden collapsed filters', () => {
-      expect(getCollapsedFilters(element).length).to.eq(1);
+      const collapsedFilters = getCollapsedFilters(element);
+      /*
+      We are fetching removed filters because
+      react-addons-css-transition-group keeps removed filters
+      on the DOM until a callback happens.
+      To make sure tests pass, a workaround is to make sure
+      we don't count any elements that are removed from the list of filters
+      but that may still be on the page but hidden
+      */
+      const removedFilters = getRemovedFilters(element);
+      expect(collapsedFilters.length - removedFilters.length).to.eq(1);
     });
 
     describe('expand control', () => {

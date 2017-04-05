@@ -530,7 +530,7 @@ describe('CardsViewController', function() {
     it('should call PageDataService.save when savePage is called with hasChanges = true', function() {
       $scope.page.set('name', 'name2'); // Cause a change.
 
-      var spy = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      var spy = sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
       $scope.savePage();
@@ -538,7 +538,7 @@ describe('CardsViewController', function() {
     });
 
     it('should not call PageDataService.save when savePage is called with hasChanges = false', function() {
-      var spy = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      var spy = sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
       $scope.savePage();
@@ -546,7 +546,7 @@ describe('CardsViewController', function() {
     });
 
     it('should set hasChanges to false after successfully saving', function(done) {
-      sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
 
@@ -564,7 +564,7 @@ describe('CardsViewController', function() {
       $scope.page.set('name', 'name2');
 
       // always fail the save.
-      sinon.stub(PageDataService, 'save', _.constant($q.reject()));
+      sinon.stub(PageDataService, 'save').callsFake(_.constant($q.reject()));
 
       $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
@@ -573,7 +573,7 @@ describe('CardsViewController', function() {
     });
 
     it('should set hasChanges to true after making a change after saving', function() {
-      sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
       $scope.page.set('name', 'name2');
@@ -584,7 +584,7 @@ describe('CardsViewController', function() {
     });
 
     it('should set editMode to false after saving', function() {
-      sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
       $scope.editMode = true;
@@ -698,7 +698,7 @@ describe('CardsViewController', function() {
     beforeEach(function() {
       controllerHarness = makeController();
       $scope = controllerHarness.$scope;
-      saveStub = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      saveStub = sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
     });

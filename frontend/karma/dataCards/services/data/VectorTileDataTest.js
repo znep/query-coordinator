@@ -17,7 +17,7 @@ describe('VectorTileDataService', function() {
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    sinon.stub($, 'baseUrl', function(pathname) {
+    sinon.stub($, 'baseUrl').callsFake(function(pathname) {
       var url = new URL(TEST_URL);
       if (pathname) {
         url.pathname = pathname;
@@ -56,7 +56,7 @@ describe('VectorTileDataService', function() {
 
     describe('curried tileGetter function', function() {
       beforeEach(function() {
-        sinon.stub(VectorTileDataService, 'getHost', _.constant('foo.example.com'));
+        sinon.stub(VectorTileDataService, 'getHost').callsFake(_.constant('foo.example.com'));
         sinon.stub(VectorTileDataService, 'getArrayBuffer');
       });
 
@@ -150,7 +150,7 @@ describe('VectorTileDataService', function() {
 
     describe('promise return value', function() {
       beforeEach(function() {
-        sinon.stub(VectorTileDataService, 'typedArrayFromArrayBufferResponse', _.constant(new Uint8Array(0)));
+        sinon.stub(VectorTileDataService, 'typedArrayFromArrayBufferResponse').callsFake(_.constant(new Uint8Array(0)));
       });
       afterEach(function() {
         VectorTileDataService.typedArrayFromArrayBufferResponse.restore();

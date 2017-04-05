@@ -67,7 +67,7 @@ describe('ChoroplethController', function() {
     Rx.Scheduler.timeout = testTimeoutScheduler;
     testHelpers.mockDirective(provide, 'choropleth');
 
-    sinon.stub(SpatialLensService, 'getCuratedRegions', _.constant(Promise.resolve([])));
+    sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(_.constant(Promise.resolve([])));
   }));
 
   afterEach(function() {
@@ -452,7 +452,7 @@ describe('ChoroplethController', function() {
       });
 
       it('should display an error message when no boundaries are enabled', function() {
-        sinon.stub(SpatialLensService, 'getAvailableGeoregions$', function() {
+        sinon.stub(SpatialLensService, 'getAvailableGeoregions$').callsFake(function() {
           return Rx.Observable.of([]);
         });
 
@@ -484,7 +484,7 @@ describe('ChoroplethController', function() {
       // in this scenario, an enabled boundary is not accessible due to a lack of write permissions,
       // meaning that the user cannot perform async region coding.
       it('should display an error message when boundaries are not accessible due to insufficient permissions', function() {
-        sinon.stub(SpatialLensService, 'getAvailableGeoregions$', function() {
+        sinon.stub(SpatialLensService, 'getAvailableGeoregions$').callsFake(function() {
           var region = {
             enabledFlag: true,
             id: 1,

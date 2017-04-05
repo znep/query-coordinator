@@ -74,7 +74,7 @@ describe('Customize card dialog', function() {
   }));
 
   beforeEach(function() {
-    sinon.stub(_, 'debounce', function(f) { return f; });
+    sinon.stub(_, 'debounce').callsFake(function(f) { return f; });
   })
 
   afterEach(function() {
@@ -964,7 +964,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when(curatedRegions);
         });
 
@@ -986,7 +986,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when(curatedRegions);
         });
 
@@ -1007,7 +1007,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', uid: 'mash-apes', view: { id: 'rook-king' }}
         ];
 
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when(curatedRegions);
         });
 
@@ -1026,7 +1026,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', uid: 'king-pawn', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when(curatedRegions);
         });
 
@@ -1041,7 +1041,7 @@ describe('Customize card dialog', function() {
 
       it('should display "No available boundaries" when there are no curated regions or computed columns for a choropleth', function() {
         // verify that it displays when expected
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when([]);
         });
 
@@ -1070,7 +1070,7 @@ describe('Customize card dialog', function() {
         ];
 
         SpatialLensService.getCuratedRegions.restore();
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when(curatedRegions);
         });
 

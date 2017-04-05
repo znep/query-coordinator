@@ -28,7 +28,7 @@ describe('ConfigureBoundaryForm', function() {
       saveLabel: 'Save',
       title: 'my title'
     };
-    sinon.stub($, 't', function(key) {
+    sinon.stub($, 't').callsFake(function(key) {
       return 'Translation for: ' + key;
     });
 

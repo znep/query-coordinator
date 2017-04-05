@@ -19,7 +19,7 @@ describe('RowStatusWidget', function() {
       authenticityToken: 'abcd',
       id: 'foo'
     };
-    sinon.stub($, 't', function(key) {
+    sinon.stub($, 't').callsFake(function(key) {
       return 'Translation for: ' + key;
     });
     this.createElement = function(addProps) {

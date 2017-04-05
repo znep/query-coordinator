@@ -14,7 +14,7 @@ describe('FormSelectInput', function() {
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();
     this.onSuccessStub = sinon.stub();
-    sinon.stub($, 't', function(key) {
+    sinon.stub($, 't').callsFake(function(key) {
       return 'Translation for: ' + key;
     });
     this.props = {

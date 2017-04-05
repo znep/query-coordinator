@@ -51,8 +51,6 @@ describe('actions/bulkEditActions', () => {
     server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
 
     return store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
-      console.log(store.getActions());
-
       const [ doSideEffect, startInProgress, updateGoals, closeModal ] = store.getActions();
 
       expect(startInProgress.type).to.eq(SharedActions.types.setModalInProgress);

@@ -12,7 +12,7 @@ describe('FormControls', function() {
 
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();
-    sinon.stub($, 't', function(key) {
+    sinon.stub($, 't').callsFake(function(key) {
       return 'Translation for: ' + key;
     });
     this.createElement = function(addProps) {

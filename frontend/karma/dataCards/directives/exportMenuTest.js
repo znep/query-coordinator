@@ -69,7 +69,7 @@ describe('Export Menu', function() {
       function stubRowCounts(unfiltered, filtered) {
         CardDataService.getRowCount.restore(); // Undo the default stub.
 
-        sinon.stub(CardDataService, 'getRowCount', function(id, where) {
+        sinon.stub(CardDataService, 'getRowCount').callsFake(function(id, where) {
           if (where === '') {
             return $q.when(filtered);
           } else {

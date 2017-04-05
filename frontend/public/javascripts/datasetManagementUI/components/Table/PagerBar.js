@@ -26,7 +26,6 @@ function PagerBar({ currentPage, resultCount, urlForPage, changePage }) {
         {firstPageRow}&ndash;{lastPageRow} {I18n.home_pane.of} {resultCountElem}
 
         <Pager
-          key={currentPage}
           resultsPerPage={PAGE_SIZE}
           currentPage={currentPage}
           resultCount={resultCount}

@@ -131,6 +131,7 @@ export class Pager extends React.Component {
     const currentPageInput = (
       <div className={currentPageInputClasses}>
         <input
+          key={this.props.currentPage}
           type="text"
           alt={errorAltText}
           aria-label={pageNumberText}

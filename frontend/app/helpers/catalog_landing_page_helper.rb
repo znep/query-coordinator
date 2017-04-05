@@ -40,9 +40,10 @@ module CatalogLandingPageHelper
     # Figure out if we need a locale prefix on links
     feature_flags = FeatureFlags.derive(nil, request).slice(
       :enable_catalog_landing_page,
+      :enable_markdown_for_catalog_landing_page_description,
       :default_to_catalog_landing_page,
       :stories_enabled
-    ).camelize_keys!
+    )
 
     server_config = {
       :airbrakeEnvironment => ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,

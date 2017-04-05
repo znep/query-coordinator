@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { translate as t } from '../../common/I18n';
-import { ENTER } from '../../common/keycodes';
+import { ENTER, isolateEventByKeys } from '../../common/keycodes';
 import SocrataIcon from '../SocrataIcon';
 import Picklist from '../Picklist';
 
@@ -42,7 +42,7 @@ export const SearchablePicklist = React.createClass({
     this.props.onChangeSearchTerm(event.target.value);
     this.setState({ isError: false });
     const textEntered = event.target.value !== '';
-    this.setState({ textEntered: textEntered });
+    this.setState({ textEntered });
   },
 
   onClickSelectedOption(selectedOption) {
@@ -50,6 +50,8 @@ export const SearchablePicklist = React.createClass({
   },
 
   onKeyUpSearch(event) {
+    isolateEventByKeys(event, [ENTER]);
+
     if (event.keyCode === ENTER) {
       this.onSearch(event);
     }

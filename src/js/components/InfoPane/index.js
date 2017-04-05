@@ -104,7 +104,7 @@ const InfoPane = React.createClass({
     return {
       descriptionLines: 4,
       onExpandDescription: _.noop,
-      isPaneCollapsible: true
+      isPaneCollapsible: false
     };
   },
 

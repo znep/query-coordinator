@@ -1,9 +1,12 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import $ from 'jquery';
+import classNames from 'classnames';
 import collapsible from '../../common/collapsible';
 import purify from '../../common/purify';
 import { translate as t } from '../../common/I18n';
+import SocrataIcon from '../SocrataIcon';
+
 
 /**
  * The InfoPane is a component that is designed to render a hero element with useful information
@@ -88,19 +91,35 @@ const InfoPane = React.createClass({
      * An optional function that should return content to be rendered in the upper-right hand corner
      * of the info pane.
      */
-    renderButtons: PropTypes.func
+    renderButtons: PropTypes.func,
+
+    /**
+     * If the isPaneCollapsible prop is true, only the the InfoPane header is initially visible
+     * and a More Info/Less Info toggle allows the InfoPane content to be shown
+     */
+    isPaneCollapsible: PropTypes.bool
   },
 
   getDefaultProps() {
     return {
       descriptionLines: 4,
-      onExpandDescription: _.noop
+      onExpandDescription: _.noop,
+      isPaneCollapsible: true
+    };
+  },
+
+  getInitialState() {
+    return {
+      paneCollapsed: this.props.isPaneCollapsible,
+      firstPaneExpansion: true
     };
   },
 
   componentDidMount() {
     this.$description = $(this.description);
-    this.ellipsify();
+    if (!this.state.paneCollapsed) {
+      this.ellipsify();
+    }
   },
 
   componentWillUpdate(nextProps) {
@@ -112,6 +131,13 @@ const InfoPane = React.createClass({
 
   componentDidUpdate(prevProps) {
     if (this.shouldEllipsify(prevProps, this.props)) {
+      this.ellipsify();
+    }
+
+    // If the InfoPane is initially collapsed, then we need to do the initial
+    // ellipsify here because ellipsify needs to have the description visible to
+    // work properly
+    if (this.state.firstPaneExpansion && !this.state.paneCollapsed) {
       this.ellipsify();
     }
   },
@@ -143,6 +169,48 @@ const InfoPane = React.createClass({
       height,
       expandedCallback: onExpandDescription
     });
+
+    // We use firstPaneExpansion to determine if the InfoPane is collapsible, is initially
+    // rendered collapsed, and is being expanded for the first time. That way we know that
+    // we need to call ellipsify when we expand the InfoPane for the first time.
+    if (this.state.firstPaneExpansion && this.props.isPaneCollapsible) {
+      this.setState({ firstPaneExpansion: !this.state.firstPaneExpansion });
+    }
+  },
+
+  toggleInfoPaneVisibility() {
+    this.togglePaneButton.blur();
+
+    this.setState({
+      paneCollapsed: !this.state.paneCollapsed
+    });
+  },
+
+  renderCollapsePaneToggle() {
+    const { paneCollapsed } = this.state;
+    const { isPaneCollapsible } = this.props;
+
+    if (!isPaneCollapsible) {
+      return null;
+    }
+
+    const buttonClassName = classNames('btn-transparent collapse-info-pane-btn', {
+      'hide': !isPaneCollapsible
+    });
+    const buttonContent = paneCollapsed ?
+      <span>{t('info_pane.more_info')} <SocrataIcon name="arrow-down" /> </span> :
+      <span>{t('info_pane.less_info')} <SocrataIcon name="arrow-up" /> </span>;
+
+    return (
+      <div>
+        <button
+          className={buttonClassName}
+          ref={(el) => this.togglePaneButton = el}
+          onClick={this.toggleInfoPaneVisibility}>
+          {buttonContent}
+        </button>
+      </div>
+    );
   },
 
   renderDescription() {
@@ -213,8 +281,11 @@ const InfoPane = React.createClass({
       renderButtons,
       provenance,
       provenanceIcon,
-      hideProvenance
+      hideProvenance,
+      isPaneCollapsible
     } = this.props;
+
+    const { paneCollapsed } = this.state;
 
     const privateIcon = isPrivate ?
       <span
@@ -232,24 +303,31 @@ const InfoPane = React.createClass({
         {t(`info_pane.${provenance}`)}
       </span>;
 
+    const contentClassName = classNames('entry-content', {
+      'hide': paneCollapsed && isPaneCollapsible
+    });
+
     return (
       <div className="info-pane result-card">
         <div className="container">
           <div className="entry-header dataset-landing-page-header">
-            <div className="entry-title">
-              <h1 className="info-pane-name">
-                {privateIcon}
-                {name}
-              </h1>
+            <div className="entry-header-contents">
+              <div className="entry-title">
+                <h1 className="info-pane-name">
+                  {privateIcon}
+                  {name}
+                </h1>
 
-              {provenanceBadge}
-              {categoryBadge}
+                {provenanceBadge}
+                {categoryBadge}
+              </div>
+
+              {buttons}
             </div>
-
-            {buttons}
+            {this.renderCollapsePaneToggle()}
           </div>
 
-          <div className="entry-content">
+          <div className={contentClassName}>
             <div className="entry-main">
               {this.renderDescription()}
               {this.renderFooter()}

@@ -38,7 +38,7 @@ describe('ShareVisualizationModal', () => {
     });
 
     it('renders', () => {
-      assert.isObject($element[0]);
+      assert.lengthOf($element, 1);
     });
 
     it('renders the script', function() {

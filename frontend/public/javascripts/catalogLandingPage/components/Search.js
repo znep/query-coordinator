@@ -40,14 +40,14 @@ function mapDispatchToProps(dispatch) {
   return {
     clearSearch: function(term) {
       dispatch(emitMixpanelEvent({
-        name: 'Catalog landing page clear search',
+        name: 'Catalog Landing Page - Clear Search',
         term: term
       }));
       dispatch(search.clearSearch());
     },
     performSearch: function(term) {
       dispatch(emitMixpanelEvent({
-        name: 'Catalog landing page search',
+        name: 'Catalog Landing Page - Search',
         term: term
       }));
 

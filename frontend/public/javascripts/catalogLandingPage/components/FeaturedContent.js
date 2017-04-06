@@ -1,32 +1,50 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { emitMixpanelEvent } from '../actions/mixpanel';
 import FeaturedContentViewCard from './FeaturedContentViewCard';
 import { getViewCardPropsForCLPFeaturedItem } from '../../common/helpers/viewCardHelpers';
 
 export class FeaturedContent extends React.Component {
   render() {
-    const { featuredContent } = this.props;
+    const {
+      catalogQuery,
+      featuredContent,
+      onFeaturedContentItemClick,
+      onFeaturedContentRendered
+    } = this.props;
 
     const featuredContentViewCards = _(featuredContent).
       sortBy('position').
       map(getViewCardPropsForCLPFeaturedItem).
-      map((props, index) => (<FeaturedContentViewCard key={index} {...props} />)).
+      map((props, index) => (
+        <FeaturedContentViewCard
+          key={index}
+          onClick={() => { onFeaturedContentItemClick(props.name, catalogQuery); }}
+          {...props} />
+      )).
       value();
 
-    return (featuredContentViewCards.length === 0) ? null : (
-      <section className="landing-page-section featured-content">
-        <h2 className="landing-page-section-header">
-          {_.get(I18n, 'featured_content.label')}
-        </h2>
-        <div className="media-results">
-          {featuredContentViewCards}
-        </div>
-      </section>
-    );
+    if (featuredContentViewCards.length === 0) {
+      return null;
+    } else {
+      onFeaturedContentRendered(catalogQuery);
+
+      return (
+        <section className="landing-page-section featured-content">
+          <h2 className="landing-page-section-header">
+            {_.get(I18n, 'featured_content.label')}
+          </h2>
+          <div className="media-results">
+            {featuredContentViewCards}
+          </div>
+        </section>
+      );
+    }
   }
 }
 
 FeaturedContent.propTypes = {
+  catalogQuery: PropTypes.object,
   featuredContent: PropTypes.shape({
     item0: PropTypes.shape({
       contentType: PropTypes.string,
@@ -45,9 +63,30 @@ FeaturedContent.propTypes = {
     }),
     item1: PropTypes.object,
     item2: PropTypes.object
-  }).isRequired
+  }).isRequired,
+  onFeaturedContentItemClick: PropTypes.func.isRequired,
+  onFeaturedContentRendered: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state) => ({ featuredContent: state.featuredContent });
+const mapStateToProps = (state) => ({
+  catalogQuery: state.catalog.query,
+  featuredContent: state.featuredContent
+});
 
-export default connect(mapStateToProps)(FeaturedContent);
+const mapDispatchToProps = (dispatch) => ({
+  onFeaturedContentItemClick: (cardTitle, catalogQuery) => {
+    dispatch(emitMixpanelEvent({
+      name: 'Catalog Landing Page - Featured Content item clicked',
+      cardTitle,
+      catalogQuery
+    }));
+  },
+  onFeaturedContentRendered: (catalogQuery) => {
+    dispatch(emitMixpanelEvent({
+      name: 'Catalog Landing Page - Featured Content rendered',
+      catalogQuery
+    }));
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FeaturedContent);

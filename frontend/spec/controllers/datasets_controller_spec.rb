@@ -29,12 +29,23 @@ describe DatasetsController do
           :description => 'test description'
         }
       }
-    }
+    }.with_indifferent_access
+  end
+
+  let(:story_view_data) do
+    {
+      :id => 'test-stry',
+      :createdAt => 1456530636244,
+      :columns => [],
+      :name => 'My Test Story',
+      :viewType => 'story'
+    }.with_indifferent_access
   end
 
   let(:view_json) { view_data.to_json }
   let(:view) { View.new(view_data) }
   let(:derived_view) { View.new(derived_view_data) }
+  let(:story_view) { View.new(story_view_data) }
 
   before do
     stub_request(:get, 'http://localhost:8080/manifest_version.json?uid=test-data').
@@ -179,6 +190,19 @@ describe DatasetsController do
 
     end
 
+    context 'for a published story' do
+      before(:each) do
+        allow(subject).to receive(:get_view).and_return(story_view)
+        CurrentDomain.stub(:default_locale => 'the_default_locale', :cname => 'example.com')
+      end
+
+      it 'redirects to the stories#show page' do
+        get :show, :id => 'test-stry'
+
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to('//example.com/stories/s/My-Test-Story/test-stry')
+      end
+    end
   end
 
   describe 'create visualization canvas' do

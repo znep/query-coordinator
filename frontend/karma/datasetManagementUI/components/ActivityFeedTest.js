@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import ActivityFeed from 'components/ActivityFeed';
 import { getEmptyStore } from '../testStore';
 import {
@@ -168,7 +169,7 @@ describe('components/ActivityFeed', () => {
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(5);
-    expect(element.querySelector('[data-activity-type=upsertcompleted]')).to.exist
+    assert.ok(element.querySelector('[data-activity-type=upsertcompleted]'));
   });
 
   it('renders an upsert job when there is an upsert job in complete', () => {
@@ -181,7 +182,7 @@ describe('components/ActivityFeed', () => {
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(5);
-    expect(element.querySelector('[data-activity-type=upsertfailed]')).to.exist
+    assert.ok(element.querySelector('[data-activity-type=upsertfailed]'));
   });
 
 });

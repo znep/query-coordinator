@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('UserSessionService', function() {
@@ -22,7 +23,10 @@ describe('UserSessionService', function() {
     describe('happy path', function() {
       it('should satisfy the promise with a correct User instance on 200', function(done) {
         $httpBackend.expectGET(CURRENT_USER_URL_MATCHER).respond(200, { id: 'awsm-swse' });
-        expect(UserSession.getCurrentUser()).to.eventually.have.property('id', 'awsm-swse').and.notify(done);
+        var promise = UserSession.getCurrentUser().then((user) => {
+          assert.propertyVal(user, 'id', 'awsm-swse');
+          done();
+        });
         $httpBackend.flush();
       });
     });
@@ -30,13 +34,23 @@ describe('UserSessionService', function() {
     describe('unhappy path', function() {
       it('should reject the promise with Errors.UnknownError for 200s with no ID', function(done) {
         $httpBackend.expectGET(CURRENT_USER_URL_MATCHER).respond(200, { not_id: 'fail-urez' });
-        expect(UserSession.getCurrentUser()).to.eventually.be.rejectedWith(UserSession.Errors.UnknownError).and.notify(done);
+        UserSession.getCurrentUser().then(
+          () => { done('unexpected promise resolution'); },
+          (error) => {
+            assert.instanceOf(error, UserSession.Errors.UnknownError);
+            done();
+          });
         $httpBackend.flush();
       });
 
       it('should reject the promise with Errors.NotLoggedIn for 404s', function(done) {
         $httpBackend.expectGET(CURRENT_USER_URL_MATCHER).respond(404);
-        expect(UserSession.getCurrentUser()).to.eventually.be.rejectedWith(UserSession.Errors.NotLoggedIn).and.notify(done);
+        UserSession.getCurrentUser().then(
+          () => { done('unexpected promise resolution'); },
+          (error) => {
+            assert.instanceOf(error, UserSession.Errors.NotLoggedIn);
+            done();
+          });
         $httpBackend.flush();
       });
 
@@ -66,7 +80,12 @@ describe('UserSessionService', function() {
           if (code < 600 && code !== 404) {
             fakeDataRequestHandler.respond(code, { error: true, code: 'fake_code', message: 'error_msg' });
             code++;
-            expect(UserSession.getCurrentUser()).to.eventually.be.rejectedWith(UserSession.Errors.UnknownError).and.notify(next);
+            UserSession.getCurrentUser().then(
+              () => { done('unexpected promise resolution'); },
+              (error) => {
+                assert.instanceOf(error, UserSession.Errors.UnknownError);
+                next();
+              });
           } else {
             done();
           }

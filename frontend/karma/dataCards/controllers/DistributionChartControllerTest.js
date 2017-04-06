@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('DistributionChartController', function() {
@@ -106,7 +108,7 @@ describe('DistributionChartController', function() {
   }
 
   it('should render as a column chart if HistogramService tells it to', function() {
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'column'; });
+    sinon.stub(HistogramService, 'getVisualizationTypeForData').callsFake(function() { return 'column'; });
 
     var histogram = createDistributionChart();
     expect(histogram.$scope.visualizationType).to.equal('column');
@@ -115,7 +117,7 @@ describe('DistributionChartController', function() {
   });
 
   it('should render as a histogram if HistogramService tells it to', function() {
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'histogram'; });
+    sinon.stub(HistogramService, 'getVisualizationTypeForData').callsFake(function() { return 'histogram'; });
 
     var histogram = createDistributionChart();
     expect(histogram.$scope.visualizationType).to.equal('histogram');
@@ -124,7 +126,7 @@ describe('DistributionChartController', function() {
   });
 
   it('interprets the data from CardDataService.getData correctly', function() {
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'column'; });
+    sinon.stub(HistogramService, 'getVisualizationTypeForData').callsFake(function() { return 'column'; });
 
     var histogram = createDistributionChart();
     expect(histogram.$scope.cardData[0][0]).to.not.eql(NaN);

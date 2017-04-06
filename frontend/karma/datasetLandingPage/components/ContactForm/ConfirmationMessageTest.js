@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import ConfirmationMessage from 'components/ContactForm/ConfirmationMessage';
 
 describe('components/ContactForm/ConfirmationMessage', function() {
@@ -7,7 +8,7 @@ describe('components/ContactForm/ConfirmationMessage', function() {
       text: 'Penguins with Coat Tails'
     });
 
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('displays .success for success messages', function() {
@@ -16,8 +17,8 @@ describe('components/ContactForm/ConfirmationMessage', function() {
       text: 'Penguins with Coat Tails'
     });
 
-    expect(element.querySelector('.success')).to.exist;
-    expect(element.querySelector('.error')).to.not.exist;
+    assert.ok(element.querySelector('.success'));
+    assert.isNull(element.querySelector('.error'));
   });
 
   it('displays .error for error messages', function() {
@@ -26,7 +27,7 @@ describe('components/ContactForm/ConfirmationMessage', function() {
       text: 'Penguins without Coat Tails'
     });
 
-    expect(element.querySelector('.error')).to.exist;
-    expect(element.querySelector('.success')).to.not.exist;
+    assert.ok(element.querySelector('.error'));
+    assert.isNull(element.querySelector('.success'));
   });
 });

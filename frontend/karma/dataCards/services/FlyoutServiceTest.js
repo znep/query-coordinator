@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -94,13 +95,13 @@ describe('Flyout service', function() {
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
 
-    expect(flyout.is(':visible')).to.be.true;
+    assert.isTrue(flyout.is(':visible'));
     expect(flyout.text()).to.equal(flyoutText);
     expectFlyoutHintPosition(hint, boxElement);
 
     TestHelpers.fireMouseEvent($('body')[0], 'mousemove');
 
-    expect(flyout.is(':hidden')).to.be.true;
+    assert.isTrue(flyout.is(':hidden'));
   });
 
   it('should position correctly when on the right edge of the screen', function() {
@@ -118,13 +119,13 @@ describe('Flyout service', function() {
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
 
-    expect(flyout.is(':visible')).to.be.true;
+    assert.isTrue(flyout.is(':visible'));
     expect(flyout.text()).to.equal(flyoutText);
     expectFlyoutHintPosition(hint, boxElement);
 
     TestHelpers.fireMouseEvent($('body')[0], 'mousemove');
 
-    expect(flyout.is(':hidden')).to.be.true;
+    assert.isTrue(flyout.is(':hidden'));
   });
 
   it('should create flyouts with a maximum width of 350px', function() {
@@ -163,7 +164,7 @@ describe('Flyout service', function() {
 
     TestHelpers.fireMouseEvent($('body')[0], 'mousemove');
 
-    expect(flyout.is(':hidden')).to.be.true;
+    assert.isTrue(flyout.is(':hidden'));
   });
 
   it('should only show one flyout at a time', function() {
@@ -255,11 +256,11 @@ describe('Flyout service', function() {
     });
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
-    expect(flyout).to.have.class('testing');
+    assert.isTrue($(flyout).hasClass('testing'));
     TestHelpers.fireMouseEvent(secondBoxElement[0], 'mousemove');
-    expect(flyout).to.not.have.class('testing');
+    assert.isFalse($(flyout).hasClass('testing'));
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
-    expect(flyout).to.have.class('testing');
+    assert.isTrue($(flyout).hasClass('testing'));
   });
 
   it('should hide flyouts on mousedown by default', function() {
@@ -273,11 +274,11 @@ describe('Flyout service', function() {
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
 
-    expect(flyout.is(':visible')).to.be.true;
+    assert.isTrue(flyout.is(':visible'));
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousedown');
 
-    expect(flyout.is(':hidden')).to.be.true;
+    assert.isTrue(flyout.is(':hidden'));
   });
 
   it('should not hide on mousedown if set to persist when registered', function(){
@@ -292,11 +293,11 @@ describe('Flyout service', function() {
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
 
-    expect(flyout.is(':visible')).to.be.true;
+    assert.isTrue(flyout.is(':visible'));
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousedown');
 
-    expect(flyout.is(':hidden')).to.be.false;
+    assert.isFalse(flyout.is(':hidden'));
   });
 
   it('should update mousedown behavior between multiple registered flyouts', function() {
@@ -333,14 +334,14 @@ describe('Flyout service', function() {
 
     // Test hiding behavior for first flyout (should hide on mousedown).
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
-    expect(flyout.is(':visible')).to.be.true;
+    assert.isTrue(flyout.is(':visible'));
     TestHelpers.fireMouseEvent(boxElement[0], 'mousedown');
-    expect(flyout.is(':hidden')).to.be.true;
+    assert.isTrue(flyout.is(':hidden'));
 
     // Test hiding behavior on second flyout (should remain visible).
     TestHelpers.fireMouseEvent(secondBoxElement[0], 'mousemove');
-    expect(flyout.is(':visible')).to.be.true;
+    assert.isTrue(flyout.is(':visible'));
     TestHelpers.fireMouseEvent(secondBoxElement[0], 'mousedown');
-    expect(flyout.is(':hidden')).to.be.false;
+    assert.isFalse(flyout.is(':hidden'));
   });
 });

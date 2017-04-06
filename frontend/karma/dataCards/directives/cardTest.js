@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('card directive', function() {
@@ -204,16 +206,16 @@ describe('card directive', function() {
     describe('when the card is not expanded', function() {
       it('should contain a link with a title of "Expand this card"', function() {
         cardModel.set('expanded', false);
-        expect(el).to.not.have.descendants('.card-control[title="Collapse this card"]');
-        expect(el).to.have.descendants('.card-control[title="Expand this card"]');
+        assert.lengthOf(el.find('.card-control[title="Collapse this card"]'), 0);
+        assert.lengthOf(el.find('.card-control[title="Expand this card"]'), 1);
       });
     });
 
     describe('when the card is expanded', function() {
       it('should contain a link with a title of "Collapse this card"', function() {
         cardModel.set('expanded', true);
-        expect(el).to.have.descendants('.card-control[title="Collapse this card"]');
-        expect(el).to.not.have.descendants('.card-control[title="Expand this card"]');
+        assert.lengthOf(el.find('.card-control[title="Collapse this card"]'), 1);
+        assert.lengthOf(el.find('.card-control[title="Expand this card"]'), 0);
       });
     });
 
@@ -222,8 +224,8 @@ describe('card directive', function() {
         cardModel.page = new Model();
         cardModel.page.toggleExpanded = sinon.spy();
         el.find('.card-control').click();
-        expect(cardModel.page.toggleExpanded.calledOnce).to.equal(true);
-        expect(cardModel.page.toggleExpanded.calledWith(cardModel)).to.be.true;
+        sinon.assert.calledOnce(cardModel.page.toggleExpanded);
+        sinon.assert.calledWith(cardModel.page.toggleExpanded, cardModel);
       });
     });
   });
@@ -366,7 +368,7 @@ describe('card directive', function() {
       });
 
       directive.scope.$broadcast('delete-card-with-model-delegate');
-      expect(didSignal).to.be.true;
+      assert.isTrue(didSignal);
     });
 
     it('should not mark itself for deletion if a table card', function() {
@@ -389,7 +391,7 @@ describe('card directive', function() {
       });
 
       directive.scope.$broadcast('delete-card-with-model-delegate');
-      expect(didSignal).to.be.false;
+      assert.isFalse(didSignal);
     });
   });
 

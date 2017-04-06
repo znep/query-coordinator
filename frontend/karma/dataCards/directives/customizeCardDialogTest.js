@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('Customize card dialog', function() {
@@ -72,7 +74,7 @@ describe('Customize card dialog', function() {
   }));
 
   beforeEach(function() {
-    sinon.stub(_, 'debounce', function(f) { return f; });
+    sinon.stub(_, 'debounce').callsFake(_.identity);
   })
 
   afterEach(function() {
@@ -253,7 +255,7 @@ describe('Customize card dialog', function() {
 
     it('should display a card preview', function() {
       expect($card.length).to.equal(1);
-      expect(customizedModel).to.not.be.undefined;
+      assert.isDefined(customizedModel);
       expect(customizedModel.fieldName).to.equal(originalModel.fieldName);
       expect(dialog.element.find('option:contains("Simple Grey")').length).to.equal(1);
     });
@@ -288,19 +290,19 @@ describe('Customize card dialog', function() {
       dialog.scope.$digest();
       cancelButton.click();
 
-      expect(originalModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+      assert.isUndefined(originalModel.getCurrentValue('baseLayerUrl'));
     });
 
     it('should not allow saving when card-specific conditions are not met', function() {
       // choropleth with no computed column
       var doneButton = dialog.element.find('button:contains("Done")');
-      expect(doneButton.is(':disabled')).to.be.false;
+      assert.isFalse(doneButton.is(':disabled'));
 
       customizedModel.set('cardType', 'choropleth');
       customizedModel.set('computedColumn', undefined);
       dialog.scope.$digest();
 
-      expect(doneButton.is(':disabled')).to.be.true;
+      assert.isTrue(doneButton.is(':disabled'));
     });
   });
 
@@ -316,8 +318,8 @@ describe('Customize card dialog', function() {
       });
       var visualizationOptions = dialog.element.find('visualization-type-selector');
 
-      expect(visualizationOptions.find('button.icon-search').is(':visible')).to.be.true;
-      expect(visualizationOptions.find('button.icon-bar-chart').is(':visible')).to.be.true;
+      assert.isTrue(visualizationOptions.find('button.icon-search').is(':visible'));
+      assert.isTrue(visualizationOptions.find('button.icon-bar-chart').is(':visible'));
     });
 
     it('should not display visualization choices when only one type is available', function() {
@@ -331,7 +333,7 @@ describe('Customize card dialog', function() {
       });
       var visualizationOptions = dialog.element.find('visualization-type-selector');
 
-      expect(visualizationOptions).to.be.hidden;
+      assert.isFalse(visualizationOptions.is(':visible'));
     });
 
     // Wrapping of visualization icons and their labels should be tested in an end to end
@@ -350,8 +352,8 @@ describe('Customize card dialog', function() {
       var visualizationOptions = dialog.element.find('visualization-type-selector');
       var iconBarChart = dialog.element.find('.icon-bar-chart');
 
-      expect(visualizationOptions.isolateScope().showCardinalityWarning).to.be.true;
-      expect(iconBarChart.find('.icon-warning')).to.not.have.css('display', 'none');
+      assert.isTrue(visualizationOptions.isolateScope().showCardinalityWarning);
+      assert.notEqual(iconBarChart.find('.icon-warning').css('display'), 'none');
     });
 
     it('should not show a warning for a histogram with no filter when bucket type is changed', function() {
@@ -366,7 +368,7 @@ describe('Customize card dialog', function() {
       var scope = dialog.scope;
       var bucketTypeDropdown = dialog.element.find('configure-histogram-bucket-type .dropdown-container');
 
-      expect(scope.showBucketTypeWarning).to.be.false;
+      assert.isFalse(scope.showBucketTypeWarning);
       expect(bucketTypeDropdown.hasClass('warning-dropdown')).to.be.false
     });
 
@@ -385,16 +387,16 @@ describe('Customize card dialog', function() {
       var bucketTypeDropdown = dialog.element.find('configure-histogram-bucket-type .dropdown-container');
       var linear = dialog.element.find('option:contains("Linear")');
 
-      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.not.be.empty;
-      expect(scope.showBucketTypeWarning).to.be.false;
+      assert.lengthOf(scope.customizedCard.getCurrentValue('activeFilters'), 1);
+      assert.isFalse(scope.showBucketTypeWarning);
 
       // Select linear
       linear.prop('selected', true).change();
       scope.$digest();
 
       // A histogram filter has been cleared, and thus the warning should appear.
-      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.be.empty;
-      expect(scope.showBucketTypeWarning).to.be.true;
+      assert.lengthOf(scope.customizedCard.getCurrentValue('activeFilters'), 0);
+      assert.isTrue(scope.showBucketTypeWarning);
     }));
 
     it('should select the currently selected visualization type when the dialog is displayed', function() {
@@ -421,13 +423,13 @@ describe('Customize card dialog', function() {
         }
         var dialog = createDialog({card: card});
 
-        expect(dialog.element.find('card-aggregation-selector')).to.not.exist;
+        assert.lengthOf(dialog.element.find('card-aggregation-selector'), 0);
       });
 
       it('should show cardAggregationSelector the card type is not blacklisted', function() {
         var dialog = createDialog();
 
-        expect(dialog.element.find('card-aggregation-selector')).to.exist;
+        assert.lengthOf(dialog.element.find('card-aggregation-selector'), 1);
       });
     });
   });
@@ -487,14 +489,14 @@ describe('Customize card dialog', function() {
       var histogramBucketHelpText = dialog.element.find('.option-help-text');
 
       // Expect elements to exist
-      expect(logarithmic.length).to.equal(1);
-      expect(linear.length).to.equal(1);
-      expect(histogramBucketHelpText.length).to.equal(1);
+      assert.lengthOf(logarithmic, 1);
+      assert.lengthOf(linear, 1);
+      assert.lengthOf(histogramBucketHelpText, 1);
 
       // Expect default values
       expect(scope.histogramBucketOption).to.equal('logarithmic');
-      expect(logarithmic.is(':selected')).to.be.true;
-      expect(linear.is(':selected')).to.be.false;
+      assert.isTrue(logarithmic.is(':selected'));
+      assert.isFalse(linear.is(':selected'));
       expect(histogramBucketHelpText.text()).to.equal(
         I18n.customizeCardDialog.histogramBucketType.logarithmicDesc
       );
@@ -545,14 +547,14 @@ describe('Customize card dialog', function() {
       var linear = dialog.element.find('option:contains("Linear")');
 
       // Active filters is not empty
-      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.not.be.empty;
+      assert.lengthOf(scope.customizedCard.getCurrentValue('activeFilters'), 1);
 
       // Change bucket type
       linear.prop('selected', true).change();
       scope.$digest();
 
       // Now active filters are empty
-      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.be.empty;
+      assert.lengthOf(scope.customizedCard.getCurrentValue('activeFilters'), 0);
     }));
 
     it('should reapply the filter if the bucket type is toggled', inject(function(Filter) {
@@ -566,7 +568,7 @@ describe('Customize card dialog', function() {
       var linear = dialog.element.find('option:contains("Linear")');
 
       // Active filters is not empty
-      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.not.be.empty;
+      assert.lengthOf(scope.customizedCard.getCurrentValue('activeFilters'), 1);
 
       // Toggle bucket type
       linear.prop('selected', true).change();
@@ -575,7 +577,7 @@ describe('Customize card dialog', function() {
       scope.$digest();
 
       // Active filters is not empty
-      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.not.be.empty;
+      assert.lengthOf(scope.customizedCard.getCurrentValue('activeFilters'), 1);
     }));
   });
 
@@ -613,9 +615,9 @@ describe('Customize card dialog', function() {
         expect(custom.length).to.equal(1);
 
         // Assert the default is right
-        expect(simpleGrey.is(':selected')).to.be.false;
-        expect(simpleBlue.is(':selected')).to.be.true;
-        expect(esri.is(':selected')).to.be.false;
+        assert.isFalse(simpleGrey.is(':selected'));
+        assert.isTrue(simpleBlue.is(':selected'));
+        assert.isFalse(esri.is(':selected'));
 
         // Select the Esri
         esri.prop('selected', true).change();
@@ -633,7 +635,7 @@ describe('Customize card dialog', function() {
         simpleBlue.prop('selected', true).change();
         dialog.scope.$digest();
 
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null; // because it's the default
+        assert.isNull(cardModel.getCurrentValue('baseLayerUrl')); // because it's the default
 
         // Select Custom
         var input = dialog.element.find('input[name=customLayerUrl]')
@@ -644,17 +646,17 @@ describe('Customize card dialog', function() {
 
         expect(input.is(':visible')).to.equal(true);
         // Shouldn't change the baseLayerUrl yet
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
+        assert.isNull(cardModel.getCurrentValue('baseLayerUrl'));
 
         // Shouldn't change the baseLayerUrl when given a non-url
         input.val('foobar').trigger('input').trigger('change');
         dialog.scope.$digest();
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
+        assert.isNull(cardModel.getCurrentValue('baseLayerUrl'));
 
         // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
         input.val('http://www.google.com/').trigger('input').trigger('change');
         dialog.scope.$digest();
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
+        assert.isNull(cardModel.getCurrentValue('baseLayerUrl'));
 
         // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
         input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
@@ -687,9 +689,9 @@ describe('Customize card dialog', function() {
         expect(custom.length).to.equal(1);
 
         // Assert the default is right
-        expect(simpleBlue.is(':selected')).to.be.true;
-        expect(simpleGrey.is(':selected')).to.be.false;
-        expect(esri.is(':selected')).to.be.false;
+        assert.isTrue(simpleBlue.is(':selected'));
+        assert.isFalse(simpleGrey.is(':selected'));
+        assert.isFalse(esri.is(':selected'));
 
         // Select the Esri
         esri.prop('selected', true).change();
@@ -707,7 +709,7 @@ describe('Customize card dialog', function() {
         simpleBlue.prop('selected', true).change();
         dialog.scope.$digest();
 
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null; // because it's the default
+        assert.isNull(cardModel.getCurrentValue('baseLayerUrl')); // because it's the default
 
         // Select Custom
         var input = dialog.element.find('input[name=customLayerUrl]');
@@ -719,17 +721,17 @@ describe('Customize card dialog', function() {
         expect(input.is(':visible')).to.equal(true);
 
         // Shouldn't change the baseLayerUrl yet
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
+        assert.isNull(cardModel.getCurrentValue('baseLayerUrl'));
 
         // Shouldn't change the baseLayerUrl when given a non-url
         input.val('foobar').trigger('input').trigger('change');
         dialog.scope.$digest();
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
+        assert.isNull(cardModel.getCurrentValue('baseLayerUrl'));
 
         // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
         input.val('http://www.google.com/').trigger('input').trigger('change');
         dialog.scope.$digest();
-        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.null;
+        assert.isNull(cardModel.getCurrentValue('baseLayerUrl'));
 
         // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
         input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
@@ -823,7 +825,7 @@ describe('Customize card dialog', function() {
         var flannelTitleConfigurationElement = dialog.element.find('.configure-flannel-title:visible');
         var selectedOption = flannelTitleConfigurationElement.find('option:selected');
 
-        expect(scope.selectedFlannelTitleColumnName).to.be.null;
+        assert.isNull(scope.selectedFlannelTitleColumnName);
         expect(selectedOption.attr('value')).to.equal('null');
         expect(selectedOption.text()).to.equal(I18n.customizeCardDialog.featureMapFlannel.defaultOption);
       });
@@ -860,7 +862,7 @@ describe('Customize card dialog', function() {
         var bar = dialog.element.find('option[value = "bar"]');
 
         // Check defaults
-        expect(scope.selectedFlannelTitleColumnName).to.be.null;
+        assert.isNull(scope.selectedFlannelTitleColumnName);
         expect(selectedOption.attr('value')).to.equal('null');
         expect(selectedOption.text()).to.equal(I18n.customizeCardDialog.featureMapFlannel.defaultOption);
 
@@ -892,7 +894,7 @@ describe('Customize card dialog', function() {
         var defaults = dialog.element.find('option[value = null]');
 
         // Check defaults
-        expect(scope.selectedFlannelTitleColumnName).to.be.null;
+        assert.isNull(scope.selectedFlannelTitleColumnName);
         expect(selectedOption.attr('value')).to.equal('null');
         expect(selectedOption.text()).to.equal(I18n.customizeCardDialog.featureMapFlannel.defaultOption);
 
@@ -943,7 +945,7 @@ describe('Customize card dialog', function() {
 
         expect(cardType).to.equal('choropleth');
         expect(curatedRegionSelectors.length).to.equal(1);
-        expect(curatedRegionSelectors).to.not.have.class('ng-hide');
+        assert.isFalse($(curatedRegionSelectors).hasClass('ng-hide'));
       });
 
       it('should not appear when the card is not a choropleth', function() {
@@ -953,7 +955,7 @@ describe('Customize card dialog', function() {
 
         expect(cardType).to.equal('feature');
         expect(curatedRegionSelectors.length).to.equal(1);
-        expect(curatedRegionSelectors).to.have.class('ng-hide');
+        assert.isTrue($(curatedRegionSelectors).hasClass('ng-hide'));
       });
 
       it('should display the correct number of curated regions in the dropdown', function() {
@@ -962,7 +964,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when(curatedRegions);
         });
 
@@ -984,7 +986,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when(curatedRegions);
         });
 
@@ -1005,7 +1007,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', uid: 'mash-apes', view: { id: 'rook-king' }}
         ];
 
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when(curatedRegions);
         });
 
@@ -1024,7 +1026,7 @@ describe('Customize card dialog', function() {
           { name: 'the 2nd most curated region ever', uid: 'king-pawn', view: { id: 'king-pawn' }}
         ];
 
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when(curatedRegions);
         });
 
@@ -1039,7 +1041,7 @@ describe('Customize card dialog', function() {
 
       it('should display "No available boundaries" when there are no curated regions or computed columns for a choropleth', function() {
         // verify that it displays when expected
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when([]);
         });
 
@@ -1058,7 +1060,7 @@ describe('Customize card dialog', function() {
         dialog.scope.$digest();
 
         var noAvailableBoundariesElement = dialog.element.find('.soc-select.faux-disabled');
-        expect(noAvailableBoundariesElement).to.not.have.class('ng-hide');
+        assert.isFalse($(noAvailableBoundariesElement).hasClass('ng-hide'));
 
         // verify that it doesn't display when not expected
 
@@ -1068,7 +1070,7 @@ describe('Customize card dialog', function() {
         ];
 
         SpatialLensService.getCuratedRegions.restore();
-        sinon.stub(SpatialLensService, 'getCuratedRegions', function() {
+        sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(function() {
           return $q.when(curatedRegions);
         });
 
@@ -1077,7 +1079,7 @@ describe('Customize card dialog', function() {
         dialog.scope.$digest();
 
         noAvailableBoundariesElement = dialog.element.find('.soc-select.faux-disabled');
-        expect(noAvailableBoundariesElement).to.have.class('ng-hide');
+        assert.isTrue($(noAvailableBoundariesElement).hasClass('ng-hide'));
       });
     });
   });

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { FeatureFlags } from 'common/feature_flags';
 
 describe('the sample application', () => {

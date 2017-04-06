@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { FeedbackPanel } from 'components/FeedbackPanel';
 import { ESCAPE_KEY_CODE } from 'constants';
 import { Simulate } from 'react-addons-test-utils';

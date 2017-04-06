@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import Fieldset from 'components/MetadataFields/Fieldset';
 
 
@@ -12,11 +13,11 @@ describe('components/MetadataFields/Fieldset', () => {
   const component = renderStatelessComponent(<Fieldset {...defaultProps} />);
 
   it('renders a title', () => {
-    expect(component.querySelector('.tabTitle')).to.exist;
+    assert.ok(component.querySelector('.tabTitle'));
   });
 
   it('renders a subtitle', () => {
-    expect(component.querySelector('.tabSubtitle')).to.exist;
+    assert.ok(component.querySelector('.tabSubtitle'));
   });
 
   it('renders any elements it wraps (children)', () => {

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import RowDetails from 'components/RowDetails';
 import { getDefaultStore } from '../testStore';
 import { insertFromServer } from 'actions/database';

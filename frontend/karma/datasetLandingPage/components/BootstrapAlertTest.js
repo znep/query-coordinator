@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { BootstrapAlert } from 'components/BootstrapAlert';
 import mockView from 'data/mockView';
 
@@ -10,12 +11,12 @@ describe('components/BootstrapAlert', function() {
 
   it('renders an element', function() {
     var element = renderComponent(BootstrapAlert, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('has a link with the bootstrap url', function() {
     var element = renderComponent(BootstrapAlert, getProps());
-    expect(element.querySelector('a')).to.exist;
+    assert.ok(element.querySelector('a'));
     expect(element.querySelector('a').getAttribute('href')).to.equal('bootstrapUrl');
     expect(element.querySelector('a').classList.contains('.btn-disabled')).to.equal(false);
   });
@@ -25,8 +26,8 @@ describe('components/BootstrapAlert', function() {
       bootstrapUrl: null
     }));
 
-    expect(element.querySelector('a')).to.exist;
-    expect(element.querySelector('.flyout')).to.exist;
+    assert.ok(element.querySelector('a'));
+    assert.ok(element.querySelector('.flyout'));
     expect(element.querySelector('a').classList.contains('btn-disabled')).to.equal(true);
   });
 });

@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 const formAPI = {
   setProperty: sinon.spy(),
   setModel: sinon.spy(),

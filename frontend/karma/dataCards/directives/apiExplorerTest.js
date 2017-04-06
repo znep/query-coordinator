@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('API Explorer', function() {
@@ -88,7 +89,7 @@ describe('API Explorer', function() {
         it('should show the JSON as selected', function() {
           var selected = element.find('button.active');
           expect(selected.length).to.equal(1);
-          expect(selected.is('[title="JSON"]')).to.be.true;
+          assert.isTrue(selected.is('[title="JSON"]'));
         });
 
         it('should show geoJSON as an option', function() {
@@ -113,7 +114,7 @@ describe('API Explorer', function() {
         it('should show the GeoJSON as selected', function() {
           var selected = element.find('button.active');
           expect(selected.length).to.equal(1);
-          expect(selected.is('[title="GeoJSON"]')).to.be.true;
+          assert.isTrue(selected.is('[title="GeoJSON"]'));
         });
       });
 
@@ -135,7 +136,7 @@ describe('API Explorer', function() {
         it('should show the JSON as selected', function() {
           var selected = element.find('button.active');
           expect(selected.length).to.equal(1);
-          expect(selected.is('[title="JSON"]')).to.be.true;
+          assert.isTrue(selected.is('[title="JSON"]'));
         });
       });
     });
@@ -255,11 +256,11 @@ describe('API Explorer', function() {
         cleanedUp = true;
       });
 
-      expect(cleanedUp).to.be.false;
+      assert.isFalse(cleanedUp);
 
       scope.$broadcast('$destroy');
 
-      expect(cleanedUp).to.be.true;
+      assert.isTrue(cleanedUp);
     }));
   });
 
@@ -278,7 +279,7 @@ describe('API Explorer', function() {
        scope.$safeApply(function() {
          scope.editMode = true;
        });
-       expect(element.find('button').hasClass('disabled')).to.be.true;
+       assert.isTrue(element.find('button').hasClass('disabled'));
     });
 
     it('should not open the panel on click', function() {

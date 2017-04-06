@@ -11,7 +11,7 @@ module.exports = function(overrides) {
         'karma/*/index.js': ['webpack', 'sourcemap']
       },
 
-      frameworks: ['mocha', 'chai', 'chai-as-promised', 'sinon-chai'],
+      frameworks: ['mocha'],
 
       reporters: ['dots', 'mocha'],
 
@@ -24,18 +24,27 @@ module.exports = function(overrides) {
       },
 
       colors: true,
-      logLevel: 'INFO',
 
-      browsers: ['PhantomJS'],
+      logLevel: 'INFO',
+      browserConsoleLogOptions: {
+        level: 'log',
+        format: '%b %T: %m',
+        terminal: true
+      },
+
+      browsers: ['ChromeNoSandboxHeadless'],
       browserNoActivityTimeout: 1000 * 55,
       browserDisconnectTimeout: 1000 * 10,
       browserDisconnectTolerance: 5,
-      phantomjsLauncher: {
-        options: {
-          viewportSize: {
-            width: 1024,
-            height: 768
-          }
+      customLaunchers: {
+        ChromeNoSandboxHeadless: {
+          base: 'Chrome',
+          flags: [
+            '--no-sandbox',
+            '--headless',
+            '--disable-gpu',
+            '--remote-debugging-port=9222'
+          ]
         }
       }
     },

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import Flyout from 'components/SocrataFlyout/SocrataFlyout';
 
 describe('components/SocrataFlyout', function() {

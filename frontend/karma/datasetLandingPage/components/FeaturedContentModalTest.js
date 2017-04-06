@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { FeaturedContentModal } from 'components/FeaturedContentModal';
 
 describe('components/FeaturedContentModal', function() {
@@ -11,7 +12,7 @@ describe('components/FeaturedContentModal', function() {
 
   it('renders an element', function() {
     var element = renderComponentWithStore(FeaturedContentModal, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('renders FeaturedItemSelector when isEditing is false', function() {
@@ -19,7 +20,7 @@ describe('components/FeaturedContentModal', function() {
       isEditing: false
     }));
 
-    expect(element.querySelector('.featured-content')).to.exist;
+    assert.ok(element.querySelector('.featured-content'));
   });
 
   it('renders ExternalResourceForm when isEditing is true and editType is externalResource', function() {
@@ -28,7 +29,7 @@ describe('components/FeaturedContentModal', function() {
       editType: 'externalResource'
     }));
 
-    expect(element.querySelector('.external-resource form')).to.exist;
+    assert.ok(element.querySelector('.external-resource form'));
   });
 
   it('renders StoryForm when isEditing is true and editType is story', function() {
@@ -37,6 +38,6 @@ describe('components/FeaturedContentModal', function() {
       editType: 'story'
     }));
 
-    expect(element.querySelector('.story form')).to.exist;
+    assert.ok(element.querySelector('.story form'));
   });
 });

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import AppBar from 'components/AppBar';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import { insertFromServer, updateFromServer } from 'actions/database';
@@ -7,8 +8,8 @@ describe('components/AppBar', () => {
   it('renders without errors', () => {
     const store = getStoreWithOutputSchema();
     const element = renderComponentWithStore(AppBar, {}, store);
-    expect(element).to.exist;
-    expect(element.querySelector('a')).to.not.exist;
+    assert.ok(element);
+    assert.isNull(element.querySelector('a'));
   });
 
   it('renders a link to primer', () => {
@@ -23,8 +24,8 @@ describe('components/AppBar', () => {
       status: 'successful'
     }));
     const element = renderComponentWithStore(AppBar, {}, store);
-    expect(element).to.exist;
-    expect(element.querySelector('a')).to.exist;
+    assert.ok(element);
+    assert.ok(element.querySelector('a'));
   });
 
 });

@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { DatasetPreview } from 'components/DatasetPreview';
 import mockView from 'data/mockView';
 import { Simulate } from 'react-addons-test-utils';
@@ -15,26 +17,26 @@ describe('components/DatasetPreview', function() {
     const element = renderComponent(DatasetPreview, getProps({
       view: { columns: [] }
     }));
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   it('does not render an element if the view has no rows', function() {
     const element = renderComponent(DatasetPreview, getProps({
       view: { rowCount: 0 }
     }));
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   it('does not render an element if the view is not tabular', function() {
     const element = renderComponent(DatasetPreview, getProps({
       view: { isTabular: false }
     }));
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   it('renders an element if the view is tabular', function() {
     const element = renderComponent(DatasetPreview, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   describe('action button', () => {
@@ -51,12 +53,12 @@ describe('components/DatasetPreview', function() {
 
       it('renders the visualize link if the bootstrapUrl is defined', () => {
         const element = renderComponent(DatasetPreview, getProps());
-        expect(element.querySelector('a[href="bootstrapUrl"]')).to.exist;
+        assert.ok(element.querySelector('a[href="bootstrapUrl"]'));
       });
 
       it('does not render the grid view link', () => {
         const element = renderComponent(DatasetPreview, getProps());
-        expect(element.querySelector('a.btn-grid')).to.not.exist;
+        assert.isNull(element.querySelector('a.btn-grid'));
       });
 
       describe('when the bootstrapUrl is blank', () => {
@@ -72,11 +74,11 @@ describe('components/DatasetPreview', function() {
         });
 
         it('does not render the visualize link', () => {
-          expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
+          assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
         });
 
         it('renders the grid view link', () => {
-          expect(element.querySelector('a.btn-grid')).to.exist;
+          assert.ok(element.querySelector('a.btn-grid'));
         });
       });
     });
@@ -89,12 +91,12 @@ describe('components/DatasetPreview', function() {
 
       it('renders the grid view link', function() {
         const element = renderComponent(DatasetPreview, getProps());
-        expect(element.querySelector('a.btn-grid')).to.exist;
+        assert.ok(element.querySelector('a.btn-grid'));
       });
 
       it('does not render the visualize link', () => {
         const element = renderComponent(DatasetPreview, getProps());
-        expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
+        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
     });
 
@@ -106,12 +108,12 @@ describe('components/DatasetPreview', function() {
 
       it('renders the grid view link', function() {
         const element = renderComponent(DatasetPreview, getProps());
-        expect(element.querySelector('a.btn-grid')).to.exist;
+        assert.ok(element.querySelector('a.btn-grid'));
       });
 
       it('does not render the visualize link', () => {
         const element = renderComponent(DatasetPreview, getProps());
-        expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
+        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
     });
   });
@@ -124,6 +126,6 @@ describe('components/DatasetPreview', function() {
 
     Simulate.click(element.querySelector('a.btn-grid'));
 
-    expect(spy).to.have.been.called;
+    sinon.assert.called(spy);
   });
 });

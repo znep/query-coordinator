@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('customizeBar', function() {
@@ -68,48 +69,51 @@ describe('customizeBar', function() {
   }
 
   it('should have a revert button', function() {
-    var customizeBar = createElement().element;
-    expect(customizeBar.find('revert-button')).to.exist;
+    assert.lengthOf($(createElement().element).find('revert-button'), 1);
   });
 
   it('should have a save button', function() {
-    var customizeBar = createElement().element;
-    expect(customizeBar.find('save-button')).to.exist;
+    assert.lengthOf($(createElement().element).find('save-button'), 1);
   });
 
   it('should have a save-as button', function() {
-    var customizeBar = createElement().element;
-    expect(customizeBar.find('save-as')).to.exist;
+    assert.lengthOf($(createElement().element).find('save-as'), 1);
   });
 
   it('should have a remove-all-cards button', function() {
     var customizeBar = createElement().element;
-    expect(customizeBar.find('remove-all-cards')).to.exist;
+    assert.lengthOf(customizeBar.find('remove-all-cards'), 1);
   });
 
-  it('should show save-as button', function(){
+  it('should show save-as button', function() {
     var customizeBar = createElement().element;
-    expect(customizeBar.find('save-as')).to.not.have.class('ng-hide');
+    var button = customizeBar.find('save-as');
+    assert.lengthOf(button, 1);
+    assert.isFalse(button.hasClass('ng-hide'));
   });
 
   it('should respond to changes to "hasChanges"', function() {
     var elementAndScope = createElement();
     var customizeBar = elementAndScope.element;
     var scope = elementAndScope.scope;
+    const customizeBarClasses = () =>
+      customizeBar.find('.customize-bar').attr('class');
+    const unsavedWarningClasses = () =>
+      customizeBar.find('.unsaved-warning.unsaved-dirty').attr('class');
 
-    expect(customizeBar.find('.customize-bar')).to.not.have.class('has-changes');
-    expect(customizeBar.find('.unsaved-warning.unsaved-dirty')).to.have.class('ng-hide');
+    assert.notInclude(customizeBarClasses(), 'has-changes');
+    assert.include(unsavedWarningClasses(), 'ng-hide');
     scope.hasChanges = true;
     scope.$digest();
-    expect(customizeBar.find('.customize-bar')).to.have.class('has-changes');
-    expect(customizeBar.find('.unsaved-warning.unsaved-dirty')).to.not.have.class('ng-hide');
+    assert.include(customizeBarClasses(), 'has-changes');
+    assert.notInclude(unsavedWarningClasses(), 'ng-hide');
   });
 
   describe('customize button', function() {
 
     it('should exist', function() {
       var customizeBar = createElement().element;
-      expect(customizeBar.find('.customize-button')).to.exist;
+      assert.lengthOf(customizeBar.find('.customize-button'), 1);
     });
 
     it('should toggle "editMode" when clicked', function() {
@@ -118,9 +122,9 @@ describe('customizeBar', function() {
       var scope = elementAndScope.scope;
       var customizeButton = customizeBar.find('.customize-button');
       customizeButton.click();
-      expect(scope.editMode).to.be.true;
+      assert.isTrue(scope.editMode);
       customizeButton.click();
-      expect(scope.editMode).to.be.false;
+      assert.isFalse(scope.editMode);
     });
 
     it('should have a flyout', function() {
@@ -130,7 +134,7 @@ describe('customizeBar', function() {
       var customizeButton = customizeBar.find('.customize-button');
       testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
       var flyout = $('#uber-flyout');
-      expect(flyout).to.exist;
+      assert.lengthOf(flyout, 1);
       expect(flyout.text()).to.match(/click to customize the layout/i);
       expect(flyout.text()).to.match(/\spage/i);
       expect(flyout.text()).to.not.match(/\sview/i);
@@ -148,7 +152,7 @@ describe('customizeBar', function() {
       var elementAndScope = createElement({expandedCard: {something: 'here'}});
       var customizeBar = elementAndScope.element;
       var customizeButton = customizeBar.find('.customize-button');
-      expect(customizeButton).to.have.class('disabled');
+      assert.isTrue(customizeButton.hasClass('disabled'));
       testHelpers.fireMouseEvent(customizeButton[0], 'click');
       expect(elementAndScope.scope.editMode).to.equal(false);
     });
@@ -159,7 +163,7 @@ describe('customizeBar', function() {
       var customizeButton = customizeBar.find('.customize-button');
       testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
       var flyout = $('#uber-flyout');
-      expect(flyout).to.exist;
+      assert.lengthOf(flyout, 1);
       expect(flyout.text()).to.match(/.*Collapse the big card.*/);
       testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
     });
@@ -168,7 +172,7 @@ describe('customizeBar', function() {
       var elementAndScope = createElement({exportingVisualization: true});
       var customizeBar = elementAndScope.element;
       var customizeButton = customizeBar.find('.customize-button');
-      expect(customizeButton).to.have.class('disabled');
+      assert.isTrue(customizeButton.hasClass('disabled'));
       testHelpers.fireMouseEvent(customizeButton[0], 'click');
       expect(elementAndScope.scope.editMode).to.equal(false);
     });
@@ -179,7 +183,7 @@ describe('customizeBar', function() {
       var customizeButton = customizeBar.find('.customize-button');
       testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
       var flyout = $('#uber-flyout');
-      expect(flyout).to.exist;
+      assert.lengthOf(flyout, 1);
       expect(flyout.text()).to.match(/.*Download Visualization as Image.*/);
       testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
     });
@@ -190,7 +194,7 @@ describe('customizeBar', function() {
     it('should show a save warning even when no changes have been made', function() {
       var elementAndScope = createElement({isEphemeral: true});
       var customizeBar = elementAndScope.element;
-      expect(customizeBar.find('.unsaved-warning.unsaved-clean')).to.not.have.class('ng-hide');
+      assert.isFalse(customizeBar.find('.unsaved-warning.unsaved-clean').hasClass('ng-hide'));
     });
   });
 });

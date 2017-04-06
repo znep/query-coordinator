@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('cardAggregationSelector', function() {
@@ -109,7 +110,7 @@ describe('cardAggregationSelector', function() {
     var models = createModels();
     var element = createElement(models);
 
-    expect(element).to.match('card-aggregation-selector');
+    assert.isTrue(element.is('card-aggregation-selector'));
     expect(element.find('select').text().toLowerCase()).to.contain(DEFAULT_ROW_DISPLAY_UNIT);
   });
 
@@ -118,17 +119,17 @@ describe('cardAggregationSelector', function() {
       var models = createModels();
       var element = createElement(models);
 
-      expect(element.find('option:not([value=null])')).to.have.length(4);
-      expect(element.find('option[value="*"]')).to.exist;
-      expect(element.find('option[value="column2_number"]')).to.exist;
-      expect(element.find('option[value="column3_money"]')).to.exist;
+      assert.lengthOf(element.find('option:not([value=null])'), 4);
+      assert.lengthOf(element.find('option[value="*"]'), 1);
+      assert.lengthOf(element.find('option[value="column2_number"]'), 1);
+      assert.lengthOf(element.find('option[value="column3_money"]'), 1);
     });
 
     it('should populate with column selected for card', function() {
       var models = createModels({ fieldName: 'column2_number' });
       var element = createElement(models);
 
-      expect(element.find('option[value="column2_number"]')).to.exist;
+      assert.lengthOf(element.find('option[value="column2_number"]'), 1);
     });
 
     it('should default to rows label', function() {
@@ -155,7 +156,7 @@ describe('cardAggregationSelector', function() {
 
       var element = createElement(models);
 
-      expect(element.find('select')).to.be.disabled;
+      assert.isTrue(element.find('select').prop('disabled'));
     });
 
     it('should select the saved aggregation', function() {

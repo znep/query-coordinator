@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const moment = require('moment');
 
@@ -128,10 +129,10 @@ describe('TimelineChartService', function() {
 
   describe('renderFlyout', function() {
     it('returns nothing if the payload is not an object', function() {
-      expect(TimelineChartService.renderFlyout()).to.be.undefined;
-      expect(TimelineChartService.renderFlyout(null)).to.be.undefined;
-      expect(TimelineChartService.renderFlyout(true)).to.be.undefined;
-      expect(TimelineChartService.renderFlyout(0)).to.be.undefined;
+      assert.isUndefined(TimelineChartService.renderFlyout());
+      assert.isUndefined(TimelineChartService.renderFlyout(null));
+      assert.isUndefined(TimelineChartService.renderFlyout(true));
+      assert.isUndefined(TimelineChartService.renderFlyout(0));
     });
 
     it('returns a flyout title element containing the payload title', function() {
@@ -153,8 +154,8 @@ describe('TimelineChartService', function() {
 
       var result = $(TimelineChartService.renderFlyout(payload));
 
-      expect(result.eq(0)).to.have.class('flyout-title');
-      expect(result.eq(1)).to.have.class('flyout-row');
+      assert.isTrue(result.eq(0).hasClass('flyout-title'));
+      assert.isTrue(result.eq(1).hasClass('flyout-row'));
 
       expect(result.find('.flyout-cell')).to.have.length(2);
       expect(result.find('.flyout-cell').eq(0).text()).to.equal('total');
@@ -172,9 +173,9 @@ describe('TimelineChartService', function() {
 
       var result = $(TimelineChartService.renderFlyout(payload));
 
-      expect(result.eq(0)).to.have.class('flyout-title');
-      expect(result.eq(1)).to.have.class('flyout-row');
-      expect(result.eq(2)).to.have.class('flyout-row');
+      assert.isTrue(result.eq(0).hasClass('flyout-title'));
+      assert.isTrue(result.eq(1).hasClass('flyout-row'));
+      assert.isTrue(result.eq(2).hasClass('flyout-row'));
 
       expect(result.find('.flyout-cell')).to.have.length(4);
       expect(result.find('.flyout-cell').eq(0).text()).to.equal('total');

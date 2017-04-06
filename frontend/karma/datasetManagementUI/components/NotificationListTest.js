@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import NotificationList from 'components/NotificationList';
 import {
   insertStarted,
@@ -26,7 +27,7 @@ describe('components/NotificationList', () => {
       filename: 'foo.csv'
     }));
     const element = renderComponentWithStore(NotificationList, {}, store);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
     expect(element.querySelectorAll('.dsmui-notification').length).to.equal(0);
   });
 
@@ -44,7 +45,7 @@ describe('components/NotificationList', () => {
     }));
     store.dispatch(addNotification(uploadNotification(57)));
     const element = renderComponentWithStore(NotificationList, {}, store);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
     expect(element.querySelectorAll('.notification').length).to.equal(1);
     expect(element.querySelectorAll('.notification.inProgress').length).to.equal(1);
     expect(element.querySelector('.progressBarInProgress.progressBar').style.width).to.eql('0%');
@@ -67,7 +68,7 @@ describe('components/NotificationList', () => {
       id: 57
     }, 50));
     const element = renderComponentWithStore(NotificationList, {}, store);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
     expect(element.querySelectorAll('.notification').length).to.equal(1);
     expect(element.querySelectorAll('.notification.inProgress').length).to.equal(1);
     expect(element.querySelector('.progressBarInProgress').style.width).to.eql('50%');
@@ -95,7 +96,7 @@ describe('components/NotificationList', () => {
       finished_at: new Date()
     }, 50));
     const element = renderComponentWithStore(NotificationList, {}, store);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
     expect(element.querySelectorAll('.notification').length).to.equal(1);
     expect(element.querySelectorAll('.notification.successful').length).to.equal(1);
     expect(element.querySelector('.progressBarSuccess').style.width).to.eql('100%');
@@ -118,7 +119,7 @@ describe('components/NotificationList', () => {
       id: 57
     }, 'some error', 50));
     const element = renderComponentWithStore(NotificationList, {}, store);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
     expect(element.querySelectorAll('.notification').length).to.equal(1);
     expect(element.querySelectorAll('.errorDetails').length).to.equal(1);
   });
@@ -136,7 +137,7 @@ describe('components/NotificationList', () => {
       output_schema_id: 1
     }));
     const element = renderComponentWithStore(NotificationList, {}, store);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
     expect(element.querySelectorAll('.dsmui-notification').length).to.equal(0);
   });
 
@@ -158,7 +159,7 @@ describe('components/NotificationList', () => {
     ));
     store.dispatch(addNotification(upsertJobNotification(52)));
     const element = renderComponentWithStore(NotificationList, {}, store);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
     expect(element.querySelectorAll('.notification').length).to.equal(1);
     expect(element.querySelectorAll('.notification.inProgress').length).to.equal(1);
     expect(element.querySelector('.progressBarInProgress.progressBar').style.width).to.eql('0%');
@@ -191,7 +192,7 @@ describe('components/NotificationList', () => {
     ));
     store.dispatch(addNotification(upsertJobNotification(52)));
     const element = renderComponentWithStore(NotificationList, {}, store);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
     expect(element.querySelectorAll('.notification').length).to.equal(1);
     expect(element.querySelectorAll('.notification.inProgress').length).to.equal(1);
     expect(element.querySelector('.progressBarInProgress.progressBar').style.width).to.eql('50%');
@@ -221,7 +222,7 @@ describe('components/NotificationList', () => {
       status: 'successful'
     }));
     const element = renderComponentWithStore(NotificationList, {}, store);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
     expect(element.querySelectorAll('.notification').length).to.equal(1);
     expect(element.querySelectorAll('.notification.successful').length).to.equal(1);
   });
@@ -249,7 +250,7 @@ describe('components/NotificationList', () => {
       status: 'failure'
     }));
     const element = renderComponentWithStore(NotificationList, {}, store);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
     expect(element.querySelectorAll('.notification').length).to.equal(1);
     expect(element.querySelectorAll('.notification.error').length).to.equal(1);
   });

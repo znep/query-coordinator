@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('Socrata-flavored $http service', function() {
@@ -47,7 +49,7 @@ describe('Socrata-flavored $http service', function() {
     var promise = http({
       url: '/test'
     });
-    expect(promise.then).to.exist.and.be.a('function');
+    assert.isFunction(promise.then);
     $httpBackend.flush();
   });
 
@@ -191,7 +193,7 @@ describe('Socrata-flavored $http service', function() {
     it('should interrogate a "requester" if one is provided in the requestConfig for its "requesterLabel"', function() {
       makeRequest();
 
-      expect(requesterStub.calledOnce).to.be.true;
+      sinon.assert.calledOnce(requesterStub);
       var spyCall = requesterStub.getCall(0);
       expect(spyCall.thisValue).to.equal(requester);
       $httpBackend.whenGET('/test').respond(200, '');
@@ -249,22 +251,22 @@ describe('Socrata-flavored $http service', function() {
 
     it('should emit an "http:start" and "http:stop" event', function() {
       $httpBackend.whenGET('/test').respond(200, '');
-      expect(httpStartEventHandlerStub.calledOnce).to.be.true;
-      expect(httpStopEventHandlerStub.called).to.be.false;
-      expect(httpErrorEventHandlerStub.called).to.be.false;
+      sinon.assert.calledOnce(httpStartEventHandlerStub);
+      assert.isFalse(httpStopEventHandlerStub.called);
+      assert.isFalse(httpErrorEventHandlerStub.called);
       $httpBackend.flush();
-      expect(httpStartEventHandlerStub.calledOnce).to.be.true;
-      expect(httpStopEventHandlerStub.calledOnce).to.be.true;
-      expect(httpErrorEventHandlerStub.called).to.be.false;
+      sinon.assert.calledOnce(httpStartEventHandlerStub);
+      sinon.assert.calledOnce(httpStopEventHandlerStub);
+      assert.isFalse(httpErrorEventHandlerStub.called);
     });
 
     it('should emit an "http:error" if the http request errors', function() {
       $httpBackend.whenGET('/test').respond(500, '');
-      expect(httpErrorEventHandlerStub.called).to.be.false;
-      expect(httpStopEventHandlerStub.called).to.be.false;
+      assert.isFalse(httpErrorEventHandlerStub.called);
+      assert.isFalse(httpStopEventHandlerStub.called);
       $httpBackend.flush();
-      expect(httpErrorEventHandlerStub.calledOnce).to.be.true;
-      expect(httpStopEventHandlerStub.called).to.be.false;
+      sinon.assert.calledOnce(httpErrorEventHandlerStub);
+      assert.isFalse(httpStopEventHandlerStub.called);
     });
 
     it('should include timing data in the start/stop events', function() {
@@ -272,15 +274,15 @@ describe('Socrata-flavored $http service', function() {
       $httpBackend.whenGET('/test').respond(200, '');
       var startEventCall = httpStartEventHandlerStub.getCall(0);
       var startEventMetadata = startEventCall.args[1];
-      expect(startEventMetadata).to.exist.and.to.be.an('object');
-      expect(startEventMetadata.startTime).to.exist.and.to.equal(INITIAL_TIME);
+      assert.isObject(startEventMetadata);
+      assert.equal(startEventMetadata.startTime, INITIAL_TIME);
       fakeClock.tick(STOP_TIME - INITIAL_TIME);
       $httpBackend.flush();
       var stopEventCall = httpStopEventHandlerStub.getCall(0);
       var stopEventMetadata = stopEventCall.args[1];
-      expect(stopEventMetadata).to.exist.and.to.be.an('object');
-      expect(stopEventMetadata.startTime).to.exist.and.to.equal(INITIAL_TIME);
-      expect(stopEventMetadata.stopTime).to.exist.and.to.equal(STOP_TIME);
+      assert.isObject(stopEventMetadata);
+      assert.equal(stopEventMetadata.startTime, INITIAL_TIME);
+      assert.equal(stopEventMetadata.stopTime, STOP_TIME);
     });
 
     it('should include timing data in the error events', function() {
@@ -290,9 +292,9 @@ describe('Socrata-flavored $http service', function() {
       $httpBackend.flush();
       var errorEventCall = httpErrorEventHandlerStub.getCall(0);
       var errorEventMetadata = errorEventCall.args[1];
-      expect(errorEventMetadata).to.exist.and.to.be.an('object');
-      expect(errorEventMetadata.startTime).to.exist.and.to.equal(INITIAL_TIME);
-      expect(errorEventMetadata.stopTime).to.exist.and.to.equal(ERROR_TIME);
+      assert.isObject(errorEventMetadata);
+      assert.equal(errorEventMetadata.startTime, INITIAL_TIME);
+      assert.equal(errorEventMetadata.stopTime, ERROR_TIME);
     });
 
   });

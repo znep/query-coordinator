@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -274,7 +276,8 @@ describe('FeatureMapController', function() {
         );
 
         queryResponse$.subscribe(function() {
-          expect(mockCardDataService.getRows).to.have.been.calledWith(
+          sinon.assert.calledWith(
+            mockCardDataService.getRows,
             expectedID,
             expectedOffset,
             expectedLimit,
@@ -313,7 +316,8 @@ describe('FeatureMapController', function() {
         );
 
         queryResponse$.subscribe(function() {
-          expect(mockCardDataService.getRows).to.have.been.calledWith(
+          sinon.assert.calledWith(
+            mockCardDataService.getRows,
             expectedID,
             expectedOffset,
             expectedLimit,
@@ -442,13 +446,13 @@ describe('FeatureMapController', function() {
           var sixthRow = formattedRows[0][5];
           var seventhRow = formattedRows[0][6];
 
-          expect(firstRow.isTitleColumn).to.be.true;
-          expect(secondRow.isTitleColumn).to.be.false;
-          expect(thirdRow.isTitleColumn).to.be.false;
-          expect(fourthRow.isTitleColumn).to.be.false;
-          expect(fifthRow.isTitleColumn).to.be.false;
-          expect(sixthRow.isTitleColumn).to.be.false;
-          expect(seventhRow.isTitleColumn).to.be.false;
+          assert.isTrue(firstRow.isTitleColumn);
+          assert.isFalse(secondRow.isTitleColumn);
+          assert.isFalse(thirdRow.isTitleColumn);
+          assert.isFalse(fourthRow.isTitleColumn);
+          assert.isFalse(fifthRow.isTitleColumn);
+          assert.isFalse(sixthRow.isTitleColumn);
+          assert.isFalse(seventhRow.isTitleColumn);
           done();
         });
 
@@ -475,13 +479,13 @@ describe('FeatureMapController', function() {
           var sixthRow = formattedRows[0][5];
           var seventhRow = formattedRows[0][6];
 
-          expect(firstRow.isFeatureMapColumn).to.be.false;
-          expect(secondRow.isFeatureMapColumn).to.be.false;
-          expect(thirdRow.isFeatureMapColumn).to.be.true;
-          expect(fourthRow.isFeatureMapColumn).to.be.false;
-          expect(fifthRow.isFeatureMapColumn).to.be.false;
-          expect(sixthRow.isFeatureMapColumn).to.be.false;
-          expect(seventhRow.isFeatureMapColumn).to.be.false;
+          assert.isFalse(firstRow.isFeatureMapColumn);
+          assert.isFalse(secondRow.isFeatureMapColumn);
+          assert.isTrue(thirdRow.isFeatureMapColumn);
+          assert.isFalse(fourthRow.isFeatureMapColumn);
+          assert.isFalse(fifthRow.isFeatureMapColumn);
+          assert.isFalse(sixthRow.isFeatureMapColumn);
+          assert.isFalse(seventhRow.isFeatureMapColumn);
           done();
         });
 
@@ -508,13 +512,13 @@ describe('FeatureMapController', function() {
           var sixthRow = formattedRows[0][5];
           var seventhRow = formattedRows[0][6];
 
-          expect(firstRow.isParentColumn).to.be.false;
-          expect(secondRow.isParentColumn).to.be.false;
-          expect(thirdRow.isParentColumn).to.be.true;
-          expect(fourthRow.isParentColumn).to.be.false;
-          expect(fifthRow.isParentColumn).to.be.false;
-          expect(sixthRow.isParentColumn).to.be.true;
-          expect(seventhRow.isParentColumn).to.be.false;
+          assert.isFalse(firstRow.isParentColumn);
+          assert.isFalse(secondRow.isParentColumn);
+          assert.isTrue(thirdRow.isParentColumn);
+          assert.isFalse(fourthRow.isParentColumn);
+          assert.isFalse(fifthRow.isParentColumn);
+          assert.isTrue(sixthRow.isParentColumn);
+          assert.isFalse(seventhRow.isParentColumn);
           done();
         });
 
@@ -534,9 +538,9 @@ describe('FeatureMapController', function() {
     elementInfo.element.find('feature-map').scope();
 
     // Use buildTileGetter as a proxy for FeatureMap's happiness.
-    expect(VectorTileDataService.buildTileGetter).to.have.not.been.called;
+    sinon.assert.notCalled(VectorTileDataService.buildTileGetter);
     elementInfo.pageModel.set('dataset', dataset);
-    expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+    sinon.assert.called(VectorTileDataService.buildTileGetter);
   });
 
   describe('extent', function() {
@@ -664,9 +668,10 @@ describe('FeatureMapController', function() {
       dataset.defineObservableProperty('permissions', { isPublic: true });
 
       buildElement({ dataset: dataset });
-      expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+      sinon.assert.called(VectorTileDataService.buildTileGetter);
       var lastCall = VectorTileDataService.buildTileGetter.lastCall;
-      expect(lastCall).to.have.been.calledWithMatch(
+      sinon.assert.calledWithMatch(
+        lastCall,
         sinon.match.any,
         sinon.match.any,
         sinon.match.any,
@@ -678,9 +683,10 @@ describe('FeatureMapController', function() {
       dataset.defineObservableProperty('permissions', { isPublic: false });
 
       buildElement({ dataset: dataset });
-      expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+      sinon.assert.called(VectorTileDataService.buildTileGetter);
       var lastCall = VectorTileDataService.buildTileGetter.lastCall;
-      expect(lastCall).to.have.been.calledWithMatch(
+      sinon.assert.calledWithMatch(
+        lastCall,
         sinon.match.any,
         sinon.match.any,
         sinon.match.any,
@@ -692,9 +698,10 @@ describe('FeatureMapController', function() {
       dataset.defineObservableProperty('permissions', undefined);
 
       buildElement({ dataset: dataset });
-      expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+      sinon.assert.called(VectorTileDataService.buildTileGetter);
       var lastCall = VectorTileDataService.buildTileGetter.lastCall;
-      expect(lastCall).to.have.been.calledWithMatch(
+      sinon.assert.calledWithMatch(
+        lastCall,
         sinon.match.any,
         sinon.match.any,
         sinon.match.any,
@@ -707,9 +714,10 @@ describe('FeatureMapController', function() {
       ServerConfig.override('feature_set', { 'staging_api_lockdown': true });
 
       buildElement({ dataset: dataset });
-      expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+      sinon.assert.called(VectorTileDataService.buildTileGetter);
       var lastCall = VectorTileDataService.buildTileGetter.lastCall;
-      expect(lastCall).to.have.been.calledWithMatch(
+      sinon.assert.calledWithMatch(
+        lastCall,
         sinon.match.any,
         sinon.match.any,
         sinon.match.any,
@@ -722,9 +730,10 @@ describe('FeatureMapController', function() {
       ServerConfig.override('feature_set', { 'staging_lockdown': true });
 
       buildElement({ dataset: dataset });
-      expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+      sinon.assert.called(VectorTileDataService.buildTileGetter);
       var lastCall = VectorTileDataService.buildTileGetter.lastCall;
-      expect(lastCall).to.have.been.calledWithMatch(
+      sinon.assert.calledWithMatch(
+        lastCall,
         sinon.match.any,
         sinon.match.any,
         sinon.match.any,
@@ -766,24 +775,24 @@ describe('FeatureMapController', function() {
     });
 
     it('should hide the busy indicator after 10 seconds if no extent is fetched', function() {
-      expect($scope.busy).to.equal(true);
+      assert.isTrue($scope.busy);
       testScheduler.advanceTo(Constants.FEATURE_MAP_RENDER_TIMEOUT);
-      expect($scope.busy).to.exist;
+      assert.isFalse($scope.busy);
     });
 
     it('should display the error message after 10 seconds if no extent fetched', function() {
-      expect($scope.displayRenderError).to.not.exist;
+      assert.isUndefined($scope.displayRenderError);
       testScheduler.advanceTo(Constants.FEATURE_MAP_RENDER_TIMEOUT);
-      expect($scope.displayRenderError).to.exist;
+      assert.isString($scope.displayRenderError);
     });
 
     it('should hide the error message if rendering eventually occurs', function() {
       testScheduler.advanceTo(Constants.FEATURE_MAP_RENDER_TIMEOUT);
-      expect($scope.displayRenderError).to.exist;
+      assert.isString($scope.displayRenderError);
       deferred.resolve(MIDDLE_ZOOM_EXTENT);
       // Synthetically signal render complete since we aren't actually rendering
       elementInfo.scope.$broadcast('render:complete');
-      expect($scope.displayRenderError).to.not.exist;
+      assert.isUndefined($scope.displayRenderError);
     });
   });
 });

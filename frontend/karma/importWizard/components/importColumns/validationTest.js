@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import TestUtils from 'react-addons-test-utils';

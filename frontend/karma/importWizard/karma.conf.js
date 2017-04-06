@@ -18,7 +18,7 @@ module.exports = function(karma) {
       'karma/importWizard/index.js': ['webpack', 'sourcemap']
     },
 
-    frameworks: ['mocha', 'chai', 'chai-as-promised', 'sinon-chai'],
+    frameworks: ['mocha'],
 
     reporters: ['mocha', 'dots'],
 

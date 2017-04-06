@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import InfoPane from 'components/InfoPane';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
@@ -6,7 +7,7 @@ import { getStore } from 'testStore';
 describe('InfoPane', () => {
   it('renders an element', () => {
     const element = renderComponentWithStore(InfoPane, {});
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   describe('updatedDate', () => {

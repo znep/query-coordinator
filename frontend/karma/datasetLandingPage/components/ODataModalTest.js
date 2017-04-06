@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { ODataModal } from 'components/ODataModal';
 import mockView from 'data/mockView';
 
@@ -8,6 +9,6 @@ describe('components/ODataModal', function() {
       view: mockView
     });
 
-    expect(element).to.exist;
+    assert.ok(element);
   });
 });

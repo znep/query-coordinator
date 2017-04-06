@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('infoPane', function() {
@@ -51,23 +53,23 @@ describe('infoPane', function() {
     });
 
     it('should have a child with the .cards-metadata class', function() {
-      expect(self.element.children().first()).to.have.class('cards-metadata');
+      assert.isTrue($(self.element.children().first()).hasClass('cards-metadata'));
     });
 
     it('should have lensType child', function() {
-      expect(self.element.find('lens-type')).to.exist;
+      assert.lengthOf(self.element.find('lens-type'), 1);
     });
 
     it('should have a link to the source dataset', function() {
-      expect(self.element.find('.source-dataset-name a')).to.exist;
+      assert.lengthOf(self.element.find('.source-dataset-name a'), 1);
     });
 
     it('should have an exportMenu child', function() {
-      expect(self.element.find('export-menu')).to.exist;
+      assert.lengthOf(self.element.find('export-menu'), 1);
     });
 
     it('should have an apiExplorer child', function() {
-      expect(self.element.find('api-explorer')).to.exist;
+      assert.lengthOf(self.element.find('api-explorer'), 1);
     });
 
     it('should have a button to toggle the visibility of the manage lens dialog', function() {
@@ -75,7 +77,7 @@ describe('infoPane', function() {
       // Set shouldShowManageLens to true on parent scope to make visible.
       self.$scope.$apply(function() { self.$scope.shouldShowManageLens = true; });
 
-      expect(self.element.find('.manage-section .action-btn')).to.exist;
+      assert.lengthOf(self.element.find('.manage-section .action-btn'), 1);
     });
   });
 

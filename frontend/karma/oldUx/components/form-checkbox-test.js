@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils, {
@@ -29,7 +31,7 @@ describe('FormCheckbox', function() {
   });
 
   it('exists', function() {
-    expect(this.createElement()).to.be.a.reactElement;
+    assert.ok(this.createElement());
   });
 
   it('renders', function() {
@@ -50,8 +52,8 @@ describe('FormCheckbox', function() {
 
     it('makes an ajax call on change', function() {
       TestUtils.Simulate.click(findByClass(this.node, 'form-checkbox'));
-      expect($.ajax).to.have.been.calledOnce;
-      expect(this.onSuccessStub).to.have.been.calledOnce;
+      sinon.assert.calledOnce($.ajax);
+      sinon.assert.calledOnce(this.onSuccessStub);
     });
   });
 });

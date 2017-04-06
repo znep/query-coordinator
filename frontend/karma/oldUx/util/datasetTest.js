@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
+
 describe('blist.dataset', function () {
   beforeEach(function() {
     blist.configuration = {};
@@ -17,7 +20,7 @@ describe('blist.dataset', function () {
 
     describe('if getNewBackendId fails', function() {
       beforeEach(function() {
-        sinon.stub(dataset, 'getNewBackendId', function() {
+        sinon.stub(dataset, 'getNewBackendId').callsFake(function() {
           return generateRejectedPromise('I reject you');
         });
       });
@@ -34,14 +37,14 @@ describe('blist.dataset', function () {
 
     describe('if getNewBackendId succeeds', function() {
       beforeEach(function() {
-        sinon.stub(dataset, 'getNewBackendId', function() {
+        sinon.stub(dataset, 'getNewBackendId').callsFake(function() {
           return $.when('asdf-asdf');
         });
       });
 
       describe('_fetchViewJson fails', function() {
         beforeEach(function() {
-          sinon.stub(dataset, '_fetchViewJson', function() {
+          sinon.stub(dataset, '_fetchViewJson').callsFake(function() {
             return generateRejectedPromise('rejection from _fetchViewJson');
           });
         });
@@ -58,14 +61,14 @@ describe('blist.dataset', function () {
 
       describe('_fetchViewJson succeeds', function() {
         beforeEach(function() {
-          sinon.stub(dataset, '_fetchViewJson', function() {
+          sinon.stub(dataset, '_fetchViewJson').callsFake(function() {
             return $.when({tableId: 20});
           });
         });
 
         describe('_lookUpDataLensesByTableId fails', function() {
           beforeEach(function() {
-            sinon.stub(dataset, '_lookUpDataLensesByTableId', function() {
+            sinon.stub(dataset, '_lookUpDataLensesByTableId').callsFake(function() {
               return generateRejectedPromise('rejection from _lookUpDataLensesByTableId');
             });
           });
@@ -82,14 +85,14 @@ describe('blist.dataset', function () {
 
         describe('_lookUpDataLensesByTableId succeeds', function() {
           beforeEach(function() {
-            sinon.stub(dataset, '_lookUpDataLensesByTableId', function() {
+            sinon.stub(dataset, '_lookUpDataLensesByTableId').callsFake(function() {
               return $.when('awesome sauce');
             });
           });
 
           describe('_onlyDataLenses fails', function() {
             beforeEach(function() {
-              sinon.stub(dataset, '_onlyDataLenses', function() {
+              sinon.stub(dataset, '_onlyDataLenses').callsFake(function() {
                 return generateRejectedPromise('rejection from _onlyDataLenses');
               });
             });
@@ -106,7 +109,7 @@ describe('blist.dataset', function () {
 
           describe('_onlyDataLenses succeeds', function() {
             beforeEach(function() {
-              sinon.stub(dataset, '_onlyDataLenses', function() {
+              sinon.stub(dataset, '_onlyDataLenses').callsFake(function() {
                 return $.when('awesome dinosaurs');
               });
             });
@@ -169,6 +172,7 @@ describe('blist.dataset', function () {
   });
 
   describe('getDownloadType', function() {
+    var dataset;
 
     beforeEach(function() {
       dataset = new Dataset({id: 'four-four'});

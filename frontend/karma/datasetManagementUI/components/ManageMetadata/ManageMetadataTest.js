@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 /* eslint new-cap: 0 */
 import _ from 'lodash';
 import { ManageMetadata } from 'components/ManageMetadata';
@@ -48,12 +50,12 @@ describe('components/ManageMetadata', () => {
 
   it('renders dataset metadata tab without errors', () => {
     const component = renderComponentWithStore(ManageMetadata, defaultDatasetProps);
-    expect(component).to.exist;
+    assert.ok(component);
   });
 
   it('renders column metadata tab without errors', () => {
     const columnMeta = renderComponentWithStore(ManageMetadata, defaultColumnProps);
-    expect(columnMeta).to.exist;
+    assert.ok(columnMeta);
   });
 
   it('renders a title', () => {

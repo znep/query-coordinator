@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { SortDropdown } from 'components/assetSelector/SortDropdown';
 import _ from 'lodash';
 

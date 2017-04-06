@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import {
   isUserRoled,
   isUserAdminOrPublisher,

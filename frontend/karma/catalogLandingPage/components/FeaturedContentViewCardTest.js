@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { FeaturedContentViewCard } from 'components/FeaturedContentViewCard';
 
 describe('components/FeaturedContentViewCard', () => {

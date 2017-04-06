@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -57,11 +59,11 @@ describe('SaveAs', function() {
       cleanedUp = true;
     });
 
-    expect(cleanedUp).to.be.false;
+    assert.isFalse(cleanedUp);
 
     scope.$broadcast('$destroy');
 
-    expect(cleanedUp).to.be.true;
+    assert.isTrue(cleanedUp);
   }));
 
   describe('"Save As" button', function() {
@@ -70,19 +72,19 @@ describe('SaveAs', function() {
     it('should make the tool panel active when clicked', function() {
       var $saveAs = createElement(elementTemplate.format('true'));
       var $toolPanel = $saveAs.find('.tool-panel-main');
-      expect($toolPanel.hasClass('active')).to.be.false;
+      assert.isFalse($toolPanel.hasClass('active'));
       $saveAs.find('.tool-panel-toggle-btn').click();
-      expect($toolPanel.hasClass('active')).to.be.true;
+      assert.isTrue($toolPanel.hasClass('active'));
     });
 
     // https://github.com/ariya/phantomjs/issues/10427
     xit('should focus the name input when clicked', function(done) {
       var $saveAs = createElement(elementTemplate.format('true'));
       var $toolPanel = $saveAs.find('.tool-panel-main');
-      expect($toolPanel.hasClass('active')).to.be.false;
+      assert.isFalse($toolPanel.hasClass('active'));
       $saveAs.find('.tool-panel-toggle-btn').click();
       _.defer(function() {
-        expect($toolPanel.find('#save-as-name:focus')).to.exist;
+        assert.lengthOf($toolPanel.find('#save-as-name:focus'), 1);
         done();
       });
     });
@@ -102,20 +104,20 @@ describe('SaveAs', function() {
       var cancelSpy = sinon.spy($saveAs.isolateScope(), 'cancel');
       $toolPanel.find('button[data-action="cancel"]').trigger('click');
       scope.$apply();
-      expect(cancelSpy.calledOnce).to.be.true;
-      expect($toolPanel.hasClass('active')).to.be.false;
+      sinon.assert.calledOnce(cancelSpy);
+      assert.isFalse($toolPanel.hasClass('active'));
     });
 
     it('should become inactive when the "Save As" button is clicked', function() {
       $saveAs.find('.tool-panel-toggle-btn').click();
       scope.$apply();
-      expect($toolPanel.hasClass('active')).to.be.false;
+      assert.isFalse($toolPanel.hasClass('active'));
     });
 
     it('should highlight the name input as an error if none is provided when the "Save" button is clicked', function() {
       $saveAs.find('button[data-action="save"]').click();
       scope.$apply();
-      expect($saveAs.find('#save-as-name').hasClass('form-error')).to.be.true;
+      assert.isTrue($saveAs.find('#save-as-name').hasClass('form-error'));
     });
 
     it('should call the savePageAs callback when a name is provided and the "Save" button is clicked', function() {
@@ -126,10 +128,10 @@ describe('SaveAs', function() {
 
       scope.$apply();
 
-      expect($saveAsName.hasClass('form-error')).to.be.false;
-      expect(scope.savePageAs.calledOnce).to.be.true;
+      assert.isFalse($saveAsName.hasClass('form-error'));
+      sinon.assert.calledOnce(scope.savePageAs);
       var savePageAsCall = scope.savePageAs.getCall(0);
-      expect(savePageAsCall.calledWithExactly(TEST_INPUT, '', undefined, undefined)).to.be.true;
+      sinon.assert.calledWithExactly(savePageAsCall, TEST_INPUT, '', undefined, undefined);
     });
 
     it('should call the savePageAs callback only once if the user clicks the "Save" button multiple times', function() {
@@ -140,8 +142,8 @@ describe('SaveAs', function() {
 
       scope.$apply();
 
-      expect($saveAsName.hasClass('form-error')).to.be.false;
-      expect(scope.savePageAs.calledOnce).to.be.true;
+      assert.isFalse($saveAsName.hasClass('form-error'));
+      sinon.assert.calledOnce(scope.savePageAs);
 
       $saveAs.find('button[data-action="save"]').click();
       $saveAs.find('button[data-action="save"]').click();
@@ -149,8 +151,8 @@ describe('SaveAs', function() {
 
       scope.$apply();
 
-      expect($saveAsName.hasClass('form-error')).to.be.false;
-      expect(scope.savePageAs.calledOnce).to.be.true;
+      assert.isFalse($saveAsName.hasClass('form-error'));
+      sinon.assert.calledOnce(scope.savePageAs);
     });
 
     it('should show a loading spinner when a name is provided and the "Save" button is clicked', function() {
@@ -162,8 +164,8 @@ describe('SaveAs', function() {
 
       scope.$apply();
 
-      expect($saveAsName.hasClass('form-error')).to.be.false;
-      expect(scope.savePageAs.calledOnce).to.be.true;
+      assert.isFalse($saveAsName.hasClass('form-error'));
+      sinon.assert.calledOnce(scope.savePageAs);
       var $spinner = $saveButton.find('spinner.save-button-flyout-target');
       expect($spinner.length).to.equal(1);
     });
@@ -173,13 +175,13 @@ describe('SaveAs', function() {
       scope.$apply();
       $saveAs.find('#save-as-name').val('input').trigger('keyup');
       scope.$apply();
-      expect($saveAs.find('#save-as-name').hasClass('form-error')).to.be.false;
+      assert.isFalse($saveAs.find('#save-as-name').hasClass('form-error'));
     });
 
     it('should become inactive if the area outside of the panel is clicked', function() {
       testHelpers.TestDom.append($saveAs);
       testHelpers.fireMouseEvent($saveAs.find('.tool-panel')[0], 'click');
-      expect($toolPanel.hasClass('active')).to.be.false;
+      assert.isFalse($toolPanel.hasClass('active'));
     });
 
     it('should not become inactive if the area outside of the panel is clicked and the save button is not idle', function() {
@@ -187,7 +189,7 @@ describe('SaveAs', function() {
       $saveAs.isolateScope().saveStatus = 'saving';
       $saveAs.isolateScope().$digest();
       testHelpers.fireMouseEvent($saveAs.find('.tool-panel')[0], 'click');
-      expect($toolPanel.hasClass('active')).to.be.true;
+      assert.isTrue($toolPanel.hasClass('active'));
     });
   });
 
@@ -218,7 +220,7 @@ describe('SaveAs', function() {
 
     it('should not show a message if the user can approve nominations and the dataset is not private', function() {
       setup(true, false, 'asdf-fdsa');
-      expect(element.find('.visibility-alert')).to.not.exist;
+      assert.lengthOf(element.find('.visibility-alert'), 0);
     });
 
     it('should show a message if the user can approve nominations and the dataset is private', function() {

@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import FormFooter from 'components/FeaturedContentModal/FormFooter';
 import { Simulate } from 'react-addons-test-utils';
 
@@ -18,7 +20,7 @@ describe('components/FeaturedContentModal/FormFooter', function() {
 
   it('renders', function() {
     var element = renderComponent(FormFooter, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   describe('save button', function() {
@@ -26,13 +28,13 @@ describe('components/FeaturedContentModal/FormFooter', function() {
       var element = renderComponent(FormFooter, getProps({
         displaySaveButton: false
       }));
-      expect(element.querySelector('button.save-button')).to.not.exist;
+      assert.isNull(element.querySelector('button.save-button'));
     });
 
     describe('when displaySaveButton is true', function() {
       it('renders', function() {
         var element = renderComponent(FormFooter, getProps());
-        expect(element.querySelector('button.save-button')).to.exist;
+        assert.ok(element.querySelector('button.save-button'));
       });
 
       it('displays the saveText in the save button by default', function() {
@@ -48,7 +50,7 @@ describe('components/FeaturedContentModal/FormFooter', function() {
           isSaving: true
         }));
         var saveButtonSpinner = element.querySelector('button.save-button .spinner-default');
-        expect(saveButtonSpinner).to.exist;
+        assert.ok(saveButtonSpinner);
       });
 
       it('displays the savedText in the save button if isSaved is true', function() {
@@ -65,7 +67,7 @@ describe('components/FeaturedContentModal/FormFooter', function() {
           isSaving: true
         }));
         var saveButton = element.querySelector('button.save-button');
-        expect(saveButton).to.be.disabled;
+        assert.isTrue($(saveButton).prop('disabled'));
       });
 
       it('is disabled when canSave is false', function() {
@@ -73,7 +75,7 @@ describe('components/FeaturedContentModal/FormFooter', function() {
           canSave: false
         }));
         var saveButton = element.querySelector('button.save-button');
-        expect(saveButton).to.be.disabled;
+        assert.isTrue($(saveButton).prop('disabled'));
       });
 
       it('invokes onClickSave on click', function() {
@@ -84,7 +86,7 @@ describe('components/FeaturedContentModal/FormFooter', function() {
         var saveButton = element.querySelector('button.save-button');
 
         Simulate.click(saveButton);
-        expect(spy).to.have.been.called;
+        sinon.assert.called(spy);
       });
     });
   });
@@ -92,7 +94,7 @@ describe('components/FeaturedContentModal/FormFooter', function() {
   describe('cancel button', function() {
     it('renders', function() {
       var element = renderComponent(FormFooter, getProps());
-      expect(element.querySelector('button.cancel-button')).to.exist;
+      assert.ok(element.querySelector('button.cancel-button'));
     });
 
     it('displays te cancelText in the cancel button', function() {
@@ -111,7 +113,7 @@ describe('components/FeaturedContentModal/FormFooter', function() {
       var cancelButton = element.querySelector('button.cancel-button')
 
       Simulate.click(cancelButton);
-      expect(spy).to.have.been.called;
+      sinon.assert.called(spy);
     });
   });
 });

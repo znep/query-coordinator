@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import _ from 'lodash';
 
 import * as ExampleData from './exampleData';

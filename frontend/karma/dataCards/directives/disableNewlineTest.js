@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('disableNewline directive', function() {
@@ -48,17 +50,17 @@ describe('disableNewline directive', function() {
 
     it('should handle the \\n newline character', function() {
       textarea.val('\n').trigger('input');
-      expect(textarea.val()).to.be.empty;
+      assert.lengthOf(textarea.val(), 0);
     });
 
     it('should handle the \\r newline character', function() {
       textarea.val('\r').trigger('input');
-      expect(textarea.val()).to.be.empty;
+      assert.lengthOf(textarea.val(), 0);
     });
 
     it('should handle the \\r\\n newline character', function() {
       textarea.val('\r\n').trigger('input');
-      expect(textarea.val()).to.be.empty;
+      assert.lengthOf(textarea.val(), 0);
     });
 
     it('should properly add non newline characters', function() {
@@ -110,7 +112,7 @@ describe('disableNewline directive', function() {
 
     it('should broadcast an "elastic:adjust" event', function() {
       textarea.trigger('input');
-      spy.should.have.been.calledWith('elastic:adjust');
+      sinon.assert.calledWith(spy, 'elastic:adjust');
     });
   });
 });

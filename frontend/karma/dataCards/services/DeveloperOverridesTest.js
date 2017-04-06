@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('Developer overrides', function() {
@@ -37,7 +38,7 @@ describe('Developer overrides', function() {
       }));
       it('should return undefined for a non-overridden dataset', inject(function(DeveloperOverrides) {
         DeveloperOverrides.setOverridesFromString('dead-beef->unde-rtst');
-        expect(DeveloperOverrides.dataOverrideForDataset('dead-fish')).to.be.undefined;
+        assert.isUndefined(DeveloperOverrides.dataOverrideForDataset('dead-fish'));
       }));
     });
     describe('with multiple overrides defined', function() {
@@ -48,19 +49,19 @@ describe('Developer overrides', function() {
       }));
       it('should return undefined for a non-overridden dataset', inject(function(DeveloperOverrides) {
         DeveloperOverrides.setOverridesFromString('dead-beef->unde-rtst,fooo-baar->cats-meow');
-        expect(DeveloperOverrides.dataOverrideForDataset('dead-fish')).to.be.undefined;
+        assert.isUndefined(DeveloperOverrides.dataOverrideForDataset('dead-fish'));
       }));
     });
     describe('replacing overrides', function() {
       it('should reflect only the new overrides', inject(function(DeveloperOverrides) {
         DeveloperOverrides.setOverridesFromString('dead-beef->unde-rtst');
         expect(DeveloperOverrides.dataOverrideForDataset('dead-beef')).to.equal('unde-rtst');
-        expect(DeveloperOverrides.dataOverrideForDataset('dead-fish')).to.be.undefined;
+        assert.isUndefined(DeveloperOverrides.dataOverrideForDataset('dead-fish'));
 
         DeveloperOverrides.setOverridesFromString('live-beef->lolz-puns');
         expect(DeveloperOverrides.dataOverrideForDataset('live-beef')).to.equal('lolz-puns');
-        expect(DeveloperOverrides.dataOverrideForDataset('dead-beef')).to.be.undefined;
-        expect(DeveloperOverrides.dataOverrideForDataset('dead-fish')).to.be.undefined;
+        assert.isUndefined(DeveloperOverrides.dataOverrideForDataset('dead-beef'));
+        assert.isUndefined(DeveloperOverrides.dataOverrideForDataset('dead-fish'));
       }));
     });
   });

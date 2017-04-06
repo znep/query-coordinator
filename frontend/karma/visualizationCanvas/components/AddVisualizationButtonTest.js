@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { AddVisualizationButton } from 'components/AddVisualizationButton';
 import mockVif from 'data/mockVif';
 
@@ -12,7 +14,7 @@ describe('AddVisualizationButton', () => {
 
   it('renders an element', () => {
     const element = renderComponent(AddVisualizationButton, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('invokes onClickHandler on click', () => {
@@ -23,7 +25,7 @@ describe('AddVisualizationButton', () => {
 
     TestUtils.Simulate.click(element.querySelector('button'));
 
-    expect(onClickSpy).to.have.been.called;
+    sinon.assert.called(onClickSpy);
   });
 
   it('does not render a button if vifs exist', () => {
@@ -31,6 +33,6 @@ describe('AddVisualizationButton', () => {
       vifs: [mockVif]
     }));
 
-    expect(element).to.be.null;
+    assert.isNull(element);
   });
 });

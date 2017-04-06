@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { FeaturedItemSelector } from 'components/FeaturedContentModal/FeaturedItemSelector';
 import { Simulate } from 'react-addons-test-utils';
 import mockFeaturedItem from 'data/mockFeaturedItem';
@@ -11,7 +13,7 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
 
   it('renders something', function() {
     var element = renderComponent(FeaturedItemSelector, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   describe('markup', function() {
@@ -22,20 +24,20 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
     });
 
     it('renders a header', function() {
-      expect(element.querySelector('.modal-content h2')).to.exist;
+      assert.ok(element.querySelector('.modal-content h2'));
     });
 
     it('renders an introduction', function() {
-      expect(element.querySelector('.modal-content p')).to.exist;
+      assert.ok(element.querySelector('.modal-content p'));
     });
 
     it('renders the featured content', function() {
-      expect(element.querySelector('.modal-content .featured-content')).to.exist;
+      assert.ok(element.querySelector('.modal-content .featured-content'));
     });
 
     it('renders a footer', function() {
-      expect(element.querySelector('footer')).to.exist;
-      expect(element.querySelector('footer .done-button')).to.exist;
+      assert.ok(element.querySelector('footer'));
+      assert.ok(element.querySelector('footer .done-button'));
     });
   });
 
@@ -53,8 +55,8 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
       contentList: [mockFeaturedItem, null, null]
     }));
 
-    expect(element.querySelector('.featured-item .edit-button')).to.exist;
-    expect(element.querySelector('.featured-item .remove-button')).to.exist;
+    assert.ok(element.querySelector('.featured-item .edit-button'));
+    assert.ok(element.querySelector('.featured-item .remove-button'));
   });
 
   it('renders the remove button with text if the item is not being removed', function() {
@@ -62,7 +64,7 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
       contentList: [null, mockFeaturedItem, null]
     }));
 
-    expect(element.querySelector('.featured-item .remove-button .spinner-default')).to.not.exist;
+    assert.isNull(element.querySelector('.featured-item .remove-button .spinner-default'));
   });
 
   it('renders the remove button with a spinner if an item is being removed', function() {
@@ -72,7 +74,7 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
       isRemoving: true
     }));
 
-    expect(element.querySelector('.featured-item .remove-button .spinner-default')).to.exist;
+    assert.ok(element.querySelector('.featured-item .remove-button .spinner-default'));
   });
 
   it('renders an add button on placeholders', function() {
@@ -114,7 +116,7 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
     });
 
     expect(buttons).to.have.length(2);
-    expect(hasStoryOption).to.be.false;
+    assert.isFalse(hasStoryOption);
   });
 
   describe('actions', function() {

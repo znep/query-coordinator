@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import TableCell from 'components/Table/TableCell';
 
 describe('components/Table/TableCell', () => {
@@ -15,31 +16,31 @@ describe('components/Table/TableCell', () => {
 
   it('renders empty', () => {
     const element = renderInTable(<TableCell cell={{ ok: null }} />);
-    expect(element).to.not.be.null;
-    expect(element.querySelector('.empty')).to.not.be.null;
+    assert.ok(element);
+    assert.ok(element.querySelector('.empty'));
   });
 
   it('renders not loaded', () => {
     const element = renderInTable(<TableCell cell={null} />);
-    expect(element).to.not.be.null;
-    expect(element.querySelector('.notYetLoaded')).to.not.be.null;
+    assert.ok(element);
+    assert.ok(element.querySelector('.notYetLoaded'));
   });
 
   it('renders text', () => {
     const element = renderInTable(<TableCell cell={{ ok: 'foobar' }} />);
-    expect(element).to.not.be.null;
+    assert.ok(element);
     expect(element.querySelector('div').innerText).to.eql('foobar');
   });
 
   it('renders a boolean', () => {
     const element = renderInTable(<TableCell cell={{ ok: true }} />);
-    expect(element).to.not.be.null;
+    assert.ok(element);
     expect(element.querySelector('div').innerText).to.eql('true');
   });
 
   it('renders a number', () =>{
     const element = renderInTable(<TableCell cell={{ ok: 42 }} />);
-    expect(element).to.not.be.null;
+    assert.ok(element);
     expect(element.querySelector('div').innerText).to.eql('42');
   });
 

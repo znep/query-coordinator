@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const L = require('leaflet');
 
@@ -59,26 +61,26 @@ describe('LeafletVisualizationHelpersService', function() {
       it('should emit an event on the rootScope', function() {
         var eventSpy = sinon.spy();
         $rootScope.$on('card-expanded', eventSpy);
-        expect(eventSpy).to.have.not.been.called;
+        sinon.assert.notCalled(eventSpy);
         model.set('hasExpandedCard', true);
-        expect(eventSpy).to.have.been.called;
+        sinon.assert.calledOnce(eventSpy);
       });
     });
 
     describe('calling `setOption` on the model in response to events on the scope', function() {
       it('skips to the first event, which is the map settling', function() {
         scope.$emit('set-extent', 'ignored');
-        expect(cardModel.setOption).to.not.have.been.called;
+        sinon.assert.notCalled(cardModel.setOption);
       });
 
       it('sets the mapExtent option on subsequent events', function() {
         scope.$emit('set-extent', 'ignored');
         scope.$emit('set-extent', _.clone(testExtent1));
-        expect(cardModel.setOption).to.have.been.calledOnce;
-        expect(cardModel.setOption).to.have.been.calledWith('mapExtent', testExtent1);
+        sinon.assert.calledOnce(cardModel.setOption);
+        sinon.assert.calledWith(cardModel.setOption, 'mapExtent', testExtent1);
         scope.$emit('set-extent', _.clone(testExtent2));
-        expect(cardModel.setOption).to.have.been.calledTwice;
-        expect(cardModel.setOption).to.have.been.calledWith('mapExtent', testExtent2);
+        sinon.assert.calledTwice(cardModel.setOption);
+        sinon.assert.calledWith(cardModel.setOption, 'mapExtent', testExtent2);
       });
 
     });
@@ -113,7 +115,7 @@ describe('LeafletVisualizationHelpersService', function() {
       var eventSpy = sinon.spy();
       scope.$on('set-extent', eventSpy);
       map.fitBounds(LeafletHelpersService.buildBounds(testExtent1));
-      expect(eventSpy).to.have.been.called;
+      sinon.assert.called(eventSpy);
     });
 
     it('should not emit an event on map resize without a card expansion', function() {
@@ -121,7 +123,7 @@ describe('LeafletVisualizationHelpersService', function() {
       scope.$on('set-extent', eventSpy);
       $mapContainer.width(640).height(480);
       map.invalidateSize();
-      expect(eventSpy).to.have.not.been.called;
+      sinon.assert.notCalled(eventSpy);
     });
 
     it('should emit an event on map resize after a card expansion', function() {
@@ -130,7 +132,7 @@ describe('LeafletVisualizationHelpersService', function() {
       scope.$on('set-extent', eventSpy);
       $mapContainer.width(640).height(480);
       map.invalidateSize();
-      expect(eventSpy).to.have.been.called;
+      sinon.assert.called(eventSpy);
     });
   });
 

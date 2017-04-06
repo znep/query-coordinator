@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { PublishNotice } from 'components/PublishNotice';
 import { Simulate } from 'react-addons-test-utils';
 import mockView from 'data/mockView';
@@ -23,7 +25,7 @@ describe('components/PublishNotice', () => {
 
   it('renders an element', () => {
     var element = renderComponent(PublishNotice, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('does not render if the dataset is not unpublished', () => {
@@ -33,7 +35,7 @@ describe('components/PublishNotice', () => {
       }
     }));
 
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   it('renders an error if the publish operation failed', () => {
@@ -43,23 +45,23 @@ describe('components/PublishNotice', () => {
       }
     }));
 
-    expect(element.querySelector('.alert.publish-notice')).to.exist;
-    expect(element.querySelector('.alert.publish-error')).to.exist;
+    assert.ok(element.querySelector('.alert.publish-notice'));
+    assert.ok(element.querySelector('.alert.publish-error'));
   });
 
   it('renders a button by default', () => {
     var element = renderComponent(PublishNotice, getProps());
     var button = element.querySelector('button');
-    expect(button).to.exist;
+    assert.ok(button);
     expect(button.textContent).to.equal('Publish');
-    expect(button.querySelector('.spinner-default')).to.not.exist;
+    assert.isNull(button.querySelector('.spinner-default'));
     expect(button.classList.contains('btn-success')).to.equal(false);
   });
 
   it('does not render a button if the user is unroled', () => {
     window.serverConfig.currentUser = null;
     const element = renderComponent(PublishNotice, getProps());
-    expect(element.querySelector('button')).to.not.exist;
+    assert.isNull(element.querySelector('button'));
   });
 
   it('renders a button with a spinner if the view is being published', () => {
@@ -70,7 +72,7 @@ describe('components/PublishNotice', () => {
     }));
 
     var button = element.querySelector('button');
-    expect(button.querySelector('.spinner-default')).to.exist;
+    assert.ok(button.querySelector('.spinner-default'));
   });
 
   it('renders a success button if the publishing succeeded', () => {
@@ -137,7 +139,7 @@ describe('components/PublishNotice', () => {
     expect(spy.callCount).to.equal(0);
 
     var flyoutId = element.querySelector('button[data-flyout]').dataset.flyout;
-    expect(flyoutId).to.exist;
-    expect(element.querySelector(`#${flyoutId}.flyout`)).to.exist;
+    assert.ok(flyoutId);
+    assert.ok(element.querySelector(`#${flyoutId}.flyout`));
   });
 });

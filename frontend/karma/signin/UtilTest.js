@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import * as Util from 'Util';
 
 describe('Util', () => {
@@ -22,19 +23,19 @@ describe('Util', () => {
 
   describe('isValidEmail', () => {
     it('allows valid emails', () => {
-      expect(Util.isValidEmail('cool.guy@coolwebsite.com')).to.be.true;
+      assert.isTrue(Util.isValidEmail('cool.guy@coolwebsite.com'));
     });
 
     it("doesn't allow invalid emails", () => {
-      expect(Util.isValidEmail('not-an-email')).to.be.false;
+      assert.isFalse(Util.isValidEmail('not-an-email'));
     });
 
     it("doesn't allow multi-line emails", () => {
-      expect(Util.isValidEmail('cool.guy@coolwebsite.com\n\nmore-not-emails')).to.be.false;
+      assert.isFalse(Util.isValidEmail('cool.guy@coolwebsite.com\n\nmore-not-emails'));
     });
 
     it('allows just @domain', () => {
-      expect(Util.isValidEmail('@coolwebsite.com')).to.be.true;
+      assert.isTrue(Util.isValidEmail('@coolwebsite.com'));
     });
   });
 
@@ -45,9 +46,9 @@ describe('Util', () => {
     });
 
     it('returns nothing if no forced connection is found', () => {
-      expect(Util.findForcedConnection('cool.guy@coolwebsite.com', forcedConnections)).to.not.exist;
-      expect(Util.findForcedConnection('cool.gal@some-domain.gov.wat', forcedConnections)).to.not.exist;
-      expect(Util.findForcedConnection('cool.dude@some-domain.gov\n\nwat', forcedConnections)).to.not.exist;
+      assert.isNotOk(Util.findForcedConnection('cool.guy@coolwebsite.com', forcedConnections));
+      assert.isNotOk(Util.findForcedConnection('cool.gal@some-domain.gov.wat', forcedConnections));
+      assert.isNotOk(Util.findForcedConnection('cool.dude@some-domain.gov\n\nwat', forcedConnections));
     });
   });
 
@@ -58,16 +59,16 @@ describe('Util', () => {
     });
 
     it('returns nothing when email does not match a connection', () => {
-      expect(Util.findEmailDomainConnection('awesome.man@gmail.com', auth0Connections, false)).to.not.exist;
-      expect(Util.findEmailDomainConnection('not-an-email', auth0Connections, false)).to.not.exist;
+      assert.isNotOk(Util.findEmailDomainConnection('awesome.man@gmail.com', auth0Connections, false));
+      assert.isNotOk(Util.findEmailDomainConnection('not-an-email', auth0Connections, false));
     });
 
     it('returns nothing for disabled connections', () => {
-      expect(Util.findEmailDomainConnection('awesome.lady@somewhere.ca', auth0Connections, false)).to.not.exist;
+      assert.isNotOk(Util.findEmailDomainConnection('awesome.lady@somewhere.ca', auth0Connections, false));
     });
 
     it('returns nothing for @socrata.com emails when socrataEmailsBypassAuth0 is true', () => {
-      expect(Util.findEmailDomainConnection('cool.guy@socrata.com', auth0Connections, true)).to.not.exist;
+      assert.isNotOk(Util.findEmailDomainConnection('cool.guy@socrata.com', auth0Connections, true));
     });
   });
 
@@ -92,11 +93,11 @@ describe('Util', () => {
     });
 
     it('returns nothing if no connection is found', () => {
-      expect(Util.findConnection('spectacular.man@gmail.com', auth0Connections, forcedConnections, false)).to.not.exist;
+      assert.isNotOk(Util.findConnection('spectacular.man@gmail.com', auth0Connections, forcedConnections, false));
     });
 
     it('returns nothing for @socrata.com emails when socrataEmailsBypassAuth0 is true', () => {
-      expect(Util.findConnection('fantastic.dude@socrata.com', auth0Connections, forcedConnections, true)).to.not.exist;
+      assert.isNotOk(Util.findConnection('fantastic.dude@socrata.com', auth0Connections, forcedConnections, true));
     });
   });
 

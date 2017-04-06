@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import { FlashMessage } from 'components/FlashMessage/FlashMessage';
@@ -49,6 +51,6 @@ describe('components/FlashMessage/FlashMessage', () => {
       visible: false
     };
     const component = shallow(<FlashMessage {...visibleProps}/>);
-    expect(component.type()).to.be.null;
+    assert.isNull(component.type());
   });
 })

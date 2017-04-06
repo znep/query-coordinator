@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import InfoPaneButtons from 'components/InfoPaneButtons';
 import mockView from 'data/mockView';
 
@@ -13,7 +14,7 @@ describe('components/InfoPaneButtons', () => {
   describe('view data button', () => {
     it('exists if the dataset is tabular', () => {
       const element = renderComponent(InfoPaneButtons, getProps());
-      expect(element.querySelector('.btn.grid')).to.exist;
+      assert.ok(element.querySelector('.btn.grid'));
     });
 
     it('does not exist if the dataset is blobby or an href', () => {
@@ -23,14 +24,14 @@ describe('components/InfoPaneButtons', () => {
         }
       }));
 
-      expect(element.querySelector('.btn.grid')).to.not.exist;
+      assert.isNull(element.querySelector('.btn.grid'));
     });
   });
 
   describe('manage button', () => {
     it('does not exist if the dataset is tabular', () => {
       const element = renderComponent(InfoPaneButtons, getProps());
-      expect(element.querySelector('.btn.manage')).to.not.exist;
+      assert.isNull(element.querySelector('.btn.manage'));
     });
 
     it('exists if the dataset is blobby or an href', () => {
@@ -40,7 +41,7 @@ describe('components/InfoPaneButtons', () => {
         }
       }));
 
-      expect(element.querySelector('.btn.manage')).to.exist;
+      assert.ok(element.querySelector('.btn.manage'));
     });
   });
 
@@ -48,7 +49,7 @@ describe('components/InfoPaneButtons', () => {
     it('exists if the dataset is tabular', () => {
       const element = renderComponent(InfoPaneButtons, getProps());
 
-      expect(element.querySelector('.btn.download')).to.exist;
+      assert.ok(element.querySelector('.btn.download'));
     });
 
     it('exists if the dataset is blobby', () => {
@@ -58,7 +59,7 @@ describe('components/InfoPaneButtons', () => {
         }
       }));
 
-      expect(element.querySelector('.btn.download')).to.exist;
+      assert.ok(element.querySelector('.btn.download'));
     });
 
     it('does not exist if the dataset is an href', () => {
@@ -68,7 +69,7 @@ describe('components/InfoPaneButtons', () => {
         }
       }));
 
-      expect(element.querySelector('.btn.download')).to.not.exist;
+      assert.isNull(element.querySelector('.btn.download'));
     });
 
     it('renders all the options', function(){
@@ -81,7 +82,7 @@ describe('components/InfoPaneButtons', () => {
       const element = renderComponent(InfoPaneButtons, getProps());
       const downloadOption = element.querySelector('[data-type="CSV for Excel"]');
 
-      expect(downloadOption).to.exist;
+      assert.ok(downloadOption);
       expect(downloadOption.getAttribute('href')).to.contain('.csv');
       expect(downloadOption.getAttribute('href')).to.contain('bom');
     });
@@ -90,7 +91,7 @@ describe('components/InfoPaneButtons', () => {
       const element = renderComponent(InfoPaneButtons, getProps());
       const downloadOption = element.querySelector('[data-type="TSV for Excel"]');
 
-      expect(downloadOption).to.exist;
+      assert.ok(downloadOption);
       expect(downloadOption.getAttribute('href')).to.contain('.tsv');
       expect(downloadOption.getAttribute('href')).to.contain('bom');
     });
@@ -118,7 +119,7 @@ describe('components/InfoPaneButtons', () => {
   describe('api button', () => {
     it('exists if the dataset is tabular', () => {
       const element = renderComponent(InfoPaneButtons, getProps());
-      expect(element.querySelector('.btn.api')).to.exist;
+      assert.ok(element.querySelector('.btn.api'));
     });
 
     it('does not exist if the dataset is blobby or an href', () => {
@@ -128,14 +129,14 @@ describe('components/InfoPaneButtons', () => {
         }
       }));
 
-      expect(element.querySelector('.btn.api')).to.not.exist;
+      assert.isNull(element.querySelector('.btn.api'));
     });
   });
 
   describe('share button', () => {
     it('exists if the dataset is tabular', () => {
       const element = renderComponent(InfoPaneButtons, getProps());
-      expect(element.querySelector('.btn.share')).to.exist;
+      assert.ok(element.querySelector('.btn.share'));
     });
 
     it('exists if the dataset is blobby or an href', () => {
@@ -145,7 +146,7 @@ describe('components/InfoPaneButtons', () => {
         }
       }));
 
-      expect(element.querySelector('.btn.share')).to.exist;
+      assert.ok(element.querySelector('.btn.share'));
     });
   });
 
@@ -163,7 +164,7 @@ describe('components/InfoPaneButtons', () => {
 
       it('exists if the bootstrapUrl is defined', () => {
         const element = renderComponent(InfoPaneButtons, getProps());
-        expect(element.querySelector('a[href="bootstrapUrl"]')).to.exist;
+        assert.ok(element.querySelector('a[href="bootstrapUrl"]'));
       });
 
       it('does not exist if the bootstrapUrl is blank', () => {
@@ -173,26 +174,26 @@ describe('components/InfoPaneButtons', () => {
           }
         }));
 
-        expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
+        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
 
       it('does not exist if the feature flag is disabled', () => {
         window.serverConfig.featureFlags.enableVisualizationCanvas = false;
         const element = renderComponent(InfoPaneButtons, getProps());
-        expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
+        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
 
       it('does not exist if the user lacks a role', () => {
         window.serverConfig.currentUser = {};
         const element = renderComponent(InfoPaneButtons, getProps());
-        expect(element.querySelector('a[href="bootstrapUrl"]')).to.not.exist;
+        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
     });
 
     describe('comment link', () => {
       it('exists if commentUrl is defined', () => {
         const element = renderComponent(InfoPaneButtons, getProps());
-        expect(element.querySelector('a[href="commentUrl"]')).to.exist;
+        assert.ok(element.querySelector('a[href="commentUrl"]'));
       });
 
       it('does not exist if commentUrl is not defined', () => {
@@ -201,14 +202,14 @@ describe('components/InfoPaneButtons', () => {
             commentUrl: null
           }
         }));
-        expect(element.querySelector('a[href="commentUrl"]')).to.not.exist;
+        assert.isNull(element.querySelector('a[href="commentUrl"]'));
       });
     });
 
     describe('contact dataset owner link', () => {
       it('exists by default (disableContactDatasetOwner is false or undefined)', () => {
         const element = renderComponent(InfoPaneButtons, getProps());
-         expect(element.querySelector('a[data-modal="contact-form"]')).to.exist;
+         assert.ok(element.querySelector('a[data-modal="contact-form"]'));
       });
 
       it('exists if disableContactDatasetOwner is defined and set to false', () => {
@@ -217,7 +218,7 @@ describe('components/InfoPaneButtons', () => {
             disableContactDatasetOwner: false
           }
         }));
-        expect(element.querySelector('a[data-modal="contact-form"]')).to.exist;
+        assert.ok(element.querySelector('a[data-modal="contact-form"]'));
       });
 
       it('does not exist if disableContactDatasetOwner is defined and set to true', () => {
@@ -226,7 +227,7 @@ describe('components/InfoPaneButtons', () => {
             disableContactDatasetOwner: true
           }
         }));
-        expect(element.querySelector('a[data-modal="contact-form"]')).to.not.exist;
+        assert.isNull(element.querySelector('a[data-modal="contact-form"]'));
       });
     });
   });

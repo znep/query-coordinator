@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const moment = require('moment');
 
@@ -144,7 +145,7 @@ describe('TimelineChartController', function() {
     };
 
     makeDirective();
-    expect($scope.cannotRenderTimelineChart).to.not.exist;
+    assert.isUndefined($scope.cannotRenderTimelineChart);
   });
 
   it('should display an error message if the timeline data is null', function() {

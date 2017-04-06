@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('cardTitle', function() {
@@ -121,7 +122,7 @@ describe('cardTitle', function() {
   describe('card title', function() {
     it('should display the title', function() {
       var element = createDirective().element;
-      expect(element.find('.card-title')).to.have.text('some title text');
+      assert.include(element.find('.card-title').text(), 'some title text');
     });
   });
 
@@ -131,7 +132,7 @@ describe('cardTitle', function() {
         rowDisplayUnit: 'my row unit',
         aggregationFunction: 'count'
       }).element;
-      expect(element.find('.dynamic-title')).to.have.text('Number of my row units by');
+      assert.include(element.find('.dynamic-title').text(), 'Number of my row units by');
     });
 
     it('should display the "sum" dynamic title when "sum" aggregation is selected', function() {
@@ -139,7 +140,7 @@ describe('cardTitle', function() {
         aggregationFunction: 'sum',
         aggregationField: 'myAggregationField'
       }).element;
-      expect(element.find('.dynamic-title')).to.have.text('Sum of My Version 1 Aggregation Fields by');
+      assert.include(element.find('.dynamic-title').text(), 'Sum of My Version 1 Aggregation Fields by');
     });
 
     it('should display the "mean" dynamic title when "mean" aggregation is selected', function() {
@@ -147,14 +148,14 @@ describe('cardTitle', function() {
         aggregationFunction: 'mean',
         aggregationField: 'myAggregationField'
       }).element;
-      expect(element.find('.dynamic-title')).to.have.text('Average My Version 1 Aggregation Field by');
+      assert.include(element.find('.dynamic-title').text(), 'Average My Version 1 Aggregation Field by');
     });
 
     it('should not display the dynamic title for a table card', function() {
       var element = createDirective({
         fieldName: '*'
       }).element;
-      expect(element.find('.dynamic-title')).to.not.be.visible;
+      assert.isFalse(element.find('.dynamic-title').is(':visible'));
     });
 
     it('should not display the dynamic title for a search card', function() {
@@ -172,7 +173,7 @@ describe('cardTitle', function() {
         fieldName: 'myFieldName',
         cardType: 'search'
       }).element;
-      expect(element.find('.dynamic-title')).to.not.be.visible;
+      assert.isFalse(element.find('.dynamic-title').is(':visible'));
     });
 
     it('should not display the dynamic title for a feature/point-map card', function() {
@@ -190,7 +191,7 @@ describe('cardTitle', function() {
         fieldName: 'myFieldName',
         cardType: 'feature'
       }).element;
-      expect(element.find('.dynamic-title')).to.not.be.visible;
+      assert.isFalse(element.find('.dynamic-title').is(':visible'));
     });
 
   });
@@ -203,7 +204,7 @@ describe('cardTitle', function() {
 
       directive.cardModel.set('customTitle', 'This is a custom title');
 
-      expect(directive.element.find('.custom-title')).to.have.html('This is a custom title');
+      assert.include(directive.element.find('.custom-title').text(), 'This is a custom title');
     });
 
     it('should allow html formatting', function() {
@@ -213,7 +214,7 @@ describe('cardTitle', function() {
 
       directive.cardModel.set('customTitle', 'This is a <span>formatted</span> custom title');
 
-      expect(directive.element.find('.custom-title')).to.have.html('This is a <span>formatted</span> custom title');
+      assert.include(directive.element.find('.custom-title').html(), 'This is a <span>formatted</span> custom title');
     });
 
     it('should not display the customTitle when not present on the card model', function() {
@@ -221,7 +222,7 @@ describe('cardTitle', function() {
         fieldName: '*'
       });
 
-      expect(directive.element.find('.custom-title')).to.not.be.visible;
+      assert.isFalse(directive.element.find('.custom-title').is(':visible'));
     });
   });
 

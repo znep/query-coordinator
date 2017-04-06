@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React, { PropTypes } from 'react'; // eslint-disable-line keyword-spacing
 import _ from 'lodash';
 import TestUtils from 'react-addons-test-utils';
@@ -408,12 +410,12 @@ describe('view testing', () => {
   it('shows the href component when displayType is href', () => {
     state.contents.displayType = 'href'
     const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop, operation: 'LINK_EXTERNAL' }));
-    expect(element.querySelector('.textPrompt.url')).to.exist;
+    assert.ok(element.querySelector('.textPrompt.url'));
   });
 
   it('does not show the href component when displayType is not href', () => {
     const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop }));
-    expect(element.querySelector('.textPrompt.url')).to.not.exist;
+    assert.isNull(element.querySelector('.textPrompt.url'));
   });
 
   it('sets the href property when the href input is blurred', () => {
@@ -433,15 +435,15 @@ describe('view testing', () => {
 
  it('returns that there is no required text if next has not been clicked', () => {
    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop }));
-   expect(element.querySelector('.textPrompt.contactEmail')).to.exist;
-   expect(element.querySelector('.error.customField')).to.not.exist;
+   assert.ok(element.querySelector('.textPrompt.contactEmail'));
+   assert.isNull(element.querySelector('.error.customField'));
  });
 
  it('returns that there is required text if next has been clicked and all required fields are not filled', () => {
    state.nextClicked = true;
    const element = renderComponent(view( {metadata: state, onMetadataAction: _.noop } ), state);
 
-   expect(element.querySelector('.error.customField')).to.exist;
+   assert.ok(element.querySelector('.error.customField'));
  });
 
  it('returns that there is no required text if next has been clicked but all required fields are filled', () => {
@@ -451,7 +453,7 @@ describe('view testing', () => {
    state.contents.nextClicked = true;
 
    const element = renderComponent(view( {metadata: state, onMetadataAction:_.noop } ), state);
-   expect(element.querySelector('.error.customField')).to.not.exist;
+   assert.isNull(element.querySelector('.error.customField'));
  });
 
  it('returns that clicking next fires onMetadataAction', () => {

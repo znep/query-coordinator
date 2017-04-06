@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { ResultCount } from 'components/assetSelector/ResultCount';
 
 describe('ResultCount', function() {

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import * as Selectors from 'selectors';
 import { STATUS_UPDATING, STATUS_SAVED } from 'lib/database/statuses';
 

@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import SocrataChangeIndicator from 'components/SocrataChangeIndicator';
 import translations from 'mockTranslations';
 
@@ -11,7 +12,7 @@ describe('components/SocrataChangeIndicator', function() {
     const element = renderComponent(SocrataChangeIndicator, props);
     TestUtils.Simulate.click(element.querySelector('button'));
 
-    callback.should.have.been.calledOnce;
+    sinon.assert.calledOnce(callback);
   });
 });
 

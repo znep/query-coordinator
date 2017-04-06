@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { ExternalResourceForm } from 'components/FeaturedContentModal/ExternalResourceForm';
 import { Simulate } from 'react-addons-test-utils';
 
@@ -13,7 +15,7 @@ describe('components/FeaturedContentModal/ExternalResourceForm', function() {
 
   it('renders something', function() {
     var element = renderComponent(ExternalResourceForm, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   describe('markup', function() {
@@ -24,36 +26,36 @@ describe('components/FeaturedContentModal/ExternalResourceForm', function() {
     });
 
     it('renders a back button', function() {
-      expect(element.querySelector('.modal-content .back-button')).to.exist;
+      assert.ok(element.querySelector('.modal-content .back-button'));
     });
 
     it('renders the header', function() {
-      expect(element.querySelector('.modal-content h2')).to.exist;
+      assert.ok(element.querySelector('.modal-content h2'));
     });
 
     it('renders the prompt', function() {
-      expect(element.querySelector('.modal-content p')).to.exist;
+      assert.ok(element.querySelector('.modal-content p'));
     });
 
     it('renders the form container', function() {
-      expect(element.querySelector('.external-resource-contents')).to.exist;
+      assert.ok(element.querySelector('.external-resource-contents'));
     });
 
     it('renders the title input', function() {
       var titleInput = element.querySelector('#external-resource-title');
-      expect(titleInput).to.exist;
+      assert.ok(titleInput);
       expect(titleInput.value).to.equal('blueberry smoothie');
     });
 
     it('renders the description input', function() {
       var descriptionInput = element.querySelector('#external-resource-description');
-      expect(descriptionInput).to.exist;
+      assert.ok(descriptionInput);
       expect(descriptionInput.value).to.equal('glorious purple goop');
     });
 
     it('renders the url input', function() {
       var urlInput = element.querySelector('#external-resource-url');
-      expect(urlInput).to.exist;
+      assert.ok(urlInput);
       expect(urlInput.value).to.equal('http://thepurplestore.com');
     });
   });
@@ -77,7 +79,7 @@ describe('components/FeaturedContentModal/ExternalResourceForm', function() {
       }));
 
       var urlWarning = element.querySelector('.alert.warning');
-      expect(urlWarning).to.exist;
+      assert.ok(urlWarning);
     });
 
     it('does not show a url warning if the url is valid', function() {
@@ -86,7 +88,7 @@ describe('components/FeaturedContentModal/ExternalResourceForm', function() {
       }));
 
       var urlWarning = element.querySelector('.alert.warning');
-      expect(urlWarning).to.not.exist;
+      assert.isNull(urlWarning);
     });
 
     it('does not show a url warning if the url is blank', function() {
@@ -95,42 +97,42 @@ describe('components/FeaturedContentModal/ExternalResourceForm', function() {
       }));
 
       var urlWarning = element.querySelector('.alert.warning');
-      expect(urlWarning).to.not.exist;
+      assert.isNull(urlWarning);
     });
 
     it('renders an error if the save failed', function() {
       var element = renderComponent(ExternalResourceForm, getProps({ hasSaveError: true }));
-      expect(element.querySelector('.alert.error')).to.exist;
+      assert.ok(element.querySelector('.alert.error'));
     });
 
     it('does not render an error if the save did not fail', function() {
       var element = renderComponent(ExternalResourceForm, getProps({ hasSaveError: false }));
-      expect(element.querySelector('.alert.error')).to.not.exist;
+      assert.isNull(element.querySelector('.alert.error'));
     });
   });
 
   describe('footer', function() {
     it('exists', function() {
       var element = renderComponent(ExternalResourceForm, getProps());
-      expect(element.querySelector('footer')).to.exist;
+      assert.ok(element.querySelector('footer'));
     });
 
     it('renders the save button', function() {
       var element = renderComponent(ExternalResourceForm, getProps());
-      expect(element.querySelector('.save-button')).to.exist;
+      assert.ok(element.querySelector('.save-button'));
     });
 
     it('renders the save button with a spinner if the item is saving', function() {
       var element = renderComponent(ExternalResourceForm, getProps({ isSaving: true }));
       var saveButton = element.querySelector('.save-button');
-      expect(saveButton).to.exist;
-      expect(saveButton.querySelector('.spinner-default')).to.exist;
+      assert.ok(saveButton);
+      assert.ok(saveButton.querySelector('.spinner-default'));
     });
 
     it('renders the save button in green if the page just saved', function() {
       var element = renderComponent(ExternalResourceForm, getProps({ isSaved: true }));
       var saveButton = element.querySelector('.save-button');
-      expect(saveButton).to.exist;
+      assert.ok(saveButton);
       expect(saveButton.classList.contains('btn-success')).to.equal(true);
     });
   });

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('clearableInput', function() {
@@ -67,7 +68,7 @@ describe('clearableInput', function() {
         input.scope().$apply();
       });
       it('should make the whole element "clearable"', function() {
-        expect(element.find('.clearable-input-wrapper').hasClass('clearable')).to.be.true;
+        assert.isTrue(element.find('.clearable-input-wrapper').hasClass('clearable'));
       });
 
       it('should set the "search" scope property', function() {
@@ -105,7 +106,7 @@ describe('clearableInput', function() {
 
     it('should be hidden initially', function() {
       var button = element.find('button');
-      expect(button.is(':visible')).to.be.false;
+      assert.isFalse(button.is(':visible'));
     });
 
     describe('with input', function() {
@@ -115,7 +116,7 @@ describe('clearableInput', function() {
       });
 
       it('should be visible', function() {
-        expect(button.is(':visible')).to.be.true;
+        assert.isTrue(button.is(':visible'));
       });
 
       it('should clear the input on click', function(done) {
@@ -166,7 +167,7 @@ describe('clearableInput', function() {
 
   it('should not be "clearable" initially', function() {
     var element = addValidElement();
-    expect(element.find('.clearable-input-wrapper').hasClass('clearable')).to.be.false;
+    assert.isFalse(element.find('.clearable-input-wrapper').hasClass('clearable'));
   });
 
 });

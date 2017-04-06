@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import {withMockFetch, testThunk} from '../asyncUtils';
 import { combineReducers } from 'redux';
 

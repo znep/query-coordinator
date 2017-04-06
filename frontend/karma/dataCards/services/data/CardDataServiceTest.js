@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const moment = require('moment');
 
@@ -579,8 +581,8 @@ describe('CardDataService', function() {
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
       response.then(function(data) {
-        expect(moment.isMoment(data.start)).to.be.true;
-        expect(moment.isMoment(data.end)).to.be.true;
+        assert.isTrue(moment.isMoment(data.start));
+        assert.isTrue(moment.isMoment(data.end));
         expect(data.start.year()).to.equal(1988);
         expect(data.end.year()).to.equal(2101);
         done();
@@ -767,7 +769,7 @@ describe('CardDataService', function() {
         // 21 is the number of date buckets we expect the call to generate`based on the dates in fakeData.
         expect(response.data.length).to.equal(21);
         _.each(response.data, function(datum) {
-          expect(datum.date.isValid()).to.be.true;
+          assert.isTrue(datum.date.isValid());
         });
         done();
       });
@@ -1044,7 +1046,7 @@ describe('CardDataService', function() {
       var whereClause = 'score=5.0';
       var response = CardDataService.getRows(fake4x4, offset, limit, order, timeout, whereClause);
       response.then(function(data) {
-        expect(data).to.be.null;
+        assert.isNull(data);
         done();
       });
       $httpBackend.flush();
@@ -1059,7 +1061,7 @@ describe('CardDataService', function() {
       var whereClause = 'score=5.0';
       var response = CardDataService.getRows(fake4x4, offset, limit, order, timeout, whereClause);
       response.then(function(data) {
-        expect(data).to.be.null;
+        assert.isNull(data);
         done();
       });
       $httpBackend.flush();
@@ -1074,7 +1076,7 @@ describe('CardDataService', function() {
       var whereClause = 'score=5.0';
       var response = CardDataService.getRows(fake4x4, offset, limit, order, timeout, whereClause);
       response.then(function(data) {
-        expect(data).to.be.null;
+        assert.isNull(data);
         done();
       });
       $httpBackend.flush();
@@ -1083,12 +1085,12 @@ describe('CardDataService', function() {
 
   describe('#getDefaultFeatureExtent', function() {
     it('should return undefined if no feature flag value is present', function() {
-      expect(CardDataService.getDefaultFeatureExtent()).to.be.undefined;
+      assert.isUndefined(CardDataService.getDefaultFeatureExtent());
     });
 
     it('should return undefined for an incorrectly formatted feature flag value', function() {
       ServerConfig.override('featureMapDefaultExtent', '{"southwest":[41.87537684702812,-87.6587963104248]}');
-      expect(CardDataService.getDefaultFeatureExtent()).to.be.undefined;
+      assert.isUndefined(CardDataService.getDefaultFeatureExtent());
     });
 
     it('should return a feature extent object for a correctly formatted feature flag value', function() {
@@ -1104,7 +1106,7 @@ describe('CardDataService', function() {
       ServerConfig.override('featureMapDefaultExtent', '{"southwest":[41.87537684702812,-87.6587963104248]');
       expect(function() {
         var returnValue = CardDataService.getDefaultFeatureExtent();
-        expect(returnValue).to.be.undefined;
+        assert.isUndefined(returnValue);
       }).to.not.throw();
     });
   });
@@ -1150,7 +1152,7 @@ describe('CardDataService', function() {
       getExpectation.respond('[{}]');
       featureExtentPromise.
         then(function(value) {
-          expect(value).to.be.undefined;
+          assert.isUndefined(value);
           done();
         }, function() {
           throw new Error('Should not be rejected');
@@ -1206,7 +1208,7 @@ describe('CardDataService', function() {
 
       it('uses the custom polygon to fetch regions useDataLensChoroplethCustomBoundary is true', function() {
         ServerConfig.override('useDataLensChoroplethCustomBoundary', true);
-        $httpBackend.expectGET(/where=within_polygon\(the_geom%2C\'asdf\'\)/).respond([]);
+        $httpBackend.expectGET(/where=within_polygon%28the_geom%2C%27asdf%27%29/).respond([]);
         CardDataService.getChoroplethRegionsUsingSourceColumn('four-four', 'location', 'shap-file');
         $httpBackend.flush();
         ServerConfig.override('dataLensChoroplethCustomBoundary', null);
@@ -1253,7 +1255,7 @@ describe('CardDataService', function() {
       var samplePromise = CardDataService.getSampleData(TEST_FIELD_NAME, fake4x4);
       samplePromise.then(
         function(data) {
-          expect(data).to.be.an('array').and.to.be.empty;
+          assert.deepEqual(data, []);
           done();
         },
         function() {

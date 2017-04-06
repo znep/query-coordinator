@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import _ from 'lodash';
 import dbReducer from 'reducers/database';
 import * as Actions from 'actions/database';
@@ -304,7 +305,7 @@ describe('reducers/database', () => {
       ego: 3,
       super_ego: 7
     });
-    expect(_.startsWith(insertedRecord.id, 'saving-')).to.be.true;
+    assert.isTrue(_.startsWith(insertedRecord.id, 'saving-'));
   });
 
   it('handles INSERT_SUCCEEDED', () => {

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import PageSelector from 'sections/goals/components/GoalTable/PageSelector';
 import translations from 'mockTranslations';
 import Immutable from 'immutable';
@@ -59,7 +60,7 @@ describe('sections/goals/components/GoalTable/PageSelector', function () {
 
     var output = renderComponentWithStore(PageSelector, {}, getDefaultStore(state));
 
-    expect(output.querySelectorAll('span').item(1).classList.contains('disabled')).to.be.true;
+    assert.isTrue(output.querySelectorAll('span').item(1).classList.contains('disabled'));
   });
 
   it('next link should be disabled in last page', function () {
@@ -78,7 +79,7 @@ describe('sections/goals/components/GoalTable/PageSelector', function () {
 
     var output = renderComponentWithStore(PageSelector, {}, getDefaultStore(state));
 
-    expect(output.querySelectorAll('span').item(2).classList.contains('disabled')).to.be.true;
+    assert.isTrue(output.querySelectorAll('span').item(2).classList.contains('disabled'));
   });
 
   it('prev & next link shouldnt be disabled in middle pages', function () {
@@ -97,8 +98,7 @@ describe('sections/goals/components/GoalTable/PageSelector', function () {
 
     var output = renderComponentWithStore(PageSelector, {}, getDefaultStore(state));
 
-    expect(output.querySelectorAll('span').item(2).classList.contains('disabled')).to.not.be.true;
-    expect(output.querySelectorAll('span').item(2).classList.contains('disabled')).to.not.be.true;
+    assert.isFalse(output.querySelectorAll('span').item(2).classList.contains('disabled'));
   });
 
   it('prev & next link should be disabled if there is only 1 page', function () {
@@ -117,8 +117,8 @@ describe('sections/goals/components/GoalTable/PageSelector', function () {
 
     var output = renderComponentWithStore(PageSelector, {}, getDefaultStore(state));
 
-    expect(output.querySelectorAll('span').item(2).classList.contains('disabled')).to.be.true;
-    expect(output.querySelectorAll('span').item(2).classList.contains('disabled')).to.be.true;
+    assert.isTrue(output.querySelectorAll('span').item(2).classList.contains('disabled'));
+    assert.isTrue(output.querySelectorAll('span').item(2).classList.contains('disabled'));
   });
 
 });

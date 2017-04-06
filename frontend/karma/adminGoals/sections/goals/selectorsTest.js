@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import Immutable from 'immutable';
 import * as Selectors from 'sections/goals/selectors';
 

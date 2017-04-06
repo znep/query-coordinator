@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { ContactForm } from 'components/ContactForm';
 import mockView from 'data/mockView';
 import recaptcha from 'lib/recaptcha';
@@ -38,7 +40,7 @@ describe('components/ContactForm', function() {
 
   it('renders an element', function() {
     var element = renderComponent(ContactForm, defaultProps);
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('stores input values in its state', function() {
@@ -50,17 +52,17 @@ describe('components/ContactForm', function() {
     var subjectInput = element.querySelector('#subject');
     subjectInput.value = 'hello';
     TestUtils.Simulate.change(subjectInput);
-    expect(spy.withArgs('subject', { value: 'hello', invalid: false })).to.have.been.called;
+    sinon.assert.called(spy.withArgs('subject', { value: 'hello', invalid: false }));
 
     var messageInput = element.querySelector('#message');
     messageInput.value = 'adios';
     TestUtils.Simulate.change(messageInput);
-    expect(spy.withArgs('message', { value: 'adios', invalid: false })).to.have.been.called;
+    sinon.assert.called(spy.withArgs('message', { value: 'adios', invalid: false }));
 
     var emailInput = element.querySelector('#email');
     emailInput.value = 'space@wombat.co';
     TestUtils.Simulate.change(emailInput);
-    expect(spy.withArgs('email', { value: 'space@wombat.co', invalid: false })).to.have.been.called;
+    sinon.assert.called(spy.withArgs('email', { value: 'space@wombat.co', invalid: false }));
   });
 
   describe('submitting an invalid form', function() {
@@ -75,7 +77,7 @@ describe('components/ContactForm', function() {
 
       var alert = element.querySelector('.alert.error');
 
-      expect(alert.hidden).to.be.false;
+      assert.isFalse(alert.hidden);
     });
 
     it('does not send the form if the email field is empty', function() {
@@ -91,7 +93,7 @@ describe('components/ContactForm', function() {
 
       TestUtils.Simulate.click(element.querySelector('#contact-form-send'));
 
-      expect(onClickSendSpy).to.not.have.been.called;
+      sinon.assert.notCalled(onClickSendSpy);
     });
 
     it('does not send the form if the subject field is empty', function() {
@@ -107,7 +109,7 @@ describe('components/ContactForm', function() {
 
       TestUtils.Simulate.click(element.querySelector('#contact-form-send'));
 
-      expect(onClickSendSpy).to.not.have.been.called;
+      sinon.assert.notCalled(onClickSendSpy);
     });
 
     it('does not send the form if the message field is empty', function() {
@@ -123,7 +125,7 @@ describe('components/ContactForm', function() {
 
       TestUtils.Simulate.click(element.querySelector('#contact-form-send'));
 
-      expect(onClickSendSpy).to.not.have.been.called;
+      sinon.assert.notCalled(onClickSendSpy);
     });
 
     it('does not send the form if the email field is invalid', function() {
@@ -139,7 +141,7 @@ describe('components/ContactForm', function() {
 
       TestUtils.Simulate.click(element.querySelector('#contact-form-send'));
 
-      expect(onClickSendSpy).to.not.have.been.called;
+      sinon.assert.notCalled(onClickSendSpy);
     });
 
     it('does not send the form if the Recaptcha is not filled in', function() {
@@ -156,7 +158,7 @@ describe('components/ContactForm', function() {
 
       TestUtils.Simulate.click(element.querySelector('#contact-form-send'));
 
-      expect(onClickSendSpy).to.not.have.been.called;
+      sinon.assert.notCalled(onClickSendSpy);
     });
   });
 
@@ -173,9 +175,9 @@ describe('components/ContactForm', function() {
       var cancelButton = element.querySelector('#contact-form-cancel');
       var sendButton = element.querySelector('#contact-form-send');
 
-      expect(cancelButton).to.be.disabled;
-      expect(sendButton).to.be.disabled;
-      expect(sendButton.querySelector('.spinner-default')).to.be.defined;
+      assert.isTrue($(cancelButton).prop('disabled'));
+      assert.isTrue($(sendButton).prop('disabled'));
+      assert.isDefined(sendButton.querySelector('.spinner-default'));
     });
 
     it('on success it displays a success alert', function() {
@@ -185,7 +187,7 @@ describe('components/ContactForm', function() {
 
       var successMessage = element.querySelector('.alert.success');
 
-      expect(successMessage).to.be.defined;
+      assert.isDefined(successMessage);
       expect(successMessage.innerHTML).to.equal(I18n.contact_dataset_owner_modal.success_html);
     });
 
@@ -196,7 +198,7 @@ describe('components/ContactForm', function() {
 
       var failureMessage = element.querySelector('.alert.error');
 
-      expect(failureMessage).to.be.defined;
+      assert.isDefined(failureMessage);
       expect(failureMessage.innerHTML).to.equal(I18n.contact_dataset_owner_modal.failure_html);
     });
 
@@ -210,7 +212,7 @@ describe('components/ContactForm', function() {
       });
       ReactDOM.render(<ContactForm {...newProps} />, node);
 
-      expect(recaptcha.reset).to.have.been.called;
+      sinon.assert.called(recaptcha.reset);
     });
   });
 });

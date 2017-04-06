@@ -1,3 +1,5 @@
+import { assert } from 'chai';
+
 /*
 helpers for testing Redux flows which include IO and multiple actions, e.g.
 

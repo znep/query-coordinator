@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -76,9 +78,8 @@ xdescribe('Polaroid Service', function() {
 
       $httpBackend.flush();
 
-      expect(successCallback).to.have.not.been.called;
-      expect(errorCallback).to.have.been.called;
-      expect(errorCallback).to.have.been.calledWith({ error: 'timeout' });
+      sinon.assert.notCalled(successCallback);
+      sinon.assert.calledWith(errorCallback, { error: 'timeout' });
     });
 
     it('runs the success callback if the request succeeds', function() {
@@ -89,8 +90,8 @@ xdescribe('Polaroid Service', function() {
       PolaroidService.download('/foo', fakeVif).then(successCallback, errorCallback);
       $httpBackend.flush();
 
-      expect(successCallback).to.have.been.called;
-      expect(errorCallback).to.have.not.been.called;
+      sinon.assert.calledOnce(successCallback);
+      sinon.assert.notCalled(errorCallback);
     });
 
     it('can take just an error callback', function() {

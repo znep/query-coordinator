@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import 'babel-polyfill';
 import _ from 'lodash';
 import { ResultsContainer } from 'components/assetSelector/ResultsContainer';
@@ -19,12 +21,10 @@ describe('ResultsContainer', function() {
   }
 
   function stubFetch(ceteraResponse = { results: [], resultSetSize: 0 }) {
-    sinon.stub(ceteraUtils, 'fetch',
-      _.constant(Promise.resolve({
-        results: ceteraResponse.results,
-        resultSetSize: ceteraResponse.resultSetSize
-      }))
-    );
+    sinon.stub(ceteraUtils, 'fetch').callsFake(_.constant(Promise.resolve({
+      results: ceteraResponse.results,
+      resultSetSize: ceteraResponse.resultSetSize
+    })));
   }
 
   it('renders', function() {

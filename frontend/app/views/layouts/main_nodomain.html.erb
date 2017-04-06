@@ -35,7 +35,8 @@ http://www.socrata.com
 <body>
   <div class="skip-links">
     <a href="#content">Skip to main content</a>
-    <a href="#footerLinks">Skip to footer links</a>
+    <%- if render_site_chrome? -%><a href="#site-chrome-footer">Skip to footer links</a><%- end -%>
+    <%- if render_legacy_chrome? -%><a href="#footerLinks">Skip to footer links</a><%- end -%>
     <%= yield :skip_links %>
   </div>
 

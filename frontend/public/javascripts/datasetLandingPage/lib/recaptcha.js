@@ -54,8 +54,8 @@ function reset(id) {
   }
 }
 
-module.exports = {
-  init: init,
-  getResponseToken: getResponseToken,
-  reset: reset
+export default {
+  init,
+  getResponseToken,
+  reset
 };

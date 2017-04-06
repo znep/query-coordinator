@@ -16,7 +16,8 @@ module.exports = function(overrides) {
       reporters: ['dots', 'mocha'],
 
       webpackMiddleware: {
-        noInfo: true
+        noInfo: true,
+        quiet: true
       },
 
       mochaReporter: {

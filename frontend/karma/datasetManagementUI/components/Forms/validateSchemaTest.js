@@ -60,7 +60,7 @@ describe('components/Forms/validateSchema', () => {
           required: false
         },
         hobbies: {
-          errors: ['Hobbies is required'],
+          errors: ['This field is required'],
           isValid: false,
           required: true
         }

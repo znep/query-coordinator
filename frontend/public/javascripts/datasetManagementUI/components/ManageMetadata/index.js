@@ -5,9 +5,8 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
 
 import * as Links from 'links';
-import * as Selectors from 'selectors';
-import { editImmutable } from 'actions/database';
-import { saveDatasetMetadata } from 'actions/manageMetadata';
+import { saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
+import { hideFlashMessage } from 'actions/flashMessage';
 import SaveButton from 'components/ManageMetadata/SaveButton';
 import MetadataContent from 'components/ManageMetadata/MetadataContent';
 import styles from 'styles/ManageMetadata/ManageMetadata.scss';
@@ -18,8 +17,9 @@ export function ManageMetadata(props) {
     fourfour,
     path,
     onDismiss,
-    onSave,
-    onEditColumnMetadata
+    onSaveDataset,
+    onSaveCol,
+    onSidebarTabClick
   } = props;
 
   const view = _.get(views, fourfour, {});
@@ -34,12 +34,23 @@ export function ManageMetadata(props) {
     onDismiss
   };
 
-  const metadataContentProps = { path, view, onEditColumnMetadata };
+  const metadataContentProps = { path, view, onSidebarTabClick };
 
-  const saveBtnProps = {
-    isDirty: _.get(view, 'isDirty', {}),
-    onSaveClick: onSave
-  };
+  const onDatasetTab = path === 'metadata/dataset';
+
+  let saveBtnProps;
+
+  if (onDatasetTab) {
+    saveBtnProps = {
+      isDirty: _.get(view, 'isDirty', {}),
+      onSaveClick: onSaveDataset
+    };
+  } else {
+    saveBtnProps = {
+      isDirty: _.get(view, 'colFormIsDirty', {}),
+      onSaveClick: onSaveCol
+    };
+  }
 
   return (
     <div className={styles.manageMetadata}>
@@ -63,33 +74,28 @@ export function ManageMetadata(props) {
 
 ManageMetadata.propTypes = {
   onDismiss: PropTypes.func.isRequired,
-  onEditColumnMetadata: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
+  onSaveDataset: PropTypes.func.isRequired,
+  onSaveCol: PropTypes.func.isRequired,
+  onSidebarTabClick: PropTypes.func,
   views: PropTypes.object.isRequired,
   fourfour: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onEditColumnMetadata: (tableName, edits) => { dispatch(editImmutable(tableName, edits)); },
   onDismiss: () => {
     dispatch(push(Links.home(ownProps.location)));
   },
-  onSave: () => dispatch(saveDatasetMetadata())
+  onSaveDataset: () => dispatch(saveDatasetMetadata()),
+  onSaveCol: () => dispatch(saveColumnMetadata()),
+  onSidebarTabClick: () => dispatch(hideFlashMessage())
 });
 
 // TODO: should prob get url stuff from redux store or rr props but not both
-const mapStateToProps = (state, ownProps) => {
-  const currentOutputSchema = Selectors.latestOutputSchema(state.db);
-  return {
-    views: _.get(state, 'db.views', {}),
-    fourfour: state.fourfour,
-    outputSchema: currentOutputSchema,
-    outputColumns: currentOutputSchema
-      ? Selectors.columnsForOutputSchema(state.db, currentOutputSchema.id)
-      : [],
-    path: ownProps.route.path
-  };
-};
+const mapStateToProps = (state, ownProps) => ({
+  views: _.get(state, 'db.views', {}),
+  fourfour: state.fourfour,
+  path: ownProps.route.path
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageMetadata);

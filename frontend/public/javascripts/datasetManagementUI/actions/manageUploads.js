@@ -195,7 +195,11 @@ export function insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outpu
   outputSchemaResponse.output_columns.forEach((outputColumn) => {
     const transform = outputColumn.transform;
     actions.push(insertFromServerIfNotExists('transforms', transform));
-    actions.push(insertFromServerIfNotExists('output_columns', {
+    // Always update store with server response since we're no longer updating
+    // output_colummns directly from metadataEditor. In future, may be better to
+    // just overwrite output_columns completely or maybe check if value has changed
+    // and call insertFromServer then
+    actions.push(insertFromServer('output_columns', {
       ..._.omit(outputColumn, ['transform']),
       transform_id: outputColumn.transform.id
     }));

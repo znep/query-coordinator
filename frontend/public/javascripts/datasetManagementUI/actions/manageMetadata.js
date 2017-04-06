@@ -4,21 +4,14 @@ import * as Links from '../links';
 import { checkStatus, getJson, socrataFetch } from '../lib/http';
 import { parseDate } from '../lib/parseDate';
 import {
-  batch,
   updateStarted,
-  updateImmutableStarted,
-  revertEdits,
   updateSucceeded,
   updateFailed,
   insertStarted,
   insertSucceeded,
   insertFailed
 } from './database';
-import {
-  STATUS_DIRTY_IMMUTABLE
-} from '../lib/database/statuses';
 import { insertChildrenAndSubscribeToOutputSchema } from './manageUploads';
-import { idForColumnNameField } from '../components/ManageMetadata/ColumnMetadataEditor';
 import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
 import { showFlashMessage } from 'actions/flashMessage';
@@ -32,7 +25,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
 
   // Careful here. We don't want to ping the server if the validation schema says
   // the form is invalid. But for validations we don't do client-side, there might
-  // not be a schema period, since there are on client side validation rules to
+  // not be a schema period, since there are no client side validation rules to
   // generate one. So right now if there is no schema, we assume the form is valid
   // and allow it to hit server. If the server kicks it back for some reason, we
   // still display the error in a flash message. Maybe we can look into putting
@@ -82,79 +75,64 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   });
 };
 
-export const saveMetadata = () => (dispatch, getState) => {
-  dispatch(saveDatasetMetadata());
+export const saveColumnMetadata = () => (dispatch, getState) => {
+  const { db, fourfour } = getState();
 
-  // TODO: convert this to a thunk
-  const { db } = getState();
-  saveColumnMetadata(dispatch, db);
-};
+  const formDataModel = _.get(db, `views.${fourfour}.colFormModel`, {});
 
-function saveColumnMetadata(dispatch, db) {
+  const schema = _.get(db, `views.${fourfour}.colFormSchema`);
+
+  // see comment above in saveDatasetMetadata thunk
+  if (schema && !schema.isValid) {
+    dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
+    return;
+  }
+
   const currentOutputSchema = Selectors.latestOutputSchema(db);
+
   if (!currentOutputSchema) {
     return;
   }
 
-  const currentColumns = Selectors.columnsForOutputSchema(db, currentOutputSchema.id);
-
   const payload = {
-    output_columns: currentColumns.map((column) => {
-      return {
-        field_name: column.field_name,
-        position: column.position,
-        display_name: column.display_name,
-        description: column.description,
-        transform: {
-          transform_expr: column.transform.transform_expr
-        }
-      };
-    })
+    output_columns: Selectors.updatedOutputColumns(db, formDataModel)
   };
+
   const inputSchema = db.input_schemas[currentOutputSchema.input_schema_id];
+
   const upload = db.uploads[inputSchema.upload_id];
+
   const newOutputSchema = {
     input_schema_id: inputSchema.id
   };
+
   dispatch(insertStarted('output_schemas', newOutputSchema));
-  currentColumns.forEach((column) => {
-    if (column.__status__.type === STATUS_DIRTY_IMMUTABLE) {
-      dispatch(updateImmutableStarted('output_columns', column.id));
-    }
-  });
+
   socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
     body: JSON.stringify(payload)
   }).
     then(checkStatus).
     then(getJson).
-    catch((err) => {
-      console.error('saving column metadata failed', err);
-      dispatch(insertFailed('output_schemas', newOutputSchema, err));
+    catch(error => {
+      dispatch(insertFailed('output_schemas', newOutputSchema, error));
+
+      error.response.json().then(({ message }) => {
+        const localizedMessage = getLocalizedErrorMessage(message);
+        dispatch(showFlashMessage('error', localizedMessage));
+      });
     }).
-    then((resp) => {
+    then(resp => {
       dispatch(insertSucceeded('output_schemas', newOutputSchema, {
         id: resp.resource.id,
         inserted_at: parseDate(resp.resource.inserted_at)
       }));
-      revertDirtyOutputColumns(dispatch, currentColumns);
+      // TODO: refactor into a thunk; will be easier to test and be consistent with
+      // rest of app
       insertChildrenAndSubscribeToOutputSchema(dispatch, upload, resp.resource);
       dispatch(redirectAfterInterval());
     });
-}
-
-// this isn't really necessary unless we implement undo...
-// but seems right, since we weren't really mutating those output columns in the first place,
-// just creating new columns based on them
-function revertDirtyOutputColumns(dispatch, outputColumns) {
-  const actions = [];
-  outputColumns.forEach((outputColumn) => {
-    if (outputColumn.__status__.type === STATUS_DIRTY_IMMUTABLE) {
-      actions.push(revertEdits('output_columns', outputColumn.id));
-    }
-  });
-  dispatch(batch(actions));
-}
+};
 
 // when save succeeds, wait this long until modal goes away
 // so user can see "saved" button is green
@@ -176,7 +154,7 @@ export function focusColumnEditor(routerState) {
       // has rendered, so we have to do this
       setTimeout(() => {
         const columnId = _.toNumber(hash.slice(1));
-        const element = document.getElementById(idForColumnNameField(columnId));
+        const element = document.getElementById(`display-name-${columnId}`);
         if (element) {
           element.focus();
         }

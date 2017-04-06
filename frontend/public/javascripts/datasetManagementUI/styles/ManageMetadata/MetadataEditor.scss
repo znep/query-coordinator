@@ -18,11 +18,17 @@
   }
 }
 
-.formContainer {
+.datasetFormContainer {
   margin-top: 1.3rem;
   padding: 0 0 0 1.3rem;
   display: inline-block;
   width: 70%;
+}
+
+.columnFormContainer {
+  composes: datasetFormContainer;
+  width: 100%;
+  padding: 0 1.3rem;
 }
 
 .requiredNote {

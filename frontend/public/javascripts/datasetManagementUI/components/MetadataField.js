@@ -18,6 +18,23 @@ class MetadataField extends Component {
     _.bindAll(this, ['showErrors']);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const { model, schema, name } = this.props;
+    const { model: nextModel, schema: nextSchema } = nextProps;
+    const { errorsVisible } = this.state;
+    const { errorsVisible: nextErrorsVisible } = nextState;
+
+    const modelChanged = !_.isEqual(model[name], nextModel[name]);
+    const schemaChanged = !_.isEqual(schema[name], nextSchema[name]);
+    const errorVisChanged = errorsVisible !== nextErrorsVisible;
+
+    if (modelChanged || schemaChanged || errorVisChanged) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   showErrors() {
     this.setState({
       errorsVisible: true
@@ -117,6 +134,7 @@ MetadataField.propTypes = {
   type: PropTypes.string.isRequired,
   className: PropTypes.string,
   label: PropTypes.string,
+  model: PropTypes.object,
   other: PropTypes.object
 };
 

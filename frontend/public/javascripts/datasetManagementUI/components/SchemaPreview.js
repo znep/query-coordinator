@@ -49,7 +49,7 @@ function mapStateToProps({ db }) {
     return {
       columns,
       headerButton: (
-        <Link className={styles.btnWrapper} to={Links.columnMetadataEditor()}>
+        <Link className={styles.btnWrapper} to={Links.columnMetadataForm()}>
           <button
             className={styles.schemaBtn}
             tabIndex="-1">

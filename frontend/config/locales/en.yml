@@ -5346,10 +5346,11 @@ en:
       url: URL
       validation_error_attribution_required: License type requires attribution. Please complete 'Data Provided By' field.
       validation_error_email: Please enter a valid email address
+      validation_error_fieldname: Field name must begin with a letter and cannot contain any spaces or non-alphanumeric characters
       validation_error_general: Couldn't submit metadata. Review your inputs and try again.
       validation_error_maxlength: '{0} must not have more than {1} characters'
       validation_error_minlength: '{0} must have at least {1} characters'
-      validation_error_required: '{0} is required'
+      validation_error_required: This field is required
       validation_error_type: '{0} must be of type {1}, but got {2}'
       validation_error_url: Please enter a valid url
     forgot_password:

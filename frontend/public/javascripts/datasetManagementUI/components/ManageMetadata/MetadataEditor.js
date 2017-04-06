@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import DatasetForm from 'components/ManageMetadata/DatasetForm';
+import ColumnForm from 'components/ManageMetadata/ColumnForm';
 import FlashMessage from 'components/FlashMessage/FlashMessage';
-import styles from 'styles/ManageMetadata/DatasetMetadataEditor.scss';
+import styles from 'styles/ManageMetadata/MetadataEditor.scss';
 
-class DatasetMetadataEditor extends Component {
+class MetadataEditor extends Component {
   constructor() {
     super();
 
@@ -30,7 +31,9 @@ class DatasetMetadataEditor extends Component {
   }
 
   render() {
-    const { flashVisible } = this.props;
+    const { flashVisible, path } = this.props;
+
+    const onDatasetTab = path === 'metadata/dataset';
 
     // push form down to make room for flash notification if it's visible
     let formPadding = {
@@ -42,23 +45,30 @@ class DatasetMetadataEditor extends Component {
         <div className={styles.flashContainer} ref={flash => this.getHeight(flash)}>
           <FlashMessage />
         </div>
-        <div className={styles.formContainer} style={formPadding}>
-          <DatasetForm />
+        <div
+          className={onDatasetTab ? styles.datasetFormContainer : styles.columnFormContainer}
+          style={formPadding}>
+          {onDatasetTab ? <DatasetForm /> : <ColumnForm />}
         </div>
-        <div className={styles.requiredNote} style={formPadding}>
-          {I18n.metadata_manage.required_note}
-        </div>
+        {
+          onDatasetTab &&
+            <div className={styles.requiredNote} style={formPadding}>
+              {I18n.metadata_manage.required_note}
+            </div>
+        }
       </div>
     );
   }
 }
 
-DatasetMetadataEditor.propTypes = {
-  flashVisible: PropTypes.bool.isRequired
+MetadataEditor.propTypes = {
+  flashVisible: PropTypes.bool.isRequired,
+  path: PropTypes.string.isRequired
 };
 
-const mapStateToProps = ({ flashMessage }) => ({
-  flashVisible: flashMessage.visible
+const mapStateToProps = ({ flashMessage }, { path }) => ({
+  flashVisible: flashMessage.visible,
+  path
 });
 
-export default connect(mapStateToProps)(DatasetMetadataEditor);
+export default connect(mapStateToProps)(MetadataEditor);

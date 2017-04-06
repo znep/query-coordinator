@@ -12,11 +12,11 @@ export const getLocalizedErrorMessage = msg => {
   const requiresLicense = /validation failed:(.+)requires that attribution be specified/ig;
 
   if (isInvalidURL.test(msg)) {
-    localizedErrorMessage = I18n.edit_metadata.validation_error_general;
+    localizedErrorMessage = I18n.edit_metadata.validation_error_url;
   } else if (requiresLicense.test(msg)) {
     localizedErrorMessage = I18n.edit_metadata.validation_error_attribution_required;
   } else {
-    localizedErrorMessage = I18n.edit_metadata.validation_error_url;
+    localizedErrorMessage = I18n.edit_metadata.validation_error_general;
   }
 
   return localizedErrorMessage;

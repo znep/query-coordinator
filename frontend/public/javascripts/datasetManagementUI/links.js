@@ -13,8 +13,8 @@ export const home = (routing) => {
 
 export const activityLog = (routing) => `${home(routing)}/log`;
 export const metadata = (routing) => `${home(routing)}/metadata`;
-export const datasetMetadataEditor = (routing) => `${home(routing)}/metadata/dataset`;
-export const columnMetadataEditor = (columnId) => (
+export const datasetMetadataForm = (routing) => `${home(routing)}/metadata/dataset`;
+export const columnMetadataForm = (columnId) => (
   (routing) => `${home(routing)}/metadata/columns${columnId ? `#${columnId}` : ''}`
 );
 export const uploads = (routing) => `${home(routing)}/uploads`;

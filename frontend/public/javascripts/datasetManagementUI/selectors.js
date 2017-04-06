@@ -47,3 +47,33 @@ export function rowsTransformed(outputColumns) {
     outputColumns.map((col) => col.transform.contiguous_rows_processed)
   ) || 0;
 }
+
+// Merges formDataModel with db.output_columns, then transforms that into the
+// shape expected by DSMAPI
+export function updatedOutputColumns(db, formDataModel) {
+  const { output_columns: outputColumns, transforms } = db;
+
+  const updatedColumns = Object.keys(formDataModel).reduce((acc, key) => {
+    const [id, ...rest] = key.split('-').reverse();
+
+    const fieldName = rest.reverse().join('_');
+
+    if (acc[id]) {
+      acc[id][fieldName] = formDataModel[key];
+    } else {
+      acc[id] = {
+        [fieldName]: formDataModel[key],
+        position: outputColumns[id].position,
+        transform: {
+          transform_expr: transforms[outputColumns[id].transform_id].transform_expr
+        }
+      };
+    }
+
+    return acc;
+  }, {});
+
+  const unsortedColumns = Object.keys(updatedColumns).map(id => updatedColumns[id]);
+
+  return _.sortBy(unsortedColumns, 'position');
+}

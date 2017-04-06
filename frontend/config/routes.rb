@@ -79,6 +79,7 @@ Rails.application.routes.draw do
       get '/orgs', :action => 'index_orgs'
       get '/orgs/:org_id', :action => 'show_org', :as => 'show_org'
       post '/orgs/:org_id/domains', :action => 'create_domain'
+      post '/rename_org/:org_id', :action => 'rename_org', :as => 'rename_org'
 
       scope :path => '(/orgs/:org_id)/domains/:domain_id',
         :constraints => {:domain_id => /(\w|-|\.)+/} do

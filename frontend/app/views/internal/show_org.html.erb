@@ -51,6 +51,20 @@
         <input type="hidden" name="domain[parentDomainId]" value="<%= @default_domain.id %>" />
         <input type="submit" value="Create"/>
       <% end %>
+      <div class="internalPanelRedesign">
+      <div class="actions expandable">
+      <%= expandable_section('Actions') do %>
+        <dl class="config_type_description">
+          <dt>Rename Organization</dt>
+          <dd>
+            <%= one_button_form(url: rename_org_path,
+                                :text => 'Rename Organization') do %>
+              <%= text_field_tag('rename-org-to', @org.name) %>
+            <%- end %>
+          </dd>
+        <%- end %>
+      </div>
+      </div>
     <%- end -%>
   </div>
 </div>

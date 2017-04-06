@@ -37,6 +37,17 @@ class InternalController < ApplicationController
     @default_domain = Organization.find.map(&:domains).flatten.compact.detect(&:default?)
   end
 
+  def rename_org
+    if params['rename-org-to'].present?
+      Organization.update_name(params[:org_id], params['rename-org-to'])
+      flash[:notice] = 'Renamed organization successfully.'
+    else
+      flash[:error] = 'Cannot rename to an empty name.'
+    end
+
+    redirect_to show_org_path
+  end
+
   def show_domain
     @domain = Domain.find(params[:domain_id])
     @aliases = @domain.aliases.try(:split, ',') || []

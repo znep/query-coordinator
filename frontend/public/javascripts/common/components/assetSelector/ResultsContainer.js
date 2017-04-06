@@ -18,12 +18,6 @@ export class ResultsContainer extends React.Component {
       currentPage: 1,
       fetchingResults: false,
       isMounted: true,
-      pagerKey: 1,
-      /*
-        pagerKey exists so that the defaultValue of the Pager input field updates when the prev/next
-        links are clicked. Otherwise, the input would not update due to how React treats defaultValue.
-        We can't use `value` instead of defaultValue, because then the input wouldn't be controllable.
-      */
       resultCount: 0,
       results: [],
       sort: 'relevance',
@@ -61,9 +55,7 @@ export class ResultsContainer extends React.Component {
         });
 
       this.setState({
-        currentPage: parseInt(pageNumber, 10),
-        /* Increment the key to trigger a re-render of the Pager currentPageInput */
-        pagerKey: this.state.pagerKey + 1
+        currentPage: parseInt(pageNumber, 10)
       });
     }
   }
@@ -106,7 +98,6 @@ export class ResultsContainer extends React.Component {
           </div>
 
           <Pager
-            key={this.state.pagerKey}
             changePage={this.changePage}
             currentPage={this.state.currentPage}
             resultCount={this.state.resultCount}

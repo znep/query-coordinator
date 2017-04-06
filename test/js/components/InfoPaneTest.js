@@ -99,7 +99,7 @@ describe('InfoPane', () => {
 
     it('displays the entry-content', () => {
       const contentClass = getContent(element).attributes.class.value;
-      assert.isNotTrue(contentClass.includes("hide"));
+      assert.isNotTrue(contentClass.includes('hide'));
     });
   });
 
@@ -112,13 +112,13 @@ describe('InfoPane', () => {
 
     it('renders the More Info toggle', () => {
       assert.notEqual(getToggle(element), null);
-      assert.isNotTrue(getToggle(element).textContent.includes("Less Info"));
-      assert.isTrue(getToggle(element).textContent.includes("More Info"));
+      assert.isNotTrue(getToggle(element).textContent.includes('Less Info'));
+      assert.isTrue(getToggle(element).textContent.includes('More Info'));
     });
 
     it('does not display the entry-content', () => {
       const contentClass = getContent(element).attributes.class.value;
-      assert.isTrue(contentClass.includes("hide"));
+      assert.isTrue(contentClass.includes('hide'));
     });
 
     describe('when the More Info toggle is clicked', () => {
@@ -128,13 +128,13 @@ describe('InfoPane', () => {
 
       it('displays the entry-content', () => {
         const contentClass = getContent(element).attributes.class.value;
-        assert.isNotTrue(contentClass.includes("hide"));
+        assert.isNotTrue(contentClass.includes('hide'));
       });
 
       it('displays the Less Info toggle', () => {
         assert.notEqual(getToggle(element), null);
-        assert.isTrue(getToggle(element).textContent.includes("Less Info"));
-        assert.isNotTrue(getToggle(element).textContent.includes("More Info"));
+        assert.isTrue(getToggle(element).textContent.includes('Less Info'));
+        assert.isNotTrue(getToggle(element).textContent.includes('More Info'));
       });
     });
   });

@@ -8,11 +8,11 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-2bc936fe.css">
-    <link rel="stylesheet" href="stylesheets/pages-9a740b59.css">
+    <link rel="stylesheet" href="css/styleguide-b80faa84.css">
+    <link rel="stylesheet" href="stylesheets/pages-0302d84c.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.14.0/babel.min.js"></script>
   </head>
 
@@ -76,6 +76,7 @@
         <li><a href="components.html#edit-bar">Edit Bar</a></li>
         <li><a href="components.html#socrata-icon">Socrata Icon</a></li>
         <li><a href="components.html#side-menu">Side Menu</a></li>
+        <li><a href="components.html#flannel">Flannel</a></li>
         <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
       </ul>
     </li>
@@ -754,6 +755,7 @@
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-axis-scale" class="socrata-icon-axis-scale"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-axis-scale" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-bar-chart-horz" class="socrata-icon-bar-chart-horz"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-bar-chart-horz" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-bar-chart" class="socrata-icon-bar-chart"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-bar-chart" /></div></li>
+  <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-bell" class="socrata-icon-bell"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-bell" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-bold2" class="socrata-icon-bold2"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-bold2" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-boolean" class="socrata-icon-boolean"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-boolean" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-cards" class="socrata-icon-cards"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-cards" /></div></li>
@@ -811,6 +813,7 @@
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-linked" class="socrata-icon-linked"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-linked" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-list-numbered" class="socrata-icon-list-numbered"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-list-numbered" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-list2" class="socrata-icon-list2"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-list2" /></div></li>
+  <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-logo" class="socrata-icon-logo"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-logo" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-lte" class="socrata-icon-lte"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-lte" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-map" class="socrata-icon-map"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-map" /></div></li>
   <li class="icon-sample"><div class="preview-glyphs"><i id="socrata-icon-move-vertical" class="socrata-icon-move-vertical"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="socrata-icon-move-vertical" /></div></li>
@@ -1005,6 +1008,20 @@
 <pre class="usage">
 <code class="language-markup">
 &lt;button class=&quot;btn btn-default&quot; disabled&gt;Disabled Button&lt;&#x2F;button&gt;
+
+</code>
+</pre>
+
+</p>
+
+<p>
+
+<button class="btn btn-default btn-disabled-light" disabled>Disabled Button Light</button>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;button class=&quot;btn btn-default btn-disabled-light&quot; disabled&gt;Disabled Button Light&lt;&#x2F;button&gt;
 
 </code>
 </pre>
@@ -2778,9 +2795,9 @@
 
 
     <!-- NPM peerDependencies and Webpack externals -->
-    <script type="text/javascript" src="js/vendor-db95ecea.js"></script>
+    <script type="text/javascript" src="/js/vendor.js"></script>
+    <script type="text/javascript" src="js/socrata-components-d5c851d4.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-e61759a9.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

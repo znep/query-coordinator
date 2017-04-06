@@ -1,5 +1,5 @@
 /*!
- * Socrata Styleguide v11.7.1
+ * Socrata Styleguide v12.1.0
  * Copyright 2015-2017 undefined
  * Licensed under undefined
  */
@@ -412,15 +412,15 @@ html {
 
 @font-face {
   font-family: "socrata-icons";
-  src: url("../fonts/socrata-icons.1487791271-862c2211.eot");
-  src: url("../fonts/socrata-icons.1487791271-862c2211.eot?#iefix") format("eot"), url("../fonts/socrata-icons.1487791271-b380ea1f.woff2") format("woff2"), url("../fonts/socrata-icons.1487791271-b7beb0a5.woff") format("woff"), url("../fonts/socrata-icons.1487791271-8b7766ef.ttf") format("truetype"), url("../fonts/socrata-icons.1487791271-273d8010.svg#socrata-icons") format("svg");
+  src: url("../fonts/socrata-icons.1491520152-ae8d4300.eot");
+  src: url("../fonts/socrata-icons.1491520152-ae8d4300.eot?#iefix") format("eot"), url("../fonts/socrata-icons.1491520152-1e095c25.woff2") format("woff2"), url("../fonts/socrata-icons.1491520152-cddfdfce.woff") format("woff"), url("../fonts/socrata-icons.1491520152-8e304530.ttf") format("truetype"), url("../fonts/socrata-icons.1491520152-5c6388d7.svg#socrata-icons") format("svg");
   font-weight: normal;
   font-style: normal; }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   @font-face {
     font-family: "socrata-icons";
-    src: url("../fonts/socrata-icons.1487791271-273d8010.svg#socrata-icons") format("svg"); } }
+    src: url("../fonts/socrata-icons.1491520152-5c6388d7.svg#socrata-icons") format("svg"); } }
 
 .icon-add-collaborator::before, .socrata-icon-add-collaborator::before,
 .icon-add::before, .socrata-icon-add::before,
@@ -433,6 +433,7 @@ html {
 .icon-axis-scale::before, .socrata-icon-axis-scale::before,
 .icon-bar-chart-horz::before, .socrata-icon-bar-chart-horz::before,
 .icon-bar-chart::before, .socrata-icon-bar-chart::before,
+.icon-bell::before, .socrata-icon-bell::before,
 .icon-bold2::before, .socrata-icon-bold2::before,
 .icon-boolean::before, .socrata-icon-boolean::before,
 .icon-cards::before, .socrata-icon-cards::before,
@@ -490,6 +491,7 @@ html {
 .icon-linked::before, .socrata-icon-linked::before,
 .icon-list-numbered::before, .socrata-icon-list-numbered::before,
 .icon-list2::before, .socrata-icon-list2::before,
+.icon-logo::before, .socrata-icon-logo::before,
 .icon-lte::before, .socrata-icon-lte::before,
 .icon-map::before, .socrata-icon-map::before,
 .icon-move-vertical::before, .socrata-icon-move-vertical::before,
@@ -608,329 +610,335 @@ html {
 .icon-bar-chart::before, .socrata-icon-bar-chart::before {
   content: "\EA0B"; }
 
-.icon-bold2::before, .socrata-icon-bold2::before {
+.icon-bell::before, .socrata-icon-bell::before {
   content: "\EA0C"; }
 
-.icon-boolean::before, .socrata-icon-boolean::before {
+.icon-bold2::before, .socrata-icon-bold2::before {
   content: "\EA0D"; }
 
-.icon-cards::before, .socrata-icon-cards::before {
+.icon-boolean::before, .socrata-icon-boolean::before {
   content: "\EA0E"; }
 
-.icon-chart::before, .socrata-icon-chart::before {
+.icon-cards::before, .socrata-icon-cards::before {
   content: "\EA0F"; }
 
-.icon-check-2::before, .socrata-icon-check-2::before {
+.icon-chart::before, .socrata-icon-chart::before {
   content: "\EA10"; }
 
-.icon-check::before, .socrata-icon-check::before {
+.icon-check-2::before, .socrata-icon-check-2::before {
   content: "\EA11"; }
 
-.icon-checkmark-alt::before, .socrata-icon-checkmark-alt::before {
+.icon-check::before, .socrata-icon-check::before {
   content: "\EA12"; }
 
-.icon-checkmark3::before, .socrata-icon-checkmark3::before {
+.icon-checkmark-alt::before, .socrata-icon-checkmark-alt::before {
   content: "\EA13"; }
 
-.icon-chevron-down::before, .socrata-icon-chevron-down::before {
+.icon-checkmark3::before, .socrata-icon-checkmark3::before {
   content: "\EA14"; }
 
-.icon-chevron-up::before, .socrata-icon-chevron-up::before {
+.icon-chevron-down::before, .socrata-icon-chevron-down::before {
   content: "\EA15"; }
 
-.icon-clear-formatting::before, .socrata-icon-clear-formatting::before {
+.icon-chevron-up::before, .socrata-icon-chevron-up::before {
   content: "\EA16"; }
 
-.icon-close-2::before, .socrata-icon-close-2::before {
+.icon-clear-formatting::before, .socrata-icon-clear-formatting::before {
   content: "\EA17"; }
 
-.icon-close-circle::before, .socrata-icon-close-circle::before {
+.icon-close-2::before, .socrata-icon-close-2::before {
   content: "\EA18"; }
 
-.icon-close::before, .socrata-icon-close::before {
+.icon-close-circle::before, .socrata-icon-close-circle::before {
   content: "\EA19"; }
 
-.icon-collapse::before, .socrata-icon-collapse::before {
+.icon-close::before, .socrata-icon-close::before {
   content: "\EA1A"; }
 
-.icon-color::before, .socrata-icon-color::before {
+.icon-collapse::before, .socrata-icon-collapse::before {
   content: "\EA1B"; }
 
-.icon-column-info::before, .socrata-icon-column-info::before {
+.icon-color::before, .socrata-icon-color::before {
   content: "\EA1C"; }
 
-.icon-community::before, .socrata-icon-community::before {
+.icon-column-info::before, .socrata-icon-column-info::before {
   content: "\EA1D"; }
 
-.icon-copy-document::before, .socrata-icon-copy-document::before {
+.icon-community::before, .socrata-icon-community::before {
   content: "\EA1E"; }
 
-.icon-crop::before, .socrata-icon-crop::before {
+.icon-copy-document::before, .socrata-icon-copy-document::before {
   content: "\EA1F"; }
 
-.icon-cross2::before, .socrata-icon-cross2::before {
+.icon-crop::before, .socrata-icon-crop::before {
   content: "\EA20"; }
 
-.icon-data::before, .socrata-icon-data::before {
+.icon-cross2::before, .socrata-icon-cross2::before {
   content: "\EA21"; }
 
-.icon-dataset::before, .socrata-icon-dataset::before {
+.icon-data::before, .socrata-icon-data::before {
   content: "\EA22"; }
 
-.icon-date::before, .socrata-icon-date::before {
+.icon-dataset::before, .socrata-icon-dataset::before {
   content: "\EA23"; }
 
-.icon-distribution::before, .socrata-icon-distribution::before {
+.icon-date::before, .socrata-icon-date::before {
   content: "\EA24"; }
 
-.icon-download::before, .socrata-icon-download::before {
+.icon-distribution::before, .socrata-icon-distribution::before {
   content: "\EA25"; }
 
-.icon-droplet::before, .socrata-icon-droplet::before {
+.icon-download::before, .socrata-icon-download::before {
   content: "\EA26"; }
 
-.icon-edit::before, .socrata-icon-edit::before {
+.icon-droplet::before, .socrata-icon-droplet::before {
   content: "\EA27"; }
 
-.icon-email::before, .socrata-icon-email::before {
+.icon-edit::before, .socrata-icon-edit::before {
   content: "\EA28"; }
 
-.icon-embed::before, .socrata-icon-embed::before {
+.icon-email::before, .socrata-icon-email::before {
   content: "\EA29"; }
 
-.icon-expand::before, .socrata-icon-expand::before {
+.icon-embed::before, .socrata-icon-embed::before {
   content: "\EA2A"; }
 
-.icon-external-square::before, .socrata-icon-external-square::before {
+.icon-expand::before, .socrata-icon-expand::before {
   content: "\EA2B"; }
 
-.icon-external::before, .socrata-icon-external::before {
+.icon-external-square::before, .socrata-icon-external-square::before {
   content: "\EA2C"; }
 
-.icon-eye-blocked::before, .socrata-icon-eye-blocked::before {
+.icon-external::before, .socrata-icon-external::before {
   content: "\EA2D"; }
 
-.icon-eye::before, .socrata-icon-eye::before {
+.icon-eye-blocked::before, .socrata-icon-eye-blocked::before {
   content: "\EA2E"; }
 
-.icon-facebook::before, .socrata-icon-facebook::before {
+.icon-eye::before, .socrata-icon-eye::before {
   content: "\EA2F"; }
 
-.icon-failed::before, .socrata-icon-failed::before {
+.icon-facebook::before, .socrata-icon-facebook::before {
   content: "\EA30"; }
 
-.icon-featured::before, .socrata-icon-featured::before {
+.icon-failed::before, .socrata-icon-failed::before {
   content: "\EA31"; }
 
-.icon-filter::before, .socrata-icon-filter::before {
+.icon-featured::before, .socrata-icon-featured::before {
   content: "\EA32"; }
 
-.icon-flyout-options::before, .socrata-icon-flyout-options::before {
+.icon-filter::before, .socrata-icon-filter::before {
   content: "\EA33"; }
 
-.icon-geo::before, .socrata-icon-geo::before {
+.icon-flyout-options::before, .socrata-icon-flyout-options::before {
   content: "\EA34"; }
 
-.icon-goal::before, .socrata-icon-goal::before {
+.icon-geo::before, .socrata-icon-geo::before {
   content: "\EA35"; }
 
-.icon-google::before, .socrata-icon-google::before {
+.icon-goal::before, .socrata-icon-goal::before {
   content: "\EA36"; }
 
-.icon-gte::before, .socrata-icon-gte::before {
+.icon-google::before, .socrata-icon-google::before {
   content: "\EA37"; }
 
-.icon-hamburger::before, .socrata-icon-hamburger::before {
+.icon-gte::before, .socrata-icon-gte::before {
   content: "\EA38"; }
 
-.icon-image::before, .socrata-icon-image::before {
+.icon-hamburger::before, .socrata-icon-hamburger::before {
   content: "\EA39"; }
 
-.icon-info-inverse::before, .socrata-icon-info-inverse::before {
+.icon-image::before, .socrata-icon-image::before {
   content: "\EA3A"; }
 
-.icon-info::before, .socrata-icon-info::before {
+.icon-info-inverse::before, .socrata-icon-info-inverse::before {
   content: "\EA3B"; }
 
-.icon-italic2::before, .socrata-icon-italic2::before {
+.icon-info::before, .socrata-icon-info::before {
   content: "\EA3C"; }
 
-.icon-kebab::before, .socrata-icon-kebab::before {
+.icon-italic2::before, .socrata-icon-italic2::before {
   content: "\EA3D"; }
 
-.icon-layout-inline::before, .socrata-icon-layout-inline::before {
+.icon-kebab::before, .socrata-icon-kebab::before {
   content: "\EA3E"; }
 
-.icon-layout-pop-out::before, .socrata-icon-layout-pop-out::before {
+.icon-layout-inline::before, .socrata-icon-layout-inline::before {
   content: "\EA3F"; }
 
-.icon-line-chart::before, .socrata-icon-line-chart::before {
+.icon-layout-pop-out::before, .socrata-icon-layout-pop-out::before {
   content: "\EA40"; }
 
-.icon-link::before, .socrata-icon-link::before {
+.icon-line-chart::before, .socrata-icon-line-chart::before {
   content: "\EA41"; }
 
-.icon-linked::before, .socrata-icon-linked::before {
+.icon-link::before, .socrata-icon-link::before {
   content: "\EA42"; }
 
-.icon-list-numbered::before, .socrata-icon-list-numbered::before {
+.icon-linked::before, .socrata-icon-linked::before {
   content: "\EA43"; }
 
-.icon-list2::before, .socrata-icon-list2::before {
+.icon-list-numbered::before, .socrata-icon-list-numbered::before {
   content: "\EA44"; }
 
-.icon-lte::before, .socrata-icon-lte::before {
+.icon-list2::before, .socrata-icon-list2::before {
   content: "\EA45"; }
 
-.icon-map::before, .socrata-icon-map::before {
+.icon-logo::before, .socrata-icon-logo::before {
   content: "\EA46"; }
 
-.icon-move-vertical::before, .socrata-icon-move-vertical::before {
+.icon-lte::before, .socrata-icon-lte::before {
   content: "\EA47"; }
 
-.icon-move::before, .socrata-icon-move::before {
+.icon-map::before, .socrata-icon-map::before {
   content: "\EA48"; }
 
-.icon-number::before, .socrata-icon-number::before {
+.icon-move-vertical::before, .socrata-icon-move-vertical::before {
   content: "\EA49"; }
 
-.icon-official::before, .socrata-icon-official::before {
+.icon-move::before, .socrata-icon-move::before {
   content: "\EA4A"; }
 
-.icon-official2::before, .socrata-icon-official2::before {
+.icon-number::before, .socrata-icon-number::before {
   content: "\EA4B"; }
 
-.icon-paragraph-center3::before, .socrata-icon-paragraph-center3::before {
+.icon-official::before, .socrata-icon-official::before {
   content: "\EA4C"; }
 
-.icon-paragraph-left::before, .socrata-icon-paragraph-left::before {
+.icon-official2::before, .socrata-icon-official2::before {
   content: "\EA4D"; }
 
-.icon-paragraph-left3::before, .socrata-icon-paragraph-left3::before {
+.icon-paragraph-center3::before, .socrata-icon-paragraph-center3::before {
   content: "\EA4E"; }
 
-.icon-paragraph-right3::before, .socrata-icon-paragraph-right3::before {
+.icon-paragraph-left::before, .socrata-icon-paragraph-left::before {
   content: "\EA4F"; }
 
-.icon-pause::before, .socrata-icon-pause::before {
+.icon-paragraph-left3::before, .socrata-icon-paragraph-left3::before {
   content: "\EA50"; }
 
-.icon-pie-chart::before, .socrata-icon-pie-chart::before {
+.icon-paragraph-right3::before, .socrata-icon-paragraph-right3::before {
   content: "\EA51"; }
 
-.icon-play::before, .socrata-icon-play::before {
+.icon-pause::before, .socrata-icon-pause::before {
   content: "\EA52"; }
 
-.icon-plus2::before, .socrata-icon-plus2::before {
+.icon-pie-chart::before, .socrata-icon-pie-chart::before {
   content: "\EA53"; }
 
-.icon-plus3::before, .socrata-icon-plus3::before {
+.icon-play::before, .socrata-icon-play::before {
   content: "\EA54"; }
 
-.icon-presentation::before, .socrata-icon-presentation::before {
+.icon-plus2::before, .socrata-icon-plus2::before {
   content: "\EA55"; }
 
-.icon-preview::before, .socrata-icon-preview::before {
+.icon-plus3::before, .socrata-icon-plus3::before {
   content: "\EA56"; }
 
-.icon-print::before, .socrata-icon-print::before {
+.icon-presentation::before, .socrata-icon-presentation::before {
   content: "\EA57"; }
 
-.icon-private::before, .socrata-icon-private::before {
+.icon-preview::before, .socrata-icon-preview::before {
   content: "\EA58"; }
 
-.icon-processing::before, .socrata-icon-processing::before {
+.icon-print::before, .socrata-icon-print::before {
   content: "\EA59"; }
 
-.icon-pulse::before, .socrata-icon-pulse::before {
+.icon-private::before, .socrata-icon-private::before {
   content: "\EA5A"; }
 
-.icon-puzzle::before, .socrata-icon-puzzle::before {
+.icon-processing::before, .socrata-icon-processing::before {
   content: "\EA5B"; }
 
-.icon-question-inverse::before, .socrata-icon-question-inverse::before {
+.icon-pulse::before, .socrata-icon-pulse::before {
   content: "\EA5C"; }
 
-.icon-question::before, .socrata-icon-question::before {
+.icon-puzzle::before, .socrata-icon-puzzle::before {
   content: "\EA5D"; }
 
-.icon-quotes-left::before, .socrata-icon-quotes-left::before {
+.icon-question-inverse::before, .socrata-icon-question-inverse::before {
   content: "\EA5E"; }
 
-.icon-redo::before, .socrata-icon-redo::before {
+.icon-question::before, .socrata-icon-question::before {
   content: "\EA5F"; }
 
-.icon-region::before, .socrata-icon-region::before {
+.icon-quotes-left::before, .socrata-icon-quotes-left::before {
   content: "\EA60"; }
 
-.icon-search::before, .socrata-icon-search::before {
+.icon-redo::before, .socrata-icon-redo::before {
   content: "\EA61"; }
 
-.icon-settings::before, .socrata-icon-settings::before {
+.icon-region::before, .socrata-icon-region::before {
   content: "\EA62"; }
 
-.icon-share::before, .socrata-icon-share::before {
+.icon-search::before, .socrata-icon-search::before {
   content: "\EA63"; }
 
-.icon-sign-out::before, .socrata-icon-sign-out::before {
+.icon-settings::before, .socrata-icon-settings::before {
   content: "\EA64"; }
 
-.icon-sort-asc::before, .socrata-icon-sort-asc::before {
+.icon-share::before, .socrata-icon-share::before {
   content: "\EA65"; }
 
-.icon-sort-az::before, .socrata-icon-sort-az::before {
+.icon-sign-out::before, .socrata-icon-sign-out::before {
   content: "\EA66"; }
 
-.icon-sort-desc::before, .socrata-icon-sort-desc::before {
+.icon-sort-asc::before, .socrata-icon-sort-asc::before {
   content: "\EA67"; }
 
-.icon-sort-za::before, .socrata-icon-sort-za::before {
+.icon-sort-az::before, .socrata-icon-sort-az::before {
   content: "\EA68"; }
 
-.icon-stories-icon::before, .socrata-icon-stories-icon::before {
+.icon-sort-desc::before, .socrata-icon-sort-desc::before {
   content: "\EA69"; }
 
-.icon-stories-menu::before, .socrata-icon-stories-menu::before {
+.icon-sort-za::before, .socrata-icon-sort-za::before {
   content: "\EA6A"; }
 
-.icon-story::before, .socrata-icon-story::before {
+.icon-stories-icon::before, .socrata-icon-stories-icon::before {
   content: "\EA6B"; }
 
-.icon-table::before, .socrata-icon-table::before {
+.icon-stories-menu::before, .socrata-icon-stories-menu::before {
   content: "\EA6C"; }
 
-.icon-tag::before, .socrata-icon-tag::before {
+.icon-story::before, .socrata-icon-story::before {
   content: "\EA6D"; }
 
-.icon-text::before, .socrata-icon-text::before {
+.icon-table::before, .socrata-icon-table::before {
   content: "\EA6E"; }
 
-.icon-twitter::before, .socrata-icon-twitter::before {
+.icon-tag::before, .socrata-icon-tag::before {
   content: "\EA6F"; }
 
-.icon-undo::before, .socrata-icon-undo::before {
+.icon-text::before, .socrata-icon-text::before {
   content: "\EA70"; }
 
-.icon-user::before, .socrata-icon-user::before {
+.icon-twitter::before, .socrata-icon-twitter::before {
   content: "\EA71"; }
 
-.icon-waiting::before, .socrata-icon-waiting::before {
+.icon-undo::before, .socrata-icon-undo::before {
   content: "\EA72"; }
 
-.icon-warning-alt::before, .socrata-icon-warning-alt::before {
+.icon-user::before, .socrata-icon-user::before {
   content: "\EA73"; }
 
-.icon-warning-alt2::before, .socrata-icon-warning-alt2::before {
+.icon-waiting::before, .socrata-icon-waiting::before {
   content: "\EA74"; }
 
-.icon-warning::before, .socrata-icon-warning::before {
+.icon-warning-alt::before, .socrata-icon-warning-alt::before {
   content: "\EA75"; }
 
-.icon-windows::before, .socrata-icon-windows::before {
+.icon-warning-alt2::before, .socrata-icon-warning-alt2::before {
   content: "\EA76"; }
 
-.icon-yahoo::before, .socrata-icon-yahoo::before {
+.icon-warning::before, .socrata-icon-warning::before {
   content: "\EA77"; }
+
+.icon-windows::before, .socrata-icon-windows::before {
+  content: "\EA78"; }
+
+.icon-yahoo::before, .socrata-icon-yahoo::before {
+  content: "\EA79"; }
 
 a.unstyled-link {
   color: #2279a6;
@@ -1219,6 +1227,10 @@ a.unstyled-link {
   .btn.btn-sm {
     font-size: 13px;
     padding: 10px 13px; }
+    .btn.btn-sm .spinner-default {
+      width: 1rem;
+      height: 1rem;
+      border-width: 2px; }
   .btn.btn-xs {
     font-size: 12px;
     padding: 9px 13px; }
@@ -1283,6 +1295,10 @@ a.unstyled-link {
       color: #919191;
       border-color: #767676;
       background-color: #5e5e5e; }
+  .btn-default.btn-disabled-light, .btn-disabled-light.btn-simple {
+    background-color: #f6f6f6;
+    color: #c8c8c8;
+    border-color: #e4e4e4; }
   .btn-default.active, .active.btn-simple {
     box-shadow: inset 0 0 10px -2px #888; }
   .btn-default.btn-inverse, .btn-inverse.btn-simple {
@@ -2757,125 +2773,27 @@ body.modal-open {
 [data-tour-step] {
   display: none; }
 
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.dropdown-container {
-  display: inline-block;
-  box-sizing: border-box;
-  position: relative; }
-
-.dropdown-invisible {
-  visibility: hidden; }
-
-.dropdown-placeholder {
-  position: relative;
-  font-size: 15px;
-  min-height: 15px;
-  background: white;
-  border: solid 1px #c8c8c8;
-  cursor: default;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  transition: border-color 0.15s ease-in-out;
-  padding: 10px;
-  padding-right: 40px;
-  color: #919191;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  z-index: 50; }
-  .dropdown-placeholder:focus {
-    outline: none; }
-  .dropdown-placeholder.dropdown-selected {
+.socrata-icon.socrata-icon-logo {
+  /* Brand guidelines say minimum logo size is 18px */
+  width: 18px;
+  height: 18px;
+  line-height: 18px; }
+  .socrata-icon.socrata-icon-logo .socrata-icon-logo-ring {
     color: #2c2c2c; }
-  .dropdown-focused .dropdown-placeholder {
-    border-color: #e6f9f5;
-    outline: solid 2px #00be9b; }
-  .dropdown-disabled .dropdown-placeholder {
-    background: #c8c8c8;
-    border-color: #adadad;
-    color: #919191;
-    pointer-events: none; }
-
-.dropdown-caret {
-  position: absolute;
-  width: 22px;
-  font-size: 18px;
-  right: 10px;
-  top: 0;
-  bottom: 0;
-  z-index: 10;
-  color: #919191;
-  transition: color 0.15s ease-in-out;
-  pointer-events: none; }
-  .dropdown-focused .dropdown-caret {
-    color: #00be9b; }
-  .dropdown-caret::after {
-    margin-top: 14px;
-    margin-left: 2px; }
-
-.dropdown-options-list {
-  position: fixed;
-  z-index: 999;
-  border: solid 1px #c8c8c8;
-  overflow-y: auto; }
-  .dropdown-options-list .picklist {
-    border: none; }
-
-.picklist {
-  background: #fff;
-  border: solid 1px #c8c8c8;
-  overflow-y: auto;
-  color: #5e5e5e; }
-  .picklist.picklist-disabled {
-    color: #919191;
-    background-color: #f6f6f6;
-    pointer-events: none; }
-  .picklist:focus {
-    border-color: #e6f9f5;
-    outline: solid 2px #00be9b; }
-
-.picklist-group-header {
-  background-color: #f1f1f1;
-  padding: 10px;
-  text-transform: uppercase;
-  font-size: 12px; }
-
-.picklist-separator {
-  height: 1px;
-  background: #c8c8c8;
-  border-left: none;
-  border-right: none; }
-
-.picklist-option {
-  position: relative;
-  padding: 10px;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  cursor: default;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; }
-  .picklist-option:hover {
-    background-color: #e6f9f5; }
-  .picklist-option.picklist-option-selected {
-    color: #fff;
-    background-color: #00be9b; }
-  .picklist-option:not(.picklist-option-selected).picklist-option-highlighted, .picklist-option:not(.picklist-option-selected):active:not(.picklist-option-selected) {
-    color: white;
-    background-color: #4dd2b9; }
+  .socrata-icon.socrata-icon-logo .socrata-icon-logo-pie {
+    color: #2c2c2c; }
+  .socrata-icon.socrata-icon-logo.socrata-icon-logo-white .socrata-icon-logo-ring {
+    color: #fff; }
+  .socrata-icon.socrata-icon-logo.socrata-icon-logo-white .socrata-icon-logo-pie {
+    color: #fff; }
+  .socrata-icon.socrata-icon-logo.socrata-icon-logo-color .socrata-icon-logo-ring {
+    color: #288dc1; }
+  .socrata-icon.socrata-icon-logo.socrata-icon-logo-color .socrata-icon-logo-pie {
+    color: #e28432; }
+  .socrata-icon.socrata-icon-logo.socrata-icon-logo-dark .socrata-icon-logo-ring {
+    color: #fff; }
+  .socrata-icon.socrata-icon-logo.socrata-icon-logo-dark .socrata-icon-logo-pie {
+    color: #e28432; }
 
 .color-picker {
   position: relative;
@@ -2960,867 +2878,6 @@ body.modal-open {
 .color-bucket:hover,
 .color-bucket:focus {
   outline: 2px solid #00be9b; }
-
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.view-card.result-card.media {
-  width: 300px;
-  height: 300px;
-  -ms-flex-preferred-size: auto;
-      flex-basis: auto;
-  overflow: hidden;
-  float: none;
-  position: relative; }
-  .view-card.result-card.media .entry-header .socrata-icon-private {
-    color: #e6af00;
-    font-size: 18px; }
-  .view-card.result-card.media .entry-header .entry-title {
-    margin-right: 2%;
-    min-height: 53px; }
-    .view-card.result-card.media .entry-header .entry-title h3 {
-      margin: 0; }
-      .view-card.result-card.media .entry-header .entry-title h3 .socrata-icon-private {
-        margin-right: 4px; }
-      .view-card.result-card.media .entry-header .entry-title h3 a div {
-        display: inline !important; }
-  .view-card.result-card.media .img-wrapper:hover {
-    cursor: pointer; }
-  .view-card.result-card.media .img-wrapper {
-    background-color: #f1f1f1;
-    display: -ms-flexbox;
-    display: flex;
-    height: 117px;
-    position: relative;
-    overflow: hidden; }
-    .view-card.result-card.media .img-wrapper img {
-      min-height: unset;
-      max-height: unset;
-      width: 100%;
-      position: absolute;
-      margin: auto; }
-    .view-card.result-card.media .img-wrapper .x-large-icon {
-      font-size: 72px;
-      color: #5e5e5e;
-      line-height: 1;
-      margin: auto; }
-    .view-card.result-card.media .img-wrapper .socrata-icon-story.x-large-icon {
-      color: #00a1af; }
-    .view-card.result-card.media .img-wrapper .socrata-icon-date.x-large-icon {
-      color: #00be9b; }
-    .view-card.result-card.media .img-wrapper .socrata-icon-list-2.x-large-icon {
-      color: #8e98a1; }
-    .view-card.result-card.media .img-wrapper .socrata-icon-map.x-large-icon {
-      color: #218649; }
-    .view-card.result-card.media .img-wrapper .socrata-icon-cards.x-large-icon {
-      color: #288dc1; }
-    .view-card.result-card.media .img-wrapper .socrata-icon-bar-chart.x-large-icon {
-      color: #e28432; }
-    .view-card.result-card.media .img-wrapper .socrata-icon-external-square.x-large-icon {
-      color: #1c6387; }
-  @media (max-width: 768px) {
-    .view-card.result-card.media .img-wrapper {
-      display: -ms-flexbox;
-      display: flex;
-      max-height: 150px; } }
-
-.view-card-overlay {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: column;
-      flex-direction: column; }
-  .view-card-overlay .btn {
-    margin-right: auto;
-    margin-left: auto;
-    width: 100px;
-    max-width: 100px; }
-    .view-card-overlay .btn:first-child {
-      margin-top: auto; }
-    .view-card-overlay .btn:last-child {
-      margin-bottom: auto;
-      margin-right: auto; }
-
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.edit-bar {
-  position: fixed;
-  width: 100%;
-  height: 60px;
-  left: 0;
-  top: 0;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align: center;
-      align-items: center;
-  background-color: #4a4747;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-  z-index: 3; }
-  .edit-bar .btn-menu {
-    width: 60px;
-    height: 100%;
-    font-size: 35px;
-    text-align: center;
-    color: #767676;
-    background-color: #ddd;
-    border: none;
-    box-sizing: border-box;
-    cursor: pointer; }
-    .edit-bar .btn-menu:hover, .edit-bar .btn-menu:focus {
-      outline: none;
-      color: #646060; }
-    .edit-bar .btn-menu::before {
-      text-align: center; }
-  .edit-bar .page-name {
-    max-width: 250px;
-    margin: 0 15px;
-    font-weight: 600;
-    font-size: 15px;
-    color: #e4e4e4;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap; }
-
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.alert {
-  background-color: #f6f6f6;
-  border: 1px solid #c8c8c8;
-  font-size: 15px;
-  padding: 12px;
-  border-radius: 1px;
-  color: #5e5e5e; }
-  .alert.info {
-    background-color: #eaf4f9;
-    border-color: #288dc1;
-    color: #1c6387; }
-  .alert.success {
-    background-color: #eaf7ef;
-    border-color: #2baf5f;
-    color: #1e7a43; }
-  .alert.warning {
-    background-color: #fdf9ed;
-    border-color: #e6af00;
-    color: #8a6900; }
-  .alert.error {
-    background-color: #faf0f0;
-    border-color: #ce6565;
-    color: #904747; }
-  .alert.alert-full-width-top {
-    border-top: 0;
-    border-left: 0;
-    border-right: 0; }
-  .alert.alert-full-width-bottom {
-    border-bottom: 0;
-    border-left: 0;
-    border-right: 0; }
-
-.input-group {
-  position: relative;
-  display: -ms-flexbox;
-  display: flex; }
-  .input-group .text-input {
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 0;
-    -ms-flex: 1 0;
-        flex: 1 0; }
-  .input-group .input-group-btn {
-    position: relative; }
-    .input-group .input-group-btn .btn {
-      border-left: none;
-      margin-left: 0;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0; }
-      .input-group .input-group-btn .btn.btn-lg {
-        padding: 13px 17px; }
-      .input-group .input-group-btn .btn.btn-sm {
-        padding: 11px 13px; }
-      .input-group .input-group-btn .btn.btn-xs {
-        padding: 10px 13px; }
-    .input-group .input-group-btn .dropdown {
-      margin-right: -0.1px;
-      font-family: "Open Sans", "Helvetica", Arial, sans-serif;
-      line-height: 1.25; }
-      .input-group .input-group-btn .dropdown .socrata-icon-arrow-down {
-        padding-left: 12px;
-        padding-right: 0; }
-
-@media (max-width: 420px) {
-  .input-group-btn .dropdown {
-    margin-right: 0; } }
-
-.dropdown {
-  display: inline-block;
-  position: relative; }
-  .dropdown > span[class*="socrata-icon-"] {
-    padding-left: 19px; }
-
-.dropdown .dropdown-options {
-  position: absolute;
-  left: 0;
-  right: inherit;
-  min-width: 8em;
-  background: #fff;
-  border-radius: 1px;
-  list-style: none;
-  padding: 0;
-  box-shadow: rgba(0, 0, 0, 0.23) 0 0 15px;
-  opacity: 0;
-  pointer-events: none; }
-
-.dropdown.dropdown-orientation-top .dropdown-options {
-  bottom: 100%; }
-
-.dropdown.dropdown-orientation-bottom .dropdown-options {
-  top: 100%; }
-
-.dropdown .dropdown-options li a {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: block;
-  text-decoration: none;
-  text-align: left;
-  color: #5e5e5e;
-  padding: 10px 15px; }
-  .dropdown .dropdown-options li a > span[class*="socrata-icon-"] {
-    padding-right: 12px; }
-
-.dropdown .dropdown-options li:hover a {
-  background: #f1f1f1; }
-
-.dropdown.active .dropdown-options {
-  opacity: 1;
-  pointer-events: auto;
-  margin: 1px 0; }
-
-/* Forms */
-.add-filter {
-  margin-right: 20px;
-  display: inline-block;
-  vertical-align: top; }
-  .add-filter .btn-add-filter {
-    font-size: 12px;
-    padding: 7px 18px; }
-  .add-filter .column-container {
-    border: 1px solid #c8c8c8;
-    position: absolute;
-    background: #fff;
-    margin-top: -1px;
-    min-width: 300px;
-    z-index: 10; }
-    .add-filter .column-container .alert.info {
-      margin-top: 8px; }
-    .add-filter .column-container .searchable-picklist-options {
-      border-top: 1px solid #c8c8c8; }
-
-.filter-bar-filter {
-  margin-right: 8px;
-  height: 31px;
-  color: #474747;
-  display: inline-block;
-  vertical-align: top; }
-  .filter-bar-filter .socrata-icon {
-    color: #848484; }
-    .filter-bar-filter .socrata-icon svg {
-      vertical-align: inherit; }
-  .filter-bar-filter .filter-control-container {
-    display: inline-block;
-    position: relative; }
-    .filter-bar-filter .filter-control-container .filter-control-toggle {
-      padding: 5px 10px;
-      padding-right: 20px;
-      border: 1px solid #c8c8c8;
-      position: relative;
-      cursor: pointer;
-      width: 130px;
-      max-width: 130px;
-      border-top-left-radius: 1px;
-      border-bottom-left-radius: 1px;
-      -webkit-user-select: none;
-         -moz-user-select: none;
-          -ms-user-select: none;
-              user-select: none;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap; }
-      .filter-bar-filter .filter-control-container .filter-control-toggle .arrow-down-icon {
-        position: absolute;
-        right: 6px;
-        top: 8px;
-        z-index: 0; }
-        .filter-bar-filter .filter-control-container .filter-control-toggle .arrow-down-icon .socrata-icon svg {
-          height: 15px;
-          width: 15px; }
-      .filter-bar-filter .filter-control-container .filter-control-toggle.left + .filter-controls {
-        left: 0; }
-      .filter-bar-filter .filter-control-container .filter-control-toggle.right + .filter-controls {
-        right: 0; }
-    .filter-bar-filter .filter-control-container .filter-controls {
-      position: absolute;
-      top: 100%;
-      width: 300px;
-      margin-top: -1px;
-      background: #fff;
-      border-radius: 1px;
-      border: 1px solid #c8c8c8;
-      z-index: 100; }
-      .filter-bar-filter .filter-control-container .filter-controls .filter-control-title {
-        margin: 8px; }
-        .filter-bar-filter .filter-control-container .filter-controls .filter-control-title h3 {
-          font-size: 12px;
-          font-weight: normal;
-          letter-spacing: 0; }
-      .filter-bar-filter .filter-control-container .filter-controls .range-filter-container {
-        padding: 8px;
-        margin-bottom: 10px; }
-        .filter-bar-filter .filter-control-container .filter-controls .range-filter-container .filter-control-title {
-          margin: 0;
-          margin-bottom: 8px; }
-        .filter-bar-filter .filter-control-container .filter-controls .range-filter-container .range-text-inputs-container {
-          -ms-flex-pack: justify;
-              justify-content: space-between; }
-          .filter-bar-filter .filter-control-container .filter-controls .range-filter-container .range-text-inputs-container .range-input {
-            max-width: 150px;
-            padding-left: 10px;
-            padding-right: 10px; }
-          .filter-bar-filter .filter-control-container .filter-controls .range-filter-container .range-text-inputs-container .range-separator {
-            margin: 8px; }
-        .filter-bar-filter .filter-control-container .filter-controls .range-filter-container .date-range-picker {
-          margin-top: 15px; }
-  .filter-bar-filter .filter-config-container {
-    display: inline-block;
-    position: relative;
-    vertical-align: top; }
-    .filter-bar-filter .filter-config-container .filter-config-toggle {
-      border: 1px solid #c8c8c8;
-      margin-left: -1px;
-      padding: 7px 2px 3px 5px;
-      cursor: pointer;
-      border-top-right-radius: 1px;
-      border-bottom-right-radius: 1px; }
-      .filter-bar-filter .filter-config-container .filter-config-toggle .kebab-icon .socrata-icon svg {
-        height: 12px;
-        width: 12px; }
-      .filter-bar-filter .filter-config-container .filter-config-toggle.left + .filter-config {
-        left: 0; }
-      .filter-bar-filter .filter-config-container .filter-config-toggle.right + .filter-config {
-        right: 0; }
-    .filter-bar-filter .filter-config-container .filter-config {
-      position: absolute;
-      top: 100%;
-      width: 400px;
-      margin-top: -1px;
-      background: #fff;
-      border-radius: 1px;
-      border: 1px solid #c8c8c8;
-      z-index: 100; }
-      .filter-bar-filter .filter-config-container .filter-config .filter-options {
-        margin: 15px;
-        margin-bottom: 30px; }
-        .filter-bar-filter .filter-config-container .filter-config .filter-options .option-label {
-          font-weight: 600; }
-        .filter-bar-filter .filter-config-container .filter-config .filter-options .setting-description {
-          margin-left: 30px; }
-  .filter-bar-filter .filter-control-toggle:focus, .filter-bar-filter .filter-config-toggle:focus {
-    z-index: 1; }
-
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.filter-bar-filter .calendar-date-filter {
-  min-width: 350px; }
-
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.filter-footer {
-  background: #f6f6f6;
-  display: -ms-flexbox;
-  display: flex;
-  padding: 8px; }
-  .filter-footer .btn {
-    padding: 0;
-    font-size: 12px; }
-  .filter-footer .btn-transparent {
-    color: #767676; }
-    .filter-footer .btn-transparent .socrata-icon-close-2 {
-      margin-right: 5px; }
-    .filter-footer .btn-transparent:hover, .filter-footer .btn-transparent:focus {
-      text-decoration: underline; }
-
-.filter-controls .filter-footer {
-  -ms-flex-pack: justify;
-      justify-content: space-between;
-  padding: 4px 8px; }
-  .filter-controls .filter-footer .apply-btn-container {
-    display: inline-block; }
-    .filter-controls .filter-footer .apply-btn-container .cancel-btn {
-      margin-right: 12px; }
-    .filter-controls .filter-footer .apply-btn-container .apply-btn {
-      padding: 6px 12px; }
-
-.filter-config .filter-footer {
-  -ms-flex-pack: end;
-      justify-content: flex-end; }
-
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.filter-bar-filter .number-filter {
-  min-width: 350px; }
-
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.searchable-picklist {
-  font-size: 12px; }
-  .searchable-picklist .searchable-picklist-input-container {
-    position: relative;
-    margin: 8px; }
-    .searchable-picklist .searchable-picklist-input-container .searchable-picklist-input {
-      width: 100%;
-      border: 1px solid #c8c8c8;
-      padding: 8px 28px; }
-      .searchable-picklist .searchable-picklist-input-container .searchable-picklist-input:focus {
-        border-color: #e6f9f5;
-        outline: solid 2px #00be9b; }
-      .searchable-picklist .searchable-picklist-input-container .searchable-picklist-input:disabled {
-        color: #919191;
-        background-color: #f6f6f6; }
-    .searchable-picklist .searchable-picklist-input-container .socrata-icon {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      left: 6px;
-      top: 6px;
-      color: #e4e4e4; }
-    .searchable-picklist .searchable-picklist-input-container .spinner-default {
-      position: absolute;
-      right: 8px;
-      top: 8px;
-      animation-duration: 0.5s;
-      border-width: 1px;
-      border-color: #00be9b;
-      border-right-color: #e6f9f5; }
-  .searchable-picklist .searchable-picklist-options {
-    max-height: 350px;
-    overflow-y: auto; }
-    .searchable-picklist .searchable-picklist-options .picklist {
-      border: none; }
-      .searchable-picklist .searchable-picklist-options .picklist .picklist-group-header {
-        border-left: solid 3px transparent; }
-      .searchable-picklist .searchable-picklist-options .picklist:focus {
-        border: none;
-        outline: none; }
-        .searchable-picklist .searchable-picklist-options .picklist:focus .picklist-group-header {
-          border-left: solid 3px #00be9b; }
-  .searchable-picklist .searchable-picklist-selected-option {
-    display: -ms-flexbox;
-    display: flex;
-    width: 100%; }
-    .searchable-picklist .searchable-picklist-selected-option > * {
-      margin: auto; }
-    .searchable-picklist .searchable-picklist-selected-option .socrata-icon {
-      width: 12px;
-      height: 12px;
-      color: #e4e4e4; }
-    .searchable-picklist .searchable-picklist-selected-option .socrata-icon-close-2 {
-      color: #919191; }
-    .searchable-picklist .searchable-picklist-selected-option .searchable-picklist-selected-option-title {
-      -ms-flex-positive: 2;
-          flex-grow: 2;
-      margin-left: 8px;
-      padding-right: 8px;
-      overflow: hidden;
-      text-overflow: ellipsis; }
-  .searchable-picklist .picklist-option {
-    cursor: pointer;
-    padding: 8px; }
-  .searchable-picklist .alert {
-    font-size: 12px; }
-
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.filter-bar-filter .text-filter .text-filter-header {
-  margin: 8px;
-  margin-top: 0;
-  margin-bottom: 0; }
-  .filter-bar-filter .text-filter .text-filter-header h3 {
-    display: inline-block;
-    margin: 5px 5px 3px 2px;
-    font-size: 12px;
-    font-weight: normal;
-    letter-spacing: 0;
-    vertical-align: text-bottom; }
-  .filter-bar-filter .text-filter .text-filter-header .dropdown-container {
-    vertical-align: bottom;
-    margin-top: 5px; }
-    .filter-bar-filter .text-filter .text-filter-header .dropdown-container .dropdown-placeholder {
-      padding: 3px 40px 3px 10px;
-      font-size: 12px;
-      text-transform: uppercase;
-      color: #2279a6;
-      border-color: transparent;
-      border-bottom-color: #adadad;
-      min-width: 80px; }
-      .filter-bar-filter .text-filter .text-filter-header .dropdown-container .dropdown-placeholder .dropdown-caret {
-        font-size: 12px;
-        right: 2px;
-        top: 3px; }
-        .filter-bar-filter .text-filter .text-filter-header .dropdown-container .dropdown-placeholder .dropdown-caret::after {
-          font-size: 16px;
-          margin-top: 1px; }
-    .filter-bar-filter .text-filter .text-filter-header .dropdown-container .dropdown-options-list .picklist-option {
-      padding: 3px 10px;
-      text-transform: uppercase;
-      font-size: 12px;
-      color: #2279a6; }
-      .filter-bar-filter .text-filter .text-filter-header .dropdown-container .dropdown-options-list .picklist-option.picklist-option-selected, .filter-bar-filter .text-filter .text-filter-header .dropdown-container .dropdown-options-list .picklist-option:active {
-        color: #fff; }
-    .filter-bar-filter .text-filter .text-filter-header .dropdown-container.dropdown-focused .dropdown-placeholder {
-      border-bottom-color: transparent; }
-
-.filter-bar-filter .text-filter .searchable-picklist .alert,
-.filter-bar-filter .text-filter .searchable-picklist .picklist {
-  border-left: none;
-  border-right: none; }
-
-.filter-bar-filter .text-filter .searchable-picklist .picklist {
-  max-height: none; }
-
-.filter-bar-filter .text-filter .searchable-picklist .picklist-group-header {
-  padding: 6px 10px; }
-
-.filter-bar-container {
-  font-size: 12px;
-  background: #f8f8f8;
-  padding: 6px 20px;
-  position: relative; }
-  .filter-bar-container .hidden {
-    position: absolute;
-    left: -10000px;
-    top: auto;
-    width: 1px;
-    height: 1px;
-    overflow: hidden; }
-  .filter-bar-container .filter-icon {
-    display: inline-block;
-    vertical-align: top; }
-    .filter-bar-container .filter-icon .socrata-icon {
-      width: 20px;
-      height: 20px;
-      margin-right: 20px;
-      margin-top: 5px;
-      color: #919191; }
-  .filter-bar-container .add-filter-container {
-    display: inline-block; }
-  .filter-bar-container .btn-expand-control {
-    font-size: 12px;
-    color: #919191;
-    text-decoration: underline;
-    float: right;
-    padding: 0;
-    margin-top: 6px; }
-    .filter-bar-container .btn-expand-control.is-hidden {
-      visibility: hidden; }
-    .filter-bar-container .btn-expand-control:hover, .filter-bar-container .btn-expand-control:focus {
-      color: #474747; }
-  .filter-bar-container .visible-filters-container {
-    display: inline-block;
-    vertical-align: top; }
-  .filter-bar-container .collapsed-filters-container {
-    position: absolute;
-    width: 100%;
-    margin-left: -20px;
-    margin-top: 6px;
-    padding: 2px 20px 0 20px;
-    padding-top: 2px;
-    background: #f8f8f8;
-    visibility: hidden; }
-    .filter-bar-container .collapsed-filters-container .filter-bar-filter {
-      margin-bottom: 10px; }
-  .filter-bar-container.filter-bar-expanded .collapsed-filters-container {
-    visibility: visible; }
-  .filter-bar-container .filter-bar-column-option {
-    font-size: 12px; }
-    .filter-bar-container .filter-bar-column-option [class^="socrata-icon-"] {
-      margin-right: 8px; }
-
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.info-pane {
-  background: #fff;
-  width: 100%; }
-  .info-pane .container {
-    margin-top: 0;
-    max-width: 68em; }
-  .info-pane h1.info-pane-name {
-    margin: 0;
-    margin-right: 11px;
-    display: inline;
-    font-size: 29px;
-    font-weight: 300;
-    letter-spacing: -0.5px; }
-    .info-pane h1.info-pane-name .socrata-icon-private {
-      color: #e6af00;
-      padding-right: 4px; }
-  .info-pane .entry-header.dataset-landing-page-header {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap; }
-    .info-pane .entry-header.dataset-landing-page-header .entry-title {
-      -ms-flex: 1 1 auto;
-          flex: 1 1 auto;
-      width: auto;
-      margin-right: 20px; }
-      .info-pane .entry-header.dataset-landing-page-header .entry-title .socrata-icon-official {
-        margin-right: 4px;
-        width: 13px; }
-      .info-pane .entry-header.dataset-landing-page-header .entry-title .tag-category {
-        margin-right: 0; }
-    .info-pane .entry-header.dataset-landing-page-header .entry-actions {
-      -ms-flex: 0 1 auto;
-          flex: 0 1 auto; }
-  .info-pane .entry-main .entry-description-container .entry-description {
-    display: inline-block;
-    line-height: 24px;
-    max-width: 100%;
-    word-wrap: break-word; }
-  .info-pane .entry-content .entry-meta.updated .meta-title {
-    padding-top: 0; }
-  @media (max-width: 420px) {
-    .info-pane .entry-header .entry-actions {
-      -ms-flex: 1 0 auto;
-          flex: 1 0 auto; } }
-
-.collapsible {
-  overflow: hidden; }
-  .collapsible .collapse-toggle.more {
-    display: none; }
-  .collapsible .collapse-toggle.less {
-    display: inherit; }
-  .collapsible[data-collapsed] .collapse-toggle.more {
-    display: inherit; }
-  .collapsible[data-collapsed] .collapse-toggle.less {
-    display: none; }
-  .collapsible .collapse-toggle {
-    padding: 0;
-    text-decoration: underline;
-    color: #919191;
-    cursor: pointer;
-    border: none;
-    background-color: #fff; }
-
-/* Base Palette Colors */
-/* Colors light version */
-/* Colors dark version */
-/* Greys */
-/* Shades of Grey */
-/* Color Vars */
-/* Button Colors */
-/* Header */
-/* Settings Panel */
-/* Backgrounds */
-.InputRange-slider {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background: #3f51b5;
-  border: 1px solid #3f51b5;
-  border-radius: 100%;
-  cursor: pointer;
-  display: block;
-  height: 1rem;
-  margin-left: -0.5rem;
-  margin-top: -0.65rem;
-  outline: none;
-  position: absolute;
-  top: 50%;
-  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
-  width: 1rem; }
-
-.InputRange-slider:active {
-  transform: scale(1.3); }
-
-.InputRange-slider:focus {
-  box-shadow: 0 0 0 5px rgba(63, 81, 181, 0.2); }
-
-.InputRange.is-disabled .InputRange-slider {
-  background: #cccccc;
-  border: 1px solid #cccccc;
-  box-shadow: none;
-  transform: none; }
-
-.InputRange-sliderContainer {
-  transition: left 0.3s ease-out; }
-
-.InputRange-label {
-  color: #aaaaaa;
-  font-family: "Helvetica Neue", san-serif;
-  font-size: 0.8rem;
-  white-space: nowrap; }
-
-.InputRange-label--min,
-.InputRange-label--max {
-  bottom: -1.4rem;
-  position: absolute; }
-
-.InputRange-label--min {
-  left: 0; }
-
-.InputRange-label--max {
-  right: 0; }
-
-.InputRange-label--value {
-  position: absolute;
-  top: -1.8rem; }
-
-.InputRange-labelContainer {
-  left: -50%;
-  position: relative; }
-
-.InputRange-label--max .InputRange-labelContainer {
-  left: 50%; }
-
-.InputRange-track {
-  background: #eeeeee;
-  border-radius: 0.3rem;
-  display: block;
-  height: 0.3rem;
-  position: relative;
-  transition: left 0.3s ease-out, width 0.3s ease-out; }
-
-.InputRange.is-disabled .InputRange-track {
-  background: #eeeeee; }
-
-.InputRange-track--container {
-  left: 0;
-  margin-top: -0.15rem;
-  position: absolute;
-  right: 0;
-  top: 50%; }
-
-.InputRange-track--active {
-  background: #3f51b5; }
-
-.InputRange {
-  cursor: pointer;
-  height: 1rem;
-  position: relative;
-  width: 100%; }
-
-.input-range-slider {
-  margin-top: 25px;
-  margin-bottom: 30px;
-  margin-left: 6px;
-  margin-right: 6px; }
-  .input-range-slider .InputRange-track, .input-range-slider .InputRange-slider, .input-range-slider .InputRange-sliderContainer {
-    transition: none; }
-  .input-range-slider .InputRange-track {
-    background: #e4e4e4;
-    border-radius: 0; }
-    .input-range-slider .InputRange-track.InputRange-track--active {
-      background: #00a1af; }
-    .input-range-slider .InputRange-track .InputRange-labelContainer {
-      bottom: 5px; }
-  .input-range-slider .InputRange-slider {
-    background: #f6f6f6;
-    border: 1px solid #adadad;
-    border-radius: 0;
-    width: 12px;
-    height: 25px;
-    margin-top: -15px;
-    margin-left: -6px; }
-    .input-range-slider .InputRange-slider:active {
-      transform: scale(1.1); }
-
-.socrata-icon {
-  width: 15px;
-  height: 15px;
-  display: inline-block;
-  line-height: 1; }
-  .socrata-icon::before {
-    display: none; }
-  .socrata-icon svg {
-    width: inherit;
-    height: inherit;
-    vertical-align: top; }
-    .socrata-icon svg path,
-    .socrata-icon svg polygon {
-      fill: currentColor; }
 
 .react-datepicker__tether-element-attached-top .react-datepicker__triangle, .react-datepicker__tether-element-attached-bottom .react-datepicker__triangle, .react-datepicker__year-read-view--down-arrow,
 .react-datepicker__month-read-view--down-arrow {
@@ -4186,6 +3243,889 @@ body.modal-open {
 /* Header */
 /* Settings Panel */
 /* Backgrounds */
+.dropdown-container {
+  display: inline-block;
+  box-sizing: border-box;
+  position: relative; }
+
+.dropdown-invisible {
+  visibility: hidden; }
+
+.dropdown-placeholder {
+  position: relative;
+  font-size: 15px;
+  min-height: 15px;
+  background: white;
+  border: solid 1px #c8c8c8;
+  cursor: default;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  transition: border-color 0.15s ease-in-out;
+  padding: 10px;
+  padding-right: 40px;
+  color: #919191;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  z-index: 50; }
+  .dropdown-placeholder:focus {
+    outline: none; }
+  .dropdown-placeholder.dropdown-selected {
+    color: #2c2c2c; }
+  .dropdown-focused .dropdown-placeholder {
+    border-color: #e6f9f5;
+    outline: solid 2px #00be9b; }
+  .dropdown-disabled .dropdown-placeholder {
+    background: #c8c8c8;
+    border-color: #adadad;
+    color: #919191;
+    pointer-events: none; }
+
+.dropdown-caret {
+  position: absolute;
+  width: 22px;
+  font-size: 18px;
+  right: 10px;
+  top: 0;
+  bottom: 0;
+  z-index: 10;
+  color: #919191;
+  transition: color 0.15s ease-in-out;
+  pointer-events: none; }
+  .dropdown-focused .dropdown-caret {
+    color: #00be9b; }
+  .dropdown-caret::after {
+    margin-top: 14px;
+    margin-left: 2px; }
+
+.dropdown-options-list {
+  position: fixed;
+  z-index: 999;
+  border: solid 1px #c8c8c8;
+  overflow-y: auto; }
+  .dropdown-options-list .picklist {
+    border: none; }
+
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.edit-bar {
+  position: fixed;
+  width: 100%;
+  height: 60px;
+  left: 0;
+  top: 0;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  background-color: #4a4747;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+  z-index: 3; }
+  .edit-bar .btn-menu {
+    width: 60px;
+    height: 100%;
+    font-size: 35px;
+    text-align: center;
+    color: #767676;
+    background-color: #ddd;
+    border: none;
+    box-sizing: border-box;
+    cursor: pointer; }
+    .edit-bar .btn-menu:hover, .edit-bar .btn-menu:focus {
+      color: #646060; }
+    .edit-bar .btn-menu::before {
+      text-align: center; }
+  .edit-bar .page-name {
+    max-width: 300px;
+    margin: 0 15px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #e4e4e4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
+    .edit-bar .page-name.page-name-clickable {
+      cursor: pointer; }
+      .edit-bar .page-name.page-name-clickable:hover {
+        color: #fff; }
+
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.alert {
+  background-color: #f6f6f6;
+  border: 1px solid #c8c8c8;
+  font-size: 15px;
+  padding: 12px;
+  border-radius: 1px;
+  color: #5e5e5e; }
+  .alert.info {
+    background-color: #eaf4f9;
+    border-color: #288dc1;
+    color: #1c6387; }
+  .alert.success {
+    background-color: #eaf7ef;
+    border-color: #2baf5f;
+    color: #1e7a43; }
+  .alert.warning {
+    background-color: #fdf9ed;
+    border-color: #e6af00;
+    color: #8a6900; }
+  .alert.error {
+    background-color: #faf0f0;
+    border-color: #ce6565;
+    color: #904747; }
+  .alert.alert-full-width-top {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0; }
+  .alert.alert-full-width-bottom {
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0; }
+
+.input-group {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex; }
+  .input-group .text-input {
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    -ms-flex: 1 0;
+        flex: 1 0; }
+  .input-group .input-group-btn {
+    position: relative; }
+    .input-group .input-group-btn .btn {
+      border-left: none;
+      margin-left: 0;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0; }
+      .input-group .input-group-btn .btn.btn-lg {
+        padding: 13px 17px; }
+      .input-group .input-group-btn .btn.btn-sm {
+        padding: 11px 13px; }
+      .input-group .input-group-btn .btn.btn-xs {
+        padding: 10px 13px; }
+    .input-group .input-group-btn .dropdown {
+      margin-right: -0.1px;
+      font-family: "Open Sans", "Helvetica", Arial, sans-serif;
+      line-height: 1.25; }
+      .input-group .input-group-btn .dropdown .socrata-icon-arrow-down {
+        padding-left: 12px;
+        padding-right: 0; }
+
+@media (max-width: 420px) {
+  .input-group-btn .dropdown {
+    margin-right: 0; } }
+
+.dropdown {
+  display: inline-block;
+  position: relative; }
+  .dropdown > span[class*="socrata-icon-"] {
+    padding-left: 19px; }
+
+.dropdown .dropdown-options {
+  position: absolute;
+  left: 0;
+  right: inherit;
+  min-width: 8em;
+  background: #fff;
+  border-radius: 1px;
+  list-style: none;
+  padding: 0;
+  box-shadow: rgba(0, 0, 0, 0.23) 0 0 15px;
+  opacity: 0;
+  pointer-events: none; }
+
+.dropdown.dropdown-orientation-top .dropdown-options {
+  bottom: 100%; }
+
+.dropdown.dropdown-orientation-bottom .dropdown-options {
+  top: 100%; }
+
+.dropdown .dropdown-options li a {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  text-decoration: none;
+  text-align: left;
+  color: #5e5e5e;
+  padding: 10px 15px; }
+  .dropdown .dropdown-options li a > span[class*="socrata-icon-"] {
+    padding-right: 12px; }
+
+.dropdown .dropdown-options li:hover a {
+  background: #f1f1f1; }
+
+.dropdown.active .dropdown-options {
+  opacity: 1;
+  pointer-events: auto;
+  margin: 1px 0; }
+
+/* Forms */
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.add-filter {
+  margin-right: 20px;
+  display: inline-block;
+  vertical-align: top; }
+  .add-filter .btn-add-filter {
+    font-size: 12px;
+    padding: 7px 18px; }
+  .add-filter .column-container {
+    border: 1px solid #c8c8c8;
+    position: absolute;
+    background: #fff;
+    margin-top: -1px;
+    min-width: 300px;
+    z-index: 10; }
+    .add-filter .column-container .alert.info {
+      margin-top: 8px; }
+    .add-filter .column-container .add-filter-picklist-options {
+      border-top: 1px solid #c8c8c8; }
+
+.add-filter-picklist {
+  font-size: 12px; }
+  .add-filter-picklist .add-filter-picklist-input-container {
+    position: relative;
+    margin: 8px; }
+    .add-filter-picklist .add-filter-picklist-input-container .add-filter-picklist-input {
+      width: 100%;
+      border: 1px solid #c8c8c8;
+      padding: 8px 28px; }
+      .add-filter-picklist .add-filter-picklist-input-container .add-filter-picklist-input:focus {
+        border-color: #e6f9f5;
+        outline: solid 2px #00be9b; }
+      .add-filter-picklist .add-filter-picklist-input-container .add-filter-picklist-input:disabled {
+        color: #919191;
+        background-color: #f6f6f6; }
+    .add-filter-picklist .add-filter-picklist-input-container .socrata-icon {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 6px;
+      top: 6px;
+      color: #e4e4e4; }
+  .add-filter-picklist .add-filter-picklist-options {
+    max-height: 350px;
+    overflow-y: auto; }
+    .add-filter-picklist .add-filter-picklist-options .picklist {
+      border: none; }
+      .add-filter-picklist .add-filter-picklist-options .picklist .picklist-group-header {
+        border-left: solid 3px transparent; }
+      .add-filter-picklist .add-filter-picklist-options .picklist:focus {
+        border: none;
+        outline: none; }
+        .add-filter-picklist .add-filter-picklist-options .picklist:focus .picklist-group-header {
+          border-left: solid 3px #00be9b; }
+  .add-filter-picklist .picklist-option {
+    cursor: pointer;
+    padding: 8px; }
+  .add-filter-picklist .alert {
+    font-size: 12px;
+    border: none; }
+
+.filter-bar-filter {
+  margin-right: 8px;
+  height: 31px;
+  color: #474747;
+  display: inline-block;
+  vertical-align: top; }
+  .filter-bar-filter .socrata-icon {
+    color: #848484; }
+    .filter-bar-filter .socrata-icon svg {
+      vertical-align: inherit; }
+  .filter-bar-filter .filter-control-container {
+    display: inline-block;
+    position: relative; }
+    .filter-bar-filter .filter-control-container .filter-control-toggle {
+      padding: 5px 10px;
+      padding-right: 20px;
+      border: 1px solid #c8c8c8;
+      position: relative;
+      cursor: pointer;
+      width: 130px;
+      max-width: 130px;
+      border-top-left-radius: 1px;
+      border-bottom-left-radius: 1px;
+      -webkit-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap; }
+      .filter-bar-filter .filter-control-container .filter-control-toggle .arrow-down-icon {
+        position: absolute;
+        right: 6px;
+        top: 8px;
+        z-index: 0; }
+        .filter-bar-filter .filter-control-container .filter-control-toggle .arrow-down-icon .socrata-icon svg {
+          height: 15px;
+          width: 15px; }
+      .filter-bar-filter .filter-control-container .filter-control-toggle.left + .filter-controls {
+        left: 0; }
+      .filter-bar-filter .filter-control-container .filter-control-toggle.right + .filter-controls {
+        right: 0; }
+    .filter-bar-filter .filter-control-container .filter-controls {
+      position: absolute;
+      top: 100%;
+      width: 300px;
+      margin-top: -1px;
+      background: #fff;
+      border-radius: 1px;
+      border: 1px solid #c8c8c8;
+      z-index: 100; }
+      .filter-bar-filter .filter-control-container .filter-controls .filter-control-title {
+        position: relative;
+        margin: 8px; }
+        .filter-bar-filter .filter-control-container .filter-controls .filter-control-title h3 {
+          font-size: 12px;
+          font-weight: normal;
+          letter-spacing: 0; }
+        .filter-bar-filter .filter-control-container .filter-controls .filter-control-title .config-btn {
+          position: absolute;
+          padding: 0;
+          top: 1px;
+          right: 0; }
+          .filter-bar-filter .filter-control-container .filter-controls .filter-control-title .config-btn:hover {
+            color: #767676; }
+          .filter-bar-filter .filter-control-container .filter-controls .filter-control-title .config-btn .socrata-icon-settings {
+            width: 20px;
+            height: 20px; }
+      .filter-bar-filter .filter-control-container .filter-controls .range-filter-container {
+        padding: 8px;
+        margin-bottom: 10px; }
+        .filter-bar-filter .filter-control-container .filter-controls .range-filter-container .filter-control-title {
+          margin: 0;
+          margin-bottom: 8px; }
+        .filter-bar-filter .filter-control-container .filter-controls .range-filter-container .range-text-inputs-container .range-input {
+          -ms-flex-positive: 4;
+              flex-grow: 4;
+          max-width: 150px;
+          padding-left: 10px;
+          padding-right: 10px; }
+        .filter-bar-filter .filter-control-container .filter-controls .range-filter-container .range-text-inputs-container .range-separator {
+          -ms-flex-positive: 1;
+              flex-grow: 1;
+          margin: 8px;
+          text-align: center; }
+        .filter-bar-filter .filter-control-container .filter-controls .range-filter-container .date-range-picker {
+          margin-top: 15px; }
+  .filter-bar-filter .filter-config-container {
+    display: inline-block;
+    position: relative;
+    vertical-align: top; }
+    .filter-bar-filter .filter-config-container .filter-config-toggle {
+      border: 1px solid #c8c8c8;
+      margin-left: -1px;
+      padding: 7px 2px 3px 5px;
+      cursor: pointer;
+      border-top-right-radius: 1px;
+      border-bottom-right-radius: 1px; }
+      .filter-bar-filter .filter-config-container .filter-config-toggle .kebab-icon .socrata-icon svg {
+        height: 12px;
+        width: 12px; }
+      .filter-bar-filter .filter-config-container .filter-config-toggle.left + .filter-config {
+        left: 0; }
+      .filter-bar-filter .filter-config-container .filter-config-toggle.right + .filter-config {
+        right: 0; }
+    .filter-bar-filter .filter-config-container .filter-config {
+      position: absolute;
+      top: 100%;
+      width: 400px;
+      margin-top: -1px;
+      background: #fff;
+      border-radius: 1px;
+      border: 1px solid #c8c8c8;
+      z-index: 100; }
+      .filter-bar-filter .filter-config-container .filter-config .filter-options {
+        margin: 15px;
+        margin-bottom: 30px; }
+        .filter-bar-filter .filter-config-container .filter-config .filter-options .option-label {
+          font-weight: 600; }
+        .filter-bar-filter .filter-config-container .filter-config .filter-options .setting-description {
+          margin-left: 30px; }
+  .filter-bar-filter .filter-control-toggle:focus, .filter-bar-filter .filter-config-toggle:focus {
+    z-index: 1; }
+
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.filter-bar-filter .calendar-date-filter {
+  min-width: 350px; }
+
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.filter-controls .filter-footer {
+  background: #f6f6f6;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  padding: 4px 8px; }
+  .filter-controls .filter-footer .btn {
+    padding: 0;
+    font-size: 12px; }
+  .filter-controls .filter-footer .btn-transparent {
+    color: #767676; }
+    .filter-controls .filter-footer .btn-transparent .socrata-icon-close-2 {
+      margin-right: 5px; }
+    .filter-controls .filter-footer .btn-transparent:hover, .filter-controls .filter-footer .btn-transparent:focus {
+      text-decoration: underline; }
+  .filter-controls .filter-footer .remove-btn {
+    display: -ms-inline-flexbox;
+    display: inline-flex; }
+    .filter-controls .filter-footer .remove-btn .socrata-icon {
+      width: 13px; }
+  .filter-controls .filter-footer .apply-btn-container {
+    display: inline-block; }
+    .filter-controls .filter-footer .apply-btn-container .reset-btn {
+      margin-right: 12px; }
+    .filter-controls .filter-footer .apply-btn-container .apply-btn {
+      padding: 6px 12px; }
+
+.filter-config .filter-footer {
+  -ms-flex-pack: end;
+      justify-content: flex-end; }
+
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.filter-bar-filter .number-filter {
+  min-width: 350px; }
+
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.searchable-picklist {
+  font-size: 12px; }
+  .searchable-picklist .searchable-picklist-input-container {
+    position: relative;
+    margin: 8px; }
+    .searchable-picklist .searchable-picklist-input-container form {
+      margin: 0; }
+    .searchable-picklist .searchable-picklist-input-container .searchable-picklist-input {
+      width: 100%;
+      height: 31px;
+      border: 1px solid #c8c8c8;
+      padding: 8px 28px 8px 8px; }
+      .searchable-picklist .searchable-picklist-input-container .searchable-picklist-input:focus {
+        border-color: #e6f9f5;
+        outline: solid 2px #00be9b; }
+      .searchable-picklist .searchable-picklist-input-container .searchable-picklist-input:disabled {
+        color: #919191;
+        background-color: #f6f6f6; }
+    .searchable-picklist .searchable-picklist-input-container .spinner-default {
+      position: absolute;
+      right: 38px;
+      top: 8px;
+      animation-duration: 0.5s;
+      border-width: 1px;
+      border-color: #00be9b;
+      border-right-color: #e6f9f5; }
+    .searchable-picklist .searchable-picklist-input-container .btn {
+      height: 31px;
+      width: 31px; }
+      .searchable-picklist .searchable-picklist-input-container .btn.btn-highlighted {
+        background-color: #00a1af;
+        border-color: #00be9b; }
+    .searchable-picklist .searchable-picklist-input-container .socrata-icon-search {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      top: 7px;
+      right: 7px;
+      color: #e4e4e4; }
+  .searchable-picklist .searchable-picklist-options {
+    max-height: 350px;
+    overflow-y: auto; }
+    .searchable-picklist .searchable-picklist-options .picklist {
+      border: none; }
+      .searchable-picklist .searchable-picklist-options .picklist .picklist-group-header {
+        border-left: solid 3px transparent; }
+      .searchable-picklist .searchable-picklist-options .picklist:focus {
+        border: none;
+        outline: none; }
+        .searchable-picklist .searchable-picklist-options .picklist:focus .picklist-group-header {
+          border-left: solid 3px #00be9b; }
+  .searchable-picklist .searchable-picklist-selected-option {
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%; }
+    .searchable-picklist .searchable-picklist-selected-option > * {
+      margin: auto; }
+    .searchable-picklist .searchable-picklist-selected-option .socrata-icon {
+      width: 12px;
+      height: 12px;
+      color: #e4e4e4; }
+    .searchable-picklist .searchable-picklist-selected-option .socrata-icon-close-2 {
+      color: #919191; }
+    .searchable-picklist .searchable-picklist-selected-option .searchable-picklist-selected-option-title {
+      -ms-flex-positive: 2;
+          flex-grow: 2;
+      margin-left: 8px;
+      padding-right: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+  .searchable-picklist .picklist-option {
+    cursor: pointer;
+    padding: 8px; }
+  .searchable-picklist .alert {
+    font-size: 12px;
+    border: none; }
+
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.filter-bar-filter .text-filter .filter-control-title {
+  margin: 8px;
+  margin-top: 0;
+  margin-bottom: 0; }
+  .filter-bar-filter .text-filter .filter-control-title h3 {
+    display: inline-block;
+    margin: 3px 5px 3px 2px;
+    font-size: 12px;
+    font-weight: normal;
+    letter-spacing: 0;
+    vertical-align: text-bottom; }
+  .filter-bar-filter .text-filter .filter-control-title .dropdown-container {
+    vertical-align: bottom; }
+    .filter-bar-filter .text-filter .filter-control-title .dropdown-container .dropdown-placeholder {
+      padding: 3px 40px 3px 10px;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #2279a6;
+      border-color: transparent;
+      border-bottom-color: #adadad;
+      min-width: 80px; }
+      .filter-bar-filter .text-filter .filter-control-title .dropdown-container .dropdown-placeholder .dropdown-caret {
+        font-size: 12px;
+        right: 2px;
+        top: 3px; }
+        .filter-bar-filter .text-filter .filter-control-title .dropdown-container .dropdown-placeholder .dropdown-caret::after {
+          font-size: 16px;
+          margin-top: 1px; }
+    .filter-bar-filter .text-filter .filter-control-title .dropdown-container .dropdown-options-list .picklist-option {
+      padding: 3px 10px;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: #2279a6; }
+      .filter-bar-filter .text-filter .filter-control-title .dropdown-container .dropdown-options-list .picklist-option.picklist-option-selected, .filter-bar-filter .text-filter .filter-control-title .dropdown-container .dropdown-options-list .picklist-option:active {
+        color: #fff; }
+    .filter-bar-filter .text-filter .filter-control-title .dropdown-container.dropdown-focused .dropdown-placeholder {
+      border-bottom-color: transparent; }
+
+.filter-bar-filter .text-filter .searchable-picklist .alert,
+.filter-bar-filter .text-filter .searchable-picklist .picklist {
+  border-left: none;
+  border-right: none; }
+
+.filter-bar-filter .text-filter .searchable-picklist .picklist {
+  max-height: none; }
+
+.filter-bar-filter .text-filter .searchable-picklist .picklist-group-header {
+  padding: 6px 10px; }
+
+.filter-bar-container {
+  font-size: 12px;
+  background: #f8f8f8;
+  padding: 6px 20px;
+  position: relative; }
+  .filter-bar-container .hidden {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden; }
+  .filter-bar-container .filter-icon {
+    display: inline-block;
+    vertical-align: top; }
+    .filter-bar-container .filter-icon .socrata-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 20px;
+      margin-top: 5px;
+      color: #919191; }
+  .filter-bar-container .add-filter-container {
+    display: inline-block; }
+  .filter-bar-container .btn-expand-control {
+    font-size: 12px;
+    color: #919191;
+    text-decoration: underline;
+    float: right;
+    padding: 0;
+    margin-top: 6px; }
+    .filter-bar-container .btn-expand-control.is-hidden {
+      visibility: hidden; }
+    .filter-bar-container .btn-expand-control:hover, .filter-bar-container .btn-expand-control:focus {
+      color: #474747; }
+  .filter-bar-container .visible-filters-container {
+    display: inline-block;
+    vertical-align: top; }
+  .filter-bar-container .collapsed-filters-container {
+    position: absolute;
+    width: 100%;
+    margin-left: -20px;
+    margin-top: 6px;
+    padding: 2px 20px 0 20px;
+    padding-top: 2px;
+    background: #f8f8f8;
+    visibility: hidden; }
+    .filter-bar-container .collapsed-filters-container .filter-bar-filter {
+      margin-bottom: 10px; }
+  .filter-bar-container .visible-filters-container .filters-enter .filter-control-toggle,
+  .filter-bar-container .visible-filters-container .filters-enter .filter-config-toggle,
+  .filter-bar-container .collapsed-filter-container .filters-enter .filter-control-toggle,
+  .filter-bar-container .collapsed-filter-container .filters-enter .filter-config-toggle {
+    background-color: #e6f9f5; }
+  .filter-bar-container .visible-filters-container .filters-enter.filters-enter-active .filter-control-toggle,
+  .filter-bar-container .visible-filters-container .filters-enter.filters-enter-active .filter-config-toggle,
+  .filter-bar-container .collapsed-filter-container .filters-enter.filters-enter-active .filter-control-toggle,
+  .filter-bar-container .collapsed-filter-container .filters-enter.filters-enter-active .filter-config-toggle {
+    background-color: #fff;
+    transition: background-color 1s ease-out; }
+  .filter-bar-container.filter-bar-expanded .collapsed-filters-container {
+    visibility: visible; }
+  .filter-bar-container .filter-bar-column-option {
+    font-size: 12px; }
+    .filter-bar-container .filter-bar-column-option [class^="socrata-icon-"] {
+      margin-right: 8px; }
+
+.socrata-flannel {
+  position: fixed;
+  background: #fff;
+  max-width: 350px;
+  box-shadow: 0 0 8px -2px #767676;
+  border: solid 1px #c8c8c8;
+  z-index: 1000; }
+  @media (max-width: 420px) {
+    .socrata-flannel {
+      max-width: none;
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      z-index: 5000; } }
+
+.socrata-flannel-header {
+  display: -ms-flexbox;
+  display: flex; }
+  .socrata-flannel-header .socrata-flannel-header-title {
+    margin: auto;
+    margin-left: 10px;
+    font-size: 17px; }
+
+.socrata-flannel-header-dismiss {
+  color: #919191; }
+  .socrata-flannel-header-dismiss:hover {
+    color: #5e5e5e; }
+
+.socrata-flannel-content {
+  padding: 10px; }
+  .socrata-flannel-content > *:first-child {
+    margin-top: 0; }
+  .socrata-flannel-content > *:last-child {
+    margin-bottom: 0; }
+
+.socrata-flannel-actions {
+  text-align: right; }
+  .socrata-flannel-actions .btn {
+    margin-right: 6px; }
+    .socrata-flannel-actions .btn:last-child {
+      margin-right: 0; }
+
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.info-pane {
+  background: #fff;
+  width: 100%; }
+  .info-pane .container {
+    margin-top: 0;
+    max-width: 68em; }
+  .info-pane h1.info-pane-name {
+    margin: 0;
+    margin-right: 11px;
+    display: inline;
+    font-size: 29px;
+    font-weight: 300;
+    letter-spacing: -0.5px; }
+    .info-pane h1.info-pane-name .socrata-icon-private {
+      color: #e6af00;
+      padding-right: 4px; }
+  .info-pane .entry-header.dataset-landing-page-header {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap; }
+    .info-pane .entry-header.dataset-landing-page-header .entry-title {
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+      width: auto;
+      margin-right: 20px; }
+      .info-pane .entry-header.dataset-landing-page-header .entry-title .socrata-icon-official {
+        margin-right: 4px;
+        width: 13px; }
+      .info-pane .entry-header.dataset-landing-page-header .entry-title .tag-category {
+        margin-right: 0; }
+    .info-pane .entry-header.dataset-landing-page-header .entry-actions {
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto; }
+  .info-pane .entry-main .entry-description-container .entry-description {
+    display: inline-block;
+    line-height: 24px;
+    max-width: 100%;
+    word-wrap: break-word; }
+  .info-pane .entry-content .entry-meta.updated .meta-title {
+    padding-top: 0; }
+  @media (max-width: 420px) {
+    .info-pane .entry-header .entry-actions {
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto; } }
+
+.collapsible {
+  overflow: hidden; }
+  .collapsible .collapse-toggle.more {
+    display: none; }
+  .collapsible .collapse-toggle.less {
+    display: inherit; }
+  .collapsible[data-collapsed] .collapse-toggle.more {
+    display: inherit; }
+  .collapsible[data-collapsed] .collapse-toggle.less {
+    display: none; }
+  .collapsible .collapse-toggle {
+    padding: 0;
+    text-decoration: underline;
+    color: #919191;
+    cursor: pointer;
+    border: none;
+    background-color: #fff; }
+
+.picklist {
+  background: #fff;
+  border: solid 1px #c8c8c8;
+  overflow-y: auto;
+  color: #5e5e5e; }
+  .picklist.picklist-disabled {
+    color: #919191;
+    background-color: #f6f6f6;
+    pointer-events: none; }
+  .picklist:focus {
+    border-color: #e6f9f5;
+    outline: solid 2px #00be9b; }
+
+.picklist-group-header {
+  background-color: #f1f1f1;
+  padding: 10px;
+  text-transform: uppercase;
+  font-size: 12px; }
+
+.picklist-separator {
+  height: 1px;
+  background: #c8c8c8;
+  border-left: none;
+  border-right: none; }
+
+.picklist-option {
+  position: relative;
+  padding: 10px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: default;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
+  .picklist-option:hover {
+    background-color: #e6f9f5; }
+  .picklist-option.picklist-option-selected {
+    color: #fff;
+    background-color: #00be9b; }
+  .picklist-option:not(.picklist-option-selected).picklist-option-highlighted, .picklist-option:not(.picklist-option-selected):active:not(.picklist-option-selected) {
+    color: white;
+    background-color: #4dd2b9; }
+
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
 .side-menu {
   position: fixed;
   width: 420px;
@@ -4321,6 +4261,235 @@ body.modal-open {
     .side-menu.menu-anchor-right, .side-menu.menu-anchor-left {
       box-shadow: none; } }
 
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.InputRange-slider {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: #3f51b5;
+  border: 1px solid #3f51b5;
+  border-radius: 100%;
+  cursor: pointer;
+  display: block;
+  height: 1rem;
+  margin-left: -0.5rem;
+  margin-top: -0.65rem;
+  outline: none;
+  position: absolute;
+  top: 50%;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  width: 1rem; }
+
+.InputRange-slider:active {
+  transform: scale(1.3); }
+
+.InputRange-slider:focus {
+  box-shadow: 0 0 0 5px rgba(63, 81, 181, 0.2); }
+
+.InputRange.is-disabled .InputRange-slider {
+  background: #cccccc;
+  border: 1px solid #cccccc;
+  box-shadow: none;
+  transform: none; }
+
+.InputRange-sliderContainer {
+  transition: left 0.3s ease-out; }
+
+.InputRange-label {
+  color: #aaaaaa;
+  font-family: "Helvetica Neue", san-serif;
+  font-size: 0.8rem;
+  white-space: nowrap; }
+
+.InputRange-label--min,
+.InputRange-label--max {
+  bottom: -1.4rem;
+  position: absolute; }
+
+.InputRange-label--min {
+  left: 0; }
+
+.InputRange-label--max {
+  right: 0; }
+
+.InputRange-label--value {
+  position: absolute;
+  top: -1.8rem; }
+
+.InputRange-labelContainer {
+  left: -50%;
+  position: relative; }
+
+.InputRange-label--max .InputRange-labelContainer {
+  left: 50%; }
+
+.InputRange-track {
+  background: #eeeeee;
+  border-radius: 0.3rem;
+  display: block;
+  height: 0.3rem;
+  position: relative;
+  transition: left 0.3s ease-out, width 0.3s ease-out; }
+
+.InputRange.is-disabled .InputRange-track {
+  background: #eeeeee; }
+
+.InputRange-track--container {
+  left: 0;
+  margin-top: -0.15rem;
+  position: absolute;
+  right: 0;
+  top: 50%; }
+
+.InputRange-track--active {
+  background: #3f51b5; }
+
+.InputRange {
+  cursor: pointer;
+  height: 1rem;
+  position: relative;
+  width: 100%; }
+
+.input-range-slider {
+  margin-top: 25px;
+  margin-bottom: 30px;
+  margin-left: 6px;
+  margin-right: 6px; }
+  .input-range-slider .InputRange-track, .input-range-slider .InputRange-slider, .input-range-slider .InputRange-sliderContainer {
+    transition: none; }
+  .input-range-slider .InputRange-track {
+    background: #e4e4e4;
+    border-radius: 0; }
+    .input-range-slider .InputRange-track.InputRange-track--active {
+      background: #00a1af; }
+    .input-range-slider .InputRange-track .InputRange-labelContainer {
+      bottom: 5px; }
+  .input-range-slider .InputRange-slider {
+    background: #f6f6f6;
+    border: 1px solid #adadad;
+    border-radius: 0;
+    width: 12px;
+    height: 25px;
+    margin-top: -15px;
+    margin-left: -6px; }
+    .input-range-slider .InputRange-slider:active {
+      transform: scale(1.1); }
+
+.socrata-icon {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  line-height: 1; }
+  .socrata-icon::before {
+    display: none; }
+  .socrata-icon svg {
+    width: inherit;
+    height: inherit;
+    vertical-align: top; }
+    .socrata-icon svg path,
+    .socrata-icon svg polygon {
+      fill: currentColor; }
+
+/* Base Palette Colors */
+/* Colors light version */
+/* Colors dark version */
+/* Greys */
+/* Shades of Grey */
+/* Color Vars */
+/* Button Colors */
+/* Header */
+/* Settings Panel */
+/* Backgrounds */
+.view-card.result-card.media {
+  width: 300px;
+  height: 300px;
+  -ms-flex-preferred-size: auto;
+      flex-basis: auto;
+  overflow: hidden;
+  float: none;
+  position: relative; }
+  .view-card.result-card.media .entry-header .socrata-icon-private {
+    color: #e6af00;
+    font-size: 18px; }
+  .view-card.result-card.media .entry-header .entry-title {
+    margin-right: 2%;
+    min-height: 53px; }
+    .view-card.result-card.media .entry-header .entry-title h3 {
+      margin: 0; }
+      .view-card.result-card.media .entry-header .entry-title h3 .socrata-icon-private {
+        margin-right: 4px; }
+      .view-card.result-card.media .entry-header .entry-title h3 a div {
+        display: inline !important; }
+  .view-card.result-card.media .img-wrapper:hover {
+    cursor: pointer; }
+  .view-card.result-card.media .img-wrapper {
+    background-color: #f1f1f1;
+    display: -ms-flexbox;
+    display: flex;
+    height: 117px;
+    position: relative;
+    overflow: hidden; }
+    .view-card.result-card.media .img-wrapper img {
+      min-height: unset;
+      max-height: unset;
+      width: 100%;
+      position: absolute;
+      margin: auto; }
+    .view-card.result-card.media .img-wrapper .x-large-icon {
+      font-size: 72px;
+      color: #5e5e5e;
+      line-height: 1;
+      margin: auto; }
+    .view-card.result-card.media .img-wrapper .socrata-icon-story.x-large-icon {
+      color: #00a1af; }
+    .view-card.result-card.media .img-wrapper .socrata-icon-date.x-large-icon {
+      color: #00be9b; }
+    .view-card.result-card.media .img-wrapper .socrata-icon-list-2.x-large-icon {
+      color: #8e98a1; }
+    .view-card.result-card.media .img-wrapper .socrata-icon-map.x-large-icon {
+      color: #218649; }
+    .view-card.result-card.media .img-wrapper .socrata-icon-cards.x-large-icon {
+      color: #288dc1; }
+    .view-card.result-card.media .img-wrapper .socrata-icon-bar-chart.x-large-icon {
+      color: #e28432; }
+    .view-card.result-card.media .img-wrapper .socrata-icon-external-square.x-large-icon {
+      color: #1c6387; }
+  @media (max-width: 768px) {
+    .view-card.result-card.media .img-wrapper {
+      display: -ms-flexbox;
+      display: flex;
+      max-height: 150px; } }
+
+.view-card-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column; }
+  .view-card-overlay .btn {
+    margin-right: auto;
+    margin-left: auto;
+    width: 100px;
+    max-width: 100px; }
+    .view-card-overlay .btn:first-child {
+      margin-top: auto; }
+    .view-card-overlay .btn:last-child {
+      margin-bottom: auto;
+      margin-right: auto; }
+
 hr {
   border-style: none;
   border-top: 1px solid #919191;
@@ -4370,9 +4539,6 @@ form {
   form *::-webkit-input-placeholder {
     color: #c8c8c8;
     opacity: 1; }
-  form *::-moz-placeholder {
-    color: #c8c8c8;
-    opacity: 1; }
   form *:-ms-input-placeholder {
     color: #c8c8c8;
     opacity: 1; }
@@ -4408,8 +4574,6 @@ form {
       box-shadow: inset 0 0 10px #cdf3dc; }
       form .text-input.text-input-success::-webkit-input-placeholder {
         opacity: 0; }
-      form .text-input.text-input-success::-moz-placeholder {
-        opacity: 0; }
       form .text-input.text-input-success:-ms-input-placeholder {
         opacity: 0; }
       form .text-input.text-input-success::placeholder {
@@ -4419,8 +4583,6 @@ form {
       outline-color: #e6af00;
       box-shadow: inset 0 0 10px #fff3cd; }
       form .text-input.text-input-warning::-webkit-input-placeholder {
-        opacity: 0; }
-      form .text-input.text-input-warning::-moz-placeholder {
         opacity: 0; }
       form .text-input.text-input-warning:-ms-input-placeholder {
         opacity: 0; }
@@ -4432,8 +4594,6 @@ form {
       background-color: #fdf8f8;
       box-shadow: inset 0 0 10px #f9ecec; }
       form .text-input.text-input-error::-webkit-input-placeholder {
-        opacity: 0; }
-      form .text-input.text-input-error::-moz-placeholder {
         opacity: 0; }
       form .text-input.text-input-error:-ms-input-placeholder {
         opacity: 0; }
@@ -4536,4 +4696,4 @@ h5 {
 h6 {
   font-size: 15px; }
 
-/*# sourceMappingURL=styleguide.css-bce68dd5.map */
+/*# sourceMappingURL=styleguide.css-f3904291.map */

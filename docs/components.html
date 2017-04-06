@@ -8,11 +8,11 @@
     <title>Socrata Styleguide</title>
 
     <link rel="stylesheet" href="stylesheets/vendor/prism-2ae3b88e.css">
-    <link rel="stylesheet" href="css/styleguide-2bc936fe.css">
-    <link rel="stylesheet" href="stylesheets/pages-9a740b59.css">
+    <link rel="stylesheet" href="css/styleguide-b80faa84.css">
+    <link rel="stylesheet" href="stylesheets/pages-0302d84c.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic' rel='stylesheet' type='text/css'>
 
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.14.0/babel.min.js"></script>
   </head>
 
@@ -76,6 +76,7 @@
         <li><a href="components.html#edit-bar">Edit Bar</a></li>
         <li><a href="components.html#socrata-icon">Socrata Icon</a></li>
         <li><a href="components.html#side-menu">Side Menu</a></li>
+        <li><a href="components.html#flannel">Flannel</a></li>
         <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
       </ul>
     </li>
@@ -728,7 +729,10 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       </div>
       <div class="example">
         
-<h3 class="styleguide-subheader">Editable Filter Bar</h3>
+<h3 class="styleguide-subheader">
+  Editable Filter Bar
+  <button id="toggle" class="btn btn-xs btn-default">Toggle isReadOnly</button>
+</h3>
 <div id="filter-bar-container"></div>
 
 <h3 class="styleguide-subheader">Non-Editable Filter Bar <span class="small">(hidden if there are no visible filters)</span></h3>
@@ -816,6 +820,11 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       render();
     }
 
+    $('#toggle').click(() => {
+      props.isReadOnly = !props.isReadOnly
+      render();
+    });
+
     render();
   });
 </script>
@@ -823,7 +832,10 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 
 <pre class="usage">
 <code class="language-markup">
-&lt;h3 class=&quot;styleguide-subheader&quot;&gt;Editable Filter Bar&lt;&#x2F;h3&gt;
+&lt;h3 class=&quot;styleguide-subheader&quot;&gt;
+  Editable Filter Bar
+  &lt;button id=&quot;toggle&quot; class=&quot;btn btn-xs btn-default&quot;&gt;Toggle isReadOnly&lt;&#x2F;button&gt;
+&lt;&#x2F;h3&gt;
 &lt;div id=&quot;filter-bar-container&quot;&gt;&lt;&#x2F;div&gt;
 
 &lt;h3 class=&quot;styleguide-subheader&quot;&gt;Non-Editable Filter Bar &lt;span class=&quot;small&quot;&gt;(hidden if there are no visible filters)&lt;&#x2F;span&gt;&lt;&#x2F;h3&gt;
@@ -910,6 +922,11 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       props.filters = newFilters;
       render();
     }
+
+    $(&#x27;#toggle&#x27;).click(() =&gt; {
+      props.isReadOnly = !props.isReadOnly
+      render();
+    });
 
     render();
   });
@@ -1421,7 +1438,8 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
     const props = {
       name: 'Wombats in Spacesuits, Floating Gently Near the Moon',
       menuLabel: 'Menu',
-      onClickMenu: () => console.log('Clicked menu')
+      onClickMenu: () => console.log('Clicked menu'),
+      onClickName: () => console.log('Clicked name')
     };
 
     const editBar = (
@@ -1451,7 +1469,8 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
     const props = {
       name: &#x27;Wombats in Spacesuits, Floating Gently Near the Moon&#x27;,
       menuLabel: &#x27;Menu&#x27;,
-      onClickMenu: () =&gt; console.log(&#x27;Clicked menu&#x27;)
+      onClickMenu: () =&gt; console.log(&#x27;Clicked menu&#x27;),
+      onClickName: () =&gt; console.log(&#x27;Clicked name&#x27;)
     };
 
     const editBar = (
@@ -1483,8 +1502,12 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
         <h2 class="styleguide-header">SocrataIcon</h2>
       </div>
       <div class="example">
-        
-<div id="socrata-icon-container"></div>
+        <p>Renders an icon as an inlined SVG rather than using the icon font.
+Any icon from <a href="/elements.html#icons" target="_blank">the icon list</a> can be used.</p>
+<p>"name" here refers to the actual SVG file name</p>
+
+
+<div id="socrata-data-icon-container"></div>
 
 <script type="text/babel" data-presets="es2015,react">
   $(() => {
@@ -1494,7 +1517,7 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 
     ReactDOM.render(
       <styleguide.SocrataIcon {...props} />,
-      document.getElementById('socrata-icon-container')
+      document.getElementById('socrata-data-icon-container')
     );
   });
 </script>
@@ -1502,7 +1525,7 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 
 <pre class="usage">
 <code class="language-markup">
-&lt;div id=&quot;socrata-icon-container&quot;&gt;&lt;&#x2F;div&gt;
+&lt;div id=&quot;socrata-data-icon-container&quot;&gt;&lt;&#x2F;div&gt;
 
 &lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
   $(() =&gt; {
@@ -1512,7 +1535,88 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 
     ReactDOM.render(
       &lt;styleguide.SocrataIcon {...props} &#x2F;&gt;,
-      document.getElementById(&#x27;socrata-icon-container&#x27;)
+      document.getElementById(&#x27;socrata-data-icon-container&#x27;)
+    );
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+<p>The Socrata logo can be rendered as all black, all white, with color, or all white with an orange "pie" (for dark backgrounds).</p>
+<p>As per the brand guidelines, the logo is rendered at the minimum size of 18px, but all other icons are rendered at 15px by default.</p>
+
+
+<div>
+  <span id="socrata-logo-icon-black-container"></span>
+  <span id="socrata-logo-icon-color-container"></span>
+  <span id="socrata-logo-icon-white-container" style="background: black;"></span>
+  <span id="socrata-logo-icon-dark-container" style="background: black;"></span>
+</div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    // black is default
+    ReactDOM.render(
+      <styleguide.SocrataIcon name="logo" />,
+      document.getElementById('socrata-logo-icon-black-container')
+    );
+
+    // white
+    ReactDOM.render(
+      <styleguide.SocrataIcon name="logo" className="socrata-icon-logo-white" />,
+      document.getElementById('socrata-logo-icon-white-container')
+    );
+
+    // color
+    ReactDOM.render(
+      <styleguide.SocrataIcon name="logo" className="socrata-icon-logo-color" />,
+      document.getElementById('socrata-logo-icon-color-container')
+    );
+
+    // dark
+    ReactDOM.render(
+      <styleguide.SocrataIcon name="logo" className="socrata-icon-logo-dark" />,
+      document.getElementById('socrata-logo-icon-dark-container')
+    );
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div&gt;
+  &lt;span id=&quot;socrata-logo-icon-black-container&quot;&gt;&lt;&#x2F;span&gt;
+  &lt;span id=&quot;socrata-logo-icon-color-container&quot;&gt;&lt;&#x2F;span&gt;
+  &lt;span id=&quot;socrata-logo-icon-white-container&quot; style=&quot;background: black;&quot;&gt;&lt;&#x2F;span&gt;
+  &lt;span id=&quot;socrata-logo-icon-dark-container&quot; style=&quot;background: black;&quot;&gt;&lt;&#x2F;span&gt;
+&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+    &#x2F;&#x2F; black is default
+    ReactDOM.render(
+      &lt;styleguide.SocrataIcon name=&quot;logo&quot; &#x2F;&gt;,
+      document.getElementById(&#x27;socrata-logo-icon-black-container&#x27;)
+    );
+
+    &#x2F;&#x2F; white
+    ReactDOM.render(
+      &lt;styleguide.SocrataIcon name=&quot;logo&quot; className=&quot;socrata-icon-logo-white&quot; &#x2F;&gt;,
+      document.getElementById(&#x27;socrata-logo-icon-white-container&#x27;)
+    );
+
+    &#x2F;&#x2F; color
+    ReactDOM.render(
+      &lt;styleguide.SocrataIcon name=&quot;logo&quot; className=&quot;socrata-icon-logo-color&quot; &#x2F;&gt;,
+      document.getElementById(&#x27;socrata-logo-icon-color-container&#x27;)
+    );
+
+    &#x2F;&#x2F; dark
+    ReactDOM.render(
+      &lt;styleguide.SocrataIcon name=&quot;logo&quot; className=&quot;socrata-icon-logo-dark&quot; &#x2F;&gt;,
+      document.getElementById(&#x27;socrata-logo-icon-dark-container&#x27;)
     );
   });
 &lt;&#x2F;script&gt;
@@ -1560,7 +1664,12 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 
     const expandableMenuListItemProps = {
       iconName: 'edit',
-      text: 'Edit Title and Description'
+      text: 'Edit Title and Description',
+      isOpen: true,
+      onClick() {
+        expandableMenuListItemProps.isOpen = !expandableMenuListItemProps.isOpen;
+        render();
+      }
     };
 
     function render() {
@@ -1638,7 +1747,12 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
 
     const expandableMenuListItemProps = {
       iconName: &#x27;edit&#x27;,
-      text: &#x27;Edit Title and Description&#x27;
+      text: &#x27;Edit Title and Description&#x27;,
+      isOpen: true,
+      onClick() {
+        expandableMenuListItemProps.isOpen = !expandableMenuListItemProps.isOpen;
+        render();
+      }
     };
 
     function render() {
@@ -1690,15 +1804,195 @@ tab, sets the icon to one appropriate for external links, and sets the metadataL
       </div>
     </section>
 
+    <section class="styleguide-section" id="flannel">
+      <div class="meta">
+        <h2 class="styleguide-header">Flannel</h2>
+      </div>
+      <div class="example">
+        
+<div id="btn-flannel-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    let btn;
+
+    const {
+      Flannel,
+      FlannelHeader,
+      FlannelContent,
+      FlannelFooter,
+      SocrataIcon
+    } = styleguide;
+
+    const title = 'Access this Dataset via SODA API';
+
+    const buttonProps = {
+     className: "btn btn-primary",
+     ref: (ref) => btn = ref,
+     onClick: renderFlannel,
+     'aria-haspopup': true,
+     'aria-owns': 'flannel-example'
+    };
+
+    const props = {
+      id: 'flannel-example',
+      title,
+      target: () => btn,
+      isOpen: false,
+      onDismiss: closeFlannel
+    };
+
+    const headerProps = {
+      title,
+      onDismiss: closeFlannel
+    };
+
+    function renderButton() {
+      ReactDOM.render(
+        <div>
+          <button {...buttonProps}>Click me!</button>
+          <div id="flannel-container" />
+        </div>,
+        document.getElementById('btn-flannel-container')
+      );
+    }
+
+    function renderFlannel() {
+      ReactDOM.render(
+        <Flannel {...props}>
+          <FlannelHeader {...headerProps} />
+          <FlannelContent>
+            <p>The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data.</p>
+            <div style={{marginBottom: '10px'}}>
+              <div className="btn-group">
+                <button className="btn btn-default"><SocrataIcon name="copy-document" /> API Docs</button>
+                <button className="btn btn-default"><SocrataIcon name="settings" /> Developer Portal</button>
+              </div>
+            </div>
+            <form>
+              <label className="block-label">API Endpoint</label>
+              <span className="input-group">
+                <input type="text" className="text-input" defaultValue="https://cookies.com" />
+                <span className="input-group-btn">
+                  <button className="btn btn-primary">Copy</button>
+                </span>
+              </span>
+            </form>
+          </FlannelContent>
+        </Flannel>,
+        document.getElementById('flannel-container')
+      );
+    }
+
+    function closeFlannel() {
+      ReactDOM.unmountComponentAtNode(document.getElementById('flannel-container'));
+    }
+
+    renderButton();
+  });
+</script>
+
+
+<pre class="usage">
+<code class="language-markup">
+&lt;div id=&quot;btn-flannel-container&quot;&gt;&lt;&#x2F;div&gt;
+
+&lt;script type=&quot;text&#x2F;babel&quot; data-presets=&quot;es2015,react&quot;&gt;
+  $(() =&gt; {
+    let btn;
+
+    const {
+      Flannel,
+      FlannelHeader,
+      FlannelContent,
+      FlannelFooter,
+      SocrataIcon
+    } = styleguide;
+
+    const title = &#x27;Access this Dataset via SODA API&#x27;;
+
+    const buttonProps = {
+     className: &quot;btn btn-primary&quot;,
+     ref: (ref) =&gt; btn = ref,
+     onClick: renderFlannel,
+     &#x27;aria-haspopup&#x27;: true,
+     &#x27;aria-owns&#x27;: &#x27;flannel-example&#x27;
+    };
+
+    const props = {
+      id: &#x27;flannel-example&#x27;,
+      title,
+      target: () =&gt; btn,
+      isOpen: false,
+      onDismiss: closeFlannel
+    };
+
+    const headerProps = {
+      title,
+      onDismiss: closeFlannel
+    };
+
+    function renderButton() {
+      ReactDOM.render(
+        &lt;div&gt;
+          &lt;button {...buttonProps}&gt;Click me!&lt;&#x2F;button&gt;
+          &lt;div id=&quot;flannel-container&quot; &#x2F;&gt;
+        &lt;&#x2F;div&gt;,
+        document.getElementById(&#x27;btn-flannel-container&#x27;)
+      );
+    }
+
+    function renderFlannel() {
+      ReactDOM.render(
+        &lt;Flannel {...props}&gt;
+          &lt;FlannelHeader {...headerProps} &#x2F;&gt;
+          &lt;FlannelContent&gt;
+            &lt;p&gt;The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data.&lt;&#x2F;p&gt;
+            &lt;div style={{marginBottom: &#x27;10px&#x27;}}&gt;
+              &lt;div className=&quot;btn-group&quot;&gt;
+                &lt;button className=&quot;btn btn-default&quot;&gt;&lt;SocrataIcon name=&quot;copy-document&quot; &#x2F;&gt; API Docs&lt;&#x2F;button&gt;
+                &lt;button className=&quot;btn btn-default&quot;&gt;&lt;SocrataIcon name=&quot;settings&quot; &#x2F;&gt; Developer Portal&lt;&#x2F;button&gt;
+              &lt;&#x2F;div&gt;
+            &lt;&#x2F;div&gt;
+            &lt;form&gt;
+              &lt;label className=&quot;block-label&quot;&gt;API Endpoint&lt;&#x2F;label&gt;
+              &lt;span className=&quot;input-group&quot;&gt;
+                &lt;input type=&quot;text&quot; className=&quot;text-input&quot; defaultValue=&quot;https:&#x2F;&#x2F;cookies.com&quot; &#x2F;&gt;
+                &lt;span className=&quot;input-group-btn&quot;&gt;
+                  &lt;button className=&quot;btn btn-primary&quot;&gt;Copy&lt;&#x2F;button&gt;
+                &lt;&#x2F;span&gt;
+              &lt;&#x2F;span&gt;
+            &lt;&#x2F;form&gt;
+          &lt;&#x2F;FlannelContent&gt;
+        &lt;&#x2F;Flannel&gt;,
+        document.getElementById(&#x27;flannel-container&#x27;)
+      );
+    }
+
+    function closeFlannel() {
+      ReactDOM.unmountComponentAtNode(document.getElementById(&#x27;flannel-container&#x27;));
+    }
+
+    renderButton();
+  });
+&lt;&#x2F;script&gt;
+
+</code>
+</pre>
+
+
+      </div>
+    </section>
+
     <!-- TEMPLATE_TOKEN (Don't remove this. Like seriously.) -->
   </div>
 </div>
 
 
     <!-- NPM peerDependencies and Webpack externals -->
-    <script type="text/javascript" src="js/vendor-db95ecea.js"></script>
+    <script type="text/javascript" src="/js/vendor.js"></script>
+    <script type="text/javascript" src="js/socrata-components-d5c851d4.js"></script>
 
-    <script type="text/javascript" src="js/socrata-components-e61759a9.js"></script>
     <script type="text/javascript" src="javascripts/all-df92dbb1.js"></script>
   </body>
 </html>

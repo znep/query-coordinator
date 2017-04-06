@@ -207,7 +207,12 @@ class Page < Model
       when 'private'
         user.present? && (user.id == owner_id || user.has_right?(UserRights::EDIT_PAGES))
       when 'domain_private'
-        user.present? && (user.id == owner_id || !CurrentDomain.member?(user))
+        # Only owners or domain members can access this page.
+        if user.present?
+          user.id == owner_id || CurrentDomain.member?(user)
+        else
+          false
+        end
       when 'public' then true
     end
   end

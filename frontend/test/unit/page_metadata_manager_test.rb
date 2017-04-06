@@ -102,13 +102,13 @@ class PageMetadataManagerTest < Minitest::Test
   end
 
   def test_fetch_dataset_columns_does_not_raise_on_success
-    manager.expects(:dataset_metadata).returns(:status => '200', :body => v1_dataset_metadata)
+    Phidippides.any_instance.stubs(:fetch_dataset_metadata).returns(:status => '200', :body => v1_dataset_metadata)
     Rails.logger.expects(:error).never
     manager.fetch_dataset_columns('four-four', options)
   end
 
   def test_fetch_dataset_columns_raises_on_non_success
-    manager.expects(:dataset_metadata).returns(:status => '403', :body => v1_dataset_metadata)
+    Phidippides.any_instance.stubs(:fetch_dataset_metadata).returns(:status => '403', :body => v1_dataset_metadata)
     Rails.logger.expects(:error).once
     assert_raises(Phidippides::NoDatasetMetadataException) do
       manager.fetch_dataset_columns('four-four', options)
@@ -613,16 +613,6 @@ class PageMetadataManagerTest < Minitest::Test
 
   def test_date_trunc_function_for_time_range_with_0_days_returns_year_aggregation
     assert_equal('date_trunc_y', manager.send(:date_trunc_function_for_time_range, 0))
-  end
-
-  def test_dataset_metadata
-    Phidippides.any_instance.expects(:fetch_dataset_metadata).times(1).with(NBE_DATASET_ID, {}).returns(
-      status: '200',
-      body: v1_dataset_metadata
-    )
-
-    result = manager.send(:dataset_metadata, NBE_DATASET_ID, {})
-    assert_equal(result.fetch(:body), v1_dataset_metadata)
   end
 
   def test_time_range_in_column_dates_equal

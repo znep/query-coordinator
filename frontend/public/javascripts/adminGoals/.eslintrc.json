@@ -4,6 +4,7 @@
   },
   "extends": "../../../node_modules/eslint-base/.eslintrc.json",
   "rules": {
+    "dot-notation": ["error", {"allowKeywords": true, "allowPattern": "^[a-z]+(_[a-z]+)+$"}],
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error"
   }

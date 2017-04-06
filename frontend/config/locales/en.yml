@@ -467,8 +467,23 @@ en:
         placeholder: Create a headline; maximum characters = 140
       description:
         label: Description
-        placeholder: Write a description for your {filter} content; maximum characters = 320 (this field accepts Markdown syntax)
-        placeholder_no_filter: Write a description for your content; maximum characters = 320 (this field accepts Markdown syntax)
+        placeholder: Write a description for your {filter} content; maximum characters = 320
+        placeholder_no_filter: Write a description for your content; maximum characters = 320
+        markdown_accepted: 'This field accepts <a class="markdownSyntax">Markdown syntax</a>.'
+        how_to_markdown:
+          header_0: 'Markdown Syntax is a simple way to format text that looks great on any device.'
+          header_1: This field supports Markdown for Italics, Bold, Paragraphs and Links.
+          basics_0: For Italics use *asterisks* or _underscores_
+          basics_1: For Bold use **asterisks** or __underscores__
+          basics_2: For Paragraphs hit <Enter> twice to insert two new lines
+          links_head: 'There are two ways to create Links, inline-style and plain URLs:'
+          links_0_0: "[Inline-style text link referencing a URL](https://www.google.com)"
+          links_0_1: '[Inline-style text link referencing a URL with tooltip](https://www.google.com "Google''s Homepage")'
+          links_1_0: 'URLs and URLs in angle brackets will automatically get turned into links:'
+          links_1_1: 'http://www.example.com or <http://www.example.com>'
+      show_stats:
+        label: Show Stats
+        explanation: Choose to show some basic statistics around this category, such as how many datasets, visualizations and stories it contains.
       featured_content:
         label: Featured Content in {filter}
         label_no_filter: Featured Content

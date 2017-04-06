@@ -7,6 +7,7 @@ import { handleEnter } from '../../common/helpers/keyPressHelpers';
 import format from 'stringformat';
 import FeaturedContentManager from './FeaturedContentManager';
 import ManagerSectionHeader from './ManagerSectionHeader';
+import MarkdownHelpFlannel from './MarkdownHelpFlannel';
 import * as Actions from '../actions/header';
 import airbrake from '../../common/airbrake';
 import { FeatureFlags } from 'common/feature_flags';
@@ -15,13 +16,20 @@ export class Manager extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { errorMessage: null, isDismissing: false, isSaving: false, initialProps: props };
+    this.state = {
+      errorMessage: null,
+      isDismissing: false,
+      isSaving: false,
+      showingMarkdownHelp: false,
+      initialProps: props
+    };
 
     _.bindAll(this, [
       'featuredContentForSave',
       'handleInputChange',
       'metadataForSave',
       'onDismiss',
+      'onToggleMarkdownHelp',
       'handleSave',
       'saveOnEnter'
     ]);
@@ -30,6 +38,10 @@ export class Manager extends React.Component {
   onDismiss() {
     this.setState({ isDismissing: true });
     window.location.href = this.props.catalogPath;
+  }
+
+  onToggleMarkdownHelp() {
+    this.setState({ showingMarkdownHelp: !this.state.showingMarkdownHelp });
   }
 
   metadataForSave() {
@@ -197,10 +209,29 @@ export class Manager extends React.Component {
       placeholder: descriptionPlaceholder
     };
 
+    let markdownSupported = '';
+    let markdownHelp = '';
+    if (FeatureFlags.value('enable_markdown_for_catalog_landing_page_description')) {
+      const markdownAccepted = { __html: _.get(I18n, 'manager.description.markdown_accepted') };
+
+      markdownSupported = (
+        <div onClick={this.onToggleMarkdownHelp} className="acceptsMarkdown">
+          <span dangerouslySetInnerHTML={markdownAccepted} />
+          <i className="socrata-icon-info"></i>
+        </div>);
+
+      if (this.state.showingMarkdownHelp) {
+        const element = document.getElementsByClassName('acceptsMarkdown')[0];
+        markdownHelp = (<MarkdownHelpFlannel
+          target={element}
+          onDismiss={this.onToggleMarkdownHelp} />);
+      }
+    }
+
     // EN-15512: Use a textarea tag if description markdown is enabled
     const description =
       FeatureFlags.value('enable_markdown_for_catalog_landing_page_description') ?
-        (<textarea {...descriptionProps} />) :
+        (<div><textarea {...descriptionProps} />{markdownSupported}{markdownHelp}</div>) :
         (<input {...descriptionProps} />);
 
     return (

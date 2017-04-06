@@ -76,6 +76,7 @@ export class Manager extends React.Component {
 
     const fetchOptions = {
       method: 'PUT',
+      redirect: 'manual',
       credentials: 'same-origin',
       headers: defaultHeaders,
       body: JSON.stringify(payloadBody)

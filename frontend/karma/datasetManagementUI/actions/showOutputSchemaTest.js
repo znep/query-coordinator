@@ -1,18 +1,12 @@
-import { expect, assert } from 'chai';
+import { expect } from 'chai';
 import _ from 'lodash';
 import { mockFetch } from '../testHelpers/mockHTTP';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import errorTableResponse from '../data/errorTableResponse';
 import {
   getNewOutputSchemaAndColumns,
-  updateActions,
   loadColumnErrors
 } from 'actions/showOutputSchema';
-import {
-  batch,
-  insertSucceeded,
-  insertFromServerIfNotExists
-} from 'actions/database';
 import { statusSavedOnServer } from 'lib/database/statuses';
 
 describe('actions/showOutputSchema', () => {
@@ -89,10 +83,10 @@ describe('actions/showOutputSchema', () => {
           error: {
             inputs: {
               arrest: {
-                ok: "031A"
+                ok: '031A'
               }
             },
-            message: "Failed to convert \"031A\" to number"
+            message: 'Failed to convert "031A" to number'
           }
         });
         expect(db.transform_1['7']).to.deep.equal({
@@ -100,26 +94,24 @@ describe('actions/showOutputSchema', () => {
           error: {
             inputs: {
               arrest: {
-                ok: "031A"
+                ok: '031A'
               }
             },
-            message: "Failed to convert \"031A\" to number"
+            message: 'Failed to convert "031A" to number'
           }
         });
         expect(db.transform_2).to.deep.equal({
           '0': {
-            ok: "foo",
+            ok: 'foo',
             __status__: statusSavedOnServer
           },
           '7': {
-            ok: "bar",
+            ok: 'bar',
             __status__: statusSavedOnServer
           }
         });
         done();
       }, 0);
     });
-
   });
-
 });

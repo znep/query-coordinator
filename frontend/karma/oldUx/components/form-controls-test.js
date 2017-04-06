@@ -29,13 +29,13 @@ describe('FormControls', function() {
   });
 
   it('exists', function() {
-    assert.isNotNull(FormControls);
+    assert.ok(FormControls);
   });
 
   it('renders', function() {
     this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    assert.isNotNull(result);
+    assert.ok(result);
   });
 
   describe('cancel button', function() {
@@ -73,7 +73,7 @@ describe('FormControls', function() {
 
     it('should not be disabled', function() {
       var button = findByTag(this.node, 'button');
-      assert.notOk(button.attributes.disabled);
+      assert.isNotOk(button.attributes.disabled);
     });
 
     describe('disabled', function() {

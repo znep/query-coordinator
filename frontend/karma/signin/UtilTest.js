@@ -46,9 +46,9 @@ describe('Util', () => {
     });
 
     it('returns nothing if no forced connection is found', () => {
-      assert.notOk(Util.findForcedConnection('cool.guy@coolwebsite.com', forcedConnections));
-      assert.notOk(Util.findForcedConnection('cool.gal@some-domain.gov.wat', forcedConnections));
-      assert.notOk(Util.findForcedConnection('cool.dude@some-domain.gov\n\nwat', forcedConnections));
+      assert.isNotOk(Util.findForcedConnection('cool.guy@coolwebsite.com', forcedConnections));
+      assert.isNotOk(Util.findForcedConnection('cool.gal@some-domain.gov.wat', forcedConnections));
+      assert.isNotOk(Util.findForcedConnection('cool.dude@some-domain.gov\n\nwat', forcedConnections));
     });
   });
 
@@ -59,16 +59,16 @@ describe('Util', () => {
     });
 
     it('returns nothing when email does not match a connection', () => {
-      assert.notOk(Util.findEmailDomainConnection('awesome.man@gmail.com', auth0Connections, false));
-      assert.notOk(Util.findEmailDomainConnection('not-an-email', auth0Connections, false));
+      assert.isNotOk(Util.findEmailDomainConnection('awesome.man@gmail.com', auth0Connections, false));
+      assert.isNotOk(Util.findEmailDomainConnection('not-an-email', auth0Connections, false));
     });
 
     it('returns nothing for disabled connections', () => {
-      assert.notOk(Util.findEmailDomainConnection('awesome.lady@somewhere.ca', auth0Connections, false));
+      assert.isNotOk(Util.findEmailDomainConnection('awesome.lady@somewhere.ca', auth0Connections, false));
     });
 
     it('returns nothing for @socrata.com emails when socrataEmailsBypassAuth0 is true', () => {
-      assert.notOk(Util.findEmailDomainConnection('cool.guy@socrata.com', auth0Connections, true));
+      assert.isNotOk(Util.findEmailDomainConnection('cool.guy@socrata.com', auth0Connections, true));
     });
   });
 
@@ -93,11 +93,11 @@ describe('Util', () => {
     });
 
     it('returns nothing if no connection is found', () => {
-      assert.notOk(Util.findConnection('spectacular.man@gmail.com', auth0Connections, forcedConnections, false));
+      assert.isNotOk(Util.findConnection('spectacular.man@gmail.com', auth0Connections, forcedConnections, false));
     });
 
     it('returns nothing for @socrata.com emails when socrataEmailsBypassAuth0 is true', () => {
-      assert.notOk(Util.findConnection('fantastic.dude@socrata.com', auth0Connections, forcedConnections, true));
+      assert.isNotOk(Util.findConnection('fantastic.dude@socrata.com', auth0Connections, forcedConnections, true));
     });
   });
 

@@ -22,7 +22,7 @@ describe('components/Table/ColumnHeader', () => {
   it('renders without errors', () => {
     const container = document.createElement('tr');
     const element = ReactDOM.render(<ColumnHeader {...defaultProps} />, container);
-    assert.isNotNull(element);
+    assert.ok(element);
   });
 
   it('handles column type changing', () => {

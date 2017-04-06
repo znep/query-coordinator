@@ -221,7 +221,7 @@ describe('animateTo', function() {
         // to fix issues with card dragging.
         xit('gets its dimensions set before the animation, and reverts afterwards', function(done) {
           var child = el.children();
-          assert.notOk(child[0].style.width);
+          assert.isNotOk(child[0].style.width);
 
           scope.styles = {
             top: 20,

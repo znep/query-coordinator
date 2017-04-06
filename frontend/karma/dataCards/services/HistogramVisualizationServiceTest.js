@@ -214,10 +214,10 @@ describe('HistogramVisualizationService', function() {
 
   describe('setupSVG', function() {
     it('should create an object with line and area keys for each filter type', function() {
-      assert.property(svg.unfiltered, 'line');
-      assert.property(svg.unfiltered, 'area');
-      assert.property(svg.filtered, 'line');
-      assert.property(svg.filtered, 'area');
+      assert.deepProperty(svg, 'unfiltered.line');
+      assert.deepProperty(svg, 'unfiltered.area');
+      assert.deepProperty(svg, 'filtered.line');
+      assert.deepProperty(svg, 'filtered.area');
     });
   });
 

@@ -25,7 +25,7 @@ describe('LoadingButton', function() {
   });
 
   it('exists', function() {
-    assert.isNotNull(this.createElement());
+    assert.ok(this.createElement());
   });
 
   it('renders as a button', function() {

@@ -193,7 +193,7 @@ describe('Socrata-flavored $http service', function() {
     it('should interrogate a "requester" if one is provided in the requestConfig for its "requesterLabel"', function() {
       makeRequest();
 
-      assert.isTrue(requesterStub.calledOnce);
+      sinon.assert.calledOnce(requesterStub);
       var spyCall = requesterStub.getCall(0);
       expect(spyCall.thisValue).to.equal(requester);
       $httpBackend.whenGET('/test').respond(200, '');
@@ -251,12 +251,12 @@ describe('Socrata-flavored $http service', function() {
 
     it('should emit an "http:start" and "http:stop" event', function() {
       $httpBackend.whenGET('/test').respond(200, '');
-      assert.isTrue(httpStartEventHandlerStub.calledOnce);
+      sinon.assert.calledOnce(httpStartEventHandlerStub);
       assert.isFalse(httpStopEventHandlerStub.called);
       assert.isFalse(httpErrorEventHandlerStub.called);
       $httpBackend.flush();
-      assert.isTrue(httpStartEventHandlerStub.calledOnce);
-      assert.isTrue(httpStopEventHandlerStub.calledOnce);
+      sinon.assert.calledOnce(httpStartEventHandlerStub);
+      sinon.assert.calledOnce(httpStopEventHandlerStub);
       assert.isFalse(httpErrorEventHandlerStub.called);
     });
 
@@ -265,7 +265,7 @@ describe('Socrata-flavored $http service', function() {
       assert.isFalse(httpErrorEventHandlerStub.called);
       assert.isFalse(httpStopEventHandlerStub.called);
       $httpBackend.flush();
-      assert.isTrue(httpErrorEventHandlerStub.calledOnce);
+      sinon.assert.calledOnce(httpErrorEventHandlerStub);
       assert.isFalse(httpStopEventHandlerStub.called);
     });
 

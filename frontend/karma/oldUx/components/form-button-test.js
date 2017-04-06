@@ -34,13 +34,13 @@ describe('FormButton', function() {
   });
 
   it('exists', function() {
-    assert.isNotNull(this.createElement());
+    assert.ok(this.createElement());
   });
 
   it('renders', function() {
     this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    assert.isNotNull(result);
+    assert.ok(result);
   });
 
   describe('rendered', function() {

@@ -74,7 +74,7 @@ describe('Customize card dialog', function() {
   }));
 
   beforeEach(function() {
-    sinon.stub(_, 'debounce').callsFake(function(f) { return f; });
+    sinon.stub(_, 'debounce').callsFake(_.identity);
   })
 
   afterEach(function() {

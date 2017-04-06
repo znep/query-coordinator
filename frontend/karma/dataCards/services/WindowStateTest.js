@@ -115,13 +115,13 @@ describe('WindowState service', function() {
     it('should react to resize events on window', function() {
       var handler = sinon.spy();
       WindowState.windowSize$.subscribe(handler);
-      assert.isTrue(handler.calledOnce);
+      sinon.assert.calledOnce(handler);
 
       var ev = document.createEvent('HTMLEvents');
       ev.initEvent('resize', true, true);
       window.dispatchEvent(ev);
 
-      assert.isTrue(handler.calledTwice);
+      sinon.assert.calledTwice(handler);
 
       var currentWindowDimensions = $(window).dimensions();
       assert.isTrue(handler.alwaysCalledWithExactly(currentWindowDimensions));

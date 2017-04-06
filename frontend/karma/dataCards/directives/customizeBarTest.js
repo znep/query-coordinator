@@ -69,24 +69,15 @@ describe('customizeBar', function() {
   }
 
   it('should have a revert button', function() {
-    assert.lengthOf(
-      $(createElement().element).find('revert-button'),
-      1
-    )
+    assert.lengthOf($(createElement().element).find('revert-button'), 1);
   });
 
   it('should have a save button', function() {
-    assert.lengthOf(
-      $(createElement().element).find('save-button'),
-      1
-    );
+    assert.lengthOf($(createElement().element).find('save-button'), 1);
   });
 
   it('should have a save-as button', function() {
-    assert.lengthOf(
-      $(createElement().element).find('save-as'),
-      1
-    );
+    assert.lengthOf($(createElement().element).find('save-as'), 1);
   });
 
   it('should have a remove-all-cards button', function() {
@@ -96,16 +87,18 @@ describe('customizeBar', function() {
 
   it('should show save-as button', function() {
     var customizeBar = createElement().element;
-    assert.notInclude(customizeBar.find('save-as').attr('class'), 'ng-hide');
+    var button = customizeBar.find('save-as');
+    assert.lengthOf(button, 1);
+    assert.isFalse(button.hasClass('ng-hide'));
   });
 
   it('should respond to changes to "hasChanges"', function() {
     var elementAndScope = createElement();
     var customizeBar = elementAndScope.element;
     var scope = elementAndScope.scope;
-    const customizeBarClasses = () => 
+    const customizeBarClasses = () =>
       customizeBar.find('.customize-bar').attr('class');
-    const unsavedWarningClasses = () => 
+    const unsavedWarningClasses = () =>
       customizeBar.find('.unsaved-warning.unsaved-dirty').attr('class');
 
     assert.notInclude(customizeBarClasses(), 'has-changes');

@@ -1004,12 +1004,12 @@ describe('cardLayout', function() {
     it("doesn't set the expandedCard state if there aren't any expanded cards", function() {
       var cl = createLayoutWithCards();
 
-      assert.notOk(cl.scope.expandedCard);
+      assert.isNotOk(cl.scope.expandedCard);
     });
 
     it('sets the expandedCard state when you expand a card', function() {
       var cl = createLayoutWithCards();
-      assert.notOk(cl.scope.expandedCard);
+      assert.isNotOk(cl.scope.expandedCard);
 
       cl.element.find('.card-control.icon-expand').eq(0).click();
       cl.scope.$digest();

@@ -104,7 +104,7 @@ describe('SaveAs', function() {
       var cancelSpy = sinon.spy($saveAs.isolateScope(), 'cancel');
       $toolPanel.find('button[data-action="cancel"]').trigger('click');
       scope.$apply();
-      assert.isTrue(cancelSpy.calledOnce);
+      sinon.assert.calledOnce(cancelSpy);
       assert.isFalse($toolPanel.hasClass('active'));
     });
 
@@ -129,9 +129,9 @@ describe('SaveAs', function() {
       scope.$apply();
 
       assert.isFalse($saveAsName.hasClass('form-error'));
-      assert.isTrue(scope.savePageAs.calledOnce);
+      sinon.assert.calledOnce(scope.savePageAs);
       var savePageAsCall = scope.savePageAs.getCall(0);
-      assert.isTrue(savePageAsCall.calledWithExactly(TEST_INPUT, '', undefined, undefined));
+      sinon.assert.calledWithExactly(savePageAsCall, TEST_INPUT, '', undefined, undefined);
     });
 
     it('should call the savePageAs callback only once if the user clicks the "Save" button multiple times', function() {
@@ -143,7 +143,7 @@ describe('SaveAs', function() {
       scope.$apply();
 
       assert.isFalse($saveAsName.hasClass('form-error'));
-      assert.isTrue(scope.savePageAs.calledOnce);
+      sinon.assert.calledOnce(scope.savePageAs);
 
       $saveAs.find('button[data-action="save"]').click();
       $saveAs.find('button[data-action="save"]').click();
@@ -152,7 +152,7 @@ describe('SaveAs', function() {
       scope.$apply();
 
       assert.isFalse($saveAsName.hasClass('form-error'));
-      assert.isTrue(scope.savePageAs.calledOnce);
+      sinon.assert.calledOnce(scope.savePageAs);
     });
 
     it('should show a loading spinner when a name is provided and the "Save" button is clicked', function() {
@@ -165,7 +165,7 @@ describe('SaveAs', function() {
       scope.$apply();
 
       assert.isFalse($saveAsName.hasClass('form-error'));
-      assert.isTrue(scope.savePageAs.calledOnce);
+      sinon.assert.calledOnce(scope.savePageAs);
       var $spinner = $saveButton.find('spinner.save-button-flyout-target');
       expect($spinner.length).to.equal(1);
     });

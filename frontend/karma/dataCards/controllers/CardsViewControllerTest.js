@@ -202,7 +202,7 @@ describe('CardsViewController', function() {
 
       $scope.page.set('name', 'mushroom mushroom');
 
-      assert.notOk($scope.writablePage.warnings.name);
+      assert.isNotOk($scope.writablePage.warnings.name);
     });
 
     it('surfaces warning names as a flyout on the warning icon', function() {
@@ -518,13 +518,13 @@ describe('CardsViewController', function() {
     it('should set hasChanges to true when a property changes on any model hooked to the page, then back to false when changed back to its original value', function() {
       $scope.$digest();
 
-      assert.notOk($scope.hasChanges);
+      assert.isNotOk($scope.hasChanges);
 
       $scope.page.set('name', 'name2');
       assert.isTrue($scope.hasChanges);
 
       $scope.page.set('name', DEFAULT_PAGE_NAME);
-      assert.notOk($scope.hasChanges);
+      assert.isNotOk($scope.hasChanges);
     });
 
     it('should call PageDataService.save when savePage is called with hasChanges = true', function() {
@@ -534,7 +534,7 @@ describe('CardsViewController', function() {
         { data: { pageId: TEST_PAGE_ID } }
       )));
       $scope.savePage();
-      assert.isTrue(spy.calledOnce);
+      sinon.assert.calledOnce(spy);
     });
 
     it('should not call PageDataService.save when savePage is called with hasChanges = false', function() {
@@ -712,7 +712,7 @@ describe('CardsViewController', function() {
 
       saveEvents.subscribe(function(event) {
         if (event.status === 'saved') {
-          assert.isTrue(saveStub.calledOnce);
+          sinon.assert.calledOnce(saveStub);
           done();
         }
       });

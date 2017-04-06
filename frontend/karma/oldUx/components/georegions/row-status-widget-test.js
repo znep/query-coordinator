@@ -36,13 +36,13 @@ describe('RowStatusWidget', function() {
   });
 
   it('exists', function() {
-    assert.isNotNull(this.createElement({status: Status.ENABLED}));
+    assert.ok(this.createElement({status: Status.ENABLED}));
   });
 
   it('renders', function() {
     this.shallowRenderer.render(this.createElement({status: Status.ENABLED}));
     var result = this.shallowRenderer.getRenderOutput();
-    assert.isNotNull(result);
+    assert.ok(result);
   });
 
   describe('when enabled', function() {

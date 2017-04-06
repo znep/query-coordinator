@@ -147,7 +147,7 @@ describe('multilineEllipsis directive', function(FlyoutService) {
 
           expect(content.text()).to.contain('...');
           assert.lengthOf(content.attr('title'), 0);
-          assert.isTrue(registrationSpy.calledOnce, 'FlyoutService.register never called');
+          sinon.assert.calledOnce(registrationSpy);
           expect(registrationSpy.getCall(0).args[0].selector).to.match(/\.multiline-ellipsis-flyout-\d?/);
           mockFlyoutService.register.restore();
           done();

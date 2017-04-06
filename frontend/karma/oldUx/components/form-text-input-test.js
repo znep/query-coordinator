@@ -27,7 +27,7 @@ describe('FormTextInput', function() {
   });
 
   it('exists', function() {
-    assert.isNotNull(FormTextInput);
+    assert.ok(FormTextInput);
   });
 
   it('renders in a <FormInput />', function() {
@@ -39,7 +39,7 @@ describe('FormTextInput', function() {
   it('has an input', function() {
     var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, this.props));
     var input = findByTag(node, 'input');
-    assert.isNotNull(input);
+    assert.ok(input);
   });
 
   it('shows required field validation errors', function() {

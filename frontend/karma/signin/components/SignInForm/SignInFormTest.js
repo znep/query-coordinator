@@ -86,7 +86,7 @@ describe('<SignInForm />', () => {
     it('blanks out connection', () => {
       wrapperWithSocrataEmail.instance().onEmailChange('@example.com');
       expect(wrapperWithSocrataEmail.state().email).to.equal('@example.com');
-      assert.notProperty(wrapperWithSocrataEmail.state(), 'connectionName');
+      assert.isNotOk(wrapperWithSocrataEmail.state().connectionName);
     });
 
     it('blanks out email when invalid', () => {
@@ -97,7 +97,7 @@ describe('<SignInForm />', () => {
 
     it('renders "SSO Enabled" when a connection is found', () => {
       expect(wrapperWithSocrataEmail.state().connectionName).to.equal('socrata-okta-sts');
-      
+
       const passwordInput = wrapperWithSocrataEmail.find(PasswordInput).shallow();
       expect(passwordInput.find('.signin-password-sso-enabled-text')).to.have.length(1);
       expect(passwordInput.find(PollingInput)).to.have.length(0);

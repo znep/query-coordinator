@@ -22,7 +22,7 @@ describe('FilterBar', () => {
 
     it('omits number columns without column stats', () => {
       assert.ok(_.find(view.columns, ['fieldName', 'cnidarian_age']));
-      assert.notOk(_.find(props.columns, ['fieldName', 'cnidarian_age']));
+      assert.isNotOk(_.find(props.columns, ['fieldName', 'cnidarian_age']));
     });
 
     it('returns calendar_date columns', () => {
@@ -31,31 +31,31 @@ describe('FilterBar', () => {
 
     it('omits photo column types', () => {
       assert.ok(_.find(view.columns, ['dataTypeName', 'photo']));
-      assert.notOk(_.find(props.columns, ['dataTypeName', 'photo']));
+      assert.isNotOk(_.find(props.columns, ['dataTypeName', 'photo']));
     });
 
     it('omits point column types', () => {
       assert.ok(_.find(view.columns, ['dataTypeName', 'point']));
-      assert.notOk(_.find(props.columns, ['dataTypeName', 'point']));
+      assert.isNotOk(_.find(props.columns, ['dataTypeName', 'point']));
     });
 
     it('omits location subcolumns', () => {
-      assert.notOk(_.find(props.columns, ['fieldName', 'marsupial_location_state']));
-      assert.notOk(_.find(props.columns, ['fieldName', 'marsupial_location_city']));
-      assert.notOk(_.find(props.columns, ['fieldName', 'marsupial_location_zip']));
+      assert.isNotOk(_.find(props.columns, ['fieldName', 'marsupial_location_state']));
+      assert.isNotOk(_.find(props.columns, ['fieldName', 'marsupial_location_city']));
+      assert.isNotOk(_.find(props.columns, ['fieldName', 'marsupial_location_zip']));
     });
 
     it('omits url subcolumns', () => {
-      assert.notOk(_.find(props.columns, ['fieldName', 'marsupial_website_description']));
+      assert.isNotOk(_.find(props.columns, ['fieldName', 'marsupial_website_description']));
     });
 
     it('omits phone subcolumns', () => {
-      assert.notOk(_.find(props.columns, ['fieldName', 'marsupial_phone_type']));
+      assert.isNotOk(_.find(props.columns, ['fieldName', 'marsupial_phone_type']));
     });
 
     it('omits internal columns', () => {
       assert.ok(_.find(view.columns, ['fieldName', ':internal_column']));
-      assert.notOk(_.find(props.columns, ['fieldName', ':internal_column']));
+      assert.isNotOk(_.find(props.columns, ['fieldName', ':internal_column']));
     });
 
     it('returns filters', () => {

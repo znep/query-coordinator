@@ -16,31 +16,31 @@ describe('components/Table/TableCell', () => {
 
   it('renders empty', () => {
     const element = renderInTable(<TableCell cell={{ ok: null }} />);
-    assert.isNotNull(element);
-    assert.isNotNull(element.querySelector('.empty'));
+    assert.ok(element);
+    assert.ok(element.querySelector('.empty'));
   });
 
   it('renders not loaded', () => {
     const element = renderInTable(<TableCell cell={null} />);
-    assert.isNotNull(element);
-    assert.isNotNull(element.querySelector('.notYetLoaded'));
+    assert.ok(element);
+    assert.ok(element.querySelector('.notYetLoaded'));
   });
 
   it('renders text', () => {
     const element = renderInTable(<TableCell cell={{ ok: 'foobar' }} />);
-    assert.isNotNull(element);
+    assert.ok(element);
     expect(element.querySelector('div').innerText).to.eql('foobar');
   });
 
   it('renders a boolean', () => {
     const element = renderInTable(<TableCell cell={{ ok: true }} />);
-    assert.isNotNull(element);
+    assert.ok(element);
     expect(element.querySelector('div').innerText).to.eql('true');
   });
 
   it('renders a number', () =>{
     const element = renderInTable(<TableCell cell={{ ok: 42 }} />);
-    assert.isNotNull(element);
+    assert.ok(element);
     expect(element.querySelector('div').innerText).to.eql('42');
   });
 

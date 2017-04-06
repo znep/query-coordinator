@@ -311,14 +311,14 @@ describe('Analytics service', function() {
         var removeEventListenerStub = sinon.stub(mockWindowService.document, 'removeEventListener');
 
         Analytics.measureDomReady();
-        assert.isTrue(addEventListenerStub.calledOnce);
+        sinon.assert.calledOnce(addEventListenerStub);
         expect($httpBackend.flush).to.throw(/No pending request/);
         addEventListenerStub.yield();
         expect($httpBackend.flush).to.throw(/No pending request/);
         mockWindowService.document.readyState = 'complete';
         addEventListenerStub.yield();
         expect($httpBackend.flush).to.not.throw(/No pending request/);
-        assert.isTrue(removeEventListenerStub.calledOnce);
+        sinon.assert.calledOnce(removeEventListenerStub);
       });
 
       it('should track the dom-ready time for a page load', function() {

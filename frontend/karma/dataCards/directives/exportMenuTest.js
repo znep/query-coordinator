@@ -155,7 +155,7 @@ describe('Export Menu', function() {
         context = createElement();
 
         testHelpers.fireMouseEvent(context.element.find('button')[0], 'click');
-        assert.notOk(context.element.scope().showPolaroidButton);
+        assert.isNotOk(context.element.scope().showPolaroidButton);
         assert.lengthOf(context.element.find('[data-action="export-polaroid"]'), 0);
       });
 

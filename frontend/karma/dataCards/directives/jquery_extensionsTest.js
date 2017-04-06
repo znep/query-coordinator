@@ -123,7 +123,7 @@ describe('jquery-extensions', function() {
         $('#container .cell:nth-child(2)').trigger('mouseenter');
         _.defer(function() {
           expect($('.flyout').length).to.equal(0);
-          assert.isTrue(onBeforeRenderStub.calledTwice);
+          sinon.assert.calledTwice(onBeforeRenderStub);
           done();
         });
       });

@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { RelatedViewList } from 'components/RelatedViewList';
 import mockServerConfig from 'data/mockServerConfig';
 import mockRelatedView from 'data/mockRelatedView';
@@ -31,9 +33,9 @@ describe('components/RelatedViewList', function() {
 
   it('renders an element with the expected structure', function() {
     var element = renderComponent(RelatedViewList, defaultProps);
-    expect(element).to.exist;
-    expect(element.webkitMatchesSelector('section')).to.be.ok;
-    expect(element.querySelector('.dataset-landing-page-header')).to.exist;
+    assert.ok(element);
+    assert.ok(element.webkitMatchesSelector('section'));
+    assert.ok(element.querySelector('.dataset-landing-page-header'));
   });
 
   it('does not render if the user is not logged in and the list is empty', function() {
@@ -42,7 +44,7 @@ describe('components/RelatedViewList', function() {
       viewList: []
     }));
 
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   it('does not render if the user is not an admin or publisher and the list is empty', function() {
@@ -51,7 +53,7 @@ describe('components/RelatedViewList', function() {
       viewList: []
     }));
 
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   describe('contents', function() {
@@ -61,8 +63,8 @@ describe('components/RelatedViewList', function() {
         viewList: []
       }));
 
-      expect(element.querySelector('.alert.default')).to.exist;
-      expect(element.querySelector('.alert.default .btn')).to.exist;
+      assert.ok(element.querySelector('.alert.default'));
+      assert.ok(element.querySelector('.alert.default .btn'));
     });
 
     it('renders a result-card for each related view', function() {
@@ -80,7 +82,7 @@ describe('components/RelatedViewList', function() {
         hasMore: true
       }));
 
-      expect(element.querySelector('.load-more-button')).to.exist;
+      assert.ok(element.querySelector('.load-more-button'));
     });
 
     it('does not render a button to load more related views on a mobile device', function() {
@@ -89,7 +91,7 @@ describe('components/RelatedViewList', function() {
         isDesktop: false
       }));
 
-      expect(element.querySelector('.load-more-button')).to.not.exist;
+      assert.isNull(element.querySelector('.load-more-button'));
     });
 
     it('renders an error alert if hasError is true', function() {
@@ -97,7 +99,7 @@ describe('components/RelatedViewList', function() {
         hasError: true
       }));
 
-      expect(element.querySelector('.alert.error')).to.exist;
+      assert.ok(element.querySelector('.alert.error'));
     });
 
     it('dispatches an action to dismiss the error when the close icon is clicked', function() {
@@ -118,7 +120,7 @@ describe('components/RelatedViewList', function() {
         hasMore: false
       }));
 
-      expect(element.querySelector('.load-more-button')).to.not.exist;
+      assert.isNull(element.querySelector('.load-more-button'));
     });
 
     it('dispatches an action to load more related views if the button is clicked', function() {
@@ -155,7 +157,7 @@ describe('components/RelatedViewList', function() {
         hasMore: true
       }));
 
-      expect(element.querySelector('.collapse-button')).to.not.exist;
+      assert.isNull(element.querySelector('.collapse-button'));
     });
 
     it('does not render the button if there are at most 3 views', function() {
@@ -164,7 +166,7 @@ describe('components/RelatedViewList', function() {
         viewList: _.fill(Array(3), mockRelatedView)
       }));
 
-      expect(element.querySelector('.collapse-button')).to.not.exist;
+      assert.isNull(element.querySelector('.collapse-button'));
     });
 
     it('renders the button if all views are loaded and there are at least 4 views', function() {
@@ -173,7 +175,7 @@ describe('components/RelatedViewList', function() {
         viewList: _.fill(Array(4), mockRelatedView)
       }));
 
-      expect(element.querySelector('.collapse-button')).to.exist;
+      assert.ok(element.querySelector('.collapse-button'));
     });
 
     it('does not render the button on a mobile device', function() {
@@ -183,7 +185,7 @@ describe('components/RelatedViewList', function() {
         isDesktop: false
       }));
 
-      expect(element.querySelector('.collapse-button')).to.not.exist;
+      assert.isNull(element.querySelector('.collapse-button'));
     });
 
     it('dispatches an action to toggle isCollapsed when the button is clicked', function() {

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import TransformStatus from 'components/Table/TransformStatus'; // eslint-disable-line no-unused-vars
 import { normal } from 'lib/displayState';
 

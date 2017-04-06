@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('UserSearchService', function() {
@@ -40,7 +41,10 @@ describe('UserSearchService', function() {
     it('returns an empty array', function(done) {
       var matchedUsers = [];
       $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, matchedUsers);
-      expect(UserSearch.find()).to.eventually.eql(matchedUsers).and.notify(done);
+      UserSearch.find().then((users) => {
+        assert.deepEqual(users, matchedUsers);
+        done();
+      });
       $httpBackend.flush();
     });
   });
@@ -52,7 +56,10 @@ describe('UserSearchService', function() {
           return _.merge(user, { displayName: user.screen_name });
         });
         $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, matchedUsers);
-        expect(UserSearch.find('Match')).to.eventually.eql(matchedUsers).and.notify(done);
+        UserSearch.find('Match').then((users) => {
+          assert.deepEqual(users, matchedUsers);
+          done();
+        });
         $httpBackend.flush();
       });
     });
@@ -61,16 +68,22 @@ describe('UserSearchService', function() {
       it('returns an empty array', function(done) {
         var matchedUsers = [];
         $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(200, matchedUsers);
-        expect(UserSearch.find('Miss')).to.eventually.eql(matchedUsers).and.notify(done);
+        UserSearch.find('Miss').then((users) => {
+          assert.deepEqual(users, matchedUsers);
+          done();
+        });
         $httpBackend.flush();
       });
     });
   });
 
   describe('when the backend throws an error', function() {
-    it('provides an error response', function() {
+    it('provides an error response', function(done) {
       $httpBackend.expectGET(USER_SEARCH_URL_MATCHER).respond(500, {error: true});
-      expect(UserSearch.find('crashy crashy')).to.be.rejectedWith(null);
+      UserSearch.find('crashy crashy').catch((error) => {
+        assert.isNull(error);
+        done();
+      });
       $httpBackend.flush();
     });
   });

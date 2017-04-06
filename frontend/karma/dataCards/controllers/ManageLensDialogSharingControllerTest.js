@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('ManageLensDialogSharingController', function() {
@@ -67,7 +69,7 @@ describe('ManageLensDialogSharingController', function() {
     it('adds all inherited shares to scope.inheritedShares', function() {
       createController({ shares: defaultShares });
 
-      expect($scope.inheritedShares).to.be.an.array;
+      assert.isArray($scope.inheritedShares);
       expect($scope.inheritedShares).to.have.length(2);
       expect(_.map($scope.inheritedShares, 'name')).to.deep.equal(['email1@example.com', 'email2@example.com']);
     });
@@ -82,7 +84,7 @@ describe('ManageLensDialogSharingController', function() {
     it('excludes inherited shares', function() {
       createController({ shares: defaultShares });
 
-      expect($scope.shares).to.be.an.array;
+      assert.isArray($scope.shares);
       expect($scope.shares).to.have.length(2);
       expect(_.map($scope.shares, 'name')).to.deep.equal(['email4@example.com', 'email3@example.com']);
     });

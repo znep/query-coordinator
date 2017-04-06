@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -364,9 +366,9 @@ xdescribe('Rich text editor', function() {
     it('clears the placeholder text after focusing on the rich text editor, and replaces it on blur', function(done) {
       createElement('bold', '', 'placeholder-text', function() {
         testHelpers.fireMouseEvent($('rich-text-editor iframe')[0].contentDocument.body, 'focus');
-        expect($(this.find('iframe')[0].contentDocument.body).text() === '').to.be.true;
+        assert.isTrue($(this.find('iframe')[0].contentDocument.body).text() === '');
         testHelpers.fireMouseEvent($('rich-text-editor iframe')[0].contentDocument.body, 'blur');
-        expect($(this.find('iframe')[0].contentDocument.body).text() === 'placeholder-text').to.be.true;
+        assert.isTrue($(this.find('iframe')[0].contentDocument.body).text() === 'placeholder-text');
         done();
       });
     });

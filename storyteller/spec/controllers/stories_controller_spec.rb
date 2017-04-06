@@ -995,10 +995,18 @@ RSpec.describe StoriesController, type: :controller do
           expect(::RequestStore.store[:current_domain]).to eq(mock_domain['cname'])
         end
 
-        it 'assigns @story_url_for_view to the correct show story URL' do
+        it 'sets @story_url_for_view' do
           get :edit, uid: draft_story.uid
+          expect(assigns(:story_url_for_view)).to eq(
+            "https://test.host/s/test-story/#{draft_story.uid}/"
+          )
+        end
 
-          expect(assigns(:story_url_for_view)).to eq('https://test.host/s/test-story/test-test/')
+        it 'sets @story_url_for_preview' do
+          get :edit, uid: draft_story.uid
+          expect(assigns(:story_url_for_preview)).to eq(
+            "https://test.host/s/test-story/#{draft_story.uid}/preview"
+          )
         end
 
         context 'when rendering a view' do

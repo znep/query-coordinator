@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('ManageLensDialogProvenanceController', function() {
@@ -47,7 +48,7 @@ describe('ManageLensDialogProvenanceController', function() {
     createController();
     $scope.$apply();
     _.defer(function() {
-      expect($scope.isOfficial).to.be.false;
+      assert.isFalse($scope.isOfficial);
       done();
     });
   });
@@ -55,7 +56,7 @@ describe('ManageLensDialogProvenanceController', function() {
   it('should not "hasChanges" when the provenance is not changed', function(done) {
     createController();
     _.defer(function() {
-      expect($scope.components.provenance.hasChanges).to.be.false;
+      assert.isFalse($scope.components.provenance.hasChanges);
       done();
     });
   });
@@ -65,7 +66,7 @@ describe('ManageLensDialogProvenanceController', function() {
     $scope.isOfficial = true;
     $scope.$apply();
     _.defer(function() {
-      expect($scope.components.provenance.hasChanges).to.be.true;
+      assert.isTrue($scope.components.provenance.hasChanges);
       done();
     });
   });
@@ -78,19 +79,19 @@ describe('ManageLensDialogProvenanceController', function() {
     $scope.isOfficial = false;
     $scope.$apply();
     _.defer(function() {
-      expect($scope.isOfficial).to.be.false;
-      expect($scope.components.provenance.hasChanges).to.be.false;
+      assert.isFalse($scope.isOfficial);
+      assert.isFalse($scope.components.provenance.hasChanges);
       done();
     });
   });
 
   it('should not have errors before or after a change', function(done) {
     createController();
-    expect($scope.components.provenance.hasErrors).to.be.false;
+    assert.isFalse($scope.components.provenance.hasErrors);
     $scope.isOfficial = true;
     $scope.$apply();
     _.defer(function() {
-      expect($scope.components.provenance.hasErrors).to.be.false;
+      assert.isFalse($scope.components.provenance.hasErrors);
       done();
     });
   });

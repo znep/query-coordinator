@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { EditMenu } from 'components/EditMenu';
 import mockView from 'data/mockView';
 import { renderIntoDocument, Simulate } from 'react-addons-test-utils';
@@ -21,7 +23,7 @@ describe('EditMenu', () => {
   });
 
   it('renders', () => {
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('uses the page name as default value for the title field', () => {
@@ -63,7 +65,7 @@ describe('EditMenu', () => {
   });
 
   it('renders an update button', () => {
-    expect(element.querySelector('.update-button')).to.exist;
+    assert.ok(element.querySelector('.update-button'));
   });
 
   it('disables the update button when the name is empty', () => {
@@ -71,7 +73,7 @@ describe('EditMenu', () => {
       name: ''
     }));
 
-    expect(element.querySelector('.update-button:disabled')).to.exist;
+    assert.ok(element.querySelector('.update-button:disabled'));
   });
 
   it('invokes onClickUpdate on update click', () => {
@@ -81,6 +83,6 @@ describe('EditMenu', () => {
     }));
 
     TestUtils.Simulate.click(element.querySelector('.update-button'));
-    expect(onClickSpy).to.have.been.called;
+    sinon.assert.called(onClickSpy);
   });
 });

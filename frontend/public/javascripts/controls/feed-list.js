@@ -540,7 +540,7 @@
         }
 
         // disable certain features if the user is not logged in
-        if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
+        if (!blist.currentUserId) {
           $('.feedNewCommentButton, .postNewCommentButton').
             addClass('disabled').
             prop('disabled', true).

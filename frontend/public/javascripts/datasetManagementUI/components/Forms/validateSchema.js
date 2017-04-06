@@ -3,23 +3,23 @@ import _ from 'lodash';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { getComponentName } from 'lib/util';
 
-const getValidationErrors = (schema, model) => Object.keys(schema).reduce((acc, key) => {
-  // Gets the model from the reformed HOC runs it again a user-defined validation scheam
-  // Schema is passed in at the point of form-creation.
+const getValidationErrors = (validationRules, model) => Object.keys(validationRules).reduce((acc, key) => {
+  // Gets the model from the reformed HOC, runs it against a user-defined validation rules.
+  // Rules are passed in at the point of form-creation.
 
   // Current built-in rules are: required, type, minLength, and maxLength. Test is a
   // wildcard that accepts a function that returns either a falsey value or an error message.
   // Feel free to add any commonly used validations in this component.
   const errors = [];
   const value = model[key];
-  const rules = schema[key];
+  const rules = validationRules[key];
 
   if (!value && !rules.required) {
     return acc;
   }
 
   if (rules.required && !value) {
-    errors.push(I18n.edit_metadata.validation_error_required.format(_.upperFirst(key)));
+    errors.push(I18n.edit_metadata.validation_error_required);
   }
 
   if (rules.type && typeof value !== rules.type) {
@@ -66,7 +66,7 @@ const getValidationErrors = (schema, model) => Object.keys(schema).reduce((acc, 
   });
 }, { isValid: true, fields: {} });
 
-const validateSchema = schema => (WrappedComponent) => {
+const validateSchema = (validationRules = {}) => (WrappedComponent) => {
   class Validated extends Component {
     constructor() {
       super();
@@ -80,22 +80,29 @@ const validateSchema = schema => (WrappedComponent) => {
 
     // Called once right before initial render. We calculate an initial schema here.
     componentWillMount() {
-      const { model } = this.props;
+      const { model, validationRules: validationRulesFromProps } = this.props;
+
+      // If rules were not passed directly into the validateSchema fn, then use
+      // rules passed in as prop (which you might do if you need to, say, generate
+      // validation rules with info from the redux store)
+      const rules = _.isEmpty(validationRules) ? validationRulesFromProps : validationRules;
 
       this.setState({
-        schema: getValidationErrors(schema, model)
+        schema: getValidationErrors(rules, model)
       });
     }
 
     // Called on every prop change (in this case, the form's data-model changing from
     // user input). Calculate a new schema
     componentWillReceiveProps(nextProps) {
-      const { model: newModel } = nextProps;
+      const { model: newModel, validationRules: validationRulesFromProps } = nextProps;
       const { model: oldModel } = this.props;
 
       if (!_.isEqual(oldModel, newModel)) {
+        const rules = _.isEmpty(validationRules) ? validationRulesFromProps : validationRules;
+
         this.setState({
-          schema: getValidationErrors(schema, newModel)
+          schema: getValidationErrors(rules, newModel)
         });
       }
     }
@@ -122,7 +129,8 @@ const validateSchema = schema => (WrappedComponent) => {
   Validated.propTypes = {
     model: PropTypes.object.isRequired,
     syncToStore: PropTypes.func,
-    fourfour: PropTypes.string
+    fourfour: PropTypes.string,
+    validationRules: PropTypes.object
   };
 
   return hoistNonReactStatics(Validated, WrappedComponent);

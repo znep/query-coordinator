@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('ModelHelper', function() {
@@ -60,8 +61,8 @@ describe('ModelHelper', function() {
 
     instance.title = title2;
 
-    expect(expectedSequenceDesc).to.be.empty;
-    expect(expectedSequenceTitle).to.be.empty;
+    assert.lengthOf(expectedSequenceDesc, 0);
+    assert.lengthOf(expectedSequenceTitle, 0);
   });
 
   it('(RW) should attempt to get lazy default if strictly needed.', function(done) {
@@ -75,7 +76,7 @@ describe('ModelHelper', function() {
     var description =_$q.defer();
     var getDescCalled = false;
     function promiser() {
-      expect(getDescCalled).to.be.false;
+      assert.isFalse(getDescCalled);
       getDescCalled = true;
       return description.promise;
     };
@@ -84,7 +85,7 @@ describe('ModelHelper', function() {
     _mh.addPropertyWithLazyDefault('description', instance, undefined, promiser);
 
     instance.description.subscribe(function(val) {
-      expect(expectedSequence).to.not.be.empty;
+      assert.isTrue(expectedSequence.length >= 1);
       var exp = expectedSequence.shift();
       expect(shouldBeResolved).to.equal(exp !== undefined); // If it's undefined, it shouldn't be resolved
       expect(val).to.equal(exp);
@@ -96,11 +97,11 @@ describe('ModelHelper', function() {
     shouldBeResolved = true;
     description.resolve(descFromDefault);
     _$rootScope.$digest();
-    expect(getDescCalled).to.be.true;
+    assert.isTrue(getDescCalled);
 
     instance.description = descFromSetter1;
     instance.description = descFromSetter2;
-    expect(expectedSequence).to.be.empty;
+    assert.lengthOf(expectedSequence, 0);
   });
 
   it('(RW) should always prefer the setter value over an in-flight request', function() {
@@ -114,7 +115,7 @@ describe('ModelHelper', function() {
     var description =_$q.defer();
     var getDescCalled = false;
     function promiser() {
-      expect(getDescCalled).to.be.false;
+      assert.isFalse(getDescCalled);
       getDescCalled = true;
       return description.promise;
     };
@@ -124,11 +125,11 @@ describe('ModelHelper', function() {
 
     // Start the sequence.
     instance.description.subscribe(function(val) {
-      expect(expectedSequence).to.not.be.empty;
+      assert.isTrue(expectedSequence.length >= 1);
       var exp = expectedSequence.shift();
       expect(val).to.equal(exp);
     });
-    expect(getDescCalled).to.be.true;
+    assert.isTrue(getDescCalled);
 
     // Call the setter before the promise succeeds.
     instance.description = descFromSetter1;
@@ -140,7 +141,7 @@ describe('ModelHelper', function() {
     // Set one more time.
     instance.description = descFromSetter2;
 
-    expect(expectedSequence).to.be.empty;
+    assert.lengthOf(expectedSequence, 0);
   });
 
   //TODO handle error cases.

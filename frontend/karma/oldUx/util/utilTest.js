@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 describe('blist.util', function () {
   var util = blist.namespace.fetch('blist.util');
 

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import ShowUpdate from 'components/ShowUpdate';
 import { getEmptyStore, getDefaultStore } from '../testStore';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
@@ -64,7 +65,7 @@ describe('components/ShowUpdate', () => {
     const store = getEmptyStore();
     insertView(store);
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('renders the column component', () => {
@@ -93,7 +94,7 @@ describe('components/ShowUpdate', () => {
     }));
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
-    expect(element).to.exist;
+    assert.ok(element);
 
     expect(element.querySelectorAll('.column-summary').length).to.equal(1);
     expect(element.querySelectorAll('.column-summary .column-name')[0].innerText).to.equal('Address');
@@ -126,8 +127,8 @@ describe('components/ShowUpdate', () => {
     }));
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
-    expect(element).to.exist;
-    expect(element.querySelector('.reviewBtn')).to.exist;
+    assert.ok(element);
+    assert.ok(element.querySelector('.reviewBtn'));
   });
 
   it('renders in progress when upsert is in progress', () => {
@@ -139,9 +140,9 @@ describe('components/ShowUpdate', () => {
     }));
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
-    expect(element).to.exist;
-    expect(element.querySelector('.tableInfo')).to.exist;
-    expect(element.querySelector('.emailBtnRequest')).to.exist;
+    assert.ok(element);
+    assert.ok(element.querySelector('.tableInfo'));
+    assert.ok(element.querySelector('.emailBtnRequest'));
   });
 
   it('tries to add an email interest when the email me button is pressed', (done) => {
@@ -154,11 +155,11 @@ describe('components/ShowUpdate', () => {
     }));
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
-    expect(element).to.exist;
-    expect(element.querySelector('.tableInfo')).to.exist;
+    assert.ok(element);
+    assert.ok(element.querySelector('.tableInfo'));
 
-    expect(element.querySelector('.emailBtnRequest')).to.exist;
-    expect(element.querySelector('.emailBtnSuccess')).to.not.exist;
+    assert.ok(element.querySelector('.emailBtnRequest'));
+    assert.isNull(element.querySelector('.emailBtnSuccess'));
     const { unmockFetch } = mockFetch({
       '/users/asdf-1234/email_interests.json': {
         POST: {
@@ -167,11 +168,11 @@ describe('components/ShowUpdate', () => {
       }
     });
     ReactTestUtils.Simulate.click(element.querySelector('.emailBtnRequest'));
-    expect(element.querySelector('.emailBtnBusy')).to.exist;
+    assert.ok(element.querySelector('.emailBtnBusy'));
     setTimeout(() => {
-      expect(element.querySelector('.emailBtnRequest')).to.not.exist;
+      assert.isNull(element.querySelector('.emailBtnRequest'));
 
-      expect(element.querySelector('.emailBtnSuccess')).to.exist;
+      assert.ok(element.querySelector('.emailBtnSuccess'));
       unmockFetch();
       done();
     }, 0);
@@ -187,11 +188,11 @@ describe('components/ShowUpdate', () => {
     }));
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
-    expect(element).to.exist;
-    expect(element.querySelector('.tableInfo')).to.exist;
+    assert.ok(element);
+    assert.ok(element.querySelector('.tableInfo'));
 
-    expect(element.querySelector('.emailBtnRequest')).to.exist;
-    expect(element.querySelector('.emailBtnError')).to.not.exist;
+    assert.ok(element.querySelector('.emailBtnRequest'));
+    assert.isNull(element.querySelector('.emailBtnError'));
     const { unmockFetch } = mockFetch({
       '/users/asdf-1234/email_interests.json': {
         POST: {
@@ -202,8 +203,8 @@ describe('components/ShowUpdate', () => {
     });
     ReactTestUtils.Simulate.click(element.querySelector('.emailBtnRequest'));
     setTimeout(() => {
-      expect(element.querySelector('.emailBtnRequest')).to.not.exist;
-      expect(element.querySelector('.emailBtnError')).to.exist;
+      assert.isNull(element.querySelector('.emailBtnRequest'));
+      assert.ok(element.querySelector('.emailBtnError'));
       unmockFetch();
       done();
     }, 0);
@@ -239,7 +240,7 @@ describe('components/ShowUpdate', () => {
     }));
 
     const element = renderComponentWithStore(ShowUpdate, PROPS, store);
-    expect(element).to.exist;
-    expect(element.querySelector('.socrata-paginated-table')).to.exist;
+    assert.ok(element);
+    assert.ok(element.querySelector('.socrata-paginated-table'));
   });
 });

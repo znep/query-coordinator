@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { ViewSelectorModal } from 'components/FeaturedContentModal/ViewSelectorModal';
 import { Simulate } from 'react-addons-test-utils';
 import mockRelatedView from 'data/mockRelatedView';
@@ -27,28 +28,28 @@ describe('components/FeaturedContentModal/ViewSelectorModal', function() {
     });
 
     it('renders the header', function() {
-      expect(element.querySelector('.modal-header')).to.exist;
+      assert.ok(element.querySelector('.modal-header'));
     });
 
     it('renders the title', function() {
-      expect(element.querySelector('.modal-content h2')).to.exist;
+      assert.ok(element.querySelector('.modal-content h2'));
     });
 
     it('renders the footer', function() {
-      expect(element.querySelector('.modal-footer')).to.exist;
+      assert.ok(element.querySelector('.modal-footer'));
     });
 
     it('renders a back button', function() {
-      expect(element.querySelector('.modal-content .back-button')).to.exist;
+      assert.ok(element.querySelector('.modal-content .back-button'));
     });
 
     it('does not render spinner', function() {
-      expect(element.querySelector('.spinner-default')).to.not.exist;
-      expect(element.querySelector('.spinner')).to.not.exist;
+      assert.isNull(element.querySelector('.spinner-default'));
+      assert.isNull(element.querySelector('.spinner'));
     });
 
     it('does not render alert', function() {
-      expect(element.querySelector('.alert')).to.not.exist;
+      assert.isNull(element.querySelector('.alert'));
     })
   });
 
@@ -57,7 +58,7 @@ describe('components/FeaturedContentModal/ViewSelectorModal', function() {
       var element = renderComponent(ViewSelectorModal, getProps({
         isLoading: true
       }));
-      expect(element.querySelector('.spinner-default')).to.exist;
+      assert.ok(element.querySelector('.spinner-default'));
     });
   });
 
@@ -66,7 +67,7 @@ describe('components/FeaturedContentModal/ViewSelectorModal', function() {
       var element = renderComponent(ViewSelectorModal, getProps({
         hasViewFetchError: true
       }));
-      expect(element.querySelector('.alert')).to.exist;
+      assert.ok(element.querySelector('.alert'));
     });
   });
 

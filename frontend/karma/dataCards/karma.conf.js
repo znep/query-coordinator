@@ -49,7 +49,7 @@ module.exports = function (karma) {
       '/stylesheets/images/common/': `http://localhost:${karma.port}/base/public/stylesheets/images/common/`
     },
 
-    frameworks: ['mocha', 'chai', 'chai-as-promised', 'chai-jquery', 'sinon-chai'],
+    frameworks: ['mocha'],
 
     webpack: webpackConfig
   }));

@@ -181,7 +181,6 @@ export class Manager extends React.Component {
               placeholder={formatWithCategory('manager.description.placeholder',
                   'manager.description.placeholder_no_category')}
               onChange={this.handleInputChange}
-              onKeyDown={handleEnter(this.saveOnEnter)}
               value={this.props.header.description} />
 
             {headingHtml(formatWithCategory('manager.featured_content.label',

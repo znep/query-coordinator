@@ -30,16 +30,20 @@ body {
   margin: 0 auto;
 
   .browse2 {
-    .browse2-facet-and-results-header {
-      overflow: hidden;
+    .browse2-results-pane {
+      visibility: hidden; // shown with JS after CLP components load
 
-      .browse2-results-header {
-        margin-left: 0;
-        padding: 1rem 0 0;
+      .browse2-facet-and-results-header {
+        overflow: hidden;
 
-        .browse2-results-clear-controls-container {
-          .browse2-results-title, .browse2-results-clear-control, .browse2-results-clear-all-button {
-            margin-bottom: 0 !important;
+        .browse2-results-header {
+          margin-left: 0;
+          padding: 1rem 0 0;
+
+          .browse2-results-clear-controls-container {
+            .browse2-results-title, .browse2-results-clear-control, .browse2-results-clear-all-button {
+              margin-bottom: 0 !important;
+            }
           }
         }
       }

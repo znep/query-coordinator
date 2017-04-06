@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import flashMessage, { initialState } from 'reducers/flashMessage';
 import { hideFlashMessage, showFlashMessage } from 'actions/flashMessage';
 

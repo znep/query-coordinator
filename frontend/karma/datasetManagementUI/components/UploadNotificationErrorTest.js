@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import UploadNotificationError from 'components/NotificationList/UploadNotificationError';
 import ReactDOM from 'react-dom';
 
@@ -29,7 +31,7 @@ describe('components/NotificationList/UploadNotificationError', () => {
   it('renders without error', () => {
     const container = document.createElement("div");
     const element = ReactDOM.render(<UploadNotificationError {...Props} />, container);
-    expect(element).to.not.be.null;
+    assert.isNotNull(element);
   });
 
   it('hides details by default', () => {
@@ -37,8 +39,8 @@ describe('components/NotificationList/UploadNotificationError', () => {
     const element = ReactDOM.render(<UploadNotificationError {...Props} />, container);
     const buttonContainer = container.querySelector('.btn-container');
     const messageContainer = container.querySelector('.msg-container');
-    expect(buttonContainer).to.be.null;
-    expect(messageContainer).to.be.null;
+    assert.isNull(buttonContainer);
+    assert.isNull(messageContainer);
   });
 
   it('show details when View Details toggle is clicked', () => {
@@ -48,8 +50,8 @@ describe('components/NotificationList/UploadNotificationError', () => {
     TestUtils.Simulate.click(detailsToggle);
     const buttonContainer = container.querySelector('.btnContainer');
     const messageContainer = container.querySelector('.msgContainer');
-    expect(buttonContainer).to.not.be.null;
-    expect(messageContainer).to.not.be.null;
+    assert.isNotNull(buttonContainer);
+    assert.isNotNull(messageContainer);
   });
 
   it('contains a dismiss button that dispatches a REMOVE NOTIFICATION action to redux store', () => {

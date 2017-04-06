@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 describe('DOMPurify extensions', function() {
   'use strict';
 

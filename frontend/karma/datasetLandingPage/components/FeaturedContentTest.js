@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import mockServerConfig from 'data/mockServerConfig';
 import mockFeaturedItem from 'data/mockFeaturedItem';
 import { FeaturedContent } from 'components/FeaturedContent';
@@ -23,7 +24,7 @@ describe('components/FeaturedContent', function() {
       contentList: [null, null, null]
     });
 
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   it('does not render anything if the contentList is empty and the user is not a publisher', function() {
@@ -35,20 +36,20 @@ describe('components/FeaturedContent', function() {
       contentList: [null, null, null]
     });
 
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   describe('manage prompt', function() {
     it('renders the manage prompt if the user is a publisher', function() {
       serverConfig.currentUser = { roleName: 'publisher' };
       var element = renderComponent(FeaturedContent, getProps());
-      expect(element.querySelector('.manage-prompt')).to.exist;
+      assert.ok(element.querySelector('.manage-prompt'));
     });
 
     it('does not render the manage prompt if the user is not logged in', function() {
       serverConfig.currentUser = null;
       var element = renderComponent(FeaturedContent, getProps());
-      expect(element.querySelector('.manage-prompt')).to.not.exist;
+      assert.isNull(element.querySelector('.manage-prompt'));
     });
   });
 

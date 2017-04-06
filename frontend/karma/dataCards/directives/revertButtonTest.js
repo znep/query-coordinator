@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 describe('Revert button', function() {
   'use strict';
 
@@ -35,28 +37,28 @@ describe('Revert button', function() {
 
     var revertButton = createElement(false, false);
 
-    expect(revertButton.find('button')).to.have.class('disabled');
+    assert.isTrue($(revertButton.find('button')).hasClass('disabled'));
   });
 
   it('should be working when the page has changes and the revert has been initiated', function() {
 
     var revertButton = createElement(true, true);
 
-    expect(revertButton.find('button')).to.have.class('working');
+    assert.isTrue($(revertButton.find('button')).hasClass('working'));
   });
 
   it('should display a spinner when the page has changes and the revert has been initiated', function() {
 
     var revertButton = createElement(true, true);
 
-    expect(revertButton.find('spinner')).to.exist;
+    assert.lengthOf(revertButton.find('spinner'), 1);
   });
 
   it('should be enabled when the page has changes and the revert has not been initiated', function() {
 
     var revertButton = createElement(true, false);
 
-    expect(revertButton.find('button')).to.not.have.class('disabled');
+    assert.isFalse($(revertButton.find('button')).hasClass('disabled'));
   });
 
   it('should call revertPage when clicked', function() {
@@ -65,7 +67,7 @@ describe('Revert button', function() {
 
     revertButton.click();
 
-    expect(revertButton.scope().revertPage).to.have.been.called;
+    sinon.assert.calledOnce(revertButton.scope().revertPage);
   });
 
 });

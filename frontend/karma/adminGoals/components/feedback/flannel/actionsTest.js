@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import Immutable from 'immutable';

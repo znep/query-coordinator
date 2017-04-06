@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import TextInput from 'components/ContactForm/TextInput';
 
 describe('components/ContactForm/TextInput', function() {
@@ -17,7 +19,7 @@ describe('components/ContactForm/TextInput', function() {
 
   it('renders an element', function() {
     var element = renderComponent(TextInput, defaultProps);
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('renders a description when provided', function() {
@@ -26,7 +28,7 @@ describe('components/ContactForm/TextInput', function() {
     }));
     var description = element.querySelector('#description');
 
-    expect(description).to.exist;
+    assert.ok(description);
     expect(description.innerHTML).to.equal('floating');
   });
 
@@ -39,7 +41,7 @@ describe('components/ContactForm/TextInput', function() {
 
     input.value = 'one small step';
     TestUtils.Simulate.change(input);
-    expect(onChangeSpy).to.have.been.called;
+    sinon.assert.called(onChangeSpy);
   });
 
   it('sets aria-invalid attribute when visited and invalid', function() {

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { ApiFlannel } from 'components/ApiFlannel';
 import { Simulate } from 'react-addons-test-utils';
 import mockView from 'data/mockView';
@@ -17,7 +18,7 @@ describe('components/ApiFlannel', () => {
 
   it('renders an element', () => {
     const element = renderComponent(ApiFlannel, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('renders a dropdown for the resource type if the view has a named resource url', () => {
@@ -27,7 +28,7 @@ describe('components/ApiFlannel', () => {
       }
     }));
 
-    expect(getDropdownToggle(element)).to.exist;
+    assert.ok(getDropdownToggle(element));
     expect(getDropdownOptions(element).length).to.equal(2);
   });
 

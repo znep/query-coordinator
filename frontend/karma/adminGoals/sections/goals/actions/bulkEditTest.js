@@ -1,3 +1,5 @@
+import { expect, assert } from 'chai';
+import sinon from 'sinon';
 import moment from 'moment';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -44,11 +46,11 @@ describe('actions/bulkEditActions', () => {
     server.restore()
   });
 
-  it('updateMultipleGoals should update given goals', (done) => {
+  it('updateMultipleGoals should update given goals', () => {
     server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
     server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
 
-    store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
+    return store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
       const [ doSideEffect, startInProgress, updateGoals, closeModal ] = store.getActions();
 
       expect(startInProgress.type).to.eq(SharedActions.types.setModalInProgress);
@@ -62,22 +64,19 @@ describe('actions/bulkEditActions', () => {
 
       expect(updateGoals.goals[0].prevailing_measure.start).to.eq(START_TIME);
       expect(updateGoals.goals[1].prevailing_measure.start).to.eq(START_TIME);
-
-      done();
-    }).catch(done.fail);
+    });
   });
 
-  it('should dispatch failure action when something went wrong', (done) => {
+  it('should dispatch failure action when something went wrong', () => {
     server.respondWith(xhr => {
       xhr.respond();
     });
 
-    store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
+    return store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
       const [doSideEffect, started, failed] = store.getActions();
 
       expect(failed.type).to.eq(SharedActions.types.showModalMessage);
-      done();
-    }).catch(done);
+    });
   });
 
   it('should dispatch a warning message if not all the items have prevailing_measure data', () => {

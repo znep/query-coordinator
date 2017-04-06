@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import marked from 'marked';
+import { FeatureFlags } from 'common/feature_flags';
 
 const Header = (props) => {
   var { headline, description } = props;
@@ -13,7 +14,7 @@ const Header = (props) => {
   }
 
   const toggleThrobber = () => {
-    $('.management-button .throbber-icon,.management-button .socrata-icon-arrow-right').toggle();
+    $('.management-button .throbber-icon, .management-button .socrata-icon-arrow-right').toggle();
   };
 
   const managementButton = (
@@ -28,7 +29,14 @@ const Header = (props) => {
     </a>
   );
 
-  const markedDescription = { __html: marked(description || '', { sanitize: true }) };
+  const interpretedDescription = (() => {
+    if (FeatureFlags.value('enable_markdown_for_catalog_landing_page_description')) {
+      const markedDescription = { __html: marked(description || '', { sanitize: true }) };
+      return <div className="description" dangerouslySetInnerHTML={markedDescription} />
+    } else {
+      return <div className="description">{description}</div>;
+    }
+  })();
 
   const headerClassname = _.isEmpty(headline) ? 'no-headline' : '';
 
@@ -38,7 +46,7 @@ const Header = (props) => {
         {headline}
         {window.serverConfig.currentUserMayManage && managementButton}
       </h1>
-      <div className="description" dangerouslySetInnerHTML={markedDescription} />
+      {interpretedDescription}
     </div>
   );
 };

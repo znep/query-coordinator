@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
 import validateSchema from 'components/Forms/validateSchema';
@@ -42,7 +43,7 @@ describe('components/Forms/validateSchema', () => {
   });
 
   it('adds a schema prop to the wrapped component', () => {
-    expect(component.props().schema).to.exist;
+    assert.property(component.props(), 'schema');
   });
 
   it('validates the form data-model correctly', () => {
@@ -59,7 +60,7 @@ describe('components/Forms/validateSchema', () => {
           required: false
         },
         hobbies: {
-          errors: ['Hobbies is required'],
+          errors: ['This field is required'],
           isValid: false,
           required: true
         }

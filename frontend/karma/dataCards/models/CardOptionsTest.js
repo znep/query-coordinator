@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('CardOptions', function() {
@@ -36,7 +37,6 @@ describe('CardOptions', function() {
   });
 
   it('deserializes', function() {
-    expect(CardOptions.deserialize).to.exist;
     var cardOptions = CardOptions.deserialize(model, TEST_CARD_OPTIONS);
     expect(cardOptions.getCurrentValue('mapExtent')).to.eql(TEST_CARD_OPTIONS.mapExtent);
     expect(cardOptions.getCurrentValue('bucketSize')).to.eql(TEST_CARD_OPTIONS.bucketSize);
@@ -45,7 +45,6 @@ describe('CardOptions', function() {
 
   it('serializes', function() {
     var cardOptions = new CardOptions(model, TEST_CARD_OPTIONS);
-    expect(cardOptions.serialize).to.exist;
     var serialized = cardOptions.serialize();
     expect(serialized).to.eql(TEST_CARD_OPTIONS);
   });
@@ -59,10 +58,9 @@ describe('CardOptions', function() {
 
   it('serializes ephemeral properties even though they are ephemeral', function() {
     var cardOptions = new CardOptions(model, TEST_CARD_OPTIONS);
-    expect(cardOptions.serialize).to.exist;
     expect(cardOptions._isObservablePropertyEphemeral('bucketSize')).to.equal(true);
     var serialized = cardOptions.serialize();
-    expect(serialized.bucketSize).to.exist;
+    assert.property(serialized, 'bucketSize');
   });
 
 });

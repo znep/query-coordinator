@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -156,9 +158,9 @@ describe('Scope RX Extensions', function() {
 
       $scope.$on('my-event', eventSpy);
       $scope.$emitEventsFromObservable('my-event', testSubjectName);
-      expect(eventSpy).to.have.not.been.called;
+      sinon.assert.notCalled(eventSpy);
       testSubjectName.onNext('value');
-      expect(eventSpy).to.have.been.calledWith(sinon.match.any, 'value');
+      sinon.assert.calledWith(eventSpy, sinon.match.any, 'value');
     });
   });
 
@@ -203,13 +205,13 @@ describe('Scope RX Extensions', function() {
 
       testSubjectPromisedCake.onNext(true);
       expect($scope).to.have.property('testSubjectName').that.equals('Chell');
-      expect($scope).to.have.property('testSubjectPromisedCake').that.is.true;
+      expect($scope).to.have.property('testSubjectPromisedCake').that.equals(true);
       expect($scope).not.to.have.property('cake');
 
       testSubjectCandescing.onNext(true);
       expect($scope).to.have.property('testSubjectName').that.equals('Chell');
-      expect($scope).to.have.property('testSubjectPromisedCake').that.is.true;
-      expect($scope).to.have.property('cake').that.is.true;
+      expect($scope).to.have.property('testSubjectPromisedCake').that.equals(true);
+      expect($scope).to.have.property('cake').that.equals(true);
     });
 
     it('should apply the value returned by onError', function() {

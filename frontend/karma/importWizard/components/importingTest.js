@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import React from 'react';
 import { view } from 'components/importing';
 import _ from 'lodash';

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import TestUtils from 'react-addons-test-utils';
 
 import * as CD from 'components/importColumns/columnDetail';

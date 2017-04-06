@@ -34,7 +34,7 @@ if (cpus.length < suites.length) {
 }
 
 // For launching a Karma test run.
-var flags = '--singleRun true --browsers PhantomJS --reporters dots'.split(' ');
+var flags = '--singleRun true --reporters dots'.split(' ');
 function generateArgs(suite) {
   return ['start', getSuiteConf(suite), '--port', ports.pop()].concat(flags);
 }

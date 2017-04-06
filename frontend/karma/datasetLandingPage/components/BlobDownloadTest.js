@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import _ from 'lodash';
 import { BlobDownload } from 'components/BlobDownload';
 import mockServerConfig from 'data/mockServerConfig';
@@ -19,9 +20,9 @@ describe('components/BlobDownload', function() {
 
   it('renders an element if the view is blobby', function() {
     var element = renderComponent(BlobDownload, getProps());
-    expect(element).to.exist;
-    expect(element.querySelector('h2')).to.exist;
-    expect(element.querySelector('.section-content')).to.exist;
+    assert.ok(element);
+    assert.ok(element.querySelector('h2'));
+    assert.ok(element.querySelector('.section-content'));
   });
 
   it('does not render an element if the view is not blobby', function() {
@@ -31,7 +32,7 @@ describe('components/BlobDownload', function() {
       }
     }));
 
-    expect(element).to.not.exist;
+    assert.isNull(element);
   });
 
   describe('edit prompt', function() {
@@ -42,13 +43,13 @@ describe('components/BlobDownload', function() {
     it('is hidden if the user is not a publisher or an admin', function() {
       window.serverConfig.currentUser = null;
       var element = renderComponent(BlobDownload, getProps());
-      expect(element.querySelector('.edit-prompt')).to.not.exist;
+      assert.isNull(element.querySelector('.edit-prompt'));
     });
 
     it('is visible if the user is a publisher or an admin', function() {
       window.serverConfig.currentUser = { roleName: 'publisher' };
       var element = renderComponent(BlobDownload, getProps());
-      expect(element.querySelector('.edit-prompt')).to.exist;
+      assert.ok(element.querySelector('.edit-prompt'));
     });
 
     it('has a button that links to the edit page', function() {
@@ -62,7 +63,7 @@ describe('components/BlobDownload', function() {
     it('contains information about the file', function() {
       var element = renderComponent(BlobDownload, getProps());
       var downloadTitle = element.querySelector('.section-content .download-object .download-title');
-      expect(downloadTitle).to.exist;
+      assert.ok(downloadTitle);
       expect(downloadTitle.textContent).to.equal('purple.png');
     });
 

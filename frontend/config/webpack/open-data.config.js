@@ -407,7 +407,6 @@ module.exports = _.defaultsDeep({
       './screens/nominations.js'
     ],
     'screen-nomination': [
-      './util/inline-login.js',
       './util/serialize.js',
       './util/base-model.js',
       './util/socrata-server.js',
@@ -443,7 +442,6 @@ module.exports = _.defaultsDeep({
     'dataset-about-full': [
       './plugins/lab.js',
       './util/asset-loading.js',
-      './util/inline-login.js',
       './controls/stars.js',
       './controls/dataset-controls.js',
       './controls/blob-dataset.js',
@@ -493,7 +491,6 @@ module.exports = _.defaultsDeep({
       './plugins/ZeroClipboard.js',
       './util/asset-loading.js',
       './controls/combination-list.js',
-      './util/inline-login.js',
       './controls/wizard-prompt.js',
       './controls/popup-select.js',
       './controls/form-inliner.js',
@@ -672,9 +669,6 @@ module.exports = _.defaultsDeep({
     ],
     'feed-list': [
       './controls/feed-list.js'
-    ],
-    'inline-login': [
-      './util/inline-login.js'
     ],
     'share-dialogs': [
       './controls/dataset-email.js',

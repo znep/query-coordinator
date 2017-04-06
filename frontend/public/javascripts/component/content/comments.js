@@ -8,7 +8,7 @@
 
     _getAssets: function() {
       return {
-        javascripts: [{assets: 'inline-login'}, {assets: 'feed-list'}],
+        javascripts: [{assets: 'feed-list'}],
         stylesheets: [{assets: 'feed'}],
         templates: ['feed?allow_comments=true'],
         translations: ['controls.feed']

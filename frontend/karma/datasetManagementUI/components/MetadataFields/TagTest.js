@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import Tag from 'components/MetadataFields/Tag';
 
 describe('components/MetadataFields/Tag', () => {

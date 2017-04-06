@@ -29,7 +29,7 @@ class ColumnHeader extends Component {
 
     return (
       <th key={column.id} className={styles.columnHeader}>
-        <Link to={Links.columnMetadataEditor(column.id)}>
+        <Link to={Links.columnMetadataForm(column.id)}>
           <span
             className={styles.colName}
             data-cheetah-hook="col-name"

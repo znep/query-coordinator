@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { MetadataTable } from 'components/MetadataTable';
 import mockView from 'data/mockView';
 
@@ -12,12 +13,12 @@ describe('components/MetadataTable', function() {
 
   it('renders an element', function() {
     var element = renderComponent(MetadataTable, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('rends a contact dataset owner button if disableContactDatasetOwner is true or undefined', function() {
     var element = renderComponent(MetadataTable, getProps());
-    expect(element.querySelector('.contact-dataset-owner')).to.exist;
+    assert.ok(element.querySelector('.contact-dataset-owner'));
   });
 
   it('does not render a contact dataset owner button if disableContactDatasetOwner is true', function() {
@@ -26,6 +27,6 @@ describe('components/MetadataTable', function() {
         disableContactDatasetOwner: true
       }
     }));
-    expect(element.querySelector('.contact-dataset-owner')).to.not.exist;
+    assert.isNull(element.querySelector('.contact-dataset-owner'));
   });
 });

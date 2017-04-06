@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import Immutable from 'immutable';
 import moment from 'moment';
 import translations from 'mockTranslations';
@@ -45,7 +47,7 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm', function () {
   });
 
   it('save button should have disabled', () => {
-    expect(this.output.querySelector('button.btn-primary').hasAttribute('disabled')).to.be.true;
+    assert.isTrue(this.output.querySelector('button.btn-primary').hasAttribute('disabled'));
   });
 
   it('should have correct goal updated value', () => {

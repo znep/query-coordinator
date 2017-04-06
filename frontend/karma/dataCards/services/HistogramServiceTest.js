@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('HistogramService', function() {
@@ -95,7 +96,7 @@ describe('HistogramService', function() {
         input = {min: -threshold, max: threshold};
         input = run(input);
         expect(input.bucketType).to.equal('logarithmic');
-        expect(input.bucketSize).to.not.exist;
+        assert.notProperty(input, 'bucketSize');
       });
 
       it('should default to a bucketSize of one if the range is empty', function() {
@@ -181,7 +182,7 @@ describe('HistogramService', function() {
         input = [];
         output = run(input, logarithmicOptions);
 
-        expect(output).to.be.instanceof(Array).and.empty;
+        assert.deepEqual(output, []);
       });
 
       it('should return an empty array if input is not an array', function() {
@@ -189,19 +190,19 @@ describe('HistogramService', function() {
 
         input = null;
         output = run(input, logarithmicOptions);
-        expect(output).to.be.instanceof(Array).and.empty;
+        assert.deepEqual(output, []);
 
         input = undefined;
         output = run(input, logarithmicOptions);
-        expect(output).to.be.instanceof(Array).and.empty;
+        assert.deepEqual(output, []);
 
         input = 19;
         output = run(input, logarithmicOptions);
-        expect(output).to.be.instanceof(Array).and.empty;
+        assert.deepEqual(output, []);
 
         input = 'purpleOatmeal';
         output = run(input, logarithmicOptions);
-        expect(output).to.be.instanceof(Array).and.empty;
+        assert.deepEqual(output, []);
       });
 
       it('should return null if linear bucketing is requested without a bucketSize', function() {

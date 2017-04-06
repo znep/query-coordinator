@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { EditBar } from 'components/EditBar';
 
 describe('EditBar', () => {
@@ -19,7 +21,7 @@ describe('EditBar', () => {
   });
 
   it('renders', () => {
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('renders the page name', () => {
@@ -27,11 +29,11 @@ describe('EditBar', () => {
   });
 
   it('renders a save button', () => {
-    expect(element.querySelector('.btn-save')).to.exist;
+    assert.ok(element.querySelector('.btn-save'));
   });
 
   it('renders a preview button', () => {
-    expect(element.querySelector('.btn-preview')).to.exist;
+    assert.ok(element.querySelector('.btn-preview'));
   });
 
   it('invokes onClickPreview on preview click', () => {
@@ -42,6 +44,6 @@ describe('EditBar', () => {
 
     TestUtils.Simulate.click(element.querySelector('.btn-preview'));
 
-    expect(onClickSpy).to.have.been.called;
+    sinon.assert.called(onClickSpy);
   });
 });

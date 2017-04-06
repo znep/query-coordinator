@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React from 'react';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag,
@@ -11,7 +13,7 @@ describe('FormInput', function() {
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();
     this.onSuccessStub = sinon.stub();
-    sinon.stub($, 't', function(key) {
+    sinon.stub($, 't').callsFake(function(key) {
       return 'Translation for: ' + key;
     });
     this.props = {
@@ -33,19 +35,19 @@ describe('FormInput', function() {
   });
 
   it('exists', function() {
-    expect(this.createElement()).to.be.a.reactElement;
+    assert.isNotNull(this.createElement());
   });
 
   it('renders', function() {
     this.shallowRenderer.render(this.createElement());
     var result = this.shallowRenderer.getRenderOutput();
-    expect(result).to.be.an.elementOfType('div');
+    assert.isNotNull(result);
   });
 
   it('has a label', function() {
     var node = this.renderIntoDocument();
     var label = findAllByTag(node, 'label')[0];
-    expect(label).to.have.textContent('my input');
+    assert.equal(label.textContent, 'my input');
   });
 
   it('shows validation errors', function() {
@@ -54,13 +56,13 @@ describe('FormInput', function() {
       validationError: 'error message'
     });
     var label = findAllByTag(node, 'label')[1];
-    expect(label).to.have.textContent('error message');
+    assert.equal(label.textContent, 'error message');
   });
 
   it('has a description', function() {
     var node = this.renderIntoDocument();
     var option = findByTag(node, 'p');
-    expect(option).to.have.textContent('my description');
+    assert.equal(option.textContent, 'my description');
   });
 
   it('can be required', function() {
@@ -68,7 +70,7 @@ describe('FormInput', function() {
       required: true
     });
     var label = findAllByTag(node, 'label')[0];
-    expect(label).to.have.className('required');
+    assert.isTrue(label.classList.contains('required'));
   });
 
 });

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { PrivateNotice } from 'components/PrivateNotice';
 import mockView from 'data/mockView';
 
@@ -7,6 +8,6 @@ describe('components/PrivateNotice', function() {
       view: mockView
     });
 
-    expect(element).to.exist;
+    assert.ok(element);
   });
 });

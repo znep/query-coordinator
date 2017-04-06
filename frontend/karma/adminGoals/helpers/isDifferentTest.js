@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import isDifferent from 'helpers/isDifferent';
 
 describe('helpers/isDifferent', () => {

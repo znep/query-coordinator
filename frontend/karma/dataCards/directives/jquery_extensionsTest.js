@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 describe('jquery-extensions', function() {
   'use strict';
 
@@ -77,7 +79,7 @@ describe('jquery-extensions', function() {
           onBeforeRender: onBeforeRenderStub
         });
         $('#container .cell').first().trigger('mouseenter');
-        expect(onBeforeRenderStub.calledOnce).to.be.true;
+        sinon.assert.calledOnce(onBeforeRenderStub);
         expect($('.flyout').length).to.equal(0);
         $('#container .cell').trigger('mouseleave');
         _.defer(function() {
@@ -96,7 +98,7 @@ describe('jquery-extensions', function() {
           onBeforeRender: onBeforeRenderStub
         });
         $('#container .cell').first().trigger('mouseenter');
-        expect(onBeforeRenderStub.calledOnce).to.be.true;
+        sinon.assert.calledOnce(onBeforeRenderStub);
         expect($('.flyout').length).to.equal(1);
         $('#container .cell').trigger('mouseleave');
         _.defer(function() {
@@ -116,12 +118,12 @@ describe('jquery-extensions', function() {
         });
         // Mouse enter with onBeforeRender returning true
         $('#container .cell').first().trigger('mouseenter');
-        expect(onBeforeRenderStub.calledOnce).to.be.true;
+        sinon.assert.calledOnce(onBeforeRenderStub);
         expect($('.flyout').length).to.equal(1);
         $('#container .cell:nth-child(2)').trigger('mouseenter');
         _.defer(function() {
           expect($('.flyout').length).to.equal(0);
-          expect(onBeforeRenderStub.calledTwice).to.be.true;
+          sinon.assert.calledTwice(onBeforeRenderStub);
           done();
         });
       });
@@ -212,10 +214,10 @@ describe('jquery-extensions', function() {
   describe('socratic easing function', function() {
     var ease = $.easing.socraticEase;
     it('should return 0 for 0 input', function() {
-      expect(ease(0)).to.be.zero;
+      assert.equal(ease(0), 0);
     });
     it('should return 1 for 1 input', function() {
-      expect(ease(1)).to.equal(1);
+      assert.equal(ease(1), 1);
     });
   });
 });

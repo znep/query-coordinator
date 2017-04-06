@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils, {
@@ -23,7 +25,7 @@ describe('LoadingButton', function() {
   });
 
   it('exists', function() {
-    expect(this.createElement()).to.be.a.reactElement;
+    assert.ok(this.createElement());
   });
 
   it('renders as a button', function() {
@@ -52,15 +54,13 @@ describe('LoadingButton', function() {
     });
 
     it('has the disabled class', function() {
-      expect(this.button).to.have.className('disabled');
+      assert.isTrue(this.button.classList.contains('disabled'));
     });
 
     it('prevents the button click event', function() {
       var mockEvent = { preventDefault: sinon.stub() };
       TestUtils.Simulate.click(this.button, mockEvent);
-      expect(mockEvent.preventDefault).to.have.callCount(1);
+      sinon.assert.calledOnce(mockEvent.preventDefault);
     });
-
   });
-
 });

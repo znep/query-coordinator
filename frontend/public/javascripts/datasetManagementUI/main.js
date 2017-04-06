@@ -9,6 +9,7 @@ import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import windowDBMiddleware from './lib/database/middleware';
 import * as Phoenix from 'phoenix';
+import Perf from 'react-addons-perf';
 
 import rootReducer from './reducers';
 import { bootstrap } from './bootstrap';
@@ -30,6 +31,8 @@ window.DSMAPI_PHOENIX_SOCKET.connect();
 const middleware = [thunk, routerMiddleware(browserHistory)];
 
 if (window.serverConfig.environment === 'development') {
+  window.Perf = Perf;
+
   middleware.push(createLogger({
     duration: true,
     timestamp: false,

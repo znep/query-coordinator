@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import TextArea from 'components/ContactForm/TextArea';
 
 describe('components/ContactForm/TextArea', function() {
@@ -17,7 +19,7 @@ describe('components/ContactForm/TextArea', function() {
 
   it('renders an element', function() {
     var element = renderComponent(TextArea, defaultProps);
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('invokes the onChange handler on change', function() {
@@ -29,7 +31,7 @@ describe('components/ContactForm/TextArea', function() {
 
     textarea.value = 'one small step';
     TestUtils.Simulate.change(textarea);
-    expect(onChangeSpy).to.have.been.called;
+    sinon.assert.called(onChangeSpy);
   });
 
   it('sets aria-invalid attribute when visited and invalid', function() {

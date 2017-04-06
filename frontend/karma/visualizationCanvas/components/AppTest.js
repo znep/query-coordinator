@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import App, { App as PureApp } from 'App';
 import { ModeStates } from 'lib/constants';
 import { getStore } from '../testStore';
@@ -8,7 +9,7 @@ import mockVif from '../data/mockVif';
 describe('App', function() {
   it('renders', function() {
     const element = renderComponentWithStore(App);
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   describe('edit mode', () => {
@@ -24,28 +25,28 @@ describe('App', function() {
     });
 
     it('renders an edit bar', () => {
-      expect(element.querySelector('.edit-bar')).to.exist;
+      assert.ok(element.querySelector('.edit-bar'));
     });
 
     it('does not render a preview bar', () => {
-      expect(element.querySelector('.preview-bar')).to.not.exist;
+      assert.isNull(element.querySelector('.preview-bar'));
     });
 
     it('does not display site chrome', () => {
-      expect(document.querySelector('#site-chrome-header')).to.not.be.visible;
+      assert.isNull(document.querySelector('#site-chrome-header'));
     });
 
     it('renders an InfoPane', () => {
-      expect(element.querySelector('.info-pane')).to.exist;
+      assert.ok(element.querySelector('.info-pane'));
     });
 
     it('renders an editable filter bar', () => {
-      expect(element.querySelector('.filter-bar-container')).to.exist;
-      expect(element.querySelector('.btn-add-filter')).to.exist;
+      assert.ok(element.querySelector('.filter-bar-container'));
+      assert.ok(element.querySelector('.btn-add-filter'));
     });
 
     it('renders an AddVisualizationButton', () => {
-      expect(element.querySelector('.add-visualization-button-container')).to.exist;
+      assert.ok(element.querySelector('.add-visualization-button-container'));
     });
 
     it('renders any visualizations', () => {
@@ -57,7 +58,7 @@ describe('App', function() {
           vifs: [mockVif]
         }
       ));
-      expect(element.querySelector('.visualization-wrapper')).to.exist;
+      assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
     it('renders edit visualization buttons', () => {
@@ -75,11 +76,11 @@ describe('App', function() {
     });
 
     it('renders a Table', () => {
-      expect(element.querySelector('.table-contents')).to.exist;
+      assert.ok(element.querySelector('.table-contents'));
     });
 
     it('renders an Edit Menu', () => {
-      expect(element.querySelector('.edit-menu')).to.exist;
+      assert.ok(element.querySelector('.edit-menu'));
     });
 
     it('renders an AuthoringWorkflow', () => {
@@ -91,7 +92,7 @@ describe('App', function() {
         }
       });
       element = renderComponentWithStore(App, {}, store);
-      expect(element.querySelector('.authoring-workflow-modal')).to.exist;
+      assert.ok(element.querySelector('.authoring-workflow-modal'));
     });
   });
 
@@ -107,37 +108,38 @@ describe('App', function() {
     });
 
     it('renders a preview bar', () => {
-      expect(element.querySelector('.preview-bar')).to.exist;
+      assert.ok(element.querySelector('.preview-bar'));
     });
 
     it('does not renders an edit bar', () => {
-      expect(element.querySelector('.edit-bar')).to.not.exist;
+      assert.isNull(element.querySelector('.edit-bar'));
     });
 
     it('does not render an Edit Menu', () => {
-      expect(element.querySelector('.edit-menu')).to.not.exist;
+      assert.isNull(element.querySelector('.edit-menu'));
     });
 
-    it('displays site chrome', () => {
-      expect(document.querySelector('#site-chrome-header')).to.be.visible;
+    // TODO this test never tested anything.
+    xit('displays site chrome', () => {
+      assert.ok(document.querySelector('#site-chrome-header'));
     });
 
     it('renders an InfoPane', () => {
-      expect(element.querySelector('.info-pane')).to.exist;
+      assert.ok(element.querySelector('.info-pane'));
     });
 
     it('renders a presentational filter bar', () => {
-      expect(element.querySelector('.filter-bar-container')).to.exist;
-      expect(element.querySelector('.add-filter-button')).to.not.exist;
+      assert.ok(element.querySelector('.filter-bar-container'));
+      assert.isNull(element.querySelector('.add-filter-button'));
     });
 
     it('does not render an AddVisualizationButton', () => {
-      expect(element.querySelector('.add-visualization-button-container')).to.not.exist;
+      assert.isNull(element.querySelector('.add-visualization-button-container'));
     });
 
     it('renders any visualizations', () => {
       element = renderComponentWithStore(App, {}, getStore({ mode: ModeStates.PREVIEW, vifs: [mockVif] }));
-      expect(element.querySelector('.visualization-wrapper')).to.exist;
+      assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
     it('does not render edit visualization buttons', () => {
@@ -146,7 +148,7 @@ describe('App', function() {
     });
 
     it('renders a Table', () => {
-      expect(element.querySelector('.table-contents')).to.exist;
+      assert.ok(element.querySelector('.table-contents'));
     });
   });
 
@@ -162,37 +164,38 @@ describe('App', function() {
     });
 
     it('does not render a preview bar', () => {
-      expect(element.querySelector('.preview-bar')).to.not.exist;
+      assert.isNull(element.querySelector('.preview-bar'));
     });
 
     it('does not renders an edit bar', () => {
-      expect(element.querySelector('.edit-bar')).to.not.exist;
+      assert.isNull(element.querySelector('.edit-bar'));
     });
 
     it('does not render an Edit Menu', () => {
-      expect(element.querySelector('.edit-menu')).to.not.exist;
+      assert.isNull(element.querySelector('.edit-menu'));
     });
 
-    it('displays site chrome', () => {
-      expect(document.querySelector('#site-chrome-header')).to.be.visible;
+    // TODO this test never tested anything.
+    xit('displays site chrome', () => {
+      assert.ok(document.querySelector('#site-chrome-header'));
     });
 
     it('renders an InfoPane', () => {
-      expect(element.querySelector('.info-pane')).to.exist;
+      assert.ok(element.querySelector('.info-pane'));
     });
 
     it('renders a presentational filter bar', () => {
-      expect(element.querySelector('.filter-bar-container')).to.exist;
-      expect(element.querySelector('.add-filter-button')).to.not.exist;
+      assert.ok(element.querySelector('.filter-bar-container'));
+      assert.isNull(element.querySelector('.add-filter-button'));
     });
 
     it('does not render an AddVisualizationButton', () => {
-      expect(element.querySelector('.add-visualization-button-container')).to.not.exist;
+      assert.isNull(element.querySelector('.add-visualization-button-container'));
     });
 
     it('renders any visualizations', () => {
       element = renderComponentWithStore(App, {}, getStore({ mode: ModeStates.VIEW, vifs: [mockVif] }));
-      expect(element.querySelector('.visualization-wrapper')).to.exist;
+      assert.ok(element.querySelector('.visualization-wrapper'));
     });
 
     it('does not render edit visualization buttons', () => {
@@ -201,7 +204,7 @@ describe('App', function() {
     });
 
     it('renders a Table', () => {
-      expect(element.querySelector('.table-contents')).to.exist;
+      assert.ok(element.querySelector('.table-contents'));
     });
   });
 

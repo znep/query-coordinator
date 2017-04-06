@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('animateTo', function() {
@@ -220,7 +221,7 @@ describe('animateTo', function() {
         // to fix issues with card dragging.
         xit('gets its dimensions set before the animation, and reverts afterwards', function(done) {
           var child = el.children();
-          expect(child[0].style.width).not.to.be.ok;
+          assert.isNotOk(child[0].style.width);
 
           scope.styles = {
             top: 20,

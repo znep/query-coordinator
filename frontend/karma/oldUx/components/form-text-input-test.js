@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import React from 'react';
 import TestUtils, {
   findRenderedDOMComponentWithTag as findByTag
@@ -11,7 +13,7 @@ describe('FormTextInput', function() {
   beforeEach(function() {
     this.shallowRenderer = TestUtils.createRenderer();
     this.onSuccessStub = sinon.stub();
-    sinon.stub($, 't', function(key) {
+    sinon.stub($, 't').callsFake(function(key) {
       return 'Translation for: ' + key;
     });
     this.props = {
@@ -25,7 +27,7 @@ describe('FormTextInput', function() {
   });
 
   it('exists', function() {
-    expect(FormTextInput).to.exist;
+    assert.ok(FormTextInput);
   });
 
   it('renders in a <FormInput />', function() {
@@ -37,7 +39,7 @@ describe('FormTextInput', function() {
   it('has an input', function() {
     var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, this.props));
     var input = findByTag(node, 'input');
-    expect(input).to.exist;
+    assert.ok(input);
   });
 
   it('shows required field validation errors', function() {
@@ -82,7 +84,7 @@ describe('FormTextInput', function() {
     }, this.props);
     var node = TestUtils.renderIntoDocument(React.createElement(FormTextInput, props));
     var input = findByTag(node, 'input');
-    expect(input).to.have.className('required');
+    assert.isTrue(input.classList.contains('required'));
   });
 
 });

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { update, SHAPEFILE_UPDATE_LAYER, updateLayerAction } from 'components/importShapefile';
 import { FILE_UPLOAD_COMPLETE, fileUploadComplete } from 'components/uploadFile';
 

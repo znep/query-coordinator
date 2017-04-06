@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -181,7 +183,7 @@ describe('RX Extensions', function() {
       var onRetryStartStub = sinon.stub();
       src$.incrementalFallbackRetry(3, onRetryStartStub).
         subscribe(_.noop, _.noop, function() {
-          expect(onRetryStartStub).to.have.not.been.called;
+          sinon.assert.notCalled(onRetryStartStub);
           done();
         });
     });

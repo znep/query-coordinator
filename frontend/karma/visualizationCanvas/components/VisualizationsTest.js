@@ -1,10 +1,11 @@
+import { expect, assert } from 'chai';
 import { Visualizations } from 'components/Visualizations';
 import mockVif from 'data/mockVif';
 
 describe('Visualizations', () => {
   it('renders nothing if this.props.vifs is empty', () => {
     const element = renderComponent(Visualizations, { vifs: [] });
-    expect(element).to.be.null;
+    assert.isNull(element);
   });
 
   it('renders a visualization for each VIF in this.props.vifs', () => {

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import Immutable from 'immutable';
 
 import translator from 'helpers/translator';

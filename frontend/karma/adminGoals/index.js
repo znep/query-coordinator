@@ -1,3 +1,12 @@
+// Sinon doesn't support native window.fetch. This test suite was written while we were targeting
+// PhantomJS, which relied on an XHR-based polyfill to provide window.fetch. This meant that sinon's
+// fakeServer worked.
+//
+// Now, we run tests in Chrome, which does have a native window.fetch. Instead of re-writing all the
+// tests using fakeServer, we elect to disable Chrome's native implementation and fall back to the
+// working polyfill.
+window.fetch = null;
+
 import 'script!jquery';
 import { Provider } from 'react-redux';
 import { FeatureFlags } from 'common/feature_flags';

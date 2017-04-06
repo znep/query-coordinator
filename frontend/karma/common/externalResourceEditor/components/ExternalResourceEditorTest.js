@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { ExternalResourceEditor } from 'components/externalResourceEditor/ExternalResourceEditor';
 
 describe('externalResourceEditor/ExternalResourceEditor', () => {

@@ -39,15 +39,11 @@ create a good starting `database.yml` for development and test.
 
 #### AWS setup for S3
 
-In order to be able to upload images in development mode, some AWS credentials need
-to be pulled from lastpass. The lastpass login is called "Storyteller Upload IAM"
-and lives in the "Shared-Socrata Engineering Common" folder. The values in this
-secure note should be added to `.env` in the rails root.
-
-There is a script to do this for you, though it requires that the
-[lastpass-cli](https://github.com/LastPass/lastpass-cli) be installed:
-
-    bin/setup_s3
+In order to be able to upload images in development mode, you need to have a
+profile for your personal IAM user in the staging environment. This profile is
+assumed to have the name `staging` by default; if your staging profile has
+another name, edit `.env` (created by `bin/setup` above) and change the profile
+argument that is used to set AWS env variables.
 
 #### Multisite Setup
 

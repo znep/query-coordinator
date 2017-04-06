@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -65,7 +67,7 @@ describe('ChoroplethController', function() {
     Rx.Scheduler.timeout = testTimeoutScheduler;
     testHelpers.mockDirective(provide, 'choropleth');
 
-    sinon.stub(SpatialLensService, 'getCuratedRegions', _.constant(Promise.resolve([])));
+    sinon.stub(SpatialLensService, 'getCuratedRegions').callsFake(_.constant(Promise.resolve([])));
   }));
 
   afterEach(function() {
@@ -327,14 +329,14 @@ describe('ChoroplethController', function() {
       flyout.find('.content').text();
 
       expect(flyoutTitle).to.equal('');
-      expect(flyout.is(':visible')).to.be.true;
+      assert.isTrue(flyout.is(':visible'));
 
       testHelpers.fireEvent(feature, 'mouseout');
 
       // Second, test a feature on the second choropleth.
       feature = $('#choropleth-2 .choropleth-container path')[1];
 
-      expect(feature, 'Could not find second choropleth in DOM').to.be.ok;
+      assert.ok(feature, 'Could not find second choropleth in DOM');
       testHelpers.fireEvent(feature, 'mousemove');
 
       flyout = $('#uber-flyout');
@@ -342,7 +344,7 @@ describe('ChoroplethController', function() {
       flyout.find('.content').text();
 
       expect(flyoutTitle).to.equal('');
-      expect(flyout.is(':visible')).to.be.true;
+      assert.isTrue(flyout.is(':visible'));
 
       testHelpers.fireEvent(feature, 'mouseout');
     });
@@ -450,7 +452,7 @@ describe('ChoroplethController', function() {
       });
 
       it('should display an error message when no boundaries are enabled', function() {
-        sinon.stub(SpatialLensService, 'getAvailableGeoregions$', function() {
+        sinon.stub(SpatialLensService, 'getAvailableGeoregions$').callsFake(function() {
           return Rx.Observable.of([]);
         });
 
@@ -482,7 +484,7 @@ describe('ChoroplethController', function() {
       // in this scenario, an enabled boundary is not accessible due to a lack of write permissions,
       // meaning that the user cannot perform async region coding.
       it('should display an error message when boundaries are not accessible due to insufficient permissions', function() {
-        sinon.stub(SpatialLensService, 'getAvailableGeoregions$', function() {
+        sinon.stub(SpatialLensService, 'getAvailableGeoregions$').callsFake(function() {
           var region = {
             enabledFlag: true,
             id: 1,
@@ -741,7 +743,7 @@ describe('ChoroplethController', function() {
 
     it('uses the cardOptions.mapExtent if it has been saved', function() {
       var choropleth = createChoropleth({ mapExtent: testExtent });
-      expect(choropleth.$scope.defaultExtent).to.be.undefined;
+      assert.isUndefined(choropleth.$scope.defaultExtent);
       expect(choropleth.$scope.savedExtent).to.eql(testExtent);
     });
 
@@ -749,13 +751,13 @@ describe('ChoroplethController', function() {
       CardDataService.getDefaultFeatureExtent.returns(testExtent);
       var choropleth = createChoropleth({});
       expect(choropleth.$scope.defaultExtent).to.eql(testExtent);
-      expect(choropleth.$scope.savedExtent).to.be.undefined;
+      assert.isUndefined(choropleth.$scope.savedExtent);
     });
 
     it('defers to the choropleth visualization for extent if there is neither a saved nor default extent', function() {
       var choropleth = createChoropleth({});
-      expect(choropleth.$scope.defaultExtent).to.be.undefined;
-      expect(choropleth.$scope.savedExtent).to.be.undefined;
+      assert.isUndefined(choropleth.$scope.defaultExtent);
+      assert.isUndefined(choropleth.$scope.savedExtent);
     });
   });
 

@@ -22,7 +22,7 @@ module StoriesHelper
 
   def settings_panel_print_story_link
     content_tag('a',
-      href: "/stories/s/#{@story.uid}/preview?print=true",
+      href: "#{@story_url_for_preview}?print=true",
       class: 'menu-list-item-header',
       role: 'button',
       target: '_blank') do

@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -200,7 +202,7 @@ describe('CardsViewController', function() {
 
       $scope.page.set('name', 'mushroom mushroom');
 
-      expect($scope.writablePage.warnings.name).to.not.be.ok;
+      assert.isNotOk($scope.writablePage.warnings.name);
     });
 
     it('surfaces warning names as a flyout on the warning icon', function() {
@@ -277,7 +279,7 @@ describe('CardsViewController', function() {
       describe('with no base filter', function() {
         it('should yield an empty WHERE', function() {
           var harness = makeMinimalController();
-          expect(harness.$scope.globalWhereClauseFragment).to.be.empty;
+          assert.lengthOf(harness.$scope.globalWhereClauseFragment, 0);
         });
       });
 
@@ -393,14 +395,14 @@ describe('CardsViewController', function() {
   describe('manage lens dialog', function() {
     it('should be initialized', function() {
       var harness = makeController();
-      expect(harness.$scope.manageLensState).to.not.be.undefined;
+      assert.isDefined(harness.$scope.manageLensState);
     });
 
     it('should hide the manage lens button when the user lacks any sufficient permissions', function() {
       var harness = makeController({}, {
         rights: [ViewRights.ADD, ViewRights.WRITE, ViewRights.DELETE]
       });
-      expect(harness.$scope.shouldShowManageLens).to.be.false;
+      assert.isFalse(harness.$scope.shouldShowManageLens);
     });
 
     it('should hide the manage lens button when on an ephemeral view', function() {
@@ -409,21 +411,21 @@ describe('CardsViewController', function() {
         pageId: null
       });
 
-      expect(harness.$scope.shouldShowManageLens).to.be.false;
+      assert.isFalse(harness.$scope.shouldShowManageLens);
     });
 
     it('should show the manage lens button when the user has the grant permission', function() {
       var harness = makeController({}, {
         rights: [ViewRights.ADD, ViewRights.WRITE, ViewRights.GRANT]
       });
-      expect(harness.$scope.shouldShowManageLens).to.be.true;
+      assert.isTrue(harness.$scope.shouldShowManageLens);
     });
 
     it('should show the manage lens button when the user has the update_view permission', function() {
       var harness = makeController({}, {
         rights: [ViewRights.ADD, ViewRights.WRITE, ViewRights.UPDATE_VIEW]
       });
-      expect(harness.$scope.shouldShowManageLens).to.be.true;
+      assert.isTrue(harness.$scope.shouldShowManageLens);
     });
   });
 
@@ -516,35 +518,35 @@ describe('CardsViewController', function() {
     it('should set hasChanges to true when a property changes on any model hooked to the page, then back to false when changed back to its original value', function() {
       $scope.$digest();
 
-      expect($scope.hasChanges).not.to.be.ok;
+      assert.isNotOk($scope.hasChanges);
 
       $scope.page.set('name', 'name2');
-      expect($scope.hasChanges).to.be.true;
+      assert.isTrue($scope.hasChanges);
 
       $scope.page.set('name', DEFAULT_PAGE_NAME);
-      expect($scope.hasChanges).not.to.be.ok;
+      assert.isNotOk($scope.hasChanges);
     });
 
     it('should call PageDataService.save when savePage is called with hasChanges = true', function() {
       $scope.page.set('name', 'name2'); // Cause a change.
 
-      var spy = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      var spy = sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
       $scope.savePage();
-      expect(spy.calledOnce).to.be.true;
+      sinon.assert.calledOnce(spy);
     });
 
     it('should not call PageDataService.save when savePage is called with hasChanges = false', function() {
-      var spy = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      var spy = sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
       $scope.savePage();
-      expect(spy.called).to.be.false;
+      assert.isFalse(spy.called);
     });
 
     it('should set hasChanges to false after successfully saving', function(done) {
-      sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
 
@@ -562,27 +564,27 @@ describe('CardsViewController', function() {
       $scope.page.set('name', 'name2');
 
       // always fail the save.
-      sinon.stub(PageDataService, 'save', _.constant($q.reject()));
+      sinon.stub(PageDataService, 'save').callsFake(_.constant($q.reject()));
 
       $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
 
-      expect($scope.hasChanges).to.be.true;
+      assert.isTrue($scope.hasChanges);
     });
 
     it('should set hasChanges to true after making a change after saving', function() {
-      sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
       $scope.page.set('name', 'name2');
       $scope.savePage();
       $rootScope.$apply(); // Must call $apply, as savePage uses a $q promise internally. Grah.
       $scope.page.set('name', 'name3');
-      expect($scope.hasChanges).to.be.true;
+      assert.isTrue($scope.hasChanges);
     });
 
     it('should set editMode to false after saving', function() {
-      sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
       $scope.editMode = true;
@@ -696,7 +698,7 @@ describe('CardsViewController', function() {
     beforeEach(function() {
       controllerHarness = makeController();
       $scope = controllerHarness.$scope;
-      saveStub = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
+      saveStub = sinon.stub(PageDataService, 'save').callsFake(_.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
     });
@@ -710,7 +712,7 @@ describe('CardsViewController', function() {
 
       saveEvents.subscribe(function(event) {
         if (event.status === 'saved') {
-          expect(saveStub.calledOnce).to.be.true;
+          sinon.assert.calledOnce(saveStub);
           done();
         }
       });

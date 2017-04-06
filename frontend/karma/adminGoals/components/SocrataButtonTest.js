@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import SocrataButton from 'components/SocrataButton';
 import translations from 'mockTranslations';
 

@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import { updateNavigation, goToPage } from 'wizard';
 import * as SaveState from 'saveState';
 

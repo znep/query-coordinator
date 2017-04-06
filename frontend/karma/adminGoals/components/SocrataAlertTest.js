@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import SocrataAlert from 'components/SocrataAlert';
 import translations from 'mockTranslations';
 

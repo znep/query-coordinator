@@ -41,7 +41,7 @@ const makeWrapper = (WrappedComponent) => {
     // that data might not be available when this component's constructor is called
     componentWillReceiveProps(nextProps) {
       const initialModelOrig = this.props.initialModel || {};
-      const initialModelUpdated = nextProps.initialModel;
+      const initialModelUpdated = nextProps.initialModel || {};
 
       if (!_.isEqual(initialModelOrig, initialModelUpdated)) {
         this.setModel(initialModelUpdated);

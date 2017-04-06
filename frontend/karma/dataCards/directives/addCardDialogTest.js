@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('addCardDialog', function() {
@@ -203,12 +205,12 @@ describe('addCardDialog', function() {
     var dialog = createDialog();
     var button = dialog.element.find('button:contains("Cancel")');
 
-    expect(dialog.element.is(':visible')).to.be.true;
+    assert.isTrue(dialog.element.is(':visible'));
 
     button.click();
     dialog.outerScope.$digest();
 
-    expect(dialog.element.is(':visible')).to.be.false;
+    assert.isFalse(dialog.element.is(':visible'));
   });
 
   // For some reason angular started adding an 'undefined:undefined' option to the dropdown,
@@ -256,7 +258,7 @@ describe('addCardDialog', function() {
 
     describe('with no column selected', function() {
       it('should be disabled', function() {
-        expect(button.is(':disabled')).to.be.true;
+        assert.isTrue(button.is(':disabled'));
       });
     });
 
@@ -270,7 +272,7 @@ describe('addCardDialog', function() {
       });
 
       it('should be disabled', function() {
-        expect(button.is(':disabled')).to.be.true;
+        assert.isTrue(button.is(':disabled'));
       });
     });
 
@@ -281,7 +283,7 @@ describe('addCardDialog', function() {
       });
 
       it('should be enabled', function() {
-        expect(button.is(':disabled')).to.be.false;
+        assert.isFalse(button.is(':disabled'));
       });
 
       describe('when clicked', function() {

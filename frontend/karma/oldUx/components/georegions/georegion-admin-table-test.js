@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
@@ -30,7 +31,7 @@ describe('GeoregionAdminTable', function() {
   });
 
   it('exists', function() {
-    expect(this.createElement()).to.be.a.reactElement;
+    assert.ok(this.createElement());
   });
 
   it('renders', function() {

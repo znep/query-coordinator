@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 import HomePaneSidebar from 'components/HomePaneSidebar';
 import { getEmptyStore } from '../testStore';
 import {
@@ -75,6 +76,6 @@ describe('components/HomePaneSidebar', () => {
     };
 
     const element = renderComponentWithStore(HomePaneSidebar, props, store);
-    expect(element.querySelectorAll('.activity-feed')).to.exist;
+    assert.ok(element.querySelectorAll('.activity-feed'));
   });
 });

@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import TestUtils from 'react-addons-test-utils';
 
 import {

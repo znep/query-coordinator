@@ -39,7 +39,7 @@ function manageData(state) { // can't destructure in the function head because t
 
         <h3>{I18n.home_pane.sidebar.column_descriptions}</h3>
         <p> {I18n.home_pane.sidebar.column_descriptions_blurb} </p>
-        <Link to={Links.columnMetadataEditor()}>
+        <Link to={Links.columnMetadataForm()}>
           <button
             className={styles.sidebarBtn}
             tabIndex="-1">

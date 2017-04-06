@@ -1,3 +1,4 @@
+import { expect, assert } from 'chai';
 var adminActivityFeedScreen = require('screens/admin-activity-feed');
 
 describe('adminActivityFeedScreen', function() {

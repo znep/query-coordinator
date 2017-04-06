@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { Manager } from 'components/Manager';
 import _ from 'lodash';
 

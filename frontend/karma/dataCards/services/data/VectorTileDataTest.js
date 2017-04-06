@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 
 describe('VectorTileDataService', function() {
@@ -15,7 +17,7 @@ describe('VectorTileDataService', function() {
   beforeEach(angular.mock.module('dataCards'));
 
   beforeEach(function() {
-    sinon.stub($, 'baseUrl', function(pathname) {
+    sinon.stub($, 'baseUrl').callsFake(function(pathname) {
       var url = new URL(TEST_URL);
       if (pathname) {
         url.pathname = pathname;
@@ -42,10 +44,6 @@ describe('VectorTileDataService', function() {
     $.baseUrl.restore();
   });
 
-  it('should exist', function() {
-    expect(VectorTileDataService).to.exist;
-  });
-
   describe('buildTileGetter', function() {
     it('should exist', function() {
       expect(VectorTileDataService).to.respondTo('buildTileGetter');
@@ -53,12 +51,12 @@ describe('VectorTileDataService', function() {
 
     it('should return a function when given a datasetId, fieldName', function() {
       var curriedFunction = VectorTileDataService.buildTileGetter('four-four', 'my_field');
-      expect(curriedFunction).to.exist.and.to.be.a('function');
+      assert.isFunction(curriedFunction);
     });
 
     describe('curried tileGetter function', function() {
       beforeEach(function() {
-        sinon.stub(VectorTileDataService, 'getHost', _.constant('foo.example.com'));
+        sinon.stub(VectorTileDataService, 'getHost').callsFake(_.constant('foo.example.com'));
         sinon.stub(VectorTileDataService, 'getArrayBuffer');
       });
 
@@ -71,8 +69,11 @@ describe('VectorTileDataService', function() {
         var urlMatcher = new RegExp('^http://foo\\.example\\.com/tiles/my_field/four-four/1/2/3\\.pbf\\?');
         var curriedFunction = VectorTileDataService.buildTileGetter('four-four', 'my_field', '', true);
         curriedFunction(1, 2, 3);
-        expect(VectorTileDataService.getHost).to.have.been.called;
-        expect(VectorTileDataService.getArrayBuffer).to.have.been.calledWithMatch(sinon.match(urlMatcher));
+        sinon.assert.called(VectorTileDataService.getHost);
+        sinon.assert.calledWithMatch(
+          VectorTileDataService.getArrayBuffer,
+          sinon.match(urlMatcher)
+        );
       });
 
       it('should include the where clause if provided', function() {
@@ -80,8 +81,11 @@ describe('VectorTileDataService', function() {
         var whereMatcher = new RegExp('{0}={1}'.format(escape('$where'), escape(whereClause)));
         var curriedFunction = VectorTileDataService.buildTileGetter('five-five', 'another_field', whereClause, false);
         curriedFunction(3, 2, 1); // arguments are irrelevant here
-        expect(VectorTileDataService.getHost).to.have.been.called;
-        expect(VectorTileDataService.getArrayBuffer).to.have.been.calledWithMatch(sinon.match(whereMatcher));
+        sinon.assert.called(VectorTileDataService.getHost);
+        sinon.assert.calledWithMatch(
+          VectorTileDataService.getArrayBuffer,
+          sinon.match(whereMatcher)
+        );
       });
     });
 
@@ -94,14 +98,14 @@ describe('VectorTileDataService', function() {
 
     it('should provide the origin hostname when there are no tileserver hosts configured', function() {
       tileserverHosts.splice(0, tileserverHosts.length); // Empty the array, maintaining the same ref
-      expect(tileserverHosts).to.be.empty;
+      assert.lengthOf(tileserverHosts, 0);
       var url = VectorTileDataService.getHost(1, 2);
-      expect(url).to.exist.and.to.equal('example.com');
+      assert.equal(url, 'example.com');
     });
 
     it('should provide the origin hostname when called with useOriginHost', function() {
       var url = VectorTileDataService.getHost(1, 2, true);
-      expect(url).to.exist.and.to.equal('example.com');
+      assert.equal(url, 'example.com');
     });
 
     it('should provide a hostname from the configured tileserver hosts', function() {
@@ -146,7 +150,7 @@ describe('VectorTileDataService', function() {
 
     describe('promise return value', function() {
       beforeEach(function() {
-        sinon.stub(VectorTileDataService, 'typedArrayFromArrayBufferResponse', _.constant(new Uint8Array(0)));
+        sinon.stub(VectorTileDataService, 'typedArrayFromArrayBufferResponse').callsFake(_.constant(new Uint8Array(0)));
       });
       afterEach(function() {
         VectorTileDataService.typedArrayFromArrayBufferResponse.restore();
@@ -186,7 +190,7 @@ describe('VectorTileDataService', function() {
 
       it('should return a typed array if there is a response', function() {
         var actual = VectorTileDataService.typedArrayFromArrayBufferResponse({ response: new ArrayBuffer(0) });
-        expect(actual).to.exist.and.to.be.instanceOf(Uint8Array);
+        assert.instanceOf(actual, Uint8Array);
       });
 
     });

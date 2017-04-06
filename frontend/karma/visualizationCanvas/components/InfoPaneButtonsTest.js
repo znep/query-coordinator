@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { InfoPaneButtons } from 'components/InfoPaneButtons';
 import { ModeStates } from 'lib/constants';
 
@@ -13,7 +15,7 @@ describe('InfoPaneButtons', () => {
   it('renders', () => {
     const element = renderComponent(InfoPaneButtons, getProps());
 
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   describe('edit button', () => {
@@ -22,7 +24,7 @@ describe('InfoPaneButtons', () => {
         mode: ModeStates.EDIT
       }));
 
-      expect(element.querySelector('.btn-edit')).to.not.exist;
+      assert.isNull(element.querySelector('.btn-edit'));
     });
 
     it('does not render for preview mode', () => {
@@ -30,7 +32,7 @@ describe('InfoPaneButtons', () => {
         mode: ModeStates.PREVIEW
       }));
 
-      expect(element.querySelector('.btn-edit')).to.not.exist;
+      assert.isNull(element.querySelector('.btn-edit'));
     });
 
     describe('view mode', () => {
@@ -40,7 +42,7 @@ describe('InfoPaneButtons', () => {
         };
         const element = renderComponent(InfoPaneButtons, getProps());
 
-        expect(element.querySelector('.btn-edit')).to.not.exist;
+        assert.isNull(element.querySelector('.btn-edit'));
       });
 
       it('renders for when user has a role', () => {
@@ -51,7 +53,7 @@ describe('InfoPaneButtons', () => {
         };
         const element = renderComponent(InfoPaneButtons, getProps());
 
-        expect(element.querySelector('.btn-edit')).to.exist;
+        assert.ok(element.querySelector('.btn-edit'));
       });
 
       it('invokes onClickEdit on click', () => {
@@ -62,7 +64,7 @@ describe('InfoPaneButtons', () => {
 
         TestUtils.Simulate.click(element.querySelector('.btn-edit'));
 
-        expect(onClickSpy).to.have.been.called;
+        sinon.assert.called(onClickSpy);
       });
     });
   });

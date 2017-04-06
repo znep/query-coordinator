@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 const angular = require('angular');
 const Rx = require('rx');
 
@@ -981,7 +983,7 @@ describe('cardLayout', function() {
       var cl = createLayoutWithCards();
 
       cl.element.find('.card-control.icon-expand').eq(3).click();
-      expect(cl.element.find('card').eq(3).hasClass('expanded')).to.be.true;
+      assert.isTrue(cl.element.find('card').eq(3).hasClass('expanded'));
     });
 
     it('should unexpand when clicking unexpand button of an expanded card', function() {
@@ -1002,16 +1004,16 @@ describe('cardLayout', function() {
     it("doesn't set the expandedCard state if there aren't any expanded cards", function() {
       var cl = createLayoutWithCards();
 
-      expect(!!cl.scope.expandedCard).not.to.be.ok;
+      assert.isNotOk(cl.scope.expandedCard);
     });
 
     it('sets the expandedCard state when you expand a card', function() {
       var cl = createLayoutWithCards();
-      expect(!!cl.scope.expandedCard).not.to.be.ok;
+      assert.isNotOk(cl.scope.expandedCard);
 
       cl.element.find('.card-control.icon-expand').eq(0).click();
       cl.scope.$digest();
-      expect(!!cl.scope.expandedCard).to.be.true;
+      assert.isTrue(!!cl.scope.expandedCard);
     });
 
     it('emit a "customize-card-with-model" event when clicking the customize button', function(done) {
@@ -1278,7 +1280,7 @@ describe('cardLayout', function() {
       it('should display "Expand" over the expand button', function() {
         var cl = createLayoutWithCards();
         var flyout = $('#uber-flyout');
-        expect(flyout.is(':visible')).to.be.false;
+        assert.isFalse(flyout.is(':visible'));
 
         var expand = cl.element.find('.card-control.icon-expand').eq(0);
         mockWindowStateService.mousePosition$.onNext({
@@ -1288,14 +1290,14 @@ describe('cardLayout', function() {
         });
 
         expectFlyoutPosition(expand, flyout);
-        expect(flyout.is(':visible')).to.be.true;
+        assert.isTrue(flyout.is(':visible'));
         expect(flyout.text()).to.equal(I18n.cardControls.expandCard);
       });
 
       it('should display "Collapse" over the collapse button', function() {
         var cl = createLayoutWithCards();
         var flyout = $('#uber-flyout');
-        expect(flyout.is(':visible')).to.be.false;
+        assert.isFalse(flyout.is(':visible'));
 
         var card = cl.element.find('card').eq(1);
         var expandButton = card.find('.card-control.icon-expand');
@@ -1309,7 +1311,7 @@ describe('cardLayout', function() {
         });
 
         expectFlyoutPosition(card.find('.card-control.icon-collapse'), flyout);
-        expect(flyout.is(':visible')).to.be.true;
+        assert.isTrue(flyout.is(':visible'));
         expect(flyout.text()).to.equal(I18n.cardControls.collapseCard);
       });
 
@@ -1320,7 +1322,7 @@ describe('cardLayout', function() {
         cl.outerScope.$apply();
 
         var flyout = $('#uber-flyout');
-        expect(flyout.is(':visible')).to.be.false;
+        assert.isFalse(flyout.is(':visible'));
 
         var choropleth = cl.element.find('choropleth').closest('.card-spot');
         expect(choropleth.length).to.equal(1);
@@ -1342,7 +1344,7 @@ describe('cardLayout', function() {
         });
 
         expectFlyoutPosition(customize.eq(0), flyout);
-        expect(flyout.is(':visible')).to.be.true;
+        assert.isTrue(flyout.is(':visible'));
         expect(flyout.text()).to.equal(I18n.cardControls.customizeEnabled);
       });
     });
@@ -1415,7 +1417,7 @@ describe('cardLayout', function() {
     ]);
 
     expect(cl.element.find('card')).to.have.length(1);
-    expect(cl.element.find('table-card')).to.exist;
+    assert.lengthOf(cl.element.find('table-card'), 1);
   });
 
   it('should show the table card if no table card is present', function() {
@@ -1423,6 +1425,6 @@ describe('cardLayout', function() {
     var cl = createLayoutWithCards([]);
 
     expect(cl.element.find('card')).to.have.length(1);
-    expect(cl.element.find('table-card')).to.exist;
+    assert.lengthOf(cl.element.find('table-card'), 1);
   });
 });

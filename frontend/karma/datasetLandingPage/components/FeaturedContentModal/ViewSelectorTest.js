@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import { ViewSelector } from 'components/FeaturedContentModal/ViewSelector';
 import { Simulate } from 'react-addons-test-utils';
 import mockRelatedView from 'data/mockRelatedView';
@@ -17,7 +19,7 @@ describe('components/FeaturedContentModal/ViewSelector', function() {
 
   it('renders', function() {
     var element = renderComponent(ViewSelector, getProps());
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   describe('viewList', function() {
@@ -39,7 +41,7 @@ describe('components/FeaturedContentModal/ViewSelector', function() {
           viewList: []
         };
         var element = renderComponent(ViewSelector, getProps(noViewsProps));
-        expect(element.querySelector('.view-card')).to.not.exist;
+        assert.isNull(element.querySelector('.view-card'));
       });
 
       it('calls renderNoViews if function is passed in', function() {
@@ -56,8 +58,8 @@ describe('components/FeaturedContentModal/ViewSelector', function() {
   describe('chooseButton', function() {
     it('renders a without saving or busy classes by default', function() {
       var element = renderComponent(ViewSelector, getProps());
-      expect(element.querySelector('.view-select.btn-busy')).to.not.exist
-      expect(element.querySelector('.view-select.btn-success')).to.not.exist
+      assert.isNull(element.querySelector('.view-select.btn-busy'));
+      assert.isNull(element.querySelector('.view-select.btn-success'));
     });
 
     it('fires the onClickChoose when clicked', function() {
@@ -76,8 +78,8 @@ describe('components/FeaturedContentModal/ViewSelector', function() {
           isSaving: true,
           isSavingViewUid: 'four-four'
         }));
-        expect(element.querySelector('.view-select.btn-busy')).to.exist
-        expect(element.querySelector('.view-select.btn-success')).to.not.exist
+        assert.ok(element.querySelector('.view-select.btn-busy'));
+        assert.isNull(element.querySelector('.view-select.btn-success'));
       });
 
       it('gets a btn-success class when is has saves', function() {
@@ -85,8 +87,8 @@ describe('components/FeaturedContentModal/ViewSelector', function() {
           isSaved: true,
           isSavingViewUid: 'four-four'
         }));
-        expect(element.querySelector('.view-select.btn-success')).to.exist
-        expect(element.querySelector('.view-select.btn-busy')).to.not.exist
+        assert.ok(element.querySelector('.view-select.btn-success'));
+        assert.isNull(element.querySelector('.view-select.btn-busy'));
       });
 
       it('does not add the state classes for other views', function() {
@@ -95,8 +97,8 @@ describe('components/FeaturedContentModal/ViewSelector', function() {
           isSaving: true,
           isSavingViewUid: 'notr-ight'
         }));
-        expect(element.querySelector('.view-select.btn-busy')).to.not.exist
-        expect(element.querySelector('.view-select.btn-success')).to.not.exist
+        assert.isNull(element.querySelector('.view-select.btn-busy'));
+        assert.isNull(element.querySelector('.view-select.btn-success'));
       });
     });
   });

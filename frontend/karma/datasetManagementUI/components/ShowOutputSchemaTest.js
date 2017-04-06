@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+import { expect, assert } from 'chai';
 import _ from 'lodash';
 import { Simulate } from 'react-addons-test-utils';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';

@@ -21,7 +21,7 @@ $(function() {
     });
   }
 
-  if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
+  if (!blist.currentUserId) {
     $container.find('.yourRating').socrataTip($.t('screens.about.tooltips.rating_disabled'));
   }
 });

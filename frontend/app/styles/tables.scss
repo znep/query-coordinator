@@ -2,7 +2,7 @@
   border-collapse: collapse;
   width: 100%;
   thead tr {
-    th {
+    td, th {
       @include sprite-menu-icons;
       background-color: $color_table_header_inactive;
       font-size: 1.2em;

@@ -52,10 +52,10 @@
               </colgroup>
               <thead>
                 <tr>
-                  <th class="required" scope="col"><div>&nbsp;</div></th>
+                  <td class="required" scope="col"><div>&nbsp;</div></td>
                   <th class="name" scope="col"><div><%= t("#{prefix}.field_name") %></div><span class="icon"></span></th>
                   <th class="options" scope="col"><div><%= t("#{prefix}.allowed_values") %></div><span class="icon"></span></th>
-                  <th class="actions" scope="col"><div>&nbsp;</div><span class="icon"></span></th>
+                  <td class="actions" scope="col"><div>&nbsp;</div><span class="icon"></span></td>
                 </tr>
               </thead>
               <tbody>
@@ -77,9 +77,9 @@
                           <%- if field['options'].present? -%>
                             <%- field['options'].each_with_index do |option, option_index| -%>
                               <li>
-                                <a href="#Delete" class="remove optionAction deleteItem">
-                                  <span class="icon fadeIcon"></span>
-                                </a>
+                                <button type="button" href="#Delete" class="remove optionAction deleteItem">
+                                  <span class="icon fadeIcon"><%= t('controls.browse.actions.delete.button') %></span>
+                                </button>
                                 <span class="grabHandle fadeIcon"></span>
                                 <label for="<%= "option_#{index}_#{option_index}" %>" style="display: none;">Allowed Value</label>
                                 <input type="text" id="<%= "option_#{index}_#{option_index}" %>" class="value" value="<%= option %>" />
@@ -87,21 +87,21 @@
                             <%- end -%>
                           <%- end-%>
                           <li class="newItemLine">
-                            <a href="#Add" class="add optionAction newItemButton">
-                              <span class="icon fadeIcon"></span>
-                            </a>
+                            <button type="button" class="add optionAction newItemButton">
+                              <span class="icon fadeIcon"><%= t('controls.editors.actions.add') %></span>
+                            </button>
                             <label><span style="display: none;">Allowed Value</span>
                               <input type="text" class="value"/>
                             </label>
                           </li>
                           <li class="templateLine">
-                             <a href="#Delete" class="remove optionAction deleteItem">
-                                <span class="icon fadeIcon"></span>
-                              </a>
-                              <span class="grabHandle fadeIcon"></span>
-                              <label><span style="display: none;">Allowed Value</span>
-                                <input type="text" class="value" />
-                              </label>
+                            <button type="button" class="remove optionAction deleteItem">
+                              <span class="icon fadeIcon"><%= t('controls.browse.actions.delete.button') %></span>
+                            </button>
+                            <span class="grabHandle fadeIcon"></span>
+                            <label><span style="display: none;">Allowed Value</span>
+                              <input type="text" class="value" />
+                            </label>
                           </li>
                         </ul>
                         <div class="errorText"></div>
@@ -209,8 +209,8 @@
             <%- end -%>
             <th class="parent"><div><%= t("#{prefix}.parent") %></div><span class="icon"></span></th>
             <th class="shown"><div><%= t("#{prefix}.shown") %></div><span class="icon"></span></th>
-            <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
-            <th class="deleteAction"><div>&nbsp;</div><span class="icon"></span></th>
+            <td class="actions"><div>&nbsp;</div><span class="icon"></span></td>
+            <td class="deleteAction"><div>&nbsp;</div><span class="icon"></span></td>
           </tr>
         </thead>
         <tbody>

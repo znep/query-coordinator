@@ -7,6 +7,10 @@
     display: none;
     float: right;
     .hideButton {
+      background-color: transparent;
+      border: 0;
+      cursor: pointer;
+      padding: 0;
       @include sprite-menu-icons;
     }
   }

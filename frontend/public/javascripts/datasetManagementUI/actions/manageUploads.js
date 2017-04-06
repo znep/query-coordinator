@@ -194,7 +194,7 @@ export function insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outpu
     // output_colummns directly from metadataEditor. In future, may be better to
     // just overwrite output_columns completely or maybe check if value has changed
     // and call insertFromServer then
-    actions.push(insertFromServer('output_columns', {
+    actions.push(insertFromServerIfNotExists('output_columns', {
       ..._.omit(outputColumn, ['transform']),
       transform_id: outputColumn.transform.id
     }));

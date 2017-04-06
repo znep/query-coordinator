@@ -112,6 +112,10 @@ li.active {
     margin: 0px 0px 0px 1em;
     float: right;
 
+    div {
+      float: none;
+    }
+
     p {
       margin: 0px 0px;
       line-height: 120%;

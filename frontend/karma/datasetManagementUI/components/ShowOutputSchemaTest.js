@@ -23,7 +23,8 @@ describe('components/ShowOutputSchema', () => {
     route: {
       path: '' // just used by mapStateToProps to determine whether we're in a "viewing row errors" state
     },
-    updateColumnType: _.noop
+    updateColumnType: _.noop,
+    routing: {}
   };
 
   it('renders a table without data', () => {
@@ -116,11 +117,10 @@ describe('components/ShowOutputSchema', () => {
       store.dispatch(insertFromServer('row_errors', {
         id: '4-1',
         offset: 1,
-        error: {
-          wanted: 3,
-          got: 2,
-          contents: ['boop', 'zoop']
-        }
+        wanted: 3,
+        type: 'too_short',
+        got: 2,
+        contents: ['boop', 'zoop']
       }));
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
       assert.equal(element.querySelector('malformed-rows-status-text', '3Malformed row'));
@@ -150,11 +150,10 @@ describe('components/ShowOutputSchema', () => {
         id: '4-0',
         offset: 0,
         input_schema_id: 4,
-        error: {
-          wanted: 3,
-          got: 2,
-          contents: ['boop', 'zoop']
-        }
+        type: 'too_short',
+        wanted: 3,
+        got: 2,
+        contents: ['boop', 'zoop']
       }));
       const element = renderComponentWithStore(ShowOutputSchema, {
         ...defaultProps,
@@ -192,9 +191,10 @@ describe('components/ShowOutputSchema', () => {
       updateColumnType: spy,
       goHome: _.noop,
       goToUpload: _.noop,
-      applyUpdate: _.noop
+      applyUpdate: _.noop,
+      dispatch: function() {}
     };
-    const element = renderPureComponent(ShowOutputSchemaUnConnected(props));
+    const element = renderComponentWithStore(ShowOutputSchemaUnConnected, props, store);
     const firstSelect = element.querySelector('select');
     firstSelect.value = 'SoQLNumber';
     Simulate.change(firstSelect);

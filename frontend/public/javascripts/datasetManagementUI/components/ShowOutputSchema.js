@@ -40,7 +40,7 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
 }
 
 
-class ShowOutputSchema extends Component {
+export class ShowOutputSchema extends Component {
 
   componentDidMount() {
     this.dispatchDataLoad(this.props);

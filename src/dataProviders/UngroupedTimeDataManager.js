@@ -115,14 +115,9 @@ function getData(vif, options) {
     };
   }
 
-  return new Promise((resolve, reject) => {
-
-    Promise.
-      all(dataRequests).
-      then(mapUngroupedDataResponsesToMultiSeriesTable).
-      then(resolve).
-      catch(reject);
-  });
+  return Promise.
+    all(dataRequests).
+    then(mapUngroupedDataResponsesToMultiSeriesTable);
 }
 
 module.exports = {

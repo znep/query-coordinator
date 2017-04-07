@@ -99,8 +99,13 @@ function prefetchDataNeededForMigration(sections) {
     } else if (section.type === 'viz' && section.dataset) {
       // dataset may be blank if unconfigured.
       // also possible to have dataset reference to nonexistent dataset.
-      return httpRequest('GET', `/api/views/${section.dataset}.json`).
-        then(({ data }) => section.dataset = data).
+      return httpRequest(
+        'GET',
+        `/api/views/${section.dataset}.json`,
+        {
+          headers: { 'X-Socrata-Federation': 'Honey Badger' } // Don't get redirected to federated domain.
+        }
+      ).then(({ data }) => section.dataset = data).
         catch((error) => {
           const missingResourceStatusCodes = [403, 404];
           if (_.includes(missingResourceStatusCodes, error.statusCode)) {

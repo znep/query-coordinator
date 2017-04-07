@@ -1055,7 +1055,7 @@ export default function AssetSelectorStore() {
     // Also, I CAN'T BELIEVE I'M WRITING THIS AGAIN
     var viewUrl = `https://${domain}/api/views/${uid}.json`;
 
-    return httpRequest('GET', viewUrl).
+    return httpRequest('GET', viewUrl, { headers: { 'X-Socrata-Federation': 'Honey Badger' } }).
       then(({ data }) => {
         // Retcon the domain into the view data.
         // We'd have to pass it around like 5 methods otherwise.

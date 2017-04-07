@@ -15,7 +15,7 @@ import * as dsmapiLinks from '../dsmapiLinks';
 export const PAGE_SIZE = 50;
 
 // TODO: refactor: the URL is the load plan, duh
-function getLoadPlan(db, outputSchemaId, displayState) {
+export function getLoadPlan(db, outputSchemaId, displayState) {
   switch (displayState.type) {
     case DisplayState.COLUMN_ERRORS: {
       const { upload, inputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
@@ -23,8 +23,9 @@ function getLoadPlan(db, outputSchemaId, displayState) {
       const url = dsmapiLinks.columnErrors(
         upload.id, inputSchema.id, outputSchemaId, columnId, PAGE_SIZE, (displayState.pageNo - 1) * PAGE_SIZE
       );
-      const load = _.find(db.__loads__, { url });
-      if (!load) {
+
+      const alreadyLoaded = _.find(db.__loads__, { url });
+      if (!alreadyLoaded) {
         return {
           type: 'COLUMN_ERRORS',
           transformId: displayState.transformId,
@@ -40,10 +41,10 @@ function getLoadPlan(db, outputSchemaId, displayState) {
       // do a "here's the url, fetch it if we haven't already fetched it" kind of thing
       const { upload, inputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
       const url = dsmapiLinks.rowErrors(
-        upload.id, inputSchema.id, (displayState.pageNo - 1) * PAGE_SIZE, PAGE_SIZE
+        upload.id, inputSchema.id, PAGE_SIZE, (displayState.pageNo - 1) * PAGE_SIZE
       );
-      const load = _.find(db.__loads__, { url });
-      if (!load) {
+      const alreadyLoaded = _.find(db.__loads__, { url });
+      if (!alreadyLoaded) {
         return {
           type: 'ROW_ERRORS',
           inputSchemaId: inputSchema.id,
@@ -94,7 +95,6 @@ export function loadVisibleData(outputSchemaId, displayState) {
 
 function executeLoadPlan(loadPlan) {
   return (dispatch) => {
-    console.log('loadPlan', loadPlan);
     switch (loadPlan.type) {
       case 'NORMAL':
         dispatch(loadNormalPreview(loadPlan.outputSchemaId, loadPlan.pageNo));
@@ -111,15 +111,16 @@ function executeLoadPlan(loadPlan) {
   };
 }
 
-// move to dsmapiLinks?
+// TODO: move to dsmapiLinks?
 function urlForNormalPreview(db, outputSchemaId, pageNo) {
   const { upload, inputSchema } = Selectors.pathForOutputSchema(db, outputSchemaId);
+
   return dsmapiLinks.rows(
     upload.id, inputSchema.id, outputSchemaId, PAGE_SIZE, (pageNo - 1) * PAGE_SIZE
   );
 }
 
-function loadNormalPreview(outputSchemaId, pageNo) {
+export function loadNormalPreview(outputSchemaId, pageNo) {
   return (dispatch, getState) => {
     const db = getState().db;
     const url = urlForNormalPreview(db, outputSchemaId, pageNo);
@@ -228,7 +229,7 @@ export function loadColumnErrors(transformId, outputSchemaId, pageNo) {
 export function loadRowErrors(inputSchemaId, pageNo) {
   return (dispatch, getState) => {
     const uploadId = getState().db.input_schemas[inputSchemaId].upload_id;
-    const url = dsmapiLinks.rowErrors(uploadId, inputSchemaId, (pageNo - 1) * PAGE_SIZE, PAGE_SIZE);
+    const url = dsmapiLinks.rowErrors(uploadId, inputSchemaId, PAGE_SIZE, (pageNo - 1) * PAGE_SIZE);
     dispatch(loadStarted(url));
     socrataFetch(url).
       then(checkStatus).

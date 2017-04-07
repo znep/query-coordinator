@@ -51,6 +51,8 @@ export default {
   info_pane: {
     less: 'Less',
     more: 'More',
+    more_info: 'More Info',
+    less_info: 'Less Info',
     official: 'Official',
     community: 'Community',
     private_notice: 'This view is private'

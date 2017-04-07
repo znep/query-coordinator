@@ -24,8 +24,10 @@
   }
 
   .entry-header.dataset-landing-page-header {
-    display: flex;
-    flex-wrap: wrap;
+    .entry-header-contents {
+      display: flex;
+      flex-wrap: wrap;
+    }
 
     .entry-title {
       flex: 1 1 auto;
@@ -45,6 +47,17 @@
     .entry-actions {
       flex: 0 1 auto;
     }
+
+    .collapse-info-pane-wrapper {
+      width: 100%;
+
+      .collapse-info-pane-btn {
+        color: $dark-grey-1;
+        vertical-align: text-top;
+        font-size: 10pt;
+        height: 24px;
+      }
+    }
   }
 
   .entry-main {
@@ -55,12 +68,20 @@
         max-width: 100%;
         word-wrap: break-word;
       }
+
+      &.pane-collapsible {
+        min-height: 75px;
+      }
     }
   }
 
   .entry-content {
     .entry-meta.updated .meta-title {
       padding-top: 0;
+    }
+
+    &.hide {
+      display: none;
     }
   }
 

@@ -1,9 +1,11 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import $ from 'jquery';
+import classNames from 'classnames';
 import collapsible from '../../common/collapsible';
 import purify from '../../common/purify';
 import { translate as t } from '../../common/I18n';
+import SocrataIcon from '../SocrataIcon';
 
 /**
  * The InfoPane is a component that is designed to render a hero element with useful information
@@ -88,19 +90,34 @@ const InfoPane = React.createClass({
      * An optional function that should return content to be rendered in the upper-right hand corner
      * of the info pane.
      */
-    renderButtons: PropTypes.func
+    renderButtons: PropTypes.func,
+
+    /**
+     * If the isPaneCollapsible prop is true, only the the InfoPane header is initially visible
+     * and a More Info/Less Info toggle allows the InfoPane content to be shown
+     */
+    isPaneCollapsible: PropTypes.bool
   },
 
   getDefaultProps() {
     return {
       descriptionLines: 4,
-      onExpandDescription: _.noop
+      onExpandDescription: _.noop,
+      isPaneCollapsible: false
+    };
+  },
+
+  getInitialState() {
+    return {
+      paneCollapsed: this.props.isPaneCollapsible
     };
   },
 
   componentDidMount() {
     this.$description = $(this.description);
-    this.ellipsify();
+    if (!this.props.isPaneCollapsible) {
+      this.ellipsify();
+    }
   },
 
   componentWillUpdate(nextProps) {
@@ -121,7 +138,7 @@ const InfoPane = React.createClass({
   },
 
   shouldEllipsify(prevProps, nextProps) {
-    return prevProps.description !== nextProps.description;
+    return (prevProps.description !== nextProps.description) && !this.props.isPaneCollapsible;
   },
 
   ellipsify() {
@@ -145,16 +162,64 @@ const InfoPane = React.createClass({
     });
   },
 
-  renderDescription() {
-    const { description } = this.props;
+  toggleInfoPaneVisibility() {
+    this.togglePaneButton.blur();
+
+    this.setState({
+      paneCollapsed: !this.state.paneCollapsed
+    });
+  },
+
+  renderCollapsePaneToggle() {
+    const { paneCollapsed } = this.state;
+    const { isPaneCollapsible } = this.props;
+
+    if (!isPaneCollapsible) {
+      return null;
+    }
+
+    const buttonClassName = classNames('btn-transparent collapse-info-pane-btn', {
+      'hide': false
+    });
+    const buttonContent = paneCollapsed ?
+      <span>{t('info_pane.more_info')} <SocrataIcon name="arrow-down" /> </span> :
+      <span>{t('info_pane.less_info')} <SocrataIcon name="arrow-up" /> </span>;
 
     return (
-      <div className="entry-description-container collapsible">
+      <div className="collapse-info-pane-wrapper">
+        <button
+          className={buttonClassName}
+          ref={(el) => this.togglePaneButton = el}
+          onClick={this.toggleInfoPaneVisibility}>
+          {buttonContent}
+        </button>
+      </div>
+    );
+  },
+
+  renderDescription() {
+    const { description, isPaneCollapsible } = this.props;
+    let moreToggle;
+    let lessToggle;
+
+    if (isPaneCollapsible) {
+      moreToggle = null;
+      lessToggle = null;
+    } else {
+      moreToggle = <button className="collapse-toggle more">{t('info_pane.more')}</button>;
+      lessToggle = <button className="collapse-toggle less">{t('info_pane.less')}</button>;
+    }
+
+    const descriptionContainerClassName = classNames('entry-description-container collapsible', {
+      'pane-collapsible': isPaneCollapsible
+    });
+
+    return (
+      <div className={descriptionContainerClassName}>
         <div className="entry-description" ref={(el) => this.description = el}>
           <div dangerouslySetInnerHTML={{ __html: purify(description) }} />
-
-          <button className="collapse-toggle more">{t('info_pane.more')}</button>
-          <button className="collapse-toggle less">{t('info_pane.less')}</button>
+          {moreToggle}
+          {lessToggle}
         </div>
       </div>
     );
@@ -213,8 +278,11 @@ const InfoPane = React.createClass({
       renderButtons,
       provenance,
       provenanceIcon,
-      hideProvenance
+      hideProvenance,
+      isPaneCollapsible
     } = this.props;
+
+    const { paneCollapsed } = this.state;
 
     const privateIcon = isPrivate ?
       <span
@@ -232,24 +300,31 @@ const InfoPane = React.createClass({
         {t(`info_pane.${provenance}`)}
       </span>;
 
+    const contentClassName = classNames('entry-content', {
+      'hide': paneCollapsed && isPaneCollapsible
+    });
+
     return (
       <div className="info-pane result-card">
         <div className="container">
           <div className="entry-header dataset-landing-page-header">
-            <div className="entry-title">
-              <h1 className="info-pane-name">
-                {privateIcon}
-                {name}
-              </h1>
+            <div className="entry-header-contents">
+              <div className="entry-title">
+                <h1 className="info-pane-name">
+                  {privateIcon}
+                  {name}
+                </h1>
 
-              {provenanceBadge}
-              {categoryBadge}
+                {provenanceBadge}
+                {categoryBadge}
+              </div>
+
+              {buttons}
             </div>
-
-            {buttons}
+            {this.renderCollapsePaneToggle()}
           </div>
 
-          <div className="entry-content">
+          <div className={contentClassName}>
             <div className="entry-main">
               {this.renderDescription()}
               {this.renderFooter()}

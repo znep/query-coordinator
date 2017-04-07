@@ -1,4 +1,8 @@
+<h3 class="styleguide-subheader">Default Info Pane </h3>
 <div id="info-pane-container"></div>
+
+<h3 class="styleguide-subheader">Collapsible Info Pane <span class="small">(if passed <i>isPaneCollapsible=true</i> prop)</span></h3>
+<div id="collapsible-info-pane-container"></div>
 
 <script type="text/babel" data-presets="es2015,react">
   $(() => {
@@ -40,6 +44,15 @@
     ReactDOM.render(
       <styleguide.InfoPane {...props} />,
       document.getElementById('info-pane-container')
+    );
+
+    const collapsibleProps = _.merge({}, props, {
+      isPaneCollapsible: true
+    });
+
+    ReactDOM.render(
+      <styleguide.InfoPane {...collapsibleProps} />,
+      document.getElementById('collapsible-info-pane-container')
     );
   });
 </script>

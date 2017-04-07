@@ -1,5 +1,6 @@
 import InfoPane from 'components/InfoPane';
 import { renderComponent } from '../helpers';
+import { Simulate } from 'react-addons-test-utils';
 
 describe('InfoPane', () => {
   function getProps(props) {
@@ -30,59 +31,111 @@ describe('InfoPane', () => {
   const getPrivateIcon = (element) => element.querySelector('.socrata-icon-private');
   const getDescription = (element) => element.querySelector('.entry-description div');
   const getButtons = (element) => element.querySelector('.entry-actions');
+  const getToggle = (element) => element.querySelector('.collapse-info-pane-btn');
+  const getContent = (element) => element.querySelector('.entry-content');
 
-  it('renders a name', () => {
-    const element = renderComponent(InfoPane, getProps());
-    expect(getName(element).textContent).to.equal('A Different View');
-  });
-
-  describe('when provenance is official', () => {
-    it('renders the correct badge', () => {
-      const element = renderComponent(InfoPane, getProps({ provenance: 'official', provenanceIcon: 'official2' }));
-      expect(getOfficial(element)).to.exist;
+  describe('header', () => {
+    it('renders a name', () => {
+      const element = renderComponent(InfoPane, getProps());
+      assert.equal(getName(element).textContent, 'A Different View');
     });
 
-    it('does not render the badge when hideProvenance is true', () => {
-      const element = renderComponent(InfoPane, getProps({ provenance: 'official', provenanceIcon: 'official2', hideProvenance: true }));
-      expect(getOfficial(element)).to.not.exist;
-      expect(getCommunity(element)).to.not.exist;
+    describe('when provenance is official', () => {
+      it('renders the correct badge', () => {
+        const element = renderComponent(InfoPane, getProps({ provenance: 'official', provenanceIcon: 'official2' }));
+        assert.notEqual(getOfficial(element), null);
+      });
+
+      it('does not render the badge when hideProvenance is true', () => {
+        const element = renderComponent(InfoPane, getProps({ provenance: 'official', provenanceIcon: 'official2', hideProvenance: true }));
+        assert.equal(getOfficial(element), null);
+        assert.equal(getCommunity(element), null);
+      });
+    });
+
+    describe('when provenance is community', () => {
+      it('renders the correct badge', () => {
+        const element = renderComponent(InfoPane, getProps({ provenance: 'community', provenanceIcon: 'community' }));
+        assert.equal(getOfficial(element), null);
+        assert.notEqual(getCommunity(element), null);
+      });
+
+      it('does not render the badge when hideProvenance is true', () => {
+        const element = renderComponent(InfoPane, getProps({ provenance: 'community', provenanceIcon: 'community', hideProvenance: true }));
+        assert.equal(getOfficial(element), null);
+        assert.equal(getCommunity(element), null);
+      });
+    });
+
+    it('renders a lock icon when isPrivate is set', () => {
+      const element = renderComponent(InfoPane, getProps());
+      assert.notEqual(getPrivateIcon(element), null);
+    });
+
+    it('does not render a lock icon when isPrivate is not set', () => {
+      const element = renderComponent(InfoPane, getProps({ isPrivate: false }));
+      assert.equal(getPrivateIcon(element), null);
+    });
+
+    it('renders buttons using the specified function', () => {
+      const element = renderComponent(InfoPane, getProps({
+        renderButtons: () => { return 'button'; }
+      }));
+
+      assert.equal(getButtons(element).textContent, 'button');
     });
   });
 
-  describe('when provenance is community', () => {
-    it('renders the correct badge', () => {
-      const element = renderComponent(InfoPane, getProps({ provenance: 'community', provenanceIcon: 'community' }));
-      expect(getOfficial(element)).to.not.exist;
-      expect(getCommunity(element)).to.exist;
+  describe('when isPaneCollapsible is false', () => {
+    let element;
+
+    beforeEach(() => {
+      element = renderComponent(InfoPane, getProps({ isPaneCollapsible: false }));
     });
 
-    it('does not render the badge when hideProvenance is true', () => {
-      const element = renderComponent(InfoPane, getProps({ provenance: 'community', provenanceIcon: 'community', hideProvenance: true }));
-      expect(getOfficial(element)).to.not.exist;
-      expect(getCommunity(element)).to.not.exist;
+    it('does not render the More/Less Info toggle', () => {
+      assert.equal(getToggle(element), null);
+    });
+
+    it('displays the entry-content', () => {
+      const contentClass = getContent(element).attributes.class.value;
+      assert.isNotTrue(contentClass.includes('hide'));
     });
   });
 
-  it('renders a lock icon when isPrivate is set', () => {
-    const element = renderComponent(InfoPane, getProps());
-    expect(getPrivateIcon(element)).to.exist;
-  });
+  describe('when isPaneCollapsible is true', () => {
+    let element;
 
-  it('does not render a lock icon when isPrivate is not set', () => {
-    const element = renderComponent(InfoPane, getProps({ isPrivate: false }));
-    expect(getPrivateIcon(element)).to.not.exist;
-  });
+    beforeEach(() => {
+      element = renderComponent(InfoPane, getProps({ isPaneCollapsible: true }));
+    });
 
-  it('renders the description', () => {
-    const element = renderComponent(InfoPane, getProps());
-    expect(getDescription(element).textContent).to.equal('A description');
-  });
+    it('renders the More Info toggle', () => {
+      assert.notEqual(getToggle(element), null);
+      assert.isNotTrue(getToggle(element).textContent.includes('Less Info'));
+      assert.isTrue(getToggle(element).textContent.includes('More Info'));
+    });
 
-  it('renders buttons using the specified function', () => {
-    const element = renderComponent(InfoPane, getProps({
-      renderButtons: () => { return 'button'; }
-    }));
+    it('does not display the entry-content', () => {
+      const contentClass = getContent(element).attributes.class.value;
+      assert.isTrue(contentClass.includes('hide'));
+    });
 
-    expect(getButtons(element).textContent).to.equal('button');
+    describe('when the More Info toggle is clicked', () => {
+      beforeEach(() => {
+        Simulate.click(getToggle(element));
+      });
+
+      it('displays the entry-content', () => {
+        const contentClass = getContent(element).attributes.class.value;
+        assert.isNotTrue(contentClass.includes('hide'));
+      });
+
+      it('displays the Less Info toggle', () => {
+        assert.notEqual(getToggle(element), null);
+        assert.isTrue(getToggle(element).textContent.includes('Less Info'));
+        assert.isNotTrue(getToggle(element).textContent.includes('More Info'));
+      });
+    });
   });
 });

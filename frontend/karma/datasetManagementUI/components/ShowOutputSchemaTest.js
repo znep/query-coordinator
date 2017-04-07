@@ -192,6 +192,7 @@ describe('components/ShowOutputSchema', () => {
       goHome: _.noop,
       goToUpload: _.noop,
       applyUpdate: _.noop,
+      routing: {},
       dispatch: function() {}
     };
     const element = renderComponentWithStore(ShowOutputSchemaUnConnected, props, store);

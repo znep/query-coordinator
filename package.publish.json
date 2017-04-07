@@ -20,5 +20,5 @@
   "bugs": {
     "url": "https://github.com/socrata/socrata-autocomplete/issues"
   },
-  "main": "js/main.js"
+  "main": "socrata-autocomplete.js"
 }

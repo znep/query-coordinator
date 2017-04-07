@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Showdown from 'showdown';
 
 import StorytellerUtils from '../StorytellerUtils';
-import httpRequest from '../services/httpRequest';
+import httpRequest, { federationHeaders } from '../services/httpRequest';
 import Actions from './Actions';
 import Constants from './Constants';
 import { dispatcher } from './Dispatcher';
@@ -103,7 +103,8 @@ function prefetchDataNeededForMigration(sections) {
         'GET',
         `/api/views/${section.dataset}.json`,
         {
-          headers: { 'X-Socrata-Federation': 'Honey Badger' } // Don't get redirected to federated domain.
+          // Don't get redirected to federated domain.
+          headers: federationHeaders()
         }
       ).then(({ data }) => section.dataset = data).
         catch((error) => {

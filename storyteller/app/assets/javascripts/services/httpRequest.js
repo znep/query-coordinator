@@ -34,6 +34,10 @@ export const storytellerHeaders = () => {
   };
 };
 
+export const federationHeaders = () => ({
+  'X-Socrata-Federation': 'Honey Badger'
+});
+
 export default function httpRequest(method, url, options) {
 
   // Normalize arguments with reasonable defaults.

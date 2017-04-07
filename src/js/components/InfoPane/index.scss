@@ -50,7 +50,7 @@
 
     .collapse-info-pane-wrapper {
       width: 100%;
-      
+
       .collapse-info-pane-btn {
         color: $dark-grey-1;
         vertical-align: text-top;
@@ -67,6 +67,10 @@
         line-height: 24px;
         max-width: 100%;
         word-wrap: break-word;
+      }
+
+      &.pane-collapsible {
+        min-height: 75px;
       }
     }
   }

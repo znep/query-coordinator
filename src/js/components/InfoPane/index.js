@@ -7,7 +7,6 @@ import purify from '../../common/purify';
 import { translate as t } from '../../common/I18n';
 import SocrataIcon from '../SocrataIcon';
 
-
 /**
  * The InfoPane is a component that is designed to render a hero element with useful information
  * about a dataset.  The component prominently features the title of the asset, a description that
@@ -110,14 +109,13 @@ const InfoPane = React.createClass({
 
   getInitialState() {
     return {
-      paneCollapsed: this.props.isPaneCollapsible,
-      firstPaneExpansion: true
+      paneCollapsed: this.props.isPaneCollapsible
     };
   },
 
   componentDidMount() {
     this.$description = $(this.description);
-    if (!this.state.paneCollapsed) {
+    if (!this.props.isPaneCollapsible) {
       this.ellipsify();
     }
   },
@@ -133,13 +131,6 @@ const InfoPane = React.createClass({
     if (this.shouldEllipsify(prevProps, this.props)) {
       this.ellipsify();
     }
-
-    // If the InfoPane is initially collapsed, then we need to do the initial
-    // ellipsify here because ellipsify needs to have the description visible to
-    // work properly
-    if (this.state.firstPaneExpansion && !this.state.paneCollapsed) {
-      this.ellipsify();
-    }
   },
 
   resetParentHeight() {
@@ -147,7 +138,7 @@ const InfoPane = React.createClass({
   },
 
   shouldEllipsify(prevProps, nextProps) {
-    return prevProps.description !== nextProps.description;
+    return (prevProps.description !== nextProps.description) && !this.props.isPaneCollapsible;
   },
 
   ellipsify() {
@@ -169,13 +160,6 @@ const InfoPane = React.createClass({
       height,
       expandedCallback: onExpandDescription
     });
-
-    // We use firstPaneExpansion to determine if the InfoPane is collapsible, is initially
-    // rendered collapsed, and is being expanded for the first time. That way we know that
-    // we need to call ellipsify when we expand the InfoPane for the first time.
-    if (this.state.firstPaneExpansion && this.props.isPaneCollapsible) {
-      this.setState({ firstPaneExpansion: !this.state.firstPaneExpansion });
-    }
   },
 
   toggleInfoPaneVisibility() {
@@ -195,7 +179,7 @@ const InfoPane = React.createClass({
     }
 
     const buttonClassName = classNames('btn-transparent collapse-info-pane-btn', {
-      'hide': !isPaneCollapsible
+      'hide': false
     });
     const buttonContent = paneCollapsed ?
       <span>{t('info_pane.more_info')} <SocrataIcon name="arrow-down" /> </span> :
@@ -214,15 +198,28 @@ const InfoPane = React.createClass({
   },
 
   renderDescription() {
-    const { description } = this.props;
+    const { description, isPaneCollapsible } = this.props;
+    let moreToggle;
+    let lessToggle;
+
+    if (isPaneCollapsible) {
+      moreToggle = null;
+      lessToggle = null;
+    } else {
+      moreToggle = <button className="collapse-toggle more">{t('info_pane.more')}</button>;
+      lessToggle = <button className="collapse-toggle less">{t('info_pane.less')}</button>;
+    }
+
+    const descriptionContainerClassName = classNames('entry-description-container collapsible', {
+      'pane-collapsible': isPaneCollapsible
+    });
 
     return (
-      <div className="entry-description-container collapsible">
+      <div className={descriptionContainerClassName}>
         <div className="entry-description" ref={(el) => this.description = el}>
           <div dangerouslySetInnerHTML={{ __html: purify(description) }} />
-
-          <button className="collapse-toggle more">{t('info_pane.more')}</button>
-          <button className="collapse-toggle less">{t('info_pane.less')}</button>
+          {moreToggle}
+          {lessToggle}
         </div>
       </div>
     );

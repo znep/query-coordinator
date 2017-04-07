@@ -280,7 +280,9 @@ function SoqlDataProvider(config) {
           success: resolve,
           error: handleError,
           headers: {
-            'Accept': 'application/json; charset=utf-8'
+            'Accept': 'application/json; charset=utf-8',
+            // Suppress cross-domain redirects if possible.
+            'X-Socrata-Federation': 'Honey Badger'
           }
         });
       }

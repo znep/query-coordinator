@@ -291,6 +291,16 @@ describe('MetadataProvider', function() {
       );
     });
 
+    it('should provide the honey badger header', function() {
+      metadataProvider.getDatasetMetadata(); // Discard the response, we don't care.
+      assert.lengthOf(server.requests, 1);
+      assert.propertyVal(
+        server.requests[0].requestHeaders,
+        'X-Socrata-Federation',
+        'Honey Badger'
+      );
+    });
+
     describe('on request error', function() {
       it('should return an Object containing "code", "error", and "message"', function(done) {
         metadataProvider.getDatasetMetadata().then(

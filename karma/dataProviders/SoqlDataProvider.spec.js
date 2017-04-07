@@ -191,6 +191,16 @@ describe('SoqlDataProvider', function() {
         server.restore();
       });
 
+      it('should provide the honey badger header', function() {
+        soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
+        assert.lengthOf(server.requests, 1);
+        assert.propertyVal(
+          server.requests[0].requestHeaders,
+          'X-Socrata-Federation',
+          'Honey Badger'
+        );
+      });
+
       it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
 
         soqlDataProvider.
@@ -392,6 +402,16 @@ describe('SoqlDataProvider', function() {
       afterEach(function() {
 
         server.restore();
+      });
+
+      it('should provide the honey badger header', function() {
+        soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
+        assert.lengthOf(server.requests, 1);
+        assert.propertyVal(
+          server.requests[0].requestHeaders,
+          'X-Socrata-Federation',
+          'Honey Badger'
+        );
       });
 
       it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
@@ -600,6 +620,16 @@ describe('SoqlDataProvider', function() {
 
       after(function() {
         $.ajax.restore();
+      });
+
+      it('should provide the honey badger header', function() {
+        soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
+        assert.lengthOf(server.requests, 1);
+        assert.propertyVal(
+          server.requests[0].requestHeaders,
+          'X-Socrata-Federation',
+          'Honey Badger'
+        );
       });
 
       // function getTableData (columnNames, order, offset, limit) { ... }

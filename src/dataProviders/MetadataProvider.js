@@ -268,7 +268,10 @@ function MetadataProvider(config) {
             // other places in the code. We are temporarily updating this to
             // ask for 'application/json' temporarily, and should restore the
             // charset clause once the bug in the Curated Regions API is fixed.
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+
+            // Suppress cross-domain redirects if possible.
+            'X-Socrata-Federation': 'Honey Badger'
           }
         });
       }

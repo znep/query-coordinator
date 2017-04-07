@@ -112,6 +112,12 @@ describe('DataPane', function() {
             }
           });
 
+          it('renders class \'disabled\' on #limit-none-container when in pie chart', () => {
+            if (chartType === 'pieChart') {
+              assert.isTrue(component.querySelector('#limit-none-container').classList.contains('disabled'))
+            }
+          });
+
           it('renders a limit count radio button', function() {
             expect(component.querySelector('#limit-count')).to.exist;
           });
@@ -128,9 +134,7 @@ describe('DataPane', function() {
           emitsEvent('#limit-count', 'onSelectLimitCount');
           emitsEvent('#limit-count-value', 'onChangeLimitCount');
           emitsEvent('#show-other-category', 'onChangeShowOtherCategory');
-
         });
-
       });
 
       describe('when the current visualization type is not "barChart or pieChart or columnChart"', function() {

@@ -417,6 +417,13 @@
       margin-top: 9px;
     }
 
+    #limit-none-container {
+
+      &.disabled {
+        opacity: 0.25;
+      }      
+    }
+
     #limit-count-container {
       margin-top: 0.5rem;
     }

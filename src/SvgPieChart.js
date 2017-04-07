@@ -206,7 +206,7 @@ $.fn.socrataSvgPieChart = function(originalVif) {
       const error = new Error();
       const errorMessage = I18n.
         translate('visualizations.pie_chart.error_limit_out_of_bounds').
-        format(1, MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1);
+        format(2, MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1);
 
       error.errorMessages = [errorMessage];
 

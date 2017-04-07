@@ -84,11 +84,16 @@ export var DataPane = React.createClass({
       name: 'limit-radio',
       disabled: isPieChart(vifAuthoring),
       onChange: this.props.onSelectLimitNone,
-      defaultChecked: limitCountDisabled
+      checked: limitCountDisabled
     };
 
+    const limitNoneContainerAttributes = {
+      id: 'limit-none-container',
+      className: `${isPieChart(vifAuthoring) ? 'disabled': ''}`
+    }
+
     const limitNoneContainer = (
-      <div id="limit-none-container">
+      <div {...limitNoneContainerAttributes}>
         <input {...limitNoneInputAttributes} />
         <label htmlFor="limit-none">
           <span className="fake-radiobutton"/>
@@ -109,7 +114,7 @@ export var DataPane = React.createClass({
           showOtherCategory: this.showOtherCategoryCheckbox.checked
         });
       },
-      defaultChecked: !limitCountDisabled
+      checked: !limitCountDisabled
     };
 
     // 'Limit results to' number input and other category group checkbox

@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 (function($) {
   blist.namespace.fetch('blist.internal');
 
@@ -126,7 +128,7 @@
     format = format || 'llll Z';
 
     if (asMoment.isValid()) {
-      this.text(asMoment.lang('en').format(format));
+      this.text(asMoment.locale('en').format(format));
     }
   };
 })(jQuery);

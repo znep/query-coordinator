@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 const CategoryStat = (props) => {
-  var { name, count } = props;
+  const { name, count } = props;
 
   return (
     <div className="stat-item">

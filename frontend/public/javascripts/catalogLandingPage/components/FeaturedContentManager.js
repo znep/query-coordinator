@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import * as Actions from '../actions/featuredContent';
+import _ from 'lodash';
 
 import FeaturedContentViewCardManager from './FeaturedContentViewCardManager';
 import FeaturedContentViewCardPlaceholder from './FeaturedContentViewCardPlaceholder';
@@ -105,7 +106,7 @@ export class FeaturedContentManager extends React.Component {
           {_.get(I18n, 'common.external_resource_editor.open_editor_button')}
         </button>
       ],
-      category: this.props.category,
+      catalogQuery: this.props.catalogQuery,
       modalIsOpen: this.state.assetSelectorIsOpen,
       onClose: this.closeAssetSelector,
       onSelect: this.onAssetSelection,
@@ -145,13 +146,22 @@ export class FeaturedContentManager extends React.Component {
 }
 
 FeaturedContentManager.propTypes = {
-  category: PropTypes.string.isRequired,
+  catalogQuery: PropTypes.object.isRequired,
   featuredContent: PropTypes.object.isRequired,
   setFeaturedContentItem: PropTypes.func.isRequired
 };
 
+FeaturedContentManager.defaultProps = {
+  catalogQuery: {},
+  featuredContent: {},
+  setFeaturedContentItem: _.noop
+};
+
 const mapStateToProps = (state) => {
-  return ({ featuredContent: state.featuredContent });
+  return ({
+    catalogQuery: state.catalog.query,
+    featuredContent: state.featuredContent
+  });
 };
 
 const mapDispatchToProps = dispatch => ({

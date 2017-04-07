@@ -27,7 +27,7 @@ export class ResultsContainer extends React.Component {
       resultCount: 0,
       results: [],
       sort: 'relevance',
-      query: ''
+      query: undefined
     };
 
     _.bindAll(this, ['changePage', 'changeSort', 'changeQuery']);
@@ -44,10 +44,19 @@ export class ResultsContainer extends React.Component {
   changePage(pageNumber) {
     if (this.state.isMounted) {
       this.setState({ fetchingResults: true });
+
+      const { catalogQuery } = this.props;
+      const categoryFilter = catalogQuery.category;
+      const assetTypeFilter = catalogQuery.limitTo;
+
+      const customMetadataFilters = _.omit(catalogQuery, ['category', 'custom_path', 'limitTo', 'tags']);
+
       ceteraUtils.
         fetch({
-          category: this.props.category,
+          category: categoryFilter,
+          customMetadataFilters,
           limit: this.props.resultsPerPage,
+          only: assetTypeFilter,
           order: this.state.sort,
           pageNumber,
           q: this.state.query
@@ -123,7 +132,7 @@ export class ResultsContainer extends React.Component {
             {this.props.additionalTopbarComponents.map((component) => component)}
             <Searchbox
               onSearch={this.changeQuery}
-              placeholder={_.get(I18n, 'common.asset_selector.results_container.search_this_category')} />
+              placeholder={_.get(I18n, 'common.asset_selector.results_container.search')} />
           </div>
           {resultContent}
         </div>
@@ -134,7 +143,7 @@ export class ResultsContainer extends React.Component {
 
 ResultsContainer.propTypes = {
   additionalTopbarComponents: PropTypes.array,
-  category: PropTypes.string,
+  catalogQuery: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
   resultsPerPage: PropTypes.number.isRequired
@@ -142,7 +151,7 @@ ResultsContainer.propTypes = {
 
 ResultsContainer.defaultProps = {
   additionalTopbarComponents: [],
-  category: null,
+  catalogQuery: {},
   onClose: _.noop,
   onSelect: _.noop,
   resultsPerPage: 6

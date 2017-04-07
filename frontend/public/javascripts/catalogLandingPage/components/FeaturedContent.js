@@ -32,7 +32,7 @@ export class FeaturedContent extends React.Component {
       return (
         <section className="landing-page-section featured-content">
           <h2 className="landing-page-section-header">
-            {_.get(I18n, 'featured_content.label')}
+            {_.get(I18n, 'featured_content.label_no_filter')}
           </h2>
           <div className="media-results">
             {featuredContentViewCards}

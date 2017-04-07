@@ -6,7 +6,9 @@ import _ from 'lodash';
 describe('components/FeaturedContentManager', () => {
   const getProps = (props = {}) => {
     return {
-      category: 'Fun',
+      catalogQuery: {
+        category: 'Fun'
+      },
       featuredContent: {
         item0: { contentType: 'internal', name: 'Bob Ross', position: 0, url: 'http://bobross.com' }
       },

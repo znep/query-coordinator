@@ -303,10 +303,10 @@ module CommonMetadataMethods
 
     {
       columns: columns,
+      downloadOverride: (nbe_metadata[:metadata] || {})[:overrideLink],
       permissions: {
         isPublic: (nbe_metadata[:grants] || []).any? { |grant| grant[:flags].include?('public') }
-      },
-      downloadOverride: (nbe_metadata[:metadata] || {})[:overrideLink]
+      }
     }.with_indifferent_access
   end
 end

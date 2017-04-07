@@ -13,7 +13,7 @@
     </p>
   </div>
   <div class="emailSection">
-    <%- if FeatureFlags.derive(nil, request).enable_inline_login || current_user %>
+    <%- if current_user %>
       <div class="subscribeText">
         <p><%= t('screens.ds.subscribe.subscribe_html') %></p>
       </div>

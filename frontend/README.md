@@ -494,6 +494,21 @@ Variable Name | Type | Source | Description
 `zookeeper_soda_fountain_path` | String | Configuration | `Zookeeper` path to the `SodaFountain` service.
 `zookeeper_phidippides_path` | String | Configuration | `Zookeeper` path to the `Phiddipides` service.
 
+## Translations & LocaleApp
+
+Only `en.yml` is checked into the codebase, and it should be the source of truth for all the latest English translations.
+If you add a new translation or update an existing one, once it is merged you should be able to login to LocaleApp and optionally update the translations for the other languages.
+
+[Updating translations](https://github.com/socrata/platform-ui/blob/master/frontend/doc/update-translations.md)
+
+If you wish to test other languages locally, you can pull the LocaleApp translations by following these steps:
+
+- Ensure you have a `LOCALEAPP_API_KEY` set in your `frontend/.env` file:
+```
+LOCALEAPP_API_KEY=[KEY FROM LASTPASS]
+```
+- Run the `bin/pull_translations` script
+
 ## Further Reading
 
 - [JavaScript documentation](doc/javascript.md)

@@ -48,14 +48,3 @@ npm install
 
 # 5. Postgres User
 psql blist_dev -c "insert into users (email, created_at, updated_at, admin, uid, domain_id, screen_name, password, created_meta) select 'frontend@socrata.com', now(), now(), true, 'zfnt-user', 1, 'Frontend Dev Admin', 'pbkdf2|sha1|10000|71ak_kGn-LxBmY2apdapSe6TuMjfCfAa|vE4G7bFp21NjpatmmM5W561qG1dL0DFhSc7Ntutr7w_ZLGKM', 'frontend dev user' where not exists (select * from users where email = 'frontend@socrata.com')"
-
-# 6. Locale Files
-if ! grep -q "LOCALEAPP_API_KEY=.*" .env ; then
-  echo 'Please enter the LocaleApp API Key, which can be found in LastPass.'
-  echo
-  read -rp 'LocaleApp API Key: ' LOCALEAPP_API_KEY
-
-  echo "LOCALEAPP_API_KEY=${LOCALEAPP_API_KEY}" >> .env
-fi
-gem install localeapp
-bin/pull_translations

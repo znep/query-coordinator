@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import DateRangePicker from '../DateRangePicker';
 import FilterHeader from './FilterHeader';
 import FilterFooter from './FilterFooter';
+import { ENTER, isolateEventByKeys } from '../../common/keycodes';
 import { getDefaultFilterForColumn } from './filters';
 import moment from 'moment';
 
@@ -30,8 +31,29 @@ export const CalendarDateFilter = React.createClass({
     };
   },
 
+  componentDidMount() {
+    if (this.dateFilter) {
+      this.inputs = this.dateFilter.querySelectorAll('.date-picker-input');
+      _.each(this.inputs, (input) => input.addEventListener('keyup', this.onEnterUpdateFilter));
+    }
+  },
+
+  componentWillUnmount() {
+    if (this.inputs) {
+      _.each(this.inputs, (input) => input.removeEventListener('keyup', this.onEnterUpdateFilter));
+    }
+  },
+
   onDatePickerChange(newDateRange) {
     this.updateValueState(newDateRange);
+  },
+
+  onEnterUpdateFilter(event) {
+    isolateEventByKeys(event, [ENTER]);
+
+    if (event.keyCode === ENTER && !this.shouldDisableApply()) {
+      this.updateFilter();
+    }
   },
 
   setDate(date) {
@@ -54,9 +76,11 @@ export const CalendarDateFilter = React.createClass({
   },
 
   shouldDisableApply() {
-    const { filter } = this.props;
     const { value } = this.state;
-    const initialValue = filter.arguments;
+    // We need to compare the filter returned by getInitialState to disable the apply button on
+    // first load. We manipulate the filter's values in getInitialState to be slightly different
+    // than the filter passed into the prop when the filter is first added.
+    const initialValue = this.getInitialState().value;
 
     return _.isEqual(initialValue, value);
   },
@@ -112,7 +136,7 @@ export const CalendarDateFilter = React.createClass({
     };
 
     return (
-      <div className="filter-controls calendar-date-filter">
+      <div className="filter-controls calendar-date-filter" ref={(el) => this.dateFilter = el}>
         <div className="range-filter-container">
           <FilterHeader {...headerProps} />
           {this.renderDateRangePicker()}

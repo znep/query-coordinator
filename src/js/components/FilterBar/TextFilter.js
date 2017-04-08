@@ -109,6 +109,15 @@ export const TextFilter = React.createClass({
         if (this.isMounted) {
           this.setState({ isValidating: false, value: '' });
           this.onSelectOption({ name: trimmedTerm, value: trimmedTerm });
+
+          // the apply button is rendered by FilterFooter, so we don't have direct access to it
+          const applyButton = this.textFilter ?
+            this.textFilter.querySelector('.apply-btn:not([disabled])') :
+            null;
+
+          if (applyButton) {
+            applyButton.focus();
+          }
         }
       }).
       catch(() => {
@@ -229,7 +238,7 @@ export const TextFilter = React.createClass({
     };
 
     return (
-      <div className="filter-controls text-filter">
+      <div className="filter-controls text-filter" ref={(el) => this.textFilter = el}>
         <div className="column-container">
           {this.renderHeader()}
           <SearchablePicklist {...picklistProps} />

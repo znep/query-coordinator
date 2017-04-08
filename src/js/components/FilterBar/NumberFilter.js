@@ -4,6 +4,7 @@ import Slider from '../Slider';
 import FilterHeader from './FilterHeader';
 import FilterFooter from './FilterFooter';
 import { translate as t } from '../../common/I18n';
+import { ENTER, isolateEventByKeys } from '../../common/keycodes';
 import { getPrecision, roundToPrecision } from '../../common/numbers';
 import { getDefaultFilterForColumn } from './filters';
 
@@ -41,6 +42,14 @@ export const NumberFilter = React.createClass({
     this.updateValueState({
       [target.id]: _.toNumber(target.value)
     });
+  },
+
+  onKeyUp(event) {
+    isolateEventByKeys(event, [ENTER]);
+
+    if (event.keyCode === ENTER && !this.shouldDisableApply()) {
+      this.updateFilter();
+    }
   },
 
   onSliderChange(newValue) {
@@ -120,6 +129,7 @@ export const NumberFilter = React.createClass({
           value={formatLabel(value.start)}
           step={step}
           onChange={this.onInputChange}
+          onKeyUp={this.onKeyUp}
           aria-label={t('filter_bar.from')}
           placeholder={t('filter_bar.from')}
           ref={(el) => this.firstInput = el} />
@@ -131,6 +141,7 @@ export const NumberFilter = React.createClass({
           value={formatLabel(value.end)}
           step={step}
           onChange={this.onInputChange}
+          onKeyUp={this.onKeyUp}
           aria-label={t('filter_bar.to')}
           placeholder={t('filter_bar.to')} />
       </div>

@@ -26,7 +26,6 @@ describe('TextFilter', () => {
     expect(element).to.exist;
   });
 
-
   it('removes a suggested option from suggestedOptions when it is selected', (done) => {
     const element = renderComponent(TextFilter, getProps({
       column: mockTextColumn,

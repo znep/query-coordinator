@@ -41,6 +41,22 @@ describe('CalendarDateFilter', () => {
     expect(getFooter(element)).to.exist;
   });
 
+  it('disables the apply button if the date range is undefined', () => {
+    const element = renderComponent(CalendarDateFilter, getProps({
+      filter: {
+        function: 'timeRange',
+        columnName: 'dinosaurTime',
+        arguments: {
+          start: null,
+          end: null
+        },
+        isHidden: false
+      }
+    }));
+
+    expect(getApplyButton(element)).to.have.attribute('disabled');
+  });
+
   it('disables the apply button if the date range is identical to the existing date range', () => {
     const element = renderComponent(CalendarDateFilter, getProps());
     const input = getDatePickerInputs(element)[0];

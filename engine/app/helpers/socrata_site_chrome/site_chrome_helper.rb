@@ -34,7 +34,7 @@ module SocrataSiteChrome
     end
 
     def get_feature_flag(flag)
-      Signaller.for(flag: flag).value(on_domain: request.host)
+      Signaller.for(flag: flag).value(on_domain: request.host) rescue nil
     end
 
     def header_title

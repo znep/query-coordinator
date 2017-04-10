@@ -9,9 +9,6 @@ import styles from 'styles/Table/TableBody.scss';
 class TableBody extends Component {
 
   shouldComponentUpdate(nextProps) {
-    console.log("********************************************************************************")
-    console.log(nextProps.displayState)
-    console.log("********************************************************************************")
     return !_.isEqual(
       {
         displayState: nextProps.displayState,

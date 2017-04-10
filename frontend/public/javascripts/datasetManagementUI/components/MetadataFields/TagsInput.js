@@ -94,6 +94,7 @@ class TagsInput extends Component {
             type="text"
             value={model[name] || ''}
             name={name}
+            id={name}
             onBlur={showErrors}
             className={classes}
             onChange={this.handleChange} />

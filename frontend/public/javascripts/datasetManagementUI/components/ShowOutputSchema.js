@@ -86,7 +86,7 @@ export function ShowOutputSchema({
 
         <ModalContent>
           <div className={styles.dataPreview}>
-            <h3>Data Preview</h3>
+            <h2 className={styles.previewHeader}>{I18n.home_pane.data_preview}</h2>
             <div className={styles.datasetAttribute}>
               <div className={styles.datasetAttribute}>
                 <p>Rows</p>

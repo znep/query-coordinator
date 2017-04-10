@@ -63,6 +63,10 @@ div.container {
     #create-spinner {
       display: none;
       margin: 0 auto;
+
+      .spinner-label {
+        display: none;
+      }
     }
 
     #create-text {

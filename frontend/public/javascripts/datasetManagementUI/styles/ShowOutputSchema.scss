@@ -92,6 +92,7 @@ li.active {
   height: 44px;
   padding: 0.5em 0.7em 0 0.7em;
   display: flex;
+  flex-shrink: 0;
   justify-content: space-between;
 
   .datasetAttribute {
@@ -114,4 +115,8 @@ li.active {
 .tableWrap {
   flex-grow: 1;
   overflow-x: auto;
+}
+
+.previewHeader {
+  composes: h3 from global;
 }

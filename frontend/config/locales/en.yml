@@ -1775,6 +1775,7 @@ en:
       data_manage_button: Manage Data
       data_uploaded: Your data has been uploaded.
       data_uploaded_blurb: Almost there! Just review your data and then hit Process Data.
+      data_preview: Data Preview
       done_processing: Your data is done being processed!
       email_me: Email Me
       email_me_error: An error has occurred.

@@ -133,3 +133,7 @@ li.active {
   flex-grow: 1;
   overflow-x: auto;
 }
+
+.previewHeader {
+  composes: h3 from global;
+}

@@ -45,20 +45,6 @@ module CommonMetadataMethods
     @phidippides ||= Phidippides.new
   end
 
-  def dataset_metadata
-    return @dataset_metadata if defined? @dataset_metadata
-    result = phidippides.fetch_dataset_metadata(
-      params[:id],
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
-    if result[:status] != '200' || result.try(:[], :body).blank?
-      @dataset_metadata = nil
-    else
-      @dataset_metadata = result[:body]
-    end
-  end
-
   def fetch_permissions(id)
     catalog_response = data_lens_manager.fetch(id)
     {
@@ -89,11 +75,15 @@ module CommonMetadataMethods
         raise UnknownRequestError.new("Error fetching derived view metadata for #{dataset_id}")
       end
     else
-      result = phidippides.fetch_dataset_metadata(
-        dataset_id,
-        :request_id => options[:request_id] || request_id,
-        :cookies => options[:cookies] || forwardable_session_cookies
-      )
+      result = case FeatureFlags.derive.phidippides_deprecation_metadata_source
+        when 'phidippides-only'
+          fetch_dataset_metadata_from_phidippides(dataset_id, options)
+        when 'core-only'
+          raise 'The core-only metadata fetch mode is not fully supported yet!'
+          fetch_dataset_metadata_from_core(dataset_id, options)
+        when 'mixed-mode'
+          fetch_dataset_metadata_in_mixed_mode(dataset_id, options)
+      end
 
       if result[:status] != '200'
         case result[:status]
@@ -242,5 +232,81 @@ module CommonMetadataMethods
         column[:isSubcolumn] = false
       end
     end
+  end
+
+  private
+
+  def _cookies(options)
+    options[:cookies] || forwardable_session_cookies
+  end
+
+  def _request_id(options)
+    options[:request_id] || request_id
+  end
+
+  def fetch_dataset_metadata_from_phidippides(dataset_id, options)
+    phidippides.fetch_dataset_metadata(
+      dataset_id,
+      :request_id => _request_id(options),
+      :cookies => _cookies(options)
+    )
+  end
+
+  def fetch_dataset_metadata_from_core(dataset_id, options)
+    migrations = View.migrations(dataset_id)
+    obe_metadata = View.find(migrations[:obeId], {'Cookie' => _cookies(options)}).data.with_indifferent_access
+    nbe_metadata = View.find(migrations[:nbeId], {'Cookie' => _cookies(options)}).data.with_indifferent_access
+    core_metadata = translate_core_metadata_to_legacy_structure(obe_metadata, nbe_metadata)
+    { body: core_metadata, status: '200' }
+  end
+
+  def fetch_dataset_metadata_in_mixed_mode(dataset_id, options)
+    phidippides_metadata = fetch_dataset_metadata_from_phidippides(dataset_id, options)
+    core_metadata = fetch_dataset_metadata_from_core(dataset_id, options)
+
+    # allow phiddy errors to bubble up (non-200 responses from core will be handled
+    # by the caller, because deep_merge gives precedence to the core response)
+    unless phidippides_metadata[:status] == '200'
+      return phidippides_metadata
+    end
+
+    merged = phidippides_metadata.deep_merge(core_metadata)
+
+    # it seems to be theoretically possible (i.e. happens locally for unknown
+    # reasons) that core and phidippides might disagree about the existence of
+    # columns. one manifestation of the problem was a data lens that, prior to
+    # this change, correctly hid hidden columns while authenticated but not when
+    # anonymous, because we might report different metadata depending on whether
+    # you're logged in.
+    #
+    # to resolve this potential complication, we're going to make assertions
+    # about the structure of the merged metadata and deal with anything that
+    # doesn't match our expectations. (this is why a single source of truth is
+    # important, mmkay?)
+    merged[:body][:columns].each do |_, column|
+      if column[:hideInTable].nil?
+        column[:hideInTable] = true
+      end
+    end
+
+    merged
+  end
+
+  # For Phidippides deprecation, this method should be progressively enhanced to
+  # translate the currently-targeted subset of fields.
+  def translate_core_metadata_to_legacy_structure(obe_metadata, nbe_metadata)
+    columns = obe_metadata.fetch(:columns, []).each_with_object({}) do |column, accum|
+      accum[column[:fieldName]] = {
+        hideInTable: column.fetch(:flags, []).include?('hidden')
+      }
+    end
+
+    {
+      columns: columns,
+      downloadOverride: (nbe_metadata[:metadata] || {})[:overrideLink],
+      permissions: {
+        isPublic: (nbe_metadata[:grants] || []).any? { |grant| grant[:flags].include?('public') }
+      }
+    }.with_indifferent_access
   end
 end

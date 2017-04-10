@@ -59,7 +59,7 @@ blist.datasetPage.setTempView = function() {
   $('#sidebarOptions .tabFilter a').addClass('alert');
   datasetPageNS.sidebar.updateEnabledSubPanes();
 
-  if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
+  if (!blist.currentUserId) {
     blist.datasetPage.flashTimedNotice($.t('screens.ds.show.unauthenticated_alert'), 10000);
   }
 };
@@ -864,13 +864,13 @@ $(function() {
 
     // report to events analytics for easier aggregation
     $.analytics && $.analytics.trackEvent('dataset page (v4-chrome)', 'page loaded', blist.dataset.id);
-  });
 
-  // disable "save as" button if the user isn't logged in
-  if (!blist.feature_flags.enable_inline_login && !blist.currentUserId) {
-    var $saveAs = $('.unsavedLine a.saveAs');
-    $saveAs.addClass('disabled');
-    $saveAs.off('click');
-    $saveAs.socrataTip($.t('screens.ds.bar.save_as_button_disabled_tooltip'));
-  }
+    // disable "save as" button if the user isn't logged in
+    if (!blist.currentUserId) {
+      var $saveAs = $('.unsavedLine a.saveAs');
+      $saveAs.addClass('disabled');
+      $saveAs.off('click');
+      $saveAs.socrataTip($.t('screens.ds.bar.save_as_button_disabled_tooltip'));
+    }
+  });
 });

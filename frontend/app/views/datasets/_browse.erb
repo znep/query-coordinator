@@ -219,12 +219,12 @@
             <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge(
                             {:view_type => 'table', :page => opts[:page]}).to_param %>"
               class="list<%= ' active' if opts[:view_type] != 'rich' %>" title="<%= t('controls.browse.actions.compact_list') %>">
-              <span class="icon"></span>
+              <span class="icon"><%= t('controls.browse.actions.compact_list') %></span>
             </a></li>
             <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge(
                             {:view_type => 'rich', :page => opts[:page]}).to_param %>"
               class="fatrow<%= ' active' if opts[:view_type] == 'rich' %>" title="<%= t('controls.browse.actions.rich_list') %>">
-              <span class="icon"></span>
+              <span class="icon"><%= t('controls.browse.actions.rich_list') %></span>
             </a></li>
           </ul>
         <%- end -%>
@@ -431,7 +431,7 @@
             <thead>
               <tr>
                 <%- if opts[:grid_items][:index] -%>
-                  <th class="index" scope="col"></th>
+                  <td class="index" scope="col"></td>
                 <%- end -%>
                 <%- if opts[:grid_items][:domainIcon] -%>
                   <th class="domainIcon" scope="col"></th>
@@ -498,6 +498,7 @@
     <%= form_tag '/datasets', :method => 'post', :class => 'newDatasetForm commonForm' do %>
       <p class="prompt"><%= t('screens.widget.create_new_dataset.prompt') %></p>
       <div class="line clearfix">
+        <label for="newDatasetName" class="accessible"><%= t('screens.widget.create_new_dataset.prompt') %></label>
         <input type="text" id="newDatasetName" name="new_dataset_name" class="required"/>
       </div>
       <p class="explanation"><%= t('screens.widget.create_new_dataset.explanation_html').html_safe %></p>
@@ -520,7 +521,9 @@
       <p class="dsDesc"></p>
     </div>
     <div class="leavingLinkWrapper">
-      <a class="leavingLink noInterstitial" href="#" rel="external"></a>
+      <a class="leavingLink noInterstitial" href="#" rel="external">
+        <%= t('core.interstitial.leaving_explanation_html') %>
+      </a>
     </div>
     <ul class="actions clearfix">
       <li>

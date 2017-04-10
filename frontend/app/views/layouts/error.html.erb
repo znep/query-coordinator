@@ -57,7 +57,8 @@ http://www.socrata.com
     <% skiplink_content = render_text_template('{{urls.skiplinks}}') %>
     <% if skiplink_content.present? %><ul><%= skiplink_content %></ul><% end %>
     <a href="#content">Skip to main content</a>
-    <a href="#footerLinks">Skip to footer links</a>
+    <%- if render_site_chrome? -%><a href="#site-chrome-footer">Skip to footer links</a><%- end -%>
+    <%- if render_legacy_chrome? -%><a href="#footerLinks">Skip to footer links</a><%- end -%>
     <%= yield :skip_links %>
   </div>
 

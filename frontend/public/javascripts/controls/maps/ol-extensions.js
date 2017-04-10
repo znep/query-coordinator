@@ -882,8 +882,8 @@
       _.each(dataLayers, function(layer) {
         var $layerSet = layer instanceof OpenLayers.Layer.Vector ? $dom.find('ul.feature') :
           $dom.find('ul.data');
-        var lId = 'mapLayer_' + layer.name;
-        var layerName = $.htmlEscape(layerObj._displayFormat.alias || layer.name);
+        var lId = 'mapLayer_' + $.htmlEscape(layer.name);
+        var layerName = layerObj._displayFormat.alias || layer.name;
         var layerType = typeMap[layerObj._displayFormat.plotStyle];
         if (layerType) {
           layerType = ' title="' + layerType + '"';
@@ -894,7 +894,7 @@
         $layerSet.append('<li data-layerid="' + layer.id + '"' +
           '><input type="checkbox" id="' + lId + '"' +
           (layer.visibility ? ' checked="checked"' : '') +
-          ' /><label for="' + lId + '"' + layerType + '>' + layerName + '</label>' +
+          ' /><label for="' + lId + '"' + layerType + '>' + $.htmlEscape(layerName) + '</label>' +
           '</li>');
         var $layerLI = $layerSet.find('li:last');
         $layerLI.data('layer', layer);

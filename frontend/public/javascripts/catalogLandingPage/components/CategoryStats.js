@@ -5,7 +5,7 @@ import StatCounts from './StatCounts';
 
 export class CategoryStats extends React.Component {
   render() {
-    var { categoryStats, showStats } = this.props;
+    const { categoryStats, showStats } = this.props;
 
     if (!showStats || !_.some(categoryStats)) {
       return null;

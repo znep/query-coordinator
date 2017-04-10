@@ -69,7 +69,6 @@ module CatalogLandingPageHelper
   def render_catalog_landing_page_initial_state
     javascript_tag(%Q(
       var initialState = {
-        category: #{View.category_display(@category).to_s.to_json},
         catalog: {
           query: #{@catalog_landing_page.to_query.to_json},
           path: #{@catalog_landing_page.to_uri.to_s.to_json}

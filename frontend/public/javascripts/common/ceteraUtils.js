@@ -41,22 +41,28 @@ function handleError(error) {
 export const ceteraUtils = (() => {
   const domain = window.location.hostname; // TODO: federation?
 
+  const assetTypeMapping = assetType => (assetType === 'new_view' ? 'datalenses' : assetType);
+
   return {
     fetch: ({
       category = null,
+      customMetadataFilters = {},
       limit = DEFAULT_LIMIT,
+      only = null,
       order = DEFAULT_ORDER,
       pageNumber = 1,
       q = null
     }) => {
       const paramObj = {
-        domains: domain,
-        search_context: domain,
         categories: category,
+        ...customMetadataFilters,
+        domains: domain,
         limit,
-        order,
         offset: getOffset(pageNumber, limit),
-        q
+        only: assetTypeMapping(only),
+        order,
+        q,
+        search_context: domain
       };
 
       const paramString = _.reduce(paramObj, function(result, value, key) {

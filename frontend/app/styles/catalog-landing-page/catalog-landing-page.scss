@@ -7,7 +7,7 @@
 @import "catalog-landing-page/featured_content";
 
 $browse2_max_width: 1280px;
-$facet_sidebar_width: 230px;
+$facet_sidebar_width: 14.5rem;
 
 body {
   margin: 0;
@@ -88,7 +88,7 @@ section.landing-page-section {
     font-weight: 500;
     margin: 0;
     padding: 11px 0;
-    color: $dark-grey-1;
+    color: $dark-grey-2;
   }
 
   .landing-page-header-wrapper {

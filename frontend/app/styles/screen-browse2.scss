@@ -912,7 +912,7 @@ html {
             }
 
             .browse2-results-clear-all-button {
-              color: $dark-grey-1;
+              color: $dark-grey-2;
               background-color: $white;
               border: 1px solid $light-grey-2;
               margin-top: -1px;
@@ -963,7 +963,7 @@ html {
                 font-size: 14px;
                 display: inline-block;
                 margin: 0;
-                color: $dark-grey-1;
+                color: $dark-grey-2;
               }
 
               .browse2-results-sort-control-period-label {
@@ -1100,7 +1100,7 @@ html {
               top: 1rem;
               font-size: 15px;
               text-align: right;
-              color: $dark-grey-1;
+              color: $dark-grey-2;
               font-weight: 300;
 
               .browse2-result-type-icon {
@@ -1384,7 +1384,7 @@ html {
                 .browse2-result-topic-label {
                   margin-right: 0.3rem;
                   font-weight: 600;
-                  color: $dark-grey-1;
+                  color: $dark-grey-2;
                 }
 
                 .browse2-result-topic,
@@ -1393,7 +1393,7 @@ html {
                 }
 
                 .browse2-result-no-topic-content {
-                  color: $dark-grey-1;
+                  color: $dark-grey-2;
                   font-style: oblique;
                 }
               }
@@ -1495,13 +1495,13 @@ html {
                 margin-bottom: 0.33em;
                 font-size: 1.1em;
                 font-weight: 700;
-                color: $dark-grey-1;
+                color: $dark-grey-2;
               }
 
               .browse2-result-timestamp-value {
                 font-size: 1.1em;
                 font-weight: 400;
-                color: $dark-grey-2;
+                color: $dark-grey-3;
               }
             }
 
@@ -1511,13 +1511,13 @@ html {
                 margin-bottom: 0.33em;
                 font-size: 1.1em;
                 font-weight: 700;
-                color: $dark-grey-1;
+                color: $dark-grey-2;
               }
 
               .browse2-result-view-count-value {
                 font-size: 1.1em;
                 font-weight: 400;
-                color: $dark-grey-2;
+                color: $dark-grey-3;
               }
             }
           }
@@ -1682,7 +1682,7 @@ html {
       font-size: 15px;
       font-weight: 300;
       line-height: 32px;
-      color: $dark-grey-1;
+      color: $dark-grey-2;
     }
   }
 

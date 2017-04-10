@@ -67,6 +67,11 @@ class DataLensControllerTest < ActionController::TestCase
       },
       :set_default_and_available_card_types_to_columns! => {}
     )
+    FeatureFlags.stubs(
+      :derive => Hashie::Mash.new({
+        :phidippides_deprecation_metadata_source => 'phidippides-only'
+      })
+    )
 
     # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
     get :data_lens, :id => '1234-1234', :app => 'dataCards'
@@ -87,6 +92,11 @@ class DataLensControllerTest < ActionController::TestCase
         :body => v1_dataset_metadata
       },
       :set_default_and_available_card_types_to_columns! => {}
+    )
+    FeatureFlags.stubs(
+      :derive => Hashie::Mash.new({
+        :phidippides_deprecation_metadata_source => 'phidippides-only'
+      })
     )
 
     # i.e. url_for(:action => :data_lens, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
@@ -149,6 +159,11 @@ class DataLensControllerTest < ActionController::TestCase
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
+      FeatureFlags.stubs(
+        :derive => Hashie::Mash.new({
+          :phidippides_deprecation_metadata_source => 'phidippides-only'
+        })
+      )
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
     end
@@ -172,6 +187,11 @@ class DataLensControllerTest < ActionController::TestCase
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
+      FeatureFlags.stubs(
+        :derive => Hashie::Mash.new({
+          :phidippides_deprecation_metadata_source => 'phidippides-only'
+        })
+      )
     end
 
     should 'redirect to the login page if the page is private' do
@@ -193,6 +213,12 @@ class DataLensControllerTest < ActionController::TestCase
 
     should 'redirect to the login page if the dataset is private' do
       DataLensManager.any_instance.stubs(:fetch).raises(DataLensManager::ViewAuthenticationRequired)
+
+      FeatureFlags.stubs(
+        :derive => Hashie::Mash.new({
+          :phidippides_deprecation_metadata_source => 'phidippides-only'
+        })
+      )
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
 
@@ -277,6 +303,11 @@ class DataLensControllerTest < ActionController::TestCase
       PageMetadataManager.any_instance.stubs(:show).returns(data_lens_page_metadata)
       Phidippides.any_instance.stubs(:fetch_dataset_metadata => { status: '403' })
       DataLensManager.any_instance.stubs(:fetch).returns({})
+      FeatureFlags.stubs(
+        :derive => Hashie::Mash.new({
+          :phidippides_deprecation_metadata_source => 'phidippides-only'
+        })
+      )
 
       get :data_lens, :id => '1234-1234', :app => 'dataCards'
       assert_response(403)
@@ -335,6 +366,11 @@ class DataLensControllerTest < ActionController::TestCase
           :all => [ 'test-data', 'obev-rson' ]
         }
       )
+      FeatureFlags.stubs(
+        :derive => Hashie::Mash.new({
+          :phidippides_deprecation_metadata_source => 'phidippides-only'
+        })
+      )
     end
 
     should 'successfully get' do
@@ -363,6 +399,7 @@ class DataLensControllerTest < ActionController::TestCase
     should 'not render google analytics JS if feature flag is not set' do
       FeatureFlags.stubs(
         :derive => Hashie::Mash.new({
+          :phidippides_deprecation_metadata_source => 'phidippides-only',
           :enable_opendata_ga_tracking => false,
           :site_chrome_header_and_footer_for_data_lens => false
         })
@@ -375,6 +412,7 @@ class DataLensControllerTest < ActionController::TestCase
       APP_CONFIG.opendata_ga_tracking_code = 'UA-9046230'
       FeatureFlags.stubs(
         :derive => Hashie::Mash.new({
+          :phidippides_deprecation_metadata_source => 'phidippides-only',
           :enable_opendata_ga_tracking => true,
           :site_chrome_header_and_footer_for_data_lens => false
         })
@@ -387,6 +425,7 @@ class DataLensControllerTest < ActionController::TestCase
       APP_CONFIG.opendata_ga_tracking_code = 'UA-9046230'
       FeatureFlags.stubs(
         :derive => Hashie::Mash.new({
+          :phidippides_deprecation_metadata_source => 'phidippides-only',
           :enable_opendata_ga_tracking => '',
           :site_chrome_header_and_footer_for_data_lens => false
         })
@@ -398,6 +437,7 @@ class DataLensControllerTest < ActionController::TestCase
     should 'render google analytics JS with explicit ga code if specified' do
       FeatureFlags.stubs(
         :derive => Hashie::Mash.new({
+          :phidippides_deprecation_metadata_source => 'phidippides-only',
           :enable_opendata_ga_tracking => 'UA-1234-567890',
           :site_chrome_header_and_footer_for_data_lens => false
         })
@@ -496,6 +536,11 @@ class DataLensControllerTest < ActionController::TestCase
         :body => v1_dataset_metadata
       },
       :set_default_and_available_card_types_to_columns! => {}
+    )
+    FeatureFlags.stubs(
+      :derive => Hashie::Mash.new({
+        :phidippides_deprecation_metadata_source => 'phidippides-only'
+      })
     )
   end
 

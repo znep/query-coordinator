@@ -234,7 +234,7 @@
 
     _getSections: function() {
       var config = [];
-      var title = this._view.name + (this._uid != 'self' ? '<br />(' + this._uid + ')' : '');
+      var title = $.htmlEscape(this._view.name) + (this._uid != 'self' ? '<br />(' + this._uid + ')' : '');
 
       if (this._dataType == 'socrata') {
         config.push({

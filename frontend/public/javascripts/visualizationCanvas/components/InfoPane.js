@@ -23,6 +23,7 @@ function mapStateToProps(state) {
     description: view.description,
     provenance: null, // EN-12840 Remove official badge from vizcan
     category: view.category,
+    isPaneCollapsible: true,
     footer,
     metadata: {
       first: {

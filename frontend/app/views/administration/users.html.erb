@@ -39,7 +39,6 @@
         )) %>
       </div>
       <div class="line">
-        <label>&nbsp;</label>
         <input type="submit" class="bulkCreateButton button default" value="<%= t('screens.admin.users.create_accounts') %>" />
         <%- unless no_js -%>
           <a href="#Cancel" class="cancelBulkCreate button"><%= t('core.dialogs.cancel') %></a>
@@ -79,7 +78,7 @@
   </form>
 
   <div class="adminUsersTableContainer tableContainer">
-  <h2><%= @table_title %></h2>
+  <%- if @table_title.present? -%><h2><%= @table_title %></h2><%- end -%>
   <%- unless @users_list.nil? -%>
     <div class="flash notice userNotice"></div>
     <div class="gridListWrapper">

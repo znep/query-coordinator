@@ -32,7 +32,7 @@ const Header = (props) => {
   const interpretedDescription = (() => {
     if (FeatureFlags.value('enable_markdown_for_catalog_landing_page_description')) {
       const markedDescription = { __html: marked(description || '', { sanitize: true }) };
-      return <div className="description" dangerouslySetInnerHTML={markedDescription} />
+      return <div className="description" dangerouslySetInnerHTML={markedDescription} />;
     } else {
       return <div className="description">{description}</div>;
     }

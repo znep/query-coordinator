@@ -2,6 +2,7 @@ require 'rails_helper'
 require_relative '../../lib/common_metadata_methods'
 
 describe CommonMetadataMethods do
+  include TestHelperMethods
 
   class DummyClass
     include CommonMetadataMethods
@@ -10,6 +11,9 @@ describe CommonMetadataMethods do
   let(:dummy_class_instance) { DummyClass.new }
 
   before do
+    init_current_domain
+    init_feature_flag_signaller
+
     allow_any_instance_of(Phidippides).to receive(:connection_details).
       and_return('address' => 'localpost', 'port' => 2402)
   end
@@ -49,6 +53,11 @@ describe CommonMetadataMethods do
   end
 
   describe 'fetch_dataset_metadata' do
+    before do
+      # default mode, overridden for a few cases below
+      rspec_stub_feature_flags_with(phidippides_deprecation_metadata_source: 'phidippides-only')
+    end
+
     let(:options) do
       {
         :request_id => '12345',
@@ -76,8 +85,14 @@ describe CommonMetadataMethods do
         :status => '200',
         :body => { :columns => test_columns }
       })
+      allow(View).to receive(:migrations).and_return({
+        obeId: 'kang-aroo',
+        nbeId: 'elep-hant'
+      })
+      allow(View).to receive(:find).and_return(View.new(json_fixture('view_a83c-up9r.json')))
     end
 
+    # NOTE: This is unaffected by phidippides_deprecation_metadata_source since it never used phiddy
     context 'data lens based on derived view' do
       let(:options) { { :is_from_derived_view => true } }
 
@@ -116,8 +131,42 @@ describe CommonMetadataMethods do
     end
 
     context 'regular data lens' do
-      it 'requests dataset metadata from phidippides' do
-        dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+
+      context 'phidippides_deprecation_metadata_source = phidippides-only' do
+        before do
+          rspec_stub_feature_flags_with(phidippides_deprecation_metadata_source: 'phidippides-only')
+        end
+
+        it 'requests dataset metadata from phidippides' do
+          expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata)
+          expect(View).not_to receive(:find)
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+        end
+      end
+
+      # TODO: we're not ready for core-only yet!
+      xcontext 'phidippides_deprecation_metadata_source = core-only' do
+        before do
+          rspec_stub_feature_flags_with(phidippides_deprecation_metadata_source: 'core-only')
+        end
+
+        it 'requests dataset metadata from core' do
+          expect_any_instance_of(Phidippides).not_to receive(:fetch_dataset_metadata)
+          expect(View).to receive(:find).twice
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+        end
+      end
+
+      context 'phidippides_deprecation_metadata_source = mixed-mode' do
+        before do
+          rspec_stub_feature_flags_with(phidippides_deprecation_metadata_source: 'mixed-mode')
+        end
+
+        it 'requests dataset metadata from both phidippides and core' do
+          expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata)
+          expect(View).to receive(:find).twice
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+        end
       end
 
       it 'raises AuthenticationRequired for 401 response from Phidippides' do

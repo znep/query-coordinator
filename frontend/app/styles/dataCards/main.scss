@@ -215,3 +215,10 @@ noscript {
 .resize-triggers > div {
   overflow: hidden !important;
 }
+
+// This is necessary to prevent double icons from showing up in places where
+// we use the styleguide icons
+// TODO Remove this code when we move to SVG icons (EN-12794)
+.socrata-icon::before {
+  display: none;
+}

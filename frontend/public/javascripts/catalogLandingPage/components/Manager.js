@@ -6,6 +6,7 @@ import { defaultHeaders } from '../../common/http';
 import { handleEnter } from '../../common/helpers/keyPressHelpers';
 import format from 'stringformat';
 import FeaturedContentManager from './FeaturedContentManager';
+import ManagerSectionHeader from './ManagerSectionHeader';
 import * as Actions from '../actions/header';
 import airbrake from '../../common/airbrake';
 
@@ -76,6 +77,7 @@ export class Manager extends React.Component {
 
     const fetchOptions = {
       method: 'PUT',
+      redirect: 'manual',
       credentials: 'same-origin',
       headers: defaultHeaders,
       body: JSON.stringify(payloadBody)
@@ -104,13 +106,31 @@ export class Manager extends React.Component {
         this.setState({ errorMessage: null });
         return response.json().then(redirectIfNeeded);
       } else {
-        if (response.status === 401) {
-          return this.setState({ errorMessage: _.get(I18n, 'you_must_login_first') });
-        } else {
-          return response.text().then((text) => {
-            handleException(text);
-          });
+        // A redirect will be seen if the session has expired and we get redirected to the login page.
+        // Unfortunately, fetch does not set the status to 302 in this case, but instead sets it to 0
+        // so we have to look in the response.type instead.
+        if (response.status === 401 || response.status === 302 || response.type === 'opaqueredirect') {
+          const loginWarningKey = 'manager.you_must_login_first';
+          const loginWarning = _.get(I18n, loginWarningKey);
+          if (!loginWarning) {
+            console.error(`Error retrieving I18n message for key: ${loginWarningKey}`);
+          }
+          return this.setState({ errorMessage: loginWarning });
         }
+        // It possible to see a 403 if the user formerly had permissions, but they have subsequently been
+        // revoked. Rather than showing a "something went wrong", let's show them a real error message.
+        if (response.status === 403) {
+          const permissionWarningKey = 'manager.you_are_not_authorized';
+          const permissionWarning = _.get(I18n, permissionWarningKey);
+          if (!permissionWarning) {
+            console.error(`Error retrieving I18n message for key: ${permissionWarningKey}`);
+          }
+          return this.setState({ errorMessage: permissionWarning });
+        }
+
+        return response.text().then((text) => {
+          handleException(text);
+        });
       }
     };
 
@@ -134,14 +154,21 @@ export class Manager extends React.Component {
   render() {
     const { isSaving, isDismissing } = this.state;
 
-    const headingHtml = (text) => {
-      return <h6 className="h6 styleguide-subheader">{text}</h6>;
-    };
+    const formatWithFilter = (translationKey, translationKeyNoFilter = translationKey) => {
+      // Special `/browse` case: omit { custom_path: '/browse' }
+      const validFilters = _.omit(this.props.catalogQuery, ['custom_path']);
 
-    const formatWithCategory = (translationKey, translationKeyNoCategory = translationKey) => {
+      // There should only ever be one filter
+      const filterType = _.keys(validFilters)[0];
+      const filterValue = validFilters[filterType];
+
+      const filterName = (filterType === 'limitTo') ?
+        _.get(I18n, `manager.view_types.${filterValue}`, null) :
+        _.startCase(filterValue);
+
       return format(
-        _.get(I18n, this.props.category ? translationKey : translationKeyNoCategory),
-        { category: this.props.category }
+        _.get(I18n, filterName ? translationKey : translationKeyNoFilter),
+        { filter: filterName }
       );
     };
 
@@ -152,43 +179,48 @@ export class Manager extends React.Component {
     const errorMessageDiv = this.state.errorMessage ?
       (<div className="alert error">{this.state.errorMessage}</div>) : null;
 
+    const metadataInputProps = (section) => ({
+      className: `text-input input-${section}`,
+      name: section,
+      onChange: this.handleInputChange,
+      type: 'text',
+      value: this.props.header[section]
+    });
 
     return (
       <div className="clp-manager">
-        <h1 className="header">{_.get(I18n, 'manager.manage_this_category')}</h1>
+        <h1 className="header">{_.get(I18n, 'manager.feature_content')}</h1>
         {errorMessageDiv}
         <div>
           <form>
-            {headingHtml(_.get(I18n, 'manager.headline.label'))}
+            <ManagerSectionHeader className="headline-header">
+              {_.get(I18n, 'manager.headline.label')}
+            </ManagerSectionHeader>
             <input
-              className="text-input input-headline"
-              name="headline"
-              type="text"
+              {...metadataInputProps('headline')}
               aria-label={_.get(I18n, 'manager.headline.placeholder')}
               maxLength="140"
               placeholder={_.get(I18n, 'manager.headline.placeholder')}
-              onChange={this.handleInputChange}
-              onKeyDown={handleEnter(this.saveOnEnter)}
-              value={this.props.header.headline} />
+              onKeyDown={handleEnter(this.saveOnEnter)} />
 
-            {headingHtml(_.get(I18n, 'manager.description.label'))}
+            <ManagerSectionHeader className="description-header">
+              {_.get(I18n, 'manager.description.label')}
+            </ManagerSectionHeader>
             <textarea
-              className="text-input input-description"
-              name="description"
-              type="text"
-              aria-label={formatWithCategory('manager.description.placeholder')}
+              {...metadataInputProps('description')}
+              aria-label={formatWithFilter('manager.description.placeholder',
+                'manager.description.placeholder_no_filter')}
               maxLength="320"
-              placeholder={formatWithCategory('manager.description.placeholder',
-                  'manager.description.placeholder_no_category')}
-              onChange={this.handleInputChange}
-              value={this.props.header.description} />
+              placeholder={formatWithFilter('manager.description.placeholder',
+                'manager.description.placeholder_no_filter')} />
 
-            {headingHtml(formatWithCategory('manager.featured_content.label',
-                  'manager.featured_content.label_no_category'))}
+            <ManagerSectionHeader className="featured-content-header">
+              {formatWithFilter('manager.featured_content.label', 'manager.featured_content.label_no_filter')}
+            </ManagerSectionHeader>
             <p className="small explanation">
               {_.get(I18n, 'manager.featured_content.explanation')}
             </p>
-            <FeaturedContentManager category={this.props.category} />
+            <FeaturedContentManager />
           </form>
         </div>
 
@@ -208,7 +240,6 @@ export class Manager extends React.Component {
 }
 
 Manager.propTypes = {
-  category: PropTypes.string,
   catalogPath: PropTypes.string.isRequired,
   catalogQuery: PropTypes.object,
   featuredContent: PropTypes.object,
@@ -223,7 +254,6 @@ Manager.propTypes = {
 const mapStateToProps = state => ({
   catalogPath: state.catalog.path,
   catalogQuery: state.catalog.query,
-  category: state.category,
   featuredContent: state.featuredContent,
   header: state.header
 });

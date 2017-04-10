@@ -209,10 +209,15 @@ module CoreServer
       # pass/spoof in the current domain cname
       request['X-Socrata-Host'] = CurrentDomain.cname
 
-      # proxy user agent
+      # attach request id, user agent, and client IPs
       if @@env.present?
         request['X-Socrata-RequestId'] = @@env['action_dispatch.request_id'].to_s.gsub('-', '')
         request['X-User-Agent'] = @@env['HTTP_USER_AGENT']
+
+        # NOTE: Forwarded is the standardized header, but not all software makes use of it yet.
+        # We use the standardized header here because Core overloads the X-Forwarded-For header
+        # to determine whether a request is considered local (see EN-13219).
+        request['Forwarded'] = @@env['HTTP_FORWARDED'] || @@env['HTTP_X_FORWARDED_FOR'] || @@env['REMOTE_ADDR'] || '-'
       else
         Rails.logger.warn('Missing env in CoreServer::Connection')
       end

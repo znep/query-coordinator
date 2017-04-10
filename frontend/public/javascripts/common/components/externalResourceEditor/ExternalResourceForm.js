@@ -141,16 +141,20 @@ export class ExternalResourceForm extends React.Component {
 }
 
 ExternalResourceForm.propTypes = {
-  description: PropTypes.string.isRequired,
+  description: PropTypes.string,
   onEnter: PropTypes.func,
   onFieldChange: PropTypes.func.isRequired,
-  previewImage: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired
+  previewImage: PropTypes.string,
+  title: PropTypes.string,
+  url: PropTypes.string
 };
 
 ExternalResourceForm.defaultProps = {
-  onEnter: _.noop
+  description: '',
+  onEnter: _.noop,
+  previewImage: '',
+  title: '',
+  url: ''
 };
 
 export default ExternalResourceForm;

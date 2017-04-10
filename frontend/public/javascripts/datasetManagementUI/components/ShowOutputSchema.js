@@ -39,7 +39,6 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   };
 }
 
-
 export class ShowOutputSchema extends Component {
 
   componentDidMount() {
@@ -110,9 +109,9 @@ export class ShowOutputSchema extends Component {
           <ModalContent>
             <div className={styles.dataPreview}>
               <div className={styles.titleWrapper}>
-                <h3>
+                <h2 className={styles.previewHeader}>
                   {I18n.data_preview.title}
-                </h3>
+                </h2>
                 {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}
               </div>
               <div className={styles.datasetAttribute}>

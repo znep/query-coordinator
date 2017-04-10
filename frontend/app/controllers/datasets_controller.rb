@@ -96,6 +96,9 @@ class DatasetsController < ApplicationController
     # Visualization Canvas case
     return if render_as_visualization_canvas
 
+    # Storyteller case
+    return if render_as_story
+
     # We're going to some version of the grid/classic viz page
 
     # Mobile case
@@ -1296,4 +1299,12 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def render_as_story
+    if @view.story?
+      redirect_to story_url(@view)
+      true
+    else
+      false
+    end
+  end
 end

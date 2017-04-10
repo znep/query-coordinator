@@ -249,7 +249,7 @@ class PageMetadataManager
   # Phidippides call for the dataset metadata - needed to fetch columns for both
   # metadb and phidippides backed page metadata.
   def fetch_dataset_columns(dataset_id, options)
-    dataset_metadata_result = dataset_metadata(dataset_id, options)
+    dataset_metadata_result = phidippides.fetch_dataset_metadata(dataset_id, options)
     if dataset_metadata_result.fetch(:status) != '200'
       Rails.logger.error("#{self.class}##{__method__} - result: #{dataset_metadata_result}")
       raise Phidippides::NoDatasetMetadataException.new(
@@ -481,10 +481,6 @@ class PageMetadataManager
         "due to error: #{response.inspect}"
       )
     end
-  end
-
-  def dataset_metadata(dataset_id, options)
-    phidippides.fetch_dataset_metadata(dataset_id, options)
   end
 
   def cards_aggregation_clause(page_metadata)

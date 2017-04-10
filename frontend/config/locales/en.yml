@@ -427,9 +427,9 @@ en:
     activation:
       action: Feature Content
       header: Feature your best content.
-      explanation: Write an introduction and promote up to 3 assets from this category
+      explanation: Write an introduction and promote up to 3 assets
     category_stats:
-      about: About this Category
+      about: About
       calendars:
         one: Calendar
         other: Calendars
@@ -449,13 +449,16 @@ en:
         one: Table
         other: Tables
     featured_content:
-      label: Featured Content in this Category
+      label: Featured Content in {filter}
+      label_no_filter: Featured Content
     manager:
       cancel: Cancel
       change: Change
       edit_action: Edit Featured Content
+      feature_content: Feature Content
       unexpected_error: An unexpected error has occurred. Please reload and try again.
       you_must_login_first: You must login first in order to save your changes.
+      you_are_not_authorized: You are not authorized to perform this operation.
       remove: Remove
       save: Save
       title: Feature Content
@@ -464,15 +467,27 @@ en:
         placeholder: Create a headline; maximum characters = 140
       description:
         label: Description
-        placeholder: Write a description for your {category} content; maximum characters = 320 (this field accepts Markdown syntax)
-        placeholder_no_category: Write a description for your content; maximum characters = 320 (this field accepts Markdown syntax)
-      show_stats:
-        label: Show Stats
-        explanation: Choose to show some basic statistics around this category, such as how many datasets, visualizations and stories it contains.
+        placeholder: Write a description for your {filter} content; maximum characters = 320 (this field accepts Markdown syntax)
+        placeholder_no_filter: Write a description for your content; maximum characters = 320 (this field accepts Markdown syntax)
       featured_content:
-        label: Featured Content in {category}
-        label_no_category: Featured Content
-        explanation: Promote up to 3 assets.
+        label: Featured Content in {filter}
+        label_no_filter: Featured Content
+        explanation: "Promote up to 3 assets:"
+      view_types:
+        apis: APIs
+        blob: Files and Documents
+        calendars: Calendars
+        charts: Charts
+        data_lens: Data Lens pages
+        datasets: Datasets
+        draft: Draft Datasets
+        filters: Filtered Views
+        forms: Forms
+        href: External Datasets
+        maps: Maps
+        new_view: Data Lens pages
+        pulse: Pulse
+        story: Stories
     search:
       hint: Search
     title: Search & Browse | %{category}
@@ -483,8 +498,7 @@ en:
       action_buttons:
         back: Back
         select: Select
-      header_title_with_category: Select Featured Content in %{category}
-      header_title_without_category: Select Featured Content
+      header_title: Select Featured Content
       results_container:
         no_results: No results
         of: of
@@ -494,7 +508,7 @@ en:
           next_page: Next page
           page: Page
           previous_page: Previous page
-        search_this_category: Search this category
+        search: Search
         sort:
           sort_by: Sort by
           sort_types:

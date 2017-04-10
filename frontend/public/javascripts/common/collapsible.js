@@ -6,7 +6,7 @@ const velocity = require('velocity-animate');
 velocity.defaults.duration = 320;
 velocity.defaults.easing = [0.645, 0.045, 0.355, 1];
 
-module.exports = function(el, options) {
+export default function(el, options) {
   const $el = $(el);
   const parent = el.parentElement;
   const originalHeight = parent.getBoundingClientRect().height;
@@ -65,4 +65,4 @@ module.exports = function(el, options) {
   });
 
   collapse();
-};
+}

@@ -1,5 +1,5 @@
 namespace :manifest do
-  %w[staging release].each do |environment|
+  %w[ staging release ].each do |environment|
     desc "Create a changelog between the last two #{environment} releases"
     task environment.to_sym, [:output_file, :auto] do |_, args|
       tags = `git tag -l frontend-#{environment}/*`.split.sort.reverse.first((ENV['RELEASE_TAGS'] || 10).to_i)
@@ -28,18 +28,20 @@ namespace :manifest do
       manifest_output = ("\n\n= FRONTEND = (from #{from_tag} to #{to_tag})")
       manifest_output << "\n\nGit diff: https://github.com/socrata/frontend/compare/#{from_tag}...#{to_tag}"
 
-      manifest_output << "\nDiff Command: `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag}`\n"
+      manifest_output << "\nDiff Command: `git log --no-color --right-only --cherry-pick --reverse #{from_tag}...#{to_tag}`\n"
 
       # TODO: Remove this list once all intended repositories are merged into platform-ui.
-      ignore_list = %w(069316e2ea2be425925863b58c3653da54d50a84)
-      git_log_output = `git log --no-color --right-only --cherry-pick --no-merges --reverse #{from_tag}...#{to_tag} ^#{ignore_list.join(' ^')}`
+      ignore_list = %w[ 069316e2ea2be425925863b58c3653da54d50a84 ]
+      git_log_cmd = "git log --no-color --right-only --cherry-pick --reverse #{from_tag}...#{to_tag} ^#{ignore_list.join(' ^')}"
+      git_log_output = `#{git_log_cmd}`
+      git_log_output_no_merges = `#{git_log_cmd} --no-merges`
 
       manifest_output << "\n\nLink to Jira query for current issues...\n"
       manifest_output << jira_query(git_log_output)
       manifest_output << "\n\n----Commits with JIRA tickets:----\n"
-      manifest_output << get_commits_with_jira(git_log_output).map(&:values).join("\n")
+      manifest_output << get_commits_with_jira(git_log_output).map(&:values).sort.join("\n")
 
-      commits_without_jira_tickets = get_commits_without_jira(git_log_output).join("\n")
+      commits_without_jira_tickets = get_commits_without_jira(git_log_output_no_merges).join("\n")
       if commits_without_jira_tickets.present?
         manifest_output << "\n\n----Commits without JIRA tickets:----\n"
         manifest_output << commits_without_jira_tickets

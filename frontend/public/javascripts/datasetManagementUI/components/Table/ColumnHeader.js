@@ -33,8 +33,7 @@ class ColumnHeader extends Component {
           <span
             className={styles.colName}
             data-cheetah-hook="col-name"
-            id={`column-display-name-${column.id}`}
-            title={column.display_name}>
+            id={`column-display-name-${column.id}`}>
             {column.display_name}
             <SocrataIcon name="edit" className={styles.icon} />
           </span>

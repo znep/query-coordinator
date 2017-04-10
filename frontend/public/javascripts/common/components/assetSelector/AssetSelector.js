@@ -7,7 +7,7 @@ export class AssetSelector extends React.Component {
   render() {
     const {
       additionalTopbarComponents,
-      category,
+      catalogQuery,
       modalIsOpen,
       onClose,
       onSelect,
@@ -16,15 +16,9 @@ export class AssetSelector extends React.Component {
 
     if (!modalIsOpen) return null;
 
-    const headerTitle = _.isEmpty(category) ?
-      _.get(I18n, 'common.asset_selector.header_title_without_category') :
-      _.get(I18n, 'common.asset_selector.header_title_with_category',
-        'Select Featured Content in %{category}'
-      ).replace('%{category}', category);
-
     const resultsContainerProps = {
       additionalTopbarComponents,
-      category,
+      catalogQuery,
       onClose,
       onSelect,
       resultsPerPage
@@ -39,7 +33,7 @@ export class AssetSelector extends React.Component {
 
     return (
       <Modal {...modalProps}>
-        <ModalHeader title={headerTitle} onDismiss={onClose} />
+        <ModalHeader title={_.get(I18n, 'common.asset_selector.header_title')} onDismiss={onClose} />
         <ModalContent>
           <ResultsContainer {...resultsContainerProps} />
         </ModalContent>
@@ -50,7 +44,7 @@ export class AssetSelector extends React.Component {
 
 AssetSelector.propTypes = {
   additionalTopbarComponents: PropTypes.array,
-  category: PropTypes.string,
+  catalogQuery: PropTypes.object.isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
@@ -59,7 +53,7 @@ AssetSelector.propTypes = {
 
 AssetSelector.defaultProps = {
   additionalTopbarComponents: [],
-  category: null,
+  catalogQuery: {},
   modalIsOpen: false,
   onClose: _.noop,
   onSelect: _.noop,

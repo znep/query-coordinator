@@ -133,7 +133,6 @@ export function loadNormalPreview(outputSchemaId, pageNo) {
         dispatch(loadFailed(url, error));
       }).
       then((resp) => {
-        dispatch(loadSucceeded(url));
         const transformIds = resp[0].output_columns.map((col) => col.transform.id);
         const withoutHeader = resp.slice(1);
         dispatch(batch(_.flatten(transformIds.map((transformId, colIdx) => {
@@ -164,6 +163,7 @@ export function loadNormalPreview(outputSchemaId, pageNo) {
         dispatch(insertMultipleFromServer(
           'row_errors', _.keyBy(rowErrors, 'id'), { ifNotExists: true }
         ));
+        dispatch(loadSucceeded(url));
       });
   };
 }
@@ -176,12 +176,12 @@ export function loadColumnErrors(transformId, outputSchemaId, pageNo) {
     const url = dsmapiLinks.columnErrors(
       upload.id, inputSchema.id, outputSchema.id, errorsColumnId, PAGE_SIZE, (pageNo - 1) * PAGE_SIZE
     );
+
     dispatch(loadStarted(url));
     socrataFetch(url).
       then(checkStatus).
       then(getJson).
       then((resp) => {
-        dispatch(loadSucceeded(url));
         const outputSchemaResp = resp[0];
         const withoutSchemaRow = resp.slice(1);
         const newRecordsByTransform = [];
@@ -210,6 +210,7 @@ export function loadColumnErrors(transformId, outputSchemaId, pageNo) {
           map(newRecord => newRecord.index);
 
           const transform = outputSchemaResp.output_columns[idx].transform;
+
           return updateFromServer('transforms', {
             id: transform.id,
             error_indices: (existingErrorIndices) => (
@@ -217,6 +218,8 @@ export function loadColumnErrors(transformId, outputSchemaId, pageNo) {
             )
           });
         })));
+
+        dispatch(loadSucceeded(url));
       }).
       catch((error) => {
         dispatch(loadFailed(url, error));
@@ -235,7 +238,6 @@ export function loadRowErrors(inputSchemaId, pageNo) {
       then(checkStatus).
       then(getJson).
       then((rows) => {
-        dispatch(loadSucceeded(url));
         const rowErrorsWithId = rows.map((row) => ({
           ...row.error,
           id: `${inputSchemaId}-${row.offset}`,
@@ -244,6 +246,7 @@ export function loadRowErrors(inputSchemaId, pageNo) {
         }));
         const rowErrorsKeyedById = _.keyBy(rowErrorsWithId, 'id');
         dispatch(insertMultipleFromServer('row_errors', rowErrorsKeyedById, { ifNotExists: true }));
+        dispatch(loadSucceeded(url));
       }).
       catch((error) => {
         dispatch(loadFailed(url, error));

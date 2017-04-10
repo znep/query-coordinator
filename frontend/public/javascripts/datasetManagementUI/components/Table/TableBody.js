@@ -8,20 +8,21 @@ import styles from 'styles/Table/TableBody.scss';
 
 class TableBody extends Component {
 
-  // shouldComponentUpdate(nextProps) {
-  //   return !_.isEqual(
-  //     {
-  //       columns: nextProps.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
-  //       displayState: nextProps.displayState,
-  //       numRowErrors: _.size(nextProps.db.row_errors)
-  //     },
-  //     {
-  //       columns: this.props.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
-  //       displayState: this.props.displayState,
-  //       numRowErrors: _.size(this.props.db.row_errors)
-  //     }
-  //   );
-  // }
+  shouldComponentUpdate(nextProps) {
+    console.log("********************************************************************************")
+    console.log(nextProps.displayState)
+    console.log("********************************************************************************")
+    return !_.isEqual(
+      {
+        displayState: nextProps.displayState,
+        __loads__: nextProps.db.__loads__
+      },
+      {
+        displayState: this.props.displayState,
+        __loads__: this.props.db.__loads__
+      }
+    );
+  }
 
   getData() {
     const props = this.props;

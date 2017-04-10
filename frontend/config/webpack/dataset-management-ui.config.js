@@ -7,6 +7,7 @@ var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 var plugins = common.plugins.concat(common.getManifestPlugin(identifier));
+
 if (!common.isProduction) {
   plugins.push(new webpack.HotModuleReplacementPlugin());
 }

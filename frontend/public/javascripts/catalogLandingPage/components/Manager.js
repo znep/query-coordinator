@@ -77,6 +77,7 @@ export class Manager extends React.Component {
 
     const fetchOptions = {
       method: 'PUT',
+      redirect: 'manual',
       credentials: 'same-origin',
       headers: defaultHeaders,
       body: JSON.stringify(payloadBody)
@@ -105,13 +106,31 @@ export class Manager extends React.Component {
         this.setState({ errorMessage: null });
         return response.json().then(redirectIfNeeded);
       } else {
-        if (response.status === 401) {
-          return this.setState({ errorMessage: _.get(I18n, 'you_must_login_first') });
-        } else {
-          return response.text().then((text) => {
-            handleException(text);
-          });
+        // A redirect will be seen if the session has expired and we get redirected to the login page.
+        // Unfortunately, fetch does not set the status to 302 in this case, but instead sets it to 0
+        // so we have to look in the response.type instead.
+        if (response.status === 401 || response.status === 302 || response.type === 'opaqueredirect') {
+          const loginWarningKey = 'manager.you_must_login_first';
+          const loginWarning = _.get(I18n, loginWarningKey);
+          if (!loginWarning) {
+            console.error(`Error retrieving I18n message for key: ${loginWarningKey}`);
+          }
+          return this.setState({ errorMessage: loginWarning });
         }
+        // It possible to see a 403 if the user formerly had permissions, but they have subsequently been
+        // revoked. Rather than showing a "something went wrong", let's show them a real error message.
+        if (response.status === 403) {
+          const permissionWarningKey = 'manager.you_are_not_authorized';
+          const permissionWarning = _.get(I18n, permissionWarningKey);
+          if (!permissionWarning) {
+            console.error(`Error retrieving I18n message for key: ${permissionWarningKey}`);
+          }
+          return this.setState({ errorMessage: permissionWarning });
+        }
+
+        return response.text().then((text) => {
+          handleException(text);
+        });
       }
     };
 

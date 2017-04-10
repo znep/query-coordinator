@@ -458,6 +458,7 @@ en:
       feature_content: Feature Content
       unexpected_error: An unexpected error has occurred. Please reload and try again.
       you_must_login_first: You must login first in order to save your changes.
+      you_are_not_authorized: You are not authorized to perform this operation.
       remove: Remove
       save: Save
       title: Feature Content

@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai';
 import AppBar from 'components/AppBar';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
-import { insertFromServer, updateFromServer } from 'actions/database';
+import { upsertFromServer, updateFromServer } from 'actions/database';
 
 describe('components/AppBar', () => {
 
@@ -14,7 +14,7 @@ describe('components/AppBar', () => {
 
   it('renders a link to primer', () => {
     const store = getStoreWithOutputSchema();
-    store.dispatch(insertFromServer('upsert_jobs', {
+    store.dispatch(upsertFromServer('upsert_jobs', {
       id: 55,
       output_schema_id: 18
     }));

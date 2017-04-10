@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {
-  insertFromServer,
+  upsertFromServer,
   batch
 } from './actions/database';
 import { addNotification, removeNotificationAfterTimeout } from './actions/notifications';
@@ -28,7 +28,7 @@ const millis = 1000;
 
 export function bootstrap(store, initialView, initialUpdate) {
   const operations = [];
-  operations.push(insertFromServer('views', {
+  operations.push(upsertFromServer('views', {
     id: initialView.id,
     name: initialView.name,
     description: initialView.description,
@@ -48,7 +48,7 @@ export function bootstrap(store, initialView, initialUpdate) {
     attachments: _.get(initialView, 'metadata.attachments', []),
     metadata: initialView.metadata || {}
   }));
-  operations.push(insertFromServer('updates', {
+  operations.push(upsertFromServer('updates', {
     id: initialUpdate.id,
     fourfour: initialView.id,
     revision_seq: _.toNumber(initialUpdate.revision_seq),
@@ -59,7 +59,7 @@ export function bootstrap(store, initialView, initialUpdate) {
     insertAndSubscribeToUpload(store.dispatch, upload);
   });
   initialUpdate.upsert_jobs.forEach((upsertJob) => {
-    operations.push(insertFromServer('upsert_jobs', {
+    operations.push(upsertFromServer('upsert_jobs', {
       ...upsertJob,
       inserted_at: parseDate(upsertJob.inserted_at),
       finished_at: upsertJob.finished_at ? parseDate(upsertJob.finished_at) : null,

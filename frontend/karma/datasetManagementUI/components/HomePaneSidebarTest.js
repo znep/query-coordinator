@@ -2,13 +2,13 @@ import { expect, assert } from 'chai';
 import HomePaneSidebar from 'components/HomePaneSidebar';
 import { getEmptyStore } from '../testStore';
 import {
-  insertFromServer
+  upsertFromServer
 } from 'actions/database';
 
 describe('components/HomePaneSidebar', () => {
   it('shows 0 checkmarks when nothing is done', () => {
     const store = getEmptyStore();
-    store.dispatch(insertFromServer('views', {
+    store.dispatch(upsertFromServer('views', {
       license: {},
       owner: {},
       viewCount: 0,
@@ -30,7 +30,7 @@ describe('components/HomePaneSidebar', () => {
 
   it('shows one checkmark when there is column metadata', () => {
     const store = getEmptyStore();
-    store.dispatch(insertFromServer('views', {
+    store.dispatch(upsertFromServer('views', {
       license: {},
       owner: {},
       viewCount: 0,
@@ -39,10 +39,10 @@ describe('components/HomePaneSidebar', () => {
       tags: [],
       description: 'bar'
     }));
-    store.dispatch(insertFromServer('uploads', { id: 'baz' }));
-    store.dispatch(insertFromServer('output_schemas', { id: 'baz', inserted_at: new Date() }));
-    store.dispatch(insertFromServer('output_columns', { id: 'baz', description: 'xkcd' }));
-    store.dispatch(insertFromServer('output_schema_columns', {
+    store.dispatch(upsertFromServer('uploads', { id: 'baz' }));
+    store.dispatch(upsertFromServer('output_schemas', { id: 'baz', inserted_at: new Date() }));
+    store.dispatch(upsertFromServer('output_columns', { id: 'baz', description: 'xkcd' }));
+    store.dispatch(upsertFromServer('output_schema_columns', {
       output_schema_id: 'baz',
       output_column_id: 'baz'
     }));
@@ -59,7 +59,7 @@ describe('components/HomePaneSidebar', () => {
 
   it('shows the activity feed when the url says to', () => {
     const store = getEmptyStore();
-    store.dispatch(insertFromServer('views', {
+    store.dispatch(upsertFromServer('views', {
       license: {},
       owner: {},
       viewCount: 0,

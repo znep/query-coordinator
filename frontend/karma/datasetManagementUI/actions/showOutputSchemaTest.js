@@ -10,8 +10,7 @@ import {
 } from 'actions/showOutputSchema';
 import {
   batch,
-  insertSucceeded,
-  insertFromServerIfNotExists
+  upsertSucceeded
 } from 'actions/database';
 import { statusSavedOnServer } from 'lib/database/statuses';
 

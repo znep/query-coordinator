@@ -2,12 +2,12 @@ import { expect, assert } from 'chai';
 import ActivityFeed from 'components/ActivityFeed';
 import { getEmptyStore } from '../testStore';
 import {
-  insertFromServer
+  upsertFromServer
 } from 'actions/database';
 
 
 function insertView(store) {
-  store.dispatch(insertFromServer('views', {
+  store.dispatch(upsertFromServer('views', {
     license: {},
     owner: {},
     viewCount: 0,
@@ -19,7 +19,7 @@ function insertView(store) {
 }
 
 function insertUpdate(store) {
-  store.dispatch(insertFromServer('updates', {
+  store.dispatch(upsertFromServer('updates', {
     id: 5,
     fourfour: 'hehe-hehe',
     revision_seq: 0,
@@ -33,7 +33,7 @@ function insertUpdate(store) {
 }
 
 function insertUpload(store) {
-  store.dispatch(insertFromServer('uploads', {
+  store.dispatch(upsertFromServer('uploads', {
     id: 0,
     filename: 'foo.csv',
     inserted_at: new Date(),
@@ -46,11 +46,11 @@ function insertUpload(store) {
 }
 
 function insertOutputSchema(store) {
-  store.dispatch(insertFromServer('input_schemas', {
+  store.dispatch(upsertFromServer('input_schemas', {
     upload_id: 0,
     id: 0
   }));
-  store.dispatch(insertFromServer('output_schemas', {
+  store.dispatch(upsertFromServer('output_schemas', {
     id: 0,
     input_schema_id: 0,
     inserted_at: new Date(),
@@ -63,7 +63,7 @@ function insertOutputSchema(store) {
 }
 
 function insertUpsertInProgress(store) {
-  store.dispatch(insertFromServer('upsert_jobs', {
+  store.dispatch(upsertFromServer('upsert_jobs', {
     status: 'progress',
     id: 0,
     finished_at: null,
@@ -77,7 +77,7 @@ function insertUpsertInProgress(store) {
 }
 
 function insertUpsertComplete(store) {
-  store.dispatch(insertFromServer('upsert_jobs', {
+  store.dispatch(upsertFromServer('upsert_jobs', {
     status: 'successful',
     id: 0,
     finished_at: new Date(),
@@ -91,7 +91,7 @@ function insertUpsertComplete(store) {
 }
 
 function insertUpsertFailed(store) {
-  store.dispatch(insertFromServer('upsert_jobs', {
+  store.dispatch(upsertFromServer('upsert_jobs', {
     status: 'failure',
     id: 0,
     finished_at: new Date(),

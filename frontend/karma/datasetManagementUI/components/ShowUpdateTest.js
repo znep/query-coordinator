@@ -3,7 +3,7 @@ import ShowUpdate from 'components/ShowUpdate';
 import { getEmptyStore, getDefaultStore } from '../testStore';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import {
-  insertFromServer
+  upsertFromServer
 } from 'actions/database';
 import ReactTestUtils from 'react-addons-test-utils';
 import { mockFetch } from '../testHelpers/mockHTTP';
@@ -34,7 +34,7 @@ const PROPS = {
 };
 
 function insertView(store) {
-  store.dispatch(insertFromServer('views', {
+  store.dispatch(upsertFromServer('views', {
     id: "hehe-hehe",
     name: "hehe",
     description: "meh",
@@ -71,12 +71,12 @@ describe('components/ShowUpdate', () => {
   it('renders the column component', () => {
     const store = getEmptyStore();
     insertView(store);
-    store.dispatch(insertFromServer('uploads', { id: 1 }));
-    store.dispatch(insertFromServer('input_schemas', { id: 1, upload_id: 1 }));
-    store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 1 }));
-    store.dispatch(insertFromServer('output_schema_columns', { output_schema_id: 1, output_column_id: 1 }));
+    store.dispatch(upsertFromServer('uploads', { id: 1 }));
+    store.dispatch(upsertFromServer('input_schemas', { id: 1, upload_id: 1 }));
+    store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 1 }));
+    store.dispatch(upsertFromServer('output_schema_columns', { output_schema_id: 1, output_column_id: 1 }));
 
-    store.dispatch(insertFromServer('output_columns', {
+    store.dispatch(upsertFromServer('output_columns', {
       position: 0,
       id: 1,
       field_name: "Address",
@@ -88,7 +88,7 @@ describe('components/ShowUpdate', () => {
         savedAt: "ON_SERVER"
       }
     }));
-    store.dispatch(insertFromServer('transforms', {
+    store.dispatch(upsertFromServer('transforms', {
       id: 620,
       output_soql_type: "SoQLText"
     }));
@@ -104,12 +104,12 @@ describe('components/ShowUpdate', () => {
   it('renders preview data when there is an output schema', () => {
     const store = getEmptyStore();
     insertView(store);
-    store.dispatch(insertFromServer('uploads', { id: 1 }));
-    store.dispatch(insertFromServer('input_schemas', { id: 1, upload_id: 1 }));
-    store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 1 }));
+    store.dispatch(upsertFromServer('uploads', { id: 1 }));
+    store.dispatch(upsertFromServer('input_schemas', { id: 1, upload_id: 1 }));
+    store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 1 }));
 
-    store.dispatch(insertFromServer('output_schema_columns', { output_schema_id: 1, output_column_id: 1 }));
-    store.dispatch(insertFromServer('output_columns', {
+    store.dispatch(upsertFromServer('output_schema_columns', { output_schema_id: 1, output_column_id: 1 }));
+    store.dispatch(upsertFromServer('output_columns', {
       position: 0,
       id: 1,
       field_name: "Address",
@@ -121,7 +121,7 @@ describe('components/ShowUpdate', () => {
         savedAt: "ON_SERVER"
       }
     }));
-    store.dispatch(insertFromServer('transforms', {
+    store.dispatch(upsertFromServer('transforms', {
       id: 620,
       output_soql_type: "SoQLText"
     }));
@@ -134,7 +134,7 @@ describe('components/ShowUpdate', () => {
   it('renders in progress when upsert is in progress', () => {
     const store = getStoreWithOutputSchema(getEmptyStore());
     insertView(store);
-    store.dispatch(insertFromServer('upsert_jobs', {
+    store.dispatch(upsertFromServer('upsert_jobs', {
       id: 620,
       status: null
     }));
@@ -148,7 +148,7 @@ describe('components/ShowUpdate', () => {
   it('tries to add an email interest when the email me button is pressed', (done) => {
     const store = getStoreWithOutputSchema(getEmptyStore());
     insertView(store);
-    store.dispatch(insertFromServer('upsert_jobs', {
+    store.dispatch(upsertFromServer('upsert_jobs', {
       id: 620,
       status: null,
       job_uuid: "001679ae-42e2-472f-ab37-720f49576d54"
@@ -181,7 +181,7 @@ describe('components/ShowUpdate', () => {
   it('renders the email me button as an error when the call to email_interests fails', (done) => {
     const store = getStoreWithOutputSchema(getEmptyStore());
     insertView(store);
-    store.dispatch(insertFromServer('upsert_jobs', {
+    store.dispatch(upsertFromServer('upsert_jobs', {
       id: 620,
       status: null,
       job_uuid: "001679ae-42e2-472f-ab37-720f49576d54"
@@ -213,12 +213,12 @@ describe('components/ShowUpdate', () => {
   it('renders the table when the upsert is complete', () => {
     const store = getEmptyStore();
     insertView(store);
-    store.dispatch(insertFromServer('uploads', {id: 1}));
-    store.dispatch(insertFromServer('input_schemas', {id: 1, upload_id: 1}));
-    store.dispatch(insertFromServer('output_schemas', {id: 1, input_schema_id: 1}));
+    store.dispatch(upsertFromServer('uploads', {id: 1}));
+    store.dispatch(upsertFromServer('input_schemas', {id: 1, upload_id: 1}));
+    store.dispatch(upsertFromServer('output_schemas', {id: 1, input_schema_id: 1}));
 
-    store.dispatch(insertFromServer('output_schema_columns', {output_schema_id: 1, output_column_id: 1}));
-    store.dispatch(insertFromServer('output_columns', {
+    store.dispatch(upsertFromServer('output_schema_columns', {output_schema_id: 1, output_column_id: 1}));
+    store.dispatch(upsertFromServer('output_columns', {
       position: 0,
       id: 1,
       field_name: "Address",
@@ -230,11 +230,11 @@ describe('components/ShowUpdate', () => {
         savedAt: "ON_SERVER"
       }
     }));
-    store.dispatch(insertFromServer('transforms', {
+    store.dispatch(upsertFromServer('transforms', {
       id: 620,
       output_soql_type: "SoQLText"
     }));
-    store.dispatch(insertFromServer('upsert_jobs', {
+    store.dispatch(upsertFromServer('upsert_jobs', {
       id: 620,
       status: "successful"
     }));

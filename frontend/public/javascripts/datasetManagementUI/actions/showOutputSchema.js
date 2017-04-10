@@ -5,12 +5,12 @@ import * as Links from '../links';
 import {
   batch,
   revertEdits,
-  insertStarted,
-  insertSucceeded,
-  insertFailed,
+  upsertStarted,
+  upsertSucceeded,
+  upsertFailed,
   updateFromServer,
   updateImmutableStarted,
-  insertMultipleFromServer
+  upsertMultipleFromServer
 } from './database';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import {
@@ -31,7 +31,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType);
 
     dispatch(batch([
-      insertStarted('output_schemas', newOutputSchema),
+      upsertStarted('output_schemas', newOutputSchema),
       updateImmutableStarted('output_columns', oldColumn.id)
     ]));
 
@@ -43,7 +43,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       then(getJson).
       then(resp => {
         dispatch(batch([
-          insertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id }),
+          upsertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id }),
           revertEdits('output_columns', oldColumn.id)
         ]));
         insertChildrenAndSubscribeToOutputSchema(dispatch, upload, resp.resource);
@@ -54,7 +54,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       }).
       catch((err) => {
         console.error('Failed to update schema!', err);
-        dispatch(insertFailed('output_schemas', newOutputSchema, err));
+        dispatch(upsertFailed('output_schemas', newOutputSchema, err));
       });
   };
 }
@@ -130,9 +130,7 @@ export function loadColumnErrors(nextState) {
         });
         dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
           const theTransformId = outputSchema.output_columns[idx].transform.id;
-          return insertMultipleFromServer(`transform_${theTransformId}`, newRecords, {
-            ifNotExists: true
-          });
+          return upsertMultipleFromServer(`transform_${theTransformId}`, newRecords);
         })));
         dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
           const errorIndices = _.map(newRecords,
@@ -175,7 +173,7 @@ export function loadRowErrors(inputSchemaId, offset, limit) {
           id: `${inputSchemaId}-${rowError.offset}`
         }));
         const rowErrorsKeyedById = _.keyBy(rowErrorsWithId, 'id');
-        dispatch(insertMultipleFromServer('row_errors', rowErrorsKeyedById, { ifNotExists: true }));
+        dispatch(upsertMultipleFromServer('row_errors', rowErrorsKeyedById));
       }).
       catch((error) => {
         // TODO: maybe add a notification

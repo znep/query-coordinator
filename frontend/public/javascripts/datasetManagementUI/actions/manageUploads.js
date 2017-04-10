@@ -2,12 +2,11 @@ import _ from 'lodash';
 import * as Links from '../links';
 import * as dsmapiLinks from '../dsmapiLinks';
 import {
-  insertFromServer,
-  insertMultipleFromServer,
-  insertFromServerIfNotExists,
-  insertStarted,
-  insertSucceeded,
-  insertFailed,
+  upsertFromServer,
+  upsertMultipleFromServer,
+  upsertStarted,
+  upsertSucceeded,
+  upsertFailed,
   updateFromServer,
   updateStarted,
   updateSucceeded,
@@ -33,7 +32,7 @@ export function createUpload(file) {
     const uploadInsert = {
       filename: file.name
     };
-    dispatch(insertStarted('uploads', uploadInsert));
+    dispatch(upsertStarted('uploads', uploadInsert));
     socrataFetch(dsmapiLinks.uploadCreate, {
       method: 'POST',
       body: JSON.stringify({
@@ -44,13 +43,13 @@ export function createUpload(file) {
       then(getJson).
       then((resp) => {
         const newUpload = resp.resource;
-        dispatch(insertSucceeded('uploads', uploadInsert, { id: newUpload.id }));
+        dispatch(upsertSucceeded('uploads', uploadInsert, { id: newUpload.id }));
         dispatch(push(Links.showUpload(newUpload.id)(routing)));
         dispatch(uploadFile(newUpload.id, file));
         dispatch(pollForOutputSchema(newUpload.id));
       }).
       catch((err) => {
-        dispatch(insertFailed('uploads', uploadInsert, err));
+        dispatch(upsertFailed('uploads', uploadInsert, err));
       });
   };
 }
@@ -132,7 +131,7 @@ function pollForOutputSchema(uploadId) {
 }
 
 export function insertAndSubscribeToUpload(dispatch, upload) {
-  dispatch(insertFromServer('uploads', {
+  dispatch(upsertFromServer('uploads', {
     ..._.omit(upload, ['schemas']),
     inserted_at: parseDate(upload.inserted_at),
     finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
@@ -149,7 +148,7 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
 
 function subscribeToUpload(dispatch, upload) {
   const outputSchemaIds = upload.schemas.map((inputSchema) => {
-    dispatch(insertFromServerIfNotExists('input_schemas', {
+    dispatch(upsertFromServer('input_schemas', {
       id: inputSchema.id,
       name: inputSchema.name,
       total_rows: inputSchema.total_rows,
@@ -157,7 +156,7 @@ function subscribeToUpload(dispatch, upload) {
     }));
     dispatch(subscribeToRowErrors(inputSchema.id));
     inputSchema.input_columns.forEach((column) => {
-      dispatch(insertFromServer('input_columns', column));
+      dispatch(upsertFromServer('input_columns', column));
     });
     return inputSchema.output_schemas.map((outputSchema) => {
       return insertAndSubscribeToOutputSchema(dispatch, upload, outputSchema);
@@ -184,7 +183,7 @@ function subscribeToRowErrors(inputSchemaId) {
 }
 
 function insertAndSubscribeToOutputSchema(dispatch, upload, outputSchemaResponse) {
-  dispatch(insertFromServer('output_schemas', toOutputSchema(outputSchemaResponse)));
+  dispatch(upsertFromServer('output_schemas', toOutputSchema(outputSchemaResponse)));
   insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outputSchemaResponse);
   return outputSchemaResponse.id;
 }
@@ -194,16 +193,13 @@ export function insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outpu
   const actions = [];
   outputSchemaResponse.output_columns.forEach((outputColumn) => {
     const transform = outputColumn.transform;
-    actions.push(insertFromServerIfNotExists('transforms', transform));
-    // Always update store with server response since we're no longer updating
-    // output_colummns directly from metadataEditor. In future, may be better to
-    // just overwrite output_columns completely or maybe check if value has changed
-    // and call insertFromServer then
-    actions.push(insertFromServer('output_columns', {
+    actions.push(upsertFromServer('transforms', transform));
+
+    actions.push(upsertFromServer('output_columns', {
       ..._.omit(outputColumn, ['transform']),
       transform_id: outputColumn.transform.id
     }));
-    dispatch(insertFromServerIfNotExists('output_schema_columns', {
+    dispatch(upsertFromServer('output_schema_columns', {
       id: `${outputSchemaResponse.id}-${outputColumn.id}`,
       output_schema_id: outputSchemaResponse.id,
       output_column_id: outputColumn.id
@@ -292,7 +288,7 @@ function fetchAndInsertDataForTransform(upload, transform, offset, limit) {
           ...result
         }));
         const keyedById = _.keyBy(recordsWithIndex, 'id');
-        dispatch(insertMultipleFromServer(`transform_${transform.id}`, keyedById));
+        dispatch(upsertMultipleFromServer(`transform_${transform.id}`, keyedById));
         dispatch(updateFromServer('transforms', {
           id: transform.id,
           fetched_rows: offset + limit

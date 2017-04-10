@@ -10,12 +10,12 @@ describe('reducers/database', () => {
     const initialDB = {};
     const operations = [
       Actions.createTable('my_table'),
-      Actions.insertStarted('my_table', { ego: 2, super_ego: 3 }),
-      Actions.insertSucceeded('my_table', { ego: 2, super_ego: 3 }, { id: 1 }),
+      Actions.upsertStarted('my_table', { ego: 2, super_ego: 3 }),
+      Actions.upsertSucceeded('my_table', { ego: 2, super_ego: 3 }, { id: 1 }),
       Actions.edit('my_table', { id: 1, ego: 5 }),
       Actions.updateStarted('my_table', { id: 1, ego: 5 }),
       Actions.updateSucceeded('my_table', { id: 1, ego: 5 }),
-      Actions.insertFromServer('my_table', { id: 2, ego: 77, super_ego: 88 })
+      Actions.upsertFromServer('my_table', { id: 2, ego: 77, super_ego: 88 })
     ];
     const database = dbReducer(initialDB, Actions.batch(operations));
     const savedAt = _.values(database.my_table)[0].__status__.savedAt;
@@ -199,7 +199,7 @@ describe('reducers/database', () => {
     });
   });
 
-  describe('INSERT_FROM_SERVER', () => {
+  describe('UPSERT_FROM_SERVER', () => {
 
     it('handles if record doesn\'t exist', () => {
       const initialDB = {
@@ -208,7 +208,7 @@ describe('reducers/database', () => {
 
       const newRecord = { id: 0, ego: 3, super_ego: 7 };
 
-      expect(dbReducer(initialDB, Actions.insertFromServer('my_table', newRecord))).to.deep.equal({
+      expect(dbReducer(initialDB, Actions.upsertFromServer('my_table', newRecord))).to.deep.equal({
         my_table: {
           0: {
             ...newRecord,
@@ -220,80 +220,15 @@ describe('reducers/database', () => {
         }
       });
     });
-
-    it('throws if record already exists', () => {
-      const initialDB = {
-        my_table: {
-          0: { ego: 5, super_ego: 7 }
-        }
-      };
-
-      const newRecord = { id: 0, ego: 3, super_ego: 7 };
-
-      const badInsert = () =>
-        dbReducer(initialDB, Actions.insertFromServer('my_table', newRecord));
-
-      expect(badInsert).to.throw(ReferenceError);
-    });
-
-    it('does nothing if record with that id exists but `options.ifNotExists`', () => {
-      // even if you supply different attributes
-      const initialDB = {
-        my_table: {
-          0: {
-            __status__: statusSavedOnServer,
-            id: 0,
-            ego: 5,
-            super_ego: 7
-          }
-        }
-      };
-
-      const newRecord = { id: 0, ego: 3, super_ego: 7 };
-      const action = Actions.insertFromServer('my_table', newRecord, { ifNotExists: true });
-      expect(dbReducer(initialDB, action)).to.deep.equal({
-        my_table: {
-          0: {
-            __status__: statusSavedOnServer,
-            id: 0,
-            ego: 5,
-            super_ego: 7
-          }
-        }
-      });
-    });
-
   });
 
-  // TODO: insertMultipleFromServer
-
-  it('handles INSERT_FROM_SERVER_IF_NOT_EXISTS', () => {
-    const initialDB = {
-      my_table: {}
-    };
-
-    const newRecord = { id: 0, ego: 3, super_ego: 7 };
-
-    expect(dbReducer(initialDB, Actions.insertFromServerIfNotExists('my_table', newRecord))).to.deep.equal({
-      my_table: {
-        0: {
-          ...newRecord,
-          __status__: {
-            savedAt: 'ON_SERVER',
-            type: 'SAVED'
-          }
-        }
-      }
-    });
-  });
-
-  it('handles INSERT_STARTED', () => {
+  it('handles UPSERT_STARTED', () => {
     const initialDB = {
       my_table: {}
     };
     const newRecord = { ego: 3, super_ego: 7 };
 
-    const database = dbReducer(initialDB, Actions.insertStarted('my_table', newRecord));
+    const database = dbReducer(initialDB, Actions.upsertStarted('my_table', newRecord));
     const startedAt = _.values(database.my_table)[0].__status__.startedAt;
     expect(new Date()).to.be.at.least(startedAt);
     const insertedRecord = _.values(database.my_table)[0];
@@ -308,7 +243,7 @@ describe('reducers/database', () => {
     assert.isTrue(_.startsWith(insertedRecord.id, 'saving-'));
   });
 
-  it('handles INSERT_SUCCEEDED', () => {
+  it('handles UPSERT_SUCCEEDED', () => {
     const additional = { id: 0, additional: 8 };
     const newRecord = {
       ego: 3,
@@ -329,7 +264,7 @@ describe('reducers/database', () => {
       }
     };
 
-    const action = Actions.insertSucceeded('my_table', newRecord, additional);
+    const action = Actions.upsertSucceeded('my_table', newRecord, additional);
     const database = dbReducer(initialDB, action);
     const savedAt = _.values(database.my_table)[0].__status__.savedAt;
     expect(database).to.deep.equal({
@@ -348,7 +283,7 @@ describe('reducers/database', () => {
     });
   });
 
-  it('handles INSERT_FAILED', () => {
+  it('handles UPSERT_FAILED', () => {
     const newRecord = { ego: 3, super_ego: 7 };
     const initialDB = {
       my_table: {
@@ -366,7 +301,7 @@ describe('reducers/database', () => {
 
     const beforeFailed = new Date();
     const error = 'o noes';
-    const action = Actions.insertFailed('my_table', newRecord, error);
+    const action = Actions.upsertFailed('my_table', newRecord, error);
     const database = dbReducer(initialDB, action);
     const failedAt = _.values(database.my_table)[0].__status__.failedAt;
     expect(failedAt).to.be.at.least(beforeFailed);
@@ -374,7 +309,7 @@ describe('reducers/database', () => {
       my_table: {
         'saving-some-uuid': {
           __status__: {
-            type: 'INSERT_FAILED',
+            type: 'UPSERT_FAILED',
             failedAt,
             error,
             newRecord
@@ -596,7 +531,7 @@ describe('reducers/database', () => {
   it('Throws on invalid table name', () => {
     const initialDB = {};
     const badInsert = () =>
-      dbReducer(initialDB, Actions.insertStarted('missingTable', {}));
+      dbReducer(initialDB, Actions.upsertStarted('missingTable', {}));
 
     expect(badInsert).to.throw(ReferenceError);
   });

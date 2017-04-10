@@ -7,7 +7,7 @@ import ShowOutputSchema from 'components/ShowOutputSchema';
 import { ShowOutputSchema as ShowOutputSchemaUnConnected } from 'components/ShowOutputSchema';
 import * as Selectors from 'selectors';
 import {
-  insertFromServer, insertMultipleFromServer, updateFromServer
+  upsertFromServer, upsertMultipleFromServer, updateFromServer
 } from 'actions/database';
 import { normal } from 'lib/displayState';
 
@@ -43,7 +43,7 @@ describe('components/ShowOutputSchema', () => {
       id: 4,
       total_rows: 3
     }));
-    store.dispatch(insertMultipleFromServer('transform_1', [
+    store.dispatch(upsertMultipleFromServer('transform_1', [
       { id: 0, ok: 'foo' },
       { id: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
       { id: 2, ok: 'baz' }
@@ -53,7 +53,7 @@ describe('components/ShowOutputSchema', () => {
       contiguous_rows_processed: 3
     }));
 
-    store.dispatch(insertMultipleFromServer('transform_2', [
+    store.dispatch(upsertMultipleFromServer('transform_2', [
       { id: 0, ok: 'bleep' },
       { id: 1, ok: null },
       { id: 2, ok: 'blorp' }
@@ -103,17 +103,17 @@ describe('components/ShowOutputSchema', () => {
         id: 4,
         num_row_errors: 1
       }));
-      store.dispatch(insertMultipleFromServer('transform_1', [
+      store.dispatch(upsertMultipleFromServer('transform_1', [
         { id: 0, ok: 'foo' },
         { id: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
         { id: 2, ok: 'baz' }
       ]));
-      store.dispatch(insertMultipleFromServer('transform_2', [
+      store.dispatch(upsertMultipleFromServer('transform_2', [
         { id: 0, ok: 'bleep' },
         { id: 1, ok: null },
         { id: 2, ok: 'blorp' }
       ]));
-      store.dispatch(insertFromServer('row_errors', {
+      store.dispatch(upsertFromServer('row_errors', {
         id: '4-1',
         offset: 1,
         error: {
@@ -136,17 +136,17 @@ describe('components/ShowOutputSchema', () => {
         id: 4,
         num_row_errors: 1
       }));
-      store.dispatch(insertMultipleFromServer('transform_1', [
+      store.dispatch(upsertMultipleFromServer('transform_1', [
         { id: 0, ok: 'foo' },
         { id: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
         { id: 2, ok: 'baz' }
       ]));
-      store.dispatch(insertMultipleFromServer('transform_2', [
+      store.dispatch(upsertMultipleFromServer('transform_2', [
         { id: 0, ok: 'bleep' },
         { id: 1, ok: null },
         { id: 2, ok: 'blorp' }
       ]));
-      store.dispatch(insertFromServer('row_errors', {
+      store.dispatch(upsertFromServer('row_errors', {
         id: '4-0',
         offset: 0,
         input_schema_id: 4,

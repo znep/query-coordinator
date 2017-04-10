@@ -136,6 +136,50 @@ module.exports = function CardDataService(
       });
     },
 
+    // Similar to getData but only returns values from the column, does not perform any aggregation.
+    // This is only used for the Distribution Chart's initial group by query to determine if there
+    // the column is a low-cardinality column.
+    getColumnValues: function(fieldName, datasetId, whereClauseFragment, options) {
+      $window.socrata.utils.assert(_.isString(fieldName), 'fieldName should be a string');
+      $window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');
+      options = _.defaults(options || {}, { limit: 200 });
+
+      datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+
+      var whereClause = buildWhereClause(whereClauseFragment);
+
+      var nameAlias = SoqlHelpers.getFieldNameAlias('name');
+
+      // Wrap field name in ticks and replace dashes with underscores
+      fieldName = SoqlHelpers.formatFieldName(fieldName);
+
+      var queryTemplate = 'select {0} as {3} {1} group by {0} limit {2}';
+      var url = $.baseUrl(`/api/id/${datasetId}.json`);
+      // TODO: Implement some method for paging/showing data that has been truncated.
+      var query = queryTemplate.format(
+        fieldName,
+        whereClause,
+        options.limit,
+        nameAlias
+      );
+
+      url.searchParams.set('$query', query);
+
+      // These two flags are needed to make queries on the NBE copy of OBE derived views.
+      // They should be noops for any view based on an NBE view (i.e. every other data lens)
+      url.searchParams.set('$$read_from_nbe', true);
+      url.searchParams.set('$$version', 2.1);
+
+      var config = httpConfig.call(this);
+
+      return http.get(url.href, config).then(function(response) {
+        return {
+          headers: response.headers(),
+          data: response.data
+        };
+      });
+    },
+
     getMagnitudeData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData) {
       $window.socrata.utils.assert(_.isString(fieldName), 'fieldName should be a string');
       $window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');

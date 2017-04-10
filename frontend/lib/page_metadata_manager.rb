@@ -448,8 +448,6 @@ class PageMetadataManager
   # could be multiple cards for the same column using identical bucketing
   # functions.
   def bucketed_column_queries(dataset_id, cards)
-    logarithmic_threshold = 2000
-
     cards.select { |card| card['cardType'] == 'histogram' }.map do |card|
 
       field_name, bucket_type, card_options = card.values_at('fieldName', 'bucketType', 'cardOptions')
@@ -463,13 +461,13 @@ class PageMetadataManager
       # is a high probability that it is a histogram rendering as a column
       # chart, so use the default group by.
       if bucket_size == 'logarithmic' || bucket_type == 'logarithmic'
-        next [ field_name, "signed_magnitude_10(#{field_name})" ]
+        next "signed_magnitude_10(#{field_name})"
       elsif bucket_size.is_a? Numeric
-        next [ field_name, "signed_magnitude_linear(#{field_name}, #{bucket_size})" ]
+        next "signed_magnitude_linear(#{field_name}, #{bucket_size})"
       elsif bucket_type.nil? && bucket_size.nil?
         next field_name
       end
-    end.flatten.compact.uniq
+    end.compact.uniq
   end
 
   def update_rollup_table(args)
@@ -498,16 +496,13 @@ class PageMetadataManager
     #if no page aggregation metadata, then default to count(*)
 
     if page_metadata['primaryAggregation'].present? && page_metadata['primaryAmountField'].present?
-      page_aggregation = "#{page_metadata['primaryAggregation']}(#{page_metadata['primaryAmountField']}) as value"
+      page_aggregation = "#{page_metadata['primaryAggregation']}(#{page_metadata['primaryAmountField']}) as COLUMN_ALIAS_GUARD__VALUE"
       result << page_aggregation
-    end
-    result = result.compact.uniq.join(', ')
-
-    if result.blank?
-      result = "count(*) as value"
+    else
+      result << 'count(*) as COLUMN_ALIAS_GUARD__VALUE'
     end
 
-    result
+    result.compact.uniq.join(', ')
   end
 
   def time_range_in_column(dataset_id, field_name)

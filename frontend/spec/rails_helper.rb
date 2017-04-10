@@ -11,10 +11,13 @@ require 'timecop'
 
 require 'vcr'
 VCR.configure do |config|
-  config.default_cassette_options = { :record => :new_episodes }
+  # We don't want any unintended changes to cassettes and
+  # up the developer's awareness of stubbing. Don't default to
+  # recording new episodes.
+  # config.default_cassette_options = { :record => :new_episodes }
   config.cassette_library_dir = 'spec/fixtures/vcr_cassettes'
   config.hook_into :webmock
-#  config.debug_logger = STDOUT
+  # config.debug_logger = STDOUT
 end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in

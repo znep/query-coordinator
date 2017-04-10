@@ -50,6 +50,13 @@ describe('DistributionChartController', function() {
 
         return withHeaders({}, $q.when(response));
       },
+      getColumnValues: function() {
+        var response = _.range(0, Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 5).map(function(x) {
+          return { name: x };
+        });
+
+        return withHeaders({}, $q.when(response));
+      },
       getColumnDomain: function() {
         return $q.when({min: -1, max: 1});
       },
@@ -84,6 +91,7 @@ describe('DistributionChartController', function() {
     page.defineObservableProperty('aggregation', {});
     page.defineObservableProperty('activeFilters', []);
     card.page = page;
+    card.fieldName = 'some-card';
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);
     card.defineObservableProperty('bucketType', undefined);

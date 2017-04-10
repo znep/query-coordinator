@@ -2,12 +2,12 @@
 // NOTE: Translations are generated in the Rake task; see parallel_deps
 // in lib/tasks/karma_tasks.rake for the easy implementation.
 
-var execFile = require('child_process').execFile;
+var exec = require('child_process').exec;
 var fs = require('fs');
 var _ = require('lodash');
 
 function getSuiteConf(name) {
-  return 'karma/' + name + '/karma.conf.js';
+  return `karma/${name}/karma.conf.js`;
 }
 
 // Get all Karma test suites.
@@ -23,37 +23,51 @@ var suites = fs.readdirSync('karma').filter(function(path) {
 // A selection of ports based on the number of suites we have.
 // This avoids port conflicts, which was causing intermittent
 // unexpected test failures when running parallel locally.
-var startingPort = 7000;
-var ports = _.range(startingPort, startingPort + suites.length);
+const startingPort = 7000;
+let numUsedPorts = 0;
+const nextPort = () => (startingPort + numUsedPorts++);
 
-// Display warning if test suites will
+// Display warning if there are fewer CPU cores than parallel test suites.
 var cpus = require('os').cpus();
-console.log('Detected ' + cpus.length + ' cores');
+console.log(`Detected ${cpus.length} cores`);
 if (cpus.length < suites.length) {
   console.error('Fewer cores than suites to test; consider implementing worker pool');
 }
 
 // For launching a Karma test run.
-var flags = '--singleRun true --reporters dots'.split(' ');
 function generateArgs(suite) {
-  return ['start', getSuiteConf(suite), '--port', ports.pop()].concat(flags);
+  return `start ${getSuiteConf(suite)} --port ${nextPort()} --singleRun true --reporters dots`;
 }
 
 // For printing Karma results, with early abort on test failures.
 function report(suite) {
   return function(error, stdout, stderr) {
-    console.log(suite + ' output:\n' + stdout + '\n error:\n' + stderr);
+    function printStreamIfNotBlank(streamName, text) {
+      if (!_.isEmpty(text)) {
+        console.log(`== ${suite} ${streamName} BEGIN ==`);
+        console.log(text);
+        console.log(`== ${suite} ${streamName} END ==`);
+      }
+    }
+    printStreamIfNotBlank('stdout', stdout);
+    printStreamIfNotBlank('stderr', stderr);
     if (error) {
+      if (error.code === 1) {
+        console.error('Tests failed.');
+      } else {
+        console.error(`Failed to run tests: ${error}`);
+      }
+
       process.exit(1);
     }
   };
 }
 
 // Execute test suites in parallel.
-var karmaCommand = './node_modules/karma/bin/karma';
 suites.forEach(function(suite) {
-  console.log('Running Karma tests for ' + suite);
-  execFile(karmaCommand, generateArgs(suite), report(suite));
+  console.log(`Spawning Karma tests for ${suite} [background]`);
+  var karmaCommand = `node --max_old_space_size=4096 ./node_modules/karma/bin/karma ${generateArgs(suite)}`;
+  exec(karmaCommand, report(suite));
 });
 
 console.log('');

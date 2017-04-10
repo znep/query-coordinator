@@ -1,10 +1,5 @@
 /* eslint-env node */
 
-// By default, Node reserves just under 2GB for this param.
-// We need more.
-var v8 = require('v8');
-v8.setFlagsFromString('--max_old_space_size=4096');
-
 var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');

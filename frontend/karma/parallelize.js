@@ -50,7 +50,7 @@ function report(suite) {
 }
 
 // Execute test suites in parallel.
-var karmaCommand = './node_modules/karma/bin/karma';
+var karmaCommand = 'node --max_old_space_size=4096 ./node_modules/karma/bin/karma';
 suites.forEach(function(suite) {
   console.log('Running Karma tests for ' + suite);
   execFile(karmaCommand, generateArgs(suite), report(suite));

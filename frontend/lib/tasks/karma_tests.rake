@@ -17,7 +17,7 @@ namespace :test do
         browser = 'Firefox'
       end
 
-      cmd = "./node_modules/karma/bin/karma start karma/#{dir}/karma.conf.js --singleRun #{!watch} --browsers #{browser} --reporters #{reporter}"
+      cmd = "node --max_old_space_size=4096 ./node_modules/karma/bin/karma start karma/#{dir}/karma.conf.js --singleRun #{!watch} --browsers #{browser} --reporters #{reporter}"
       puts cmd
       fail("#{dir} Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
       puts "#{dir} Karma tests completed without failure."

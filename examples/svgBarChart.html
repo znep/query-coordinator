@@ -73,6 +73,8 @@
     <div id="bar-chart-17"></div>
     <p>Grouping values including percent symbols, should not cause an error</p>
     <div id="bar-chart-18"></div>
+    <p>Measure summed data sorted, should sort nulls last</p>
+    <div id="bar-chart-19"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -798,6 +800,54 @@
         title: 'Reading and Math Proficiencies'
       };
 
+      var barChart19Vif = {
+        "format": {
+          "type": "visualization_interchange_format",
+          "version": 2
+        },
+        "configuration": {
+          "viewSourceDataLink": true,
+          "showDimensionLabels": true,
+          "showValueLabels": true,
+          "xAxisScalingMode": "pan"
+        },
+        "description": "",
+        "series": [
+          {
+            "color": {
+              "primary": "#71abd9",
+              "secondary": "#71abd9",
+              "highlight": "#cccccc"
+            },
+            "dataSource": {
+              "datasetUid": "pfn7-4ih7",
+              "dimension": {
+                "columnName": "borough",
+                "aggregationFunction": null
+              },
+              "domain": "evergreen.data.socrata.com",
+              "measure": {
+                "columnName": "zip_code",
+                "aggregationFunction": "sum"
+              },
+              "orderBy": {
+                "parameter": "measure",
+                "sort": "desc"
+              },
+              "type": "socrata.soql",
+              "filters": []
+            },
+            "label": null,
+            "type": "barChart",
+            "unit": {
+              "one": "case",
+              "other": "cases"
+            }
+          }
+        ],
+        "title": "Null values sorted last"
+      };
+
       /**
        * Instantiate the plugins
        */
@@ -831,6 +881,7 @@
       $('#bar-chart-16').socrataSvgBarChart(barChart16Vif);
       $('#bar-chart-17').socrataSvgBarChart(barChart17Vif);
       $('#bar-chart-18').socrataSvgBarChart(barChart18Vif);
+      $('#bar-chart-19').socrataSvgBarChart(barChart19Vif);
 
       fillInExpectedValues();
 

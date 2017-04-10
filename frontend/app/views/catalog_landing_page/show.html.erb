@@ -7,7 +7,23 @@
 <%- end %>
 
 <div class="catalog">
-  <div id="search-content"></div>
+
+  <!--
+    EN-15369:
+    Use autocomplete searchbar. Short term solution is to comment out our React searchbar
+    and just use the socrata-autocomplete, which is not portable into React contexts.
+    https://github.com/socrata/socrata-autocomplete
+
+    Long term solution is to re-implement the autocomplete functionality into the common React searchbar.
+  -->
+
+  <div
+    class="search-with-autocomplete"
+    data-catalog-autocomplete="<%= FeatureFlags.derive(@view, request).browse_autocomplete %>">
+  </div>
+
+  <!-- <div id="search-content"></div> -->
+
   <%= render 'datasets/catalog', :opts => @processed_browse %>
 </div>
 

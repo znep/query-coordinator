@@ -31,6 +31,7 @@ describe('getLoadPlan', () => {
 
     const displayState = {
       type: DisplayState.NORMAL,
+      outputSchemaId,
       pageNo
     };
 
@@ -40,7 +41,7 @@ describe('getLoadPlan', () => {
       pageNo
     };
 
-     expect(getLoadPlan(db, outputSchemaId, displayState)).to.deep.equal(plan);
+     expect(getLoadPlan(db, displayState)).to.deep.equal(plan);
   });
 
   it('DisplayState.ROW_ERRORS returns plan when not loaded', () => {
@@ -49,6 +50,7 @@ describe('getLoadPlan', () => {
 
     const displayState = {
       type: DisplayState.ROW_ERRORS,
+      outputSchemaId,
       pageNo
     };
 
@@ -58,7 +60,7 @@ describe('getLoadPlan', () => {
       pageNo
     };
 
-    expect(getLoadPlan(db, outputSchemaId, displayState)).to.deep.equal(plan);
+    expect(getLoadPlan(db, displayState)).to.deep.equal(plan);
   });
 
   it('DisplayState.COLUMN_ERRORS returns plan when not loaded', () => {
@@ -68,6 +70,7 @@ describe('getLoadPlan', () => {
     const displayState = {
       type: DisplayState.COLUMN_ERRORS,
       pageNo,
+      outputSchemaId,
       transformId: 1
     };
 
@@ -78,7 +81,7 @@ describe('getLoadPlan', () => {
       outputSchemaId
     };
 
-    expect(getLoadPlan(db, outputSchemaId, displayState)).to.deep.equal(plan);
+    expect(getLoadPlan(db, displayState)).to.deep.equal(plan);
   });
 
   it('Returns null when loaded for all display states', () => {
@@ -126,27 +129,6 @@ describe('getLoadPlan', () => {
 });
 
 describe('loadNormalPreview', () => {
-  it('fetches normal rows into transform tables', (done) => {
-    const store = getStoreWithOutputSchema();
-
-    const { unmockFetch } = mockFetch({
-      '/api/publishing/v1/upload/5/schema/4/rows/18?limit=50&offset=0': {
-        GET: {
-          status: 200,
-          response: normalWithErrorsResponse
-        }
-      }
-    });
-
-    store.dispatch(loadNormalPreview(outputSchemaId, pageNo));
-
-    afterNextFrameRender(() => {
-      unmockFetch();
-
-      done();
-    });
-  });
-
   it('fetches normal rows into transform tables and errors into row_errors', (done) => {
     const store = getStoreWithOutputSchema();
 
@@ -161,7 +143,13 @@ describe('loadNormalPreview', () => {
 
     const rows = _.filter(normalWithErrorsResponse.slice(1), row => row.row);
 
-    store.dispatch(loadNormalPreview(outputSchemaId, pageNo));
+    const displayState = {
+      type: DisplayState.NORMAL,
+      outputSchemaId,
+      pageNo
+    };
+
+    store.dispatch(loadNormalPreview(displayState));
 
     afterNextFrameRender(() => {
       unmockFetch();
@@ -203,7 +191,13 @@ describe('loadRowErrors', () => {
       }
     });
 
-    store.dispatch(loadRowErrors(inputSchemaId, pageNo));
+    const displayState = {
+      type: DisplayState.ROW_ERRORS,
+      outputSchemaId,
+      pageNo
+    };
+
+    store.dispatch(loadRowErrors(displayState));
     afterNextFrameRender(() => {
       unmockFetch();
       const db = store.getState().db;
@@ -225,6 +219,12 @@ describe('loadColumnErrors', () => {
   it('fetches errors, inserts them into column tables with error_indices in columns table', (done) => {
     const store = getStoreWithOutputSchema();
     const transformId =  1;
+    const displayState = {
+      type: DisplayState.COLUMN_ERRORS,
+      transformId,
+      outputSchemaId,
+      pageNo
+    };
 
     const { unmockFetch } = mockFetch({
       '/api/publishing/v1/upload/5/schema/4/errors/18?limit=50&offset=0&column_id=50': {
@@ -235,7 +235,7 @@ describe('loadColumnErrors', () => {
       }
     });
 
-    store.dispatch(loadColumnErrors(transformId, outputSchemaId, pageNo));
+    store.dispatch(loadColumnErrors(displayState));
     afterNextFrameRender(() => {
       unmockFetch();
       const db = store.getState().db;

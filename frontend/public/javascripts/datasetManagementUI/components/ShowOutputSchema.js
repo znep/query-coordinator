@@ -51,7 +51,7 @@ export class ShowOutputSchema extends Component {
 
   dispatchDataLoad(props) {
     props.dispatch(
-      LoadDataActions.loadVisibleData(props.outputSchema.id, props.displayState)
+      LoadDataActions.loadVisibleData(props.displayState)
     );
   }
 

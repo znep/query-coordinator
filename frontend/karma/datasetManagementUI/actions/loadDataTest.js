@@ -91,6 +91,7 @@ describe('getLoadPlan', () => {
 
     const displayState = {
       pageNo,
+      outputSchemaId,
       transformId: 1
     };
 
@@ -111,17 +112,17 @@ describe('getLoadPlan', () => {
 
     const db = store.getState().db;
 
-    expect(getLoadPlan(db, outputSchemaId, {
+    expect(getLoadPlan(db, {
       ...displayState,
       type: DisplayState.NORMAL
     })).to.equal(null);
 
-    expect(getLoadPlan(db, outputSchemaId, {
+    expect(getLoadPlan(db, {
       ...displayState,
       type: DisplayState.ROW_ERRORS
     })).to.equal(null);
 
-    expect(getLoadPlan(db, outputSchemaId, {
+    expect(getLoadPlan(db, {
       ...displayState,
       type: DisplayState.COLUMN_ERRORS
     })).to.equal(null);

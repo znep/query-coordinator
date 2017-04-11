@@ -72,14 +72,13 @@ export function getLoadPlan(db, displayState) {
       }
     }
     default:
-      console.error('unknown display state', displayState.type);
-      return null;
+      throw new TypeError(`Unknown display state: ${displayState}`);
   }
 }
 
-export function loadVisibleData(outputSchemaId, displayState) {
+export function loadVisibleData(displayState) {
   return (dispatch, getState) => {
-    const loadPlan = getLoadPlan(getState().db, outputSchemaId, displayState);
+    const loadPlan = getLoadPlan(getState().db, displayState);
     if (loadPlan) {
       dispatch(executeLoadPlan(loadPlan, displayState));
     }
@@ -99,7 +98,7 @@ function executeLoadPlan(loadPlan, displayState) {
         dispatch(loadColumnErrors(displayState));
         break;
       default:
-        console.error('unknown load plan type', loadPlan.type);
+        throw new TypeError(`Unknown load plan type: ${loadPlan.type}`);
     }
   };
 }
@@ -233,7 +232,6 @@ export function loadColumnErrors(displayState) {
 export function loadRowErrors(displayState) {
   return (dispatch, getState) => {
     const db = getState().db;
-    console.log({displayState});
     const inputSchemaId = db.output_schemas[displayState.outputSchemaId].input_schema_id;
     const url = urlForPreview(db, displayState);
 

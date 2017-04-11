@@ -13,7 +13,6 @@ import { normal } from 'lib/displayState';
 
 /* eslint-disable new-cap */
 describe('components/ShowOutputSchema', () => {
-
   const defaultProps = {
     params: {
       uploadId: 5,
@@ -24,7 +23,7 @@ describe('components/ShowOutputSchema', () => {
       path: '' // just used by mapStateToProps to determine whether we're in a "viewing row errors" state
     },
     updateColumnType: _.noop,
-    routing: {}
+    location: {}
   };
 
   it('renders a table without data', () => {

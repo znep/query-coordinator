@@ -32,6 +32,7 @@ export class Card extends React.Component {
       _.pick(this.props, 'name', 'description', 'id', 'updatedAt', 'viewCount'),
       {
         displayType: this.props.type,
+        imageUrl: this.props.previewImageUrl,
         isPrivate: !this.props.isPublic,
         url: this.props.link
       }

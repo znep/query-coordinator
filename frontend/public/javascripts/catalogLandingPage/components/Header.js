@@ -17,8 +17,12 @@ const Header = (props) => {
     $('.management-button .throbber-icon, .management-button .socrata-icon-arrow-right').toggle();
   };
 
-  const managementButton = (
-    <a className="management-button-anchor" href={managementPageHref} onClick={toggleThrobber}>
+  const managementButton = () => {
+    if (document.querySelector('.alert.info.browse2-manage-catalog-landing-page')) {
+      return null;
+    }
+
+    return (<a className="management-button-anchor" href={managementPageHref} onClick={toggleThrobber}>
       <button className="management-button alert info">
         <i id="socrata-icon-edit" className="socrata-icon-edit"></i>
         <span className="hoverText">
@@ -26,8 +30,8 @@ const Header = (props) => {
         </span>
         <span className="throbber-icon"></span>
       </button>
-    </a>
-  );
+    </a>);
+  };
 
   const interpretedDescription = (() => {
     if (FeatureFlags.value('enable_markdown_for_catalog_landing_page_description')) {
@@ -44,7 +48,7 @@ const Header = (props) => {
     <div className="catalog-landing-page-header">
       <h1 className={headerClassname}>
         {headline}
-        {window.serverConfig.currentUserMayManage && managementButton}
+        {window.serverConfig.currentUserMayManage && managementButton()}
       </h1>
       {interpretedDescription}
     </div>

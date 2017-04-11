@@ -84,7 +84,8 @@ module CatalogLandingPageHelper
   def should_render_catalog_landing_page_activator?
     FeatureFlags.value_for(:enable_catalog_landing_page, request: request) &&
       CatalogLandingPage.may_activate?(request) &&
-      can_manage_catalog_landing_page?
+      can_manage_catalog_landing_page? &&
+      @catalog_landing_page.present? && @catalog_landing_page.metadata.values.all?(&:blank?)
   end
 
   def can_manage_catalog_landing_page?

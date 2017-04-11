@@ -17,7 +17,7 @@ const Header = (props) => {
     $('.management-button .throbber-icon, .management-button .socrata-icon-arrow-right').toggle();
   };
 
-  const managementButton = () => {
+  const renderManagementButton = () => {
     if (document.querySelector('.alert.info.browse2-manage-catalog-landing-page')) {
       return null;
     }
@@ -48,7 +48,7 @@ const Header = (props) => {
     <div className="catalog-landing-page-header">
       <h1 className={headerClassname}>
         {headline}
-        {window.serverConfig.currentUserMayManage && managementButton()}
+        {window.serverConfig.currentUserMayManage && renderManagementButton()}
       </h1>
       {interpretedDescription}
     </div>

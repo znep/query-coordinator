@@ -10,6 +10,7 @@ import { parseDate } from './lib/parseDate';
 import * as ApplyUpdate from './actions/applyUpdate';
 
 export const emptyDB = {
+  __loads__: {},
   views: {},
   updates: {},
   uploads: {},

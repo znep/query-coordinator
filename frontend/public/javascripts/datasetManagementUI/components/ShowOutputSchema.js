@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
 import { push } from 'react-router-redux';
@@ -9,9 +9,11 @@ import * as Links from '../links';
 import * as Selectors from '../selectors';
 import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
+import * as LoadDataActions from '../actions/loadData';
+import * as DisplayState from '../lib/displayState';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
-import * as DisplayState from '../lib/displayState';
+import PagerBar from './Table/PagerBar';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ShowOutputSchema.scss';
 
@@ -37,114 +39,136 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   };
 }
 
-export function ShowOutputSchema({
-  db,
-  upload,
-  inputSchema,
-  outputSchema,
-  columns,
-  displayState,
-  canApplyUpdate,
-  goHome,
-  updateColumnType,
-  applyUpdate }) {
+export class ShowOutputSchema extends Component {
 
-  const path = {
-    uploadId: upload.id,
-    inputSchemaId: inputSchema.id,
-    outputSchemaId: outputSchema.id
-  };
+  componentDidMount() {
+    this.dispatchDataLoad(this.props);
+  }
 
-  const modalProps = {
-    fullScreen: true,
-    onDismiss: goHome
-  };
-  // TODO: a good candidate for a component since reused elsewhere
-  const headerProps = {
-    title: (
-      <ol className={styles.list}>
-        <li>
-          <Link to={Links.uploads}>
-            {I18n.home_pane.data}
-          </Link>
-          <SocrataIcon name="arrow-right" className={styles.icon} />
-        </li>
-        <li className={styles.active}>
-          {I18n.home_pane.preview}
-        </li>
-      </ol>
-    ),
-    onDismiss: goHome
-  };
+  componentWillReceiveProps(nextProps) {
+    this.dispatchDataLoad(nextProps);
+  }
 
-  const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
+  dispatchDataLoad(props) {
+    props.dispatch(
+      LoadDataActions.loadVisibleData(props.displayState)
+    );
+  }
 
-  return (
-    <div className={styles.outputSchemaContainer}>
-      <Modal {...modalProps}>
-        <ModalHeader {...headerProps} />
+  render() {
+    const {
+      db,
+      upload,
+      inputSchema,
+      outputSchema,
+      columns,
+      displayState,
+      canApplyUpdate,
+      numLoadsInProgress,
+      goHome,
+      updateColumnType,
+      applyUpdate,
+      routing
+    } = this.props;
 
-        <ModalContent>
-          <div className={styles.dataPreview}>
-            <h2 className={styles.previewHeader}>{I18n.home_pane.data_preview}</h2>
-            <div className={styles.datasetAttribute}>
-              <div className={styles.datasetAttribute}>
-                <p>Rows</p>
-                <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
+    const path = {
+      uploadId: upload.id,
+      inputSchemaId: inputSchema.id,
+      outputSchemaId: outputSchema.id
+    };
+
+    const modalProps = {
+      fullScreen: true,
+      onDismiss: goHome
+    };
+    // TODO: a good candidate for a component since reused elsewhere
+    const headerProps = {
+      title: (
+        <ol className={styles.list}>
+          <li>
+            <Link to={Links.uploads}>
+              {I18n.home_pane.data}
+            </Link>
+            <SocrataIcon name="arrow-right" className={styles.icon} />
+          </li>
+          <li className={styles.active}>
+            {I18n.home_pane.preview}
+          </li>
+        </ol>
+      ),
+      onDismiss: goHome
+    };
+
+    const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
+
+    return (
+      <div className={styles.outputSchemaContainer}>
+        <Modal {...modalProps}>
+          <ModalHeader {...headerProps} />
+
+          <ModalContent>
+            <div className={styles.dataPreview}>
+              <div className={styles.titleWrapper}>
+                <h2 className={styles.previewHeader}>
+                  {I18n.data_preview.title}
+                </h2>
+                {numLoadsInProgress > 0 ? <span className="spinner-default" /> : null}
               </div>
               <div className={styles.datasetAttribute}>
                 <div className={styles.datasetAttribute}>
-                  <p>Rows</p>
-                  <p
-                    className={styles.attribute}
-                    data-cheetah-hook="total-rows-transformed">{commaify(rowsTransformed)}</p>
+                  <p>{I18n.data_preview.rows}</p>
+                  <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
                 </div>
                 <div className={styles.datasetAttribute}>
-                  <p>Columns</p>
+                  <p>{I18n.data_preview.columns}</p>
                   <p className={styles.attribute}>{columns.length}</p>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className={styles.tableWrap}>
-            <Table
-              db={db}
+            <div className={styles.tableWrap}>
+              <Table
+                db={db}
+                path={path}
+                columns={columns}
+                inputSchema={inputSchema}
+                outputSchema={outputSchema}
+                displayState={displayState}
+                updateColumnType={updateColumnType} />
+            </div>
+            <PagerBar
               path={path}
-              columns={columns}
-              inputSchema={inputSchema}
-              outputSchema={outputSchema}
-              displayState={displayState}
-              updateColumnType={updateColumnType} />
-          </div>
-        </ModalContent>
+              routing={routing}
+              displayState={displayState} />
+          </ModalContent>
 
-        <ModalFooter>
-          {canApplyUpdate ?
-            <ReadyToImport
-              db={db}
-              outputSchema={outputSchema} /> :
-            <div />}
+          <ModalFooter>
+            {canApplyUpdate ?
+              <ReadyToImport
+                db={db}
+                outputSchema={outputSchema} /> :
+              <div />}
 
-          <div>
-            <Link to={Links.home}>
+            <div>
+              <Link to={Links.home}>
+                <button
+                  className={styles.saveBtn}>
+                  {I18n.home_pane.save_for_later}
+                </button>
+              </Link>
+
               <button
-                className={styles.saveBtn}>
-                {I18n.home_pane.save_for_later}
+                onClick={applyUpdate}
+                disabled={!canApplyUpdate}
+                className={styles.processBtn}>
+                {I18n.home_pane.process_data}
               </button>
-            </Link>
-
-            <button
-              onClick={applyUpdate}
-              disabled={!canApplyUpdate}
-              className={styles.processBtn}>
-              {I18n.home_pane.process_data}
-            </button>
-          </div>
-        </ModalFooter>
-      </Modal>
-    </div>
-  );
+            </div>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  }
 }
 
 ShowOutputSchema.propTypes = {
@@ -153,11 +177,14 @@ ShowOutputSchema.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
+  displayState: PropTypes.object.isRequired,
+  canApplyUpdate: PropTypes.bool.isRequired,
+  numLoadsInProgress: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
-  displayState: PropTypes.object.isRequired,
-  canApplyUpdate: PropTypes.bool.isRequired
+  dispatch: PropTypes.func.isRequired,
+  routing: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state, ownProps) {
@@ -170,7 +197,9 @@ function mapStateToProps(state, ownProps) {
   );
   return {
     ...queryResults,
-    displayState: DisplayState.fromUrl(_.pick(ownProps, ['params', 'route']))
+    numLoadsInProgress: Selectors.numLoadsInProgress(state.db),
+    displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
+    routing: ownProps.location
   };
 }
 
@@ -184,7 +213,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     applyUpdate: () => (
       dispatch(ApplyActions.applyUpdate(_.toNumber(ownProps.params.outputSchemaId)))
-    )
+    ),
+    dispatch
   };
 }
 

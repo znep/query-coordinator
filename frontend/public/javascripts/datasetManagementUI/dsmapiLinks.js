@@ -25,8 +25,12 @@ export const columnErrors = (uploadId, inputSchemaId, outputSchemaId, columnId, 
   `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors/${outputSchemaId}` +
     `?limit=${limit}&offset=${offset}&column_id=${columnId}`;
 
-export const rowErrors = (uploadId, inputSchemaId, offset, limit) =>
+export const rowErrors = (uploadId, inputSchemaId, limit, offset) =>
   `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors?limit=${limit}&offset=${offset}`;
+
+export const rows = (uploadId, inputSchemaId, outputSchemaId, limit, offset) =>
+  `${base}/upload/${uploadId}/schema/${inputSchemaId}/rows/${outputSchemaId}` +
+    `?limit=${limit}&offset=${offset}`;
 
 export const errorExport = (uploadId, inputSchemaId, outputSchemaId) =>
   `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors/${outputSchemaId}`;

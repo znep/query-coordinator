@@ -87,7 +87,7 @@ describe('withMockFetch + testThunk', () => {
   const myThunk = (dispatch) => {
     dispatch({ type: 'LOAD_STARTED' });
     fetch('/foo', { body: 'bar' }).then((response) => {
-      dispatch({ type: 'LOAD_FINISHED' })
+      dispatch({ type: 'LOAD_SUCCEEDED' })
     });
     // problem: a .catch here will catch assertion errors, which should be out-of-band
     // how can we test failure cases?
@@ -98,7 +98,7 @@ describe('withMockFetch + testThunk', () => {
       case 'LOAD_STARTED':
         return 'loadingState';
 
-      case 'LOAD_FINISHED':
+      case 'LOAD_SUCCEEDED':
         return 'finishedState';
     }
   };
@@ -122,7 +122,7 @@ describe('withMockFetch + testThunk', () => {
             expect(state).to.equal('loadingState');
           },
           (state, action) => {
-            expect(action).to.deep.equal({ type: 'LOAD_FINISHED' });
+            expect(action).to.deep.equal({ type: 'LOAD_SUCCEEDED' });
             expect(state).to.equal('finishedState');
           }
         ]);

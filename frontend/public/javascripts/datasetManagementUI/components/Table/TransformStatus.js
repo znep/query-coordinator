@@ -89,9 +89,7 @@ class TransformStatus extends Component {
       </div>
     );
 
-    const errorFlyout = (transform.num_transform_errors > 0 && !inErrorMode) ?
-      <ErrorFlyout transform={transform} /> :
-      null;
+    const errorFlyout = <ErrorFlyout transform={transform} />;
 
     if (transform.num_transform_errors > 0) {
       const msg = thisColumnDone ?

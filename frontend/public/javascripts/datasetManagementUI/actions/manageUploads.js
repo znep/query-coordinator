@@ -24,7 +24,6 @@ import { push } from 'react-router-redux';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import { parseDate } from '../lib/parseDate';
 import { joinChannel } from '../lib/channels';
-import { loadRowErrors } from './showOutputSchema';
 
 export function createUpload(file) {
   return (dispatch, getState) => {
@@ -168,15 +167,12 @@ function subscribeToUpload(dispatch, upload) {
 function subscribeToRowErrors(inputSchemaId) {
   return (dispatch) => {
     const channelName = `row_errors:${inputSchemaId}`;
-    let rowErrorsSoFar = 0;
     joinChannel(channelName, {
       errors: (event) => {
         dispatch(updateFromServer('input_schemas', {
           id: inputSchemaId,
           num_row_errors: event.errors
         }));
-        dispatch(loadRowErrors(inputSchemaId, rowErrorsSoFar, event.errors - rowErrorsSoFar));
-        rowErrorsSoFar = event.errors;
       }
     });
   };
@@ -207,13 +203,11 @@ export function insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outpu
   });
   dispatch(batch(actions));
   outputSchemaResponse.output_columns.forEach((outputColumn) => {
-    dispatch(createTableAndSubscribeToTransform(upload, outputColumn.transform));
+    dispatch(createTableAndSubscribeToTransform(outputColumn.transform));
   });
 }
 
-const INITIAL_FETCH_LIMIT_ROWS = 200;
-
-function createTableAndSubscribeToTransform(upload, transform) {
+function createTableAndSubscribeToTransform(transform) {
   return (dispatch, getState) => {
     const db = getState().db;
     const transformInDb = db.transforms[transform.id];
@@ -223,7 +217,6 @@ function createTableAndSubscribeToTransform(upload, transform) {
         row_fetch_started: true
       }));
       dispatch(createTable(`transform_${transform.id}`));
-      let initialRowsFetched = false;
       const channelName = `transform_progress:${transform.id}`;
       joinChannel(channelName, {
         max_ptr: (maxPtr) => {
@@ -231,13 +224,6 @@ function createTableAndSubscribeToTransform(upload, transform) {
             id: transform.id,
             contiguous_rows_processed: maxPtr.end_row_offset
           }));
-          if (!initialRowsFetched) {
-            initialRowsFetched = true;
-            const offset = 0;
-            dispatch(
-              fetchAndInsertDataForTransform(upload, transform, offset, INITIAL_FETCH_LIMIT_ROWS)
-            );
-          }
         },
         errors: (errorsMsg) => {
           dispatch(updateFromServer('transforms', {
@@ -271,28 +257,5 @@ function subscribeToOutputSchema(outputSchema) {
         })));
       }
     });
-  };
-}
-
-function fetchAndInsertDataForTransform(upload, transform, offset, limit) {
-  return (dispatch) => {
-    socrataFetch(dsmapiLinks.transformResults(upload.id, transform.id, limit, offset)).
-      then(checkStatus).
-      then(getJson).
-      catch((error) => {
-        console.error('failed to get transform results', error);
-      }).
-      then((resp) => {
-        const recordsWithIndex = resp.resource.map((result, id) => ({
-          id,
-          ...result
-        }));
-        const keyedById = _.keyBy(recordsWithIndex, 'id');
-        dispatch(upsertMultipleFromServer(`transform_${transform.id}`, keyedById));
-        dispatch(updateFromServer('transforms', {
-          id: transform.id,
-          fetched_rows: offset + limit
-        }));
-      });
   };
 }

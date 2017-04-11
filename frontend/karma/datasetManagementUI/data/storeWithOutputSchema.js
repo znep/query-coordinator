@@ -1,4 +1,4 @@
-import { upsertFromServer, createTable } from 'actions/database';
+import { updateFromServer, upsertFromServer, createTable } from 'actions/database';
 import { getDefaultStore } from '../testStore';
 
 export function getStoreWithOutputSchema(store = getDefaultStore()) {
@@ -39,14 +39,33 @@ export function getStoreWithOutputSchema(store = getDefaultStore()) {
   store.dispatch(upsertFromServer('transforms', {
     id: 1,
     transform_expr: 'arrest',
-    output_soql_type: 'SoQLText',
+    output_soql_type: 'SoQLText'
   }));
   store.dispatch(upsertFromServer('transforms', {
     id: 2,
     transform_expr: 'block',
-    output_soql_type: 'SoQLText',
+    output_soql_type: 'SoQLText'
   }));
   store.dispatch(createTable('transform_1'));
   store.dispatch(createTable('transform_2'));
   return store;
+}
+
+export function getStoreWithProcessedRows(store = getDefaultStore()) {
+  const osStore = getStoreWithOutputSchema(store);
+
+  osStore.dispatch(updateFromServer('transforms', {
+    id: 1,
+    contiguous_rows_processed: 2
+  }));
+  osStore.dispatch(updateFromServer('transforms', {
+    id: 2,
+    contiguous_rows_processed: 2
+  }));
+  osStore.dispatch(updateFromServer('input_schemas', {
+    id: 4,
+    total_rows: 2
+  }));
+
+  return osStore;
 }

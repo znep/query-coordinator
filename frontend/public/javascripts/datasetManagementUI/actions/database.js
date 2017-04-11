@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const BATCH = 'BATCH';
 export const batch = (operations) => ({
   type: BATCH,
@@ -121,3 +123,22 @@ export const createTable = (name) => ({
 });
 
 // no delete actions because we never delete anything lol
+
+export const LOAD_STARTED = 'LOAD_STARTED';
+export const loadStarted = (url) => ({
+  type: LOAD_STARTED,
+  url
+});
+
+export const LOAD_SUCCEEDED = 'LOAD_SUCCEEDED';
+export const loadSucceeded = (url) => ({
+  type: LOAD_SUCCEEDED,
+  url
+});
+
+export const LOAD_FAILED = 'STATUS_LOAD_FAILED';
+export const loadFailed = (url, error) => ({
+  type: LOAD_FAILED,
+  url,
+  error
+});

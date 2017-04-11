@@ -88,6 +88,10 @@ export class Pager extends React.Component {
   }
 
   render() {
+    if (!this.lastPage() || this.lastPage() <= 1) {
+      return <div className="pager"></div>;
+    }
+
     const prevLinkDisabled = this.props.currentPage === 1;
     const prevLink = this.renderPagerLink({
       className: 'prev-link',
@@ -127,6 +131,7 @@ export class Pager extends React.Component {
     const currentPageInput = (
       <div className={currentPageInputClasses}>
         <input
+          key={this.props.currentPage}
           type="text"
           alt={errorAltText}
           aria-label={pageNumberText}

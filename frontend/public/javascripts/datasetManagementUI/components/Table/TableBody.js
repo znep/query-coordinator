@@ -3,23 +3,20 @@ import React, { PropTypes, Component } from 'react';
 import TableCell from './TableCell';
 import RowError from './RowError';
 import * as DisplayState from '../../lib/displayState';
+import { PAGE_SIZE } from '../../actions/loadData';
 import styles from 'styles/Table/TableBody.scss';
-
-const RENDER_ROWS = 50;
 
 class TableBody extends Component {
 
   shouldComponentUpdate(nextProps) {
     return !_.isEqual(
       {
-        columns: nextProps.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
         displayState: nextProps.displayState,
-        numRowErrors: _.size(nextProps.db.row_errors)
+        __loads__: nextProps.db.__loads__
       },
       {
-        columns: this.props.transforms.map(t => [t.id, t.fetched_rows, t.error_indices]),
         displayState: this.props.displayState,
-        numRowErrors: _.size(this.props.db.row_errors)
+        __loads__: this.props.db.__loads__
       }
     );
   }
@@ -29,15 +26,21 @@ class TableBody extends Component {
     const transformTables = props.transforms.map((transform) => (
       props.db[`transform_${transform.id}`]
     ));
+    const startRow = (props.displayState.pageNo - 1) * PAGE_SIZE;
+    const endRow = startRow + PAGE_SIZE;
     let rowIndices;
     if (props.displayState.type === DisplayState.COLUMN_ERRORS) {
       const errorsTransform = props.db.transforms[props.displayState.transformId];
-      rowIndices = errorsTransform.error_indices || _.range(RENDER_ROWS);
+      if (errorsTransform.error_indices) {
+        rowIndices = errorsTransform.error_indices.slice(startRow, endRow);
+      } else {
+        rowIndices = [];
+      }
     } else if (props.displayState.type === DisplayState.ROW_ERRORS) {
       rowIndices = _.filter(props.db.row_errors, { input_schema_id: props.inputSchemaId }).
-        map((rowError) => rowError.offset);
+                     map((rowError) => rowError.offset);
     } else {
-      rowIndices = _.range(0, RENDER_ROWS);
+      rowIndices = _.range(startRow, endRow);
     }
     return rowIndices.map((rowIdx) => ({
       rowIdx,
@@ -62,7 +65,7 @@ class TableBody extends Component {
   render() {
     const data = this.getData();
     const rows = data.map(row => (
-      row.rowError ? <RowError key={row.rowIdx} rowError={row.rowError} /> : this.renderNormalRow(row)
+      row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row)
     ));
 
     return (

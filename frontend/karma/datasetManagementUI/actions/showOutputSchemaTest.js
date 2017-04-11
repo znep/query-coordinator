@@ -1,18 +1,7 @@
-import { expect, assert } from 'chai';
+import { expect } from 'chai';
 import _ from 'lodash';
-import { mockFetch } from '../testHelpers/mockHTTP';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
-import errorTableResponse from '../data/errorTableResponse';
-import {
-  getNewOutputSchemaAndColumns,
-  updateActions,
-  loadColumnErrors
-} from 'actions/showOutputSchema';
-import {
-  batch,
-  upsertSucceeded
-} from 'actions/database';
-import { statusSavedOnServer } from 'lib/database/statuses';
+import { getNewOutputSchemaAndColumns } from 'actions/showOutputSchema';
 
 describe('actions/showOutputSchema', () => {
 
@@ -51,74 +40,5 @@ describe('actions/showOutputSchema', () => {
         }
       ]);
     });
-
   });
-
-  describe('loadColumnErrors', () => {
-
-    it('fetches errors, inserts them into column tables, and updates error_indices in columns table', (done) => {
-      const store = getStoreWithOutputSchema();
-      const nextRouterState = {
-        params: {
-          inputSchemaId: 4,
-          outputSchemaId: 18,
-          errorsTransformId: 1,
-          uploadId: 5
-        }
-      };
-      const { unmockFetch } = mockFetch({
-        '/api/publishing/v1/upload/5/schema/4/errors/18?limit=50&offset=0&column_id=50': {
-          GET: {
-            status: 200,
-            response: errorTableResponse
-          }
-        }
-      });
-      store.dispatch(loadColumnErrors(nextRouterState));
-      setTimeout(() => {
-        unmockFetch();
-        const db = store.getState().db;
-        const transform1 = _.find(db.transforms, { id: 1 });
-        expect(transform1.error_indices).to.deep.equal(['0', '7']);
-        expect(_.sortBy(_.keys(db.transform_1))).to.deep.equal(['0', '7']);
-        // bizarrely, asserting against the whole object fails, but asserting against the
-        // individual keys succeeds
-        expect(db.transform_1['0']).to.deep.equal({
-          __status__: statusSavedOnServer,
-          error: {
-            inputs: {
-              arrest: {
-                ok: "031A"
-              }
-            },
-            message: "Failed to convert \"031A\" to number"
-          }
-        });
-        expect(db.transform_1['7']).to.deep.equal({
-          __status__: statusSavedOnServer,
-          error: {
-            inputs: {
-              arrest: {
-                ok: "031A"
-              }
-            },
-            message: "Failed to convert \"031A\" to number"
-          }
-        });
-        expect(db.transform_2).to.deep.equal({
-          '0': {
-            ok: "foo",
-            __status__: statusSavedOnServer
-          },
-          '7': {
-            ok: "bar",
-            __status__: statusSavedOnServer
-          }
-        });
-        done();
-      }, 0);
-    });
-
-  });
-
 });

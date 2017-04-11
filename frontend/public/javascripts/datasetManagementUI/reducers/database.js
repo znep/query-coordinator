@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import uuidV4 from 'uuid/v4';
 import {
   EDIT,
   EDIT_IMMUTABLE,
@@ -15,7 +16,10 @@ import {
   UPDATE_FROM_SERVER,
   UPDATE_FAILED,
   CREATE_TABLE,
-  BATCH
+  BATCH,
+  LOAD_STARTED,
+  LOAD_SUCCEEDED,
+  LOAD_FAILED
 } from '../actions/database';
 import {
   STATUS_DIRTY,
@@ -29,10 +33,12 @@ import {
   statusInsertFailed,
   statusUpdating,
   statusUpdatingImmutable,
-  statusUpdateFailed
+  statusUpdateFailed,
+  statusLoadInProgress,
+  statusLoadSucceeded,
+  statusLoadFailed
 } from '../lib/database/statuses';
 import { emptyDB } from '../bootstrap';
-import uuidV4 from 'uuid/v4';
 
 // TODO: use ImmutableJS instead of Object Spread? It may shorten repetitive code here & improve speed
 export default function dbReducer(db = emptyDB, action) {
@@ -172,7 +178,7 @@ export default function dbReducer(db = emptyDB, action) {
           ...record,
           __status__: statusSavedOnServer
         };
-        return _.merge({}, withUpdatedStatus, action.updates);
+        return updateWithFunctions(withUpdatedStatus, action.updates);
       });
 
     case UPDATE_PROGRESS:
@@ -195,6 +201,58 @@ export default function dbReducer(db = emptyDB, action) {
         ...db,
         [action.name]: {}
       };
+
+    case LOAD_STARTED: {
+      const loadId = uuidV4();
+      return {
+        ...db,
+        __loads__: {
+          ...db.__loads__,
+          [loadId]: {
+            id: loadId,
+            status: statusLoadInProgress,
+            url: action.url
+          }
+        }
+      };
+    }
+    case LOAD_SUCCEEDED: {
+      // maybe it should just delete them? idk
+      const key = _.findKey(
+        db.__loads__,
+        (tableRecord) => (
+          tableRecord.url === action.url
+        )
+      );
+      return {
+        ...db,
+        __loads__: {
+          ...db.__loads__,
+          [key]: {
+            ...db.__loads__[key],
+            status: statusLoadSucceeded
+          }
+        }
+      };
+    }
+    case LOAD_FAILED: {
+      const key = _.findKey(
+        db.__loads__,
+        (tableRecord) => (
+          tableRecord.url === action.url
+        )
+      );
+      return {
+        ...db,
+        __loads__: {
+          ...db.__loads__,
+          [key]: {
+            ...db.__loads__[key],
+            status: statusLoadFailed(action.error)
+          }
+        }
+      };
+    }
 
     default:
       return db;
@@ -244,4 +302,16 @@ function updateRecord(db, tableName, id, updater) {
       [id]: updater(record)
     }
   };
+}
+
+function updateWithFunctions(record, updates) {
+  const cloned = _.clone(record);
+  _.forEach(updates, (value, key) => {
+    if (_.isFunction(value)) {
+      cloned[key] = value(cloned[key]);
+    } else {
+      cloned[key] = value;
+    }
+  });
+  return cloned;
 }

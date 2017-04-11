@@ -9,6 +9,7 @@ import FeaturedContentManager from './FeaturedContentManager';
 import ManagerSectionHeader from './ManagerSectionHeader';
 import * as Actions from '../actions/header';
 import airbrake from '../../common/airbrake';
+import { FeatureFlags } from 'common/feature_flags';
 
 export class Manager extends React.Component {
   constructor(props) {
@@ -187,6 +188,21 @@ export class Manager extends React.Component {
       value: this.props.header[section]
     });
 
+    const descriptionPlaceholder = formatWithFilter('manager.description.placeholder',
+      'manager.description.placeholder_no_filter');
+    const descriptionProps = {
+      ...metadataInputProps('description'),
+      'aria-label': descriptionPlaceholder,
+      maxLength: 320,
+      placeholder: descriptionPlaceholder
+    };
+
+    // EN-15512: Use a textarea tag if description markdown is enabled
+    const description =
+      FeatureFlags.value('enable_markdown_for_catalog_landing_page_description') ?
+        (<textarea {...descriptionProps} />) :
+        (<input {...descriptionProps} />);
+
     return (
       <div className="clp-manager">
         <h1 className="header">{_.get(I18n, 'manager.feature_content')}</h1>
@@ -206,13 +222,7 @@ export class Manager extends React.Component {
             <ManagerSectionHeader className="description-header">
               {_.get(I18n, 'manager.description.label')}
             </ManagerSectionHeader>
-            <textarea
-              {...metadataInputProps('description')}
-              aria-label={formatWithFilter('manager.description.placeholder',
-                'manager.description.placeholder_no_filter')}
-              maxLength="320"
-              placeholder={formatWithFilter('manager.description.placeholder',
-                'manager.description.placeholder_no_filter')} />
+            {description}
 
             <ManagerSectionHeader className="featured-content-header">
               {formatWithFilter('manager.featured_content.label', 'manager.featured_content.label_no_filter')}

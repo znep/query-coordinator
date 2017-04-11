@@ -4,11 +4,11 @@ import {
   EDIT,
   EDIT_IMMUTABLE,
   REVERT_EDITS,
-  INSERT_STARTED,
-  INSERT_FROM_SERVER,
-  INSERT_MULTIPLE_FROM_SERVER,
-  INSERT_SUCCEEDED,
-  INSERT_FAILED,
+  UPSERT_STARTED,
+  UPSERT_FROM_SERVER,
+  UPSERT_MULTIPLE_FROM_SERVER,
+  UPSERT_SUCCEEDED,
+  UPSERT_FAILED,
   UPDATE_STARTED,
   UPDATE_IMMUTABLE_STARTED,
   UPDATE_PROGRESS,
@@ -64,38 +64,20 @@ export default function dbReducer(db = emptyDB, action) {
         __status__: statusSavedOnServer
       }));
 
-    case INSERT_FROM_SERVER: {
-      if (db[action.tableName][action.newRecord.id]) {
-        if (action.options.ifNotExists) {
-          return db;
-        } else {
-          throw new ReferenceError(
-            `insertFromServer: record in table "${action.tableName}" ` +
-            `with id ${action.newRecord.id} already exists`
-          );
-        }
-      } else {
-        return {
-          ...db,
-          [action.tableName]: {
-            ...db[action.tableName],
-            [action.newRecord.id]: {
-              ...action.newRecord,
-              __status__: statusSavedOnServer
-            }
+    case UPSERT_FROM_SERVER: {
+      return {
+        ...db,
+        [action.tableName]: {
+          ...db[action.tableName],
+          [action.newRecord.id]: {
+            ...action.newRecord,
+            __status__: statusSavedOnServer
           }
-        };
-      }
+        }
+      };
     }
 
-    case INSERT_MULTIPLE_FROM_SERVER: {
-      const intersection = _.intersection(_.keys(action.newRecords), _.keys(db[action.tableName]));
-      if (!action.options.ifNotExists && intersection.length > 0) {
-        throw new ReferenceError(
-          `insertMultipleFromServer: records in table "${action.tableName}" ` +
-          `with ids ${intersection} already exist`
-        );
-      }
+    case UPSERT_MULTIPLE_FROM_SERVER: {
       _.forEach(action.newRecords, (newRecord) => {
         newRecord.__status__ = statusSavedOnServer;
       });
@@ -106,7 +88,7 @@ export default function dbReducer(db = emptyDB, action) {
     }
 
     // TODO kind of want "new" state to match the "dirty" state updates have
-    case INSERT_STARTED: {
+    case UPSERT_STARTED: {
       const uuid = `saving-${uuidV4()}`;
       return {
         ...db,
@@ -121,7 +103,7 @@ export default function dbReducer(db = emptyDB, action) {
       };
     }
 
-    case INSERT_SUCCEEDED: {
+    case UPSERT_SUCCEEDED: {
       const key = _.findKey(
         db[action.tableName],
         (tableRecord) => (
@@ -134,7 +116,7 @@ export default function dbReducer(db = emptyDB, action) {
       delete newTable[key];
       if (newTable[action.additional.id]) {
         throw new ReferenceError(
-          `insertSucceeded: record in table ${action.tableName} ` +
+          `upsertSucceeded: record in table ${action.tableName} ` +
           `with id ${action.additional.id} already exists`
         );
       }
@@ -149,7 +131,7 @@ export default function dbReducer(db = emptyDB, action) {
       };
     }
 
-    case INSERT_FAILED: {
+    case UPSERT_FAILED: {
       const key = _.findKey(
         db[action.tableName],
         (tableRecord) => (

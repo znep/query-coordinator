@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import {
   batch,
-  insertMultipleFromServer,
+  upsertMultipleFromServer,
   loadStarted,
   loadSucceeded,
   loadFailed,
@@ -148,7 +148,7 @@ export function loadNormalPreview(displayState) {
               ...row.row[colIdx]
             }));
           const actions = [];
-          actions.push(insertMultipleFromServer(
+          actions.push(upsertMultipleFromServer(
             `transform_${transformId}`,
             _.keyBy(rowsForColumn, 'id'),
             { ifNotExists: true }
@@ -164,7 +164,7 @@ export function loadNormalPreview(displayState) {
             input_schema_id: inputSchemaId,
             offset: row.offset
           }));
-        dispatch(insertMultipleFromServer(
+        dispatch(upsertMultipleFromServer(
           'row_errors', _.keyBy(rowErrors, 'id'), { ifNotExists: true }
         ));
         dispatch(loadSucceeded(url));
@@ -197,7 +197,7 @@ export function loadColumnErrors(displayState) {
         });
         dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
           const theTransformId = outputSchemaResp.output_columns[idx].transform.id;
-          return insertMultipleFromServer(`transform_${theTransformId}`, newRecords, {
+          return upsertMultipleFromServer(`transform_${theTransformId}`, newRecords, {
             ifNotExists: true
           });
         })));
@@ -247,7 +247,7 @@ export function loadRowErrors(displayState) {
           offset: row.offset
         }));
         const rowErrorsKeyedById = _.keyBy(rowErrorsWithId, 'id');
-        dispatch(insertMultipleFromServer('row_errors', rowErrorsKeyedById, { ifNotExists: true }));
+        dispatch(upsertMultipleFromServer('row_errors', rowErrorsKeyedById, { ifNotExists: true }));
         dispatch(loadSucceeded(url));
       }).
       catch((error) => {

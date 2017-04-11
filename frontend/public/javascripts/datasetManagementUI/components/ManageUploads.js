@@ -8,7 +8,7 @@ import * as Actions from '../actions/manageUploads';
 import { Modal, ModalHeader, ModalContent } from 'socrata-components';
 import {
   STATUS_INSERTING,
-  STATUS_INSERT_FAILED
+  STATUS_UPSERT_FAILED
 } from '../lib/database/statuses';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ManageUploads.scss';
@@ -129,7 +129,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ManageUploads);
 function UploadListItem({ upload }) {
   if (upload.__status__.type === STATUS_INSERTING) {
     return (<span>{upload.filename}</span>);
-  } else if (upload.__status__.type === STATUS_INSERT_FAILED) {
+  } else if (upload.__status__.type === STATUS_UPSERT_FAILED) {
     return (
       <span>
         {

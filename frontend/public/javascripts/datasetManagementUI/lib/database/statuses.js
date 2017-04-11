@@ -39,10 +39,10 @@ export function statusInserting() {
   };
 }
 
-export const STATUS_INSERT_FAILED = 'INSERT_FAILED';
+export const STATUS_UPSERT_FAILED = 'UPSERT_FAILED';
 export function statusInsertFailed(newRecord, error) {
   return {
-    type: STATUS_INSERT_FAILED,
+    type: STATUS_UPSERT_FAILED,
     newRecord,
     error,
     failedAt: new Date()

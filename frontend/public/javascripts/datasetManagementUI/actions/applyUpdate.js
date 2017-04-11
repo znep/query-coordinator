@@ -1,9 +1,9 @@
 import { socrataFetch, checkStatus, checkStatusForPoll, getJson } from '../lib/http';
 import { push } from 'react-router-redux';
 import {
-  insertStarted,
-  insertSucceeded,
-  insertFailed,
+  upsertStarted,
+  upsertSucceeded,
+  upsertFailed,
   updateFromServer
 } from '../actions/database';
 import {
@@ -27,7 +27,7 @@ export function applyUpdate(outputSchemaId) {
     const newUpsertJob = {
       output_schema_id: outputSchemaId
     };
-    dispatch(insertStarted('upsert_jobs', newUpsertJob));
+    dispatch(upsertStarted('upsert_jobs', newUpsertJob));
     socrataFetch(dsmapiLinks.applyUpdate, {
       method: 'PUT',
       body: JSON.stringify({ output_schema_id: outputSchemaId })
@@ -35,14 +35,14 @@ export function applyUpdate(outputSchemaId) {
       then(checkStatus).
       then(getJson).
       then((resp) => {
-        dispatch(insertSucceeded('upsert_jobs', newUpsertJob, resp.resource));
+        dispatch(upsertSucceeded('upsert_jobs', newUpsertJob, resp.resource));
         const upsertJobId = resp.resource.id;
         dispatch(addNotification(upsertJobNotification(upsertJobId)));
         dispatch(pollForUpsertJobProgress(upsertJobId));
         dispatch(push(Links.home(routing)));
       }).
       catch((err) => {
-        dispatch(insertFailed('upsert_jobs', newUpsertJob, err));
+        dispatch(upsertFailed('upsert_jobs', newUpsertJob, err));
       });
   };
 }
@@ -89,7 +89,7 @@ export function pollForUpsertJobProgress(upsertJobId) {
 export function addEmailInterest(upsertJobUuid) {
   return (dispatch) => {
     const newRecord = { job_uuid: upsertJobUuid };
-    dispatch(insertStarted('email_interests', newRecord));
+    dispatch(upsertStarted('email_interests', newRecord));
     socrataFetch(`/users/${serverConfig.currentUserId}/email_interests.json`, {
       method: 'POST',
       body: JSON.stringify({
@@ -100,10 +100,10 @@ export function addEmailInterest(upsertJobUuid) {
       then(checkStatus).
       then(
         () => {
-          dispatch(insertSucceeded('email_interests', newRecord, { id: upsertJobUuid }));
+          dispatch(upsertSucceeded('email_interests', newRecord, { id: upsertJobUuid }));
         },
         (err) => {
-          dispatch(insertFailed('email_interests', newRecord, err));
+          dispatch(upsertFailed('email_interests', newRecord, err));
         }
       );
   };

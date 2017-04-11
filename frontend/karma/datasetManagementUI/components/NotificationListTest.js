@@ -1,9 +1,9 @@
 import { expect, assert } from 'chai';
 import NotificationList from 'components/NotificationList';
 import {
-  insertStarted,
-  insertSucceeded,
-  insertFromServer,
+  upsertStarted,
+  upsertSucceeded,
+  upsertFromServer,
   updateStarted,
   updateProgress,
   updateFailed,
@@ -23,7 +23,7 @@ describe('components/NotificationList', () => {
 
   it('doesn\'t show an upload before it has an id', () => {
     const store = getDefaultStore();
-    store.dispatch(insertStarted('uploads', {
+    store.dispatch(upsertStarted('uploads', {
       filename: 'foo.csv'
     }));
     const element = renderComponentWithStore(NotificationList, {}, store);
@@ -33,10 +33,10 @@ describe('components/NotificationList', () => {
 
   it('shows an upload in progress at 0% when it has just been started', () => {
     const store = getDefaultStore();
-    store.dispatch(insertStarted('uploads', {
+    store.dispatch(upsertStarted('uploads', {
       filename: 'foo.csv'
     }));
-    store.dispatch(insertSucceeded('uploads',
+    store.dispatch(upsertSucceeded('uploads',
       { filename: 'foo.csv' },
       { id: 57 }
     ));
@@ -53,10 +53,10 @@ describe('components/NotificationList', () => {
 
   it('shows an upload in progress at 50% when it has gotten progress events', () => {
     const store = getDefaultStore();
-    store.dispatch(insertStarted('uploads', {
+    store.dispatch(upsertStarted('uploads', {
       filename: 'foo.csv'
     }));
-    store.dispatch(insertSucceeded('uploads',
+    store.dispatch(upsertSucceeded('uploads',
       { filename: 'foo.csv' },
       { id: 57 }
     ));
@@ -77,7 +77,7 @@ describe('components/NotificationList', () => {
 
   it('shows a recently completed upload', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('uploads', {
+    store.dispatch(upsertFromServer('uploads', {
       id: 57,
       filename: 'foo.csv'
     }));
@@ -104,7 +104,7 @@ describe('components/NotificationList', () => {
 
   it('shows a failed upload', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('uploads', {
+    store.dispatch(upsertFromServer('uploads', {
       id: 57,
       filename: 'foo.csv'
     }));
@@ -126,14 +126,14 @@ describe('components/NotificationList', () => {
 
   it('doesn\'t show an upsert job before it has an id', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
-    store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
-    store.dispatch(insertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
-    store.dispatch(insertFromServer('output_schema_columns', {
+    store.dispatch(upsertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
+    store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
+    store.dispatch(upsertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
+    store.dispatch(upsertFromServer('output_schema_columns', {
       output_schema_id: 1,
       output_column_id: 1
     }));
-    store.dispatch(insertStarted('upsert_jobs', {
+    store.dispatch(upsertStarted('upsert_jobs', {
       output_schema_id: 1
     }));
     const element = renderComponentWithStore(NotificationList, {}, store);
@@ -143,17 +143,17 @@ describe('components/NotificationList', () => {
 
   it('shows an upsert job in progress which has 0 log entries', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
-    store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
-    store.dispatch(insertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
-    store.dispatch(insertFromServer('output_schema_columns', {
+    store.dispatch(upsertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
+    store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
+    store.dispatch(upsertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
+    store.dispatch(upsertFromServer('output_schema_columns', {
       output_schema_id: 1,
       output_column_id: 1
     }));
-    store.dispatch(insertStarted('upsert_jobs', {
+    store.dispatch(upsertStarted('upsert_jobs', {
       output_schema_id: 1
     }));
-    store.dispatch(insertSucceeded('upsert_jobs',
+    store.dispatch(upsertSucceeded('upsert_jobs',
       { output_schema_id: 1 },
       { id: 52, status: 'in_progress' }
     ));
@@ -168,17 +168,17 @@ describe('components/NotificationList', () => {
 
   it('shows an upsert job in progress which has some log entries', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
-    store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
-    store.dispatch(insertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
-    store.dispatch(insertFromServer('output_schema_columns', {
+    store.dispatch(upsertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
+    store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
+    store.dispatch(upsertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
+    store.dispatch(upsertFromServer('output_schema_columns', {
       output_schema_id: 1,
       output_column_id: 1
     }));
-    store.dispatch(insertStarted('upsert_jobs', {
+    store.dispatch(upsertStarted('upsert_jobs', {
       output_schema_id: 1
     }));
-    store.dispatch(insertSucceeded('upsert_jobs',
+    store.dispatch(upsertSucceeded('upsert_jobs',
       { output_schema_id: 1 },
       { id: 52, status: 'in_progress' }
     ));
@@ -201,17 +201,17 @@ describe('components/NotificationList', () => {
 
   it('shows a recently completed upsert job', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
-    store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
-    store.dispatch(insertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
-    store.dispatch(insertFromServer('output_schema_columns', {
+    store.dispatch(upsertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
+    store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
+    store.dispatch(upsertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
+    store.dispatch(upsertFromServer('output_schema_columns', {
       output_schema_id: 6,
       output_column_id: 1
     }));
-    store.dispatch(insertStarted('upsert_jobs', {
+    store.dispatch(upsertStarted('upsert_jobs', {
       output_schema_id: 1
     }));
-    store.dispatch(insertSucceeded('upsert_jobs',
+    store.dispatch(upsertSucceeded('upsert_jobs',
       { output_schema_id: 1 },
       { id: 52, status: 'in_progress' }
     ));
@@ -229,17 +229,17 @@ describe('components/NotificationList', () => {
 
   it('shows a failed upsert job', () => {
     const store = getDefaultStore();
-    store.dispatch(insertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
-    store.dispatch(insertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
-    store.dispatch(insertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
-    store.dispatch(insertFromServer('output_schema_columns', {
+    store.dispatch(upsertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
+    store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
+    store.dispatch(upsertFromServer('output_columns', { id: 1, contiguous_rows_processed: 5000 }));
+    store.dispatch(upsertFromServer('output_schema_columns', {
       output_schema_id: 1,
       output_column_id: 1
     }));
-    store.dispatch(insertStarted('upsert_jobs', {
+    store.dispatch(upsertStarted('upsert_jobs', {
       output_schema_id: 1
     }));
-    store.dispatch(insertSucceeded('upsert_jobs',
+    store.dispatch(upsertSucceeded('upsert_jobs',
       { output_schema_id: 1 },
       { id: 52 }
     ));

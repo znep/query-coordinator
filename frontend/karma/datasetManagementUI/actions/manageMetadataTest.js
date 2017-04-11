@@ -3,9 +3,9 @@ import { saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata'
 import { mockFetch } from '../testHelpers/mockHTTP';
 import mockPhx from '../testHelpers/mockPhoenixSocket';
 import {
-  INSERT_SUCCEEDED,
-  INSERT_STARTED,
-  INSERT_FROM_SERVER,
+  UPSERT_SUCCEEDED,
+  UPSERT_STARTED,
+  UPSERT_FROM_SERVER,
   UPDATE_STARTED,
   UPDATE_SUCCEEDED
 } from 'actions/database';
@@ -163,7 +163,7 @@ describe('actions/manageMetadata', () => {
       setTimeout(() => {
         const action = store.getActions()[0];
 
-        expect(action.type).to.eq(INSERT_STARTED);
+        expect(action.type).to.eq(UPSERT_STARTED);
 
         expect(action.tableName).to.eq('output_schemas');
 
@@ -191,7 +191,7 @@ describe('actions/manageMetadata', () => {
       setTimeout(() => {
         const action = store.getActions()[1];
 
-        expect(action.type).to.eq(INSERT_SUCCEEDED);
+        expect(action.type).to.eq(UPSERT_SUCCEEDED);
 
         expect(action.tableName).to.eq('output_schemas');
 
@@ -217,7 +217,7 @@ describe('actions/manageMetadata', () => {
       setTimeout(() => {
         const action = store.getActions()[2];
 
-        expect(action.type).to.eq(INSERT_FROM_SERVER);
+        expect(action.type).to.eq(UPSERT_FROM_SERVER);
 
         expect(action.tableName).to.eq('output_schema_columns');
 
@@ -253,7 +253,7 @@ describe('actions/manageMetadata', () => {
 
         expect(batchedActions.length).to.eq(4);
 
-        expect(batchedActions.map(action => action.type)).to.contain(INSERT_FROM_SERVER);
+        expect(batchedActions.map(action => action.type)).to.contain(UPSERT_FROM_SERVER);
 
         expect(batchedActions.filter(action => action.tableName === 'transforms').length).to.eq(2);
 

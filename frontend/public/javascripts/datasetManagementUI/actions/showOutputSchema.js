@@ -5,9 +5,9 @@ import * as Links from '../links';
 import {
   batch,
   revertEdits,
-  insertStarted,
-  insertSucceeded,
-  insertFailed,
+  upsertStarted,
+  upsertSucceeded,
+  upsertFailed,
   updateImmutableStarted
 } from './database';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
@@ -29,7 +29,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType);
 
     dispatch(batch([
-      insertStarted('output_schemas', newOutputSchema),
+      upsertStarted('output_schemas', newOutputSchema),
       updateImmutableStarted('output_columns', oldColumn.id)
     ]));
 
@@ -41,7 +41,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       then(getJson).
       then(resp => {
         dispatch(batch([
-          insertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id }),
+          upsertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id }),
           revertEdits('output_columns', oldColumn.id)
         ]));
         insertChildrenAndSubscribeToOutputSchema(dispatch, upload, resp.resource);
@@ -52,7 +52,7 @@ export function updateColumnType(oldSchema, oldColumn, newType) {
       }).
       catch((err) => {
         console.error('Failed to update schema!', err);
-        dispatch(insertFailed('output_schemas', newOutputSchema, err));
+        dispatch(upsertFailed('output_schemas', newOutputSchema, err));
       });
   };
 }

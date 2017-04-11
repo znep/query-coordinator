@@ -31,44 +31,41 @@ export const revertEdits = (tableName, recordId) => ({
 
 // used when the server pushes new info to us (e.g. over a web socket)
 // and on initial page load
-export const INSERT_FROM_SERVER = 'INSERT_FROM_SERVER';
-export const insertFromServer = (tableName, newRecord, options = {}) => ({
-  type: INSERT_FROM_SERVER,
+// Upsert will insert if record does not exist, and will overwrite if it does.
+export const UPSERT_FROM_SERVER = 'UPSERT_FROM_SERVER';
+export const upsertFromServer = (tableName, newRecord, options = {}) => ({
+  type: UPSERT_FROM_SERVER,
   tableName,
   newRecord,
-  options: _.defaults(options, { ifNotExists: false })
+  options
 });
 
-export const INSERT_MULTIPLE_FROM_SERVER = 'INSERT_MULTIPLE_FROM_SERVER';
-export const insertMultipleFromServer = (tableName, newRecords, options = {}) => ({
-  type: INSERT_MULTIPLE_FROM_SERVER,
+export const UPSERT_MULTIPLE_FROM_SERVER = 'UPSERT_MULTIPLE_FROM_SERVER';
+export const upsertMultipleFromServer = (tableName, newRecords, options = {}) => ({
+  type: UPSERT_MULTIPLE_FROM_SERVER,
   tableName,
   newRecords,
-  options: _.defaults(options, { ifNotExists: false })
+  options
 });
 
-// Idempotent version of INSERT_FROM_SERVER.
-export const insertFromServerIfNotExists = (tableName, newRecord) =>
-  insertFromServer(tableName, newRecord, { ifNotExists: true });
-
-export const INSERT_STARTED = 'INSERT_STARTED';
-export const insertStarted = (tableName, newRecord) => ({
-  type: INSERT_STARTED,
+export const UPSERT_STARTED = 'UPSERT_STARTED';
+export const upsertStarted = (tableName, newRecord) => ({
+  type: UPSERT_STARTED,
   tableName,
   newRecord
 });
 
-export const INSERT_SUCCEEDED = 'INSERT_SUCCEEDED';
-export const insertSucceeded = (tableName, newRecord, additional) => ({
-  type: INSERT_SUCCEEDED,
+export const UPSERT_SUCCEEDED = 'UPSERT_SUCCEEDED';
+export const upsertSucceeded = (tableName, newRecord, additional) => ({
+  type: UPSERT_SUCCEEDED,
   tableName,
   newRecord,
   additional
 });
 
-export const INSERT_FAILED = 'INSERT_FAILED';
-export const insertFailed = (tableName, newRecord, error) => ({
-  type: INSERT_FAILED,
+export const UPSERT_FAILED = 'UPSERT_FAILED';
+export const upsertFailed = (tableName, newRecord, error) => ({
+  type: UPSERT_FAILED,
   tableName,
   newRecord,
   error

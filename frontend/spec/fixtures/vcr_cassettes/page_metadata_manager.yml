@@ -47,7 +47,7 @@ http_interactions:
           "error" : true,
           "message" : "Cannot find web property with name "
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:50:45 GMT
 - request:
     method: get
@@ -385,7 +385,7 @@ http_interactions:
           },
           "flags" : [ "default", "restorable", "restorePossibleForType" ]
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:51:38 GMT
 - request:
     method: get
@@ -1421,7 +1421,7 @@ http_interactions:
           "tags" : [ "a tag", "another tag" ],
           "flags" : [ "default", "restorable", "restorePossibleForType" ]
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:51:39 GMT
 - request:
     method: put
@@ -1462,7 +1462,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"message":"Path not found: /dataset-rollup/_a83c-up9r","errorCode":"not-found","data":{"path":"/dataset-rollup/_a83c-up9r"}}'
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:52:49 GMT
 - request:
     method: get
@@ -1508,7 +1508,7 @@ http_interactions:
           "obeId" : "efcd-jzv3",
           "syncedAt" : 1458002588
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:52:49 GMT
 - request:
     method: get
@@ -1922,7 +1922,7 @@ http_interactions:
             "flags" : [ "admin" ]
           }
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:52:55 GMT
 - request:
     method: put
@@ -1972,7 +1972,7 @@ http_interactions:
           "error" : true,
           "message" : "You must be logged in to access this resource"
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:52:55 GMT
 - request:
     method: get
@@ -2016,7 +2016,7 @@ http_interactions:
         1 (city)","fred":"text","description":"","cardinality":1,"physicalDatatype":"text"},"contact_fax":{"name":"CONTACT_FAX","fred":"text","description":"","cardinality":5938,"physicalDatatype":"text"},"location_1_state":{"name":"Location
         1 (state)","fred":"text","description":"","cardinality":1,"physicalDatatype":"text"},"district_number":{"name":"DISTRICT_NUMBER","fred":"number","description":"","cardinality":24,"physicalDatatype":"number"},"facname":{"name":"FACNAME","fred":"text","description":"","cardinality":8756,"physicalDatatype":"text"},"contact_phone_number":{"name":"CONTACT_PHONE_NUMBER","fred":"text","description":"","cardinality":8330,"physicalDatatype":"text"},"district_name":{"name":"DISTRICT_NAME","fred":"text","description":"","cardinality":1,"physicalDatatype":"text"},"facid":{"name":"FACID","fred":"number","description":"","cardinality":9194,"physicalDatatype":"number"},"fac_fdr":{"name":"FAC_FDR","fred":"text","description":"","cardinality":20,"physicalDatatype":"text"},"location_1_zip":{"name":"Location
         1 (zip)","fred":"text","description":"","cardinality":1,"physicalDatatype":"text"},"license_effective_date":{"name":"LICENSE_EFFECTIVE_DATE","fred":"text","description":"","cardinality":827,"physicalDatatype":"text"},"license_number":{"name":"LICENSE_NUMBER","fred":"number","description":"","cardinality":7104,"physicalDatatype":"number"},"contact_email":{"name":"CONTACT_EMAIL","fred":"text","description":"","cardinality":4290,"physicalDatatype":"text"},"capacity":{"name":"CAPACITY","fred":"number","description":"","cardinality":349,"physicalDatatype":"number"}},"ownerId":"3hpa-tfzy"}'
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:52:56 GMT
 - request:
     method: get
@@ -2062,7 +2062,7 @@ http_interactions:
           "obeId" : "efcd-jzv3",
           "syncedAt" : 1458002588
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:52:56 GMT
 - request:
     method: put
@@ -2099,7 +2099,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:52:56 GMT
 - request:
     method: put
@@ -2150,6 +2150,1631 @@ http_interactions:
           "error" : true,
           "message" : "You must be logged in to access this resource"
         }
-    http_version: 
+    http_version:
   recorded_at: Fri, 17 Feb 2017 19:52:56 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/tyia-pmfq.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Mar 2017 22:54:14 GMT
+      X-Socrata-Requestid:
+      - 4nhhmhltvpdier3f34rhct9d1
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "tyia-pmfq",
+          "name" : "Dallas Building Permits Data Lens",
+          "averageRating" : 0,
+          "createdAt" : 1489791127,
+          "description" : "",
+          "displayType" : "data_lens",
+          "domainCName" : "localhost",
+          "downloadCount" : 0,
+          "hideFromCatalog" : false,
+          "hideFromDataJson" : false,
+          "moderationStatus" : false,
+          "newBackend" : true,
+          "numberOfComments" : 0,
+          "oid" : 65,
+          "provenance" : "community",
+          "publicationAppendEnabled" : false,
+          "publicationDate" : 1486166464,
+          "publicationGroup" : 53,
+          "publicationStage" : "published",
+          "rowsUpdatedAt" : 1486166460,
+          "rowsUpdatedBy" : "tugg-ikce",
+          "tableId" : 53,
+          "totalTimesRated" : 0,
+          "viewCount" : 0,
+          "viewLastModified" : 1489791129,
+          "viewType" : "tabular",
+          "columns" : [ ],
+          "displayFormat" : {
+            "data_lens_page_metadata" : {
+              "cards" : [ {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "area",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : "logarithmic"
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "geolocation_state",
+                "cardType" : "column"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "issued",
+                "cardType" : "timeline"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "permit_no",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : "logarithmic"
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "geolocation",
+                "cardType" : "feature",
+                "aggregationFunction" : "count"
+              }, {
+                "cardSize" : 2,
+                "expanded" : false,
+                "fieldName" : "*",
+                "cardType" : "table"
+              } ],
+              "isFromDerivedView" : false,
+              "name" : "Dallas Building Permits Data Lens",
+              "datasetId" : "x2u3-er7p",
+              "description" : "",
+              "pageId" : "tyia-pmfq",
+              "version" : 4
+            }
+          },
+          "grants" : [ {
+            "inherited" : true,
+            "type" : "viewer",
+            "flags" : [ "public" ]
+          } ],
+          "metadata" : {
+            "availableDisplayTypes" : [ "data_lens" ]
+          },
+          "owner" : {
+            "id" : "tugg-ikce",
+            "displayName" : "Stan R",
+            "lastNotificationSeenAt" : 1488566246,
+            "screenName" : "Stan R",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "query" : { },
+          "rights" : [ "read" ],
+          "tableAuthor" : {
+            "id" : "tugg-ikce",
+            "displayName" : "Stan R",
+            "lastNotificationSeenAt" : 1488566246,
+            "screenName" : "Stan R",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          }
+        }
+    http_version:
+  recorded_at: Fri, 17 Mar 2017 22:54:14 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/tyia-pmfq.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Mar 2017 22:54:14 GMT
+      X-Socrata-Requestid:
+      - dla86iyz30pdqvtszkguumpqk
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "tyia-pmfq",
+          "name" : "Dallas Building Permits Data Lens",
+          "averageRating" : 0,
+          "createdAt" : 1489791127,
+          "description" : "",
+          "displayType" : "data_lens",
+          "domainCName" : "localhost",
+          "downloadCount" : 0,
+          "hideFromCatalog" : false,
+          "hideFromDataJson" : false,
+          "moderationStatus" : false,
+          "newBackend" : true,
+          "numberOfComments" : 0,
+          "oid" : 65,
+          "provenance" : "community",
+          "publicationAppendEnabled" : false,
+          "publicationDate" : 1486166464,
+          "publicationGroup" : 53,
+          "publicationStage" : "published",
+          "rowsUpdatedAt" : 1486166460,
+          "rowsUpdatedBy" : "tugg-ikce",
+          "tableId" : 53,
+          "totalTimesRated" : 0,
+          "viewCount" : 0,
+          "viewLastModified" : 1489791129,
+          "viewType" : "tabular",
+          "columns" : [ ],
+          "displayFormat" : {
+            "data_lens_page_metadata" : {
+              "cards" : [ {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "area",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : "logarithmic"
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "geolocation_state",
+                "cardType" : "column"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "issued",
+                "cardType" : "timeline"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "permit_no",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : "logarithmic"
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "geolocation",
+                "cardType" : "feature",
+                "aggregationFunction" : "count"
+              }, {
+                "cardSize" : 2,
+                "expanded" : false,
+                "fieldName" : "*",
+                "cardType" : "table"
+              } ],
+              "isFromDerivedView" : false,
+              "name" : "Dallas Building Permits Data Lens",
+              "datasetId" : "x2u3-er7p",
+              "description" : "",
+              "pageId" : "tyia-pmfq",
+              "version" : 4
+            }
+          },
+          "grants" : [ {
+            "inherited" : true,
+            "type" : "viewer",
+            "flags" : [ "public" ]
+          } ],
+          "metadata" : {
+            "availableDisplayTypes" : [ "data_lens" ]
+          },
+          "owner" : {
+            "id" : "tugg-ikce",
+            "displayName" : "Stan R",
+            "lastNotificationSeenAt" : 1488566246,
+            "screenName" : "Stan R",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "query" : { },
+          "rights" : [ "read" ],
+          "tableAuthor" : {
+            "id" : "tugg-ikce",
+            "displayName" : "Stan R",
+            "lastNotificationSeenAt" : 1488566246,
+            "screenName" : "Stan R",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          }
+        }
+    http_version:
+  recorded_at: Fri, 17 Mar 2017 22:54:14 GMT
+- request:
+    method: get
+    uri: http://localhost:14567/health.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Mar 2017 22:54:14 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '17'
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: UTF-8
+      string: '{"status":"good"}'
+    http_version:
+  recorded_at: Fri, 17 Mar 2017 22:54:14 GMT
+- request:
+    method: get
+    uri: http://localhost:14567/health.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Mar 2017 22:54:14 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '17'
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: UTF-8
+      string: '{"status":"good"}'
+    http_version:
+  recorded_at: Fri, 17 Mar 2017 22:54:14 GMT
+- request:
+    method: get
+    uri: http://localhost:14567/health.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Mar 2017 22:54:14 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '17'
+      X-Content-Type-Options:
+      - nosniff
+    body:
+      encoding: UTF-8
+      string: '{"status":"good"}'
+    http_version:
+  recorded_at: Fri, 17 Mar 2017 22:54:14 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/x2u3-er7p.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Mar 2017 23:03:26 GMT
+      X-Socrata-Requestid:
+      - 6o0i2ekp8gkzc315mhv6hyz11
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "x2u3-er7p",
+          "name" : "Dallas Building Inspection Master Permits",
+          "averageRating" : 0,
+          "createdAt" : 1486166398,
+          "domainCName" : "localhost",
+          "downloadCount" : 0,
+          "hideFromCatalog" : false,
+          "hideFromDataJson" : false,
+          "newBackend" : true,
+          "numberOfComments" : 0,
+          "oid" : 56,
+          "provenance" : "official",
+          "publicationAppendEnabled" : false,
+          "publicationDate" : 1486166464,
+          "publicationGroup" : 53,
+          "publicationStage" : "published",
+          "rowsUpdatedAt" : 1486166460,
+          "rowsUpdatedBy" : "tugg-ikce",
+          "tableId" : 53,
+          "totalTimesRated" : 0,
+          "viewCount" : 0,
+          "viewLastModified" : 1486166464,
+          "viewType" : "tabular",
+          "columns" : [ {
+            "id" : 242,
+            "name" : "Permit No",
+            "dataTypeName" : "number",
+            "fieldName" : "permit_no",
+            "position" : 1,
+            "renderTypeName" : "number",
+            "tableColumnId" : 231,
+            "width" : 208,
+            "format" : { }
+          }, {
+            "id" : 243,
+            "name" : "Permit Type",
+            "dataTypeName" : "text",
+            "fieldName" : "permit_type",
+            "position" : 2,
+            "renderTypeName" : "text",
+            "tableColumnId" : 232,
+            "width" : 232,
+            "format" : { }
+          }, {
+            "id" : 244,
+            "name" : "Issued",
+            "dataTypeName" : "calendar_date",
+            "fieldName" : "issued",
+            "position" : 3,
+            "renderTypeName" : "calendar_date",
+            "tableColumnId" : 233,
+            "width" : 172,
+            "format" : { }
+          }, {
+            "id" : 245,
+            "name" : "Mapsco",
+            "dataTypeName" : "text",
+            "fieldName" : "mapsco",
+            "position" : 4,
+            "renderTypeName" : "text",
+            "tableColumnId" : 234,
+            "width" : 172,
+            "format" : { }
+          }, {
+            "id" : 246,
+            "name" : "Contractor",
+            "dataTypeName" : "text",
+            "fieldName" : "contractor",
+            "position" : 5,
+            "renderTypeName" : "text",
+            "tableColumnId" : 235,
+            "width" : 220,
+            "format" : { }
+          }, {
+            "id" : 247,
+            "name" : "Area",
+            "dataTypeName" : "number",
+            "fieldName" : "area",
+            "position" : 6,
+            "renderTypeName" : "number",
+            "tableColumnId" : 236,
+            "width" : 148,
+            "format" : { }
+          }, {
+            "id" : 248,
+            "name" : "Work Description",
+            "dataTypeName" : "text",
+            "fieldName" : "work_description",
+            "position" : 7,
+            "renderTypeName" : "text",
+            "tableColumnId" : 237,
+            "width" : 292,
+            "format" : { }
+          }, {
+            "id" : 249,
+            "name" : "Land Use",
+            "dataTypeName" : "text",
+            "fieldName" : "land_use",
+            "position" : 8,
+            "renderTypeName" : "text",
+            "tableColumnId" : 238,
+            "width" : 196,
+            "format" : { }
+          }, {
+            "id" : 250,
+            "name" : "GeoLocation (address)",
+            "dataTypeName" : "text",
+            "fieldName" : "geolocation_address",
+            "position" : 9,
+            "renderTypeName" : "text",
+            "tableColumnId" : 239,
+            "format" : { }
+          }, {
+            "id" : 251,
+            "name" : "GeoLocation (zip)",
+            "dataTypeName" : "text",
+            "fieldName" : "geolocation_zip",
+            "position" : 10,
+            "renderTypeName" : "text",
+            "tableColumnId" : 240,
+            "format" : { }
+          }, {
+            "id" : 252,
+            "name" : "GeoLocation (city)",
+            "dataTypeName" : "text",
+            "fieldName" : "geolocation_city",
+            "position" : 11,
+            "renderTypeName" : "text",
+            "tableColumnId" : 241,
+            "format" : { }
+          }, {
+            "id" : 253,
+            "name" : "GeoLocation",
+            "dataTypeName" : "point",
+            "fieldName" : "geolocation",
+            "position" : 12,
+            "renderTypeName" : "point",
+            "tableColumnId" : 242,
+            "format" : { }
+          }, {
+            "id" : 254,
+            "name" : "GeoLocation (state)",
+            "dataTypeName" : "text",
+            "fieldName" : "geolocation_state",
+            "position" : 13,
+            "renderTypeName" : "text",
+            "tableColumnId" : 243,
+            "format" : { }
+          }, {
+            "id" : 255,
+            "name" : "Zip Code",
+            "dataTypeName" : "text",
+            "fieldName" : "zip_code",
+            "position" : 14,
+            "renderTypeName" : "text",
+            "tableColumnId" : 244,
+            "width" : 196,
+            "format" : { }
+          } ],
+          "grants" : [ {
+            "inherited" : false,
+            "type" : "viewer",
+            "flags" : [ "public" ]
+          } ],
+          "owner" : {
+            "id" : "tugg-ikce",
+            "displayName" : "Stan R",
+            "lastNotificationSeenAt" : 1488566246,
+            "screenName" : "Stan R",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "query" : { },
+          "rights" : [ "read" ],
+          "tableAuthor" : {
+            "id" : "tugg-ikce",
+            "displayName" : "Stan R",
+            "lastNotificationSeenAt" : 1488566246,
+            "screenName" : "Stan R",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "flags" : [ "default", "restorable", "restorePossibleForType" ]
+        }
+    http_version:
+  recorded_at: Fri, 17 Mar 2017 23:03:26 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/x2u3-er7p.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Mar 2017 23:03:26 GMT
+      X-Socrata-Requestid:
+      - 4di2w96vh3cpi5w8cofmqdzmh
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "x2u3-er7p",
+          "name" : "Dallas Building Inspection Master Permits",
+          "averageRating" : 0,
+          "createdAt" : 1486166398,
+          "domainCName" : "localhost",
+          "downloadCount" : 0,
+          "hideFromCatalog" : false,
+          "hideFromDataJson" : false,
+          "newBackend" : true,
+          "numberOfComments" : 0,
+          "oid" : 56,
+          "provenance" : "official",
+          "publicationAppendEnabled" : false,
+          "publicationDate" : 1486166464,
+          "publicationGroup" : 53,
+          "publicationStage" : "published",
+          "rowsUpdatedAt" : 1486166460,
+          "rowsUpdatedBy" : "tugg-ikce",
+          "tableId" : 53,
+          "totalTimesRated" : 0,
+          "viewCount" : 0,
+          "viewLastModified" : 1486166464,
+          "viewType" : "tabular",
+          "columns" : [ {
+            "id" : 242,
+            "name" : "Permit No",
+            "dataTypeName" : "number",
+            "fieldName" : "permit_no",
+            "position" : 1,
+            "renderTypeName" : "number",
+            "tableColumnId" : 231,
+            "width" : 208,
+            "format" : { }
+          }, {
+            "id" : 243,
+            "name" : "Permit Type",
+            "dataTypeName" : "text",
+            "fieldName" : "permit_type",
+            "position" : 2,
+            "renderTypeName" : "text",
+            "tableColumnId" : 232,
+            "width" : 232,
+            "format" : { }
+          }, {
+            "id" : 244,
+            "name" : "Issued",
+            "dataTypeName" : "calendar_date",
+            "fieldName" : "issued",
+            "position" : 3,
+            "renderTypeName" : "calendar_date",
+            "tableColumnId" : 233,
+            "width" : 172,
+            "format" : { }
+          }, {
+            "id" : 245,
+            "name" : "Mapsco",
+            "dataTypeName" : "text",
+            "fieldName" : "mapsco",
+            "position" : 4,
+            "renderTypeName" : "text",
+            "tableColumnId" : 234,
+            "width" : 172,
+            "format" : { }
+          }, {
+            "id" : 246,
+            "name" : "Contractor",
+            "dataTypeName" : "text",
+            "fieldName" : "contractor",
+            "position" : 5,
+            "renderTypeName" : "text",
+            "tableColumnId" : 235,
+            "width" : 220,
+            "format" : { }
+          }, {
+            "id" : 247,
+            "name" : "Area",
+            "dataTypeName" : "number",
+            "fieldName" : "area",
+            "position" : 6,
+            "renderTypeName" : "number",
+            "tableColumnId" : 236,
+            "width" : 148,
+            "format" : { }
+          }, {
+            "id" : 248,
+            "name" : "Work Description",
+            "dataTypeName" : "text",
+            "fieldName" : "work_description",
+            "position" : 7,
+            "renderTypeName" : "text",
+            "tableColumnId" : 237,
+            "width" : 292,
+            "format" : { }
+          }, {
+            "id" : 249,
+            "name" : "Land Use",
+            "dataTypeName" : "text",
+            "fieldName" : "land_use",
+            "position" : 8,
+            "renderTypeName" : "text",
+            "tableColumnId" : 238,
+            "width" : 196,
+            "format" : { }
+          }, {
+            "id" : 250,
+            "name" : "GeoLocation (address)",
+            "dataTypeName" : "text",
+            "fieldName" : "geolocation_address",
+            "position" : 9,
+            "renderTypeName" : "text",
+            "tableColumnId" : 239,
+            "format" : { }
+          }, {
+            "id" : 251,
+            "name" : "GeoLocation (zip)",
+            "dataTypeName" : "text",
+            "fieldName" : "geolocation_zip",
+            "position" : 10,
+            "renderTypeName" : "text",
+            "tableColumnId" : 240,
+            "format" : { }
+          }, {
+            "id" : 252,
+            "name" : "GeoLocation (city)",
+            "dataTypeName" : "text",
+            "fieldName" : "geolocation_city",
+            "position" : 11,
+            "renderTypeName" : "text",
+            "tableColumnId" : 241,
+            "format" : { }
+          }, {
+            "id" : 253,
+            "name" : "GeoLocation",
+            "dataTypeName" : "point",
+            "fieldName" : "geolocation",
+            "position" : 12,
+            "renderTypeName" : "point",
+            "tableColumnId" : 242,
+            "format" : { }
+          }, {
+            "id" : 254,
+            "name" : "GeoLocation (state)",
+            "dataTypeName" : "text",
+            "fieldName" : "geolocation_state",
+            "position" : 13,
+            "renderTypeName" : "text",
+            "tableColumnId" : 243,
+            "format" : { }
+          }, {
+            "id" : 255,
+            "name" : "Zip Code",
+            "dataTypeName" : "text",
+            "fieldName" : "zip_code",
+            "position" : 14,
+            "renderTypeName" : "text",
+            "tableColumnId" : 244,
+            "width" : 196,
+            "format" : { }
+          } ],
+          "grants" : [ {
+            "inherited" : false,
+            "type" : "viewer",
+            "flags" : [ "public" ]
+          } ],
+          "owner" : {
+            "id" : "tugg-ikce",
+            "displayName" : "Stan R",
+            "lastNotificationSeenAt" : 1488566246,
+            "screenName" : "Stan R",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "query" : { },
+          "rights" : [ "read" ],
+          "tableAuthor" : {
+            "id" : "tugg-ikce",
+            "displayName" : "Stan R",
+            "lastNotificationSeenAt" : 1488566246,
+            "screenName" : "Stan R",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "flags" : [ "default", "restorable", "restorePossibleForType" ]
+        }
+    http_version:
+  recorded_at: Fri, 17 Mar 2017 23:03:26 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/cfa5-i2ky.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 17 Mar 2017 23:03:26 GMT
+      X-Socrata-Requestid:
+      - 4di2w96vh3cpi5w8cofmqdzmh
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "cfa5-i2ky",
+          "name" : "Private Data Lens for real",
+          "averageRating" : 0,
+          "createdAt" : 1489792426,
+          "description" : "",
+          "displayType" : "data_lens",
+          "downloadCount" : 0,
+          "hideFromCatalog" : false,
+          "hideFromDataJson" : false,
+          "newBackend" : true,
+          "numberOfComments" : 0,
+          "oid" : 67,
+          "provenance" : "community",
+          "publicationAppendEnabled" : false,
+          "publicationDate" : 1486167009,
+          "publicationGroup" : 57,
+          "publicationStage" : "published",
+          "rowsUpdatedAt" : 1489793286,
+          "rowsUpdatedBy" : "tugg-ikce",
+          "tableId" : 57,
+          "totalTimesRated" : 0,
+          "viewCount" : 0,
+          "viewLastModified" : 1489792426,
+          "viewType" : "tabular",
+          "columns" : [ ],
+          "displayFormat" : {
+            "data_lens_page_metadata" : {
+              "cards" : [ {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "area",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : "logarithmic"
+                }
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "issued",
+                "cardType" : "timeline"
+              }, {
+                "cardSize" : 1,
+                "expanded" : false,
+                "fieldName" : "permit_no",
+                "cardType" : "histogram",
+                "cardOptions" : {
+                  "bucketSize" : "logarithmic"
+                }
+              }, {
+                "cardSize" : 2,
+                "expanded" : false,
+                "fieldName" : "*",
+                "cardType" : "table"
+              } ],
+              "isFromDerivedView" : false,
+              "name" : "Private Data Lens for real",
+              "datasetId" : "2jnm-ghyx",
+              "description" : "",
+              "pageId" : "cfa5-i2ky",
+              "version" : 4
+            }
+          },
+          "metadata" : {
+            "availableDisplayTypes" : [ "data_lens" ]
+          },
+          "owner" : {
+            "id" : "tugg-ikce",
+            "displayName" : "Stan R",
+            "emailUnsubscribed" : false,
+            "lastNotificationSeenAt" : 1488566246,
+            "profileLastModified" : 1478036910,
+            "screenName" : "Stan R",
+            "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards", "manage_provenance", "view_all_dataset_status_logs", "create_story", "edit_story_title_desc", "create_story_copy", "delete_story", "manage_story_collaborators", "manage_story_visibility", "manage_story_public_version", "edit_story", "view_unpublished_story", "view_story", "use_data_connectors" ],
+            "flags" : [ "admin" ]
+          },
+          "query" : { },
+          "rights" : [ ]
+        }
+    http_version:
+  recorded_at: Fri, 17 Mar 2017 23:03:26 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/rrgq-keyp.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:52:55 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Www-Authenticate:
+      - Basic realm="Socrata API Server"
+      X-Error-Code:
+      - authentication_required
+      X-Error-Message:
+      - You must be logged in to access this resource
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "authentication_required",
+          "error" : true,
+          "message" : "You must be logged in to access this resource"
+        }
+    http_version:
+  recorded_at: Mon, 20 Mar 2017 17:07:54 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/g34u-2aa5.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Fri, 17 Feb 2017 19:52:55 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Www-Authenticate:
+      - Basic realm="Socrata API Server"
+      X-Error-Code:
+      - authentication_required
+      X-Error-Message:
+      - You must be logged in to access this resource
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "permission_denied",
+          "error" : true,
+          "message" : "The current user doesn't have access to this view"
+        }
+    http_version:
+  recorded_at: Mon, 20 Mar 2017 17:07:54 GMT
+- request:
+    method: get
+    uri: http://127.0.0.1:2401/v1/id/ij2u-iwtx/dataset
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Content-Type:
+      - application/json
+      X-Socrata-Wink:
+      - iAmASocrataEmployee
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Requestid:
+      - request_id
+      Cookie:
+      - :chocolate_chip: secretly raisins
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 20 Mar 2017 19:53:19 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Accept-Encoding, User-Agent
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJuYW1lIjoiTmF0aW9uYWwgU2Nob29sIEx1bmNoIC0gUGFydGljaXBhdGlv
+        biBBbmQgTWVhbHMgU2VydmVkIiwidXBkYXRlZEF0IjoiMjAxNi0xMi0xNVQw
+        Nzo0MjoxNy4wMDBaIiwiZGVzY3JpcHRpb24iOiIiLCJkb21haW4iOiJsb2Nh
+        bGhvc3QiLCJsb2NhbGUiOiJlbl9VUyIsImlkIjoiaWoydS1pd3R4IiwiY29s
+        dW1ucyI6eyJwZXJjZW50X2ZyZWVfcnBfb2ZfdG90YWwiOnsibmFtZSI6IlBl
+        cmNlbnQgRnJlZS9SUMKgb2YgVG90YWwiLCJmcmVkIjoibnVtYmVyIiwiZGVz
+        Y3JpcHRpb24iOiIiLCJjYXJkaW5hbGl0eSI6NDEsInBoeXNpY2FsRGF0YXR5
+        cGUiOiJudW1iZXIifSwicmVkdWNlZF9wcmljZSI6eyJuYW1lIjoiUmVkdWNl
+        ZMKgUHJpY2UiLCJmcmVkIjoibnVtYmVyIiwiZGVzY3JpcHRpb24iOiIiLCJj
+        YXJkaW5hbGl0eSI6MjIsInBoeXNpY2FsRGF0YXR5cGUiOiJudW1iZXIifSwi
+        dG90YWwiOnsibmFtZSI6IlRvdGFswqAiLCJmcmVkIjoibnVtYmVyIiwiZGVz
+        Y3JpcHRpb24iOiIiLCJjYXJkaW5hbGl0eSI6MzcsInBoeXNpY2FsRGF0YXR5
+        cGUiOiJudW1iZXIifSwiZnVsbF9wcmljZSI6eyJuYW1lIjoiRnVsbMKgUHJp
+        Y2UiLCJmcmVkIjoibnVtYmVyIiwiZGVzY3JpcHRpb24iOiIiLCJjYXJkaW5h
+        bGl0eSI6MzEsInBoeXNpY2FsRGF0YXR5cGUiOiJudW1iZXIifSwidG90YWxf
+        bHVuY2hlc19zZXJ2ZWQiOnsibmFtZSI6IlRvdGFsIEx1bmNoZXPCoFNlcnZl
+        ZCIsImZyZWQiOiJudW1iZXIiLCJkZXNjcmlwdGlvbiI6IiIsImNhcmRpbmFs
+        aXR5Ijo0MywicGh5c2ljYWxEYXRhdHlwZSI6Im51bWJlciJ9LCJmcmVlIjp7
+        Im5hbWUiOiJGcmVlwqAiLCJmcmVkIjoibnVtYmVyIiwiZGVzY3JpcHRpb24i
+        OiIiLCJjYXJkaW5hbGl0eSI6MzUsInBoeXNpY2FsRGF0YXR5cGUiOiJudW1i
+        ZXIifSwiZmlzY2FsX3llYXIiOnsibmFtZSI6IkZpc2NhbCBZZWFyIiwiZnJl
+        ZCI6ImNhbGVuZGFyX2RhdGUiLCJkZXNjcmlwdGlvbiI6IiIsImNhcmRpbmFs
+        aXR5Ijo0NSwicGh5c2ljYWxEYXRhdHlwZSI6ImZsb2F0aW5nX3RpbWVzdGFt
+        cCJ9fSwib3duZXJJZCI6InR1Z2ctaWtjZSJ9
+    http_version:
+  recorded_at: Mon, 20 Mar 2017 19:53:19 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/ij2u-iwtx.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 20 Mar 2017 19:53:20 GMT
+      X-Socrata-Requestid:
+      - 9ske56x2e0kq0ucmx360wifw5
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCIgOiAiaWoydS1pd3R4IiwKICAibmFtZSIgOiAiTmF0aW9uYWwg
+        U2Nob29sIEx1bmNoIC0gUGFydGljaXBhdGlvbiBBbmQgTWVhbHMgU2VydmVk
+        IiwKICAiYXZlcmFnZVJhdGluZyIgOiAwLAogICJjcmVhdGVkQXQiIDogMTQ3
+        OTM0MjUzNCwKICAiZGlzcGxheVR5cGUiIDogInRhYmxlIiwKICAiZG9tYWlu
+        Q05hbWUiIDogImxvY2FsaG9zdCIsCiAgImRvd25sb2FkQ291bnQiIDogMCwK
+        ICAiaGlkZUZyb21DYXRhbG9nIiA6IGZhbHNlLAogICJoaWRlRnJvbURhdGFK
+        c29uIiA6IGZhbHNlLAogICJuZXdCYWNrZW5kIiA6IHRydWUsCiAgIm51bWJl
+        ck9mQ29tbWVudHMiIDogMCwKICAib2lkIiA6IDEyLAogICJwcm92ZW5hbmNl
+        IiA6ICJvZmZpY2lhbCIsCiAgInB1YmxpY2F0aW9uQXBwZW5kRW5hYmxlZCIg
+        OiBmYWxzZSwKICAicHVibGljYXRpb25EYXRlIiA6IDE0NzkzNDI1NDIsCiAg
+        InB1YmxpY2F0aW9uR3JvdXAiIDogMTIsCiAgInB1YmxpY2F0aW9uU3RhZ2Ui
+        IDogInB1Ymxpc2hlZCIsCiAgInJvd3NVcGRhdGVkQXQiIDogMTQ4MTc4Nzgy
+        MSwKICAicm93c1VwZGF0ZWRCeSIgOiAidHVnZy1pa2NlIiwKICAidGFibGVJ
+        ZCIgOiAxMiwKICAidG90YWxUaW1lc1JhdGVkIiA6IDAsCiAgInZpZXdDb3Vu
+        dCIgOiAwLAogICJ2aWV3TGFzdE1vZGlmaWVkIiA6IDE0ODE3ODc3MzcsCiAg
+        InZpZXdUeXBlIiA6ICJ0YWJ1bGFyIiwKICAiY29sdW1ucyIgOiBbIHsKICAg
+        ICJpZCIgOiA1NywKICAgICJuYW1lIiA6ICJGaXNjYWwgWWVhciIsCiAgICAi
+        ZGF0YVR5cGVOYW1lIiA6ICJjYWxlbmRhcl9kYXRlIiwKICAgICJmaWVsZE5h
+        bWUiIDogImZpc2NhbF95ZWFyIiwKICAgICJwb3NpdGlvbiIgOiAxLAogICAg
+        InJlbmRlclR5cGVOYW1lIiA6ICJjYWxlbmRhcl9kYXRlIiwKICAgICJ0YWJs
+        ZUNvbHVtbklkIiA6IDU3LAogICAgIndpZHRoIiA6IDIzMiwKICAgICJmb3Jt
+        YXQiIDogeyB9CiAgfSwgewogICAgImlkIiA6IDU4LAogICAgIm5hbWUiIDog
+        IkZyZWXCoCIsCiAgICAiZGF0YVR5cGVOYW1lIiA6ICJudW1iZXIiLAogICAg
+        ImZpZWxkTmFtZSIgOiAiZnJlZSIsCiAgICAicG9zaXRpb24iIDogMiwKICAg
+        ICJyZW5kZXJUeXBlTmFtZSIgOiAibnVtYmVyIiwKICAgICJ0YWJsZUNvbHVt
+        bklkIiA6IDU4LAogICAgIndpZHRoIiA6IDE2MCwKICAgICJmb3JtYXQiIDog
+        eyB9CiAgfSwgewogICAgImlkIiA6IDU5LAogICAgIm5hbWUiIDogIlJlZHVj
+        ZWTCoFByaWNlIiwKICAgICJkYXRhVHlwZU5hbWUiIDogIm51bWJlciIsCiAg
+        ICAiZmllbGROYW1lIiA6ICJyZWR1Y2VkX3ByaWNlIiwKICAgICJwb3NpdGlv
+        biIgOiAzLAogICAgInJlbmRlclR5cGVOYW1lIiA6ICJudW1iZXIiLAogICAg
+        InRhYmxlQ29sdW1uSWQiIDogNTksCiAgICAid2lkdGgiIDogMjU2LAogICAg
+        ImZvcm1hdCIgOiB7IH0KICB9LCB7CiAgICAiaWQiIDogNjAsCiAgICAibmFt
+        ZSIgOiAiRnVsbMKgUHJpY2UiLAogICAgImRhdGFUeXBlTmFtZSIgOiAibnVt
+        YmVyIiwKICAgICJmaWVsZE5hbWUiIDogImZ1bGxfcHJpY2UiLAogICAgInBv
+        c2l0aW9uIiA6IDQsCiAgICAicmVuZGVyVHlwZU5hbWUiIDogIm51bWJlciIs
+        CiAgICAidGFibGVDb2x1bW5JZCIgOiA2MCwKICAgICJ3aWR0aCIgOiAyMjAs
+        CiAgICAiZm9ybWF0IiA6IHsgfQogIH0sIHsKICAgICJpZCIgOiA2MSwKICAg
+        ICJuYW1lIiA6ICJUb3RhbMKgIiwKICAgICJkYXRhVHlwZU5hbWUiIDogIm51
+        bWJlciIsCiAgICAiZmllbGROYW1lIiA6ICJ0b3RhbCIsCiAgICAicG9zaXRp
+        b24iIDogNSwKICAgICJyZW5kZXJUeXBlTmFtZSIgOiAibnVtYmVyIiwKICAg
+        ICJ0YWJsZUNvbHVtbklkIiA6IDYxLAogICAgIndpZHRoIiA6IDE3MiwKICAg
+        ICJmb3JtYXQiIDogeyB9CiAgfSwgewogICAgImlkIiA6IDYyLAogICAgIm5h
+        bWUiIDogIlRvdGFsIEx1bmNoZXPCoFNlcnZlZCIsCiAgICAiZGF0YVR5cGVO
+        YW1lIiA6ICJudW1iZXIiLAogICAgImZpZWxkTmFtZSIgOiAidG90YWxfbHVu
+        Y2hlc19zZXJ2ZWQiLAogICAgInBvc2l0aW9uIiA6IDYsCiAgICAicmVuZGVy
+        VHlwZU5hbWUiIDogIm51bWJlciIsCiAgICAidGFibGVDb2x1bW5JZCIgOiA2
+        MiwKICAgICJ3aWR0aCIgOiAzNDAsCiAgICAiZm9ybWF0IiA6IHsgfQogIH0s
+        IHsKICAgICJpZCIgOiA2MywKICAgICJuYW1lIiA6ICJQZXJjZW50IEZyZWUv
+        UlDCoG9mIFRvdGFsIiwKICAgICJkYXRhVHlwZU5hbWUiIDogIm51bWJlciIs
+        CiAgICAiZmllbGROYW1lIiA6ICJwZXJjZW50X2ZyZWVfcnBfb2ZfdG90YWwi
+        LAogICAgInBvc2l0aW9uIiA6IDcsCiAgICAicmVuZGVyVHlwZU5hbWUiIDog
+        Im51bWJlciIsCiAgICAidGFibGVDb2x1bW5JZCIgOiA2MywKICAgICJ3aWR0
+        aCIgOiAzODgsCiAgICAiZm9ybWF0IiA6IHsgfQogIH0gXSwKICAiZ3JhbnRz
+        IiA6IFsgewogICAgImluaGVyaXRlZCIgOiBmYWxzZSwKICAgICJ0eXBlIiA6
+        ICJ2aWV3ZXIiLAogICAgImZsYWdzIiA6IFsgInB1YmxpYyIgXQogIH0gXSwK
+        ICAibWV0YWRhdGEiIDogewogICAgInJvd0xhYmVsIiA6ICJSb3ciLAogICAg
+        ImF2YWlsYWJsZURpc3BsYXlUeXBlcyIgOiBbICJ0YWJsZSIsICJmYXRyb3ci
+        LCAicGFnZSIgXSwKICAgICJyZW5kZXJUeXBlQ29uZmlnIiA6IHsKICAgICAg
+        InZpc2libGUiIDogewogICAgICAgICJ0YWJsZSIgOiB0cnVlCiAgICAgIH0K
+        ICAgIH0KICB9LAogICJvd25lciIgOiB7CiAgICAiaWQiIDogInR1Z2ctaWtj
+        ZSIsCiAgICAiZGlzcGxheU5hbWUiIDogIlN0YW4gUiIsCiAgICAibGFzdE5v
+        dGlmaWNhdGlvblNlZW5BdCIgOiAxNDg4NTY2MjQ2LAogICAgInNjcmVlbk5h
+        bWUiIDogIlN0YW4gUiIsCiAgICAicmlnaHRzIiA6IFsgImNyZWF0ZV9kYXRh
+        c2V0cyIsICJlZGl0X290aGVyc19kYXRhc2V0cyIsICJlZGl0X3NkcCIsICJl
+        ZGl0X3NpdGVfdGhlbWUiLCAibW9kZXJhdGVfY29tbWVudHMiLCAibWFuYWdl
+        X3VzZXJzIiwgImNob3duX2RhdGFzZXRzIiwgImVkaXRfbm9taW5hdGlvbnMi
+        LCAiYXBwcm92ZV9ub21pbmF0aW9ucyIsICJmZWF0dXJlX2l0ZW1zIiwgImZl
+        ZGVyYXRpb25zIiwgIm1hbmFnZV9zdG9yaWVzIiwgIm1hbmFnZV9hcHByb3Zh
+        bCIsICJjaGFuZ2VfY29uZmlndXJhdGlvbnMiLCAidmlld19kb21haW4iLCAi
+        dmlld19vdGhlcnNfZGF0YXNldHMiLCAiZWRpdF9wYWdlcyIsICJjcmVhdGVf
+        cGFnZXMiLCAidmlld19nb2FscyIsICJ2aWV3X2Rhc2hib2FyZHMiLCAiZWRp
+        dF9nb2FscyIsICJlZGl0X2Rhc2hib2FyZHMiLCAiY3JlYXRlX2Rhc2hib2Fy
+        ZHMiLCAibWFuYWdlX3Byb3ZlbmFuY2UiLCAidmlld19hbGxfZGF0YXNldF9z
+        dGF0dXNfbG9ncyIsICJjcmVhdGVfc3RvcnkiLCAiZWRpdF9zdG9yeV90aXRs
+        ZV9kZXNjIiwgImNyZWF0ZV9zdG9yeV9jb3B5IiwgImRlbGV0ZV9zdG9yeSIs
+        ICJtYW5hZ2Vfc3RvcnlfY29sbGFib3JhdG9ycyIsICJtYW5hZ2Vfc3Rvcnlf
+        dmlzaWJpbGl0eSIsICJtYW5hZ2Vfc3RvcnlfcHVibGljX3ZlcnNpb24iLCAi
+        ZWRpdF9zdG9yeSIsICJ2aWV3X3VucHVibGlzaGVkX3N0b3J5IiwgInZpZXdf
+        c3RvcnkiLCAidXNlX2RhdGFfY29ubmVjdG9ycyIgXSwKICAgICJmbGFncyIg
+        OiBbICJhZG1pbiIgXQogIH0sCiAgInF1ZXJ5IiA6IHsgfSwKICAicmlnaHRz
+        IiA6IFsgInJlYWQiIF0sCiAgInRhYmxlQXV0aG9yIiA6IHsKICAgICJpZCIg
+        OiAidHVnZy1pa2NlIiwKICAgICJkaXNwbGF5TmFtZSIgOiAiU3RhbiBSIiwK
+        ICAgICJsYXN0Tm90aWZpY2F0aW9uU2VlbkF0IiA6IDE0ODg1NjYyNDYsCiAg
+        ICAic2NyZWVuTmFtZSIgOiAiU3RhbiBSIiwKICAgICJyaWdodHMiIDogWyAi
+        Y3JlYXRlX2RhdGFzZXRzIiwgImVkaXRfb3RoZXJzX2RhdGFzZXRzIiwgImVk
+        aXRfc2RwIiwgImVkaXRfc2l0ZV90aGVtZSIsICJtb2RlcmF0ZV9jb21tZW50
+        cyIsICJtYW5hZ2VfdXNlcnMiLCAiY2hvd25fZGF0YXNldHMiLCAiZWRpdF9u
+        b21pbmF0aW9ucyIsICJhcHByb3ZlX25vbWluYXRpb25zIiwgImZlYXR1cmVf
+        aXRlbXMiLCAiZmVkZXJhdGlvbnMiLCAibWFuYWdlX3N0b3JpZXMiLCAibWFu
+        YWdlX2FwcHJvdmFsIiwgImNoYW5nZV9jb25maWd1cmF0aW9ucyIsICJ2aWV3
+        X2RvbWFpbiIsICJ2aWV3X290aGVyc19kYXRhc2V0cyIsICJlZGl0X3BhZ2Vz
+        IiwgImNyZWF0ZV9wYWdlcyIsICJ2aWV3X2dvYWxzIiwgInZpZXdfZGFzaGJv
+        YXJkcyIsICJlZGl0X2dvYWxzIiwgImVkaXRfZGFzaGJvYXJkcyIsICJjcmVh
+        dGVfZGFzaGJvYXJkcyIsICJtYW5hZ2VfcHJvdmVuYW5jZSIsICJ2aWV3X2Fs
+        bF9kYXRhc2V0X3N0YXR1c19sb2dzIiwgImNyZWF0ZV9zdG9yeSIsICJlZGl0
+        X3N0b3J5X3RpdGxlX2Rlc2MiLCAiY3JlYXRlX3N0b3J5X2NvcHkiLCAiZGVs
+        ZXRlX3N0b3J5IiwgIm1hbmFnZV9zdG9yeV9jb2xsYWJvcmF0b3JzIiwgIm1h
+        bmFnZV9zdG9yeV92aXNpYmlsaXR5IiwgIm1hbmFnZV9zdG9yeV9wdWJsaWNf
+        dmVyc2lvbiIsICJlZGl0X3N0b3J5IiwgInZpZXdfdW5wdWJsaXNoZWRfc3Rv
+        cnkiLCAidmlld19zdG9yeSIsICJ1c2VfZGF0YV9jb25uZWN0b3JzIiBdLAog
+        ICAgImZsYWdzIiA6IFsgImFkbWluIiBdCiAgfSwKICAiZmxhZ3MiIDogWyAi
+        ZGVmYXVsdCIsICJyZXN0b3JhYmxlIiwgInJlc3RvcmVQb3NzaWJsZUZvclR5
+        cGUiIF0KfQo=
+    http_version:
+  recorded_at: Mon, 20 Mar 2017 19:53:20 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/migrations/ij2u-iwtx
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 20 Mar 2017 19:53:20 GMT
+      X-Socrata-Requestid:
+      - aef3qb1l66kmxezrc4pqj9yx2
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "controlMapping" : "{\"nameShortening\":{\"percent_free_rp_of_total\":\"percent_free_rp_of_total\",\"reduced_price\":\"reduced_price\",\"total\":\"total\",\"full_price\":\"full_price\",\"total_lunches_served\":\"total_lunches_served\",\"free\":\"free\",\"fiscal_year\":\"fiscal_year\"},\"geoResourceIds\":[],\"curatedRegions\":[]}",
+          "lastSyncJobId" : "c22ac07c-ae7f-42d4-830e-1f29acf30711",
+          "migrationPhase" : "prep",
+          "migrationPhaseUpdated" : 1479342541,
+          "nbeId" : "ij2u-iwtx",
+          "nbePublicationGroup" : 12,
+          "obeId" : "xxik-zkrp",
+          "syncedAt" : 1481787810
+        }
+    http_version:
+  recorded_at: Mon, 20 Mar 2017 19:53:20 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/views/xxik-zkrp.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Federation:
+      - Honey Badger
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 20 Mar 2017 19:53:20 GMT
+      X-Socrata-Requestid:
+      - comgtv4adaz9p892iejccrvgt
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        ewogICJpZCIgOiAieHhpay16a3JwIiwKICAibmFtZSIgOiAiTmF0aW9uYWwg
+        U2Nob29sIEx1bmNoIC0gUGFydGljaXBhdGlvbiBBbmQgTWVhbHMgU2VydmVk
+        IiwKICAiYXZlcmFnZVJhdGluZyIgOiAwLAogICJjcmVhdGVkQXQiIDogMTQ3
+        OTM0MDgwNywKICAiZGlzcGxheVR5cGUiIDogInRhYmxlIiwKICAiZG9tYWlu
+        Q05hbWUiIDogImxvY2FsaG9zdCIsCiAgImRvd25sb2FkQ291bnQiIDogMCwK
+        ICAiaGlkZUZyb21DYXRhbG9nIiA6IGZhbHNlLAogICJoaWRlRnJvbURhdGFK
+        c29uIiA6IGZhbHNlLAogICJuZXdCYWNrZW5kIiA6IGZhbHNlLAogICJudW1i
+        ZXJPZkNvbW1lbnRzIiA6IDAsCiAgIm9pZCIgOiA0MywKICAicHJvdmVuYW5j
+        ZSIgOiAib2ZmaWNpYWwiLAogICJwdWJsaWNhdGlvbkFwcGVuZEVuYWJsZWQi
+        IDogZmFsc2UsCiAgInB1YmxpY2F0aW9uRGF0ZSIgOiAxNDgxNzg3NzM3LAog
+        ICJwdWJsaWNhdGlvbkdyb3VwIiA6IDgsCiAgInB1YmxpY2F0aW9uU3RhZ2Ui
+        IDogInB1Ymxpc2hlZCIsCiAgInJvd3NVcGRhdGVkQXQiIDogMTQ4MTc4Nzcz
+        MCwKICAicm93c1VwZGF0ZWRCeSIgOiAidHVnZy1pa2NlIiwKICAidGFibGVJ
+        ZCIgOiA0MSwKICAidG90YWxUaW1lc1JhdGVkIiA6IDAsCiAgInZpZXdDb3Vu
+        dCIgOiAwLAogICJ2aWV3TGFzdE1vZGlmaWVkIiA6IDE0ODE3ODc3MzcsCiAg
+        InZpZXdUeXBlIiA6ICJ0YWJ1bGFyIiwKICAiY29sdW1ucyIgOiBbIHsKICAg
+        ICJpZCIgOiA5NCwKICAgICJuYW1lIiA6ICJGaXNjYWwgWWVhciIsCiAgICAi
+        ZGF0YVR5cGVOYW1lIiA6ICJjYWxlbmRhcl9kYXRlIiwKICAgICJmaWVsZE5h
+        bWUiIDogImZpc2NhbF95ZWFyIiwKICAgICJwb3NpdGlvbiIgOiAyLAogICAg
+        InJlbmRlclR5cGVOYW1lIiA6ICJjYWxlbmRhcl9kYXRlIiwKICAgICJ0YWJs
+        ZUNvbHVtbklkIiA6IDI5LAogICAgIndpZHRoIiA6IDIzMiwKICAgICJjYWNo
+        ZWRDb250ZW50cyIgOiB7CiAgICAgICJsYXJnZXN0IiA6ICIyMDE1LTAxLTAx
+        VDAwOjAwOjAwIiwKICAgICAgIm5vbl9udWxsIiA6IDQ2LAogICAgICAibnVs
+        bCIgOiAwLAogICAgICAidG9wIiA6IFsgewogICAgICAgICJpdGVtIiA6ICIy
+        MDExLTAxLTAxVDAwOjAwOjAwIiwKICAgICAgICAiY291bnQiIDogMjAKICAg
+        ICAgfSwgewogICAgICAgICJpdGVtIiA6ICIyMDEyLTAxLTAxVDAwOjAwOjAw
+        IiwKICAgICAgICAiY291bnQiIDogMTkKICAgICAgfSwgewogICAgICAgICJp
+        dGVtIiA6ICIyMDEzLTAxLTAxVDAwOjAwOjAwIiwKICAgICAgICAiY291bnQi
+        IDogMTgKICAgICAgfSwgewogICAgICAgICJpdGVtIiA6ICIyMDE0LTAxLTAx
+        VDAwOjAwOjAwIiwKICAgICAgICAiY291bnQiIDogMTcKICAgICAgfSwgewog
+        ICAgICAgICJpdGVtIiA6ICIyMDE1LTAxLTAxVDAwOjAwOjAwIiwKICAgICAg
+        ICAiY291bnQiIDogMTYKICAgICAgfSBdLAogICAgICAic21hbGxlc3QiIDog
+        IjE5NzAtMDEtMDFUMDA6MDA6MDAiCiAgICB9LAogICAgImZvcm1hdCIgOiB7
+        CiAgICAgICJ2aWV3IiA6ICJkYXRlX3ltb250aGQiLAogICAgICAiYWxpZ24i
+        IDogImxlZnQiCiAgICB9CiAgfSwgewogICAgImlkIiA6IDk1LAogICAgIm5h
+        bWUiIDogIkZyZWXCoCIsCiAgICAiZGF0YVR5cGVOYW1lIiA6ICJudW1iZXIi
+        LAogICAgImZpZWxkTmFtZSIgOiAiZnJlZSIsCiAgICAicG9zaXRpb24iIDog
+        MywKICAgICJyZW5kZXJUeXBlTmFtZSIgOiAibnVtYmVyIiwKICAgICJ0YWJs
+        ZUNvbHVtbklkIiA6IDMwLAogICAgIndpZHRoIiA6IDE2MCwKICAgICJjYWNo
+        ZWRDb250ZW50cyIgOiB7CiAgICAgICJsYXJnZXN0IiA6ICIxOS44IiwKICAg
+        ICAgIm5vbl9udWxsIiA6IDQ2LAogICAgICAiYXZlcmFnZSIgOiAiMTIuMTcz
+        OTEzMDQzNDc4MjYiLAogICAgICAibnVsbCIgOiAwLAogICAgICAidG9wIiA6
+        IFsgewogICAgICAgICJpdGVtIiA6ICI0LjYiLAogICAgICAgICJjb3VudCIg
+        OiAyMAogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjUuOCIsCiAgICAg
+        ICAgImNvdW50IiA6IDE5CiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAi
+        Ny4zIiwKICAgICAgICAiY291bnQiIDogMTgKICAgICAgfSwgewogICAgICAg
+        ICJpdGVtIiA6ICI4LjEiLAogICAgICAgICJjb3VudCIgOiAxNwogICAgICB9
+        LCB7CiAgICAgICAgIml0ZW0iIDogIjguNiIsCiAgICAgICAgImNvdW50IiA6
+        IDE2CiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAiOS40IiwKICAgICAg
+        ICAiY291bnQiIDogMTUKICAgICAgfSwgewogICAgICAgICJpdGVtIiA6ICIx
+        MC4yIiwKICAgICAgICAiY291bnQiIDogMTQKICAgICAgfSwgewogICAgICAg
+        ICJpdGVtIiA6ICIxMC41IiwKICAgICAgICAiY291bnQiIDogMTMKICAgICAg
+        fSwgewogICAgICAgICJpdGVtIiA6ICIxMC4zIiwKICAgICAgICAiY291bnQi
+        IDogMTIKICAgICAgfSwgewogICAgICAgICJpdGVtIiA6ICIxMCIsCiAgICAg
+        ICAgImNvdW50IiA6IDExCiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAi
+        MTAuNiIsCiAgICAgICAgImNvdW50IiA6IDEwCiAgICAgIH0sIHsKICAgICAg
+        ICAiaXRlbSIgOiAiOS44IiwKICAgICAgICAiY291bnQiIDogOQogICAgICB9
+        LCB7CiAgICAgICAgIml0ZW0iIDogIjkuOSIsCiAgICAgICAgImNvdW50IiA6
+        IDgKICAgICAgfSwgewogICAgICAgICJpdGVtIiA6ICI5LjciLAogICAgICAg
+        ICJjb3VudCIgOiA3CiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAiMTEu
+        MiIsCiAgICAgICAgImNvdW50IiA6IDYKICAgICAgfSwgewogICAgICAgICJp
+        dGVtIiA6ICIxMS43IiwKICAgICAgICAiY291bnQiIDogNQogICAgICB9LCB7
+        CiAgICAgICAgIml0ZW0iIDogIjEyLjIiLAogICAgICAgICJjb3VudCIgOiA0
+        CiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAiMTIuNCIsCiAgICAgICAg
+        ImNvdW50IiA6IDMKICAgICAgfSwgewogICAgICAgICJpdGVtIiA6ICIxMi42
+        IiwKICAgICAgICAiY291bnQiIDogMgogICAgICB9LCB7CiAgICAgICAgIml0
+        ZW0iIDogIjEyLjkiLAogICAgICAgICJjb3VudCIgOiAxCiAgICAgIH0gXSwK
+        ICAgICAgInNtYWxsZXN0IiA6ICI0LjYiLAogICAgICAic3VtIiA6ICI1NjAu
+        MCIKICAgIH0sCiAgICAiZm9ybWF0IiA6IHsgfQogIH0sIHsKICAgICJpZCIg
+        OiA5NiwKICAgICJuYW1lIiA6ICJSZWR1Y2VkwqBQcmljZSIsCiAgICAiZGF0
+        YVR5cGVOYW1lIiA6ICJudW1iZXIiLAogICAgImZpZWxkTmFtZSIgOiAicmVk
+        dWNlZF9wcmljZSIsCiAgICAicG9zaXRpb24iIDogNCwKICAgICJyZW5kZXJU
+        eXBlTmFtZSIgOiAibnVtYmVyIiwKICAgICJ0YWJsZUNvbHVtbklkIiA6IDMx
+        LAogICAgIndpZHRoIiA6IDI1NiwKICAgICJjYWNoZWRDb250ZW50cyIgOiB7
+        CiAgICAgICJsYXJnZXN0IiA6ICIzLjIiLAogICAgICAibm9uX251bGwiIDog
+        NDUsCiAgICAgICJhdmVyYWdlIiA6ICIxLjk0ODg4ODg4ODg4ODg4OSIsCiAg
+        ICAgICJudWxsIiA6IDEsCiAgICAgICJ0b3AiIDogWyB7CiAgICAgICAgIml0
+        ZW0iIDogIjAuNSIsCiAgICAgICAgImNvdW50IiA6IDIwCiAgICAgIH0sIHsK
+        ICAgICAgICAiaXRlbSIgOiAiMC42IiwKICAgICAgICAiY291bnQiIDogMTkK
+        ICAgICAgfSwgewogICAgICAgICJpdGVtIiA6ICIwLjgiLAogICAgICAgICJj
+        b3VudCIgOiAxOAogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjEuMyIs
+        CiAgICAgICAgImNvdW50IiA6IDE3CiAgICAgIH0sIHsKICAgICAgICAiaXRl
+        bSIgOiAiMS41IiwKICAgICAgICAiY291bnQiIDogMTYKICAgICAgfSwgewog
+        ICAgICAgICJpdGVtIiA6ICIxLjciLAogICAgICAgICJjb3VudCIgOiAxNQog
+        ICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjEuOSIsCiAgICAgICAgImNv
+        dW50IiA6IDE0CiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAiMS42IiwK
+        ICAgICAgICAiY291bnQiIDogMTMKICAgICAgfSwgewogICAgICAgICJpdGVt
+        IiA6ICIxLjgiLAogICAgICAgICJjb3VudCIgOiAxMgogICAgICB9LCB7CiAg
+        ICAgICAgIml0ZW0iIDogIjIiLAogICAgICAgICJjb3VudCIgOiAxMQogICAg
+        ICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjIuMSIsCiAgICAgICAgImNvdW50
+        IiA6IDEwCiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAiMi4yIiwKICAg
+        ICAgICAiY291bnQiIDogOQogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDog
+        IjIuNCIsCiAgICAgICAgImNvdW50IiA6IDgKICAgICAgfSwgewogICAgICAg
+        ICJpdGVtIiA6ICIyLjUiLAogICAgICAgICJjb3VudCIgOiA3CiAgICAgIH0s
+        IHsKICAgICAgICAiaXRlbSIgOiAiMi42IiwKICAgICAgICAiY291bnQiIDog
+        NgogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjIuNyIsCiAgICAgICAg
+        ImNvdW50IiA6IDUKICAgICAgfSwgewogICAgICAgICJpdGVtIiA6ICIyLjgi
+        LAogICAgICAgICJjb3VudCIgOiA0CiAgICAgIH0sIHsKICAgICAgICAiaXRl
+        bSIgOiAiMi45IiwKICAgICAgICAiY291bnQiIDogMwogICAgICB9LCB7CiAg
+        ICAgICAgIml0ZW0iIDogIjMuMSIsCiAgICAgICAgImNvdW50IiA6IDIKICAg
+        ICAgfSwgewogICAgICAgICJpdGVtIiA6ICIzLjIiLAogICAgICAgICJjb3Vu
+        dCIgOiAxCiAgICAgIH0gXSwKICAgICAgInNtYWxsZXN0IiA6ICIwLjUiLAog
+        ICAgICAic3VtIiA6ICI4Ny43IgogICAgfSwKICAgICJmb3JtYXQiIDogeyB9
+        CiAgfSwgewogICAgImlkIiA6IDk3LAogICAgIm5hbWUiIDogIkZ1bGzCoFBy
+        aWNlIiwKICAgICJkYXRhVHlwZU5hbWUiIDogIm51bWJlciIsCiAgICAiZmll
+        bGROYW1lIiA6ICJmdWxsX3ByaWNlIiwKICAgICJwb3NpdGlvbiIgOiA1LAog
+        ICAgInJlbmRlclR5cGVOYW1lIiA6ICJudW1iZXIiLAogICAgInRhYmxlQ29s
+        dW1uSWQiIDogMzIsCiAgICAid2lkdGgiIDogMjIwLAogICAgImNhY2hlZENv
+        bnRlbnRzIiA6IHsKICAgICAgImxhcmdlc3QiIDogIjE3LjgiLAogICAgICAi
+        bm9uX251bGwiIDogNDYsCiAgICAgICJhdmVyYWdlIiA6ICIxMi41ODI2MDg2
+        OTU2NTIxNyIsCiAgICAgICJudWxsIiA6IDAsCiAgICAgICJ0b3AiIDogWyB7
+        CiAgICAgICAgIml0ZW0iIDogIjE3LjgiLAogICAgICAgICJjb3VudCIgOiAy
+        MAogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjE2LjYiLAogICAgICAg
+        ICJjb3VudCIgOiAxOQogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjE2
+        LjEiLAogICAgICAgICJjb3VudCIgOiAxOAogICAgICB9LCB7CiAgICAgICAg
+        Iml0ZW0iIDogIjE1LjUiLAogICAgICAgICJjb3VudCIgOiAxNwogICAgICB9
+        LCB7CiAgICAgICAgIml0ZW0iIDogIjE0LjkiLAogICAgICAgICJjb3VudCIg
+        OiAxNgogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjE0LjYiLAogICAg
+        ICAgICJjb3VudCIgOiAxNQogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDog
+        IjE0LjUiLAogICAgICAgICJjb3VudCIgOiAxNAogICAgICB9LCB7CiAgICAg
+        ICAgIml0ZW0iIDogIjE1LjMiLAogICAgICAgICJjb3VudCIgOiAxMwogICAg
+        ICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjE0LjciLAogICAgICAgICJjb3Vu
+        dCIgOiAxMgogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjEzLjMiLAog
+        ICAgICAgICJjb3VudCIgOiAxMQogICAgICB9LCB7CiAgICAgICAgIml0ZW0i
+        IDogIjExLjUiLAogICAgICAgICJjb3VudCIgOiAxMAogICAgICB9LCB7CiAg
+        ICAgICAgIml0ZW0iIDogIjExLjIiLAogICAgICAgICJjb3VudCIgOiA5CiAg
+        ICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAiMTIuMSIsCiAgICAgICAgImNv
+        dW50IiA6IDgKICAgICAgfSwgewogICAgICAgICJpdGVtIiA6ICIxMi4yIiwK
+        ICAgICAgICAiY291bnQiIDogNwogICAgICB9LCB7CiAgICAgICAgIml0ZW0i
+        IDogIjEyLjQiLAogICAgICAgICJjb3VudCIgOiA2CiAgICAgIH0sIHsKICAg
+        ICAgICAiaXRlbSIgOiAiMTIuOCIsCiAgICAgICAgImNvdW50IiA6IDUKICAg
+        ICAgfSwgewogICAgICAgICJpdGVtIiA6ICIxMi45IiwKICAgICAgICAiY291
+        bnQiIDogNAogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjEyLjYiLAog
+        ICAgICAgICJjb3VudCIgOiAzCiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIg
+        OiAiMTEuNyIsCiAgICAgICAgImNvdW50IiA6IDIKICAgICAgfSwgewogICAg
+        ICAgICJpdGVtIiA6ICIxMS40IiwKICAgICAgICAiY291bnQiIDogMQogICAg
+        ICB9IF0sCiAgICAgICJzbWFsbGVzdCIgOiAiOC41IiwKICAgICAgInN1bSIg
+        OiAiNTc4LjgiCiAgICB9LAogICAgImZvcm1hdCIgOiB7IH0KICB9LCB7CiAg
+        ICAiaWQiIDogOTgsCiAgICAibmFtZSIgOiAiVG90YWzCoCIsCiAgICAiZGF0
+        YVR5cGVOYW1lIiA6ICJudW1iZXIiLAogICAgImZpZWxkTmFtZSIgOiAidG90
+        YWwiLAogICAgInBvc2l0aW9uIiA6IDYsCiAgICAicmVuZGVyVHlwZU5hbWUi
+        IDogIm51bWJlciIsCiAgICAidGFibGVDb2x1bW5JZCIgOiAzMywKICAgICJ3
+        aWR0aCIgOiAxNzIsCiAgICAiY2FjaGVkQ29udGVudHMiIDogewogICAgICAi
+        bGFyZ2VzdCIgOiAiMzEuOCIsCiAgICAgICJub25fbnVsbCIgOiA0NiwKICAg
+        ICAgImF2ZXJhZ2UiIDogIjI2LjY1ODY5NTY1MjE3MzkxIiwKICAgICAgIm51
+        bGwiIDogMCwKICAgICAgInRvcCIgOiBbIHsKICAgICAgICAiaXRlbSIgOiAi
+        MjIuNCIsCiAgICAgICAgImNvdW50IiA6IDIwCiAgICAgIH0sIHsKICAgICAg
+        ICAiaXRlbSIgOiAiMjQuMSIsCiAgICAgICAgImNvdW50IiA6IDE5CiAgICAg
+        IH0sIHsKICAgICAgICAiaXRlbSIgOiAiMjQuNCIsCiAgICAgICAgImNvdW50
+        IiA6IDE4CiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAiMjQuNyIsCiAg
+        ICAgICAgImNvdW50IiA6IDE3CiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIg
+        OiAiMjQuNiIsCiAgICAgICAgImNvdW50IiA6IDE2CiAgICAgIH0sIHsKICAg
+        ICAgICAiaXRlbSIgOiAiMjQuOSIsCiAgICAgICAgImNvdW50IiA6IDE1CiAg
+        ICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAiMjUuNiIsCiAgICAgICAgImNv
+        dW50IiA6IDE0CiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAiMjYuMiIs
+        CiAgICAgICAgImNvdW50IiA6IDEzCiAgICAgIH0sIHsKICAgICAgICAiaXRl
+        bSIgOiAiMjYuNyIsCiAgICAgICAgImNvdW50IiA6IDEyCiAgICAgIH0sIHsK
+        ICAgICAgICAiaXRlbSIgOiAiMjciLAogICAgICAgICJjb3VudCIgOiAxMQog
+        ICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjI2LjYiLAogICAgICAgICJj
+        b3VudCIgOiAxMAogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjI1Ljgi
+        LAogICAgICAgICJjb3VudCIgOiA5CiAgICAgIH0sIHsKICAgICAgICAiaXRl
+        bSIgOiAiMjIuOSIsCiAgICAgICAgImNvdW50IiA6IDgKICAgICAgfSwgewog
+        ICAgICAgICJpdGVtIiA6ICIyMyIsCiAgICAgICAgImNvdW50IiA6IDcKICAg
+        ICAgfSwgewogICAgICAgICJpdGVtIiA6ICIyMy40IiwKICAgICAgICAiY291
+        bnQiIDogNgogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjIzLjYiLAog
+        ICAgICAgICJjb3VudCIgOiA1CiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIg
+        OiAiMjMuNyIsCiAgICAgICAgImNvdW50IiA6IDQKICAgICAgfSwgewogICAg
+        ICAgICJpdGVtIiA6ICIyMy45IiwKICAgICAgICAiY291bnQiIDogMwogICAg
+        ICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjI0LjIiLAogICAgICAgICJjb3Vu
+        dCIgOiAyCiAgICAgIH0sIHsKICAgICAgICAiaXRlbSIgOiAiMjUuMyIsCiAg
+        ICAgICAgImNvdW50IiA6IDEKICAgICAgfSBdLAogICAgICAic21hbGxlc3Qi
+        IDogIjIyLjQiLAogICAgICAic3VtIiA6ICIxMjI2LjMiCiAgICB9LAogICAg
+        ImZvcm1hdCIgOiB7IH0KICB9LCB7CiAgICAiaWQiIDogOTksCiAgICAibmFt
+        ZSIgOiAiVG90YWwgTHVuY2hlc8KgU2VydmVkIiwKICAgICJkYXRhVHlwZU5h
+        bWUiIDogIm51bWJlciIsCiAgICAiZmllbGROYW1lIiA6ICJ0b3RhbF9sdW5j
+        aGVzX3NlcnZlZCIsCiAgICAicG9zaXRpb24iIDogNywKICAgICJyZW5kZXJU
+        eXBlTmFtZSIgOiAibnVtYmVyIiwKICAgICJ0YWJsZUNvbHVtbklkIiA6IDM0
+        LAogICAgIndpZHRoIiA6IDM0MCwKICAgICJjYWNoZWRDb250ZW50cyIgOiB7
+        CiAgICAgICJsYXJnZXN0IiA6ICI1Mjc4LjQiLAogICAgICAibm9uX251bGwi
+        IDogNDYsCiAgICAgICJhdmVyYWdlIiA6ICI0NDAzLjAxODY5NTY1MjE3NCIs
+        CiAgICAgICJudWxsIiA6IDAsCiAgICAgICJ0b3AiIDogWyB7CiAgICAgICAg
+        Iml0ZW0iIDogIjUyNzQuNDUiLAogICAgICAgICJjb3VudCIgOiAyMAogICAg
+        ICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjUyMTQuODQiLAogICAgICAgICJj
+        b3VudCIgOiAxOQogICAgICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjUwOTcu
+        NTciLAogICAgICAgICJjb3VudCIgOiAxOAogICAgICB9LCB7CiAgICAgICAg
+        Iml0ZW0iIDogIjUwMjAuMzQiLAogICAgICAgICJjb3VudCIgOiAxNwogICAg
+        ICB9LCB7CiAgICAgICAgIml0ZW0iIDogIjUwMDUuOTUiLAogICAgICAgICJj
+        b3VudCIgOiAxNgogICAgICB9IF0sCiAgICAgICJzbWFsbGVzdCIgOiAiMzU2
+        NS4xIiwKICAgICAgInN1bSIgOiAiMjAyNTM4Ljg2IgogICAgfSwKICAgICJm
+        b3JtYXQiIDogeyB9CiAgfSwgewogICAgImlkIiA6IDEwMCwKICAgICJuYW1l
+        IiA6ICJQZXJjZW50IEZyZWUvUlDCoG9mIFRvdGFsIiwKICAgICJkYXRhVHlw
+        ZU5hbWUiIDogInBlcmNlbnQiLAogICAgImZpZWxkTmFtZSIgOiAicGVyY2Vu
+        dF9mcmVlX3JwX29mX3RvdGFsIiwKICAgICJwb3NpdGlvbiIgOiA4LAogICAg
+        InJlbmRlclR5cGVOYW1lIiA6ICJwZXJjZW50IiwKICAgICJ0YWJsZUNvbHVt
+        bklkIiA6IDM1LAogICAgIndpZHRoIiA6IDM4OCwKICAgICJjYWNoZWRDb250
+        ZW50cyIgOiB7CiAgICAgICJsYXJnZXN0IiA6ICI3Mi42IiwKICAgICAgIm5v
+        bl9udWxsIiA6IDQ2LAogICAgICAiYXZlcmFnZSIgOiAiNTIuMzY3MzkxMzA0
+        MzQ3ODMiLAogICAgICAibnVsbCIgOiAwLAogICAgICAidG9wIiA6IFsgewog
+        ICAgICAgICJpdGVtIiA6ICI0OC42IiwKICAgICAgICAiY291bnQiIDogMjAK
+        ICAgICAgfSwgewogICAgICAgICJpdGVtIiA6ICI0OS4xIiwKICAgICAgICAi
+        Y291bnQiIDogMTkKICAgICAgfSwgewogICAgICAgICJpdGVtIiA6ICI1Ny42
+        IiwKICAgICAgICAiY291bnQiIDogMTgKICAgICAgfSwgewogICAgICAgICJp
+        dGVtIiA6ICI1OS4zIiwKICAgICAgICAiY291bnQiIDogMTcKICAgICAgfSBd
+        LAogICAgICAic21hbGxlc3QiIDogIjIwLjciLAogICAgICAic3VtIiA6ICIy
+        NDA4LjkiCiAgICB9LAogICAgImZvcm1hdCIgOiB7IH0KICB9IF0sCiAgImdy
+        YW50cyIgOiBbIHsKICAgICJpbmhlcml0ZWQiIDogZmFsc2UsCiAgICAidHlw
+        ZSIgOiAidmlld2VyIiwKICAgICJmbGFncyIgOiBbICJwdWJsaWMiIF0KICB9
+        IF0sCiAgIm1ldGFkYXRhIiA6IHsKICAgICJyb3dMYWJlbCIgOiAiUm93IiwK
+        ICAgICJhdmFpbGFibGVEaXNwbGF5VHlwZXMiIDogWyAidGFibGUiLCAiZmF0
+        cm93IiwgInBhZ2UiIF0sCiAgICAicmVuZGVyVHlwZUNvbmZpZyIgOiB7CiAg
+        ICAgICJ2aXNpYmxlIiA6IHsKICAgICAgICAidGFibGUiIDogdHJ1ZQogICAg
+        ICB9CiAgICB9CiAgfSwKICAib3duZXIiIDogewogICAgImlkIiA6ICJ0dWdn
+        LWlrY2UiLAogICAgImRpc3BsYXlOYW1lIiA6ICJTdGFuIFIiLAogICAgImxh
+        c3ROb3RpZmljYXRpb25TZWVuQXQiIDogMTQ4ODU2NjI0NiwKICAgICJzY3Jl
+        ZW5OYW1lIiA6ICJTdGFuIFIiLAogICAgInJpZ2h0cyIgOiBbICJjcmVhdGVf
+        ZGF0YXNldHMiLCAiZWRpdF9vdGhlcnNfZGF0YXNldHMiLCAiZWRpdF9zZHAi
+        LCAiZWRpdF9zaXRlX3RoZW1lIiwgIm1vZGVyYXRlX2NvbW1lbnRzIiwgIm1h
+        bmFnZV91c2VycyIsICJjaG93bl9kYXRhc2V0cyIsICJlZGl0X25vbWluYXRp
+        b25zIiwgImFwcHJvdmVfbm9taW5hdGlvbnMiLCAiZmVhdHVyZV9pdGVtcyIs
+        ICJmZWRlcmF0aW9ucyIsICJtYW5hZ2Vfc3RvcmllcyIsICJtYW5hZ2VfYXBw
+        cm92YWwiLCAiY2hhbmdlX2NvbmZpZ3VyYXRpb25zIiwgInZpZXdfZG9tYWlu
+        IiwgInZpZXdfb3RoZXJzX2RhdGFzZXRzIiwgImVkaXRfcGFnZXMiLCAiY3Jl
+        YXRlX3BhZ2VzIiwgInZpZXdfZ29hbHMiLCAidmlld19kYXNoYm9hcmRzIiwg
+        ImVkaXRfZ29hbHMiLCAiZWRpdF9kYXNoYm9hcmRzIiwgImNyZWF0ZV9kYXNo
+        Ym9hcmRzIiwgIm1hbmFnZV9wcm92ZW5hbmNlIiwgInZpZXdfYWxsX2RhdGFz
+        ZXRfc3RhdHVzX2xvZ3MiLCAiY3JlYXRlX3N0b3J5IiwgImVkaXRfc3Rvcnlf
+        dGl0bGVfZGVzYyIsICJjcmVhdGVfc3RvcnlfY29weSIsICJkZWxldGVfc3Rv
+        cnkiLCAibWFuYWdlX3N0b3J5X2NvbGxhYm9yYXRvcnMiLCAibWFuYWdlX3N0
+        b3J5X3Zpc2liaWxpdHkiLCAibWFuYWdlX3N0b3J5X3B1YmxpY192ZXJzaW9u
+        IiwgImVkaXRfc3RvcnkiLCAidmlld191bnB1Ymxpc2hlZF9zdG9yeSIsICJ2
+        aWV3X3N0b3J5IiwgInVzZV9kYXRhX2Nvbm5lY3RvcnMiIF0sCiAgICAiZmxh
+        Z3MiIDogWyAiYWRtaW4iIF0KICB9LAogICJxdWVyeSIgOiB7IH0sCiAgInJp
+        Z2h0cyIgOiBbICJyZWFkIiBdLAogICJ0YWJsZUF1dGhvciIgOiB7CiAgICAi
+        aWQiIDogInR1Z2ctaWtjZSIsCiAgICAiZGlzcGxheU5hbWUiIDogIlN0YW4g
+        UiIsCiAgICAibGFzdE5vdGlmaWNhdGlvblNlZW5BdCIgOiAxNDg4NTY2MjQ2
+        LAogICAgInNjcmVlbk5hbWUiIDogIlN0YW4gUiIsCiAgICAicmlnaHRzIiA6
+        IFsgImNyZWF0ZV9kYXRhc2V0cyIsICJlZGl0X290aGVyc19kYXRhc2V0cyIs
+        ICJlZGl0X3NkcCIsICJlZGl0X3NpdGVfdGhlbWUiLCAibW9kZXJhdGVfY29t
+        bWVudHMiLCAibWFuYWdlX3VzZXJzIiwgImNob3duX2RhdGFzZXRzIiwgImVk
+        aXRfbm9taW5hdGlvbnMiLCAiYXBwcm92ZV9ub21pbmF0aW9ucyIsICJmZWF0
+        dXJlX2l0ZW1zIiwgImZlZGVyYXRpb25zIiwgIm1hbmFnZV9zdG9yaWVzIiwg
+        Im1hbmFnZV9hcHByb3ZhbCIsICJjaGFuZ2VfY29uZmlndXJhdGlvbnMiLCAi
+        dmlld19kb21haW4iLCAidmlld19vdGhlcnNfZGF0YXNldHMiLCAiZWRpdF9w
+        YWdlcyIsICJjcmVhdGVfcGFnZXMiLCAidmlld19nb2FscyIsICJ2aWV3X2Rh
+        c2hib2FyZHMiLCAiZWRpdF9nb2FscyIsICJlZGl0X2Rhc2hib2FyZHMiLCAi
+        Y3JlYXRlX2Rhc2hib2FyZHMiLCAibWFuYWdlX3Byb3ZlbmFuY2UiLCAidmll
+        d19hbGxfZGF0YXNldF9zdGF0dXNfbG9ncyIsICJjcmVhdGVfc3RvcnkiLCAi
+        ZWRpdF9zdG9yeV90aXRsZV9kZXNjIiwgImNyZWF0ZV9zdG9yeV9jb3B5Iiwg
+        ImRlbGV0ZV9zdG9yeSIsICJtYW5hZ2Vfc3RvcnlfY29sbGFib3JhdG9ycyIs
+        ICJtYW5hZ2Vfc3RvcnlfdmlzaWJpbGl0eSIsICJtYW5hZ2Vfc3RvcnlfcHVi
+        bGljX3ZlcnNpb24iLCAiZWRpdF9zdG9yeSIsICJ2aWV3X3VucHVibGlzaGVk
+        X3N0b3J5IiwgInZpZXdfc3RvcnkiLCAidXNlX2RhdGFfY29ubmVjdG9ycyIg
+        XSwKICAgICJmbGFncyIgOiBbICJhZG1pbiIgXQogIH0sCiAgImZsYWdzIiA6
+        IFsgImRlZmF1bHQiLCAicmVzdG9yYWJsZSIsICJyZXN0b3JlUG9zc2libGVG
+        b3JUeXBlIiBdCn0K
+    http_version:
+  recorded_at: Mon, 20 Mar 2017 19:53:20 GMT
+- request:
+    method: get
+    uri: http://127.0.0.1:2401/v1/id/abcd-efgh/dataset
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Content-Type:
+      - application/json
+      X-Socrata-Wink:
+      - iAmASocrataEmployee
+      X-Socrata-Host:
+      - localhost
+      X-Socrata-Requestid:
+      - request_id
+      Cookie:
+      - :chocolate_chip: secretly raisins
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Mon, 20 Mar 2017 19:53:19 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Accept-Encoding, User-Agent
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code": "not_found",
+          "error": true,
+          "message": "Cannot find web property with name 127.0.0.1"
+        }
+    http_version:
+  recorded_at: Mon, 20 Mar 2017 19:53:19 GMT
 recorded_with: VCR 3.0.3

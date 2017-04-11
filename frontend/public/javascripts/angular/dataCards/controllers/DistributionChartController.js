@@ -37,10 +37,10 @@ module.exports = function DistributionChartController(
      * them with semantic names.  Please note that if you add an Observable that produces an array
      * of values, you will get unexpected results due to concat.
      */
-    var keys = ['groupBySample', 'activeFilter', 'whereClause', 'fieldName', 'dataset', 'aggregation'];
+    var keys = ['activeFilter', 'whereClause', 'fieldName', 'dataset', 'aggregation'];
     var aggregateSequenceValues = _.flow(Array.prototype.concat, _.partial(_.zipObject, keys)).bind([]);
 
-    return groupBySample$.combineLatest(
+    return Rx.Observable.combineLatest(
       activeFilters$.pluck(0),
       whereClause$,
       Array.prototype.constructor
@@ -49,24 +49,28 @@ module.exports = function DistributionChartController(
       dataset$.pluck('id'),
       aggregation$,
       _.flow(aggregateSequenceValues, function(values) {
-        var unfilteredData = values.groupBySample;
+        const requestOptions = { orderBy: SoqlHelpers.formatFieldName(values.fieldName) };
+        const { fieldName, dataset, aggregation } = values;
+
+        var unfilteredDataPromise = CardDataService.getData(fieldName, dataset, '', aggregation, requestOptions);
 
         // If we aren't filtering the page, no need to request filtered data, just render the
         // unfiltered data.
         if (_.isEmpty(values.whereClause)) {
-          var result = HistogramService.transformDataForColumnChart(unfilteredData);
-          return Rx.Observable.returnValue(result);
+          return Rx.Observable.fromPromise(unfilteredDataPromise).map(function(response) {
+            return HistogramService.transformDataForColumnChart(response.data);
+          });
         } else {
-          var requestOptions = { orderBy: SoqlHelpers.formatFieldName(values.fieldName) };
           var requestArguments = _.at(values, 'fieldName', 'dataset', 'whereClause', 'aggregation').concat(requestOptions);
-          var filteredDataPromise = CardDataService.getData.apply(CardDataService, requestArguments).
-            then(function(response) {
-              var filteredData = response.data;
+          var filteredDataPromise = CardDataService.getData.apply(CardDataService, requestArguments);
+
+          return Rx.Observable.fromPromise(Promise.all([unfilteredDataPromise, filteredDataPromise])).
+            map(function(responses) {
+              var unfilteredData = responses[0].data;
+              var filteredData = responses[1].data;
               var selectedValue = _.get(values.activeFilter, 'operand');
               return HistogramService.transformDataForColumnChart(unfilteredData, filteredData, selectedValue, true);
             });
-
-          return Rx.Observable.fromPromise(filteredDataPromise);
         }
       })
     ).switchLatest();
@@ -74,11 +78,9 @@ module.exports = function DistributionChartController(
 
   var groupBySample$ = fieldName$.combineLatest(
     dataset$,
-    aggregation$,
     _.identity
   ).withLatestFrom(
     dataset$,
-    aggregation$,
     function(fieldName, dataset, aggregation) {
 
       /** To decide if we should render as a column chart, make a request for (n + 1) unique
@@ -91,17 +93,17 @@ module.exports = function DistributionChartController(
        * the unfiltered data.
        */
       var whereClause = `\`${fieldName}\` IS NOT NULL`;
-      var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1, orderBy: fieldName};
-      var cardDataPromise = CardDataService.getData(fieldName, dataset.id, whereClause, aggregation, options).
-        then(function(response) {
-          return _.map(response.data, function(bucket) {
+      var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1 };
+      var cardDataPromise = CardDataService.getColumnValues(fieldName, dataset.id, whereClause, options);
+      return Rx.Observable.fromPromise(cardDataPromise).
+        pluck('data').
+        map(function(data) {
+          return _.map(data, function(bucket) {
             return {
-              name: parseFloat(bucket.name),
-              value: bucket.value
+              name: parseFloat(bucket.COLUMN_ALIAS_GUARD__NAME)
             };
           });
         });
-      return Rx.Observable.fromPromise(cardDataPromise);
     }).
     switchLatest().
     shareReplay(1);

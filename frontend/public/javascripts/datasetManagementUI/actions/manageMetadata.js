@@ -7,9 +7,9 @@ import {
   updateStarted,
   updateSucceeded,
   updateFailed,
-  insertStarted,
-  insertSucceeded,
-  insertFailed
+  upsertStarted,
+  upsertSucceeded,
+  upsertFailed
 } from './database';
 import { insertChildrenAndSubscribeToOutputSchema } from './manageUploads';
 import * as Selectors from '../selectors';
@@ -106,7 +106,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     input_schema_id: inputSchema.id
   };
 
-  dispatch(insertStarted('output_schemas', newOutputSchema));
+  dispatch(upsertStarted('output_schemas', newOutputSchema));
 
   socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
@@ -115,7 +115,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     then(checkStatus).
     then(getJson).
     catch(error => {
-      dispatch(insertFailed('output_schemas', newOutputSchema, error));
+      dispatch(upsertFailed('output_schemas', newOutputSchema, error));
 
       error.response.json().then(({ message }) => {
         const localizedMessage = getLocalizedErrorMessage(message);
@@ -123,7 +123,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
       });
     }).
     then(resp => {
-      dispatch(insertSucceeded('output_schemas', newOutputSchema, {
+      dispatch(upsertSucceeded('output_schemas', newOutputSchema, {
         id: resp.resource.id,
         inserted_at: parseDate(resp.resource.inserted_at)
       }));

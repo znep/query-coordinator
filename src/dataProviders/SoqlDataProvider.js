@@ -57,28 +57,33 @@ function SoqlDataProvider(config) {
    * @return {Promise}
    */
   this.query = function(queryString, nameAlias, valueAlias) {
-    const url = urlForQuery(`$query=${encodeURIComponent(queryString)}`);
+    const path = pathForQuery(`$query=${encodeURIComponent(queryString)}`);
 
-    return makeSoqlGetRequest(url).then((data) => {
+    return makeSoqlGetRequest(path).then((data) => {
       return mapRowsResponseToTable([ nameAlias, valueAlias ], data);
     });
   };
 
   this.getRowCount = function(whereClauseComponents) {
-    var alias = '__count_alias__'; // lowercase in order to deal with OBE norms
-    var whereClause = whereClauseComponents ?
+    const alias = '__count_alias__'; // lowercase in order to deal with OBE norms
+    const whereClause = whereClauseComponents ?
       `&$where=${encodeURIComponent(whereClauseComponents)}` :
       '';
-    var url = urlForQuery(
+    const path = pathForQuery(
       '$select=count(*) as {0}{1}'.
         format(alias, whereClause)
     );
 
-    return makeSoqlGetRequest(url).
+    return makeSoqlGetRequest(path).
       then(
         function(data) {
-          var path = '[0]{0}'.format(alias);
-          return parseInt(_.get(data, path), 10);
+          return parseInt(
+            _.get(
+              data,
+              `[0]${alias}`
+            ),
+            10
+          );
         }
       );
   };
@@ -111,7 +116,7 @@ function SoqlDataProvider(config) {
    * @return {Promise}
    */
   this.getRows = function(columnNames, queryString) {
-    var url = urlForQuery(queryString);
+    const path = pathForQuery(queryString);
 
     utils.assertInstanceOf(columnNames, Array);
     utils.assert(columnNames.length > 0);
@@ -120,7 +125,7 @@ function SoqlDataProvider(config) {
       utils.assertIsOneOfTypes(columnName, 'string');
     });
 
-    return makeSoqlGetRequest(url).
+    return makeSoqlGetRequest(path).
       then(
         function(soqlData) {
           return mapRowsResponseToTable(columnNames, soqlData);
@@ -148,9 +153,6 @@ function SoqlDataProvider(config) {
    * @return {Promise}
    */
   this.getTableData = function(columnNames, order, offset, limit, whereClauseComponents) {
-    var queryString;
-    var url;
-
     utils.assertInstanceOf(columnNames, Array);
     utils.assertIsOneOfTypes(offset, 'number');
     utils.assertIsOneOfTypes(limit, 'number');
@@ -163,7 +165,7 @@ function SoqlDataProvider(config) {
       '[0].columnName'
     );
 
-    queryString =
+    const queryString =
       '$select={0}&$order=`{1}`+{2}&$limit={3}&$offset={4}{5}'.
       format(
         columnNames.map(escapeColumnName).join(','),
@@ -173,9 +175,9 @@ function SoqlDataProvider(config) {
         offset,
         whereClauseComponents ? '&$where=' + encodeURIComponent(whereClauseComponents) : ''
       );
-    url = urlForQuery(queryString);
+    const path = pathForQuery(queryString);
 
-    return makeSoqlGetRequest(url).
+    return makeSoqlGetRequest(path).
       then(
         function(data) {
           return mapRowsResponseToTable(columnNames, data);
@@ -192,13 +194,17 @@ function SoqlDataProvider(config) {
       const minAlias = '__min__';
       const maxAlias = '__max__';
       const { fieldName, dataTypeName } = column;
+      var orderBy;
+      var queryString;
+      var select;
+      var path;
 
       // For number and calendar_date columns, we need the min and max of the column
       if (dataTypeName === 'number' || dataTypeName === 'calendar_date') {
-        const select = `min(${fieldName}) as ${minAlias}, max(${fieldName}) as ${maxAlias}`;
-        const queryString = `$select=${select}`;
-        const url = urlForQuery(queryString);
-        return makeSoqlGetRequest(url).then((result) => {
+        select = `min(${fieldName}) as ${minAlias}, max(${fieldName}) as ${maxAlias}`;
+        queryString = `$select=${select}`;
+        path = pathForQuery(queryString);
+        return makeSoqlGetRequest(path).then((result) => {
           switch (dataTypeName) {
             case 'number':
               return {
@@ -215,12 +221,12 @@ function SoqlDataProvider(config) {
         });
       } else if (dataTypeName === 'text') {
         const escapedFieldName = escapeColumnName(fieldName);
-        const select = `${escapedFieldName}+as+item,count(${escapedFieldName})+as+count`;
-        const orderBy = `count(${escapedFieldName})+DESC`;
-        const queryString = `$select=${select}&$order=${orderBy}&$group=${escapedFieldName}&$limit=25`;
-        const url = urlForQuery(queryString);
+        select = `${escapedFieldName}+as+item,count(${escapedFieldName})+as+count`;
+        orderBy = `count(${escapedFieldName})+DESC`;
+        queryString = `$select=${select}&$order=${orderBy}&$group=${escapedFieldName}&$limit=25`;
+        path = pathForQuery(queryString);
 
-        return makeSoqlGetRequest(url).then((result) => {
+        return makeSoqlGetRequest(path).then((result) => {
           return {
             top: result
           };
@@ -238,9 +244,9 @@ function SoqlDataProvider(config) {
     const select = `${escapedColumnName}`;
     const where = encodeURIComponent(`${escapedColumnName}="${term}"`);
     const queryString = `$select=${select}&$where=${where}&$limit=1`;
-    const url = urlForQuery(queryString);
+    const path = pathForQuery(queryString);
 
-    return makeSoqlGetRequest(url).then((result) => {
+    return makeSoqlGetRequest(path).then((result) => {
       return new Promise((resolve, reject) => {
         return _.isArray(result) && result.length === 1 ?
           resolve() : reject();
@@ -258,7 +264,21 @@ function SoqlDataProvider(config) {
   //   message: status text,
   //   soqlError: response JSON
   // }
-  function makeSoqlGetRequest(url) {
+  const makeSoqlGetRequest = (path) => {
+    const domain = this.getConfigurationProperty('domain');
+    const url = `https://${domain}/${path}`;
+    const isSameDomain = domain === window.location.hostname;
+
+    const headers = {
+      'Accept': 'application/json; charset=utf-8'
+    };
+
+    // TODO EN-15459 EN-15483: Once Core correctly responds to OPTIONS,
+    // remove the domain check and always set the federation header.
+    if (isSameDomain) {
+      // Suppress cross-domain redirects if possible.
+      headers['X-Socrata-Federation'] = 'Honey Badger';
+    }
 
     return new Promise(
       function(resolve, reject) {
@@ -275,31 +295,23 @@ function SoqlDataProvider(config) {
         }
 
         $.ajax({
-          url: url,
+          url,
+          headers,
           method: 'GET',
           success: resolve,
-          error: handleError,
-          headers: {
-            'Accept': 'application/json; charset=utf-8',
-            // Suppress cross-domain redirects if possible.
-            'X-Socrata-Federation': 'Honey Badger'
-          }
+          error: handleError
         });
       }
     );
-  }
+  };
 
   function escapeColumnName(columnName) {
     return '`{0}`'.format(columnName);
   }
 
-  function urlForQuery(queryString) {
-
-    return 'https://{0}/api/id/{1}.json?{2}'.format(
-      self.getConfigurationProperty('domain'),
-      self.getConfigurationProperty('datasetUid'),
-      queryString
-    );
+  function pathForQuery(queryString) {
+    const datasetUid = self.getConfigurationProperty('datasetUid');
+    return `api/id/${datasetUid}.json?${queryString}`;
   }
 
   /**

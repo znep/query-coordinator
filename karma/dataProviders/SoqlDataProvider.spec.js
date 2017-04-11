@@ -5,7 +5,7 @@ var SoqlDataProvider = rewire('src/dataProviders/SoqlDataProvider');
 
 describe('SoqlDataProvider', function() {
 
-  var VALID_DOMAIN = 'localhost:9443';
+  var VALID_DOMAIN = 'example.com';
   var VALID_DATASET_UID = 'test-test';
 
   var INVALID_DOMAIN = null;
@@ -191,14 +191,31 @@ describe('SoqlDataProvider', function() {
         server.restore();
       });
 
-      it('should provide the honey badger header', function() {
-        soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
-        assert.lengthOf(server.requests, 1);
-        assert.propertyVal(
-          server.requests[0].requestHeaders,
-          'X-Socrata-Federation',
-          'Honey Badger'
-        );
+      describe('cross-domain request', function() {
+        it('should not provide the X-Socrata-Federation header', function() {
+          soqlDataProvider.query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS);
+          assert.lengthOf(server.requests, 1);
+          assert.notProperty(
+            server.requests[0].requestHeaders,
+            'X-Socrata-Federation'
+          );
+        });
+      });
+
+      describe('same-domain request', function() {
+        it('should provide the X-Socrata-Federation header', function() {
+          soqlDataProvider = new SoqlDataProvider({
+            domain: window.location.hostname,
+            datasetUid: VALID_DATASET_UID
+          });
+          soqlDataProvider.query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS);
+          assert.lengthOf(server.requests, 1);
+          assert.propertyVal(
+            server.requests[0].requestHeaders,
+            'X-Socrata-Federation',
+            'Honey Badger'
+          );
+        });
       });
 
       it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
@@ -404,14 +421,31 @@ describe('SoqlDataProvider', function() {
         server.restore();
       });
 
-      it('should provide the honey badger header', function() {
-        soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
-        assert.lengthOf(server.requests, 1);
-        assert.propertyVal(
-          server.requests[0].requestHeaders,
-          'X-Socrata-Federation',
-          'Honey Badger'
-        );
+      describe('cross-domain request', function() {
+        it('should not provide the X-Socrata-Federation header', function() {
+          soqlDataProvider.getRows(QUERY_COLUMNS, QUERY_STRING);
+          assert.lengthOf(server.requests, 1);
+          assert.notProperty(
+            server.requests[0].requestHeaders,
+            'X-Socrata-Federation'
+          );
+        });
+      });
+
+      describe('same-domain request', function() {
+        it('should provide the X-Socrata-Federation header', function() {
+          soqlDataProvider = new SoqlDataProvider({
+            domain: window.location.hostname,
+            datasetUid: VALID_DATASET_UID
+          });
+          soqlDataProvider.getRows(QUERY_COLUMNS, QUERY_STRING);
+          assert.lengthOf(server.requests, 1);
+          assert.propertyVal(
+            server.requests[0].requestHeaders,
+            'X-Socrata-Federation',
+            'Honey Badger'
+          );
+        });
       });
 
       it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
@@ -607,29 +641,42 @@ describe('SoqlDataProvider', function() {
     // we only care about what query gets generated.
     describe('resultant query', function() {
       var soqlDataProvider;
-      var $ajaxStub;
-
-      before(function() {
-        soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
-        $ajaxStub = sinon.stub($, 'ajax', _.constant(new Promise(_.noop))); // Stub $.ajax to never resolve.
-      });
+      var server;
 
       beforeEach(function() {
-        $.ajax.reset(); // reset stub between tests.
+        server = sinon.fakeServer.create();
+        soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
       });
 
-      after(function() {
-        $.ajax.restore();
+      afterEach(function() {
+        server.restore();
       });
 
-      it('should provide the honey badger header', function() {
-        soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
-        assert.lengthOf(server.requests, 1);
-        assert.propertyVal(
-          server.requests[0].requestHeaders,
-          'X-Socrata-Federation',
-          'Honey Badger'
-        );
+      describe('cross-domain request', function() {
+        it('should not provide the X-Socrata-Federation header', function() {
+          soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
+          assert.lengthOf(server.requests, 1);
+          assert.notProperty(
+            server.requests[0].requestHeaders,
+            'X-Socrata-Federation'
+          );
+        });
+      });
+
+      describe('same-domain request', function() {
+        it('should provide the X-Socrata-Federation header', function() {
+          soqlDataProvider = new SoqlDataProvider({
+            domain: window.location.hostname,
+            datasetUid: VALID_DATASET_UID
+          });
+          soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
+          assert.lengthOf(server.requests, 1);
+          assert.propertyVal(
+            server.requests[0].requestHeaders,
+            'X-Socrata-Federation',
+            'Honey Badger'
+          );
+        });
       });
 
       // function getTableData (columnNames, order, offset, limit) { ... }
@@ -651,14 +698,13 @@ describe('SoqlDataProvider', function() {
       argumentsAndExpectedQueryPairs.map(function(pair) {
         var args = pair.args;
         var resultantQueryParts = pair.resultantQueryParts;
-        var url;
 
         it('should query', function() {
           soqlDataProvider.getTableData.apply(soqlDataProvider, args);
 
-          url = $ajaxStub.getCalls()[0].args[0].url;
+          assert.lengthOf(server.requests, 1);
+          var url = server.requests[0].url;
 
-          assert.lengthOf($ajaxStub.getCalls(), 1);
           assert.notInclude(url, '$$read_from_nbe=true');
           assert.notInclude(url, '$$version=2.1');
         });
@@ -667,9 +713,8 @@ describe('SoqlDataProvider', function() {
           it('given arguments {0} should produce query part {1}'.format(args.join(), queryPart), function() {
             soqlDataProvider.getTableData.apply(soqlDataProvider, args);
 
-            url = $ajaxStub.getCalls()[0].args[0].url;
-
-            assert.lengthOf($ajaxStub.getCalls(), 1);
+            assert.lengthOf(server.requests, 1);
+            var url = server.requests[0].url;
             assert.include(url, queryPart);
           });
         });

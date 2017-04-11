@@ -3,6 +3,28 @@ var utils = require('socrata-utils');
 var DataProvider = require('./DataProvider');
 var _ = require('lodash');
 
+const headersForDomain = (domain) => {
+  const isSameDomain = domain === window.location.hostname;
+
+  const headers = {
+    // TODO/EN-9041: The Curated Regions API currently returns an error
+    // if you ask for 'application/json; charset=utf-8' as we do in
+    // other places in the code. We are temporarily updating this to
+    // ask for 'application/json' temporarily, and should restore the
+    // charset clause once the bug in the Curated Regions API is fixed.
+    'Accept': 'application/json'
+  };
+
+  // TODO EN-15459 EN-15483: Once Core correctly responds to OPTIONS,
+  // remove the domain check and always set the federation header.
+  if (isSameDomain) {
+    // Suppress cross-domain redirects if possible.
+    headers['X-Socrata-Federation'] = 'Honey Badger';
+  }
+
+  return headers;
+};
+
 function MetadataProvider(config) {
   var self = this;
 
@@ -26,42 +48,30 @@ function MetadataProvider(config) {
    * (See: https://localhost/api/docs/types#View)
    */
   this.getDatasetMetadata = function() {
-    var url = 'https://{0}/api/views/{1}.json'.format(
-      this.getConfigurationProperty('domain'),
-      this.getConfigurationProperty('datasetUid')
-    );
-
-    return makeMetadataRequest(url);
+    const datasetUid = this.getConfigurationProperty('datasetUid');
+    return makeMetadataRequest(`api/views/${datasetUid}.json`);
   };
 
   this.getCuratedRegions = function() {
-    var url = 'https://{0}/api/curated_regions'.format(
-      this.getConfigurationProperty('domain'),
-      this.getConfigurationProperty('datasetUid')
-    );
-
-    return makeMetadataRequest(url);
+    return makeMetadataRequest('api/curated_regions');
   };
 
   this.getPhidippidesMetadata = function() {
-    var url = 'https://{0}/metadata/v1/dataset/{1}.json'.format(
-      this.getConfigurationProperty('domain'),
-      this.getConfigurationProperty('datasetUid')
-    );
-
-    return makeMetadataRequest(url);
+    const datasetUid = this.getConfigurationProperty('datasetUid');
+    return makeMetadataRequest(`metadata/v1/dataset/${datasetUid}.json`);
   };
 
   this.getDatasetMigrationMetadata = function() {
-    var domain = this.getConfigurationProperty('domain');
     var datasetUid = this.getConfigurationProperty('datasetUid');
-    var url = `https://${domain}/api/migrations/${datasetUid}.json`;
-
-    return makeMetadataRequest(url);
+    return makeMetadataRequest(`api/migrations/${datasetUid}.json`);
   };
 
   this.getShapefileMetadata = function() {
-    function makeRequest(url) {
+    // TODO Make this less of a special snowflake HTTP request.
+    const datasetUid = this.getConfigurationProperty('datasetUid');
+    const domain = this.getConfigurationProperty('domain');
+    function makeRequest(path) {
+      const url = `https://${domain}/${path}`;
       return new Promise(function(resolve, reject) {
         var xhr = new XMLHttpRequest();
 
@@ -96,12 +106,7 @@ function MetadataProvider(config) {
 
         xhr.open('GET', url, true);
 
-        // Set user-defined headers.
-        var headers = {
-          Accept: 'application/json'
-        };
-
-        _.each(headers, function(value, key) {
+        _.each(headersForDomain(domain), function(value, key) {
           xhr.setRequestHeader(key, value);
         });
 
@@ -111,18 +116,12 @@ function MetadataProvider(config) {
       /* eslint-enable dot-notation */
     }
 
-    var curatedRegionsUrl = 'https://{0}/api/curated_regions?method=getByViewUid&viewUid={1}'.format(
-      this.getConfigurationProperty('domain'),
-      this.getConfigurationProperty('datasetUid')
-    );
+    var curatedRegionsPath = `api/curated_regions?method=getByViewUid&viewUid=${datasetUid}`;
 
-    var phidippidesUrl = 'https://{0}/metadata/v1/dataset/{1}.json'.format(
-      this.getConfigurationProperty('domain'),
-      this.getConfigurationProperty('datasetUid')
-    );
+    var phidippidesPath = `metadata/v1/dataset/${datasetUid}.json`;
 
-    var curatedRegionsRequest = makeRequest(curatedRegionsUrl);
-    var phidippidesRequest = makeRequest(phidippidesUrl);
+    var curatedRegionsRequest = makeRequest(curatedRegionsPath);
+    var phidippidesRequest = makeRequest(phidippidesPath);
 
     return Promise.all([curatedRegionsRequest, phidippidesRequest]).then(function(responses) {
       var curatedRegionsResponse = responses[0];
@@ -241,7 +240,9 @@ function MetadataProvider(config) {
     });
   };
 
-  function makeMetadataRequest(url) {
+  const makeMetadataRequest = (path) => {
+    const domain = this.getConfigurationProperty('domain');
+    const url = `https://${domain}/${path}`;
 
     return new Promise(
       function(resolve, reject) {
@@ -258,25 +259,15 @@ function MetadataProvider(config) {
         }
 
         $.ajax({
-          url: url,
+          url,
+          headers: headersForDomain(domain),
           method: 'GET',
           success: resolve,
-          error: handleError,
-          headers: {
-            // TODO/EN-9041: The Curated Regions API currently returns an error
-            // if you ask for 'application/json; charset=utf-8' as we do in
-            // other places in the code. We are temporarily updating this to
-            // ask for 'application/json' temporarily, and should restore the
-            // charset clause once the bug in the Curated Regions API is fixed.
-            'Accept': 'application/json',
-
-            // Suppress cross-domain redirects if possible.
-            'X-Socrata-Federation': 'Honey Badger'
-          }
+          error: handleError
         });
       }
     );
-  }
+  };
 }
 
 module.exports = MetadataProvider;

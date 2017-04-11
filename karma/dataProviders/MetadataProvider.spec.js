@@ -4,7 +4,7 @@ var MetadataProvider = require('src/dataProviders/MetadataProvider');
 
 describe('MetadataProvider', function() {
 
-  var VALID_DOMAIN = 'localhost:9443';
+  var VALID_DOMAIN = 'example.com';
   var VALID_DATASET_UID = 'test-test';
 
   var INVALID_DOMAIN = null;
@@ -291,14 +291,32 @@ describe('MetadataProvider', function() {
       );
     });
 
-    it('should provide the honey badger header', function() {
-      metadataProvider.getDatasetMetadata(); // Discard the response, we don't care.
-      assert.lengthOf(server.requests, 1);
-      assert.propertyVal(
-        server.requests[0].requestHeaders,
-        'X-Socrata-Federation',
-        'Honey Badger'
-      );
+    describe('cross-domain request', function() {
+      it('should not provide the X-Socrata-Federation header', function() {
+        metadataProvider.getDatasetMetadata(); // Discard the response, we don't care.
+        assert.lengthOf(server.requests, 1);
+        assert.notProperty(
+          server.requests[0].requestHeaders,
+          'X-Socrata-Federation'
+        );
+      });
+    });
+
+    describe('same-domain request', function() {
+      it('should provide the X-Socrata-Federation header', function() {
+        var metadataProviderOptions = {
+          domain: window.location.hostname,
+          datasetUid: VALID_DATASET_UID
+        };
+        metadataProvider = new MetadataProvider(metadataProviderOptions);
+        metadataProvider.getDatasetMetadata(); // Discard the response, we don't care.
+        assert.lengthOf(server.requests, 1);
+        assert.propertyVal(
+          server.requests[0].requestHeaders,
+          'X-Socrata-Federation',
+          'Honey Badger'
+        );
+      });
     });
 
     describe('on request error', function() {

@@ -10,6 +10,7 @@ import ManagerSectionHeader from './ManagerSectionHeader';
 import * as Actions from '../actions/header';
 import airbrake from '../../common/airbrake';
 import { FeatureFlags } from 'common/feature_flags';
+import { fetchTranslation } from '../../common/locale';
 
 export class Manager extends React.Component {
   constructor(props) {
@@ -92,12 +93,14 @@ export class Manager extends React.Component {
     };
 
     const handleException = (error = '') => {
-      this.setState({ errorMessage: _.get(I18n, 'manager.unexpected_error') });
+      this.setState({ errorMessage: fetchTranslation('manager.error.unexpected_500') });
       console.error(error);
-      airbrake.notify({
-        error: `Error in Catalog Landing Page manager: ${error}`,
-        context: { component: 'CatalogLandingPage' }
-      });
+      try {
+        airbrake.notify({
+          error: `Error in Catalog Landing Page manager: ${error}`,
+          context: { component: 'CatalogLandingPage' }
+        });
+      } catch (err) {}
     };
 
     const handleResponse = (response) => {
@@ -111,26 +114,16 @@ export class Manager extends React.Component {
         // Unfortunately, fetch does not set the status to 302 in this case, but instead sets it to 0
         // so we have to look in the response.type instead.
         if (response.status === 401 || response.status === 302 || response.type === 'opaqueredirect') {
-          const loginWarningKey = 'manager.you_must_login_first';
-          const loginWarning = _.get(I18n, loginWarningKey);
-          if (!loginWarning) {
-            console.error(`Error retrieving I18n message for key: ${loginWarningKey}`);
-          }
-          return this.setState({ errorMessage: loginWarning });
+          return this.setState({ errorMessage: fetchTranslation('manager.error.you_must_login_first') });
         }
         // It possible to see a 403 if the user formerly had permissions, but they have subsequently been
         // revoked. Rather than showing a "something went wrong", let's show them a real error message.
         if (response.status === 403) {
-          const permissionWarningKey = 'manager.you_are_not_authorized';
-          const permissionWarning = _.get(I18n, permissionWarningKey);
-          if (!permissionWarning) {
-            console.error(`Error retrieving I18n message for key: ${permissionWarningKey}`);
-          }
-          return this.setState({ errorMessage: permissionWarning });
+          return this.setState({ errorMessage: fetchTranslation('manager.error.you_are_not_authorized') });
         }
 
         return response.text().then((text) => {
-          handleException(text);
+          handleException(text); // 500
         });
       }
     };

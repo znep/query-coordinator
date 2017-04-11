@@ -26,7 +26,6 @@ function mapStateToProps({ parentView, filters }) {
         version: 2
       },
       configuration: {
-        order: parentView.sortOrder,
         viewSourceDataLink: false
       },
       series: [

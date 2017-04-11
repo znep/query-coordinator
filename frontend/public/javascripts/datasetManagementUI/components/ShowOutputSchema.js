@@ -177,7 +177,7 @@ ShowOutputSchema.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
-  displayState: PropTypes.object.isRequired,
+  displayState: DisplayState.propType.isRequired,
   canApplyUpdate: PropTypes.bool.isRequired,
   numLoadsInProgress: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,

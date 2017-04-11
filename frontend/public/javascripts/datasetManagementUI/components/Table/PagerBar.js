@@ -5,25 +5,26 @@ import { Link } from 'react-router';
 import * as DisplayState from '../../lib/displayState';
 import { PAGE_SIZE } from '../../actions/loadData';
 import * as Selectors from '../../selectors';
+import { commaify } from '../../../common/formatNumber.js';
 import Pager from '../../../common/components/Pager';
 import styles from 'styles/Table/PagerBar.scss';
 
 function PagerBar({ currentPage, resultCount, urlForPage, changePage }) {
   if (resultCount) {
-    const firstPageRow = (currentPage - 1) * PAGE_SIZE + 1;
-    const lastPageRow = Math.min(currentPage * PAGE_SIZE, resultCount);
+    const firstPageRow = commaify((currentPage - 1) * PAGE_SIZE + 1);
+    const lastPageRow = commaify(Math.min(currentPage * PAGE_SIZE, resultCount));
     const lastPage = urlForPage(Math.ceil(resultCount / PAGE_SIZE));
 
     let resultCountElem;
     if (resultCount > PAGE_SIZE) {
-      resultCountElem = <Link to={lastPage}>{resultCount}</Link>;
+      resultCountElem = <Link to={lastPage}>{commaify(resultCount)}</Link>;
     } else {
-      resultCountElem = resultCount;
+      resultCountElem = commaify(resultCount);
     }
 
     return (
       <div className={styles.pagerBar}>
-        {firstPageRow}&ndash;{lastPageRow} {I18n.home_pane.of} {resultCountElem}
+        {I18n.home_pane.showing} {firstPageRow}&ndash;{lastPageRow} {I18n.home_pane.of} {resultCountElem}
 
         <Pager
           resultsPerPage={PAGE_SIZE}
@@ -95,7 +96,7 @@ const ConnectedPagerBar = connect(mapStateToProps, mapDispatchToProps)(PagerBar)
 ConnectedPagerBar.propTypes = {
   path: PropTypes.object.isRequired,
   routing: PropTypes.object.isRequired,
-  displayState: PropTypes.object.isRequired
+  displayState: DisplayState.propType.isRequired
 };
 
 export default ConnectedPagerBar;

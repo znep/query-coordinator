@@ -80,7 +80,7 @@ class TableBody extends Component {
 TableBody.propTypes = {
   db: PropTypes.object.isRequired,
   transforms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  displayState: PropTypes.object.isRequired,
+  displayState: DisplayState.propType.isRequired,
   inputSchemaId: PropTypes.number.isRequired
 };
 

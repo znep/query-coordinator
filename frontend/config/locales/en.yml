@@ -1809,6 +1809,7 @@ en:
       save_for_later: Save for Later
       schema_preview: Columns in this Dataset
       schema_preview_blurb: Add a data file to see a schema preview.
+      showing: Showing rows
       sidebar:
         blurb: Make your data even better
         column_descriptions: Describe Columns

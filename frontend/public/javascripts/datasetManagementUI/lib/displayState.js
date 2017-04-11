@@ -1,3 +1,5 @@
+import { PropTypes } from 'react';
+
 import * as Links from '../links';
 
 export const NORMAL = 'NORMAL';
@@ -24,12 +26,14 @@ export const rowErrors = (pageNo, outputSchemaId) => ({
 
 export function fromUiUrl({ params, route }) {
   const pageNo = _.toNumber(params.pageNo || '1');
+  const outputSchemaId = _.toNumber(params.outputSchemaId);
+
   if (params.errorsTransformId) {
-    return columnErrors(_.toNumber(params.errorsTransformId), pageNo, params.outputSchemaId);
+    return columnErrors(_.toNumber(params.errorsTransformId), pageNo, outputSchemaId);
   } else if (route.path.indexOf('row_errors') > 0) {
-    return rowErrors(pageNo, params.outputSchemaId);
+    return rowErrors(pageNo, outputSchemaId);
   } else {
-    return normal(pageNo, params.outputSchemaId);
+    return normal(pageNo, outputSchemaId);
   }
 }
 
@@ -64,3 +68,10 @@ export function toUiUrl(path, displayState) {
       console.error('unknown display state type', displayState.type);
   }
 }
+
+export const propType = PropTypes.shape({
+  type: PropTypes.oneOf([NORMAL, COLUMN_ERRORS, ROW_ERRORS]).isRequired,
+  pageNo: PropTypes.number.isRequired,
+  outputSchemaId: PropTypes.number.isRequired,
+  transformId: PropTypes.number
+});

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Showdown from 'showdown';
 
 import StorytellerUtils from '../StorytellerUtils';
-import httpRequest from '../services/httpRequest';
+import httpRequest, { federationHeaders } from '../services/httpRequest';
 import Actions from './Actions';
 import Constants from './Constants';
 import { dispatcher } from './Dispatcher';
@@ -99,8 +99,14 @@ function prefetchDataNeededForMigration(sections) {
     } else if (section.type === 'viz' && section.dataset) {
       // dataset may be blank if unconfigured.
       // also possible to have dataset reference to nonexistent dataset.
-      return httpRequest('GET', `/api/views/${section.dataset}.json`).
-        then(({ data }) => section.dataset = data).
+      return httpRequest(
+        'GET',
+        `/api/views/${section.dataset}.json`,
+        {
+          // Don't get redirected to federated domain.
+          headers: federationHeaders()
+        }
+      ).then(({ data }) => section.dataset = data).
         catch((error) => {
           const missingResourceStatusCodes = [403, 404];
           if (_.includes(missingResourceStatusCodes, error.statusCode)) {

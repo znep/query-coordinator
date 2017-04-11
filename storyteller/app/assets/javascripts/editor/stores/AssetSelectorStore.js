@@ -8,7 +8,7 @@ import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 import { storyStore } from './StoryStore';
 import { fileUploaderStore, STATUS } from './FileUploaderStore';
-import httpRequest, { storytellerHeaders } from '../../services/httpRequest';
+import httpRequest, { federationHeaders, storytellerHeaders } from '../../services/httpRequest';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
 function t(str) {
@@ -1055,7 +1055,7 @@ export default function AssetSelectorStore() {
     // Also, I CAN'T BELIEVE I'M WRITING THIS AGAIN
     var viewUrl = `https://${domain}/api/views/${uid}.json`;
 
-    return httpRequest('GET', viewUrl).
+    return httpRequest('GET', viewUrl, { headers: federationHeaders() }).
       then(({ data }) => {
         // Retcon the domain into the view data.
         // We'd have to pass it around like 5 methods otherwise.

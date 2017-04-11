@@ -3,14 +3,13 @@ require 'rails_helper'
 describe CatalogLandingPageHelper do
   include TestHelperMethods
 
-  let(:publisher) { true }
-  let(:administrator) { true }
-  let(:superadmin) { true }
+  let(:is_publisher?) { true }
+  let(:is_administrator?) { true }
+  let(:is_superadmin?) { true }
   let(:catalog_landing_page) { double }
 
   let(:current_user) do
     user_double = double
-    allow(user_double).to receive(:publisher).and_return(publisher)
     allow(helper).to receive(:current_user).and_return(user_double)
   end
 
@@ -26,9 +25,9 @@ describe CatalogLandingPageHelper do
         allow(controller).to receive(:session).and_return(session_double)
       end
     )
-    allow(current_user).to receive(:is_publisher?).and_return(publisher)
-    allow(current_user).to receive(:is_administrator?).and_return(administrator)
-    allow(current_user).to receive(:is_superadmin?).and_return(superadmin)
+    allow(current_user).to receive(:is_publisher?).and_return(is_publisher?)
+    allow(current_user).to receive(:is_administrator?).and_return(is_administrator?)
+    allow(current_user).to receive(:is_superadmin?).and_return(is_superadmin?)
     allow(helper).to receive(:current_user).and_return(current_user)
     helper.instance_variable_set('@catalog_landing_page', catalog_landing_page)
   end
@@ -41,9 +40,9 @@ describe CatalogLandingPageHelper do
     end
 
     context 'none of administrator, publisher, superadmin' do
-      let(:publisher){ false }
-      let(:administrator) { false }
-      let(:superadmin) { false }
+      let(:is_publisher?){ false }
+      let(:is_administrator?) { false }
+      let(:is_superadmin?) { false }
 
       it 'should return false' do
         expect(helper.can_manage_catalog_landing_page?).to eq(false)

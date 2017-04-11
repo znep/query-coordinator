@@ -2910,6 +2910,13 @@ en:
         view_moderation: View Moderation
         view_moderation_description: View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
       jobs:
+        columns:
+          asset_type: Asset Type
+          asset_name: Asset Name
+          event: Event
+          initiated_by: Initiated By
+          date_started: Date Started
+          status: Status
         actions:
           append: Append
           delete: Delete
@@ -2918,6 +2925,7 @@ en:
           replace: Replace
           upsert: Upsert
           working_copy: Working Copy
+          restore: Restore
         filters:
           all: All
           append: Append

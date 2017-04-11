@@ -186,6 +186,7 @@ Ensure that you are using Ruby version 2.3.0 or greater.
 ```sh
 bundle exec rake test:karma
 bundle exec rake test:karma:adminGoals
+bundle exec rake test:karma:adminActivityFeed
 bundle exec rake test:karma:common
 bundle exec rake test:karma:dataCards
 bundle exec rake test:karma:datasetLandingPage
@@ -306,6 +307,7 @@ rake tasks:
 
 ```sh
 rake lint:eslint:all                   # Lint the whole javascript codebase
+rake lint:eslint:adminActivityFeed     # Lint admin activity feed page
 rake lint:eslint:oldUx                 # Lint the old ux
 rake lint:eslint:catalogLandingPage    # Lint catalog landing page
 rake lint:eslint:dataCards             # Lint data lens

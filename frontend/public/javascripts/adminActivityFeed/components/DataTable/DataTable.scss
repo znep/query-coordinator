@@ -1,0 +1,45 @@
+$row_highlight_color: #F5F5F5;
+
+table.data-table {
+  background-color: #f8f8f8;
+  border-collapse: collapse;
+  margin-bottom: 54px;
+
+  thead {
+    background-color: #f8f8f8;
+    overflow: auto;
+    white-space: nowrap;
+
+    tr {
+      position: relative;
+      border-bottom: none;
+
+      th {
+        font-weight: 400;
+        border-bottom: none;
+      }
+    }
+  }
+
+  tbody {
+    background-color: white;
+    overflow: auto;
+    width: 100%;
+
+    tr {
+      user-select: none; /* CSS3 (little to no support) */
+      -ms-user-select: none; /* IE 10+ */
+      -moz-user-select: none; /* Gecko (Firefox) */
+      -webkit-user-select: none; /* Webkit (Safari, Chrome) */
+      line-height: 16px;
+
+      &.selected {
+        background-color: $row_highlight_color;
+      }
+
+      &:hover {
+        background-color: $row_highlight_color;
+      }
+    }
+  }
+}

@@ -59,6 +59,20 @@ class Administration::ActivityFeedController < AdministrationController
         :date_range => date_string
       }.select { |_, v| v.present? }
     }
+
+    respond_to do |format|
+      format.json {
+        render :json => { activities: @activities, pager_info: @pager_info }
+      }
+
+      format.html {
+        if feature_flag?('enable_new_activity_log_ui', request)
+          render 'new_index'
+        else
+          render 'index'
+        end
+      }
+    end
   end
 
   def show

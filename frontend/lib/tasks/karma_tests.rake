@@ -30,6 +30,7 @@ namespace :test do
       'dataCards' => 'update_datacards_translations',
       'datasetLandingPage' => 'update_dataset_landing_page_translations',
       'adminGoals' => 'update_admin_goals_translations',
+      'adminActivityFeed' => 'update_admin_activity_feed_translations',
       'importWizard' => 'update_import_wizard_translations',
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
@@ -52,6 +53,7 @@ namespace :test do
       'test:karma:translations:update_dataset_landing_page_translations',
       'test:karma:translations:update_import_wizard_translations',
       'test:karma:translations:update_admin_goals_translations',
+      'test:karma:translations:update_admin_activity_feed_translations',
       'test:karma:translations:update_dataset_management_ui_translations',
       'test:karma:translations:update_visualization_canvas_translations',
       'test:karma:translations:update_signin_translations'
@@ -155,6 +157,14 @@ namespace :test do
         File.write(output_filename, "export default #{translations.to_json.html_safe};")
       end
 
+      desc 'update_admin_activity_feed_translations'
+      task :update_admin_activity_feed_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/adminActivityFeed/mockTranslations.js'
+        translations = YAML.load_file(translations_filename)['en']['screens']['admin']['jobs']
+        File.write(output_filename, "export default #{translations.to_json.html_safe};")
+      end
+
       desc 'update_visualization_canvas_translations'
       task :update_visualization_canvas_translations do
         translations_filename = 'config/locales/en.yml'
@@ -180,6 +190,7 @@ namespace :test do
     desc 'run all the karma tasks'
     task :all, [:watch, :browser, :reporter] => [
       'karma:adminGoals',
+      'karma:adminActivityFeed',
       'karma:catalogLandingPage',
       'karma:common',
       'karma:dataCards',

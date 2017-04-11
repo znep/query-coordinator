@@ -15,6 +15,11 @@ namespace :lint do
       run_eslint('public/javascripts/common', args[:format])
     end
 
+    desc 'run eslint on the adminActivityFeed files'
+    task :adminActivityFeed, :format do |task, args|
+      run_eslint('public/javascripts/adminActivityFeed', args[:format])
+    end
+
     desc 'run eslint on the dataCards files'
     task :dataCards, :format do |task, args|
       run_eslint('public/javascripts/angular', args[:format])

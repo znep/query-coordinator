@@ -1,4 +1,9 @@
 module ActivityFeedHelper
+  def render_admin_activity_feed_initial_data
+    activities_json = json_escape(@activities.to_json)
+    pager_info_json = json_escape(@pager_info.to_json)
+    javascript_tag("var initialData = {activities: #{activities_json}, pager_info: #{pager_info_json}}")
+  end
 
   def date_and_relative_day(time)
     "#{time.strftime('%d %b %Y at %H:%M:%S %Z')} (#{HumaneDateHelper.humane_date(time)})"

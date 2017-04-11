@@ -1,0 +1,15 @@
+.activity-feed-table {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+
+  table {
+    margin: 0;
+    margin-bottom: 25px;
+  }
+
+  .pagination {
+    margin: 0 10px 10px 0;
+    align-self: flex-end;
+  }
+}

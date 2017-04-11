@@ -12,6 +12,8 @@ import airbrake from '../../common/airbrake';
 import { FeatureFlags } from 'common/feature_flags';
 import { fetchTranslation } from '../../common/locale';
 
+/* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
+
 export class Manager extends React.Component {
   constructor(props) {
     super(props);

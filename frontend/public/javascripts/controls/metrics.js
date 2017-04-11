@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 (function($) {
   'use strict';
 
@@ -496,8 +498,19 @@
     urlBase: ''
   };
 
+  // Getting date locale format from momentjs.
+  // Converting to a format so can be jqueryui date formatter.
+  moment.locale(blist.locale);
+  const localeDateFormat = moment.
+    localeData().
+    longDateFormat('ll').
+    replace(/\[(\w+)\]/g,"'$1'").
+    replace(/YYYY/, 'yy').
+    replace(/MMM/, 'M').
+    replace(/D/, 'd');
+
   $.fn.metricsTimeControl.defaults = {
-    displayDateFormat: 'M d, yy',
+    displayDateFormat: localeDateFormat,
     metricsScreen: null,
     minimumDate: Date.parse('2008-01-01'),
     parseDateFormat: 'MMM D, YYYY',

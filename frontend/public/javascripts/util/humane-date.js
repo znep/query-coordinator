@@ -20,6 +20,7 @@
  *          * Separate calls for ISO date and Date object
  */
 
+var moment = require('moment');
 var humaneUtilNS = blist.namespace.fetch('blist.util.humaneDate');
 
 _.each(['minute', 'hour', 'day', 'week', 'month', 'year'], function(duration) {

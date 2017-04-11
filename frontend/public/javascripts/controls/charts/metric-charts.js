@@ -1,5 +1,7 @@
 /*global Raphael */
 
+var moment = require('moment');
+
 (function() {
   'use strict';
 
@@ -36,7 +38,7 @@
     var raphael;
 
     $chart.show();
-    moment.lang(blist.locale);
+    moment.locale(blist.locale);
 
     var chartD3 = $chart.data('metrics-chart');
     if (!chartD3) {

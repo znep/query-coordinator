@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 $(function() {
   var csrfCookieName = 'socrata-csrf-token';
 
@@ -212,7 +214,7 @@ $(function() {
   blist.pageOpened = Math.round(new Date().getTime() / 1000);
 
   // Fix dates for local timezone and blist locale
-  moment.lang(blist.locale);
+  moment.locale(blist.locale);
   $('.dateLocalize').each(function() {
     var $dateSpan = $(this);
     var format = $dateSpan.data('format');

@@ -1158,6 +1158,7 @@ en:
       unable_to_load_map_html: "<h3>We're having trouble connecting to the Esri map service that hosts this map.</h3><p>If the problem persists, please contact this site’s administrator with this error message.</p>"
     nominate:
       all: All
+      and: and
       approve: "(Approve)"
       approve_tip: Approve this suggestion
       approved: Approved
@@ -1166,6 +1167,9 @@ en:
       back_to_suggestions: Back to Dataset Suggestions
       browse: Browse
       cancel: Cancel
+      comment:
+        one: 1 comment
+        other: "%{count} comments"
       comments: Comments
       contact_author: Contact Suggestion Author
       dataset_suggestions: Dataset Suggestions
@@ -1191,6 +1195,10 @@ en:
       needs_moderation: Needs Moderation
       new: New
       no_result: No Results
+      official_response_count:
+        one: 1 official response
+        other: "%{count} official responses"
+      on_this_suggestion: on this suggestion
       open: Open
       pending: Pending
       rate_down: I don't like it

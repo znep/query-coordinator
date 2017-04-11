@@ -1163,10 +1163,14 @@
       if (metadata.operator == 'blank?') {
         // special case these since they have no actual values
         var cachedContents = column.cachedContents || {};
+        // EN-14004: The null/not-null counts coming back from core are not correct for
+        // checkbox columns. Ideally we'd fix core, but for now we'll hide the counts
+        // for checkbox columns.
+        var shouldDisplayCounts = column.dataTypeName !== 'checkbox';
         addFilterLine({
           item: renderType.filterConditions.details.IS_BLANK.text.replace(/^is\s/, ''),
           data: 'IS_BLANK',
-          count: cachedContents['null']
+          count: shouldDisplayCounts ? cachedContents['null'] : undefined
         }, column, condition, $filter, filterUniqueId, {
           textOnly: true,
           selected: _.any(condition.children || [], function(child) {
@@ -1176,7 +1180,7 @@
         addFilterLine({
           item: renderType.filterConditions.details.IS_NOT_BLANK.text.replace(/^is\s/, ''),
           data: 'IS_NOT_BLANK',
-          count: cachedContents['non_null']
+          count: shouldDisplayCounts ? cachedContents['non_null'] : undefined
         }, column, condition, $filter, filterUniqueId, {
           textOnly: true,
           selected: _.any(condition.children || [], function(child) {
@@ -1548,8 +1552,9 @@
         if (!metadata.autocomplete) {
           $line.find('.filterValueEditor').each(function(i) {
             var $this = $(this);
-            var editorValue = getFilterValue(_.isArray(valueObj.item) ?
-              valueObj.item[i] : valueObj.item, column, metadata);
+            var item = _.isArray(valueObj.item) ?
+              valueObj.item[i] : valueObj.item
+            var editorValue = getFilterValue(item, column, metadata);
 
             $this.data('unifiedFilter-editor',
               $this.blistEditor({

@@ -9,8 +9,7 @@ describe CatalogLandingPageHelper do
   let(:catalog_landing_page) { double }
 
   let(:current_user) do
-    user_double = double
-    allow(helper).to receive(:current_user).and_return(user_double)
+    allow(helper).to receive(:current_user).and_return(double)
   end
 
   before do
@@ -63,6 +62,14 @@ describe CatalogLandingPageHelper do
       allow(catalog_landing_page).to receive(:metadata).and_return(metadata)
     end
 
+    context 'when there is no existing catalog landing page' do
+      let(:catalog_landing_page) { nil }
+
+      it 'should return true' do
+        expect(helper.should_render_catalog_landing_page_activator?).to eq(true)
+      end
+    end
+
     context 'when catalog landing page can be activated' do
       it 'should return true' do
         expect(helper.should_render_catalog_landing_page_activator?).to eq(true)
@@ -81,6 +88,7 @@ describe CatalogLandingPageHelper do
 
     context 'when metadata is present and not blank' do
       let(:metadata) { {:header => 'header'} }
+
       it 'should return false' do
         expect(helper.should_render_catalog_landing_page_activator?).to eq(false)
       end
@@ -88,6 +96,7 @@ describe CatalogLandingPageHelper do
 
     context 'when metadata is present but values are blank' do
       let(:metadata) { {:header => ''} }
+
       it 'should return true' do
         expect(helper.should_render_catalog_landing_page_activator?).to eq(true)
       end

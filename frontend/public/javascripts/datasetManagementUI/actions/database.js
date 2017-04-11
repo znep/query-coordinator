@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export const BATCH = 'BATCH';
 export const batch = (operations) => ({
   type: BATCH,

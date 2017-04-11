@@ -64,5 +64,5 @@ Table.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   updateColumnType: PropTypes.func.isRequired,
-  displayState: PropTypes.object.isRequired
+  displayState: DisplayState.propType.isRequired
 };

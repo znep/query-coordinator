@@ -146,7 +146,7 @@ class TransformStatus extends Component {
 TransformStatus.propTypes = {
   transform: PropTypes.object.isRequired,
   columnId: PropTypes.number.isRequired,
-  displayState: PropTypes.object.isRequired,
+  displayState: DisplayState.propType.isRequired,
   path: PropTypes.object.isRequired,
   totalRows: PropTypes.number
 };

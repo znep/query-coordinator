@@ -3,7 +3,6 @@ import * as Links from '../links';
 import * as dsmapiLinks from '../dsmapiLinks';
 import {
   upsertFromServer,
-  upsertMultipleFromServer,
   upsertStarted,
   upsertSucceeded,
   upsertFailed,

@@ -85,7 +85,7 @@ class RowErrorsLink extends Component {
 
 RowErrorsLink.propTypes = {
   path: PropTypes.object.isRequired,
-  displayState: PropTypes.object.isRequired,
+  displayState: DisplayState.propType.isRequired,
   numRowErrors: PropTypes.number.isRequired,
   inRowErrorMode: PropTypes.bool.isRequired
 };

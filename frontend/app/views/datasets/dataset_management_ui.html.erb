@@ -33,7 +33,8 @@
       view: <%== @view.to_json %>,
       update: <%== @update.to_json %>,
       datasetCategories: <%== flatten_category_tree.to_json %>.map(arrayToObject),
-      datasetLicenses: <%== licenses.to_json %>.map(arrayToObject)
+      datasetLicenses: <%== licenses.to_json %>.map(arrayToObject),
+      customMetadata: <%== get_dataset_management_ui_custom_metadata.to_json %>
     };
   </script>
 

@@ -71,6 +71,7 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
     constructor() {
       super();
       this.state = {
+        initialSyncCompleted: false,
         schema: {
           isValid: true,
           fields: {}
@@ -95,15 +96,32 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
     // Called on every prop change (in this case, the form's data-model changing from
     // user input). Calculate a new schema
     componentWillReceiveProps(nextProps) {
-      const { model: newModel, validationRules: validationRulesFromProps } = nextProps;
+      const { model: newModel, validationRules: validationRulesFromProps, fourfour, syncToStore } = nextProps;
       const { model: oldModel } = this.props;
+      const { initialSyncCompleted } = this.state;
 
       if (!_.isEqual(oldModel, newModel)) {
         const rules = _.isEmpty(validationRules) ? validationRulesFromProps : validationRules;
 
-        this.setState({
-          schema: getValidationErrors(rules, newModel)
-        });
+        const schema = getValidationErrors(rules, newModel);
+
+        // We want to perform an inital sync to store as soon as we have enough info
+        // to do so. The sync that happens in componentWillUpdate is not reliable since
+        // fourfour usually resolves after the schema gets calculated, so diffing state.schema
+        // and nextState.schema can't serve as a control mechanism. So we put a sync flag in
+        // state (initialSyncCompleted) to compensate for that.
+        if (!initialSyncCompleted && fourfour && syncToStore) {
+          syncToStore(fourfour, 'schema', schema);
+
+          this.setState({
+            schema,
+            initialSyncCompleted: true
+          });
+        } else {
+          this.setState({
+            schema
+          });
+        }
       }
     }
 

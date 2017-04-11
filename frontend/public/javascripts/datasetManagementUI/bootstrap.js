@@ -45,9 +45,10 @@ export function bootstrap(store, initialView, initialUpdate) {
     licenseId: initialView.licenseId,
     attribution: initialView.attribution,
     tags: initialView.tags,
-    email: initialView.privateMetadata ? initialView.privateMetadata.email : '',
+    privateMetadata: initialView.privateMetadata || {},
     attachments: _.get(initialView, 'metadata.attachments', []),
-    metadata: initialView.metadata || {}
+    metadata: initialView.metadata || {},
+    customMetadataFields: window.initialState.customMetadata || []
   }));
   operations.push(upsertFromServer('updates', {
     id: initialUpdate.id,

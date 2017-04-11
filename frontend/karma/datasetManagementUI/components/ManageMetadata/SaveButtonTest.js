@@ -7,16 +7,14 @@ import SaveButton from 'components/ManageMetadata/SaveButton';
 describe('components/ManageMetadata/SaveButton', () => {
   const props = {
     onSaveClick: sinon.spy(),
-    isDirty: {
-      form: false
-    }
+    isDirty:  false,
+    isSaving: false
   };
 
   const dirtyProps = {
     ...props,
-    isDirty: {
-      form: true
-    }
+    isDirty: true,
+    isSaving: false
   };
 
   it('is disabled when form is clean', () => {

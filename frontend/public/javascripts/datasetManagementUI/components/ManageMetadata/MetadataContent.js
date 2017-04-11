@@ -5,20 +5,20 @@ import MetadataEditor from '../ManageMetadata/MetadataEditor';
 import styles from 'styles/ManageMetadata/MetadataContent.scss';
 
 // TODO : should probably abstract sidebar to its own component
-const MetadataContent = ({ path, onSidebarTabClick }) =>
+const MetadataContent = ({ path, fourfour, onSidebarTabClick }) =>
   <div>
     <div className={styles.sidebar}>
       <Link
         to={Links.datasetMetadataForm}
         className={styles.tab}
-        onClick={onSidebarTabClick}
+        onClick={() => onSidebarTabClick(fourfour)}
         activeClassName={styles.selected}>
         {I18n.metadata_manage.dataset_metadata_label}
       </Link>
       <Link
         to={Links.columnMetadataForm()}
         className={styles.tab}
-        onClick={onSidebarTabClick}
+        onClick={() => onSidebarTabClick(fourfour)}
         activeClassName={styles.selected}>
         {I18n.metadata_manage.column_metadata_label}
       </Link>
@@ -28,7 +28,8 @@ const MetadataContent = ({ path, onSidebarTabClick }) =>
 
 MetadataContent.propTypes = {
   path: PropTypes.string.isRequired,
-  onSidebarTabClick: PropTypes.func
+  onSidebarTabClick: PropTypes.func,
+  fourfour: PropTypes.string.isRequired
 };
 
 export default MetadataContent;

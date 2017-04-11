@@ -16,6 +16,10 @@ module DatasetManagementUiHelper
     javascript_tag("var serverConfig = #{json_escape(config.to_json)};")
   end
 
+  def get_dataset_management_ui_custom_metadata
+    CurrentDomain.property(:fieldsets, :metadata) || []
+  end
+
   def render_dataset_management_ui_translations
     translations = LocaleCache.render_translations([LocalePart.dataset_management_ui])['dataset_management_ui']
     translations = translations.merge(

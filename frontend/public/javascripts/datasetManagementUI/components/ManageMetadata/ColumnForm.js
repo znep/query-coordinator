@@ -10,7 +10,6 @@ import { edit } from 'actions/database';
 import * as Selectors from 'selectors';
 import styles from 'styles/ManageMetadata/ColumnForm.scss';
 
-
 export const ColumnForm = ({ currentColumns, ...props }) => {
   const colToArr = col =>
     [

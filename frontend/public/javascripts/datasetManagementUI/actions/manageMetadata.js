@@ -9,13 +9,19 @@ import {
   updateFailed,
   upsertStarted,
   upsertSucceeded,
-  upsertFailed
+  upsertFailed,
+  edit,
+  batch,
+  outputSchemaUpsertStarted,
+  outputSchemaUpsertSucceeded,
+  outputSchemaUpsertFailed
 } from './database';
 import { insertChildrenAndSubscribeToOutputSchema } from './manageUploads';
 import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
 import { showFlashMessage } from 'actions/flashMessage';
 import { getLocalizedErrorMessage } from 'lib/util';
+import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX } from 'lib/customMetadata';
 
 export const saveDatasetMetadata = () => (dispatch, getState) => {
   const { db, fourfour } = getState();
@@ -32,6 +38,15 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   // a default empty schema that is valid into the store later.
   if (schema && !schema.isValid) {
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
+
+    // MetadataField looks at displayMetadataFieldErrors in store, and will show
+    // field-level validation errors if it's truthy. Dispatching this action from here
+    // allows us to show field-level validation errors on form submit.
+    dispatch(edit('views', {
+      id: fourfour,
+      displayMetadataFieldErrors: true
+    }));
+
     return;
   }
 
@@ -51,9 +66,41 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
 
   const privateMetadata = _.pick(model, ['email']);
 
-  const datasetMetadata = _.assign({}, publicMetadata, { privateMetadata });
+  const isCustomField = (v, k) => {
+    const regex = new RegExp(`^${CUSTOM_FIELD_PREFIX}`);
+    return regex.test(k);
+  };
 
-  dispatch(updateStarted('views', datasetMetadata));
+  const isPrivateCustomField = (v, k) => {
+    const regex = new RegExp(`^${PRIVATE_CUSTOM_FIELD_PREFIX}`);
+    return regex.test(k);
+  };
+
+  const customMetadata = _.pickBy(model, isCustomField);
+
+  const privateCustomMetadata = _.pickBy(model, isPrivateCustomField);
+
+  const datasetMetadata = {
+    ...publicMetadata,
+    privateMetadata: {
+      ...privateMetadata,
+      privateCustomMetadata: {
+        ...privateCustomMetadata
+      }
+    },
+    metadata: {
+      ...customMetadata
+    }
+  };
+
+  const updateRecord = {
+    id: fourfour
+  };
+
+  dispatch(updateStarted('views', {
+    ...updateRecord,
+    payload: datasetMetadata
+  }));
 
   // TODO: switch this to read from redux store
   socrataFetch(`/api/views/${window.initialState.view.id}`, {
@@ -62,11 +109,11 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   }).
   then(checkStatus).
   then(() => {
-    dispatch(updateSucceeded('views', datasetMetadata));
+    dispatch(updateSucceeded('views', updateRecord));
     dispatch(redirectAfterInterval());
   }).
   catch(error => {
-    dispatch(updateFailed('views', datasetMetadata, error));
+    dispatch(updateFailed('views', updateRecord, error));
 
     error.response.json().then(({ message }) => {
       const localizedMessage = getLocalizedErrorMessage(message);
@@ -85,6 +132,13 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
   // see comment above in saveDatasetMetadata thunk
   if (schema && !schema.isValid) {
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
+
+    // See comment in corresponding portion of saveDatasetMetadata action
+    dispatch(edit('views', {
+      id: fourfour,
+      displayMetadataFieldErrors: true
+    }));
+
     return;
   }
 
@@ -106,7 +160,12 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     input_schema_id: inputSchema.id
   };
 
-  dispatch(upsertStarted('output_schemas', newOutputSchema));
+  const startOperations = [
+    outputSchemaUpsertStarted(),
+    upsertStarted('output_schemas', newOutputSchema)
+  ];
+
+  dispatch(batch(startOperations));
 
   socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
@@ -115,18 +174,27 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     then(checkStatus).
     then(getJson).
     catch(error => {
-      dispatch(upsertFailed('output_schemas', newOutputSchema, error));
-
+      const errorOperations = [
+        upsertFailed('output_schemas', newOutputSchema, error),
+        outputSchemaUpsertFailed()
+      ];
+      dispatch(batch(errorOperations));
       error.response.json().then(({ message }) => {
         const localizedMessage = getLocalizedErrorMessage(message);
         dispatch(showFlashMessage('error', localizedMessage));
       });
     }).
     then(resp => {
-      dispatch(upsertSucceeded('output_schemas', newOutputSchema, {
-        id: resp.resource.id,
-        inserted_at: parseDate(resp.resource.inserted_at)
-      }));
+      const successOperations = [
+        outputSchemaUpsertSucceeded(),
+        upsertSucceeded('output_schemas', newOutputSchema, {
+          id: resp.resource.id,
+          inserted_at: parseDate(resp.resource.inserted_at)
+        })
+      ];
+
+      dispatch(batch(successOperations));
+
       // TODO: refactor into a thunk; will be easier to test and be consistent with
       // rest of app
       insertChildrenAndSubscribeToOutputSchema(dispatch, upload, resp.resource);

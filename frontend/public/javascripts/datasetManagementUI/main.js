@@ -19,6 +19,7 @@ import rootRoute from './routes';
 import styleguide from './styles/style.global.scss'; //eslint-disable-line
 
 const viewId = window.initialState.view.id;
+
 window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/publishing/v1/socket', {
   params: {
     fourfour: viewId,

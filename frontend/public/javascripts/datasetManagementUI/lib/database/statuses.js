@@ -39,6 +39,10 @@ export function statusInserting() {
   };
 }
 
+export const STATUS_NEW = 'NEW';
+
+export const STATUS_UPSERTING = 'UPSERTING';
+
 export const STATUS_UPSERT_FAILED = 'UPSERT_FAILED';
 export function statusInsertFailed(newRecord, error) {
   return {
@@ -80,7 +84,6 @@ export function statusUpdateFailed(updates, error, percentCompleted) {
 }
 
 // load statuses
-
 export const STATUS_LOAD_IN_PROGRESS = 'STATUS_LOAD_IN_PROGRESS';
 export const statusLoadInProgress = {
   type: STATUS_LOAD_IN_PROGRESS

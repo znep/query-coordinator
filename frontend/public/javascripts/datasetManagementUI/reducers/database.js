@@ -19,9 +19,15 @@ import {
   BATCH,
   LOAD_STARTED,
   LOAD_SUCCEEDED,
-  LOAD_FAILED
+  LOAD_FAILED,
+  OUTPUT_SCHEMA_UPSERT_STARTED,
+  OUTPUT_SCHEMA_UPSERT_SUCCEEDED,
+  OUTPUT_SCHEMA_UPSERT_FAILED
 } from '../actions/database';
 import {
+  STATUS_UPSERTING,
+  STATUS_UPSERT_FAILED,
+  STATUS_SAVED,
   STATUS_DIRTY,
   statusDirty,
   STATUS_DIRTY_IMMUTABLE,
@@ -107,8 +113,9 @@ export default function dbReducer(db = emptyDB, action) {
       const key = _.findKey(
         db[action.tableName],
         (tableRecord) => (
+          tableRecord.__status__ &&
           tableRecord.__status__.type === STATUS_INSERTING &&
-            _.isEqual(_.omit(tableRecord, ['__status__', 'id']), action.newRecord)
+          _.isEqual(_.omit(tableRecord, ['__status__', 'id']), action.newRecord)
         )
       );
       const record = db[action.tableName][key];
@@ -253,6 +260,33 @@ export default function dbReducer(db = emptyDB, action) {
         }
       };
     }
+
+    case OUTPUT_SCHEMA_UPSERT_STARTED:
+      return {
+        ...db,
+        'output_schemas': {
+          ...db.output_schemas,
+          __status__: STATUS_UPSERTING
+        }
+      };
+
+    case OUTPUT_SCHEMA_UPSERT_SUCCEEDED:
+      return {
+        ...db,
+        'output_schemas': {
+          ...db.output_schemas,
+          __status__: STATUS_SAVED
+        }
+      };
+
+    case OUTPUT_SCHEMA_UPSERT_FAILED:
+      return {
+        ...db,
+        'output_schemas': {
+          ...db.output_schemas,
+          __status__: STATUS_UPSERT_FAILED
+        }
+      };
 
     default:
       return db;

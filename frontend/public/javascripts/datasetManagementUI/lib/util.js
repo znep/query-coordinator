@@ -21,3 +21,18 @@ export const getLocalizedErrorMessage = msg => {
 
   return localizedErrorMessage;
 };
+
+export const flattenObject = (obj = {}) =>
+  Object.keys(obj).reduce((acc, key) => {
+    if (_.isPlainObject(obj[key])) {
+      return Object.assign(
+        {},
+        acc,
+        flattenObject(obj[key])
+      );
+    } else {
+      acc[key] = obj[key];
+    }
+
+    return acc;
+  }, {});

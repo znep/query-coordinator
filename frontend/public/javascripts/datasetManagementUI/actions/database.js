@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export const BATCH = 'BATCH';
 export const batch = (operations) => ({
   type: BATCH,
@@ -141,4 +139,19 @@ export const loadFailed = (url, error) => ({
   type: LOAD_FAILED,
   url,
   error
+});
+
+export const OUTPUT_SCHEMA_UPSERT_STARTED = 'OUTPUT_SCHEMA_UPSERT_STARTED';
+export const outputSchemaUpsertStarted = () => ({
+  type: OUTPUT_SCHEMA_UPSERT_STARTED
+});
+
+export const OUTPUT_SCHEMA_UPSERT_SUCCEEDED = 'OUTPUT_SCHEMA_UPSERT_SUCCEEDED';
+export const outputSchemaUpsertSucceeded = () => ({
+  type: OUTPUT_SCHEMA_UPSERT_SUCCEEDED
+});
+
+export const OUTPUT_SCHEMA_UPSERT_FAILED = 'OUTPUT_SCHEMA_UPSERT_FAILED';
+export const outputSchemaUpsertFailed = () => ({
+  type: OUTPUT_SCHEMA_UPSERT_FAILED
 });

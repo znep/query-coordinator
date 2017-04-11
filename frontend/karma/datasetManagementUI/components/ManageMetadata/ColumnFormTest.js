@@ -71,9 +71,10 @@ describe('components/ManageMetadata/ColumnForm', () => {
     expect(component.find('form')).to.have.length(1);
     expect(component.find('Fieldset')).to.have.length(1);
     expect(component.find('.row')).to.have.length(2);
-    expect(component.find('MetadataField')).to.have.length(6);
+    expect(component.find('.row').children()).to.have.length(6);
     expect(component
-      .find('MetadataField')
+      .find('.row')
+      .children()
       .map(field => field.prop('type'))
       .filter(type => type === 'text')).to.have.length(6);
   });

@@ -2,6 +2,15 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
+.privateMessage {
+  font-size: 13px;
+  color: $grey;
+}
+
+.icon {
+  margin-right: 0.2em;
+}
+
 .label {
   composes: block-label from global;
 }

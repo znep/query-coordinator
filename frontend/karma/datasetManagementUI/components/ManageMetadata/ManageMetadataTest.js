@@ -110,7 +110,7 @@ describe('components/ManageMetadata', () => {
     it('passes the correct prop to SaveButton when form isn\'t dirty', () => {
       const component = shallow(<ManageMetadata {...defaultDatasetProps}/>);
 
-      expect(component.find('SaveButton').props().isDirty.form).to.eq(false);
+      expect(component.find('SaveButton').props().isDirty).to.eq(false);
     });
 
     it('passes the correct prop to SaveButton when form is dirty', () => {
@@ -130,7 +130,7 @@ describe('components/ManageMetadata', () => {
 
       const component = shallow(<ManageMetadata {...dirtyProps} />);
 
-      expect(component.find('SaveButton').props().isDirty.form).to.eq(true);
+      expect(component.find('SaveButton').props().isDirty).to.eq(true);
     });
   });
 });

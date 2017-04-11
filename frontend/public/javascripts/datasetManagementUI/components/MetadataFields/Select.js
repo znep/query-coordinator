@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import styles from 'styles/MetadataFields/Select.scss';
 
-const Select = ({ name, options, label, bindInput, required, showErrors }) =>
+const Select = ({ name, options, label, bindInput, required, inErrorState, showErrors }) =>
   <select
     id={name}
     aria-label={label}
     aria-required={required}
-    className={styles.select}
+    className={inErrorState ? styles.selectError : styles.select}
     onBlur={showErrors}
     {...bindInput(name)}>
     {options.map((option, idx) =>
@@ -23,6 +23,7 @@ Select.propTypes = {
   label: PropTypes.string,
   bindInput: PropTypes.func.isRequired,
   required: PropTypes.bool,
+  inErrorState: PropTypes.bool,
   showErrors: PropTypes.func
 };
 

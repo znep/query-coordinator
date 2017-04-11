@@ -9,6 +9,8 @@ import {
   UPDATE_STARTED,
   UPDATE_SUCCEEDED
 } from 'actions/database';
+import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX } from 'lib/customMetadata';
+import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import initialState from '../data/initialState.js';
@@ -86,13 +88,6 @@ describe('actions/manageMetadata', () => {
 
       const { fourfour, db } = store.getState();
 
-      const expectedPayload = {
-        ..._.omit(db.views[fourfour].model, 'email'),
-        privateMetadata: {
-          email: db.views[fourfour].model.email
-        }
-      };
-
       setTimeout(() => {
         const action = store.getActions()[0];
 
@@ -100,7 +95,7 @@ describe('actions/manageMetadata', () => {
 
         expect(action.tableName).to.eq('views');
 
-        expect(action.updates).to.deep.eq(expectedPayload);
+        expect(action.updates.id).to.eq(fourfour);
 
         unmockFetch();
 
@@ -124,10 +119,7 @@ describe('actions/manageMetadata', () => {
       const { fourfour, db } = store.getState();
 
       const expectedPayload = {
-        ..._.omit(db.views[fourfour].model, 'email'),
-        privateMetadata: {
-          email: db.views[fourfour].model.email
-        }
+        id: fourfour
       };
 
       setTimeout(() => {
@@ -142,6 +134,103 @@ describe('actions/manageMetadata', () => {
         unmockFetch();
 
         unmockPhx();
+
+        done();
+      }, 0);
+    });
+
+    it('shows an error message if form schema is invalid', () => {
+      const { unmockFetch } = mockFetch(responses, () => {});
+
+      const unmockPhx = mockPhx({
+        'output_schema:57': []
+      }, () => {});
+
+      const newState = Object.assign({}, initialState);
+
+      newState.db.views['3kt9-pmvq'].schema = {
+        isValid: false
+      };
+
+      const store = mockStore(newState);
+
+      store.dispatch(saveDatasetMetadata());
+
+      expect(store.getActions()[0].type).to.eq(SHOW_FLASH_MESSAGE);
+      expect(store.getActions()[0].kind).to.eq('error');
+    });
+
+    it('shows field-level errors if form schema is invalid', () => {
+      const { unmockFetch } = mockFetch(responses, () => {});
+
+      const unmockPhx = mockPhx({
+        'output_schema:57': []
+      }, () => {});
+
+      const newState = Object.assign({}, initialState);
+
+      newState.db.views['3kt9-pmvq'].schema = {
+        isValid: false
+      };
+
+      const store = mockStore(newState);
+
+      store.dispatch(saveDatasetMetadata());
+
+      const action = store.getActions()[1];
+
+      expect(action.type).to.eq('EDIT');
+      expect(action.tableName).to.eq('views');
+      expect(action.updates).to.deep.eq({
+        id: '3kt9-pmvq',
+        displayMetadataFieldErrors: true
+      });
+    });
+
+    it('submits custom metada correctly', (done) => {
+      const { unmockFetch } = mockFetch(responses, done);
+
+      const unmockPhx = mockPhx({
+        'output_schema:57': []
+      }, done);
+
+      const newState = Object.assign({}, initialState);
+
+      newState.db.views['3kt9-pmvq'].schema = {
+        isValid: true
+      };
+
+      newState.db.views['3kt9-pmvq'].model = {
+        ...newState.db.views['3kt9-pmvq'].model,
+        [`${CUSTOM_FIELD_PREFIX}-name`]: 'tester',
+        [`${PRIVATE_CUSTOM_FIELD_PREFIX}-secret`]: 'big secret'
+      };
+
+      const store = mockStore(newState);
+
+      store.dispatch(saveDatasetMetadata());
+
+      const { fourfour, db } = store.getState();
+
+      const expectedPayload = {
+        ..._.omit(db.views[fourfour].model, [
+          'email',
+          `${PRIVATE_CUSTOM_FIELD_PREFIX}-secret`,
+          `${CUSTOM_FIELD_PREFIX}-name`
+        ]),
+        privateMetadata: {
+          email: db.views[fourfour].model.email,
+          privateCustomMetadata: {
+            [`${PRIVATE_CUSTOM_FIELD_PREFIX}-secret`]: 'big secret'
+          }
+        },
+        metadata: {
+          [`${CUSTOM_FIELD_PREFIX}-name`]: 'tester'
+        }
+      };
+
+      setTimeout(() => {
+        expect(store.getActions()[0].updates.payload).to.deep.eq(expectedPayload);
 
         done();
       }, 0);
@@ -161,7 +250,7 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[0];
+        const action = store.getActions()[0].operations[1];
 
         expect(action.type).to.eq(UPSERT_STARTED);
 
@@ -189,7 +278,7 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[1];
+        const action = store.getActions()[1].operations[1];
 
         expect(action.type).to.eq(UPSERT_SUCCEEDED);
 

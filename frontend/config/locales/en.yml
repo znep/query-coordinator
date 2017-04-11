@@ -1858,7 +1858,7 @@ en:
         subtitles:
           dataset_subtitle: Make your title and description as clear and simple as possible.
           tags_subtitle: Categorize your dataset to make it easier to find.
-          contact_subtitle: Private Field -  only logged in users will see this value
+          private_field: Private Field -  only logged in users will see this value
       errors:
         missing_name: Dataset name is required.
       required_note: Required field

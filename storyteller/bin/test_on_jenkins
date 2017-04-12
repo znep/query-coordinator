@@ -8,7 +8,8 @@ APP_ROOT = Pathname.new File.expand_path('../../',  __FILE__)
 if system('../bin/should_run_tests storyteller') == nil
   raise 'Test check script failed to run, aborting.'
 elsif $?.exitstatus == 1
-  exit 1
+  # Tests don't need to be run.
+  exit 0
 end
 
 Dir.chdir APP_ROOT do

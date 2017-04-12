@@ -1,5 +1,8 @@
 import 'whatwg-fetch';
 import airbrake from './airbrake';
+import { fetchTranslation } from './locale';
+
+/* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 
 const CETERA_EXTERNAL_URI = window.serverConfig.ceteraExternalUri;
 if (_.isEmpty(CETERA_EXTERNAL_URI)) {
@@ -12,17 +15,32 @@ const DEFAULT_ORDER = 'relevance';
 
 const getOffset = (pageNumber, limit) => (pageNumber - 1) * limit;
 
+let errorMessage;
+
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
-    const error = new Error(response.statusText);
-    error.response = response;
-    airbrake.notify({
-      error: `Error fetching cetera results: ${error}`,
-      context: { component: 'AssetSelector' }
-    });
-    console.error(error);
+    errorMessage = response.statusText;
+
+    if (response.status === 502) {
+      errorMessage = fetchTranslation('manager.error.connection_502');
+    }
+    if (response.status === 503) {
+      errorMessage = fetchTranslation('manager.error.unavailable_503');
+    }
+    if (response.status === 504) {
+      errorMessage = fetchTranslation('manager.error.timeout_504');
+    }
+
+    console.error(errorMessage);
+
+    try {
+      airbrake.notify({
+        error: `Error fetching cetera results: ${errorMessage}`,
+        context: { component: 'AssetSelector' }
+      });
+    } catch (err) {}
   }
 }
 
@@ -31,11 +49,14 @@ function parseJSON(response) {
 }
 
 function handleError(error) {
-  airbrake.notify({
-    error: `Error fetching cetera results: ${error}`,
-    context: { component: 'AssetSelector' }
-  });
+  try {
+    airbrake.notify({
+      error: `Error fetching cetera results: ${error}`,
+      context: { component: 'AssetSelector' }
+    });
+  } catch (err) {}
   console.error(error);
+  return errorMessage;
 }
 
 export const ceteraUtils = (() => {

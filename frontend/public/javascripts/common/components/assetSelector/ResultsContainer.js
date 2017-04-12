@@ -56,8 +56,12 @@ export class ResultsContainer extends React.Component {
           q: this.state.query
         }).
         then((response) => {
-          const results = ceteraUtils.mapToAssetSelectorResult(response.results);
-          this.setState({ fetchingResults: false, results, resultCount: response.resultSetSize });
+          if (_.isObject(response)) {
+            const results = ceteraUtils.mapToAssetSelectorResult(response.results);
+            this.setState({ fetchingResults: false, results, resultCount: response.resultSetSize });
+          } else {
+            this.setState({ fetchingResults: false, results: [], resultCount: 0, errorMessage: response });
+          }
         }).
         catch(() => {
           this.setState({ fetchingResults: false });
@@ -84,6 +88,8 @@ export class ResultsContainer extends React.Component {
 
     if (this.state.fetchingResults) {
       resultContent = <Spinner />;
+    } else if (this.state.errorMessage) {
+      resultContent = <div className="alert error">{this.state.errorMessage}</div>;
     } else if (!this.state.results.length) {
       resultContent = <NoResults />;
     } else {

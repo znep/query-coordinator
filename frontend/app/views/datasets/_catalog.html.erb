@@ -129,6 +129,10 @@
       end
     %>
 
+    <%- if should_render_catalog_landing_page_activator? %>
+      <%= render 'datasets/browse2_manage_catalog_landing_page' %>
+    <%- end %>
+
     <!-- Results Container -->
     <div id="catalog-landing-page-spinner">
       <div class="spinner-default spinner-large"></div>

@@ -454,17 +454,6 @@ en:
     manager:
       cancel: Cancel
       change: Change
-      edit_action: Edit Featured Content
-      feature_content: Feature Content
-      unexpected_error: An unexpected error has occurred. Please reload and try again.
-      you_must_login_first: You must login first in order to save your changes.
-      you_are_not_authorized: You are not authorized to perform this operation.
-      remove: Remove
-      save: Save
-      title: Feature Content
-      headline:
-        label: Headline
-        placeholder: Create a headline; maximum characters = 140
       description:
         label: Description
         placeholder: Write a description for your {filter} content; maximum characters = 320
@@ -481,13 +470,25 @@ en:
           links_0_1: '[Inline-style text link referencing a URL with tooltip](https://www.google.com "Google''s Homepage")'
           links_1_0: 'URLs and URLs in angle brackets will automatically get turned into links:'
           links_1_1: 'http://www.example.com or <http://www.example.com>'
-      show_stats:
-        label: Show Stats
-        explanation: Choose to show some basic statistics around this category, such as how many datasets, visualizations and stories it contains.
+      edit_action: Edit Featured Content
+      error:
+        connection_502: We were unable to connect to the asset catalog. Please reload and try again.
+        timeout_504: We were unable to query to the asset catalog. Please reload and try again.
+        unavailable_503: We were unable to contact the asset catalog. Please reload and try again.
+        unexpected_500: An unexpected error has occurred. Please reload and try again.
+        you_are_not_authorized: You are not authorized to perform this operation.
+        you_must_login_first: You must login first in order to save your changes.
+      feature_content: Feature Content
       featured_content:
         label: Featured Content in {filter}
         label_no_filter: Featured Content
         explanation: "Promote up to 3 assets:"
+      headline:
+        label: Headline
+        placeholder: Create a headline; maximum characters = 140
+      remove: Remove
+      save: Save
+      title: Feature Content
       view_types:
         apis: APIs
         blob: Files and Documents

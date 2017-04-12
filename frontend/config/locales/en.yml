@@ -1920,6 +1920,28 @@ en:
         ready_to_import: Ready to import
         rows: rows
         will_not_be_imported: Rows that will not be imported
+        help_modal:
+          why_wont_start: "Why won't"
+          why_wont_end: "of my rows import?"
+          we_love_your_data: "Data quality is important to ensure that visualizations and exports work as expected. That’s why we won’t import rows with errors."
+          two_types_of_errors: "There are two common types of errors:"
+          type_error_blurb: The cell doesn't match the content type
+          row_error_blurb: The row has the wrong number of columns
+          next: Next
+          done: Done
+          previous: Previous
+          type_errors: 1. Type errors
+          row_errors: 2. Row errors
+          you_can_download_start: "You can download a CSV with all"
+          you_can_download_end: "rows:"
+          get_rows_into_dataset_blurb: From here, it’s up to you how you want to clean your data, you can either utilize the CSV file and append the results to the dataset, or fix the errors at the source and replace all the data.
+          error_file: What can I do about it?
+          error_file_blurb: We’ve created a special error file containing all rows that has one or more errors, as well as an explanation of each error. You can download it from the data page.
+          error_file_sub_blurb: The CSV contains all rows with errors , as well as an explanation of each error.
+          clean_data_start: "How do I get my"
+          clean_data_end:  "rows back into the dataset?"
+          clean_data_blurb: Once your data is clean, you can use the Append and Replace wizard to add the remaining rows.
+          clean_data_sub_blurb: Once you have a clean file, you can append the data to your dataset.
       row_errors:
         error_message: "Expected {0} columns, found {1}"
         flyout_message_singular: 1 row is malformed.

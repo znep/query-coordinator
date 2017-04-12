@@ -152,8 +152,9 @@ export default React.createClass({
     const privateIcon = isPrivate ?
       <span className="icon socrata-icon-private" /> : null;
 
+    const previewImageStyling = { backgroundImage: `url(${imageUrl})` };
     const image = _.isString(imageUrl) && !_.isEmpty(imageUrl) ?
-      <img src={imageUrl} alt={name} /> :
+      <div className="preview-image" style={previewImageStyling} title={name} /> :
       <span className={`${icon} x-large-icon`}></span>;
 
     return (

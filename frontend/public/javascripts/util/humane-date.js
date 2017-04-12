@@ -21,6 +21,8 @@
  */
 
 var moment = require('moment');
+moment.locale(blist.locale);
+
 var humaneUtilNS = blist.namespace.fetch('blist.util.humaneDate');
 
 _.each(['minute', 'hour', 'day', 'week', 'month', 'year'], function(duration) {

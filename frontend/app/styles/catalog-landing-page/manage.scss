@@ -31,6 +31,48 @@ div.clp-manager {
     }
   }
 
+  $markdownHelpFlannelWidth: 675px;
+
+  .acceptsMarkdown {
+    float: right;
+    text-align: right;
+    width: $markdownHelpFlannelWidth;
+  }
+
+  .markdownSyntax {
+    cursor: pointer;
+  }
+
+  .markdownHelp.socrata-flannel {
+    width: $markdownHelpFlannelWidth;
+    max-width: $markdownHelpFlannelWidth;
+
+    section.socrata-flannel-content {
+      font-size: 14px;
+      display: flex;
+
+      .info-button {
+        font-size: 40px;
+        color: $primary-dark;
+        margin-right: 7px;
+      }
+      .close-button {
+        font-size: 35px;
+        color: $light-grey-2;
+        line-height: 1.13;
+
+        i {
+          cursor: pointer;
+        }
+      }
+    }
+
+    p.heading {
+      font-weight: bold;
+      margin-top: 11px;
+    }
+  }
+
   button.cancel-button {
     margin-right: 10px;
   }

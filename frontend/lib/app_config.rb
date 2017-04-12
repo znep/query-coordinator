@@ -27,7 +27,6 @@ class AppConfig < Hashie::Dash
   property :tileserver_hosts
 
   # Search
-  property :cetera_external_uri
   property :cetera_internal_uri
 
   # Sitemap

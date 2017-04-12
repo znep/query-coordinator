@@ -404,7 +404,6 @@ Variable Name | Type | Source | Description
 `canary` | Boolean | Configuration | If set to true the host will visually identify itself as the Canary.
 `catalog_landing_page_airbrake_api_key` | String | Configuration | AirBrake API token used to track CLP errors.
 `catalog_landing_page_airbrake_project_id` | String | Configuration | AirBrake Project ID used to track CLP errors.
-`cetera_external_uri` | URI | Configuration | External API endpoint that provides the cetera catalog search service.
 `cetera_internal_uri` | URI | Configuration | Internal API endpoint that provides the cetera catalog search service.
 `clortho_bucket` | String | Configuration | Bucket identifier in AWS-KMS used to access secret values defined in the Clortho service.
 `consul_host` | URI | Configuration | API endpoint _URI_, **not "host"**, used to access the Consul service. Used primarily to access maintenance / downtime notices displayed in the frontend.

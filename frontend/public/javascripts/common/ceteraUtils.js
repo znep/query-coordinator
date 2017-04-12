@@ -4,12 +4,7 @@ import { fetchTranslation } from './locale';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 
-const CETERA_EXTERNAL_URI = window.serverConfig.ceteraExternalUri;
-if (_.isEmpty(CETERA_EXTERNAL_URI)) {
-  console.error('CETERA_EXTERNAL_URI is empty!');
-}
-
-const CETERA_API = `${CETERA_EXTERNAL_URI}/catalog/v1`;
+const CETERA_API = '/api/catalog/v1';
 const DEFAULT_LIMIT = 6;
 const DEFAULT_ORDER = 'relevance';
 
@@ -60,7 +55,7 @@ function handleError(error) {
 }
 
 export const ceteraUtils = (() => {
-  const domain = window.location.hostname; // TODO: federation?
+  const domain = serverConfig.domain; // TODO: federation?
 
   const assetTypeMapping = assetType => (assetType === 'new_view' ? 'datalenses' : assetType);
 
@@ -92,7 +87,10 @@ export const ceteraUtils = (() => {
 
       const fetchUrl = `${CETERA_API}?${paramString}`;
 
-      const fetchOptions = { credentials: 'same-origin' };
+      const fetchOptions = {
+        credentials: 'same-origin',
+        headers: { 'X-Socrata-Host': domain }
+      };
 
       return fetch(fetchUrl, fetchOptions).
         then(checkStatus).

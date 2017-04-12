@@ -120,13 +120,13 @@ class BrowseActionsTest2 < Minitest::Test
 
     stub_feature_flags_with(:cetera_search => true)
 
-    APP_CONFIG.stubs(cetera_internal_uri: 'http://cetera.app.aws-us-east-1-fedramp-prod.socrata.net')
-    APP_CONFIG.stubs(cetera_external_uri: 'https://api.us.socrata.com/api')
+    APP_CONFIG.stubs(
+      cetera_internal_uri: 'http://cetera.app.aws-us-east-1-fedramp-prod.socrata.net'
+    )
   end
 
-  def test_do_not_use_cetera_if_cetera_internal_uri_and_cetera_external_uri_not_present
+  def test_do_not_use_cetera_if_cetera_internal_uri_not_present
     APP_CONFIG.stubs(cetera_internal_uri: nil)
-    APP_CONFIG.stubs(cetera_external_uri: nil)
     refute @browse_controller.send(:using_cetera?)
   end
 

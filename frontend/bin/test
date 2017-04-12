@@ -1,90 +1,51 @@
 #!/usr/bin/env bash
 set -ex
 
-cd $WORKSPACE/frontend
-
-# NOTE: Using set -e as we've done above, means that ANY expression that returns a non-zero result
-# will terminate this script. For example in the CHANGED_FILES expression, we short-circuit the
-# return value to true in the event that grep returns a non-zero response (i.e. no matches). We
-# also do this for the eslint expression to prevent unwanted non-zero responses from terminating
-# this script early. If the jenkins job is failing with "Finished: FAILURE" and you can't see why,
-# consider running this script and testing the value of $? to see if it's non-zero.
-
 # Called by Jenkins to ensure tests pass and code is free of lint.
 # Note that dependencies should be installed before running this script.  To do this,
 # run `bundle install && npm install`
 
+
 # Log the author name and email of the last commit
 echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
 
-# Find commit where this pull request branched from
-MERGE_BASE=$(git merge-base HEAD origin/master)
+if ../bin/should_run_tests frontend; then
+  cd $WORKSPACE/frontend
 
-CHANGED_FILES=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\)') || true
-
-# Find all javascript files that have changed on this PR
-JAVASCRIPT_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.jsx\?$' | cut -c3-)
-JSON_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.json$' | cut -c3-)
-
-# Find all ruby files that have changed on this PR
-RUBY_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.e\?rb$' | cut -c3-)
-YAML_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.ya\?ml$' | cut -c3-)
-
-# Find if the Gemfile has changed on this PR
-GEMFILE=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*Gemfile\(\.lock\)\?$' | cut -c3-)
-
-if [[ -z $JAVASCRIPT_FILES ]] && [[ -z $RUBY_FILES ]] && [[ -z $JSON_FILES ]] && [[ -z $YAML_FILES ]] && [[ -z $GEMFILE ]]; then
-  echo "Nothing to do!"
-  exit 0
-fi
-
-# Ruby tests
-if ! [[ -z $RUBY_FILES ]] || ! [[ -z $JSON_FILES ]] || ! [[ -z $YAML_FILES ]] || ! [[ -z $GEMFILE ]]; then
+  # Ruby tests
   bundle exec rake test:units
   bundle exec rake test:functionals
   bundle exec rspec --no-color
-else
-  echo "No Ruby files changed, skipping Ruby tests."
-fi
 
-# Bail early if there are test failures
-if [[ $? != 0 ]]; then
-  exit $?
-fi
+  # JavaScript lint
+  if ! [[ -z $JAVASCRIPT_FILES ]]; then
+    # Run eslint on the collection of javascript files, ignoring certain files that we do not lint
+    # and ignoring warnings.  Ensure the command always succeeds by using || true to give us an
+    # opportunity to print a nicer list of lint errors.
+    NEW_PROBLEMS=$(node_modules/.bin/eslint --ignore-path .eslintignore --quiet -f compact ${JAVASCRIPT_FILES} || true)
 
-# JavaScript lint
-if ! [[ -z $JAVASCRIPT_FILES ]]; then
-  # Run eslint on the collection of javascript files, ignoring certain files that we do not lint
-  # and ignoring warnings.  Ensure the command always succeeds by using || true to give us an
-  # opportunity to print a nicer list of lint errors.
-  NEW_PROBLEMS=$(node_modules/.bin/eslint --ignore-path .eslintignore --quiet -f compact ${JAVASCRIPT_FILES} || true)
+    # Find all lines of eslint output that represent lint errors
+    DELTA=$(echo "${NEW_PROBLEMS}" | sed -e :a -e '$d;N;2,2ba' -e 'P;D')
 
-  # Find all lines of eslint output that represent lint errors
-  DELTA=$(echo "${NEW_PROBLEMS}" | sed -e :a -e '$d;N;2,2ba' -e 'P;D')
+    # Determine how many lint errors there were
+    DELTA_COUNT=$(echo "${NEW_PROBLEMS}" | tail -n1 | cut -d ' ' -f 1)
 
-  # Determine how many lint errors there were
-  DELTA_COUNT=$(echo "${NEW_PROBLEMS}" | tail -n1 | cut -d ' ' -f 1)
-
-  # Display a friendly message representing the result of the lint job
-  if [[ "$DELTA_COUNT" -gt 0 ]]; then
-    echo
-    echo "JavaScript lint errors [${DELTA_COUNT}]:"
-    echo
-    echo "${DELTA}"
-    echo
-    echo "Found JavaScript lint errors, exiting"
-    exit 1
+    # Display a friendly message representing the result of the lint job
+    if [[ "$DELTA_COUNT" -gt 0 ]]; then
+      echo
+      echo "JavaScript lint errors [${DELTA_COUNT}]:"
+      echo
+      echo "${DELTA}"
+      echo
+      echo "Found JavaScript lint errors, exiting"
+      exit 1
+    else
+      echo "No JavaScript lint errors"
+    fi
   else
-    echo "No JavaScript lint errors"
+    echo "No JavaScript files changed, skipping JavaScript linting."
   fi
-else
-  echo "No JavaScript files changed, skipping JavaScript linting."
-fi
 
-# JavaScript tests
-if ! [[ -z $JAVASCRIPT_FILES ]] || ! [[ -z $JSON_FILES ]]; then
-  echo "If the karma tests hang after success, go ahead and merge since they are the last test suite."
+  # JavaScript tests
   bundle exec rake test:karma[,,dots]
-else
-  echo "No JavaScript/JSON files changed, skipping JavaScript tests."
 fi

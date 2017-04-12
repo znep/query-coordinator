@@ -5,6 +5,12 @@ require 'yaml'
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path('../../',  __FILE__)
 
+if system('../bin/should_run_tests storyteller') == nil
+  raise 'Test check script failed to run, aborting.'
+elsif $?.exitstatus == 1
+  exit 1
+end
+
 Dir.chdir APP_ROOT do
 
   database_config = YAML.load_file('config/database.yml.test')

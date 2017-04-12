@@ -21,7 +21,6 @@ function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
-    const error = new Error(response.statusText);
     errorMessage = response.statusText;
 
     if (response.status === 502) {
@@ -36,14 +35,12 @@ function checkStatus(response) {
 
     console.error(errorMessage);
 
-    error.response = response;
     try {
       airbrake.notify({
-        error: `Error fetching cetera results: ${error}`,
+        error: `Error fetching cetera results: ${errorMessage}`,
         context: { component: 'AssetSelector' }
       });
     } catch (err) {}
-    console.error(error);
   }
 }
 

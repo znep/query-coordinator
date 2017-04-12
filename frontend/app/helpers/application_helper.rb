@@ -976,7 +976,7 @@ module ApplicationHelper
   end
 
   def using_cetera?
-    return false if APP_CONFIG.cetera_internal_uri.blank? && APP_CONFIG.cetera_external_uri.blank?
+    return false if APP_CONFIG.cetera_internal_uri.blank?
 
     uri = URI(APP_CONFIG.cetera_internal_uri)
     unless uri.host.present? && uri.scheme.present?

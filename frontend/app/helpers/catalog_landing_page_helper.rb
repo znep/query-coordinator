@@ -52,7 +52,6 @@ module CatalogLandingPageHelper
         APP_CONFIG.catalog_landing_page_airbrake_api_key,
       :airbrakeProjectId => ENV['CATALOG_LANDING_PAGE_AIRBRAKE_PROJECT_ID'] ||
         APP_CONFIG.catalog_landing_page_airbrake_project_id,
-      :ceteraExternalUri => APP_CONFIG.cetera_external_uri,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :currentUserMayManage => can_manage_catalog_landing_page?,

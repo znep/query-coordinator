@@ -10,12 +10,18 @@ import {
   SET_ACTIVITIES,
   SET_PAGINATION,
   DISMISS_RESTORE_MODAL,
-  SET_ALERT
+  SET_ALERT,
+  SET_FILTER_EVENT,
+  SET_FILTER_STATUS,
+  SET_FILTER_DATE
 } from 'actionTypes';
 import {
   loadActivities,
   restoreDataset,
-  gotoPage
+  gotoPage,
+  filterByEvent,
+  filterByStatus,
+  filterByDate
 } from 'actions';
 
 import mockActivities from './mockActivities';
@@ -100,6 +106,48 @@ describe('Activity Feed actions', () => {
       assert(dispatchedActions[1].type === DISMISS_RESTORE_MODAL);
       assert(dispatchedActions[2].type === SET_ACTIVITIES);
       assert(dispatchedActions[3].type === SET_PAGINATION);
+    });
+  });
+
+  it('should be able to filter by event type', () => {
+    mockHttpClient.respondWith('GET', /\/admin\/activity_feed\.json/, 200, mockActivities);
+
+    const action = filterByEvent('a_value');
+
+    return store.dispatch(action).then(() => {
+      const dispatchedActions = store.getActions();
+
+      assert(dispatchedActions[0].type === SET_FILTER_EVENT);
+      assert(dispatchedActions[1].type === SET_ACTIVITIES);
+      assert(dispatchedActions[2].type === SET_PAGINATION);
+    });
+  });
+
+  it('should be able to filter by status', () => {
+    mockHttpClient.respondWith('GET', /\/admin\/activity_feed\.json/, 200, mockActivities);
+
+    const action = filterByStatus('a_value');
+
+    return store.dispatch(action).then(() => {
+      const dispatchedActions = store.getActions();
+
+      assert(dispatchedActions[0].type === SET_FILTER_STATUS);
+      assert(dispatchedActions[1].type === SET_ACTIVITIES);
+      assert(dispatchedActions[2].type === SET_PAGINATION);
+    });
+  });
+
+  it('should be able to filter by date range', () => {
+    mockHttpClient.respondWith('GET', /\/admin\/activity_feed\.json/, 200, mockActivities);
+
+    const action = filterByDate({from: 'a_date', to: 'future_date'});
+
+    return store.dispatch(action).then(() => {
+      const dispatchedActions = store.getActions();
+
+      assert(dispatchedActions[0].type === SET_FILTER_DATE);
+      assert(dispatchedActions[1].type === SET_ACTIVITIES);
+      assert(dispatchedActions[2].type === SET_PAGINATION);
     });
   });
 });

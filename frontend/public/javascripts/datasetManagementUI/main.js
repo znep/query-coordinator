@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
-import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
+import { syncHistoryWithStore } from 'react-router-redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import windowDBMiddleware from './lib/database/middleware';
@@ -26,10 +26,11 @@ window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/publishing/v1/socket', {
     token: window.serverConfig.websocketToken
   }
 });
+
 window.DSMAPI_PHOENIX_SOCKET.connect();
 
 // middleware
-const middleware = [thunk, routerMiddleware(browserHistory)];
+const middleware = [thunk];
 
 if (window.serverConfig.environment === 'development') {
   window.Perf = Perf;
@@ -40,7 +41,9 @@ if (window.serverConfig.environment === 'development') {
     collapsed: true,
     logErrors: false
   }));
+
   middleware.push(windowDBMiddleware);
+
   console.log(
     'for convenience, try e.g. `console.table(DB.uploads)` (only works when RAILS_ENV==development)'
   );
@@ -49,11 +52,16 @@ if (window.serverConfig.environment === 'development') {
 }
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 const store = createStore(rootReducer, composeEnhancers(
   applyMiddleware(...middleware)
 ));
+
 bootstrap(store, window.initialState.view, window.initialState.update);
-const history = syncHistoryWithStore(browserHistory, store);
+
+const history = syncHistoryWithStore(browserHistory, store, {
+  selectLocationState: state => state.routing.location
+});
 
 ReactDOM.render(
   <Provider store={store}>

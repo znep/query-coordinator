@@ -9,8 +9,8 @@ import styles from 'styles/App.scss';
 
 class App extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
-    const fourfour = _.get(this.props, 'params.fourfour', '');
+    const { dispatch, urlParams } = this.props;
+    const { fourfour } = urlParams;
 
     dispatch(setFourfour(fourfour));
   }
@@ -41,7 +41,12 @@ class App extends Component {
 
 App.propTypes = {
   children: PropTypes.element,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  urlParams: PropTypes.string
 };
 
-export default connect()(App);
+const mapStateToProps = (state, { params }) => ({
+  urlParams: params
+});
+
+export default connect(mapStateToProps)(App);

@@ -31,12 +31,20 @@ export class MetadataField extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { model, schema, name } = this.props;
+    const { model, schema, name, subName } = this.props;
     const { model: nextModel, schema: nextSchema } = nextProps;
     const { errorsVisible } = this.state;
     const { errorsVisible: nextErrorsVisible } = nextState;
 
-    const modelChanged = !_.isEqual(model[name], nextModel[name]);
+    let modelChanged = !_.isEqual(model[name], nextModel[name]);
+
+    // for complex fields like tagsinput that have several things tracked in the
+    // form datamodel; we want to check if any of those changed when determining
+    // whether to update
+    if (subName) {
+      modelChanged = modelChanged || !_.isEqual(model[subName], nextModel[subName]);
+    }
+
     const schemaChanged = !_.isEqual(schema[name], nextSchema[name]);
     const errorVisChanged = errorsVisible !== nextErrorsVisible;
 
@@ -150,6 +158,7 @@ MetadataField.propTypes = {
     isValid: PropTypes.bool
   }),
   name: PropTypes.string.isRequired,
+  subName: PropTypes.string,
   type: PropTypes.string.isRequired,
   className: PropTypes.string,
   label: PropTypes.string,

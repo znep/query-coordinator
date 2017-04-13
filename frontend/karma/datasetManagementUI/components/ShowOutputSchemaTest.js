@@ -188,7 +188,7 @@ describe('components/ShowOutputSchema', () => {
       inputSchema: _.values(storeDb.input_schemas)[0],
       outputSchema: _.values(storeDb.output_schemas)[0],
       columns: Selectors.columnsForOutputSchema(storeDb, _.values(storeDb.output_schemas)[0].id),
-      displayState: normal(),
+      displayState: normal(1, 18),
       canApplyUpdate: false,
       updateColumnType: spy,
       goHome: _.noop,
@@ -197,6 +197,7 @@ describe('components/ShowOutputSchema', () => {
       addColumn: () => _.noop,
       dropColumn: () => _.noop,
       routing: {},
+      numLoadsInProgress: 0,
       dispatch: function() {}
     };
     const element = renderComponentWithStore(ShowOutputSchemaUnConnected, props, store);

@@ -9,7 +9,7 @@ import StatefulAutocomplete from './components/StatefulAutocomplete';
  */
 const autocompleteContainers = document.querySelectorAll('[data-catalog-autocomplete="true"]');
 
-autocompleteContainers.forEach((container) => {
+Array.from(autocompleteContainers).forEach((container) => {
   const collapsible = container.dataset.catalogAutocompleteCollapsible === 'true';
   const animate = container.dataset.catalogAutocompleteDisableAnimation !== 'true';
   const mobile = container.dataset.catalogAutocompleteMobile === 'true';

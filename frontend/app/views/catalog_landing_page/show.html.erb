@@ -22,7 +22,9 @@
     data-catalog-autocomplete="<%= FeatureFlags.derive(@view, request).browse_autocomplete %>">
   </div>
 
-  <!-- <div id="search-content"></div> -->
+  <% unless FeatureFlags.derive(@view, request).browse_autocomplete %>
+    <div id="search-content"></div>
+  <% end %>
 
   <%= render 'datasets/catalog', :opts => @processed_browse %>
 </div>

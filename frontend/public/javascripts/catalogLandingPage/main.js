@@ -8,7 +8,7 @@ import _ from 'lodash';
 import airbrake from '../common/airbrake';
 import reducer from './reducers';
 import App from './App';
-// import Search from './components/Search';
+import Search from './components/Search';
 
 const middleware = [thunk];
 
@@ -24,18 +24,17 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
 
 const store = createStore(reducer, applyMiddleware(...middleware));
 
-/* EN-15369:
-  Using the socrata-autocomplete searchbar for now. TODO: re-implement its behavior into the common search
-  component used below.
-
-// Render the search bar
-ReactDOM.render(
-  <Provider store={store}>
-    <Search />
-  </Provider>,
-  document.querySelector('#search-content')
-);
-*/
+// EN-15369, EN-15600: Render the non-autocomplete search bar. If there is no #search-content div
+// then we are using the autocomplete searchbar instead of the Search react component.
+// TODO: re-implement the autocomplete search behavior in the Search react component.
+if (document.querySelector('#search-content')) {
+  ReactDOM.render(
+    <Provider store={store}>
+      <Search />
+    </Provider>,
+    document.querySelector('#search-content')
+  );
+}
 
 ReactDOM.render(
   <Provider store={store}>

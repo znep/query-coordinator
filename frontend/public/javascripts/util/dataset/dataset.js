@@ -4688,6 +4688,13 @@
 
       if (
         _.isObject(filterCondition) &&
+        _.get(filterCondition, 'type', null) === 'operator'
+      ) {
+        operators.push(_.cloneDeep(filterCondition));
+      }
+
+      if (
+        _.isObject(filterCondition) &&
         _.get(filterCondition, 'children', []).length > 0
       ) {
         recursivelyExtractActualFilterConditionOperators(filterCondition.children);
@@ -4822,6 +4829,7 @@
       );
 
       if (moreThanOneFilterPresent) {
+        var newFiltersForJsonQuery;
 
         // If there is more than one filter on the original jsonQuery where and
         // there is more than one filter on the new jsonQuery where, then we
@@ -4831,7 +4839,7 @@
           originalJsonQueryWhere.hasOwnProperty('children') &&
           newJsonQueryWhere.hasOwnProperty('children')
         ) {
-          var newFiltersForJsonQuery = newJsonQueryWhere.children.
+          newFiltersForJsonQuery = newJsonQueryWhere.children.
             filter(function(newFilter) {
                 var matchingOldFilter = originalJsonQueryWhere.children.
                   filter(function(oldFilter) {
@@ -4859,7 +4867,7 @@
         } else if (newJsonQueryWhere.hasOwnProperty('children')) {
           // Save all filters on the new jsonQuery where that are not equal to
           // the original jsonQuery where.
-          var newFiltersForJsonQuery = newJsonQueryWhere.children.
+          newFiltersForJsonQuery = newJsonQueryWhere.children.
             filter(function(newFilter) {
               return !_.isEqual(originalJsonQueryWhere, newFilter);
             });
@@ -4874,6 +4882,8 @@
         // inheritance wouldn't apply in any case.
         if (!_.isEqual(originalJsonQueryWhere, newJsonQueryWhere)) {
           newDataset.metadata.jsonQuery.where = newJsonQueryWhere;
+        } else {
+          delete newDataset.metadata.jsonQuery.where;
         }
       }
     }

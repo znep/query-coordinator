@@ -155,3 +155,10 @@ export const OUTPUT_SCHEMA_UPSERT_FAILED = 'OUTPUT_SCHEMA_UPSERT_FAILED';
 export const outputSchemaUpsertFailed = () => ({
   type: OUTPUT_SCHEMA_UPSERT_FAILED
 });
+
+export const SET_VIEW = 'SET_VIEW';
+export const setView = newView => ({
+  type: SET_VIEW,
+  id: newView.id,
+  payload: newView
+});

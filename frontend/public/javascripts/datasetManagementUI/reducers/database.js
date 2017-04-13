@@ -17,6 +17,7 @@ import {
   UPDATE_FAILED,
   CREATE_TABLE,
   BATCH,
+  SET_VIEW,
   LOAD_STARTED,
   LOAD_SUCCEEDED,
   LOAD_FAILED,
@@ -158,6 +159,19 @@ export default function dbReducer(db = emptyDB, action) {
         }
       };
     }
+
+    case SET_VIEW:
+      return {
+        ...db,
+        views: {
+          ...db.views,
+          [action.id]: {
+            ...db.views[action.id],
+            ...action.payload,
+            __status__: statusSavedOnServer
+          }
+        }
+      };
 
     case UPDATE_STARTED:
       return updateRecord(db, action.tableName, action.updates.id, (record) => ({

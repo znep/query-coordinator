@@ -5,13 +5,13 @@ import { checkStatus, getJson, socrataFetch } from '../lib/http';
 import { parseDate } from '../lib/parseDate';
 import {
   updateStarted,
-  updateSucceeded,
   updateFailed,
   upsertStarted,
   upsertSucceeded,
   upsertFailed,
   edit,
   batch,
+  setView,
   outputSchemaUpsertStarted,
   outputSchemaUpsertSucceeded,
   outputSchemaUpsertFailed
@@ -106,8 +106,15 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     body: JSON.stringify(datasetMetadata)
   }).
   then(checkStatus).
-  then(() => {
-    dispatch(updateSucceeded('views', updateRecord));
+  then(getJson).
+  then(resp => {
+    // console.log('HEY', resp)
+    dispatch(setView(resp));
+    // upsertSucceeded('views', newOutputSchema, {
+    //   id: resp.resource.id,
+    //   inserted_at: parseDate(resp.resource.inserted_at)
+    // })
+    // dispatch(updateSucceeded('views', updateRecord));
     dispatch(redirectAfterInterval());
   }).
   catch(error => {

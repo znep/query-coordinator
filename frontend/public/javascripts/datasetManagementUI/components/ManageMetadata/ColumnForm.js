@@ -108,8 +108,9 @@ const mapDispatchToProps = (dispatch) => ({
   syncToStore: (id, key, val) => dispatch(edit('views', { id, [`colForm${_.upperFirst(key)}`]: val }))
 });
 
-const mapStateToProps = ({ db, fourfour }) => {
+const mapStateToProps = ({ db, routing }) => {
   const currentColumns = getCurrentColumns(db);
+  const { fourfour } = routing;
 
   return {
     currentColumns,

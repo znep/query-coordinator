@@ -26,7 +26,7 @@ import { joinChannel } from '../lib/channels';
 
 export function createUpload(file) {
   return (dispatch, getState) => {
-    const routing = getState().routing;
+    const { routing } = getState();
     const uploadInsert = {
       filename: file.name
     };
@@ -42,7 +42,7 @@ export function createUpload(file) {
       then((resp) => {
         const newUpload = resp.resource;
         dispatch(upsertSucceeded('uploads', uploadInsert, { id: newUpload.id }));
-        dispatch(push(Links.showUpload(newUpload.id)(routing)));
+        dispatch(push(Links.showUpload(newUpload.id)(routing.location)));
         dispatch(uploadFile(newUpload.id, file));
         dispatch(pollForOutputSchema(newUpload.id));
       }).
@@ -97,7 +97,7 @@ const SCHEMA_POLL_INTERVAL_MS = 500;
 
 function pollForOutputSchema(uploadId) {
   return (dispatch, getState) => {
-    const routing = getState().routing;
+    const { routing } = getState();
     function pollAgain() {
       setTimeout(() => {
         dispatch(pollForOutputSchema(uploadId));
@@ -119,7 +119,7 @@ function pollForOutputSchema(uploadId) {
               uploadId,
               upload.schemas[0].id,
               outputSchemaIds[0]
-            )(routing)));
+            )(routing.location)));
           } else {
             pollAgain();
           }

@@ -23,7 +23,7 @@ export const UPSERT_JOB_FAILURE = 'failure';
 
 export function applyUpdate(outputSchemaId) {
   return (dispatch, getState) => {
-    const routing = getState().routing;
+    const routing = getState().routing.location;
     const newUpsertJob = {
       output_schema_id: outputSchemaId
     };

@@ -52,7 +52,7 @@ function createNewOutputSchema(
 export const updateColumnType = (oldOutputSchema, oldColumn, newType) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
-  const routing = state.routing;
+  const routing = state.routing.location;
   const inputSchema = db.input_schemas[oldOutputSchema.input_schema_id];
   const uploadId = inputSchema.upload_id;
   const upload = db.uploads[uploadId];
@@ -79,7 +79,7 @@ export const updateColumnType = (oldOutputSchema, oldColumn, newType) => (dispat
 export const addColumn = (outputSchema, inputColumn) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
-  const routing = state.routing;
+  const routing = state.routing.location;
   const inputSchema = db.input_schemas[outputSchema.input_schema_id];
   const uploadId = inputSchema.upload_id;
   const upload = db.uploads[uploadId];
@@ -124,7 +124,7 @@ export const addColumn = (outputSchema, inputColumn) => (dispatch, getState) => 
 export const dropColumn = (outputSchema, toDrop) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
-  const routing = state.routing;
+  const routing = state.routing.location;
   const inputSchema = db.input_schemas[outputSchema.input_schema_id];
   const uploadId = inputSchema.upload_id;
   const upload = db.uploads[uploadId];

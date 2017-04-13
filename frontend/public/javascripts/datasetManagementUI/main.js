@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
-import { syncHistoryWithStore } from 'react-router-redux';
+import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import windowDBMiddleware from './lib/database/middleware';
@@ -30,7 +30,7 @@ window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/publishing/v1/socket', {
 window.DSMAPI_PHOENIX_SOCKET.connect();
 
 // middleware
-const middleware = [thunk];
+const middleware = [thunk, routerMiddleware(browserHistory)];
 
 if (window.serverConfig.environment === 'development') {
   window.Perf = Perf;

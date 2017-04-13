@@ -93,7 +93,8 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
     }
 
     // put schema in store on initial render so other components can know if the
-    // form is valid or not before the user even types anything
+    // form is valid or not before the user types anything; this lets us prevent
+    // the form from sending if there is a newly created required field for example
     componentDidMount() {
       const { fourfour, syncToStore } = this.props;
       const { schema } = this.state;

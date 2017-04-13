@@ -285,7 +285,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state, ownProps) {
   return {
     view: _.values(state.db.views)[0],
-    routing: state.routing,
+    routing: state.routing.location,
     db: state.db,
     urlParams: ownProps.params
   };

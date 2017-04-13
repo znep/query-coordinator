@@ -24,8 +24,8 @@ import { getLocalizedErrorMessage } from 'lib/util';
 import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX, fromFlatToNested } from 'lib/customMetadata';
 
 export const saveDatasetMetadata = () => (dispatch, getState) => {
-  const { db, fourfour } = getState();
-
+  const { db, routing } = getState();
+  const { fourfour } = routing;
   const model = _.get(db, `views.${fourfour}.model`);
   const schema = _.get(db, `views.${fourfour}.schema`);
 
@@ -123,7 +123,9 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
 };
 
 export const saveColumnMetadata = () => (dispatch, getState) => {
-  const { db, fourfour } = getState();
+  const { db, routing } = getState();
+
+  const { fourfour } = routing;
 
   const formDataModel = _.get(db, `views.${fourfour}.colFormModel`, {});
 
@@ -209,7 +211,7 @@ export const DELAY_UNTIL_CLOSE_MS = 1000;
 function redirectAfterInterval() {
   return (dispatch, getState) => {
     setTimeout(() => {
-      dispatch(push(Links.home(getState().routing)));
+      dispatch(push(Links.home(getState().routing.location)));
     }, DELAY_UNTIL_CLOSE_MS);
   };
 }

@@ -112,8 +112,10 @@ HomePaneSidebar.propTypes = {
   urlParams: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ db, routing }, { urlParams }) => {
-  return { routing, db, urlParams };
-};
+const mapStateToProps = ({ db, routing }, { urlParams }) => ({
+  db,
+  urlParams,
+  routing: routing.location
+});
 
 export default connect(mapStateToProps)(HomePaneSidebar);

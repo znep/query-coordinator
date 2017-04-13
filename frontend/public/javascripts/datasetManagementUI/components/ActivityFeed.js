@@ -218,8 +218,9 @@ ActivityFeed.propTypes = {
   db: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ db, routing }) => {
-  return ({ routing, db });
-};
+const mapStateToProps = ({ db, routing }) => ({
+  db,
+  routing: routing.location
+});
 
 export default connect(mapStateToProps)(ActivityFeed);

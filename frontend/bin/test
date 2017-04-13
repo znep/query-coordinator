@@ -1,28 +1,30 @@
 #!/usr/bin/env bash
-set -ex
+set -e
+
+cd "$(git rev-parse --show-toplevel)"
 
 # Called by Jenkins to ensure tests pass and code is free of lint.
 # Note that dependencies should be installed before running this script.  To do this,
 # run `bundle install && npm install`
 
-
 # Log the author name and email of the last commit
 echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
 
-if ../bin/should_run_tests frontend; then
-  cd $WORKSPACE/frontend
+if ./bin/should_run_tests frontend; then
+  # Find commit where this pull request branched from
+  MERGE_BASE=$(git merge-base HEAD origin/master)
 
-  # Ruby tests
-  bundle exec rake test:units
-  bundle exec rake test:functionals
-  bundle exec rspec --no-color
+  CHANGED_FILES=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\)') || true
+
+  # Find all javascript files that have changed on this PR
+  JAVASCRIPT_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.jsx\?$' | cut -c3-)
 
   # JavaScript lint
   if ! [[ -z $JAVASCRIPT_FILES ]]; then
     # Run eslint on the collection of javascript files, ignoring certain files that we do not lint
     # and ignoring warnings.  Ensure the command always succeeds by using || true to give us an
     # opportunity to print a nicer list of lint errors.
-    NEW_PROBLEMS=$(node_modules/.bin/eslint --ignore-path .eslintignore --quiet -f compact ${JAVASCRIPT_FILES} || true)
+    NEW_PROBLEMS=$(frontend/node_modules/.bin/eslint --ignore-path frontend/.eslintignore --quiet -f compact ${JAVASCRIPT_FILES} || true)
 
     # Find all lines of eslint output that represent lint errors
     DELTA=$(echo "${NEW_PROBLEMS}" | sed -e :a -e '$d;N;2,2ba' -e 'P;D')
@@ -45,6 +47,13 @@ if ../bin/should_run_tests frontend; then
   else
     echo "No JavaScript files changed, skipping JavaScript linting."
   fi
+
+  cd frontend
+
+  # Ruby tests
+  bundle exec rake test:units
+  bundle exec rake test:functionals
+  bundle exec rspec --no-color
 
   # JavaScript tests
   bundle exec rake test:karma[,,dots]

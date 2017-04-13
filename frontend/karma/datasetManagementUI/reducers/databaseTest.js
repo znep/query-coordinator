@@ -536,7 +536,7 @@ describe('reducers/database', () => {
     expect(badInsert).to.throw(ReferenceError);
   });
 
-  it('handles EDIT_VIEW', () => {
+  it('handles SET_VIEW', () => {
     const action = Actions.setView({
       id: 'abcd-1234',
       name: 'Socrata Tester',

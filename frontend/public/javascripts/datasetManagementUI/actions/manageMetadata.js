@@ -21,7 +21,7 @@ import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
 import { showFlashMessage } from 'actions/flashMessage';
 import { getLocalizedErrorMessage } from 'lib/util';
-import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX } from 'lib/customMetadata';
+import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX, fromFlatToNested } from 'lib/customMetadata';
 
 export const saveDatasetMetadata = () => (dispatch, getState) => {
   const { db, fourfour } = getState();
@@ -84,12 +84,10 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     ...publicMetadata,
     privateMetadata: {
       ...privateMetadata,
-      privateCustomMetadata: {
-        ...privateCustomMetadata
-      }
+      custom_fields: fromFlatToNested(privateCustomMetadata)
     },
     metadata: {
-      ...customMetadata
+      custom_fields: fromFlatToNested(customMetadata)
     }
   };
 

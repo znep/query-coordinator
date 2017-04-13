@@ -8,7 +8,30 @@ import CommonMetadataTable from '../../common/components/MetadataTable';
 export const MetadataTable = CommonMetadataTable;
 
 function mapStateToProps(state) {
-  return _.pick(state, 'view');
+  const view = state.view || {};
+
+  const customFieldsets = view.customMetadataFieldsets || [];
+
+  const customMetadataFieldsets = customFieldsets.reduce((acc, fieldset) => {
+    const currentAvailableFields = fieldset.fields.map(field => field.name);
+
+    // Have to perform this check in case user deletes a field but we still have
+    // data for it.
+    const customFields = _.pickBy(fieldset.existing_fields, (v, k) =>
+      currentAvailableFields.includes(k));
+
+    return {
+      ...acc,
+      [fieldset.name]: {
+        ...customFields
+      }
+    };
+  }, {});
+
+  return ({
+    view,
+    customMetadataFieldsets
+  });
 }
 
 function mapDispatchToProps(dispatch) {

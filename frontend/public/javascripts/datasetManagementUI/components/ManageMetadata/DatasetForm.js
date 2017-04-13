@@ -9,21 +9,15 @@ import Fieldset from 'components/MetadataFields/Fieldset';
 import reformed from 'components/Forms/reformed';
 import validateSchema from 'components/Forms/validateSchema';
 import { edit } from 'actions/database';
-import { flattenObject } from 'lib/util';
-import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX } from 'lib/customMetadata';
+import { makeNamespacedFieldName, fromNestedToFlat } from 'lib/customMetadata';
 import styles from 'styles/ManageMetadata/DatasetForm.scss';
 
 // HELPERS
 // fns to transform custom metadata fields into the proper shape
 const transformCustomField = (field, fieldsetName) => {
-  const prefix = field.private ? PRIVATE_CUSTOM_FIELD_PREFIX : CUSTOM_FIELD_PREFIX;
-
-  // in case user creates fields with the same name
-  const fieldIdentifier = btoa(fieldsetName).slice(0, 6);
-
   let fieldConstructor = {
     type: 'text',
-    name: `${prefix}-${fieldIdentifier}-${field.name}`,
+    name: makeNamespacedFieldName(field.private, field.name, fieldsetName),
     label: field.name,
     isPrivate: field.private,
     required: field.required
@@ -256,9 +250,15 @@ DatasetForm.propTypes = {
 const mapStateToProps = ({ db, fourfour }) => {
   const view = _.get(db, `views.${fourfour}`, {});
 
-  const privateFields = flattenObject(view.privateMetadata);
+  const privateCustomMetadata = _.get(view, 'privateMetadata.custom_fields', {});
 
-  const customFieldsWithValues = view.metadata;
+  const customMetadata = _.get(view, 'metadata.custom_fields', {});
+
+  const privateFieldsWithValues = _.omit(view.privateMetadata, 'custom_fields');
+
+  const privateCustomFieldsWithValues = fromNestedToFlat(privateCustomMetadata, true);
+
+  const customFieldsWithValues = fromNestedToFlat(customMetadata, false);
 
   const customFieldsetObjs = _.isEmpty(view.customMetadataFields)
     ? []
@@ -281,7 +281,8 @@ const mapStateToProps = ({ db, fourfour }) => {
       licenseId: view.licenseId,
       attribution: view.attribution,
       attributionLink: view.attributionLink,
-      ...privateFields,
+      ...privateFieldsWithValues,
+      ...privateCustomFieldsWithValues,
       ...customFieldsWithValues
     },
     validationRules: combinedValidationRules,

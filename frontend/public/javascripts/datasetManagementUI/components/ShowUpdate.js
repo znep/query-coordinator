@@ -158,6 +158,24 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
     category: view.category
   };
 
+  // MetadataTable component doesn't distinguish between private and non-private
+  // custom metadata. So we have to do some data-massaging here before passing
+  // custom metadata info to it.
+  const privateCustomMetadata = _.get(view, 'privateMetadata.custom_fields', {});
+
+  const nonPrivateCustomMetadata = _.get(view, 'metadata.custom_fields', {});
+
+  const combinedCustomMetadata = _.merge(nonPrivateCustomMetadata, privateCustomMetadata);
+
+  const currentAvailableFields = view.customMetadataFields
+    ? view.customMetadataFields.map(fieldset => fieldset.name)
+    : [];
+
+  // Have to perform this check in case user deletes a field but we still have
+  // data for it.
+  const customMetadataFieldsets = _.pickBy(combinedCustomMetadata, (v, k) =>
+    currentAvailableFields.includes(k));
+
   const tableProps = {
     view: {
       ...view,
@@ -178,7 +196,8 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
       viewCount: view.viewCount,
       downloadCount: view.downloadCount,
       ownerName: view.owner.displayName // owner.name
-    }
+    },
+    customMetadataFieldsets
   };
 
   metadataSection = (

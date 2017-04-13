@@ -202,8 +202,8 @@ describe('actions/manageMetadata', () => {
 
       newState.db.views['3kt9-pmvq'].model = {
         ...newState.db.views['3kt9-pmvq'].model,
-        [`${CUSTOM_FIELD_PREFIX}-name`]: 'tester',
-        [`${PRIVATE_CUSTOM_FIELD_PREFIX}-secret`]: 'big secret'
+        [`${CUSTOM_FIELD_PREFIX}-${btoa('fieldset')}-name`]: 'tester',
+        [`${PRIVATE_CUSTOM_FIELD_PREFIX}-${btoa('fieldset')}-secret`]: 'big secret'
       };
 
       const store = mockStore(newState);
@@ -215,17 +215,23 @@ describe('actions/manageMetadata', () => {
       const expectedPayload = {
         ..._.omit(db.views[fourfour].model, [
           'email',
-          `${PRIVATE_CUSTOM_FIELD_PREFIX}-secret`,
-          `${CUSTOM_FIELD_PREFIX}-name`
+          `${PRIVATE_CUSTOM_FIELD_PREFIX}-${btoa('fieldset')}-secret`,
+          `${CUSTOM_FIELD_PREFIX}-${btoa('fieldset')}-name`
         ]),
         privateMetadata: {
           email: db.views[fourfour].model.email,
-          privateCustomMetadata: {
-            [`${PRIVATE_CUSTOM_FIELD_PREFIX}-secret`]: 'big secret'
+          custom_fields: {
+            fieldset: {
+              secret: 'big secret'
+            }
           }
         },
         metadata: {
-          [`${CUSTOM_FIELD_PREFIX}-name`]: 'tester'
+          custom_fields: {
+            fieldset: {
+              name: 'tester'
+            }
+          }
         }
       };
 

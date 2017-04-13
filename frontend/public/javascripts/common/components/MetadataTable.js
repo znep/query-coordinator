@@ -113,12 +113,11 @@ class MetadataTable extends Component {
   }
 
   render() {
-    const view = this.props.view;
+    const { view, customMetadataFieldsets } = this.props;
     const onClickEditMetadata = this.props.onClickEditMetadata || _.noop;
     const onClickStats = this.props.onClickStats || _.noop;
 
     let attribution;
-    let customMetadataFieldsets;
     let attachments;
     let category;
     let tags;
@@ -128,6 +127,7 @@ class MetadataTable extends Component {
     let editMetadata;
     let contactDatasetOwner;
     let dataLastUpdated;
+    let customMetadataTable;
 
     if (view.attribution) {
       attribution = (
@@ -143,17 +143,16 @@ class MetadataTable extends Component {
       );
     }
 
-    if (!_.isEmpty(view.customMetadataFieldsets)) {
-      customMetadataFieldsets = _.map(view.customMetadataFieldsets, (fieldset, i) => {
-        const fields = _.map(fieldset.fields, (field, j) => {
-          const existingField = fieldset.existing_fields[field.name];
-          if (_.isString(existingField) || _.isNumber(existingField)) {
+    if (!_.isEmpty(customMetadataFieldsets)) {
+      const makeRows = (fields = {}) => {
+        return _.map(fields, (value, name) => {
+          if (_.isString(value) || _.isNumber(value)) {
             return (
-              <tr key={j}>
-                <td>{field.displayName || field.name}</td>
+              <tr key={name}>
+                <td>{name}</td>
                 <td>
                   <Linkify properties={{ rel: 'nofollow', target: '_blank' }}>
-                    {existingField}
+                    {value}
                   </Linkify>
                 </td>
               </tr>
@@ -162,16 +161,20 @@ class MetadataTable extends Component {
             return null;
           }
         });
+      };
+
+      customMetadataTable = _.map(customMetadataFieldsets, (fieldset, fieldsetName) => {
+        const tableRows = makeRows(fieldset);
 
         return (
-          <div key={i} className="metadata-table">
+          <div key={fieldsetName} className="metadata-table">
             <h3 className="metadata-table-title">
-              {fieldset.name}
+              {fieldsetName}
             </h3>
 
             <table className="table table-condensed table-borderless table-discrete table-striped">
               <tbody>
-                {fields}
+                {tableRows}
               </tbody>
             </table>
           </div>
@@ -416,7 +419,7 @@ class MetadataTable extends Component {
             </dl>
 
             <div className="metadata-column tables collapsed">
-              {customMetadataFieldsets}
+              {customMetadataTable}
 
               <div className="metadata-table">
                 {attachments}
@@ -509,7 +512,8 @@ MetadataTable.propTypes = {
   onClickStats: PropTypes.func,
   onExpandMetadataTable: PropTypes.func,
   onExpandTags: PropTypes.func,
-  view: PropTypes.object.isRequired
+  view: PropTypes.object.isRequired,
+  customMetadataFieldsets: PropTypes.object
 };
 
 export default MetadataTable;

@@ -119,7 +119,9 @@ export class ShowOutputSchema extends Component {
               <div className={styles.datasetAttribute}>
                 <div className={styles.datasetAttribute}>
                   <p>{I18n.data_preview.rows}</p>
-                  <p className={styles.attribute}>{commaify(rowsTransformed)}</p>
+                  <p
+                    className={styles.attribute}
+                    data-cheetah-hook="total-rows-transformed">{commaify(rowsTransformed)}</p>
                 </div>
                 <div className={styles.datasetAttribute}>
                   <p>{I18n.data_preview.columns}</p>

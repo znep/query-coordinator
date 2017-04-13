@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import { handleEnter } from '../../helpers/keyPressHelpers';
+import { fetchTranslation } from '../../../common/locale';
 
 export class ExternalResourceForm extends React.Component {
   constructor(props) {
@@ -128,12 +129,17 @@ export class ExternalResourceForm extends React.Component {
         {_.get(I18n, 'common.external_resource_editor.form.fields.preview_image.error')}
       </div>;
 
+    const imageHint = (<div className="alert info image-hint">
+      {fetchTranslation('common.external_resource_editor.form.fields.preview_image.hint')}
+    </div>);
+
     return (
       <form className="external-resource-form">
         {titleField}
         {descriptionField}
         {urlField}
         {previewImageField}
+        {imageHint}
         {imageWarning}
       </form>
     );

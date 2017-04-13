@@ -3,7 +3,7 @@
     <div class="header-content">
       <%= header_logo %>
 
-      <nav class="desktop">
+      <nav class="desktop" aria-label="<%= t('header.header_links_aria_label') %>">
 
         <div class="evergreen-link-cluster">
 
@@ -37,7 +37,7 @@
         <%= navbar_links_div(:use_dropdown => true) %>
       </nav>
 
-      <nav class="mobile">
+      <nav class="mobile" aria-label="<%= t('header.header_links_aria_label') %>">
         <a class="site-chrome-btn menu-toggle" href="#" onclick="mobileMenuToggle()">
           <span class="socrata-icon-hamburger"></span>
           <%= t('header.menu') %>

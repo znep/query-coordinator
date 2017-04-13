@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import {
+  HANDLE_FETCH_ROW_COUNT_SUCCESS,
+  HANDLE_FETCH_ROW_COUNT_ERROR,
   REQUESTED_VIEW_PUBLISH,
   HANDLE_VIEW_PUBLISH_SUCCESS,
   HANDLE_VIEW_PUBLISH_ERROR,
@@ -48,6 +50,18 @@ export default function(state, action) {
       return {
         ...state,
         hasPublishingError: false
+      };
+
+    case HANDLE_FETCH_ROW_COUNT_SUCCESS:
+      return {
+        ...state,
+        rowCount: action.rowCount
+      };
+
+    case HANDLE_FETCH_ROW_COUNT_ERROR:
+      return {
+        ...state,
+        rowCount: null
       };
 
     default:

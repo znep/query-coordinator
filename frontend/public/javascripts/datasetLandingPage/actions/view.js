@@ -1,7 +1,10 @@
+import _ from 'lodash';
 import 'whatwg-fetch';
 import { checkStatus, defaultHeaders } from '../../common/http';
 
 import {
+  HANDLE_FETCH_ROW_COUNT_SUCCESS,
+  HANDLE_FETCH_ROW_COUNT_ERROR,
   REQUESTED_VIEW_PUBLISH,
   HANDLE_VIEW_PUBLISH_SUCCESS,
   HANDLE_VIEW_PUBLISH_ERROR,
@@ -22,6 +25,17 @@ export function handleViewPublishError() {
 
 export function clearViewPublishError() {
   return { type: CLEAR_VIEW_PUBLISH_ERROR };
+}
+
+export function handleFetchRowCountSuccess(rowCount) {
+  return {
+    type: HANDLE_FETCH_ROW_COUNT_SUCCESS,
+    rowCount
+  };
+}
+
+export function handleFetchRowCountError() {
+  return { type: HANDLE_FETCH_ROW_COUNT_ERROR };
 }
 
 export function publishView() {
@@ -47,5 +61,32 @@ export function publishView() {
         _.delay(redirect, 1000);
       }).
       catch(() => dispatch(handleViewPublishError()));
+  };
+}
+
+export function fetchRowCount() {
+  return (dispatch, getState) => {
+    const viewId = getState().view.id;
+    const fetchOptions = {
+      method: 'GET',
+      headers: defaultHeaders,
+      credentials: 'same-origin'
+    };
+
+    // NOTE: This is where a REQUESTED-type action would be dispatched, but
+    // we're firing this on page load and it doesn't seem necessary.
+
+    fetch(`/api/id/${viewId}?$query=select count(*) as COLUMN_ALIAS_GUARD__count`, fetchOptions).
+      then(checkStatus).
+      then((response) => response.json()).
+      then((apiResponse) => {
+        let rowCount = _.get(apiResponse, '[0].column_alias_guard__count', null);
+        if (!_.isNull(rowCount)) {
+          rowCount = _.toNumber(rowCount);
+        }
+
+        dispatch(handleFetchRowCountSuccess(rowCount));
+      }).
+      catch(() => dispatch(handleFetchRowCountError()));
   };
 }

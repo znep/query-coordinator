@@ -1,15 +1,12 @@
 import 'babel-polyfill-safe';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import createLogger from 'redux-logger';
-import airbrake from '../common/airbrake';
 import components from 'socrata-components';
 import utils from 'socrata-utils';
 
-import datasetLandingPage from './reducers';
+import airbrake from '../common/airbrake';
+import store from './store';
 import App from './App';
 import DynamicContent from './DynamicContent';
 
@@ -18,19 +15,10 @@ import DynamicContent from './DynamicContent';
 const csrfCookie = encodeURIComponent(window.serverConfig.csrfToken);
 document.cookie = `socrata-csrf-token=${csrfCookie};secure;path=/`;
 
-const middleware = [thunk];
-
-if (window.serverConfig.environment === 'development') {
-  middleware.push(createLogger({
-    duration: true,
-    timestamp: false,
-    collapsed: true
-  }));
-} else {
+// Register with Airbrake in non-dev environments.
+if (window.serverConfig.environment !== 'development') {
   airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
-
-const store = createStore(datasetLandingPage, applyMiddleware(...middleware));
 
 // Defer rendering so the spinner in the erb can render.
 _.defer(() => {

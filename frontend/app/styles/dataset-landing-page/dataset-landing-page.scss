@@ -227,6 +227,27 @@ main.container.landing-page-container {
         }
       }
     }
+
+    // Special treatment for a spinner that appears while row stats are being
+    // fetched asynchronously. Explicitly sets dimensions so that the container
+    // doesn't resize unattractively when the spinner disappears.
+    &.dataset-contents {
+
+      .section-content {
+        height: 5.35rem;
+
+        .metadata-section.busy {
+          width: 100%;
+          text-align: center;
+        }
+
+        .spinner-default {
+          height: 52px;
+          width: 52px;
+          border-width: 5px;
+        }
+      }
+    }
   }
 
   .alert.error {

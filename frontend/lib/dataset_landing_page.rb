@@ -9,7 +9,6 @@ class DatasetLandingPage
     def fetch_all(view, current_user, cookies, request_id, request)
       threads = {}
 
-      threads[:row_count] = Thread.new { fetch_row_count(view) }
       threads[:can_publish] = Thread.new { fetch_can_publish(view) }
       threads[:migrations] = Thread.new { fetch_migrations(view) }
 
@@ -99,7 +98,6 @@ class DatasetLandingPage
         :ownerName => view.owner.displayName,
         :provenance => view.provenance,
         :resourceUrl => view.resource_url,
-        :rowCount => threads[:row_count].value,
         :rowLabel => row_label(view),
         :rowLabelMultiple => row_label(view).pluralize(2),
         :sortOrder => view.first_usable_sort_order,
@@ -110,10 +108,6 @@ class DatasetLandingPage
       }
 
       results
-    end
-
-    def fetch_row_count(view)
-      view.row_count rescue 0
     end
 
     def fetch_can_publish(view)

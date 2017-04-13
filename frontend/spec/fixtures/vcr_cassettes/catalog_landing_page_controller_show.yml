@@ -1433,7 +1433,6 @@ http_interactions:
           "properties" : [ {
             "name" : "category%3DGovernment",
             "value" : {
-              "show_stats" : true,
               "description" : "The page focuses on datasets in the Government category",
               "headline" : "Government Dataset"
             }
@@ -1487,7 +1486,6 @@ http_interactions:
           "properties" : [ {
             "name" : "category%3DGovernment",
             "value" : {
-              "show_stats" : true,
               "description" : "The page focuses on datasets in the Government category",
               "headline" : "Government Dataset"
             }

@@ -29,8 +29,7 @@ class CatalogLandingPageController < ApplicationController
     begin
       catalog_landing_page.update_metadata(
         'headline' => metadata[:headline],
-        'description' => metadata[:description],
-        'show_stats' => !!metadata[:showStats]
+        'description' => metadata[:description]
       )
     rescue => e
       if e.error_code == 'permission_denied' # lol Core errors

@@ -29,7 +29,7 @@ describe CatalogLandingPageController do
 
         expect(assigns(:category)).to eq('Government')
         expect(assigns(:featured_content).length).to eq(2)
-        expect(assigns(:metadata).keys).to eq(%w(show_stats description headline))
+        expect(assigns(:metadata).keys).to eq(%w(description headline))
         expect(assigns(:processed_browse)[:sidebar_config].search).to eq(false)
 
         expect(response).to have_http_status(:success)
@@ -77,7 +77,7 @@ describe CatalogLandingPageController do
 
           expect(assigns(:category)).to eq('Government')
           expect(assigns(:featured_content).length).to eq(2)
-          expect(assigns(:metadata).keys.sort).to eq(%w(description headline show_stats))
+          expect(assigns(:metadata).keys.sort).to eq(%w(description headline))
 
           expect(response).to have_http_status(:success)
         end
@@ -93,8 +93,7 @@ describe CatalogLandingPageController do
         },
         :metadata => {
           :headline => 'My headline',
-          :description => 'My description',
-          :showStats => 'true'
+          :description => 'My description'
         },
         :featured_content => {
           1 => {
@@ -147,7 +146,7 @@ describe CatalogLandingPageController do
 
       it 'should save the updated information' do
         expect_any_instance_of(CatalogLandingPage).to receive(:update_metadata).
-          with('headline' => 'My headline', 'description' => 'My description', 'show_stats' => true)
+          with('headline' => 'My headline', 'description' => 'My description')
         expect_any_instance_of(CatalogLandingPage).to receive(:create_or_update_featured_content).
           with('removed' => false, 'resource_id' => '1').once
         expect(FeaturedContent).to receive(:destroy).once

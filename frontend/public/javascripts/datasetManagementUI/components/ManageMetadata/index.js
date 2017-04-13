@@ -107,7 +107,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 // TODO: should prob get url stuff from redux store or rr props but not both
 const mapStateToProps = (state, ownProps) => ({
   views: _.get(state, 'db.views', {}),
-  fourfour: state.fourfour,
+  fourfour: state.routing.fourfour,
   path: ownProps.route.path,
   outputSchemaStatus: state.db.output_schemas.__status__
 });

@@ -247,7 +247,9 @@ DatasetForm.propTypes = {
 // We need to pass initialModel as a prop to reformed HOC if we want to pre-load
 // our form with data. Since these data come from the redux store, we create this
 // prop here in mapStateToProps.
-const mapStateToProps = ({ db, fourfour }) => {
+const mapStateToProps = ({ db, routing }) => {
+  const { fourfour } = routing;
+
   const view = _.get(db, `views.${fourfour}`, {});
 
   const privateCustomMetadata = _.get(view, 'privateMetadata.custom_fields', {});

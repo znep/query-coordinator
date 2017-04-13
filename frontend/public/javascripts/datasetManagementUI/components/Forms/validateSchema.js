@@ -71,7 +71,6 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
     constructor() {
       super();
       this.state = {
-        initialSyncCompleted: false,
         schema: {
           isValid: true,
           fields: {}
@@ -93,35 +92,31 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
       });
     }
 
+    // put schema in store on initial render so other components can know if the
+    // form is valid or not before the user even types anything
+    componentDidMount() {
+      const { fourfour, syncToStore } = this.props;
+      const { schema } = this.state;
+
+      if (syncToStore && fourfour) {
+        syncToStore(fourfour, 'schema', schema);
+      }
+    }
+
     // Called on every prop change (in this case, the form's data-model changing from
     // user input). Calculate a new schema
     componentWillReceiveProps(nextProps) {
-      const { model: newModel, validationRules: validationRulesFromProps, fourfour, syncToStore } = nextProps;
+      const { model: newModel, validationRules: validationRulesFromProps } = nextProps;
       const { model: oldModel } = this.props;
-      const { initialSyncCompleted } = this.state;
 
       if (!_.isEqual(oldModel, newModel)) {
         const rules = _.isEmpty(validationRules) ? validationRulesFromProps : validationRules;
 
         const schema = getValidationErrors(rules, newModel);
 
-        // We want to perform an inital sync to store as soon as we have enough info
-        // to do so. The sync that happens in componentWillUpdate is not reliable since
-        // fourfour usually resolves after the schema gets calculated, so diffing state.schema
-        // and nextState.schema can't serve as a control mechanism. So we put a sync flag in
-        // state (initialSyncCompleted) to compensate for that.
-        if (!initialSyncCompleted && fourfour && syncToStore) {
-          syncToStore(fourfour, 'schema', schema);
-
-          this.setState({
-            schema,
-            initialSyncCompleted: true
-          });
-        } else {
-          this.setState({
-            schema
-          });
-        }
+        this.setState({
+          schema
+        });
       }
     }
 

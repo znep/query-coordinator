@@ -12,6 +12,8 @@ export class ExternalResourceEditor extends React.Component {
     this.state = { title: '', description: '', url: '', previewImage: '' };
 
     _.bindAll(this, [
+      'isDirty',
+      'isDisabled',
       'updateField',
       'returnExternalResource',
       'renderModalContent',
@@ -29,17 +31,26 @@ export class ExternalResourceEditor extends React.Component {
     }
   }
 
-  updateField(field, value) {
-    this.setState({ [field]: value });
-  }
-
   isDirty() {
     return !_.isEqual(this.initialState, this.state);
+  }
+
+  isDisabled() {
+    const { title, url } = this.state;
+    return !this.isDirty() || _.isEmpty(title) || _.isEmpty(url);
+  }
+
+  updateField(field, value) {
+    this.setState({ [field]: value });
   }
 
   returnExternalResource() {
     const { title, description, url, previewImage } = this.state;
     const { onClose, onSelect } = this.props;
+
+    if (this.isDisabled()) {
+      return;
+    }
 
     const result = {
       contentType: 'external',
@@ -97,8 +108,6 @@ export class ExternalResourceEditor extends React.Component {
 
   renderFooterContent() {
     const { onClose } = this.props;
-    const { title, url } = this.state;
-    const formIsInvalid = _.isEmpty(title) || _.isEmpty(url);
 
     return (
       <div>
@@ -111,7 +120,7 @@ export class ExternalResourceEditor extends React.Component {
         <button
           key="select"
           className="btn btn-sm btn-primary select-button"
-          disabled={!this.isDirty() || formIsInvalid}
+          disabled={this.isDisabled()}
           onClick={this.returnExternalResource}>
           {_.get(I18n, 'common.external_resource_editor.footer.select')}
         </button>

@@ -196,18 +196,27 @@ export class Manager extends React.Component {
       value: this.props.header[section]
     });
 
+    const descriptionMarkdownEnabled = FeatureFlags.
+      value('enable_markdown_for_catalog_landing_page_description');
+
+    // EN-15607: When a user hits the Enter key on a description field, do nothing if markdown is enabled
+    // because they can enter a new line. If markdown is disabled, then save the form on Enter.
+    const onDescriptionEnter = descriptionMarkdownEnabled ? _.noop : this.saveOnEnter;
+
     const descriptionPlaceholder = formatWithFilter('manager.description.placeholder',
       'manager.description.placeholder_no_filter');
+
     const descriptionProps = {
       ...metadataInputProps('description'),
       'aria-label': descriptionPlaceholder,
       maxLength: 320,
+      onKeyDown: handleEnter(onDescriptionEnter),
       placeholder: descriptionPlaceholder
     };
 
     let markdownSupported = '';
     let markdownHelp = '';
-    if (FeatureFlags.value('enable_markdown_for_catalog_landing_page_description')) {
+    if (descriptionMarkdownEnabled) {
       const markdownAccepted = { __html: _.get(I18n, 'manager.description.markdown_accepted') };
 
       markdownSupported = (
@@ -225,8 +234,7 @@ export class Manager extends React.Component {
     }
 
     // EN-15512: Use a textarea tag if description markdown is enabled
-    const description =
-      FeatureFlags.value('enable_markdown_for_catalog_landing_page_description') ?
+    const description = descriptionMarkdownEnabled ?
         (<div><textarea {...descriptionProps} />{markdownSupported}{markdownHelp}</div>) :
         (<input {...descriptionProps} />);
 

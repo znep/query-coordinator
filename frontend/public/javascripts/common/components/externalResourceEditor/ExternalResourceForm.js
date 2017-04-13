@@ -8,7 +8,7 @@ export class ExternalResourceForm extends React.Component {
 
     this.state = { isImageValid: true, initialProps: props };
 
-    _.bindAll(this, ['onChange', 'onKeyDown', 'renderInputField']);
+    _.bindAll(this, ['onChange', 'onEnter', 'renderInputField']);
   }
 
   onChange(inputName, event) {
@@ -43,7 +43,7 @@ export class ExternalResourceForm extends React.Component {
     }
   }
 
-  onKeyDown(event) {
+  onEnter(event) {
     event.preventDefault();
     event.stopPropagation();
     this.props.onEnter();
@@ -60,7 +60,7 @@ export class ExternalResourceForm extends React.Component {
       type: 'text',
       'aria-labelledby': `${prefix}-${kebabKey}-label`,
       onChange: (event) => { this.onChange(inputName, event); },
-      onKeyDown: handleEnter(this.onKeyDown)
+      onKeyDown: handleEnter(this.onEnter)
     });
 
     if (inputProps.type !== 'file') {

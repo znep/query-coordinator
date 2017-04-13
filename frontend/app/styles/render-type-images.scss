@@ -53,6 +53,9 @@
 
 .menuLink {
   background-image: url(/stylesheets/images/content/table/menu_icon.png);
+  .link-text {
+    visibility: hidden;
+  }
 }
 
 .blist-th-icon {

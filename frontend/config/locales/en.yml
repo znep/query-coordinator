@@ -560,6 +560,7 @@ en:
             error: Error uploading image. Acceptable formats are jpg, jpeg, png, or gif.
             label: Preview Image
             no_file_chosen: No file chosen
+            hint: Your image will look best if the aspect ratio is 2.5:1 (width:height).
           title:
             label: Title
             placeholder: Add a title (required)

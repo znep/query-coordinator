@@ -136,14 +136,14 @@ export class ExternalResourceForm extends React.Component {
     </div>);
 
     return (
-      <form className="external-resource-form">
+      <div className="external-resource-form">
         {titleField}
         {descriptionField}
         {urlField}
         {previewImageField}
         {imageHint}
         {imageWarning}
-      </form>
+      </div>
     );
   }
 }

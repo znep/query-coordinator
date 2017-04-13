@@ -627,6 +627,14 @@ $(function() {
     $('.browse2-manage-catalog-landing-page').hide();
   }
 
+  function showCLPHelpFlyout() {
+    $('#clp-help-flyout').show();
+  }
+
+  function hideCLPHelpFlyout() {
+    $('#clp-help-flyout').hide();
+  }
+
   var $browse = $('.browse2');
   // alias this method so external scripts can get at it
   var getDS = blist.browse.getDS = function($item) {
@@ -783,4 +791,5 @@ $(function() {
   $('.browse2-result-delete-button').on('click', deleteResult);
   $('.browse2-result-delete-button').on('click', deleteResult);
   $('.manage-clp-hide-action').on('click', hideCLPManager);
+  $('#clp-help-toggle').on('mouseover', showCLPHelpFlyout).on('mouseout', hideCLPHelpFlyout);
 });

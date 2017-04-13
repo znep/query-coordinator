@@ -1,6 +1,16 @@
 section.landing-page-section.featured-content {
   margin: 1rem 0;
 
+  .catalog-landing-page-help-flyout {
+    position: relative;
+    margin-left: 0.5rem;
+
+    .flyout {
+      margin-left: 8px;
+      margin-top: 8px;
+    }
+  }
+
   .manage-prompt {
     display: none;
 

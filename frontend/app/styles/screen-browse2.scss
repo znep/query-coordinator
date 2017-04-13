@@ -442,6 +442,26 @@ html {
       float: right;
       cursor: pointer;
     }
+
+    .clp-help-wrapper {
+      display: inline-block;
+      margin-left: 0.5rem;
+
+      #clp-help-toggle {
+        color: $primary-text;
+      }
+
+      #clp-help-flyout {
+        position: absolute;
+        margin-top: 18px;
+        margin-left: 7px;
+
+        p {
+          font-size: 13px;
+          color: $dark-grey-2;
+        }
+      }
+    }
   }
 
   .browse2-facets-pane {

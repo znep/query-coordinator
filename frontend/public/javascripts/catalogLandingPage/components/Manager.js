@@ -6,6 +6,7 @@ import { defaultHeaders } from '../../common/http';
 import { handleEnter } from '../../common/helpers/keyPressHelpers';
 import format from 'stringformat';
 import FeaturedContentManager from './FeaturedContentManager';
+import HelpFlyout from './HelpFlyout';
 import ManagerSectionHeader from './ManagerSectionHeader';
 import MarkdownHelpFlannel from './MarkdownHelpFlannel';
 import * as Actions from '../actions/header';
@@ -231,7 +232,10 @@ export class Manager extends React.Component {
 
     return (
       <div className="clp-manager">
-        <h1 className="header">{_.get(I18n, 'manager.feature_content')}</h1>
+        <h1 className="header">
+          {_.get(I18n, 'manager.feature_content')}
+          <HelpFlyout right text={_.get(I18n, 'activation.whats_this')} />
+        </h1>
         {errorMessageDiv}
         <div>
           <form>

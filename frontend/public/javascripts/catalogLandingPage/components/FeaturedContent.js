@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import FeaturedContentViewCard from './FeaturedContentViewCard';
+import HelpFlyout from './HelpFlyout';
 import { getViewCardPropsForCLPFeaturedItem } from '../../common/helpers/viewCardHelpers';
 
 export class FeaturedContent extends React.Component {
@@ -29,10 +30,14 @@ export class FeaturedContent extends React.Component {
     } else {
       onFeaturedContentRendered(catalogQuery);
 
+      const helpFlyout = window.serverConfig.currentUserMayManage ?
+        <HelpFlyout right text={_.get(I18n, 'activation.whats_this')} /> : null;
+
       return (
         <section className="landing-page-section featured-content">
           <h2 className="landing-page-section-header">
             {_.get(I18n, 'featured_content.label_no_filter')}
+            {helpFlyout}
           </h2>
           <div className="media-results">
             {featuredContentViewCards}

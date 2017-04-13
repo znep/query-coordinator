@@ -38,7 +38,7 @@ describe('components/FeaturedContent', () => {
     }));
     const header = element.querySelector('.landing-page-section-header');
     assert.isNotNull(header);
-    assert.equal(header.textContent, 'Featured Content');
+    assert.match(header.textContent, /Featured Content/);
   });
 
   it('renders multiple featured content view cards', () => {

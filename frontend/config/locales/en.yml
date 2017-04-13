@@ -428,6 +428,7 @@ en:
       action: Feature Content
       header: Feature your best content.
       explanation: Write an introduction and promote up to 3 assets
+      whats_this: What's this?
     category_stats:
       about: About
       calendars:

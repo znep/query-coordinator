@@ -30,6 +30,14 @@ const hideCLPManager = () => {
   $('.browse2-manage-catalog-landing-page').hide();
 };
 
+const showCLPHelpFlyout = () => {
+  $('#clp-help-flyout').show();
+};
+
+const hideCLPHelpFlyout = () => {
+  $('#clp-help-flyout').hide();
+};
+
 const doBrowse = (newOpts) => {
   // Reset page
   delete newOpts.page;
@@ -233,5 +241,6 @@ $(document).ready(() => {
   $('.browse2-mobile-facets-filter-button').on('click', filterBrowse2MobileFacets);
   $('.browse2-facets-pane-mobile-clear-all-button').on('click', browse2MobileFacetClearAll);
   $('.manage-clp-hide-action').on('click', hideCLPManager);
+  $('#clp-help-toggle').on('mouseover', showCLPHelpFlyout).on('mouseout', hideCLPHelpFlyout);
 });
 

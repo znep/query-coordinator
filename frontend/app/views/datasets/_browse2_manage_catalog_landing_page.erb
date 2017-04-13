@@ -15,5 +15,20 @@
     t('catalog_landing_page.activation.action'),
     activation_params,
     :class => 'manage-clp-activate-action') %>
+
+  <div class="clp-help-wrapper">
+    <% help_flyout = content_tag(:span, nil, :class => 'socrata-icon-question', :id => 'clp-help-toggle') %>
+
+    <%= link_to(help_flyout,
+      'https://socrata.zendesk.com/knowledge/articles/115005683108/en-us?brand_id=3285806',
+      :target => :_blank,
+      :data => { :flyout => 'clp-help-flyout' }) %>
+
+    <div id="clp-help-flyout" class="flyout flyout-right flyout-hidden">
+      <section class="flyout-content">
+        <p><%= t('catalog_landing_page.activation.whats_this') %></p>
+      </section>
+    </div>
+  </div>
 </div>
 <%- end %>

@@ -3,6 +3,7 @@
 @import "common/mixins";
 @import "catalog-landing-page/search";
 @import "catalog-landing-page/header";
+@import "catalog-landing-page/help_flyout";
 @import "catalog-landing-page/featured_content";
 
 div.clp-manager {
@@ -12,6 +13,15 @@ div.clp-manager {
 
   h1.header {
     margin: 1rem 0;
+  }
+
+  .catalog-landing-page-help-flyout {
+    float: right;
+
+    .flyout {
+      margin-left: 8px;
+      margin-top: 8px;
+    }
   }
 
   .explanation {

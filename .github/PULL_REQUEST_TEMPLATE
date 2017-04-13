@@ -4,5 +4,5 @@
 - [ ] `Gemfile.lock` and `package.json` are up to date.
 
 Check one of the below:
-- [ ] Obtained design review via `snu designFE <pr>` for changes to `common/`.
+- [ ] Obtained design review via `snu cr designFE <pr>` for changes to `common/`.
 - [ ] This PR does not include changes to `common/`.

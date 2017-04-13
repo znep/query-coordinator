@@ -18,6 +18,14 @@ export function latestOutputSchema(db) {
   return _.maxBy(_.values(db.output_schemas), 'id');
 }
 
+export function columnsForInputSchema(db, inputSchemaId) {
+  const unsortedColumns = _.filter(
+    db.input_columns,
+    (ic) => ic.input_schema_id === inputSchemaId
+  );
+  return _.sortBy(unsortedColumns, 'position');
+}
+
 export function columnsForOutputSchema(db, outputSchemaId) {
   const schemaColumns = _.filter(db.output_schema_columns, { output_schema_id: outputSchemaId });
   const unsortedColumns = _.chain(db.output_columns).

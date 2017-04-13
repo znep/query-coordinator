@@ -1907,6 +1907,11 @@ en:
         errors_exist: Errors total
         errors_exist_scanning: Errors found so far
         no_errors_exist: All cells will import correctly
+        ignore_column: Ignore - don't import
+        ignored_column: Ignored - column won't be imported
+        import_column: Import Column
+        set_row_id: Set as row identifier
+        column_options: Column Options
         scanning: Still scanning for errors...
         type_display_names:
           SoQLBoolean: True/False

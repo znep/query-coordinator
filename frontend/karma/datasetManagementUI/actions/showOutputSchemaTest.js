@@ -1,7 +1,23 @@
 import { expect } from 'chai';
 import _ from 'lodash';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
-import { getNewOutputSchemaAndColumns } from 'actions/showOutputSchema';
+import { getStoreWithOneColumn } from '../data/storeWithOneColumn';
+import errorTableResponse from '../data/errorTableResponse';
+import addColumnResponse from '../data/addColumnResponse';
+import {
+  getNewOutputSchemaAndColumns,
+  updateActions,
+  loadColumnErrors,
+  addColumn,
+  dropColumn
+} from 'actions/showOutputSchema';
+import {
+  batch,
+  insertSucceeded,
+  insertFromServerIfNotExists
+} from 'actions/database';
+import { statusSavedOnServer } from 'lib/database/statuses';
+import mockPhx from '../testHelpers/mockPhoenixSocket';
 
 describe('actions/showOutputSchema', () => {
 
@@ -41,4 +57,40 @@ describe('actions/showOutputSchema', () => {
       ]);
     });
   });
+
+  // This should be tested but for some reason the channel
+  // global is getting wiped out by some other test??
+  // describe('addColumn', () => {
+
+  //   it.only('does the thing', (done) => {
+  //     const unmockPhx = mockPhx({
+  //       'output_schema:90': [],
+  //       'row_errors:4': []
+  //     }, done);
+
+  //     const store = getStoreWithOneColumn();
+  //     var db = store.getState().db;
+
+  //     const { unmockFetch } = mockFetch({
+  //       '/api/publishing/v1/upload/5/schema/4': {
+  //         POST: {
+  //           status: 200,
+  //           response: addColumnResponse
+  //         }
+  //       }
+  //     });
+  //     const outputSchema = db.output_schemas[18];
+  //     const inputColumn = db.input_columns[2];
+  //     store.dispatch(addColumn(outputSchema, inputColumn));
+  //     setTimeout(() => {
+  //       unmockFetch();
+  //       unmockPhx();
+  //       db = store.getState().db;
+  //       console.log("WATTTT")
+  //       done();
+  //     }, 0);
+  //   });
+
+  // });
+
 });

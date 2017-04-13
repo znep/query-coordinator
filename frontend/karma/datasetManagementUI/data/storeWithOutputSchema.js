@@ -36,15 +36,33 @@ export function getStoreWithOutputSchema(store = getDefaultStore()) {
     output_schema_id: 18,
     output_column_id: 51
   }));
+  store.dispatch(upsertFromServer('input_columns', {
+    id: 1,
+    field_name: 'arrest',
+    soql_type: 'SoQLText',
+    input_schema_id: 4
+  }))
+  store.dispatch(upsertFromServer('input_columns', {
+    id: 2,
+    field_name: 'block',
+    soql_type: 'SoQLText',
+    input_schema_id: 4
+  }))
   store.dispatch(upsertFromServer('transforms', {
     id: 1,
     transform_expr: 'arrest',
-    output_soql_type: 'SoQLText'
+    output_soql_type: 'SoQLText',
+    transform_input_columns: [{
+      input_column_id: 1
+    }]
   }));
   store.dispatch(upsertFromServer('transforms', {
     id: 2,
     transform_expr: 'block',
-    output_soql_type: 'SoQLText'
+    output_soql_type: 'SoQLText',
+    transform_input_columns: [{
+      input_column_id: 2
+    }]
   }));
   store.dispatch(createTable('transform_1'));
   store.dispatch(createTable('transform_2'));

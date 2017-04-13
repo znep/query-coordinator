@@ -16,7 +16,9 @@ describe('components/Table/ColumnHeader', () => {
       },
       display_name: 'foo'
     },
-    updateColumnType: _.noop
+    updateColumnType: _.noop,
+    addColumn: _.noop,
+    dropColumn: _.noop
   };
 
   it('renders without errors', () => {
@@ -29,7 +31,9 @@ describe('components/Table/ColumnHeader', () => {
     const spy = sinon.spy();
     const props = {
       ...defaultProps,
-      updateColumnType: spy
+      updateColumnType: spy,
+      addColumn: _.noop,
+      dropColumn: _.noop
     };
     const container = document.createElement('tr');
     ReactDOM.render(<ColumnHeader {...props} />, container);
@@ -42,6 +46,38 @@ describe('components/Table/ColumnHeader', () => {
       'SoQLNumber'
     ])
   });
+
+  it('renders a disable button when not disabled', () => {
+    const props = {
+      ...defaultProps,
+      updateColumnType: _.noop,
+      addColumn: _.noop,
+      dropColumn: _.noop,
+      isDisabled: false
+    };
+    const container = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...props} />, container);
+    TestUtils.Simulate.click(container.querySelector('.dropdownButton'));
+    expect(container.querySelector('.socrata-icon-eye-blocked')).to.exist;
+    expect(container.querySelector('.socrata-icon-add')).to.not.exist;
+  });
+
+
+  it('renders an add button when disabled', () => {
+    const props = {
+      ...defaultProps,
+      updateColumnType: _.noop,
+      addColumn: _.noop,
+      dropColumn: _.noop,
+      isDisabled: true
+    };
+    const container = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...props} />, container);
+    TestUtils.Simulate.click(container.querySelector('.dropdownButton'));
+    expect(container.querySelector('.socrata-icon-eye-blocked')).to.not.exist;
+    expect(container.querySelector('.socrata-icon-plus3')).to.exist;
+  });
+
 
   // testing fix for EN-12896
   it('handles column type changing after output schema changes', () => {

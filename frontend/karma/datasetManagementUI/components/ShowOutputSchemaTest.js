@@ -19,6 +19,9 @@ describe('components/ShowOutputSchema', () => {
       inputSchemaId: 4,
       outputSchemaId: 18
     },
+    updateColumnType: _.noop,
+    addColumn: _.noop,
+    dropColumn: _.noop,
     route: {
       path: '' // just used by mapStateToProps to determine whether we're in a "viewing row errors" state
     },
@@ -191,6 +194,8 @@ describe('components/ShowOutputSchema', () => {
       goHome: _.noop,
       goToUpload: _.noop,
       applyUpdate: _.noop,
+      addColumn: () => _.noop,
+      dropColumn: () => _.noop,
       routing: {},
       dispatch: function() {}
     };
@@ -205,6 +210,81 @@ describe('components/ShowOutputSchema', () => {
     expect(calledWithOutputSchema.id).to.eql(_.values(storeDb.output_schemas)[0].id);
     expect(calledWithOutputColumn.id).to.eql(_.values(storeDb.output_columns)[0].id);
     expect(calledWithUpdatedType).to.eql('SoQLNumber');
+  });
+
+  it('calls `dropColumn` when clicked', () => {
+    const store = getStoreWithOutputSchema();
+    const storeDb = store.getState().db;
+    const spy = sinon.spy();
+    // rendering unconnected version so we can pass in a spy instead of
+    // going through mapDispatchToProps
+    const props = {
+      db: storeDb,
+      upload: _.values(storeDb.uploads)[0],
+      inputSchema: _.values(storeDb.input_schemas)[0],
+      outputSchema: _.values(storeDb.output_schemas)[0],
+      columns: Selectors.columnsForOutputSchema(storeDb, _.values(storeDb.output_schemas)[0].id),
+      displayState: normal(),
+      canApplyUpdate: false,
+      updateColumnType: _.noop,
+      goHome: _.noop,
+      goToUpload: _.noop,
+      applyUpdate: _.noop,
+      addColumn: () => _.noop,
+      dropColumn: () => spy,
+      dispatch: _.noop
+    };
+    const element = renderComponentWithStore(ShowOutputSchemaUnConnected, props, store);
+    Simulate.click(element.querySelector('.dropdownButton'));
+    Simulate.click(element.querySelector('.socrata-icon-eye-blocked'));
+    expect(spy.callCount).to.eql(1);
+
+    const [calledWithOutputColumn] = spy.args[0];
+    expect(calledWithOutputColumn.field_name).to.eql('arrest');
+  });
+
+  it('calls `addColumn` when clicked', () => {
+    const store = getStoreWithOutputSchema();
+    var storeDb = store.getState().db;
+    store.dispatch(upsertFromServer('output_schemas', {
+      id: 42,
+      input_schema_id: _.values(storeDb.input_schemas)[0].id
+    }));
+    store.dispatch(upsertFromServer('output_schema_columns', {
+      id: 23,
+      output_schema_id: 42,
+      output_column_id: 51
+    }));
+
+    storeDb = store.getState().db;
+    const outSchema = storeDb.output_schemas[42];
+
+    const spy = sinon.spy();
+    // rendering unconnected version so we can pass in a spy instead of
+    // going through mapDispatchToProps
+    const props = {
+      db: storeDb,
+      upload: _.values(storeDb.uploads)[0],
+      inputSchema: _.values(storeDb.input_schemas)[0],
+      outputSchema: outSchema,
+      columns: Selectors.columnsForOutputSchema(storeDb, outSchema.id),
+      canApplyUpdate: false,
+      displayState: normal(),
+      updateColumnType: _.noop,
+      goHome: _.noop,
+      goToUpload: _.noop,
+      applyUpdate: _.noop,
+      addColumn: () => spy,
+      dropColumn: () => _.noop,
+      dispatch: _.noop
+    };
+    const element = renderComponentWithStore(ShowOutputSchemaUnConnected, props, store);
+    Simulate.click(element.querySelector('.dropdownButton'));
+    Simulate.click(element.querySelector('.socrata-icon-plus3'));
+    expect(spy.callCount).to.eql(1);
+
+    const [calledWithOutputColumn] = spy.args[0];
+    expect(calledWithOutputColumn.field_name).to.eql('arrest');
   });
 
   // these overlap a bit with ColumnStatusTest, but that's not a bad thing IMO

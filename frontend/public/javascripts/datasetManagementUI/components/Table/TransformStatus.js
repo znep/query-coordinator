@@ -56,6 +56,7 @@ class TransformStatus extends Component {
     this.attachFlyouts();
   }
 
+
   attachFlyouts() {
     if (this.flyoutParentEl) {
       styleguide.attachTo(this.flyoutParentEl);
@@ -63,8 +64,26 @@ class TransformStatus extends Component {
   }
 
   render() {
-    const { transform, totalRows, path, displayState, columnId } = this.props;
+    const { transform, totalRows, path, displayState, columnId, isDisabled } = this.props;
     const SubI18n = I18n.show_output_schema.column_header;
+    if (isDisabled) {
+      return (
+        <th className={styles.disabledColumn}>
+          <div className={styles.columnProgressBar}>
+            <ProgressBar
+              type="done"
+              percent="100"
+              ariaLabeledBy={`column-display-name-${columnId}`} />
+          </div>
+          <div className={styles.statusText}>
+            <SocrataIcon name="eye-blocked" className={styles.disabledIcon} />
+            {SubI18n.ignored_column}
+          </div>
+        </th>
+      );
+    }
+
+
     const uploadDone = _.isNumber(totalRows);
     const thisColumnDone = _.isNumber(totalRows) &&
                            transform.contiguous_rows_processed === totalRows;
@@ -144,11 +163,12 @@ class TransformStatus extends Component {
 }
 
 TransformStatus.propTypes = {
-  transform: PropTypes.object.isRequired,
+  transform: PropTypes.object,
   columnId: PropTypes.number.isRequired,
   displayState: DisplayState.propType.isRequired,
   path: PropTypes.object.isRequired,
-  totalRows: PropTypes.number
+  totalRows: PropTypes.number,
+  isDisabled: PropTypes.bool
 };
 
 export default TransformStatus;

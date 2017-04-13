@@ -1,7 +1,9 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
-
+.typeIconDisabled {
+  color: $grey !important;
+}
 .date {
   color: #B26B00;
 }

@@ -217,6 +217,7 @@ function createTableAndSubscribeToTransform(transform) {
       }));
       dispatch(createTable(`transform_${transform.id}`));
       const channelName = `transform_progress:${transform.id}`;
+
       joinChannel(channelName, {
         max_ptr: (maxPtr) => {
           dispatch(updateFromServer('transforms', {
@@ -248,6 +249,7 @@ function toOutputSchema(os) {
 function subscribeToOutputSchema(outputSchema) {
   return (dispatch) => {
     const channelName = `output_schema:${outputSchema.id}`;
+
     joinChannel(channelName, {
       update: (updatedOutputSchema) => {
         dispatch(updateFromServer('output_schemas', toOutputSchema({

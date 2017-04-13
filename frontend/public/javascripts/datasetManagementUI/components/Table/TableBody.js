@@ -11,10 +11,20 @@ class TableBody extends Component {
   shouldComponentUpdate(nextProps) {
     return !_.isEqual(
       {
+        columns: nextProps.columns.map((c) => (
+          c.transform ?
+          [c.transform.id, c.transform.fetched_rows, c.transform.error_indices] :
+          null
+        )),
         displayState: nextProps.displayState,
         __loads__: nextProps.db.__loads__
       },
       {
+        columns: this.props.columns.map((c) => (
+          c.transform ?
+          [c.transform.id, c.transform.fetched_rows, c.transform.error_indices] :
+          null
+        )),
         displayState: this.props.displayState,
         __loads__: this.props.db.__loads__
       }
@@ -23,9 +33,7 @@ class TableBody extends Component {
 
   getData() {
     const props = this.props;
-    const transformTables = props.transforms.map((transform) => (
-      props.db[`transform_${transform.id}`]
-    ));
+
     const startRow = (props.displayState.pageNo - 1) * PAGE_SIZE;
     const endRow = startRow + PAGE_SIZE;
     let rowIndices;
@@ -44,12 +52,20 @@ class TableBody extends Component {
     }
     return rowIndices.map((rowIdx) => ({
       rowIdx,
-      transforms: props.transforms.map((transform, transformIdx) => {
-        const cell = transformTables[transformIdx][rowIdx];
-        return {
-          id: transform.id,
-          cell
-        };
+      transforms: this.props.columns.map((column) => {
+        const transform = column.transform;
+        if (!transform) {
+          return {
+            id: `column_${column.id}`,
+            cell: null
+          };
+        } else {
+          const cell = this.props.db[`transform_${transform.id}`][rowIdx];
+          return {
+            id: transform.id,
+            cell
+          };
+        }
       }),
       rowError: props.db.row_errors[`${props.inputSchemaId}-${rowIdx}`]
     }));
@@ -58,7 +74,11 @@ class TableBody extends Component {
   renderNormalRow(row) {
     return (
       <tr key={row.rowIdx}>
-        {row.transforms.map(transform => <TableCell key={transform.id} cell={transform.cell} />)}
+        {row.transforms.map((transform) => {
+          return (<TableCell
+            key={transform.id}
+            cell={transform.cell} />);
+        })}
       </tr>);
   }
 
@@ -79,8 +99,8 @@ class TableBody extends Component {
 
 TableBody.propTypes = {
   db: PropTypes.object.isRequired,
-  transforms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  displayState: DisplayState.propType.isRequired,
+  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  displayState: PropTypes.object.isRequired,
   inputSchemaId: PropTypes.number.isRequired
 };
 

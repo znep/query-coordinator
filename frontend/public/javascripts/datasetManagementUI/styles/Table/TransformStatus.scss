@@ -33,6 +33,12 @@
   }
 }
 
+.disabledColumn {
+  composes: colErrors;
+  color: $alternate-1-dark;
+  font-style: italic;
+  background-color: #f6f6f6 !important; //lol
+}
 .statusText {
   padding: 5px;
   border-bottom: 1px solid $light-grey-4;
@@ -86,6 +92,12 @@
 .successIcon {
   composes: success from global;
   composes: errorInfo;
+}
+
+.disabledIcon {
+  composes: warning from global;
+  composes: errorInfo;
+  background-color: $alternate-1-base !important;
 }
 
 .error {

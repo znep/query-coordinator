@@ -22,8 +22,8 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   const upload = db.uploads[_.toNumber(uploadId)];
   const inputSchema = db.input_schemas[_.toNumber(inputSchemaId)];
   const outputSchema = db.output_schemas[outputSchemaId];
-  const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
 
+  const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
   const canApplyUpdate = columns.every((column) => {
     return column.transform.contiguous_rows_processed &&
       column.transform.contiguous_rows_processed === inputSchema.total_rows;
@@ -67,6 +67,8 @@ export class ShowOutputSchema extends Component {
       numLoadsInProgress,
       goHome,
       updateColumnType,
+      addColumn,
+      dropColumn,
       applyUpdate,
       routing
     } = this.props;
@@ -134,7 +136,9 @@ export class ShowOutputSchema extends Component {
                 inputSchema={inputSchema}
                 outputSchema={outputSchema}
                 displayState={displayState}
-                updateColumnType={updateColumnType} />
+                updateColumnType={updateColumnType}
+                addColumn={addColumn(outputSchema)}
+                dropColumn={dropColumn(outputSchema)} />
             </div>
             <PagerBar
               path={path}
@@ -156,7 +160,6 @@ export class ShowOutputSchema extends Component {
                   {I18n.home_pane.save_for_later}
                 </button>
               </Link>
-
               <button
                 onClick={applyUpdate}
                 disabled={!canApplyUpdate}
@@ -182,6 +185,8 @@ ShowOutputSchema.propTypes = {
   numLoadsInProgress: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
+  addColumn: PropTypes.func.isRequired,
+  dropColumn: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   routing: PropTypes.object.isRequired
@@ -207,6 +212,12 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     updateColumnType: (oldSchema, oldColumn, newType) => {
       dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType));
+    },
+    addColumn: (outputSchema) => {
+      return (column) => dispatch(ShowActions.addColumn(outputSchema, column));
+    },
+    dropColumn: (outputSchema) => {
+      return (column) => dispatch(ShowActions.dropColumn(outputSchema, column));
     },
     goHome: () => {
       dispatch(push(Links.home(ownProps.location)));

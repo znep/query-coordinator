@@ -25,6 +25,11 @@ const hideBrowse2MobileLoadingSpinner = () => {
   $('.browse2-loading-spinner-container').hide();
 };
 
+const hideCLPManager = () => {
+  document.cookie = 'hide-clp-manager=true; expires=0; path=/';
+  $('.browse2-manage-catalog-landing-page').hide();
+};
+
 const doBrowse = (newOpts) => {
   // Reset page
   delete newOpts.page;
@@ -227,5 +232,6 @@ $(document).ready(() => {
     on('click', browse2MobileFacetClick);
   $('.browse2-mobile-facets-filter-button').on('click', filterBrowse2MobileFacets);
   $('.browse2-facets-pane-mobile-clear-all-button').on('click', browse2MobileFacetClearAll);
+  $('.manage-clp-hide-action').on('click', hideCLPManager);
 });
 

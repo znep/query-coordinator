@@ -623,7 +623,7 @@ $(function() {
   }
 
   function hideCLPManager() {
-    $.cookies.set('hide-clp-manager', true);
+    document.cookie = "hide-clp-manager=true; expires=0; path=/";
     $('.browse2-manage-catalog-landing-page').hide();
   }
 

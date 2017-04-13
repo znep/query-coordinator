@@ -535,4 +535,26 @@ describe('reducers/database', () => {
 
     expect(badInsert).to.throw(ReferenceError);
   });
+
+  it('handles EDIT_VIEW', () => {
+    const action = Actions.setView({
+      id: 'abcd-1234',
+      name: 'Socrata Tester',
+      tags: ['one', 'two', 'three']
+    });
+
+    const expectedResult = {
+      id: 'abcd-1234',
+      name: 'Socrata Tester',
+      tags: ['one', 'two', 'three'],
+      __status__: {
+        type: 'SAVED',
+        savedAt: 'ON_SERVER'
+      }
+    };
+
+    const state = dbReducer(undefined, action);
+
+    assert.deepEqual(state.views[action.id], expectedResult);
+  })
 });

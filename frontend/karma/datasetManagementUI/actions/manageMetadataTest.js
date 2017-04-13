@@ -7,6 +7,7 @@ import {
   UPSERT_STARTED,
   UPSERT_FROM_SERVER,
   UPDATE_STARTED,
+  SET_VIEW,
   UPDATE_SUCCEEDED
 } from 'actions/database';
 import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX } from 'lib/customMetadata';
@@ -27,6 +28,7 @@ describe('actions/manageMetadata', () => {
       PUT: {
         status: 200,
         response: {
+          id: 'hehe-hehe',
           name: 'New Name',
           description: 'New description',
           category: 'New Category'
@@ -105,7 +107,7 @@ describe('actions/manageMetadata', () => {
       }, 0);
     });
 
-    it('dispatches insert succeeded with correct data if server responded with 200-level status', (done) => {
+    it('dispatches set view action with correct data if server responded with 200-level status', (done) => {
       const { unmockFetch } = mockFetch(responses, done);
 
       const unmockPhx = mockPhx({
@@ -118,18 +120,14 @@ describe('actions/manageMetadata', () => {
 
       const { fourfour, db } = store.getState();
 
-      const expectedPayload = {
-        id: fourfour
-      };
-
       setTimeout(() => {
         const action = store.getActions()[1];
 
-        expect(action.type).to.eq(UPDATE_SUCCEEDED);
+        expect(action.type).to.eq(SET_VIEW);
 
-        expect(action.tableName).to.eq('views');
+        expect(action.id).to.eq(responses['/api/views/hehe-hehe'].PUT.response.id);
 
-        expect(action.updatedRecord).to.deep.eq(expectedPayload);
+        expect(action.payload).to.deep.eq(responses['/api/views/hehe-hehe'].PUT.response);
 
         unmockFetch();
 

@@ -108,13 +108,8 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   then(checkStatus).
   then(getJson).
   then(resp => {
-    // console.log('HEY', resp)
     dispatch(setView(resp));
-    // upsertSucceeded('views', newOutputSchema, {
-    //   id: resp.resource.id,
-    //   inserted_at: parseDate(resp.resource.inserted_at)
-    // })
-    // dispatch(updateSucceeded('views', updateRecord));
+    
     dispatch(redirectAfterInterval());
   }).
   catch(error => {

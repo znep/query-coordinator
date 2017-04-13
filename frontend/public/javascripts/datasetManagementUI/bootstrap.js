@@ -44,6 +44,7 @@ export function bootstrap(store, initialView, initialUpdate) {
     license: initialView.license || {},
     licenseId: initialView.licenseId,
     attribution: initialView.attribution,
+    attributionLink: initialView.attributionLink,
     tags: initialView.tags,
     privateMetadata: initialView.privateMetadata || {},
     attachments: _.get(initialView, 'metadata.attachments', []),

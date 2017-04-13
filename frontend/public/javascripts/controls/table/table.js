@@ -3230,7 +3230,7 @@
             '></div>');
         }
         html.push(
-          ' <a class="menuLink action-item" href="#column-menu"></a>',
+          ' <a class="menuLink action-item" href="#column-menu"><span class="link-text">' + $.t('controls.grid.menu') + '</span></a>',
           '<div class="button-wrapper"> <div class="info-button action-item"></div> </div>',
           '<span class="info-container',
           canEdit() ? ' icon-display' : '',

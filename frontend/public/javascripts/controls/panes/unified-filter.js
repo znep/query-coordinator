@@ -1553,7 +1553,7 @@
           $line.find('.filterValueEditor').each(function(i) {
             var $this = $(this);
             var item = _.isArray(valueObj.item) ?
-              valueObj.item[i] : valueObj.item
+              valueObj.item[i] : valueObj.item;
             var editorValue = getFilterValue(item, column, metadata);
 
             $this.data('unifiedFilter-editor',

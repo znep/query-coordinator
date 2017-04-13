@@ -30,11 +30,26 @@ namespace :manifest do
 
       manifest_output << "\nDiff Command: `git log --no-color --right-only --cherry-pick --reverse #{from_tag}...#{to_tag}`\n"
 
+      # We put JIRA ticket references in commit subjects.
+      # Some place ticket references in each normal commit.
+      # Some place ticket references in the merge commit only.
+      # We search all commit subjects for ticket references (merge and normal).
+      # We allow merge commits without ticket references but
+      # warn for all normal commits without ticket references.
+      # We also need to ignore changes in storyteller directories.
+
       # TODO: Remove this list once all intended repositories are merged into platform-ui.
       ignore_list = %w[ 069316e2ea2be425925863b58c3653da54d50a84 ]
-      git_log_cmd = "git log --no-color --right-only --cherry-pick --reverse #{from_tag}...#{to_tag} ^#{ignore_list.join(' ^')}"
-      git_log_output = `#{git_log_cmd}`
-      git_log_output_no_merges = `#{git_log_cmd} --no-merges`
+      # N.B.: the %s bit in this string is a printf format expression, used below via the % operator.
+      # Read up here: http://ruby-doc.org/core-2.2.0/String.html#method-i-25
+      git_log_cmd_template = "git log --no-color --right-only --cherry-pick --reverse %s #{from_tag}...#{to_tag} ^#{ignore_list.join(' ^')} -- . ':(exclude)storyteller'"
+
+      # Excluding storyteller via -- . ':(exclude)storyteller' also ends up ignoring empty merge commits
+      # (because of the '.' that is required for excludes to work) unless we pass --full-history.
+      git_log_output = `#{git_log_cmd_template % '--full-history'}`
+
+      # Exclude merges from no-ticket warnings.
+      git_log_output_no_merges = `#{git_log_cmd_template % '--no-merges'}`
 
       manifest_output << "\n\nLink to Jira query for current issues...\n"
       manifest_output << jira_query(git_log_output)

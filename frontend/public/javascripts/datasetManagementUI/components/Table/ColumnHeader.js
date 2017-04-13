@@ -15,7 +15,7 @@ function DropdownWithIcon(dropdownProps) {
   const klass = classNames(
     styles.colDropdownItem,
     { [styles.colDropdownItemDisabled]: disabled }
-  )
+  );
   return (
 
     <div className={klass}>

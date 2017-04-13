@@ -92,8 +92,8 @@ export const addColumn = (outputSchema, inputColumn) => (dispatch, getState) => 
   const newColumnExpr = `to_${xform}(${inputColumn.field_name})`;
 
   const genTransform = (column) => {
-    const xform = db.transforms[column.transform_id];
-    return xform.transform_expr;
+    const newXform = db.transforms[column.transform_id];
+    return newXform.transform_expr;
   };
   const newOutputColumns = outputColumnsOf(db, outputSchema).
     map(oc => toNewOutputColumn(oc, genTransform)).

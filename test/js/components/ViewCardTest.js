@@ -59,7 +59,7 @@ describe('ViewCard', function() {
     describe('image preview', function() {
       it('renders an icon if no image is provided', function() {
         var element = renderComponent(ViewCard, getProps());
-        expect(element.querySelector('img')).to.not.exist;
+        expect(element.querySelector('.preview-image')).to.not.exist;
       });
 
       it('renders an image if one is provided', function() {
@@ -67,7 +67,9 @@ describe('ViewCard', function() {
           imageUrl: '/image.png'
         }));
 
-        expect(element.querySelector('img')).to.exist;
+        expect(element.querySelector('.preview-image')).to.exist;
+        expect(element.querySelector('.preview-image').style.backgroundImage).to.exist;
+        expect(element.querySelector('.preview-image').style.backgroundImage).to.include('/image.png');
       });
 
       it('renders an image if one is provided and resource is external', function() {
@@ -76,7 +78,9 @@ describe('ViewCard', function() {
           isExternal: true
         }));
 
-        expect(element.querySelector('img')).to.exist;
+        expect(element.querySelector('.preview-image')).to.exist;
+        expect(element.querySelector('.preview-image').style.backgroundImage).to.exist;
+        expect(element.querySelector('.preview-image').style.backgroundImage).to.include('/image.png');
       });
     });
 

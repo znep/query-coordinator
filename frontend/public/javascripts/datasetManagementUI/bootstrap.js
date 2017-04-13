@@ -2,12 +2,13 @@ import _ from 'lodash';
 import {
   upsertFromServer,
   batch
-} from './actions/database';
-import { addNotification, removeNotificationAfterTimeout } from './actions/notifications';
-import { upsertJobNotification } from './lib/notifications';
-import { insertAndSubscribeToUpload } from './actions/manageUploads';
-import { parseDate } from './lib/parseDate';
-import * as ApplyUpdate from './actions/applyUpdate';
+} from 'actions/database';
+import { setFourfour } from 'actions/routing';
+import { addNotification, removeNotificationAfterTimeout } from 'actions/notifications';
+import { upsertJobNotification } from 'lib/notifications';
+import { insertAndSubscribeToUpload } from 'actions/manageUploads';
+import { parseDate } from 'lib/parseDate';
+import * as ApplyUpdate from 'actions/applyUpdate';
 
 export const emptyDB = {
   __loads__: {},
@@ -29,6 +30,7 @@ const millis = 1000;
 
 export function bootstrap(store, initialView, initialUpdate) {
   const operations = [];
+  store.dispatch(setFourfour(initialView.id));
   operations.push(upsertFromServer('views', {
     id: initialView.id,
     name: initialView.name,

@@ -1,5 +1,4 @@
 import React, { PropTypes, Component } from 'react';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import AppBar from './AppBar';
@@ -8,20 +7,13 @@ import { setFourfour } from 'actions/routing';
 import styles from 'styles/App.scss';
 
 class App extends Component {
-  componentDidMount() {
-    const { dispatch, urlParams } = this.props;
-    const { fourfour } = urlParams;
-
-    dispatch(setFourfour(fourfour));
-  }
-
-  componentDidUpdate(prevProps) {
+  componentWillReceiveProps(nextProps) {
     const { dispatch } = this.props;
-    const currentFourfour = _.get(this.props, 'params.fourfour', '');
-    const prevFourfour = _.get(prevProps, 'params.fourfour', '');
+    const oldFourfour = this.props.urlParams.fourfour;
+    const newFourfour = nextProps.urlParams.fourfour;
 
-    if (currentFourfour !== prevFourfour) {
-      dispatch(setFourfour(currentFourfour));
+    if (oldFourfour !== newFourfour) {
+      dispatch(setFourfour(newFourfour));
     }
   }
 

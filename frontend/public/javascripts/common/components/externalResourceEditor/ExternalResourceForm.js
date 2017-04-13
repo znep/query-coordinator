@@ -106,7 +106,9 @@ export class ExternalResourceForm extends React.Component {
     };
 
     const noFileChosenText = this.props.previewImage ? null : (
-      <span> {fetchTranslation('common.external_resource_editor.form.fields.preview_image.no_file_chosen')}</span>
+      <span>
+        {fetchTranslation('common.external_resource_editor.form.fields.preview_image.no_file_chosen')}
+      </span>
     );
 
     // Use a styleguide button and hide the actual previewImage file input button.

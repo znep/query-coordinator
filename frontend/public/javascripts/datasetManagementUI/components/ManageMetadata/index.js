@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import { push } from 'react-router-redux';
+import { push, goBack } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
 
@@ -19,6 +19,7 @@ export function ManageMetadata(props) {
     fourfour,
     path,
     onDismiss,
+    history,
     onSaveDataset,
     onSaveCol,
     onSidebarTabClick,
@@ -32,9 +33,14 @@ export function ManageMetadata(props) {
     onDismiss
   };
 
+  let lastVisited;
+  if (history.length > 1) {
+    lastVisited = history[0];
+  }
+
   const headerProps = {
     title: I18n.metadata_manage.title,
-    onDismiss
+    onDismiss: () => onDismiss(lastVisited)
   };
 
   const metadataContentProps = { path, fourfour, onSidebarTabClick };
@@ -89,8 +95,17 @@ ManageMetadata.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onDismiss: () => {
-    dispatch(push(Links.home(ownProps.location)));
+  onDismiss: previousLocation => {
+    if (previousLocation && previousLocation.dsmui) {
+      dispatch(goBack());
+    } else {
+      dispatch(push(Links.home(ownProps.location)));
+    }
+    // if (!previousLocation)
+    // const redirectLocation = previousLocation.dsmui
+    //   ? previousLocation.location
+    //   : ownProps.location;
+    // dispatch(push(Links.home(redirectLocation)));
   },
   onSaveDataset: () => dispatch(saveDatasetMetadata()),
   onSaveCol: () => dispatch(saveColumnMetadata()),
@@ -104,10 +119,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   }
 });
 
-// TODO: should prob get url stuff from redux store or rr props but not both
 const mapStateToProps = (state, ownProps) => ({
   views: _.get(state, 'db.views', {}),
   fourfour: state.routing.fourfour,
+  history: state.routing.history,
   path: ownProps.route.path,
   outputSchemaStatus: state.db.output_schemas.__status__
 });

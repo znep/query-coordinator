@@ -34,7 +34,9 @@ class App extends Component {
 App.propTypes = {
   children: PropTypes.element,
   dispatch: PropTypes.func,
-  urlParams: PropTypes.string
+  urlParams: PropTypes.shape({
+    fourfour: PropTypes.string
+  })
 };
 
 const mapStateToProps = (state, { params }) => ({

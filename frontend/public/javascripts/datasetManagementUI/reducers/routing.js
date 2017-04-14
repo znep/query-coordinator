@@ -11,8 +11,24 @@ const fourfour = (state = '', action) => {
   }
 };
 
+const history = (state = [], action) => {
+  switch (action.type) {
+    case 'PUSH_URL':
+      if (state.length === 0) {
+        return [action.pathname];
+      } else if (state.length === 1) {
+        return [...state, action.pathname];
+      } else {
+        return [state[state.length - 1], action.pathname];
+      }
+    default:
+      return state;
+  }
+};
+
 const routing = combineReducers({
   fourfour,
+  history,
   location: routerReducer
 });
 

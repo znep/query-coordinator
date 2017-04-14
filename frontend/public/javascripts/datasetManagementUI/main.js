@@ -63,6 +63,16 @@ const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: state => state.routing.location
 });
 
+history.listen(location => {
+  store.dispatch({
+    type: 'PUSH_URL',
+    pathname: {
+      location,
+      dsmui: true
+    }
+  });
+});
+
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>

@@ -11,7 +11,8 @@ const MetadataProvider = require('./dataProviders/MetadataProvider');
 const ROW_HEIGHT_PX = 39;
 const MAX_COLUMN_COUNT = 64;
 
-$.fn.socrataTable = function(originalVif) {
+// Passing in locale is a temporary workaround to localize the Table & Pager
+$.fn.socrataTable = function(originalVif, locale) {
 
   originalVif = VifHelpers.migrateVif(_.cloneDeep(originalVif));
 
@@ -103,7 +104,7 @@ $.fn.socrataTable = function(originalVif) {
 
     $element.addClass('socrata-paginated-table');
 
-    visualization = new Table($element, originalVif);
+    visualization = new Table($element, originalVif, locale);
 
     attachApiEvents();
 
@@ -113,7 +114,7 @@ $.fn.socrataTable = function(originalVif) {
     //
     // Note that the Pager will not actually modify the DOM until you actually
     // call render, so we do that as well.
-    pager = new Pager($element.find('.socrata-visualization-container'));
+    pager = new Pager($element.find('.socrata-visualization-container'), locale);
     pager.render(computePagerOptions());
 
     // Note that we do this here and not just call computePageSize() as an

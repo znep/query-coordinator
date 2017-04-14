@@ -390,7 +390,7 @@ export default {
       no_column_description: 'No description provided',
       no_row_count: 'Row count unavailable.',
       no_rows: 'No {unitOther}',
-      only_row: 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
+      only_rows: 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
       previous: 'Previous'
     },
     timeline_chart: {

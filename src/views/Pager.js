@@ -3,7 +3,8 @@ const $ = require('jquery');
 const utils = require('socrata-utils');
 const I18n = require('../I18n');
 
-module.exports = function Pager(element) {
+// Passing in locale is a temporary workaround to localize the Pager
+module.exports = function Pager(element, locale) {
   const self = this;
   let lastRenderOptions;
   let lastButtonFocusedSelector = null;
@@ -41,15 +42,15 @@ module.exports = function Pager(element) {
     const endIndex = Math.min(options.datasetRowCount, options.endIndex);
 
     if (options.datasetRowCount === 0) {
-      message = I18n.translate('visualizations.table.no_rows');
+      message = I18n.translate('visualizations.table.no_rows', locale);
     } else if (options.endIndex === options.startIndex + 1) {
-      message = I18n.translate('visualizations.table.only_row');
+      message = I18n.translate('visualizations.table.only_rows', locale);
     } else if (hasOnlyOnePage(options)) {
-      message = I18n.translate('visualizations.table.all_rows');
+      message = I18n.translate('visualizations.table.all_rows', locale);
     } else if (!_.isFinite(options.datasetRowCount)) {
-      message = I18n.translate('visualizations.table.no_row_count');
+      message = I18n.translate('visualizations.table.no_row_count', locale);
     } else {
-      message = I18n.translate('visualizations.table.many_rows');
+      message = I18n.translate('visualizations.table.many_rows', locale);
     }
 
     message = message.format({
@@ -72,8 +73,8 @@ module.exports = function Pager(element) {
     ].join('\n');
 
     return template.format({
-      previous: I18n.translate('visualizations.table.previous'),
-      next: I18n.translate('visualizations.table.next'),
+      previous: I18n.translate('visualizations.table.previous', locale),
+      next: I18n.translate('visualizations.table.next', locale),
       previousDisabled: (options.disabled || options.startIndex === 0) ? ' disabled' : '',
       nextDisabled: (options.disabled || options.endIndex >= options.datasetRowCount) ? ' disabled' : ''
     });

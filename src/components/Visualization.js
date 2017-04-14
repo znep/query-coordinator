@@ -8,7 +8,9 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    this.visualization = new VisualizationRenderer(this.props.vif, this.element);
+    // this.props.options contains localization information passed in from DatasetPreview
+    // as temporary way localize the Table & Pager components until the mono-repo is complete.
+    this.visualization = new VisualizationRenderer(this.props.vif, this.element, this.props.options);
   },
 
   componentDidUpdate() {

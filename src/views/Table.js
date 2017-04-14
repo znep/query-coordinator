@@ -7,7 +7,8 @@ const I18n = require('../I18n');
 
 const MINIMUM_COLUMN_WIDTH = 64;
 
-module.exports = function Table(element, originalVif) {
+// Passing in locale is a temporary workaround to localize the Table
+module.exports = function Table(element, originalVif, locale) {
 
   _.extend(this, new SvgVisualization(element, originalVif));
 
@@ -64,7 +65,7 @@ module.exports = function Table(element, originalVif) {
       removeClass('loaded');
 
     superRenderError(
-      I18n.translate('visualizations.table.error_unable_to_render')
+      I18n.translate('visualizations.table.error_unable_to_render', locale)
     );
   };
 
@@ -537,7 +538,7 @@ module.exports = function Table(element, originalVif) {
     const title = _.escape($target.find('.column-header-content-column-name').text());
     const description =
       _.escape($target.attr('data-column-description')) ||
-      `<em>${I18n.translate('visualizations.table.no_column_description')}</em>`;
+      `<em>${I18n.translate('visualizations.table.no_column_description', locale)}</em>`;
     const content = `
       <span>${title}</span><br>
       <span>${description}</span>

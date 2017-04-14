@@ -2,9 +2,15 @@ import {isNull, isString, isPlainObject, has, get} from 'lodash';
 
 import en from './locales/en';
 import es from './locales/es';
+import fr from './locales/fr';
+import ca from './locales/ca';
+import it from './locales/it';
+import nl from './locales/nl';
+import zh from './locales/zh';
 
-var locale = 'en';
-const locales = { en, es };
+const default_locale = 'en';
+const locales = { en, es, fr, ca, it, nl, zh };
+let locale = default_locale;
 
 export const setLocale = key => {
   key = isString(key) ? key.toLowerCase() : null;
@@ -12,13 +18,22 @@ export const setLocale = key => {
   if (has(locales, key)) {
     locale = key;
   } else {
-    throw new Error(`I18n: The locale ${key} is not available.`);
+    // Default to English if the locale translation file is not present
+    locale = default_locale;
   }
+  return locale;
 };
 
-export const translate = key => {
+// Passing in environmentLocale is a temporary workaround to localize the Table & Pager
+export const translate = (key, environmentLocale) => {
+  locale = environmentLocale ? setLocale(environmentLocale) : locale;
+
   key = isString(key) ? key.toLowerCase() : null;
-  var translation = get(locales[locale], key, null);
+  let translation = get(locales[locale], key, null);
+  // Default to English for an individual translation if it is missing from the locale file
+  if (translation === null) {
+    translation = get(locales[default_locale], key, null);
+  }
 
   if (isString(translation)) {
     return translation;
@@ -33,7 +48,7 @@ export const translate = key => {
 
 export const translateGroup = key => {
   key = isString(key) ? key.toLowerCase() : null;
-  var translationGroup = get(locales[locale], key, null);
+  let translationGroup = get(locales[locale], key, null);
 
   if (isPlainObject(translationGroup)) {
     return translationGroup;

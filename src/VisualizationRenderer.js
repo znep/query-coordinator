@@ -85,7 +85,8 @@ export const VisualizationRenderer = function(vif, element, options) {
         break;
 
       case 'table':
-        $element.socrataTable(this.vif);
+        // Passing options.locale is a temporary workaround to localize the Table & Pager
+        $element.socrataTable(this.vif, options.locale);
         break;
 
       case 'timelineChart':

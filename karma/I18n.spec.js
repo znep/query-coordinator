@@ -1,7 +1,15 @@
+import _ from 'lodash';
 import en from 'src/locales/en';
 import es from 'src/locales/es';
+import fr from 'src/locales/fr';
+import ca from 'src/locales/ca';
+import ita from 'src/locales/it';
+import nl from 'src/locales/nl';
+import zh from 'src/locales/zh';
 
 import { setLocale, translate, translateGroup } from 'src/I18n';
+
+const locales = { en, es, fr, ca, nl, zh, it: ita };
 
 describe('I18n', function() {
 
@@ -37,6 +45,22 @@ describe('I18n', function() {
         expect(function() {
           translate('aggregations');
         }).to.throw(/Access to a group/);
+      });
+    });
+
+    describe('when an available locale other than English is set', function() {
+      _.forEach(locales, function(value, key) {
+        it(`returns available translations for ${key}`, function() {
+          setLocale(_.toString(key));
+          expect(translate('visualizations.table.next')).to.equal(value.visualizations.table.next);
+          expect(translate('visualizations.table.no_column_description')).to.equal(value.visualizations.table.no_column_description);
+        });
+      });
+      _.forEach(locales, function(value, key) {
+        it(`returns the English translation if the the ${key} translation is not present`, function() {
+          setLocale(_.toString(key));
+          expect(translate('aggregations.sum')).to.equal(en.aggregations.sum);
+        });
       });
     });
   });
@@ -82,10 +106,9 @@ describe('I18n', function() {
     });
 
     describe('when the locale does not exist', function() {
-      it('throws', function() {
-        expect(function() {
-          setLocale('bm');
-        }).to.throw(/The locale bm is not available/);
+      it('defaults to English', function() {
+        setLocale('bm');
+        expect(translate('modal.title')).to.equal(en.modal.title);
       });
     });
   });

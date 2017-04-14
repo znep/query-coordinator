@@ -107,7 +107,11 @@ ManageMetadata.propTypes = {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onDismiss: previousLocation => {
-    if (previousLocation) {
+    // Check if previous path is one of the modal tabs; if so, we don't want to
+    // go back to the previous path
+    const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/updates\/\d+\/metadata\/(columns|dataset)/;
+
+    if (previousLocation && !isDatasetModalPath.test(previousLocation.pathname)) {
       dispatch(goBack());
     } else {
       dispatch(push(Links.home(ownProps.location)));

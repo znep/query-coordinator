@@ -78,8 +78,11 @@ export function ManageMetadata(props) {
         </ModalContent>
 
         <ModalFooter>
-          <button id="cancel" className={styles.button} onClick={onDismiss}>
-            {I18n.common.cancel}
+          <button
+            id="cancel"
+            className={styles.button}
+            onClick={() => onDismiss(lastVisited)}>
+              {I18n.common.cancel}
           </button>
           <SaveButton {...saveBtnProps} />
         </ModalFooter>

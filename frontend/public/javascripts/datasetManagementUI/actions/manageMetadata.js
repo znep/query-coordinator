@@ -109,7 +109,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   then(getJson).
   then(resp => {
     dispatch(setView(resp));
-    
+
     dispatch(redirectAfterInterval());
   }).
   catch(error => {

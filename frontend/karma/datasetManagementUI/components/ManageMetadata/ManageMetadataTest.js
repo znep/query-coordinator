@@ -28,6 +28,16 @@ describe('components/ManageMetadata', () => {
       }
     },
     fourfour: 'hehe-hehe',
+    history: [
+      {
+        pathname: '/dataset/kjkjkjk/8ftf-gp92/updates/0/uploads/244/schemas/1732/output/355',
+        search: '',
+        hash: '',
+        action: 'POP',
+        key: 'rr69kr',
+        query: {}
+      }
+    ],
     onChange: _.noop,
     onSaveDataset: _.noop,
     onSaveCol: _.noop,

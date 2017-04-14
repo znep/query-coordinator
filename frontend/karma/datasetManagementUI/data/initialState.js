@@ -375,21 +375,33 @@ const initialState = {
     upsert_jobs: {},
     row_errors: {},
   },
-  fourfour: '3kt9-pmvq',
+  routing: {
+    fourfour: '3kt9-pmvq',
+    history: [
+      {
+        pathname: '/dataset/kjkjkjk/8ftf-gp92/updates/0/uploads/244/schemas/1732/output/355',
+        search: '',
+        hash: '',
+        action: 'POP',
+        key: 'rr69kr',
+        query: {}
+      }
+    ],
+    location: {
+      locationBeforeTransitions: {
+        pathname: '/dataset/kjkjkjk/8ftf-gp92/updates/0',
+        search: '',
+        hash: '',
+        action: 'PUSH',
+        key: 'p8lt7q',
+        query: {}
+      }
+    }
+  },
   flashMessage: {
     message: '',
     kind: '',
     visible: false
-  },
-  routing: {
-    locationBeforeTransitions: {
-      pathname: '/dataset/tnksu/3kt9-pmvq/updates/0/metadata/columns',
-      search: '',
-      hash: '',
-      action: 'POP',
-      key: 'h3elx0',
-      query: {}
-    }
   },
   notifications: []
 }

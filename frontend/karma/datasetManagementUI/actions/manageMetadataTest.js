@@ -88,7 +88,9 @@ describe('actions/manageMetadata', () => {
 
       store.dispatch(saveDatasetMetadata());
 
-      const { fourfour, db } = store.getState();
+      const { routing, db } = store.getState();
+
+      const { fourfour } = routing;
 
       setTimeout(() => {
         const action = store.getActions()[0];
@@ -118,7 +120,9 @@ describe('actions/manageMetadata', () => {
 
       store.dispatch(saveDatasetMetadata());
 
-      const { fourfour, db } = store.getState();
+      const { routing, db } = store.getState();
+
+      const { fourfour } = routing;
 
       setTimeout(() => {
         const action = store.getActions()[1];
@@ -185,7 +189,7 @@ describe('actions/manageMetadata', () => {
       });
     });
 
-    it('submits custom metada correctly', (done) => {
+    it('submits custom metadata correctly', (done) => {
       const { unmockFetch } = mockFetch(responses, done);
 
       const unmockPhx = mockPhx({
@@ -208,7 +212,9 @@ describe('actions/manageMetadata', () => {
 
       store.dispatch(saveDatasetMetadata());
 
-      const { fourfour, db } = store.getState();
+      const { routing, db } = store.getState();
+
+      const { fourfour } = routing;
 
       const expectedPayload = {
         ..._.omit(db.views[fourfour].model, [

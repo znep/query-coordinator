@@ -15,13 +15,17 @@ const MetadataContent = ({ path, fourfour, onSidebarTabClick, uploadExists }) =>
         activeClassName={styles.selected}>
         {I18n.metadata_manage.dataset_metadata_label}
       </Link>
-      <Link
-        to={Links.columnMetadataForm()}
-        className={styles.tab}
-        onClick={() => onSidebarTabClick(fourfour)}
-        activeClassName={styles.selected}>
-        {I18n.metadata_manage.column_metadata_label}
-      </Link>
+      {uploadExists ?
+        <Link
+          to={Links.columnMetadataForm()}
+          className={styles.tab}
+          onClick={() => onSidebarTabClick(fourfour)}
+          activeClassName={styles.selected}>
+            {I18n.metadata_manage.column_metadata_label}
+        </Link> :
+        <span className={styles.disabled}>
+          {I18n.metadata_manage.column_metadata_label}
+        </span>}
     </div>
     <MetadataEditor path={path} />
   </div>;

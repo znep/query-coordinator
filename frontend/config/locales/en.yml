@@ -5386,6 +5386,7 @@ en:
       missing_external_dataset: Please supply at least one external dataset.
       multiple_extensions: More than one of the same extension for the same endpoint is not allowed.
       new_attachment: New Attachment
+      no_fields_message: There are no fields for this fieldset.
       none: "(none)"
       northwest_latitude: Northwest Latitude
       northwest_longitude: Northwest Longitude

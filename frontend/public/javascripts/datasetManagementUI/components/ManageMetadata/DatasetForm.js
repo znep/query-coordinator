@@ -54,7 +54,9 @@ const transformCustomFieldsetOne = obj => ({
 
 const transformCustomFieldsetTwo = obj => ({
   ...obj,
-  fields: obj.fields.map(field => transformCustomField(field, obj.title))
+  fields: obj.fields
+    ? obj.fields.map(field => transformCustomField(field, obj.title))
+    : [{ type: 'nothing', name: 'no-field-message' }]
 });
 
 const transformCustomFieldset = _.flowRight([
@@ -68,6 +70,14 @@ const objToField = (obj, extraProps) => {
     ...obj,
     ...extraProps
   };
+
+  if (obj.type === 'nothing') {
+    return (
+      <span key={obj.name}>
+        {I18n.edit_metadata.no_fields_message}
+      </span>
+    );
+  }
 
   return <MetadataField {...fieldProps} key={obj.name} />;
 };

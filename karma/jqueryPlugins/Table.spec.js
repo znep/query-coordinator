@@ -1,14 +1,11 @@
-var _ = require('lodash');
-var $ = require('jquery');
-var rewire = require('rewire');
-var Table = rewire('src/Table');
+const _ = require('lodash');
+const $ = require('jquery');
+const rewire = require('rewire');
+const Table = rewire('src/Table');
 
-describe('Table', function() {
-
-  'use strict';
-
-  var $container;
-  var tableVIF = {
+describe('Table', () => {
+  let $container;
+  const tableVIF = {
     columnName: '',
     configuration: {
       order: [
@@ -51,32 +48,32 @@ describe('Table', function() {
     // and they're done sequentially.
     // Native promises need one frame to resolve.
     // Hende the two defers.
-    _.defer(function() {
+    _.defer(() => {
       _.defer(done);
     });
   }
 
-  beforeEach(function() {
+  beforeEach(() => {
     $container = $('<div>').attr('id', 'test-table').css({ width: 640, height: 480 });
     $('body').append($container);
   });
 
-  afterEach(function() {
+  afterEach(() => {
     $('#test-table').remove();
   });
 
-  describe('jQuery component', function() {
-    var revertRewire;
-    var vif;
-    var getTableDataSpy;
-    var tableRenderSpy;
-    var tableRenderErrorSpy;
+  describe('jQuery component', () => {
+    let revertRewire;
+    let vif;
+    let getTableDataSpy;
+    let tableRenderSpy;
+    let tableRenderErrorSpy;
     // Arbitrary choice, in real life MetadataProvider.getDisplayableColumns provides this for us.
-    var theSingleNonDisplayableColumn = 'location_city';
-    var displayableColumns;
-    var displayableColumnNames;
+    let theSingleNonDisplayableColumn = 'location_city';
+    let displayableColumns;
+    let displayableColumnNames;
 
-    beforeEach(function(done) {
+    beforeEach((done) => {
       vif = _.cloneDeep(tableVIF);
       getTableDataSpy = sinon.spy(_.constant(
         Promise.resolve({
@@ -89,9 +86,7 @@ describe('Table', function() {
 
       displayableColumns = _.filter(
         window.testData.CHICAGO_CRIMES_DATASET_METADATA.columns,
-        function(column) {
-          return column.fieldName !== theSingleNonDisplayableColumn;
-        }
+        (column) => column.fieldName !== theSingleNonDisplayableColumn
       );
       displayableColumnNames = _.map(displayableColumns, 'fieldName');
 
@@ -102,9 +97,7 @@ describe('Table', function() {
           this.getDatasetMetadata = _.constant(
             Promise.resolve(window.testData.CHICAGO_CRIMES_DATASET_METADATA)
           );
-          this.getDisplayableColumns = function() {
-            return displayableColumns;
-          };
+          this.getDisplayableColumns = () => displayableColumns;
         },
         SoqlDataProvider: function() {
           this.getTableData = getTableDataSpy;
@@ -126,7 +119,7 @@ describe('Table', function() {
       flushDataRequests(done);
     });
 
-    afterEach(function() {
+    afterEach(() => {
       revertRewire();
       destroyVisualization($container);
     });
@@ -140,13 +133,13 @@ describe('Table', function() {
       );
     }
 
-    it('displays only displayable columns', function() {
+    it('displays only displayable columns', () => {
       // We're testing that Table delegates to MetadataProvider.getDisplayableColumns.
-      var calls = tableRenderSpy.getCalls();
+      const calls = tableRenderSpy.getCalls();
 
       assert.lengthOf(calls, 2);
 
-      var columnNamesQueriedFor = _.map(
+      const columnNamesQueriedFor = _.map(
         calls[0].args[1].columns,
         'fieldName'
       );
@@ -155,9 +148,122 @@ describe('Table', function() {
       assert.notInclude(columnNamesQueriedFor, theSingleNonDisplayableColumn);
     });
 
-    describe('on SOCRATA_VISUALIZATION_PAGINATION_NEXT', function() {
-      beforeEach(function(done) {
-        var calls = getTableDataSpy.getCalls();
+    it('uses the order specified in the VIF', () => {
+      const calls = getTableDataSpy.getCalls();
+      assert.lengthOf(calls, 1);
+
+      assert.deepEqual(
+        getGetTableDataArgumentsHash(calls[0]),
+        {
+          columnNames: displayableColumnNames,
+          order: tableVIF.configuration.order,
+          limit: 6,
+          offset: 0
+        }
+      );
+    });
+
+    describe('when order is not in VIF', () => {
+      let originalMetadata;
+
+      beforeEach(() => {
+        originalMetadata = window.testData.CHICAGO_CRIMES_DATASET_METADATA;
+      });
+
+      afterEach(() => {
+        window.testData.CHICAGO_CRIMES_DATASET_METADATA = originalMetadata;
+      });
+
+      it('uses the default sort order when the view has a sort in query', (done) => {
+        delete vif.configuration.order;
+
+        getTableDataSpy.reset();
+        emitEvent($container, 'SOCRATA_VISUALIZATION_RENDER_VIF', vif);
+
+        _.defer(() => {
+          const calls = getTableDataSpy.getCalls();
+          assert.lengthOf(calls, 1);
+
+          assert.deepEqual(
+            getGetTableDataArgumentsHash(calls[0]),
+            {
+              columnNames: displayableColumnNames,
+              order: [ { ascending: false, columnName: 'date' } ],
+              limit: 6,
+              offset: 0
+            }
+          );
+
+          done();
+        });
+      });
+
+      it('uses the system id when the view does not have a group by', (done) => {
+        const newVif = _.cloneDeep(vif);
+        delete newVif.configuration.order;
+        // we're modifying the domain name to trick the memoized dataset metadata request to
+        // invalidate its cache
+        newVif.domain = 'unexample.com';
+
+        delete window.testData.CHICAGO_CRIMES_DATASET_METADATA.query.orderBys;
+
+        getTableDataSpy.reset();
+        emitEvent($container, 'SOCRATA_VISUALIZATION_RENDER_VIF', newVif);
+
+        _.defer(() => {
+          const calls = getTableDataSpy.getCalls();
+          assert.lengthOf(calls, 1);
+
+          assert.deepEqual(
+            getGetTableDataArgumentsHash(calls[0]),
+            {
+              columnNames: displayableColumnNames,
+              order: [ { ascending: true, columnName: ':id' } ],
+              limit: 6,
+              offset: 0
+            }
+          );
+
+          done();
+        });
+      });
+
+      it('it guesses an appropropriate order when the view has a group by', (done) => {
+        const newVif = _.cloneDeep(vif);
+        delete newVif.configuration.order;
+        // we're modifying the domain name to trick the memoized dataset metadata request to
+        // invalidate its cache
+        newVif.domain = 'unexample.com';
+
+        delete window.testData.CHICAGO_CRIMES_DATASET_METADATA.query.orderBys;
+        window.testData.CHICAGO_CRIMES_DATASET_METADATA.query.groupBys = 'fake group by';
+        window.testData.CHICAGO_CRIMES_DATASET_METADATA.flags = [];
+
+        getTableDataSpy.reset();
+        emitEvent($container, 'SOCRATA_VISUALIZATION_RENDER_VIF', newVif);
+
+        _.defer(() => {
+          const calls = getTableDataSpy.getCalls();
+          assert.lengthOf(calls, 1);
+
+          assert.deepEqual(
+            getGetTableDataArgumentsHash(calls[0]),
+            {
+              columnNames: displayableColumnNames,
+              order: [ { ascending: true, columnName: 'case_number' } ],
+              limit: 6,
+              offset: 0
+            }
+          );
+
+          done();
+        });
+      });
+    });
+
+    describe('on SOCRATA_VISUALIZATION_PAGINATION_NEXT', () => {
+      beforeEach((done) => {
+        const calls = getTableDataSpy.getCalls();
         assert.lengthOf(calls, 1); // Just test sanity.
 
         emitEvent($container, 'SOCRATA_VISUALIZATION_PAGINATION_NEXT');
@@ -166,8 +272,8 @@ describe('Table', function() {
         flushDataRequests(done);
       });
 
-      it('makes a data request for the next page', function() {
-        var calls = getTableDataSpy.getCalls();
+      it('makes a data request for the next page', () => {
+        const calls = getTableDataSpy.getCalls();
         assert.lengthOf(calls, 2);
 
         assert.deepEqual(
@@ -191,9 +297,9 @@ describe('Table', function() {
         );
       });
 
-      describe('then SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', function(done) {
-        beforeEach(function(done) {
-          var calls = getTableDataSpy.getCalls();
+      describe('then SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', (done) => {
+        beforeEach((done) => {
+          const calls = getTableDataSpy.getCalls();
           assert.lengthOf(calls, 2); // Just test sanity.
 
           emitEvent($container, 'SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS');
@@ -202,8 +308,8 @@ describe('Table', function() {
           flushDataRequests(done);
         });
 
-        it('makes a data request for the original page', function() {
-          var calls = getTableDataSpy.getCalls();
+        it('makes a data request for the original page', () => {
+          const calls = getTableDataSpy.getCalls();
           assert.lengthOf(calls, 3);
 
           assert.deepEqual(
@@ -219,10 +325,10 @@ describe('Table', function() {
       });
     });
 
-    describe('on SOCRATA_VISUALIZATION_COLUMN_CLICKED for a currently unsorted column', function() {
-      var vifUpdatedSpy;
-      beforeEach(function(done) {
-        var calls = getTableDataSpy.getCalls();
+    describe('on SOCRATA_VISUALIZATION_COLUMN_CLICKED for a currently unsorted column', () => {
+      let vifUpdatedSpy;
+      beforeEach((done) => {
+        const calls = getTableDataSpy.getCalls();
         assert.lengthOf(calls, 1); // Just test sanity.
 
         vifUpdatedSpy = sinon.spy();
@@ -233,8 +339,8 @@ describe('Table', function() {
         flushDataRequests(done);
       });
 
-      it('makes a data request that sorts ASC on the column', function() {
-        var calls = getTableDataSpy.getCalls();
+      it('makes a data request that sorts ASC on the column', () => {
+        const calls = getTableDataSpy.getCalls();
         assert.lengthOf(calls, 2);
 
         assert.deepEqual(
@@ -258,12 +364,12 @@ describe('Table', function() {
         );
       });
 
-      it('emits SOCRATA_VISUALIZATION_VIF_UPDATED', function() {
-        var calls = vifUpdatedSpy.getCalls();
+      it('emits SOCRATA_VISUALIZATION_VIF_UPDATED', () => {
+        const calls = vifUpdatedSpy.getCalls();
         assert.lengthOf(calls, 1);
 
-        var newVIF = calls[0].args[0].originalEvent.detail;
-        var expectedVIF = _.cloneDeep(tableVIF);
+        const newVIF = calls[0].args[0].originalEvent.detail;
+        const expectedVIF = _.cloneDeep(tableVIF);
         _.set(expectedVIF, 'configuration.order[0].columnName', 'district');
 
         assert.deepEqual(
@@ -272,15 +378,15 @@ describe('Table', function() {
         );
       });
 
-      describe('then another SOCRATA_VISUALIZATION_COLUMN_CLICKED on the same column', function() {
-        beforeEach(function(done) {
+      describe('then another SOCRATA_VISUALIZATION_COLUMN_CLICKED on the same column', () => {
+        beforeEach((done) => {
           emitEvent($container, 'SOCRATA_VISUALIZATION_COLUMN_CLICKED', 'district');
           // Allow the mock data providers to resolve.
           flushDataRequests(done);
         });
 
-        it('makes a data request that sorts DESC on the column', function() {
-          var calls = getTableDataSpy.getCalls();
+        it('makes a data request that sorts DESC on the column', () => {
+          const calls = getTableDataSpy.getCalls();
           assert.lengthOf(calls, 3);
 
           assert.deepEqual(
@@ -294,15 +400,15 @@ describe('Table', function() {
           );
         });
 
-        describe('then yet another another SOCRATA_VISUALIZATION_COLUMN_CLICKED on the same column', function() {
-          beforeEach(function(done) {
+        describe('then yet another another SOCRATA_VISUALIZATION_COLUMN_CLICKED on the same column', () => {
+          beforeEach((done) => {
             emitEvent($container, 'SOCRATA_VISUALIZATION_COLUMN_CLICKED', 'district');
             // Allow the mock data providers to resolve.
             flushDataRequests(done);
           });
 
-          it('makes a data request that sorts ASC on the column', function() {
-            var calls = getTableDataSpy.getCalls();
+          it('makes a data request that sorts ASC on the column', () => {
+            const calls = getTableDataSpy.getCalls();
             assert.lengthOf(calls, 4);
 
             assert.deepEqual(
@@ -319,9 +425,9 @@ describe('Table', function() {
       });
     });
 
-    describe('on SOCRATA_VISUALIZATION_CELL_FLYOUT', function() {
-      it('emits a flyout render event', function(done) {
-        $container.on('SOCRATA_VISUALIZATION_FLYOUT', function(event) {
+    describe('on SOCRATA_VISUALIZATION_CELL_FLYOUT', () => {
+      it('emits a flyout render event', (done) => {
+        $container.on('SOCRATA_VISUALIZATION_FLYOUT', (event) => {
           assert.deepEqual(event.originalEvent.detail, {
             stuff: 'things'
           });
@@ -334,9 +440,9 @@ describe('Table', function() {
       });
     });
 
-    describe('on SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function() {
-      it('emits a flyout render event', function(done) {
-        $container.on('SOCRATA_VISUALIZATION_FLYOUT', function(event) {
+    describe('on SOCRATA_VISUALIZATION_COLUMN_FLYOUT', () => {
+      it('emits a flyout render event', (done) => {
+        $container.on('SOCRATA_VISUALIZATION_FLYOUT', (event) => {
           assert.deepEqual(event.originalEvent.detail, {
             stuff: 'things'
           });

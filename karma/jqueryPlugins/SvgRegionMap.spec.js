@@ -246,6 +246,8 @@ describe('SvgRegionMap jQuery component', function() {
       });
     });
 
+    // TODO: write tests
+
     afterEach(function() {
 
       // Restore old data providers

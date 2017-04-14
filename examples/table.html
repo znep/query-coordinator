@@ -86,6 +86,12 @@
     <div id="table-12"></div>
     <p>Nothing here should alert on page load or user interaction. If it does, that's an XSS vulnerability which needs to be fixed immediately.</p>
     <div id="table-xss"></div>
+    <p>Tests tables without VIF sort order.</p>
+    <div id="table-dataset-query-sort"></div>
+    <p>Tests table without VIF sort order or dataset query.</p>
+    <div id="table-system-id-sort"></div>
+    <p>Tests tables without default sort order for a grouped view.</p>
+    <div id="table-grouped-sort-order"></div>
   </body>
 
   <!-- Include external vendor -->
@@ -439,6 +445,130 @@
 
     var $tableXSSElement = $('#table-xss');
     $tableXSSElement.socrataTable(tableXSSVIF);
+
+    var tableDatasetQuerySortVIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        viewSourceDataLink: false
+      },
+      description: 'This table sorts by the dataset query when a VIF sort order is not defined',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: DATASET_UID,
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: DOMAIN,
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table without a VIF sort order'
+    };
+
+    var $tableDatasetQuerySortElement = $('#table-dataset-query-sort');
+    $tableDatasetQuerySortElement.socrataTable(tableDatasetQuerySortVIF);
+
+    var tableSystemIdSortOrderVIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        viewSourceDataLink: false
+      },
+      description: 'This table sorts by the system id',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: 'eygp-tzh7',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'catastrophiccats.test-socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table without VIF sort order or dataset query'
+    };
+
+    var $tableSystemIdSort = $('#table-system-id-sort');
+    $tableSystemIdSort.socrataTable(tableSystemIdSortOrderVIF);
+
+
+    var tableGroupedSortOrderVIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        viewSourceDataLink: false
+      },
+      description: 'This table makes an educated guess about which column to sort by',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: '4zka-v48z',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'opendata-demo.test-socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table based on a grouped view without a VIF sort order'
+    };
+
+    var $tableGroupedSortOrderElement = $('#table-grouped-sort-order');
+    $tableGroupedSortOrderElement.socrataTable(tableGroupedSortOrderVIF );
 
     // Begin table event handling
 

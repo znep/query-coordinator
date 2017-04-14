@@ -6,10 +6,6 @@ export default {
     version: 2
   },
   configuration: {
-    order: [{
-      ascending: true,
-      columnName: null
-    }],
     viewSourceDataLink: false
   },
   description: '',

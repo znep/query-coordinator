@@ -21,25 +21,6 @@ export default function table(state, action) {
       break;
 
     case actions.RECEIVE_METADATA:
-      let metadata = {
-        datasetUid: '',
-        domain: '',
-        data: action.datasetMetadata
-      };
-      let displayableColumns = getDisplayableColumns(metadata);
-
-      if (displayableColumns.length > 0) {
-
-        setStringValueOrDefaultValue(
-          state,
-          'configuration.order[0].columnName',
-          displayableColumns[0].fieldName
-        );
-      }
-
-      state = baseVifReducer(state, action);
-      break;
-
     case actions.SET_DOMAIN:
     case actions.SET_DATASET_UID:
     case actions.SET_FILTERS:

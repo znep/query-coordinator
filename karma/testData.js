@@ -26,6 +26,19 @@ window.testData = {
     "viewLastModified" : 1431571524,
     "viewType" : "tabular",
     "columns" : [ {
+      "id" : 203618252,
+      "name" : "Case Number",
+      "dataTypeName" : "text",
+      "fieldName" : "case_number",
+      "position" : 2,
+      "renderTypeName" : "text",
+      "tableColumnId" : 24781985,
+      "width" : 134,
+      "format" : {
+        "aggregate" : "count",
+        "align" : "left"
+      }
+    }, {
       "id" : 203618251,
       "name" : "ID",
       "dataTypeName" : "number",
@@ -38,19 +51,6 @@ window.testData = {
         "precisionStyle" : "standard",
         "align" : "right",
         "noCommas" : "true"
-      }
-    }, {
-      "id" : 203618252,
-      "name" : "Case Number",
-      "dataTypeName" : "text",
-      "fieldName" : "case_number",
-      "position" : 2,
-      "renderTypeName" : "text",
-      "tableColumnId" : 24781985,
-      "width" : 134,
-      "format" : {
-        "aggregate" : "count",
-        "align" : "left"
       }
     }, {
       "id" : 203618253,

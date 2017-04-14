@@ -81,23 +81,8 @@ $.fn.socrataTable = function(originalVif, locale) {
 
     utils.assertHasProperties(
       originalVif,
-      'configuration.order',
       'series[0].dataSource.datasetUid',
       'series[0].dataSource.domain'
-    );
-    utils.assert(
-      Array.isArray(_.get(originalVif, 'configuration.order')),
-      'jQuery.fn.socrataTable: VIF configuration must include an "order" key ' +
-      'whose value is an Array.'
-    );
-    utils.assertEqual(
-      _.get(originalVif, 'configuration.order').length,
-      1
-    );
-    utils.assertHasProperties(
-      _.get(originalVif, 'configuration.order[0]'),
-      'ascending',
-      'columnName'
     );
 
     renderState.vif = originalVif;
@@ -519,6 +504,64 @@ $.fn.socrataTable = function(originalVif, locale) {
       domain: _.get(vifForDataQuery, 'series[0].dataSource.domain')
     };
 
+    function isNotGeoColumn(column) {
+      return !column.dataTypeName.match(/(location|point|polygon|line)$/i);
+    }
+
+    function getSortOrder(datasetMetadata, displayableColumns) {
+      const isDefault = _.includes(datasetMetadata.flags, 'default');
+      const isGrouped = _.has(datasetMetadata, 'query.groupBys');
+
+      // Get the default sort from the query property (note that if this is the NBE copy, this
+      // query might not be the same as the query in the OBE copy)
+      const defaultSort = _.chain(datasetMetadata).
+        get('query.orderBys', []).
+        map((columnOrder) => {
+          const columnId = _.get(columnOrder, 'expression.columnId');
+          const column = _.find(datasetMetadata.columns, (col) => col.id === columnId);
+
+          if (_.has(column, 'fieldName') && isNotGeoColumn(column)) {
+            return {
+              ascending: columnOrder.ascending,
+              columnName: column.fieldName
+            };
+          } else {
+            return null;
+          }
+        }).
+        compact().
+        take(1).
+        value();
+
+      if (!_.isEmpty(defaultSort)) {
+        return defaultSort;
+      } else if (isDefault || !isGrouped) {
+        // if this is a default view or a derived view that does not have group bys, we can safely
+        // use the system id to sort if there isn't a sort order in the VIF.
+        return [{
+          ascending: true,
+          columnName: ':id'
+        }];
+      } else {
+        // if this is a grouped view that doesn't have a sort order in the VIF, let's take an
+        // educated guess at which column we should sort by.
+        const sortableColumn = _.find(displayableColumns, (column) => {
+          return _.has(column, 'fieldName') && isNotGeoColumn(column);
+        });
+
+        if (!_.isObject(sortableColumn)) {
+          return Promise.reject(
+            'No sortable column detected.'
+          );
+        }
+
+        return [{
+          ascending: true,
+          columnName: sortableColumn.fieldName
+        }];
+      }
+    }
+
     function getSoqlDataUsingDatasetMetadata(datasetMetadata) {
       const displayableColumns = new MetadataProvider(dataProviderConfig).
         getDisplayableColumns(datasetMetadata);
@@ -527,6 +570,20 @@ $.fn.socrataTable = function(originalVif, locale) {
         'fieldName'
       ).
         slice(0, MAX_COLUMN_COUNT);
+
+      // If the order in the VIF is undefined, we need to find a column to sort the table by
+      if (_.isUndefined(order)) {
+        order = getSortOrder(datasetMetadata, displayableColumns);
+
+        // Update order the VIF so we can visually indicate which column the table is sorted
+        _.set(renderState.vif, 'configuration.order', order);
+
+      } else if (order.length !== 1) {
+        return Promise.reject(
+          'Order parameter must be an array with exactly one element.'
+        );
+      }
+
       const soqlDataProvider = new SoqlDataProvider(dataProviderConfig);
       const soqlRowCountPromise = getMemoizedRowCount(
         soqlDataProvider,
@@ -599,12 +656,6 @@ $.fn.socrataTable = function(originalVif, locale) {
     }
 
     visualization.showBusyIndicator();
-
-    if (order.length !== 1) {
-      return Promise.reject(
-        'Order parameter must be an array with exactly one element.'
-      );
-    }
 
     if (renderState.busy) {
       throw new Error(

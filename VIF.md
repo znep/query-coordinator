@@ -58,28 +58,28 @@ The following example would cause left and bottom axis labels to be drawn and th
 
 Required |Optional
 :-------:|:----------------------------------------------------------------------:
-    -    |Column Chart, Feature Map, Histogram, Region Map, Table, Timeline Chart
+|    -    |Column Chart, Feature Map, Histogram, Region Map, Table, Timeline Chart|
 
 ##### `measureAxisMinValue`
 `measureAxisMinValue` sets minimum value for measure axis. Overrides configuration.yAxisScalingMode.showZero as false.
 
 Required |Optional
 :-------:|:----------------------:
-    -    |Column Chart, Timeline Chart, Histogram, Bar Chart
+|    -    |Column Chart, Timeline Chart, Histogram, Bar Chart|
 
 ##### `measureAxisMaxValue`
 `measureAxisMaxValue` sets maximum value for measure axis. Overrides configuration.yAxisScalingMode.showZero as false.
 
 Required |Optional
 :-------:|:----------------------:
-    -    |Column Chart, Timeline Chart, Histogram, Bar Chart
+|    -    |Column Chart, Timeline Chart, Histogram, Bar Chart|
 
 ##### `baseLayerOpacity`
 `baseLayerOpacity` is the value that will be used as the css `opacity` value for map tiles. Its type is `<number>` and it must be in the range [0, 1].
 
 Required |Optional
 :-------:|:----------------------:
-    -    |Feature Map, Region Map
+|    -    |Feature Map, Region Map|
 
 ##### `baseLayerUrl`
 `baseLayerUrl` is a URL template that the mapping library will use to generate the `src` attribute for base layer tile `<img>` elements. Its type is `<string>` and it should be templatized in the standard format: for Leaflet (the mapping library currently used by this project) documentation on the URL template can be found at: http://leafletjs.com/reference.html#tilelayer.
@@ -92,7 +92,7 @@ If this property is omitted, the Feature Map and Region Map will use the followi
 
 Required |Optional
 :-------:|:----------------------:
-    -    |Feature Map, Region Map
+|    -    |Feature Map, Region Map|
 
 ##### `bucketType`
 `bucketType` overrides logic in the implementation of the Histogram that determines an appropriate bucketing strategy based on features of the data. Its type is `<string>`.
@@ -101,14 +101,14 @@ Accepted values are `'linear'` and `'logarithmic'`; currently queries requesting
 
 Required  |Optional
 :--------:|:-------:
-Histogram |    -
+|Histogram |    -|
 
 ##### `computedColumnName`
 `computedColumnName` is the name of the georegion-encoded column in the dataset specified by the first series in the vif that should be used to map values to regions. Its type is `<string>` and it must be the name of a 'computed' column in the current dataset. 
 
 Required   |Optional
 :---------:|:-------:
-Region Map |    -
+|Region Map |    -|
 
 ##### `legend`
 `legend` overrides default rendering options for the Region Map legend. Its type is `object`. This object must have the following properties:
@@ -123,17 +123,17 @@ Region Map |    -
 
 Required |Optional
 :-------:|:---------:
-    -    |Region Map
+|    -    |Region Map|
 
 ##### `locateUser`
 `locateUser` enables or disables the 'locate me' button on Feature Maps and Region Maps. Its type is `<boolean>`. If set to true, the 'locate me' button will be rendered and functional. If omitted or set to `false`, the 'locate me' button will not be rendered.
 
 Required |Optional
 :-------:|:----------------------:
-    -    |Feature Map, Region Map
+|    -    |Feature Map, Region Map|
 
 ##### `order`
-`order` defines the initial column to be sorted in a Table. Its type is `<array>` and it must have at least one order declaration of type `<object>`. This object must have the following properties:
+`order` defines the initial column to be sorted in a Table. If not provided, the table will default to sorting by the system id, if available, or by the first sortable column. Its type is `<array>` and it must have at least one order declaration of type `<object>` (note that the table currently only supports one order). This object must have the following properties:
 
 * The `columnName` property, of type `<string>`, specifies which column should be used in the order clause of the query. It must be the name of a column in the current dataset.
 
@@ -141,28 +141,28 @@ Required |Optional
 
 Required |Optional
 :-------:|:-------:
-Table    |    -
+|    -    |Table|
 
 ##### `panAndZoom`
 `panAndZoom` enables or disables panning and zooming of maps. Its type is `<boolean>`. If omitted or set to `true`, the map will be pannable and zoomable using input events and the default map controls. If set to `false`, the map will not be pannable and zoomable and the default controls will not be rendered.
 
 Required |Optional
 :-------:|:----------------------:
-    -    |Feature Map, Region Map
+|    -    |Feature Map, Region Map|
 
 ##### `pointOpacity`
 `pointOpacity` controls the opacity of individual points rendered by the Feature Map. Its type is `<number>` and it must be in the range [0, 1].
 
 Required |Optional
 :-------:|:----------:
-    -    |Feature Map
+|    -    |Feature Map|
     
 ##### `pointSize`
 `pointSize` controls the size of individual points rendered by the Feature Map by multiplying minimum size. Its type is `<number>` and it must be in the range [1, 3.2]. Defaults to 1.
 
 Required |Optional
 :-------:|:----------:
-    -    |Feature Map
+|    -    |Feature Map|
 
 ##### `precision`
 `precision` overrides the automatic bucketing of dates for Timeline Charts. Its type is `<string>`.
@@ -171,7 +171,7 @@ Accepted values are `'day'`, `'month'` and `'year'`. If present, the Timeline Ch
 
 Required |Optional
 :-------:|:-------------:
-    -    |Timeline Chart
+|    -    |Timeline Chart|
 
 *NOTE: The Timeline Chart currently does not respect this property, but will be amended to do so in the near future.*
 
@@ -200,7 +200,7 @@ The following example would cause Region and Feature Maps to show the map coordi
 
 Required |Optional
 :-------:|:----------------------:
-    -    |Feature Map, Region Map
+|    -    |Feature Map, Region Map|
 
 *NOTE: Zoom levels decrease the size of the visible geographic area as they increase, so a zoom level of 1 is 'zoomed all the way out' and a zoom level of 18 is 'zoomed all the way in'.*
 
@@ -209,21 +209,21 @@ Required |Optional
 
 Required |Optional
 :-------:|:----------:
-    -    |Feature Map
+|    -    |Feature Map|
 
 ##### `maxTileDensity`
 `maxTileDensity` controls the maxiumum number of individual points that will be drawn, per tile, by the Feature Map. Its type is `<number>` and it must be in the range [0, 65,536].
 
 Required |Optional
 :-------:|:----------:
-    -    |Feature Map
+|    -    |Feature Map|
 
 ##### `rowInspectorTitleColumnName`
 `rowInspectorTitleColumnName` controls which value in a row is used as the 'title' of the row inspector flyout. Its type is `<string>` and it must be the name of a column in the current dataset.
 
 Required |Optional
 :-------:|:----------:
-    -    |Feature Map
+|    -    |Feature Map|
 
 ##### `shapefile`
 `shapefile` is how the GeoJSON shape file that is paired with row data to render a Region Map is specified. Its type is `<object>`. This object must have the following properties:
@@ -252,7 +252,7 @@ The following example shows a valid `shapefile` object:
 
 Required   |Optional
 :---------:|:-------:
-Region Map |    -
+|Region Map |    -|
 
 ##### `tableColumnWidths`
 `tableColumnWidths` controls the rendered widths of individual columns in a table. Its type is `<object>`; its keys, of type `<string>`, are column names and its values, of type `<number>`, represent the intended width of the column in pixels.
@@ -275,7 +275,7 @@ The following example would cause a table to render all columns 100 pixels wide 
 
 Required |Optional
 :-------:|:-------:
-    -    |Table
+|    -    |Table|
 
 ##### `treatNullValuesAsZero`
 `treatNullValuesAsZero` controls the rendering behavior of null values. Its type is `<boolean>`.
@@ -295,28 +295,28 @@ If this property is absent it will be considered false.
 
 Required |Optional
 :-------:|:-------------:
-    -    |Timeline Chart
+|    -    |Timeline Chart|
 
 ##### `viewSourceDataLink`
 `viewSourceLink` controls whether or not to display the "View source data" link in the info bar of the visualization. Its type is `<boolean>`. If omitted or set to `true`, the "View source data" link will be rendered. If set to `false` the "View source data" link will not be rendered.
 
 Required |Optional
 :-------:|:----------------------------------------------------------------------:
-    -    |Column Chart, Feature Map, Histogram, Region Map, Table, Timeline Chart
+|    -    |Column Chart, Feature Map, Histogram, Region Map, Table, Timeline Chart|
 
 ##### `xAxisDataLabels`
 `xAxisDataLabels` controls whether or not to display column labels on Column Charts. Its type is `<boolean>`. If omitted or set to `true`, column labels will be rendered. If set to `false`, column labels will not be rendered.
 
 Required |Optional
 :-------:|:-----------:
-    -    |Column Chart
+|    -    |Column Chart|
 
 ##### `xAxisScalingMode`
 `xAxisScalingMode` controls the horizontal scaling of rendered data in Column Charts and Timeline Charts. Its type is `<string>`. Accepted values are `pan` and `fit`. If set to `pan`, the visualization will not attempt to fit all rendered values within the viewport. If set to `fit`, the visualization will attempt to fit all rendered values within the viewport and may render an error if the number of rows in the query response exceeds a certain threshold.
 
 Required |Optional
 :-------:|:---------------------------:
-    -    |Column Chart, Timeline Chart
+|    -    |Column Chart, Timeline Chart|
 
 ##### `showOtherCategory`
 `showOtherCategory` controls whether grouping data above specified limit into `(other)` category. 
@@ -325,7 +325,7 @@ There isn't a default limit in Bar Chart and Column Chart. `showOtherCategory` i
 
 Required |Optional
 :-------:|:---------------------------:
-    -    |Bar Chart, Pie Chart, Column Chart
+|    -    |Bar Chart, Pie Chart, Column Chart|
 
 ##### `showLegend`
 `showLegend` controls whether to show or hide legend for grouped charts. `showLegend` is true by default
@@ -333,7 +333,7 @@ for grouped charts.
 
 Required |Optional
 :-------:|:---------------------------:
-    -    |Column Chart
+|    -    |Column Chart|
 
 ### The `format` Object
 The format object specifies the format and version of the vif. It is of type `<object>`. This object must have the following properties:
@@ -508,10 +508,10 @@ The following example would cause a column in a Column Chart with a value of 1 t
   ]
 }
 ```
- 
+
  Required |Optional
  :-------:|:---------------------------:
-     -    |Bar Chart, Pie Chart, Column Chart
+ |    -    |Bar Chart, Pie Chart, Column Chart|
 
 ### Appendix: SoQL Filter Objects
 

@@ -280,7 +280,7 @@ module.exports = function Table(element, originalVif, locale) {
   }
 
   function templateTable(vif, data) {
-    const activeSort = _.get(vif, 'configuration.order[0]');
+    const activeSort = _.get(vif, 'configuration.order[0]', {});
 
     if (data === null) {
       return '';

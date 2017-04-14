@@ -8,6 +8,19 @@ import ShowOutputSchema from './components/ShowOutputSchema';
 import { focusColumnEditor } from './actions/manageMetadata';
 import ShowUpload from './components/ShowUpload';
 import NoMatch from './components/NoMatch';
+import _ from 'lodash';
+
+const checkUploadStatus = store => (nextState, replace) => {
+  const uploadExists = !_.isEmpty(store.getState().db.output_columns);
+
+  const { category, fourfour, name, updateSeq } = nextState.params;
+
+  if (uploadExists) {
+    store.dispatch(focusColumnEditor(nextState));
+  } else {
+    replace(`/${category}/${name}/${fourfour}/updates/${updateSeq}`);
+  }
+};
 
 export default function rootRoute(store) {
   return (
@@ -18,7 +31,7 @@ export default function rootRoute(store) {
       <Route
         path="metadata/columns"
         component={ManageMetadata}
-        onEnter={(nextState) => store.dispatch(focusColumnEditor(nextState))} />
+        onEnter={checkUploadStatus(store)} />
       <Route path="uploads" component={ManageUploads} />
       <Route path=":sidebarSelection" component={ShowUpdate} />
       <Route path="uploads/:uploadId" component={ShowUpload} />

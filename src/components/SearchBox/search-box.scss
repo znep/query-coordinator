@@ -39,6 +39,7 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
   line-height: normal !important;
   margin-bottom: 0 !important;
   padding-left: $search-box-inactive-padding !important;
+  box-sizing: border-box; /* EN-15547: override styling from CS Rally template */
 
   /* We have lots of CSS resets that turn this button off, but we want it here */
   &::-webkit-search-cancel-button {

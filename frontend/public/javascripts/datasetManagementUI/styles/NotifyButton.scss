@@ -1,0 +1,37 @@
+.emailBtn {
+  composes: btn from global;
+  width: 250px;
+  height: 50px;
+
+  span {
+    margin-right: 0.5em;
+  }
+}
+
+.emailBtnRequest {
+  composes: emailBtn;
+  composes: btn-default from global;
+}
+
+.emailBtnBusy {
+  composes: emailBtn;
+  composes: btn-primary from global;
+  composes: btn-busy from global;
+}
+
+.emailBtnError {
+  composes: emailBtn;
+  compooses: btn-error from global;
+}
+
+.emailBtnSuccess {
+  composes: emailBtn;
+  composes: btn-success from global;
+}
+
+.spinner {
+  composes: spinner-default from global;
+  composes: spinner-btn-default from global;
+  width: 1.5rem;
+  height: 1.5rem;
+}

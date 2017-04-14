@@ -36,10 +36,14 @@ export class DatasetPreview extends Component {
 
   renderTable() {
     const { vif } = this.props;
-
+    // This is a temporary way to pass localization information to frontend-visualizations
+    // to localize the Table & Pager until the mono-repo is complete.
+    const options = _.has(window, 'serverConfig.locale') ?
+      { locale: window.serverConfig.locale } :
+      { locale: '' };
     return (
       <div className="table-contents">
-        <SocrataVisualizations.Visualization vif={vif} />
+        <SocrataVisualizations.Visualization vif={vif} options={options} />
       </div>
     );
   }

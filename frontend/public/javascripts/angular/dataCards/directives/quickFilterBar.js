@@ -50,10 +50,9 @@ module.exports = function quickFilterBar(
     } else if (filter instanceof Filter.IsNullFilter) {
       return I18n.filter.blank;
     } else if (filter instanceof Filter.TimeRangeFilter) {
-      var format = 'YYYY MMMM DD';
       return I18n.t('filter.dateRange',
-        moment(filter.start).format(format),
-        moment(filter.end).format(format)
+        moment(filter.start).format('LL'),
+        moment(filter.end).format('LL')
       );
     } else if (filter instanceof Filter.ValueRangeFilter) {
       return I18n.t('filter.valueRange',

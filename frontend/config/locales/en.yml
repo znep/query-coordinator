@@ -393,7 +393,7 @@ en:
         oldest_first: oldest first
         range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
         range_label_all: Showing all {0} {1}
-        range_label_subtitle: Showing {0} {1} <span class="subtitle">out of {2}</span>
+        range_label_subtitle: Showing {0} <span class="subtitle">out of {1}</span> {2}
         smallest_first: smallest first
         sort: Click to sort {0}
         sorted: Sorted {0}

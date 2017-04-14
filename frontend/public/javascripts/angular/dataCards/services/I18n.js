@@ -1,4 +1,9 @@
+const _ = require('lodash');
+const moment = require('moment');
+
 module.exports = function I18n($log, ServerConfig, $window) {
+  const localeInfo = ServerConfig.get('locales');
+  moment.locale(_.get(localeInfo, 'currentLocale'));
 
   // TODO clean this up using _.mapKeys when we upgrade lodash
   function camelCaseKeys(obj) {
@@ -33,7 +38,6 @@ module.exports = function I18n($log, ServerConfig, $window) {
   // Turns a url into a localized version of the url:
   // I18n.a('/path/to/page') -> '/ru/path/to/page'
   i18n.a = function(href) {
-    var localeInfo = ServerConfig.get('locales');
     var localePart = '';
     if (localeInfo.currentLocale !== localeInfo.defaultLocale) {
       localePart = '/' + localeInfo.currentLocale;

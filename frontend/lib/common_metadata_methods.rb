@@ -292,21 +292,43 @@ module CommonMetadataMethods
     merged
   end
 
+  # In core, computationStrategy has a slightly different structure
+  # strategy_type becomes type
+  def get_computation_strategy_legacy_structure(column)
+    core_computation_strategy = column[:computationStrategy]
+    return {} unless core_computation_strategy
+
+    computation_strategy = core_computation_strategy.slice(:type, :source_columns, :parameters)
+    computation_strategy[:strategy_type] = computation_strategy.delete(:type)
+    computation_strategy
+  end
+
   # For Phidippides deprecation, this method should be progressively enhanced to
   # translate the currently-targeted subset of fields.
   def translate_core_metadata_to_legacy_structure(obe_metadata, nbe_metadata)
-    columns = obe_metadata.fetch(:columns, []).each_with_object({}) do |column, accum|
+    obe_columns = obe_metadata.fetch(:columns, []).each_with_object({}) do |column, accum|
       accum[column[:fieldName]] = {
         hideInTable: column.fetch(:flags, []).include?('hidden')
       }
     end
 
-    {
-      columns: columns,
-      downloadOverride: (nbe_metadata[:metadata] || {})[:overrideLink],
+    nbe_columns = nbe_metadata.fetch(:columns, []).each_with_object({}) do |column, accum|
+      accum[column[:fieldName]] = {
+        computationStrategy: get_computation_strategy_legacy_structure(column)
+      }.compact
+    end
+
+    metadata = {
+      columns: obe_columns.deep_merge(nbe_columns),
       permissions: {
         isPublic: (nbe_metadata[:grants] || []).any? { |grant| grant[:flags].include?('public') }
       }
     }.with_indifferent_access
+
+    if nbe_metadata.dig(:metadata, :overrideLink)
+      metadata[:downloadOverride] = nbe_metadata[:metadata][:overrideLink]
+    end
+
+    metadata
   end
 end

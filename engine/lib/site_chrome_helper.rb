@@ -38,12 +38,18 @@ module SiteChromeHelper
 
   def site_chrome_javascript_tag
     if using_custom_header_footer?
-      site_chrome_js_dir = "#{SocrataSiteChrome::Engine.root}/app/assets/javascripts/socrata_site_chrome/"
-      javascript_tag(File.read("#{site_chrome_js_dir}/disable_preview.js")) <<
-        javascript_tag(File.read("#{site_chrome_js_dir}/admin_header.js")) <<
-        javascript_tag("window.current_user = #{site_chrome_current_user || {}};") <<
-        javascript_tag(raw(custom_header_footer_content[:header][:js])) <<
-        javascript_tag(raw(custom_header_footer_content[:footer][:js]))
+      site_chrome_js_dir = "#{SocrataSiteChrome::Engine.root}/app/assets/javascripts/socrata_site_chrome"
+      node_modules_dir = "#{SocrataSiteChrome::Engine.root}/node_modules"
+
+      safe_join([
+        File.read("#{site_chrome_js_dir}/disable_preview.js"),
+        File.read("#{site_chrome_js_dir}/admin_header.js"),
+        File.read("#{node_modules_dir}/socrata-notifications/socrata-notifications.js"),
+        File.read("#{node_modules_dir}/socrata-autocomplete/socrata-autocomplete.js"),
+        "window.current_user = #{site_chrome_current_user || {}};",
+        raw(custom_header_footer_content[:header][:js]),
+        raw(custom_header_footer_content[:footer][:js])
+      ].map(&method(:javascript_tag)))
     else
       # `socrata_site_chrome` corresponds to the mount point in the hosting app's config/routes.rb
       # Note: The _lack_ of a leading / is critical to this helper generating the correct digest path

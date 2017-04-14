@@ -1,4 +1,4 @@
-import { SET_FOURFOUR } from 'actions/routing';
+import { SET_FOURFOUR, ADD_LOCATION } from 'actions/routing';
 import { routerReducer } from 'react-router-redux';
 import { combineReducers } from 'redux';
 
@@ -13,13 +13,13 @@ const fourfour = (state = '', action) => {
 
 const history = (state = [], action) => {
   switch (action.type) {
-    case 'PUSH_URL':
+    case ADD_LOCATION:
       if (state.length === 0) {
-        return [action.pathname];
+        return [action.location];
       } else if (state.length === 1) {
-        return [...state, action.pathname];
+        return [...state, action.location];
       } else {
-        return [state[state.length - 1], action.pathname];
+        return [state[state.length - 1], action.location];
       }
     default:
       return state;

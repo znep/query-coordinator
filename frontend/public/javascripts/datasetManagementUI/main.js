@@ -16,6 +16,7 @@ import { bootstrap } from './bootstrap';
 import * as Selectors from './selectors';
 import Airbrake from '../common/airbrake';
 import rootRoute from './routes';
+import { addLocation } from 'actions/routing';
 import styleguide from './styles/style.global.scss'; //eslint-disable-line
 
 const viewId = window.initialState.view.id;
@@ -64,13 +65,7 @@ const history = syncHistoryWithStore(browserHistory, store, {
 });
 
 history.listen(location => {
-  store.dispatch({
-    type: 'PUSH_URL',
-    pathname: {
-      location,
-      dsmui: true
-    }
-  });
+  store.dispatch(addLocation(location));
 });
 
 ReactDOM.render(

@@ -34,6 +34,11 @@ export function ManageMetadata(props) {
   };
 
   let lastVisited;
+
+  // We only keep current location and previous location, and the code that stores
+  // these lives only in DSMUI. This means that if you came from another site, there
+  // will be only one location in history (the current one). If there is more than one,
+  // then we know that the first one is from DSMUI.
   if (history.length > 1) {
     lastVisited = history[0];
   }
@@ -91,21 +96,19 @@ ManageMetadata.propTypes = {
   views: PropTypes.object.isRequired,
   fourfour: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
-  outputSchemaStatus: PropTypes.string
+  outputSchemaStatus: PropTypes.string,
+  history: PropTypes.arrayOf(PropTypes.shape({
+    pathname: PropTypes.string
+  }))
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onDismiss: previousLocation => {
-    if (previousLocation && previousLocation.dsmui) {
+    if (previousLocation) {
       dispatch(goBack());
     } else {
       dispatch(push(Links.home(ownProps.location)));
     }
-    // if (!previousLocation)
-    // const redirectLocation = previousLocation.dsmui
-    //   ? previousLocation.location
-    //   : ownProps.location;
-    // dispatch(push(Links.home(redirectLocation)));
   },
   onSaveDataset: () => dispatch(saveDatasetMetadata()),
   onSaveCol: () => dispatch(saveColumnMetadata()),

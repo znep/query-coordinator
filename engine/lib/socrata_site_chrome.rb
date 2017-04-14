@@ -28,7 +28,7 @@ module SocrataSiteChrome
   require 'socrata_site_chrome/site_chrome'
   require 'socrata_site_chrome/version'
 
-  require 'site_chrome_helper' # Helper methods for the host application, not the engine
+  require 'site_chrome_consumer_helpers' # Helper methods for the host application, not the engine
   require 'socrata_site_chrome/test/helpers'
 
   def self.configuration

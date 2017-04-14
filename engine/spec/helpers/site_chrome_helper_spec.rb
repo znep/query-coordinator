@@ -174,8 +174,8 @@ describe SocrataSiteChrome::SiteChromeHelper do
   end
 
   describe '#site_chrome_current_user' do
-    it 'returns nil if request_current_user is nil' do
-      allow(helper).to receive(:request_current_user).and_return(nil)
+    it 'returns nil if site_chrome_request_current_user is nil' do
+      allow(helper).to receive(:site_chrome_request_current_user).and_return(nil)
       expect(helper.site_chrome_current_user).to be(nil)
     end
 
@@ -185,7 +185,7 @@ describe SocrataSiteChrome::SiteChromeHelper do
         'roleName' => 'designer',
         'id' => '999'
       }
-      allow(helper).to receive(:request_current_user).and_return(fake_user)
+      allow(helper).to receive(:site_chrome_request_current_user).and_return(fake_user)
       result = helper.site_chrome_current_user
 
       expect(result.class).to eq(SocrataSiteChrome::User)
@@ -196,13 +196,13 @@ describe SocrataSiteChrome::SiteChromeHelper do
   end
 
   describe '#logged_in' do
-    it 'returns true if request_current_user is present' do
-      allow(helper).to receive(:request_current_user).and_return('id' => 'fooo-baar')
+    it 'returns true if site_chrome_request_current_user is present' do
+      allow(helper).to receive(:site_chrome_request_current_user).and_return('id' => 'fooo-baar')
       expect(helper.logged_in?).to eq(true)
     end
 
-    it 'returns false if request_current_user is not present' do
-      allow(helper).to receive(:request_current_user).and_return(nil)
+    it 'returns false if site_chrome_request_current_user is not present' do
+      allow(helper).to receive(:site_chrome_request_current_user).and_return(nil)
       expect(helper.logged_in?).to eq(false)
     end
   end
@@ -303,12 +303,12 @@ describe SocrataSiteChrome::SiteChromeHelper do
       expect(helper.username).to eq('Profile')
     end
 
-    it 'returns "Profile" if there is a request_current_user with no displayName' do
+    it 'returns "Profile" if there is a current user with no displayName' do
       stub_current_user('displayName' => nil)
       expect(helper.username).to eq('Profile')
     end
 
-    it 'returns the request_current_user displayName if there is a request_current_user' do
+    it 'returns the displayName if there is a current user' do
       stub_current_user('displayName' => 'derek zoolander')
       expect(helper.username).to eq('derek zoolander')
     end

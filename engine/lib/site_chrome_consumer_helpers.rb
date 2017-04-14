@@ -1,8 +1,8 @@
 require 'cgi'
 
-# The purpose of this module is to add helper methods to the host Rails application.
+# The purpose of this module is to add helper methods to the consumer/host Rails application.
 
-module SiteChromeHelper
+module SiteChromeConsumerHelpers
   include SocrataSiteChrome::SharedHelperMethods
 
   def site_chrome_meta_viewport_tag
@@ -47,8 +47,8 @@ module SiteChromeHelper
         File.read("#{node_modules_dir}/socrata-notifications/socrata-notifications.js"),
         File.read("#{node_modules_dir}/socrata-autocomplete/socrata-autocomplete.js"),
         "window.current_user = #{site_chrome_current_user || {}};",
-        raw(custom_header_footer_content[:header][:js]),
-        raw(custom_header_footer_content[:footer][:js])
+        raw(site_chrome_custom_header_footer_content[:header][:js]),
+        raw(site_chrome_custom_header_footer_content[:footer][:js])
       ].map(&method(:javascript_tag)))
     else
       # `socrata_site_chrome` corresponds to the mount point in the hosting app's config/routes.rb

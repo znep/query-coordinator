@@ -168,8 +168,8 @@ MetadataField.propTypes = {
   displayMetadataFieldErrors: PropTypes.bool
 };
 
-const mapStateToProps = ({ db, fourfour }) => ({
-  displayMetadataFieldErrors: _.get(db, `views.${fourfour}.displayMetadataFieldErrors`)
+const mapStateToProps = ({ db, routing }) => ({
+  displayMetadataFieldErrors: _.get(db, `views.${routing.fourfour}.displayMetadataFieldErrors`)
 });
 
 export default connect(mapStateToProps)(MetadataField);

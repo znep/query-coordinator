@@ -5,7 +5,7 @@ import MetadataEditor from '../ManageMetadata/MetadataEditor';
 import styles from 'styles/ManageMetadata/MetadataContent.scss';
 
 // TODO : should probably abstract sidebar to its own component
-const MetadataContent = ({ path, fourfour, onSidebarTabClick }) =>
+const MetadataContent = ({ path, fourfour, onSidebarTabClick, uploadExists }) =>
   <div>
     <div className={styles.sidebar}>
       <Link
@@ -29,7 +29,8 @@ const MetadataContent = ({ path, fourfour, onSidebarTabClick }) =>
 MetadataContent.propTypes = {
   path: PropTypes.string.isRequired,
   onSidebarTabClick: PropTypes.func,
-  fourfour: PropTypes.string.isRequired
+  fourfour: PropTypes.string.isRequired,
+  uploadExists: PropTypes.bool
 };
 
 export default MetadataContent;

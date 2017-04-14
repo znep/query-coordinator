@@ -85,6 +85,14 @@ describe('ResultsContainer', () => {
   });
 
   describe('additionalTopbarComponents', () => {
+    beforeEach(() => {
+      stubFetch();
+    });
+
+    afterEach(() => {
+      ceteraUtils.fetch.restore();
+    });
+
     it('can be an empty array', () => {
       const element = renderComponent(ResultsContainer, getProps({
         additionalTopbarComponents: []

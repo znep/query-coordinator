@@ -162,7 +162,9 @@ $(function() {
             },
             selectCallback: function(option, checked) {
               if (checked) {
-                finished(option.id);
+                option.getViewForDisplay(rt, function(viewToDisplay) {
+                  finished(viewToDisplay.id);
+                });
               } else {
                 finished();
               }

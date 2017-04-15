@@ -12,6 +12,9 @@
   <ul role="menu" aria-hidden="true">
     <li role="menuitem"><%= link_to(t('admin.open_performance.home'), site_chrome_massage_url('/stat')) %></li>
     <li role="menuitem"><%= link_to(t('admin.open_performance.data'), site_chrome_massage_url('/stat/data')) %></li>
+    <%- if get_feature_flag('report_builder_enabled') %>
+      <li role="menuitem"><%= link_to(t('admin.open_performance.reports'), site_chrome_massage_url('/manage/reports')) %></li>
+    <%- end %>
     <li role="menuitem"><%= link_to(t('admin.open_performance.goals_and_dashboards'), site_chrome_massage_url('/stat/goals')) %></li>
     <%- if current_user_can_see_admin_link? %>
       <li role="menuitem"><%= link_to(t('admin.open_performance.goal_inventory'), site_chrome_massage_url('/admin/goals')) %></li>

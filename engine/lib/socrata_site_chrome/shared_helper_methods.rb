@@ -6,8 +6,10 @@
 module SocrataSiteChrome
   module SharedHelperMethods
     def site_chrome_request_current_user
-      raise 'Hosting app must provide a method for current_user_json on ApplicationController' unless
-        request.env['action_controller.instance'].respond_to?(:current_user_json)
+      unless request.env['action_controller.instance'].respond_to?(:current_user_json)
+        raise 'Hosting app must provide a method for current_user_json on ApplicationController'
+      end
+
       request.env['action_controller.instance'].current_user_json
     end
 
@@ -19,7 +21,7 @@ module SocrataSiteChrome
       !!cookies[:socrata_site_chrome_preview]
     end
 
-    def site_chrome_pub_stage
+    def site_chrome_publication_stage
       site_chrome_preview_mode? ? :draft : :published
     end
 
@@ -71,7 +73,7 @@ module SocrataSiteChrome
     # This will bypass the Site Appearance configuration and pull the custom header/footer content
     # from the Site Chrome configuration properties `custom_[header|footer]_[html|css|js]`
     def site_chrome_custom_header_footer_content
-      site_chrome_custom_content.fetch(site_chrome_pub_stage)
+      site_chrome_custom_content.fetch(site_chrome_publication_stage)
     end
 
     def site_chrome_instance

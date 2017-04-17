@@ -19,14 +19,14 @@ module SocrataSiteChrome
         if Rails.env.test?
           SocrataSiteChrome::DomainConfig.site_chrome_test_configuration
         else
-          SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config(pub_stage(request.cookies))
+          SocrataSiteChrome::DomainConfig.new(request.host).site_chrome_config(publication_stage(request.cookies))
         end
       )
     end
 
     private
 
-    def pub_stage(cookies = {})
+    def publication_stage(cookies = {})
       !!cookies.with_indifferent_access[:socrata_site_chrome_preview] ? :draft : :published
     end
 

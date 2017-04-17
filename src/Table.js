@@ -575,8 +575,9 @@ $.fn.socrataTable = function(originalVif, locale) {
       if (_.isUndefined(order)) {
         order = getSortOrder(datasetMetadata, displayableColumns);
 
-        // Update order the VIF so we can visually indicate which column the table is sorted
-        _.set(renderState.vif, 'configuration.order', order);
+        // Update order in vifForDataQuery so we can visually indicate which column the table is
+        // being sorted by
+        _.set(vifForDataQuery, 'configuration.order', order);
 
       } else if (order.length !== 1) {
         return Promise.reject(

@@ -147,4 +147,32 @@ describe('Selectors', () => {
 
   });
 
+  describe('rowsTransformed', () => {
+
+    it('returns the min of contiguous_rows_transformed', () => {
+      const columns = [
+        { transform: { contiguous_rows_processed: 20 } },
+        { transform: { contiguous_rows_processed: 30 } }
+      ];
+      assert.equal(Selectors.rowsTransformed(columns), 20);
+    });
+
+    it('returns 0 if some transforms have no contiguous_rows_transform attribute', () => {
+      const columns = [
+        { transform: { contiguous_rows_processed: 20 } },
+        { transform: {} }
+      ];
+      assert.equal(Selectors.rowsTransformed(columns), 0);
+    });
+
+    it('returns 0 if none of the transforms have a contiguous_rows_transform attribute', () => {
+      const columns = [
+        { transform: {} },
+        { transform: {} }
+      ];
+      assert.equal(Selectors.rowsTransformed(columns), 0);
+    });
+
+  });
+
 });

@@ -52,7 +52,7 @@ export function uploadsInProgress(db) {
 
 export function rowsTransformed(outputColumns) {
   return _.min(
-    outputColumns.map((col) => col.transform.contiguous_rows_processed)
+    outputColumns.map((col) => (col.transform.contiguous_rows_processed || 0))
   ) || 0;
 }
 

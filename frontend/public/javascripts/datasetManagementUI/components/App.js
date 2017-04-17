@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import AppBar from './AppBar';
 import NotificationList from './NotificationList';
+import Modal from 'components/Modals/Modal';
 import { setFourfour } from 'actions/routing';
 import styles from 'styles/App.scss';
 
@@ -26,6 +27,7 @@ class App extends Component {
         <AppBar />
         {children}
         <NotificationList />
+        <Modal />
       </div>
     );
   }

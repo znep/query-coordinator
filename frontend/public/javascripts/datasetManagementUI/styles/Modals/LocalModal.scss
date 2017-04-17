@@ -1,0 +1,8 @@
+.container {
+  display: initial;
+}
+
+.hiddenContainer {
+  composes: container;
+  display: none;
+}

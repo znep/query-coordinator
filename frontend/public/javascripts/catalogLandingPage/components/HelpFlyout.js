@@ -3,7 +3,7 @@ import Flyout from './Flyout';
 
 export default class HelpFlyout extends React.Component {
   render() {
-    const ZENDESK_LINK = 'https://socrata.zendesk.com/knowledge/articles/115005683108/en-us?brand_id=3285806';
+    const ZENDESK_LINK = 'https://support.socrata.com/hc/en-us/articles/115005683108';
 
     return (
       <div className="catalog-landing-page-help-flyout">

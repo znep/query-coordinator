@@ -1,6 +1,7 @@
 export const types = {
   setActivities: 'SET_ACTIVITIES',
-  setPagination: 'SET_PAGINATION'
+  setPagination: 'SET_PAGINATION',
+  dismissError: 'DISMISS_ERROR'
 };
 
 export const setActivities = (activities) => ({
@@ -26,3 +27,7 @@ export const loadActivities = () => {
     });
   };
 };
+
+export const dismissError = () => ({
+  type: types.dismissError
+});

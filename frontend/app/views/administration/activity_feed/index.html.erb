@@ -31,6 +31,12 @@
 <div class="contentBox withLeftNavigation jobsScreen">
   <%= display_standard_flashes %>
 
+  <% if @error %>
+    <div class="flash error">
+      <%= t('screens.admin.jobs.index_page.server_error') %>
+    </div>
+  <% end %>
+
   <div class="jobs-filter">
     <span class="jobs-filter--header"><%= t('screens.admin.jobs.filters.filter_by') %>:</span>
     <form class="jobs-filter--form" action="/admin/activity_feed">

@@ -9,6 +9,9 @@ export default function(state, action) {
     case actions.types.setPagination:
       return state.set('pagination', immutable.fromJS(action.pagination));
 
+    case actions.types.dismissError:
+      return state.set('error', null);
+
     default:
       return state;
   }

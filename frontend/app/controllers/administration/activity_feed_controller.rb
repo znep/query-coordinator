@@ -38,27 +38,37 @@ class Administration::ActivityFeedController < AdministrationController
       end
     end
 
-    activities_response = ImportActivity.find_all_by_created_at_descending(
-      :includeCount => false,
-      :offset => offset,
-      :limit => page_size + 1,
-      :activityType => activity_type,
-      :status => activity_status,
-      :startDate => start_date,
-      :endDate => end_date
-    )
-    @activities = activities_response[:activities]
-    @pager_info = {
-      :next_page => page_idx + 1,
-      :prev_page => [page_idx - 1, 1].max,
-      :has_next_page? => @activities.size > page_size,
-      :has_prev_page? => page_idx > 1,
-      :params => {
-        :activity_type => activity_type,
-        :activity_status => activity_status,
-        :date_range => date_string
-      }.select { |_, v| v.present? }
-    }
+    begin
+      activities_response = ImportActivity.find_all_by_created_at_descending(
+        :includeCount => false,
+        :offset => offset,
+        :limit => page_size + 1,
+        :activityType => activity_type,
+        :status => activity_status,
+        :startDate => start_date,
+        :endDate => end_date
+      )
+      @activities = activities_response[:activities]
+      @pager_info = {
+        :next_page => page_idx + 1,
+        :prev_page => [page_idx - 1, 1].max,
+        :has_next_page? => @activities.size > page_size,
+        :has_prev_page? => page_idx > 1,
+        :params => {
+          :activity_type => activity_type,
+          :activity_status => activity_status,
+          :date_range => date_string
+        }.select { |_, v| v.present? }
+      }
+    rescue
+      @activities = []
+      @pager_info = {}
+      @error = true
+
+      error_class = 'ImportActivityRequestFailure'
+      error_message = 'Could not get activity list'
+      report_error(error_class, error_message)
+    end
 
     respond_to do |format|
       format.json {
@@ -83,5 +93,15 @@ class Administration::ActivityFeedController < AdministrationController
     rescue ImportStatusService::ServerError
       return render_500
     end
+  end
+
+  private
+
+  def report_error(error_class, error_message)
+    Airbrake.notify(
+      :error_class => error_class,
+      :error_message => error_message
+    )
+    Rails.logger.error(error_message)
   end
 end

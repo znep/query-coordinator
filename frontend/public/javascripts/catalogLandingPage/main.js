@@ -9,6 +9,7 @@ import airbrake from '../common/airbrake';
 import reducer from './reducers';
 import App from './App';
 import Search from './components/Search';
+import { dateLocalize } from '../common/locale';
 
 const middleware = [thunk];
 
@@ -51,5 +52,7 @@ if (footer) {
 
 document.querySelector('#catalog-landing-page-spinner').style.display = 'none';
 document.querySelector('.catalog .browse2-results-pane').style.visibility = 'visible';
+
+Array.from(document.querySelectorAll('.dateLocalize')).forEach(dateLocalize);
 
 require('./catalog');

@@ -1,4 +1,5 @@
 import airbrake from './airbrake';
+import moment from 'moment';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 
@@ -27,4 +28,11 @@ export const fetchTranslation = (key) => {
     } catch (err) {}
   }
   return message;
+};
+
+export const dateLocalize = (element) => {
+  const $dateSpan = $(element);
+  const format = $dateSpan.data('format');
+  const rawdate = $dateSpan.data('rawdatetime') * 1000;
+  $dateSpan.text(moment(rawdate).locale(serverConfig.locale).format(format));
 };

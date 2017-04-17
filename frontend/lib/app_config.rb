@@ -80,7 +80,6 @@ class AppConfig < Hashie::Dash
 
   # Auth0
   property :auth0_id
-  property :auth0_jwt
   property :auth0_secret
   property :auth0_uri
 

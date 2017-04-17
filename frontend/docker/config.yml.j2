@@ -132,11 +132,10 @@ default: &default
   {#
    # auth alternatives
    #}
-  {% if AUTH0_URI is defined and AUTH0_ID is defined and AUTH0_SECRET is defined and AUTH0_JWT is defined -%}
+  {% if AUTH0_URI is defined and AUTH0_ID is defined and AUTH0_SECRET is defined -%}
   auth0_uri: {{ AUTH0_URI }}
   auth0_id: {{ AUTH0_ID }}
   auth0_secret: {{ AUTH0_SECRET }}
-  auth0_jwt: {{ AUTH0_JWT }}
   {%- endif %}
 
   {#

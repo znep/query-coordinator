@@ -86,7 +86,7 @@ helpers to the bottom of the `<head>` section:
 <title><%= site_chrome_window_title %></title>
 <%= site_chrome_favicon_tag %>
 <%= site_chrome_meta_viewport_tag %>
-<%= site_chrome_google_analytics_tag %>
+<%= site_chrome_analytics_tags %>
 <%= site_chrome_stylesheet_tag %>
 ```
 
@@ -127,7 +127,7 @@ An example layout is shown below:
 
     <%= site_chrome_favicon_tag %>
     <%= site_chrome_meta_viewport_tag %>
-    <%= site_chrome_google_analytics_tag %>
+    <%= site_chrome_analytics_tags %>
     <%= site_chrome_stylesheet_tag %>
   </head>
 

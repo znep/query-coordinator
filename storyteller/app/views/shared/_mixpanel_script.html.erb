@@ -18,7 +18,7 @@
 
     mixpanel.init(
       '<%= Rails.application.config.mixpanel_token %>',
-      { secure_cookie: true, cookie_expiration: null }
+      <%== mixpanel_config_options.to_json %>
     );
   </script>
 

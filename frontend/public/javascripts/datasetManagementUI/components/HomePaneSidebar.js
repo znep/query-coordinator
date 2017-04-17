@@ -42,6 +42,7 @@ export const ManageData = (props) => {
         <Link to={Links.columnMetadataForm()}>
           <button
             className={columnsExist ? styles.sidebarBtn : styles.sidebarBtnDisabled}
+            title={!columnsExist && I18n.home_pane.sidebar.no_columns_msg}
             disabled={!columnsExist}
             tabIndex="-1">
             {I18n.home_pane.sidebar.column_descriptions_button}

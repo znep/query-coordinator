@@ -23,7 +23,9 @@ const MetadataContent = ({ path, fourfour, onSidebarTabClick, columnsExist }) =>
           activeClassName={styles.selected}>
             {I18n.metadata_manage.column_metadata_label}
         </Link> :
-        <span className={styles.disabled}>
+        <span
+          className={styles.disabled}
+          title={I18n.home_pane.sidebar.no_columns_msg}>
           {I18n.metadata_manage.column_metadata_label}
         </span>}
     </div>

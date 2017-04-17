@@ -1836,6 +1836,7 @@ en:
         feature: Feature
         feature_blurb: Feature assets or external resources that best represent your data.
         feature_button: Feature
+        no_columns_msg: This dataset doesn't contain any columns yet.
         title: Beyond the Basics
         visualize: Visualize
         visualize_blurb: Visualize your data and explore relationships.

@@ -1790,6 +1790,14 @@ en:
       columns: Columns
     export_errors: Export Errors
     home_pane:
+      publish_modal:
+        to_primer: "Go to Primer"
+        publishing:
+          title: "Your dataset is being processed & will be public shortly"
+          body: "It's safe to close your browser.  The progress will not be interrupted."
+        successful:
+          title: "This dataset is published"
+          body: "You can't currently make any more changes from here."
       add_column_metadata: Add Column Metadata
       add_column_metadata_blurb: Column metadata will help people understand what the column means.
       adding_data: Adding Data
@@ -1807,7 +1815,7 @@ en:
       data_uploaded: Your data has been uploaded.
       data_uploaded_blurb: Almost there! Just review your data and then hit Process Data.
       done_processing: Your data is done being processed!
-      email_me: Email Me
+      email_me: Email me when ready
       email_me_error: An error has occurred.
       email_me_success: We'll send you an email!
       getting_started: Getting Started

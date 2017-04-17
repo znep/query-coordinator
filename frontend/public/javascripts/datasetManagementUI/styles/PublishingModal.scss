@@ -1,0 +1,51 @@
+@import 'app/styles/styleguide-colors';
+
+.publishModal {
+  text-align: center;
+
+  span.statusIcon {
+    font-size: 100px;
+  }
+
+  span.inProgress {
+    color: $primary-base;
+  }
+
+  .button {
+    min-width: 250px;
+  }
+
+  span.success {
+    color: $success-base;
+  }
+
+  h2 {
+    margin: 1.5em 0 0.75em;
+    font-size: 19px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  .progressBarContainer {
+    height: 10px;
+    width: 375px;
+    margin: -10px auto 45px;
+    background-color: $light-grey-4;
+  }
+
+  :global {
+    .modal-container {
+      max-width: 550px;
+    }
+
+    .modal-footer {
+      margin-bottom: 1.75em;
+    }
+
+    .modal-footer-actions {
+      text-align: center;
+    }
+  }
+}

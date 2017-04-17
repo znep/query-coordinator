@@ -1,7 +1,25 @@
 import _ from 'lodash';
 import { STATUS_UPDATING, STATUS_LOAD_IN_PROGRESS } from './lib/database/statuses';
+import { UPSERT_JOB_SUCCESSFUL } from 'actions/applyUpdate.js';
 
 // TODO: if perf becomes an issue, use reselect for memoization
+export function percentUpserted(db, upsertJobId) {
+  const upsertJob = db.upsert_jobs[upsertJobId];
+
+  if (upsertJob.status === UPSERT_JOB_SUCCESSFUL) {
+    return 100;
+  } else {
+    return 100 * (rowsUpserted(db, upsertJobId) / rowsToBeImported(db, upsertJob.output_schema_id));
+  }
+}
+
+export function rowsToBeImported(db, outputSchemaId) {
+  const outputSchema = db.output_schemas[outputSchemaId];
+  const inputSchema = db.input_schemas[outputSchema.input_schema_id];
+  const errorRows = outputSchema.error_count || 0;
+
+  return Math.max(0, inputSchema.total_rows - errorRows);
+}
 
 export function rowsUpserted(db, upsertJobId) {
   const upsertJob = db.upsert_jobs[upsertJobId];

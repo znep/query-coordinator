@@ -38,11 +38,15 @@ export const App = React.createClass({
 
   setSiteChromeVisibility() {
     const { mode } = this.props;
+    const adminHeader = document.body.querySelector('#site-chrome-admin-header');
 
     switch (mode) {
       case ModeStates.EDIT:
         document.body.classList.add('hide-site-chrome');
         document.body.classList.remove('preview-mode');
+        if (adminHeader) {
+          adminHeader.classList.add('site-chrome-small');
+        }
         return;
 
       case ModeStates.PREVIEW:

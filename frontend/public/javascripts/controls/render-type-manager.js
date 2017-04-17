@@ -170,7 +170,7 @@
           settings.table));
       },
       reset: function() {
-        this.$dom.children('.renderContent').empty().removeData().removeClass('blist-table');
+        this.$dom.children('.renderContent').empty().removeData().removeClass('blist-table').off('.table');
       },
       scrollsInline: true,
       translations: ['controls.grid', 'screens.ds']

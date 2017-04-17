@@ -83,16 +83,6 @@ module SocrataSiteChrome
       site_chrome_current_user.try(:display_name).presence || t('header.profile')
     end
 
-    def request_current_user
-      raise 'Hosting app must provide a method for current_user_json on ApplicationController' unless
-        request.env['action_controller.instance'].respond_to?(:current_user_json)
-      request.env['action_controller.instance'].current_user_json
-    end
-
-    def site_chrome_current_user
-      SocrataSiteChrome::User.new(request_current_user) if request_current_user.present?
-    end
-
     def current_user_can_see_admin_link?
       return false unless site_chrome_current_user
       site_chrome_current_user.is_superadmin? ||
@@ -321,21 +311,6 @@ module SocrataSiteChrome
 
     def current_version_is_greater_than_or_equal?(version)
       Gem::Version.new(site_chrome_instance.current_version) >= Gem::Version.new(version)
-    end
-
-    def in_preview_mode?
-      !!cookies[:socrata_site_chrome_preview]
-    end
-
-    def pub_stage
-      in_preview_mode? ? :draft : :published
-    end
-
-    # EN-6555: Support for entirely custom headers/footers.
-    # This will bypass the Site Appearance configuration and pull the custom header/footer content
-    # from the Site Chrome configuration properties `custom_[header|footer]_[html|css|js]`
-    def custom_header_footer_content
-      site_chrome_custom_content.fetch(pub_stage)
     end
 
     def render_custom_content_html(content: {}, section_id: nil, custom_content_class: nil, size: nil)

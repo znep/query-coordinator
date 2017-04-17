@@ -1,3 +1,3 @@
 module ApplicationHelper
-  include SiteChromeHelper
+  include SiteChromeConsumerHelpers
 end

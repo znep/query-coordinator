@@ -71,11 +71,11 @@ This is because the default `/assets` is currently reserved in `frontend` for a 
 
 ## Usage
 
-In order to use the `*_tag` helper methods below, you will have to include SiteChromeHelper. You
+In order to use the `*_tag` helper methods below, you will have to include SiteChromeConsumerHelpers. You
 should most likely do this in your `ApplicationHelper.rb`.
 
 ```ruby
-include SiteChromeHelper
+include SiteChromeConsumerHelpers
 ```
 
 In the main layout that you are using for your application (usually

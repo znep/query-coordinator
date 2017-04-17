@@ -31,21 +31,21 @@ module SocrataSiteChrome
       HashWithIndifferentAccess.new(SocrataSiteChrome::DomainConfig.new(domain).config)
     end
 
-    def fetch(pub_stage = :published)
+    def fetch(publication_stage = :published)
       content = config[:properties].to_a.select do |property|
         SocrataSiteChrome::CustomContent.property_names.include?(property[:name])
       end.to_a
 
       {
         :header => {
-          :html => property(content, 'custom_header_html', pub_stage),
-          :css => property(content, 'custom_header_css', pub_stage),
-          :js => property(content, 'custom_header_js', pub_stage)
+          :html => property(content, 'custom_header_html', publication_stage),
+          :css => property(content, 'custom_header_css', publication_stage),
+          :js => property(content, 'custom_header_js', publication_stage)
         },
         :footer => {
-          :html => property(content, 'custom_footer_html', pub_stage),
-          :css => property(content, 'custom_footer_css', pub_stage),
-          :js => property(content, 'custom_footer_js', pub_stage)
+          :html => property(content, 'custom_footer_html', publication_stage),
+          :css => property(content, 'custom_footer_css', publication_stage),
+          :js => property(content, 'custom_footer_js', publication_stage)
         }
       }
     end
@@ -64,14 +64,14 @@ module SocrataSiteChrome
 
     private
 
-    def property(custom_content, property_name, pub_stage)
+    def property(custom_content, property_name, publication_stage)
       custom_content.detect do |content|
-        content[:name] == property_name_with_prefix(property_name, pub_stage)
+        content[:name] == property_name_with_prefix(property_name, publication_stage)
       end.try(:[], :value)
     end
 
-    def property_name_with_prefix(property_name, pub_stage)
-      pub_stage == :draft ? "draft_#{property_name}" : property_name
+    def property_name_with_prefix(property_name, publication_stage)
+      publication_stage == :draft ? "draft_#{property_name}" : property_name
     end
 
     # Returns the property hash for property matching provided name

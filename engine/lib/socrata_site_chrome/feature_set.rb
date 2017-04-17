@@ -21,7 +21,7 @@ module SocrataSiteChrome
     def get_feature(name)
       feature_set.to_h.
         fetch('properties', []).
-        find { |property| property['name'].downcase == name }
+        find { |property| property['name'].downcase == name.downcase }
     end
 
     def feature_set

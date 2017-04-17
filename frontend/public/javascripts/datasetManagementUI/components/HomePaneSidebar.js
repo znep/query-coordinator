@@ -20,7 +20,7 @@ function query(db) {
   };
 }
 
-const ManageData = (props) => {
+export const ManageData = (props) => {
   const { db, columnsExist } = props;
   const { anyColumnHasDescription } = query(db);
 

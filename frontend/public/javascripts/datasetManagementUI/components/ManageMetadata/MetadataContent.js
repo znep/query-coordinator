@@ -5,7 +5,7 @@ import MetadataEditor from '../ManageMetadata/MetadataEditor';
 import styles from 'styles/ManageMetadata/MetadataContent.scss';
 
 // TODO : should probably abstract sidebar to its own component
-const MetadataContent = ({ path, fourfour, onSidebarTabClick, uploadExists }) =>
+const MetadataContent = ({ path, fourfour, onSidebarTabClick, columnsExist }) =>
   <div>
     <div className={styles.sidebar}>
       <Link
@@ -15,7 +15,7 @@ const MetadataContent = ({ path, fourfour, onSidebarTabClick, uploadExists }) =>
         activeClassName={styles.selected}>
         {I18n.metadata_manage.dataset_metadata_label}
       </Link>
-      {uploadExists ?
+      {columnsExist ?
         <Link
           to={Links.columnMetadataForm()}
           className={styles.tab}
@@ -34,7 +34,7 @@ MetadataContent.propTypes = {
   path: PropTypes.string.isRequired,
   onSidebarTabClick: PropTypes.func,
   fourfour: PropTypes.string.isRequired,
-  uploadExists: PropTypes.bool
+  columnsExist: PropTypes.bool
 };
 
 export default MetadataContent;

@@ -24,8 +24,11 @@ describe SocrataSiteChrome::FeatureSet do
   describe '#feature_enabled?' do
     describe 'when the feature is enabled' do
       it 'returns true' do
-        enabled = subject.feature_enabled?('floatingfox')
-        expect(enabled).to be true
+        expect(subject.feature_enabled?('floatingfox')).to eq(true)
+      end
+
+      it 'is case-insensitive' do
+        expect(subject.feature_enabled?('FloATingFox')).to eq(true)
       end
     end
 
@@ -58,16 +61,25 @@ describe SocrataSiteChrome::FeatureSet do
     describe 'when feature_set requests successfully' do
       it 'returns the object that matches the name passed in' do
         feature = subject.get_feature('snappingsnail')
-        expected_feature = parse_feature_set_json(feature_set_json).
+        expected_feature_value = parse_feature_set_json(feature_set_json).
           first['properties'].
           first
 
-        expect(feature).to eq(expected_feature)
+        expect(feature).to eq(expected_feature_value)
       end
 
       it 'returns nil when there is no match' do
         feature = subject.get_feature('nonexistentnarwhal')
         expect(feature).to be_nil
+      end
+
+      it 'is case-insensitive' do
+        feature = subject.get_feature('sNAppiNGsnaiL')
+        expected_feature_value = parse_feature_set_json(feature_set_json).
+          first['properties'].
+          first
+
+        expect(feature).to eq(expected_feature_value)
       end
     end
 

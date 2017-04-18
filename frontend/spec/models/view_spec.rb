@@ -326,4 +326,20 @@ describe View do
       expect(view.newBackend?).to be(false)
     end
   end
+
+  describe 'blobs' do
+    let (:view) do
+      View.new({
+        'id' => 'blob-view',
+        'viewType' => 'blobby',
+        'blobId' => '1a05430e-b1c1-4ff2-911c-3979eb54ed4d',
+        'blobFilename' => 'hotfix_giraffes.zip'
+      })
+    end
+
+    it 'constructs the blob href correctly' do
+      expected = '/api/views/blob-view/files/1a05430e-b1c1-4ff2-911c-3979eb54ed4d?filename=hotfix_giraffes.zip'
+      expect(view.blobs.first['href']).to eq(expected)
+    end
+  end
 end

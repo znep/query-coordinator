@@ -73,47 +73,6 @@
   margin: 0em 0em 1em 0em;
 }
 
-// UPSERT
-.emailBtn {
-  composes: btn from global;
-  width: 250px;
-  height: 50px;
-}
-
-.emailBtnRequest {
-  composes: emailBtn;
-  composes: btn-primary from global;
-  composes: btn-inverse from global;
-}
-
-.emailBtnBusy {
-  composes: emailBtn;
-  composes: btn-primary from global;
-  composes: btn-busy from global;
-}
-
-.emailBtnError {
-  composes: emailBtn;
-  compooses: btn-error from global;
-}
-
-.emailBtnSuccess {
-  composes: emailBtn;
-  composes: btn-success from global;
-}
-
-.icon {
-  margin-right: 0.5em;
-}
-
-.spinner {
-  composes: spinner-default from global;
-  composes: spinner-btn-primary from global;
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-
 // UPSERT PREVIEW
 .manageDataLink {
   float: right;

@@ -1,15 +1,13 @@
-
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { commaify } from '../../common/formatNumber';
 import * as dsmapiLinks from '../dsmapiLinks';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ReadyToImport.scss';
-import styleguide from 'socrata-components';
+import { Modal, ModalHeader, ModalContent, ModalFooter, attachTo } from 'socrata-components';
 import { nextHelpItem, closeHelpModal, openHelpModal, previousHelpItem } from '../actions/readyToImport';
 import classNames from 'classnames';
 
-const { Modal, ModalHeader, ModalContent, ModalFooter } = styleguide;
 const SubI18n = I18n.show_output_schema.ready_to_import;
 
 class ReadyToImport extends Component {
@@ -23,7 +21,7 @@ class ReadyToImport extends Component {
 
   attachFlyouts() {
     if (this.flyoutParentEl) {
-      styleguide.attachTo(this.flyoutParentEl);
+      attachTo(this.flyoutParentEl);
     }
   }
 
@@ -59,7 +57,7 @@ class ReadyToImport extends Component {
 
     return (
       <Modal {...modalProps} >
-        <styleguide.ModalHeader {...headerProps} />
+        <ModalHeader {...headerProps} />
         <ModalContent>
           {content}
         </ModalContent>

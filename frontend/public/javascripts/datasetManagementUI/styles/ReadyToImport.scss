@@ -14,18 +14,18 @@
   margin-left: 2em !important;
 }
 
-.helpVis1a {
-  max-width: 100%;
-}
-.helpVis1b {
-  max-width: 100%;
-}
-.helpVis2 {
-  max-width: 100%;
-}
-.helpVis3 {
-  max-width: 100%;
-}
+// .helpVis1a {
+//   max-width: 100%;
+// }
+// .helpVis1b {
+//   max-width: 100%;
+// }
+// .helpVis2 {
+//   max-width: 100%;
+// }
+// .helpVis3 {
+//   max-width: 100%;
+// }
 
 
 .modalInception {
@@ -98,14 +98,14 @@
     }
   }
 }
-.nextButton {
-  composes: btn from global;
-  composes: btn-primary from global;
-}
-.previousButton {
-  composes: btn from global;
-  composes: btn-default from global;
-}
+// .nextButton {
+//   composes: btn from global;
+//   composes: btn-primary from global;
+// }
+// .previousButton {
+//   composes: btn from global;
+//   composes: btn-default from global;
+// }
 
 .readyToImport {
   &>p {
@@ -176,14 +176,14 @@
   color: $primary-base;
 }
 
-.errorCount {
-  color: $error-base;
-}
+// .errorCount {
+//   color: $error-base;
+// }
 
-.caption {
-  composes: small from global;
-}
+// .caption {
+//   composes: small from global;
+// }
 
-.typesOfErrors {
-  font-weight: 900;
-}
+// .typesOfErrors {
+//   font-weight: 900;
+// }

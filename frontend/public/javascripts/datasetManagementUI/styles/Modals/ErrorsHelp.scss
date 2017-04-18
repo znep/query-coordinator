@@ -1,0 +1,37 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.errorCount {
+  color: $error-base;
+}
+
+.typesOfErrors {
+  font-weight: 900;
+}
+
+.helpVis1a {
+  max-width: 100%;
+}
+.helpVis1b {
+  max-width: 100%;
+}
+.helpVis2 {
+  max-width: 100%;
+}
+.helpVis3 {
+  max-width: 100%;
+}
+
+.caption {
+  composes: small from global;
+}
+
+.nextButton {
+  composes: btn from global;
+  composes: btn-primary from global;
+}
+.previousButton {
+  composes: btn from global;
+  composes: btn-default from global;
+}

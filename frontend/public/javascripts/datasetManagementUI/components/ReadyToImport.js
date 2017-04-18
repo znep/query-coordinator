@@ -1,4 +1,3 @@
-
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { commaify } from '../../common/formatNumber';
@@ -13,20 +12,6 @@ const { Modal, ModalHeader, ModalContent, ModalFooter } = styleguide;
 const SubI18n = I18n.show_output_schema.ready_to_import;
 
 class ReadyToImport extends Component {
-  componentDidMount() {
-    // this.attachFlyouts(); // TODO: Need to make flyouts show on top, refs: EN-15574
-  }
-
-  componentDidUpdate() {
-    // this.attachFlyouts(); // TODO: Need to make flyouts show on top, refs: EN-15574
-  }
-
-  attachFlyouts() {
-    if (this.flyoutParentEl) {
-      styleguide.attachTo(this.flyoutParentEl);
-    }
-  }
-
   errorString(start, end) {
     return (<span>
       {SubI18n.help_modal[start]}
@@ -167,7 +152,7 @@ class ReadyToImport extends Component {
       openModal
     } = this.props;
 
-    const modal = modalVisible ? this.modals()[modalIndex].bind(this)() : null;
+    // const modal = modalVisible ? this.modals()[modalIndex].bind(this)() : null;
 
     let errorExportButton;
     const errorExportActualButton = (
@@ -208,7 +193,6 @@ class ReadyToImport extends Component {
           className={styles.helpModalIcon}
           data-flyout="error-help-flyout"
           onClick={openModal}></span>
-        {modal}
         {errorExportButton}
       </div>
     );
@@ -219,12 +203,6 @@ class ReadyToImport extends Component {
 ReadyToImport.propTypes = {
   db: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
-  closeModal: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired,
-  nextModal: PropTypes.func.isRequired,
-  previousModal: PropTypes.func.isRequired,
-  modalIndex: PropTypes.number.isRequired,
-  modalVisible: PropTypes.bool.isRequired,
   errorRows: PropTypes.number.isRequired,
   upload: PropTypes.object.isRequired,
   importableRows: PropTypes.number.isRequired,
@@ -247,12 +225,12 @@ const mapStateToProps = ({ readyToImport }, { db, outputSchema }) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  openModal: () => dispatch(openHelpModal()),
-  closeModal: () => dispatch(closeHelpModal()),
-  nextModal: () => dispatch(nextHelpItem()),
-  previousModal: () => dispatch(previousHelpItem())
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   openModal: () => dispatch(openHelpModal()),
+//   closeModal: () => dispatch(closeHelpModal()),
+//   nextModal: () => dispatch(nextHelpItem()),
+//   previousModal: () => dispatch(previousHelpItem())
+// });
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReadyToImport);
+export default connect(mapStateToProps)(ReadyToImport);

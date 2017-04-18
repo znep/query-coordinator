@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Modal as StyleGuideModal } from 'socrata-components';
 import { connect } from 'react-redux';
 import { hideModal } from 'actions/modal';
-import styles from 'styles/Modals/LocalModal.scss';
+import styles from 'styles/Modals/Modal.scss';
 
 const Modal = ({ visible = false, contentComponentName, onDismiss }) => {
   if (!visible) {

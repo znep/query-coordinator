@@ -50,19 +50,19 @@
         // * blistModel: disable minimum characters for full-text search,
         //     enable progressive loading of data, and hook up Ajax info
         $datasetGrid.
-          bind('column_sort', function(event, c, a) {
+          bind('column_sort.table', function(event, c, a) {
             columnSorted(datasetObj, c, a);
           }).
-          bind('clear_filter', function(event, c) {
+          bind('clear_filter.table', function(event, c) {
             clearColumnFilter(datasetObj, c);
           }).
-          bind('column_moved', function(event, c, p) {
+          bind('column_moved.table', function(event, c, p) {
             columnMove(datasetObj, c, p);
           }).
-          bind('column_name_dblclick', function(event, origEvent) {
+          bind('column_name_dblclick.table', function(event, origEvent) {
             columnNameEdit(datasetObj, event, origEvent);
           }).
-          bind('cellclick', function(e, r, c, o) {
+          bind('cellclick.table', function(e, r, c, o) {
             cellClick(datasetObj, e, r, c, o);
           }).
           blistTable({

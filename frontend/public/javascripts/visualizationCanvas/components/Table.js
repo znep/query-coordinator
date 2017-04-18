@@ -1,8 +1,13 @@
-import React, { PropTypes, PureComponent } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { components as SocrataVisualizations } from 'socrata-visualizations';
 import { connect } from 'react-redux';
 
-export class Table extends PureComponent {
+export class Table extends Component {
+  // if the VIF has not changed between renders, don't re-render!
+  shouldComponentUpdate(nextProps) {
+    return !_.isEqual(nextProps.vif, this.props.vif);
+  }
+
   render() {
     const { vif } = this.props;
 

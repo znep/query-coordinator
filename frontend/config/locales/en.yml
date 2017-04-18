@@ -5741,6 +5741,7 @@ en:
       unsaved: Unsaved
       updated: Updated
       view_count: View Count
+    map_pan_and_zoom_message: Current zoom level and positioning will be preserved when you click save above.
     preview: Preview
     render_error: There was a problem rendering this page.
     save: Save

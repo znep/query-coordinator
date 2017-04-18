@@ -1,39 +1,42 @@
 import _ from 'lodash';
 import React, { PropTypes, PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { components as SocrataVisualizations } from 'socrata-visualizations';
-import EditVisualizationButton from './EditVisualizationButton';
-import ShareVisualizationButton from './ShareVisualizationButton';
+import { bindActionCreators } from 'redux';
+import VisualizationWrapper from './VisualizationWrapper';
+import {
+  setMapCenterAndZoom,
+  setMapNotificationDismissed
+} from '../actions';
 
 export class Visualizations extends PureComponent {
   render() {
-    const { vifs, displayEditButtons, displayShareButtons } = this.props;
+    const {
+      vifs,
+      displayShareButtons,
+      isEditable,
+      mapNotificationDismissed,
+      onMapCenterAndZoomChange,
+      onMapNotificationDismiss
+    } = this.props;
 
     if (_.isEmpty(vifs)) {
       return null;
     }
 
-    const renderEditButton = (index) => {
-      return displayEditButtons ?
-        <EditVisualizationButton vifIndex={index} /> :
-        null;
-    };
+    const visualizations = _.map(vifs, (vif, vifIndex) => {
+      const props = {
+        key: vifIndex,
+        vif,
+        vifIndex,
+        isEditable,
+        mapNotificationDismissed: mapNotificationDismissed[vifIndex],
+        displayShareButton: displayShareButtons,
+        onMapCenterAndZoomChange,
+        onMapNotificationDismiss
+      };
 
-    const renderShareButton = (index) => {
-      return displayShareButtons ?
-        <ShareVisualizationButton vifIndex={index} /> :
-        null;
-    };
-
-    const visualizations = _.map(vifs, (vif, i) => (
-      <div className="visualization-wrapper" key={i}>
-        <div className="action-btns">
-          {renderEditButton(i)}
-          {renderShareButton(i)}
-        </div>
-        <SocrataVisualizations.Visualization vif={vif} />
-      </div>
-    ));
+      return <VisualizationWrapper {...props} />;
+    });
 
     return (
       <div className="visualizations">
@@ -45,15 +48,30 @@ export class Visualizations extends PureComponent {
 
 Visualizations.propTypes = {
   vifs: PropTypes.array.isRequired,
-  displayEditButtons: PropTypes.bool
+  isEditable: PropTypes.bool,
+  displayShareButtons: PropTypes.bool,
+  mapNotificationDismissed: PropTypes.array,
+  onMapCenterAndZoomChange: PropTypes.func,
+  onMapNotificationDismiss: PropTypes.func
 };
 
 Visualizations.defaultProps = {
-  displayEditButtons: false
+  isEditable: false,
+  displayShareButtons: false,
+  mapNotificationDismissed: [],
+  onMapCenterAndZoomChange: _.noop,
+  onMapNotificationDismiss: _.noop
 };
 
 function mapStateToProps(state) {
-  return _.pick(state, 'vifs');
+  return _.pick(state, 'vifs', 'mapNotificationDismissed');
 }
 
-export default connect(mapStateToProps)(Visualizations);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    onMapCenterAndZoomChange: setMapCenterAndZoom,
+    onMapNotificationDismiss: setMapNotificationDismissed
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Visualizations);

@@ -72,7 +72,7 @@ export const App = React.createClass({
           <InfoPane />
           <FilterBar isReadOnly={false} />
           <AddVisualizationButton />
-          <Visualizations displayEditButtons displayShareButtons={SHARE_BUTTON_ENABLED.edit} />
+          <Visualizations isEditable displayShareButtons={SHARE_BUTTON_ENABLED.edit} />
           <Table />
         </div>
         <AuthoringWorkflowModal />

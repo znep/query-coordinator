@@ -1,5 +1,5 @@
 module ApplicationHelper
-  include SiteChromeHelper
+  include SiteChromeConsumerHelpers
   include LocaleHelper
 
   # Build translations to pass into javascript

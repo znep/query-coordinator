@@ -29,6 +29,15 @@ module SiteChromeConsumerHelpers
     end
   end
 
+  def site_chrome_webtrends_tag
+    webtrends_url = site_chrome_instance.general[:webtrends_url]
+    javascript_include_tag(webtrends_url) if webtrends_url.present?
+  end
+
+  def site_chrome_analytics_tags
+    [site_chrome_google_analytics_tag, site_chrome_webtrends_tag].map(&:to_s).join.html_safe
+  end
+
   def site_chrome_stylesheet_tag
     # `socrata_site_chrome` corresponds to the mount point in the hosting app's config/routes.rb
     # Note: The _inclusion_ of the leading / is critcial to the helper generating the correct digest path

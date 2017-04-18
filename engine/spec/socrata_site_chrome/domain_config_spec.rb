@@ -6,6 +6,9 @@ describe SocrataSiteChrome::DomainConfig do
   let(:site_chrome_config) do
     JSON.parse(File.read('spec/fixtures/site_chrome_config.json')).with_indifferent_access
   end
+  let(:custom_site_chrome_config) do
+    JSON.parse(File.read('spec/fixtures/custom_content_config.json')).first.with_indifferent_access
+  end
   let(:helper) { SocrataSiteChrome::DomainConfig }
   let(:coreservice_uri) { Rails.application.config_for(:config)['coreservice_uri'] }
   let(:configurations_uri) do
@@ -122,6 +125,14 @@ describe SocrataSiteChrome::DomainConfig do
       stub_domains
       result = helper.new(domain).send(:current_site_chrome)
       expect(result).to eq({})
+    end
+
+    it 'does not Airbrake for custom site chrome configurations' do
+      custom_config = custom_site_chrome_config.clone
+      allow_any_instance_of(helper).to receive(:get_domain_config) { custom_config }
+      expect(Airbrake).not_to receive(:notify)
+      stub_domains
+      result = helper.new(domain).send(:current_site_chrome)
     end
   end
 

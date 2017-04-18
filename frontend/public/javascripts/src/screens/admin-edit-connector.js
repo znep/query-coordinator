@@ -183,16 +183,20 @@ function removeFocusOnSelect(event) {
 }
 
 $(() => {
-
   const elementType = blist.feature_flags.enable_data_connector ? 'select' : 'input';
 
   $('.filter-assets .searchBox').on('keyup', (event) => {
     const term = $(event.currentTarget).val().toLowerCase();
+    let elements = $(`${elementType}.sync-type`);
 
-    $(`${elementType}.sync-type`).each((_index, el) => {
+    if (elements.length <= 0) {
+      elements = $('.item.search-item');
+    }
+    elements.each((_index, el) => {
       const $el = $(el);
-      const contents = filterAssets($el);
+      const contents = filterAssets($el) || el.textContent;
       const $wrapper = $el.closest('.search-item');
+
       if (contents.toLowerCase().indexOf(term) === -1) {
         $wrapper.hide();
       } else {

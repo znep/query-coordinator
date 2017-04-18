@@ -114,6 +114,12 @@ module SocrataSiteChrome
           config[:name] == 'siteChromeConfigVars'
         end
 
+        custom_site_chrome_config = config[:properties].detect do |config|
+          config[:name] == 'activation_state'
+        end
+
+        custom_site_chrome_config_enabled = custom_site_chrome_config.try(:dig, :value, :custom)
+
         if site_chrome_config.try(:dig, :value, :versions).present?
           # If current_version does not exist, use latest existing version
           current_version = site_chrome_config.dig(:value, :current_version) ||
@@ -122,6 +128,8 @@ module SocrataSiteChrome
         elsif site_chrome_config.try(:dig, :value, :content).present?
           # This is the case for a domain with Perspectives configuration set up,
           # but not the Site Chrome header/footer. Don't Airbrake.
+        elsif custom_site_chrome_config_enabled
+          # Using a custom Site Chrome configuration. Don't Airbrake.
         else
           # Unrecognized Site Chrome config, Airbrake.
           message = "Invalid #{CONFIGURATION_TYPE} configuration in domain: #{cname}"

@@ -12,35 +12,35 @@ const { Modal, ModalHeader, ModalContent, ModalFooter } = styleguide;
 const SubI18n = I18n.show_output_schema.ready_to_import;
 
 class ReadyToImport extends Component {
-  errorString(start, end) {
-    return (<span>
-      {SubI18n.help_modal[start]}
-      <span className={styles.errorCount}> {this.props.errorRows} </span>
-      {SubI18n.help_modal[end]}
-    </span>);
-  }
+  // errorString(start, end) {
+  //   return (<span>
+  //     {SubI18n.help_modal[start]}
+  //     <span className={styles.errorCount}> {this.props.errorRows} </span>
+  //     {SubI18n.help_modal[end]}
+  //   </span>);
+  // }
 
   modal(title, content) {
     const { nextModal, modalIndex, previousModal, closeModal } = this.props;
 
-    const isDone = modalIndex === (this.modals().length - 1);
-    const buttonText = isDone ? SubI18n.help_modal.done : SubI18n.help_modal.next;
+    // const isDone = modalIndex === (this.modals().length - 1);
+    // const buttonText = isDone ? SubI18n.help_modal.done : SubI18n.help_modal.next;
     const modalProps = {
       onDismiss: closeModal,
       className: styles.modalInception
     };
 
-    const headerProps = {
-      title,
-      onDismiss: closeModal
-    };
-
-    const previousButton = modalIndex > 0 ? (
-      <button
-        onClick={previousModal}
-        className={styles.previousButton}>
-        {SubI18n.help_modal.previous}
-      </button>) : null;
+    // const headerProps = {
+    //   title,
+    //   onDismiss: closeModal
+    // };
+    //
+    // const previousButton = modalIndex > 0 ? (
+    //   <button
+    //     onClick={previousModal}
+    //     className={styles.previousButton}>
+    //     {SubI18n.help_modal.previous}
+    //   </button>) : null;
 
     return (
       <Modal {...modalProps} >
@@ -51,74 +51,74 @@ class ReadyToImport extends Component {
         <ModalFooter>
           {this.dots()}
 
-          {previousButton}
-          <button
-            onClick={nextModal}
-            className={styles.nextButton}>
-            {buttonText}
-          </button>
+          // {previousButton}
+          // <button
+          //   onClick={nextModal}
+          //   className={styles.nextButton}>
+          //   {buttonText}
+          // </button>
         </ModalFooter>
       </Modal>
     );
   }
 
-  whyWontTheyImport() {
-    return this.modal(this.errorString('why_wont_start', 'why_wont_end'),
-      <div className="help">
-        <p>
-          {SubI18n.help_modal.we_love_your_data}&nbsp;
-          <span className={styles.typesOfErrors}>{SubI18n.help_modal.two_types_of_errors}</span>
-        </p>
+  // whyWontTheyImport() {
+  //   return this.modal(this.errorString('why_wont_start', 'why_wont_end'),
+  //     <div className="help">
+  //       <p>
+  //         {SubI18n.help_modal.we_love_your_data}&nbsp;
+  //         <span className={styles.typesOfErrors}>{SubI18n.help_modal.two_types_of_errors}</span>
+  //       </p>
+  //
+  //       <div className="kinds">
+  //         <div className="type-errors">
+  //           <h6>{SubI18n.help_modal.type_errors}</h6>
+  //           <img
+  //             alt="{SubI18n.help_modal.type_errors}"
+  //             className={styles.helpVis1a}
+  //             src="/images/datasetManagementUI/help-visual-1a.png" />
+  //           <p className={styles.caption}>{SubI18n.help_modal.type_error_blurb}</p>
+  //         </div>
+  //         <div className="row-errors">
+  //           <h6>{SubI18n.help_modal.row_errors}</h6>
+  //           <img
+  //             alt="{SubI18n.help_modal.row_errors}"
+  //             className={styles.helpVis1b}
+  //             src="/images/datasetManagementUI/help-visual-1b.png" />
+  //           <p className={styles.caption}>{SubI18n.help_modal.row_error_blurb}</p>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-        <div className="kinds">
-          <div className="type-errors">
-            <h6>{SubI18n.help_modal.type_errors}</h6>
-            <img
-              alt="{SubI18n.help_modal.type_errors}"
-              className={styles.helpVis1a}
-              src="/images/datasetManagementUI/help-visual-1a.png" />
-            <p className={styles.caption}>{SubI18n.help_modal.type_error_blurb}</p>
-          </div>
-          <div className="row-errors">
-            <h6>{SubI18n.help_modal.row_errors}</h6>
-            <img
-              alt="{SubI18n.help_modal.row_errors}"
-              className={styles.helpVis1b}
-              src="/images/datasetManagementUI/help-visual-1b.png" />
-            <p className={styles.caption}>{SubI18n.help_modal.row_error_blurb}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // whatCanIDoAboutIt() {
+  //   return this.modal(SubI18n.help_modal.error_file,
+  //     <div className="help">
+  //       <p>{SubI18n.help_modal.error_file_blurb}</p>
+  //       <h6>{this.errorString('you_can_download_start', 'you_can_download_end')}</h6>
+  //       <img
+  //         alt="{SubI18n.help_modal.error_file_blurb}"
+  //         className={styles.helpVis2}
+  //         src="/images/datasetManagementUI/help-visual-2.png" />
+  //       <p className={styles.caption}>{SubI18n.help_modal.error_file_sub_blurb}</p>
+  //     </div>
+  //   );
+  // }
 
-  whatCanIDoAboutIt() {
-    return this.modal(SubI18n.help_modal.error_file,
-      <div className="help">
-        <p>{SubI18n.help_modal.error_file_blurb}</p>
-        <h6>{this.errorString('you_can_download_start', 'you_can_download_end')}</h6>
-        <img
-          alt="{SubI18n.help_modal.error_file_blurb}"
-          className={styles.helpVis2}
-          src="/images/datasetManagementUI/help-visual-2.png" />
-        <p className={styles.caption}>{SubI18n.help_modal.error_file_sub_blurb}</p>
-      </div>
-    );
-  }
-
-  howToGetRowsBackInDataset() {
-    return this.modal(this.errorString('clean_data_start', 'clean_data_end'),
-      <div className="help">
-        <p>{SubI18n.help_modal.get_rows_into_dataset_blurb}</p>
-        <h6>{SubI18n.help_modal.clean_data_blurb}</h6>
-        <img
-          alt="{SubI18n.help_modal.get_rows_into_dataset_blurb}"
-          className={styles.helpVis3}
-          src="/images/datasetManagementUI/help-visual-3.png" />
-        <p className={styles.caption}>{SubI18n.help_modal.clean_data_sub_blurb}</p>
-      </div>
-    );
-  }
+  // howToGetRowsBackInDataset() {
+  //   return this.modal(this.errorString('clean_data_start', 'clean_data_end'),
+  //     <div className="help">
+  //       <p>{SubI18n.help_modal.get_rows_into_dataset_blurb}</p>
+  //       <h6>{SubI18n.help_modal.clean_data_blurb}</h6>
+  //       <img
+  //         alt="{SubI18n.help_modal.get_rows_into_dataset_blurb}"
+  //         className={styles.helpVis3}
+  //         src="/images/datasetManagementUI/help-visual-3.png" />
+  //       <p className={styles.caption}>{SubI18n.help_modal.clean_data_sub_blurb}</p>
+  //     </div>
+  //   );
+  // }
 
   dots() {
     const { modalIndex } = this.props;
@@ -136,9 +136,9 @@ class ReadyToImport extends Component {
     );
   }
 
-  modals() {
-    return [this.whyWontTheyImport, this.whatCanIDoAboutIt, this.howToGetRowsBackInDataset];
-  }
+  // modals() {
+  //   return [this.whyWontTheyImport, this.whatCanIDoAboutIt, this.howToGetRowsBackInDataset];
+  // }
 
   render() {
     const {

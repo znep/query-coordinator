@@ -9,3 +9,9 @@ export const addLocation = location => ({
   type: ADD_LOCATION,
   location
 });
+
+export const SET_OUTPUT_SCHEMA_ID = 'SET_OUTPUT_SCHEMA_ID';
+export const setOutputSchemaId = id => ({
+  type: SET_OUTPUT_SCHEMA_ID,
+  id
+});

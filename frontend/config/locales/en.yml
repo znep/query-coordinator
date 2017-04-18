@@ -2769,14 +2769,16 @@ en:
         ignored_option: Don't Connect
         last_synced: Last synced
         never: Never
-        no_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
+        no_esri_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
+        no_catalog_federator_connectors: There are no current catalog federator connectors. If you wish to connect an external source to your catalog, click Add New above.
         not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
         in_progress: Sync in progress
         not_yet: Not yet synced
         save: Save
         search: Search the domain
         selective_connection: Selective Connection
-        service_unavailable: Connector services are currently unavailable.
+        esri_service_unavailable: Esri connector services are currently unavailable.
+        catalog_federator_service_unavailable: Catalog federator services are currently unavailable.
         show_title: ArcGIS Server Federation
         some_assets: Connect a subset of assets
         source: Connector source

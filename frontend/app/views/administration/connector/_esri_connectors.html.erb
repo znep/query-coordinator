@@ -1,0 +1,96 @@
+<div class="gridListWrapper">
+  <h2>Esri Connectors</h2>
+  <table class="gridList templatesList" cellspacing="0">
+    <colgroup>
+      <col class="name" />
+      <col class="federatedAssets" />
+      <col class="status" />
+      <col class="endedAt" />
+      <col class="actions" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="domain" scope="col"><span><%= t("#{connector}.source_domain") %> </span></th>
+        <th class="federatedAssets" scope="col">
+          <span>
+            <%= t("#{connector}.discovered_assets") %>
+          </span>
+        </th>
+        <th class="federatedAssets" scope="col">
+          <span>
+            <%= t("#{connector}.connected_assets") %>
+          </span>
+        </th>
+        <th class="status" scope="col">
+          <span>
+            <%= t("#{connector}.current_status") %>
+          </span>
+        </th>
+        <th class="endedAt" scope="col">
+          <span>
+            <%= t("#{connector}.last_synced") %>
+          </span>
+        </th>
+        <th class="actions" scope="col">
+          <span>
+            <%= t("#{connector}.actions") %>
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <%- @esri_connectors.each do |server| -%>
+        <tr>
+          <td class="name" scope="row">
+            <a target="_blank" href="<%= server.url %>">
+              <%= server.display_name %>
+            </a>
+          </td>
+          <td class="federatedAssets" scope="row">
+            <%= t(
+              "#{connector}.assets_discovered",
+              count: server.discovered_count
+            ) %>
+          </td>
+          <td class="federatedAssets" scope="row">
+            <%= link_to_if(
+              server.connected_count > 0 && server.backend == 'esri-crawler',
+              t("#{connector}.assets_connected", count: server.connected_count),
+              controller: 'connector', action: :show_connector, :server_id => server.id
+            ) %>
+          </td>
+          <td class="status" scope="row" nowrap>
+            <p class="current-status">
+              <span class="connector-icon connector-icon-<%=server.status_key.dasherize %> icon-<%= connector_icon(server.status_key)%>"></span>
+              <%= t("#{connector}.#{server.status_key}") %>
+            </p>
+          </td>
+          <td class="endedAt" scope="row">
+            <%- if server.last_synced -%>
+              <%= date_time_span(server.last_synced) %>
+            <%- else -%>
+              <%= t("#{connector}.never") %>
+            <%- end -%>
+          </td>
+          <td class="actions" scope="row">
+            <%- if server.last_synced || server.backend == 'catalog-federator' %>
+              <%= link_to(
+                t("#{connector}.edit"),
+                { :action => :edit_connector, :server_id => server.id },
+                :class => 'button buttonArea'
+              ) %>
+            <%- else -%>
+              <%= link_to(t("#{connector}.edit"), '#', :class => 'button buttonArea disabled') %>
+            <%- end -%>
+            <%= form_button(
+              {:action => :delete_connector, :server_id => server.id},
+              t("#{connector}.terminate"),
+              { :method => :delete  },
+              :class => "button buttonArea"
+            ) %>
+          </td>
+        </tr>
+      <%- end -%>
+    </tbody>
+  </table>
+</div>

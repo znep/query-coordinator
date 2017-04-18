@@ -5,30 +5,70 @@ class Administration::ConnectorController < AdministrationController
   # Connector / EsriServerConnector / CatalogFederatorConnector
   #
 
-  before_filter :only => [:connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector] {|c| c.check_auth_level(UserRights::USE_DATA_CONNECTORS)}
-  before_filter :only => [:connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector, :show_connector] {|c| c.check_feature_flag('enable_catalog_connector')}
+  before_filter :only => [
+    :connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector
+  ] { |c| c.check_auth_level(UserRights::USE_DATA_CONNECTORS) }
+
+  before_filter :only => [
+    :connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector,
+    :show_connector
+  ] { |c| c.check_feature_flag('enable_catalog_connector') }
+
+  before_filter :fetch_connectors, :only => :connectors
+  before_filter :edit_connectors, :only => :edit_connector
 
   def enable_catalog_federator_connector?
     FeatureFlags.derive(nil, request, nil)[:enable_catalog_federator_connector]
   end
 
-  def connectors
+  # +before_filter+
+  def fetch_connectors
+    @esri_connectors = []
     begin
-      esri_connectors = EsriServerConnector.servers
-      if enable_catalog_federator_connector?
-        cf_sources = CatalogFederatorConnector.servers
-        @connectors = esri_connectors + cf_sources
-      else
-        @connectors = esri_connectors
-      end
-      @failed_esri_connection = false
+      @esri_connectors = EsriServerConnector.servers
     rescue EsriCrawler::ServerError => error
-      display_external_error(error, :connectors)
-    rescue StandardError => ex
-      Rails.logger.error("Encountered error while trying to access Esri Crawler Service: #{ex}")
-      flash[:notice] = t('screens.admin.connector.service_unavailable')
       @failed_esri_connection = true
+      display_external_error(error)
+    rescue => ex
+      @failed_esri_connection = true
+      Rails.logger.error("Encountered error while trying to access Esri Crawler service: #{ex}")
     end
+
+    if enable_catalog_federator_connector?
+      begin
+        @catalog_federator_connectors = CatalogFederatorConnector.servers
+      rescue => ex
+        @failed_catalog_federator_connection = true
+        Rails.logger.error("Encountered error while trying to access Catalog Federator service: #{ex}")
+      end
+    end
+
+    flash[:notice] = t('screens.admin.connector.esri_service_unavailable') if @esri_connectors.empty?
+    if @catalog_federator_connectors.empty?
+      flash[:notice] += t('screens.admin.connector.catalog_federator_service_unavailable')
+    end
+  end
+
+  # +before_filter+
+  def edit_connectors
+    @data_connection_on = feature_flag?('enable_data_connector', request)
+    begin
+      @tree = EsriServerConnector.tree(params[:server_id])
+      @server = EsriServerConnector.server(params[:server_id])
+    rescue EsriCrawler::ResourceNotFound => error
+      # flash[:error] = t('screens.admin.connector.flashes.server_not_found')
+    rescue EsriCrawler::ServerError => error
+      # display_external_error(error)
+    rescue => error
+      # flash[:notice] = t('screens.admin.connector.service_unavailable')
+    end
+
+    if enable_catalog_federator_connector?
+      @server = CatalogFederatorConnector.servers.first
+    end
+  end
+
+  def connectors
   end
 
   def new_connector
@@ -62,19 +102,6 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def edit_connector
-    @data_connection_on = feature_flag?('enable_data_connector', request)
-
-    begin
-      @tree = EsriServerConnector.tree(params[:server_id])
-      @server = EsriServerConnector.server(params[:server_id])
-    rescue EsriCrawler::ResourceNotFound => error
-      flash[:error] = t('screens.admin.connector.flashes.server_not_found')
-      redirect_to :action => :connectors
-    rescue EsriCrawler::ServerError => error
-      display_external_error(error, :connectors)
-    rescue StandardError => error
-      handle_failed_connection(error)
-    end
   end
 
   def update_connector
@@ -130,7 +157,7 @@ class Administration::ConnectorController < AdministrationController
     redirect_to :action => :connectors
   end
 
-  def display_external_error(error, redirection)
+  def display_external_error(error, redirection = nil)
     begin
       reason = error.body['error']['reason']
       params = error.body['error']['params'].symbolize_keys
@@ -138,7 +165,7 @@ class Administration::ConnectorController < AdministrationController
     rescue
       flash[:error] = t("screens.admin.connector.errors.problem_with_errors")
     end
-    redirect_to :action => redirection
+    redirect_to :action => redirection if redirection
   end
 
   def show_connector

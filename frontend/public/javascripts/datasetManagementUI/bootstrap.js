@@ -4,6 +4,7 @@ import {
   batch
 } from 'actions/database';
 import { setFourfour } from 'actions/routing';
+import { showModal } from 'actions/modal';
 import { addNotification, removeNotificationAfterTimeout } from 'actions/notifications';
 import { upsertJobNotification } from 'lib/notifications';
 import { insertAndSubscribeToUpload } from 'actions/manageUploads';
@@ -75,6 +76,11 @@ export function bootstrap(store, initialView, initialUpdate) {
     }
   });
   store.dispatch(batch(operations));
+
+  if (initialUpdate.upsert_jobs.length) {
+    store.dispatch(showModal('Publishing'));
+  }
+
   // notifications
   initialUpdate.upsert_jobs.forEach((upsertJob) => {
     const notification = upsertJobNotification(upsertJob.id);

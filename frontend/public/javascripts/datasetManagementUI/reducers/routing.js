@@ -12,7 +12,7 @@ const fourfour = (state = '', action) => {
   }
 };
 
-const outputSchemaId = (state = 368, action) => {
+const outputSchemaId = (state = 375, action) => {
   switch (action.type) {
     case SET_OUTPUT_SCHEMA_ID:
       return action.id;

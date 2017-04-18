@@ -41,7 +41,7 @@ const ReadyToImport = ({ upload, inputSchema, importableRows, errorRows, outputS
         {SubI18n.will_not_be_imported}{' '}
         <span data-cheetah-hook="error-rows" className={styles.errorRows}>{commaify(errorRows)}</span>
       </p>
-      // TODO: add flyout to help icon
+      {/* TODO: add flyout to help icon*/}
       <span
         className={styles.helpModalIcon}
         onClick={() => openModal('ErrorsHelp')}></span>

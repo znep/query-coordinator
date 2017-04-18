@@ -6,6 +6,7 @@ import {
   upsertFailed,
   updateFromServer
 } from '../actions/database';
+import { showModal } from 'actions/modal';
 import {
   addNotification,
   removeNotificationAfterTimeout
@@ -36,6 +37,7 @@ export function applyUpdate(outputSchemaId) {
       then(getJson).
       then((resp) => {
         dispatch(upsertSucceeded('upsert_jobs', newUpsertJob, resp.resource));
+        dispatch(showModal('Publishing'));
         const upsertJobId = resp.resource.id;
         dispatch(addNotification(upsertJobNotification(upsertJobId)));
         dispatch(pollForUpsertJobProgress(upsertJobId));

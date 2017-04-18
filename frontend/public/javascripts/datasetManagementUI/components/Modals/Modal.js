@@ -2,16 +2,37 @@ import React, { PropTypes } from 'react';
 import { Modal as StyleGuideModal } from 'socrata-components';
 import { connect } from 'react-redux';
 import { hideModal } from 'actions/modal';
+import _ from 'lodash';
 import styles from 'styles/Modals/Modal.scss';
 
 import ErrorsHelp from 'components/Modals/ErrorsHelp';
+import Publishing from 'components/Modals/Publishing';
+
+const getModalProps = (props, contentComponentName) => {
+  switch (contentComponentName) {
+    case 'ErrorsHelp':
+      return {
+        ...props,
+        children: (<ErrorsHelp />),
+        className: styles.errorsHelp
+      };
+    case 'Publishing':
+      return {
+        ...props,
+        children: (<Publishing />),
+        onDismiss: _.noop
+      };
+    default:
+      return props;
+  }
+};
 
 const Modal = ({ visible = false, contentComponentName, onDismiss }) => {
   if (!visible) {
     return null;
   }
 
-  let modalProps = {
+  const defaultProps = {
     children: null,
     className: '',
     fullScreen: false,
@@ -19,14 +40,7 @@ const Modal = ({ visible = false, contentComponentName, onDismiss }) => {
     onDismiss
   };
 
-  switch (contentComponentName) {
-    case 'ErrorsHelp':
-      modalProps.children = <ErrorsHelp />;
-      modalProps.className = styles.errorsHelp;
-      break;
-    default:
-      modalProps.children = null;
-  }
+  const modalProps = getModalProps(defaultProps, contentComponentName);
 
   return (
     <div className={styles.container}>

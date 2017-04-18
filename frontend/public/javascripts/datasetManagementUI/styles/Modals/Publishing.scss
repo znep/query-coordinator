@@ -15,10 +15,16 @@
   :global {
     .modal-container {
       max-width: 550px;
+    }
+  }
+}
 
-      section.modal-content {
-        padding-bottom: 1.75em;
-      }
+.modalFooter {
+  margin-bottom: 1.75em;
+
+  :global {
+    .modal-footer-actions {
+      text-align: center;
     }
   }
 }

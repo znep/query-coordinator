@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import * as ApplyUpdate from '../actions/applyUpdate';
-import { STATUS_INSERTING, STATUS_SAVED } from '../lib/database/statuses';
 import SocrataIcon from '../../common/components/SocrataIcon';
+import * as ApplyUpdate from 'actions/applyUpdate';
+import { STATUS_INSERTING, STATUS_SAVED } from 'lib/database/statuses';
 import styles from 'styles/NotifyButton.scss';
 
 function NotifyButton({ email_interests, addEmailInterest, upsertJob, className }) {
@@ -50,7 +50,9 @@ function NotifyButton({ email_interests, addEmailInterest, upsertJob, className 
 NotifyButton.propTypes = {
   email_interests: PropTypes.object.isRequired,
   addEmailInterest: PropTypes.func.isRequired,
-  upsertJob: PropTypes.object,
+  upsertJob: PropTypes.shape({
+    job_uuid: PropTypes.string
+  }),
   className: PropTypes.string
 };
 

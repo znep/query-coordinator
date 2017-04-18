@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 
-import { Modal, ModalContent, ModalFooter } from 'socrata-components';
+import { Modal, ModalContent } from 'socrata-components';
 import SocrataIcon from '../../common/components/SocrataIcon';
 
 import ProgressBar from './ProgressBar';
@@ -27,7 +26,7 @@ function PublishingModal({ upsertJob, fourfour, percentUpserted, applyUpdate }) 
       title = I18n.home_pane.publish_modal.publishing.title;
       body = I18n.home_pane.publish_modal.publishing.body;
       status = 'inProgress';
-      icon = { name: 'public-open', className: styles.inProgress };
+      icon = <SocrataIcon className={styles.inProgress} name="public-open" />;
       button = <NotifyButton className={styles.button} />;
 
       break;
@@ -35,11 +34,11 @@ function PublishingModal({ upsertJob, fourfour, percentUpserted, applyUpdate }) 
       title = I18n.home_pane.publish_modal.successful.title;
       body = I18n.home_pane.publish_modal.successful.body;
       status = 'success';
-      icon = { name: 'checkmark-alt', className: styles.success };
+      icon = <SocrataIcon className={styles.success} name="checkmark-alt" />;
       button = (
         <a
           href={`/d/${fourfour}`}
-          className={classNames('btn', 'btn-primary', styles.button)}>
+          className={styles.toPrimer}>
           {I18n.home_pane.publish_modal.to_primer}
         </a>
       );
@@ -49,17 +48,17 @@ function PublishingModal({ upsertJob, fourfour, percentUpserted, applyUpdate }) 
       title = I18n.home_pane.publish_modal.failure.title;
       body = I18n.home_pane.publish_modal.failure.body;
       status = 'error';
-      icon = { name: 'close-circle', className: styles.failure };
+      icon = <SocrataIcon className={styles.failure} name="close-circle" />;
       button = [
         <a
           key="cancel"
           href="/profile"
-          className={classNames('btn', 'btn-default', styles.errorButton)}>
+          className={styles.cancelButton}>
           {I18n.common.cancel}
         </a>,
         <button
           key="try-again"
-          className={classNames('btn', 'btn-primary', styles.errorButton)}
+          className={styles.tryAgainButton}
           onClick={() => applyUpdate(upsertJob)}>
           {I18n.common.try_again}
         </button>
@@ -71,13 +70,12 @@ function PublishingModal({ upsertJob, fourfour, percentUpserted, applyUpdate }) 
       <h2>{title}</h2>
       <ModalContent>
         <p>{body}</p>
-        <SocrataIcon className={classNames(styles.statusIcon, icon.className)} name={icon.name} />
+        {icon}
         <div className={styles.progressBarContainer}>
           <ProgressBar percent={percentUpserted} type={status} ariaLabel="progress publishing" />
         </div>
         {button}
       </ModalContent>
-      <ModalFooter />
     </Modal>
   );
 }

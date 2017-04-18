@@ -19,13 +19,6 @@
     save: function(successCallback, errorCallback) {
       var page = this;
       var type = 'PUT';
-      if ($.isBlank(page.uid)) {
-        // Creating a new page; converting from Pages dataset
-        delete page.owner;
-        delete page.flags;
-        page.permission = 'public';
-        type = 'POST';
-      }
 
       var finalSuccess = function(resp) {
         var flags = {};
@@ -44,21 +37,7 @@
         page.makeRequest({
           type: type,
           success: function(resp) {
-            if (page._pathDirty) {
-              page.makeRequest({
-                type: 'POST',
-                url: '/api/id/pages',
-                data: JSON.stringify([{
-                  path: page._oldPath,
-                  ':deleted': true
-                }]),
-                complete: function() {
-                  finalSuccess(resp);
-                }
-              });
-            } else {
-              finalSuccess(resp);
-            }
+            finalSuccess(resp);
           },
           error: errorCallback
         });
@@ -126,16 +105,9 @@
     }
   });
 
-  // Or (id, successCallback, errorCallback)
-  Page.createFromId = function(newId, oldId, successCallback, errorCallback) {
-    if (_.isFunction(oldId)) {
-      errorCallback = successCallback;
-      successCallback = oldId;
-      oldId = null;
-    }
-
+  Page.createFromId = function(newId, successCallback, errorCallback) {
     $.Tache.Get({ //eslint-disable-line new-cap
-      url: $.isBlank(newId) ? '/api/id/pages.json?path=' + oldId : '/api/pages/' + newId + '.json',
+      url: '/api/pages/' + newId + '.json',
       success: function(page) {
         if (_.isArray(page)) {
           page = _.first(page);
@@ -148,52 +120,20 @@
     });
   };
 
-  // Or (id, successCallback, errorCallback)
-  Page.deleteById = function(newId, oldId, successCallback, errorCallback) {
-    if (_.isFunction(oldId)) {
-      errorCallback = successCallback;
-      successCallback = oldId;
-      oldId = null;
-    }
-
-    var callback = _.after(2, successCallback);
-
-    // Have to delete from both new and old service :/
+  Page.deleteById = function(newId, successCallback, errorCallback) {
     if (!$.isBlank(newId)) {
       $.socrataServer.makeRequest({
         type: 'DELETE',
         url: '/api/pages/' + newId + '.json',
         error: errorCallback,
-        success: callback
+        success: successCallback
       });
     } else {
-      callback();
-    }
-    if (!$.isBlank(oldId)) {
-      $.socrataServer.makeRequest({
-        type: 'POST',
-        url: '/api/id/pages',
-        data: JSON.stringify([{
-          path: oldId,
-          ':deleted': true
-        }]),
-        error: function(e) {
-          // /api/id/pages does not exist on all domains
-          if (e.status === 404) {
-            callback();
-          } else {
-            errorCallback();
-          }
-        },
-        success: callback
-      });
-    } else {
-      callback();
+      successCallback();
     }
   };
 
   Page.checkUnique = function(path, successCallback, errorCallback) {
-    var doSave = _.after(2, successCallback);
     $.socrataServer.makeRequest({
       type: 'GET',
       cache: false,
@@ -203,29 +143,10 @@
       },
       success: function(resp) {
         if (resp) {
-          doSave();
+          successCallback();
         } else {
           errorCallback();
         }
-      }
-    });
-    $.socrataServer.makeRequest({
-      type: 'GET',
-      cache: false,
-      url: '/api/id/pages',
-      isSODA: true,
-      params: {
-        path: path
-      },
-      success: function(resp) {
-        if (_.isEmpty(resp)) {
-          doSave();
-        } else {
-          errorCallback();
-        }
-      },
-      error: function() {
-        doSave();
       }
     });
   };

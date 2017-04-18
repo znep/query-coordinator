@@ -24,7 +24,7 @@ $(function() {
     var $a = $(this);
     if (confirm('Are you sure you want to remove this report?')) {
       $.globalIndicator.statusWorking();
-      Page.deleteById($a.data('id'), $a.data('oldid'), function() {
+      Page.deleteById($a.data('id'), function() {
         $.globalIndicator.statusFinished();
         $a.closest('.singleItem').remove();
       }, $.globalIndicator.statusError);
@@ -57,7 +57,7 @@ $(function() {
     var $a = $(this);
 
     $.globalIndicator.statusWorking();
-    Page.createFromId($a.data('id'), $a.data('oldid'), function(report) {
+    Page.createFromId($a.data('id'), function(report) {
         $.globalIndicator.hideStatus();
         var $settingsDialog = $.showModal('configuratorSettings');
         $settingsDialog.find('input[name=pageUrl]').closest('.line').addClass('hide');

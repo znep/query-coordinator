@@ -1,0 +1,46 @@
+[
+  {
+    "id" : 4285,
+    "state" : "active",
+    "source" : "https://www.transportation.gov/sites/dot.gov/files/docs/data.json",
+    "sourceType" : "open_data_metadata_v1_1",
+    "displayName" : "Transportation Gov",
+    "targetDomainId" : 76,
+    "createdAt" : 1492211119,
+    "syncSelectionPolicy" : "all",
+    "syncStarted" : 1492386423,
+    "syncEnded" : 1492386423,
+    "syncStatus" : "failure",
+    "syncUserId" : 689,
+    "syncConnectedCount" : 0
+  },
+  {
+    "id" : 4128,
+    "state" : "disabled",
+    "source" : "http://data.seattlecitygis.opendata.arcgis.com/data.json",
+    "sourceType" : "open_data_metadata_v1_1",
+    "displayName" : "Seattle GIS",
+    "targetDomainId" : 76,
+    "createdAt" : 1492118859,
+    "syncSelectionPolicy" : "existing",
+    "syncStarted" : 1492386424,
+    "syncEnded" : 1492386429,
+    "syncStatus" : "success",
+    "syncUserId" : 689,
+    "syncSucceeded" : 1492386429,
+    "syncDiscoveryCount" : 95,
+    "syncUnimportableCount" : 0,
+    "syncConnectedCount" : 95
+  },
+  {
+    "id" : 4129,
+    "state" : "active",
+    "source" : "http://gisdata.hartford.gov/data.json",
+    "sourceType" : "open_data_metadata_v1_1",
+    "displayName" : "Hartford GIS",
+    "targetDomainId" : 76,
+    "createdAt" : 1492118945,
+    "syncSelectionPolicy" : "all",
+    "syncUserId" : 689
+  }
+]

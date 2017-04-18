@@ -36,6 +36,9 @@ class AppConfig < Hashie::Dash
   property :polaroid_hostname
   property :polaroid_port, transform_with: as_int
 
+  # Catalog Federator service
+  property :catalog_federator_url
+
   # Curated Region Job Queue
   property :curated_region_job_queue_hostname
   property :curated_region_job_queue_port, transform_with: as_int

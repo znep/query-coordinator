@@ -2,15 +2,25 @@ class Administration::ConnectorController < AdministrationController
   include DataConnectorHelper
 
   #
-  # Connector / DataConnector (formerly known as external federation)
+  # Connector / EsriServerConnector / CatalogFederatorConnector
   #
 
   before_filter :only => [:connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector] {|c| c.check_auth_level(UserRights::USE_DATA_CONNECTORS)}
   before_filter :only => [:connectors, :new_connector, :delete_connector, :create_connector, :edit_connector, :update_connector, :show_connector] {|c| c.check_feature_flag('enable_catalog_connector')}
 
+  def enable_catalog_federator_connector?
+    FeatureFlags.derive(nil, request, nil)[:enable_catalog_federator_connector]
+  end
+
   def connectors
     begin
-      @connectors = DataConnector.servers
+      esri_connectors = EsriServerConnector.servers
+      if enable_catalog_federator_connector?
+        cf_sources = CatalogFederatorConnector.servers
+        @connectors = esri_connectors + cf_sources
+      else
+        @connectors = esri_connectors
+      end
       @failed_esri_connection = false
     rescue EsriCrawler::ServerError => error
       display_external_error(error, :connectors)
@@ -28,7 +38,7 @@ class Administration::ConnectorController < AdministrationController
   def create_connector
     @server = params[:server] || {}
     begin
-      response = DataConnector.create(params[:server][:esri_domain])
+      response = EsriServerConnector.create(params[:server][:esri_domain])
     rescue EsriCrawler::ServerError => error
       return display_external_error(error, :new_connector)
     rescue StandardError => error
@@ -48,8 +58,8 @@ class Administration::ConnectorController < AdministrationController
     @data_connection_on = feature_flag?('enable_data_connector', request)
 
     begin
-      @tree = DataConnector.tree(params[:server_id])
-      @server = DataConnector.server(params[:server_id])
+      @tree = EsriServerConnector.tree(params[:server_id])
+      @server = EsriServerConnector.server(params[:server_id])
     rescue EsriCrawler::ResourceNotFound => error
       flash[:error] = t('screens.admin.connector.flashes.server_not_found')
       redirect_to :action => :connectors
@@ -62,9 +72,9 @@ class Administration::ConnectorController < AdministrationController
 
   def update_connector
     begin
-      @response = DataConnector.update_server(params[:server_id], params['server'])
-      @server = DataConnector.server(params[:server_id])
-      @tree = DataConnector.tree(params[:server_id])
+      @response = EsriServerConnector.update_server(params[:server_id], params['server'])
+      @server = EsriServerConnector.server(params[:server_id])
+      @tree = EsriServerConnector.tree(params[:server_id])
     rescue EsriCrawler::ServerError => error
       return display_external_error(error, :edit_connector)
     rescue EsriCrawler::ResourceNotFound => error
@@ -84,7 +94,7 @@ class Administration::ConnectorController < AdministrationController
 
   def delete_connector
     begin
-      @response = DataConnector.delete_server(params[:server_id])
+      @response = EsriServerConnector.delete_server(params[:server_id])
       respond_to do |format|
         format.html do
           flash[:notice] = t('screens.admin.connector.flashes.deleted')
@@ -128,8 +138,8 @@ class Administration::ConnectorController < AdministrationController
     offset = (page_idx - 1) * page_size
 
     begin
-      @server = DataConnector.server(params[:server_id])
-      layer_resp = DataConnector.all_layers(params[:server_id], offset, page_size)
+      @server = EsriServerConnector.server(params[:server_id])
+      layer_resp = EsriServerConnector.all_layers(params[:server_id], offset, page_size)
       @layers = layer_resp['items']
       count = layer_resp['count']
     rescue EsriCrawler::ResourceNotFound => error

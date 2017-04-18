@@ -28,7 +28,7 @@
           <p class= "connector-status-last-synced">  <%= t("#{connector}.last_synced") %>: </p>
           <p class="result-time-stamp time-stamp">
             <%- if @server.last_synced -%>
-              <%= @server.parse_last_synced %>
+              <%= date_time_span(@server.last_synced) %>
               (<%= HumaneDateHelper.humane_date(Time.parse(@server.last_synced)) %>)
             <%- else -%>
               <%= t("#{connector}.never") %>

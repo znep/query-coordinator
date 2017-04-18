@@ -2745,7 +2745,8 @@ en:
         never: Never
         no_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
         not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
-        not_yet: Sync in progress
+        in_progress: Sync in progress
+        not_yet: Not yet synced
         save: Save
         search: Search the domain
         selective_connection: Selective Connection

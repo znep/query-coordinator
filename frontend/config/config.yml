@@ -46,6 +46,7 @@
 
 default: &default
   # service hosts/ports/names et simil
+  catalog_federator_url: http://localhost:5710
   cetera_internal_uri: http://localhost:5704
   coreservice_uri: http://localhost:8080
   feature_flag_signaller_uri: http://localhost:14567

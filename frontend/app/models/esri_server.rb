@@ -4,25 +4,21 @@
 # A federated layer corresponds to a socrata dataset.
 
 class EsriServer
-  attr_reader :job, :url, :synced_count, :layer_count, :id, :sync_type, :last_synced
+  attr_reader :job, :url, :connected_count, :discovered_count, :id, :sync_type, :last_synced
 
   def initialize(server_hash)
     @data = server_hash
     @job =  @data['most_recent_job'] # may be nil
     @url = @data['url']
-    @layer_count = @data['layer_count']
-    @synced_count = @data['synced_count']
+    @discovered_count = @data['layer_count']
+    @connected_count = @data['synced_count']
     @id = @data['id']
     @sync_type = @data['sync_type']
     @last_synced = @data['last_synced']
   end
 
-  def parse_last_synced
-    if @last_synced
-      Time.parse(@last_synced).to_s(:admin_connectors)
-    else
-      'Never'
-    end
+  def backend
+    'esri-crawler'
   end
 
   def status_key
@@ -30,11 +26,15 @@ class EsriServer
       case @job['status']
         when 'failure' then 'failed'
         when 'success' then 'success'
-        else 'not_yet'
+        else 'in_progress'
       end
     else
-      'not_yet'
+      'in_progress'
     end
+  end
+
+  def display_name
+    url
   end
 
   def federate_all?

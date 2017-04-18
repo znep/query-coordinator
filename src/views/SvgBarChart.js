@@ -21,11 +21,11 @@ const MARGINS = {
   LEFT: 16
 };
 const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
-const DIMENSION_LABELS_FIXED_WIDTH = 115;
+const DIMENSION_LABELS_DEFAULT_WIDTH = 115;
 const DIMENSION_LABELS_ROTATION_ANGLE = 0;
 const DIMENSION_LABELS_FONT_SIZE = 14;
 const DIMENSION_LABELS_FONT_COLOR = '#5e5e5e';
-const DIMENSION_LABELS_MAX_CHARACTERS = 11;
+const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 11; // Empirically determined to work well enough.
 const MEASURE_LABELS_FONT_SIZE = 14;
 const MEASURE_LABELS_FONT_COLOR = '#5e5e5e';
 const MEASURE_VALUE_TEXT_IN_BAR_MINIMUM_BAR_WIDTH = 50;
@@ -42,6 +42,8 @@ const AXIS_DEFAULT_COLOR = '#979797';
 const AXIS_TICK_COLOR = '#adadad';
 const AXIS_GRID_COLOR = '#f1f1f1';
 const NO_VALUE_SENTINEL = '__NO_VALUE__';
+// Limits width of dimension chart labels.
+const MIN_WIDTH_RESERVED_FOR_CHART = 25;
 
 function SvgBarChart($element, vif) {
   const self = this;
@@ -52,6 +54,20 @@ function SvgBarChart($element, vif) {
   let d3XScale;
   let lastRenderedSeriesHeight = 0;
   let lastRenderedZoomTranslate = 0;
+
+  const labelResizeState = {
+    draggerElement: null,
+
+    // True during interactive resize, false otherwise.
+    dragging: false,
+
+    // Controls how much horizontal space the labels take up.
+    // The override persists until cleared by a VIF update.
+    // The override is active if this value is defined.
+    // Otherwise, the chart falls back to the space
+    // configured in the VIF or the default.
+    overriddenAreaSize: undefined
+  };
 
   _.extend(this, new SvgVisualization($element, vif));
 
@@ -66,6 +82,10 @@ function SvgBarChart($element, vif) {
     if (!newData && !dataToRender) {
       return;
     }
+
+    // Forget the label area size the user set - we're
+    // loading a brand new vif.
+    labelResizeState.overriddenAreaSize = undefined;
 
     this.clearError();
 
@@ -82,6 +102,7 @@ function SvgBarChart($element, vif) {
       dataToRender = newData;
     }
 
+    $(labelResizeState.draggerElement).toggleClass('enabled', self.getShowDimensionLabels());
     renderData();
   };
 
@@ -105,6 +126,45 @@ function SvgBarChart($element, vif) {
    * Private methods
    */
 
+  function labelWidthDragger() {
+    const dragger = document.createElement('div');
+    labelResizeState.draggerElement = dragger;
+
+    dragger.setAttribute('class', 'label-width-dragger');
+
+    d3.select(dragger).call(d3.behavior.drag().
+      on('dragstart', () => {
+        $chartElement.addClass('dragging-label-width-dragger');
+        labelResizeState.dragging = true;
+        labelResizeState.overriddenAreaSize = computeLabelWidth();
+      }).
+      on('drag', () => {
+        labelResizeState.overriddenAreaSize += d3.event.dx;
+        renderData();
+        hideFlyout();
+      }).
+      on('dragend', () => {
+        $chartElement.removeClass('dragging-label-width-dragger');
+        labelResizeState.dragging = false;
+        renderData();
+        self.emitEvent('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', labelResizeState.overriddenAreaSize);
+      })
+    );
+
+    return dragger;
+  }
+
+  function updateLabelWidthDragger(leftOffset, topOffset, height) {
+    // Only move if not dragging. Otherwise,
+    // d3's dragger becomes confused.
+    if (!labelResizeState.dragging) {
+      labelResizeState.draggerElement.setAttribute(
+        'style',
+        `left: ${leftOffset}px; top: ${topOffset}px; height: ${height}px`
+      );
+    }
+  }
+
   function renderTemplate() {
 
     $chartElement = $(
@@ -112,10 +172,32 @@ function SvgBarChart($element, vif) {
       {
         'class': 'bar-chart'
       }
-    );
+    ).append(labelWidthDragger());
 
     self.$element.find('.socrata-visualization-container').
       append($chartElement);
+  }
+
+  function computeLabelWidth() {
+    let configuredSize = _.get(self.getVif(), 'configuration.dimensionLabelAreaSize');
+    if (!_.isFinite(configuredSize)) {
+      configuredSize = DIMENSION_LABELS_DEFAULT_WIDTH;
+    }
+
+    const width = _.isFinite(labelResizeState.overriddenAreaSize) ?
+      labelResizeState.overriddenAreaSize : configuredSize;
+
+    const axisLabels = self.getAxisLabels();
+    const leftMargin = MARGINS.LEFT + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
+    const rightMargin = MARGINS.RIGHT +
+      (axisLabels.right ? AXIS_LABEL_MARGIN : 0) +
+      MIN_WIDTH_RESERVED_FOR_CHART;
+
+    return _.clamp(
+      width,
+      0,
+      $chartElement.width() - (leftMargin + rightMargin)
+    );
   }
 
   function renderData() {
@@ -123,7 +205,8 @@ function SvgBarChart($element, vif) {
       DEFAULT_MOBILE_BAR_HEIGHT :
       DEFAULT_DESKTOP_BAR_HEIGHT;
 
-    const dimensionLabelsWidth = (self.getShowDimensionLabels() ? DIMENSION_LABELS_FIXED_WIDTH : 0);
+    const dimensionLabelsWidth = self.getShowDimensionLabels() ?
+      computeLabelWidth() : 0;
 
     const axisLabels = self.getAxisLabels();
     const leftMargin = MARGINS.LEFT + (axisLabels.left ? AXIS_LABEL_MARGIN : 0) + dimensionLabelsWidth;
@@ -653,7 +736,7 @@ function SvgBarChart($element, vif) {
         attr(
           'transform',
           () => {
-            const translateX = -DIMENSION_LABELS_FIXED_WIDTH;
+            const translateX = -dimensionLabelsWidth;
             const translateY = -lastRenderedZoomTranslate;
 
             return (self.getShowDimensionLabels()) ?
@@ -690,7 +773,7 @@ function SvgBarChart($element, vif) {
         attr(
           'transform',
           () => {
-            const translateX = -DIMENSION_LABELS_FIXED_WIDTH;
+            const translateX = -dimensionLabelsWidth;
             const translateY = -lastRenderedZoomTranslate;
 
               return (self.getShowDimensionLabels()) ?
@@ -835,10 +918,12 @@ function SvgBarChart($element, vif) {
     // This scale is used for groupings of bars under a single dimension
     // category.
     d3GroupingYScale = generateYGroupScale(measureLabels, d3DimensionYScale);
-    d3YAxis = generateYAxis(d3DimensionYScale);
+    d3YAxis = generateYAxis(d3DimensionYScale, dimensionLabelsWidth);
 
     /**
      * 4. Clear out any existing chart.
+     * TODO: This really needs to use d3's ability to update
+     * elements in-place.
      */
 
     d3.select($chartElement[0]).select('svg').
@@ -885,7 +970,7 @@ function SvgBarChart($element, vif) {
         () => {
 
           return (self.getShowDimensionLabels()) ?
-            `translate(${-DIMENSION_LABELS_FIXED_WIDTH},0)` :
+            `translate(${-dimensionLabelsWidth},0)` :
             '';
         }
       );
@@ -1057,6 +1142,7 @@ function SvgBarChart($element, vif) {
       renderYAxis();
       renderSeries();
       renderXAxis();
+      updateLabelWidthDragger(leftMargin, topMargin, height);
     // See TODO above.
     // }
 
@@ -1308,14 +1394,6 @@ function SvgBarChart($element, vif) {
       getPrimaryColorOrNone();
   }
 
-  function conditionallyTruncateLabel(label) {
-    label = label || I18n.translate('visualizations.common.no_value');
-
-    return (label.length >= DIMENSION_LABELS_MAX_CHARACTERS) ?
-      `${label.substring(0, DIMENSION_LABELS_MAX_CHARACTERS - 1).trim()}…` :
-      label;
-  }
-
   function generateYScale(domain, height, isMultiSeries) {
     const padding = (isMultiSeries) ?
       0.3 :
@@ -1349,7 +1427,18 @@ function SvgBarChart($element, vif) {
       rangeRoundBands([0, yScale.rangeBand()]);
   }
 
-  function generateYAxis(yScale) {
+  function generateYAxis(yScale, allowedLabelWidth) {
+    // This sucks, but linear interpolation seems good enough.
+    const allowedLabelCharCount = Math.ceil(allowedLabelWidth / DIMENSION_LABELS_PIXEL_PER_CHARACTER);
+    const noValuePlaceholder = I18n.translate('visualizations.common.no_value');
+
+    function conditionallyTruncateLabel(label) {
+      label = label || noValuePlaceholder;
+
+      return (label.length >= allowedLabelCharCount) ?
+        `${label.substring(0, allowedLabelCharCount - 1).trim()}…` :
+        label;
+    }
 
     return d3.svg.axis().
       scale(yScale).

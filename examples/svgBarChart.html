@@ -41,7 +41,7 @@
     <div id="bar-chart-1"></div>
     <p>Unaggregated data with limit = 10</p>
     <div id="bar-chart-2"></div>
-    <p>Unaggregated data with limit = 10 and 'showOtherCategory' = true, values should sum to <span class="school-district-proficiency">(FETCHING COUNT...)</span></p>
+    <p>Unaggregated data with limit = 10 and 'showOtherCategory' = true, values should sum to <span class="school-district-proficiency">(FETCHING COUNT...)</span>. Custom label width.</p>
     <div id="bar-chart-3"></div>
     <p>Aggregated data with dimension sorted ascending alphabetically</p>
     <div id="bar-chart-4"></div>
@@ -222,6 +222,7 @@
       var barChart3Vif = _.cloneDeep(barChart1Vif);
       barChart3Vif.configuration.showOtherCategory = true;
       barChart3Vif.series[0].dataSource.limit = 10;
+      barChart3Vif.configuration.dimensionLabelAreaSize = 215;
 
       var VIF_1_COLUMN_NAME = 'category';
       var VIF_1_DATASET_UID = 'r6t9-rak2';

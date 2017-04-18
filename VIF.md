@@ -104,11 +104,18 @@ Required  |Optional
 |Histogram |    -|
 
 ##### `computedColumnName`
-`computedColumnName` is the name of the georegion-encoded column in the dataset specified by the first series in the vif that should be used to map values to regions. Its type is `<string>` and it must be the name of a 'computed' column in the current dataset. 
+`computedColumnName` is the name of the georegion-encoded column in the dataset specified by the first series in the vif that should be used to map values to regions. Its type is `<string>` and it must be the name of a 'computed' column in the current dataset.
 
 Required   |Optional
 :---------:|:-------:
 |Region Map |    -|
+
+##### `dimensionLabelAreaSize`
+`dimensionLabelAreaSize` controls the space reserved for dimension labels. Its type is `<number>` and a unit of pixels. Labels which take up more space than is allocated are truncated via an ellipsis ().
+
+Required |Optional
+:-------:|:--------:
+|   -    |Bar Chart|
 
 ##### `legend`
 `legend` overrides default rendering options for the Region Map legend. Its type is `object`. This object must have the following properties:

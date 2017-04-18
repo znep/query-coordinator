@@ -48,6 +48,11 @@ class CatalogLandingPage
     pages.include?(catalog_query(params))
   end
 
+  def self.should_route?(request)
+    # EN-15655: Prevent CLP from loading in the select dataset modal (path == '/browse/select_dataset').
+    request.path == '/browse'
+  end
+
   # We have to do CGI escaping here because for some reason the FeaturedContent class decided
   # not to perform any escaping, so we have to do it for it in order to maintain consistency.
   def self.catalog_query(params)

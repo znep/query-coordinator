@@ -27,7 +27,7 @@ function PublishingModal({ upsertJob, fourfour, percentUpserted, applyUpdate }) 
       title = I18n.home_pane.publish_modal.publishing.title;
       body = I18n.home_pane.publish_modal.publishing.body;
       status = 'inProgress';
-      icon = { name: 'geo', className: styles.inProgress };
+      icon = { name: 'public-open', className: styles.inProgress };
       button = <NotifyButton className={styles.button} />;
 
       break;

@@ -269,6 +269,8 @@ $axis-padding: 42px;
 
   &.socrata-visualization-busy {
 
+    pointer-events: none;
+
     .socrata-visualization-busy-indicator-container {
       display: block;
     }

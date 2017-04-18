@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import Visualization from '../../components/Visualization';
 
-import { setCenterAndZoom } from '../actions';
+import { setCenterAndZoom, setDimensionLabelAreaSize } from '../actions';
 import {
   hasVisualizationType,
   hasVisualizationDimension,
@@ -37,11 +37,15 @@ export var VisualizationPreview = React.createClass({
   componentDidMount() {
     $(this.visualizationPreview).
       on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
+    $(this.visualizationPreview).
+      on('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', this.onDimensionLabelAreaSizeChanged);
   },
 
   componentWillUnMount() {
     $(this.visualizationPreview).
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
+    $(this.visualizationPreview).
+      off('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', this.onDimensionLabelAreaSizeChanged);
   },
 
   shouldComponentUpdate(nextProps) {
@@ -61,6 +65,13 @@ export var VisualizationPreview = React.createClass({
   onCenterAndZoomChanged(event) {
     const centerAndZoom = _.get(event, 'originalEvent.detail');
     this.props.onCenterAndZoomChanged(centerAndZoom);
+  },
+
+  onDimensionLabelAreaSizeChanged(event) {
+    const width = _.get(event, 'originalEvent.detail');
+    if (_.isFinite(width)) {
+      this.props.onDimensionLabelAreaSizeChanged(width);
+    }
   },
 
   isVifValid() {
@@ -117,6 +128,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onCenterAndZoomChanged(centerAndZoom) {
       dispatch(setCenterAndZoom(centerAndZoom));
+    },
+    onDimensionLabelAreaSizeChanged(width) {
+      dispatch(setDimensionLabelAreaSize(width));
     }
   };
 }

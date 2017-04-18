@@ -27,6 +27,7 @@ function defaultProps() {
 function stubCharts() {
   let originalChartImplementations;
   const stubbedCharts = [
+    'socrataSvgBarChart',
     'socrataSvgColumnChart',
     'socrataSvgTimelineChart',
     'socrataSvgHistogram',
@@ -51,6 +52,26 @@ function rendersChartType(props, jqueryFunctionName) {
   });
 }
 
+function updatesCenterAndZoom(props) {
+  it('updates the VIF when SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED is emitted', () => {
+    props.onCenterAndZoomChanged = sinon.spy();
+    const element = renderComponent(VisualizationPreview, props);
+
+    const newValue = { foo: 'bar' };
+
+    element.dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED',
+        {
+          detail: newValue,
+          bubbles: true
+        }
+      )
+    );
+    sinon.assert.calledWithExactly(props.onCenterAndZoomChanged, newValue);
+  });
+}
+
 describe('VisualizationPreview', () => {
   stubCharts();
 
@@ -69,6 +90,48 @@ describe('VisualizationPreview', () => {
       _.set(props, 'vif.series[0].dataSource.domain','example.com');
 
       rendersChartType(props, 'socrataSvgColumnChart');
+    });
+
+    describe('when rendering a barChart', () => {
+      const props = defaultProps();
+
+      const emitLabelSizeChangeEvent = (element, newSize) => {
+        element.dispatchEvent(
+          new window.CustomEvent(
+            'SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED',
+            {
+              detail: newSize,
+              bubbles: true
+            }
+          )
+        );
+      };
+
+      _.set(props, 'vif.series[0].type','barChart');
+      _.set(props, 'vif.series[0].dataSource.dimension.columnName','example_dimension');
+      _.set(props, 'vif.series[0].dataSource.measure.columnName','example_measure');
+      _.set(props, 'vif.series[0].dataSource.datasetUid','exam-ples');
+      _.set(props, 'vif.series[0].dataSource.domain','example.com');
+
+      rendersChartType(props, 'socrataSvgBarChart');
+
+      it('updates the VIF when SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED is emitted', () => {
+        props.onDimensionLabelAreaSizeChanged = sinon.spy();
+        const element = renderComponent(VisualizationPreview, props);
+
+        const newSize = 999;
+        emitLabelSizeChangeEvent(element, newSize);
+        sinon.assert.calledWithExactly(props.onDimensionLabelAreaSizeChanged, newSize);
+      });
+
+      it('ignores SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED with invalid payload', () => {
+        props.onDimensionLabelAreaSizeChanged = sinon.spy();
+        const element = renderComponent(VisualizationPreview, props);
+
+        const newSize = undefined;
+        emitLabelSizeChangeEvent(element, newSize);
+        sinon.assert.notCalled(props.onDimensionLabelAreaSizeChanged);
+      });
     });
 
     describe('when rendering a histogram', () => {
@@ -104,6 +167,7 @@ describe('VisualizationPreview', () => {
       _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
 
       rendersChartType(props, 'socrataSvgFeatureMap');
+      updatesCenterAndZoom(props);
     });
 
     describe('when rendering a regionMap', () => {
@@ -118,6 +182,7 @@ describe('VisualizationPreview', () => {
       _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
 
       rendersChartType(props, 'socrataSvgRegionMap');
+      updatesCenterAndZoom(props);
     });
   });
 

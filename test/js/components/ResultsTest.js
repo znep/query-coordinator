@@ -7,9 +7,9 @@ import Result from 'components/Results/Result';
 /* Note that in these tests noop functions are passed in as props to satisfy propTypes requirements */
 describe('<Results />', () => {
   const results = [
-    { title: "Birds", display_title: "<span>Birds</span>" },
-    { title: "Not Birds", display_title: "Not <span>Birds</span>" },
-    { title: "Maybe Birds", display_title: "Maybe <span>Birds</span>" }
+    { title: 'Birds', match_offset: [{ start: 0, length: 5 }] },
+    { title: 'Not Birds', match_offset: [{ start: 4, length: 5 }] },
+    { title: 'Maybe Birds', match_offset: [{ start: 6, length: 5 }] }
   ];
 
   it('is empty when hidden', () => {
@@ -21,7 +21,7 @@ describe('<Results />', () => {
         onResultFocusChanged={() => {}}
         onQueryChanged={() => {}} />
     );
-    
+
     expect(wrapper.find(Result)).to.have.length(0);
   });
 

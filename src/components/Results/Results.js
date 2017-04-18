@@ -78,8 +78,8 @@ class Results extends React.Component {
     return results.map((result, index) =>
       <Result
         key={result.title}
+        matchOffsets={result.match_offsets}
         name={result.title}
-        displayTitle={result.display_title}
         index={index}
         focused={index === focusedResult} />
     );

@@ -1,16 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import cssModules from 'react-css-modules';
 import { getSearchUrl } from '../../Util';
 import { resultFocusChanged, queryChanged, resultVisibilityChanged } from '../../actions';
 import styles from './results.scss';
 
-class Result extends React.Component {
+export class Result extends React.Component {
   constructor(props) {
     super(props);
 
     this.handleClick = this.handleClick.bind(this);
     this.handleMouseOver = this.handleMouseOver.bind(this);
+    this.displayTitle = this.displayTitle.bind(this);
   }
 
   handleClick() {
@@ -30,14 +32,44 @@ class Result extends React.Component {
     this.props.onResultFocusChanged(this.props.index);
   }
 
+  // Returns array of `name` prop fragments decorated with <span class="highlight">
+  // around the matches specified in the `matchOffsets` prop.
+  displayTitle() {
+    const { matchOffsets, name } = this.props;
+    const displayTitleFragments = [];
+
+    // Beginning of title, before any matches
+    displayTitleFragments.push(name.substring(0, _.get(matchOffsets[0], 'start')));
+
+    matchOffsets.forEach((offset, index) => {
+      // Wrap each match around <span class="highlight">
+      displayTitleFragments.push(
+        <span className="highlight">
+          {name.substring(offset.start, offset.length + offset.start)}
+        </span>
+      );
+
+      // Push the following non-highlighted substring up until the next highlighted substring,
+      // or the rest of the name if there isn't another highlighted substring.
+      const nextMatch = matchOffsets[index + 1];
+      const nextMatchStart = nextMatch ? nextMatch.start : undefined;
+
+      displayTitleFragments.push(
+        name.substring(offset.length + offset.start, nextMatchStart)
+      );
+    });
+
+    return displayTitleFragments;
+  }
+
   render() {
     return (
       <div
-        ref={(domNode) => { this.domNode = domNode; }}
         styleName={this.props.focused === true ? 'result-focused' : 'result'}
         onMouseDown={this.handleClick}
-        onMouseOver={this.handleMouseOver}
-        dangerouslySetInnerHTML={{ __html: this.props.displayTitle }} />
+        onMouseOver={this.handleMouseOver}>
+        {this.displayTitle()}
+      </div>
     );
   }
 }
@@ -47,8 +79,8 @@ Result.propTypes = {
   onQueryChanged: PropTypes.func.isRequired,
   onResultsVisibilityChanged: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
+  matchOffsets: PropTypes.array.isRequired,
   name: PropTypes.string.isRequired,
-  displayTitle: PropTypes.string.isRequired,
   focused: PropTypes.bool
 };
 

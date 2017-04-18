@@ -83,23 +83,25 @@ const HowToGetRowsBackInDataset = () =>
     <p className={styles.caption}>{SubI18n.help_modal.clean_data_sub_blurb}</p>
   </div>;
 
-const Dots = ({ modalPage }) => {
+const Dots = ({ modalPage, setPage }) => {
   const dots = [1, 2, 3].map((num, idx) =>
     <div
       key={idx}
+      onClick={() => setPage(idx)}
       className={classNames(styles.dot, { [styles.dotSelected]: idx === modalPage })}>
-      &middot;
+      &#x25CF;
     </div>);
 
   return (
-    <div className={styles.dotsWrap}>
-      <div className={styles.dots}>{dots}</div>
-    </div>
+    <span>
+      {dots}
+    </span>
   );
 };
 
 Dots.propTypes = {
-  modalPage: PropTypes.number.isRequired
+  modalPage: PropTypes.number.isRequired,
+  setPage: PropTypes.func.isRequired
 };
 
 const getContent = (idx, errorRowCount) => {
@@ -123,7 +125,13 @@ class ErrorsHelp extends Component {
       modalPage: 0
     };
 
-    _.bindAll(['nextPage', 'prevPage']);
+    _.bindAll(this, ['nextPage', 'prevPage', 'setPage']);
+  }
+
+  setPage(pageNumber) {
+    this.setState({
+      modalPage: pageNumber
+    });
   }
 
   nextPage() {
@@ -143,22 +151,23 @@ class ErrorsHelp extends Component {
 
     const headerProps = {
       title: getHeaderTitle(this.state.modalPage, errorRowCount),
+      className: styles.header,
       onDismiss: onDismiss
     };
 
     const content = getContent(this.state.modalPage, errorRowCount);
 
-    const buttonText = this.state.modalPage >= 3
+    const buttonText = this.state.modalPage >= 2
       ? SubI18n.help_modal.done
       : SubI18n.help_modal.next;
 
-    const buttonHandler = this.state.modalPage >= 3
+    const buttonHandler = this.state.modalPage >= 2
       ? onDismiss
-      : () => this.nextPage();
+      : this.nextPage;
 
     const previousButton = this.state.modalPage > 0 ? (
       <button
-        onClick={this.prevPage()}
+        onClick={this.prevPage}
         className={styles.previousButton}>
         {SubI18n.help_modal.previous}
       </button>) : null;
@@ -166,17 +175,19 @@ class ErrorsHelp extends Component {
     return (
       <div>
         <ModalHeader {...headerProps} />
-        <ModalContent>
+        <ModalContent className={styles.content}>
           {content}
         </ModalContent>
-        <ModalFooter>
-          <Dots modalPage={this.state.modalPage} />
-          {previousButton}
-          <button
-            onClick={buttonHandler}
-            className={styles.nextButton}>
-            {buttonText}
-          </button>
+        <ModalFooter className={styles.footer}>
+          <Dots modalPage={this.state.modalPage} setPage={this.setPage} />
+          <div className={styles.buttonContainer}>
+            {previousButton}
+            <button
+              onClick={buttonHandler}
+              className={styles.nextButton}>
+              {buttonText}
+            </button>
+          </div>
         </ModalFooter>
       </div>
     );

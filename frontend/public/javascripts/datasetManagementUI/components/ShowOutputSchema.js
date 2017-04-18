@@ -156,9 +156,7 @@ export class ShowOutputSchema extends Component {
 
           <ModalFooter>
             {canApplyUpdate ?
-              <ReadyToImport
-                db={db}
-                outputSchema={outputSchema} /> :
+              <ReadyToImport /> :
               <div />}
 
             <div>
@@ -236,7 +234,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     applyUpdate: () => (
       dispatch(ApplyActions.applyUpdate(_.toNumber(ownProps.params.outputSchemaId)))
-    )
+    ),
+    dispatch
   };
 }
 

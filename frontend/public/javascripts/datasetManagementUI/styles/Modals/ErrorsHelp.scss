@@ -36,23 +36,61 @@
   composes: btn-default from global;
 }
 
-.dotsWrap {
-  position: absolute;
-  text-align: center;
-  bottom: 5px;
-  left: 0px;
-  right: 0px;
-  z-index: 1001;
-}
-.dots {
-  align-self: flex-end;
-}
 .dot {
   display: inline-block;
-  font-size: 64px;
-  line-height: 1em;
+  font-size: 20px;
+  margin: 0 5px;
+  line-height: 42px;
   color: $light-grey-2;
+  cursor: pointer;
 }
 .dotSelected {
   color: $primary-base;
+}
+
+.header {
+  text-align: left;
+  box-shadow: none;
+  margin-bottom: 12px;
+
+  button {
+    min-width: 0px;
+  }
+
+  :global {
+    .modal-header-dismiss {
+      font-size: 20px;
+    }
+  }
+}
+
+.content {
+  position: relative;
+  overflow: hidden;
+  padding: 0px 19px;
+  min-height: 330px;
+}
+
+.footer {
+  background: $white;
+  position: relative;
+  border: none;
+
+  :global {
+    .modal-footer-actions {
+      text-align: center;
+      position: relative;
+    }
+  }
+
+  button {
+    min-width: 120px;
+    margin-left: 12px;
+  }
+}
+
+.buttonContainer {
+  position: absolute;
+  top: 0;
+  right: 0;
 }

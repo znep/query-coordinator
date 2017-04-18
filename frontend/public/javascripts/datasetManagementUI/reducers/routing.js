@@ -12,7 +12,7 @@ const fourfour = (state = '', action) => {
   }
 };
 
-const outPutSchemaId = (state = null, action) => {
+const outputSchemaId = (state = 368, action) => {
   switch (action.type) {
     case SET_OUTPUT_SCHEMA_ID:
       return action.id;
@@ -38,7 +38,7 @@ const history = (state = [], action) => {
 
 const routing = combineReducers({
   fourfour,
-  outPutSchemaId,
+  outputSchemaId,
   history,
   location: routerReducer
 });

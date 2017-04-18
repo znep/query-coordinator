@@ -1,7 +1,7 @@
 import { SHOW_MODAL, HIDE_MODAL } from 'actions/modal';
 
 const initialState = {
-  visible: true,
+  visible: false,
   contentComponentName: null
 };
 

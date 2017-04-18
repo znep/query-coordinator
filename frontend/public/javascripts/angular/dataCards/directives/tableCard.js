@@ -310,7 +310,7 @@ module.exports = function tableCard(
             });
 
             // Get the jquery width of the widest elements
-            _.each(columnWidths, function(v, k) {
+            _.forOwn(columnWidths, function(v, k) {
               var width = parseInt($window.getComputedStyle(maxCells[k]).width, 10);
               // Apply a min/max
               if (width > 300) {

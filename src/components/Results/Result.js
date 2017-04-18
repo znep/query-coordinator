@@ -34,6 +34,8 @@ export class Result extends React.Component {
 
   // Returns array of `name` prop fragments decorated with <span class="highlight">
   // around the matches specified in the `matchOffsets` prop.
+  // NOTE: there is a `display_title` in the Cetera Autocomplete result that has the <span>
+  // tags already, but it is deprecated. More details: EN-15539
   displayTitle() {
     const { matchOffsets, name } = this.props;
     const displayTitleFragments = [];
@@ -42,7 +44,7 @@ export class Result extends React.Component {
     displayTitleFragments.push(name.substring(0, _.get(matchOffsets[0], 'start')));
 
     matchOffsets.forEach((offset, index) => {
-      // Wrap each match around <span class="highlight">
+      // Wrap each match with <span class="highlight">
       displayTitleFragments.push(
         <span className="highlight">
           {name.substring(offset.start, offset.length + offset.start)}

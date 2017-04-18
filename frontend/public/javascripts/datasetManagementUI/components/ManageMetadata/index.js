@@ -22,6 +22,7 @@ export function ManageMetadata(props) {
     history,
     onSaveDataset,
     onSaveCol,
+    columnsExist,
     onSidebarTabClick,
     outputSchemaStatus
   } = props;
@@ -48,7 +49,7 @@ export function ManageMetadata(props) {
     onDismiss: () => onDismiss(lastVisited)
   };
 
-  const metadataContentProps = { path, fourfour, onSidebarTabClick };
+  const metadataContentProps = { path, fourfour, onSidebarTabClick, columnsExist };
 
   const onDatasetTab = path === 'metadata/dataset';
 
@@ -100,6 +101,7 @@ ManageMetadata.propTypes = {
   fourfour: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   outputSchemaStatus: PropTypes.string,
+  columnsExist: PropTypes.bool,
   history: PropTypes.arrayOf(PropTypes.shape({
     pathname: PropTypes.string
   }))
@@ -134,6 +136,7 @@ const mapStateToProps = (state, ownProps) => ({
   fourfour: state.routing.fourfour,
   history: state.routing.history,
   path: ownProps.route.path,
+  columnsExist: !_.isEmpty(state.db.output_columns),
   outputSchemaStatus: state.db.output_schemas.__status__
 });
 

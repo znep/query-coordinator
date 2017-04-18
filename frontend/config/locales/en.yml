@@ -855,7 +855,6 @@ en:
           pulse: Pulse
           pulse_help: Learn about Pulse
           story: Stories
-          story_help: New
           unpublished: Working Copies
           visualization: Data Lens pages
           visualization_help: New
@@ -1848,6 +1847,7 @@ en:
         feature: Feature
         feature_blurb: Feature assets or external resources that best represent your data.
         feature_button: Feature
+        no_columns_msg: This dataset doesn't contain any columns yet.
         title: Beyond the Basics
         visualize: Visualize
         visualize_blurb: Visualize your data and explore relationships.
@@ -2757,7 +2757,8 @@ en:
         never: Never
         no_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
         not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
-        not_yet: Sync in progress
+        in_progress: Sync in progress
+        not_yet: Not yet synced
         save: Save
         search: Search the domain
         selective_connection: Selective Connection
@@ -3017,6 +3018,7 @@ en:
             disabled_restore_time: Datasets can only be restored within 5 days of deletion.
             disabled_restore_type: Restore is only available for datasets, not for views or visualizations.
           restore_deleted_dataset_confirm: Are you sure you want to restore the dataset %{dataset}?
+          server_error: We're having trouble loading this information right now. Please try again soon, or email support@socrata.com to get help.
           showing_all_so_far: Showing all jobs which have been recorded so far
           showing_most_recent: Showing the most recent %{limit} jobs
           started: Started
@@ -5398,6 +5400,7 @@ en:
       missing_external_dataset: Please supply at least one external dataset.
       multiple_extensions: More than one of the same extension for the same endpoint is not allowed.
       new_attachment: New Attachment
+      no_fields_message: There are no fields for this fieldset.
       none: "(none)"
       northwest_latitude: Northwest Latitude
       northwest_longitude: Northwest Longitude

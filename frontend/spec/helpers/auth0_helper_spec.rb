@@ -87,16 +87,6 @@ describe Auth0Helper do
 
   end
 
-  context 'connection_exists' do
-    it 'returns true with a valid response' do
-      expect(connection_exists('test')).to eq(true)
-    end
-
-    it 'returns false with an invalid response' do
-      expect(connection_exists('notthere')).to be_falsey
-    end
-  end
-
   context 'generate_authorize_uri' do
     it 'returns the correct URI' do
       expect(generate_authorize_uri('test', '/test/callback')).to eq(

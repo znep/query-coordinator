@@ -44,9 +44,5 @@ export default {
   attributionLink: 'attributionLink',
   statsUrl: 'http://wombats.com',
   editMetadataUrl: 'http://penguins.com',
-  sortOrder: [{
-    ascending: true,
-    columnName: 'frogs'
-  }],
   metadata: {}
 };

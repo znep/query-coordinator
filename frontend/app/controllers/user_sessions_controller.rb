@@ -167,26 +167,14 @@ class UserSessionsController < ApplicationController
   # Tests an Auth0 connection string for redirection eligibility.
   # A client is redirected if:
   # 1. The connection is present.
-  # 2. The connection actually exists in our Auth0 account.
-  # 3. The client is making a fresh login attempt.
-  # 4. The redirect parameter is NOT set.
+  # 2. The client is making a fresh login attempt.
+  # 3. The redirect parameter is NOT set.
   #
   # Redirect can be overriden by using ?redirect=false.
   def should_auth0_redirect?(connection)
-
-      # Booleans to determine validity of redirect request
-      connection_is_present = connection.present?
-      connection_is_valid = connection_exists(connection)
-      has_redirect_param = params.fetch(:redirect, false)
-
-      if connection_is_present && !connection_is_valid
-        error = "A non-working connection string, #{connection}, has been specified in Auth0 configuration."
-
-        Rails.logger.error(error)
-        Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
-      end
-
-      connection_is_present && connection_is_valid && !has_redirect_param
+    connection_is_present = connection.present?
+    has_redirect_param = params.fetch(:redirect, false)
+    connection_is_present && !has_redirect_param
   end
 
   ##

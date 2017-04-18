@@ -2,39 +2,32 @@ require 'rails_helper'
 
 RSpec.describe MixpanelHelper, type: :helper do
 
-  let(:token) { 'a token' }
+  describe '#mixpanel_config_options' do
+    let(:result) { helper.mixpanel_config_options }
 
-  describe '#mixpanel_tracking_enabled?' do
-    context 'when no Mixpanel token exists' do
-      before do
-        allow(Rails.application.config).to receive(:mixpanel_token).and_return(nil)
-        set_feature_flags(MixpanelHelper::FLAG => true)
-      end
-
-      it 'returns false' do
-        expect(helper.mixpanel_tracking_enabled?).to eq(false)
-      end
+    before do
+      allow(helper).to receive(:full_mixpanel_tracking_feature_enabled?).and_return(false)
     end
 
-    context 'when the feature flag is disabled' do
-      before do
-        allow(Rails.application.config).to receive(:mixpanel_token).and_return(token)
-        set_feature_flags(MixpanelHelper::FLAG => false)
-      end
-
-      it 'returns false' do
-        expect(helper.mixpanel_tracking_enabled?).to eq(false)
-      end
+    it 'returns a hash of options' do
+      expect(result).to be_a(Hash)
     end
 
-    context 'when a Mixpanel token exists and the feature flag is enabled' do
+    it 'sets secure_cookie to true' do
+      expect(result[:secure_cookie]).to eq(true)
+    end
+
+    it 'sets cookie_expiration to nil by default' do
+      expect(result[:cookie_expiration]).to eq(nil)
+    end
+
+    context 'when fullMixpanelTracking is enabled' do
       before do
-        allow(Rails.application.config).to receive(:mixpanel_token).and_return(token)
-        set_feature_flags(MixpanelHelper::FLAG => true)
+        allow(helper).to receive(:full_mixpanel_tracking_feature_enabled?).and_return(true)
       end
 
-      it 'returns true' do
-        expect(helper.mixpanel_tracking_enabled?).to eq(true)
+      it 'sets cookie_expiration to 365' do
+        expect(result[:cookie_expiration]).to eq(365)
       end
     end
   end

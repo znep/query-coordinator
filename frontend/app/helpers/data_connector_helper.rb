@@ -27,8 +27,9 @@ module DataConnectorHelper
   def connector_icon(status)
     case status
       when 'failed' then 'failed'
+      when 'failure' then 'failed'
       when 'success' then 'check'
-      when 'not_yet' then 'waiting'
+      when 'in_progress' then 'waiting'
     end
   end
 

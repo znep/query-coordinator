@@ -100,7 +100,6 @@ class DatasetLandingPage
         :resourceUrl => view.resource_url,
         :rowLabel => row_label(view),
         :rowLabelMultiple => row_label(view).pluralize(2),
-        :sortOrder => view.first_usable_sort_order,
         :statsUrl => stats_url(view, current_user),
         :tags => view.tags,
         :twitterShareUrl => share_twitter_url(view),

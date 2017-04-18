@@ -20,8 +20,8 @@ function query(db) {
   };
 }
 
-function manageData(state) { // can't destructure in the function head because the linter explodes???
-  const { db } = state;
+export const ManageData = (props) => {
+  const { db, columnsExist } = props;
   const { anyColumnHasDescription } = query(db);
 
   const doneCheckmark = <SocrataIcon name="checkmark-alt" className={styles.icon} />;
@@ -41,7 +41,9 @@ function manageData(state) { // can't destructure in the function head because t
         <p> {I18n.home_pane.sidebar.column_descriptions_blurb} </p>
         <Link to={Links.columnMetadataForm()}>
           <button
-            className={styles.sidebarBtn}
+            className={columnsExist ? styles.sidebarBtn : styles.sidebarBtnDisabled}
+            title={!columnsExist && I18n.home_pane.sidebar.no_columns_msg}
+            disabled={!columnsExist}
             tabIndex="-1">
             {I18n.home_pane.sidebar.column_descriptions_button}
           </button>
@@ -80,12 +82,17 @@ function manageData(state) { // can't destructure in the function head because t
       </div>
     </div>
   );
-}
+};
 
-function HomePaneSidebar(state) {
-  const { urlParams } = state;
+ManageData.propTypes = {
+  db: PropTypes.object,
+  columnsExist: PropTypes.bool
+};
+
+function HomePaneSidebar(props) {
+  const { urlParams } = props;
   const showLog = urlParams.sidebarSelection === 'log';
-  const contents = showLog ? (<ActivityFeed />) : manageData(state);
+  const contents = showLog ? (<ActivityFeed />) : <ManageData {...props} />;
 
   return (
     <div className={styles.sidebar}>
@@ -115,7 +122,8 @@ HomePaneSidebar.propTypes = {
 const mapStateToProps = ({ db, routing }, { urlParams }) => ({
   db,
   urlParams,
-  routing: routing.location
+  routing: routing.location,
+  columnsExist: !_.isEmpty(db.output_columns)
 });
 
 export default connect(mapStateToProps)(HomePaneSidebar);

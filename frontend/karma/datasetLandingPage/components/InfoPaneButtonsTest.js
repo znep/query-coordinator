@@ -112,7 +112,7 @@ describe('components/InfoPaneButtons', () => {
       }));
       const downloadButton = element.querySelector('.download');
 
-      expect(downloadButton.href).to.match(/file_data/);
+      expect(downloadButton.href).to.match(/files/);
     });
   });
 

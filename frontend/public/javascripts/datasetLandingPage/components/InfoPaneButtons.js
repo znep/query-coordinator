@@ -81,7 +81,7 @@ export default class InfoPaneButtons extends Component {
     } else if (view.isBlobby) {
       return (
         <a
-          href={`/api/file_data/${view.blobId}?filename=${view.blobFilename}`}
+          href={`/api/views/${view.id}/files/${view.blobId}?filename=${view.blobFilename}`}
           className="btn btn-simple btn-sm unstyled-link download"
           target="_blank">
           {I18n.action_buttons.download}

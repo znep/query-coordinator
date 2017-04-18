@@ -1142,7 +1142,7 @@ class View < Model
 
     if is_blobby?
       opts = { :filename => URI.escape(blobFilename || '') }
-      b = {'href' => "/api/file_data/#{blobId}?#{opts.to_param}",
+      b = {'href' => "/api/views/#{id}/files/#{blobId}?#{opts.to_param}",
         'type' => (blobMimeType || '').gsub(/;.*/, ''), 'size' => blobFileSize}
       b['name'] =  blobFilename if blobFilename != name
       @blobs = [b]

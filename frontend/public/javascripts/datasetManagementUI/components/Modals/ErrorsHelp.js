@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 import _ from 'lodash';
 import { hideModal } from 'actions/modal';
 import styles from 'styles/Modals/ErrorsHelp.scss';
@@ -82,6 +83,25 @@ const HowToGetRowsBackInDataset = () =>
     <p className={styles.caption}>{SubI18n.help_modal.clean_data_sub_blurb}</p>
   </div>;
 
+const Dots = ({ modalPage }) => {
+  const dots = [1, 2, 3].map((num, idx) =>
+    <div
+      key={idx}
+      className={classNames(styles.dot, { [styles.dotSelected]: idx === modalPage })}>
+      &middot;
+    </div>);
+
+  return (
+    <div className={styles.dotsWrap}>
+      <div className={styles.dots}>{dots}</div>
+    </div>
+  );
+};
+
+Dots.propTypes = {
+  modalPage: PropTypes.number.isRequired
+};
+
 const getContent = (idx, errorRowCount) => {
   switch (idx) {
     case 0:
@@ -150,6 +170,7 @@ class ErrorsHelp extends Component {
           {content}
         </ModalContent>
         <ModalFooter>
+          <Dots modalPage={this.state.modalPage} />
           {previousButton}
           <button
             onClick={buttonHandler}

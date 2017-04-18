@@ -155,26 +155,26 @@
   composes: flyout-hidden from global;
 }
 
-.dotsWrap {
-  position: absolute;
-  text-align: center;
-  bottom: 5px;
-  left: 0px;
-  right: 0px;
-  z-index: 1001;
-}
-.dots {
-  align-self: flex-end;
-}
-.dot {
-  display: inline-block;
-  font-size: 64px;
-  line-height: 1em;
-  color: $light-grey-2;
-}
-.dotSelected {
-  color: $primary-base;
-}
+// .dotsWrap {
+//   position: absolute;
+//   text-align: center;
+//   bottom: 5px;
+//   left: 0px;
+//   right: 0px;
+//   z-index: 1001;
+// }
+// .dots {
+//   align-self: flex-end;
+// }
+// .dot {
+//   display: inline-block;
+//   font-size: 64px;
+//   line-height: 1em;
+//   color: $light-grey-2;
+// }
+// .dotSelected {
+//   color: $primary-base;
+// }
 
 // .errorCount {
 //   color: $error-base;

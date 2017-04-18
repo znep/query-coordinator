@@ -11,7 +11,7 @@ import * as ApplyUpdate from '../actions/applyUpdate.js';
 import * as Selectors from '../selectors.js';
 import styles from 'styles/PublishingModal.scss';
 
-function PublishingModal({ upsertJob, fourfour, percentUpserted }) {
+function PublishingModal({ upsertJob, fourfour, percentUpserted, applyUpdate }) {
   if (!upsertJob) {
     return null;
   }
@@ -46,7 +46,24 @@ function PublishingModal({ upsertJob, fourfour, percentUpserted }) {
 
       break;
     default:
-      return null;
+      title = I18n.home_pane.publish_modal.failure.title;
+      body = I18n.home_pane.publish_modal.failure.body;
+      status = 'error';
+      icon = { name: 'close-circle', className: styles.failure };
+      button = [
+        <a
+          key="cancel"
+          href="/profile"
+          className={classNames('btn', 'btn-default', styles.errorButton)}>
+          {I18n.common.cancel}
+        </a>,
+        <button
+          key="try-again"
+          className={classNames('btn', 'btn-primary', styles.errorButton)}
+          onClick={() => applyUpdate(upsertJob)}>
+          {I18n.common.try_again}
+        </button>
+      ];
   }
 
   return (
@@ -68,17 +85,19 @@ function PublishingModal({ upsertJob, fourfour, percentUpserted }) {
 PublishingModal.propTypes = {
   upsertJob: PropTypes.shape({
     id: PropTypes.number,
+    output_schema_id: PropTypes.number,
     status: PropTypes.string
   }),
   fourfour: PropTypes.string,
-  percentUpserted: PropTypes.number
+  percentUpserted: PropTypes.number,
+  applyUpdate: PropTypes.func
 };
 
 function mapStateToProps(state) {
   const upsertJob = _.maxBy(_.values(state.db.upsert_jobs), job => job.updated_at);
 
   if (upsertJob) {
-    let percentUpserted = Selectors.percentUpserted(state.db, upsertJob.id);
+    const percentUpserted = Selectors.percentUpserted(state.db, upsertJob.id);
     const fourfour = state.routing.fourfour;
 
     return {
@@ -91,4 +110,10 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(PublishingModal);
+function mapDispatchToProps(dispatch) {
+  return {
+    applyUpdate: (upsertJob) => dispatch(ApplyUpdate.applyUpdate(upsertJob.output_schema_id))
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PublishingModal);

@@ -1777,6 +1777,7 @@ en:
       header: Create a New Dataset
       placeholder: Dataset Name
       title: Create Dataset
+      try_again: Try Again?
     create:
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
@@ -1798,6 +1799,9 @@ en:
         successful:
           title: "This dataset is published"
           body: "You can't currently make any more changes from here."
+        failure:
+          title: "Something went wrong with publishing your data"
+          body: "Our site is having trouble right now, please wait and try again."
       add_column_metadata: Add Column Metadata
       add_column_metadata_blurb: Column metadata will help people understand what the column means.
       adding_data: Adding Data

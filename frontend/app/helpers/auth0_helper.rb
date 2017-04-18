@@ -92,19 +92,6 @@ module Auth0Helper
   end
 
   ##
-  # Contact Auth0's API to test if the domain-specified connections
-  # are in the set of Socrata's connections.
-  def connection_exists(name)
-    response = HTTParty.get("https://#{AUTH0_URI}/api/v2/connections?fields=name", headers: {
-      'Authorization' => "Bearer #{AUTH0_JWT}"
-    })
-
-    if JSON.parse(response.body).is_a? Array
-      response.any? { |connection| connection['name'] == name }
-    end
-  end
-
-  ##
   # Generate an authorization URI that can be used to
   # authenticate a user with the given Auth0 connection string.
   #

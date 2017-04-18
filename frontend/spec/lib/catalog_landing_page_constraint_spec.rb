@@ -14,7 +14,7 @@ describe Constraints::CatalogLandingPageConstraint do
       init_feature_flag_signaller(with: { enable_catalog_landing_page: true })
       allow(CatalogLandingPage).to receive(:exists?).and_return(existence)
     end
-    let(:request) { double(:request, query_parameters: {}) }
+    let(:request) { double(:request, path: '/browse', query_parameters: {}) }
 
     context 'if the path exists' do
       let(:existence) { true }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DataConnector do
+describe EsriServerConnector do
   include TestHelperMethods
 
   let(:fixture_prefix) { "#{Rails.root}/spec/fixtures/data_connector" }
@@ -77,7 +77,7 @@ describe DataConnector do
 
   context '#self.update_server' do
     it 'interprets checkboxes as sync_types' do
-      body = DataConnector.update_server(2, check_params)
+      body = EsriServerConnector.update_server(2, check_params)
 
       expect(body['folders']).to be_kind_of(Array)
       body['folders'].each do |folder|
@@ -112,7 +112,7 @@ describe DataConnector do
         expect(query).to eq({:filters => {:socrata_domain => host}})
         {'items' => []}
       end
-      servers = DataConnector.servers
+      servers = EsriServerConnector.servers
     end
 
     it 'returns an array of EsriServers' do
@@ -121,7 +121,7 @@ describe DataConnector do
         :status => 200,
         :body => File.read("#{fixture_prefix}/servers.json")
       )
-      servers = DataConnector.servers
+      servers = EsriServerConnector.servers
       expect(servers.length).to eq(1)
       expect(servers[0]).to be_an_instance_of(EsriServer)
     end
@@ -137,7 +137,7 @@ describe DataConnector do
         :status => 200,
         :body => File.read("#{fixture_prefix}/server.json")
       )
-      server = DataConnector.server(1)
+      server = EsriServerConnector.server(1)
       expect(server).to be_an_instance_of(EsriServer)
     end
   end
@@ -147,7 +147,7 @@ describe DataConnector do
       expect(query).to eq({:filters => {:socrata_domain => host}})
       {}
     end
-    server = DataConnector.server(1)
+    server = EsriServerConnector.server(1)
   end
 
   context '#self.create' do
@@ -166,7 +166,7 @@ describe DataConnector do
           :domain_id => CurrentDomain.domain.id
         })
       end
-      DataConnector.create(esri_domain, sync_type)
+      EsriServerConnector.create(esri_domain, sync_type)
     end
   end
 

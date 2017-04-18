@@ -253,9 +253,18 @@ module CommonMetadataMethods
   end
 
   def fetch_dataset_metadata_from_core(dataset_id, options)
-    migrations = View.migrations(dataset_id)
-    obe_metadata = View.find(migrations[:obeId], {'Cookie' => _cookies(options)}).data.with_indifferent_access
-    nbe_metadata = View.find(migrations[:nbeId], {'Cookie' => _cookies(options)}).data.with_indifferent_access
+    migrations = View.migrations(dataset_id) rescue nil
+
+    if migrations
+      obe_metadata = View.find(migrations[:obeId], {'Cookie' => _cookies(options)}).data.with_indifferent_access
+      nbe_metadata = View.find(migrations[:nbeId], {'Cookie' => _cookies(options)}).data.with_indifferent_access
+    else
+      metadata = View.find(dataset_id, {'Cookie' => _cookies(options)}).data.with_indifferent_access
+      is_nbe_only = metadata[:newBackend]
+      nbe_metadata = is_nbe_only ? metadata : {}
+      obe_metadata = is_nbe_only ? {} : metadata
+    end
+
     core_metadata = translate_core_metadata_to_legacy_structure(obe_metadata, nbe_metadata)
     { body: core_metadata, status: '200' }
   end
@@ -296,7 +305,7 @@ module CommonMetadataMethods
   # strategy_type becomes type
   def get_computation_strategy_legacy_structure(column)
     core_computation_strategy = column[:computationStrategy]
-    return {} unless core_computation_strategy
+    return nil unless core_computation_strategy
 
     computation_strategy = core_computation_strategy.slice(:type, :source_columns, :parameters)
     computation_strategy[:strategy_type] = computation_strategy.delete(:type)
@@ -314,7 +323,8 @@ module CommonMetadataMethods
 
     nbe_columns = nbe_metadata.fetch(:columns, []).each_with_object({}) do |column, accum|
       accum[column[:fieldName]] = {
-        computationStrategy: get_computation_strategy_legacy_structure(column)
+        computationStrategy: get_computation_strategy_legacy_structure(column),
+        cardinality: column.dig(:cachedContents, :cardinality)
       }.compact
     end
 

@@ -5,7 +5,7 @@ export class BlobPreview extends Component {
   renderPreview() {
     const { view } = this.props;
 
-    const href = `/api/file_data/${view.blobId}`;
+    const href = `/api/views/${view.id}/files/${view.blobId}`;
 
     switch (view.blobType) {
       case 'image':

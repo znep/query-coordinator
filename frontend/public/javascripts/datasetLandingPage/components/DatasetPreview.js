@@ -88,7 +88,6 @@ function mapStateToProps({ view }) {
         version: 2
       },
       configuration: {
-        order: view.sortOrder,
         viewSourceDataLink: false
       },
       series: [

@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 
 import AppBar from './AppBar';
+import PublishingModal from './PublishingModal';
 import NotificationList from './NotificationList';
 import Modal from 'components/Modals/Modal';
 import { setFourfour } from 'actions/routing';
@@ -20,10 +21,11 @@ class App extends Component {
 
   render() {
     const { children } = this.props;
-    const classNames = `dataset-management-ui ${styles.datasetManagementUi}`;
+    const wrapperClasses = `dataset-management-ui ${styles.datasetManagementUi}`;
 
     return (
-      <div className={classNames}>
+      <div className={wrapperClasses}>
+        <PublishingModal />
         <AppBar />
         {children}
         <NotificationList />

@@ -11,6 +11,8 @@
 
     brew update
 
+    brew install awscli
+
 Install `postgres`:
 
     brew install postgres

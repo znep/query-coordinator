@@ -1,3 +1,6 @@
+# The preferred usage for checking on features is to create a convenience method
+# here that checks for the presence of the feature through feature flags and/or
+# account features/modules.
 module FeaturesHelper
   def open_performance_enabled?
     feature_enabled?('govstat')
@@ -14,11 +17,31 @@ module FeaturesHelper
     feature_enabled?('staging_lockdown')
   end
 
+  def mixpanel_tracking_enabled?
+    Rails.application.config.mixpanel_token.present? &&
+      feature_flag_enabled?('enable_storyteller_mixpanel') &&
+      (mixpanel_tracking_feature_enabled? || full_mixpanel_tracking_feature_enabled?)
+  end
+
+  def mixpanel_tracking_feature_enabled?
+    feature_enabled?('mixpaneltracking')
+  end
+
+  def full_mixpanel_tracking_feature_enabled?
+    feature_enabled?('fullmixpaneltracking')
+  end
+
+  private
+
   def feature_flag_enabled?(flag)
     Signaller.for(flag: flag).value(on_domain: request.host)
   end
 
   def feature_enabled?(name)
-    SocrataSiteChrome::FeatureSet.new(CoreServer.current_domain['cname']).feature_enabled?(name) rescue false
+    feature_set.feature_enabled?(name) rescue false
+  end
+
+  def feature_set
+    @feature_set ||= SocrataSiteChrome::FeatureSet.new(CoreServer.current_domain['cname'])
   end
 end

@@ -5,9 +5,5 @@ export default {
     one: 'puffin',
     other: 'puffins'
   },
-  sortOrder: [{
-    ascending: true,
-    columnName: 'penguin'
-  }],
   path: '/mock-parent-view-path'
 };

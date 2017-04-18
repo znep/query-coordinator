@@ -11,8 +11,6 @@
 # This module also helps chip away at the 1KLOC ApplicationHelper, so yay.
 module SiteChromeHelper
 
-  include SocrataSiteChrome::SiteChromeHelper
-
   # Determines whether we consider site chrome to be enabled, according to a
   # complex set of rules.
   def enable_site_chrome?

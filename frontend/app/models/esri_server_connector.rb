@@ -1,4 +1,4 @@
-class DataConnector
+class EsriServerConnector
   include DataConnectorHelper
 
   def self.servers

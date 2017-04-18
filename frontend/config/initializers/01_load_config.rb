@@ -31,8 +31,7 @@ STYLE_PACKAGES = YAML.load_file("#{Rails.root}/config/style_packages.yml") || {}
 AUTH0_URI = ENV['AUTH0_URI'] || APP_CONFIG.auth0_uri
 AUTH0_ID = ENV['AUTH0_ID'] || APP_CONFIG.auth0_id
 AUTH0_SECRET = ENV['AUTH0_SECRET'] || APP_CONFIG.auth0_secret
-AUTH0_JWT = ENV['AUTH0_JWT'] || APP_CONFIG.auth0_jwt
-AUTH0_CONFIGURED = AUTH0_URI.present? && AUTH0_ID.present? && AUTH0_SECRET.present? && AUTH0_JWT.present?
+AUTH0_CONFIGURED = AUTH0_URI.present? && AUTH0_ID.present? && AUTH0_SECRET.present?
 
 unless AUTH0_CONFIGURED
   missing_variables = []
@@ -40,7 +39,6 @@ unless AUTH0_CONFIGURED
   missing_variables.push('AUTH0_URI') if AUTH0_URI.nil?
   missing_variables.push('AUTH0_ID') if AUTH0_ID.nil?
   missing_variables.push('AUTH0_SECRET') if AUTH0_SECRET.nil?
-  missing_variables.push('AUTH0_JWT') if AUTH0_JWT.nil?
 
   Airbrake.notify(
     :error_class => 'Auth0MissingEnvironmentVariableError',

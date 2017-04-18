@@ -960,7 +960,6 @@ export default function AssetSelectorStore() {
     );
 
     StorytellerUtils.assert(_state.dataset.columns.length > 0, 'dataset must have at least one column');
-    const defaultSortColumn = _state.dataset.columns[0];
 
     const visualization = {
       type: 'table',
@@ -984,10 +983,6 @@ export default function AssetSelectorStore() {
       },
       description: _.get(_state, 'dataset.description', ''),
       configuration: {
-        order: [{
-          ascending: true,
-          columnName: defaultSortColumn.fieldName
-        }],
         localization: {}
       }
     };

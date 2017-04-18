@@ -30,10 +30,11 @@ describe('App', function() {
 
     it('does not render a preview bar', () => {
       assert.isNull(element.querySelector('.preview-bar'));
+      assert.isNull(document.querySelector('.preview-mode'));
     });
 
     it('does not display site chrome', () => {
-      assert.isNull(document.querySelector('#site-chrome-header'));
+      assert.ok(document.querySelector('.hide-site-chrome'));
     });
 
     it('renders an InfoPane', () => {
@@ -109,6 +110,7 @@ describe('App', function() {
 
     it('renders a preview bar', () => {
       assert.ok(element.querySelector('.preview-bar'));
+      assert.ok(document.querySelector('.preview-mode'));
     });
 
     it('does not renders an edit bar', () => {
@@ -119,9 +121,8 @@ describe('App', function() {
       assert.isNull(element.querySelector('.edit-menu'));
     });
 
-    // TODO this test never tested anything.
-    xit('displays site chrome', () => {
-      assert.ok(document.querySelector('#site-chrome-header'));
+    it('displays site chrome', () => {
+      assert.isNull(document.querySelector('.hide-site-chrome'));
     });
 
     it('renders an InfoPane', () => {
@@ -165,6 +166,7 @@ describe('App', function() {
 
     it('does not render a preview bar', () => {
       assert.isNull(element.querySelector('.preview-bar'));
+      assert.isNull(document.querySelector('.preview-mode'));
     });
 
     it('does not renders an edit bar', () => {
@@ -175,9 +177,8 @@ describe('App', function() {
       assert.isNull(element.querySelector('.edit-menu'));
     });
 
-    // TODO this test never tested anything.
-    xit('displays site chrome', () => {
-      assert.ok(document.querySelector('#site-chrome-header'));
+    it('displays site chrome', () => {
+      assert.isNull(document.querySelector('.hide-site-chrome'));
     });
 
     it('renders an InfoPane', () => {

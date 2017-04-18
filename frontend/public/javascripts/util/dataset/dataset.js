@@ -492,7 +492,7 @@
         var b = {
           type: (this.blobMimeType || '').replace(/;.*/, ''),
           size: this.blobFileSize,
-          href: '/api/file_data/' + this.blobId +
+          href: '/api/views/' + ds.id + '/files/' + this.blobId +
             '?' + $.param({
               filename: this.blobFilename
             })

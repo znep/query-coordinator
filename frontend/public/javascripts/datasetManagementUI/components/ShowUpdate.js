@@ -6,14 +6,13 @@ import MetadataTable from '../../common/components/MetadataTable';
 import SchemaPreview from './SchemaPreview';
 import HomePaneSidebar from './HomePaneSidebar';
 import DatasetPreview from './DatasetPreview';
+import NotifyButton from './NotifyButton';
 import RowDetails from '../components/RowDetails';
 import * as Links from '../links';
 import { Link } from 'react-router';
 import { latestOutputSchema } from '../selectors';
 import * as Actions from '../actions/manageUploads';
 import * as ApplyUpdate from '../actions/applyUpdate';
-import { STATUS_INSERTING, STATUS_SAVED } from '../lib/database/statuses';
-import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ShowUpdate.scss';
 
 const noDataYetView = (createUpload) =>
@@ -65,62 +64,22 @@ const outputSchemaView = (db, outputSchema) => {
   );
 };
 
-const upsertInProgressView = (db, addEmailInterest) => {
-  const upsertJob = _.find(db.upsert_jobs, { status: null });
-
-  let notifyButton;
-  if (upsertJob) {
-    const upsertJobUuid = upsertJob.job_uuid;
-    const emailInterest = _.find(db.email_interests, { job_uuid: upsertJobUuid });
-    if (emailInterest) {
-      if (emailInterest.__status__.type === STATUS_INSERTING) {
-        notifyButton = (
-          <button className={styles.emailBtnBusy}>
-            <span className={styles.spinner}></span>
-          </button>
-        );
-      } else if (emailInterest.__status__.type === STATUS_SAVED) {
-        notifyButton = (
-          <button
-            className={styles.emailBtnSuccess}>
-            <SocrataIcon name="checkmark3" className={styles.icon} />
-            {I18n.home_pane.email_me_success}
-          </button>
-        );
-      } else {
-        notifyButton = (
-          <button
-            className={styles.emailBtnError}>
-            {I18n.home_pane.email_me_error}
-          </button>
-        );
-      }
-    } else {
-      notifyButton = (
-        <button
-          className={styles.emailBtnRequest}
-          onClick={() => { addEmailInterest(upsertJobUuid); }}>
-          {I18n.home_pane.email_me}
-        </button>
-      );
-    }
-  }
-
+const upsertInProgressView = () => {
   return (
     <div className={styles.tableInfo}>
       <h3 className={styles.previewAreaHeader}>{I18n.home_pane.being_processed}</h3>
       <p>{I18n.home_pane.being_processed_detail}</p>
-      <div>{notifyButton}</div>
+      <div><NotifyButton /></div>
     </div>
   );
 };
 
 // WRAPPER COMPONENT
-const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, db, addEmailInterest, createUpload }) => {
+const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, db, createUpload }) => {
   let child;
 
   if (upsertExists) {
-    child = upsertInProgressView(db, addEmailInterest);
+    child = upsertInProgressView(db);
   } else if (outputSchema) {
     child = outputSchemaView(db, outputSchema);
   } else {
@@ -138,7 +97,6 @@ WrapDataTablePlaceholder.propTypes = {
   upsertExists: PropTypes.number.isRequired,
   outputSchema: PropTypes.object,
   db: PropTypes.object,
-  addEmailInterest: PropTypes.func,
   createUpload: PropTypes.func
 };
 
@@ -150,7 +108,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUpload }) {
+function ShowUpdate({ view, routing, db, urlParams, createUpload }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -237,7 +195,6 @@ function ShowUpdate({ view, routing, db, urlParams, addEmailInterest, createUplo
         upsertExists={doesUpsertExist}
         outputSchema={outputSchema}
         db={db}
-        addEmailInterest={addEmailInterest}
         createUpload={createUpload} />
     );
   }
@@ -267,15 +224,11 @@ ShowUpdate.propTypes = {
   routing: PropTypes.object.isRequired,
   db: PropTypes.object.isRequired,
   urlParams: PropTypes.object.isRequired,
-  addEmailInterest: PropTypes.func.isRequired,
   createUpload: PropTypes.func.isRequired
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    addEmailInterest: (jobUuid) => {
-      dispatch(ApplyUpdate.addEmailInterest(jobUuid));
-    },
     createUpload: (file) => {
       dispatch(Actions.createUpload(file));
     }

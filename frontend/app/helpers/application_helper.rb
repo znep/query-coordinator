@@ -4,6 +4,7 @@ module ApplicationHelper
 
   include Browse2Helper
   include BrowseHelper
+  include SiteChromeConsumerHelpers
   include SiteChromeHelper
   include CommonSocrataMethods
   include UserAuthMethods

@@ -184,6 +184,28 @@ describe CatalogLandingPage do
     end
   end
 
+  describe '.should_route?' do
+    let(:configuration) { double(:config) }
+
+    context 'when on a /browse page' do
+      let(:path) { '/browse' }
+      let(:request) { double(:request, path: path) }
+
+      it 'should return true' do
+        expect(CatalogLandingPage.should_route?(request)).to eq(true)
+      end
+    end
+
+    context 'when on a /browse/select_dataset modal' do
+      let(:path) { '/browse/select_dataset' }
+      let(:request) { double(:request, path: path) }
+
+      it 'should return false' do
+        expect(CatalogLandingPage.should_route?(request)).to eq(false)
+      end
+    end
+  end
+
   describe '.catalog_query' do
     it 'should return a canonical key given valid input' do
       some_hash = ActionController::Parameters.new(category: 'Foo')

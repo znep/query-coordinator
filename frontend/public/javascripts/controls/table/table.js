@@ -2100,9 +2100,9 @@
     // Render container elements
     var $outside = $this.
       addClass('blist-table').
-      mousedown(onMouseDown).
-      mousemove(onMouseMove).
-      dblclick(onDoubleClick).
+      bind('mousedown.table', onMouseDown).
+      bind('mousemove.table', onMouseMove).
+      bind('dblclick.table', onDoubleClick).
       html(headerStr);
 
     if (options.columnDrag) {
@@ -2341,7 +2341,7 @@
     };
 
     if (options.manualResize) {
-      $this.bind('resize', updateLayout);
+      $this.bind('resize.table', updateLayout);
     } else {
       $(window).resize(updateLayout);
     }
@@ -4176,7 +4176,7 @@
     var table = this;
     var curView;
     // Need to listen for view to be set
-    $this.bind('dataset_ready', function(event, newModel) {
+    $this.bind('dataset_ready.table', function(event, newModel) {
       model = newModel;
 
       var isReady = function() {
@@ -4188,7 +4188,7 @@
           initRows();
 
           // Bind to events on the DOM that are thrown by the model
-          $this.bind('columns_changed', function() {
+          $this.bind('columns_changed.table', function() {
               // This seem a bit heavy-handed...
               initMeta();
               renderHeader();
@@ -4196,7 +4196,7 @@
               renderPagination();
               initRows();
             }).
-            bind('rows_changed', function() {
+            bind('rows_changed.table', function() {
               begin('updateRows');
               initRows();
               // If the row count changes, we should move to the
@@ -4207,12 +4207,12 @@
               renderPagination();
               end('updateRows');
             }).
-            bind('selection_change', function(selectionChangeEvent, rows) {
+            bind('selection_change.table', function(selectionChangeEvent, rows) {
               begin('selectionChange');
               updateRowSelection(rows);
               end('selectionChange');
             }).
-            bind('show', function() {
+            bind('show.table', function() {
               initMeta();
               renderHeader();
               renderFooter();

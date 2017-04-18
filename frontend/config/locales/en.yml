@@ -855,7 +855,6 @@ en:
           pulse: Pulse
           pulse_help: Learn about Pulse
           story: Stories
-          story_help: New
           unpublished: Working Copies
           visualization: Data Lens pages
           visualization_help: New
@@ -1777,6 +1776,7 @@ en:
       header: Create a New Dataset
       placeholder: Dataset Name
       title: Create Dataset
+      try_again: Try Again?
     create:
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
@@ -1790,6 +1790,17 @@ en:
       columns: Columns
     export_errors: Export Errors
     home_pane:
+      publish_modal:
+        to_primer: "Go to Primer"
+        publishing:
+          title: "Your dataset is being processed & will be public shortly"
+          body: "It's safe to close your browser.  The progress will not be interrupted."
+        successful:
+          title: "This dataset is published"
+          body: "You can't currently make any more changes from here."
+        failure:
+          title: "Something went wrong with publishing your data"
+          body: "Our site is having trouble right now, please wait and try again."
       add_column_metadata: Add Column Metadata
       add_column_metadata_blurb: Column metadata will help people understand what the column means.
       adding_data: Adding Data
@@ -1807,7 +1818,7 @@ en:
       data_uploaded: Your data has been uploaded.
       data_uploaded_blurb: Almost there! Just review your data and then hit Process Data.
       done_processing: Your data is done being processed!
-      email_me: Email Me
+      email_me: Email me when ready
       email_me_error: An error has occurred.
       email_me_success: We'll send you an email!
       getting_started: Getting Started
@@ -1836,6 +1847,7 @@ en:
         feature: Feature
         feature_blurb: Feature assets or external resources that best represent your data.
         feature_button: Feature
+        no_columns_msg: This dataset doesn't contain any columns yet.
         title: Beyond the Basics
         visualize: Visualize
         visualize_blurb: Visualize your data and explore relationships.
@@ -2745,7 +2757,8 @@ en:
         never: Never
         no_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
         not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
-        not_yet: Sync in progress
+        in_progress: Sync in progress
+        not_yet: Not yet synced
         save: Save
         search: Search the domain
         selective_connection: Selective Connection

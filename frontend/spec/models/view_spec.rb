@@ -290,106 +290,6 @@ describe View do
     end
   end
 
-  describe '.first_usable_sort_order' do
-    it 'defaults to using the fieldName of the first non-geospatial column with a fieldName' do
-      test_view = View.new({
-        'columns' => [
-          { 'id' => 1234, 'foo' => 'elephant', 'dataTypeName' => 'text' },
-          { 'id' => 5678, 'fieldName' => 'location_column', 'dataTypeName' => 'point' },
-          { 'id' => 9123, 'fieldName' => 'giraffe', 'dataTypeName' => 'number' }
-        ],
-        'query' => {}
-      })
-      expected_sort_order = [{
-        :ascending => true,
-        :columnName => 'giraffe'
-      }]
-
-      expect(test_view.first_usable_sort_order).to eq(expected_sort_order)
-    end
-
-    context 'when query.orderBys are present' do
-      it 'returns a sort order based on the first usable orderBy in query' do
-        test_view = View.new({
-          'id' => 'peng-uins',
-          'columns' => [
-            { 'id' => 1234, 'foo' => 'elephant', 'dataTypeName' => 'text' },
-            { 'id' => 5678, 'fieldName' => 'location_column', 'dataTypeName' => 'point' },
-            { 'id' => 9123, 'fieldName' => 'giraffe', 'dataTypeName' => 'number' }
-          ],
-          'query' => {
-            'orderBys' => [
-              {
-                'ascending' => false,
-                'expression' => {
-                  'columnId' => 1234
-                }
-              },
-              {
-                'ascending' => false,
-                'expression' => {
-                  'columnId' => 5678
-                }
-              },
-              {
-                'ascending' => true,
-                'expression' => {
-                  'columnId' => 9123
-                }
-              },
-              {
-                'ascending' => false,
-                'expression' => {
-                  'columnId' => 9123
-                }
-              }
-            ]
-          }
-        })
-
-        # it does not return a sort order based on:
-        # - the column without a fieldName
-        # - the geospatial column
-        # - the second valid orderBy in query
-        expected_sort_order = [
-          {
-            :ascending => true,
-            :columnName => 'giraffe'
-          }
-        ]
-
-        expect(test_view.first_usable_sort_order).to eq(expected_sort_order)
-      end
-
-      it 'returns an alternate sort order if none of the columns in query.orderBys are valid to use' do
-        test_view = View.new({
-          'id' => 'peng-uins',
-          'columns' => [
-            { 'id' => 1234, 'foo' => 'elephant', 'dataTypeName' => 'text' },
-            { 'id' => 5678, 'fieldName' => 'location_column', 'dataTypeName' => 'point' },
-            { 'id' => 9123, 'fieldName' => 'giraffe', 'dataTypeName' => 'number' }
-          ],
-          'query' => {
-            'orderBys' => [
-              {
-                'ascending' => false,
-                'expression' => {
-                  'columnId' => 1234
-                }
-              }
-            ]
-          }
-        })
-        expected_sort_order = [{
-          :ascending => true,
-          :columnName => 'giraffe'
-        }]
-
-        expect(test_view.first_usable_sort_order).to eq(expected_sort_order)
-      end
-    end
-  end
-
   describe '.named_resource_url' do
     before do
       CurrentDomain.stubs(:cname => 'localhost')
@@ -424,6 +324,22 @@ describe View do
       view.data = {'newBackend' => true}
       view.update_data = {'newBackend' => false}
       expect(view.newBackend?).to be(false)
+    end
+  end
+
+  describe 'blobs' do
+    let (:view) do
+      View.new({
+        'id' => 'blob-view',
+        'viewType' => 'blobby',
+        'blobId' => '1a05430e-b1c1-4ff2-911c-3979eb54ed4d',
+        'blobFilename' => 'hotfix_giraffes.zip'
+      })
+    end
+
+    it 'constructs the blob href correctly' do
+      expected = '/api/views/blob-view/files/1a05430e-b1c1-4ff2-911c-3979eb54ed4d?filename=hotfix_giraffes.zip'
+      expect(view.blobs.first['href']).to eq(expected)
     end
   end
 end

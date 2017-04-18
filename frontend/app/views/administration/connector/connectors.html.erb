@@ -72,17 +72,19 @@
           <tbody>
             <%- @connectors.each do |server| -%>
               <tr>
-                <td class="name" scope="row"><%= server.url %></td>
+                <td class="name" scope="row">
+                  <a target="_blank" href="<%= server.url %>"> <%= server.display_name %> </a>
+                </td>
                 <td class="federatedAssets" scope="row">
                   <%= t(
                     "#{connector}.assets_discovered",
-                    count: server.layer_count
+                    count: server.discovered_count
                   ) %>
                 </td>
                 <td class="federatedAssets" scope="row">
                     <%= link_to_if(
-                          server.synced_count > 0,
-                          t("#{connector}.assets_connected", count: server.synced_count),
+                          server.connected_count > 0 && server.backend == 'esri-crawler',
+                          t("#{connector}.assets_connected", count: server.connected_count),
                           { controller: "connector", action: :show_connector, :server_id => server.id }) %>
                 </td>
                 <td class="status" scope="row" nowrap>
@@ -94,13 +96,13 @@
                 </td>
                 <td class="endedAt" scope="row">
                   <%- if server.last_synced -%>
-                    <%= server.parse_last_synced %>
+                    <%= date_time_span(server.last_synced) %>
                   <%- else -%>
                     <%= t("#{connector}.never") %>
                   <%- end -%>
                 </td>
                 <td class="actions" scope="row">
-                  <%- if server.last_synced %>
+                  <%- if server.last_synced || server.backend == 'catalog-federator' %>
                     <%= link_to(
                       t("#{connector}.edit"),
                       {

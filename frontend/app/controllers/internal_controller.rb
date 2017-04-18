@@ -589,6 +589,25 @@ class InternalController < ApplicationController
     end
   end
 
+  def find_deleted_user
+    if params[:email]
+      begin
+        @deleted_user = User.find_deleted_user(params[:email])
+      rescue CoreServer::ResourceNotFound
+        errors << "User with email #{params[:email]} does not exist, or is not deleted."
+        prepare_to_render_flashes!
+      end
+    end
+  end
+
+  def undelete_user
+    User.undelete(params[:uid_to_undelete])
+    notices << "User successfully undeleted!"
+    prepare_to_render_flashes!
+
+    redirect_to find_deleted_user_path
+  end
+
   private
 
   def check_auth

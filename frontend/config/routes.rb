@@ -75,6 +75,10 @@ Rails.application.routes.draw do
       post :update_feature_flags_on_multiple_domains
       post :set_environment_feature_flag
 
+      get :find_deleted_user
+      post :find_deleted_user
+      post :undelete_user
+
       post '/orgs', :action => 'create_org'
       get '/orgs', :action => 'index_orgs'
       get '/orgs/:org_id', :action => 'show_org', :as => 'show_org'

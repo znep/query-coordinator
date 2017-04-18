@@ -62,6 +62,14 @@ class User < Model
     parse(CoreServer::Base.connection.create_request("/users.json?method=finishAccountCreate&token=#{token}"))
   end
 
+  def self.find_deleted_user(email)
+    parse(CoreServer::Base.connection.get_request("/users.json?method=getDeletedByEmail&email=#{CGI.escape(email)}"))
+  end
+
+  def self.undelete(uid)
+    parse(CoreServer::Base.connection.update_request("/users.json?method=undelete&uid=#{uid}"))
+  end
+
   def create(inviteToken = nil, authToken = nil)
     User.create(data_hash, inviteToken, authToken)
   end

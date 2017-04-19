@@ -100,6 +100,9 @@ gem 'rspec-rails', '~> 3.4'
 # Feature flag operations.
 gem 'signaller-ruby', '~> 0.0', :require => 'signaller'
 
+# ElastiCache auto-discovery for memcached nodes
+gem 'dalli-elasticache', '~> 0.2.0'
+
 group :production do
   # Reaps unicorn worker processes under predefined conditions
   gem 'unicorn-worker-killer', '~> 0.4'

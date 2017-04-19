@@ -72,7 +72,7 @@ class TransformStatus extends Component {
           <div className={styles.columnProgressBar}>
             <ProgressBar
               type="done"
-              percent="100"
+              percent={100}
               ariaLabeledBy={`column-display-name-${columnId}`} />
           </div>
           <div className={styles.statusText}>

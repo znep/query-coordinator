@@ -838,6 +838,7 @@ en:
         moderation_status_title: Moderation Status
         tags_singular_title: tag
         tags_title: Tags
+        this_site_only: This site only
         topics_singular_title: topic
         topics_title: Topics
         view_types:

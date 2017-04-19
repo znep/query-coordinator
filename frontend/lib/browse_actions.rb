@@ -171,7 +171,7 @@ module BrowseActions
     return nil if all_feds.length < 1
 
     all_feds.unshift(
-      text: 'This site only',
+      text: t('controls.browse.facets.this_site_only'),
       value: CurrentDomain.domain.id.to_s, # must be string or view won't notice
       icon: {
         type: 'static',

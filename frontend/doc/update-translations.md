@@ -64,7 +64,7 @@ even if you have deleted the key in the uploaded file, because the import proces
 
 ### Move/Rename
 
-Renaming and repurposing keys may require you to remove the key first, then add it back. To modify the translations
+Renaming and repurposing keys may require you to [remove the key](#remove) first, then add it back. To modify the translations
 of individual keys, the Translations section is an alternative to uploading entire files.
 
 ### Warnings and Errors
@@ -76,9 +76,9 @@ should usually be fixed and re-uploaded. Common warnings:
 key, because this triggers special translation functionality.
 
 * _can't be a descendant of an existing translation_ — if you're converting an existing translation key so that it is
-a namespace (contains subkeys), you need to delete the existing translation key in Locale first.
+a namespace (contains subkeys), you need to [delete the existing translation key](#remove) in Locale first.
 
-* _can't create a key that is being used as a namespace_ — the inverse of the previous warning, delete the subkeys if
+* _can't create a key that is being used as a namespace_ — the inverse of the previous warning, [delete](#remove) the subkeys if
 you want to convert a namespace to a single key.
 
 * _must use the same variables as the default locale_ — this seems to stem from translators not preserving HTML

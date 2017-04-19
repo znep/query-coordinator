@@ -2,8 +2,8 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 
 import AppBar from './AppBar';
-import PublishingModal from './PublishingModal';
 import NotificationList from './NotificationList';
+import Modal from 'components/Modals/Modal';
 import { setFourfour } from 'actions/routing';
 import styles from 'styles/App.scss';
 
@@ -24,10 +24,10 @@ class App extends Component {
 
     return (
       <div className={wrapperClasses}>
-        <PublishingModal />
         <AppBar />
         {children}
         <NotificationList />
+        <Modal />
       </div>
     );
   }

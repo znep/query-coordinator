@@ -6,11 +6,7 @@ import {
   upsertFailed,
   updateFromServer
 } from '../actions/database';
-import {
-  addNotification,
-  removeNotificationAfterTimeout
-} from '../actions/notifications';
-import { upsertJobNotification } from '../lib/notifications';
+import { showModal } from 'actions/modal';
 import * as dsmapiLinks from '../dsmapiLinks';
 import * as Links from '../links';
 import { parseDate } from '../lib/parseDate';
@@ -36,8 +32,8 @@ export function applyUpdate(outputSchemaId) {
       then(getJson).
       then((resp) => {
         dispatch(upsertSucceeded('upsert_jobs', newUpsertJob, resp.resource));
+        dispatch(showModal('Publishing'));
         const upsertJobId = resp.resource.id;
-        dispatch(addNotification(upsertJobNotification(upsertJobId)));
         dispatch(pollForUpsertJobProgress(upsertJobId));
         dispatch(push(Links.home(routing)));
       }).
@@ -62,9 +58,6 @@ export function pollForUpsertJobProgress(upsertJobId) {
               ...upsertJob,
               finished_at: parseDate(upsertJob.finished_at)
             }));
-            if (upsertJob.status === UPSERT_JOB_SUCCESSFUL) {
-              dispatch(removeNotificationAfterTimeout(upsertJobNotification(upsertJob.id)));
-            }
           });
           if (_.map(update.upsert_jobs, 'status').some((status) => status === UPSERT_JOB_IN_PROGRESS)) {
             setTimeout(() => {

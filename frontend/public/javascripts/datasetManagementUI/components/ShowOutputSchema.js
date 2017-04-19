@@ -10,6 +10,7 @@ import * as Selectors from '../selectors';
 import * as ShowActions from '../actions/showOutputSchema';
 import * as ApplyActions from '../actions/applyUpdate';
 import * as LoadDataActions from '../actions/loadData';
+import { setOutputSchemaId } from 'actions/routing';
 import * as DisplayState from '../lib/displayState';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
@@ -42,17 +43,27 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
 export class ShowOutputSchema extends Component {
 
   componentDidMount() {
-    this.dispatchDataLoad(this.props);
+    const { displayState, dispatch, urlParams } = this.props;
+
+    dispatch(LoadDataActions.loadVisibleData(displayState));
+
+    if (urlParams.outputSchemaId) {
+      dispatch(setOutputSchemaId(_.toNumber(urlParams.outputSchemaId)));
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.dispatchDataLoad(nextProps);
-  }
+    const { dispatch, urlParams } = this.props;
+    const { urlParams: nextUrlParams, displayState } = nextProps;
 
-  dispatchDataLoad(props) {
-    props.dispatch(
-      LoadDataActions.loadVisibleData(props.displayState)
-    );
+    const oldOutputSchemaId = urlParams.outputSchemaId;
+    const newOutputSchemaId = nextUrlParams.outputSchemaId;
+
+    if (oldOutputSchemaId !== newOutputSchemaId) {
+      dispatch(setOutputSchemaId(_.toNumber(newOutputSchemaId)));
+    }
+
+    dispatch(LoadDataActions.loadVisibleData(displayState));
   }
 
   render() {
@@ -150,9 +161,7 @@ export class ShowOutputSchema extends Component {
 
           <ModalFooter>
             {canApplyUpdate ?
-              <ReadyToImport
-                db={db}
-                outputSchema={outputSchema} /> :
+              <ReadyToImport /> :
               <div />}
 
             <div>
@@ -191,7 +200,10 @@ ShowOutputSchema.propTypes = {
   dropColumn: PropTypes.func.isRequired,
   applyUpdate: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
-  routing: PropTypes.object.isRequired
+  routing: PropTypes.object.isRequired,
+  urlParams: PropTypes.shape({
+    outputSchemaId: PropTypes.string
+  })
 };
 
 function mapStateToProps(state, ownProps) {
@@ -206,7 +218,8 @@ function mapStateToProps(state, ownProps) {
     ...queryResults,
     numLoadsInProgress: Selectors.numLoadsInProgress(state.db),
     displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
-    routing: ownProps.location
+    routing: ownProps.location,
+    urlParams: ownProps.params
   };
 }
 

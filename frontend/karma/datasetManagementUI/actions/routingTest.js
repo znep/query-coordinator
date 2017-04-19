@@ -1,5 +1,12 @@
 import { assert } from 'chai';
-import { setFourfour, addLocation, SET_FOURFOUR, ADD_LOCATION } from 'actions/routing';
+import {
+  setFourfour,
+  addLocation,
+  setOutputSchemaId,
+  SET_FOURFOUR,
+  ADD_LOCATION,
+  SET_OUTPUT_SCHEMA_ID
+} from 'actions/routing';
 
 describe('actions/routing', () => {
   describe('actions/routing/setFourfour', () => {
@@ -10,6 +17,19 @@ describe('actions/routing', () => {
       };
 
       const action = setFourfour(expectedAction.fourfour);
+
+      assert.deepEqual(action, expectedAction);
+    });
+  });
+
+  describe('actions/routing/setOutputSchemaId', () => {
+    it('returns an action of the expected shape', () => {
+      const expectedAction = {
+        type: SET_OUTPUT_SCHEMA_ID,
+        id: 388
+      };
+
+      const action = setOutputSchemaId(expectedAction.id);
 
       assert.deepEqual(action, expectedAction);
     });

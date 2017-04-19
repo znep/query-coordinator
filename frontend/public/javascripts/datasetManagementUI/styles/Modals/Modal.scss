@@ -1,0 +1,51 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.container {
+  display: initial;
+}
+
+.errorsHelp {
+  :global {
+    .modal-container {
+      width: 840px;
+      max-width: 840px;
+      text-align: center;
+      p, h3, h4, h5, h6 {
+        text-align: left;
+      }
+      h6 {
+        margin-top: 10px;
+      }
+      p {
+        margin-bottom: 1em;
+      }
+
+      table {
+        th, td {
+          padding: 5px;
+        }
+      }
+    }
+  }
+}
+
+.publishing {
+  text-align: center;
+
+  h2 {
+    margin: 1.5em 0 0.75em;
+    font-size: 19px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  :global {
+    .modal-container {
+      max-width: 550px;
+    }
+  }
+}

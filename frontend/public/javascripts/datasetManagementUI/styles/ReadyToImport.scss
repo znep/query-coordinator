@@ -14,99 +14,6 @@
   margin-left: 2em !important;
 }
 
-.helpVis1a {
-  max-width: 100%;
-}
-.helpVis1b {
-  max-width: 100%;
-}
-.helpVis2 {
-  max-width: 100%;
-}
-.helpVis3 {
-  max-width: 100%;
-}
-
-
-.modalInception {
-  // this css is v important
-  :global {
-    .modal-header {
-      text-align: left !important;
-      box-shadow: none;
-      button {
-        min-width: 0px !important;
-      }
-    }
-    .modal-container {
-      width: 840px;
-      height: 450px;
-      position: relative;
-      top: 210px;
-      text-align: center;
-      p, h3, h4, h5, h6 {
-        text-align: left;
-      }
-      h6 {
-        margin-top: 10px;
-      }
-      p {
-        margin-bottom: 1em;
-      }
-      .modal-content {
-        position: relative;
-        overflow: hidden;
-        padding: 0px 19px;
-      }
-
-      table {
-        th, td {
-          padding: 5px;
-        }
-      }
-
-
-      .kinds {
-        display: flex;
-
-        h6 {
-          position: relative;
-          text-align: center;
-        }
-
-        .row-errors, .type-errors {
-          display: inline-block;
-        }
-        .row-errors {
-          flex-grow: 2;
-        }
-        .type-errors {
-          flex-grow: 1;
-        }
-      }
-    }
-    .modal-footer {
-      background: $white;
-      position: relative;
-      border: none;
-      button {
-        z-index: 1002;
-      }
-    }
-    .modal-footer-actions {
-      justify-content: flex-end !important; // ;_;
-    }
-  }
-}
-.nextButton {
-  composes: btn from global;
-  composes: btn-primary from global;
-}
-.previousButton {
-  composes: btn from global;
-  composes: btn-default from global;
-}
-
 .readyToImport {
   &>p {
     display: inline-block;
@@ -131,14 +38,12 @@
   color: $light-grey-1;
   font-size: 17px;
   display: inline-block;
-  // composes: socrata-icon-question from global;
 }
 .errorsHelp:hover {
   padding-left: 7px;
   color: $light-grey-1;
   font-size: 17px;
   display: inline-block;
-  // composes: socrata-icon-question from global;
 }
 
 .helpModalIcon {
@@ -153,37 +58,4 @@
 .errorsHelpFlyout {
   composes: flyout from global;
   composes: flyout-hidden from global;
-}
-
-.dotsWrap {
-  position: absolute;
-  text-align: center;
-  bottom: 5px;
-  left: 0px;
-  right: 0px;
-  z-index: 1001;
-}
-.dots {
-  align-self: flex-end;
-}
-.dot {
-  display: inline-block;
-  font-size: 64px;
-  line-height: 1em;
-  color: $light-grey-2;
-}
-.dotSelected {
-  color: $primary-base;
-}
-
-.errorCount {
-  color: $error-base;
-}
-
-.caption {
-  composes: small from global;
-}
-
-.typesOfErrors {
-  font-weight: 900;
 }

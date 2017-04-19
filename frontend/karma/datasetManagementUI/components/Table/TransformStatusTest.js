@@ -20,7 +20,7 @@ describe('components/Table/TransformStatus', () => {
       inputSchemaId: 0,
       outputSchemaId: 0
     },
-    displayState: normal()
+    displayState: normal(1, 382)
   };
 
   describe('when there are no errors', () => {

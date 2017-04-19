@@ -29,6 +29,10 @@
   <%= render 'datasets/catalog', :opts => @processed_browse %>
 </div>
 
+<div id="modals">
+  <%= yield :modals %>
+</div>
+
 <%= content_for :scripts do %>
   <script src="/javascripts/plugins/lodash.js"></script>
   <script>var I18n = I18n || {};</script>

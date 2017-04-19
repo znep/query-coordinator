@@ -139,138 +139,6 @@ $(function() {
     return replacedText;
   }
 
-  function createNewStory(event) {
-
-    var $button = $(this);
-
-    function onError() {
-
-      $button.attr('data-status', 'ready');
-
-      alert('Oh no! There’s been a problem. Please try again.');
-    }
-
-    function onSuccess(data, textStatus, xhr) {
-
-      function validate4x4(testString) {
-        var valid = false;
-        var pattern = window.blist.util.patterns.UID;
-
-        if (pattern) {
-          valid = testString.match(pattern) !== null;
-        }
-
-        return valid;
-      }
-
-      function onPublishSuccess(publishData) {
-
-        if (publishData.hasOwnProperty('id') && validate4x4(publishData.id)) {
-
-          // This is the second phase of the creation action,
-          // and this endpoint is responsible for removing the
-          // '"initialized": false' flag (or setting it to true)
-          // when it succeeds at creating the new story objects
-          // in Storyteller's datastore.
-          //
-          // This isn't perfect but it should (hopefully) be
-          // reliable enough that users will not totally fail to
-          // create stories when they intend to do so.
-          window.location.href = '/stories/s/{0}/create'.format(publishData.id);
-
-        } else {
-          onError();
-        }
-      }
-
-      if (data.hasOwnProperty('id') && validate4x4(data.id)) {
-        // Next we need to publish the newly-created catalog
-        // asset, since the publish action provisions a new
-        // 4x4.
-        var publishUrl = '/api/views/{0}/publication.json?accessType=WEBSITE'.format(data.id);
-        var publishSettings = {
-          contentType: false,
-          error: onError,
-          headers: {
-            'X-App-Token': blist.configuration.appToken
-          },
-          type: 'POST',
-          success: onPublishSuccess
-        };
-
-        $.ajax(publishUrl, publishSettings);
-
-      } else {
-        onError(xhr, 'Invalid storyUid', 'Invalid storyUid');
-      }
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (window.hasOwnProperty('blist') &&
-      window.blist.hasOwnProperty('configuration') &&
-      window.blist.configuration.hasOwnProperty('appToken')) {
-
-      var newStoryName = 'Untitled Story - {0}'.format(new Date().format('m-d-Y'));
-      var newStoryData = {
-        displayFormat: {},
-        displayType: 'story',
-        metadata: {
-          availableDisplayTypes: ['story'],
-          // Since Storyteller has its own datastore, we will
-          // need to treat this asynchonously. Tagging the
-          // metadata with '"initialized": false' should at least
-          // allow us to understand how many of the two-phase
-          // story creation actions fail, and should also allow
-          // us to do some garbage collection down the road.
-          initialized: false,
-          // Because of an unfortunate legacy in Core Server,
-          // the way that we ensure that the newly-created asset
-          // is of viewType 'story' is by putting a property
-          // called 'isStorytellerAsset' on the metadata object.
-          isStorytellerAsset: true,
-          jsonQuery: {},
-          renderTypeConfig: {
-            visible: {
-              story: true
-            }
-          }
-        },
-        name: newStoryName,
-        query: {}
-      };
-      var url = '/api/views.json';
-      var settings = {
-        contentType: false,
-        data: JSON.stringify(newStoryData),
-        dataType: 'json',
-        error: onError,
-        headers: {
-          'Content-type': 'application/json',
-          'X-App-Token': blist.configuration.appToken
-        },
-        type: 'POST',
-        success: onSuccess
-      };
-
-      $button.attr('data-status', 'busy');
-      $.ajax(url, settings);
-    }
-  }
-
-  function toggleBrowse2CreateAssetDisplay() {
-    var $sectionContainer = $(this).parent('.browse2-create-asset');
-    var currentDisplay = $sectionContainer.attr('data-panel-display');
-
-    if (currentDisplay === 'show') {
-      $sectionContainer.attr('data-panel-display', 'hide');
-      $(this).blur();
-    } else {
-      $sectionContainer.attr('data-panel-display', 'show');
-    }
-  }
-
   function toggleBrowse2FacetDisplay(event, element) {
     element = element || this;
     var $sectionContainer = $(element).parent('.browse2-facet-section');
@@ -487,129 +355,6 @@ $(function() {
     }
   }
 
-  function makeResultPublic(event) {
-    var id = $(event.target).closest('[data-result-id]').attr('data-result-id');
-    var dataset;
-    var url = '/views/{0}.json?accessType=WEBSITE&method=setPermission&value=public.read'.format(id);
-    var makePublicSettings;
-
-    function onMakePublicSuccess() {
-      window.location.href = window.location.href;
-    }
-
-    function onMakePublicError() {
-      alert(
-        $.t('controls.browse.browse2.edit.make_public.error', {
-          dataset: dataset.name
-        })
-      );
-    }
-
-    if (!(blist.browse.datasets[id] instanceof Dataset)) {
-      blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]);
-    }
-
-    dataset = blist.browse.datasets[id];
-
-    makePublicSettings = {
-      contentType: false,
-      error: onMakePublicError,
-      headers: {
-        'X-App-Token': blist.configuration.appToken
-      },
-      type: 'PUT',
-      success: onMakePublicSuccess
-    };
-
-    $.ajax(url, makePublicSettings);
-  }
-
-  function makeResultPrivate(event) {
-    var id = $(event.target).closest('[data-result-id]').attr('data-result-id');
-    var dataset;
-    var url = '/views/{0}.json?accessType=WEBSITE&method=setPermission&value=private'.format(id);
-    var makePrivateSettings;
-
-    function onMakePrivateSuccess() {
-      window.location.href = window.location.href;
-    }
-
-    function onMakePrivateError() {
-      alert(
-        $.t('controls.browse.browse2.edit.make_private.error', {
-          dataset: dataset.name
-        })
-      );
-    }
-
-    if (!(blist.browse.datasets[id] instanceof Dataset)) {
-      blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]);
-    }
-
-    dataset = blist.browse.datasets[id];
-
-    makePrivateSettings = {
-      contentType: false,
-      error: onMakePrivateError,
-      headers: {
-        'X-App-Token': blist.configuration.appToken
-      },
-      type: 'PUT',
-      success: onMakePrivateSuccess
-    };
-
-    $.ajax(url, makePrivateSettings);
-  }
-
-  function deleteResult(event) {
-    var id = $(event.target).closest('[data-result-id]').attr('data-result-id');
-    var dataset;
-    var url;
-    var deleteSettings;
-
-    function onDeleteSuccess() {
-      window.location.href = window.location.href;
-    }
-
-    function onDeleteError() {
-      alert(
-        $.t('controls.browse.browse2.edit.delete.error', {
-          dataset: dataset.name
-        })
-      );
-    }
-
-    if (!(blist.browse.datasets[id] instanceof Dataset)) {
-      blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]);
-    }
-
-    dataset = blist.browse.datasets[id];
-
-    if (dataset.isDataLens()) {
-      // Send a DELETE request to the NFE endpoint, which should propagate the delete to the
-      // OBE representation.
-      url = '/metadata/v1/page/{0}'.format(id);
-    } else {
-      url = '/api/views/{0}.json'.format(id);
-    }
-
-    deleteSettings = {
-      contentType: false,
-      error: onDeleteError,
-      headers: {
-        'X-App-Token': blist.configuration.appToken
-      },
-      type: 'DELETE',
-      success: onDeleteSuccess
-    };
-
-    if (confirm($.t('controls.browse.browse2.edit.delete.confirm', {
-        dataset: dataset.name
-      }))) {
-      $.ajax(url, deleteSettings);
-    }
-  }
-
   function showBrowse2MobileLoadingSpinner() {
     $('.browse2-loading-spinner-container').show();
   }
@@ -623,7 +368,7 @@ $(function() {
   }
 
   function hideCLPManager() {
-    document.cookie = "hide-clp-manager=true; expires=0; path=/";
+    document.cookie = 'hide-clp-manager=true; expires=0; path=/';
     $('.browse2-manage-catalog-landing-page').hide();
   }
 
@@ -746,12 +491,6 @@ $(function() {
     );
   }
 
-  $.live(
-    '#create-story-button',
-    'click',
-    createNewStory
-  );
-
   // Expand facet child options list by default if it contains an "active" option
   $('.browse2-facet-section-child-option.active').closest('.browse2-facet-section-child-options').show();
 
@@ -774,22 +513,33 @@ $(function() {
     }
   });
 
+  $.fn.extend({
+    onClickOrEnter: function(callback) {
+      return this.on('click', function(event) { callback(event); }).
+        keyup(function(event) {
+          if (event.keyCode === 13) {
+            callback(event);
+          }
+        });
+    }
+  });
+
   // Click listeners
-  $('.browse2-create-asset-button').on('click', toggleBrowse2CreateAssetDisplay);
-  $('.browse2-facet-section-title').on('click', toggleBrowse2FacetDisplay);
+  $('.browse2-facet-section-title').onClickOrEnter(
+    function(event) { toggleBrowse2FacetDisplay(event, event.target); });
   $('.browse2-mobile-filter, .browse2-facets-pane-mobile-header').on('click', toggleBrowse2MobileFacetsSlideout);
   $('.browse2-facets-mobile-active-filter').on('click', browse2MobileActiveFilterClick);
-  $('.browse2-facet-section-child-option-toggle').on('click', toggleBrowse2FacetChildOptionDropdown);
+  $('.browse2-facet-section-child-option-toggle').onClickOrEnter(
+    function(event) { toggleBrowse2FacetChildOptionDropdown(event); });
   $('.browse2-facet-section-option, .browse2-facet-section-child-option').on('click', browse2MobileFacetClick);
   $('.browse2-mobile-facets-filter-button').on('click', filterBrowse2MobileFacets);
   $('.browse2-facets-pane-mobile-clear-all-button').on('click', browse2MobileFacetClearAll);
-  $('.browse2-facet-section-modal-button').on('click', showBrowse2FacetModal);
-  $('.browse2-facet-section-modal-background, .browse2-facet-section-modal-close, .modal-close-button, .modal-close-button > a').click(hideBrowse2FacetModal);
-  $('.browse2-result-description-truncation-toggle-control').on('click', toggleBrowse2DescriptionTruncation);
-  $('.browse2-result-make-public-button').on('click', makeResultPublic);
-  $('.browse2-result-make-private-button').on('click', makeResultPrivate);
-  $('.browse2-result-delete-button').on('click', deleteResult);
-  $('.browse2-result-delete-button').on('click', deleteResult);
-  $('.manage-clp-hide-action').on('click', hideCLPManager);
+  $('.browse2-facet-section-modal-button').onClickOrEnter(
+    function(event) { showBrowse2FacetModal(event); });
+  $('.browse2-facet-section-modal-background, .browse2-facet-section-modal-close, .modal-close-button, .modal-close-button > a').
+    onClickOrEnter(hideBrowse2FacetModal);
+  $('.browse2-result-description-truncation-toggle-control').onClickOrEnter(
+    function(event) { toggleBrowse2DescriptionTruncation(event); });
+  $('.manage-clp-hide-action').onClickOrEnter(hideCLPManager);
   $('#clp-help-toggle').on('mouseover', showCLPHelpFlyout).on('mouseout', hideCLPHelpFlyout);
 });

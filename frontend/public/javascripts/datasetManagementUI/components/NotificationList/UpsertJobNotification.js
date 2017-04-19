@@ -56,7 +56,7 @@ export default function UpsertJobNotification({ upsertJob, rowsToBeImported, row
 
 UpsertJobNotification.propTypes = {
   upsertJob: PropTypes.object.isRequired,
-  totalRows: PropTypes.number.isRequired,
+  rowsUpserted: PropTypes.number.isRequired,
   rowsToBeImported: PropTypes.number.isRequired,
   percentUpserted: PropTypes.number.isRequired
 };

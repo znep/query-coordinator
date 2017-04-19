@@ -30,6 +30,10 @@ RSpec.configure do |config|
     #     # => "be bigger than 2"
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
 
+    config.before(:each) do
+      RequestStore.clear!
+    end
+
     config.around(:each, verify_stubs: false) do |example|
       config.mock_with :rspec do |mocks|
         mocks.verify_partial_doubles = false

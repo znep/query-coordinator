@@ -7,9 +7,15 @@ describe SocrataSiteChrome::FeatureSet do
   let(:feature_set_json) {
     '[{ "properties": [{ "name": "SnappingSnail", "value": false }, { "name": "FloatingFox", "value": true }] }]' }
   let(:feature_set_request_status) { 200 }
+  let(:coreservice_uri) { Rails.application.config_for(:config)['coreservice_uri'] }
+  let(:domains_uri) { "#{coreservice_uri}/domains/#{domain}.json" }
 
   def parse_feature_set_json(json)
     JSON.parse(json)
+  end
+
+  before(:each) do
+    stub_domains
   end
 
   before do

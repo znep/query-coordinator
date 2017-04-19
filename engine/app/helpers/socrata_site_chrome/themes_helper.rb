@@ -35,7 +35,7 @@ module SocrataSiteChrome
     end
 
     def domain_config(cname = request.host)
-      ::RequestStore.store['site_chrome.domain_config'] ||= SocrataSiteChrome::DomainConfig.new(cname)
+      SocrataSiteChrome::DomainConfig.instance(cname)
     end
   end
 end

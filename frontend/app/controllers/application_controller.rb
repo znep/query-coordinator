@@ -266,6 +266,11 @@ class ApplicationController < ActionController::Base
     session[:return_to] = request.fullpath
   end
 
+  def redirect_to(options = {}, response_status = {})
+    logger.info("Redirecting from #{request.path} to #{options}, referred from #{request.referrer || 'unknown referrer'}")
+    super
+  end
+
   def redirect_back_or_default(path)
     redirect_to(session[:return_to] || path)
     session[:return_to] = nil

@@ -168,10 +168,6 @@ class DatasetsController < ApplicationController
 
     # See if the user is accessing the canonical URL; if not, redirect
     unless using_canonical_url?
-      # Log redirects in production
-      if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
-        logger.info("Doing a dataset redirect from #{request.referrer}")
-      end
       # when setting flash messages and redirectly to datasets#show, we fall through
       # here, so persist any previously set flash messages (like timeout errors from bootstrap)
       flash.keep
@@ -298,11 +294,7 @@ class DatasetsController < ApplicationController
     end
 
     # See if the user is accessing the canonical URL; if not, redirect
-    unless request.path == canonical_path_proc.call(locale: nil)
-      # Log redirects in production
-      if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
-        logger.info("Doing a dataset redirect from #{request.referrer}")
-      end
+    unless using_canonical_url?
       return redirect_to canonical_path
     end
 
@@ -1122,6 +1114,8 @@ class DatasetsController < ApplicationController
         view_row_path(composite_params)
       elsif request.path =~ /\/alt$/
         alt_view_path(composite_params)
+      elsif request.path =~ /\/data$/
+        data_grid_path(composite_params)
       else
         view_path(composite_params)
       end
@@ -1244,7 +1238,7 @@ class DatasetsController < ApplicationController
   end
 
   def using_canonical_url?
-    request.path == canonical_path_proc.call(locale: nil) || request.path =~ /\/data$/
+    request.path == canonical_path_proc.call(locale: nil)
   end
 
   def render_as_dataset_landing_page

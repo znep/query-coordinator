@@ -319,7 +319,7 @@ Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit_sha} and try again
   end
 
   def current_release_semver
-    semver_yaml = git.gblob("#{last_released_commit_sha}:.semver").contents
+    semver_yaml = git.gblob("#{last_released_commit_sha}:storyteller/.semver").contents
     semver = YAML.load(semver_yaml)
     SemVer.new(semver[:major], semver[:minor], semver[:patch], semver[:special])
   end

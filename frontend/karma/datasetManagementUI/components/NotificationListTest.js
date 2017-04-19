@@ -141,7 +141,8 @@ describe('components/NotificationList', () => {
     expect(element.querySelectorAll('.dsmui-notification').length).to.equal(0);
   });
 
-  it('shows an upsert job in progress which has 0 log entries', () => {
+  // Re-enable if we add upsert job notifications back.
+  xit('shows an upsert job in progress which has 0 log entries', () => {
     const store = getDefaultStore();
     store.dispatch(upsertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
     store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
@@ -166,7 +167,8 @@ describe('components/NotificationList', () => {
     expect(element.querySelector('.percentCompleted').innerText).to.eql('0%');
   });
 
-  it('shows an upsert job in progress which has some log entries', () => {
+  // Re-enable if we add upsert job notifications back.
+  xit('shows an upsert job in progress which has some log entries', () => {
     const store = getDefaultStore();
     store.dispatch(upsertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
     store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
@@ -199,7 +201,8 @@ describe('components/NotificationList', () => {
     expect(element.querySelector('.percentCompleted').innerText).to.eql('50%');
   });
 
-  it('shows a recently completed upsert job', () => {
+  // Re-enable if we add upsert job notifications back.
+  xit('shows a recently completed upsert job', () => {
     const store = getDefaultStore();
     store.dispatch(upsertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
     store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));
@@ -227,7 +230,8 @@ describe('components/NotificationList', () => {
     expect(element.querySelectorAll('.notification.successful').length).to.equal(1);
   });
 
-  it('shows a failed upsert job', () => {
+  // Re-enable if we add upsert job notifications back.
+  xit('shows a failed upsert job', () => {
     const store = getDefaultStore();
     store.dispatch(upsertFromServer('input_schemas', { id: 0, total_rows: 5000 }));
     store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 0 }));

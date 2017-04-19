@@ -11,7 +11,8 @@ module.exports = _.defaultsDeep({
     'admin-georegions-screen': './screens/admin-georegions-screen',
     'admin-activity-feed': ['../plugins/daterangepicker.jquery.js', './screens/admin-activity-feed'],
     'admin-activity-feed-show': './screens/admin-activity-feed-show',
-    'admin-edit-connector': './screens/admin-edit-connector'
+    'admin-edit-connector': './screens/admin-edit-connector',
+    'admin-new-connector': './screens/admin-new-connector'
   },
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/src/.eslintrc.json'),

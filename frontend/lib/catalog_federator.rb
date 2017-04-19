@@ -5,8 +5,14 @@ module CatalogFederator
     include Socrata::CookieHelper
 
     def get_sources
-      response = self.class.get("/v1/source", headers: headers)
-      raise_error("/v1/source", response) unless response.code == 200
+      response = self.class.get('/v1/source', headers: headers)
+      raise_error('/v1/source', response) unless response.code == 200
+      response.parsed_response
+    end
+
+    def post_source(source)
+      response = self.class.post('/v1/source', headers: headers, body: source.to_json)
+      raise_error('/v1/source', response) unless response.code == 200
       response.parsed_response
     end
 

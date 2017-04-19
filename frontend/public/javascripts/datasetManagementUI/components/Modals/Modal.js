@@ -20,6 +20,7 @@ const getModalProps = (props, contentComponentName) => {
       return {
         ...props,
         children: (<Publishing />),
+        className: styles.publishing,
         onDismiss: _.noop
       };
     default:

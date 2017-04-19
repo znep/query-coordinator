@@ -2,6 +2,32 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
+.help {
+  composes: help from global;
+}
+
+.kinds {
+  display: flex;
+
+  h6 {
+    position: relative;
+    text-align: center;
+  }
+}
+
+.rowErrors {
+  flex-grow: 2;
+}
+
+.typeErrors {
+  flex-grow: 1;
+}
+
+.rowErrors,
+.typeErros {
+  display: inline-block;
+}
+
 .errorCount {
   color: $error-base;
 }

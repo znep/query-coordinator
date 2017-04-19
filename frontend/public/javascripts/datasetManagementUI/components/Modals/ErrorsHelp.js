@@ -8,14 +8,71 @@ import styles from 'styles/Modals/ErrorsHelp.scss';
 
 const SubI18n = I18n.show_output_schema.ready_to_import;
 
-
-// TODO: refactor using setdangerousinnerHTML?
 const makeErrorString = (start, end, errorRowCount) =>
   <span>
     {SubI18n.help_modal[start]}
     <span className={styles.errorCount}>{` ${errorRowCount} `}</span>
     {SubI18n.help_modal[end]}
   </span>;
+
+const WhyWontTheyImport = () =>
+  <div className={styles.help}>
+    <p>
+      {SubI18n.help_modal.we_love_your_data}&nbsp;
+      <span className={styles.typesOfErrors}>{SubI18n.help_modal.two_types_of_errors}</span>
+    </p>
+
+    <div className={styles.kinds}>
+      <div className={styles.typeErrors}>
+        <h6>{SubI18n.help_modal.type_errors}</h6>
+        <img
+          alt={SubI18n.help_modal.type_errors}
+          className={styles.helpVis1a}
+          src="/images/datasetManagementUI/help-visual-1a.png" />
+        <p className={styles.caption}>{SubI18n.help_modal.type_error_blurb}</p>
+      </div>
+      <div className={styles.rowErrors}>
+        <h6>{SubI18n.help_modal.row_errors}</h6>
+        <img
+          alt={SubI18n.help_modal.row_errors}
+          className={styles.helpVis1b}
+          src="/images/datasetManagementUI/help-visual-1b.png" />
+        <p className={styles.caption}>{SubI18n.help_modal.row_error_blurb}</p>
+      </div>
+    </div>
+  </div>;
+
+const WhatCanIDoAboutIt = ({ errorRowCount }) =>
+  <div className={styles.help}>
+    <p>{SubI18n.help_modal.error_file_blurb}</p>
+    <h6>{makeErrorString('you_can_download_start', 'you_can_download_end', errorRowCount)}</h6>
+    <img
+      alt={SubI18n.help_modal.error_file_blurb}
+      className={styles.helpVis2}
+      src="/images/datasetManagementUI/help-visual-2.png" />
+    <p className={styles.caption}>{SubI18n.help_modal.error_file_sub_blurb}</p>
+  </div>;
+
+WhatCanIDoAboutIt.propTypes = {
+  errorRowCount: PropTypes.number.isRequired
+};
+
+const HowToGetRowsBackInDataset = () =>
+  <div className={styles.help}>
+    <p>{SubI18n.help_modal.get_rows_into_dataset_blurb}</p>
+    <h6>{SubI18n.help_modal.clean_data_blurb}</h6>
+    <img
+      alt={SubI18n.help_modal.get_rows_into_dataset_blurb}
+      className={styles.helpVis3}
+      src="/images/datasetManagementUI/help-visual-3.png" />
+    <p className={styles.caption}>{SubI18n.help_modal.clean_data_sub_blurb}</p>
+  </div>;
+
+const pages = [
+  WhatCanIDoAboutIt,
+  WhyWontTheyImport,
+  HowToGetRowsBackInDataset
+];
 
 const getHeaderTitle = (idx, errorRowCount) => {
   switch (idx) {
@@ -30,80 +87,6 @@ const getHeaderTitle = (idx, errorRowCount) => {
   }
 };
 
-const WhyWontTheyImport = () =>
-  <div className="help">
-    <p>
-      {SubI18n.help_modal.we_love_your_data}&nbsp;
-      <span className={styles.typesOfErrors}>{SubI18n.help_modal.two_types_of_errors}</span>
-    </p>
-
-    <div className="kinds">
-      <div className="type-errors">
-        <h6>{SubI18n.help_modal.type_errors}</h6>
-        <img
-          alt="{SubI18n.help_modal.type_errors}"
-          className={styles.helpVis1a}
-          src="/images/datasetManagementUI/help-visual-1a.png" />
-        <p className={styles.caption}>{SubI18n.help_modal.type_error_blurb}</p>
-      </div>
-      <div className="row-errors">
-        <h6>{SubI18n.help_modal.row_errors}</h6>
-        <img
-          alt="{SubI18n.help_modal.row_errors}"
-          className={styles.helpVis1b}
-          src="/images/datasetManagementUI/help-visual-1b.png" />
-        <p className={styles.caption}>{SubI18n.help_modal.row_error_blurb}</p>
-      </div>
-    </div>
-  </div>;
-
-const WhatCanIDoAboutIt = ({ errorRowCount }) =>
-  <div className="help">
-    <p>{SubI18n.help_modal.error_file_blurb}</p>
-    <h6>{makeErrorString('you_can_download_start', 'you_can_download_end', errorRowCount)}</h6>
-    <img
-      alt="{SubI18n.help_modal.error_file_blurb}"
-      className={styles.helpVis2}
-      src="/images/datasetManagementUI/help-visual-2.png" />
-    <p className={styles.caption}>{SubI18n.help_modal.error_file_sub_blurb}</p>
-  </div>;
-
-WhatCanIDoAboutIt.propTypes = {
-  errorRowCount: PropTypes.number.isRequired
-};
-
-const HowToGetRowsBackInDataset = () =>
-  <div className="help">
-    <p>{SubI18n.help_modal.get_rows_into_dataset_blurb}</p>
-    <h6>{SubI18n.help_modal.clean_data_blurb}</h6>
-    <img
-      alt="{SubI18n.help_modal.get_rows_into_dataset_blurb}"
-      className={styles.helpVis3}
-      src="/images/datasetManagementUI/help-visual-3.png" />
-    <p className={styles.caption}>{SubI18n.help_modal.clean_data_sub_blurb}</p>
-  </div>;
-
-const Dots = ({ modalPage, setPage }) => {
-  const dots = [1, 2, 3].map((num, idx) =>
-    <div
-      key={idx}
-      onClick={() => setPage(idx)}
-      className={classNames(styles.dot, { [styles.dotSelected]: idx === modalPage })}>
-      &#x25CF;
-    </div>);
-
-  return (
-    <span>
-      {dots}
-    </span>
-  );
-};
-
-Dots.propTypes = {
-  modalPage: PropTypes.number.isRequired,
-  setPage: PropTypes.func.isRequired
-};
-
 const getContent = (idx, errorRowCount) => {
   switch (idx) {
     case 0:
@@ -115,6 +98,35 @@ const getContent = (idx, errorRowCount) => {
     default:
       return null;
   }
+};
+
+const Dots = ({ currentPageIdx, numOfTotalPages, setPage }) => {
+  let dots = [];
+
+  for (let idx = 0; idx < numOfTotalPages; idx += 1) {
+    const dot = (
+      <div
+        key={idx}
+        onClick={() => setPage(idx)}
+        className={classNames(styles.dot, { [styles.dotSelected]: idx === currentPageIdx })}>
+        &#x25CF;
+      </div>
+    );
+
+    dots.push(dot);
+  }
+
+  return (
+    <span>
+      {dots}
+    </span>
+  );
+};
+
+Dots.propTypes = {
+  currentPageIdx: PropTypes.number.isRequired,
+  numOfTotalPages: PropTypes.number.isRequired,
+  setPage: PropTypes.func.isRequired
 };
 
 class ErrorsHelp extends Component {
@@ -148,24 +160,25 @@ class ErrorsHelp extends Component {
 
   render() {
     const { onDismiss, errorRowCount } = this.props;
+    const { modalPage } = this.state;
 
     const headerProps = {
-      title: getHeaderTitle(this.state.modalPage, errorRowCount),
+      title: getHeaderTitle(modalPage, errorRowCount),
       className: styles.header,
       onDismiss: onDismiss
     };
 
-    const content = getContent(this.state.modalPage, errorRowCount);
+    const content = getContent(modalPage, errorRowCount);
 
-    const buttonText = this.state.modalPage >= 2
+    const buttonText = modalPage === pages.length - 1
       ? SubI18n.help_modal.done
       : SubI18n.help_modal.next;
 
-    const buttonHandler = this.state.modalPage >= 2
+    const buttonHandler = modalPage === pages.length - 1
       ? onDismiss
       : this.nextPage;
 
-    const previousButton = this.state.modalPage > 0 ? (
+    const previousButton = modalPage > 0 ? (
       <button
         onClick={this.prevPage}
         className={styles.previousButton}>
@@ -179,7 +192,7 @@ class ErrorsHelp extends Component {
           {content}
         </ModalContent>
         <ModalFooter className={styles.footer}>
-          <Dots modalPage={this.state.modalPage} setPage={this.setPage} />
+          <Dots currentPageIdx={modalPage} numOfTotalPages={pages.length} setPage={this.setPage} />
           <div className={styles.buttonContainer}>
             {previousButton}
             <button

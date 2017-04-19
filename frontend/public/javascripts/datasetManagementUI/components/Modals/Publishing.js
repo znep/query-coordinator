@@ -11,7 +11,7 @@ import { hideModal } from 'actions/modal';
 import * as Selectors from 'selectors';
 import styles from 'styles/Modals/Publishing.scss';
 
-function Publishing({ upsertJob, fourfour, percentUpserted, applyUpdate, hideModal }) {
+function Publishing({ upsertJob, fourfour, percentUpserted, applyUpdate, onCancelClick }) {
   let title;
   let body;
   let status;
@@ -49,7 +49,7 @@ function Publishing({ upsertJob, fourfour, percentUpserted, applyUpdate, hideMod
       button = [
         <button
           key="cancel"
-          onClick={hideModal}
+          onClick={onCancelClick}
           className={styles.cancelButton}>
           {I18n.common.cancel}
         </button>,
@@ -63,7 +63,7 @@ function Publishing({ upsertJob, fourfour, percentUpserted, applyUpdate, hideMod
   }
 
   return (
-    <div className={styles.publishModal}>
+    <div>
       <h2>{title}</h2>
       <ModalContent>
         <p>{body}</p>
@@ -84,11 +84,11 @@ Publishing.propTypes = {
     id: PropTypes.number.isRequired,
     output_schema_id: PropTypes.number.isRequired,
     status: PropTypes.string.isRequired
-  }).isRequred,
+  }).isRequired,
   fourfour: PropTypes.string.isRequired,
   percentUpserted: PropTypes.number.isRequired,
   applyUpdate: PropTypes.func.isRequired,
-  hideModal: PropTypes.func.isRequired
+  onCancelClick: PropTypes.func.isRequired
 };
 
 function mapStateToProps({ db, routing }) {
@@ -106,7 +106,7 @@ function mapStateToProps({ db, routing }) {
 function mapDispatchToProps(dispatch) {
   return {
     applyUpdate: (upsertJob) => dispatch(ApplyUpdate.applyUpdate(upsertJob.output_schema_id)),
-    hideModal: () => dispatch(hideModal())
+    onCancelClick: () => dispatch(hideModal())
   };
 }
 

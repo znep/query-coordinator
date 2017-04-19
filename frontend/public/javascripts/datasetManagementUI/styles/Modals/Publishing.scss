@@ -1,24 +1,5 @@
 @import 'app/styles/styleguide-colors';
 
-.publishModal {
-  text-align: center;
-
-  h2 {
-    margin: 1.5em 0 0.75em;
-    font-size: 19px;
-  }
-
-  p {
-    margin-bottom: 0;
-  }
-
-  :global {
-    .modal-container {
-      max-width: 550px;
-    }
-  }
-}
-
 .modalFooter {
   margin-bottom: 1.75em;
 

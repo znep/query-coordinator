@@ -6,26 +6,41 @@
   <div class="connector-form-field-container">
     <div class="line">
       <label for="federation_source" class="required"><%= t("#{connector}.source") %></label>
-      <select disabled>
-        <option id="federation_source"><%= t("#{connector}.esri_arcgis") %></option>
+      <select
+        id="federation_source"
+        name="server[federation_source]"
+        value="<%= @server['federation_source']%>"
+      />
+        <option value="esri_arcgis"><%= t("#{connector}.esri_arcgis") %></option>
+        <% if @include_data_json %>
+          <option value="data_json"><%= t("#{connector}.data_json") %></option>
+        <% end %>
       </select>
     </div>
     <div class="line">
-      <label for="esri_domain" class="required"><%= t("#{connector}.arcgis_server_address") %></label>
-
+      <label for="source_url" class="required"><%= t("#{connector}.source_url") %></label>
       <div class="input-group">
         <span class="input-group-prepend">https://</span>
         <input
           type="text"
-          name="server[esri_domain]"
-          id="esri_domain"
-          value="<%= @server['esri_domain']%>"
+          name="server[source_url]"
+          id="source_url"
+          value="<%= @server['source_url']%>"
           class="required input-prepended"
           placeholder="<domain>/ArcGIS/rest"
         />
       </div>
     </div>
-
+    <div class="line" id="display_name_option" style="display:none">
+      <label for="display_name" class="required"><%= t("#{connector}.display_name") %></label>
+      <input
+        type="text"
+        name="server[display_name]"
+        id="display_name"
+        value="<%= @server['display_name']%>"
+        class="required input-prepended"
+      />
+    </div>
   </div>
 
   <div class="line clearfix">

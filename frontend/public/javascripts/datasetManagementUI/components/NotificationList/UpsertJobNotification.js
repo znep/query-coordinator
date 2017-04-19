@@ -5,20 +5,19 @@ import * as ApplyUpdate from '../../actions/applyUpdate';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/NotificationList/UpsertJobNotification.scss';
 
-export default function UpsertJobNotification({ upsertJob, totalRows, rowsUpserted }) {
+export default function UpsertJobNotification({ upsertJob, importTotal, rowsUpserted, percent }) {
   const commaifiedRowsUpserted = commaify(rowsUpserted);
-  const commaifiedTotalRows = commaify(totalRows);
+  const commaifiedTotalRows = commaify(importTotal);
 
   switch (upsertJob.status) {
     case ApplyUpdate.UPSERT_JOB_IN_PROGRESS: {
-      const percent = rowsUpserted / totalRows * 100;
       return (
         <div className={`${styles.notification} ${styles.inProgress}`}>
           <span className={styles.message}>{I18n.progress_items.processing}</span>
           <span className={styles.subMessage}>
             ({commaifiedRowsUpserted} / {commaifiedTotalRows} {I18n.progress_items.rows})
           </span>
-          <span className={styles.percentCompleted}>{Math.round(percent)}%</span>
+          <span className={styles.percentCompleted}>{percent}%</span>
           <div className={styles.progressBarContainer}>
             <ProgressBar percent={percent} type="inProgress" className={styles.progressBar} />
           </div>
@@ -57,6 +56,7 @@ export default function UpsertJobNotification({ upsertJob, totalRows, rowsUpsert
 
 UpsertJobNotification.propTypes = {
   upsertJob: PropTypes.object.isRequired,
-  totalRows: PropTypes.number.isRequired,
-  rowsUpserted: PropTypes.number.isRequired
+  rowsUpserted: PropTypes.number.isRequired,
+  importTotal: PropTypes.number.isRequired,
+  percent: PropTypes.number.isRequired
 };

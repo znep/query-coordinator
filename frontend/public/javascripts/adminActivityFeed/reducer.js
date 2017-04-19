@@ -12,6 +12,12 @@ export default function(state, action) {
     case actions.types.dismissError:
       return state.set('error', null);
 
+    case actions.types.showDetailsModal:
+      return state.setIn(['detailsModal'], action.activity);
+
+    case actions.types.dismissDetailsModal:
+      return state.setIn(['detailsModal'], null);
+
     default:
       return state;
   }

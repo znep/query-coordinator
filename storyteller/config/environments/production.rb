@@ -53,7 +53,18 @@ Rails.application.configure do
   # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
 
   # Use a different cache store in production.
-  config.cache_store = :dalli_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'storyteller' }
+  # See if elasticache auto-discovery is available
+  elasticache_endpoint = ENV['MEMCACHED_CONFIG_ENDPOINT']
+
+  memcached_hosts = if elasticache_endpoint.present?
+    Dalli::ElastiCache.new(elasticache_endpoint).servers
+  else
+    ENV['MEMCACHED_HOST']
+  end
+
+  raise 'No memcached hosts are configured, please set MEMCACHED_HOSTS or MEMCACHED_CONFIG_ENDPOINT.' if memcached_hosts.empty?
+
+  config.cache_store = :dalli_store, memcached_hosts || 'memcache', { :namespace => 'storyteller' }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = 'http://assets.example.com'

@@ -42,7 +42,6 @@ describe('components/ShowOutputSchema', () => {
     route: {
       path: '' // just used by mapStateToProps to determine whether we're in a "viewing row errors" state
     },
-    updateColumnType: _.noop,
     location: {},
     urlParams: {
       outputSchemaId: '18'
@@ -249,7 +248,7 @@ describe('components/ShowOutputSchema', () => {
       inputSchema: _.values(storeDb.input_schemas)[0],
       outputSchema: _.values(storeDb.output_schemas)[0],
       columns: Selectors.columnsForOutputSchema(storeDb, _.values(storeDb.output_schemas)[0].id),
-      displayState: normal(),
+      displayState: normal(1, 18),
       canApplyUpdate: false,
       updateColumnType: _.noop,
       goHome: _.noop,
@@ -298,7 +297,7 @@ describe('components/ShowOutputSchema', () => {
       outputSchema: outSchema,
       columns: Selectors.columnsForOutputSchema(storeDb, outSchema.id),
       canApplyUpdate: false,
-      displayState: normal(),
+      displayState: normal(1, 18),
       updateColumnType: _.noop,
       goHome: _.noop,
       goToUpload: _.noop,

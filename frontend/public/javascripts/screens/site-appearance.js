@@ -9,6 +9,9 @@ var validationRules = {
   'content[general][google_analytics_token]': {
     pattern: inputTypeValidations.google_analytics
   },
+  'content[general][webtrends_url]': {
+    pattern: inputTypeValidations.url
+  },
   'content[general][window_icon]': {
     pattern: inputTypeValidations.url
   },

@@ -15,5 +15,14 @@ class CatalogFederatorConnector
         []
       end
     end
+
+    def create(source_form)
+      source = {
+        'source' => source_form['source_url'],
+        'sourceType' => 'open_data_metadata_v1_1',
+        'displayName' => source_form['display_name']
+      }
+      client.post_source(source)
+    end
   end
 end

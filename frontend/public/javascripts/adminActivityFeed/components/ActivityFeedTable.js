@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -54,7 +55,19 @@ class ActivityFeedTable extends React.Component {
       {
         id: 'actions',
         title: '',
-        mapper: () => ''
+        mapper: _.identity,
+        template: item => {
+          const showDetailsButton = ['SuccessWithDataErrors', 'Failure'].
+            includes(item.getIn(['data', 'status']));
+
+          if (showDetailsButton) {
+            return (
+              <a className="details-modal-link" onClick={_.bind(props.showDetailsModal, this, item)}>
+                <LocalizedText localeKey='view_details'/>
+              </a>
+            );
+          }
+        }
       }
     ];
 
@@ -76,7 +89,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    showRestoreModal: (activity) => dispatch(actions.showRestoreModal(activity)),
     showDetailsModal: (activity) => dispatch(actions.showDetailsModal(activity))
   };
 };

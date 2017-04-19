@@ -14,13 +14,18 @@ Rails.application.configure do
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
 
-  # Enable Rack::Cache to put a simple HTTP cache in front of your application
-  # Add `rack-cache` to your Gemfile before enabling this.
-  # For large-scale production use, consider using a caching reverse proxy like
-  # NGINX, varnish or squid.
-  # config.action_dispatch.rack_cache = true
-  # '10.1.0.68:11211:1', '10.1.0.69:11211:1', '10.1.0.70:11211:1', '10.1.0.71:11211:1', '10.1.0.72:11211:1', '10.1.0.73:11211:1'
-  config.cache_store = :dalli_store, *ENV['MEMCACHED_HOSTS'].to_s.split(',').map(&:strip), {
+  # See if elasticache auto-discovery is available
+  elasticache_endpoint = ENV['MEMCACHED_CONFIG_ENDPOINT']
+
+  memcached_hosts = if elasticache_endpoint.present?
+    Dalli::ElastiCache.new(elasticache_endpoint).servers
+  else
+    ENV['MEMCACHED_HOSTS'].to_s.split(',').map(&:strip)
+  end
+
+  raise 'No memcached hosts are configured, please set MEMCACHED_HOSTS or MEMCACHED_CONFIG_ENDPOINT.' if memcached_hosts.empty?
+
+  config.cache_store = :dalli_store, memcached_hosts, {
     :namespace => ENV['MEMCACHED_KEYSPACE'] || 'webapp_rails4',
     :expires_in => 1.day,
     :compress => true,

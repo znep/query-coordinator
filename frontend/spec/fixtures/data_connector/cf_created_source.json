@@ -1,0 +1,11 @@
+{
+  "id" : 4129,
+  "state" : "active",
+  "source" : "http://gisdata.hartford.gov/data.json",
+  "sourceType" : "open_data_metadata_v1_1",
+  "displayName" : "Hartford GIS",
+  "targetDomainId" : 76,
+  "createdAt" : 1492118945,
+  "syncSelectionPolicy" : "all",
+  "syncUserId" : 689
+}

@@ -19,3 +19,35 @@
     cursor: pointer;
   }
 }
+
+.details-modal-link {
+  cursor: pointer;
+}
+
+.modal-content {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #767676;
+  font-size: 13px;
+
+  li {
+    list-style: none;
+  }
+  .line-title {
+    font-weight: 600;
+  }
+}
+
+.modal-footer .btn {
+  height: 28px;
+  width: 76px;
+  color: #474747;
+  font-size: 13px;
+  font-weight: 300;
+  padding: 5px;
+
+  &.btn-default {
+    color: #474747;
+    border: 1px solid #C8C8C8;
+  }
+}

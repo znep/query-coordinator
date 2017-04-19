@@ -2728,6 +2728,7 @@ en:
         data_connect_all: Connect all assets as Maps
         data_option: Data Connection
         data_option_explanation: Assets will appear in your catalog as Maps
+        data_json: Data.JSON endpoint
         dataset: Dataset
         deleted_pending: Deleted (Pending)
         discovered_assets: Discovered assets
@@ -2742,11 +2743,13 @@ en:
           problem_with_errors: We were unable to process your request.
           server_ping_error: 'Could not reach server: %{url}'
           unknown_error: 'Your request failed for the following reason: %{reason}'
-        esri_arcgis: Esri ArcGIS
+        esri_arcgis: Esri ArcGIS Server
         esri_arcgis_url: ArcGIS Server address
         failing: Failing
         flashes:
-          created: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
+          created:
+            esri: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
+            data_json: Success! You connector is ready and you may now edit the connector to choose which datasets to import.
           deleted: Your connector has been marked for deletion.
           server_not_found: We could not find that server-- it may have been recently deleted.
           updated: Your settings have been saved. Now syncing connected assets.
@@ -2766,6 +2769,7 @@ en:
         show_title: ArcGIS Server Federation
         some_assets: Connect a subset of assets
         source: Connector source
+        source_url: URL
         success: Success
         terminate: Terminate
         title: Manage Connectors
@@ -2969,6 +2973,8 @@ en:
         view_moderation: View Moderation
         view_moderation_description: View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
       jobs:
+        cancel: Cancel
+        close: Close
         columns:
           asset_type: Asset Type
           asset_name: Asset Name
@@ -2976,6 +2982,7 @@ en:
           initiated_by: Initiated By
           date_started: Date Started
           status: Status
+        details: Details
         actions:
           append: Append
           delete: Delete
@@ -3001,6 +3008,8 @@ en:
           type: Type
           upsert: Upsert
           working_copy: Working Copy
+        import_method: Import Method
+        initiated_at: Initiated At
         index_page:
           action: Type
           dataset: Dataset
@@ -3300,12 +3309,18 @@ en:
           started_by: Started by
           title: Data Job Detail
           to: to
+        started_by: Started by
         statuses:
           failure: Failed
           in_progress: In Progress
           not_started: Not yet started
           success: Completed
           success_with_data_errors: Completed, with problems
+        quick_filters:
+          all: All
+          data_update_failures: Data Update Failures
+          deleted_assets: Deleted Assets
+        view_details: View Details
       metadata:
         add_new_category: Add New Category
         add_new_field: Add New Field
@@ -3751,6 +3766,10 @@ en:
                 description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" and "Rally"</a>.
                 placeholder: Select a template
                 title: Template
+              webtrends_url:
+                description: Enter the tag URL for your WebTrends account to collect analytics for your site.
+                placeholder: https://www.yoursite.gov/webtrends.load.js
+                title: WebTrends Tag
               window_icon:
                 description: URL reference to the icon displayed in the browser window, tab and URL field.
                 placeholder: https://yoursite.gov/logos/favicon.png
@@ -3889,274 +3908,6 @@ en:
         these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
         update: Update
         upload_failed: Upload failed
-        warning_html: "<b>Warning!</b> You changed your language setting from the default. Check that all of your content is speaking the same language."
-        you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
-        you_are_about_html: "<p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>\n"
-        you_have_activated: You have activated your new header/footer and Dataset Landing Page.
-      site_chrome:
-        activate: Activate
-        add_new_link_menu: Add Menu
-        add_new_link_row: Add %{section} Link
-        after_clicking_ok: After clicking 'OK' below, see both features in action by visiting one of your datasets.
-        cancel: Cancel
-        congratulations: Congratulations!
-        description: Configure the appearance of your Socrata site.
-        get_excited: Get Excited!
-        link_menu_label_html: "<b>Menu</b> - <i>You can drag links to reorder them</i>"
-        move_link_row: Drag to reorder
-        ok: OK
-        preview: Preview
-        preview_changes: Preview Changes
-        remove_link_menu: Remove Link Menu
-        remove_link_row: Remove Link
-        save: Save
-        save_changes: Save Changes
-        see_both_features: See both features in action by visiting one of your datasets.
-        site_appearance: Site Appearance
-        tabs:
-          footer:
-            fields:
-              background_color_text_link_color:
-                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
-              copyright_notice:
-                description: Choose whether or not to display a copyright notice in the Footer. The notice will automatically update to the current calendar year.
-                label: Show Copyright Notice
-                title: Copyright Notice
-              copyright_notice_source:
-                description: The name of your organization, city, county or state that appears with the copyright and current year.
-                placeholder: Copyright Source
-              display_name_color_display_name_size:
-                description: Color and size of the text for Footer Display Name.
-              footer_background_color:
-                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
-                placeholder: "#123456"
-                title: Footer Background Color
-              footer_display_name:
-                description: This is the name displayed in the Footer area. Usually set to your organization's name.
-                placeholder: Footer Display Name
-                title: Footer Display Name
-              footer_display_name_color:
-                placeholder: "#123456"
-                title: Footer Display Name Color
-              footer_display_name_size:
-                placeholder: 14pt
-                title: Footer Display Name Size
-              footer_logo:
-                description: URL reference to the Footer logo. Recommended minimum size is 80 x 80 pixels.
-                placeholder: https://yoursite.gov/logos/footer_logo.png
-                title: Footer Logo
-              footer_logo_alt:
-                description: This is the text that is displayed to screen readers for accessibility for your logo.
-                placeholder: Footer Logo
-                title: Footer Logo Alt Text for Screen Readers
-              footer_logo_height:
-                description: You can optionally set a height and width for your logo displayed in the Footer.
-                error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
-                placeholder: 80px
-                title: Footer Logo Height
-              footer_logo_url:
-                description: This is the URL that visitors are redirected to upon clicking the footer logo from any page on your site. You can specify a URL here or just leave it as "/" to go to your homepage.
-                placeholder: "/"
-                title: Footer Logo URL
-              footer_logo_width:
-                description: You can optionally set a height and width for your logo displayed in the Footer.
-                error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
-                placeholder: 80px
-                title: Footer Logo Width
-              footer_text_link_color:
-                placeholder: "#ffffff"
-                title: Footer Text & Link Color
-              link_title_label: Link Label
-              link_title_placeholder: Link Text
-              logo_height_logo_width:
-                description: You can optionally set a height and width for your logo displayed in the Footer.
-              menu_links:
-                description: You may display up to 15 links in the Footer. Links will be shown in a single row, and will wrap to multiple rows for mobile and on smaller screens.
-                title: Footer Links
-              menu_title_placeholder: Menu Text
-              powered_by:
-                description: Displays "Powered by Socrata" branding in the footer, and also provides a link to socrata.com
-                label: Show Socrata branding in the Footer
-                title: Powered by Socrata
-              url_label: URL
-              url_placeholder: http://data.evergreen.gov
-            title: Footer
-          general:
-            activation:
-              all_pages_except_home: All pages except Home page
-              entire_site: Entire site
-              primer_included: Primer is also included in this update.
-              revert_html: Revert all pages to non-configurable Header/Footer and<br/>turn off Primer
-              select_where: 'Select where these Site Appearance settings will appear:'
-            fields:
-              display_language_switcher:
-                description: Use this setting to define which languages your site supports. English is required and included for all sites. To add additional languages, please contact support@socrata.com
-                label: Display Language Switcher in header and footer
-                title: Languages
-              font_family:
-                description: Choose the typeface that will be used in both Header and Footer for all text.
-                description_html: Choose the typeface that will be used in both Header and Footer for all text.
-                placeholder: Typeface
-                title: Typeface
-              google_analytics_token:
-                description: Enter the token (not the entire script) of your Google Analytics tracking code to collect analytics for your site.
-                error: 'Token should match the format: UA-XXXXX-XXXX'
-                placeholder: UA-12345678-1
-                title: Google Analytics Token
-              max_width:
-                description: Enter the maximum width (in pixels) of your Header and Footer content. If left empty, it will stretch to the dimensions of the visitor's browser window.
-                placeholder: 1200px
-                title: Max Width
-              show_signin_signout:
-                description: Show these options if your site requires a user Profile / Sign In.
-                show_profile: Show a link to Profile after Signed In
-                show_signin_signout: Show Sign In / Sign Out
-                show_signup: Show ability to create an account via Sign Up
-                title: Sign In / Sign Out
-              template:
-                description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
-                description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" and "Rally"</a>.
-                placeholder: Select a template
-                title: Template
-              window_icon:
-                description: URL reference to the icon displayed in the browser window, tab and URL field.
-                placeholder: https://yoursite.gov/logos/favicon.png
-                title: Browser Window or Tab Icon (favicon)
-              window_title_display:
-                description: This is the name displayed in the browser window or tab title.
-                placeholder: Browser Window or Tab Title Display
-                title: Browser Window or Tab Title Display
-            title: General Settings
-          header:
-            fields:
-              bar_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
-                placeholder: "#123456"
-                title: Bar Background Color (Primary)
-              bar_background_color_bar_secondary_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
-              bar_secondary_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
-                placeholder: "#123456"
-                title: Bar Background Color (Secondary)
-              bar_text_link_color:
-                description: Color of the text and links that sit atop the Header Bar.
-                placeholder: "#ffffff"
-                title: Bar Text & Link Color
-              display_name_color_display_name_size:
-                description: Color and size of the text for Header Display Name.
-              header_bar_logo:
-                description: URL reference to the site Header logo. Recommended minimum size is 80 x 80 pixels. This logo will be displayed at a small size.
-                placeholder: https://yoursite.gov/logos/header_logo.png
-                title: Header Bar Logo
-              header_bar_logo_alt:
-                description: This is the text that is displayed to screen readers for accessibility for your logo.
-                placeholder: Header Logo
-                title: Header Logo Alt Text for Screen Readers
-              header_display_name:
-                description: Name displayed in the Header Bar. Usually set to your organization's name.
-                placeholder: Header Display Name
-                title: Header Display Name
-              header_display_name_color:
-                placeholder: "#123456"
-                title: Header Display Name Color
-              header_display_name_size:
-                placeholder: 16pt
-                title: Header Display Name Size
-              header_logo_height:
-                description: You can optionally set the height and width for your logo displayed in the Header Bar.
-                error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
-                placeholder: 80px
-                title: Header Logo Height
-              header_logo_url:
-                description: This is the URL that visitors are redirected to upon clicking the header logo from any page on your site. You can specify a URL here or just leave it as "/" to go to your homepage.
-                placeholder: "/"
-                title: Header Logo URL
-              header_logo_width:
-                description: You can optionally set the height and width for your logo displayed in the Header Bar.
-                error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
-                placeholder: 80px
-                title: Header Logo Width
-              link_title_label: Link Label
-              link_title_placeholder: Link Text
-              logo_height_logo_width:
-                description: You can optionally set the height and width for your logo displayed in the Header Bar.
-              menu_links:
-                description: Display up to 15 links or menus with links in the Header Bar. To create a drop down menu, first add a Menu then add the link labels and associated URLs to it. The menus and other links will be placed in a single row in the Header. If the labels get too long or a visitor is viewing your site on a small device, the menus and links will automatically be collapsed into a single menu.
-                title: Header Links
-              menu_title_placeholder: Menu Text
-              url_label: URL
-              url_placeholder: http://data.evergreen.gov
-            title: Header Bar
-          social:
-            fields:
-              facebook_profile_link:
-                description: Add the URL here to display a link to your organization's Facebook profile in both the Header and Footer.
-                placeholder: http://www.facebook.com/
-                title: Facebook Profile Link
-              flickr_profile_link:
-                description: Add the URL here to display a link to your organization's Flickr profile in both the Header and Footer.
-                placeholder: http://www.flickr.com/
-                title: Flickr Profile Link
-              github_profile_link:
-                description: Add the URL here to display a link to your organization's GitHub profile in both the Header and Footer.
-                placeholder: http://www.github.com/
-                title: Github Profile Link
-              google_plus_profile_link:
-                description: Add the URL here to display a link to your organization's Google Plus profile in both the Header and Footer.
-                placeholder: http://www.plus.google.com/
-                title: Google Plus Profile Link
-              instagram_profile_link:
-                description: Add the URL here to display a link to your organization's Instagram profile in both the Header and Footer.
-                placeholder: http://www.instagram.com/
-                title: Instagram Profile Link
-              linked_in_profile_link:
-                description: Add the URL here to display a link to your organization's LinkedIn profile in both the Header and Footer.
-                placeholder: http://www.linkedin.com/
-                title: LinkedIn Profile Link
-              pinterest_profile_link:
-                description: Add the URL here to display a link to your organization's Pinterest profile in both the Header and Footer.
-                placeholder: http://www.pinterest.com/
-                title: Pinterest Profile Link
-              tumblr_profile_link:
-                description: Add the URL here to display a link to your organization's Tumblr profile in both the Header and Footer.
-                placeholder: http://www.tumblr.com/
-                title: Tumblr Profile Link
-              twitter_profile_link:
-                description: Add the URL here to display a link to your organization's Twitter profile in both the Header and Footer.
-                placeholder: http://www.twitter.com/
-                title: Twitter Profile Link
-              vimeo_profile_link:
-                description: Add the URL here to display a link to your organization's Vimeo profile in both the Header and Footer.
-                placeholder: http://www.vimeo.com/
-                title: Vimeo Profile Link
-              yammer_profile_link:
-                description: Add the URL here to display a link to your organization's Yammer profile in both the Header and Footer.
-                placeholder: http://www.yammer.com/
-                title: Yammer Profile Link
-              youtube_profile_link:
-                description: Add the URL here to display a link to your organization's YouTube profile in both the Header and Footer.
-                placeholder: http://www.youtube.com/
-                title: YouTube Profile Link
-            title: Social Sharing
-          whats_new:
-            fields:
-              a_bundle_of_goodness:
-                description_html: "<p>Get excited! Socrata Primer, formerly known as the Dataset Landing Page, and your new, configurable Header/Footer are both ready to go! Read on to learn about these enhancements and how you can activate them, today.</p>"
-                title: 'A Bundle of Goodness: Two New Features Available Now'
-              a_new_configurable_header_footer:
-                description_html: <p>We've also introduced a new unified, mobile-responsive, configurable header/footer for your site. This new header/footer empowers you to control your site's logos, colors, copyright, navigational links, social icons, and more on your own, without having to contact Socrata Support.</p> <p>By the way, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then change it however you'd like - it's all yours.</p>
-                title: A New Configurable Header/Footer
-              active_both_today:
-                description_html: '<p>Primer and your new Configurable Header/Footer are both available now. Review the tabs above, update what you''d like, and when you''re ready, activate them together!</p> <p><b>Note:</b> If you haven''t configured the header/footer for your site within one month, Socrata will use our suggested configuration to activate it and Primer automatically. We''ll do this to ensure your data users are getting the most up-to-date experience available.</p> <p>For tips on configuring your header/footer, please visit our Support site here: <a href=" https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>'
-                title: Activate Both Today!
-              dataset_landing_page:
-                description_html: <p>With this upgrade, your datasets have a new front-page experience known as 'Primer'. This experience highlights commonly accessed aspects of a dataset and ensures your data users see metadata before taking action. Publishers and Administrators have the freedom to "feature" related views and visualizations, sophisticated users can explore metadata and metrics up-front, and all users can access data in the way they desire, whether this is via data visualizations, direct file downloads, or the API. And of course - the classic tabular data view is still accessible from the top navigation of this view for users who are comfortable there.</p>
-                title: Primer
-            title: What's New
-        these_features: These features will empower you to better control the appearance of your site and will help data consumers explore your data even better than before. Your users are going to love them!
-        these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
-        update: Update
         warning_html: "<b>Warning!</b> You changed your language setting from the default. Check that all of your content is speaking the same language."
         you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
         you_are_about_html: "<p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>\n"

@@ -105,6 +105,8 @@ GEM
     crass (1.0.2)
     daemons (1.2.3)
     dalli (2.7.6)
+    dalli-elasticache (0.2.0)
+      dalli (>= 1.0.0)
     database_cleaner (1.4.1)
     debug_inspector (0.0.2)
     delayed_job (4.1.1)
@@ -369,6 +371,7 @@ DEPENDENCIES
   cetera-ruby (~> 0.1.1)
   clipboard (~> 1.1)
   daemons (~> 1.2)
+  dalli-elasticache (~> 0.2.0)
   database_cleaner
   decima-ruby (= 0.1.0)!
   delayed_job_active_record (~> 4.1)

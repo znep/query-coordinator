@@ -12,6 +12,15 @@ module SocrataSiteChrome
 
     attr_reader :cname, :config_updated_at, :request_config, :logger, :cache
 
+    class << self
+      alias_method :orig_new, :new
+      def new(*args)
+        (RequestStore['site_chrome.domain_config'] ||= {})[args] ||= orig_new(*args)
+      end
+
+      alias :instance :new
+    end
+
     def initialize(domain_name, config: Hash.new, logger: nil, cache: nil)
       @request_config = {
         :cache_key_prefix => (defined?(Rails) && !config.has_key?(:cache_key_prefix)) ?

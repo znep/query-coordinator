@@ -35,7 +35,7 @@ module SocrataSiteChrome
     private
 
     def domain_config
-      ::RequestStore.store['site_chrome.domain_config'] ||= SocrataSiteChrome::DomainConfig.new(domain)
+      SocrataSiteChrome::DomainConfig.instance(domain)
     end
 
     def get_feature_set

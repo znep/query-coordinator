@@ -28,7 +28,7 @@ module SocrataSiteChrome
     end
 
     def config
-      HashWithIndifferentAccess.new(SocrataSiteChrome::DomainConfig.new(domain).config)
+      HashWithIndifferentAccess.new(SocrataSiteChrome::DomainConfig.instance(domain).config)
     end
 
     def fetch(publication_stage = :published)

@@ -5,6 +5,14 @@ $(function() {
 
   blist.util.enforceLodashFunctions();
 
+  // EN-15381: The html and body tags have a height of 100%, and the .siteOuterWrapper has a min-height
+  // of 100%. This causes the footer to be pushed below the bottom of the page, even on pages where the
+  // content doesn't take up the whole window.
+  // This takes the site chrome footer height (dynamic, based on domain-specific content) and
+  // re-calculates the min-height of .siteOuterWrapper based on the footer height.
+  var footerHeight = $('#site-chrome-footer').height();
+  $('.siteOuterWrapper').css('min-height', 'calc(100% - {0}px)'.format(footerHeight));
+
   // generic events
   $.live('a[rel$=external]', 'focus', function() {
     this.target = '_blank';

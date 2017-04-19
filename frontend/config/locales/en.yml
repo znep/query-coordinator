@@ -2969,6 +2969,8 @@ en:
         view_moderation: View Moderation
         view_moderation_description: View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
       jobs:
+        cancel: Cancel
+        close: Close
         columns:
           asset_type: Asset Type
           asset_name: Asset Name
@@ -2976,6 +2978,7 @@ en:
           initiated_by: Initiated By
           date_started: Date Started
           status: Status
+        details: Details
         actions:
           append: Append
           delete: Delete
@@ -3001,6 +3004,8 @@ en:
           type: Type
           upsert: Upsert
           working_copy: Working Copy
+        import_method: Import Method
+        initiated_at: Initiated At
         index_page:
           action: Type
           dataset: Dataset
@@ -3300,12 +3305,18 @@ en:
           started_by: Started by
           title: Data Job Detail
           to: to
+        started_by: Started by
         statuses:
           failure: Failed
           in_progress: In Progress
           not_started: Not yet started
           success: Completed
           success_with_data_errors: Completed, with problems
+        quick_filters:
+          all: All
+          data_update_failures: Data Update Failures
+          deleted_assets: Deleted Assets
+        view_details: View Details
       metadata:
         add_new_category: Add New Category
         add_new_field: Add New Field

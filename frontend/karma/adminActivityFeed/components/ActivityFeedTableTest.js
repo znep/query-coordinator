@@ -1,8 +1,8 @@
-import _ from 'lodash';
 import { expect, assert } from 'chai';
 
 import testStore from '../testStore';
 import mockActivities from '../mockActivities';
+import mockTranslations from '../mockTranslations';
 import ActivityFeedTable from 'components/ActivityFeedTable';
 
 describe('ActivityFeedTable', () => {
@@ -45,4 +45,17 @@ describe('ActivityFeedTable', () => {
 
     expect(expectedDateColumns).to.deep.eq(dateColumns);
   });
+
+  it('should render view details link for failed activities', () => {
+    const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
+
+    Array.prototype.filter.
+      call(
+        output.querySelectorAll('tbody tr'),
+        row => [mockTranslations.statuses.success_with_data_errors, mockTranslations.statuses.failure].
+          includes(row.querySelector('td[data-column=status]').textContent)
+      ).
+      forEach(row => expect(row.querySelector('td[data-column=actions]').textContent).to.eq('View Details'));
+  });
+
 });

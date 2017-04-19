@@ -41,10 +41,10 @@ class Administration::ConnectorController < AdministrationController
     begin
       if @server['federation_source'] == 'data_json'
         response = CatalogFederatorConnector.create(params[:server])
-        success_notice = t('screens.admin.connector.flashes.created.data_json')
+        success_notice = t('screens.admin.connector.flashes.created_data_json')
       else
         response = EsriServerConnector.create(params[:server][:source_url])
-        success_notice = t('screens.admin.connector.flashes.created.esri')
+        success_notice = t('screens.admin.connector.flashes.created')
       end
     rescue EsriCrawler::ServerError => error
       return display_external_error(error, :new_connector)

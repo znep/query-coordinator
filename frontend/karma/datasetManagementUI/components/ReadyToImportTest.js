@@ -1,68 +1,111 @@
+import { assert } from 'chai';
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
+import { shallow } from 'enzyme';
 import _ from 'lodash';
-import { Simulate } from 'react-addons-test-utils';
-import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
-import ReadyToImport from 'components/ReadyToImport';
-import * as Selectors from 'selectors';
-import {
-  insertFromServer, insertMultipleFromServer, updateFromServer
-} from 'actions/database';
-import { normal } from 'lib/displayState';
+import ReadyToImportConnected, { ReadyToImport } from 'components/ReadyToImport';
 
-/* eslint-disable new-cap */
-describe('components/ReadyToImport', () => {
-
-  const store = getStoreWithOutputSchema();
-  const storeDb = store.getState().db;
-  const spy = sinon.spy();
-  // rendering unconnected version so we can pass in a spy instead of
-  // going through mapDispatchToProps
-  const props = {
-    db: storeDb,
-    outputSchema: _.values(storeDb.output_schemas)[0],
-    readyToImport: {
-      modalVisible: false,
-      modalIndex: 0
-    }
+describe.only('components/ReadyToImport', () => {
+  const defaultProps = {
+    "upload": {
+      "inserted_at": "2017-04-19T00:45:21.212Z",
+      "id": 263,
+      "finished_at": "2017-04-19T00:45:21.000Z",
+      "filename": "baby_crimes.csv",
+      "failed_at": null,
+      "created_by": {
+        "user_id": "tugg-ikce",
+        "email": "brandon.webster@socrata.com",
+        "display_name": "branweb"
+      },
+      "content_type": "text/csv",
+      "__status__": {
+        "type": "SAVED",
+        "savedAt": "ON_SERVER"
+      }
+    },
+    "inputSchema": {
+      "id": 1751,
+      "name": null,
+      "total_rows": 9,
+      "upload_id": 263,
+      "__status__": {
+        "type": "SAVED",
+        "savedAt": "ON_SERVER"
+      },
+      "num_row_errors": 0
+    },
+    "importableRows": 0,
+    "errorRows": 9,
+    "outputSchema": {
+      "input_schema_id": 1751,
+      "id": 382,
+      "__status__": {
+        "type": "SAVED",
+        "savedAt": "ON_SERVER"
+      },
+      "error_count": 9,
+      "inserted_at": "2017-04-19T01:12:51.530Z",
+      "created_by": {
+        "user_id": "tugg-ikce",
+        "email": "brandon.webster@socrata.com",
+        "display_name": "branweb"
+      }
+    },
+    "openModal": sinon.spy()
   };
 
-  it('renders without the modal', () => {
-    const element = renderComponentWithStore(ReadyToImport, props, store);
-    assert.isNull(element.querySelector('.modalInception'));
+  it('renders null if there is no output schema', () => {
+    const newProps = {
+      ...defaultProps,
+      outputSchema: null
+    };
+
+    const component = shallow(<ReadyToImport {...newProps} />);
+
+    assert.isNull(component.html());
   });
 
-  it('renders the modal when clicked', () => {
-    const element = renderComponentWithStore(ReadyToImport, props, store);
-    Simulate.click(element.querySelector('.helpModalIcon'));
-    assert.isNotNull(element.querySelector('.modalInception'));
+  it('renders a disabled export errors button if error count is 0', () => {
+    const newProps = {
+      ...defaultProps,
+      outputSchema: {
+        ...defaultProps.outpSchema,
+        error_count: 0
+      }
+    };
+
+    const component = shallow(<ReadyToImport {...newProps} />);
+
+    assert.isTrue(component.find('ErrorButton').prop('disabled'));
   });
 
-  function classesOf(el) {
-    return Array.from(el.classList.entries()).map(([_, c]) => c);
-  }
+  it('renders a working export errors button if error count is > 0', () => {
+    const component = shallow(<ReadyToImport {...defaultProps} />);
 
-  it('can page through the modal', () => {
-    const element = renderComponentWithStore(ReadyToImport, props, store);
-    Simulate.click(element.querySelector('.helpModalIcon'));
-    assert.isNotNull(element.querySelector('.modalInception'));
+    const aTag = component.find('a');
 
-    assert.include(classesOf(element.querySelectorAll('.dot')[0]), 'dotSelected');
-    assert.notInclude(classesOf(element.querySelectorAll('.dot')[1]), 'dotSelected');
-    assert.notInclude(classesOf(element.querySelectorAll('.dot')[2]), 'dotSelected');
+    const errorButton = component.find('ErrorButton');
 
-    Simulate.click(element.querySelector('.nextButton'));
-    assert.notInclude(classesOf(element.querySelectorAll('.dot')[0]), 'dotSelected');
-    assert.include(classesOf(element.querySelectorAll('.dot')[1]), 'dotSelected');
-    assert.notInclude(classesOf(element.querySelectorAll('.dot')[2]), 'dotSelected');
-
-    Simulate.click(element.querySelector('.nextButton'));
-    assert.notInclude(classesOf(element.querySelectorAll('.dot')[0]), 'dotSelected');
-    assert.notInclude(classesOf(element.querySelectorAll('.dot')[1]), 'dotSelected');
-    assert.include(classesOf(element.querySelectorAll('.dot')[2]), 'dotSelected');
-
-    Simulate.click(element.querySelector('.nextButton'));
-    assert.isNull(element.querySelector('.modalInception'));
+    assert.isFalse(aTag.isEmpty());
+    assert.isFalse(errorButton.isEmpty());
+    assert.isFalse(errorButton.prop('disabled'));
   });
 
+  it('displays the correct number of error rows', () => {
+    const component = shallow(<ReadyToImport {...defaultProps} />);
+
+    const displayedErrorRows = component.find('.errorRows').childAt(0).text();
+
+    assert.equal(_.toNumber(displayedErrorRows), defaultProps.outputSchema.error_count);
+  });
+
+  it('renders an icon that launches a help modal', () => {
+    const component = shallow(<ReadyToImport {...defaultProps} />);
+
+    const icon = component.find('.helpModalIcon');
+
+    icon.simulate('click');
+
+    assert.isTrue(defaultProps.openModal.calledOnce);
+  });
 });

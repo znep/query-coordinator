@@ -1,6 +1,6 @@
 import { SHOW_MODAL, HIDE_MODAL } from 'actions/modal';
 
-const initialState = {
+export const initialState = {
   visible: false,
   contentComponentName: null
 };

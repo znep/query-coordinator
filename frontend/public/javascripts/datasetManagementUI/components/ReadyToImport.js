@@ -8,30 +8,37 @@ import styles from 'styles/ReadyToImport.scss';
 
 const SubI18n = I18n.show_output_schema.ready_to_import;
 
-const ReadyToImport = ({ upload, inputSchema, importableRows, errorRows, outputSchema, openModal }) => {
+const ErrorButton = ({ disabled }) =>
+  <button className={styles.errorsBtn} disabled={disabled}>
+    {I18n.export_errors}
+    <SocrataIcon name="download" />
+  </button>;
+
+ErrorButton.propTypes = {
+  disabled: PropTypes.bool
+};
+
+export const ReadyToImport = (props) => {
+  const { upload, inputSchema, importableRows, errorRows, outputSchema, openModal } = props;
+
   if (!outputSchema) {
     return null;
   }
 
   let errorExportButton;
 
-  const errorExportActualButton = (
-    <button className={styles.errorsBtn} disabled={!(outputSchema.error_count > 0)}>
-      {I18n.export_errors}
-      <SocrataIcon name="download" />
-    </button>
-  );
-
   if (outputSchema.error_count > 0) {
     const errorTableLink = dsmapiLinks.errorExport(upload.id, inputSchema.id, outputSchema.id);
 
     errorExportButton = (
       <a href={errorTableLink}>
-        {errorExportActualButton}
+        <ErrorButton disabled={false} />
       </a>
     );
   } else {
-    errorExportButton = errorExportActualButton;
+    errorExportButton = (
+      <ErrorButton disabled />
+    );
   }
 
   return (

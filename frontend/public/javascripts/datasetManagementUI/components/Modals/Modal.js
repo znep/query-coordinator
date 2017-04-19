@@ -28,7 +28,7 @@ const getModalProps = (props, contentComponentName) => {
   }
 };
 
-const Modal = ({ visible = false, contentComponentName, onDismiss }) => {
+export const Modal = ({ visible = false, contentComponentName, onDismiss }) => {
   if (!visible) {
     return null;
   }

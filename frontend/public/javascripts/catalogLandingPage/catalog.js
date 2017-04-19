@@ -12,6 +12,8 @@ import $ from 'jquery';
 require('jquery-ui-bundle');
 
 const MIN_DESKTOP_WIDTH = 768;
+// 2x the CSS line-height (24px) for description <div>s and <p>s + 10px for padding
+const DESCRIPTION_TRUNCATION_THRESHOLD = 58;
 
 const mobileScreenWidth = () => {
   return ($(window).width() <= MIN_DESKTOP_WIDTH);
@@ -55,8 +57,8 @@ const doBrowse = (newOpts) => {
   window.location = `${baseUrl}?${newUrlParams}`;
 };
 
-const toggleBrowse2FacetDisplay = (event) => {
-  const $sectionContainer = $(event.target).parent('.browse2-facet-section');
+const toggleBrowse2FacetDisplay = (event, target) => {
+  const $sectionContainer = $(target).parent('.browse2-facet-section');
   const currentDisplay = $sectionContainer.attr('data-facet-display');
 
   if (currentDisplay === 'show') {
@@ -71,7 +73,7 @@ const toggleBrowse2FacetDisplay = (event) => {
 const toggleBrowse2FacetChildOptionDropdown = (event) => {
   event.preventDefault();
   event.stopPropagation();
-  var childOptionsAlreadyVisible = $(event.target).closest('li').
+  const childOptionsAlreadyVisible = $(event.target).closest('li').
     find('.browse2-facet-section-child-options').is(':visible');
   $(event.target).closest('li').find('.browse2-facet-section-child-options').slideToggle('fast');
   event.target.title = childOptionsAlreadyVisible ?
@@ -194,6 +196,88 @@ const browse2MobileFacetClearAll = (event) => {
   filterBrowse2MobileFacets();
 };
 
+// Store the overflow property values as data attributes on the facet modal so we can restore
+// it once the modal is hidden.
+const storeOverflowPropertyInModal = (element) => {
+  const overflowX = $(element).css('overflow-x');
+  const overflowY = $(element).css('overflow-y');
+  $('.browse2-facet-section-modal').data('{0}OverflowX'.format(element), overflowX);
+  $('.browse2-facet-section-modal').data('{0}OverflowY'.format(element), overflowY);
+};
+
+const restoreOverflowProperty = (element) => {
+  const overflowX = $('.browse2-facet-section-modal').data('{0}OverflowX'.format(element));
+  const overflowY = $('.browse2-facet-section-modal').data('{0}OverflowY'.format(element));
+  const defaultOverflow = 'initial';
+  $(element).css({
+    'overflow-x': overflowX || defaultOverflow,
+    'overflow-y': overflowY || defaultOverflow
+  });
+};
+
+const hideBrowse2FacetModal = () => {
+  $('.browse2-facet-section-modal').addClass('hidden');
+  restoreOverflowProperty('html');
+  restoreOverflowProperty('body');
+  $('.siteOuterWrapper').attr('aria-hidden', false);
+};
+
+const hideBrowse2FacetModalOnEscape = () => {
+  $(document).keyup((e) => {
+    if (e.keyCode === 27) {
+      hideBrowse2FacetModal();
+    }
+  });
+};
+
+const showBrowse2FacetModal = (event) => {
+  event.preventDefault();
+  // Set height of modal based on user's window size
+  const modalVerticalMargins = 40;
+  const modalHeaderFooterHeight = 120;
+  const modalContentMaxHeight = window.innerHeight - (modalVerticalMargins * 2) - modalHeaderFooterHeight;
+  $('.browse2-facet-section-modal-container').css({
+    'margin': '{0}px auto'.format(modalVerticalMargins)
+  });
+  $('.browse2-facet-section-modal-content').css({
+    'max-height': '{0}px'.format(modalContentMaxHeight)
+  });
+  // Prevent the normal body scroll and show the modal
+  storeOverflowPropertyInModal('html');
+  storeOverflowPropertyInModal('body');
+  $('html, body').css('overflow', 'hidden');
+  const chosenFacet = $(event.currentTarget).data('modalFacet');
+  $('.browse2-facet-section-modal[data-modal-facet="{0}"]'.format(chosenFacet)).removeClass('hidden');
+  $('.browse2-facet-section-modal-container h1').focus();
+  $('.siteOuterWrapper').attr('aria-hidden', true);
+  hideBrowse2FacetModalOnEscape();
+};
+
+const truncateDescription = (element) => {
+  $(element).dotdotdot({
+    height: DESCRIPTION_TRUNCATION_THRESHOLD,
+    callback: function(isTruncated) {
+      if (isTruncated) {
+        $(this).parent('.browse2-result-description-container').
+        attr('data-description-display', 'truncate');
+      }
+    }
+  });
+};
+
+const toggleBrowse2DescriptionTruncation = (event) => {
+  event.preventDefault();
+  const sectionContainer = $(this).parent('.browse2-result-description-container');
+  const currentDisplay = sectionContainer.attr('data-description-display');
+
+  if (currentDisplay === 'show') {
+    truncateDescription(sectionContainer.children('.browse2-result-description'));
+  } else {
+    sectionContainer.attr('data-description-display', 'show');
+    sectionContainer.children('.browse2-result-description').trigger('destroy');
+  }
+};
+
 $(document).ready(() => {
   const opts = {};
   const $facetHeaders = $('.browse2-facet-section-title');
@@ -219,8 +303,41 @@ $(document).ready(() => {
     );
   }
 
+  // Expand facet child options list by default if it contains an "active" option
+  $('.browse2-facet-section-child-option.active').closest('.browse2-facet-section-child-options').show();
+
+  // Collapse facet options by default on mobile
+  if (mobileScreenWidth()) {
+    toggleBrowse2FacetDisplay(null, $('.browse2-facet-section-title'));
+    $('ul.browse2-facet-section-options').hide();
+  }
+
+  // Result description truncation
+  $('.browse2-result-description').each((index, element) => {
+    let descriptionHeight = 0;
+    $(element).children().
+    each((i, childElement) => {
+      descriptionHeight += $(childElement).outerHeight(true);
+    });
+
+    if (descriptionHeight >= DESCRIPTION_TRUNCATION_THRESHOLD) {
+      truncateDescription(element);
+    }
+  });
+
   // Listeners
-  $facetHeaders.on('click', toggleBrowse2FacetDisplay);
+  $.fn.extend({
+    onClickOrEnter: function(callback) {
+      return this.on('click', function(event) { callback(event); }).
+        keyup(function(event) {
+          if (event.keyCode === 13) {
+            callback(event);
+          }
+        });
+    }
+  });
+
+  $facetHeaders.onClickOrEnter(function(event) { toggleBrowse2FacetDisplay(event, event.target); });
 
   $sortType.on('change', () => {
     _.defer(() => {
@@ -230,7 +347,19 @@ $(document).ready(() => {
     });
   });
 
-  $('.browse2-facet-section-child-option-toggle').on('click', toggleBrowse2FacetChildOptionDropdown);
+  $('.browse2-facet-section-child-option-toggle').onClickOrEnter(
+    function(event) { toggleBrowse2FacetChildOptionDropdown(event); }
+  );
+  $('.browse2-facet-section-modal-button').onClickOrEnter(
+    function(event) { showBrowse2FacetModal(event); }
+  );
+  $(`.browse2-facet-section-modal-background, .browse2-facet-section-modal-close,
+    .modal-close-button, .modal-close-button > a`).onClickOrEnter(hideBrowse2FacetModal);
+  $('.browse2-result-description-truncation-toggle-control').onClickOrEnter(
+    function(event) { toggleBrowse2DescriptionTruncation(event); }
+  );
+  $('.manage-clp-hide-action').onClickOrEnter(hideCLPManager);
+  $('#clp-help-toggle').on('mouseover', showCLPHelpFlyout).on('mouseout', hideCLPHelpFlyout);
 
   // Mobile menu listeners
   $('.browse2-mobile-filter, .browse2-facets-pane-mobile-header').
@@ -240,7 +369,5 @@ $(document).ready(() => {
     on('click', browse2MobileFacetClick);
   $('.browse2-mobile-facets-filter-button').on('click', filterBrowse2MobileFacets);
   $('.browse2-facets-pane-mobile-clear-all-button').on('click', browse2MobileFacetClearAll);
-  $('.manage-clp-hide-action').on('click', hideCLPManager);
-  $('#clp-help-toggle').on('mouseover', showCLPHelpFlyout).on('mouseout', hideCLPHelpFlyout);
 });
 

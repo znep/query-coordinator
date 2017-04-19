@@ -129,7 +129,7 @@ Dots.propTypes = {
   setPage: PropTypes.func.isRequired
 };
 
-class ErrorsHelp extends Component {
+export class ErrorsHelp extends Component {
   constructor() {
     super();
 

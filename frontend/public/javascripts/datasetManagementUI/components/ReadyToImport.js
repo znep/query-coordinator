@@ -9,6 +9,10 @@ import styles from 'styles/ReadyToImport.scss';
 const SubI18n = I18n.show_output_schema.ready_to_import;
 
 const ReadyToImport = ({ upload, inputSchema, importableRows, errorRows, outputSchema, openModal }) => {
+  if (!outputSchema) {
+    return null;
+  }
+
   let errorExportButton;
 
   const errorExportActualButton = (
@@ -51,28 +55,34 @@ const ReadyToImport = ({ upload, inputSchema, importableRows, errorRows, outputS
 };
 
 ReadyToImport.propTypes = {
-  outputSchema: PropTypes.object.isRequired,
-  errorRows: PropTypes.number.isRequired,
-  upload: PropTypes.object.isRequired,
-  importableRows: PropTypes.number.isRequired,
-  inputSchema: PropTypes.object.isRequired,
-  openModal: PropTypes.func.isRequired
+  outputSchema: PropTypes.object,
+  errorRows: PropTypes.number,
+  upload: PropTypes.object,
+  importableRows: PropTypes.number,
+  inputSchema: PropTypes.object,
+  openModal: PropTypes.func
 };
 
 const mapStateToProps = ({ db, routing }) => {
-  const outputSchema = db.output_schemas[routing.outputSchemaId];
-  const inputSchema = db.input_schemas[outputSchema.input_schema_id];
-  const upload = db.uploads[inputSchema.upload_id];
-  const errorRows = outputSchema.error_count || 0;
-  const importableRows = Math.max(0, inputSchema.total_rows - errorRows);
+  const { outputSchemaId } = routing;
 
-  return {
-    upload,
-    inputSchema,
-    importableRows,
-    errorRows,
-    outputSchema
-  };
+  if (outputSchemaId) {
+    const outputSchema = db.output_schemas[outputSchemaId];
+    const inputSchema = db.input_schemas[outputSchema.input_schema_id];
+    const upload = db.uploads[inputSchema.upload_id];
+    const errorRows = outputSchema.error_count || 0;
+    const importableRows = Math.max(0, inputSchema.total_rows - errorRows);
+
+    return {
+      upload,
+      inputSchema,
+      importableRows,
+      errorRows,
+      outputSchema
+    };
+  } else {
+    return {};
+  }
 };
 
 const mapDispatchToProps = (dispatch) => ({

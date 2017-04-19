@@ -43,8 +43,13 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
 export class ShowOutputSchema extends Component {
 
   componentDidMount() {
-    const { displayState, dispatch } = this.props;
+    const { displayState, dispatch, urlParams } = this.props;
+
     dispatch(LoadDataActions.loadVisibleData(displayState));
+
+    if (urlParams.outputSchemaId) {
+      dispatch(setOutputSchemaId(_.toNumber(urlParams.outputSchemaId)));
+    }
   }
 
   componentWillReceiveProps(nextProps) {

@@ -49,7 +49,10 @@ export default function ProgressBar({ percent, ariaLabel, ariaLabeledBy, type, c
 }
 
 ProgressBar.propTypes = {
-  percent: PropTypes.number.isRequired,
+  percent: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   ariaLabel: PropTypes.string,
   ariaLabeledBy: PropTypes.string,
   type: PropTypes.string,

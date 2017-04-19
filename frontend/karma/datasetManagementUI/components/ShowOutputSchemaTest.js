@@ -11,13 +11,30 @@ import {
 } from 'actions/database';
 import { normal } from 'lib/displayState';
 
+const missingProps = {
+  numLoadsInProgress: 0,
+  displayState: {
+    "type": "NORMAL",
+    "pageNo": 1,
+    "outputSchemaId": 18
+  },
+  routing: {
+    "pathname": "/dataset/-kjh-kjh/e5t3-a5v3/updates/0/uploads/263/schemas/1751/output/18",
+    "search": "",
+    "hash": "",
+    "action": "POP",
+    "key": null,
+    "query": {}
+  }
+};
+
 /* eslint-disable new-cap */
 describe('components/ShowOutputSchema', () => {
   const defaultProps = {
     params: {
-      uploadId: 5,
-      inputSchemaId: 4,
-      outputSchemaId: 18
+      uploadId: '5',
+      inputSchemaId: '4',
+      outputSchemaId: '18'
     },
     updateColumnType: _.noop,
     addColumn: _.noop,
@@ -26,7 +43,11 @@ describe('components/ShowOutputSchema', () => {
       path: '' // just used by mapStateToProps to determine whether we're in a "viewing row errors" state
     },
     updateColumnType: _.noop,
-    location: {}
+    location: {},
+    urlParams: {
+      outputSchemaId: '18'
+    },
+    ...missingProps
   };
 
   it('renders a table without data', () => {
@@ -196,7 +217,10 @@ describe('components/ShowOutputSchema', () => {
       applyUpdate: _.noop,
       addColumn: () => _.noop,
       dropColumn: () => _.noop,
-      routing: {},
+      urlParams: {
+        outputSchemaId: '18'
+      },
+      ...missingProps,
       numLoadsInProgress: 0,
       dispatch: function() {}
     };
@@ -233,7 +257,11 @@ describe('components/ShowOutputSchema', () => {
       applyUpdate: _.noop,
       addColumn: () => _.noop,
       dropColumn: () => spy,
-      dispatch: _.noop
+      urlParams: {
+        outputSchemaId: '18'
+      },
+      dispatch: _.noop,
+      ...missingProps
     };
     const element = renderComponentWithStore(ShowOutputSchemaUnConnected, props, store);
     Simulate.click(element.querySelector('.dropdownButton'));
@@ -277,7 +305,11 @@ describe('components/ShowOutputSchema', () => {
       applyUpdate: _.noop,
       addColumn: () => spy,
       dropColumn: () => _.noop,
-      dispatch: _.noop
+      urlParams: {
+        outputSchemaId: '18'
+      },
+      dispatch: _.noop,
+      ...missingProps
     };
     const element = renderComponentWithStore(ShowOutputSchemaUnConnected, props, store);
     Simulate.click(element.querySelector('.dropdownButton'));

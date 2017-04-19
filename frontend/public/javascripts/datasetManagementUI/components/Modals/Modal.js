@@ -8,18 +8,19 @@ import styles from 'styles/Modals/Modal.scss';
 import ErrorsHelp from 'components/Modals/ErrorsHelp';
 import Publishing from 'components/Modals/Publishing';
 
+// TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
 const getModalProps = (props, contentComponentName) => {
   switch (contentComponentName) {
     case 'ErrorsHelp':
       return {
         ...props,
-        children: (<ErrorsHelp />),
+        children: ([<ErrorsHelp />]),
         className: styles.errorsHelp
       };
     case 'Publishing':
       return {
         ...props,
-        children: (<Publishing />),
+        children: ([<Publishing />]),
         className: styles.publishing,
         onDismiss: _.noop
       };
@@ -34,7 +35,7 @@ export const Modal = ({ visible = false, contentComponentName, onDismiss }) => {
   }
 
   const defaultProps = {
-    children: null,
+    children: [null],
     className: '',
     fullScreen: false,
     overlay: true,

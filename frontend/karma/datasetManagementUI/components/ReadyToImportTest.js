@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import _ from 'lodash';
 import ReadyToImportConnected, { ReadyToImport } from 'components/ReadyToImport';
 
-describe.only('components/ReadyToImport', () => {
+describe('components/ReadyToImport', () => {
   const defaultProps = {
     "upload": {
       "inserted_at": "2017-04-19T00:45:21.212Z",

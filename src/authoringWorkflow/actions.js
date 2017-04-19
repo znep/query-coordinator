@@ -576,6 +576,14 @@ export function setRowInspectorTitleColumnName(rowInspectorTitleColumnName) {
   };
 }
 
+export const SET_DIMENSION_LABEL_AREA_SIZE = 'SET_DIMENSION_LABEL_AREA_SIZE';
+export function setDimensionLabelAreaSize(width) {
+  return {
+    type: SET_DIMENSION_LABEL_AREA_SIZE,
+    width
+  };
+}
+
 export const SET_CENTER_AND_ZOOM = 'SET_CENTER_AND_ZOOM';
 export function setCenterAndZoom(centerAndZoom) {
   return {

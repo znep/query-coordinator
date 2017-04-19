@@ -32,6 +32,10 @@ export default function barChart(state, action) {
       setBooleanValueOrDefaultValue(state, 'configuration.showValueLabels', action.showValueLabels, true);
       break;
 
+    case actions.SET_DIMENSION_LABEL_AREA_SIZE:
+      _.set(state, 'configuration.dimensionLabelAreaSize', action.width);
+      break;
+
     case actions.SET_DIMENSION_GROUPING_COLUMN_NAME:
       const dimensionGroupingColumnName = action.dimensionGroupingColumnName;
 

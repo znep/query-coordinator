@@ -5,5 +5,43 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+
+    &.dragging-label-width-dragger {
+      // Override inline "move" cursor set on chart pan area.
+      cursor: ew-resize !important;
+
+      // Tricky to update during drag, so we leave it alone and hide it.
+      .label-width-dragger {
+        opacity: 0;
+      }
+    }
+
+    .label-width-dragger {
+      $dragger-width: 5px;
+      // Transparent but still interactive region left of the visible drag handle.
+      $extra-handle-width: 20px;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      margin-left: -($dragger-width + $extra-handle-width);
+      cursor: ew-resize;
+      display: none;
+
+      padding-left: $extra-handle-width / 2;
+      padding-right: $extra-handle-width / 2;
+
+      // Actual visible handle (on hover).
+      border-right: $dragger-width solid transparent;
+
+      &.enabled {
+        display: block;
+      }
+
+      &:hover {
+        border-right-color: rgba(0, 0, 0, 0.3);
+      }
+    }
   }
 }

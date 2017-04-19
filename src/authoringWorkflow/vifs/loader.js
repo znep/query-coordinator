@@ -17,6 +17,7 @@ const paths = {
   labelBottom: 'configuration.axisLabels.bottom',
   labelLeft: 'configuration.axisLabels.left',
   labelTop: 'configuration.axisLabels.top',
+  dimensionLabelAreaSize: 'configuration.dimensionLabelAreaSize',
   limit: 'series[0].dataSource.limit',
   mapCenterAndZoom: 'configuration.mapCenterAndZoom',
   measureAggregationFunction: 'series[0].dataSource.measure.aggregationFunction',
@@ -103,6 +104,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.labelTop)) {
     dispatch(actions.setLabelTop(get(paths.labelTop)));
+  }
+
+  if (has(paths.dimensionLabelAreaSize)) {
+    dispatch(actions.setDimensionLabelAreaSize(get(paths.dimensionLabelAreaSize)));
   }
 
   if (has(paths.limit)) {

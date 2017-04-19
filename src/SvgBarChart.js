@@ -51,6 +51,7 @@ $.fn.socrataSvgBarChart = function(originalVif) {
 
   function attachInteractionEvents() {
     $element.on('SOCRATA_VISUALIZATION_BAR_CHART_FLYOUT', handleFlyout);
+    $element.on('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', handleDimensionLabelAreaSizeChanged);
   }
 
   function detachApiEvents() {
@@ -66,6 +67,7 @@ $.fn.socrataSvgBarChart = function(originalVif) {
 
   function detachInteractionEvents() {
     $element.off('SOCRATA_VISUALIZATION_BAR_CHART_FLYOUT', handleFlyout);
+    $element.off('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', handleDimensionLabelAreaSizeChanged);
   }
 
   function handleWindowResize() {
@@ -89,6 +91,27 @@ $.fn.socrataSvgBarChart = function(originalVif) {
         'SOCRATA_VISUALIZATION_FLYOUT',
         {
           detail: payload,
+          bubbles: true
+        }
+      )
+    );
+  }
+
+  function handleDimensionLabelAreaSizeChanged(event) {
+    const newSize = event.originalEvent.detail;
+    const newVif = _.cloneDeep(visualization.getVif());
+
+    if (_.isFinite(newSize)) {
+      _.set(newVif, 'configuration.dimensionLabelAreaSize', newSize);
+    } else {
+      delete (newVif.configuration || {}).dimensionLabelAreaSize;
+    }
+
+    $element[0].dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        {
+          detail: newVif,
           bubbles: true
         }
       )

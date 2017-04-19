@@ -62,7 +62,7 @@ WORKDIR ${APP_DIR}
 ADD config/database.yml.production ${APP_DIR}/config/database.yml
 
 RUN npm run webpack
-RUN bundle exec rake assets:precompile
+RUN DISABLE_CACHE=true bundle exec rake assets:precompile
 
 # Make and chown the rails tmp dir to the socrata user
 RUN mkdir -p ${APP_TMP_DIR}

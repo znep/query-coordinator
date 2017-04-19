@@ -147,15 +147,11 @@ export class ErrorsHelp extends Component {
   }
 
   nextPage() {
-    this.setState({
-      modalPage: this.state.modalPage + 1
-    });
+    this.setPage(this.state.modalPage + 1);
   }
 
   prevPage() {
-    this.setState({
-      modalPage: this.state.modalPage - 1
-    });
+    this.setPage(this.state.modalPage - 1);
   }
 
   render() {
@@ -178,12 +174,14 @@ export class ErrorsHelp extends Component {
       ? onDismiss
       : this.nextPage;
 
-    const previousButton = modalPage > 0 ? (
+    const previousButton = modalPage > 0
+      ? (
       <button
         onClick={this.prevPage}
         className={styles.previousButton}>
         {SubI18n.help_modal.previous}
-      </button>) : null;
+      </button>)
+      : null;
 
     return (
       <div>

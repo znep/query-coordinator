@@ -14,13 +14,13 @@ const getModalProps = (props, contentComponentName) => {
     case 'ErrorsHelp':
       return {
         ...props,
-        children: ([<ErrorsHelp />]),
+        children: ([<ErrorsHelp key={1} />]),
         className: styles.errorsHelp
       };
     case 'Publishing':
       return {
         ...props,
-        children: ([<Publishing />]),
+        children: ([<Publishing key={1} />]),
         className: styles.publishing,
         onDismiss: _.noop
       };

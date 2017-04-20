@@ -37,6 +37,10 @@ class EsriServer
     url
   end
 
+  def type_key
+    'esri_arcgis'
+  end
+
   def federate_all?
     @sync_type == 'catalog'
   end

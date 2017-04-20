@@ -24,6 +24,10 @@ class CatalogFederatorSource
     sync_status || 'not_yet'
   end
 
+  def type_key
+    'data_json'
+  end
+
   def federate_all?
     sync_policy == 'all'
   end

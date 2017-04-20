@@ -41,7 +41,8 @@
           </colgroup>
           <thead>
             <tr>
-              <th class="domain" scope="col"><span><%= t("#{connector}.source_domain") %> </span></th>
+              <th class="domain" scope="col"><span><%= t("#{connector}.connector") %> </span></th>
+              <th class="source" scope="col"><span><%= t("#{connector}.type") %> </span></th>
               <th class="federatedAssets" scope="col">
                 <span>
                   <%= t("#{connector}.discovered_assets") %>
@@ -73,7 +74,10 @@
             <%- @connectors.each do |server| -%>
               <tr>
                 <td class="name" scope="row">
-                  <a target="_blank" href="<%= server.url %>"> <%= server.display_name %> </a>
+                  <a target="_blank" href="<%= server.url %>"> <%= strip_tags server.display_name %> </a>
+                </td>
+                <td class="name" scope="row">
+                  <%= t("#{connector}.#{server.type_key}") %>
                 </td>
                 <td class="federatedAssets" scope="row">
                   <%= t(

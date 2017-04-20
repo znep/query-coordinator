@@ -2728,6 +2728,7 @@ en:
         catalog_option_explanation: Assets will appear in your catalog as External Datasets
         connected_assets: Connected assets
         connection_type: Connection Type
+        connector: Connector
         current_status: Current Status
         data: Data
         data_connect_all: Connect all assets as Maps
@@ -2777,6 +2778,7 @@ en:
         success: Success
         terminate: Terminate
         title: Manage Connectors
+        type: Type
       datasets:
         asset_inventory:
           initialize: Initialize Asset Inventory

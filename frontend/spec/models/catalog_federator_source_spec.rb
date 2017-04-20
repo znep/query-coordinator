@@ -27,6 +27,10 @@ describe CatalogFederatorSource, :type => :model do
       expect(source.server_backend).to eq('catalog_federator')
     end
 
+    it 'has a data_json type_key' do
+      expect(source.type_key).to eq('data_json')
+    end
+
     it 'has a no sync status yet' do
       expect(source.status_key).to eq('not_yet')
     end
@@ -65,6 +69,10 @@ describe CatalogFederatorSource, :type => :model do
 
     it 'has a catalog_federator backend' do
       expect(source.server_backend).to eq('catalog_federator')
+    end
+
+    it 'has a data_json type_key' do
+      expect(source.type_key).to eq('data_json')
     end
 
     it 'has a success sync status' do

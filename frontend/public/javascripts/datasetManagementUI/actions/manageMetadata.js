@@ -50,7 +50,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     return;
   }
 
-  const publicMetadata = _.pick(
+  const publicMetadata = filterMetadata(_.pick(
     model,
     [
       'id',
@@ -62,7 +62,14 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       'attributionLink',
       'tags'
     ]
-  );
+  ));
+
+  function filterMetadata(metadata) {
+    if (metadata.licenseId === '') {
+      metadata.licenseId = null;
+    }
+    return metadata;
+  }
 
   const privateMetadata = _.pick(model, ['email']);
 

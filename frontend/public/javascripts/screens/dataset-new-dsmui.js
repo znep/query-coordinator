@@ -46,7 +46,7 @@ function createDataset() {
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
     data: JSON.stringify({
-      displayType: 'table',
+      displayType: 'draft',
       name: datasetTitle
     }),
     success: function(newView) {

@@ -2874,7 +2874,7 @@ en:
         page_title: Manage Spatial Lens
         picker_explanation: Choose a geospatial layer that you want to use as the basis for your Spatial Lens. You can click on the name to preview the layer in a new browser tab.
         picker_explanation_html: "<p>Choose a geospatial layer that you want to use as the basis for your Spatial Lens.</p><p>You can click on the name to preview the layer in a new browser tab.</p>"
-        picker_support_html: Can't find what you're looking for? View the article <a href="https://support.socrata.com/hc/en-us/articles/217039278">Finding a Dataset for your Spatial Lens</a> to learn more.
+        picker_support_html: Can't find what you're looking for? View the article <a href="https://support.socrata.com/hc/en-us/articles/212862177">Creating Spatial Lens Boundaries</a> to learn more.
         region_name: Boundary Name
         remove: Remove
         status_disabled: Not enabled

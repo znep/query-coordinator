@@ -29,7 +29,7 @@ const getModalProps = (props, contentComponentName) => {
       return {
         ...props,
         children: ([<PublishConfirmation key={1} />]),
-        className: styles.publishingConfirmation
+        className: styles.publishConfirmation
       };
     default:
       return props;

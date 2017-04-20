@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { ModalContent, ModalFooter } from 'socrata-components';
 
 import { hideModal } from 'actions/modal';
-import * as ApplyActions from 'actions/applyUpdate';
+import { applyUpdate } from 'actions/applyUpdate';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Modals/PublishConfirmation.scss';
 
-function PublishConfirmation({ outputSchemaId, doCancel, applyUpdate }) {
+function PublishConfirmation({ outputSchemaId, doCancel, doUpdate }) {
   return (
     <div>
       <h2>{I18n.home_pane.publish_confirmation.title}</h2>
@@ -22,7 +22,7 @@ function PublishConfirmation({ outputSchemaId, doCancel, applyUpdate }) {
           {I18n.common.cancel}
         </button>
         <button
-          onClick={() => applyUpdate(outputSchemaId)}
+          onClick={() => doUpdate(outputSchemaId)}
           className={styles.mainButton}>
           {I18n.home_pane.publish_confirmation.button}
         </button>
@@ -34,7 +34,7 @@ function PublishConfirmation({ outputSchemaId, doCancel, applyUpdate }) {
 PublishConfirmation.propTypes = {
   outputSchemaId: PropTypes.number.isRequired,
   doCancel: PropTypes.func.isRequired,
-  applyUpdate: PropTypes.func.isRequired
+  doUpdate: PropTypes.func.isRequired
 };
 
 function mapStateToProps({ routing }) {
@@ -48,7 +48,7 @@ function mapStateToProps({ routing }) {
 function mapDispatchToProps(dispatch) {
   return {
     doCancel: () => dispatch(hideModal()),
-    applyUpdate: (outputSchemaId) => dispatch(ApplyActions.applyUpdate(outputSchemaId))
+    doUpdate: (outputSchemaId) => dispatch(applyUpdate(outputSchemaId))
   };
 }
 

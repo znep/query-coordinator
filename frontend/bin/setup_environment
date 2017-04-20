@@ -43,7 +43,7 @@ fi
 
 npm config set registry https://repo.socrata.com/artifactory/api/npm/npm-virtual
 curl -u"${ARTIFACTORY_USER}":"${ARTIFACTORY_PASSWORD}" "https://repo.socrata.com/artifactory/api/npm/auth" >> ~/.npmrc
-npm install -g karma-cli phantomjs karma-phantomjs-launcher
+npm install -g karma-cli
 npm install
 
 # 5. Postgres User

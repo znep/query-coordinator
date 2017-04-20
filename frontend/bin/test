@@ -56,5 +56,5 @@ if ./bin/should_run_tests frontend; then
   bundle exec rspec --no-color
 
   # JavaScript tests
-  bundle exec rake test:karma[,,dots]
+  bundle exec rake test:karma:parallel
 fi

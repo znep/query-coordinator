@@ -1,8 +1,17 @@
 import { assert } from 'chai';
+import sinon from 'sinon';
 import { ShareVisualizationModal } from 'components/ShareVisualizationModal';
 import mockVif from 'data/mockVif';
 
 describe('ShareVisualizationModal', () => {
+  beforeEach(() => {
+    sinon.stub($.fn, 'socrataSvgHistogram');
+  });
+
+  afterEach(() => {
+    $.fn.socrataSvgHistogram.restore();
+  });
+
   const getProps = (props) => {
     return {
       vifIndex: 0,

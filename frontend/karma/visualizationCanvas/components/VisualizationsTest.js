@@ -1,8 +1,17 @@
 import { assert } from 'chai';
+import sinon from 'sinon';
 import { Visualizations } from 'components/Visualizations';
 import mockVif from 'data/mockVif';
 
 describe('Visualizations', () => {
+  beforeEach(() => {
+    sinon.stub($.fn, 'socrataSvgHistogram');
+  });
+
+  afterEach(() => {
+    $.fn.socrataSvgHistogram.restore();
+  });
+
   it('renders nothing if this.props.vifs is empty', () => {
     const element = renderComponent(Visualizations, { vifs: [] });
     assert.isNull(element);

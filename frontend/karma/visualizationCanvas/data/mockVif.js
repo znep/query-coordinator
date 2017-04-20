@@ -23,7 +23,7 @@ export default {
           "columnName": "plausibility",
           "aggregationFunction": null
         },
-        "domain": "vertex-stories.test-socrata.com",
+        "domain": "example.com",
         "measure": {
           "columnName": null,
           "aggregationFunction": "count"

@@ -187,9 +187,36 @@ describe CatalogLandingPage do
   describe '.should_route?' do
     let(:configuration) { double(:config) }
 
+    context 'when on a browse page without a search query' do
+      let(:path) { '/browse' }
+      let(:request) { double(:request, path: path, params: {}) }
+
+      it 'should return true' do
+        expect(CatalogLandingPage.should_route?(request)).to eq(true)
+      end
+    end
+
+    context 'when on a browse page with a search query' do
+      let(:path) { '/browse' }
+      let(:request) { double(:request, path: path, params: { q: 'foo' }.with_indifferent_access) }
+
+      it 'should return false' do
+        expect(CatalogLandingPage.should_route?(request)).to eq(false)
+      end
+    end
+
+    context 'when on a browse page with an empty search query' do
+      let(:path) { '/browse' }
+      let(:request) { double(:request, path: path, params: { q: '' }.with_indifferent_access) }
+
+      it 'should return true' do
+        expect(CatalogLandingPage.should_route?(request)).to eq(true)
+      end
+    end
+
     context 'when on a /browse page' do
       let(:path) { '/browse' }
-      let(:request) { double(:request, path: path) }
+      let(:request) { double(:request, path: path, params: {}) }
 
       it 'should return true' do
         expect(CatalogLandingPage.should_route?(request)).to eq(true)
@@ -198,7 +225,7 @@ describe CatalogLandingPage do
 
     context 'when on a /browse/select_dataset modal' do
       let(:path) { '/browse/select_dataset' }
-      let(:request) { double(:request, path: path) }
+      let(:request) { double(:request, path: path, params: {}) }
 
       it 'should return false' do
         expect(CatalogLandingPage.should_route?(request)).to eq(false)

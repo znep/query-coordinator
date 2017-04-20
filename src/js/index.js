@@ -17,6 +17,7 @@ import FilterBar from './components/FilterBar';
 import InfoPane from './components/InfoPane';
 import Slider from './components/Slider';
 import DateRangePicker from './components/DateRangePicker';
+import FilterItem from './components/FilterBar/FilterItem';
 import SocrataIcon from './components/SocrataIcon';
 import Modal, { ModalHeader, ModalContent, ModalFooter } from './components/Modal';
 import SideMenu, { MenuListItem, ExpandableMenuListItem } from './components/SideMenu';
@@ -47,6 +48,7 @@ module.exports = {
   EditBar,
   ExternalViewCard,
   FilterBar,
+  FilterItem,
   InfoPane,
   Slider,
   DateRangePicker,

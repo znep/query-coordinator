@@ -14,7 +14,8 @@ export const CalendarDateFilter = React.createClass({
     isReadOnly: PropTypes.bool,
     onClickConfig: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
-    onUpdate: PropTypes.func.isRequired
+    onUpdate: PropTypes.func.isRequired,
+    onClear: PropTypes.func
   },
 
   getInitialState() {
@@ -93,6 +94,10 @@ export const CalendarDateFilter = React.createClass({
       start: rangeMin,
       end: rangeMax
     });
+
+    if (typeof this.props.onClear === 'function') {
+      this.props.onClear();
+    }
   },
 
   updateFilter() {

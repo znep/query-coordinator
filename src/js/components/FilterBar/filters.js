@@ -46,10 +46,15 @@ export function getFilterToggleText(filter, column) {
   switch (column.dataTypeName) {
     case 'calendar_date': {
       const { start, end } = filter.arguments;
-      const startLabel = formatDate(start, 'l');
-      const endLabel = formatDate(end, 'l');
 
-      return t('filter_bar.range_filter.range_label').format(startLabel, endLabel);
+      if (start && end) {
+        const startLabel = formatDate(start, 'l');
+        const endLabel = formatDate(end, 'l');
+
+        return t('filter_bar.range_filter.range_label').format(startLabel, endLabel);
+      } else {
+        return column.name;
+      }
     }
 
     case 'number': {

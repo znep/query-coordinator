@@ -1,26 +1,6 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import reducer from 'reducer';
-import {
-  addVisualization,
-  editVisualization,
-  cancelEditingVisualization,
-  updateVisualization,
-  enterPreviewMode,
-  enterEditMode,
-  openEditMenu,
-  updateNameAndDescription,
-  closeEditMenu,
-  setFilters,
-  receivedColumnStats,
-  requestedSave,
-  handleSaveSuccess,
-  handleSaveError,
-  clearSaveState,
-  openShareModal,
-  closeShareModal,
-  setEmbedSize
-} from 'actions';
-
+import * as actions from 'actions';
 import { ModeStates, SaveStates } from 'lib/constants';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
@@ -109,7 +89,6 @@ describe('Reducer', () => {
       { origin: mockVifOrigin }
     );
 
-
     sharedExamples.beforeEachSetInitialState(INITIAL_STATES.ephemeralViewWithVif);
 
     sharedExamples.itSetsDataSourceUrl();
@@ -120,7 +99,7 @@ describe('Reducer', () => {
 
     describe('OPEN_SHARE_MODAL', () => {
       beforeEach(() => {
-        state = reducer(state, openShareModal({
+        state = reducer(state, actions.openShareModal({
           vifIndex: 0
         }));
       });
@@ -150,7 +129,7 @@ describe('Reducer', () => {
     );
 
     const makeStateDirty = () => {
-      state = reducer(state, updateNameAndDescription({ name: '', description: '' }));
+      state = reducer(state, actions.updateNameAndDescription({ name: '', description: '' }));
       assert.isTrue(state.isDirty);
       return state;
     };
@@ -169,7 +148,7 @@ describe('Reducer', () => {
 
     describe('ADD_VISUALIZATION', () => {
       beforeEach(() => {
-        state = reducer(state, addVisualization());
+        state = reducer(state, actions.addVisualization());
       });
 
       it('sets authoringWorkflow.isActive to true', () => {
@@ -191,7 +170,7 @@ describe('Reducer', () => {
 
     describe('EDIT_VISUALIZATION', () => {
       beforeEach(() => {
-        state = reducer(state, editVisualization({
+        state = reducer(state, actions.editVisualization({
           vifIndex: 0,
           vifs: [mockVifWithOrigin]
         }));
@@ -204,19 +183,12 @@ describe('Reducer', () => {
       it('sets the authoringWorkflow.vif to vif at index vifIndex', () => {
         assert.deepEqual(state.authoringWorkflow.vif, mockVifWithOrigin);
       });
-
-      it('throws an error if vifIndex is out of range', () => {
-        assert.throws(
-          () => reducer(state, editVisualization({ vifIndex: 3, vifs: [mockVif] })),
-          /invalid vifIndex/
-        );
-      });
     });
 
     describe('CANCEL_EDITING_VISUALIZATION', () => {
       beforeEach(() => {
-        state = reducer(state, addVisualization());
-        state = reducer(state, cancelEditingVisualization());
+        state = reducer(state, actions.addVisualization());
+        state = reducer(state, actions.cancelEditingVisualization());
       });
 
       it('sets authoringWorkflow.isActive to false', () => {
@@ -237,9 +209,9 @@ describe('Reducer', () => {
           name: 'potato',
           origin: mockVifOrigin
         };
-        state = reducer(state, clearSaveState());
-        state = reducer(state, addVisualization());
-        state = reducer(state, updateVisualization({
+        state = reducer(state, actions.clearSaveState());
+        state = reducer(state, actions.addVisualization());
+        state = reducer(state, actions.updateVisualization({
           vif: newVif,
           filters: [mockFilter, mockFilter, mockFilter]
         }));
@@ -269,37 +241,37 @@ describe('Reducer', () => {
 
     describe('ENTER_EDIT_MODE', () => {
       it('sets mode to "edit"', () => {
-        const state = reducer(state, enterEditMode());
+        const state = reducer(state, actions.enterEditMode());
         assert.equal(state.mode, ModeStates.EDIT);
       });
     });
 
     describe('ENTER_PREVIEW_MODE', () => {
       it('sets mode to "preview"', () => {
-        const state = reducer(state, enterPreviewMode());
+        const state = reducer(state, actions.enterPreviewMode());
         assert.equal(state.mode, ModeStates.PREVIEW);
       });
     });
 
     describe('OPEN_EDIT_MENU', () => {
       it('opens the edit menu', () => {
-        const state = reducer(state, openEditMenu());
+        const state = reducer(state, actions.openEditMenu());
         assert.isTrue(state.isEditMenuActive);
       });
     });
 
     describe('CLOSE_EDIT_MENU', () => {
       it('closes the edit menu', () => {
-        const state = reducer(state, closeEditMenu());
+        const state = reducer(state, actions.closeEditMenu());
         assert.isFalse(state.isEditMenuActive);
       });
     });
 
     describe('UPDATE_NAME_AND_DESCRIPTION', () => {
       beforeEach(() => {
-        state = reducer(state, clearSaveState());
-        state = reducer(state, openEditMenu());
-        state = reducer(state, updateNameAndDescription({
+        state = reducer(state, actions.clearSaveState());
+        state = reducer(state, actions.openEditMenu());
+        state = reducer(state, actions.updateNameAndDescription({
           name: 'some name',
           description: 'some description'
         }));
@@ -324,10 +296,10 @@ describe('Reducer', () => {
 
     describe('SET_FILTERS', () => {
       beforeEach(() => {
-        state = reducer(state, clearSaveState());
-        state = reducer(state, addVisualization());
-        state = reducer(state, updateVisualization({ vif: mockVif }));
-        state = reducer(state, setFilters([mockFilter]));
+        state = reducer(state, actions.clearSaveState());
+        state = reducer(state, actions.addVisualization());
+        state = reducer(state, actions.updateVisualization({ vif: mockVif }));
+        state = reducer(state, actions.setFilters([mockFilter]));
       });
 
        it('sets the filters array', () => {
@@ -345,9 +317,39 @@ describe('Reducer', () => {
       });
     });
 
+    describe('SET_MAP_CENTER_AND_ZOOM', () => {
+      let data;
+
+      beforeEach(() => {
+        data = {
+          centerAndZoom: { center: { lat: 33, lng: -92 }, zoom: 8 },
+          vifIndex: 0
+        };
+        state = reducer(state, actions.setMapCenterAndZoom(data));
+      });
+
+      it('sets the center and zoom for the provided index', () => {
+        assert.equal(state.vifs[0].configuration.mapCenterAndZoom, data.centerAndZoom);
+      });
+
+      it('sets isDirty to true', () => {
+        assert.isTrue(state.isDirty);
+      });
+    });
+
+    describe('SET_MAP_NOTIFICATION_DISMISSED', () => {
+      beforeEach(() => {
+        state = reducer(state, actions.setMapNotificationDismissed({ vifIndex: 0 }));
+      });
+
+      it('sets the mapNotificationDismissed to true for the provided index', () => {
+        assert.isTrue(state.mapNotificationDismissed[0]);
+      });
+    });
+
     describe('RECEIVED_COLUMN_STATS', () => {
       beforeEach(() => {
-        state = reducer(state, receivedColumnStats('purple'));
+        state = reducer(state, actions.receivedColumnStats('purple'));
       });
 
       it('sets columnStats', () => {
@@ -357,7 +359,7 @@ describe('Reducer', () => {
 
     describe('REQUESTED_SAVE', () => {
       beforeEach(() => {
-        state = reducer(state, requestedSave());
+        state = reducer(state, actions.requestedSave());
       });
 
       it('sets the save state to saving', () => {
@@ -373,7 +375,7 @@ describe('Reducer', () => {
 
       beforeEach(() => {
         state = makeStateDirty();
-        state = reducer(state, handleSaveSuccess(response));
+        state = reducer(state, actions.handleSaveSuccess(response));
       });
 
       it('sets the save state to saved', () => {
@@ -388,7 +390,7 @@ describe('Reducer', () => {
     describe('HANDLE_SAVE_ERROR', () => {
       beforeEach(() => {
         state = makeStateDirty();
-        state = reducer(state, handleSaveError());
+        state = reducer(state, actions.handleSaveError());
       });
 
       it('does not modify isDirty', () => {
@@ -402,9 +404,9 @@ describe('Reducer', () => {
 
     describe('CLEAR_SAVE_STATE', () => {
       beforeEach(() => {
-        state = reducer(state, requestedSave());
+        state = reducer(state, actions.requestedSave());
         assert.equal(state.saveState, SaveStates.SAVING);
-        state = reducer(state, clearSaveState());
+        state = reducer(state, actions.clearSaveState());
       });
 
       it('sets save state to idle', () => {
@@ -414,7 +416,7 @@ describe('Reducer', () => {
 
     describe('OPEN_SHARE_MODAL', () => {
       beforeEach(() => {
-        state = reducer(undefined, openShareModal({
+        state = reducer(undefined, actions.openShareModal({
           vifIndex: 0
         }));
       });
@@ -432,7 +434,7 @@ describe('Reducer', () => {
         const newSize = 'medium';
 
         it('sets just shareModal.embedSize', () => {
-          const stateAfterSetEmbedSize = reducer(state, setEmbedSize(newSize));
+          const stateAfterSetEmbedSize = reducer(state, actions.setEmbedSize(newSize));
           assert.deepEqual(stateAfterSetEmbedSize.shareModal, {
             vif: mockVifWithOrigin,
             vifIndex: 0,
@@ -444,7 +446,7 @@ describe('Reducer', () => {
 
       describe('then CLOSE_SHARE_MODAL', () => {
         it('clears isActive', () => {
-          const stateAfterClose = reducer(state, closeShareModal());
+          const stateAfterClose = reducer(state, actions.closeShareModal());
           assert.isFalse(stateAfterClose.shareModal.isActive);
         });
       });

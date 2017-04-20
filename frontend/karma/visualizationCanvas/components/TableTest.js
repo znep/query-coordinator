@@ -1,11 +1,17 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
+import sinon from 'sinon';
 import Table from 'components/Table';
 
 describe('Table', () => {
   let element;
 
   beforeEach(() => {
+    sinon.stub($.fn, 'socrataTable');
     element = renderComponentWithStore(Table, {});
+  });
+
+  afterEach(() => {
+    $.fn.socrataTable.restore();
   });
 
   it('renders an element', () => {
@@ -13,6 +19,6 @@ describe('Table', () => {
   });
 
   it('renders a table', () => {
-    assert.ok(element.querySelector('.socrata-table'));
+    sinon.assert.calledOnce($.fn.socrataTable);
   });
 });

@@ -24,6 +24,18 @@ export const updateVisualization = (data) => ({
   data
 });
 
+export const SET_MAP_CENTER_AND_ZOOM = 'SET_MAP_CENTER_AND_ZOOM';
+export const setMapCenterAndZoom = (data) => ({
+  type: SET_MAP_CENTER_AND_ZOOM,
+  data
+});
+
+export const SET_MAP_NOTIFICATION_DISMISSED = 'SET_MAP_NOTIFICATION_DISMISSED';
+export const setMapNotificationDismissed = (data) => ({
+  type: SET_MAP_NOTIFICATION_DISMISSED,
+  data
+});
+
 export const ENTER_PREVIEW_MODE = 'ENTER_PREVIEW_MODE';
 export const enterPreviewMode = () => ({
   type: ENTER_PREVIEW_MODE

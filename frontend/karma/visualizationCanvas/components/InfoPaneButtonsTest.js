@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import { InfoPaneButtons } from 'components/InfoPaneButtons';
 import { ModeStates } from 'lib/constants';
 

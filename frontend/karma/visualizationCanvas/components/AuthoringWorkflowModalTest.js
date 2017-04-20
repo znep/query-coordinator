@@ -1,8 +1,21 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
+import sinon from 'sinon';
 import { AuthoringWorkflowModal } from 'components/AuthoringWorkflowModal';
 import mockVif from 'data/mockVif';
 
 describe('AuthoringWorkflowModal', () => {
+  let server;
+
+  beforeEach(() => {
+    // This stubs the Authoring Workflow's data requests.
+    server = sinon.fakeServer.create();
+    server.respondWith([200, { 'Content-Type': 'application/json' }, '{}']);
+  });
+
+  afterEach(() => {
+    server.restore();
+  });
+
   const getProps = (props) => {
     return {
       config: {

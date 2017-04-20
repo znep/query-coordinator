@@ -1,5 +1,5 @@
 export default {
   environment: 'production',
-  domain: 'puffins-in-spacesuits.com',
+  domain: 'example.com',
   usersnapProjectID: 'uhhhhh'
 };

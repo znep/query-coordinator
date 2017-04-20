@@ -1,5 +1,5 @@
+import { assert } from 'chai';
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
 import { Simulate } from 'react-addons-test-utils';
 import { SaveButton } from 'components/SaveButton';
 import { SaveStates } from 'lib/constants';
@@ -24,15 +24,15 @@ describe('SaveButton', () => {
 
   it('renders a button', () => {
     assert.ok(element);
-    expect(element.className).to.match(/btn/);
+    assert.match(element.className, /btn/);
   });
 
   it('is enabled when the page is dirty', () => {
     element = renderComponent(SaveButton, getProps({ isDirty: false }));
-    expect(element.disabled).to.equal(true);
+    assert.isTrue(element.disabled);
 
     element = renderComponent(SaveButton, getProps({ isDirty: true }));
-    expect(element.disabled).to.equal(false);
+    assert.isFalse(element.disabled);
   });
 
   it('renders a spinner if the save state is saving', () => {
@@ -44,8 +44,8 @@ describe('SaveButton', () => {
     const onClick = sinon.spy();
     element = renderComponent(SaveButton, getProps({ isDirty: true, onClick }));
 
-    expect(onClick.called).to.equal(false);
+    sinon.assert.notCalled(onClick);
     Simulate.click(element);
-    expect(onClick.called).to.equal(true);
+    sinon.assert.calledOnce(onClick);
   });
 });

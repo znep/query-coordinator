@@ -1,4 +1,5 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
+import sinon from 'sinon';
 import App, { App as PureApp } from 'App';
 import { ModeStates } from 'lib/constants';
 import { getStore } from '../testStore';
@@ -7,6 +8,20 @@ import mockView from '../data/mockView';
 import mockVif from '../data/mockVif';
 
 describe('App', function() {
+  let server;
+
+  beforeEach(() => {
+    // This stubs the network requests being made by socrata-visualizations (specifically the
+    // visualizations and the Authoring Workflow. We shouldn't be making network requests from
+    // any other components, but if we did attempt to do that, this will override those requests.
+    server = sinon.fakeServer.create();
+    server.respondWith([200, { 'Content-Type': 'application/json' }, '{}']);
+  });
+
+  afterEach(() => {
+    server.restore();
+  });
+
   it('renders', function() {
     const element = renderComponentWithStore(App);
     assert.ok(element);
@@ -73,7 +88,7 @@ describe('App', function() {
         }
       ));
       const editVisualizationButtons = element.querySelectorAll('.edit-visualization-button');
-      expect(editVisualizationButtons.length).to.equal(2);
+      assert.equal(editVisualizationButtons.length, 2);
     });
 
     it('renders a Table', () => {
@@ -145,7 +160,7 @@ describe('App', function() {
 
     it('does not render edit visualization buttons', () => {
       element = renderComponentWithStore(App, {}, getStore({ mode: ModeStates.PREVIEW, vifs: [mockVif] }));
-      expect(element.querySelectorAll('.edit-visualization-button-container').length).to.equal(0);
+      assert.equal(element.querySelectorAll('.edit-visualization-button-container').length, 0);
     });
 
     it('renders a Table', () => {
@@ -201,16 +216,11 @@ describe('App', function() {
 
     it('does not render edit visualization buttons', () => {
       element = renderComponentWithStore(App, {}, getStore({ mode: ModeStates.VIEW, vifs: [mockVif] }));
-      expect(element.querySelectorAll('.edit-visualization-button-container').length).to.equal(0);
+      assert.equal(element.querySelectorAll('.edit-visualization-button-container').length, 0);
     });
 
     it('renders a Table', () => {
       assert.ok(element.querySelector('.table-contents'));
     });
   });
-
-  it('throws an error if no mode is specified', () => {
-    expect(() => renderComponentWithStore(App, {}, getStore({ mode: 'unicorns' })).to.throw(/invalid mode/));
-  });
 });
-

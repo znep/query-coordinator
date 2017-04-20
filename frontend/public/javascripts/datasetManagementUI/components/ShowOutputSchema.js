@@ -8,10 +8,10 @@ import { commaify } from '../../common/formatNumber';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
 import * as ShowActions from '../actions/showOutputSchema';
-import * as ApplyActions from '../actions/applyUpdate';
 import * as LoadDataActions from '../actions/loadData';
 import { setOutputSchemaId } from 'actions/routing';
 import * as DisplayState from '../lib/displayState';
+import { showModal } from 'actions/modal';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
 import PagerBar from './Table/PagerBar';
@@ -237,9 +237,9 @@ function mapDispatchToProps(dispatch, ownProps) {
     goHome: () => {
       dispatch(push(Links.home(ownProps.location)));
     },
-    applyUpdate: () => (
-      dispatch(ApplyActions.applyUpdate(_.toNumber(ownProps.params.outputSchemaId)))
-    ),
+    applyUpdate: () => {
+      dispatch(showModal('PublishConfirmation'));
+    },
     dispatch
   };
 }

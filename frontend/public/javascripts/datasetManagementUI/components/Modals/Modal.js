@@ -7,6 +7,7 @@ import styles from 'styles/Modals/Modal.scss';
 
 import ErrorsHelp from 'components/Modals/ErrorsHelp';
 import Publishing from 'components/Modals/Publishing';
+import PublishConfirmation from 'components/Modals/PublishConfirmation';
 
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
 const getModalProps = (props, contentComponentName) => {
@@ -23,6 +24,12 @@ const getModalProps = (props, contentComponentName) => {
         children: ([<Publishing key={1} />]),
         className: styles.publishing,
         onDismiss: _.noop
+      };
+    case 'PublishConfirmation':
+      return {
+        ...props,
+        children: ([<PublishConfirmation key={1} />]),
+        className: styles.publishConfirmation
       };
     default:
       return props;

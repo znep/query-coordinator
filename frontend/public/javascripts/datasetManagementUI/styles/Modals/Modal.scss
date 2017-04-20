@@ -31,7 +31,7 @@
   }
 }
 
-.publishing {
+.publishConfirmation {
   text-align: center;
 
   h2 {
@@ -48,4 +48,12 @@
       max-width: 550px;
     }
   }
+}
+
+.publishing {
+  composes: publishConfirmation;
+}
+
+div.publishing {
+  z-index: 9000; // Allow interaction with the header bar.
 }

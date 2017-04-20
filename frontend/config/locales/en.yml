@@ -1802,6 +1802,10 @@ en:
         failure:
           title: "Something went wrong with publishing your data"
           body: "Our site is having trouble right now, please wait and try again."
+      publish_confirmation:
+          title: "You are about to make your dataset public"
+          body: "It will be accessible to anyone through your data catalog."
+          button: "Publish Now"
       add_column_metadata: Add Column Metadata
       add_column_metadata_blurb: Column metadata will help people understand what the column means.
       adding_data: Adding Data

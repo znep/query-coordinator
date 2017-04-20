@@ -1,5 +1,6 @@
 class Administration::ConnectorController < AdministrationController
   include DataConnectorHelper
+  include ActionView::Helpers::SanitizeHelper
 
   #
   # Connector / EsriServerConnector / CatalogFederatorConnector
@@ -15,7 +16,7 @@ class Administration::ConnectorController < AdministrationController
   ] { |c| c.check_feature_flag('enable_catalog_connector') }
 
   before_filter :fetch_connectors, :only => :connectors
-  before_filter :edit_connectors, :only => :edit_connector
+  before_filter :fetch_servers, :only => :edit_connector
 
   def enable_catalog_federator_connector?
     FeatureFlags.derive(nil, request, nil)[:enable_catalog_federator_connector]
@@ -50,7 +51,7 @@ class Administration::ConnectorController < AdministrationController
   end
 
   # +before_filter+
-  def edit_connectors
+  def fetch_servers
     @data_connection_on = feature_flag?('enable_data_connector', request)
     begin
       @tree = EsriServerConnector.tree(params[:server_id])
@@ -64,7 +65,8 @@ class Administration::ConnectorController < AdministrationController
     end
 
     if enable_catalog_federator_connector?
-      @server = CatalogFederatorConnector.servers.first
+      @server = CatalogFederatorConnector.servers.detect { |server| server.id == params[:server_id].to_i }
+      @list = CatalogFederator::Client.new.list(@server.id)
     end
   end
 
@@ -102,21 +104,22 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def edit_connector
+    params[:type] ||= 'esri' # Default to Esri if not specified on the URL for backward compatibility.
   end
 
   def update_connector
-    begin
-      @response = EsriServerConnector.update_server(params[:server_id], params['server'])
-      @server = EsriServerConnector.server(params[:server_id])
-      @tree = EsriServerConnector.tree(params[:server_id])
-    rescue EsriCrawler::ServerError => error
-      return display_external_error(error, :edit_connector)
-    rescue EsriCrawler::ResourceNotFound => error
-      flash[:error] = t('screens.admin.connector.flashes.server_not_found')
-      redirect_to :action => :connectors
-    rescue StandardError => error
-      handle_failed_connection(error)
-    end
+    # begin
+    #   @response = EsriServerConnector.update_server(params[:server_id], params['server'])
+    #   @server = EsriServerConnector.server(params[:server_id])
+    #   @tree = EsriServerConnector.tree(params[:server_id])
+    # rescue EsriCrawler::ServerError => error
+    #   return display_external_error(error, :edit_connector)
+    # rescue EsriCrawler::ResourceNotFound => error
+    #   flash[:error] = t('screens.admin.connector.flashes.server_not_found')
+    #   redirect_to :action => :connectors
+    # rescue StandardError => error
+    #   handle_failed_connection(error)
+    # end
     respond_to do |format|
       format.html do
         flash[:notice] = t('screens.admin.connector.flashes.updated')

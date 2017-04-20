@@ -16,17 +16,13 @@ module CatalogFederator
       handle_response(response, route)
     end
 
-    def disable_source(source_id)
-      route = "/v1/source/#{source_id}/disable"
-      response = self.class.delete(route, headers: headers)
-      handle_response(response, route)
+    def list(source_id, concise = true)
+      endpoint = "/v1/source/#{source_id}/preprocess?concise=#{concise}"
+      response = self.class.get(endpoint, headers: headers)
+      raise_error(endpoint, response) unless response.code == 200
+      response.parsed_response['datasets']
     end
-
-    def delete_source(source_id)
-      route = "/v1/source/#{source_id}"
-      response = self.class.delete(route, headers: headers)
-      handle_response(response, route)
-    end
+    alias :tree :list
 
     private
 

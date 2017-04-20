@@ -46,6 +46,7 @@
               name="server[sync_type]" value="data"
               <%= @server.data_connect_all? ? 'checked="checked"' : '' %> />
             <label for="dataConnectAll" class="inline-value-label"><%= t("#{prefix}.data_connect_all") %></label>
+            <span class="notice">Checked selections below are ignored when this is selected.</span>
           </div>
           <div class="valueBox inline-value">
             <input type="radio" id="federateAll" class="server-sync"
@@ -70,12 +71,14 @@
                   name="server[sync_type]" value="catalog"
                   <%= @server.federate_all? ? 'checked="checked"' : '' %> />
                 <label for="federateAll"><%= t("#{prefix}.all_assets") %></label>
+                <span class="notice">Checked selections below are ignored when this is selected.</span>
               </div>
               <div class="valueBox">
                 <input type="radio" id="federateSome" class="server-sync"
                   name="server[sync_type]" value="ignored"
                   <%= @server.federate_all? ? '' : 'checked="checked"' %> />
                 <label for="federateSome"><%= t("#{prefix}.some_assets") %></label>
+                <span class="notice">Checked selections below are the only ones that will be connected.</span>
               </div>
           </div> <%# end flex left section %>
           <div class="line clearfix flexbox-right-section">
@@ -97,78 +100,12 @@
           </div>
 
           <% if @tree.present? %>
-            <div class="esri-tree">
-              <%- @tree['folders'].each do |folder| -%>
-                <div class="item folder search-item">
-                  <div class="editItem">
-                    <% if @data_connection_on %>
-                      <div
-                        class="select-style <%= disabled_class(@server)%>"
-                        id="style-div-for-<%=folder['id']%>">
-                        <%= icon_for_asset(@server, folder) %>
-                        <%= folder_select_tag(@server, folder) %>
-                      </div>
-                    <% else %>
-                      <%= folder_check_box(@server, folder) %>
-                    <% end %>
-                    <span class="asset-name">
-                      <%= truncate(folder['name'], length: 120) %>
-                    </span>
-                  </div>
-
-                  <%- folder['services'].each do |service| -%>
-                    <div class="item child service search-item">
-                      <div class="editItem">
-                        <% if @data_connection_on %>
-                          <div
-                            class="select-style <%=disabled_class(@server)%>"
-                            id="style-div-for-<%=service['id']%>">
-                            <%= icon_for_asset(@server, service) %>
-                            <%= service_select_tag(@server, folder, service) %>
-                          </div>
-                        <% else %>
-                          <%= service_check_box(@server, folder, service) %>
-                        <% end %>
-                        <a target="_blank" href="<%= service['url'] %>"
-                          name="<%= service_display_string(service) %>">
-                          <span class="asset-name">
-                            <%= truncate(service_display_string(service), length: 120) %>
-                          </span>
-                        </a>
-                      </div>
-
-                      <%- service['layers'].each do |layer| -%>
-                        <div class="item child layer search-item">
-                          <div class="editItem">
-                            <% if @data_connection_on %>
-                              <div
-                                class="select-style <%= disabled_class(@server)%>"
-                                id="style-div-for-<%=layer['id']%>">
-                                <%= icon_for_asset(@server, layer) %>
-                                <%= layer_select_tag(@server, folder, service, layer) %>
-                              </div>
-                            <% else %>
-                              <%= layer_check_box(@server, folder, service, layer) %>
-                            <% end %>
-                            <a target="_blank" href="<%= layer['url'] %>">
-                              <%- if layer['name'].blank? -%>
-                                <%= layer['url'] %>
-                              <%- else -%>
-                                <span class="asset-name">
-                                  <%= truncate(layer['name'], length: 120) %>
-                                </span>
-                              <%- end -%>
-                            </a>
-                          </div>
-                        </div>
-                      <%- end -%>
-                    </div>
-                  <%- end -%>
-                </div>
-              <%- end -%>
-            </div> <%# end esri-tree container %>
+            <%= render 'esri_tree' %>
           <% end %>
 
+          <% if @list.present? %>
+            <%= render 'catalog_federator_list' %>
+          <% end %>
         <%# end inner fieldset tag (by rails)%>
       <%# end outer fieldset tag (by rails) %>
     </form>

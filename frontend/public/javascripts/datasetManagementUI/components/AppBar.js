@@ -3,10 +3,11 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { EditBar } from 'socrata-components';
 import SocrataIcon from '../../common/components/SocrataIcon';
-import styles from '../styles/AppBar.scss';
 import * as ApplyUpdate from '../actions/applyUpdate';
+import PublishButton from './PublishButton';
+import styles from '../styles/AppBar.scss';
 
-const PreviewLink = () =>
+const previewLink = (
   <div className={styles.primerPreview}>
     <a
       href={`/d/${window.initialState.view.id}`}
@@ -14,11 +15,15 @@ const PreviewLink = () =>
       Preview Primer
       <SocrataIcon name="preview" className={styles.previewIcon} />
     </a>
-  </div>;
+  </div>
+);
 
 const AppBar = ({ name, showPreviewLink }) =>
-  <EditBar name={name} >
-    {showPreviewLink && <PreviewLink />}
+  <EditBar name={name}>
+    <div className={styles.buttonContainer}>
+      {showPreviewLink && previewLink}
+      <PublishButton />
+    </div>
   </EditBar>;
 
 AppBar.propTypes = {

@@ -391,6 +391,10 @@ describe('components/ShowOutputSchema', () => {
 
     it('shows the row count before the file has finished uploading', () => {
       const store = getStoreWithOutputSchema();
+      store.dispatch(updateFromServer('input_schemas', {
+        id: 4,
+        total_rows: null // this is set to 50 in the mocks (useful for other tests); have to null it out
+      }));
       store.dispatch(updateFromServer('transforms', {
         id: 1,
         contiguous_rows_processed: 2
@@ -403,7 +407,7 @@ describe('components/ShowOutputSchema', () => {
       expect(element.querySelector('.attribute').innerText).to.eql('2');
     });
 
-    it('shows the row count before the file has finished uploading', () => {
+    it('shows the row count when the file has finished uploading', () => {
       const store = getStoreWithOutputSchema();
       store.dispatch(updateFromServer('input_schemas', {
         id: 4,
@@ -413,59 +417,6 @@ describe('components/ShowOutputSchema', () => {
       expect(element.querySelector('.attribute').innerText).to.eql('50');
     });
 
-  });
-
-  describe('"apply update" button', () => {
-
-    it('is disabled when the upload is in progress', () => {
-      const store = getStoreWithOutputSchema();
-      store.dispatch(updateFromServer('transforms', {
-        id: 1,
-        contiguous_rows_processed: 2
-      }));
-      store.dispatch(updateFromServer('transforms', {
-        id: 2,
-        contiguous_rows_processed: 3
-      }));
-      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.processBtn').disabled).to.equal(true);
-    });
-
-    it('is disabled when the upload is done but not all columns have caught up', () => {
-      const store = getStoreWithOutputSchema();
-      store.dispatch(updateFromServer('input_schemas', {
-        id: 4,
-        total_rows: 50
-      }));
-      store.dispatch(updateFromServer('transforms', {
-        id: 1,
-        contiguous_rows_processed: 2
-      }));
-      store.dispatch(updateFromServer('transforms', {
-        id: 2,
-        contiguous_rows_processed: 3
-      }));
-      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.processBtn').disabled).to.equal(true);
-    });
-
-    it('is enabled when the upload is done and all columns have caught up', () => {
-      const store = getStoreWithOutputSchema();
-      store.dispatch(updateFromServer('input_schemas', {
-        id: 4,
-        total_rows: 50
-      }));
-      store.dispatch(updateFromServer('transforms', {
-        id: 1,
-        contiguous_rows_processed: 50
-      }));
-      store.dispatch(updateFromServer('transforms', {
-        id: 2,
-        contiguous_rows_processed: 50
-      }));
-      const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
-      expect(element.querySelector('.processBtn').disabled).to.equal(false);
-    });
   });
 
   describe('ReadyToImport indicator', () => {

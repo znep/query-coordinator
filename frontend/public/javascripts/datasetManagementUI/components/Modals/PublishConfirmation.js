@@ -6,6 +6,7 @@ import { hideModal } from 'actions/modal';
 import { applyUpdate } from 'actions/applyUpdate';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Modals/PublishConfirmation.scss';
+import * as Selectors from '../../selectors';
 
 function PublishConfirmation({ outputSchemaId, doCancel, doUpdate }) {
   return (
@@ -37,8 +38,8 @@ PublishConfirmation.propTypes = {
   doUpdate: PropTypes.func.isRequired
 };
 
-function mapStateToProps({ routing }) {
-  const { outputSchemaId } = routing;
+function mapStateToProps({ db }) {
+  const outputSchemaId = Selectors.latestOutputSchema(db).id;
 
   return {
     outputSchemaId

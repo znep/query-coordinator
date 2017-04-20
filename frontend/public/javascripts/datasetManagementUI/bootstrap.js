@@ -8,6 +8,16 @@ import { showModal } from 'actions/modal';
 import { insertAndSubscribeToUpload } from 'actions/manageUploads';
 import { parseDate } from 'lib/parseDate';
 import * as ApplyUpdate from 'actions/applyUpdate';
+import { createCombinedValidationRules, createInitialModel } from 'components/ManageMetadata/DatasetForm';
+import { getValidationErrors } from 'components/Forms/validateSchema';
+
+const calculateInitialSchema = (view, customMetadata) => {
+  const validations = createCombinedValidationRules(customMetadata);
+
+  const model = createInitialModel(view);
+
+  return getValidationErrors(validations, model);
+};
 
 export const emptyDB = {
   __loads__: {},
@@ -27,7 +37,7 @@ export const emptyDB = {
 
 const millis = 1000;
 
-export function bootstrap(store, initialView, initialUpdate) {
+export function bootstrap(store, initialView, initialUpdate, customMetadata) {
   const operations = [];
   store.dispatch(setFourfour(initialView.id));
   operations.push(upsertFromServer('views', {
@@ -46,6 +56,7 @@ export function bootstrap(store, initialView, initialUpdate) {
     licenseId: initialView.licenseId,
     attribution: initialView.attribution,
     attributionLink: initialView.attributionLink,
+    schema: calculateInitialSchema(initialView, customMetadata),
     tags: initialView.tags,
     privateMetadata: initialView.privateMetadata || {},
     attachments: _.get(initialView, 'metadata.attachments', []),

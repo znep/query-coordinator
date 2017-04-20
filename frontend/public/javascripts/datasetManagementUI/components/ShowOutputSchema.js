@@ -11,7 +11,6 @@ import * as ShowActions from '../actions/showOutputSchema';
 import * as LoadDataActions from '../actions/loadData';
 import { setOutputSchemaId } from 'actions/routing';
 import * as DisplayState from '../lib/displayState';
-import { showModal } from 'actions/modal';
 import Table from './Table';
 import ReadyToImport from './ReadyToImport';
 import PagerBar from './Table/PagerBar';
@@ -25,10 +24,7 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   const outputSchema = db.output_schemas[outputSchemaId];
 
   const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
-  const canApplyUpdate = columns.every((column) => {
-    return column.transform.contiguous_rows_processed &&
-      column.transform.contiguous_rows_processed === inputSchema.total_rows;
-  });
+  const canApplyUpdate = Selectors.allTransformsDone(columns, inputSchema);
 
   return {
     db,
@@ -80,7 +76,6 @@ export class ShowOutputSchema extends Component {
       updateColumnType,
       addColumn,
       dropColumn,
-      applyUpdate,
       routing
     } = this.props;
 
@@ -171,12 +166,6 @@ export class ShowOutputSchema extends Component {
                   {I18n.home_pane.save_for_later}
                 </button>
               </Link>
-              <button
-                onClick={applyUpdate}
-                disabled={!canApplyUpdate}
-                className={styles.processBtn}>
-                {I18n.home_pane.process_data}
-              </button>
             </div>
           </ModalFooter>
         </Modal>
@@ -198,7 +187,6 @@ ShowOutputSchema.propTypes = {
   updateColumnType: PropTypes.func.isRequired,
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
-  applyUpdate: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   routing: PropTypes.object.isRequired,
   urlParams: PropTypes.shape({
@@ -236,9 +224,6 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     goHome: () => {
       dispatch(push(Links.home(ownProps.location)));
-    },
-    applyUpdate: () => {
-      dispatch(showModal('PublishConfirmation'));
     },
     dispatch
   };

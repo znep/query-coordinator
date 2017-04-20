@@ -87,6 +87,43 @@ const objToFieldset = (obj, children, idx) =>
     {children}
   </Fieldset>;
 
+// Takes store values and pieces them together to create the form's datamodel
+// We export it because we want to use it on app load in bootstrap.js so that we can
+// validate incoming data from the server even if the user hasn't loaded this component
+export const createInitialModel = view => {
+
+  const metadata = _.pick(
+    view,
+    [
+      'attribution',
+      'attributionLink',
+      'category',
+      'description',
+      'id',
+      'licenseId',
+      'name',
+      'tags'
+    ]
+  );
+
+  const privateMetadata = _.omit(view.privateMetadata, 'custom_fields');
+
+  const privateCustomMetadata = _.get(view, 'privateMetadata.custom_fields', {});
+
+  const customMetadata = _.get(view, 'metadata.custom_fields', {});
+
+  const flattenedPrivateCustomMetadata = fromNestedToFlat(privateCustomMetadata, true);
+
+  const flattenedCustomMetadata = fromNestedToFlat(customMetadata, false);
+
+  return {
+    ...metadata,
+    ...privateMetadata,
+    ...flattenedPrivateCustomMetadata,
+    ...flattenedCustomMetadata
+  };
+};
+
 // DATA
 // the predefined collection of fielsets and their fields
 const fieldsetObjs = [
@@ -172,7 +209,7 @@ const fieldsetObjs = [
 ];
 
 // VALIDATIONS
-// We add rules to this for custom fields in mapStateToProps
+// Rules for non-custom fields
 const validationRules = {
   name: {
     required: true
@@ -197,8 +234,7 @@ const validationRules = {
   }
 };
 
-// Used inside mapStateToProps. Generates a validation schema for user-defined
-// custom metadata fields
+// Generates a validation schema for user-defined custom metadata fields
 const createCustomValidationRules = (customFieldsets = []) => {
   return customFieldsets.reduce((acc, fieldset) => {
     const rules = fieldset.fields.reduce((innerAcc, field) => {
@@ -219,6 +255,22 @@ const createCustomValidationRules = (customFieldsets = []) => {
       ...rules
     };
   }, {});
+};
+
+// Used inside mapStateToProps to create a combined validation schema
+// Also use in bootstrap when app inializes
+export const createCombinedValidationRules = (customFieldsets = []) => {
+
+  const customValidations = _
+    .chain(customFieldsets)
+    .map(transformCustomFieldset)
+    .thru(createCustomValidationRules)
+    .value();
+
+  return {
+    ...customValidations,
+    ...validationRules
+  };
 };
 
 // COMPONENT
@@ -262,44 +314,17 @@ const mapStateToProps = ({ db, routing }) => {
 
   const view = _.get(db, `views.${fourfour}`, {});
 
-  const privateCustomMetadata = _.get(view, 'privateMetadata.custom_fields', {});
+  const initialModel = createInitialModel(view);
 
-  const customMetadata = _.get(view, 'metadata.custom_fields', {});
+  const customFieldsetObjs = view.customMetadataFields.map(transformCustomFieldset);
 
-  const privateFieldsWithValues = _.omit(view.privateMetadata, 'custom_fields');
-
-  const privateCustomFieldsWithValues = fromNestedToFlat(privateCustomMetadata, true);
-
-  const customFieldsWithValues = fromNestedToFlat(customMetadata, false);
-
-  const customFieldsetObjs = _.isEmpty(view.customMetadataFields)
-    ? []
-    : view.customMetadataFields.map(transformCustomFieldset);
-
-  const customValidationRules = createCustomValidationRules(customFieldsetObjs);
-
-  const combinedValidationRules = {
-    ...customValidationRules,
-    ...validationRules
-  };
+  const combinedValidationRules = createCombinedValidationRules(view.customMetadataFields);
 
   return {
-    initialModel: {
-      name: view.name,
-      tags: view.tags || [],
-      email: view.email,
-      description: view.description,
-      category: view.category,
-      licenseId: view.licenseId,
-      attribution: view.attribution,
-      attributionLink: view.attributionLink,
-      ...privateFieldsWithValues,
-      ...privateCustomFieldsWithValues,
-      ...customFieldsWithValues
-    },
-    validationRules: combinedValidationRules,
+    initialModel,
     fourfour,
-    customFieldsetObjs
+    customFieldsetObjs,
+    validationRules: combinedValidationRules
   };
 };
 

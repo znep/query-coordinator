@@ -3,9 +3,10 @@ import { getDefaultStore } from '../testStore';
 
 export function getStoreWithOutputSchema(store = getDefaultStore()) {
   // already in default store
-  // store.dispatch(upsertFromServer('input_schemas', {
-  //   id: 4,
-  // }));
+  store.dispatch(updateFromServer('input_schemas', {
+    id: 4,
+    total_rows: 50
+  }));
   store.dispatch(upsertFromServer('output_schemas', {
     id: 18,
     input_schema_id: 4
@@ -41,13 +42,13 @@ export function getStoreWithOutputSchema(store = getDefaultStore()) {
     field_name: 'arrest',
     soql_type: 'SoQLText',
     input_schema_id: 4
-  }))
+  }));
   store.dispatch(upsertFromServer('input_columns', {
     id: 2,
     field_name: 'block',
     soql_type: 'SoQLText',
     input_schema_id: 4
-  }))
+  }));
   store.dispatch(upsertFromServer('transforms', {
     id: 1,
     transform_expr: 'arrest',

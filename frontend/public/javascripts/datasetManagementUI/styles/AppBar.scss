@@ -2,6 +2,15 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  flex-grow: 1;
+  align-items: center;
+  padding-right: 30px;
+}
+
 .primerPreview {
   width: 100%;
   text-align: right;

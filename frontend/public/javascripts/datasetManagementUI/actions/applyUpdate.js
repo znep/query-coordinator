@@ -9,6 +9,7 @@ import {
 import { showModal } from 'actions/modal';
 import * as dsmapiLinks from '../dsmapiLinks';
 import * as Links from '../links';
+import * as Selectors from '../selectors';
 import { parseDate } from '../lib/parseDate';
 
 // from https://github.com/socrata/dsmapi/blob/0071c4cdf5128698e6ae9ad2ed1c307e884bb386/web/models/upsert_job.ex#L32-L34
@@ -17,9 +18,10 @@ export const UPSERT_JOB_IN_PROGRESS = 'in_progress';
 export const UPSERT_JOB_SUCCESSFUL = 'successful';
 export const UPSERT_JOB_FAILURE = 'failure';
 
-export function applyUpdate(outputSchemaId) {
+export function applyUpdate() {
   return (dispatch, getState) => {
     const routing = getState().routing.location;
+    const outputSchemaId = Selectors.latestOutputSchema(getState().db).id;
     const newUpsertJob = {
       output_schema_id: outputSchemaId
     };

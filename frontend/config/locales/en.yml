@@ -1838,9 +1838,15 @@ en:
       preview: Preview
       process_data: Process Data
       publishing_data_is_easy_and_fun: You'll be publishing data in no time.
+      publish_dataset_button:
+        cant_publish_until: "You can't publish until you have:"
+        publish_dataset: Publish Dataset
+        metadata_satisfied: Filled out all required metadata
+        data_satisfied: Added a data file
+        make_accessible: Make the dataset accessible to others
       required: Required
       review_data: Review Data
-      save_for_later: Save for Later
+      save_for_later: Save
       schema_preview: Columns in this Dataset
       schema_preview_blurb: Add a data file to see a schema preview.
       showing: Showing rows

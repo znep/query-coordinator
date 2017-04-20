@@ -9,7 +9,7 @@ export function getDefaultStore() {
     'row_errors:4': []
   }, () => {});
   const store = getEmptyStore();
-  bootstrap(store, window.initialState.view, window.initialState.update);
+  bootstrap(store, window.initialState.view, window.initialState.update, window.initialState.customMetadata);
   unmockPhx();
   return store;
 }

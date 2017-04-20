@@ -62,6 +62,13 @@ export function columnsForOutputSchema(db, outputSchemaId) {
   return _.sortBy(unsortedColumns, 'position');
 }
 
+export function allTransformsDone(columnsWithTransforms, inputSchema) {
+  return columnsWithTransforms.every((column) => (
+    column.transform.contiguous_rows_processed &&
+      column.transform.contiguous_rows_processed === inputSchema.total_rows
+  ));
+}
+
 export function uploadsInProgress(db) {
   return _.filter(db.uploads, (upload) => (
     upload.__status__.type === STATUS_UPDATING

@@ -1759,7 +1759,8 @@
       }
 
       var bom = (type == 'CSV for Excel') ? '&bom=true' : '';
-      return '/api/views/{0}/rows.{1}?accessType=DOWNLOAD{2}'.format(this.id, ext, bom);
+      var format = (type == 'CSV for Excel') ? '&format=true' : '';
+      return '/api/views/{0}/rows.{1}?accessType=DOWNLOAD{2}{3}'.format(this.id, ext, bom, format);
     },
 
     _getCommentCacheKey: function(comment) {

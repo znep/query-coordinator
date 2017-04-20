@@ -124,7 +124,6 @@ GEM
       dotenv (= 2.0.2)
       railties (~> 4.0)
     erubis (2.7.0)
-    execjs (2.7.0)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.5.0)
@@ -335,9 +334,6 @@ GEM
     trollop (2.1.2)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uglifier (2.7.1)
-      execjs (>= 0.3.0)
-      json (>= 1.8.0)
     unicorn (4.9.0)
       kgio (~> 2.6)
       rack
@@ -418,7 +414,6 @@ DEPENDENCIES
   spring
   stackprof
   stomp (= 1.4.3)
-  uglifier (~> 2.7)
   unicorn (~> 4.9)
   unicorn-worker-killer (~> 0.4)
   web-console

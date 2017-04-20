@@ -54,7 +54,7 @@
           </td>
           <td class="federatedAssets" scope="row">
             <%= link_to_if(
-              server.connected_count > 0 && server.backend == 'catalog_federator',
+              server.connected_count > 0 && server.server_backend == 'catalog_federator',
               t("screens.admin.connector.assets_connected", count: server.connected_count),
               controller: 'connector', action: :show_connector, :server_id => server.id
             ) %>
@@ -73,7 +73,7 @@
             <%- end -%>
           </td>
           <td class="actions" scope="row">
-            <%- if server.last_synced || server.backend == 'catalog-federator' %>
+            <%- if server.last_synced || server.server_backend == 'catalog_federator' %>
               <%= link_to(
                 t("screens.admin.connector.edit"),
                 { :action => :edit_connector, :server_id => server.id, :type => 'catalog_federator' },

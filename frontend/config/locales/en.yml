@@ -2749,12 +2749,13 @@ en:
         errors:
           duplicate_server_error: That Esri Server has already been connected to this domain.
           invalid_attributes_error: 'These parameters were invalid: %{invalid}.'
-          json_format_error: Your JSON was malformed.
+          json_format_error: This connector cannot be used because the JSON data is malformed.
           missing_attributes_error: 'These parameters were missing: %{missing}.'
           not_found_error: That resource was not found.
           problem_with_errors: We were unable to process your request.
           server_ping_error: 'Could not reach server: %{url}'
           unknown_error: 'Your request failed for the following reason: %{reason}'
+          unknown_server: Unable to locate the requested server.
         esri_arcgis: Esri ArcGIS Server
         esri_arcgis_url: ArcGIS Server address
         failing: Failing

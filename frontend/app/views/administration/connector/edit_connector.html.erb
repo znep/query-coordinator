@@ -25,20 +25,20 @@
   <div class="selective-connection">
     <%= form_tag({:action => 'update_connector'}, :method => 'post', :class => 'commonForm') %>
       <h2><%= t("#{prefix}.connection_type") %></h2>
-      <% if @data_connection_on %>
-      <div class="legend">
-        <div class="legend-item">
-          <span role="presentation" class="icon-data legend-icon"></span>
-          <span class="legend-info">
-            <span class= "legend-key"> <%= t("#{prefix}.data_option") %> </span>- <%= t("#{prefix}.data_option_explanation") %>
-          </span>
-        </div>
-        <div class="legend-item">
-          <span role="presentation" class="icon-external-square legend-icon"></span>
-          <span class="legend-info">
-            <span class="legend-key"><%= t("#{prefix}.catalog_option") %> </span>- <%= t("#{prefix}.catalog_option_explanation") %>
-          </span>
-        </div>
+      <% if @enable_catalog_connector && params[:type] == 'esri' %>
+        <div class="legend">
+          <div class="legend-item">
+            <span role="presentation" class="icon-data legend-icon"></span>
+            <span class="legend-info">
+              <span class= "legend-key"> <%= t("#{prefix}.data_option") %> </span>- <%= t("#{prefix}.data_option_explanation") %>
+            </span>
+          </div>
+          <div class="legend-item">
+            <span role="presentation" class="icon-external-square legend-icon"></span>
+            <span class="legend-info">
+              <span class="legend-key"><%= t("#{prefix}.catalog_option") %> </span>- <%= t("#{prefix}.catalog_option_explanation") %>
+            </span>
+          </div>
         </div>
         <fieldset class="line">
           <div class="valueBox inline-value">

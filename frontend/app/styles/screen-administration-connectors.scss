@@ -7,6 +7,10 @@ $pager-blue: #2f4589;
 
 #connector-content {
 
+  .gridList td {
+    vertical-align: middle;
+  }
+
   .connectors-header {
 
     .connector-top-page-status {

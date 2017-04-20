@@ -7,6 +7,12 @@ module DatasetManagementAPI
     get("/api/publishing/v1/revision/#{view_uid}/#{revision_seq}", cookies)['resource']
   end
 
+  def self.get_open_updates(view_uid, cookies)
+    get("/api/publishing/v1/revision/#{view_uid}?open=true", cookies).map do |update|
+      update['resource']
+    end
+  end
+
   def self.get_uploads_index(view_uid, revision_seq, cookies)
     get("/api/publishing/v1/revision/#{view_uid}/#{revision_seq}/upload", cookies)
   end

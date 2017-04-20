@@ -372,4 +372,167 @@ describe DatasetsController do
     end
   end
 
+  describe 'entering DSMP' do
+    before(:each) do
+      stub_site_chrome
+      allow(subject).to receive(:dataset_management_page_enabled?).and_return(true)
+    end
+
+    context 'GET /category/view_name/id/updates/revision_seq' do
+      before do
+        stub_request(:get, 'http://localhost:8080/views/test-data.json').
+          with(:headers => request_headers).
+          to_return(:status => 200, :body => '', :headers => {})
+      end
+
+      before(:each) do
+        allow(subject).to receive(:using_canonical_url?).and_return(true)
+      end
+
+      # 4x4 is valid and has revision, directly to path with sequence number
+      it 'loads the page without error' do
+        allow(DatasetManagementAPI).to receive(:get_update).and_return({'id' => 1})
+        allow(DatasetManagementAPI).to receive(:get_uploads_index).and_return([{'resource' => {'id' => 2}}])
+        allow(DatasetManagementAPI).to receive(:get_upload).and_return([])
+        allow(DatasetManagementAPI).to receive(:get_websocket_token).and_return('a token')
+        init_current_user(controller)
+        login
+        expect(View).to receive(:find).and_return(view)
+        view.stub(:can_read? => true)
+        get :updates, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
+        expect(response).to have_http_status(:success)
+      end
+
+      # 4x4 is not found should 404
+      it '404s for not found views' do
+        init_current_user(controller)
+        login
+        expect(View).to receive(:find).and_raise(CoreServer::ResourceNotFound.new('response'))
+        get :updates, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
+        expect(response).to have_http_status(:not_found)
+      end
+
+      # no permissions for 4x4 should 404
+      it '404s if user does not have permission' do
+        init_current_user(controller)
+        login
+        expect(View).to receive(:find).and_return(view)
+        view.stub(:can_read? => false)
+        get :updates, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      # 4x4 does not have a revision with that sequence number should 404
+      it '404s when DSMAPI can\'t find that revision_seq' do
+        init_current_user(controller)
+        login
+        expect(View).to receive(:find).and_return(view)
+        view.stub(:can_read? => true)
+        allow(DatasetManagementAPI).to receive(:get_update).and_raise(DatasetManagementAPI::ResourceNotFound.new('response'))
+
+        get :updates, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'GET /d/id/updates/revision_seq' do
+      before do
+        stub_request(:get, 'http://localhost:8080/views/test-data.json').
+          with(:headers => request_headers).
+          to_return(:status => 200, :body => '', :headers => {})
+      end
+
+      # 4x4 is valid and has revision, directly to path with sequence number
+      it 'redirects to the cannoical address' do
+        init_current_user(controller)
+        login
+        expect(View).to receive(:find).and_return(view)
+        view.stub(:can_read? => true)
+        expect(subject).to receive(:using_canonical_url?).and_return(false)
+        get :updates, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0'
+        expect(response).to have_http_status(:redirect)
+        expect(response['Location']).to end_with('/updates/0')
+      end
+
+      it 'redirects to the cannoical address, preserving the full path' do
+        init_current_user(controller)
+        login
+        expect(View).to receive(:find).and_return(view)
+        view.stub(:can_read? => true)
+        expect(subject).to receive(:using_canonical_url?).and_return(false)
+        get :updates, :view_name => 'Test-Data', :id => 'test-data', :revision_seq => '0', :rest_of_path => '/metadata/columns'
+        expect(response).to have_http_status(:redirect)
+        expect(response['Location']).to end_with('/updates/0/metadata/columns')
+      end
+    end
+
+    context 'GET /category/view_name/id/updates/current' do
+
+      # 4x4 is valid and has revision, redirected from 'current'
+      it 'redirects without error' do
+        init_current_user(controller)
+        login
+        expect(DatasetManagementAPI)
+          .to receive(:get_open_updates)
+          .and_return([{'revision_seq' => 1}, {'revision_seq' => 0}])
+
+        get :current_update, :id => 'test-data'
+        expect(response).to have_http_status(:redirect)
+        expect(response['Location']).to end_with('/updates/1')
+      end
+
+      it 'redirects without error, preserving the full path' do
+        init_current_user(controller)
+        login
+        expect(DatasetManagementAPI)
+          .to receive(:get_open_updates)
+          .and_return([{'revision_seq' => 1}, {'revision_seq' => 0}])
+
+        get :current_update, :id => 'test-data', :rest_of_path => '/metadata/columns'
+        expect(response).to have_http_status(:redirect)
+        expect(response['Location']).to end_with('/updates/1/metadata/columns')
+      end
+
+      # 4x4 does not have any open revisions should 404 at 'current'
+      it '404s when there are no open revisions' do
+        init_current_user(controller)
+        login
+        expect(DatasetManagementAPI)
+          .to receive(:get_open_updates)
+          .and_return([])
+
+        get :current_update, :id => 'test-data'
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'GET /d/id/updates/current' do
+
+      # 4x4 is valid and has revision, directly to path with sequence number
+      it 'redirects to a path with the revision sequence' do
+        init_current_user(controller)
+        login
+        expect(DatasetManagementAPI)
+          .to receive(:get_open_updates)
+          .and_return([{'revision_seq' => 1}, {'revision_seq' => 0}])
+
+        get :current_update, :id => 'test-data'
+        expect(response).to have_http_status(:redirect)
+        expect(response['Location']).to end_with('/updates/1')
+      end
+
+      # 4x4 is valid and has revision, directly to path with sequence number
+      it 'redirects to a path with the revision sequence, preserving the full path' do
+        init_current_user(controller)
+        login
+        expect(DatasetManagementAPI)
+          .to receive(:get_open_updates)
+          .and_return([{'revision_seq' => 1}, {'revision_seq' => 0}])
+
+        get :current_update, :id => 'test-data', :rest_of_path => '/metadata/columns'
+        expect(response).to have_http_status(:redirect)
+        expect(response['Location']).to end_with('/updates/1/metadata/columns')
+      end
+    end
+  end
 end

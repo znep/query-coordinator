@@ -256,14 +256,21 @@ class DatasetsController < ApplicationController
   end
 
   def updates
-    if FeatureFlags.derive(@view, request).enable_dataset_management_ui
+    if dataset_management_page_enabled?
       @view = get_view(params[:id])
-      unless request.path.starts_with?(canonical_path_proc.call)
-        canonical_url = "#{canonical_path_proc.call}/updates/#{params[:revision_seq]}#{params[:rest_of_path]}"
+      return if @view.nil?
+      unless using_canonical_url?
+        flash.keep
+        canonical_url = "#{canonical_path_proc.call}#{params[:rest_of_path]}"
         return redirect_to(canonical_url)
       end
+
       # TODO: would be more efficient to make fewer api calls to DSMAPI
-      @update = DatasetManagementAPI.get_update(@view.id, params[:revision_seq], cookies)
+      begin
+        @update = DatasetManagementAPI.get_update(@view.id, params[:revision_seq], cookies)
+      rescue DatasetManagementAPI::ResourceNotFound
+        return render_404
+      end
       uploads = DatasetManagementAPI.get_uploads_index(@view.id, params[:revision_seq], cookies)
       full_uploads = uploads.map do |upload|
         upload_id = upload['resource']['id']
@@ -275,6 +282,19 @@ class DatasetsController < ApplicationController
     else
       render_404
     end
+  end
+
+  def current_update
+    if dataset_management_page_enabled?
+      # ask dsmapi for the list of revisions
+      open_updates = DatasetManagementAPI.get_open_updates(params[:id], cookies)
+      if open_updates.length > 0
+        # get the first one and redirect to that path
+        revision_seq = open_updates.first['revision_seq']
+        return redirect_to :action => "updates", :revision_seq => revision_seq, :rest_of_path => params[:rest_of_path]
+      end
+    end
+    return render_404
   end
 
   def blob
@@ -1107,6 +1127,7 @@ class DatasetsController < ApplicationController
   def canonical_path_proc
     Proc.new do |params|
       composite_params = @view.route_params
+
       composite_params.merge!(row_id: @row[':id'] || @row['sid']) unless @row.nil?
       composite_params.merge!(params || {})
 
@@ -1116,6 +1137,8 @@ class DatasetsController < ApplicationController
         alt_view_path(composite_params)
       elsif request.path =~ /\/data$/
         data_grid_path(composite_params)
+      elsif request.path =~ /\/updates/
+        view_updates_path(composite_params)
       else
         view_path(composite_params)
       end
@@ -1238,7 +1261,7 @@ class DatasetsController < ApplicationController
   end
 
   def using_canonical_url?
-    request.path == canonical_path_proc.call(locale: nil)
+    request.path.starts_with(canonical_path_proc.call(locale: nil))
   end
 
   def render_as_dataset_landing_page

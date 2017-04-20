@@ -339,6 +339,16 @@ module CommonMetadataMethods
       metadata[:downloadOverride] = nbe_metadata[:metadata][:overrideLink]
     end
 
+    # field 'rowLabel' exists on the metadata of both the obe and nbe copies
+    # because we have datasets that are nbe-only and potentially datasets that are obe_only
+    # we should try to get the field from the nbe copy first, and then if not found,
+    # get it from the obe copy.
+    if nbe_metadata.dig(:metadata, :rowLabel)
+      metadata[:rowDisplayUnit] = nbe_metadata[:metadata][:rowLabel]
+    elsif obe_metadata.dig(:metadata, :rowLabel)
+      metadata[:rowDisplayUnit] = obe_metadata[:metadata][:rowLabel]
+    end
+
     metadata
   end
 end

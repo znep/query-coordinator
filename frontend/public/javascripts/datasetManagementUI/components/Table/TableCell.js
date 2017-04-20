@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
+import _ from 'lodash';
 import styles from 'styles/Table/TableCell.scss';
 
 class TableCell extends Component {
@@ -9,12 +9,16 @@ class TableCell extends Component {
   }
 
   render() {
-    const cell = this.props.cell;
+    const { cell } = this.props;
+
     if (!cell) {
       return (<td className={styles.notYetLoaded} />);
+
     } else if (cell.error) {
       const inputs = cell.error.inputs;
+
       const input = _.first(_.map(inputs, (value) => value)).ok;
+
       return (
         <td className={styles.error} title={cell.error.message}>
           <div>{input}</div>
@@ -24,12 +28,14 @@ class TableCell extends Component {
       return (
         <td className={styles.empty}><div /></td>
       );
+
     } else {
       return (
-        <td>
+        <td className={styles.base}>
           <div>{`${cell.ok}`}</div>
         </td>
       );
+
     }
   }
 

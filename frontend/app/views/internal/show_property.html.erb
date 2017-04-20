@@ -9,7 +9,7 @@
 
 <%- is_json = !@property.is_a?(String) -%>
 
-<div class="contentBox withLeftNavigation">
+<div class="contentBox withLeftNavigation internalPanelRedesign">
   <div class='content'>
     <%= render :partial => 'production_warning' %>
     <h1>
@@ -30,6 +30,13 @@
       <input type="submit" value="Save" id="saveButton"/>
       <div class="flash notice hide saveMessage">Configuration Saved</div>
     <%- end -%>
+
+    <div class="audit expandable">
+      <%= expandable_section('Audit') do %>
+        <dl class="config_type_description audit_list">
+        </dl>
+      <%- end %>
+    </div>
   </div>
 </div>
 
@@ -100,6 +107,23 @@
       $form.submit(function(event)
       {
           updateJsonVal();
+      });
+
+      $.getJSON('/api/configurations/<%= @config.id %>/properties/<%= CGI.escape(@property_key) %>.json?method=getLastUpdaters&limit=10', function(data) {
+        _.each(data, function(datum) {
+          $('.audit_list').append(
+            $.tag2({ _: 'dt', contents: { _: 'a', href: '/profile/{0}'.format(datum.uid), contents: datum.email }})
+          );
+          $('.audit_list').append(
+            $.tag2({_: 'dd', contents: moment(datum.event_time * 1000).format('LLLL')})
+          );
+        });
+      }).fail(function(xhr) {
+        // Don't pretend it's there if we have no data.
+        // This seems to happen largely because core's CGI-unescaping does bad things with our CGI-escaped property names.
+        if (xhr.status === 404) {
+          $('.audit').remove();
+        }
       });
   });
   </script>

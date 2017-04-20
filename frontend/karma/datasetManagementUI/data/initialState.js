@@ -379,7 +379,7 @@ const initialState = {
     fourfour: '3kt9-pmvq',
     history: [
       {
-        pathname: '/dataset/kjkjkjk/8ftf-gp92/updates/0/uploads/244/schemas/1732/output/355',
+        pathname: '/dataset/kjkjkjk/8ftf-gp92/revisions/0/uploads/244/schemas/1732/output/355',
         search: '',
         hash: '',
         action: 'POP',
@@ -389,7 +389,7 @@ const initialState = {
     ],
     location: {
       locationBeforeTransitions: {
-        pathname: '/dataset/kjkjkjk/8ftf-gp92/updates/0',
+        pathname: '/dataset/kjkjkjk/8ftf-gp92/revisions/0',
         search: '',
         hash: '',
         action: 'PUSH',

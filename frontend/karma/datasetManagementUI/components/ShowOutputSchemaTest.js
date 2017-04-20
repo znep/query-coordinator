@@ -19,7 +19,7 @@ const missingProps = {
     "outputSchemaId": 18
   },
   routing: {
-    "pathname": "/dataset/-kjh-kjh/e5t3-a5v3/updates/0/uploads/263/schemas/1751/output/18",
+    "pathname": "/dataset/-kjh-kjh/e5t3-a5v3/revisions/0/uploads/263/schemas/1751/output/18",
     "search": "",
     "hash": "",
     "action": "POP",

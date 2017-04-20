@@ -57,7 +57,7 @@ function createDataset() {
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         success: function() {
-          document.location = '/d/' + newView.id + '/updates/0';
+          document.location = '/d/' + newView.id + '/revisions/0';
         },
         error: function(xhr, textStatus, errorThrown) {
           handleError(xhr, textStatus, errorThrown, 'dsmapi');

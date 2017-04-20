@@ -3,13 +3,13 @@ module DatasetManagementAPI
 
   class ServerError < StandardError; end
 
-  def self.get_update(view_uid, revision_seq, cookies)
+  def self.get_revision(view_uid, revision_seq, cookies)
     get("/api/publishing/v1/revision/#{view_uid}/#{revision_seq}", cookies)['resource']
   end
 
-  def self.get_open_updates(view_uid, cookies)
-    get("/api/publishing/v1/revision/#{view_uid}?open=true", cookies).map do |update|
-      update['resource']
+  def self.get_open_revisions(view_uid, cookies)
+    get("/api/publishing/v1/revision/#{view_uid}?open=true", cookies).map do |revision|
+      revision['resource']
     end
   end
 

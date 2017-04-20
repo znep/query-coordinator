@@ -20,7 +20,7 @@ const PROPS = {
   },
   routing: {
     locationBeforeTransitions: {
-      pathname: "/dataset/qq/bjp2-6cwn/updates/0",
+      pathname: "/dataset/qq/bjp2-6cwn/revisions/0",
       search: "",
       hash: "",
       action: "POP",

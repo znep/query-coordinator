@@ -18,7 +18,7 @@ const checkUploadStatus = store => (nextState, replace) => {
   if (uploadExists) {
     store.dispatch(focusColumnEditor(nextState));
   } else {
-    replace(`/${category}/${name}/${fourfour}/updates/${updateSeq}`);
+    replace(`/${category}/${name}/${fourfour}/revisions/${updateSeq}`);
   }
 };
 
@@ -26,7 +26,7 @@ const checkUpsertStatus = store => (nextState, replace, blocking) => {
   const upsertJob = _.maxBy(_.values(store.getState().db.upsert_jobs), job => job.updated_at);
 
   const { category, fourfour, name, updateSeq } = nextState.params;
-  const newPath = `/${category}/${name}/${fourfour}/updates/${updateSeq}`;
+  const newPath = `/${category}/${name}/${fourfour}/revisions/${updateSeq}`;
 
   if (upsertJob && newPath !== nextState.location.pathname) {
     replace(newPath);
@@ -38,7 +38,7 @@ const checkUpsertStatus = store => (nextState, replace, blocking) => {
 export default function rootRoute(store) {
   return (
     <Route
-      path="/:category/:name/:fourfour/updates/:updateSeq"
+      path="/:category/:name/:fourfour/revisions/:updateSeq"
       component={App}
       onEnter={checkUpsertStatus(store)}>
 

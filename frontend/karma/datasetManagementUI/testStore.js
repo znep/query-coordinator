@@ -23,7 +23,7 @@ export function getEmptyStore() {
     type: '@@router/LOCATION_CHANGE',
     payload: {
       action: 'POP',
-      pathname: '/dataset/Herp-Derp/hehe-hehe/updates/0/metadata'
+      pathname: '/dataset/Herp-Derp/hehe-hehe/revisions/0/metadata'
     }
   });
   return store;

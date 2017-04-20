@@ -255,7 +255,7 @@ class DatasetsController < ApplicationController
     end
   end
 
-  def updates
+  def show_revision
     if dataset_management_page_enabled?
       @view = get_view(params[:id])
       return if @view.nil?
@@ -267,7 +267,7 @@ class DatasetsController < ApplicationController
 
       # TODO: would be more efficient to make fewer api calls to DSMAPI
       begin
-        @update = DatasetManagementAPI.get_update(@view.id, params[:revision_seq], cookies)
+        @revision = DatasetManagementAPI.get_revision(@view.id, params[:revision_seq], cookies)
       rescue DatasetManagementAPI::ResourceNotFound
         return render_404
       end
@@ -276,7 +276,7 @@ class DatasetsController < ApplicationController
         upload_id = upload['resource']['id']
         DatasetManagementAPI.get_upload(@view.id, params[:revision_seq], upload_id, cookies)
       end
-      @update[:uploads] = full_uploads
+      @revision[:uploads] = full_uploads
       @websocket_token = DatasetManagementAPI.get_websocket_token(@view.id, cookies)
       render 'datasets/dataset_management_ui', :layout => 'styleguide'
     else
@@ -284,14 +284,14 @@ class DatasetsController < ApplicationController
     end
   end
 
-  def current_update
+  def current_revision
     if dataset_management_page_enabled?
       # ask dsmapi for the list of revisions
-      open_updates = DatasetManagementAPI.get_open_updates(params[:id], cookies)
-      if open_updates.length > 0
+      open_revisions = DatasetManagementAPI.get_open_revisions(params[:id], cookies)
+      if open_revisions.length > 0
         # get the first one and redirect to that path
-        revision_seq = open_updates.first['revision_seq']
-        return redirect_to :action => "updates", :revision_seq => revision_seq, :rest_of_path => params[:rest_of_path]
+        revision_seq = open_revisions.first['revision_seq']
+        return redirect_to :action => 'show_revision', :revision_seq => revision_seq, :rest_of_path => params[:rest_of_path]
       end
     end
     return render_404
@@ -1137,8 +1137,8 @@ class DatasetsController < ApplicationController
         alt_view_path(composite_params)
       elsif request.path =~ /\/data$/
         data_grid_path(composite_params)
-      elsif request.path =~ /\/updates/
-        view_updates_path(composite_params)
+      elsif request.path =~ /\/revisions/
+        show_revision_path(composite_params)
       else
         view_path(composite_params)
       end

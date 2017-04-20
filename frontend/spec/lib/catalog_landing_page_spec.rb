@@ -76,6 +76,22 @@ describe CatalogLandingPage do
       end
     end
 
+    context 'when there is a blacklisted parameter' do
+      let(:params) { { category: 'Whatever', q: 'some search' } }
+
+      it 'should return false' do
+        expect(CatalogLandingPage.may_activate?(request)).to eq(false)
+      end
+    end
+
+    context 'when there is a blacklisted parameter with an empty value' do
+      let(:params) { { category: 'Whatever', q: '' } }
+
+      it 'should return true' do
+        expect(CatalogLandingPage.may_activate?(request)).to eq(true)
+      end
+    end
+
     context 'when we get too many parameters' do
       let(:params) { { category: 'Whatever', limitTo: 'charts' } }
 

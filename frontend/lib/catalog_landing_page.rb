@@ -21,11 +21,19 @@ class CatalogLandingPage
     request_store[:valid_params] ||= PARAMS_WHITELIST + CurrentDomain.custom_facets
   end
 
+  # True if there is a blacklisted param in the request that has a present value.
+  # This is because clearing the searchbar can result in `?q=` leftover.
+  def self.blacklisted_param_present?(request)
+    request.params.slice(*PARAMS_BLACKLIST).values.presence.to_a.any?(&:present?)
+  end
+
   def self.may_activate?(request)
     max_params_to_accept = [
       FeatureFlags.value_for(:catalog_landing_page_allows_multiple_params, request: request).to_i,
       1
     ].max
+
+    return false if blacklisted_param_present?(request)
 
     params = request.params.slice(*valid_params)
     return true if (1..max_params_to_accept).include?(params.size)
@@ -51,7 +59,7 @@ class CatalogLandingPage
 
   def self.should_route?(request)
     # EN-15742: If a search query has been made, do not show the CLP.
-    return false if request.params.slice(*PARAMS_BLACKLIST).values.presence.to_a.any?(&:present?)
+    return false if blacklisted_param_present?(request)
 
     # EN-15655: Prevent CLP from loading in the select dataset modal (path == '/browse/select_dataset').
     request.path == '/browse'

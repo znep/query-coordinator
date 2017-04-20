@@ -33,4 +33,3 @@ describe Constraints::CatalogLandingPageConstraint do
   end
 
 end
-

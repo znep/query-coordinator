@@ -101,7 +101,11 @@ class Administration::ConnectorController < AdministrationController
 
   def delete_connector
     begin
-      @response = EsriServerConnector.delete_server(params[:server_id])
+      if params['server_backend'] == 'catalog_federator'
+        response = CatalogFederatorConnector.delete(params[:server_id])
+      else
+        response = EsriServerConnector.delete_server(params[:server_id])
+      end
       respond_to do |format|
         format.html do
           flash[:notice] = t('screens.admin.connector.flashes.deleted')

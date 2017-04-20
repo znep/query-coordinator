@@ -16,8 +16,8 @@ class CatalogFederatorSource
     @last_synced = @data['syncEnded']
   end
 
-  def backend
-    'catalog-federator'
+  def server_backend
+    'catalog_federator'
   end
 
   def status_key

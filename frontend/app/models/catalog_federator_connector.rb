@@ -24,5 +24,10 @@ class CatalogFederatorConnector
       }
       client.post_source(source)
     end
+
+    def delete(source_id)
+      client.disable_source(source_id)
+      client.delete_source(source_id)
+    end
   end
 end

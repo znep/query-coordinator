@@ -23,8 +23,8 @@ describe CatalogFederatorSource, :type => :model do
     end
 
 
-    it 'has a catalog-federator backend' do
-      expect(source.backend).to eq('catalog-federator')
+    it 'has a catalog_federator backend' do
+      expect(source.server_backend).to eq('catalog_federator')
     end
 
     it 'has a no sync status yet' do
@@ -63,8 +63,8 @@ describe CatalogFederatorSource, :type => :model do
     end
 
 
-    it 'has a catalog-federator backend' do
-      expect(source.backend).to eq('catalog-federator')
+    it 'has a catalog_federator backend' do
+      expect(source.server_backend).to eq('catalog_federator')
     end
 
     it 'has a success sync status' do

@@ -17,8 +17,8 @@ class EsriServer
     @last_synced = @data['last_synced']
   end
 
-  def backend
-    'esri-crawler'
+  def server_backend
+    'esri_crawler'
   end
 
   def status_key

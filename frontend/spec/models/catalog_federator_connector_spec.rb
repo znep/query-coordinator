@@ -70,12 +70,63 @@ describe CatalogFederatorConnector do
       expect(source['syncUserId']).to be(689)
     end
 
-    it 'returns an empty array if catalog-federator cannot return them' do
+    it 'throws an error if catalog-federator cannot create it' do
       allow_any_instance_of(Socrata::RequestIdHelper).to receive(:current_request_id).and_return('req_id2')
       source_form = {'source_url' => 'some.data.json', 'display_name' => 'data'}
       expect do
         CatalogFederatorConnector.create(source_form)
       end.to raise_error(StandardError)
+    end
+  end
+
+  describe '#delete' do
+
+    let(:disable1) { @disable1 }
+    let(:delete1) { @delete1 }
+    let(:disable2) { @disable2 }
+    let(:delete2) { @delete2 }
+    let(:disable3) { @disable3 }
+
+    before do
+      allow(CurrentDomain).to receive(:cname).and_return('localhost')
+      allow(APP_CONFIG).to receive(:catalog_federator_url).and_return('cf-host')
+      allow_any_instance_of(Socrata::CookieHelper).to receive(:current_cookies).and_return('nom_NOM')
+
+      @disable1 = stub_request(:delete, "#{base_uri}/v1/source/428/disable").
+        with(:headers => {'Content-Type' => 'application/json', 'X-Socrata-RequestId' => 'req_id1', 'Cookie' => 'nom_NOM', 'X-Socrata-Host' => 'localhost'}).
+        to_return(status: 200)
+      @delete1 = stub_request(:delete, "#{base_uri}/v1/source/428").
+        with(:headers => {'Content-Type' => 'application/json', 'X-Socrata-RequestId' => 'req_id1', 'Cookie' => 'nom_NOM', 'X-Socrata-Host' => 'localhost'}).
+        to_return(status: 200)
+      @disable2 = stub_request(:delete, "#{base_uri}/v1/source/429/disable").
+        with(:headers => {'Content-Type' => 'application/json', 'X-Socrata-RequestId' => 'req_id2', 'Cookie' => 'nom_NOM', 'X-Socrata-Host' => 'localhost'}).
+        to_return(status: 200)
+      @delete2= stub_request(:delete, "#{base_uri}/v1/source/429").
+        with(:headers => {'Content-Type' => 'application/json', 'X-Socrata-RequestId' => 'req_id2', 'Cookie' => 'nom_NOM', 'X-Socrata-Host' => 'localhost'}).
+        to_return(status: 500)
+      @disable3 = stub_request(:delete, "#{base_uri}/v1/source/430/disable").
+        with(:headers => {'Content-Type' => 'application/json', 'X-Socrata-RequestId' => 'req_id3', 'Cookie' => 'nom_NOM', 'X-Socrata-Host' => 'localhost'}).
+        to_return(status: 500)
+    end
+
+    it 'deletes the source if catalog-federator successfully disables and deletes it' do
+      allow_any_instance_of(Socrata::RequestIdHelper).to receive(:current_request_id).and_return('req_id1')
+      CatalogFederatorConnector.delete(428)
+      assert_requested(disable1)
+      assert_requested(delete1)
+    end
+
+    it 'throws an error if catalog-federator successfully disables it but fails to delete it' do
+      allow_any_instance_of(Socrata::RequestIdHelper).to receive(:current_request_id).and_return('req_id2')
+      expect { CatalogFederatorConnector.delete(429) }.to raise_error(StandardError)
+      assert_requested(disable2)
+      assert_requested(delete2)
+    end
+
+    it 'throws an error if catalog-federator fails to disable it' do
+      allow_any_instance_of(Socrata::RequestIdHelper).to receive(:current_request_id).and_return('req_id3')
+      expect { CatalogFederatorConnector.delete(430) }.to raise_error(StandardError)
+      assert_requested(disable3)
     end
   end
 end

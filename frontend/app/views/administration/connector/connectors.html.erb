@@ -83,7 +83,7 @@
                 </td>
                 <td class="federatedAssets" scope="row">
                     <%= link_to_if(
-                          server.connected_count > 0 && server.backend == 'esri-crawler',
+                          server.connected_count > 0 && server.server_backend == 'esri_crawler',
                           t("#{connector}.assets_connected", count: server.connected_count),
                           { controller: "connector", action: :show_connector, :server_id => server.id }) %>
                 </td>
@@ -102,7 +102,7 @@
                   <%- end -%>
                 </td>
                 <td class="actions" scope="row">
-                  <%- if server.last_synced || server.backend == 'catalog-federator' %>
+                  <%- if server.last_synced || server.server_backend == 'catalog_federator' %>
                     <%= link_to(
                       t("#{connector}.edit"),
                       {
@@ -121,7 +121,7 @@
                     %>
                   <%- end -%>
                   <%= form_button(
-                    {:action => :delete_connector, :server_id => server.id},
+                    {:action => :delete_connector, :server_id => server.id, :server_backend => server.server_backend},
                     t("#{connector}.terminate"),
                     {:method => :delete},
                     :class => "button buttonArea"

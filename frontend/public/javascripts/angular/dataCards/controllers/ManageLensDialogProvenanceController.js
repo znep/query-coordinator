@@ -1,9 +1,9 @@
 /*
 We are now introducing 'Provenance' to our users. Provenance has two values:
   - OFFICIAL
-  - null
+  - COMMUNITY
 
-Eventually we want to introduce another value, "COMMUNITY", but for now it is either OFFICIAL or null.
+For historical reasons, the COMMUNITY status is internally represented as null.
 */
 
 module.exports = function ManageLensDialogProvenanceController($scope, http, $q, rx) {
@@ -31,7 +31,7 @@ module.exports = function ManageLensDialogProvenanceController($scope, http, $q,
 
     // Core expects all caps for the payload
     var payload = {
-      provenance: $scope.isOfficial ? 'OFFICIAL' : null
+      provenance: $scope.isOfficial ? 'OFFICIAL' : 'COMMUNITY'
     };
 
     return http.put(url, payload);

@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import { expect, assert } from 'chai';
 const angular = require('angular');
 
@@ -12,8 +13,6 @@ describe('ManageLensDialogProvenanceController', function() {
 
   var $dialogScope;
   var $scope;
-
-  var metadataUrl = /^\/views\/page-page/;
 
   beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
@@ -30,14 +29,11 @@ describe('ManageLensDialogProvenanceController', function() {
     testHelpers.TestDom.clear();
   });
 
-  beforeEach(function() {
-    $httpBackend.when('PUT', metadataUrl).respond({});
-  });
-
-  function createController() {
-    var datasetOverrides = {};
+  function createController(pageOverrides, datasetOverrides) {
+    pageOverrides = pageOverrides || {};
+    datasetOverrides = datasetOverrides || {};
     $dialogScope = $rootScope.$new();
-    $dialogScope.page = Mockumentary.createPage();
+    $dialogScope.page = Mockumentary.createPage(pageOverrides, datasetOverrides);
     $dialogScope.dataset = Mockumentary.createDataset(datasetOverrides);
     $controller('ManageLensDialogController', { $scope: $dialogScope });
     $scope = $dialogScope.$new();
@@ -93,6 +89,50 @@ describe('ManageLensDialogProvenanceController', function() {
     _.defer(function() {
       assert.isFalse($scope.components.provenance.hasErrors);
       done();
+    });
+  });
+
+  describe('when saving', function() {
+    var metadataUrl = '/api/views/page-page.json';
+
+    beforeEach(function() {
+      $httpBackend.when('PUT', metadataUrl).respond({});
+      sinon.stub(socrata.utils, 'getCookie').returns('CSRF-TOKEN');
+    });
+
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
+
+      socrata.utils.getCookie.restore();
+    });
+
+    it('sends OFFICIAL to Core when isOfficial = true', function(done) {
+      createController({ provenance: null });
+      $scope.isOfficial = true;
+      $scope.$apply();
+
+      _.defer(function() {
+        $httpBackend.expectPUT(metadataUrl, { provenance: 'OFFICIAL' });
+
+        $scope.components.provenance.save();
+        $httpBackend.flush();
+        done();
+      });
+    });
+
+    it('sends COMMUNITY to Core when isOfficial = false', function(done) {
+      createController({ provenance: 'official' });
+      $scope.isOfficial = false;
+      $scope.$apply();
+
+      _.defer(function() {
+        $httpBackend.expectPUT(metadataUrl, { provenance: 'COMMUNITY' });
+
+        $scope.components.provenance.save();
+        $httpBackend.flush();
+        done();
+      });
     });
   });
 

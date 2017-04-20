@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import InfoPane from 'components/InfoPane';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
@@ -16,7 +16,7 @@ describe('InfoPane', () => {
         isEphemeral: true
       }));
 
-      expect(element.querySelector('.entry-meta .date').innerText).to.equal('Unsaved');
+      assert.equal(element.querySelector('.entry-meta .date').innerText, 'Unsaved');
     });
 
     it('renders the lastUpdatedAt value if the view is not ephemeral', () => {
@@ -24,7 +24,7 @@ describe('InfoPane', () => {
         isEphemeral: false
       }));
 
-      expect(element.querySelector('.entry-meta .date').innerText).to.equal('November 15, 2016');
+      assert.equal(element.querySelector('.entry-meta .date').innerText, 'November 15, 2016');
     });
   });
 
@@ -32,7 +32,7 @@ describe('InfoPane', () => {
     const element = renderComponentWithStore(InfoPane, {});
     const footer = element.querySelector('.entry-meta.first a');
 
-    expect(footer.innerText).to.equal('Based on ' + mockParentView.name);
-    expect(footer.href).to.have.string(mockParentView.path);
+    assert.equal(footer.innerText, 'Based on ' + mockParentView.name);
+    assert.isTrue(footer.href.includes(mockParentView.path));
   });
 });

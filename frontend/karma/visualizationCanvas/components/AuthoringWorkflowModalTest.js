@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import { AuthoringWorkflowModal } from 'components/AuthoringWorkflowModal';
 import mockVif from 'data/mockVif';
 

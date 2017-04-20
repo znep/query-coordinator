@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import App, { App as PureApp } from 'App';
 import { ModeStates } from 'lib/constants';
 import { getStore } from '../testStore';
@@ -73,7 +73,7 @@ describe('App', function() {
         }
       ));
       const editVisualizationButtons = element.querySelectorAll('.edit-visualization-button');
-      expect(editVisualizationButtons.length).to.equal(2);
+      assert.equal(editVisualizationButtons.length, 2);
     });
 
     it('renders a Table', () => {
@@ -145,7 +145,7 @@ describe('App', function() {
 
     it('does not render edit visualization buttons', () => {
       element = renderComponentWithStore(App, {}, getStore({ mode: ModeStates.PREVIEW, vifs: [mockVif] }));
-      expect(element.querySelectorAll('.edit-visualization-button-container').length).to.equal(0);
+      assert.equal(element.querySelectorAll('.edit-visualization-button-container').length, 0);
     });
 
     it('renders a Table', () => {
@@ -201,16 +201,11 @@ describe('App', function() {
 
     it('does not render edit visualization buttons', () => {
       element = renderComponentWithStore(App, {}, getStore({ mode: ModeStates.VIEW, vifs: [mockVif] }));
-      expect(element.querySelectorAll('.edit-visualization-button-container').length).to.equal(0);
+      assert.equal(element.querySelectorAll('.edit-visualization-button-container').length, 0);
     });
 
     it('renders a Table', () => {
       assert.ok(element.querySelector('.table-contents'));
     });
   });
-
-  it('throws an error if no mode is specified', () => {
-    expect(() => renderComponentWithStore(App, {}, getStore({ mode: 'unicorns' })).to.throw(/invalid mode/));
-  });
 });
-

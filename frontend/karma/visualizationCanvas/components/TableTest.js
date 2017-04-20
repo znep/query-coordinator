@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import Table from 'components/Table';
 
 describe('Table', () => {
@@ -13,6 +13,6 @@ describe('Table', () => {
   });
 
   it('renders a table', () => {
-    assert.ok(element.querySelector('.socrata-table'));
+    sinon.assert.calledOnce($.fn.socrataTable);
   });
 });

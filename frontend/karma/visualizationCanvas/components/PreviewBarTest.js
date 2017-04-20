@@ -1,5 +1,5 @@
+import { assert } from 'chai';
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
 import { PreviewBar } from 'components/PreviewBar';
 
 describe('PreviewBar', () => {
@@ -38,6 +38,6 @@ describe('PreviewBar', () => {
   });
 
   it('renders the preview title', () => {
-    expect(element.innerText).to.equal(I18n.preview);
+    assert.equal(element.innerText, I18n.preview);
   });
 });

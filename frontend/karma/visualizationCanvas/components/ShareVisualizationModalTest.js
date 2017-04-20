@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import { ShareVisualizationModal } from 'components/ShareVisualizationModal';
 import mockVif from 'data/mockVif';
 

@@ -1,5 +1,5 @@
+import { assert } from 'chai';
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
 import { AddVisualizationButton } from 'components/AddVisualizationButton';
 import mockVif from 'data/mockVif';
 

@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import { EditBar } from 'components/EditBar';
 
 describe('EditBar', () => {
@@ -25,7 +25,7 @@ describe('EditBar', () => {
   });
 
   it('renders the page name', () => {
-    expect(element.innerText).to.contain('wombats');
+    assert.match(element.innerText, /wombats/);
   });
 
   it('renders a save button', () => {

@@ -1,5 +1,5 @@
+import { assert } from 'chai';
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
 import { Simulate } from 'react-addons-test-utils';
 import { SaveNotification } from 'components/SaveNotification';
 import { SaveStates } from 'lib/constants';
@@ -47,17 +47,17 @@ describe('SaveNotification', () => {
     const dismiss = sinon.spy();
     element = renderComponent(SaveNotification, getProps({ saveState: SaveStates.SAVED, dismiss }));
 
-    expect(dismiss.called).to.equal(false);
+    sinon.assert.notCalled(dismiss);
     Simulate.click(getDismissButton(element));
-    expect(dismiss.called).to.equal(true);
+    sinon.assert.calledOnce(dismiss);
   });
 
   it('calls retry when the retry button is clicked', () => {
     const retry = sinon.spy();
     element = renderComponent(SaveNotification, getProps({ saveState: SaveStates.ERRORED, retry }));
 
-    expect(retry.called).to.equal(false);
+    sinon.assert.notCalled(retry);
     Simulate.click(getRetryButton(element));
-    expect(retry.called).to.equal(true);
+    sinon.assert.calledOnce(retry);
   });
 });

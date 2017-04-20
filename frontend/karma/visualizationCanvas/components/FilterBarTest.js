@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import _ from 'lodash';
 import { mapStateToProps, mapDispatchToProps } from 'components/FilterBar';
 import parentView from 'data/mockParentView';
@@ -17,7 +17,7 @@ describe('FilterBar', () => {
     });
 
     it('returns columns', () => {
-      expect(_.isArray(props.columns)).to.equal(true);
+      assert.isArray(props.columns);
     });
 
     it('omits number columns without column stats', () => {
@@ -59,7 +59,7 @@ describe('FilterBar', () => {
     });
 
     it('returns filters', () => {
-      expect(props.filters).to.deep.equal(filters);
+      assert.deepEqual(props.filters, filters);
     });
 
     it('omits any undisplayable filters', () => {
@@ -74,12 +74,12 @@ describe('FilterBar', () => {
         ],
         parentView
       });
-      expect(props.filters.length).to.equal(1);
-      expect(props.filters[0]).to.deep.equal(filter);
+      assert.equal(props.filters.length, 1);
+      assert.deepEqual(props.filters[0], filter);
     });
 
     it('returns a function to valid text filter values', () => {
-      expect(props.isValidTextFilterColumnValue).to.be.a('function');
+      assert.isFunction(props.isValidTextFilterColumnValue);
     });
   });
 

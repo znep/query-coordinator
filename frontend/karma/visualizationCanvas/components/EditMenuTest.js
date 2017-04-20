@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import { EditMenu } from 'components/EditMenu';
 import mockView from 'data/mockView';
 import { renderIntoDocument, Simulate } from 'react-addons-test-utils';
@@ -27,11 +27,11 @@ describe('EditMenu', () => {
   });
 
   it('uses the page name as default value for the title field', () => {
-    expect(element.querySelector('input[id="edit-title-field"]').value).to.eq('test name');
+    assert.equal(element.querySelector('input[id="edit-title-field"]').value, 'test name');
   });
 
   it('uses the page description as default value for the description field', () => {
-    expect(element.querySelector('textarea[id="edit-description-field"]').value).to.eq('test description');
+    assert.equal(element.querySelector('textarea[id="edit-description-field"]').value, 'test description');
   });
 
   it('update the name in state if the name field value is changed', (done) => {
@@ -44,7 +44,7 @@ describe('EditMenu', () => {
     TestUtils.Simulate.change(textInput);
 
     _.defer(() => {
-      expect(component.state.name).to.eq('new name');
+      assert.equal(component.state.name, 'new name');
       done();
     });
   });
@@ -59,7 +59,7 @@ describe('EditMenu', () => {
     TestUtils.Simulate.change(textarea);
 
     _.defer(() => {
-      expect(component.state.description).to.eq('new description');
+      assert.equal(component.state.description, 'new description');
       done();
     });
   });

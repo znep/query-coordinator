@@ -16,6 +16,7 @@ class CatalogLandingPage
   end
 
   PARAMS_WHITELIST = %w(category limitTo provenance federation_filter)
+  PARAMS_BLACKLIST = %w(q)
   def self.valid_params
     request_store[:valid_params] ||= PARAMS_WHITELIST + CurrentDomain.custom_facets
   end
@@ -49,6 +50,9 @@ class CatalogLandingPage
   end
 
   def self.should_route?(request)
+    # EN-15742: If a search query has been made, do not show the CLP.
+    return false if request.params.slice(*PARAMS_BLACKLIST).values.presence.to_a.any?(&:present?)
+
     # EN-15655: Prevent CLP from loading in the select dataset modal (path == '/browse/select_dataset').
     request.path == '/browse'
   end

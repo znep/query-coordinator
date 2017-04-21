@@ -93,6 +93,10 @@ function SvgRegionMap(element, vif) {
     }
 
     if (newVif) {
+      // First, update our internal VIF reference, since both updateCenterAndZoom and updateBaseLayer
+      // depend on this.getVif() returning the updated VIF instead of the previously rendered VIF.
+      self.updateVif(newVif);
+
       // If the VIF has the center and zoom level of the map specified we can
       // just use that. Otherwise we'll need to derive a bounding box from the
       // shapefile and tell Leaflet to attempt to show that bounding box
@@ -111,7 +115,6 @@ function SvgRegionMap(element, vif) {
         updateMapBoundsFromGeoJSONData(newData);
       }
 
-      self.updateVif(newVif);
       updateBaseLayer();
     }
 

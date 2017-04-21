@@ -28,6 +28,10 @@
   <%= render 'esri_connectors' if @esri_connectors.present? %>
   <%= render 'catalog_federator_connectors' if @catalog_federator_connectors.present? %>
 
+  <% if @esri_connectors.blank? && @catalog_federator_connectors.blank? %>
+    <p class="noResultsMessage"> <%= t("screens.admin.connector.no_connectors") %> </p>
+  <%- end -%>
+
 </div>
 
 <%= render_admin_qualtrics %>

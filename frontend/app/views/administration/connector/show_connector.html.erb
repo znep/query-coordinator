@@ -114,7 +114,7 @@
         <%= link_to(
           element.index,
           "/admin/connectors/#{@server.id}?page=#{element.index}&#{element.get_params}",
-          :class => "pager-element page #{'pager-page-selected' if element.selected}")
+          :class => "pager-element page #{'pager-page-selected' if element.selected}"
         ) %>
       <% else %>
         <span class="pager-element ellipsis">…</span>

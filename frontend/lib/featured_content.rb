@@ -82,11 +82,16 @@ class FeaturedContent
     # in the context of a View Card since the view card properties differ from what the API returns.
     def featured_item(featured_item)
       view_card_mapping = featured_item.slice(*%w(contentType description id position url)).with_indifferent_access
-      view_card_mapping[:uid] = featured_item['featuredLensUid']
+      uid = featured_item['featuredLensUid']
+      view_card_mapping[:uid] = uid
       view_card_mapping[:name] = featured_item['title']
 
       if featured_item['previewImage'].present?
-        view_card_mapping[:imageUrl] = "https://#{CurrentDomain.cname}/api/file_data/#{featured_item['previewImage']}"
+        if view_card_mapping[:contentType] == 'internal'
+          view_card_mapping[:imageUrl] = "https://#{CurrentDomain.cname}/views/#{uid}/files/#{featured_item['previewImage']}"
+        else
+          view_card_mapping[:imageUrl] = "https://#{CurrentDomain.cname}/api/file_data/#{featured_item['previewImage']}"
+        end
       end
 
       result = Cetera::Utils.search_views(

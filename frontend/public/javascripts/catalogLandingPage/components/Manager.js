@@ -71,6 +71,15 @@ export class Manager extends React.Component {
       } else {
         featuredContentPayload[key].contentType = 'internal';
         featuredContentPayload[key].featuredLensUid = featuredContentItem.uid;
+        // EN-15773: For internal featured content items, the imageUrl is going to be something like:
+        // https://domain.gov/views/rjq6-7bhn/files/83703c09-8c91-45f1-8a38-63f9c5112277
+        // The featured content api only accepts the id portion at the end, so parse it out for the payload.
+        if (featuredContentItem.imageUrl) {
+          const previewImageId = featuredContentItem.imageUrl.match(/(([a-z0-9]+-){4})[a-z0-9]+$/);
+          if (previewImageId && previewImageId[0]) {
+            featuredContentPayload[key].previewImage = previewImageId[0];
+          }
+        }
       }
     });
 

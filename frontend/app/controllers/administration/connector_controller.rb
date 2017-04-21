@@ -38,7 +38,7 @@ class Administration::ConnectorController < AdministrationController
     rescue EsriCrawler::ServerError => error
       return display_external_error(error, :new_connector)
     rescue StandardError => error
-      handle_failed_connection(error)
+      return handle_failed_connection(error)
     end
 
     respond_to do |format|
@@ -63,9 +63,9 @@ class Administration::ConnectorController < AdministrationController
       return display_external_error(error, :edit_connector)
     rescue EsriCrawler::ResourceNotFound => error
       flash[:error] = t('screens.admin.connector.flashes.server_not_found')
-      redirect_to :action => :connectors
+      return redirect_to :action => :connectors
     rescue StandardError => error
-      handle_failed_connection(error)
+      return handle_failed_connection(error)
     end
     respond_to do |format|
       format.html do

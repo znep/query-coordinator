@@ -17,8 +17,6 @@ class Administration::ConnectorController < AdministrationController
   before_filter :fetch_server, :only => :edit_connector
   before_filter :fetch_connectors, :only => :connectors
 
-  before_filter :set_default_type, :only => %i(edit_connector show_connector)
-
   def connectors # index
   end
 
@@ -151,11 +149,6 @@ class Administration::ConnectorController < AdministrationController
   private
 
   # +before_filter+
-  def set_default_type
-    params[:type] ||= 'esri' # Default to Esri if not specified on the URL for backward compatibility.
-  end
-
-  # +before_filter+
   def require_a_catalog_connector
     check_feature_flag('enable_catalog_connector') || check_feature_flag('enable_catalog_federator_connector')
   end
@@ -189,6 +182,7 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def fetch_server
+    params[:type] ||= 'esri'
     @enable_catalog_connector = check_feature_flag('enable_catalog_connector')
     if params[:type] == 'esri'
       begin

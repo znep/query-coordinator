@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import MetadataField from 'components/MetadataField';
 import Fieldset from 'components/MetadataFields/Fieldset';
-import reformed from 'components/Forms/reformed';
+import manageModel from 'components/Forms/manageModel';
 import validateSchema from 'components/Forms/validateSchema';
 import { edit } from 'actions/database';
 import * as Selectors from 'selectors';
@@ -122,7 +122,7 @@ const mapStateToProps = ({ db, routing }) => {
 
 const formWrapper = _.flowRight([
   connect(mapStateToProps, mapDispatchToProps),
-  reformed,
+  manageModel,
   validateSchema()
 ]);
 

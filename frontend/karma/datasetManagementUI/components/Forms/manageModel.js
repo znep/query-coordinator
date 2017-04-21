@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import reformed from 'components/Forms/reformed';
+import manageModel from 'components/Forms/manageModel';
 
 const WrappedForm = (props) =>
   <form>
@@ -16,25 +16,25 @@ describe('components/Forms/reformed', () => {
   };
 
   it('renders the wrapped component', () => {
-    const ReformedForm = reformed(WrappedForm);
+    const WrappedForm = manageModel(WrappedForm);
 
-    const component = shallow(<ReformedForm />);
+    const component = shallow(<WrappedForm />);
 
     expect(component.name()).to.eq('WrappedForm');
   });
 
   it('passes form data-model to the wrapped component', () => {
-    const ReformedForm = reformed(WrappedForm);
+    const WrappedForm = manageModel(WrappedForm);
 
-    const component = shallow(<ReformedForm initialModel={initialModel} />);
+    const component = shallow(<WrappedForm initialModel={initialModel} />);
 
     expect(component.props().model).to.deep.eq(initialModel);
   });
 
   it('passes callbacks needed to manage form data to the wrapped component', () => {
-    const ReformedForm = reformed(WrappedForm);
+    const WrappedForm = manageModel(WrappedForm);
 
-    const component = shallow(<ReformedForm />);
+    const component = shallow(<WrappedForm />);
 
     expect(component.props()).to.contain.keys([
       'setModel',
@@ -48,9 +48,9 @@ describe('components/Forms/reformed', () => {
   });
 
   it('updates state correctly when setModel is called', () => {
-    const ReformedForm = reformed(WrappedForm);
+    const WrappedForm = manageModel(WrappedForm);
 
-    const component = shallow(<ReformedForm initialModel={initialModel} />);
+    const component = shallow(<WrappedForm initialModel={initialModel} />);
 
     const newModel = {
       ...initialModel,
@@ -63,9 +63,9 @@ describe('components/Forms/reformed', () => {
   });
 
   it('updates state correctly when setProperty is called', () => {
-    const ReformedForm = reformed(WrappedForm);
+    const WrappedForm = manageModel(WrappedForm);
 
-    const component = shallow(<ReformedForm initialModel={initialModel} />);
+    const component = shallow(<WrappedForm initialModel={initialModel} />);
 
     component.props().setProperty('name', 'newName');
 
@@ -73,9 +73,9 @@ describe('components/Forms/reformed', () => {
   });
 
   it('updates state correctly when setDirty is called', () => {
-    const ReformedForm = reformed(WrappedForm);
+    const WrappedForm = manageModel(WrappedForm);
 
-    const component = shallow(<ReformedForm initialModel={initialModel} />);
+    const component = shallow(<WrappedForm initialModel={initialModel} />);
 
     const dirtyState = {
       form: true,
@@ -88,9 +88,9 @@ describe('components/Forms/reformed', () => {
   });
 
   it('updates state correctly when setDirtyProperty is called', () => {
-    const ReformedForm = reformed(WrappedForm);
+    const WrappedForm = manageModel(WrappedForm);
 
-    const component = shallow(<ReformedForm initialModel={initialModel} />);
+    const component = shallow(<WrappedForm initialModel={initialModel} />);
 
     component.props().setDirtyProperty('name');
 

@@ -146,7 +146,7 @@ const makeWrapper = (WrappedComponent) => {
     initialModel: PropTypes.object
   };
 
-  FormWrapper.displayName = `Reformed(${getComponentName(WrappedComponent)})`;
+  FormWrapper.displayName = `ManageModel(${getComponentName(WrappedComponent)})`;
   return hoistNonReactStatics(FormWrapper, WrappedComponent);
 };
 

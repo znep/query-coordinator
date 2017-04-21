@@ -17,6 +17,8 @@ class Administration::ConnectorController < AdministrationController
   before_filter :fetch_server, :only => :edit_connector
   before_filter :fetch_connectors, :only => :connectors
 
+  before_filter :set_default_type, :only => %i(edit_connector show_connector)
+
   def connectors # index
   end
 
@@ -51,7 +53,6 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def edit_connector
-    params[:type] ||= 'esri' # Default to Esri if not specified on the URL for backward compatibility.
   end
 
   def update_connector
@@ -119,30 +120,40 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def show_connector
-    @enable_catalog_connector = check_feature_flag('enable_catalog_connector')
-    page_size = 50
-    all_threshold = 8
-    page_idx = params.fetch(:page, '1').to_i
-    offset = (page_idx - 1) * page_size
+    # Show page currently only supported for Esri connectors
+    if params[:type] == 'esri'
+      @enable_catalog_connector = check_feature_flag('enable_catalog_connector')
+      page_size = 50
+      all_threshold = 8
+      page_idx = params.fetch(:page, '1').to_i
+      offset = (page_idx - 1) * page_size
 
-    begin
-      @server = EsriServerConnector.server(params[:server_id])
-      layer_resp = EsriServerConnector.all_layers(params[:server_id], offset, page_size)
-      @layers = layer_resp['items']
-      count = layer_resp['count']
-    rescue EsriCrawler::ResourceNotFound => error
-      flash[:error] = t('screens.admin.connector.flashes.server_not_found')
-      redirect_to :action => :connectors
-    rescue EsriCrawler::ServerError => error
-      return display_external_error(error, :connectors)
-    rescue StandardError => error
-      handle_failed_connection(error)
+      begin
+        @server = EsriServerConnector.server(params[:server_id])
+        layer_resp = EsriServerConnector.all_layers(params[:server_id], offset, page_size)
+        @layers = layer_resp['items']
+        count = layer_resp['count']
+      rescue EsriCrawler::ResourceNotFound => error
+        flash[:error] = t('screens.admin.connector.flashes.server_not_found')
+        redirect_to :action => :connectors
+      rescue EsriCrawler::ServerError => error
+        return display_external_error(error, :connectors)
+      rescue StandardError => error
+        handle_failed_connection(error)
+      end
+
+      @pager_elements = Pager::paginate(count, page_size, page_idx, { :all_threshold => all_threshold, :params => {} })
+    else
+      redirect_to :connectors
     end
-
-    @pager_elements = Pager::paginate(count, page_size, page_idx, { :all_threshold => all_threshold, :params => {} })
   end
 
   private
+
+  # +before_filter+
+  def set_default_type
+    params[:type] ||= 'esri' # Default to Esri if not specified on the URL for backward compatibility.
+  end
 
   # +before_filter+
   def require_a_catalog_connector

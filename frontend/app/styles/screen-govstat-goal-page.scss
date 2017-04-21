@@ -900,35 +900,20 @@ $chartHeight: 210px;
 
 .measuresContainer {
   overflow: hidden;
-  padding: 0 7em;
-  &.count-1 .relatedMeasure {
-    border: none;
-    float: none;
-    width: auto;
-  }
-  &.count-2 .relatedMeasure {
-    width: 50%;
-    &:last-child {
-      border-right: none;
-      margin-right: -20px;
-    }
-  }
+  padding: 0 8em;
+
   .relatedMeasure {
+    width: 45%;
+    box-sizing: border-box;
     border-top: 1px solid #cecece;
-    border-right: 1px solid #cecece;
     float: left;
-    margin-bottom: 3em;
+    margin-bottom: 5em;
     @include transition(2s, margin-bottom);
-    width: 33.333%;
-    &:nth-child(1), &:nth-child(2), &:nth-child(3) {
-      border-top: none;
-    }
-    &:nth-child(3n+1) {
-      clear: left;
-    }
-    &:nth-child(3n) {
+    &:nth-child(2n) {
       border-right: none;
-      margin-right: -20px;
+    }
+    &:nth-child(2n+1) {
+      margin-right: 10%;
     }
     .wrapper {
       min-height: 13em;

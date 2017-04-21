@@ -88,26 +88,20 @@
           </div>
         </div> <%# end flex box container %>
       <% end %>
+    </form>
 
-      <%= form_tag({:action => 'update_connector'}, {:method => 'post', :class => 'commonForm'}) %>
-        <fieldset class="line">
+    <%= form_tag({:action => 'update_connector'}, {:method => 'post', :class => 'commonForm'}) %>
+      <fieldset class="line">
+        <div class="filter-assets">
+          <input
+            type="text"
+            title="<%= t("screens.admin.connector.search") %>"
+            class="textPrompt searchBox prompt"/>
+        </div>
 
-          <div class="filter-assets">
-            <input
-              type="text"
-              title="<%= t("#{prefix}.search") %>"
-              class="textPrompt searchBox prompt"/>
-          </div>
-
-          <% if @tree.present? %>
-            <%= render 'esri_tree' %>
-          <% end %>
-
-          <% if @list.present? %>
-            <%= render 'catalog_federator_list' %>
-          <% end %>
-        <%# end inner fieldset tag (by rails)%>
-      <%# end outer fieldset tag (by rails) %>
+        <%= render 'esri_tree' if @tree.present? %>
+        <%= render 'catalog_federator_list' if @list.present? %>
+      </fieldset>
     </form>
   </div>
 </div>

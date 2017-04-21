@@ -61,8 +61,7 @@ module CatalogFederator
 
   class Client < AbstractClient
     def initialize
-      uri = Addressable::URI.parse(APP_CONFIG.catalog_federator_url).to_s
-      self.class.base_uri(uri)
+      self.class.base_uri(Addressable::URI.parse(APP_CONFIG.catalog_federator_url).to_s)
     end
   end
 end

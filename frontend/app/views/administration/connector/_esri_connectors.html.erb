@@ -39,7 +39,7 @@
       </tr>
     </thead>
     <tbody>
-      <%- @connectors.each do |server| -%>
+      <%- @esri_connectors.each do |server| -%>
         <tr>
           <td class="name" scope="row">
             <a target="_blank" href="<%= server.url %>"> <%= strip_tags server.display_name %> </a>
@@ -97,13 +97,10 @@
               t("screens.admin.connector.terminate"),
               {:method => :delete},
               :class => "button buttonArea"
-            )%>
+            ) %>
           </td>
         </tr>
       <%- end -%>
     </tbody>
   </table>
-  <%- else -%>
-    <p class="noResultsMessage"> <%= t("screens.admin.connector.no_connectors") %> </p>
-  <%- end -%>
 </div>

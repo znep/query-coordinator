@@ -22,7 +22,18 @@ module CatalogFederator
       raise_error(endpoint, response) unless response.code == 200
       response.parsed_response['datasets']
     end
-    alias :tree :list
+
+    def disable_source(source_id)
+      route = "/v1/source/#{source_id}/disable"
+      response = self.class.delete(route, headers: headers)
+      handle_response(response, route)
+    end
+
+    def delete_source(source_id)
+      route = "/v1/source/#{source_id}"
+      response = self.class.delete(route, headers: headers)
+      handle_response(response, route)
+    end
 
     private
 

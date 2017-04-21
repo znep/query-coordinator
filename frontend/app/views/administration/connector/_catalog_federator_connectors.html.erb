@@ -53,11 +53,7 @@
             ) %>
           </td>
           <td class="federatedAssets" scope="row">
-            <%= link_to_if(
-              server.connected_count > 0 && server.server_backend == 'catalog_federator',
-              t("screens.admin.connector.assets_connected", count: server.connected_count),
-              controller: 'connector', action: :show_connector, :server_id => server.id
-            ) %>
+            <%= t("screens.admin.connector.assets_connected", count: server.connected_count) %>
           </td>
           <td class="status" scope="row" nowrap>
             <p class="current-status">

@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -10,55 +10,85 @@ import { edit } from 'actions/database';
 import * as Selectors from 'selectors';
 import styles from 'styles/ManageMetadata/ColumnForm.scss';
 
-export const ColumnForm = ({ currentColumns, ...props }) => {
-  const colToArr = col =>
-    [
-      {
-        type: 'text',
-        label: I18n.metadata_manage.column_tab.name,
-        name: `display-name-${col.id}`,
-        ...props
-      },
-      {
-        type: 'text',
-        label: I18n.metadata_manage.column_tab.description,
-        name: `description-${col.id}`,
-        ...props
-      },
-      {
-        type: 'text',
-        label: I18n.metadata_manage.column_tab.field_name,
-        name: `field-name-${col.id}`,
-        ...props
-      }
-    ];
+export class ColumnForm extends Component {
+  componentWillUpdate(nextProps) {
+    const { syncToStore, fourfour, schema, model, isDirty } = this.props;
+    const { schema: nextSchema, model: nextModel, isDirty: nextIsDirty } = nextProps;
 
-  const arrToFields = arr =>
-    arr.map((obj, idx) => <MetadataField {...obj} key={idx} />);
+    if (!_.isEqual(model, nextModel)) {
+      syncToStore(fourfour, 'colFormModel', nextModel);
+    }
 
-  const fieldsToRows = (fields, idx) =>
-    <div className={styles.row} key={idx}>{fields}</div>;
+    if (!_.isEqual(isDirty, nextIsDirty)) {
+      syncToStore(fourfour, 'colFormIsDirty', nextIsDirty);
+    }
 
-  const rows = currentColumns
-    .map(colToArr)
-    .map(arrToFields)
-    .map(fieldsToRows);
+    if (!_.isEqual(schema, nextSchema)) {
+      syncToStore(fourfour, 'colFormSchema', nextSchema);
+    }
+  }
 
-  return (
-    <form>
-      <Fieldset
-        title={I18n.metadata_manage.column_tab.title}
-        subtitle={I18n.metadata_manage.column_tab.subtitle}>
-        {rows}
-      </Fieldset>
-    </form>
-  );
-};
+  render() {
+    // TODO: remove when we upgrade babel-eslint
+    // babel-eslint bug: https://github.com/babel/babel-eslint/issues/249
+    /* eslint-disable no-use-before-define */
+    const { currentColumns, ...rest } = this.props;
+    /* eslint-disable no-use-before-define */
+
+    const colToArr = col =>
+      [
+        {
+          type: 'text',
+          label: I18n.metadata_manage.column_tab.name,
+          name: `display-name-${col.id}`,
+          ...rest
+        },
+        {
+          type: 'text',
+          label: I18n.metadata_manage.column_tab.description,
+          name: `description-${col.id}`,
+          ...rest
+        },
+        {
+          type: 'text',
+          label: I18n.metadata_manage.column_tab.field_name,
+          name: `field-name-${col.id}`,
+          ...rest
+        }
+      ];
+
+    const arrToFields = arr =>
+      arr.map((obj, idx) => <MetadataField {...obj} key={idx} />);
+
+    const fieldsToRows = (fields, idx) =>
+      <div className={styles.row} key={idx}>{fields}</div>;
+
+    const rows = currentColumns
+      .map(colToArr)
+      .map(arrToFields)
+      .map(fieldsToRows);
+
+    return (
+      <form>
+        <Fieldset
+          title={I18n.metadata_manage.column_tab.title}
+          subtitle={I18n.metadata_manage.column_tab.subtitle}>
+          {rows}
+        </Fieldset>
+      </form>
+    );
+  }
+}
 
 ColumnForm.propTypes = {
   currentColumns: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequred
-  }))
+  })),
+  syncToStore: PropTypes.func.isRequired,
+  fourfour: PropTypes.string.isRequired,
+  schema: PropTypes.object,
+  isDirty: PropTypes.object,
+  model: PropTypes.object
 };
 
 const getCurrentColumns = db => {
@@ -105,7 +135,8 @@ const createValidationSchema = currentColumns => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  syncToStore: (id, key, val) => dispatch(edit('views', { id, [`colForm${_.upperFirst(key)}`]: val }))
+  syncToStore: (fourfour, key, val) =>
+    dispatch(edit('views', { id: fourfour, [key]: val }))
 });
 
 const mapStateToProps = ({ db, routing }) => {

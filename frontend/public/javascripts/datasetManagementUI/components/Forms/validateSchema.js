@@ -6,7 +6,7 @@ import { getComponentName } from 'lib/util';
 export const getValidationErrors = (validationRules, model) => {
   return (
     Object.keys(validationRules).reduce((acc, key) => {
-      // Gets the model from the reformed HOC, runs it against a user-defined validation rules.
+      // Gets the model from the manageModel HOC, runs it against a user-defined validation rules.
       // Rules are passed in at the point of form-creation.
 
       // Current built-in rules are: required, type, minLength, and maxLength. Test is a
@@ -99,14 +99,14 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
     // put schema in store on initial render so other components can know if the
     // form is valid or not before the user types anything; this lets us prevent
     // the form from sending if there is a newly created required field for example
-    componentDidMount() {
-      const { fourfour, syncToStore } = this.props;
-      const { schema } = this.state;
-
-      if (syncToStore && fourfour) {
-        syncToStore(fourfour, 'schema', schema);
-      }
-    }
+    // componentDidMount() {
+    //   const { fourfour, syncToStore } = this.props;
+    //   const { schema } = this.state;
+    //
+    //   if (syncToStore && fourfour) {
+    //     syncToStore(fourfour, 'schema', schema);
+    //   }
+    // }
 
     // Called on every prop change (in this case, the form's data-model changing from
     // user input). Calculate a new schema
@@ -125,16 +125,6 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
       }
     }
 
-    // Gets syncToStore as a prop from reformed HOC. Not required, but if available,
-    // will put schema in store.
-    componentWillUpdate(nextProps, nextState) {
-      const { syncToStore, fourfour } = this.props;
-
-      if (syncToStore && fourfour && !_.isEqual(this.state.schema, nextState.schema)) {
-        syncToStore(fourfour, 'schema', nextState.schema);
-      }
-    }
-
     render() {
       return React.createElement(WrappedComponent, _.assign({}, this.props, {
         schema: this.state.schema
@@ -146,8 +136,6 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
 
   Validated.propTypes = {
     model: PropTypes.object.isRequired,
-    syncToStore: PropTypes.func,
-    fourfour: PropTypes.string,
     validationRules: PropTypes.object
   };
 

@@ -343,6 +343,7 @@ function editRecord(db, action, isImmutable) {
 
 function updateRecord(db, tableName, id, updater) {
   const record = db[tableName][id];
+
   return {
     ...db,
     [tableName]: {

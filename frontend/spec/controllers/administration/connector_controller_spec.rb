@@ -29,9 +29,9 @@ describe Administration::ConnectorController do
           VCR.use_cassette('administration/connector_controller', :record => :new_episodes) do
             get :connectors
             expect(response).to have_http_status(:success)
-            expect(flash[:notice].length).to eq(2)
-            expect(flash[:notice]).to include('Esri connector services are currently unavailable.')
-            expect(flash[:notice]).to include('Catalog federator services are currently unavailable.')
+            expect(flash[:warning].length).to eq(2)
+            expect(flash[:warning]).to include('Esri connector services are currently unavailable.')
+            expect(flash[:warning]).to include('Catalog federator services are currently unavailable.')
           end
         end
       end
@@ -46,8 +46,8 @@ describe Administration::ConnectorController do
           VCR.use_cassette('administration/connector_controller', :record => :new_episodes) do
             get :connectors
             expect(response).to have_http_status(:success)
-            expect(flash[:notice].length).to eq(1)
-            expect(flash[:notice]).to include('Esri connector services are currently unavailable.')
+            expect(flash[:warning].length).to eq(1)
+            expect(flash[:warning]).to include('Esri connector services are currently unavailable.')
           end
         end
       end
@@ -62,8 +62,8 @@ describe Administration::ConnectorController do
           VCR.use_cassette('administration/connector_controller', :record => :new_episodes) do
             get :connectors
             expect(response).to have_http_status(:success)
-            expect(flash[:notice].length).to eq(1)
-            expect(flash[:notice]).to include('Catalog federator services are currently unavailable.')
+            expect(flash[:warning].length).to eq(1)
+            expect(flash[:warning]).to include('Catalog federator services are currently unavailable.')
           end
         end
       end

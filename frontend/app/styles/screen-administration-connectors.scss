@@ -154,17 +154,6 @@ $pager-blue: #2f4589;
 
 .selective-connection {
 
-  .notice {
-    margin-left: 1rem;
-    font-style: italic;
-    color: $timestamp-grey;
-    display: none;
-  }
-
-  input[type=radio]:checked ~ .notice {
-    display: inline;
-  }
-
   .inline-value-label {
     padding-left: 0px;
     padding-right: 10px;

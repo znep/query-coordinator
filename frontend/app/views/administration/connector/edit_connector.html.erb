@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-connectors' %>
-  <title><%= t("screens.admin.connector.title") %> | <%= get_site_title %></title>
+  <title><%= t('screens.admin.connector.title') %> | <%= get_site_title %></title>
 <% end %>
 
 <%= render 'left_nav' %>
@@ -11,11 +11,11 @@
 <div id="connector-content" class="contentBox withLeftNavigation">
   <div class="adminHeader connectors">
     <span class="icon"></span>
-    <h1><%= t("screens.admin.connector.edit_connector", url: @server.url) %></h1>
+    <h1><%= t('screens.admin.connector.edit_connector', :url => @server.url) %></h1>
     <%= display_standard_flashes %>
     <div class="connector-list-go-back">
       <%= link_to(
-        t("screens.admin.connector.back_to_connector_list"),
+        t('screens.admin.connector.back_to_connector_list'),
         :controller => '/administration/connector',
         :action => 'connectors'
       ) %>
@@ -24,19 +24,25 @@
 
   <div class="selective-connection">
     <%= form_tag({:action => 'update_connector'}, :method => 'post', :class => 'commonForm') %>
-      <h2><%= t("screens.admin.connector.connection_type") %></h2>
-      <% if @enable_catalog_connector && params[:type] == 'esri' %>
+      <h2><%= t('screens.admin.connector.connection_type') %></h2>
+      <% if check_feature_flag('enable_data_connector') && esri_arcgis? %>
         <div class="legend">
           <div class="legend-item">
             <span role="presentation" class="icon-data legend-icon"></span>
             <span class="legend-info">
-              <span class= "legend-key"> <%= t("screens.admin.connector.data_option") %> </span>- <%= t("screens.admin.connector.data_option_explanation") %>
+              <span class= "legend-key">
+                <%= t('screens.admin.connector.data_option') %>
+              </span>
+              - <%= t('screens.admin.connector.data_option_explanation') %>
             </span>
           </div>
           <div class="legend-item">
             <span role="presentation" class="icon-external-square legend-icon"></span>
             <span class="legend-info">
-              <span class="legend-key"><%= t("screens.admin.connector.catalog_option") %> </span>- <%= t("screens.admin.connector.catalog_option_explanation") %>
+              <span class="legend-key">
+                <%= t('screens.admin.connector.catalog_option') %>
+              </span>
+              - <%= t('screens.admin.connector.catalog_option_explanation') %>
             </span>
           </div>
         </div>
@@ -45,22 +51,28 @@
             <input type="radio" id="dataConnectAll" class="server-sync"
               name="server[sync_type]" value="data"
               <%= @server.data_connect_all? ? 'checked="checked"' : '' %> />
-            <label for="dataConnectAll" class="inline-value-label"><%= t("screens.admin.connector.data_connect_all") %></label>
+            <label for="dataConnectAll" class="inline-value-label">
+              <%= t('screens.admin.connector.data_connect_all') %>
+            </label>
             <span class="notice">Checked selections below are ignored when this is selected.</span>
           </div>
           <div class="valueBox inline-value">
             <input type="radio" id="federateAll" class="server-sync"
               name="server[sync_type]" value="catalog"
               <%= @server.federate_all? ? 'checked="checked"' : '' %> />
-            <label for="federateAll" class="inline-value-label"><%= t("screens.admin.connector.catalog_connect_all") %></label>
+            <label for="federateAll" class="inline-value-label">
+              <%= t('screens.admin.connector.catalog_connect_all') %>
+            </label>
           </div>
           <div class="valueBox inline-value">
             <input type="radio" id="connectSome" class="server-sync"
               name="server[sync_type]" value="ignored"
               <%= @server.federate_all? || @server.data_connect_all? ? '' : 'checked="checked"' %> />
-            <label for="connectSome" class="inline-value-label"><%= t("screens.admin.connector.some_assets") %></label>
+            <label for="connectSome" class="inline-value-label">
+              <%= t('screens.admin.connector.some_assets') %>
+            </label>
           </div>
-          <input type="submit" value=<%=t("screens.admin.connector.save")%> class="button inline-button"/>
+          <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button inline-button"/>
         </fieldset>
       <% else %>
         <div class="new-connector-form flexbox-space-between">
@@ -70,33 +82,28 @@
                 <input type="radio" id="federateAll" class="server-sync"
                   name="server[sync_type]" value="catalog"
                   <%= @server.federate_all? ? 'checked="checked"' : '' %> />
-                <label for="federateAll"><%= t("screens.admin.connector.all_assets") %></label>
-                <span class="notice">Checked selections below are ignored when this is selected.</span>
+                <label for="federateAll"><%= t('screens.admin.connector.all_assets') %></label>
               </div>
               <div class="valueBox">
                 <input type="radio" id="federateSome" class="server-sync"
                   name="server[sync_type]" value="ignored"
                   <%= @server.federate_all? ? '' : 'checked="checked"' %> />
-                <label for="federateSome"><%= t("screens.admin.connector.some_assets") %></label>
-                <span class="notice">Checked selections below are the only ones that will be connected.</span>
+                <label for="federateSome"><%= t('screens.admin.connector.some_assets') %></label>
               </div>
           </div> <%# end flex left section %>
           <div class="line clearfix flexbox-right-section">
             <div class="flexbox-upper-right">
-              <input type="submit" value=<%=t("screens.admin.connector.save")%> class="button"/>
+              <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button"/>
             </div>
           </div>
         </div> <%# end flex box container %>
       <% end %>
     </form>
 
-    <%= form_tag({:action => 'update_connector'}, {:method => 'post', :class => 'commonForm'}) %>
+    <%= form_tag({:action => 'update_connector'}, :method => 'post', :class => 'commonForm') %>
       <fieldset class="line">
         <div class="filter-assets">
-          <input
-            type="text"
-            title="<%= t("screens.admin.connector.search") %>"
-            class="textPrompt searchBox prompt"/>
+          <input type="text" title="<%= t('screens.admin.connector.search') %>" class="textPrompt searchBox prompt" />
         </div>
 
         <%= render 'esri_tree' if @tree.present? %>

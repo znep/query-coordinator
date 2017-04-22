@@ -93,6 +93,7 @@ namespace :test do
         output_filename = 'karma/catalogLandingPage/mockTranslations.js'
         all_translations = YAML.load_file(translations_filename)['en']
         translations = all_translations['catalog_landing_page'].merge(
+          common: all_translations['common'],
           data_types: all_translations['core']['data_types']
         )
         File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")

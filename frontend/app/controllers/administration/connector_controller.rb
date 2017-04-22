@@ -145,7 +145,7 @@ class Administration::ConnectorController < AdministrationController
 
       @pager_elements = Pager::paginate(count, page_size, page_idx, { :all_threshold => all_threshold, :params => {} })
     else
-      redirect_to :connectors
+      redirect_to :edit_connectors
     end
   end
 

@@ -1,6 +1,9 @@
 class Administration::ConnectorController < AdministrationController
   include DataConnectorHelper
   include ActionView::Helpers::SanitizeHelper
+  include Administration::ConnectorHelper
+
+  helper_method :check_feature_flag
 
   #
   # Connector / EsriServerConnector / CatalogFederatorConnector

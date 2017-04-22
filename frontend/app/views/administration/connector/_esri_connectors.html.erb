@@ -7,16 +7,19 @@
       <%= t("screens.admin.connector.#{server.type_key}") %>
     </td>
     <td class="federatedAssets" scope="row">
-      <%= t(
-        "screens.admin.connector.assets_discovered",
-        count: server.discovered_count
-      ) %>
+      <%= t('screens.admin.connector.assets_discovered', count: server.discovered_count) %>
     </td>
     <td class="federatedAssets" scope="row">
-        <%= link_to_if(
-              server.connected_count > 0 && server.server_backend == 'esri_crawler',
-              t("screens.admin.connector.assets_connected", count: server.connected_count),
-              { controller: "connector", action: :show_connector, :server_id => server.id }) %>
+      <%= link_to_if(
+        server.connected_count > 0 && server.server_backend == 'esri_crawler',
+        t('screens.admin.connector.assets_connected', count: server.connected_count),
+        {
+          controller: 'connector',
+          action: :show_connector,
+          :server_id => server.id,
+          :type => 'esri_arcgis'
+        }
+      ) %>
     </td>
     <td class="status" scope="row" nowrap>
       <p class="current-status">
@@ -29,33 +32,37 @@
       <%- if server.last_synced -%>
         <%= date_time_span(server.last_synced) %>
       <%- else -%>
-        <%= t("screens.admin.connector.never") %>
+        <%= t('screens.admin.connector.never') %>
       <%- end -%>
     </td>
     <td class="actions" scope="row">
       <%- if server.last_synced || server.server_backend == 'catalog_federator' %>
         <%= link_to(
-          t("screens.admin.connector.edit"),
+          t('screens.admin.connector.edit'),
           {
             :action => :edit_connector,
-            :server_id => server.id
+            :server_id => server.id,
+            :type => 'esri_arcgis'
           },
-          {:class => 'button buttonArea'}
-        )
-        %>
+          :class => 'button buttonArea'
+        ) %>
       <%- else -%>
         <%= link_to(
-          t("screens.admin.connector.edit"),
+          t('screens.admin.connector.edit'),
           '#',
           {:class => 'button buttonArea disabled'}
-        )
-        %>
+        ) %>
       <%- end -%>
       <%= form_button(
-        {:action => :delete_connector, :server_id => server.id, :server_backend => server.server_backend},
-        t("screens.admin.connector.terminate"),
+        {
+          :action => :delete_connector,
+          :server_id => server.id,
+          :server_backend => server.server_backend,
+          :type => 'esri_arcgis'
+        },
+        t('screens.admin.connector.terminate'),
         {:method => :delete},
-        :class => "button buttonArea"
+        :class => 'button buttonArea'
       ) %>
     </td>
   </tr>

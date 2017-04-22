@@ -9,10 +9,7 @@
       <%= t("screens.admin.connector.#{server.type_key}") %>
     </td>
     <td class="federatedAssets" scope="row">
-      <%= t(
-        "screens.admin.connector.assets_discovered",
-        count: server.discovered_count
-      ) %>
+      <%= t('screens.admin.connector.assets_discovered', count: server.discovered_count) %>
     </td>
     <td class="federatedAssets" scope="row">
       <%= t("screens.admin.connector.assets_connected", count: server.connected_count) %>
@@ -27,24 +24,28 @@
       <%- if server.last_synced -%>
         <%= date_time_span(server.last_synced) %>
       <%- else -%>
-        <%= t("screens.admin.connector.never") %>
+        <%= t('screens.admin.connector.never') %>
       <%- end -%>
     </td>
     <td class="actions" scope="row">
       <%- if server.last_synced || server.server_backend == 'catalog_federator' %>
         <%= link_to(
-          t("screens.admin.connector.edit"),
-          { :action => :edit_connector, :server_id => server.id, :type => 'catalog_federator' },
+          t('screens.admin.connector.edit'),
+          { :action => :edit_connector, :server_id => server.id, :type => 'data_json' },
           :class => 'button buttonArea'
         ) %>
       <%- else -%>
-        <%= link_to(t("screens.admin.connector.edit"), '#', :class => 'button buttonArea disabled') %>
+        <%= link_to(t('screens.admin.connector.edit'), '#', :class => 'button buttonArea disabled') %>
       <%- end -%>
       <%= form_button(
-        {:action => :delete_connector, :server_id => server.id},
-        t("screens.admin.connector.terminate"),
+        {
+          :action => :delete_connector,
+          :server_id => server.id,
+          :type => 'data_json'
+        },
+        t('screens.admin.connector.terminate'),
         { :method => :delete  },
-        :class => "button buttonArea"
+        :class => 'button buttonArea'
       ) %>
     </td>
   </tr>

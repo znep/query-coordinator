@@ -47,7 +47,7 @@ class Administration::ConnectorController < AdministrationController
     respond_to do |format|
       format.html do
         flash[:notice] = success_notice
-        redirect_to :action => :connectors
+        redirect_to :connectors
       end
       format.data { render :json => { :success => true } }
     end
@@ -65,14 +65,14 @@ class Administration::ConnectorController < AdministrationController
       return display_external_error(error, :edit_connector)
     rescue EsriCrawler::ResourceNotFound => error
       flash[:error] = t('screens.admin.connector.flashes.server_not_found')
-      return redirect_to :action => :connectors
+      return redirect_to :connectors
     rescue StandardError => error
       return handle_failed_connection(error)
     end
     respond_to do |format|
       format.html do
         flash[:notice] = t('screens.admin.connector.flashes.updated')
-        redirect_to :action => :edit_connector
+        return redirect_to :edit_connector
       end
       format.data { render :json => { :success => true } }
     end
@@ -88,13 +88,13 @@ class Administration::ConnectorController < AdministrationController
       respond_to do |format|
         format.html do
           flash[:notice] = t('screens.admin.connector.flashes.deleted')
-          redirect_to :action => :connectors
+          return redirect_to :connectors
         end
         format.data { render :json => { :success => true } }
       end
     rescue EsriCrawler::ResourceNotFound => error
       flash[:error] = t('screens.admin.connector.flashes.server_not_found')
-      redirect_to :action => :connectors
+      return redirect_to :connectors
     rescue EsriCrawler::ServerError => error
       return display_external_error(error, :connectors)
     rescue StandardError => error
@@ -106,7 +106,7 @@ class Administration::ConnectorController < AdministrationController
   # Redirecting to /connectors will log an error if the service is still down.
   def handle_failed_connection(error)
     flash[:warning] = t('screens.admin.connector.service_unavailable')
-    redirect_to :action => :connectors
+    redirect_to :connectors
   end
 
   def display_external_error(error, redirection = nil)
@@ -115,14 +115,14 @@ class Administration::ConnectorController < AdministrationController
       params = error.body['error']['params'].symbolize_keys
       flash[:error] = t("screens.admin.connector.errors.#{reason}") % params
     rescue
-      flash[:error] = t("screens.admin.connector.errors.problem_with_errors")
+      flash[:error] = t('screens.admin.connector.errors.problem_with_errors')
     end
-    redirect_to :action => redirection if redirection
+    redirect_to redirection if redirection.present?
   end
 
   def show_connector
     # Show page currently only supported for Esri connectors
-    if params[:type] == 'esri'
+    if esri_arcgis?
       @enable_catalog_connector = check_feature_flag('enable_catalog_connector')
       page_size = 50
       all_threshold = 8
@@ -136,7 +136,7 @@ class Administration::ConnectorController < AdministrationController
         count = layer_resp['count']
       rescue EsriCrawler::ResourceNotFound => error
         flash[:error] = t('screens.admin.connector.flashes.server_not_found')
-        redirect_to :action => :connectors
+        return redirect_to :connectors
       rescue EsriCrawler::ServerError => error
         return display_external_error(error, :connectors)
       rescue StandardError => error
@@ -185,9 +185,8 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def fetch_server
-    params[:type] ||= 'esri'
     @enable_catalog_connector = check_feature_flag('enable_catalog_connector')
-    if params[:type] == 'esri'
+    if esri_arcgis?
       begin
         @tree = EsriServerConnector.tree(params[:server_id])
         @server = EsriServerConnector.server(params[:server_id])
@@ -200,21 +199,21 @@ class Administration::ConnectorController < AdministrationController
       end
     end
 
-    if params[:type] == 'catalog_federator'
+    if data_json?
       if check_feature_flag('enable_catalog_federator_connector')
         begin
           @server = CatalogFederatorConnector.servers.detect { |server| server.id == params[:server_id].to_i }
           @list = CatalogFederator::Client.new.list(@server.id)
         rescue => e
           add_flash(:error, t('screens.admin.connector.errors.json_format_error'))
-          redirect_to :connectors
+          return redirect_to :connectors
         end
       end
     end
 
     unless @server.present?
       add_flash(:warning, t('screens.admin.connector.errors.unknown_server'))
-      redirect_to :action => :connectors
+      redirect_to :connectors
     end
   end
 

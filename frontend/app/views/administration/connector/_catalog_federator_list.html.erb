@@ -5,7 +5,7 @@
 </div>
 
 <div class="catalog-federator-list">
-  <%- @list.sort_by { |item| item['name'] }.each_with_index do |item, index| -%>
+  <%- @datasets.sort_by { |item| item['name'] }.each_with_index do |item, index| -%>
     <div class="item search-item">
       <div class="edit-item">
         <%= check_box_tag(index, index) %>

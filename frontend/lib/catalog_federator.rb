@@ -16,7 +16,7 @@ module CatalogFederator
       handle_response(response, route)
     end
 
-    def list(source_id, concise = true)
+    def get_datasets(source_id, concise = true)
       endpoint = "/v1/source/#{source_id}/preprocess?concise=#{concise}"
       response = self.class.get(endpoint, headers: headers)
       raise_error(endpoint, response) unless response.code == 200

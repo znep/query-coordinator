@@ -203,7 +203,7 @@ class Administration::ConnectorController < AdministrationController
       if check_feature_flag('enable_catalog_federator_connector')
         begin
           @server = CatalogFederatorConnector.servers.detect { |server| server.id == params[:server_id].to_i }
-          @list = CatalogFederator::Client.new.list(@server.id)
+          @datasets = CatalogFederator::Client.new.get_datasets(@server.id)
         rescue => e
           add_flash(:error, t('screens.admin.connector.errors.json_format_error'))
           return redirect_to :connectors

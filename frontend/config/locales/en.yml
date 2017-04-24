@@ -1821,7 +1821,7 @@ en:
       data_blurb: Add a data file and enable visualizations and mapping.
       data_manage_button: Manage Data
       data_uploaded: Your data has been uploaded.
-      data_uploaded_blurb: Almost there! Just review your data and then hit Process Data.
+      data_uploaded_blurb: You can review it here before publishing.
       done_processing: Your data is done being processed!
       email_me: Email me when ready
       email_me_error: An error has occurred.

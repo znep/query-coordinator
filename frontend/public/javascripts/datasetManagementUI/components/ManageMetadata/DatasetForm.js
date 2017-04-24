@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import MetadataField from 'components/MetadataField';
 import Fieldset from 'components/MetadataFields/Fieldset';
-import manageModel from 'components/Forms/manageModel';
+import manageFormModel from 'components/Forms/manageFormModel';
 import validateSchema from 'components/Forms/validateSchema';
 import { edit } from 'actions/database';
 import { makeNamespacedFieldName, fromNestedToFlat } from 'lib/customMetadata';
@@ -339,7 +339,7 @@ DatasetForm.propTypes = {
   isDirty: PropTypes.object
 };
 
-// We need to pass initialModel as a prop to manageModel HOC if we want to pre-load
+// We need to pass initialModel as a prop to manageFormModel HOC if we want to pre-load
 // our form with data. Since these data come from the redux store, we create this
 // prop here in mapStateToProps.
 const mapStateToProps = ({ db, routing }) => {
@@ -368,11 +368,11 @@ const mapDispatchToProps = dispatch => ({
 // We want to use these higher-order components together to create data for one another.
 // They follow a pattern of creating data, passing these data in as props to their wrapped
 // component, and then passing that component + its new props to the next HOC. So
-// connect creates initialModel, which manageModel uses to create model, which validateSchema
+// connect creates initialModel, which manageFormModel uses to create model, which validateSchema
 // uses to create schema.
 const formWrapper = _.flowRight([
   connect(mapStateToProps, mapDispatchToProps),
-  manageModel,
+  manageFormModel,
   validateSchema()
 ]);
 

@@ -6,7 +6,7 @@ import { getComponentName } from 'lib/util';
 export const getValidationErrors = (validationRules, model) => {
   return (
     Object.keys(validationRules).reduce((acc, key) => {
-      // Gets the model from the manageModel HOC, runs it against a user-defined validation rules.
+      // Gets the model from the manageFormModel HOC, runs it against a user-defined validation rules.
       // Rules are passed in at the point of form-creation.
 
       // Current built-in rules are: required, type, minLength, and maxLength. Test is a

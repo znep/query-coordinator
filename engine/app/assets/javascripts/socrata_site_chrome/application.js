@@ -20,5 +20,5 @@
 
   If you add new files to the tree, or require new node_modules, you ALSO need to manually add those items
   to the custom site chrome case, if applicable.
-  Do this in the `site_chrome_javascript_tag` method in engine/lib/site_chrome_helper.rb
+  Do this in the `site_chrome_javascript_tag` method in engine/lib/site_chrome_consumer_helpers.rb
 */

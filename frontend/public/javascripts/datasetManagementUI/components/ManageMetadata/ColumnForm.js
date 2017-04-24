@@ -132,13 +132,21 @@ const createValidationSchema = currentColumns => {
   return currentColumns.reduce((acc, col) => {
     const displayNameValidaions = {
       [`display-name-${col.id}`]: {
-        required: true
+        required: true,
+        noDupesWith: {
+          fieldFilter: (val, key) => /^display-name/.test(key),
+          message: I18n.edit_metadata.validation_error_dupe_display_name
+        }
       }
     };
 
     const fieldNameValidations = {
       [`field-name-${col.id}`]: {
         required: true,
+        noDupesWith: {
+          fieldFilter: (val, key) => /^field-name/.test(key),
+          message: I18n.edit_metadata.validation_error_dupe_field_name
+        },
         test: val => {
           if (val && isValidFieldName(val)) {
             return null;

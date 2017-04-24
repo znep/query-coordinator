@@ -58,6 +58,19 @@ export const getValidationErrors = (validationRules, model) => {
         }
       }
 
+      if (rules.noDupesWith) {
+        // pull current field out of form data model
+        const modelWithoutCurrentField = _.omit(model, [key]);
+
+        // filter form data model according to callback
+        const consideredFields = _.pickBy(modelWithoutCurrentField, rules.noDupesWith.fieldFilter);
+
+        // check for dupes
+        if (value && _.some(consideredFields, (val) => val === value)) {
+          errors.push(rules.noDupesWith.message);
+        }
+      }
+
       if (rules.test) {
         const error = rules.test(value);
 

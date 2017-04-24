@@ -33,7 +33,9 @@ describe('components/ManageMetadata/DatasetForm', () => {
   const store = createStore(reducer, newState, applyMiddleware(thunk));
 
   const defaultProps = {
-    fourfour: '3kt9-pmvq'
+    fourfour: '3kt9-pmvq',
+    syncToStore: () => {},
+    model: {}
   };
 
   it('renders correctly', () => {

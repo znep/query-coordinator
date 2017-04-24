@@ -307,7 +307,7 @@ const InfoPane = React.createClass({
     return (
       <div className="info-pane result-card">
         <div className="container">
-          <div className="entry-header dataset-landing-page-header">
+          <div className="entry-header">
             <div className="entry-header-contents">
               <div className="entry-title">
                 <h1 className="info-pane-name">

@@ -5,7 +5,7 @@
   <title><%= t("#{connector}.title") %> | <%= get_site_title %></title>
 <% end %>
 
-<%= render 'left_nav' %>
+<%= render :partial => 'left_nav' %>
 
 <%= include_webpack_bundle 'admin/admin-new-connector.js' %>
 

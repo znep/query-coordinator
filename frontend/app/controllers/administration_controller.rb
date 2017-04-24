@@ -1202,7 +1202,6 @@ class AdministrationController < ApplicationController
   def check_feature_flag(feature_flag)
     run_access_check { feature_flag?(feature_flag, request) }
   end
-
   def check_admin_or_superadmin
     run_access_check{current_user.is_administrator? || current_user.is_superadmin?}
   end

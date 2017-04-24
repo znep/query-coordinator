@@ -386,10 +386,4 @@ class ApplicationController < ActionController::Base
       }.html_safe
     end
   end
-
-  def add_flash(key, message)
-    flash[key] ||= []
-    flash[key] << message unless flash[key].include?(message)
-  end
-
 end

@@ -16,13 +16,6 @@ module CatalogFederator
       handle_response(response, route)
     end
 
-    def get_datasets(source_id, concise = true)
-      endpoint = "/v1/source/#{source_id}/preprocess?concise=#{concise}"
-      response = self.class.get(endpoint, headers: headers)
-      raise_error(endpoint, response) unless response.code == 200
-      response.parsed_response['datasets']
-    end
-
     def disable_source(source_id)
       route = "/v1/source/#{source_id}/disable"
       response = self.class.delete(route, headers: headers)
@@ -61,7 +54,8 @@ module CatalogFederator
 
   class Client < AbstractClient
     def initialize
-      self.class.base_uri(Addressable::URI.parse(APP_CONFIG.catalog_federator_url).to_s)
+      uri = Addressable::URI.parse(APP_CONFIG.catalog_federator_url).to_s
+      self.class.base_uri(uri)
     end
   end
 end

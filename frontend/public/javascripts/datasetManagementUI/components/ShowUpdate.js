@@ -34,6 +34,7 @@ const noDataYetView = (createUpload) =>
       id="file"
       name="file"
       type="file"
+      accept=".csv,.tsv,.xls,.xlsx"
       aria-labelledby="upload-label"
       onChange={(evt) => (createUpload(evt.target.files[0]))} />
 

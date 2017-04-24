@@ -909,6 +909,16 @@
       }
     },
 
+    // inDatasetSearch - boolean - if set to true, it tells the backend to timeout faster than its default; see details in EN-10852
+    setSearchString: function(searchString, inDatasetSearch) {
+      var metadata = $.extend(true, {}, this.metadata);
+      metadata.jsonQuery.search = searchString;
+      metadata.inDatasetSearch = inDatasetSearch;
+      this.update({
+        metadata: metadata
+      });
+    },
+
     _getClustersViaSODA2: function(viewport, displayFormat, minDistance, successCallback, errorCallback) {
       var ds = this;
 
@@ -2996,19 +3006,28 @@
       ds.query = ds.query || {};
       ds.metadata.jsonQuery = ds.metadata.jsonQuery || {};
 
-      // jsonQuery gets priority; if it changes, force update of query
-      if (!_.isUndefined(oldJsonQuery) && !_.isEqual($.deepCompact(oldJsonQuery),
-          $.deepCompact(ds.metadata.jsonQuery)) ||
-        !_.isEmpty(ds.metadata.jsonQuery) && _.isEmpty(ds.query)) {
-        ds.query.filterCondition = blist.filter.generateSODA1(ds.metadata.jsonQuery.where,
-          ds.metadata.jsonQuery.having, ds.metadata.defaultFilters);
+      var jsonQueryChanged = !_.isEqual($.deepCompact(oldJsonQuery), $.deepCompact(ds.metadata.jsonQuery));
+      var hasOldJsonQuery = !_.isUndefined(oldJsonQuery);
+      var hasNewJsonQuery = !_.isEmpty(ds.metadata.jsonQuery);
+      var hasNoQuery = _.isEmpty(ds.query);
+
+      // ds.query only gets properties set in this condition:
+      if (hasOldJsonQuery && jsonQueryChanged || hasNewJsonQuery && hasNoQuery) {
+        ds.query.filterCondition = blist.filter.generateSODA1(
+          ds.metadata.jsonQuery.where,
+          ds.metadata.jsonQuery.having,
+          ds.metadata.defaultFilters
+        );
+
         ds.query.namedFilters = ds.query.namedFilters || {};
+
         _.each(ds.metadata.jsonQuery.namedFilters, function(nf, id) {
           ds.query.namedFilters[id] = $.extend(blist.filter.generateSODA1(nf.where, nf.having), {
             temporary: nf.temporary,
             displayTypes: nf.displayTypes
           });
         });
+
         ds.query.orderBys = _.compact(_.map(ds.metadata.jsonQuery.order, function(ob) {
           var c = ds.columnForIdentifier(ob.columnFieldName);
           if ($.isBlank(c)) {

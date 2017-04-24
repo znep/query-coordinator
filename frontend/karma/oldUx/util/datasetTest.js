@@ -213,6 +213,41 @@ describe('blist.dataset', function () {
     });
   });
 
+  describe('setSearchString', function() {
+    var dataset;
+    var searchString = 'jaqueline';
+    var updateSpy;
+
+    beforeEach(function() {
+      dataset = new Dataset({id: 'test-test'});
+      updateSpy = sinon.spy(dataset, 'update');
+      dataset.setSearchString(searchString, true);
+    });
+
+    it('sets searchString on metadata.jsonQuery.search ', function() {
+      assert.equal(dataset.metadata.jsonQuery.search, searchString);
+    });
+
+    it('sets searchString on itself', function() {
+      assert.equal(dataset.searchString, searchString);
+    });
+
+    it('sets inDatasetSearch on metadata', function() {
+      assert.isTrue(dataset.metadata.inDatasetSearch);
+    });
+
+    it('calls #update with metadata', function() {
+      sinon.assert.calledOnce(updateSpy);
+      var expectedMetadata = {
+        jsonQuery: {
+          search: searchString
+        },
+        inDatasetSearch: true
+      };
+
+      sinon.assert.calledWithMatch(updateSpy, { metadata: expectedMetadata });
+    });
+  });
 
   function generateRejectedPromise(payload) {
     var deferred = $.Deferred();

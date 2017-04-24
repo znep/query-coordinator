@@ -6,13 +6,16 @@ describe CatalogFederatorConnector do
   before(:all) { VCR.turn_off! }
   after(:all) { VCR.turn_on! }
 
+  before do
+    CatalogFederator::Client.new.class.base_uri(base_uri) # Hack to get around weird HTTParty API
+  end
+
   let(:fixture_prefix) { "#{Rails.root}/spec/fixtures/data_connector" }
   let(:base_uri) { 'http://cf-host:80' }
 
   describe '#servers' do
     before do
       allow(CurrentDomain).to receive(:cname).and_return('localhost')
-      allow(APP_CONFIG).to receive(:catalog_federator_url).and_return('cf-host')
       allow_any_instance_of(Socrata::CookieHelper).to receive(:current_cookies).and_return('nom_NOM')
 
       stub_request(:get, "#{base_uri}/v1/source").
@@ -45,7 +48,6 @@ describe CatalogFederatorConnector do
   describe '#create' do
     before do
       allow(CurrentDomain).to receive(:cname).and_return('localhost')
-      allow(APP_CONFIG).to receive(:catalog_federator_url).and_return('cf-host')
       allow_any_instance_of(Socrata::CookieHelper).to receive(:current_cookies).and_return('nom_NOM')
 
       stub_request(:post, "#{base_uri}/v1/source").
@@ -89,7 +91,6 @@ describe CatalogFederatorConnector do
 
     before do
       allow(CurrentDomain).to receive(:cname).and_return('localhost')
-      allow(APP_CONFIG).to receive(:catalog_federator_url).and_return('cf-host')
       allow_any_instance_of(Socrata::CookieHelper).to receive(:current_cookies).and_return('nom_NOM')
 
       @disable1 = stub_request(:delete, "#{base_uri}/v1/source/428/disable").

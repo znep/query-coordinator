@@ -147,7 +147,6 @@
 
         <%=
           browse_container_classes = %w(browse2-results-header)
-          browse_container_classes << 'clearfix' unless opts[:browse_in_container]
           browse_container_classes << 'browse2-results-header-no-title' if opts[:browse_in_container]
 
           content_tag(:div, nil, :class => browse_container_classes) do

@@ -112,7 +112,7 @@ section.landing-page-section {
     display: flex;
     justify-content: flex-start;
     align-content: flex-start;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     overflow: hidden;
     position: relative;
 
@@ -128,10 +128,14 @@ section.landing-page-section {
 
     .result-card {
       flex: 0 0 auto;
-      width: 31.9%;
+      width: calc(33.3% - 0.66rem);
       max-width: 350px;
       height: 300px;
       margin-right: 1rem;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
 
       &.loading-card {
         display: flex;

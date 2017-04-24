@@ -2,7 +2,7 @@
   <%- @tree['folders'].each do |folder| -%>
     <div class="item folder search-item">
       <div class="editItem">
-        <% if @data_connection_on %>
+        <% if @enable_data_connector %>
           <div
             class="select-style <%= disabled_class(@server)%>"
             id="style-div-for-<%=folder['id']%>">
@@ -20,7 +20,7 @@
       <%- folder['services'].each do |service| -%>
         <div class="item child service search-item">
           <div class="editItem">
-            <% if @data_connection_on %>
+            <% if @enable_data_connector %>
               <div
                 class="select-style <%=disabled_class(@server)%>"
                 id="style-div-for-<%=service['id']%>">
@@ -41,7 +41,7 @@
           <%- service['layers'].each do |layer| -%>
             <div class="item child layer search-item">
               <div class="editItem">
-                <% if @data_connection_on %>
+                <% if @enable_data_connector %>
                   <div
                     class="select-style <%= disabled_class(@server)%>"
                     id="style-div-for-<%=layer['id']%>">

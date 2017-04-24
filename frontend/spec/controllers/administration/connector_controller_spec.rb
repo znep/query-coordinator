@@ -30,8 +30,8 @@ describe Administration::ConnectorController do
             get :connectors
             expect(response).to have_http_status(:success)
             expect(flash[:warning].length).to eq(2)
-            expect(flash[:warning]).to include('Esri connector services are currently unavailable.')
-            expect(flash[:warning]).to include('DATA.json services are currently unavailable.')
+            expect(flash[:warning]).to include('There are no Esri connectors. If you wish to connect an external source to your catalog, click Add new above.')
+            expect(flash[:warning]).to include('There are no current DATA.json connectors. If you wish to connect an external source to your catalog, click Add new above.')
           end
         end
       end
@@ -47,15 +47,15 @@ describe Administration::ConnectorController do
             get :connectors
             expect(response).to have_http_status(:success)
             expect(flash[:warning].length).to eq(1)
-            expect(flash[:warning]).to include('Esri connector services are currently unavailable.')
+            expect(flash[:warning]).to include('There are no Esri connectors. If you wish to connect an external source to your catalog, click Add new above.')
           end
         end
       end
 
       context 'when only catalog federator is enabled' do
         before do
-          allow(subject).to receive(:check_feature_flag).with('enable_catalog_federator_connector').and_return(true)
-          allow(subject).to receive(:check_feature_flag).with('enable_catalog_connector').and_return(false)
+          rspec_stub_feature_flags_with(:enable_catalog_connector => false, :enable_catalog_federator_connector => true)
+          allow(subject).to receive(:require_a_catalog_connector).and_return(true)
         end
 
         it 'displays only the esri error message' do
@@ -63,7 +63,7 @@ describe Administration::ConnectorController do
             get :connectors
             expect(response).to have_http_status(:success)
             expect(flash[:warning].length).to eq(1)
-            expect(flash[:warning]).to include('DATA.json services are currently unavailable.')
+            expect(flash[:warning]).to include('There are no current DATA.json connectors. If you wish to connect an external source to your catalog, click Add new above.')
           end
         end
       end

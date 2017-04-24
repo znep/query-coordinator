@@ -123,7 +123,7 @@ class Administration::ConnectorController < AdministrationController
   def show_connector
     # Show page currently only supported for Esri connectors
     if esri_arcgis?
-      @enable_catalog_connector = check_feature_flag('enable_catalog_connector')
+      @enable_catalog_connector = FeatureFlags.derive(nil, request).enable_catalog_connector
       page_size = 50
       all_threshold = 8
       page_idx = params.fetch(:page, '1').to_i
@@ -157,7 +157,7 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def fetch_connectors
-    if check_feature_flag('enable_catalog_connector')
+    if @enable_catalog_connector = FeatureFlags.derive(nil, request).enable_catalog_connector
       @esri_connectors = []
       begin
         @esri_connectors = EsriServerConnector.servers
@@ -188,7 +188,8 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def fetch_server
-    @enable_catalog_connector = check_feature_flag('enable_catalog_connector')
+    @enable_catalog_connector = FeatureFlags.derive(nil, request).enable_catalog_connector
+    @enable_data_connector = FeatureFlags.derive(nil, request).enable_data_connector
     if esri_arcgis?
       begin
         @tree = EsriServerConnector.tree(params[:server_id])

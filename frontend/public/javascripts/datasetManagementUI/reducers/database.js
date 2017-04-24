@@ -140,8 +140,14 @@ export default function dbReducer(db = emptyDB, action) {
     }
 
     case UPSERT_FAILED: {
+      let table = db[action.tableName];
+
+      if (action.tableName === 'output_schemas') {
+        table = _.omit(table, ['__status__']);
+      }
+
       const key = _.findKey(
-        db[action.tableName],
+        table,
         (tableRecord) => (
           tableRecord.__status__.type === STATUS_INSERTING &&
           _.isEqual(_.omit(tableRecord, ['__status__', 'id']), action.newRecord)

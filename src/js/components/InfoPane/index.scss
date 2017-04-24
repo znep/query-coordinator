@@ -23,8 +23,9 @@
     }
   }
 
-  .entry-header.dataset-landing-page-header {
+  .entry-header {
     .entry-header-contents {
+      width: 100%;
       display: flex;
       flex-wrap: wrap;
     }

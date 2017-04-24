@@ -7,7 +7,7 @@ describe('components/FeaturedContentModal/StoryForm', function() {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       canSave: true,
-      createdAt: '2016-06-08T15:52:10.000-07:00',
+      createdAt: '2016-06-08T12:52:10.000-07:00',
       description: 'Daphne and Josephine',
       hasSaveError: false,
       hasValidationError: false,

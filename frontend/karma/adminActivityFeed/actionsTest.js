@@ -9,7 +9,8 @@ import serviceLocator from 'middlewares/serviceLocator';
 import {
   SET_ACTIVITIES,
   SET_PAGINATION,
-  DISMISS_RESTORE_MODAL
+  DISMISS_RESTORE_MODAL,
+  SET_ALERT
 } from 'actionTypes';
 import {
   loadActivities,
@@ -95,9 +96,10 @@ describe('Activity Feed actions', () => {
     return store.dispatch(action).then(() => {
       const dispatchedActions = store.getActions();
 
-      assert(dispatchedActions[0].type === DISMISS_RESTORE_MODAL);
-      assert(dispatchedActions[1].type === SET_ACTIVITIES);
-      assert(dispatchedActions[2].type === SET_PAGINATION);
+      assert(dispatchedActions[0].type === SET_ALERT);
+      assert(dispatchedActions[1].type === DISMISS_RESTORE_MODAL);
+      assert(dispatchedActions[2].type === SET_ACTIVITIES);
+      assert(dispatchedActions[3].type === SET_PAGINATION);
     });
   });
 });

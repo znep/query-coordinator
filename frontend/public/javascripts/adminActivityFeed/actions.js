@@ -1,7 +1,8 @@
 import {
   SET_ACTIVITIES,
   SET_PAGINATION,
-  DISMISS_ERROR,
+  SET_ALERT,
+  DISMISS_ALERT,
   SHOW_RESTORE_MODAL,
   DISMISS_RESTORE_MODAL,
   SHOW_DETAILS_MODAL,
@@ -34,12 +35,21 @@ export const loadActivities = () => {
       }));
 
       return data;
+    }).catch((error) => { // eslint-disable-line dot-notation
+      dispatch(setAlert('error', 'general_error', {error: error.message}));
     });
   };
 };
 
-export const dismissError = () => ({
-  type: DISMISS_ERROR
+export const dismissAlert = () => ({
+  type: DISMISS_ALERT
+});
+
+export const setAlert = (alertType, translationKey, data) => ({
+  type: SET_ALERT,
+  alertType,
+  translationKey,
+  data
 });
 
 export const showRestoreModal = (activity) => ({
@@ -66,14 +76,17 @@ export const restoreDataset = () => {
     const api = getService('api');
     const datasetId = state.getIn(['restoreModal', 'id']);
 
-    return api.restoreDataset(datasetId).then(() => {
-      dispatch(dismissRestoreModal());
-      return dispatch(loadActivities());
-    }).catch((error) => { // eslint-disable-line dot-notation
-      if (window.error) {
-        console.error(error);
-      }
-    });
+    return api.
+      restoreDataset(datasetId).
+      then(() => {
+        dispatch(setAlert('success', 'restore_success'));
+        dispatch(dismissRestoreModal());
+        return dispatch(loadActivities());
+      }).
+      catch((error) => { // eslint-disable-line dot-notation
+        dispatch(dismissRestoreModal());
+        dispatch(setAlert('error', 'general_error', { error: error.message }));
+      });
   };
 };
 

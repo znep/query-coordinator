@@ -49,7 +49,9 @@ export default class HttpClient {
     const success = response.status >= 200 && response.status < 300;
 
     if (!success) {
-      throw response;
+      let error = new Error(`${response.status}: ${response.statusText}`);
+      error.response = response;
+      throw error;
     }
 
     return response;

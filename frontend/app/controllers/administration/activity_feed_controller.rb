@@ -63,7 +63,7 @@ class Administration::ActivityFeedController < AdministrationController
     rescue
       @activities = []
       @pager_info = {}
-      @error = true
+      @alert = { type: 'error', translation_key: 'server_error' }
 
       error_class = 'ImportActivityRequestFailure'
       error_message = 'Could not get activity list'

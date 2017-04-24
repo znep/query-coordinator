@@ -25,8 +25,6 @@ export class MetadataField extends Component {
 
     if (displayMetadataFieldErrors) {
       this.showErrors();
-    } else {
-      this.hideErrors();
     }
   }
 

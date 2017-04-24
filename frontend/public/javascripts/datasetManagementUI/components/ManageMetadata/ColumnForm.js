@@ -11,6 +11,21 @@ import * as Selectors from 'selectors';
 import styles from 'styles/ManageMetadata/ColumnForm.scss';
 
 export class ColumnForm extends Component {
+  shouldComponentUpdate(nextProps) {
+    const { schema, model, isDirty } = this.props;
+    const { schema: nextSchema, model: nextModel, isDirty: nextIsDirty } = nextProps;
+
+    const modelChanged = !_.isEqual(model, nextModel);
+    const dirtyStatusChanged = !_.isEqual(isDirty, nextIsDirty);
+    const schemaChanged = !_.isEqual(schema, nextSchema);
+
+    if (modelChanged || dirtyStatusChanged || schemaChanged) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   componentWillUpdate(nextProps) {
     const { syncToStore, fourfour, schema, model, isDirty } = this.props;
     const { schema: nextSchema, model: nextModel, isDirty: nextIsDirty } = nextProps;
@@ -115,22 +130,30 @@ const isValidFieldName = fieldName => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(fieldName)
 
 const createValidationSchema = currentColumns => {
   return currentColumns.reduce((acc, col) => {
-    acc[`display-name-${col.id}`] = {
-      required: true
+    const displayNameValidaions = {
+      [`display-name-${col.id}`]: {
+        required: true
+      }
     };
 
-    acc[`field-name-${col.id}`] = {
-      required: true,
-      test: val => {
-        if (val && isValidFieldName(val)) {
-          return null;
-        } else {
-          return I18n.edit_metadata.validation_error_fieldname;
+    const fieldNameValidations = {
+      [`field-name-${col.id}`]: {
+        required: true,
+        test: val => {
+          if (val && isValidFieldName(val)) {
+            return null;
+          } else {
+            return I18n.edit_metadata.validation_error_fieldname;
+          }
         }
       }
     };
 
-    return acc;
+    return {
+      ...acc,
+      ...displayNameValidaions,
+      ...fieldNameValidations
+    };
   }, {});
 };
 

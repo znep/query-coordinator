@@ -48,6 +48,16 @@ export const getValidationErrors = (validationRules, model) => {
         }
       }
 
+      if (rules.noDupes) {
+        const subfield = model[rules.noDupes];
+
+        if (value && Array.isArray(subfield)) {
+          if (subfield.includes(value)) {
+            errors.push(I18n.edit_metadata.validation_error_no_dupes);
+          }
+        }
+      }
+
       if (rules.test) {
         const error = rules.test(value);
 

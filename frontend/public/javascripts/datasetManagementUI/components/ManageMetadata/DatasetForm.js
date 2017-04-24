@@ -214,6 +214,9 @@ const validationRules = {
   name: {
     required: true
   },
+  tag: {
+    noDupes: 'tags'
+  },
   attributionLink: {
     test: val => {
       if (val && isURL(val, { require_protocol: true })) {

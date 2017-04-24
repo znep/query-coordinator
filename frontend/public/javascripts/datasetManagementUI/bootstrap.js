@@ -57,7 +57,7 @@ export function bootstrap(store, initialView, initialUpdate, customMetadata) {
     attribution: initialView.attribution,
     attributionLink: initialView.attributionLink,
     schema: calculateInitialSchema(initialView, customMetadata),
-    tags: initialView.tags,
+    tags: initialView.tags || [],
     privateMetadata: initialView.privateMetadata || {},
     attachments: _.get(initialView, 'metadata.attachments', []),
     metadata: initialView.metadata || {},

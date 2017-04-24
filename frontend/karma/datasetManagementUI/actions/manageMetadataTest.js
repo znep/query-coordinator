@@ -93,7 +93,7 @@ describe('actions/manageMetadata', () => {
       const { fourfour } = routing;
 
       setTimeout(() => {
-        const action = store.getActions()[0];
+        const action = store.getActions()[1];
 
         expect(action.type).to.eq(UPDATE_STARTED);
 
@@ -125,7 +125,7 @@ describe('actions/manageMetadata', () => {
       const { fourfour } = routing;
 
       setTimeout(() => {
-        const action = store.getActions()[1];
+        const action = store.getActions()[2];
 
         expect(action.type).to.eq(SET_VIEW);
 
@@ -158,8 +158,8 @@ describe('actions/manageMetadata', () => {
 
       store.dispatch(saveDatasetMetadata());
 
-      expect(store.getActions()[0].type).to.eq(SHOW_FLASH_MESSAGE);
-      expect(store.getActions()[0].kind).to.eq('error');
+      expect(store.getActions()[1].type).to.eq(SHOW_FLASH_MESSAGE);
+      expect(store.getActions()[1].kind).to.eq('error');
     });
 
     it('shows field-level errors if form schema is invalid', () => {
@@ -179,7 +179,7 @@ describe('actions/manageMetadata', () => {
 
       store.dispatch(saveDatasetMetadata());
 
-      const action = store.getActions()[1];
+      const action = store.getActions()[2];
 
       expect(action.type).to.eq('EDIT');
       expect(action.tableName).to.eq('views');
@@ -240,7 +240,7 @@ describe('actions/manageMetadata', () => {
       };
 
       setTimeout(() => {
-        expect(store.getActions()[0].updates.payload).to.deep.eq(expectedPayload);
+        expect(store.getActions()[1].updates.payload).to.deep.eq(expectedPayload);
 
         done();
       }, 0);
@@ -260,7 +260,7 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[0].operations[1];
+        const action = store.getActions()[1].operations[1];
 
         expect(action.type).to.eq(UPSERT_STARTED);
 
@@ -288,7 +288,7 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[1].operations[1];
+        const action = store.getActions()[2].operations[1];
 
         expect(action.type).to.eq(UPSERT_SUCCEEDED);
 
@@ -314,7 +314,7 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[2];
+        const action = store.getActions()[3];
 
         expect(action.type).to.eq(UPSERT_FROM_SERVER);
 

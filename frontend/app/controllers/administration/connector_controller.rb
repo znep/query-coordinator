@@ -163,12 +163,14 @@ class Administration::ConnectorController < AdministrationController
         @esri_connectors = EsriServerConnector.servers
       rescue EsriCrawler::ServerError => error
         @failed_esri_connection = true
+        add_flash(:error, t('screens.admin.connector.esri_service_unavailable'))
         display_external_error(error)
       rescue => ex
         @failed_esri_connection = true
+        add_flash(:error, t('screens.admin.connector.esri_service_unavailable'))
         Rails.logger.error("Encountered error while trying to access Esri Crawler service: #{ex}")
       end
-      add_flash(:warning, t('screens.admin.connector.esri_service_unavailable')) if @esri_connectors.blank?
+      add_flash(:warning, t('screens.admin.connector.no_esri_connectors')) if @esri_connectors.blank?
     end
 
     if check_feature_flag('enable_catalog_federator_connector')
@@ -176,10 +178,11 @@ class Administration::ConnectorController < AdministrationController
         @catalog_federator_connectors = CatalogFederatorConnector.servers
       rescue => ex
         @failed_catalog_federator_connection = true
+        add_flash(:error, t('screens.admin.connector.catalog_federator_service_unavailable'))
         Rails.logger.error("Encountered error while trying to access Catalog Federator service: #{ex}")
       end
       if @catalog_federator_connectors.blank?
-        add_flash(:warning, t('screens.admin.connector.catalog_federator_service_unavailable'))
+        add_flash(:warning, t('screens.admin.connector.no_catalog_federator_connectors'))
       end
     end
   end

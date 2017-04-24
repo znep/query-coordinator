@@ -2770,8 +2770,8 @@ en:
         ignored_option: Don't Connect
         last_synced: Last synced
         never: Never
-        no_esri_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
-        no_catalog_federator_connectors: There are no current DATA.json connectors. If you wish to connect an external source to your catalog, click Add New above.
+        no_esri_connectors: There are no Esri connectors. If you wish to connect an external source to your catalog, click Add new above.
+        no_catalog_federator_connectors: There are no current DATA.json connectors. If you wish to connect an external source to your catalog, click Add new above.
         not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
         in_progress: Sync in progress
         not_yet: Not yet synced

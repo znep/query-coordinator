@@ -2730,6 +2730,7 @@ en:
         back_to_connector_list: Back to Connector list
         catalog: External
         catalog_connect_all: Connect all assets as External Datasets
+        catalog_federator_service_unavailable: DATA.json services are currently unavailable.
         catalog_option: External Connection
         catalog_option_explanation: Assets will appear in your catalog as External Datasets
         connected_assets: Connected assets
@@ -2749,14 +2750,16 @@ en:
         errors:
           duplicate_server_error: That Esri Server has already been connected to this domain.
           invalid_attributes_error: 'These parameters were invalid: %{invalid}.'
-          json_format_error: Your JSON was malformed.
+          json_format_error: This connector cannot be used because the JSON data is malformed.
           missing_attributes_error: 'These parameters were missing: %{missing}.'
           not_found_error: That resource was not found.
           problem_with_errors: We were unable to process your request.
           server_ping_error: 'Could not reach server: %{url}'
           unknown_error: 'Your request failed for the following reason: %{reason}'
+          unknown_server: Unable to locate the requested server.
         esri_arcgis: Esri ArcGIS Server
         esri_arcgis_url: ArcGIS Server address
+        esri_service_unavailable: Esri connector services are currently unavailable.
         failing: Failing
         flashes:
           created: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
@@ -2770,6 +2773,8 @@ en:
         last_synced: Last synced
         never: Never
         no_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
+        no_esri_connectors: There are no Esri connectors. If you wish to connect an external source to your catalog, click Add new above.
+        no_catalog_federator_connectors: There are no current DATA.json connectors. If you wish to connect an external source to your catalog, click Add new above.
         not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
         in_progress: Sync in progress
         not_yet: Not yet synced

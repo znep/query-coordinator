@@ -1,25 +1,17 @@
 # helper for logic around displaying connector pages
 module DataConnectorHelper
 
-  # private :get_service_display_string
-
   # for a service hash, get the most preferred way to represent it as a string
   def service_display_string(service_data)
-    display_string = get_service_display_string(service_data)
-    return service_data['url'] if display_string.blank?
-    return "#{display_string} (#{service_data['kind'].titleize})"
-  end
+    display_string = service_data.values_at('name', 'service_description', 'description').detect(&:present?)
 
-  def get_service_display_string(service_data)
-    return service_data['name'] unless service_data['name'].blank?
-    return service_data['service_description'] unless service_data['service_description'].blank?
-    return service_data['description'] unless service_data['description'].blank?
-    return ''
+    return service_data['url'] if display_string.blank?
+
+    "#{display_string} (#{service_data['kind'].titleize})"
   end
 
   def layer_display_string(layer_data)
-    return layer_data['name'] unless layer_data['name'].blank?
-    layer_data['url']
+    layer_data['name'].presence || layer_data['url']
   end
 
   # get the suffix for an icon representing a connector's sync state
@@ -72,22 +64,24 @@ module DataConnectorHelper
   end
 
   def disabled_class(server)
-    option_disabled?(server) ? "is-disabled" : ""
+    option_disabled?(server) ? 'is-disabled' : ''
   end
 
   def icon_for_asset(server, asset)
     content_tag(
       :span,
-      "",
-      class: "select-icon #{sync_type_icon(asset['sync_type'])} " + disabled_class(server),
+      '',
+      class: "select-icon #{sync_type_icon(asset['sync_type'])} #{disabled_class(server)}",
       id: "icon-for-#{asset['id']}"
     )
   end
 
   def select_tag_choices
-    {t("screens.admin.connector.data_option") => 'data',
-    t("screens.admin.connector.catalog_option") => 'catalog',
-    t("screens.admin.connector.ignored_option") => 'ignored'}
+    {
+      t('screens.admin.connector.data_option') => 'data',
+      t('screens.admin.connector.catalog_option') => 'catalog',
+      t('screens.admin.connector.ignored_option') => 'ignored'
+    }
   end
 
   # Constructs the check_boxes for the edit_connector page.
@@ -107,7 +101,9 @@ module DataConnectorHelper
           :id => folder['id'],
           :term => folder_search_term(folder)
         }
-      }, 'catalog', 'ignored'
+      },
+      'catalog',
+      'ignored'
     )
   end
 
@@ -146,7 +142,9 @@ module DataConnectorHelper
           :id => service['id'],
           :term => service_search_term(folder, service)
         }
-      }, 'catalog', 'ignored'
+      },
+      'catalog',
+      'ignored'
     )
   end
 
@@ -185,7 +183,9 @@ module DataConnectorHelper
           :id => layer['id'],
           :term => layer_search_term(folder, service, layer)
         }
-      }, 'catalog', 'ignored'
+      },
+      'catalog',
+      'ignored'
     )
   end
 
@@ -207,4 +207,5 @@ module DataConnectorHelper
       }
     )
   end
+
 end

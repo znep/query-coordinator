@@ -1,0 +1,20 @@
+<div>
+  <button onclick="$('.item.search-item:visible').find('input').trigger('click'); return false;">
+     Click to Toggle the Selections Visible Below</strong>
+  </button>
+</div>
+
+<div class="catalog-federator-list">
+  <%- @datasets.sort_by { |item| item['name'] }.each_with_index do |item, index| -%>
+    <div class="item search-item">
+      <div class="edit-item">
+        <%= check_box_tag(index, index) %>
+        <span class="asset-name">
+          <label for="<%= index %>" title="<%= item['externalId'] %>">
+            <%= truncate(item['name'], length: 120) %>
+          </label>
+        </span>
+      </div>
+    </div>
+  <%- end -%>
+</div>

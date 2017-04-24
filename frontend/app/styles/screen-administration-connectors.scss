@@ -7,6 +7,10 @@ $pager-blue: #2f4589;
 
 #connector-content {
 
+  .gridList td {
+    vertical-align: middle;
+  }
+
   .connectors-header {
 
     .connector-top-page-status {
@@ -190,6 +194,12 @@ $pager-blue: #2f4589;
     margin-right: 6px;
     input {
       width: 100%;
+    }
+    .searchBox {
+      margin-bottom: 1rem;
+    }
+    & + div {
+      margin-bottom: 1rem;
     }
   }
   .esri-tree {

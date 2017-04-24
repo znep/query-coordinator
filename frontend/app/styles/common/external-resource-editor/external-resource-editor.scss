@@ -62,6 +62,15 @@ $view-card-preview-height: 300px;
           display: none;
         }
 
+        .preview-image-button {
+          margin-right: 0.7rem;
+        }
+
+        .preview-image-label {
+          font-size: 0.9rem;
+          font-style: italic;
+        }
+
         .file-input {
           margin-bottom: 12px;
         }

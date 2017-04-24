@@ -97,7 +97,7 @@ export class ExternalResourceForm extends React.Component {
     });
 
     const previewImageButtonProps = {
-      className: 'btn btn-primary',
+      className: 'btn btn-primary preview-image-button',
       'aria-labelledby': 'external-resource-preview-image-label',
       onClick: (e) => {
         e.preventDefault();
@@ -106,7 +106,7 @@ export class ExternalResourceForm extends React.Component {
     };
 
     const noFileChosenText = this.props.previewImage ? null : (
-      <span>
+      <span className="preview-image-label">
         {fetchTranslation('common.external_resource_editor.form.fields.preview_image.no_file_chosen')}
       </span>
     );

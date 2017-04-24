@@ -128,6 +128,7 @@ section.landing-page-section {
 
     .result-card {
       flex: 0 0 auto;
+      // Sized for 3 cards, 2 of which have 1rem margin-right. 2rem/3 = 0.66rem
       width: calc(33.3% - 0.66rem);
       max-width: 350px;
       height: 300px;

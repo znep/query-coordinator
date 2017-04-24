@@ -29,6 +29,7 @@ class TagsInput extends Component {
     const {
       removeDirtyProperty,
       setDirtyProperty,
+      showErrors,
       setModel,
       model,
       subName,
@@ -41,6 +42,7 @@ class TagsInput extends Component {
     const isValid = _.get(schema, `fields.${name}.isValid`, true);
 
     if (!model[name] || !isValid) {
+      showErrors();
       return;
     }
 
@@ -48,15 +50,15 @@ class TagsInput extends Component {
     setDirtyProperty(subName);
     setModel({
       ...model,
-      [subName]: model[subName].concat(model.tag),
+      [subName]: model[subName].concat(model[name]),
       [name]: ''
     });
   }
 
   removeTag(tagName) {
-    const { model, setModel, subName } = this.props;
+    const { model, setModel, name, subName } = this.props;
 
-    const newTags = model.tags.filter(tag => tag !== tagName);
+    const newTags = model[subName].filter(tag => tag !== tagName);
 
     setModel({
       ...model,
@@ -74,14 +76,14 @@ class TagsInput extends Component {
   }
 
   render() {
-    const { placeholder, model, name, inErrorState, showErrors } = this.props;
+    const { placeholder, model, name, subName, inErrorState, showErrors } = this.props;
 
     const classes = classNames(styles.textInput, { [styles.validationError]: inErrorState });
 
     const buttonClasses = classNames(styles.button, { [styles.validationError]: inErrorState });
 
-    const listItems = model.tags
-      ? model.tags.map((tag, idx) =>
+    const listItems = model[subName]
+      ? model[subName].map((tag, idx) =>
         <Tag key={idx} tagName={tag} onTagClick={() => this.removeTag(tag)} />)
       : null;
 

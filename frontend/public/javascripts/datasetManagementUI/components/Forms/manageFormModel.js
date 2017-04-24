@@ -48,16 +48,6 @@ const makeWrapper = (WrappedComponent) => {
       }
     }
 
-    // If you pass syncToStore in as a prop, then this component will send
-    // its internal state to the redux store
-    componentWillUpdate(nextProps, nextState) {
-      const { syncToStore, fourfour } = this.props;
-      if (syncToStore && fourfour && !_.isEqual(nextState, this.state)) {
-        syncToStore(fourfour, 'model', nextState.model);
-        syncToStore(fourfour, 'isDirty', nextState.isDirty);
-      }
-    }
-
     setModel(model) {
       this.setState({ model });
     }
@@ -141,12 +131,11 @@ const makeWrapper = (WrappedComponent) => {
   }
 
   FormWrapper.propTypes = {
-    syncToStore: PropTypes.func,
     fourfour: PropTypes.string,
     initialModel: PropTypes.object
   };
 
-  FormWrapper.displayName = `Reformed(${getComponentName(WrappedComponent)})`;
+  FormWrapper.displayName = `ManageFormModel(${getComponentName(WrappedComponent)})`;
   return hoistNonReactStatics(FormWrapper, WrappedComponent);
 };
 

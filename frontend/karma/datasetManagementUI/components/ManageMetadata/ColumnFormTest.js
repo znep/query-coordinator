@@ -63,7 +63,8 @@ describe('components/ManageMetadata/ColumnForm', () => {
         }
       }
     ],
-    fourfour: '3kt9-pmvq'
+    fourfour: '3kt9-pmvq',
+    syncToStore: () => {}
   };
 
   it('renders correctly', () => {

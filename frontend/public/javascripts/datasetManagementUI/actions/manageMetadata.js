@@ -19,7 +19,7 @@ import {
 import { insertChildrenAndSubscribeToOutputSchema } from './manageUploads';
 import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
-import { showFlashMessage } from 'actions/flashMessage';
+import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
 import { getLocalizedErrorMessage } from 'lib/util';
 import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX, fromFlatToNested } from 'lib/customMetadata';
 
@@ -28,6 +28,8 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   const { fourfour } = routing;
   const model = _.get(db, `views.${fourfour}.model`);
   const schema = _.get(db, `views.${fourfour}.schema`);
+
+  dispatch(hideFlashMessage());
 
   // Careful here. We don't want to ping the server if the validation schema says
   // the form is invalid. But for validations we don't do client-side, there might
@@ -138,6 +140,8 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 
   const schema = _.get(db, `views.${fourfour}.colFormSchema`);
 
+  dispatch(hideFlashMessage());
+
   // see comment above in saveDatasetMetadata thunk
   if (schema && !schema.isValid) {
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
@@ -183,14 +187,36 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     then(checkStatus).
     then(getJson).
     catch(error => {
+      // console.log('error', error.response.json().then(err => console.log(err)))
       const errorOperations = [
         upsertFailed('output_schemas', newOutputSchema, error),
         outputSchemaUpsertFailed()
       ];
       dispatch(batch(errorOperations));
-      error.response.json().then(({ message }) => {
-        const localizedMessage = getLocalizedErrorMessage(message);
-        dispatch(showFlashMessage('error', localizedMessage));
+      error.response.json().then(err => {
+        const errorDetails = err.params || {};
+        let errorMessage;
+
+        const { field_name: fieldNameErrors, display_name: displayNameErrors } =
+          _.pick(errorDetails, 'field_name', 'display_name');
+
+        if (fieldNameErrors && Array.isArray(fieldNameErrors)) {
+          const { reason } = fieldNameErrors[0];
+
+          if (reason === 'duplicate') {
+            errorMessage = I18n.edit_metadata.validation_error_dupe_field_name;
+          }
+        } else if (displayNameErrors && Array.isArray(displayNameErrors)) {
+          const { reason } = displayNameErrors[0];
+
+          if (reason === 'duplicate') {
+            errorMessage = I18n.edit_metadata.validation_error_dupe_display_name;
+          }
+        } else {
+          errorMessage = I18n.edit_metadata.validation_error_general;
+        }
+
+        dispatch(showFlashMessage('error', errorMessage));
       });
     }).
     then(resp => {

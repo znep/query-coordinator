@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import isEmail from 'validator/lib/isEmail';
 import isURL from 'validator/lib/isURL';
@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import MetadataField from 'components/MetadataField';
 import Fieldset from 'components/MetadataFields/Fieldset';
-import reformed from 'components/Forms/reformed';
+import manageFormModel from 'components/Forms/manageFormModel';
 import validateSchema from 'components/Forms/validateSchema';
 import { edit } from 'actions/database';
 import { makeNamespacedFieldName, fromNestedToFlat } from 'lib/customMetadata';
@@ -214,6 +214,9 @@ const validationRules = {
   name: {
     required: true
   },
+  tag: {
+    noDupes: 'tags'
+  },
   attributionLink: {
     test: val => {
       if (val && isURL(val, { require_protocol: true })) {
@@ -274,24 +277,49 @@ export const createCombinedValidationRules = (customFieldsets = []) => {
 };
 
 // COMPONENT
-export const DatasetForm = ({ customFieldsetObjs, ...props }) => {
-  const fieldsetsCombined = customFieldsetObjs
-    ? fieldsetObjs.concat(customFieldsetObjs)
-    : fieldsetObjs;
+export class DatasetForm extends Component {
+  componentWillUpdate(nextProps) {
+    const { syncToStore, fourfour, schema, model, isDirty } = this.props;
+    const { schema: nextSchema, model: nextModel, isDirty: nextIsDirty } = nextProps;
 
-  const fieldsets = fieldsetsCombined
-    .map(fieldsetObj => ({
-      ...fieldsetObj,
-      fields: fieldsetObj.fields.map(fieldObj => objToField(fieldObj, props))
-    }))
-    .map((fieldsetObj, idx) => objToFieldset(fieldsetObj, fieldsetObj.fields, idx));
+    if (!_.isEqual(model, nextModel)) {
+      syncToStore(fourfour, 'model', nextModel);
+    }
 
-  return (
-    <form id="dataset-metadata-editor">
-      {fieldsets}
-    </form>
-  );
-};
+    if (!_.isEqual(isDirty, nextIsDirty)) {
+      syncToStore(fourfour, 'isDirty', nextIsDirty);
+    }
+
+    if (!_.isEqual(schema, nextSchema)) {
+      syncToStore(fourfour, 'schema', nextSchema);
+    }
+  }
+
+  render() {
+    // TODO: remove when we upgrade babel-eslint
+    // babel-eslint bug: https://github.com/babel/babel-eslint/issues/249
+    /* eslint-disable no-use-before-define */
+    const { customFieldsetObjs, ...rest } = this.props;
+    /* eslint-disable no-use-before-define */
+
+    const fieldsetsCombined = customFieldsetObjs
+      ? fieldsetObjs.concat(customFieldsetObjs)
+      : fieldsetObjs;
+
+    const fieldsets = fieldsetsCombined
+      .map(fieldsetObj => ({
+        ...fieldsetObj,
+        fields: fieldsetObj.fields.map(fieldObj => objToField(fieldObj, rest))
+      }))
+      .map((fieldsetObj, idx) => objToFieldset(fieldsetObj, fieldsetObj.fields, idx));
+
+    return (
+      <form id="dataset-metadata-editor">
+        {fieldsets}
+      </form>
+    );
+  }
+}
 
 DatasetForm.propTypes = {
   customFieldsetObjs: PropTypes.arrayOf(PropTypes.shape({
@@ -303,10 +331,15 @@ DatasetForm.propTypes = {
       type: PropTypes.string,
       isPrivate: PropTypes.bool
     }))
-  }))
+  })),
+  syncToStore: PropTypes.func.isRequired,
+  fourfour: PropTypes.string.isRequired,
+  schema: PropTypes.object,
+  model: PropTypes.object.isRequired,
+  isDirty: PropTypes.object
 };
 
-// We need to pass initialModel as a prop to reformed HOC if we want to pre-load
+// We need to pass initialModel as a prop to manageFormModel HOC if we want to pre-load
 // our form with data. Since these data come from the redux store, we create this
 // prop here in mapStateToProps.
 const mapStateToProps = ({ db, routing }) => {
@@ -328,20 +361,18 @@ const mapStateToProps = ({ db, routing }) => {
   };
 };
 
-// Optional callback we can pass into reformed HOC to sync it's internal state with
-// the redux store.
-const mapDispatchToProps = (dispatch) => ({
-  syncToStore: (id, key, val) => dispatch(edit('views', { id, [key]: val }))
+const mapDispatchToProps = dispatch => ({
+  syncToStore: (fourfour, key, val) => dispatch(edit('views', { id: fourfour, [key]: val }))
 });
 
 // We want to use these higher-order components together to create data for one another.
 // They follow a pattern of creating data, passing these data in as props to their wrapped
 // component, and then passing that component + its new props to the next HOC. So
-// connect creates initialModel, which reformed uses to create model, which validateSchema
+// connect creates initialModel, which manageFormModel uses to create model, which validateSchema
 // uses to create schema.
 const formWrapper = _.flowRight([
   connect(mapStateToProps, mapDispatchToProps),
-  reformed,
+  manageFormModel,
   validateSchema()
 ]);
 

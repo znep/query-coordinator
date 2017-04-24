@@ -6,7 +6,7 @@ import { getComponentName } from 'lib/util';
 export const getValidationErrors = (validationRules, model) => {
   return (
     Object.keys(validationRules).reduce((acc, key) => {
-      // Gets the model from the reformed HOC, runs it against a user-defined validation rules.
+      // Gets the model from the manageFormModel HOC, runs it against a user-defined validation rules.
       // Rules are passed in at the point of form-creation.
 
       // Current built-in rules are: required, type, minLength, and maxLength. Test is a
@@ -45,6 +45,29 @@ export const getValidationErrors = (validationRules, model) => {
         if (value && value.length > rules.maxLength) {
           const maxLength = rules.maxLength;
           errors.push(I18n.edit_metadata.validation_error_maxlength.format(_.upperFirst(key), maxLength));
+        }
+      }
+
+      if (rules.noDupes) {
+        const subfield = model[rules.noDupes];
+
+        if (value && Array.isArray(subfield)) {
+          if (subfield.includes(value)) {
+            errors.push(I18n.edit_metadata.validation_error_no_dupes);
+          }
+        }
+      }
+
+      if (rules.noDupesWith) {
+        // pull current field out of form data model
+        const modelWithoutCurrentField = _.omit(model, [key]);
+
+        // filter form data model according to callback
+        const consideredFields = _.pickBy(modelWithoutCurrentField, rules.noDupesWith.fieldFilter);
+
+        // check for dupes
+        if (value && _.some(consideredFields, (val) => val === value)) {
+          errors.push(rules.noDupesWith.message);
         }
       }
 
@@ -96,18 +119,6 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
       });
     }
 
-    // put schema in store on initial render so other components can know if the
-    // form is valid or not before the user types anything; this lets us prevent
-    // the form from sending if there is a newly created required field for example
-    componentDidMount() {
-      const { fourfour, syncToStore } = this.props;
-      const { schema } = this.state;
-
-      if (syncToStore && fourfour) {
-        syncToStore(fourfour, 'schema', schema);
-      }
-    }
-
     // Called on every prop change (in this case, the form's data-model changing from
     // user input). Calculate a new schema
     componentWillReceiveProps(nextProps) {
@@ -125,16 +136,6 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
       }
     }
 
-    // Gets syncToStore as a prop from reformed HOC. Not required, but if available,
-    // will put schema in store.
-    componentWillUpdate(nextProps, nextState) {
-      const { syncToStore, fourfour } = this.props;
-
-      if (syncToStore && fourfour && !_.isEqual(this.state.schema, nextState.schema)) {
-        syncToStore(fourfour, 'schema', nextState.schema);
-      }
-    }
-
     render() {
       return React.createElement(WrappedComponent, _.assign({}, this.props, {
         schema: this.state.schema
@@ -146,8 +147,6 @@ const validateSchema = (validationRules = {}) => (WrappedComponent) => {
 
   Validated.propTypes = {
     model: PropTypes.object.isRequired,
-    syncToStore: PropTypes.func,
-    fourfour: PropTypes.string,
     validationRules: PropTypes.object
   };
 

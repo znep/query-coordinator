@@ -40,23 +40,22 @@ namespace :manifest do
 
       # TODO: Remove this list once all intended repositories are merged into platform-ui.
       ignore_list = %w[ 069316e2ea2be425925863b58c3653da54d50a84 ]
-      # N.B.: the %s bit in this string is a printf format expression, used below via the % operator.
-      # Read up here: http://ruby-doc.org/core-2.2.0/String.html#method-i-25
-      git_log_cmd_template = "git log --no-color --right-only --cherry-pick --reverse %s #{from_tag}...#{to_tag} ^#{ignore_list.join(' ^')} -- . ':(exclude)storyteller'"
+      git_log_flags = '--no-color --right-only --cherry-pick --reverse --no-merges'
+      git_log_revision_range = "#{from_tag}...#{to_tag}"
+      # NOTE: Excluding storyteller via -- . ':(exclude)storyteller' also ends up ignoring empty merge
+      # commits (because of the '.' that is required for excludes to work). If you need to get merges,
+      # pass --full-history (though note this will end up including non-frontend merges).
+      git_log_query = "^#{ignore_list.join(' ^')} -- . ':(exclude)storyteller'"
+      git_log_cmd = "git log #{git_log_flags} #{git_log_revision_range} #{git_log_query}"
 
-      # Excluding storyteller via -- . ':(exclude)storyteller' also ends up ignoring empty merge commits
-      # (because of the '.' that is required for excludes to work) unless we pass --full-history.
-      git_log_output = `#{git_log_cmd_template % '--full-history'}`
-
-      # Exclude merges from no-ticket warnings.
-      git_log_output_no_merges = `#{git_log_cmd_template % '--no-merges'}`
+      git_log_output = `#{git_log_cmd}`
 
       manifest_output << "\n\nLink to Jira query for current issues...\n"
       manifest_output << jira_query(git_log_output)
       manifest_output << "\n\n----Commits with JIRA tickets:----\n"
       manifest_output << get_commits_with_jira(git_log_output).map(&:values).sort.join("\n")
 
-      commits_without_jira_tickets = get_commits_without_jira(git_log_output_no_merges).join("\n")
+      commits_without_jira_tickets = get_commits_without_jira(git_log_output).join("\n")
       if commits_without_jira_tickets.present?
         manifest_output << "\n\n----Commits without JIRA tickets:----\n"
         manifest_output << commits_without_jira_tickets

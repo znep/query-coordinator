@@ -51,7 +51,6 @@ class InternalController < ApplicationController
   def show_domain
     @domain = Domain.find(params[:domain_id])
     @aliases = @domain.aliases.try(:split, ',') || []
-    @modules = AccountModule.find
     @deleted = @domain.deletedAt.present?
     @configs = ::Configuration.find_by_type(nil, false, params[:domain_id], false)
     # Show the Feature Flag link on all pages even if it doesn't exist, because we
@@ -89,8 +88,17 @@ class InternalController < ApplicationController
     }
 
     @known_config_types = ExternalConfig.for(:configuration_types).for_autocomplete(params)
+    @permanent_modules = {
+      routing_approval: 'Routing and Approval does not properly clean up when disabled, so you cannot remove it.'
+    }.with_indifferent_access
 
-    @features = KNOWN_FEATURES
+    @modules = (AccountModule.find + KNOWN_FEATURES).map do |duck_module|
+      (duck_module.try(:as_json) || duck_module).symbolize_keys.tap do |_module|
+        if @permanent_modules.key?(_module[:name])
+          _module.bury(:permanent, :reason, @permanent_modules[_module[:name]])
+        end
+      end
+    end
 
     respond_to do |format|
       format.json { render :json => @domain.data.to_json }

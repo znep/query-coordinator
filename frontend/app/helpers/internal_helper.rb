@@ -146,6 +146,10 @@ module InternalHelper
     end
   end
 
+  def permanent_module?(feature)
+    @permanent_modules.include?(feature)
+  end
+
   def bulk_feature_flag_update(flags, options = {})
     flags.keep_if { |k, _| FeatureFlags.has?(k) }
     domain_flags = @domain.feature_flags

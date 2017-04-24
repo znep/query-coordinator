@@ -33,6 +33,10 @@ export default class HttpClient {
     return this.request(url, 'PUT', payload, options);
   }
 
+  patch(url, payload, options = {}) {
+    return this.request(url, 'PATCH', payload, options);
+  }
+
   post(url, payload, options = {}) {
     return this.request(url, 'POST', payload, options);
   }

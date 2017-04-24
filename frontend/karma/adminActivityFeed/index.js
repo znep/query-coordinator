@@ -57,7 +57,7 @@ window.renderComponentWithLocalization = function(component, props, store) {
     locale: 'en',
     root: 'screens.admin.jobs'
   }, React.createElement(Provider, { store }, React.createElement(component, props)));
-}
+};
 
 function requireAll(context) {
   context.keys().forEach(context);

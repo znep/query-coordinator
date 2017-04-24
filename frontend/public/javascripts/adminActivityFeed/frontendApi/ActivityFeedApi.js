@@ -40,4 +40,14 @@ export default class ActivityFeedApi {
 
     return this._httpClient.get(url, { json: true });
   }
+
+  restoreDataset(datasetId) {
+    if (datasetId) {
+      const url = `/views/${datasetId}.json?method=restore`;
+
+      return this._httpClient.patch(url);
+    } else {
+      return Promise.reject(new Error('empty datasetId'));
+    }
+  }
 }

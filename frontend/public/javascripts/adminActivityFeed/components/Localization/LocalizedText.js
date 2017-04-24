@@ -3,9 +3,9 @@ import React from 'react';
 
 export default function LocalizedText(props, context) {
   const { localization } = context;
-  const { localeKey } = props;
+  const { localeKey, data } = props;
 
-  const translation = localization.translate(localeKey);
+  const translation = localization.translate(localeKey, data);
   const spanProps = _.omit(props, ['localeKey']);
 
   return <span {...spanProps} dangerouslySetInnerHTML={{__html: translation}}/>;

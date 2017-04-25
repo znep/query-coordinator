@@ -125,38 +125,20 @@ function iconClassForValue(selectedValue) {
   }
 }
 
-function onRadioSelected(elementType) {
+function setConnectionStrategy(elementType) {
   return (event) => {
     const $target = $(event.currentTarget);
-    const canSelectLayers = $target.value() && ($target.attr('value') !== 'ignored');
-    const setState = ($el) => {
-      $el[canSelectLayers ? 'attr' : 'removeAttr']('disabled', true);
-    };
+    const selectAllAssets = ($target.value() && $target.val() !== 'ignored');
+    const setState = ($el) => ($el.attr('disabled', selectAllAssets));
+    const setDisabledClass = ($el) => ($el[selectAllAssets ? 'addClass' : 'removeClass']('is-disabled'));
 
-    // set or remove the is-disabled class on select-style divs and select-icon spans
-    const setDisabledClass = ($el) => {
-      $el[canSelectLayers ? 'addClass' : 'removeClass']('is-disabled');
-    };
-    $('.select-style').each((_index, el) => {
-      setDisabledClass($(el));
-    });
+    // Esri use case
+    setDisabledClass($('.select-style'));
+    setDisabledClass($('.select-icon'));
+    setState($(`${elementType}.sync-type`));
 
-    $('.select-icon').each((_index, el) => {
-      setDisabledClass($(el));
-    });
-
-    // Argh! because rails puts a bunch of hidden elements everywhere, we can't
-    // just enable/disable the ones we know about, we have to get the hidden
-    // ones as well, which have names that match the elements of .sync-type,
-    // so we loop over all the visible ones and select the hidden ones
-    // from the name of the visible ones ;_;
-    $(`${elementType}.sync-type`).each((_index, el) => {
-      const $visible = $(el);
-      const name = $visible.attr('name');
-      const $hidden = $(`${elementType}[name="${name}"`);
-      setState($visible);
-      setState($hidden);
-    });
+    // Catalog Federator use case
+    setState($('fieldset.line input[type=checkbox]'));
   };
 }
 
@@ -210,5 +192,5 @@ $(() => {
 
   $('.sync-type-check').change(onChecked);
   $('.sync-type-select').change(onSelected);
-  $('.server-sync').change(onRadioSelected(elementType));
+  $('.server-sync').change(setConnectionStrategy(elementType));
 });

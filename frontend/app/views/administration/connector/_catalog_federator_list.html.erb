@@ -8,7 +8,7 @@
   <%- @datasets.sort_by { |item| item['name'] }.each_with_index do |item, index| -%>
     <div class="item search-item">
       <div class="edit-item">
-        <%= check_box_tag(index, index) %>
+        <%= check_box_tag(index, index, false, :class => 'is-disabled', :disabled => 'disabled') %>
         <span class="asset-name">
           <label for="<%= index %>" title="<%= item['externalId'] %>">
             <%= truncate(item['name'], length: 120) %>

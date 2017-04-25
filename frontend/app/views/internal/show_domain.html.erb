@@ -74,7 +74,7 @@
     <h2>Add Configuration Set:</h2>
     <%= form_tag create_site_config_path, :class => 'addConfigForm' do %>
       <div class='line'>
-        <%= text_field_tag 'config[type]', '', :class => 'add_config_type' %>
+        <%= text_field_tag 'config[type]', '', :class => 'add_config_type', :autocomplete => 'off' %>
         <div class="warning">
           <%- [ :poorly_understood,
                 :not_intended_for_direct_manipulation,
@@ -96,18 +96,21 @@
       <%- @domain.features.sort.each do |feature, enabled| -%>
       <div class="line<%= ' featureDisabled' unless enabled %>">
         <label><%= feature %></label>
-        <%= enable_or_disable_module_feature(feature, enabled) %>
-        <%= remove_module_feature(feature) %>
+        <%- unless permanent_module?(feature) %>
+          <%= enable_or_disable_module_feature(feature, enabled) %>
+          <%= remove_module_feature(feature) %>
+        <%- end %>
       </div>
       <%- end -%>
     </div>
 
     <h2>Add Module</h2>
-    <%= form_tag add_module_feature_path do %>
+    <%= form_tag add_module_feature_path, :class => 'addModuleForm', :autocomplete => 'off' do %>
       <div class='line'>
         <%= text_field_tag 'new-feature_name' %>
         <%= hidden_field_tag 'new-feature_enabled', 'enabled' %>
       </div>
+      <div class="warning"></div>
       <%= submit_tag 'Add' %>
     <% end %>
 
@@ -275,12 +278,23 @@
         }).focus();
       }));
 
-      var modules = <%== (@modules + @features).to_json %>;
+      var displayModuleWarning = function(dataItem) {
+        var $warning = $('.addModuleForm .warning');
+        var genericWarning = 'This module is permanent right now. You will not be able to disable or remove it.';
+        if (dataItem.permanent) {
+          $warning.text(dataItem.permanent.reason || genericWarning).show();
+        } else {
+          $warning.hide();
+        }
+      };
+
+      var modules = <%== @modules.to_json %>;
       $('input[name=new-feature_name]').focus(_.once(function() {
         $(this).awesomecomplete({
           highlightMatches: true,
           ignoreCase: true,
-          excludeFieldsFromRender: ['flags'],
+          excludeFieldsFromRender: ['flags', 'permanent'],
+          onComplete: displayModuleWarning,
           renderFunction: showAllFieldsRenderFunction,
           staticData: modules,
           resultLimit: 100,
@@ -296,7 +310,7 @@
           $this.socrataTip({
             trigger: 'hover',
             isSolo: true,
-            message: module.description,
+            message: _.compact([module.description, _.get(module, 'permanent.reason')]).join('<br /><br />'),
             'parent': 'body'
           });
         }

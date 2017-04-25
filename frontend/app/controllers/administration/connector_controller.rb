@@ -3,8 +3,6 @@ class Administration::ConnectorController < AdministrationController
   include ActionView::Helpers::SanitizeHelper
   include Administration::ConnectorHelper
 
-  helper_method :check_feature_flag
-
   #
   # Connector / EsriServerConnector / CatalogFederatorConnector
   #
@@ -14,18 +12,19 @@ class Administration::ConnectorController < AdministrationController
       c.check_auth_level(UserRights::USE_DATA_CONNECTORS)
     end
 
-  before_filter :require_a_catalog_connector, :only =>
-    %i(connectors new_connector delete_connector create_connector edit_connector update_connector show_connector)
-
   before_filter :fetch_server, :only => :edit_connector
   before_filter :fetch_connectors, :only => :connectors
+
+  def enable_catalog_federator_connector?
+    FeatureFlags.derive(nil, request, nil)[:enable_catalog_federator_connector]
+  end
 
   def connectors # index
   end
 
   def new_connector
     @server = {}
-    @include_data_json = check_feature_flag('enable_catalog_federator_connector')
+    @include_data_json = enable_catalog_federator_connector?
   end
 
   def create_connector
@@ -54,6 +53,7 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def edit_connector
+    @enable_data_connector = feature_flag?('enable_data_connector', request)
   end
 
   def update_connector
@@ -123,7 +123,6 @@ class Administration::ConnectorController < AdministrationController
   def show_connector
     # Show page currently only supported for Esri connectors
     if esri_arcgis?
-      @enable_catalog_connector = FeatureFlags.derive(nil, request).enable_catalog_connector
       page_size = 50
       all_threshold = 8
       page_idx = params.fetch(:page, '1').to_i
@@ -151,29 +150,21 @@ class Administration::ConnectorController < AdministrationController
 
   private
 
-  # +before_filter+
-  def require_a_catalog_connector
-    check_feature_flag('enable_catalog_connector') || check_feature_flag('enable_catalog_federator_connector')
-  end
-
   def fetch_connectors
-    if @enable_catalog_connector = FeatureFlags.derive(nil, request).enable_catalog_connector
-      @esri_connectors = []
-      begin
-        @esri_connectors = EsriServerConnector.servers
-      rescue EsriCrawler::ServerError => error
-        @failed_esri_connection = true
-        add_flash(:error, t('screens.admin.connector.esri_service_unavailable'))
-        display_external_error(error)
-      rescue => ex
-        @failed_esri_connection = true
-        add_flash(:error, t('screens.admin.connector.esri_service_unavailable'))
-        Rails.logger.error("Encountered error while trying to access Esri Crawler service: #{ex}")
-      end
-      add_flash(:warning, t('screens.admin.connector.no_esri_connectors')) if @esri_connectors.blank?
+    @esri_connectors = []
+    begin
+      @esri_connectors = EsriServerConnector.servers
+    rescue EsriCrawler::ServerError => error
+      @failed_esri_connection = true
+      add_flash(:error, t('screens.admin.connector.esri_service_unavailable'))
+      display_external_error(error)
+    rescue => ex
+      @failed_esri_connection = true
+      add_flash(:error, t('screens.admin.connector.esri_service_unavailable'))
+      Rails.logger.error("Encountered error while trying to access Esri Crawler service: #{ex}")
     end
 
-    if check_feature_flag('enable_catalog_federator_connector')
+    if enable_catalog_federator_connector?
       begin
         @catalog_federator_connectors = CatalogFederatorConnector.servers
       rescue => ex
@@ -188,8 +179,6 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def fetch_server
-    @enable_catalog_connector = FeatureFlags.derive(nil, request).enable_catalog_connector
-    @enable_data_connector = FeatureFlags.derive(nil, request).enable_data_connector
     if esri_arcgis?
       begin
         @tree = EsriServerConnector.tree(params[:server_id])
@@ -204,7 +193,7 @@ class Administration::ConnectorController < AdministrationController
     end
 
     if data_json?
-      if check_feature_flag('enable_catalog_federator_connector')
+      if enable_catalog_federator_connector?
         begin
           @server = CatalogFederatorConnector.servers.detect { |server| server.id == params[:server_id].to_i }
           @datasets = CatalogFederator::Client.new.get_datasets(@server.id)

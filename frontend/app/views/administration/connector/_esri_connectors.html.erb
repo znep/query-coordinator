@@ -36,7 +36,7 @@
       <%- end -%>
     </td>
     <td class="actions" scope="row">
-      <%- if server.last_synced || server.server_backend == 'catalog_federator' %>
+      <%- if server.last_synced %>
         <%= link_to(
           t('screens.admin.connector.edit'),
           {
@@ -57,8 +57,7 @@
         {
           :action => :delete_connector,
           :server_id => server.id,
-          :server_backend => server.server_backend,
-          :type => 'esri_arcgis'
+          :server_backend => server.server_backend
         },
         t('screens.admin.connector.terminate'),
         {:method => :delete},

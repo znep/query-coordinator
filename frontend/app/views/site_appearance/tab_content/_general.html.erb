@@ -15,6 +15,11 @@
 <%= site_appearance_form_field(:general, :google_analytics_token, "#{locale_string}.google_analytics_token") %>
 <%= site_appearance_form_field(:general, :webtrends_url, "#{locale_string}.webtrends_url") %>
 
+<% if FeatureFlags.derive(nil, request)[:site_appearance_tealium_analytics] %>
+  <%= site_appearance_form_field(:general, [:tealium, :account_id], "#{locale_string}.tealium.account_id") %>
+  <%= site_appearance_form_field(:general, [:tealium, :cname_for_prod_reporting], "#{locale_string}.tealium.cname_for_prod_reporting") %>
+<% end %>
+
 <%= section_separator %>
 
 <% if FeatureFlags.derive(nil, request)[:site_chrome_language_switcher] %>

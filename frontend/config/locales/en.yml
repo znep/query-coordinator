@@ -3781,6 +3781,15 @@ en:
                 show_signin_signout: Show Sign In / Sign Out
                 show_signup: Show ability to create an account via Sign Up
                 title: Sign In / Sign Out
+              tealium:
+                account_id:
+                  description: Enter your Tealium account ID to collect analytics for your site.
+                  placeholder: your_org/your_app
+                  title: Tealium Account ID
+                cname_for_prod_reporting:
+                  description: Enter the domain cname that you wish to report production analytics for. This is useful if you also have a "dev" domain that you collect separate analytics for. If you leave this field blank, analytics will always be reported as "prod".
+                  placeholder: yoursite.gov
+                  title: Domain Name for Production Tealium Analytics
               template:
                 description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
                 description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" and "Rally"</a>.

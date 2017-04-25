@@ -354,13 +354,38 @@
             cpObj._genericErrorHandler(xhr);
           });
       } else {
-        cpObj._view.addColumn(column,
-          function(nc) {
-            columnCreated(cpObj, nc, finalCallback);
-          },
-          function(xhr) {
-            cpObj._genericErrorHandler(xhr);
-          });
+        var actuallyAddColumn = function(col) {
+
+          cpObj._view.addColumn(
+            col,
+            function(nc) {
+              columnCreated(cpObj, nc, finalCallback);
+            },
+            function(xhr) {
+              cpObj._genericErrorHandler(xhr);
+            }
+          );
+        };
+
+        // EN-14748 - Update Grid View to Allow Geocoding NBE Point Columns
+        //
+        // (See details above implementation of launchNbeGeocodingConfigurator).
+        if (Column.isNbePointColumn(blist.dataset, column)) {
+          // Need to call cpObj._finishProcessing() here to dismiss the spinner
+          // that gets shown by something further up the inheritance tree. We
+          // will call cpObj._startProcessing() in
+          // launchNbeGeocodingConfigurator() to show the spinner when we
+          // actually start the request.
+          cpObj._finishProcessing();
+          launchNbeGeocodingConfigurator(
+            blist.dataset.columns,
+            column,
+            function() { cpObj._startProcessing(); },
+            actuallyAddColumn
+          );
+        } else {
+          actuallyAddColumn(column);
+        }
       }
     }
   }, {
@@ -409,3 +434,217 @@
   }
 
 })(jQuery);
+
+// EN-14748 - Update Grid View to Allow Geocoding NBE Point Columns
+//
+// This work adds a configuration UI for NBE geocoding. It is launched when the
+// user attempts to add a column of type 'point' to an NBE dataset, and augments
+// the metadata that gets POSTed to the backend with a computation strategy
+// based on the columns that the user has specified for each tier of geographic
+// specificity (address -> locality -> subregion -> region -> postal code ->
+// country), of which only address and postal code are required by the form.
+//
+// As such, the request that would have been made when the user clicks 'Create'
+// in the Add Column form is not actually made until the user also clicks
+// 'Create' on the Geocoding Configuration form.
+//
+// Rather than trying to figure out the weird dynamic form creation/binding
+// stuff that is used by other panes in the grid view, this code uses similar
+// markup and class names to approximate the look and feel but just uses basic
+// jQuery DOM manipulation to actually operate the form, a pleasant consequence
+// of which is that the entire experience is contained in the following function
+// as opposed to split up into un-greppable stuff like:
+//
+//   // defines: addColumn, addChildColumn
+//   props['add' + capName] = function(column, successCallback, errorCallback,
+//     customParams) {
+//     ...
+//
+// Yuck, right?
+function launchNbeGeocodingConfigurator(columns, columnToAdd, showSpinner, addColumnCallback) {
+  var REQUIRED_NBE_GEOCODING_FIELDS = ['address', 'postal_code'];
+  var LOCALIZATION_PREFIX = 'screens.ds.grid_sidebar.add_column.nbe_geocoding_configuration.';
+  var generateSelectFromColumnList = function(columnList, selectName) {
+    var isRequiredField = _.includes(REQUIRED_NBE_GEOCODING_FIELDS, selectName);
+    var labels = {
+      address: $.t(LOCALIZATION_PREFIX + 'address_label'),
+      locality: $.t(LOCALIZATION_PREFIX + 'locality_label'),
+      subregion: $.t(LOCALIZATION_PREFIX + 'subregion_label'),
+      region: $.t(LOCALIZATION_PREFIX + 'region_label'),
+      postal_code: $.t(LOCALIZATION_PREFIX + 'postal_code_label'),
+      country: $.t(LOCALIZATION_PREFIX + 'country_label')
+    };
+    var labelClass = (isRequiredField) ?
+      ' class="required"' :
+      '';
+    var selectClass = (isRequiredField) ?
+      ' class="inputItem required"' :
+      ' class="inputItem"';
+    var selectHeaderOptionDisabled = (isRequiredField) ?
+      ' disabled' :
+      '';
+    var selectHeader = (isRequiredField) ?
+      $.t(LOCALIZATION_PREFIX + 'required_select_header') :
+      $.t(LOCALIZATION_PREFIX + 'optional_select_header');
+
+    return (
+      '<div class="nbe-geocoding-option line clearfix select">' +
+        '<label for="' + selectName + '"' + labelClass + '>' + labels[selectName] + '</label>' +
+        '<div class="inputWrapper">' +
+          '<div class="selector uniform">' +
+            '<div class="container">' +
+              '<div>' +
+                '<span>' +
+                  selectHeader +
+                '</span>' +
+              '</div>' +
+            '</div>' +
+            '<select name="' + selectName + '"' + selectClass + '>' +
+              '<option value="" selected' + selectHeaderOptionDisabled + '>' + selectHeader + '</option>' +
+              columnList.
+                filter(function(column) {
+                  // We generally only accept columns of type 'text' for geocoding
+                  // source columns, but we do allow number columns to be used for
+                  // the postal code field.
+                  var isAcceptableTypeForField = (
+                    (column.dataTypeName === 'text') ||
+                    (column.dataTypeName === 'number' && selectName === 'postal_code')
+                  );
+
+                  return isAcceptableTypeForField;
+                }).
+                map(function(column) {
+                  return '<option value="' + column.fieldName + '">' + column.name + '</option>';
+                }).
+                join('') +
+            '</select>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  };
+  var $nbeGeocodingModal = $(
+    '<div id="nbe-geocoding" class="commonForm formSection">' +
+      '<div class="subtitleBlock">' +
+        '<p class="subtitle">' +
+          $.t('screens.ds.grid_sidebar.add_column.nbe_geocoding_configuration.subtitle') +
+        '</p>' +
+      '</div>' +
+      '<div class="paneContent">' +
+        '<div class="formSection">' +
+          '<div class="nbe-geocoding-fields sectionContent" name="nbe-geocoding-fields">' +
+            generateSelectFromColumnList(columns, 'address') +
+            generateSelectFromColumnList(columns, 'locality') +
+            generateSelectFromColumnList(columns, 'subregion') +
+            generateSelectFromColumnList(columns, 'region') +
+            generateSelectFromColumnList(columns, 'postal_code') +
+            generateSelectFromColumnList(columns, 'country') +
+          '</div>' +
+        '</div>' +
+        '<span class="required">' +
+          $.t('core.forms.required_field') +
+        '</span>' +
+        '<div class="nbe-geocoding-buttons finishButtons">' +
+          '<a id="nbe-geocoding-submit" href="#" class="button arrowButton requiresLogin submit disabled">' +
+            $.t('core.dialogs.create') +
+          '</a>' +
+          '<a id="nbe-geocoding-cancel" href="#" class="button requiresLogin">' +
+            $.t('core.dialogs.cancel') +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+  var columnMapping = {
+    address: null,
+    locality: null,
+    subregion: null,
+    region: null,
+    postal_code: null,
+    country: null
+  };
+  var validateColumnMapping = function() {
+    var requiredFieldsHaveStringValues = REQUIRED_NBE_GEOCODING_FIELDS.map(
+      function(requiredField) {
+        return _.isString(columnMapping[requiredField]);
+      }
+    );
+    var isValid = !_.includes(
+      requiredFieldsHaveStringValues,
+      false
+    );
+
+    $('#nbe-geocoding-submit').toggleClass('disabled', !isValid);
+
+    return isValid;
+  };
+
+  $nbeGeocodingModal.find('select').on('change', function(e) {
+    // $(...).value() will return null if the value is an empty string, which is
+    // what we want. $(...).val(), on the other hand, will return an empty string,
+    // which messes up our columnMapping logic. Don't use $(...).val()!
+    var value = $(e.target).value();
+    var $fakeSelectValue = $(e.target).parent().find('.container div span');
+
+    columnMapping[e.target.name] = value;
+
+    if (_.isNull(value)) {
+      $fakeSelectValue.text(
+        $.t(
+          'screens.ds.grid_sidebar.add_column.nbe_geocoding_configuration.optional_select_header'
+        )
+      );
+    } else {
+      $fakeSelectValue.text(value);
+    }
+
+    validateColumnMapping();
+  });
+
+  $nbeGeocodingModal.find('#nbe-geocoding-submit').on('click', function() {
+
+    if (validateColumnMapping()) {
+      var sources = _.cloneDeep(columnMapping);
+      var sourceColumns = [];
+      var defaults = {};
+
+      Object.keys(sources).forEach(function(sourceKey) {
+        // Remove keys for which the value is null.
+        if (_.isNull(sources[sourceKey])) {
+          delete sources[sourceKey];
+        // Add columns to sourceColumns if they are being used.
+        } else {
+          sourceColumns.push(_.get(sources, sourceKey));
+        }
+      });
+
+      var columnWithComputationStrategy = _.cloneDeep(columnToAdd);
+      columnWithComputationStrategy.computationStrategy = {
+        type: 'geocoding',
+        source_columns: sourceColumns,
+        parameters: {
+          sources: sources,
+          defaults: defaults,
+          version: 'v1'
+        }
+      };
+
+      $nbeGeocodingModal.remove();
+      showSpinner();
+      addColumnCallback(columnWithComputationStrategy);
+    }
+  });
+
+  $nbeGeocodingModal.find('#nbe-geocoding-cancel').on('click', function() {
+    if (
+      confirm(
+        $.t('screens.ds.grid_sidebar.add_column.nbe_geocoding_configuration.cancel_configuration_prompt')
+      )
+    ) {
+
+      $nbeGeocodingModal.remove();
+    }
+  });
+
+  $('.controlPane.addColumn').append($nbeGeocodingModal);
+}

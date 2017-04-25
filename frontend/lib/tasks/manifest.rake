@@ -98,30 +98,6 @@ namespace :manifest do
     end
   end
 
-  # output all commit messages that mention a Jira id or pull request id.
-  # this is useful for prepping the Test Matrix for test pods
-  # this step gets ran after first running 'FROM_TAG=<tag> TO_TAG=<tag> rake manifest:release[manifest.txt]'
-  namespace :commits do
-    desc 'Output a distinct list of commit messages that mention a Jira ticket'
-    task :distinct_with_jira, [:manifest_file] do |_, args|
-      fail 'Path to manifest.txt must be provided' if args.manifest_file.blank?
-
-      puts
-      get_commits_with_jira(args.manifest_file)
-        .map(&:values).each(&method(:puts))
-      puts
-    end
-
-    desc 'Output a distinct list of commit messages that lack a Jira ticket mention'
-    task :distinct_without_jira, [:manifest_file] do |_, args|
-      fail 'Path to manifest.txt must be provided' if args.manifest_file.blank?
-
-      puts
-      get_commits_without_jira(args.manifest_file).each(&method(:puts))
-      puts
-    end
-  end
-
   desc 'Generates useful information for the current release'
   task :release_info, [:auto, :manifest_file] do |_, args|
     args.with_defaults(:auto => false, :manifest_file => nil)

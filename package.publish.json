@@ -1,6 +1,6 @@
 {
   "name": "socrata-autocomplete",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Catalog autocomplete on the Socrata platform",
   "publishConfig": {
     "registry": "https://repo.socrata.com/artifactory/api/npm/npm-local"

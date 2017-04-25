@@ -248,9 +248,10 @@ http://www.socrata.com
                 return false;
               }
               var rightNow = moment();
-              // Yes, there is an isBetween, but it's moment-2.9.0+.
-              var shouldDisplay = moment(data.display_start * 1000).isBefore(rightNow)
-                               && moment(data.display_finish * 1000).isAfter(rightNow);
+              var shouldDisplay = rightNow.isBetween(
+                moment(data.display_start * 1000),
+                moment(data.display_finish * 1000)
+              );
               return shouldDisplay;
             }
           });

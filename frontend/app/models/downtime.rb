@@ -31,8 +31,8 @@ class Downtime
       display_finish: @message_finish.to_i,
       message: I18n.t(
         'core.maintenance_notice',
-        start: (%Q{<span class="dateLocalize" data-format="LLLL UTCZ" data-rawdatetime="#{@downtime_start.to_i}"></span>}),
-        finish: (%Q{<span class="dateLocalize" data-format="LLLL UTCZ" data-rawdatetime="#{@downtime_finish.to_i}"></span>})
+        start: (%Q{<span class="dateLocalize" data-format="LLLL z" data-rawdatetime="#{@downtime_start.to_i}"></span>}),
+        finish: (%Q{<span class="dateLocalize" data-format="LLLL z" data-rawdatetime="#{@downtime_finish.to_i}"></span>})
       ) + (@custom_message.present? ? "<br />#{@custom_message}" : '')
     }.to_json
   end

@@ -25,7 +25,7 @@ module.exports = _.defaultsDeep({
       './plugins/lodash.js',
       './plugins/moment-with-locales.js',
       './plugins/moment-timezone-with-data-2012-2022.js',
-      './plugins/jstz.min.js',
+      './plugins/jstz.js',
       './util/namespace.js',
       './util/compat.js',
       './plugins/inheritance.js',

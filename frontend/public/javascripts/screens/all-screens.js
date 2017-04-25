@@ -221,7 +221,7 @@ $(function() {
 
   // Fix dates for local timezone and blist locale
   moment.locale(blist.locale);
-  blist.configuration.userTimeZoneName = jstz.determine().name();
+  blist.configuration.userTimeZoneName = jstz.determine().name(); // eslint-disable-line no-undef
   $('.dateLocalize').each(function() {
     var $dateSpan = $(this);
     var format = $dateSpan.data('format');

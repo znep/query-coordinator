@@ -29,13 +29,33 @@ module SiteChromeConsumerHelpers
     end
   end
 
+  def site_chrome_tealium_tags
+    tealium_account_id = site_chrome_instance.general.dig(:tealium, :account_id)
+    if tealium_account_id.present?
+      tealium_cname_for_prod_reporting = site_chrome_instance.general[:tealium][:cname_for_prod_reporting]
+
+      teailum_production_mode = request.host == tealium_cname_for_prod_reporting ||
+        tealium_cname_for_prod_reporting.empty?
+
+      javascript_include_tag("//tags.tiqcdn.com/utag/#{tealium_account_id}/prod/utag.sync.js") <<
+      javascript_tag(<<-eos)
+        (function(a,b,c,d){
+        a='//tags.tiqcdn.com/utag/#{tealium_account_id}/#{teailum_production_mode ? 'prod' : 'dev'}/utag.js';
+        b=document;c='script';d=b.createElement(c);d.src=a;d.type='text/java'+c;d.async=true;
+        a=b.getElementsByTagName(c)[0];a.parentNode.insertBefore(d,a);
+        })();
+      eos
+    end
+  end
+
   def site_chrome_webtrends_tag
     webtrends_url = site_chrome_instance.general[:webtrends_url]
     javascript_include_tag(webtrends_url) if webtrends_url.present?
   end
 
   def site_chrome_analytics_tags
-    [site_chrome_google_analytics_tag, site_chrome_webtrends_tag].map(&:to_s).join.html_safe
+    [site_chrome_google_analytics_tag, site_chrome_tealium_tags, site_chrome_webtrends_tag].
+      map(&:to_s).join.html_safe
   end
 
   def site_chrome_stylesheet_tag

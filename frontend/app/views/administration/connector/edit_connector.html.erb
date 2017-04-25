@@ -25,7 +25,7 @@
   <div class="selective-connection">
     <%= form_tag({:action => 'update_connector'}, :method => 'post', :class => 'commonForm') %>
       <h2><%= t('screens.admin.connector.connection_type') %></h2>
-      <% if @enable_data_connector && esri_arcgis? %>
+      <% if enable_data_connector? && esri_arcgis? %>
         <div class="legend">
           <div class="legend-item">
             <span role="presentation" class="icon-data legend-icon"></span>

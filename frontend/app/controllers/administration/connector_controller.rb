@@ -1,4 +1,5 @@
 class Administration::ConnectorController < AdministrationController
+
   include DataConnectorHelper
   include ActionView::Helpers::SanitizeHelper
   include Administration::ConnectorHelper
@@ -15,16 +16,11 @@ class Administration::ConnectorController < AdministrationController
   before_filter :fetch_server, :only => :edit_connector
   before_filter :fetch_connectors, :only => :connectors
 
-  def enable_catalog_federator_connector?
-    FeatureFlags.derive(nil, request, nil)[:enable_catalog_federator_connector]
-  end
-
   def connectors # index
   end
 
   def new_connector
     @server = {}
-    @include_data_json = enable_catalog_federator_connector?
   end
 
   def create_connector
@@ -53,7 +49,6 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def edit_connector
-    @enable_data_connector = feature_flag?('enable_data_connector', request)
   end
 
   def update_connector
@@ -209,5 +204,24 @@ class Administration::ConnectorController < AdministrationController
       redirect_to :connectors
     end
   end
+
+  def enable_data_connector?
+    # Can't use ||= idiom with falsey values
+    @enable_data_connector = @enable_data_connector.nil? ?
+      FeatureFlags.derive(nil, request).enable_data_connector : @enable_data_connector
+  end
+  helper_method :enable_data_connector?
+
+  def enable_catalog_connector?
+    @enable_catalog_connector = @enable_catalog_connector.nil? ?
+      FeatureFlags.derive(nil, request).enable_catalog_connector : @enable_catalog_connector
+  end
+  helper_method :enable_catalog_connector?
+
+  def enable_catalog_federator_connector?
+    @enable_catalog_federator_connector = @enable_catalog_federator_connector.nil? ?
+      FeatureFlags.derive(nil, request).enable_catalog_federator_connector : @enable_catalog_federator_connector
+  end
+  helper_method :enable_catalog_federator_connector?
 
 end

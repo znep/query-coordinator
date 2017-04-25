@@ -27,11 +27,20 @@ class StoryPublisher
 
     @story = PublishedStory.from_draft_story(@draft_story)
     @story.created_by = creating_user_id
+
+    @json_blocks = StoryJsonBlocks.from_story(@draft_story, user, copy: true)
   end
 
   # @return [Boolean] success
   def publish
+    return false unless json_blocks.save
+
+    story.block_ids = json_blocks.blocks.map(&:id)
     saved = story.save
+
+    unless saved
+      story.blocks.each(&:delete)
+    end
 
     if saved
       permissions_response = nil
@@ -47,12 +56,13 @@ class StoryPublisher
 
       # roll back
       unless permissions_response.present?
-        story.destroy
+        story.blocks.each(&:delete)
+        story.delete
         saved = false
       end
 
       begin
-        GettyImagesDownloader.new(story, user).download
+        GettyImagesDownloader.new(story, user).download if saved
       rescue => exception
         AirbrakeNotifier.report_error(
           exception,
@@ -66,6 +76,6 @@ class StoryPublisher
 
   private
 
-  attr_reader :user, :permissions_updater, :story_uid
+  attr_reader :user, :permissions_updater, :story_uid, :json_blocks
 
 end

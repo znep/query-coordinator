@@ -226,6 +226,10 @@ RSpec.describe Block, type: :model do
       expect(valid_block).to be_valid
     end
 
+    it 'has an invalid factory' do
+      expect(FactoryGirl.build(:invalid_block)).to be_invalid
+    end
+
     it 'does not allow a null value for :layout' do
       invalid_block = FactoryGirl.build(:block, layout: nil)
       expect(invalid_block).to_not be_valid

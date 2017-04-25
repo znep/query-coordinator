@@ -1,13 +1,9 @@
 class StoryDraftCreator
-  attr_reader :new_blocks, :story
+  attr_reader :story
 
-  class InvalidBlockIdsError < StandardError ; end
-  class InvalidNewBlocksError < StandardError ; end
   class CreateTransactionError < StandardError ; end
   class DigestMismatchError < StandardError ; end
   class DigestMissingError < StandardError ; end
-
-  #TODO: Make user another attribute rather than its own thing.
 
   # Initialized with attributes hash
   #
@@ -16,6 +12,7 @@ class StoryDraftCreator
   # attributes[:digest] - previous draft digest to ensure safe saving
   # attributes[:blocks] - array of json blocks for new draft
   # attributes[:theme] - display theme for this story draft
+  # attributes[:copy_blocks] - copies blocks and attachments
   def initialize(attributes)
     @user = attributes[:user] || {}
     unless @user['id'] =~ FOUR_BY_FOUR_PATTERN
@@ -30,12 +27,9 @@ class StoryDraftCreator
     @digest = attributes[:digest]
 
     # This will raise an exception if :blocks is not present.
-    @json_blocks = attributes.fetch(:blocks) || []
-    unless @json_blocks.is_a?(Array)
+    @blocks = attributes.fetch(:blocks) || []
+    unless @blocks.is_a?(Array)
       raise ArgumentError.new('Blocks attribute is not an array')
-    end
-    unless all_json_blocks_are_hashes?
-      raise ArgumentError.new("Blocks contains non-hashes: '#{@json_blocks}'")
     end
 
     @theme = attributes[:theme]
@@ -43,25 +37,24 @@ class StoryDraftCreator
       raise ArgumentError.new('Theme attribute is empty')
     end
 
+    @json_blocks = StoryJsonBlocks.new(
+      @blocks,
+      user,
+      copy: attributes[:copy_blocks]
+    )
     @story = nil
-
-    @new_blocks = deserialize_json_blocks
   end
 
   def create
     validate_digest_matches_against_last_draft
 
-    unless all_new_blocks_valid?
-      raise InvalidNewBlocksError.new('invalid new blocks')
-    end
-
     ActiveRecord::Base.transaction do
 
-      new_blocks.each(&:save!)
+      json_blocks.save!
 
       @story = DraftStory.new(
         uid: uid,
-        block_ids: new_blocks.map(&:id),
+        block_ids: json_blocks.blocks.map(&:id),
         created_by: user['id'],
         theme: theme
       )
@@ -73,28 +66,6 @@ class StoryDraftCreator
 
   private
   attr_reader :user, :uid, :json_blocks, :digest, :theme
-
-  # Interactions with the Data Model
-
-  def all_json_blocks_are_hashes?
-    @json_blocks.all? do |json_block|
-      json_block.is_a?(Hash)
-    end
-  end
-
-  def deserialize_json_blocks
-    json_blocks.map do |json_block|
-      Block.from_json(
-        json_block.
-          merge(created_by: user['id']).
-          except(:id)
-      )
-    end
-  end
-
-  def all_new_blocks_valid?
-    new_blocks.all?(&:valid?)
-  end
 
   def existing_story
     unless uid.blank?

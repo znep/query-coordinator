@@ -6,6 +6,10 @@ FactoryGirl.define do
     created_by 'test_user@socrata.com'
     presentable true
 
+    factory :invalid_block do
+      layout nil
+    end
+
     factory :block_with_image do
       components { [ { type: 'image', value: { documentId: 1, url: 'http://example.com/image.jpg' } } ] }
     end
@@ -43,6 +47,14 @@ FactoryGirl.define do
         [
           { type: 'hero', value: { url: '/stories/api/v1/getty-images/2392020' } },
           { type: 'author', value: { blurb: 'Hello!', image: { url: '/stories/api/v1/getty-images/203920', documentId: nil } } }
+        ]
+      }
+    end
+
+    factory :block_with_only_getty_image do
+      components {
+        [
+          { type: 'hero', value: { url: '/stories/api/v1/getty-images/2392020' } }
         ]
       }
     end

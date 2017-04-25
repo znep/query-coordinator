@@ -69,7 +69,7 @@ export class FeaturedContentViewCardManager extends React.Component {
             </button>
             <button
               {...focusableButtonProps}
-              className="remove-button btn btn-alternate-1"
+              className="remove-button btn btn-alternate-1 btn-inverse"
               onBlur={() => this.setHovering(false)}
               onClick={this.removeFeaturedContentItem}
               onKeyDown={handleEnter(this.removeFeaturedContentItem)}>

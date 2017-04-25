@@ -389,15 +389,12 @@ $(function() {
 
   $searchForm.submit(function(e) {
     e.preventDefault();
-    var searchText = $(e.currentTarget).find(':input.searchField').val();
+    var searchString = $(e.currentTarget).find(':input.searchField').val();
     var inDatasetSearch = $(e.currentTarget).find(':input[name=inDatasetSearch]').val() === 'true';
-    var md = $.extend(true, {}, blist.dataset.metadata);
-    md.jsonQuery.search = searchText;
-    md.inDatasetSearch = inDatasetSearch;
-    blist.dataset.update({
-      metadata: md
-    });
-    if (!searchText || searchText === '') {
+
+    blist.dataset.setSearchString(searchString, inDatasetSearch);
+
+    if (!searchString) {
       $clearSearch.hide();
     } else {
       $clearSearch.show();

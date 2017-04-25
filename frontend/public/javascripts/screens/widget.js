@@ -452,10 +452,8 @@ $(function() {
 
   $searchForm.submit(function(e) {
     e.preventDefault();
-    var searchText = $(e.currentTarget).find(':input').val();
-    blist.dataset.update({
-      searchString: searchText
-    });
+    var searchString = $(e.currentTarget).find(':input').val();
+    blist.dataset.setSearchString(searchString, true);
   });
 
   if (!$.isBlank(blist.dataset.searchString)) {

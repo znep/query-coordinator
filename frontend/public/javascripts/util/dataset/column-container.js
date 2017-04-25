@@ -152,7 +152,21 @@
       };
 
       if (!$.isBlank(column)) {
-        req.data = JSON.stringify(new Column(column, cont).cleanCopy());
+        var cleanColumn = new Column(column, cont).cleanCopy();
+
+        // EN-14748 - Update Grid View to Allow Geocoding NBE Point Columns
+        //
+        // Of course, <Column>.cleanCopy() has no notion of computation
+        // strategies and rather than trying to teach it about them for this one
+        // specific case it is probably easier just to modify the clean copy
+        // if we know that we should (e.g. when it is a new point column on a
+        // NBE dataset and there was a computationStrategy on the original
+        // column metadata passed to this method).
+        if (Column.isNbePointColumn(blist.dataset, column) && _.has(column, 'computationStrategy')) {
+          cleanColumn.computationStrategy = column.computationStrategy;
+        }
+
+        req.data = JSON.stringify(cleanColumn);
       }
 
       if (!$.isBlank(customParams)) {

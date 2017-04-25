@@ -578,6 +578,9 @@
     }
   });
 
+  Column.isNbePointColumn = function(dataset, column) {
+    return _.get(dataset, 'newBackend') && _.get(column, 'dataTypeName') === 'point';
+  };
 
   Column.sanitizeName = function(colName) {
     // refer to core server ViewColumn.underscoreName

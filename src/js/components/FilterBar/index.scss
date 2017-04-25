@@ -108,8 +108,10 @@ $filter-bar-container-padding: 20px;
 
   .filter-bar-column-option {
     font-size: 12px;
+    display: inline-flex;
 
-    [class^="socrata-icon-"] {
+    .socrata-icon {
+      margin: auto;
       margin-right: 8px;
     }
   }

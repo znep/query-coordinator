@@ -1,8 +1,9 @@
+import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 
 export function SocrataIcon({ name, className }) {
   const attributes = {
-    className: `socrata-icon socrata-icon-${name} ${className}`,
+    className: classNames('socrata-icon', `socrata-icon-${name}`, className),
     dangerouslySetInnerHTML: {
       __html: require(`src/fonts/svg/${name}.svg`) // eslint-disable-line global-require
     }

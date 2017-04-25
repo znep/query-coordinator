@@ -48,13 +48,12 @@
   }
 }
 
-.dropdown-caret {
+.dropdown-caret.socrata-icon-arrow-down {
   position: absolute;
-  width: 22px;
-  font-size: 18px;
+  width: 18px;
+  height: 18px;
   right: 10px;
-  top: 0;
-  bottom: 0;
+  top: 13px;
   z-index: 10;
   color: $light-grey-1;
   transition: color 0.15s ease-in-out;
@@ -62,13 +61,6 @@
 
   .dropdown-focused & {
     color: $alternate-3;
-  }
-
-  &::after {
-    @extend .socrata-icon-arrow-down::before;
-
-    margin-top: 14px;
-    margin-left: 2px;
   }
 }
 

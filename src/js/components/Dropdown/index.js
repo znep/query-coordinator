@@ -3,6 +3,7 @@ import $ from 'jquery';
 import classNames from 'classnames';
 import React from 'react';
 import SocrataUtils from 'socrata-utils';
+import SocrataIcon from '../SocrataIcon';
 import Picklist from '../Picklist';
 import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from '../../common/keycodes';
 
@@ -259,7 +260,7 @@ export default React.createClass({
   renderPlaceholder() {
     let { placeholder } = this.props;
     const { selectedOption } = this.state;
-    const caret = <div className="dropdown-caret" key="caret"></div>;
+    const caret = <SocrataIcon name="arrow-down" className="dropdown-caret" key="dropdown-caret" />;
     const placeholderText = text => <span key="placeholder">{text}</span>;
     const placeholderIsFunction = typeof placeholder === 'function';
     const placeholderIsString = typeof placeholder === 'string';

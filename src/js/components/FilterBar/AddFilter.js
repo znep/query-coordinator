@@ -72,8 +72,8 @@ export const AddFilter = React.createClass({
   renderColumnOption(column) {
     return (option) => (
       <div className="filter-bar-column-option">
-        <span className={getIconForDataType(column.dataTypeName)} role="presentation" />
-        {option.title}
+        <SocrataIcon name={getIconForDataType(column.dataTypeName)} />
+        <span>{option.title}</span>
       </div>
     );
   },

@@ -73,86 +73,103 @@ function getData(vif, options) {
   function applyOrderBy(dataTable) {
     const dimensionIndex = 0;
     const measureIndex = 1;
+
     const otherCategoryName = I18n.translate(
       'visualizations.common.other_category'
     );
-    const orderByParameter = _.get(
-      vif,
-      'series[0].dataSource.orderBy.parameter',
-      'measure'
-    ).toLowerCase();
-    const orderBySort = _.get(
-      vif,
-      'series[0].dataSource.orderBy.sort',
-      'desc'
-    ).toLowerCase();
+
+    const orderBy = _.get(vif, 'series[0].dataSource.orderBy', {});
+    const orderByParameter = (orderBy.parameter || 'measure').toLowerCase();
+    const orderBySort = (orderBy.sort || 'desc').toLowerCase();
     const orderingByDimension = (orderByParameter === 'dimension');
+
     const sortValueIndex = (orderingByDimension) ?
       dimensionIndex :
       measureIndex;
-    const makeComparator = (direction) => {
-      const compareValues = (direction === 'asc') ?
-        (valueA, valueB) => { return valueA >= valueB; } :
-        (valueA, valueB) => { return valueA <= valueB; };
 
-      return (a, b) => {
-        // If we are ordering by the dimension, the order should always be:
-        //
-        // <Non-null dimension values>
-        // <Null dimension value> (if present in the dimension values)
-        // <Other category>
-        //
-        // Since the dimension values will all be unique, we do not have to
-        // handle some comparisons (e.g. if both a and b are '(Other)' or null).
-        //
-        // If we are ordering by the measure, the order should always be:
-        //
-        // <Non-null dimension values and/or other category,
-        //  depending on measure>
-        // <Null measure values>
-        if (orderingByDimension) {
-          if (a[sortValueIndex] === otherCategoryName) {
-            return 1;
-          } else if (b[sortValueIndex] === otherCategoryName) {
-            return -1;
-          } else if (a[sortValueIndex] === null) {
-            return 1;
-          } else if (b[sortValueIndex] === null) {
-            return -1;
-          } else {
-            return (compareValues(a[sortValueIndex], b[sortValueIndex])) ?
-              1 :
-              -1;
-          }
-        } else {
+    // Determine whether all values for ordering are numeric.
+    // See note on compare function at bottom.
+    const doSortNumeric = _(dataTable.rows).
+      map(_.partialRight(_.nth, sortValueIndex)).
+      compact().
+      every((val) => !_.isNaN(_.toNumber(val)));
 
-          if (a[sortValueIndex] === null) {
-            return -1;
-          } else if (b[sortValueIndex] === null) {
-            return 1;
-          } else {
-            return (compareValues(a[sortValueIndex], b[sortValueIndex])) ?
-              1 :
-              -1;
-          }
-        }
-      };
+    const compareValues = makeValueComparator(orderBySort, doSortNumeric);
+    const compareCategoriesToNullAndOther = (a, b) => {
+      if (a === otherCategoryName) {
+        return 1;
+      } else if (b === otherCategoryName) {
+        return -1;
+      } else if (a === null) {
+        return 1;
+      } else if (b === null) {
+        return -1;
+      } else {
+        // Categories that aren't null or "other" need to use a different sort.
+        return 0;
+      }
     };
 
-    dataTable.rows.sort(makeComparator(orderBySort));
+    const comparator = (a, b) => {
+      // If we are ordering by the dimension, the order should always be:
+      //
+      // <Non-null dimension values>
+      // <Null dimension value> (if present in the dimension values)
+      // <Other category>
+      //
+      // Since the dimension values will all be unique, we do not have to
+      // handle some comparisons (e.g. if both a and b are '(Other)' or null).
+      //
+      // If we are ordering by the measure, the order should always respect the
+      // measure's value, subsorted for equal values with the Other category
+      // and the null category sorted to the end of an equivalency group.
+      const categoryA = a[0];
+      const categoryB = b[0];
+      const valueA = a[sortValueIndex];
+      const valueB = b[sortValueIndex];
+
+      if (orderingByDimension) {
+        return compareCategoriesToNullAndOther(categoryA, categoryB) ||
+          compareValues(categoryA, categoryB);
+      } else {
+        return compareValues(valueA, valueB) ||
+          compareCategoriesToNullAndOther(categoryA, categoryB) ||
+          compareValues(categoryA, categoryB);
+      }
+    };
+
+    dataTable.rows.sort(comparator);
 
     return dataTable;
   }
 
-  return new Promise((resolve, reject) => {
+  return Promise.
+    all(dataRequests).
+    then(mapUngroupedDataResponsesToMultiSeriesTable).
+    then(applyOrderBy);
+}
 
-    Promise.
-      all(dataRequests).
-      then(mapUngroupedDataResponsesToMultiSeriesTable).
-      then(applyOrderBy).
-      then(resolve).
-      catch(reject);
-  });
+// Generalized comparison routine for arbitrary values.
+//
+// Note that, at this point, we may have lost type information - the results of
+// the query might cast everything into strings, which is very inconvenient...
+// so we need to stipulate explicitly whether our order comparison should use
+// lexicographic or numeric ordering.
+//
+// NOTE: There's a possibility that we can move this logic further down into
+// makeSocrataCategoricalDataRequest, but at time of writing that module isn't
+// covered by tests, so the change is too risky to attempt.
+function makeValueComparator(direction, numeric) {
+  const _compare = (direction === 'asc') ? _.gt : _.lt;
+  const _transform = numeric ? _.toNumber : _.identity;
+
+  return (a, b) =>  {
+    if (a === b) {
+      return 0;
+    } else {
+      return _compare(_transform(a), _transform(b)) ? 1 : -1;
+    }
+  };
 }
 
 module.exports = {

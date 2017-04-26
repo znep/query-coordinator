@@ -32,7 +32,6 @@ module CatalogFederator
     end
 
     def update_source(source_id, source)
-      Rails.logger.debug("source.to_json = #{source.to_json}")
       route = "/v1/source/#{source_id}/make-it-so"
       handle_response(self.class.patch(route, headers: headers, body: source.to_json), route)
     end

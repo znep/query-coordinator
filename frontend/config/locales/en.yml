@@ -453,6 +453,8 @@ en:
       label: Featured Content in {filter}
       label_no_filter: Featured Content
     manager:
+      asset_selector:
+        header_title_with_filter: Select Featured Content for {filter}
       cancel: Cancel
       change: Change
       description:
@@ -479,7 +481,8 @@ en:
         unexpected_500: An unexpected error has occurred. Please reload and try again.
         you_are_not_authorized: You are not authorized to perform this operation.
         you_must_login_first: You must login first in order to save your changes.
-      feature_content: Feature Content
+      feature_content: Feature Content for {filter}
+      feature_content_no_filter: Feature Content
       featured_content:
         label: Featured Content in {filter}
         label_no_filter: Featured Content

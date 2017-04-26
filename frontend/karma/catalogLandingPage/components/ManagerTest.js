@@ -75,33 +75,33 @@ describe('components/Manager', () => {
     });
   });
 
-  describe('featured content header', () => {
+  describe('header', () => {
     it('does not specify a filter when managing /browse', () => {
       const element = renderComponentWithStore(Manager, getProps({
         catalogQuery: { custom_path: '/browse' }
       }));
-      assert.equal(element.querySelector('.featured-content-header').textContent, 'Featured Content');
+      assert.equal(element.querySelector('.header span').textContent, 'Feature Content');
     });
 
     it('specifies a category filter', () => {
       const element = renderComponentWithStore(Manager, getProps({
         catalogQuery: { category: 'Fun' }
       }));
-      assert.equal(element.querySelector('.featured-content-header').textContent, 'Featured Content in Fun');
+      assert.equal(element.querySelector('.header span').textContent, 'Feature Content for Fun');
     });
 
     it('specifies a view type filter', () => {
       const element = renderComponentWithStore(Manager, getProps({
         catalogQuery: { limitTo: 'charts' }
       }));
-      assert.equal(element.querySelector('.featured-content-header').textContent, 'Featured Content in Charts');
+      assert.equal(element.querySelector('.header span').textContent, 'Feature Content for Charts');
     });
 
     it('specifies a custom metadata filter', () => {
       const element = renderComponentWithStore(Manager, getProps({
         catalogQuery: { '1980sMovies': 'Predator' }
       }));
-      assert.equal(element.querySelector('.featured-content-header').textContent, 'Featured Content in Predator');
+      assert.equal(element.querySelector('.header span').textContent, 'Feature Content for Predator');
     });
   });
 });

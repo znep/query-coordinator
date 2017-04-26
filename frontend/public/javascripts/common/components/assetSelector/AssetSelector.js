@@ -31,9 +31,11 @@ export class AssetSelector extends React.Component {
       overlay: true
     };
 
+    const title = this.props.title || _.get(I18n, 'common.asset_selector.header_title');
+
     return (
       <Modal {...modalProps}>
-        <ModalHeader title={_.get(I18n, 'common.asset_selector.header_title')} onDismiss={onClose} />
+        <ModalHeader title={title} onDismiss={onClose} />
         <ModalContent>
           <ResultsContainer {...resultsContainerProps} />
         </ModalContent>
@@ -48,7 +50,8 @@ AssetSelector.propTypes = {
   modalIsOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
-  resultsPerPage: PropTypes.number.isRequired
+  resultsPerPage: PropTypes.number.isRequired,
+  title: PropTypes.string
 };
 
 AssetSelector.defaultProps = {

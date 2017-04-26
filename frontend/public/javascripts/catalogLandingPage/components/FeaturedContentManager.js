@@ -110,7 +110,8 @@ export class FeaturedContentManager extends React.Component {
       modalIsOpen: this.state.assetSelectorIsOpen,
       onClose: this.closeAssetSelector,
       onSelect: this.onAssetSelection,
-      resultsPerPage: 6
+      resultsPerPage: 6,
+      title: this.props.assetSelectorTitle
     };
 
     const selectedFeaturedContentItemIsEmpty = () => (
@@ -146,6 +147,7 @@ export class FeaturedContentManager extends React.Component {
 }
 
 FeaturedContentManager.propTypes = {
+  assetSelectorTitle: PropTypes.string.isRequired,
   catalogQuery: PropTypes.object.isRequired,
   featuredContent: PropTypes.object.isRequired,
   setFeaturedContentItem: PropTypes.func.isRequired

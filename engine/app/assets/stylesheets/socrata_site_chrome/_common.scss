@@ -131,11 +131,15 @@ header#site-chrome-header, footer#site-chrome-footer {
   }
 
   .searchbox {
+    visibility: hidden;
+    position: absolute;
     float: right;
     min-height: 32px;
 
     form {
       line-height: $header_logo_height;
+      display: inline-flex;
+      vertical-align: middle;
       position: relative;
       margin-bottom: 0;
 
@@ -152,10 +156,10 @@ header#site-chrome-header, footer#site-chrome-footer {
 
       label {
         height: $searchbox_height;
-
-        .searchbox-label {
-          display: none;
-        }
+        width: auto;
+        display: block;
+        margin: auto;
+        font-size: inherit;
       }
 
       input {
@@ -168,7 +172,7 @@ header#site-chrome-header, footer#site-chrome-footer {
         z-index: 3;
         vertical-align: top;
         height: $searchbox_height - 18; // 16px padding + 2px border
-        box-sizing: content-box;
+        box-sizing: content-box !important;
         font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
       }
 

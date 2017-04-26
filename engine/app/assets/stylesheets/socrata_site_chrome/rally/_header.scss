@@ -43,25 +43,6 @@ header#site-chrome-header[template="rally"] {
           vertical-align: middle;
         }
       }
-
-      .searchbox {
-        form {
-          line-height: initial;
-          display: inline-flex;
-          vertical-align: middle;
-
-          label {
-            width: auto;
-            display: block;
-            margin: auto;
-            font-size: inherit;
-          }
-
-          .search-button {
-            display: none; // appears with toggleSearchButton()
-          }
-        }
-      }
     }
 
     .rally-bottom {

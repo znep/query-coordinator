@@ -13,9 +13,6 @@ class Administration::ConnectorController < AdministrationController
       c.check_auth_level(UserRights::USE_DATA_CONNECTORS)
     end
 
-  before_filter :require_a_catalog_connector, :only =>
-    %i(connectors new_connector delete_connector create_connector edit_connector update_connector show_connector)
-
   before_filter :fetch_server, :only => [:edit_connector, :update_connector, :show_connector]
   before_filter :fetch_connectors, :only => :connectors
 

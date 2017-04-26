@@ -116,7 +116,8 @@ describe('components/Table/ColumnHeader', () => {
       'SoQLFloatingTimestamp',
       'SoQLNumber',
       'SoQLText',
-      'SoQLBoolean'
+      'SoQLBoolean',
+      'SoQLLocation'
     ]);
   });
 

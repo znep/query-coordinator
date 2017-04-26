@@ -1942,6 +1942,7 @@ en:
           SoQLBoolean: True/False
           SoQLFixedTimestamp: Date & Time (with timezone)
           SoQLFloatingTimestamp: Date & Time
+          location_coming_soon: Location (Coming Soon)
           SoQLLocation: Location
           SoQLNumber: Number
           SoQLPoint: Point

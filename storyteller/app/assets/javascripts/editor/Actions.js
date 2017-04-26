@@ -53,6 +53,10 @@ export default {
   // {any} value: New component value.
   BLOCK_UPDATE_COMPONENT: 'BLOCK_UPDATE_COMPONENT',
 
+  // {String} blockId
+  // {number|String} componentIndex
+  DISMISS_MAP_NOTIFICATION: 'DISMISS_MAP_NOTIFICATION',
+
   /**
    * Story save
    */

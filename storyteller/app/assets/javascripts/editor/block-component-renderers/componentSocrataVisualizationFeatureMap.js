@@ -2,6 +2,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 
 import '../componentBase';
+import '../componentWithMapBounds';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 import { flyoutRenderer } from '../FlyoutRenderer';
@@ -26,7 +27,7 @@ export default function componentSocrataVisualizationFeatureMap(props) {
   );
 
   if ($this.children().length === 0) {
-    _renderTemplate($this, componentData);
+    _renderTemplate($this, props);
   }
 
   _updateVisualization($this, componentData);
@@ -34,7 +35,10 @@ export default function componentSocrataVisualizationFeatureMap(props) {
 
   return $this;
 }
-function _renderTemplate($element, componentData) {
+
+function _renderTemplate($element, props) {
+  const { componentData, editMode } = props;
+
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
   const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
@@ -53,6 +57,10 @@ function _renderTemplate($element, componentData) {
         flyoutRenderer.clear();
       }
     });
+
+  if (editMode) {
+    $element.componentWithMapBounds(componentData);
+  }
 
   $element.append($componentContent);
 }
@@ -85,7 +93,7 @@ function _updateVisualization($element, componentData) {
     vif.configuration.baseLayerOpacity = _.get(vif, 'configuration.baseLayerOpacity', 0.8);
     vif.configuration.hover = _.get(vif, 'configuration.hover', true);
     vif.configuration.locateUser = _.get(vif, 'configuration.locateUser', true);
-    vif.configuration.panAndZoom = _.get(vif, 'conifugration.panAndZoom', true);
+    vif.configuration.panAndZoom = _.get(vif, 'configuration.panAndZoom', true);
 
     // EN-7517 - Title and description of VisualizationAddController V1 vifs are not useful.
     //
@@ -97,8 +105,20 @@ function _updateVisualization($element, componentData) {
       vif.description = null;
     }
 
-    // Use triggerHandler since we don't want this to bubble
-    $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent.socrataSvgFeatureMap(vif);
+    // If it looks like the map has already been rendered once, we can just update it instead of
+    // destroying it and rendering from scratch
+    const isFeatureMap = _.isEqual(_.get(vif, 'series[0].type'), 'featureMap');
+    if (isFeatureMap && $componentContent.find('canvas').length > 0) {
+      $componentContent[0].dispatchEvent(
+        new CustomEvent('SOCRATA_VISUALIZATION_RENDER_VIF', { detail: vif })
+      );
+    // Otherwise, we should destroy whatever used to be in the component and
+    // create a new feature map in its place.
+    } else {
+
+      // Use triggerHandler since we don't want this to bubble
+      $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
+      $componentContent.socrataSvgFeatureMap(vif);
+    }
   }
 }

@@ -112,4 +112,27 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
       });
     });
   });
+
+  describe('when in edit mode', function() {
+    let socrataSvgRegionMapStub;
+    let componentWithMapBoundsStub;
+
+    beforeEach(function() {
+      socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap');
+      componentWithMapBoundsStub = sinon.stub($.fn, 'componentWithMapBounds');
+
+      $component = $component.componentSocrataVisualizationRegionMap(getProps({
+        editMode: true
+      }));
+    });
+
+    afterEach(function() {
+      socrataSvgRegionMapStub.restore();
+      componentWithMapBoundsStub.restore();
+    });
+
+    it('invokes componentWithMapBounds', function() {
+      sinon.assert.called(componentWithMapBoundsStub);
+    });
+  });
 });

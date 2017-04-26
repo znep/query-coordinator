@@ -82,4 +82,27 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
       );
     });
   });
+
+  describe('when in edit mode', function() {
+    let socrataSvgFeatureMapStub;
+    let componentWithMapBoundsStub;
+
+    beforeEach(function() {
+      socrataSvgFeatureMapStub = sinon.stub($.fn, 'socrataSvgFeatureMap');
+      componentWithMapBoundsStub = sinon.stub($.fn, 'componentWithMapBounds');
+
+      $component = $component.componentSocrataVisualizationFeatureMap(getProps({
+        editMode: true
+      }));
+    });
+
+    afterEach(function() {
+      socrataSvgFeatureMapStub.restore();
+      componentWithMapBoundsStub.restore();
+    });
+
+    it('invokes componentWithMapBounds', function() {
+      sinon.assert.called(componentWithMapBoundsStub);
+    });
+  });
 });

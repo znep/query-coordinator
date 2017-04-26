@@ -1,6 +1,5 @@
 $banner_padding: 20px;
 $banner_height: calc(#{max($header_logo_height, $header_display_name_size)} + #{$banner_padding});
-$searchbox-height: 36px;
 
 header#site-chrome-header[template="evergreen"] {
   font-family: $font_family, "Open Sans", Helvetica, Arial, "sans-serif";
@@ -121,52 +120,11 @@ header#site-chrome-header[template="evergreen"] {
               font-size: 18px;
             }
 
-            .searchbox {
-              opacity: 0;
-              z-index: -1;
-
-              -webkit-transition: opacity 0.1s;
-              transition: opacity 0.1s;
+            form {
+              margin-top: -3px;
 
               input {
-                -webkit-transition: width 0.4s;
-                transition: width 0.4s;
-                width: 50px;
-              }
-              &.expanded {
-                opacity: 1;
-                /*
-                  EN-12069:
-                  101, 1 higher than the z-index set on .dropdown elements due to EN-11443.
-                  Otherwise the dropdowns will be clickable through the expanded search bar.
-                */
-                z-index: 101;
-
-                input {
-                  width: 250px;
-                }
-              }
-
-              position: absolute;
-              // This is a nested calc, which doesn't work in browsers shittier than or equal to IE11.
-              // There is javascript to position it for those browsers instead: verticallyPositionSearchbar()
-              top: calc((#{$banner_height} - #{$searchbox-height}) / 2);
-              right: 0;
-
-              form {
-                display: flex;
-
-                label {
-                  width: auto;
-                  display: block;
-                  margin: auto;
-                  font-size: inherit;
-                }
-
-                button.search-button {
-                  height: $searchbox_height;
-                  display: none; // appears with toggleSearchButton()
-                }
+                box-sizing: content-box !important;
               }
             }
           }

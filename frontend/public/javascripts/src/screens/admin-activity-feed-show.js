@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export function replaceTimestamps(parent$) {
   parent$.find('.time-stamp').each((i, el) => {
     const $el = $(el);

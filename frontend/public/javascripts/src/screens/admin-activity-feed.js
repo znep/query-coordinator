@@ -2,6 +2,7 @@
 /* eslint-disable no-alert */
 
 import { timeControl } from '../lib/admin-time-control';
+import moment from 'moment';
 
 export function replaceTimestamps($parent) {
   $parent.find('.started-time').each((i, el) => {

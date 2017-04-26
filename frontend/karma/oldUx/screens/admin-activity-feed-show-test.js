@@ -1,4 +1,5 @@
 import { expect, assert } from 'chai';
+import moment from 'moment';
 var adminActivityFeedShowScreen = require('screens/admin-activity-feed-show');
 
 describe('adminActivityFeedJobScreen', function() {

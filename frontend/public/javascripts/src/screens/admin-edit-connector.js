@@ -3,18 +3,17 @@
  * The functionality here is non-essential, simply faciliating checkbox selection
  */
 
-function parentOf($el, elementType) {
+function parentOf($el) {
   const parentId = $el.data('parent-id');
   const parentType = $el.data('parent');
   if (!parentId || !parentType) { return false; }
-  return $(`${elementType}[data-id="${parentId}"][data-type="${parentType}"]`);
+  return $(`select[data-id="${parentId}"][data-type="${parentType}"]`);
 }
 
-// elementType: input for checkboxes or select for select tags
-function childrenOf($el, elementType) {
+function childrenOf($el) {
   const id = $el.data('id');
   const type = $el.data('type');
-  return $(`${elementType}[data-parent-id="${id}"][data-parent="${type}"]`);
+  return $(`select[data-parent-id="${id}"][data-parent="${type}"]`);
 }
 
 // gets the span that holds the icon for the select operation
@@ -125,7 +124,7 @@ function iconClassForValue(selectedValue) {
   }
 }
 
-function setConnectionStrategy(elementType) {
+function setConnectionStrategy() {
   return (event) => {
     const $target = $(event.currentTarget);
     const selectAllAssets = ($target.value() && $target.val() !== 'ignored');
@@ -135,7 +134,7 @@ function setConnectionStrategy(elementType) {
     // Esri use case
     setDisabledClass($('.select-style'));
     setDisabledClass($('.select-icon'));
-    setState($(`${elementType}.sync-type`));
+    setState($('select.sync-type'));
 
     // Catalog Federator use case
     setState($('fieldset.line input[type=checkbox]'));
@@ -165,11 +164,9 @@ function removeFocusOnSelect(event) {
 }
 
 $(() => {
-  const elementType = blist.feature_flags.enable_data_connector ? 'select' : 'input';
-
   $('.filter-assets .searchBox').on('keyup', (event) => {
     const term = $(event.currentTarget).val().toLowerCase();
-    let elements = $(`${elementType}.sync-type`);
+    let elements = $('select.sync-type');
 
     if (elements.length <= 0) {
       elements = $('.item.search-item');
@@ -192,5 +189,5 @@ $(() => {
 
   $('.sync-type-check').change(onChecked);
   $('.sync-type-select').change(onSelected);
-  $('.server-sync').change(setConnectionStrategy(elementType));
+  $('.server-sync').change(setConnectionStrategy());
 });

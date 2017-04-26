@@ -218,13 +218,6 @@ class Administration::ConnectorController < AdministrationController
     end
   end
 
-  def enable_data_connector?
-    # Can't use ||= idiom with falsey values
-    @enable_data_connector = @enable_data_connector.nil? ?
-      FeatureFlags.derive(nil, request).enable_data_connector : @enable_data_connector
-  end
-  helper_method :enable_data_connector?
-
   def enable_catalog_connector?
     @enable_catalog_connector = @enable_catalog_connector.nil? ?
       FeatureFlags.derive(nil, request).enable_catalog_connector : @enable_catalog_connector

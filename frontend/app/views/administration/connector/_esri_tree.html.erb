@@ -2,16 +2,12 @@
   <%- @tree['folders'].each do |folder| -%>
     <div class="item folder search-item">
       <div class="editItem">
-        <% if enable_data_connector? %>
-          <div
-            class="select-style <%= disabled_class(@server)%>"
-            id="style-div-for-<%=folder['id']%>">
-            <%= icon_for_asset(@server, folder) %>
-            <%= folder_select_tag(@server, folder) %>
-          </div>
-        <% else %>
-          <%= folder_check_box(@server, folder) %>
-        <% end %>
+        <div
+          class="select-style <%= disabled_class(@server)%>"
+          id="style-div-for-<%=folder['id']%>">
+          <%= icon_for_asset(@server, folder) %>
+          <%= folder_select_tag(@server, folder) %>
+        </div>
         <span class="asset-name">
           <%= truncate(folder['name'], length: 120) %>
         </span>
@@ -20,16 +16,12 @@
       <%- folder['services'].each do |service| -%>
         <div class="item child service search-item">
           <div class="editItem">
-            <% if enable_data_connector? %>
-              <div
-                class="select-style <%=disabled_class(@server)%>"
-                id="style-div-for-<%=service['id']%>">
-                <%= icon_for_asset(@server, service) %>
-                <%= service_select_tag(@server, folder, service) %>
-              </div>
-            <% else %>
-              <%= service_check_box(@server, folder, service) %>
-            <% end %>
+            <div
+              class="select-style <%=disabled_class(@server)%>"
+              id="style-div-for-<%=service['id']%>">
+              <%= icon_for_asset(@server, service) %>
+              <%= service_select_tag(@server, folder, service) %>
+            </div>
             <a target="_blank" href="<%= service['url'] %>"
               name="<%= service_display_string(service) %>">
               <span class="asset-name">
@@ -41,16 +33,12 @@
           <%- service['layers'].each do |layer| -%>
             <div class="item child layer search-item">
               <div class="editItem">
-                <% if enable_data_connector? %>
-                  <div
-                    class="select-style <%= disabled_class(@server)%>"
-                    id="style-div-for-<%=layer['id']%>">
-                    <%= icon_for_asset(@server, layer) %>
-                    <%= layer_select_tag(@server, folder, service, layer) %>
-                  </div>
-                <% else %>
-                  <%= layer_check_box(@server, folder, service, layer) %>
-                <% end %>
+                <div
+                  class="select-style <%= disabled_class(@server)%>"
+                  id="style-div-for-<%=layer['id']%>">
+                  <%= icon_for_asset(@server, layer) %>
+                  <%= layer_select_tag(@server, folder, service, layer) %>
+                </div>
                 <a target="_blank" href="<%= layer['url'] %>">
                   <%- if layer['name'].blank? -%>
                     <%= layer['url'] %>

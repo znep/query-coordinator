@@ -31,7 +31,7 @@
       <%- if server.last_synced || server.server_backend == 'catalog_federator' %>
         <%= link_to(
           t('screens.admin.connector.edit'),
-          { :action => :edit_connector, :server_id => server.id, :type => 'data_json' },
+          { :action => :edit_connector, :server_id => server.id, :type => 'catalog_federator' },
           :class => 'button buttonArea'
         ) %>
       <%- else -%>

@@ -92,7 +92,7 @@
           </div> <%# end flex left section %>
           <div class="line clearfix flexbox-right-section">
             <div class="flexbox-upper-right">
-              <%= hidden_field_tag('type', esri_arcgis? ? 'esri_arcgis' : 'data_json') %>
+              <%= hidden_field_tag('type', esri_arcgis? ? 'esri_arcgis' : 'catalog_federator') %>
               <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button"/>
             </div>
           </div>
@@ -105,7 +105,7 @@
         </div>
 
         <%= render 'esri_tree' if esri_arcgis? %>
-        <%= render 'catalog_federator_list' if data_json? %>
+        <%= render 'catalog_federator_list' if catalog_federator? %>
       </fieldset>
     </form>
   </div>

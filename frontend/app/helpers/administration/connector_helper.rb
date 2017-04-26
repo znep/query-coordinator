@@ -5,8 +5,8 @@ module Administration
       params.fetch(:type, 'esri_arcgis') == 'esri_arcgis'
     end
 
-    def data_json?
-      params[:type] == 'data_json'
+    def catalog_federator?
+      params[:type] == 'catalog_federator'
     end
 
  end

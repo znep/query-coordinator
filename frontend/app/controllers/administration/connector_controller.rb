@@ -68,7 +68,7 @@ class Administration::ConnectorController < AdministrationController
       return redirect_to :connectors
     end
 
-    if data_json?
+    if catalog_federator?
       begin
         if params[:server][:sync_type] == 'catalog'
           CatalogFederator::Client.new.sync_source(params[:server_id])
@@ -89,7 +89,7 @@ class Administration::ConnectorController < AdministrationController
 
   def delete_connector
     begin
-      if data_json?
+      if catalog_federator?
         response = CatalogFederatorConnector.delete(params[:server_id])
       else
         response = EsriServerConnector.delete_server(params[:server_id])
@@ -200,7 +200,7 @@ class Administration::ConnectorController < AdministrationController
       end
     end
 
-    if data_json?
+    if catalog_federator?
       if enable_catalog_federator_connector?
         begin
           @server = CatalogFederatorConnector.servers.detect { |server| server.id == params[:server_id].to_i }

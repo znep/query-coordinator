@@ -20,6 +20,7 @@ en:
   header:
     administration: Administration
     header_links_aria_label: Header links
+    close_button_aria_label: Close
     language: Language
     menu: Menu
     my_profile: My Profile

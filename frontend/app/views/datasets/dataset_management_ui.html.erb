@@ -38,6 +38,6 @@
       customMetadata: <%== get_dataset_management_ui_custom_metadata.to_json %>
     };
   </script>
-  <%= render :partial => 'templates/mixpanel_tracking' %>
+  <%= render :partial => 'templates/mixpanel_tracking_no_util' %>
   <%= include_webpack_bundle 'dataset-management-ui/main.js' %>
 <% end %>

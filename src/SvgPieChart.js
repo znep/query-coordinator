@@ -2,6 +2,7 @@ const _ = require('lodash');
 const $ = require('jquery');
 const utils = require('socrata-utils');
 const SvgPieChart = require('./views/SvgPieChart');
+const MetadataProvider = require('./dataProviders/MetadataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
@@ -12,13 +13,10 @@ const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').
 const MAX_ROWS_BEFORE_FORCED_OTHER_GROUP = 11;
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
-$.fn.socrataSvgPieChart = function(originalVif) {
+$.fn.socrataSvgPieChart = function(originalVif, options) {
   originalVif = VifHelpers.migrateVif(originalVif);
   const $element = $(this);
-  const visualization = new SvgPieChart(
-    $element,
-    originalVif
-  );
+  const visualization = new SvgPieChart($element, originalVif, options);
   let rerenderOnResizeTimeout;
 
   /**
@@ -121,6 +119,11 @@ $.fn.socrataSvgPieChart = function(originalVif) {
     detachInteractionEvents();
 
     $.fn.socrataSvgPieChart.validateVif(newVif).then(() => {
+      const datasetMetadataProvider = new MetadataProvider({
+        domain: _.get(newVif, 'series[0].dataSource.domain'),
+        datasetUid: _.get(newVif, 'series[0].dataSource.datasetUid')
+      });
+
       const processSeries = (series, seriesIndex) => {
         const type = _.get(series, 'dataSource.type');
 
@@ -136,7 +139,9 @@ $.fn.socrataSvgPieChart = function(originalVif) {
             );
         }
       };
-      const processData = (dataResponses) => {
+
+      const processData = (resolutions) => {
+        const [ newColumns, ...dataResponses ] = resolutions;
         const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
           const measureIndex = dataResponse.columns.indexOf('measure');
 
@@ -160,13 +165,20 @@ $.fn.socrataSvgPieChart = function(originalVif) {
         } else {
 
           attachInteractionEvents();
-          visualization.render(newVif, dataResponses);
+          visualization.render(newVif, dataResponses, newColumns);
         }
       };
+
       const dataRequests = newVif.series.map(processSeries);
+      const displayableFilterableColumns = visualization.shouldDisplayFilterBar() ?
+        datasetMetadataProvider.getDisplayableFilterableColumns() :
+        Promise.resolve(null);
 
       Promise.
-        all(dataRequests).
+        all([
+          displayableFilterableColumns,
+          ...dataRequests
+        ]).
         then(processData);
     }).
     catch(handleError);

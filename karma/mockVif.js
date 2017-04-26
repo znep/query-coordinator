@@ -29,7 +29,17 @@ export default {
           "aggregationFunction": "count"
         },
         "type": "socrata.soql",
-        "filters": []
+        "filters": [
+          {
+            "function": "valueRange",
+            "columnName": "blood_alcohol_level",
+            "arguments": {
+              "start": 0.25,
+              "end": 0.5001
+            },
+            "isHidden": true
+          }
+        ]
       },
       "label": null,
       "type": "histogram",

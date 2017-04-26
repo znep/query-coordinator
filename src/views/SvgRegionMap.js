@@ -40,9 +40,9 @@ SvgRegionMap.SHAPEFILE_REGION_HUMAN_READABLE_NAME =
 SvgRegionMap.SHAPEFILE_REGION_VALUE = '__SHAPEFILE_REGION_VALUE__';
 SvgRegionMap.SHAPEFILE_REGION_IS_SELECTED = '__SHAPEFILE_REGION_IS_SELECTED__';
 
-function SvgRegionMap(element, vif) {
+function SvgRegionMap(element, vif, options) {
 
-  _.extend(this, new SvgVisualization(element, vif));
+  _.extend(this, new SvgVisualization(element, vif, options));
 
   const self = this;
 
@@ -75,7 +75,7 @@ function SvgRegionMap(element, vif) {
    * Public methods
    */
 
-  this.render = function(newVif, newData) {
+  this.render = function(newVif, newData, newColumns) {
     const $visualizationContainer = self.$element.
       find('.socrata-visualization-container');
 
@@ -123,6 +123,9 @@ function SvgRegionMap(element, vif) {
       updateRegionLayer(newData);
     }
 
+    if (newColumns) {
+      this.updateColumns(newColumns);
+    }
 
     renderLegend();
   };

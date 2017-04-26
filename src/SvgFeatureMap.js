@@ -28,7 +28,7 @@ const WINDOW_RESIZE_RERENDER_DELAY = 200;
  *
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  */
-$.fn.socrataSvgFeatureMap = function(originalVif) {
+$.fn.socrataSvgFeatureMap = function(originalVif, options) {
   utils.assert(
     _.isPlainObject(originalVif),
     'You must pass in a valid VIF to use socrataSvgFeatureMap'
@@ -98,23 +98,23 @@ $.fn.socrataSvgFeatureMap = function(originalVif) {
 
   function handleRenderVif(event) {
     var newVif = event.originalEvent.detail;
-    var rerender = (extent) => {
+    var rerender = (extent, newColumns) => {
       var vectorTileGetter = buildVectorTileGetter(
         SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0)
       );
 
       visualization.clearError();
-      visualization.render(newVif, { extent, vectorTileGetter });
+      visualization.render(newVif, { extent, vectorTileGetter }, newColumns);
     };
 
     if (didChangeDataSource(newVif, lastRenderedVif)) {
       initializeDataProviders(newVif);
       getDataFromProviders(newVif).then((resolutions) => {
-        var extent = resolutions[1];
+        const newColumns = resolutions[0];
+        const extent = resolutions[2];
+        datasetMetadata = resolutions[1];
 
-        datasetMetadata = resolutions[0];
-
-        rerender(extent);
+        rerender(extent, newColumns);
       }).catch(handleError);
     } else {
       rerender();
@@ -374,13 +374,13 @@ $.fn.socrataSvgFeatureMap = function(originalVif) {
     var datasetUid = _.get(newVif, DATASET_UID_PATH);
     var columnName = _.get(newVif, COLUMN_NAME_PATH);
 
-    visualization = new SvgFeatureMap($element, newVif);
+    visualization = new SvgFeatureMap($element, newVif, options);
     attachEvents();
 
     // Binds all globally-scoped dataProviders.
     initializeDataProviders(newVif);
     getDataFromProviders(newVif).then((resolutions) => {
-      var [metadata, extent] = resolutions;
+      var [newColumns, metadata, extent] = resolutions;
       datasetMetadata = metadata;
 
       visualization.render(
@@ -390,7 +390,8 @@ $.fn.socrataSvgFeatureMap = function(originalVif) {
           vectorTileGetter: buildVectorTileGetter(
             SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0)
           )
-        }
+        },
+        newColumns
       );
 
       lastRenderedVif = newVif;
@@ -420,14 +421,15 @@ $.fn.socrataSvgFeatureMap = function(originalVif) {
         extentRequest = geospaceDataProvider.getFeatureExtent(columnName);
       }
 
-      /**
-       * Initial data requests to set up visualization state
-       */
+      const displayableFilterableColumns = visualization.shouldDisplayFilterBar() ?
+        metadataProvider.getDisplayableFilterableColumns() :
+        Promise.resolve(null);
 
       // We query the extent of the features we are rendering in order to make
       // individual tile requests more performant (through the use of a
       // WITHIN_BOX query clause).
       return Promise.all([
+        displayableFilterableColumns,
         datasetMetadataRequest,
         extentRequest
       ]);

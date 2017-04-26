@@ -59,14 +59,14 @@ function bindStyles() {
   }
 }
 
-function SvgHistogram($element, vif) {
+function SvgHistogram($element, vif, options) {
   var self = this;
   var $chartElement;
   var dataToRender;
   var d3DimensionXScale;
   var d3YScale;
 
-  _.extend(this, new SvgVisualization($element, vif));
+  _.extend(this, new SvgVisualization($element, vif, options));
 
   renderTemplate();
 
@@ -74,7 +74,7 @@ function SvgHistogram($element, vif) {
    * Public methods
    */
 
-  this.render = function(newVif, newData) {
+  this.render = function(newVif, newData, newColumns) {
 
     if (!newData && !dataToRender) {
       return;
@@ -89,6 +89,10 @@ function SvgHistogram($element, vif) {
     if (newData) {
       validateData(newData);
       dataToRender = newData;
+    }
+
+    if (newColumns) {
+      this.updateColumns(newColumns);
     }
 
     renderData();

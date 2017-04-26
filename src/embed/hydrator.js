@@ -70,7 +70,7 @@ export const hydrateEmbed = (element) => {
     $(element).replaceWith(target);
 
     try {
-      new VisualizationRenderer(vif, target);
+      new VisualizationRenderer(vif, target, { displayFilterBar: true });
     } catch (e) {
       logWarning('Visualization failed to render', e);
       // TODO better error UX.

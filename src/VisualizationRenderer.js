@@ -59,29 +59,29 @@ export const VisualizationRenderer = function(vif, element, options) {
 
     switch (visualizationType) {
       case 'barChart':
-        $element.socrataSvgBarChart(this.vif);
+        $element.socrataSvgBarChart(this.vif, options);
         break;
 
       case 'columnChart':
-        $element.socrataSvgColumnChart(this.vif);
+        $element.socrataSvgColumnChart(this.vif, options);
         break;
 
       case 'featureMap':
-        $element.socrataSvgFeatureMap(this.vif);
+        $element.socrataSvgFeatureMap(this.vif, options);
         // RowInspector is the detailed flannel handler for feature maps
         RowInspector.setup();
         break;
 
       case 'histogram':
-        $element.socrataSvgHistogram(this.vif);
+        $element.socrataSvgHistogram(this.vif, options);
         break;
 
       case 'pieChart':
-        $element.socrataSvgPieChart(this.vif);
+        $element.socrataSvgPieChart(this.vif, options);
         break;
 
       case 'regionMap':
-        $element.socrataSvgRegionMap(this.vif);
+        $element.socrataSvgRegionMap(this.vif, options);
         break;
 
       case 'table':
@@ -90,11 +90,11 @@ export const VisualizationRenderer = function(vif, element, options) {
         break;
 
       case 'timelineChart':
-        $element.socrataSvgTimelineChart(this.vif);
+        $element.socrataSvgTimelineChart(this.vif, options);
         break;
 
       case 'timelineChart.line':
-        $element.socrataSvgTimelineChart(this.vif);
+        $element.socrataSvgTimelineChart(this.vif, options);
         break;
 
       default:

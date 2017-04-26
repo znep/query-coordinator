@@ -5,6 +5,7 @@ const moment = require('moment');
 // Project Imports
 const VifHelpers = require('./helpers/VifHelpers');
 const SvgTimelineChart = require('./views/SvgTimelineChart');
+const MetadataProvider = require('./dataProviders/MetadataProvider');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const TimeDataManager = require('./dataProviders/TimeDataManager');
 const I18n = require('./I18n');
@@ -14,12 +15,12 @@ const getSoqlVifValidator = require(
 // Constants
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
-$.fn.socrataSvgTimelineChart = function(originalVif) {
+$.fn.socrataSvgTimelineChart = function(originalVif, options) {
 
   originalVif = VifHelpers.migrateVif(originalVif);
 
   const $element = $(this);
-  const visualization = new SvgTimelineChart($element, originalVif);
+  const visualization = new SvgTimelineChart($element, originalVif, options);
 
   let rerenderOnResizeTimeout;
 
@@ -121,18 +122,31 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
   }
 
   function updateData(newVif) {
+    const skipPromise = _.constant(Promise.resolve(null));
+    const domain = _.get(newVif, 'series[0].dataSource.domain');
+    const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
+    const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
     visualization.showBusyIndicator();
     detachInteractionEvents();
 
     $.fn.socrataSvgTimelineChart.validateVif(newVif).
-      then(() => TimeDataManager.getData(newVif)).
-      then((newData) => renderVisualization(newVif, newData)).
+      then(visualization.shouldDisplayFilterBar() ? datasetMetadataProvider.getDisplayableFilterableColumns : skipPromise).
+      then((columns) => {
+        return Promise.all([
+          Promise.resolve(columns),
+          TimeDataManager.getData(newVif)
+        ]);
+      }).
+      then((resolutions) => {
+        const [ newColumns, newData ] = resolutions;
+        renderVisualization(newVif, newData, newColumns);
+      }).
       catch(handleError);
   }
 
-  function renderVisualization(vifToRender, dataToRender) {
+  function renderVisualization(vifToRender, dataToRender, columnsToRender) {
     const underTwoRows = dataToRender.rows.length < 2;
     const overMaxRowCount =
       dataToRender.rows.length > TimeDataManager.MAX_ROW_COUNT;
@@ -171,7 +185,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif) {
     } else {
 
       attachInteractionEvents();
-      visualization.render(vifToRender, dataToRender);
+      visualization.render(vifToRender, dataToRender, columnsToRender);
     }
   }
 

@@ -40,7 +40,7 @@ const AXIS_TICK_COLOR = '#adadad';
 const AXIS_GRID_COLOR = '#f1f1f1';
 const NO_VALUE_SENTINEL = '__NO_VALUE__';
 
-function SvgColumnChart($element, vif) {
+function SvgColumnChart($element, vif, options) {
   const self = this;
   let $chartElement;
   let dataToRender;
@@ -50,7 +50,7 @@ function SvgColumnChart($element, vif) {
   let lastRenderedSeriesWidth = 0;
   let lastRenderedZoomTranslate = 0;
 
-  _.extend(this, new SvgVisualization($element, vif));
+  _.extend(this, new SvgVisualization($element, vif, options));
 
   renderTemplate();
 
@@ -58,16 +58,15 @@ function SvgColumnChart($element, vif) {
    * Public methods
    */
 
-  this.render = function(newVif, newData) {
+  this.render = function(newVif, newData, newColumns) {
 
-    if (!newData && !dataToRender) {
+    if (!newData && !dataToRender && !newColumns) {
       return;
     }
 
     this.clearError();
 
     if (newVif) {
-
       if (!_.isEqual(this.getVif().series, newVif.series)) {
         lastRenderedZoomTranslate = 0;
       }
@@ -77,6 +76,10 @@ function SvgColumnChart($element, vif) {
 
     if (newData) {
       dataToRender = newData;
+    }
+
+    if (newColumns) {
+      this.updateColumns(newColumns);
     }
 
     renderData();

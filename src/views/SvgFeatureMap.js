@@ -24,8 +24,8 @@ const FEATURE_MAP_DEFAULT_LOCATE_USER = false;
 const FEATURE_MAP_MIN_POINT_SIZE_MULTIPLIER = 1;
 const FEATURE_MAP_MAX_POINT_SIZE_MULTIPLIER = 3.2;
 
-function SvgFeatureMap(element, vif) {
-  _.extend(this, new SvgVisualization(element, vif));
+function SvgFeatureMap(element, vif, options) {
+  _.extend(this, new SvgVisualization(element, vif, options));
 
   var self = this;
 
@@ -109,7 +109,7 @@ function SvgFeatureMap(element, vif) {
    * Public methods
    */
 
-  this.render = function(newVif, newData) {
+  this.render = function(newVif, newData, newColumns) {
     var hasMapDimensions = mapElement.width() > 0 && mapElement.height() > 0;
     var extent = newData.extent;
     var vectorTileGetter = newData.vectorTileGetter;
@@ -145,6 +145,10 @@ function SvgFeatureMap(element, vif) {
     } else {
       // If nothing to render again call completion asynchronously
       _.defer(handleVectorTileRenderComplete);
+    }
+
+    if (newColumns) {
+      this.updateColumns(newColumns);
     }
 
     lastRenderedVif = newVif || lastRenderedVif || vif;

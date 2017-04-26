@@ -498,4 +498,58 @@ describe('MetadataProvider', function() {
       );
     });
   });
+
+  describe('getFilterableColumns()', () => {
+    it('returns numbers with rangeMin and rangeMax', () => {
+      const columns = [
+        {dataTypeName: 'number', fieldName: 'kitty'},
+        {dataTypeName: 'number', fieldName: 'roomba', rangeMin: 1, rangeMax: 100}
+      ];
+
+      const filteredColumns = metadataProvider.getFilterableColumns({ columns });
+
+      assert.deepEqual(filteredColumns, [columns[1]]);
+    });
+
+    it('returns text', () => {
+      const columns = [
+        {dataTypeName: 'number', fieldName: 'kitty'},
+        {dataTypeName: 'text', fieldName: 'sparrow'}
+      ];
+
+      const filteredColumns = metadataProvider.getFilterableColumns({ columns });
+
+      assert.deepEqual(filteredColumns, [columns[1]]);
+    });
+
+    it('returns calendar_date', () => {
+      const columns = [
+        {dataTypeName: 'number', fieldName: 'kitty'},
+        {dataTypeName: 'calendar_date', fieldName: 'piggy'}
+      ];
+
+      const filteredColumns = metadataProvider.getFilterableColumns({ columns });
+
+      assert.deepEqual(filteredColumns, [columns[1]]);
+    });
+  });
+
+  describe('getDisplayableFilterableColumns', () => {
+    beforeEach(() => {
+      server.respondImmediately = true;
+      server.respondWith('GET', 'https://example.com/api/views/test-test.json', [200, { 'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_DATASET_METADATA)]);
+      server.respondWith('GET', /api\/id/, [200, { 'Content-Type': 'application/json' }, JSON.stringify([{}])]);
+    });
+
+    afterEach(() => {
+      server.restore();
+    });
+
+    it('returns only displayable and filterable columns', () => {
+      return metadataProvider.getDisplayableFilterableColumns().then((columns) => {
+        assert.deepEqual(metadataProvider.getFilterableColumns({ columns }), columns);
+        assert.deepEqual(metadataProvider.getDisplayableColumns({ columns }), columns);
+      });
+    });
+  });
 });

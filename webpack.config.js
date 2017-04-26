@@ -108,6 +108,11 @@ module.exports = [
           include: [ path.resolve('src'), path.resolve('karma') ]
         },
         {
+          loader: 'imports-loader',
+          test: /dotdotdot/,
+          query: { 'jQuery': 'jquery' }
+        },
+        {
           test: /\.s?css$/,
           // Process styles but don't inline images. We don't use them.
           loader: 'style-loader!css-loader?url=false!sass-loader'
@@ -115,7 +120,11 @@ module.exports = [
       ]
     },
     resolve: {
-      modulesDirectories: [ 'node_modules' ]
+      modulesDirectories: [ 'node_modules' ],
+      alias: {
+        'react': path.resolve('node_modules/react'),
+        'react-dom': path.resolve('node_modules/react-dom')
+      }
     },
     devtool: 'source-map'
   },

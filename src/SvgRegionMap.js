@@ -24,13 +24,10 @@ const WINDOW_RESIZE_RERENDER_DELAY = 200;
  *
  * @param vif
  */
-$.fn.socrataSvgRegionMap = function(originalVif) {
+$.fn.socrataSvgRegionMap = function(originalVif, options) {
   originalVif = VifHelpers.migrateVif(originalVif);
   var $element = $(this);
-  var visualization = new SvgRegionMap(
-    $element,
-    originalVif
-  );
+  var visualization = new SvgRegionMap($element, originalVif, options);
   var lastRenderedVif;
   var rerenderOnResizeTimeout;
 
@@ -440,6 +437,7 @@ $.fn.socrataSvgRegionMap = function(originalVif) {
       const filters = _.get(vifToRender, 'series[0].dataSource.filters', []);
 
       const dataSource = { domain, datasetUid };
+      const datasetMetadataProvider = new MetadataProvider(dataSource);
       const datasetGeospaceDataProvider = new GeospaceDataProvider(dataSource);
       const soqlDataProvider = new SoqlDataProvider(dataSource);
       const datasetColumnExtentDataProvider = new SoqlDataProvider(dataSource);
@@ -490,12 +488,22 @@ $.fn.socrataSvgRegionMap = function(originalVif) {
 
       const featureExtentRequest = datasetGeospaceDataProvider.getFeatureExtent(columnName);
       const soqlQueryRequest = soqlDataProvider.query(queryString, NAME_ALIAS, VALUE_ALIAS);
-      const requests = [ shapefileMetadataRequest, featureExtentRequest, soqlQueryRequest ];
+      const displayableFilterableColumns = visualization.shouldDisplayFilterBar() ?
+        datasetMetadataProvider.getDisplayableFilterableColumns() :
+        Promise.resolve(null);
+
+      const requests = [
+        shapefileMetadataRequest,
+        featureExtentRequest,
+        soqlQueryRequest,
+        displayableFilterableColumns
+      ];
 
       return Promise.all(requests).then((values) => {
         const shapefileMetadata = values[0];
         const featureExtent = values[1];
         const soqlQueryResponse = values[2];
+        const newColumns = values[3];
 
         const data = soqlQueryResponse.rows.map((row) => {
           return { name: row[0], value: parseInt(row[1], 10) }
@@ -542,7 +550,7 @@ $.fn.socrataSvgRegionMap = function(originalVif) {
           }).
           then((data) => {
             visualization.hideBusyIndicator();
-            visualization.render(vifToRender, data);
+            visualization.render(vifToRender, data, newColumns);
             lastRenderedVif = vifToRender;
           }).
           catch(handleError);

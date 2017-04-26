@@ -130,6 +130,28 @@ describe('SvgVisualization', () => {
     });
   });
 
+  describe('#updateColumns', () => {
+    let viz;
+    let columnsMock;
+    let renderFilterBarStub;
+
+    beforeEach(() => {
+      columnsMock = [1];
+      viz = new SvgVisualization($element, mockVif);
+      renderFilterBarStub = sinon.stub(viz, 'renderFilterBar');
+    });
+
+    it('replaces previous columns with new value', () => {
+      viz.updateColumns(columnsMock);
+      assert.deepEqual(viz.getColumns(), columnsMock);
+    });
+
+    it('re-renders the filter bar', () => {
+      viz.updateColumns(columnsMock);
+      sinon.assert.calledOnce(renderFilterBarStub);
+    });
+  });
+
   describe('#renderTitle', () => {
     let viz;
 
@@ -199,6 +221,62 @@ describe('SvgVisualization', () => {
       viz.updateVif(newVif);
       const description = getVizChildElement('.socrata-visualization-description');
       assert.equal(description.innerHTML, 'New Description');
+    });
+  });
+
+  describe('#renderFilterBar', () => {
+    let viz;
+    let columnsMock = [
+      {
+        name: 'Blood Alcohol Level',
+        fieldName: 'blood_alcohol_level',
+        dataTypeName: 'number',
+        rangeMin: 1,
+        rangeMax: 10
+      }
+    ];
+
+    const getVisualization = ($el) => $el.find('.socrata-visualization');
+    const getFilterBarContainer = ($el) => $el.find('.socrata-visualization-filter-bar-container');
+
+    beforeEach(() => {
+      const vif = _.cloneDeep(mockVif);
+
+      _.set(vif, 'series[0].dataSource.filters[0].isHidden', false);
+
+      viz = new SvgVisualization($element, vif, { displayFilterBar: true });
+      viz.updateColumns(columnsMock);
+    });
+
+    it('renders nothing when there are no columns', () => {
+      viz.updateColumns(null);
+
+      assert.isFalse(getVisualization($element).hasClass('socrata-visualization-filter-bar'));
+      assert.lengthOf(getFilterBarContainer($element).children(), 0);
+    });
+
+    it('renders nothing when displayFilterBar is false', () => {
+      viz.updateOptions({ displayFilterBar: false });
+      viz.updateColumns(columnsMock);
+
+      assert.isFalse(getVisualization($element).hasClass('socrata-visualization-filter-bar'));
+      assert.lengthOf(getFilterBarContainer($element).children(), 0);
+    });
+
+    it('renders nothing when there are no visible filters', () => {
+      const vif = _.cloneDeep(mockVif);
+      viz.updateVif(vif);
+
+      assert.isFalse(getVisualization($element).hasClass('socrata-visualization-filter-bar'));
+      assert.lengthOf(getFilterBarContainer($element).children(), 0);
+    });
+
+    it('renders', () => {
+      assert.isAbove(getFilterBarContainer($element).children().length, 0);
+    });
+
+    it('adds socrata-visualization-filter-bar to container', () => {
+      assert.isTrue(getVisualization($element).hasClass('socrata-visualization-filter-bar'));
     });
   });
 
@@ -802,6 +880,51 @@ describe('SvgVisualization', () => {
 
       const viz = new SvgVisualization($element, mockVif);
       viz.emitEvent('TEST_EVENT', {content: null});
+    });
+  });
+
+  describe('#isEmbedded', () => {
+    let viz;
+
+    beforeEach(() => {
+      viz = new SvgVisualization($element, mockVif);
+    });
+
+    it('returns true when the proper class is on the container', () => {
+      $element.addClass('socrata-visualization-embed');
+      assert.isTrue(viz.isEmbedded());
+    });
+
+    it('returns false when the proper class is not on the container', () => {
+      assert.isFalse(viz.isEmbedded());
+    });
+  });
+
+  describe('#shouldDisplayFilterBar', () => {
+    let viz;
+
+    beforeEach(() => {
+      viz = new SvgVisualization($element, mockVif);
+    });
+
+    it('returns false when the option is set to false', () => {
+      viz.updateOptions({
+        displayFilterBar: false
+      });
+
+      assert.isFalse(viz.shouldDisplayFilterBar());
+    });
+
+    it('returns true when the option is set to true', () => {
+      viz.updateOptions({
+        displayFilterBar: true
+      });
+
+      assert.isTrue(viz.shouldDisplayFilterBar());
+    });
+
+    it('returns false when the option is not set', () => {
+      assert.isFalse(viz.shouldDisplayFilterBar());
     });
   });
 });

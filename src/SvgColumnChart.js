@@ -3,6 +3,7 @@ const $ = require('jquery');
 
 const VifHelpers = require('./helpers/VifHelpers');
 const SvgColumnChart = require('./views/SvgColumnChart');
+const MetadataProvider = require('./dataProviders/MetadataProvider');
 const CategoricalDataManager = require(
   './dataProviders/CategoricalDataManager'
 );
@@ -13,12 +14,12 @@ const getSoqlVifValidator = require(
 
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
-$.fn.socrataSvgColumnChart = function(originalVif) {
+$.fn.socrataSvgColumnChart = function(originalVif, options) {
 
   originalVif = VifHelpers.migrateVif(originalVif);
 
   const $element = $(this);
-  const visualization = new SvgColumnChart($element, originalVif);
+  const visualization = new SvgColumnChart($element, originalVif, options);
 
   let rerenderOnResizeTimeout;
 
@@ -120,18 +121,31 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
   }
 
   function updateData(newVif) {
+    const skipPromise = _.constant(Promise.resolve(null));
+    const domain = _.get(newVif, 'series[0].dataSource.domain');
+    const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
+    const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
     visualization.showBusyIndicator();
     detachInteractionEvents();
 
     $.fn.socrataSvgColumnChart.validateVif(newVif).
-      then(() => CategoricalDataManager.getData(newVif)).
-      then((newData) => renderVisualization(newVif, newData)).
+      then(visualization.shouldDisplayFilterBar() ? datasetMetadataProvider.getDisplayableFilterableColumns : skipPromise).
+      then((columns) => {
+        return Promise.all([
+          Promise.resolve(columns),
+          CategoricalDataManager.getData(newVif)
+        ]);
+      }).
+      then((resolutions) => {
+        const [ newColumns, newData ] = resolutions;
+        renderVisualization(newVif, newData, newColumns);
+      }).
       catch(handleError);
   }
 
-  function renderVisualization(vifToRender, dataToRender) {
+  function renderVisualization(vifToRender, dataToRender, columnsToRender) {
     const overMaxRowCount = (
       dataToRender.rows.length > CategoricalDataManager.MAX_ROW_COUNT
     );
@@ -163,7 +177,7 @@ $.fn.socrataSvgColumnChart = function(originalVif) {
     } else {
 
       attachInteractionEvents();
-      visualization.render(vifToRender, dataToRender);
+      visualization.render(vifToRender, dataToRender, columnsToRender);
     }
   }
 

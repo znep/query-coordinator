@@ -9,6 +9,7 @@ import hydrateEmbeds from './hydrator';
 
 import '../views/styles/socrata-visualizations.scss';
 import 'leaflet/dist/leaflet.css';
+import 'socrata-components/dist/css/styleguide-no-tag-level.css';
 
 window.socrata = window.socrata || {};
 window.socrata.visualizationEmbed = window.socrata.visualizationEmbed || {};

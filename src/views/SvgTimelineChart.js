@@ -34,7 +34,7 @@ const AXIS_GRID_COLOR = '#f1f1f1';
 const HIGHLIGHT_COLOR = 'rgba(44, 44, 44, 0.18)';
 const AREA_STROKE_WIDTH = '3px';
 
-function SvgTimelineChart($element, vif) {
+function SvgTimelineChart($element, vif, options) {
   const self = this;
   const parseDate = d3.
     time.
@@ -59,7 +59,7 @@ function SvgTimelineChart($element, vif) {
   let lastRenderedZoomTranslateOffsetFromEnd;
   let dateBisector;
 
-  _.extend(this, new SvgVisualization($element, vif));
+  _.extend(this, new SvgVisualization($element, vif, options));
 
   renderTemplate();
 
@@ -67,7 +67,7 @@ function SvgTimelineChart($element, vif) {
    * Public methods
    */
 
-  this.render = function(newVif, newData) {
+  this.render = function(newVif, newData, newColumns) {
 
     if (!newData && !dataToRender) {
       return;
@@ -90,6 +90,10 @@ function SvgTimelineChart($element, vif) {
       // not want to store a reference to 'newData' at all but rather just
       // to the result of 'mapDataTableToDataTablesBySeries()'.
       dataToRenderBySeries = mapDataTableToDataTablesBySeries(newData);
+    }
+
+    if (newColumns) {
+      this.updateColumns(newColumns);
     }
 
     renderData();

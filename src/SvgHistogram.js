@@ -3,6 +3,7 @@ const $ = require('jquery');
 const utils = require('socrata-utils');
 const DistributionChartHelpers = require('./views/DistributionChartHelpers');
 const SvgHistogram = require('./views/SvgHistogram');
+const MetadataProvider = require('./dataProviders/MetadataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
@@ -170,13 +171,10 @@ function transformBucketedData(bucketingOptions, response) {
   };
 };
 
-$.fn.socrataSvgHistogram = function(originalVif) {
+$.fn.socrataSvgHistogram = function(originalVif, options) {
   originalVif = VifHelpers.migrateVif(originalVif);
   var $element = $(this);
-  var visualization = new SvgHistogram(
-    $element,
-    originalVif
-  );
+  var visualization = new SvgHistogram($element, originalVif, options);
   var rerenderOnResizeTimeout;
 
   /**
@@ -249,6 +247,11 @@ $.fn.socrataSvgHistogram = function(originalVif) {
     visualization.showBusyIndicator();
 
     $.fn.socrataSvgHistogram.validateVif(newVif).then(() => {
+      const datasetMetadataProvider = new MetadataProvider({
+        domain: _.get(newVif, 'series[0].dataSource.domain'),
+        datasetUid: _.get(newVif, 'series[0].dataSource.datasetUid')
+      });
+
       const dataRequests = newVif.
         series.
         map(
@@ -268,10 +271,18 @@ $.fn.socrataSvgHistogram = function(originalVif) {
           }
         );
 
+      const displayableFilterableColumns = visualization.shouldDisplayFilterBar() ?
+        datasetMetadataProvider.getDisplayableFilterableColumns() :
+        Promise.resolve(null);
+
       return Promise.
-        all(dataRequests).
+        all([
+          displayableFilterableColumns,
+          ...dataRequests
+        ]).
         then(
-          function(dataResponses) {
+          function(resolutions) {
+            const [ newColumns, ...dataResponses ] = resolutions;
             const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
               const measureIndex = dataResponse.columns.indexOf('measure');
               return dataResponse.rows.map((row) => row[measureIndex]);
@@ -290,7 +301,7 @@ $.fn.socrataSvgHistogram = function(originalVif) {
                 I18n.translate('visualizations.common.error_no_data')
               );
             } else {
-              visualization.render(newVif, dataResponses);
+              visualization.render(newVif, dataResponses, newColumns);
             }
           }
         )

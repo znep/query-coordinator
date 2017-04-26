@@ -27,7 +27,7 @@ const VALUE_LABEL_THRESHOLD = 25;
 
 const PI2 = Math.PI * 2;
 
-function SvgPieChart($element, vif) {
+function SvgPieChart($element, vif, options) {
   const self = this;
   let $chartElement; // chart container element
   let dataToRender; // chart data
@@ -39,7 +39,7 @@ function SvgPieChart($element, vif) {
   let colorPalette;
   let centerDot; // hidden circle at the center of pie
 
-  _.extend(this, new SvgVisualization($element, vif));
+  _.extend(this, new SvgVisualization($element, vif, options));
 
   renderTemplate();
 
@@ -47,8 +47,8 @@ function SvgPieChart($element, vif) {
    * Public methods
    */
 
-  this.render = (newVif, newData) => {
-    if (!newData && !dataToRender) {
+  this.render = (newVif, newData, newColumns) => {
+    if (!newData && !dataToRender && !newColumns) {
       return;
     }
 
@@ -60,6 +60,10 @@ function SvgPieChart($element, vif) {
 
     if (newData) {
       dataToRender = newData;
+    }
+
+    if (newColumns) {
+      this.updateColumns(newColumns);
     }
 
     renderPie();

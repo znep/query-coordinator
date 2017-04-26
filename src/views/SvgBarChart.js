@@ -45,7 +45,7 @@ const NO_VALUE_SENTINEL = '__NO_VALUE__';
 // Limits width of dimension chart labels.
 const MIN_WIDTH_RESERVED_FOR_CHART = 25;
 
-function SvgBarChart($element, vif) {
+function SvgBarChart($element, vif, options) {
   const self = this;
   let $chartElement;
   let dataToRender;
@@ -69,7 +69,7 @@ function SvgBarChart($element, vif) {
     overriddenAreaSize: undefined
   };
 
-  _.extend(this, new SvgVisualization($element, vif));
+  _.extend(this, new SvgVisualization($element, vif, options));
 
   renderTemplate();
 
@@ -77,7 +77,7 @@ function SvgBarChart($element, vif) {
    * Public methods
    */
 
-  this.render = function(newVif, newData) {
+  this.render = function(newVif, newData, newColumns) {
 
     if (!newData && !dataToRender) {
       return;
@@ -102,7 +102,12 @@ function SvgBarChart($element, vif) {
       dataToRender = newData;
     }
 
+    if (newColumns) {
+      this.updateColumns(newColumns);
+    }
+
     $(labelResizeState.draggerElement).toggleClass('enabled', self.getShowDimensionLabels());
+
     renderData();
   };
 

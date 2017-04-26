@@ -1,7 +1,8 @@
-var $ = require('jquery');
-var utils = require('socrata-utils');
-var DataProvider = require('./DataProvider');
-var _ = require('lodash');
+const $ = require('jquery');
+const _ = require('lodash');
+const utils = require('socrata-utils');
+const DataProvider = require('./DataProvider');
+const SoqlDataProvider = require('./SoqlDataProvider');
 
 const headersForDomain = (domain) => {
   const isSameDomain = domain === window.location.hostname;
@@ -26,15 +27,18 @@ const headersForDomain = (domain) => {
 };
 
 function MetadataProvider(config) {
-  var self = this;
-
-  _.extend(this, new DataProvider(config));
-
   utils.assertHasProperty(config, 'domain');
   utils.assertHasProperty(config, 'datasetUid');
 
   utils.assertIsOneOfTypes(config.domain, 'string');
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
+
+  _.extend(this, new DataProvider(config));
+
+  const soqlDataProvider = new SoqlDataProvider({
+    domain: this.getConfigurationProperty('domain'),
+    datasetUid: this.getConfigurationProperty('datasetUid')
+  });
 
   /**
    * Public methods
@@ -47,52 +51,54 @@ function MetadataProvider(config) {
    * Columns are structured in an Array.
    * (See: https://localhost/api/docs/types#View)
    */
-  this.getDatasetMetadata = function() {
+  this.getDatasetMetadata = () => {
     const datasetUid = this.getConfigurationProperty('datasetUid');
-    return makeMetadataRequest(`api/views/${datasetUid}.json`);
+    const url = `api/views/${datasetUid}.json`;
+
+    return makeMetadataRequest(url);
   };
 
-  this.getCuratedRegions = function() {
+  this.getCuratedRegions = () => {
     return makeMetadataRequest('api/curated_regions');
   };
 
-  this.getPhidippidesMetadata = function() {
+  this.getPhidippidesMetadata = () => {
     const datasetUid = this.getConfigurationProperty('datasetUid');
-    return makeMetadataRequest(`metadata/v1/dataset/${datasetUid}.json`);
+    const url = `metadata/v1/dataset/${datasetUid}.json`;
+
+    return makeMetadataRequest(url);
   };
 
-  this.getDatasetMigrationMetadata = function() {
-    var datasetUid = this.getConfigurationProperty('datasetUid');
-    return makeMetadataRequest(`api/migrations/${datasetUid}.json`);
+  this.getDatasetMigrationMetadata = () => {
+    const datasetUid = this.getConfigurationProperty('datasetUid');
+    const url = `api/migrations/${datasetUid}.json`;
+
+    return makeMetadataRequest(url);
   };
 
-  this.getShapefileMetadata = function() {
-    // TODO Make this less of a special snowflake HTTP request.
-    const datasetUid = this.getConfigurationProperty('datasetUid');
+  this.getShapefileMetadata = () => {
     const domain = this.getConfigurationProperty('domain');
+    const datasetUid = this.getConfigurationProperty('datasetUid');
+
     function makeRequest(path) {
       const url = `https://${domain}/${path}`;
-      return new Promise(function(resolve, reject) {
-        var xhr = new XMLHttpRequest();
+
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
 
         function onFail() {
-
           return reject({
             status: parseInt(xhr.status, 10),
             message: xhr.statusText
           });
         }
 
-        xhr.onload = function() {
-          var status = parseInt(xhr.status, 10);
+        xhr.onload = () => {
+          const status = parseInt(xhr.status, 10);
 
           if (status === 200) {
-
             try {
-
-              return resolve(
-                JSON.parse(xhr.responseText)
-              );
+              return resolve(JSON.parse(xhr.responseText));
             } catch (e) {
               // Let this fall through to the `onFail()` below.
             }
@@ -103,7 +109,6 @@ function MetadataProvider(config) {
 
         xhr.onabort = onFail;
         xhr.onerror = onFail;
-
         xhr.open('GET', url, true);
 
         _.each(headersForDomain(domain), function(value, key) {
@@ -111,29 +116,25 @@ function MetadataProvider(config) {
         });
 
         xhr.send();
-      /* eslint-disable dot-notation */
-      })['catch'](_.constant(null));
-      /* eslint-enable dot-notation */
+      }).catch(_.constant(null));
     }
 
-    var curatedRegionsPath = `api/curated_regions?method=getByViewUid&viewUid=${datasetUid}`;
+    const curatedRegionsUrl = `api/curated_regions?method=getByViewUid&viewUid=${datasetUid}`;
+    const curatedRegionsRequest = makeRequest(curatedRegionsUrl);
 
-    var phidippidesPath = `metadata/v1/dataset/${datasetUid}.json`;
+    const phidippidesUrl = `metadata/v1/dataset/${datasetUid}.json`;
+    const phidippidesRequest = makeRequest(phidippidesUrl);
 
-    var curatedRegionsRequest = makeRequest(curatedRegionsPath);
-    var phidippidesRequest = makeRequest(phidippidesPath);
+    return Promise.all([curatedRegionsRequest, phidippidesRequest]).then((responses) => {
+      const [ curatedRegionsResponse, phidippidesResponse ] = responses;
 
-    return Promise.all([curatedRegionsRequest, phidippidesRequest]).then(function(responses) {
-      var curatedRegionsResponse = responses[0];
-      var phidippidesResponse = responses[1];
+      const curatedRegionsGeometryLabel = _.get(curatedRegionsResponse, 'geometryLabel', null);
+      const phidippidesGeometryLabel = _.get(phidippidesResponse, 'geometryLabel', null);
+      const geometryLabel = curatedRegionsGeometryLabel || phidippidesGeometryLabel;
 
-      var curatedRegionsGeometryLabel = _.get(curatedRegionsResponse, 'geometryLabel', null);
-      var phidippidesGeometryLabel = _.get(phidippidesResponse, 'geometryLabel', null);
-      var geometryLabel = curatedRegionsGeometryLabel || phidippidesGeometryLabel;
-
-      var curatedRegionsFeaturePk = _.get(curatedRegionsResponse, 'featurePk', null);
-      var phidippidesFeaturePk = _.get(phidippidesResponse, 'featurePk', null);
-      var featurePk = curatedRegionsFeaturePk || phidippidesFeaturePk || '_feature_id';
+      const curatedRegionsFeaturePk = _.get(curatedRegionsResponse, 'featurePk', null);
+      const phidippidesFeaturePk = _.get(phidippidesResponse, 'featurePk', null);
+      const featurePk = curatedRegionsFeaturePk || phidippidesFeaturePk || '_feature_id';
 
       return {
         geometryLabel: geometryLabel,
@@ -142,7 +143,7 @@ function MetadataProvider(config) {
     });
   };
 
-  this.isSystemColumn = function(fieldName) {
+  this.isSystemColumn = (fieldName) => {
     return fieldName[0] === ':';
   };
 
@@ -153,22 +154,22 @@ function MetadataProvider(config) {
    *
    * This code is lifted from frontend: lib/common_metadata_methods.rb.
    */
-  this.isSubcolumn = function(fieldName, datasetMetadata) {
+  this.isSubcolumn = (fieldName, datasetMetadata) => {
     utils.assertIsOneOfTypes(fieldName, 'string');
 
-    var isSubcolumn = false;
-    var columns = datasetMetadata.columns;
-    var fieldNameByName = {};
+    let parentColumnName;
+    let isSubcolumn = false;
+    const columns = datasetMetadata.columns;
+    const fieldNameByName = {};
 
-    var fieldNameWithoutCollisionSuffix = fieldName.replace(/_\d+$/g, '');
-    var hasExplodedSuffix = /_(address|city|state|zip|type|description)$/.test(fieldNameWithoutCollisionSuffix);
+    const fieldNameWithoutCollisionSuffix = fieldName.replace(/_\d+$/g, '');
+    const hasExplodedSuffix = /_(address|city|state|zip|type|description)$/.test(fieldNameWithoutCollisionSuffix);
 
-    var matchedColumn = _.find(columns, _.matches({ fieldName: fieldName }));
-    var parentColumnName;
+    const matchedColumn = _.find(columns, _.matches({ fieldName: fieldName }));
 
     utils.assert(
       matchedColumn,
-      'could not find column {0} in dataset {1}'.format(fieldName, datasetMetadata.id)
+      `could not find column ${fieldName} in dataset ${datasetMetadata.id}`
     );
 
     // The naming convention is that child column names are the parent column name, followed by the
@@ -201,7 +202,7 @@ function MetadataProvider(config) {
      * marked as an exploded subcolumn.
      */
     if (parentColumnName !== matchedColumn.name && hasExplodedSuffix) {
-      _.each(columns, function(column) {
+      _.each(columns, (column) => {
         fieldNameByName[column.name] = fieldNameByName[column.name] || [];
         fieldNameByName[column.name].push(column.fieldName);
       });
@@ -210,7 +211,7 @@ function MetadataProvider(config) {
       // There are columns that have the same name as this one, sans parenthetical.
       // Its field_name naming convention should also match, for us to infer it's a subcolumn.
       isSubcolumn = (fieldNameByName[parentColumnName] || []).
-        some(function(parentFieldName) {
+        some((parentFieldName) => {
           return parentFieldName + '_' === fieldName.substring(0, parentFieldName.length + 1);
         });
     }
@@ -221,7 +222,7 @@ function MetadataProvider(config) {
   // EN-13453: Don't try to pass along hidden columns.
   // If a logged in user has write access to a view, the request for metadata will return hidden
   // columns decorated with a nice hidden flag, instead of omitting the hidden columns completely.
-  this.isHiddenColumn = function(flags) {
+  this.isHiddenColumn = (flags) => {
     return flags ? _.includes(flags, 'hidden') : false;
   };
 
@@ -230,43 +231,81 @@ function MetadataProvider(config) {
   // display to the user (all columns minus system and subcolumns).
   //
   // @return {Object[]}
-  this.getDisplayableColumns = function(datasetMetadata) {
+  this.getDisplayableColumns = (datasetMetadata) => {
     utils.assertHasProperty(datasetMetadata, 'columns');
 
-    return _.reject(datasetMetadata.columns, function(column) {
-      return self.isSystemColumn(column.fieldName) ||
-        self.isSubcolumn(column.fieldName, datasetMetadata) ||
-        self.isHiddenColumn(column.flags);
+    return _.reject(datasetMetadata.columns, (column) => {
+      return this.isSystemColumn(column.fieldName) ||
+        this.isSubcolumn(column.fieldName, datasetMetadata) ||
+        this.isHiddenColumn(column.flags);
     });
+  };
+
+  /**
+   * Returns columns that are support by our filtering experience.
+   * These columns include numbers (with column stats), text and
+   * calendar dates.
+   */
+  this.getFilterableColumns = (datasetMetadata) => {
+    utils.assertHasProperty(datasetMetadata, 'columns');
+
+    return _.filter(datasetMetadata.columns, (column) => {
+      return (
+          column.dataTypeName === 'number' &&
+          _.isNumber(column.rangeMin) &&
+          _.isNumber(column.rangeMax)
+        ) ||
+        column.dataTypeName === 'text' ||
+        column.dataTypeName === 'calendar_date';
+    });
+  };
+
+  /**
+   * Returns the result of getDisplayableColumns and
+   * getFilterableColumns combined with a fresh call to
+   * getDatasetMetadata.
+   */
+  this.getDisplayableFilterableColumns = () => {
+    return this.getDatasetMetadata().
+      then((datasetMetadata) => {
+        return Promise.all([
+          Promise.resolve(datasetMetadata),
+          soqlDataProvider.getColumnStats(datasetMetadata.columns)
+        ]);
+      }).
+      then((resolutions) => {
+        const [ datasetMetadata, columnStats ] = resolutions;
+        const columns = _.merge([], columnStats, datasetMetadata.columns);
+        const getDisplayableFilterableColumns = _.flow(
+          this.getDisplayableColumns,
+          (displayableColumns) => this.getFilterableColumns({ columns: displayableColumns })
+        );
+
+        return Promise.resolve(getDisplayableFilterableColumns({ columns }));
+      });
   };
 
   const makeMetadataRequest = (path) => {
     const domain = this.getConfigurationProperty('domain');
     const url = `https://${domain}/${path}`;
 
-    return new Promise(
-      function(resolve, reject) {
-
-        function handleError(jqXHR) {
-
-          reject(
-            {
-              status: parseInt(jqXHR.status, 10),
-              message: jqXHR.statusText,
-              metadataError: jqXHR.responseJSON || jqXHR.responseText || '<No response>'
-            }
-          );
-        }
-
-        $.ajax({
-          url,
-          headers: headersForDomain(domain),
-          method: 'GET',
-          success: resolve,
-          error: handleError
+    return new Promise((resolve, reject) => {
+      function handleError(jqXHR) {
+        reject({
+          status: parseInt(jqXHR.status, 10),
+          message: jqXHR.statusText,
+          metadataError: jqXHR.responseJSON || jqXHR.responseText || '<No response>'
         });
       }
-    );
+
+      $.ajax({
+        url,
+        method: 'GET',
+        success: resolve,
+        error: handleError,
+        headers: headersForDomain(domain)
+      });
+    });
   };
 }
 

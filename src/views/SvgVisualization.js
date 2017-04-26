@@ -2,6 +2,9 @@
 const $ = require('jquery');
 const _ = require('lodash');
 const utils = require('socrata-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const { FilterBar, SocrataIcon } = require('socrata-components');
 
 // Project Imports
 const VifHelpers = require('../helpers/VifHelpers');
@@ -40,7 +43,7 @@ const DEFAULT_TYPE_VARIANTS = {
 const DEFAULT_UNIT_ONE = '';
 const DEFAULT_UNIT_OTHER = '';
 
-function SvgVisualization($element, vif) {
+function SvgVisualization($element, vif, options) {
   const self = this;
   // See: http://stackoverflow.com/a/4819886
   const mobile = (
@@ -49,6 +52,8 @@ function SvgVisualization($element, vif) {
   );
 
   let currentVif;
+  let currentOptions;
+  let currentColumns;
 
   // NOTE: Initialization occurs at the bottom of the file!
 
@@ -58,6 +63,14 @@ function SvgVisualization($element, vif) {
 
   this.getVif = function() {
     return currentVif;
+  };
+
+  this.getColumns = function() {
+    return currentColumns;
+  };
+
+  this.getOptions = function() {
+    return currentOptions;
   };
 
   this.updateVif = function(vifToRender) {
@@ -74,6 +87,7 @@ function SvgVisualization($element, vif) {
 
     self.renderTitle();
     self.renderDescription();
+    self.renderFilterBar();
     self.hidePanningNotice();
 
     if (shouldRenderViewSourceDataLink) {
@@ -81,6 +95,16 @@ function SvgVisualization($element, vif) {
     } else {
       self.hideViewSourceDataLink();
     }
+  };
+
+  this.updateColumns = function(columnsToRender) {
+    currentColumns = columnsToRender;
+    self.renderFilterBar();
+  };
+
+  this.updateOptions = function(optionsToRender) {
+    currentOptions = optionsToRender;
+    self.renderFilterBar();
   };
 
   this.renderTitle = function() {
@@ -119,6 +143,35 @@ function SvgVisualization($element, vif) {
         text('');
       self.$container.removeClass('socrata-visualization-description');
     }
+  };
+
+  this.renderFilterBar = function() {
+    const $filterBarContainer = self.$container.find('.socrata-visualization-filter-bar-container');
+    const filters = _.get(this.getVif(), 'series[0].dataSource.filters', []);
+    const allHidden = _.every(filters, (filter) => filter.isHidden);
+
+    if (!this.getColumns() || !this.shouldDisplayFilterBar() || filters.length === 0 || allHidden) {
+      ReactDOM.unmountComponentAtNode($filterBarContainer[0]);
+      self.$container.removeClass('socrata-visualization-filter-bar');
+      return;
+    }
+
+    self.$container.addClass('socrata-visualization-filter-bar');
+
+    const props = {
+      columns: this.getColumns(),
+      filters,
+      isReadOnly: true,
+      onUpdate: (newFilters) => {
+        const newVif = _.cloneDeep(this.getVif());
+        _.set(newVif, 'series[0].dataSource.filters', newFilters);
+
+        this.emitEvent('SOCRATA_VISUALIZATION_VIF_UPDATED', newVif);
+        this.emitEvent('SOCRATA_VISUALIZATION_RENDER_VIF', newVif);
+      }
+    };
+
+    ReactDOM.render(React.createElement(FilterBar, props), $filterBarContainer[0]);
   };
 
   let topAxisLabelElement = null;
@@ -357,7 +410,7 @@ function SvgVisualization($element, vif) {
 
         let href = `https://${domain}/d/${linkableDatasetUid}`;
 
-        if (self.$container.closest('.socrata-visualization-embed').length) {
+        if (self.isEmbedded()) {
           href += '?referrer=embed';
         }
 
@@ -705,6 +758,14 @@ function SvgVisualization($element, vif) {
     );
   };
 
+  this.isEmbedded = function() {
+    return self.$container.closest('.socrata-visualization-embed').length > 0;
+  };
+
+  this.shouldDisplayFilterBar = function() {
+    return _.get(self.getOptions(), 'displayFilterBar', false);
+  };
+
   /**
    * Private methods
    */
@@ -724,13 +785,14 @@ function SvgVisualization($element, vif) {
                 append(
                   $('<div>', {'class': 'socrata-visualization-description'})
                 ),
+              $('<div>', {'class': 'socrata-visualization-filter-bar-container'}),
               $('<div>', {'class': 'socrata-visualization-container'}),
               $('<div>', {'class': 'socrata-visualization-info'}).
                 append([
                   $('<div>', {'class': 'socrata-visualization-view-source-data'}).append(
                     $('<a>', {'href': '', 'target': '_blank'}).append([
-                      I18n.translate('visualizations.common.view_source_data'),
-                      $('<span>', {'class': 'icon-external'})
+                      $('<span>').append(I18n.translate('visualizations.common.view_source_data')),
+                      $('<span>', {'class': 'socrata-visualization-view-source-data-icon'})
                     ])
                   ),
                   $('<div>', {'class': 'socrata-visualization-panning-notice'}).text(
@@ -747,6 +809,11 @@ function SvgVisualization($element, vif) {
                 ])
             ])
         );
+
+    ReactDOM.render(
+      React.createElement(SocrataIcon, { name: 'external' }),
+      self.$element.find('.socrata-visualization-view-source-data-icon')[0]
+    );
   }
 
   function attachEvents() {
@@ -881,6 +948,7 @@ function SvgVisualization($element, vif) {
   this.$container = self.$element.find('.socrata-visualization');
 
   this.updateVif(vif);
+  this.updateOptions(options);
 }
 
 module.exports = SvgVisualization;

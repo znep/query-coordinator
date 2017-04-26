@@ -2,6 +2,7 @@
 
 $title-height: 44px;
 $description-height: 26px;
+$filter-bar-height: 43px;
 $title-description-padding: 6px;
 $info-height: 24px;
 $busy-indicator-width-height: 24px;
@@ -76,6 +77,11 @@ $axis-padding: 42px;
     }
   }
 
+  .socrata-visualization-filter-bar-container {
+    position: relative;
+    z-index: 5;
+  }
+
   .socrata-visualization-info {
     position: absolute;
     display: none;
@@ -98,8 +104,18 @@ $axis-padding: 42px;
       font-size: 12px;
       margin-left: 6px;
 
-      .socrata-visualization-icon-external {
+      a {
+        display: inline-flex;
+      }
+
+      .socrata-visualization-view-source-data-icon {
+        display: inline-flex;
+        margin: auto;
         margin-left: 6px;
+
+        .socrata-icon {
+          margin: auto;
+        }
       }
     }
 
@@ -196,6 +212,30 @@ $axis-padding: 42px;
     }
   }
 
+  &.socrata-visualization-filter-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$filter-bar-height});
+    }
+  }
+
+  &.socrata-visualization-title.socrata-visualization-filter-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$filter-bar-height});
+    }
+  }
+
+  &.socrata-visualization-description.socrata-visualization-filter-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$description-height} - #{$filter-bar-height});
+    }
+  }
+
+  &.socrata-visualiation-title.socrata-visualization-description.socrata-visualization-filter-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$description-height} - #{$filter-bar-height});
+    }
+  }
+
   &.socrata-visualization-title.socrata-visualization-description {
 
     .socrata-visualization-title-container {
@@ -248,11 +288,35 @@ $axis-padding: 42px;
     }
   }
 
+  &.socrata-visualization-filter-bar.socrata-visualization-info {
+    .socrata-visualization-container {
+      height: calc(100% - #{$filter-bar-height} - #{$info-height});
+    }
+  }
+
+  &.socrata-visualization-filter-bar.socrata-visualization-description.socrata-visualization-info {
+    .socrata-visualization-container {
+      height: calc(100% - #{$description-height} - #{$filter-bar-height} - #{$info-height});
+    }
+  }
+
+  &.socrata-visualization-filter-bar.socrata-visualization-title.socrata-visualization-info {
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$filter-bar-height} - #{$info-height});
+    }
+  }
+
   &.socrata-visualization-title.socrata-visualization-description.socrata-visualization-info {
 
     .socrata-visualization-container {
       height: calc(100% - #{$title-height} - #{$description-height} - #{$info-height});
       border-top: 1px solid $visualization-container-border-color;
+    }
+  }
+
+  &.socrata-visualization-filter-bar.socrata-visualization-title.socrata-visualization-description.socrata-visualization-info {
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$description-height} - #{$filter-bar-height} - #{$info-height});
     }
   }
 
@@ -295,6 +359,7 @@ $axis-padding: 42px;
     height: 100%;
     border: none;
     box-sizing: border-box;
+    z-index: 1;
   }
 
   &.socrata-visualization-top-axis-title {

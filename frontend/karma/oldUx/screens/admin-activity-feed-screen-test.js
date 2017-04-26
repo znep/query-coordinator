@@ -1,4 +1,5 @@
 import { expect, assert } from 'chai';
+import moment from 'moment';
 var adminActivityFeedScreen = require('screens/admin-activity-feed');
 
 describe('adminActivityFeedScreen', function() {
@@ -57,7 +58,7 @@ describe('adminActivityFeedScreen', function() {
     });
 
     it('returns "yesterday" for a date yesterday', function() {
-      var yesterday = moment().subtract('days', 1);
+      var yesterday = moment().subtract(1, 'days');
       expect(adminActivityFeedScreen.todayYesterdayOrDate(yesterday)).to.equal('Yesterday');
     });
 

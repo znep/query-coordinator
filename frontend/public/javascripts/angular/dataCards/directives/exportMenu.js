@@ -84,6 +84,11 @@ module.exports = function ExportMenu(WindowState, ServerConfig, CardDataService,
           url.searchParams.set('accessType', 'DOWNLOAD');
           url.searchParams.set('bom', true);
           url.searchParams.set('query', query);
+          if ($scope.page.isFromDerivedView) {
+            // NOTE: for this endpoint, we don't need to use the `version` magic
+            // flag, and we don't need to prefix magic flags with dollar signs.
+            url.searchParams.set('read_from_nbe', true);
+          }
 
           return url.href;
         });

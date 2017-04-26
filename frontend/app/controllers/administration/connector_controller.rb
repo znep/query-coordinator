@@ -13,7 +13,10 @@ class Administration::ConnectorController < AdministrationController
       c.check_auth_level(UserRights::USE_DATA_CONNECTORS)
     end
 
-  before_filter :fetch_server, :only => :edit_connector
+  before_filter :require_a_catalog_connector, :only =>
+    %i(connectors new_connector delete_connector create_connector edit_connector update_connector show_connector)
+
+  before_filter :fetch_server, :only => [:edit_connector, :update_connector, :show_connector]
   before_filter :fetch_connectors, :only => :connectors
 
   def connectors # index
@@ -36,7 +39,7 @@ class Administration::ConnectorController < AdministrationController
     rescue EsriCrawler::ServerError => error
       return display_external_error(error, :new_connector)
     rescue StandardError => error
-      return handle_failed_connection(error)
+      return handle_failed_connection_and_redirect(error)
     end
 
     respond_to do |format|
@@ -52,30 +55,44 @@ class Administration::ConnectorController < AdministrationController
   end
 
   def update_connector
-    begin
-      @response = EsriServerConnector.update_server(params[:server_id], params['server'])
-      @server = EsriServerConnector.server(params[:server_id])
-      @tree = EsriServerConnector.tree(params[:server_id])
-    rescue EsriCrawler::ServerError => error
-      return display_external_error(error, :edit_connector)
-    rescue EsriCrawler::ResourceNotFound => error
-      flash[:error] = t('screens.admin.connector.flashes.server_not_found')
-      return redirect_to :connectors
-    rescue StandardError => error
-      return handle_failed_connection(error)
-    end
-    respond_to do |format|
-      format.html do
-        flash[:notice] = t('screens.admin.connector.flashes.updated')
-        return redirect_to :edit_connector
+    if esri_arcgis?
+      begin
+        @response = EsriServerConnector.update_server(params[:server_id], params[:server])
+      rescue EsriCrawler::ServerError => error
+        return display_external_error(error, :edit_connector)
+      rescue EsriCrawler::ResourceNotFound => error
+        flash[:error] = t('screens.admin.connector.flashes.server_not_found')
+        return redirect_to :connectors
+      rescue StandardError => error
+        return handle_failed_connection_and_redirect(error)
       end
-      format.data { render :json => { :success => true } }
+
+      flash[:notice] = t('screens.admin.connector.flashes.updated')
+      return redirect_to :connectors
+    end
+
+    if data_json?
+      begin
+        if params[:server][:sync_type] == 'catalog'
+          CatalogFederator::Client.new.sync_source(params[:server_id])
+        else
+          CatalogFederator::Client.new.update_source(params[:server_id], decorated_catalog)
+        end
+        flash[:notice] = t('screens.admin.connector.flashes.updated')
+        return redirect_to :connectors
+      rescue => error
+        flash[:warning] = t('screens.admin.connector.flashes.update_failed')
+        return redirect_to :connectors
+      end
+
+      flash[:notice] = t('screens.admin.connector.flashes.updated')
+      return redirect_to :connectors
     end
   end
 
   def delete_connector
     begin
-      if params['server_backend'] == 'catalog_federator'
+      if data_json?
         response = CatalogFederatorConnector.delete(params[:server_id])
       else
         response = EsriServerConnector.delete_server(params[:server_id])
@@ -93,13 +110,13 @@ class Administration::ConnectorController < AdministrationController
     rescue EsriCrawler::ServerError => error
       return display_external_error(error, :connectors)
     rescue StandardError => error
-      handle_failed_connection(error)
+      return handle_failed_connection_and_redirect(error)
     end
   end
 
   # If esri_crawler_http is unreachable.
   # Redirecting to /connectors will log an error if the service is still down.
-  def handle_failed_connection(error)
+  def handle_failed_connection_and_redirect(error)
     flash[:warning] = t('screens.admin.connector.service_unavailable')
     redirect_to :connectors
   end
@@ -124,7 +141,6 @@ class Administration::ConnectorController < AdministrationController
       offset = (page_idx - 1) * page_size
 
       begin
-        @server = EsriServerConnector.server(params[:server_id])
         layer_resp = EsriServerConnector.all_layers(params[:server_id], offset, page_size)
         @layers = layer_resp['items']
         count = layer_resp['count']
@@ -134,10 +150,10 @@ class Administration::ConnectorController < AdministrationController
       rescue EsriCrawler::ServerError => error
         return display_external_error(error, :connectors)
       rescue StandardError => error
-        handle_failed_connection(error)
+        return handle_failed_connection_and_redirect(error)
       end
 
-      @pager_elements = Pager::paginate(count, page_size, page_idx, { :all_threshold => all_threshold, :params => {} })
+      @pager_elements = Pager::paginate(count, page_size, page_idx, :all_threshold => all_threshold, :params => {})
     else
       redirect_to :edit_connectors
     end
@@ -223,5 +239,16 @@ class Administration::ConnectorController < AdministrationController
       FeatureFlags.derive(nil, request).enable_catalog_federator_connector : @enable_catalog_federator_connector
   end
   helper_method :enable_catalog_federator_connector?
+
+  def decorated_catalog
+    user_selections = params[:server][:assets].map(&:to_i)
+    selected_assets = @datasets.values_at(*user_selections)
+    added_selections = selected_assets.pluck('externalId')
+    removed_selections = (@datasets - selected_assets).pluck('externalId')
+    {
+      'addedSelections': added_selections,
+      'removedSelections': removed_selections
+    }
+  end
 
 end

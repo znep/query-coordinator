@@ -5,13 +5,19 @@
 </div>
 
 <div class="catalog-federator-list">
-  <%- @datasets.sort_by { |item| item['name'] }.each_with_index do |item, index| -%>
+  <%- @datasets.sort_by { |dataset| dataset['name'] }.each_with_index do |dataset, index| -%>
     <div class="item search-item">
       <div class="edit-item">
-        <%= check_box_tag(index, index, false, :class => 'is-disabled', :disabled => 'disabled') %>
+        <%= check_box_tag(
+          'server[assets][]',
+          index,
+          dataset['selected'],
+          :class => ['is-disabled', dataset['importable'] ? 'importable' : 'unimportable'],
+          :disabled => 'disabled'
+        ) %>
         <span class="asset-name">
-          <label for="<%= index %>" title="<%= item['externalId'] %>">
-            <%= truncate(item['name'], length: 120) %>
+          <label for="<%= index %>" title="<%= dataset['externalId'] %>">
+            <%= truncate(dataset['name'], length: 120) %>
           </label>
         </span>
       </div>

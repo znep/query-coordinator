@@ -1,38 +1,45 @@
 module CatalogFederator
+
   class AbstractClient
+
     include HTTParty
     include Socrata::RequestIdHelper
     include Socrata::CookieHelper
 
     def get_sources
       route = '/v1/source'
-      response = self.class.get(route, headers: headers)
-      handle_response(response, route)
+      handle_response(self.class.get(route, headers: headers), route)
     end
 
     def post_source(source)
       route = '/v1/source'
-      response = self.class.post(route, headers: headers, body: source.to_json)
-      handle_response(response, route)
+      handle_response(self.class.post(route, headers: headers, body: source.to_json), route)
     end
 
     def get_datasets(source_id, concise = true)
-      endpoint = "/v1/source/#{source_id}/preprocess?concise=#{concise}"
-      response = self.class.get(endpoint, headers: headers)
-      raise_error(endpoint, response) unless response.code == 200
-      response.parsed_response['datasets']
+      route = "/v1/source/#{source_id}/preprocess?concise=#{concise}"
+      handle_response(self.class.get(route, headers: headers), route, 'datasets')
     end
 
     def disable_source(source_id)
       route = "/v1/source/#{source_id}/disable"
-      response = self.class.delete(route, headers: headers)
-      handle_response(response, route)
+      handle_response(self.class.delete(route, headers: headers), route)
     end
 
     def delete_source(source_id)
       route = "/v1/source/#{source_id}"
-      response = self.class.delete(route, headers: headers)
-      handle_response(response, route)
+      handle_response(self.class.delete(route, headers: headers), route)
+    end
+
+    def update_source(source_id, source)
+      Rails.logger.debug("source.to_json = #{source.to_json}")
+      route = "/v1/source/#{source_id}/make-it-so"
+      handle_response(self.class.patch(route, headers: headers, body: source.to_json), route)
+    end
+
+    def sync_source(source_id)
+      route = "/v1/source/#{source_id}/sync"
+      handle_response(self.class.put(route, headers: headers), route)
     end
 
     private
@@ -53,10 +60,11 @@ module CatalogFederator
       raise StandardError, message
     end
 
-    def handle_response(response, path)
+    def handle_response(response, path, key = nil)
       raise_error(response, path) unless response.code == 200
-      response.parsed_response
+      key ? response.parsed_response[key] : response.parsed_response
     end
+
   end
 
   class Client < AbstractClient
@@ -64,4 +72,5 @@ module CatalogFederator
       self.class.base_uri(Addressable::URI.parse(APP_CONFIG.catalog_federator_url).to_s)
     end
   end
+
 end

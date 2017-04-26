@@ -92,6 +92,7 @@
           </div> <%# end flex left section %>
           <div class="line clearfix flexbox-right-section">
             <div class="flexbox-upper-right">
+              <%= hidden_field_tag('type', esri_arcgis? ? 'esri_arcgis' : 'data_json') %>
               <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button"/>
             </div>
           </div>
@@ -103,8 +104,8 @@
           <input type="text" title="<%= t('screens.admin.connector.search') %>" class="textPrompt searchBox prompt" />
         </div>
 
-        <%= render 'esri_tree' if @tree.present? %>
-        <%= render 'catalog_federator_list' if @datasets.present? %>
+        <%= render 'esri_tree' if esri_arcgis? %>
+        <%= render 'catalog_federator_list' if data_json? %>
       </fieldset>
     </form>
   </div>

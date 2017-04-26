@@ -147,6 +147,23 @@ describe('Export Menu', function() {
         expect(context.element.scope().csvDownloadURL).to.equal('https://socrata.com');
         expect(context.element.find('a').get(0).href).to.equal('https://socrata.com/');
       });
+
+      it('uses a magic flag when the data lens is based on a derived view', function() {
+        stubRowCounts(50000, 30000);
+
+        context = createElement(null, {isFromDerivedView: true});
+
+        var page = context.element.scope().page;
+        page.set('cards', [Mockumentary.createCard(page, 'something')]);
+        page.getCurrentValue('cards')[0].set('activeFilters', [new Filter.IsNullFilter(true)]);
+
+        // keeping the filter setup because this was only triggered when rows were filtered
+        context.element.scope().isFilteredCSVExport = true;
+        context.element.scope().$apply();
+
+        var regex = /read_from_nbe=true/i;
+        expect(context.element.find('a').get(0).href).to.match(regex);
+      });
     });
 
     describe('the Polaroid button', function() {

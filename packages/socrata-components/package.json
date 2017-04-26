@@ -17,7 +17,7 @@
     "components"
   ],
   "author": "Socrata, Inc.",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/socrata/styleguide/issues"
   },
@@ -29,9 +29,10 @@
     "jquery": "2.2.4",
     "lodash": "4.14.2",
     "moment": "2.14.1",
-    "react": "15.3.2",
+    "react": "15.4.2",
+    "react-addons-css-transition-group": "15.4.2",
     "react-datepicker": "0.39.0",
-    "react-dom": "15.3.2",
+    "react-dom": "15.4.2",
     "react-input-range": "0.9.2",
     "socrata-utils": "3.2.0",
     "tether": "1.0.2",

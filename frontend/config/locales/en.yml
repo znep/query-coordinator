@@ -2182,7 +2182,7 @@ en:
     - Fri
     - Sat
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mar
@@ -2210,7 +2210,7 @@ en:
       short: "%d %b %Y"
       short_with_time: "%Y/%m/%d %I:%M%p"
     month_names:
-    - 
+    -
     - January
     - February
     - March
@@ -2843,6 +2843,7 @@ en:
           deleted: Your connector has been marked for deletion.
           server_not_found: We could not find that server-- it may have been recently deleted.
           updated: Your settings have been saved. Now syncing connected assets.
+          update_failed: The update failed. Please try again or contact support.
         ignore: Ignored
         ignored: Ignored
         ignored_option: Don't Connect

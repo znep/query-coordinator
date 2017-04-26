@@ -81,7 +81,7 @@ module.exports = function DistributionChartController(
     _.identity
   ).withLatestFrom(
     dataset$,
-    function(fieldName, dataset, aggregation) {
+    function(fieldName, dataset, aggregation) { // eslint-disable-line no-unused-vars
 
       /** To decide if we should render as a column chart, make a request for (n + 1) unique
        * elements, then ensure that there are n or less elements and that they are all integers,

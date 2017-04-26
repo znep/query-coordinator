@@ -247,10 +247,13 @@ export class Manager extends React.Component {
         (<div><textarea {...descriptionProps} />{markdownSupported}{markdownHelp}</div>) :
         (<input {...descriptionProps} />);
 
+    const assetSelectorTitle = formatWithFilter('manager.asset_selector.header_title_with_filter',
+      'common.asset_selector.header_title');
+
     return (
       <div className="clp-manager">
         <h1 className="header">
-          {_.get(I18n, 'manager.feature_content')}
+          <span>{formatWithFilter('manager.feature_content', 'manager.feature_content_no_filter')}</span>
           <HelpFlyout right text={_.get(I18n, 'activation.whats_this')} />
         </h1>
         {errorMessageDiv}
@@ -272,12 +275,12 @@ export class Manager extends React.Component {
             {description}
 
             <ManagerSectionHeader className="featured-content-header">
-              {formatWithFilter('manager.featured_content.label', 'manager.featured_content.label_no_filter')}
+              {_.get(I18n, 'manager.featured_content.label_no_filter')}
             </ManagerSectionHeader>
             <p className="small explanation">
               {_.get(I18n, 'manager.featured_content.explanation')}
             </p>
-            <FeaturedContentManager />
+            <FeaturedContentManager assetSelectorTitle={assetSelectorTitle} />
           </form>
         </div>
 

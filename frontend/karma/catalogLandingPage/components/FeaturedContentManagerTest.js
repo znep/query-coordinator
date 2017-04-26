@@ -7,6 +7,7 @@ import _ from 'lodash';
 describe('components/FeaturedContentManager', () => {
   const getProps = (props = {}) => {
     return {
+      assetSelectorTitle: 'Select Featured Content',
       catalogQuery: {
         category: 'Fun'
       },

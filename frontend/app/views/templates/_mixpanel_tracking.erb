@@ -1,6 +1,5 @@
-<%= javascript_include_tag("util/mixpanel-analytics.js?#{asset_revision_key}"); %>
-
 <% if mixpanel_tracking_enabled? %>
+  <%= javascript_include_tag("util/mixpanel-analytics.js?#{asset_revision_key}"); %>
 
   <!-- start Mixpanel - Measuring UX things -->
   <script type="text/javascript">//<![CDATA[

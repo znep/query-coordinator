@@ -6,6 +6,8 @@ import * as ReactRedux from 'react-redux';
 import * as Middlewares from './middlewares';
 import rootReducer from './reducers';
 
+import Airbrake from '../common/airbrake';
+
 import App from './containers/App/App';
 
 let middlewares = [
@@ -21,6 +23,8 @@ if (!window.mixpanelConfig.disabled) {
 
 if (window.serverConfig.environment === 'development') {
   middlewares.push(Middlewares.createLogger());
+} else {
+  Airbrake.init();
 }
 
 let store = Redux.createStore(rootReducer, Redux.compose(

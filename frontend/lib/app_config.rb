@@ -67,6 +67,8 @@ class AppConfig < Hashie::Dash
 
   # Third-party analytics and errors
   property :airbrake_api_key
+  property :admin_goals_page_airbrake_api_key
+  property :admin_goals_page_airbrake_project_id
   property :catalog_landing_page_airbrake_api_key
   property :catalog_landing_page_airbrake_project_id
   property :dataset_landing_page_airbrake_api_key

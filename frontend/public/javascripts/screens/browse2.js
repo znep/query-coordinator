@@ -141,7 +141,7 @@ $(function() {
 
   function toggleBrowse2FacetDisplay(event, element) {
     element = element || this;
-    var $sectionContainer = $(element).parent('.browse2-facet-section');
+    var $sectionContainer = $(element).closest('.browse2-facet-section');
     var currentDisplay = $sectionContainer.attr('data-facet-display');
 
     if (currentDisplay === 'show') {
@@ -156,10 +156,7 @@ $(function() {
   function toggleBrowse2FacetChildOptionDropdown(event) {
     event.preventDefault();
     event.stopPropagation();
-    var childOptionsAlreadyVisible = $(this).closest('li').find('.browse2-facet-section-child-options').is(':visible');
-    $(this).closest('li').find('.browse2-facet-section-child-options').slideToggle('fast');
-    this.title = childOptionsAlreadyVisible ?
-      $.t('controls.browse.browse2.facets.expand.title') : $.t('controls.browse.browse2.facets.contract.title');
+    $(event.target).closest('li').find('.browse2-facet-section-child-options').slideToggle('fast');
   }
 
   function toggleBrowse2MobileFacetsSlideout(event) {

@@ -58,7 +58,7 @@ const doBrowse = (newOpts) => {
 };
 
 const toggleBrowse2FacetDisplay = (event, target) => {
-  const $sectionContainer = $(target).parent('.browse2-facet-section');
+  const $sectionContainer = $(target).closest('.browse2-facet-section');
   const currentDisplay = $sectionContainer.attr('data-facet-display');
 
   if (currentDisplay === 'show') {
@@ -73,12 +73,7 @@ const toggleBrowse2FacetDisplay = (event, target) => {
 const toggleBrowse2FacetChildOptionDropdown = (event) => {
   event.preventDefault();
   event.stopPropagation();
-  const childOptionsAlreadyVisible = $(event.target).closest('li').
-    find('.browse2-facet-section-child-options').is(':visible');
   $(event.target).closest('li').find('.browse2-facet-section-child-options').slideToggle('fast');
-  event.target.title = childOptionsAlreadyVisible ?
-    $.t('controls.browse.browse2.facets.expand.title') :
-    $.t('controls.browse.browse2.facets.contract.title');
 };
 
 // Mobile menu

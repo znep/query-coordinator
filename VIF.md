@@ -211,6 +211,27 @@ Required |Optional
 
 *NOTE: Zoom levels decrease the size of the visible geographic area as they increase, so a zoom level of 1 is 'zoomed all the way out' and a zoom level of 18 is 'zoomed all the way in'.*
 
+##### `mapOptions`
+`mapOptions` is a set of map-specific configuration options that are passed directly to Leaflet on map initialization. Its type is `object`. This object theoretically supports any of the [properties supported by Leaflet](http://leafletjs.com/reference.html#map-options).
+
+The following example would create a map with the Leaflet option `zoomAnimation` set to true.
+
+```
+{
+  configuration: {
+  ...
+  mapOptions: {
+    zoomAnimation: true
+  }
+}
+```
+
+Required |Optional
+:-------:|:----------------------:
+|    -    |Feature Map, Region Map|
+
+*NOTE: In practice, we generally avoid using this property*
+
 ##### `maxRowInspectorDensity`
 `maxRowInspectorDensity` controls the maximum number of individual points within a selection radius for which the row inspector will be allowed to launch. Its type is `<number>`. If there are more than the specified number of points in a selection radius, a message will be shown to the user communicating that in order to launch the row inspector they must zoom in or apply filters to reduce the number of points within the selection radius.
 
@@ -409,7 +430,7 @@ Additionally, if `type` is `'socrata.soql'`, the following properties are option
 
 Required |Optional
 :-------:|:---------------------------:
-    -    |Bar Chart, Column Chart, Histogram, Pie Chart, Timeline Chart
+|    -   |Bar Chart, Column Chart, Histogram, Pie Chart, Timeline Chart|
 
 If `type` is `'socrata.sample'`, the following properties are also required:
 

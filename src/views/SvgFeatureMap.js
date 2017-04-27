@@ -129,9 +129,11 @@ function SvgFeatureMap(element, vif, options) {
       // Attach events on first render only
       attachEvents();
 
+      // updating center and zoom must happen before we render the feature layer, or we will end up
+      // requesting (and rendering) the points for the previous zoom level.
+      updateCenterAndZoom(newVif);
       updateBaseLayer(newVif);
       updateFeatureLayer(newVif, vectorTileGetter);
-      updateCenterAndZoom(newVif);
 
       if (extent) {
         fitBounds(buildBoundsFromExtent(extent));
@@ -139,9 +141,11 @@ function SvgFeatureMap(element, vif, options) {
     } else if (newVif && !_.isEqual(newVif, lastRenderedVif)) {
       this.updateVif(newVif);
 
+      // updating center and zoom must happen before we render the feature layer, or we will end up
+      // requesting (and rendering) the points for the previous zoom level.
+      updateCenterAndZoom(newVif);
       updateBaseLayer(newVif);
       updateFeatureLayer(newVif, vectorTileGetter);
-      updateCenterAndZoom(newVif);
     } else {
       // If nothing to render again call completion asynchronously
       _.defer(handleVectorTileRenderComplete);

@@ -58,7 +58,22 @@ class GoalTableRow extends React.Component {
     const isGoalEnded = endDate && moment(endDate).isBefore();
     const goalStatusTranslationKey = isGoalEnded ? 'end_progress' : 'progress';
     const goalStatus = goalStatusTranslation(translations, ['measure', goalStatusTranslationKey, goal.get('status')]);
-    const goalVisibility = goal.get('is_public') ? 'status_public' : 'status_private';
+
+    const isPublic = goal.get('is_public');
+    // N.B: new Date(null) returns the epoch.
+    const draftTime = new Date(goal.getIn([ 'narrative', 'draft', 'created_at' ]));
+    const publishedTime = new Date(goal.getIn([ 'narrative', 'published', 'created_at' ]));
+
+    // True if the narrative has been edited since it was published.
+    // False otherwise.
+    //
+    // These scenarios are _not_ treated as unpublished drafts:
+    // * Domain is still using classic editor.
+    // * Particular goal was never loaded in Storyteller.
+    const hasUnpublishedDraft = draftTime.getTime() > publishedTime.getTime();
+
+    const publicStatus = hasUnpublishedDraft ? 'status_public_with_draft' : 'status_public';
+    const goalVisibility = isPublic ? publicStatus : 'status_private';
 
     return (
       <tr ref='tr' onClick={ this.handleClick } className={ rowClass } onDoubleClick={ this.handleEditClick }>
@@ -81,7 +96,7 @@ class GoalTableRow extends React.Component {
         </td>
         <td className="single-line">{ goal.get('owner_name') }</td>
         <td className="single-line">{ moment(goal.get('updated_at') || goal.get('created_at')).format('ll') }</td>
-        <td className="single-line">{ translations.getIn(['admin', 'goal_values', goalVisibility]) }</td>
+        <td className="single-line visibility">{ translations.getIn(['admin', 'goal_values', goalVisibility]) }</td>
         <td className="single-line">{ goalStatus }</td>
         <td className="dashboard-link">
           <a target="_blank" href={ dashboardUrl } className="external-link" onClick={ this.handleLinkClick }>

@@ -65,6 +65,13 @@ class OpenPerformance::Odysseus
       )
   end
 
+  def self.list_goals(format = 'json')
+    ::RequestStore.store['goals'] ||=
+      odysseus_http_request(
+        path: "/api/stat/v1/goals.#{format}"
+      )
+  end
+
   private
 
   def self.odysseus_http_request(options)

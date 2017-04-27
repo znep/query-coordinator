@@ -15,7 +15,7 @@ function checkXhrStatus(response) {
 }
 
 function request(apiVersion, method, path, otherOptions) {
-  const url = `/stat/api/${apiVersion}/${path}`;
+  const url = `/api/stat/${apiVersion}/${path}`;
   const options = _.merge(_.clone(fetchOptions), {
     method,
     headers: {

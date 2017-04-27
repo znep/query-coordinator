@@ -18,7 +18,11 @@ export function update(goalId, goalVersion, data) {
 }
 
 export function getAll() {
-  return api.get('v1', `${goalsPrefix}.json`, {});
+  return api.get('v3', `${goalsPrefix}.json`, {}).catch(
+    (error) => {
+      // Maybe Storyteller is down or hasn't deployed the new API yet. Fall back to old API.
+      return api.get('v1', `${goalsPrefix}.json`, {});
+    });
 }
 
 export function getById(goalId) {

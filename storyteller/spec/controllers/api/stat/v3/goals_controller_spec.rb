@@ -1,0 +1,180 @@
+require 'rails_helper'
+
+RSpec.describe Api::Stat::V3::GoalsController, type: :controller do
+  before do
+    request.env['HTTPS'] = 'on' # otherwise we get redirected to HTTPS for all requests.
+  end
+
+  let(:action) { :nothing }
+  let(:goal_uid) { 'open-perf' } # This story exists in test seeds.
+  let(:get_request) { get action, uid: goal_uid }
+  let(:is_goal_accessible) { true }
+  let(:is_goal_unauthorized) { false }
+
+  before do
+    stub_current_domain
+    set_features(['govstat'])
+    stub_goal_accessibility(
+      goal_uid,
+      :accessible => is_goal_accessible,
+      :unauthorized => is_goal_unauthorized
+    )
+  end
+
+  describe '#index' do
+    let(:action) { :index }
+
+    shared_examples 'accessible endpoint' do
+      let(:odysseus_response) { instance_double(HttpResponse) }
+      let(:odysseus_ok) { true }
+      let(:odysseus_json) { [] }
+      before do
+        allow(OpenPerformance::Odysseus).to receive(:list_goals).and_return(odysseus_response)
+        allow(odysseus_response).to receive(:ok?).and_return(odysseus_ok)
+        allow(odysseus_response).to receive(:json).and_return(odysseus_json)
+        get_request
+        json_response = JSON.parse(response.body)
+      end
+
+      describe('ody is ok') do
+        json_response = nil
+        narrative = nil
+
+        before do
+          json_response = JSON.parse(response.body)
+          narrative = json_response.length > 0 ? json_response[0]['narrative'] : nil
+        end
+
+        it '200s' do
+          expect(response.status).to be(200)
+        end
+
+        describe 'no goals' do
+          it('returns an empty array') do
+            expect(json_response).to eq([])
+          end
+        end
+
+        describe 'goal with no revisions at all' do
+          let(:odysseus_json) {[
+            { 'id' => 'noth-ingg' }
+          ]}
+
+          it('set draft to nil') do
+            expect(narrative['draft']).to eq(nil)
+          end
+
+          it('set published to nil') do
+            expect(narrative['published']).to eq(nil)
+          end
+        end
+
+        describe 'goal with only a single draft' do
+          let(:odysseus_json) {[
+            { 'id' => 'open-perf' }
+          ]}
+
+          it('set draft to the draft details') do
+            expect(narrative['draft']).to have_key('created_at') # Value varies
+            expect(narrative['draft']).to include('created_by' => 'perf-lord')
+          end
+
+          it('set published to nil') do
+            expect(narrative['published']).to eq(nil)
+          end
+        end
+
+        describe 'goal with multiple drafts' do
+          let(:odysseus_json) {[
+            { 'id' => 'many-draf' }
+          ]}
+
+          it('set draft to the latest draft details') do
+            expect(narrative['draft']).to include(
+              'created_by' => 'time-trvl',
+              'created_at' => '1988-10-01T07:00:00.000Z'
+            )
+          end
+
+          it('set published to nil') do
+            expect(narrative['published']).to eq(nil)
+          end
+        end
+
+        describe 'goal with a single published revision' do
+          let(:odysseus_json) {[
+            { 'id' => 'test-test' }
+          ]}
+
+          it('set draft to the draft details') do
+            expect(narrative['draft']).to have_key('created_at') # Value varies
+            expect(narrative['draft']).to include('created_by' => 'good-doer')
+          end
+
+          it('set published to the revision details') do
+            expect(narrative['published']).to have_key('created_at') # Value varies
+            expect(narrative['published']).to include('created_by' => 'good-doer')
+          end
+        end
+
+        describe 'goal with multiple published revisions' do
+          let(:odysseus_json) {[
+            { 'id' => 'many-publ' }
+          ]}
+
+          it('set published to the revision details') do
+            expect(narrative['published']).to include(
+              'created_by' => 'neil-amst',
+              'created_at' => '2000-02-01T08:00:00.000Z'
+            )
+          end
+        end
+      end
+
+      describe('ody fails') do
+        let(:odysseus_ok) { false }
+
+        it '500s' do
+          expect(response.status).to be(500)
+        end
+      end
+    end
+
+    shared_examples 'inaccessible endpoint' do
+      it '403s' do
+        get_request
+        expect(response.status).to be(403)
+      end
+    end
+
+    describe 'anon' do
+      before do
+        stub_invalid_session
+      end
+
+      it_behaves_like 'inaccessible endpoint'
+    end
+
+    describe 'logged in as' do
+      before do
+        stub_valid_session
+        stub_current_user_story_authorization(auth)
+      end
+
+      describe 'unpriviledged' do
+        let(:auth) { mock_user_authorization_unprivileged }
+        it_behaves_like 'inaccessible endpoint'
+      end
+
+      describe 'with edit_goals right' do
+        let(:auth) { mock_user_authorization_with_domain_rights(%w(edit_goals)) }
+        it_behaves_like 'accessible endpoint'
+      end
+
+      describe 'without edit_goals right' do
+        let(:auth) { mock_user_authorization_with_domain_rights(%w(something_else)) }
+        it_behaves_like 'inaccessible endpoint'
+      end
+    end
+  end
+end

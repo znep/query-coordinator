@@ -102,6 +102,8 @@ class ApplicationController < ActionController::Base
         require_sufficient_rights_for_api_stat_goals_published
       when 'api/stat/v1/goals/drafts'
         require_sufficient_rights_for_api_stat_goals_drafts
+      when 'api/stat/v3/goals'
+        require_sufficient_rights_for_api_stat_goals
       when 'api/v1/documents'
         require_sufficient_rights_for_api_documents
       when 'api/v1/drafts'
@@ -352,6 +354,10 @@ class ApplicationController < ActionController::Base
       else
         raise_undefined_authorization_handler_error
     end
+  end
+
+  def require_sufficient_rights_for_api_stat_goals
+    render nothing: true, status: 403 unless can_edit_goals?
   end
 
   def require_sufficient_rights_for_consul_checks

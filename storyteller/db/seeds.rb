@@ -322,3 +322,51 @@ DraftStory.create(
   created_by: 'auni-corn',
   theme: 'serif'
 )
+
+DraftStory.create(
+  created_at: Time.parse('1-10-1988'),
+  uid: 'many-draf',
+  block_ids: [unqualified_goal_block.id],
+  created_by: 'time-trvl',
+  theme: 'serif'
+)
+
+DraftStory.create(
+  created_at: Time.parse('1-10-1988') - 1.day,
+  uid: 'many-draf',
+  block_ids: [unqualified_goal_block.id],
+  created_by: 'time-trvl',
+  theme: 'serif'
+)
+
+DraftStory.create(
+  created_at: Time.parse('1-10-1988') - 1.week,
+  uid: 'many-draf',
+  block_ids: [unqualified_goal_block.id],
+  created_by: 'time-trvl',
+  theme: 'serif'
+)
+
+PublishedStory.create(
+  created_at: Time.parse('1-2-2000'),
+  uid: 'many-publ',
+  block_ids: [unqualified_goal_block.id],
+  created_by: 'neil-amst',
+  theme: 'serif'
+)
+
+PublishedStory.create(
+  created_at: Time.parse('1-2-2000') - 1.day,
+  uid: 'many-publ',
+  block_ids: [unqualified_goal_block.id],
+  created_by: 'bobb-ytbl',
+  theme: 'serif'
+)
+
+PublishedStory.create(
+  created_at: Time.parse('1-2-2000') - 1.week,
+  uid: 'many-publ',
+  block_ids: [unqualified_goal_block.id],
+  created_by: 'some-prsn',
+  theme: 'serif'
+)

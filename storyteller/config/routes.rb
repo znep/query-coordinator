@@ -76,6 +76,9 @@ Rails.application.routes.draw do
 
     # for Goals
     namespace :stat do
+      namespace :v3, defaults: { format: 'json' } do
+        get 'goals' => 'goals#index'
+      end
       namespace :v1, defaults: { format: 'json' } do
         namespace :goals do
           get ':uid/narrative/published/latest' => 'published#latest'

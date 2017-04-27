@@ -5,7 +5,7 @@
 </div>
 
 <div class="catalog-federator-list">
-  <%- @datasets.sort_by { |dataset| dataset['name'] }.each_with_index do |dataset, index| -%>
+  <%- @datasets.each_with_index do |dataset, index| -%>
     <div class="item search-item">
       <div class="edit-item">
         <%= check_box_tag(
@@ -13,10 +13,11 @@
           index,
           dataset['selected'],
           :class => ['is-disabled', dataset['importable'] ? 'importable' : 'unimportable'],
+          :id => "server_assets_#{index}",
           :disabled => 'disabled'
         ) %>
         <span class="asset-name">
-          <label for="<%= index %>" title="<%= dataset['externalId'] %>">
+          <label for="<%= "server_assets_#{index}" %>" title="<%= dataset['externalId'] %>">
             <%= truncate(dataset['name'], length: 120) %>
           </label>
         </span>

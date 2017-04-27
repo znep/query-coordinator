@@ -60,14 +60,6 @@ class CatalogFederator
 
     private
 
-    def json_for_source_update(source, user_id)
-      {
-        'displayName' => source.display_name,
-        'syncUserId' => user_id,
-        'syncSelectionPolicty' => sync_policy
-      }
-    end
-
     def route(id = nil, action = nil)
       "/v1/source#{"/#{id}" if id}#{"/#{action}" if action}"
     end

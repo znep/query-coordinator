@@ -18,19 +18,18 @@ export default function componentSocrataVisualizationFeatureMap(props) {
   });
 
   const $this = $(this);
-  const { componentData } = props;
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  StorytellerUtils.assertHasProperty(props, 'componentData.type');
   StorytellerUtils.assert(
-    componentData.type === 'socrata.visualization.featureMap',
-    `componentSocrataVisualizationFeatureMap: Unsupported component type ${componentData.type}`
+    props.componentData.type === 'socrata.visualization.featureMap',
+    `componentSocrataVisualizationFeatureMap: Unsupported component type ${props.componentData.type}`
   );
 
   if ($this.children().length === 0) {
     _renderTemplate($this, props);
   }
 
-  _updateVisualization($this, componentData);
+  _updateVisualization($this, props);
   $this.componentBase(props);
 
   return $this;
@@ -65,9 +64,10 @@ function _renderTemplate($element, props) {
   $element.append($componentContent);
 }
 
-function _updateVisualization($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'value.vif');
+function _updateVisualization($element, props) {
+  StorytellerUtils.assertHasProperty(props, 'componentData.value.vif');
 
+  const { componentData, editMode } = props;
   const renderedVif = $element.attr('data-rendered-vif') || '{}';
   const $componentContent = $element.find('.component-content');
   const vif = componentData.value.vif;
@@ -118,7 +118,7 @@ function _updateVisualization($element, componentData) {
 
       // Use triggerHandler since we don't want this to bubble
       $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-      $componentContent.socrataSvgFeatureMap(vif);
+      $componentContent.socrataSvgFeatureMap(vif, { displayFilterBar: !editMode });
     }
   }
 }

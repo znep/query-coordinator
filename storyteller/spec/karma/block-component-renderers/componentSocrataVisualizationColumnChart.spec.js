@@ -79,7 +79,8 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
     it('should call into socrataColumnChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataColumnChartStub,
-        validComponentData.value.vif
+        validComponentData.value.vif,
+        sinon.match.any
       );
     });
   });

@@ -78,7 +78,8 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
     it('should call into socrataSvgFeatureMap with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataSvgFeatureMapStub,
-        validComponentData.value.vif
+        validComponentData.value.vif,
+        sinon.match.any
       );
     });
   });

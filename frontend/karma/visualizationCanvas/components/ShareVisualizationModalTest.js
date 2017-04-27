@@ -81,7 +81,7 @@ describe('ShareVisualizationModal', () => {
     });
 
     it('chooses the given size', function() {
-      assert.equal($element.find('.dropdown-placeholder').text(), 'Medium (400x300)');
+      assert.match($element.find('.dropdown-placeholder').text(), /Medium\s\(400x300\)/);
     });
   });
 });

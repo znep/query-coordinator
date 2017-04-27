@@ -19,20 +19,19 @@ export default function componentSocrataVisualizationRegionMap(props) {
   });
 
   const $this = $(this);
-  const { componentData } = props;
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  StorytellerUtils.assertHasProperty(props, 'componentData.type');
   StorytellerUtils.assert(
-    componentData.type === 'socrata.visualization.regionMap' ||
-    componentData.type === 'socrata.visualization.choroplethMap',
-    `componentSocrataVisualizationRegionMap: Unsupported component type ${componentData.type}`
+    props.componentData.type === 'socrata.visualization.regionMap' ||
+    props.componentData.type === 'socrata.visualization.choroplethMap',
+    `componentSocrataVisualizationRegionMap: Unsupported component type ${props.componentData.type}`
   );
 
   if ($this.children().length === 0) {
     _renderTemplate($this, props);
   }
 
-  _updateVisualization($this, componentData);
+  _updateVisualization($this, props);
   $this.componentBase(props);
 
   return $this;
@@ -67,9 +66,10 @@ function _renderTemplate($element, props) {
   $element.append($componentContent);
 }
 
-function _updateVisualization($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'value.vif');
+function _updateVisualization($element, props) {
+  StorytellerUtils.assertHasProperty(props, 'componentData.value.vif');
 
+  const { componentData, editMode } = props;
   const $componentContent = $element.find('.component-content');
   const renderedVif = $element.attr('data-rendered-vif') || '{}';
   const vif = componentData.value.vif;
@@ -105,7 +105,7 @@ function _updateVisualization($element, componentData) {
     } else {
       // Use triggerHandler since we don't want this to bubble
       $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-      $componentContent.socrataSvgRegionMap(vif);
+      $componentContent.socrataSvgRegionMap(vif, { displayFilterBar: !editMode });
     }
   }
 }

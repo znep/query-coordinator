@@ -17,28 +17,28 @@ export default function componentSocrataVisualizationTimelineChart(props) {
   });
 
   const $this = $(this);
-  const { componentData } = props;
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  StorytellerUtils.assertHasProperty(props, 'componentData.type');
   StorytellerUtils.assert(
-    componentData.type === 'socrata.visualization.timelineChart',
-    `componentSocrataVisualizationTimelineChart: Unsupported component type ${componentData.type}`
+    props.componentData.type === 'socrata.visualization.timelineChart',
+    `componentSocrataVisualizationTimelineChart: Unsupported component type ${props.componentData.type}`
   );
 
   if ($this.children().length === 0) {
-    renderTemplate($this, componentData);
+    renderTemplate($this, props);
   }
 
-  updateVisualization($this, componentData);
+  updateVisualization($this, props);
   $this.componentBase(props);
 
   return $this;
 }
 
-function renderTemplate($element, componentData) {
-  var className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
-  var $componentContent = $('<div>', { class: 'component-content' });
-  var flyoutEvent = 'SOCRATA_VISUALIZATION_FLYOUT';
+function renderTemplate($element, props) {
+  const { componentData } = props;
+  const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+  const $componentContent = $('<div>', { class: 'component-content' });
+  const flyoutEvent = 'SOCRATA_VISUALIZATION_FLYOUT';
 
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
@@ -58,9 +58,10 @@ function renderTemplate($element, componentData) {
   $element.append($componentContent);
 }
 
-function updateVisualization($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'value.vif');
+function updateVisualization($element, props) {
+  StorytellerUtils.assertHasProperty(props, 'componentData.value.vif');
 
+  const { componentData, editMode } = props;
   const $componentContent = $element.find('.component-content');
   const renderedVif = $element.attr('data-rendered-vif') || '{}';
   const vif = componentData.value.vif;
@@ -86,6 +87,6 @@ function updateVisualization($element, componentData) {
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent.socrataSvgTimelineChart(vif);
+    $componentContent.socrataSvgTimelineChart(vif, { displayFilterBar: !editMode });
   }
 }

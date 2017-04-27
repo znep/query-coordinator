@@ -80,7 +80,8 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
     it('should call into socrataHistogram with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataHistogramStub,
-        validComponentData.value.vif
+        validComponentData.value.vif,
+        sinon.match.any
       );
     });
   });

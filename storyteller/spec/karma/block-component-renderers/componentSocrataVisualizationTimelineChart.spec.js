@@ -77,7 +77,8 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
     it('should call into socrataTimelineChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataTimelineChartStub,
-        validComponentData.value.vif
+        validComponentData.value.vif,
+        sinon.match.any
       );
     });
   });

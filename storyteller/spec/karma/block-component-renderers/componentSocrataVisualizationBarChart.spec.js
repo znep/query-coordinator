@@ -76,10 +76,11 @@ describe('componentSocrataVisualizationBarChart jQuery plugin', function() {
       assert.instanceOf($component, $);
     });
 
-    it('should call into socrataColumnChart with the correct arguments', function() {
+    it('should call into socrataSvgBarChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataBarChartStub,
-        validComponentData.value.vif
+        validComponentData.value.vif,
+        sinon.match.any
       );
     });
   });

@@ -17,25 +17,25 @@ export default function componentSocrataVisualizationColumnChart(props) {
   });
 
   const $this = $(this);
-  const { componentData } = props;
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  StorytellerUtils.assertHasProperty(props, 'componentData.type');
   StorytellerUtils.assert(
-    componentData.type === 'socrata.visualization.columnChart',
-    `componentSocrataVisualizationColumnChart: Unsupported component type ${componentData.type}`
+    props.componentData.type === 'socrata.visualization.columnChart',
+    `componentSocrataVisualizationColumnChart: Unsupported component type ${props.componentData.type}`
   );
 
   if ($this.children().length === 0) {
-    _renderTemplate($this, componentData);
+    _renderTemplate($this, props);
   }
 
-  _updateVisualization($this, componentData);
+  _updateVisualization($this, props);
   $this.componentBase(props);
 
   return $this;
 }
 
-function _renderTemplate($element, componentData) {
+function _renderTemplate($element, props) {
+  const { componentData } = props;
   const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
   const $componentContent = $('<div>', { class: 'component-content' });
   const flyoutEvent = 'SOCRATA_VISUALIZATION_FLYOUT';
@@ -58,9 +58,10 @@ function _renderTemplate($element, componentData) {
   $element.append($componentContent);
 }
 
-function _updateVisualization($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'value.vif');
+function _updateVisualization($element, props) {
+  StorytellerUtils.assertHasProperty(props, 'componentData.value.vif');
 
+  const { componentData, editMode } = props;
   const $componentContent = $element.find('.component-content');
   const renderedVif = $element.attr('data-rendered-vif') || '{}';
   const vif = componentData.value.vif;
@@ -86,6 +87,6 @@ function _updateVisualization($element, componentData) {
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent.socrataSvgColumnChart(vif);
+    $componentContent.socrataSvgColumnChart(vif, { displayFilterBar: !editMode });
   }
 }

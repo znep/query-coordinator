@@ -72,7 +72,8 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
     it('should call into socrataSvgRegionMap with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataSvgRegionMapStub,
-        validComponentData.value.vif
+        validComponentData.value.vif,
+        sinon.match.any
       );
     });
   });
@@ -107,7 +108,8 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
       it('should call into socrataSvgRegionMap with the correct arguments', function() {
         sinon.assert.calledWithExactly(
           socrataSvgRegionMapStub,
-          validChoroplethComponentData.value.vif
+          validChoroplethComponentData.value.vif,
+          sinon.match.any
         );
       });
     });

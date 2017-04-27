@@ -16,10 +16,6 @@
     line-height: 1.25rem;
     font-size: 0.9rem;
 
-    @include desktop {
-      width: 64%;
-    }
-
     p {
       line-height: normal;
     }

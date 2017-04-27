@@ -77,7 +77,11 @@ class Stat::GoalsController < StoriesController
 
     copy_uid = odysseus_response.json['new_goal_id']
 
-    blocks = copy_attachments(story)
+    blocks = StoryJsonBlocks.from_story(
+      story,
+      current_user,
+      copy: true
+    ).blocks
 
     update_goal_embed(
       blocks,
@@ -86,15 +90,11 @@ class Stat::GoalsController < StoriesController
       copy_uid
     )
 
-    blocks = blocks.map do |block|
-      block.as_json.symbolize_keys
-    end
-
     story_draft_creator = StoryDraftCreator.new(
       user: current_user,
       uid: copy_uid,
       digest: FAKE_DIGEST,
-      blocks: blocks,
+      blocks: StoryJsonBlocks.blocks_to_json(blocks),
       theme: story.theme
     )
 

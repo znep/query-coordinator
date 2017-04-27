@@ -11,10 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160823201624) do
+ActiveRecord::Schema.define(version: 20170427170117) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "block_components_migrations", force: :cascade do |t|
+    t.integer  "block_id"
+    t.jsonb    "original_components"
+    t.jsonb    "new_components"
+    t.string   "migration_version"
+    t.datetime "migrated_on"
+    t.datetime "rolled_back_on"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  add_index "block_components_migrations", ["block_id"], name: "index_block_components_migrations_on_block_id", using: :btree
 
   create_table "blocks", force: :cascade do |t|
     t.string   "layout",                     null: false
@@ -102,4 +115,5 @@ ActiveRecord::Schema.define(version: 20160823201624) do
   add_index "published_stories", ["created_by"], name: "index_published_stories_on_created_by", using: :btree
   add_index "published_stories", ["uid"], name: "index_published_stories_on_uid", using: :btree
 
+  add_foreign_key "block_components_migrations", "blocks"
 end

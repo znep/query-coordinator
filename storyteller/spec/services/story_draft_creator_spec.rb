@@ -320,7 +320,7 @@ RSpec.describe StoryDraftCreator do
         it 'raises an exception and does not create a DraftStory object' do
           expect {
             @story = story_creator.create
-          }.to raise_error(StoryDraftCreator::InvalidNewBlocksError)
+          }.to raise_error(StoryJsonBlocks::InvalidNewBlocksError)
 
           expect(@story).to be_nil
 

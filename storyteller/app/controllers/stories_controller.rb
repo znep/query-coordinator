@@ -140,17 +140,19 @@ class StoriesController < ApplicationController
 
     copy_uid = view_copy['id']
 
-    blocks = copy_attachments(story)
-    blocks = blocks.map do |block|
-      block.as_json.symbolize_keys
-    end
+    json_blocks = StoryJsonBlocks.from_story(
+      story,
+      current_user,
+      copy: true
+    ).json_blocks
 
     story_draft_creator = StoryDraftCreator.new(
       user: current_user,
       uid: copy_uid,
       digest: FAKE_DIGEST,
-      blocks: blocks,
-      theme: story.theme
+      blocks: json_blocks,
+      theme: story.theme,
+      copy_blocks: true
     )
 
     @story = story_draft_creator.create
@@ -239,38 +241,6 @@ class StoriesController < ApplicationController
     @custom_theme_configs = theme_list.custom_theme_list.sort_by { |key| key["title"] }
     @default_themes = theme_list
     @custom_themes = theme_list.custom_themes
-  end
-
-  def copy_attachments(story)
-    story.blocks.map do |block|
-      components = block.components.clone.select do |component|
-        ['image', 'author', 'hero'].include?(component['type'])
-      end
-
-      components.each do |component|
-        value = component['type'] == 'author' ?
-          component['value']['image'] :
-          component['value']
-
-        document_id = value['documentId']
-        document = Document.find_by_id(document_id)
-
-        # old getty image blocks didn't have a documentId configured because they didn't have a document.
-        next if document.nil?
-
-        document_copy = document.dup
-        document_copy.status = 'unprocessed'
-        document_copy.save!
-
-        document_copy.copy_attachments_from(document)
-        document_copy.update_attribute(:status, 'processed')
-
-        value['documentId'] = document_copy.id
-        value['url'] = document_copy.canonical_url
-      end
-
-      block
-    end
   end
 
   # It looks like Rails is automatically setting 'X-Frame-Options: SAMEORIGIN'

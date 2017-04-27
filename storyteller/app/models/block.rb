@@ -15,6 +15,9 @@ class Block < ActiveRecord::Base
     '3-3-3-3'
   ]
 
+  # Component types that include images
+  IMAGE_COMPONENT_TYPES = %w( image author hero )
+
   validates :layout, presence: true, inclusion: { in: VALID_BLOCK_LAYOUTS }
   validates :components, presence: true
   validates :created_by, presence: true

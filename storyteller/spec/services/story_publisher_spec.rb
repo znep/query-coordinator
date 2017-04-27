@@ -1,8 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe StoryPublisher do
-
-  let(:draft_story) { FactoryGirl.create(:draft_story) }
+  # using let! here because we have a test below that checks that no blocks are
+  # created as part of the publish step. If the blocks are created as part of
+  # lazy-loading the story, it throws off the Block counts.
+  let!(:draft_story) { FactoryGirl.create(:draft_story_with_blocks) }
   let(:user) { mock_valid_user }
   let(:permissions_updater) { instance_double(CorePermissionsUpdater) }
   let(:params) do
@@ -53,6 +55,13 @@ RSpec.describe StoryPublisher do
       expect(subject.story.created_by).to eq(user['id'])
     end
 
+    it 'initializes with copied blocks' do
+      expect(StoryJsonBlocks).to receive(:from_story).
+        with(draft_story, user, copy: true)
+
+      StoryPublisher.new(user, permissions_updater, params)
+    end
+
     context 'when draft story does not exist' do
       let(:params) do
         {
@@ -71,7 +80,6 @@ RSpec.describe StoryPublisher do
   end
 
   describe '#publish' do
-
     before do
       allow(permissions_updater).to receive(:update_permissions).and_return(true)
     end
@@ -90,6 +98,15 @@ RSpec.describe StoryPublisher do
         subject.publish
       end
 
+      it 'saves blocks' do
+        expect { subject.publish }.to change { Block.count }.by(draft_story.block_ids.count)
+      end
+
+      it 'saves new blocks to story' do
+        subject.publish
+        expect(subject.story.block_ids).to_not eq(draft_story.block_ids)
+      end
+
       context 'when updating permissions raises' do
         before do
           allow(permissions_updater).to receive(:update_permissions).and_raise
@@ -103,6 +120,10 @@ RSpec.describe StoryPublisher do
 
         it 'does not create published story' do
           expect { subject.publish }.to_not change { PublishedStory.count }
+        end
+
+        it 'deletes previously created blocks' do
+          expect { subject.publish }.to_not change { Block.count }
         end
 
         it 'returns false' do
@@ -132,6 +153,31 @@ RSpec.describe StoryPublisher do
             expect(AirbrakeNotifier).to receive(:report_error)
             subject.publish
           end
+        end
+      end
+
+      context 'when saving blocks fails' do
+        before do
+          allow_any_instance_of(Block).to receive(:save).and_return(false)
+        end
+
+        it 'does not save the story' do
+          expect(subject.story).to_not receive(:save)
+          subject.publish
+        end
+
+        it 'returns false' do
+          expect(subject.publish).to eq(false)
+        end
+      end
+
+      context 'when saving story fails' do
+        before do
+          allow(subject.story).to receive(:save).and_return(false)
+        end
+
+        it 'deletes previously created blocks' do
+          expect { subject.publish }.to_not change { Block.count }
         end
       end
     end

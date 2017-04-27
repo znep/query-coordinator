@@ -11,7 +11,9 @@ module BlockOperations
     # Returns a list of urls for all images in all blocks of the story in order or appearance.
     def block_images(size = nil)
       @block_images ||= begin
+        # We don't want to include author blocks in this list
         image_compontent_types = %w( image hero )
+
         image_blocks = Block.for_story(self).with_component_type(*image_compontent_types)
         ordered_blocks = in_story_order(image_blocks).compact
 

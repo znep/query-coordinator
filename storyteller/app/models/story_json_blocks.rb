@@ -79,7 +79,7 @@ class StoryJsonBlocks
   def copy_attachments
     blocks.map do |block|
       components = block.components.clone.select do |component|
-        ['image', 'author', 'hero'].include?(component['type'])
+        Block::IMAGE_COMPONENT_TYPES.include?(component['type'])
       end
 
       components.each do |component|

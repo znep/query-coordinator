@@ -306,7 +306,9 @@ describe('actions/manageMetadata', () => {
       const { unmockFetch } = mockFetch(responses, ()=> {});
 
       const unmockPhx = mockPhx({
-        'output_schema:57': []
+        'output_schema:57': [],
+        'transform_progress:6105': [],
+        'transform_progress:6106': []
       }, ()=> {});
 
       const store = mockStore(initialState);
@@ -314,7 +316,7 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[3];
+        const action = store.getActions()[4];
 
         expect(action.type).to.eq(UPSERT_FROM_SERVER);
 
@@ -338,7 +340,9 @@ describe('actions/manageMetadata', () => {
       const { unmockFetch } = mockFetch(responses, () => {});
 
       const unmockPhx = mockPhx({
-        'output_schema:57': []
+        'output_schema:57': [],
+        'transform_progress:6105': [],
+        'transform_progress:6106': []
       }, () => {});
 
       const store = mockStore(initialState);
@@ -348,7 +352,7 @@ describe('actions/manageMetadata', () => {
       setTimeout(() => {
         const actions = store.getActions();
 
-        const batchedActions = actions[(actions.length - 1)].operations;
+        const batchedActions = actions[6].operations;
 
         expect(batchedActions.length).to.eq(4);
 

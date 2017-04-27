@@ -77,6 +77,7 @@ export default function dbReducer(db = emptyDB, action) {
         [action.tableName]: {
           ...db[action.tableName],
           [action.newRecord.id]: {
+            ...db[action.tableName][action.newRecord.id],
             ...action.newRecord,
             __status__: statusSavedOnServer
           }

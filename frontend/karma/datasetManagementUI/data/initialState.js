@@ -403,7 +403,8 @@ const initialState = {
     kind: '',
     visible: false
   },
-  notifications: []
+  notifications: [],
+  channels: {}
 }
 
 export default initialState;

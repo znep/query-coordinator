@@ -22,7 +22,7 @@ import { uploadNotification } from '../lib/notifications';
 import { push } from 'react-router-redux';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import { parseDate } from '../lib/parseDate';
-import { joinChannel } from '../lib/channels';
+import { joinChannel } from './channels';
 
 export function createUpload(file) {
   return (dispatch, getState) => {
@@ -209,29 +209,24 @@ export function insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outpu
 function createTableAndSubscribeToTransform(transform) {
   return (dispatch, getState) => {
     const db = getState().db;
-    const transformInDb = db.transforms[transform.id];
-    if (!transformInDb.row_fetch_started) {
-      dispatch(updateFromServer('transforms', {
-        id: transform.id,
-        row_fetch_started: true
-      }));
-      dispatch(createTable(`transform_${transform.id}`));
-      const channelName = `transform_progress:${transform.id}`;
-
-      joinChannel(channelName, {
-        max_ptr: (maxPtr) => {
-          dispatch(updateFromServer('transforms', {
-            id: transform.id,
-            contiguous_rows_processed: maxPtr.end_row_offset
-          }));
-        },
-        errors: (errorsMsg) => {
-          dispatch(updateFromServer('transforms', {
-            id: transform.id,
-            num_transform_errors: errorsMsg.count
-          }));
-        }
-      });
+    const channelName = `transform_progress:${transform.id}`;
+    dispatch(joinChannel(channelName, {
+      max_ptr: (maxPtr) => {
+        dispatch(updateFromServer('transforms', {
+          id: transform.id,
+          contiguous_rows_processed: maxPtr.end_row_offset
+        }));
+      },
+      errors: (errorsMsg) => {
+        dispatch(updateFromServer('transforms', {
+          id: transform.id,
+          num_transform_errors: errorsMsg.count
+        }));
+      }
+    }));
+    const tableName = `transform_${transform.id}`;
+    if (!db[tableName]) {
+      dispatch(createTable(tableName));
     }
   };
 }
@@ -250,13 +245,13 @@ function subscribeToOutputSchema(outputSchema) {
   return (dispatch) => {
     const channelName = `output_schema:${outputSchema.id}`;
 
-    joinChannel(channelName, {
+    dispatch(joinChannel(channelName, {
       update: (updatedOutputSchema) => {
         dispatch(updateFromServer('output_schemas', toOutputSchema({
           ...outputSchema,
           ...updatedOutputSchema
         })));
       }
-    });
+    }));
   };
 }

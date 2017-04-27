@@ -315,6 +315,15 @@
 <% content_for :js_footer do %>
   <%- unless params[:no_js] == 'true' -%>
     <%= include_webpack_bundle 'open-data/admin-metadata.js' %>
+    <script type="text/javascript">
+      // This sucks because it's copied from config/routes.rb and violates DRY.
+      // At some point, if we care, there's probably a way to inspect Rails.application.routes
+      blist.field_action_urls = {
+        toggle_metadata_option: '/admin/metadata/:fieldset/:index/:option',
+        move_metadata_field: '/admin/metadata/:fieldset/:field/move/:direction',
+        delete_metadata_field: '/admin/metadata/:fieldset/:index/delete'
+      };
+    </script>
   <%- end -%>
 <% end %>
 <%= render_translations LocalePart.screens.admin.metadata %>

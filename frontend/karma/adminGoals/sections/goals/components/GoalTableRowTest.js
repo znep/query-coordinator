@@ -51,6 +51,7 @@ describe('sections/goals/components/GoalTable/GoalTableRow', () => {
     assertGoalHasStatus(goals.noPublicationStateReportedPrivate, 'status_private');
     assertGoalHasStatus(goals.noPublicationStateReportedPublic, 'status_public');
     assertGoalHasStatus(goals.neverEdited, 'status_private');
+    assertGoalHasStatus(goals.publicMigratedNotPublished, 'status_public_with_draft');
     assertGoalHasStatus(goals.neverPublished, 'status_private');
     assertGoalHasStatus(goals.unpublished, 'status_private');
     assertGoalHasStatus(goals.unpublishedWithDraft, 'status_private');

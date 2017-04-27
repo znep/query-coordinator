@@ -101,7 +101,7 @@ class OpenPerformance::Odysseus
 
     response = HttpResponse.new(http.request(request))
 
-    raise "Unexpected non-json response from Odysseus: #{response}" unless response.json
+    raise "Unexpected non-json non-csv response from Odysseus: #{response}" unless response.json || response.csv
     raise "Unexpected server error response from Odysseus: #{response}" if response.server_error?
     # Procrustes likes to throw 400s for goals that are misconfigured. Technically, these
     # should be 200s containing an explanatory payload (it's not the fault of the

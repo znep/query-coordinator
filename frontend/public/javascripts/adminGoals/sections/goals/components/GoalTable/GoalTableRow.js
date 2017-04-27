@@ -60,20 +60,30 @@ class GoalTableRow extends React.Component {
     const goalStatus = goalStatusTranslation(translations, ['measure', goalStatusTranslationKey, goal.get('status')]);
 
     const isPublic = goal.get('is_public');
-    // N.B: new Date(null) returns the epoch.
-    const draftTime = new Date(goal.getIn([ 'narrative', 'draft', 'created_at' ]));
-    const publishedTime = new Date(goal.getIn([ 'narrative', 'published', 'created_at' ]));
+    const draftTime = goal.getIn([ 'narrative', 'draft', 'created_at' ]);
+    const publishedTime = goal.getIn([ 'narrative', 'published', 'created_at' ]);
 
-    // True if the narrative has been edited since it was published.
-    // False otherwise.
-    //
     // These scenarios are _not_ treated as unpublished drafts:
     // * Domain is still using classic editor.
     // * Particular goal was never loaded in Storyteller.
-    const hasUnpublishedDraft = draftTime.getTime() > publishedTime.getTime();
 
-    const publicStatus = hasUnpublishedDraft ? 'status_public_with_draft' : 'status_public';
-    const goalVisibility = isPublic ? publicStatus : 'status_private';
+    let goalVisibility;
+
+    const hasBeenMigrated = _.isString(draftTime) || _.isString(publishedTime);
+    if (hasBeenMigrated) {
+      const draftTimeParsed = new Date(draftTime);
+      const publishedTimeParsed = new Date(publishedTime);
+
+      const hasUnpublishedDraft = _.isNil(publishedTime) ||
+        draftTimeParsed.getTime() > publishedTimeParsed.getTime();
+
+      const publicStatus = hasUnpublishedDraft  ? 'status_public_with_draft' : 'status_public';
+      goalVisibility = isPublic ? publicStatus : 'status_private';
+    } else {
+      goalVisibility = isPublic ? 'status_public' : 'status_private';
+    }
+
+
 
     return (
       <tr ref='tr' onClick={ this.handleClick } className={ rowClass } onDoubleClick={ this.handleEditClick }>

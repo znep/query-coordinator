@@ -344,6 +344,7 @@ describe CoreServer do
     let(:make_request) { CoreServer.core_server_http_request(options) }
 
     before do
+      allow(mock_http).to receive(:[]).with('Content-Type').and_return('fake')
       allow(Net::HTTP).to receive(:new).and_return(mock_http)
       allow(Net::HTTP::Get).to receive(:new).with(Addressable::URI.parse(Rails.application.config.coreservice_uri + options[:path])).and_return(mock_get)
     end

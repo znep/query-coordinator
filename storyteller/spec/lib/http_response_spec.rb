@@ -26,6 +26,16 @@ describe 'HttpResponse' do
       response = HttpResponse.new(double('response', :body => '{}', :[] => 'text/plain'))
       expect(response.json).to be_nil
     end
+
+    it 'sets csv if the body is parseable' do
+      response = HttpResponse.new(double('response', :body => 'foo,bar', :[] => 'text/csv'))
+      expect(response.csv).to eq([%w(foo bar)])
+    end
+
+    it 'sets csv to nil if the Content-Type is not text/csv' do
+      response = HttpResponse.new(double('response', :body => '{}', :[] => 'text/plain'))
+      expect(response.csv).to be_nil
+    end
   end
 
   describe '#code' do

@@ -370,3 +370,18 @@ PublishedStory.create(
   created_by: 'some-prsn',
   theme: 'serif'
 )
+
+PublishedStory.create(
+  created_at: Time.parse('1-2-2000') - 1.week,
+  uid: 'neww-drft',
+  block_ids: [unqualified_goal_block.id],
+  created_by: 'some-prsn',
+  theme: 'serif'
+)
+DraftStory.create(
+  created_at: Time.parse('1-2-2000'),
+  uid: 'neww-drft',
+  block_ids: [unqualified_goal_block.id],
+  created_by: 'some-prsn',
+  theme: 'serif'
+)

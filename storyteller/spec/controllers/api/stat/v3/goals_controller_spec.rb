@@ -7,7 +7,8 @@ RSpec.describe Api::Stat::V3::GoalsController, type: :controller do
 
   let(:action) { :nothing }
   let(:goal_uid) { 'open-perf' } # This story exists in test seeds.
-  let(:get_request) { get action, uid: goal_uid }
+  let(:format) { 'json' }
+  let(:get_request) { get action, uid: goal_uid, format: format }
   let(:is_goal_accessible) { true }
   let(:is_goal_unauthorized) { false }
 
@@ -21,7 +22,7 @@ RSpec.describe Api::Stat::V3::GoalsController, type: :controller do
     )
   end
 
-  describe '#index' do
+  describe '#index (format: json)' do
     let(:action) { :index }
 
     shared_examples 'accessible endpoint' do
@@ -127,6 +128,156 @@ RSpec.describe Api::Stat::V3::GoalsController, type: :controller do
               'created_by' => 'neil-amst',
               'created_at' => '2000-02-01T08:00:00.000Z'
             )
+          end
+        end
+      end
+
+      describe('ody fails') do
+        let(:odysseus_ok) { false }
+
+        it '500s' do
+          expect(response.status).to be(500)
+        end
+      end
+    end
+
+    shared_examples 'inaccessible endpoint' do
+      it '403s' do
+        get_request
+        expect(response.status).to be(403)
+      end
+    end
+
+    describe 'anon' do
+      before do
+        stub_invalid_session
+      end
+
+      it_behaves_like 'inaccessible endpoint'
+    end
+
+    describe 'logged in as' do
+      before do
+        stub_valid_session
+        stub_current_user_story_authorization(auth)
+      end
+
+      describe 'unpriviledged' do
+        let(:auth) { mock_user_authorization_unprivileged }
+        it_behaves_like 'inaccessible endpoint'
+      end
+
+      describe 'with edit_goals right' do
+        let(:auth) { mock_user_authorization_with_domain_rights(%w(edit_goals)) }
+        it_behaves_like 'accessible endpoint'
+      end
+
+      describe 'without edit_goals right' do
+        let(:auth) { mock_user_authorization_with_domain_rights(%w(something_else)) }
+        it_behaves_like 'inaccessible endpoint'
+      end
+    end
+  end
+
+  describe '#index (format: csv)' do
+    let(:action) { :index }
+    let(:format) { 'csv' }
+
+    shared_examples 'accessible endpoint' do
+      header_row = 'Goal Title,Goal page link,Goal owner,Goal updated date,Visibility,Goal status,Goal status override,Dashboard name,Dashboard link,Category,Dataset Owner,Dataset updated date,Action,Subject,Kind,Range,Target value,Baseline value,Units,Range value,Range units,Start date,End date'.split(',')
+      let(:odysseus_response) { instance_double(HttpResponse) }
+      let(:odysseus_ok) { true }
+      let(:visibility_index) { header_row.index('Visibility') }
+      let(:visibility_claimed_by_procrustes) { 'Public' }
+      let(:odysseus_csv) { [
+        header_row,
+        [
+          'title',
+          "https://example.com/stat/goals/default/cate-gory/#{goal_uid}",
+          'owner',
+          'update date',
+          visibility_claimed_by_procrustes
+        ]
+      ] }
+      before do
+        allow(OpenPerformance::Odysseus).to receive(:list_goals).and_return(odysseus_response)
+        allow(odysseus_response).to receive(:ok?).and_return(odysseus_ok)
+        allow(odysseus_response).to receive(:csv).and_return(odysseus_csv)
+        get_request
+      end
+
+      describe('ody is ok') do
+        csv_response = nil
+        narrative = nil
+        returned_visibility = nil
+
+        before do
+          csv_response = CSV.parse(response.body)
+          returned_visibility = csv_response.length > 1 ? csv_response[1][visibility_index] : nil
+        end
+
+        it '200s' do
+          expect(response.status).to be(200)
+        end
+
+        describe 'no goals' do
+          let(:odysseus_csv) { [ header_row ] }
+          it('returns just the header') do
+            expect(csv_response).to eq([ header_row ])
+          end
+        end
+
+        describe 'public goal with no revisions at all' do
+          let(:visibility_claimed_by_procrustes) { 'Public' }
+          let(:goal_uid) { 'noth-ingg' }
+
+          it('sets Visibility to Public') do
+            expect(returned_visibility).to eq('Public')
+          end
+        end
+
+        describe 'private goal with only a single draft' do
+          let(:visibility_claimed_by_procrustes) { 'Private' }
+          let(:goal_uid) { 'open-perf' }
+
+          it('sets Visibility to Private') do
+            expect(returned_visibility).to eq('Private')
+          end
+        end
+
+        describe 'private goal with multiple drafts' do
+          let(:visibility_claimed_by_procrustes) { 'Private' }
+          let(:goal_uid) { 'many-draf' }
+
+          it('sets Visibility to Private') do
+            expect(returned_visibility).to eq('Private')
+          end
+        end
+
+        describe 'public goal with only drafts (aka, migrated but not published)' do
+          let(:visibility_claimed_by_procrustes) { 'Public' }
+          let(:goal_uid) { 'many-draf' }
+
+          it('sets Visibility to Public (unpublished draft)') do
+            expect(returned_visibility).to eq('Public (unpublished draft)')
+          end
+        end
+
+        describe 'public goal with a draft newer than the published revision' do
+          let(:visibility_claimed_by_procrustes) { 'Public' }
+          let(:goal_uid) { 'neww-drft' }
+
+          it('sets Visibility to Public (unpublished drafts)') do
+            expect(returned_visibility).to eq('Public (unpublished draft)')
+          end
+        end
+
+        describe 'private goal with a draft newer than the published revision' do
+          let(:visibility_claimed_by_procrustes) { 'Private' }
+          let(:goal_uid) { 'neww-drft' }
+
+          it('sets Visibility to Private') do
+            expect(returned_visibility).to eq('Private')
           end
         end
       end

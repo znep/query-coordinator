@@ -180,7 +180,7 @@ const cagriAdmin = {
 
 };
 
-export var goalsWithPublicationState = {
+export const goalsWithPublicationState = {
   // V1 API (fallback)
   noPublicationStateReportedPrivate: {
     "id": "lgcy-prvt",
@@ -228,6 +228,25 @@ export var goalsWithPublicationState = {
     "id": "nver-pbls",
     "name": "Never Published",
     "is_public": false,
+    "prevailing_measure": {},
+    "base_dashboard": "cfa5-i2ky",
+    "updated_at": "2016-06-13T13:14:14.280+03:00",
+    "created_at": "2016-06-10T14:10:25.125+03:00",
+    "version": "2016-06-13T13:14:14.280+03:00",
+    "created_by": cagriAdmin,
+    "prevailingMeasureProgress": "no_judgement",
+    "narrative": {
+      "draft": {
+        "created_at": "2017-01-17T22:58:51.210Z",
+        "created_by": "tugg-ikce"
+      },
+      "published": null
+    }
+  },
+  publicMigratedNotPublished: {
+    "id": "nver-pbls",
+    "name": "Public, Migrated, but not published",
+    "is_public": true,
     "prevailing_measure": {},
     "base_dashboard": "cfa5-i2ky",
     "updated_at": "2016-06-13T13:14:14.280+03:00",

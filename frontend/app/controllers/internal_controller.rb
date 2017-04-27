@@ -589,7 +589,10 @@ class InternalController < ApplicationController
   end
 
   def organization_list
-    summary = Organization.find.map { |org| { id: org.id, name: org.name } }
+    summary = Organization.find.
+      map { |org| { id: org.id, name: org.name } }.
+      # Sort numbers, then case-insensitive alphas, then underscores.
+      sort_by { |o| o[:name].upcase }
 
     respond_to do |format|
       format.data { render :json => summary }

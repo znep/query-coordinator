@@ -13,7 +13,8 @@
       <p>No organizations found.</p>
     <% else %>
       <ul>
-        <% @orgs.sort{ |a, b| a.name <=> b.name }.each do |org| %>
+        <%# Sort numbers, then case-insensitive alphas, then underscores. -%>
+        <% @orgs.sort_by { |o| o.name.upcase }.each do |org| %>
           <%= li_classes = [].tap do |classes|
             classes << 'emptyOrganization' if org.empty?
           end

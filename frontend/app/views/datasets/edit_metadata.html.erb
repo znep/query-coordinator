@@ -212,7 +212,6 @@
         <%= hidden_field_tag('view[iconUrl]', @view.iconUrl, :class => 'iconUrlField') %>
       </div>
       <div class="line clearfix<%= ' hide' unless @view.iconUrl %>">
-        <label>&nbsp;</label>
         <div class="customImageContainer">
           <img alt="" src="<%= @view.custom_image  %>" class="ajaxImage datasetImage" />
         </div>

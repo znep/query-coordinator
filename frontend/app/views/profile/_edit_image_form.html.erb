@@ -6,22 +6,20 @@
   <div class="editArea">
     <div class="editSection clearfix">
       <div class="line clearfix">
-        <label>&nbsp;</label>
         <div id="profileImage">
           <img src="<%= current_user.profile_image_path('large') %>" alt="<%= current_user.displayName %>" />
         </div>
       </div>
       <div class="line fullLine imageErrorLine">
-        <label>&nbsp;</label>
         <div class="flash errorMessage error imageError"><%= t('screens.profile.edit.validation.image_format') %></div>
       </div>
       <div class="line fullLine">
-        <label>&nbsp;</label>
-          <%= file_field_tag('new_image',{:accept => 'image/png,image/gif,image/jpeg',
-                             'data-endpoint' => current_user.profile_image_path(''),
-                             :class => 'uploadNewImage'}) %>
-          <%= submit_tag t('screens.profile.edit.image.upload_image_button') %>
-          <span class="uploadIndicator"></span>
+        <%= file_field_tag('new_image',
+          :accept => 'image/png,image/gif,image/jpeg',
+          'data-endpoint' => current_user.profile_image_path(''),
+          :class => 'uploadNewImage') %>
+        <%= submit_tag t('screens.profile.edit.image.upload_image_button') %>
+        <span class="uploadIndicator"></span>
       </div>
     </div>
   </div>

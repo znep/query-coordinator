@@ -43,10 +43,10 @@
         <span class="flash error thumbnailError"><%= t('screens.profile.edit.validation.image_format') %></span>
       </div>
       <div class="line clearfix">
-        <label>&nbsp;</label>
-        <%= file_field_tag('new_image', {:accept => 'image/png,image/gif,image/jpeg',
-                           'data-endpoint' => @token.set_thumbnail_url(current_user.id),
-                           :class => 'uploadAppTokenImage'}) %>
+        <%= file_field_tag('new_image',
+          :accept => 'image/png,image/gif,image/jpeg',
+          'data-endpoint' => @token.set_thumbnail_url(current_user.id),
+          :class => 'uploadAppTokenImage') %>
         <span class="uploadIndicator"></span>
       </div>
     <%- end -%>

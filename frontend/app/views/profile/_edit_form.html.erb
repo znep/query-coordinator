@@ -55,9 +55,12 @@
       <%- [{:name => 'description', :value => current_user.description},
           {:name => 'interests', :value => current_user.interests}].each do |text_prompt| -%>
         <div class="line clearfix">
-          <label><%= t("screens.profile.edit.info.#{text_prompt[:name]}.title") %></label>
-          <%= text_area_tag("user[#{text_prompt[:name]}]", text_prompt[:value],
-            :class => 'textPrompt', :title => t("screens.profile.edit.info.#{text_prompt[:name]}.prompt")) %>
+          <%- text_prompt_name = text_prompt[:name] -%>
+          <label for="user_<%= text_prompt_name %>">
+            <%= t("screens.profile.edit.info.#{text_prompt_name}.title") %>
+          </label>
+          <%= text_area_tag("user[#{text_prompt_name}]", text_prompt[:value],
+            :class => 'textPrompt', :title => t("screens.profile.edit.info.#{text_prompt_name}.prompt")) %>
         </div>
      <%- end -%>
    </div>

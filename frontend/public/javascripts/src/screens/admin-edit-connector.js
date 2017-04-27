@@ -138,6 +138,7 @@ function setConnectionStrategy() {
 
     // Catalog Federator use case
     setState($('fieldset.line input[type=checkbox]'));
+    setState($('#select_all_button'));
   };
 }
 

@@ -1079,7 +1079,7 @@ module Canvas2
       if facet[:use_icon]
         ret += '<span class="icon"></span>'
       elsif !facet_item[:icon].nil?
-        ret += '<img class="customIcon" src="' + theme_image_url(facet_item[:icon]) + '" alt="icon" />'
+        ret += '<img class="customIcon" src="' + theme_image_url(facet_item[:icon]) + '" alt="" />'
       end
       ret += CGI::escapeHTML(facet_item[:text])
       ret += '</a>'

@@ -278,7 +278,7 @@ module DatasetsHelper
         ret << '<span class="icon"></span>'
       end
     elsif !facet_option[:icon].nil?
-      ret += '<img class="customIcon" src="' + theme_image_url(facet_option[:icon]) + '" alt="icon" />'
+      ret += '<img class="customIcon" src="' + theme_image_url(facet_option[:icon]) + '" alt="" />'
     end
     ret += h(facet_option[:text])
     ret += '</a>'

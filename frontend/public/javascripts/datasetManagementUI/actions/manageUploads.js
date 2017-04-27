@@ -209,24 +209,36 @@ export function insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outpu
 function createTableAndSubscribeToTransform(transform) {
   return (dispatch, getState) => {
     const db = getState().db;
-    const channelName = `transform_progress:${transform.id}`;
-    dispatch(joinChannel(channelName, {
-      max_ptr: (maxPtr) => {
-        dispatch(updateFromServer('transforms', {
-          id: transform.id,
-          contiguous_rows_processed: maxPtr.end_row_offset
-        }));
-      },
-      errors: (errorsMsg) => {
-        dispatch(updateFromServer('transforms', {
-          id: transform.id,
-          num_transform_errors: errorsMsg.count
-        }));
-      }
-    }));
+    // maybe create table
     const tableName = `transform_${transform.id}`;
     if (!db[tableName]) {
       dispatch(createTable(tableName));
+    }
+    // maybe subscribe to transform
+    if (transform.completed_at) {
+      const inputColumnId = transform.transform_input_columns[0].input_column_id;
+      const inputColumn = db.input_columns[inputColumnId];
+      const inputSchema = db.input_schemas[inputColumn.input_schema_id];
+      dispatch(updateFromServer('transforms', {
+        id: transform.id,
+        contiguous_rows_processed: inputSchema.total_rows
+      }));
+    } else {
+      const channelName = `transform_progress:${transform.id}`;
+      dispatch(joinChannel(channelName, {
+        max_ptr: (maxPtr) => {
+          dispatch(updateFromServer('transforms', {
+            id: transform.id,
+            contiguous_rows_processed: maxPtr.end_row_offset
+          }));
+        },
+        errors: (errorsMsg) => {
+          dispatch(updateFromServer('transforms', {
+            id: transform.id,
+            num_transform_errors: errorsMsg.count
+          }));
+        }
+      }));
     }
   };
 }

@@ -127,7 +127,7 @@ function iconClassForValue(selectedValue) {
 function setConnectionStrategy() {
   return (event) => {
     const $target = $(event.currentTarget);
-    const selectAllAssets = ($target.value() && $target.val() !== 'ignored');
+    const selectAllAssets = ($target.value() && $target.val() === 'all');
     const setState = ($el) => ($el.attr('disabled', selectAllAssets));
     const setDisabledClass = ($el) => ($el[selectAllAssets ? 'addClass' : 'removeClass']('is-disabled'));
 

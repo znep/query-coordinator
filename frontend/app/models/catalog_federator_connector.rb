@@ -16,7 +16,7 @@ class CatalogFederatorConnector
     end
 
     def create(source_form)
-      client.post_source(
+      client.create_source(
         'source' => source_form.fetch('source_url'),
         'sourceType' => 'open_data_metadata_v1_1',
         'displayName' => source_form.fetch('display_name')

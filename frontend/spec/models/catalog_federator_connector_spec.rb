@@ -8,7 +8,7 @@ describe CatalogFederatorConnector do
 
   let(:fixture_prefix) { "#{Rails.root}/spec/fixtures/data_connector" }
   let(:base_uri) { 'http://cf-host:80' }
-  let(:test_client) { CatalogFederator::Client.new.tap { |instance| instance.class.base_uri(base_uri) }}
+  let(:test_client) { CatalogFederator.client.tap { |client| client.base_uri(base_uri) } }
 
   describe '#servers' do
     before do

@@ -1,4 +1,10 @@
-module CatalogFederator
+class CatalogFederator
+
+  class << self
+    def client
+      @client ||= Client.new
+    end
+  end
 
   class AbstractClient
 
@@ -6,42 +12,65 @@ module CatalogFederator
     include Socrata::RequestIdHelper
     include Socrata::CookieHelper
 
+    delegate :base_uri, :delete, :get, :patch, :post, :put, :to => self
+
     def get_sources
-      route = '/v1/source'
-      handle_response(self.class.get(route, headers: headers), route)
+      handle_response(get(route, headers: headers), route)
     end
 
-    def post_source(source)
-      route = '/v1/source'
-      handle_response(self.class.post(route, headers: headers, body: source.to_json), route)
+    def create_source(source)
+      handle_response(post(route, headers: headers, body: source.to_json), route)
     end
 
-    def get_datasets(source_id, concise = true)
-      route = "/v1/source/#{source_id}/preprocess?concise=#{concise}"
-      handle_response(self.class.get(route, headers: headers), route, 'datasets')
+    def get_datasets(source_id, concise: true)
+      handle_response(
+        get(route(source_id, "preprocess?concise=#{concise}"), headers: headers),
+        route(source_id, "preprocess?concise=#{concise}"),
+        'datasets'
+      )
+    end
+
+    def set_sync_policy(source_id, sync_policy)
+      handle_response(
+        put(route(source_id), headers: headers, body: {:syncSelectionPolicy => sync_policy}.to_json),
+        route(source_id)
+      )
     end
 
     def disable_source(source_id)
-      route = "/v1/source/#{source_id}/disable"
-      handle_response(self.class.delete(route, headers: headers), route)
+      handle_response(delete(route(source_id, 'disable'), headers: headers), route(source_id, 'disable'))
     end
 
     def delete_source(source_id)
-      route = "/v1/source/#{source_id}"
-      handle_response(self.class.delete(route, headers: headers), route)
+      handle_response(delete(route(source_id), headers: headers), route(source_id))
     end
 
-    def update_source(source_id, source)
-      route = "/v1/source/#{source_id}/make-it-so"
-      handle_response(self.class.patch(route, headers: headers, body: source.to_json), route)
+    # Synchronous call - large number of datasets can take a long time.
+    def sync_datasets(source_id, datasets)
+      handle_response(
+        patch(route(source_id, 'make-it-so'), headers: headers, body: datasets.to_json),
+        route(source_id, 'make-it-so')
+      )
     end
 
+    # Asynchronous call - just puts a message on a queue to sync previous selections
     def sync_source(source_id)
-      route = "/v1/source/#{source_id}/sync"
-      handle_response(self.class.put(route, headers: headers), route)
+      handle_response(put(route(source_id, 'sync'), headers: headers), route(source_id, 'sync'))
     end
 
     private
+
+    def json_for_source_update(source, user_id)
+      {
+        'displayName' => source.display_name,
+        'syncUserId' => user_id,
+        'syncSelectionPolicty' => sync_policy
+      }
+    end
+
+    def route(id = nil, action = nil)
+      "/v1/source#{"/#{id}" if id}#{"/#{action}" if action}"
+    end
 
     def headers
       {
@@ -52,15 +81,17 @@ module CatalogFederator
       }.compact
     end
 
-    def raise_error(response, path)
-      message = "Invalid response from catalog-federator calling #{path}\n" \
-                "Response code: #{response.code}\n" \
-                "#{response.body.inspect}"
+    def raise_error(response, route)
+      message = <<~EOM
+        Invalid response from catalog-federator calling #{route}
+        Response code: #{response.code}
+        #{response.body.inspect}
+      EOM
       raise StandardError, message
     end
 
-    def handle_response(response, path, key = nil)
-      raise_error(response, path) unless response.code == 200
+    def handle_response(response, route, key = nil)
+      raise_error(response, route) unless response.code == 200
       key ? response.parsed_response[key] : response.parsed_response
     end
 
@@ -68,7 +99,7 @@ module CatalogFederator
 
   class Client < AbstractClient
     def initialize
-      self.class.base_uri(Addressable::URI.parse(APP_CONFIG.catalog_federator_url).to_s)
+      base_uri(Addressable::URI.parse(APP_CONFIG.catalog_federator_url).to_s)
     end
   end
 

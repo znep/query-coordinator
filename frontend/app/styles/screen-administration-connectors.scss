@@ -11,6 +11,13 @@ $pager-blue: #2f4589;
     vertical-align: middle;
   }
 
+  .connection-type {
+    font-size: 1.1rem;
+    .title {
+      font-weight: bold;
+    }
+  }
+
   .connectors-header {
 
     .connector-top-page-status {
@@ -154,7 +161,7 @@ $pager-blue: #2f4589;
 
 .selective-connection {
 
-  .inline-value-label {
+  .inline-value label {
     padding-left: 0px;
     padding-right: 10px;
   }

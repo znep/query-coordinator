@@ -169,7 +169,7 @@ Rails.application.routes.draw do
         get '/new', :action => 'new_connector', :as => 'new_connector'
         get '/:server_id/edit', :action => 'edit_connector', :as => 'edit_connector'
         get '/:server_id', :action => 'show_connector', :as => 'show_connector'
-        post '/:server_id', :action => 'update_connector'
+        post '/:server_id', :action => 'update_connector', :as => 'update_connector'
         delete '/:server_id/delete', :action => 'delete_connector'
       end
 

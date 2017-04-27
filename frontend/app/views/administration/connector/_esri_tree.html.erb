@@ -1,3 +1,24 @@
+<div class="legend">
+  <div class="legend-item">
+    <span role="presentation" class="icon-data legend-icon"></span>
+    <span class="legend-info">
+      <span class= "legend-key">
+        <%= t('screens.admin.connector.data_option') %>
+      </span>
+      - <%= t('screens.admin.connector.data_option_explanation') %>
+    </span>
+  </div>
+  <div class="legend-item">
+    <span role="presentation" class="icon-external-square legend-icon"></span>
+    <span class="legend-info">
+      <span class="legend-key">
+        <%= t('screens.admin.connector.catalog_option') %>
+      </span>
+      - <%= t('screens.admin.connector.catalog_option_explanation') %>
+    </span>
+  </div>
+</div>
+
 <div class="esri-tree">
   <%- @tree['folders'].each do |folder| -%>
     <div class="item folder search-item">

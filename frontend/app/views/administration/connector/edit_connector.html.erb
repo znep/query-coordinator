@@ -24,34 +24,18 @@
 
   <div class="selective-connection">
     <%= form_tag({:action => 'update_connector'}, :method => 'post', :class => 'commonForm') %>
-      <h2><%= t('screens.admin.connector.connection_type') %></h2>
+      <div class="connection-type">
+        <span class="title"><%= t('screens.admin.connector.connection_type') %>:</span>
+        <span class="type"><%= t("screens.admin.connector.#{@server.type_key}") %></span>
+      </div>
+      <h2><%= t('screens.admin.connector.sync_policy') %></h2>
       <% if esri_arcgis? %>
-        <div class="legend">
-          <div class="legend-item">
-            <span role="presentation" class="icon-data legend-icon"></span>
-            <span class="legend-info">
-              <span class= "legend-key">
-                <%= t('screens.admin.connector.data_option') %>
-              </span>
-              - <%= t('screens.admin.connector.data_option_explanation') %>
-            </span>
-          </div>
-          <div class="legend-item">
-            <span role="presentation" class="icon-external-square legend-icon"></span>
-            <span class="legend-info">
-              <span class="legend-key">
-                <%= t('screens.admin.connector.catalog_option') %>
-              </span>
-              - <%= t('screens.admin.connector.catalog_option_explanation') %>
-            </span>
-          </div>
-        </div>
         <fieldset class="line">
           <div class="valueBox inline-value">
             <input type="radio" id="dataConnectAll" class="server-sync"
               name="server[sync_type]" value="data"
               <%= @server.data_connect_all? ? 'checked="checked"' : '' %> />
-            <label for="dataConnectAll" class="inline-value-label">
+            <label for="dataConnectAll">
               <%= t('screens.admin.connector.data_connect_all') %>
             </label>
           </div>
@@ -59,7 +43,7 @@
             <input type="radio" id="federateAll" class="server-sync"
               name="server[sync_type]" value="catalog"
               <%= @server.federate_all? ? 'checked="checked"' : '' %> />
-            <label for="federateAll" class="inline-value-label">
+            <label for="federateAll">
               <%= t('screens.admin.connector.catalog_connect_all') %>
             </label>
           </div>
@@ -67,7 +51,7 @@
             <input type="radio" id="connectSome" class="server-sync"
               name="server[sync_type]" value="ignored"
               <%= @server.federate_all? || @server.data_connect_all? ? '' : 'checked="checked"' %> />
-            <label for="connectSome" class="inline-value-label">
+            <label for="connectSome">
               <%= t('screens.admin.connector.some_assets') %>
             </label>
           </div>
@@ -77,22 +61,22 @@
         <div class="new-connector-form flexbox-space-between">
           <div class="flexbox-left-section">
             <fieldset class="line">
-              <div class="valueBox">
+              <div class="valueBox inline-value">
                 <input type="radio" id="federateAll" class="server-sync"
-                  name="server[sync_type]" value="catalog"
+                  name="server[sync_policy]" value="all"
                   <%= @server.federate_all? ? 'checked="checked"' : '' %> />
                 <label for="federateAll"><%= t('screens.admin.connector.all_assets') %></label>
               </div>
-              <div class="valueBox">
+              <div class="valueBox inline-value">
                 <input type="radio" id="federateSome" class="server-sync"
-                  name="server[sync_type]" value="ignored"
+                  name="server[sync_policy]" value="existing"
                   <%= @server.federate_all? ? '' : 'checked="checked"' %> />
                 <label for="federateSome"><%= t('screens.admin.connector.some_assets') %></label>
               </div>
           </div> <%# end flex left section %>
           <div class="line clearfix flexbox-right-section">
             <div class="flexbox-upper-right">
-              <%= hidden_field_tag('type', esri_arcgis? ? 'esri_arcgis' : 'catalog_federator') %>
+              <%= hidden_field_tag('type', esri_arcgis? ? 'esri_arcgis' : 'data_json') %>
               <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button"/>
             </div>
           </div>
@@ -104,8 +88,11 @@
           <input type="text" title="<%= t('screens.admin.connector.search') %>" class="textPrompt searchBox prompt" />
         </div>
 
-        <%= render 'esri_tree' if esri_arcgis? %>
-        <%= render 'catalog_federator_list' if catalog_federator? %>
+        <%= if esri_arcgis?
+          render 'esri_tree'
+        else
+          render 'catalog_federator_list'
+        end %>
       </fieldset>
     </form>
   </div>

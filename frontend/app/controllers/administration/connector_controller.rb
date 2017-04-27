@@ -14,7 +14,7 @@ class Administration::ConnectorController < AdministrationController
     end
 
   before_filter :fetch_server, :only => [:edit_connector, :update_connector, :show_connector]
-  before_filter :fetch_connectors, :only => :connectors
+  before_filter :fetch_connectors, :only => [:connectors, :update_connector]
 
   def connectors # index
   end
@@ -54,6 +54,7 @@ class Administration::ConnectorController < AdministrationController
   def update_connector
     if esri_arcgis?
       begin
+        # Note! The implementation of the EsriServerConnector is intimately tied to the params hash structure.
         @response = EsriServerConnector.update_server(params[:server_id], params[:server])
       rescue EsriCrawler::ServerError => error
         return display_external_error(error, :edit_connector)
@@ -66,14 +67,13 @@ class Administration::ConnectorController < AdministrationController
 
       flash[:notice] = t('screens.admin.connector.flashes.updated')
       return redirect_to :connectors
-    end
-
-    if catalog_federator?
+    else
       begin
-        if params[:server][:sync_type] == 'catalog'
-          CatalogFederator::Client.new.sync_source(params[:server_id])
+        CatalogFederator.client.set_sync_policy(params[:server_id], params[:server][:sync_policy])
+        if params[:server][:sync_policy] == 'all'
+          CatalogFederator.client.sync_datasets(params[:server_id], selection_diff(all_assets: true))
         else
-          CatalogFederator::Client.new.update_source(params[:server_id], decorated_catalog)
+          CatalogFederator.client.sync_datasets(params[:server_id], selection_diff)
         end
         flash[:notice] = t('screens.admin.connector.flashes.updated')
         return redirect_to :connectors
@@ -89,10 +89,10 @@ class Administration::ConnectorController < AdministrationController
 
   def delete_connector
     begin
-      if catalog_federator?
-        response = CatalogFederatorConnector.delete(params[:server_id])
-      else
+      if esri_arcgis?
         response = EsriServerConnector.delete_server(params[:server_id])
+      else
+        response = CatalogFederatorConnector.delete(params[:server_id])
       end
       respond_to do |format|
         format.html do
@@ -198,13 +198,11 @@ class Administration::ConnectorController < AdministrationController
       rescue => error
         flash[:warning] = t('screens.admin.connector.esri_service_unavailable')
       end
-    end
-
-    if catalog_federator?
+    else
       if enable_catalog_federator_connector?
         begin
-          @server = CatalogFederatorConnector.servers.detect { |server| server.id == params[:server_id].to_i }
-          @datasets = CatalogFederator::Client.new.get_datasets(@server.id).sort_by { |item| item['name'] }
+          @server = CatalogFederatorConnector.servers.detect { |server| server.id.to_i == params[:server_id].to_i }
+          @datasets = CatalogFederator.client.get_datasets(@server.id).sort_by { |item| item['name'] }
         rescue => e
           add_flash(:error, t('screens.admin.connector.errors.json_format_error'))
           return redirect_to :connectors
@@ -218,26 +216,17 @@ class Administration::ConnectorController < AdministrationController
     end
   end
 
-  def enable_catalog_connector?
-    @enable_catalog_connector = @enable_catalog_connector.nil? ?
-      FeatureFlags.derive(nil, request).enable_catalog_connector : @enable_catalog_connector
-  end
-  helper_method :enable_catalog_connector?
-
   def enable_catalog_federator_connector?
     @enable_catalog_federator_connector = @enable_catalog_federator_connector.nil? ?
       FeatureFlags.derive(nil, request).enable_catalog_federator_connector : @enable_catalog_federator_connector
   end
   helper_method :enable_catalog_federator_connector?
 
-  def decorated_catalog
-    user_selections = params[:server][:assets].map(&:to_i)
-    selected_assets = @datasets.values_at(*user_selections)
-    added_selections = selected_assets.pluck('externalId')
-    removed_selections = (@datasets - selected_assets).pluck('externalId')
+  def selection_diff(all_assets: false)
+    selected_assets = all_assets ? @datasets : @datasets.values_at(*params[:server][:assets].map(&:to_i))
     {
-      'addedSelections': added_selections,
-      'removedSelections': removed_selections
+      'addedSelections': selected_assets.pluck('externalId'),
+      'removedSelections': (@datasets - selected_assets).pluck('externalId')
     }
   end
 

@@ -31,7 +31,7 @@ const transformCustomField = (field, fieldsetName) => {
       },
       ...field.options.map(option => ({
         title: option,
-        value: option.toUpperCase()
+        value: option
       }))
     ];
 

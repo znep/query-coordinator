@@ -49,6 +49,7 @@ if (window.serverConfig.environment === 'development') {
     'for convenience, try e.g. `console.table(DB.uploads)` (only works when RAILS_ENV==development)'
   );
 } else {
+  // 126728 is Publishing airbrake project id
   Airbrake.init(126728, window.serverConfig.airbrakeKey);
 }
 

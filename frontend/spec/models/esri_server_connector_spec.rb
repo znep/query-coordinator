@@ -156,17 +156,17 @@ describe EsriServerConnector do
 
     it 'sets the sync type of the returning server' do
       sync_type = 'meow'
-      esri_domain = 'sampleserver'
+      esri_url = 'https://sampleserver.com'
 
       expect(EsriCrawler).to receive(:post_request) do |path, body|
         expect(body).to eq({
-          :url => "https://#{esri_domain}",
+          :url => esri_url,
           :sync_type => sync_type,
           :socrata_domain => CurrentDomain.cname,
           :domain_id => CurrentDomain.domain.id
         })
       end
-      EsriServerConnector.create(esri_domain, sync_type)
+      EsriServerConnector.create(esri_url, sync_type)
     end
   end
 

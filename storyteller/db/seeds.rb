@@ -324,6 +324,14 @@ DraftStory.create(
 )
 
 DraftStory.create(
+  created_at: Time.parse('1-10-1983'),
+  uid: 'many-draf',
+  block_ids: [unqualified_goal_block.id],
+  created_by: 'time-trvl',
+  theme: 'serif'
+)
+
+DraftStory.create(
   created_at: Time.parse('1-10-1988'),
   uid: 'many-draf',
   block_ids: [unqualified_goal_block.id],
@@ -332,15 +340,7 @@ DraftStory.create(
 )
 
 DraftStory.create(
-  created_at: Time.parse('1-10-1988') - 1.day,
-  uid: 'many-draf',
-  block_ids: [unqualified_goal_block.id],
-  created_by: 'time-trvl',
-  theme: 'serif'
-)
-
-DraftStory.create(
-  created_at: Time.parse('1-10-1988') - 1.week,
+  created_at: Time.parse('1-10-1981'),
   uid: 'many-draf',
   block_ids: [unqualified_goal_block.id],
   created_by: 'time-trvl',
@@ -356,7 +356,7 @@ PublishedStory.create(
 )
 
 PublishedStory.create(
-  created_at: Time.parse('1-2-2000') - 1.day,
+  created_at: Time.parse('1-2-1999'),
   uid: 'many-publ',
   block_ids: [unqualified_goal_block.id],
   created_by: 'bobb-ytbl',
@@ -364,7 +364,7 @@ PublishedStory.create(
 )
 
 PublishedStory.create(
-  created_at: Time.parse('1-2-2000') - 1.week,
+  created_at: Time.parse('1-3-1999'),
   uid: 'many-publ',
   block_ids: [unqualified_goal_block.id],
   created_by: 'some-prsn',

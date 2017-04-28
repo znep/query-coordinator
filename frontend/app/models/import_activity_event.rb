@@ -18,11 +18,11 @@ class ImportActivityEvent
   end
 
   def type
-    (@data[:event_type] || '').gsub('-', '_')
+    (@data[:event_type] || 'generic').gsub('-', '_')
   end
 
   def info
-    @info ||= @data[:info].with_indifferent_access
+    @info ||= (@data[:info] || {}).with_indifferent_access
   end
 
   protected

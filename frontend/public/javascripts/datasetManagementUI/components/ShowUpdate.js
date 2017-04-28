@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import { InfoPane } from 'socrata-components';
 import MetadataTable from '../../common/components/MetadataTable';
 import SchemaPreview from './SchemaPreview';
@@ -109,7 +110,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-function ShowUpdate({ view, routing, db, urlParams, createUpload }) {
+function ShowUpdate({ view, routing, db, urlParams, createUpload, pushToEditMetadata }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -145,7 +146,7 @@ function ShowUpdate({ view, routing, db, urlParams, createUpload }) {
       licenseName: view.license.name,
       licenseLogo: view.license.logoUrl,
       licenseUrl: view.license.termsLink,
-      editMetadataUrl: Links.metadata(routing),
+      editMetadataUrl: '#',
       statsUrl: '', // MetadataTable computes this because permission checking
       disableContactDatasetOwner: true, // looks up a CurrentDomain feature whatever that is
       lastUpdatedAt: view.lastUpdatedAt,
@@ -156,7 +157,11 @@ function ShowUpdate({ view, routing, db, urlParams, createUpload }) {
       downloadCount: view.downloadCount,
       ownerName: view.owner.displayName // owner.name
     },
-    customMetadataFieldsets
+    customMetadataFieldsets,
+    onClickEditMetadata: (e) => {
+      e.preventDefault();
+      pushToEditMetadata(Links.metadata(routing));
+    }
   };
 
   metadataSection = (
@@ -225,14 +230,16 @@ ShowUpdate.propTypes = {
   routing: PropTypes.object.isRequired,
   db: PropTypes.object.isRequired,
   urlParams: PropTypes.object.isRequired,
-  createUpload: PropTypes.func.isRequired
+  createUpload: PropTypes.func.isRequired,
+  pushToEditMetadata: PropTypes.func.isRequired
 };
 
 function mapDispatchToProps(dispatch) {
   return {
     createUpload: (file) => {
       dispatch(Actions.createUpload(file));
-    }
+    },
+    pushToEditMetadata: url => dispatch(push(url))
   };
 }
 

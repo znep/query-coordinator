@@ -16,14 +16,12 @@
     <div class="line">
       <label for="source_url" class="required"><%= t("#{connector}.source_url") %></label>
       <div class="input-group">
-        <span class="input-group-prepend">https://</span>
         <input
           type="text"
           name="server[source_url]"
           id="source_url"
           value="<%= @server['source_url']%>"
           class="required input-prepended"
-          placeholder="<domain>/ArcGIS/rest"
         />
       </div>
     </div>

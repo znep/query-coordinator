@@ -2839,12 +2839,13 @@ en:
         esri_service_unavailable: Esri connector services are currently unavailable.
         failing: Failing
         flashes:
-          created: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
+          created: Success! We reached your server. It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
           created_data_json: Success! You connector is ready and you may now edit the connector to choose which datasets to import.
           deleted: Your connector has been marked for deletion.
           server_not_found: We could not find that server-- it may have been recently deleted.
           updated: Your settings have been saved. Now syncing connected assets.
           update_failed: The update failed. Please try again or contact support.
+          server_already_exists: That connector already exists.
         ignore: Ignored
         ignored: Ignored
         ignored_option: Don't Connect

@@ -25,18 +25,27 @@ class Administration::ConnectorController < AdministrationController
 
   def create_connector
     @server = params[:server] || {}
-    begin
-      if @server['federation_source'] == 'data_json'
+    if @server['federation_source'] == 'data_json'
+      begin
         response = CatalogFederatorConnector.create(params[:server])
         success_notice = t('screens.admin.connector.flashes.created_data_json')
-      else
+      rescue StandardError => error
+        # Core transforms the 400 returned by the catalog federator service to a 500, so we match the text
+        if error.message.match(/source already exists/)
+          flash[:error] = t('screens.admin.connector.flashes.server_already_exists')
+          return redirect_to :connectors
+        end
+        return display_external_error(error, :new_connector)
+      end
+    else
+      begin
         response = EsriServerConnector.create(params[:server][:source_url])
         success_notice = t('screens.admin.connector.flashes.created')
+      rescue EsriCrawler::ServerError => error
+        return display_external_error(error, :new_connector)
+      rescue StandardError => error
+        return handle_failed_connection_and_redirect(error)
       end
-    rescue EsriCrawler::ServerError => error
-      return display_external_error(error, :new_connector)
-    rescue StandardError => error
-      return handle_failed_connection_and_redirect(error)
     end
 
     respond_to do |format|

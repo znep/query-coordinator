@@ -68,44 +68,78 @@ describe('externalResourceEditor/ExternalResourceEditor', () => {
     it('calls onClose on cancel button click', () => {
       const spy = sinon.spy();
       const element = renderComponent(ExternalResourceEditor, getProps({ onClose: spy }));
-      TestUtils.Simulate.click(element.querySelector('.modal-footer').querySelector('button.cancel-button'));
+      const cancelButton = element.querySelector('.modal-footer').querySelector('button.cancel-button');
+
+      TestUtils.Simulate.click(cancelButton);
       sinon.assert.called(spy);
     });
 
     it('does not call onSelect on select button click if the title is invalid', () => {
       const spy = sinon.spy();
       const element = renderComponent(ExternalResourceEditor, getProps({ onSelect: spy }));
+      const selectButton = element.querySelector('.modal-footer').querySelector('button.select-button');
 
       TestUtils.Simulate.change(element.querySelector('input.title'),
         { target: { value: '' } });
       TestUtils.Simulate.change(element.querySelector('input.url'),
         { target: { value: 'http://test.com' } });
-      TestUtils.Simulate.click(element.querySelector('.modal-footer').querySelector('button.select-button'));
+      TestUtils.Simulate.click(selectButton);
+      sinon.assert.notCalled(spy);
+    });
+
+    it('does not call onSelect on select button click if the url is empty', () => {
+      const spy = sinon.spy();
+      const element = renderComponent(ExternalResourceEditor, getProps({ onSelect: spy }));
+      const selectButton = element.querySelector('.modal-footer').querySelector('button.select-button');
+
+      TestUtils.Simulate.change(element.querySelector('input.title'),
+        { target: { value: 'test title' } });
+
+      TestUtils.Simulate.change(element.querySelector('input.url'),
+        { target: { value: '' } });
+      TestUtils.Simulate.click(selectButton);
+
       sinon.assert.notCalled(spy);
     });
 
     it('does not call onSelect on select button click if the url is invalid', () => {
+      // URLs are invalid if they don't start with http(s)://
       const spy = sinon.spy();
       const element = renderComponent(ExternalResourceEditor, getProps({ onSelect: spy }));
+      const selectButton = element.querySelector('.modal-footer').querySelector('button.select-button');
 
       TestUtils.Simulate.change(element.querySelector('input.title'),
         { target: { value: 'test title' } });
+
       TestUtils.Simulate.change(element.querySelector('input.url'),
-        { target: { value: '' } });
-      TestUtils.Simulate.click(element.querySelector('.modal-footer').querySelector('button.select-button'));
+        { target: { value: 'test.com' } });
+      TestUtils.Simulate.click(selectButton);
+
+      TestUtils.Simulate.change(element.querySelector('input.url'),
+        { target: { value: 'www.test.com' } });
+      TestUtils.Simulate.click(selectButton);
+
       sinon.assert.notCalled(spy);
     });
 
     it('calls onSelect on select button click if the form is valid', () => {
       const spy = sinon.spy();
       const element = renderComponent(ExternalResourceEditor, getProps({ onSelect: spy }));
-      // Enter text in both the Title and Url fields to make the form valid
+      const selectButton = element.querySelector('.modal-footer').querySelector('button.select-button');
+      // Enter text in both the Title and Url fields to make the form valid.
       TestUtils.Simulate.change(element.querySelector('input.title'),
         { target: { value: 'test title' } });
+
+      // URLs are valid if they are prepended with `http(s)://`.
       TestUtils.Simulate.change(element.querySelector('input.url'),
         { target: { value: 'http://test.com' } });
-      TestUtils.Simulate.click(element.querySelector('.modal-footer').querySelector('button.select-button'));
-      sinon.assert.called(spy);
+      TestUtils.Simulate.click(selectButton);
+
+      TestUtils.Simulate.change(element.querySelector('input.url'),
+        { target: { value: 'https://test.com' } });
+      TestUtils.Simulate.click(selectButton);
+
+      sinon.assert.calledTwice(spy);
     });
   });
 });

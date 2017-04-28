@@ -3,6 +3,7 @@ import _ from 'lodash';
 import BackButton from '../BackButton';
 import ExternalResourceForm from './ExternalResourceForm';
 import { ExternalViewCard, Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
+import { VALID_URL_REGEX } from '../../constants';
 
 export class ExternalResourceEditor extends React.Component {
   constructor(props) {
@@ -13,6 +14,7 @@ export class ExternalResourceEditor extends React.Component {
 
     _.bindAll(this, [
       'isDirty',
+      'isUrlValid',
       'isDisabled',
       'updateField',
       'returnExternalResource',
@@ -35,9 +37,12 @@ export class ExternalResourceEditor extends React.Component {
     return !_.isEqual(this.initialState, this.state);
   }
 
+  isUrlValid() {
+    return VALID_URL_REGEX.test(this.state.url);
+  }
+
   isDisabled() {
-    const { title, url } = this.state;
-    return !this.isDirty() || _.isEmpty(title) || _.isEmpty(url);
+    return !this.isDirty() || _.isEmpty(this.state.title) || !this.isUrlValid();
   }
 
   updateField(field, value) {
@@ -67,13 +72,20 @@ export class ExternalResourceEditor extends React.Component {
     const { title, description, url, previewImage } = this.state;
     const { onBack } = this.props;
 
+    const showUrlWarning = !_.isEmpty(this.state.url) && !this.isUrlValid();
+    const urlWarning = showUrlWarning ? (
+      <div className="alert error url-warning">
+        {_.get(I18n, 'common.external_resource_editor.form.fields.url.error')}
+      </div>) : null;
+
     const externalResourceFormProps = {
       description,
       onEnter: this.returnExternalResource,
       onFieldChange: this.updateField,
       previewImage,
       title,
-      url
+      url,
+      urlWarning
     };
 
     const previewCardProps = {

@@ -590,6 +590,7 @@ en:
             label: Title
             placeholder: Add a title (required)
           url:
+            error: Invalid URL. Make sure your link starts with http:// or https://.
             label: URL
             placeholder: https://example.com (required)
       header_title: Feature an External Resource

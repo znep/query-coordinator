@@ -96,6 +96,8 @@ export class ExternalResourceForm extends React.Component {
       'placeholder': fetchTranslation('common.external_resource_editor.form.fields.url.placeholder')
     });
 
+    const { urlWarning } = this.props;
+
     const previewImageButtonProps = {
       className: 'btn btn-primary preview-image-button',
       'aria-labelledby': 'external-resource-preview-image-label',
@@ -140,6 +142,7 @@ export class ExternalResourceForm extends React.Component {
         {titleField}
         {descriptionField}
         {urlField}
+        {urlWarning}
         {previewImageField}
         {imageHint}
         {imageWarning}
@@ -154,7 +157,8 @@ ExternalResourceForm.propTypes = {
   onFieldChange: PropTypes.func.isRequired,
   previewImage: PropTypes.string,
   title: PropTypes.string,
-  url: PropTypes.string
+  url: PropTypes.string,
+  urlWarning: PropTypes.element
 };
 
 ExternalResourceForm.defaultProps = {
@@ -162,7 +166,8 @@ ExternalResourceForm.defaultProps = {
   onEnter: _.noop,
   previewImage: '',
   title: '',
-  url: ''
+  url: '',
+  urlWarning: null
 };
 
 export default ExternalResourceForm;

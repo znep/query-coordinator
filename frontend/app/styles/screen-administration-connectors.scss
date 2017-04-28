@@ -7,6 +7,22 @@ $pager-blue: #2f4589;
 
 #connector-content {
 
+  .adminHeader.connectors {
+    span.icon {
+      position: relative;
+      top: -0.4rem;
+    }
+  }
+  .edit-connector {
+    font-weight :bold;
+    font-size: 1.3rem;
+    padding-bottom: 0.5rem;
+    span {
+      font-size: 1rem;
+      font-weight: normal;
+    }
+  }
+
   .gridList td {
     vertical-align: middle;
   }

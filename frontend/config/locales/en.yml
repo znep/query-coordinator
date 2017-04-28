@@ -2823,7 +2823,7 @@ en:
         deleted_pending: Deleted (Pending)
         discovered_assets: Discovered assets
         edit: Edit
-        edit_connector: 'Edit Connector: %{url}'
+        edit_connector: 'Edit Connector'
         errors:
           duplicate_server_error: That Esri Server has already been connected to this domain.
           invalid_attributes_error: 'These parameters were invalid: %{invalid}.'

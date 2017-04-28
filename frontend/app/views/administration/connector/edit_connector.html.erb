@@ -11,7 +11,10 @@
 <div id="connector-content" class="contentBox withLeftNavigation">
   <div class="adminHeader connectors">
     <span class="icon"></span>
-    <h1><%= t('screens.admin.connector.edit_connector', :url => @server.url) %></h1>
+    <div class="edit-connector">
+      <%= t('screens.admin.connector.edit_connector') %>:
+      <span><%= @server.try(:display_name) || @server.url %></span>
+    </div>
     <%= display_standard_flashes %>
     <div class="connector-list-go-back">
       <%= link_to(

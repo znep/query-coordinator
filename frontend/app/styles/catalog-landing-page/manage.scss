@@ -16,7 +16,13 @@ div.clp-manager {
   }
 
   .catalog-landing-page-help-flyout {
-    float: right;
+    position: relative;
+    margin-left: 0.5rem;
+
+    span.socrata-icon-question {
+      position: relative;
+      top: -0.1rem;
+    }
 
     .flyout {
       margin-left: 8px;

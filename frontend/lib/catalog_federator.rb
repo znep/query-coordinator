@@ -61,7 +61,7 @@ class CatalogFederator
     private
 
     def route(id = nil, action = nil)
-      "/v1/source#{"/#{id}" if id}#{"/#{action}" if action}"
+      ['v1', 'source', id, action].compact.join('/').prepend('/')
     end
 
     def headers

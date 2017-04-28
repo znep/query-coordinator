@@ -8,6 +8,7 @@ function getIconClassForDisplayType(displayType) {
       return 'socrata-icon-external';
 
     case 'data_lens':
+    case 'visualization':
       return 'socrata-icon-cards';
 
     case 'story':

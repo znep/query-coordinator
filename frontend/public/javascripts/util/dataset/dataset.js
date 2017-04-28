@@ -4669,7 +4669,7 @@
             if (
               child.hasOwnProperty('type') &&
               child.hasOwnProperty('value') &&
-              child.type === 'literal'
+              _.get(child, 'type') === 'literal'
             ) {
 
               if (String(Number(child.value)) === child.value) {
@@ -4690,8 +4690,8 @@
           if (child.hasOwnProperty('children')) {
             var atLeastOneOperatorGrandchild = _.include(
               _.compact(
-                child.children.map(function(grandchild) {
-                  return grandchild.type;
+                _.get(child, 'children', []).map(function(grandchild) {
+                  return _.get(grandchild, 'type');
                 })
               ),
               'operator'
@@ -4700,7 +4700,9 @@
             if (child.type === 'operator' && !atLeastOneOperatorGrandchild) {
               operators.push(_.cloneDeep(child));
             } else {
-              recursivelyExtractActualFilterConditionOperators(child.children);
+              recursivelyExtractActualFilterConditionOperators(
+                _.get(child, 'children', [])
+              );
             }
           }
         });
@@ -4717,18 +4719,20 @@
         _.isObject(filterCondition) &&
         _.get(filterCondition, 'children', []).length > 0
       ) {
-        recursivelyExtractActualFilterConditionOperators(filterCondition.children);
+        recursivelyExtractActualFilterConditionOperators(
+          _.get(filterCondition, 'children', [])
+        );
       }
 
       return operators;
     };
     var assignNewFiltersForJsonQuery = function(dataset, filters) {
       if (filters.length === 1) {
-        dataset.metadata.jsonQuery.where = filters[0];
+        _.set(dataset, 'metadata.jsonQuery.where', filters[0]);
       } else if (filters.length > 1) {
-        dataset.metadata.jsonQuery.where.children = filters;
+        _.set(dataset, 'metadata.jsonQuery.where.children', filters);
       } else {
-        dataset.metadata.jsonQuery.where = undefined;
+        _.set(dataset, 'metadata.jsonQuery.where', undefined);
       }
     };
     var originalDatasetGrouping = _.get(
@@ -4744,13 +4748,17 @@
     var groupingAddedToNewChildView = (
       _.isNull(originalDatasetGrouping) && !_.isNull(newDatasetGrouping)
     );
+    // Hey, watch out here, occasionally instead of the filterCondition key not
+    // existing, sometimes it does exist but is undefined! Argh!
     var shouldModifyQueryFilterCondition = (
-      _.has(originalDataset, 'query.filterCondition') &&
-      _.has(newDataset, 'query.filterCondition')
+      !_.isUndefined(_.get(originalDataset, 'query.filterCondition')) &&
+      !_.isUndefined(_.get(newDataset, 'query.filterCondition'))
     );
+    // Hey, watch out here, occasionally instead of the where key not existing,
+    // sometimes it does exist but is undefined! Argh!
     var shouldModifyJsonQueryWhere = (
-      _.has(originalDataset, 'metadata.jsonQuery.where') &&
-      _.has(newDataset, 'metadata.jsonQuery.where')
+      !_.isUndefined(_.get(originalDataset, 'metadata.jsonQuery.where')) &&
+      !_.isUndefined(_.get(newDataset, 'metadata.jsonQuery.where'))
     );
 
     // Just return the new dataset if no grouping is applied, or if the parent
@@ -4767,11 +4775,11 @@
     // and then creating a non-default, but also not-inheriting, view.
     if (shouldModifyQueryFilterCondition) {
       var modifiedOriginalFilterCondition = blist.filter.generateSODA1(
-        originalDataset.metadata.jsonQuery.where,
-        originalDataset.metadata.jsonQuery.having,
-        originalDataset.metadata.defaultFilters
+        _.get(originalDataset, 'metadata.jsonQuery.where'),
+        _.get(originalDataset, 'metadata.jsonQuery.having'),
+        _.get(originalDataset, 'metadata.defaultFilters')
       );
-      var newQueryFilterCondition = newDataset.query.filterCondition;
+      var newQueryFilterCondition = _.get(newDataset, 'query.filterCondition');
 
       // Recursively apply convertStringifiedNumberLiteralsToNumbers to all
       // values of modifiedOriginalFilterCondition (_.forIn does not recurse,
@@ -4782,11 +4790,11 @@
         convertStringifiedNumberLiteralsToNumbers
       );
 
-      var newQueryFilterConditionIsSingleFilterClause = newQueryFilterCondition.
-        children.
-        filter(function(newFilter) {
-          return _.get(newFilter, 'type') !== 'operator';
-        }).length > 0;
+      var newQueryFilterConditionIsSingleFilterClause =
+        _.get(newQueryFilterCondition, 'children', []).
+          filter(function(newFilter) {
+            return _.get(newFilter, 'type') !== 'operator';
+          }).length > 0;
 
       // If the children of newQueryFilterCondition constitute a single filter
       // condition (e.g. they are a pair of 'column' and 'literal' types as
@@ -4806,25 +4814,31 @@
         });
 
         if (newFilterExistsInOldFilterCondition) {
-          delete newDataset.query.filterCondition;
+          _.unset(newDataset, 'query.filterCondition');
         }
       // Otherwise, we can actually iterate over newQueryFilterCondition's
       // children and compare them to the existing filters.
       } else {
-        var newFiltersForQuery = newQueryFilterCondition.children.
-          filter(function(newFilter) {
-            var matchingOldFilter = modifiedOriginalFilterCondition.children.
-              filter(function(oldFilter) {
-                return _.isEqual(newFilter, oldFilter);
-              });
+        var newFiltersForQuery =
+          _.get(newQueryFilterCondition, 'children', []).
+            filter(function(newFilter) {
+              var matchingOldFilter = _.get(
+                modifiedOriginalFilterCondition, 'children', []).
+                  filter(function(oldFilter) {
+                    return _.isEqual(newFilter, oldFilter);
+                  });
 
-            return matchingOldFilter.length === 0;
-          });
+              return matchingOldFilter.length === 0;
+            });
 
         if (newFiltersForQuery.length > 0) {
-          newDataset.query.filterCondition.children = newFiltersForQuery;
+          _.set(
+            newDataset,
+            'query.filterCondition.children',
+            newFiltersForQuery
+          );
         } else {
-          delete newDataset.query.filterCondition;
+          _.unset(newDataset, 'query.filterCondition');
         }
       }
     }
@@ -4841,8 +4855,11 @@
     // there is more than one filter. Otherwise, it stores the filter parameters
     // at the root of the object.
     if (shouldModifyJsonQueryWhere) {
-      var originalJsonQueryWhere = originalDataset.metadata.jsonQuery.where;
-      var newJsonQueryWhere = newDataset.metadata.jsonQuery.where;
+      var originalJsonQueryWhere = _.get(
+        originalDataset,
+        'metadata.jsonQuery.where'
+      );
+      var newJsonQueryWhere = _.get(newDataset, 'metadata.jsonQuery.where');
       var moreThanOneFilterPresent = (
         originalJsonQueryWhere.hasOwnProperty('children') ||
         newJsonQueryWhere.hasOwnProperty('children')
@@ -4859,12 +4876,13 @@
           originalJsonQueryWhere.hasOwnProperty('children') &&
           newJsonQueryWhere.hasOwnProperty('children')
         ) {
-          newFiltersForJsonQuery = newJsonQueryWhere.children.
+          newFiltersForJsonQuery = _.get(newJsonQueryWhere, 'children', []).
             filter(function(newFilter) {
-                var matchingOldFilter = originalJsonQueryWhere.children.
-                  filter(function(oldFilter) {
-                    return _.isEqual(newFilter, oldFilter);
-                  });
+                var matchingOldFilter =
+                  _.get(originalJsonQueryWhere, 'children', []).
+                    filter(function(oldFilter) {
+                      return _.isEqual(newFilter, oldFilter);
+                    });
 
                 return matchingOldFilter.length === 0;
               });
@@ -4875,19 +4893,20 @@
           // also exist in originalJsonQueryWhere.
           var singleNewFilterExistsInOriginalJsonQueryWhere = false;
 
-          originalJsonQueryWhere.children.forEach(function(oldFilter) {
-            if (_.isEqual(oldFilter, newJsonQueryWhere)) {
-              singleNewFilterExistsInOriginalJsonQueryWhere = true;
-            }
-          });
+          _.get(originalJsonQueryWhere, 'children', []).
+            forEach(function(oldFilter) {
+              if (_.isEqual(oldFilter, newJsonQueryWhere)) {
+                singleNewFilterExistsInOriginalJsonQueryWhere = true;
+              }
+            });
 
           if (singleNewFilterExistsInOriginalJsonQueryWhere) {
-            newDataset.metadata.jsonQuery.where = undefined;
+            _.set(newDataset, 'metadata.jsonQuery.where', undefined);
           }
         } else if (newJsonQueryWhere.hasOwnProperty('children')) {
           // Save all filters on the new jsonQuery where that are not equal to
           // the original jsonQuery where.
-          newFiltersForJsonQuery = newJsonQueryWhere.children.
+          newFiltersForJsonQuery = _.get(newJsonQueryWhere, 'children', []).
             filter(function(newFilter) {
               return !_.isEqual(originalJsonQueryWhere, newFilter);
             });
@@ -4901,9 +4920,9 @@
         // we can just use that filter verbatim since the modifying-lens-id
         // inheritance wouldn't apply in any case.
         if (!_.isEqual(originalJsonQueryWhere, newJsonQueryWhere)) {
-          newDataset.metadata.jsonQuery.where = newJsonQueryWhere;
+          _.set(newDataset, 'metadata.jsonQuery.where', newJsonQueryWhere);
         } else {
-          delete newDataset.metadata.jsonQuery.where;
+          _.unset(newDataset, 'metadata.jsonQuery.where');
         }
       }
     }
@@ -4929,17 +4948,23 @@
       'feature_flags.force_use_of_modifying_lens_id_in_grouped_child_view',
       false
     );
-    var originalDatasetHasGroupBys = _.has(
-      originalDataset,
-      'query.groupBys'
+    var originalDatasetHasGroupBys = !_.isUndefined(
+      _.get(
+        originalDataset,
+        'query.groupBys'
+      )
     );
-    var originalDatasetHasFilterCondition = _.has(
-      originalDataset,
-      'query.filterCondition'
+    var originalDatasetHasFilterCondition = !_.isUndefined(
+      _.get(
+        originalDataset,
+        'query.filterCondition'
+      )
     );
-    var newDatasetHasGroupBys = _.has(
-      newDataset,
-      'query.groupBys'
+    var newDatasetHasGroupBys = !_.isUndefined(
+      _.get(
+        newDataset,
+        'query.groupBys'
+      )
     );
 
     if (

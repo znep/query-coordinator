@@ -13,7 +13,7 @@ module Paperclip
   module CopyAttachments
 
     # Copies S3-stored attachments from the source ActiveRecord instance.
-    def copy_attachments_from(source)
+    def copy_attachments_from(source, validate_copy = true)
       self.class.attachment_definitions.keys.each do |attachment_name|
         source_attachment = source.send(attachment_name)
 
@@ -28,11 +28,16 @@ module Paperclip
           source_s3_object = source_attachment.s3_object(style)
           destination_s3_object = destination_attachment.s3_object(style)
 
-          source_s3_object.copy_to(
-            destination_s3_object,
-            acl: source_attachment.s3_permissions(style),
-            server_side_encryption: 'AES256'
-          )
+          begin
+            source_s3_object.copy_to(
+              destination_s3_object,
+              acl: source_attachment.s3_permissions(style),
+              server_side_encryption: 'AES256'
+            )
+          rescue Aws::S3::Errors::AccessDenied => error
+            puts Paperclip.log "Aws::S3::Errors::AccessDenied when copying #{source_s3_object.key} -> #{destination_s3_object.key}"
+            raise error if validate_copy
+          end
         end
       end
     end

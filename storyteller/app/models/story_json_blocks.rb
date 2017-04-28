@@ -109,7 +109,7 @@ class StoryJsonBlocks
           )
         end
 
-        document_copy.copy_attachments_from(document)
+        document_copy.copy_attachments_from(document, validate_document_copy)
         document_copy.update_attribute(:status, 'processed')
 
         value['documentId'] = document_copy.id

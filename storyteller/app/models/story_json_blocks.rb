@@ -5,16 +5,19 @@
 class StoryJsonBlocks
 
   class InvalidNewBlocksError < StandardError ; end
+  class CopyAttachmentsError < StandardError ; end
 
   attr_reader :json_blocks
 
   # @param json_blocks [Array] Hash representation of the blocks
   # @param user [Hash] The user that is associated with creating any blocks
   # @param attributes [Boolean] :copy make a copy of attachments?
+  # @param attributes [Boolean] :validate_document_copy validate new document?
   def initialize(json_blocks, user, options = {})
     @json_blocks = json_blocks
     @user = user
     @copy = options[:copy]
+    @validate_document_copy = options.fetch(:validate_document_copy, true)
 
     unless json_blocks.is_a?(Array)
       raise ArgumentError.new("json_blocks attribute is not an array: '#{json_blocks}'")
@@ -66,7 +69,7 @@ class StoryJsonBlocks
   end
 
   private
-  attr_reader :copy, :user
+  attr_reader :copy, :user, :validate_document_copy
 
   def all_json_blocks_are_hashes?
     json_blocks.all? do |json_block|
@@ -95,7 +98,16 @@ class StoryJsonBlocks
 
         document_copy = document.dup
         document_copy.status = 'unprocessed'
-        document_copy.save!
+
+        # We don't validate the Document model when we're running this from a migration
+        # because we might have older Documents in the database that would no longer
+        # pass validation today, i.e. because we have an older format of direct_upload_url.
+        # We're assuming that if it is in the database, it validated at the time of creation.
+        unless document_copy.save(validate: validate_document_copy)
+          raise CopyAttachmentsError.new(
+            "Error copying Document(#{document.id}) attachments: #{document_copy.errors.full_messages.to_sentence}"
+          )
+        end
 
         document_copy.copy_attachments_from(document)
         document_copy.update_attribute(:status, 'processed')

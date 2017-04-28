@@ -19,10 +19,15 @@ class CopyAttachmentsInPublishedStories < ActiveRecord::Migration
 
         # This call does the copying of attachments and doesn't save
         # the new components back to the block
+        #
+        # Need to pass in `validate_document_copy: false` since we may have older Documents
+        # in our production environments that would fail validation if saved today
         json_blocks = StoryJsonBlocks.new(
           this_block_as_json_blocks_array,
           { id: block.created_by },
-          copy: true)
+          copy: true,
+          validate_document_copy: false
+        )
 
         # only care about the first one since we initialized the json_blocks
         # class with one block.

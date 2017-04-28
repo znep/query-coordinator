@@ -126,6 +126,42 @@ RSpec.describe StoryJsonBlocks, type: :model do
       end
     end
 
+    context 'when original Document fails validation' do
+      let(:blocks) { [FactoryGirl.build(:block_with_image)] }
+
+      before do
+        allow_any_instance_of(Document).to receive(:valid?).and_return(false)
+      end
+
+      it 'raises CopyAttachmentsError' do
+        expect { subject }.to raise_error(StoryJsonBlocks::CopyAttachmentsError)
+      end
+
+      it 'does not save document' do
+        expect {
+          begin
+            subject
+          rescue StoryJsonBlocks::CopyAttachmentsError
+          end
+        }.to_not change { Document.count }
+      end
+
+      context 'when we pass in `validate_document_copy: false` option' do
+        let(:options) do
+          { copy: true, validate_document_copy: false }
+        end
+
+        it 'does not raise' do
+          expect { subject }.to_not raise_error
+        end
+
+        it 'saves document' do
+          expect { subject }.to change { Document.count }
+        end
+
+      end
+    end
+
     def backfill_documents_in_blocks(blocks)
       blocks.each do |block|
         block.components.each do |component|

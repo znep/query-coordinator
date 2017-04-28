@@ -47,6 +47,7 @@ export class Pager extends React.Component {
   }
 
   pageInputChange(e) {
+    e.stopPropagation();
     const newPage = parseInt(e.target.value, 10);
     if (newPage === this.props.currentPage && !this.state.pageIsInvalid) return;
     if (newPage >= 1 && newPage <= this.lastPage()) {
@@ -59,7 +60,9 @@ export class Pager extends React.Component {
   }
 
   pageInputKeyDown(e) {
+    e.stopPropagation();
     if (e.keyCode === ENTER) {
+      e.preventDefault();
       e.target.blur();
     }
   }

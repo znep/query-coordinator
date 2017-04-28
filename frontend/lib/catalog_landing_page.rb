@@ -150,7 +150,9 @@ class CatalogLandingPage
         )
       elsif item[:contentType] == 'internal'
         view = View.find(item[:uid])
-        item.merge!(view.data.slice(*%w(displayType createdAt rowsUpdatedAt viewCount)))
+        item.merge!(view.data.slice(*%w(createdAt rowsUpdatedAt viewCount)))
+        # EN-15660: use view.display.type instead of view.displayType :(
+        item[:displayType] = view.display.type
         item[:isPrivate] = !view.is_public? # See View class regarding semantics of is_private?
       else
         raise "Unknown featured content type: #{item[:contentType]}"

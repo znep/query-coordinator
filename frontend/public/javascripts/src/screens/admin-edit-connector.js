@@ -127,7 +127,7 @@ function iconClassForValue(selectedValue) {
 function setConnectionStrategy() {
   return (event) => {
     const $target = $(event.currentTarget);
-    const selectAllAssets = ($target.value() && ($target.val() === 'all' || $target.val() !== 'ignored'));
+    const selectAllAssets = ($target.value() && ($target.val() === 'all' || $target.val() === 'catalog') || $target.val() == 'data');
     const setState = ($el) => ($el.attr('disabled', selectAllAssets));
     const setDisabledClass = ($el) => ($el[selectAllAssets ? 'addClass' : 'removeClass']('is-disabled'));
 
@@ -191,5 +191,4 @@ $(() => {
   $('.sync-type-check').change(onChecked);
   $('.sync-type-select').change(onSelected);
   $('.server-sync').change(setConnectionStrategy());
-  $('.server-sync').trigger('change');
 });

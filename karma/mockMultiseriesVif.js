@@ -53,7 +53,7 @@ export default {
         "domain": "vertex-stories.test-socrata.com",
         "measure": {
           "columnName": null,
-          "aggregationFunction": "count"
+          "aggregationFunction": "sum"
         },
         "type": "socrata.soql",
         "filters": []

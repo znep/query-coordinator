@@ -589,6 +589,23 @@ describe('SvgVisualization', () => {
     });
   });
 
+  describe('#getMeasureAggregationBySeriesIndex', () => {
+    it('returns the aggregation function at the series index', () => {
+      const viz = new SvgVisualization($element, mockMultiseriesVif);
+      assert.equal(viz.getMeasureAggregationBySeriesIndex(0), 'count');
+      assert.equal(viz.getMeasureAggregationBySeriesIndex(1), 'sum');
+    });
+
+    it('downcases the aggregation function', () => {
+      const viz = new SvgVisualization($element, mockVif);
+      const copiedVif = _.cloneDeep(viz.getVif());
+      copiedVif.series[0].dataSource.measure.aggregationFunction = 'COUNT';
+      viz.updateVif(copiedVif);
+
+      assert.equal(viz.getMeasureAggregationBySeriesIndex(0), 'count');
+    });
+  });
+
   describe('#getUnitOneBySeriesIndex', () => {
     it('returns the specified value for one unit by series index', () => {
       const viz = new SvgVisualization($element, mockMultiseriesVif);
@@ -596,13 +613,32 @@ describe('SvgVisualization', () => {
       assert.equal(viz.getUnitOneBySeriesIndex(1), 'Banana');
     });
 
-    it('returns an empty string if the one unit is not specified', () => {
+    it('returns the default unit if the one unit is not specified', () => {
       const viz = new SvgVisualization($element, mockVif);
       const copiedVif = _.cloneDeep(viz.getVif());
       copiedVif.series[0].unit.one = null;
       viz.updateVif(copiedVif);
 
-      assert.equal(viz.getUnitOneBySeriesIndex(0), '');
+      assert.equal(viz.getUnitOneBySeriesIndex(0), I18n.translate('visualizations.common.unit.one'));
+    });
+
+    it('returns the default unit if the one unit is an empty string', () => {
+      const viz = new SvgVisualization($element, mockVif);
+      const copiedVif = _.cloneDeep(viz.getVif());
+      copiedVif.series[0].unit.one = '';
+      viz.updateVif(copiedVif);
+
+      assert.equal(viz.getUnitOneBySeriesIndex(0), I18n.translate('visualizations.common.unit.one'));
+    });
+
+    it('returns the sum aggregation unit if there is an aggregation function and no specified one unit', () => {
+      const viz = new SvgVisualization($element, mockVif);
+      const copiedVif = _.cloneDeep(viz.getVif());
+      copiedVif.series[0].unit.one = null;
+      copiedVif.series[0].dataSource.measure.aggregationFunction = 'sum';
+      viz.updateVif(copiedVif);
+
+      assert.equal(viz.getUnitOneBySeriesIndex(0), I18n.translate('visualizations.common.sum_aggregation_unit'));
     });
   });
 
@@ -613,13 +649,32 @@ describe('SvgVisualization', () => {
       assert.equal(viz.getUnitOtherBySeriesIndex(1), 'Bananas');
     });
 
-    it('returns an empty string if the other unit is not specified', () => {
+    it('returns the default unit if the other unit is not specified', () => {
       const viz = new SvgVisualization($element, mockVif);
       const copiedVif = _.cloneDeep(viz.getVif());
       copiedVif.series[0].unit.other = null;
       viz.updateVif(copiedVif);
 
-      assert.equal(viz.getUnitOtherBySeriesIndex(0), '');
+      assert.equal(viz.getUnitOtherBySeriesIndex(0), I18n.translate('visualizations.common.unit.other'));
+    });
+
+    it('returns the default unit if the other unit is an empty string', () => {
+      const viz = new SvgVisualization($element, mockVif);
+      const copiedVif = _.cloneDeep(viz.getVif());
+      copiedVif.series[0].unit.other = '';
+      viz.updateVif(copiedVif);
+
+      assert.equal(viz.getUnitOtherBySeriesIndex(0), I18n.translate('visualizations.common.unit.other'));
+    });
+
+    it('returns the sum aggregation unit if there is an aggregation function and no specified other unit', () => {
+      const viz = new SvgVisualization($element, mockVif);
+      const copiedVif = _.cloneDeep(viz.getVif());
+      copiedVif.series[0].unit.other = null;
+      copiedVif.series[0].dataSource.measure.aggregationFunction = 'sum';
+      viz.updateVif(copiedVif);
+
+      assert.equal(viz.getUnitOtherBySeriesIndex(0), I18n.translate('visualizations.common.sum_aggregation_unit'));
     });
   });
 

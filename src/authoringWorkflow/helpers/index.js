@@ -64,6 +64,12 @@ export const setUnits = (series, action) => {
   const rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', null);
   const unitOne = _.get(series, 'unit.one', null);
   const unitOther = _.get(series, 'unit.other', null);
+  const defaultUnitRegex = new RegExp(`^${translate('visualizations.common.unit.one')}$`);
+
+  // If the rowDisplayUnit looks like our default display unit, don't set it as a custom unit
+  if (!_.isEmpty(rowDisplayUnit) && rowDisplayUnit.match(defaultUnitRegex)) {
+    return;
+  }
 
   // EN-13353 - Error Creating Region Map
   //

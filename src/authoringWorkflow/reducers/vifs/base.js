@@ -71,13 +71,13 @@ export default function(state, action) {
 
     case actions.SET_UNIT_ONE:
       forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'unit.one', action.one, translate('visualizations.common.unit.one'));
+        _.set(series, 'unit.one', action.one);
       });
       break;
 
     case actions.SET_UNIT_OTHER:
       forEachSeries(state, series => {
-        setStringValueOrDefaultValue(series, 'unit.other', action.other, translate('visualizations.common.unit.other'));
+        _.set(series, 'unit.other', action.other);
       });
       break;
 

@@ -40,8 +40,8 @@ const DEFAULT_TYPE_VARIANTS = {
   columnChart: 'column', // others: 'bar'
   timelineChart: 'area' // others: 'line'
 };
-const DEFAULT_UNIT_ONE = '';
-const DEFAULT_UNIT_OTHER = '';
+const DEFAULT_UNIT_ONE = I18n.translate('visualizations.common.unit.one');
+const DEFAULT_UNIT_OTHER = I18n.translate('visualizations.common.unit.other');
 
 function SvgVisualization($element, vif, options) {
   const self = this;
@@ -520,19 +520,33 @@ function SvgVisualization($element, vif, options) {
       DEFAULT_TYPE_VARIANTS[typeComponents[0]];
   };
 
+  this.getMeasureAggregationBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
+
+    return _.chain(self.getVif()).
+      get(`series[${actualSeriesIndex}]dataSource.measure.aggregationFunction`).
+      toLower().
+      value();
+  };
+
   this.getUnitOneBySeriesIndex = function(seriesIndex) {
     const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
       self.getVif(),
       seriesIndex
     );
-    const unitOne = _.get(
-      self.getVif(),
-      `series[${actualSeriesIndex}].unit.one`
-    );
+    const hasSumAggregation = _.isEqual(self.getMeasureAggregationBySeriesIndex(seriesIndex), 'sum');
+    const unitOne = _.get(self.getVif(), `series[${actualSeriesIndex}]unit.one`);
 
-    return (_.isString(unitOne)) ?
-      unitOne :
-      DEFAULT_UNIT_ONE;
+    if (_.isString(unitOne) && !_.isEmpty(unitOne)) {
+      return unitOne;
+    } else if (hasSumAggregation) {
+      return I18n.translate('visualizations.common.sum_aggregation_unit');
+    } else {
+      return DEFAULT_UNIT_ONE;
+    }
   };
 
   this.getUnitOtherBySeriesIndex = function(seriesIndex) {
@@ -540,14 +554,16 @@ function SvgVisualization($element, vif, options) {
       self.getVif(),
       seriesIndex
     );
-    const unitOther = _.get(
-      self.getVif(),
-      `series[${actualSeriesIndex}].unit.other`
-    );
+    const hasSumAggregation = _.isEqual(self.getMeasureAggregationBySeriesIndex(seriesIndex), 'sum');
+    const unitOther = _.get(self.getVif(), `series[${actualSeriesIndex}]unit.other`);
 
-    return (_.isString(unitOther)) ?
-      unitOther :
-      DEFAULT_UNIT_OTHER;
+    if (_.isString(unitOther) && !_.isEmpty(unitOther)) {
+      return unitOther;
+    } else if (hasSumAggregation) {
+      return I18n.translate('visualizations.common.sum_aggregation_unit');
+    } else {
+      return DEFAULT_UNIT_OTHER;
+    }
   };
 
   this.getPrimaryColorBySeriesIndex = function(seriesIndex) {

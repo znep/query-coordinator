@@ -242,11 +242,11 @@ export default {
       fields: {
         units_one: {
           title: 'Singular',
-          placeholder: 'Record'
+          placeholder: 'Row'
         },
         units_other: {
           title: 'Plural',
-          placeholder: 'Records'
+          placeholder: 'Rows'
         },
         row_inspector_title: {
           no_value: 'No Point Inspector Title'
@@ -304,8 +304,8 @@ export default {
       other_category: '(Other)',
       unlabeled_measure_prefix: 'Measure ',
       unit: {
-        one: 'Record',
-        other: 'Records'
+        one: 'Row',
+        other: 'Rows'
       },
       validation: {
         errors: {
@@ -330,7 +330,8 @@ export default {
         }
       },
       error_other_category_query_failed: 'An error was encountered when preparing the "Other" grouping. This data configuration may not support the \'Group remaining as "Other"\' option.',
-      error_duplicated_dimension_value: 'The data settings for this chart have resulted in duplicate values. Try selecting a dimension with unique values or apply an aggregation function to the measure.'
+      error_duplicated_dimension_value: 'The data settings for this chart have resulted in duplicate values. Try selecting a dimension with unique values or apply an aggregation function to the measure.',
+      sum_aggregation_unit: 'Total'
     },
     choropleth_map: {
       title: 'Choropleth Map',

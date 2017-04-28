@@ -164,7 +164,7 @@ describe CommonMetadataMethods do
 
         it 'requests dataset metadata from both phidippides and core' do
           expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata)
-          expect(View).to receive(:find).twice
+          expect(View).to receive(:find).exactly(3).times
           dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
         end
       end

@@ -253,19 +253,12 @@ module CommonMetadataMethods
   end
 
   def fetch_dataset_metadata_from_core(dataset_id, options)
-    migrations = View.migrations(dataset_id) rescue nil
-
-    if migrations
-      obe_metadata = View.find(migrations[:obeId], {'Cookie' => _cookies(options)}).data.with_indifferent_access
-      nbe_metadata = View.find(migrations[:nbeId], {'Cookie' => _cookies(options)}).data.with_indifferent_access
-    else
-      metadata = View.find(dataset_id, {'Cookie' => _cookies(options)}).data.with_indifferent_access
-      is_nbe_only = metadata[:newBackend]
-      nbe_metadata = is_nbe_only ? metadata : {}
-      obe_metadata = is_nbe_only ? {} : metadata
-    end
-
-    core_metadata = translate_core_metadata_to_legacy_structure(obe_metadata, nbe_metadata)
+    # it's necessary to get nbe metadata because it contains
+    # fields that are not present in obe metadata
+    view = View.find(dataset_id, {'Cookie' => _cookies(options)})
+    nbe_view = view.nbe_view
+    nbe_metadata = nbe_view.nil? ? {} : nbe_view.data.with_indifferent_access
+    core_metadata = translate_core_metadata_to_legacy_structure(nbe_metadata)
     { body: core_metadata, status: '200' }
   end
 
@@ -314,22 +307,25 @@ module CommonMetadataMethods
 
   # For Phidippides deprecation, this method should be progressively enhanced to
   # translate the currently-targeted subset of fields.
-  def translate_core_metadata_to_legacy_structure(obe_metadata, nbe_metadata)
-    obe_columns = obe_metadata.fetch(:columns, []).each_with_object({}) do |column, accum|
-      accum[column[:fieldName]] = {
-        hideInTable: column.fetch(:flags, []).include?('hidden')
-      }
-    end
-
+  def translate_core_metadata_to_legacy_structure(nbe_metadata)
     nbe_columns = nbe_metadata.fetch(:columns, []).each_with_object({}) do |column, accum|
       accum[column[:fieldName]] = {
+        cardinality: column.dig(:cachedContents, :cardinality),
         computationStrategy: get_computation_strategy_legacy_structure(column),
-        cardinality: column.dig(:cachedContents, :cardinality)
+        description: column[:description],
+        fred: column[:renderTypeName],
+        name: column[:name],
+        physicalDatatype: column[:renderTypeName]
       }.compact
     end
 
+    # The OBE->NBE conversion doesn't add any metadata to allow us to differentiate sub-columns,
+    # except that it has a naming convention of "Parent Column Name (Sub-column Name)"
+    # flag_subcolumns! is an existing helper method that identifies subcolumns from core metadata
+    flag_subcolumns!(nbe_columns)
+
     metadata = {
-      columns: obe_columns.deep_merge(nbe_columns),
+      columns: nbe_columns,
       permissions: {
         isPublic: (nbe_metadata[:grants] || []).any? { |grant| grant[:flags].include?('public') }
       }
@@ -339,15 +335,10 @@ module CommonMetadataMethods
       metadata[:downloadOverride] = nbe_metadata[:metadata][:overrideLink]
     end
 
-    # field 'rowLabel' exists on the metadata of both the obe and nbe copies
-    # because we have datasets that are nbe-only and potentially datasets that are obe_only
-    # we should try to get the field from the nbe copy first, and then if not found,
-    # get it from the obe copy.
-    if nbe_metadata.dig(:metadata, :rowLabel)
-      metadata[:rowDisplayUnit] = nbe_metadata[:metadata][:rowLabel]
-    elsif obe_metadata.dig(:metadata, :rowLabel)
-      metadata[:rowDisplayUnit] = obe_metadata[:metadata][:rowLabel]
-    end
+    # phidippides.rb has a helper method augment_dataset_metadata!
+    # that will create phidippides-like structure on some fields using core metadata
+    # this helper method is especially useful in creating fields with a complex structure
+    phidippides.augment_dataset_metadata!(nbe_metadata[:id], metadata)
 
     metadata
   end

@@ -30,7 +30,7 @@ class Administration::ConnectorController < AdministrationController
         response = CatalogFederatorConnector.create(params[:server])
         success_notice = t('screens.admin.connector.flashes.created_data_json')
       rescue StandardError => error
-        # Core transforms the 400 returned by the catalog federator service to a 500, so we match the text
+        # Catalog federator service transforms the 400 returned by core into a 500, so we match the text.
         if error.message.match(/source already exists/)
           flash[:error] = t('screens.admin.connector.flashes.server_already_exists')
           return redirect_to :connectors

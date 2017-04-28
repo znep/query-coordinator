@@ -38,7 +38,7 @@ describe Administration::ConnectorController do
       let(:selection_diff) do
         {
           :addedSelections => ['http://some.url.com', 'http://another.url.com', 'http://yet.another.url.com'],
-          :removedSelections=>[]
+          :removedSelections => []
         }
       end
       let(:sync_policy) { 'all' }

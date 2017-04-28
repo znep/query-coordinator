@@ -43,7 +43,7 @@ describe OpenPerformance::Odysseus do
       let(:odysseus_response_content_type) { 'text/plain' }
 
       it 'raises with a distinctive message' do
-        expect { example_invocation.call }.to raise_error(/Unexpected non-json response from Odysseus/)
+        expect { example_invocation.call }.to raise_error(/Unexpected non-json non-csv response from Odysseus/)
       end
     end
 

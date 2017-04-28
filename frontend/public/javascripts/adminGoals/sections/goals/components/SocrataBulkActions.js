@@ -31,7 +31,7 @@ class SocrataBulkActions extends React.Component {
       infoBoxFor: 'Csv'
     });
 
-    this.props.downloadCsv();
+    this.props.downloadCsv(this.props.csvUrl);
   }
 
   handleCancelCsv() {
@@ -78,7 +78,7 @@ class SocrataBulkActions extends React.Component {
   }
 
   render() {
-    const { csvExport, translations, openBulkEditModal, selectedRowsCount } = this.props;
+    const { csvExport, translations, openBulkEditModal, selectedRowsCount, csvUrl } = this.props;
 
     const editTitle = Helpers.translator(translations, 'admin.bulk_edit.button_title');
     const csvExportTitle = Helpers.translator(translations, 'admin.export.Csv.button_label');
@@ -93,7 +93,7 @@ class SocrataBulkActions extends React.Component {
           <Components.Socrata.DownloadButton ref="csv"
                                              simple
                                              fileName={Constants.goalsCsvFilename}
-                                             fileUrl={Constants.goalsCsvUrl}
+                                             fileUrl={csvUrl}
                                              inProgress={csvExport.inProgress}
                                              onStartDownload={this.handleDownloadCsv}>
             { csvExportTitle }
@@ -105,15 +105,22 @@ class SocrataBulkActions extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  translations: state.get('translations'),
-  selectedRowsCount: State.getSelectedIds(state).count(),
-  csvExport: Selectors.getCsvExport(state).toJS()
-});
+const mapStateToProps = state => {
+  // TODO: Remove the fallback to V1 when storyteller's V3 api is stable in production.
+  const csvUrl = _.some(state.getIn(['goals', 'data']).toJS(), 'narrative') ?
+    Constants.goalsCsvUrlV3 : Constants.goalsCsvUrlV1;
+
+  return {
+    csvUrl,
+    translations: state.get('translations'),
+    selectedRowsCount: State.getSelectedIds(state).count(),
+    csvExport: Selectors.getCsvExport(state).toJS()
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   openBulkEditModal: () => dispatch(Actions.BulkEdit.openModal()),
-  downloadCsv: () => dispatch(Actions.DataExport.downloadCsv()),
+  downloadCsv: (csvUrl) => dispatch(Actions.DataExport.downloadCsv(csvUrl)),
   cancelDownloadCsv: () => dispatch(Actions.DataExport.cancelDownloadCsv())
 });
 

@@ -1,6 +1,6 @@
 # Utility wrapper around Net::HTTP* responses.
 class HttpResponse
-  attr_reader :raw, :json
+  attr_reader :raw, :json, :csv
 
   def initialize(http_response = nil)
     @raw = http_response
@@ -9,6 +9,8 @@ class HttpResponse
     rescue JSON::ParserError => error
       @json = nil
     end
+
+    @csv = csv? ? CSV.parse(raw.body) : nil
   end
 
   def code
@@ -44,5 +46,10 @@ class HttpResponse
   def json?
     raw && raw.try(:[], 'Content-Type') &&
       raw['Content-Type'].include?('application/json') && raw.body.size > 1
+  end
+
+  def csv?
+    raw && raw.try(:[], 'Content-Type') &&
+      raw['Content-Type'].include?('text/csv') && raw.body.size > 1
   end
 end

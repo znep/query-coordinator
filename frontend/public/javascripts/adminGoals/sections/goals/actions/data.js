@@ -3,6 +3,7 @@ import * as SharedActions from '../../shared/actions';
 import * as Immutable from 'immutable';
 import * as Helpers from '../../../helpers';
 import * as State from '../state';
+import Airbrake from '../../../../common/airbrake';
 
 export const types = {
   setAll: 'goals.data.setAll',
@@ -34,10 +35,11 @@ export const load = () => (dispatch, getState) => {
       dispatch(setAll(Immutable.fromJS(goals)));
       dispatch(SharedActions.loading.stop());
     }).
-    catch(() => { // eslint-disable-line dot-notation
+    catch((error) => { // eslint-disable-line dot-notation
       const translations = State.getTranslations(getState());
       const message = Helpers.translator(translations, 'admin.listing.load_error');
 
+      Airbrake.notify(error);
       dispatch(SharedActions.showGlobalMessage('goals', message));
       dispatch(SharedActions.loading.stop());
     });

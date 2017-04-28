@@ -1,4 +1,5 @@
 import * as api from './basic';
+import Airbrake from '../../common/airbrake';
 
 const goalsPrefix = 'goals';
 
@@ -18,7 +19,15 @@ export function update(goalId, goalVersion, data) {
 }
 
 export function getAll() {
-  return api.get('v1', `${goalsPrefix}.json`, {});
+  return api.get('v3', `${goalsPrefix}.json`, {}).catch(
+    (error) => {
+      // Maybe Storyteller is down or hasn't deployed the new API yet. Fall back to old API.
+      Airbrake.notify({
+        error,
+        context: { info: 'goals.getAll, falling back to v1 API' }
+      });
+      return api.get('v1', `${goalsPrefix}.json`, {});
+    });
 }
 
 export function getById(goalId) {

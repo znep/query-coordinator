@@ -2358,6 +2358,7 @@ en:
       goal_values:
         status_private: Private
         status_public: Public
+        status_public_with_draft: Public (unpublished draft)
       listing:
         dashboard: Dashboard
         default_alert_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"

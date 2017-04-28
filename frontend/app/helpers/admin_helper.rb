@@ -169,6 +169,11 @@ module AdminHelper
 
   def render_admin_server_config
     server_config = {
+      :airbrakeEnvironment => ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
+      :airbrakeKey => ENV['ADMIN_GOALS_PAGE_AIRBRAKE_API_KEY'] ||
+        APP_CONFIG.admin_goals_page_airbrake_api_key,
+      :airbrakeProjectId => ENV['ADMIN_GOALS_PAGE_AIRBRAKE_PROJECT_ID'] ||
+        APP_CONFIG.admin_goals_page_airbrake_project_id,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :domain => CurrentDomain.cname,

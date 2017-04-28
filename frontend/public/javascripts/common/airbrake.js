@@ -29,6 +29,32 @@ function init(projectId, projectKey) {
   });
 }
 
+const warnOnce = _.once(() => {
+  if (window.console && console.info) {
+    console.info('Airbrake not initialized.');
+  }
+});
+
+// If airbrake has been initialized, provide it to the callback.
+// If it has not been initialized, prints a warning once.
+function getAirbrake(callback) {
+  if (airbrake) {
+    callback(airbrake);
+  } else {
+    warnOnce();
+  }
+}
+
+// Convenience function - if airbrake has been initialized, call notify
+// on it with the given payload. If not, warn once.
+function notify(payload) {
+  getAirbrake((ab) => {
+    ab.notify(payload);
+  });
+}
+
 export default {
-  init
+  init,
+  getAirbrake,
+  notify
 };

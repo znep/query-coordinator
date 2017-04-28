@@ -316,7 +316,7 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[4];
+        const action = store.getActions()[4].operations[2];
 
         expect(action.type).to.eq(UPSERT_FROM_SERVER);
 
@@ -352,9 +352,9 @@ describe('actions/manageMetadata', () => {
       setTimeout(() => {
         const actions = store.getActions();
 
-        const batchedActions = actions[6].operations;
+        const batchedActions = actions[4].operations;
 
-        expect(batchedActions.length).to.eq(4);
+        expect(batchedActions.length).to.eq(6);
 
         expect(batchedActions.map(action => action.type)).to.contain(UPSERT_FROM_SERVER);
 

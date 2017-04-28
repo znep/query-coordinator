@@ -153,9 +153,9 @@ function subscribeToUpload(dispatch, upload) {
       upload_id: upload.id
     }));
     dispatch(subscribeToRowErrors(inputSchema.id));
-    inputSchema.input_columns.forEach((column) => {
-      dispatch(upsertFromServer('input_columns', column));
-    });
+    dispatch(batch(inputSchema.input_columns.map((column) => (
+      upsertFromServer('input_columns', column)
+    ))));
     return inputSchema.output_schemas.map((outputSchema) => {
       return insertAndSubscribeToOutputSchema(dispatch, upload, outputSchema);
     });
@@ -194,7 +194,7 @@ export function insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outpu
       ..._.omit(outputColumn, ['transform']),
       transform_id: outputColumn.transform.id
     }));
-    dispatch(upsertFromServer('output_schema_columns', {
+    actions.push(upsertFromServer('output_schema_columns', {
       id: `${outputSchemaResponse.id}-${outputColumn.id}`,
       output_schema_id: outputSchemaResponse.id,
       output_column_id: outputColumn.id

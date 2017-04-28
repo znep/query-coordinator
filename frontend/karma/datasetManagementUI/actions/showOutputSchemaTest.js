@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, assert } from 'chai';
 import _ from 'lodash';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import { getStoreWithOneColumn } from '../data/storeWithOneColumn';
@@ -14,7 +14,8 @@ import {
 import {
   batch,
   insertSucceeded,
-  insertFromServerIfNotExists
+  insertFromServerIfNotExists,
+  updateFromServer
 } from 'actions/database';
 import { statusSavedOnServer } from 'lib/database/statuses';
 import mockPhx from '../testHelpers/mockPhoenixSocket';
@@ -56,6 +57,47 @@ describe('actions/showOutputSchema', () => {
         }
       ]);
     });
+
+    it('uses the input column\'s field name in the transform even if the output column\'s field name has changed', () => {
+      // ...than the input column's fieldname
+      const store = getStoreWithOutputSchema();
+
+      store.dispatch(updateFromServer('output_columns', {
+        id: 50,
+        field_name: 'user_edited_this_fieldname'
+      }));
+
+      const db = store.getState().db;
+      const oldSchema = _.find(db.output_schemas, { id: 18 });
+      const oldColumn = _.find(db.output_columns, { id: 50 });
+      const newType = 'SoQLNumber';
+
+      const result = getNewOutputSchemaAndColumns(db, oldSchema, oldColumn, newType);
+
+      expect(result.newOutputSchema.input_schema_id).to.eql(oldSchema.input_schema_id);
+      expect(result.oldOutputColIds).to.eql([50, 51]);
+      expect(result.newOutputColumns).to.eql([
+        {
+          display_name: 'arrest',
+          position: 0,
+          field_name: 'user_edited_this_fieldname', // save that they modified the fieldname
+          description: null,
+          transform: {
+            transform_expr: 'to_number(arrest)' // but transform from the original
+          }
+        },
+        {
+          display_name: 'block',
+          position: 1,
+          field_name: 'block',
+          description: null,
+          transform: {
+            transform_expr: 'block'
+          }
+        }
+      ]);
+    })
+
   });
 
   // This should be tested but for some reason the channel

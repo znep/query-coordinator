@@ -88,12 +88,12 @@ export const addColumn = (outputSchema, inputColumn) => (dispatch, getState) => 
     input_schema_id: inputSchema.id
   };
 
-  const xform = soqlProperties[inputColumn.soql_type].canonicalName;
-  const newColumnExpr = `to_${xform}(${inputColumn.field_name})`;
+  const transform = soqlProperties[inputColumn.soql_type].canonicalName;
+  const newColumnExpr = `to_${transform}(${inputColumn.field_name})`;
 
   const genTransform = (column) => {
-    const newXform = db.transforms[column.transform_id];
-    return newXform.transform_expr;
+    const newTransform = db.transforms[column.transform_id];
+    return newTransform.transform_expr;
   };
   const newOutputColumns = outputColumnsOf(db, outputSchema).
     map(oc => toNewOutputColumn(oc, genTransform)).
@@ -180,13 +180,20 @@ export function getNewOutputSchemaAndColumns(db, oldOutputSchema, oldColumn, new
   // Input columns are presently always text.  This will eventually
   // change, and then we'll need the input column here instead of
   // just hardcoding a comparison to text.
-  const genTransform = (column) => {
-    const xform = db.transforms[column.transform_id];
-    const xformExpr = xform.transform_expr;
-
-    return (column.id === oldColumn.id) ?
-    `to_${soqlProperties[newType].canonicalName}(${column.field_name})` :
-    xformExpr;
+  const genTransform = (outputColumn) => {
+    const transform = db.transforms[outputColumn.transform_id];
+    const transformExpr = transform.transform_expr;
+    const inputColumns = transform.transform_input_columns.map((inputColumnRef) => (
+      db.input_columns[inputColumnRef.input_column_id]
+    ));
+    if (inputColumns.length !== 1) {
+      console.error(
+        'expected transform', transform.id, 'to have 1 input column; has', inputColumns.length
+      );
+    }
+    return (outputColumn.id === oldColumn.id) ?
+      `to_${soqlProperties[newType].canonicalName}(${inputColumns[0].field_name})` :
+      transformExpr;
   };
   const newOutputColumns = oldOutputColumns.map((c) => (
     toNewOutputColumn(c, genTransform)

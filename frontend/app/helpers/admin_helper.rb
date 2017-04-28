@@ -126,10 +126,7 @@ module AdminHelper
   end
 
   def show_connectors?
-    (
-      feature_flag?('enable_catalog_connector', request) ||
-      feature_flag?('enable_catalog_federator_connector', request)
-    ) && CurrentDomain.user_can?(current_user, UserRights::USE_DATA_CONNECTORS)
+    CurrentDomain.user_can?(current_user, UserRights::USE_DATA_CONNECTORS)
   end
 
   private

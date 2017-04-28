@@ -1,17 +1,25 @@
 <div>
-  <button onclick="$('.item.search-item:visible').find('input').trigger('click'); return false;">
-     Click to Toggle the Selections Visible Below</strong>
+  <button disabled="disabled" id="select_all_button"
+    onclick="$('.item.search-item:visible').find('input').attr('checked', true); return false;">
+    <%= t('screens.admin.connector.click_to_select_all') %>
   </button>
 </div>
 
 <div class="catalog-federator-list">
-  <%- @datasets.sort_by { |item| item['name'] }.each_with_index do |item, index| -%>
+  <%- @datasets.each_with_index do |dataset, index| -%>
     <div class="item search-item">
       <div class="edit-item">
-        <%= check_box_tag(index, index) %>
+        <%= check_box_tag(
+          'server[assets][]',
+          index,
+          dataset['selected'],
+          :class => ['is-disabled', dataset['importable'] ? 'importable' : 'unimportable'],
+          :id => "server_assets_#{index}",
+          :disabled => @server.federate_all?
+        ) %>
         <span class="asset-name">
-          <label for="<%= index %>" title="<%= item['externalId'] %>">
-            <%= truncate(item['name'], length: 120) %>
+          <label for="<%= "server_assets_#{index}" %>" title="<%= dataset['externalId'] %>">
+            <%= truncate(dataset['name'], length: 120) %>
           </label>
         </span>
       </div>

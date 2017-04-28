@@ -6,13 +6,9 @@
   <div class="connector-form-field-container">
     <div class="line">
       <label for="federation_source" class="required"><%= t("#{connector}.type") %></label>
-      <select
-        id="federation_source"
-        name="server[federation_source]"
-        value="<%= @server['federation_source']%>"
-      />
+      <select id="federation_source" name="server[federation_source]" value="<%= @server['federation_source']%>" />
         <option value="esri_arcgis"><%= t("#{connector}.esri_arcgis") %></option>
-        <% if @include_data_json %>
+        <% if enable_catalog_federator_connector? %>
           <option value="data_json"><%= t("#{connector}.data_json") %></option>
         <% end %>
       </select>
@@ -20,14 +16,12 @@
     <div class="line">
       <label for="source_url" class="required"><%= t("#{connector}.source_url") %></label>
       <div class="input-group">
-        <span class="input-group-prepend">https://</span>
         <input
           type="text"
           name="server[source_url]"
           id="source_url"
           value="<%= @server['source_url']%>"
           class="required input-prepended"
-          placeholder="<domain>/ArcGIS/rest"
         />
       </div>
     </div>

@@ -426,8 +426,18 @@ en:
   catalog_landing_page:
     activation:
       action: Feature Content
-      header: Feature your best content.
+      dismiss: Not now, hide this info
       explanation: Write an introduction and promote up to 3 assets
+      explanation_0:
+        description: Introduce the category with a headline, introduction and optional statistics.
+        header: Create a Headline and Introduction
+      explanation_1:
+        description: Show summary level category stats for exploration.
+        header: Share stats in 'About this Category'
+      explanation_2:
+        description: Choose up to 3 Socrata or External assets to feature for this category.
+        header: Display Featured Content
+      header: Feature your best content.
       whats_this: What's this?
     category_stats:
       about: About
@@ -458,21 +468,22 @@ en:
       cancel: Cancel
       change: Change
       description:
-        label: Description
-        placeholder: Write a description for your {filter} content; maximum characters = 320
-        placeholder_no_filter: Write a description for your content; maximum characters = 320
-        markdown_accepted: 'This field accepts <a class="markdownSyntax">Markdown syntax</a>.'
         how_to_markdown:
-          header_0: 'Markdown Syntax is a simple way to format text that looks great on any device.'
-          header_1: This field supports Markdown for Italics, Bold, Paragraphs and Links.
           basics_0: For Italics use *asterisks* or _underscores_
           basics_1: For Bold use **asterisks** or __underscores__
           basics_2: For Paragraphs hit <Enter> twice to insert two new lines
-          links_head: 'There are two ways to create Links, inline-style and plain URLs:'
+          header_0: Markdown Syntax is a simple way to format text that looks great on any device.
+          header_1: This field supports Markdown for Italics, Bold, Paragraphs and Links.
           links_0_0: "[Inline-style text link referencing a URL](https://www.google.com)"
           links_0_1: '[Inline-style text link referencing a URL with tooltip](https://www.google.com "Google''s Homepage")'
           links_1_0: 'URLs and URLs in angle brackets will automatically get turned into links:'
-          links_1_1: 'http://www.example.com or <http://www.example.com>'
+          links_1_1: http://www.example.com or <http://www.example.com>
+          links_head: 'There are two ways to create Links, inline-style and plain URLs:'
+        label: Description
+        markdown_accepted: This field accepts <a class="markdownSyntax">Markdown syntax</a>.
+        placeholder: Write a description for your {filter} content; maximum characters = 320
+        placeholder_no_category: Write a description for your content; maximum characters = 320 (this field accepts Markdown syntax)
+        placeholder_no_filter: Write a description for your content; maximum characters = 320
       edit_action: Edit Featured Content
       error:
         connection_502: We were unable to connect to the asset catalog. Please reload and try again.
@@ -484,15 +495,21 @@ en:
       feature_content: Feature Content for {filter}
       feature_content_no_filter: Feature Content
       featured_content:
+        explanation: 'Promote up to 3 assets:'
         label: Featured Content in {filter}
+        label_no_category: Featured Content
         label_no_filter: Featured Content
-        explanation: "Promote up to 3 assets:"
       headline:
         label: Headline
         placeholder: Create a headline; maximum characters = 140
+      manage_this_category: Manage this Category
       remove: Remove
       save: Save
+      show_stats:
+        explanation: Choose to show some basic statistics around this category, such as how many datasets, visualizations and stories it contains.
+        label: Show Stats
       title: Feature Content
+      unexpected_error: An unexpected error has occurred. Please reload and try again.
       view_types:
         apis: APIs
         blob: Files and Documents
@@ -508,6 +525,8 @@ en:
         new_view: Data Lens pages
         pulse: Pulse
         story: Stories
+      you_are_not_authorized: You are not authorized to perform this operation.
+      you_must_login_first: You must login first in order to save your changes.
     search:
       hint: Search
     title: Search & Browse | %{category}
@@ -519,6 +538,8 @@ en:
         back: Back
         select: Select
       header_title: Select Featured Content
+      header_title_with_category: Select Featured Content in %{category}
+      header_title_without_category: Select Featured Content
       results_container:
         no_results: No results
         of: of
@@ -529,6 +550,7 @@ en:
           page: Page
           previous_page: Previous page
         search: Search
+        search_this_category: Search this category
         sort:
           sort_by: Sort by
           sort_types:
@@ -561,9 +583,9 @@ en:
           preview_image:
             button_text: Choose an image
             error: Error uploading image. Acceptable formats are jpg, jpeg, png, or gif.
+            hint: Your image will look best if the aspect ratio is 2.5:1 (width:height).
             label: Preview Image
             no_file_chosen: No file chosen
-            hint: Your image will look best if the aspect ratio is 2.5:1 (width:height).
           title:
             label: Title
             placeholder: Add a title (required)
@@ -859,6 +881,7 @@ en:
           pulse: Pulse
           pulse_help: Learn about Pulse
           story: Stories
+          story_help: New
           unpublished: Working Copies
           visualization: Data Lens pages
           visualization_help: New
@@ -1621,6 +1644,11 @@ en:
       title: Send a Message to the Owner of this Dataset
     copy: Copy
     copy_success: Copied!
+    dataset_contents:
+      columns: Columns
+      row_display_unit: Each row is a
+      rows: Rows
+      title: What's in this Dataset?
     dataset_preview:
       all_rows: Showing all rows
       grid_view_link: Explore Data
@@ -1636,6 +1664,7 @@ en:
       title: Table Preview
       unable_to_render: We're having trouble displaying this table.
       visualize_link: Visualize and Explore (preview)
+    default_row_label: row
     done: Done
     download:
       csv_for_excel: CSV for Excel
@@ -1752,6 +1781,47 @@ en:
     save: Save
     saved: Saved
     saving: Saving
+    schema_preview:
+      api_field_name: API Field Name
+      column_name: Column Name
+      data_type: Data Type
+      data_types:
+        blob: Blob
+        calendar_date: Floating Timestamp
+        checkbox: Checkbox
+        dataset_link: Dataset Link
+        date: Fixed Timestamp
+        document: Document
+        drop_down_list: Text
+        email: Text
+        flag: Text
+        geospatial: Geospatial
+        html: Text
+        line: Line
+        link: Text
+        list: List
+        location: Location
+        money: Money
+        multiline: Line
+        multipoint: Point
+        multipolygon: Polygon
+        nested_table: Nested Table
+        number: Number
+        object: Object
+        percent: Number
+        phone: Text
+        photo: Photo
+        point: Point
+        polygon: Polygon
+        stars: Number
+        text: Text
+        url: Text
+      description: Description
+      geospatial_layer_title: Columns in this Layer
+      show_all: Show All
+      show_less: Show Less
+      title: Columns in this Dataset
+      type: Type
     share:
       cancel: Cancel
       email: Share via Email
@@ -1772,13 +1842,13 @@ en:
   dataset_management_ui:
     common:
       cancel: Cancel
-      ok: Ok
-      save: Save
       errors:
         unknown: An error occurred creating your dataset. Make sure you are logged in and have appropriate permissions.  If the problem persists, please contact <a href="https://support.socrata.com">Socrata support</a>.
       explanation: To get started, choose a name for your dataset
       header: Create a New Dataset
+      ok: Ok
       placeholder: Dataset Name
+      save: Save
       title: Create Dataset
       try_again: Try Again?
     create:
@@ -1789,26 +1859,11 @@ en:
       placeholder: Dataset Name
       title: Create Dataset
     data_preview:
-      title: Data Preview
-      rows: Rows
       columns: Columns
+      rows: Rows
+      title: Data Preview
     export_errors: Export Errors
     home_pane:
-      publish_modal:
-        to_primer: "Go to Primer"
-        publishing:
-          title: "Your dataset is being processed & will be public shortly"
-          body: "It's safe to close your browser.  The progress will not be interrupted."
-        successful:
-          title: "This dataset is published"
-          body: "You can't currently make any more changes from here."
-        failure:
-          title: "Something went wrong with publishing your data"
-          body: "Our site is having trouble right now, please wait and try again."
-      publish_confirmation:
-          title: "You are about to make your dataset public"
-          body: "It will be accessible to anyone through your data catalog."
-          button: "Publish Now"
       add_column_metadata: Add Column Metadata
       add_column_metadata_blurb: Column metadata will help people understand what the column means.
       adding_data: Adding Data
@@ -1823,6 +1878,7 @@ en:
       data: Choose Data Source
       data_blurb: Add a data file and enable visualizations and mapping.
       data_manage_button: Manage Data
+      data_preview: Data Preview
       data_uploaded: Your data has been uploaded.
       data_uploaded_blurb: You can review it here before publishing.
       done_processing: Your data is done being processed!
@@ -1840,13 +1896,28 @@ en:
       percent_uploaded: "{0}% Uploaded"
       preview: Preview
       process_data: Process Data
-      publishing_data_is_easy_and_fun: You'll be publishing data in no time.
+      publish_confirmation:
+        body: It will be accessible to anyone through your data catalog.
+        button: Publish Now
+        title: You are about to make your dataset public
       publish_dataset_button:
-        cant_publish_until: "You can't publish until you have:"
-        publish_dataset: Publish Dataset
-        metadata_satisfied: Filled out all required metadata
+        cant_publish_until: 'You can''t publish until you have:'
         data_satisfied: Added a data file
         make_accessible: Make the dataset accessible to others
+        metadata_satisfied: Filled out all required metadata
+        publish_dataset: Publish Dataset
+      publish_modal:
+        failure:
+          body: Our site is having trouble right now, please wait and try again.
+          title: Something went wrong with publishing your data
+        publishing:
+          body: It's safe to close your browser.  The progress will not be interrupted.
+          title: Your dataset is being processed & will be public shortly
+        successful:
+          body: You can't currently make any more changes from here.
+          title: This dataset is published
+        to_primer: Go to Primer
+      publishing_data_is_easy_and_fun: You'll be publishing data in no time.
       required: Required
       review_data: Review Data
       save_for_later: Save
@@ -1870,13 +1941,13 @@ en:
       table_preview: Table Preview
       upload_done: Upload Done
       uploading: Uploading {filename}...
+    manage: Manage
     manage_uploads:
       failed: "{filename} (failed: {status})"
       new_file: Upload a New File
+      previous: Previous uploads
       supported_uploads: Supported file types .csv, .tsv, .xls, .xlsx
       table_preview: Table Preview
-      previous: Previous uploads
-    manage: Manage
     metadata_manage:
       column_metadata_label: Column Descriptions
       column_tab:
@@ -1892,18 +1963,21 @@ en:
       dataset_metadata_label: Dataset Metadata
       dataset_tab:
         errors:
-          missing_name: Dataset name is required.
-          invalid_url: Please enter a valid url.
           invalid_email: Please enter a valid email address.
-        titles:
-          dataset_title: Title and Description
-          tags_title: Categories and Tags
-          licenses_title: Licensing & Attribution
-          contact_title: Contact Email
+          invalid_url: Please enter a valid url.
+          missing_name: Dataset name is required.
+        subtitle: Make your title and description as clear and simple as possible.
         subtitles:
+          contact_subtitle: Private Field -  only logged in users will see this value
           dataset_subtitle: Make your title and description as clear and simple as possible.
-          tags_subtitle: Categorize your dataset to make it easier to find.
           private_field: Private Field -  only logged in users will see this value
+          tags_subtitle: Categorize your dataset to make it easier to find.
+        title: Title and Description
+        titles:
+          contact_title: Contact Email
+          dataset_title: Title and Description
+          licenses_title: Licensing & Attribution
+          tags_title: Categories and Tags
       errors:
         missing_name: Dataset name is required.
       required_note: Required field
@@ -1913,8 +1987,9 @@ en:
       suggestion: Try going back to the update.
       title: Not Found
     progress_items:
-      connection_error_body_description: Something went wrong when trying to upload the file {0}.
+      connection_error_body: Something went wrong with your connection. Make sure you are connected to the internet.
       connection_error_body_advice: Check your internet connection and make sure to keep your browser window open while the file is uploading.
+      connection_error_body_description: Something went wrong when trying to upload the file {0}.
       connection_error_title: Lost Connection
       hide_details: Hide Details
       import_failed: Import Failed.
@@ -1927,20 +2002,21 @@ en:
     show_output_schema:
       click_to_view: Click to view
       column_header:
+        column_options: Column Options
         column_status_flyout:
+          click_to_view: Click to view
           error_msg_plural: "{num_errors} rows didn't match the type {type}"
           error_msg_singular: "{num_errors} row didn't match the type {type}"
         error_exists: Error total
         error_exists_scanning: Error found so far
         errors_exist: Errors total
         errors_exist_scanning: Errors found so far
-        no_errors_exist: All cells will import correctly
         ignore_column: Ignore - don't import
         ignored_column: Ignored - column won't be imported
         import_column: Import Column
-        set_row_id: Set as row identifier
-        column_options: Column Options
+        no_errors_exist: All cells will import correctly
         scanning: Still scanning for errors...
+        set_row_id: Set as row identifier
         type_display_names:
           SoQLBoolean: True/False
           SoQLFixedTimestamp: Date & Time (with timezone)
@@ -1951,39 +2027,39 @@ en:
           SoQLPoint: Point
           SoQLText: Text
       ready_to_import:
-        ready_to_import: Ready to import
-        rows: rows
-        will_not_be_imported: Rows that will not be imported
         help_modal:
-          why_wont_start: "Why won't"
-          why_wont_end: "of my rows import?"
-          we_love_your_data: "Data quality is important to ensure that visualizations and exports work as expected. That’s why we won’t import rows with errors."
-          two_types_of_errors: "There are two common types of errors:"
-          type_error_blurb: The cell doesn't match the content type
-          row_error_blurb: The row has the wrong number of columns
-          next: Next
+          clean_data_blurb: Once your data is clean, you can use the Append and Replace wizard to add the remaining rows.
+          clean_data_end: rows back into the dataset?
+          clean_data_start: How do I get my
+          clean_data_sub_blurb: Once you have a clean file, you can append the data to your dataset.
           done: Done
-          previous: Previous
-          type_errors: 1. Type errors
-          row_errors: 2. Row errors
-          you_can_download_start: "You can download a CSV with all"
-          you_can_download_end: "rows:"
-          get_rows_into_dataset_blurb: From here, it’s up to you how you want to clean your data, you can either utilize the CSV file and append the results to the dataset, or fix the errors at the source and replace all the data.
           error_file: What can I do about it?
           error_file_blurb: We’ve created a special error file containing all rows that has one or more errors, as well as an explanation of each error. You can download it from the data page.
           error_file_sub_blurb: The CSV contains all rows with errors , as well as an explanation of each error.
-          clean_data_start: "How do I get my"
-          clean_data_end:  "rows back into the dataset?"
-          clean_data_blurb: Once your data is clean, you can use the Append and Replace wizard to add the remaining rows.
-          clean_data_sub_blurb: Once you have a clean file, you can append the data to your dataset.
+          get_rows_into_dataset_blurb: From here, it’s up to you how you want to clean your data, you can either utilize the CSV file and append the results to the dataset, or fix the errors at the source and replace all the data.
+          next: Next
+          previous: Previous
+          row_error_blurb: The row has the wrong number of columns
+          row_errors: 2. Row errors
+          two_types_of_errors: 'There are two common types of errors:'
+          type_error_blurb: The cell doesn't match the content type
+          type_errors: 1. Type errors
+          we_love_your_data: Data quality is important to ensure that visualizations and exports work as expected. That’s why we won’t import rows with errors.
+          why_wont_end: of my rows import?
+          why_wont_start: Why won't
+          you_can_download_end: 'rows:'
+          you_can_download_start: You can download a CSV with all
+        ready_to_import: Ready to import
+        rows: rows
+        will_not_be_imported: Rows that will not be imported
       row_errors:
-        error_message: "Expected {0} columns, found {1}"
-        flyout_message_singular: 1 row is malformed.
-        flyout_message_plural: "{0} rows are malformed."
+        error_message: Expected {0} columns, found {1}
         flyout_message_explanation: They might have too many, or not enough columns.
+        flyout_message_plural: "{0} rows are malformed."
+        flyout_message_singular: 1 row is malformed.
         malformed_row: Malformed row
         malformed_rows: Malformed rows
-        row: "Error Row {0}"
+        row: Error Row {0}
         row_content: Row content
       rows_so_far: rows so far
       rows_total: rows total
@@ -2133,10 +2209,10 @@ en:
     - Saturday
     formats:
       default: "%m-%d-%Y"
-      long: '%B %d, %Y'
-      long_with_time: '%d %b %Y at %H:%M:%S %Z'
-      short: '%d %b %Y'
-      short_with_time: '%Y/%m/%d %I:%M%p'
+      long: "%B %d, %Y"
+      long_with_time: "%d %b %Y at %H:%M:%S %Z"
+      short: "%d %b %Y"
+      short_with_time: "%Y/%m/%d %I:%M%p"
     month_names:
     -
     - January
@@ -2191,12 +2267,12 @@ en:
       x_months:
         one: 1 month
         other: "%{count} months"
-      x_years:
-        one: 1 year
-        other: "%{count} years"
       x_seconds:
         one: 1 second
         other: "%{count} seconds"
+      x_years:
+        one: 1 year
+        other: "%{count} years"
     prompts:
       day: Day
       hour: Hour
@@ -2236,7 +2312,6 @@ en:
     messages:
       accepted: must be accepted
       blank: can't be blank
-      present: must be blank
       confirmation: doesn't match %{attribute}
       empty: can't be empty
       equal_to: must be equal to %{count}
@@ -2248,10 +2323,12 @@ en:
       invalid: is invalid
       less_than: must be less than %{count}
       less_than_or_equal_to: must be less than or equal to %{count}
-      model_invalid: "Validation failed: %{errors}"
+      model_invalid: 'Validation failed: %{errors}'
       not_a_number: is not a number
       not_an_integer: must be an integer
       odd: must be odd
+      other_than: must be other than %{count}
+      present: must be blank
       required: must exist
       taken: has already been taken
       too_long:
@@ -2263,61 +2340,11 @@ en:
       wrong_length:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
-      other_than: must be other than %{count}
     template:
       body: 'There were problems with the following fields:'
       header:
         one: 1 error prohibited this %{model} from being saved
         other: "%{count} errors prohibited this %{model} from being saved"
-  helpers:
-    select:
-      prompt: Please select
-    submit:
-      create: Create %{model}
-      submit: Save %{model}
-      update: Update %{model}
-  number:
-    currency:
-      format:
-        delimiter: ","
-        format: "%u%n"
-        precision: 2
-        separator: "."
-        significant: false
-        strip_insignificant_zeros: false
-        unit: "$"
-    format:
-      delimiter: ","
-      precision: 3
-      separator: "."
-      significant: false
-      strip_insignificant_zeros: false
-    human:
-      decimal_units:
-        format: "%n %u"
-        units:
-          billion: Billion
-          million: Million
-          quadrillion: Quadrillion
-          thousand: Thousand
-          trillion: Trillion
-      format:
-        precision: 3
-        significant: true
-        strip_insignificant_zeros: true
-      storage_units:
-        format: "%n %u"
-        units:
-          byte:
-            one: Byte
-            other: Bytes
-          gb: GB
-          kb: KB
-          mb: MB
-          tb: TB
-    percentage:
-      format:
-        format: "%n%"
   govstat:
     admin:
       bulk_edit:
@@ -2567,6 +2594,55 @@ en:
       layouts: Layouts
       list_layout: List Layout
       title: Select Layout
+  helpers:
+    select:
+      prompt: Please select
+    submit:
+      create: Create %{model}
+      submit: Save %{model}
+      update: Update %{model}
+  number:
+    currency:
+      format:
+        delimiter: ","
+        format: "%u%n"
+        precision: 2
+        separator: "."
+        significant: false
+        strip_insignificant_zeros: false
+        unit: "$"
+    format:
+      delimiter: ","
+      precision: 3
+      separator: "."
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: "%n %u"
+        units:
+          billion: Billion
+          million: Million
+          quadrillion: Quadrillion
+          thousand: Thousand
+          trillion: Trillion
+      format:
+        precision: 3
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one: Byte
+            other: Bytes
+          gb: GB
+          kb: KB
+          mb: MB
+          tb: TB
+    percentage:
+      format:
+        format: "%n%"
   plugins:
     daterangepicker:
       clear: Clear
@@ -2738,24 +2814,25 @@ en:
         catalog_federator_service_unavailable: DATA.json services are currently unavailable.
         catalog_option: External Connection
         catalog_option_explanation: Assets will appear in your catalog as External Datasets
+        click_to_select_all: Click to select all
         connected_assets: Connected assets
         connection_type: Connection Type
         connector: Connector
         current_status: Current Status
         data: Data
         data_connect_all: Connect all assets as Maps
+        data_json: Data.JSON endpoint
         data_option: Data Connection
         data_option_explanation: Assets will appear in your catalog as Maps
-        data_json: Data.JSON endpoint
         dataset: Dataset
         deleted_pending: Deleted (Pending)
         discovered_assets: Discovered assets
         edit: Edit
-        edit_connector: 'Edit Connector: %{url}'
+        edit_connector: 'Edit Connector'
         errors:
           duplicate_server_error: That Esri Server has already been connected to this domain.
           invalid_attributes_error: 'These parameters were invalid: %{invalid}.'
-          json_format_error: This connector cannot be used because the JSON data is malformed.
+          json_format_error: The connector cannot be used because the JSON data is malformed.
           missing_attributes_error: 'These parameters were missing: %{missing}.'
           not_found_error: That resource was not found.
           problem_with_errors: We were unable to process your request.
@@ -2767,21 +2844,23 @@ en:
         esri_service_unavailable: Esri connector services are currently unavailable.
         failing: Failing
         flashes:
-          created: Success! We reached your server.  It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
+          created: Success! We reached your server. It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
           created_data_json: Success! You connector is ready and you may now edit the connector to choose which datasets to import.
           deleted: Your connector has been marked for deletion.
           server_not_found: We could not find that server-- it may have been recently deleted.
           updated: Your settings have been saved. Now syncing connected assets.
+          update_failed: The update failed. Please try again or contact support.
+          server_already_exists: That connector already exists.
         ignore: Ignored
         ignored: Ignored
         ignored_option: Don't Connect
+        in_progress: Sync in progress
         last_synced: Last synced
         never: Never
+        no_catalog_federator_connectors: There are no current DATA.json connectors. If you wish to connect an external source to your catalog, click Add new above.
         no_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
         no_esri_connectors: There are no Esri connectors. If you wish to connect an external source to your catalog, click Add new above.
-        no_catalog_federator_connectors: There are no current DATA.json connectors. If you wish to connect an external source to your catalog, click Add new above.
         not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
-        in_progress: Sync in progress
         not_yet: Not yet synced
         save: Save
         search: Search the domain
@@ -2792,6 +2871,7 @@ en:
         source: Connector source
         source_url: URL
         success: Success
+        sync_policy: Synchronization Policy
         terminate: Terminate
         title: Manage Connectors
         type: Type
@@ -2995,25 +3075,25 @@ en:
         view_moderation: View Moderation
         view_moderation_description: View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
       jobs:
-        cancel: Cancel
-        close: Close
-        columns:
-          asset_type: Asset Type
-          asset_name: Asset Name
-          event: Event
-          initiated_by: Initiated By
-          date_started: Date Started
-          status: Status
-        details: Details
         actions:
           append: Append
           delete: Delete
           geocoding: Geocoding
           import: Import
           replace: Replace
+          restore: Restore
           upsert: Upsert
           working_copy: Working Copy
-          restore: Restore
+        cancel: Cancel
+        close: Close
+        columns:
+          asset_name: Asset Name
+          asset_type: Asset Type
+          date_started: Date Started
+          event: Event
+          initiated_by: Initiated By
+          status: Status
+        details: Details
         filters:
           all: All
           append: Append
@@ -3031,10 +3111,6 @@ en:
           upsert: Upsert
           working_copy: Working Copy
         import_method: Import Method
-        initiated_at: Initiated At
-        restore: Restore
-        restored: Restored
-        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}"
         index_page:
           action: Type
           dataset: Dataset
@@ -3060,6 +3136,14 @@ en:
           title: Data Jobs
           to_working_copy: to working copy
           with_problems: with problems
+        initiated_at: Initiated At
+        quick_filters:
+          all: All
+          data_update_failures: Data Update Failures
+          deleted_assets: Deleted Assets
+        restore: Restore
+        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}"
+        restored: Restored
         show_page:
           back: Back to jobs list
           error_details_heading: Error details
@@ -3341,10 +3425,6 @@ en:
           not_started: Not yet started
           success: Completed
           success_with_data_errors: Completed, with problems
-        quick_filters:
-          all: All
-          data_update_failures: Data Update Failures
-          deleted_assets: Deleted Assets
         view_details: View Details
       metadata:
         add_new_category: Add New Category
@@ -3391,7 +3471,6 @@ en:
         metadata_explain2: Fields can be configured in multiple ways. They can be <span class="code">required</span>, which will be enforced when publishers create new datasets and update existing metadata. They can also be <span class="code">private</span>, meaning that the values entered will not be visible to the public.
         metadata_explain3: Finally, you can choose to pre-define the options for your <span class="code">fields</span> if you wish to have values chosen from a list rather than entered as free-form text.
         metadata_field_table_description: Metadata Fields for '%{name}'
-        no: No
         no_data: No custom dataset fields have been defined for your domain yet. Enter a name below and click 'Create' to begin.
         no_fields_defined: This field set does not have any fields defined yet
         page_title: Manage Dataset Metadata
@@ -3401,7 +3480,6 @@ en:
         title: Manage Metadata
         'true': true
         up: Up
-        yes: Yes
       new_story:
         background_color: Background Color
         background_image: Background Image
@@ -3435,7 +3513,6 @@ en:
         dashboard: Dashboard
         data_saved: Your data has been saved!
         dataset: Dataset
-        dataset: Dataset
         dataset_not_found: This dataset or view cannot be found, or has been deleted.
         date_created: Date Created
         date_of_last_approved: Date of Last Approved
@@ -3448,7 +3525,7 @@ en:
           one: 1 day old
           other: "%{count} days old"
         days: day(s)
-        enter_profile: (Enter a user ID or URL of their profile page)
+        enter_profile: "(Enter a user ID or URL of their profile page)"
         everyone_at_once: Everyone at once
         federated_from: Federated from %{name}
         fill_required_fields: Please fill in all required fields
@@ -3474,7 +3551,6 @@ en:
         not_ready_yet: Not Ready Yet
         nothing_to_approve: Nothing To Approve
         notification_interval: Notification Interval
-        notification_interval: Notification Interval
         notification_method: Notification Method
         old: Old
         older: Older
@@ -3487,8 +3563,8 @@ en:
         remove_approver: Remove Approver
         remove_stage: Remove Stage
         require_action:
-          one: "You have <strong>1</strong> dataset that requires action."
-          other: "You have <strong>%{count}</strong> datasets that require action."
+          one: You have <strong>1</strong> dataset that requires action.
+          other: You have <strong>%{count}</strong> datasets that require action.
         resubmission_reason: Resubmission Reason
         resubmit: Resubmit
         search: Search
@@ -3512,12 +3588,12 @@ en:
           convert_now_button_label: Convert it now
           default_socrata_logo: Default Socrata Logo
           default_title: Social Data Player Templates
-          editing: "Editing %{title}"
+          editing: Editing %{title}
           embed: Embed
           loading_message: Loading your Data Player Customization...
           logo_link_url: Logo Link URL
           make_public_button_label: Make ite public
-          none: (none)
+          none: "(none)"
           old_version_warning: The customization you are trying to edit is our old design, which is no longer supported. If you want to make changes to it, you'll have to convert it over to our new design first. You can preview how it will look before committing to using it.
           panes:
             advanced:
@@ -3946,9 +4022,277 @@ en:
         you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
         you_are_about_html: "<p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>\n"
         you_have_activated: You have activated your new header/footer and Dataset Landing Page.
+      site_chrome:
+        activate: Activate
+        add_new_link_menu: Add Menu
+        add_new_link_row: Add %{section} Link
+        after_clicking_ok: After clicking 'OK' below, see both features in action by visiting one of your datasets.
+        cancel: Cancel
+        congratulations: Congratulations!
+        description: Configure the appearance of your Socrata site.
+        get_excited: Get Excited!
+        link_menu_label_html: "<b>Menu</b> - <i>You can drag links to reorder them</i>"
+        move_link_row: Drag to reorder
+        ok: OK
+        preview: Preview
+        preview_changes: Preview Changes
+        remove_link_menu: Remove Link Menu
+        remove_link_row: Remove Link
+        save: Save
+        save_changes: Save Changes
+        see_both_features: See both features in action by visiting one of your datasets.
+        site_appearance: Site Appearance
+        tabs:
+          footer:
+            fields:
+              background_color_text_link_color:
+                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
+              copyright_notice:
+                description: Choose whether or not to display a copyright notice in the Footer. The notice will automatically update to the current calendar year.
+                label: Show Copyright Notice
+                title: Copyright Notice
+              copyright_notice_source:
+                description: The name of your organization, city, county or state that appears with the copyright and current year.
+                placeholder: Copyright Source
+              display_name_color_display_name_size:
+                description: Color and size of the text for Footer Display Name.
+              footer_background_color:
+                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
+                placeholder: "#123456"
+                title: Footer Background Color
+              footer_display_name:
+                description: This is the name displayed in the Footer area. Usually set to your organization's name.
+                placeholder: Footer Display Name
+                title: Footer Display Name
+              footer_display_name_color:
+                placeholder: "#123456"
+                title: Footer Display Name Color
+              footer_display_name_size:
+                placeholder: 14pt
+                title: Footer Display Name Size
+              footer_logo:
+                description: URL reference to the Footer logo. Recommended minimum size is 80 x 80 pixels.
+                placeholder: https://yoursite.gov/logos/footer_logo.png
+                title: Footer Logo
+              footer_logo_alt:
+                description: This is the text that is displayed to screen readers for accessibility for your logo.
+                placeholder: Footer Logo
+                title: Footer Logo Alt Text for Screen Readers
+              footer_logo_height:
+                description: You can optionally set a height and width for your logo displayed in the Footer.
+                error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
+                placeholder: 80px
+                title: Footer Logo Height
+              footer_logo_url:
+                description: This is the URL that visitors are redirected to upon clicking the footer logo from any page on your site. You can specify a URL here or just leave it as "/" to go to your homepage.
+                placeholder: "/"
+                title: Footer Logo URL
+              footer_logo_width:
+                description: You can optionally set a height and width for your logo displayed in the Footer.
+                error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
+                placeholder: 80px
+                title: Footer Logo Width
+              footer_text_link_color:
+                placeholder: "#ffffff"
+                title: Footer Text & Link Color
+              link_title_label: Link Label
+              link_title_placeholder: Link Text
+              logo_height_logo_width:
+                description: You can optionally set a height and width for your logo displayed in the Footer.
+              menu_links:
+                description: You may display up to 15 links in the Footer. Links will be shown in a single row, and will wrap to multiple rows for mobile and on smaller screens.
+                title: Footer Links
+              menu_title_placeholder: Menu Text
+              powered_by:
+                description: Displays "Powered by Socrata" branding in the footer, and also provides a link to socrata.com
+                label: Show Socrata branding in the Footer
+                title: Powered by Socrata
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Footer
+          general:
+            activation:
+              all_pages_except_home: All pages except Home page
+              entire_site: Entire site
+              primer_included: Primer is also included in this update.
+              revert_html: Revert all pages to non-configurable Header/Footer and<br/>turn off Primer
+              select_where: 'Select where these Site Appearance settings will appear:'
+            fields:
+              display_language_switcher:
+                description: Use this setting to define which languages your site supports. English is required and included for all sites. To add additional languages, please contact support@socrata.com
+                label: Display Language Switcher in header and footer
+                title: Languages
+              font_family:
+                description: Choose the typeface that will be used in both Header and Footer for all text.
+                description_html: Choose the typeface that will be used in both Header and Footer for all text.
+                placeholder: Typeface
+                title: Typeface
+              google_analytics_token:
+                description: Enter the token (not the entire script) of your Google Analytics tracking code to collect analytics for your site.
+                error: 'Token should match the format: UA-XXXXX-XXXX'
+                placeholder: UA-12345678-1
+                title: Google Analytics Token
+              max_width:
+                description: Enter the maximum width (in pixels) of your Header and Footer content. If left empty, it will stretch to the dimensions of the visitor's browser window.
+                placeholder: 1200px
+                title: Max Width
+              show_signin_signout:
+                description: Show these options if your site requires a user Profile / Sign In.
+                show_profile: Show a link to Profile after Signed In
+                show_signin_signout: Show Sign In / Sign Out
+                show_signup: Show ability to create an account via Sign Up
+                title: Sign In / Sign Out
+              template:
+                description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
+                description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" and "Rally"</a>.
+                placeholder: Select a template
+                title: Template
+              window_icon:
+                description: URL reference to the icon displayed in the browser window, tab and URL field.
+                placeholder: https://yoursite.gov/logos/favicon.png
+                title: Browser Window or Tab Icon (favicon)
+              window_title_display:
+                description: This is the name displayed in the browser window or tab title.
+                placeholder: Browser Window or Tab Title Display
+                title: Browser Window or Tab Title Display
+            title: General Settings
+          header:
+            fields:
+              bar_background_color:
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
+                placeholder: "#123456"
+                title: Bar Background Color (Primary)
+              bar_background_color_bar_secondary_background_color:
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
+              bar_secondary_background_color:
+                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
+                placeholder: "#123456"
+                title: Bar Background Color (Secondary)
+              bar_text_link_color:
+                description: Color of the text and links that sit atop the Header Bar.
+                placeholder: "#ffffff"
+                title: Bar Text & Link Color
+              display_name_color_display_name_size:
+                description: Color and size of the text for Header Display Name.
+              header_bar_logo:
+                description: URL reference to the site Header logo. Recommended minimum size is 80 x 80 pixels. This logo will be displayed at a small size.
+                placeholder: https://yoursite.gov/logos/header_logo.png
+                title: Header Bar Logo
+              header_bar_logo_alt:
+                description: This is the text that is displayed to screen readers for accessibility for your logo.
+                placeholder: Header Logo
+                title: Header Logo Alt Text for Screen Readers
+              header_display_name:
+                description: Name displayed in the Header Bar. Usually set to your organization's name.
+                placeholder: Header Display Name
+                title: Header Display Name
+              header_display_name_color:
+                placeholder: "#123456"
+                title: Header Display Name Color
+              header_display_name_size:
+                placeholder: 16pt
+                title: Header Display Name Size
+              header_logo_height:
+                description: You can optionally set the height and width for your logo displayed in the Header Bar.
+                error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
+                placeholder: 80px
+                title: Header Logo Height
+              header_logo_url:
+                description: This is the URL that visitors are redirected to upon clicking the header logo from any page on your site. You can specify a URL here or just leave it as "/" to go to your homepage.
+                placeholder: "/"
+                title: Header Logo URL
+              header_logo_width:
+                description: You can optionally set the height and width for your logo displayed in the Header Bar.
+                error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
+                placeholder: 80px
+                title: Header Logo Width
+              link_title_label: Link Label
+              link_title_placeholder: Link Text
+              logo_height_logo_width:
+                description: You can optionally set the height and width for your logo displayed in the Header Bar.
+              menu_links:
+                description: Display up to 15 links or menus with links in the Header Bar. To create a drop down menu, first add a Menu then add the link labels and associated URLs to it. The menus and other links will be placed in a single row in the Header. If the labels get too long or a visitor is viewing your site on a small device, the menus and links will automatically be collapsed into a single menu.
+                title: Header Links
+              menu_title_placeholder: Menu Text
+              url_label: URL
+              url_placeholder: http://data.evergreen.gov
+            title: Header Bar
+          social:
+            fields:
+              facebook_profile_link:
+                description: Add the URL here to display a link to your organization's Facebook profile in both the Header and Footer.
+                placeholder: http://www.facebook.com/
+                title: Facebook Profile Link
+              flickr_profile_link:
+                description: Add the URL here to display a link to your organization's Flickr profile in both the Header and Footer.
+                placeholder: http://www.flickr.com/
+                title: Flickr Profile Link
+              github_profile_link:
+                description: Add the URL here to display a link to your organization's GitHub profile in both the Header and Footer.
+                placeholder: http://www.github.com/
+                title: Github Profile Link
+              google_plus_profile_link:
+                description: Add the URL here to display a link to your organization's Google Plus profile in both the Header and Footer.
+                placeholder: http://www.plus.google.com/
+                title: Google Plus Profile Link
+              instagram_profile_link:
+                description: Add the URL here to display a link to your organization's Instagram profile in both the Header and Footer.
+                placeholder: http://www.instagram.com/
+                title: Instagram Profile Link
+              linked_in_profile_link:
+                description: Add the URL here to display a link to your organization's LinkedIn profile in both the Header and Footer.
+                placeholder: http://www.linkedin.com/
+                title: LinkedIn Profile Link
+              pinterest_profile_link:
+                description: Add the URL here to display a link to your organization's Pinterest profile in both the Header and Footer.
+                placeholder: http://www.pinterest.com/
+                title: Pinterest Profile Link
+              tumblr_profile_link:
+                description: Add the URL here to display a link to your organization's Tumblr profile in both the Header and Footer.
+                placeholder: http://www.tumblr.com/
+                title: Tumblr Profile Link
+              twitter_profile_link:
+                description: Add the URL here to display a link to your organization's Twitter profile in both the Header and Footer.
+                placeholder: http://www.twitter.com/
+                title: Twitter Profile Link
+              vimeo_profile_link:
+                description: Add the URL here to display a link to your organization's Vimeo profile in both the Header and Footer.
+                placeholder: http://www.vimeo.com/
+                title: Vimeo Profile Link
+              yammer_profile_link:
+                description: Add the URL here to display a link to your organization's Yammer profile in both the Header and Footer.
+                placeholder: http://www.yammer.com/
+                title: Yammer Profile Link
+              youtube_profile_link:
+                description: Add the URL here to display a link to your organization's YouTube profile in both the Header and Footer.
+                placeholder: http://www.youtube.com/
+                title: YouTube Profile Link
+            title: Social Sharing
+          whats_new:
+            fields:
+              a_bundle_of_goodness:
+                description_html: "<p>Get excited! Socrata Primer, formerly known as the Dataset Landing Page, and your new, configurable Header/Footer are both ready to go! Read on to learn about these enhancements and how you can activate them, today.</p>"
+                title: 'A Bundle of Goodness: Two New Features Available Now'
+              a_new_configurable_header_footer:
+                description_html: <p>We've also introduced a new unified, mobile-responsive, configurable header/footer for your site. This new header/footer empowers you to control your site's logos, colors, copyright, navigational links, social icons, and more on your own, without having to contact Socrata Support.</p> <p>By the way, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then change it however you'd like - it's all yours.</p>
+                title: A New Configurable Header/Footer
+              active_both_today:
+                description_html: '<p>Primer and your new Configurable Header/Footer are both available now. Review the tabs above, update what you''d like, and when you''re ready, activate them together!</p> <p><b>Note:</b> If you haven''t configured the header/footer for your site within one month, Socrata will use our suggested configuration to activate it and Primer automatically. We''ll do this to ensure your data users are getting the most up-to-date experience available.</p> <p>For tips on configuring your header/footer, please visit our Support site here: <a href=" https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>'
+                title: Activate Both Today!
+              dataset_landing_page:
+                description_html: <p>With this upgrade, your datasets have a new front-page experience known as 'Primer'. This experience highlights commonly accessed aspects of a dataset and ensures your data users see metadata before taking action. Publishers and Administrators have the freedom to "feature" related views and visualizations, sophisticated users can explore metadata and metrics up-front, and all users can access data in the way they desire, whether this is via data visualizations, direct file downloads, or the API. And of course - the classic tabular data view is still accessible from the top navigation of this view for users who are comfortable there.</p>
+                title: Primer
+            title: What's New
+        these_features: These features will empower you to better control the appearance of your site and will help data consumers explore your data even better than before. Your users are going to love them!
+        these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
+        update: Update
+        warning_html: "<b>Warning!</b> You changed your language setting from the default. Check that all of your content is speaking the same language."
+        you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
+        you_are_about_html: "<p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>\n"
+        you_have_activated: You have activated your new header/footer and Dataset Landing Page.
       story_appearance:
         panes:
-          pane_other:
+          other:
             label: Other
             sections:
               background:
@@ -3986,6 +4330,21 @@ en:
                 label: Appearance and Layout
             subtitle: Customize the appearance of the story pager
             title: Pager
+          pane_other:
+            label: Other
+            sections:
+              background:
+                fields:
+                  description:
+                    value: How long to pause on each slide before automatically advancing to the next. Set to zero to disable it entirely.
+                  height:
+                    text: Height
+                  slide_advance:
+                    prompt: Length of time to wait (in seconds)
+                    text: Slide Advance
+                label: Background
+            subtitle: Other customizable options on stories
+            title: Other
           text_box:
             label: Text Box
             sections:
@@ -4428,6 +4787,17 @@ en:
             add_option_button: Add Option
             option: Option
             title: Multiple Choice Options
+          nbe_geocoding_configuration:
+            address_label: Address
+            cancel_configuration_prompt: Are you sure you want to cancel geocoding configuration? Configuration must be completed at the time of column creation.
+            country_label: Country
+            locality_label: Locality
+            optional_select_header: "(Infer / Use default)"
+            postal_code_label: Postal Code
+            region_label: Region
+            required_select_header: Select a column...
+            subregion_label: Sub-region
+            subtitle: Configure Geocoding Source Columns
           nested_table:
             default_column_name: Untitled
           subtitle: Add a new column to your dataset
@@ -4435,17 +4805,6 @@ en:
           title: Add Column
           validation:
             view_column: You cannot add a column to a view
-          nbe_geocoding_configuration:
-            subtitle: Configure Geocoding Source Columns
-            required_select_header: Select a column...
-            optional_select_header: (Infer / Use default)
-            address_label: Address
-            locality_label: Locality
-            subregion_label: Sub-region
-            region_label: Region
-            postal_code_label: Postal Code
-            country_label: Country
-            cancel_configuration_prompt: Are you sure you want to cancel geocoding configuration? Configuration must be completed at the time of column creation.
         api:
           api_docs: API Docs
           column_ids_title: 'Field Names:'
@@ -5162,15 +5521,14 @@ en:
       data_provided_by: Data Provided By
       data_provided_prompt: Individual or Organization
       data_provider_required: You must specify the data provider (attribution).
+      dataset_attribution: Individual or organization
+      dataset_email: example@socrata.com
+      dataset_tags: Enter tag name
       dataset_title: Dataset Title
       dataset_title_error: The dataset must have a title.
       dataset_title_prompt: Enter a title
-      dataset_url: Dataset URL
-      dataset_url_prompt: Enter the location of your external dataset
-      dataset_tags: Enter tag name
-      dataset_email: example@socrata.com
       dataset_url: Enter web address
-      dataset_attribution: Individual or organization
+      dataset_url_prompt: Enter the location of your external dataset
       default_row_label: Row
       delete: Delete
       described_by: Data Dictionary
@@ -5241,11 +5599,11 @@ en:
       validation_error_email: Please enter a valid email address
       validation_error_fieldname: Field name must begin with a letter and cannot contain any spaces or non-alphanumeric characters
       validation_error_general: Couldn't submit metadata. Review your inputs and try again.
-      validation_error_maxlength: '{0} must not have more than {1} characters'
-      validation_error_minlength: '{0} must have at least {1} characters'
+      validation_error_maxlength: "{0} must not have more than {1} characters"
+      validation_error_minlength: "{0} must have at least {1} characters"
       validation_error_no_dupes: A tag with this name already exists
       validation_error_required: This field is required
-      validation_error_type: '{0} must be of type {1}, but got {2}'
+      validation_error_type: "{0} must be of type {1}, but got {2}"
       validation_error_url: Please enter a valid url
     forgot_password:
       already_authenticated: 'Unable to reset password: you are already logged in.'
@@ -5510,8 +5868,8 @@ en:
       sign_up: Sign Up
       sso_enabled: SSO Enabled
       sso_required: The administrator for this site requires that privileged users log in with an account other than a Socrata ID. Please log in using a different method.
-      sso_required_for_superadmins_by_fedramp: This domain is configured for FedRAMP security. Access is permitted only via single sign-on.
       sso_required_for_superadmins_by_default: This domain is configured to disallow password-based logins with @socrata.com emails.
+      sso_required_for_superadmins_by_fedramp: This domain is configured for FedRAMP security. Access is permitted only via single sign-on.
       tips_html: Use your Email and Password to sign in to all <strong>Socrata powered</strong> sites.
     sign_up:
       already_have_account: Already have an account?
@@ -5524,7 +5882,7 @@ en:
         have_account_link: I already have an account
       headline: We're glad you want to join %{site}
       password_verification:
-        failed_html: "Validation failed: Your password must satisfy three of the following four criteria:<ul class='styled'><li>contain a digit</li><li>contain a lowercase letter</li><li>contain an uppercase letter</li><li>contain a non-alphanumeric symbol</li></ul>"
+        failed_html: 'Validation failed: Your password must satisfy three of the following four criteria:<ul class=''styled''><li>contain a digit</li><li>contain a lowercase letter</li><li>contain an uppercase letter</li><li>contain a non-alphanumeric symbol</li></ul>'
       prompt_html: Create a new <strong>Socrata ID</strong>.
       terms_html: By clicking on "Create My Account" below, you are agreeing to our <a href="http://www.socrata.com/terms-of-service" rel="external">Terms of Service</a> and <a href="http://www.socrata.com/privacy" rel="external">Privacy Policy.</a>
       third_party: After signing in, your 3rd-party credentials will be associated with this account.
@@ -5535,8 +5893,8 @@ en:
       admin: Admin
       api: API
       apply: Apply
-      browser_page_views: Browser Page Views
       browser_other: other
+      browser_page_views: Browser Page Views
       browsers: Browsers
       bytes_out: Bytes Out
       catalog: Catalog
@@ -5613,7 +5971,6 @@ en:
       hourly: Hourly
       map_created: map created
       maps: Maps
-      maps: Maps
       maps_added: Maps Added
       maps_created: maps created
       maps_lowercase: maps
@@ -5633,7 +5990,6 @@ en:
       private_goals: Private Goals
       profile: Profile
       public_goals: Public Goals
-      referrals: Referrals
       referrals: Referrals
       requests: Requests
       row_created: row created

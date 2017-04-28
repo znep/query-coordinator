@@ -8,8 +8,7 @@ class CatalogFederatorConnector
 
     def servers
       begin
-        sources = client.get_sources
-        sources.map { |source| CatalogFederatorSource.new(source) }
+        client.get_sources.map { |source| CatalogFederatorSource.new(source) }
       rescue StandardError => ex
         Rails.logger.error("Error getting sources from catalog-federtor: #{ex}")
         []
@@ -17,12 +16,11 @@ class CatalogFederatorConnector
     end
 
     def create(source_form)
-      source = {
-        'source' => source_form['source_url'],
+      client.create_source(
+        'source' => source_form.fetch('source_url'),
         'sourceType' => 'open_data_metadata_v1_1',
-        'displayName' => source_form['display_name']
-      }
-      client.post_source(source)
+        'displayName' => source_form.fetch('display_name')
+      )
     end
 
     def delete(source_id)

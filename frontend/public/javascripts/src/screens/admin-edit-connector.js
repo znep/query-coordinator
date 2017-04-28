@@ -3,18 +3,17 @@
  * The functionality here is non-essential, simply faciliating checkbox selection
  */
 
-function parentOf($el, elementType) {
+function parentOf($el) {
   const parentId = $el.data('parent-id');
   const parentType = $el.data('parent');
   if (!parentId || !parentType) { return false; }
-  return $(`${elementType}[data-id="${parentId}"][data-type="${parentType}"]`);
+  return $(`select[data-id="${parentId}"][data-type="${parentType}"]`);
 }
 
-// elementType: input for checkboxes or select for select tags
-function childrenOf($el, elementType) {
+function childrenOf($el) {
   const id = $el.data('id');
   const type = $el.data('type');
-  return $(`${elementType}[data-parent-id="${id}"][data-parent="${type}"]`);
+  return $(`select[data-parent-id="${id}"][data-parent="${type}"]`);
 }
 
 // gets the span that holds the icon for the select operation
@@ -125,38 +124,21 @@ function iconClassForValue(selectedValue) {
   }
 }
 
-function onRadioSelected(elementType) {
+function setConnectionStrategy() {
   return (event) => {
     const $target = $(event.currentTarget);
-    const canSelectLayers = $target.value() && ($target.attr('value') !== 'ignored');
-    const setState = ($el) => {
-      $el[canSelectLayers ? 'attr' : 'removeAttr']('disabled', true);
-    };
+    const selectAllAssets = ($target.value() && ($target.val() === 'all' || $target.val() === 'catalog') || $target.val() === 'data');
+    const setState = ($el) => ($el.attr('disabled', selectAllAssets));
+    const setDisabledClass = ($el) => ($el[selectAllAssets ? 'addClass' : 'removeClass']('is-disabled'));
 
-    // set or remove the is-disabled class on select-style divs and select-icon spans
-    const setDisabledClass = ($el) => {
-      $el[canSelectLayers ? 'addClass' : 'removeClass']('is-disabled');
-    };
-    $('.select-style').each((_index, el) => {
-      setDisabledClass($(el));
-    });
+    // Esri use case
+    setDisabledClass($('.select-style'));
+    setDisabledClass($('.select-icon'));
+    setState($('select.sync-type'));
 
-    $('.select-icon').each((_index, el) => {
-      setDisabledClass($(el));
-    });
-
-    // Argh! because rails puts a bunch of hidden elements everywhere, we can't
-    // just enable/disable the ones we know about, we have to get the hidden
-    // ones as well, which have names that match the elements of .sync-type,
-    // so we loop over all the visible ones and select the hidden ones
-    // from the name of the visible ones ;_;
-    $(`${elementType}.sync-type`).each((_index, el) => {
-      const $visible = $(el);
-      const name = $visible.attr('name');
-      const $hidden = $(`${elementType}[name="${name}"`);
-      setState($visible);
-      setState($hidden);
-    });
+    // Catalog Federator use case
+    setState($('fieldset.line input[type=checkbox]'));
+    setState($('#select_all_button'));
   };
 }
 
@@ -183,11 +165,9 @@ function removeFocusOnSelect(event) {
 }
 
 $(() => {
-  const elementType = blist.feature_flags.enable_data_connector ? 'select' : 'input';
-
   $('.filter-assets .searchBox').on('keyup', (event) => {
     const term = $(event.currentTarget).val().toLowerCase();
-    let elements = $(`${elementType}.sync-type`);
+    let elements = $('select.sync-type');
 
     if (elements.length <= 0) {
       elements = $('.item.search-item');
@@ -210,5 +190,5 @@ $(() => {
 
   $('.sync-type-check').change(onChecked);
   $('.sync-type-select').change(onSelected);
-  $('.server-sync').change(onRadioSelected(elementType));
+  $('.server-sync').change(setConnectionStrategy());
 });

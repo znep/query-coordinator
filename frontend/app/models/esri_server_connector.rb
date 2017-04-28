@@ -41,9 +41,9 @@ class EsriServerConnector
   end
 
   # create a new connector by posting it to the EsriCrawler
-  def self.create(esri_domain, sync_type = 'ignored')
+  def self.create(esri_url, sync_type = 'ignored')
     EsriCrawler.post_request('/servers', {
-      :url => "https://#{esri_domain}",
+      :url => esri_url,
       :sync_type => sync_type,
       :socrata_domain => CurrentDomain.cname,
       :domain_id => CurrentDomain.domain.id

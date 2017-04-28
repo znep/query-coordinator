@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 
 import DataTable from 'components/DataTable/DataTable';
 
@@ -17,7 +17,7 @@ describe('DataTable', () => {
       columns: []
     });
 
-    expect(output.tagName).to.eq('TABLE');
+    assert(output.tagName === 'TABLE');
   });
 
   it('should render a condensed table', () => {
@@ -51,7 +51,7 @@ describe('DataTable', () => {
       }));
 
       const titleColumn = output.querySelectorAll('th')[0];
-      expect(titleColumn.textContent).to.eq('Title');
+      assert(titleColumn.textContent === 'Title');
     });
 
     it('should rendered with given component', () => {
@@ -61,8 +61,8 @@ describe('DataTable', () => {
       }));
 
       const titleColumn = output.querySelectorAll('th>strong');
-      expect(titleColumn[0].textContent).to.eq('Title');
-      expect(titleColumn[1].textContent).to.eq('Views');
+      assert(titleColumn[0].textContent === 'Title');
+      assert(titleColumn[1].textContent === 'Views');
     });
   });
 
@@ -94,7 +94,7 @@ describe('DataTable', () => {
       }));
 
       const ageColumn = output.querySelectorAll('tbody>tr>td')[1];
-      expect(ageColumn.innerHTML).to.eq('25');
+      assert(ageColumn.innerHTML === '25');
     });
 
     it('should render column with custom template', () => {
@@ -104,7 +104,7 @@ describe('DataTable', () => {
       }));
 
       const nameColumn = output.querySelectorAll('tbody>tr>td')[0];
-      expect(nameColumn.innerHTML).to.eq('<a href="http://example.com/1">John Doe</a>');
+      assert(nameColumn.innerHTML === '<a href="http://example.com/1">John Doe</a>');
     });
 
     it('should render columns with given column component', () => {
@@ -118,7 +118,7 @@ describe('DataTable', () => {
       }));
 
       const nameColumn = output.querySelectorAll('tbody>tr>td')[0];
-      expect(nameColumn.innerHTML).to.eq('<p><a href="http://example.com/1">John Doe</a></p>');
+      assert(nameColumn.innerHTML === '<p><a href="http://example.com/1">John Doe</a></p>');
     });
   });
 });

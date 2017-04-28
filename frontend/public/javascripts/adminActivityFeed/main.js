@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import immutable from 'immutable';
+import Immutable from 'immutable';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -20,8 +20,9 @@ import {
 } from './actions';
 
 const containerElement = document.querySelector('#app');
+const serversideError = containerElement.getAttribute('data-error');
 
-const initialState = immutable.fromJS({
+const initialState = Immutable.fromJS({
   activities: [],
   loadingFeed: false,
   filtering: {
@@ -30,8 +31,12 @@ const initialState = immutable.fromJS({
     dateFrom: null,
     dateTo: null
   },
-  pagination: null,
-  error: containerElement.getAttribute('data-error')
+  error: serversideError,
+  pagination: {
+    currentPage: 1,
+    hasNextPage: false,
+    hasPreviousPage: false
+  }
 });
 
 const httpClient = new HttpClient();
@@ -62,9 +67,17 @@ document.addEventListener('DOMContentLoaded', () => {
     </Localization>,
     containerElement,
     () => {
-      if (window.initialData && window.initialData.activities && window.initialData.pager_info) {
-        store.dispatch(setActivities(window.initialData.activities));
-        store.dispatch(setPagination(window.initialData.pager_info));
+      const initialData = window.initialData;
+
+      if (initialData && initialData.activities && initialData.pager_info) {
+        const pagerInfo = initialData.pager_info;
+
+        store.dispatch(setActivities(initialData.activities));
+        store.dispatch(setPagination({
+          currentPage: 1,
+          hasNextPage: pagerInfo['has_next_page?'],
+          hasPreviousPage: pagerInfo['has_prev_page?']
+        }));
       } else {
         store.dispatch(loadActivities());
       }

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 
 import Localization from 'components/Localization/Localization';
 import connectLocalization from 'components/Localization/connectLocalization';
@@ -21,7 +21,7 @@ describe('Localization', () => {
   const renderComponent = (ComponentClass, props) => {
     const tree = <Localization locale={locale} translations={translations} {...props}><ComponentClass /></Localization>;
     return _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode)(tree);
-  }
+  };
 
   describe('api', () => {
     it('should be accessible from children components', () => {
@@ -32,7 +32,7 @@ describe('Localization', () => {
       });
 
       const output = renderComponent(MyComponent);
-      expect(output.textContent).to.eq('true');
+      assert(output.textContent === 'true');
     });
 
     it('getLocale() should return current locale', () => {
@@ -41,7 +41,7 @@ describe('Localization', () => {
       });
 
       const output = renderComponent(MyComponent);
-      expect(output.textContent).to.eq(locale);
+      assert(output.textContent === locale);
     });
 
     it('translate(key,data) should return localized string if exists', () => {
@@ -50,7 +50,7 @@ describe('Localization', () => {
       });
 
       const output = renderComponent(MyComponent);
-      expect(output.textContent).to.eq('Tests');
+      assert(output.textContent === 'Tests');
     });
 
     it('translate(key,data) should return not found text if key doesn\'t exists', () => {
@@ -59,7 +59,7 @@ describe('Localization', () => {
       });
 
       const output = renderComponent(MyComponent);
-      expect(output.textContent).to.eq('(no translation available)');
+      assert(output.textContent === '(no translation available)');
     });
 
     it('translate(key,data) should replace sub keys in translation with fields provided in data', () => {
@@ -68,7 +68,7 @@ describe('Localization', () => {
       });
 
       const output = renderComponent(MyComponent);
-      expect(output.textContent).to.eq('Hello, John Doe');
+      assert(output.textContent === 'Hello, John Doe');
     });
 
     it('translate(key,data) should return key name if desired when key not found', () => {
@@ -77,7 +77,7 @@ describe('Localization', () => {
       });
 
       const output = renderComponent(MyComponent, { returnKeyForNotFound: true });
-      expect(output.textContent).to.eq('notexist');
+      assert(output.textContent === 'notexist');
     });
 
     it('translate(key, data) shoud search for the given key under root namespace if provided', () => {
@@ -86,7 +86,7 @@ describe('Localization', () => {
       });
 
       const output = renderComponent(MyComponent, { root: 'deep' });
-      expect(output.textContent).to.eq('im in deep');
+      assert(output.textContent === 'im in deep');
     });
 
     it('translate(key, data) should respect count data', () => {
@@ -95,7 +95,7 @@ describe('Localization', () => {
       });
 
       const output = renderComponent(MyComponent);
-      expect(output.textContent).to.eq('5 products, 1 product');
+      assert(output.textContent === '5 products, 1 product');
     });
   });
 });

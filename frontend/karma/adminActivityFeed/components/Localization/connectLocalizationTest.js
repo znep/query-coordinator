@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 
 import Localization from 'components/Localization/Localization';
 import connectLocalization from 'components/Localization/connectLocalization';
@@ -23,6 +23,6 @@ describe('connectLocalization', () => {
     );
 
     const output = renderComponent(component);
-    expect(output.textContent).to.eq(`${translations.test} ${locale}`);
+    assert(output.textContent === `${translations.test} ${locale}`);
   });
 });

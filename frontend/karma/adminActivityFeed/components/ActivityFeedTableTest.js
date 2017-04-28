@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 
 import testStore from '../testStore';
 import mockActivities from '../mockActivities';
@@ -29,8 +29,8 @@ describe('ActivityFeedTable', () => {
       ''
     ];
 
-    expect(columnTitles.length).to.eq(7);
-    expect(columnTitles).to.deep.eq(expectedColumnTitles);
+    assert.lengthOf(columnTitles, 7);
+    assert.deepEqual(columnTitles, expectedColumnTitles);
   });
 
   it('should render localized dates', () => {
@@ -43,7 +43,7 @@ describe('ActivityFeedTable', () => {
       'March 7, 2017'
     ];
 
-    expect(expectedDateColumns).to.deep.eq(dateColumns);
+    assert.deepEqual(expectedDateColumns, dateColumns);
   });
 
   it('should render view details link for failed activities', () => {
@@ -55,7 +55,7 @@ describe('ActivityFeedTable', () => {
         row => [mockTranslations.statuses.success_with_data_errors, mockTranslations.statuses.failure].
           includes(row.querySelector('td[data-column=status]').textContent)
       ).
-      forEach(row => expect(row.querySelector('td[data-column=actions]').textContent).to.eq('View Details'));
+      forEach(row => assert(row.querySelector('td[data-column=actions]').textContent === 'View Details'));
   });
 
 });

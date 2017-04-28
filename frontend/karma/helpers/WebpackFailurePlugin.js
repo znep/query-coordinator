@@ -4,7 +4,7 @@ module.exports = function() {
       var warnings = stats.compilation.warnings;
 
       if (warnings.length > 0) {
-        console.log(warnings[0].message);
+        console.log(warnings);
 
         // Don't throw errors when in watch mode
         if (process.argv.join('').indexOf('--singleRunfalse') === -1) {

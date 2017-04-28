@@ -19,13 +19,19 @@ export const setPagination = (pagination) => ({
 });
 
 export const loadActivities = () => {
-  return (getService) => (dispatch) => {
+  return (getService) => (dispatch, getState) => {
     const api = getService('api');
+    const currentPage = getState().getIn(['pagination', 'currentPage']);
 
-    // TODO: apply filtering and pagination
-    return api.get().then(data => {
+    return api.get(currentPage).then(data => {
+      const pagerInfo = data['pager_info'];
+
       dispatch(setActivities(data.activities));
-      dispatch(setPagination(data.pager_info));
+      dispatch(setPagination({
+        currentPage,
+        hasNextPage: pagerInfo['has_next_page?'],
+        hasPreviousPage: pagerInfo['has_prev_page?']
+      }));
 
       return data;
     });
@@ -68,5 +74,15 @@ export const restoreDataset = () => {
         console.error(error);
       }
     });
+  };
+};
+
+export const gotoPage = (pageNumber) => {
+  return () => (dispatch, getState) => {
+    const pagination = getState().get('pagination').toJS();
+    pagination.currentPage = pageNumber;
+
+    dispatch(setPagination(pagination));
+    return dispatch(loadActivities());
   };
 };

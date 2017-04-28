@@ -3426,6 +3426,9 @@ en:
           success: Completed
           success_with_data_errors: Completed, with problems
         view_details: View Details
+        pagination:
+          next: Next
+          previous: Previous
       metadata:
         add_new_category: Add New Category
         add_new_field: Add New Field

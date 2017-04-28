@@ -2,7 +2,7 @@ import _ from 'lodash';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import immutable from 'immutable';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 
 import serviceLocator from 'middlewares/serviceLocator';
 
@@ -13,9 +13,9 @@ import {
 } from 'actionTypes';
 import {
   loadActivities,
-  restoreDataset
+  restoreDataset,
+  gotoPage
 } from 'actions';
-import reducer from 'reducer';
 
 import mockActivities from './mockActivities';
 
@@ -34,7 +34,11 @@ const initialState = immutable.fromJS({
     dateFrom: null,
     dateTo: null
   },
-  pagination: null
+  pagination: {
+    currentPage: 1,
+    hasNextPage: true,
+    hasPreviousPage: false
+  }
 });
 
 const mockStore = configureStore([
@@ -56,17 +60,28 @@ describe('Activity Feed actions', () => {
     return store.dispatch(loadActivities()).then(() => {
       const dispatchedActions = store.getActions();
 
-      expect(dispatchedActions[0].type).to.eq(SET_ACTIVITIES);
-      expect(dispatchedActions[1].type).to.eq(SET_PAGINATION);
+      assert(dispatchedActions[0].type === SET_ACTIVITIES);
+      assert(dispatchedActions[1].type === SET_PAGINATION);
     });
   });
 
-  xit('should be able to load next page', () => {
+  it('should be able to goto page', () => {
+    mockHttpClient.respondWith('GET', /\/admin\/activity_feed\.json/, 200, mockActivities);
 
-  });
+    return store.dispatch(gotoPage(2)).then(() => {
+      const dispatchedActions = store.getActions();
+      const actionTypes = dispatchedActions.map(a => a.type);
 
-  xit('should be able to load previous page', () => {
+      const expectedTypes = [
+        SET_PAGINATION,
+        SET_ACTIVITIES,
+        SET_PAGINATION
+      ];
 
+      assert(actionTypes[0] === expectedTypes[0]);
+      assert(actionTypes[1] === expectedTypes[1]);
+      assert(actionTypes[2] === expectedTypes[2]);
+    });
   });
 
   it('should be able to restore dataset', () => {
@@ -80,9 +95,9 @@ describe('Activity Feed actions', () => {
     return store.dispatch(action).then(() => {
       const dispatchedActions = store.getActions();
 
-      expect(dispatchedActions[0].type).to.eq(DISMISS_RESTORE_MODAL);
-      expect(dispatchedActions[1].type).to.eq(SET_ACTIVITIES);
-      expect(dispatchedActions[2].type).to.eq(SET_PAGINATION);
+      assert(dispatchedActions[0].type === DISMISS_RESTORE_MODAL);
+      assert(dispatchedActions[1].type === SET_ACTIVITIES);
+      assert(dispatchedActions[2].type === SET_PAGINATION);
     });
   });
 });

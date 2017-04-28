@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 
 import Localization from 'components/Localization/Localization';
 import LocalizedDate from 'components/Localization/LocalizedDate';
@@ -19,6 +19,6 @@ describe('LocalizedDate', () => {
 
     const output = renderComponent(component);
 
-    expect(output.textContent).to.eq('March 22, 2017');
+    assert(output.textContent === 'March 22, 2017');
   });
 });

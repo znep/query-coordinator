@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 
 import Localization from 'components/Localization/Localization';
 import LocalizedText from 'components/Localization/LocalizedText';
@@ -19,7 +19,7 @@ describe('LocalizedText', () => {
     );
 
     const output = renderComponent(component);
-    expect(output.tagName).to.eq('SPAN');
-    expect(output.textContent).to.eq(translations.test);
+    assert(output.tagName === 'SPAN');
+    assert(output.textContent === translations.test);
   });
 });

@@ -8,8 +8,11 @@ import LocalizedText from './Localization/LocalizedText';
 
 import DataTable from './DataTable/DataTable';
 import AssetType from './AssetType';
+import ActivityFeedPagination from './ActivityFeedPagination';
 
 import { showDetailsModal, showRestoreModal } from '../actions';
+
+import './ActivityFeedTable.scss';
 
 class ActivityFeedTable extends React.Component {
   constructor(props) {
@@ -101,7 +104,12 @@ class ActivityFeedTable extends React.Component {
   render() {
     const { activities } = this.props;
 
-    return <DataTable data={activities} columns={this.columns} rowIdGetter={this.rowIdGetter} />;
+    return (
+      <div className="activity-feed-table">
+        <DataTable data={activities} columns={this.columns} rowIdGetter={this.rowIdGetter} />
+        <ActivityFeedPagination />
+      </div>
+    );
   }
 }
 

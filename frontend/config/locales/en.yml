@@ -3034,6 +3034,11 @@ en:
         title: Manage Home Page
         up: Up
       index:
+        section_headers:
+          data_and_assets: Data and Assets
+          content: Content
+          super_admin: Super Admin
+          site_settings: Site Settings
         comment_moderation: Comment Moderation
         comment_moderation_description: Review and moderate comments for datasets on your site
         connectors: Connectors

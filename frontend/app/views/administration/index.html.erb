@@ -1,170 +1,142 @@
 <%- prefix = 'screens.admin.index' %>
 <% content_for :head do %>
+  <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css" />
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-index-screen' %>
   <title>Administration | <%= get_site_title %></title>
 <% end %>
 
-<%= render :partial => 'left_nav' %>
-
-<div class="contentBox withLeftNavigation">
+<div class="admin-index">
   <%= display_standard_flashes %>
 
-  <ul class="adminList">
-      <li class="analytics">
-        <%= admin_nav_link_to t("#{prefix}.site_analytics"), :controller => '/administration', :action => 'analytics' %>
-        <span class="description">
-          <%= t("#{prefix}.site_analytics_description") %>
-        </span>
-      </li>
-    <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_USERS) -%>
-      <li class="users">
-        <%= admin_nav_link_to t("#{prefix}.users"), :controller => '/administration', :action => 'users' %>
-        <span class="description">
-          <%= t("#{prefix}.users_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, UserRights::FEDERATIONS) && module_available?(:federations) -%>
-      <li class="federation">
-        <%= admin_nav_link_to t("#{prefix}.federation"), :controller => '/administration', :action => 'federations' %>
-        <span class="description">
-          <%= t("#{prefix}.federation_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, UserRights::MODERATE_COMMENTS) && module_enabled?(:publisher_comment_moderation) -%>
-      <li class="comments">
-        <%= admin_nav_link_to t("#{prefix}.comment_moderation"), :controller => '/administration', :action => 'comment_moderation' %>
-        <span class="description">
-          <%= t("#{prefix}.comment_moderation_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, UserRights::APPROVE_NOMINATIONS) && feature?(:view_moderation) -%>
-      <li class="viewmoderation">
-        <%= admin_nav_link_to t("#{prefix}.view_moderation"), :controller => '/administration', :action => 'views' %>
-          <span class="description">
-            <%= t("#{prefix}.view_moderation_description") %>
-          </span>
-      </li>
-    <%- end -%>
-    <%- if user_can?(current_user, UserRights::EDIT_SDP) -%>
-      <li class="appearance">
-        <%= admin_nav_link_to t("#{prefix}.sdp_templates"), :controller => '/administration', :action => 'sdp_templates' %>
-        <span class="description">
-          <%= t("#{prefix}.sdp_templates_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_PAGES) && module_enabled?(:canvas_designer) -%>
-      <li class="contentmgmt">
-        <%= admin_nav_link_to t("#{prefix}.dataslate_pages"), :controller => '/administration', :action => 'canvas_pages' %>
-        <span class="description">
-          <%= t("#{prefix}.dataslate_pages_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) ||
+  <div class="admin-link-columns">
+    <section>
+      <h2><i class="socrata-icon-dataset"></i> <%= t("#{prefix}.section_headers.data_and_assets") %></h2>
+      <ul class="admin-link-list">
+        <%- if CurrentDomain.user_can?(current_user, UserRights::VIEW_ALL_DATASET_STATUS_LOGS) %>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.jobs"), :controller => '/administration/activity_feed', :action => 'index' %>
+              <p><%= t("#{prefix}.jobs_description") %></p>
+            </li>
+        <%- end %>
+        <li>
+          <%= admin_nav_link_to t("#{prefix}.site_analytics"), :controller => '/administration', :action => 'analytics' %>
+          <p><%= t("#{prefix}.site_analytics_description") %></p>
+        </li>
+        <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) ||
             CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
-      <li class="datasets">
-        <%= admin_nav_link_to t("#{prefix}.datasets"), :controller => '/administration', :action => 'datasets' %>
-        <span class="description">
-          <%= t("#{prefix}.datasets_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if can_view_georegions_admin?(current_user) -%>
-      <li class="georegions">
-        <%= admin_nav_link_to t("#{prefix}.georegions"), :controller => '/administration', :action => 'georegions' %>
-        <span class="description">
-          <%= t("#{prefix}.georegions_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if show_site_appearance_admin_panel? %>
-      <li class="homemgmt">
-        <%= admin_nav_link_to t("#{prefix}.site_appearance"), :controller => '/site_appearance', :action => 'edit' %>
-        <span class="description">
-          <%= t("#{prefix}.site_appearance_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_STORIES) ||
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.datasets"), :controller => '/administration', :action => 'datasets' %>
+              <p><%= t("#{prefix}.datasets_description") %></p>
+            </li>
+        <%- end -%>
+        <%- if CurrentDomain.user_can?(current_user, UserRights::FEDERATIONS) && module_available?(:federations) -%>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.federation"), :controller => '/administration', :action => 'federations' %>
+              <p><%= t("#{prefix}.federation_description") %></p>
+            </li>
+        <%- end -%>
+        <%- if show_connectors? %>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.connectors"), :controller => '/administration/connector', :action => 'connectors' %>
+              <p><%= t("#{prefix}.connectors_description") %></p>
+            </li>
+        <%- end %>
+      </ul>
+    </section>
+    <section>
+      <h2><i class="socrata-icon-copy-document"></i> <%= t("#{prefix}.section_headers.content") %></h2>
+      <ul class="admin-link-list">
+        <%- if module_enabled?(:routing_approval) && current_user.can_approve? -%>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.dataset_routing_and_approval"), :controller => '/administration/routing_approval', :action => 'index' %>
+              <p><%= t("#{prefix}.dataset_routing_and_approval_description") %></p>
+            </li>
+        <%- end -%>
+        <%- if CurrentDomain.user_can?(current_user, UserRights::APPROVE_NOMINATIONS) && feature?(:view_moderation) -%>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.view_moderation"), :controller => '/administration', :action => 'views' %>
+              <p><%= t("#{prefix}.view_moderation_description") %></p>
+            </li>
+        <%- end -%>
+        <%- if CurrentDomain.user_can?(current_user, UserRights::MODERATE_COMMENTS) && module_enabled?(:publisher_comment_moderation) -%>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.comment_moderation"), :controller => '/administration', :action => 'comment_moderation' %>
+              <p><%= t("#{prefix}.comment_moderation_description") %></p>
+            </li>
+        <%- end -%>
+        <%- if can_view_georegions_admin?(current_user) -%>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.georegions"), :controller => '/administration', :action => 'georegions' %>
+              <p><%= t("#{prefix}.georegions_description") %></p>
+            </li>
+        <%- end -%>
+        <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_STORIES) ||
             CurrentDomain.user_can?(current_user, UserRights::FEATURE_ITEMS) ||
             CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
-      <li class="homemgmt">
-        <%= admin_nav_link_to t("#{prefix}.home_page"), :controller => '/administration', :action => 'home' %>
-        <span class="description">
-          <%= t("#{prefix}.home_page_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
-      <li class="metadata">
-        <%= admin_nav_link_to t("#{prefix}.metadata"), :controller => '/administration', :action => 'metadata' %>
-        <span class="description">
-          <%= t("#{prefix}.metadata_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if module_enabled?(:routing_approval) && current_user.can_approve? -%>
-      <li class="routingApproval">
-        <%= admin_nav_link_to t("#{prefix}.dataset_routing_and_approval"), :controller => '/administration/routing_approval', :action => 'index' %>
-        <span class="description">
-          <%= t("#{prefix}.dataset_routing_and_approval_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if CurrentDomain.user_can?(current_user, UserRights::VIEW_ALL_DATASET_STATUS_LOGS) %>
-      <li class="activity-feed">
-        <%= admin_nav_link_to t("#{prefix}.jobs"), :controller => '/administration/activity_feed', :action => 'index' %>
-        <span class="description">
-          <%= t("#{prefix}.jobs_description") %>
-        </span>
-      </li>
-    <%- end %>
-    <%- if current_user.try(:is_superadmin?) -%>
-      <li class="internal">
-        <%= admin_nav_link_to t("#{prefix}.internal"), :controller => 'internal', :action => 'index' %>
-        <span class="description">
-          <%= t("#{prefix}.internal_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if current_user.try(:is_superadmin?) && (feature_flag?('stories_enabled', request) || FeatureFlags.derive(nil, request).open_performance_narrative_editor == 'storyteller') -%>
-      <li class="contentmgmt">
-        <%= admin_nav_link_to t("#{prefix}.stories"), '/stories/admin/themes' %>
-        <span class="description">
-          <%= t("#{prefix}.stories_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if CurrentDomain.module_enabled?(:govStat) -%>
-      <li class="datasets">
-        <%= admin_nav_link_to t("#{prefix}.goals"), '/admin/goals' %>
-        <span class="description">
-          <%= t("#{prefix}.goals_description") %>
-        </span>
-      </li>
-    <%- end -%>
-    <%- if show_connectors? %>
-      <li class="connectors">
-        <%= admin_nav_link_to t("#{prefix}.connectors"), :controller => '/administration/connector', :action => 'connectors' %>
-        <span class="description">
-          <%= t("#{prefix}.connectors_description") %>
-        </span>
-      </li>
-    <%- end %>
-    <%- if current_user.try(:is_superadmin?) %>
-      <li class="feature_flags">
-        <%= admin_nav_link_to t("#{prefix}.feature_flags"), :controller => '/internal', :action => 'feature_flags', :domain_id => CurrentDomain.cname %>
-        <span class="description">
-          <%= t("#{prefix}.feature_flags_description") %>
-        </span>
-      </li>
-    <%- end -%>
-  </ul>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.home_page"), :controller => '/administration', :action => 'home' %>
+              <p><%= t("#{prefix}.home_page_description") %></p>
+            </li>
+        <%- end -%>
+        <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_PAGES) && module_enabled?(:canvas_designer) -%>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.dataslate_pages"), :controller => '/administration', :action => 'canvas_pages' %>
+              <p><%= t("#{prefix}.dataslate_pages_description") %></p>
+            </li>
+        <%- end -%>
+      </ul>
+    </section>
+    <section>
+      <%- if current_user.try(:is_superadmin?) -%>
+        <div class="super-admin-menu">
+          <h2><i class="socrata-icon-private"></i> <%= t("#{prefix}.section_headers.super_admin") %></h2>
+          <ul class="admin-link-list">
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.internal"), :controller => 'internal', :action => 'index' %>
+              <p><%= t("#{prefix}.internal_description") %></p>
+            </li>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.feature_flags"), :controller => '/internal', :action => 'feature_flags', :domain_id => CurrentDomain.cname %>
+              <p><%= t("#{prefix}.feature_flags_description") %></p>
+            </li>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.stories"), '/stories/admin/themes' %>
+              <p><%= t("#{prefix}.stories_description") %></p>
+            </li>
+          </ul>
+        </div>
+      <%- end %>
+      <h2><i class="socrata-icon-settings"></i> <%= t("#{prefix}.section_headers.site_settings") %></h2>
+      <ul class="admin-link-list">
+        <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_USERS) -%>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.users"), :controller => '/administration', :action => 'users' %>
+              <p><%= t("#{prefix}.users_description") %></p>
+            </li>
+        <%- end -%>
+        <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.metadata"), :controller => '/administration', :action => 'metadata' %>
+              <p><%= t("#{prefix}.metadata_description") %></p>
+            </li>
+        <%- end -%>
+        <%- if show_site_appearance_admin_panel? %>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.site_appearance"), :controller => '/site_appearance', :action => 'edit' %>
+              <p><%= t("#{prefix}.site_appearance_description") %></p>
+            </li>
+        <%- end -%>
+        <%- if user_can?(current_user, UserRights::EDIT_SDP) -%>
+            <li>
+              <%= admin_nav_link_to t("#{prefix}.sdp_templates"), :controller => '/administration', :action => 'sdp_templates' %>
+              <p><%= t("#{prefix}.sdp_templates_description") %></p>
+            </li>
+        <%- end -%>
+      </ul>
+    </section>
+  </div>
 </div>
 
 <%= render_admin_qualtrics %>

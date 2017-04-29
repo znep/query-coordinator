@@ -2019,7 +2019,7 @@ class View < Model
   end
 
   def as_visualization_canvas_parent
-    canvas_row_label = (row_label || I18n.t('visualization_canvas.default_row_label')).capitalize
+    canvas_row_label = row_label || I18n.t('visualization_canvas.default_row_label').capitalize
 
     {
       :id => nbe_view.id, # the authoring workflow only works on NBE datasets

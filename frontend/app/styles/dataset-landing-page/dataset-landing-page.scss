@@ -57,7 +57,7 @@ body {
     }
   }
 
-  .entry-header.dataset-landing-page-header {
+  .entry-header {
     display: flex;
     flex-wrap: wrap;
 
@@ -135,7 +135,7 @@ body {
   }
 
   @media(max-width: $small) {
-    .entry-header.dataset-landing-page-header {
+    .entry-header {
       .entry-actions {
         flex: 1 0 auto;
 

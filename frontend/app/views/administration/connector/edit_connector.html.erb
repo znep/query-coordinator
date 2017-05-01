@@ -32,36 +32,41 @@
         <span class="type"><%= t("screens.admin.connector.#{@server.type_key}") %></span>
       </div>
       <h2><%= t('screens.admin.connector.sync_policy') %></h2>
-      <% if esri_arcgis? %>
-        <fieldset class="line">
-          <div class="valueBox inline-value">
-            <input type="radio" id="dataConnectAll" class="server-sync"
-              name="server[sync_type]" value="data"
-              <%= @server.data_connect_all? ? 'checked="checked"' : '' %> />
-            <label for="dataConnectAll">
-              <%= t('screens.admin.connector.data_connect_all') %>
-            </label>
+      <div class="edit-connector-form flexbox-space-between">
+        <% if esri_arcgis? %>
+          <div class="flexbox-left-section">
+            <fieldset class="line">
+              <div class="valueBox inline-value">
+                <input type="radio" id="dataConnectAll" class="server-sync"
+                  name="server[sync_type]" value="data"
+                  <%= @server.data_connect_all? ? 'checked="checked"' : '' %> />
+                <label for="dataConnectAll">
+                  <%= t('screens.admin.connector.data_connect_all') %>
+                </label>
+              </div>
+              <div class="valueBox inline-value">
+                <input type="radio" id="federateAll" class="server-sync"
+                  name="server[sync_type]" value="catalog"
+                  <%= @server.federate_all? ? 'checked="checked"' : '' %> />
+                <label for="federateAll">
+                  <%= t('screens.admin.connector.catalog_connect_all') %>
+                </label>
+              </div>
+              <div class="valueBox inline-value">
+                <input type="radio" id="connectSome" class="server-sync"
+                  name="server[sync_type]" value="ignored"
+                  <%= @server.federate_all? || @server.data_connect_all? ? '' : 'checked="checked"' %> />
+                <label for="connectSome">
+                  <%= t('screens.admin.connector.some_assets') %>
+                </label>
+              </div>
+            </fieldset>
           </div>
-          <div class="valueBox inline-value">
-            <input type="radio" id="federateAll" class="server-sync"
-              name="server[sync_type]" value="catalog"
-              <%= @server.federate_all? ? 'checked="checked"' : '' %> />
-            <label for="federateAll">
-              <%= t('screens.admin.connector.catalog_connect_all') %>
-            </label>
+          <div class="line clearfix flexbox-right-section">
+            <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button inline-button" />
+            <div class="save-connector-spinner"><span class="icon"></span></div>
           </div>
-          <div class="valueBox inline-value">
-            <input type="radio" id="connectSome" class="server-sync"
-              name="server[sync_type]" value="ignored"
-              <%= @server.federate_all? || @server.data_connect_all? ? '' : 'checked="checked"' %> />
-            <label for="connectSome">
-              <%= t('screens.admin.connector.some_assets') %>
-            </label>
-          </div>
-          <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button inline-button"/>
-        </fieldset>
-      <% else %>
-        <div class="new-connector-form flexbox-space-between">
+        <% else %>
           <div class="flexbox-left-section">
             <fieldset class="line">
               <div class="valueBox inline-value">
@@ -76,15 +81,17 @@
                   <%= @server.federate_all? ? '' : 'checked="checked"' %> />
                 <label for="federateSome"><%= t('screens.admin.connector.some_assets') %></label>
               </div>
-          </div> <%# end flex left section %>
+            </fieldset>
+          </div>
           <div class="line clearfix flexbox-right-section">
             <div class="flexbox-upper-right">
               <%= connector_type_hidden_field_tag %>
-              <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button"/>
+              <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button inline-button" />
+              <div class="save-connector-spinner"><span class="icon"></span></div>
             </div>
           </div>
-        </div> <%# end flex box container %>
-      <% end %>
+        <% end %>
+      </div>
 
       <fieldset class="line">
         <div class="filter-assets">

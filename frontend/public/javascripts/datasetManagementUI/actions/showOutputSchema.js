@@ -15,6 +15,7 @@ import {
   insertChildrenAndSubscribeToOutputSchema
 } from './manageUploads';
 import { soqlProperties } from '../lib/soqlTypes';
+import { currentAndIgnoredOutputColumns } from 'selectors';
 
 function createNewOutputSchema(
   routing,
@@ -76,38 +77,20 @@ export const updateColumnType = (oldOutputSchema, oldColumn, newType) => (dispat
   );
 };
 
-export const addColumn = (outputSchema, inputColumn) => (dispatch, getState) => {
+export const newAddColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
   const routing = state.routing.location;
   const inputSchema = db.input_schemas[outputSchema.input_schema_id];
   const uploadId = inputSchema.upload_id;
   const upload = db.uploads[uploadId];
+  const { current } = currentAndIgnoredOutputColumns(db);
 
   const newOutputSchema = {
     input_schema_id: inputSchema.id
   };
 
-  const transform = soqlProperties[inputColumn.soql_type].canonicalName;
-  const newColumnExpr = `to_${transform}(${inputColumn.field_name})`;
-
-  const genTransform = (column) => {
-    const newTransform = db.transforms[column.transform_id];
-    return newTransform.transform_expr;
-  };
-  const newOutputColumns = outputColumnsOf(db, outputSchema).
-    map(oc => toNewOutputColumn(oc, genTransform)).
-    concat([
-      {
-        display_name: inputColumn.field_name,
-        field_name: inputColumn.field_name,
-        position: inputColumn.position,
-        description: '',
-        transform: {
-          transform_expr: newColumnExpr
-        }
-      }
-    ]);
+  const newOutputColumns = [...current, _.omit(outputColumn, 'ignored')];
 
   dispatch(upsertStarted('output_schemas', newOutputSchema));
 
@@ -121,24 +104,20 @@ export const addColumn = (outputSchema, inputColumn) => (dispatch, getState) => 
   );
 };
 
-export const dropColumn = (outputSchema, toDrop) => (dispatch, getState) => {
+export const newDropColumn = (outputSchema, column) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
   const routing = state.routing.location;
   const inputSchema = db.input_schemas[outputSchema.input_schema_id];
   const uploadId = inputSchema.upload_id;
   const upload = db.uploads[uploadId];
+  const { current } = currentAndIgnoredOutputColumns(db);
 
   const newOutputSchema = {
     input_schema_id: inputSchema.id
   };
-  const genTransform = (column) => {
-    const { transform_expr: expr } = db.transforms[column.transform_id];
-    return expr;
-  };
-  const newOutputColumns = outputColumnsOf(db, outputSchema)
-    .filter(oc => oc.id !== toDrop.id)
-    .map(oc => toNewOutputColumn(oc, genTransform));
+
+  const newOutputColumns = current.filter(oc => oc.id !== column.id);
 
   dispatch(upsertStarted('output_schemas', newOutputSchema));
 

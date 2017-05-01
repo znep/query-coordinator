@@ -74,8 +74,6 @@ export class ShowOutputSchema extends Component {
       numLoadsInProgress,
       goHome,
       updateColumnType,
-      addColumn,
-      dropColumn,
       routing
     } = this.props;
 
@@ -144,9 +142,7 @@ export class ShowOutputSchema extends Component {
                 inputSchema={inputSchema}
                 outputSchema={outputSchema}
                 displayState={displayState}
-                updateColumnType={updateColumnType}
-                addColumn={addColumn(outputSchema)}
-                dropColumn={dropColumn(outputSchema)} />
+                updateColumnType={updateColumnType} />
             </div>
             <PagerBar
               path={path}
@@ -185,8 +181,6 @@ ShowOutputSchema.propTypes = {
   numLoadsInProgress: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
   updateColumnType: PropTypes.func.isRequired,
-  addColumn: PropTypes.func.isRequired,
-  dropColumn: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   routing: PropTypes.object.isRequired,
   urlParams: PropTypes.shape({
@@ -215,12 +209,6 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     updateColumnType: (oldSchema, oldColumn, newType) => {
       dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType));
-    },
-    addColumn: (outputSchema) => {
-      return (column) => dispatch(ShowActions.addColumn(outputSchema, column));
-    },
-    dropColumn: (outputSchema) => {
-      return (column) => dispatch(ShowActions.dropColumn(outputSchema, column));
     },
     goHome: () => {
       dispatch(push(Links.home(ownProps.location)));

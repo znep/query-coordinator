@@ -197,7 +197,5 @@ export function currentAndIgnoredOutputColumns(db) {
         }))
       };
     })
-    .thru(obj => [...obj.current, ...obj.ignored])
-    .thru(cols => _.sortBy(cols, 'position'))
     .value();
 }

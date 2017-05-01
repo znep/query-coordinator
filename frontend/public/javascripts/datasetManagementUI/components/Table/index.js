@@ -7,6 +7,7 @@ import * as DisplayState from '../../lib/displayState';
 import styles from 'styles/Table/Table.scss';
 import { currentAndIgnoredOutputColumns } from 'selectors';
 import { connect } from 'react-redux';
+import * as ShowActions from 'actions/showOutputSchema';
 
 function Table({
   db,
@@ -19,6 +20,9 @@ function Table({
   addColumn,
   dropColumn }) {
 
+  // const sortedOutputColumns = _.sortBy([...obj.current, ...obj.ignored], 'position');
+  //   .thru(obj => [...obj.current, ...obj.ignored])
+  //   .thru(cols => _.sortBy(cols, 'position'))
   const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
   const numRowErrors = inputSchema.num_row_errors;
   return (
@@ -32,8 +36,8 @@ function Table({
               isDisabled={column.ignored}
               column={column}
               updateColumnType={updateColumnType}
-              addColumn={addColumn}
-              dropColumn={dropColumn} />
+              addColumn={() => addColumn(outputSchema, column)}
+              dropColumn={() => dropColumn(outputSchema, column)} />
           )}
         </tr>
         <tr className={styles.columnStatuses}>
@@ -76,11 +80,19 @@ Table.propTypes = {
   outputColumns: PropTypes.arrayOf(PropTypes.object)
 };
 
-// TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
-// fails; should probably redirect or display some message to the user
+const combineAndSort = ({ current, ignored }) =>
+  _.sortBy([...current, ...ignored], 'position');
+
+  // TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
+  // fails; should probably redirect or display some message to the user
 const mapStateToProps = ({ db }, ownProps) => ({
   ...ownProps,
-  outputColumns: currentAndIgnoredOutputColumns(db)
+  outputColumns: combineAndSort(currentAndIgnoredOutputColumns(db))
 });
 
-export default connect(mapStateToProps)(Table);
+const mapDispatchToProps = dispatch => ({
+  addColumn: (outputSchema, column) => dispatch(ShowActions.newAddColumn(outputSchema, column)),
+  dropColumn: (outputSchema, column) => dispatch(ShowActions.newDropColumn(outputSchema, column))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Table);

@@ -18,9 +18,17 @@ describe('components/InfoPaneButtons', () => {
     });
 
     it('does not exist if the dataset is blobby or an href', () => {
-      const element = renderComponent(InfoPaneButtons, getProps({
+      let element = renderComponent(InfoPaneButtons, getProps({
         view: {
           isBlobby: true
+        }
+      }));
+
+      assert.isNull(element.querySelector('.btn.grid'));
+
+      element = renderComponent(InfoPaneButtons, getProps({
+        view: {
+          isHref: true
         }
       }));
 
@@ -35,9 +43,17 @@ describe('components/InfoPaneButtons', () => {
     });
 
     it('exists if the dataset is blobby or an href', () => {
-      const element = renderComponent(InfoPaneButtons, getProps({
+      let element = renderComponent(InfoPaneButtons, getProps({
         view: {
           isBlobby: true
+        }
+      }));
+
+      assert.ok(element.querySelector('.btn.manage'));
+
+      element = renderComponent(InfoPaneButtons, getProps({
+        view: {
+          isHref: true
         }
       }));
 
@@ -122,10 +138,23 @@ describe('components/InfoPaneButtons', () => {
       assert.ok(element.querySelector('.btn.api'));
     });
 
+    // TODO: implement this test after refactoring breakpoints/Responsive from lib
+    xit('does not exist if the window width is below the mobile breakpoint', () => {
+
+    });
+
     it('does not exist if the dataset is blobby or an href', () => {
-      const element = renderComponent(InfoPaneButtons, getProps({
+      let element = renderComponent(InfoPaneButtons, getProps({
         view: {
           isBlobby: true
+        }
+      }));
+
+      assert.isNull(element.querySelector('.btn.api'));
+
+      element = renderComponent(InfoPaneButtons, getProps({
+        view: {
+          isHref: true
         }
       }));
 

@@ -1,3 +1,5 @@
+<%- is_goal = @story_metadata.goal? -%>
+
 <div id="settings-panel-container">
   <div class="settings-panel">
     <%- if current_user.present? && !open_performance_enabled? %>
@@ -26,7 +28,7 @@
       <li id="settings-panel-story-metadata" class="menu-list-item">
         <button class="menu-list-item-header expandable">
           <span class="socrata-icon-edit"></span>
-          <%- if @story_metadata.goal? -%>
+          <%- if is_goal -%>
           <span><%= t('editor.settings_panel.displaying_section.section_title_when_goal') %></span>
           <%- else -%>
           <span><%= t('editor.settings_panel.displaying_section.section_title') %></span>
@@ -34,7 +36,7 @@
         </button>
         <div class="menu-list-item-content settings-panel-displaying collapsed">
           <div>
-            <%- unless can_edit_title_and_description? -%>
+            <%- unless can_edit_title_and_description?(is_goal) -%>
               <section class="warning-bar">
                 <p><span class="socrata-icon-warning"></span></p>
                 <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.cannot_edit_title_and_description') %></p>
@@ -43,10 +45,10 @@
 
             <form>
               <label for="title" class="block-label"><%= t('editor.settings_panel.displaying_section.title_label') %></label>
-              <input id="title" class="text-input" name="title" type="text" maxlength="254"<%= ' disabled' unless can_edit_title_and_description? %>>
-              <%- unless @story_metadata.goal? -%>
+              <input id="title" class="text-input" name="title" type="text" maxlength="254"<%= ' disabled' unless can_edit_title_and_description?(is_goal) %>>
+              <%- unless is_goal -%>
                 <label for="description" class="block-label"><%= t('editor.settings_panel.displaying_section.description_label') %></label>
-                <textarea id="description" class="text-area" name="description" <%= ' disabled' unless can_edit_title_and_description? %>></textarea>
+                <textarea id="description" class="text-area" name="description" <%= ' disabled' unless can_edit_title_and_description?(is_goal) %>></textarea>
               <%- end -%>
             </form>
 
@@ -54,7 +56,7 @@
               <p><%= t('editor.settings_panel.errors.generic_save_failure_message') %></p>
             </div>
             <button class="btn btn-default btn-dark settings-save-btn">
-              <%- if @story_metadata.goal? -%>
+              <%- if is_goal -%>
               <span><%= t('editor.settings_panel.displaying_section.save_button_label_when_goal') %></span>
               <%- else -%>
               <span><%= t('editor.settings_panel.displaying_section.save_button_label') %></span>
@@ -65,16 +67,16 @@
       </li>
 
       <li id="settings-panel-copy-story" class="menu-list-item">
-        <button class="menu-list-item-header" data-action="STORY_MAKE_COPY_MODAL_OPEN"<%= ' disabled' unless can_make_copy? %>>
+        <button class="menu-list-item-header" data-action="STORY_MAKE_COPY_MODAL_OPEN"<%= ' disabled' unless can_make_copy?(is_goal) %>>
           <span class="socrata-icon-copy-document"></span>
           <span><%= t('editor.settings_panel.copy_section.section_title') %></span>
-          <%- unless can_make_copy? -%>
+          <%- unless can_make_copy?(is_goal) -%>
             <span class="settings-panel-subtitle"><%= t('editor.settings_panel.warnings.permissions') %></span>
           <%- end %>
         </button>
       </li>
 
-      <%- unless @story_metadata.goal? -%>
+      <%- unless is_goal -%>
       <li id="settings-panel-collaborators" class="menu-list-item">
         <button class="menu-list-item-header" data-action="COLLABORATORS_OPEN"<%= ' disabled' unless can_manage_collaborators? %>>
           <span class="socrata-icon-add-collaborator"></span>
@@ -93,7 +95,7 @@
         </button>
         <div class="menu-list-item-content settings-panel-publishing collapsed">
           <div>
-            <%- unless can_manage_story_visibility? && can_publish_story? -%>
+            <%- unless can_manage_story_visibility?(is_goal) && can_publish_story?(is_goal) -%>
               <section class="warning-bar">
                 <p><span class="socrata-icon-warning"></span></p>
                 <%- if @story_metadata.public? -%>
@@ -110,7 +112,7 @@
                 <h3><%= t('editor.settings_panel.publishing_section.visibility.private') %></h3>
               </div>
               <div>
-                <button class="btn btn-alternate-2 btn-dark" <%= ' disabled' unless can_manage_story_visibility? %>>
+                <button class="btn btn-alternate-2 btn-dark" <%= ' disabled' unless can_manage_story_visibility?(is_goal) %>>
                   <span><%= t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
                 </button>
               </div>
@@ -132,7 +134,7 @@
 
             <p class="settings-panel-story-publishing-help-text">
               <%=
-                if @story_metadata.goal?
+                if is_goal
                   t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly_goals')
                 else
                   t('editor.settings_panel.publishing_section.messages.can_be_shared_publicly')
@@ -143,7 +145,7 @@
         </div>
       </li>
 
-      <%- unless @story_metadata.goal? -%>
+      <%- unless is_goal -%>
       <li id="settings-panel-share" class="menu-list-item">
         <button class="menu-list-item-header" data-action="SHARE_AND_EMBED_MODAL_OPEN">
           <span class="socrata-icon-share"></span>
@@ -159,7 +161,7 @@
         <% end -%>
       </li>
 
-      <%- unless @story_metadata.goal? -%>
+      <%- unless is_goal -%>
       <li id="settings-panel-story-stats" class="menu-list-item">
         <%= settings_panel_story_stats_link do %>
           <span class="socrata-icon-bar-chart"></span>

@@ -50,24 +50,24 @@ module UserAuthorizationHelper
     (owner? && has_domain_right?('view_unpublished_story'))
   end
 
-  def can_edit_title_and_description?
-    admin? || (owner? && has_domain_right?('edit_story_title_desc'))
+  def can_edit_title_and_description?(is_goal = false)
+    admin? || ((is_goal || owner?) && has_domain_right?('edit_story_title_desc'))
   end
 
-  def can_make_copy?
-    admin? || (owner? && has_domain_right?('create_story_copy'))
+  def can_make_copy?(is_goal = false)
+    admin? || ((is_goal || owner?) && has_domain_right?('create_story_copy'))
   end
 
   def can_manage_collaborators?
     admin? || (owner? && has_domain_right?('manage_story_collaborators'))
   end
 
-  def can_manage_story_visibility?
-    admin? || (owner? && has_domain_right?('manage_story_visibility'))
+  def can_manage_story_visibility?(is_goal = false)
+    admin? || ((is_goal || owner?) && has_domain_right?('manage_story_visibility'))
   end
 
-  def can_publish_story?
-    admin? || (owner? && has_domain_right?('manage_story_public_version'))
+  def can_publish_story?(is_goal = false)
+    admin? || ((is_goal || owner?) && has_domain_right?('manage_story_public_version'))
   end
 
   def can_see_story_stats?

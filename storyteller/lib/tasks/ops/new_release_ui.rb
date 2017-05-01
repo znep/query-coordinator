@@ -241,7 +241,7 @@ Proceed?
   # version. Example header:
   #   Storyteller v1.0.1 Manifest (old version: v1.0.0).
   def manifest_text
-    commits = git.log(MAX_MANIFEST_COMMITS).between(last_released_commit_sha, new_release_commit).select do |commit|
+    commits = git.gblob('../storyteller').log(MAX_MANIFEST_COMMITS).between(last_released_commit_sha, new_release_commit).select do |commit|
       commit.parents.length == 1 # Ignore merge commits.
     end
 
@@ -253,7 +253,10 @@ Proceed?
       "#{ticket_id}: https://socrata.atlassian.net/browse/#{ticket_id}"
     end.join("\n")
 
-    commits_summary = "JIRA tickets:\n#{jira_tickets_text}\n\n"
+    commits_summary = "Link to Jira query for current issues...\n"
+    commits_summary << jira_query(jira_tickets)
+
+    commits_summary << "\n\nJIRA tickets:\n#{jira_tickets_text}\n\n"
     commits_summary << "Diff: https://github.com/socrata/storyteller/compare/#{last_released_commit_sha}...#{new_release_commit.sha}\n\n"
     commits_summary << commits.map do |commit|
       "#{commit.author.name} #{commit.date.strftime('%m-%d-%y')} #{commit.sha}:\n#{commit.message.strip}"
@@ -312,6 +315,11 @@ Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit_sha} and try again
     else
       local_release_commit
     end
+  end
+
+  def jira_query(jira_tickets)
+    jira_query = "id in (#{jira_tickets.join(',')})"
+    URI("https://socrata.atlassian.net/issues/?jql=#{URI.encode(jira_query)}").to_s
   end
 
   def copy_manifest_to_clipboard

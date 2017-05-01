@@ -122,7 +122,12 @@ $(function() {
           datasetPageNS.rtManager.visibleTypes[rt]) {
           datasetPageNS.rtManager.toggle(rt);
         } else if (id) {
-          if (id != blist.dataset.id) {
+          var activeId = _.get(
+            blist,
+            'dataset.metadata.renderTypeConfig.active.' + rt + '.id',
+            blist.dataset.id
+          );
+          if (id != activeId) {
             var newMD = $.extend({}, blist.dataset.metadata);
             $.deepSet(newMD, id, 'renderTypeConfig', 'active', rt, 'id');
             blist.dataset.update({
@@ -162,9 +167,21 @@ $(function() {
             },
             selectCallback: function(option, checked) {
               if (checked) {
-                option.getViewForDisplay(rt, function(viewToDisplay) {
-                  finished(viewToDisplay.id);
-                });
+                if (option === blist.dataset) {
+                  // User selected the parent dataset.
+                  // If the user previously saved the view with the table displaying another dataset
+                  // (map layer), getViewForDisplay will give us the ID of that other dataset (because,
+                  // technically, that's the tabular view to display for that dataset).
+                  // So, assume the user wants to display the parent dataset here (because they
+                  // clicked its name).
+                  // We still need to call getViewForDisplay for non-parent views, to ensure
+                  // children always load a displayable view.
+                  finished(option.id);
+                } else {
+                  option.getViewForDisplay(rt, function(viewToDisplay) {
+                    finished(viewToDisplay.id);
+                  });
+                }
               } else {
                 finished();
               }

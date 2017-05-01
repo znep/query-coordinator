@@ -28,7 +28,7 @@
       <%- end -%>
     </td>
     <td class="actions" scope="row">
-      <%- if server.last_synced || server.server_backend == 'catalog_federator' %>
+      <%- if can_edit_connector?(server) %>
         <%= link_to(
           t('screens.admin.connector.edit'),
           { :action => :edit_connector, :server_id => server.id },

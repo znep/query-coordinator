@@ -112,11 +112,18 @@
       $.getJSON('/api/configurations/<%= @config.id %>/properties/<%= CGI.escape(@property_key) %>.json?method=getLastUpdaters&limit=10', function(data) {
         _.each(data, function(datum) {
           $('.audit_list').append(
-            $.tag2({ _: 'dt', contents: { _: 'a', href: '/profile/{0}'.format(datum.uid), contents: datum.email }})
+            $.tag2({ _: 'dt', contents: {
+              _: 'a', href: '/profile/{0}'.format(datum.uid), contents: datum.email
+            }})
           );
-          $('.audit_list').append(
-            $.tag2({_: 'dd', contents: moment(datum.event_time * 1000).format('LLLL')})
-          );
+          var event_time = moment(datum.event_time * 1000).
+            tz(blist.configuration.userTimeZoneName).
+            format('LLLL z');
+          $('.audit_list').append($.tag2({_: 'dd', contents: [{
+            _: 'span', 'class': 'action', contents: (datum.action ? datum.action.capitalize() + 'd: ' : '')
+          }, {
+            _: 'span', 'class': 'time', contents: event_time
+          }]}));
         });
       }).fail(function(xhr) {
         // Don't pretend it's there if we have no data.

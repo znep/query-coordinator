@@ -265,6 +265,14 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       end
     end
 
+    describe 'when the user has a valid right and we are looking at a goal' do
+      let(:domain_rights) { ['edit_story_title_desc'] }
+
+      it 'returns true' do
+        expect(can_edit_title_and_description?(is_goal = true)).to be(true)
+      end
+    end
+
     describe 'when the user is neither an admin nor an owner with a valid right' do
       let(:domain_role) { 'not-administator-nor-publisher_stories' }
       let(:view_role) { 'not-owner' }
@@ -290,6 +298,14 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
 
       it 'returns true' do
         expect(can_make_copy?).to be(true)
+      end
+    end
+
+    describe 'when the user has a valid right and we are looking at a goal' do
+      let(:domain_rights) { ['create_story_copy'] }
+
+      it 'returns true' do
+        expect(can_make_copy?(is_goal = true)).to be(true)
       end
     end
 
@@ -349,6 +365,14 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
       end
     end
 
+    describe 'when the user has a valid right and we are looking at a goal' do
+      let(:domain_rights) { ['manage_story_visibility'] }
+
+      it 'returns true' do
+        expect(can_manage_story_visibility?(is_goal = true)).to be(true)
+      end
+    end
+
     describe 'when the user is neither an admin nor an owner with a valid right' do
       let(:domain_role) { 'not-administator-nor-publisher_stories' }
       let(:view_role) { 'not-owner' }
@@ -374,6 +398,14 @@ RSpec.describe UserAuthorizationHelper, type: :helper do
 
       it 'returns true' do
         expect(can_publish_story?).to be(true)
+      end
+    end
+
+    describe 'when the user has a valid right and we are looking at a goal' do
+      let(:domain_rights) { ['manage_story_public_version'] }
+
+      it 'returns true' do
+        expect(can_publish_story?(is_goal = true)).to be(true)
       end
     end
 

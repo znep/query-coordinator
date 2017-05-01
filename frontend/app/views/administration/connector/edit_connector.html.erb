@@ -79,7 +79,7 @@
           </div> <%# end flex left section %>
           <div class="line clearfix flexbox-right-section">
             <div class="flexbox-upper-right">
-              <%= hidden_field_tag('type', esri_arcgis? ? 'esri_arcgis' : 'data_json') %>
+              <%= connector_type_hidden_field_tag %>
               <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button"/>
             </div>
           </div>

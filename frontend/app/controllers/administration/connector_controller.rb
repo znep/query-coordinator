@@ -25,7 +25,7 @@ class Administration::ConnectorController < AdministrationController
 
   def create_connector
     @server = params[:server] || {}
-    if @server['federation_source'] == 'data_json'
+    if data_json_federation_source?
       unless params[:server][:source_url].downcase.ends_with?('data.json')
         (errors ||= []) << t('screens.admin.connector.errors.url_must_end_in_data_json')
       end

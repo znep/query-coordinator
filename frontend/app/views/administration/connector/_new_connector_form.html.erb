@@ -5,17 +5,17 @@
     <div class="line">
       <label for="federation_source" class="required"><%= t("screens.admin.connector.type") %></label>
       <select id="federation_source" name="server[federation_source]" value="<%= @server['federation_source'] %>" />
-        <option value="esri_arcgis" <%= 'selected' if @server['federation_source'] == 'esri_arcgis' %>>
+        <option value="esri_arcgis" <%= 'selected' if esri_arcgis_federation_source? %>>
           <%= t("screens.admin.connector.esri_arcgis") %>
         </option>
         <% if enable_catalog_federator_connector? %>
-          <option value="data_json" <%= 'selected' if @server['federation_source'] == 'data_json' %>>
+          <option value="data_json" <%= 'selected' if data_json_federation_source? %>>
             <%= t("screens.admin.connector.data_json") %>
           </option>
         <% end %>
       </select>
     </div>
-    <div class="line">
+    <div class="line esri-arcgis" style="display: <%= esri_arcgis_federation_source? ? 'block' : 'none' %>">
       <label for="source_url" class="required"><%= t("screens.admin.connector.source_url") %></label>
       <div class="input-group">
         <input
@@ -23,20 +23,37 @@
           name="server[source_url]"
           id="source_url"
           value="<%= @server['source_url']%>"
-          class="required input-prepended"
+          class="required input-prepended esri-arcgis"
           placeholder="<%= esri_url_placeholder %>"
+          <%= 'disabled="disabled"' unless esri_arcgis_federation_source? %>
         />
       </div>
     </div>
-    <div class="line" id="display_name_option" style="display:none">
+
+    <div class="line data-json" style="display: <%= data_json_federation_source? ? 'block' : 'none' %>">
+      <label for="source_url" class="required"><%= t("screens.admin.connector.source_url") %></label>
+      <div class="input-group">
+        <input
+          type="text"
+          name="server[source_url]"
+          id="source_url"
+          value="<%= @server['source_url']%>"
+          class="required input-prepended data-json"
+          placeholder="<%= data_json_url_placeholder %>"
+          <%= 'disabled="disabled"' unless data_json_federation_source? %>
+        />
+      </div>
+    </div>
+    <div class="line data-json" style="display: <%= data_json_federation_source? ? 'block' : 'none' %>">
       <label for="display_name" class="required"><%= t("screens.admin.connector.display_name") %></label>
       <input
         type="text"
         name="server[display_name]"
         id="display_name"
         value="<%= @server['display_name']%>"
-        class="required input-prepended"
+        class="required input-prepended data-json"
         placeholder="<%= t('screens.admin.connector.connector_name') %>"
+        <%= 'disabled="disabled"' unless data_json_federation_source? %>
       />
     </div>
   </div>

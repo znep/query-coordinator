@@ -1,13 +1,8 @@
 $(function() {
   $('#federation_source').change(function() {
-    var selection = this.options[this.selectedIndex].value;
+    var esriArcgis = this.options[this.selectedIndex].value === 'esri_arcgis';
 
-    // vary the placeholder text by connector type
-    var placeholderText = selection === 'data_json' ? 'http://example.com/data.json' : 'https://example.com/ArcGIS/rest';
-    document.getElementById('source_url').setAttribute('placeholder', placeholderText);
-
-    // include/exclude the displayName option by connector type
-    var displayNameDisplay = selection === 'data_json' ? 'block' : 'none';
-    document.getElementById('display_name_option').style.display = displayNameDisplay;
+    $('.new-connector-form .esri-arcgis')[esriArcgis ? 'show' : 'hide']().attr('disabled', !esriArcgis);
+    $('.new-connector-form .data-json')[esriArcgis ? 'hide' : 'show']().attr('disabled', esriArcgis)
   });
 });

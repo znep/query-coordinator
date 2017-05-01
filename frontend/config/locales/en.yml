@@ -2815,7 +2815,7 @@ en:
         catalog_federator_service_unavailable: DATA.json services are currently unavailable.
         catalog_option: External Connection
         catalog_option_explanation: Assets will appear in your catalog as External Datasets
-        click_to_select_all: Click to select all
+        clear_selections: Clear Selections
         connected_assets: Connected assets
         connection_type: Connection Type
         connector: Connector
@@ -2865,6 +2865,7 @@ en:
         not_yet: Not yet synced
         save: Save
         search: Search the domain
+        select_all: Select All
         selective_connection: Selective Connection
         service_unavailable: Connector services are currently unavailable.
         show_title: ArcGIS Server Federation

@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "21.5.4",
+  "version": "21.5.5",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
@@ -87,7 +87,7 @@
     "semver": "5.1.0",
     "shelljs": "0.6.0",
     "sinon": "1.17.5",
-    "socrata-components": "13.0.1",
+    "socrata-components": "13.2.0",
     "socrata-utils": "3.2.0",
     "style-loader": "0.13.1",
     "tether": "1.0.2",
@@ -144,7 +144,7 @@
     "redux-logger": "2.6.1",
     "redux-thunk": "2.1.0",
     "reselect": "2.5.3",
-    "socrata-components": "13.0.1",
+    "socrata-components": "13.2.0",
     "socrata-utils": "3.2.0",
     "whatwg-fetch": "1.0.0"
   },

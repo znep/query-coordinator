@@ -36,7 +36,7 @@ export const COLUMN_TYPES = [
   {
     type: 'money',
     preferredVisualizationTypes: ['barChart', 'columnChart', 'pieChart'],
-    icon: 'icon-number'
+    icon: 'icon-dollar'
   },
   {
     type: 'number',

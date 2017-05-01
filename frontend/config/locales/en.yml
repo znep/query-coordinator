@@ -2842,9 +2842,9 @@ en:
           server_ping_error: 'Could not reach server: %{url}'
           unknown_error: 'Your request failed for the following reason: %{reason}'
           unknown_server: Unable to locate the requested server.
-          url_must_end_in_data_json: The Data.JSON URL must end with "data.json".
+          url_must_end_in_data_json: The Data.JSON URL must end with "/data.json".
           display_name_is_required: The Display Name field is required.
-          url_cannot_be_blank: The URL field cannot be blank.
+          url_cannot_be_blank: The URL field is required.
         esri_arcgis: Esri ArcGIS Server
         esri_arcgis_url: ArcGIS Server address
         esri_service_unavailable: Esri connector services are currently unavailable.

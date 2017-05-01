@@ -228,8 +228,8 @@
 
     <div class="attachments">
       <div class="line clearfix">
-        <label><%= t('screens.edit_metadata.existing_attachments') %></label>
-        <div class="existingAttachments">
+        <label for="existing_attachments"><%= t('screens.edit_metadata.existing_attachments') %></label>
+        <div class="existingAttachments" id="existing_attachments">
           <ul>
             <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
               <%- @view.metadata.attachments.each do |attachment| -%>
@@ -261,7 +261,7 @@
 
     <h2><%= t('screens.edit_metadata.contact_information') %></h2>
     <div class="line clearfix">
-      <label><%= t('screens.edit_metadata.contact_email') %></label>
+      <%= label_tag('view[privateMetadata][contactEmail]', t('screens.edit_metadata.contact_email')) %>
       <%= text_field_tag('view[privateMetadata][contactEmail]', (@view.data['privateMetadata'] || {})['contactEmail'],
             :title => t('screens.edit_metadata.email_address'), :class => 'textPrompt email') %>
       <div class="additionalHelp"><%= t('screens.edit_metadata.email_help') %></div>

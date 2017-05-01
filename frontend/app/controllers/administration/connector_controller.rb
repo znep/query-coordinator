@@ -25,7 +25,18 @@ class Administration::ConnectorController < AdministrationController
 
   def create_connector
     @server = params[:server] || {}
-    if @server['federation_source'] == 'data_json'
+    if data_json_federation_source?
+      unless params[:server][:source_url].downcase.ends_with?('data.json')
+        (errors ||= []) << t('screens.admin.connector.errors.url_must_end_in_data_json')
+      end
+      if params[:server][:display_name].blank?
+        (errors ||= []) << t('screens.admin.connector.errors.display_name_is_required')
+      end
+      if errors.present?
+        flash.now[:error] = errors.join(' ')
+        return render :new_connector
+      end
+
       begin
         response = CatalogFederatorConnector.create(params[:server])
         success_notice = t('screens.admin.connector.flashes.created_data_json')
@@ -38,6 +49,11 @@ class Administration::ConnectorController < AdministrationController
         return display_external_error(error, :new_connector)
       end
     else
+      if params[:server][:source_url].blank?
+        flash.now[:error] = t('screens.admin.connector.errors.url_cannot_be_blank')
+        return render :new_connector
+      end
+
       begin
         response = EsriServerConnector.create(params[:server][:source_url])
         success_notice = t('screens.admin.connector.flashes.created')

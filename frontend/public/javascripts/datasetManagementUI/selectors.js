@@ -128,3 +128,76 @@ export function updatedOutputColumns(db, formDataModel) {
 
   return _.sortBy(unsortedColumns, 'position');
 }
+
+export function currentAndIgnoredOutputColumns(db) {
+
+  // get all input column ids
+  return _.chain(Object.keys(db.input_columns))
+    .map(icid => {
+      // get ids of all transforms that were run on this input column
+      const matchingTransformIds = Object.keys(db.transforms).filter(tid => {
+        return db.transforms[tid].transform_input_columns
+          .filter(tic => tic.input_column_id === _.toNumber(icid)).length;
+      });
+
+      // of those ids, return the highest (i.e., the most recent)
+      return Math.max(...matchingTransformIds);
+    })
+    .flatMap(tid => {
+      // get ids of ouput_columns that resulted from this transform
+      return Object.keys(db.output_columns)
+        .filter(ocid => db.output_columns[ocid].transform_id === tid);
+    })
+    .map(_.toNumber)
+    .reduce((acc, ocid) => {
+      // assume most rencently created output schema is the current output schema
+      const latestOutputSchemaId = Math.max(...Object.keys(db.output_schemas).map(_.toNumber));
+
+      // get array of ids of all output columns in current output schema
+      const currentOutputColumnIds = _.chain(db.output_schema_columns)
+        .filter(osc => osc.output_schema_id === latestOutputSchemaId)
+        .reduce((innerAcc, osc) => {
+          return [...innerAcc, osc.output_column_id];
+        }, [])
+        .value();
+
+      // sort output column ids based on whether they are in the current output schema or not
+      if (currentOutputColumnIds.includes(ocid)) {
+        return {
+          ...acc,
+          current: [...acc.current, ocid]
+        };
+      } else {
+        return {
+          ...acc,
+          ignored: [...acc.ignored, ocid]
+        };
+      }
+    }, { current: [], ignored: [] })
+    .thru(val => {
+      // map ocids to actual oc objects
+      return {
+        current: val.current.map(ocid => db.output_columns[ocid]),
+        ignored: val.ignored.map(ocid => ({
+          ...db.output_columns[ocid],
+          ignored: true
+        }))
+      };
+    })
+    .thru(val => {
+      // add transform data
+      return {
+        current: val.current.map(oc => ({
+          ...oc,
+          transform: db.transforms[oc.transform_id]
+        })),
+        ignored: val.ignored.map(oc => ({
+          ...oc,
+          transform: db.transforms[oc.transform_id]
+        }))
+      };
+    })
+    .thru(obj => [...obj.current, ...obj.ignored])
+    .thru(cols => _.sortBy(cols, 'position'))
+    .value();
+}

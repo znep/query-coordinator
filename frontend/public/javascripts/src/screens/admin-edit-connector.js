@@ -169,7 +169,7 @@ function disableSave(event) {
   const $target = $(event.currentTarget);
   _.defer(() => (
     $target.siblings('.save-connector-spinner').show();
-    $target.addClass('disabled').attr('disabled', true)
+    $target.addClass('disabled').attr('disabled', true);
   ));
 }
 

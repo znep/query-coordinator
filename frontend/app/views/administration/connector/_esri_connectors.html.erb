@@ -36,7 +36,7 @@
       <%- end -%>
     </td>
     <td class="actions" scope="row">
-      <%- if server.last_synced %>
+      <%- if server.last_synced && !server.sync_in_progress? %>
         <%= link_to(
           t('screens.admin.connector.edit'),
           {

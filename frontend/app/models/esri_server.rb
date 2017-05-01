@@ -49,4 +49,7 @@ class EsriServer
     @sync_type == 'data'
   end
 
+  def sync_in_progress?
+    status_key == 'in_progress'
+  end
 end

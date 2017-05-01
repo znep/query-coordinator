@@ -1,40 +1,43 @@
 import React, { PropTypes, Component } from 'react';
+
+import breakpoints from '../lib/breakpoints';
 import { isUserRoled } from '../../common/user';
 import { localizeLink } from '../../common/locale';
 
 export default class InfoPaneButtons extends Component {
   renderViewDataButton() {
     const { view, onClickGrid } = this.props;
+    const isBlobbyOrHref = view.isBlobby || view.isHref;
 
-    if (view.isBlobby || view.isHref) {
+    if (isBlobbyOrHref) {
       return null;
-    } else {
-      return (
-        <a
-          href={localizeLink(view.gridUrl)}
-          className="btn btn-simple btn-sm unstyled-link grid"
-          onClick={onClickGrid}>
-          {I18n.action_buttons.data}
-          <span className="icon-external" />
-        </a>
-      );
     }
+
+    return (
+      <a
+        href={localizeLink(view.gridUrl)}
+        className="btn btn-simple btn-sm unstyled-link grid"
+        onClick={onClickGrid}>
+        {I18n.action_buttons.data}
+      </a>
+    );
   }
 
   renderManageButton() {
     const { view } = this.props;
+    const isBlobbyOrHref = view.isBlobby || view.isHref;
 
-    if (view.isBlobby || view.isHref) {
-      return (
-        <a
-          href={`${localizeLink(view.gridUrl)}?pane=manage`}
-          className="btn btn-simple btn-sm unstyled-link manage">
-          {I18n.manage_dataset}
-        </a>
-      );
-    } else {
+    if (!isBlobbyOrHref) {
       return null;
     }
+
+    return (
+      <a
+        href={`${localizeLink(view.gridUrl)}?pane=manage`}
+        className="btn btn-simple btn-sm unstyled-link manage">
+        {I18n.manage_dataset}
+      </a>
+    );
   }
 
   renderDownloadLink(format, callback) {
@@ -114,16 +117,20 @@ export default class InfoPaneButtons extends Component {
 
   renderApiButton() {
     const { view } = this.props;
+    const isBlobbyOrHref = view.isBlobby || view.isHref;
 
-    if (view.isBlobby || view.isHref) {
+    const windowWidth = document.body.offsetWidth;
+    const isMobile = windowWidth <= breakpoints.mobile;
+
+    if (isBlobbyOrHref || isMobile) {
       return null;
-    } else {
-      return (
-        <button className="btn btn-simple btn-sm api" data-flannel="api-flannel" data-toggle>
-          {I18n.action_buttons.api}
-        </button>
-      );
     }
+
+    return (
+      <button className="btn btn-simple btn-sm api" data-flannel="api-flannel" data-toggle>
+        {I18n.action_buttons.api}
+      </button>
+    );
   }
 
   renderShareButton() {
@@ -137,6 +144,10 @@ export default class InfoPaneButtons extends Component {
   renderMoreActions() {
     const { view } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
+
+    const windowWidth = document.body.offsetWidth;
+    const isMobile = windowWidth <= breakpoints.mobile;
+
     const { enableVisualizationCanvas } = serverConfig.featureFlags;
     const canCreateVisualizationCanvas = enableVisualizationCanvas &&
       isUserRoled() &&
@@ -169,13 +180,27 @@ export default class InfoPaneButtons extends Component {
       </li>
     ) : null;
 
-    const odataLink = (view.isBlobby || view.isHref) ? null : (
-      <li>
-        <a tabIndex="0" role="button" className="option" data-modal="odata-modal">
-          {I18n.action_buttons.odata}
-        </a>
-      </li>
-    );
+    let odataLink = null;
+    if (!isBlobbyOrHref) {
+      odataLink = (
+        <li>
+          <a tabIndex="0" role="button" className="option" data-modal="odata-modal">
+            {I18n.action_buttons.odata}
+          </a>
+        </li>
+      );
+    }
+
+    let apiLink = null;
+    if (isMobile) {
+      apiLink = (
+        <li>
+          <a tabIndex="0" role="button" className="option" data-flannel="api-flannel">
+            {I18n.action_buttons.api}
+          </a>
+        </li>
+      );
+    }
 
     return (
       <div className="btn btn-simple btn-sm dropdown more" data-dropdown data-orientation="bottom">
@@ -185,6 +210,7 @@ export default class InfoPaneButtons extends Component {
           {contactFormLink}
           {commentLink}
           {odataLink}
+          {apiLink}
         </ul>
       </div>
     );

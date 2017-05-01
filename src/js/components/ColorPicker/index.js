@@ -38,6 +38,14 @@ export const ColorPicker = React.createClass({
     };
   },
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.setState({
+        selectedColor: nextProps.value
+      });
+    }
+  },
+
   componentDidUpdate(prevProps, prevState) {
     if (!prevState.showingBuckets && this.state.showingBuckets) {
       this.colorBucketsRef.focus();

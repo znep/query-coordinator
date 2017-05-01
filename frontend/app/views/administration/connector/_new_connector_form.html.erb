@@ -1,20 +1,18 @@
-<%- connector = 'screens.admin.connector' %>
-
 <%= display_standard_flashes %>
 
 <div class="new-connector-form flexbox-space-between">
   <div class="connector-form-field-container">
     <div class="line">
-      <label for="federation_source" class="required"><%= t("#{connector}.type") %></label>
+      <label for="federation_source" class="required"><%= t("screens.admin.connector.type") %></label>
       <select id="federation_source" name="server[federation_source]" value="<%= @server['federation_source']%>" />
-        <option value="esri_arcgis"><%= t("#{connector}.esri_arcgis") %></option>
+        <option value="esri_arcgis"><%= t("screens.admin.connector.esri_arcgis") %></option>
         <% if enable_catalog_federator_connector? %>
-          <option value="data_json"><%= t("#{connector}.data_json") %></option>
+          <option value="data_json"><%= t("screens.admin.connector.data_json") %></option>
         <% end %>
       </select>
     </div>
     <div class="line">
-      <label for="source_url" class="required"><%= t("#{connector}.source_url") %></label>
+      <label for="source_url" class="required"><%= t("screens.admin.connector.source_url") %></label>
       <div class="input-group">
         <input
           type="text"
@@ -22,22 +20,24 @@
           id="source_url"
           value="<%= @server['source_url']%>"
           class="required input-prepended"
+          placeholder="<%= esri_url_placeholder %>"
         />
       </div>
     </div>
     <div class="line" id="display_name_option" style="display:none">
-      <label for="display_name" class="required"><%= t("#{connector}.display_name") %></label>
+      <label for="display_name" class="required"><%= t("screens.admin.connector.display_name") %></label>
       <input
         type="text"
         name="server[display_name]"
         id="display_name"
         value="<%= @server['display_name']%>"
         class="required input-prepended"
+        placeholder="Connector Name"
       />
     </div>
   </div>
 
   <div class="line clearfix">
-    <input type="submit" value=<%=t("#{connector}.save")%> class="button"/>
+    <input type="submit" value=<%=t("screens.admin.connector.save")%> class="button"/>
   </div>
 </div>

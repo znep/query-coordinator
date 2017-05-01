@@ -3,7 +3,7 @@ $(function() {
     var selection = this.options[this.selectedIndex].value;
 
     // vary the placeholder text by connector type
-    var placeholderText = selection === 'data_json' ? '<domain>/data.json' : '<domain>/ArcGIS/rest';
+    var placeholderText = selection === 'data_json' ? 'http://example.com/data.json' : 'https://example.com/ArcGIS/rest';
     document.getElementById('source_url').setAttribute('placeholder', placeholderText);
 
     // include/exclude the displayName option by connector type

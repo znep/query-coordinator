@@ -2819,6 +2819,7 @@ en:
         connected_assets: Connected assets
         connection_type: Connection Type
         connector: Connector
+        connector_name: Connector Name
         current_status: Current Status
         data: Data
         data_connect_all: Connect all assets as Maps

@@ -231,7 +231,7 @@ class BulkEditForm extends React.Component {
   renderFooter() {
     const { form, translations, actions, unsavedChanges, isAllSelectedGoalsConfigured } = this.props;
 
-    const isUpdateInProgress = form.get('updateInProgress');
+    const saveInProgress = form.get('saveInProgress');
     const isUpdateDisabled = !isAllSelectedGoalsConfigured || !unsavedChanges;
 
     const updateLabel = Helpers.translator(translations, 'admin.bulk_edit.update');
@@ -240,13 +240,14 @@ class BulkEditForm extends React.Component {
     return (
       <Components.Socrata.Modal.Footer>
         <Components.Socrata.Button small
-                                   onClick={ actions.closeModal }>
+                                   onClick={ actions.closeModal }
+                                   disabled={ saveInProgress }>
           { cancelLabel }
         </Components.Socrata.Button>
         <Components.Socrata.Button small primary
                                    onClick={ this.updateGoals }
                                    disabled={ isUpdateDisabled }
-                                   inProgress={ isUpdateInProgress }>
+                                   inProgress={ saveInProgress }>
           { updateLabel }
         </Components.Socrata.Button>
       </Components.Socrata.Modal.Footer>
@@ -261,13 +262,12 @@ class BulkEditForm extends React.Component {
     return <div className="selected-rows-indicator">{ message }</div>;
   }
 
-  renderAlert() {
-    const message = this.props.message;
-    if (!message.get('visible')) {
-      return;
-    }
+  renderSaveError() {
+    const { translations, saveError } = this.props;
 
-    return <Components.Socrata.Alert type={message.get('type')} message={ message.get('content') }/>;
+    const failureMessage = Helpers.translator(translations, 'admin.bulk_edit.failure_message');
+
+    return saveError ? <Components.Socrata.Alert type='error' message={ failureMessage } /> : null;
   }
 
   renderUnconfiguredGoalWarning() {
@@ -287,7 +287,7 @@ class BulkEditForm extends React.Component {
         <Components.Socrata.Modal.Header title={ modalTitle } onClose={ handleNavigateAway }/>
 
         <Components.Socrata.Modal.Content className="bulk-edit-modal-content">
-          { this.renderAlert() }
+          { this.renderSaveError() }
           { this.renderUnconfiguredGoalWarning() }
           { this.renderSelectedRowsIndicator() }
           { this.renderVisibility() }
@@ -313,7 +313,7 @@ const mapStateToProps = state => {
     commonData: commonData,
     goals: Selectors.getSelectedGoals(state),
     isAllSelectedGoalsConfigured: Selectors.isAllSelectedGoalsConfigured(state),
-    message: bulkEdit.get('message'),
+    saveError: bulkEdit.get('saveError'),
     unsavedChanges: Helpers.isDifferent(commonData.toJS(), goal.toJS())
   };
 };

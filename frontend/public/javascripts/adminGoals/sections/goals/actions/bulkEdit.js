@@ -8,7 +8,10 @@ import * as Analytics from '../../shared/analytics';
 export const types = {
   openModal: 'goals.bulkEdit.openModal',
   closeModal: 'goals.bulkEdit.closeModal',
-  setFormData: 'goals.bulkEdit.setFormData'
+  setFormData: 'goals.bulkEdit.setFormData',
+  saveStart: 'goals.bulkEdit.saveStart', // Payload: none.
+  saveSuccess: 'goals.bulkEdit.saveSuccess', // Payload: Number of goals saved.
+  saveError: 'goals.bulkEdit.saveError' // Payload: none.
 };
 
 export const openModal = () => ({
@@ -50,7 +53,6 @@ function formatGoalDataForWrite(updatedData) {
  */
 export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
   const allConfigured = goals.every(goal => goal.has('prevailing_measure'));
-  const translations = getState().get('translations');
 
   // Send event to mixpanel
   const analyticsEvent = Analytics.createTrackEventActionData(Analytics.EventNames.clickUpdateOnBulkEdit, {});
@@ -63,19 +65,22 @@ export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
     throw new Error('Cannot save goal which has not been configured.');
   }
 
-  const failureMessage = Helpers.translator(translations, 'admin.bulk_edit.failure_message');
-
   const normalizedData = formatGoalDataForWrite(updatedData);
-  dispatch(SharedActions.setModalInProgress('goals', 'bulkEdit', true));
+  dispatch({ type: types.saveStart });
 
   const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), normalizedData));
   return Promise.all(updateRequests).then(updatedGoals => {
-    const successMessage = Helpers.translator(translations, 'admin.bulk_edit.success_message', updatedGoals.length);
 
+    // TODO: Consider combining these actions. They're redundant.
     dispatch(DataActions.updateAll(updatedGoals));
-    dispatch(closeModal());
-    dispatch(SharedActions.showGlobalMessage('goals', successMessage, 'success'));
+    dispatch({
+      type: types.saveSuccess,
+      data: updatedGoals.length
+    });
+    dispatch(closeModal()); // TODO does this really belong here?
 
     return updatedGoals;
-  }).catch(() => dispatch(SharedActions.showModalMessage('goals', 'bulkEdit', failureMessage)));
+  }).catch(() => dispatch({
+    type: types.saveError
+  }));
 };

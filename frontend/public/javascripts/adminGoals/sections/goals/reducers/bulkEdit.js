@@ -6,12 +6,8 @@ import * as SharedActions from '../../shared/actions';
 const initialState = Immutable.fromJS({
   visible: false,
   goal: {},
-  message: {
-    visible: false,
-    content: '',
-    type: 'error'
-  },
-  updateInProgress: false
+  saveError: false,
+  saveInProgress: false
 });
 
 const section = 'goals';
@@ -22,21 +18,17 @@ const closeModal = () => initialState;
 
 const setFormData = (state, { data }) => state.mergeIn(['goal'], data);
 
-const setModalInProgress = (state, { inProgress }) => state.set('updateInProgress', inProgress);
+const onSaveStart = (state) => state.set('saveError', false).set('saveInProgress', true);
 
-const showModalMessage = (state, { message, messageType }) => state.set('message', new Immutable.Map({
-  visible: true,
-  content: message,
-  type: messageType
-}));
+const onSaveError = (state) => state.set('saveError', true).set('saveInProgress', false);
 
-const hideModalMessage = state => state.set('message', initialState.get('message'));
+const onSaveSuccess = (state) => state.set('saveInProgress', false);
 
 export default ReduxImmutable.createReducer(initialState, {
   [Actions.types.openModal]: openModal,
   [Actions.types.closeModal]: closeModal,
   [Actions.types.setFormData]: setFormData,
-  [SharedActions.types.setModalInProgress]: SharedActions.createModalHandler(section, modal, setModalInProgress),
-  [SharedActions.types.showModalMessage]: SharedActions.createModalHandler(section, modal, showModalMessage),
-  [SharedActions.types.hideModalMessage]: SharedActions.createModalHandler(section, modal, hideModalMessage)
+  [Actions.types.saveStart]: onSaveStart,
+  [Actions.types.saveError]: onSaveError,
+  [Actions.types.saveSuccess]: onSaveSuccess
 });

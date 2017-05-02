@@ -35,4 +35,8 @@ class CatalogFederatorSource
   def data_connect_all?
     false
   end
+
+  def sync_in_progress?
+    status_key == 'in_progress'
+  end
 end

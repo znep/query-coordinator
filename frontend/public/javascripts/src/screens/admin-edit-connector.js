@@ -165,6 +165,14 @@ function removeFocusOnSelect(event) {
   $styleDiv.removeClass('has-focus');
 }
 
+function disableSave(event) {
+  const $target = $(event.currentTarget);
+  _.defer(() => {
+    $target.siblings('.save-connector-spinner').show();
+    $target.addClass('disabled').attr('disabled', true);
+  });
+}
+
 $(() => {
   $('.filter-assets .searchBox').on('keyup', (event) => {
     const term = $(event.currentTarget).val().toLowerCase();
@@ -192,4 +200,6 @@ $(() => {
   $('.sync-type-check').change(onChecked);
   $('.sync-type-select').change(onSelected);
   $('.server-sync').change(setConnectionStrategy());
+
+  $('input:submit').click(disableSave);
 });

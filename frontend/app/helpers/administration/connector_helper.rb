@@ -32,5 +32,11 @@ module Administration
       hidden_field_tag('type', esri_arcgis? ? ESRI_ARCGIS : DATA_JSON)
     end
 
+    def can_edit_connector?(server)
+      return false if server.sync_in_progress?
+
+      server.last_synced || server.server_backend == 'catalog_federator'
+    end
+
  end
 end

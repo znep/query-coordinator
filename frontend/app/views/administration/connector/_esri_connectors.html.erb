@@ -36,23 +36,15 @@
       <%- end -%>
     </td>
     <td class="actions" scope="row">
-      <%- if server.last_synced %>
-        <%= link_to(
-          t('screens.admin.connector.edit'),
-          {
-            :action => :edit_connector,
-            :server_id => server.id,
-            :type => 'esri_arcgis'
-          },
-          :class => 'button buttonArea'
-        ) %>
-      <%- else -%>
-        <%= link_to(
-          t('screens.admin.connector.edit'),
-          '#',
-          {:class => 'button buttonArea disabled'}
-        ) %>
-      <%- end -%>
+      <%= link_to(
+        t('screens.admin.connector.edit'),
+        {
+          :action => :edit_connector,
+          :server_id => server.id,
+          :type => 'esri_arcgis'
+        },
+        :class => "button buttonArea #{'disabled' unless server.last_synced && !server.sync_in_progress?}"
+      ) %>
       <%= form_button(
         {
           :action => :delete_connector,

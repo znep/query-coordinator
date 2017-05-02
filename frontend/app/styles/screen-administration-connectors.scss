@@ -5,7 +5,41 @@ $success-green: green;
 $timestamp-grey: #888888;
 $pager-blue: #2f4589;
 
+@import "socrata-icons";
+
 #connector-content {
+
+  a.disabled {
+    pointer-events: none;
+  }
+
+  .edit-connector-form, {
+    .flexbox-right-section {
+      position: relative;
+    }
+
+    div.line {
+      padding-top: 0;
+
+      & > * {
+        margin-right: 0;
+      }
+      input[type=submit] {
+        margin-right: 0;
+      }
+    }
+
+    .save-connector-spinner {
+      position: absolute;
+      top: 0.6rem;
+      right: 1.1rem;
+      display: none;
+      & .icon {
+        @include throbber-icon;
+        background-image: none;
+      }
+    }
+  }
 
   .adminHeader.connectors {
     span.icon {
@@ -67,7 +101,7 @@ $pager-blue: #2f4589;
   }
 
   .select-icon {
-    margin: 5px 5px 5px 5px;
+    margin: 5px;
     font-size: 1em;
     position: absolute;
   }
@@ -184,7 +218,6 @@ $pager-blue: #2f4589;
 
   .legend {
     font-size: 1.2em;
-    margin: 5px;
 
     .legend-icon {
       margin-right: 3px;
@@ -213,13 +246,11 @@ $pager-blue: #2f4589;
   }
 
   .filter-assets {
-    margin-top: 1em;
+    margin-top: 1rem;
     margin-right: 6px;
+    margin-bottom: 1rem;
     input {
       width: 100%;
-    }
-    .searchBox {
-      margin-bottom: 1rem;
     }
     & + div {
       margin-bottom: 1rem;

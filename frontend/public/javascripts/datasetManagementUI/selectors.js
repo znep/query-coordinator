@@ -143,15 +143,25 @@ export function currentAndIgnoredOutputColumns(db) {
       // of those ids, return the highest (i.e., the most recent)
       return Math.max(...matchingTransformIds);
     })
-    .flatMap(tid => {
+    .map(tid => {
       // get ids of ouput_columns that resulted from this transform
-      return Object.keys(db.output_columns)
+      const matchingOutputColumnIds = Object.keys(db.output_columns)
         .filter(ocid => db.output_columns[ocid].transform_id === tid);
+
+      // If you edit column metadata, DSMAPI will create new copies of all
+      // output columns, even ones you didn't touch. So have to take the most
+      // recent copy here.
+      return Math.max(...matchingOutputColumnIds);
     })
     .map(_.toNumber)
     .reduce((acc, ocid) => {
-      // assume most rencently created output schema is the current output schema
-      const latestOutputSchemaId = Math.max(...Object.keys(db.output_schemas).map(_.toNumber));
+      // assume most recently created output schema is the current output schema
+      // TODO: remove once we get the status out of output schema
+      const keys = Object.keys(db.output_schemas)
+        .filter(key => key !== '__status__')
+        .map(_.toNumber);
+
+      const latestOutputSchemaId = Math.max(...keys);
 
       // get array of ids of all output columns in current output schema
       const currentOutputColumnIds = _.chain(db.output_schema_columns)

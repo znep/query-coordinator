@@ -1265,6 +1265,9 @@ class DatasetsController < ApplicationController
   end
 
   def render_as_dataset_landing_page
+    # Propagate the SF geo hack a little bit further (EN-15802).
+    return false if view.is_api_geospatial?
+
     if dataset_landing_page_enabled? && view.has_landing_page? && !params[:bypass_dslp]
       # See if the user is accessing the canonical URL; if not, redirect
       unless using_canonical_url?

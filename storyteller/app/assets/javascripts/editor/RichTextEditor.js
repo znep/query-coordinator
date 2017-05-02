@@ -90,7 +90,7 @@ export default function RichTextEditor(element, editorId, formats, contentToPrel
 
   this.contentDiffersFrom = function(otherContent) {
     function uniformify(html) {
-      return _.unescape(html).replace(/<div>|<\/div>|<br>/g, '').replace(/&nbsp;/g, '\xa0');
+      return _.unescape(html).replace(/&nbsp;/g, '\xa0');
     }
 
     return uniformify(_editor.getHTML()) !== uniformify(otherContent);

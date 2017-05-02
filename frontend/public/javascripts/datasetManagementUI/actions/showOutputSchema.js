@@ -78,7 +78,7 @@ export const updateColumnType = (oldOutputSchema, oldColumn, newType) => (dispat
 };
 
 function getUniqueName(arr, name, count = 1) {
-  const newName = count && count > 1 ? `${name} ${count}` : name;
+  const newName = count && count > 1 ? `${name}_${count}` : name;
   if (!arr.includes(newName)) {
     return newName;
   } else {

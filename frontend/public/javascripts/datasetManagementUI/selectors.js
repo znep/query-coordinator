@@ -115,6 +115,7 @@ export function updatedOutputColumns(db, formDataModel) {
       acc[id] = {
         [fieldName]: formDataModel[key],
         position: outputColumns[id].position,
+        id: _.toNumber(id),
         transform: {
           transform_expr: transforms[outputColumns[id].transform_id].transform_expr
         }
@@ -146,20 +147,61 @@ export function currentAndIgnoredOutputColumns(db) {
     .map(tid => {
       // get ids of ouput_columns that resulted from this transform
       const matchingOutputColumnIds = Object.keys(db.output_columns)
-        .filter(ocid => db.output_columns[ocid].transform_id === tid);
+        .filter(ocid => db.output_columns[ocid].transform_id === tid)
+        .map(_.toNumber);
 
-      // If you edit column metadata, DSMAPI will create new copies of all
-      // output columns, even ones you didn't touch. So have to take the most
-      // recent copy here.
-      return Math.max(...matchingOutputColumnIds);
+      // if two output columns derive from the same transform, assume that they
+      // are copies of each other, but one has updated metadata. To get the right
+      // one, we need to reference the current output schema
+      if (matchingOutputColumnIds.length > 1) {
+        // TODO: remove filter once we get the status out of output schema
+        // and hopefully that uuid thing too
+        const keys = Object.keys(db.output_schemas)
+          .filter(key => key !== '__status__')
+          .map(_.toNumber)
+          .filter(key => !!key);
+
+        const latestOutputSchemaId = Math.max(...keys);
+
+        // get array of ids of all output columns in current output schema
+        const currentOutputColumnIds = _.chain(db.output_schema_columns)
+          .filter(osc => osc.output_schema_id === latestOutputSchemaId)
+          .reduce((innerAcc, osc) => {
+            return [...innerAcc, osc.output_column_id];
+          }, [])
+          .value();
+
+        // sometimes output schema id resolves before output_schema_columns table gets
+        // updated, in which case currentOutputColumnIds isn't defined, so we have to
+        // check before we check which dupe output column is in the current schema.
+        if (currentOutputColumnIds && currentOutputColumnIds.length) {
+          const currentOutputColumnId = matchingOutputColumnIds.filter(ocid =>
+            currentOutputColumnIds.includes(ocid))[0];
+
+          // if one of the output column ids was in the current schema, then return it
+          if (currentOutputColumnId) {
+            return currentOutputColumnId;
+          // if not, that presubably means that it was ignored, so return the most
+          // recently created one
+          } else {
+            return Math.max(...matchingOutputColumnIds);
+          }
+        // this means you probably ignored a column, and that dsmui path returns
+        // the lowest ids, so do the same here
+        } else {
+          return Math.min(...matchingOutputColumnIds);
+        }
+      } else {
+        return matchingOutputColumnIds[0];
+      }
     })
-    .map(_.toNumber)
     .reduce((acc, ocid) => {
       // assume most recently created output schema is the current output schema
       // TODO: remove once we get the status out of output schema
       const keys = Object.keys(db.output_schemas)
         .filter(key => key !== '__status__')
-        .map(_.toNumber);
+        .map(_.toNumber)
+        .filter(key => !!key);
 
       const latestOutputSchemaId = Math.max(...keys);
 

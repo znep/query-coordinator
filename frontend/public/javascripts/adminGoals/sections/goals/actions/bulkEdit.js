@@ -58,11 +58,9 @@ export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
 
   // Cannot update prevailing measure data for the items
   // which are not configured properly.
+  // The UI should prevent this case.
   if (!allConfigured) {
-    const message = Helpers.translator(translations, 'admin.bulk_edit.not_configured_message');
-    dispatch(SharedActions.showModalMessage('goals', 'bulkEdit', message));
-
-    return Promise.resolve();
+    throw new Error('Cannot save goal which has not been configured.');
   }
 
   const failureMessage = Helpers.translator(translations, 'admin.bulk_edit.failure_message');

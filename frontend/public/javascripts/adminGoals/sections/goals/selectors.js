@@ -51,6 +51,13 @@ export const getSelectedGoals = Reselect.createSelector(
   (goals, selectedIds) => goals.toSeq().filter(goal => selectedIds.includes(goal.get('id')))
 );
 
+// True if all selected goals have a prevailing measure, false otherwise.
+// If no goals are selected, returns true.
+export const isAllSelectedGoalsConfigured = Reselect.createSelector(
+  getSelectedGoals,
+  (goals) => goals.every(goal => goal.has('prevailing_measure'))
+);
+
 export const getNumberOfPages = Reselect.createSelector(
   State.getData, State.getPagination,
   (goals, pagination) => Math.max(1, Math.ceil(goals.count() / pagination.get('goalsPerPage')))

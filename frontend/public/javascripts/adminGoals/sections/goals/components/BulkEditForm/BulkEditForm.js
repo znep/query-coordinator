@@ -229,10 +229,10 @@ class BulkEditForm extends React.Component {
   }
 
   renderFooter() {
-    const { form, translations, actions, unsavedChanges } = this.props;
+    const { form, translations, actions, unsavedChanges, isAllSelectedGoalsConfigured } = this.props;
 
     const isUpdateInProgress = form.get('updateInProgress');
-    const isUpdateDisabled = !unsavedChanges;
+    const isUpdateDisabled = !isAllSelectedGoalsConfigured || !unsavedChanges;
 
     const updateLabel = Helpers.translator(translations, 'admin.bulk_edit.update');
     const cancelLabel = Helpers.translator(translations, 'admin.bulk_edit.cancel');
@@ -270,6 +270,14 @@ class BulkEditForm extends React.Component {
     return <Components.Socrata.Alert type={message.get('type')} message={ message.get('content') }/>;
   }
 
+  renderUnconfiguredGoalWarning() {
+    const { translations, isAllSelectedGoalsConfigured } = this.props;
+    const message = Helpers.translator(translations, 'admin.bulk_edit.not_configured_message');
+
+    return isAllSelectedGoalsConfigured ?
+      null : <Components.Socrata.Alert type='error' message={ message }/>;
+  }
+
   render() {
     const { translations, handleNavigateAway } = this.props;
     const modalTitle = Helpers.translator(translations, 'admin.bulk_edit.title');
@@ -280,6 +288,7 @@ class BulkEditForm extends React.Component {
 
         <Components.Socrata.Modal.Content className="bulk-edit-modal-content">
           { this.renderAlert() }
+          { this.renderUnconfiguredGoalWarning() }
           { this.renderSelectedRowsIndicator() }
           { this.renderVisibility() }
           { this.renderDateRange() }
@@ -303,6 +312,7 @@ const mapStateToProps = state => {
     goal: bulkEdit.get('goal'),
     commonData: commonData,
     goals: Selectors.getSelectedGoals(state),
+    isAllSelectedGoalsConfigured: Selectors.isAllSelectedGoalsConfigured(state),
     message: bulkEdit.get('message'),
     unsavedChanges: Helpers.isDifferent(commonData.toJS(), goal.toJS())
   };

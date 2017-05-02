@@ -78,13 +78,4 @@ describe('actions/bulkEditActions', () => {
       expect(failed.type).to.eq(SharedActions.types.showModalMessage);
     });
   });
-
-  it('should dispatch a warning message if not all the items have prevailing_measure data', () => {
-    const goals = GOALS.concat([{ id: 'not_configured' }]);
-
-    store.dispatch(Actions.BulkEdit.saveGoals(goals.map(goal => Immutable.fromJS(goal))), {});
-    const [doSideEffect, notConfigured] = store.getActions();
-
-    expect(notConfigured.type).to.eq(SharedActions.types.showModalMessage);
-  });
 });

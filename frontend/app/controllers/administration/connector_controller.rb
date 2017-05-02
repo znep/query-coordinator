@@ -139,7 +139,7 @@ class Administration::ConnectorController < AdministrationController
   # If esri_crawler_http is unreachable.
   # Redirecting to /connectors will log an error if the service is still down.
   def handle_failed_connection_and_redirect(error)
-    flash[:warning] = t('screens.admin.connector.service_unavailable')
+    flash[:warning] = t('screens.admin.connector.errors.service_unavailable')
     redirect_to :connectors
   end
 
@@ -187,13 +187,8 @@ class Administration::ConnectorController < AdministrationController
     @esri_connectors = []
     begin
       @esri_connectors = EsriServerConnector.servers
-    rescue EsriCrawler::ServerError => error
-      @failed_esri_connection = true
-      add_flash(:error, t('screens.admin.connector.esri_service_unavailable'))
-      display_external_error(error)
     rescue => ex
       @failed_esri_connection = true
-      add_flash(:error, t('screens.admin.connector.esri_service_unavailable'))
       Rails.logger.error("Encountered error while trying to access Esri Crawler service: #{ex}")
     end
 
@@ -202,12 +197,12 @@ class Administration::ConnectorController < AdministrationController
         @catalog_federator_connectors = CatalogFederatorConnector.servers
       rescue => ex
         @failed_catalog_federator_connection = true
-        add_flash(:error, t('screens.admin.connector.catalog_federator_service_unavailable'))
         Rails.logger.error("Encountered error while trying to access Catalog Federator service: #{ex}")
       end
-      if @catalog_federator_connectors.blank?
-        add_flash(:warning, t('screens.admin.connector.no_catalog_federator_connectors'))
-      end
+    end
+
+    if @failed_esri_connection || @failed_catalog_federator_connection
+      add_flash(:error, t('screens.admin.connector.errors.connectors_unavailable'))
     end
   end
 
@@ -221,7 +216,7 @@ class Administration::ConnectorController < AdministrationController
       rescue EsriCrawler::ServerError => error
         display_external_error(error)
       rescue => error
-        flash[:warning] = t('screens.admin.connector.esri_service_unavailable')
+        flash[:warning] = t('screens.admin.connector.errors.esri_service_unavailable')
       end
     else
       if enable_catalog_federator_connector?

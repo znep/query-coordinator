@@ -2812,7 +2812,6 @@ en:
         back_to_connector_list: Back to Connector list
         catalog: External
         catalog_connect_all: Connect all assets as External Datasets
-        catalog_federator_service_unavailable: DATA.json services are currently unavailable.
         catalog_option: External Connection
         catalog_option_explanation: Assets will appear in your catalog as External Datasets
         clear_selections: Clear Selections
@@ -2833,28 +2832,32 @@ en:
         edit: Edit
         edit_connector: 'Edit Connector'
         errors:
-          duplicate_server_error: That Esri Server has already been connected to this domain.
+          catalog_federator_service_unavailable: Data.JSON connector services are currently unavailable. Try again later.
+          connectors_unavailable: One or more of your Connections is currently unavailable. Please contact support@socrata.com to resolve.
+          duplicate_server_error: The Esri ArcGIS Server you're attempting to configure has already been connected to this domain. Navigate back to your Connector list to review.
+          duplicate_data_json_error: The data.JSON URL you are attempting to configure has already been connected to this domain. Return to your Connector list to Edit this connection.
+          esri_service_unavailable: Esri ArcGIS connector services are currently unavailable. Try again later.
           invalid_attributes_error: 'These parameters were invalid: %{invalid}.'
-          json_format_error: The connector cannot be used because the JSON data is malformed.
+          json_format_error: The data.JSON URL or file is formatted incorrectly. Terminate this connection and click 'Add New' to try again.
           missing_attributes_error: 'These parameters were missing: %{missing}.'
           not_found_error: That resource was not found.
-          problem_with_errors: We were unable to process your request.
+          problem_with_errors: Unable to process your request. Try again later.
           server_ping_error: 'Could not reach server: %{url}'
-          unknown_error: 'Your request failed for the following reason: %{reason}'
+          service_unavailable: Connector services are currently unavailable. Try again later.
+          unknown_error: 'Request failed for the following reason: %{reason}'
           unknown_server: Unable to locate the requested server.
           url_must_end_in_data_json: The Data.JSON URL must end with "/data.json".
           display_name_is_required: The Display Name field is required.
           url_cannot_be_blank: The URL field is required.
         esri_arcgis: Esri ArcGIS Server
         esri_arcgis_url: ArcGIS Server address
-        esri_service_unavailable: Esri connector services are currently unavailable.
         failing: Failing
         flashes:
-          created: Success! We reached your server. It will take some time to sync the ArcGIS catalog, after which you can edit the connector's settings and continue setup.
-          created_data_json: Success! You connector is ready and you may now edit the connector to choose which datasets to import.
-          deleted: Your connector has been marked for deletion.
-          server_not_found: We could not find that server-- it may have been recently deleted.
-          updated: Your settings have been saved. Now syncing connected assets.
+          created: Connection successful! We reached your server. It will take some time to sync the Esri ArcGIS catalog, after which you can 'Edit' the connection's settings.
+          created_data_json: Your connection is ready. 'Edit' the connection to select which assets to federate.
+          deleted: Connection terminated.
+          server_not_found: Unable to find the selected server -- it may have been recently deleted.
+          updated: Your selections have been saved. Selected assets are now being synced.
           update_failed: The update failed. Please try again or contact support.
           server_already_exists: That connector already exists.
         ignore: Ignored
@@ -2863,16 +2866,13 @@ en:
         in_progress: Sync in progress
         last_synced: Last synced
         never: Never
-        no_catalog_federator_connectors: There are no current DATA.json connectors. If you wish to connect an external source to your catalog, click Add new above.
-        no_connectors: There are no current connectors. If you wish to connect an external source to your catalog, click Add New above.
-        no_esri_connectors: There are no Esri connectors. If you wish to connect an external source to your catalog, click Add new above.
+        no_connectors: There are no connections currently configured. If you wish to connect an external source to your catalog, select Add New.
         not_synced_yet_edit: You may edit the connector's settings once we have synced the ArcGIS catalog.
         not_yet: Not yet synced
         save: Save
         search: Search the domain
         select_all: Select All
         selective_connection: Selective Connection
-        service_unavailable: Connector services are currently unavailable.
         show_title: ArcGIS Server Federation
         some_assets: Connect a subset of assets
         source: Connector source

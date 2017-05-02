@@ -35,11 +35,11 @@ describe CatalogFederatorConnector do
       end
     end
 
-    it 'returns an empty array if catalog-federator cannot return them' do
+    it 'throws an error if catalog-federator cannot return them' do
       allow_any_instance_of(Socrata::RequestIdHelper).to receive(:current_request_id).and_return('req_id2')
-      sources = CatalogFederatorConnector.servers
-      expect(sources).to be_kind_of(Array)
-      expect(sources.length).to be(0)
+      expect do
+        CatalogFederatorConnector.servers
+      end.to raise_error(StandardError)
     end
   end
 

@@ -7,12 +7,7 @@ class CatalogFederatorConnector
     end
 
     def servers
-      begin
-        client.get_sources.map { |source| CatalogFederatorSource.new(source) }
-      rescue StandardError => ex
-        Rails.logger.error("Error getting sources from catalog-federtor: #{ex}")
-        []
-      end
+      client.get_sources.map { |source| CatalogFederatorSource.new(source) }
     end
 
     def create(source_form)

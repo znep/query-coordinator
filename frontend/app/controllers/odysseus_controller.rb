@@ -1,6 +1,7 @@
 require 'httparty'
 class OdysseusController < ApplicationController
   skip_before_filter :require_user
+  before_filter { |c| c.require_module! :govStat }
 
   def index
     render_odysseus_path(request.path)

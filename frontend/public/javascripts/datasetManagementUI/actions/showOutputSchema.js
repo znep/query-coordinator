@@ -77,6 +77,15 @@ export const updateColumnType = (oldOutputSchema, oldColumn, newType) => (dispat
   );
 };
 
+function getUniqueName(arr, name, count = 1) {
+  const newName = count && count > 1 ? `${name} ${count}` : name;
+  if (!arr.includes(newName)) {
+    return newName;
+  } else {
+    return getUniqueName(arr, name, count + 1);
+  }
+}
+
 export const newAddColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
@@ -90,7 +99,21 @@ export const newAddColumn = (outputSchema, outputColumn) => (dispatch, getState)
     input_schema_id: inputSchema.id
   };
 
-  const newOutputColumns = [...current, _.omit(outputColumn, 'ignored')];
+  // check for clashes with existing columns
+  const { existingFieldNames, existingDisplayNames } = current.reduce((acc, oc) => {
+    return {
+      existingFieldNames: [...acc.existingFieldNames, oc.field_name],
+      existingDisplayNames: [...acc.existingDisplayNames, oc.display_name]
+    };
+  }, { existingFieldNames: [], existingDisplayNames: [] });
+
+  const newOutputColumn = {
+    ...outputColumn,
+    field_name: getUniqueName(existingFieldNames, outputColumn.field_name),
+    display_name: getUniqueName(existingDisplayNames, outputColumn.display_name)
+  };
+
+  const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')];
 
   dispatch(upsertStarted('output_schemas', newOutputSchema));
 

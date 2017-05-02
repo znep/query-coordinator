@@ -48,6 +48,9 @@ catalog-landing-page:
 catalog-landing-page-manage:
 - catalog-landing-page/manage
 
+internal-asset-manager:
+- internal-asset-manager/show
+
 ie9:
 - dataCards/ie9
 

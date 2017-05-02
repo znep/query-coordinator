@@ -2602,6 +2602,8 @@ en:
       create: Create %{model}
       submit: Save %{model}
       update: Update %{model}
+  internal_asset_manager:
+    title: Asset Manager
   number:
     currency:
       format:

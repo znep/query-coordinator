@@ -114,6 +114,12 @@ Rails.application.routes.draw do
       end
     end
 
+    scope :controller => 'internal_asset_manager' do
+      get '/admin/datasets',
+        :action => 'show',
+        :constraints => Constraints::InternalAssetManagerConstraint.new
+    end
+
     scope :path => '/admin', :controller => 'administration' do
       get '/', :action => :index
       get :analytics
@@ -121,7 +127,7 @@ Rails.application.routes.draw do
       get :users
       get :comment_moderation
       get :sdp_templates
-      get :datasets
+      get :datasets # 💀
       post :initialize_asset_inventory
       get :data_slate, :as => 'canvas_admin', :action => 'canvas_pages'
       get 'data_slate/create', :as => 'canvas_create', :action => 'create_canvas_page'

@@ -14,7 +14,7 @@ const dataTypes = {
   link: 'link',
   list: 'list-numbered',
   location: 'map',
-  money: 'number',
+  money: 'dollar',
   multiline: 'geo',
   multipoint: 'geo',
   multipolygon: 'geo',

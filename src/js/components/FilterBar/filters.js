@@ -57,6 +57,7 @@ export function getFilterToggleText(filter, column) {
       }
     }
 
+    case 'money':
     case 'number': {
       const { start, end } = _.defaultTo(filter.arguments, {});
 

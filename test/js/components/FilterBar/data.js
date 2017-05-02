@@ -42,6 +42,14 @@ export const mockBinaryOperatorFilter = {
   joinOn: 'OR'
 };
 
+export const mockMoneyColumn = {
+  dataTypeName: 'money',
+  fieldName: 'dinosaurMoney',
+  name: 'Dinosaur Money',
+  rangeMin: .1,
+  rangeMax: 100.01
+};
+
 export const mockNumberColumn = {
   dataTypeName: 'number',
   fieldName: 'dinosaurAge',

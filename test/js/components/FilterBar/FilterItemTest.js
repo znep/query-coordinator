@@ -6,6 +6,7 @@ import {
   mockBinaryOperatorFilter,
   mockTimeRangeFilter,
   mockCalendarDateColumn,
+  mockMoneyColumn,
   mockNumberColumn,
   mockTextColumn
 } from './data';
@@ -40,31 +41,40 @@ describe('FilterItem', () => {
       })
     }));
 
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('filter control', () => {
     it('renders a control toggle', () => {
-      expect(getControlToggle(element)).to.exist;
+      assert.isNotNull(getControlToggle(element));
     });
 
     it('renders the filter title in the toggle', () => {
-      expect(getControlToggle(element).textContent).to.contain('From 1 to 3');
+      assert.include(getControlToggle(element).textContent, 'From 1 to 3');
     });
 
     it('toggles visibility of filter controls when the toggle is clicked', () => {
-      expect(getControls(element)).to.not.exist;
+      assert.isNull(getControls(element));
 
       Simulate.click(getControlToggle(element));
-      expect(getControls(element)).to.exist;
+      assert.isNotNull(getControls(element));
 
       Simulate.click(getControlToggle(element));
-      expect(getControls(element)).to.not.exist;
+      assert.isNull(getControls(element));
+    });
+
+    it('renders a number filter when the column is a money column', () => {
+      Simulate.click(getControlToggle(element));
+      assert.isTrue(getControls(element).classList.contains('number-filter'));
     });
 
     it('renders a number filter when the column is a number column', () => {
+      const element = renderComponent(FilterItem, getProps({
+        column: mockMoneyColumn
+      }));
+
       Simulate.click(getControlToggle(element));
-      expect(getControls(element)).to.have.class('number-filter');
+      assert.isTrue(getControls(element).classList.contains('number-filter'));
     });
 
     it('renders a text filter when the column is a text column', () => {
@@ -74,7 +84,7 @@ describe('FilterItem', () => {
       }));
 
       Simulate.click(getControlToggle(element));
-      expect(getControls(element)).to.have.class('text-filter');
+      assert.isTrue(getControls(element).classList.contains('text-filter'));
     });
 
     it('renders a calendar_date filter when the column is a calendar_date column', () => {
@@ -84,53 +94,53 @@ describe('FilterItem', () => {
       }));
 
       Simulate.click(getControlToggle(element));
-      expect(getControls(element)).to.have.class('calendar-date-filter');
+      assert.isTrue(getControls(element).classList.contains('calendar-date-filter'));
     });
 
     it('closes the controls when the body is clicked', () => {
       Simulate.click(getControlToggle(element));
-      expect(getControls(element)).to.exist;
+      assert.isNotNull(getControls(element));
       document.body.click();
-      expect(getControls(element)).to.not.exist;
+      assert.isNull(getControls(element));
     });
 
     it('closes the controls when the config toggle is clicked', () => {
       Simulate.click(getControlToggle(element));
-      expect(getControls(element)).to.exist;
+      assert.isNotNull(getControls(element));
       Simulate.click(getConfigToggle(element));
-      expect(getControls(element)).to.not.exist;
-      expect(getConfig(element)).to.exist;
+      assert.isNull(getControls(element));
+      assert.isNotNull(getConfig(element));
     });
   });
 
   describe('filter config', () => {
     it('renders a filter config toggle', () => {
-      expect(getControlToggle(element)).to.exist;
+      assert.isNotNull(getControlToggle(element));
     });
 
     it('toggles visibility of the filter config when the toggle is clicked', () => {
-      expect(getConfig(element)).to.not.exist;
+      assert.isNull(getConfig(element));
 
       Simulate.click(getConfigToggle(element));
-      expect(getConfig(element)).to.exist;
+      assert.isNotNull(getConfig(element));
 
       Simulate.click(getConfigToggle(element));
-      expect(getConfig(element)).to.not.exist;
+      assert.isNull(getConfig(element));
     });
 
     it('closes the config when the body is clicked', () => {
       Simulate.click(getConfigToggle(element));
-      expect(getConfig(element)).to.exist;
+      assert.isNotNull(getConfig(element));
       document.body.click();
-      expect(getConfig(element)).to.not.exist;
+      assert.isNull(getConfig(element));
     });
 
     it('closes the config when the control toggle is clicked', () => {
       Simulate.click(getConfigToggle(element));
-      expect(getConfig(element)).to.exist;
+      assert.isNotNull(getConfig(element));
       Simulate.click(getControlToggle(element));
-      expect(getConfig(element)).to.not.exist;
-      expect(getControls(element)).to.exist;
+      assert.isNull(getConfig(element));
+      assert.isNotNull(getControls(element));
     });
   });
 
@@ -143,7 +153,7 @@ describe('FilterItem', () => {
         isReadOnly: true
       }));
 
-      expect(element).to.exist;
+      assert.isNotNull(element);
     });
 
     it('does not render the config toggle', () => {
@@ -152,7 +162,7 @@ describe('FilterItem', () => {
         isReadOnly: true
       }));
 
-      expect(getConfigToggle(element)).to.not.exist;
+      assert.isNull(getConfigToggle(element));
     });
   });
 });

@@ -23,7 +23,7 @@ export const FilterItem = React.createClass({
       isHidden: PropTypes.bool
     }).isRequired,
     column: PropTypes.shape({
-      dataTypeName: PropTypes.oneOf(['calendar_date', 'number', 'text']),
+      dataTypeName: PropTypes.oneOf(['calendar_date', 'money', 'number', 'text']),
       name: PropTypes.string.isRequired
     }).isRequired,
     isReadOnly: PropTypes.bool.isRequired,
@@ -216,6 +216,7 @@ export const FilterItem = React.createClass({
 
     switch (column.dataTypeName) {
       case 'calendar_date': return <CalendarDateFilter {...filterProps} />;
+      case 'money': return <NumberFilter {...filterProps} />;
       case 'number': return <NumberFilter {...filterProps} />;
       case 'text': return <TextFilter {...filterProps} />;
       default: return null;

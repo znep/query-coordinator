@@ -1,4 +1,6 @@
-export default [{
+import _ from 'lodash';
+
+const goals = [{
   "id": "ykke-a4sz",
   "name": "Categoryless Goal",
   "is_public": true,
@@ -244,7 +246,7 @@ export const goalsWithPublicationState = {
     }
   },
   publicMigratedNotPublished: {
-    "id": "nver-pbls",
+    "id": "nver-mgrd",
     "name": "Public, Migrated, but not published",
     "is_public": true,
     "prevailing_measure": {},
@@ -285,7 +287,7 @@ export const goalsWithPublicationState = {
     }
   },
   unpublishedWithDraft: {
-    "id": "unpu-blsh",
+    "id": "unpu-drft",
     "name": "Unpublished (published, then made private), with draft",
     "is_public": false,
     "prevailing_measure": {},
@@ -329,7 +331,7 @@ export const goalsWithPublicationState = {
     }
   },
   publishedWithDraft: {
-    "id": "nver-edit",
+    "id": "publ-drft",
     "name": "Published, with draft",
     "is_public": true,
     "prevailing_measure": {},
@@ -351,3 +353,7 @@ export const goalsWithPublicationState = {
     }
   }
 };
+
+Array.prototype.push.apply(goals, _.values(goalsWithPublicationState));
+
+export default goals;

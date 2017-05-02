@@ -44,8 +44,8 @@ describe('sections/goals/components/GoalTable/GoalTableBody', function() {
     this.output = renderComponentWithStore(TableWrapper, state.goals.data, getDefaultStore(state));
   });
 
-  it('should have 4 rows', function() {
-    expect(this.output.querySelectorAll('tr').length).to.eq(4);
+  it(`should have ${goals.length} rows`, function() {
+    expect(this.output.querySelectorAll('tr').length).to.eq(goals.length);
   });
 
   it('should have 8 columns in a row', function() {

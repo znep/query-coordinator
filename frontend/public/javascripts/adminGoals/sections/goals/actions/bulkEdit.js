@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import * as api from '../../../api';
-import * as SharedActions from '../../shared/actions';
 import * as DataActions from './data';
 import * as Helpers from '../../../helpers';
 import * as Analytics from '../../shared/analytics';

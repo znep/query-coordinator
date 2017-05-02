@@ -9,38 +9,9 @@ import * as feedback from '../../components/feedback';
 export const showFeedbackFlannel = hoverable => feedback.Flannel.actions.open(hoverable);
 
 export const types = {
-  doSideEffect: 'shared.doSideEffect',
-  showModalMessage: 'shared.showModalMessage',
-  hideModalMessage: 'shared.hideModalMessage',
   showGlobalMessage: 'shared.showGlobalMessage',
-  hideGlobalMessage: 'shared.hideGlobalMessage',
-  setModalInProgress: 'shared.setModalInProgress'
+  hideGlobalMessage: 'shared.hideGlobalMessage'
 };
-
-export const doSideEffect = (payload) => ({
-  type: types.doSideEffect,
-  ...payload
-});
-
-export const showModalMessage = (section, modalName, message, messageType = 'error') => ({
-  type: types.showModalMessage,
-  section,
-  modalName,
-  message,
-  messageType
-});
-
-export const hideModalMessage = (section) => ({
-  type: types.hideModalMessage,
-  section
-});
-
-export const setModalInProgress = (section, modalName, inProgress) => ({
-  type: types.setModalInProgress,
-  section,
-  modalName,
-  inProgress
-});
 
 export const showGlobalMessage = (section, message, messageType = 'error') => ({
   type: types.showGlobalMessage,

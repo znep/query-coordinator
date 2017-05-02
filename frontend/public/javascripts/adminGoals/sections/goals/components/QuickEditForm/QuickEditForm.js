@@ -4,6 +4,7 @@ import * as React from 'react';
 import * as ReactRedux  from 'react-redux';
 import * as Immutable from 'immutable';
 import * as Actions from '../../actions';
+import * as Helpers from '../../../../helpers';
 import * as SharedActions from '../../../shared/actions';
 import * as State from '../../state';
 import * as Selectors from '../../selectors';
@@ -12,11 +13,11 @@ import * as Constants from '../../../../constants';
 
 import EditGeneral from './EditGeneral';
 import EditPrevailingMeasure from './EditPrevailingMeasure';
-import Details from './Details';
+import GoalDetails from './GoalDetails';
 
 import './QuickEditForm.scss';
 
-class GoalQuickEdit extends React.Component {
+class QuickEditForm extends React.Component {
   constructor(props) {
     super(props);
 
@@ -114,8 +115,31 @@ class GoalQuickEdit extends React.Component {
     this.props.saveGoalQuickEdit();
   }
 
+  renderSaveError() {
+    let { translations, saveError } = this.props;
+
+    if (!saveError) {
+      return null;
+    }
+
+    let failureMessage;
+    // Parse message, sometimes it's JSON.
+    try {
+      saveError = JSON.parse(saveError);
+    } catch (x) {} //eslint-disable-line no-empty
+
+    if (saveError.validationError) {
+      failureMessage = _.map(saveError.errors,
+        err => Helpers.translator(translations, `admin.quick_edit.validation.${err.field}.${err.rule}`));
+    } else {
+      failureMessage = Helpers.translator(translations, 'admin.quick_edit.default_alert_message');
+    }
+
+    return <Components.Socrata.Alert type='error' message={ failureMessage }/>;
+  }
+
   render() {
-    const { translations, goal, message, isGoalNotConfigured } = this.props;
+    const { translations, goal, isGoalNotConfigured, saveInProgress } = this.props;
 
     const baseDashboardId = goal.get('base_dashboard');
     const categoryId = goal.getIn(['category', 'id']) || 'uncategorized';
@@ -124,11 +148,6 @@ class GoalQuickEdit extends React.Component {
 
     const goalName = goal.get('name');
     const goalTitle = `${ translations.getIn(['admin', 'quick_edit', 'quick_edit_measure']) } - ${goalName}`;
-
-    // Fail message on top of modal
-    const failureAlert = message.get('visible') ?
-      <Components.Socrata.Alert type={ message.get('type') } message={ message.get('content') }/> :
-      null;
 
     // Warning message for not configured goals.
     const notConfiguredGoalMessage = (
@@ -162,14 +181,14 @@ class GoalQuickEdit extends React.Component {
             </a>
           </Components.Socrata.Modal.Header>
           <Components.Socrata.Modal.Content>
-            { failureAlert }
+            { this.renderSaveError() }
 
             <div className="goal-quick-edit-form">
               <EditGeneral {...subComponentProps} />
               { notConfiguredGoalAlert }
               <EditPrevailingMeasure {...subComponentProps} />
             </div>
-            <Details goal={ goal }/>
+            <GoalDetails goal={ goal }/>
           </Components.Socrata.Modal.Content>
           <Components.Socrata.Modal.Footer>
             <div className="link-container">
@@ -178,10 +197,13 @@ class GoalQuickEdit extends React.Component {
                 <span className="icon-external"/>
               </a>
             </div>
-            <Components.Socrata.Button onClick={ this.props.dismissModal }>
+            <Components.Socrata.Button onClick={ this.props.dismissModal } disabled={ saveInProgress } >
               { translations.getIn(['admin', 'quick_edit', 'cancel']) }
             </Components.Socrata.Button>
-            <Components.Socrata.Button type="submit" primary onClick={ this.save } disabled={ !this.props.unsavedChanges }>
+            <Components.Socrata.Button type="submit" primary
+              onClick={ this.save }
+              disabled={ !this.props.unsavedChanges || saveInProgress }
+              inProgress={ saveInProgress }>
               { translations.getIn(['admin', 'quick_edit', 'save']) }
             </Components.Socrata.Button>
           </Components.Socrata.Modal.Footer>
@@ -201,12 +223,13 @@ const mapStateToProps = state => {
   const isGoalNotConfigured = _.isNil(goal.get('prevailing_measure'));
 
   return {
-    translations: state.get('translations'),
+    formData: formData,
     goal: goal,
-    message: quickEdit.get('message'),
     isGoalNotConfigured: isGoalNotConfigured,
-    unsavedChanges: unsavedChanges,
-    formData: formData
+    saveError: quickEdit.get('saveError'),
+    saveInProgress: quickEdit.get('saveInProgress'),
+    translations: state.get('translations'),
+    unsavedChanges: unsavedChanges
   };
 };
 
@@ -217,4 +240,5 @@ const mapDispatchToProps = dispatch => ({
   openFeedbackFlannel: event => dispatch(SharedActions.showFeedbackFlannel(event.target))
 });
 
-export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Components.ModalQuitEventHandler(GoalQuickEdit)); // eslint-disable-line new-cap
+export const QuickEditFormComponent = QuickEditForm; // Unconnected.
+export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Components.ModalQuitEventHandler(QuickEditFormComponent)); // eslint-disable-line new-cap

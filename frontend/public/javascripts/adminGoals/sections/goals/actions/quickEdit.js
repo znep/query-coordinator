@@ -1,7 +1,5 @@
-import _ from 'lodash';
 import * as Api from '../../../api';
 import * as DataActions from './data';
-import * as SharedActions from '../../shared/actions';
 import * as Helpers from '../../../helpers';
 import * as State from '../state';
 import * as Selectors from '../selectors';
@@ -10,7 +8,11 @@ import * as Analytics from '../../shared/analytics';
 export const types = {
   openModal: 'goals.quickEdit.openModal',
   closeModal: 'goals.quickEdit.closeModal',
-  updateFormData: 'goals.quickEdit.updateFormData'
+  updateFormData: 'goals.quickEdit.updateFormData',
+  saveStart: 'goals.quickEdit.saveStart', // Payload: none (includes analytics event).
+  saveSuccess: 'goals.quickEdit.saveSuccess', // Payload: none.
+  saveError: 'goals.quickEdit.saveError', // Payload: Error JSON.
+  publishLatestDraft: 'goals.quickEdit.publishLatestDraft' // Payload: none.
 };
 
 export const openModal = goalId => ({
@@ -29,6 +31,42 @@ export const updateFormData = data => ({
   type: types.updateFormData,
   data
 });
+
+export const saveStart = (goalId, analyticsEvent) => ({
+  type: types.saveStart,
+  ...Analytics.createTrackEventActionData(analyticsEvent, {
+      [Analytics.EventPayloadKeys.goalId]: goalId
+  })
+});
+export const saveError = (error) => ({ type: types.saveError, data: error });
+export const saveSuccess = () => ({ type: types.saveSuccess });
+
+/**
+ * Publishes latest narrative draft.
+ */
+export const publishLatestDraft = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const quickEdit = State.getQuickEdit(state);
+    const goal = Selectors.getGoalById(state, quickEdit.get('goalId'));
+    const goalId = goal.get('id');
+
+    dispatch(saveStart(goalId, Analytics.EventNames.clickPublishOnQuickEdit));
+    return Api.goals.publishLatestDraft(goalId).then(() => {
+      const latestDraft = goal.getIn([ 'narrative', 'draft' ]).toJS();
+      dispatch(DataActions.updateById(goalId, {
+        narrative: {
+          published: latestDraft,
+          draft: latestDraft
+        }
+      }));
+      dispatch(saveSuccess());
+    }).
+    catch(error => {// eslint-disable-line dot-notation
+      dispatch(saveError(error.message));
+    });
+  };
+};
 
 /**
  * Saves quick edit form to API.
@@ -64,34 +102,21 @@ export function save() {
       'maintain_type': formData.get('measureMaintainType')
     };
 
-    const analyticsEvent = Analytics.createTrackEventActionData(Analytics.EventNames.clickUpdateOnQuickEdit, {
-      [Analytics.EventPayloadKeys.goalId]: goalId
-    });
-
-    dispatch(SharedActions.doSideEffect(analyticsEvent));
-    dispatch(SharedActions.setModalInProgress('goals', 'quickEdit', true));
-    dispatch(SharedActions.hideModalMessage('goals', 'quickEdit'));
+    dispatch(saveStart(goalId, Analytics.EventNames.clickUpdateOnQuickEdit));
 
     return Api.goals.update(goalId, version, values).then(updatedGoal => {
       const successMessage = Helpers.translator(translations, 'admin.quick_edit.success_message', updatedGoal.name);
 
-        dispatch(DataActions.updateById(goalId, updatedGoal));
-        dispatch(SharedActions.showGlobalMessage('goals', successMessage, 'success'));
-        dispatch(closeModal());
-      }).
-      catch(error => {// eslint-disable-line dot-notation
-        const message = JSON.parse(error.message);
-
-        let failureMessage;
-        if (message.validationError) {
-          failureMessage = _.map(message.errors,
-            err => Helpers.translator(translations, `admin.quick_edit.validation.${err.field}.${err.rule}`));
-        } else {
-          failureMessage = Helpers.translator(translations, 'admin.quick_edit.default_alert_message');
-        }
-
-        dispatch(SharedActions.showModalMessage('goals', 'quickEdit', failureMessage));
-        dispatch(SharedActions.setModalInProgress('goals', 'quickEdit', false));
+      // TODO: Consider combining these actions. They're redundant.
+      dispatch(DataActions.updateById(goalId, updatedGoal));
+      dispatch({
+        notification: { type: 'success', message: successMessage },
+        ...saveSuccess()
       });
+      dispatch(closeModal());
+    }).
+    catch(error => {// eslint-disable-line dot-notation
+      dispatch(saveError(error.message));
+    });
   };
 }

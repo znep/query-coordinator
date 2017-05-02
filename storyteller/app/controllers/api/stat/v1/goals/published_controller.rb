@@ -1,4 +1,6 @@
 class Api::Stat::V1::Goals::PublishedController < Api::V1::PublishedController
+  protect_from_forgery with: :null_session
+
   # Blank, this just differs from the normal Api::V1::PublishedController in the
   # permissions we want to apply, which are handled in ApplicationController.
   # The permissions are keyed off of the controller class, hence why this

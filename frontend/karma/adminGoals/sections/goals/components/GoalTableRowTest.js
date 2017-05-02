@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import { assert } from 'chai';
 import GoalTableRow from 'sections/goals/components/GoalTable/GoalTableRow';
-import { goalsWithPublicationState as goals } from '../../../data/goalTableActions/propGoals';
+import propGoals, { goalsWithPublicationState } from '../../../data/goalTableActions/propGoals';
 
 import translations from 'mockTranslations';
 
@@ -22,7 +22,12 @@ class RowWrapper extends React.Component {
 describe('sections/goals/components/GoalTable/GoalTableRow', () => {
   const renderWithGoal = (goal) => {
     assert.isOk(goal);
-    const state = { translations };
+    const state = {
+      translations,
+      goals: {
+        data: propGoals
+      }
+    };
 
     const props = {
       goal: Immutable.fromJS(goal)
@@ -48,15 +53,15 @@ describe('sections/goals/components/GoalTable/GoalTableRow', () => {
       });
     };
 
-    assertGoalHasStatus(goals.noPublicationStateReportedPrivate, 'status_private');
-    assertGoalHasStatus(goals.noPublicationStateReportedPublic, 'status_public');
-    assertGoalHasStatus(goals.neverEdited, 'status_private');
-    assertGoalHasStatus(goals.publicMigratedNotPublished, 'status_public_with_draft');
-    assertGoalHasStatus(goals.neverPublished, 'status_private');
-    assertGoalHasStatus(goals.unpublished, 'status_private');
-    assertGoalHasStatus(goals.unpublishedWithDraft, 'status_private');
-    assertGoalHasStatus(goals.published, 'status_public');
-    assertGoalHasStatus(goals.publishedWithDraft, 'status_public_with_draft');
+    assertGoalHasStatus(goalsWithPublicationState.noPublicationStateReportedPrivate, 'status_private');
+    assertGoalHasStatus(goalsWithPublicationState.noPublicationStateReportedPublic, 'status_public');
+    assertGoalHasStatus(goalsWithPublicationState.neverEdited, 'status_private');
+    assertGoalHasStatus(goalsWithPublicationState.publicMigratedNotPublished, 'status_public_with_draft');
+    assertGoalHasStatus(goalsWithPublicationState.neverPublished, 'status_private');
+    assertGoalHasStatus(goalsWithPublicationState.unpublished, 'status_private');
+    assertGoalHasStatus(goalsWithPublicationState.unpublishedWithDraft, 'status_private');
+    assertGoalHasStatus(goalsWithPublicationState.published, 'status_public');
+    assertGoalHasStatus(goalsWithPublicationState.publishedWithDraft, 'status_public_with_draft');
   });
 
 });

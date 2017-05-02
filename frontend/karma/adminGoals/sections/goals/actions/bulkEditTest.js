@@ -46,6 +46,34 @@ describe('actions/bulkEditActions', () => {
     server.restore()
   });
 
+  describe('saveStart', () => {
+    const action = Actions.BulkEdit.saveStart();
+    it('is of the correct type', () => {
+      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveStart');
+    });
+    it('includes analytics event', () => {
+      assert.property(action, 'analyticsTrackEvent');
+      assert.propertyVal(action.analyticsTrackEvent, 'eventName', 'Clicked Update on Bulk Edit');
+    });
+  });
+
+  describe('saveSuccess', () => {
+    const action = Actions.BulkEdit.saveSuccess(123);
+    it('is of the correct type', () => {
+      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveSuccess');
+    });
+    it('includes count as data', () => {
+      assert.property(action, 'data', 123);
+    });
+  });
+
+  describe('saveError', () => {
+    const action = Actions.BulkEdit.saveError();
+    it('is of the correct type', () => {
+      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveError');
+    });
+  });
+
   it('updateMultipleGoals should update given goals', () => {
     server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
     server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
@@ -66,7 +94,7 @@ describe('actions/bulkEditActions', () => {
     });
   });
 
-  it('should dispatch failure action when something went wrong', () => {
+  it('dispatches error action on failure', () => {
     server.respondWith(xhr => {
       xhr.respond();
     });

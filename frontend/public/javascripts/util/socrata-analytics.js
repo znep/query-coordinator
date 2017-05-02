@@ -255,8 +255,7 @@ jQuery.metrics = {
     return pageType;
   },
   browser_name: function() {
-    return $.browser.msie ? 'ie' : $.browser.mozilla ? 'firefox' : $.browser.chrome ? 'chrome' :
-      $.browser.safari ? 'safari' : 'other';
+    return _.get($, 'ua.browser.name', 'other').toLowerCase();
   }
 };
 

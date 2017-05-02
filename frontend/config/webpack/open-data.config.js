@@ -27,6 +27,7 @@ module.exports = _.defaultsDeep({
       './plugins/moment-timezone-with-data-2012-2022.js',
       './plugins/jstz.js',
       './util/namespace.js',
+      './plugins/ua-parser.min.js',
       './util/compat.js',
       './plugins/inheritance.js',
       './controls/base-control.js',

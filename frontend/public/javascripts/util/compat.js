@@ -28,18 +28,11 @@
   // Add device detection
   $.device = $.device || {};
 
-  if (navigator.userAgent.match(/iPad/i) != null) {
-    $.device.ipad = true;
-  }
-  if (navigator.userAgent.match(/(iPhone|iPod)/i) != null) {
-    $.device.iphone = true;
-  }
-  if (navigator.userAgent.match(/Android/i) != null) {
-    $.device.android = true;
-  }
-  if ($.device.iphone || $.device.android) {
-    $.device.mobile = true;
-  }
+  var device = _.get($, 'ua.device.model', '').toLowerCase();
+  $.device.ipad = device === 'ipad';
+  $.device.iphone = _.includes(['ipod', 'iphone'], device);
+  $.device.android = _.get($, 'ua.os.name', '').toLowerCase() === 'android';
+  $.device.mobile = _.get($, 'ua.device.type', '').toLowerCase() === 'mobile';
 
   // prototype defs to delegate Array native functions to underscore for d3+ie8- benefit.
   // since underscore has already loaded and cached its native function refs, this is
@@ -121,38 +114,20 @@
 })(jQuery);
 
 $(function() {
-  // [lint pass]: I don't think it's worth the time to untangle this...
-  /* eslint-disable no-cond-assign */
-  var m;
-  if (m = /PhantomJS\/([0-9.]+)/.exec(navigator.userAgent)) {
-    $.browser.chrome = false;
-    $.browser.safari = false;
-    $.browser.mozilla = false;
-    $.browser.version = m[1];
+  var browserName = _.get($, 'ua.browser.name', '').toLowerCase();
 
-  } else if (m = /Chrome\/([0-9.]+)/.exec(navigator.userAgent)) {
-    $.browser.chrome = true;
-    $.browser.safari = false;
-    $.browser.version = m[1];
-  } else if (/Safari\//.exec(navigator.userAgent) && !($.device.ipad || $.device.mobile)) {
-    // This version sniffing for mobile devices (1) doesn't work and (2) breaks clicks inexplicably.
-    m = /Version\/([0-9.]+)/.exec(navigator.userAgent);
-    if (m) {
-      $.browser.version = m[1];
-    }
-  } else if (m = /Trident.*rv:([\w.]+)/.exec(navigator.userAgent)) {
-    // IE11 is special and likes to pretend to be Mozilla
-    $.browser.msie = true;
-    delete $.browser.mozilla;
-    $.browser.version = m[1];
-  }
-  /* eslint-enable no-cond-assign */
-  $.browser.majorVersion = parseInt($.browser.version);
+  $.browser.chrome = browserName === 'chrome';
+  $.browser.safari = browserName === 'safari';
+  $.browser.msie = browserName === 'ie';
+  $.browser.edge = browserName === 'edge';
+  $.browser.mozilla = browserName === 'firefox';
+  $.browser.version = _.get($, 'ua.browser.version');
+  $.browser.majorVersion = parseInt(_.get($, 'ua.browser.major'));
 
   // Infinite Exasperation?
   if ($.browser.msie) {
     // add version classes
-    $('html').addClass('ie ie' + $.browser.version.slice(0, 1)); // I guess this will break when we hit IE10.
+    $('html').addClass('ie ie' + $.browser.majorVersion);
 
     // add button elems
     $('a.button').each(function() {

@@ -28,6 +28,13 @@ export const setFormData = data => ({
   data
 });
 
+export const saveStart = () => ({
+  type: types.saveStart,
+  ...Analytics.createTrackEventActionData(Analytics.EventNames.clickUpdateOnBulkEdit, {})
+});
+export const saveError = () => ({ type: types.saveError });
+export const saveSuccess = (goalCount) => ({ type: types.saveSuccess, data: goalCount });
+
 /**
  * Goal update api expects prevailing_measure data normalized.
  * @param {Object} updatedData
@@ -53,10 +60,7 @@ function formatGoalDataForWrite(updatedData) {
  */
 export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
   const allConfigured = goals.every(goal => goal.has('prevailing_measure'));
-
-  // Send event to mixpanel
-  const analyticsEvent = Analytics.createTrackEventActionData(Analytics.EventNames.clickUpdateOnBulkEdit, {});
-  dispatch(SharedActions.doSideEffect(analyticsEvent));
+  const translations = getState().get('translations');
 
   // Cannot update prevailing measure data for the items
   // which are not configured properly.
@@ -66,21 +70,20 @@ export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
   }
 
   const normalizedData = formatGoalDataForWrite(updatedData);
-  dispatch({ type: types.saveStart });
+  dispatch(saveStart());
 
   const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), normalizedData));
   return Promise.all(updateRequests).then(updatedGoals => {
+    const successMessage = Helpers.translator(translations, 'admin.bulk_edit.success_message', updatedGoals.length);
 
     // TODO: Consider combining these actions. They're redundant.
     dispatch(DataActions.updateAll(updatedGoals));
     dispatch({
-      type: types.saveSuccess,
-      data: updatedGoals.length
+      notification: { type: 'success', message: successMessage },
+      ...saveSuccess(updatedGoals.length)
     });
     dispatch(closeModal()); // TODO does this really belong here?
 
     return updatedGoals;
-  }).catch(() => dispatch({
-    type: types.saveError
-  }));
+  }).catch(() => dispatch(saveError()));
 };

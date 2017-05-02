@@ -218,7 +218,7 @@ export class Manager extends React.Component {
     const descriptionProps = {
       ...metadataInputProps('description'),
       'aria-label': descriptionPlaceholder,
-      maxLength: 320,
+      maxLength: 1000,
       onKeyDown: handleEnter(onDescriptionEnter),
       placeholder: descriptionPlaceholder
     };

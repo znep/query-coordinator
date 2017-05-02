@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <Localization
       translations={translations}
       locale={serverConfig.locale || 'en'}
+      localePrefix={serverConfig.localePrefix}
       returnKeyForNotFound={true}
       root="screens.admin.jobs">
       <Provider store={store}>

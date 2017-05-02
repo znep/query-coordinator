@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 
 export default class TableHeaderColumn extends React.Component {
   constructor(props) {
@@ -9,23 +8,15 @@ export default class TableHeaderColumn extends React.Component {
   }
 
   handleColumnClick() {
-    this.props.onSort(this.column);
+    this.props.onClick(this.props.column);
   }
 
   render() {
-    const { column, sorting } = this.props;
-    const { title, sortable } = column;
-
-    const isSorted = sortable && sorting !== 'none';
-
-    const classes = classNames({
-      'sorted':      isSorted,
-      'sorted-asc':  isSorted && sorting === 'asc',
-      'sorted-desc': isSorted && sorting === 'desc'
-    });
+    const { column } = this.props;
+    const { title } = column;
 
     return (
-      <th onClick={this.handleColumnClick} className={classes}>
+      <th onClick={this.handleColumnClick}>
         { title }
       </th>
     );
@@ -33,7 +24,10 @@ export default class TableHeaderColumn extends React.Component {
 }
 
 TableHeaderColumn.propTypes = {
-  sorting: React.PropTypes.oneOf(['asc', 'desc', 'none']).isRequired,
+  sorting: React.PropTypes.shape({
+    direction: React.PropTypes.oneOf(['asc', 'desc']).isRequired,
+    column:  React.PropTypes.object.isRequired
+  }),
   column: React.PropTypes.object.isRequired,
-  onSort: React.PropTypes.func.isRequired
+  onClick: React.PropTypes.func.isRequired
 };

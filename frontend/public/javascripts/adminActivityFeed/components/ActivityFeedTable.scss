@@ -2,12 +2,57 @@
 
 .activity-feed-table {
   background: $white;
+  padding: 16px;
+  padding-top: 26px;
+
   display: flex;
   flex-direction: column;
 
-  table {
+  .table.table-condensed {
     margin: 0;
-    margin-bottom: 25px;
+
+    thead {
+      tr {
+        border-bottom: 1px solid #EAEAEA;
+      }
+    }
+
+    th {
+      white-space: nowrap;
+    }
+
+    th[data-column-sorted] {
+      padding-right: 30px;
+
+      .sorting-indicator {
+        margin-left: 0;
+        margin-right: -25px;
+      }
+    }
+
+    th[data-column=name] {
+      width: 99%;
+    }
+
+    th[data-column=actions] {
+      min-width: 200px;
+    }
+
+    th, td {
+      padding: 10px 20px;
+    }
+
+    td {
+      white-space: nowrap;
+
+      a {
+        color: #5e5e5e;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
   }
 
   .pagination {

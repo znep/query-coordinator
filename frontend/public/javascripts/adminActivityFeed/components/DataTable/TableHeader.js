@@ -2,18 +2,14 @@ import React from 'react';
 
 export default class TableHeader extends React.Component {
   renderColumns() {
-    const {onSort, columns, columnComponent, columnSorting} = this.props;
-    const isTableSorted = columnSorting != null;
+    const {onColumnClick, columns, columnComponent, sorting} = this.props;
 
     return columns.map((column, index) => {
-      const isColumnSorted = isTableSorted && columnSorting.column === column;
-      const sorting = isColumnSorted ? columnSorting.sorting : 'none';
-
       return React.createElement(columnComponent, {
-        key: `column-${index}`,
         column,
         sorting,
-        onSort
+        key: `column-${index}`,
+        onClick: onColumnClick
       });
     });
   }
@@ -30,11 +26,11 @@ export default class TableHeader extends React.Component {
 }
 
 TableHeader.propTypes = {
-  columnSorting: React.PropTypes.shape({
-    sorting: React.PropTypes.oneOf(['asc', 'desc']).isRequired,
+  sorting: React.PropTypes.shape({
+    direction: React.PropTypes.oneOf(['asc', 'desc']).isRequired,
     column:  React.PropTypes.object.isRequired
   }),
-  onSort: React.PropTypes.func.isRequired,
+  onColumnClick: React.PropTypes.func.isRequired,
   columns: React.PropTypes.array.isRequired,
   columnComponent: React.PropTypes.func.isRequired
 };

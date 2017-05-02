@@ -11,7 +11,7 @@ import './DataTable.scss';
 
 export default class DataTable extends React.Component {
   render() {
-    const { columns, data, rowIdGetter, selectedRows, onColumnSorted } = this.props;
+    const { columns, data, rowIdGetter, selectedRows, onColumnClick , sorting} = this.props;
 
     // Components
     const {
@@ -23,9 +23,9 @@ export default class DataTable extends React.Component {
     return (
       <table className="table table-condensed table-borderless data-table table-discrete">
         <TableHeader
-          onSort={onColumnSorted}
+          onColumnClick={onColumnClick}
           columns={columns}
-          columnSorting={null}
+          sorting={sorting}
           columnComponent={headerColumnComponent}
           />
         <TableBody
@@ -47,7 +47,8 @@ DataTable.defaultProps = {
   headerColumnComponent: TableHeaderColumn,
   dataRowComponent: TableDataRow,
   dataColumnComponent: TableDataColumn,
-  onColumnSorted: _.noop
+  onColumnClick: _.noop,
+  sorting: null
 };
 
 DataTable.propTypes = {
@@ -55,5 +56,9 @@ DataTable.propTypes = {
   data: React.PropTypes.any.isRequired,
   rowIdGetter: React.PropTypes.func.isRequired,
   selectedRows: React.PropTypes.any.isRequired,
-  onColumnSorted: React.PropTypes.func.isRequired
+  onColumnClick: React.PropTypes.func.isRequired,
+  sorting: React.PropTypes.shape({
+    direction: React.PropTypes.oneOf(['asc', 'desc']).isRequired,
+    column:  React.PropTypes.object.isRequired
+  })
 };

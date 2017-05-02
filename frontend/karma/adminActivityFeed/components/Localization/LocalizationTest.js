@@ -44,6 +44,24 @@ describe('Localization', () => {
       assert(output.textContent === locale);
     });
 
+    it('getLocalePrefix() should return url prefix for current locale', () => {
+      const MyComponent = connectLocalization(({ localization }) => {
+        return <span>{localization.getLocalePrefix()}</span>;
+      });
+
+      const output = renderComponent(MyComponent, { localePrefix: '/en' });
+      assert(output.textContent === '/en');
+    });
+
+    it('getLocalePrefix() should return empty string if it is not specified', () => {
+      const MyComponent = connectLocalization(({ localization }) => {
+        return <span>{String(localization.getLocalePrefix())}</span>;
+      });
+
+      const output = renderComponent(MyComponent, {});
+      assert(output.textContent === '');
+    });
+
     it('translate(key,data) should return localized string if exists', () => {
       const MyComponent = connectLocalization(({ localization }) => {
         return <span>{localization.translate('tests')}</span>;

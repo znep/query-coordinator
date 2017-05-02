@@ -3087,6 +3087,17 @@ en:
         view_moderation: View Moderation
         view_moderation_description: View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
       jobs:
+        cancel: Cancel
+        close: Close
+        empty_message: Your site doesn't have any activity yet. <a href="%{new_dataset_url}">Create a dataset</a> to get started.
+        columns:
+          asset_type: Asset Type
+          asset_name: Asset Name
+          event: Event
+          initiated_by: Initiated By
+          date_started: Date Started
+          status: Status
+        details: Details
         actions:
           append: Append
           delete: Delete

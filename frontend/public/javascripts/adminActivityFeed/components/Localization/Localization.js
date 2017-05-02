@@ -7,6 +7,7 @@ export default class Localization extends React.Component {
 
     this.translate = this.translate.bind(this);
     this.getLocale = this.getLocale.bind(this);
+    this.getLocalePrefix = this.getLocalePrefix.bind(this);
   }
 
   getChildContext() {
@@ -15,13 +16,18 @@ export default class Localization extends React.Component {
     return {
       localization: {
         translate: (locale === 'nyan' ? (() => 'nyan') : this.translate),
-        getLocale: this.getLocale
+        getLocale: this.getLocale,
+        getLocalePrefix: this.getLocalePrefix
       }
     };
   }
 
   getLocale() {
     return this.props.locale;
+  }
+
+  getLocalePrefix() {
+    return this.props.localePrefix;
   }
 
   translate(key, data) {
@@ -60,7 +66,8 @@ export default class Localization extends React.Component {
 
 Localization.defaultProps = {
   notFoundText: '(no translation available)',
-  returnKeyForNotFound: false
+  returnKeyForNotFound: false,
+  localePrefix: ''
 };
 
 Localization.propTypes = {
@@ -69,12 +76,14 @@ Localization.propTypes = {
   notFoundText: React.PropTypes.string.isRequired,
   returnKeyForNotFound: React.PropTypes.bool.isRequired,
   root: React.PropTypes.string,
-  children: React.PropTypes.any
+  children: React.PropTypes.any,
+  localePrefix: React.PropTypes.string
 };
 
 Localization.childContextTypes = {
   localization: React.PropTypes.shape({
     translate: React.PropTypes.func,
-    getLocale: React.PropTypes.func
+    getLocale: React.PropTypes.func,
+    getLocalePrefix: React.PropTypes.func
   })
 };

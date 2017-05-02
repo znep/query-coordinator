@@ -20,17 +20,32 @@ describe('ActivityFeedTable', () => {
     const columnTitles = [].slice.call(output.querySelectorAll('thead th')).map(c => c.textContent);
 
     const expectedColumnTitles = [
-      'Asset Type',
+      'Date Started',
       'Event',
       'Asset Name',
       'Initiated By',
-      'Date Started',
       'Status',
       ''
     ];
 
-    assert.lengthOf(columnTitles, 7);
+    assert.lengthOf(columnTitles, 6);
     assert.deepEqual(columnTitles, expectedColumnTitles);
+  });
+
+  it('should indicate sorted table column', () => {
+    const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
+    const columns = [].slice.call(output.querySelectorAll('thead th'));
+    const dateColumn = columns[4];
+
+    columns.forEach((column) => {
+      const indicator = column.querySelector('span.sorting-indicator');
+
+      if (column === dateColumn) {
+        assert.isDefined(indicator);
+      } else {
+        assert.isNull(indicator);
+      }
+    });
   });
 
   it('should render localized dates', () => {
@@ -48,14 +63,14 @@ describe('ActivityFeedTable', () => {
 
   it('should render view details link for failed activities', () => {
     const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
+    const rows = [].slice.call(output.querySelectorAll('tbody tr'));
 
-    Array.prototype.filter.
-      call(
-        output.querySelectorAll('tbody tr'),
-        row => [mockTranslations.statuses.success_with_data_errors, mockTranslations.statuses.failure].
-          includes(row.querySelector('td[data-column=status]').textContent)
-      ).
-      forEach(row => assert(row.querySelector('td[data-column=actions]').textContent === 'View Details'));
+    const statusesForDetails = [mockTranslations.statuses.success_with_data_errors, mockTranslations.statuses.failure];
+    const getRowStatus = (row) => row.querySelector('td[data-column=status]').textContent;
+    const getRowAction = (row) => row.querySelector('td[data-column=actions]').textContent;
+
+    rows.
+      filter(row => statusesForDetails.includes(getRowStatus(row))).
+      forEach(row => assert(getRowAction(row) === 'View Details'));
   });
-
 });

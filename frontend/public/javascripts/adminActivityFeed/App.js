@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import ActivityFeedTable from './components/ActivityFeedTable';
 import Error from './components/Error';
+import EmptyState from './components/EmptyState';
 import RestoreModal from './components/RestoreModal';
 import DetailsModal from './components/DetailsModal';
+import ActivityFeedTable from './components/ActivityFeedTable';
 
 import './App.scss';
 
@@ -18,6 +19,7 @@ class App extends React.Component {
         {detailsModal}
         {restoreModal}
         <ActivityFeedTable />
+        <EmptyState />
       </div>
     );
   }

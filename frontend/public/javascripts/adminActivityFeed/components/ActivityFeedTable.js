@@ -5,95 +5,64 @@ import { connect } from 'react-redux';
 import connectLocalization from './Localization/connectLocalization';
 import LocalizedDate from './Localization/LocalizedDate';
 import LocalizedText from './Localization/LocalizedText';
+import * as helpers from '../helpers';
 
+import ActivityFeedTableHeaderColumn from './ActivityFeedTableHeaderColumn';
 import DataTable from './DataTable/DataTable';
-import AssetType from './AssetType';
 import ActivityFeedPagination from './ActivityFeedPagination';
+import AssetName from './AssetName';
+import ActivityActions from './ActivityActions';
+import Status from './Status';
 
 import { showDetailsModal, showRestoreModal } from '../actions';
-
 import './ActivityFeedTable.scss';
 
 class ActivityFeedTable extends React.Component {
   constructor(props) {
     super(props);
 
-    const { dispatchShowRestoreModal, localization } = props;
+    const localization = props.localization;
+    const t = localization.translate;
 
     this.columns = [
       {
-        id: 'type',
-        title: localization.translate('columns.asset_type'),
-        mapper: item => item.getIn(['data', 'entity_type']),
-        template: (type) => <AssetType type={type} />
+        id: 'dateStarted',
+        title: t('columns.date_started'),
+        mapper: item => item.getIn(['data', 'created_at']),
+        template: date => <LocalizedDate date={date}/>
       },
       {
         id: 'event',
-        title: localization.translate('columns.event'),
-        mapper: item => item.getIn(['data', 'activity_type']),
-        template: type => <LocalizedText localeKey={`actions.${_.snakeCase(type)}`} />
+        title: t('columns.event'),
+        mapper: helpers.activities.getType,
+        template: type => <LocalizedText localeKey={`actions.${type}`}/>
       },
       {
         id: 'name',
-        title: localization.translate('columns.asset_name'),
-        mapper: item => item.getIn(['dataset', 'name'])
+        title: t('columns.asset_name'),
+        mapper: _.identity,
+        template: activity => <AssetName activity={activity}/>
       },
       {
         id: 'initiatedBy',
-        title: localization.translate('columns.initiated_by'),
-        mapper: item => item.getIn(['initiated_by', 'displayName'])
-      },
-      {
-        id: 'dateStarted',
-        title: localization.translate('columns.date_started'),
-        mapper: item => item.getIn(['data', 'created_at']),
-        template: date => <LocalizedDate date={date} />
+        title: t('columns.initiated_by'),
+        mapper: activity => activity.getIn(['initiated_by', 'displayName'], '')
       },
       {
         id: 'status',
-        title: localization.translate('columns.status'),
-        mapper: item => item.getIn(['data', 'status']),
-        template: status => <LocalizedText localeKey={`statuses.${_.snakeCase(status)}`} />
+        title: t('columns.status'),
+        mapper: helpers.activities.getStatus,
+        template: status => <Status status={status}/>
       },
       {
         id: 'actions',
         title: '',
         mapper: _.identity,
-        template: item => {
-          const showDetailsButton = ['SuccessWithDataErrors', 'Failure'].includes(item.getIn(['data', 'status']));
-
-          const showRestoreButton = (
-            item.get('dataset') &&
-            (item.getIn(['dataset', 'flags']) || []).indexOf('restorable') > -1 &&
-            item.getIn(['dataset', 'deleted']) &&
-            item.getIn(['data', 'first_deleted_in_list']) &&
-            item.getIn(['data', 'activity_type']) === 'Delete'
-          );
-
-          const isRestored = (
-            item.getIn(['data', 'activity_type']) === 'Delete' &&
-            !item.getIn(['dataset', 'deleted'])
-          );
-
-          if (showRestoreButton) {
-            return (
-              <button
-                className="restore-modal-link button-as-link"
-                onClick={_.bind(dispatchShowRestoreModal, this, item.toJS())}>
-                <LocalizedText localeKey='restore'/>
-              </button>
-            );
-          } else if (isRestored) {
-            return <LocalizedText localeKey='restored' className="restored-dataset"/>;
-          } else if (showDetailsButton) {
-            return (
-              <button
-                className="details-modal-link button-as-link"
-                onClick={_.bind(props.dispatchShowDetailsModal, this, item)}>
-                <LocalizedText localeKey='view_details'/>
-              </button>
-            );
-          }
+        template: activity => {
+          return <ActivityActions
+            activity={activity}
+            onShowDetails={this.props.onShowActivityDetails}
+            onRestore={this.props.onRestoreActivity}  />;
         }
       }
     ];
@@ -106,7 +75,12 @@ class ActivityFeedTable extends React.Component {
 
     return (
       <div className="activity-feed-table">
-        <DataTable data={activities} columns={this.columns} rowIdGetter={this.rowIdGetter} />
+        <DataTable
+          data={activities}
+          columns={this.columns}
+          rowIdGetter={this.rowIdGetter}
+          headerColumnComponent={ActivityFeedTableHeaderColumn}
+          sorting={this.sorting}/>
         <ActivityFeedPagination />
       </div>
     );
@@ -120,8 +94,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchShowDetailsModal: (activity) => dispatch(showDetailsModal(activity)),
-  dispatchShowRestoreModal: (activity) => dispatch(showRestoreModal(activity))
+  onShowActivityDetails: (activity) => dispatch(showDetailsModal(activity)),
+  onRestoreActivity: (activity) => dispatch(showRestoreModal(activity))
 });
 
 export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(ActivityFeedTable));

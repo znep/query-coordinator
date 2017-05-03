@@ -131,11 +131,17 @@ header#site-chrome-header, footer#site-chrome-footer {
   }
 
   .searchbox {
+    &.initial {
+      visibility: hidden;
+      position: absolute;
+    }
     float: right;
     min-height: 32px;
 
     form {
       line-height: $header_logo_height;
+      display: inline-flex;
+      vertical-align: middle;
       position: relative;
       margin-bottom: 0;
 
@@ -156,6 +162,11 @@ header#site-chrome-header, footer#site-chrome-footer {
         .searchbox-label {
           display: none;
         }
+
+        width: auto;
+        display: block;
+        margin: auto;
+        font-size: inherit;
       }
 
       input {
@@ -194,6 +205,12 @@ header#site-chrome-header, footer#site-chrome-footer {
           background: #e4e4e4;
         }
       }
+    }
+  }
+
+  .searchbox[data-catalog-autocomplete="true"] {
+    input {
+      box-sizing: content-box !important;
     }
   }
 

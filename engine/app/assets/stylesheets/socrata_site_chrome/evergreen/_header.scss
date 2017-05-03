@@ -171,6 +171,12 @@ header#site-chrome-header[template="evergreen"] {
             }
           }
 
+          .collapsible-search[data-catalog-autocomplete="true"] {
+            input {
+              box-sizing: content-box !important;
+            }
+          }
+
           .language-switcher-container {
             float: right;
           }

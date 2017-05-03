@@ -144,17 +144,11 @@ export function currentAndIgnoredOutputColumns(db) {
       // of those ids, return the highest (i.e., the most recent)
       return Math.max(...matchingTransformIds);
     })
-    .map(tid => {
+    .flatMap(tid => {
       // get ids of ouput_columns that resulted from this transform
-      const matchingOutputColumnIds = Object.keys(db.output_columns)
+      return Object.keys(db.output_columns)
         .filter(ocid => db.output_columns[ocid].transform_id === tid)
         .map(_.toNumber);
-
-      if (matchingOutputColumnIds.length > 1) {
-        return Math.max(...matchingOutputColumnIds);
-      } else {
-        return matchingOutputColumnIds[0];
-      }
     })
     .reduce((acc, ocid) => {
       // assume most recently created output schema is the current output schema
@@ -196,6 +190,74 @@ export function currentAndIgnoredOutputColumns(db) {
           ignored: true
         }))
       };
+    })
+    .thru(val => {
+      // if there is an output column in val.ignored that has the same transform
+      // id as an output column in val.current, that means it is an old copy that
+      // contains outdated metadata. We don't want to display this to the user so
+      // we filter it out here. The ideal place to have done this is in the flatMap
+      // on line 147, but unfortunately db.output_schema_columns doesn't have the
+      // information we need at that point.
+      const currentTransforms = val.current.map(oc => oc.transform_id);
+      const newIgnored = val.ignored.filter(oc => !currentTransforms.includes(oc.transform_id));
+
+      return {
+        ...val,
+        ignored: newIgnored
+      };
+    })
+    .thru(val => {
+      // if you edit column metadata multiple times, you will have multiple
+      // output columns in the store, all sharing the same transform. If you then
+      // ignore that column, none of the copies will be in the output schema. Taking
+      // the most recent is no good, so we have to crawl the old output schemas til
+      // we find a match
+      const transformIds = val.ignored.map(oc => oc.transform_id);
+
+      const duplicateOutputColumnIds = val.ignored
+        .filter(oc => transformIds.filter(tid => tid === oc.transform_id).length > 1)
+        .map(oc => oc.id);
+
+      // TODO: remove filters once we get the status out of output schema
+      const keys = Object.keys(db.output_schemas)
+        .filter(key => key !== '__status__')
+        .map(_.toNumber)
+        .filter(key => !!key)
+        .sort()
+        .reverse();
+
+      function crawlOutputSchemas(arr) {
+        if (!arr || !arr.length) {
+          return false;
+        }
+        const [head, ...tail] = arr;
+        const currentOutputColumnIds = _.chain(db.output_schema_columns)
+          .filter(osc => osc.output_schema_id === head)
+          .reduce((acc, osc) => {
+            return [...acc, osc.output_column_id];
+          }, [])
+          .value();
+
+        duplicateOutputColumnIds.filter(ocid => currentOutputColumnIds.includes(ocid));
+
+        if (duplicateOutputColumnIds.length) {
+          return duplicateOutputColumnIds[0];
+        } else {
+          return crawlOutputSchemas(tail);
+        }
+      }
+
+      const matchingId = crawlOutputSchemas(keys.slice(0, keys.length - 1));
+
+      const toRemove = duplicateOutputColumnIds.filter(ocid => ocid !== matchingId);
+
+      const newIgnored = val.ignored.filter(oc => !toRemove.includes(oc.id));
+
+      return {
+        ...val,
+        ignored: newIgnored
+      };
+
     })
     .thru(val => {
       // add transform data

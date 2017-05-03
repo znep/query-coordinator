@@ -21,3 +21,16 @@ export const getLocalizedErrorMessage = msg => {
 
   return localizedErrorMessage;
 };
+
+export function getUniqueName(arr, name, count = 1) {
+  const newName = count && count > 1 ? `${name} ${count}` : name;
+  if (!arr.includes(newName)) {
+    return newName;
+  } else {
+    return getUniqueName(arr, name, count + 1);
+  }
+}
+
+export const removeWhitespace = str => str.replace(/\s/g, '_');
+
+export const getUniqueFieldName = _.flowRight(removeWhitespace, getUniqueName);

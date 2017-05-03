@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react';
-import ColumnHeader from './ColumnHeader';
-import TransformStatus from './TransformStatus';
-import TableBody from './TableBody';
-import RowErrorsLink from './RowErrorsLink';
-import * as DisplayState from '../../lib/displayState';
-import styles from 'styles/Table/Table.scss';
-import { currentAndIgnoredOutputColumns } from 'selectors';
 import { connect } from 'react-redux';
+
+import ColumnHeader from 'components/Table/ColumnHeader';
+import TransformStatus from 'components/Table/TransformStatus';
+import TableBody from 'components/Table/TableBody';
+import RowErrorsLink from 'components/Table/RowErrorsLink';
 import * as ShowActions from 'actions/showOutputSchema';
+import * as DisplayState from 'lib/displayState';
+import { currentAndIgnoredOutputColumns } from 'selectors';
+import styles from 'styles/Table/Table.scss';
 
 function Table({
   db,
@@ -20,9 +21,6 @@ function Table({
   addColumn,
   dropColumn }) {
 
-  // const sortedOutputColumns = _.sortBy([...obj.current, ...obj.ignored], 'position');
-  //   .thru(obj => [...obj.current, ...obj.ignored])
-  //   .thru(cols => _.sortBy(cols, 'position'))
   const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
   const numRowErrors = inputSchema.num_row_errors;
   return (
@@ -77,22 +75,30 @@ Table.propTypes = {
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
   displayState: PropTypes.object.isRequired,
-  outputColumns: PropTypes.arrayOf(PropTypes.object)
+  outputColumns: PropTypes.arrayOf(PropTypes.shape({
+    position: PropTypes.number.isRequired,
+    field_name: PropTypes.string.isRequired,
+    display_name: PropTypes.string.isRequired,
+    description: PropTypes.string,
+    transform_id: PropTypes.number.isRequired
+  }))
 };
 
 const combineAndSort = ({ current, ignored }) =>
   _.sortBy([...current, ...ignored], 'position');
 
-  // TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
-  // fails; should probably redirect or display some message to the user
+// TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
+// fails; should probably redirect or display some message to the user
 const mapStateToProps = ({ db }, ownProps) => ({
   ...ownProps,
   outputColumns: combineAndSort(currentAndIgnoredOutputColumns(db))
 });
 
 const mapDispatchToProps = dispatch => ({
-  addColumn: (outputSchema, column) => dispatch(ShowActions.newAddColumn(outputSchema, column)),
-  dropColumn: (outputSchema, column) => dispatch(ShowActions.newDropColumn(outputSchema, column))
+  addColumn: (outputSchema, column) => dispatch(ShowActions.addColumn(outputSchema, column)),
+  dropColumn: (outputSchema, column) => dispatch(ShowActions.dropColumn(outputSchema, column)),
+  updateColumnType: (oldSchema, oldColumn, newType) =>
+    dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Table);

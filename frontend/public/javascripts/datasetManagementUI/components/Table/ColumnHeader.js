@@ -127,8 +127,8 @@ class ColumnHeader extends Component {
       (<span
         className={styles.colName}
         id={`column-field-name-${column.id}`}
-        title={column.field_name}>
-        {column.field_name}
+        title={column.display_name}>
+        {column.display_name}
       </span>) :
       (<Link to={Links.columnMetadataForm(column.id)}>
         <span

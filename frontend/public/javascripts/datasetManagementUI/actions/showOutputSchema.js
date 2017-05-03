@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { push } from 'react-router-redux';
-import * as dsmapiLinks from '../dsmapiLinks';
-import * as Links from '../links';
+import * as dsmapiLinks from 'dsmapiLinks';
+import * as Links from 'links';
 import {
   batch,
   revertEdits,
@@ -9,13 +9,14 @@ import {
   upsertSucceeded,
   upsertFailed,
   updateImmutableStarted
-} from './database';
-import { socrataFetch, checkStatus, getJson } from '../lib/http';
+} from 'actions/database';
+import { socrataFetch, checkStatus, getJson } from 'lib/http';
 import {
   insertChildrenAndSubscribeToOutputSchema
-} from './manageUploads';
-import { soqlProperties } from '../lib/soqlTypes';
+} from 'actions/manageUploads';
+import { soqlProperties } from 'lib/soqlTypes';
 import { currentAndIgnoredOutputColumns } from 'selectors';
+import { getUniqueName, getUniqueFieldName } from 'lib/util';
 
 function createNewOutputSchema(
   routing,
@@ -77,16 +78,7 @@ export const updateColumnType = (oldOutputSchema, oldColumn, newType) => (dispat
   );
 };
 
-function getUniqueName(arr, name, count = 1) {
-  const newName = count && count > 1 ? `${name}_${count}` : name;
-  if (!arr.includes(newName)) {
-    return newName;
-  } else {
-    return getUniqueName(arr, name, count + 1);
-  }
-}
-
-export const newAddColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
+export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
   const routing = state.routing.location;
@@ -110,7 +102,7 @@ export const newAddColumn = (outputSchema, outputColumn) => (dispatch, getState)
   const newOutputColumn = {
     ...outputColumn,
     field_name: getUniqueName(existingFieldNames, outputColumn.field_name),
-    display_name: getUniqueName(existingDisplayNames, outputColumn.display_name)
+    display_name: getUniqueFieldName(existingDisplayNames, outputColumn.display_name)
   };
 
   const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')];
@@ -127,7 +119,7 @@ export const newAddColumn = (outputSchema, outputColumn) => (dispatch, getState)
   );
 };
 
-export const newDropColumn = (outputSchema, column) => (dispatch, getState) => {
+export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
   const routing = state.routing.location;

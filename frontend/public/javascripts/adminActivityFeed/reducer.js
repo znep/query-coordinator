@@ -2,7 +2,8 @@ import immutable from 'immutable';
 import {
   SET_ACTIVITIES,
   SET_PAGINATION,
-  DISMISS_ERROR,
+  DISMISS_ALERT,
+  SET_ALERT,
   SHOW_RESTORE_MODAL,
   DISMISS_RESTORE_MODAL,
   SHOW_DETAILS_MODAL,
@@ -17,8 +18,14 @@ export default function(state, action) {
     case SET_PAGINATION:
       return state.set('pagination', immutable.fromJS(action.pagination));
 
-    case DISMISS_ERROR:
-      return state.set('error', null);
+    case DISMISS_ALERT:
+      return state.set('alert', null);
+
+    case SET_ALERT:
+      return state.set(
+        'alert',
+        immutable.fromJS({type: action.alertType, translationKey: action.translationKey, data: action.data})
+      );
 
     case SHOW_DETAILS_MODAL:
       return state.setIn(['detailsModal'], action.activity);

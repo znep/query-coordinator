@@ -31,9 +31,9 @@
 <div class="contentBox withLeftNavigation jobsScreen">
   <%= display_standard_flashes %>
 
-  <% if @error %>
+  <% if @alert %>
     <div class="flash error">
-      <%= t('screens.admin.jobs.index_page.server_error') %>
+      <%= t('screens.admin.jobs.index_page.alerts.server_error') %>
     </div>
   <% end %>
 

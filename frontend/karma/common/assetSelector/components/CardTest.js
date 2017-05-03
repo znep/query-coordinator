@@ -15,7 +15,7 @@ describe('Card', () => {
     provenance: 'official',
     tags: [],
     type: 'dataset',
-    updatedAt: '2016-12-15T22:52:12.006Z',
+    updatedAt: '2016-12-15T12:52:12.006Z',
     viewCount: 9999999
   };
 
@@ -62,7 +62,7 @@ describe('Card', () => {
       id: 'abcd-1234',
       imageUrl: 'https://opendata-demo.test-socrata.com/views/7237-mge9/files/573050a0-c39e-4cd5-bdd1-38f12f5f1e84',
       isPrivate: false,
-      updatedAt: '2016-12-15T22:52:12.006Z',
+      updatedAt: '2016-12-15T12:52:12.006Z',
       url: 'http://davidhasselhoffonline.com/',
       viewCount: 9999999
     });

@@ -20,7 +20,8 @@ import {
 } from './actions';
 
 const containerElement = document.querySelector('#app');
-const serversideError = containerElement.getAttribute('data-error');
+const alertType = containerElement.getAttribute('data-alert-type');
+const alertTranslationKey = containerElement.getAttribute('data-alert-translation-key');
 
 const initialState = Immutable.fromJS({
   activities: [],
@@ -31,12 +32,12 @@ const initialState = Immutable.fromJS({
     dateFrom: null,
     dateTo: null
   },
-  error: serversideError,
   pagination: {
     currentPage: 1,
     hasNextPage: false,
     hasPreviousPage: false
-  }
+  },
+  alert: alertType && alertTranslationKey ? { type: alertType, translationKey: alertTranslationKey } : null
 });
 
 const httpClient = new HttpClient();

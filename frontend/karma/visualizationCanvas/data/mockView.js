@@ -82,6 +82,6 @@ export default {
       dataTypeName: 'text'
     }
   ],
-  lastUpdatedAt: '2016-11-15T13:37:28.000-08:00',
+  lastUpdatedAt: '2016-11-15T12:37:28.000-08:00',
   viewCount: 10
 };

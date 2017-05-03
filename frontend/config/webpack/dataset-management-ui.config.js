@@ -24,6 +24,7 @@ module.exports = _.defaultsDeep({
   },
   module: {
     loaders: [
+      common.getReactHotLoader(),
       common.getBabelLoader(),
       {
         test: /\.global.scss$/,

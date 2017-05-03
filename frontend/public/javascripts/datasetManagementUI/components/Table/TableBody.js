@@ -54,7 +54,7 @@ class TableBody extends Component {
       rowIdx,
       transforms: this.props.columns.map((column) => {
         const transform = column.transform;
-        if (!transform) {
+        if (column.ignored) {
           return {
             id: `column_${column.id}`,
             cell: null

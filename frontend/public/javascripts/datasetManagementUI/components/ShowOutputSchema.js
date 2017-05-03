@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { commaify } from '../../common/formatNumber';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
-import * as ShowActions from '../actions/showOutputSchema';
 import * as LoadDataActions from '../actions/loadData';
 import { setOutputSchemaId } from 'actions/routing';
 import * as DisplayState from '../lib/displayState';
@@ -73,9 +72,6 @@ export class ShowOutputSchema extends Component {
       canApplyUpdate,
       numLoadsInProgress,
       goHome,
-      updateColumnType,
-      addColumn,
-      dropColumn,
       routing
     } = this.props;
 
@@ -143,10 +139,7 @@ export class ShowOutputSchema extends Component {
                 columns={columns}
                 inputSchema={inputSchema}
                 outputSchema={outputSchema}
-                displayState={displayState}
-                updateColumnType={updateColumnType}
-                addColumn={addColumn(outputSchema)}
-                dropColumn={dropColumn(outputSchema)} />
+                displayState={displayState} />
             </div>
             <PagerBar
               path={path}
@@ -184,9 +177,6 @@ ShowOutputSchema.propTypes = {
   canApplyUpdate: PropTypes.bool.isRequired,
   numLoadsInProgress: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
-  updateColumnType: PropTypes.func.isRequired,
-  addColumn: PropTypes.func.isRequired,
-  dropColumn: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   routing: PropTypes.object.isRequired,
   urlParams: PropTypes.shape({
@@ -213,15 +203,6 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   return {
-    updateColumnType: (oldSchema, oldColumn, newType) => {
-      dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType));
-    },
-    addColumn: (outputSchema) => {
-      return (column) => dispatch(ShowActions.addColumn(outputSchema, column));
-    },
-    dropColumn: (outputSchema) => {
-      return (column) => dispatch(ShowActions.dropColumn(outputSchema, column));
-    },
     goHome: () => {
       dispatch(push(Links.home(ownProps.location)));
     },

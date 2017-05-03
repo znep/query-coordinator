@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { push } from 'react-router-redux';
-import * as dsmapiLinks from '../dsmapiLinks';
-import * as Links from '../links';
+import * as dsmapiLinks from 'dsmapiLinks';
+import * as Links from 'links';
 import {
   batch,
   revertEdits,
@@ -9,12 +9,14 @@ import {
   upsertSucceeded,
   upsertFailed,
   updateImmutableStarted
-} from './database';
-import { socrataFetch, checkStatus, getJson } from '../lib/http';
+} from 'actions/database';
+import { socrataFetch, checkStatus, getJson } from 'lib/http';
 import {
   insertChildrenAndSubscribeToOutputSchema
-} from './manageUploads';
-import { soqlProperties } from '../lib/soqlTypes';
+} from 'actions/manageUploads';
+import { soqlProperties } from 'lib/soqlTypes';
+import { currentAndIgnoredOutputColumns } from 'selectors';
+import { getUniqueName, getUniqueFieldName } from 'lib/util';
 
 function createNewOutputSchema(
   routing,
@@ -76,38 +78,34 @@ export const updateColumnType = (oldOutputSchema, oldColumn, newType) => (dispat
   );
 };
 
-export const addColumn = (outputSchema, inputColumn) => (dispatch, getState) => {
+export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
   const routing = state.routing.location;
   const inputSchema = db.input_schemas[outputSchema.input_schema_id];
   const uploadId = inputSchema.upload_id;
   const upload = db.uploads[uploadId];
+  const { current } = currentAndIgnoredOutputColumns(db);
 
   const newOutputSchema = {
     input_schema_id: inputSchema.id
   };
 
-  const transform = soqlProperties[inputColumn.soql_type].canonicalName;
-  const newColumnExpr = `to_${transform}(${inputColumn.field_name})`;
+  // check for clashes with existing columns
+  const { existingFieldNames, existingDisplayNames } = current.reduce((acc, oc) => {
+    return {
+      existingFieldNames: [...acc.existingFieldNames, oc.field_name],
+      existingDisplayNames: [...acc.existingDisplayNames, oc.display_name]
+    };
+  }, { existingFieldNames: [], existingDisplayNames: [] });
 
-  const genTransform = (column) => {
-    const newTransform = db.transforms[column.transform_id];
-    return newTransform.transform_expr;
+  const newOutputColumn = {
+    ...outputColumn,
+    field_name: getUniqueFieldName(existingFieldNames, outputColumn.field_name),
+    display_name: getUniqueName(existingDisplayNames, outputColumn.display_name)
   };
-  const newOutputColumns = outputColumnsOf(db, outputSchema).
-    map(oc => toNewOutputColumn(oc, genTransform)).
-    concat([
-      {
-        display_name: inputColumn.field_name,
-        field_name: inputColumn.field_name,
-        position: inputColumn.position,
-        description: '',
-        transform: {
-          transform_expr: newColumnExpr
-        }
-      }
-    ]);
+
+  const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')];
 
   dispatch(upsertStarted('output_schemas', newOutputSchema));
 
@@ -121,24 +119,20 @@ export const addColumn = (outputSchema, inputColumn) => (dispatch, getState) => 
   );
 };
 
-export const dropColumn = (outputSchema, toDrop) => (dispatch, getState) => {
+export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
   const routing = state.routing.location;
   const inputSchema = db.input_schemas[outputSchema.input_schema_id];
   const uploadId = inputSchema.upload_id;
   const upload = db.uploads[uploadId];
+  const { current } = currentAndIgnoredOutputColumns(db);
 
   const newOutputSchema = {
     input_schema_id: inputSchema.id
   };
-  const genTransform = (column) => {
-    const { transform_expr: expr } = db.transforms[column.transform_id];
-    return expr;
-  };
-  const newOutputColumns = outputColumnsOf(db, outputSchema)
-    .filter(oc => oc.id !== toDrop.id)
-    .map(oc => toNewOutputColumn(oc, genTransform));
+
+  const newOutputColumns = current.filter(oc => oc.id !== column.id);
 
   dispatch(upsertStarted('output_schemas', newOutputSchema));
 

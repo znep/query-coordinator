@@ -112,7 +112,7 @@
                 <%= render :partial => 'datasets/stage_icon',
                   :locals => {:approval => @approval_template, :view => v} %>
                 <%- stage_name = @approval_template.stage((v.last_approval || {})['approvalStageId'])['name'] %>
-                <%= t('screens.admin.routing_approval.not_ready_yet') || stage_name %>
+                <%= stage_name || t('screens.admin.routing_approval.not_ready_yet') %>
               </td>
               <td class="actions">
                 <%= render :partial => 'administration/routing_approval_actions',

@@ -10,7 +10,7 @@ import * as DisplayState from 'lib/displayState';
 import { currentAndIgnoredOutputColumns } from 'selectors';
 import styles from 'styles/Table/Table.scss';
 
-function Table({
+export function Table({
   db,
   path,
   inputSchema,
@@ -89,8 +89,12 @@ const combineAndSort = ({ current, ignored }) =>
 
 // TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
 // fails; should probably redirect or display some message to the user
-const mapStateToProps = ({ db }, ownProps) => ({
-  ...ownProps,
+const mapStateToProps = ({ db }, { path, inputSchema, outputSchema, displayState }) => ({
+  db,
+  path,
+  inputSchema,
+  outputSchema,
+  displayState,
   outputColumns: combineAndSort(currentAndIgnoredOutputColumns(db))
 });
 

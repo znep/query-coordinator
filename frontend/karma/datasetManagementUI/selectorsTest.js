@@ -1,6 +1,7 @@
 import { expect, assert } from 'chai';
 import * as Selectors from 'selectors';
 import { STATUS_UPDATING, STATUS_SAVED } from 'lib/database/statuses';
+import db from './data/db';
 
 describe('Selectors', () => {
 
@@ -175,4 +176,47 @@ describe('Selectors', () => {
 
   });
 
+  describe('currentAndIgnoredOutputColumns', () => {
+    const output = Selectors.currentAndIgnoredOutputColumns(db);
+
+    it('puts all columns in current output schema into current array', () => {
+      const outputSchemaIds = Object.keys(db.output_schemas)
+        .filter(key => key !== '__status__')
+        .map(_.toNumber)
+        .filter(key => !!key);
+
+      const latestOutputSchemaId = Math.max(...outputSchemaIds);
+
+      const currentOutputColumnIds = _.chain(db.output_schema_columns)
+        .filter(osc => osc.output_schema_id === latestOutputSchemaId)
+        .reduce((innerAcc, osc) => {
+          return [...innerAcc, osc.output_column_id];
+        }, [])
+        .value();
+
+      const CurrentIdsFromSelector = output.current.map(oc => oc.id);
+
+      assert.deepEqual(currentOutputColumnIds, CurrentIdsFromSelector);
+    });
+
+    it('puts ignored columns in ignored array', () => {
+      assert.equal(output.ignored.length, 1);
+    });
+
+    it('omits column from ignored array if a current column exists with same transform id', () => {
+      const currentTransformIds = output.current.map(oc => oc.transform_id);
+      const ignoredTransformIds = output.ignored.map(oc => oc.transform_id);
+      ignoredTransformIds.forEach(tid => assert.notInclude(currentTransformIds, tid));
+    });
+
+    it('does not have columns in ignored array that share the same transform id', () => {
+      const ignoredTransformIds = output.ignored.map(oc => oc.transform_id);
+
+      ignoredTransformIds.forEach(tid => {
+        const tidIdx = _.findIndex(ignoredTransformIds, id => id === tid);
+        const withoutCurrent = ignoredTransformIds.filter((id, idx) => idx !== tidIdx);
+        assert.notInclude(withoutCurrent, tid);
+      });
+    });
+  });
 });

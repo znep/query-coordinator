@@ -25,7 +25,14 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       # TODO Refactor all of this... Both the controller and tests are a hot mess.
       # This doesn't work. #find is not an instance method
       View.any_instance.stubs(:find => test_view)
+      Phidippides.any_instance.stubs(:get_dataset_size => 1 )
       # TODO determine why 23 tests fail or break when :use_ephemeral_bootstrap is set to true
+      stub_feature_flags_with(
+        :use_ephemeral_bootstrap => false,
+        :create_v2_data_lens => false,
+        :enable_data_lens_page_metadata_migrations => false,
+        :phidippides_deprecation_metadata_source => 'phidippides-only'
+      )
     end
 
     context 'unauthenticated' do
@@ -55,8 +62,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       setup do
         # Stub out services, so we don't end up trying
         # to connect to external endpoints.
-        @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {columns: nil} })
-        stub_current_user
+        @phidippides.stubs(
+          fetch_dataset_metadata: {
+            status: '500',
+            body: { columns: nil }
+          }.with_indifferent_access
+        )
       end
 
       should 'return 403 if role is not set, and not admin - for V1 Data Lenses' do

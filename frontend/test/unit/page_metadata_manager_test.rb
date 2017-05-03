@@ -28,6 +28,7 @@ class PageMetadataManagerTest < Minitest::Test
       )
     )
     stub_feature_flags_with(:enable_data_lens_page_metadata_migrations => false)
+    stub_feature_flags_with(:phidippides_deprecation_metadata_source => 'phidippides-only')
     @dataset_copy_stub = stub_dataset_copy_request(NBE_DATASET_ID)
   end
 
@@ -39,8 +40,7 @@ class PageMetadataManagerTest < Minitest::Test
     end.returns(v2_page_metadata.to_json)
     PageMetadataManager.any_instance.expects(:fetch_dataset_columns).returns(v1_dataset_metadata[:columns])
     CoreServer::Base.stubs(connection: core_stub)
-
-    manager.show('four-four')
+    manager.show('four-four', options)
 
     stub_feature_flags_with(:enable_data_lens_page_metadata_migrations => false)
   end
@@ -58,10 +58,12 @@ class PageMetadataManagerTest < Minitest::Test
       assert_equal(metadata['description'], data_lens_page_metadata['description'])
     end.returns('data-lens')
     Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }.with_indifferent_access,
+      get_dataset_size: 1
     )
+    DataLensManager.any_instance.stubs(fetch: { 'rights' => %(read write) })
 
-    result = manager.create(data_lens_page_metadata)
+    result = manager.create(data_lens_page_metadata, options)
     assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
   end
 
@@ -262,9 +264,9 @@ class PageMetadataManagerTest < Minitest::Test
 
   def test_no_dataset_copy_when_feature_flag_not_set
     previous_secondary_group_identifier = APP_CONFIG.secondary_group_identifier
+
     begin
       APP_CONFIG.secondary_group_identifier = false
-
       manager.stubs(
         fetch_min_max_in_column: {
           'min' => '1987-08-15T00:00:00.000',
@@ -272,13 +274,14 @@ class PageMetadataManagerTest < Minitest::Test
         }
       )
 
+      DataLensManager.any_instance.stubs(fetch: { 'rights' => %(read write) })
       PageMetadataManager.any_instance.expects(:update_rollup_table)
-
       Phidippides.any_instance.stubs(
-        fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
+        fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }.with_indifferent_access,
+        get_dataset_size: 1
       )
       DataLensManager.any_instance.expects(:create).returns('data-lens')
-      manager.create(data_lens_page_metadata)
+      manager.create(data_lens_page_metadata, options)
       assert_not_requested @dataset_copy_stub
     rescue
       APP_CONFIG.secondary_group_identifier = previous_secondary_group_identifier
@@ -297,13 +300,14 @@ class PageMetadataManagerTest < Minitest::Test
         }
       )
 
+      DataLensManager.any_instance.stubs(fetch: { 'rights' => %(read write) })
       PageMetadataManager.any_instance.expects(:update_rollup_table)
-
       Phidippides.any_instance.stubs(
-        fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
+        fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }.with_indifferent_access,
+        get_dataset_size: 1
       )
       DataLensManager.any_instance.expects(:create).returns('data-lens')
-      manager.create(data_lens_page_metadata)
+      manager.create(data_lens_page_metadata, options)
       assert_not_requested @dataset_copy_stub
     rescue
       APP_CONFIG.secondary_group_identifier = previous_secondary_group_identifier

@@ -55,12 +55,13 @@ class DatasetMetadataController < ApplicationController
     end
 
     begin
-      result = phidippides.fetch_dataset_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
+      dataset_metadata = fetch_dataset_metadata(
+        params[:id],
+        :request_id => request_id,
+        :cookies => forwardable_session_cookies
+      )
 
-      dataset_metadata = result[:body]
-
-      dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /\A20[0-9]\z/
-      flag_subcolumns!(dataset_metadata[:columns])
+      dataset_metadata[:permissions] = permissions if dataset_metadata && dataset_metadata[:status] =~ /\A20[0-9]\z/
 
       # Explicitly allow cross-origin requests for this endpoint, since visualizations
       # need to be able to access dataset metadata and the visualization itself may be
@@ -68,7 +69,7 @@ class DatasetMetadataController < ApplicationController
       headers['Access-Control-Allow-Origin'] = '*'
       headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
 
-      render :json => dataset_metadata, :status => result[:status]
+      render :json => dataset_metadata
     rescue Phidippides::ConnectionError
       render :json => { :body => 'Phidippides connection error' }, :status => '500'
     end

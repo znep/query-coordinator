@@ -542,23 +542,42 @@ class InternalController < ApplicationController
 
     begin
       raise 'Both :domains and :domain_list were empty.' if domain_list.blank?
+      domain_list.sort!
+
       case params[:commit]
         when 'Set'
           processed_value = FeatureFlags.process_value(params[:multiple_domains][params[:flag]])
-          flag.set_multiple(
-            to_value: processed_value,
-            on_domains: domain_list,
-            authorization: auth_header
-          ) unless params[:dry_run]
-          domain_list.each do |domain|
+          changed_domains = begin
+            flag.set_multiple(
+              to_value: processed_value,
+              on_domains: domain_list,
+              authorization: auth_header
+            ) unless params[:dry_run]
+            domain_list
+          rescue Signaller::ProcessingIncomplete => e
+            (domain_list - e.remaining_items).tap do |list|
+              errors << "Job incomplete. Only processed #{list.size} domains."
+              errors << "Remaining: #{e.remaining_items.join(', ')}"
+            end
+          end
+          changed_domains.each do |domain|
             notices << %Q{#{dry_run}#{params[:flag]} was set with value "#{processed_value}" on #{domain}.}
           end
         when 'Reset'
-          flag.reset_multiple(
-            on_domains: domain_list,
-            authorization: auth_header
-          ) unless params[:dry_run]
-          domain_list.each do |domain|
+          changed_domains = begin
+            flag.reset_multiple(
+              on_domains: domain_list,
+              authorization: auth_header
+            ) unless params[:dry_run]
+            domain_list
+          rescue Signaller::ProcessingIncomplete => e
+            (domain_list - e.remaining_items).tap do |list|
+              errors << "Job incomplete. Only processed #{list.size} domains."
+              errors << "Remaining: #{e.remaining_items.join(', ')}"
+            end
+          end
+
+          changed_domains.each do |domain|
             notices << %Q{#{dry_run}#{params[:flag]} was reset to its default value of "#{FeatureFlags.default_for(params[:flag])}" on #{domain}.}
           end
       end

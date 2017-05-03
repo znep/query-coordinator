@@ -131,7 +131,7 @@ header#site-chrome-header, footer#site-chrome-footer {
   }
 
   .searchbox {
-    &.initial {
+    &.hidden {
       visibility: hidden;
       position: absolute;
     }

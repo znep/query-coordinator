@@ -158,9 +158,9 @@ function checkMobileBreakpoint() {
     }
   }
 
-  // Undo initial styling to hide searchbox during width calculations.
+  // Undo initial hidden styling to hide searchbox during width calculations.
   // Prevents "flashing" of non-mobile search when on mobile.
-  $siteChromeHeader.find('div.searchbox.initial').removeClass('initial');
+  $siteChromeHeader.find('div.searchbox.hidden').removeClass('hidden');
 }
 
 function showDesktopHeaderNav() {

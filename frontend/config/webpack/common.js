@@ -191,6 +191,7 @@ module.exports = {
   getEslintConfig: getEslintConfig,
   withHotModuleEntries: withHotModuleEntries,
   getBabelLoader: getBabelLoader,
+  getReactHotLoader: getReactHotLoader,
   getHotModuleEntries: getHotModuleEntries,
   getManifestPlugin: getManifestPlugin,
   getOutput: getOutput,

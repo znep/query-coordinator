@@ -2825,7 +2825,7 @@ en:
         current_status: Current Status
         data: Data
         data_connect_all: Connect all assets as Maps
-        data_json: Data.JSON endpoint
+        data_json: Data.JSON URL
         data_option: Data Connection
         data_option_explanation: Assets will appear in your catalog as Maps
         dataset: Dataset
@@ -2855,6 +2855,7 @@ en:
         esri_arcgis: Esri ArcGIS Server
         esri_arcgis_url: ArcGIS Server address
         failing: Failing
+        failed: Failed
         flashes:
           created: Connection successful! We reached your server. It will take some time to sync the Esri ArcGIS catalog, after which you can 'Edit' the connection's settings.
           created_data_json: Your connection is ready. 'Edit' the connection to select which assets to federate.
@@ -2866,7 +2867,7 @@ en:
         ignore: Ignored
         ignored: Ignored
         ignored_option: Don't Connect
-        in_progress: Sync in progress
+        in_progress: In progress
         last_synced: Last synced
         never: Never
         no_connectors: There are no connections currently configured. If you wish to connect an external source to your catalog, select Add New.
@@ -2885,6 +2886,7 @@ en:
         terminate: Terminate
         title: Manage Connectors
         type: Type
+        update_selections: Update connector selections
       datasets:
         asset_inventory:
           initialize: Initialize Asset Inventory

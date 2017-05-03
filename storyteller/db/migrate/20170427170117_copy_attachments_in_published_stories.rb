@@ -8,51 +8,42 @@ class CopyAttachmentsInPublishedStories < ActiveRecord::Migration
     migration_time = Time.now
 
     PublishedStory.all.each do |story|
-      # we only care about blocks that have image components
-      image_blocks = Block.for_story(story).
-        with_component_type(*Block::IMAGE_COMPONENT_TYPES)
+      # we only care about stories that have blocks that contain image components
+      next unless story.has_image_component?
 
-      image_blocks.each do |block|
-        migration_audit = BlockComponentsMigration.from_block(block)
+      migration_audit = PublishedStoryBlockIdsMigration.from_published_story(story)
 
-        this_block_as_json_blocks_array = StoryJsonBlocks.blocks_to_json([block])
+      json_blocks = StoryJsonBlocks.from_story(
+        story,
+        { 'id' => story.created_by },
+        copy: true,
+        validate_document_copy: false
+      )
 
-        # This call does the copying of attachments and doesn't save
-        # the new components back to the block
-        #
-        # Need to pass in `validate_document_copy: false` since we may have older Documents
-        # in our production environments that would fail validation if saved today
-        json_blocks = StoryJsonBlocks.new(
-          this_block_as_json_blocks_array,
-          { id: block.created_by },
-          copy: true,
-          validate_document_copy: false
-        )
+      json_blocks.save!
+      new_block_ids = json_blocks.blocks.map(&:id)
 
-        # only care about the first one since we initialized the json_blocks
-        # class with one block.
-        new_components = json_blocks.blocks.first.components
+      story.update_column(:block_ids, new_block_ids)
 
-        block.update_column(:components, new_components)
-
-        migration_audit.new_components = new_components
-        migration_audit.migration_version = version
-        migration_audit.migrated_on = migration_time
-
-        migration_audit.save!
-      end
+      migration_audit.new_block_ids = new_block_ids
+      migration_audit.migration_version = version
+      migration_audit.migrated_on = migration_time
+      migration_audit.save!
     end
   end
 
   def down
     rollback_time = Time.now
 
-    BlockComponentsMigration.where(
+    PublishedStoryBlockIdsMigration.where(
       migration_version: version,
       rolled_back_on: nil # in case we've rolled back and rolled forward already
     ).each do |migration_audit|
-      block = migration_audit.block
-      block.update_column(:components, migration_audit.original_components)
+      story = migration_audit.published_story
+      story.update_column(:block_ids, migration_audit.original_block_ids)
+
+      Block.where(id: migration_audit.new_block_ids).update_all(deleted_at: rollback_time)
+
       migration_audit.update_attribute(:rolled_back_on, rollback_time)
     end
   end

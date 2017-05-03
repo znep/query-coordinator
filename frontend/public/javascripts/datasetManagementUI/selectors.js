@@ -130,6 +130,11 @@ export function updatedOutputColumns(db, formDataModel) {
   return _.sortBy(unsortedColumns, 'position');
 }
 
+// so we would store this as a boolean property of output columns, but turns out
+// this would require a lot of DSMAPI changes (probably more code than here, amazingly), in:
+// - computation of denormalized error count for output schema
+// - starting new transforms when a new output schema is created
+// - endpoints which return results
 export function currentAndIgnoredOutputColumns(db) {
 
   // get all input column ids

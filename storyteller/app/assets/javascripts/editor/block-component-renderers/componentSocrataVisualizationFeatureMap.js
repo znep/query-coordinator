@@ -18,6 +18,7 @@ export default function componentSocrataVisualizationFeatureMap(props) {
   });
 
   const $this = $(this);
+  const { componentData, editMode } = props;
 
   StorytellerUtils.assertHasProperty(props, 'componentData.type');
   StorytellerUtils.assert(
@@ -26,7 +27,11 @@ export default function componentSocrataVisualizationFeatureMap(props) {
   );
 
   if ($this.children().length === 0) {
-    _renderTemplate($this, props);
+    _renderTemplate($this, componentData);
+  }
+
+  if (editMode) {
+    $this.componentWithMapBounds(componentData);
   }
 
   _updateVisualization($this, props);
@@ -35,9 +40,7 @@ export default function componentSocrataVisualizationFeatureMap(props) {
   return $this;
 }
 
-function _renderTemplate($element, props) {
-  const { componentData, editMode } = props;
-
+function _renderTemplate($element, componentData) {
   StorytellerUtils.assertHasProperty(componentData, 'type');
 
   const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
@@ -56,10 +59,6 @@ function _renderTemplate($element, props) {
         flyoutRenderer.clear();
       }
     });
-
-  if (editMode) {
-    $element.componentWithMapBounds(componentData);
-  }
 
   $element.append($componentContent);
 }

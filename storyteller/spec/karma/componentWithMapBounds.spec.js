@@ -26,7 +26,7 @@ describe('componentWithMapBounds jQuery plugin', function() {
 
     const MapNotificationDismissalMock = function() {
       _.extend(this, new Store());
-      this.isDismissed = _.constant(true);
+      this.isDismissed = _.constant(false);
     };
 
     mapNotificationDismissalStore = new MapNotificationDismissalMock();
@@ -93,6 +93,7 @@ describe('componentWithMapBounds jQuery plugin', function() {
     });
 
     it('removes the notification on dismissal', function() {
+      mapNotificationDismissalStore.isDismissed = _.constant(true);
       mapNotificationDismissalStore._emitChange();
       assert.equal($component.find('.notification-container').length, 0);
     });

@@ -131,8 +131,10 @@ header#site-chrome-header, footer#site-chrome-footer {
   }
 
   .searchbox {
-    visibility: hidden;
-    position: absolute;
+    &.hidden {
+      visibility: hidden;
+      position: absolute;
+    }
     float: right;
     min-height: 32px;
 
@@ -156,6 +158,11 @@ header#site-chrome-header, footer#site-chrome-footer {
 
       label {
         height: $searchbox_height;
+
+        .searchbox-label {
+          display: none;
+        }
+
         width: auto;
         display: block;
         margin: auto;
@@ -172,7 +179,7 @@ header#site-chrome-header, footer#site-chrome-footer {
         z-index: 3;
         vertical-align: top;
         height: $searchbox_height - 18; // 16px padding + 2px border
-        box-sizing: content-box !important;
+        box-sizing: content-box;
         font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
       }
 
@@ -198,6 +205,12 @@ header#site-chrome-header, footer#site-chrome-footer {
           background: #e4e4e4;
         }
       }
+    }
+  }
+
+  .searchbox[data-catalog-autocomplete="true"] {
+    input {
+      box-sizing: content-box !important;
     }
   }
 

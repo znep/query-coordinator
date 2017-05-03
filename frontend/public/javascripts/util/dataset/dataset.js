@@ -1768,9 +1768,10 @@
         return '/api/geospatial/{0}?method=export&format={1}'.format(this.id, type);
       }
 
-      var bom = (type == 'CSV for Excel') ? '&bom=true' : '';
-      var format = (type == 'CSV for Excel') ? '&format=true' : '';
-      return '/api/views/{0}/rows.{1}?accessType=DOWNLOAD{2}{3}'.format(this.id, ext, bom, format);
+      var bom = (type == 'CSV for Excel' || type == 'CSV for Excel (Europe)') ? '&bom=true' : '';
+      var format = (type == 'CSV for Excel' || type == 'CSV for Excel (Europe)') ? '&format=true' : '';
+      var delimiter = (type == 'CSV for Excel (Europe)') ? '&delimiter=;' : '';
+      return '/api/views/{0}/rows.{1}?accessType=DOWNLOAD{2}{3}{4}'.format(this.id, ext, bom, format, delimiter);
     },
 
     _getCommentCacheKey: function(comment) {

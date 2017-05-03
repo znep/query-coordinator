@@ -19,7 +19,7 @@ export default {
   isTabular: true,
   isBlobby: false,
   gridUrl: 'gridUrl',
-  exportFormats: [ 'csv', 'json', 'csv_for_excel', 'tsv_for_excel' ],
+  exportFormats: [ 'csv', 'json', 'csv_for_excel', 'csv_for_excel_europe', 'tsv_for_excel' ],
   lastUpdatedAt: 'May 5, 2016',
   dataLastUpdatedAt: 'Jan 1, 1970',
   metadataLastUpdatedAt: 'May 5, 2016',

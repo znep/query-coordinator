@@ -355,7 +355,7 @@ class DatasetLandingPage
     end
 
     def export_formats
-      %w(csv csv_for_excel json rdf rss tsv_for_excel xml)
+      %w(csv csv_for_excel csv_for_excel_europe json rdf rss tsv_for_excel xml)
     end
 
     def custom_metadata_fieldsets(view)

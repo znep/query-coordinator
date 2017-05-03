@@ -18,7 +18,7 @@
   margin-bottom: 13px;
 }
 
-select::-ms-expand {
+.select::-ms-expand {
     display: none; /* remove default arrow in IE 10 and 11 */
 }
 

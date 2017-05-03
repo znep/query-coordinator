@@ -25,6 +25,7 @@ $(document).ready(function() {
   initialBodyOverflowY = $('body').css('overflow-y') || 'visible';
 
   addAriaExpandedAttributeToSearchBox();
+  verticallyPositionSearchbar();
   checkMobileBreakpoint();
 
   // Show header nav. It has opacity set to 0 initially to prevent a flash of desktop styling on mobile.
@@ -69,6 +70,59 @@ function mobileLanguageSwitcher($div) {
   });
 }
 
+function toggleCollapsibleSearch(self) {
+  var $searchbox = $(self).siblings('.searchbox');
+  $searchbox.toggleClass('expanded');
+  $searchbox.find('input').focus();
+
+  if ($searchbox.hasClass('expanded')) {
+    $searchbox.attr('aria-expanded', 'true');
+  }
+
+  // Close searchbox on click outside of box
+  $(document).mouseup(function(e) {
+    if (!$searchbox.is(e.target) && $searchbox.has(e.target).length === 0) {
+      $searchbox.removeClass('expanded');
+      $searchbox.attr('aria-expanded', 'false');
+    }
+  });
+
+  // Close searchbox on ESCAPE key
+  $(document).keyup(function(e) {
+    if (e.keyCode === 27) {
+      $searchbox.removeClass('expanded');
+      $searchbox.attr('aria-expanded', 'false');
+    }
+  });
+}
+
+// Button appears only if text has been entered.
+function toggleSearchButton(self) {
+  var $searchButton = $(self).closest('form').find('.search-button');
+  if (self.value !== '') {
+    $searchButton.fadeIn(50);
+  } else {
+    $searchButton.fadeOut(50);
+  }
+}
+
+/**
+ * Browsers like IE11 don't understand nested calc commands, which are used to position the searchbar
+ * due to vertically aligning it with the dynamically sized logo.
+ * Instead, we need to position it with javascript.
+ */
+function verticallyPositionSearchbar() {
+  var isMSIE = navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0;
+  var isSafari = navigator.userAgent.indexOf('Safari') !== -1;
+  if (isMSIE || isSafari) {
+    var $searchbox = $('header#site-chrome-header .collapsible-search .searchbox');
+    var $banner = $siteChromeHeader.find('.banner');
+    var positionTop = $banner.height() / 2 - $searchbox.height() / 2;
+
+    $searchbox.css('top', positionTop);
+  }
+}
+
 /**
  * Check if the header should enter mobile mode based on the width of the navLinks
  * and the available width of the navbar based on the user's window size.
@@ -103,10 +157,6 @@ function checkMobileBreakpoint() {
       showDesktopHeaderNav();
     }
   }
-
-  // Undo initial styling to hide searchbox during width calculations. Prevents "flashing" of non-mobile
-  // search when on mobile.
-  $('div.searchbox').css('visibility', 'visible').css('position', 'initial');
 }
 
 function showDesktopHeaderNav() {

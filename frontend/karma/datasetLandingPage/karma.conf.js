@@ -1,7 +1,7 @@
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
   'dataset-landing-page.config.js',
-  [ 'karma/datasetLandingPage' ]
+  [ 'karma/datasetLandingPage', 'karma/helpers', 'public/javascripts' ]
 );
 webpackConfig.externals = {
   jquery: 'jQuery'

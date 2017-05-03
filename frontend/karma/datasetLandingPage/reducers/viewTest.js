@@ -1,85 +1,103 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import { getDefaultStore } from 'testStore';
 import reducer from 'reducers/view';
 import {
   requestedViewPublish,
   handleViewPublishSuccess,
   handleViewPublishError,
-  clearViewPublishError
+  clearViewPublishError,
+  handleFetchRowCountSuccess,
+  handleFetchRowCountError
 } from 'actions/view';
 
-describe('reducers/view', function() {
-  var state;
+describe('reducers/view', () => {
+  let state;
 
-  beforeEach(function() {
+  beforeEach(() => {
     state = reducer();
   });
 
-  describe('REQUESTED_VIEW_PUBLISH', function() {
-    it('sets isPublishing to true', function() {
-      expect(state.isPublishing).to.equal(false);
+  describe('REQUESTED_VIEW_PUBLISH', () => {
+    it('sets isPublishing to true', () => {
+      state.isPublishing = false;
       state = reducer(state, requestedViewPublish());
-      expect(state.isPublishing).to.equal(true);
+      assert.isTrue(state.isPublishing);
     });
 
-    it('sets hasPublishingSuccess to false', function() {
+    it('sets hasPublishingSuccess to false', () => {
       state.hasPublishingSuccess = true;
       state = reducer(state, requestedViewPublish());
-      expect(state.hasPublishingSuccess).to.equal(false);
+      assert.isFalse(state.hasPublishingSuccess);
     });
 
-    it('sets hasPublishingError to false', function() {
+    it('sets hasPublishingError to false', () => {
       state.hasPublishingError = true;
       state = reducer(state, requestedViewPublish());
-      expect(state.hasPublishingError).to.equal(false);
+      assert.isFalse(state.hasPublishingError);
     });
   });
 
-  describe('HANDLE_VIEW_PUBLISH_SUCCESS', function() {
-    it('sets isPublishing to false', function() {
+  describe('HANDLE_VIEW_PUBLISH_SUCCESS', () => {
+    it('sets isPublishing to false', () => {
       state.isPublishing = true;
       state = reducer(state, handleViewPublishSuccess());
-      expect(state.isPublishing).to.equal(false);
+      assert.isFalse(state.isPublishing);
     });
 
-    it('sets hasPublishingSuccess to true', function() {
-      expect(state.hasPublishingSuccess).to.equal(false);
+    it('sets hasPublishingSuccess to true', () => {
+      state.hasPublishingSuccess = false;
       state = reducer(state, handleViewPublishSuccess());
-      expect(state.hasPublishingSuccess).to.equal(true);
+      assert.isTrue(state.hasPublishingSuccess);
     });
 
-    it('sets hasPublishingError to false', function() {
+    it('sets hasPublishingError to false', () => {
       state.hasPublishingError = true;
       state = reducer(state, handleViewPublishSuccess());
-      expect(state.hasPublishingError).to.equal(false);
+      assert.isFalse(state.hasPublishingError);
     });
   });
 
-  describe('HANDLE_VIEW_PUBLISH_ERROR', function() {
-    it('sets isPublishing to false', function() {
+  describe('HANDLE_VIEW_PUBLISH_ERROR', () => {
+    it('sets isPublishing to false', () => {
       state.isPublishing = true;
       state = reducer(state, handleViewPublishError());
-      expect(state.isPublishing).to.equal(false);
+      assert.isFalse(state.isPublishing);
     });
 
-    it('sets hasPublishingSuccess to false', function() {
+    it('sets hasPublishingSuccess to false', () => {
       state.hasPublishingSuccess = true;
       state = reducer(state, handleViewPublishError());
-      expect(state.hasPublishingSuccess).to.equal(false);
+      assert.isFalse(state.hasPublishingSuccess);
     });
 
-    it('sets hasPublishingError to true', function() {
-      expect(state.hasPublishingError).to.equal(false);
+    it('sets hasPublishingError to true', () => {
+      state.hasPublishingError = false;
       state = reducer(state, handleViewPublishError());
-      expect(state.hasPublishingError).to.equal(true);
+      assert.isTrue(state.hasPublishingError);
     });
   });
 
-  describe('CLEAR_VIEW_PUBLISH_ERROR', function() {
-    it('sets hasPublishingError to false', function() {
+  describe('CLEAR_VIEW_PUBLISH_ERROR', () => {
+    it('sets hasPublishingError to false', () => {
       state.hasPublishingError = true;
       state = reducer(state, clearViewPublishError());
-      expect(state.hasPublishingError).to.equal(false);
+      assert.isFalse(state.hasPublishingError);
+    });
+  });
+
+  describe('HANDLE_FETCH_ROW_COUNT_SUCCESS', () => {
+    it('sets rowCount to a number', () => {
+      state.rowCount = 'foo';
+      state = reducer(state, handleFetchRowCountSuccess(52));
+      assert.strictEqual(state.rowCount, 52);
+    });
+  });
+
+  describe('HANDLE_FETCH_ROW_COUNT_ERROR', () => {
+    it('sets rowCount to null', () => {
+      state.rowCount = 'foo';
+      state = reducer(state, handleFetchRowCountError());
+      assert.isNull(state.rowCount);
     });
   });
 });

@@ -52,7 +52,7 @@ const uploadActivity = (upload, at) => {
     <div>
       <p>
         <span className={styles.createdBy}>{creator(upload)}</span>&nbsp;
-        uploaded a <Link to={Links.showUpload(upload.id)}>file</Link>
+        uploaded a file
       </p>
       <ActivityFeedTimestamp date={at} />
     </div>

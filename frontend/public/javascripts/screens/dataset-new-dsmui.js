@@ -27,7 +27,17 @@ function handleError(xhr, textStatus, errorThrown, fromApi) {
   var message = $('#error-message');
   message.show();
   inProgress = false;
+
   updateButtonDisplay();
+}
+
+function handleRevisionError(view, xhr, textStatus, errorThrown, fromApi) {
+  $.ajax({
+    type: 'DELETE',
+    url: '/api/views/' + view.id
+  });
+
+  handleError(xhr, textStatus, errorThrown, fromApi);
 }
 
 function createDataset() {
@@ -60,7 +70,7 @@ function createDataset() {
           document.location = '/d/' + newView.id + '/revisions/0';
         },
         error: function(xhr, textStatus, errorThrown) {
-          handleError(xhr, textStatus, errorThrown, 'dsmapi');
+          handleRevisionError(newView, xhr, textStatus, errorThrown, 'dsmapi');
         }
       });
     },

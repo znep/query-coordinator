@@ -60,9 +60,7 @@ function ShowUpload({ upload, latestOutputSchema, goHome }) {
     title: (
       <ol className={styles.list}>
         <li className={styles.active}>
-          <Link to={Links.uploads}>
             {I18n.home_pane.data}
-          </Link>
           <SocrataIcon name="arrow-right" className={styles.icon} />
         </li>
         <li>

@@ -24,13 +24,7 @@ const outputSchemaId = (state = null, action) => {
 const history = (state = [], action) => {
   switch (action.type) {
     case ADD_LOCATION:
-      if (state.length === 0) {
-        return [action.location];
-      } else if (state.length === 1) {
-        return [...state, action.location];
-      } else {
-        return [state[state.length - 1], action.location];
-      }
+      return [...state, action.location];
     default:
       return state;
   }

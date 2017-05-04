@@ -1,11 +1,9 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import { push, goBack } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
 
-import * as Links from 'links';
-import { saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
+import { dismissMetadataPane, saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
 import { hideFlashMessage } from 'actions/flashMessage';
 import { edit } from 'actions/database';
 import { STATUS_UPDATING, STATUS_UPSERTING } from 'lib/database/statuses';
@@ -19,7 +17,6 @@ export function ManageMetadata(props) {
     fourfour,
     path,
     onDismiss,
-    history,
     onSaveDataset,
     onSaveCol,
     columnsExist,
@@ -34,19 +31,9 @@ export function ManageMetadata(props) {
     onDismiss
   };
 
-  let lastVisited;
-
-  // We only keep current location and previous location, and the code that stores
-  // these lives only in DSMUI. This means that if you came from another site, there
-  // will be only one location in history (the current one). If there is more than one,
-  // then we know that the first one is from DSMUI.
-  if (history.length > 1) {
-    lastVisited = history[0];
-  }
-
   const headerProps = {
     title: I18n.metadata_manage.title,
-    onDismiss: () => onDismiss(lastVisited)
+    onDismiss
   };
 
   const metadataContentProps = { path, fourfour, onSidebarTabClick, columnsExist };
@@ -82,7 +69,7 @@ export function ManageMetadata(props) {
           <button
             id="cancel"
             className={styles.button}
-            onClick={() => onDismiss(lastVisited)}>
+            onClick={onDismiss}>
               {I18n.common.cancel}
           </button>
           <SaveButton {...saveBtnProps} />
@@ -101,24 +88,12 @@ ManageMetadata.propTypes = {
   fourfour: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   outputSchemaStatus: PropTypes.string,
-  columnsExist: PropTypes.bool,
-  history: PropTypes.arrayOf(PropTypes.shape({
-    pathname: PropTypes.string
-  }))
+  columnsExist: PropTypes.bool
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  onDismiss: previousLocation => {
-    // Check if previous path is one of the modal tabs; if so, we don't want to
-    // go back to the previous path
-    const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata\/(columns|dataset)/;
 
-    if (previousLocation && !isDatasetModalPath.test(previousLocation.pathname)) {
-      dispatch(goBack());
-    } else {
-      dispatch(push(Links.home(ownProps.location)));
-    }
-  },
+const mapDispatchToProps = (dispatch) => ({
+  onDismiss: () => dispatch(dismissMetadataPane()),
   onSaveDataset: () => dispatch(saveDatasetMetadata()),
   onSaveCol: () => dispatch(saveColumnMetadata()),
   onSidebarTabClick: (fourfour) => {
@@ -134,7 +109,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 const mapStateToProps = (state, ownProps) => ({
   views: _.get(state, 'db.views', {}),
   fourfour: state.routing.fourfour,
-  history: state.routing.history,
   path: ownProps.route.path,
   columnsExist: !_.isEmpty(state.db.output_columns),
   outputSchemaStatus: state.db.output_schemas.__status__

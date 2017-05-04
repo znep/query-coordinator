@@ -9,22 +9,19 @@ export function mapStateToProps({ columnStats, view, filters, parentView }) {
   // Merge columns with column stats
   const columnsWithColumnStats = _.merge([], columnStats, view.columns);
 
-  // Get displayable columns only, subcolumns and system columns are omitted
-  const displayableColumns = new dataProviders.MetadataProvider({
+  const metadataProvider = new dataProviders.MetadataProvider({
     domain: serverConfig.domain,
     datasetUid: parentView.id
-  }).getDisplayableColumns({
+  });
+
+  // Get displayable columns only, subcolumns and system columns are omitted
+  const displayableColumns = metadataProvider.getDisplayableColumns({
     ...view,
     columns: columnsWithColumnStats
   });
 
   // Filter out unsupported column types
-  const columns = _.filter(displayableColumns, (column) => {
-    if (column.dataTypeName === 'number') {
-      return _.isNumber(column.rangeMin) && _.isNumber(column.rangeMax);
-    }
-    return column.dataTypeName === 'text' || column.dataTypeName === 'calendar_date';
-  });
+  const columns = metadataProvider.getFilterableColumns({ columns: displayableColumns });
 
   // Filter out any filters that depend on columns that might be missing
   const displayableFilters = _.filter(filters, (filter) => {

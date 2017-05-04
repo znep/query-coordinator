@@ -27,6 +27,14 @@ export const urlParams = () => (
     value()
 );
 
-export const redirectToQueryString = (queryString) => {
-  document.location.search = queryString;
+export const redirectToQueryString = (queryString, wait = 0) => {
+  _.delay(() => {
+    document.location.search = queryString;
+  }, wait);
+};
+
+export const redirectTo = (location, wait = 0) => {
+  _.delay(() => {
+    document.location.assign(location);
+  }, wait);
 };

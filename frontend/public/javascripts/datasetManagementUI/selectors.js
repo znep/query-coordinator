@@ -242,10 +242,10 @@ export function currentAndIgnoredOutputColumns(db) {
           }, [])
           .value();
 
-        duplicateOutputColumnIds.filter(ocid => currentOutputColumnIds.includes(ocid));
+        const filtered = duplicateOutputColumnIds.filter(ocid => currentOutputColumnIds.includes(ocid));
 
-        if (duplicateOutputColumnIds.length) {
-          return duplicateOutputColumnIds[0];
+        if (filtered.length) {
+          return filtered[0];
         } else {
           return crawlOutputSchemas(tail);
         }

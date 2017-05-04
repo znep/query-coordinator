@@ -218,5 +218,13 @@ describe('Selectors', () => {
         assert.notInclude(withoutCurrent, tid);
       });
     });
+
+    it('crawls backwards through output schemas to figure out which ignored column to keep if there is more than one', () => {
+      const ignoredColumnsWithSameTransform = [9396, 9414, 9416];
+      const ignoredColumnIds = output.ignored.map(oc => oc.id);
+      assert.include(ignoredColumnIds, ignoredColumnsWithSameTransform[2]);
+      assert.notInclude(ignoredColumnIds, ignoredColumnsWithSameTransform[0]);
+      assert.notInclude(ignoredColumnIds, ignoredColumnsWithSameTransform[1]);
+    });
   });
 });

@@ -52,7 +52,7 @@ const uploadActivity = (upload, at) => {
     <div>
       <p>
         <span className={styles.createdBy}>{creator(upload)}</span>&nbsp;
-        uploaded a <Link to={Links.showUpload(upload.id)}>file</Link>
+        uploaded a file
       </p>
       <ActivityFeedTimestamp date={at} />
     </div>
@@ -139,6 +139,7 @@ function activitiesOf(db) {
     value: upload,
     at: upload.finished_at
   }));
+  // TODO: remove this filter when get __status__ out of the output_schemas table
   const filteredOutputSchemas = _.filter(db.output_schemas, (val, key) =>
     key && key !== '__status__');
   const outputSchemas = _.map(filteredOutputSchemas, (outputSchema) => {

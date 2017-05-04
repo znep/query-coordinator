@@ -45,6 +45,11 @@ class AdministrationController < ApplicationController
   before_filter :is_superadmin?, :only => [:initialize_asset_inventory]
 
   def index
+    if feature_flag?('enable_new_admin_ui', request)
+      render 'new_index'
+    else
+      render 'index'
+    end
   end
 
   def datasets

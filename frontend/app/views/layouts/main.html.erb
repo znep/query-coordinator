@@ -74,6 +74,8 @@ http://www.socrata.com
 
   <%= render :partial => 'templates/mixpanel_tracking' %>
 
+  <%= render_pendo_tracker %>
+
   <%= get_favicon_tag %>
 
   <%- if enable_site_chrome? || enable_govstat_chrome? -%>

@@ -82,6 +82,7 @@ class AppConfig < Hashie::Dash
   property :standard_ga_tracking_code
   property :visualization_canvas_airbrake_api_key
   property :visualization_canvas_airbrake_project_id
+  property :pendo_token
 
   # Auth0
   property :auth0_id

@@ -97,6 +97,9 @@ default: &default
   atomic_metrics_flush: true
   metrics_batch_size: 1
 
+  # Pendo Tracker App Token
+  pendo_token: 58b54a43-79c9-4bef-561d-bf2d671e81c5
+
 # Local development
 development: &development
   <<: *default

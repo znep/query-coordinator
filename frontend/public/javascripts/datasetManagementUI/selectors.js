@@ -136,9 +136,21 @@ export function updatedOutputColumns(db, formDataModel) {
 // - starting new transforms when a new output schema is created
 // - endpoints which return results
 export function currentAndIgnoredOutputColumns(db) {
+  // TODO: remove filters once we get the status out of output schema
+  const osIds = Object.keys(db.output_schemas)
+    .filter(key => key !== '__status__')
+    .map(_.toNumber)
+    .filter(key => !!key);
+
+  const latestOutputSchemaId = Math.max(...osIds);
 
   // get all input column ids
-  return _.chain(Object.keys(db.input_columns))
+  return _.chain(db.input_columns)
+    .filter(ic => {
+      const isid = db.output_schemas[latestOutputSchemaId].input_schema_id;
+      return ic.input_schema_id === isid;
+    })
+    .map(ic => ic.id)
     .map(icid => {
       // get ids of all transforms that were run on this input column
       const matchingTransformIds = Object.keys(db.transforms).filter(tid => {
@@ -156,15 +168,6 @@ export function currentAndIgnoredOutputColumns(db) {
         .map(_.toNumber);
     })
     .reduce((acc, ocid) => {
-      // assume most recently created output schema is the current output schema
-      // TODO: remove once we get the status out of output schema
-      const keys = Object.keys(db.output_schemas)
-        .filter(key => key !== '__status__')
-        .map(_.toNumber)
-        .filter(key => !!key);
-
-      const latestOutputSchemaId = Math.max(...keys);
-
       // get array of ids of all output columns in current output schema
       const currentOutputColumnIds = _.chain(db.output_schema_columns)
         .filter(osc => osc.output_schema_id === latestOutputSchemaId)
@@ -223,11 +226,7 @@ export function currentAndIgnoredOutputColumns(db) {
         .filter(oc => transformIds.filter(tid => tid === oc.transform_id).length > 1)
         .map(oc => oc.id);
 
-      // TODO: remove filters once we get the status out of output schema
-      const keys = Object.keys(db.output_schemas)
-        .filter(key => key !== '__status__')
-        .map(_.toNumber)
-        .filter(key => !!key)
+      const sortedIds = [...osIds]
         .sort()
         .reverse();
 
@@ -252,7 +251,7 @@ export function currentAndIgnoredOutputColumns(db) {
         }
       }
 
-      const matchingId = crawlOutputSchemas(keys.slice(0, keys.length - 1));
+      const matchingId = crawlOutputSchemas(sortedIds.slice(0, sortedIds.length - 1));
 
       const toRemove = duplicateOutputColumnIds.filter(ocid => ocid !== matchingId);
 

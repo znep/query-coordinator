@@ -90,9 +90,7 @@ export class ShowOutputSchema extends Component {
       title: (
         <ol className={styles.list}>
           <li>
-            <Link to={Links.uploads}>
               {I18n.home_pane.data}
-            </Link>
             <SocrataIcon name="arrow-right" className={styles.icon} />
           </li>
           <li className={styles.active}>

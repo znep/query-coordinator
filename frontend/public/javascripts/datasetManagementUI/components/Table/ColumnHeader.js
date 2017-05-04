@@ -17,7 +17,6 @@ function DropdownWithIcon(dropdownProps) {
     { [styles.colDropdownItemDisabled]: disabled }
   );
   return (
-
     <div className={klass}>
       <SocrataIcon className={icon} name={title} />
       {Translations[title]}
@@ -34,8 +33,9 @@ DropdownWithIcon.proptypes = {
 class ColumnHeader extends Component {
 
   shouldComponentUpdate(nextProps) {
-    return !_.isEqual(nextProps.column, this.props.column) ||
-      nextProps.outputSchema.id !== this.props.outputSchema.id;
+    return !_.isEqual(nextProps.column, this.props.column)
+      || nextProps.outputSchema.id !== this.props.outputSchema.id
+      || nextProps.activeApiCallInvolvingThis !== this.props.activeApiCallInvolvingThis;
   }
 
   onDropColumn(column) {
@@ -47,17 +47,11 @@ class ColumnHeader extends Component {
   }
 
   onRowId() {
-    console.warn('onRowId not implemented');
-  }
-
-  onColumnOptions() {
-    console.warn('onColumnOptions implemented');
+    this.props.validateThenSetRowIdentifier(this.props.outputSchema, this.props.column);
   }
 
   optionsFor() {
-
-
-    if (this.props.isDisabled) {
+    if (this.props.column.ignored) {
       return [
         {
           title: 'import_column',
@@ -79,29 +73,35 @@ class ColumnHeader extends Component {
         title: 'ignore_column',
         value: 'onDropColumn',
         icon: 'socrata-icon-eye-blocked',
+        disabled: this.props.column.is_primary_key,
         render: DropdownWithIcon
       },
       {
         title: 'set_row_id',
         value: 'onRowId',
         icon: 'socrata-icon-question',
+        disabled: this.props.column.is_primary_key,
         render: DropdownWithIcon
       }
     ];
   }
 
   columnType() {
-    const column = this.props.column;
-    if (column.transform) {
-      return column.transform.output_soql_type;
-    } else {
-      return column.soql_type;
-    }
+    return this.props.column.transform.output_soql_type;
   }
 
+  icon(isDisabled) {
+    if (this.props.activeApiCallInvolvingThis) {
+      return (<span className={styles.progressSpinner} />);
+    } else if (this.props.column.is_primary_key) {
+      return (<span className={styles.rowIdIcon} />);
+    }
+    return (<TypeIcon type={this.columnType()} isDisabled={isDisabled} />);
+  }
 
   render() {
-    const { outputSchema, column, updateColumnType, isDisabled } = this.props;
+    const { outputSchema, column, updateColumnType, activeApiCallInvolvingThis } = this.props;
+    const isDisabled = column.ignored || activeApiCallInvolvingThis;
 
     const types = soqlTypes.map((type) => ({
       humanName: Translations.type_display_names[type],
@@ -123,7 +123,7 @@ class ColumnHeader extends Component {
       }
     };
 
-    const header = isDisabled ?
+    const header = (!column.transform) ?
       (<span
         className={styles.colName}
         id={`column-field-name-${column.id}`}
@@ -141,18 +141,18 @@ class ColumnHeader extends Component {
         </span>
       </Link>);
 
-    const klass = classNames(styles.columnHeader, {
+    const className = classNames(styles.columnHeader, {
       [styles.columnHeaderDisabled]: isDisabled
     });
 
     return (
-      <th key={column.id} className={klass}>
+      <th key={column.id} className={className}>
         {header}
         <div className={styles.colDropdown}>
           <Dropdown {...dropdownProps} />
         </div>
         <br />
-        <TypeIcon type={this.columnType()} isDisabled={isDisabled} />
+        {this.icon(isDisabled)}
         <select
           name="col-type"
           disabled={isDisabled}
@@ -180,10 +180,11 @@ class ColumnHeader extends Component {
 ColumnHeader.propTypes = {
   outputSchema: PropTypes.object.isRequired,
   column: PropTypes.object.isRequired,
+  activeApiCallInvolvingThis: PropTypes.bool.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
-  isDisabled: PropTypes.bool
+  validateThenSetRowIdentifier: PropTypes.func.isRequired
 };
 
 export default ColumnHeader;

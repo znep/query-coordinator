@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import * as DisplayState from '../../lib/displayState';
 import { PAGE_SIZE } from '../../actions/loadData';
 import * as Selectors from '../../selectors';
-import { commaify } from '../../../common/formatNumber.js';
+import { commaify } from '../../../common/formatNumber';
 import Pager from '../../../common/components/Pager';
 import styles from 'styles/Table/PagerBar.scss';
 

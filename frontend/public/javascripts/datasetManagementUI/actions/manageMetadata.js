@@ -187,7 +187,6 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     then(checkStatus).
     then(getJson).
     catch(error => {
-      // console.log('error', error.response.json().then(err => console.log(err)))
       const errorOperations = [
         upsertFailed('output_schemas', newOutputSchema, error),
         outputSchemaUpsertFailed()
@@ -232,7 +231,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 
       // TODO: refactor into a thunk; will be easier to test and be consistent with
       // rest of app
-      insertChildrenAndSubscribeToOutputSchema(dispatch, upload, resp.resource);
+      insertChildrenAndSubscribeToOutputSchema(dispatch, resp.resource);
       dispatch(redirectAfterInterval());
     });
 };

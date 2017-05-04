@@ -82,20 +82,3 @@ export function statusUpdateFailed(updates, error, percentCompleted) {
     failedAt: new Date()
   };
 }
-
-// load statuses
-export const STATUS_LOAD_IN_PROGRESS = 'STATUS_LOAD_IN_PROGRESS';
-export const statusLoadInProgress = {
-  type: STATUS_LOAD_IN_PROGRESS
-};
-
-export const STATUS_LOAD_SUCCEEDED = 'STATUS_LOAD_SUCCEEDED';
-export const statusLoadSucceeded = {
-  type: STATUS_LOAD_SUCCEEDED
-};
-
-export const STATUS_LOAD_FAILED = 'STATUS_LOAD_FAILED';
-export const statusLoadFailed = (error) => ({
-  type: STATUS_LOAD_FAILED,
-  error
-});

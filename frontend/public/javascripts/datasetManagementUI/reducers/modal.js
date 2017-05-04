@@ -2,26 +2,28 @@ import { SHOW_MODAL, HIDE_MODAL } from 'actions/modal';
 
 export const initialState = {
   visible: false,
-  contentComponentName: null
+  contentComponentName: null,
+  payload: null
 };
 
-const modal = (state = initialState, { type, contentComponentName }) => {
-  switch (type) {
+const modal = (state = initialState, action) => {
+  switch (action.type) {
     case SHOW_MODAL:
       return {
-        ...state,
-        contentComponentName,
-        visible: true
+        visible: true,
+        contentComponentName: action.contentComponentName,
+        payload: action.payload
       };
+
     case HIDE_MODAL:
       return {
         ...state,
         visible: false
       };
+
     default:
       return state;
   }
 };
-
 
 export default modal;

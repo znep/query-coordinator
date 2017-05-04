@@ -1,18 +1,20 @@
 import { combineReducers } from 'redux';
-import dbReducer from './database';
-import notificationReducer from './notifications';
+import db from './database';
+import notifications from './notifications';
 import routing from 'reducers/routing';
 import flashMessage from 'reducers/flashMessage';
 import modal from 'reducers/modal';
 import channels from 'reducers/channels';
+import apiCalls from 'reducers/apiCalls';
 
 const rootReducer = combineReducers({
-  db: dbReducer,
+  db,
   flashMessage,
   routing,
-  notifications: notificationReducer,
+  notifications,
   modal,
-  channels
+  channels,
+  apiCalls
 });
 
 export default rootReducer;

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { expect, assert } from 'chai';
 import { saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
 import { mockFetch } from '../testHelpers/mockHTTP';
@@ -47,7 +48,10 @@ describe('actions/manageMetadata', () => {
                   transform_expr: 'to_number(id)',
                   output_soql_type: 'SoQLNumber',
                   id: 6105,
-                  completed_at: '2017-04-03T15:49:34'
+                  completed_at: '2017-04-03T15:49:34',
+                  transform_input_columns: [
+                    { input_column_id: 6262 }
+                  ],
                 },
                 position: 0,
                 id: 6329,
@@ -60,7 +64,10 @@ describe('actions/manageMetadata', () => {
                   transform_expr: 'case_number',
                   output_soql_type: 'SoQLText',
                   id: 6106,
-                  completed_at: '2017-04-03T15:49:34'
+                  completed_at: '2017-04-03T15:49:34',
+                  transform_input_columns: [
+                    { input_column_id: 6262 }
+                  ]
                 },
                 position: 1,
                 id: 6328,
@@ -273,7 +280,7 @@ describe('actions/manageMetadata', () => {
         unmockPhx();
 
         done();
-      }, 0);
+      }, 100);
     });
 
     it('dispatches an insert succeeded action with correct data if server resonds with 200-level status', (done) => {
@@ -316,24 +323,30 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[4].operations[2];
+        const action = store.getActions()[8].operations[2];
 
         expect(action.type).to.eq(UPSERT_FROM_SERVER);
 
         expect(action.tableName).to.eq('output_schema_columns');
 
-        expect(action.newRecord).to.deep.eq({
+
+        const expected = {
           id: '57-6329',
           output_schema_id: 57,
           output_column_id: 6329
-        });
+        };
+        expect(
+          JSON.stringify(action.newRecord, null, 2)
+        ).to.deep.eq(
+          JSON.stringify(expected, null, 2)
+        ); // won't deep eq otherwise. beats me.
 
         unmockFetch();
 
         unmockPhx();
 
         done();
-      }, 0);
+      }, 10);
     });
 
     it('updates transforms and output_columns with any new values', (done) => {
@@ -352,7 +365,7 @@ describe('actions/manageMetadata', () => {
       setTimeout(() => {
         const actions = store.getActions();
 
-        const batchedActions = actions[4].operations;
+        const batchedActions = actions[8].operations;
 
         expect(batchedActions.length).to.eq(6);
 

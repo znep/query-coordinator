@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
+import { connect } from 'react-redux';
 import TableCell from './TableCell';
 import RowError from './RowError';
 import * as DisplayState from '../../lib/displayState';
@@ -9,26 +10,25 @@ import styles from 'styles/Table/TableBody.scss';
 class TableBody extends Component {
 
   shouldComponentUpdate(nextProps) {
-    return !_.isEqual(
-      {
-        columns: nextProps.columns.map((c) => (
-          c.transform ?
-          [c.transform.id, c.transform.fetched_rows, c.transform.error_indices] :
+    const nextStuff = {
+      columns: nextProps.columns.map((c) => (
+        c.transform ?
+          [c.transform.id, c.transform.error_indices] :
           null
-        )),
-        displayState: nextProps.displayState,
-        __loads__: nextProps.db.__loads__
-      },
-      {
-        columns: this.props.columns.map((c) => (
-          c.transform ?
-          [c.transform.id, c.transform.fetched_rows, c.transform.error_indices] :
+      )),
+      displayState: nextProps.displayState,
+      apiCalls: nextProps.apiCalls
+    };
+    const currentStuff = {
+      columns: this.props.columns.map((c) => (
+        c.transform ?
+          [c.transform.id, c.transform.error_indices] :
           null
-        )),
-        displayState: this.props.displayState,
-        __loads__: this.props.db.__loads__
-      }
-    );
+      )),
+      displayState: this.props.displayState,
+      apiCalls: this.props.apiCalls
+    };
+    return !_.isEqual(nextStuff, currentStuff);
   }
 
   getData() {
@@ -97,11 +97,18 @@ class TableBody extends Component {
 
 }
 
+function mapStateToProps(state) {
+  return {
+    apiCalls: state.apiCalls
+  };
+}
+
 TableBody.propTypes = {
   db: PropTypes.object.isRequired,
+  apiCalls: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   displayState: PropTypes.object.isRequired,
   inputSchemaId: PropTypes.number.isRequired
 };
 
-export default TableBody;
+export default connect(mapStateToProps)(TableBody);

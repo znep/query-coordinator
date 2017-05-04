@@ -130,9 +130,11 @@ const defaultProps = {
       }
     }
   ],
+  apiCallsByColumnId: {},
   updateColumnType: () => {},
   addColumn: () => {},
-  dropColumn: () => {}
+  dropColumn: () => {},
+  validateThenSetRowIdentifier: () => {}
 };
 
 describe('components/Table', () => {
@@ -148,11 +150,11 @@ describe('components/Table', () => {
 
   it('renders a table body component', () => {
     const component = shallow(<Table {...defaultProps}/>);
-    assert.isFalse(component.find('TableBody').isEmpty());
+    assert.isFalse(component.find('Connect(TableBody)').isEmpty());
   });
 
   it('renders a disabled ColumnHeader if column is ignored', () => {
     const component = shallow(<Table {...defaultProps}/>);
-    assert.isTrue(component.find('ColumnHeader').last().prop('isDisabled'));
+    assert.isTrue(component.find('ColumnHeader').last().prop('column').ignored);
   });
 });

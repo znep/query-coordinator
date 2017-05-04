@@ -19,7 +19,8 @@ describe('actions/modal', () => {
 
     const expectedAction = {
       type: SHOW_MODAL,
-      contentComponentName: 'TestComponent'
+      contentComponentName: 'TestComponent',
+      payload: null
     };
 
     it('returns an action of the correct shape', () => {

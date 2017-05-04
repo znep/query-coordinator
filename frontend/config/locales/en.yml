@@ -2063,6 +2063,11 @@ en:
         malformed_rows: Malformed rows
         row: Error Row {0}
         row_content: Row content
+      row_identifier_error:
+        reason_bad_type: This column cannot be a row identifier because of its type.
+        reason_duplicate: "The value \"{value}\" was duplicated. Its first occurrence is in row #{first_index}."
+        reason_null: "This column had a null at row #{row_index}"
+        what_to_do: Please select a different column, upload a new file without this error, or leave the row identifier unset.
       rows_so_far: rows so far
       rows_total: rows total
       upload_done: Upload Done

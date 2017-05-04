@@ -5,129 +5,96 @@ import { mockFetch } from '../testHelpers/mockHTTP';
 import { normalWithErrorsResponse, rowErrorResponse, columnErrorResponse } from '../data/errorTableResponse';
 import { getStoreWithOutputSchema, getStoreWithProcessedRows } from '../data/storeWithOutputSchema';
 
-import * as dsmapiLinks from 'dsmapiLinks';
-import { loadStarted, loadSucceeded } from 'actions/database';
+import {
+  apiCallStarted,
+  apiCallSucceeded,
+  LOAD_ROWS
+} from 'actions/apiCalls';
 import * as DisplayState from 'lib/displayState';
 import { statusSavedOnServer } from 'lib/database/statuses';
-import { getLoadPlan,
-         loadNormalPreview,
-         loadRowErrors,
-         loadColumnErrors,
-         PAGE_SIZE} from 'actions/loadData';
+import {
+  needToLoadAnything,
+  loadNormalPreview,
+  loadRowErrors,
+  loadColumnErrors,
+  PAGE_SIZE
+} from 'actions/loadData';
 
 function afterNextFrameRender(body) {
   setTimeout(body, 0);
 }
 
-const uploadId = 5;
-const inputSchemaId = 4;
-const outputSchemaId = 18;
-const pageNo = 1;
+describe('actions/loadData', () => {
 
-describe('actions/loadData.js', () => {
-  describe('getLoadPlan', () => {
-    it('DisplayState.NORMAL returns plan when not loaded', () => {
+  const inputSchemaId = 4;
+  const outputSchemaId = 18;
+  const transformId = 1;
+  const pageNo = 1;
+
+  const normalDisplayState = DisplayState.normal(pageNo, outputSchemaId);
+  const rowErrorsDisplayState = DisplayState.rowErrors(pageNo, outputSchemaId);
+  const columnErrorsDisplayState = DisplayState.columnErrors(transformId, pageNo, outputSchemaId);
+
+  const normalCall = {
+    operation: LOAD_ROWS,
+    params: {
+      displayState: normalDisplayState
+    }
+  };
+  const rowErrorsCall = {
+    operation: LOAD_ROWS,
+    params: {
+      displayState: rowErrorsDisplayState
+    }
+  };
+  const columnErrorsCall = {
+    operation: LOAD_ROWS,
+    params: {
+      displayState: columnErrorsDisplayState
+    }
+  };
+
+
+  describe('needToLoadAnything', () => {
+
+    it('DisplayState.NORMAL returns true when not loaded', () => {
       const store = getStoreWithProcessedRows();
-      const db = store.getState().db;
 
-      const displayState = {
-        type: DisplayState.NORMAL,
-        outputSchemaId,
-        pageNo
-      };
-
-      const plan = {
-        type: 'NORMAL',
-        outputSchemaId,
-        pageNo
-      };
-
-       expect(getLoadPlan(db, displayState)).to.deep.equal(plan);
+       expect(needToLoadAnything(store.getState(), normalDisplayState)).to.deep.equal(true);
     });
 
     it('DisplayState.ROW_ERRORS returns plan when not loaded', () => {
       const store = getStoreWithProcessedRows();
-      const db = store.getState().db;
 
-      const displayState = {
-        type: DisplayState.ROW_ERRORS,
-        outputSchemaId,
-        pageNo
-      };
-
-      const plan = {
-        type: 'ROW_ERRORS',
-        inputSchemaId,
-        pageNo
-      };
-
-      expect(getLoadPlan(db, displayState)).to.deep.equal(plan);
+      expect(needToLoadAnything(store.getState(), rowErrorsDisplayState)).to.deep.equal(true);
     });
 
     it('DisplayState.COLUMN_ERRORS returns plan when not loaded', () => {
       const store = getStoreWithProcessedRows();
-      const db = store.getState().db;
 
-      const displayState = {
-        type: DisplayState.COLUMN_ERRORS,
-        pageNo,
-        outputSchemaId,
-        transformId: 1
-      };
-
-      const plan = {
-        type: 'COLUMN_ERRORS',
-        transformId: 1,
-        pageNo,
-        outputSchemaId
-      };
-
-      expect(getLoadPlan(db, displayState)).to.deep.equal(plan);
+      expect(needToLoadAnything(store.getState(), columnErrorsDisplayState)).to.deep.equal(true);
     });
 
     it('Returns null when loaded for all display states', () => {
       const store = getStoreWithProcessedRows();
 
-      const columnId = 50;
+      const normalCallId = 0;
+      store.dispatch(apiCallStarted(normalCallId, normalCall));
+      store.dispatch(apiCallSucceeded(normalCallId));
 
-      const displayState = {
-        pageNo,
-        outputSchemaId,
-        transformId: 1
-      };
+      const rowErrorCallId = 1;
+      store.dispatch(apiCallStarted(rowErrorCallId, rowErrorsCall));
+      store.dispatch(apiCallSucceeded(rowErrorCallId));
 
-      const rowsLink = dsmapiLinks.rows(
-        uploadId, inputSchemaId, outputSchemaId, PAGE_SIZE, (pageNo - 1) * PAGE_SIZE);
-      store.dispatch(loadStarted(rowsLink));
-      store.dispatch(loadSucceeded(rowsLink));
+      const columnErrorsCallId = 2;
+      store.dispatch(apiCallStarted(columnErrorsCallId, columnErrorsCall));
+      store.dispatch(apiCallSucceeded(columnErrorsCallId));
 
-      const rowErrorsLink = dsmapiLinks.rowErrors(
-        uploadId, inputSchemaId, PAGE_SIZE, (pageNo - 1) * PAGE_SIZE);
-      store.dispatch(loadStarted(rowErrorsLink));
-      store.dispatch(loadSucceeded(rowErrorsLink));
-
-      const columnErrorsLink = dsmapiLinks.columnErrors(
-        uploadId, inputSchemaId, outputSchemaId, columnId, PAGE_SIZE, (pageNo - 1) * PAGE_SIZE);
-      store.dispatch(loadStarted(columnErrorsLink));
-      store.dispatch(loadSucceeded(columnErrorsLink));
-
-      const db = store.getState().db;
-
-      expect(getLoadPlan(db, {
-        ...displayState,
-        type: DisplayState.NORMAL
-      })).to.equal(null);
-
-      expect(getLoadPlan(db, {
-        ...displayState,
-        type: DisplayState.ROW_ERRORS
-      })).to.equal(null);
-
-      expect(getLoadPlan(db, {
-        ...displayState,
-        type: DisplayState.COLUMN_ERRORS
-      })).to.equal(null);
+      expect(needToLoadAnything(store.getState(), normalCall.params.displayState)).to.equal(false);
+      expect(needToLoadAnything(store.getState(), rowErrorsCall.params.displayState)).to.equal(false);
+      expect(needToLoadAnything(store.getState(), columnErrorsCall.params.displayState)).to.equal(false);
     });
+
   });
 
   describe('loadNormalPreview', () => {
@@ -145,13 +112,7 @@ describe('actions/loadData.js', () => {
 
       const rows = _.filter(normalWithErrorsResponse.slice(1), row => row.row);
 
-      const displayState = {
-        type: DisplayState.NORMAL,
-        outputSchemaId,
-        pageNo
-      };
-
-      store.dispatch(loadNormalPreview(displayState));
+      store.dispatch(loadNormalPreview(normalCall));
 
       afterNextFrameRender(() => {
         unmockFetch();
@@ -193,13 +154,7 @@ describe('actions/loadData.js', () => {
         }
       });
 
-      const displayState = {
-        type: DisplayState.ROW_ERRORS,
-        outputSchemaId,
-        pageNo
-      };
-
-      store.dispatch(loadRowErrors(displayState));
+      store.dispatch(loadRowErrors(rowErrorsCall));
       afterNextFrameRender(() => {
         unmockFetch();
         const db = store.getState().db;
@@ -220,13 +175,6 @@ describe('actions/loadData.js', () => {
   describe('loadColumnErrors', () => {
     it('fetches errors, inserts them into column tables with error_indices in columns table', (done) => {
       const store = getStoreWithOutputSchema();
-      const transformId =  1;
-      const displayState = {
-        type: DisplayState.COLUMN_ERRORS,
-        transformId,
-        outputSchemaId,
-        pageNo
-      };
 
       const { unmockFetch } = mockFetch({
         '/api/publishing/v1/upload/5/schema/4/errors/18?limit=50&offset=0&column_id=50': {
@@ -237,7 +185,7 @@ describe('actions/loadData.js', () => {
         }
       });
 
-      store.dispatch(loadColumnErrors(displayState));
+      store.dispatch(loadColumnErrors(columnErrorsCall));
       afterNextFrameRender(() => {
         unmockFetch();
         const db = store.getState().db;

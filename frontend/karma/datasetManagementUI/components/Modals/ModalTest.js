@@ -5,8 +5,10 @@ import { Modal } from 'components/Modals/Modal';
 
 describe('components/Modals/Modal', () => {
   const defaultProps = {
-    visible: false,
-    contentComponentName: null,
+    modalState: {
+      visible: false,
+      contentComponentName: null
+    },
     onDismiss: sinon.spy()
   };
 
@@ -18,8 +20,10 @@ describe('components/Modals/Modal', () => {
   it('renders ErrorsHelp modal', () => {
     const newProps = {
       ...defaultProps,
-      contentComponentName: 'ErrorsHelp',
-      visible: true
+      modalState: {
+        contentComponentName: 'ErrorsHelp',
+        visible: true
+      }
     };
 
     const component = shallow(<Modal {...newProps}/>);
@@ -30,8 +34,10 @@ describe('components/Modals/Modal', () => {
   it('renders Publishing modal', () => {
     const newProps = {
       ...defaultProps,
-      contentComponentName: 'Publishing',
-      visible: true
+      modalState: {
+        contentComponentName: 'Publishing',
+        visible: true
+      }
     };
 
     const component = shallow(<Modal {...newProps}/>);

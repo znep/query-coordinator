@@ -87,3 +87,13 @@
   font-weight: 600;
 }
 
+.progressSpinner {
+  composes: spinner-default from global;
+  width: 13px;
+  height: 13px;
+}
+
+.rowIdIcon {
+  composes: socrata-icon-id from global;
+  color: $primary-base;
+}

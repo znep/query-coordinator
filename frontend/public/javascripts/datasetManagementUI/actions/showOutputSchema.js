@@ -1,97 +1,106 @@
-import _ from 'lodash';
 import { push } from 'react-router-redux';
+import uuid from 'uuid';
 import * as dsmapiLinks from 'dsmapiLinks';
 import * as Links from 'links';
 import {
-  batch,
-  revertEdits,
   upsertStarted,
   upsertSucceeded,
-  upsertFailed,
-  updateImmutableStarted
+  upsertFailed
 } from 'actions/database';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
+import {
+  apiCallStarted,
+  apiCallSucceeded,
+  apiCallFailed,
+  ADD_COLUMN,
+  DROP_COLUMN,
+  SET_ROW_IDENTIFIER,
+  UPDATE_COLUMN_TYPE,
+  VALIDATE_ROW_IDENTIFIER
+} from 'actions/apiCalls';
 import {
   insertChildrenAndSubscribeToOutputSchema
 } from 'actions/manageUploads';
 import { soqlProperties } from 'lib/soqlTypes';
-import { currentAndIgnoredOutputColumns } from 'selectors';
+import * as Selectors from 'selectors';
+import { showModal } from 'actions/modal';
 import { getUniqueName, getUniqueFieldName } from 'lib/util';
 
 function createNewOutputSchema(
-  routing,
-  dispatch,
-  upload,
   oldOutputSchema,
-  newOutputSchema,
   newOutputColumns,
-  oldColumn
+  call
 ) {
-  const uri = dsmapiLinks.newOutputSchema(upload.id, oldOutputSchema.input_schema_id);
-  socrataFetch(uri, {
-    method: 'POST',
-    body: JSON.stringify({ output_columns: newOutputColumns })
-  }).
-    then(checkStatus).
-    then(getJson).
-    then(resp => {
-      dispatch(batch(_.concat([
-        upsertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id })
-      ], oldColumn ? revertEdits('output_columns', oldColumn.id) : [])));
-
-      insertChildrenAndSubscribeToOutputSchema(dispatch, upload, resp.resource);
-
-      dispatch(push(
-        Links.showOutputSchema(upload.id, oldOutputSchema.input_schema_id, resp.resource.id)(routing)
-      ));
+  return (dispatch, getState) => {
+    const callId = uuid();
+    dispatch(apiCallStarted(callId, call));
+    const routing = getState().routing.location;
+    const db = getState().db;
+    const { upload, inputSchema } = Selectors.pathForOutputSchema(db, oldOutputSchema.id);
+    const newOutputSchema = {
+      input_schema_id: inputSchema.id
+    };
+    // TODO: the upsertStarted/succeeded/failed lifecycle isn't doing anything for us here
+    // that the loadStarted isn't. probably get rid of it
+    dispatch(upsertStarted('output_schemas', newOutputSchema));
+    const url = dsmapiLinks.newOutputSchema(upload.id, oldOutputSchema.input_schema_id);
+    socrataFetch(url, {
+      method: 'POST',
+      body: JSON.stringify({ output_columns: newOutputColumns })
     }).
-    catch((err) => {
-      console.error('Failed to update schema!', err, err.stack);
-      dispatch(upsertFailed('output_schemas', newOutputSchema, err));
-    });
+      then(checkStatus).
+      then(getJson).
+      then(resp => {
+        dispatch(upsertSucceeded('output_schemas', newOutputSchema, { id: resp.resource.id }));
+        dispatch(apiCallSucceeded(callId));
+
+        insertChildrenAndSubscribeToOutputSchema(dispatch, resp.resource);
+
+        dispatch(push(
+          Links.showOutputSchema(upload.id, oldOutputSchema.input_schema_id, resp.resource.id)(routing)
+        ));
+      }).
+      catch((err) => {
+        dispatch(upsertFailed('output_schemas', newOutputSchema, err));
+        dispatch(apiCallFailed(callId, err));
+      });
+  };
 }
 
-export const updateColumnType = (oldOutputSchema, oldColumn, newType) => (dispatch, getState) => {
+export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
-  const routing = state.routing.location;
-  const inputSchema = db.input_schemas[oldOutputSchema.input_schema_id];
-  const uploadId = inputSchema.upload_id;
-  const upload = db.uploads[uploadId];
+  const call = {
+    operation: UPDATE_COLUMN_TYPE,
+    params: {
+      outputSchemaId: outputSchema.id,
+      outputColumnId: oldColumn.id
+    }
+  };
 
-  const { newOutputSchema, newOutputColumns } =
-    getNewOutputSchemaAndColumns(db, oldOutputSchema, oldColumn, newType);
+  const newOutputColumns = outputColumnsWithChangedType(db, outputSchema, oldColumn, newType);
 
-  dispatch(batch([
-    upsertStarted('output_schemas', newOutputSchema),
-    updateImmutableStarted('output_columns', oldColumn.id)
-  ]));
-
-  createNewOutputSchema(
-    routing,
-    dispatch,
-    upload,
-    oldOutputSchema,
-    newOutputSchema,
+  dispatch(createNewOutputSchema(
+    outputSchema,
     newOutputColumns,
-    oldColumn
-  );
+    call
+  ));
 };
 
 export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
-  const routing = state.routing.location;
-  const inputSchema = db.input_schemas[outputSchema.input_schema_id];
-  const uploadId = inputSchema.upload_id;
-  const upload = db.uploads[uploadId];
-  const { current } = currentAndIgnoredOutputColumns(db);
 
-  const newOutputSchema = {
-    input_schema_id: inputSchema.id
+  const call = {
+    operation: ADD_COLUMN,
+    params: {
+      outputSchemaId: outputSchema.id,
+      outputColumnId: outputColumn.id
+    }
   };
 
   // check for clashes with existing columns
+  const { current } = Selectors.currentAndIgnoredOutputColumns(db);
   const { existingFieldNames, existingDisplayNames } = current.reduce((acc, oc) => {
     return {
       existingFieldNames: [...acc.existingFieldNames, oc.field_name],
@@ -105,52 +114,61 @@ export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) =>
     display_name: getUniqueName(existingDisplayNames, outputColumn.display_name)
   };
 
-  const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')];
+  const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')].
+    map(oc => toNewOutputColumn(oc, sameTransform(db)));
 
-  dispatch(upsertStarted('output_schemas', newOutputSchema));
-
-  createNewOutputSchema(
-    routing,
-    dispatch,
-    upload,
+  dispatch(createNewOutputSchema(
     outputSchema,
-    newOutputSchema,
-    newOutputColumns
-  );
+    newOutputColumns,
+    call
+  ));
 };
 
 export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
-  const routing = state.routing.location;
-  const inputSchema = db.input_schemas[outputSchema.input_schema_id];
-  const uploadId = inputSchema.upload_id;
-  const upload = db.uploads[uploadId];
-  const { current } = currentAndIgnoredOutputColumns(db);
 
-  const newOutputSchema = {
-    input_schema_id: inputSchema.id
+  const call = {
+    operation: DROP_COLUMN,
+    params: {
+      outputSchemaId: outputSchema.id,
+      outputColumnId: column.id
+    }
   };
 
-  const newOutputColumns = current.filter(oc => oc.id !== column.id);
+  const { current } = Selectors.currentAndIgnoredOutputColumns(db);
+  const newOutputColumns = current.
+    filter(oc => oc.id !== column.id).
+    map(oc => toNewOutputColumn(oc, sameTransform(db)));
 
-  dispatch(upsertStarted('output_schemas', newOutputSchema));
-
-  createNewOutputSchema(
-    routing,
-    dispatch,
-    upload,
+  dispatch(createNewOutputSchema(
     outputSchema,
-    newOutputSchema,
-    newOutputColumns
-  );
+    newOutputColumns,
+    call
+  ));
 };
 
-function outputColumnsOf(db, outputSchema) {
-  return _.filter(db.output_schema_columns, { output_schema_id: outputSchema.id }).
-            map(sc => sc.output_column_id).
-            map(id => db.output_columns[id]);
-}
+export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, getState) => {
+  const db = getState().db;
+
+  const call = {
+    operation: SET_ROW_IDENTIFIER,
+    params: { outputSchema, outputColumnToSet }
+  };
+
+  const newOutputColumns = Selectors.columnsForOutputSchema(db, outputSchema.id).
+    map((outputColumn) => ({
+      ...outputColumn,
+      is_primary_key: outputColumn.id === outputColumnToSet.id
+    })).
+    map(oc => toNewOutputColumn(oc, sameTransform(db)));
+
+  dispatch(createNewOutputSchema(
+    outputSchema,
+    newOutputColumns,
+    call
+  ));
+};
 
 function toNewOutputColumn(outputColumn, genTransform) {
   return {
@@ -160,17 +178,19 @@ function toNewOutputColumn(outputColumn, genTransform) {
     description: outputColumn.description,
     transform: {
       transform_expr: genTransform(outputColumn)
-    }
+    },
+    is_primary_key: outputColumn.is_primary_key
   };
 }
 
-export function getNewOutputSchemaAndColumns(db, oldOutputSchema, oldColumn, newType) {
-  const newOutputSchema = {
-    input_schema_id: oldOutputSchema.input_schema_id
-  };
+function sameTransform(db) {
+  return (column) => (
+    db.transforms[column.transform_id].transform_expr
+  );
+}
 
-  const oldOutputColumns = outputColumnsOf(db, oldOutputSchema);
-  const oldOutputColIds = oldOutputColumns.map(oc => oc.id);
+export function outputColumnsWithChangedType(db, oldOutputSchema, oldColumn, newType) {
+  const oldOutputColumns = Selectors.columnsForOutputSchema(db, oldOutputSchema.id);
   // Input columns are presently always text.  This will eventually
   // change, and then we'll need the input column here instead of
   // just hardcoding a comparison to text.
@@ -189,13 +209,39 @@ export function getNewOutputSchemaAndColumns(db, oldOutputSchema, oldColumn, new
       `to_${soqlProperties[newType].canonicalName}(${inputColumns[0].field_name})` :
       transformExpr;
   };
-  const newOutputColumns = oldOutputColumns.map((c) => (
+  return oldOutputColumns.map((c) => (
     toNewOutputColumn(c, genTransform)
   ));
+}
 
-  return {
-    newOutputSchema,
-    newOutputColumns,
-    oldOutputColIds
+export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
+  return (dispatch, getState) => {
+    const { upload } = Selectors.pathForOutputSchema(getState().db, outputSchema.id);
+    const transformId = outputColumn.transform_id;
+    const call = {
+      operation: VALIDATE_ROW_IDENTIFIER,
+      params: {
+        outputSchemaId: outputSchema.id,
+        outputColumnId: outputColumn.id
+      }
+    };
+    const callId = uuid();
+
+    dispatch(apiCallStarted(callId, call));
+    const url = dsmapiLinks.validateRowIdentifier(upload.id, transformId);
+    socrataFetch(url).
+      then(checkStatus).
+      then(getJson).
+      then((result) => {
+        dispatch(apiCallSucceeded(callId));
+        if (!result.valid) {
+          dispatch(showModal('RowIdentifierError', result));
+        } else {
+          dispatch(setRowIdentifier(outputSchema, outputColumn));
+        }
+      }).
+      catch((error) => {
+        dispatch(apiCallFailed(callId, error));
+      });
   };
 }

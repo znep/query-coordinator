@@ -64,9 +64,9 @@ class TransformStatus extends Component {
   }
 
   render() {
-    const { transform, totalRows, path, displayState, columnId, isDisabled } = this.props;
+    const { transform, totalRows, path, displayState, columnId, isIgnored } = this.props;
     const SubI18n = I18n.show_output_schema.column_header;
-    if (isDisabled) {
+    if (isIgnored) {
       return (
         <th className={styles.disabledColumn}>
           <div className={styles.columnProgressBar}>
@@ -163,12 +163,12 @@ class TransformStatus extends Component {
 }
 
 TransformStatus.propTypes = {
-  transform: PropTypes.object,
+  transform: PropTypes.object.isRequired,
+  isIgnored: PropTypes.bool.isRequired,
   columnId: PropTypes.number.isRequired,
   displayState: DisplayState.propType.isRequired,
   path: PropTypes.object.isRequired,
-  totalRows: PropTypes.number,
-  isDisabled: PropTypes.bool
+  totalRows: PropTypes.number
 };
 
 export default TransformStatus;

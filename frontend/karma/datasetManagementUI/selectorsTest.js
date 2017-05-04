@@ -61,7 +61,7 @@ describe('Selectors', () => {
 
   describe('columnsForOutputSchema', () => {
 
-    it('returns all columns for an output schema', () => {
+    it('returns all columns for an output schema, including is_primary_key from join table', () => {
       const db = {
         output_schemas: {
           1: { id: 1 },
@@ -84,16 +84,34 @@ describe('Selectors', () => {
         },
         output_schema_columns: {
           '5-51': { output_schema_id: 5, output_column_id: 51 },
-          '1-52': { output_schema_id: 1, output_column_id: 52 },
+          '1-52': { output_schema_id: 1, output_column_id: 52, is_primary_key: true },
           '1-53': { output_schema_id: 1, output_column_id: 53 },
           '1-54': { output_schema_id: 1, output_column_id: 54 },
           '7-55': { output_schema_id: 7, output_column_id: 55 }
         }
       };
       assert.deepEqual(Selectors.columnsForOutputSchema(db, 1), [
-        { id: 52, schema_column_index: 0, transform_id: 2, transform: { id: 2 } },
-        { id: 53, schema_column_index: 1, transform_id: 3, transform: { id: 3 } },
-        { id: 54, schema_column_index: 2, transform_id: 4, transform: { id: 4 } }
+        {
+          id: 52,
+          schema_column_index: 0,
+          transform_id: 2,
+          transform: { id: 2 },
+          is_primary_key: true
+        },
+        {
+          id: 53,
+          schema_column_index: 1,
+          transform_id: 3,
+          transform: { id: 3 },
+          is_primary_key: false
+        },
+        {
+          id: 54,
+          schema_column_index: 2,
+          transform_id: 4,
+          transform: { id: 4 },
+          is_primary_key: false
+        }
       ]);
     });
 

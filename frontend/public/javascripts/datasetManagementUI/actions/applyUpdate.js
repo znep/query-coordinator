@@ -75,7 +75,6 @@ export function pollForUpsertJobProgress(upsertJobId) {
         }
       }).
       catch((err) => {
-        console.log(JSON.stringify(err));
         console.error('polling for upsert job progress failed', err);
       });
   };

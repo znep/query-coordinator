@@ -1,76 +1,51 @@
 import _ from 'lodash';
-import { socrataFetch, checkStatus, getJson } from '../lib/http';
+import uuid from 'uuid';
+import { socrataFetch, checkStatus, getJson } from 'lib/http';
 import {
   batch,
   upsertMultipleFromServer,
-  loadStarted,
-  loadSucceeded,
-  loadFailed,
   updateFromServer
-} from '../actions/database';
-import * as DisplayState from '../lib/displayState';
-import * as Selectors from '../selectors';
-import * as dsmapiLinks from '../dsmapiLinks';
+} from 'actions/database';
+import {
+  apiCallStarted,
+  apiCallSucceeded,
+  apiCallFailed,
+  LOAD_ROWS
+} from 'actions/apiCalls';
+import {
+  STATUS_CALL_IN_PROGRESS,
+  STATUS_CALL_SUCCEEDED
+} from 'lib/apiCallStatus';
+import * as DisplayState from 'lib/displayState';
+import * as Selectors from 'selectors';
+import * as dsmapiLinks from 'dsmapiLinks';
 
 export const PAGE_SIZE = 50;
 
-// TODO: refactor: the URL is the load plan, duh
-export function getLoadPlan(db, displayState) {
+// only exported for tests...
+export function needToLoadAnything({ apiCalls, db }, displayState) {
+  const previousApiCall = _.find(apiCalls, (call) => (
+    (call.status === STATUS_CALL_IN_PROGRESS
+      || call.status === STATUS_CALL_SUCCEEDED)
+      && _.isEqual(call.params.displayState, displayState)
+  ));
   switch (displayState.type) {
-    case DisplayState.COLUMN_ERRORS: {
-      const url = urlForPreview(db, displayState);
-      const alreadyLoaded = _.find(db.__loads__, { url });
-
-      if (!alreadyLoaded) {
-        return {
-          type: 'COLUMN_ERRORS',
-          transformId: displayState.transformId,
-          outputSchemaId: displayState.outputSchemaId,
-          pageNo: displayState.pageNo
-        };
-      } else {
-        return null;
-      }
-    }
-    case DisplayState.ROW_ERRORS: {
-      // kind of seems easier to only formulate the url once...
-      // do a "here's the url, fetch it if we haven't already fetched it" kind of thing
-      const inputSchemaId = db.output_schemas[displayState.outputSchemaId].input_schema_id;
-      const url = urlForPreview(db, displayState);
-      const alreadyLoaded = _.find(db.__loads__, { url });
-
-      if (!alreadyLoaded) {
-        return {
-          type: 'ROW_ERRORS',
-          pageNo: displayState.pageNo,
-          inputSchemaId
-        };
-      } else {
-        return null;
-      }
-    }
     case DisplayState.NORMAL: {
       const { inputSchema } = Selectors.pathForOutputSchema(db, displayState.outputSchemaId);
       const columns = Selectors.columnsForOutputSchema(db, displayState.outputSchemaId);
       const minRowsProcessed = Selectors.rowsTransformed(columns);
       const firstRowNeeded = (displayState.pageNo - 1) * PAGE_SIZE;
       const lastRowNeeded = firstRowNeeded + PAGE_SIZE;
-      const alreadyLoaded = _.find(db.__loads__, { url: urlForPreview(db, displayState) });
 
       const haveWholePage = minRowsProcessed >= lastRowNeeded;
       const doneLoadingThisPage = minRowsProcessed === inputSchema.total_rows &&
                                   minRowsProcessed >= firstRowNeeded;
-
-      if ((haveWholePage || doneLoadingThisPage) && !alreadyLoaded) {
-        return {
-          type: 'NORMAL',
-          outputSchemaId: displayState.outputSchemaId,
-          pageNo: displayState.pageNo
-        };
-      } else {
-        return null;
-      }
+      return (haveWholePage || doneLoadingThisPage) && !previousApiCall;
     }
+    case DisplayState.ROW_ERRORS:
+    case DisplayState.COLUMN_ERRORS:
+      return !previousApiCall;
+
     default:
       throw new TypeError(`Unknown display state: ${displayState}`);
   }
@@ -78,27 +53,29 @@ export function getLoadPlan(db, displayState) {
 
 export function loadVisibleData(displayState) {
   return (dispatch, getState) => {
-    const loadPlan = getLoadPlan(getState().db, displayState);
-    if (loadPlan) {
-      dispatch(executeLoadPlan(loadPlan, displayState));
+    if (needToLoadAnything(getState(), displayState)) {
+      dispatch(loadData({
+        operation: LOAD_ROWS,
+        params: { displayState }
+      }));
     }
   };
 }
 
-function executeLoadPlan(loadPlan, displayState) {
+function loadData(apiCall) {
   return (dispatch) => {
-    switch (loadPlan.type) {
-      case 'NORMAL':
-        dispatch(loadNormalPreview(displayState));
+    switch (apiCall.params.displayState.type) {
+      case DisplayState.NORMAL:
+        dispatch(loadNormalPreview(apiCall));
         break;
-      case 'ROW_ERRORS':
-        dispatch(loadRowErrors(displayState));
+      case DisplayState.ROW_ERRORS:
+        dispatch(loadRowErrors(apiCall));
         break;
-      case 'COLUMN_ERRORS':
-        dispatch(loadColumnErrors(displayState));
+      case DisplayState.COLUMN_ERRORS:
+        dispatch(loadColumnErrors(apiCall));
         break;
       default:
-        throw new TypeError(`Unknown load plan type: ${loadPlan.type}`);
+        throw new TypeError(`Unknown display state type: ${apiCall.displayState.type}`);
     }
   };
 }
@@ -124,18 +101,17 @@ function urlForPreview(db, displayState) {
   }
 }
 
-export function loadNormalPreview(displayState) {
+export function loadNormalPreview(apiCall) {
   return (dispatch, getState) => {
     const db = getState().db;
+    const displayState = apiCall.params.displayState;
     const url = urlForPreview(db, displayState);
-    dispatch(loadStarted(url));
+    const callId = uuid();
+
+    dispatch(apiCallStarted(callId, apiCall));
     socrataFetch(url).
       then(checkStatus).
       then(getJson).
-      catch((error) => {
-        console.error('failed to get transform results', error);
-        dispatch(loadFailed(url, error));
-      }).
       then((resp) => {
         const transformIds = resp[0].output_columns.map((col) => col.transform.id);
         const withoutHeader = resp.slice(1);
@@ -167,17 +143,22 @@ export function loadNormalPreview(displayState) {
         dispatch(upsertMultipleFromServer(
           'row_errors', _.keyBy(rowErrors, 'id'), { ifNotExists: true }
         ));
-        dispatch(loadSucceeded(url));
+        dispatch(apiCallSucceeded(callId));
+      }).
+      catch((error) => {
+        dispatch(apiCallFailed(callId, error));
       });
   };
 }
 
-export function loadColumnErrors(displayState) {
+export function loadColumnErrors(apiCall) {
   return (dispatch, getState) => {
     const db = getState().db;
+    const displayState = apiCall.params.displayState;
     const url = urlForPreview(db, displayState);
+    const callId = uuid();
 
-    dispatch(loadStarted(url));
+    dispatch(apiCallStarted(callId, apiCall));
     socrataFetch(url).
       then(checkStatus).
       then(getJson).
@@ -219,23 +200,23 @@ export function loadColumnErrors(displayState) {
           });
         })));
 
-        dispatch(loadSucceeded(url));
+        dispatch(apiCallSucceeded(callId));
       }).
       catch((error) => {
-        dispatch(loadFailed(url, error));
-        // TODO: maybe add a notification
-        console.error('failed to load column errors', error);
+        dispatch(apiCallFailed(callId, error));
       });
   };
 }
 
-export function loadRowErrors(displayState) {
+export function loadRowErrors(apiCall) {
   return (dispatch, getState) => {
     const db = getState().db;
+    const displayState = apiCall.params.displayState;
     const inputSchemaId = db.output_schemas[displayState.outputSchemaId].input_schema_id;
     const url = urlForPreview(db, displayState);
+    const callId = uuid();
 
-    dispatch(loadStarted(url));
+    dispatch(apiCallStarted(callId, apiCall));
     socrataFetch(url).
       then(checkStatus).
       then(getJson).
@@ -248,12 +229,10 @@ export function loadRowErrors(displayState) {
         }));
         const rowErrorsKeyedById = _.keyBy(rowErrorsWithId, 'id');
         dispatch(upsertMultipleFromServer('row_errors', rowErrorsKeyedById, { ifNotExists: true }));
-        dispatch(loadSucceeded(url));
+        dispatch(apiCallSucceeded(callId));
       }).
       catch((error) => {
-        dispatch(loadFailed(url, error));
-        // TODO: maybe add a notification
-        console.error('failed to load row errors', error);
+        dispatch(apiCallFailed(callId, error));
       });
   };
 }

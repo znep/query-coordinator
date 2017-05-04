@@ -14,11 +14,6 @@ export const newOutputSchema = (uploadId, inputSchemaId) => {
   return `${base}/upload/${uploadId}/schema/${inputSchemaId}`;
 };
 
-export const transformResults = (uploadId, transformId, limit, offset) => {
-  return `${base}/upload/${uploadId}/transform/${transformId}` +
-         `/results?limit=${limit}&offset=${offset}`;
-};
-
 export const applyUpdate = `${revisionBase}/apply`;
 
 export const columnErrors = (uploadId, inputSchemaId, outputSchemaId, columnId, limit, offset) =>
@@ -34,3 +29,6 @@ export const rows = (uploadId, inputSchemaId, outputSchemaId, limit, offset) =>
 
 export const errorExport = (uploadId, inputSchemaId, outputSchemaId) =>
   `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors/${outputSchemaId}`;
+
+export const validateRowIdentifier = (uploadId, transformId) =>
+  `${base}/upload/${uploadId}/transform/${transformId}/validate_row_identifier`;

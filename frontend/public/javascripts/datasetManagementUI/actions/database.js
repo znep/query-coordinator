@@ -122,25 +122,6 @@ export const createTable = (name) => ({
 
 // no delete actions because we never delete anything lol
 
-export const LOAD_STARTED = 'LOAD_STARTED';
-export const loadStarted = (url) => ({
-  type: LOAD_STARTED,
-  url
-});
-
-export const LOAD_SUCCEEDED = 'LOAD_SUCCEEDED';
-export const loadSucceeded = (url) => ({
-  type: LOAD_SUCCEEDED,
-  url
-});
-
-export const LOAD_FAILED = 'STATUS_LOAD_FAILED';
-export const loadFailed = (url, error) => ({
-  type: LOAD_FAILED,
-  url,
-  error
-});
-
 export const OUTPUT_SCHEMA_UPSERT_STARTED = 'OUTPUT_SCHEMA_UPSERT_STARTED';
 export const outputSchemaUpsertStarted = () => ({
   type: OUTPUT_SCHEMA_UPSERT_STARTED

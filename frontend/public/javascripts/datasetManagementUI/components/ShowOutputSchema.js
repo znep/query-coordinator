@@ -192,7 +192,7 @@ function mapStateToProps(state, ownProps) {
   );
   return {
     ...queryResults,
-    numLoadsInProgress: Selectors.numLoadsInProgress(state.db),
+    numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.apiCalls),
     displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
     routing: ownProps.location,
     urlParams: ownProps.params

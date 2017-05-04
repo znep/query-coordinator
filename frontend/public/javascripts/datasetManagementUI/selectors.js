@@ -1,6 +1,8 @@
 import _ from 'lodash';
-import { STATUS_UPDATING, STATUS_LOAD_IN_PROGRESS } from './lib/database/statuses';
-import { UPSERT_JOB_SUCCESSFUL } from 'actions/applyUpdate.js';
+import { STATUS_UPDATING } from './lib/database/statuses';
+import { STATUS_CALL_IN_PROGRESS } from './lib/apiCallStatus';
+import { UPSERT_JOB_SUCCESSFUL } from 'actions/applyUpdate';
+import { LOAD_ROWS } from 'actions/apiCalls';
 
 // TODO: if perf becomes an issue, use reselect for memoization
 export function percentUpserted(db, upsertJobId) {
@@ -45,21 +47,18 @@ export function columnsForInputSchema(db, inputSchemaId) {
 }
 
 export function columnsForOutputSchema(db, outputSchemaId) {
-  const schemaColumns = _.filter(db.output_schema_columns, { output_schema_id: outputSchemaId });
-  const unsortedColumns = _.chain(db.output_columns).
-    filter((column) =>
-      schemaColumns.some(
-        (schemaColumn) => (
-          column.id === schemaColumn.output_column_id
-        )
-      )
-    ).
-    map((outputColumn) => ({
-      ...outputColumn,
-      transform: db.transforms[outputColumn.transform_id]
-    })).
+  return _.chain(db.output_schema_columns).
+    filter({ output_schema_id: outputSchemaId }).
+    map((outputSchemaColumn) => {
+      const outputColumn = db.output_columns[outputSchemaColumn.output_column_id];
+      return {
+        ...outputColumn,
+        transform: db.transforms[outputColumn.transform_id],
+        is_primary_key: outputSchemaColumn.is_primary_key || false
+      };
+    }).
+    sortBy('position').
     value();
-  return _.sortBy(unsortedColumns, 'position');
 }
 
 export function allTransformsDone(columnsWithTransforms, inputSchema) {
@@ -92,11 +91,11 @@ export function pathForOutputSchema(db, outputSchemaId) {
   };
 }
 
-export function numLoadsInProgress(db) {
-  return _.filter(
-    db.__loads__,
-    (load) => (load.status.type === STATUS_LOAD_IN_PROGRESS)
-  ).length;
+export function rowLoadOperationsInProgress(apiCalls) {
+  return _.filter(apiCalls, (call) => (
+    call.operation === LOAD_ROWS
+      && call.status === STATUS_CALL_IN_PROGRESS
+  )).length;
 }
 
 // Merges formDataModel with db.output_columns, then transforms that into the

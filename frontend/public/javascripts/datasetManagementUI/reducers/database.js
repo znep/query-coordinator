@@ -18,9 +18,6 @@ import {
   CREATE_TABLE,
   BATCH,
   SET_VIEW,
-  LOAD_STARTED,
-  LOAD_SUCCEEDED,
-  LOAD_FAILED,
   OUTPUT_SCHEMA_UPSERT_STARTED,
   OUTPUT_SCHEMA_UPSERT_SUCCEEDED,
   OUTPUT_SCHEMA_UPSERT_FAILED
@@ -40,10 +37,7 @@ import {
   statusInsertFailed,
   statusUpdating,
   statusUpdatingImmutable,
-  statusUpdateFailed,
-  statusLoadInProgress,
-  statusLoadSucceeded,
-  statusLoadFailed
+  statusUpdateFailed
 } from '../lib/database/statuses';
 import { emptyDB } from '../bootstrap';
 
@@ -229,58 +223,6 @@ export default function dbReducer(db = emptyDB, action) {
         ...db,
         [action.name]: {}
       };
-
-    case LOAD_STARTED: {
-      const loadId = uuidV4();
-      return {
-        ...db,
-        __loads__: {
-          ...db.__loads__,
-          [loadId]: {
-            id: loadId,
-            status: statusLoadInProgress,
-            url: action.url
-          }
-        }
-      };
-    }
-    case LOAD_SUCCEEDED: {
-      // maybe it should just delete them? idk
-      const key = _.findKey(
-        db.__loads__,
-        (tableRecord) => (
-          tableRecord.url === action.url
-        )
-      );
-      return {
-        ...db,
-        __loads__: {
-          ...db.__loads__,
-          [key]: {
-            ...db.__loads__[key],
-            status: statusLoadSucceeded
-          }
-        }
-      };
-    }
-    case LOAD_FAILED: {
-      const key = _.findKey(
-        db.__loads__,
-        (tableRecord) => (
-          tableRecord.url === action.url
-        )
-      );
-      return {
-        ...db,
-        __loads__: {
-          ...db.__loads__,
-          [key]: {
-            ...db.__loads__[key],
-            status: statusLoadFailed(action.error)
-          }
-        }
-      };
-    }
 
     case OUTPUT_SCHEMA_UPSERT_STARTED:
       return {

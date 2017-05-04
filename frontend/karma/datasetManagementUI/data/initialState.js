@@ -354,7 +354,9 @@ const initialState = {
           type: 'SAVED',
           savedAt: 'ON_SERVER'
         },
-        row_fetch_started: true,
+        transform_input_columns: [
+          { input_column_id: 6262 }
+        ],
         contiguous_rows_processed: 423223,
         fetched_rows: 200
       },
@@ -367,7 +369,9 @@ const initialState = {
           type: 'SAVED',
           savedAt: 'ON_SERVER'
         },
-        row_fetch_started: true,
+        transform_input_columns: [
+          { input_column_id: 6263 }
+        ],
         contiguous_rows_processed: 423223,
         fetched_rows: 200
       }
@@ -405,6 +409,6 @@ const initialState = {
   },
   notifications: [],
   channels: {}
-}
+};
 
 export default initialState;

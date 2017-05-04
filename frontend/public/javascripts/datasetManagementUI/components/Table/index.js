@@ -9,6 +9,8 @@ import * as ShowActions from 'actions/showOutputSchema';
 import * as DisplayState from 'lib/displayState';
 import { currentAndIgnoredOutputColumns } from 'selectors';
 import styles from 'styles/Table/Table.scss';
+import { COLUMN_OPERATIONS } from 'actions/apiCalls';
+import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 
 export function Table({
   db,
@@ -17,9 +19,11 @@ export function Table({
   outputSchema,
   outputColumns,
   displayState,
+  apiCallsByColumnId,
   updateColumnType,
   addColumn,
-  dropColumn }) {
+  dropColumn,
+  validateThenSetRowIdentifier }) {
 
   const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
   const numRowErrors = inputSchema.num_row_errors;
@@ -31,11 +35,12 @@ export function Table({
             <ColumnHeader
               key={column.id}
               outputSchema={outputSchema}
-              isDisabled={column.ignored}
               column={column}
               updateColumnType={updateColumnType}
+              activeApiCallInvolvingThis={_.has(apiCallsByColumnId, column.id)}
               addColumn={() => addColumn(outputSchema, column)}
-              dropColumn={() => dropColumn(outputSchema, column)} />
+              dropColumn={() => dropColumn(outputSchema, column)}
+              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)} />
           )}
         </tr>
         <tr className={styles.columnStatuses}>
@@ -44,7 +49,7 @@ export function Table({
               key={column.id}
               path={path}
               transform={column.transform}
-              isDisabled={column.ignored}
+              isIgnored={column.ignored || false}
               displayState={displayState}
               columnId={column.id}
               totalRows={inputSchema.total_rows} />
@@ -74,7 +79,9 @@ Table.propTypes = {
   updateColumnType: PropTypes.func.isRequired,
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
+  validateThenSetRowIdentifier: PropTypes.func.isRequired,
   displayState: PropTypes.object.isRequired,
+  apiCallsByColumnId: PropTypes.object.isRequired,
   outputColumns: PropTypes.arrayOf(PropTypes.shape({
     position: PropTypes.number.isRequired,
     field_name: PropTypes.string.isRequired,
@@ -89,20 +96,32 @@ const combineAndSort = ({ current, ignored }) =>
 
 // TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
 // fails; should probably redirect or display some message to the user
-const mapStateToProps = ({ db }, { path, inputSchema, outputSchema, displayState }) => ({
-  db,
-  path,
-  inputSchema,
-  outputSchema,
-  displayState,
-  outputColumns: combineAndSort(currentAndIgnoredOutputColumns(db))
-});
+const mapStateToProps = ({ db, apiCalls }, { path, inputSchema, outputSchema, displayState }) => {
+  const apiCallsByColumnId = _.chain(apiCalls).
+    filter((call) => (
+      _.includes(COLUMN_OPERATIONS, call.operation)
+        && call.status === STATUS_CALL_IN_PROGRESS
+    )).
+    keyBy('params.outputColumnId').
+    value();
+  return {
+    db,
+    path,
+    inputSchema,
+    outputSchema,
+    displayState,
+    outputColumns: combineAndSort(currentAndIgnoredOutputColumns(db)),
+    apiCallsByColumnId
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   addColumn: (outputSchema, column) => dispatch(ShowActions.addColumn(outputSchema, column)),
   dropColumn: (outputSchema, column) => dispatch(ShowActions.dropColumn(outputSchema, column)),
   updateColumnType: (oldSchema, oldColumn, newType) =>
-    dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType))
+    dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType)),
+  validateThenSetRowIdentifier: (outputSchema, column) =>
+    dispatch(ShowActions.validateThenSetRowIdentifier(outputSchema, column))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Table);

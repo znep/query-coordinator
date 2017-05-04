@@ -8,9 +8,10 @@ import styles from 'styles/Modals/Modal.scss';
 import ErrorsHelp from 'components/Modals/ErrorsHelp';
 import Publishing from 'components/Modals/Publishing';
 import PublishConfirmation from 'components/Modals/PublishConfirmation';
+import RowIdentifierError from 'components/Modals/RowIdentifierError';
 
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
-const getModalProps = (props, contentComponentName) => {
+const getModalProps = (props, contentComponentName, payload) => {
   switch (contentComponentName) {
     case 'ErrorsHelp':
       return {
@@ -18,6 +19,7 @@ const getModalProps = (props, contentComponentName) => {
         children: ([<ErrorsHelp key={1} />]),
         className: styles.errorsHelp
       };
+
     case 'Publishing':
       return {
         ...props,
@@ -25,18 +27,29 @@ const getModalProps = (props, contentComponentName) => {
         className: styles.publishing,
         onDismiss: _.noop
       };
+
     case 'PublishConfirmation':
       return {
         ...props,
         children: ([<PublishConfirmation key={1} />]),
         className: styles.publishConfirmation
       };
+
+    case 'RowIdentifierError':
+      return {
+        ...props,
+        children: ([<RowIdentifierError key={1} result={payload} />]),
+        className: styles.rowIdentifierError
+      };
+
     default:
       return props;
   }
 };
 
-export const Modal = ({ visible = false, contentComponentName, onDismiss }) => {
+export const Modal = ({ modalState, onDismiss }) => {
+  const { visible = false, contentComponentName, payload } = modalState;
+
   if (!visible) {
     return null;
   }
@@ -49,7 +62,7 @@ export const Modal = ({ visible = false, contentComponentName, onDismiss }) => {
     onDismiss
   };
 
-  const modalProps = getModalProps(defaultProps, contentComponentName);
+  const modalProps = getModalProps(defaultProps, contentComponentName, payload);
 
   return (
     <div className={styles.container}>
@@ -59,14 +72,16 @@ export const Modal = ({ visible = false, contentComponentName, onDismiss }) => {
 };
 
 Modal.propTypes = {
-  visible: PropTypes.bool,
-  onDismiss: PropTypes.func.isRequired,
-  contentComponentName: PropTypes.string
+  modalState: PropTypes.shape({
+    visible: PropTypes.bool.isRequired,
+    contentComponentName: PropTypes.string,
+    payload: PropTypes.object
+  }).isRequired,
+  onDismiss: PropTypes.func.isRequired
 };
 
 const mapStateToProps = ({ modal }) => ({
-  visible: modal.visible,
-  contentComponentName: modal.contentComponentName
+  modalState: modal
 });
 
 const mapDispatchToProps = (dispatch) => ({

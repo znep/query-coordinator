@@ -157,7 +157,7 @@ function subscribeToUpload(dispatch, upload) {
       upsertFromServer('input_columns', column)
     ))));
     return inputSchema.output_schemas.map((outputSchema) => {
-      return insertAndSubscribeToOutputSchema(dispatch, upload, outputSchema);
+      return insertAndSubscribeToOutputSchema(dispatch, outputSchema);
     });
   });
   return _.flatten(outputSchemaIds);
@@ -166,24 +166,24 @@ function subscribeToUpload(dispatch, upload) {
 function subscribeToRowErrors(inputSchemaId) {
   return (dispatch) => {
     const channelName = `row_errors:${inputSchemaId}`;
-    joinChannel(channelName, {
+    dispatch(joinChannel(channelName, {
       errors: (event) => {
         dispatch(updateFromServer('input_schemas', {
           id: inputSchemaId,
           num_row_errors: event.errors
         }));
       }
-    });
+    }));
   };
 }
 
-function insertAndSubscribeToOutputSchema(dispatch, upload, outputSchemaResponse) {
+function insertAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
   dispatch(upsertFromServer('output_schemas', toOutputSchema(outputSchemaResponse)));
-  insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outputSchemaResponse);
+  insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaResponse);
   return outputSchemaResponse.id;
 }
 
-export function insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outputSchemaResponse) {
+export function insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
   dispatch(subscribeToOutputSchema(outputSchemaResponse));
   const actions = [];
   outputSchemaResponse.output_columns.forEach((outputColumn) => {
@@ -197,13 +197,14 @@ export function insertChildrenAndSubscribeToOutputSchema(dispatch, upload, outpu
     actions.push(upsertFromServer('output_schema_columns', {
       id: `${outputSchemaResponse.id}-${outputColumn.id}`,
       output_schema_id: outputSchemaResponse.id,
-      output_column_id: outputColumn.id
+      output_column_id: outputColumn.id,
+      is_primary_key: outputColumn.is_primary_key
     }));
   });
-  dispatch(batch(actions));
   outputSchemaResponse.output_columns.forEach((outputColumn) => {
     dispatch(createTableAndSubscribeToTransform(outputColumn.transform));
   });
+  dispatch(batch(actions));
 }
 
 function createTableAndSubscribeToTransform(transform) {
@@ -215,7 +216,9 @@ function createTableAndSubscribeToTransform(transform) {
       dispatch(createTable(tableName));
     }
     // maybe subscribe to transform
-    if (transform.completed_at) {
+    if (transform.completed_at && transform.contiguous_rows_processed) {
+      // do nothing
+    } else if (transform.completed_at) {
       const inputColumnId = transform.transform_input_columns[0].input_column_id;
       const inputColumn = db.input_columns[inputColumnId];
       const inputSchema = db.input_schemas[inputColumn.input_schema_id];

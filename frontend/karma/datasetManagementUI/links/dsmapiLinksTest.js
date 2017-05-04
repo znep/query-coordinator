@@ -20,6 +20,6 @@ describe('dsmapi links', () => {
   });
 
   it('creates a transformResults link', () => {
-    expect(dsmapiLinks.transformResults(0, 1, 2, 5)).to.eq('/api/publishing/v1/upload/0/transform/1/results?limit=2&offset=5');
+    expect(dsmapiLinks.rows(0, 1, 2, 5, 10)).to.eq('/api/publishing/v1/upload/0/schema/1/rows/2?limit=5&offset=10');
   });
 });

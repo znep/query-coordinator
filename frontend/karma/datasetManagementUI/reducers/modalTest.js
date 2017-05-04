@@ -13,9 +13,9 @@ describe('reducers/modal', () => {
     const state = modal(undefined, showModal('TestComponent'));
 
     const expectedState = {
-      ...initialState,
       visible: true,
-      contentComponentName: 'TestComponent'
+      contentComponentName: 'TestComponent',
+      payload: null
     };
 
     assert.deepEqual(state, expectedState);
@@ -25,8 +25,9 @@ describe('reducers/modal', () => {
     const state = modal(undefined, hideModal());
 
     const expectedState = {
-      ...initialState,
-      visible: false
+      visible: false,
+      contentComponentName: null,
+      payload: null
     };
 
     assert.deepEqual(state, expectedState);

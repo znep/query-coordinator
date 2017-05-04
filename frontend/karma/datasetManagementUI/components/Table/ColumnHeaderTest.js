@@ -2,7 +2,8 @@ import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import _ from 'lodash';
 import ColumnHeader from 'components/Table/ColumnHeader';
-import ReactDOM from 'react-dom';
+import { getEmptyStore } from '../../testStore';
+import { apiCallStarted, COLUMN_OPERATIONS } from 'actions/apiCalls';
 
 describe('components/Table/ColumnHeader', () => {
 
@@ -16,14 +17,16 @@ describe('components/Table/ColumnHeader', () => {
       },
       display_name: 'foo'
     },
+    activeApiCallInvolvingThis: false,
     updateColumnType: _.noop,
     addColumn: _.noop,
-    dropColumn: _.noop
+    dropColumn: _.noop,
+    validateThenSetRowIdentifier: _.noop
   };
 
   it('renders without errors', () => {
-    const container = document.createElement('tr');
-    const element = ReactDOM.render(<ColumnHeader {...defaultProps} />, container);
+    const element = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...defaultProps} />, element);
     assert.ok(element);
   });
 
@@ -35,9 +38,10 @@ describe('components/Table/ColumnHeader', () => {
       addColumn: _.noop,
       dropColumn: _.noop
     };
-    const container = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...props} />, container);
-    const select = container.querySelector('select');
+    const element = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...props} />, element);
+
+    const select = element.querySelector('select');
     select.value = 'SoQLNumber';
     TestUtils.Simulate.change(select);
     expect(spy.args[0]).to.deep.equal([
@@ -52,30 +56,36 @@ describe('components/Table/ColumnHeader', () => {
       ...defaultProps,
       updateColumnType: _.noop,
       addColumn: _.noop,
-      dropColumn: _.noop,
-      isDisabled: false
+      dropColumn: _.noop
     };
-    const container = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...props} />, container);
-    TestUtils.Simulate.click(container.querySelector('.dropdownButton'));
-    expect(container.querySelector('.socrata-icon-eye-blocked')).to.exist;
-    expect(container.querySelector('.socrata-icon-add')).to.not.exist;
+    const element = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...props} />, element);
+
+    TestUtils.Simulate.click(element.querySelector('.dropdownButton'));
+    expect(element.querySelector('.socrata-icon-eye-blocked')).to.exist;
+    expect(element.querySelector('.socrata-icon-add')).to.not.exist;
   });
 
 
   it('renders an add button when disabled', () => {
     const props = {
       ...defaultProps,
+      column: {
+        transform: {
+          output_soql_type: 'SoQLText'
+        },
+        ignored: true
+      },
       updateColumnType: _.noop,
       addColumn: _.noop,
-      dropColumn: _.noop,
-      isDisabled: true
+      dropColumn: _.noop
     };
-    const container = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...props} />, container);
-    TestUtils.Simulate.click(container.querySelector('.dropdownButton'));
-    expect(container.querySelector('.socrata-icon-eye-blocked')).to.not.exist;
-    expect(container.querySelector('.socrata-icon-plus3')).to.exist;
+    const element = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...props} />, element);
+
+    TestUtils.Simulate.click(element.querySelector('.dropdownButton'));
+    expect(element.querySelector('.socrata-icon-eye-blocked')).to.not.exist;
+    expect(element.querySelector('.socrata-icon-plus3')).to.exist;
   });
 
 
@@ -86,9 +96,9 @@ describe('components/Table/ColumnHeader', () => {
       ...defaultProps,
       updateColumnType: spy
     };
-    const container = document.createElement('tr');
     // render for the first time
-    ReactDOM.render(<ColumnHeader {...propsWithSpy} />, container);
+    const element = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...propsWithSpy} />, element);
     // render for the second time, with new output schema
     const newProps = {
       ...propsWithSpy,
@@ -96,8 +106,8 @@ describe('components/Table/ColumnHeader', () => {
         id: 53
       }
     };
-    ReactDOM.render(<ColumnHeader {...newProps} />, container);
-    const select = container.querySelector('select');
+    ReactDOM.render(<ColumnHeader {...newProps} />, element);
+    const select = element.querySelector('select');
     select.value = 'SoQLNumber';
     TestUtils.Simulate.change(select);
     expect(spy.args[0]).to.deep.equal([
@@ -108,9 +118,10 @@ describe('components/Table/ColumnHeader', () => {
   });
 
   it('renders correct list of types', () => {
-    const container = document.createElement('tr');
-    const element = ReactDOM.render(<ColumnHeader {...defaultProps} />, container);
-    const options = container.querySelectorAll('select option');
+    const element = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...defaultProps} />, element);
+
+    const options = element.querySelectorAll('select option');
     const values = [...options].map(option => option.value)
     expect(values).to.deep.equal([
       'SoQLFloatingTimestamp',
@@ -119,6 +130,100 @@ describe('components/Table/ColumnHeader', () => {
       'SoQLBoolean',
       'SoQLLocation'
     ]);
+  });
+
+  it('renders a spinner and disables if an output schema is being created that replaces this column', () => {
+    COLUMN_OPERATIONS.forEach((operation) => {
+      const store = getEmptyStore();
+      const call = {
+        operation: operation,
+        params: {
+          outputColumnId: 5
+        }
+      };
+      store.dispatch(apiCallStarted(0, call));
+      const props = {
+        ...defaultProps,
+        column: {
+          id: 5,
+          transform: {
+            output_soql_type: 'SoQLText'
+          }
+        },
+        activeApiCallInvolvingThis: true,
+        updateColumnType: _.noop,
+        addColumn: _.noop,
+        dropColumn: _.noop
+      };
+      const element = document.createElement('tr');
+      ReactDOM.render(<ColumnHeader {...props} />, element);
+
+      expect(element.querySelector('.spinner-default')).to.exist;
+    });
+  });
+
+  it('renders a spinner and disables if this column is being validated as a row identifier', () => {
+    const call = {
+      operation: 'VALIDATE_ROW_IDENTIFIER',
+      params: {
+        outputColumnId: 5
+      }
+    };
+    const props = {
+      ...defaultProps,
+      column: {
+        id: 5,
+        transform: {
+          output_soql_type: 'SoQLText'
+        }
+      },
+      activeApiCallInvolvingThis: true,
+      updateColumnType: _.noop,
+      addColumn: _.noop,
+      dropColumn: _.noop
+    };
+    const element = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...props} />, element);
+
+    expect(element.querySelector('.spinner-default')).to.exist;
+  });
+
+  it('doesn\'t render a spinner if there\'s no api call in progress', () => {
+    const props = {
+      ...defaultProps,
+      column: {
+        id: 5,
+        transform: {
+          output_soql_type: 'SoQLText'
+        }
+      },
+      updateColumnType: _.noop,
+      addColumn: _.noop,
+      dropColumn: _.noop
+    };
+    const element = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...props} />, element);
+
+    expect(element.querySelector('.spinner-default')).to.not.exist;
+  });
+
+  it('renders an id icon if this is a row identifier', () => {
+    const store = getEmptyStore();
+    const props = {
+      ...defaultProps,
+      column: {
+        transform: {
+          output_soql_type: 'SoQLText'
+        },
+        is_primary_key: true
+      },
+      updateColumnType: _.noop,
+      addColumn: _.noop,
+      dropColumn: _.noop
+    };
+    const element = document.createElement('tr');
+    ReactDOM.render(<ColumnHeader {...props} />, element);
+    expect(element.querySelector('.socrata-icon-id')).to.exist;
   });
 
 });

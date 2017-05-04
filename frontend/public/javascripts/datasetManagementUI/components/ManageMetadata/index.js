@@ -17,7 +17,6 @@ export function ManageMetadata(props) {
     fourfour,
     path,
     onDismiss,
-    history,
     onSaveDataset,
     onSaveCol,
     columnsExist,
@@ -31,16 +30,6 @@ export function ManageMetadata(props) {
     fullScreen: true,
     onDismiss
   };
-
-  let lastVisited;
-
-  // We only keep current location and previous location, and the code that stores
-  // these lives only in DSMUI. This means that if you came from another site, there
-  // will be only one location in history (the current one). If there is more than one,
-  // then we know that the first one is from DSMUI.
-  if (history.length > 1) {
-    lastVisited = history[0];
-  }
 
   const headerProps = {
     title: I18n.metadata_manage.title,
@@ -99,10 +88,7 @@ ManageMetadata.propTypes = {
   fourfour: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   outputSchemaStatus: PropTypes.string,
-  columnsExist: PropTypes.bool,
-  history: PropTypes.arrayOf(PropTypes.shape({
-    pathname: PropTypes.string
-  }))
+  columnsExist: PropTypes.bool
 };
 
 
@@ -123,7 +109,6 @@ const mapDispatchToProps = (dispatch) => ({
 const mapStateToProps = (state, ownProps) => ({
   views: _.get(state, 'db.views', {}),
   fourfour: state.routing.fourfour,
-  history: state.routing.history,
   path: ownProps.route.path,
   columnsExist: !_.isEmpty(state.db.output_columns),
   outputSchemaStatus: state.db.output_schemas.__status__

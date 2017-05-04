@@ -1669,7 +1669,6 @@ en:
     done: Done
     download:
       csv_for_excel: CSV for Excel
-      csv_for_excel_europe: CSV for Excel (Europe)
       csv_without_geo: CSV (without geospatial data)
       json_without_geo: JSON (without geospatial data)
       original: Original

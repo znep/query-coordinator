@@ -112,16 +112,6 @@ describe('components/InfoPaneButtons', () => {
       expect(downloadOption.getAttribute('href')).to.contain('bom');
     });
 
-    it('renders CSV for Excel Europe Option', function(){
-      const element = renderComponent(InfoPaneButtons, getProps());
-      const downloadOption = element.querySelector('[data-type="CSV for Excel (Europe)"]');
-
-      assert.ok(downloadOption);
-      expect(downloadOption.getAttribute('href')).to.contain('.csv');
-      expect(downloadOption.getAttribute('href')).to.contain('format');
-      expect(downloadOption.getAttribute('href')).to.contain('delimiter');
-    });
-
     it('uses an overrideLink value if it is set', function() {
       const link = 'http://somelink';
       const element = renderComponent(InfoPaneButtons, getProps({

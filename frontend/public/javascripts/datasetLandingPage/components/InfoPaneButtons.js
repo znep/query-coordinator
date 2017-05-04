@@ -52,15 +52,6 @@ export default class InfoPaneButtons extends Component {
       extension = 'csv';
       type = 'CSV for Excel';
       params.bom = 'true';
-      params.format = 'true';
-    }
-
-    if (format === 'csv_for_excel_europe') {
-      extension = 'csv';
-      type = 'CSV for Excel (Europe)';
-      params.bom = 'true';
-      params.format = 'true';
-      params.delimiter = ';';
     }
 
     if (format === 'tsv_for_excel') {

@@ -226,5 +226,23 @@ describe('Selectors', () => {
       assert.notInclude(ignoredColumnIds, ignoredColumnsWithSameTransform[0]);
       assert.notInclude(ignoredColumnIds, ignoredColumnsWithSameTransform[1]);
     });
+
+    it('returns only output columns derived for the current input schema', () => {
+      const outputSchemaIds = Object.keys(db.output_schemas)
+        .filter(key => key !== '__status__')
+        .map(_.toNumber)
+        .filter(key => !!key);
+
+      const latestOutputSchemaId = Math.max(...outputSchemaIds);
+
+      const currentInputSchemaId = db.output_schemas[latestOutputSchemaId].input_schema_id;
+
+      const currentInputColumns = Object.keys(db.input_columns)
+        .filter(icid => db.input_columns[icid].input_schema_id === currentInputSchemaId);
+
+      const returnedColumns = [...output.current, ...output.ignored];
+
+      assert.isAtMost(returnedColumns.length, currentInputColumns.length);
+    });
   });
 });

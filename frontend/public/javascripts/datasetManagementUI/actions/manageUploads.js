@@ -41,7 +41,10 @@ export function createUpload(file) {
       then(getJson).
       then((resp) => {
         const newUpload = resp.resource;
-        dispatch(upsertSucceeded('uploads', uploadInsert, { id: newUpload.id }));
+        dispatch(upsertSucceeded('uploads', uploadInsert, {
+          id: newUpload.id,
+          created_by: newUpload.created_by
+        }));
         dispatch(push(Links.showUpload(newUpload.id)(routing.location)));
         dispatch(uploadFile(newUpload.id, file));
         dispatch(pollForOutputSchema(newUpload.id));

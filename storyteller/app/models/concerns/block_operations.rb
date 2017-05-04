@@ -25,6 +25,10 @@ module BlockOperations
       end
     end
 
+    def has_image_component?
+      Block.for_story(self).with_component_type(*Block::IMAGE_COMPONENT_TYPES).any?
+    end
+
     private
 
     # The order in which block rows are returned from the database is not

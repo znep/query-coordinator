@@ -95,4 +95,58 @@ shared_examples 'has_block_operations' do
     end
 
   end
+
+  describe '#has_image_component?' do
+    context 'with blocks that contain images' do
+      before do
+        subject.block_ids = [
+          FactoryGirl.create(:block).id,
+          FactoryGirl.create(:block_with_image).id
+        ]
+      end
+
+      it 'returns true' do
+        expect(subject.has_image_component?).to eq(true)
+      end
+    end
+
+    context 'with blocks that contain hero images' do
+      before do
+        subject.block_ids = [
+          FactoryGirl.create(:block).id,
+          FactoryGirl.create(:block_with_hero).id
+        ]
+      end
+
+      it 'returns true' do
+        expect(subject.has_image_component?).to eq(true)
+      end
+    end
+
+    context 'with blocks that contain author images' do
+      before do
+        subject.block_ids = [
+          FactoryGirl.create(:block).id,
+          FactoryGirl.create(:block_with_author).id
+        ]
+      end
+
+      it 'returns true' do
+        expect(subject.has_image_component?).to eq(true)
+      end
+    end
+
+    context 'without blocks that contain images' do
+      before do
+        subject.block_ids = [
+          FactoryGirl.create(:block),
+          FactoryGirl.create(:block)
+        ]
+      end
+
+      it 'returns false' do
+        expect(subject.has_image_component?).to eq(false)
+      end
+    end
+  end
 end

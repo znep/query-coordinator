@@ -1,11 +1,9 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import { push, goBack } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
 
-import * as Links from 'links';
-import { saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
+import { dismissMetadataPane, saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
 import { hideFlashMessage } from 'actions/flashMessage';
 import { edit } from 'actions/database';
 import { STATUS_UPDATING, STATUS_UPSERTING } from 'lib/database/statuses';
@@ -46,7 +44,7 @@ export function ManageMetadata(props) {
 
   const headerProps = {
     title: I18n.metadata_manage.title,
-    onDismiss: () => onDismiss(lastVisited)
+    onDismiss
   };
 
   const metadataContentProps = { path, fourfour, onSidebarTabClick, columnsExist };
@@ -82,7 +80,7 @@ export function ManageMetadata(props) {
           <button
             id="cancel"
             className={styles.button}
-            onClick={() => onDismiss(lastVisited)}>
+            onClick={onDismiss}>
               {I18n.common.cancel}
           </button>
           <SaveButton {...saveBtnProps} />
@@ -107,18 +105,9 @@ ManageMetadata.propTypes = {
   }))
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  onDismiss: previousLocation => {
-    // Check if previous path is one of the modal tabs; if so, we don't want to
-    // go back to the previous path
-    const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata\/(columns|dataset)/;
 
-    if (previousLocation && !isDatasetModalPath.test(previousLocation.pathname)) {
-      dispatch(goBack());
-    } else {
-      dispatch(push(Links.home(ownProps.location)));
-    }
-  },
+const mapDispatchToProps = (dispatch) => ({
+  onDismiss: () => dispatch(dismissMetadataPane()),
   onSaveDataset: () => dispatch(saveDatasetMetadata()),
   onSaveCol: () => dispatch(saveColumnMetadata()),
   onSidebarTabClick: (fourfour) => {

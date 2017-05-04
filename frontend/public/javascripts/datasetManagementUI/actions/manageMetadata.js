@@ -23,6 +23,26 @@ import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
 import { getLocalizedErrorMessage } from 'lib/util';
 import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX, fromFlatToNested } from 'lib/customMetadata';
 
+export const dismissMetadataPane = () => (dispatch, getState) => {
+  const state = getState();
+  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata(\/columns|\/dataset)?/;
+  const currentLocation = state.routing.history[state.routing.history.length - 1];
+
+  const helper = (history) => {
+    const location = history[history.length - 1];
+
+    if (history.length === 0) {
+      dispatch(push(Links.home(currentLocation)));
+    } else if (isDatasetModalPath.test(location.pathname)) {
+      helper(history.slice(0, -1));
+    } else {
+      dispatch(push(location));
+    }
+  };
+
+  helper(state.routing.history);
+};
+
 export const saveDatasetMetadata = () => (dispatch, getState) => {
   const { db, routing } = getState();
   const { fourfour } = routing;
@@ -242,9 +262,9 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 export const DELAY_UNTIL_CLOSE_MS = 1000;
 
 function redirectAfterInterval() {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     setTimeout(() => {
-      dispatch(push(Links.home(getState().routing.location)));
+      dispatch(dismissMetadataPane());
     }, DELAY_UNTIL_CLOSE_MS);
   };
 }

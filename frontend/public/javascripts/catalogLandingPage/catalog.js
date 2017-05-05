@@ -262,7 +262,7 @@ const truncateDescription = (element) => {
 
 const toggleBrowse2DescriptionTruncation = (event) => {
   event.preventDefault();
-  const sectionContainer = $(this).parent('.browse2-result-description-container');
+  const sectionContainer = $(event.target).closest('.browse2-result-description-container');
   const currentDisplay = sectionContainer.attr('data-description-display');
 
   if (currentDisplay === 'show') {

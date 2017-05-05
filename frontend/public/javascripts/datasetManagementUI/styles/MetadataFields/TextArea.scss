@@ -5,13 +5,17 @@
   resize: vertical;
   width: 100%;
   min-width: 250px;
-  min-height: 6em;
+  min-height: 150px;
   height: auto;
   resize: vertical;
 
   p {
     margin-bottom: 0;
   }
+}
+
+form .textArea {
+  line-height: 22px;
 }
 
 .textAreaError {

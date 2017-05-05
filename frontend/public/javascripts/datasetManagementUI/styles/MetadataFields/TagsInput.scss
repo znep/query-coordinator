@@ -28,6 +28,10 @@
   border-right-width: 0px;
 }
 
+form .textInput {
+  line-height: 22px;
+}
+
 .validationError {
   border-color: $error;
   outline-color: $error;

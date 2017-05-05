@@ -1970,9 +1970,8 @@ en:
           missing_name: Dataset name is required.
         subtitle: Make your title and description as clear and simple as possible.
         subtitles:
-          contact_subtitle: Private Field -  only logged in users will see this value
           dataset_subtitle: Make your title and description as clear and simple as possible.
-          private_field: Private Field -  only logged in users will see this value
+          private_field: Private field. Only logged in users will see this value.
           tags_subtitle: Categorize your dataset to make it easier to find.
         title: Title and Description
         titles:

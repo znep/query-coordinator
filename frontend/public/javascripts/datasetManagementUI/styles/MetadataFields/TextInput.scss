@@ -8,6 +8,10 @@
   }
 }
 
+form .textInput {
+  line-height: 22px;
+}
+
 .textInputError {
   composes: textInput;
   composes: text-input-error from global;

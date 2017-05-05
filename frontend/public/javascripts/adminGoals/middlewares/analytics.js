@@ -31,6 +31,11 @@ const TRACK_FIELD = 'analyticsTrackEvent';
 /**
  * Creates analytics middleware.
  *
+ * NOTE:
+ * Analytics should be powered from the same actions which effect state changes (i.e.,
+ * bulkEdit.saveStarted) whenever possible. Avoid creating actions specifically for analytics
+ * tracking, unless there is no existing action which could serve as a vehicle for analyticsTrackEvent.
+ *
  * This middleware interprets actions which has *analyticsTrackEvent* object defined. This object should have two fields
  * called 'eventName' and 'eventPayload'. Please use `createTrackEventActionData` helper function to create this
  * necessary data.

@@ -1,10 +1,6 @@
 import * as Immutable from 'immutable';
 import * as ReduxImmutable from 'redux-immutablejs';
 import * as Actions from '../actions/quickEdit';
-import * as SharedActions from '../../shared/actions';
-
-const section = 'goals';
-const modal = 'quickEdit';
 
 const initialState = Immutable.fromJS({
   visible: false,
@@ -12,23 +8,11 @@ const initialState = Immutable.fromJS({
   saveInProgress: false,
   formData: {},
   initialFormData: null,
-  message: {
-    visible: false,
-    content: '',
-    type: 'error'
-  }
+  saveError: null
 });
 
 const openModal = (state, { goalId }) => state.merge({ visible: true, goalId });
 const closeModal = () => initialState;
-
-const showModalMessage = (state, { message, messageType }) => state.mergeIn(['message'], {
-  visible: true,
-  content: message,
-  messageType
-});
-
-const hideModalMessage = (state) => state.set('message', initialState.get('message'));
 
 const updateFormData = (state, { data }) => {
   if (state.get('initialFormData')) {
@@ -38,10 +22,17 @@ const updateFormData = (state, { data }) => {
   }
 };
 
+const onSaveStart = (state) => state.set('saveError', null).set('saveInProgress', true);
+
+const onSaveError = (state, { data }) => state.set('saveError', data).set('saveInProgress', false);
+
+const onSaveSuccess = (state) => state.set('saveInProgress', false);
+
 export default ReduxImmutable.createReducer(initialState, {
   [Actions.types.openModal]: openModal,
   [Actions.types.closeModal]: closeModal,
   [Actions.types.updateFormData]: updateFormData,
-  [SharedActions.types.showModalMessage]: SharedActions.createModalHandler(section, modal, showModalMessage),
-  [SharedActions.types.hideModalMessage]: SharedActions.createModalHandler(section, modal, hideModalMessage)
+  [Actions.types.saveStart]: onSaveStart,
+  [Actions.types.saveError]: onSaveError,
+  [Actions.types.saveSuccess]: onSaveSuccess
 });

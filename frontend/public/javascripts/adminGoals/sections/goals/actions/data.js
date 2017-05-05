@@ -35,7 +35,7 @@ export const load = () => (dispatch, getState) => {
       dispatch(setAll(Immutable.fromJS(goals)));
       dispatch(SharedActions.loading.stop());
     }).
-    catch((error) => { // eslint-disable-line dot-notation
+    catch((error) => {
       const translations = State.getTranslations(getState());
       const message = Helpers.translator(translations, 'admin.listing.load_error');
 

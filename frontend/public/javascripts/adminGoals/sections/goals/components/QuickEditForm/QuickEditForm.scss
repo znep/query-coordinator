@@ -1,3 +1,5 @@
+@import 'app/styles/styleguide-colors';
+
 .modal-header-with-link {
   .h5.modal-header-title {
     white-space: nowrap;
@@ -60,12 +62,30 @@
       width: ($form-width - $label-width - $label-padding-right);
     }
 
+    .form-light-notice {
+      display: block;
+      margin-left: calc(#{$label-width} + 0.5em);
+      margin-bottom: 0.5em;
+      font-size: 13px;
+      color: $dark-grey-1;
+    }
+
     .text-input {
       width: 300px;
     }
 
     .datepicker-input.text-input {
       width: 140px;
+    }
+
+    .form-block {
+      max-width: $form-width - $label-width - $label-padding-right;
+      display: inline-block;
+    }
+
+    .form-light {
+      font-size: 13px;
+      color: $dark-grey-1;
     }
   }
 

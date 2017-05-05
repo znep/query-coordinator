@@ -39,3 +39,22 @@ export function fetchCsvData() {
   const path = `${goalsPrefix}.csv`;
   return api.get('v1', path, {});
 }
+
+export function publishLatestDraft(goalId) {
+  if (!_.isString(goalId)) {
+    throw new Error(`Cannot publish goal with malformed ID: ${goalId}`);
+  }
+
+  const draftDigest = api.get('v1', `${goalsPrefix}/${goalId}/narrative/drafts/latest`).then(_.property('digest'));
+
+  return draftDigest.then((digest) => {
+    return api.post(
+      'v1',
+      `${goalsPrefix}/${goalId}/narrative/published`,
+      {
+        body: JSON.stringify({ digest })
+      }
+    ).
+    then(() => getById(goalId)); // Re-fetch the goal to get the new version field.
+  });
+}

@@ -48,7 +48,7 @@ class GoalTableRow extends React.Component {
   }
 
   render() {
-    const { goal, selected, translations } = this.props;
+    const { goal, selected, translations, goalPublicationStatus } = this.props;
     const dashboard = goal.get('base_dashboard', 'default');
 
     const goalPageUrl = `/stat/goals/${dashboard}/${goal.getIn(['category', 'id']) || 'uncategorized'}/${goal.get('id')}/edit`;
@@ -58,32 +58,6 @@ class GoalTableRow extends React.Component {
     const isGoalEnded = endDate && moment(endDate).isBefore();
     const goalStatusTranslationKey = isGoalEnded ? 'end_progress' : 'progress';
     const goalStatus = goalStatusTranslation(translations, ['measure', goalStatusTranslationKey, goal.get('status')]);
-
-    const isPublic = goal.get('is_public');
-    const draftTime = goal.getIn([ 'narrative', 'draft', 'created_at' ]);
-    const publishedTime = goal.getIn([ 'narrative', 'published', 'created_at' ]);
-
-    // These scenarios are _not_ treated as unpublished drafts:
-    // * Domain is still using classic editor.
-    // * Particular goal was never loaded in Storyteller.
-
-    let goalVisibility;
-
-    const hasBeenMigrated = _.isString(draftTime) || _.isString(publishedTime);
-    if (hasBeenMigrated) {
-      const draftTimeParsed = new Date(draftTime);
-      const publishedTimeParsed = new Date(publishedTime);
-
-      const hasUnpublishedDraft = _.isNil(publishedTime) ||
-        draftTimeParsed.getTime() > publishedTimeParsed.getTime();
-
-      const publicStatus = hasUnpublishedDraft  ? 'status_public_with_draft' : 'status_public';
-      goalVisibility = isPublic ? publicStatus : 'status_private';
-    } else {
-      goalVisibility = isPublic ? 'status_public' : 'status_private';
-    }
-
-
 
     return (
       <tr ref='tr' onClick={ this.handleClick } className={ rowClass } onDoubleClick={ this.handleEditClick }>
@@ -106,7 +80,7 @@ class GoalTableRow extends React.Component {
         </td>
         <td className="single-line">{ goal.get('owner_name') }</td>
         <td className="single-line">{ moment(goal.get('updated_at') || goal.get('created_at')).format('ll') }</td>
-        <td className="single-line visibility">{ translations.getIn(['admin', 'goal_values', goalVisibility]) }</td>
+        <td className="single-line visibility">{ translations.getIn(['admin', 'goal_values', goalPublicationStatus]) }</td>
         <td className="single-line">{ goalStatus }</td>
         <td className="dashboard-link">
           <a target="_blank" href={ dashboardUrl } className="external-link" onClick={ this.handleLinkClick }>
@@ -118,10 +92,13 @@ class GoalTableRow extends React.Component {
 }
 
 const mapStateToProps = (state, props) => {
+  const goalId = props.goal.get('id');
   const selectedRowIds = State.getSelectedIds(state);
-  const selected = selectedRowIds.includes(props.goal.get('id'));
+  const selected = selectedRowIds.includes(goalId);
+  const goalPublicationStatus = Selectors.getGoalPublicationStatus(state, goalId);
 
   return {
+    goalPublicationStatus,
     translations: state.get('translations'),
     paginatedRowIds: Selectors.getPaginatedGoalIds(state),
     selected

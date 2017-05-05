@@ -7,7 +7,9 @@ export const EventNames = {
   quickEditGoal: 'Opened Quick Edit Form',
   bulkEditGoal: 'Opened Bulk Edit Form',
   clickUpdateOnQuickEdit: 'Clicked Update on Quick Edit',
-  clickUpdateOnBulkEdit: 'Clicked Update on Bulk Edit'
+  clickUpdateOnBulkEdit: 'Clicked Update on Bulk Edit',
+  clickPublishOnQuickEdit: 'Clicked Update Public Version on Quick Edit',
+  publishViaQuickEditVisibilityDropdown: 'Published a narrative by changing visibility dropdown on Quick Edit'
 };
 
 export const EventPayloadKeys = {

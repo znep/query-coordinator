@@ -1,72 +1,102 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import Immutable from 'immutable';
-import moment from 'moment';
 import translations from 'mockTranslations';
 import mockGoalsByIds from '../../../data/cachedGoals';
 import mockDatasets from '../../../data/datasets';
-import QuickEditForm from 'sections/goals/components/QuickEditForm/QuickEditForm';
+import QuickEditForm, { QuickEditFormComponent } from 'sections/goals/components/QuickEditForm/QuickEditForm';
+import { shallow } from 'enzyme';
 
 const mockGoals = Immutable.fromJS(mockGoalsByIds).valueSeq().toList().toJS();
 
 var getDefaultStore = require('testStore').getDefaultStore;
 let server;
 
+//TODO: Test redux connectors.
+
 describe('sections/goals/components/QuickEditForm/QuickEditForm', function () {
   let goalId = '7ndm-ubkq';
   let goal = mockGoalsByIds[goalId];
+  let goalAsImmutable = Immutable.fromJS(goal);
 
-  beforeEach(() => {
-    server = sinon.fakeServer.create();
-    server.autoRespond = true;
-    server.respondWith(xhr => {
-      xhr.respond(200, null, JSON.stringify(mockDatasets[goal.datasetId]));
-    });
+  const render = (propOverrides) => {
+    const props = _.merge(
+      {},
+      {
+        formData: Immutable.fromJS({}),
+        goal: goalAsImmutable,
+        isGoalNotConfigured: false,
+        saveError: false,
+        saveInProgress: false,
+        translations: Immutable.fromJS(translations),
+        unsavedChanges: false
+      },
+      propOverrides
+    );
 
-    let state = Immutable.fromJS({
-      translations: translations,
-      goals: {
-        data: mockGoals,
-        quickEdit: {
-          goalId: goalId,
-          message: { visible: false },
-          formData: {}
-        }
-      }
-    });
-
-    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(state));
-  });
-
-  afterEach(() => {
-    server.restore();
-  });
+    return shallow(React.createElement(QuickEditFormComponent, props));
+  };
 
   it('should have correct title', () => {
-    expect(this.output.querySelector('h1.modal-header-title').textContent).to.include(goal.name)
+    const output = render();
+    assert.include(output.find('Header').prop('title'), goal.name);
   });
 
-  it('save button should have disabled', () => {
-    assert.isTrue(this.output.querySelector('button.btn-primary').hasAttribute('disabled'));
+  describe('save button', () => {
+    const getButton = (output) => {
+      return output.find('[type="submit"]');
+    }
+    const itShouldBeDisabled = (state) => {
+      it('should be disabled', () => {
+        const output = render(state);
+        assert.isTrue(getButton(output).prop('disabled'));
+      });
+    };
+    const itShouldBeEnabled = (state) => {
+      it('should be enabled', () => {
+        const output = render(state);
+        assert.isFalse(getButton(output).prop('disabled'));
+      });
+    };
+
+    describe('save not in progress, no changes', () => {
+      itShouldBeDisabled();
+    });
+
+    describe('save not in progress, changes', () => {
+      itShouldBeEnabled({
+        unsavedChanges: true,
+        formData: Immutable.fromJS({ something: 'changed' })
+      });
+    });
+
+    describe('save in progress, changes', () => {
+      itShouldBeDisabled({
+        unsavedChanges: true,
+        saveInProgress: true
+      });
+    });
+
+    describe('save in progress, no changes', () => {
+      itShouldBeDisabled({
+        saveInProgress: true
+      });
+    });
   });
 
-  it('should have correct goal updated value', () => {
-    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(0).textContent).to.eq(moment(goal.updated_at).format('ll'));
+  it('should pass goal to GoalDetails, EditGeneral and EditPrevailingMeasure', () => {
+    const output = render();
+    const editGeneralProps = output.find('Content').dive().find('Connect(EditGeneral)').props();
+    const editPrevailingMeasure = output.find('Content').dive().find('Connect(EditPrevailingMeasure)').props();
+    const detailsProps = output.find('Content').dive().find('Connect(GoalDetails)').props();
+    assert.propertyVal(editGeneralProps, 'goal', goalAsImmutable);
+    assert.propertyVal(editGeneralProps, 'goal', goalAsImmutable);
+    assert.propertyVal(detailsProps, 'goal', goalAsImmutable);
   });
-
-  it('should have correct goal owner value', () => {
-    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(1).textContent).to.eq(goal.created_by.displayName);
-  });
-
-  it('should have correct goal owner value', () => {
-    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(2).textContent).to.eq(goal.dashboard.name);
-  });
-
-  it('should have correct category name', () => {
-    expect(this.output.querySelectorAll('.goal-quick-edit-details div').item(3).textContent).to.eq(goal.category.name);
-  });
-
 });
+
+// Tests below use a full DOM render and test functionality of EditGeneral and EditPrevailingMeasure.
+// Consider porting to Enzyme and reducing scope to QuickEditForm only.
 
 describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Increase - Absolute', function () {
   let goalId = 'g34u-2aa5';

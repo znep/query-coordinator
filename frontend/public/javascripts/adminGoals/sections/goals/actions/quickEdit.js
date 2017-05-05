@@ -1,16 +1,19 @@
-import _ from 'lodash';
 import * as Api from '../../../api';
 import * as DataActions from './data';
-import * as SharedActions from '../../shared/actions';
 import * as Helpers from '../../../helpers';
 import * as State from '../state';
 import * as Selectors from '../selectors';
 import * as Analytics from '../../shared/analytics';
+import { FeatureFlags } from 'common/feature_flags';
 
 export const types = {
   openModal: 'goals.quickEdit.openModal',
   closeModal: 'goals.quickEdit.closeModal',
-  updateFormData: 'goals.quickEdit.updateFormData'
+  updateFormData: 'goals.quickEdit.updateFormData',
+  saveStart: 'goals.quickEdit.saveStart', // Payload: none (includes analytics event).
+  saveSuccess: 'goals.quickEdit.saveSuccess', // Payload: none.
+  saveError: 'goals.quickEdit.saveError', // Payload: Error JSON.
+  publishLatestDraft: 'goals.quickEdit.publishLatestDraft' // Payload: none.
 };
 
 export const openModal = goalId => ({
@@ -30,6 +33,64 @@ export const updateFormData = data => ({
   data
 });
 
+export const saveStart = (goalId, analyticsEvent) => ({
+  type: types.saveStart,
+  ...Analytics.createTrackEventActionData(analyticsEvent, {
+      [Analytics.EventPayloadKeys.goalId]: goalId
+  })
+});
+export const saveError = (error) => ({ type: types.saveError, data: error });
+export const saveSuccess = () => ({ type: types.saveSuccess });
+
+/**
+ * Internal method - does not handle errors. Use the exported
+ * functions if you're just wanting to trigger a publication.
+ * Publishes latest narrative draft.
+ */
+const publishLatestDraftInternal = (analyticsEventName) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const quickEdit = State.getQuickEdit(state);
+    const goal = Selectors.getGoalById(state, quickEdit.get('goalId'));
+    const goalId = goal.get('id');
+
+    dispatch(saveStart(goalId, analyticsEventName));
+    return Api.goals.publishLatestDraft(goalId).then((updatedGoal) => {
+      const latestDraftImmutable = goal.getIn([ 'narrative', 'draft' ]);
+      const latestDraft = latestDraftImmutable ? latestDraftImmutable.toJS() : null;
+      dispatch(DataActions.updateById(goalId, {
+        narrative: {
+          published: latestDraft,
+          draft: latestDraft
+        },
+        ...updatedGoal
+      }));
+      dispatch(saveSuccess());
+    });
+  };
+};
+
+/**
+ * Publishes latest narrative draft.
+ */
+export const publishLatestDraft = () => {
+  return (dispatch, getState) =>
+    publishLatestDraftInternal(Analytics.EventNames.clickPublishOnQuickEdit)(dispatch, getState).
+      catch(error => {
+        dispatch(saveError(error.message));
+      });
+};
+
+const getIsPublishNecessary = (getState) => {
+    const state = getState();
+    const quickEdit = State.getQuickEdit(state);
+    const formData = quickEdit.get('formData');
+    const originalVisibility = quickEdit.getIn([ 'initialFormData', 'visibility' ]);
+    const newVisibility = formData.get('visibility');
+    const usingStorytellerEditor = FeatureFlags.value('open_performance_narrative_editor') === 'storyteller';
+    return newVisibility === 'public' && originalVisibility === 'private' && usingStorytellerEditor;
+};
+
 /**
  * Saves quick edit form to API.
  * Fetches form data from state. Rebuilds data to API format.
@@ -38,60 +99,57 @@ export const updateFormData = data => ({
  */
 export function save() {
   return (dispatch, getState) => {
-    const state = getState();
-    const translations = state.get('translations');
+    const isPublishNecessary = getIsPublishNecessary(getState);
+    const publishIfNecessary = isPublishNecessary ?
+      publishLatestDraftInternal(Analytics.EventNames.publishViaQuickEditVisibilityDropdown)(dispatch, getState) :
+      Promise.resolve();
 
-    const quickEdit = State.getQuickEdit(state);
-    const formData = quickEdit.get('formData');
-    const goal = Selectors.getGoalById(state, quickEdit.get('goalId'));
-    const goalId = goal.get('id');
-    const version = goal.get('version');
-    const values = {
-      'is_public': formData.get('visibility') == 'public',
-      'name': formData.get('name'),
-      'action': formData.get('actionType'),
-      'subject': formData.get('prevailingMeasureName'),
-      'override': formData.get('prevailingMeasureProgressOverride') == 'none' ?
-        '' : formData.get('prevailingMeasureProgressOverride'),
-      'unit': formData.get('unit'),
-      'delta_is_percent': formData.get('percentUnit') == '%',
-      'start': formData.get('startDate'),
-      'end': formData.get('endDate'),
-      'target': formData.get('measureTarget'),
-      'target_type': formData.get('measureTargetType'),
-      'baseline': formData.get('measureBaseline'),
-      'delta': formData.get('measureTargetDelta'),
-      'maintain_type': formData.get('measureMaintainType')
-    };
+    return publishIfNecessary.then(() => {
+      // Re-fetch data from store; publishing may have changed
+      // some values (most importantly, version).
+      const state = getState();
+      const translations = state.get('translations');
 
-    const analyticsEvent = Analytics.createTrackEventActionData(Analytics.EventNames.clickUpdateOnQuickEdit, {
-      [Analytics.EventPayloadKeys.goalId]: goalId
-    });
+      const quickEdit = State.getQuickEdit(state);
+      const formData = quickEdit.get('formData');
+      const goal = Selectors.getGoalById(state, quickEdit.get('goalId'));
+      const goalId = goal.get('id');
+      const version = goal.get('version');
 
-    dispatch(SharedActions.doSideEffect(analyticsEvent));
-    dispatch(SharedActions.setModalInProgress('goals', 'quickEdit', true));
-    dispatch(SharedActions.hideModalMessage('goals', 'quickEdit'));
+      const values = {
+        'is_public': formData.get('visibility') === 'public',
+        'name': formData.get('name'),
+        'action': formData.get('actionType'),
+        'subject': formData.get('prevailingMeasureName'),
+        'override': formData.get('prevailingMeasureProgressOverride') == 'none' ?
+          '' : formData.get('prevailingMeasureProgressOverride'),
+        'unit': formData.get('unit'),
+        'delta_is_percent': formData.get('percentUnit') == '%',
+        'start': formData.get('startDate'),
+        'end': formData.get('endDate'),
+        'target': formData.get('measureTarget'),
+        'target_type': formData.get('measureTargetType'),
+        'baseline': formData.get('measureBaseline'),
+        'delta': formData.get('measureTargetDelta'),
+        'maintain_type': formData.get('measureMaintainType')
+      };
 
-    return Api.goals.update(goalId, version, values).then(updatedGoal => {
-      const successMessage = Helpers.translator(translations, 'admin.quick_edit.success_message', updatedGoal.name);
+      dispatch(saveStart(goalId, Analytics.EventNames.clickUpdateOnQuickEdit));
 
+      return Api.goals.update(goalId, version, values).then(updatedGoal => {
+        const successMessage = Helpers.translator(translations, 'admin.quick_edit.success_message', updatedGoal.name);
+
+        // TODO: Consider combining these actions. They're redundant.
         dispatch(DataActions.updateById(goalId, updatedGoal));
-        dispatch(SharedActions.showGlobalMessage('goals', successMessage, 'success'));
+        dispatch({
+          notification: { type: 'success', message: successMessage },
+          ...saveSuccess()
+        });
         dispatch(closeModal());
-      }).
-      catch(error => {// eslint-disable-line dot-notation
-        const message = JSON.parse(error.message);
-
-        let failureMessage;
-        if (message.validationError) {
-          failureMessage = _.map(message.errors,
-            err => Helpers.translator(translations, `admin.quick_edit.validation.${err.field}.${err.rule}`));
-        } else {
-          failureMessage = Helpers.translator(translations, 'admin.quick_edit.default_alert_message');
-        }
-
-        dispatch(SharedActions.showModalMessage('goals', 'quickEdit', failureMessage));
-        dispatch(SharedActions.setModalInProgress('goals', 'quickEdit', false));
       });
+    }).
+    catch(error => {
+      dispatch(saveError(error.message));
+    });
   };
 }

@@ -229,10 +229,10 @@ class BulkEditForm extends React.Component {
   }
 
   renderFooter() {
-    const { form, translations, actions, unsavedChanges } = this.props;
+    const { form, translations, actions, unsavedChanges, areAllSelectedGoalsConfigured } = this.props;
 
-    const isUpdateInProgress = form.get('updateInProgress');
-    const isUpdateDisabled = !unsavedChanges;
+    const saveInProgress = form.get('saveInProgress');
+    const isUpdateDisabled = !areAllSelectedGoalsConfigured || !unsavedChanges;
 
     const updateLabel = Helpers.translator(translations, 'admin.bulk_edit.update');
     const cancelLabel = Helpers.translator(translations, 'admin.bulk_edit.cancel');
@@ -240,13 +240,14 @@ class BulkEditForm extends React.Component {
     return (
       <Components.Socrata.Modal.Footer>
         <Components.Socrata.Button small
-                                   onClick={ actions.closeModal }>
+                                   onClick={ actions.closeModal }
+                                   disabled={ saveInProgress }>
           { cancelLabel }
         </Components.Socrata.Button>
         <Components.Socrata.Button small primary
                                    onClick={ this.updateGoals }
                                    disabled={ isUpdateDisabled }
-                                   inProgress={ isUpdateInProgress }>
+                                   inProgress={ saveInProgress }>
           { updateLabel }
         </Components.Socrata.Button>
       </Components.Socrata.Modal.Footer>
@@ -261,13 +262,20 @@ class BulkEditForm extends React.Component {
     return <div className="selected-rows-indicator">{ message }</div>;
   }
 
-  renderAlert() {
-    const message = this.props.message;
-    if (!message.get('visible')) {
-      return;
-    }
+  renderSaveError() {
+    const { translations, saveError } = this.props;
 
-    return <Components.Socrata.Alert type={message.get('type')} message={ message.get('content') }/>;
+    const failureMessage = Helpers.translator(translations, 'admin.bulk_edit.failure_message');
+
+    return saveError ? <Components.Socrata.Alert type='error' message={ failureMessage } /> : null;
+  }
+
+  renderUnconfiguredGoalWarning() {
+    const { translations, areAllSelectedGoalsConfigured } = this.props;
+    const message = Helpers.translator(translations, 'admin.bulk_edit.not_configured_message');
+
+    return areAllSelectedGoalsConfigured ?
+      null : <Components.Socrata.Alert type='error' message={ message }/>;
   }
 
   render() {
@@ -279,7 +287,8 @@ class BulkEditForm extends React.Component {
         <Components.Socrata.Modal.Header title={ modalTitle } onClose={ handleNavigateAway }/>
 
         <Components.Socrata.Modal.Content className="bulk-edit-modal-content">
-          { this.renderAlert() }
+          { this.renderSaveError() }
+          { this.renderUnconfiguredGoalWarning() }
           { this.renderSelectedRowsIndicator() }
           { this.renderVisibility() }
           { this.renderDateRange() }
@@ -303,7 +312,8 @@ const mapStateToProps = state => {
     goal: bulkEdit.get('goal'),
     commonData: commonData,
     goals: Selectors.getSelectedGoals(state),
-    message: bulkEdit.get('message'),
+    areAllSelectedGoalsConfigured: Selectors.areAllSelectedGoalsConfigured(state),
+    saveError: bulkEdit.get('saveError'),
     unsavedChanges: Helpers.isDifferent(commonData.toJS(), goal.toJS())
   };
 };

@@ -2424,12 +2424,18 @@ en:
           measure: Measure
           reduce: Reduce
         cancel: Cancel
+        cannot_publish_draft_not_present: No draft is present for this goal, so it cannot be made public.
         category: Category
+        create_a_draft: Create a draft
         dashboard: Dashboard
         dataset_owner: Dataset Owner
         dataset_updated: Dataset Updated
         date_range: Date Range
         default_alert_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"
+        draft_latest: (published)
+        draft_saved_on: Most recent draft saved on {0}.
+        draft_not_present: No saved drafts.
+        drafts: Drafts
         feedback: Feedback
         goal_name: Goal Title
         goal_owner: Last updated by
@@ -2468,6 +2474,7 @@ en:
         status: Status
         success_message: Success! {0} updated.
         unit: Unit
+        update_public_version: Update Public Version
         validation:
           action:
             enum: Action should be one of Increase, Decrease, Maintain, Measure.
@@ -2498,9 +2505,7 @@ en:
           unit:
             blank: Unit shouldn't be blank.
         visibility: Visibility
-      visibility_controls_disabled:
-        link: goal editor.
-        text: Publishing and visibility status can be managed in the
+      visibility_controls_will_publish: Making a goal public will publish the most recent draft.
     chrome:
       header:
         links:

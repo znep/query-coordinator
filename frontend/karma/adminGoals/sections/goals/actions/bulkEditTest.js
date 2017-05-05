@@ -46,18 +46,45 @@ describe('actions/bulkEditActions', () => {
     server.restore()
   });
 
+  describe('saveStart', () => {
+    const action = Actions.BulkEdit.saveStart();
+    it('is of the correct type', () => {
+      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveStart');
+    });
+    it('includes analytics event', () => {
+      assert.property(action, 'analyticsTrackEvent');
+      assert.propertyVal(action.analyticsTrackEvent, 'eventName', 'Clicked Update on Bulk Edit');
+    });
+  });
+
+  describe('saveSuccess', () => {
+    const action = Actions.BulkEdit.saveSuccess(123);
+    it('is of the correct type', () => {
+      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveSuccess');
+    });
+    it('includes count as data', () => {
+      assert.property(action, 'data', 123);
+    });
+  });
+
+  describe('saveError', () => {
+    const action = Actions.BulkEdit.saveError();
+    it('is of the correct type', () => {
+      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveError');
+    });
+  });
+
   it('updateMultipleGoals should update given goals', () => {
     server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
     server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
 
     return store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
-      const [ doSideEffect, startInProgress, updateGoals, closeModal ] = store.getActions();
+      const [ saveStart, updateGoals, saveSuccess, closeModal ] = store.getActions();
 
-      expect(startInProgress.type).to.eq(SharedActions.types.setModalInProgress);
+      expect(saveStart.type).to.eq(Actions.BulkEdit.types.saveStart);
       expect(updateGoals.type).to.eq(Actions.Data.types.updateAll);
+      expect(saveSuccess.type).to.eq(Actions.BulkEdit.types.saveSuccess);
       expect(closeModal.type).to.eq(Actions.BulkEdit.types.closeModal);
-
-      expect(startInProgress.inProgress).to.eq(true);
 
       expect(updateGoals.goals[0].is_public).to.eq(true);
       expect(updateGoals.goals[1].is_public).to.eq(true);
@@ -67,24 +94,16 @@ describe('actions/bulkEditActions', () => {
     });
   });
 
-  it('should dispatch failure action when something went wrong', () => {
+  it('dispatches error action on failure', () => {
     server.respondWith(xhr => {
       xhr.respond();
     });
 
     return store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
-      const [doSideEffect, started, failed] = store.getActions();
+      const [ saveStart, saveError ] = store.getActions();
 
-      expect(failed.type).to.eq(SharedActions.types.showModalMessage);
+      expect(saveStart.type).to.eq(Actions.BulkEdit.types.saveStart);
+      expect(saveError.type).to.eq(Actions.BulkEdit.types.saveError);
     });
-  });
-
-  it('should dispatch a warning message if not all the items have prevailing_measure data', () => {
-    const goals = GOALS.concat([{ id: 'not_configured' }]);
-
-    store.dispatch(Actions.BulkEdit.saveGoals(goals.map(goal => Immutable.fromJS(goal))), {});
-    const [doSideEffect, notConfigured] = store.getActions();
-
-    expect(notConfigured.type).to.eq(SharedActions.types.showModalMessage);
   });
 });

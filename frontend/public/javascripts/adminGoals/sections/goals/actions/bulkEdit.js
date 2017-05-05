@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import * as api from '../../../api';
-import * as SharedActions from '../../shared/actions';
 import * as DataActions from './data';
 import * as Helpers from '../../../helpers';
 import * as Analytics from '../../shared/analytics';
@@ -8,7 +7,10 @@ import * as Analytics from '../../shared/analytics';
 export const types = {
   openModal: 'goals.bulkEdit.openModal',
   closeModal: 'goals.bulkEdit.closeModal',
-  setFormData: 'goals.bulkEdit.setFormData'
+  setFormData: 'goals.bulkEdit.setFormData',
+  saveStart: 'goals.bulkEdit.saveStart', // Payload: none.
+  saveSuccess: 'goals.bulkEdit.saveSuccess', // Payload: Number of goals saved.
+  saveError: 'goals.bulkEdit.saveError' // Payload: none.
 };
 
 export const openModal = () => ({
@@ -24,6 +26,13 @@ export const setFormData = data => ({
   type: types.setFormData,
   data
 });
+
+export const saveStart = () => ({
+  type: types.saveStart,
+  ...Analytics.createTrackEventActionData(Analytics.EventNames.clickUpdateOnBulkEdit, {})
+});
+export const saveError = () => ({ type: types.saveError });
+export const saveSuccess = (goalCount) => ({ type: types.saveSuccess, data: goalCount });
 
 /**
  * Goal update api expects prevailing_measure data normalized.
@@ -52,32 +61,28 @@ export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
   const allConfigured = goals.every(goal => goal.has('prevailing_measure'));
   const translations = getState().get('translations');
 
-  // Send event to mixpanel
-  const analyticsEvent = Analytics.createTrackEventActionData(Analytics.EventNames.clickUpdateOnBulkEdit, {});
-  dispatch(SharedActions.doSideEffect(analyticsEvent));
-
   // Cannot update prevailing measure data for the items
   // which are not configured properly.
+  // The UI should prevent this case.
   if (!allConfigured) {
-    const message = Helpers.translator(translations, 'admin.bulk_edit.not_configured_message');
-    dispatch(SharedActions.showModalMessage('goals', 'bulkEdit', message));
-
-    return Promise.resolve();
+    throw new Error('Cannot save goal which has not been configured.');
   }
 
-  const failureMessage = Helpers.translator(translations, 'admin.bulk_edit.failure_message');
-
   const normalizedData = formatGoalDataForWrite(updatedData);
-  dispatch(SharedActions.setModalInProgress('goals', 'bulkEdit', true));
+  dispatch(saveStart());
 
   const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), normalizedData));
   return Promise.all(updateRequests).then(updatedGoals => {
     const successMessage = Helpers.translator(translations, 'admin.bulk_edit.success_message', updatedGoals.length);
 
+    // TODO: Consider combining these actions. They're redundant.
     dispatch(DataActions.updateAll(updatedGoals));
-    dispatch(closeModal());
-    dispatch(SharedActions.showGlobalMessage('goals', successMessage, 'success'));
+    dispatch({
+      notification: { type: 'success', message: successMessage },
+      ...saveSuccess(updatedGoals.length)
+    });
+    dispatch(closeModal()); // TODO does this really belong here?
 
     return updatedGoals;
-  }).catch(() => dispatch(SharedActions.showModalMessage('goals', 'bulkEdit', failureMessage)));
+  }).catch(() => dispatch(saveError()));
 };

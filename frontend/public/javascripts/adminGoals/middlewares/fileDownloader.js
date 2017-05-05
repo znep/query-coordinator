@@ -62,7 +62,7 @@ export default store => next => action => {
               then(() => store.dispatch({ type: successActionType, ...getExtraActionFields(action) })).
               then(clear);
           }).
-          catch(reason => {// eslint-disable-line dot-notation
+          catch(reason => {
             store.dispatch({ type: failureActionType, reason, ...getExtraActionFields(action) });
 
             const message = state.getIn(['translations', 'admin', 'default_error_message']);

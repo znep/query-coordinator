@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as Reselect from 'reselect';
 import * as Immutable from 'immutable';
 import * as Helpers from '../../helpers';
@@ -8,6 +9,39 @@ import moment from 'moment';
 
 export const getGoalById = (state, goalId) => {
   return State.getData(state).find(goal => goal.get('id') === goalId);
+};
+
+// Given a goal ID, returns one of the 3 below strings:
+// 'status_public': If the goal is public, and no drafts have been created since publishing.
+// 'status_public_with_draft': If the goal is public, but has an unpublished draft.
+// 'status_private': If the goal is private (regardless of draft situation).
+export const getGoalPublicationStatus = (state, goalId) => {
+  const goal = getGoalById(state, goalId);
+  const isPublic = goal.get('is_public');
+  const draftTime = goal.getIn([ 'narrative', 'draft', 'created_at' ]);
+  const publishedTime = goal.getIn([ 'narrative', 'published', 'created_at' ]);
+
+  // These scenarios are _not_ treated as unpublished drafts:
+  // * Domain is still using classic editor.
+  // * Particular goal was never loaded in Storyteller.
+
+  let goalPublicationStatus;
+
+  const hasBeenMigrated = _.isString(draftTime) || _.isString(publishedTime);
+  if (hasBeenMigrated) {
+    const draftTimeParsed = new Date(draftTime);
+    const publishedTimeParsed = new Date(publishedTime);
+
+    const hasUnpublishedDraft = _.isNil(publishedTime) ||
+      draftTimeParsed.getTime() > publishedTimeParsed.getTime();
+
+    const publicStatus = hasUnpublishedDraft  ? 'status_public_with_draft' : 'status_public';
+    goalPublicationStatus = isPublic ? publicStatus : 'status_private';
+  } else {
+    goalPublicationStatus = isPublic ? 'status_public' : 'status_private';
+  }
+
+  return goalPublicationStatus;
 };
 
 const getStatus = (translations, goal) => {
@@ -49,6 +83,13 @@ export const getSortedGoals = Reselect.createSelector(
 export const getSelectedGoals = Reselect.createSelector(
   State.getData, State.getSelectedIds,
   (goals, selectedIds) => goals.toSeq().filter(goal => selectedIds.includes(goal.get('id')))
+);
+
+// True if all selected goals have a prevailing measure, false otherwise.
+// If no goals are selected, returns true.
+export const areAllSelectedGoalsConfigured = Reselect.createSelector(
+  getSelectedGoals,
+  (goals) => goals.every(goal => goal.has('prevailing_measure'))
 );
 
 export const getNumberOfPages = Reselect.createSelector(

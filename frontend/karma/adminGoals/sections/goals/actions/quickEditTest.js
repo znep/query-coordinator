@@ -7,8 +7,10 @@ import Immutable from 'immutable';
 import mockGoalsById from '../../../data/cachedGoals';
 import propGoals, { goalsWithPublicationState } from '../../../data/goalTableActions/propGoals';
 import mockedTranslations from '../../../mockTranslations';
+import { FeatureFlags } from 'common/feature_flags';
 
 import * as Actions from 'sections/goals/actions';
+import { EventNames } from 'sections/shared/analytics';
 
 const mockGoals = Immutable.fromJS(mockGoalsById).valueSeq().toList().toJS();
 
@@ -82,7 +84,6 @@ describe('actions/quickEditActions', () => {
           },
           initialFormData: {},
           formData: {}
-
         }
       }
     });
@@ -95,6 +96,52 @@ describe('actions/quickEditActions', () => {
 
     afterEach(() => {
       server.restore()
+    });
+
+    describe('making a goal public', () => {
+      it('publishes first', () => {
+        const draftGoalId = goalsWithPublicationState.publishedWithDraft.id;
+        const state = initialState.mergeDeep({
+          goals: {
+            data: propGoals,
+            quickEdit: {
+              goalId: draftGoalId,
+              formData: {
+                visibility: 'public'
+              },
+              initialFormData: {
+                visibility: 'private'
+              }
+            }
+          }
+        });
+        server.respondWith(xhr => {
+          xhr.respond(200, null, JSON.stringify({ digest: 'foo' }));
+        });
+
+        store = mockStore(state);
+
+        return store.dispatch(Actions.QuickEdit.save()).then(() => {
+          assert.lengthOf(store.getActions(), 7);
+          // Only test the first 3 and the last, the rest are covered elsewhere.
+          const [ saveStart, updateById, saveSuccess ] = store.getActions();
+          const closeModal = _.last(store.getActions());
+
+          assert.propertyVal(saveStart, 'type', Actions.QuickEdit.types.saveStart);
+          assert.property(saveStart, 'analyticsTrackEvent');
+          assert.propertyVal(
+            saveStart.analyticsTrackEvent,
+            'eventName',
+            EventNames.publishViaQuickEditVisibilityDropdown
+          );
+          assert.propertyVal(saveStart.analyticsTrackEvent.eventPayload, 'Goal Id', draftGoalId);
+          assert.propertyVal(updateById, 'type', Actions.Data.types.updateById);
+          assert.propertyVal(saveSuccess, 'type', Actions.QuickEdit.types.saveSuccess);
+          assert.propertyVal(closeModal, 'type', Actions.QuickEdit.types.closeModal);
+
+          assert.propertyVal(updateById, 'goalId', draftGoalId);
+        });
+      });
     });
 
     it('updates goal', () => {
@@ -112,6 +159,15 @@ describe('actions/quickEditActions', () => {
         assert.propertyVal(closeModal, 'type', Actions.QuickEdit.types.closeModal);
 
         assert.propertyVal(updateById, 'goalId', goalId);
+      });
+    });
+
+    it('includes analytics event', () => {
+      return store.dispatch(Actions.QuickEdit.save()).then(() => {
+        const action = _.find(store.getActions(), { type: Actions.QuickEdit.types.saveStart });
+        assert.property(action, 'analyticsTrackEvent');
+        assert.propertyVal(action.analyticsTrackEvent.eventPayload, 'Goal Id', goalId);
+        assert.propertyVal(action.analyticsTrackEvent, 'eventName', EventNames.clickUpdateOnQuickEdit);
       });
     });
 
@@ -183,6 +239,15 @@ describe('actions/quickEditActions', () => {
         assert.propertyVal(narrativePublishRequest, 'method', 'POST');
         assert.propertyVal(narrativePublishRequest, 'url', `/api/stat/v1/goals/${goalId}/narrative/published`);
         assert.propertyVal(narrativePublishRequest, 'requestBody', '{"digest":"fake digest"}');
+      });
+    });
+
+    it('includes analytics event', () => {
+      return store.dispatch(Actions.QuickEdit.publishLatestDraft()).then(() => {
+        const action = _.find(store.getActions(), { type: Actions.QuickEdit.types.saveStart });
+        assert.property(action, 'analyticsTrackEvent');
+        assert.propertyVal(action.analyticsTrackEvent.eventPayload, 'Goal Id', goalId);
+        assert.propertyVal(action.analyticsTrackEvent, 'eventName', EventNames.clickPublishOnQuickEdit);
       });
     });
 

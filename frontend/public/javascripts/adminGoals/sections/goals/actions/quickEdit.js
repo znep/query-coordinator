@@ -4,6 +4,7 @@ import * as Helpers from '../../../helpers';
 import * as State from '../state';
 import * as Selectors from '../selectors';
 import * as Analytics from '../../shared/analytics';
+import { FeatureFlags } from 'common/feature_flags';
 
 export const types = {
   openModal: 'goals.quickEdit.openModal',
@@ -42,18 +43,21 @@ export const saveError = (error) => ({ type: types.saveError, data: error });
 export const saveSuccess = () => ({ type: types.saveSuccess });
 
 /**
+ * Internal method - does not handle errors. Use the exported
+ * functions if you're just wanting to trigger a publication.
  * Publishes latest narrative draft.
  */
-export const publishLatestDraft = () => {
+const publishLatestDraftInternal = (analyticsEventName) => {
   return (dispatch, getState) => {
     const state = getState();
     const quickEdit = State.getQuickEdit(state);
     const goal = Selectors.getGoalById(state, quickEdit.get('goalId'));
     const goalId = goal.get('id');
 
-    dispatch(saveStart(goalId, Analytics.EventNames.clickPublishOnQuickEdit));
+    dispatch(saveStart(goalId, analyticsEventName));
     return Api.goals.publishLatestDraft(goalId).then(() => {
-      const latestDraft = goal.getIn([ 'narrative', 'draft' ]).toJS();
+      const latestDraftImmutable = goal.getIn([ 'narrative', 'draft' ]);
+      const latestDraft = latestDraftImmutable ? latestDraftImmutable.toJS() : null;
       dispatch(DataActions.updateById(goalId, {
         narrative: {
           published: latestDraft,
@@ -61,11 +65,19 @@ export const publishLatestDraft = () => {
         }
       }));
       dispatch(saveSuccess());
-    }).
-    catch(error => {// eslint-disable-line dot-notation
-      dispatch(saveError(error.message));
     });
   };
+};
+
+/**
+ * Publishes latest narrative draft.
+ */
+export const publishLatestDraft = () => {
+  return (dispatch, getState) =>
+    publishLatestDraftInternal(Analytics.EventNames.clickPublishOnQuickEdit)(dispatch, getState).
+      catch(error => {// eslint-disable-line dot-notation
+        dispatch(saveError(error.message));
+      });
 };
 
 /**
@@ -84,8 +96,12 @@ export function save() {
     const goal = Selectors.getGoalById(state, quickEdit.get('goalId'));
     const goalId = goal.get('id');
     const version = goal.get('version');
+    const originalVisibility = quickEdit.getIn([ 'initialFormData', 'visibility' ]);
+    const newVisibility = formData.get('visibility');
+    const usingStorytellerEditor = FeatureFlags.value('open_performance_narrative_editor') === 'storyteller';
+    const isPublishNecessary = newVisibility === 'public' && originalVisibility === 'private' && usingStorytellerEditor;
     const values = {
-      'is_public': formData.get('visibility') == 'public',
+      'is_public': newVisibility == 'public',
       'name': formData.get('name'),
       'action': formData.get('actionType'),
       'subject': formData.get('prevailingMeasureName'),
@@ -102,18 +118,25 @@ export function save() {
       'maintain_type': formData.get('measureMaintainType')
     };
 
-    dispatch(saveStart(goalId, Analytics.EventNames.clickUpdateOnQuickEdit));
+    const publishIfNecessary = isPublishNecessary ?
+      publishLatestDraftInternal(Analytics.EventNames.publishViaQuickEditVisibilityDropdown)(dispatch, getState) :
+      Promise.resolve();
 
-    return Api.goals.update(goalId, version, values).then(updatedGoal => {
-      const successMessage = Helpers.translator(translations, 'admin.quick_edit.success_message', updatedGoal.name);
+    return publishIfNecessary.then(() => {
 
-      // TODO: Consider combining these actions. They're redundant.
-      dispatch(DataActions.updateById(goalId, updatedGoal));
-      dispatch({
-        notification: { type: 'success', message: successMessage },
-        ...saveSuccess()
+      dispatch(saveStart(goalId, Analytics.EventNames.clickUpdateOnQuickEdit));
+
+      return Api.goals.update(goalId, version, values).then(updatedGoal => {
+        const successMessage = Helpers.translator(translations, 'admin.quick_edit.success_message', updatedGoal.name);
+
+        // TODO: Consider combining these actions. They're redundant.
+        dispatch(DataActions.updateById(goalId, updatedGoal));
+        dispatch({
+          notification: { type: 'success', message: successMessage },
+          ...saveSuccess()
+        });
+        dispatch(closeModal());
       });
-      dispatch(closeModal());
     }).
     catch(error => {// eslint-disable-line dot-notation
       dispatch(saveError(error.message));

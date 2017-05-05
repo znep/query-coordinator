@@ -96,7 +96,7 @@ class Administration::ConnectorController < AdministrationController
       begin
         CatalogFederator.client.set_sync_policy(params[:server_id], params[:server][:sync_policy])
         if params[:server][:sync_policy] == 'all'
-          CatalogFederator.client.sync_datasets(params[:server_id], selection_diff(all_assets: true))
+          CatalogFederator.client.sync_source(params[:server_id])
         else
           CatalogFederator.client.sync_datasets(params[:server_id], selection_diff)
         end
@@ -242,11 +242,11 @@ class Administration::ConnectorController < AdministrationController
   end
   helper_method :enable_catalog_federator_connector?
 
-  def selection_diff(all_assets: false)
-    selected_assets = all_assets ? @datasets : @datasets.values_at(*params[:server][:assets].map(&:to_i))
+  def selection_diff
+    selections = @datasets.values_at(*params[:server][:assets].to_a.map(&:to_i))
     {
-      'addedSelections': selected_assets.pluck('externalId'),
-      'removedSelections': (@datasets - selected_assets).pluck('externalId')
+      'addedSelections': selections.pluck('externalId'),
+      'removedSelections': (@datasets - selections).pluck('externalId')
     }
   end
 

@@ -147,7 +147,6 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     itShowsDraftPublicationDate();
     itHidesSpinner();
     itHidesPublishedMessage();
-
   });
 
   describe('publishedWithDraft saving', () => {

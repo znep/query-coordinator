@@ -112,7 +112,7 @@ describe('sections/goals/selectors/getSelectedGoals', () => {
   });
 });
 
-describe('sections/goals/selectors/isAllSelectedGoalsConfigured', () => {
+describe('sections/goals/selectors/areAllSelectedGoalsConfigured', () => {
   const GOAL_DATA_NONE_CONFIGURED = [
     { id: 'a', is_public: true },
     { id: 'b', is_public: true }
@@ -126,13 +126,13 @@ describe('sections/goals/selectors/isAllSelectedGoalsConfigured', () => {
 
   const itReturnsTrueForState = (scenarioName, state) => {
     it(`returns true for ${scenarioName}`, () => {
-      assert.isTrue(Selectors.isAllSelectedGoalsConfigured(Immutable.fromJS(state)));
+      assert.isTrue(Selectors.areAllSelectedGoalsConfigured(Immutable.fromJS(state)));
     });
   };
 
   const itReturnsFalseForState = (scenarioName, state) => {
     it(`returns false for ${scenarioName}`, () => {
-      assert.isFalse(Selectors.isAllSelectedGoalsConfigured(Immutable.fromJS(state)));
+      assert.isFalse(Selectors.areAllSelectedGoalsConfigured(Immutable.fromJS(state)));
     });
   };
 

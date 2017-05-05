@@ -87,7 +87,7 @@ export const getSelectedGoals = Reselect.createSelector(
 
 // True if all selected goals have a prevailing measure, false otherwise.
 // If no goals are selected, returns true.
-export const isAllSelectedGoalsConfigured = Reselect.createSelector(
+export const areAllSelectedGoalsConfigured = Reselect.createSelector(
   getSelectedGoals,
   (goals) => goals.every(goal => goal.has('prevailing_measure'))
 );

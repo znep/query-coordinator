@@ -229,10 +229,10 @@ class BulkEditForm extends React.Component {
   }
 
   renderFooter() {
-    const { form, translations, actions, unsavedChanges, isAllSelectedGoalsConfigured } = this.props;
+    const { form, translations, actions, unsavedChanges, areAllSelectedGoalsConfigured } = this.props;
 
     const saveInProgress = form.get('saveInProgress');
-    const isUpdateDisabled = !isAllSelectedGoalsConfigured || !unsavedChanges;
+    const isUpdateDisabled = !areAllSelectedGoalsConfigured || !unsavedChanges;
 
     const updateLabel = Helpers.translator(translations, 'admin.bulk_edit.update');
     const cancelLabel = Helpers.translator(translations, 'admin.bulk_edit.cancel');
@@ -271,10 +271,10 @@ class BulkEditForm extends React.Component {
   }
 
   renderUnconfiguredGoalWarning() {
-    const { translations, isAllSelectedGoalsConfigured } = this.props;
+    const { translations, areAllSelectedGoalsConfigured } = this.props;
     const message = Helpers.translator(translations, 'admin.bulk_edit.not_configured_message');
 
-    return isAllSelectedGoalsConfigured ?
+    return areAllSelectedGoalsConfigured ?
       null : <Components.Socrata.Alert type='error' message={ message }/>;
   }
 
@@ -312,7 +312,7 @@ const mapStateToProps = state => {
     goal: bulkEdit.get('goal'),
     commonData: commonData,
     goals: Selectors.getSelectedGoals(state),
-    isAllSelectedGoalsConfigured: Selectors.isAllSelectedGoalsConfigured(state),
+    areAllSelectedGoalsConfigured: Selectors.areAllSelectedGoalsConfigured(state),
     saveError: bulkEdit.get('saveError'),
     unsavedChanges: Helpers.isDifferent(commonData.toJS(), goal.toJS())
   };

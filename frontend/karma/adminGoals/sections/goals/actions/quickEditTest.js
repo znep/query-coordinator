@@ -205,7 +205,7 @@ describe('actions/quickEditActions', () => {
     });
 
     afterEach(() => {
-      server.restore()
+      server.restore();
     });
 
     it('dispatches expected actions on success', () => {

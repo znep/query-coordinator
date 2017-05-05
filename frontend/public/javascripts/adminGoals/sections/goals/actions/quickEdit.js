@@ -75,7 +75,7 @@ const publishLatestDraftInternal = (analyticsEventName) => {
 export const publishLatestDraft = () => {
   return (dispatch, getState) =>
     publishLatestDraftInternal(Analytics.EventNames.clickPublishOnQuickEdit)(dispatch, getState).
-      catch(error => {// eslint-disable-line dot-notation
+      catch(error => {
         dispatch(saveError(error.message));
       });
 };
@@ -101,7 +101,7 @@ export function save() {
     const usingStorytellerEditor = FeatureFlags.value('open_performance_narrative_editor') === 'storyteller';
     const isPublishNecessary = newVisibility === 'public' && originalVisibility === 'private' && usingStorytellerEditor;
     const values = {
-      'is_public': newVisibility == 'public',
+      'is_public': newVisibility === 'public',
       'name': formData.get('name'),
       'action': formData.get('actionType'),
       'subject': formData.get('prevailingMeasureName'),
@@ -138,7 +138,7 @@ export function save() {
         dispatch(closeModal());
       });
     }).
-    catch(error => {// eslint-disable-line dot-notation
+    catch(error => {
       dispatch(saveError(error.message));
     });
   };

@@ -341,7 +341,7 @@ $(function() {
 
   function toggleBrowse2DescriptionTruncation(event) {
     event.preventDefault();
-    var sectionContainer = $(this).parent('.browse2-result-description-container');
+    var sectionContainer = $(event.target).closest('.browse2-result-description-container');
     var currentDisplay = sectionContainer.attr('data-description-display');
 
     if (currentDisplay === 'show') {

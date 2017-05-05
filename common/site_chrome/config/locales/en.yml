@@ -19,8 +19,8 @@ en:
     powered_by: Powered By
   header:
     administration: Administration
-    header_links_aria_label: Header links
     close_button_aria_label: Close
+    header_links_aria_label: Header links
     language: Language
     menu: Menu
     my_profile: My Profile

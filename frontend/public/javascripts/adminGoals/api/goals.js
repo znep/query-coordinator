@@ -54,6 +54,7 @@ export function publishLatestDraft(goalId) {
       {
         body: JSON.stringify({ digest })
       }
-    );
+    ).
+    then(() => getById(goalId)); // Re-fetch the goal to get the new version field.
   });
 }

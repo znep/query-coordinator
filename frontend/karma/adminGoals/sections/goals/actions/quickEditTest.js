@@ -115,8 +115,9 @@ describe('actions/quickEditActions', () => {
             }
           }
         });
+        const fakeGoalData = { version: 'fakeVersion' };
         server.respondWith(xhr => {
-          xhr.respond(200, null, JSON.stringify({ digest: 'foo' }));
+          xhr.respond(200, null, JSON.stringify(fakeGoalData));
         });
 
         store = mockStore(state);
@@ -140,6 +141,7 @@ describe('actions/quickEditActions', () => {
           assert.propertyVal(closeModal, 'type', Actions.QuickEdit.types.closeModal);
 
           assert.propertyVal(updateById, 'goalId', draftGoalId);
+          assert.propertyVal(updateById.data, 'version', fakeGoalData.version);
         });
       });
     });
@@ -231,14 +233,20 @@ describe('actions/quickEditActions', () => {
       });
 
       return store.dispatch(Actions.QuickEdit.publishLatestDraft()).then(() => {
-        assert.lengthOf(server.requests, 2);
+        // 1- fetch latest draft
+        // 2- publish draft
+        // 3- fetch new version of goal
+        assert.lengthOf(server.requests, 3);
         const narrativeFetchRequest = server.requests[0];
         const narrativePublishRequest = server.requests[1];
+        const latestVersionFetchRequest = server.requests[2];
         assert.propertyVal(narrativeFetchRequest, 'method', 'GET');
         assert.propertyVal(narrativeFetchRequest, 'url', `/api/stat/v1/goals/${goalId}/narrative/drafts/latest`);
         assert.propertyVal(narrativePublishRequest, 'method', 'POST');
         assert.propertyVal(narrativePublishRequest, 'url', `/api/stat/v1/goals/${goalId}/narrative/published`);
         assert.propertyVal(narrativePublishRequest, 'requestBody', '{"digest":"fake digest"}');
+        assert.propertyVal(latestVersionFetchRequest, 'method', 'GET');
+        assert.propertyVal(latestVersionFetchRequest, 'url', `/api/stat/v1/goals/${goalId}`);
       });
     });
 

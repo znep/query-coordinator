@@ -55,14 +55,15 @@ const publishLatestDraftInternal = (analyticsEventName) => {
     const goalId = goal.get('id');
 
     dispatch(saveStart(goalId, analyticsEventName));
-    return Api.goals.publishLatestDraft(goalId).then(() => {
+    return Api.goals.publishLatestDraft(goalId).then((updatedGoal) => {
       const latestDraftImmutable = goal.getIn([ 'narrative', 'draft' ]);
       const latestDraft = latestDraftImmutable ? latestDraftImmutable.toJS() : null;
       dispatch(DataActions.updateById(goalId, {
         narrative: {
           published: latestDraft,
           draft: latestDraft
-        }
+        },
+        ...updatedGoal
       }));
       dispatch(saveSuccess());
     });
@@ -80,6 +81,16 @@ export const publishLatestDraft = () => {
       });
 };
 
+const getIsPublishNecessary = (getState) => {
+    const state = getState();
+    const quickEdit = State.getQuickEdit(state);
+    const formData = quickEdit.get('formData');
+    const originalVisibility = quickEdit.getIn([ 'initialFormData', 'visibility' ]);
+    const newVisibility = formData.get('visibility');
+    const usingStorytellerEditor = FeatureFlags.value('open_performance_narrative_editor') === 'storyteller';
+    return newVisibility === 'public' && originalVisibility === 'private' && usingStorytellerEditor;
+};
+
 /**
  * Saves quick edit form to API.
  * Fetches form data from state. Rebuilds data to API format.
@@ -88,41 +99,40 @@ export const publishLatestDraft = () => {
  */
 export function save() {
   return (dispatch, getState) => {
-    const state = getState();
-    const translations = state.get('translations');
-
-    const quickEdit = State.getQuickEdit(state);
-    const formData = quickEdit.get('formData');
-    const goal = Selectors.getGoalById(state, quickEdit.get('goalId'));
-    const goalId = goal.get('id');
-    const version = goal.get('version');
-    const originalVisibility = quickEdit.getIn([ 'initialFormData', 'visibility' ]);
-    const newVisibility = formData.get('visibility');
-    const usingStorytellerEditor = FeatureFlags.value('open_performance_narrative_editor') === 'storyteller';
-    const isPublishNecessary = newVisibility === 'public' && originalVisibility === 'private' && usingStorytellerEditor;
-    const values = {
-      'is_public': newVisibility === 'public',
-      'name': formData.get('name'),
-      'action': formData.get('actionType'),
-      'subject': formData.get('prevailingMeasureName'),
-      'override': formData.get('prevailingMeasureProgressOverride') == 'none' ?
-        '' : formData.get('prevailingMeasureProgressOverride'),
-      'unit': formData.get('unit'),
-      'delta_is_percent': formData.get('percentUnit') == '%',
-      'start': formData.get('startDate'),
-      'end': formData.get('endDate'),
-      'target': formData.get('measureTarget'),
-      'target_type': formData.get('measureTargetType'),
-      'baseline': formData.get('measureBaseline'),
-      'delta': formData.get('measureTargetDelta'),
-      'maintain_type': formData.get('measureMaintainType')
-    };
-
+    const isPublishNecessary = getIsPublishNecessary(getState);
     const publishIfNecessary = isPublishNecessary ?
       publishLatestDraftInternal(Analytics.EventNames.publishViaQuickEditVisibilityDropdown)(dispatch, getState) :
       Promise.resolve();
 
     return publishIfNecessary.then(() => {
+      // Re-fetch data from store; publishing may have changed
+      // some values (most importantly, version).
+      const state = getState();
+      const translations = state.get('translations');
+
+      const quickEdit = State.getQuickEdit(state);
+      const formData = quickEdit.get('formData');
+      const goal = Selectors.getGoalById(state, quickEdit.get('goalId'));
+      const goalId = goal.get('id');
+      const version = goal.get('version');
+
+      const values = {
+        'is_public': formData.get('visibility') === 'public',
+        'name': formData.get('name'),
+        'action': formData.get('actionType'),
+        'subject': formData.get('prevailingMeasureName'),
+        'override': formData.get('prevailingMeasureProgressOverride') == 'none' ?
+          '' : formData.get('prevailingMeasureProgressOverride'),
+        'unit': formData.get('unit'),
+        'delta_is_percent': formData.get('percentUnit') == '%',
+        'start': formData.get('startDate'),
+        'end': formData.get('endDate'),
+        'target': formData.get('measureTarget'),
+        'target_type': formData.get('measureTargetType'),
+        'baseline': formData.get('measureBaseline'),
+        'delta': formData.get('measureTargetDelta'),
+        'maintain_type': formData.get('measureMaintainType')
+      };
 
       dispatch(saveStart(goalId, Analytics.EventNames.clickUpdateOnQuickEdit));
 

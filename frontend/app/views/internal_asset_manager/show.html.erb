@@ -3,14 +3,7 @@
   <title><%= I18n.t('internal_asset_manager.title') %> | <%= get_site_title %></title>
 <%- end %>
 
-<div class="internal-asset-manager">
-  <div
-    class="search-with-autocomplete"
-    data-catalog-autocomplete="<%= FeatureFlags.derive(@view, request).browse_autocomplete %>">
-  </div>
-
-  <div id="internal-asset-manager-content"></div>
-</div>
+<div class="internal-asset-manager" id="internal-asset-manager-content"></div>
 
 <!--
 <div id="modals">

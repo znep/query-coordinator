@@ -2608,7 +2608,19 @@ en:
       submit: Save %{model}
       update: Update %{model}
   internal_asset_manager:
-    title: Asset Manager
+    errors:
+      insufficent_view_permission: You do not have permission to view this page.
+    result_list_table:
+      columns:
+        access_level: Access Level
+        category: Category
+        discoverable: Discoverable
+        last_updated_date: Last Updated Date
+        name: Name
+        owned_by: Owned By
+        type: Type
+        visibility: Visibility
+    title: Asset Inventory
   number:
     currency:
       format:

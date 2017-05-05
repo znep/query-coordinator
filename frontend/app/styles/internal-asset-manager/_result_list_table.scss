@@ -1,0 +1,38 @@
+@import "styleguide-colors";
+
+table.result-list-table {
+  thead {
+    tr {
+      th {
+        white-space: nowrap;
+        background: $light-grey-5;
+        border: 1px solid $light-grey-3;
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+  }
+
+  tr.result-list-row {
+    td {
+      &.name {
+        a {
+          text-decoration: none;
+        }
+
+        span.name {
+          font-size: 15px;
+        }
+
+        span.description {
+          display: block;
+        }
+      }
+
+      &.type {
+        font-size: 18px;
+        text-align: center;
+      }
+    }
+  }
+}

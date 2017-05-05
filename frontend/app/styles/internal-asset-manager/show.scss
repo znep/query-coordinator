@@ -1,7 +1,14 @@
 @import "styleguide-colors";
+@import "internal-asset-manager/result_list_table";
+
+$admin-header-height: 46px;
 
 body {
   margin: 0;
-  padding: 0;
+  padding: $admin-header-height 0 0 0;
   background: $light-grey-6;
+}
+
+.internal-asset-manager {
+
 }

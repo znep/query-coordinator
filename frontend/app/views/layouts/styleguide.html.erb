@@ -23,7 +23,7 @@ http://www.socrata.com
       <%== site_chrome_admin_header(request, response, @site_chrome_admin_header_options || {}) %>
     <%- end -%>
 
-    <%- unless @suppress_site_chrome_header -%>
+    <%- if render_site_chrome? && !@suppress_site_chrome_header -%>
       <%== site_chrome_header(request, response) %>
     <%- end -%>
 
@@ -33,7 +33,9 @@ http://www.socrata.com
 
     <%= yield %>
 
-    <%== site_chrome_footer(request, response) %>
+    <%- if render_site_chrome? -%>
+      <%== site_chrome_footer(request, response) %>
+    <%- end -%>
 
     <%# Ensure mixpanelConfig is defined before loading other scripts -%>
     <%= render_mixpanel_config %>

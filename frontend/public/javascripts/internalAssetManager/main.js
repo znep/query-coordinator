@@ -31,12 +31,6 @@ ReactDOM.render(
   document.querySelector('#internal-asset-manager-content')
 );
 
-// Show the footer
-// const footer = document.querySelector('#site-chrome-footer');
-// if (footer) {
-//   footer.style.visibility = 'visible';
-// }
-
-// TODO: hide spinner
+// TODO: hide spinner that doesn't exist yet
 
 Array.from(document.querySelectorAll('.dateLocalize')).forEach(dateLocalize);

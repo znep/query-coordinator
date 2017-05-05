@@ -9,7 +9,7 @@ module InternalAssetManagerHelper
   end
 
   def render_internal_asset_manager_translations
-    javascript_tag("var I18n = _.extend(I18n, #{json_escape(internal_asset_manager_translations.to_json)});")
+    javascript_tag("window.I18n = _.extend(I18n, #{json_escape(internal_asset_manager_translations.to_json)});")
   end
 
   def render_internal_asset_manager_mixpanel_config
@@ -23,7 +23,7 @@ module InternalAssetManagerHelper
       mixpanel_config[:disable] = true
     end
 
-    javascript_tag("var mixpanelConfig = #{json_escape(mixpanel_config.to_json)};")
+    javascript_tag("window.mixpanelConfig = #{json_escape(mixpanel_config.to_json)};")
   end
 
   def render_internal_asset_manager_session_data
@@ -34,7 +34,7 @@ module InternalAssetManagerHelper
       :email => current_user.try(:email)
     }
 
-    javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
+    javascript_tag("window.sessionData = #{json_escape(session_data.to_json)};")
   end
 
   def render_internal_asset_manager_server_config
@@ -56,13 +56,24 @@ module InternalAssetManagerHelper
       :recaptchaKey => RECAPTCHA_2_SITE_KEY
     }
 
-    javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")
+    javascript_tag("window.serverConfig = #{json_escape(server_config.to_json)};")
   end
 
   def render_internal_asset_manager_initial_state
     javascript_tag(%Q(
-      var initialState = {};
+      window.initialState = {
+        catalog: {
+          columns: #{internal_asset_manager_table_columns},
+          results: #{@catalog_results.try(:to_json)}
+        }
+      };
     ))
+  end
+
+  # Defines the default order of the columns for the internal asset manager table.
+  # Eventually this will be configurable on a per-user basis.
+  def internal_asset_manager_table_columns
+    %w(type name lastUpdatedDate ownedBy accessLevel category visibility discoverable)
   end
 
 end

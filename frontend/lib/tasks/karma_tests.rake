@@ -32,6 +32,7 @@ namespace :test do
       'adminGoals' => 'update_admin_goals_translations',
       'adminActivityFeed' => 'update_admin_activity_feed_translations',
       'importWizard' => 'update_import_wizard_translations',
+      'internalAssetManager' => 'update_internal_asset_manager_translations',
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
       'signin' => 'update_signin_translations',
@@ -52,6 +53,7 @@ namespace :test do
       'test:karma:translations:update_datacards_translations',
       'test:karma:translations:update_dataset_landing_page_translations',
       'test:karma:translations:update_import_wizard_translations',
+      'test:karma:translations:update_internal_asset_manager_translations',
       'test:karma:translations:update_admin_goals_translations',
       'test:karma:translations:update_admin_activity_feed_translations',
       'test:karma:translations:update_dataset_management_ui_translations',
@@ -127,6 +129,17 @@ namespace :test do
         File.write(output_filename, "module.exports = #{all_translations.to_json.html_safe};")
       end
 
+      desc 'update_internal_asset_manager_translations'
+      task :update_internal_asset_manager_translations do
+        translations_filename = 'config/locales/en.yml'
+        output_filename = 'karma/internalAssetManager/mockTranslations.js'
+        all_translations = YAML.load_file(translations_filename)['en']
+        translations = all_translations['internal_asset_manager'].merge(
+          common: all_translations['common']
+        )
+        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
+      end
+
       desc 'update_dataset_management_ui_translations'
       task :update_dataset_management_ui_translations do
         translations_filename = 'config/locales/en.yml'
@@ -198,6 +211,7 @@ namespace :test do
       'karma:datasetLandingPage',
       'karma:datasetManagementUI',
       'karma:importWizard',
+      'karma:internalAssetManager',
       'karma:oldUx',
       'karma:signin',
       'karma:visualizationCanvas'

@@ -1,6 +1,14 @@
 require 'asset-inventory'
 
 module AssetInventoryService
+
+  class InternalAssetManager
+    def self.find(request_id, cookie = nil, search_options = {})
+      cetera_catalog_search_client = Cetera::Utils.catalog_search_client
+      cetera_catalog_search_client.find_views(request_id, cookie, search_options)
+    end
+  end
+
   def self.find(cached = true)
     search_operation = cached ? :search_cached_views : :search_views
     search_options = { :nofederate => true, :limitTo => 'assetinventory', :admin => true }

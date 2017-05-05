@@ -272,14 +272,6 @@ class Page < Model
     setup_model(json_data)
   end
 
-  def self.path_exists?(cur_path)
-    cur_path = cur_path.split('/').map { |part| part.starts_with?(':') ? ':var' : part }.join('/')
-    # TODO: better way to handle this w/ service?
-    find(method: 'getRouting').any? do |p|
-      cur_path == p.path.split('/').map { |part| part.starts_with?(':') ? ':var' : part }.join('/')
-    end
-  end
-
   def self.create(attributes, custom_headers = {})
     # Status should eventually start as unpublished
     attributes = {content: { type: 'Container', id: 'pageRoot' }}.merge(attributes)

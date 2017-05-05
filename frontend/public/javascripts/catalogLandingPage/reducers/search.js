@@ -14,6 +14,7 @@ export default (state, action) => {
 
     const newUrlParamString = _(newUrlParams).
       toPairs().
+      filter((value) => value[0] !== 'page').
       map((param) => param.join('=')).
       value().
       join('&');

@@ -137,9 +137,12 @@ function activitiesOf(db) {
   const uploads = _.map(db.uploads, (upload) => ({
     type: 'upload',
     value: upload,
-    at: upload.inserted_at
+    at: upload.finished_at
   }));
-  const outputSchemas = _.map(db.output_schemas, (outputSchema) => {
+  // TODO: remove this filter when get __status__ out of the output_schemas table
+  const filteredOutputSchemas = _.filter(db.output_schemas, (val, key) =>
+    key && key !== '__status__');
+  const outputSchemas = _.map(filteredOutputSchemas, (outputSchema) => {
     const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
     const upload = _.find(db.uploads, { id: inputSchema.upload_id });
     return {

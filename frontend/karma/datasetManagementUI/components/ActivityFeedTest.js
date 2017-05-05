@@ -36,7 +36,7 @@ function insertUpload(store) {
   store.dispatch(upsertFromServer('uploads', {
     id: 0,
     filename: 'foo.csv',
-    inserted_at: new Date(),
+    finished_at: new Date(),
     created_by: {
       display_name: 'bob',
       email: 'foo@bar.com',

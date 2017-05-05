@@ -3,9 +3,6 @@
 A Rails engine that supplies common header, footer, and navigation elements for use in Socrata
 applications written in Rails.
 
-> Note: Within this repo, the top-level `chrome` app is just a demo container to exercise the
-> engine. The header/footer engine itself is within the `engine` subdirectory.
-
 ## Installation
 
 ### From Artifactory
@@ -387,7 +384,7 @@ $text_padding: 11px;
 
 ## Making a release
 
-To make a release, bump the version of the gem by editing `engine/lib/socrata_site_chrome/version.rb`
+To make a release, bump the version of the gem by editing `lib/socrata_site_chrome/version.rb`
 and push to the master branch. There is a jenkins job that will watch for version
 bump changes and automatically publish the gem to artifactory.
 
@@ -423,7 +420,7 @@ Build the gem and push it to artifactory.
 
 ## Running tests
 
-Run RSpec tests from within the `engine` directory with:
+Run RSpec tests with:
 
     bundle exec rake
 

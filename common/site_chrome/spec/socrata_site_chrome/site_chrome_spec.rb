@@ -35,8 +35,12 @@ describe SocrataSiteChrome::SiteChrome do
   end
 
   describe '#locales' do
-    let(:default_locales) { JSON.parse(File.read("#{Rails.root}/engine/config/default_site_chrome.json")).
-      first['properties'].first.dig('value', 'versions', helper.current_version, 'published', 'content', 'locales').with_indifferent_access }
+    let(:default_locales) do
+      default_site_chrome = JSON.parse(File.read("#{SocrataSiteChrome::Engine.root}/config/default_site_chrome.json"))
+      default_site_chrome.first['properties']
+        .first.dig('value', 'versions', helper.current_version, 'published', 'content', 'locales')
+        .with_indifferent_access
+    end
 
     it 'uses the default locales if there are no user specified locales' do
       config_vars_without_locales = site_chrome_config_vars['content'].dup.tap do |config_vars|

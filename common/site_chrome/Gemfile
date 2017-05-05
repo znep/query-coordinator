@@ -19,6 +19,7 @@ gem 'sass'
 gem 'signaller-ruby', :require => 'signaller'
 
 group :development, :test do
+  gem 'sqlite3'
   gem 'byebug'
   gem 'guard'
   gem 'guard-rspec'

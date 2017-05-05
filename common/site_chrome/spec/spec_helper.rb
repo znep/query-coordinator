@@ -136,5 +136,3 @@ end
 def stub_configurations(response = { status: 200, body: '[{ "stuff": true }]' })
   stub_request(:get, configurations_uri).to_return(response)
 end
-
-Rails.application.config.cache_key_prefix = 'deadbeef'

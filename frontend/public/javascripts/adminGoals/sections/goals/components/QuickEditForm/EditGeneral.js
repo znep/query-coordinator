@@ -10,6 +10,8 @@ import goalStatusTranslation from '../../../../helpers/goalStatus';
 import * as Actions from '../../actions';
 import * as Selectors from '../../selectors';
 
+import GoalEditLink from './GoalEditLink';
+
 class EditGeneral extends React.Component {
   constructor(props) {
     super(props);
@@ -107,14 +109,29 @@ class EditGeneral extends React.Component {
   }
 
   renderVisibilitySection() {
-    const { translations } = this.props;
+    const { goal, translations, goalPublicationStatus, usingStorytellerEditor } = this.props;
+    const draft = goal.getIn([ 'narrative', 'draft' ]);
+    // Can't publish in this state - user must publish from within full editor.
+    const readOnlyBecauseNoDraft = usingStorytellerEditor &&
+      !draft &&
+      goalPublicationStatus === 'status_private';
+
+    const noDraftMessage = <div className="form-block no-draft-message">
+      { translations.getIn(['admin', 'goal_values', goalPublicationStatus]) }.<br />
+      <span className="form-light">
+        { translations.getIn(['admin', 'quick_edit', 'cannot_publish_draft_not_present']) + ' ' }
+        <GoalEditLink
+          text= { translations.getIn(['admin', 'quick_edit', 'create_a_draft']) }
+        />
+      </span>
+    </div>;
 
     return (
-      <div className="form-line">
+      <div className="form-line visibility-status">
         <label className="inline-label">
           { translations.getIn(['admin', 'quick_edit', 'visibility']) }
         </label>
-        { this.renderVisibilityDropdown() }
+        { readOnlyBecauseNoDraft ? noDraftMessage : this.renderVisibilityDropdown() }
       </div>
     );
   }

@@ -11,6 +11,7 @@ import * as Selectors from '../../selectors';
 import * as Components from '../../../../components';
 import * as Constants from '../../../../constants';
 
+import GoalEditLink from './GoalEditLink';
 import EditGeneral from './EditGeneral';
 import EditPrevailingMeasure from './EditPrevailingMeasure';
 import GoalDetails from './GoalDetails';
@@ -141,11 +142,6 @@ class QuickEditForm extends React.Component {
   render() {
     const { translations, goal, isGoalNotConfigured, saveInProgress } = this.props;
 
-    const baseDashboardId = goal.get('base_dashboard');
-    const categoryId = goal.getIn(['category', 'id']) || 'uncategorized';
-    const goalId = goal.get('id');
-    const goalPageUrl = `/stat/goals/${baseDashboardId}/${categoryId}/${goalId}/edit`;
-
     const goalName = goal.get('name');
     const goalTitle = `${ translations.getIn(['admin', 'quick_edit', 'quick_edit_measure']) } - ${goalName}`;
 
@@ -154,9 +150,8 @@ class QuickEditForm extends React.Component {
       <div className="unconfigured-goal-warning-message">
         <span>{ translations.getIn(['admin', 'quick_edit', 'not_configured_goal_message', 'text']) }</span>
         &nbsp;
-        <a href={ goalPageUrl } target="_blank">
-          { translations.getIn(['admin', 'quick_edit', 'not_configured_goal_message', 'link']) }.
-        </a>
+        <GoalEditLink
+          text= { translations.getIn(['admin', 'quick_edit', 'not_configured_goal_message', 'link']) } />
       </div>
     );
 
@@ -192,10 +187,9 @@ class QuickEditForm extends React.Component {
           </Components.Socrata.Modal.Content>
           <Components.Socrata.Modal.Footer>
             <div className="link-container">
-              <a href={ goalPageUrl } target="_blank" className="external-link">
-                { translations.getIn(['admin', 'quick_edit', 'manage_on_goal_page']) }
-                <span className="icon-external"/>
-              </a>
+              <GoalEditLink
+                text= { translations.getIn(['admin', 'quick_edit', 'manage_on_goal_page']) }
+              />
             </div>
             <Components.Socrata.Button onClick={ this.props.dismissModal } disabled={ saveInProgress } >
               { translations.getIn(['admin', 'quick_edit', 'cancel']) }

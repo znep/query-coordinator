@@ -11,6 +11,22 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
   let goal;
   let output;
 
+  const noDraftMessageSelector = '.visibility-status .no-draft-message';
+  const visibilityDropdownSelector = '.visibility-status Select';
+  const itRendersEditablePublicationStatus = () => {
+    it('renders editable publication status', () => {
+      assert.lengthOf(output.find(visibilityDropdownSelector), 1);
+      assert.lengthOf(output.find(noDraftMessageSelector), 0);
+    });
+  };
+
+  const itRendersReadonlyPublicationStatus = () => {
+    it('renders readonly publication status', () => {
+      assert.lengthOf(output.find(visibilityDropdownSelector), 0);
+      assert.lengthOf(output.find(noDraftMessageSelector), 1);
+    });
+  };
+
   const render = (goal, propOverrides) => {
     const props = _.merge(
       {},
@@ -32,7 +48,6 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
   };
 
   describe('not using storyteller', () => {
-    let output;
     beforeEach(() => {
       output = render(goalsWithPublicationState.neverPublished, {
         usingStorytellerEditor: false
@@ -46,6 +61,8 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     it('does not render draft status', () => {
       assert.lengthOf(output.find('.draft-status'), 0);
     });
+
+    itRendersEditablePublicationStatus();
   });
 
   describe('using storyteller', () => {
@@ -147,6 +164,7 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     itShowsDraftPublicationDate();
     itHidesSpinner();
     itHidesPublishedMessage();
+    itRendersEditablePublicationStatus();
   });
 
   describe('publishedWithDraft saving', () => {
@@ -165,6 +183,7 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     itShowsSpinner();
     itHidesPublishLink();
     itHidesPublishedMessage();
+    itRendersEditablePublicationStatus();
   });
 
   describe('published idle', () => {
@@ -179,6 +198,7 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     itShowsPublishedMessage();
     itHidesPublishLink();
     itHidesSpinner()
+    itRendersEditablePublicationStatus();
   });
 
   describe('private never published idle', () => {
@@ -193,6 +213,7 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     itHidesSpinner()
     itHidesPublishLink();
     itHidesPublishedMessage();
+    itRendersEditablePublicationStatus();
   });
 
   describe('private unpublished idle', () => {
@@ -207,6 +228,7 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     itHidesSpinner()
     itHidesPublishLink();
     itHidesPublishedMessage();
+    itRendersEditablePublicationStatus();
   });
 
   describe('private never edited', () => {
@@ -221,5 +243,6 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     itHidesSpinner()
     itHidesPublishLink();
     itHidesPublishedMessage();
+    itRendersReadonlyPublicationStatus();
   });
 });

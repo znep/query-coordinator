@@ -79,7 +79,13 @@
     }
 
     .form-block {
+      max-width: $form-width - $label-width - $label-padding-right;
       display: inline-block;
+    }
+
+    .form-light {
+      font-size: 13px;
+      color: $dark-grey-1;
     }
   }
 

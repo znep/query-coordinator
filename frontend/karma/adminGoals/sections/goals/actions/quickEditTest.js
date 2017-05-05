@@ -95,7 +95,7 @@ describe('actions/quickEditActions', () => {
     });
 
     afterEach(() => {
-      server.restore()
+      server.restore();
     });
 
     describe('making a goal public', () => {

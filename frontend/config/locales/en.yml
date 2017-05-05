@@ -2424,7 +2424,9 @@ en:
           measure: Measure
           reduce: Reduce
         cancel: Cancel
+        cannot_publish_draft_not_present: No draft is present for this goal, so it cannot be made public.
         category: Category
+        create_a_draft: Create a draft
         dashboard: Dashboard
         dataset_owner: Dataset Owner
         dataset_updated: Dataset Updated

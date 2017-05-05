@@ -18,11 +18,11 @@ FeatureFlags.useTestFixture({
   enable_new_activity_log_ui: true
 });
 
-const MockHttpClient = require('./MockHttpClient');
-const ActivityFeedApi = require('frontendApi/ActivityFeedApi');
+const MockHttpClient = require('./MockHttpClient').default;
+const ActivityFeedApi = require('frontendApi/ActivityFeedApi').default;
 
 // This needs to happen after setting all of the mock window data.
-var getDefaultStore = require('testStore');
+const getDefaultStore = require('testStore').default;
 
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
@@ -33,7 +33,7 @@ window.renderComponentWithStore = function(component, props, store) {
 
     store = getDefaultStore(api);
   }
-  
+
   return window.renderComponent(Provider, { store }, React.createElement(component, props));
 };
 window.renderComponentWithLocalization = function(component, props, store) {
@@ -51,7 +51,7 @@ window.renderComponentWithLocalization = function(component, props, store) {
 
     store = getDefaultStore(api);
   }
-  
+
   return window.renderComponent(Localization, {
     translations,
     locale: 'en',

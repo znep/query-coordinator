@@ -1,5 +1,5 @@
 import React from 'react';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import { Simulate } from 'react-addons-test-utils';
 
 const MockHttpClient = require('../MockHttpClient').default;
@@ -36,7 +36,7 @@ describe('Alert', () => {
     const actual = output.querySelector('span').textContent;
     const expected = mockTranslations.index_page.alerts.restore_success;
 
-    expect(actual).to.eq(expected);
+    assert.equal(actual, expected);
   });
 
   it('should dismissed when clicked X', (done) => {
@@ -45,7 +45,7 @@ describe('Alert', () => {
     Simulate.click(output.querySelector('.socrata-icon-close'));
 
     setTimeout(() => {
-      expect(store.getState().toJS().alert).to.be.null;
+      assert.isNull(store.getState().toJS().alert);
       done();
     }, 50);
   });

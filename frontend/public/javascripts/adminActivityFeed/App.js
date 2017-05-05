@@ -5,6 +5,7 @@ import Alert from './components/Alert';
 import RestoreModal from './components/RestoreModal';
 import DetailsModal from './components/DetailsModal';
 import ActivityFeedTable from './components/ActivityFeedTable';
+import FilterBar from './components/FilterBar/FilterBar';
 
 import './App.scss';
 
@@ -19,6 +20,7 @@ class App extends React.Component {
         {alert}
         {detailsModal}
         {restoreModal}
+        <FilterBar />
         <ActivityFeedTable />
         <EmptyState />
       </div>

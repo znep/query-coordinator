@@ -1,7 +1,7 @@
 import {fromJS} from 'immutable';
 import moment from 'moment';
 import React from 'react';
-import { expect } from 'chai';
+import { assert } from 'chai';
 import { Simulate } from 'react-addons-test-utils';
 
 const MockHttpClient = require('../MockHttpClient').default;
@@ -54,7 +54,7 @@ describe('DetailsModal', () => {
     const title = output.querySelector('.modal-header-title').textContent;
     const expectedTitle = mockTranslations.details;
 
-    expect(title).to.eq(expectedTitle);
+    assert.equal(title, expectedTitle);
   });
 
   it('should render restore modal with correct content', () => {
@@ -68,42 +68,34 @@ describe('DetailsModal', () => {
     const lineActivityImportMethod = output.querySelector('#line-activity-import-method').textContent;
     const lineActivityFilename = output.querySelector('#line-activity-filename').textContent;
 
-    expect(lineActivityType).to.eq(mockActivity.data.activity_type);
-    expect(lineActivityName).to.eq(mockActivity.dataset.name);
-    expect(lineActivityEventTitle).to.eq(
-      mockTranslations.show_page.
-        event_messages[mockActivity.data.status][mockActivity.data.latest_event.event_type].
-        title
-    );
-    expect(lineActivityEventDesc).to.eq(
-      mockTranslations.show_page.
-        event_messages[mockActivity.data.status][mockActivity.data.latest_event.event_type].
-        description.replace('%{reason}', mockActivity.data.latest_event.info.reason)
-    );
-    expect(lineActivityInitiatedAt).to.eq(
-      mockTranslations.initiated_at + ': ' +
-      moment(mockActivity.data.created_at).format('LLL')
-    );
-    expect(lineActivityStartedBy).to.eq(
-      mockTranslations.started_by + ': ' +
-      mockActivity.initiated_by.displayName
-    );
-    expect(lineActivityImportMethod).to.eq(
-      mockTranslations.import_method + ': ' +
-      mockActivity.data.service
-    );
-    expect(lineActivityFilename).to.eq(mockActivity.file_name);
+    const expectedEventTitle = mockTranslations.show_page.
+      event_messages[mockActivity.data.status][mockActivity.data.latest_event.event_type].title;
+    const expectedEventDesc = mockTranslations.show_page.
+      event_messages[mockActivity.data.status][mockActivity.data.latest_event.event_type].
+      description.replace('%{reason}', mockActivity.data.latest_event.info.reason);
+    const expectedInitiatedAt = `${mockTranslations.initiated_at}: ${moment(mockActivity.data.created_at).format('LLL')}`;
+    const expectedStartedBy = `${mockTranslations.started_by}: ${mockActivity.initiated_by.displayName}`;
+    const expectedImportMethod = `${mockTranslations.import_method}: ${mockActivity.data.service}`;
+
+    assert.equal(lineActivityType, mockActivity.data.activity_type);
+    assert.equal(lineActivityName, mockActivity.dataset.name);
+    assert.equal(lineActivityEventTitle, expectedEventTitle);
+    assert.equal(lineActivityEventDesc, expectedEventDesc);
+    assert.equal(lineActivityInitiatedAt, expectedInitiatedAt);
+    assert.equal(lineActivityStartedBy, expectedStartedBy);
+    assert.equal(lineActivityImportMethod, expectedImportMethod);
+    assert.equal(lineActivityFilename, mockActivity.file_name);
   });
 
   it('close button should fire close event', (done) => {
     const output = renderComponentWithLocalization(DetailsModal, {}, store);
 
-    expect(store.getState().toJS().detailsModal).to.not.be.null;
+    assert.isNotNull(store.getState().toJS().detailsModal);
 
     Simulate.click(output.querySelector('.btn-default'));
 
     setTimeout(() => {
-      expect(store.getState().toJS().detailsModal).to.be.null;
+      assert.isNull(store.getState().toJS().detailsModal);
 
       done();
     }, 50);

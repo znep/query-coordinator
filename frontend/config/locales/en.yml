@@ -2356,6 +2356,8 @@ en:
       bulk_edit:
         button_title: Edit Multiple Items...
         cancel: Cancel
+        cannot_publish_drafts_not_present: "These goals must have a draft before they can be published:"
+        create_a_draft: Create a draft
         date_range_from: From
         date_range_label: Date Range
         date_range_to: To

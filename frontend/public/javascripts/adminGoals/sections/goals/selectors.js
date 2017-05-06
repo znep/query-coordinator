@@ -92,6 +92,19 @@ export const areAllSelectedGoalsConfigured = Reselect.createSelector(
   (goals) => goals.every(goal => goal.has('prevailing_measure'))
 );
 
+// True if all selected goals have at least one draft.
+export const areAllSelectedGoalsPublishable = Reselect.createSelector(
+  getSelectedGoals,
+  (goals) => goals.every(goal => goal.getIn([ 'narrative', 'draft', 'created_at' ]))
+);
+
+// Returns a list of selected goals which have no associated draft.
+export const getDraftlessSelectedGoals = Reselect.createSelector(
+  getSelectedGoals,
+  //(goals) => goals.filter(goal => _.isNil(goal.getIn([ 'narrative', 'draft', 'created_at' ])))
+  (goals) => goals
+);
+
 export const getNumberOfPages = Reselect.createSelector(
   State.getData, State.getPagination,
   (goals, pagination) => Math.max(1, Math.ceil(goals.count() / pagination.get('goalsPerPage')))

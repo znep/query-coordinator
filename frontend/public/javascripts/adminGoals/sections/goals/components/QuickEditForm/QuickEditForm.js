@@ -11,7 +11,7 @@ import * as Selectors from '../../selectors';
 import * as Components from '../../../../components';
 import * as Constants from '../../../../constants';
 
-import GoalEditLink from './GoalEditLink';
+import GoalEditLink from '../GoalEditLink';
 import EditGeneral from './EditGeneral';
 import EditPrevailingMeasure from './EditPrevailingMeasure';
 import GoalDetails from './GoalDetails';
@@ -151,6 +151,7 @@ class QuickEditForm extends React.Component {
         <span>{ translations.getIn(['admin', 'quick_edit', 'not_configured_goal_message', 'text']) }</span>
         &nbsp;
         <GoalEditLink
+          goal= { goal }
           text= { translations.getIn(['admin', 'quick_edit', 'not_configured_goal_message', 'link']) } />
       </div>
     );
@@ -188,6 +189,7 @@ class QuickEditForm extends React.Component {
           <Components.Socrata.Modal.Footer>
             <div className="link-container">
               <GoalEditLink
+                goal= { goal }
                 text= { translations.getIn(['admin', 'quick_edit', 'manage_on_goal_page']) }
               />
             </div>

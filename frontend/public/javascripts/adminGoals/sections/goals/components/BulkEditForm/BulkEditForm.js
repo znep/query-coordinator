@@ -13,6 +13,8 @@ import * as Selectors from '../../selectors';
 import * as Actions from '../../actions';
 import * as Helpers from '../../../../helpers';
 
+import GoalEditLink from '../GoalEditLink';
+
 import './BulkEditForm.scss';
 
 class BulkEditForm extends React.Component {
@@ -104,14 +106,22 @@ class BulkEditForm extends React.Component {
   }
 
   getVisibilityOptions() {
-    const { translations } = this.props;
+    const { translations, publishDisabledBecauseMissingDrafts } = this.props;
     const publicLabel = Helpers.translator(translations, 'admin.goal_values.status_public');
     const privateLabel = Helpers.translator(translations, 'admin.goal_values.status_private');
+    const publicOption = { value: 'public', label: publicLabel };
+    const privateOption = { value: 'private', label: privateLabel };
 
-    return [
-      { value: 'public', label: publicLabel },
-      { value: 'private', label: privateLabel }
-    ];
+    if (publishDisabledBecauseMissingDrafts) {
+      return [
+        privateOption
+      ];
+    } else {
+      return [
+        publicOption,
+        privateOption
+      ];
+    }
   }
 
   getOverrideOptions() {
@@ -142,13 +152,57 @@ class BulkEditForm extends React.Component {
     );
   }
 
-  renderVisibility() {
-    // If the new editor is enabled, we need to complete EN-12848 before we can support
-    // visibility changes.
-    if (FeatureFlags.value('open_performance_narrative_editor') === 'storyteller') {
+  renderGoalEditLinks(goals, linkText) {
+    return (
+      <table className="edit-goal-list"><tbody>
+        {
+          goals.map((goal) => (
+            <tr>
+              <td>{ goal.get('name') }</td>
+              <td className="edit-link">
+                <GoalEditLink
+                  goal= { goal }
+                  text= { linkText } />
+              </td>
+            </tr>
+          ))
+        }
+      </tbody></table>
+    );
+  }
+
+  renderPublicationNotice() {
+    const {
+      translations,
+      usingStorytellerEditor,
+      publishDisabledBecauseMissingDrafts,
+      draftlessSelectedGoals
+    } = this.props;
+
+    if (publishDisabledBecauseMissingDrafts) {
+      return (
+        <div className="drafts-missing-notice">
+          { translations.getIn(['admin', 'bulk_edit', 'cannot_publish_drafts_not_present']) }
+          {
+            this.renderGoalEditLinks(
+              draftlessSelectedGoals,
+              translations.getIn(['admin', 'bulk_edit', 'create_a_draft'])
+            )
+          }
+        </div>
+      );
+    } else if (usingStorytellerEditor) {
+      return (
+        <div className="form-light-notice will-publish-notice">
+          { translations.getIn(['admin', 'visibility_controls_will_publish']) }
+        </div>
+      );
+    } else {
       return null;
     }
+  }
 
+  renderVisibility() {
     const { translations, goal, commonData } = this.props;
 
     const visibility = goal.get('is_public', commonData.get('is_public'));
@@ -170,6 +224,7 @@ class BulkEditForm extends React.Component {
             options={ options }/>
           { this.renderRevertButton(this.isVisibilityChanged(), this.revertVisibility) }
         </div>
+        { this.renderPublicationNotice() }
       </div>
     );
   }
@@ -305,8 +360,13 @@ const mapStateToProps = state => {
   const bulkEdit = State.getBulkEdit(state);
   const commonData = Selectors.getCommonData(state);
   const goal = bulkEdit.get('goal');
+  const usingStorytellerEditor = FeatureFlags.value('open_performance_narrative_editor') === 'storyteller';
+  const areAllSelectedGoalsPublishable = Selectors.areAllSelectedGoalsPublishable(state);
+  const publishDisabledBecauseMissingDrafts = usingStorytellerEditor && !areAllSelectedGoalsPublishable;
 
   return {
+    usingStorytellerEditor,
+    publishDisabledBecauseMissingDrafts,
     translations: state.get('translations'),
     form: bulkEdit,
     goal: bulkEdit.get('goal'),
@@ -314,7 +374,8 @@ const mapStateToProps = state => {
     goals: Selectors.getSelectedGoals(state),
     areAllSelectedGoalsConfigured: Selectors.areAllSelectedGoalsConfigured(state),
     saveError: bulkEdit.get('saveError'),
-    unsavedChanges: Helpers.isDifferent(commonData.toJS(), goal.toJS())
+    unsavedChanges: Helpers.isDifferent(commonData.toJS(), goal.toJS()),
+    draftlessSelectedGoals: Selectors.getDraftlessSelectedGoals(state),
   };
 };
 

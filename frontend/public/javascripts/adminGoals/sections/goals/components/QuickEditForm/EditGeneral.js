@@ -10,7 +10,7 @@ import goalStatusTranslation from '../../../../helpers/goalStatus';
 import * as Actions from '../../actions';
 import * as Selectors from '../../selectors';
 
-import GoalEditLink from './GoalEditLink';
+import GoalEditLink from '../GoalEditLink';
 
 class EditGeneral extends React.Component {
   constructor(props) {
@@ -76,7 +76,6 @@ class EditGeneral extends React.Component {
     } else if (goalPublicationStatus === 'status_public') {
       return translations.getIn(['admin', 'quick_edit', 'draft_latest']);
     }
-
   }
 
   renderDraftStatus() {
@@ -121,6 +120,7 @@ class EditGeneral extends React.Component {
       <span className="form-light">
         { translations.getIn(['admin', 'quick_edit', 'cannot_publish_draft_not_present']) + ' ' }
         <GoalEditLink
+          goal={ goal }
           text= { translations.getIn(['admin', 'quick_edit', 'create_a_draft']) }
         />
       </span>

@@ -47,7 +47,7 @@ describe Administration::ConnectorController do
         expect(CatalogFederatorConnector).to receive(:servers).at_least(:once).and_return([server])
         expect(CatalogFederator.client).to receive(:get_datasets).with(server_id).and_return(datasets)
         expect(CatalogFederator.client).to receive(:set_sync_policy).with(server_id, sync_policy)
-        expect(CatalogFederator.client).to receive(:sync_source).with(server_id)
+        expect(CatalogFederator.client).to receive(:sync_datasets).with(server_id, selection_diff)
         post :update_connector, :server_id => server_id, :type => 'catalog_federator', :server => {
           :sync_policy => sync_policy
         }

@@ -45,10 +45,11 @@ class CatalogFederator
       handle_response(delete(route(source_id), headers: headers), route(source_id))
     end
 
+    # Synchronous call - large number of datasets can take a long time.
     def sync_datasets(source_id, datasets)
       handle_response(
-        patch(route(source_id, 'make-it-so?async=true'), headers: headers, body: datasets.to_json),
-        route(source_id, 'make-it-so?async=true')
+        patch(route(source_id, 'make-it-so'), headers: headers, body: datasets.to_json),
+        route(source_id, 'make-it-so')
       )
     end
 

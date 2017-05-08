@@ -9,11 +9,12 @@
 <%= include_webpack_bundle 'admin/admin-edit-connector.js' %>
 
 <div id="connector-content" class="contentBox withLeftNavigation">
-
   <div class="adminHeader connectors">
-    <h1><%= t('screens.admin.connector.edit_connector') %>:
-      <span><%= @server.display_name %></span>
-    </h1>
+    <span class="icon"></span>
+    <div class="edit-connector">
+      <%= t('screens.admin.connector.edit_connector') %>:
+      <span><%= @server.try(:display_name) || @server.url %></span>
+    </div>
     <%= display_standard_flashes %>
     <div class="connector-list-go-back">
       <%= link_to(
@@ -35,7 +36,6 @@
         <% if esri_arcgis? %>
           <div class="flexbox-left-section">
             <fieldset class="line">
-              <legend><span class="accessibility"><%= t('screens.admin.connector.connection_type') %></span></legend>
               <div class="valueBox inline-value">
                 <input type="radio" id="dataConnectAll" class="server-sync"
                   name="server[sync_type]" value="data"
@@ -69,7 +69,6 @@
         <% else %>
           <div class="flexbox-left-section">
             <fieldset class="line">
-              <legend class="accessibility"><%= t('screens.admin.connector.connection_type') %></legend>
               <div class="valueBox inline-value">
                 <input type="radio" id="federateAll" class="server-sync"
                   name="server[sync_policy]" value="all"
@@ -95,13 +94,8 @@
       </div>
 
       <fieldset class="line">
-        <legend>
-          <span class="accessibility"><%= t('screens.admin.connector.update_selections') %></span>
-        </legend>
-
         <div class="filter-assets">
-          <label for="searchBox" class="accessibility"><%= t('screens.admin.connector.search') %></label>
-          <input type="text" title="<%= t('screens.admin.connector.search') %>" class="textPrompt searchBox prompt" id="searchBox" />
+          <input type="text" title="<%= t('screens.admin.connector.search') %>" class="textPrompt searchBox prompt" />
         </div>
 
         <%= if esri_arcgis?

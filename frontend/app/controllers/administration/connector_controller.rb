@@ -14,7 +14,7 @@ class Administration::ConnectorController < AdministrationController
     end
 
   before_filter :fetch_server, :only => [:edit_connector, :update_connector, :show_connector]
-  before_filter :fetch_connectors, :only => [:connectors]
+  before_filter :fetch_connectors, :only => [:connectors, :update_connector]
 
   def connectors # index
   end

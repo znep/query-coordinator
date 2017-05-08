@@ -21,10 +21,7 @@ class CatalogFederatorSource
   end
 
   def status_key
-    case sync_status
-      when 'failure' then 'failed'
-      else sync_status || 'not_yet'
-    end
+    sync_status || 'not_yet'
   end
 
   def type_key
@@ -40,6 +37,6 @@ class CatalogFederatorSource
   end
 
   def sync_in_progress?
-    sync_status == 'in_progress'
+    status_key == 'in_progress'
   end
 end

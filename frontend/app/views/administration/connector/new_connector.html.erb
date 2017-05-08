@@ -1,7 +1,8 @@
+<%- connector = 'screens.admin.connector' %>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-connectors' %>
-  <title><%= t('screens.admin.connector.title') %> | <%= get_site_title %></title>
+  <title><%= t("#{connector}.title") %> | <%= get_site_title %></title>
 <% end %>
 
 <%= render 'left_nav' %>
@@ -10,9 +11,10 @@
 
 <div id="connector-content" class="contentBox withLeftNavigation">
   <div class="adminHeader connectors">
-    <h1><%= t('screens.admin.connector.add_connector') %></h1>
+    <span class="icon"></span>
+    <h1><%= t("#{connector}.add_connector") %></h1>
     <div class="connector-list-go-back">
-      <%= link_to(t('screens.admin.connector.back_to_connector_list'),
+      <%= link_to(t("#{connector}.back_to_connector_list"),
                   :controller => '/administration/connector',
                   :action => 'connectors') %>
     </div>

@@ -31,9 +31,7 @@
           <%= folder_select_tag(@server, folder) %>
         </div>
         <span class="asset-name">
-          <label for="server_folders_<%=folder['id']%>_sync_type">
-            <%= truncate(folder['name'], length: 120) %>
-          </label>
+          <%= truncate(folder['name'], length: 120) %>
         </span>
       </div>
 
@@ -49,9 +47,7 @@
             <a target="_blank" href="<%= service['url'] %>"
               name="<%= service_display_string(service) %>">
               <span class="asset-name">
-                <label for="server_folders_<%=folder['id']%>_services_<%=service['id']%>_sync_type">
-                  <%= truncate(service_display_string(service), length: 120) %>
-                </label>
+                <%= truncate(service_display_string(service), length: 120) %>
               </span>
             </a>
           </div>
@@ -70,9 +66,7 @@
                     <%= layer['url'] %>
                   <%- else -%>
                     <span class="asset-name">
-                      <label for="server_folders_<%=folder['id']%>_services_<%=service['id']%>_layers_<%=layer['id']%>_sync_type">
-                       <%= truncate(layer['name'], length: 120) %>
-                      </label>
+                      <%= truncate(layer['name'], length: 120) %>
                     </span>
                   <%- end -%>
                 </a>

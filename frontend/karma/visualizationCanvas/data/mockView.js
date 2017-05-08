@@ -22,11 +22,6 @@ export default {
       dataTypeName: 'number'
     },
     {
-      fieldName: 'cnidarian_cost',
-      name: 'cost',
-      dataTypeName: 'money'
-    },
-    {
       fieldName: 'profile_pic',
       name: 'Picture',
       dataTypeName: 'photo'

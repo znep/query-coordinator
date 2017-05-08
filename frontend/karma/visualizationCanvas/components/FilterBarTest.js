@@ -20,11 +20,6 @@ describe('FilterBar', () => {
       assert.isArray(props.columns);
     });
 
-    it('omits money columns without column stats', () => {
-      assert.ok(_.find(view.columns, ['fieldName', 'cnidarian_cost']));
-      assert.isNotOk(_.find(props.columns, ['fieldName', 'cnidarian_cost']));
-    });
-
     it('omits number columns without column stats', () => {
       assert.ok(_.find(view.columns, ['fieldName', 'cnidarian_age']));
       assert.isNotOk(_.find(props.columns, ['fieldName', 'cnidarian_age']));

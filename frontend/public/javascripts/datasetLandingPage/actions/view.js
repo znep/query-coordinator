@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import 'whatwg-fetch';
-import { checkStatus, defaultHeaders, redirectTo } from '../../common/http';
+import { checkStatus, defaultHeaders } from '../../common/http';
 
 import {
   HANDLE_FETCH_ROW_COUNT_SUCCESS,
@@ -53,9 +53,12 @@ export function publishView() {
       then(checkStatus).
       then((response) => response.json()).
       then((publishedView) => {
-        dispatch(handleViewPublishSuccess());
+        function redirect() {
+          window.location.href = window.location.href.replace(viewId, publishedView.id);
+        }
 
-        redirectTo(window.location.href.replace(viewId, publishedView.id), 1000);
+        dispatch(handleViewPublishSuccess());
+        _.delay(redirect, 1000);
       }).
       catch(() => dispatch(handleViewPublishError()));
   };
@@ -77,15 +80,9 @@ export function fetchRowCount() {
       then(checkStatus).
       then((response) => response.json()).
       then((apiResponse) => {
-        // OBE will lowercase the field in the response.
-        const rowCountOBE = _.get(apiResponse, '[0].column_alias_guard__count', null);
-        const rowCountNBE = _.get(apiResponse, '[0].COLUMN_ALIAS_GUARD__count', null);
-
-        let rowCount = null;
-        if (_.isString(rowCountNBE)) {
-          rowCount = _.toNumber(rowCountNBE);
-        } else if (_.isString(rowCountOBE)) {
-          rowCount = _.toNumber(rowCountOBE);
+        let rowCount = _.get(apiResponse, '[0].column_alias_guard__count', null);
+        if (!_.isNull(rowCount)) {
+          rowCount = _.toNumber(rowCount);
         }
 
         dispatch(handleFetchRowCountSuccess(rowCount));

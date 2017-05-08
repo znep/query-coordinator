@@ -7,10 +7,7 @@ import {
   SHOW_RESTORE_MODAL,
   DISMISS_RESTORE_MODAL,
   SHOW_DETAILS_MODAL,
-  DISMISS_DETAILS_MODAL,
-  SET_FILTER_EVENT,
-  SET_FILTER_STATUS,
-  SET_FILTER_DATE
+  DISMISS_DETAILS_MODAL
 } from './actionTypes';
 
 export default function(state, action) {
@@ -31,7 +28,7 @@ export default function(state, action) {
       );
 
     case SHOW_DETAILS_MODAL:
-      return state.setIn(['detailsModal'], immutable.fromJS(action.activity));
+      return state.setIn(['detailsModal'], action.activity);
 
     case DISMISS_DETAILS_MODAL:
       return state.setIn(['detailsModal'], null);
@@ -47,17 +44,6 @@ export default function(state, action) {
 
     case DISMISS_RESTORE_MODAL:
       return state.setIn(['restoreModal'], null);
-
-    case SET_FILTER_EVENT:
-      return state.setIn(['filtering', 'eventType'], action.value);
-
-    case SET_FILTER_STATUS:
-      return state.setIn(['filtering', 'eventStatus'], action.value);
-
-    case SET_FILTER_DATE:
-      return state.
-        setIn(['filtering', 'dateFrom'], action.value.from).
-        setIn(['filtering', 'dateTo'], action.value.to);
 
     default:
       return state;

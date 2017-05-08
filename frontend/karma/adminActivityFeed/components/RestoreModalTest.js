@@ -1,5 +1,5 @@
 import React from 'react';
-import { assert } from 'chai';
+import { expect, assert } from 'chai';
 import { Simulate } from 'react-addons-test-utils';
 
 const MockHttpClient = require('../MockHttpClient').default;
@@ -37,7 +37,7 @@ describe('RestoreModal', () => {
     const title = output.querySelector('.modal-header-title').textContent;
     const expectedTitle = mockTranslations.restore;
 
-    assert.equal(title, expectedTitle);
+    expect(title).to.eq(expectedTitle);
   });
 
   it('should render restore modal with correct content', () => {
@@ -46,7 +46,7 @@ describe('RestoreModal', () => {
     const content = output.querySelector('.modal-content').textContent;
     const expectedContent = mockTranslations.restore_confirmation.replace('%{dataset}', 'test_name');
 
-    assert.equal(content, expectedContent);
+    expect(content).to.eq(expectedContent);
   });
 
   it('should render restore modal with correct buttons', () => {
@@ -58,18 +58,18 @@ describe('RestoreModal', () => {
     const expectedCancelButton = mockTranslations.cancel;
     const expectedRestoreButton = mockTranslations.restore;
 
-    assert.equal(cancelButton, expectedCancelButton);
-    assert.equal(restoreButton, expectedRestoreButton);
+    expect(cancelButton).to.eq(expectedCancelButton);
+    expect(restoreButton).to.eq(expectedRestoreButton);
   });
 
   it('cancel button should fire close event', (done) => {
     const output = renderComponentWithLocalization(RestoreModal, {}, store);
-    assert.isNotNull(store.getState().toJS().restoreModal);
+    expect(store.getState().toJS().restoreModal).to.not.be.null;
 
     Simulate.click(output.querySelector('.btn-default'));
 
     setTimeout(() => {
-      assert.isNull(store.getState().toJS().restoreModal);
+      expect(store.getState().toJS().restoreModal).to.be.null;
 
       done();
     }, 50);
@@ -82,7 +82,7 @@ describe('RestoreModal', () => {
     Simulate.click(output.querySelector('.btn-primary'));
 
     setTimeout(() => {
-      assert.isNull(store.getState().toJS().restoreModal);
+      expect(store.getState().toJS().restoreModal).to.be.null;
 
       done();
     }, 50);

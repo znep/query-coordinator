@@ -6,10 +6,7 @@ import {
   SHOW_RESTORE_MODAL,
   DISMISS_RESTORE_MODAL,
   SHOW_DETAILS_MODAL,
-  DISMISS_DETAILS_MODAL,
-  SET_FILTER_EVENT,
-  SET_FILTER_STATUS,
-  SET_FILTER_DATE
+  DISMISS_DETAILS_MODAL
 } from './actionTypes';
 
 export const setActivities = (activities) => ({
@@ -25,14 +22,9 @@ export const setPagination = (pagination) => ({
 export const loadActivities = () => {
   return (getService) => (dispatch, getState) => {
     const api = getService('api');
-    const state = getState();
-    const currentPage = state.getIn(['pagination', 'currentPage']);
-    const activityType = state.getIn(['filtering', 'eventType']);
-    const activityStatus = state.getIn(['filtering', 'eventStatus']);
-    const dateFrom = state.getIn(['filtering', 'dateFrom']);
-    const dateTo = state.getIn(['filtering', 'dateTo']);
+    const currentPage = getState().getIn(['pagination', 'currentPage']);
 
-    return api.get(currentPage, activityType, activityStatus, dateFrom, dateTo).then(data => {
+    return api.get(currentPage).then(data => {
       const pagerInfo = data['pager_info'];
 
       dispatch(setActivities(data.activities));
@@ -107,38 +99,3 @@ export const gotoPage = (pageNumber) => {
     return dispatch(loadActivities());
   };
 };
-
-export const filterByEvent = (value) =>
-  () => (dispatch) => {
-    dispatch(setFilterEvent(value));
-    return dispatch(loadActivities());
-  };
-
-export const setFilterEvent = (value) => ({
-  type: SET_FILTER_EVENT,
-  value
-});
-
-export const filterByStatus = (value) => (
-  () => (dispatch) => {
-    dispatch(setFilterStatus(value));
-    return dispatch(loadActivities());
-  }
-);
-
-export const setFilterStatus = (value) => ({
-  type: SET_FILTER_STATUS,
-  value
-});
-
-export const filterByDate = (value) => (
-  () => (dispatch) => {
-    dispatch(setFilterDate(value));
-    return dispatch(loadActivities());
-  }
-);
-
-export const setFilterDate = (value) => ({
-  type: SET_FILTER_DATE,
-  value
-});

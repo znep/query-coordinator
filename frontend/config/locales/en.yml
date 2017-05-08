@@ -3101,13 +3101,12 @@ en:
         columns:
           asset_type: Asset Type
           asset_name: Asset Name
-          date_started: Date Started
           event: Event
           initiated_by: Initiated By
+          date_started: Date Started
           status: Status
         details: Details
         actions:
-          all: All
           append: Append
           delete: Delete
           geocoding: Geocoding
@@ -3154,7 +3153,6 @@ en:
           deleted_dataset: Deleted dataset
           deleted_user: User has been deleted
           export_as_csv: Export As CSV
-          filter_by: Filter By
           initiated_by: Initiated by
           no_jobs: No jobs to show
           page_title: Data Jobs
@@ -3456,7 +3454,6 @@ en:
           to: to
         started_by: Started by
         statuses:
-          all: All
           failure: Failed
           in_progress: In Progress
           not_started: Not yet started

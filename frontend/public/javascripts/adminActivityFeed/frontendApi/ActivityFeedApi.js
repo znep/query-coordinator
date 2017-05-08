@@ -23,14 +23,15 @@ export default class ActivityFeedApi {
     if (dateFrom) {
       let dateRange = '';
 
-      dateRange += moment(dateFrom).format('MM/DD/YYYY');
+      const dateFromString = moment(dateFrom).format('MM/DD/YYYY');
+      dateRange += dateFromString;
 
       if (dateTo) {
-        dateRange += ' - ';
+        dateRange += '-';
         dateRange += moment(dateTo).format('MM/DD/YYYY');
       }
 
-      query += `date_range=${encodeURIComponent(dateRange)}`;
+      query += `date_range=${dateRange}`;
     }
 
     query += `&page=${page}&activity_type=${activityType}&activity_status=${activityStatus}`;

@@ -5,30 +5,6 @@ class DataslateRouting
       page_for(path, options)
   end
 
-  def self.collision_free_path_for(path, options = {})
-    existing_paths = ((RequestStore[:dataslate_routing] ||= {})[CurrentDomain.cname] ||=
-      new(options.only(:custom_headers))).
-      to_h.
-      keys
-
-    # Theoretically, we could search for holes instead of hitting the largest number,
-    # but seriously... why bother? It's a vanishingly pointless security hole for a use
-    # case we don't actually care about anymore because CS uses chalk and customers do not
-    # create DataSlate pages on their own.
-    last_collision = existing_paths.
-      select { |e_path| e_path =~ /^#{path}(-\d+)?$/ }.
-      sort_by { |e_path| e_path.match(/(?:-(\d+))?$/)[1].to_i }.
-      last
-
-    if last_collision.nil?
-      path
-    elsif last_collision == path
-      last_collision + '-1'
-    else
-      last_collision.sub(/-(\d+)$/, &:succ)
-    end
-  end
-
   # Call this method sparingly! User.roles_list fetches information from Core to do their stuff.
   def self.clear_cache_for_current_domain!
     (User.roles_list + %w(superadmin anon)).

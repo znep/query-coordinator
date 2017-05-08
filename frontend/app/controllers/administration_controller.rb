@@ -148,10 +148,17 @@ class AdministrationController < ApplicationController
     if url.blank?
       prefix = CurrentDomain.module_enabled?(:govStat) ? '/reports/' : '/'
       # Let's generate one from the title
-      url = DataslateRouting.collision_free_path_for(prefix + title.convert_to_url)
+      url = prefix + title.convert_to_url
+      i = 1
+      check_url = url
+      while Page.path_exists?(check_url) do
+        check_url = "#{url}-#{i}"
+        i += 1
+      end
+      url = check_url
     end
     url = "/#{url}" unless url.starts_with?('/')
-    if DataslateRouting.for(url).present?
+    if Page.path_exists?(url)
       flash[:error] = t('screens.admin.canvas.path_must_be_unique')
       return redirect_to :action => 'create_canvas_page', :path => url, :title => title
     end

@@ -84,41 +84,4 @@ describe DataslateRouting do
       end
     end
   end
-
-  describe '.collision_free_path_for' do
-    let(:service_response) { existing_paths.map(&method(:pathify)) }
-    let(:target_url) { '/foo-bar' }
-
-    subject { DataslateRouting.collision_free_path_for(target_url) }
-
-    def generate_resolved_url(url, number)
-      number.nil? ? url : "#{url}-#{number}"
-    end
-
-    context 'there is no collision' do
-      let(:existing_paths) { %w() }
-
-      it 'should return itself' do
-        expect(subject).to eq(target_url)
-      end
-    end
-
-    context 'there exists one collision' do
-      let(:existing_paths) { [ target_url ] }
-
-      it 'should return an available path' do
-        expect(subject).to eq(generate_resolved_url(target_url, 1))
-      end
-    end
-
-    context 'there exists many collision' do
-      let(:existing_paths) do
-        [ nil, 9, 10, 200, 314 ].map { |num| generate_resolved_url(target_url, num) }
-      end
-
-      it 'should return an available path' do
-        expect(subject).to eq(generate_resolved_url(target_url, 315))
-      end
-    end
-  end
 end

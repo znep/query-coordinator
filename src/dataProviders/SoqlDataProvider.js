@@ -194,18 +194,19 @@ function SoqlDataProvider(config) {
       const minAlias = '__min__';
       const maxAlias = '__max__';
       const { fieldName, dataTypeName } = column;
-      var orderBy;
-      var queryString;
-      var select;
-      var path;
+      let orderBy;
+      let queryString;
+      let select;
+      let path;
 
       // For number and calendar_date columns, we need the min and max of the column
-      if (dataTypeName === 'number' || dataTypeName === 'calendar_date') {
+      if (_.includes(['money', 'number', 'calendar_date'], dataTypeName)) {
         select = `min(${fieldName}) as ${minAlias}, max(${fieldName}) as ${maxAlias}`;
         queryString = `$select=${select}`;
         path = pathForQuery(queryString);
         return makeSoqlGetRequest(path).then((result) => {
           switch (dataTypeName) {
+            case 'money':
             case 'number':
               return {
                 rangeMin: _.toNumber(result[0][minAlias]),

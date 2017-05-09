@@ -250,13 +250,16 @@ function MetadataProvider(config) {
     utils.assertHasProperty(datasetMetadata, 'columns');
 
     return _.filter(datasetMetadata.columns, (column) => {
-      return (
-          column.dataTypeName === 'number' &&
-          _.isNumber(column.rangeMin) &&
-          _.isNumber(column.rangeMax)
-        ) ||
-        column.dataTypeName === 'text' ||
-        column.dataTypeName === 'calendar_date';
+      switch (column.dataTypeName) {
+        case 'money':
+        case 'number':
+          return _.isNumber(column.rangeMin) && _.isNumber(column.rangeMax);
+        case 'text':
+        case 'calendar_date':
+          return true;
+        default:
+          return false;
+      }
     });
   };
 

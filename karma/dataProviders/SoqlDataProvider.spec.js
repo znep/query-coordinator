@@ -1,29 +1,28 @@
-var _ = require('lodash');
-var $ = require('jquery');
-var rewire = require('rewire');
-var SoqlDataProvider = rewire('src/dataProviders/SoqlDataProvider');
+import _ from 'lodash';
+import $ from 'jquery';
+const rewire = require('rewire');
+const SoqlDataProvider = rewire('src/dataProviders/SoqlDataProvider');
 
-describe('SoqlDataProvider', function() {
+describe('SoqlDataProvider', () => {
+  const VALID_DOMAIN = 'example.com';
+  const VALID_DATASET_UID = 'test-test';
 
-  var VALID_DOMAIN = 'example.com';
-  var VALID_DATASET_UID = 'test-test';
+  const INVALID_DOMAIN = null;
+  const INVALID_DATASET_UID = null;
 
-  var INVALID_DOMAIN = null;
-  var INVALID_DATASET_UID = null;
+  const QUERY_COLUMNS = [ 'NAME_ALIAS', 'VALUE_ALIAS' ];
+  const QUERY_STRING = 'SELECT testName AS NAME_ALIAS, testValue AS VALUE_ALIAS WHERE testValue > 0 LIMIT 200';
 
-  var QUERY_COLUMNS = [ 'NAME_ALIAS', 'VALUE_ALIAS' ];
-  var QUERY_STRING = 'SELECT testName AS NAME_ALIAS, testValue AS VALUE_ALIAS WHERE testValue > 0 LIMIT 200';
+  const ERROR_STATUS = 400;
+  const ERROR_MESSAGE = 'Bad request';
 
-  var ERROR_STATUS = 400;
-  var ERROR_MESSAGE = 'Bad request';
-
-  var SUCCESS_STATUS = 200;
+  const SUCCESS_STATUS = 200;
 
   // `.query()` mock data
-  var NAME_ALIAS = 'SOQL_DATA_PROVIDER_NAME_ALIAS';
-  var VALUE_ALIAS = 'SOQL_DATA_PROVIDER_VALUE_ALIAS';
+  const NAME_ALIAS = 'SOQL_DATA_PROVIDER_NAME_ALIAS';
+  const VALUE_ALIAS = 'SOQL_DATA_PROVIDER_VALUE_ALIAS';
 
-  var SAMPLE_QUERY_REQUEST_ERROR = JSON.stringify({
+  const SAMPLE_QUERY_REQUEST_ERROR = JSON.stringify({
     "message": "query.soql.no-such-column",
     "errorCode": "query.soql.no-such-column",
     "data": {
@@ -39,7 +38,7 @@ describe('SoqlDataProvider', function() {
     }
   });
 
-  var SAMPLE_QUERY_REQUEST_RESPONSE = JSON.stringify([
+  const SAMPLE_QUERY_REQUEST_RESPONSE = JSON.stringify([
     {
       "SOQL_DATA_PROVIDER_NAME_ALIAS": "Street and Sidewalk Cleaning",
       "SOQL_DATA_PROVIDER_VALUE_ALIAS": "103412"
@@ -50,15 +49,15 @@ describe('SoqlDataProvider', function() {
     }
   ]);
 
-  var EXPECTED_QUERY_REQUEST_COLUMNS = [NAME_ALIAS, VALUE_ALIAS];
+  const EXPECTED_QUERY_REQUEST_COLUMNS = [NAME_ALIAS, VALUE_ALIAS];
 
-  var EXPECTED_QUERY_REQUEST_ROWS = [
+  const EXPECTED_QUERY_REQUEST_ROWS = [
     ["Street and Sidewalk Cleaning", "103412"],
     ["Graffiti Private Property", "31161"]
   ];
 
   // `.getRows()` mock data
-  var SAMPLE_ROW_REQUEST_ERROR = JSON.stringify({
+  const SAMPLE_ROW_REQUEST_ERROR = JSON.stringify({
     "message": "query.soql.no-such-column",
     "errorCode": "query.soql.no-such-column",
     "data": {
@@ -74,7 +73,7 @@ describe('SoqlDataProvider', function() {
     }
   });
 
-  var SAMPLE_ROW_REQUEST_RESPONSE = JSON.stringify([
+  const SAMPLE_ROW_REQUEST_RESPONSE = JSON.stringify([
     {
       "address": "Intersection of TREASURE ISLAND RD and",
       "case_id": "501753",
@@ -116,26 +115,26 @@ describe('SoqlDataProvider', function() {
     }
   ]);
 
-  var SAMPLE_DATASET_METADATA = {
+  const SAMPLE_DATASET_METADATA = {
     "columns":
-      Object.keys(JSON.parse(SAMPLE_ROW_REQUEST_RESPONSE)[0]).map(function(columnName) {
+      Object.keys(JSON.parse(SAMPLE_ROW_REQUEST_RESPONSE)[0]).map((columnName) => {
         return {
           fieldName: columnName
         };
       })
   };
 
-  var SAMPLE_METADATA_ERROR = JSON.stringify({
+  const SAMPLE_METADATA_ERROR = JSON.stringify({
     "code" : "not_found",
     "error" : true,
     "message" : "Cannot find view with id 56p4-vdcc.jso"
   });
 
-  var EXPECTED_ROW_COUNT = 100;
+  const EXPECTED_ROW_COUNT = 100;
 
-  var SAMPLE_ROW_COUNT_RESPONSE = JSON.stringify([{__count_alias__: EXPECTED_ROW_COUNT}]);
+  const SAMPLE_ROW_COUNT_RESPONSE = JSON.stringify([{__count_alias__: EXPECTED_ROW_COUNT}]);
 
-  var server;
+  let server;
 
   function _respondWithError(payload) {
     server.respond([ERROR_STATUS, { 'Content-Type': 'application/json' }, payload]);
@@ -145,23 +144,18 @@ describe('SoqlDataProvider', function() {
     server.respond([SUCCESS_STATUS, { 'Content-Type': 'application/json' }, payload]);
   }
 
-  describe('constructor', function() {
-
-    describe('when called with invalid configuration options', function() {
-
-      it('should throw', function() {
-
-        assert.throw(function() {
-
-          var soqlDataProvider = new SoqlDataProvider({
+  describe('constructor', () => {
+    describe('when called with invalid configuration options', () => {
+      it('should throw', () => {
+        assert.throw(() => {
+          const soqlDataProvider = new SoqlDataProvider({
             domain: INVALID_DOMAIN,
             datasetUid: VALID_DATASET_UID
           });
         });
 
-        assert.throw(function() {
-
-          var soqlDataProvider = new SoqlDataProvider({
+        assert.throw(() => {
+          const soqlDataProvider = new SoqlDataProvider({
             domain: VALID_DOMAIN,
             datasetUid: INVALID_DATASET_UID
           });
@@ -170,29 +164,25 @@ describe('SoqlDataProvider', function() {
     });
   });
 
-  describe('`.query()`', function() {
-
-    describe('on request error', function() {
-
-      var soqlDataProviderOptions = {
+  describe('`.query()`', () => {
+    describe('on request error', () => {
+      const soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
       };
-      var soqlDataProvider;
+      let soqlDataProvider;
 
-      beforeEach(function() {
-
+      beforeEach(() => {
         server = sinon.fakeServer.create();
         soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
       });
 
-      afterEach(function() {
-
+      afterEach(() => {
         server.restore();
       });
 
-      describe('cross-domain request', function() {
-        it('should not provide the X-Socrata-Federation header', function() {
+      describe('cross-domain request', () => {
+        it('should not provide the X-Socrata-Federation header', () => {
           soqlDataProvider.query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS);
           assert.lengthOf(server.requests, 1);
           assert.notProperty(
@@ -202,8 +192,8 @@ describe('SoqlDataProvider', function() {
         });
       });
 
-      describe('same-domain request', function() {
-        it('should provide the X-Socrata-Federation header', function() {
+      describe('same-domain request', () => {
+        it('should provide the X-Socrata-Federation header', () => {
           soqlDataProvider = new SoqlDataProvider({
             domain: window.location.hostname,
             datasetUid: VALID_DATASET_UID
@@ -218,18 +208,17 @@ describe('SoqlDataProvider', function() {
         });
       });
 
-      it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
-
+      it('should return an object containing "status", "message" and "soqlError" properties', (done) => {
         soqlDataProvider.
           query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS).
           then(
-            function(data) {
+            (data) => {
 
               // Fail the test since we expected an error response.
               assert.isTrue(undefined);
               done();
             },
-            function(error) {
+            (error) => {
 
               assert.property(error, 'status');
               assert.property(error, 'message');
@@ -243,18 +232,17 @@ describe('SoqlDataProvider', function() {
         _respondWithError(SAMPLE_QUERY_REQUEST_ERROR);
       });
 
-      it('should include the correct request error status', function(done) {
-
+      it('should include the correct request error status', (done) => {
         soqlDataProvider.
           query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS).
           then(
-            function(data) {
+            (data) => {
 
               // Fail the test since we expected an error response.
               assert.isTrue(undefined);
               done();
             },
-            function(error) {
+            (error) => {
 
               assert.equal(error.status, ERROR_STATUS);
               done();
@@ -266,16 +254,15 @@ describe('SoqlDataProvider', function() {
         _respondWithError(SAMPLE_QUERY_REQUEST_ERROR);
       });
 
-      it('should include the correct request error message', function(done) {
-
+      it('should include the correct request error message', (done) => {
         soqlDataProvider.
           query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS).
           then(
-            function(data) {
+            (data) => {
               // Fail the test since we expected an error response.
               done('Request succeeded, we did not expect it to.');
             },
-            function(error) {
+            (error) => {
 
               assert.equal(error.message.toLowerCase(), ERROR_MESSAGE.toLowerCase());
               done();
@@ -287,16 +274,16 @@ describe('SoqlDataProvider', function() {
         _respondWithError(SAMPLE_QUERY_REQUEST_ERROR);
       });
 
-      it('should include the correct soqlError object', function(done) {
+      it('should include the correct soqlError object', (done) => {
 
         soqlDataProvider.
           query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS).
           then(
-            function(data) {
+            (data) => {
               // Fail the test since we expected an error response.
               done('Request succeeded, we did not expect it to.');
             },
-            function(error) {
+            (error) => {
 
               assert.deepEqual(error.soqlError, JSON.parse(SAMPLE_QUERY_REQUEST_ERROR));
               done();
@@ -309,37 +296,33 @@ describe('SoqlDataProvider', function() {
       });
     });
 
-    describe('on request success', function(done) {
-
-      var soqlDataProviderOptions = {
+    describe('on request success', (done) => {
+      const soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
       };
-      var soqlDataProvider;
+      let soqlDataProvider;
 
-      beforeEach(function() {
-
+      beforeEach(() => {
         server = sinon.fakeServer.create();
         soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
       });
 
-      afterEach(function() {
-
+      afterEach(() => {
         server.restore();
       });
 
-      it('should return an object containing columns and rows', function(done) {
-
+      it('should return an object containing columns and rows', (done) => {
         soqlDataProvider.
           query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS).
           then(
-            function(data) {
+            (data) => {
 
               assert.property(data, 'columns');
               assert.property(data, 'rows');
               done();
             },
-            function(error) {
+            (error) => {
 
               // Fail the test since we expected an success response.
               assert.isTrue(undefined);
@@ -352,17 +335,16 @@ describe('SoqlDataProvider', function() {
         _respondWithSuccess(SAMPLE_QUERY_REQUEST_RESPONSE);
       });
 
-      it('should return the expected columns', function(done) {
-
+      it('should return the expected columns', (done) => {
         soqlDataProvider.
           query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS).
           then(
-            function(data) {
+            (data) => {
 
               assert.deepEqual(data.columns, EXPECTED_QUERY_REQUEST_COLUMNS);
               done();
             },
-            function(error) {
+            (error) => {
 
               // Fail the test since we expected an success response.
               assert.isTrue(undefined);
@@ -375,17 +357,16 @@ describe('SoqlDataProvider', function() {
         _respondWithSuccess(SAMPLE_QUERY_REQUEST_RESPONSE);
       });
 
-      it('should return the expected rows', function(done) {
-
+      it('should return the expected rows', (done) => {
         soqlDataProvider.
           query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS).
           then(
-            function(data) {
+            (data) => {
 
               assert.deepEqual(data.rows, EXPECTED_QUERY_REQUEST_ROWS);
               done();
             },
-            function(error) {
+            (error) => {
 
               // Fail the test since we expected an success response.
               assert.isTrue(undefined);
@@ -400,29 +381,25 @@ describe('SoqlDataProvider', function() {
     });
   });
 
-  describe('`.getRows()`', function() {
-
-    describe('on request error', function() {
-
-      var soqlDataProviderOptions = {
+  describe('`.getRows()`', () => {
+    describe('on request error', () => {
+      const soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
       };
-      var soqlDataProvider;
+      let soqlDataProvider;
 
-      beforeEach(function() {
-
+      beforeEach(() => {
         server = sinon.fakeServer.create();
         soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
       });
 
-      afterEach(function() {
-
+      afterEach(() => {
         server.restore();
       });
 
-      describe('cross-domain request', function() {
-        it('should not provide the X-Socrata-Federation header', function() {
+      describe('cross-domain request', () => {
+        it('should not provide the X-Socrata-Federation header', () => {
           soqlDataProvider.getRows(QUERY_COLUMNS, QUERY_STRING);
           assert.lengthOf(server.requests, 1);
           assert.notProperty(
@@ -432,8 +409,8 @@ describe('SoqlDataProvider', function() {
         });
       });
 
-      describe('same-domain request', function() {
-        it('should provide the X-Socrata-Federation header', function() {
+      describe('same-domain request', () => {
+        it('should provide the X-Socrata-Federation header', () => {
           soqlDataProvider = new SoqlDataProvider({
             domain: window.location.hostname,
             datasetUid: VALID_DATASET_UID
@@ -448,16 +425,15 @@ describe('SoqlDataProvider', function() {
         });
       });
 
-      it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
-
+      it('should return an object containing "status", "message" and "soqlError" properties', (done) => {
         soqlDataProvider.
           getRows(QUERY_COLUMNS, QUERY_STRING).
           then(
-            function(data) {
+            (data) => {
               // Fail the test since we expected an error response.
               done('Request succeeded, we did not expect it to.');
             },
-            function(error) {
+            (error) => {
 
               assert.property(error, 'status');
               assert.property(error, 'message');
@@ -471,15 +447,14 @@ describe('SoqlDataProvider', function() {
         _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
       });
 
-      it('should include the correct request error status', function(done) {
-
+      it('should include the correct request error status', (done) => {
         soqlDataProvider.
           getRows(QUERY_COLUMNS, QUERY_STRING).
           then(
-            function(data) {
+            (data) => {
               done('Request succeeded, we did not expect it to.');
             },
-            function(error) {
+            (error) => {
 
               assert.equal(error.status, ERROR_STATUS);
               done();
@@ -491,16 +466,15 @@ describe('SoqlDataProvider', function() {
         _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
       });
 
-      it('should include the correct request error message', function(done) {
-
+      it('should include the correct request error message', (done) => {
         soqlDataProvider.
           getRows(QUERY_COLUMNS, QUERY_STRING).
           then(
-            function(data) {
+            (data) => {
               // Fail the test since we expected an error response.
               done('Request succeeded, we did not expect it to.');
             },
-            function(error) {
+            (error) => {
               assert.equal(error.message.toLowerCase(), ERROR_MESSAGE.toLowerCase());
               done();
             }
@@ -511,16 +485,16 @@ describe('SoqlDataProvider', function() {
         _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
       });
 
-      it('should include the correct soqlError object', function(done) {
+      it('should include the correct soqlError object', (done) => {
 
         soqlDataProvider.
           getRows(QUERY_COLUMNS, QUERY_STRING).
           then(
-            function(data) {
+            (data) => {
               // Fail the test since we expected an error response.
               done('Request succeeded, we did not expect it to.');
             },
-            function(error) {
+            (error) => {
               assert.deepEqual(error.soqlError, JSON.parse(SAMPLE_ROW_REQUEST_ERROR));
               done();
             }
@@ -532,22 +506,21 @@ describe('SoqlDataProvider', function() {
       });
     });
 
-    describe('on request success', function(done) {
-
-      var soqlDataProviderOptions = {
+    describe('on request success', (done) => {
+      const soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
       };
-      var soqlDataProvider;
+      let soqlDataProvider;
 
-      var columnsToRetrieve = [
+      const columnsToRetrieve = [
         'address', // Exists, always non null
         'point',   // Exists, always non null
         'can_be_blank', // Sometimes is null.
         'always_blank', // Always null.
       ];
 
-      var expectedRowResults = [
+      const expectedRowResults = [
         [
           "Intersection of TREASURE ISLAND RD and",
           {
@@ -569,23 +542,20 @@ describe('SoqlDataProvider', function() {
       ];
 
 
-      beforeEach(function() {
-
+      beforeEach(() => {
         server = sinon.fakeServer.create();
         soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
       });
 
-      afterEach(function() {
-
+      afterEach(() => {
         server.restore();
       });
 
-      it('should return an object containing columns and rows', function(done) {
-
+      it('should return an object containing columns and rows', (done) => {
         soqlDataProvider.
           getRows(columnsToRetrieve, QUERY_STRING).
           then(
-            function(data) {
+            (data) => {
 
               assert.property(data, 'columns');
               assert.property(data, 'rows');
@@ -597,12 +567,11 @@ describe('SoqlDataProvider', function() {
         _respondWithSuccess(SAMPLE_ROW_REQUEST_RESPONSE);
       });
 
-      it('should return the expected columns', function(done) {
-
+      it('should return the expected columns', (done) => {
         soqlDataProvider.
           getRows(columnsToRetrieve, QUERY_STRING).
           then(
-            function(data) {
+            (data) => {
 
               assert.deepEqual(data.columns, columnsToRetrieve);
               done();
@@ -613,12 +582,11 @@ describe('SoqlDataProvider', function() {
         _respondWithSuccess(SAMPLE_ROW_REQUEST_RESPONSE);
       });
 
-      it('should return the expected rows', function(done) {
-
+      it('should return the expected rows', (done) => {
         soqlDataProvider.
           getRows(columnsToRetrieve, QUERY_STRING).
           then(
-            function(data) {
+            (data) => {
 
               assert.deepEqual(data.rows, expectedRowResults);
               done();
@@ -631,29 +599,29 @@ describe('SoqlDataProvider', function() {
     });
   });
 
-  describe('.getTableData()', function() {
-    var soqlDataProviderOptions = {
+  describe('.getTableData()', () => {
+    const soqlDataProviderOptions = {
       domain: VALID_DOMAIN,
       datasetUid: VALID_DATASET_UID
     };
 
     // These tests don't resolve any data requests -
     // we only care about what query gets generated.
-    describe('resultant query', function() {
-      var soqlDataProvider;
-      var server;
+    describe('resultant query', () => {
+      let soqlDataProvider;
+      let server;
 
-      beforeEach(function() {
+      beforeEach(() => {
         server = sinon.fakeServer.create();
         soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
       });
 
-      afterEach(function() {
+      afterEach(() => {
         server.restore();
       });
 
-      describe('cross-domain request', function() {
-        it('should not provide the X-Socrata-Federation header', function() {
+      describe('cross-domain request', () => {
+        it('should not provide the X-Socrata-Federation header', () => {
           soqlDataProvider.getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10);
           assert.lengthOf(server.requests, 1);
           assert.notProperty(
@@ -663,8 +631,8 @@ describe('SoqlDataProvider', function() {
         });
       });
 
-      describe('same-domain request', function() {
-        it('should provide the X-Socrata-Federation header', function() {
+      describe('same-domain request', () => {
+        it('should provide the X-Socrata-Federation header', () => {
           soqlDataProvider = new SoqlDataProvider({
             domain: window.location.hostname,
             datasetUid: VALID_DATASET_UID
@@ -680,7 +648,7 @@ describe('SoqlDataProvider', function() {
       });
 
       // function getTableData (columnNames, order, offset, limit) { ... }
-      var argumentsAndExpectedQueryPairs = [
+      const argumentsAndExpectedQueryPairs = [
         {
           args: [ [ 'foo', 'bar' ], [ { columnName: 'foo', ascending: true } ], 0, 10 ],
           resultantQueryParts: [ '$select=`foo`,`bar`', '$order=`foo`+ASC', '$offset=0', '$limit=10' ]
@@ -695,56 +663,54 @@ describe('SoqlDataProvider', function() {
         }
       ];
 
-      argumentsAndExpectedQueryPairs.map(function(pair) {
-        var args = pair.args;
-        var resultantQueryParts = pair.resultantQueryParts;
+      argumentsAndExpectedQueryPairs.map((pair) => {
+        const args = pair.args;
+        const resultantQueryParts = pair.resultantQueryParts;
 
-        it('should query', function() {
+        it('should query', () => {
           soqlDataProvider.getTableData.apply(soqlDataProvider, args);
 
           assert.lengthOf(server.requests, 1);
-          var url = server.requests[0].url;
+          const { url } = server.requests[0];
 
           assert.notInclude(url, '$$read_from_nbe=true');
           assert.notInclude(url, '$$version=2.1');
         });
 
-        resultantQueryParts.map(function(queryPart) {
-          it('given arguments {0} should produce query part {1}'.format(args.join(), queryPart), function() {
+        resultantQueryParts.map((queryPart) => {
+          it('given arguments {0} should produce query part {1}'.format(args.join(), queryPart), () => {
             soqlDataProvider.getTableData.apply(soqlDataProvider, args);
 
             assert.lengthOf(server.requests, 1);
-            var url = server.requests[0].url;
+            const { url } = server.requests[0];
             assert.include(url, queryPart);
           });
         });
       });
     });
 
-    describe('on request error', function() {
+    describe('on request error', () => {
+      let soqlDataProvider;
 
-      var soqlDataProvider;
-
-      beforeEach(function() {
-
+      beforeEach(() => {
         server = sinon.fakeServer.create();
         soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
       });
 
-      afterEach(function() {
+      afterEach(() => {
         server.restore();
       });
 
-      it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
+      it('should return an object containing "status", "message" and "soqlError" properties', (done) => {
 
         soqlDataProvider.
           getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
           then(
-            function(data) {
+            (data) => {
               // Fail the test since we expected an error response.
               done('Request succeeded, we did not expect it to.');
             },
-            function(error) {
+            (error) => {
 
               assert.property(error, 'status');
               assert.property(error, 'message');
@@ -758,15 +724,14 @@ describe('SoqlDataProvider', function() {
         _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
       });
 
-      it('should include the correct request error status', function(done) {
-
+      it('should include the correct request error status', (done) => {
         soqlDataProvider.
           getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
           then(
-            function(data) {
+            (data) => {
               done('Request succeeded, we did not expect it to.');
             },
-            function(error) {
+            (error) => {
 
               assert.equal(error.status, ERROR_STATUS);
               done();
@@ -778,16 +743,15 @@ describe('SoqlDataProvider', function() {
         _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
       });
 
-      it('should include the correct request error message', function(done) {
-
+      it('should include the correct request error message', (done) => {
         soqlDataProvider.
           getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
           then(
-            function(data) {
+            (data) => {
               // Fail the test since we expected an error response.
               done('Request succeeded, we did not expect it to.');
             },
-            function(error) {
+            (error) => {
               assert.equal(error.message.toLowerCase(), ERROR_MESSAGE.toLowerCase());
               done();
             }
@@ -798,16 +762,15 @@ describe('SoqlDataProvider', function() {
         _respondWithError(SAMPLE_ROW_REQUEST_ERROR);
       });
 
-      it('should include the correct soqlError object', function(done) {
-
+      it('should include the correct soqlError object', (done) => {
         soqlDataProvider.
           getTableData(['a'], [ { columnName: 'a', ascending: true } ], 0, 10).
           then(
-            function(data) {
+            (data) => {
               // Fail the test since we expected an error response.
               done('Request succeeded, we did not expect it to.');
             },
-            function(error) {
+            (error) => {
               assert.deepEqual(error.soqlError, JSON.parse(SAMPLE_ROW_REQUEST_ERROR));
               done();
             }
@@ -819,31 +782,27 @@ describe('SoqlDataProvider', function() {
       });
     });
 
-    describe('on request success', function(done) {
-
-      var soqlDataProviderOptions = {
+    describe('on request success', (done) => {
+      const soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
         datasetUid: VALID_DATASET_UID
       };
-      var soqlDataProvider;
+      let soqlDataProvider;
 
-      beforeEach(function() {
-
+      beforeEach(() => {
         server = sinon.fakeServer.create();
         soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
       });
 
-      afterEach(function() {
-
+      afterEach(() => {
         server.restore();
       });
 
-      it('should return the expected columns', function(done) {
-
+      it('should return the expected columns', (done) => {
         soqlDataProvider.
           getTableData(['columnA', 'columnB'], [ { columnName: 'columnA', ascending: true } ], 0, 10).
           then(
-            function(data) {
+            (data) => {
 
               assert.deepEqual(data.columns, [ 'columnA', 'columnB' ]);
               done();
@@ -854,12 +813,11 @@ describe('SoqlDataProvider', function() {
         _respondWithSuccess(SAMPLE_ROW_REQUEST_RESPONSE);
       });
 
-      it('should return the expected rows', function(done) {
-
+      it('should return the expected rows', (done) => {
         soqlDataProvider.
           getTableData(['columnA', 'columnB'], [ { columnName: 'columnA', ascending: true } ], 0, 10).
           then(
-            function(data) {
+            (data) => {
 
               assert.deepEqual(data.rows, [
                 [ 'column A value 1', 'column B value 1' ],
@@ -886,39 +844,38 @@ describe('SoqlDataProvider', function() {
         );
       });
     });
-
   });
 
-  describe('getRowCount()', function() {
-    var soqlDataProvider;
-    var soqlDataProviderOptions = {
+  describe('getRowCount()', () => {
+    let soqlDataProvider;
+    const soqlDataProviderOptions = {
       domain: VALID_DOMAIN,
       datasetUid: VALID_DATASET_UID
     };
 
-    beforeEach(function() {
+    beforeEach(() => {
       server = sinon.fakeServer.create();
       soqlDataProvider = new SoqlDataProvider(soqlDataProviderOptions);
     });
 
-    afterEach(function() {
+    afterEach(() => {
       server.restore();
     });
 
-    it('should query', function() {
+    it('should query', () => {
       soqlDataProvider.getRowCount(); // Discard response, we don't care.
-      var url = server.requests[0].url;
+      const { url } = server.requests[0];
 
       assert.lengthOf(server.requests, 1);
       assert.notInclude(url, '$$read_from_nbe=true');
       assert.notInclude(url, '$$version=2.1');
     });
 
-    describe('on request error', function() {
-      it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
+    describe('on request error', () => {
+      it('should return an object containing "status", "message" and "soqlError" properties', (done) => {
         soqlDataProvider.getRowCount().then(
           done,
-          function(error) {
+          (error) => {
             assert.property(error, 'status');
             assert.equal(error.status, ERROR_STATUS);
             done();
@@ -929,10 +886,10 @@ describe('SoqlDataProvider', function() {
       });
     });
 
-    describe('on request success', function() {
-      it('should return an Array containing an Object with key `count`.', function(done) {
+    describe('on request success', () => {
+      it('should return an Array containing an Object with key `count`.', (done) => {
         soqlDataProvider.getRowCount().then(
-          function(count) {
+          (count) => {
             assert.equal(count, EXPECTED_ROW_COUNT);
             done();
           },
@@ -944,8 +901,13 @@ describe('SoqlDataProvider', function() {
     });
   });
 
-  describe('getColumnStats()', function() {
+  describe('getColumnStats()', () => {
     let soqlDataProvider;
+
+    const moneyColumn = {
+      fieldName: 'moneyColumn',
+      dataTypeName: 'money'
+    };
 
     const numberColumn = {
       fieldName: 'numberColumn',
@@ -980,36 +942,44 @@ describe('SoqlDataProvider', function() {
     });
 
     it('errors if input is not an array', () => {
-      expect(() => soqlDataProvider.getColumnStats()).to.throw();
-      expect(() => soqlDataProvider.getColumnStats({})).to.throw();
+      assert.throw(() => soqlDataProvider.getColumnStats());
+      assert.throw(() => soqlDataProvider.getColumnStats({}));
+    });
+
+    it('fetches stats for money columns', () => {
+      soqlDataProvider.getColumnStats([moneyColumn]);
+      const { url } = server.requests[0];
+      assert.lengthOf(server.requests, 1);
+      assert.match(url, /select.+min/);
+      assert.match(url, /select.+max/);
     });
 
     it('fetches stats for number columns', () => {
       soqlDataProvider.getColumnStats([numberColumn]);
-      var url = server.requests[0].url;
-      expect(server.requests).to.have.length(1);
-      expect(url).to.match(/select.+min/);
-      expect(url).to.match(/select.+max/);
+      const { url } = server.requests[0];
+      assert.lengthOf(server.requests, 1);
+      assert.match(url, /select.+min/);
+      assert.match(url, /select.+max/);
     });
 
     it('fetches stats for calendar_type columns', () => {
       soqlDataProvider.getColumnStats([calendarDateColumn]);
-      var url = server.requests[0].url;
-      expect(server.requests).to.have.length(1);
-      expect(url).to.match(/select.+min/);
-      expect(url).to.match(/select.+max/);
+      const { url } = server.requests[0];
+      assert.lengthOf(server.requests, 1);
+      assert.match(url, /select.+min/);
+      assert.match(url, /select.+max/);
     });
 
     it('fetches stats for text columns', () => {
       soqlDataProvider.getColumnStats([textColumn]);
-      var url = server.requests[0].url;
-      expect(server.requests).to.have.length(1);
-      expect(url).to.match(/select.+count/);
+      const { url } = server.requests[0];
+      assert.lengthOf(server.requests, 1);
+      assert.match(url, /select.+count/);
     });
 
     it('only fetches stats for number, calendar_type, and text columns', () => {
       soqlDataProvider.getColumnStats([textColumn, numberColumn, textColumn, calendarDateColumn, fakeColumn]);
-      expect(server.requests).to.have.length(4);
+      assert.lengthOf(server.requests, 4);
     });
 
     it('passes through errors', (done) => {
@@ -1021,7 +991,7 @@ describe('SoqlDataProvider', function() {
     });
   });
 
-  describe('match()', function() {
+  describe('match()', () => {
     let soqlDataProvider;
 
     beforeEach(() => {
@@ -1034,7 +1004,7 @@ describe('SoqlDataProvider', function() {
 
     it('fetches a limit 1 query', () => {
       soqlDataProvider.match('columnName', 'something');
-      expect(server.requests).to.have.length(1);
+      assert.lengthOf(server.requests, 1);
     });
 
     it('rejects when term is not found', (done) => {

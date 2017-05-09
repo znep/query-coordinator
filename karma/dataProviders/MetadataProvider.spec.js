@@ -1,23 +1,22 @@
-var d3 = require('d3');
-var _ = require('lodash');
-var MetadataProvider = require('src/dataProviders/MetadataProvider');
+import d3 from 'd3';
+import _ from 'lodash';
+import MetadataProvider from 'src/dataProviders/MetadataProvider';
 
-describe('MetadataProvider', function() {
+describe('MetadataProvider', () => {
+  const VALID_DOMAIN = 'example.com';
+  const VALID_DATASET_UID = 'test-test';
 
-  var VALID_DOMAIN = 'example.com';
-  var VALID_DATASET_UID = 'test-test';
+  const INVALID_DOMAIN = null;
+  const INVALID_DATASET_UID = null;
 
-  var INVALID_DOMAIN = null;
-  var INVALID_DATASET_UID = null;
+  const ERROR_STATUS = 400;
+  const ERROR_MESSAGE = 'Bad request';
 
-  var ERROR_STATUS = 400;
-  var ERROR_MESSAGE = 'Bad request';
+  const SUCCESS_STATUS = 200;
 
-  var SUCCESS_STATUS = 200;
+  const SAMPLE_DATASET_METADATA_REQUEST_ERROR = '';
 
-  var SAMPLE_DATASET_METADATA_REQUEST_ERROR = '';
-
-  var SAMPLE_DATASET_METADATA_REQUEST_RESPONSE = JSON.stringify({
+  const SAMPLE_DATASET_METADATA_REQUEST_RESPONSE = JSON.stringify({
     "name": "Case Data from San Francisco 311",
     "updatedAt": "2014-08-22T22:36:10.000Z",
     "defaultPage": "cs5s-apnb",
@@ -59,7 +58,7 @@ describe('MetadataProvider', function() {
     }
   });
 
-  var SAMPLE_ROW_REQUEST_RESPONSE = JSON.stringify([
+  const SAMPLE_ROW_REQUEST_RESPONSE = JSON.stringify([
     {
       "address": "Intersection of TREASURE ISLAND RD and",
       "case_id": "501753",
@@ -81,15 +80,15 @@ describe('MetadataProvider', function() {
     },
   ]);
 
-  var SAMPLE_DATASET_METADATA = window.testData.CHICAGO_CRIMES_DATASET_METADATA;
+  const SAMPLE_DATASET_METADATA = window.testData.CHICAGO_CRIMES_DATASET_METADATA;
 
-  var SAMPLE_METADATA_ERROR = JSON.stringify({
+  const SAMPLE_METADATA_ERROR = JSON.stringify({
     "code" : "not_found",
     "error" : true,
     "message" : "Cannot find view with id 56p4-vdcc.jso"
   });
 
-  var SAMPLE_MIGRATION_METADATA = {
+  const SAMPLE_MIGRATION_METADATA = {
     "migrationPhase": "prep",
     "migrationPhaseUpdated": 1462987365,
     "nbeId": "h6bt-4qvq",
@@ -98,37 +97,33 @@ describe('MetadataProvider', function() {
     "syncedAt": 1462987365
   };
 
-  var server;
-  var metadataProviderOptions = {
+  let server;
+  const metadataProviderOptions = {
     domain: VALID_DOMAIN,
     datasetUid: VALID_DATASET_UID
   };
-  var metadataProvider;
+  let metadataProvider;
 
-  beforeEach(function() {
+  beforeEach(() => {
     server = sinon.fakeServer.create();
     metadataProvider = new MetadataProvider(metadataProviderOptions);
   });
 
-  afterEach(function() {
+  afterEach(() => {
     server.restore();
   });
 
-  describe('constructor', function() {
-
-    it('should throw with invalid configuration values', function() {
-
-      assert.throw(function() {
-
-        var metadataProvider = new MetadataProvider({
+  describe('constructor', () => {
+    it('should throw with invalid configuration values', () => {
+      assert.throw(() => {
+        const metadataProvider = new MetadataProvider({
           domain: INVALID_DOMAIN,
           datasetUid: VALID_DATASET_UID
         });
       });
 
-      assert.throw(function() {
-
-        var metadataProvider = new MetadataProvider({
+      assert.throw(() => {
+        const metadataProvider = new MetadataProvider({
           domain: VALID_DOMAIN,
           datasetUid: INVALID_DATASET_UID
         });
@@ -136,9 +131,8 @@ describe('MetadataProvider', function() {
     });
   });
 
-  describe('`.getShapefileMetadata`', function() {
-
-    it('should merge results from the curated regions API and phidippides if they succeed', function(done) {
+  describe('`.getShapefileMetadata`', () => {
+    it('should merge results from the curated regions API and phidippides if they succeed', (done) => {
       server.respondWith(/\/api\/curated_regions/, JSON.stringify({
         geometryLabel: 'jellyfish',
         featurePk: null
@@ -152,19 +146,19 @@ describe('MetadataProvider', function() {
       metadataProvider.
         getShapefileMetadata().
         then(
-          function(data) {
-            expect(data.geometryLabel).to.equal('jellyfish');
-            expect(data.featurePk).to.equal('octopus');
+          (data) => {
+            assert.equal(data.geometryLabel, 'jellyfish');
+            assert.equal(data.featurePk, 'octopus');
             done();
           },
-          function(error) {
+          (error) => {
 
             // Fail the test since we expected a success response.
             assert.isTrue(undefined);
             done();
           }
         ).catch(
-          function(e) {
+          (e) => {
 
             // Fail the test since we shouldn't be encountering an
             // exception in any case.
@@ -177,7 +171,7 @@ describe('MetadataProvider', function() {
       server.respond();
     });
 
-    it('should use the results from phidippides if the curated regions request fails', function(done) {
+    it('should use the results from phidippides if the curated regions request fails', (done) => {
       server.respondWith(/\/api\/curated_regions/, [ERROR_STATUS, {}, '']);
       server.respondWith(/\/metadata\/v1\/dataset/, JSON.stringify({
         geometryLabel: 'cuttlefish',
@@ -187,19 +181,19 @@ describe('MetadataProvider', function() {
       metadataProvider.
         getShapefileMetadata().
         then(
-          function(data) {
-            expect(data.geometryLabel).to.equal('cuttlefish');
-            expect(data.featurePk).to.equal('octopus');
+          (data) => {
+            assert.equal(data.geometryLabel, 'cuttlefish');
+            assert.equal(data.featurePk, 'octopus');
             done();
           },
-          function(error) {
+          (error) => {
 
             // Fail the test since we expected a success response.
             assert.isTrue(undefined);
             done();
           }
         ).catch(
-          function(e) {
+          (e) => {
 
             // Fail the test since we shouldn't be encountering an
             // exception in any case.
@@ -212,7 +206,7 @@ describe('MetadataProvider', function() {
       server.respond();
     });
 
-    it('should use the results from the curated regions API if the phidippides request fails', function(done) {
+    it('should use the results from the curated regions API if the phidippides request fails', (done) => {
       server.respondWith(/\/api\/curated_regions/, JSON.stringify({
         geometryLabel: null,
         featurePk: 'cnidaria'
@@ -223,19 +217,19 @@ describe('MetadataProvider', function() {
       metadataProvider.
         getShapefileMetadata().
         then(
-          function(data) {
-            expect(data.geometryLabel).to.equal(null);
-            expect(data.featurePk).to.equal('cnidaria');
+          (data) => {
+            assert.equal(data.geometryLabel, null);
+            assert.equal(data.featurePk, 'cnidaria');
             done();
           },
-          function(error) {
+          (error) => {
 
             // Fail the test since we expected a success response.
             assert.isTrue(undefined);
             done();
           }
         ).catch(
-          function(e) {
+          (e) => {
 
             // Fail the test since we shouldn't be encountering an
             // exception in any case.
@@ -248,26 +242,26 @@ describe('MetadataProvider', function() {
       server.respond();
     });
 
-    it('should return default values for both metadata keys if both requests fail', function(done) {
+    it('should return default values for both metadata keys if both requests fail', (done) => {
       server.respondWith(/\/api\/curated_regions/, [ERROR_STATUS, {}, '']);
       server.respondWith(/\/metadata\/v1\/dataset/, [ERROR_STATUS, {}, '']);
 
       metadataProvider.
         getShapefileMetadata().
         then(
-          function(data) {
-            expect(data.geometryLabel).to.equal(null);
-            expect(data.featurePk).to.equal('_feature_id');
+          (data) => {
+            assert.equal(data.geometryLabel, null);
+            assert.equal(data.featurePk, '_feature_id');
             done();
           },
-          function(error) {
+          (error) => {
 
             // Fail the test since we expected a success response.
             assert.isTrue(undefined);
             done();
           }
         ).catch(
-          function(e) {
+          (e) => {
 
             // Fail the test since we shouldn't be encountering an
             // exception in any case.
@@ -281,8 +275,8 @@ describe('MetadataProvider', function() {
     });
   });
 
-  describe('getDatasetMetadata()', function() {
-    it('should query the NBE by default', function() {
+  describe('getDatasetMetadata()', () => {
+    it('should query the NBE by default', () => {
       metadataProvider.getDatasetMetadata(); // Discard the response, we don't care.
       assert.lengthOf(server.requests, 1);
       assert.include(
@@ -291,8 +285,8 @@ describe('MetadataProvider', function() {
       );
     });
 
-    describe('cross-domain request', function() {
-      it('should not provide the X-Socrata-Federation header', function() {
+    describe('cross-domain request', () => {
+      it('should not provide the X-Socrata-Federation header', () => {
         metadataProvider.getDatasetMetadata(); // Discard the response, we don't care.
         assert.lengthOf(server.requests, 1);
         assert.notProperty(
@@ -302,9 +296,9 @@ describe('MetadataProvider', function() {
       });
     });
 
-    describe('same-domain request', function() {
-      it('should provide the X-Socrata-Federation header', function() {
-        var metadataProviderOptions = {
+    describe('same-domain request', () => {
+      it('should provide the X-Socrata-Federation header', () => {
+        const metadataProviderOptions = {
           domain: window.location.hostname,
           datasetUid: VALID_DATASET_UID
         };
@@ -319,11 +313,11 @@ describe('MetadataProvider', function() {
       });
     });
 
-    describe('on request error', function() {
-      it('should return an Object containing "code", "error", and "message"', function(done) {
+    describe('on request error', () => {
+      it('should return an Object containing "code", "error", and "message"', (done) => {
         metadataProvider.getDatasetMetadata().then(
           done,
-          function(error) {
+          (error) => {
             assert.property(error, 'status');
             assert.equal(error.status, ERROR_STATUS);
             done();
@@ -334,10 +328,10 @@ describe('MetadataProvider', function() {
       });
     });
 
-    describe('on request success', function() {
-      it('should return an Object of metadata', function(done) {
+    describe('on request success', () => {
+      it('should return an Object of metadata', (done) => {
         metadataProvider.getDatasetMetadata().then(
-          function(data) {
+          (data) => {
             assert.isObject(data);
             assert.property(data, 'columns');
             assert.isArray(data.columns);
@@ -351,39 +345,39 @@ describe('MetadataProvider', function() {
     });
   });
 
-  describe('getDatasetMigrationMetadata', function() {
-    describe('on request error', function() {
-      it('fails the promise', function(done) {
+  describe('getDatasetMigrationMetadata', () => {
+    describe('on request error', () => {
+      it('fails the promise', (done) => {
         metadataProvider.
           getDatasetMigrationMetadata().
           then(done).
-          catch(function(error) {
+          catch((error) => {
             assert.isObject(error);
             done();
           });
 
-          server.respond([ERROR_STATUS, {'Content-Type': 'application/json'}, '{}']);
+        server.respond([ERROR_STATUS, {'Content-Type': 'application/json'}, '{}']);
       });
     });
 
-    describe('on request success', function() {
-      it('should return an Object of metadata', function(done) {
+    describe('on request success', () => {
+      it('should return an Object of metadata', (done) => {
         metadataProvider.
           getDatasetMigrationMetadata().
-          then(function(data) {
+          then((data) => {
             assert.isObject(data);
             assert.property(data, 'nbeId');
             done();
           }).
           catch(done);
 
-          server.respond([SUCCESS_STATUS, {'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_MIGRATION_METADATA)]);
+        server.respond([SUCCESS_STATUS, {'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_MIGRATION_METADATA)]);
       });
     });
   });
 
-  describe('isSystemColumn()', function() {
-    it('returns true if and only if the column starts with :', function() {
+  describe('isSystemColumn()', () => {
+    it('returns true if and only if the column starts with :', () => {
       assert.isFalse(metadataProvider.isSystemColumn('foo', SAMPLE_DATASET_METADATA));
       assert.isFalse(metadataProvider.isSystemColumn('foo:', SAMPLE_DATASET_METADATA));
       assert.isFalse(metadataProvider.isSystemColumn('fo:o', SAMPLE_DATASET_METADATA));
@@ -392,9 +386,9 @@ describe('MetadataProvider', function() {
     });
   });
 
-  describe('isSubcolumn()', function() {
-    it('returns true when there is a suffix', function() {
-      var sampleDatasetMetadataWithExtraSimilarlyNamedColumns = _.cloneDeep(SAMPLE_DATASET_METADATA);
+  describe('isSubcolumn()', () => {
+    it('returns true when there is a suffix', () => {
+      const sampleDatasetMetadataWithExtraSimilarlyNamedColumns = _.cloneDeep(SAMPLE_DATASET_METADATA);
 
       sampleDatasetMetadataWithExtraSimilarlyNamedColumns.columns.push({
         "id" : _.uniqueId(),
@@ -429,34 +423,34 @@ describe('MetadataProvider', function() {
       ));
     });
 
-    it('flags subcolumns when there is not a suffix', function() {
+    it('flags subcolumns when there is not a suffix', () => {
       assert.isFalse(metadataProvider.isSubcolumn('location', SAMPLE_DATASET_METADATA));
       assert.isTrue(metadataProvider.isSubcolumn('location_city', SAMPLE_DATASET_METADATA));
     });
   });
 
-  describe('isHiddenColumn()', function() {
-    it('returns true if the column flags includes "hidden"', function() {
+  describe('isHiddenColumn()', () => {
+    it('returns true if the column flags includes "hidden"', () => {
       assert.isTrue(metadataProvider.isHiddenColumn(['hidden'], SAMPLE_DATASET_METADATA));
     });
 
-    it('returns false if the column flags does not include "hidden"', function() {
+    it('returns false if the column flags does not include "hidden"', () => {
       assert.isFalse(metadataProvider.isHiddenColumn(['potato'], SAMPLE_DATASET_METADATA));
     });
 
-    it('returns false if the column flags is undefined', function() {
+    it('returns false if the column flags is undefined', () => {
       assert.isFalse(metadataProvider.isHiddenColumn(undefined, SAMPLE_DATASET_METADATA));
     });
   });
 
-  describe('getDisplayableColumns()', function() {
-    var mockMetadata = {
+  describe('getDisplayableColumns()', () => {
+    const mockMetadata = {
       columns: [{
         fieldName: 'mockColumn'
       }]
     };
 
-    it('excludes the column if isSystemColumn, isSubcolumn, or isHiddenColumn are true', function() {
+    it('excludes the column if isSystemColumn, isSubcolumn, or isHiddenColumn are true', () => {
       sinon.stub(metadataProvider, 'isSystemColumn', _.constant(true));
       sinon.stub(metadataProvider, 'isSubcolumn', _.constant(false));
       sinon.stub(metadataProvider, 'isHiddenColumn', _.constant(false));
@@ -500,6 +494,17 @@ describe('MetadataProvider', function() {
   });
 
   describe('getFilterableColumns()', () => {
+    it('returns money with rangeMin and rangeMax', () => {
+      const columns = [
+        {dataTypeName: 'money', fieldName: 'kitty'},
+        {dataTypeName: 'money', fieldName: 'roomba', rangeMin: 1, rangeMax: 100}
+      ];
+
+      const filteredColumns = metadataProvider.getFilterableColumns({ columns });
+
+      assert.deepEqual(filteredColumns, [columns[1]]);
+    });
+
     it('returns numbers with rangeMin and rangeMax', () => {
       const columns = [
         {dataTypeName: 'number', fieldName: 'kitty'},
@@ -545,10 +550,11 @@ describe('MetadataProvider', function() {
       server.restore();
     });
 
-    it('returns only displayable and filterable columns', () => {
+    it('returns only displayable and filterable columns', (done) => {
       return metadataProvider.getDisplayableFilterableColumns().then((columns) => {
         assert.deepEqual(metadataProvider.getFilterableColumns({ columns }), columns);
         assert.deepEqual(metadataProvider.getDisplayableColumns({ columns }), columns);
+        done();
       });
     });
   });

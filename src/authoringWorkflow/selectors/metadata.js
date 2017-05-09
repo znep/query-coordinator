@@ -43,9 +43,11 @@ export const getFilterableColumns = createSelector(
   hasColumnStats,
   (columns, hasColumnStats) => {
     return _.filter(columns, (column) => {
-      return column.dataTypeName === 'text'
-       || (hasColumnStats && column.dataTypeName === 'number')
-       || (column.dataTypeName === 'calendar_date');
+      const { dataTypeName } = column;
+
+      return dataTypeName === 'text' ||
+        dataTypeName === 'calendar_date' ||
+        (hasColumnStats && _.includes(['money', 'number'], dataTypeName));
     });
   }
 );

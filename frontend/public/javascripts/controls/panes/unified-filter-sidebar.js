@@ -65,8 +65,13 @@
             var cpObj = this;
             var canEditFilters = false;
 
-            if (!_.isEmpty(blist.currentUser)) {
-              canEditFilters = blist.currentUser.isSuperadmin() ||
+            // EN-16102: This conditional used to reference blist.currentUser,
+            // but apparently we instantiate that model asynchronously for...
+            // reasons?... so this condition would improperly evaluate to false.
+            // Checking for superadmin is not complicated, so this section has
+            // been changed to bypass the model and just read the JSON directly.
+            if (!_.isEmpty(blist.currentUserJson)) {
+              canEditFilters = _.includes(blist.currentUserJson.flags, 'admin') ||
                 blist.dataset.hasRight(blist.rights.view.UPDATE_VIEW);
             }
 

@@ -28,14 +28,13 @@ class DowntimeConfig < ExternalConfig
                        time['downtime_start'], time['downtime_end'],
                        time['custom_message'])
         end
-        Rails.logger.info("Downtimes loaded! #{@downtimes.inspect}")
+        Rails.logger.info("[Downtime] Loaded: #{@downtimes.inspect}")
       else
-        Rails.logger.warn("Unable to load downtime banner: #{source}")
+        Rails.logger.warn("[Downtime] No config found at: #{source}")
       end
     rescue StandardError => e
       # Ignore all errors/typos from the downtime parsing
-      semantic_source = (use_consul?) ? 'consul' : 'config/downtime.yml'
-      Rails.logger.warn("Error loading downtime information from #{semantic_source} - #{e}")
+      Rails.logger.warn("[Downtime] Error loading from #{source} - #{e}")
     end
   end
 

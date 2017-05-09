@@ -5,6 +5,7 @@ module DatasetManagementUiHelper
       csrfToken: form_authenticity_token.to_s,
       appToken: APP_CONFIG.app_token,
       websocketToken: websocket_token,
+      airbrakeEnvironment: ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
       airbrakeKey: ENV['PUBLISHING_AIRBRAKE_API_KEY'] || APP_CONFIG.publishing_airbrake_api_key,
       currentUserId: User.current_user.id,
       localePrefix: locale_prefix

@@ -14,6 +14,8 @@ describe('<SignInForm />', () => {
   const defaultProps = {
     translate: () => '',
     doAuth0Login: () => { },
+    onLoginStart: () => { },
+    onLoginError: () => { },
     options: defaultOptions
   };
 
@@ -48,6 +50,30 @@ describe('<SignInForm />', () => {
 
       // if we have an error, spinner shouldn't be visibile
       expect(wrapper.find('.signin-form-spinner')).to.have.length(0);
+    });
+  });
+
+  describe('allowUsernamePasswordLogin', () => {
+    const propsWithAllowUsernamePasswordLogin = _.cloneDeep(defaultProps);
+    propsWithAllowUsernamePasswordLogin.options.allowUsernamePasswordLogin = true;
+    propsWithAllowUsernamePasswordLogin.auth0Connections = [
+      {
+        domain_aliases: ['socrata.com'],
+        name: 'socrata-okta-sts',
+        status: true
+      }
+    ];
+
+    let wrapperWithAllowUsernamePasswordLogin;
+
+    beforeEach(() => {
+      wrapperWithAllowUsernamePasswordLogin = shallow(<SignInForm {...propsWithAllowUsernamePasswordLogin} />);
+      wrapperWithAllowUsernamePasswordLogin.instance().onEmailChange('fakey@socrata.com');
+    });
+
+    it('does not grab connection', () => {
+      expect(wrapperWithAllowUsernamePasswordLogin.state().email).to.equal('fakey@socrata.com');
+      expect(wrapperWithAllowUsernamePasswordLogin.state().connectionName).to.not.exist;
     });
   });
 

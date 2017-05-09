@@ -26,10 +26,16 @@ class Auth0Controller < ApplicationController
         render_500
       else # UID is of the form xxxx-xxxx
         uid = extracted_uid.to_s
-        Rails.logger.info("Successful Auth0 login with UID: #{uid}")
-        cookies[:_core_session_id] = {value: "#{gen_cookie(uid)}", secure: true}
-        cookies[:logged_in] = { value: true, secure: true }
-        redirect_to '/profile'
+        Rails.logger.info("Successful username/password Auth0 login with UID: #{uid}")
+        cookies[:_core_session_id] = {
+          value: gen_cookie(uid).to_s,
+          secure: true
+        }
+        cookies[:logged_in] = {
+          value: true,
+          secure: true
+        }
+        redirect_back_or_default(login_redirect_url)
       end
       return
     end
@@ -39,7 +45,7 @@ class Auth0Controller < ApplicationController
 
     # if this is a social login attempt but social login isn't allowed, error.
     # openid_login is the social login feature flag, because naming is hard. It should be renamed.
-    if social_connection?(auth0_identifier) && !feature?('openid_login') 
+    if social_connection?(auth0_identifier) && !feature?('openid_login')
       Rails.logger.error("Tried to login with auth0 social provider on a domain with social login disabled (user_id #{auth0_identifier})")
       return render_404
     # if the token isn't valid, error

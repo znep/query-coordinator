@@ -32,12 +32,16 @@ class SignInForm extends React.Component {
       loggingIn: false
     };
 
-    this.onEmailChange = this.onEmailChange.bind(this);
-    this.onPasswordChange = this.onPasswordChange.bind(this);
-    this.setLoginErrorMessage = this.setLoginErrorMessage.bind(this);
-    this.onLoginStart = this.onLoginStart.bind(this);
-    this.renderErrorOrSpiiner = this.renderErrorOrSpinner.bind(this);
-    this.doSignIn = this.doSignIn.bind(this);
+    _.bindAll(this, [
+      'doSignIn',
+      'handleAuth0Error',
+      'onEmailChange',
+      'onLoginError',
+      'onLoginStart',
+      'onPasswordChange',
+      'renderErrorOrSpinner',
+      'setLoginErrorMessage'
+    ]);
   }
 
   /**
@@ -47,15 +51,23 @@ class SignInForm extends React.Component {
   onEmailChange(email) {
     if (isValidEmail(email)) {
       const { auth0Connections, options } = this.props;
-      const { forcedConnections, socrataEmailsBypassAuth0 } = options;
-      const connectionName = findConnection(
-        email,
-        auth0Connections,
+      const {
         forcedConnections,
-        socrataEmailsBypassAuth0
-      );
+        socrataEmailsBypassAuth0,
+        allowUsernamePasswordLogin } = options;
 
-      this.setState({ email, connectionName });
+      if (allowUsernamePasswordLogin === false) {
+        const connectionName = findConnection(
+          email,
+          auth0Connections,
+          forcedConnections,
+          socrataEmailsBypassAuth0
+        );
+
+        this.setState({ email, connectionName });
+      } else {
+        this.setState({ email });
+      }
     } else {
       this.setState({ email: null, connectionName: null });
     }
@@ -66,7 +78,13 @@ class SignInForm extends React.Component {
   }
 
   onLoginStart() {
+    this.props.onLoginStart();
     this.setState({ loggingIn: true });
+  }
+
+  onLoginError(level, message) {
+    this.setState({ loggingIn: false, password: '' });
+    this.props.onLoginError(level, message);
   }
 
   setLoginErrorMessage(error) {
@@ -82,7 +100,10 @@ class SignInForm extends React.Component {
 
     const { options, auth0Connections } = this.props;
     const { connectionName, email } = this.state;
-    const { forcedConnections, socrataEmailsBypassAuth0 } = options;
+    const {
+        forcedConnections,
+        socrataEmailsBypassAuth0,
+        allowUsernamePasswordLogin } = options;
 
     // blank out error
     this.setLoginErrorMessage(null);
@@ -90,7 +111,7 @@ class SignInForm extends React.Component {
     if (!_.isEmpty(connectionName)) {
       // we already have a connection name; just use that
       this.auth0Login(connectionName);
-    } else if (!_.isEmpty(email)) {
+    } else if (!_.isEmpty(email) && allowUsernamePasswordLogin === false) {
       // make sure we *really* shouldn't have a connection...
       const foundConnection = findConnection(
         email,
@@ -105,7 +126,6 @@ class SignInForm extends React.Component {
       } else {
         // otherwise do a regular ol login
         this.formLogin();
-        this.formDomNode.submit();
       }
     } else {
       // by default, we just do a login when the fields are blank;
@@ -125,9 +145,72 @@ class SignInForm extends React.Component {
     });
   }
 
+  handleAuth0Error(error) {
+    const { translate } = this.props;
+
+    if (_.isEmpty(error) || _.isEmpty(error.message)) {
+      console.error('Unknown auth0 error', error);
+
+      this.onLoginError(
+        'error',
+        translate('screens.sign_in.auth0_unknown')
+      );
+    } else {
+      const message = error.message;
+
+      if (message.includes('Wrong email or password')) {
+        this.onLoginError(
+          'warning',
+          translate('screens.sign_in.auth0_invalid')
+        );
+      } else if (message.includes('Too many logins with the same username or email')) {
+        // this one is for rate limiting logins
+        this.onLoginError(
+          'warning',
+          translate('screens.sign_in.auth0_too_many_requests')
+        );
+      } else if (
+          message.includes('Your account has been blocked after multiple consecutive login attempts')
+      ) {
+        this.onLoginError(
+          'warning',
+          translate('screens.sign_in.auth0_locked_out')
+        );
+      } else if (message.includes('connection parameter is mandatory')) {
+        // note that we should never get here; the auth0_helper should throw an exception
+        // if the connection parameter environment variable is missing
+        console.error('No connection parameter!', error);
+
+        this.onLoginError(
+          'error',
+          translate('screens.sign_in.auth0_unknown')
+        );
+      } else {
+        console.error('Unknown auth0 error', error);
+
+        this.onLoginError(
+          'error',
+          translate('screens.sign_in.auth0_unknown')
+        );
+      }
+    }
+  }
+
   formLogin() {
+    const { doAuth0Login, options } = this.props;
+    const { email, password } = this.state;
+    const { auth0DatabaseConnection, allowUsernamePasswordLogin } = options;
     this.onLoginStart();
-    this.formDomNode.submit();
+
+    if (allowUsernamePasswordLogin) {
+      this.formDomNode.submit();
+    } else {
+      doAuth0Login({
+        connection: auth0DatabaseConnection,
+        username: email,
+        password: password
+      }, (error) => { this.handleAuth0Error(error); });
+    }
   }
 
   renderErrorOrSpinner() {
@@ -161,6 +244,7 @@ class SignInForm extends React.Component {
         ref={(formDomNode) => { this.formDomNode = formDomNode; }}
         action="/user_sessions"
         method="post"
+        onSubmit={this.doSignIn}
         autoComplete={disableSignInAutocomplete ? 'off' : 'on'}>
         {this.renderErrorOrSpinner()}
 
@@ -199,6 +283,8 @@ SignInForm.propTypes = {
   options: OptionsPropType.isRequired,
   translate: PropTypes.func.isRequired,
   doAuth0Login: PropTypes.func.isRequired,
+  onLoginStart: PropTypes.func.isRequired,
+  onLoginError: PropTypes.func.isRequired,
   auth0Connections: PropTypes.arrayOf(Auth0ConnectionsPropType)
 };
 

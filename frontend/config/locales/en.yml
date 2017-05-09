@@ -5909,6 +5909,10 @@ en:
       title: Reset Password
     sign_in:
       auth0_intro: There are several ways you can sign in. If you haven't signed up for an account yet, choose the option that is most convenient for you. If you have, use the same option now.
+      auth0_invalid: Invalid username or password. For security, too many failed attempts will result in this account being locked out.
+      auth0_too_many_requests: Too many requests with same email. Please wait and try again.
+      auth0_locked_out: Your account has been blocked after multiple consecutive failed login attempts. We’ve sent you an email with instructions on how to unblock it.
+      auth0_unknown: An unknown error occurred logging in. Please contact support.
       back_to_sign_in_selection: <a class="login-back">Back to sign in options</a>
       dont_have_account: Don't have an account yet?
       error: Error logging in
@@ -5921,6 +5925,7 @@ en:
       headline: Sign In to %{site}
       mismatch: Passwords do not match. Please try again.
       new_login_message: <strong>Important!</strong> Login and signup will have a new look soon, learn more <a href="https://support.socrata.com/hc/en-us/articles/226005288" target="_blank" style="text-decoration&#58; underline;">here</a>
+      no_username_password_login: Attempted to login in an unauthorized way, please contact support.
       prompt_html: Sign in with your <strong>Socrata ID</strong>.
       sign_in_using: Sign in using
       sign_in_with: "<strong>Sign in</strong> with %{provider}"

@@ -1,6 +1,7 @@
 import React from 'react';
 import Auth0 from 'auth0-js';
 import cssModules from 'react-css-modules';
+import _ from 'lodash';
 import { SocrataIcon } from 'socrata-components';
 import { Translate, renderAlerts } from '../Util';
 import OptionsPropType from '../PropTypes/OptionsPropType';
@@ -23,11 +24,14 @@ class SignInContainer extends React.Component {
       }),
       auth0Connections: [],
       renderLoginForm: false,
-      translate: translate.get
+      translate: translate.get,
+      alerts: []
     };
 
     this.renderChooseConnectionOrSignInForm = this.renderChooseConnectionOrSignInForm.bind(this);
     this.onConnectionChosen = this.onConnectionChosen.bind(this);
+    this.onLoginError = this.onLoginError.bind(this);
+    this.onLoginStart = this.onLoginStart.bind(this);
     this.setLoginFormVisibility = this.setLoginFormVisibility.bind(this);
     this.renderFormMessage = this.renderFormMessage.bind(this);
   }
@@ -48,6 +52,15 @@ class SignInContainer extends React.Component {
 
   onConnectionChosen(connection) {
     this.state.auth0Client.login({ connection });
+  }
+
+  onLoginStart() {
+    // clear out alerts on login start
+    this.setState({ alerts: [] });
+  }
+
+  onLoginError(level, message) {
+    this.setState({ alerts: [[level, message]] });
   }
 
   setLoginFormVisibility(show) {
@@ -75,6 +88,8 @@ class SignInContainer extends React.Component {
         <SignIn
           translate={translate}
           doAuth0Login={doAuth0Login}
+          onLoginStart={this.onLoginStart}
+          onLoginError={this.onLoginError}
           auth0Connections={auth0Connections}
           options={options}
           setLoginFormVisibility={this.setLoginFormVisibility} />
@@ -117,14 +132,14 @@ class SignInContainer extends React.Component {
   }
 
   render() {
-    const { translate } = this.state;
+    const { translate, alerts } = this.state;
     const { options } = this.props;
     const { flashes } = options;
     return (
       <div styleName="container">
         {this.renderBackButton()}
 
-        {renderAlerts(flashes)}
+        {renderAlerts(_.concat(flashes, alerts))}
 
         <div styleName="header-container">
           <h2 styleName="header">

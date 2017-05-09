@@ -79,6 +79,7 @@ describe UserSessionsController do
       it 'allows Socrata users if socrata_emails_bypass_auth0 is enabled' do
         allow(CurrentDomain).to receive(:feature?).with('fedramp').and_return(false)
         allow(CurrentDomain).to receive(:feature?).with('socrata_emails_bypass_auth0').and_return(true)
+        allow(CurrentDomain).to receive(:feature?).with('username_password_login').and_return(true)
         allow_any_instance_of(UserSession).to receive(:user).and_return(user)
         allow(user).to receive(:is_superadmin?).and_return(true)
 

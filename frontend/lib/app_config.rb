@@ -88,6 +88,7 @@ class AppConfig < Hashie::Dash
   property :auth0_id
   property :auth0_secret
   property :auth0_uri
+  property :auth0_database_connection
 
   # Data lens tuning parameters
   property :enable_png_download_ui

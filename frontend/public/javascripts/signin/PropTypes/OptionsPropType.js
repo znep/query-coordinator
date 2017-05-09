@@ -11,6 +11,15 @@ export default
     // Auth0 URI (most likely socrata.auth0.com)
     auth0Uri: PropTypes.string.isRequired,
 
+    // Auth0 "custom database" connection to use for username/password logins
+    // In "development" mode (Rails.env.development?) this is not used and instead
+    // the login is submitted straight to the user_sessions_controller
+    auth0DatabaseConnection: PropTypes.string,
+
+    // Whether or not to submit straight to the user_sessions_controller or to go
+    // through the auth0 custom database connection
+    allowUsernamePasswordLogin: PropTypes.bool.isRequired,
+
     // Site key for recaptcha (for signup page)
     recaptchaSitekey: PropTypes.string,
 

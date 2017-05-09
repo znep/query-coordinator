@@ -61,20 +61,34 @@ class UserSessionsController < ApplicationController
   def create
     @body_id = 'login'
 
-    # We allow @socrata.com users to bypass auth0 if a module is turned on, but only when the fedramp module is off.
-    # The purpose of this is to restrict superadmin logins to ensure MFA through Okta, and "@socrata.com users" is a
-    # superset of superadmins.
-    # This is enforced in the javascript but we have to enforce it here as well.
+    # In general, if we get here it means that a user session has been created by submitting a login form straight to Rails
+    # If auth0 is enabled, we mostly disallow this.
     if use_auth0? &&
        params.key?(:user_session) &&
-       params[:user_session].key?(:login) &&
-       params[:user_session][:login].include?('@socrata.com')
-      if feature?('fedramp')
-        flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_fedramp')
-        redirect_to login_url and return
+       params[:user_session].key?(:login)
+      # We allow @socrata.com users to bypass auth0 if a module is turned on, but only when the fedramp module is off.
+      # The purpose of this is to restrict superadmin logins to ensure MFA through Okta, and "@socrata.com users" is a
+      # superset of superadmins.
+      # This is enforced in the javascript but we have to enforce it here as well.
+      if Rails.env.production? && params[:user_session][:login].include?('@socrata.com')
+        if feature?('fedramp')
+          flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_fedramp')
+          redirect_to login_url and return
+        end
+
+        unless feature?('socrata_emails_bypass_auth0')
+          flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_default')
+          redirect_to login_url and return
+        end
       end
-      if !feature?('socrata_emails_bypass_auth0')
-        flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_default')
+
+      # Disallow bypassing going through auth0 for username and password logins;
+      # In development mode, we _always_ bypass auth0 for simplicity.
+      # In production, the "username_password_login" module can be added.
+      # This is because this mechanism is used to enforce 2FA in some scenarios,
+      # and if we let people bypass it then they're bypassing 2FA which is Very Bad.
+      unless Rails.env.development? || feature?('username_password_login')
+        flash[:error] = t('screens.sign_in.no_username_password_login')
         redirect_to login_url and return
       end
     end

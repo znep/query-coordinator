@@ -5,6 +5,7 @@ export default {
   auth0ClientId: "not-a-client",
   auth0Uri:"socrata.auth0.com",
   baseDomainUri:"https://opendata-demo.rc-socrata.com",
+  allowUsernamePasswordLogin: false,
   authenticityToken:"not-a-token",
   rememberMe: null,
   showSocial: null,

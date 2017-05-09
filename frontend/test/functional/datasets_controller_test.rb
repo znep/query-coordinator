@@ -151,7 +151,7 @@ class DatasetsControllerTest < ActionController::TestCase
     refute(value)
   end
 
-  test 'shows old UX for datasets that are on the NBE and user is admin' do
+  test 'no redirect for datasets that are on the NBE and user is admin' do
     setup_nbe_dataset_test(true)
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } }
@@ -189,8 +189,10 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_redirected_to '/d/olde-four'
   end
 
-  test 'stops redirection to OBE view page when the feature flag disable_obe_redirection is true' do
+  test 'no redirect to OBE view page when the feature flag disable_obe_redirection is true and there is no OBE view' do
     setup_nbe_dataset_test(false, true)
+    Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '404', body: {} })
+    View.stubs(:migrations).raises(CoreServer::ResourceNotFound.new('response'))
     FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(disable_obe_redirection: true) })
     mock_metadata = Metadata.new.tap do |metadata|
       metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
@@ -198,6 +200,19 @@ class DatasetsControllerTest < ActionController::TestCase
     View.any_instance.stubs(:metadata => mock_metadata)
     get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
     assert_response :success
+  end
+
+  test 'redirect to OBE view page when the feature flag disable_obe_redirection is true and there is an OBE view' do
+    setup_nbe_dataset_test(false, true)
+    Phidippides.any_instance.stubs(fetch_dataset_metadata: { status: '200', body: {} })
+    View.any_instance.stubs(:migrations => { 'obeId' => 'olde-four' })
+    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |feature_flags| feature_flags.stubs(disable_obe_redirection: true) })
+    mock_metadata = Metadata.new.tap do |metadata|
+      metadata.stubs(:feature_flags => Hashie::Mash.new, :attachments => [], :data => Hashie::Mash.new)
+    end
+    View.any_instance.stubs(:metadata => mock_metadata)
+    get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
+    assert_redirected_to '/d/olde-four'
   end
 
   test 'redirects to home page for NBE datasets without default page for non-admin users' do

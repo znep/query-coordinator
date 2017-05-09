@@ -156,42 +156,17 @@
     getURL: function(bounds) {
       bounds = this.adjustBounds(bounds);
 
-      // TODO: Remove this transformation and kill_esri_reprojection_and_pass_different_webm
-      // feature flag when we remove kill_snowflake_map_projections
-      var allowEsriReprojection = blist.feature_flags.kill_esri_reprojection_and_pass_different_webm !== true &&
-        blist.feature_flags.kill_snowflake_map_projections !== true;
-      if (allowEsriReprojection) {
-        bounds = bounds.transform(this.projection, this.externalMapProjection);
-      }
-
       // ArcGIS Server only wants the numeric portion of the projection ID.
       var projWords = this.projection.getCode().split(':');
       var srid = projWords[projWords.length - 1];
       var imageSize = this.getImageSize();
       var newParams = {
         'BBOX': bounds.toBBOX(),
+        'BBOXSR': srid,
+        'IMAGESR': srid,
         'SIZE': imageSize.w + ',' + imageSize.h,
         'F': 'image'
       };
-
-      // TODO: Add BBOXSR and IMAGESR to the newParams above and remove include_sr_in_esri
-      // feature flag when we remove kill_snowflake_map_projections.
-      var includeSpatialReference = blist.feature_flags.include_sr_in_esri ||
-        blist.feature_flags.kill_snowflake_map_projections;
-      if (includeSpatialReference) {
-        $.extend(newParams, {
-          'BBOXSR': srid,
-          'IMAGESR': srid
-        });
-      }
-
-      // TODO: Remove this when we remove kill_snowflake_map_projections
-      if (blist.feature_flags.kill_esri_reprojection_and_pass_different_webm === true) {
-        $.extend(newParams, {
-          'BBOXSR': 3857,
-          'IMAGESR': 3857
-        });
-      }
 
       // Now add the filter parameters.
       if (this.layerDefs) {

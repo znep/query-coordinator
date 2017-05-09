@@ -7,8 +7,7 @@ import Airbrake from '../../../../common/airbrake';
 
 export const types = {
   setAll: 'goals.data.setAll',
-  updateById: 'goals.data.updateById',
-  updateAll: 'goals.data.updateAll'
+  updateById: 'goals.data.updateById'
 };
 
 export const setAll = goals => ({
@@ -20,11 +19,6 @@ export const updateById = (goalId, data) => ({
   type: types.updateById,
   goalId,
   data
-});
-
-export const updateAll = goals => ({
-  type: types.updateAll,
-  goals
 });
 
 export const load = () => (dispatch, getState) => {

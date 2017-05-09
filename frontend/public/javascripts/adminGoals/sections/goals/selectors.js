@@ -107,8 +107,7 @@ export const areAllSelectedGoalsPublishable = Reselect.createSelector(
 // Returns a list of selected goals which have no associated draft.
 export const getDraftlessSelectedGoals = Reselect.createSelector(
   getSelectedGoals,
-  //(goals) => goals.filter(goal => _.isNil(goal.getIn([ 'narrative', 'draft', 'created_at' ])))
-  (goals) => goals
+  (goals) => goals.filter(goal => _.isNil(goal.getIn([ 'narrative', 'draft', 'created_at' ])))
 );
 
 export const getNumberOfPages = Reselect.createSelector(
@@ -156,7 +155,7 @@ const getSameValue = (items, ...properties) => {
 export const getCommonData = Reselect.createSelector(
   getSelectedGoals,
   goals => Immutable.fromJS({
-    is_public: getSameValue(goals, 'is_public'),
+    publishing_action: getSameValue(goals, 'publishing_action'),
     prevailing_measure: {
       start: getSameValue(goals, 'prevailing_measure', 'start'),
       end: getSameValue(goals, 'prevailing_measure', 'end'),

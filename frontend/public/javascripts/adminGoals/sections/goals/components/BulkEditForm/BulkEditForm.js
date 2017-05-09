@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
+import * as Immutable from 'immutable';
 import { FeatureFlags } from 'common/feature_flags';
 
 import * as React from 'react';
@@ -10,10 +11,12 @@ import * as Constants from '../../../../constants';
 
 import * as State from '../../state';
 import * as Selectors from '../../selectors';
-import * as Actions from '../../actions';
+import * as GoalsActions from '../../actions';
+import * as Actions from '../../../../actions';
 import * as Helpers from '../../../../helpers';
 
 import GoalEditLink from '../GoalEditLink';
+import BulkEditSaveProgress from './BulkEditSaveProgress';
 
 import './BulkEditForm.scss';
 
@@ -22,8 +25,8 @@ class BulkEditForm extends React.Component {
     super(props);
 
     _.bindAll(this, [
-      'updateVisibility',
-      'revertVisibility',
+      'setPublishingAction',
+      'unsetPublishingAction',
       'updateDateRangeTo',
       'updateDateRangeFrom',
       'revertDateRange',
@@ -34,13 +37,11 @@ class BulkEditForm extends React.Component {
   }
 
   updateFormData(pathArr, value) {
-    const { goal } = this.props;
-    const path = _.isArray(pathArr) ? pathArr : [pathArr];
-    this.props.actions.setFormData(goal.setIn(path, value));
+    this.props.bulkEditActions.setFormData(pathArr, value);
   }
 
-  updateVisibility({ value }) {
-    this.updateFormData('is_public', value === 'public');
+  setPublishingAction({ value }) {
+    this.props.bulkEditActions.setPublishingAction(value);
   }
 
   updateDateRangeTo(value) {
@@ -55,19 +56,17 @@ class BulkEditForm extends React.Component {
     this.updateFormData(['prevailing_measure', 'metadata', 'progress_override'], value);
   }
 
-  revertFields(...fields) {
-    const { commonData, goal, actions } = this.props;
+  revertFields(...paths) {
+    const { commonData, bulkEditActions } = this.props;
 
-    const oldData = fields.reduce((data, field) => {
-      const path = _.isArray(field) ? field : [field];
-      return data.setIn(path, commonData.getIn(path));
-    }, goal);
+    _.each(paths, (path) => {
+      bulkEditActions.setFormData(path, _.get(commonData, path));
+    });
 
-    actions.setFormData(oldData);
   }
 
-  revertVisibility() {
-    this.revertFields('is_public');
+  unsetPublishingAction() {
+    this.props.bulkEditActions.setPublishingAction(null);
   }
 
   revertOverride() {
@@ -79,22 +78,29 @@ class BulkEditForm extends React.Component {
   }
 
   updateGoals() {
-    const { goals, goal, actions } = this.props;
+    const { selectedGoals, goal, notificationActions, bulkEditActions, translations } = this.props;
 
-    actions.saveGoals(goals, goal.toJS());
-  }
-
-  isFieldsChanged(...fields) {
-    const { commonData, goal } = this.props;
-
-    return _.some(fields, field => {
-      const path = _.isArray(field) ? field : [field];
-      return goal.hasIn(path) && commonData.getIn(path) != goal.getIn(path);
+    bulkEditActions.saveGoals(selectedGoals, goal).then((success) => {
+      if (success) {
+        bulkEditActions.closeModal();
+        notificationActions.showNotification(
+          'success',
+          Helpers.translator(translations, 'admin.bulk_edit.success_message', selectedGoals.length)
+        );
+      }
     });
   }
 
-  isVisibilityChanged() {
-    return this.isFieldsChanged('is_public');
+  isFieldsChanged(...paths) {
+    const { commonData, goal } = this.props;
+
+    return _.some(paths, (path) =>
+      _.has(goal, path) && _.get(commonData, path) != _.get(goal, path)
+    );
+  }
+
+  hasPublishingActionSet() {
+    return _.isString(this.props.publishingAction);
   }
 
   isOverrideChanged() {
@@ -105,22 +111,29 @@ class BulkEditForm extends React.Component {
     return this.isFieldsChanged(['prevailing_measure', 'start'], ['prevailing_measure', 'end']);
   }
 
-  getVisibilityOptions() {
-    const { translations, publishDisabledBecauseMissingDrafts } = this.props;
-    const publicLabel = Helpers.translator(translations, 'admin.goal_values.status_public');
-    const privateLabel = Helpers.translator(translations, 'admin.goal_values.status_private');
-    const publicOption = { value: 'public', label: publicLabel };
-    const privateOption = { value: 'private', label: privateLabel };
+  getPublishingActionOptions() {
+    const { translations, publishDisabledBecauseMissingDrafts, goalSelectionCount } = this.props;
+    const publishLabel = Helpers.translator(translations, 'admin.bulk_edit.publish_latest_draft');
+    const privateLabel = Helpers.translator(translations, 'admin.bulk_edit.make_private');
+    const hasPrivateGoals = goalSelectionCount['status_private'] > 0;
+    const hasPublicGoalsWithDraft = goalSelectionCount['status_public_with_draft'] > 0;
+    const hasPublicGoals =
+      goalSelectionCount['status_public'] > 0 ||
+      hasPublicGoalsWithDraft;
+
+    const publishOption = { value: 'publish_latest_draft', label: publishLabel };
+    const privateOption = { value: 'make_private', label: privateLabel };
 
     if (publishDisabledBecauseMissingDrafts) {
-      return [
-        privateOption
-      ];
+      return hasPublicGoals ? [ privateOption ] : [];
     } else {
-      return [
-        publicOption,
-        privateOption
-      ];
+      if (hasPrivateGoals && hasPublicGoals || hasPublicGoalsWithDraft) {
+        return [ publishOption, privateOption ];
+      } else if (hasPublicGoals) {
+        return [ privateOption ];
+      } else {
+        return [ publishOption ];
+      }
     }
   }
 
@@ -145,6 +158,7 @@ class BulkEditForm extends React.Component {
       return;
     }
 
+    //TODO lame scrolling oscillation
     return (
       <Components.Socrata.Flyout text={ tooltipText }>
         <Components.Socrata.ChangeIndicator onRevert={ onRevert }/>
@@ -157,11 +171,11 @@ class BulkEditForm extends React.Component {
       <table className="edit-goal-list"><tbody>
         {
           goals.map((goal) => (
-            <tr key={ goal.get('id') }>
-              <td>{ goal.get('name') }</td>
+            <tr key={ goal.id }>
+              <td>{ goal.name }</td>
               <td className="edit-link">
                 <GoalEditLink
-                  goal= { goal }
+                  goal= { Immutable.fromJS(goal) }
                   text= { linkText } />
               </td>
             </tr>
@@ -174,7 +188,6 @@ class BulkEditForm extends React.Component {
   renderPublicationNotice() {
     const {
       translations,
-      usingStorytellerEditor,
       publishDisabledBecauseMissingDrafts,
       draftlessSelectedGoals
     } = this.props;
@@ -192,38 +205,29 @@ class BulkEditForm extends React.Component {
           }
         </div>
       );
-    } else if (usingStorytellerEditor) {
-      return (
-        <div className="form-light-notice will-publish-notice">
-          { translations.getIn(['admin', 'visibility_controls_will_publish']) }
-        </div>
-      );
     } else {
       return null;
     }
   }
 
-  renderVisibility() {
-    const { translations, goal, commonData } = this.props;
-
-    const visibility = goal.get('is_public', commonData.get('is_public'));
-    const options = this.getVisibilityOptions();
-
-    const label = Helpers.translator(translations, 'admin.bulk_edit.visibility');
-    const value = visibility === null ? null : (visibility ? 'public' : 'private');
+  renderPublishingAction() {
+    const { translations, publishingAction } = this.props;
+    const options = this.getPublishingActionOptions();
+    const label = Helpers.translator(translations, 'admin.bulk_edit.publishing_action');
+    const selector = <Components.Select
+      className="form-select-medium"
+      clearable={ false }
+      searchable={ false }
+      onChange={ this.setPublishingAction }
+      value={ publishingAction }
+      options={ options }/>;
 
     return (
       <div className="form-line">
         <label className="block-label">{ label }</label>
         <div>
-          <Components.Select
-            className="form-select-small"
-            clearable={ false }
-            searchable={ false }
-            onChange={ this.updateVisibility }
-            value={ value }
-            options={ options }/>
-          { this.renderRevertButton(this.isVisibilityChanged(), this.revertVisibility) }
+          { options.length > 0 ? selector : null }
+          { this.renderRevertButton(this.hasPublishingActionSet(), this.unsetPublishingAction) }
         </div>
         { this.renderPublicationNotice() }
       </div>
@@ -235,7 +239,7 @@ class BulkEditForm extends React.Component {
     const valuePath = ['prevailing_measure', 'metadata', 'progress_override'];
 
     const label = Helpers.translator(translations, 'admin.bulk_edit.override_label');
-    const overrideValue = goal.getIn(valuePath, commonData.getIn(valuePath));
+    const overrideValue = _.get(goal, valuePath, _.get(commonData, valuePath));
 
     const options = this.getOverrideOptions();
 
@@ -263,8 +267,9 @@ class BulkEditForm extends React.Component {
     const toPlaceholder = Helpers.translator(translations, 'admin.bulk_edit.date_range_to');
     const fromPlaceholder = Helpers.translator(translations, 'admin.bulk_edit.date_range_from');
 
-    const fromValue = goal.getIn(['prevailing_measure', 'start'], commonData.getIn(['prevailing_measure', 'start']));
-    const toValue = goal.getIn(['prevailing_measure', 'end'], commonData.getIn(['prevailing_measure', 'end']));
+    const prevailingMeasure = goal.prevailing_measure || {};
+    const fromValue = prevailingMeasure.start || commonData.prevailing_measure.start;
+    const toValue = prevailingMeasure.end || commonData.prevailing_measure.end;
 
     return (
       <div className="form-row measure-date-range">
@@ -284,10 +289,10 @@ class BulkEditForm extends React.Component {
     );
   }
 
-  renderFooter() {
-    const { form, translations, actions, unsavedChanges, areAllSelectedGoalsConfigured } = this.props;
+  renderCancelAndUpdateFooter() {
+    const { saveStatus, translations, bulkEditActions, unsavedChanges, areAllSelectedGoalsConfigured } = this.props;
 
-    const saveInProgress = form.get('saveInProgress');
+    const saveInProgress = saveStatus.inProgress;
     const isUpdateDisabled = !areAllSelectedGoalsConfigured || !unsavedChanges;
 
     const updateLabel = Helpers.translator(translations, 'admin.bulk_edit.update');
@@ -296,7 +301,7 @@ class BulkEditForm extends React.Component {
     return (
       <Components.Socrata.Modal.Footer>
         <Components.Socrata.Button small
-                                   onClick={ actions.closeModal }
+                                   onClick={ bulkEditActions.closeModal }
                                    disabled={ saveInProgress }>
           { cancelLabel }
         </Components.Socrata.Button>
@@ -311,19 +316,72 @@ class BulkEditForm extends React.Component {
   }
 
   renderSelectedRowsIndicator() {
-    const { translations, goals } = this.props;
-    const numberOfGoals = goals.count();
-    const message = Helpers.translator(translations, 'admin.bulk_edit.items_selected', numberOfGoals);
+    const { translations, goalSelectionCount } = this.props;
+    const numberOfGoals = _(goalSelectionCount).values().sum();
 
-    return <div className="selected-rows-indicator">{ message }</div>;
+    const counts = _.map(goalSelectionCount, (count, goalPublicationStatus) =>
+      <tr className="selected-rows-count" key={ goalPublicationStatus }>
+        <td>{ translations.getIn(['admin', 'goal_values', goalPublicationStatus]) }</td>
+        <td>{ count }</td>
+      </tr>
+    );
+    const message = Helpers.translator(translations, 'admin.bulk_edit.items_selected', numberOfGoals);
+    return (
+      <div className="selected-rows-indicator">
+        { message }
+        <table>
+          <tbody>
+            { counts }
+          </tbody>
+        </table>
+      </div>
+    );
   }
 
   renderSaveError() {
-    const { translations, saveError } = this.props;
+    const { translations, saveStatus, selectedGoals } = this.props;
+    let failedGoals = saveStatus.failedGoals;
+    if (_.isEmpty(failedGoals)) {
+      // This function is only called if there is a save error. It is possible
+      // that we failed very early in the process (probably due to a TypeError
+      // or similar bug). In this case, it is possible that we haven't gotten
+      // around to updating the list of errored goals. So, assume every goal
+      // failed.
+      failedGoals = selectedGoals;
+    }
 
     const failureMessage = Helpers.translator(translations, 'admin.bulk_edit.failure_message');
+    const successCount = saveStatus.taskCompletedCount - failedGoals.length;
 
-    return saveError ? <Components.Socrata.Alert type='error' message={ failureMessage } /> : null;
+    return (
+      <div>
+        <Components.Socrata.Alert type='error' message={ failureMessage } />
+        <h6>
+          { Helpers.translator(translations, 'admin.bulk_edit.success_goal_count', successCount) }
+        </h6>
+        <h6>
+          { Helpers.translator(translations, 'admin.bulk_edit.failed_goal_count', failedGoals.length) }
+        </h6>
+        {
+          this.renderGoalEditLinks(
+            failedGoals,
+            translations.getIn(['admin', 'bulk_edit', 'configure'])
+          )
+        }
+      </div>
+    );
+  }
+
+  renderCloseButtonOnlyFooter() {
+    const { translations, dismissModal } = this.props;
+    const closeLabel = Helpers.translator(translations, 'admin.bulk_edit.close');
+    return (
+      <Components.Socrata.Modal.Footer>
+        <Components.Socrata.Button small onClick={ dismissModal }>
+          { closeLabel }
+        </Components.Socrata.Button>
+      </Components.Socrata.Modal.Footer>
+    );
   }
 
   renderUnconfiguredGoalWarning() {
@@ -342,63 +400,108 @@ class BulkEditForm extends React.Component {
     );
   }
 
+  renderModalHeader(onClose) {
+    const { translations } = this.props;
+    const modalTitle = Helpers.translator(translations, 'admin.bulk_edit.title');
+    return (<Components.Socrata.Modal.Header title={ modalTitle } onClose={ onClose }/>);
+  }
+
+  renderModalContent(...children) {
+    return (
+      <Components.Socrata.Modal.Content className="bulk-edit-modal-content" children={ children } />
+    );
+  }
+
   renderEditor() {
-    return (<div>
-      { this.renderSelectedRowsIndicator() }
-      { this.renderVisibility() }
-      { this.renderDateRange() }
-      { this.renderOverride() }
-    </div>);
+    const { saveStatus, areAllSelectedGoalsConfigured, dismissModal, handleNavigateAway } = this.props;
+    const headerWithNoCloseButton = this.renderModalHeader();
+    const headerWithCloseConfirmationButton = this.renderModalHeader(handleNavigateAway);
+    const headerWithCloseImmediatelyButton = this.renderModalHeader(dismissModal);
+
+    if (!areAllSelectedGoalsConfigured) {
+      return [
+        headerWithCloseImmediatelyButton,
+        this.renderModalContent(
+          this.renderUnconfiguredGoalWarning()
+        ),
+        this.renderCloseButtonOnlyFooter()
+      ];
+    } else if (saveStatus.error) {
+      return [
+        headerWithCloseImmediatelyButton,
+        this.renderModalContent(
+          this.renderSaveError()
+        ),
+        this.renderCloseButtonOnlyFooter()
+      ];
+    } else if (saveStatus.inProgress) {
+      return [
+        headerWithNoCloseButton,
+        this.renderModalContent(
+          <BulkEditSaveProgress />
+        )
+      ];
+    } else {
+      return [
+        this.renderModalContent(
+          headerWithCloseConfirmationButton,
+          this.renderSelectedRowsIndicator(),
+          this.renderPublishingAction(),
+          this.renderDateRange(),
+          this.renderOverride()
+        ),
+        this.renderCancelAndUpdateFooter()
+      ];
+    }
   }
 
   render() {
-    const { translations, handleNavigateAway, areAllSelectedGoalsConfigured } = this.props;
-    const modalTitle = Helpers.translator(translations, 'admin.bulk_edit.title');
-
-    return (
-      <Components.Socrata.Modal.Modal>
-        <Components.Socrata.Modal.Header title={ modalTitle } onClose={ handleNavigateAway }/>
-
-        <Components.Socrata.Modal.Content className="bulk-edit-modal-content">
-          { this.renderSaveError() }
-          { areAllSelectedGoalsConfigured ?
-              this.renderEditor() :
-              this.renderUnconfiguredGoalWarning() }
-        </Components.Socrata.Modal.Content>
-
-        { this.renderFooter() }
-      </Components.Socrata.Modal.Modal>
-    );
+    return (<Components.Socrata.Modal.Modal children={ this.renderEditor() }/>);
   }
 }
 
 const mapStateToProps = state => {
-  const bulkEdit = State.getBulkEdit(state);
-  const commonData = Selectors.getCommonData(state);
-  const goal = bulkEdit.get('goal');
   const usingStorytellerEditor = FeatureFlags.value('open_performance_narrative_editor') === 'storyteller';
   const areAllSelectedGoalsPublishable = Selectors.areAllSelectedGoalsPublishable(state);
   const publishDisabledBecauseMissingDrafts = usingStorytellerEditor && !areAllSelectedGoalsPublishable;
+  const selectedGoals = Selectors.getSelectedGoals(state).toJS();
+  const commonData = Selectors.getCommonData(state).toJS();
+
+  const {
+    goal,
+    publishingAction,
+    saveStatus
+  } = State.getBulkEdit(state).toJS();
+
+  const goalSelectionCount = _.countBy(
+    selectedGoals,
+    (row) => Selectors.getGoalPublicationStatus(state, row.id)
+  );
+
+  const unsavedChanges =
+    Helpers.isDifferent(commonData, goal) ||
+    _.isString(publishingAction);
 
   return {
-    usingStorytellerEditor,
+    goal,
+    publishingAction,
+    selectedGoals,
+    goalSelectionCount,
     publishDisabledBecauseMissingDrafts,
+    unsavedChanges,
+    commonData,
+    saveStatus,
     translations: state.get('translations'),
-    form: bulkEdit,
-    goal: bulkEdit.get('goal'),
-    commonData: commonData,
-    goals: Selectors.getSelectedGoals(state),
     areAllSelectedGoalsConfigured: Selectors.areAllSelectedGoalsConfigured(state),
-    saveError: bulkEdit.get('saveError'),
-    unsavedChanges: Helpers.isDifferent(commonData.toJS(), goal.toJS()),
-    draftlessSelectedGoals: Selectors.getDraftlessSelectedGoals(state),
-    unconfiguredSelectedGoals: Selectors.getUnconfiguredSelectedGoals(state)
+    draftlessSelectedGoals: Selectors.getDraftlessSelectedGoals(state).toJS(),
+    unconfiguredSelectedGoals: Selectors.getUnconfiguredSelectedGoals(state).toJS()
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  actions: Redux.bindActionCreators(Actions.BulkEdit, dispatch),
-  dismissModal: () => dispatch(Actions.BulkEdit.closeModal())
+  bulkEditActions: Redux.bindActionCreators(GoalsActions.BulkEdit, dispatch),
+  notificationActions: Redux.bindActionCreators(Actions.notifications, dispatch),
+  dismissModal: () => dispatch(GoalsActions.BulkEdit.closeModal())
 });
 
 export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(Components.ModalQuitEventHandler(BulkEditForm)); // eslint-disable-line new-cap

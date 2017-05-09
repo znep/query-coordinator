@@ -2356,13 +2356,17 @@ en:
       bulk_edit:
         button_title: Edit Multiple Items...
         cancel: Cancel
+        close: Close
         cannot_publish_drafts_not_present: "These goals must be upgraded before they can be published:"
         configure: Configure
         upgrade: Upgrade
         date_range_from: From
         date_range_label: Date Range
         date_range_to: To
-        failure_message: "<strong>Error.</strong> There was a problem performing this action. Try again, or cancel."
+        success_goal_count: "{0} goals saved successfully."
+        failed_goal_count: "{0} goals failed to save:"
+        failure_message: "<strong>Error.</strong> Some goals failed to save. Try again, or make your edits individually on each goal's page."
+        items_progress: "{0} of {1} processed ({2}%)"
         items_selected: "{0} Items Selected"
         not_configured_message: "<strong>Oops.</strong> It looks like one or more of your goals is unconfigured. Bulk edits can only be made to goals that have already been configured."
         override_label: Override
@@ -2376,7 +2380,9 @@ en:
         success_message: Success! {0} goals were updated.
         title: Edit Multiple Items
         update: Update
-        visibility: Visibility
+        publishing_action: Publishing Action
+        make_private: Make Private
+        publish_latest_draft: Publish Latest Draft
       default_error_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"
       export:
         Csv:

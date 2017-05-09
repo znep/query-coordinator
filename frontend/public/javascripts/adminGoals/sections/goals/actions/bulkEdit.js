@@ -1,16 +1,30 @@
 import _ from 'lodash';
 import * as api from '../../../api';
 import * as DataActions from './data';
-import * as Helpers from '../../../helpers';
 import * as Analytics from '../../shared/analytics';
+import Airbrake from '../../../../common/airbrake';
 
 export const types = {
   openModal: 'goals.bulkEdit.openModal',
   closeModal: 'goals.bulkEdit.closeModal',
   setFormData: 'goals.bulkEdit.setFormData',
-  saveStart: 'goals.bulkEdit.saveStart', // Payload: none.
-  saveSuccess: 'goals.bulkEdit.saveSuccess', // Payload: Number of goals saved.
-  saveError: 'goals.bulkEdit.saveError' // Payload: none.
+  setPublishingAction: 'goals.bulkEdit.setPublishingAction',
+  // Save started.
+  // Payload: number of goals to save..
+  saveStart: 'goals.bulkEdit.saveStart',
+
+  // One save task completed successfully.
+  // Payload: none.
+  saveProgressSuccess: 'goals.bulkEdit.saveProgressSuccess',
+
+  // One save task completed with error.
+  // Payload: goal which failed to save. Optional.
+  saveProgressError: 'goals.bulkEdit.saveProgressError',
+
+  // Overall save process completed, regardless
+  // of success or failure.
+  // Payload: none.
+  saveFinished: 'goals.bulkEdit.saveFinished'
 };
 
 export const openModal = () => ({
@@ -22,17 +36,24 @@ export const closeModal = () => ({
   type: types.closeModal
 });
 
-export const setFormData = data => ({
-  type: types.setFormData,
-  data
+export const setPublishingAction = (publishingAction) => ({
+  type: types.setPublishingAction,
+  data: publishingAction
 });
 
-export const saveStart = () => ({
+export const setFormData = (path, value) => ({
+  type: types.setFormData,
+  data: { path, value }
+});
+
+export const saveStart = (taskTotalCount) => ({
+  data: taskTotalCount,
   type: types.saveStart,
   ...Analytics.createTrackEventActionData(Analytics.EventNames.clickUpdateOnBulkEdit, {})
 });
-export const saveError = () => ({ type: types.saveError });
-export const saveSuccess = (goalCount) => ({ type: types.saveSuccess, data: goalCount });
+export const saveProgressSuccess = () => ({ type: types.saveProgressSuccess });
+export const saveProgressError = (goal) => ({ type: types.saveProgressError, data: goal});
+export const saveFinished = () => ({ type: types.saveFinished });
 
 /**
  * Goal update api expects prevailing_measure data normalized.
@@ -50,16 +71,59 @@ function formatGoalDataForWrite(updatedData) {
   return normalized;
 }
 
+// Saves one goal in the broader context of a bulk edit.
+// Returns a promise for the latest version of the goal.
+const saveSingleGoal = (goal, dataToWrite, publishingAction) => {
+  const { id, version } = goal;
+  if (publishingAction === 'make_private') {
+    dataToWrite.is_public = false;
+  }
+
+  const updateConfigurationRequest = api.goals.update(
+    id,
+    version,
+    dataToWrite
+  );
+
+  return updateConfigurationRequest.then((updateResult) => {
+    if (publishingAction === 'publish_latest_draft') {
+      // Note that we're only publishing _after_ we know the rest of the data
+      // was updated successfully. Otherwise, we might publish a partially-
+      // updated goal if another request fails!
+
+      // This API call will set is_public to true and also
+      // returns a promise for the latest version of the goal.
+      return api.goals.publishLatestDraft(id).then((updatedGoal) => {
+        const latestDraft = _.get(goal, 'narrative.draft', null);
+        return {
+          narrative: {
+            published: latestDraft,
+            draft: latestDraft
+          },
+          ...updatedGoal
+        };
+      });
+    } else {
+      // Just return the latest version of the goal,
+      // but preserve the draft information.
+      updateResult.narrative = updateResult.narrative || goal.narrative;
+      return updateResult;
+    }
+  });
+};
+
 /**
  * Makes an API request to update given list of goals
- * data.
+ * data. The returned promise resolves to true if the
+ * request has succeeded, false otherwise.
  *
- * @param {Immutable.List} goals List of goal objects
+ * @param {Array} goals List of goal objects
  * @param {Object} updatedData Updated fields
  */
 export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
-  const allConfigured = goals.every(goal => goal.has('prevailing_measure'));
-  const translations = getState().get('translations');
+  const allConfigured = _.every(goals, (goal) => _.has(goal, 'prevailing_measure'));
+  const bulkEdit = getState().getIn(['goals', 'bulkEdit']);
+  const publishingAction = bulkEdit.get('publishingAction');
 
   // Cannot update prevailing measure data for the items
   // which are not configured properly.
@@ -69,20 +133,34 @@ export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
   }
 
   const normalizedData = formatGoalDataForWrite(updatedData);
-  dispatch(saveStart());
+  dispatch(saveStart(goals.length));
 
-  const updateRequests = goals.map(goal => api.goals.update(goal.get('id'), goal.get('version'), normalizedData));
+  const updateRequests = _.map(goals, (goal) => {
+    return saveSingleGoal(goal, normalizedData, publishingAction).then(
+      (updatedGoalData) => {
+        dispatch(DataActions.updateById(goal.id, updatedGoalData));
+        dispatch(saveProgressSuccess());
+        return updatedGoalData;
+      },
+      (error) => {
+        dispatch(saveProgressError(goal));
+        Airbrake.notify(error);
+      }
+    );
+  });
+
   return Promise.all(updateRequests).then(updatedGoals => {
-    const successMessage = Helpers.translator(translations, 'admin.bulk_edit.success_message', updatedGoals.length);
-
-    // TODO: Consider combining these actions. They're redundant.
-    dispatch(DataActions.updateAll(updatedGoals));
-    dispatch({
-      notification: { type: 'success', message: successMessage },
-      ...saveSuccess(updatedGoals.length)
-    });
-    dispatch(closeModal()); // TODO does this really belong here?
-
+    dispatch(saveFinished());
     return updatedGoals;
-  }).catch(() => dispatch(saveError()));
+  }).catch((error) => {
+    // Since we catch() in the individual requests, we are unlikely to get here.
+    // If we do get here, there's probably a TypeError or similar lurking in our
+    // codebase.
+    dispatch(saveProgressError());
+    dispatch(saveFinished());
+    Airbrake.notify(error);
+  }).then(() =>
+    // Return success or failure.
+    !getState().getIn(['goals', 'bulkEdit', 'saveStatus', 'error'])
+  );
 };

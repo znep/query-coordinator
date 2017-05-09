@@ -8,6 +8,14 @@
   padding: 0;
   line-height: 34px;
   margin-bottom: 20px;
+
+  td:first-child {
+    padding-right: 1em;
+  }
+}
+
+.selected-rows-count {
+  font-size: 13px;
 }
 
 .form-light-notice {

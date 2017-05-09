@@ -7,15 +7,16 @@ import classNames from 'classnames/bind';
  * @param {Function} props.onClick Callback for close button
  */
 export function Header(props) {
+  const closeButton = <button type="button" className="btn btn-transparent modal-header-dismiss" onClick={ props.onClose } aria-label="Close quick edit form">
+      <span className="icon-close-2" />
+    </button>;
   return (
     <div className={ `modal-header ${props.className || ''}` }>
       <h1 className="h5 modal-header-title">
         { props.title }
       </h1>
       { props.children }
-      <button type="button" className="btn btn-transparent modal-header-dismiss" onClick={ props.onClose } aria-label="Close quick edit form">
-        <span className="icon-close-2" />
-      </button>
+      { props.onClose ? closeButton : null }
     </div>
   );
 }

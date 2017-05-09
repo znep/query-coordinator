@@ -2356,9 +2356,9 @@ en:
       bulk_edit:
         button_title: Edit Multiple Items...
         cancel: Cancel
-        cannot_publish_drafts_not_present: "These goals must have a draft before they can be published:"
+        cannot_publish_drafts_not_present: "These goals must be upgraded before they can be published:"
         configure: Configure
-        create_a_draft: Create a draft
+        upgrade: Upgrade
         date_range_from: From
         date_range_label: Date Range
         date_range_to: To
@@ -2427,9 +2427,8 @@ en:
           measure: Measure
           reduce: Reduce
         cancel: Cancel
-        cannot_publish_draft_not_present: No draft is present for this goal, so it cannot be made public.
+        cannot_publish_draft_not_present: This goal must be upgraded before publishing.
         category: Category
-        create_a_draft: Create a draft
         dashboard: Dashboard
         dataset_owner: Dataset Owner
         dataset_updated: Dataset Updated
@@ -2478,6 +2477,7 @@ en:
         success_message: Success! {0} updated.
         unit: Unit
         update_public_version: Update Public Version
+        upgrade: Upgrade
         validation:
           action:
             enum: Action should be one of Increase, Decrease, Maintain, Measure.

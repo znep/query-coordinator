@@ -180,13 +180,14 @@ class BulkEditForm extends React.Component {
     } = this.props;
 
     if (publishDisabledBecauseMissingDrafts) {
+      const failureMessage = translations.getIn(['admin', 'bulk_edit', 'cannot_publish_drafts_not_present']);
       return (
         <div className="drafts-missing-notice">
-          { translations.getIn(['admin', 'bulk_edit', 'cannot_publish_drafts_not_present']) }
+          <Components.Socrata.Alert type='error' message={ failureMessage } />
           {
             this.renderGoalEditLinks(
               draftlessSelectedGoals,
-              translations.getIn(['admin', 'bulk_edit', 'create_a_draft'])
+              translations.getIn(['admin', 'bulk_edit', 'upgrade'])
             )
           }
         </div>

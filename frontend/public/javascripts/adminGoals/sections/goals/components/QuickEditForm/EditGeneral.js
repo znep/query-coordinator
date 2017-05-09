@@ -121,7 +121,7 @@ class EditGeneral extends React.Component {
         { translations.getIn(['admin', 'quick_edit', 'cannot_publish_draft_not_present']) + ' ' }
         <GoalEditLink
           goal={ goal }
-          text= { translations.getIn(['admin', 'quick_edit', 'create_a_draft']) }
+          text= { translations.getIn(['admin', 'quick_edit', 'upgrade']) }
         />
       </span>
     </div>;

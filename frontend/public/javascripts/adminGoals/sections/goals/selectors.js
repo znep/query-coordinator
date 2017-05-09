@@ -92,6 +92,12 @@ export const areAllSelectedGoalsConfigured = Reselect.createSelector(
   (goals) => goals.every(goal => goal.has('prevailing_measure'))
 );
 
+// Returns a list of selected goals which are not configured.
+export const getUnconfiguredSelectedGoals = Reselect.createSelector(
+  getSelectedGoals,
+  (goals) => goals.filter(goal => !goal.has('prevailing_measure'))
+);
+
 // True if all selected goals have at least one draft.
 export const areAllSelectedGoalsPublishable = Reselect.createSelector(
   getSelectedGoals,

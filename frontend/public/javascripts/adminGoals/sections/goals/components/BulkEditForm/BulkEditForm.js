@@ -157,7 +157,7 @@ class BulkEditForm extends React.Component {
       <table className="edit-goal-list"><tbody>
         {
           goals.map((goal) => (
-            <tr>
+            <tr key={ goal.get('id') }>
               <td>{ goal.get('name') }</td>
               <td className="edit-link">
                 <GoalEditLink
@@ -326,15 +326,32 @@ class BulkEditForm extends React.Component {
   }
 
   renderUnconfiguredGoalWarning() {
-    const { translations, areAllSelectedGoalsConfigured } = this.props;
+    const { translations, unconfiguredSelectedGoals } = this.props;
     const message = Helpers.translator(translations, 'admin.bulk_edit.not_configured_message');
+    return (
+      <div>
+        <Components.Socrata.Alert type='error' message= { message } />
+        {
+          this.renderGoalEditLinks(
+            unconfiguredSelectedGoals,
+            translations.getIn(['admin', 'bulk_edit', 'configure'])
+          )
+        }
+      </div>
+    );
+  }
 
-    return areAllSelectedGoalsConfigured ?
-      null : <Components.Socrata.Alert type='error' message={ message }/>;
+  renderEditor() {
+    return (<div>
+      { this.renderSelectedRowsIndicator() }
+      { this.renderVisibility() }
+      { this.renderDateRange() }
+      { this.renderOverride() }
+    </div>);
   }
 
   render() {
-    const { translations, handleNavigateAway } = this.props;
+    const { translations, handleNavigateAway, areAllSelectedGoalsConfigured } = this.props;
     const modalTitle = Helpers.translator(translations, 'admin.bulk_edit.title');
 
     return (
@@ -343,11 +360,9 @@ class BulkEditForm extends React.Component {
 
         <Components.Socrata.Modal.Content className="bulk-edit-modal-content">
           { this.renderSaveError() }
-          { this.renderUnconfiguredGoalWarning() }
-          { this.renderSelectedRowsIndicator() }
-          { this.renderVisibility() }
-          { this.renderDateRange() }
-          { this.renderOverride() }
+          { areAllSelectedGoalsConfigured ?
+              this.renderEditor() :
+              this.renderUnconfiguredGoalWarning() }
         </Components.Socrata.Modal.Content>
 
         { this.renderFooter() }
@@ -376,6 +391,7 @@ const mapStateToProps = state => {
     saveError: bulkEdit.get('saveError'),
     unsavedChanges: Helpers.isDifferent(commonData.toJS(), goal.toJS()),
     draftlessSelectedGoals: Selectors.getDraftlessSelectedGoals(state),
+    unconfiguredSelectedGoals: Selectors.getUnconfiguredSelectedGoals(state)
   };
 };
 

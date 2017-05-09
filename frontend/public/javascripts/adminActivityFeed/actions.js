@@ -1,4 +1,6 @@
 import {
+  START_LOADING,
+  STOP_LOADING,
   SET_ACTIVITIES,
   SET_PAGINATION,
   SET_ALERT,
@@ -24,6 +26,8 @@ export const setPagination = (pagination) => ({
 
 export const loadActivities = () => {
   return (getService) => (dispatch, getState) => {
+    dispatch(startLoading());
+
     const api = getService('api');
     const state = getState();
     const currentPage = state.getIn(['pagination', 'currentPage']);
@@ -41,10 +45,12 @@ export const loadActivities = () => {
         hasNextPage: pagerInfo['has_next_page?'],
         hasPreviousPage: pagerInfo['has_prev_page?']
       }));
+      dispatch(stopLoading());
 
       return data;
     }).catch((error) => { // eslint-disable-line dot-notation
       dispatch(setAlert('error', 'general_error', {error: error.message}));
+      dispatch(stopLoading());
     });
   };
 };
@@ -84,6 +90,8 @@ export const restoreDataset = () => {
     const api = getService('api');
     const datasetId = state.getIn(['restoreModal', 'id']);
 
+    dispatch(startLoading());
+
     return api.
       restoreDataset(datasetId).
       then(() => {
@@ -93,7 +101,8 @@ export const restoreDataset = () => {
       }).
       catch((error) => { // eslint-disable-line dot-notation
         dispatch(dismissRestoreModal());
-        dispatch(setAlert('error', 'general_error', { error: error.message }));
+        dispatch(stopLoading());
+        return dispatch(setAlert('error', 'general_error', { error: error.message }));
       });
   };
 };
@@ -109,7 +118,10 @@ export const gotoPage = (pageNumber) => {
 };
 
 export const filterByEvent = (value) =>
-  () => (dispatch) => {
+  () => (dispatch, getState) => {
+    const pagination = getState().get('pagination').toJS();
+    pagination.currentPage = 1;
+    dispatch(setPagination(pagination));
     dispatch(setFilterEvent(value));
     return dispatch(loadActivities());
   };
@@ -120,7 +132,10 @@ export const setFilterEvent = (value) => ({
 });
 
 export const filterByStatus = (value) => (
-  () => (dispatch) => {
+  () => (dispatch, getState) => {
+    const pagination = getState().get('pagination').toJS();
+    pagination.currentPage = 1;
+    dispatch(setPagination(pagination));
     dispatch(setFilterStatus(value));
     return dispatch(loadActivities());
   }
@@ -132,7 +147,10 @@ export const setFilterStatus = (value) => ({
 });
 
 export const filterByDate = (value) => (
-  () => (dispatch) => {
+  () => (dispatch, getState) => {
+    const pagination = getState().get('pagination').toJS();
+    pagination.currentPage = 1;
+    dispatch(setPagination(pagination));
     dispatch(setFilterDate(value));
     return dispatch(loadActivities());
   }
@@ -141,4 +159,12 @@ export const filterByDate = (value) => (
 export const setFilterDate = (value) => ({
   type: SET_FILTER_DATE,
   value
+});
+
+export const startLoading = () => ({
+  type: START_LOADING
+});
+
+export const stopLoading = () => ({
+  type: STOP_LOADING
 });

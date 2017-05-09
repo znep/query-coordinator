@@ -73,16 +73,16 @@ export function uploadFile(uploadId, file) {
       if (xhr.status === 200) {
         const { resource: inputSchema } = JSON.parse(xhr.responseText);
         dispatch(updateSucceeded('uploads', uploadUpdate));
-        dispatch(updateFromServer('uploads', {
+        // these writes to uploads and input_schemas usually happen before polling succeeds
+        // but can also happen after in the case of a very small dataset
+        dispatch(upsertFromServer('uploads', {
           id: uploadId,
           finished_at: new Date()
         }));
-        setTimeout(() => {
-          dispatch(updateFromServer('input_schemas', {
-            id: inputSchema.id,
-            total_rows: inputSchema.total_rows
-          }));
-        }, 500); // remove when EN-13948 is fixed
+        dispatch(upsertFromServer('input_schemas', {
+          id: inputSchema.id,
+          total_rows: inputSchema.total_rows
+        }));
         dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
       } else {
         dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));

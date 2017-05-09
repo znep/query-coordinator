@@ -4,7 +4,7 @@ import { getDefaultStore } from 'testStore';
 import * as http from 'common/http';
 import reducer from 'reducers/catalog';
 import * as Actions from 'actions/catalog';
-import mockCeteraResults from 'data/mockCeteraResults';
+import mockCeteraResponse from 'data/mockCeteraResponse';
 
 describe('reducers/catalog', () => {
   let state;
@@ -14,10 +14,12 @@ describe('reducers/catalog', () => {
   });
 
   describe('UPDATE_CATALOG_RESULTS', () => {
-    it('updates the catalog results with the provided array', () => {
+    it('updates the catalog results array and resultSetSize', () => {
       state.results = [];
-      state = reducer(state, Actions.updateCatalogResults(mockCeteraResults));
+      state.resultSetSize = 0;
+      state = reducer(state, Actions.updateCatalogResults(mockCeteraResponse));
       assert.lengthOf(state.results, 6);
+      assert.equal(state.resultSetSize, 6);
     });
   });
 });

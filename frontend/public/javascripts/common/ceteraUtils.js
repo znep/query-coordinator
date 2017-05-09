@@ -51,7 +51,7 @@ function handleError(error) {
     });
   } catch (err) {}
   console.error(error);
-  return errorMessage;
+  throw error;
 }
 
 export const ceteraUtils = (() => {

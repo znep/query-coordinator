@@ -17,9 +17,9 @@ export class ResultListTable extends React.Component {
     return _.merge(
       {
         category: result.classification.domain_category,
-        isPublished: result.metadata.is_published,
+        isPublished: !!result.metadata.is_published,
         link: result.link,
-        visibleToAnonymous: result.metadata.visible_to_anonymous
+        visibleToAnonymous: !!result.metadata.visible_to_anonymous
       },
       _.pick(result.resource, ['description', 'name', 'provenance', 'type', 'updatedAt'])
     );
@@ -64,11 +64,9 @@ ResultListTable.propTypes = {
   results: PropTypes.array.isRequired
 };
 
-const mapStateToProps = (state) => {
-  return ({
-    columns: state.catalog.columns,
-    results: state.catalog.results
-  });
-};
+const mapStateToProps = state => ({
+  columns: state.catalog.columns,
+  results: state.catalog.results
+});
 
 export default connect(mapStateToProps)(ResultListTable);

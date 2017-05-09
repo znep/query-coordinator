@@ -1,3 +1,3 @@
-export const updateCatalogResults = (results) => (
-  { type: 'UPDATE_CATALOG_RESULTS', results }
+export const updateCatalogResults = (response) => (
+  { type: 'UPDATE_CATALOG_RESULTS', response }
 );

@@ -64,7 +64,8 @@ module InternalAssetManagerHelper
       window.initialState = {
         catalog: {
           columns: #{internal_asset_manager_table_columns},
-          results: #{@catalog_results.try(:to_json)}
+          results: #{@catalog_results.to_json},
+          resultSetSize: #{@catalog_result_set_size}
         }
       };
     ))

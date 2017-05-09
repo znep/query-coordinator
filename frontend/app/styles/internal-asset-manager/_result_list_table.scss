@@ -1,4 +1,5 @@
 @import "styleguide-colors";
+@import "internal-asset-manager/mixins/multi_line_ellipsis";
 
 table.result-list-table {
   thead {
@@ -26,6 +27,7 @@ table.result-list-table {
 
         span.description {
           display: block;
+          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $light-grey-6);
         }
       }
 

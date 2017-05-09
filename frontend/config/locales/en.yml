@@ -2614,6 +2614,7 @@ en:
       update: Update %{model}
   internal_asset_manager:
     errors:
+      fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.
     result_list_table:
       columns:

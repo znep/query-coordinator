@@ -11,11 +11,13 @@ class InternalAssetManagerController < ApplicationController
     cookie = "_core_session_id=#{cookies[:_core_session_id]}"
     search_options = {
       domains: CurrentDomain.cname,
-      limit: 10,
+      limit: 10, # NOTE: This should match the value of RESULTS_PER_PAGE in
+                 # public/javascripts/internalAssetManager/components/CatalogResults.js
       show_visibility: true
     }
-    @catalog_results = AssetInventoryService::InternalAssetManager.
-      find(request_id, cookie, search_options).dig('results')
+    cetera_response = AssetInventoryService::InternalAssetManager.find(request_id, cookie, search_options)
+    @catalog_results = cetera_response.to_h['results'].to_a
+    @catalog_result_set_size = cetera_response.to_h['resultSetSize'].to_i
   end
 
   private

@@ -15,13 +15,14 @@ export class ResultListRow extends React.Component {
   renderCell(columnName, index) {
     const {
       description,
-      isPublished,
+      // TODO: will likely need isPublished, provenenace, visibleToAnonmyous once their need is understood.
+      // isPublished,
       link,
       name,
       // provenance,
       type,
-      updatedAt,
-      visibleToAnonymous
+      updatedAt
+      // visibleToAnonymous
     } = this.props;
 
     const cellTag = (value) => (
@@ -49,7 +50,8 @@ export class ResultListRow extends React.Component {
       case 'type':
         return cellTag(<span className={getIconClassForDisplayType(type)} />);
       case 'visibility':
-        return cellTag(`anonymous? ${visibleToAnonymous.toString()} published? ${isPublished.toString()}`);
+        // TODO: some stuff with visibleToAnonymous and isPublished and maybe provenance?
+        return cellTag('TODO');
       default:
         return cellTag(this.props[columnName]);
     }
@@ -68,19 +70,17 @@ ResultListRow.propTypes = {
   category: PropTypes.string,
   columns: PropTypes.array.isRequired,
   description: PropTypes.string,
-  isPublished: PropTypes.bool,
+  // isPublished: PropTypes.bool,
   link: PropTypes.string,
   name: PropTypes.string,
   // provenance: PropTypes.string,
   type: PropTypes.string,
-  updatedAt: PropTypes.string,
-  visibleToAnonymous: PropTypes.bool
+  updatedAt: PropTypes.string
+  // visibleToAnonymous: PropTypes.bool
 };
 
-const mapStateToProps = (state) => {
-  return ({
-    columns: state.catalog.columns
-  });
-};
+const mapStateToProps = state => ({
+  columns: state.catalog.columns
+});
 
 export default connect(mapStateToProps)(ResultListRow);

@@ -1,5 +1,6 @@
 @import "styleguide-colors";
 @import "internal-asset-manager/result_list_table";
+@import "common/pager";
 
 $admin-header-height: 46px;
 
@@ -10,5 +11,27 @@ body {
 }
 
 .internal-asset-manager {
+  .catalog-results {
+    .catalog-results-spinner-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
 
+    .pager {
+      display: inline-block;
+      margin-bottom: 0;
+      margin-right: 1rem;
+    }
+
+    .result-count {
+      display: inline-block;
+      float: none;
+    }
+  }
 }

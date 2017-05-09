@@ -14,7 +14,8 @@ class InternalController < ApplicationController
     { name: 'socrata_emails_bypass_auth0', description: "Don't automatically login users with @socrata.com email addresses through auth0" },
     { name: 'disable_contact_dataset_owner', description: 'Disable contacting dataset owners in the DSLP/Primer.' },
     { name: 'disable_owner_contact', description: 'Disables showing the Contact Dataset Owner section in the About pane.' },
-    { name: 'fedramp', description: 'Enables security restrictions on this domain for fedramp compliance.' }
+    { name: 'fedramp', description: 'Enables security restrictions on this domain for fedramp compliance.' },
+    { name: 'pendo_tracking', description: 'Enable pendo tracker on this domain.' }
   ]
 
   def index

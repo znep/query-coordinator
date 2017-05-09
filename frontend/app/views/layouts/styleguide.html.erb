@@ -40,6 +40,8 @@ http://www.socrata.com
     <%# Ensure mixpanelConfig is defined before loading other scripts -%>
     <%= render_mixpanel_config %>
 
+    <%= render_pendo_tracker %>
+
     <%# dotdotdot and velocity are finicky about jQuery. -%>
     <%# We made jquery an external, load it here and then bind it to window to be loaded into our Webpack bundle. -%>
     <%= jquery_include('2.2.4') %>

@@ -898,6 +898,24 @@ module ApplicationHelper
     CurrentDomain.feature?(:mixpanelTracking) || CurrentDomain.feature?(:fullMixpanelTracking)
   end
 
+  # Renders pendo tracker code if pendo_tracking feature enabled.
+  # Only runs for logged in users.
+  def render_pendo_tracker
+    if CurrentDomain.feature?(:pendo_tracking) && @current_user
+      pendo_config = {
+        :token => APP_CONFIG.pendo_token,
+        :email => @current_user.try(:email),
+        :socrata_id => @current_user.try(:id),
+        :socrata_employee => @current_user.try(:is_superadmin?) || false,
+        :role => @current_user.try(:roleName) || 'N/A',
+        :stories_enabled => FeatureFlags.has?(:stories_enabled),
+        :environment =>  Rails.env
+      }
+
+      render 'templates/pendo_tracking', :pendo_config => pendo_config
+    end
+  end
+
   def font_tags
     out = ''
 

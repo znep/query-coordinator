@@ -133,6 +133,10 @@ default: &default
     {%- endif %}
   {%- endif %}
 
+  {% if PENDO_TOKEN is defined -%}
+    pendo_token: {{ PENDO_TOKEN }}
+  {%- endif %}
+
   {#
    # auth alternatives
    #}

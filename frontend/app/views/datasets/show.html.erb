@@ -281,5 +281,7 @@
   <%= include_webpack_bundle 'open-data/dompurify.js' %>
   <%= include_webpack_bundle 'open-data/dataset-show.js' %>
   <script> if ((typeof moment) !== 'undefined') { moment.lang(blist.locale); } </script>
-  <script>$(document).ready(() => lastAccessed.add('<%= @view.id %>')); </script>
+  <script>
+    $(document).ready(() => { if (window.lastAccessed) { window.lastAccessed.add('<%= @view.id %>'); } });
+  </script>
 <% end %>

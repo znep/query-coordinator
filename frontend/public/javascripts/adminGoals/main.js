@@ -12,7 +12,6 @@ import App from './containers/App/App';
 
 let middlewares = [
   Middlewares.thunk,
-  Middlewares.notifyUser,
   Middlewares.fileDownloader
 ];
 

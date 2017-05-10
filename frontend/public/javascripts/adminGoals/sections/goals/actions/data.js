@@ -1,4 +1,5 @@
 import * as api from '../../../api';
+import * as Actions from '../../../actions';
 import * as SharedActions from '../../shared/actions';
 import * as Immutable from 'immutable';
 import * as Helpers from '../../../helpers';
@@ -34,7 +35,7 @@ export const load = () => (dispatch, getState) => {
       const message = Helpers.translator(translations, 'admin.listing.load_error');
 
       Airbrake.notify(error);
-      dispatch(SharedActions.showGlobalMessage('goals', message));
+      dispatch(Actions.notifications.showNotification('error', message));
       dispatch(SharedActions.loading.stop());
     });
 };

@@ -167,7 +167,6 @@ $(document).on('ready', function() {
   }
 
   if (Environment.CURRENT_USER) {
-    new MostRecentlyUsed({namespace: `socrata:assets:mru:${Environment.CURRENT_USER.id}`}).
-      add(Environment.STORY_UID);
+    new MostRecentlyUsed({namespace: `socrata:assets:mru:${Environment.CURRENT_USER.id}`}).add(Environment.STORY_UID);
   }
 });

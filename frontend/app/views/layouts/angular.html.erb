@@ -52,7 +52,6 @@ http://www.socrata.com
       <%= render_noscript(@dataset_id) %>
     <% end %>
 
-    <%= include_webpack_bundle 'internal-asset-manager/last-accessed.js' %>
     <%= include_webpack_bundle 'data-cards/main.js' %>
 
     <%== site_chrome_admin_header(request, response) if render_site_admin_chrome? %>
@@ -76,8 +75,9 @@ http://www.socrata.com
   <%= render 'templates/mixpanel_tracking' %>
   <%= render_pendo_tracker %>
 
+  <%= include_webpack_bundle 'internal-asset-manager/last-accessed.js' %>
   <% if @dataset_id %>
-    <script>if (window.lastAccessed) { window.lastAccessed.add('<%= @dataset_id %>'); }</script>
+    <script>lastAccessed.add('<%= @dataset_id %>');</script>
   <% end %>
 
 </html>

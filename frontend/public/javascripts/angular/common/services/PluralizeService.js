@@ -32,7 +32,7 @@ var uncountableWords = [
   'furniture', 'luggage',
   'advice', 'information', 'news', 'info',
   'music', 'art', 'love', 'happiness',
-  'electricity', 'gas', 'power'
+  'electricity', 'gas', 'power', 'riga'
 ];
 
 function applyRules(str, rules, skip) {

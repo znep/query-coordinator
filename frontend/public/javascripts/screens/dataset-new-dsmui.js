@@ -31,10 +31,11 @@ function handleError(xhr, textStatus, errorThrown, fromApi) {
   updateButtonDisplay();
 }
 
-function handleRevisionError(view, xhr, textStatus, errorThrown, fromApi) {
+function handleRevisionError(view, xhr, textStatus, errorThrown, headers, fromApi) {
   $.ajax({
     type: 'DELETE',
-    url: '/api/views/' + view.id
+    url: '/api/views/' + view.id,
+    headers: headers
   });
 
   handleError(xhr, textStatus, errorThrown, fromApi);
@@ -70,7 +71,7 @@ function createDataset() {
           document.location = '/d/' + newView.id + '/revisions/0';
         },
         error: function(xhr, textStatus, errorThrown) {
-          handleRevisionError(newView, xhr, textStatus, errorThrown, 'dsmapi');
+          handleRevisionError(newView, xhr, textStatus, errorThrown, headers, 'dsmapi');
         }
       });
     },

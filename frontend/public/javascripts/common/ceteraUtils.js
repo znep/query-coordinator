@@ -82,7 +82,7 @@ export const ceteraUtils = (() => {
       };
 
       const paramString = _.reduce(paramObj, function(result, value, key) {
-        return (key && value) ? result += `${key}=${value}&` : result;
+        return (key && value) ? result += `${key}=${encodeURIComponent(value)}&` : result;
       }, '').slice(0, -1);
 
       const fetchUrl = `${CETERA_API}?${paramString}`;

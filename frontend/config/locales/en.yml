@@ -2382,6 +2382,7 @@ en:
         update: Update
         publishing_action: Publishing Action
         make_private: Make Private
+        make_public: Make Public
         publish_latest_draft: Publish Latest Draft
       default_error_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"
       export:

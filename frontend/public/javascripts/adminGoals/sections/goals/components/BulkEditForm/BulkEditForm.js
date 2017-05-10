@@ -112,8 +112,10 @@ class BulkEditForm extends React.Component {
   }
 
   getPublishingActionOptions() {
-    const { translations, publishDisabledBecauseMissingDrafts, goalSelectionCount } = this.props;
-    const publishLabel = Helpers.translator(translations, 'admin.bulk_edit.publish_latest_draft');
+    const { translations, publishDisabledBecauseMissingDrafts, goalSelectionCount, usingStorytellerEditor}
+      = this.props;
+    const storytellerPublishLabel = Helpers.translator(translations, 'admin.bulk_edit.publish_latest_draft');
+    const classicPublishLabel = Helpers.translator(translations, 'admin.bulk_edit.make_public');
     const privateLabel = Helpers.translator(translations, 'admin.bulk_edit.make_private');
     const hasPrivateGoals = goalSelectionCount['status_private'] > 0;
     const hasPublicGoalsWithDraft = goalSelectionCount['status_public_with_draft'] > 0;
@@ -121,7 +123,10 @@ class BulkEditForm extends React.Component {
       goalSelectionCount['status_public'] > 0 ||
       hasPublicGoalsWithDraft;
 
-    const publishOption = { value: 'publish_latest_draft', label: publishLabel };
+    const classicEditorPublishOption = { value: 'make_public_classic_editor', label: classicPublishLabel };
+    const storytellerPublishOption = { value: 'publish_latest_draft', label: storytellerPublishLabel };
+    const publishOption = usingStorytellerEditor ? storytellerPublishOption : classicEditorPublishOption;
+
     const privateOption = { value: 'make_private', label: privateLabel };
 
     if (publishDisabledBecauseMissingDrafts) {
@@ -389,7 +394,7 @@ class BulkEditForm extends React.Component {
     const message = Helpers.translator(translations, 'admin.bulk_edit.not_configured_message');
     return (
       <div>
-        <Components.Socrata.Alert type='error' message= { message } />
+        <Components.Socrata.Alert type='error' message={ message } />
         {
           this.renderGoalEditLinks(
             unconfiguredSelectedGoals,
@@ -494,6 +499,7 @@ const mapStateToProps = state => {
     unsavedChanges,
     commonData,
     saveStatus,
+    usingStorytellerEditor,
     translations: state.get('translations'),
     areAllSelectedGoalsConfigured: Selectors.areAllSelectedGoalsConfigured(state),
     draftlessSelectedGoals: Selectors.getDraftlessSelectedGoals(state).toJS(),

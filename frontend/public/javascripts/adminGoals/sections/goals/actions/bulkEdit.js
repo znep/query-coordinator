@@ -77,6 +77,8 @@ const saveSingleGoal = (goal, dataToWrite, publishingAction) => {
   const { id, version } = goal;
   if (publishingAction === 'make_private') {
     dataToWrite.is_public = false;
+  } else if (publishingAction === 'make_public_classic_editor') {
+    dataToWrite.is_public = true;
   }
 
   const updateConfigurationRequest = api.goals.update(

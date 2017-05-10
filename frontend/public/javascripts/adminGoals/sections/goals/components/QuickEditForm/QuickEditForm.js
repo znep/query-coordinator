@@ -1,9 +1,11 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import * as React from 'react';
+import * as Redux from 'redux';
 import * as ReactRedux  from 'react-redux';
 import * as Immutable from 'immutable';
-import * as Actions from '../../actions';
+import * as GoalsActions from '../../actions';
+import * as Actions from '../../../../actions';
 import * as Helpers from '../../../../helpers';
 import * as SharedActions from '../../../shared/actions';
 import * as State from '../../state';
@@ -112,8 +114,19 @@ class QuickEditForm extends React.Component {
    * @param event
    */
   save(event) {
+    const { translations, notificationActions, saveGoal, dismissModal, goal } = this.props;
+    const goalName = goal.get('name');
+
     event.preventDefault();
-    this.props.saveGoalQuickEdit();
+    saveGoal().then((success) => {
+      if (success) {
+        dismissModal();
+        notificationActions.showNotification(
+          'success',
+          Helpers.translator(translations, 'admin.quick_edit.success_message', goalName)
+        );
+      }
+    });
   }
 
   renderSaveError() {
@@ -230,10 +243,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  dismissModal: () => dispatch(Actions.QuickEdit.closeModal()),
-  saveGoalQuickEdit: () => dispatch(Actions.QuickEdit.save()),
-  updateFormData: newData => dispatch(Actions.QuickEdit.updateFormData(newData)),
-  openFeedbackFlannel: event => dispatch(SharedActions.showFeedbackFlannel(event.target))
+  dismissModal: () => dispatch(GoalsActions.QuickEdit.closeModal()),
+  saveGoal: () => dispatch(GoalsActions.QuickEdit.save()),
+  updateFormData: newData => dispatch(GoalsActions.QuickEdit.updateFormData(newData)),
+  openFeedbackFlannel: event => dispatch(SharedActions.showFeedbackFlannel(event.target)),
+  notificationActions: Redux.bindActionCreators(Actions.notifications, dispatch)
 });
 
 export const QuickEditFormComponent = QuickEditForm; // Unconnected.

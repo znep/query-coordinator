@@ -123,10 +123,9 @@ describe('actions/quickEditActions', () => {
         store = mockStore(state);
 
         return store.dispatch(Actions.QuickEdit.save()).then(() => {
-          assert.lengthOf(store.getActions(), 7);
-          // Only test the first 3 and the last, the rest are covered elsewhere.
+          assert.lengthOf(store.getActions(), 6);
+          // Only test the first 3, the rest are covered elsewhere.
           const [ saveStart, updateById, saveSuccess ] = store.getActions();
-          const closeModal = _.last(store.getActions());
 
           assert.propertyVal(saveStart, 'type', Actions.QuickEdit.types.saveStart);
           assert.property(saveStart, 'analyticsTrackEvent');
@@ -138,7 +137,6 @@ describe('actions/quickEditActions', () => {
           assert.propertyVal(saveStart.analyticsTrackEvent.eventPayload, 'Goal Id', draftGoalId);
           assert.propertyVal(updateById, 'type', Actions.Data.types.updateById);
           assert.propertyVal(saveSuccess, 'type', Actions.QuickEdit.types.saveSuccess);
-          assert.propertyVal(closeModal, 'type', Actions.QuickEdit.types.closeModal);
 
           assert.propertyVal(updateById, 'goalId', draftGoalId);
           assert.propertyVal(updateById.data, 'version', fakeGoalData.version);
@@ -152,13 +150,12 @@ describe('actions/quickEditActions', () => {
       });
 
       return store.dispatch(Actions.QuickEdit.save()).then(() => {
-        assert.lengthOf(store.getActions(), 4);
-        const [ saveStart, updateById, saveSuccess, closeModal ] = store.getActions();
+        assert.lengthOf(store.getActions(), 3);
+        const [ saveStart, updateById, saveSuccess ] = store.getActions();
 
         assert.propertyVal(saveStart, 'type', Actions.QuickEdit.types.saveStart);
         assert.propertyVal(updateById, 'type', Actions.Data.types.updateById);
         assert.propertyVal(saveSuccess, 'type', Actions.QuickEdit.types.saveSuccess);
-        assert.propertyVal(closeModal, 'type', Actions.QuickEdit.types.closeModal);
 
         assert.propertyVal(updateById, 'goalId', goalId);
       });

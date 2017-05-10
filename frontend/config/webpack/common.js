@@ -130,8 +130,6 @@ function getBabelLoader() {
   return _.extend({}, jsLoaderBaseConfig, {
     loader: 'babel',
     query: {
-      // Manually resolve these plugins and presets to work around
-      // webpack require path issues.
       presets: [
         'babel-preset-es2015',
         'babel-preset-react'

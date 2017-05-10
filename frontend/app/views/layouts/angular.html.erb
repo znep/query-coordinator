@@ -41,15 +41,16 @@ http://www.socrata.com
     <%= render_angular_translations %>
     <%= render_user %>
     <%= render_metadata %>
+
   </head>
 
   <body ng-app="<%= angular_app %>">
 
-    <% if @dataset_id %>
+    <% if @skip_link_id %>
       <div class="skip-links">
-        <%= link_to t('angular.dataCards.skip_link'), get_alt_dataset_link(@dataset_id) %>
+        <%= link_to t('angular.dataCards.skip_link'), get_alt_dataset_link(@skip_link_id) %>
       </div>
-      <%= render_noscript(@dataset_id) %>
+      <%= render_noscript(@skip_link_id) %>
     <% end %>
 
     <%= include_webpack_bundle 'data-cards/main.js' %>
@@ -72,12 +73,7 @@ http://www.socrata.com
     <%= site_chrome_analytics_tags %>
   <%- end -%>
 
-  <%= render 'templates/mixpanel_tracking' %>
+  <%= render :partial => 'templates/mixpanel_tracking' %>
   <%= render_pendo_tracker %>
-
-  <%= include_webpack_bundle 'internal-asset-manager/last-accessed.js' %>
-  <% if @dataset_id %>
-    <script>lastAccessed.add('<%= @dataset_id %>');</script>
-  <% end %>
 
 </html>

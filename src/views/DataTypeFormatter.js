@@ -123,6 +123,34 @@ const CURRENCY_SYMBOLS = {
   'ZWD': 'Z$'
 };
 
+const TIME_FORMATS = {
+  date_time: 'MM/DD/YYYY hh:mm:ss A',
+  date: 'MM/DD/YYYY',
+  date_dmy: 'DD/MM/YYYY',
+  date_dmy_time: 'DD/MM/YYYY hh:mm:ss A',
+  date_ymd: 'YYYY/MM/DD',
+  date_ymd_time: 'YYYY/MM/DD hh:mm:ss A',
+  date_monthdy: 'MMMM DD, YYYY',
+  date_monthdy_shorttime: 'MMMM DD, YYYY hh:mm A',
+  date_shortmonthdy: 'MMM DD, YYYY',
+  date_monthdy_time: 'MMMM DD, YYYY hh:mm:ss A',
+  date_dmonthy: 'DD MMMM YYYY',
+  date_shortmonthdy_shorttime: 'MMM DD, YYYY hh:mm A',
+  date_ymonthd: 'YYYY MMMM DD',
+  date_ymonthd_time: 'YYYY MMMM DD hh:mm:ss A',
+  date_my: 'MM/YYYY',
+  date_ym: 'YYYY/MM',
+  date_shortmonthy: 'MMM YYYY',
+  date_yshortmonth: 'YYYY MMM',
+  date_monthy: 'MMMM YYYY',
+  date_ymonth: 'YYYY MMMM',
+  date_y: 'YYYY',
+  // The following two formats are our default formats,
+  // which match none of the existing custom formats.
+  default_date_time: 'YYYY MMM DD hh:mm:ss A',
+  default_date: 'YYYY MMM DD'
+};
+
 module.exports = {
   renderCell: renderCell,
   renderBooleanCell: renderBooleanCell,
@@ -554,55 +582,43 @@ function renderMultipleChoiceCell(cellContent, column) {
 * Render a date or timestamp following column formatting, otherwise following defaults.
 */
 
-const timeFormattings = {
-  date_time: 'MM/DD/YYYY hh:MM:ss A',
-  date: 'MM/DD/YYYY',
-  date_dmy: 'DD/MM/YYYY',
-  date_dmy_time: 'DD/MM/YYYY hh:MM:ss A',
-  date_ymd: 'YYYY/MM/DD',
-  date_ymd_time: 'YYYY/MM/DD hh:MM:ss A',
-  date_monthdy: 'MMMM DD, YYYY',
-  date_monthdy_shorttime: 'MMMM DD, YYYY hh:MM A',
-  date_shortmonthdy: 'MMM DD, YYYY',
-  date_monthdy_time: 'MMMM DD, YYYY hh:MM:ss A',
-  date_dmonthy: 'DD MMMM YYYY',
-  date_shortmonthdy_shorttime: 'MMM DD, YYYY hh:MM A',
-  date_ymonthd: 'YYYY MMMM DD',
-  date_ymonthd_time: 'YYYY MMMM DD hh:MM:ss A',
-  date_my: 'MM/YYYY',
-  date_ym: 'YYYY/MM',
-  date_shortmonthy: 'MMM YYYY',
-  date_yshortmonth: 'YYYY MMM',
-  date_monthy: 'MMMM YYYY',
-  date_ymonth: 'YYYY MMMM',
-  date_y: 'YYYY'
-};
 
 function renderTimestampCell(cellContent, column) {
-  if (_.isString(cellContent) || _.isNumber(cellContent)) {
-    if (_.isNumber(cellContent)) {
-      cellContent = (cellContent * 1000);
-    }
-
-    const time = moment(cellContent);
-    const fallbackFormat = timeFormattings.date_time;
-    if (time.isValid()) {
-      if (column.format && column.format.formatString) {
-        // Option A: format using user-specified format string
-        return time.format(column.format.formatString);
-      } else if (column.format && column.format.view) {
-        // Option B: format using preferred builtin style
-        return time.format(timeFormattings[column.format.view] || fallbackFormat);
-      } else if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
-        // Option C: infer date-only string format
-        return time.format('YYYY MMM DD');
-      } else {
-        // Option D: use date-with-time format
-        return time.format('YYYY MMM DD hh:mm:ss A');
-      }
-    }
+  if (!_.isString(cellContent) && !_.isNumber(cellContent)) {
+    return '';
   }
-  return '';
+
+  if (_.isNumber(cellContent)) {
+    // If we receive seconds, convert to milliseconds.
+    cellContent = (cellContent * 1000);
+  }
+
+  const time = moment(cellContent);
+  if (!time.isValid()) {
+    return '';
+  }
+
+  const formatString = _.get(column, 'format.formatString');
+  const formatStyle = _.get(column, 'format.view');
+
+  if (formatString) {
+    // Option A: format using user-specified format string
+    return time.format(formatString);
+
+  } else if (formatStyle) {
+    // Option B: format using preferred builtin style
+    const fallbackFormat = TIME_FORMATS.date_time;
+    return time.format(TIME_FORMATS[formatStyle] || fallbackFormat);
+
+  } else if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
+    // Option C: infer date-only string format when the time is exactly midnight
+    return time.format(TIME_FORMATS.default_date);
+
+  } else {
+    // Option D: use date-with-time format
+    return time.format(TIME_FORMATS.default_date_time);
+
+  }
 }
 
 function getCellAlignment(column) {

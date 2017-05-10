@@ -81,16 +81,6 @@ class UserSessionsController < ApplicationController
           redirect_to login_url and return
         end
       end
-
-      # Disallow bypassing going through auth0 for username and password logins;
-      # In development mode, we _always_ bypass auth0 for simplicity.
-      # In production, the "username_password_login" module can be added.
-      # This is because this mechanism is used to enforce 2FA in some scenarios,
-      # and if we let people bypass it then they're bypassing 2FA which is Very Bad.
-      unless Rails.env.development? || feature?('username_password_login')
-        flash[:error] = t('screens.sign_in.no_username_password_login')
-        redirect_to login_url and return
-      end
     end
 
     if current_user_session

@@ -7,37 +7,10 @@ import SaveButton from 'components/ManageMetadata/SaveButton';
 describe('components/ManageMetadata/SaveButton', () => {
   const props = {
     onSaveClick: sinon.spy(),
-    isDirty:  false,
     isSaving: false
   };
 
-  const dirtyProps = {
-    ...props,
-    isDirty: true,
-    isSaving: false
-  };
-
-  it('is disabled when form is clean', () => {
-    const component = shallow(<SaveButton {...props} />);
-
-    expect(component.props().disabled).to.eq(true);
-  });
-
-  it('is enabled when form is dirty', () => {
-    const component = shallow(<SaveButton {...dirtyProps} />);
-
-    expect(component.props().disabled).to.eq(false);
-  });
-
-  it('calls its onSaveClick callback when clicked and dirty', () => {
-    const component = mount(<SaveButton {...dirtyProps} />);
-
-    component.simulate('click');
-
-    expect(component.props().onSaveClick.calledOnce).to.eq(true);
-  });
-
-  it('doesn\'t call it\'s onSaveClick callback when clicked and clean', () => {
+  it('calls its onSaveClick callback when clicked', () => {
     const component = mount(<SaveButton {...props} />);
 
     component.simulate('click');

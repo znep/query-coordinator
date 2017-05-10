@@ -115,12 +115,21 @@ describe('components/ManageMetadata', () => {
   });
 
   describe('onSave handling', () => {
+    function distinguishableNoop1() { }
+    function distinguishableNoop2() { }
+
+    const props = {
+      ...defaultDatasetProps,
+      onDismiss: distinguishableNoop1,
+      onSaveDataset: distinguishableNoop2
+    };
+
     // rather than test save funcitonality here, just test that it passes the correct
     // data; test saving behavior in SaveButton tests
     it('passes the correct prop to SaveButton when form isn\'t dirty', () => {
-      const component = shallow(<ManageMetadata {...defaultDatasetProps}/>);
+      const component = shallow(<ManageMetadata {...props}/>);
 
-      expect(component.find('SaveButton').props().isDirty).to.eq(false);
+      assert.equal(component.find('SaveButton').props().onSaveClick, props.onDismiss);
     });
 
     it('passes the correct prop to SaveButton when form is dirty', () => {
@@ -132,7 +141,7 @@ describe('components/ManageMetadata', () => {
       };
 
       const dirtyProps = {
-        ...defaultDatasetProps,
+        ...props,
         views: {
           [defaultProps.fourfour]: dirtyView
         }
@@ -140,7 +149,7 @@ describe('components/ManageMetadata', () => {
 
       const component = shallow(<ManageMetadata {...dirtyProps} />);
 
-      expect(component.find('SaveButton').props().isDirty).to.eq(true);
+      assert.equal(component.find('SaveButton').props().onSaveClick, props.onSaveDataset);
     });
   });
 });

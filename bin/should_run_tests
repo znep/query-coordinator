@@ -7,8 +7,13 @@ set -e
 
 if [ -z $1 ]; then
   echo 'Usage:'
-  echo "$(basename $0) <project-name>"
+  echo "$(basename ${0}) <project-name>"
   exit 2
+fi
+
+if [ ! -z $FORCE_TEST_RUN ]; then
+  echo "FORCE_TEST_RUN detected, running all tests for $1"
+  exit 0
 fi
 
 echo "Checking if we should run tests for $1"
@@ -20,14 +25,14 @@ CHANGED_PROJECTS="$(git diff --name-only ${MERGE_BASE} | egrep -o '^\w+' | sort 
 echo "Changed projects: $CHANGED_PROJECTS"
 case "$CHANGED_PROJECTS" in
   *common*)
-    echo 'Common changed, so running tests'
+    echo "Common changed, so running tests for ${1}"
     exit 0
     ;;
   *$1*)
-    echo "$1 changed, so running tests"
+    echo "${1} changed, so running tests"
     exit 0
     ;;
 esac
 
-echo "Neither common nor $1 changed, so not running tests"
+echo "Neither common nor ${1} changed, so not running tests"
 exit 1

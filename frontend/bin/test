@@ -17,7 +17,7 @@ if ./bin/should_run_tests frontend; then
   CHANGED_FILES=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\)') || true
 
   # Find all javascript files that have changed on this PR
-  JAVASCRIPT_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.jsx\?$' | cut -c3-)
+  JAVASCRIPT_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*\.jsx\?$' | cut -c3- | grep '^frontend\/')
 
   # JavaScript lint
   if ! [[ -z $JAVASCRIPT_FILES ]]; then

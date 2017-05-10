@@ -1,0 +1,28 @@
+source 'https://repo.socrata.com/artifactory/api/gems/rubygems-virtual'
+
+# Declare your gem's dependencies in socrata_site_chrome.gemspec.
+# Bundler will treat runtime dependencies like base dependencies, and
+# development dependencies will be added by default to the :development group.
+gemspec
+
+# Declare any dependencies that are still in development here instead of in
+# your gemspec. These might include edge Rails or gems from your path or
+# Git. Remember to move these dependencies to your gemspec before releasing
+# your gem to rubygems.org.
+
+gem 'airbrake'
+gem 'chroma'
+gem 'hashie'
+gem 'httparty'
+gem 'request_store'
+gem 'sass'
+gem 'signaller-ruby', :require => 'signaller'
+
+group :development, :test do
+  gem 'sqlite3'
+  gem 'byebug'
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'rspec-rails'
+  gem 'webmock'
+end

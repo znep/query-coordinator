@@ -1,10 +1,10 @@
-def npm(path, command)
+def npm(command, path: 'karma_config')
   sh("cd #{path} && npm #{command}") do |ok, res|
     yield(ok, res) if block_given?
   end
 end
 
-def bundle(path, command)
+def bundle(command, path: 'site_chrome')
   sh("cd #{path} && bundle #{command}") do |ok, res|
     yield(ok, res) if block_given?
   end
@@ -28,8 +28,8 @@ Dir.glob('site_chrome/lib/tasks/*.rake').each(&method(:load))
 
 desc 'Run linter'
 task lint: :deps do
-  npm('karma_config', 'run lint') do |ok, res|
-    raise 'Lint failed' unless ok
+  npm('run lint') do |ok, res|
+    raise 'Link failed' unless ok
   end
 end
 
@@ -39,7 +39,7 @@ task :deps do
 end
 
 desc 'Run lint and tests'
-task default: %w[lint test]
+task default: %i(lint test)
 
 desc 'Run all tests'
-task test: [:karma, :spec]
+task test: %i(karma spec)

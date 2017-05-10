@@ -75,9 +75,6 @@ function doBuild(onComplete) {
     // if you're in it, you don't end up in Trash
     fs.emptyDirSync(paths.appBuild);
 
-    // Copy the package used for actually publishing
-    fs.copySync(`${paths.appDirectory}/package.publish.json`, `${paths.appBuild}/package.json`);
-
     // Start the webpack build
     build(previousSizeMap, onComplete);
   });
@@ -161,11 +158,10 @@ function build(previousSizeMap, onComplete) {
 
     // only print this message if we're running build alone and not from another script
     if (startBuild) {
-      console.log('The ' + chalk.cyan('build') + ' folder is ready to be published.');
+      console.log('The ' + chalk.cyan('build') + ' folder is ready to used.');
       console.log();
       console.log('  ' + chalk.cyan('cd') +  ' build');
       console.log('  ' + chalk.cyan('npm') +  ' version major/minor/patch');
-      console.log('  ' + chalk.cyan('npm') +  ' publish');
       console.log();
     }
 

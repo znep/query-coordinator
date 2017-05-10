@@ -144,7 +144,7 @@ class SearchBox extends React.Component {
           onClick={() => { this.domNode.focus(); }}>
           <SocrataIcon name="search" />
         </div>
-
+        <label htmlFor="autocomplete-search-input" styleName="aria-not-displayed">Search:</label>
         <input
           type="search"
           ref={(domNode) => { this.domNode = domNode; }}
@@ -153,7 +153,8 @@ class SearchBox extends React.Component {
           onFocus={() => { this.handleFocusChanged(true); }}
           onBlur={() => { this.handleFocusChanged(false); }}
           value={currentQuery}
-          placeholder="Search" />
+          placeholder="Search"
+          id="autocomplete-search-input" />
       </form>
     );
   }

@@ -166,7 +166,7 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
 
 @keyframes iconUncollapse {
   from { left: 0px; }
-  to{ left: -275px; }
+  to { left: -275px; }
 }
 
 .icon-container-collapsible {
@@ -190,4 +190,15 @@ $search-icon-hidden-transform: scaleX(0) translateX(-30px);
   @extend .icon-container-static;
 
   margin-top: 12px;
+}
+
+.aria-not-displayed {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }

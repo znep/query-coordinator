@@ -18,6 +18,12 @@ module.exports = _.defaultsDeep({
       {
         test: /\.png$/,
         loader: 'url-loader?limit=100000'
+      },
+      {
+        // Prevent lodash from putting itself on window.
+        // See: https://github.com/lodash/lodash/issues/2671
+        test: /node_modules\/lodash/,
+        loader: 'imports?define=>undefined'
       }
       // ...
     ]

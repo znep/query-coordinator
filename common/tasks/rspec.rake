@@ -1,7 +1,7 @@
 namespace 'rspec' do
   task :deps do
-    bundle('site_chrome', 'check') do |ok, res|
-      bundle('site_chrome', 'install') unless ok
+    bundle('check') do |ok, res|
+      bundle('install') unless ok
     end
   end
 

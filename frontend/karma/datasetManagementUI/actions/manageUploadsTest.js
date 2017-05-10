@@ -1,130 +1,181 @@
 import { expect, assert } from 'chai';
 import _ from 'lodash';
 import { getDefaultStore } from '../testStore';
-import { createUpload } from 'actions/manageUploads';
+import { pollForOutputSchema } from 'actions/manageUploads';
 import uploadResponse from '../data/uploadResponse';
-import mockPhoenixSocket from '../testHelpers/mockPhoenixSocket';
-import { mockFetch, mockXHR } from '../testHelpers/mockHTTP';
+// import mockPhoenixSocket from '../testHelpers/mockPhoenixSocket';
+// import { mockFetch, mockXHR } from '../testHelpers/mockHTTP';
+import mockAPI from '../testHelpers/MockAPI/routes';
+import thunk from 'redux-thunk';
+import configureStore from 'redux-mock-store';
+const mockStore = configureStore([thunk]);
+import * as dsmapiLinks from 'dsmapiLinks';
 
-describe('actions/manageUploads', () => {
+describe.only('actions/manageUploads', () => {
+  it('does thing', (done) => {
 
-  const fetchResponses = {
-    '/api/publishing/v1/revision/hehe-hehe/0/upload': {
-      POST: {
-        response: {
-          resource: {
-            id: 6,
-            filename: 'crimes.csv',
-            schemas: []
-          }
-        }
-      }
-    },
-    '/api/publishing/v1/upload/6': {
-      GET: {
-        response: {
-          resource: {
-            id: 6,
-            filename: 'crimes.csv',
-            schemas: [
-              {
-                id: 6,
-                input_columns: [
-                  {
-                    id: 1000,
-                    schema_id: 6,
-                    position: 0,
-                    field_name: 'arrest',
-                    display_name: 'arrest',
-                    soql_type: 'text'
-                  },
-                  {
-                    id: 1001,
-                    schema_id: 6,
-                    position: 1,
-                    field_name: 'block',
-                    display_name: 'block',
-                    soql_type: 'text'
-                  }
-                ],
-                output_schemas: [
-                  {
-                    id: 7,
-                    input_schema_id: 6,
-                    output_columns: [
-                      {
-                        id: 2000,
-                        schema_id: 7,
-                        position: 0,
-                        field_name: 'arrest',
-                        display_name: 'arrest',
-                        transform: {
-                          id: 0,
-                          output_soql_type: 'text',
-                          output_column_id: 2000,
-                          transform_expr: 'identity'
-                        }
-                      },
-                      {
-                        id: 2001,
-                        schema_id: 7,
-                        position: 1,
-                        field_name: 'block',
-                        display_name: 'block',
-                        transform: {
-                          id: 1,
-                          output_soql_type: 'text',
-                          output_column_id: 2001,
-                          transform_expr: 'identity'
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    '/api/publishing/v1/upload/6/transform/0/results?limit=200&offset=0': {
-      GET: {
-        response: {
-          resource: [
-            'some',
-            'data',
-            'values'
-          ]
-        }
-      }
-    },
-    '/api/publishing/v1/upload/6/transform/1/results?limit=200&offset=0': {
-      GET: {
-        response: {
-          resource: [
-            'other',
-            'data',
-            'values'
-          ]
-        }
-      }
-    },
-    '/api/publishing/v1/upload/6/schema/6/errors?limit=1&offset=0': {
-      GET: {
-        response: [
-          {
-            offset: 1,
-            error: {
-              wanted: 3,
-              got: 2,
-              type: 'too_long',
-              contents: ['foo', 'bar']
-            }
-          }
-        ]
-      }
-    }
-  };
+    const x = mockAPI()
+
+    const store = mockStore({});
+
+    const myThunk = () => (dispatch, getState) => fetch(dsmapiLinks.uploadShow)
+      .then(resp => resp.json())
+      // .then(resp => console.log('hey', resp))
+      .then(resp => dispatch({type: 'YAW!', payload: resp.resource}))
+      .catch(err => console.log('err', err))
+
+    store.dispatch(myThunk())
+      .then(() => {
+        console.log(store.getActions())
+        done()
+      })
+    // console.log(x);
+    // const req = new XMLHttpRequest()
+    //
+    // req.open('GET', 'http://localhost/hey/thing')
+    //
+    //
+    // req.onload = e => {
+    //   console.log('load', req)
+    //   done()
+    // }
+    //
+    // req.onerror = err => {
+    //   console.log('err', err)
+    //   done()
+    // }
+    //
+    //
+    // req.send()
+    // fetch('api/v1/upload')
+    //   .then(resp => resp.json())
+    //   .then(resp => {
+    //     console.log('bkey', resp)
+    //     done()
+    //   })
+    //   .catch(err => {
+    //     console.log('err', err)
+    //     done()
+    //   })
+  })
+
+  // const fetchResponses = {
+  //   '/api/publishing/v1/revision/hehe-hehe/0/upload': {
+  //     POST: {
+  //       response: {
+  //         resource: {
+  //           id: 6,
+  //           filename: 'crimes.csv',
+  //           schemas: []
+  //         }
+  //       }
+  //     }
+  //   },
+  //   '/api/publishing/v1/upload/6': {
+  //     GET: {
+  //       response: {
+  //         resource: {
+  //           id: 6,
+  //           filename: 'crimes.csv',
+  //           schemas: [
+  //             {
+  //               id: 6,
+  //               input_columns: [
+  //                 {
+  //                   id: 1000,
+  //                   schema_id: 6,
+  //                   position: 0,
+  //                   field_name: 'arrest',
+  //                   display_name: 'arrest',
+  //                   soql_type: 'text'
+  //                 },
+  //                 {
+  //                   id: 1001,
+  //                   schema_id: 6,
+  //                   position: 1,
+  //                   field_name: 'block',
+  //                   display_name: 'block',
+  //                   soql_type: 'text'
+  //                 }
+  //               ],
+  //               output_schemas: [
+  //                 {
+  //                   id: 7,
+  //                   input_schema_id: 6,
+  //                   output_columns: [
+  //                     {
+  //                       id: 2000,
+  //                       schema_id: 7,
+  //                       position: 0,
+  //                       field_name: 'arrest',
+  //                       display_name: 'arrest',
+  //                       transform: {
+  //                         id: 0,
+  //                         output_soql_type: 'text',
+  //                         output_column_id: 2000,
+  //                         transform_expr: 'identity'
+  //                       }
+  //                     },
+  //                     {
+  //                       id: 2001,
+  //                       schema_id: 7,
+  //                       position: 1,
+  //                       field_name: 'block',
+  //                       display_name: 'block',
+  //                       transform: {
+  //                         id: 1,
+  //                         output_soql_type: 'text',
+  //                         output_column_id: 2001,
+  //                         transform_expr: 'identity'
+  //                       }
+  //                     }
+  //                   ]
+  //                 }
+  //               ]
+  //             }
+  //           ]
+  //         }
+  //       }
+  //     }
+  //   },
+  //   '/api/publishing/v1/upload/6/transform/0/results?limit=200&offset=0': {
+  //     GET: {
+  //       response: {
+  //         resource: [
+  //           'some',
+  //           'data',
+  //           'values'
+  //         ]
+  //       }
+  //     }
+  //   },
+  //   '/api/publishing/v1/upload/6/transform/1/results?limit=200&offset=0': {
+  //     GET: {
+  //       response: {
+  //         resource: [
+  //           'other',
+  //           'data',
+  //           'values'
+  //         ]
+  //       }
+  //     }
+  //   },
+  //   '/api/publishing/v1/upload/6/schema/6/errors?limit=1&offset=0': {
+  //     GET: {
+  //       response: [
+  //         {
+  //           offset: 1,
+  //           error: {
+  //             wanted: 3,
+  //             got: 2,
+  //             type: 'too_long',
+  //             contents: ['foo', 'bar']
+  //           }
+  //         }
+  //       ]
+  //     }
+  //   }
+  // };
 
   // TODO: this fails sporadically; suspect some sort of race condition or error
   // caused by socket mock

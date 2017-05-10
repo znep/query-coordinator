@@ -59,6 +59,7 @@
     "eslint-plugin-jsx-a11y": "1.2.2",
     "eslint-plugin-react": "5.0.1",
     "exports-loader": "0.6.2",
+    "fetch-mock": "^5.10.0",
     "file-loader": "0.8.5",
     "html-loader": "0.3.0",
     "http-proxy": "1.11.3",
@@ -103,7 +104,8 @@
     "url-loader": "0.5.7",
     "webpack": "1.13.1",
     "webpack-dev-server": "1.14.0",
-    "webpack-manifest-plugin": "0.4.0"
+    "webpack-manifest-plugin": "0.4.0",
+    "xhr-mock": "^1.9.0"
   },
   "dependencies": {
     "airbrake-js": "0.5.9",

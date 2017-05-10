@@ -461,6 +461,9 @@ class BulkEditForm extends React.Component {
 }
 
 const mapStateToProps = state => {
+  // Ideally, only plain JS objects will be sent to the component.
+  // ImmutableJS is nice for the store, but it makes working in the
+  // component unnecessarily arduous.
   const usingStorytellerEditor = FeatureFlags.value('open_performance_narrative_editor') === 'storyteller';
   const areAllSelectedGoalsPublishable = Selectors.areAllSelectedGoalsPublishable(state);
   const publishDisabledBecauseMissingDrafts = usingStorytellerEditor && !areAllSelectedGoalsPublishable;

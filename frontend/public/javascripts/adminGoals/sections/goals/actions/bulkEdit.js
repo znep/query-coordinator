@@ -149,6 +149,9 @@ export const saveGoals = (goals, updatedData) => (dispatch, getState) => {
     );
   });
 
+  // Note that Promise.all fails fast, so it's important that we
+  // handle errors in each individual updateRequests promises.
+  // Otherwise, we'll end up reporting only the first failure below.
   return Promise.all(updateRequests).then(updatedGoals => {
     dispatch(saveFinished());
     return updatedGoals;

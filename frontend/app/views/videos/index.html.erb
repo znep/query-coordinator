@@ -1,0 +1,85 @@
+<%- content_for :head do -%>
+  <title>Video Guides | <%= get_site_title %></title>
+  <%= rendered_stylesheet_tag 'screen-videos' %>
+
+  <%- if @popup -%>
+    <%= rendered_stylesheet_tag 'screen-videos-popup' %>
+  <%- end -%>
+<%- end -%>
+
+<div class="topLevelVideoContainer"></div>
+
+<div class="contentBox filterBox">
+  <h3><%= t('screens.videos.filters.tell_me_about.title') %></h3>
+  <ul class="filterCriteria">
+    <li><a href="#all" data-filter="all" class="selected"><%= t('screens.videos.filters.tell_me_about.everything') %></a></li>
+    <li><a href="#maps" data-filter="maps"><%= t('screens.videos.filters.tell_me_about.maps') %></a></li>
+    <li><a href="#charts" data-filter="charts"><%= t('screens.videos.filters.tell_me_about.charts') %></a></li>
+    <li><a href="#analyzing" data-filter="analyzing"><%= t('screens.videos.filters.tell_me_about.analyzing') %></a></li>
+    <li><a href="#sharing" data-filter="sharing"><%= t('screens.videos.filters.tell_me_about.sharing') %></a></li>
+    <li><a href="#publishing" data-filter="publishing"><%= t('screens.videos.filters.tell_me_about.publishing') %></a></li>
+  </ul>
+
+    <h3><%= t('screens.videos.filters.i_am_a_data.title') %></h3>
+  <ul class="audienceCriteria">
+    <li><a href="#consumer" data-audience="consumer"><%= t('screens.videos.filters.i_am_a_data.consumer') %></a></li>
+    <li><a href="#publisher" data-audience="publisher"><%= t('screens.videos.filters.i_am_a_data.publisher') %></a></li>
+    <li><a href="#all" data-audience="all" class="selected"><%= t('screens.videos.filters.i_am_a_data.everything') %></a></li>
+  </ul>
+
+  <h3><%= t('screens.videos.filters.sort_on.title') %></h3>
+  <ul class="sortCriteria">
+    <li><a href="#basics" data-sort="basics" class="selected"><%= t('screens.videos.filters.sort_on.basics_first') %></a></li>
+    <li><a href="#alphabetical" data-sort="alphabetical"><%= t('screens.videos.filters.sort_on.alphabetical') %></a></li>
+    <li><a href="#date-added" data-sort="date"><%= t('screens.videos.filters.sort_on.most_recent') %></a></li>
+  </ul>
+</div>
+
+<div class="contentBox withLeftNavigation videoListBox">
+  <h1><%= t('screens.videos.title') %></h1>
+
+  <p class="intro">
+    <%= t('screens.videos.intro_html', company_name: CurrentDomain.strings.indirect_object_company || CurrentDomain.strings.company) %>
+  </p>
+
+
+  <p class="noResultsText"><%= t('screens.videos.no_results') %></p>
+
+  <h2 class="relatedVideosHeader">
+    <%= t('screens.videos.related_videos.title') %>
+    <a href="<%= videos_path %>" rel="external" class="seeMoreLink rightArrow"><%= t('screens.videos.related_videos.see_more_link') %><span class="icon"></span></a>
+  </h2>
+
+  <ul class="videoList clearfix">
+    <%- VIDEO_LIST.each do |video| -%>
+      <li data-id="<%= video['name'] %>" data-type="<%= video['type'] %>"
+          data-audience="<%= video['audience'] %>" data-added="<%= video['added'] %>"
+          data-embedid="<%= video['wistia']['embedid'] %>">
+        <a href="#<%= video['name'] %>">
+          <img src="/stylesheets/images/video_thumbnails/<%= video['name'] %>.png" alt="<%= video['title'] %>" />
+          <h2><%= video['title'] %></h2>
+          <p class="length"><%= video['length'] %></p>
+        </a>
+      </li>
+    <%- end -%>
+  </ul>
+</div>
+
+<textarea id="embedTemplate"><script charset="ISO-8859-1" src="//fast.wistia.com/assets/external/E-v1.js" async></script><div class="wistia_embed wistia_async_%embedid% autoPlay=true playerColor=274066" style="width:640px;height:360px">&nbsp;</div></textarea>
+
+<%- content_for :modals do -%>
+  <%= modal :class => 'videoPopupModal', :tabIndex => 0 do %>
+    <div class="videoContainer"></div>
+  <%- end -%>
+<%- end -%>
+
+<%- content_for :js_footer do -%>
+  <%- if @popup -%>
+    <script type="text/javascript">
+      blist.namespace.fetch('blist.videos');
+      blist.videos.popupMode = true;
+    </script>
+  <%- end -%>
+
+  <%= include_webpack_bundle 'open-data/screen-videos.js' %>
+<%- end -%>

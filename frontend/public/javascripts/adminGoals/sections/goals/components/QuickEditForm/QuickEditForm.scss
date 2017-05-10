@@ -1,0 +1,105 @@
+@import 'app/styles/styleguide-colors';
+
+.modal-header-with-link {
+  .h5.modal-header-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 120px;
+  }
+
+  a.feedback {
+    position: absolute;
+    right: 50px;
+    top: 12px;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.modal-content {
+  .Select-menu-outer {
+    left: 0;
+  }
+
+  .form-select-small {
+    width: 150px;
+    display: inline-flex;
+  }
+
+  .form-select-medium {
+    width: 250px;
+    display: inline-flex;
+  }
+
+  .form-select-wide {
+    width: 300px;
+    display: inline-flex;
+  }
+
+  .goal-quick-edit-form {
+    $form-width: 600px;
+    $label-width: 175px;
+    $label-padding-right: 20px;
+
+    float: left;
+    width: $form-width;
+
+    label {
+      display: inline-block;
+      width: $label-width;
+      text-align: right;
+      padding-right: $label-padding-right;
+      vertical-align: top;
+    }
+
+    .form-message {
+      display: inline-block;
+      width: ($form-width - $label-width - $label-padding-right);
+    }
+
+    .form-light-notice {
+      display: block;
+      margin-left: calc(#{$label-width} + 0.5em);
+      margin-bottom: 0.5em;
+      font-size: 13px;
+      color: $dark-grey-1;
+    }
+
+    .text-input {
+      width: 300px;
+    }
+
+    .datepicker-input.text-input {
+      width: 140px;
+    }
+
+    .form-block {
+      max-width: $form-width - $label-width - $label-padding-right;
+      display: inline-block;
+    }
+
+    .form-light {
+      font-size: 13px;
+      color: $dark-grey-1;
+    }
+  }
+
+  .goal-quick-edit-details {
+    float: right;
+    width: 400px;
+    margin-left: 40px;
+
+    div {
+      margin-bottom: 20px;
+    }
+  }
+
+  .unconfigured-goal-warning-message a {
+    text-decoration: none;
+  }
+}

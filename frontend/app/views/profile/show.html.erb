@@ -1,0 +1,111 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'profile-show' %>
+  <title><%= @user.displayName %> | <%= get_site_title %></title>
+<% end %>
+
+<div id="profile" class="profileContent clearfix">
+  <div class="mainFlash">
+    <%= display_standard_flashes %>
+  </div>
+
+  <%= render :partial => '/profile/socrata_news/sidebar' %>
+
+  <div class="profileMainContent">
+    <%= render :partial => '/profile/socrata_news/header' %>
+  <%- if @is_user_current || @user.description || @user.interests || @user.userLinks  -%>
+      <div class="basicInfo content">
+        <div class="innerItem">
+          <%= edit_link(@user, 'editBasicInfoLink basicInfo', t('screens.profile.bar.edit_info_link')) %>
+          <h2><%= t('screens.profile.info.title') %></h2>
+          <%- if @user.description -%>
+          <p class="innerItem textItem"><%= auto_link(h(@user.description),
+            :html => {:rel => 'nofollow noreferrer external'}) %></p>
+          <%- else -%>
+          <p class="innerItem emptyItem"><%= t('screens.profile.info.no_description') %></p>
+          <%- end -%>
+        </div>
+
+        <%- if @user.interests -%>
+          <div class="innerItem">
+            <h3><%= t('screens.profile.info.interests') %></h3>
+            <div class="innerContent">
+              <p class="textItem"><%= @user.interests %></p>
+            </div>
+          </div>
+        <%- end -%>
+
+        <%- if @user.userLinks -%>
+          <div class="innerItem userLinksItem">
+            <h3><%= t('screens.profile.info.external_links') %></h3>
+            <div class="innerContent">
+              <%- @user.userLinks.each do |user_link| -%>
+                <%- link_type = UserLink.link_types.find { |link_item|
+                  link_item[0] == user_link.linkType.upcase} -%>
+                <p>
+                  <span class="subHeader textDisplay"><%= link_type.nil? ? t('screens.profile.info.other_ext_link') : t("screens.profile.info.links.#{link_type[1]}") %></span>
+                  <span class="textDisplay"><%= user_link.label.present? ? "#{user_link.label} : " : '' %><%= user_link.url %></span>
+                </p>
+              <%- end -%>
+            </div>
+          </div>
+        <%- end -%>
+      </div>
+    <%- end -%>
+
+    <div class="datasetsList content">
+      <h2><%= t('screens.profile.browse.title', user: @user.displayName) %></h2>
+      <%- if @is_user_current -%>
+      <ul class="ownershipLinks">
+        <%# @base_url comes from browse_controller %>
+        <li><a href="<%= @processed_browse[:base_url] %>"
+          class="<%= params[:ownership] != 'sharedToMe' ?
+            'active' : '' %>"><%= t('screens.profile.browse.owned_datasets') %></a></li>
+        <li><a href="<%= @processed_browse[:base_url] %>?ownership=sharedToMe"
+          class="<%= params[:ownership] == 'sharedToMe' ?
+            'active' : '' %>"><%= t('screens.profile.browse.shared_datasets') %></a></li>
+      </ul>
+      <%- end -%>
+      <%= render_browse(@processed_browse) %>
+    </div>
+
+    <%- if !@app_tokens.blank? || @user == current_user -%>
+      <div class="appTokens content">
+        <div class="innerItem">
+          <%= edit_link(@user, 'editAppTokensLink appTokens', t('screens.profile.app_tokens.manage_link'), 'app_tokens') %>
+          <h2><%= t('screens.profile.app_tokens.title', user: @user.displayName) %></h2>
+          <%# TODO: Add link to SODA docs or something %>
+        </div>
+        <%- if @app_tokens.blank? -%>
+        <p class="emptyItem"><%= t('screens.profile.app_tokens.no_applications', user: @user.displayName) %></p>
+        <%- else -%>
+          <%- @app_tokens.each do |token| -%>
+            <div class="innerItem">
+              <%= render :partial => 'app_token_display', :locals => {
+                  :edit => false, :token => token
+              } %>
+            </div>
+          <%- end -%>
+        <%- end -%>
+      </div>
+    <%- end -%>
+
+  </div>
+</div>
+
+<%= render_profile_qualtrics %>
+
+<%= render_translations LocalePart.screens.profile %>
+
+<%- unless @is_user_current -%>
+<% content_for :modals do %>
+  <%= render :partial => 'contact_user' %>
+<% end %>
+<%- end -%>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.profile');
+    blist.profile.profileUserId = '<%= @user.id %>';
+  </script>
+  <%= include_webpack_bundle 'open-data/screen-profile.js' %>
+<% end %>

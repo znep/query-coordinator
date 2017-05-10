@@ -1,0 +1,36 @@
+@mixin notification {
+  .notification-container {
+    position: absolute;
+    bottom: 25px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+    z-index: 100;
+
+    .notification-message {
+      display: inline-flex;
+      line-height: normal;
+      opacity: 0.9;
+      padding: 0;
+      margin: auto;
+      margin-top: 5px;
+      margin-right: 5px;
+
+      .notification-text {
+        margin: auto;
+        margin-left: 11px;
+      }
+
+      .notification-dismiss {
+        margin: auto;
+        color: $primary-dark;
+
+        .socrata-icon-close-2 {
+          width: 13px;
+          height: 13px;
+        }
+      }
+    }
+  }
+}

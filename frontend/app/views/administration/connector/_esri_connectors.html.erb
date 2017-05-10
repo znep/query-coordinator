@@ -1,0 +1,60 @@
+<%- @esri_connectors.each do |server| -%>
+  <tr>
+    <td class="name" scope="row">
+      <a target="_blank" href="<%= server.url %>"> <%= strip_tags server.display_name %> </a>
+    </td>
+    <td class="type" scope="row">
+      <%= t("screens.admin.connector.#{server.type_key}") %>
+    </td>
+    <td class="federatedAssets" scope="row">
+      <%= t('screens.admin.connector.assets_discovered', count: server.discovered_count) %>
+    </td>
+    <td class="federatedAssets" scope="row">
+      <%= link_to_if(
+        server.connected_count > 0 && server.server_backend == 'esri_crawler',
+        t('screens.admin.connector.assets_connected', count: server.connected_count),
+        {
+          controller: 'connector',
+          action: :show_connector,
+          :server_id => server.id,
+          :type => 'esri_arcgis'
+        }
+      ) %>
+    </td>
+    <td class="status" scope="row" nowrap>
+      <p class="current-status">
+        <span class="connector-icon connector-icon-<%=server.status_key.dasherize %> icon-<%= connector_icon(server.status_key)%>"></span>
+
+        <%= t("screens.admin.connector.#{server.status_key}") %>
+      </p>
+    </td>
+    <td class="endedAt" scope="row">
+      <%- if server.last_synced -%>
+        <%= date_time_span(server.last_synced) %>
+      <%- else -%>
+        <%= t('screens.admin.connector.never') %>
+      <%- end -%>
+    </td>
+    <td class="actions" scope="row">
+      <%= link_to(
+        t('screens.admin.connector.edit'),
+        {
+          :action => :edit_connector,
+          :server_id => server.id,
+          :type => 'esri_arcgis'
+        },
+        :class => "button buttonArea #{'disabled' unless server.last_synced && !server.sync_in_progress?}"
+      ) %>
+      <%= form_button(
+        {
+          :action => :delete_connector,
+          :server_id => server.id,
+          :server_backend => server.server_backend
+        },
+        t('screens.admin.connector.terminate'),
+        {:method => :delete},
+        :class => 'button buttonArea'
+      ) %>
+    </td>
+  </tr>
+<%- end -%>

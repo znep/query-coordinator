@@ -1,0 +1,13 @@
+{
+  "app": {
+    "id": "/rpec/storyteller",
+    "env": {
+      "PG_DB_PORT": "5432",
+      "PG_DB_NAME": "storyteller_test_db_name",
+      "PG_DB_USER": "storyteller_test_user",
+      "CLORTHO_BUCKET": "test-credentials-bucket-credsbucket-abcdefghij",
+      "CLORTHO_PATH": "storyteller_secrets.sh",
+      "PG_DB_HOST": "storyteller-test.abcdefghij.us-west-2.rds.amazonaws.com"
+    }
+  }
+}

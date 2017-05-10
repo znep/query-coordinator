@@ -1,0 +1,43 @@
+[{
+  "contentType": "internal",
+  "lensUid": "2jnm-ghyx",
+  "position": 0,
+  "title": "A Data Lens Appears!",
+  "featuredView": {
+    "name": "A Data Lens Appears!",
+    "id": "px7r-ajhh",
+    "description": "",
+    "url": "https://localhost/Government/A-Data-Lens-Appears-/px7r-ajhh",
+    "displayType": "data_lens",
+    "createdAt": "2016-12-20T16:09:24.000-08:00",
+    "updatedAt": "2017-01-06T15:49:16.000-08:00",
+    "viewCount": 0,
+    "isPrivate": false,
+    "imageUrl": null
+  }
+}, {
+  "contentType": "internal",
+  "lensUid": "2jnm-ghyx",
+  "position": 1,
+  "title": "Cool Story Bro II!",
+  "url": "https://localhost/stories/s/Cool-Story-Bro-II-/dm6r-n5dn",
+  "featuredView": {
+    "name": "Cool Story Bro II!",
+    "id": "dm6r-n5dn",
+    "description": null,
+    "url": "https://localhost/stories/s/Cool-Story-Bro-II-/dm6r-n5dn",
+    "displayType": "story",
+    "createdAt": "2016-10-28T09:49:26.000-07:00",
+    "updatedAt": "2016-10-28T10:18:15.000-07:00",
+    "viewCount": 0,
+    "isPrivate": false,
+    "imageUrl": null
+  }
+}, {
+  "contentType": "external",
+  "description": "This is a link to a helpful search engine!",
+  "position": 2,
+  "previewImage": "f2234ba4-2518-4537-b295-1ba815b83457",
+  "title": "Teh Googels",
+  "url": "https://www.google.com/"
+}]

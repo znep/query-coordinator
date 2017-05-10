@@ -1,0 +1,35 @@
+.createDatasetBox {
+  display: none;
+}
+
+.browseSection .browseList .results .gridList {
+  th.index, td.index {
+    width: 10em;
+    white-space: nowrap;
+  }
+}
+
+.expander {
+  display: none;
+}
+
+a.chooseDatasetButton {
+  @include sprite-menu-icons;
+  font-size: 0.8em;
+  margin-right: 1em;
+}
+
+#paneSpinner {
+  background-color: rgba(255, 255, 255, 0.5);
+  height: 100%;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+#paneSpinnerInside {
+  bottom: 50%;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}

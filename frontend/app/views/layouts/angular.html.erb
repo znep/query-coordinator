@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="<%= I18n.locale %>">
+
+<!--
+Powered by Socrata Publica
+http://www.socrata.com
+-->
+
+  <head>
+    <%- if params[:controller] == "data_lens" -%>
+      <meta name="page_name" content="Data Lens">
+    <%- end -%>
+
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <%= csrf_meta_tags %>
+    <%= canary_warning %>
+
+    <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-air.css?<%= asset_revision_key %>"/>
+    <%= rendered_stylesheet_tag 'socrata-icons' %>
+
+    <%= angular_theme_tag %>
+
+    <%= angular_stylesheet_tag %>
+    <!--[if IE 9]><%= rendered_stylesheet_tag 'ie9' %><![endif]-->
+
+    <%= get_favicon_tag %>
+
+    <%- if enable_site_chrome? -%>
+      <%= site_chrome_meta_viewport_tag %>
+      <%= site_chrome_stylesheet_tag %>
+    <%- end -%>
+
+    <%= yield :head %>
+
+    <%- unless CurrentDomain.properties.typekit_id.blank? -%>
+      <script type="text/javascript" src="//use.typekit.net/<%= CurrentDomain.properties.typekit_id %>.js"></script>
+      <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    <%- end -%>
+
+    <%= render_angular_config %>
+    <%= render_angular_translations %>
+    <%= render_user %>
+    <%= render_metadata %>
+  </head>
+
+  <body ng-app="<%= angular_app %>">
+
+    <% if @dataset_id %>
+      <div class="skip-links">
+        <%= link_to t('angular.dataCards.skip_link'), get_alt_dataset_link(@dataset_id) %>
+      </div>
+      <%= render_noscript(@dataset_id) %>
+    <% end %>
+
+    <%= include_webpack_bundle 'internal-asset-manager/last-accessed.js' %>
+    <%= include_webpack_bundle 'data-cards/main.js' %>
+
+    <%== site_chrome_admin_header(request, response) if render_site_admin_chrome? %>
+
+    <%== site_chrome_header(request, response) if render_site_chrome? %>
+
+    <%= yield %>
+
+    <%== site_chrome_footer(request, response, :size => 'small') if render_site_chrome? %>
+
+    <%= site_chrome_javascript_tag if enable_site_chrome? || enable_govstat_chrome? %>
+  </body>
+
+
+  <%= render_ga_tracking %>
+
+  <%- if enable_site_chrome? -%>
+    <%= site_chrome_analytics_tags %>
+  <%- end -%>
+
+  <%= render 'templates/mixpanel_tracking' %>
+  <%= render_pendo_tracker %>
+
+  <% if @dataset_id %>
+    <script>if (window.lastAccessed) { window.lastAccessed.add('<%= @dataset_id %>'); }</script>
+  <% end %>
+
+</html>

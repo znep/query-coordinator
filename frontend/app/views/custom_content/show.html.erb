@@ -1,0 +1,19 @@
+<%- prerendered_cache @cache_key, @cached_fragment, :expires_in => 15.minutes do -%>
+
+  <% content_for :head do %>
+    <title><%= [ @page_title, get_site_title ].flatten.reject{ |s| s.blank? }.join(' | ') %></title>
+
+    <%= rendered_stylesheet_tag "canvas" %>
+    <%= rendered_stylesheet_tag "homepage-show" if Canvas::Environment.context == :homepage &&
+                                                   @page_config.default_styles %>
+    <%- if @page_config.stylesheets.present? -%>
+      <%- @page_config.stylesheets.each do |style_package| -%>
+        <%= rendered_stylesheet_tag style_package %>
+      <%- end -%>
+    <%- end -%>
+    <link rel="stylesheet" type="text/css" href="/styles/<%= @stylesheet %>.css?<%= asset_revision_key %>"/>
+  <% end %>
+
+  <%= raw render_widget(@page_config.contents) %>
+
+<%- end -%>

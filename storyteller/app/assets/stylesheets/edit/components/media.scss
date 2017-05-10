@@ -1,0 +1,369 @@
+@import 'lib/variables';
+
+.component-asset-selector {
+  position: relative;
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  background-color: #f2f2f2;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ddd;
+    transition: color $transition-duration, background-color $transition-duration;
+  }
+
+  &:before {
+    background-image: asset-url('media-block-icon.png');
+    background-size: 30%;
+    background-position: 50% 38%;
+    background-repeat: no-repeat;
+    content: ' ';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+
+    .small & {
+      background-size: 24%;
+    }
+  }
+
+  .asset-selector-insert-btn {
+    position: relative;
+    display: block;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    top: 70%;
+    font-weight: 600;
+
+    .small & {
+      top: 70%;
+    }
+  }
+}
+
+#story-view {
+  .component-asset-selector {
+    background-color: transparent;
+
+    &:before {
+      background-image: none;
+    }
+  }
+}
+
+
+.col6 > .col12,
+.col12 + .col12 {
+  .component-asset-selector,
+  .component-embedded-html,
+  .component-image,
+  .component-socrata-visualization-choropleth-map, // legacy
+  .component-socrata-visualization-region-map,
+  .component-socrata-visualization-classic,
+  .component-socrata-visualization-bar-chart,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
+  .component-socrata-visualization-table,
+  .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-pie-chart,
+  .component-story-tile,
+  .component-story-widget,
+  .component-goal-tile,
+  .component-youtube-video {
+    @include media-query-property(
+      'margin-top',
+      $media-component-small-margin-top / 2,
+      $media-component-medium-margin-top / 2,
+      $media-component-large-margin-top / 2,
+      $media-component-extra-large-margin-top / 2
+    );
+  }
+}
+
+.component-asset-selector,
+.component-embedded-html,
+.component-image,
+.component-socrata-visualization-choropleth-map, // legacy
+.component-socrata-visualization-region-map,
+.component-socrata-visualization-classic,
+.component-socrata-visualization-bar-chart,
+.component-socrata-visualization-column-chart,
+.component-socrata-visualization-feature-map,
+.component-socrata-visualization-histogram,
+.component-socrata-visualization-table,
+.component-socrata-visualization-timeline-chart,
+.component-socrata-visualization-pie-chart,
+.component-story-tile,
+.component-story-widget,
+.component-goal-tile,
+.component-youtube-video {
+  @include media-query-property(
+    'margin-top',
+    $media-component-small-margin-top,
+    $media-component-medium-margin-top,
+    $media-component-large-margin-top,
+    $media-component-extra-large-margin-top
+  );
+
+  .component-edit-controls {
+    display: none;
+  }
+  &.editing .component-edit-controls {
+    display: block;
+  }
+}
+
+.component-socrata-visualization-classic,
+.component-youtube-video {
+  iframe {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+}
+
+.component-youtube-video {
+  background-color: $youtube-bg-color;
+}
+
+.component-image {
+  overflow: hidden;
+  img {
+    width: 100%;
+  }
+}
+
+.component-socrata-visualization-table {
+  width: 100%;
+  .socrata-paginated-table {
+    height: 100%;
+  }
+}
+
+.component-author {
+  background: $author-component-bg-color;
+  padding: $author-component-padding;
+  border-radius: 1px;
+  overflow: hidden; // Makes background take size of content.
+
+  .author-image {
+    position: relative;
+    margin-top: 0;
+    border: 1px solid #{$author-component-profile-image-border-color};
+    padding: $author-component-profile-image-padding;
+
+    #story-edit & .component-edit-controls {
+      margin-top: $author-component-profile-image-padding;
+      margin-right: $author-component-profile-image-padding;
+    }
+  }
+
+  .author-blurb {
+    margin-right: 0;
+  }
+}
+
+.small .component-author {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.col3 {
+  .component-asset-selector,
+  .component-embedded-html,
+  .component-socrata-visualizaiton-choropleth-map, // legacy
+  .component-socrata-visualizaiton-region-map,
+  .component-socrata-visualization-classic,
+  .component-socrata-visualization-bar-chart,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
+  .component-socrata-visualization-timeline-chart
+  .component-socrata-visualization-pie-chart
+  .component-youtube-video {
+    $small-height: $col3-block-edit-content-width-small * (4/5);
+    $medium-height: $col3-block-edit-content-width-medium * (3/4);
+    $large-height: $col3-block-edit-content-width-large * (3/4);
+    $extra-large-height: $col3-block-edit-content-width-extra-large * (3/4);
+
+    @include media-query-property(
+      'height',
+      $small-height,
+      $medium-height,
+      $large-height,
+      $extra-large-height
+    );
+  }
+}
+
+.col4 {
+  .component-asset-selector,
+  .component-embedded-html,
+  .component-socrata-visualization-choropleth-map, // legacy
+  .component-socrata-visualization-region-map,
+  .component-socrata-visualization-classic,
+  .component-socrata-visualization-bar-chart,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
+  .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-pie-chart,
+  .component-youtube-video {
+    $small-height: $col4-block-edit-content-width-small * (4/5);
+    $medium-height: $col4-block-edit-content-width-medium * (3/4);
+    $large-height: $col4-block-edit-content-width-large * (3/4);
+    $extra-large-height: $col4-block-edit-content-width-extra-large * (3/4);
+
+    @include media-query-property(
+      'height',
+      $small-height,
+      $medium-height,
+      $large-height,
+      $extra-large-height
+    );
+  }
+}
+
+.col6 {
+  $small-height: $col6-block-edit-content-width-small * (4/5);
+  $medium-height: $col6-block-edit-content-width-medium * (3/5);
+  $large-height: $col6-block-edit-content-width-large * (3/5);
+  $extra-large-height: $col6-block-edit-content-width-extra-large * (3/5);
+
+
+  .col12 {
+    .component-asset-selector,
+    .component-socrata-visualization-choropleth-map, // legacy
+    .component-socrata-visualization-region-map,
+    .component-socrata-visualization-classic,
+    .component-socrata-visualization-bar-chart,
+    .component-socrata-visualization-column-chart,
+    .component-socrata-visualization-feature-map,
+    .component-socrata-visualization-histogram,
+    .component-socrata-visualization-timeline-chart,
+    .component-socrata-visualization-pie-chart,
+    .component-youtube-video {
+      @include media-query-property(
+        'height',
+        $small-height,
+        $medium-height,
+        $large-height,
+        $extra-large-height
+      );
+    }
+  }
+
+  .component-asset-selector,
+  .component-socrata-visualization-choropleth-map, // legacy
+  .component-socrata-visualization-region-map,
+  .component-socrata-visualization-classic,
+  .component-socrata-visualization-bar-chart,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
+  .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-pie-chart,
+  .component-youtube-video {
+    @include media-query-property(
+      'height',
+      $small-height,
+      $medium-height,
+      $large-height,
+      $extra-large-height
+    );
+  }
+
+  .component-embedded-html {
+     @include media-query-property(
+      'height',
+      $col8-block-edit-content-width-small * 1.8,
+      $col6-block-edit-content-width-medium * 1.5,
+      $col6-block-edit-content-width-large * 1,
+      $col6-block-edit-content-width-extra-large * (4/5)
+    );
+  }
+}
+
+.col8 {
+  $small-height: $col8-block-edit-content-width-small * (4/5);
+  $medium-height: $col8-block-edit-content-width-medium * (3/5);
+  $large-height: $col8-block-edit-content-width-large * (3/5);
+  $extra-large-height: $col8-block-edit-content-width-extra-large * (3/5);
+
+  .component-asset-selector,
+  .component-socrata-visualization-choropleth-map, // legacy
+  .component-socrata-visualization-region-map,
+  .component-socrata-visualization-classic,
+  .component-socrata-visualization-bar-chart,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
+  .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-pie-chart,
+  .component-youtube-video {
+    @include media-query-property(
+      'height',
+      $small-height,
+      $medium-height,
+      $large-height,
+      $extra-large-height
+    );
+  }
+
+  /* Embedded HTML optimized for budget embed */
+  .component-embedded-html {
+    @include media-query-property(
+      'height',
+      $col8-block-edit-content-width-small * 1.2,
+      $col8-block-edit-content-width-medium,
+      $large-height,
+      $col8-block-edit-content-width-extra-large * (3/5)
+    );
+  }
+}
+
+.col12 {
+  $small-height: $col12-block-edit-content-width-small * (4/5);
+  $medium-height: $col12-block-edit-content-width-medium * (3/5);
+  $large-height: $col12-block-edit-content-width-large * (3/5);
+  $extra-large-height: $col12-block-edit-content-width-extra-large * (3/5);
+
+  .component-asset-selector,
+  .component-socrata-visualization-choropleth-map, // legacy
+  .component-socrata-visualization-region-map,
+  .component-socrata-visualization-classic,
+  .component-socrata-visualization-bar-chart,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map,
+  .component-socrata-visualization-histogram,
+  .component-socrata-visualization-timeline-chart,
+  .component-socrata-visualization-pie-chart,
+  .component-youtube-video {
+    @include media-query-property(
+      'height',
+      $small-height,
+      $medium-height,
+      $large-height,
+      $extra-large-height
+    );
+  }
+  .component-embedded-html {
+    @include media-query-property(
+      'height',
+      $col8-block-edit-content-width-small * 1.2,
+      $col12-block-edit-content-width-medium * 0.7,
+      $col12-block-edit-content-width-large * 0.5,
+      $col12-block-edit-content-width-extra-large * (2/5)
+    );
+  }
+}
+
+.small .component-embedded-html {
+  height: $main-content-width-small * 1.2;
+}

@@ -1,0 +1,21 @@
+<div class="leftNavBox">
+  <div class="domainCompletion">
+    Search for a domain:
+    <div>
+      <input type="text" id="domainSelect" class="domainAwesomeComplete" />
+      <span class="spinner"></span>
+    </div>
+  </div>
+  <ul class="navigationList">
+    <li><a href='/internal'>Internal Panel Home</a></li>
+    <li><a href='/internal/orgs'>Organizations</a></li>
+    <li><a href='/internal/analytics'>Analytics</a></li>
+    <li><a href='/internal/config_info'>Configuration Info</a></li>
+    <%- if Signaller.healthy? %>
+      <li><a href='/internal/feature_flag_report'>Feature Flag Report</a></li>
+    <%- end %>
+  </ul>
+</div>
+<% content_for :js_footer do %>
+  <%= include_webpack_bundle 'open-data/screen-internal.js' %>
+<% end %>

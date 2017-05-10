@@ -1,0 +1,162 @@
+.usersScreen {
+  .userInformation {
+    .usersFind {
+      float: right;
+    }
+  }
+  .flash {
+    width: 40em;
+  }
+  > .flash {
+    margin-top: 0;
+  }
+  .information {
+    font-size: 1.2em;
+    margin-bottom: 1em;
+  }
+  .usersFind {
+    .submit {
+      text-transform: none;
+    }
+  }
+  .userRoleSelectFilter {
+    float: right;
+    label {
+      bottom: 0.6em;
+      font-size: 1.3em;
+      position: relative;
+    }
+    select {
+      width: 10em;
+    }
+  }
+  .adminUsersTable, .futureUsersTable {
+    .select {
+      text-align: center;
+      width: 1em;
+    }
+    tr {
+      .button {
+        opacity: 1;
+        @include transition-duration(0.2s);
+        @include transition-property(opacity);
+        &:focus {
+          opacity: 1.0;
+        }
+      }
+    }
+    tbody {
+      td, .row-header {
+        height: 2.5em;
+        padding: 0;
+        vertical-align: middle;
+        &.user {
+          .userIcon {
+            float: left;
+            padding-right: 0.5em;
+          }
+          .cellInner {
+            font-weight: bold;
+            line-height: 2em;
+          }
+        }
+      }
+      .selector.uniform {
+        font-size: 1em;
+      }
+      .roleSelect {
+        width: 10em;
+      }
+      .actions {
+        .loading {
+          @include throbber-icon;
+          display: none;
+        }
+        input.button {
+          font-size: 0.8em;
+        }
+        .enableAccount {
+          display: none;
+        }
+        &.isWorking {
+          .loading {
+            display: inline-block;
+          }
+        }
+      }
+      tr.disabled {
+        td, .row-header {
+          &.user, &.email {
+            color: #aaa;
+            font-style: italic;
+          }
+          &.email {
+            @include warning-icon-medium;
+            .icon {
+              float: left;
+              margin-right: 1em;
+            }
+            .cellInner {
+              position: relative;
+              top: 3px;
+            }
+          }
+          &.actions {
+            .enableAccount {
+              display: inline;
+            }
+          }
+        }
+      }
+    }
+  }
+  .tableContainer {
+    .noResultsMessage {
+      display: none;
+      font-size: 1.4em;
+      margin: 3em 0;
+      text-align: center;
+    }
+    &.noResults {
+      .noResultsMessage {
+        display: block;
+      }
+    }
+    .userNotice {
+      display: none;
+    }
+  }
+  .futureUsersContainer {
+    padding-top: 2em;
+    .unregisteredExplanation {
+      font-size: 1.4em;
+      padding: 1em 0;
+    }
+    .futureUsersTable {
+      td, .row-header {
+        &.email {
+          padding-left: 1em;
+        }
+      }
+    }
+  }
+  .usersTopPageButtonArea {
+    float: right;
+  }
+  .showBulkCreateForm, .cancelBulkCreate {
+    font-size: 1.2em;
+  }
+  .bulkUserCreateSection {
+    padding: 1em 0;
+    textarea {
+      width: 35em;
+    }
+    .line {
+      label {
+        padding-right: 0.5em;
+        text-align: right;
+        width: 6em;
+      }
+    }
+  }
+}

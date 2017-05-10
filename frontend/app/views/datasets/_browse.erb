@@ -1,0 +1,586 @@
+<%-
+  if using_cetera? || using_cetera_profile_search?
+    return render 'datasets/browse2', :opts => opts
+  end
+-%>
+
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'browse-control' %>
+<% end %>
+
+<%- cur_sort = opts[:sort_opts].detect { |s| s[:value] == opts[:sortBy] } -%>
+<%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
+<%- in_search = opts[:user_params][:q] && opts[:row_count] -%>
+
+<div data-view-type="<%= opts[:view_type] %>" class="browseSection <%= opts[:facets].length < 1 ? 'noFacets' : '' %>
+  <%= opts[:custom_class] || '' %>
+  <%= opts[:browse_in_container] ? 'inContainer' : '' %> <%= opts[:disable][:sort] ? 'noSort' : '' %>">
+
+  <%- if opts[:facets].length > 0 -%>
+    <div class="browseFacets <%= show_time_period ? 'hasTimePeriod' : '' %>">
+      <%= raw opts[:sidebar_config].header if opts[:sidebar_config] && opts[:sidebar_config].header %>
+      <%= render :partial => 'datasets/browse_search',
+                 :locals => { :opts => opts } if opts[:sidebar_config].nil? || opts[:sidebar_config].search %>
+
+      <%- if (opts[:q].present? || opts[:facets].any?{ |f| opts[:user_params][f[:param]].present? }) && (!opts[:user_params].include?(:filtered_types))-%>
+        <div class="facetSection clearAllSection">
+          <ul>
+            <li>
+            <%- cp = opts[:user_params].reject{ |k| k == :q } -%>
+            <%- opts[:facets].each { |facet| cp.delete(facet[:param]) } -%>
+            <a href="<%= opts[:base_url] + '?' + cp.to_param %>"><%= t('controls.browse.actions.clear_all') %></a>
+            </li>
+          </ul>
+        </div>
+      <%- end -%>
+
+      <%- opts[:facets].each do |facet| -%>
+        <%- next if (facet[:options].nil? || facet[:options].length < 1) && facet[:custom_content].nil? -%>
+        <div class="facetSection clearfix <%= facet[:param] %>">
+          <h4 class="title"><%= facet[:title] %></h4>
+          <%- if facet[:custom_content].nil? -%>
+            <ul>
+              <%- if opts[facet[:param]].present? -%>
+                <li>
+                  <% if opts[:user_params].include?(:filtered_types) %>
+                    <%- filtered_types = opts[:user_params][:filtered_types] -%>
+                    <%- opts[:user_params][:limitTo] = filtered_types -%>
+                    <a href="<%= opts[:base_url] + '?' + opts[:user_params].to_param %>" class="clearValues">
+                  <% else %>
+                    <%- cp = opts[:user_params].dup -%>
+                    <%- cp.delete(facet[:param]) -%>
+                    <a href="<%= opts[:base_url] + '?' + cp.to_param %>" class="clearValues">
+                  <% end %>
+                  <%- if facet[:use_icon] -%>
+                    <span class="icon"></span>
+                  <%- end -%>
+                  <%= t('controls.browse.actions.clear_facet') %>
+                  </a>
+                </li>
+              <%- end -%>
+              <%- facet[:options].each do |facet_option| -%>
+                <%= browse_facet_option(facet_option, facet[:param], opts, facet[:use_icon]) %>
+              <%- end -%>
+            </ul>
+            <%- unless facet[:extra_options].blank? -%>
+              <%- if facet[:tag_cloud].present? -%>
+                <%- content_for :modals do -%>
+                  <%= modal :id => "browseDialog_#{facet[:param]}", :class => 'browseOptionsDialog' do %>
+                    <div class="optionsContent">
+                      <%- facet[:extra_options].each do |facet_option| -%>
+                        <%- cp = opts[:user_params].dup -%>
+                        <%- cp[facet[:param]] = facet_option[:value] -%>
+                        <a href="<%= opts[:base_url] %>?<%= cp.to_param %>" rel="<%= facet_option[:count] %>">
+                          <%= facet_option[:text] %>
+                        </a>
+                      <%- end -%>
+                    </div>
+                    <ul class="actions clearfix">
+                      <li>
+                        <a class="jqmClose button cancel" href="#cancel"><%= t('core.dialogs.close') %></a>
+                      </li>
+                    </ul>
+                  <%- end -%>
+                <%- end -%>
+                <a class="cloudLink" href="#More <%= facet[:title] %>" rel="<%= facet[:param] %>">
+                  <%= t('controls.browse.actions.all_options') %>
+                </a>
+                <div style="display: none" aria-hidden="false">
+                  <h5><%= t('controls.browse.ordered_topics') %></h5>
+                  <ol>
+                    <%- facet[:extra_options].sort_by { |item| item[:count] }.each do |facet_option| -%>
+                      <li>
+                        <%- cp = opts[:user_params].dup -%>
+                        <%- cp[facet[:param]] = facet_option[:value] -%>
+                        <a href="<%= opts[:base_url] %>?<%= cp.to_param %>" rel="<%= facet_option[:count] %>">
+                          <%= facet_option[:text] %>
+                        </a>
+                      </li>
+                    <%- end -%>
+                  </ol>
+                </div>
+              <%- else -%>
+                <div class="moreOptions list hide">
+                  <%- facet[:extra_options].each do |facet_option| -%>
+                    <%- cp = opts[:user_params].dup -%>
+                    <%- cp[facet[:param]] = facet_option[:value] -%>
+                    <%= link_for_facet(facet, facet_option, opts, cp) %>
+                  <%- end -%>
+                </div>
+                <a class="moreLink" href="#More <%= facet[:title] %>"><%= t('controls.browse.actions.all_options') %></a>
+              <%- end -%>
+            <%- end -%>
+          <%- else -%>
+            <%- if opts[facet[:param]].present? -%>
+              <%- cp = opts[:user_params].reject{ |k| k == facet[:param] } -%>
+              <ul><li><a href="<%= opts[:base_url] + '?' + cp.to_param %>" class="clearValues">
+                (Clear)
+              </a></li></ul>
+              <%- end -%>
+            <%= raw facet[:custom_content].call(params, opts) %>
+          <%- end -%>
+        </div>
+        <%- end -%>
+      </div>
+    <%- end -%>
+    <%- unless opts[:embedded_browse_iframe_hack] -%>
+
+        <%- if ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
+                CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
+
+          <div class="createDatasetBox infoBox">
+            <h3><%= t('controls.browse.actions.create_resource') %></h3>
+            <div class="buttonContainer">
+
+            <%- if current_user_can_create_story? || FeatureFlags.derive(@view, request).enable_dataset_management_ui -%>
+
+                <a class="button downArrow" href="#" data-jq-dropdown="#create-resource-dropdown" data-horizontal-offset="-3" data-vertical-offset="-10">
+                  <%= t('controls.browse.actions.create_resource_short') %>
+                  <span class="icon"></span>
+                </a>
+
+                <div id="create-resource-dropdown" class="jq-dropdown jq-dropdown-tip jq-dropdown-anchor-right jq-dropdown-relative">
+                  <div class="create-resource-panel jq-dropdown-panel">
+
+                    <div class="create-resource-buttons">
+                      <a class="button createLink secondary-button next" href="<%= new_dataset_path %>" title="<%= t('controls.browse.actions.create_dataset_shorter') %>">
+                        <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_shorter') : t('controls.browse.actions.create_dataset_verb') %>
+                        <span class="icon"></span>
+                      </a>
+
+                      <%- if current_user_can_create_story? -%>
+                      <a id="create-story-button" class="button secondary-button next" href="#" title="<%= t('controls.browse.actions.create_story_short') %>">
+                        <%= opts[:browse_in_container] ? t('controls.browse.actions.create_story_short') : t('controls.browse.actions.create_story_verb') %>
+                        <span class="icon"></span>
+                      </a>
+                      <%- end -%>
+
+                      <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
+                      <a id="create-tabular-beta"
+                          class="button createTabular secondary-button next"
+                          href="<%= new_dataset_path(beta: true) %>"
+                          title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
+                        <%= opts[:browse_in_container] ?
+                              t('controls.browse.actions.create_tabular_beta_short') :
+                              t('controls.browse.actions.create_tabular_beta_verb') %>
+                        <span class="icon"></span>
+                      </a>
+                      <%- end -%>
+                    </div>
+                  </div>
+
+                  <div class="create-resource-spinner">
+                    <div class="loadingSpinner"></div>
+                  </div>
+                </div>
+
+              <%- else -%>
+                <a class="button createLink" href="<%= new_dataset_path %>"><%= t('controls.browse.actions.create_dataset_short') %></a>
+              <%- end -%>
+
+            </div>
+          </div>
+        <%- end -%>
+
+    <%- end -%>
+
+    <%- if opts[:header_config] -%>
+      <div class="browseHeader">
+        <%- [:counter, :search].each do |option| -%>
+          <%- if opts[:header_config][option] -%>
+            <%= render :partial => "datasets/browse_#{option.to_s}",
+                       :locals => { :opts => opts } %>
+          <%- end -%>
+        <%- end -%>
+      </div>
+    <%- end -%>
+
+    <%- show_catalog_sort_dropdown = opts[:show_catalog_sort_dropdown] -%>
+    <%- if opts[:a11y_skip_to_content] -%>
+      <% content_for(:relocated_content) do %><a name="above-content"></a><% end %>
+    <%- end -%>
+    <a name="dataset-listing" tabindex="-1"></a>
+    <div class="browseList <%= show_catalog_sort_dropdown ? 'hasSort' : '' %>">
+      <%- unless opts[:browse_in_container] -%>
+        <div class="titleContainer">
+          <h2 title="<%= opts[:title] %>"><%= opts[:title] %>
+            <%- unless opts[:hide_catalog_rss] -%>
+              <a href="/catalog.rss" class="subscribe" title="<%= t('controls.browse.actions.subscribe') %>">
+                <span class="icon"></span>
+              </a>
+            <%- end -%>
+          </h2>
+        </div>
+      <%- end -%>
+
+      <div class="topControls">
+        <%- unless opts[:view_type] == 'listing' || opts[:hide_view_types] -%>
+          <ul class="viewTypeOptions pillButtons">
+            <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge(
+                            {:view_type => 'table', :page => opts[:page]}).to_param %>"
+              class="list<%= ' active' if opts[:view_type] != 'rich' %>" title="<%= t('controls.browse.actions.compact_list') %>">
+              <span class="icon"><%= t('controls.browse.actions.compact_list') %></span>
+            </a></li>
+            <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge(
+                            {:view_type => 'rich', :page => opts[:page]}).to_param %>"
+              class="fatrow<%= ' active' if opts[:view_type] == 'rich' %>" title="<%= t('controls.browse.actions.rich_list') %>">
+              <span class="icon"><%= t('controls.browse.actions.rich_list') %></span>
+            </a></li>
+          </ul>
+        <%- end -%>
+
+        <%- if show_catalog_sort_dropdown -%>
+          <div class="sortOptions">
+            <label for="browseSortType" class="sortLabel"><%= t('controls.browse.sort_title') %></label>
+            <select id="browseSortType" class="sortType" name="sortType">
+              <%- opts[:sort_opts].each do |so| -%>
+                <%- next if !so[:requires].nil? && opts[so[:requires]].nil? -%>
+                <option value="<%= so[:value] %>" class="<%= 'timePeriod' if so[:is_time_period] %>"
+                  <%= "selected='selected'" if so[:value] == opts[:sortBy] %>><%= so[:name] %></option>
+              <%- end -%>
+            </select>
+            <%- time_opts = [
+              { :value => 'week', :name => t('controls.browse.sort_periods.week') },
+              { :value => 'month', :name => t('controls.browse.sort_periods.month') },
+              { :value => 'year', :name => t('controls.browse.sort_periods.year') }
+            ] -%>
+            <label for="browseSortPeriod" class="sortLabel"><%= t('controls.browse.sort_period_title') %></label>
+            <select class="sortPeriod<%= ' hide' unless show_time_period %>" name="sortPeriod" id="browseSortPeriod">
+              <%- time_opts.each do |to| -%>
+                <option value="<%= to[:value] %>"<%= ' selected="selected"' if to[:value] == opts[:sortPeriod] %>>
+                  <%= to[:name] %>
+                </option>
+              <%- end -%>
+            </select>
+          </div>
+        <%- end -%>
+      </div>
+
+      <div class="results" <%- if opts[:a11y_skip_to_content] -%>id="content"<%- end -%>>
+        <%- if opts[:view_request_error] -%>
+          <div class="noResults">
+            <span class="message"><%= opts[:timeout_text] %></span>
+            <%- unless opts[:embedded_browse_iframe_hack] -%>
+
+              <%- if ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
+                      CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
+
+                <%- if current_user_can_create_story? || FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
+
+                  <a class="button dropdown-button downArrow" href="#" data-jq-dropdown="#create-resource-footer-dropdown" data-horizontal-offset="-3" data-vertical-offset="-10">
+                    <%= t('controls.browse.actions.create_resource_short') %>
+                    <span class="icon"></span>
+                  </a>
+
+                  <div id="create-resource-footer-dropdown" class="create-resource-dropdown jq-dropdown jq-dropdown-tip jq-dropdown-anchor-right jq-dropdown-relative">
+                    <div class="create-resource-panel jq-dropdown-panel">
+
+                      <div class="create-resource-buttons">
+                        <a class="button createLink secondary-button next" href="<%= new_dataset_path %>" title="<%= t('controls.browse.actions.create_dataset_shorter') %>">
+                          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_shorter') : t('controls.browse.actions.create_dataset_verb') %>
+                          <span class="icon"></span>
+                        </a>
+
+                        <%- if current_user_can_create_story? -%>
+                        <a id="create-story-footer-button" class="button secondary-button next" href="#" title="<%= t('controls.browse.actions.create_story_short') %>">
+                          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_story_short') : t('controls.browse.actions.create_story_verb') %>
+                          <span class="icon"></span>
+                        </a>
+                        <%- end -%>
+
+                        <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
+                        <a id="create-tabular-beta-footer"
+                            class="button createTabular secondary-button next"
+                            href="<%= new_dataset_path(beta: true) %>"
+                            title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
+                          <%= opts[:browse_in_container] ?
+                                t('controls.browse.actions.create_tabular_beta_short') :
+                                t('controls.browse.actions.create_tabular_beta_verb') %>
+                          <span class="icon"></span>
+                        </a>
+                        <%- end -%>
+                      </div>
+                    </div>
+
+                    <div class="create-resource-spinner">
+                      <div class="loadingSpinner"></div>
+                    </div>
+                  </div>
+
+                <%- else -%>
+
+                  <a class="button createLink" href="<%= new_dataset_path %>"><%= t('controls.browse.actions.create_dataset_short') %></a>
+
+                <%- end -%>
+              <%- end -%>
+
+            <%- end -%>
+            <%- if CurrentDomain.module_enabled?(:dataset_nomination) && !opts[:suppress_dataset_creation] -%>
+              <a class="button suggestLink" href="<%= nominate_index_path %>"><%= t('controls.browse.actions.suggest_dataset_short') %></a>
+            <%- end -%>
+          </div>
+        <%- elsif opts[:view_count] == 0 -%>
+          <div class="noResults">
+            <span class="message"><%= opts[:no_results_text] %></span>
+            <%- unless opts[:embedded_browse_iframe_hack] -%>
+
+              <%- if ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
+                      CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
+
+                <%- if current_user_can_create_story? || FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
+
+                  <a class="button dropdown-button downArrow" href="#" data-jq-dropdown="#create-resource-footer-dropdown" data-horizontal-offset="-3" data-vertical-offset="-10">
+                    <%= t('controls.browse.actions.create_resource_short') %>
+                    <span class="icon"></span>
+                  </a>
+
+                  <div id="create-resource-footer-dropdown" class="create-resource-dropdown jq-dropdown jq-dropdown-tip jq-dropdown-anchor-right jq-dropdown-relative">
+                    <div class="create-resource-panel jq-dropdown-panel">
+
+                      <div class="create-resource-buttons">
+                        <a class="button createLink secondary-button next" href="<%= new_dataset_path %>" title="<%= t('controls.browse.actions.create_dataset_shorter') %>">
+                          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_dataset_shorter') : t('controls.browse.actions.create_dataset_verb') %>
+                          <span class="icon"></span>
+                        </a>
+
+                        <%- if current_user_can_create_story? -%>
+                        <a id="create-story-footer-button" class="button secondary-button next" href="#" title="<%= t('controls.browse.actions.create_story_short') %>">
+                          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_story_short') : t('controls.browse.actions.create_story_verb') %>
+                          <span class="icon"></span>
+                        </a>
+                        <%- end -%>
+
+                        <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
+                        <a id="create-tabular-beta"
+                            class="button createTabular secondary-button next"
+                            href="<%= new_dataset_path(beta: true) %>"
+                            title="<%= t('controls.browse.actions.create_tabular_beta_short') %>">
+                          <%= opts[:browse_in_container] ?
+                                t('controls.browse.actions.create_tabular_beta_short') :
+                                t('controls.browse.actions.create_tabular_beta_verb') %>
+                          <span class="icon"></span>
+                        </a>
+                        <%- end -%>
+                      </div>
+                    </div>
+
+                    <div class="create-resource-spinner">
+                      <div class="loadingSpinner"></div>
+                    </div>
+                  </div>
+
+                <%- else -%>
+
+                  <a class="button createLink" href="<%= new_dataset_path %>"><%= t('controls.browse.actions.create_dataset_short') %></a>
+
+                <%- end -%>
+              <%- end -%>
+
+            <%- end -%>
+            <%- if CurrentDomain.module_enabled?(:dataset_nomination) && !opts[:suppress_dataset_creation] -%>
+              <a class="button suggestLink" href="<%= nominate_index_path %>"><%= t('controls.browse.actions.suggest_dataset_short') %></a>
+            <%- end -%>
+          </div>
+        <%- elsif opts[:view_type] == 'listing' %>
+          <%- opts[:view_results].each do |v| -%>
+              <%= render :partial => 'datasets/browse_listing',
+                :locals => {
+                  :opts => opts,
+                  :v => v,
+                  :link => v.link.present? ? v.link : view_url(v),
+                  :display_title => v.display_title.present? ? v.display_title : v.display.name.capitalize,
+                  :in_search => in_search,
+                  :categories => v.categories.present? ? v.categories : [v.category_display].compact,
+                  :rel_type => view_rel_type(v, CurrentDomain, opts)
+                } %>
+          <%- end -%>
+        <%- else -%>
+          <table
+            class="gridList<%= ' hasFederations' if opts[:use_federations] %>"
+            summary="<%= a11y_browse_summary(opts) %>">
+            <colgroup>
+              <%- if opts[:grid_items][:index] -%>
+                <col class="index" />
+              <%- end -%>
+              <%- if opts[:grid_items][:domainIcon] -%>
+                <col class="domainIcon" />
+              <%- end -%>
+              <%- if opts[:grid_items][:nameDesc] -%>
+                <col class="nameDesc" />
+              <%- end -%>
+              <%- if opts[:grid_items][:largeImage] -%>
+                <col class="largeImage" />
+              <%- end -%>
+              <%- if opts[:grid_items][:richSection] -%>
+                <col class="richSection" />
+              <%- end -%>
+              <%- if opts[:grid_items][:datasetActions] -%>
+                <col class="datasetActions" />
+              <%- end -%>
+              <%- if opts[:grid_items][:popularity] -%>
+                <col class="popularity" />
+              <%- end -%>
+              <%- if opts[:grid_items][:type] -%>
+                <col class="type" />
+              <%- end -%>
+              <%- if opts[:grid_items][:rss] -%>
+                <col class="rss" />
+              <%- end -%>
+            </colgroup>
+            <%- unless opts[:disable][:table_header] -%>
+            <thead>
+              <tr>
+                <%- if opts[:grid_items][:index] -%>
+                  <td class="index" scope="col"></td>
+                <%- end -%>
+                <%- if opts[:grid_items][:domainIcon] -%>
+                  <th class="domainIcon" scope="col"></th>
+                <%- end -%>
+                <%- if opts[:grid_items][:nameDesc] -%>
+                  <th class="nameDesc" scope="col"><%= t('controls.browse.listing.table_header.name') %></th>
+                <%- end -%>
+                <%- if opts[:grid_items][:largeImage] -%>
+                  <th class="largeImage" scope="col"></th>
+                <%- end -%>
+                <%- if opts[:grid_items][:richSection] -%>
+                  <th class="richSection" scope="col"><%= t('controls.browse.listing.table_header.name') %></th>
+                <%- end -%>
+                <%- if opts[:grid_items][:datasetActions] -%>
+                  <th class="datasetActions" scope="col"><%= opts[:dataset_actions] %></th>
+                <%- end -%>
+                <%- if opts[:grid_items][:popularity] -%>
+                  <th class="popularity" scope="col"><%= t('controls.browse.listing.table_header.popularity') %></th>
+                <%- end -%>
+                <%- if opts[:grid_items][:type] -%>
+                  <th class="type" scope="col"><%= t('controls.browse.listing.table_header.type') %></th>
+                <%- end -%>
+                <%- if opts[:grid_items][:rss] -%>
+                  <th class="rss" scope="col"><%= t('controls.browse.listing.table_header.rss') %></th>
+                <%- end -%>
+              </tr>
+            </thead>
+            <%- end -%>
+            <%= render opts[:browse_table_partial], :opts => opts, :in_search => in_search %>
+        </table>
+        <%- end -%>
+      </div>
+
+      <%- if !opts[:view_request_error] && opts[:view_count] && opts[:view_count] > 0 -%>
+        <%= create_pagination(opts[:view_count], opts[:limit],
+        opts[:page], opts[:base_url] + '?' + opts[:user_params].to_param, 'button') unless opts[:disable][:pagination] %>
+        <%- if (opts[:footer_config].nil? || opts[:footer_config].counter) && !opts[:disable][:counter] -%>
+          <%= render opts[:browse_counter_partial], :opts => opts %>
+        <%- end -%>
+      <%- end -%>
+    </div>
+
+    <%- if !opts[:browse_in_container] &&
+            CurrentDomain.module_enabled?(:dataset_nomination) -%>
+    <div class="suggestBox infoBox">
+      <h3><%= t('controls.browse.actions.suggest_dataset') %></h3>
+      <div class="buttonContainer">
+        <a class="button next" href="<%= nominate_index_path %>"><%= t('controls.browse.actions.suggest_dataset_verb') %><span class="icon"></span></a>
+      </div>
+    </div>
+  <%- end -%>
+
+  <div class="clearBoth"></div>
+</div>
+
+<%- content_for :modals do -%>
+  <%= modal :class => 'browseOptionsDialog' do %>
+    <div class="optionsContent"></div>
+  <%- end -%>
+
+  <%= modal :class => 'newDatasetModal' do %>
+    <h2><%= t('screens.widget.create_new_dataset.title') %></h2>
+
+    <%= form_tag '/datasets', :method => 'post', :class => 'newDatasetForm commonForm' do %>
+      <p class="prompt"><%= t('screens.widget.create_new_dataset.prompt') %></p>
+      <div class="line clearfix">
+        <label for="newDatasetName" class="accessible"><%= t('screens.widget.create_new_dataset.prompt') %></label>
+        <input type="text" id="newDatasetName" name="new_dataset_name" class="required"/>
+      </div>
+      <p class="explanation"><%= t('screens.widget.create_new_dataset.explanation_html').html_safe %></p>
+      <ul class="submitActions clearfix">
+        <li><a class="submitButton button"><%= t('core.dialogs.save') %></a></li>
+        <li><a class="jqmClose button"><%= t('core.dialogs.cancel') %></a></li>
+      </ul>
+    <% end %>
+  <%- end -%>
+
+  <%= modal :class => 'externalDomainNotice' do %>
+    <h2>
+      <%= t('core.interstitial.leaving_notice_html', :site_name => CurrentDomain.cname) %>
+    </h2>
+    <p>
+      <%= t('core.interstitial.leaving_explanation_html') %>
+    </p>
+    <div class="nameDescription">
+      <p class="dsName"></p>
+      <p class="dsDesc"></p>
+    </div>
+    <div class="leavingLinkWrapper">
+      <a class="leavingLink noInterstitial" href="#" rel="external">
+        <%= t('core.interstitial.leaving_explanation_html') %>
+      </a>
+    </div>
+    <ul class="actions clearfix">
+      <li>
+        <a class="noInterstitial default button accept" href="#" rel="external">
+          <span class="icon"></span>
+          <%= t('core.dialogs.continue') %>
+        </a>
+      </li>
+      <li>
+        <a class="jqmClose button cancel" href="#cancel">
+          <span class="icon"></span>
+          <%= t('core.dialogs.cancel') %>
+        </a>
+      </li>
+    </ul>
+  <%- end -%>
+<%- end -%>
+
+<% content_for :templates do %>
+<div class="expandedInfo">
+  <div class="actions">
+    <a class="permissions button" href="#Permissions"
+      title="<%= t('controls.browse.actions.permissions.title') %>">
+    </a>
+    <a class="delete button" href="#Delete" title="<%= t('controls.browse.actions.delete.title') %>">
+      <%= t('controls.browse.actions.delete.button') %>
+    </a>
+    <a class="about button" href="#About" title="<%= t('controls.browse.actions.about.title') %>">
+      <%= t('controls.browse.actions.about.button') %>
+    </a>
+    <div class="share menu"></div>
+  </div>
+  <div class="comments" title="<%= t('controls.browse.listing.comment_count') %>">
+    <span class="icon"></span><span class="value"></span>
+  </div>
+  <%= stars_control('datasetAverageRating') %>
+</div>
+<%= render :partial => 'browse/row_search_templates' %>
+<% end %>
+
+<%= render_translations LocalePart.controls.browse %>
+
+<% content_for :js_footer do %>
+  <script type='text/javascript'>
+    $(function()
+    {
+       blist.namespace.fetch('blist.browse');
+       blist.browse.datasets = {};
+       <%- opts[:view_results].each do |v| -%>
+       blist.browse.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
+       <%- end -%>
+       blist.browse.baseURL = "<%= opts[:base_url] %>";
+       <%- if opts[:row_count].present? -%>
+       blist.browse.rowCount = <%= opts[:row_count].to_i %>;
+       blist.browse.searchOptions = <%= safe_json(opts[:search_options]) %>;
+       <%- end -%>
+    });
+  </script>
+  <%= include_webpack_bundle 'open-data/browse-control.js' %>
+<% end %>

@@ -1,0 +1,99 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.dropdownButton {
+  composes: btn from global;
+  composes: btn-xs from global;
+  composes: btn-simple from global;
+  composes: socrata-icon-kebab from global;
+  padding: 3px 3px !important;
+  border: 1px solid $light-grey-2;
+}
+.dropdownButton {
+  padding: 5px;
+}
+
+.columnHeader {
+  font-size: 13px;
+  position: relative;
+  .colDropdown {
+    position: absolute;
+    right: 0.45em;
+    top: 0.25em;
+
+  }
+  :global {
+    .picklist-option {
+      padding: 0px;
+    }
+
+  }
+  .colDropdownItem {
+    padding: 10px;
+    font-weight: normal;
+    text-align: left;
+    span {
+      margin-right: 0.5em;
+    }
+  }
+  .colDropdownItemDisabled {
+    pointer-events: none;
+    background: $light-grey-5;
+    color: $light-grey-1;
+  }
+  padding: 5px;
+  width: 250px;
+
+  a {
+    text-decoration: none;
+  }
+
+  .icon {
+    padding-left: 5px;
+    display: none;
+  }
+
+  select {
+    width: 92%;
+    margin-left: 5px;
+    font-size: 12px;
+    height: 23px;
+    font-weight: normal;
+    color: $dark-grey-2;
+    font-weight: 600;
+  }
+
+  select:disabled {
+    opacity: 0.6;
+  }
+
+}
+
+.columnHeader:hover {
+  .icon {
+    display: inline;
+  }
+}
+
+.colName {
+  margin: 0 0 -17px;
+  color: $dark-grey-3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: auto;
+  text-align: left;
+  font-weight: 600;
+}
+
+.progressSpinner {
+  composes: spinner-default from global;
+  width: 13px;
+  height: 13px;
+}
+
+.rowIdIcon {
+  composes: socrata-icon-id from global;
+  color: $primary-base;
+}

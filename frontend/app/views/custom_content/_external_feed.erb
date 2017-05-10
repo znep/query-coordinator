@@ -1,0 +1,22 @@
+<%- if widget.error_message -%>
+  <div id="<%= widget.elem_id %>" class="externalFeed error">
+    <%= widget.error_message %>
+  </div>
+<%- else -%>
+  <ul id="<%= widget.elem_id %>" class="externalFeed">
+    <%- widget.feed_items.each do |item| -%>
+      <li>
+        <%- widget.properties.show.each do |show| -%>
+          <%- case show.type -%>
+          <%- when 'title' -%>
+            <%= content_tag((show.tagType || 'h3'), maybe_link_to(item.title, item.link, show.link), :class => 'itemTitle') %>
+          <%- when 'description' -%>
+            <%= content_tag((show.tagType || 'p'), maybe_link_to(item.description, item.link, show.link), :class => 'itemDescription') %>
+          <%- when 'pubDate' -%>
+            <%= content_tag((show.tagType || 'p'), maybe_link_to(item.pubDate, item.link, show.link), :class => 'itemPubDate') %>
+          <%- end -%>
+        <%- end -%>
+      <%- end -%>
+    </li>
+  </ul>
+<%- end -%>

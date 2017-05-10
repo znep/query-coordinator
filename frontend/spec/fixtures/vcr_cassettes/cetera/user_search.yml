@@ -1,0 +1,82 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:5704/whitepages/v1?q=katie
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Cookie:
+      - logged_in=true; _socrata_session_id=BAh7CkkiD3Nlc3Npb25faWQGOgZFRkkiJTk2YzU2Zjk0YTdjM2RhMWMzODQ4M2E4OGE0MzNhNDkzBjsARkkiCXVzZXIGOwBGaQdJIhBfY3NyZl90b2tlbgY7AEZJIjEwU3BVWkpNVXBNM2dGN2ZsT2lSMHgreFMzdFd2T3BKeXRWbFA2K2Erd3lBPQY7AEZJIglpbml0BjsAVFRJIg5yZXR1cm5fdG8GOwBGMA==--753eb4f6b07926596a2bcd9b2925c72d93a7e267;
+        _core_session_id=ODNueS13OXplIDE0NjczNDA0OTIgNjMyYjcxNTIyZWZmIDZmNWFlMDI3MmY2YzY0YjFiODFiMmY3NTgxZGQ5NTJiM2RhM2E5MzY=;
+        socrata-csrf-token=/+1vNjX7ttHA0ffeUcGyQRcoqD7XjhBu0LTEoPVEd6kuxztSpu8SHCDGQDtr5caG+3p263i0ghxl7YtLE/q0iQ==
+      X-Socrata-Host:
+      - opendata.rc-socrata.com
+      X-Socrata-Requestid:
+      - 55c8a53595d246c6ac8e20dd2a9bcb71
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 30 Jun 2016 20:51:58 GMT
+      Set-Cookie:
+      - _core_session_id=ODNueS13OXplIDE0NjczNDE1MTggNjMyYjcxNTIyZWZmIDgxNjBkYjMzNjE5Y2RlOWNlZWZiZGI1ZjBmYTk3YzE3NWMyZWIxZGI;Path=/
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "results" :
+            [
+              {
+                "id" : "qr5u-37k6",
+                "screen_name" : "Katie Gmail",
+                "email" : "vredked@gmail.com",
+                "role_name" : "viewer"
+              },
+              {
+                "id" : "j2mj-9pbb",
+                "screen_name" : "Katie Vedder",
+                "email" : "devidet.aker@socrata.com"
+              },
+              {
+                "id" : "tqpm-4m48",
+                "screen_name" : "Katie Grillo",
+                "email" : "123505_kbrtwre.rreseoa@socrata.com",
+                "profile_image_url_large" : "/api/users/tqpm-4m48/profile_images/LARGE",
+                "profile_image_url_medium" : "/api/users/tqpm-4m48/profile_images/THUMB",
+                "profile_image_url_small" : "/api/users/tqpm-4m48/profile_images/TINY"
+              },
+              {
+                "id" : "6jm3-3uiz",
+                "screen_name" : "Katie Gmail",
+                "email" : "adrt+eedkvad@gmail.com",
+                "role_name" : "publisher_stories",
+                "profile_image_url_large" : "/api/users/6jm3-3uiz/profile_images/LARGE",
+                "profile_image_url_medium" : "/api/users/6jm3-3uiz/profile_images/THUMB",
+                "profile_image_url_small" : "/api/users/6jm3-3uiz/profile_images/TINY"
+              },
+              {
+                "id" : "227n-3mdp",
+                "screen_name" : "katie",
+                "email" : "132228_kbrtwre.rreseoa@socrata.com"
+              }
+            ],
+          "resultSetSize" : 5,
+          "timings" : { "serviceMillis" : 121, "searchMillis" : [ 2, 9 ] }
+        }
+    http_version: 
+  recorded_at: Thu, 30 Jun 2016 20:51:59 GMT
+recorded_with: VCR 3.0.3

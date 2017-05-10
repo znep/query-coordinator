@@ -1,0 +1,597 @@
+.mondrian * {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.mondrian.chartHidden > * {
+  visibility: hidden;
+  &.overlayContainer {
+    visibility: visible;
+  }
+}
+
+.mondrian {
+  height: 100%;
+  position: relative;
+  .overlayContainer {
+    top: 0em;
+    left: 0em;
+    right: 0em;
+    bottom: 0em;
+    position: absolute;
+  }
+  .chartOuterContainer {
+    position: absolute;
+    top: 0em;
+    left: 0em;
+    right: 0em;
+    bottom: 0em;
+  }
+  &.hasNoneLegend .legendContainer {
+    visibility: hidden;
+  }
+  .yLabelVert {
+    font-size: 1.4em;
+    font-weight: bold;
+    max-height: 4em;
+    overflow: hidden;
+    background: url(/stylesheets/images/content/70percentwhite.png);
+    position: absolute;
+    @include prefixer(transform, rotate(-90deg));
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+    .socrata-component & {
+      background: transparent;
+    }
+    .ie8 & {
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3, sizingMode='auto expand') progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/stylesheets/images/content/70percentwhite.png', sizingMethod='scale');
+      background: transparent;
+    }
+    .ie8 .socrata-component & {
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3, sizingMode='auto expand');
+      background: transparent;
+    }
+  }
+  .floatingAxisLabel.xLabelHoriz {
+    background: url(/stylesheets/images/content/70percentwhite.png);
+    position: absolute;
+    padding: 0.2em;
+    bottom: 1em;
+    margin-bottom: 0;
+    .socrata-component & {
+      background: transparent;
+    }
+  }
+  .xLabelHoriz {
+    overflow: hidden;
+    max-height: 4em;
+    font-size: 1.4em;
+    font-weight: bold;
+    text-align: center;
+  }
+  .chartContainer {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    .nullDataBar {
+      background: transparent url(/images/hatchpattern.png);
+      position: absolute;
+    }
+  }
+  .legendContainer {
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    max-height: 100%;
+    line-height: normal;
+    z-index: 10;
+    &.bottom, &.top {
+      max-height: 20em;
+      width: auto;
+      margin: auto;
+      & .legendLines {
+        width: auto;
+        max-height: 15em;
+        overflow-y: auto;
+      }
+    }
+    &.bottom {
+      left: 50%;
+      transform: translateX(-50%);
+      position: absolute;
+      bottom: 1.5em;
+    }
+    &.top {
+      left: 0;
+      right: 0;
+      position: absolute;
+      top: 1em;
+    }
+    &.left, &.right {
+      overflow-y: auto;
+      top: 50%;
+      max-width: 35%;
+      text-align: left;
+      .legendLine {
+        display: block;
+      }
+    }
+    &.left {
+      margin-left: 5px;
+      margin-right: 7px;
+      float: left;
+    }
+    &.right {
+      margin-left: 7px;
+      margin-right: 5px;
+      float: right;
+    }
+  }
+  .baselineContainer {
+    cursor: move;
+    position: absolute;
+    z-index: 2;
+    &:hover {
+      .baselineBg {
+        @include opacity(0.25);
+      }
+      .baselineLine {
+        background-color: #444;
+      }
+    }
+    .baselineBg {
+      background-color: #000;
+      @include opacity(0.05);
+      position: absolute;
+      z-index: 2;
+    }
+    .baselineLine {
+      position: relative;
+      z-index: 3;
+    }
+  }
+  .valueMarkerContainer {
+    position: absolute;
+    z-index: 2;
+    &:hover {
+      .markerBg {
+        @include opacity(0.35);
+      }
+    }
+    .markerBg {
+      @include opacity(0.1);
+      position: absolute;
+      z-index: 2;
+    }
+    .markerLine {
+      position: absolute;
+      z-index: 3;
+    }
+  }
+  // use px here because i'm nervous about data integrity
+  .tick {
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
+    .tickLine {
+      background: #ccc;
+      bottom: 0;
+      @include opacity(0.7);
+      position: absolute;
+    }
+    &.origin .tickLine {
+      background-color: #000;
+    }
+    .tickLabel {
+      background-color: rgba(247, 247, 247, 0.7);
+      bottom: 1px;
+      font-size: 1.2em;
+      padding: 0 0.3em;
+      @include no-pointer-events("/stylesheets/images/content/70percentwhite.png");
+      position: absolute;
+      text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+.mondrian {
+  .top .legendLines {
+    margin-bottom: 3px;
+    margin-top: 2px;
+  }
+  .bottom .legendLines {
+    margin-top: 3px;
+    margin-bottom: 2px;
+  }
+  .left, .right {
+    .legendLines {
+      width: 100%;
+    }
+  }
+  .legendLines {
+    background-color: rgba(255, 255, 255, 0.7);
+    @include border-radius(0.2em);
+    display: inline-block;
+    margin-right: 2em;
+    border: 1px solid #aaa;
+    .ie8 & {
+      background: transparent url(/stylesheets/images/content/70percentwhite.png);
+    }
+  }
+  .legendLine {
+    display: inline-block;
+    word-wrap: break-word;
+    padding: 0.5em;
+  }
+  .legendIcon {
+    float: left;
+    height: 1.7em;
+    margin-right: 1em;
+    @include border-radius(0.2em);
+    width: 1.7em;
+    .markerLine {
+      display: block;
+      height: 1px;
+      border-top: 1px;
+      border-style: dashed;
+      margin: 0.9em 0;
+      width: 1.7em;
+    }
+  }
+  .legendLabel {
+    font-size: 1.3em;
+    line-height: 1.38em;
+  }
+}
+
+.smallMode {
+  .legendLine {
+    padding: 0.2em;
+    margin-right: 1.2em;
+  }
+  .legendIcon {
+    height: 1.25em;
+    width: 1.25em;
+    margin-right: 0.5em;
+    .markerLine {
+      margin: 0.6em 0;
+      width: 1.25em;
+    }
+  }
+  .legendLabel {
+    font-size: 1.1em;
+    line-height: 1.2em;
+  }
+}
+
+.mondrian.columnChart, .mondrian.barChart.orientationRight {
+  // Label positioning.
+  div.rowLabel {
+    @include prefixer(transform, rotate(-90deg));
+    .ie8 & {
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3, sizingMode='auto expand');
+    }
+  }
+  // Anything other than bottom legend, including no legend.
+  .xLabelHoriz {
+    bottom: 1.5em;
+  }
+  &.hasBottomLegend {
+    .xLabelHoriz {
+      bottom: 4em;
+      margin-top: 2px;
+    }
+  }
+  &.hasLeftLegend .yLabelVert {
+    left: -8em;
+  }
+  // Chart margins.
+  // No legend
+  .chartOuterContainer {
+    top: 0em;
+    left: 0em;
+    right: 0em;
+    bottom: 0em;
+  }
+  &.hasYLabelVert .chartOuterContainer {
+    left: 1em;
+  }
+  &.hasTopLegend {
+    .chartOuterContainer {
+      top: 5em;
+      right: 0em;
+      bottom: 0em;
+    }
+    &.smallMode {
+      .chartOuterContainer {
+        top: 3em;
+      }
+    }
+  }
+  &.hasBottomLegend {
+    .chartOuterContainer {
+      top: 0em;
+      right: 0em;
+      bottom: 0em;
+    }
+  }
+  // In legend left and right, right/left is updated by JS upon render to allow for dynamically-sized legends.
+  &.hasLeftLegend {
+    .chartOuterContainer {
+      top: 0em;
+      right: 0em;
+      bottom: 0em;
+    }
+  }
+  &.hasLeftLegend {
+    &.hasYLabelVert .chartOuterContainer {
+      left: 25em;
+    }
+  }
+  &.hasRightLegend {
+    .chartOuterContainer {
+      top: 0em;
+      bottom: 0em;
+    }
+  }
+  .chartContainer {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .baselineContainer {
+    cursor: ns-resize;
+    margin-top: -2px;
+    padding: 2px 0;
+    top: -3px;
+    width: 100%;
+    .baselineBg {
+      height: 5px;
+      top: 0;
+      width: 100%;
+    }
+    .baselineLine {
+      height: 1px;
+      width: 100%;
+    }
+    .ie8 & {
+      cursor: n-resize;
+    }
+  }
+  .valueMarkerContainer {
+    height: 5px;
+    margin-top: -3px;
+    width: 100%;
+    .markerBg {
+      height: 5px;
+      top: 0;
+      width: 100%;
+    }
+    .markerLine {
+      height: 1px;
+      border-bottom: 1px;
+      border-style: dashed;
+      top: 2px;
+      width: 100%;
+    }
+  }
+  // use px here because i'm nervous about data integrity
+  .tick {
+    height: 1px;
+    left: 0;
+    width: 100%;
+    .tickLine {
+      height: 1px;
+      width: 100%;
+    }
+    &.origin .tickLine {
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      margin-top: -1px;
+    }
+    .tickLabel {
+      bottom: 1px;
+    }
+  }
+}
+
+.mondrian.barChart.orientationDown {
+  // Label positioning.
+  // Anything other than top legend, including no legend.
+  .xLabelHoriz {
+    top: 0em;
+    bottom: auto;
+    margin: 0;
+    margin-bottom: 2px;
+  }
+  &.hasTopLegend .xLabelHoriz {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+  &.hasTopLegend .xLabelHoriz {
+    top: 3em;
+    bottom: auto;
+  }
+  &.hasLeftLegend .yLabelVert {
+    left: -5em;
+  }
+  // Chart margins.
+  .chartOuterContainer {
+    margin-left: 10px;
+    top: 0em;
+    left: 0em;
+    right: 0em;
+    bottom: 0em;
+  }
+  &.hasYLabelVert {
+    .chartOuterContainer {
+      top: 2em;
+    }
+  }
+  &.hasTopLegend {
+    .chartOuterContainer {
+      top: 1em;
+      left: 0em;
+      right: 0em;
+      bottom: 0em;
+    }
+  }
+  // In legend left and right, right/left is updated by JS upon render to allow for dynamically-sized legends.
+  &.hasLeftLegend {
+    .chartOuterContainer {
+      top: 2em;
+      right: 0em;
+      bottom: 0em;
+    }
+  }
+  &.hasRightLegend {
+    .chartOuterContainer {
+      top: 2em;
+      left: 0em;
+      bottom: 0em;
+    }
+  }
+  .chartContainer {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .baselineContainer {
+    cursor: ew-resize;
+    margin-left: -2px;
+    padding: 0 2px;
+    top: 0;
+    left: -3px;
+    height: 100%;
+    .baselineBg {
+      width: 5px;
+      left: 0;
+      height: 100%;
+    }
+    .baselineLine {
+      width: 1px;
+      height: 100%;
+    }
+    .ie8 & {
+      cursor: e-resize;
+    }
+  }
+  .valueMarkerContainer {
+    top: 0;
+    width: 5px;
+    margin-left: -3px;
+    height: 100%;
+    .markerBg {
+      width: 5px;
+      left: 0;
+      height: 100%;
+    }
+    .markerLine {
+      width: 1px;
+      border-left: 1px;
+      border-style: dashed;
+      left: 2px;
+      height: 100%;
+    }
+  }
+  // use px here because i'm nervous about data integrity
+  .tick {
+    width: 1px;
+    top: 0;
+    height: 100%;
+    .tickLine {
+      width: 1px;
+      height: 100%;
+    }
+    &.origin .tickLine {
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+      margin-left: -1px;
+    }
+    .tickLabel {
+      top: 1px;
+      height: 1.2em;
+    }
+  }
+}
+
+.barChart div.rowLabel {
+  position: absolute;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mondrian .overlayContainer {
+  z-index: 15;
+  .dsgProgress {
+    @include dataset-sidebar-icons;
+    width: 40em;
+    max-width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    margin-top: 5em;
+    .dsgOperationText {
+      font-size: 1.4em;
+      line-height: 1.4em;
+      vertical-align: middle;
+      display: block;
+      min-height: 1.4em;
+    }
+    .dsgProgressText {
+      vertical-align: middle;
+      line-height: 1.2em;
+      display: block;
+      min-height: 1.2em;
+    }
+    .dsgPauseExplanationText {
+      vertical-align: middle;
+      line-height: 1.2em;
+    }
+    .dsgProgressPauseButton {
+      vertical-align: middle;
+      padding: 0.25em 0.5em;
+      font-size: 1em;
+      margin-top: 5px;
+      float: right;
+    }
+    .dsgFilterIcon {
+      @include border-radius(0.35em);
+      background-color: #0b5e9b;
+      display: inline-block;
+      width: 23px;
+      margin-left: 4px;
+      margin-right: 4px;
+      margin-bottom: -5px;
+      padding: 4px;
+    }
+    .dsgSpinner {
+      position: relative;
+      margin-right: auto;
+      margin-left: auto;
+      margin-top: 10px;
+      display: inline-block;
+      z-index: 9998;
+    }
+  }
+}
+
+.widgetContent {
+  .dsgLoadingMsg {
+    display: none;
+  }
+}
+
+.mondrian.pieChart {
+  .legendContainer {
+    &.bottom, &.top {
+      max-width: 95%;
+      max-height: auto;
+    }
+    &.top {
+      top: 0;
+    }
+  }
+}

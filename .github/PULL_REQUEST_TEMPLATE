@@ -1,0 +1,8 @@
+*Reviewers: please verify the below tasks.*
+
+- [ ] JIRA ticket IDs present in ALL commit subject(s).
+- [ ] `Gemfile.lock` and `package.json` are up to date.
+
+Check one of the below:
+- [ ] Obtained design review via `snu cr designFE <pr>` for changes to `common/`.
+- [ ] This PR does not include changes to `common/`.

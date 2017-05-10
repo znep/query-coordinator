@@ -1,0 +1,23 @@
+import _ from 'lodash';
+
+const getInitialState = () => _.get(window, 'initialState.catalog', {
+  columns: [],
+  results: [],
+  resultSetSize: 0
+});
+
+export default (state, action) => {
+  if (_.isUndefined(state)) {
+    return getInitialState();
+  }
+
+  if (action.type === 'UPDATE_CATALOG_RESULTS') {
+    return {
+      ...state,
+      results: action.response.results,
+      resultSetSize: action.response.resultSetSize
+    };
+  }
+
+  return state;
+};

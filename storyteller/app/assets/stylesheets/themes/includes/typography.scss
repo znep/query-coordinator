@@ -1,0 +1,376 @@
+// This file is imported into each theme file after setting theme variables.
+// Be careful changing or overriding things here. Also, feel free to make additional
+// files for themes to include
+//
+// This file assumes markup structured like .<themename>.<size> .typeset
+// Ex: <div class="classic medium"><div class="block typeset">...</div></div>
+
+// Import type tools --
+// Modular Scale: http://www.modularscale.com/  & https://github.com/modularscale/modularscale-sass
+// Type-Heading: https://github.com/ellioseven/type-heading
+@import '../../vendor/type-heading';
+@import '../../vendor/modular-scale.scss';
+
+// Widths for ratio calculations
+$medium:  768px;
+$large:   1200px;
+$xlarge:  1400px;
+$xxlarge:   1600px;
+
+// Modular Scale settings
+$ms-base: $base-type-size;
+$ms-ratio: $ms-ratio-1, $ms-ratio-2, $ms-ratio-3;
+
+$small-top-margin: 16px;
+$medium-top-margin: 24px;
+$large-top-margin: 32px;
+
+
+// Heading size map.
+// Configured as: font-size line-height (margin-top margin-bottom) breakpoint
+// See http://ellioseven.github.io/type-heading/user-guide/#configure-type-heading
+
+$th-headings: (
+  title: (
+    ms(8) $ms-ratio-1 (ms(6)/$ms-ratio-1 0px),
+    ms(10) $ms-ratio-2 (ms(8)/$ms-ratio-1 0px) $medium,
+    ms(14) $ms-ratio-2 (ms(11)/$ms-ratio-2 0px) $large
+    ),
+
+  h1: (
+    ms(7) $ms-ratio-1 (ms(6)/$ms-ratio-1 0px),
+    ms(8) $ms-ratio-2 (ms(8)/$ms-ratio-1 0px) $medium,
+    ms(11) $ms-ratio-2 (ms(11)/$ms-ratio-2 0px) $large
+    ),
+
+  h2: (
+    ms(5) $ms-ratio-1 (ms(5)/$ms-ratio-1 0px),
+    ms(7) $ms-ratio-2 (ms(7)/$ms-ratio-1 0px) $medium,
+    ms(9) $ms-ratio-2 (ms(9)/$ms-ratio-2 0px) $large
+    ),
+
+  h3: (
+    ms(3) $ms-ratio-1 (ms(3)/$ms-ratio-1 0px),
+    ms(5) $ms-ratio-2 (ms(5)/$ms-ratio-1 0px) $medium,
+    ms(7) $ms-ratio-2 (ms(7)/$ms-ratio-1 0px) $large
+
+    ),
+
+  h4: (
+    ms(2) $ms-ratio-1 (ms(2)/$ms-ratio-1 0px),
+    ms(3) $ms-ratio-2 (ms(3)/$ms-ratio-1 0px) $medium,
+    ms(5) $ms-ratio-2 (ms(5)/$ms-ratio-1 0px) $large
+    ),
+
+  h5: (
+    ms(1) $ms-ratio-1 (ms(1)/$ms-ratio-1 0px),
+    ms(1) $ms-ratio-2 (ms(1)/$ms-ratio-1 0px) $medium,
+    ms(3) $ms-ratio-2 (ms(3)/$ms-ratio-1 0px) $large
+  ),
+
+  h6: (
+    ms(0) $ms-ratio-1 (ms(0)/$ms-ratio-1 0px),
+    ms(0) $ms-ratio-2 (ms(0)/$ms-ratio-1 0px) $medium,
+    ms(1) $ms-ratio-2 (ms(1)/$ms-ratio-1 0px) $large
+  )
+);
+
+
+.typeset {
+  font-size: $base-type-size;
+  color: $default-type-color;
+  -webkit-font-smoothing: antialiased;
+  font-weight: $body-font-weight;
+
+
+  // View Styles
+  // ==========================================================================================
+
+  // This iterates through headings and applies their th-heading values for each
+  // Essentailly h(n) { @include th-headings(h(n)) }
+  @for $index from 1 through 6 {
+    h#{$index} {
+      @include th-headings(h#{$index});
+    }
+  }
+
+  // Set the heading type face
+  h1, h2, h3, h4, h5, h6 {
+    font-family: $heading-font-stack;
+    color: $heading-type-color;
+    font-weight: $heading-font-weight;
+  }
+
+  // Set the primary type face and vertical rhythm
+  p, &.squire-formatted > div, ul, ol, blockquote, figcaption {
+    font-size: $std-type-size;
+    line-height: $std-line-height;
+    margin-bottom: $ms-ratio-1 + em;
+    margin-top: $ms-ratio-1 + em;
+    font-family: $body-font-stack;
+  }
+
+  // Style the blockquotes
+  blockquote {
+    font-style: $blockquote-font-style;
+    border-left: $blockquote-border-left;
+    padding-left: $blockquote-padding-left;
+    margin-left: $blockquote-margin-left;
+  }
+
+  // Left align lists
+  ul, ol {
+    padding-left: $list-padding-left;
+  }
+
+  ul {
+    list-style-type: $ul-list-style-type;
+  }
+
+  ol {
+    list-style-type: $ol-list-style-type;
+  }
+
+  // List items are often long, so set set them apart by 1/2 the line height
+  li {
+    margin-bottom: $ms-ratio-1*.5 + em;
+  }
+
+  li ol, li ul {
+    font-size: 1em;
+  }
+
+  // Custom bullets
+  @if variable-exists(list-bullet-character) and $list-bullet-character {
+    ul {
+      list-style-type: none !important;
+    }
+
+    ul li {
+      text-indent: -$list-margin-adjustment;
+      padding-left: $list-margin-adjustment;
+      &:before {
+        // Force an indefinite height for this pseudo-element (see below).
+        display: block;
+        height: 0;
+        // Force Sass to interpret the unicode escapes in $list-bullet-character
+        // in the way CSS would (i.e., not as the literal string "\2022", but as the dot).
+        content: unquote('"' + $list-bullet-character + '"');
+        color: $list-bullet-color;
+        margin-right: 0.8em;
+      }
+
+      // Force correct layout in conjunction with the :before pseudo-element.
+      // This rule plus the display/height rules above will allow everything
+      // to have correct left alignment.
+      * {
+        display: inline;
+      }
+    }
+  }
+
+  // In text hyperlinks
+  a {
+    color: $link-color;
+    text-decoration: $link-text-decoration;
+    &:hover {
+      color: $link-hover;
+    }
+
+    // Goal: textual hyperlinks should break at word/hyphen boundaries, but raw URLs
+    // should wrap whenever needed instead of escaping their containers.
+    //
+    // Chrome: requires any one of overflow-wrap, word-wrap, or word-break property set to break-word.
+    //  * hyphens property not yet supported.
+    // Firefox: requires word-wrap property set to break-word.
+    //  * doesn't yet support overflow-wrap as newer alias for word-wrap.
+    //  * hyphens property is supported but ineffectual here.
+    // IE 11: fails to wrap raw URLs except with hyphens property.
+    //  * unlike Firefox, hyphens property seems to take precedence over word-wrap.
+    // Edge: fails to wrap raw URLs except with hyphens property.
+    //  * unlike Firefox, hyphens property seems to take precedence over word-wrap.
+    //
+    // References:
+    // http://caniuse.com/#search=word
+    // http://caniuse.com/#search=hyphens
+    //
+    // NOTE - Bourbon explicitly changes break-word to break-all for the word-wrap property:
+    // https://github.com/thoughtbot/bourbon/blob/master/core/bourbon/library/_word-wrap.scss#L25
+    word-wrap: break-word; // for Chrome and Firefox
+    -ms-hyphens: auto; // for IE11 and Edge
+  }
+
+
+  // Special Formatting for Specific Things
+
+  // Titles should be nice and big. Huge headlines, everbody!
+  .title {
+    @include th-headings(title);
+    font-family: $title-font-family;
+  }
+
+  // Subtitles will come in handy
+  .subtitle {
+    display: block;
+    @include th-headings(h5);
+    color: $subtitle-font-color;
+    font-family: $subtitle-font-family;
+    margin-top: 0px !important;
+  }
+
+  // Spacers just give you extra space
+  .spacer {
+    height: ms(12);
+  }
+
+  // Default horizontal rule
+  hr {
+    border-top: $hr-border-top;
+    border-bottom: 0;
+    height: 1px;
+  }
+
+  // Clean up margins for editor
+  & > h1:first-child,
+  & > h2:first-child,
+  & > h3:first-child,
+  & > h4:first-child,
+  & > p,
+  &.squire-formatted > div,
+  & > ul,
+  & > ol,
+  & > blockquote,
+  & > hr,
+  li + ul,
+  h1 + p, h2 + p, h3 + p, h4 + p,
+  .component-media {
+    margin-top: $small-top-margin;
+  }
+}
+
+
+// Editor Styles
+// ==========================================================================================
+// Styles displayed in editor view  where required to adjust for media queries playing with iframes
+// Ideally, these are used in the editor only?
+//
+
+// Medium breakpoint class translation
+&.medium .typeset {
+
+  // Generate all heading styles for the medium breakpoint
+  @for $index from 1 through 6 {
+    h#{$index} {
+      @include th-heading(
+        $heading: h#{$index},
+        $breakpoint: $medium
+      );
+    }
+  }
+
+  p,
+  &.squire-formatted > div,
+  ul,
+  ol, blockquote, figcaption {
+    font-size: $lg-type-size;
+    line-height: $lg-line-height;
+    margin-bottom: $ms-ratio-2 + em;
+    margin-top: $ms-ratio-2 + em;
+  }
+
+  li {
+     margin-bottom: $ms-ratio-2*.5 + em;
+  }
+
+  .title {
+    @include th-heading($heading: title, $breakpoint: $medium);
+    font-family: $title-font-family;
+  }
+
+  // Clean up margins for editor
+  & > h1:first-child,
+  & > h2:first-child,
+  & > h3:first-child,
+  & > h4:first-child,
+  & > p,
+  &.squire-formatted > div,
+  & > ul,
+  & > ol,
+  & > blockquote,
+  & > hr,
+  li + ul,
+  h1 + p, h2 + p, h3 + p, h4 + p,
+  // also add space above a component-media placeholder as if it were an image because it will be and/or it should layout similarly.
+  .component-media {
+    margin-top: $medium-top-margin;
+  }
+
+} // End Medium Size
+
+
+&.large .typeset {
+
+  // Generate all heading styles for the large breakpoint
+  @for $index from 1 through 6 {
+    h#{$index} {
+      @include th-heading(
+        $heading: h#{$index},
+        $breakpoint: $large
+      );
+    }
+  }
+
+
+  p, &.squire-formatted > div, ul, ol, blockquote, figcaption {
+      font-size: $lg-type-size;;
+      line-height: $lg-line-height;
+      margin-bottom: $ms-ratio-2 + em;
+      margin-top: $ms-ratio-2 + em;
+  }
+
+  li {
+     margin-bottom: $ms-ratio-2*.5 + em;
+  }
+
+  li ol, li ul {
+    font-size: 1em;
+  }
+
+  .title {
+    @include th-heading($heading: title, $breakpoint: $large);
+    font-family: $title-font-family;
+  }
+
+  // Clean up margins for editor
+  & > h1:first-child,
+  & > h2:first-child,
+  & > h3:first-child,
+  & > h4:first-child,
+  & > p,
+  & > ul,
+  & > ol,
+  & > blockquote,
+  & > hr,
+  li + ul,
+  h1 + p, h2 + p, h3 + p, h4 + p,
+  // also add space above a component-media placeholder as if it were an image because it will be and/or it should layout similarly.
+  .component-media {
+    margin-top: $large-top-margin;
+  }
+} // End Large Size
+
+// Sometimes we want to make the top of typset text flush with the top of the container (i.e. author block).
+.typeset.remove-top-margin > :first-child {
+  margin-top: 0 !important;
+}
+
+// Media top margins also apply to non-typeset elements
+.component-media {
+  margin-top: $small-top-margin;
+}
+&.medium .component-media {
+  margin-top: $medium-top-margin;
+}
+&.large .component-media {
+  margin-top: $large-top-margin;
+}

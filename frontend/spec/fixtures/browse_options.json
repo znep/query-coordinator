@@ -1,0 +1,118 @@
+{
+  "limit": 10,
+  "page": 1,
+  "base_url": "/browse",
+  "view_type": "browse2",
+  "user_params": {},
+  "facets": [
+    {
+      "title": "Categories",
+      "param": "category",
+      "options": [
+        {
+          "value": "business",
+          "text": "business"
+        },
+        {
+          "value": "fun",
+          "text": "fun"
+        }
+      ],
+      "extra_options": null
+    },
+    {
+      "title": "View Types",
+      "param": "limitTo",
+      "options": [
+        {
+            "text": "Data Lens pages",
+            "value": "new_view",
+            "class": "typeDataLens"
+        },
+        {
+            "text": "Datasets",
+            "value": "datasets",
+            "class": "typeBlist"
+        },
+        {
+            "text": "Charts",
+            "value": "charts",
+            "class": "typeChart"
+        },
+        {
+            "text": "Maps",
+            "value": "maps",
+            "class": "typeMap"
+        },
+        {
+            "text": "Calendars",
+            "value": "calendars",
+            "class": "typeCalendar"
+        },
+        {
+            "text": "Filtered Views",
+            "value": "filters",
+            "class": "typeFilter"
+        },
+        {
+            "text": "External Datasets",
+            "value": "href",
+            "class": "typeHref"
+        },
+        {
+            "text": "Files and Documents",
+            "value": "blob",
+            "class": "typeBlob"
+        },
+        {
+            "text": "Forms",
+            "value": "forms",
+            "class": "typeForm"
+        }
+      ]
+    },
+    {
+      "title": "Topics",
+      "param": "tags",
+      "options": [
+        {
+          "value": "protein",
+          "text": "protein",
+          "count": 113
+        },
+        {
+          "value": "beer",
+          "text": "beer",
+          "count": 24
+        },
+        {
+          "value": "arnold",
+          "text": "arnold",
+          "count": 13
+        },
+        {
+          "value": "beef",
+          "text": "beef",
+          "count": 2
+        },
+        {
+          "value": "mullets",
+          "text": "mullets",
+          "count": 54
+        }
+      ],
+      "extra_options": [
+        {
+          "value": "neck tats",
+          "text": "neck tats",
+          "count": 11
+        },
+        {
+          "value": "shake weights",
+          "text": "shake weights",
+          "count": 42
+        }
+      ]
+    }
+  ]
+}

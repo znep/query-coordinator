@@ -1,0 +1,10 @@
+.btnWrapper {
+  float: right;
+  margin-top: 7px;
+}
+
+.schemaBtn {
+  composes: btn from global;
+  composes: btn-sm from global;
+  composes: btn-alternate-2 from global;
+}

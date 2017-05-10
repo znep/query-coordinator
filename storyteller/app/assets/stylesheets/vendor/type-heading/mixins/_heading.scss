@@ -1,0 +1,167 @@
+// Heading
+// 
+// @group Mixins / Heading
+// @author Elliot Mitchum
+
+// th-heading
+// Output styles for a heading list.
+//
+// @since 0.0.10
+// @type mixin
+//
+// @requires {function} th-heading
+// @requires {function} th-property-font-size
+// @requires {function} _th-core-global-breakpoint
+// @requires {mixin} th-property-margin-top
+// @requires {mixin} th-property-margin-bottom
+// @requires {mixin} th-property-font-size
+// @requires {mixin} th-property-line-height
+// @requires {mixin} th-with-breakpoint
+//
+// @param {string} $heading A heading map key (required).
+// @param {number | boolean} $breakpoint (false) A heading list breakpoint.
+// @param {boolean} $convert (true) If returned value should be unit converted.
+// @param {number} $base-font-size ($th-base-font-size) Font size used for relative calculations.
+// @param {list | boolean} $include (false font-size line-height margin-top margin-bottom) Include only certain properties in the mixin output.
+//
+// @example scss Output h1 styles.
+// // th-heading(h1)
+// @example scss Output h1 styles with 768px breakpoint.
+// // th-heading(
+// //   $heading: h1,
+// //   $breakpoint: 768px
+// // )
+// @example scss Output h1 styles without unit conversion.
+// // th-heading(
+// //   $heading: h1,
+// //   $convert: false
+// // )
+// @example scss Output h1 styles with a base font size of 48px.
+// // th-heading(
+// //   $heading: h1,
+// //   $base-font-size: 48px
+// // )
+// @example scss Output h1 styles but only include font-size and line-height
+// // th-heading(
+// //   $heading: h1,
+// //   $include: (font-size line-height)
+// // )
+
+@mixin th-heading(
+  $heading,
+  $breakpoint: false,
+  $convert: true,
+  $base-font-size: $th-base-font-size,
+  $include: false
+){
+  $heading: th-heading(
+    $heading: $heading,
+    $breakpoint: $breakpoint
+  );
+  $font-size: th-property-font-size(
+    $heading: $heading,
+    $breakpoint: $breakpoint,
+    $base-font-size: $base-font-size,
+    $convert: false
+  );
+  $breakpoint: _th-core-global-breakpoint($breakpoint);
+  @if not $include or th-list-has($include, margin-top) {
+    @include th-property-margin-top(
+      $heading: $heading,
+      $breakpoint: $breakpoint,
+      $convert: $convert,
+      $base-font-size: $font-size
+    );
+  }
+  @if not $include or th-list-has($include, margin-bottom) {
+    @include th-property-margin-bottom(
+      $heading: $heading,
+      $breakpoint: $breakpoint,
+      $convert: $convert,
+      $base-font-size: $font-size
+    );
+  }
+  @if not $include or th-list-has($include, font-size) {
+    @include th-property-font-size(
+      $heading: $heading,
+      $breakpoint: $breakpoint,
+      $convert: $convert,
+      $base-font-size: $base-font-size
+    );
+  }
+  @if not $include or th-list-has($include, line-height) {
+    @include th-property-line-height(
+      $heading: $heading,
+      $breakpoint: $breakpoint,
+      $convert: $convert,
+      $base-font-size: $font-size
+    );
+  }
+}
+
+// th-headings
+// Output styles for a heading accross all breakpoints.
+//
+// @since 0.0.10
+// @type mixin
+//
+// @requires {function} th-heading-get-map
+// @requires {function} _th-heading-has-next
+// @requires {function} th-property
+// @requires {mixin} th-breakpoint
+// @requires {mixin} th-heading
+// @requires {gem} breakpoint - https://github.com/at-import/breakpoint
+//
+// @param {list | string} $heading A heading map key or list (required).
+// @param {string} $direction (min-width | max-width) Media query direction.
+// @param {boolean} $convert (true) If returned value should be unit converted.
+// @param {number} $base-font-size ($th-base-font-size) Font size used for relative calculations.
+//
+// @example scss Output all h1 styles across all breakpoints.
+// // @include th-headings(h1)
+// @example scss Output font-size and line-height h1 styles across all breakpoints.
+// // th-headings(
+// //   $heading: h1,
+// //   $include: (font-size line-height)
+// // )
+
+@mixin th-headings(
+  $heading,
+  $convert: true,
+  $base-font-size: $th-base-font-size,
+  $include: false
+){
+  $heading-map: th-heading-get-map($heading);
+  @if _th-heading-has-next($heading-map) {
+    @each $heading in $heading-map {
+      $breakpoint: th-property($heading, breakpoint);
+      @if $breakpoint {
+        @include th-breakpoint(
+        $query: $breakpoint,
+        $breakpoint: $breakpoint
+        ){
+          @include th-heading(
+          $heading: $heading,
+          $convert: $convert,
+          $base-font-size: $base-font-size,
+          $include: $include
+          );
+        }
+      } @else {
+        @include th-heading(
+        $heading: $heading,
+        $convert: $convert,
+        $base-font-size: $base-font-size,
+        $include: $include
+        );
+      }
+    }
+  } @else {
+    @include th-heading(
+      $heading: $heading,
+      $convert: $convert,
+      $base-font-size: $base-font-size,
+      $include: $include
+    );
+  }
+}

@@ -1,0 +1,21 @@
+<% social_media_sections =
+  %w(facebook twitter youtube linked_in flickr instagram tumblr pinterest yammer google_plus vimeo github) %>
+
+<% social_media_sections.each do |social_media_section| %>
+
+  <% form_field_url = "content[general][social_shares][#{social_media_section}][url]" %>
+  <% social_media_section_locale_key = "#{locale_string}.#{social_media_section}_profile_link" %>
+  <section class="settings-group">
+    <div class="settings-form">
+      <%= label_tag(
+        form_field_url,
+        t("#{social_media_section_locale_key}.title"),
+        :id => "#{form_field_url}_label") %>
+      <%= text_field_tag(
+        form_field_url,
+        social_share_link(social_media_section),
+        :placeholder => t("#{social_media_section_locale_key}.placeholder")) %>
+    </div>
+    <aside><p><%= t("#{social_media_section_locale_key}.description") %></p></aside>
+  </section>
+<% end %>

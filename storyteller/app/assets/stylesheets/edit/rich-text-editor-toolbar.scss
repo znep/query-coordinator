@@ -1,0 +1,313 @@
+@import 'lib/variables';
+@import 'dist/fonts/socrata-icons';
+@import 'bourbon';
+
+#rich-text-editor-toolbar-wrapper { // for positioning
+  position: fixed;
+  top: $rich-text-editor-toolbar-top-offset;
+  z-index: $rich-text-editor-toolbar-z-index;
+  width: 100%;
+  min-height: $rich-text-editor-toolbar-btn-height + 0.1rem;
+  transition: top $transition-duration;
+  background: #EEEEEE;
+  border-bottom: solid 1px #DDDDDD;
+  text-align: center;
+
+  .moving & {
+    display: none;
+  }
+
+  .story-save-error & {
+    top: calc(#{$story-save-error-bar-reserved-height + $rich-text-editor-toolbar-top-offset});
+  }
+
+  .downtime-notice & {
+    top: calc(#{$downtime-notice-bar-reserved-height + $rich-text-editor-toolbar-top-offset});
+  }
+
+  .open-performance-enabled & {
+    top: calc(#{$rich-text-editor-toolbar-top-offset} + #{$site-chrome-admin-header-small-height});
+  }
+
+  .open-performance-enabled.story-save-error & {
+    top: calc(#{$story-save-error-bar-reserved-height + $rich-text-editor-toolbar-top-offset} + #{$site-chrome-admin-header-small-height});
+  }
+
+  .open-performance-enabled.downtime-notice & {
+    top: calc(#{$downtime-notice-bar-reserved-height + $rich-text-editor-toolbar-top-offset} + #{$site-chrome-admin-header-small-height});
+  }
+}
+
+#rich-text-editor-toolbar {
+  @include unselectable();
+  @include clearfix();
+  @include transition(opacity 0.2s);
+
+  display: inline-block;
+  background-color: $rich-text-editor-toolbar-bg-color;
+  font-size: 1.5rem;
+  padding: 0 1rem;
+  opacity: 0;
+  vertical-align: middle;
+
+  &.visible {
+    opacity: 1;
+  }
+
+  .rich-text-editor-toolbar-btn-group,
+  .rich-text-editor-toolbar-select-group {
+    float: left;
+
+    &:first-child .rich-text-editor-toolbar-divider { // hide divider in first button group
+      display: none;
+    }
+  }
+
+  .rich-text-editor-toolbar-btn-group {
+    &.rich-text-editor-toolbar-btn-group-with-block-elements {
+      .rich-text-editor-toolbar-divider {
+        top: 7px;
+      }
+    }
+  }
+
+  .rich-text-editor-toolbar-btn-panel-group {
+    position: relative;
+    float: right;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  .rich-text-editor-toolbar-btn,
+  .rich-text-editor-toolbar-select,
+  .rich-text-editor-toolbar-select-hint {
+    color: $rich-text-editor-toolbar-inactive-color;
+  }
+
+  .rich-text-editor-toolbar-btn {
+    width: $rich-text-editor-toolbar-btn-width;
+    height: $rich-text-editor-toolbar-btn-height;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: default;
+  }
+
+  .rich-text-editor-toolbar-btn-bold:before {
+    @extend .socrata-icon-bold2::before
+  }
+
+  .rich-text-editor-toolbar-btn-italic:before {
+    @extend .socrata-icon-italic2::before
+  }
+
+  .rich-text-editor-toolbar-btn-left:before {
+    @extend .socrata-icon-paragraph-left3::before
+  }
+
+  .rich-text-editor-toolbar-btn-center:before {
+    @extend .socrata-icon-paragraph-center3::before
+  }
+
+  .rich-text-editor-toolbar-btn-right:before {
+    @extend .socrata-icon-paragraph-right3::before;
+  }
+
+  .rich-text-editor-toolbar-btn-link:before {
+    @extend .socrata-icon-link::before;
+  }
+
+  .rich-text-editor-toolbar-btn-orderedList:before {
+    @extend .socrata-icon-list-numbered::before;
+  }
+
+  .rich-text-editor-toolbar-btn-unorderedList:before {
+    @extend .socrata-icon-list2::before;
+  }
+
+  .rich-text-editor-toolbar-btn-blockquote:before {
+    @extend .socrata-icon-quotes-left::before;
+  }
+
+  .rich-text-editor-toolbar-btn-clearFormatting:before {
+    @extend .socrata-icon-clear-formatting::before;
+  }
+
+  .rich-text-editor-toolbar-select-container {
+    position: relative;
+    display: block;
+    height: $rich-text-editor-toolbar-btn-height;
+    width: $rich-text-editor-toolbar-select-width;
+    border: none;
+    box-sizing: border-box;
+
+    .rich-text-editor-toolbar-select,
+    .rich-text-editor-toolbar-select-hint {
+      position: absolute;
+      display: block;
+    }
+
+    .rich-text-editor-toolbar-select {
+      left: 0;
+      width: 16rem;
+      height: $rich-text-editor-toolbar-btn-height;
+      padding: 0 0 0 1.5rem;
+      font-size: 1.7rem;
+      line-height: $rich-text-editor-toolbar-btn-height;
+      background-color: transparent;
+      border: none;
+      outline: none;
+      z-index: 2;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      -webkit-border-radius: 0px;
+
+      &::-ms-expand {
+        display: none; // IE doesn't really support appearance: none
+      }
+    }
+
+    .rich-text-editor-toolbar-select-hint {
+      right: 0;
+      width: $rich-text-editor-toolbar-btn-height;
+      height: $rich-text-editor-toolbar-btn-width;
+      text-align: center;
+      line-height: $rich-text-editor-toolbar-btn-height;
+      z-index: 1;
+      font-family: 'icomoon';
+      font-size: 1.2rem;
+
+      &:before {
+        @extend .socrata-icon-arrow-down::before;
+      }
+    }
+  }
+
+  .rich-text-editor-toolbar-btn-panel-group {
+
+    .rich-text-editor-toolbar-btn-textColor {
+      position: relative;
+      float: right;
+
+      .rich-text-editor-toolbar-text-color-swatch {
+        position: absolute;
+        display: block;
+        width: 20px;
+        height: 20px;
+        left: 10px;
+        top: 11px;
+        background-color: transparent;
+        border: 1px solid #d7d7d7;
+        border-radius: 0.1rem;
+        pointer-events: none;
+      }
+    }
+
+    .rich-text-editor-toolbar-text-color-panel {
+      position: absolute;
+      display: none;
+      width: 130px;
+      height: 110px;
+      bottom: -110px;
+      left: 0px;
+      margin: 0;
+      padding: 0 2px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      box-shadow: 0px 2px 7px 1px rgba(51, 51, 51, 0.22);
+
+      hr {
+        margin: 0;
+        border-top: 0;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .rich-text-editor-toolbar-text-color-panel-color-swatch,
+      .rich-text-editor-toolbar-text-color-panel-custom-color-swatch,
+      .rich-text-editor-toolbar-text-color-panel-active-custom-color-swatch {
+        width: 20px;
+        height: 20px;
+        margin: 7px 2px;
+        border: 1px solid #ddd;
+        border-radius: 0.1rem
+      }
+
+      .rich-text-editor-toolbar-text-color-panel-active-custom-color-container {
+        position: relative;
+        display: block;
+
+        .rich-text-editor-toolbar-text-color-panel-color-input {
+          display: block;
+          padding: 0 0.5rem;
+          width: 80px;
+          height: 3rem;
+          font-family: 'Open Sans', sans-serif;
+          font-size: 1.35rem;
+          line-height: 3rem;
+          margin: 2px 35px 0 4px;
+          background-color: #fff;
+        }
+
+        .rich-text-editor-toolbar-text-color-panel-active-custom-color-swatch {
+          position: absolute;
+          display: block;
+          top: 0px;
+          right: 4px;
+          margin: 0;
+          padding: 0;
+          width: 32px;
+          height: 32px;
+          border: 1px solid #c5c5c5;
+        }
+      }
+    }
+
+    .rich-text-editor-toolbar-btn-textColor.active + .rich-text-editor-toolbar-text-color-panel {
+      display: block;
+    }
+  }
+
+  .rich-text-editor-toolbar-divider {
+    position: relative;
+    top: -2px;
+    height: 2.7rem;
+    display: inline-block;
+    vertical-align: middle;
+    border-left: 1px solid $rich-text-editor-toolbar-inactive-color;
+    margin: 0 0.8rem;
+  }
+
+  &.dim {
+    .rich-text-editor-toolbar-text-color-swatch {
+      border-color: #d7d7d7 !important;
+      background-color: transparent !important;
+    }
+  }
+
+  &.active {
+
+    .rich-text-editor-toolbar-btn,
+    .rich-text-editor-toolbar-select,
+    .rich-text-editor-toolbar-select-hint {
+      color: $rich-text-editor-toolbar-color;
+      cursor: pointer;
+    }
+    .rich-text-editor-toolbar-divider {
+      border-left: 1px solid #C2C2C2;
+    }
+
+    .rich-text-editor-toolbar-select-group,
+    .rich-text-editor-toolbar-btn {
+      &:hover {
+        background-color: lighten($rich-text-editor-toolbar-active-bg-color, 12%);
+      }
+
+      &.active {
+        background-color: $rich-text-editor-toolbar-active-bg-color;
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+<% content_for :head do %>
+  <title><%= CurrentDomain.site_title %></title>
+  <%= rendered_stylesheet_tag 'error-pages' %>
+<% end %>
+
+<div class="modalContentBox siteContent">
+  <div class="contentHeader">
+    <h1><%= t 'error.permission_denied_403.no_permission' %></h1>
+  </div>
+  <div class="contentBoxInner clearfix unauthorized">
+    <div class="icon errorIcon"></div>
+
+    <p class="body"><%= t 'error.permission_denied_403.were_sorry' %></p>
+
+    <div class="goSomewhere">
+      <a href="javascript:history.back(1)" class="button default"><%= t 'error.back' %></a>
+      <span class="labelText"><%= t 'error.to_whence_you_came' %></span>
+    </div>
+  </div>
+</div>
+
+<%= render_translations LocalePart.error.permission_denied_403 %>

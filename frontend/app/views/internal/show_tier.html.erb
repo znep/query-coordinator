@@ -1,0 +1,46 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal' %>
+<title>Tier <%= @tier.nil? ? '' : @tier.name %> | Internal Panel |
+  <%= get_site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <div class='content'>
+
+    <% if @tier.nil? %>
+      <p>Tier could not be found</p>
+
+    <% else %>
+      <h1>Tier: <%= @tier.name %></h1>
+
+      <h2>Domains in this tier:</h2>
+      <%- domains = Organization.find().collect {|o| o.domains}.flatten.
+        compact.select {|d| d.accountTier.name == @tier.name} -%>
+      <% if domains.nil? || domains.size <= 0 %>
+        <p>No domains for this tier.</p>
+      <% else %>
+        <ul>
+          <% domains.each do |domain| %>
+          <li><a href="/internal/orgs/<%= domain.organizationId
+            %>/domains/<%= domain.cname %>">
+            <%= domain.name %> (<%= domain.cname %>)
+          </a></li>
+          <% end %>
+        </ul>
+      <% end %>
+
+      <h2>Modules enabled:</h2>
+      <% if @tier.accountModules.nil? || @tier.accountModules.size <= 0 %>
+        <p>No modules enabled for this tier.</p>
+      <% else %>
+        <ul>
+          <% @tier.accountModules.each do |mod| %>
+          <li class='infoLine'><strong><%= mod.name %></strong> - <%= mod.description %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% end %>
+  </div>
+</div>

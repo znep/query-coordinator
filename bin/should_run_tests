@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# PR builder: Check if we should run tests for a project.
+# This script takes a project name (storyteller/frontend) and returns false (nonzero) if we should skip
+# tests.
+set -e
+
+if [ -z $1 ]; then
+  echo 'Usage:'
+  echo "$(basename ${0}) <project-name>"
+  exit 2
+fi
+
+if [ "${FORCE_TEST_RUN}" = "true" ] ; then
+  echo "FORCE_TEST_RUN detected, running all tests for $1"
+  exit 0
+fi
+
+echo "Checking if we should run tests for $1"
+# Find commit where this pull request branched from
+MERGE_BASE=$(git merge-base HEAD origin/master)
+
+CHANGED_PROJECTS="$(git diff --name-only ${MERGE_BASE} | egrep -o '^\w+' | sort | uniq )"
+
+echo "Changed projects: $CHANGED_PROJECTS"
+case "$CHANGED_PROJECTS" in
+  *common*)
+    echo "Common changed, so running tests for ${1}"
+    exit 0
+    ;;
+  *$1*)
+    echo "${1} changed, so running tests"
+    exit 0
+    ;;
+esac
+
+echo "Neither common nor ${1} changed, so not running tests"
+exit 1

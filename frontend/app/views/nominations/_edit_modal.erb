@@ -1,0 +1,22 @@
+<%= modal :class => 'nominateDialog editNominationDialog' do %>
+  <h2 class="create"><%= t('controls.nominate.suggest_a_dataset') %></h2>
+  <h2 class="edit"><%= t('controls.nominate.edit_suggestion') %></h2>
+  <form class="nominateContent commonForm">
+    <div class="line">
+      <label for="nominateTitle" class="required"><%= t('controls.nominate.title') %></label>
+      <input id="nominateTitle" name="nominate_title" type="text"
+        class="required textPrompt" title="<%= t('controls.nominate.title_prompt') %>" />
+    </div>
+    <div class="line clearfix">
+      <label for="nominateDescription"><%= t('controls.nominate.description') %></label>
+      <textarea id="nominateDescription" name="nominate_description"
+        class="textPrompt" title="<%= t('controls.nominate.description_prompt') %>"></textarea>
+    </div>
+    <span class="required"><%= t('controls.nominate.required') %></span>
+  </form>
+  <div class="mainError"></div>
+  <ul class="actions">
+    <li><a href="#Cancel" class="jqmClose button"><%= t('controls.nominate.cancel') %></a></li>
+    <li><a href="#Submit" class="submitAction button"><%= t('controls.nominate.submit') %></a></li>
+  </ul>
+<%- end -%>

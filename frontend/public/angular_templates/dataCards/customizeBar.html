@@ -1,0 +1,48 @@
+<div
+  class="customize-bar"
+  ng-class="{ 'has-changes': hasChanges, 'is-customizing': editMode }">
+  <div class="customize-button-wrapper">
+    <button
+      type="button"
+      class="action-btn customize-bar-action-btn r-to-l customize-button"
+      ng-click="toggleCustomizeMode()"
+      ng-class="{ 'disabled': !canCustomize, 'cards-edit-disabled': !!expandedCard }">
+      {{editMode | ifElse:'customizeBar.customizing':'customizeBar.customize' | I18n}}
+    </button>
+  </div>
+  <revert-button
+    ng-click="revertPage()"
+    page-has-changes="hasChanges"
+    revert-initiated="revertInitiated"
+    ng-show="!isEphemeral">
+  </revert-button>
+  <save-button
+    class="save-this-page r-to-l"
+    button-class="customize-bar-action-btn"
+    ng-click="savePage()"
+    enabled="shouldEnableSave"
+    ng-hide="isEphemeral"
+    save-status="saveStatus">
+  </save-button>
+  <save-as
+    show-provenance-section="showProvenanceSection"
+    is-ephemeral="isEphemeral"
+    page="page"
+    save-page-as="savePageAs"></save-as>
+  <span
+    class="unsaved-warning unsaved-dirty"
+    ng-show="hasChanges">
+    <span class="icon-warning"></span> {{::'customizeBar.changesWarning' | I18n}}
+  </span>
+  <span
+    class="unsaved-warning unsaved-clean"
+    ng-show="!hasChanges && isEphemeral">
+    <span class="icon-warning"></span> {{::'customizeBar.unsavedWarning' | I18n}}
+  </span>
+  <div class="controls-right">
+    <remove-all-cards
+      ng-show="editMode"
+      enabled="editMode && hasCards">
+    </remove-all-cards>
+  </div>
+</div>

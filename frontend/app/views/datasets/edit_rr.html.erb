@@ -1,0 +1,107 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'dataset-edit-rr' %>
+  <%= rendered_stylesheet_tag 'base-control-third-party' %>
+  <title>Editing Rich Display for <%= @view.name %> | <%= get_site_title %></title>
+<% end %>
+
+<div class="contentBox" id="datasetEditRR">
+  <div class="header clearfix">
+    <a href="<%= view_path(@view) %>" class="returnLink">Return to Dataset</a>
+
+    <h1>Modifying <span class="displayName"></span> View for <%= @view.name %></h1>
+
+    <div class="unsavedLine">
+      <a href="#save" class="save button">Save</a>
+      <a href="#revert" class="revert button">Revert Changes</a>
+      <span class="loadingIcon hide">Working...</span>
+    </div>
+    <a href="#Clear" class="clearLayout button">New Layout</a>
+
+    <ul id="renderTypeOptions" class="pillButtons">
+      <li><a href="<%= edit_view_rr_path(@view, defaultRender: 'richList') %>"
+        class="fatrow noRedirPrompt" title="Edit rich list layout"
+        data-displayName="Rich List">
+        <span class="icon"></span>
+      </a></li>
+      <li><a href="<%= edit_view_rr_path(@view, defaultRender: 'page') %>"
+        class="page noRedirPrompt" title="Edit single row layout"
+        data-displayName="Page">
+        <span class="icon"></span>
+      </a></li>
+    </ul>
+  </div>
+
+  <div class="mainContainer richRendererContainer">
+    <div id="layoutContainer"
+      class="navRenderType fatRowRenderType">
+      <div class="renderArea">
+      </div>
+
+      <div class="previewContainer">
+        <h2>Preview</h2>
+        <div class="previewArea">
+          <div class="row clearfix"></div>
+          <div class="row clearfix"></div>
+        </div>
+      </div>
+
+      <ul class="navigation">
+        <li><a href="#start" title="View first row" class="start button">
+          <span class="icon"></span>
+        </a></li>
+        <li><a href="#previous" title="View previous row" class="previous button">
+          <span class="icon"></span>
+        </a></li>
+        <li class="info">
+          <%= t('controls.grid.viewing_row_html') %>
+        </li>
+        <li><a href="#next" title="View next row" class="next button">
+          <span class="icon"></span>
+        </a></li>
+        <li><a href="#end" title="View last row" class="end button">
+          <span class="icon"></span>
+        </a></li>
+      </ul>
+    </div>
+
+    <div id="gridSidebar"></div>
+  </div>
+</div>
+
+<% content_for :templates do %>
+<%= render(:partial => 'templates/grid_sidebar') %>
+<div class="labelPalette">
+  <div class="sectionContent">
+    <ul class="columnFields">
+      <li class="columnItem">
+        <div class="columnLabel richLabel fieldItem"></div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="fieldPalette">
+  <div class="sectionContent">
+    <ul class="columnFields">
+      <li class="columnItem">
+        <div class="columnData richItem fieldItem noRender"></div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="staticPalette">
+  <div class="sectionContent">
+    <div class="fieldItem richLabel staticLabel defaultData">(Static text)</div>
+  </div>
+</div>
+<% end %>
+
+<% content_for :modals do %>
+<%= render :partial => 'save_view_dialog' %>
+<% end %>
+
+<% content_for :js_footer do %>
+  <script type='text/javascript'>
+    blist.dataset = new Dataset(<%= safe_json(@view) %>);
+  </script>
+  <%= include_webpack_bundle 'open-data/dataset-edit-rr.js' %>
+<% end %>

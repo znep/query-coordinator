@@ -1,0 +1,25 @@
+.textArea {
+  composes: text-area from global;
+  composes: text-input from global;
+  display: block;
+  resize: vertical;
+  width: 100%;
+  min-width: 250px;
+  min-height: 150px;
+  height: auto;
+  resize: vertical;
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+form .textArea {
+  line-height: 22px;
+}
+
+.textAreaError {
+  composes: textArea;
+  composes: text-input-error from global;
+  margin-bottom: 5px;
+}

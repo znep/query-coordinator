@@ -1,0 +1,35 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal' %>
+<title><%=
+  [ 'Find Deleted User',
+    'Internal Panel'
+  ].join(' | ') %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation internalPanelRedesign">
+  <div class='content'>
+    <h1>Looking for a deleted user?</h1>
+    <%= display_standard_flashes %>
+
+    <%= one_button_form(url: nil, text: 'Find') do -%>
+      <%= label_tag 'email' %>
+      <%= text_field_tag 'email', '' %>
+    <%- end %>
+
+    <%- if @deleted_user %>
+      <dl class="config_type_description">
+        <dt>Display Name:</dt>
+        <dd><%= @deleted_user.displayName %></dd>
+        <dt>Screen Name:</dt>
+        <dd><%= @deleted_user.screenName %></dd>
+        <dt>Email:</dt>
+        <dd><%= @deleted_user.email %></dd>
+      </dl>
+      <%= one_button_form(url: undelete_user_path, text: 'Undelete') do %>
+        <%= hidden_field_tag 'uid_to_undelete', @deleted_user.id %>
+      <%- end %>
+    <%- end %>
+  </div>
+</div>

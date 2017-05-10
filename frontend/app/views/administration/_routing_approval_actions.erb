@@ -1,0 +1,27 @@
+<%- last_app_rej = view.last_approval(true) -%>
+<%- if view.next_approval_stage(approval_template).present? &&
+  (CurrentDomain.user_can?(current_user, UserRights::MANAGE_APPROVAL) ||
+  (view.next_approval_stage(approval_template)['approverUids'] || []).include?(current_user.id)) -%>
+  <div>
+    <%= form_button({:action => 'approve_view', :controller => '/administration/routing_approval', :id => view.id,
+        :approval_type => 'A'}, t('screens.admin.routing_approval.approve'), {}, {:class => 'button approve'}) %>
+    <%- if last_app_rej.nil? || last_app_rej['approvalTypeName'] != 'R' -%>
+      <%= form_button({:action => 'approve_view', :controller => '/administration/routing_approval', :id => view.id,
+          :approval_type => 'R'}, t('screens.admin.routing_approval.reject'), {},
+          {:class => 'button reject'}) do %>
+          <% '<div class="rejectionReason reasonBox">'.html_safe +
+            label_tag(t('screens.admin.routing_approval.rejection_reason')) + text_area_tag('comment') + '</div>'.html_safe %>
+      <% end %>
+    <%- end -%>
+  </div>
+<%- elsif view.has_rights?(ViewRights::UPDATE_VIEW) &&
+  last_app_rej.present? && last_app_rej['approvalTypeName'] == 'R' -%>
+  <div>
+    <%= form_button({:action => 'approve_view', :controller => '/administration/routing_approval', :id => view.id,
+        :approval_type => 'M'}, t('screens.admin.routing_approval.resubmit'), {},
+        {:class => 'button resubmit'}) do %>
+        <% '<div class="resubmitReason reasonBox">'.html_safe +
+          label_tag(t('screens.admin.routing_approval.resubmission_reason')) + text_area_tag('comment') + '</div>'.html_safe %>
+    <% end %>
+  </div>
+<%- end -%>

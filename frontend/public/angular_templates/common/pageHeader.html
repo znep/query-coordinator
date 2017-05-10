@@ -1,0 +1,14 @@
+<div class="page-header row" ng-style="pageHeaderStyle">
+  <div class="span6">
+    <div class="page-header-logo">
+      <a href="/"><img ng-show="logoUrl" ng-src="{{logoUrl}}" alt="{{::'pageHeader.logo' | I18n}}" /></a>
+    </div>
+  </div>
+  <div class="span6">
+    <div class="page-header-links">
+      <a ng-hide="currentUser" class="page-header-link page-header-link-signup" href="{{signUp.url}}" title="{{signUp.label}}">{{signUp.label}}</a>
+      <a ng-hide="currentUser" class="page-header-link page-header-link-signin" href="{{signIn.url}}" title="{{signIn.label}}">{{signIn.label}}</a>
+      <a ng-show="currentUser" class="page-header-link page-header-link-signout" href="{{signOut.url}}" title="{{signOut.label}}">{{signOut.label}}</a>
+    </div>
+  </div>
+</div>

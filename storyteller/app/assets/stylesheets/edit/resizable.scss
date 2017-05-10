@@ -1,0 +1,57 @@
+@import 'lib/variables';
+
+//TODO obviously this isn't done, working on it.
+.component-resizable {
+  padding-bottom: $resize-bar-height;
+
+  .component-resize-handle {
+    $resize-handle-margin: 2px;
+
+    z-index: $component-resize-handle-z-index;
+    box-sizing: border-box;
+    position: absolute;
+    left: $resize-handle-margin;
+    bottom: $resize-handle-margin;
+    width: calc(100% - #{$resize-handle-margin * 2});
+    height: $resize-bar-height - 2 * $resize-handle-margin;
+
+    background-color: $resize-bar-color;
+
+    &:hover {
+      cursor: ns-resize;
+      background-color: $resize-bar-hover-color;
+
+      div {
+        border-top-color: $resize-bar-hint-hover-color;
+        border-bottom-color: $resize-bar-hint-hover-color;
+      }
+    }
+
+    div {
+      $hint-height: 6px;
+      $hint-width: 20px;
+      $hint-line-thickness: 2px;
+
+      height: $hint-height;
+      width: $hint-width;
+      margin-left: calc(50% - #{$hint-width / 2});
+      margin-top: ($resize-bar-height - 2 * $resize-handle-margin) - (2 * $hint-line-thickness + $hint-height);
+      border-top: $hint-line-thickness solid $resize-bar-hint-color;
+      border-bottom: $hint-line-thickness solid $resize-bar-hint-color;
+    }
+  }
+}
+
+.block-edit.is-resizing {
+  z-index: $resizing-block;
+}
+
+body.is-resizing {
+  * {
+    cursor: ns-resize !important;
+  }
+
+  iframe {
+    pointer-events: none; // workaround for iframes eating mouse events
+  }
+}

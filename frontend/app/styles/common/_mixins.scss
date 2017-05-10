@@ -1,0 +1,12 @@
+@import "common/breakpoints";
+
+@mixin desktop {
+  @media screen and (min-width: #{$medium}) {
+    @content;
+  }
+}
+@mixin mobile {
+  @media screen and (max-width: #{$medium}) {
+    @content;
+  }
+}

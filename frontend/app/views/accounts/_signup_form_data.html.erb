@@ -1,0 +1,55 @@
+<%= f.hidden_field :inviteToken %>
+<%= f.hidden_field :authToken %>
+<%= f.hidden_field :firstName %>
+<%= f.hidden_field :lastName %>
+<%= hidden_field_tag 'signup[accept_terms]', 'true' %>
+
+<%- required_span = "<span class=\"accessible\">#{t('core.forms.required_field')}</span>" -%>
+
+<div class="line">
+  <div class="labelLine">
+    <%= f.label :email, "#{t('account.common.form.email')} #{required_span}".html_safe,
+      :class => 'required main' %>
+  </div>
+  <%= f.text_field :email %>
+</div>
+
+<div class="line">
+  <div class="labelLine">
+    <%= f.label :screenName, "#{t('account.common.form.display_name')} #{required_span}".html_safe,
+      :class => 'required main' %>
+  </div>
+  <%= f.text_field :screenName, :maxlength => 40 %>
+</div>
+
+<%- if !local_assigns[:hide_password] -%>
+<div class="line">
+  <div class="labelLine">
+    <%= f.label :password, "#{t('account.common.form.password')} <span class=\"accessible\">#{t('account.common.form.password_requirements')}</span>".html_safe,
+      :class => 'required passwordLabel main' %>
+    <span class="passwordHint about">(<%= t('account.common.form.password_restrictions') %> <span class="icon">&nbsp;</span>)</span>
+  </div>
+  <%= f.password_field :password %>
+</div>
+
+<div class="line clearfix">
+  <div class="labelLine">
+    <%= f.label :passwordConfirm, "#{t('account.common.form.confirm_password')} #{required_span}".html_safe,
+      :class => 'required main' %>
+  </div>
+  <%= f.password_field :passwordConfirm %>
+</div>
+<%- end -%>
+
+<%= render :partial => 'accounts/captcha', :locals => local_assigns %>
+
+<p class="signUpHint">
+  <%= t('screens.sign_up.terms_html') %>
+</p>
+
+<div class="formActionButtons">
+  <input type="submit" class="button default" value="<%= t('screens.sign_up.form.create_account_button') %>" />
+  <span class="accountSignupHint">
+    <%= link_to t('screens.sign_up.form.have_account_link'), login_path, :class => 'signInLink' %>.
+  </span>
+</div>

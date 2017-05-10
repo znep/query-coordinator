@@ -1,15 +1,70 @@
+.*.swp
 .DS_Store
 .bundle
 .byebug_history
+.env
+.idea/
+.localeapp/
+.npmrc
 .sass-cache
-
-db/*.sqlite3
-log/*.log
-tmp/**/*
-node_modules/
+.vimrc
+REVISION
+dev-server/*.pid
+dev-server/logs
+frontend.iml
+frontend.tgz
+frontend/!config/locales/en.yml
+frontend/app/styles/vendor
+frontend/config/locales/*.yml
+frontend/coverage
+frontend/karma/**/mockTranslations.js
+frontend/log/
+frontend/public/asset_pipeline
+frontend/public/cache
+frontend/public/geodata
+frontend/public/javascripts/dist
+frontend/public/packages
+frontend/public/stylesheets/socrata-components
+frontend/public/stylesheets/socrata-styleguide
+frontend/public/stylesheets/socrata-visualizations
+frontend/vendor/bundle
+frontend/vendor/bundler_gems
+manifest*.txt
+nbproject
+node_modules
 npm-debug.log
+socrata-node/DEPEND
+socrata-node/node_modules
+packages/**/dist
 
-engine/*.gem
-engine/node_modules/
-engine/pkg/
-engine/spec/dummy/log/*.log
+# Webpacked JS
+storyteller/public/js
+webpack-assets.json
+
+# Ignore local database settings
+storyteller/config/database.yml
+
+# IDE settings
+*.sublime-project
+*.sublime-workspace
+
+# Zeus configs
+custom_plan.rb
+zeus.json
+
+# Other
+storyteller/tmp
+marathon.properties
+storyteller/coverage
+
+# Build-related stuff
+/ops-tools
+dockerize.properties
+
+# site_chrome
+db/*.sqlite3
+common/site_chrome/log/*.log
+common/site_chrome/tmp/**/*
+common/site-chrome/engine/*.gem
+common/site-chrome/engine/pkg/
+common/site-chrome/engine/spec/dummy/log/*.log

@@ -1,0 +1,25 @@
+<% content_for :head do %>
+    <%= render_feature_flags_for_javascript %>
+    <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css" />
+    <%= rendered_stylesheet_tag 'administration-screen' %>
+    <title><%= t("screens.admin.jobs.index_page.title") %> | <%= get_site_title %></title>
+    <%= render_admin_session_data %>
+    <%= render_admin_server_config %>
+    <%= render_admin_activity_feed_initial_data %>
+    <%= render_mixpanel_config %>
+<% end %>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.admin.jobs %>
+  <%= render_translations LocalePart.plugins.daterangepicker %>
+  <%= render_translations LocalePart.table %>
+<% end %>
+
+<div
+  id="app"
+  data-alert-type="<%= (@alert || {}).fetch(:type, nil) %>"
+  data-alert-translation-key="<%= (@alert || {}).fetch(:translation_key, nil) %>"
+></div>
+
+<%= include_webpack_bundle 'admin-activity-feed/main.js' %>

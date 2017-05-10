@@ -1,0 +1,209 @@
+// Note: on disk, these file names start with "_" i.e. "_search.scss"
+@import "styleguide-colors";
+@import "common/breakpoints";
+@import "common/mixins";
+@import "catalog-landing-page/search";
+@import "catalog-landing-page/header";
+@import "catalog-landing-page/help_flyout";
+@import "catalog-landing-page/featured_content";
+
+$browse2_max_width: 1280px;
+$facet_sidebar_width: 14.5rem;
+
+body {
+  margin: 0;
+  padding: 0;
+  background: $light-grey-6;
+}
+
+#catalog-landing-page {
+  @include desktop {
+    margin-left: $facet_sidebar_width;
+  }
+}
+
+.catalog {
+  @include desktop {
+    padding: 1rem;
+  }
+
+  max-width: $browse2_max_width;
+  margin: 0 auto;
+
+  .browse2 {
+    .browse2-results-pane {
+      visibility: hidden; // shown with JS after CLP components load
+
+      .browse2-facet-and-results-header {
+        overflow: hidden;
+
+        .browse2-results-header {
+          margin-left: 0;
+          padding: 1rem 0 0;
+
+          .browse2-results-clear-controls-container {
+            .browse2-results-title, .browse2-results-clear-control, .browse2-results-clear-all-button {
+              margin-bottom: 0 !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Fix styleguide buttons with spinners in them
+.btn.btn-sm.btn-busy {
+  padding: 8px 15px 5px;
+
+  .spinner-default {
+    width: 15px;
+    height: 15px;
+    border-width: 2px;
+  }
+}
+
+.catalog-landing-page {
+  // Styleguide polyfill
+  .spinner-large {
+    width: 64px;
+    height: 64px;
+    border: 7px solid $primary-base;
+    border-right-color: $primary-light;
+  }
+
+  .desktop-spinner {
+    display: flex;
+    width: 100%;
+    height: 287px;
+
+    .spinner-large {
+      margin: auto;
+    }
+  }
+}
+
+section.landing-page-section {
+  h2 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0;
+    padding: 11px 0;
+    color: $dark-grey-2;
+  }
+
+  .landing-page-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    .btn-default {
+      margin-bottom: 8px;
+      align-self: center;
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+      }
+    }
+  }
+
+  .media-results {
+    display: flex;
+    justify-content: flex-start;
+    align-content: flex-start;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    position: relative;
+
+    .alert {
+      width: 100%;
+    }
+
+    .second {
+      .date {
+        font-size: 11px;
+      }
+    }
+
+    .result-card {
+      flex: 0 0 auto;
+      // Sized for 3 cards, 2 of which have 1rem margin-right. 2rem/3 = 0.66rem
+      width: calc(33.3% - 0.66rem);
+      max-width: 350px;
+      height: 300px;
+      margin-right: 1rem;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+
+      &.loading-card {
+        display: flex;
+
+        .spinner-large {
+          margin: auto;
+        }
+      }
+
+      @media(max-width: $medium) {
+        flex: 0 0 260px;
+      }
+
+      @media(min-width: $medium) {
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    &.related-views {
+      .result-card:not(.loading-card) {
+        opacity: 0;
+      }
+    }
+
+    @media(max-width: $medium) {
+      flex-flow: row nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+  }
+
+  .alert.error {
+    margin-top: 15px;
+  }
+
+  .section-content {
+    background: $white;
+    border: 1px $light-grey-4 solid;
+    border-bottom-width: 2px;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  hr {
+    margin: 0 15px;
+    border-top: 1px $light-grey-4 solid;
+  }
+}
+
+.modal {
+  h1, h4, h5, h6 {
+    font-weight: 400;
+  }
+
+  .modal-header-title {
+    max-width: 95%;
+  }
+}
+
+#site-chrome-header .mobile-menu {
+  z-index: 1000 !important;
+}
+
+footer#site-chrome-footer {
+  margin-top: 20px;
+  visibility: hidden;
+}

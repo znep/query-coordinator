@@ -1,0 +1,100 @@
+[
+  {
+    "expect": [{":updated_at":1278026248,":created_meta":"275909","employee_name":"O'Neil, Michael P.",":updated_meta":"275909","employee_status":"Employee",":sid":319,"position_title":"PRIORITY PLACEMENT DIRECTOR",":id":"DBBF7389-2A58-4E3B-BCFA-FA07F05BDBB6","salary":"81600.00",":position":319,":created_at":1278026248,"pay_basis":"Per Annum"},{":updated_at":1278026248,":created_meta":"275909","employee_name":"Neralla, Venkateswar N.",":updated_meta":"275909","employee_status":"Employee",":sid":305,"position_title":"PRIORITY PLACEMENT DIRECTOR",":id":"A8E2CCA1-E0BA-4C09-BBDC-2F05235E2D8B","salary":"75480.00",":position":305,":created_at":1278026248,"pay_basis":"Per Annum"},{":updated_at":1278026248,":created_meta":"275909","employee_name":"Cokley, Rebecca A.",":updated_meta":"275909","employee_status":"Employee",":sid":76,"position_title":"PRIORITY PLACEMENT DIRECTOR",":id":"A19EABA7-8575-476D-AD48-D4E6F244D09C","salary":"72000.00",":position":76,":created_at":1278026248,"pay_basis":"Per Annum"}],
+    "description": "is_not_blank and equals",
+    "filterCondition":   {
+      "type" : "operator",
+      "value" : "AND",
+      "children" : [ {
+        "type" : "operator",
+        "value" : "AND",
+        "children" : [ {
+          "type" : "operator",
+          "value" : "IS_NOT_BLANK",
+          "children" : [ {
+            "type" : "column",
+            "columnFieldName" : "employee_name"
+          } ]
+        }, {
+          "type" : "operator",
+          "value" : "EQUALS",
+          "children" : [ {
+            "type" : "column",
+            "columnFieldName" : "position_title"
+          }, {
+            "type": "literal",
+            "value": "PRIORITY PLACEMENT DIRECTOR"
+          } ]
+        } ]
+      }]
+    }
+  },
+  {
+    "expect": [{":updated_at":1278026248,":created_meta":"275909","employee_name":"Zichal, Heather R.",":updated_meta":"275909","employee_status":"Employee",":sid":469,"position_title":"DEPUTY ASSISTANT TO THE PRESIDENT FOR ENERGY AND CLIMATE CHANGE",":id":"0AB95D7A-6B52-4BCB-A654-EA5F5382B9AD","salary":"100000.00",":position":469,":created_at":1278026248,"pay_basis":"Per Annum"},{":updated_at":1278026248,":created_meta":"275909","employee_name":"Zelman, Allison L.",":updated_meta":"275909","employee_status":"Employee",":sid":468,"position_title":"POLICY ASSISTANT",":id":"496F46E3-8987-411E-8DAA-C3A557F0A1D2","salary":"50000.00",":position":468,":created_at":1278026248,"pay_basis":"Per Annum"}],
+    "description": "greater than on string",
+    "filterCondition":   {
+      "type" : "operator",
+      "value" : "AND",
+      "children" : [ {
+        "type" : "operator",
+        "value" : "AND",
+        "children" : [ {
+          "type" : "operator",
+          "value" : "GREATER_THAN",
+          "children" : [ {
+                "type" : "column",
+                "columnFieldName" : "employee_name"
+              },
+              {
+                "type" : "literal",
+                "value" : "Z"
+              }
+            ]
+        } ]
+      }]
+    }
+
+  },
+  {
+    "expect": [{":updated_at":1278026248,":created_meta":"275909","employee_name":"Zichal, Heather R.",":updated_meta":"275909","employee_status":"Employee",":sid":469,"position_title":"DEPUTY ASSISTANT TO THE PRESIDENT FOR ENERGY AND CLIMATE CHANGE",":id":"0AB95D7A-6B52-4BCB-A654-EA5F5382B9AD","salary":"100000.00",":position":469,":created_at":1278026248,"pay_basis":"Per Annum"},{":updated_at":1278026248,":created_meta":"275909","employee_name":"Zelman, Allison L.",":updated_meta":"275909","employee_status":"Employee",":sid":468,"position_title":"POLICY ASSISTANT",":id":"496F46E3-8987-411E-8DAA-C3A557F0A1D2","salary":"50000.00",":position":468,":created_at":1278026248,"pay_basis":"Per Annum"}],
+    "description": "less than on string",
+    "filterCondition":   {
+      "type" : "operator",
+      "value" : "AND",
+      "children" : [ {
+        "type" : "operator",
+        "value" : "AND",
+        "children" : [ {
+          "type" : "operator",
+          "value" : "LESS_THAN",
+          "children" : [
+            {
+              "type" : "literal",
+              "value" : "Z"
+            },
+            {
+              "type" : "column",
+              "columnFieldName" : "employee_name"
+            }
+          ]
+        }]
+      }]
+    }
+  },
+  {
+    "expect": [{":updated_at":1278026248,":created_meta":"275909","employee_name":"O'Neil, Michael P.",":updated_meta":"275909","employee_status":"Employee",":sid":319,"position_title":"PRIORITY PLACEMENT DIRECTOR",":id":"DBBF7389-2A58-4E3B-BCFA-FA07F05BDBB6","salary":"81600.00",":position":319,":created_at":1278026248,"pay_basis":"Per Annum"}],
+    "description": "equals on money",
+    "filterCondition":   {
+          "type" : "operator",
+          "value" : "EQUALS",
+          "children" : [ {
+            "type" : "column",
+            "columnFieldName" : "salary"
+          }, {
+            "type": "literal",
+            "value": 81600.00
+          } ]
+      }
+    }
+
+]

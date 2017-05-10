@@ -1,0 +1,208 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'browse-control' %>
+  <%= rendered_stylesheet_tag 'administration-routing-approval' %>
+  <title><%= t('screens.admin.routing_approval.title') %> | <%= get_site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div id="routingApprovalContent" class="contentBox withLeftNavigation">
+  <%= render :partial => 'header',
+        :locals => {:active => 'queue'} %>
+
+  <%= display_standard_flashes %>
+
+  <div class="browseSection">
+    <%- if !@approval_template.nil? -%>
+    <div class="browseList">
+      <div class="titleContainer clearfix">
+        <form type="GET" action="<%= @base_url + "?" +
+          @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' || p.to_s == 'stage_id'}.to_param -%>">
+          <div class="searchSection">
+            <span class="icon"></span>
+            <input type="text" name="q" title="<%= t('screens.admin.routing_approval.search') %>"
+              class="textPrompt searchBox" value="<%= @params[:q] %>" />
+            <%- if !@params[:q].blank? -%>
+            <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' } -%>
+            <a href="<%= @base_url + "?" + cp.to_param %>"
+              class="clearSearch close"><span class="icon"></span></a>
+            <%- end -%>
+          </div>
+          <%- filter_stages = @approval_template.stages.reject {|s| s['visible']} -%>
+          <%- if filter_stages.length > 0 -%>
+          <%= select_tag("stage_id", options_for_select([['All', '']].concat(filter_stages
+            .map {|s| [s['name'], s['id'].to_s]}), @params[:stage_id].to_s)) %>
+          <%- end -%>
+          <input type="submit" value="<%= t('screens.admin.routing_approval.go') %>" />
+        </form>
+
+        <h2><%= t('screens.admin.routing_approval.approval_queue') %></h2>
+      </div>
+
+      <div class="results">
+        <%- if @view_count == 0 -%>
+        <div class="noResults">
+          <span class="message"><%= t('screens.admin.routing_approval.nothing_to_approve') %></span>
+        </div>
+
+        <%- else -%>
+        <table class="gridList">
+          <colgroup>
+            <col class="index" />
+            <%- if @use_federations -%>
+            <col class="domainIcon" />
+            <%- end -%>
+            <col class="nameDesc" />
+            <col class="stage" />
+            <col class="actions" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="index" scope="col"></th>
+              <%- if @use_federations -%>
+              <th class="domainIcon" scope="col"></th>
+              <%- end -%>
+              <th class="nameDesc" scope="col"><%= t('screens.admin.routing_approval.dataset') %></th>
+              <th class="stage" scope="col"></th>
+              <th class="actions" scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%- @view_results.each_with_index do |v, i| -%>
+            <tr class="item collapsed <%= v.is_stuck?(@approval_template) ?
+              'stuck' : ''%>"
+              data-viewId="<%= v.id %>">
+              <td class="index" scope="row">
+                <a class="expander" title="<%= t('screens.admin.routing_approval.click_to_expand') %>" href="#Expand">
+                  <span class="icon"></span>
+                </a>
+              </td>
+              <%- rel_type = v.federated? ?
+                    CurrentDomain.feature?(:federated_interstitial) ?
+                      'externalDomain' : 'external' : (@rel_type || '') -%>
+              <%- if @use_federations -%>
+              <td class="domainIcon">
+                <a href="<%= view_url(v) %>" rel="<%= rel_type %>">
+                  <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
+                    t('screens.admin.routing_approval.federated_from', :name => v.domainCName) : CurrentDomain.cname %>" />
+                </a>
+              </td>
+              <%- end -%>
+              <td class="nameDesc">
+                <a href="<%= view_url(v) %>" class="name alert" rel="<%= rel_type %>">
+                  <span class="icon" title="<%= t('screens.admin.routing_approval.inactive_warning', :count => @approval_template.maxInactivityInterval) %>"></span>
+                  <%= v.name %>
+                </a>
+                <div class="description" title="<%= v.description %>">
+                  <%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow noreferrer external' })) %>
+                </div>
+                <div class="expandBlock clearfix collapsed">
+                  <div class="extraInfo <%= @use_federations ? "federated" : "" %>">
+                    <div class="infoContent"></div>
+                    <a class="close" href="#Close"><span class="icon"></span></a>
+                  </div>
+                </div>
+              </td>
+              <td class="stage">
+                <%= render :partial => 'datasets/stage_icon',
+                  :locals => {:approval => @approval_template, :view => v} %>
+                <%- stage_name = @approval_template.stage((v.last_approval || {})['approvalStageId'])['name'] %>
+                <%= stage_name || t('screens.admin.routing_approval.not_ready_yet') %>
+              </td>
+              <td class="actions">
+                <%= render :partial => 'administration/routing_approval_actions',
+                  :locals => {:view => v, :approval_template => @approval_template} %>
+              </td>
+            </tr>
+            <%- end -%>
+          </tbody>
+        </table>
+        <%- end -%>
+      </div>
+
+      <%- if @view_count > 0 -%>
+      <%= create_pagination(@view_count, @limit,
+        @opts[:page], @base_url + '?' + @params.to_param, 'button') %>
+      <%- end -%>
+    </div>
+
+    <%- else -%>
+    <h3 class="unconfiguredMessage"><%= t('screens.admin.routing_approval.unconfigured_message') %></h3>
+    <%- end -%>
+  </div>
+</div>
+
+<%= render_admin_qualtrics %>
+
+<% content_for :templates do %>
+<div class="expandedInfo">
+  <div class="stage line">
+    <span class="title"><%= t('screens.admin.routing_approval.stage') %>:</span>
+    <div class="value">
+      <div class="icon"></div>
+      <span class="description"></span>
+    </div>
+  </div>
+  <div class="created line">
+    <div class="user leftColumn">
+      <span class="title"><%= t('screens.admin.routing_approval.created_by') %>:</span>
+      <a class="value" href="#"></a>
+    </div>
+    <div class="date rightColumn">
+      <span class="title"><%= t('screens.admin.routing_approval.date_created') %>:</span>
+      <span class="value"></span>
+    </div>
+  </div>
+  <div class="lastApproved line">
+    <div class="user leftColumn">
+      <div class="title"></div>
+      <a class="value userLoad" href="#"></a>
+    </div>
+    <div class="date rightColumn">
+      <div class="title"></div>
+      <span class="value"></span>
+    </div>
+  </div>
+  <div class="reason line">
+    <div class="title"></div>
+    <span class="value"></span>
+  </div>
+  <div class="nextApprover line">
+    <div class="user">
+      <span class="title"><%= t('screens.admin.routing_approval.next_approver') %>:</span>
+      <ul>
+        <li><a class="value userLoad" href="#"></a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<% end %>
+
+<%- content_for :js_footer do -%>
+  <%- unless params[:no_js] == 'true' -%>
+    <script type="text/javascript">
+      $(function()
+      {
+         var raNS = blist.namespace.fetch('blist.routingApproval');
+         raNS.datasets = {};
+         <%- @view_results.each do |v| -%>
+         raNS.datasets['<%= v.id %>'] = <%= safe_json(v) %>;
+         raNS.datasets['<%= v.id %>'].approvalHistory =
+            <%= safe_json(v.approval_history) %>;
+         <%- end -%>
+         raNS.approvalTemplate = new Approval(<%= safe_json(@approval_template) %>);
+      });
+    </script>
+    <%= include_webpack_bundle 'open-data/admin-routing-approval.js' %>
+  <%- end -%>
+<%- end -%>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds %>
+  <%= render_translations LocalePart.screens.admin.routing_approval %>
+<% end %>

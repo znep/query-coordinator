@@ -1,0 +1,40 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'components' %>
+<% end %>
+
+<%-
+dc = {
+  ds1: {type: 'dataset', datasetId: 'r5by-xub9'},
+  ds2: {type: 'dataset', datasetId: 'ig2g-cynv'},
+  ds3: {type: 'dataset', datasetId: '2u7y-hjvg'}
+}
+
+components = {
+  type: 'Container',
+  id: 'test-root',
+  children: [
+  {
+    type: 'Table',
+    contextId: 'ds1'
+  },
+  {
+    type: 'Table',
+    contextId: 'ds2'
+  },
+  {
+    type: 'Table',
+    contextId: 'ds3'
+  }
+  ]
+}
+
+@page = Page.new({data: dc, content: components, path: '/test_page/cf'}.with_indifferent_access)
+Canvas2::Util.is_private(@page.private_data?)
+-%>
+
+<%- @page.set_context(nil) -%>
+<%= raw @page.render(!@minimal_render) %>
+
+<%- content_for :js_footer do -%>
+  <%= render :partial => 'custom_content/canvas_js', :locals => { :page => @page, :template => nil } %>
+<%- end -%>

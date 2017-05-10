@@ -1,0 +1,24 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://odysseus-test:3010/stories/api/stat/v1/goals/goal-goal/narrative/published/latest.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version:
+  recorded_at: Fri, 01 Jul 2016 21:10:29 GMT
+recorded_with: VCR 3.0.3

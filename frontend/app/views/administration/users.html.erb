@@ -1,0 +1,266 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-users' %>
+  <title><%= t('screens.admin.users.title') %> | <%= get_site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+<%- no_js = params[:no_js].present? -%>
+
+<div class="contentBox withLeftNavigation usersScreen">
+  <div class="adminHeader floating users">
+    <div class="usersTopPageButtonArea">
+      <%= link_to t('screens.admin.users.export_as_csv'), {:action => 'users', :format => :csv}, {:class => 'button'} %>
+      <%- unless no_js -%>
+        <%= link_to t('screens.admin.users.create_users'), {:anchor => 'BulkCreate'}, {:class => ['button','showBulkCreateForm']} =%>
+      <%- end -%>
+    </div>
+    <span class="icon"></span>
+    <h1><%= t('screens.admin.users.title') %></h1>
+  </div>
+
+  <div class="bulkUserCreateSection clearfix<%= ' hide' unless no_js %>">
+    <%= form_tag({:action => 'bulk_create_users'}, {:method => 'post', :class => 'commonForm'}) %>
+      <div class="line">
+        <label for="users"><%= t('screens.admin.users.emails') %></label>
+        <%= text_area_tag('users', nil,
+          :class => 'textPrompt', :title => t('screens.admin.users.email_prompt') ) %>
+      </div>
+      <div class="line">
+        <%= raw(select_for_role(
+            'role',
+            'name' => 'role',
+            'css_class' => 'roleSelect',
+            'include_none' => false
+        )) %>
+      </div>
+      <div class="line">
+        <input type="submit" class="bulkCreateButton button default" value="<%= t('screens.admin.users.create_accounts') %>" />
+        <%- unless no_js -%>
+          <a href="#Cancel" class="cancelBulkCreate button"><%= t('core.dialogs.cancel') %></a>
+        <%- end -%>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="contentBox withLeftNavigation usersScreen" id="adminContent">
+  <%- unless @users_list.blank? %>
+    <div class="userRoleSelectFilter">
+      <label for="userRoleFilterDropdown"><%= t('screens.admin.users.filter_by') %></label>
+      <select id="userRoleFilterDropdown">
+        <option value="all"><%= t('screens.admin.users.all') %></option>
+        <%- User.roles_list.each do |role| -%>
+          <option value="<%= role =%>"><%= t("screens.admin.users.roles.#{role}").titleize %></option>
+        <%- end -%>
+      </select>
+    </div>
+  <%- end -%>
+
+  <%= display_standard_flashes %>
+
+  <%- unless @user_search_results.nil? -%>
+    <p class="information">
+      <%= link_to t('screens.admin.users.return_to_overview'), :action => 'users' %>
+    </p>
+  <%- end -%>
+
+  <form class="search usersFind" action="<%= url_for :action => 'users' %>" method="get">
+    <label for="username"><%= t('screens.admin.users.search_for_users') %></label>
+    <input type="text" class="textPrompt searchField<%= ' prompt' if @search.nil? %>" name="username" id="username"
+      title="<%= t('screens.admin.users.search_for_users') %>" value="<%= @search %>" />
+
+    <input type="submit" class="submit" alt="<%= t('screens.admin.users.search') %>" value="<%= t('screens.admin.users.search') %>" />
+  </form>
+
+  <div class="adminUsersTableContainer tableContainer">
+  <%- if @table_title.present? -%><h2><%= @table_title %></h2><%- end -%>
+  <%- unless @users_list.nil? -%>
+    <div class="flash notice userNotice"></div>
+    <div class="gridListWrapper">
+      <table
+        class="gridList adminUsersTable"
+        cellspacing="0"
+        summary="<%= a11y_users_summary(
+                 @users_list,
+                 [
+                   t('screens.admin.users.name'),
+                   t('screens.admin.users.email'),
+                   t('screens.admin.users.role'),
+                   @existing_user_actions ? t('screens.admin.users.actions') : nil
+                 ]) %>"
+      >
+        <colgroup>
+          <%# Enable once we have bulk ops %>
+          <%- if @existing_user_actions && false-%>
+            <col class="select" />
+          <%- end -%>
+          <col class="user" />
+          <col class="email" />
+          <col class="role" />
+          <%- if @existing_user_actions -%>
+            <col class="actions" />
+          <%- end -%>
+        </colgroup>
+        <thead>
+          <tr>
+            <%#Enable once we have bulk ops %>
+            <%- if @existing_user_actions && false -%>
+              <th class="select" scope="col"></th>
+            <%- end -%>
+            <th class="user" scope="col"><div><%= t('screens.admin.users.name') %></div><span class="icon"></span></th>
+            <th class="email" scope="col"><div><%= t('screens.admin.users.email') %></div><span class="icon"></span></th>
+            <th class="role" scope="col"><div><%= t('screens.admin.users.role') %></div><span class="icon"></span></th>
+            <%- if @existing_user_actions -%>
+              <th class="actions"><%= t('screens.admin.users.actions') %></th>
+            <%- end -%>
+          </tr>
+        </thead>
+        <tbody>
+          <%- @users_list.each do |user| -%>
+            <tr class="item<%= ' disabled' if user.privilegesDisabled %>" data-userrole="<%= user.roleName %>">
+              <%# Enable once we have bulk ops %>
+              <%- if @existing_user_actions && false -%>
+                <td class="select">
+                  <%- unless user.id == current_user.id %>
+                    <%= check_box_tag "user_select[#{user.id}]" %>
+                  <%- end -%>
+                </td>
+              <%- end -%>
+              <th class="user row-header" scope="row">
+                <a href="<%= profile_path(user) %>">
+                  <img class="userIcon" src="<%= user.profile_image_path('small')%>"
+                    alt="<%= user.displayName %>" />
+                  <span class="cellInner">
+                    <%= user.displayName %>
+                  </span>
+                </a>
+              </th>
+              <td class="email warning">
+                <span class="icon"></span>
+                <span class="cellInner">
+                  <%= user.email %>
+                </span>
+              </td>
+              <td class="role">
+                <%- if user.id == current_user.id -%>
+                  <span class="cellInner"><%= (current_user.roleName || '').titleize %></span>
+                <%- else -%>
+                  <span class="cellInner hide"><%= (user.roleName || '').titleize %></span>
+                  <%= form_tag({:action => 'set_user_role'}, {:method => 'put'}) %>
+                    <input type="hidden" name="user_id" class="hiddenID" value="<%= user.id %>" />
+                    <%= raw(select_for_role(
+                        "userSelect-#{user.id}",
+                        'name' => 'role',
+                        'current_role' => user.roleName,
+                        'css_class' => 'roleSelect',
+                        'show_label' => false
+                    )) %>
+                    <%- if no_js -%>
+                      <input type="submit" class="userSaveButton" value="<%= t('core.dialogs.save') %>" />
+                    <%- end -%>
+                  </form>
+                <%- end -%>
+              </td>
+              <%- if @existing_user_actions -%>
+                <td class="actions">
+                  <%- unless user.id == current_user.id -%>
+                    <span class="loading"></span>
+                    <%= form_button({ :action => 'set_user_role' },
+                                    t('screens.admin.users.remove'), {:user_id => user.id}, {:class => 'button removeButton'}) %>
+                    <%= form_button({ :action => 'reset_user_password', :user_id => user.id },
+                                    t('screens.admin.users.reset_password'), {}, {:class => 'button resetPasswordButton'}) %>
+                    <span class="enableAccount">
+                      <%= form_button({ :action => 're_enable_user', :user_id => user.id },
+                                      t('screens.admin.users.reenable_privileges'), {}, {:class => 'button enableAccountButton'}) %>
+                    </span>
+                  <%- end -%>
+                </td>
+              <%- end -%>
+            </tr>
+          <%- end -%>
+        </tbody>
+      </table>
+    </div>
+    <p class="noResultsMessage<%= ' noHide' if @users_list && @users_list.length == 0 %>"><%= t('screens.admin.users.no_users_match') %></p>
+  <%- end -%>
+
+  <%- unless @futures.blank? -%>
+    <div class="futureUsersContainer tableContainer">
+      <p class="unregisteredExplanation">
+        <%= t('screens.admin.users.pending_users') %>
+      </p>
+      <div class="gridListWrapper">
+        <table
+          class="gridList futureUsersTable"
+          cellspacing="0"
+          summary="<%= a11y_pending_users_summary(
+                         @futures,
+                         [
+                           t('screens.admin.users.email'),
+                           t('screens.admin.users.role'),
+                           t('screens.admin.users.invited'),
+                           t('screens.admin.users.actions')
+                         ]) %>"
+        >
+          <colgroup>
+            <col class="email" />
+            <col class="role" />
+            <col class="createdAt" />
+            <col class="actions" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="email"><div><%= t('screens.admin.users.email') %></div><span class="icon"></span></th>
+              <th class="role"><div><%= t('screens.admin.users.role') %></div><span class="icon"></span></th>
+              <th class="createdAt"><div><%= t('screens.admin.users.invited') %></div><span class="icon"></span></th>
+              <th class="actions"><%= t('screens.admin.users.actions') %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%- @futures.each do |user| -%>
+              <tr class="item" data-userrole="<%= user.role %>">
+                <th class="email row-header" scope="row">
+                  <span class="cellInner">
+                    <%= user.email %>
+                  </span>
+                </th>
+                <td class="role">
+                  <span class="cellInner">
+                    <%= user.role.titleize %>
+                  </span>
+                </td>
+                <td class="createdAt">
+                  <span class="cellInner">
+                    <%= long_date_span(user.createdAt) %>
+                  </span>
+                </td>
+                <td class="actions">
+                  <span class="loading"></span>
+                  <%= form_button({ :action => 'delete_future_user', :id => user.id }, t('screens.admin.users.remove'),
+                       {:method => :delete}, {:class => 'button removeButton'}) %>
+                </td>
+              </tr>
+            <%- end -%>
+          </tbody>
+        </table>
+      </div>
+      <p class="noResultsMessage"><%= t('screens.admin.users.no_pending_users') %></p>
+    </div>
+  <%- end -%>
+
+  </div>
+</div>
+
+<%= render_admin_qualtrics %>
+
+<% content_for :js_footer do %>
+  <%- unless no_js -%>
+    <%= include_webpack_bundle 'open-data/admin-users.js' %>
+  <%- end -%>
+<% end %>
+<%= render_translations LocalePart.screens.admin.users %>

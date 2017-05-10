@@ -1,0 +1,478 @@
+<%#
+Responsible for:
+- Storing data for sidebar inspiration blocks
+
+This is .json.erb so that we can translate the default content
+and use asset path helpers.
+
+Oddities: The excessive <br> tags is so our default content matches
+exactly what Squire will generate. If it did not, we would fire
+content change events on initial Story Render.
+%>
+{
+  "text": {
+    "name": "<%= I18n.t('inspiration_blocks.categories.text.name') %>",
+    "description": "<%= I18n.t('inspiration_blocks.categories.text.description') %>",
+    "blocks": [
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/title-12.svg") %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "html",
+              "value": "<h1 class='align-center' style='text-align:center'><%= I18n.t('inspiration_blocks.title_block.heading') %><br></h1>"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-12.svg") %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h1>#{I18n.t('inspiration_blocks.text_block.heading')}<br></h1>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_block.content')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-12a.svg") %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_block.content')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-12-mixed-content.svg") %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%= # Join array for sane HTML scanning
+              [
+                "<h1>#{I18n.t('inspiration_blocks.text_mixed_content_block.heading')}<br></h1>",
+                "<div>",
+                  "<i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                  "#{I18n.t('inspiration_blocks.text_mixed_content_block.main_content')}",
+                  "<br>",
+                "</div>",
+                "<h4>#{I18n.t('inspiration_blocks.text_mixed_content_block.subheading')}<br></h4>",
+                "<ul>",
+                  "<li>#{I18n.t('inspiration_blocks.text_mixed_content_block.list.item1')}<br></li>",
+                  "<li>#{I18n.t('inspiration_blocks.text_mixed_content_block.list.item2')}<br></li>",
+                  "<li>#{I18n.t('inspiration_blocks.text_mixed_content_block.list.item3')}<br></li>",
+                  "<li>#{I18n.t('inspiration_blocks.text_mixed_content_block.list.item4')}<br></li>",
+                "</ul>"
+              ].join('').html_safe %>"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-12-blockquote.svg") %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "html",
+              "value": "<blockquote><%= I18n.t('inspiration_blocks.blockquote_block.quote') %><br>-<%= I18n.t('inspiration_blocks.blockquote_block.author') %></blockquote>"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-6-6.svg") %>",
+        "blockContent": {
+          "layout": "6-6",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_6_6.heading1')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_6_6.content1')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            },
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_6_6.heading2')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_6_6.content2')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-8-4.svg") %>",
+        "blockContent": {
+          "layout": "8-4",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_8_4.heading1')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_8_4.content1')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            },
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_8_4.heading2')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_8_4.content2')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-4-4-4.svg") %>",
+        "blockContent": {
+          "layout": "4-4-4",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_4_4_4.heading1')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_4_4_4.content1')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            },
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_4_4_4.heading2')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_4_4_4.content2')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            },
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_4_4_4.heading3')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_4_4_4.content3')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            }
+          ],
+          "presentable": true
+        }
+      }
+    ]
+  },
+
+  "media_and_text": {
+    "name": "<%= I18n.t('inspiration_blocks.categories.media_and_text.name') %>",
+    "description": "<%= I18n.t('inspiration_blocks.categories.media_and_text.description') %>",
+    "blocks": [
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/media-12.svg") %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "assetSelector"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-top-media-12.svg") %>",
+        "blockContent": {
+          "layout": "12-12",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%= [
+                "<h3>#{ I18n.t('inspiration_blocks.text_top_media_12.heading') }</h3>",
+                "<p>#{ I18n.t('inspiration_blocks.text_top_media_12.content') }</p>"
+              ].join('').html_safe %>"
+            },
+            {
+              "type": "assetSelector"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/media-6-6.svg") %>",
+        "blockContent": {
+          "layout": "6-6",
+          "components": [
+            {
+              "type": "assetSelector"
+            },
+            {
+              "type": "assetSelector"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-top-media-6-6.svg") %>",
+        "blockContent": {
+          "layout": "12-12-12-12",
+          "components": [
+            { "type": "html", "value": "<h4><%= I18n.t('inspiration_blocks.text_top_media_6_6.heading') %></h4>" },
+              { "type": "assetSelector" },
+              { "type": "html", "value": "<h4><%= I18n.t('inspiration_blocks.text_top_media_6_6.heading') %></h4>" },
+              { "type": "assetSelector" }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-media-6-6.svg") %>",
+        "blockContent": {
+          "layout": "6-6",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_media_6_6.heading')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_media_6_6.content')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            },
+            {
+              "type": "assetSelector"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-media-4-8.svg") %>",
+        "blockContent": {
+          "layout": "4-8",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_media_4_8.heading')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_media_4_8.content')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            },
+            {
+              "type": "assetSelector"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/media-text-6-6.svg") %>",
+        "blockContent": {
+          "layout": "6-6",
+          "components": [
+            {
+              "type": "assetSelector"
+            },
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_media_6_6.heading')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.media_text_6_6.content')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/media-text-8-4.svg") %>",
+        "blockContent": {
+          "layout": "8-4",
+          "components": [
+            {
+              "type": "assetSelector"
+            },
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.media_text_8_4.heading')}<br></h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.media_text_8_4.content')}",
+                "<br>",
+                "</div>"
+              ].join('').html_safe %>"
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/media-4-4-4.svg") %>",
+        "blockContent": {
+          "layout": "4-4-4",
+          "components": [
+            {
+              "type": "assetSelector"
+            },
+            {
+              "type": "assetSelector"
+            },
+            {
+              "type": "assetSelector"
+            }
+          ],
+          "presentable": true
+        }
+      }
+    ]
+  },
+
+  "hero": {
+    "name": "<%= I18n.t('inspiration_blocks.categories.hero.name') %>",
+    "description": "<%= I18n.t('inspiration_blocks.categories.hero.description') %>",
+    "blocks": [
+      {
+        "imagePreview": "<%= asset_path('editor/iconic-blocks/cover-image-text.svg') %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "hero",
+              "value": {
+                "html": "<h1 class='align-center' style='text-align:center; color: #fff'><%= I18n.t('inspiration_blocks.hero.heading') %><br></h1>"
+              }
+            }
+          ],
+          "presentable": true
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/author.svg") %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            <%
+              # Need to prepend base_asset_path, as we're rendering this file in a detached ActionView
+              # that has no config associated with it (thus it doesn't respect relative_url_root).
+              profile_image = current_user['profileImageUrlLarge'] ||
+                base_asset_path + asset_path("large-profile.png")
+
+              blurb = [
+                "<h6>#{current_user['displayName']}</h6>",
+                "<div>",
+                  "#{I18n.t('inspiration_blocks.author.blurb.content')}",
+                "</div>"
+              ].join('')
+
+              component_value = {
+                'blurb' => blurb,
+                'image' => {
+                  'documentId': nil,
+                  'url': profile_image
+                }
+              }
+            %>
+            {
+              "type": "author",
+              "value": <%== component_value.to_json %>
+            }
+          ],
+          "presentable": true
+        }
+      }
+    ]
+  },
+
+  "dividers_and_spacers": {
+    "name": "<%= I18n.t('inspiration_blocks.categories.dividers_and_spacers.name') %>",
+    "blocks": [
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/element-rule.svg") %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "horizontalRule"
+            }
+          ],
+          "presentable": false
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/element-spacer.svg") %>",
+        "blockContent": {
+          "layout": "12",
+          "components": [
+            {
+              "type": "spacer"
+            }
+          ],
+          "presentable": false
+        }
+      }
+    ]
+  }
+}

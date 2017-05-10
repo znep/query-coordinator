@@ -1,0 +1,216 @@
+default: &default
+  {#
+   # service hosts/ports/names et simil
+   #
+   # conditional checks account for environments (including local dev)
+   # where only a subset of services may be running
+   #}
+  canary: {{ CANARY | default('false') }}
+
+  {% if CETERA_INTERNAL_URI is defined -%}
+  cetera_internal_uri: {{ CETERA_INTERNAL_URI }}
+  {%- endif %}
+
+  {% if SITEMAP_S3_URL is defined -%}
+  sitemap_s3_url: {{ SITEMAP_S3_URL }}
+  {%- endif %}
+
+  {% if SOCRATA_VISUALIZATIONS_V1_EMBED_URL is defined -%}
+  socrata_visualizations_v1_embed_url: {{ SOCRATA_VISUALIZATIONS_V1_EMBED_URL }}
+  {%- endif %}
+
+  {% if SOCRATA_VISUALIZATIONS_V1_LOADER_URL is defined -%}
+  socrata_visualizations_v1_loader_url: {{ SOCRATA_VISUALIZATIONS_V1_LOADER_URL }}
+  {%- endif %}
+
+  {% if CONSUL_HOST is defined -%}
+  consul_host: {{ CONSUL_HOST }}
+  {%- endif %}
+
+  coreservice_uri: http://{{ CORESERVICE_URI }}
+
+  {% if FEATURE_FLAG_SIGNALLER_URI is defined -%}
+  feature_flag_signaller_uri: {{ FEATURE_FLAG_SIGNALLER_URI }}
+  {%- endif %}
+
+  {% if CURATED_REGION_JOB_QUEUE_HOSTNAME is defined and CURATED_REGION_JOB_QUEUE_PORT is defined -%}
+  curated_region_job_queue_hostname: {{ CURATED_REGION_JOB_QUEUE_HOSTNAME }}
+  curated_region_job_queue_port: {{ CURATED_REGION_JOB_QUEUE_PORT }}
+  {%- endif %}
+
+  {% if IMPORT_STATUS_SERVICE_HOSTNAME is defined and IMPORT_STATUS_SERVICE_PORT is defined -%}
+  import_status_service_hostname: {{ IMPORT_STATUS_SERVICE_HOSTNAME }}
+  import_status_service_port: {{ IMPORT_STATUS_SERVICE_PORT }}
+  {%- endif %}
+
+  {% if DATASET_MANAGEMENT_API_HOSTNAME is defined and DATASET_MANAGEMENT_API_PORT is defined -%}
+  dataset_management_api_hostname: {{ DATASET_MANAGEMENT_API_HOSTNAME }}
+  dataset_management_api_port: {{ DATASET_MANAGEMENT_API_PORT }}
+  {%- endif %}
+
+  {% if CATALOG_FEDERATOR_URL is defined -%}
+  catalog_federator_url: {{ CATALOG_FEDERATOR_URL }}
+  {%- endif %}
+
+  {% if ESRI_CRAWLER_HOSTNAME is defined and ESRI_CRAWLER_PORT is defined -%}
+  esri_crawler_hostname: {{ ESRI_CRAWLER_HOSTNAME }}
+  esri_crawler_port: {{ ESRI_CRAWLER_PORT }}
+  {%- endif %}
+
+  {% if STORYTELLER_URI is defined -%}
+  storyteller_uri: {{ STORYTELLER_URI }}
+  {%- endif %}
+
+
+  {% if METRICS_DIR is defined -%}
+  metrics_dir: {{ METRICS_DIR }}
+  {% else %}
+  metrics_dir: tmp/metriclogs
+  {%- endif %}
+
+  {% if METRICS_BATCH_SIZE is defined -%}
+  metrics_batch_size: {{ METRICS_BATCH_SIZE }}
+  {% else %}
+  metrics_batch_size: 100
+  {%- endif %}
+
+  atomic_metrics_flush: {{ ATOMIC_METRICS_FLUSH | default('false') }}
+
+  odysseus_app_name: {{ ODYSSEUS_APP_NAME }}
+
+  {% if POLAROID_HOSTNAME is defined and POLAROID_PORT is defined -%}
+  polaroid_hostname: {{ POLAROID_HOSTNAME }}
+  polaroid_port: {{ POLAROID_PORT }}
+  {%- endif %}
+
+  secondary_group_identifier: '_spandex_'
+
+  {% if STATSD_ENABLED is defined and STATSD_SERVER is defined -%}
+  statsd_enabled: {{ STATSD_ENABLED }}
+  statsd_server: {{ STATSD_SERVER }}
+  {% else %}
+  statsd_enabled: false
+  {%- endif %}
+
+  {% if TILESERVER_HOSTS is defined -%}
+  tileserver_hosts: '{{ TILESERVER_HOSTS }}'
+  {%- endif %}
+
+  zk_hosts: '{{ ZOOKEEPER_HOSTS }}'
+
+  {#
+   # internal app tokens
+   #}
+  app_token: {{ APP_TOKEN }}
+  data_cards_app_token: {{ DATA_CARDS_APP_TOKEN }}
+
+  {#
+   # third-party app tokens
+   #}
+  {% if MIXPANEL_TOKEN is defined -%}
+  mixpanel_token: {{ MIXPANEL_TOKEN }}
+  {%- endif %}
+
+  {% if OPENDATA_GA_TRACKING_CODE is defined -%}
+  opendata_ga_tracking_code: {{ OPENDATA_GA_TRACKING_CODE }}
+  {% elif GOOGLE_ANALYTICS_TRACKING_CODE is defined -%}
+  opendata_ga_tracking_code: {{ GOOGLE_ANALYTICS_TRACKING_CODE }}
+  {%- endif %}
+
+  {% if STANDARD_GA_TRACKING_CODE is defined -%}
+  standard_ga_tracking_code: {{ STANDARD_GA_TRACKING_CODE }}
+  {%- endif %}
+
+  {% if QUALTRICS_ADMIN_SURVEY_ID is defined or QUALTRICS_PROFILE_SURVEY_ID is defined  -%}
+  qualtrics:
+    {% if QUALTRICS_ADMIN_SURVEY_ID is defined -%}
+    admin:
+      survey_id: {{QUALTRICS_ADMIN_SURVEY_ID}}
+    {%- endif %}
+    {% if QUALTRICS_PROFILE_SURVEY_ID is defined -%}
+    profile:
+      survey_id: {{QUALTRICS_PROFILE_SURVEY_ID}}
+    {%- endif %}
+  {%- endif %}
+
+  {% if PENDO_TOKEN is defined -%}
+    pendo_token: {{ PENDO_TOKEN }}
+  {%- endif %}
+
+  {#
+   # auth alternatives
+   #}
+  {% if AUTH0_URI is defined and AUTH0_ID is defined and AUTH0_SECRET is defined -%}
+  auth0_uri: {{ AUTH0_URI }}
+  auth0_id: {{ AUTH0_ID }}
+  auth0_secret: {{ AUTH0_SECRET }}
+  auth0_database_connection: {{ AUTH0_DATABASE_CONNECTION }}
+  {%- endif %}
+
+  {#
+   # data lens behaviors
+   #}
+  {% if ENABLE_PNG_DOWNLOAD_UI -%}
+  enable_png_download_ui: {{ ENABLE_PNG_DOWNLOAD_UI }}
+  {% else -%}
+  enable_png_download_ui: true
+  {% endif -%}
+
+  {% if ENABLE_SEARCH_SUGGESTIONS is defined -%}
+  enable_search_suggestions: {{ ENABLE_SEARCH_SUGGESTIONS }}
+  {% else -%}
+  enable_search_suggestions: true
+  {% endif -%}
+
+  {% if FEATURE_MAP_DISABLE_PAN_ZOOM is defined -%}
+  feature_map_disable_pan_zoom: {{ FEATURE_MAP_DISABLE_PAN_ZOOM }}
+  {% else -%}
+  feature_map_disable_pan_zoom: false
+  {% endif -%}
+
+  {% if FEATURE_MAP_FEATURES_PER_TILE is defined -%}
+  feature_map_features_per_tile: {{ FEATURE_MAP_FEATURES_PER_TILE }}
+  {% else %}
+  feature_map_features_per_tile: 50000
+  {%- endif %}
+
+  {% if FEATURE_MAP_ZOOM_DEBOUNCE is defined -%}
+  feature_map_zoom_debounce: {{ FEATURE_MAP_ZOOM_DEBOUNCE }}
+  {% else %}
+  feature_map_zoom_debounce: 500
+  {%- endif %}
+
+  {% if SHAPE_FILE_REGION_QUERY_LIMIT is defined -%}
+  shape_file_region_query_limit: {{ SHAPE_FILE_REGION_QUERY_LIMIT }}
+  {% else %}
+  shape_file_region_query_limit: 5000
+  {%- endif %}
+
+  {% if CACHE_DATASLATE_ROUTING is defined -%}
+  cache_dataslate_routing: {{ CACHE_DATASLATE_ROUTING }}
+  {%- endif %}
+
+  zendesk_notifications:
+    article_count: {{ ZENDESK_ARTICLE_COUNT | default(4) }}
+    zendesk_link: {{ ZENDESK_LINK | default('https://support.socrata.com/hc/en-us/sections/203977877-Check-out-the-Latest') }}
+    zendesk_section: {{ ZENDESK_SECTION | default(203977877) }}
+
+  restore_dataset_days: {{ RESTORE_DATASET_DAYS | default(5) }}
+
+development:
+  <<: *default
+
+staging:
+  <<: *default
+
+fedramp-prod:
+  <<: *default
+
+eu-prod:
+  <<: *default
+
+rc:
+  <<: *default
+
+production:
+  <<: *default

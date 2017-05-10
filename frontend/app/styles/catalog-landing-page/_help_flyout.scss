@@ -1,0 +1,22 @@
+.catalog-landing-page-help-flyout {
+  display: inline-block;
+
+  .socrata-icon-question {
+    font-size: 16px;
+    color: $primary-text;
+  }
+
+  .flyout {
+    z-index: 1000;
+    position: absolute;
+
+    .flyout-content {
+      font-size: 13px;
+      font-weight: normal;
+
+      p {
+        white-space: nowrap;
+      }
+    }
+  }
+}

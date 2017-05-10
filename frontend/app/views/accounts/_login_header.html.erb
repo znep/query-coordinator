@@ -1,0 +1,19 @@
+<h1 class="loginHeader modalHeader">
+  <%- if CurrentDomain.strings.login_header.present? -%>
+    <%= CurrentDomain.strings.login_header %>
+  <%- else -%>
+    <%= t('screens.sign_in.headline', site: CurrentDomain.strings.company) %>
+  <%- end -%>
+</h1>
+<div class="signupHeader modalHeader">
+  <h1>
+    <%- if CurrentDomain.strings.signup_header.present? -%>
+      <%= CurrentDomain.strings.signup_header %>
+    <%- else -%>
+      <%= t('screens.sign_up.headline', site: CurrentDomain.strings.company) %>
+    <%- end -%>
+  </h1>
+  <%- if CurrentDomain.strings.signup_explanation.present? -%>
+    <div class="signupExplanation explanation"><%= simple_format CurrentDomain.strings.signup_explanation %></div>
+  <%- end -%>
+</div>

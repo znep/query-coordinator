@@ -11,7 +11,7 @@ if [ -z $1 ]; then
   exit 2
 fi
 
-if [ ! -z $FORCE_TEST_RUN ]; then
+if [ ${FORCE_TEST_RUN} = "true" ] ; then
   echo "FORCE_TEST_RUN detected, running all tests for $1"
   exit 0
 fi

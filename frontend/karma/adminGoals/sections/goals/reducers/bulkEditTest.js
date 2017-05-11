@@ -111,6 +111,5 @@ describe('bulkEdit reducer', () => {
     it('unsets saveInProgress', () => {
       assert.deepPropertyVal(afterSomeErrorsAndSomeSuccess, 'saveStatus.inProgress', false);
     });
-
   });
 });

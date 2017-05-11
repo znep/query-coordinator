@@ -1,6 +1,6 @@
 var inputTypeValidations = {
   google_analytics: /^ua-\d+-\d+$/i,
-  color: /^(#(?=[a-z\d]*$)(?:.{3}|.{6})|transparent)$/i,
+  color: /^(#(?=[a-f0-9]*$)(?:.{3}|.{6})|transparent)$/i,
   dimensions: /^\d{1,4}(px|pt|em|rem|%)$/,
   url: /^(https?|www|mailto|\/)/
 };

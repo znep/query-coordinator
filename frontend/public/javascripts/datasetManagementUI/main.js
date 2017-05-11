@@ -59,7 +59,7 @@ const store = createStore(rootReducer, composeEnhancers(
   applyMiddleware(...middleware)
 ));
 
-bootstrap(store, window.initialState.view, window.initialState.update, window.initialState.customMetadata);
+bootstrap(store, window.initialState.view, window.initialState.revision, window.initialState.customMetadata);
 
 const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: state => state.routing.location

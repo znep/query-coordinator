@@ -37,7 +37,7 @@ window.initialState = {
       value: 'Historical Dogs'
     }
   ],
-  update: {
+  revision: {
     id: 42,
     fourfour: 'hehe-hehe',
     revision_seq: 0,

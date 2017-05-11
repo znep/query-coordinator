@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { STATUS_UPDATING } from './lib/database/statuses';
 import { STATUS_CALL_IN_PROGRESS } from './lib/apiCallStatus';
-import { UPSERT_JOB_SUCCESSFUL } from 'actions/applyUpdate';
+import { UPSERT_JOB_SUCCESSFUL } from 'actions/applyRevision';
 import { LOAD_ROWS } from 'actions/apiCalls';
 
 // TODO: if perf becomes an issue, use reselect for memoization

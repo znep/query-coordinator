@@ -48,6 +48,10 @@ function getAirbrake(callback) {
 // Convenience function - if airbrake has been initialized, call notify
 // on it with the given payload. If not, warn once.
 function notify(payload) {
+  if (window.console && console.error) {
+    console.error('Airbrake notification:', payload);
+  }
+
   getAirbrake((ab) => {
     ab.notify(payload);
   });

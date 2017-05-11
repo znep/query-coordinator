@@ -6,12 +6,12 @@ import SocrataIcon from '../../../common/components/SocrataIcon';
 
 import ProgressBar from 'components/ProgressBar';
 import NotifyButton from 'components/NotifyButton';
-import * as ApplyUpdate from 'actions/applyUpdate';
+import * as ApplyRevision from 'actions/applyRevision';
 import { hideModal } from 'actions/modal';
 import * as Selectors from 'selectors';
 import styles from 'styles/Modals/Publishing.scss';
 
-function Publishing({ upsertJob, fourfour, percentUpserted, applyUpdate, onCancelClick }) {
+function Publishing({ upsertJob, fourfour, percentUpserted, applyRevision, onCancelClick }) {
   let title;
   let body;
   let status;
@@ -19,7 +19,7 @@ function Publishing({ upsertJob, fourfour, percentUpserted, applyUpdate, onCance
   let button;
 
   switch (upsertJob.status) {
-    case ApplyUpdate.UPSERT_JOB_IN_PROGRESS:
+    case ApplyRevision.UPSERT_JOB_IN_PROGRESS:
       title = I18n.home_pane.publish_modal.publishing.title;
       body = I18n.home_pane.publish_modal.publishing.body;
       status = 'inProgress';
@@ -27,7 +27,7 @@ function Publishing({ upsertJob, fourfour, percentUpserted, applyUpdate, onCance
       button = <NotifyButton className={styles.button} />;
 
       break;
-    case ApplyUpdate.UPSERT_JOB_SUCCESSFUL:
+    case ApplyRevision.UPSERT_JOB_SUCCESSFUL:
       title = I18n.home_pane.publish_modal.successful.title;
       body = I18n.home_pane.publish_modal.successful.body;
       status = 'success';
@@ -56,7 +56,7 @@ function Publishing({ upsertJob, fourfour, percentUpserted, applyUpdate, onCance
         <button
           key="try-again"
           className={styles.tryAgainButton}
-          onClick={() => applyUpdate(upsertJob)}>
+          onClick={() => applyRevision(upsertJob)}>
           {I18n.common.try_again}
         </button>
       ];
@@ -87,7 +87,7 @@ Publishing.propTypes = {
   }).isRequired,
   fourfour: PropTypes.string.isRequired,
   percentUpserted: PropTypes.number.isRequired,
-  applyUpdate: PropTypes.func.isRequired,
+  applyRevision: PropTypes.func.isRequired,
   onCancelClick: PropTypes.func.isRequired
 };
 
@@ -105,7 +105,7 @@ function mapStateToProps({ db, routing }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    applyUpdate: (upsertJob) => dispatch(ApplyUpdate.applyUpdate(upsertJob.output_schema_id)),
+    applyRevision: (upsertJob) => dispatch(ApplyRevision.applyRevision(upsertJob.output_schema_id)),
     onCancelClick: () => dispatch(hideModal())
   };
 }

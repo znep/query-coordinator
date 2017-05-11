@@ -13,8 +13,8 @@ import * as Links from '../links';
 import { Link } from 'react-router';
 import { latestOutputSchema } from '../selectors';
 import * as Actions from '../actions/manageUploads';
-import * as ApplyUpdate from '../actions/applyUpdate';
-import styles from 'styles/ShowUpdate.scss';
+import * as ApplyRevision from '../actions/applyRevision';
+import styles from 'styles/ShowRevision.scss';
 
 const noDataYetView = (createUpload) =>
   <div className={styles.tableInfo}>
@@ -110,7 +110,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-function ShowUpdate({ view, routing, db, urlParams, createUpload, pushToEditMetadata }) {
+function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMetadata }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -175,9 +175,9 @@ function ShowUpdate({ view, routing, db, urlParams, createUpload, pushToEditMeta
 
   const outputSchema = latestOutputSchema(db);
   const doesUpsertExist = _.size(_.filter(db.upsert_jobs,
-                                          uj => uj.status !== ApplyUpdate.UPSERT_JOB_FAILURE));
+                                          uj => uj.status !== ApplyRevision.UPSERT_JOB_FAILURE));
   const isUpsertComplete = doesUpsertExist &&
-    _.map(db.upsert_jobs, (uj) => uj.status === ApplyUpdate.UPSERT_JOB_SUCCESSFUL).
+    _.map(db.upsert_jobs, (uj) => uj.status === ApplyRevision.UPSERT_JOB_SUCCESSFUL).
     reduce((acc, success) => success || acc, false);
 
   let dataTable;
@@ -225,7 +225,7 @@ function ShowUpdate({ view, routing, db, urlParams, createUpload, pushToEditMeta
   );
 }
 
-ShowUpdate.propTypes = {
+ShowRevision.propTypes = {
   view: PropTypes.object.isRequired,
   routing: PropTypes.object.isRequired,
   db: PropTypes.object.isRequired,
@@ -252,4 +252,4 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShowUpdate);
+export default connect(mapStateToProps, mapDispatchToProps)(ShowRevision);

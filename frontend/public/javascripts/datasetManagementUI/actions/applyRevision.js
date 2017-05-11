@@ -18,7 +18,7 @@ export const UPSERT_JOB_IN_PROGRESS = 'in_progress';
 export const UPSERT_JOB_SUCCESSFUL = 'successful';
 export const UPSERT_JOB_FAILURE = 'failure';
 
-export function applyUpdate() {
+export function applyRevision() {
   return (dispatch, getState) => {
     const routing = getState().routing.location;
     const outputSchemaId = Selectors.latestOutputSchema(getState().db).id;
@@ -26,7 +26,7 @@ export function applyUpdate() {
       output_schema_id: outputSchemaId
     };
     dispatch(upsertStarted('upsert_jobs', newUpsertJob));
-    socrataFetch(dsmapiLinks.applyUpdate, {
+    socrataFetch(dsmapiLinks.applyRevision, {
       method: 'PUT',
       body: JSON.stringify({ output_schema_id: outputSchemaId })
     }).

@@ -22,9 +22,6 @@ if (window.serverConfig.environment !== 'development') {
 
 // Defer rendering so the spinner in the erb can render.
 _.defer(() => {
-  if (window.lastAccessed) {
-    window.lastAccessed.add(window.initialState.view.id);
-  }
 
   // Render the App, falling back to rendering an error if it fails.
   try {

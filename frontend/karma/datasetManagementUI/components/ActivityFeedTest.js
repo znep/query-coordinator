@@ -18,8 +18,8 @@ function insertView(store) {
   }));
 }
 
-function insertUpdate(store) {
-  store.dispatch(upsertFromServer('updates', {
+function insertRevision(store) {
+  store.dispatch(upsertFromServer('revisions', {
     id: 5,
     fourfour: 'hehe-hehe',
     revision_seq: 0,
@@ -116,7 +116,7 @@ describe('components/ActivityFeed', () => {
   it('renders an update when there is an update', () => {
     const store = getEmptyStore();
     insertView(store);
-    insertUpdate(store);
+    insertRevision(store);
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(1);
@@ -126,7 +126,7 @@ describe('components/ActivityFeed', () => {
   it('renders an upload when there is an upload', () => {
     const store = getEmptyStore();
     insertView(store);
-    insertUpdate(store);
+    insertRevision(store);
     insertUpload(store);
 
     const element = renderComponentWithStore(ActivityFeed, {}, store);
@@ -137,7 +137,7 @@ describe('components/ActivityFeed', () => {
   it('renders an output schema when there is an output schema', () => {
     const store = getEmptyStore();
     insertView(store);
-    insertUpdate(store);
+    insertRevision(store);
     insertUpload(store);
     insertOutputSchema(store);
 
@@ -149,7 +149,7 @@ describe('components/ActivityFeed', () => {
   it('renders an upsert job when there is an upsert job in progress', () => {
     const store = getEmptyStore();
     insertView(store);
-    insertUpdate(store);
+    insertRevision(store);
     insertUpload(store);
     insertOutputSchema(store);
     insertUpsertInProgress(store);
@@ -162,7 +162,7 @@ describe('components/ActivityFeed', () => {
   it('renders an upsert job when there is an upsert job in complete', () => {
     const store = getEmptyStore();
     insertView(store);
-    insertUpdate(store);
+    insertRevision(store);
     insertUpload(store);
     insertOutputSchema(store);
     insertUpsertComplete(store);
@@ -175,7 +175,7 @@ describe('components/ActivityFeed', () => {
   it('renders an upsert job when there is an upsert job in complete', () => {
     const store = getEmptyStore();
     insertView(store);
-    insertUpdate(store);
+    insertRevision(store);
     insertUpload(store);
     insertOutputSchema(store);
     insertUpsertFailed(store);

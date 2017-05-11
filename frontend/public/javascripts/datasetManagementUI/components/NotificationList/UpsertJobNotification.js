@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ProgressBar from '../ProgressBar';
 import { commaify } from '../../../common/formatNumber';
-import * as ApplyUpdate from '../../actions/applyUpdate';
+import * as ApplyRevision from '../../actions/applyRevision';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/NotificationList/UpsertJobNotification.scss';
 
@@ -10,7 +10,7 @@ export default function UpsertJobNotification({ upsertJob, importTotal, rowsUpse
   const commaifiedTotalRows = commaify(importTotal);
 
   switch (upsertJob.status) {
-    case ApplyUpdate.UPSERT_JOB_IN_PROGRESS: {
+    case ApplyRevision.UPSERT_JOB_IN_PROGRESS: {
       return (
         <div className={`${styles.notification} ${styles.inProgress}`}>
           <span className={styles.message}>{I18n.progress_items.processing}</span>
@@ -24,7 +24,7 @@ export default function UpsertJobNotification({ upsertJob, importTotal, rowsUpse
         </div>
       );
     }
-    case ApplyUpdate.UPSERT_JOB_SUCCESSFUL:
+    case ApplyRevision.UPSERT_JOB_SUCCESSFUL:
       return (
         <div className={`${styles.notification} ${styles.successful}`}>
           <span className={styles.message}>{I18n.progress_items.processing}</span>
@@ -41,7 +41,7 @@ export default function UpsertJobNotification({ upsertJob, importTotal, rowsUpse
         </div>
       );
 
-    case ApplyUpdate.UPSERT_JOB_FAILURE:
+    case ApplyRevision.UPSERT_JOB_FAILURE:
       return (
         <div className={`${styles.notification} ${styles.error}`}>
           {I18n.progress_items.import_failed}

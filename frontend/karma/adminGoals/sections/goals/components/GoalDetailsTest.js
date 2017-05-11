@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { assert } from 'chai';
 import Immutable from 'immutable';
 import moment from 'moment';
@@ -17,7 +16,7 @@ describe('sections/goals/components/QuickEditForm/GoalDetails', () => {
       {},
       {
         goal: goalAsImmutable,
-        translations: Immutable.fromJS(translations),
+        translations: Immutable.fromJS(translations)
       },
       propOverrides
     );
@@ -25,7 +24,7 @@ describe('sections/goals/components/QuickEditForm/GoalDetails', () => {
     return shallow(React.createElement(GoalDetails.WrappedComponent, props));
   };
 
-  const findDivs = (output) => output.find('.goal-quick-edit-details').children().find('div')
+  const findDivs = (output) => output.find('.goal-quick-edit-details').children().find('div');
 
   it('should have correct goal updated value', () => {
     const divs = findDivs(render());

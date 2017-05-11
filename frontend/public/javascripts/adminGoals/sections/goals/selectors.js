@@ -92,6 +92,24 @@ export const areAllSelectedGoalsConfigured = Reselect.createSelector(
   (goals) => goals.every(goal => goal.has('prevailing_measure'))
 );
 
+// Returns a list of selected goals which are not configured.
+export const getUnconfiguredSelectedGoals = Reselect.createSelector(
+  getSelectedGoals,
+  (goals) => goals.filter(goal => !goal.has('prevailing_measure'))
+);
+
+// True if all selected goals have at least one draft.
+export const areAllSelectedGoalsPublishable = Reselect.createSelector(
+  getSelectedGoals,
+  (goals) => goals.every(goal => goal.getIn([ 'narrative', 'draft', 'created_at' ]))
+);
+
+// Returns a list of selected goals which have no associated draft.
+export const getDraftlessSelectedGoals = Reselect.createSelector(
+  getSelectedGoals,
+  (goals) => goals.filter(goal => _.isNil(goal.getIn([ 'narrative', 'draft', 'created_at' ])))
+);
+
 export const getNumberOfPages = Reselect.createSelector(
   State.getData, State.getPagination,
   (goals, pagination) => Math.max(1, Math.ceil(goals.count() / pagination.get('goalsPerPage')))
@@ -137,7 +155,7 @@ const getSameValue = (items, ...properties) => {
 export const getCommonData = Reselect.createSelector(
   getSelectedGoals,
   goals => Immutable.fromJS({
-    is_public: getSameValue(goals, 'is_public'),
+    publishing_action: getSameValue(goals, 'publishing_action'),
     prevailing_measure: {
       start: getSameValue(goals, 'prevailing_measure', 'start'),
       end: getSameValue(goals, 'prevailing_measure', 'end'),

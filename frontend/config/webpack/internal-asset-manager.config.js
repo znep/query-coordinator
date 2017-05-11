@@ -14,8 +14,7 @@ if (!common.isProduction) {
 module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/internalAssetManager'),
   entry: common.withHotModuleEntries({
-    'main': [ './main' ],
-    'last-accessed': [ './last-accessed' ]
+    'main': './main'
   }),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/internalAssetManager/.eslintrc.json'),

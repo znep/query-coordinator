@@ -261,7 +261,9 @@ describe('actions/manageMetadata', () => {
       const store = mockStore(initialState);
 
       const unmockPhx = mockPhx({
-        'output_schema:57': []
+        'output_schema:57': [],
+        'transform_progress:6105': [],
+        'transform_progress:6106': [],
       }, () => {});
 
       store.dispatch(saveColumnMetadata());

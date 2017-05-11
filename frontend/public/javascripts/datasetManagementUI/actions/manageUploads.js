@@ -31,7 +31,7 @@ export function createUpload(file) {
       filename: file.name
     };
     dispatch(upsertStarted('uploads', uploadInsert));
-    socrataFetch(dsmapiLinks.uploadCreate, {
+    return socrataFetch(dsmapiLinks.uploadCreate, {
       method: 'POST',
       body: JSON.stringify({
         filename: file.name
@@ -55,6 +55,8 @@ export function createUpload(file) {
   };
 }
 
+// TODO: promisify this? would make testing easier, and would match the rest of the
+// async calls that use fetch
 export function uploadFile(uploadId, file) {
   return (dispatch) => {
     const uploadUpdate = {
@@ -65,10 +67,12 @@ export function uploadFile(uploadId, file) {
     dispatch(addNotification(uploadNotification(uploadId)));
     const xhr = new XMLHttpRequest();
     xhr.open('POST', dsmapiLinks.uploadBytes(uploadId));
-    xhr.upload.onprogress = (evt) => {
-      percent = evt.loaded / evt.total * 100;
-      dispatch(updateProgress('uploads', uploadUpdate, percent));
-    };
+    if (xhr.upload) {
+      xhr.upload.onprogress = (evt) => {
+        percent = evt.loaded / evt.total * 100;
+        dispatch(updateProgress('uploads', uploadUpdate, percent));
+      };
+    }
     xhr.onload = () => {
       if (xhr.status === 200) {
         const { resource: inputSchema } = JSON.parse(xhr.responseText);
@@ -92,7 +96,7 @@ export function uploadFile(uploadId, file) {
       dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));
     };
     xhr.setRequestHeader('Content-type', file.type);
-    xhr.send(file);
+    xhr.send();
   };
 }
 
@@ -107,9 +111,12 @@ function pollForOutputSchema(uploadId) {
       }, SCHEMA_POLL_INTERVAL_MS);
     }
 
-    socrataFetch(dsmapiLinks.uploadShow(uploadId)).
+    return socrataFetch(dsmapiLinks.uploadShow(uploadId)).
       then(getJson).
       then((resp) => {
+        // TODO: parsing the response as json just returns the parsed body of the
+        // resonse, so the status is never goin to be defined here. Should re-write
+        // this to account for that
         if (resp.status === 404) {
           pollAgain();
         } else if (resp.status === 500) {
@@ -117,6 +124,8 @@ function pollForOutputSchema(uploadId) {
         } else {
           const upload = resp.resource;
           if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
+            // TODO: subscribeToUpload not a thunk :(. Bad for testing, bad for debugging
+            // bad for establishing a standard interface for communicating with store. Convert
             const outputSchemaIds = subscribeToUpload(dispatch, upload);
             dispatch(push(Links.showOutputSchema(
               uploadId,

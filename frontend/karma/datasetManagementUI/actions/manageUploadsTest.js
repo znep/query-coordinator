@@ -10,7 +10,7 @@ import * as dsmapiLinks from 'dsmapiLinks';
 
 const mockStore = configureStore([thunk]);
 
-describe.only('actions/manageUploads', () => {
+describe('actions/manageUploads', () => {
 
   describe('actions/manageUploads/createUpload', () => {
     let unmock;

@@ -57,13 +57,13 @@ export function createUpload(file) {
   };
 }
 
-// TODO: promisify this? would make testing easier, and would match the rest of the
-// async calls that use fetch
 function xhrPromise(method, url, file, uploadUpdate, dispatch) {
   return new Promise((res, rej) => {
     const xhr = new XMLHttpRequest();
 
     xhr.open(method, url);
+
+    let percent;
 
     if (xhr.upload) {
       xhr.upload.onprogress = evt => {
@@ -76,19 +76,24 @@ function xhrPromise(method, url, file, uploadUpdate, dispatch) {
       if (xhr.status >= 200 && xhr.status < 300) {
         res(xhr);
       } else {
-        rej(xhr);
+        rej({
+          xhr,
+          percent
+        });
       }
     };
 
     xhr.onerror = () => {
-      console.log('failed')
-      rej(xhr)
+      rej({
+        xhr,
+        percent
+      });
     };
 
     xhr.setRequestHeader('Content-type', file.type);
 
     xhr.send();
-  })
+  });
 }
 
 export function uploadFile(uploadId, file) {
@@ -96,12 +101,11 @@ export function uploadFile(uploadId, file) {
     const uploadUpdate = {
       id: uploadId
     };
-    let percent;
     dispatch(updateStarted('uploads', uploadUpdate));
     dispatch(addNotification(uploadNotification(uploadId)));
     return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadUpdate, dispatch)
       .then(resp => JSON.parse(resp.responseText))
-      .then(resp => {
+      .then(() => {
         dispatch(updateSucceeded('uploads', uploadUpdate));
         dispatch(updateFromServer('uploads', {
           id: uploadId,
@@ -109,8 +113,8 @@ export function uploadFile(uploadId, file) {
         }));
         dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
       })
-      .catch(resp => {
-        dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));
+      .catch(err => {
+        dispatch(updateFailed('uploads', uploadUpdate, err.xhr.status, err.percent));
       });
     // const xhr = new XMLHttpRequest();
     // xhr.open('POST', dsmapiLinks.uploadBytes(uploadId));
@@ -213,10 +217,8 @@ function subscribeToUpload(dispatch, upload) {
       upload_id: upload.id
     }));
     dispatch(subscribeToRowErrors(inputSchema.id));
-    dispatch(batch(inputSchema.input_columns.map((column) => {
-      upsertFromServer('input_columns', column)
-    }
-    )));
+    dispatch(batch(inputSchema.input_columns.map((column) =>
+      upsertFromServer('input_columns', column))));
     return inputSchema.output_schemas.map((outputSchema) => {
       return insertAndSubscribeToOutputSchema(dispatch, outputSchema);
     });

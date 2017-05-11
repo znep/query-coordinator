@@ -1,9 +1,30 @@
 const initialState = {
   db: {
+    __loads__: {},
+    views: {},
+    updates: {},
+    uploads: {},
+    input_schemas: {},
+    output_schemas: {},
     input_columns: {},
-    input_schema: {}
+    output_columns: {},
+    output_schema_columns: {},
+    transforms: {},
+    upsert_jobs: {},
+    email_interests: {},
+    row_errors: {}
   },
-  channels: {},
+  flashMessage: {
+    message: '',
+    kind: '',
+    visible: false
+  },
+  notifications: [],
+  modal: {
+    visible: false,
+    contentComponentName: null,
+    payload: null
+  },
   routing: {
     fourfour: 'tw7g-jnvn',
     outputSchemaId: 9908,
@@ -35,7 +56,9 @@ const initialState = {
         query: {}
       }
     }
-  }
+  },
+  channels: {},
+  apiCalls: {}
 };
 
 export default initialState;

@@ -7,7 +7,7 @@ import { setFourfour } from 'actions/routing';
 import { showModal } from 'actions/modal';
 import { insertAndSubscribeToUpload } from 'actions/manageUploads';
 import { parseDate } from 'lib/parseDate';
-import * as ApplyUpdate from 'actions/applyUpdate';
+import * as ApplyRevision from 'actions/applyRevision';
 import { createCombinedValidationRules, createInitialModel } from 'components/ManageMetadata/DatasetForm';
 import { getValidationErrors } from 'components/Forms/validateSchema';
 
@@ -22,7 +22,7 @@ const calculateInitialSchema = (view, customMetadata) => {
 export const emptyDB = {
   __loads__: {},
   views: {},
-  updates: {},
+  revisions: {},
   uploads: {},
   input_schemas: {},
   output_schemas: {},
@@ -37,7 +37,7 @@ export const emptyDB = {
 
 const millis = 1000;
 
-export function bootstrap(store, initialView, initialUpdate, customMetadata) {
+export function bootstrap(store, initialView, initialRevision, customMetadata) {
   const operations = [];
   store.dispatch(setFourfour(initialView.id));
   operations.push(upsertFromServer('views', {
@@ -63,30 +63,30 @@ export function bootstrap(store, initialView, initialUpdate, customMetadata) {
     metadata: initialView.metadata || {},
     customMetadataFields: window.initialState.customMetadata || []
   }));
-  operations.push(upsertFromServer('updates', {
-    id: initialUpdate.id,
+  operations.push(upsertFromServer('revisions', {
+    id: initialRevision.id,
     fourfour: initialView.id,
-    revision_seq: _.toNumber(initialUpdate.revision_seq),
-    inserted_at: parseDate(initialUpdate.inserted_at),
-    created_by: initialUpdate.created_by
+    revision_seq: _.toNumber(initialRevision.revision_seq),
+    inserted_at: parseDate(initialRevision.inserted_at),
+    created_by: initialRevision.created_by
   }));
-  initialUpdate.uploads.forEach((upload) => {
+  initialRevision.uploads.forEach((upload) => {
     insertAndSubscribeToUpload(store.dispatch, upload);
   });
-  initialUpdate.upsert_jobs.forEach((upsertJob) => {
+  initialRevision.upsert_jobs.forEach((upsertJob) => {
     operations.push(upsertFromServer('upsert_jobs', {
       ...upsertJob,
       inserted_at: parseDate(upsertJob.inserted_at),
       finished_at: upsertJob.finished_at ? parseDate(upsertJob.finished_at) : null,
       created_by: upsertJob.created_by
     }));
-    if (upsertJob.status === ApplyUpdate.UPSERT_JOB_IN_PROGRESS) {
-      store.dispatch(ApplyUpdate.pollForUpsertJobProgress(upsertJob.id));
+    if (upsertJob.status === ApplyRevision.UPSERT_JOB_IN_PROGRESS) {
+      store.dispatch(ApplyRevision.pollForUpsertJobProgress(upsertJob.id));
     }
   });
   store.dispatch(batch(operations));
 
-  if (initialUpdate.upsert_jobs.length) {
+  if (initialRevision.upsert_jobs.length) {
     store.dispatch(showModal('Publishing'));
   }
 }

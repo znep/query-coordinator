@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import styleguide from 'socrata-components';
 import { showModal } from 'actions/modal';
-import * as ApplyUpdate from '../actions/applyUpdate';
+import * as ApplyRevision from '../actions/applyRevision';
 import * as Selectors from '../selectors';
 import styles from 'styles/PublishButton.scss';
 
@@ -122,8 +122,8 @@ function mapStateToProps(state) {
     dataSatisfied,
     publishedOrPublishing: _.size(
       _.filter(state.db.upsert_jobs, (job) => (
-        job.status === ApplyUpdate.UPSERT_JOB_SUCCESSFUL ||
-          job.status === ApplyUpdate.UPSERT_JOB_IN_PROGRESS
+        job.status === ApplyRevision.UPSERT_JOB_SUCCESSFUL ||
+          job.status === ApplyRevision.UPSERT_JOB_IN_PROGRESS
       ))
     ) > 0
   };

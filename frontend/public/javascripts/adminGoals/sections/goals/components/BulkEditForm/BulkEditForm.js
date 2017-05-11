@@ -220,7 +220,7 @@ class BulkEditForm extends React.Component {
     const options = this.getPublishingActionOptions();
     const label = Helpers.translator(translations, 'admin.bulk_edit.publishing_action');
     const selector = <Components.Select
-      className="form-select-medium"
+      className="form-select-medium publishing-action-select"
       clearable={ false }
       searchable={ false }
       onChange={ this.setPublishingAction }
@@ -393,7 +393,7 @@ class BulkEditForm extends React.Component {
     const { translations, unconfiguredSelectedGoals } = this.props;
     const message = Helpers.translator(translations, 'admin.bulk_edit.not_configured_message');
     return (
-      <div>
+      <div className="unconfigured-goal-warning">
         <Components.Socrata.Alert type='error' message={ message } />
         {
           this.renderGoalEditLinks(

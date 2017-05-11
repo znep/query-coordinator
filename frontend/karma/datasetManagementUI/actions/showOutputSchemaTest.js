@@ -19,7 +19,7 @@ import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 // import errorTableResponse from '../data/errorTableResponse';
 // import addColumnResponse from '../data/addColumnResponse';
 
-describe('actions/showOutputSchema', () => {
+describe.only('actions/showOutputSchema', () => {
 
   describe('outputColumnsWithChangedType', () => {
 

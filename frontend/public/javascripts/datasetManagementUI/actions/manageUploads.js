@@ -24,39 +24,6 @@ import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import { parseDate } from '../lib/parseDate';
 import { joinChannel } from './channels';
 
-export function createUpload(file) {
-  return (dispatch, getState) => {
-    const { routing } = getState();
-    const uploadInsert = {
-      filename: file.name
-    };
-    dispatch(upsertStarted('uploads', uploadInsert));
-    return socrataFetch(dsmapiLinks.uploadCreate, {
-      method: 'POST',
-      body: JSON.stringify({
-        filename: file.name
-      })
-    }).
-      then(checkStatus).
-      then(getJson).
-      then((resp) => {
-        const newUpload = resp.resource;
-        dispatch(upsertSucceeded('uploads', uploadInsert, {
-          id: newUpload.id,
-          created_by: newUpload.created_by
-        }));
-        dispatch(push(Links.showUpload(newUpload.id)(routing.location)));
-        return Promise.all([
-          dispatch(uploadFile(newUpload.id, file)),
-          dispatch(pollForOutputSchema(newUpload.id))
-        ]);
-      }).
-      catch((err) => {
-        return dispatch(upsertFailed('uploads', uploadInsert, err));
-      });
-  };
-}
-
 function xhrPromise(method, url, file, uploadUpdate, dispatch) {
   return new Promise((res, rej) => {
     const xhr = new XMLHttpRequest();
@@ -96,101 +63,117 @@ function xhrPromise(method, url, file, uploadUpdate, dispatch) {
   });
 }
 
-export function uploadFile(uploadId, file) {
-  return (dispatch) => {
-    const uploadUpdate = {
-      id: uploadId
-    };
-    dispatch(updateStarted('uploads', uploadUpdate));
-    dispatch(addNotification(uploadNotification(uploadId)));
-    return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadUpdate, dispatch)
-      .then(resp => JSON.parse(resp.responseText))
-      .then(() => {
-        dispatch(updateSucceeded('uploads', uploadUpdate));
-        dispatch(updateFromServer('uploads', {
-          id: uploadId,
-          finished_at: new Date()
-        }));
-        dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
-      })
-      .catch(err => {
-        dispatch(updateFailed('uploads', uploadUpdate, err.xhr.status, err.percent));
-      });
-    // const xhr = new XMLHttpRequest();
-    // xhr.open('POST', dsmapiLinks.uploadBytes(uploadId));
-    // if (xhr.upload) {
-    //   xhr.upload.onprogress = (evt) => {
-    //     percent = evt.loaded / evt.total * 100;
-    //     dispatch(updateProgress('uploads', uploadUpdate, percent));
-    //   };
-    // }
-    // xhr.onload = () => {
-    //   if (xhr.status === 200) {
-    //     const { resource: inputSchema } = JSON.parse(xhr.responseText);
-    //     dispatch(updateSucceeded('uploads', uploadUpdate));
-    //     dispatch(updateFromServer('uploads', {
-    //       id: uploadId,
-    //       finished_at: new Date()
-    //     }));
-    //     setTimeout(() => {
-    //       dispatch(updateFromServer('input_schemas', {
-    //         id: inputSchema.id,
-    //         total_rows: inputSchema.total_rows
-    //       }));
-    //     }, 500); // remove when EN-13948 is fixed
-    //     dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
-    //   } else {
-    //     dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));
-    //   }
-    // };
-    // xhr.onerror = () => {
-    //   dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));
-    // };
-    // xhr.setRequestHeader('Content-type', file.type);
-    // xhr.send();
+export const uploadFile = (uploadId, file) => dispatch => {
+  const uploadUpdate = {
+    id: uploadId
   };
-}
+
+  dispatch(updateStarted('uploads', uploadUpdate));
+
+  dispatch(addNotification(uploadNotification(uploadId)));
+
+  return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadUpdate, dispatch)
+    .then(resp => JSON.parse(resp.responseText))
+    .then(() => {
+      dispatch(updateSucceeded('uploads', uploadUpdate));
+
+      dispatch(updateFromServer('uploads', {
+        id: uploadId,
+        finished_at: new Date()
+      }));
+
+      dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
+    })
+    .catch(err =>
+      dispatch(updateFailed('uploads', uploadUpdate, err.xhr.status, err.percent)));
+};
 
 const SCHEMA_POLL_INTERVAL_MS = 500;
 
-function pollForOutputSchema(uploadId) {
-  return (dispatch, getState) => {
-    const { routing } = getState();
-    function pollAgain() {
-      setTimeout(() => {
-        dispatch(pollForOutputSchema(uploadId));
-      }, SCHEMA_POLL_INTERVAL_MS);
-    }
+// TODO: change from polling to websocket; would look something like
+// joinChannel('upload:${uploadId}', {
+//   insert_input_schema: (inputSchema) => {
+//     dispatch(...)
+//   }
+// });
+const pollForOutputSchema = uploadId => (dispatch, getState) => {
+  const { routing } = getState();
 
-    return socrataFetch(dsmapiLinks.uploadShow(uploadId)).
-      then(getJson).
-      then((resp) => {
-        // TODO: parsing the response as json just returns the parsed body of the
-        // resonse, so the status is never goin to be defined here. Should re-write
-        // this to account for that
-        if (resp.status === 404) {
-          pollAgain();
-        } else if (resp.status === 500) {
-          dispatch(updateFailed('uploads', { id: uploadId }));
-        } else {
-          const upload = resp.resource;
-          if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
-            // TODO: subscribeToUpload not a thunk :(. Bad for testing, bad for debugging
-            // bad for establishing a standard interface for communicating with store. Convert
-            const outputSchemaIds = subscribeToUpload(dispatch, upload);
-            dispatch(push(Links.showOutputSchema(
-              uploadId,
-              upload.schemas[0].id,
-              outputSchemaIds[0]
-            )(routing.location)));
-          } else {
-            pollAgain();
-          }
-        }
-      })
-      .catch(err => err);
+  function pollAgain() {
+    setTimeout(() => {
+      dispatch(pollForOutputSchema(uploadId));
+    }, SCHEMA_POLL_INTERVAL_MS);
+  }
+
+  return socrataFetch(dsmapiLinks.uploadShow(uploadId))
+  .then(resp => {
+    if (resp.status === 404) {
+      pollAgain();
+
+      throw new Error('Upload failed: trying again');
+    } else if (resp.status === 500) {
+      dispatch(updateFailed('uploads', { id: uploadId }));
+
+      throw new Error('Upload failed: terminating');
+    } else {
+      return resp;
+    }
+  })
+  .then(getJson)
+  .then(resp => {
+    const upload = resp.resource;
+
+    if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
+      // TODO: subscribeToUpload not a thunk :(. Bad for testing, bad for debugging
+      // bad for establishing a standard interface for communicating with store. Convert
+      const outputSchemaIds = subscribeToUpload(dispatch, upload);
+
+      dispatch(push(Links.showOutputSchema(
+        uploadId,
+        upload.schemas[0].id,
+        outputSchemaIds[0]
+      )(routing.location)));
+    } else {
+      pollAgain();
+    }
+  })
+  .catch(err => err);
+};
+
+export const createUpload = file => (dispatch, getState) => {
+  const { routing } = getState();
+
+  const uploadInsert = {
+    filename: file.name
   };
-}
+
+  dispatch(upsertStarted('uploads', uploadInsert));
+
+  return socrataFetch(dsmapiLinks.uploadCreate, {
+    method: 'POST',
+    body: JSON.stringify({
+      filename: file.name
+    })
+  })
+  .then(checkStatus)
+  .then(getJson)
+  .then(resp => {
+    const newUpload = resp.resource;
+
+    dispatch(upsertSucceeded('uploads', uploadInsert, {
+      id: newUpload.id,
+      created_by: newUpload.created_by
+    }));
+
+    dispatch(push(Links.showUpload(newUpload.id)(routing.location)));
+
+    return Promise.all([
+      dispatch(uploadFile(newUpload.id, file)),
+      dispatch(pollForOutputSchema(newUpload.id))
+    ]);
+  })
+  .catch(err => dispatch(upsertFailed('uploads', uploadInsert, err)));
+};
 
 export function insertAndSubscribeToUpload(dispatch, upload) {
   dispatch(upsertFromServer('uploads', {

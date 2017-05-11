@@ -13,14 +13,14 @@ import * as dsmapiLinks from 'dsmapiLinks';
 
 describe.only('actions/manageUploads', () => {
 
+  let unmock
   beforeEach(done => {
-    const x = mockAPI();
-    console.log('hey', x)
-    x()
+    unmock = mockAPI();
     done();
   });
 
   afterEach(done => {
+    unmock()
     done();
   });
 

@@ -46,12 +46,11 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     `series[${seriesIndex}].dataSource.limit`,
     null
   );
-  const limit = (limitFromVif !== null) ?
+  const limit = limitFromVif !== null && !showOtherCategory ?
     parseInt(limitFromVif, 10) :
     maxRowCount;
 
   let queryString;
-
   if (isUnaggregatedQuery) {
 
     // Note that we add one to the limit before making the query so that we can
@@ -263,11 +262,28 @@ function augmentSocrataDataResponseWithOtherCategory(
    * Step 2: Generate a query using the synthesized 'other' category vif.
    */
 
-  const otherCategoryWhereClauseComponents = SoqlHelpers.
+  let otherCategoryWhereClauseComponents = SoqlHelpers.
     whereClauseFilteringOwnColumn(
       otherCategoryVif,
       seriesIndex
     );
+
+  // If the other request contained nulls, we need to select nulls explicitly to prevent
+  // Core from omitting the null values. By the time we get to here, queryResponse.rows looks like
+  // this: [[value, count], [value, count]] (for example: [['1', '1'], [undefined, '1']]). While
+  // the value is actually null, Core fails to return a value to accompany the null value's count
+  // (remember, Core doesn't think that null should be meaningful), which then becomes undefined
+  // when we parse Core's response.
+  const hasNullValuesInOther = _.some(_.map(queryResponse.rows.slice(limit), dimensionIndex), _.isUndefined);
+  if (hasNullValuesInOther) {
+    const nullValueWhere = SoqlHelpers.filterToWhereClauseComponent({
+      columnName: dimensionColumnName,
+      'function': 'isNull',
+      arguments: { isNull: true }
+    });
+    otherCategoryWhereClauseComponents += ` OR ${nullValueWhere}`;
+  }
+
   const isUnaggregatedQuery = (
     _.isNull(series.dataSource.dimension.aggregationFunction) &&
     _.isNull(series.dataSource.measure.aggregationFunction)

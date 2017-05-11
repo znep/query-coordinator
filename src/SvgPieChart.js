@@ -211,6 +211,12 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
       seriesIndex
     );
 
+    const showOtherCategory = _.get(vifToRender, 'configuration.showOtherCategory', true);
+    const isUnaggregatedQuery = (
+      _.isNull(series.dataSource.dimension.aggregationFunction) &&
+      _.isNull(series.dataSource.measure.aggregationFunction)
+    );
+
     const limitConf = _.get(vifToRender, `series[${seriesIndex}].dataSource.limit`);
     const isLimitInRange = _.inRange(limitConf, 2, MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 2);
 
@@ -225,13 +231,15 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
       throw error;
     }
 
-    const limit = limitConf || MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1;
-
-    const showOtherCategory = _.get(vifToRender, 'configuration.showOtherCategory', true);
-    const isUnaggregatedQuery = (
-      _.isNull(series.dataSource.dimension.aggregationFunction) &&
-      _.isNull(series.dataSource.measure.aggregationFunction)
-    );
+    // If we a VIF-defined limit on the number of rows to show, but we also want to show the
+    // remaining rows grouped in an other category, we need to request all of the rows so we can
+    // figure out if we need to do any special handling when making our request for the other
+    // category's count. Specifically, Core omits null values when combining a count and a where
+    // statement, unless we say to do otherwise.
+    const queryLimit = limitConf && !showOtherCategory ?
+      limitConf :
+      MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1;
+    const displayedValuesLimit = (limitConf || queryLimit) - 1;
 
     const processQueryResponse = (queryResponse) => {
       const dimensionIndex = queryResponse.columns.indexOf(dimensionAlias);
@@ -279,7 +287,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
         ${whereClause}
         ORDER BY ${orderClause}
         NULL LAST
-        LIMIT ${limit}`;
+        LIMIT ${queryLimit}`;
     } else {
 
       queryString = `
@@ -290,7 +298,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
         GROUP BY ${groupByClause}
         ORDER BY ${orderClause}
         NULL LAST
-        LIMIT ${limit}`;
+        LIMIT ${queryLimit}`;
     }
 
     return soqlDataProvider.
@@ -320,14 +328,24 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
         // If the number of rows in the query is one more than the maximum that
         // we allow before grouping into an "other" category, then we need to do
         // a second query to count the things that are in the "other" category.
-        if (showOtherCategory && queryResponseRowCount === limit) {
+        if (showOtherCategory && queryResponseRowCount > displayedValuesLimit) {
 
           const otherCategoryName = I18n.translate(
             'visualizations.common.other_category'
           );
 
-          // Removing last element of queryResponse.rows array. It will be included in others category.
-          queryResponse.rows = queryResponse.rows.slice(0, queryResponse.rows.length - 1);
+          const rowsInOtherCategory = queryResponse.rows.slice(displayedValuesLimit);
+          // We need to check whether the rows that would have ended up in the other category
+          // contain any nulls. By the time we get to here, queryResponse.rows looks like this:
+          // [[value, count], [value, count]] (for example: [['1', '1'], [undefined, '1']]). While
+          // the value is actually null, Core fails to return a value to accompany the null value's
+          // count (remember, Core doesn't think that null should be meaningful), which then
+          // becomes undefined when we parse Core's response.
+          const hasNullValuesInOther = _.some(_.map(rowsInOtherCategory, _.first), _.isUndefined);
+
+          // Removing the overflow elements in queryResponse.rows array. They will be included in
+          // others category.
+          queryResponse.rows = queryResponse.rows.slice(0, displayedValuesLimit);
 
           // Note that we can't just use the multiple argument version of the
           // binaryOperator filter since it joins arguments with OR, and we need
@@ -387,11 +405,23 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
               });
           }
 
-          const otherCategoryWhereClauseComponents = SoqlHelpers.
+          let otherCategoryWhereClauseComponents = SoqlHelpers.
             whereClauseFilteringOwnColumn(
               otherCategoryVifToRender,
               seriesIndex
             );
+
+          // If the other request contained nulls, we need to select nulls explicitly to prevent
+          // Core from omitting the null values.
+          if (hasNullValuesInOther) {
+            const nullValueWhere = SoqlHelpers.filterToWhereClauseComponent({
+              columnName: dimension.replace(/`/g, ''),
+              function: 'isNull',
+              arguments: { isNull: true }
+            });
+            otherCategoryWhereClauseComponents += ` OR ${nullValueWhere}`;
+          }
+
           const otherCategoryAggregationClause = SoqlHelpers.aggregationClause(
             otherCategoryVifToRender,
             seriesIndex,

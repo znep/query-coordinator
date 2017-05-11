@@ -46,17 +46,51 @@ export function createUpload(file) {
           created_by: newUpload.created_by
         }));
         dispatch(push(Links.showUpload(newUpload.id)(routing.location)));
-        dispatch(uploadFile(newUpload.id, file));
-        dispatch(pollForOutputSchema(newUpload.id));
+        return Promise.all([
+          dispatch(uploadFile(newUpload.id, file)),
+          dispatch(pollForOutputSchema(newUpload.id))
+        ]);
       }).
       catch((err) => {
-        dispatch(upsertFailed('uploads', uploadInsert, err));
+        return dispatch(upsertFailed('uploads', uploadInsert, err));
       });
   };
 }
 
 // TODO: promisify this? would make testing easier, and would match the rest of the
 // async calls that use fetch
+function xhrPromise(method, url, file, uploadUpdate, dispatch) {
+  return new Promise((res, rej) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.open(method, url);
+
+    if (xhr.upload) {
+      xhr.upload.onprogress = evt => {
+        percent = evt.loaded / evt.total * 100;
+        dispatch(updateProgress('uploads', uploadUpdate, percent));
+      };
+    }
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        res(xhr);
+      } else {
+        rej(xhr);
+      }
+    };
+
+    xhr.onerror = () => {
+      console.log('failed')
+      rej(xhr)
+    };
+
+    xhr.setRequestHeader('Content-type', file.type);
+
+    xhr.send();
+  })
+}
+
 export function uploadFile(uploadId, file) {
   return (dispatch) => {
     const uploadUpdate = {
@@ -65,38 +99,51 @@ export function uploadFile(uploadId, file) {
     let percent;
     dispatch(updateStarted('uploads', uploadUpdate));
     dispatch(addNotification(uploadNotification(uploadId)));
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', dsmapiLinks.uploadBytes(uploadId));
-    if (xhr.upload) {
-      xhr.upload.onprogress = (evt) => {
-        percent = evt.loaded / evt.total * 100;
-        dispatch(updateProgress('uploads', uploadUpdate, percent));
-      };
-    }
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        const { resource: inputSchema } = JSON.parse(xhr.responseText);
+    return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadUpdate, dispatch)
+      .then(resp => JSON.parse(resp.responseText))
+      .then(resp => {
         dispatch(updateSucceeded('uploads', uploadUpdate));
         dispatch(updateFromServer('uploads', {
           id: uploadId,
           finished_at: new Date()
         }));
-        setTimeout(() => {
-          dispatch(updateFromServer('input_schemas', {
-            id: inputSchema.id,
-            total_rows: inputSchema.total_rows
-          }));
-        }, 500); // remove when EN-13948 is fixed
         dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
-      } else {
+      })
+      .catch(resp => {
         dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));
-      }
-    };
-    xhr.onerror = () => {
-      dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));
-    };
-    xhr.setRequestHeader('Content-type', file.type);
-    xhr.send();
+      });
+    // const xhr = new XMLHttpRequest();
+    // xhr.open('POST', dsmapiLinks.uploadBytes(uploadId));
+    // if (xhr.upload) {
+    //   xhr.upload.onprogress = (evt) => {
+    //     percent = evt.loaded / evt.total * 100;
+    //     dispatch(updateProgress('uploads', uploadUpdate, percent));
+    //   };
+    // }
+    // xhr.onload = () => {
+    //   if (xhr.status === 200) {
+    //     const { resource: inputSchema } = JSON.parse(xhr.responseText);
+    //     dispatch(updateSucceeded('uploads', uploadUpdate));
+    //     dispatch(updateFromServer('uploads', {
+    //       id: uploadId,
+    //       finished_at: new Date()
+    //     }));
+    //     setTimeout(() => {
+    //       dispatch(updateFromServer('input_schemas', {
+    //         id: inputSchema.id,
+    //         total_rows: inputSchema.total_rows
+    //       }));
+    //     }, 500); // remove when EN-13948 is fixed
+    //     dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
+    //   } else {
+    //     dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));
+    //   }
+    // };
+    // xhr.onerror = () => {
+    //   dispatch(updateFailed('uploads', uploadUpdate, xhr.status, percent));
+    // };
+    // xhr.setRequestHeader('Content-type', file.type);
+    // xhr.send();
   };
 }
 
@@ -136,7 +183,8 @@ function pollForOutputSchema(uploadId) {
             pollAgain();
           }
         }
-      });
+      })
+      .catch(err => err);
   };
 }
 
@@ -165,9 +213,10 @@ function subscribeToUpload(dispatch, upload) {
       upload_id: upload.id
     }));
     dispatch(subscribeToRowErrors(inputSchema.id));
-    dispatch(batch(inputSchema.input_columns.map((column) => (
+    dispatch(batch(inputSchema.input_columns.map((column) => {
       upsertFromServer('input_columns', column)
-    ))));
+    }
+    )));
     return inputSchema.output_schemas.map((outputSchema) => {
       return insertAndSubscribeToOutputSchema(dispatch, outputSchema);
     });
@@ -271,7 +320,6 @@ function toOutputSchema(os) {
 function subscribeToOutputSchema(outputSchema) {
   return (dispatch) => {
     const channelName = `output_schema:${outputSchema.id}`;
-
     dispatch(joinChannel(channelName, {
       update: (updatedOutputSchema) => {
         dispatch(updateFromServer('output_schemas', toOutputSchema({

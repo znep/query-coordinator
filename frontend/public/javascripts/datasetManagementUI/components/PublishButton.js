@@ -89,13 +89,10 @@ class PublishButton extends Component {
             {SubI18n.publish_dataset}
           </button>
         </div>
-        {!publishedOrPublishing ?
-          <PublishReadinessFlyout
-            dataSatisfied={dataSatisfied}
-            metadataSatisfied={metadataSatisfied} /> :
-          null}
-        {/* ^ without this condition, the flyout doesn't go away because the mouse out event
-            is blocked by the modal */}
+        <PublishReadinessFlyout
+          dataSatisfied={dataSatisfied}
+          metadataSatisfied={metadataSatisfied}
+          hide={publishedOrPublishing} />
       </div>
     );
   }

@@ -2,7 +2,6 @@ import { expect, assert } from 'chai';
 import GoalTableBody from 'sections/goals/components/GoalTable/GoalTableBody';
 import moment from 'moment';
 import goals from '../../../data/goalTableActions/propGoals';
-import dashboards from '../../../data/goalTableActions/propDashboards';
 
 import translations from 'mockTranslations';
 
@@ -38,7 +37,7 @@ describe('sections/goals/components/GoalTable/GoalTableBody', function() {
             direction: 'asc'
           }
         }
-      },
+      }
     };
 
     this.output = renderComponentWithStore(TableWrapper, state.goals.data, getDefaultStore(state));

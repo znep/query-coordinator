@@ -1,20 +1,13 @@
 import _ from 'lodash';
-import sinon from 'sinon';
 import { assert } from 'chai';
 import Immutable from 'immutable';
 import translations from 'mockTranslations';
-import mockGoalsByIds from '../../../data/cachedGoals';
-import mockDatasets from '../../../data/datasets';
 import BulkEditForm from 'sections/goals/components/BulkEditForm/BulkEditForm';
 import { shallow } from 'enzyme';
 
-const mockGoals = Immutable.fromJS(mockGoalsByIds).valueSeq().toList().toJS();
-
 //TODO: Test redux connectors.
 
-describe('sections/goals/components/BulkEditForm/BulkEditForm', function () {
-  let goalId = '7ndm-ubkq';
-  let goal = mockGoalsByIds[goalId];
+describe('sections/goals/components/BulkEditForm/BulkEditForm', () => {
   let output;
 
   const render = (propOverrides) => {

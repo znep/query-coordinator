@@ -38,7 +38,7 @@ describe('sections/goals/components/GoalTable/GoalTableHead', () => {
             goalsPerPage: 25
           }
         }
-      },
+      }
     });
 
     output = renderComponentWithStore(TableWrapper, {}, getDefaultStore(state));
@@ -86,7 +86,7 @@ describe('sections/goals/components/GoalTable/GoalTableHead sorting', () => {
             direction: direction
           }
         }
-      },
+      }
     });
 
     return renderComponentWithStore(TableWrapper, {}, getDefaultStore(state));
@@ -96,7 +96,7 @@ describe('sections/goals/components/GoalTable/GoalTableHead sorting', () => {
 
   _.each(titlesList, label => {
 
-    it(`${label} should have correct order icon`, function () {
+    it(`${label} should have correct order icon`, () => {
       const componentAsc = getComponent(label, 'asc');
       const componentDesc = getComponent(label, 'desc');
 
@@ -126,7 +126,7 @@ describe('sections/goals/components/GoalTable/GoalTableHead check all toggle', (
             direction: 'asc'
           }
         }
-      },
+      }
     });
 
     const output = renderComponentWithStore(TableWrapper, {}, getDefaultStore(state));
@@ -150,7 +150,7 @@ describe('sections/goals/components/GoalTable/GoalTableHead check all toggle', (
             direction: 'asc'
           }
         }
-      },
+      }
     });
 
     const output = renderComponentWithStore(TableWrapper, {}, getDefaultStore(state));

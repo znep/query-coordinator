@@ -97,7 +97,15 @@ class CatalogLandingPageController < ApplicationController
   def fetch_catalog_landing_page
     @catalog_landing_page = CatalogLandingPage.new(current_domain, params)
 
-    @category = params[:category]
+    # EN-15349: String used in page <title> to differentiate between different CLPs.
+    @clp_title_param_string = ''
+    clp_title_params = params.except('controller', 'action', 'custom_path')
+    clp_title_params.each do |key, value|
+      value_string = key == 'limitTo' ?
+        I18n.t("catalog_landing_page.view_types.#{value}", :default => value) : value
+      @clp_title_param_string << " | #{value_string}"
+    end
+
     @featured_content = @catalog_landing_page.try(:featured_content)
     @metadata = @catalog_landing_page.try(:metadata).to_h
   end

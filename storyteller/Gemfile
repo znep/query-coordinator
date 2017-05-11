@@ -70,9 +70,6 @@ gem 'ConnectSDK', path: 'vendor/gems/ConnectSDK'
 # We use aws-sdk v2 for RDS database migrations
 gem 'aws-sdk', '~> 2.0'
 
-# Provides common header and footer
-gem 'socrata_site_chrome', '2.4.7'
-
 # AWS DB migration tasks
 gem 'httparty', '~> 0.14'
 gem 'decima-ruby', '0.1.0', path: 'vendor/gems/decima-ruby-0.1.0'
@@ -99,6 +96,9 @@ gem 'signaller-ruby', '~> 0.0', :require => 'signaller'
 
 # ElastiCache auto-discovery for memcached nodes
 gem 'dalli-elasticache', '~> 0.2.0'
+
+# Socrata Site Chrome
+gem 'socrata_site_chrome', path: '../common/site_chrome'
 
 group :production do
   # Reaps unicorn worker processes under predefined conditions

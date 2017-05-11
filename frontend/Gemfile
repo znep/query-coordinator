@@ -34,7 +34,6 @@ gem 'sanitize' # Note that this is in addition to the default Rails implementati
 gem 'sass-rails', '~> 5.0'
 gem 'semver2'
 gem 'signaller-ruby', :require => 'signaller'
-gem 'socrata_site_chrome', '2.4.7'
 gem 'snappy'
 gem 'statsd-ruby', '~>1.3.0'
 gem 'therubyracer'
@@ -55,6 +54,9 @@ gem 'inifile'
 gem 'git'
 gem 'clipboard'
 gem 'jenkins_api_client'
+
+# Socrata Site Chrome
+gem 'socrata_site_chrome', path: '../common/site_chrome'
 
 group :test do
   gem 'factory_girl'

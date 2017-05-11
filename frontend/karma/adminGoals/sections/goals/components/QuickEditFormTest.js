@@ -11,10 +11,11 @@ const mockGoals = Immutable.fromJS(mockGoalsByIds).valueSeq().toList().toJS();
 
 var getDefaultStore = require('testStore').getDefaultStore;
 let server;
+let output;
 
 //TODO: Test redux connectors.
 
-describe('sections/goals/components/QuickEditForm/QuickEditForm', function () {
+describe('sections/goals/components/QuickEditForm/QuickEditForm', () => {
   let goalId = '7ndm-ubkq';
   let goal = mockGoalsByIds[goalId];
   let goalAsImmutable = Immutable.fromJS(goal);
@@ -38,24 +39,22 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm', function () {
   };
 
   it('should have correct title', () => {
-    const output = render();
+    output = render();
     assert.include(output.find('Header').prop('title'), goal.name);
   });
 
   describe('save button', () => {
-    const getButton = (output) => {
-      return output.find('[type="submit"]');
-    }
+    let getButton = () => output.find('[type="submit"]');
     const itShouldBeDisabled = (state) => {
       it('should be disabled', () => {
-        const output = render(state);
-        assert.isTrue(getButton(output).prop('disabled'));
+        output = render(state);
+        assert.isTrue(getButton().prop('disabled'));
       });
     };
     const itShouldBeEnabled = (state) => {
       it('should be enabled', () => {
-        const output = render(state);
-        assert.isFalse(getButton(output).prop('disabled'));
+        output = render(state);
+        assert.isFalse(getButton().prop('disabled'));
       });
     };
 
@@ -85,9 +84,8 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm', function () {
   });
 
   it('should pass goal to GoalDetails, EditGeneral and EditPrevailingMeasure', () => {
-    const output = render();
+    output = render();
     const editGeneralProps = output.find('Content').dive().find('Connect(EditGeneral)').props();
-    const editPrevailingMeasure = output.find('Content').dive().find('Connect(EditPrevailingMeasure)').props();
     const detailsProps = output.find('Content').dive().find('Connect(GoalDetails)').props();
     assert.propertyVal(editGeneralProps, 'goal', goalAsImmutable);
     assert.propertyVal(editGeneralProps, 'goal', goalAsImmutable);
@@ -98,7 +96,7 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm', function () {
 // Tests below use a full DOM render and test functionality of EditGeneral and EditPrevailingMeasure.
 // Consider porting to Enzyme and reducing scope to QuickEditForm only.
 
-describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Increase - Absolute', function () {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Increase - Absolute', () => {
   let goalId = 'g34u-2aa5';
   let goal = mockGoals[goalId];
 
@@ -122,7 +120,7 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
       }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
+    output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -130,36 +128,36 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
   });
 
   it('should have action selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
   });
 
   it('should have subject edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
   });
 
   it('should have measure target type selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-target-type')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-target-type')).to.have.length(1);
   });
 
   it('should have measure target edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-target')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-target')).to.have.length(1);
   });
 
   it('should have measure unit edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
   });
 
   it('should have measure date range edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
   });
 
   it('should have measure override selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
   });
 
 });
 
-describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Increase - Relative', function () {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Increase - Relative', () => {
   let goalId = 'vefh-4ihb';
   let goal = mockGoals[goalId];
 
@@ -180,10 +178,10 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
           initialFormData: {},
           formData: {}
         }
-      },
+      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
+    output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -191,44 +189,44 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
   });
 
   it('should have action selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
   });
 
   it('should have subject edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
   });
 
   it('should have measure target type selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-target-type')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-target-type')).to.have.length(1);
   });
 
   it('should have measure baseline edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-baseline')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-baseline')).to.have.length(1);
   });
 
   it('should have measure unit edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
   });
 
   it('should have measure delta edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-target-delta')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-target-delta')).to.have.length(1);
   });
 
   it('should have measure percent unit selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-percent-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-percent-unit')).to.have.length(1);
   });
 
   it('should have measure date range edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
   });
 
   it('should have measure override selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
   });
 
 });
 
-describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - Absolute', function () {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - Absolute', () => {
   let goalId = 'ykke-a4sz';
   let goal = mockGoals[goalId];
 
@@ -249,10 +247,10 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
           initialFormData: {},
           formData: {}
         }
-      },
+      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
+    output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -260,36 +258,36 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
   });
 
   it('should have action selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
   });
 
   it('should have subject edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
   });
 
   it('should have measure target type selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-target-type')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-target-type')).to.have.length(1);
   });
 
   it('should have measure target edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-target')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-target')).to.have.length(1);
   });
 
   it('should have measure unit edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
   });
 
   it('should have measure date range edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
   });
 
   it('should have measure override selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
   });
 
 });
 
-describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - Relative', function () {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Reduce - Relative', () => {
   let goalId = 'sgv4-zzaj';
   let goal = mockGoals[goalId];
 
@@ -310,10 +308,10 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
           initialFormData: {},
           formData: {}
         }
-      },
+      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
+    output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -321,44 +319,44 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
   });
 
   it('should have action selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
   });
 
   it('should have subject edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
   });
 
   it('should have measure target type selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-target-type')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-target-type')).to.have.length(1);
   });
 
   it('should have measure baseline edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-baseline')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-baseline')).to.have.length(1);
   });
 
   it('should have measure unit edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
   });
 
   it('should have measure delta edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-target-delta')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-target-delta')).to.have.length(1);
   });
 
   it('should have measure percent unit selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-percent-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-percent-unit')).to.have.length(1);
   });
 
   it('should have measure date range edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
   });
 
   it('should have measure override selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
   });
 
 });
 
-describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Within', function () {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Within', () => {
   let goalId = '59yh-53jg';
   let goal = mockGoals[goalId];
 
@@ -379,10 +377,10 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
           initialFormData: {},
           formData: {}
         }
-      },
+      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
+    output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -390,44 +388,44 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
   });
 
   it('should have action selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
   });
 
   it('should have subject edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
   });
 
   it('should have measure maintain type selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-maintain-type')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-maintain-type')).to.have.length(1);
   });
 
   it('should have measure baseline edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-baseline')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-baseline')).to.have.length(1);
   });
 
   it('should have measure unit edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
   });
 
   it('should have measure delta edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-target-delta')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-target-delta')).to.have.length(1);
   });
 
   it('should have measure percent unit selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-percent-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-percent-unit')).to.have.length(1);
   });
 
   it('should have measure date range edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
   });
 
   it('should have measure override selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
   });
 
 });
 
-describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Below', function () {
+describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Below', () => {
   let goalId = 'jf7f-i9h8';
   let goal = mockGoals[goalId];
 
@@ -448,10 +446,10 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
           initialFormData: {},
           formData: {}
         }
-      },
+      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
+    output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -459,36 +457,36 @@ describe('containers/QuickEditForm/QuickEditForm Prevailing Measure - Maintain -
   });
 
   it('should have action selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
   });
 
   it('should have subject edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
   });
 
   it('should have measure maintain type selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-maintain-type')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-maintain-type')).to.have.length(1);
   });
 
   it('should have measure baseline edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-baseline')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-baseline')).to.have.length(1);
   });
 
   it('should have measure unit edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
   });
 
   it('should have measure date range edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
   });
 
   it('should have measure override selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
   });
 
 });
 
-describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Above', function () {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Maintain - Above', () => {
   let goalId = '7ndm-ubkq';
   let goal = mockGoals[goalId];
 
@@ -509,10 +507,10 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
           initialFormData: {},
           formData: {}
         }
-      },
+      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
+    output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -520,36 +518,36 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
   });
 
   it('should have action selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
   });
 
   it('should have subject edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
   });
 
   it('should have measure maintain type selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-maintain-type')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-maintain-type')).to.have.length(1);
   });
 
   it('should have measure baseline edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-baseline')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-baseline')).to.have.length(1);
   });
 
   it('should have measure unit edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
   });
 
   it('should have measure date range edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
   });
 
   it('should have measure override selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
   });
 
 });
 
-describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Measure', function () {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measure - Measure', () => {
   let goalId = '63mm-ymcx';
   let goal = mockGoals[goalId];
 
@@ -570,10 +568,10 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
           initialFormData: {},
           formData: {}
         }
-      },
+      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
+    output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -581,28 +579,28 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Prevailing Measu
   });
 
   it('should have action selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-action')).to.have.length(1);
   });
 
   it('should have subject edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-subject')).to.have.length(1);
   });
 
   it('should have measure unit edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-unit')).to.have.length(1);
   });
 
   it('should have measure date range edit', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-date-range')).to.have.length(1);
   });
 
   it('should have measure override selection', () => {
-    expect(this.output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
+    expect(output.querySelectorAll('div.prevailing-measure-container .measure-override')).to.have.length(1);
   });
 
 });
 
-describe('sections/goals/components/QuickEditForm/QuickEditForm Not Configured Goal', function () {
+describe('sections/goals/components/QuickEditForm/QuickEditForm Not Configured Goal', () => {
   let goalId = 'kd8s-mb3p';
   let goal = mockGoals[goalId];
 
@@ -623,10 +621,10 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Not Configured G
           initialFormData: {},
           formData: {}
         }
-      },
+      }
     };
 
-    this.output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
+    output = renderComponentWithStore(QuickEditForm, {}, getDefaultStore(Immutable.fromJS(state)));
   });
 
   afterEach(() => {
@@ -634,6 +632,6 @@ describe('sections/goals/components/QuickEditForm/QuickEditForm Not Configured G
   });
 
   it('should have action selection', () => {
-    expect(this.output.querySelectorAll('.unconfigured-goal-warning-message')).to.have.length(1);
+    expect(output.querySelectorAll('.unconfigured-goal-warning-message')).to.have.length(1);
   });
 });

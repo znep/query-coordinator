@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import Immutable from 'immutable';
 import moment from 'moment';
 import translations from 'mockTranslations';
-import propGoals, { goalsWithPublicationState } from '../../../data/goalTableActions/propGoals';
+import { goalsWithPublicationState } from '../../../data/goalTableActions/propGoals';
 import EditGeneral from 'sections/goals/components/QuickEditForm/EditGeneral';
 import { shallow } from 'enzyme';
 
@@ -27,16 +27,16 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     });
   };
 
-  const render = (goal, propOverrides) => {
+  const render = (goalToRender, propOverrides) => {
     const props = _.merge(
       {},
       {
-        goal: Immutable.fromJS(goal),
+        goal: Immutable.fromJS(goalToRender),
         goalPublicationStatus: 'status_private',
         saveInProgress: false,
         formData: Immutable.fromJS({
           visibility: 'private',
-          name: goal.name
+          name: goalToRender.name
         }),
         translations: Immutable.fromJS(translations),
         usingStorytellerEditor: true
@@ -66,7 +66,6 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
   });
 
   describe('using storyteller', () => {
-    let output;
     beforeEach(() => {
       output = render(goalsWithPublicationState.neverPublished);
     });
@@ -197,7 +196,7 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     itShowsDraftPublicationDate();
     itShowsPublishedMessage();
     itHidesPublishLink();
-    itHidesSpinner()
+    itHidesSpinner();
     itRendersEditablePublicationStatus();
   });
 
@@ -210,7 +209,7 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     });
 
     itShowsDraftPublicationDate();
-    itHidesSpinner()
+    itHidesSpinner();
     itHidesPublishLink();
     itHidesPublishedMessage();
     itRendersEditablePublicationStatus();
@@ -225,7 +224,7 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     });
 
     itShowsDraftPublicationDate();
-    itHidesSpinner()
+    itHidesSpinner();
     itHidesPublishLink();
     itHidesPublishedMessage();
     itRendersEditablePublicationStatus();
@@ -240,7 +239,7 @@ describe('sections/goals/components/QuickEditForm/EditGeneral', () => {
     });
 
     itHidesDraftPublicationDate();
-    itHidesSpinner()
+    itHidesSpinner();
     itHidesPublishLink();
     itHidesPublishedMessage();
     itRendersReadonlyPublicationStatus();

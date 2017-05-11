@@ -1,3 +1,5 @@
+@import 'app/styles/styleguide-colors';
+
 .selected-rows-indicator {
   display: block;
   border: 1px solid #eee;
@@ -6,4 +8,39 @@
   padding: 0;
   line-height: 34px;
   margin-bottom: 20px;
+
+  td:first-child {
+    padding-right: 1em;
+  }
+}
+
+.selected-rows-count {
+  font-size: 13px;
+}
+
+.form-light-notice {
+  display: block;
+  font-size: 13px;
+  color: $dark-grey-1;
+}
+
+.drafts-missing-notice {
+  margin-left: 1em;
+}
+
+.edit-goal-list {
+  width: calc(100% - 2em);
+  margin-left: 2em;
+  border-collapse: collapse;
+
+  tr {
+    &:hover {
+      background: $light-grey-5;
+    }
+  }
+
+  td.edit-link {
+    text-align: right;
+    white-space: nowrap;
+  }
 }

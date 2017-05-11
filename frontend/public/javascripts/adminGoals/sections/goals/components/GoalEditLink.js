@@ -1,6 +1,4 @@
-import * as Selectors from '../../selectors';
 import React, { PropTypes } from 'react';
-import * as ReactRedux  from 'react-redux';
 
 class GoalEditLink extends React.Component {
   constructor(props) {
@@ -25,11 +23,8 @@ class GoalEditLink extends React.Component {
 }
 
 GoalEditLink.propTypes = {
-  text: PropTypes.string.isRequired
+  text: PropTypes.string.isRequired,
+  goal: PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => ({
-  goal: Selectors.getQuickEditGoal(state)
-});
-
-export default ReactRedux.connect(mapStateToProps, null)(GoalEditLink);
+export default GoalEditLink;

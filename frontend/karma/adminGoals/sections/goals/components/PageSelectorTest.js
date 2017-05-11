@@ -5,8 +5,8 @@ import Immutable from 'immutable';
 
 var getDefaultStore = require('testStore').getDefaultStore;
 
-describe('sections/goals/components/GoalTable/PageSelector', function () {
-  it('should have correct offset numbers', function () {
+describe('sections/goals/components/GoalTable/PageSelector', () => {
+  it('should have correct offset numbers', () => {
     var state = Immutable.fromJS({
       translations: translations,
       goals: {
@@ -25,7 +25,7 @@ describe('sections/goals/components/GoalTable/PageSelector', function () {
     expect(output.querySelectorAll('span').item(0).textContent).to.eq(`10 - 20 ${translations.admin.listing.of} 100`);
   });
 
-  it('should start with 1 in first page', function () {
+  it('should start with 1 in first page', () => {
     var state = {
       translations: translations,
       goals: {
@@ -44,7 +44,7 @@ describe('sections/goals/components/GoalTable/PageSelector', function () {
     expect(output.querySelectorAll('span').item(0).textContent).to.eq(`1 - 10 ${translations.admin.listing.of} 100`);
   });
 
-  it('prev link should be disabled in first page', function () {
+  it('prev link should be disabled in first page', () => {
     var state = {
       translations: translations,
       goals: {
@@ -63,7 +63,7 @@ describe('sections/goals/components/GoalTable/PageSelector', function () {
     assert.isTrue(output.querySelectorAll('span').item(1).classList.contains('disabled'));
   });
 
-  it('next link should be disabled in last page', function () {
+  it('next link should be disabled in last page', () => {
     var state = {
       translations: translations,
       goals: {
@@ -82,7 +82,7 @@ describe('sections/goals/components/GoalTable/PageSelector', function () {
     assert.isTrue(output.querySelectorAll('span').item(2).classList.contains('disabled'));
   });
 
-  it('prev & next link shouldnt be disabled in middle pages', function () {
+  it('prev & next link shouldnt be disabled in middle pages', () => {
     var state = {
       translations: translations,
       goals: {
@@ -101,7 +101,7 @@ describe('sections/goals/components/GoalTable/PageSelector', function () {
     assert.isFalse(output.querySelectorAll('span').item(2).classList.contains('disabled'));
   });
 
-  it('prev & next link should be disabled if there is only 1 page', function () {
+  it('prev & next link should be disabled if there is only 1 page', () => {
     var state = {
       translations: translations,
       goals: {

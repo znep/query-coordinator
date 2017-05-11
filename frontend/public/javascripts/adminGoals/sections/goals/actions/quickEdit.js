@@ -1,6 +1,5 @@
 import * as Api from '../../../api';
 import * as DataActions from './data';
-import * as Helpers from '../../../helpers';
 import * as State from '../state';
 import * as Selectors from '../selectors';
 import * as Analytics from '../../shared/analytics';
@@ -108,7 +107,6 @@ export function save() {
       // Re-fetch data from store; publishing may have changed
       // some values (most importantly, version).
       const state = getState();
-      const translations = state.get('translations');
 
       const quickEdit = State.getQuickEdit(state);
       const formData = quickEdit.get('formData');
@@ -137,19 +135,15 @@ export function save() {
       dispatch(saveStart(goalId, Analytics.EventNames.clickUpdateOnQuickEdit));
 
       return Api.goals.update(goalId, version, values).then(updatedGoal => {
-        const successMessage = Helpers.translator(translations, 'admin.quick_edit.success_message', updatedGoal.name);
-
         // TODO: Consider combining these actions. They're redundant.
         dispatch(DataActions.updateById(goalId, updatedGoal));
-        dispatch({
-          notification: { type: 'success', message: successMessage },
-          ...saveSuccess()
-        });
-        dispatch(closeModal());
+        dispatch(saveSuccess());
+        return true;
       });
     }).
     catch(error => {
       dispatch(saveError(error.message));
+      return false;
     });
   };
 }

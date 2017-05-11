@@ -11,10 +11,29 @@ import * as Actions from 'sections/goals/actions';
 import * as SharedActions from 'sections/shared/actions';
 
 const START_TIME = moment.utc().toISOString();
+const END_TIME = moment.utc().add(1, 'day').toISOString();
 
 const GOALS = [
-  { id: 'a', is_public: false, start: moment.utc().add(1, 'day').toISOString(), prevailing_measure: {} },
-  { id: 'b', is_public: true, start: moment.utc().toISOString(), prevailing_measure: {} }
+  {
+    id: 'a',
+    is_public: false,
+    start: moment.utc().add(1, 'day').toISOString(),
+    prevailing_measure: {},
+    narrative: {
+      created_at: 'a_created_at',
+      created_by: 'a_created_by',
+    }
+  },
+  {
+    id: 'b',
+    is_public: true,
+    start: moment.utc().toISOString(),
+    prevailing_measure: {},
+    narrative: {
+      created_at: 'b_created_at',
+      created_by: 'b_created_by',
+    }
+  }
 ];
 
 const mockStore = configureStore([thunk]);
@@ -57,53 +76,92 @@ describe('actions/bulkEditActions', () => {
     });
   });
 
-  describe('saveSuccess', () => {
-    const action = Actions.BulkEdit.saveSuccess(123);
+  describe('saveFinished', () => {
+    const action = Actions.BulkEdit.saveFinished();
     it('is of the correct type', () => {
-      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveSuccess');
-    });
-    it('includes count as data', () => {
-      assert.property(action, 'data', 123);
+      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveFinished');
     });
   });
 
-  describe('saveError', () => {
-    const action = Actions.BulkEdit.saveError();
+  describe('saveProgressSuccess', () => {
+    const action = Actions.BulkEdit.saveProgressSuccess();
     it('is of the correct type', () => {
-      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveError');
+      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveProgressSuccess');
     });
   });
 
-  it('updateMultipleGoals should update given goals', () => {
-    server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
-    server.respondWith(/goals/, JSON.stringify({ is_public: true, prevailing_measure: { start: START_TIME } }));
+  describe('saveProgressError', () => {
+    const fakeGoal = { foo: 4 };
+    const action = Actions.BulkEdit.saveProgressError(fakeGoal);
+    it('has type and action', () => {
+      assert.propertyVal(action, 'type', 'goals.bulkEdit.saveProgressError');
+      assert.propertyVal(action, 'data', fakeGoal);
+    });
+  });
 
-    return store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
-      const [ saveStart, updateGoals, saveSuccess, closeModal ] = store.getActions();
+  it('saveGoals should dispatch expected actions if everything goes well', () => {
+    const responseData = {
+      prevailing_measure: {
+        start: START_TIME
+      }
+    };
 
-      expect(saveStart.type).to.eq(Actions.BulkEdit.types.saveStart);
-      expect(updateGoals.type).to.eq(Actions.Data.types.updateAll);
-      expect(saveSuccess.type).to.eq(Actions.BulkEdit.types.saveSuccess);
-      expect(closeModal.type).to.eq(Actions.BulkEdit.types.closeModal);
+    const updateData = {
+      prevailing_measure: {
+        end: END_TIME
+      }
+    };
 
-      expect(updateGoals.goals[0].is_public).to.eq(true);
-      expect(updateGoals.goals[1].is_public).to.eq(true);
+    server.respondWith(/goals/, JSON.stringify(responseData));
 
-      expect(updateGoals.goals[0].prevailing_measure.start).to.eq(START_TIME);
-      expect(updateGoals.goals[1].prevailing_measure.start).to.eq(START_TIME);
+    return store.dispatch(Actions.BulkEdit.saveGoals(GOALS, updateData)).then((success) => {
+      const [ saveStart, update1, progressSuccess1, update2, progressSuccess2, saveFinished ] = store.getActions();
+
+      assert.propertyVal(saveStart, 'type', Actions.BulkEdit.types.saveStart);
+      assert.propertyVal(update1, 'type', Actions.Data.types.updateById);
+      assert.propertyVal(update2, 'type', Actions.Data.types.updateById);
+      assert.propertyVal(progressSuccess1, 'type', Actions.BulkEdit.types.saveProgressSuccess);
+      assert.propertyVal(progressSuccess2, 'type', Actions.BulkEdit.types.saveProgressSuccess);
+
+      assert.propertyVal(update1, 'goalId', 'a');
+      assert.propertyVal(update1.data, 'narrative', GOALS[0].narrative);
+      assert.deepPropertyVal(update1.data, 'prevailing_measure.start', responseData.prevailing_measure.start);
+      assert.propertyVal(update2, 'goalId', 'b');
+      assert.propertyVal(update2.data, 'narrative', GOALS[1].narrative);
+      assert.deepPropertyVal(update2.data, 'prevailing_measure.start', responseData.prevailing_measure.start);
+
+      assert.propertyVal(saveFinished, 'type', Actions.BulkEdit.types.saveFinished);
+
+      assert.isTrue(success);
     });
   });
 
   it('dispatches error action on failure', () => {
+
+    const updateData = {
+      prevailing_measure: {
+        end: END_TIME
+      }
+    };
+
+    store = mockStore(initialState.setIn(['goals', 'bulkEdit', 'saveStatus', 'error'], true));
+
     server.respondWith(xhr => {
       xhr.respond();
     });
 
-    return store.dispatch(Actions.BulkEdit.saveGoals(GOALS.map(goal => Immutable.fromJS(goal)), { is_public: true })).then(() => {
-      const [ saveStart, saveError ] = store.getActions();
+    return store.dispatch(Actions.BulkEdit.saveGoals(GOALS, updateData)).then((success) => {
+      const [ saveStart, progressError1, progressError2, saveFinished ] = store.getActions();
 
-      expect(saveStart.type).to.eq(Actions.BulkEdit.types.saveStart);
-      expect(saveError.type).to.eq(Actions.BulkEdit.types.saveError);
+      assert.propertyVal(saveStart, 'type', Actions.BulkEdit.types.saveStart);
+      assert.propertyVal(progressError1, 'type', Actions.BulkEdit.types.saveProgressError);
+      assert.deepPropertyVal(progressError1, 'data.id', 'a');
+      assert.propertyVal(progressError2, 'type', Actions.BulkEdit.types.saveProgressError);
+      assert.deepPropertyVal(progressError2, 'data.id', 'b');
+
+      assert.propertyVal(saveFinished, 'type', Actions.BulkEdit.types.saveFinished);
+
+      assert.isFalse(success);
     });
   });
 });

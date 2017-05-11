@@ -22,7 +22,6 @@ import { richTextEditorManager } from './RichTextEditorManager';
 import { exceptionNotifier } from '../services/ExceptionNotifier';
 import CollaboratorsDataProvider from './CollaboratorsDataProvider';
 import StoryPublicationStatus from './components/StoryPublicationStatus'; //eslint-disable-line no-unused-vars
-import MostRecentlyUsed from 'common/most_recently_used';
 
 const {
   ENVIRONMENT,
@@ -300,9 +299,4 @@ $(document).on('ready', () => {
       action: Actions.MOVE_COMPONENT_CANCEL
     });
   });
-
-  if (Environment.CURRENT_USER) {
-    new MostRecentlyUsed({namespace: `socrata:assets:mru:${Environment.CURRENT_USER.id}`}).
-      add(Environment.STORY_UID);
-  }
 });

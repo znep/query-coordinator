@@ -23,8 +23,6 @@ import PresentationMode from './PresentationMode';
 
 import { windowSizeBreakpointStore } from '../editor/stores/WindowSizeBreakpointStore';
 
-import MostRecentlyUsed from 'common/most_recently_used';
-
 $(document).on('ready', function() {
 
   var analytics = new StorytellerUtils.Analytics();
@@ -149,7 +147,6 @@ $(document).on('ready', function() {
           break;
       }
     }
-
   });
 
   // Init window size
@@ -164,10 +161,5 @@ $(document).on('ready', function() {
     analytics.sendMetric('domain', 'page-views', 1);
 
     analytics.flushMetrics();
-  }
-
-  if (Environment.CURRENT_USER) {
-    new MostRecentlyUsed({namespace: `socrata:assets:mru:${Environment.CURRENT_USER.id}`}).
-      add(Environment.STORY_UID);
   }
 });

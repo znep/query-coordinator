@@ -39,7 +39,7 @@ describe('Visualization', () => {
     });
 
     it('removes the visualization on unmount', () => {
-      element.componentWillUnMount();
+      element.componentWillUnmount();
       const container = ReactDOM.findDOMNode(element).querySelector('.socrata-visualization-container');
 
       expect(container).to.not.exist;

@@ -17,7 +17,7 @@ export default React.createClass({
     this.visualization.update(this.props.vif);
   },
 
-  componentWillUnMount() {
+  componentWillUnmount() {
     this.visualization.destroy();
   },
 

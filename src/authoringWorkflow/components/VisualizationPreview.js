@@ -41,7 +41,7 @@ export var VisualizationPreview = React.createClass({
       on('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', this.onDimensionLabelAreaSizeChanged);
   },
 
-  componentWillUnMount() {
+  componentWillUnmount() {
     $(this.visualizationPreview).
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     $(this.visualizationPreview).

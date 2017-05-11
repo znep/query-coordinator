@@ -163,7 +163,6 @@ class BulkEditForm extends React.Component {
       return;
     }
 
-    //TODO lame scrolling oscillation
     return (
       <Components.Socrata.Flyout text={ tooltipText }>
         <Components.Socrata.ChangeIndicator onRevert={ onRevert }/>

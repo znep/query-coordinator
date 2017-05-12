@@ -44,7 +44,7 @@ function createNewOutputSchema(
     // that the loadStarted isn't. probably get rid of it
     dispatch(upsertStarted('output_schemas', newOutputSchema));
     const url = dsmapiLinks.newOutputSchema(upload.id, oldOutputSchema.input_schema_id);
-    socrataFetch(url, {
+    return socrataFetch(url, {
       method: 'POST',
       body: JSON.stringify({ output_columns: newOutputColumns })
     }).
@@ -90,7 +90,6 @@ export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch,
 export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
   const state = getState();
   const db = state.db;
-
   const call = {
     operation: ADD_COLUMN,
     params: {
@@ -117,7 +116,7 @@ export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) =>
   const newOutputColumns = [...current, _.omit(newOutputColumn, 'ignored')].
     map(oc => toNewOutputColumn(oc, sameTransform(db)));
 
-  dispatch(createNewOutputSchema(
+  return dispatch(createNewOutputSchema(
     outputSchema,
     newOutputColumns,
     call

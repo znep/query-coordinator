@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { createUpload } from 'actions/manageUploads';
 import mockPhoenixSocket from '../testHelpers/mockPhoenixSocket';
-import mockAPI from '../testHelpers/mockAPI/routes';
+import mockAPI from '../testHelpers/mockAPI';
 import initialState from '../data/baseState';
 import * as dsmapiLinks from 'dsmapiLinks';
 

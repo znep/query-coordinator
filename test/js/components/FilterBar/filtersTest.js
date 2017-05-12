@@ -43,7 +43,7 @@ describe('filters', () => {
           }
         };
 
-        assert.equal(getFilterToggleText(filter, mockMoneyColumn), 'Greater than 5');
+        assert.equal(getFilterToggleText(filter, mockMoneyColumn), `From 5 to ${mockMoneyColumn.rangeMax}`);
       });
 
       it('returns a "less than" range when the start of the range is the min of the column', () => {
@@ -54,7 +54,7 @@ describe('filters', () => {
           }
         };
 
-        assert.equal(getFilterToggleText(filter, mockMoneyColumn), 'Less than 19');
+        assert.equal(getFilterToggleText(filter, mockMoneyColumn), `From ${mockMoneyColumn.rangeMin} to 19`);
       });
 
       it('returns a generic range message otherwise', () => {
@@ -82,7 +82,7 @@ describe('filters', () => {
           }
         };
 
-        assert.equal(getFilterToggleText(filter, mockNumberColumn), 'Greater than 5');
+        assert.equal(getFilterToggleText(filter, mockNumberColumn), `From 5 to ${mockNumberColumn.rangeMax}`);
       });
 
       it('returns a "less than" range when the start of the range is the min of the column', () => {
@@ -93,7 +93,7 @@ describe('filters', () => {
           }
         };
 
-        assert.equal(getFilterToggleText(filter, mockNumberColumn), 'Less than 19');
+        assert.equal(getFilterToggleText(filter, mockNumberColumn), `From ${mockNumberColumn.rangeMin} to 19`);
       });
 
       it('returns a generic range message otherwise', () => {

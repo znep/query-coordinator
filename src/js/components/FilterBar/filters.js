@@ -68,12 +68,8 @@ export function getFilterToggleText(filter, column) {
       const hasMinValue = _.isFinite(start) && !_.isEqual(column.rangeMin, startLabel);
       const hasMaxValue = _.isFinite(end) && !_.isEqual(column.rangeMax, endLabel);
 
-      if (hasMinValue && hasMaxValue) {
+      if (hasMinValue || hasMaxValue) {
         return t('filter_bar.range_filter.range_label').format(startLabel, endLabel);
-      } else if (hasMinValue) {
-        return t('filter_bar.range_filter.greater_label').format(startLabel);
-      } else if (hasMaxValue) {
-        return t('filter_bar.range_filter.less_label').format(endLabel);
       } else {
         return column.name;
       }

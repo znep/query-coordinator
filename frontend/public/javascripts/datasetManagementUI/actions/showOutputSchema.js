@@ -80,7 +80,7 @@ export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch,
 
   const newOutputColumns = outputColumnsWithChangedType(db, outputSchema, oldColumn, newType);
 
-  dispatch(createNewOutputSchema(
+  return dispatch(createNewOutputSchema(
     outputSchema,
     newOutputColumns,
     call
@@ -106,7 +106,6 @@ export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) =>
       existingDisplayNames: [...acc.existingDisplayNames, oc.display_name]
     };
   }, { existingFieldNames: [], existingDisplayNames: [] });
-
   const newOutputColumn = {
     ...outputColumn,
     field_name: getUniqueFieldName(existingFieldNames, outputColumn.field_name),
@@ -136,11 +135,12 @@ export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
   };
 
   const { current } = Selectors.currentAndIgnoredOutputColumns(db);
+
   const newOutputColumns = current.
     filter(oc => oc.id !== column.id).
     map(oc => toNewOutputColumn(oc, sameTransform(db)));
 
-  dispatch(createNewOutputSchema(
+  return dispatch(createNewOutputSchema(
     outputSchema,
     newOutputColumns,
     call

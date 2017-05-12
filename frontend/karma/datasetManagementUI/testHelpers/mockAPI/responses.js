@@ -1,22 +1,22 @@
 export const uploadCreate = {
   "resource":{
     "schemas":[],
-    "inserted_at":"2017-05-09T23:10:16.339627",
-    "id":8325,
+    "inserted_at":"2017-05-12T14:12:09.293177",
+    "id":823,
     "finished_at":null,
     "filename":"petty_crimes.csv",
     "failed_at":null,
     "created_by":{
-       "user_id":"k7tm-2kym",
-       "email":"test.user@socrata.com",
-       "display_name":"Test User"
+      "user_id":"yczc-8men",
+      "email":"brandon.webster@socrata.com",
+      "display_name":"Brandon Webster"
     },
     "content_type":null
   },
   "links":{
-    "show":"/api/publishing/v1/upload/8325",
-    "bytes":"/api/publishing/v1/upload/8325",
-    "add_to_revision":"/api/publishing/v1/upload/8325"
+    "show":"/api/publishing/v1/upload/823",
+    "bytes":"/api/publishing/v1/upload/823",
+    "add_to_revision":"/api/publishing/v1/upload/823"
   }
 };
 
@@ -30,17 +30,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310263
+                  "input_column_id":22277
                 }
               ],
               "transform_expr":"to_number(`id`)",
               "output_soql_type":"SoQLNumber",
-              "id":285870,
-              "completed_at":"2017-05-09T23:10:21"
+              "id":20799,
+              "completed_at":null
             },
             "position":0,
             "is_primary_key":false,
-            "id":250669,
+            "id":18133,
             "field_name":"id",
             "display_name":"ID",
             "description":""
@@ -49,17 +49,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310264
+                  "input_column_id":22278
                 }
               ],
               "transform_expr":"`case_number`",
               "output_soql_type":"SoQLText",
-              "id":285871,
+              "id":20800,
               "completed_at":null
             },
             "position":1,
             "is_primary_key":false,
-            "id":250670,
+            "id":18134,
             "field_name":"case_number",
             "display_name":"Case Number",
             "description":""
@@ -68,17 +68,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310265
+                  "input_column_id":22279
                 }
               ],
               "transform_expr":"to_floating_timestamp(`date`)",
               "output_soql_type":"SoQLFloatingTimestamp",
-              "id":285872,
-              "completed_at":"2017-05-09T23:10:21"
+              "id":20801,
+              "completed_at":null
             },
             "position":2,
             "is_primary_key":false,
-            "id":250671,
+            "id":18135,
             "field_name":"date",
             "display_name":"Date",
             "description":""
@@ -87,17 +87,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310266
+                  "input_column_id":22280
                 }
               ],
               "transform_expr":"`block`",
               "output_soql_type":"SoQLText",
-              "id":285873,
-              "completed_at":"2017-05-09T23:10:20"
+              "id":20802,
+              "completed_at":null
             },
             "position":3,
             "is_primary_key":false,
-            "id":250672,
+            "id":18136,
             "field_name":"block",
             "display_name":"Block",
             "description":""
@@ -106,17 +106,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310267
+                  "input_column_id":22281
                 }
               ],
               "transform_expr":"`iucr`",
               "output_soql_type":"SoQLText",
-              "id":285874,
-              "completed_at":"2017-05-09T23:10:21"
+              "id":20803,
+              "completed_at":null
             },
             "position":4,
             "is_primary_key":false,
-            "id":250673,
+            "id":18137,
             "field_name":"iucr",
             "display_name":"IUCR",
             "description":""
@@ -125,17 +125,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310268
+                  "input_column_id":22282
                 }
               ],
               "transform_expr":"`primary_type`",
               "output_soql_type":"SoQLText",
-              "id":285875,
-              "completed_at":"2017-05-09T23:10:21"
+              "id":20804,
+              "completed_at":null
             },
             "position":5,
             "is_primary_key":false,
-            "id":250674,
+            "id":18138,
             "field_name":"primary_type",
             "display_name":"Primary Type",
             "description":""
@@ -144,17 +144,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310269
+                  "input_column_id":22283
                 }
               ],
               "transform_expr":"`description`",
               "output_soql_type":"SoQLText",
-              "id":285876,
+              "id":20805,
               "completed_at":null
             },
             "position":6,
             "is_primary_key":false,
-            "id":250675,
+            "id":18139,
             "field_name":"description",
             "display_name":"Description",
             "description":""
@@ -163,17 +163,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310270
+                  "input_column_id":22284
                 }
               ],
               "transform_expr":"`location_description`",
               "output_soql_type":"SoQLText",
-              "id":285877,
+              "id":20806,
               "completed_at":null
             },
             "position":7,
             "is_primary_key":false,
-            "id":250676,
+            "id":18140,
             "field_name":"location_description",
             "display_name":"Location Description",
             "description":""
@@ -182,17 +182,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310271
+                  "input_column_id":22285
                 }
               ],
               "transform_expr":"to_boolean(`arrest`)",
               "output_soql_type":"SoQLBoolean",
-              "id":285878,
+              "id":20807,
               "completed_at":null
             },
             "position":8,
             "is_primary_key":false,
-            "id":250677,
+            "id":18141,
             "field_name":"arrest",
             "display_name":"Arrest",
             "description":""
@@ -201,17 +201,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310272
+                  "input_column_id":22286
                 }
               ],
               "transform_expr":"to_boolean(`domestic`)",
               "output_soql_type":"SoQLBoolean",
-              "id":285879,
+              "id":20808,
               "completed_at":null
             },
             "position":9,
             "is_primary_key":false,
-            "id":250678,
+            "id":18142,
             "field_name":"domestic",
             "display_name":"Domestic",
             "description":""
@@ -220,17 +220,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310273
+                  "input_column_id":22287
                 }
               ],
               "transform_expr":"to_number(`beat`)",
               "output_soql_type":"SoQLNumber",
-              "id":285880,
+              "id":20809,
               "completed_at":null
             },
             "position":10,
             "is_primary_key":false,
-            "id":250679,
+            "id":18143,
             "field_name":"beat",
             "display_name":"Beat",
             "description":""
@@ -239,17 +239,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310274
+                  "input_column_id":22288
                 }
               ],
               "transform_expr":"to_number(`district`)",
               "output_soql_type":"SoQLNumber",
-              "id":285881,
+              "id":20810,
               "completed_at":null
             },
             "position":11,
             "is_primary_key":false,
-            "id":250680,
+            "id":18144,
             "field_name":"district",
             "display_name":"District",
             "description":""
@@ -258,17 +258,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310275
+                  "input_column_id":22289
                 }
               ],
               "transform_expr":"to_number(`ward`)",
               "output_soql_type":"SoQLNumber",
-              "id":285882,
+              "id":20811,
               "completed_at":null
             },
             "position":12,
             "is_primary_key":false,
-            "id":250681,
+            "id":18145,
             "field_name":"ward",
             "display_name":"Ward",
             "description":""
@@ -277,17 +277,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310276
+                  "input_column_id":22290
                 }
               ],
               "transform_expr":"to_number(`community_area`)",
               "output_soql_type":"SoQLNumber",
-              "id":285883,
+              "id":20812,
               "completed_at":null
             },
             "position":13,
             "is_primary_key":false,
-            "id":250682,
+            "id":18146,
             "field_name":"community_area",
             "display_name":"Community Area",
             "description":""
@@ -296,17 +296,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310277
+                  "input_column_id":22291
                 }
               ],
               "transform_expr":"`fbi_code`",
               "output_soql_type":"SoQLText",
-              "id":285884,
+              "id":20813,
               "completed_at":null
             },
             "position":14,
             "is_primary_key":false,
-            "id":250683,
+            "id":18147,
             "field_name":"fbi_code",
             "display_name":"FBI Code",
             "description":""
@@ -315,17 +315,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310278
+                  "input_column_id":22292
                 }
               ],
               "transform_expr":"to_number(`x_coordinate`)",
               "output_soql_type":"SoQLNumber",
-              "id":285885,
+              "id":20814,
               "completed_at":null
             },
             "position":15,
             "is_primary_key":false,
-            "id":250684,
+            "id":18148,
             "field_name":"x_coordinate",
             "display_name":"X Coordinate",
             "description":""
@@ -334,17 +334,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310279
+                  "input_column_id":22293
                 }
               ],
               "transform_expr":"to_number(`y_coordinate`)",
               "output_soql_type":"SoQLNumber",
-              "id":285886,
+              "id":20815,
               "completed_at":null
             },
             "position":16,
             "is_primary_key":false,
-            "id":250685,
+            "id":18149,
             "field_name":"y_coordinate",
             "display_name":"Y Coordinate",
             "description":""
@@ -353,17 +353,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310280
+                  "input_column_id":22294
                 }
               ],
               "transform_expr":"to_number(`year`)",
               "output_soql_type":"SoQLNumber",
-              "id":285887,
+              "id":20816,
               "completed_at":null
             },
             "position":17,
             "is_primary_key":false,
-            "id":250686,
+            "id":18150,
             "field_name":"year",
             "display_name":"Year",
             "description":""
@@ -372,17 +372,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310281
+                  "input_column_id":22295
                 }
               ],
               "transform_expr":"to_floating_timestamp(`updated_on`)",
               "output_soql_type":"SoQLFloatingTimestamp",
-              "id":285888,
+              "id":20817,
               "completed_at":null
             },
             "position":18,
             "is_primary_key":false,
-            "id":250687,
+            "id":18151,
             "field_name":"updated_on",
             "display_name":"Updated On",
             "description":""
@@ -391,17 +391,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310282
+                  "input_column_id":22296
                 }
               ],
               "transform_expr":"to_number(`latitude`)",
               "output_soql_type":"SoQLNumber",
-              "id":285889,
+              "id":20818,
               "completed_at":null
             },
             "position":19,
             "is_primary_key":false,
-            "id":250688,
+            "id":18152,
             "field_name":"latitude",
             "display_name":"Latitude",
             "description":""
@@ -410,17 +410,17 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310283
+                  "input_column_id":22297
                 }
               ],
               "transform_expr":"to_number(`longitude`)",
               "output_soql_type":"SoQLNumber",
-              "id":285890,
+              "id":20819,
               "completed_at":null
             },
             "position":20,
             "is_primary_key":false,
-            "id":250689,
+            "id":18153,
             "field_name":"longitude",
             "display_name":"Longitude",
             "description":""
@@ -429,28 +429,28 @@ export const uploadBytes = {
             "transform":{
               "transform_input_columns":[
                 {
-                  "input_column_id":310284
+                  "input_column_id":22298
                 }
               ],
               "transform_expr":"`location`",
               "output_soql_type":"SoQLText",
-              "id":285891,
+              "id":20820,
               "completed_at":null
             },
             "position":21,
             "is_primary_key":false,
-            "id":250690,
+            "id":18154,
             "field_name":"location",
             "display_name":"Location",
             "description":""
           }
         ],
-        "inserted_at":"2017-05-09T23:10:19.128086",
-        "input_schema_id":9649,
-        "id":9908,
+        "inserted_at":"2017-05-12T14:12:21.648593",
+        "input_schema_id":945,
+        "id":1145,
         "error_count":0,
         "created_by":{
-          "user_id":"k7tm-2kym",
+          "user_id":"yczc-8men",
           "email":"brandon.webster@socrata.com",
           "display_name":"Brandon Webster"
         },
@@ -458,13 +458,13 @@ export const uploadBytes = {
       }
     ],
     "name":null,
-    "inserted_at":"2017-05-09T23:10:16.485161",
+    "inserted_at":"2017-05-12T14:12:09.412481",
     "input_columns":[
       {
         "soql_type":"SoQLText",
         "position":0,
-        "input_schema_id":9649,
-        "id":310263,
+        "input_schema_id":945,
+        "id":22277,
         "guessed_subtypes":[
 
         ],
@@ -474,8 +474,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":1,
-        "input_schema_id":9649,
-        "id":310264,
+        "input_schema_id":945,
+        "id":22278,
         "guessed_subtypes":[
 
         ],
@@ -485,8 +485,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":2,
-        "input_schema_id":9649,
-        "id":310265,
+        "input_schema_id":945,
+        "id":22279,
         "guessed_subtypes":[
 
         ],
@@ -496,8 +496,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":3,
-        "input_schema_id":9649,
-        "id":310266,
+        "input_schema_id":945,
+        "id":22280,
         "guessed_subtypes":[
 
         ],
@@ -507,8 +507,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":4,
-        "input_schema_id":9649,
-        "id":310267,
+        "input_schema_id":945,
+        "id":22281,
         "guessed_subtypes":[
 
         ],
@@ -518,8 +518,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":5,
-        "input_schema_id":9649,
-        "id":310268,
+        "input_schema_id":945,
+        "id":22282,
         "guessed_subtypes":[
 
         ],
@@ -529,8 +529,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":6,
-        "input_schema_id":9649,
-        "id":310269,
+        "input_schema_id":945,
+        "id":22283,
         "guessed_subtypes":[
 
         ],
@@ -540,8 +540,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":7,
-        "input_schema_id":9649,
-        "id":310270,
+        "input_schema_id":945,
+        "id":22284,
         "guessed_subtypes":[
 
         ],
@@ -551,8 +551,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":8,
-        "input_schema_id":9649,
-        "id":310271,
+        "input_schema_id":945,
+        "id":22285,
         "guessed_subtypes":[
 
         ],
@@ -562,8 +562,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":9,
-        "input_schema_id":9649,
-        "id":310272,
+        "input_schema_id":945,
+        "id":22286,
         "guessed_subtypes":[
 
         ],
@@ -573,8 +573,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":10,
-        "input_schema_id":9649,
-        "id":310273,
+        "input_schema_id":945,
+        "id":22287,
         "guessed_subtypes":[
 
         ],
@@ -584,8 +584,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":11,
-        "input_schema_id":9649,
-        "id":310274,
+        "input_schema_id":945,
+        "id":22288,
         "guessed_subtypes":[
 
         ],
@@ -595,8 +595,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":12,
-        "input_schema_id":9649,
-        "id":310275,
+        "input_schema_id":945,
+        "id":22289,
         "guessed_subtypes":[
 
         ],
@@ -606,8 +606,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":13,
-        "input_schema_id":9649,
-        "id":310276,
+        "input_schema_id":945,
+        "id":22290,
         "guessed_subtypes":[
 
         ],
@@ -617,8 +617,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":14,
-        "input_schema_id":9649,
-        "id":310277,
+        "input_schema_id":945,
+        "id":22291,
         "guessed_subtypes":[
 
         ],
@@ -628,8 +628,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":15,
-        "input_schema_id":9649,
-        "id":310278,
+        "input_schema_id":945,
+        "id":22292,
         "guessed_subtypes":[
 
         ],
@@ -639,8 +639,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":16,
-        "input_schema_id":9649,
-        "id":310279,
+        "input_schema_id":945,
+        "id":22293,
         "guessed_subtypes":[
 
         ],
@@ -650,8 +650,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":17,
-        "input_schema_id":9649,
-        "id":310280,
+        "input_schema_id":945,
+        "id":22294,
         "guessed_subtypes":[
 
         ],
@@ -661,8 +661,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":18,
-        "input_schema_id":9649,
-        "id":310281,
+        "input_schema_id":945,
+        "id":22295,
         "guessed_subtypes":[
 
         ],
@@ -672,8 +672,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":19,
-        "input_schema_id":9649,
-        "id":310282,
+        "input_schema_id":945,
+        "id":22296,
         "guessed_subtypes":[
 
         ],
@@ -683,8 +683,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":20,
-        "input_schema_id":9649,
-        "id":310283,
+        "input_schema_id":945,
+        "id":22297,
         "guessed_subtypes":[
 
         ],
@@ -694,8 +694,8 @@ export const uploadBytes = {
       {
         "soql_type":"SoQLText",
         "position":21,
-        "input_schema_id":9649,
-        "id":310284,
+        "input_schema_id":945,
+        "id":22298,
         "guessed_subtypes":[
 
         ],
@@ -703,17 +703,17 @@ export const uploadBytes = {
         "field_name":"location"
       }
     ],
-    "id":9649,
+    "id":945,
     "created_by":{
-      "user_id":"k7tm-2kym",
-      "email":"test.user@socrata.com",
-      "display_name":"Test User"
+      "user_id":"yczc-8men",
+      "email":"brandon.webster@socrata.com",
+      "display_name":"Brandon Webster"
     }
   },
   "links":{
-    "transform":"/api/publishing/v1/upload/8325/schema/9649",
-    "show":"/api/publishing/v1/upload/8325/schema/9649",
-    "latest_output":"/api/publishing/v1/upload/8325/schema/9649/output/latest"
+    "transform":"/api/publishing/v1/upload/823/schema/945",
+    "show":"/api/publishing/v1/upload/823/schema/945",
+    "latest_output":"/api/publishing/v1/upload/823/schema/945/output/latest"
   }
 };
 
@@ -721,7 +721,7 @@ export const uploadShow = {
   "resource":{
     "schemas":[
       {
-        "total_rows":null,
+        "total_rows":9,
         "output_schemas":[
           {
             "output_columns":[
@@ -729,17 +729,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332177
+                      "input_column_id":22277
                     }
                   ],
                   "transform_expr":"to_number(`id`)",
                   "output_soql_type":"SoQLNumber",
-                  "id":314244,
+                  "id":20799,
                   "completed_at":null
                 },
                 "position":0,
                 "is_primary_key":false,
-                "id":279376,
+                "id":18133,
                 "field_name":"id",
                 "display_name":"ID",
                 "description":""
@@ -748,17 +748,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332178
+                      "input_column_id":22278
                     }
                   ],
                   "transform_expr":"`case_number`",
                   "output_soql_type":"SoQLText",
-                  "id":314245,
+                  "id":20800,
                   "completed_at":null
                 },
                 "position":1,
                 "is_primary_key":false,
-                "id":279377,
+                "id":18134,
                 "field_name":"case_number",
                 "display_name":"Case Number",
                 "description":""
@@ -767,17 +767,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332179
+                      "input_column_id":22279
                     }
                   ],
                   "transform_expr":"to_floating_timestamp(`date`)",
                   "output_soql_type":"SoQLFloatingTimestamp",
-                  "id":314246,
+                  "id":20801,
                   "completed_at":null
                 },
                 "position":2,
                 "is_primary_key":false,
-                "id":279378,
+                "id":18135,
                 "field_name":"date",
                 "display_name":"Date",
                 "description":""
@@ -786,17 +786,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332180
+                      "input_column_id":22280
                     }
                   ],
                   "transform_expr":"`block`",
                   "output_soql_type":"SoQLText",
-                  "id":314247,
+                  "id":20802,
                   "completed_at":null
                 },
                 "position":3,
                 "is_primary_key":false,
-                "id":279379,
+                "id":18136,
                 "field_name":"block",
                 "display_name":"Block",
                 "description":""
@@ -805,17 +805,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332181
+                      "input_column_id":22281
                     }
                   ],
                   "transform_expr":"`iucr`",
                   "output_soql_type":"SoQLText",
-                  "id":314248,
+                  "id":20803,
                   "completed_at":null
                 },
                 "position":4,
                 "is_primary_key":false,
-                "id":279380,
+                "id":18137,
                 "field_name":"iucr",
                 "display_name":"IUCR",
                 "description":""
@@ -824,17 +824,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332182
+                      "input_column_id":22282
                     }
                   ],
                   "transform_expr":"`primary_type`",
                   "output_soql_type":"SoQLText",
-                  "id":314249,
+                  "id":20804,
                   "completed_at":null
                 },
                 "position":5,
                 "is_primary_key":false,
-                "id":279381,
+                "id":18138,
                 "field_name":"primary_type",
                 "display_name":"Primary Type",
                 "description":""
@@ -843,17 +843,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332183
+                      "input_column_id":22283
                     }
                   ],
                   "transform_expr":"`description`",
                   "output_soql_type":"SoQLText",
-                  "id":314250,
+                  "id":20805,
                   "completed_at":null
                 },
                 "position":6,
                 "is_primary_key":false,
-                "id":279382,
+                "id":18139,
                 "field_name":"description",
                 "display_name":"Description",
                 "description":""
@@ -862,17 +862,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332184
+                      "input_column_id":22284
                     }
                   ],
                   "transform_expr":"`location_description`",
                   "output_soql_type":"SoQLText",
-                  "id":314251,
+                  "id":20806,
                   "completed_at":null
                 },
                 "position":7,
                 "is_primary_key":false,
-                "id":279383,
+                "id":18140,
                 "field_name":"location_description",
                 "display_name":"Location Description",
                 "description":""
@@ -881,17 +881,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332185
+                      "input_column_id":22285
                     }
                   ],
                   "transform_expr":"to_boolean(`arrest`)",
                   "output_soql_type":"SoQLBoolean",
-                  "id":314252,
+                  "id":20807,
                   "completed_at":null
                 },
                 "position":8,
                 "is_primary_key":false,
-                "id":279384,
+                "id":18141,
                 "field_name":"arrest",
                 "display_name":"Arrest",
                 "description":""
@@ -900,17 +900,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332186
+                      "input_column_id":22286
                     }
                   ],
                   "transform_expr":"to_boolean(`domestic`)",
                   "output_soql_type":"SoQLBoolean",
-                  "id":314253,
+                  "id":20808,
                   "completed_at":null
                 },
                 "position":9,
                 "is_primary_key":false,
-                "id":279385,
+                "id":18142,
                 "field_name":"domestic",
                 "display_name":"Domestic",
                 "description":""
@@ -919,17 +919,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332187
+                      "input_column_id":22287
                     }
                   ],
                   "transform_expr":"to_number(`beat`)",
                   "output_soql_type":"SoQLNumber",
-                  "id":314254,
+                  "id":20809,
                   "completed_at":null
                 },
                 "position":10,
                 "is_primary_key":false,
-                "id":279386,
+                "id":18143,
                 "field_name":"beat",
                 "display_name":"Beat",
                 "description":""
@@ -938,17 +938,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332188
+                      "input_column_id":22288
                     }
                   ],
                   "transform_expr":"to_number(`district`)",
                   "output_soql_type":"SoQLNumber",
-                  "id":314255,
+                  "id":20810,
                   "completed_at":null
                 },
                 "position":11,
                 "is_primary_key":false,
-                "id":279387,
+                "id":18144,
                 "field_name":"district",
                 "display_name":"District",
                 "description":""
@@ -957,17 +957,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332189
+                      "input_column_id":22289
                     }
                   ],
                   "transform_expr":"to_number(`ward`)",
                   "output_soql_type":"SoQLNumber",
-                  "id":314256,
+                  "id":20811,
                   "completed_at":null
                 },
                 "position":12,
                 "is_primary_key":false,
-                "id":279388,
+                "id":18145,
                 "field_name":"ward",
                 "display_name":"Ward",
                 "description":""
@@ -976,17 +976,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332190
+                      "input_column_id":22290
                     }
                   ],
                   "transform_expr":"to_number(`community_area`)",
                   "output_soql_type":"SoQLNumber",
-                  "id":314257,
+                  "id":20812,
                   "completed_at":null
                 },
                 "position":13,
                 "is_primary_key":false,
-                "id":279389,
+                "id":18146,
                 "field_name":"community_area",
                 "display_name":"Community Area",
                 "description":""
@@ -995,17 +995,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332191
+                      "input_column_id":22291
                     }
                   ],
                   "transform_expr":"`fbi_code`",
                   "output_soql_type":"SoQLText",
-                  "id":314258,
+                  "id":20813,
                   "completed_at":null
                 },
                 "position":14,
                 "is_primary_key":false,
-                "id":279390,
+                "id":18147,
                 "field_name":"fbi_code",
                 "display_name":"FBI Code",
                 "description":""
@@ -1014,17 +1014,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332192
+                      "input_column_id":22292
                     }
                   ],
                   "transform_expr":"to_number(`x_coordinate`)",
                   "output_soql_type":"SoQLNumber",
-                  "id":314259,
+                  "id":20814,
                   "completed_at":null
                 },
                 "position":15,
                 "is_primary_key":false,
-                "id":279391,
+                "id":18148,
                 "field_name":"x_coordinate",
                 "display_name":"X Coordinate",
                 "description":""
@@ -1033,17 +1033,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332193
+                      "input_column_id":22293
                     }
                   ],
                   "transform_expr":"to_number(`y_coordinate`)",
                   "output_soql_type":"SoQLNumber",
-                  "id":314260,
+                  "id":20815,
                   "completed_at":null
                 },
                 "position":16,
                 "is_primary_key":false,
-                "id":279392,
+                "id":18149,
                 "field_name":"y_coordinate",
                 "display_name":"Y Coordinate",
                 "description":""
@@ -1052,17 +1052,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332194
+                      "input_column_id":22294
                     }
                   ],
                   "transform_expr":"to_number(`year`)",
                   "output_soql_type":"SoQLNumber",
-                  "id":314261,
+                  "id":20816,
                   "completed_at":null
                 },
                 "position":17,
                 "is_primary_key":false,
-                "id":279393,
+                "id":18150,
                 "field_name":"year",
                 "display_name":"Year",
                 "description":""
@@ -1071,17 +1071,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332195
+                      "input_column_id":22295
                     }
                   ],
                   "transform_expr":"to_floating_timestamp(`updated_on`)",
                   "output_soql_type":"SoQLFloatingTimestamp",
-                  "id":314262,
+                  "id":20817,
                   "completed_at":null
                 },
                 "position":18,
                 "is_primary_key":false,
-                "id":279394,
+                "id":18151,
                 "field_name":"updated_on",
                 "display_name":"Updated On",
                 "description":""
@@ -1090,17 +1090,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332196
+                      "input_column_id":22296
                     }
                   ],
                   "transform_expr":"to_number(`latitude`)",
                   "output_soql_type":"SoQLNumber",
-                  "id":314263,
+                  "id":20818,
                   "completed_at":null
                 },
                 "position":19,
                 "is_primary_key":false,
-                "id":279395,
+                "id":18152,
                 "field_name":"latitude",
                 "display_name":"Latitude",
                 "description":""
@@ -1109,17 +1109,17 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332197
+                      "input_column_id":22297
                     }
                   ],
                   "transform_expr":"to_number(`longitude`)",
                   "output_soql_type":"SoQLNumber",
-                  "id":314264,
+                  "id":20819,
                   "completed_at":null
                 },
                 "position":20,
                 "is_primary_key":false,
-                "id":279396,
+                "id":18153,
                 "field_name":"longitude",
                 "display_name":"Longitude",
                 "description":""
@@ -1128,28 +1128,28 @@ export const uploadShow = {
                 "transform":{
                   "transform_input_columns":[
                     {
-                      "input_column_id":332198
+                      "input_column_id":22298
                     }
                   ],
                   "transform_expr":"`location`",
                   "output_soql_type":"SoQLText",
-                  "id":314265,
+                  "id":20820,
                   "completed_at":null
                 },
                 "position":21,
                 "is_primary_key":false,
-                "id":279397,
+                "id":18154,
                 "field_name":"location",
                 "display_name":"Location",
                 "description":""
               }
             ],
-            "inserted_at":"2017-05-11T18:31:49.251822",
-            "input_schema_id":9649,
-            "id":11197,
+            "inserted_at":"2017-05-12T14:12:21.648593",
+            "input_schema_id":945,
+            "id":1145,
             "error_count":0,
             "created_by":{
-              "user_id":"k7tm-2kym",
+              "user_id":"yczc-8men",
               "email":"brandon.webster@socrata.com",
               "display_name":"Brandon Webster"
             },
@@ -1157,13 +1157,13 @@ export const uploadShow = {
           }
         ],
         "name":null,
-        "inserted_at":"2017-05-11T18:31:46.708687",
+        "inserted_at":"2017-05-12T14:12:09.412481",
         "input_columns":[
           {
             "soql_type":"SoQLText",
             "position":0,
-            "input_schema_id":9649,
-            "id":310263,
+            "input_schema_id":945,
+            "id":22277,
             "guessed_subtypes":[
 
             ],
@@ -1173,8 +1173,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":1,
-            "input_schema_id":9649,
-            "id":310264,
+            "input_schema_id":945,
+            "id":22278,
             "guessed_subtypes":[
 
             ],
@@ -1184,8 +1184,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":2,
-            "input_schema_id":9649,
-            "id":310265,
+            "input_schema_id":945,
+            "id":22279,
             "guessed_subtypes":[
 
             ],
@@ -1195,8 +1195,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":3,
-            "input_schema_id":9649,
-            "id":310266,
+            "input_schema_id":945,
+            "id":22280,
             "guessed_subtypes":[
 
             ],
@@ -1206,8 +1206,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":4,
-            "input_schema_id":9649,
-            "id":310267,
+            "input_schema_id":945,
+            "id":22281,
             "guessed_subtypes":[
 
             ],
@@ -1217,8 +1217,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":5,
-            "input_schema_id":9649,
-            "id":310268,
+            "input_schema_id":945,
+            "id":22282,
             "guessed_subtypes":[
 
             ],
@@ -1228,8 +1228,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":6,
-            "input_schema_id":9649,
-            "id":310269,
+            "input_schema_id":945,
+            "id":22283,
             "guessed_subtypes":[
 
             ],
@@ -1239,8 +1239,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":7,
-            "input_schema_id":9649,
-            "id":310270,
+            "input_schema_id":945,
+            "id":22284,
             "guessed_subtypes":[
 
             ],
@@ -1250,8 +1250,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":8,
-            "input_schema_id":9649,
-            "id":310271,
+            "input_schema_id":945,
+            "id":22285,
             "guessed_subtypes":[
 
             ],
@@ -1261,8 +1261,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":9,
-            "input_schema_id":9649,
-            "id":310272,
+            "input_schema_id":945,
+            "id":22286,
             "guessed_subtypes":[
 
             ],
@@ -1272,8 +1272,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":10,
-            "input_schema_id":9649,
-            "id":310273,
+            "input_schema_id":945,
+            "id":22287,
             "guessed_subtypes":[
 
             ],
@@ -1283,8 +1283,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":11,
-            "input_schema_id":9649,
-            "id":310274,
+            "input_schema_id":945,
+            "id":22288,
             "guessed_subtypes":[
 
             ],
@@ -1294,8 +1294,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":12,
-            "input_schema_id":9649,
-            "id":310275,
+            "input_schema_id":945,
+            "id":22289,
             "guessed_subtypes":[
 
             ],
@@ -1305,8 +1305,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":13,
-            "input_schema_id":9649,
-            "id":310276,
+            "input_schema_id":945,
+            "id":22290,
             "guessed_subtypes":[
 
             ],
@@ -1316,8 +1316,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":14,
-            "input_schema_id":9649,
-            "id":310277,
+            "input_schema_id":945,
+            "id":22291,
             "guessed_subtypes":[
 
             ],
@@ -1327,8 +1327,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":15,
-            "input_schema_id":9649,
-            "id":310278,
+            "input_schema_id":945,
+            "id":22292,
             "guessed_subtypes":[
 
             ],
@@ -1338,8 +1338,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":16,
-            "input_schema_id":9649,
-            "id":310279,
+            "input_schema_id":945,
+            "id":22293,
             "guessed_subtypes":[
 
             ],
@@ -1349,8 +1349,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":17,
-            "input_schema_id":9649,
-            "id":310280,
+            "input_schema_id":945,
+            "id":22294,
             "guessed_subtypes":[
 
             ],
@@ -1360,8 +1360,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":18,
-            "input_schema_id":9649,
-            "id":310281,
+            "input_schema_id":945,
+            "id":22295,
             "guessed_subtypes":[
 
             ],
@@ -1371,8 +1371,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":19,
-            "input_schema_id":9649,
-            "id":310282,
+            "input_schema_id":945,
+            "id":22296,
             "guessed_subtypes":[
 
             ],
@@ -1382,8 +1382,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":20,
-            "input_schema_id":9649,
-            "id":310283,
+            "input_schema_id":945,
+            "id":22297,
             "guessed_subtypes":[
 
             ],
@@ -1393,8 +1393,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":21,
-            "input_schema_id":9649,
-            "id":310284,
+            "input_schema_id":945,
+            "id":22298,
             "guessed_subtypes":[
 
             ],
@@ -1402,70 +1402,51 @@ export const uploadShow = {
             "field_name":"location"
           }
         ],
-        "id":9649,
+        "id":945,
         "created_by":{
-          "user_id":"k7tm-2kym",
-          "email":"test.user@socrata.com",
-          "display_name":"Test User"
+          "user_id":"yczc-8men",
+          "email":"brandon.webster@socrata.com",
+          "display_name":"Brandon Webster"
         }
       }
     ],
-    "inserted_at":"2017-05-09T23:10:16.339627",
-    "id":8325,
-    "finished_at":null,
+    "inserted_at":"2017-05-12T14:12:09.293177",
+    "id":823,
+    "finished_at":"2017-05-12T14:12:22",
     "filename":"petty_crimes.csv",
     "failed_at":null,
     "created_by":{
-      "user_id":"k7tm-2kym",
-      "email":"test.user@socrata.com",
-      "display_name":"Test User"
+      "user_id":"yczc-8men",
+      "email":"brandon.webster@socrata.com",
+      "display_name":"Brandon Webster"
     },
-    "content_type":null
+    "content_type":"text/csv"
   },
   "links":{
-    "show":"/api/publishing/v1/upload/8325",
-    "bytes":"/api/publishing/v1/upload/8325",
-    "add_to_revision":"/api/publishing/v1/upload/8325"
+    "show":"/api/publishing/v1/upload/823",
+    "bytes":"/api/publishing/v1/upload/823",
+    "add_to_revision":"/api/publishing/v1/upload/823"
   }
 };
 
-export const newOutputSchema = {
+export const newOutputSchemaFromDrop = {
   "resource":{
     "output_columns":[
       {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310263
-            }
-          ],
-          "transform_expr":"to_text(id)",
-          "output_soql_type":"SoQLText",
-          "id":309525,
-          "completed_at":null
-        },
-        "position":0,
-        "is_primary_key":false,
-        "id":274645,
-        "field_name":"id",
-        "display_name":"ID",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310264
+              "input_column_id":22278
             }
           ],
           "transform_expr":"`case_number`",
           "output_soql_type":"SoQLText",
-          "id":285871,
-          "completed_at":null
+          "id":20800,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":1,
         "is_primary_key":false,
-        "id":250670,
+        "id":18134,
         "field_name":"case_number",
         "display_name":"Case Number",
         "description":""
@@ -1474,17 +1455,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310265
+              "input_column_id":22279
             }
           ],
           "transform_expr":"to_floating_timestamp(`date`)",
           "output_soql_type":"SoQLFloatingTimestamp",
-          "id":285872,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20801,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":2,
         "is_primary_key":false,
-        "id":250671,
+        "id":18135,
         "field_name":"date",
         "display_name":"Date",
         "description":""
@@ -1493,17 +1474,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310266
+              "input_column_id":22280
             }
           ],
           "transform_expr":"`block`",
           "output_soql_type":"SoQLText",
-          "id":285873,
-          "completed_at":"2017-05-09T23:10:20"
+          "id":20802,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":3,
         "is_primary_key":false,
-        "id":250672,
+        "id":18136,
         "field_name":"block",
         "display_name":"Block",
         "description":""
@@ -1512,17 +1493,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310267
+              "input_column_id":22281
             }
           ],
           "transform_expr":"`iucr`",
           "output_soql_type":"SoQLText",
-          "id":285874,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20803,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":4,
         "is_primary_key":false,
-        "id":250673,
+        "id":18137,
         "field_name":"iucr",
         "display_name":"IUCR",
         "description":""
@@ -1531,17 +1512,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310268
+              "input_column_id":22282
             }
           ],
           "transform_expr":"`primary_type`",
           "output_soql_type":"SoQLText",
-          "id":285875,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20804,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":5,
         "is_primary_key":false,
-        "id":250674,
+        "id":18138,
         "field_name":"primary_type",
         "display_name":"Primary Type",
         "description":""
@@ -1550,17 +1531,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310269
+              "input_column_id":22283
             }
           ],
           "transform_expr":"`description`",
           "output_soql_type":"SoQLText",
-          "id":285876,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20805,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":6,
         "is_primary_key":false,
-        "id":250675,
+        "id":18139,
         "field_name":"description",
         "display_name":"Description",
         "description":""
@@ -1569,17 +1550,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310270
+              "input_column_id":22284
             }
           ],
           "transform_expr":"`location_description`",
           "output_soql_type":"SoQLText",
-          "id":285877,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20806,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":7,
         "is_primary_key":false,
-        "id":250676,
+        "id":18140,
         "field_name":"location_description",
         "display_name":"Location Description",
         "description":""
@@ -1588,17 +1569,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310271
+              "input_column_id":22285
             }
           ],
           "transform_expr":"to_boolean(`arrest`)",
           "output_soql_type":"SoQLBoolean",
-          "id":285878,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20807,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":8,
         "is_primary_key":false,
-        "id":250677,
+        "id":18141,
         "field_name":"arrest",
         "display_name":"Arrest",
         "description":""
@@ -1607,17 +1588,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310272
+              "input_column_id":22286
             }
           ],
           "transform_expr":"to_boolean(`domestic`)",
           "output_soql_type":"SoQLBoolean",
-          "id":285879,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20808,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":9,
         "is_primary_key":false,
-        "id":250678,
+        "id":18142,
         "field_name":"domestic",
         "display_name":"Domestic",
         "description":""
@@ -1626,17 +1607,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310273
+              "input_column_id":22287
             }
           ],
           "transform_expr":"to_number(`beat`)",
           "output_soql_type":"SoQLNumber",
-          "id":285880,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20809,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":10,
         "is_primary_key":false,
-        "id":250679,
+        "id":18143,
         "field_name":"beat",
         "display_name":"Beat",
         "description":""
@@ -1645,17 +1626,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310274
+              "input_column_id":22288
             }
           ],
           "transform_expr":"to_number(`district`)",
           "output_soql_type":"SoQLNumber",
-          "id":285881,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20810,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":11,
         "is_primary_key":false,
-        "id":250680,
+        "id":18144,
         "field_name":"district",
         "display_name":"District",
         "description":""
@@ -1664,17 +1645,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310275
+              "input_column_id":22289
             }
           ],
           "transform_expr":"to_number(`ward`)",
           "output_soql_type":"SoQLNumber",
-          "id":285882,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20811,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":12,
         "is_primary_key":false,
-        "id":250681,
+        "id":18145,
         "field_name":"ward",
         "display_name":"Ward",
         "description":""
@@ -1683,17 +1664,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310276
+              "input_column_id":22290
             }
           ],
           "transform_expr":"to_number(`community_area`)",
           "output_soql_type":"SoQLNumber",
-          "id":285883,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20812,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":13,
         "is_primary_key":false,
-        "id":250682,
+        "id":18146,
         "field_name":"community_area",
         "display_name":"Community Area",
         "description":""
@@ -1702,17 +1683,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310277
+              "input_column_id":22291
             }
           ],
           "transform_expr":"`fbi_code`",
           "output_soql_type":"SoQLText",
-          "id":285884,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20813,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":14,
         "is_primary_key":false,
-        "id":250683,
+        "id":18147,
         "field_name":"fbi_code",
         "display_name":"FBI Code",
         "description":""
@@ -1721,17 +1702,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310278
+              "input_column_id":22292
             }
           ],
           "transform_expr":"to_number(`x_coordinate`)",
           "output_soql_type":"SoQLNumber",
-          "id":285885,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20814,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":15,
         "is_primary_key":false,
-        "id":250684,
+        "id":18148,
         "field_name":"x_coordinate",
         "display_name":"X Coordinate",
         "description":""
@@ -1740,17 +1721,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310279
+              "input_column_id":22293
             }
           ],
           "transform_expr":"to_number(`y_coordinate`)",
           "output_soql_type":"SoQLNumber",
-          "id":285886,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20815,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":16,
         "is_primary_key":false,
-        "id":250685,
+        "id":18149,
         "field_name":"y_coordinate",
         "display_name":"Y Coordinate",
         "description":""
@@ -1759,17 +1740,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310280
+              "input_column_id":22294
             }
           ],
           "transform_expr":"to_number(`year`)",
           "output_soql_type":"SoQLNumber",
-          "id":285887,
-          "completed_at":"2017-05-09T23:10:22"
+          "id":20816,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":17,
         "is_primary_key":false,
-        "id":250686,
+        "id":18150,
         "field_name":"year",
         "display_name":"Year",
         "description":""
@@ -1778,17 +1759,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310281
+              "input_column_id":22295
             }
           ],
           "transform_expr":"to_floating_timestamp(`updated_on`)",
           "output_soql_type":"SoQLFloatingTimestamp",
-          "id":285888,
-          "completed_at":"2017-05-09T23:10:22"
+          "id":20817,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":18,
         "is_primary_key":false,
-        "id":250687,
+        "id":18151,
         "field_name":"updated_on",
         "display_name":"Updated On",
         "description":""
@@ -1797,17 +1778,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310282
+              "input_column_id":22296
             }
           ],
           "transform_expr":"to_number(`latitude`)",
           "output_soql_type":"SoQLNumber",
-          "id":285889,
-          "completed_at":"2017-05-09T23:10:22"
+          "id":20818,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":19,
         "is_primary_key":false,
-        "id":250688,
+        "id":18152,
         "field_name":"latitude",
         "display_name":"Latitude",
         "description":""
@@ -1816,17 +1797,17 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310283
+              "input_column_id":22297
             }
           ],
           "transform_expr":"to_number(`longitude`)",
           "output_soql_type":"SoQLNumber",
-          "id":285890,
-          "completed_at":"2017-05-09T23:10:22"
+          "id":20819,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":20,
         "is_primary_key":false,
-        "id":250689,
+        "id":18153,
         "field_name":"longitude",
         "display_name":"Longitude",
         "description":""
@@ -1835,36 +1816,1353 @@ export const newOutputSchema = {
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310284
+              "input_column_id":22298
             }
           ],
           "transform_expr":"`location`",
           "output_soql_type":"SoQLText",
-          "id":285891,
-          "completed_at":"2017-05-09T23:10:22"
+          "id":20820,
+          "completed_at":"2017-05-12T14:12:23"
         },
         "position":21,
         "is_primary_key":false,
-        "id":250690,
+        "id":18154,
         "field_name":"location",
         "display_name":"Location",
         "description":""
       }
     ],
-    "inserted_at":"2017-05-10T20:55:36.471437",
-    "input_schema_id":9649,
-    "id":10947,
+    "inserted_at":"2017-05-12T14:18:55.922365",
+    "input_schema_id":945,
+    "id":1146,
     "error_count":0,
     "created_by":{
-      "user_id":"k7tm-2kym",
-      "email":"test.user@socrata.com",
-      "display_name":"test user"
+      "user_id":"yczc-8men",
+      "email":"brandon.webster@socrata.com",
+      "display_name":"Brandon Webster"
+    },
+    "completed_at":"2017-05-12T14:18:55"
+  },
+  "links":{
+    "show":"/api/publishing/v1/upload/823/schema/945/output/1146",
+    "rows":"/api/publishing/v1/upload/823/schema/945/rows/1146"
+  }
+};
+
+export const newOutputSchemaFromAdd = {
+  "resource":{
+    "output_columns":[
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22277
+            }
+          ],
+          "transform_expr":"to_number(`id`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20799,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":0,
+        "is_primary_key":false,
+        "id":18133,
+        "field_name":"id",
+        "display_name":"ID",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22278
+            }
+          ],
+          "transform_expr":"`case_number`",
+          "output_soql_type":"SoQLText",
+          "id":20800,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":1,
+        "is_primary_key":false,
+        "id":18134,
+        "field_name":"case_number",
+        "display_name":"Case Number",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22279
+            }
+          ],
+          "transform_expr":"to_floating_timestamp(`date`)",
+          "output_soql_type":"SoQLFloatingTimestamp",
+          "id":20801,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":2,
+        "is_primary_key":false,
+        "id":18135,
+        "field_name":"date",
+        "display_name":"Date",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22280
+            }
+          ],
+          "transform_expr":"`block`",
+          "output_soql_type":"SoQLText",
+          "id":20802,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":3,
+        "is_primary_key":false,
+        "id":18136,
+        "field_name":"block",
+        "display_name":"Block",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22281
+            }
+          ],
+          "transform_expr":"`iucr`",
+          "output_soql_type":"SoQLText",
+          "id":20803,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":4,
+        "is_primary_key":false,
+        "id":18137,
+        "field_name":"iucr",
+        "display_name":"IUCR",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22282
+            }
+          ],
+          "transform_expr":"`primary_type`",
+          "output_soql_type":"SoQLText",
+          "id":20804,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":5,
+        "is_primary_key":false,
+        "id":18138,
+        "field_name":"primary_type",
+        "display_name":"Primary Type",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22283
+            }
+          ],
+          "transform_expr":"`description`",
+          "output_soql_type":"SoQLText",
+          "id":20805,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":6,
+        "is_primary_key":false,
+        "id":18139,
+        "field_name":"description",
+        "display_name":"Description",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22284
+            }
+          ],
+          "transform_expr":"`location_description`",
+          "output_soql_type":"SoQLText",
+          "id":20806,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":7,
+        "is_primary_key":false,
+        "id":18140,
+        "field_name":"location_description",
+        "display_name":"Location Description",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22285
+            }
+          ],
+          "transform_expr":"to_boolean(`arrest`)",
+          "output_soql_type":"SoQLBoolean",
+          "id":20807,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":8,
+        "is_primary_key":false,
+        "id":18141,
+        "field_name":"arrest",
+        "display_name":"Arrest",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22286
+            }
+          ],
+          "transform_expr":"to_boolean(`domestic`)",
+          "output_soql_type":"SoQLBoolean",
+          "id":20808,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":9,
+        "is_primary_key":false,
+        "id":18142,
+        "field_name":"domestic",
+        "display_name":"Domestic",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22287
+            }
+          ],
+          "transform_expr":"to_number(`beat`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20809,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":10,
+        "is_primary_key":false,
+        "id":18143,
+        "field_name":"beat",
+        "display_name":"Beat",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22288
+            }
+          ],
+          "transform_expr":"to_number(`district`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20810,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":11,
+        "is_primary_key":false,
+        "id":18144,
+        "field_name":"district",
+        "display_name":"District",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22289
+            }
+          ],
+          "transform_expr":"to_number(`ward`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20811,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":12,
+        "is_primary_key":false,
+        "id":18145,
+        "field_name":"ward",
+        "display_name":"Ward",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22290
+            }
+          ],
+          "transform_expr":"to_number(`community_area`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20812,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":13,
+        "is_primary_key":false,
+        "id":18146,
+        "field_name":"community_area",
+        "display_name":"Community Area",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22291
+            }
+          ],
+          "transform_expr":"`fbi_code`",
+          "output_soql_type":"SoQLText",
+          "id":20813,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":14,
+        "is_primary_key":false,
+        "id":18147,
+        "field_name":"fbi_code",
+        "display_name":"FBI Code",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22292
+            }
+          ],
+          "transform_expr":"to_number(`x_coordinate`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20814,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":15,
+        "is_primary_key":false,
+        "id":18148,
+        "field_name":"x_coordinate",
+        "display_name":"X Coordinate",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22293
+            }
+          ],
+          "transform_expr":"to_number(`y_coordinate`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20815,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":16,
+        "is_primary_key":false,
+        "id":18149,
+        "field_name":"y_coordinate",
+        "display_name":"Y Coordinate",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22294
+            }
+          ],
+          "transform_expr":"to_number(`year`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20816,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":17,
+        "is_primary_key":false,
+        "id":18150,
+        "field_name":"year",
+        "display_name":"Year",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22295
+            }
+          ],
+          "transform_expr":"to_floating_timestamp(`updated_on`)",
+          "output_soql_type":"SoQLFloatingTimestamp",
+          "id":20817,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":18,
+        "is_primary_key":false,
+        "id":18151,
+        "field_name":"updated_on",
+        "display_name":"Updated On",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22296
+            }
+          ],
+          "transform_expr":"to_number(`latitude`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20818,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":19,
+        "is_primary_key":false,
+        "id":18152,
+        "field_name":"latitude",
+        "display_name":"Latitude",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22297
+            }
+          ],
+          "transform_expr":"to_number(`longitude`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20819,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":20,
+        "is_primary_key":false,
+        "id":18153,
+        "field_name":"longitude",
+        "display_name":"Longitude",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22298
+            }
+          ],
+          "transform_expr":"`location`",
+          "output_soql_type":"SoQLText",
+          "id":20820,
+          "completed_at":"2017-05-12T14:12:23"
+        },
+        "position":21,
+        "is_primary_key":false,
+        "id":18154,
+        "field_name":"location",
+        "display_name":"Location",
+        "description":""
+      }
+    ],
+    "inserted_at":"2017-05-12T14:20:36.697703",
+    "input_schema_id":945,
+    "id":1147,
+    "error_count":0,
+    "created_by":{
+      "user_id":"yczc-8men",
+      "email":"brandon.webster@socrata.com",
+      "display_name":"Brandon Webster"
+    },
+    "completed_at":"2017-05-12T14:20:36"
+  },
+  "links":{
+    "show":"/api/publishing/v1/upload/823/schema/945/output/1147",
+    "rows":"/api/publishing/v1/upload/823/schema/945/rows/1147"
+  }
+};
+
+export const newOutputSchemaFromTypeChange = {
+  "resource":{
+    "output_columns":[
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22277
+            }
+          ],
+          "transform_expr":"to_text(id)",
+          "output_soql_type":"SoQLText",
+          "id":20821,
+          "completed_at":null
+        },
+        "position":0,
+        "is_primary_key":false,
+        "id":18155,
+        "field_name":"id",
+        "display_name":"ID",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22278
+            }
+          ],
+          "transform_expr":"`case_number`",
+          "output_soql_type":"SoQLText",
+          "id":20800,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":1,
+        "is_primary_key":false,
+        "id":18134,
+        "field_name":"case_number",
+        "display_name":"Case Number",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22279
+            }
+          ],
+          "transform_expr":"to_floating_timestamp(`date`)",
+          "output_soql_type":"SoQLFloatingTimestamp",
+          "id":20801,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":2,
+        "is_primary_key":false,
+        "id":18135,
+        "field_name":"date",
+        "display_name":"Date",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22280
+            }
+          ],
+          "transform_expr":"`block`",
+          "output_soql_type":"SoQLText",
+          "id":20802,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":3,
+        "is_primary_key":false,
+        "id":18136,
+        "field_name":"block",
+        "display_name":"Block",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22281
+            }
+          ],
+          "transform_expr":"`iucr`",
+          "output_soql_type":"SoQLText",
+          "id":20803,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":4,
+        "is_primary_key":false,
+        "id":18137,
+        "field_name":"iucr",
+        "display_name":"IUCR",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22282
+            }
+          ],
+          "transform_expr":"`primary_type`",
+          "output_soql_type":"SoQLText",
+          "id":20804,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":5,
+        "is_primary_key":false,
+        "id":18138,
+        "field_name":"primary_type",
+        "display_name":"Primary Type",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22283
+            }
+          ],
+          "transform_expr":"`description`",
+          "output_soql_type":"SoQLText",
+          "id":20805,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":6,
+        "is_primary_key":false,
+        "id":18139,
+        "field_name":"description",
+        "display_name":"Description",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22284
+            }
+          ],
+          "transform_expr":"`location_description`",
+          "output_soql_type":"SoQLText",
+          "id":20806,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":7,
+        "is_primary_key":false,
+        "id":18140,
+        "field_name":"location_description",
+        "display_name":"Location Description",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22285
+            }
+          ],
+          "transform_expr":"to_boolean(`arrest`)",
+          "output_soql_type":"SoQLBoolean",
+          "id":20807,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":8,
+        "is_primary_key":false,
+        "id":18141,
+        "field_name":"arrest",
+        "display_name":"Arrest",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22286
+            }
+          ],
+          "transform_expr":"to_boolean(`domestic`)",
+          "output_soql_type":"SoQLBoolean",
+          "id":20808,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":9,
+        "is_primary_key":false,
+        "id":18142,
+        "field_name":"domestic",
+        "display_name":"Domestic",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22287
+            }
+          ],
+          "transform_expr":"to_number(`beat`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20809,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":10,
+        "is_primary_key":false,
+        "id":18143,
+        "field_name":"beat",
+        "display_name":"Beat",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22288
+            }
+          ],
+          "transform_expr":"to_number(`district`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20810,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":11,
+        "is_primary_key":false,
+        "id":18144,
+        "field_name":"district",
+        "display_name":"District",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22289
+            }
+          ],
+          "transform_expr":"to_number(`ward`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20811,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":12,
+        "is_primary_key":false,
+        "id":18145,
+        "field_name":"ward",
+        "display_name":"Ward",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22290
+            }
+          ],
+          "transform_expr":"to_number(`community_area`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20812,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":13,
+        "is_primary_key":false,
+        "id":18146,
+        "field_name":"community_area",
+        "display_name":"Community Area",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22291
+            }
+          ],
+          "transform_expr":"`fbi_code`",
+          "output_soql_type":"SoQLText",
+          "id":20813,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":14,
+        "is_primary_key":false,
+        "id":18147,
+        "field_name":"fbi_code",
+        "display_name":"FBI Code",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22292
+            }
+          ],
+          "transform_expr":"to_number(`x_coordinate`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20814,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":15,
+        "is_primary_key":false,
+        "id":18148,
+        "field_name":"x_coordinate",
+        "display_name":"X Coordinate",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22293
+            }
+          ],
+          "transform_expr":"to_number(`y_coordinate`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20815,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":16,
+        "is_primary_key":false,
+        "id":18149,
+        "field_name":"y_coordinate",
+        "display_name":"Y Coordinate",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22294
+            }
+          ],
+          "transform_expr":"to_number(`year`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20816,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":17,
+        "is_primary_key":false,
+        "id":18150,
+        "field_name":"year",
+        "display_name":"Year",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22295
+            }
+          ],
+          "transform_expr":"to_floating_timestamp(`updated_on`)",
+          "output_soql_type":"SoQLFloatingTimestamp",
+          "id":20817,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":18,
+        "is_primary_key":false,
+        "id":18151,
+        "field_name":"updated_on",
+        "display_name":"Updated On",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22296
+            }
+          ],
+          "transform_expr":"to_number(`latitude`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20818,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":19,
+        "is_primary_key":false,
+        "id":18152,
+        "field_name":"latitude",
+        "display_name":"Latitude",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22297
+            }
+          ],
+          "transform_expr":"to_number(`longitude`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20819,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":20,
+        "is_primary_key":false,
+        "id":18153,
+        "field_name":"longitude",
+        "display_name":"Longitude",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22298
+            }
+          ],
+          "transform_expr":"`location`",
+          "output_soql_type":"SoQLText",
+          "id":20820,
+          "completed_at":"2017-05-12T14:12:23"
+        },
+        "position":21,
+        "is_primary_key":false,
+        "id":18154,
+        "field_name":"location",
+        "display_name":"Location",
+        "description":""
+      }
+    ],
+    "inserted_at":"2017-05-12T14:21:45.479100",
+    "input_schema_id":945,
+    "id":1148,
+    "error_count":0,
+    "created_by":{
+      "user_id":"yczc-8men",
+      "email":"brandon.webster@socrata.com",
+      "display_name":"Brandon Webster"
     },
     "completed_at":null
   },
   "links":{
-    "show":"/api/publishing/v1/upload/8325/schema/9649/output/10947",
-    "rows":"/api/publishing/v1/upload/8325/schema/9649/rows/10947"
+    "show":"/api/publishing/v1/upload/823/schema/945/output/1148",
+    "rows":"/api/publishing/v1/upload/823/schema/945/rows/1148"
+  }
+};
+
+export const newOutputSchemaFromSetPrimary = {
+  "resource":{
+    "output_columns":[
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22277
+            }
+          ],
+          "transform_expr":"to_text(id)",
+          "output_soql_type":"SoQLText",
+          "id":20821,
+          "completed_at":"2017-05-12T14:21:46"
+        },
+        "position":0,
+        "is_primary_key":false,
+        "id":18155,
+        "field_name":"id",
+        "display_name":"ID",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22278
+            }
+          ],
+          "transform_expr":"`case_number`",
+          "output_soql_type":"SoQLText",
+          "id":20800,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":1,
+        "is_primary_key":true,
+        "id":18134,
+        "field_name":"case_number",
+        "display_name":"Case Number",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22279
+            }
+          ],
+          "transform_expr":"to_floating_timestamp(`date`)",
+          "output_soql_type":"SoQLFloatingTimestamp",
+          "id":20801,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":2,
+        "is_primary_key":false,
+        "id":18135,
+        "field_name":"date",
+        "display_name":"Date",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22280
+            }
+          ],
+          "transform_expr":"`block`",
+          "output_soql_type":"SoQLText",
+          "id":20802,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":3,
+        "is_primary_key":false,
+        "id":18136,
+        "field_name":"block",
+        "display_name":"Block",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22281
+            }
+          ],
+          "transform_expr":"`iucr`",
+          "output_soql_type":"SoQLText",
+          "id":20803,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":4,
+        "is_primary_key":false,
+        "id":18137,
+        "field_name":"iucr",
+        "display_name":"IUCR",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22282
+            }
+          ],
+          "transform_expr":"`primary_type`",
+          "output_soql_type":"SoQLText",
+          "id":20804,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":5,
+        "is_primary_key":false,
+        "id":18138,
+        "field_name":"primary_type",
+        "display_name":"Primary Type",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22283
+            }
+          ],
+          "transform_expr":"`description`",
+          "output_soql_type":"SoQLText",
+          "id":20805,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":6,
+        "is_primary_key":false,
+        "id":18139,
+        "field_name":"description",
+        "display_name":"Description",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22284
+            }
+          ],
+          "transform_expr":"`location_description`",
+          "output_soql_type":"SoQLText",
+          "id":20806,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":7,
+        "is_primary_key":false,
+        "id":18140,
+        "field_name":"location_description",
+        "display_name":"Location Description",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22285
+            }
+          ],
+          "transform_expr":"to_boolean(`arrest`)",
+          "output_soql_type":"SoQLBoolean",
+          "id":20807,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":8,
+        "is_primary_key":false,
+        "id":18141,
+        "field_name":"arrest",
+        "display_name":"Arrest",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22286
+            }
+          ],
+          "transform_expr":"to_boolean(`domestic`)",
+          "output_soql_type":"SoQLBoolean",
+          "id":20808,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":9,
+        "is_primary_key":false,
+        "id":18142,
+        "field_name":"domestic",
+        "display_name":"Domestic",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22287
+            }
+          ],
+          "transform_expr":"to_number(`beat`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20809,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":10,
+        "is_primary_key":false,
+        "id":18143,
+        "field_name":"beat",
+        "display_name":"Beat",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22288
+            }
+          ],
+          "transform_expr":"to_number(`district`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20810,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":11,
+        "is_primary_key":false,
+        "id":18144,
+        "field_name":"district",
+        "display_name":"District",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22289
+            }
+          ],
+          "transform_expr":"to_number(`ward`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20811,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":12,
+        "is_primary_key":false,
+        "id":18145,
+        "field_name":"ward",
+        "display_name":"Ward",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22290
+            }
+          ],
+          "transform_expr":"to_number(`community_area`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20812,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":13,
+        "is_primary_key":false,
+        "id":18146,
+        "field_name":"community_area",
+        "display_name":"Community Area",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22291
+            }
+          ],
+          "transform_expr":"`fbi_code`",
+          "output_soql_type":"SoQLText",
+          "id":20813,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":14,
+        "is_primary_key":false,
+        "id":18147,
+        "field_name":"fbi_code",
+        "display_name":"FBI Code",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22292
+            }
+          ],
+          "transform_expr":"to_number(`x_coordinate`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20814,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":15,
+        "is_primary_key":false,
+        "id":18148,
+        "field_name":"x_coordinate",
+        "display_name":"X Coordinate",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22293
+            }
+          ],
+          "transform_expr":"to_number(`y_coordinate`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20815,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":16,
+        "is_primary_key":false,
+        "id":18149,
+        "field_name":"y_coordinate",
+        "display_name":"Y Coordinate",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22294
+            }
+          ],
+          "transform_expr":"to_number(`year`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20816,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":17,
+        "is_primary_key":false,
+        "id":18150,
+        "field_name":"year",
+        "display_name":"Year",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22295
+            }
+          ],
+          "transform_expr":"to_floating_timestamp(`updated_on`)",
+          "output_soql_type":"SoQLFloatingTimestamp",
+          "id":20817,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":18,
+        "is_primary_key":false,
+        "id":18151,
+        "field_name":"updated_on",
+        "display_name":"Updated On",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22296
+            }
+          ],
+          "transform_expr":"to_number(`latitude`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20818,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":19,
+        "is_primary_key":false,
+        "id":18152,
+        "field_name":"latitude",
+        "display_name":"Latitude",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22297
+            }
+          ],
+          "transform_expr":"to_number(`longitude`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20819,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":20,
+        "is_primary_key":false,
+        "id":18153,
+        "field_name":"longitude",
+        "display_name":"Longitude",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22298
+            }
+          ],
+          "transform_expr":"`location`",
+          "output_soql_type":"SoQLText",
+          "id":20820,
+          "completed_at":"2017-05-12T14:12:23"
+        },
+        "position":21,
+        "is_primary_key":false,
+        "id":18154,
+        "field_name":"location",
+        "display_name":"Location",
+        "description":""
+      }
+    ],
+    "inserted_at":"2017-05-12T14:22:23.275188",
+    "input_schema_id":945,
+    "id":1149,
+    "error_count":0,
+    "created_by":{
+      "user_id":"yczc-8men",
+      "email":"brandon.webster@socrata.com",
+      "display_name":"Brandon Webster"
+    },
+    "completed_at":"2017-05-12T14:22:23"
+  },
+  "links":{
+    "show":"/api/publishing/v1/upload/823/schema/945/output/1149",
+    "rows":"/api/publishing/v1/upload/823/schema/945/rows/1149"
   }
 };
 
@@ -1875,17 +3173,17 @@ export const rows = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310263
+              "input_column_id":22277
             }
           ],
           "transform_expr":"to_text(id)",
           "output_soql_type":"SoQLText",
-          "id":309525,
-          "completed_at":"2017-05-10T20:55:36"
+          "id":20821,
+          "completed_at":"2017-05-12T14:21:46"
         },
         "position":0,
         "is_primary_key":false,
-        "id":274645,
+        "id":18155,
         "field_name":"id",
         "display_name":"ID",
         "description":""
@@ -1894,1091 +3192,17 @@ export const rows = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310264
-            }
-          ],
-          "transform_expr":"`case_number`",
-          "output_soql_type":"SoQLText",
-          "id":285871,
-          "completed_at":null
-        },
-        "position":1,
-        "is_primary_key":false,
-        "id":250670,
-        "field_name":"case_number",
-        "display_name":"Case Number",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310265
-            }
-          ],
-          "transform_expr":"to_floating_timestamp(`date`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
-          "id":285872,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":2,
-        "is_primary_key":false,
-        "id":250671,
-        "field_name":"date",
-        "display_name":"Date",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310266
-            }
-          ],
-          "transform_expr":"`block`",
-          "output_soql_type":"SoQLText",
-          "id":285873,
-          "completed_at":"2017-05-09T23:10:20"
-        },
-        "position":3,
-        "is_primary_key":false,
-        "id":250672,
-        "field_name":"block",
-        "display_name":"Block",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310267
-            }
-          ],
-          "transform_expr":"`iucr`",
-          "output_soql_type":"SoQLText",
-          "id":285874,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":4,
-        "is_primary_key":false,
-        "id":250673,
-        "field_name":"iucr",
-        "display_name":"IUCR",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310268
-            }
-          ],
-          "transform_expr":"`primary_type`",
-          "output_soql_type":"SoQLText",
-          "id":285875,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":5,
-        "is_primary_key":false,
-        "id":250674,
-        "field_name":"primary_type",
-        "display_name":"Primary Type",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310269
-            }
-          ],
-          "transform_expr":"`description`",
-          "output_soql_type":"SoQLText",
-          "id":285876,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":6,
-        "is_primary_key":false,
-        "id":250675,
-        "field_name":"description",
-        "display_name":"Description",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310270
-            }
-          ],
-          "transform_expr":"`location_description`",
-          "output_soql_type":"SoQLText",
-          "id":285877,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":7,
-        "is_primary_key":false,
-        "id":250676,
-        "field_name":"location_description",
-        "display_name":"Location Description",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310271
-            }
-          ],
-          "transform_expr":"to_boolean(`arrest`)",
-          "output_soql_type":"SoQLBoolean",
-          "id":285878,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":8,
-        "is_primary_key":false,
-        "id":250677,
-        "field_name":"arrest",
-        "display_name":"Arrest",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310272
-            }
-          ],
-          "transform_expr":"to_boolean(`domestic`)",
-          "output_soql_type":"SoQLBoolean",
-          "id":285879,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":9,
-        "is_primary_key":false,
-        "id":250678,
-        "field_name":"domestic",
-        "display_name":"Domestic",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310273
-            }
-          ],
-          "transform_expr":"to_number(`beat`)",
-          "output_soql_type":"SoQLNumber",
-          "id":285880,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":10,
-        "is_primary_key":false,
-        "id":250679,
-        "field_name":"beat",
-        "display_name":"Beat",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310274
-            }
-          ],
-          "transform_expr":"to_number(`district`)",
-          "output_soql_type":"SoQLNumber",
-          "id":285881,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":11,
-        "is_primary_key":false,
-        "id":250680,
-        "field_name":"district",
-        "display_name":"District",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310275
-            }
-          ],
-          "transform_expr":"to_number(`ward`)",
-          "output_soql_type":"SoQLNumber",
-          "id":285882,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":12,
-        "is_primary_key":false,
-        "id":250681,
-        "field_name":"ward",
-        "display_name":"Ward",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310276
-            }
-          ],
-          "transform_expr":"to_number(`community_area`)",
-          "output_soql_type":"SoQLNumber",
-          "id":285883,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":13,
-        "is_primary_key":false,
-        "id":250682,
-        "field_name":"community_area",
-        "display_name":"Community Area",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310277
-            }
-          ],
-          "transform_expr":"`fbi_code`",
-          "output_soql_type":"SoQLText",
-          "id":285884,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":14,
-        "is_primary_key":false,
-        "id":250683,
-        "field_name":"fbi_code",
-        "display_name":"FBI Code",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310278
-            }
-          ],
-          "transform_expr":"to_number(`x_coordinate`)",
-          "output_soql_type":"SoQLNumber",
-          "id":285885,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":15,
-        "is_primary_key":false,
-        "id":250684,
-        "field_name":"x_coordinate",
-        "display_name":"X Coordinate",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310279
-            }
-          ],
-          "transform_expr":"to_number(`y_coordinate`)",
-          "output_soql_type":"SoQLNumber",
-          "id":285886,
-          "completed_at":"2017-05-09T23:10:21"
-        },
-        "position":16,
-        "is_primary_key":false,
-        "id":250685,
-        "field_name":"y_coordinate",
-        "display_name":"Y Coordinate",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310280
-            }
-          ],
-          "transform_expr":"to_number(`year`)",
-          "output_soql_type":"SoQLNumber",
-          "id":285887,
-          "completed_at":"2017-05-09T23:10:22"
-        },
-        "position":17,
-        "is_primary_key":false,
-        "id":250686,
-        "field_name":"year",
-        "display_name":"Year",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310281
-            }
-          ],
-          "transform_expr":"to_floating_timestamp(`updated_on`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
-          "id":285888,
-          "completed_at":"2017-05-09T23:10:22"
-        },
-        "position":18,
-        "is_primary_key":false,
-        "id":250687,
-        "field_name":"updated_on",
-        "display_name":"Updated On",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310282
-            }
-          ],
-          "transform_expr":"to_number(`latitude`)",
-          "output_soql_type":"SoQLNumber",
-          "id":285889,
-          "completed_at":"2017-05-09T23:10:22"
-        },
-        "position":19,
-        "is_primary_key":false,
-        "id":250688,
-        "field_name":"latitude",
-        "display_name":"Latitude",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310283
-            }
-          ],
-          "transform_expr":"to_number(`longitude`)",
-          "output_soql_type":"SoQLNumber",
-          "id":285890,
-          "completed_at":"2017-05-09T23:10:22"
-        },
-        "position":20,
-        "is_primary_key":false,
-        "id":250689,
-        "field_name":"longitude",
-        "display_name":"Longitude",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310284
-            }
-          ],
-          "transform_expr":"`location`",
-          "output_soql_type":"SoQLText",
-          "id":285891,
-          "completed_at":"2017-05-09T23:10:22"
-        },
-        "position":21,
-        "is_primary_key":false,
-        "id":250690,
-        "field_name":"location",
-        "display_name":"Location",
-        "description":""
-      }
-    ],
-    "inserted_at":"2017-05-10T20:55:36.471437",
-    "input_schema_id":9649,
-    "id":10947,
-    "error_count":0,
-    "created_by":{
-      "user_id":"k7tm-2kym",
-      "email":"test.user@socrata.com",
-      "display_name":"Test User"
-    },
-    "completed_at":"2017-05-10T20:55:37"
-  },
-  {
-    "row":[
-      {
-        "ok":"10376594"
-      },
-      {
-        "ok":"HZ112917"
-      },
-      {
-        "ok":"2016-01-11T23:53:00.000"
-      },
-      {
-        "ok":"004XX S LARAMIE AVE"
-      },
-      {
-        "ok":"031A"
-      },
-      {
-        "ok":"ROBBERY"
-      },
-      {
-        "ok":"ARMED: HANDGUN"
-      },
-      {
-        "ok":"SIDEWALK"
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":"1522"
-      },
-      {
-        "ok":"15"
-      },
-      {
-        "ok":"29"
-      },
-      {
-        "ok":"25"
-      },
-      {
-        "ok":"3"
-      },
-      {
-        "ok":"1141799"
-      },
-      {
-        "ok":"1897396"
-      },
-      {
-        "ok":"2016"
-      },
-      {
-        "ok":"2016-01-18T15:54:00.000"
-      },
-      {
-        "ok":"41.87452002"
-      },
-      {
-        "ok":"-87.75484623"
-      },
-      {
-        "ok":"(41.874520022, -87.754846231)"
-      }
-    ],
-    "offset":0
-  },
-  {
-    "row":[
-      {
-        "ok":"10376574"
-      },
-      {
-        "ok":"HZ112920"
-      },
-      {
-        "ok":"2016-01-11T23:45:00.000"
-      },
-      {
-        "ok":"003XX N CENTRAL AVE"
-      },
-      {
-        "ok":"031A"
-      },
-      {
-        "ok":"ROBBERY"
-      },
-      {
-        "ok":"ARMED: HANDGUN"
-      },
-      {
-        "ok":"STREET"
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":"1523"
-      },
-      {
-        "ok":"15"
-      },
-      {
-        "ok":"28"
-      },
-      {
-        "ok":"25"
-      },
-      {
-        "ok":"3"
-      },
-      {
-        "ok":"1138978"
-      },
-      {
-        "ok":"1901836"
-      },
-      {
-        "ok":"2016"
-      },
-      {
-        "ok":"2016-01-18T15:54:00.000"
-      },
-      {
-        "ok":"41.88675567"
-      },
-      {
-        "ok":"-87.76509592"
-      },
-      {
-        "ok":"(41.886755667, -87.765095923)"
-      }
-    ],
-    "offset":1
-  },
-  {
-    "row":[
-      {
-        "ok":"10376371"
-      },
-      {
-        "ok":"HZ112605"
-      },
-      {
-        "ok":"2016-01-11T23:30:00.000"
-      },
-      {
-        "ok":"004XX E 48TH ST"
-      },
-      {
-        "ok":"910"
-      },
-      {
-        "ok":"MOTOR VEHICLE THEFT"
-      },
-      {
-        "ok":"AUTOMOBILE"
-      },
-      {
-        "ok":"STREET"
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":"223"
-      },
-      {
-        "ok":"2"
-      },
-      {
-        "ok":"3"
-      },
-      {
-        "ok":"38"
-      },
-      {
-        "ok":"7"
-      },
-      {
-        "ok":"1180055"
-      },
-      {
-        "ok":"1873293"
-      },
-      {
-        "ok":"2016"
-      },
-      {
-        "ok":"2016-01-18T15:54:00.000"
-      },
-      {
-        "ok":"41.80758633"
-      },
-      {
-        "ok":"-87.61512779"
-      },
-      {
-        "ok":"(41.807586328, -87.615127788)"
-      }
-    ],
-    "offset":2
-  },
-  {
-    "row":[
-      {
-        "ok":"10380234"
-      },
-      {
-        "ok":"HZ116304"
-      },
-      {
-        "ok":"2016-01-11T23:30:00.000"
-      },
-      {
-        "ok":"055XX S CORNELL AVE"
-      },
-      {
-        "ok":"910"
-      },
-      {
-        "ok":"MOTOR VEHICLE THEFT"
-      },
-      {
-        "ok":"AUTOMOBILE"
-      },
-      {
-        "ok":"STREET"
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":"235"
-      },
-      {
-        "ok":"2"
-      },
-      {
-        "ok":"5"
-      },
-      {
-        "ok":"41"
-      },
-      {
-        "ok":"7"
-      },
-      {
-        "ok":"1188201"
-      },
-      {
-        "ok":"1868688"
-      },
-      {
-        "ok":"2016"
-      },
-      {
-        "ok":"2016-01-18T15:54:00.000"
-      },
-      {
-        "ok":"41.7947592"
-      },
-      {
-        "ok":"-87.58539793"
-      },
-      {
-        "ok":"(41.794759204, -87.585397931)"
-      }
-    ],
-    "offset":3
-  },
-  {
-    "row":[
-      {
-        "ok":"10375856"
-      },
-      {
-        "ok":"HZ112435"
-      },
-      {
-        "ok":"2016-01-11T23:30:00.000"
-      },
-      {
-        "ok":"001XX S CENTRAL AVE"
-      },
-      {
-        "ok":"560"
-      },
-      {
-        "ok":"ASSAULT"
-      },
-      {
-        "ok":"SIMPLE"
-      },
-      {
-        "ok":"RESIDENCE"
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":"1522"
-      },
-      {
-        "ok":"15"
-      },
-      {
-        "ok":"29"
-      },
-      {
-        "ok":"25"
-      },
-      {
-        "ok":"08A"
-      },
-      {
-        "ok":"1139082"
-      },
-      {
-        "ok":"1898717"
-      },
-      {
-        "ok":"2016"
-      },
-      {
-        "ok":"2016-01-18T15:54:00.000"
-      },
-      {
-        "ok":"41.87819484"
-      },
-      {
-        "ok":"-87.76478988"
-      },
-      {
-        "ok":"(41.878194837, -87.764789883)"
-      }
-    ],
-    "offset":4
-  },
-  {
-    "row":[
-      {
-        "ok":"10375836"
-      },
-      {
-        "ok":"HZ112407"
-      },
-      {
-        "ok":"2016-01-11T23:25:00.000"
-      },
-      {
-        "ok":"063XX S KEDZIE AVE"
-      },
-      {
-        "ok":"1330"
-      },
-      {
-        "ok":"CRIMINAL TRESPASS"
-      },
-      {
-        "ok":"TO LAND"
-      },
-      {
-        "ok":"DRUG STORE"
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":"823"
-      },
-      {
-        "ok":"8"
-      },
-      {
-        "ok":"15"
-      },
-      {
-        "ok":"66"
-      },
-      {
-        "ok":"26"
-      },
-      {
-        "ok":"1156143"
-      },
-      {
-        "ok":"1862448"
-      },
-      {
-        "ok":"2016"
-      },
-      {
-        "ok":"2016-01-18T15:54:00.000"
-      },
-      {
-        "ok":"41.77834098"
-      },
-      {
-        "ok":"-87.70312224"
-      },
-      {
-        "ok":"(41.778340981, -87.703122242)"
-      }
-    ],
-    "offset":5
-  },
-  {
-    "row":[
-      {
-        "ok":"10376791"
-      },
-      {
-        "ok":"HZ112953"
-      },
-      {
-        "ok":"2016-01-11T23:20:00.000"
-      },
-      {
-        "ok":"004XX W 76TH ST"
-      },
-      {
-        "ok":"031A"
-      },
-      {
-        "ok":"ROBBERY"
-      },
-      {
-        "ok":"ARMED: HANDGUN"
-      },
-      {
-        "ok":"OTHER"
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":"621"
-      },
-      {
-        "ok":"6"
-      },
-      {
-        "ok":"17"
-      },
-      {
-        "ok":"69"
-      },
-      {
-        "ok":"3"
-      },
-      {
-        "ok":"1174859"
-      },
-      {
-        "ok":"1854542"
-      },
-      {
-        "ok":"2016"
-      },
-      {
-        "ok":"2016-01-18T15:54:00.000"
-      },
-      {
-        "ok":"41.75624913"
-      },
-      {
-        "ok":"-87.63474388"
-      },
-      {
-        "ok":"(41.756249125, -87.634743877)"
-      }
-    ],
-    "offset":6
-  },
-  {
-    "row":[
-      {
-        "ok":"10375849"
-      },
-      {
-        "ok":"HZ112411"
-      },
-      {
-        "ok":"2016-01-11T23:15:00.000"
-      },
-      {
-        "ok":"024XX N NARRAGANSETT AVE"
-      },
-      {
-        "ok":"460"
-      },
-      {
-        "ok":"BATTERY"
-      },
-      {
-        "ok":"SIMPLE"
-      },
-      {
-        "ok":"ATHLETIC CLUB"
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":"2512"
-      },
-      {
-        "ok":"25"
-      },
-      {
-        "ok":"36"
-      },
-      {
-        "ok":"19"
-      },
-      {
-        "ok":"08B"
-      },
-      {
-        "ok":"1133346"
-      },
-      {
-        "ok":"1915440"
-      },
-      {
-        "ok":"2016"
-      },
-      {
-        "ok":"2016-01-18T15:54:00.000"
-      },
-      {
-        "ok":"41.92418726"
-      },
-      {
-        "ok":"-87.7854594"
-      },
-      {
-        "ok":"(41.924187262, -87.785459395)"
-      }
-    ],
-    "offset":7
-  },
-  {
-    "row":[
-      {
-        "ok":"10376251"
-      },
-      {
-        "ok":"HZ112670"
-      },
-      {
-        "ok":"2016-01-11T23:15:00.000"
-      },
-      {
-        "ok":"037XX W FLOURNOY ST"
-      },
-      {
-        "ok":"820"
-      },
-      {
-        "ok":"THEFT"
-      },
-      {
-        "ok":"$500 AND UNDER"
-      },
-      {
-        "ok":"STREET"
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":false
-      },
-      {
-        "ok":"1133"
-      },
-      {
-        "ok":"11"
-      },
-      {
-        "ok":"24"
-      },
-      {
-        "ok":"27"
-      },
-      {
-        "ok":"6"
-      },
-      {
-        "ok":"1151652"
-      },
-      {
-        "ok":"1896775"
-      },
-      {
-        "ok":"2016"
-      },
-      {
-        "ok":"2016-01-18T15:54:00.000"
-      },
-      {
-        "ok":"41.87262801"
-      },
-      {
-        "ok":"-87.71868635"
-      },
-      {
-        "ok":"(41.872628006, -87.718686345)"
-      }
-    ],
-    "offset":8
-  }
-]
-
-export const columnErrors = [
-  {
-    "output_columns":[
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310263
-            }
-          ],
-          "transform_expr":"to_number(id)",
-          "output_soql_type":"SoQLNumber",
-          "id":310324,
-          "completed_at":"2017-05-10T21:43:53"
-        },
-        "position":0,
-        "is_primary_key":false,
-        "id":275448,
-        "field_name":"id",
-        "display_name":"ID",
-        "description":""
-      },
-      {
-        "transform":{
-          "transform_input_columns":[
-            {
-              "input_column_id":310264
+              "input_column_id":22278
             }
           ],
           "transform_expr":"to_boolean(case_number)",
           "output_soql_type":"SoQLBoolean",
-          "id":310325,
-          "completed_at":"2017-05-10T23:29:33"
+          "id":20822,
+          "completed_at":"2017-05-12T14:23:20"
         },
         "position":1,
-        "is_primary_key":false,
-        "id":275449,
+        "is_primary_key":true,
+        "id":18156,
         "field_name":"case_number",
         "display_name":"Case Number",
         "description":""
@@ -2987,17 +3211,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310265
+              "input_column_id":22279
             }
           ],
           "transform_expr":"to_floating_timestamp(`date`)",
           "output_soql_type":"SoQLFloatingTimestamp",
-          "id":285872,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20801,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":2,
         "is_primary_key":false,
-        "id":250671,
+        "id":18135,
         "field_name":"date",
         "display_name":"Date",
         "description":""
@@ -3006,17 +3230,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310266
+              "input_column_id":22280
             }
           ],
           "transform_expr":"`block`",
           "output_soql_type":"SoQLText",
-          "id":285873,
-          "completed_at":"2017-05-09T23:10:20"
+          "id":20802,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":3,
         "is_primary_key":false,
-        "id":250672,
+        "id":18136,
         "field_name":"block",
         "display_name":"Block",
         "description":""
@@ -3025,17 +3249,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310267
+              "input_column_id":22281
             }
           ],
           "transform_expr":"`iucr`",
           "output_soql_type":"SoQLText",
-          "id":285874,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20803,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":4,
         "is_primary_key":false,
-        "id":250673,
+        "id":18137,
         "field_name":"iucr",
         "display_name":"IUCR",
         "description":""
@@ -3044,17 +3268,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310268
+              "input_column_id":22282
             }
           ],
           "transform_expr":"`primary_type`",
           "output_soql_type":"SoQLText",
-          "id":285875,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20804,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":5,
         "is_primary_key":false,
-        "id":250674,
+        "id":18138,
         "field_name":"primary_type",
         "display_name":"Primary Type",
         "description":""
@@ -3063,17 +3287,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310269
+              "input_column_id":22283
             }
           ],
           "transform_expr":"`description`",
           "output_soql_type":"SoQLText",
-          "id":285876,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20805,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":6,
         "is_primary_key":false,
-        "id":250675,
+        "id":18139,
         "field_name":"description",
         "display_name":"Description",
         "description":""
@@ -3082,17 +3306,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310270
+              "input_column_id":22284
             }
           ],
           "transform_expr":"`location_description`",
           "output_soql_type":"SoQLText",
-          "id":285877,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20806,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":7,
         "is_primary_key":false,
-        "id":250676,
+        "id":18140,
         "field_name":"location_description",
         "display_name":"Location Description",
         "description":""
@@ -3101,17 +3325,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310271
+              "input_column_id":22285
             }
           ],
           "transform_expr":"to_boolean(`arrest`)",
           "output_soql_type":"SoQLBoolean",
-          "id":285878,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20807,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":8,
         "is_primary_key":false,
-        "id":250677,
+        "id":18141,
         "field_name":"arrest",
         "display_name":"Arrest",
         "description":""
@@ -3120,17 +3344,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310272
+              "input_column_id":22286
             }
           ],
           "transform_expr":"to_boolean(`domestic`)",
           "output_soql_type":"SoQLBoolean",
-          "id":285879,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20808,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":9,
         "is_primary_key":false,
-        "id":250678,
+        "id":18142,
         "field_name":"domestic",
         "display_name":"Domestic",
         "description":""
@@ -3139,17 +3363,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310273
+              "input_column_id":22287
             }
           ],
           "transform_expr":"to_number(`beat`)",
           "output_soql_type":"SoQLNumber",
-          "id":285880,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20809,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":10,
         "is_primary_key":false,
-        "id":250679,
+        "id":18143,
         "field_name":"beat",
         "display_name":"Beat",
         "description":""
@@ -3158,17 +3382,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310274
+              "input_column_id":22288
             }
           ],
           "transform_expr":"to_number(`district`)",
           "output_soql_type":"SoQLNumber",
-          "id":285881,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20810,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":11,
         "is_primary_key":false,
-        "id":250680,
+        "id":18144,
         "field_name":"district",
         "display_name":"District",
         "description":""
@@ -3177,17 +3401,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310275
+              "input_column_id":22289
             }
           ],
           "transform_expr":"to_number(`ward`)",
           "output_soql_type":"SoQLNumber",
-          "id":285882,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20811,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":12,
         "is_primary_key":false,
-        "id":250681,
+        "id":18145,
         "field_name":"ward",
         "display_name":"Ward",
         "description":""
@@ -3196,17 +3420,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310276
+              "input_column_id":22290
             }
           ],
           "transform_expr":"to_number(`community_area`)",
           "output_soql_type":"SoQLNumber",
-          "id":285883,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20812,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":13,
         "is_primary_key":false,
-        "id":250682,
+        "id":18146,
         "field_name":"community_area",
         "display_name":"Community Area",
         "description":""
@@ -3215,17 +3439,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310277
+              "input_column_id":22291
             }
           ],
           "transform_expr":"`fbi_code`",
           "output_soql_type":"SoQLText",
-          "id":285884,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20813,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":14,
         "is_primary_key":false,
-        "id":250683,
+        "id":18147,
         "field_name":"fbi_code",
         "display_name":"FBI Code",
         "description":""
@@ -3234,17 +3458,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310278
+              "input_column_id":22292
             }
           ],
           "transform_expr":"to_number(`x_coordinate`)",
           "output_soql_type":"SoQLNumber",
-          "id":285885,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20814,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":15,
         "is_primary_key":false,
-        "id":250684,
+        "id":18148,
         "field_name":"x_coordinate",
         "display_name":"X Coordinate",
         "description":""
@@ -3253,17 +3477,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310279
+              "input_column_id":22293
             }
           ],
           "transform_expr":"to_number(`y_coordinate`)",
           "output_soql_type":"SoQLNumber",
-          "id":285886,
-          "completed_at":"2017-05-09T23:10:21"
+          "id":20815,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":16,
         "is_primary_key":false,
-        "id":250685,
+        "id":18149,
         "field_name":"y_coordinate",
         "display_name":"Y Coordinate",
         "description":""
@@ -3272,17 +3496,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310280
+              "input_column_id":22294
             }
           ],
           "transform_expr":"to_number(`year`)",
           "output_soql_type":"SoQLNumber",
-          "id":285887,
-          "completed_at":"2017-05-09T23:10:22"
+          "id":20816,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":17,
         "is_primary_key":false,
-        "id":250686,
+        "id":18150,
         "field_name":"year",
         "display_name":"Year",
         "description":""
@@ -3291,17 +3515,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310281
+              "input_column_id":22295
             }
           ],
           "transform_expr":"to_floating_timestamp(`updated_on`)",
           "output_soql_type":"SoQLFloatingTimestamp",
-          "id":285888,
-          "completed_at":"2017-05-09T23:10:22"
+          "id":20817,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":18,
         "is_primary_key":false,
-        "id":250687,
+        "id":18151,
         "field_name":"updated_on",
         "display_name":"Updated On",
         "description":""
@@ -3310,17 +3534,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310282
+              "input_column_id":22296
             }
           ],
           "transform_expr":"to_number(`latitude`)",
           "output_soql_type":"SoQLNumber",
-          "id":285889,
-          "completed_at":"2017-05-09T23:10:22"
+          "id":20818,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":19,
         "is_primary_key":false,
-        "id":250688,
+        "id":18152,
         "field_name":"latitude",
         "display_name":"Latitude",
         "description":""
@@ -3329,17 +3553,17 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310283
+              "input_column_id":22297
             }
           ],
           "transform_expr":"to_number(`longitude`)",
           "output_soql_type":"SoQLNumber",
-          "id":285890,
-          "completed_at":"2017-05-09T23:10:22"
+          "id":20819,
+          "completed_at":"2017-05-12T14:12:22"
         },
         "position":20,
         "is_primary_key":false,
-        "id":250689,
+        "id":18153,
         "field_name":"longitude",
         "display_name":"Longitude",
         "description":""
@@ -3348,32 +3572,32 @@ export const columnErrors = [
         "transform":{
           "transform_input_columns":[
             {
-              "input_column_id":310284
+              "input_column_id":22298
             }
           ],
           "transform_expr":"`location`",
           "output_soql_type":"SoQLText",
-          "id":285891,
-          "completed_at":"2017-05-09T23:10:22"
+          "id":20820,
+          "completed_at":"2017-05-12T14:12:23"
         },
         "position":21,
         "is_primary_key":false,
-        "id":250690,
+        "id":18154,
         "field_name":"location",
         "display_name":"Location",
         "description":""
       }
     ],
-    "inserted_at":"2017-05-10T21:44:03.897815",
-    "input_schema_id":9649,
-    "id":10974,
+    "inserted_at":"2017-05-12T14:23:20.690934",
+    "input_schema_id":945,
+    "id":1150,
     "error_count":9,
     "created_by":{
-      "user_id":"k7tm-2kym",
+      "user_id":"yczc-8men",
       "email":"brandon.webster@socrata.com",
       "display_name":"Brandon Webster"
     },
-    "completed_at":"2017-05-10T23:29:33"
+    "completed_at":"2017-05-12T14:23:20"
   },
   {
     "row":[
@@ -4077,7 +4301,1144 @@ export const columnErrors = [
     ],
     "offset":8
   }
-]
+];
+
+export const columnErrors = [
+  {
+    "output_columns":[
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22277
+            }
+          ],
+          "transform_expr":"to_text(id)",
+          "output_soql_type":"SoQLText",
+          "id":20821,
+          "completed_at":"2017-05-12T14:21:46"
+        },
+        "position":0,
+        "is_primary_key":false,
+        "id":18155,
+        "field_name":"id",
+        "display_name":"ID",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22278
+            }
+          ],
+          "transform_expr":"to_boolean(case_number)",
+          "output_soql_type":"SoQLBoolean",
+          "id":20822,
+          "completed_at":"2017-05-12T14:23:20"
+        },
+        "position":1,
+        "is_primary_key":true,
+        "id":18156,
+        "field_name":"case_number",
+        "display_name":"Case Number",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22279
+            }
+          ],
+          "transform_expr":"to_floating_timestamp(`date`)",
+          "output_soql_type":"SoQLFloatingTimestamp",
+          "id":20801,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":2,
+        "is_primary_key":false,
+        "id":18135,
+        "field_name":"date",
+        "display_name":"Date",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22280
+            }
+          ],
+          "transform_expr":"`block`",
+          "output_soql_type":"SoQLText",
+          "id":20802,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":3,
+        "is_primary_key":false,
+        "id":18136,
+        "field_name":"block",
+        "display_name":"Block",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22281
+            }
+          ],
+          "transform_expr":"`iucr`",
+          "output_soql_type":"SoQLText",
+          "id":20803,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":4,
+        "is_primary_key":false,
+        "id":18137,
+        "field_name":"iucr",
+        "display_name":"IUCR",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22282
+            }
+          ],
+          "transform_expr":"`primary_type`",
+          "output_soql_type":"SoQLText",
+          "id":20804,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":5,
+        "is_primary_key":false,
+        "id":18138,
+        "field_name":"primary_type",
+        "display_name":"Primary Type",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22283
+            }
+          ],
+          "transform_expr":"`description`",
+          "output_soql_type":"SoQLText",
+          "id":20805,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":6,
+        "is_primary_key":false,
+        "id":18139,
+        "field_name":"description",
+        "display_name":"Description",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22284
+            }
+          ],
+          "transform_expr":"`location_description`",
+          "output_soql_type":"SoQLText",
+          "id":20806,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":7,
+        "is_primary_key":false,
+        "id":18140,
+        "field_name":"location_description",
+        "display_name":"Location Description",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22285
+            }
+          ],
+          "transform_expr":"to_boolean(`arrest`)",
+          "output_soql_type":"SoQLBoolean",
+          "id":20807,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":8,
+        "is_primary_key":false,
+        "id":18141,
+        "field_name":"arrest",
+        "display_name":"Arrest",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22286
+            }
+          ],
+          "transform_expr":"to_boolean(`domestic`)",
+          "output_soql_type":"SoQLBoolean",
+          "id":20808,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":9,
+        "is_primary_key":false,
+        "id":18142,
+        "field_name":"domestic",
+        "display_name":"Domestic",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22287
+            }
+          ],
+          "transform_expr":"to_number(`beat`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20809,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":10,
+        "is_primary_key":false,
+        "id":18143,
+        "field_name":"beat",
+        "display_name":"Beat",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22288
+            }
+          ],
+          "transform_expr":"to_number(`district`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20810,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":11,
+        "is_primary_key":false,
+        "id":18144,
+        "field_name":"district",
+        "display_name":"District",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22289
+            }
+          ],
+          "transform_expr":"to_number(`ward`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20811,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":12,
+        "is_primary_key":false,
+        "id":18145,
+        "field_name":"ward",
+        "display_name":"Ward",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22290
+            }
+          ],
+          "transform_expr":"to_number(`community_area`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20812,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":13,
+        "is_primary_key":false,
+        "id":18146,
+        "field_name":"community_area",
+        "display_name":"Community Area",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22291
+            }
+          ],
+          "transform_expr":"`fbi_code`",
+          "output_soql_type":"SoQLText",
+          "id":20813,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":14,
+        "is_primary_key":false,
+        "id":18147,
+        "field_name":"fbi_code",
+        "display_name":"FBI Code",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22292
+            }
+          ],
+          "transform_expr":"to_number(`x_coordinate`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20814,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":15,
+        "is_primary_key":false,
+        "id":18148,
+        "field_name":"x_coordinate",
+        "display_name":"X Coordinate",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22293
+            }
+          ],
+          "transform_expr":"to_number(`y_coordinate`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20815,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":16,
+        "is_primary_key":false,
+        "id":18149,
+        "field_name":"y_coordinate",
+        "display_name":"Y Coordinate",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22294
+            }
+          ],
+          "transform_expr":"to_number(`year`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20816,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":17,
+        "is_primary_key":false,
+        "id":18150,
+        "field_name":"year",
+        "display_name":"Year",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22295
+            }
+          ],
+          "transform_expr":"to_floating_timestamp(`updated_on`)",
+          "output_soql_type":"SoQLFloatingTimestamp",
+          "id":20817,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":18,
+        "is_primary_key":false,
+        "id":18151,
+        "field_name":"updated_on",
+        "display_name":"Updated On",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22296
+            }
+          ],
+          "transform_expr":"to_number(`latitude`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20818,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":19,
+        "is_primary_key":false,
+        "id":18152,
+        "field_name":"latitude",
+        "display_name":"Latitude",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22297
+            }
+          ],
+          "transform_expr":"to_number(`longitude`)",
+          "output_soql_type":"SoQLNumber",
+          "id":20819,
+          "completed_at":"2017-05-12T14:12:22"
+        },
+        "position":20,
+        "is_primary_key":false,
+        "id":18153,
+        "field_name":"longitude",
+        "display_name":"Longitude",
+        "description":""
+      },
+      {
+        "transform":{
+          "transform_input_columns":[
+            {
+              "input_column_id":22298
+            }
+          ],
+          "transform_expr":"`location`",
+          "output_soql_type":"SoQLText",
+          "id":20820,
+          "completed_at":"2017-05-12T14:12:23"
+        },
+        "position":21,
+        "is_primary_key":false,
+        "id":18154,
+        "field_name":"location",
+        "display_name":"Location",
+        "description":""
+      }
+    ],
+    "inserted_at":"2017-05-12T14:23:20.690934",
+    "input_schema_id":945,
+    "id":1150,
+    "error_count":9,
+    "created_by":{
+      "user_id":"yczc-8men",
+      "email":"brandon.webster@socrata.com",
+      "display_name":"Brandon Webster"
+    },
+    "completed_at":"2017-05-12T14:23:20"
+  },
+  {
+    "row":[
+      {
+        "ok":"10376594"
+      },
+      {
+        "error":{
+          "message":"Failed to convert \"HZ112917\" to boolean",
+          "inputs":{
+            "case_number":{
+              "ok":"HZ112917"
+            }
+          }
+        }
+      },
+      {
+        "ok":"2016-01-11T23:53:00.000"
+      },
+      {
+        "ok":"004XX S LARAMIE AVE"
+      },
+      {
+        "ok":"031A"
+      },
+      {
+        "ok":"ROBBERY"
+      },
+      {
+        "ok":"ARMED: HANDGUN"
+      },
+      {
+        "ok":"SIDEWALK"
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":"1522"
+      },
+      {
+        "ok":"15"
+      },
+      {
+        "ok":"29"
+      },
+      {
+        "ok":"25"
+      },
+      {
+        "ok":"3"
+      },
+      {
+        "ok":"1141799"
+      },
+      {
+        "ok":"1897396"
+      },
+      {
+        "ok":"2016"
+      },
+      {
+        "ok":"2016-01-18T15:54:00.000"
+      },
+      {
+        "ok":"41.87452002"
+      },
+      {
+        "ok":"-87.75484623"
+      },
+      {
+        "ok":"(41.874520022, -87.754846231)"
+      }
+    ],
+    "offset":0
+  },
+  {
+    "row":[
+      {
+        "ok":"10376574"
+      },
+      {
+        "error":{
+          "message":"Failed to convert \"HZ112920\" to boolean",
+          "inputs":{
+            "case_number":{
+              "ok":"HZ112920"
+            }
+          }
+        }
+      },
+      {
+        "ok":"2016-01-11T23:45:00.000"
+      },
+      {
+        "ok":"003XX N CENTRAL AVE"
+      },
+      {
+        "ok":"031A"
+      },
+      {
+        "ok":"ROBBERY"
+      },
+      {
+        "ok":"ARMED: HANDGUN"
+      },
+      {
+        "ok":"STREET"
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":"1523"
+      },
+      {
+        "ok":"15"
+      },
+      {
+        "ok":"28"
+      },
+      {
+        "ok":"25"
+      },
+      {
+        "ok":"3"
+      },
+      {
+        "ok":"1138978"
+      },
+      {
+        "ok":"1901836"
+      },
+      {
+        "ok":"2016"
+      },
+      {
+        "ok":"2016-01-18T15:54:00.000"
+      },
+      {
+        "ok":"41.88675567"
+      },
+      {
+        "ok":"-87.76509592"
+      },
+      {
+        "ok":"(41.886755667, -87.765095923)"
+      }
+    ],
+    "offset":1
+  },
+  {
+    "row":[
+      {
+        "ok":"10376371"
+      },
+      {
+        "error":{
+          "message":"Failed to convert \"HZ112605\" to boolean",
+          "inputs":{
+            "case_number":{
+              "ok":"HZ112605"
+            }
+          }
+        }
+      },
+      {
+        "ok":"2016-01-11T23:30:00.000"
+      },
+      {
+        "ok":"004XX E 48TH ST"
+      },
+      {
+        "ok":"910"
+      },
+      {
+        "ok":"MOTOR VEHICLE THEFT"
+      },
+      {
+        "ok":"AUTOMOBILE"
+      },
+      {
+        "ok":"STREET"
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":"223"
+      },
+      {
+        "ok":"2"
+      },
+      {
+        "ok":"3"
+      },
+      {
+        "ok":"38"
+      },
+      {
+        "ok":"7"
+      },
+      {
+        "ok":"1180055"
+      },
+      {
+        "ok":"1873293"
+      },
+      {
+        "ok":"2016"
+      },
+      {
+        "ok":"2016-01-18T15:54:00.000"
+      },
+      {
+        "ok":"41.80758633"
+      },
+      {
+        "ok":"-87.61512779"
+      },
+      {
+        "ok":"(41.807586328, -87.615127788)"
+      }
+    ],
+    "offset":2
+  },
+  {
+    "row":[
+      {
+        "ok":"10380234"
+      },
+      {
+        "error":{
+          "message":"Failed to convert \"HZ116304\" to boolean",
+          "inputs":{
+            "case_number":{
+              "ok":"HZ116304"
+            }
+          }
+        }
+      },
+      {
+        "ok":"2016-01-11T23:30:00.000"
+      },
+      {
+        "ok":"055XX S CORNELL AVE"
+      },
+      {
+        "ok":"910"
+      },
+      {
+        "ok":"MOTOR VEHICLE THEFT"
+      },
+      {
+        "ok":"AUTOMOBILE"
+      },
+      {
+        "ok":"STREET"
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":"235"
+      },
+      {
+        "ok":"2"
+      },
+      {
+        "ok":"5"
+      },
+      {
+        "ok":"41"
+      },
+      {
+        "ok":"7"
+      },
+      {
+        "ok":"1188201"
+      },
+      {
+        "ok":"1868688"
+      },
+      {
+        "ok":"2016"
+      },
+      {
+        "ok":"2016-01-18T15:54:00.000"
+      },
+      {
+        "ok":"41.7947592"
+      },
+      {
+        "ok":"-87.58539793"
+      },
+      {
+        "ok":"(41.794759204, -87.585397931)"
+      }
+    ],
+    "offset":3
+  },
+  {
+    "row":[
+      {
+        "ok":"10375856"
+      },
+      {
+        "error":{
+          "message":"Failed to convert \"HZ112435\" to boolean",
+          "inputs":{
+            "case_number":{
+              "ok":"HZ112435"
+            }
+          }
+        }
+      },
+      {
+        "ok":"2016-01-11T23:30:00.000"
+      },
+      {
+        "ok":"001XX S CENTRAL AVE"
+      },
+      {
+        "ok":"560"
+      },
+      {
+        "ok":"ASSAULT"
+      },
+      {
+        "ok":"SIMPLE"
+      },
+      {
+        "ok":"RESIDENCE"
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":"1522"
+      },
+      {
+        "ok":"15"
+      },
+      {
+        "ok":"29"
+      },
+      {
+        "ok":"25"
+      },
+      {
+        "ok":"08A"
+      },
+      {
+        "ok":"1139082"
+      },
+      {
+        "ok":"1898717"
+      },
+      {
+        "ok":"2016"
+      },
+      {
+        "ok":"2016-01-18T15:54:00.000"
+      },
+      {
+        "ok":"41.87819484"
+      },
+      {
+        "ok":"-87.76478988"
+      },
+      {
+        "ok":"(41.878194837, -87.764789883)"
+      }
+    ],
+    "offset":4
+  },
+  {
+    "row":[
+      {
+        "ok":"10375836"
+      },
+      {
+        "error":{
+          "message":"Failed to convert \"HZ112407\" to boolean",
+          "inputs":{
+            "case_number":{
+              "ok":"HZ112407"
+            }
+          }
+        }
+      },
+      {
+        "ok":"2016-01-11T23:25:00.000"
+      },
+      {
+        "ok":"063XX S KEDZIE AVE"
+      },
+      {
+        "ok":"1330"
+      },
+      {
+        "ok":"CRIMINAL TRESPASS"
+      },
+      {
+        "ok":"TO LAND"
+      },
+      {
+        "ok":"DRUG STORE"
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":"823"
+      },
+      {
+        "ok":"8"
+      },
+      {
+        "ok":"15"
+      },
+      {
+        "ok":"66"
+      },
+      {
+        "ok":"26"
+      },
+      {
+        "ok":"1156143"
+      },
+      {
+        "ok":"1862448"
+      },
+      {
+        "ok":"2016"
+      },
+      {
+        "ok":"2016-01-18T15:54:00.000"
+      },
+      {
+        "ok":"41.77834098"
+      },
+      {
+        "ok":"-87.70312224"
+      },
+      {
+        "ok":"(41.778340981, -87.703122242)"
+      }
+    ],
+    "offset":5
+  },
+  {
+    "row":[
+      {
+        "ok":"10376791"
+      },
+      {
+        "error":{
+          "message":"Failed to convert \"HZ112953\" to boolean",
+          "inputs":{
+            "case_number":{
+              "ok":"HZ112953"
+            }
+          }
+        }
+      },
+      {
+        "ok":"2016-01-11T23:20:00.000"
+      },
+      {
+        "ok":"004XX W 76TH ST"
+      },
+      {
+        "ok":"031A"
+      },
+      {
+        "ok":"ROBBERY"
+      },
+      {
+        "ok":"ARMED: HANDGUN"
+      },
+      {
+        "ok":"OTHER"
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":"621"
+      },
+      {
+        "ok":"6"
+      },
+      {
+        "ok":"17"
+      },
+      {
+        "ok":"69"
+      },
+      {
+        "ok":"3"
+      },
+      {
+        "ok":"1174859"
+      },
+      {
+        "ok":"1854542"
+      },
+      {
+        "ok":"2016"
+      },
+      {
+        "ok":"2016-01-18T15:54:00.000"
+      },
+      {
+        "ok":"41.75624913"
+      },
+      {
+        "ok":"-87.63474388"
+      },
+      {
+        "ok":"(41.756249125, -87.634743877)"
+      }
+    ],
+    "offset":6
+  },
+  {
+    "row":[
+      {
+        "ok":"10375849"
+      },
+      {
+        "error":{
+          "message":"Failed to convert \"HZ112411\" to boolean",
+          "inputs":{
+            "case_number":{
+              "ok":"HZ112411"
+            }
+          }
+        }
+      },
+      {
+        "ok":"2016-01-11T23:15:00.000"
+      },
+      {
+        "ok":"024XX N NARRAGANSETT AVE"
+      },
+      {
+        "ok":"460"
+      },
+      {
+        "ok":"BATTERY"
+      },
+      {
+        "ok":"SIMPLE"
+      },
+      {
+        "ok":"ATHLETIC CLUB"
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":"2512"
+      },
+      {
+        "ok":"25"
+      },
+      {
+        "ok":"36"
+      },
+      {
+        "ok":"19"
+      },
+      {
+        "ok":"08B"
+      },
+      {
+        "ok":"1133346"
+      },
+      {
+        "ok":"1915440"
+      },
+      {
+        "ok":"2016"
+      },
+      {
+        "ok":"2016-01-18T15:54:00.000"
+      },
+      {
+        "ok":"41.92418726"
+      },
+      {
+        "ok":"-87.7854594"
+      },
+      {
+        "ok":"(41.924187262, -87.785459395)"
+      }
+    ],
+    "offset":7
+  },
+  {
+    "row":[
+      {
+        "ok":"10376251"
+      },
+      {
+        "error":{
+          "message":"Failed to convert \"HZ112670\" to boolean",
+          "inputs":{
+            "case_number":{
+              "ok":"HZ112670"
+            }
+          }
+        }
+      },
+      {
+        "ok":"2016-01-11T23:15:00.000"
+      },
+      {
+        "ok":"037XX W FLOURNOY ST"
+      },
+      {
+        "ok":"820"
+      },
+      {
+        "ok":"THEFT"
+      },
+      {
+        "ok":"$500 AND UNDER"
+      },
+      {
+        "ok":"STREET"
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":false
+      },
+      {
+        "ok":"1133"
+      },
+      {
+        "ok":"11"
+      },
+      {
+        "ok":"24"
+      },
+      {
+        "ok":"27"
+      },
+      {
+        "ok":"6"
+      },
+      {
+        "ok":"1151652"
+      },
+      {
+        "ok":"1896775"
+      },
+      {
+        "ok":"2016"
+      },
+      {
+        "ok":"2016-01-18T15:54:00.000"
+      },
+      {
+        "ok":"41.87262801"
+      },
+      {
+        "ok":"-87.71868635"
+      },
+      {
+        "ok":"(41.872628006, -87.718686345)"
+      }
+    ],
+    "offset":8
+  }
+];
 
 export const errorExport = {
   "errors": "blah"

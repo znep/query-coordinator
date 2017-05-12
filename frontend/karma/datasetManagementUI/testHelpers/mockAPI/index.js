@@ -2,6 +2,7 @@ import fetchMock from 'fetch-mock';
 import xhrMock from 'xhr-mock';
 import * as dsmapiLinks from 'dsmapiLinks';
 import * as responses from './responses';
+import _ from 'lodash';
 
 const STATUS_TEXT = {
   OK: 'OK',
@@ -31,11 +32,45 @@ export const uploadShow = () => fetchMock.get('express:/api/publishing/v1/upload
   statusText: STATUS_TEXT.OK
 });
 
-export const newOutputSchema = () => fetchMock.post('express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId', {
-  body: JSON.stringify(responses.newOutputSchema),
-  status: 201,
-  statusText: STATUS_TEXT.CREATED
+export const newOutputSchema = () => fetchMock.post('express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId', (url, options) => {
+  const requestColumns = JSON.parse(options.body).output_columns || [];
+  const existingColumns = responses.uploadShow.resource.schemas[0].output_schemas[0].output_columns;
+
+  const response = {
+    body: JSON.stringify(responses.newOutputSchemaFromTypeChange),
+    status: 201,
+    statusText: STATUS_TEXT.CREATED
+  };
+
+  // TODO: distinguishe between type change and setting primary key
+  if(requestColumns.length > existingColumns.length) {
+    return {
+      ...response,
+      body: JSON.stringify(responses.newOutputSchemaFromAdd)
+    };
+  } else if (requestColumns.length < existingColumns.length) {
+    return {
+      ...response,
+      body: JSON.stringify(responses.newOutputSchemaFromDrop)
+    };
+  } else {
+    return response;
+  }
 });
+
+// export const newOutputSchema = () => fetchMock.post('express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId', {
+//   body: JSON.stringify(responses.newOutputSchema),
+//   status: 201,
+//   statusText: STATUS_TEXT.CREATED
+// });
+// export const newOutputSchema = () => fetchMock.post((url, options) => {
+//   console.log('urll', url)
+//   console.log('options', options)
+// }, {
+//   body: JSON.stringify(responses.newOutputSchema),
+//   status: 201,
+//   statusText: STATUS_TEXT.CREATED
+// });
 
 export const rows = () => fetchMock.get('express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId/rows/:outputSchemaId', {
   body: JSON.stringify(responses.rows),

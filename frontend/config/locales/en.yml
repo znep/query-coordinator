@@ -2376,7 +2376,7 @@ en:
         failed_goal_count: "{0} goals failed to save:"
         failure_message: "<strong>Error.</strong> Some goals failed to save. Try again, or make your edits individually on each goal's page."
         items_progress: "{0} of {1} processed ({2}%)"
-        items_selected: "{0} Items Selected"
+        items_selected: "{0} Items Selected ({1})"
         not_configured_message: "<strong>Oops.</strong> It looks like one or more of your goals is unconfigured. Bulk edits can only be made to goals that have already been configured."
         override_label: Override
         override_types:
@@ -2410,7 +2410,7 @@ en:
       goal_values:
         status_private: Private
         status_public: Public
-        status_public_with_draft: Public (unpublished draft)
+        status_public_with_draft: Public with unpublished draft
       listing:
         dashboard: Dashboard
         default_alert_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"

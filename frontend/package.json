@@ -154,6 +154,8 @@
     "rx-angular": "0.0.14",
     "socrata-components": "13.3.0",
     "socrata-visualizations": "21.6.0",
+    "socrata-notifications": "1.0.8",
+    "socrata-autocomplete": "1.0.8",
     "stringformat": "0.0.5",
     "tether": "1.0.2",
     "tether-shepherd": "1.2.0",

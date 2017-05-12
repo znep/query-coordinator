@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Constants from '../Constants';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertIsOneOfTypes, assertHasProperty } from 'common/js_utils';
 import { richTextEditorManager } from '../RichTextEditorManager';
 import { windowSizeBreakpointStore } from '../stores/WindowSizeBreakpointStore';
 
@@ -34,8 +35,8 @@ export default function componentHTML(props) {
   props = _.extend({}, props, { editButtonSupported: false });
   const { componentData, theme, extraContentClasses } = props;
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperty(componentData, 'type');
+  assert(
     componentData.type === 'html',
     `componentHTML: Unsupported component type ${componentData.type}`
   );
@@ -58,7 +59,7 @@ export default function componentHTML(props) {
 function _setupRichTextEditor($element, componentData, theme, extraContentClasses) {
   const editorId = _.uniqueId();
 
-  StorytellerUtils.assertHasProperty(componentData, 'value');
+  assertHasProperty(componentData, 'value');
 
   _setupPhantomEditor($element, componentData, theme);
 
@@ -179,10 +180,10 @@ function _updateRichTextEditor($element, componentData, theme) {
   const editorId = $element.attr('data-editor-id');
   const editor = richTextEditorManager.getEditor(editorId);
 
-  StorytellerUtils.assertIsOneOfTypes(theme, 'string');
-  StorytellerUtils.assertHasProperty(componentData, 'value');
+  assertIsOneOfTypes(theme, 'string');
+  assertHasProperty(componentData, 'value');
 
-  StorytellerUtils.assert(
+  assert(
     editor,
     `Cannot find the rich text editor associated with ${editorId}.`
   );

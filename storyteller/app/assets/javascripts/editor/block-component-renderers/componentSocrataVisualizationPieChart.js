@@ -4,6 +4,7 @@ import _ from 'lodash';
 import '../componentBase';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperty } from 'common/js_utils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 $.fn.componentSocrataVisualizationPieChart = componentSocrataVisualizationPieChart;
@@ -19,8 +20,8 @@ export default function componentSocrataVisualizationPieChart(props) {
 
   const $this = $(this);
 
-  StorytellerUtils.assertHasProperty(props, 'componentData.type');
-  StorytellerUtils.assert(
+  assertHasProperty(props, 'componentData.type');
+  assert(
     props.componentData.type === 'socrata.visualization.pieChart',
     `componentSocrataVisualizationPieChart: Unsupported component type ${props.componentData.type}`
   );
@@ -36,7 +37,7 @@ export default function componentSocrataVisualizationPieChart(props) {
 }
 
 function _renderTemplate($element, props) {
-  StorytellerUtils.assertHasProperty(props, 'componentData.type');
+  assertHasProperty(props, 'componentData.type');
 
   const { componentData } = props;
   const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
@@ -57,7 +58,7 @@ function _renderTemplate($element, props) {
 }
 
 function _updateVisualization($element, props) {
-  StorytellerUtils.assertHasProperty(props, 'componentData.value.vif');
+  assertHasProperty(props, 'componentData.value.vif');
 
   const { componentData, editMode } = props;
   const vif = componentData.value.vif;

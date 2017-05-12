@@ -4,6 +4,7 @@ import _ from 'lodash';
 import '../componentBase';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperty, assertHasProperties } from 'common/js_utils';
 import Environment from '../../StorytellerEnvironment';
 
 $.fn.componentEmbeddedHtml = componentEmbeddedHtml;
@@ -18,8 +19,8 @@ export default function componentEmbeddedHtml(props) {
 
   const { componentData } = props;
 
-  StorytellerUtils.assertHasProperties(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperties(componentData, 'type');
+  assert(
     componentData.type === 'embeddedHtml',
     `componentEmbeddedHtml: Unsupported component type ${componentData.type}`
   );
@@ -37,7 +38,7 @@ export default function componentEmbeddedHtml(props) {
 }
 
 function _renderEmbeddedHtml($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  assertHasProperty(componentData, 'type');
 
   const $iframeElement = $(
     '<iframe>',
@@ -63,8 +64,8 @@ function _renderEmbeddedHtml($element, componentData) {
 }
 
 function _updateSrcAndTitle($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'value');
-  StorytellerUtils.assertHasProperty(componentData.value, 'url');
+  assertHasProperty(componentData, 'value');
+  assertHasProperty(componentData.value, 'url');
 
   const embeddedHtmlUrl = componentData.value.url;
   const documentId = componentData.value.documentId;
@@ -88,9 +89,9 @@ function _updateIframeHeight($element, componentData) {
   const $iframeElement = $element.find('iframe');
   const renderedHeight = parseInt($iframeElement.attr('height'), 10);
 
-  StorytellerUtils.assertHasProperty(componentData, 'value');
-  StorytellerUtils.assertHasProperty(componentData.value, 'layout');
-  StorytellerUtils.assertHasProperty(componentData.value.layout, 'height');
+  assertHasProperty(componentData, 'value');
+  assertHasProperty(componentData.value, 'layout');
+  assertHasProperty(componentData.value.layout, 'height');
 
   if (renderedHeight !== componentData.value.layout.height) {
     $iframeElement.attr('height', componentData.value.layout.height);

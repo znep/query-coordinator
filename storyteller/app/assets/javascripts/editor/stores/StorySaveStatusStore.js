@@ -4,6 +4,7 @@ import Store from './Store';
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertIsOneOfTypes } from 'common/js_utils';
 import { dispatcher } from '../Dispatcher';
 import { storyStore } from './StoryStore';
 import httpRequest from '../../services/httpRequest';
@@ -30,8 +31,8 @@ export default function StorySaveStatusStore(forStoryUid) {
 
   _.extend(this, new Store());
 
-  StorytellerUtils.assertIsOneOfTypes(forStoryUid, 'string');
-  StorytellerUtils.assert(storyStore, 'StoryStore must be initialized before StorySaveStatusStore');
+  assertIsOneOfTypes(forStoryUid, 'string');
+  assert(storyStore, 'StoryStore must be initialized before StorySaveStatusStore');
 
   this.register(function(payload) {
     var action = payload.action;
@@ -66,7 +67,7 @@ export default function StorySaveStatusStore(forStoryUid) {
         break;
 
       case Actions.STORY_SAVE_STARTED:
-        StorytellerUtils.assert(_saveInProgress === false, 'Can only have one pending save at a time.');
+        assert(_saveInProgress === false, 'Can only have one pending save at a time.');
 
         _lastSerializedStory = storyStore.serializeStory(forStoryUid);
         _saveInProgress = true;

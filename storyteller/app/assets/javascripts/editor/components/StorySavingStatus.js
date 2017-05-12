@@ -5,6 +5,7 @@ import I18n from '../I18n';
 import Constants from '../Constants';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertIsOneOfTypes } from 'common/js_utils';
 import { storyStore } from '../stores/StoryStore';
 import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
 
@@ -15,8 +16,8 @@ export default function StorySavingStatus(options) {
   var holdInSavedState = false; // We need to keep displaying 'Saved!' for a bit.
   var clearHoldInSaveStateAfterDebounce;
 
-  StorytellerUtils.assert(storySaveStatusStore, 'storySaveStatusStore must be instantiated');
-  StorytellerUtils.assertIsOneOfTypes(options, 'object', 'undefined');
+  assert(storySaveStatusStore, 'storySaveStatusStore must be instantiated');
+  assertIsOneOfTypes(options, 'object', 'undefined');
 
   options = _.extend({}, {
     savedMessageTimeout: 5000, // When the story saves, keep displaying 'Saved!' for this long.

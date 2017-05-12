@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assertHasProperty } from 'common/js_utils';
 import httpRequest from '../../services/httpRequest';
 import Store from './Store';
 import { coreSavingStore } from './CoreSavingStore';
@@ -21,7 +22,7 @@ export default function ShareAndEmbedStore() {
   var _storyViewUrl = Environment.STORY_VIEW_URL;
 
   this.register(function(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'action');
+    assertHasProperty(payload, 'action');
     switch (payload.action) {
 
       case Actions.SHARE_AND_EMBED_MODAL_OPEN:

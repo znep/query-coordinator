@@ -128,7 +128,7 @@ var utils = {
 
   assertHasProperties: function(object) {
 
-    var assertHasProperty = this.assertHasProperty;
+    var assertHasProperty = utils.assertHasProperty;
 
     // Apply all arguments (minus `object`)
     // to assertHasProperty(object, argument).
@@ -200,8 +200,8 @@ var utils = {
    * @param {Number} expectedLength - The expected length.
    */
   assertLengthIs: function(collection, expectedLength) {
-    this.assertHasProperty(collection, 'length');
-    this.assertIsOneOfTypes(expectedLength, 'number');
+    utils.assertHasProperty(collection, 'length');
+    utils.assertIsOneOfTypes(expectedLength, 'number');
     utils.assert(
       collection.length === expectedLength,
       'Expected `{0}` to have length {1}, was {2}.'.format(collection, expectedLength, collection.length)
@@ -251,7 +251,7 @@ var utils = {
       var parts = absVal.toString().split('.').concat('');
       var precision = Math.min(parts[1].length, maxLength - parts[0].length);
 
-      return this.commaify(val.toFixed(precision), formatNumberOptions);
+      return utils.commaify(val.toFixed(precision), formatNumberOptions);
 
     } else if (/e/i.test(val)) {
 
@@ -279,7 +279,7 @@ var utils = {
 
       // This branch handles values that need a magnitude suffix.
       // We use commaify to determine what magnitude we're operating in.
-      var magnitudeGroups = this.commaify(absVal.toFixed(0)).split(',');
+      var magnitudeGroups = utils.commaify(absVal.toFixed(0)).split(',');
       symbolIndex = magnitudeGroups.length - 2;
       newValue = parseFloat(magnitudeGroups[0] + '.' + magnitudeGroups[1]);
       newValue = newValue.toFixed(maxLength - magnitudeGroups[0].length - 1);
@@ -410,9 +410,9 @@ var utils = {
     var needToRegister;
     var needToUnregister;
 
-    this.assertInstanceOf($element, $);
-    this.assert($element.length === 1, '`element` selection must have length 1');
-    this.assertIsOneOfTypes(enable, 'boolean');
+    utils.assertInstanceOf($element, $);
+    utils.assert($element.length === 1, '`element` selection must have length 1');
+    utils.assertIsOneOfTypes(enable, 'boolean');
 
     hasPreventPageScrolling = $element[0].hasOwnProperty('preventPageScrolling');
 
@@ -528,12 +528,6 @@ var utils = {
     );
   }
 };
-
-if (String.prototype.format && console && console.warn) {
-  console.warn(
-    'Warning: String.prototype.format was already set somewhere else. It may not function as expected.'
-  );
-}
 
 /* eslint-disable no-extend-native */
 

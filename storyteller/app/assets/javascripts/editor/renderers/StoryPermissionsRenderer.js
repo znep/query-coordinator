@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import I18n from '../I18n';
 import Environment from '../../StorytellerEnvironment';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assert } from 'common/js_utils';
 import { storyStore } from '../stores/StoryStore';
 import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
 import { permissionStore } from '../stores/PermissionStore';
@@ -29,8 +29,8 @@ export default function StoryPermissionsRenderer() {
 
   var $settingsPanelPublishing = $('.settings-panel-publishing');
 
-  StorytellerUtils.assert(storySaveStatusStore, 'storySaveStatusStore must be instantiated');
-  StorytellerUtils.assert($settingsPanelPublishing.length === 1, 'Cannot find a publishing section in settings panel.');
+  assert(storySaveStatusStore, 'storySaveStatusStore must be instantiated');
+  assert($settingsPanelPublishing.length === 1, 'Cannot find a publishing section in settings panel.');
 
   $settingsPanelStoryStatus = $settingsPanelPublishing.find('.settings-panel-story-status');
 

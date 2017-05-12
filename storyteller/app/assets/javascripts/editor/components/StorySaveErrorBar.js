@@ -3,7 +3,7 @@ import $ from 'jquery';
 import I18n from '../I18n';
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assert } from 'common/js_utils';
 import { dispatcher } from '../Dispatcher';
 import { autosave } from '../Autosave';
 import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
@@ -12,7 +12,7 @@ import { userSessionStore } from '../stores/UserSessionStore';
 $.fn.storySaveErrorBar = StorySaveErrorBar;
 
 export default function StorySaveErrorBar() {
-  StorytellerUtils.assert(
+  assert(
     storySaveStatusStore,
     'storySaveStatusStore must be instantiated'
   );

@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import Store from './Store';
 import Actions from '../Actions';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assertHasProperty, assertHasProperties } from 'common/js_utils';
 
 export var linkModalStore = new LinkModalStore();
 export default function LinkModalStore() {
@@ -66,7 +66,7 @@ export default function LinkModalStore() {
   };
 
   function _openModal(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'editorId');
+    assertHasProperty(payload, 'editorId');
 
     visible = true;
     editorId = payload.editorId;
@@ -87,7 +87,7 @@ export default function LinkModalStore() {
   }
 
   function _setInputs(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'text', 'link', 'openInNewWindow');
+    assertHasProperties(payload, 'text', 'link', 'openInNewWindow');
 
     var urlRegex = /^https?:\/\/.+\../;
     var emailRegex = /^(mailto:)?.+@./;

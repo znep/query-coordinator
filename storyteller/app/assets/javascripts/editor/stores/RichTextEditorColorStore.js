@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import Actions from '../Actions';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assertIsOneOfTypes } from 'common/js_utils';
 import Environment from '../../StorytellerEnvironment';
 import Store from './Store';
 import { storyStore } from './StoryStore';
@@ -53,7 +54,7 @@ export default function RichTextEditorColorStore() {
    */
 
   function updateDefaultColors(themeId) {
-    StorytellerUtils.assertIsOneOfTypes(themeId, 'string');
+    assertIsOneOfTypes(themeId, 'string');
 
     if (_.startsWith(themeId, 'custom-')) {
       themeId = parseInt(_.trimStart(themeId, 'custom-'), 10);

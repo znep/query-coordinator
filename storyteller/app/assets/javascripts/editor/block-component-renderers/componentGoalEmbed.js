@@ -7,6 +7,7 @@ import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-component
 
 import '../componentBase';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertIsOneOfTypes, assertHasProperty, assertHasProperties } from 'common/js_utils';
 import I18n from '../I18n';
 import { storyStore } from '../stores/StoryStore';
 import Actions from '../Actions';
@@ -51,8 +52,8 @@ export default function componentGoalEmbed(props) {
   const $this = $(this);
   const { componentData } = props;
 
-  StorytellerUtils.assertHasProperties(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperties(componentData, 'type');
+  assert(
     componentData.type === 'goal.embed',
     `componentGoalEmbed: Unsupported component type ${componentData.type}`
   );
@@ -71,8 +72,8 @@ const debouncedUpdateHeightInComponentData = _.debounce(function($iframeElement,
   const blockId = StorytellerUtils.findClosestAttribute($iframeElement, 'data-block-id');
   const componentIndex = parseInt(StorytellerUtils.findClosestAttribute($iframeElement, 'data-component-index'), 10);
 
-  StorytellerUtils.assertIsOneOfTypes(blockId, 'string');
-  StorytellerUtils.assert(_.isFinite(componentIndex));
+  assertIsOneOfTypes(blockId, 'string');
+  assert(_.isFinite(componentIndex));
 
   let component = storyStore.getBlockComponentAtIndex(blockId, componentIndex);
 
@@ -93,7 +94,7 @@ const debouncedUpdateHeightInComponentData = _.debounce(function($iframeElement,
 function renderGoal($element, props) {
   const { componentData, editMode } = props;
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  assertHasProperty(componentData, 'type');
 
   function monitorHeightChanges() {
     setInterval(() => {
@@ -264,7 +265,7 @@ function renderModal($element, state) {
 }
 
 function updateSrcAndTitle($element, componentData) {
-  StorytellerUtils.assertHasProperties(
+  assertHasProperties(
     componentData,
     'value',
     'value.uid'

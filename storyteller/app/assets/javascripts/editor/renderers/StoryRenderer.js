@@ -5,6 +5,7 @@ import I18n from '../I18n';
 import Actions from '../Actions';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertInstanceOf, assertIsOneOfTypes, assertHasProperties } from 'common/js_utils';
 import StoryRendererElementCache from '../StoryRendererElementCache';
 import '../block-component-renderers';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
@@ -37,10 +38,10 @@ export default function StoryRenderer(options) {
   var renderNeeded = false;
   var rendering = false;
 
-  StorytellerUtils.assertIsOneOfTypes(storyUid, 'string');
-  StorytellerUtils.assertInstanceOf($container, $);
-  StorytellerUtils.assertInstanceOf(insertionHint, $);
-  StorytellerUtils.assertInstanceOf(richTextEditorManager, RichTextEditorManager);
+  assertIsOneOfTypes(storyUid, 'string');
+  assertInstanceOf($container, $);
+  assertInstanceOf(insertionHint, $);
+  assertInstanceOf(richTextEditorManager, RichTextEditorManager);
 
   $container.addClass('story');
   $container.add(insertionHint).attr('data-story-uid', storyUid);
@@ -807,7 +808,7 @@ export default function StoryRenderer(options) {
       // If the container is not in the cache, we must grab it from the DOM. All component containers
       // have already been created in one step in _renderBlock.
       $componentContainer = $block.find('.component-container[data-component-index="' + componentIndex + '"]');
-      StorytellerUtils.assert(
+      assert(
         $componentContainer.length > 0,
         StorytellerUtils.format(
           'Could not find component container for blockId: {0}, componentIndex: {1}',
@@ -818,7 +819,7 @@ export default function StoryRenderer(options) {
       elementCache.setComponent(blockId, componentIndex, $componentContainer);
     }
 
-    StorytellerUtils.assertInstanceOf($componentContainer, $);
+    assertInstanceOf($componentContainer, $);
 
     return $componentContainer;
   }
@@ -873,7 +874,7 @@ export default function StoryRenderer(options) {
   // This function maps component data (type, value) to
   // a jQuery plugin name ('storytellerComponentText').
   function _findAppropriateComponentRenderer(componentData) {
-    StorytellerUtils.assertHasProperties(componentData, 'type');
+    assertHasProperties(componentData, 'type');
 
     switch (componentData.type) {
       case 'html':

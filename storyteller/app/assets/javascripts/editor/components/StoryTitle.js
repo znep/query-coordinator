@@ -1,13 +1,13 @@
 import $ from 'jquery';
 
-import StorytellerUtils from '../../StorytellerUtils';
+import { assertIsOneOfTypes } from 'common/js_utils';
 import { storyStore } from '../stores/StoryStore';
 
 $.fn.storyTitle = StoryTitle;
 
 export default function StoryTitle(storyUid) {
 
-  StorytellerUtils.assertIsOneOfTypes(storyUid, 'string');
+  assertIsOneOfTypes(storyUid, 'string');
 
   var $title = $(this);
 

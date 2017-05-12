@@ -1,4 +1,4 @@
-import StorytellerUtils from '../StorytellerUtils';
+import { assertIsOneOfTypes } from 'common/js_utils';
 
 export default function SimpleEventEmitter() {
   var _listeners = [];
@@ -14,7 +14,7 @@ export default function SimpleEventEmitter() {
    * being added multiple times.
    */
   this.addListener = function(callback) {
-    StorytellerUtils.assertIsOneOfTypes(callback, 'function');
+    assertIsOneOfTypes(callback, 'function');
     _listeners.push(callback);
   };
 
@@ -22,7 +22,7 @@ export default function SimpleEventEmitter() {
    * Remove a listener from the listener array.
    */
   this.removeListener = function(callback) {
-    StorytellerUtils.assertIsOneOfTypes(callback, 'function');
+    assertIsOneOfTypes(callback, 'function');
 
     var i = _listeners.indexOf(callback);
 

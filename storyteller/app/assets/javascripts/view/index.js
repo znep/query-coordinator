@@ -17,15 +17,15 @@ import '../editor/block-component-renderers/componentSocrataVisualizationTable';
 import '../editor/block-component-renderers/componentSocrataVisualizationTimelineChart';
 import '../editor/block-component-renderers/componentStoryTile';
 
-import StorytellerUtils from '../StorytellerUtils';
 import Environment from '../StorytellerEnvironment';
 import PresentationMode from './PresentationMode';
+import { Analytics } from 'common/analytics';
 
 import { windowSizeBreakpointStore } from '../editor/stores/WindowSizeBreakpointStore';
 
 $(document).on('ready', function() {
 
-  var analytics = new StorytellerUtils.Analytics();
+  var analytics = new Analytics();
   (new PresentationMode());
 
   SocrataVisualizations.views.RowInspector.setup();

@@ -5,6 +5,7 @@ import '../componentBase';
 import Actions from '../Actions';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperty } from 'common/js_utils';
 import { storyStore } from '../stores/StoryStore';
 import { dispatcher } from '../Dispatcher';
 import { flyoutRenderer } from '../FlyoutRenderer';
@@ -23,8 +24,8 @@ export default function componentSocrataVisualizationTable(props) {
   const $this = $(this);
   const { componentData } = props;
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperty(componentData, 'type');
+  assert(
     componentData.type === 'socrata.visualization.table',
     `componentSocrataVisualizationTable: Unsupported component type ${componentData.type}`
   );
@@ -44,7 +45,7 @@ function _renderTemplate($element, props) {
   const { componentData, editMode } = props;
   const $componentContent = $('<div>', { class: 'component-content' });
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  assertHasProperty(componentData, 'type');
 
   $element.
     addClass(StorytellerUtils.typeToClassNameForComponentType(componentData.type)).
@@ -109,7 +110,7 @@ function _updateVisualization($element, componentData) {
     return type;
   }
 
-  StorytellerUtils.assertHasProperty(componentData, 'value.vif');
+  assertHasProperty(componentData, 'value.vif');
   vif = componentData.value.vif;
 
   $element.attr('data-rendered-vif', JSON.stringify(vif));

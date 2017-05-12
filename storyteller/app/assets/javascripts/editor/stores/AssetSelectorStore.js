@@ -6,6 +6,7 @@ import Store from './Store';
 import Actions from '../Actions';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperty, assertEqual, assertIsOneOfTypes, assertHasProperties } from 'common/js_utils';
 import { storyStore } from './StoryStore';
 import { fileUploaderStore, STATUS } from './FileUploaderStore';
 import httpRequest, { federationHeaders, storytellerHeaders } from '../../services/httpRequest';
@@ -80,7 +81,7 @@ export default function AssetSelectorStore() {
   let _state = {};
 
   this.register((payload) => {
-    StorytellerUtils.assertHasProperty(payload, 'action');
+    assertHasProperty(payload, 'action');
 
     switch (payload.action) {
 
@@ -424,8 +425,8 @@ export default function AssetSelectorStore() {
   }
 
   function _setImageSearchPhrase(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'phrase');
-    StorytellerUtils.assertIsOneOfTypes(payload.phrase, 'string');
+    assertHasProperty(payload, 'phrase');
+    assertIsOneOfTypes(payload.phrase, 'string');
 
     _state.imageSearchPhrase = payload.phrase.trim();
     _state.imageSearching = _state.imageSearchPhrase.length > 0;
@@ -462,7 +463,7 @@ export default function AssetSelectorStore() {
   }
 
   function _updateImageWindowTarget() {
-    StorytellerUtils.assertEqual(self.getComponentType(), 'image');
+    assertEqual(self.getComponentType(), 'image');
 
     const value = self.getComponentValue();
     value.openInNewWindow = !value.openInNewWindow;
@@ -478,8 +479,8 @@ export default function AssetSelectorStore() {
   }
 
   function _setImageSearchSelection(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'id');
-    StorytellerUtils.assertIsOneOfTypes(payload.id, 'string', 'number');
+    assertHasProperty(payload, 'id');
+    assertIsOneOfTypes(payload.id, 'string', 'number');
 
     const type = self.getComponentType();
     const url = `${Constants.API_PREFIX_PATH}/getty-images/${payload.id}`;
@@ -505,8 +506,8 @@ export default function AssetSelectorStore() {
   }
 
   function setImageCrop(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'crop');
-    StorytellerUtils.assertHasProperties(payload.crop, 'width', 'height', 'x', 'y');
+    assertHasProperty(payload, 'crop');
+    assertHasProperties(payload.crop, 'width', 'height', 'x', 'y');
 
     const value = getImageComponent(self.getComponentValue());
     value.crop = payload.crop;
@@ -601,7 +602,7 @@ export default function AssetSelectorStore() {
   }
 
   function setPreviewImage(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'file');
+    assertHasProperty(payload, 'file');
 
     const file = payload.file;
     const isNotValidFileSize = file.size > Constants.MAX_FILE_SIZE_BYTES;
@@ -702,7 +703,7 @@ export default function AssetSelectorStore() {
   }
 
   function _selectNew(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'blockId', 'componentIndex');
+    assertHasProperties(payload, 'blockId', 'componentIndex');
 
     _state = {
       step: WIZARD_STEP.SELECT_ASSET_PROVIDER,
@@ -716,7 +717,7 @@ export default function AssetSelectorStore() {
   }
 
   function _editExisting(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'blockId', 'componentIndex');
+    assertHasProperties(payload, 'blockId', 'componentIndex');
 
     const component = storyStore.getBlockComponentAtIndex(
       payload.blockId,
@@ -757,8 +758,8 @@ export default function AssetSelectorStore() {
   }
 
   function _jumpToStep(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'step');
-    StorytellerUtils.assertHasProperty(WIZARD_STEP, payload.step);
+    assertHasProperties(payload, 'step');
+    assertHasProperty(WIZARD_STEP, payload.step);
 
     if (_state.step !== payload.step) {
       _state.step = payload.step;
@@ -847,7 +848,7 @@ export default function AssetSelectorStore() {
         if (_.isPlainObject(nbeViewData)) {
 
           // We should be able to handle all NBE datasets.
-          StorytellerUtils.assert(
+          assert(
             viewIsDirectlyVisualizable(_state.componentType, nbeViewData),
             'All versions of this dataset deemed unfit for visualization!'
           );
@@ -862,8 +863,8 @@ export default function AssetSelectorStore() {
   }
 
   function _chooseVisualizationDataset(payload) {
-    StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
-    StorytellerUtils.assertIsOneOfTypes(payload.datasetUid, 'string');
+    assertIsOneOfTypes(payload.domain, 'string');
+    assertIsOneOfTypes(payload.datasetUid, 'string');
 
     _getView(payload.domain, payload.datasetUid).
       then(_getVisualizableView).
@@ -914,7 +915,7 @@ export default function AssetSelectorStore() {
   function _chooseVisualizationMapOrChart(payload) {
     _state.step = WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
 
-    StorytellerUtils.assertIsOneOfTypes(payload.domain, 'string');
+    assertIsOneOfTypes(payload.domain, 'string');
 
     const mapChartError = () => {
       alert(t('visualization.choose_map_or_chart_error')); // eslint-disable-line no-alert
@@ -948,18 +949,18 @@ export default function AssetSelectorStore() {
     // in Data Lens.
     const unit = I18n.t('editor.visualizations.default_unit');
 
-    StorytellerUtils.assertHasProperties(
+    assertHasProperties(
       _state,
       'componentProperties.dataset.domain',
       'componentProperties.dataset.datasetUid',
       'dataset.columns'
     );
-    StorytellerUtils.assert(
+    assert(
       _state.componentType === 'socrata.visualization.table',
       `Visualization under construction is not a table, cannot proceed. Was: ${_state.componentType}`
     );
 
-    StorytellerUtils.assert(_state.dataset.columns.length > 0, 'dataset must have at least one column');
+    assert(_state.dataset.columns.length > 0, 'dataset must have at least one column');
 
     const visualization = {
       type: 'table',
@@ -999,8 +1000,8 @@ export default function AssetSelectorStore() {
   // * _state.componentProperties.dataset.datasetUid,
   // * _state.dataset
   function _setComponentPropertiesFromViewData(viewData) {
-    StorytellerUtils.assertIsOneOfTypes(viewData, 'object');
-    StorytellerUtils.assertHasProperties(viewData,
+    assertIsOneOfTypes(viewData, 'object');
+    assertHasProperties(viewData,
       'domain', // We retcon this in, sorry if you tried to feed in plain data from /api/views.
       'id'
     );
@@ -1100,7 +1101,7 @@ export default function AssetSelectorStore() {
       self._emitChange();
     } else if (format === 'vif') {
 
-      StorytellerUtils.assertHasProperty(_state, 'componentProperties.dataset');
+      assertHasProperty(_state, 'componentProperties.dataset');
 
       _state.componentType = `socrata.visualization.${visualization.type}`;
       _state.componentProperties = {
@@ -1146,7 +1147,7 @@ export default function AssetSelectorStore() {
   }
 
   function upload(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'id');
+    assertHasProperty(payload, 'id');
 
     const crop = getImageComponent(self.getComponentValue()).crop;
     const hasCrop = crop && crop.x !== 0 && crop.y !== 0 && crop.width !== 100 && crop.height !== 100;
@@ -1361,7 +1362,7 @@ export default function AssetSelectorStore() {
   }
 
   function _updateStoryWindowTarget() {
-    StorytellerUtils.assertEqual(self.getComponentType(), 'story.tile');
+    assertEqual(self.getComponentType(), 'story.tile');
 
     const value = self.getComponentValue();
     value.openInNewWindow = !value.openInNewWindow;
@@ -1385,7 +1386,7 @@ export default function AssetSelectorStore() {
   }
 
   function _updateGoalWindowTarget() {
-    StorytellerUtils.assertEqual(self.getComponentType(), 'goal.tile');
+    assertEqual(self.getComponentType(), 'goal.tile');
 
     const value = self.getComponentValue();
     value.openInNewWindow = !value.openInNewWindow;
@@ -1408,7 +1409,7 @@ export default function AssetSelectorStore() {
   }
 
   function setProvider(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'provider');
+    assertHasProperty(payload, 'provider');
 
     switch (payload.provider) {
       case 'SOCRATA_VISUALIZATION':

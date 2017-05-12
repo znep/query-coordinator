@@ -5,6 +5,7 @@
 tbody tr.malformedRow {
   color: $error-text;
   background: $error-light;
+  font-size: 13px;
 
   td {
     border-width: 0px;

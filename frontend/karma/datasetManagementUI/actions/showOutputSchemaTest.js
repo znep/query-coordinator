@@ -18,7 +18,7 @@ import { statusSavedOnServer } from 'lib/database/statuses';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import mockAPI from '../testHelpers/mockAPI';
 import initialState from '../data/baseState';
-import mockPhoenixSocket from '../testHelpers/mockPhoenixSocket';
+// import mockPhoenixSocket from '../testHelpers/mockPhoenixSocket';
 // import { getStoreWithOneColumn } from '../data/storeWithOneColumn';
 // import errorTableResponse from '../data/errorTableResponse';
 // import addColumnResponse from '../data/addColumnResponse';
@@ -28,547 +28,86 @@ import { latestOutputSchema, columnsForOutputSchema } from 'selectors';
 const mockStore = configureStore([thunk]);
 import rootReducer from 'reducers';
 import { applyMiddleware, createStore } from 'redux';
+import { SocketIO, Server} from 'mock-socket';
+
+function wsmock() {
+  const mockServer = new Server('/api/publishing/v1/socket')
+
+  mockServer.on('connection', server => {
+    mockServer.emit('ok', 'connected fine')
+    mockServer.emit('errors', {count: 0})
+    mockServer.emit('max_ptr', {
+      "seq_num":0,
+      "row_offset":0,
+      "end_row_offset":4999
+    })
+    mockServer.emit('updated', {error_count: 3})
+  })
+
+  window.DSMAPI_PHOENIX_SOCKET = {
+    channel: function(name){
+      const x = new SocketIO('/api/publishing/v1/socket');
+      // console.log(x.join)
+      x.join = function() { return this }
+      x.receive = function() { return this }
+      return x
+    }
+  }
+
+  return mockServer
+}
 
 describe.only('actions/showOutputSchema', () => {
 
   describe('addColumn', () => {
     let unmock;
+    let unmockWS;
 
     beforeEach(() => {
       unmock = mockAPI();
+      unmockWS = wsmock();
     });
 
     afterEach(() => {
       unmock();
+      unmockWS.stop();
     });
 
     it('constructs a new output schema, given a new column', (done) => {
       const store = createStore(rootReducer, applyMiddleware(thunk));
 
-      // mockPhoenixSocket({
-      //     "transform_progress:314244":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314245":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314246":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314247":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314248":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314249":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314250":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314251":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314252":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314253":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314254":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314255":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314256":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314257":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314258":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314259":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314260":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314261":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314262":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314263":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314264":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:314265":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:285871":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //     "transform_progress:309525":[
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":0,
-      //           "row_offset":0,
-      //           "end_row_offset":4999
-      //         }
-      //       },
-      //       {
-      //         "event":"max_ptr",
-      //         "payload":{
-      //           "seq_num":1,
-      //           "row_offset":5000,
-      //           "end_row_offset":9999
-      //         }
-      //       }
-      //     ],
-      //   'output_schema:11197': [
-      //     {
-      //       event: 'update',
-      //       payload: {
-      //         error_count: 3
-      //       }
-      //     }
-      //   ],
-      //   'output_schema:10947': [
-      //     {
-      //       event: 'update',
-      //       payload: {
-      //         error_count: 3
-      //       }
-      //     }
-      //   ],
-      //   'row_errors:10378': [
-      //     {
-      //       event: 'errors',
-      //       payload: {
-      //         errors: 1
-      //       }
-      //     }
-      //   ]
-      // }, done)
-
-      // const seedStore = () => (dispatch, getState) => Promise.all([
-      //   createUpload({name: 'petty_crimes.csv'})
-      // ])
-      // const fakeStore = mockStore({})
+      let fakeStore;
+      let os;
+      let column
 
       store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+        .then(() => {
+          const {db} = store.getState()
+          os = latestOutputSchema(db);
+          column = columnsForOutputSchema(db, os.id)[0];
+          return store.dispatch(addColumn(os, column))
+        })
         .then(() => {
           return store.getState()
         })
         .then(state => {
-          const fakeStore = mockStore(state);
-          const os = latestOutputSchema(state.db);
-          const column = columnsForOutputSchema(state.db, os.id)[0];
+          fakeStore = mockStore(state);
           return fakeStore.dispatch(addColumn(os, column))
-            .then(() => console.log(fakeStore.getActions()))
-          // return fakeStore.getActions()
-          // return store.getState()
-          // fakeStore.dispatch(addColumn(os, column))
-          //   .then(() => {
-          //     console.log(fakeStore.getActions())
-          //   })
-        })
-        .then(a => {
-          console.log('hey', a)
-          // return fakeStore.getActions()
+            .then(() => fakeStore.getActions())
         })
         .then(actions => {
-          // console.log(actions)
+          console.log('actions', actions)
           done()
         })
         .catch(err => {
           console.log('err', err)
           done()
-        })
-      // const store = getStoreWithOutputSchema();
-      //
-      // const db = store.getState().db;
-      // const oldSchema = _.find(db.output_schemas, { id: 18 });
-      // const oldColumn = _.find(db.output_columns, { id: 50 });
-      // const newType = 'SoQLNumber';
-      //
-      // const newOutputCols = outputColumnsWithChangedType(db, oldSchema, oldColumn, newType);
-      //
-      // expect(newOutputCols).to.eql([
-      //   {
-      //     display_name: 'arrest',
-      //     position: 0,
-      //     field_name: 'arrest',
-      //     description: null,
-      //     is_primary_key: false,
-      //     transform: {
-      //       transform_expr: 'to_number(arrest)'
-      //     }
-      //   },
-      //   {
-      //     display_name: 'block',
-      //     position: 1,
-      //     field_name: 'block',
-      //     description: null,
-      //     is_primary_key: false,
-      //     transform: {
-      //       transform_expr: 'block'
-      //     }
-      //   }
-      // ]);
+        });
+
+      // setTimeout(() => {
+      //   console.log(fakeStore.getActions())
+      //   done()
+      // }, 100);
     });
 
     // it('uses the input column\'s field name in the transform even if the output column\'s field name has changed', () => {

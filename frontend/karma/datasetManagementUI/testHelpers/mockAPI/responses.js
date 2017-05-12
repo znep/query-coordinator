@@ -55,7 +55,7 @@ export const uploadBytes = {
               "transform_expr":"`case_number`",
               "output_soql_type":"SoQLText",
               "id":285871,
-              "completed_at":"2017-05-09T23:10:21"
+              "completed_at":null
             },
             "position":1,
             "is_primary_key":false,
@@ -1145,7 +1145,7 @@ export const uploadShow = {
               }
             ],
             "inserted_at":"2017-05-11T18:31:49.251822",
-            "input_schema_id":10378,
+            "input_schema_id":9649,
             "id":11197,
             "error_count":0,
             "created_by":{
@@ -1162,8 +1162,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":0,
-            "input_schema_id":10378,
-            "id":332177,
+            "input_schema_id":9649,
+            "id":310263,
             "guessed_subtypes":[
 
             ],
@@ -1173,8 +1173,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":1,
-            "input_schema_id":10378,
-            "id":332178,
+            "input_schema_id":9649,
+            "id":310264,
             "guessed_subtypes":[
 
             ],
@@ -1184,8 +1184,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":2,
-            "input_schema_id":10378,
-            "id":332179,
+            "input_schema_id":9649,
+            "id":310265,
             "guessed_subtypes":[
 
             ],
@@ -1195,8 +1195,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":3,
-            "input_schema_id":10378,
-            "id":332180,
+            "input_schema_id":9649,
+            "id":310266,
             "guessed_subtypes":[
 
             ],
@@ -1206,8 +1206,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":4,
-            "input_schema_id":10378,
-            "id":332181,
+            "input_schema_id":9649,
+            "id":310267,
             "guessed_subtypes":[
 
             ],
@@ -1217,8 +1217,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":5,
-            "input_schema_id":10378,
-            "id":332182,
+            "input_schema_id":9649,
+            "id":310268,
             "guessed_subtypes":[
 
             ],
@@ -1228,8 +1228,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":6,
-            "input_schema_id":10378,
-            "id":332183,
+            "input_schema_id":9649,
+            "id":310269,
             "guessed_subtypes":[
 
             ],
@@ -1239,8 +1239,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":7,
-            "input_schema_id":10378,
-            "id":332184,
+            "input_schema_id":9649,
+            "id":310270,
             "guessed_subtypes":[
 
             ],
@@ -1250,8 +1250,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":8,
-            "input_schema_id":10378,
-            "id":332185,
+            "input_schema_id":9649,
+            "id":310271,
             "guessed_subtypes":[
 
             ],
@@ -1261,8 +1261,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":9,
-            "input_schema_id":10378,
-            "id":332186,
+            "input_schema_id":9649,
+            "id":310272,
             "guessed_subtypes":[
 
             ],
@@ -1272,8 +1272,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":10,
-            "input_schema_id":10378,
-            "id":332187,
+            "input_schema_id":9649,
+            "id":310273,
             "guessed_subtypes":[
 
             ],
@@ -1283,8 +1283,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":11,
-            "input_schema_id":10378,
-            "id":332188,
+            "input_schema_id":9649,
+            "id":310274,
             "guessed_subtypes":[
 
             ],
@@ -1294,8 +1294,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":12,
-            "input_schema_id":10378,
-            "id":332189,
+            "input_schema_id":9649,
+            "id":310275,
             "guessed_subtypes":[
 
             ],
@@ -1305,8 +1305,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":13,
-            "input_schema_id":10378,
-            "id":332190,
+            "input_schema_id":9649,
+            "id":310276,
             "guessed_subtypes":[
 
             ],
@@ -1316,8 +1316,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":14,
-            "input_schema_id":10378,
-            "id":332191,
+            "input_schema_id":9649,
+            "id":310277,
             "guessed_subtypes":[
 
             ],
@@ -1327,8 +1327,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":15,
-            "input_schema_id":10378,
-            "id":332192,
+            "input_schema_id":9649,
+            "id":310278,
             "guessed_subtypes":[
 
             ],
@@ -1338,8 +1338,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":16,
-            "input_schema_id":10378,
-            "id":332193,
+            "input_schema_id":9649,
+            "id":310279,
             "guessed_subtypes":[
 
             ],
@@ -1349,8 +1349,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":17,
-            "input_schema_id":10378,
-            "id":332194,
+            "input_schema_id":9649,
+            "id":310280,
             "guessed_subtypes":[
 
             ],
@@ -1360,8 +1360,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":18,
-            "input_schema_id":10378,
-            "id":332195,
+            "input_schema_id":9649,
+            "id":310281,
             "guessed_subtypes":[
 
             ],
@@ -1371,8 +1371,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":19,
-            "input_schema_id":10378,
-            "id":332196,
+            "input_schema_id":9649,
+            "id":310282,
             "guessed_subtypes":[
 
             ],
@@ -1382,8 +1382,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":20,
-            "input_schema_id":10378,
-            "id":332197,
+            "input_schema_id":9649,
+            "id":310283,
             "guessed_subtypes":[
 
             ],
@@ -1393,8 +1393,8 @@ export const uploadShow = {
           {
             "soql_type":"SoQLText",
             "position":21,
-            "input_schema_id":10378,
-            "id":332198,
+            "input_schema_id":9649,
+            "id":310284,
             "guessed_subtypes":[
 
             ],
@@ -1402,7 +1402,7 @@ export const uploadShow = {
             "field_name":"location"
           }
         ],
-        "id":10378,
+        "id":9649,
         "created_by":{
           "user_id":"k7tm-2kym",
           "email":"test.user@socrata.com",
@@ -1461,7 +1461,7 @@ export const newOutputSchema = {
           "transform_expr":"`case_number`",
           "output_soql_type":"SoQLText",
           "id":285871,
-          "completed_at":"2017-05-09T23:10:21"
+          "completed_at":null
         },
         "position":1,
         "is_primary_key":false,
@@ -1900,7 +1900,7 @@ export const rows = [
           "transform_expr":"`case_number`",
           "output_soql_type":"SoQLText",
           "id":285871,
-          "completed_at":"2017-05-09T23:10:21"
+          "completed_at":null
         },
         "position":1,
         "is_primary_key":false,

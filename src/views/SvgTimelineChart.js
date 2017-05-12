@@ -58,6 +58,7 @@ function SvgTimelineChart($element, vif, options) {
   let lastRenderedEndDate;
   let lastRenderedZoomTranslateOffsetFromEnd;
   let dateBisector;
+  let measureLabels;
 
   _.extend(this, new SvgVisualization($element, vif, options));
 
@@ -150,7 +151,7 @@ function SvgTimelineChart($element, vif, options) {
   // predictibility as opposed to rendering performance).
   function mapDataTableToDataTablesBySeries(dataTable) {
     const dataTableDimensionIndex = dataTable.columns.indexOf('dimension');
-    const measureLabels = dataTable.columns.slice(dataTableDimensionIndex + 1);
+    measureLabels = dataTable.columns.slice(dataTableDimensionIndex + 1);
     const dataTablesBySeries = measureLabels.map((measureLabel, i) => {
       const dataTableMeasureIndex = dataTableDimensionIndex + 1 + i;
       const rows = dataTable.rows.map((row) => {
@@ -855,8 +856,16 @@ function SvgTimelineChart($element, vif, options) {
         null
       )
     );
+    const usingColorPalette = _.get(
+      self.getVif(),
+      'series[0].color.palette',
+      false
+    );
+
     function getColorFromPalette() {
-      const palette = self.getColorPaletteBySeriesIndex(seriesIndex);
+      const palette = usingColorPalette === 'custom' ?
+        self.getColorPaletteByColumnTitles(measureLabels) :
+        self.getColorPaletteBySeriesIndex(seriesIndex);
 
       return palette[seriesIndex];
     }

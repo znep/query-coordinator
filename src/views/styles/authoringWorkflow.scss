@@ -412,6 +412,41 @@
       }
     }
 
+    .custom-palette-container {
+      border: 1px solid #c8c8c8;
+      background-color: white;
+      padding: 0 10px;
+      margin: 20px 0;
+
+      .custom-color-container {
+        margin: 10px 0px;
+        height: 30px;
+
+        .color-picker {
+          display: inline-block;
+          width: 52px;
+
+          .color-frame {
+            height: 30px;
+
+            .selected-color-frame {
+              width: calc(100% - 16px);
+            }
+          }
+        }
+
+        .color-value {
+          display: inline-block;
+          vertical-align: top;
+          padding: 3px 8px;
+          width: calc(100% - 52px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
     #limit-subtitle {
       display: block;
       margin-top: 9px;
@@ -421,7 +456,7 @@
 
       &.disabled {
         opacity: 0.25;
-      }      
+      }
     }
 
     #limit-count-container {

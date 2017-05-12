@@ -21,7 +21,8 @@ export default {
     alternate1: 'Alternate 1',
     alternate2: 'Alternate 2',
     accent: 'Accent',
-    dark: 'Dark'
+    dark: 'Dark',
+    custom: 'Custom...'
   },
   modal: {
     title: 'Edit Visualization',
@@ -137,6 +138,7 @@ export default {
         data_labels: 'Data Labels',
         general: 'General'
       },
+      custom_color_palette_error: 'The custom color palette failed to load.',
       fields: {
         title: {
           title: 'Title'

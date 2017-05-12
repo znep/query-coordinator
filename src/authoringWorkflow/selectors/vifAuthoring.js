@@ -11,6 +11,7 @@ export const getFilters = state => _.get(state, 'filters', []);
 export const getSelectedVisualizationType = state => _.get(state, 'authoring.selectedVisualizationType', null)
 export const getShowCenteringAndZoomingSaveMessage = state => _.get(state, 'authoring.showCenteringAndZoomingSaveMessage', null);
 export const isUserCurrentlyActive = state => _.get(state, 'authoring.userCurrentlyActive', false);
+export const getCustomColorPaletteError = state => _.get(state, 'authoring.customColorPaletteError', null);
 
 export const getCurrentVif = createSelector(
   getVifs,
@@ -190,6 +191,27 @@ export const getMeasureAxisMaxValue = createSelector(
 export const getDimensionGroupingColumnName = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'series[0].dataSource.dimension.grouping.columnName', null)
+);
+
+export const getColorPaletteGroupingColumnName = createSelector(
+  getCurrentVif,
+  getSelectedVisualizationType,
+  getDimensionGroupingColumnName,
+  (vif, visualizationType, grouping) => {
+    return visualizationType === 'pieChart' ?
+      _.get(vif, 'series[0].dataSource.dimension.columnName', null) :
+      grouping;
+  }
+);
+
+export const getCustomColorPalette = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].color.customPalette', {})
+);
+
+export const hasCustomColorPalette = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].color.palette') === 'custom'
 );
 
 export const getOrderBy = createSelector(

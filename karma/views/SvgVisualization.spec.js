@@ -782,6 +782,59 @@ describe('SvgVisualization', () => {
     });
   });
 
+  describe('#getColorPaletteByColumnTitles', () => {
+    let viz;
+    let stub;
+    let __reset__;
+    let customPalette;
+
+    beforeEach(() => {
+      stub = sinon.stub();
+      __reset__ = SvgVisualization.__set__({
+        CustomColorPaletteManager: {
+          getDisplayedColorsFromCustomPalette: stub
+        }
+      });
+      viz = new SvgVisualization($element, mockVif);
+
+      const copiedVif = _.cloneDeep(viz.getVif());
+      const addedGrouping = {
+        grouping: { columnName: 'id' }
+      };
+      customPalette = {
+        'id': {
+          '10988': { 'color': '#fdbb69', 'index': 11 },
+          '10989': { 'color': '#f06c45', 'index': 10 },
+          '10990': { 'color': '#e42022', 'index': 9 },
+          '10991': { 'color': '#f16666', 'index': 8 },
+          '10992': { 'color': '#dc9a88', 'index': 7 },
+          '10993': { 'color': '#6f9e4c', 'index': 6 },
+          '10994': { 'color': '#52af43', 'index': 5 },
+          '10995': { 'color': '#98d277', 'index': 4 },
+          '10996': { 'color': '#7eba98', 'index': 3 },
+          '10997': { 'color': '#2d82af', 'index': 2 },
+          '10998': { 'color': '#5b9ec9', 'index': 1 },
+          '10999': { 'color': '#a6cee3', 'index': 0 },
+          '(Other)': { 'color': '#fe982c', 'index': 12 }
+        }
+      };
+      _.merge(copiedVif.series[0].dataSource.dimension, addedGrouping);
+      copiedVif.series[0].color.palette = 'custom';
+      copiedVif.series[0].color.customPalette = customPalette;
+      viz.updateVif(copiedVif);
+    });
+
+    afterEach(() => __reset__());
+
+    it('calls getColorPaletteByColumnTitles with the correct arguments', () => {
+      const columnNames = [ '10988', '10989', '10990', '10991', '10992', '10993', '10994', '10995', '10996', '10997', '10998', '10999', '(Other)' ];
+      const columnColors = ['#fdbb69', '#f06c45', '#e42022', '#f16666', '#dc9a88', '#6f9e4c', '#52af43', '#98d277', '#7eba98', '#2d82af', '#5b9ec9', '#a6cee3', '#fe982c'];
+      viz.getColorPaletteByColumnTitles(columnNames)
+
+      sinon.assert.calledWith(stub, columnNames, customPalette.id);
+    });
+  });
+
   describe('#getYAxisScalingMode', () => {
     let viz;
 

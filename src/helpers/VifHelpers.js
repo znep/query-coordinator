@@ -1,4 +1,4 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
 var DEFAULT_VIF = {
   configuration: {
@@ -193,6 +193,6 @@ function migrateVif1ToVif2(vifToMigrate) {
 }
 
 module.exports = {
-  getDefaultVif: getDefaultVif,
-  migrateVif: migrateVif
+  getDefaultVif,
+  migrateVif
 };

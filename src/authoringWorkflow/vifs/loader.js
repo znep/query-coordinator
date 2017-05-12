@@ -9,6 +9,7 @@ const paths = {
   baseLayerUrl: 'configuration.baseLayerUrl',
   colorPalette: 'series[0].color.palette',
   computedColumnName: 'configuration.computedColumnName',
+  customColorPalette: 'series[0].color.customPalette',
   datasetUid: 'series[0].dataSource.datasetUid',
   description: 'description',
   dimensionColumnName: 'series[0].dataSource.dimension.columnName',
@@ -74,10 +75,6 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setBaseLayer(get(paths.baseLayerUrl)));
   }
 
-  if (has(paths.colorPalette)) {
-    dispatch(actions.setColorPalette(get(paths.colorPalette)));
-  }
-
   if (has(paths.computedColumnName)) {
     dispatch(actions.setComputedColumn(get(paths.computedColumnName)));
   }
@@ -92,6 +89,22 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.dimensionGroupingColumnName)) {
     dispatch(actions.setDimensionGroupingColumnName(get(paths.dimensionGroupingColumnName)));
+  }
+
+  if (has(paths.customColorPalette)) {
+    const columnName = has(paths.dimensionGroupingColumnName) ?
+      get(paths.dimensionGroupingColumnName) :
+      get(paths.dimensionColumnName);
+
+    dispatch(actions.setCustomColorPalette(
+      get(paths.customColorPalette)[columnName],
+      columnName
+    ));
+  }
+  
+  // This depends on dimensionGroupingColumnName being set
+  if (has(paths.colorPalette)) {
+    dispatch(actions.setColorPalette(get(paths.colorPalette)));
   }
 
   if (has(paths.labelBottom)) {

@@ -37,6 +37,7 @@ export default function timelineChart(state, action) {
         // If the dimension grouping functionality is being disabled, then we
         // also want to remove any color palette that has been set.
         _.unset(state, 'series[0].color.palette');
+        _.unset(state, 'series[0].dataSource.dimension.grouping');
       } else {
 
         // Otherwise, if the color palette has not yet been set, then assign
@@ -46,6 +47,21 @@ export default function timelineChart(state, action) {
         }
       }
       break;
+
+    case actions.SET_CUSTOM_COLOR_PALETTE:
+      const customColorPalette = action.customColorPalette;
+      const grouping = action.dimensionGroupingColumnName;
+      _.set(state, 'series[0].color.customPalette', {
+        [grouping]: customColorPalette
+      });
+      break;
+
+    case actions.UPDATE_CUSTOM_COLOR_PALETTE: {
+      const { dimensionGroupingColumnName, group, selectedColor } = action;
+      const path = ['series', 0, 'color', 'customPalette', dimensionGroupingColumnName, group, 'color'];
+      _.set(state, path, selectedColor)
+      break;
+    }
 
     case actions.SET_PRECISION:
       forEachSeries(state, series => {
@@ -58,7 +74,9 @@ export default function timelineChart(state, action) {
       break;
 
     case actions.SET_COLOR_PALETTE:
-      _.set(state, 'series[0].color.palette', action.colorPalette);
+      if (_.get(state, 'series[0].dataSource.dimension.grouping', null) !== null) {
+        _.set(state, 'series[0].color.palette', action.colorPalette);
+      }
       break;
 
     case actions.RECEIVE_METADATA:

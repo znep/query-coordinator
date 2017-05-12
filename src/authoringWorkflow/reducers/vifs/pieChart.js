@@ -27,6 +27,21 @@ export default function pieChart(state, action) {
       _.set(state, 'series[0].color.palette', action.colorPalette);
       break;
 
+    case actions.SET_CUSTOM_COLOR_PALETTE:
+      const customColorPalette = action.customColorPalette;
+      const grouping = action.dimensionGroupingColumnName;
+      _.set(state, 'series[0].color.customPalette', {
+        [grouping]: customColorPalette
+      });
+      break;
+
+    case actions.UPDATE_CUSTOM_COLOR_PALETTE: {
+      const { dimensionGroupingColumnName, group, selectedColor } = action;
+      const path = ['series', 0, 'color', 'customPalette', dimensionGroupingColumnName, group, 'color'];
+      _.set(state, path, selectedColor)
+      break;
+    }
+
     case actions.SET_SHOW_VALUE_LABELS:
       setBooleanValueOrDefaultValue(state, 'configuration.showValueLabels', action.showValueLabels, true);
       break;

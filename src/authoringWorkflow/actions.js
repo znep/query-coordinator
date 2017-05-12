@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import moment from 'moment';
 
+import CustomColorPaletteManager from '../dataProviders/CustomColorPaletteManager';
 import MetadataProvider from '../dataProviders/MetadataProvider';
 import SoqlDataProvider from '../dataProviders/SoqlDataProvider';
 import RegionCodingProvider from '../dataProviders/RegionCodingProvider';
-import { getVifs } from './selectors/vifAuthoring';
+import { getVifs, getColorPalette } from './selectors/vifAuthoring';
 import { load } from './vifs/loader';
 
 export const SET_VIF_CHECKPOINT = 'SET_VIF_CHECKPOINT';
@@ -417,6 +418,38 @@ export function setColorScale(negativeColor, zeroColor, positiveColor) {
   };
 }
 
+export const SET_COLOR_PALETTE_PROPERTIES = 'SET_COLOR_PALETTE_PROPERTIES';
+export function setColorPaletteProperties() {
+  return (dispatch, getState) => {
+    const { vifAuthoring } = getState();
+    const hasCustomColorPalette = _.isEqual(getColorPalette(vifAuthoring), 'custom');
+
+    dispatch({
+      type: SET_COLOR_PALETTE_PROPERTIES
+    });
+
+    if (hasCustomColorPalette) {
+      CustomColorPaletteManager.
+        generateCustomColorPalette(vifAuthoring).then(
+          ({customColorPalette, dimensionColumnName}) => {
+            dispatch(setCustomColorPalette(customColorPalette, dimensionColumnName));
+          }
+      ).catch((error) => {
+        dispatch(handleCustomColorPaletteError(error));
+        console.error(error);
+      });
+    }
+  };
+}
+
+export const HANDLE_CUSTOM_COLOR_PALETTE_ERROR = 'HANDLE_CUSTOM_COLOR_PALETTE_ERROR';
+export function handleCustomColorPaletteError(error) {
+  return {
+    type: HANDLE_CUSTOM_COLOR_PALETTE_ERROR,
+    error
+  };
+}
+
 export const SET_COLOR_PALETTE = 'SET_COLOR_PALETTE';
 export function setColorPalette(colorPalette) {
   return {
@@ -596,6 +629,25 @@ export const SET_MAP_INFO_DISMISSED = 'SET_MAP_INFO_DISMISSED';
 export function setMapInfoDismissed() {
   return {
     type: SET_MAP_INFO_DISMISSED
+  };
+}
+
+export const SET_CUSTOM_COLOR_PALETTE = 'SET_CUSTOM_COLOR_PALETTE';
+export function setCustomColorPalette(customColorPalette, dimensionGroupingColumnName) {
+  return {
+    type: SET_CUSTOM_COLOR_PALETTE,
+    customColorPalette,
+    dimensionGroupingColumnName
+  };
+}
+
+export const UPDATE_CUSTOM_COLOR_PALETTE = 'UPDATE_CUSTOM_COLOR_PALETTE';
+export function updateCustomColorPalette(selectedColor, group, dimensionGroupingColumnName) {
+  return {
+    type: UPDATE_CUSTOM_COLOR_PALETTE,
+    selectedColor,
+    group,
+    dimensionGroupingColumnName
   };
 }
 

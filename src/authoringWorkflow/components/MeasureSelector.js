@@ -6,8 +6,14 @@ import Styleguide from 'socrata-components';
 
 import { translate } from '../../I18n';
 import { AGGREGATION_TYPES, COLUMN_TYPES } from '../constants';
-import { setMeasure, setMeasureAggregation } from '../actions';
-import { getAnyMeasure, isFeatureMap } from '../selectors/vifAuthoring';
+import {
+  setMeasure,
+  setMeasureAggregation
+} from '../actions';
+import {
+  getAnyMeasure,
+  isFeatureMap
+} from '../selectors/vifAuthoring';
 import { hasData, getValidMeasures } from '../selectors/metadata';
 
 export const MeasureSelector = React.createClass({

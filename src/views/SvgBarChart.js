@@ -54,6 +54,7 @@ function SvgBarChart($element, vif, options) {
   let d3XScale;
   let lastRenderedSeriesHeight = 0;
   let lastRenderedZoomTranslate = 0;
+  let measureLabels;
 
   const labelResizeState = {
     draggerElement: null,
@@ -234,7 +235,7 @@ function SvgBarChart($element, vif, options) {
     // the first element is going to be 'dimension'.
     const hasMultipleColumns = dataToRender.columns.length > 2;
     const noValueLabel = I18n.translate('visualizations.common.no_value');
-    const measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
+    measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
       map((label) => hasMultipleColumns ? label || noValueLabel : label);
 
     let width;
@@ -1310,7 +1311,7 @@ function SvgBarChart($element, vif, options) {
               );
 
               showGroupHighlight(dimensionGroup);
-              showGroupFlyout(dimensionGroup, dimensionValues, measureLabels);
+              showGroupFlyout(dimensionGroup, dimensionValues);
             }
           }
         ).
@@ -1385,7 +1386,9 @@ function SvgBarChart($element, vif, options) {
     );
 
     function getColorFromPalette() {
-      const palette = self.getColorPaletteBySeriesIndex(0);
+      const palette = usingColorPalette === 'custom' ?
+        self.getColorPaletteByColumnTitles(measureLabels) :
+        self.getColorPaletteBySeriesIndex(0);
 
       return palette[measureIndex];
     }
@@ -1603,7 +1606,7 @@ function SvgBarChart($element, vif, options) {
     });
   }
 
-  function showGroupFlyout(groupElement, dimensionValues, measureLabels) {
+  function showGroupFlyout(groupElement, dimensionValues) {
     const title = groupElement.attr('data-dimension-value');
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(

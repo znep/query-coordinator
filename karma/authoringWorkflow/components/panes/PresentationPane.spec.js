@@ -324,7 +324,12 @@ describe('PresentationPane', function() {
 
     describe('rendering', () => {
       it('renders color palette selection', () => {
-        expect(component.querySelector('#color-palette')).to.exist;
+        expect(component.querySelector('#color-palette')).to.not.equal(null);
+      });
+
+      it('renders a custom color palette option at the end of the picklist', () => {
+        expect(component.querySelector('#custom-6')).to.not.equal(null);
+        expect(component.querySelector('#custom-1')).to.equal(null);
       });
     });
 

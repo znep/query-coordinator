@@ -6,8 +6,16 @@ import Styleguide from 'socrata-components';
 
 import { translate } from '../../I18n';
 import { VISUALIZATION_TYPES } from '../constants';
-import { setVisualizationType, setDimension } from '../actions';
-import { getAnyDimension, getSelectedVisualizationType, isRegionMap } from '../selectors/vifAuthoring';
+import { setVisualizationType, setColorPalette, setDimension } from '../actions';
+import {
+  getAnyDimension,
+  getColorPalette,
+  getSelectedVisualizationType,
+  hasCustomColorPalette,
+  isRegionMap,
+  getPrimaryColor,
+  getDimensionGroupingColumnName
+} from '../selectors/vifAuthoring';
 import {
   getAnyLocationColumn,
   getRecommendedVisualizationTypes,
@@ -39,6 +47,8 @@ export const VisualizationTypeSelector = React.createClass({
       const {
         onSelectVisualizationType,
         setDimensionToLocation,
+        updateColorPalette,
+        updateDimensionGroupingColumnName,
         vifAuthoring,
         metadata
       } = this.props;
@@ -186,6 +196,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onSelectVisualizationType(visualizationType) {
       dispatch(setVisualizationType(visualizationType));
+    },
+    updateColorPalette(colorPalette) {
+      dispatch(setColorPalette(colorPalette));
     },
     setDimensionToLocation(dimension) {
       dispatch(setDimension(dimension));

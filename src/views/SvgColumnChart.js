@@ -49,6 +49,7 @@ function SvgColumnChart($element, vif, options) {
   let d3YScale;
   let lastRenderedSeriesWidth = 0;
   let lastRenderedZoomTranslate = 0;
+  let measureLabels;
 
   _.extend(this, new SvgVisualization($element, vif, options));
 
@@ -144,7 +145,7 @@ function SvgColumnChart($element, vif, options) {
     // the first element is going to be 'dimension'.
     const hasMultipleColumns = dataToRender.columns.length > 2;
     const noValueLabel = I18n.translate('visualizations.common.no_value');
-    const measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
+    measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
       map((label) => hasMultipleColumns ? label || noValueLabel : label);
 
     let width;
@@ -466,7 +467,6 @@ function SvgColumnChart($element, vif, options) {
         attr(
           'fill',
           (value, measureIndex, dimensionIndex) => {
-
             return getColor(dimensionIndex, measureIndex);
           }
         ).
@@ -1022,7 +1022,7 @@ function SvgColumnChart($element, vif, options) {
             );
 
             showGroupHighlight(dimensionGroup);
-            showGroupFlyout(dimensionGroup, dimensionValues, measureLabels);
+            showGroupFlyout(dimensionGroup, dimensionValues);
           }
         }
       ).
@@ -1096,12 +1096,14 @@ function SvgColumnChart($element, vif, options) {
     );
     const usingColorPalette = _.get(
       self.getVif(),
-      `series[${(isGrouping) ? 0 : dimensionIndex}].color.palette`,
+      'series[0].color.palette',
       false
     );
 
     function getColorFromPalette() {
-      const palette = self.getColorPaletteBySeriesIndex(0);
+      const palette = usingColorPalette === 'custom' ?
+        self.getColorPaletteByColumnTitles(measureLabels) :
+        self.getColorPaletteBySeriesIndex(0);
 
       return palette[measureIndex];
     }
@@ -1318,7 +1320,7 @@ function SvgColumnChart($element, vif, options) {
     });
   }
 
-  function showGroupFlyout(groupElement, dimensionValues, measureLabels) {
+  function showGroupFlyout(groupElement, dimensionValues) {
     const title = groupElement.attr('data-dimension-value');
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(

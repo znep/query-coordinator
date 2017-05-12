@@ -126,7 +126,8 @@ function SvgPieChart($element, vif, options) {
       attr('class', 'slices');
 
     // Color from custom palette
-    colorPalette = self.getColorPaletteBySeriesIndex(0);
+    let columnLabels = dataToRender[0].rows.map((val) => val[0]);
+    colorPalette = getColorFromPalette(columnLabels);
     color = (index) => d3.rgb(colorPalette[index]);
 
     // pie slices
@@ -168,6 +169,23 @@ function SvgPieChart($element, vif, options) {
     }
 
     resizePie();
+  }
+
+  /**
+   * Get Pie Colors
+   */
+  function getColorFromPalette(columnLabels) {
+    const usingColorPalette = _.get(
+      self.getVif(),
+      'series[0].color.palette',
+      false
+    );
+
+    const palette = usingColorPalette === 'custom' ?
+      self.getColorPaletteByColumnTitles(columnLabels) :
+      self.getColorPaletteBySeriesIndex(0);
+
+    return palette;
   }
 
   /**

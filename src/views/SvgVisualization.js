@@ -10,6 +10,7 @@ const { FilterBar, SocrataIcon } = require('socrata-components');
 const VifHelpers = require('../helpers/VifHelpers');
 const SvgHelpers = require('../helpers/SvgHelpers');
 const I18n = require('../I18n');
+const CustomColorPaletteManager = require('../dataProviders/CustomColorPaletteManager');
 const MetadataProvider = require('../dataProviders/MetadataProvider');
 
 // Constants
@@ -665,6 +666,20 @@ function SvgVisualization($element, vif, options) {
     );
 
     return _.get(COLOR_PALETTES, colorPalette, COLOR_PALETTES.categorical);
+  };
+
+  this.getColorPaletteByColumnTitles = function(displayedColumnTitles) {
+    const currentVizType = _.get(self.getVif(), 'series[0].type');
+    const columnName = currentVizType === 'pieChart' ?
+      _.get(self.getVif(), 'series[0].dataSource.dimension.columnName') :
+      _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
+
+    const currentPalette = _.get(self.getVif(), `series[0].color.customPalette.${columnName}`);
+
+    return CustomColorPaletteManager.getDisplayedColorsFromCustomPalette(
+      displayedColumnTitles,
+      currentPalette
+    );
   };
 
   /**

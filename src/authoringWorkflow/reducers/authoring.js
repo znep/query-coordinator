@@ -6,7 +6,9 @@ import {
   AWAIT_REGION_CODING,
   FINISH_REGION_CODING,
   HANDLE_REGION_CODING_ERROR,
+  HANDLE_CUSTOM_COLOR_PALETTE_ERROR,
   REQUEST_REGION_CODING,
+  SET_COLOR_PALETTE_PROPERTIES,
   SET_COMPUTED_COLUMN,
   SET_VIF_CHECKPOINT,
   SET_VISUALIZATION_TYPE,
@@ -24,6 +26,7 @@ export var defaultState = {
   hasPannedOrZoomed: false,
   filters: [],
   userCurrentlyActive: false,
+  customColorPaletteError: null
 };
 
 export default function authoring(state, action) {
@@ -81,6 +84,14 @@ export default function authoring(state, action) {
 
     case SET_USER_IDLE:
       state.userCurrentlyActive = false;
+      break;
+
+    case SET_COLOR_PALETTE_PROPERTIES:
+      state.customColorPaletteError = null;
+      break;
+
+    case HANDLE_CUSTOM_COLOR_PALETTE_ERROR:
+      state.customColorPaletteError = action.error;
       break;
   }
 

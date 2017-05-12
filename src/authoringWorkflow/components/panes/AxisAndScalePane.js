@@ -66,7 +66,7 @@ export var AxisAndScalePane = React.createClass({
 
     const attributes = {
       options,
-      onSelection: onSelectChartSorting,
+      onSelection: (chartSorting) => onSelectChartSorting(chartSorting),
       id: 'chart-sorting-selection',
       value: `${defaultChartSort.parameter}-${defaultChartSort.sort}`
     };

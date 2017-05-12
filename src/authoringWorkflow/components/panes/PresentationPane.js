@@ -20,54 +20,8 @@ import AccordionPane from '../shared/AccordionPane';
 import DebouncedSlider from '../shared/DebouncedSlider';
 import DebouncedInput from '../shared/DebouncedInput';
 import DebouncedTextArea from '../shared/DebouncedTextArea';
-
-import {
-  getPrimaryColor,
-  getSecondaryColor,
-  getPointOpacity,
-  getPointSize,
-  getColorScale,
-  getColorPalette,
-  getBaseLayer,
-  getBaseLayerOpacity,
-  getShowDimensionLabels,
-  getShowValueLabels,
-  getShowValueLabelsAsPercent,
-  getAxisLabels,
-  getTitle,
-  getDescription,
-  getViewSourceDataLink,
-  isBarChart,
-  isGroupedBarChart,
-  isRegionMap,
-  isColumnChart,
-  isGroupedColumnChart,
-  isFeatureMap,
-  isHistogram,
-  isTimelineChart,
-  isGroupedTimelineChart,
-  isPieChart
-} from '../../selectors/vifAuthoring';
-
-import {
-  setPrimaryColor,
-  setSecondaryColor,
-  setPointOpacity,
-  setPointSize,
-  setColorScale,
-  setColorPalette,
-  setBaseLayer,
-  setBaseLayerOpacity,
-  setShowDimensionLabels,
-  setShowValueLabels,
-  setShowValueLabelsAsPercent,
-  setLabelTop,
-  setLabelBottom,
-  setLabelLeft,
-  setTitle,
-  setDescription,
-  setViewSourceDataLink
-} from '../../actions';
+import * as selectors from '../../selectors/vifAuthoring';
+import * as actions from '../../actions';
 
 export var PresentationPane = React.createClass({
   getDefaultProps() {
@@ -78,26 +32,44 @@ export var PresentationPane = React.createClass({
     };
   },
 
+  componentWillReceiveProps(nextProps) {
+    const thisVizType = this.props.vifAuthoring.authoring.selectedVisualizationType;
+    const nextVizType = nextProps.vifAuthoring.authoring.selectedVisualizationType;
+    const thisSeries = _.get(this.props.vifAuthoring.vifs[thisVizType], 'series[0]');
+    const nextSeries = _.get(nextProps.vifAuthoring.vifs[nextVizType], 'series[0]');
+
+    if (
+      !_.isEqual(thisVizType, nextVizType) ||
+      !_.isEqual(_.get(thisSeries, 'dataSource'), _.get(nextSeries, 'dataSource')) ||
+      !_.isEqual(_.get(thisSeries, 'color.palette'), _.get(nextSeries, 'color.palette'))
+    ) {
+      this.props.onChangeDataSource();
+    }
+  },
+
   onSelectColorScale(event) {
-    var colorScale = _.find(this.props.colorScales, { value: event.target.value }).scale;
+    const colorScale = _.find(this.props.colorScales, { value: event.target.value }).scale;
     this.props.onSelectColorScale(colorScale);
   },
 
-  renderPrimaryColor(labelText) {
-    var { vifAuthoring, onChangePrimaryColor } = this.props;
-    var primaryColor = getPrimaryColor(vifAuthoring);
+  renderPrimaryColor() {
+    const { vifAuthoring, onChangePrimaryColor } = this.props;
+    const primaryColor = selectors.getPrimaryColor(vifAuthoring);
+    const labelText = translate('panes.presentation.fields.bar_color.title');
 
     return (
-      <div>
-        <label className="block-label" htmlFor="primary-color">{labelText}</label>
-        <Styleguide.ColorPicker handleColorChange={onChangePrimaryColor} value={primaryColor} palette={COLORS}/>
-      </div>
+      <AccordionPane key="colors" title={translate('panes.presentation.subheaders.colors')}>
+        <div>
+          <label className="block-label" htmlFor="primary-color">{labelText}</label>
+          <Styleguide.ColorPicker handleColorChange={onChangePrimaryColor} value={primaryColor} palette={COLORS}/>
+        </div>
+      </AccordionPane>
     );
   },
 
   renderSecondaryColor(labelText) {
-    var { vifAuthoring, onChangeSecondaryColor } = this.props;
-    var secondaryColor = getSecondaryColor(vifAuthoring);
+    const { vifAuthoring, onChangeSecondaryColor } = this.props;
+    const secondaryColor = selectors.getSecondaryColor(vifAuthoring);
 
     return (
       <div>
@@ -107,13 +79,92 @@ export var PresentationPane = React.createClass({
     );
   },
 
+  renderColorPalette() {
+    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
+    const selectedColorPalette = selectors.getColorPalette(vifAuthoring);
+    const colorPalettesWithCustomOption = [
+      ...colorPalettes,
+      {
+        title: translate('color_palettes.custom'),
+        value: "custom"
+      }
+    ];
+    const colorPaletteAttributes = {
+      id: 'color-palette',
+      options: colorPalettesWithCustomOption,
+      value: selectedColorPalette,
+      onSelection: onSelectColorPalette
+    };
+    const customColorSelectors = selectedColorPalette === 'custom' ?
+      this.renderCustomColorSelector() :
+      null;
+
+    return (
+      <AccordionPane key="colors" title={translate('panes.presentation.subheaders.colors')}>
+        <label className="block-label" htmlFor="color-palette">
+          {translate('panes.presentation.fields.color_palette.title')}
+        </label>
+        <div className="color-scale-dropdown-container">
+          <Styleguide.Dropdown {...colorPaletteAttributes} />
+        </div>
+        {customColorSelectors}
+      </AccordionPane>
+    );
+  },
+
+  renderCustomColorSelector() {
+    const { vifAuthoring, onChangeCustomColorPalette } = this.props;
+    const dimensionColumnName = selectors.getColorPaletteGroupingColumnName(vifAuthoring);
+    const customColorPalette = selectors.getCustomColorPalette(vifAuthoring);
+    const customPaletteSelected = selectors.hasCustomColorPalette(vifAuthoring);
+    const hasCustomPaletteGrouping = _.has(customColorPalette, dimensionColumnName);
+    const hasCustomColorPaletteError = selectors.getCustomColorPaletteError(vifAuthoring);
+
+    if (hasCustomPaletteGrouping && !hasCustomColorPaletteError) {
+      const colorSelectors = _.chain(customColorPalette[dimensionColumnName]).
+        map((paletteValue, paletteKey) => ({color: paletteValue.color, index: paletteValue.index, group: paletteKey})).
+        filter((palette) => palette.index > -1).
+        sortBy('index').
+        map((palette) => {
+          const customColorPaletteAttributes = {
+            handleColorChange: (selectedColor) =>
+              onChangeCustomColorPalette(selectedColor, palette.group, dimensionColumnName),
+            value: palette.color,
+            palette: COLORS
+          };
+          return (
+            <div className="custom-color-container" key={palette.group}>
+              <Styleguide.ColorPicker {...customColorPaletteAttributes} />
+              <label className="color-value">{palette.group}</label>
+            </div>
+          );
+        }).
+        value();
+
+      return (
+        <div className="custom-palette-container">
+          {colorSelectors}
+        </div>
+      );
+    } else if (customPaletteSelected && hasCustomColorPaletteError) {
+      return (
+        <div className="custom-color-palette-error alert error">
+          {translate('panes.presentation.custom_color_palette_error')}
+        </div>
+      );
+    } else {
+      return null;
+    }
+
+  },
+
   renderDimensionLabels() {
     const { vifAuthoring } = this.props;
     const inputAttributes = {
       id: 'show-dimension-labels',
       type: 'checkbox',
       onChange: this.props.onChangeShowDimensionLabels,
-      defaultChecked: getShowDimensionLabels(vifAuthoring)
+      defaultChecked: selectors.getShowDimensionLabels(vifAuthoring)
     };
 
     return (
@@ -134,12 +185,12 @@ export var PresentationPane = React.createClass({
   renderLabels() {
     const { vifAuthoring } = this.props;
 
-    const valueLabelsVisible = isBarChart(vifAuthoring) || isPieChart(vifAuthoring);
+    const valueLabelsVisible = selectors.isBarChart(vifAuthoring) || selectors.isPieChart(vifAuthoring);
     const valueLabels = valueLabelsVisible ? this.renderShowValueLabels() : null;
 
-    const valueLabelsAsPercent = isPieChart(vifAuthoring) ? this.renderShowPercentLabels() : null;
+    const valueLabelsAsPercent = selectors.isPieChart(vifAuthoring) ? this.renderShowPercentLabels() : null;
 
-    const dimensionLabelsVisible = isBarChart(vifAuthoring) || isColumnChart(vifAuthoring);
+    const dimensionLabelsVisible = selectors.isBarChart(vifAuthoring) || selectors.isColumnChart(vifAuthoring);
     const dimensionLabels = dimensionLabelsVisible ? this.renderDimensionLabels() : null;
 
     return (
@@ -157,7 +208,7 @@ export var PresentationPane = React.createClass({
       id: 'show-value-labels',
       type: 'checkbox',
       onChange: this.props.onChangeShowValueLabels,
-      defaultChecked: getShowValueLabels(vifAuthoring)
+      defaultChecked: selectors.getShowValueLabels(vifAuthoring)
     };
 
     return (
@@ -177,13 +228,13 @@ export var PresentationPane = React.createClass({
 
   renderShowPercentLabels() {
     const { vifAuthoring } = this.props;
-    const showLabels = getShowValueLabels(vifAuthoring);
+    const showLabels = selectors.getShowValueLabels(vifAuthoring);
 
     const inputAttributes = {
       id: 'show-value-labels-as-percent',
       type: 'checkbox',
       onChange: this.props.onChangeShowValueLabelsAsPercent,
-      defaultChecked: getShowValueLabelsAsPercent(vifAuthoring),
+      defaultChecked: selectors.getShowValueLabelsAsPercent(vifAuthoring),
       disabled: !showLabels
     };
 
@@ -208,7 +259,7 @@ export var PresentationPane = React.createClass({
 
   renderBarChartVisualizationLabels() {
     const { vifAuthoring, onChangeLabelTop, onChangeLabelLeft } = this.props;
-    const axisLabels = getAxisLabels(vifAuthoring);
+    const axisLabels = selectors.getAxisLabels(vifAuthoring);
     const topAxisLabel = _.get(axisLabels, 'top', '');
     const leftAxisLabel = _.get(axisLabels, 'left', '');
 
@@ -232,7 +283,7 @@ export var PresentationPane = React.createClass({
 
   renderVisualizationLabels() {
     const { vifAuthoring, onChangeLabelLeft, onChangeLabelBottom } = this.props;
-    const axisLabels = getAxisLabels(vifAuthoring);
+    const axisLabels = selectors.getAxisLabels(vifAuthoring);
     const leftAxisLabel = _.get(axisLabels, 'left', '');
     const bottomAxisLabel = _.get(axisLabels, 'bottom', '');
 
@@ -260,7 +311,7 @@ export var PresentationPane = React.createClass({
       id: 'show-source-data-link',
       type: 'checkbox',
       onChange: this.props.onChangeShowSourceDataLink,
-      checked: getViewSourceDataLink(vifAuthoring)
+      checked: selectors.getViewSourceDataLink(vifAuthoring)
     };
 
     return (
@@ -278,7 +329,7 @@ export var PresentationPane = React.createClass({
 
   renderTitleField() {
     const { vifAuthoring, onChangeTitle } = this.props;
-    const title = getTitle(vifAuthoring);
+    const title = selectors.getTitle(vifAuthoring);
 
     return (
       <div className="authoring-field">
@@ -290,7 +341,7 @@ export var PresentationPane = React.createClass({
 
   renderDescriptionField() {
     const { vifAuthoring, onChangeDescription } = this.props;
-    const description = getDescription(vifAuthoring);
+    const description = selectors.getDescription(vifAuthoring);
 
     return (
       <div className="authoring-field">
@@ -311,23 +362,8 @@ export var PresentationPane = React.createClass({
   },
 
   renderGroupedBarChartControls() {
-    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
-    const selectedColorPalette = getColorPalette(vifAuthoring);
-    const colorPaletteAttributes = {
-      id: 'color-palette',
-      options: colorPalettes,
-      value: selectedColorPalette,
-      onSelection: onSelectColorPalette
-    };
-
     return [
-      <AccordionPane key="colors" title={translate('panes.presentation.subheaders.colors')}>
-        <label className="block-label"
-               htmlFor="color-palette">{translate('panes.presentation.fields.color_palette.title')}</label>
-        <div className="color-scale-dropdown-container">
-          <Styleguide.Dropdown {...colorPaletteAttributes} />
-        </div>
-      </AccordionPane>,
+      this.renderColorPalette(),
       this.renderLabels(),
       this.renderBarChartVisualizationLabels()
     ];
@@ -335,32 +371,15 @@ export var PresentationPane = React.createClass({
 
   renderBarChartControls() {
     return [
-      <AccordionPane key="colors" title={translate('panes.presentation.subheaders.colors')}>
-        {this.renderPrimaryColor(translate('panes.presentation.fields.bar_color.title'))}
-      </AccordionPane>,
+      this.renderPrimaryColor(),
       this.renderLabels(),
       this.renderBarChartVisualizationLabels()
     ];
   },
 
   renderGroupedColumnChartControls() {
-    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
-    const selectedColorPalette = getColorPalette(vifAuthoring);
-    const colorPaletteAttributes = {
-      id: 'color-palette',
-      options: colorPalettes,
-      value: selectedColorPalette,
-      onSelection: onSelectColorPalette
-    };
-
     return [
-      <AccordionPane key="colors" title={translate('panes.presentation.subheaders.colors')}>
-        <label className="block-label"
-               htmlFor="color-palette">{translate('panes.presentation.fields.color_palette.title')}</label>
-        <div className="color-scale-dropdown-container">
-          <Styleguide.Dropdown {...colorPaletteAttributes} />
-        </div>
-      </AccordionPane>,
+      this.renderColorPalette(),
       this.renderLabels(),
       this.renderVisualizationLabels()
     ];
@@ -368,9 +387,7 @@ export var PresentationPane = React.createClass({
 
   renderColumnChartControls() {
     return [
-      <AccordionPane key="colors" title={translate('panes.presentation.subheaders.colors')}>
-        {this.renderPrimaryColor(translate('panes.presentation.fields.bar_color.title'))}
-      </AccordionPane>,
+      this.renderPrimaryColor(),
       this.renderLabels(),
       this.renderVisualizationLabels()
     ];
@@ -378,48 +395,29 @@ export var PresentationPane = React.createClass({
 
   renderHistogramControls() {
     return [
-      <AccordionPane key="colors" title={translate('panes.presentation.subheaders.colors')}>
-        {this.renderPrimaryColor(translate('panes.presentation.fields.bar_color.title'))}
-      </AccordionPane>,
+      this.renderPrimaryColor(),
       this.renderVisualizationLabels()
     ];
   },
 
   renderTimelineChartControls() {
     return [
-      <AccordionPane key="colors" title={translate('panes.presentation.subheaders.colors')}>
-        {this.renderPrimaryColor(translate('panes.presentation.fields.line_color.title'))}
-      </AccordionPane>,
+      this.renderPrimaryColor(),
       this.renderVisualizationLabels()
     ];
   },
 
   renderGroupedTimelineChartControls() {
-    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
-    const selectedColorPalette = getColorPalette(vifAuthoring);
-    const colorPaletteAttributes = {
-      id: 'color-palette',
-      options: colorPalettes,
-      value: selectedColorPalette,
-      onSelection: onSelectColorPalette
-    };
-
     return (
-      <AccordionPane title={translate('panes.presentation.subheaders.colors')}>
-        <label className="block-label"
-               htmlFor="color-palette">{translate('panes.presentation.fields.color_palette.title')}</label>
-        <div className="color-scale-dropdown-container">
-          <Styleguide.Dropdown {...colorPaletteAttributes} />
-        </div>
-      </AccordionPane>
+      this.renderColorPalette()
     );
   },
 
   renderFeatureMapControls() {
     var { vifAuthoring, onChangePrimaryColor, onChangePointOpacity, onChangePointSize } = this.props;
-    var pointColor = getPrimaryColor(vifAuthoring);
-    var pointOpacity = getPointOpacity(vifAuthoring);
-    var pointSize = getPointSize(vifAuthoring);
+    var pointColor = selectors.getPrimaryColor(vifAuthoring);
+    var pointOpacity = selectors.getPointOpacity(vifAuthoring);
+    var pointSize = selectors.getPointSize(vifAuthoring);
 
     var pointColorAttributes = {
       handleColorChange: onChangePrimaryColor,
@@ -476,7 +474,7 @@ export var PresentationPane = React.createClass({
 
   renderRegionMapControls() {
     var { vifAuthoring, colorScales, onSelectColorScale } = this.props;
-    var defaultColorScale = getColorScale(vifAuthoring);
+    var defaultColorScale = selectors.getColorScale(vifAuthoring);
 
     var defaultColorScaleKey = _.find(colorScales, colorScale => {
       var negativeColorsMatch = defaultColorScale.negativeColor === colorScale.scale[0];
@@ -508,8 +506,8 @@ export var PresentationPane = React.createClass({
 
   renderMapLayerControls() {
     var { vifAuthoring, baseLayers, onSelectBaseLayer, onChangeBaseLayerOpacity } = this.props;
-    var defaultBaseLayer = getBaseLayer(vifAuthoring);
-    var defaultBaseLayerOpacity = getBaseLayerOpacity(vifAuthoring);
+    var defaultBaseLayer = selectors.getBaseLayer(vifAuthoring);
+    var defaultBaseLayerOpacity = selectors.getBaseLayerOpacity(vifAuthoring);
 
     var baseLayerAttributes = {
       id: 'base-layer',
@@ -549,23 +547,8 @@ export var PresentationPane = React.createClass({
   },
 
   renderPieChartControls() {
-    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
-    const selectedColorPalette = getColorPalette(vifAuthoring);
-    const colorPaletteAttributes = {
-      id: 'color-palette',
-      options: colorPalettes,
-      value: selectedColorPalette,
-      onSelection: onSelectColorPalette
-    };
-
     return [
-      <AccordionPane key="colors" title={translate('panes.presentation.subheaders.colors')}>
-        <label className="block-label"
-               htmlFor="color-palette">{translate('panes.presentation.fields.color_palette.title')}</label>
-        <div className="color-scale-dropdown-container">
-          <Styleguide.Dropdown {...colorPaletteAttributes} />
-        </div>
-      </AccordionPane>,
+      this.renderColorPalette(),
       this.renderLabels()
     ];
   },
@@ -581,34 +564,34 @@ export var PresentationPane = React.createClass({
 
     let general = this.renderGeneral();
 
-    if (isBarChart(vifAuthoring)) {
+    if (selectors.isBarChart(vifAuthoring)) {
 
-      if (isGroupedBarChart(vifAuthoring)) {
+      if (selectors.isGroupedBarChart(vifAuthoring)) {
         configuration = this.renderGroupedBarChartControls();
       } else {
         configuration = this.renderBarChartControls();
       }
-    } else if (isColumnChart(vifAuthoring)) {
+    } else if (selectors.isColumnChart(vifAuthoring)) {
 
-      if (isGroupedColumnChart(vifAuthoring)) {
+      if (selectors.isGroupedColumnChart(vifAuthoring)) {
         configuration = this.renderGroupedColumnChartControls();
       } else {
         configuration = this.renderColumnChartControls();
       }
-    } else if (isHistogram(vifAuthoring)) {
+    } else if (selectors.isHistogram(vifAuthoring)) {
       configuration = this.renderHistogramControls();
-    } else if (isTimelineChart(vifAuthoring)) {
+    } else if (selectors.isTimelineChart(vifAuthoring)) {
 
-      if (isGroupedTimelineChart(vifAuthoring)) {
+      if (selectors.isGroupedTimelineChart(vifAuthoring)) {
         configuration = this.renderGroupedTimelineChartControls();
       } else {
         configuration = this.renderTimelineChartControls();
       }
-    } else if (isFeatureMap(vifAuthoring)) {
+    } else if (selectors.isFeatureMap(vifAuthoring)) {
       configuration = this.renderFeatureMapControls();
-    } else if (isRegionMap(vifAuthoring)) {
+    } else if (selectors.isRegionMap(vifAuthoring)) {
       configuration = this.renderRegionMapControls();
-    } else if (isPieChart(vifAuthoring)) {
+    } else if (selectors.isPieChart(vifAuthoring)) {
       configuration = this.renderPieChartControls();
     } else {
       configuration = this.renderEmptyPane();
@@ -636,78 +619,86 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onChangePrimaryColor: primaryColor => {
-      dispatch(setPrimaryColor(primaryColor));
+      dispatch(actions.setPrimaryColor(primaryColor));
     },
 
     onChangeSecondaryColor: secondaryColor => {
-      dispatch(setSecondaryColor(secondaryColor));
+      dispatch(actions.setSecondaryColor(secondaryColor));
     },
 
     onSelectBaseLayer: baseLayer => {
-      dispatch(setBaseLayer(baseLayer.value));
+      dispatch(actions.setBaseLayer(baseLayer.value));
     },
 
     onChangeBaseLayerOpacity: baseLayerOpacity => {
-      dispatch(setBaseLayerOpacity(_.round(baseLayerOpacity, 2)));
+      dispatch(actions.setBaseLayerOpacity(_.round(baseLayerOpacity, 2)));
     },
 
     onChangePointOpacity: pointOpacity => {
-      dispatch(setPointOpacity(_.round(pointOpacity, 2)));
+      dispatch(actions.setPointOpacity(_.round(pointOpacity, 2)));
     },
 
     onChangePointSize: pointSize => {
-      dispatch(setPointSize(_.round(pointSize, 2)));
+      dispatch(actions.setPointSize(_.round(pointSize, 2)));
     },
 
     onChangeShowDimensionLabels: (event) => {
       const showDimensionLabels = event.target.checked;
 
-      dispatch(setShowDimensionLabels(showDimensionLabels));
+      dispatch(actions.setShowDimensionLabels(showDimensionLabels));
     },
 
     onChangeShowValueLabels: (event) => {
       const showValueLabels = event.target.checked;
 
-      dispatch(setShowValueLabels(showValueLabels));
+      dispatch(actions.setShowValueLabels(showValueLabels));
     },
 
     onChangeShowValueLabelsAsPercent: (event) => {
       const showValueLabelsAsPercent = event.target.checked;
 
-      dispatch(setShowValueLabelsAsPercent(showValueLabelsAsPercent));
+      dispatch(actions.setShowValueLabelsAsPercent(showValueLabelsAsPercent));
     },
 
     onChangeLabelTop: (event) => {
-      dispatch(setLabelTop(event.target.value));
+      dispatch(actions.setLabelTop(event.target.value));
     },
 
     onChangeLabelBottom: (event) => {
-      dispatch(setLabelBottom(event.target.value));
+      dispatch(actions.setLabelBottom(event.target.value));
     },
 
     onChangeLabelLeft: (event) => {
-      dispatch(setLabelLeft(event.target.value));
+      dispatch(actions.setLabelLeft(event.target.value));
     },
 
     onSelectColorScale: colorScale => {
-      dispatch(setColorScale(...colorScale.scale));
+      dispatch(actions.setColorScale(...colorScale.scale));
     },
 
     onSelectColorPalette: (event) => {
-      dispatch(setColorPalette(event.value));
+      dispatch(actions.setColorPalette(event.value));
+    },
+
+    onChangeCustomColorPalette: (selectedColor, group, dimensionColumnName) => {
+      dispatch(actions.updateCustomColorPalette(selectedColor, group, dimensionColumnName));
+    },
+
+    onChangeDataSource: () => {
+      dispatch(actions.setColorPaletteProperties());
     },
 
     onChangeTitle: (event) => {
-      dispatch(setTitle(event.target.value));
+      dispatch(actions.setTitle(event.target.value));
     },
 
     onChangeDescription: (event) => {
-      dispatch(setDescription(event.target.value));
+      dispatch(actions.setDescription(event.target.value));
     },
 
     onChangeShowSourceDataLink: event => {
       const viewSourceDataLink = event.target.checked;
-      dispatch(setViewSourceDataLink(viewSourceDataLink));
+      dispatch(actions.setViewSourceDataLink(viewSourceDataLink));
     }
   };
 }

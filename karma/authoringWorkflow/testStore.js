@@ -8,15 +8,11 @@ import vifs from 'src/authoringWorkflow/vifs';
 import { defaultState as defaultMetadata } from 'src/authoringWorkflow/reducers/metadata';
 
 export default function(stateOverrides) {
-  const testMetadata = _.merge(
-    defaultMetadata,
-    {
-      domain: 'test.domain',
-      datasetUid: 'xxxx-xxxx'
-    }
-  );
+  return createStore(reducer, getInitialState(stateOverrides), applyMiddleware(thunk));
+}
 
-  var initialState = _.merge(
+export function getInitialState(stateOverrides) {
+  return _.merge(
     {
       vifAuthoring: {
         authoring: {
@@ -24,10 +20,14 @@ export default function(stateOverrides) {
         },
         vifs: vifs()
       },
-      metadata: testMetadata
+      metadata: _.merge(
+        defaultMetadata,
+        {
+          domain: 'test.domain',
+          datasetUid: 'xxxx-xxxx'
+        }
+      )
     },
     stateOverrides
   );
-
-  return createStore(reducer, initialState, applyMiddleware(thunk));
 }

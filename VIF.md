@@ -163,7 +163,7 @@ Required |Optional
 Required |Optional
 :-------:|:----------:
 |    -    |Feature Map|
-    
+
 ##### `pointSize`
 `pointSize` controls the size of individual points rendered by the Feature Map by multiplying minimum size. Its type is `<number>` and it must be in the range [1, 3.2]. Defaults to 1.
 
@@ -495,6 +495,22 @@ The following example would cause the series in question to be rendered primaril
       ...
     }
   ]
+}
+```
+
+* The `customPalette` is used if the `palette` property is set to `custom`. It defines the relationship between grouped values and their custom colors. It's type is `<object>` with a property for the grouping dimension. The grouping dimension contains objects for each grouped value describing the assigned `color` and order `index`. Example:
+```
+{
+  'Grouping Dimension': {
+      'group1': {
+        color: '#aaaaaa',
+        index: 2
+      },
+      'group2': {
+        color: '#aaaaaa',
+        index: 1
+      }
+    }
 }
 ```
 

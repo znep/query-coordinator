@@ -167,7 +167,7 @@ function showDesktopHeaderNav() {
   // Hide mobile nav
   $siteChromeHeaderMobileNav.css('display', 'none');
   $siteChromeHeaderMobileNav.attr('aria-hidden', 'true');
-  $siteChromeHeader.find('.mobile-menu').attr('aria-hidden', 'true');
+  $siteChromeHeader.find('.mobile-menu').attr('aria-hidden', 'true').attr('hidden', 'true');
   // Close mobile menu if it is open
   if ($siteChromeHeader.find('.mobile-menu').hasClass('active')) {
     closeMobileMenu();
@@ -186,5 +186,5 @@ function showMobileHeaderNav() {
   $siteChromeHeaderMobileNav.css('display', 'block');
   $siteChromeHeader.find('.rally-top .searchbox').hide();
   $siteChromeHeaderMobileNav.attr('aria-hidden', 'false');
-  $siteChromeHeader.find('.mobile-menu').attr('aria-hidden', 'false');
+  $siteChromeHeader.find('.mobile-menu').attr('aria-hidden', 'false').removeAttr('hidden');
 }

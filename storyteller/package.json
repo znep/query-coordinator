@@ -10,7 +10,7 @@
     "test": "RAILS_ENV=karma karma start spec/karma/karma.conf.js",
     "test-watch": "RAILS_ENV=karma karma start spec/karma/karma.conf.js --singleRun false",
     "test-browser": "RAILS_ENV=karma karma start spec/karma/karma.conf.js --singleRun false --browsers Chrome",
-    "webpack": "webpack --config config/webpack.config.js",
+    "webpack": "webpack --config config/webpack.config.js --bail",
     "watch": "webpack-dev-server --config config/webpack.config.js",
     "build": "npm run webpack",
     "postinstall": "npm run webpack"

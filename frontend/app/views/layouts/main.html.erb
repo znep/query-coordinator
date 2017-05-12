@@ -72,7 +72,9 @@ http://www.socrata.com
 
   <%= render_ga_tracking %>
 
+  <%- unless @disable_mixpanel_tracking %>
   <%= render :partial => 'templates/mixpanel_tracking' %>
+  <% end -%>
 
   <%= render_pendo_tracker %>
 

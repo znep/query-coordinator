@@ -105,10 +105,10 @@ class AccountsController < ApplicationController
   end
 
   def reset_password
-    if !current_user.nil?
-      return redirect_to(forgot_password_path)
-    end
+    return redirect_to(forgot_password_path) unless current_user.nil?
     @body_id = 'resetPassword'
+    @disable_mixpanel_tracking = true
+
     if request.post?
       if params[:confirm_password] != params[:password]
         flash[:notice] = t('screens.sign_in.mismatch')

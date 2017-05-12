@@ -28,6 +28,22 @@ class FilterBar extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    const filterByStatus = _.get(nextProps, 'filtering.eventStatus');
+    let quickFilter = 'all';
+
+    if (filterByStatus === 'Failure') {
+     quickFilter = 'data_update_failures';
+    }
+
+    const filterByEvent = _.get(nextProps, 'filtering.eventType');
+    if (filterByEvent === 'Delete') {
+      quickFilter = 'deleted_assets';
+    }
+
+    this.setState({quickFilter});
+  }
+
   onDateChange(event) {
     const from = _.get(event, 'arguments.start', null);
     const to = _.get(event, 'arguments.end', null);
@@ -171,19 +187,20 @@ class FilterBar extends React.Component {
   }
 
   renderQuickFilters() {
-    const allClass = this.state.quickFilter === 'all' ? 'selected' : null;
-    const failedClass = this.state.quickFilter === 'data_update_failures' ? 'selected' : null;
-    const deletedClass = this.state.quickFilter === 'deleted_assets' ? 'selected' : null;
+    const { quickFilter } = this.state;
+    const allClass = quickFilter === 'all' ? 'selected' : null;
+    const failedClass = quickFilter === 'data_update_failures' ? 'selected' : null;
+    const deletedClass = quickFilter === 'deleted_assets' ? 'selected' : null;
 
     return (
       <ul>
-        <li onClick={_.bind(this.onQuickFilterChange, this, 'all')} className={allClass}>
+        <li onClick={_.wrap('all', this.onQuickFilterChange)} className={allClass}>
           <LocalizedText localeKey={'quick_filters.all'}/>
         </li>
-        <li onClick={_.bind(this.onQuickFilterChange, this, 'data_update_failures')} className={failedClass}>
+        <li onClick={_.wrap('data_update_failures', this.onQuickFilterChange)} className={failedClass}>
           <LocalizedText localeKey={'quick_filters.data_update_failures'}/>
         </li>
-        <li onClick={_.bind(this.onQuickFilterChange, this, 'deleted_assets')} className={deletedClass}>
+        <li onClick={_.wrap('deleted_assets', this.onQuickFilterChange)} className={deletedClass}>
           <LocalizedText localeKey={'quick_filters.deleted_assets'}/>
         </li>
       </ul>
@@ -208,6 +225,13 @@ class FilterBar extends React.Component {
     );
   }
 }
+
+FilterBar.propTypes = {
+  filtering: React.PropTypes.object,
+  filterByEvent: React.PropTypes.func.isRequired,
+  filterByStatus: React.PropTypes.func.isRequired,
+  filterByDate: React.PropTypes.func.isRequired
+};
 
 const mapStateToProps = (state) => ({
   filtering: state.get('filtering').toJS()

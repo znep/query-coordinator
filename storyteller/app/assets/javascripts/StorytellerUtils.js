@@ -340,12 +340,12 @@ var utils = {
 
     assert(
       _.isString(blockId),
-      `Failed to find attribute data-block-id in the ancestors of: ${this.inspectNode(element)}`
+      `Failed to find attribute data-block-id in the ancestors of: ${utils.inspectNode(element)}`
     );
 
     assert(
       _.isFinite(componentIndex),
-      `Failed to find an integer-valued data-component-index attribute in the ancestors of: ${this.inspectNode(element)}`
+      `Failed to find an integer-valued data-component-index attribute in the ancestors of: ${utils.inspectNode(element)}`
     );
 
     return { blockId, componentIndex };

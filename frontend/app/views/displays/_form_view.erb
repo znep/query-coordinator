@@ -13,6 +13,10 @@
   data-defaultSuccessRedirect="<%= def_success_redirect %>"
   action="<%= local_assigns[:prefix] || '' %>/views/<%=
     @view.id %>/rows.html?method=createForm&successRedirect=<%= CGI.escape(success_redirect) %>">
+  <%- if FeatureFlags.derive(nil, request).use_captcha_for_forms -%>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <div class="g-recaptcha" data-sitekey="<%= RECAPTCHA_2_SITE_KEY %>"></div>
+  <%- end -%>
   <%- form_columns.each do |c| -%>
     <%- if (!c.is_linked?) -%>
       <div class="line clearfix <%= c.client_type %>">

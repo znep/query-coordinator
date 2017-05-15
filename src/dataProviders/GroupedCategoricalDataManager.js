@@ -675,7 +675,7 @@ function getData(vif, options) {
     const doSortNumeric = _(dataTable.rows).
       map((row) => {
         return orderingByDimension ?
-          _.nth(row, sortValueIndex) :
+          row[sortValueIndex] :
           sumRowMeasureValues(row);
       }).
       compact().

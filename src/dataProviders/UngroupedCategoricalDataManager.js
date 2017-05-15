@@ -90,7 +90,7 @@ function getData(vif, options) {
     // Determine whether all values for ordering are numeric.
     // See note on compare function at bottom.
     const doSortNumeric = _(dataTable.rows).
-      map(_.partialRight(_.nth, sortValueIndex)).
+      map((row) => row[sortValueIndex]).
       compact().
       every((val) => !_.isNaN(_.toNumber(val)));
 

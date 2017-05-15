@@ -7,6 +7,15 @@ def npm(path, command)
   end
 end
 
+def bundle(path, command)
+  command = "cd #{path} && bundle #{command}"
+  if block_given?
+    sh(command) { |ok, res| yield(ok, res) }
+  else
+    sh(command)
+  end
+end
+
 def rspec(path)
   sh("cd #{path} && rspec")
 end

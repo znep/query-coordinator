@@ -1,9 +1,11 @@
 namespace 'rspec' do
   task :deps do
     npm('site_chrome', 'run check-dependencies') do |ok, res|
-      unless ok
-        npm('site_chrome', 'install')
-      end
+      npm('site_chrome', 'install') unless ok
+    end
+
+    bundle('site_chrome', 'check') do |ok, res|
+      bundle('site_chrome', 'install') unless ok
     end
   end
 

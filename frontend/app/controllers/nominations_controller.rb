@@ -3,7 +3,7 @@ class NominationsController < ApplicationController
   skip_before_filter :require_user, :only => [:index, :show]
 
   def index
-    @base_url = request.path
+    @base_url = locale_prefix + request.path
     @page_size = 10
     @params = params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
     params[:page] ||= 1

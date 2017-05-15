@@ -1,18 +1,12 @@
 def npm(path, command)
-  command = "cd #{path} && npm #{command}"
-  if block_given?
-    sh(command) { |ok, res| yield(ok, res) }
-  else
-    sh(command)
+  sh("cd #{path} && npm #{command}") do |ok, res|
+    yield(ok, res) if block_given?
   end
 end
 
 def bundle(path, command)
-  command = "cd #{path} && bundle #{command}"
-  if block_given?
-    sh(command) { |ok, res| yield(ok, res) }
-  else
-    sh(command)
+  sh("cd #{path} && bundle #{command}") do |ok, res|
+    yield(ok, res) if block_given?
   end
 end
 
@@ -24,9 +18,9 @@ def guard(path)
   sh("cd #{path} && guard")
 end
 
-Dir.glob('tasks/*.rake').each { |file| load(file) }
+Dir.glob('tasks/*.rake').each(&method(:load))
 # Load tasks from site_chrome.
-Dir.glob('site_chrome/lib/tasks/*.rake').each { |file| load(file) }
+Dir.glob('site_chrome/lib/tasks/*.rake').each(&method(:load))
 
 desc 'Run linter'
 task lint: :deps do

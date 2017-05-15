@@ -1,6 +1,12 @@
 namespace :site_chrome do
   desc "Build site_chrome with LocaleApp translations"
   task :build do
+    # We have multiple keys in Jenkins, so they're namespaced.
+    # Yet we stil have to map to what LocaleApp expects.
+    if ENV['SITE_CHROME_LOCALEAPP_API_KEY']
+      ENV['LOCALEAPP_API_KEY'] = ENV['SITE_CHROME_LOCALEAPP_API_KEY']
+    end
+
     Dir.chdir("#{Dir.pwd}/site_chrome") unless Dir.pwd.end_with?('site_chrome')
 
     puts `npm install`

@@ -28,6 +28,7 @@ export default class Pagination extends React.Component {
 
   render() {
     const {
+      disabled,
       currentPage,
       hasNextPage,
       hasPreviousPage,
@@ -43,7 +44,7 @@ export default class Pagination extends React.Component {
     const nextButton = (
       <button
         className="btn btn-transparent btn-page-changer btn-page-changer-next"
-        disabled={!hasNextPage}
+        disabled={!hasNextPage || disabled}
         onClick={() => onGotoPage(currentPage + 1)}>
         <span>{nextButtonText}</span>
         <SocrataIcon name="arrow-right" />
@@ -53,7 +54,7 @@ export default class Pagination extends React.Component {
     const previousButton = (
       <button
         className="btn btn-transparent btn-page-changer btn-page-changer-previous"
-        disabled={!hasPreviousPage}
+        disabled={!hasPreviousPage || disabled}
         onClick={() => onGotoPage(currentPage - 1)}>
         <SocrataIcon name="arrow-left" />
         <span>{previousButtonText}</span>
@@ -87,7 +88,8 @@ export default class Pagination extends React.Component {
 Pagination.defaultProps = {
   showOtherPageNumbers: false,
   showCurrentPageNumber: true,
-  otherPageNumbersRange: 5
+  otherPageNumbersRange: 5,
+  disabled: false
 };
 
 Pagination.propTypes = {
@@ -100,6 +102,6 @@ Pagination.propTypes = {
   otherPageNumbersRange: React.PropTypes.number.isRequired,
   onGotoPage: React.PropTypes.func.isRequired,
   nextButtonText: React.PropTypes.string.isRequired,
-  previousButtonText: React.PropTypes.string.isRequired
+  previousButtonText: React.PropTypes.string.isRequired,
+  disabled: React.PropTypes.bool
 };
-

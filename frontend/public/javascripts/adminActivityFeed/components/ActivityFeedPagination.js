@@ -7,7 +7,7 @@ import * as actions from '../actions';
 
 class ActivityFeedPagination extends React.Component {
   render() {
-    const { currentPage, hasNextPage, hasPreviousPage, onGotoPage, localization } = this.props;
+    const { currentPage, hasNextPage, hasPreviousPage, onGotoPage, localization, disabled } = this.props;
 
     if (hasNextPage || hasPreviousPage) {
       return (
@@ -18,6 +18,7 @@ class ActivityFeedPagination extends React.Component {
           onGotoPage={onGotoPage}
           nextButtonText={localization.translate('pagination.next')}
           previousButtonText={localization.translate('pagination.previous')}
+          disabled={disabled}
           />
       );
     }
@@ -32,7 +33,8 @@ const mapStateToProps = (state) => {
   return {
     currentPage: pagination.get('currentPage'),
     hasNextPage: pagination.get('hasNextPage'),
-    hasPreviousPage: pagination.get('hasPreviousPage')
+    hasPreviousPage: pagination.get('hasPreviousPage'),
+    disabled: state.get('loading')
   };
 };
 

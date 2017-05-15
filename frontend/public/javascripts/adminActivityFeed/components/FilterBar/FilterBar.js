@@ -20,7 +20,8 @@ class FilterBar extends React.Component {
       'onStatusChange',
       'onDateChange',
       'onDateClear',
-      'onQuickFilterChange'
+      'onQuickFilterChange',
+      'renderBlockLink'
     ]);
 
     this.state = {
@@ -29,15 +30,14 @@ class FilterBar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const filterByStatus = _.get(nextProps, 'filtering.eventStatus');
+    const { eventType, eventStatus } = nextProps;
     let quickFilter = 'all';
 
-    if (filterByStatus === 'Failure') {
+    if (eventStatus === 'Failure') {
      quickFilter = 'data_update_failures';
     }
 
-    const filterByEvent = _.get(nextProps, 'filtering.eventType');
-    if (filterByEvent === 'Delete') {
+    if (eventType === 'Delete') {
       quickFilter = 'deleted_assets';
     }
 
@@ -86,6 +86,8 @@ class FilterBar extends React.Component {
   }
 
   renderDateFilter() {
+    const { dateFrom, dateTo } = this.props;
+
     const props = {
       column: {
         name: this.props.localization.translate('columns.date_started'),
@@ -98,8 +100,8 @@ class FilterBar extends React.Component {
         columnName: 'date',
         isHidden: true,
         arguments: {
-          start: _.get(this.props, 'filtering.dateFrom'),
-          end: _.get(this.props, 'filtering.dateTo')
+          start: dateFrom,
+          end: dateTo
         }
       },
       onUpdate: this.onDateChange,
@@ -113,6 +115,7 @@ class FilterBar extends React.Component {
   }
 
   renderEventFilter() {
+    const { eventType } = this.props;
     const eventTypes = ['all', 'append', 'import', 'replace', 'upsert', 'delete', 'restore'];
     const options = _.map(
       eventTypes,
@@ -121,8 +124,7 @@ class FilterBar extends React.Component {
         value: _.upperFirst(item)
       })
     );
-    const currentValue = _.get(this.props, 'filtering.eventType');
-    const value = currentValue !== 'All' ? currentValue : null;
+    const value = eventType !== 'All' ? eventType : null;
     const placeholder = this.props.localization.translate('columns.event');
 
     const props = {
@@ -139,6 +141,7 @@ class FilterBar extends React.Component {
   }
 
   renderStatusFilter() {
+    const { eventStatus } = this.props;
     const statusTypes = [
       {title: 'All'},
       {title: 'Success', icon: 'checkmark-alt'},
@@ -169,8 +172,7 @@ class FilterBar extends React.Component {
         render: renderOption
       })
     );
-    const currentValue = _.get(this.props, 'filtering.eventStatus');
-    const value = currentValue !== 'All' ? currentValue : null;
+    const value = eventStatus !== 'All' ? eventStatus : null;
     const placeholder = this.props.localization.translate('columns.status');
 
     const props = {
@@ -194,16 +196,21 @@ class FilterBar extends React.Component {
 
     return (
       <ul>
-        <li onClick={_.wrap('all', this.onQuickFilterChange)} className={allClass}>
-          <LocalizedText localeKey={'quick_filters.all'}/>
-        </li>
-        <li onClick={_.wrap('data_update_failures', this.onQuickFilterChange)} className={failedClass}>
-          <LocalizedText localeKey={'quick_filters.data_update_failures'}/>
-        </li>
-        <li onClick={_.wrap('deleted_assets', this.onQuickFilterChange)} className={deletedClass}>
-          <LocalizedText localeKey={'quick_filters.deleted_assets'}/>
-        </li>
+        {this.renderBlockLink('all', allClass)}
+        {this.renderBlockLink('data_update_failures', failedClass)}
+        {this.renderBlockLink('deleted_assets', deletedClass)}
       </ul>
+    );
+  }
+
+  renderBlockLink(value, className) {
+    const {disabled} = this.props;
+    const onClick = disabled ? null : _.wrap(value, this.onQuickFilterChange);
+
+    return (
+      <li onClick={onClick} className={className}>
+        <LocalizedText localeKey={`quick_filters.${value}`}/>
+      </li>
     );
   }
 
@@ -226,16 +233,29 @@ class FilterBar extends React.Component {
   }
 }
 
-FilterBar.propTypes = {
-  filtering: React.PropTypes.object,
-  filterByEvent: React.PropTypes.func.isRequired,
-  filterByStatus: React.PropTypes.func.isRequired,
-  filterByDate: React.PropTypes.func.isRequired
+FilterBar.defaultProps = {
+  disabled: false
 };
 
-const mapStateToProps = (state) => ({
-  filtering: state.get('filtering').toJS()
-});
+FilterBar.propTypes = {
+  dateFrom: React.PropTypes.string,
+  dateTo: React.PropTypes.string,
+  eventType: React.PropTypes.string,
+  eventStatus: React.PropTypes.string,
+  disabled: React.PropTypes.bool
+};
+
+const mapStateToProps = (state) => {
+  const filtering = state.get('filtering').toJS();
+
+  return {
+    disabled: state.get('loading'),
+    dateFrom: _.get(filtering, 'dateFrom'),
+    dateTo: _.get(filtering, 'dateTo'),
+    eventType: _.get(filtering, 'eventType'),
+    eventStatus: _.get(filtering, 'eventStatus')
+  };
+};
 
 const mapDispatchToProps = (dispatch) => ({
   filterByEvent: (value) => dispatch(actions.filterByEvent(value)),

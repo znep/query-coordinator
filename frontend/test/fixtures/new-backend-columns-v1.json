@@ -42,6 +42,13 @@
       "fred": "number",
       "physicalDatatype": "number"
     },
+    "voice_roughness_timing": {
+      "cardinality": 12,
+      "name": "Voice roughness timing",
+      "description": "Time measurement of gravelly voice.",
+      "fred": "number",
+      "physicalDatatype": "floating_timestamp"
+    },
     "thing_without_commas": {
       "cardinality": 12,
       "name": "Something without any commas",

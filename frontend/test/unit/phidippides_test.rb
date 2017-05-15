@@ -293,6 +293,9 @@ class PhidippidesTest < Minitest::Test
     assert_equal(true, result[:columns]['thing_without_commas']['format']['noCommas'])
     assert_equal('percent', result[:columns]['voice_roughness']['dataTypeName'])
     assert_equal('percent', result[:columns]['voice_roughness']['renderTypeName'])
+    assert_equal('calendar_date', result[:columns]['voice_roughness_timing']['dataTypeName'])
+    assert_equal('calendar_date', result[:columns]['voice_roughness_timing']['renderTypeName'])
+    assert_equal('floating_timestamp', result[:columns]['voice_roughness_timing']['physicalDatatype'])
   end
 
   def test_mirror_nbe_column_metadata_with_row_label

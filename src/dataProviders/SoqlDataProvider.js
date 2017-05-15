@@ -193,6 +193,7 @@ function SoqlDataProvider(config) {
     const promises = _.map(columns, function(column) {
       const minAlias = '__min__';
       const maxAlias = '__max__';
+      const countAlias = '__count__';
       const { fieldName, dataTypeName } = column;
       let orderBy;
       let queryString;
@@ -222,8 +223,8 @@ function SoqlDataProvider(config) {
         });
       } else if (dataTypeName === 'text') {
         const escapedFieldName = escapeColumnName(fieldName);
-        select = `${escapedFieldName}+as+item,count(${escapedFieldName})+as+count`;
-        orderBy = `count(${escapedFieldName})+DESC`;
+        select = `${escapedFieldName}+as+item,count(*)+as+${countAlias}`;
+        orderBy = `${countAlias}+DESC`;
         queryString = `$select=${select}&$order=${orderBy}&$group=${escapedFieldName}&$limit=25`;
         path = pathForQuery(queryString);
 

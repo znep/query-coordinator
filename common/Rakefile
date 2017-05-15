@@ -34,4 +34,4 @@ desc 'Run lint and tests'
 task default: %w[lint test]
 
 desc 'Run all tests'
-task test: [:karma, :rspec]
+task test: [:karma, :spec]

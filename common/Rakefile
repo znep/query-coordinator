@@ -1,60 +1,3 @@
-desc 'Run lint and  tests'
-task default: %w[lint test]
-
-desc 'Ensures dependencies are installed'
-task :deps do
-  npm('karma_config', 'run check-dependencies') do |ok, res|
-    unless ok
-      npm('karma_config', 'install')
-    end
-  end
-
-  npm('site_chrome', 'run check-dependencies') do |ok, res|
-    unless ok
-      npm('site_chrome', 'install')
-    end
-  end
-end
-
-namespace 'karma' do
-  task :runonce do
-    npm('karma_config', 'test')
-  end
-  task :watch do
-    npm('karma_config', 'run watch')
-  end
-end
-
-namespace 'rspec' do
-  task :runonce do
-    rspec 'site_chrome'
-  end
-  task :watch do
-    guard 'site_chrome'
-  end
-end
-
-desc 'Run all Ruby tests'
-task spec: %w[rspec:runonce]
-
-desc 'Watch Ruby test files'
-task spec_watch: %w[rspec:watch]
-
-desc 'Run all JavaScript tests (check prereqs)'
-task karma: %w[deps karma:runonce]
-
-desc 'Run all JavaScript tests and re-run on file change'
-task karma_watch: %w[deps karma:watch]
-
-desc 'Run linter'
-task lint: :deps do
-  npm('karma_config', 'run lint')
-  npm('site_chrome', 'run lint')
-end
-
-desc 'Run all tests'
-task test: [:karma, :rspec]
-
 def npm(path, command)
   command = "cd #{path} && npm #{command}"
   if block_given?
@@ -71,3 +14,24 @@ end
 def guard(path)
   sh("cd #{path} && guard")
 end
+
+Dir.glob('tasks/*.rake').each { |file| load(file) }
+# Load tasks from site_chrome.
+Dir.glob('site_chrome/lib/tasks/*.rake').each { |file| load(file) }
+
+desc 'Run linter'
+task lint: :deps do
+  npm('karma_config', 'run lint')
+  npm('site_chrome', 'run lint')
+end
+
+task :deps do
+  Rake.application['karma:deps'].invoke
+  Rake.application['rspec:deps'].invoke
+end
+
+desc 'Run lint and tests'
+task default: %w[lint test]
+
+desc 'Run all tests'
+task test: [:karma, :rspec]

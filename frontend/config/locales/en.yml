@@ -3211,7 +3211,7 @@ en:
           data_update_failures: Data Update Failures
           deleted_assets: Deleted Assets
         restore: Restore
-        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}"
+        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}" ?
         restored: Restored
         show_page:
           back: Back to jobs list

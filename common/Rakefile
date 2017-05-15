@@ -3,38 +3,60 @@ task default: %w[lint test]
 
 desc 'Ensures dependencies are installed'
 task :deps do
-  npm 'run check-dependencies' do |ok, res|
+  npm('karma_config', 'run check-dependencies') do |ok, res|
     unless ok
-      npm 'install'
+      npm('karma_config', 'install')
+    end
+  end
+
+  npm('site_chrome', 'run check-dependencies') do |ok, res|
+    unless ok
+      npm('site_chrome', 'install')
     end
   end
 end
 
 namespace 'karma' do
   task :runonce do
-    npm 'test'
+    npm('karma_config', 'test')
   end
   task :watch do
-    npm 'run watch'
+    npm('karma_config', 'run watch')
   end
 end
+
+namespace 'rspec' do
+  task :runonce do
+    rspec 'site_chrome'
+  end
+  task :watch do
+    guard 'site_chrome'
+  end
+end
+
+desc 'Run all Ruby tests'
+task spec: %w[rspec:runonce]
+
+desc 'Watch Ruby test files'
+task spec_watch: %w[rspec:watch]
 
 desc 'Run all JavaScript tests (check prereqs)'
 task karma: %w[deps karma:runonce]
 
-desc 'Run all tests and re-run on file change'
-task watch: %w[deps karma:watch]
+desc 'Run all JavaScript tests and re-run on file change'
+task karma_watch: %w[deps karma:watch]
 
 desc 'Run linter'
 task lint: :deps do
-  npm 'run lint'
+  npm('karma_config', 'run lint')
+  npm('site_chrome', 'run lint')
 end
 
 desc 'Run all tests'
-task test: :karma
+task test: [:karma, :rspec]
 
-def npm(command)
-  command = "cd karma_config && npm #{command}"
+def npm(path, command)
+  command = "cd #{path} && npm #{command}"
   if block_given?
     sh(command) { |ok, res| yield(ok, res) }
   else
@@ -42,3 +64,10 @@ def npm(command)
   end
 end
 
+def rspec(path)
+  sh("cd #{path} && rspec")
+end
+
+def guard(path)
+  sh("cd #{path} && guard")
+end

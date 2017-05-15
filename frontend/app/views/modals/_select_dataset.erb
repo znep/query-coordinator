@@ -1,0 +1,5 @@
+<%= modal :id => 'selectDataset' do %>
+  <%- title = local_assigns[:title] || t('controls.common.dataset_picker.title') -%>
+  <h2><%= title %></h2>
+  <iframe frameBorder="0" title="<%= title %>" data-urltoload="<%= url_for :controller => :browse, :action => :select_dataset %><%= local_assigns[:federate] == 'true' ? '' : '?nofederate=true&suppressed_facets[]=domain' %>"></iframe>
+<%- end -%>

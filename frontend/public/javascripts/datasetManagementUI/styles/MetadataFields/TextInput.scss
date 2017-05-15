@@ -1,0 +1,19 @@
+.textInput {
+  composes: text-input from global;
+  width: 100%;
+  min-width: 250px;
+
+  @media (max-width: 1000px) {
+    width: 100%;
+  }
+}
+
+form .textInput {
+  line-height: 22px;
+}
+
+.textInputError {
+  composes: textInput;
+  composes: text-input-error from global;
+  margin-bottom: 2px !important;
+}

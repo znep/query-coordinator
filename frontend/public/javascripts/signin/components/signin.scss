@@ -1,0 +1,101 @@
+@import "../common.scss";
+
+.container {
+  @extend .center;
+  @include base;
+
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  background: $white;
+  border: 1px solid $light-grey-3;
+  padding-left: 3em;
+  padding-right: 3em;
+  padding-bottom: 1.5em;
+  padding-top: 3em;
+  min-width: 225px;
+
+  /* If the screen is big enough, take up less of it */
+  @media screen and (min-width: $break-large) {
+    max-width: 650px;
+  }
+}
+
+.header-container {
+  margin-bottom: 2em;
+}
+
+.header {
+  @extend .center;
+  @extend .h2;
+
+  text-align: center;
+}
+
+.inner-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-container {
+  @media screen and (min-width: $break-large) {
+    margin: 0 4em;
+  }
+}
+
+.signup-container {
+  color: $grey;
+  padding-top: 2em;
+}
+
+.signup-link {
+  @extend .unstyled-link;
+  cursor: pointer;
+}
+
+.back-to-options {
+  @extend .unstyled-link;
+
+  font-size: 85%;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  cursor: pointer;
+}
+
+.back-to-options-icon {
+  margin-right: 3px;
+  display: flex;
+
+  & svg {
+    width: 9px;
+    height: 9px;
+
+    & polygon {
+      fill: $primary-text;
+    }
+  }
+}
+
+.alert-base {
+  @extend .alert;
+  margin-bottom: 1.5em;
+}
+
+.alert-notice {
+  @extend .alert-base;
+  @extend .info;
+}
+
+.alert-warning {
+  @extend .alert-base;
+  @extend .warning;
+}
+
+.alert-error {
+  @extend .alert-base;
+  @extend .error;
+}

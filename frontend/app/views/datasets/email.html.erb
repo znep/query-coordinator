@@ -1,0 +1,45 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'dataset-upload' %>
+  <title>Email this Dataset | <%= get_site_title %></title>
+<% end %>
+
+<div class="contentBox">
+  <h2>Email this Dataset</h2>
+
+  <div class="mainContent">
+    <% if !@bad_addresses.nil? && @bad_addresses.size <= 0 %>
+      <p>Your emails were sent successfully. You can now return to <%= link_to @view.name, alt_view_path(@view) %>.</p>
+    <% elsif !@bad_addresses.nil? && @bad_addresses.size > 0 %>
+      <p>Errors were encountered while sending your emails:<p>
+      <ul>
+        <% @bad_addresses.each do |email, error| %>
+          <li><%= email %>: <%= error %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <%= form_tag("#{email_dataset_path(@view)}", :id => "emailForm", :multipart => false) do %>
+        <div class="fieldContent clearfix">
+          <p class="errorMessage"></p>
+          <p class="instructions">
+          Please enter the email address of the person that you'd like to send a copy of
+          &ldquo;<%= h(@view.name) %>&rdquo;. You can enter a comma-separated list of
+          email addresses to send the dataset to multiple people.
+          </p>
+          <fieldset class="last">
+            <div class="emailInputContainer clearfix">
+              <label for="emails">Email addresses:</label>
+              <div class="emailInput">
+                <%= text_field_tag('emails') %>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="footer clearfix">
+          <%= submit_tag('Send Email') %>
+          <%= link_to "Back to #{@view.name}", alt_view_path(@view) %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+response=`grep -lR '\.only' spec/karma`
+
+if [ -n "$response" ]; then
+  red='\033[0;31m'
+  nocolor='\033[0m'
+
+  echo ""
+  echo -e "${red}ERROR${nocolor}: You must remove all .only's before committing."
+  echo "If you are intentionally committing .only's, use -n."
+  echo ""
+  echo "Offending files:"
+  echo "$response"
+  echo ""
+
+  exit 1
+fi

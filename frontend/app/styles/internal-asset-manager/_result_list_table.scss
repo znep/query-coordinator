@@ -1,0 +1,65 @@
+@import "styleguide-colors";
+@import "internal-asset-manager/mixins/multi_line_ellipsis";
+
+table.result-list-table {
+  thead {
+    tr {
+      th {
+        white-space: nowrap;
+        background: $light-grey-5;
+        border: 1px solid $light-grey-3;
+        cursor: pointer;
+        user-select: none;
+
+        &.active {
+          font-weight: 700;
+        }
+
+        &.name {
+          width: 600px;
+        }
+
+        .ascending-arrow, .descending-arrow {
+          display: none;
+          float: right;
+        }
+
+        &.ascending {
+          .ascending-arrow {
+            display: inline-block;
+          }
+        }
+
+        &.descending {
+          .descending-arrow {
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
+
+  tr.result-list-row {
+    td {
+      &.name {
+        a {
+          text-decoration: none;
+        }
+
+        span.name {
+          font-size: 15px;
+        }
+
+        span.description {
+          display: block;
+          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $light-grey-6);
+        }
+      }
+
+      &.type {
+        font-size: 18px;
+        text-align: center;
+      }
+    }
+  }
+}

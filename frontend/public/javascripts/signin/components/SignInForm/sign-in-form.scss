@@ -1,0 +1,109 @@
+@import "../../common";
+
+.form {
+  @include form;
+
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media screen and (min-width: $break-large) {
+    max-width: 350px;
+  }
+}
+
+.reset-password {
+  @extend .unstyled-link;
+
+  float: right;
+  font-size: 85%;
+  margin-right: 2px;
+  margin-top: 11px;
+}
+
+.sign-in-button {
+  @extend .btn;
+  @extend .btn-primary;
+  @extend .btn-lg;
+  @include default-font;
+
+  width: 100%;
+  margin-top: 1.5em;
+}
+
+.icon-container {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  margin-top: 11px;
+  margin-left: 9px;
+
+  & svg {
+    width: 20px;
+    height: 20px;
+
+    & path {
+      fill: $light-grey-1;
+    }
+  }
+}
+
+.input-with-icon {
+  @include default-font;
+  @extend .text-input;
+
+  padding-left: 34px !important;
+  width: 100%;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  border-radius: 0 !important;
+  line-height: 1.4em !important;
+}
+
+.input-password {
+  @extend .input-with-icon;
+
+  /* since the two inputs are "touching" we give the bottom one no top border */
+  border-top: 0.5px !important;
+}
+
+.input-email {
+  @extend .input-with-icon;
+
+  border-bottom: 0.5px !important;
+}
+
+.sso-enabled-text {
+  text-align: left;
+  padding-top: 7px;
+  padding-bottom: 9px;
+  padding-left: 32px;
+  border-top: 1px solid $light-grey-3;
+}
+
+.remember-me {
+  @extend .checkbox;
+  float: left;
+  font-size: 85%;
+  margin-top: 8px;
+  color: #767676;
+}
+
+.psuedo-checkbox {
+  @extend .fake-checkbox;
+  margin-right: 4px !important;
+  margin-top: 2px;
+}
+
+.psuedo-checkbox-check {
+  @extend .icon-checkmark3;
+}
+
+.real-checkbox {
+  display: none !important;
+}
+
+.login-error {
+  @extend .alert;
+  @extend .error;
+}

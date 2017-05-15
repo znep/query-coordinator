@@ -1,0 +1,112 @@
+{
+  "domain": "localhost",
+  "description": "",
+  "updatedAt": "2017-03-10T22:14:59.000Z",
+  "ownerId": "tugg-ikce",
+  "id": "vdj8-z7h2",
+  "columns": {
+    "_6_tinymonster": {
+      "description": "",
+      "physicalDatatype": "text",
+      "name": "6_tinymonster",
+      "fred": "text"
+    },
+    "_1_megamonstrosityquotient": {
+      "description": "",
+      "physicalDatatype": "number",
+      "name": "1_megamonstrosityquotient",
+      "fred": "number"
+    },
+    "_5_monster": {
+      "description": "",
+      "physicalDatatype": "text",
+      "name": "5_monster",
+      "fred": "text"
+    },
+    "_0_ultramonstrosityquotient": {
+      "description": "",
+      "physicalDatatype": "number",
+      "name": "0_ultramonstrosityquotient",
+      "fred": "number"
+    },
+    "_13_smallchronometerreading": {
+      "description": "",
+      "physicalDatatype": "calendar_date",
+      "name": "13_smallchronometerreading",
+      "fred": "calendar_date"
+    },
+    "_3_monstrosityquotient": {
+      "description": "",
+      "physicalDatatype": "number",
+      "name": "3_monstrosityquotient",
+      "fred": "number"
+    },
+    "_15_microchronometerreading": {
+      "description": "",
+      "physicalDatatype": "calendar_date",
+      "name": "15_microchronometerreading",
+      "fred": "calendar_date"
+    },
+    "_14_tinychronometerreading": {
+      "description": "",
+      "physicalDatatype": "calendar_date",
+      "name": "14_tinychronometerreading",
+      "fred": "calendar_date"
+    },
+    "_11_largechronometerreading": {
+      "description": "",
+      "physicalDatatype": "calendar_date",
+      "name": "11_largechronometerreading",
+      "fred": "calendar_date"
+    },
+    "_4_monsterometerreading": {
+      "description": "",
+      "physicalDatatype": "number",
+      "name": "4_monsterometerreading",
+      "fred": "number"
+    },
+    "_8_subjectiveoration": {
+      "description": "",
+      "physicalDatatype": "text",
+      "name": "8_subjectiveoration",
+      "fred": "text"
+    },
+    "_9_coordinates": {
+      "description": "",
+      "physicalDatatype": "text",
+      "name": "9_coordinates",
+      "fred": "text"
+    },
+    "_2_kilomonstrosityquotient": {
+      "description": "",
+      "physicalDatatype": "number",
+      "name": "2_kilomonstrosityquotient",
+      "fred": "number"
+    },
+    "_10_witnesstestimony": {
+      "description": "",
+      "physicalDatatype": "text",
+      "name": "10_witnesstestimony",
+      "fred": "text"
+    },
+    "_7_subjectivereading": {
+      "description": "",
+      "physicalDatatype": "number",
+      "name": "7_subjectivereading",
+      "fred": "number"
+    },
+    "_12_mediumchoronometerreading": {
+      "description": "",
+      "physicalDatatype": "calendar_date",
+      "name": "12_mediumchoronometerreading",
+      "fred": "calendar_date"
+    },
+    "_9_coordinates_computed": {
+      "description": "",
+      "physicalDatatype": "number",
+      "name": "9_coordinates_computed",
+      "fred": "number"
+    }
+  },
+  "name": "Rows (1)"
+}

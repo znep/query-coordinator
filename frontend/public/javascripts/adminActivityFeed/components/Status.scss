@@ -1,0 +1,30 @@
+@import "bourbon";
+@import "colors";
+
+.activity-status {
+  i:before {
+    font-size: 16px;
+    vertical-align: bottom;
+    margin-right: 5px;
+  }
+
+  &[data-status="failure"] i {
+    color: $error;
+  }
+
+  &[data-status="in_progress"] i {
+    color: $grey;
+  }
+
+  &[data-status="not_started"] i {
+    color: $grey;
+  }
+
+  &[data-status="success"] i {
+    color: $success;
+  }
+
+  &[data-status="success_with_data_errors"] i {
+    color: $warning;
+  }
+}

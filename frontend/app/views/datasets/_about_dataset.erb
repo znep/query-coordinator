@@ -1,0 +1,407 @@
+<div class="aboutDataset">
+  <%- if display_dataset_landing_page_link -%>
+    <div class="dslpLink">
+      <h4 class="formHeader"><%= t('screens.about.dataset_landing_page.title') %></h4>
+      <p><%= t('screens.about.dataset_landing_page.description') %></p>
+      <a class="fullButton" href="<%= view_path(@view) %>"><%= t('screens.about.dataset_landing_page.button') %></a>
+    </div>
+  <%- end -%>
+  <div class="aboutHeader clearfix">
+    <a class="aboutAuthorImageLink" href="<%= profile_path(@view.owner) %>">
+      <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"
+        src="<%= @view.owner.profile_image_path("medium") %>"/>
+    </a>
+    <a class="aboutAuthorName" href="<%= profile_path(@view.owner) %>"><%= @view.owner.displayName %></a>
+    <p><em><%= t('screens.about.created') %></em> <span class="aboutCreateDate"><%= short_date_span(@view.createdAt) %></span></p>
+    <%- if @view.is_snapshotted? -%>
+    <p><em><%= t('screens.about.snapshotted') %></em> <span class="aboutUpdateDate"><%= short_date_span(@view.publicationDate) %></span></p>
+    <%- else -%>
+    <p><em><%= t('screens.about.updated') %></em> <span class="aboutUpdateDate"><%= short_date_span(@view.last_activity) %></span></p>
+    <%- end -%>
+  </div>
+
+  <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) && !@view.is_api? -%>
+    <a href="<%= edit_view_metadata_path(@view) %>" class="fullButton editMetadataButton"><%= t('screens.about.edit_metadata') %></a>
+  <%- end -%>
+
+  <%- unless local_assigns[:full_page] -%>
+    <a href="<%= about_view_path(@view) %>" class="viewFullLink fullButton"><%= t('screens.about.view_full_page') %></a>
+  <%- end -%>
+
+  <%- if @view.custom_image.present? -%>
+  <div class="customImageSection clearfix">
+    <div class="sectionContent">
+      <img alt="" src="<%= @view.custom_image('large') %>" class="datasetCustomImage" />
+    </div>
+  </div>
+  <%- end -%>
+
+  <div class="formSection">
+    <%- if  !(@view.is_href? || @view.is_blobby?) %>
+      <a class="expander expanded formHeader" href="#expand">
+        <span class="icon"></span>
+        <%= t('screens.about.description') %>
+      </a>
+      <div class="sectionContent">
+        <p><%= view_formatted_description(@view) || t('screens.about.none') %></p>
+      </div>
+    <%- end %>
+  </div>
+
+  <%- if module_enabled?(:routing_approval) && current_user.present? && @view.flag?('default') &&
+    (current_user.can_approve? || @view.has_rights?(ViewRights::UPDATE_VIEW)) -%>
+  <%- approval = Approval.find()[0] -%>
+  <%- if approval.present? -%>
+  <%- next_stage = @view.next_approval_stage(approval) -%>
+  <%- @users = {}
+    (CoreServer::Base.connection.batch_request do |batch_id|
+      ((next_stage || {})['approverUids'] || []).each do |userId|
+        User.find(userId, {}, batch_id)
+      end
+      (@view.approval_history || []).each do |ah|
+        User.find(ah['approverUserUid'], {}, batch_id)
+      end
+    end || []).each do |r|
+      u = User.parse(r['response'])
+      @users[u.id] = u
+    end -%>
+
+  <div class="formSection">
+    <a class="expander <%= !next_stage.nil? ? "expanded" : "collapsed" %> formHeader" href="#expand">
+      <span class="icon"></span>
+      Routing &amp; Approval
+    </a>
+    <dl class="sectionContent routingApproval" style="<%= next_stage.nil? &&
+      !local_assigns[:full_page] ? 'display:none' : '' %>">
+      <%- last_app = @view.last_approval -%>
+      <%- last_app_rej = @view.last_approval(true) -%>
+      <dt>Stage</dt>
+      <dd class="stage">
+        <%= render :partial => 'datasets/stage_icon', :locals => {:view => @view, :approval => approval} %>
+        <span class="name"><%= approval.stage((last_app || {})['approvalStageId'])['name'] %></span>
+      </dd>
+      <%- if !next_stage.nil? -%>
+      <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_APPROVAL) ||
+        (next_stage['approverUids'] || []).include?(current_user.id) ||
+        @view.has_rights?(ViewRights::UPDATE_VIEW) &&
+        last_app_rej.present? && last_app_rej['approvalTypeName'] == 'R' -%>
+      <dt>Actions</dt>
+      <dd class="actions">
+        <%= render :partial => 'administration/routing_approval_actions',
+          :locals => {:view => @view, :approval_template => approval} %>
+      </dd>
+      <%- end -%>
+      <dt>Next Approver</dt>
+      <dd><ul>
+        <%- (next_stage['approverUids'] || []).each do |uid| -%>
+        <%- u = @users[uid] -%>
+        <li><a href='<%= profile_path(u) %>'><%= u.displayName %></a></li>
+        <%- end -%>
+      </ul></dd>
+      <%- end -%>
+    </dl>
+  </div>
+
+  <%- if !@view.approval_history.empty? -%>
+  <div class="formSection">
+    <a class="expander <%= !next_stage.nil? ? "expanded" : "collapsed" %> formHeader" href="#expand">
+      <span class="icon"></span>
+      Approval History
+    </a>
+    <ul class="sectionContent approvalHistory" style="<%= next_stage.nil? &&
+      !local_assigns[:full_page] ? 'display:none' : '' %>">
+      <%- @view.approval_history.each do |ah| -%>
+      <li>
+      <div class="stage">
+        <div class="icon">
+          <%- i = approval.stages.index {|s| s['id'] == ah['approvalStageId']} || 0 -%>
+          <%- approval.stages.length.times do |j| -%>
+          <span class="<%= j > i ? "off" : j < i ? "on" : ah['approvalTypeName'] == 'R' ?
+            "rejected" : ah['approvalTypeName'] == 'A' ? "on" : "off" %>"></span>
+          <%- end -%>
+        </div>
+        <%= approval.stage(ah['approvalStageId'])['name'] %></div>
+      <%- u = @users[ah['approverUserUid']] -%>
+      <div class='user'><%= case ah['approvalTypeName']
+        when 'R'
+          'Rejected'
+        when 'A'
+          'Approved'
+        when 'M'
+          'Resubmitted'
+        end %> by
+        <a href='<%= profile_path(u) %>'><%= u.displayName %></a></div>
+      <span class="date">On <%= short_date_span(ah['approvalDate']) %></span>
+      <%- if !ah['comment'].blank? -%>
+      <span class="reason"><%= ah['comment'] %></span>
+      <%- end -%>
+      </li>
+      <%- end -%>
+    </ul>
+  </div>
+  <%- end -%>
+  <%- end -%>
+  <%- end -%>
+
+  <% if current_user && current_user.is_superadmin? -%>
+    <div class="formSection">
+      <a class="expander expanded formHeader" href="#expand">
+        <span class="icon"></span>
+        <%= t('screens.about.admin_debugging') %>
+      </a>
+      <%= render :partial => 'admin_debugging' %>
+    </div>
+  <%- end -%>
+
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      <%= t('screens.about.activity') %>
+    </a>
+    <dl class="sectionContent">
+      <%- (CurrentDomain.properties.rating_types || ["rating"]).each do |rating_type| -%>
+        <dt><%= t('screens.about.community') %></dt>
+        <dd class="clearfix">
+          <%= stars_control('datasetAverageRating', @view.average_rating(rating_type)) %>
+        </dd>
+        <%- unless action_name == 'alt' %>
+          <dt><%= t('screens.about.your') %></dt>
+          <dd class="clearfix">
+          <%- if current_user %>
+            <%= stars_control_interactive(rating_type, @view.user_rating(rating_type), @view, 'yourRating') %>
+          <%- else %>
+            <%= stars_control('yourRating', 0) %>
+          <%- end %>
+          </dd>
+        <%- end %>
+      <%- end -%>
+      <dt><%= t('screens.about.raters') %></dt>
+      <dd class="totalTimesRated"><%= @view.totalTimesRated %></dd>
+      <dt><%= t('screens.about.visits') %></dt>
+      <dd><%= @view.viewCount || '&nbsp;'.html_safe %></dd>
+      <dt><%= t('screens.about.downloads') %></dt>
+      <dd><%= @view.downloadCount || '&nbsp;'.html_safe %></dd>
+      <dt><%= t('screens.about.comments') %></dt>
+      <dd class="numberOfComments"><%= @view.numberOfComments %></dd>
+      <dt><%= t('screens.about.contributors') %></dt>
+      <dd><%= @view.contributor_users.length %></dd>
+      <%- if @view.user_granted?(current_user) || CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) -%>
+        <dt class="widenedItem">
+          <%= link_to t('screens.about.view_statistics'), view_stats_path(@view), { :class => 'statsButton' } %>
+        </dt>
+        <dd>&nbsp;</dd>
+      <%- end -%>
+    </dl>
+  </div>
+
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      <%= t('screens.about.meta') %>
+    </a>
+    <dl class="sectionContent">
+      <dt><%= t('screens.about.category') %></dt>
+      <dd><%= @view.category_display || t('screens.about.none') %></dd>
+      <dt><%= t('screens.about.permissions') %></dt>
+      <dd><%= @view.is_public? ? t('screens.about.public') : t('screens.about.private') %></dd>
+      <dt><%= t('screens.about.tags') %></dt>
+      <dd><span class="wrap"><%= @view.tag_display_string %></span></dd>
+      <%- if @view.dataset? %>
+      <dt><%= t('screens.about.row_label') %></dt>
+      <dd><span class="wrap row_label"><%= row_label %></span></dd>
+      <%- end %>
+      <%- if @view.is_tabular? %>
+      <dt><%= t('screens.about.row_count') %></dt>
+      <dd><span class="wrap row_count"><%= @row_count %></span></dd>
+      <%- if @view.new_backend? -%>
+      <dt><%= t('screens.about.soda2_support') %></dt>
+      <dd><%= t('screens.about.soda2_yes') %></dd>
+      <%- end -%>
+      <%- end %>
+    </dl>
+  </div>
+
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+
+
+      <%= t('screens.about.links') %>
+    </a>
+    <dl class="sectionContent">
+      <dt><%= t('screens.about.permalink') %></dt>
+      <dd><span class="hardWrap"><%=
+        perma_url = view_url(@view)
+        link_to "".html_safe + perma_url + "<span class='accessible'>Opens in new window.</span>".html_safe,
+                perma_url,
+                :rel => 'external',
+                :title=> 'Permanent link, opens in new window' %></span></dd>
+
+        <dt><%= t('screens.about.short_url') %></dt>
+        <dd><span class="hardWrap"><%=
+          short_url = short_view_url(@view)
+          link_to "".html_safe + short_url + "<span class='accessible'>Opens in new window.</span>".html_safe,
+                      short_url,
+                      :rel => 'external',
+                      :title=> 'Short link, opens in new window' %></span></dd>
+    </dl>
+  </div>
+
+<%- if @view.metadata && !@view.metadata.attachments.blank? -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      <%= t('screens.about.attachments') %>
+    </a>
+    <ul class="sectionContent">
+      <%- @view.metadata.attachments.each do |attachment| -%>
+        <%- attachmentObj = Attachment.setup_model(attachment) -%>
+        <li>
+          <%= link_to( attachmentObj.displayName, attachmentObj.href(@view.id), :target => "_blank" ) %>
+        </li>
+      <%- end -%>
+    </ul>
+  </div>
+<%- end -%>
+
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+       <%= t('screens.about.licensing') %>
+    </a>
+    <dl class="sectionContent">
+      <dt><%= t('screens.about.data_provided_by') %></dt>
+      <dd><%= @view.property_or_default(['attribution']) || t('screens.about.none') %></dd>
+      <dt><%= t('screens.about.source_link') %></dt>
+      <dd><%= @view.property_or_default(['attributionLink']).blank? ?
+                t('screens.about.none') :
+                link_to_url(h(@view.property_or_default(['attributionLink'])), :rel => 'nofollow noreferrer external') %></dd>
+      <%- if @view.property_or_default(['license']) -%>
+        <dt><%= t('screens.about.license') %></dt>
+        <dd><%== render_license %></dd>
+      <%- end -%>
+      <%- if @view.property_or_default(['termsAndConditions']) -%>
+        <dt><%= t('screens.about.terms_of_use') %></dt>
+        <dd><span class="wrap"><%= @view.property_or_default(['termsAndConditions']) %></span></dd>
+      <%- end -%>
+    </dl>
+  </div>
+
+<%- if !@view.data['northWest'].nil? -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      <%= t('screens.about.spatial_extent') %>
+    </a>
+    <div class="sectionContent">
+      <%- extent = extent_html(@view.data['northWest']['lat'],
+            @view.data['northWest']['long'],
+            @view.data['southEast']['lat'],
+            @view.data['southEast']['long']) -%>
+      <%= raw extent %>
+    </div>
+  </div>
+<%- end -%>
+
+<%- if @view.is_tabular? -%>
+  <%- if @view.rdf_subject.present? || @view.rdf_class_display_name.present? -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      <%= t('screens.about.semantics') %>
+    </a>
+    <dl class="sectionContent">
+      <dt><%= t('screens.about.row_class') %></dt>
+      <dd><span class="hardWrap">
+        <%= @view.rdf_class_display_name.present? ? @view.rdf_class_display_name : t('screens.about.none') %></span></dd>
+      <dt><%= t('screens.about.subject_column') %></dt>
+      <dd>
+        <%= @view.rdf_subject.present? ? @view.rdf_subject : t('screens.about.none') %>
+      </dd>
+    </dl>
+  </div>
+  <%- end -%>
+
+  <%- if @view.resourceName.present? || @view.row_identifier.present? -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+      <%= t('screens.about.permanent_links') %>
+    </a>
+    <dl class="sectionContent">
+      <dt><%= t('screens.about.resource_name') %></dt>
+      <dd><span class="hardWrap"><%= @view.resourceName.present? ? @view.resourceName : t('screens.about.none') %></span></dd>
+      <dt><%= t('screens.about.row_identifier') %></dt>
+      <dd>
+        <%= @view.row_identifier.present? ? @view.row_identifier : t('screens.about.none') %>
+      </dd>
+    </dl>
+  </div>
+  <%- end -%>
+<%- end -%>
+
+<%- view_meta = @view.merged_metadata['custom_fields'] -%>
+<%- if !view_meta.blank? -%>
+  <%- merge_custom_metadata(@view).each do |fieldset| -%>
+    <%- if (fieldset.fields || []).any? { |field| (view_meta[fieldset.name] || {})[field.name].present? } %>
+      <div class="formSection">
+        <a class="expander expanded formHeader" href="#expand">
+          <span class="icon"></span>
+          <%= fieldset.name %>
+        </a>
+        <%- existing_fields = (view_meta &&
+            view_meta.assoc(fieldset.name)) ?
+            view_meta.assoc(fieldset.name)[1] : {} -%>
+
+        <dl class="sectionContent">
+          <%- (fieldset.fields || []).each do |field| -%>
+            <%- unless existing_fields[field.name].blank? -%>
+              <dt><%= field.displayName || field.name %></dt>
+              <dd><span class="wrap">
+                  <%= raw(auto_link(h(existing_fields[field.name])|| '',
+                      :html => { :rel => 'nofollow noreferrer external' })) %>
+              </span></dd>
+            <%- end -%>
+          <%- end -%>
+        </dl>
+      </div>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>
+
+<%- if !CurrentDomain.feature?("disable_owner_contact") && (current_user.nil? || (current_user.id != @view.owner.id)) -%>
+  <div class="formSection">
+    <a href="#expand" class="expander expanded formHeader">
+      <span class="icon"></span>
+      <%= t('screens.about.actions') %>
+    </a>
+    <div class="flash"></div>
+    <dl class="sectionContent contactOwnerLinks">
+      <dt class="widenedItem">
+      <%= link_to t('screens.about.flag_dataset'), local_assigns[:static_links] ?
+        contact_dataset_path(@view) : '#flag',
+        :class => 'contactButton', 'data-select' => '' %>
+      </dt>
+      <dd>&nbsp;</dd>
+      <dt class="widenedItem">
+      <%= link_to t('screens.about.contact_dataset_owner'), local_assigns[:static_links] ?
+        contact_dataset_path(@view) : '#contact',
+            {:class => 'contactButton', 'data-select' => 'other'} %>
+      </dt>
+      <dd>&nbsp;</dd>
+    </dl>
+  </div>
+<%- end -%>
+
+  <% #For now datasync is gated to superadmins, hopefully will be added for publisher and above soon  %>
+  <%- if current_user && current_user.is_superadmin? && @view.dataset? -%>
+  <div class="formSection">
+    <a class="expander expanded formHeader" href="#expand">
+      <span class="icon"></span>
+       <%= t('screens.about.datasync_status') %>
+    </a>
+    <%= render :partial => 'datasync_links' %>
+  </div>
+  <%- end -%>
+
+</div>

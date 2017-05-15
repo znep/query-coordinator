@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!--[if IE 8]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>" lang="<%= I18n.locale %>"
+        xmlns:og="http://opengraphprotocol.org/schema/" class="ie ie8 noBorderRadius noLinearGradient noCss3"><![endif]-->
+<!--[if gte IE 9]>
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>"
+        xmlns:og="http://opengraphprotocol.org/schema/" lang="<%= I18n.locale %>" class="ie"><![endif]-->
+<!--[if !IE]>-->
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>" lang="<%= I18n.locale %>"
+        xmlns:og="http://opengraphprotocol.org/schema/"><!--<![endif]-->
+
+<!--
+Powered by Socrata Publica
+http://www.socrata.com
+-->
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <%= meta_tags @meta unless @meta.blank? %>
+
+  <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png?<%= asset_revision_key %>"/>
+
+  <%= rendered_stylesheet_tag 'base' %>
+
+  <%= jquery_include %>
+  <%= javascript_error_helper_tag %>
+
+  <%= yield :head %>
+
+</head>
+
+<body>
+  <div class="skip-links">
+    <a href="#content">Skip to main content</a>
+    <%- if render_site_chrome? -%><a href="#site-chrome-footer">Skip to footer links</a><%- end -%>
+    <%- if render_legacy_chrome? -%><a href="#footerLinks">Skip to footer links</a><%- end -%>
+    <%= yield :skip_links %>
+  </div>
+
+  <div class="siteOuterWrapper">
+    <div class="siteInnerWrapper">
+
+      <div id="siteHeader" class="clearfix">
+      </div>
+
+      <a name="content"  tabindex="-1"></a>
+      <%= yield :layout %>
+
+    </div>
+  </div>
+
+  <div id="siteFooter">
+    <a name="footerLinks"  tabindex="-1"></a>
+  </div>
+
+  <%#
+  Better to load JS at the bottom:
+  http://developer.yahoo.com/performance/rules.html#js_bottom
+  %>
+
+  <script type="text/template" id="templates">
+    <%= render :partial => 'shared/control_templates' %>
+    <%= yield :templates %>
+
+    <%= modal :id => 'jqmAlert' do %>
+      <h2>Alert</h2>
+      <p class="alertMessage"></p>
+      <div class="finishButtons">
+        <a href="#close" class="button jqmClose">Close</a>
+      </div>
+    <%- end -%>
+  </script>
+  <div id="js-appended-templates" style="display: none" aria-hidden="true"></div>
+
+  <%= include_webpack_bundle 'open-data/base.js' %>
+
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.configuration');
+    blist.rights = { user: <%= raw UserRights.to_h.to_json %>, view: <%= raw ViewRights.to_h.to_json %> };
+
+    (function ($)
+    {
+        var loggedInCookie = $.cookies.get('logged_in');
+        if (loggedInCookie && loggedInCookie == "true")
+        {
+            $('#siteHeader .siteUserNav').addClass('loggedInNav');
+        }
+    })(jQuery);
+  </script>
+
+  <div id="modals">
+    <%= yield :modals %>
+  </div>
+
+  <%= yield :js_footer %>
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+@import 'lib/variables';
+
+html {
+  font-size: 10px;
+
+  body {
+    background-color: aliceblue;
+    overflow-y: scroll;
+
+    .application-error-container {
+      position: relative;
+      display: block;
+      margin: 10vh auto;
+      width: 50%;
+      min-width: 48rem;
+      max-width: 64rem;
+      min-height: 32rem;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 0.25rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      box-sizing: content-box;
+
+      .application-error-status-code {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        left: 0;
+        top: 0;
+        font-size: 14rem;
+        font-weight: 200;
+        text-align: center;
+        color: #f4f4f4;
+      }
+
+      .application-error-title {
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        font-size: 6rem;
+        font-weight: 200;
+        text-align: center;
+        color: #686868;
+      }
+
+      .application-error-image {
+        position: relative;
+        display: block;
+        width: 100%;
+        background-color: #eee;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .application-error-description {
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        font-size: 2rem;
+        font-weight: 200;
+        text-align: center;
+        color: #888;
+      }
+    }
+
+    .application-error-login-notice {
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.6rem;
+      color: #696969;
+      background-color: #f3f3f3;
+      -webkit-font-smoothing: antialiased;
+
+      a, a:visited {
+        color: #2279a6;
+      }
+    }
+  }
+}

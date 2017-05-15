@@ -1,0 +1,133 @@
+<div class="gridListWrapper a11y-version">
+  <table class="gridList georegions-table" cellspacing="0">
+    <colgroup>
+      <col class="name" />
+      <col class="status" />
+      <%- if render_actions -%>
+      <col class="default" />
+      <col class="date-added" />
+      <col class="edit-action" />
+      <%- end -%>
+    </colgroup>
+    <thead>
+    <tr>
+      <th class="name"><div><%= t("#{prefix}.region_name") %></div></th>
+      <th class="status"><div><%= t("#{prefix}.enabled?") %></div></th>
+      <%- if render_actions -%>
+      <th class="default">
+        <div>
+          <%= t("#{prefix}.default_georegions", :count => count, :limit => limit) %>
+          <span class="icon-info" title='<%= t("#{prefix}.default_georegions_flyout") %>'></span>
+        </div>
+      </th>
+      <th class="date-added"><div><%= t("#{prefix}.date_added") %></div></th>
+      <th class="edit-action"><div><%= t("#{prefix}.actions") %></div></th>
+      <%- end -%>
+    </tr>
+    </thead>
+    <tbody>
+    <%- jobs.each do |job| -%>
+      <tr class="item">
+        <td class="name"><%= job['jobParameters']['name'] %></td>
+        <td class="status" colspan="<%= render_actions ? 4 : 1  %>">
+          <span class="status-icon-progress" aria-hidden="true" role="presentation"></span>
+          <span class="row-status-widget-label is-progress">
+            <%=  t("#{prefix}.status_progress") %>
+            <br>
+            <span class="substatus"><%= t("#{prefix}.substatus_progress") %></span>
+          </span>
+        </td>
+      </tr>
+    <%- end -%>
+    <%- georegions.each do |georegion| -%>
+      <tr class="item">
+        <td class="name"><%= georegion.name %></td>
+        <td class="status">
+          <span
+            class="<%= georegion.enabled? ? 'status-icon-enabled icon-check' : 'status-icon-disabled icon-failed' %>"
+            aria-hidden="true"
+            role="presentation"></span>
+          <span class="row-status-widget-label <%= georegion.enabled? ? 'is-enabled' : 'is-disabled'%>">
+            <%=  t(georegion.enabled? ? "#{prefix}.status_enabled" : "#{prefix}.status_disabled") %>
+          </span>
+          <%- if georegion.enabled? -%>
+            <%= form_button(
+                  { :action => :disable_georegion, :id => georegion.id }.merge(request.query_parameters),
+                  t("#{prefix}.disable"),
+                  { :method => :put },
+                  {
+                    'class' => 'button',
+                    'data-action' => 'disable',
+                    'aria-label' => t("#{prefix}.disable_label")
+                  }) %>
+          <%- else -%>
+            <%= form_button(
+                  { :action => :enable_georegion, :id => georegion.id }.merge(request.query_parameters),
+                  t("#{prefix}.enable"),
+                  { :method => :put },
+                  {
+                    'class' => 'button',
+                    'data-action' => 'enable',
+                    'aria-label' => t("#{prefix}.enable_label")
+                  }) %>
+          <%- end -%>
+        </td>
+        <td class="default">
+          <%- if georegion.default? -%>
+            <%= form_checkbox_button({
+                  :url_opts => {
+                    :action => :set_georegion_default_status,
+                    :id => georegion.id,
+                    :default_flag => 'undefault'
+                  }.merge(request.query_parameters),
+                  :id => "default-#{georegion.id}",
+                  :disabled => false, # never disabled when set as default
+                  :checked => true, # always checked when set as default
+                  :title => t("#{prefix}.undefault"),
+                  :button_opts => { 'data-action' => 'default' } }) %>
+          <%- else -%>
+            <%= form_checkbox_button({
+                  :url_opts => {
+                      :action => :set_georegion_default_status,
+                      :id => georegion.id,
+                      :default_flag => 'default'
+                    }.merge(request.query_parameters),
+                  :id => "default_#{georegion.id}",
+                  :disabled => !allow_defaulting || !georegion.enabled?, # disabled depending on limit
+                  :checked => false, # unchecked when not set as default
+                  :title => allow_defaulting ? t("#{prefix}.default") : t("#{prefix}.default_georegions_limit", :limit => limit),
+                  :button_opts => { 'data-action' => 'default' } }) %>
+          <%- end -%>
+        </td>
+        <td class="date-added">
+          <span><%= long_date_span(georegion.datetime_added) %></span>
+        </td>
+        <td class="edit-action">
+          <%= form_button(
+                { :action => :configure_boundary, :id => georegion.id },
+                t("#{prefix}.edit"),
+                { :method => :get },
+                {
+                  'class' => 'button',
+                  'data-action' => 'edit',
+                  'aria-label' => t("#{prefix}.edit_label")
+                }) %>
+        </td>
+      </tr>
+    <%- end -%>
+    <%- failed_jobs.each do |job| -%>
+      <tr class="item">
+        <td class="name"><%= job['latest_event']['info']['jobParameters']['name'] %></td>
+        <td class="status" colspan="<%= render_actions ? 4 : 1  %>">
+          <span class="status-icon-failed icon-failed" aria-hidden="true" role="presentation"></span>
+          <span class="row-status-widget-label is-failed">
+            <%=  t("#{prefix}.status_failed") %>
+            <br>
+            <span class="substatus"><%= t("#{prefix}.substatus_failed_html", code: job['id']) %></span>
+          </span>
+        </td>
+      </tr>
+    <%- end -%>
+    </tbody>
+  </table>
+</div>

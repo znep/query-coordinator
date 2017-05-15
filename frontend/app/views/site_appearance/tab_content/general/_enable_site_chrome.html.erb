@@ -1,0 +1,31 @@
+<section class="settings-group">
+  <div class="settings-form full">
+    <h6><%= t('screens.admin.site_appearance.tabs.general.activation.select_where') %></h6>
+    <%= site_appearance_radio_button(
+      'site_appearance',
+      'entire_site',
+      t('screens.admin.site_appearance.tabs.general.activation.entire_site'),
+      selected: site_appearance_on_entire_site_or_default_state
+    ) %>
+    <%= site_appearance_radio_button(
+      'site_appearance',
+      'all_pages_except_home',
+      t('screens.admin.site_appearance.tabs.general.activation.all_pages_except_home'),
+      selected: @site_appearance.on_all_pages_except_home_page?
+    ) %>
+    <%= site_appearance_radio_button(
+      'site_appearance',
+      'revert_site_chrome',
+      t('screens.admin.site_appearance.tabs.general.activation.revert_html').html_safe,
+      disabled: !@site_appearance.activated?,
+      selected: @site_appearance.reverted?
+    ) %>
+    <%- unless @site_appearance.activated? -%>
+      <%# This hidden input is enabled when the user clicks the Activate button %>
+      <input id="enable_activation" type="hidden" name="activation" value="true" disabled="disabled" />
+    <%- end -%>
+  </div>
+  <aside class="full">
+    <p><%= t('screens.admin.site_appearance.tabs.general.activation.primer_included') %></p>
+  </aside>
+</section>

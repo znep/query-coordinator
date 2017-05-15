@@ -1,0 +1,46 @@
+<div class="aboutDataset_contact">
+  <div class="contactOwnerFormWrapper">
+    <%= form_tag(url_for({:controller => 'datasets', :action => "validate_contact_owner"}),
+      :class => 'contactOwnerForm') do %>
+      <%= hidden_field_tag 'method', 'flag' %>
+      <div class="lined">
+        <div><label for="contactPurpose" class="required"><%= t('screens.ds.dataset_contact.form.purpose') %></label></div>
+        <select id="contactPurpose" name="type">
+          <%= options_for_select(
+              [[t('screens.ds.dataset_contact.form.purposes.prompt'), ''],
+               [t('screens.ds.dataset_contact.form.purposes.copyright_violation'), 'copyright_violation'],
+               [t('screens.ds.dataset_contact.form.purposes.offensive_content'), 'offensive_content'],
+               [t('screens.ds.dataset_contact.form.purposes.spam'), 'spam'],
+               [t('screens.ds.dataset_contact.form.purposes.personal_information'), 'personal_information'],
+               [t('screens.ds.dataset_contact.form.purposes.other_purpose'), 'other']], '') -%>
+        </select>
+      </div>
+
+      <div class="lined">
+        <label for="contactSubject"><%= t('screens.ds.dataset_contact.form.subject') %></label>
+        <textarea id="contactSubject" name="subject"></textarea>
+      </div>
+
+      <div class="lined">
+        <div><label for="contactBody" class="required"><%= t('screens.ds.dataset_contact.form.message') %></label></div>
+        <textarea id="contactBody" name="message"></textarea>
+      </div>
+
+      <div class="lined">
+        <div><label for="fromAddress" class="required"><%= t('screens.ds.dataset_contact.form.email') %></label></div>
+        <p><%= t('screens.ds.dataset_contact.form.email_prompt') %></p>
+        <input id="fromAddress" name="from_address" type="text" value="<%= current_user.email unless (current_user.nil? || current_user.email.nil?) %>"/>
+      </div>
+      <div class="recaptcha_flash flash"></div>
+      <%= render :partial => 'accounts/captcha', :locals => { :div_id => 'contactCaptcha' } %>
+
+      <%- if local_assigns[:static_links] -%>
+      <%= submit_tag('Send', :class => 'button default') %>
+      <%- else -%>
+        <a href="#submit" class="button sendContactButton"><%= t('screens.ds.dataset_contact.form.send_button') %></a>
+      <%- end -%>
+      <a href="<%= local_assigns[:static_links] ? alt_view_path(@view) : '#cancel' %>"
+        class="button cancelContactButton contactButton"><%= t('core.dialogs.cancel') %></a>
+    <% end %>
+  </div>
+</div>

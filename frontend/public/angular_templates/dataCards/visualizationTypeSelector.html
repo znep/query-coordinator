@@ -1,0 +1,96 @@
+<h3 class="visualization-type-selector-title">{{::'customizeCardDialog.visualizationOptions.title' | I18n}}</h3>
+<ul class="visualization-types">
+  <li ng-show="availableCardTypes.indexOf('timeline') > -1">
+    <button
+      class="visualization-type icon-line-chart"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'timeline' }"
+      ng-click="setCardType('timeline', $event)"
+      data-visualization-name="timelineChart"></button>
+    <span>{{::'common.cards.timelineChart' | I18n}}</span>
+  </li>
+  <li ng-show="availableCardTypes.indexOf('search') > -1">
+    <button
+    class="visualization-type icon-search"
+    ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'search' }"
+    ng-click="setCardType('search', $event)"
+    data-visualization-name="searchCard"></button>
+    <span>{{::'common.cards.searchCard' | I18n}}</span>
+  </li>
+  <li ng-show="availableCardTypes.indexOf('feature') > -1">
+    <button
+      class="visualization-type icon-map"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'feature' }"
+      ng-click="setCardType('feature', $event)"
+      data-visualization-name="featureMap"></button>
+    <span>{{::'common.cards.featureMap' | I18n}}</span>
+  </li>
+  <li ng-show="availableCardTypes.indexOf('column') > -1">
+    <button
+      class="visualization-type icon-bar-chart"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'column' }"
+      ng-click="setCardType('column', $event)"
+      data-visualization-name="columnChart">
+        <span class="icon-warning" ng-show="showCardinalityWarning"></span>
+    </button>
+    <span>{{::'common.cards.columnChart' | I18n}}</span>
+  </li>
+  <li ng-show="availableCardTypes.indexOf('histogram') > -1">
+    <button
+      class="visualization-type icon-distribution"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram' }"
+      ng-click="setCardType('histogram', $event)"
+      data-visualization-name="distributionChart">
+        <span class="icon-warning" ng-show="showHistogramColumnChartWarning"></span>
+    </button>
+    <span>{{::'common.cards.distributionChart' | I18n}}</span>
+  </li>
+  <li ng-show="availableCardTypes.indexOf('choropleth') > -1">
+    <button
+      class="visualization-type icon-region"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'choropleth' }"
+      ng-click="setCardType('choropleth', $event)"
+      data-visualization-name="choropleth">
+    </button>
+    <span>{{::'common.cards.choropleth' | I18n}}</span>
+  </li>
+</ul>
+
+<div class="curated-region-selector" ng-show="showCuratedRegionSelector">
+  <span>{{'common.by' | I18n}}</span>
+  <span class="soc-select faux-disabled" ng-show="showNoRegions">{{::'addCardDialog.noAvailableBoundaries' | I18n}}</span>
+  <span class="soc-select" ng-show="showSingleRegion">{{allCuratedRegions[0].name}}</span>
+  <soc-select ng-model="selectedCuratedRegion" ng-show="showMultipleRegions">
+    <soc-option
+      ng-bind="curatedRegion.name"
+      ng-repeat="curatedRegion in computedCuratedRegions"
+      ng-selected="curatedRegion.view.id === selectedCuratedRegion && selectedCuratedRegion"
+      ng-show="computedCuratedRegions.length"
+      value="{{curatedRegion.view.id}}">
+    </soc-option>
+    <soc-option
+      ng-if="showNonComputedSection && showRegionDivider"
+      disabled="disabled">
+    </soc-option>
+    <soc-option
+      ng-if="showNonComputedSection"
+      ng-bind-html="nonComputedSectionTitle"
+      ng-show="nonComputedCuratedRegions.length"
+      disabled="disabled">
+    </soc-option>
+    <soc-option
+      ng-bind="curatedRegion.name"
+      ng-disabled="!enableNonComputedSection"
+      ng-if="showNonComputedSection"
+      ng-repeat="curatedRegion in nonComputedCuratedRegions"
+      ng-selected="curatedRegion.view.id === selectedCuratedRegion && selectedCuratedRegion"
+      ng-show="nonComputedCuratedRegions.length"
+      value="{{curatedRegion.view.id}}">
+    </soc-option>
+  </soc-select>
+</div>
+
+<div
+  class="curated-region-info-message"
+  ng-show="showInfoMessage && showCuratedRegionSelector"
+  ng-bind-html="informationMessage">
+</div>

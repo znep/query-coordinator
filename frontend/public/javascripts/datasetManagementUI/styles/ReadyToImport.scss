@@ -1,0 +1,61 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.footerBtn {
+  min-width: 120px;
+  margin-left: 12px;
+}
+
+.errorsBtn {
+  composes: btn from global;
+  composes: btn-default from global;
+  composes: footerBtn;
+  margin-left: 2em !important;
+}
+
+.readyToImport {
+  &>p {
+    display: inline-block;
+    margin: 0px 0.5em 0px 1em;
+  }
+
+
+  .importableRows {
+    color: $primary-text;
+    font-weight: 600;
+  }
+
+  .errorRows {
+    color: $error-text;
+    font-weight: 600;
+    margin-left: 0.2em;
+  }
+}
+
+.errorsHelp {
+  padding-left: 7px;
+  color: $light-grey-1;
+  font-size: 17px;
+  display: inline-block;
+}
+.errorsHelp:hover {
+  padding-left: 7px;
+  color: $light-grey-1;
+  font-size: 17px;
+  display: inline-block;
+}
+
+.helpModalIcon {
+  composes: socrata-icon-question from global;
+  color: $light-grey-1;
+  &:hover {
+    color: $primary-base;
+    cursor: pointer;
+  }
+}
+
+.errorsHelpFlyout {
+  composes: flyout from global;
+  composes: flyout-hidden from global;
+}

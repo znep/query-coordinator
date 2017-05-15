@@ -1,0 +1,39 @@
+<div id="<%= widget.elem_id %>" class="feedWidget clearfix"></div>
+
+<%- needs_view_js(widget.main_view.id, widget.main_view) -%>
+
+<%- content_for :js_footer do -%>
+  <%- allow_once do -%>
+    <%= include_webpack_bundle 'open-data/feed-list.js' %>
+  <%- end -%>
+
+  <script type="text/javascript">
+    // activator for feed widget <%= widget.elem_id %>
+    $(function()
+    {
+        var targetSelector = '#<%= widget.elem_id %>';
+        var options = <%= safe_json(widget.js_opts) %>;
+        Dataset.createFromViewId('<%= widget.main_view.id %>', function(mainView)
+        {
+            options.mainView = mainView;
+
+            var $feedListTemplate = $.renderTemplate('feedList');
+
+            mainView.getComments(function(comments)
+            {
+                $(targetSelector)
+                    .append($feedListTemplate)
+                    .find('.feed')
+                        .feedList($.extend({}, options, { comments: comments }));
+            });
+
+        });
+    });
+  </script>
+<%- end -%>
+
+<%- allow_once do -%>
+  <%- content_for :templates do -%>
+    <%= render :partial => 'templates/feed', :locals => { :allow_comments => widget.properties.allowComments } %>
+  <%- end -%>
+<%- end -%>

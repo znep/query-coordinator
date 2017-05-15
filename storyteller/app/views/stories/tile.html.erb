@@ -1,0 +1,36 @@
+<div class="tile-container theme-<%= @tile_properties[:theme] %>">
+  <div class="tile typeset">
+
+    <h1 class="tile-title"><%= @tile_properties[:title] %></h1>
+
+    <% if @tile_properties[:image].present? %>
+      <div class="tile-image" style="background-image: url('<%= @tile_properties[:image] %>');'"></div>
+    <% else %>
+      <div class="tile-image"></div>
+    <% end %>
+
+    <p class="tile-description <%= 'hidden' if @tile_properties[:description].blank? %>">
+      <%= @tile_properties[:description] %>
+    </p>
+    <p class="tile-no-description <%= 'hidden' if @tile_properties[:description].present? %>">
+      <%= t('tile.no_description_label') %>
+    </p>
+
+    <div class="tile-link-container">
+      <p class="tile-link">
+        <%= t('tile.read_more_prompt') %>
+        <a
+          href="<%= @tile_properties[:url] %>"
+          title="<%= "#{t('tile.read_more_prompt')}#{@tile_properties[:url]}" %>"
+          target="_blank">
+          <%= @tile_properties[:url] %>
+        </a>
+      </p>
+    </div>
+
+    <div class="tile-loading">
+      <div class="tile-loading-spinner"></div>
+    </div>
+
+  </div>
+</div>

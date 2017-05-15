@@ -1,0 +1,19 @@
+{
+  "results": [
+    {
+      "id" : "funs-bear",
+      "screen_name" : "Funshine Bear",
+      "email" : "funshine.bear@care.alot",
+      "role_name" : "bear"
+    },
+    {
+      "id" : "good-bear",
+      "email" : "good.luck.bear@care.alot"
+    }
+  ],
+  "resultSetSize": 2,
+  "timings": {
+    "serviceMillis": 1023,
+    "searchMillis": [0, 12]
+  }
+}

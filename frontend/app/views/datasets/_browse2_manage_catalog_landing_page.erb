@@ -1,0 +1,34 @@
+<%- unless cookies['hide-clp-manager'] %>
+<div class="alert info browse2-manage-catalog-landing-page">
+  <%-
+    activation_params = { controller: :catalog_landing_page, action: :manage }.
+      merge(params.only(*CatalogLandingPage.valid_params)).
+      merge(custom_path: params[:custom_path])
+    activation_params.merge!(custom_path: '/browse') if CatalogLandingPage.special_case_browse?(request)
+  %>
+  <div class="close-action manage-clp-hide-action">
+    <i id="socrata-icon-close" class="socrata-icon-close"></i>
+  </div>
+  <span class="header"><%= t('catalog_landing_page.activation.header') %></span>
+  <%= t('catalog_landing_page.activation.explanation') %>:
+  <%= link_to(
+    t('catalog_landing_page.activation.action'),
+    activation_params,
+    :class => 'manage-clp-activate-action') %>
+
+  <div class="clp-help-wrapper">
+    <% help_flyout = content_tag(:span, nil, :class => 'socrata-icon-question', :id => 'clp-help-toggle') %>
+
+    <%= link_to(help_flyout,
+      'https://support.socrata.com/hc/en-us/articles/115005683108',
+      :target => :_blank,
+      :data => { :flyout => 'clp-help-flyout' }) %>
+
+    <div id="clp-help-flyout" class="flyout flyout-right flyout-hidden">
+      <section class="flyout-content">
+        <p><%= t('catalog_landing_page.activation.whats_this') %></p>
+      </section>
+    </div>
+  </div>
+</div>
+<%- end %>

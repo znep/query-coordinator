@@ -1,0 +1,131 @@
+manage-lens-dialog {
+  section {
+    label {
+      display: inline-block;
+      line-height: 29px;
+      margin-right: 0.5rem;
+    }
+    .contents {
+      .flavor-text {
+        margin: 1rem 0;
+        line-height: 1.5em;
+        position: relative;
+        .icon-warning {
+          position: absolute;
+          right: 100%;
+          top: 0;
+          line-height: inherit;
+          margin-right: 1.5rem;
+        }
+      }
+    }
+    soc-select select {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+  }
+
+  section.provenance {
+    margin-bottom: 2rem;
+    input.view-provenance-checkbox {
+      height: 0.8rem;
+    }
+
+    label.view-provenance-label {
+      font-weight: bold;
+    }
+  }
+
+  section.ownership {
+    margin-bottom: 2rem;
+    .ownership-input {
+      outline: none;
+      padding: 0.5rem 1rem;
+      width: 15rem;
+    }
+    .icon-warning {
+      display: inline-block;
+      margin-left: 0.5rem;
+    }
+    .tool-panel.suggestion-tool-panel {
+      display: block;
+    }
+    .tool-panel.suggestion-tool-panel .tool-panel-main {
+      top: 20px;
+    }
+  }
+
+  section.sharing {
+    margin-bottom: 2rem;
+    .shares {
+      .share {
+        margin-bottom: .75rem;
+        .share-user {
+          line-height: 29px;
+          &.pending-removal {
+            text-decoration: line-through;
+          }
+        }
+        .share-remove-button {
+          font-size: .75rem;
+          margin-left: 1rem;
+        }
+      }
+      .add-new-shares-prompt {
+        position: relative;
+        margin-bottom: 1rem;
+        .icon-info {
+          position: absolute;
+          top: -1px;
+          font-size: 1.2rem;
+        }
+        .message {
+          padding-left: 1.5rem;
+        }
+      }
+      .manage-lens-dialog-add-shares {
+        margin-bottom: 1.5rem;
+      }
+    }
+    .row.description {
+      margin-bottom: 1rem;
+    }
+    .inherited-share {
+      margin-bottom: .75rem;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    .share-user {
+      display: block;
+      padding-right: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  section.visibility {
+    .invisible {
+      visibility: hidden;
+    }
+    .with-private-dataset {
+      margin-top: 0.25rem;
+    }
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .controls {
+    margin-top: 0;
+    text-align: right;
+
+    .unsaved-changes-message {
+      display: inline-block;
+      line-height: 35px;
+      margin-right: 1em;
+    }
+  }
+}

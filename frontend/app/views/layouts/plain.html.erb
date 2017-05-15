@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>" lang="<%= I18n.locale %>">
+
+<!--
+Powered by Socrata Publica
+http://www.socrata.com
+-->
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+  <%= site_chrome_meta_viewport_tag %>
+  <%= site_chrome_analytics_tags %>
+  <%= site_chrome_stylesheet_tag %>
+
+  <%= yield :head %>
+</head>
+
+<body>
+  <%- if render_site_admin_chrome? -%>
+    <%== site_chrome_admin_header(request, response, size: 'small') %>
+  <%- end -%>
+
+  <%= yield :layout %>
+
+  <%= jquery_include %>
+  <%= site_chrome_javascript_tag %>
+</body>
+</html>

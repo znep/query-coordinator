@@ -1,0 +1,10 @@
+<dl class="sectionContent">
+  <dt>Documentation</dt>
+  <dd><%= link_to nil, "http://socrata.github.io/datasync/resources/checking-log.html" %></dd>
+
+  <dt>Current sync status</dt>
+  <dd><%= link_to 'JSON', "/datasync/id/#{@view.id}/status/index.json" %> | <%= link_to 'Text', "/datasync/id/#{@view.id}/status/" %></dd>
+
+  <dt>Datasync Logs</dt>
+  <dd><%= link_to 'JSON', "/datasync/id/#{@view.id}/log/index.json" %> | <%= link_to 'Text', "/datasync/id/#{@view.id}/log/" %></dd>
+</dl>

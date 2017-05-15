@@ -1,0 +1,118 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-connectors' %>
+  <title><%= t('screens.admin.connector.title') %> | <%= get_site_title %></title>
+<% end %>
+
+<%= render 'left_nav' %>
+
+<%= include_webpack_bundle 'admin/admin-edit-connector.js' %>
+
+<div id="connector-content" class="contentBox withLeftNavigation">
+
+  <div class="adminHeader connectors">
+    <h1><%= t('screens.admin.connector.edit_connector') %>:
+      <span><%= @server.display_name %></span>
+    </h1>
+    <%= display_standard_flashes %>
+    <div class="connector-list-go-back">
+      <%= link_to(
+        t('screens.admin.connector.back_to_connector_list'),
+        :controller => '/administration/connector',
+        :action => 'connectors'
+      ) %>
+    </div>
+  </div>
+
+  <div class="selective-connection">
+    <%= form_tag({:action => 'update_connector'}, :method => 'post', :class => 'commonForm') %>
+      <div class="connection-type">
+        <span class="title"><%= t('screens.admin.connector.connection_type') %>:</span>
+        <span class="type"><%= t("screens.admin.connector.#{@server.type_key}") %></span>
+      </div>
+      <h2><%= t('screens.admin.connector.sync_policy') %></h2>
+      <div class="edit-connector-form flexbox-space-between">
+        <% if esri_arcgis? %>
+          <div class="flexbox-left-section">
+            <fieldset class="line">
+              <legend><span class="accessibility"><%= t('screens.admin.connector.connection_type') %></span></legend>
+              <div class="valueBox inline-value">
+                <input type="radio" id="dataConnectAll" class="server-sync"
+                  name="server[sync_type]" value="data"
+                  <%= @server.data_connect_all? ? 'checked="checked"' : '' %> />
+                <label for="dataConnectAll">
+                  <%= t('screens.admin.connector.data_connect_all') %>
+                </label>
+              </div>
+              <div class="valueBox inline-value">
+                <input type="radio" id="federateAll" class="server-sync"
+                  name="server[sync_type]" value="catalog"
+                  <%= @server.federate_all? ? 'checked="checked"' : '' %> />
+                <label for="federateAll">
+                  <%= t('screens.admin.connector.catalog_connect_all') %>
+                </label>
+              </div>
+              <div class="valueBox inline-value">
+                <input type="radio" id="connectSome" class="server-sync"
+                  name="server[sync_type]" value="ignored"
+                  <%= @server.federate_all? || @server.data_connect_all? ? '' : 'checked="checked"' %> />
+                <label for="connectSome">
+                  <%= t('screens.admin.connector.some_assets') %>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="line clearfix flexbox-right-section">
+            <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button inline-button" />
+            <div class="save-connector-spinner"><span class="icon"></span></div>
+          </div>
+        <% else %>
+          <div class="flexbox-left-section">
+            <fieldset class="line">
+              <legend class="accessibility"><%= t('screens.admin.connector.connection_type') %></legend>
+              <div class="valueBox inline-value">
+                <input type="radio" id="federateAll" class="server-sync"
+                  name="server[sync_policy]" value="all"
+                  <%= @server.federate_all? ? 'checked="checked"' : '' %> />
+                <label for="federateAll"><%= t('screens.admin.connector.all_assets') %></label>
+              </div>
+              <div class="valueBox inline-value">
+                <input type="radio" id="federateSome" class="server-sync"
+                  name="server[sync_policy]" value="existing"
+                  <%= @server.federate_all? ? '' : 'checked="checked"' %> />
+                <label for="federateSome"><%= t('screens.admin.connector.some_assets') %></label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="line clearfix flexbox-right-section">
+            <div class="flexbox-upper-right">
+              <%= connector_type_hidden_field_tag %>
+              <input type="submit" value=<%=t('screens.admin.connector.save')%> class="button inline-button" />
+              <div class="save-connector-spinner"><span class="icon"></span></div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <fieldset class="line">
+        <legend>
+          <span class="accessibility"><%= t('screens.admin.connector.update_selections') %></span>
+        </legend>
+
+        <div class="filter-assets">
+          <label for="searchBox" class="accessibility"><%= t('screens.admin.connector.search') %></label>
+          <input type="text" title="<%= t('screens.admin.connector.search') %>" class="textPrompt searchBox prompt" id="searchBox" />
+        </div>
+
+        <%= if esri_arcgis?
+          render 'esri_tree'
+        else
+          render 'catalog_federator_list'
+        end %>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<%= render_admin_qualtrics %>
+<%= render_translations LocalePart.screens.admin.connector %>

@@ -1,0 +1,25 @@
+.adminList {
+  padding: 1.5em;
+  li {
+    @include admin-header-icons;
+    margin-bottom: 2em;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    a {
+      font-size: 1.7em;
+      font-weight: bold;
+      line-height: 32px;
+      .icon {
+        float: left;
+        margin-right: 0.5em;
+      }
+    }
+    .description {
+      color: #999999;
+      display: block;
+      font-size: 1.2em;
+      margin-top: 0.5em;
+    }
+  }
+}

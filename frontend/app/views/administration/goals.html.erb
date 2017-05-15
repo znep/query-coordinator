@@ -1,0 +1,18 @@
+<% content_for :head do %>
+  <%= render_feature_flags_for_javascript %>
+  <script type="text/javascript">
+    window.strings = <%== CurrentDomain.strings.to_json %>;
+    window.translations = <%== LocaleCache.render_translations([LocalePart.from_array(['govstat'])])['govstat'].to_json %>
+  </script>
+  <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css" />
+  <title><%= t('govstat.admin.page_title') %> | <%= get_site_title %></title>
+<% end %>
+
+<div id="app"></div>
+
+<%= render_admin_session_data %>
+<%= render_admin_server_config %>
+<%= render_mixpanel_config %>
+
+<%= include_webpack_bundle 'admin-goals/main.js' %>

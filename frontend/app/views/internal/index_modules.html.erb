@@ -1,0 +1,54 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal' %>
+<title>Modules | Internal Panel | <%= get_site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <div class='content'>
+
+    <h1>All Modules:</h1>
+
+    <%- if @modules.nil? || @modules.size <= 0 -%>
+      <p>No modules found.</p>
+    <%- else -%>
+      <%= form_tag "/internal/modules/bulk", :class => 'wide' do %>
+        <div class='line'>
+          <label><strong>Module</strong></label>
+          <%- @tiers.each do |tier| -%>
+          <span class='cell'><a href="/internal/tiers/<%= tier.name %>">
+              <%= tier.name %>
+          </a></span>
+          <%- end -%>
+        </div>
+        <%- @modules.each do |mod| -%>
+        <div class='line'>
+          <label><%= mod.name %></label>
+          <%- @tiers.each do |tier| -%>
+          <%- enabled = tier.has_module?(mod.name) -%>
+          <span class='cell'><input type="checkbox"
+            name="modules[<%= mod.name %>][<%= tier.name %>]"
+            <%= enabled ? 'checked="checked"': '' %> /></span>
+          <%- end -%>
+        </div>
+        <% end %>
+        <input type="submit" value="Update" />
+      <%- end -%>
+
+      <h2>Add a module</h2>
+      <%= form_tag "/internal/modules" do %>
+        <div class='line'>
+          <label>Name:</label>
+          <input type="text" name="mod[name]" />
+        </div>
+        <div class='line'>
+          <label>Description:</label>
+          <input type="text" name="mod[description]" />
+        </div>
+        <input type="submit" value="Add"/>
+      <%- end -%>
+    <%- end -%>
+
+  </div>
+</div>

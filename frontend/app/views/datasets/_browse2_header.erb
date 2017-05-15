@@ -1,0 +1,7 @@
+<div class="browseHeader">
+  <%- [:counter, :search].each do |option| -%>
+    <%- if opts[:header_config][option] -%>
+      <%= render "datasets/browse_#{option}", :opts => opts %>
+    <%- end -%>
+  <%- end -%>
+</div>

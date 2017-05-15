@@ -1,0 +1,14 @@
+{
+  "globals": {
+    "describe": true,
+    "it": true,
+    "sinon": true,
+    "assert": true,
+    "before": true,
+    "after": true,
+    "beforeEach": true,
+    "afterEach": true,
+    "xdescribe": true,
+    "xit": true
+  }
+}

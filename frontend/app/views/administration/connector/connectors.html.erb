@@ -1,0 +1,79 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-connectors' %>
+  <title><%= t('screens.admin.connector.title') %> | <%= get_site_title %></title>
+<% end %>
+
+<%= render 'left_nav' %>
+
+<div id="connector-content" class="contentBox withLeftNavigation">
+
+  <div class="adminHeader connectors floating">
+    <h1><%= t('screens.admin.connector.title') %></h1>
+    <div class="connector-top-page-button-area">
+      <div class="buttonArea">
+        <%= link_to(
+          t('screens.admin.connector.add_new'),
+          :new_connector,
+          :class => "button",
+          :title => t('screens.admin.connector.add_connector')
+        )%>
+      </div>
+    </div>
+  </div>
+
+  <%= display_standard_flashes %>
+
+  <% if @esri_connectors.blank? && @catalog_federator_connectors.blank? %>
+    <p class="noResultsMessage"> <%= t('screens.admin.connector.no_connectors') %> </p>
+  <% else %>
+    <div class="gridListWrapper">
+    <table class="gridList templatesList" cellspacing="0">
+      <colgroup>
+        <col class="name" />
+        <col class="federatedAssets" />
+        <col class="status" />
+        <col class="endedAt" />
+        <col class="actions" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="domain" scope="col"><span><%= t('screens.admin.connector.connector') %> </span></th>
+          <th class="source" scope="col"><span><%= t('screens.admin.connector.type') %> </span></th>
+          <th class="federatedAssets" scope="col">
+            <span>
+              <%= t('screens.admin.connector.discovered_assets') %>
+            </span>
+          </th>
+          <th class="federatedAssets" scope="col">
+            <span>
+              <%= t('screens.admin.connector.connected_assets') %>
+            </span>
+          </th>
+          <th class="status" scope="col">
+            <span>
+              <%= t('screens.admin.connector.current_status') %>
+            </span>
+          </th>
+          <th class="endedAt" scope="col">
+            <span>
+              <%= t('screens.admin.connector.last_synced') %>
+            </span>
+          </th>
+          <th class="actions" scope="col">
+            <span>
+              <%= t('screens.admin.connector.actions') %>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render 'esri_connectors' if @esri_connectors.present? %>
+        <%= render 'catalog_federator_connectors' if @catalog_federator_connectors.present? %>
+      </tbody>
+    </table>
+  </div>
+  <%- end -%>
+</div>
+
+<%= render_admin_qualtrics %>

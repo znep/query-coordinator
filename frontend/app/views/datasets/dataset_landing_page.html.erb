@@ -1,0 +1,72 @@
+<% content_for :head do %>
+  <title><%= @view.name %> | <%= get_site_title %></title>
+  <link rel="canonical" href="<%= view_path(@view) %>" />
+
+  <meta name="description" content="<%= meta_description %>">
+  <meta name="page_name" content="Primer">
+
+  <%= rendered_stylesheet_tag("dataset-landing-page") %>
+
+  <link rel="stylesheet" href="/stylesheets/socrata-visualizations/socrata-visualizations.css"/>
+  <link rel="canonical" href="<%= view_path(@view) %>" />
+<% end %>
+
+<div class="dataset-landing-page">
+  <div id="app">
+
+    <%# Info pane skeleton %>
+    <div class="info-pane result-card">
+      <div class="container">
+        <div class="entry-header dataset-landing-page-header">
+          <div class="entry-title"><h1 class="info-pane-name"></h1></div>
+          <div class="entry-actions"></div>
+        </div>
+        <div class="entry-content">
+          <div class="entry-main">
+            <div class="entry-description-container" style="min-height: 70px;">
+              <div class="entry-description">&nbsp;</div>
+            </div>
+          </div>
+          <div class="entry-meta second">
+            <div class="entry-meta updated">
+              <span class="meta-title">&nbsp;</span>
+              <span class="date">&nbsp;</span>
+            </div>
+
+            <% if @view.attribution %>
+              <div class="entry-meta views">
+                <span class="meta-title">&nbsp;</span>
+                <span class="attribution">&nbsp;</span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-spinner">
+      <div class="spinner-default spinner-large"></div>
+    </div>
+  </div>
+
+  <div id="dynamic-content"></div>
+</div>
+
+<% content_for :scripts do %>
+  <%= render_dataset_landing_page_translations %>
+
+  <%= render_dataset_landing_page_session_data %>
+  <%= render_dataset_landing_page_server_config %>
+
+  <script>
+    var initialState = {
+      view: <%= raw @dataset_landing_page_view.to_json %>,
+      relatedViews: <%= raw @related_views.to_json %>,
+      featuredContent: <%= raw @featured_content.to_json %>
+    };
+  </script>
+
+  <%= include_webpack_bundle 'dataset-landing-page/main.js' %>
+
+  <script src="https://www.google.com/recaptcha/api.js?render=explicit" async></script>
+<% end %>

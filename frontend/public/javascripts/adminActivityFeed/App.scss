@@ -1,0 +1,84 @@
+@import 'app/styles/styleguide-colors';
+
+.siteContentWrapper {
+  padding: 0;
+  font-size: 10px;
+}
+
+.loading-in-progress {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 100%;
+  z-index: 51;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.server-error {
+  width: 100%;
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+
+  div {
+    margin-top: 10px;
+  }
+
+  i {
+    margin-left: 15px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+}
+
+button.button-as-link {
+  font-size: 12px;
+  line-height: 24px;
+  color: $primary-text;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: $dark-grey-1;
+  font-size: 13px;
+
+  li {
+    list-style: none;
+  }
+  .line-title {
+    font-weight: 600;
+  }
+}
+
+.modal-footer .btn {
+  height: 28px;
+  width: 76px;
+  font-size: 13px;
+  font-weight: 300;
+  padding: 5px;
+
+  &.btn-default {
+    color: $dark-grey-3;
+    border: 1px solid $light-grey-2;
+  }
+
+  &.btn-primary {
+    color: $white;
+    border: 1px solid $primary-base;
+  }
+}
+
+.restore-modal-link {
+  cursor: pointer;
+}
+
+.restored-dataset {
+  color: $dark-grey-1;
+  font-style: italic;
+}

@@ -1,0 +1,24 @@
+.datasetManagementUi {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+
+  section {
+    padding: 1em;
+  }
+
+  :global {
+    section.modal-content {
+      padding: 0;
+    }
+
+    .edit-bar {
+      position: static;
+      width: 100%;
+      z-index: auto;
+      span.page-name {
+        width: 100%;
+      }
+    }
+  }
+}

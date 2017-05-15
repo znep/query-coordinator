@@ -1,0 +1,439 @@
+@import 'lib/open-sans-font';
+@import 'lib/variables';
+@import 'tool-classes';
+
+html {
+  font-family: "Open Sans", "Helvetica", sans-serif;
+  font-size: 10px;
+  overflow-y: scroll;
+
+  body#story-edit {
+    min-width: 768px;
+  }
+}
+
+// 100    Extra Light or Ultra Light
+// 200    Light or Thin
+// 300    Book or Demi
+// 400    Normal or Regular
+// 500    Medium
+// 600    Semibold, Demibold
+// 700    Bold
+// 800    Black, Extra Bold or Heavy
+// 900    Extra Black, Fat, Poster or Ultra Black
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: $body-bg-color;
+}
+
+a {
+  color: $link-color;
+}
+
+.header-main {
+  @include unselectable();
+  @include clearfix();
+
+  position: fixed;
+  width: 100%;
+  height: $header-height;
+  left: 0;
+  top: 0;
+  font-size: 15px;
+  color: $header-text-color;
+  background-color: $header-bg-color;
+  box-shadow: 0 0 0.3rem $header-box-shadow-color;
+  box-sizing: content-box;
+  z-index: $site-header-z-index;
+  min-width: 73rem; // current point where header would bump to line 2
+
+  .open-performance-enabled & {
+    top: $site-chrome-admin-header-small-height;
+  }
+
+  .moving & {
+    display: none;
+  }
+
+  .header-right {
+    display: inline-block;
+    float: right;
+    line-height: $header-height;
+    font-size: 1.5rem;
+    font-weight: 100;
+  }
+
+  .menu-divider {  // line divider
+    height: 3.2rem;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+    border-left: 1px solid #6B6B6B;
+  }
+
+  .link-header {
+    display: inline-block;
+    margin: 0 1em;
+    max-width: $header-title-max-width;
+    height: 5.5rem;
+    line-height: 5.5rem;
+    color: $header-story-title-color;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border: none;
+    background-color: transparent;
+
+    &:hover,
+    &:active {
+      color: $header-story-title-hover-color;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .story-title {
+    font-weight: 600;
+  }
+
+  // Buttons
+  .btn-transparent {
+    color: $header-story-title-color;
+    background-color: transparent;
+    font-weight: lighter;
+    display: inline-block;
+    line-height: normal;
+    padding: 0.8rem 1.5rem;
+    height: 100%;
+    box-sizing: border-box;
+    transition: none;
+
+    &:hover,
+    &:active {
+      color: $header-story-title-hover-color;
+      background-color: transparent;
+    }
+
+    &:disabled {
+      color: $header-btn-disabled-color;
+    }
+  }
+
+  .undo-btn,
+  .redo-btn {
+    padding: 0 0.3rem;;
+    font-size: 1.9rem;
+    position: relative;
+    top: 3px;
+  }
+
+  .redo-btn {
+    margin-right: 1.2rem;
+  }
+
+  .preview-btn {
+    &.disabled {
+      color: $header-btn-disabled-color;
+    }
+
+    span {
+      margin-left: 3px;
+      position: static;
+    }
+  }
+
+  .settings-panel-btn {
+    display: block;
+    float: left;
+    width: $header-height;
+    height: 100%;
+    color: $settings-panel-btn-color;
+    font-size: 3.5rem;
+    line-height: $header-height;
+    text-align: center;
+    background-color: #e0e0e0;
+    border: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    border-bottom: solid 1px #aaa;
+
+    &:hover,
+    &:focus {
+      outline: none;
+      color: #555;
+    }
+
+    &:before {
+      text-align: center;
+      font-size: 3.8rem;
+    }
+  }
+
+  .panel-btn, .status-indicator {
+    padding: 0.8rem 1.5rem;
+  }
+
+  .panel-btn {
+    &.active {
+      color: $header-text-color;
+      background-color: $header-link-hover-bg-color;
+    }
+
+    &:disabled {
+      color: darken($header-text-color, 40%);
+    }
+  }
+
+  // Status Indicators
+  .status-indicator {
+    color: $header-text-color;
+    background-color: transparent;
+    font-weight: lighter;
+
+    display: inline-block;
+    cursor: default;
+    vertical-align: middle;
+  }
+
+  #story-publication-status {
+    color: $header-publication-status-color;
+  }
+
+  #story-saving-indicator {
+    color: darken($header-text-color, 40%);
+  }
+}
+
+#site-chrome-admin-header {
+  // site-chrome defaults to 9999, but
+  // we'd prefer it to fit our z-index scaling.
+  z-index: 13;
+}
+
+#story-save-error-bar, #downtime-notice-bar {
+  display: inline-flex;
+  position: fixed;
+  top: 6rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  line-height: 1.4;
+  font-size: 1.5rem;
+  z-index: $story-save-error-z-index;
+  transition: opacity $transition-duration;
+  opacity: 0;
+  pointer-events: none;
+  padding: 0.4rem 1rem;
+  color: $story-save-error-bar-icon-color;
+  background: $story-save-error-bar-background;
+  border: 1px solid $story-save-error-bar-border-color;
+  border-left: none;
+  border-right: none;
+
+  .open-performance-enabled & {
+    top: calc(6rem + #{$site-chrome-admin-header-small-height});
+  }
+
+  &.visible {
+    opacity: 1;
+  }
+
+  .container {
+    display: inline-flex;
+    margin: auto;
+    pointer-events: all;
+
+    .message {
+      color: $story-save-error-bar-color;
+      padding: 0 0.6rem;
+
+      span + a {
+        margin-left: 5px;
+      }
+    }
+
+    .spinner-default {
+      display: none;
+      margin: auto;
+    }
+
+    &.story-save-error-bar-trying-again {
+      .available {
+        display: none;
+      }
+
+      .spinner-default {
+        display: inline-block;
+      }
+    }
+  }
+}
+
+#story-save-error-bar {
+  min-height: $story-save-error-bar-reserved-height;
+}
+
+#downtime-notice-bar {
+  min-height: $downtime-notice-bar-reserved-height;
+  a {
+    color: $story-save-error-bar-color;
+    cursor: pointer;
+  }
+}
+
+input[type="text"], textarea {
+  &:disabled {
+    background-color: $input-disabled-background-color;
+    color: $input-disabled-color;
+    cursor: not-allowed;
+  }
+}
+
+#create-story-title-input {
+  width: 100%;
+  font-size: 2rem;
+}
+
+#create-story-submit-btn {
+  position: relative;
+  display: block;
+  width: 50%;
+  font-size: 2rem;
+  margin: 0 auto;
+}
+
+ul.quick-action-menu {
+  li, ul {
+    display: inline-block;
+    height: $header-height;
+    vertical-align: top;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+.message-warning {
+  color: $empty-story-warning-font-color;
+  font-size: $empty-story-message-font-size;
+  font-weight: bold;
+  padding-top: 40px;
+  text-align: center;
+}
+
+.warning-bar {
+  border: solid 1px $warning-bar-border-color;
+  background-color: $warning-bar-background-color;
+  padding: 1.1rem;
+  font-size: 1.5rem;
+  color: $warning-bar-color;
+  line-height: 1.25;
+
+  &::after {
+    content: '';
+    display: table;
+    clear: left;
+  }
+
+  p {
+    float: left;
+    box-sizing: border-box;
+
+    &:first-child {
+      width: $warning-bar-icon-width;
+      font-size: $warning-bar-icon-font-size;
+      color: $warning-bar-icon-color;
+    }
+
+    &:last-child {
+      width: calc(100% - #{$warning-bar-icon-width});
+      padding-top: 0.1rem;
+    }
+  }
+}
+
+.alert.info {
+  font-size: 1.5rem;
+  background-color: $alert-info-background-color;
+  border: solid 1px $alert-info-border-color;
+  color: $alert-info-color;
+  margin-left: 3rem;
+  margin-right: 3rem;
+  margin-top: 5px;
+  padding: 0.75rem;
+  padding-bottom: 0.9rem;
+
+  a {
+    color: $alert-info-anchor-color;
+  }
+
+  [class^="socrata-icon-"] {
+    color: $alert-info-icon-color;
+    margin-right: 4px;
+  }
+}
+
+#authoring-workflow {
+  line-height: 1.618; // Styleguide expects this.
+
+  .nav-tabs {
+    margin-bottom: 24.27px;
+  }
+
+  // FIXME Styleguide - expected for AX controls
+  button, input, keygen, select, textarea {
+    line-height: 1.25;
+  }
+}
+
+#site-chrome-admin-header {
+  .moving & {
+    display: none;
+  }
+}
+
+#moving-cancel-header {
+  display: none;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: $header-bg-color;
+  cursor: pointer;
+  z-index: $site-header-z-index;
+
+  .moving & {
+    display: inline-flex;
+  }
+
+  span {
+    margin: auto;
+    color: white;
+  }
+
+  .moving-cancel-header-text {
+    margin-left: 4px;
+    font-size: 15px;
+  }
+
+  .moving-cancel-header-icon {
+    display: inline-block;
+    margin-right: 4px;
+    font-size: 15px;
+  }
+}
+
+// Developer mode Rack Mini Profiler.
+// Positioned under the header.
+.profiler-results {
+  top: 92px !important;
+  z-index: 10 !important;
+}

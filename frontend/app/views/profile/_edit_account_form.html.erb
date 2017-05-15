@@ -1,0 +1,113 @@
+<div class="editAccountInfoForm editForm">
+  <h1><%= t('screens.profile.edit.account.title') %></h1>
+
+  <%= display_standard_flashes %>
+  <%= form_tag(update_account_profile_url, :method => 'put',
+       :class => 'commonForm',
+       :id => 'editAccountForm') do %>
+    <div class="editArea">
+      <%- unless current_user.flag?('nopassword') -%>
+        <div class="editSection clearfix">
+          <div class="line clearfix">
+            <div class="label"><%= t('screens.profile.edit.account.current_email') %></div>
+            <span class="field textItem"><%= current_user.email %></span>
+          </div>
+          <div class="line clearfix">
+            <label for="user_email"><%= t('screens.profile.edit.account.new_email') %></label>
+            <%= text_field_tag('user[email]', '', :class => 'textPrompt email') %>
+          </div>
+          <div class="line clearfix">
+            <label for="user_email_confirm"><%= t('screens.profile.edit.account.confirm_email') %></label>
+            <%= text_field_tag('user[email_confirm]', '', :class => 'textPrompt email') %>
+          </div>
+          <div class="line clearfix">
+            <label for="user_email_password"><%= t('screens.profile.edit.account.password') %></label>
+            <%= password_field_tag('user[email_password]', '') %>
+            <span class="fieldHint textItem">
+              <%= t('screens.profile.edit.account.password_prompt') %>
+            </span>
+          </div>
+        </div>
+      <%- end -%>
+
+      <div class="editSection clearfix">
+        <div class="line clearfix<%= ' noPassword hide' if current_user.flag?('nopassword') %>">
+          <label for="user_password_old"><%= t('screens.profile.edit.account.old_password') %></label>
+          <%= password_field_tag('user[password_old]', '', :class => 'currentPassword') %>
+        </div>
+        <div class="line clearfix">
+          <label for="user_password_new"><%= t('screens.profile.edit.account.new_password') %></label>
+          <%= password_field_tag('user[password_new]', '', :class => 'newPassword') %>
+          <span class="fieldHint textItem passwordHint about">
+            <%= t('screens.profile.edit.account.password_restrictions_html') %>
+          </span>
+        </div>
+        <div class="line clearfix">
+          <label for="user_password_confirm"><%= t('screens.profile.edit.account.confirm_password') %></label>
+          <%= password_field_tag('user[password_confirm]', '', :class => 'confirmPassword') %>
+        </div>
+      </div>
+
+      <%- if CurrentDomain.module_enabled?(:openid_login) && FeatureFlags.derive(@view, request).show_auth0_identifiers -%>
+        <%- auth0_identifiers = current_user.auth0_identifiers -%>
+        <div class="editSection clearfix">
+          <div class="line clearfix">
+            <span class="field textItem">
+              <%= t('screens.profile.edit.account.sso_identifiers') %>
+            </span>
+          </div>
+
+          <%- if auth0_identifiers.empty? -%>
+            <div class="line clearfix">
+              <span class="field emptyItem"><%= t('screens.profile.edit.account.no_auth0id') %></span>
+            </div>
+          <%- else -%>
+            <%- auth0_identifiers.each do |ident| -%>
+              <div class="line clearfix">
+                <%= label_tag "auth0id_delete_list[#{ident.identifier}]", 'Delete' %>
+                <span class="field textItem">
+                  <%= check_box_tag "auth0id_delete_list[#{ident.identifier}]" %>
+                  <%= hidden_field_tag "auth0id_delete_paths[#{ident.identifier}]", ident.delete_path %>
+                  <%= ident.identifier %>
+                </span>
+              </div>
+            <%- end -%>
+          <%- end -%>
+        </div>
+      <%- end -%>
+
+      <div class="editSection clearfix">
+        <div class="line clearfix">
+          <div class="label"><%= t('screens.profile.edit.account.email.title') %></div>
+          <span class="textItem">
+            <%= t('screens.profile.edit.account.email.subtitle') %>
+          </span>
+        </div>
+        <%- EmailInterest.specification.sort {|a, b| a.last[:description] <=> b.last[:description]}.each do |interest| -%>
+          <%- next if interest.last[:right] && !current_user.has_right?(interest.last[:right]) -%>
+          <div class="line emailInterestLine clearfix">
+            <div class="spacer"></div>
+            <%= check_box_tag("email_interests[#{interest.first}]", true, @email_interests.any? { |i| i.eventTag == interest.first }) %>
+            <label class="description" for="email_interests_<%= interest.first %>"><%= t("screens.profile.edit.account.email.interests.#{interest.last[:description]}") %></label>
+          </div>
+        <%- end -%>
+        <div class="line emailSubscribeLine clearfix">
+          <div class="spacer"></div>
+          <%= check_box_tag('user[email_subscribe]', true, !current_user.emailUnsubscribed) %>
+          <label for="user_email_subscribe" class="description">
+            <%= t('screens.profile.edit.account.email.interests.user_affected') %>
+          </label>
+          <p><%= t('screens.profile.edit.account.email.policy', site: CurrentDomain.strings.company) %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="submitLine">
+      <%= submit_tag t('core.dialogs.save'), :class => 'button default' %>
+      <%= link_to t('core.dialogs.cancel'), profile_path(current_user), :class => 'button' %>
+    </div>
+  <% end %>
+</div>
+
+<% content_for :js_footer do %>
+<% end %>

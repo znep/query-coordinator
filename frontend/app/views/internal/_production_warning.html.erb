@@ -1,0 +1,6 @@
+<%- case editing_this_page_is_dangerous? -%>
+<%- when :child_domains -%>
+  <div class="flash notice">Danger, Will Robinson! You are currently editing a domain with children. Your actions may have consequent effects on other domains which are its children.</div>
+<%- when :short_name -%>
+  <div class="flash notice">Danger, Will Robinson! You are currently editing the default production domain.</div>
+<%- end -%>

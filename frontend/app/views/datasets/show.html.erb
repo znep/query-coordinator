@@ -1,0 +1,287 @@
+<% content_for :head do %>
+  <%- if @view.is_tabular? -%>
+    <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+  <%- end -%>
+  <%= rendered_stylesheet_tag 'base-control-third-party' %>
+  <%= rendered_stylesheet_tag 'dataset-show' %>
+
+  <%- if is_mobile? -%>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+  <%- end -%>
+
+  <title><%= h(@view.name) %> | <%= get_site_title %></title>
+  <link rel="canonical" href="<%= data_grid_path(@view) %>"/>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%- unless @view.new_backend? -%>
+    <%= link_to 'Go to an accessible version of this page', alt_view_path(@view) %>
+  <%- end -%>
+
+  <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) -%>
+    <%= link_to 'Edit the metadata of this dataset', edit_view_metadata_path(@view) %>
+  <%- end -%>
+<% end %>
+
+<%= display_standard_flashes %>
+
+<%- sidebar_position = CurrentDomain.property(:position, :sidebar) || 'right' -%>
+<%- default_pane = CurrentDomain.property(:default_pane, :sidebar) -%>
+
+<% content_for :dataset_actions do %>
+  <div id="actionBox" class="clearfix">
+    <ul id="toolbarOptions" class="clearfix">
+      <%- if @view.is_published? && !@view.is_api? -%>
+      <li>
+        <ul id="shareOptions">
+          <%- if @view.is_public? && @view.is_tabular? -%>
+            <li class="subscribe">
+              <a class="subscribe" href="#subscribe" title="<%= t('screens.ds.bar.subscribe_prompt') %>">
+              <span class="icon"><%= t('screens.ds.bar.subscribe') %></span></a>
+            </li>
+          <%- end -%>
+          <%- socialize_menu_options(@view).each_pair do |network, data| %>
+          <li><a class="<%= network %>" rel="external" title="<%= t("screens.ds.bar.share_#{network}") %>" href="<%= data['href'] %>">
+            <span class="icon"><%= t("screens.ds.bar.share_#{network}") %></span></a></li>
+          <%- end %>
+          <%-
+          # See comment on implementation in `application_helpers.rb`
+          if user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
+          -%>
+            <li><a class="email" href="#email" title="<%= t('screens.ds.bar.share_email') %>">
+              <span class="icon"><%= t('screens.ds.bar.share_email') %></span></a></li>
+          <%- end -%>
+        </ul>
+      </li>
+      <%- end -%>
+      <li>
+        <%- if @view.available_display_types.length > 1 -%>
+        <ul id="renderTypeOptions" class="pillButtons">
+
+          <%- url_types = {'fatrow' => 'richList'} -%>
+          <%- @view.available_display_types.clone.
+            push('template').each do |type| -%>
+            <%- view_type_link_title = t('screens.ds.bar.view_type', type: t("screens.ds.bar.view_types.#{type}")) -%>
+          <li><a
+            href="<%= view_path(@view, defaultRender: url_types[type] || type) %>"
+            class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
+            title="<%= view_type_link_title %>">
+            <span class="icon"><%= view_type_link_title %></span>
+          </a></li>
+          <%- end -%>
+
+        </ul>
+        <%- end -%>
+      </li>
+      <%- if @view.is_tabular? && !@view.is_form? -%>
+      <li>
+        <form id="searchForm" action="#">
+          <span class="icon"></span>
+          <input type="text" class="searchField textPrompt" title="<%= t('screens.ds.bar.find_prompt') %>" value="<%= params[:q] %>"/>
+          <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
+          <input type="hidden" name="inDatasetSearch" value="true" />
+        </form>
+      </li>
+      <%- end -%>
+    </ul>
+  </div>
+
+  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="<%= t('screens.ds.bar.full_screen') %>">
+    <span class="icon"><%= t('screens.ds.bar.full_screen') %></span>
+  </a>
+
+  <div id="actionBar" class="clearfix position-<%= sidebar_position %>">
+    <%- if @view.can_modify_data? -%>
+    <div id="editBar" class="clearfix">
+      <ul id="editOptions">
+        <li><a href="#Undo" class="button undo" title="<%= t('screens.ds.bar.format.undo') %>">
+          <span class="icon"><%= t('screens.ds.bar.format.undo') %></span>
+        </a></li>
+        <li><a href="#Redo" class="button redo" title="<%= t('screens.ds.bar.format.redo') %>">
+          <span class="icon"><%= t('screens.ds.bar.format.redo') %></span>
+        </a></li>
+      </ul>
+
+      <div id="formatOptions" class="disabled">
+        <ul>
+          <li><%= format_link_tag('bold') %></li>
+          <li><%= format_link_tag('underline') %></li>
+          <li><%= format_link_tag('italic') %></li>
+          <li><%= format_link_tag('strike') %></li>
+          <li><%= format_link_tag('bullet') %></li>
+          <li><%= format_link_tag('number') %></li>
+          <li><%= format_link_tag('link') %></li>
+          <li><%= select_tag('format_fontFamily', font_select_options('Helvetica'), :class => 'fontFamily') %></li>
+          <li><%= select_tag('format_fontSize', font_size_select_options(12), :class => 'fontSize') %></li>
+          <li>
+            <div class="menu color">
+              <a class="menuButton color" title="<%= t('screens.ds.bar.format.color') %>" href="#color">
+                <span class="colorIcon colorIndicator"></span><span class="icon"></span>
+              </a>
+            </div>
+          </li>
+          <li><div class="align menu alignLeft"></div></li>
+        </ul>
+      </div>
+    </div>
+    <%- end -%>
+
+    <div class="sidebarOptionsContainer clearfix">
+      <ul id="sidebarOptions" class="clearfix">
+        <li><%= sidebar_link('edit') %></li>
+        <li><%= sidebar_link('manage') %></li>
+        <li><%= sidebar_link('moreViews') %></li>
+        <li><%= sidebar_link('filter', include_alert_icon = true) %></li>
+        <li><%= sidebar_link('visualize') %></li>
+        <li><%= sidebar_link('export') %></li>
+        <li><%= sidebar_link('discuss') %></li>
+        <li><%= sidebar_link('embed') %></li>
+        <li><%= sidebar_link('about') %></li>
+        <li class="hide"><%= sidebar_link('more') %></li>
+      </ul>
+    </div>
+  </div>
+<% end %>
+<%= render :partial => 'dataset_bar', :locals => {:sidebar_position => sidebar_position} %>
+
+<div class="outerContainer" role="main">
+  <div id="renderTypeContainer" class="innerContainer">
+    <div class="aboutLoad">
+      <%= render :partial => 'about_dataset' %>
+      <%- if !@view.new_backend? && @view.is_tabular? && !@view.is_form? && @view.display.data_valid? -%>
+        <%# SEO links for individual rows %>
+        <%- next_index = !@row_index.nil? ? (@row_index+1) : 0 -%>
+        <a href="<%= view_path(@view, row_index: next_index) %>" class="rowLink">
+          <%= next_index == 0 ? 'First' : 'Next' %> row
+        </a>
+      <%- end -%>
+    </div>
+    <div class="viewErrorContainer">
+      <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) -%>
+      <div class="viewError"><%= @view.display.invalid_message %></div>
+      <ul class="invalidActions">
+        <li>
+          <a href="#Edit" class="editView button">Edit View</a>
+        </li>
+        <%- if @view.has_rights?(ViewRights::DELETE_VIEW) -%>
+        <li>
+          <a href="#Remove" class="removeView button">Delete View</a>
+        </li>
+        <%- end -%>
+      </ul>
+      <%- else -%>
+      <div class="viewError">This view cannot be displayed</div>
+      <%- end -%>
+    </div>
+
+    <div class="staticRenderType fullHeight renderTypeNode">
+      <%= render(:partial => @view.display.render_partial) if @view.display.render_partial %>
+    </div>
+
+    <%- if ( @view.is_tabular? || @view.is_geo? ) && !@view.is_form? -%>
+      <%= render :partial => 'templates/fatrow' %>
+      <%= render :partial => 'templates/page_render_type' %>
+    <%- end -%>
+  </div>
+
+  <div id="gridSidebar">
+    <a class="close" href="#close"><span class="icon">Close</span></a>
+  </div>
+</div>
+
+<% content_for :templates do %>
+<%= render(:partial => 'templates/grid_sidebar') %>
+<%= render(:partial => 'show_hide_template') %>
+<%= render :partial => 'column_order_template' %>
+<div class="embedForm">
+  <%= render :partial => 'embed_form', :locals => { :view => @view, :cur => 'root',
+             :customization_id => (CurrentDomain.user_can?(current_user, UserRights::EDIT_SDP) ? nil : CurrentDomain.default_widget_customization_id) } %>
+</div>
+<div class="printForm">
+  <%= render :partial => 'print_form', :locals => { :view => @view } %>
+</div>
+<%= render :partial => 'downloads_table_template' %>
+<%= render :partial => 'templates/feed', :locals => { :allow_comments => @view.module_enabled?(:allow_comments) } %>
+<%= render :partial => 'flag_message' %>
+<%= render :partial => 'sharing' %>
+<%= render :partial => 'permissions' %>
+<%= render :partial => 'api_access' %>
+<%= render :partial => 'odata_access' %>
+<%= render :partial => 'templates/fatrow_header' %>
+<%= render :partial => 'data_lens_pane' %>
+<div class="editAlertTemplate">
+  <div class="editAlert">
+    <p class="editMessage">
+      <%= @view.is_immutable? ?
+            t('screens.ds.dataset_status.immutable') :
+            t('screens.ds.dataset_status.needs_copy') %>
+    </p>
+    <p class="copyingMessage"><%= t('screens.ds.dataset_status.copy_in_progress') %></p>
+    <p class="doneCopyingMessage hide"><%= t('screens.ds.dataset_status.copy_available') %></p>
+    <a href="#Unpublished" class="button editPublished"><%= t('screens.ds.dataset_status.edit_dataset_button') %></a>
+    <p class="errorMessage hide"><%= t('screens.ds.dataset_status.error_publishing_html') %></p>
+  </div>
+</div>
+<%= render :partial => 'templates/unified_filter' %>
+<%= render :partial => 'append_replace' %>
+<% end %>
+
+<%- content_for :modals do -%>
+
+  <%= render :partial => 'modals/subscribe_dataset' %>
+
+  <%= render :partial => 'modals/email_dataset' %>
+
+  <%= render :partial => 'save_view_dialog' %>
+
+  <%= render :partial => 'modals/select_dataset' %>
+<%- end -%>
+
+<%= render_translations LocalePart.support %>
+<%= render_translations LocalePart.controls.grid %>
+<%= render_translations LocalePart.controls.embed %>
+<%= render_translations LocalePart.screens.ds %>
+<%= render_translations LocalePart.screens.about %>
+<%= render_translations LocalePart.controls.upload_dialog %>
+<%= render_translations LocalePart.controls.editors %>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() { blist.mainSpinner = $('#renderTypeContainer').loadingSpinner({metric: 'main', model: blist.dataset}); });
+
+    <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
+
+    <%- if @row.present? -%>
+      blist.initialRowId = '<%= @row['sid'] %>';
+    <%- end -%>
+
+    blist.sidebarPosition = '<%= sidebar_position %>';
+    blist.defaultPane = '<%= default_pane %>';
+
+    $.extend(blist.configuration, <%= raw json_escape(configuration.to_json) %>);
+
+    blist.sidebarHidden = <%= raw json_escape(sidebar_hidden.to_json) %>;
+
+    <%# Please see admin_controller#add_custom_layer for explanation %>
+    <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first
+        custom_layers = {}
+        ['esri'].each do |map_type|
+          custom_layers[map_type] = custom_layer_config.data['properties'].detect { |property|
+            property['name'] == map_type
+          }['value']
+        end if custom_layer_config
+    -%>
+    <%#blist.custom_layers = JSON.parse($.htmlUnescape("<%= h custom_layers.to_json.gsub(/\\/, '\\\\\\') % >")); -%>
+  </script>
+
+  <%- if @view.is_tabular? -%>
+    <%= include_webpack_bundle 'open-data/shared-editors.js' %>
+  <%- end -%>
+
+  <%= include_webpack_bundle 'open-data/dompurify.js' %>
+  <%= include_webpack_bundle 'open-data/dataset-show.js' %>
+  <script type="text/javascript">
+    if ((typeof moment) !== 'undefined') { moment.lang(blist.locale); }
+  </script>
+
+<% end %>

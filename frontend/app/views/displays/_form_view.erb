@@ -1,0 +1,48 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'display-form' %>
+<% end %>
+
+<form class="formView socrataForm commonForm" method="POST"
+  <%- form_columns = @view.columns.select {|c| c.form_enabled?} -%>
+  <%- if form_columns.any? {|c| c.client_type == 'document' || c.client_type == 'photo'} -%>
+  enctype="multipart/form-data"
+  <%- end -%>
+  <%- success_redirect = @view.display.options.successRedirect -%>
+  <%- def_success_redirect = view_form_success_url(@view) -%>
+  <%- success_redirect = def_success_redirect if success_redirect.blank? -%>
+  data-defaultSuccessRedirect="<%= def_success_redirect %>"
+  action="<%= local_assigns[:prefix] || '' %>/views/<%=
+    @view.id %>/rows.html?method=createForm&successRedirect=<%= CGI.escape(success_redirect) %>">
+  <%- form_columns.each do |c| -%>
+    <%- if (!c.is_linked?) -%>
+      <div class="line clearfix <%= c.client_type %>">
+        <label for="form_field_<%= c.fieldName %>" title="<%= c.name %>"><%= c.name %></label>
+        <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
+      </div>
+    <%- end -%>
+
+  <%- end -%>
+  <div class="submitLine">
+    <input type="submit" value="Submit" />
+  </div>
+  <%- if local_assigns[:show_powered_tag] -%>
+  <a href="http://www.socrata.com/" class="poweredLink"
+    target="_blank">Powered by Socrata</a>
+  <%- end -%>
+</form>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() {
+      var alreadySubmitting = false;
+      $('form.socrataForm').submit(function(evt) {
+        if (alreadySubmitting) {
+          evt.preventDefault();
+          return;
+        }
+        alreadySubmitting = true;
+        $(this).find('.submit.button').addClass('disabled');
+      });
+    });
+  </script>
+<% end %>

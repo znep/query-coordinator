@@ -1,0 +1,11 @@
+<div class="histogram" ng-class="{'has-selection': hasSelection}"></div>
+<load-spinner busy="loading"></load-spinner>
+<div class="visualization-render-error" ng-show="histogramRenderError">
+  <div class="row">
+    <div class="span2"><span class="icon-warning"></span></div>
+    <div class="span10" ng-switch="histogramRenderError">
+      <div ng-switch-when="noData">{{::'distributionChart.errors.noData' | I18n}}</div>
+      <div ng-switch-default>{{::'distributionChart.errors.error' | I18n}}</div>
+    </div>
+  </div>
+</div>

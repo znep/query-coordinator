@@ -1,0 +1,58 @@
+<%= form_tag({:action => 'edit_app_token',
+             :token_id => ((@token.nil? || @token.id.nil?) ? 'new' : @token.id)},
+             {:multipart => true, :class => 'commonForm createNewTokenForm'}) %>
+  <div class="editSection noBorder">
+    <div class="line clearfix">
+      <label for="app_token_name" class="required"><%= t('screens.profile.edit.app_tokens.application_name') %></label>
+      <%= text_field_tag("app_token[name]", @token.name, :class => 'textPrompt required', :maxlength => 100,
+            :title => t('screens.profile.edit.app_tokens.application_name_prompt')) %>
+    </div>
+    <div class="line clearfix">
+      <label for="app_token_description" class="required"><%= t('screens.profile.edit.app_tokens.description') %></label>
+      <%= text_area_tag("app_token[description]", @token.description, :class => 'textPrompt required',
+            :title => t('screens.profile.edit.app_tokens.description_prompt')) %>
+    </div>
+    <div class="line clearfix">
+      <label for="app_token_organization"><%= t('screens.profile.edit.app_tokens.organization') %></label>
+      <%= text_field_tag("app_token[organization]", @token.organization, :class => 'textPrompt', :maxlength => 100,
+            :title => t('screens.profile.edit.app_tokens.organization_prompt')) %>
+    </div>
+    <div class="line clearfix">
+      <label for="app_token_website"><%= t('screens.profile.edit.app_tokens.website') %></label>
+      <%= text_field_tag("app_token[website]", @token.website, :class => 'textPrompt url', :maxlength => 100,
+            :title => t('screens.profile.edit.app_tokens.website_prompt')) %>
+    </div>
+    <div class="line clearfix">
+      <label for="app_token_baseUri"><%= t('screens.profile.edit.app_tokens.callback_prefix') %></label>
+      <%= text_field_tag("app_token[baseUri]", @token.baseUri, :class => 'textPrompt url', :maxlength => 100,
+            :title => t('screens.profile.edit.app_tokens.callback_prefix_prompt')) %>
+      <p><%= t('screens.profile.edit.app_tokens.callback_prefix_help_html') %></p>
+    </div>
+    <div class="line clearfix">
+      <label for="app_token_public"><%= t('screens.profile.edit.app_tokens.public') %></label>
+      <%= check_box_tag 'app_token[public]', 'on', @token.public %>
+    </div>
+    <%# We deprecated app_token thumbnail upload as part of EN-1426.
+         We now only allow you to edit this if you created a thumbnail before the deprecation. %>
+    <%- if !@token.id.nil? && @token.has_thumbnail? -%>
+      <div class="line clearfix">
+        <label><%= t('screens.profile.edit.app_tokens.thumbnail') %></label>
+        <div class="thumbnail thumbnailArea">
+          <img src="<%= @token.thumbnail_url %>" alt="thumbnail" />
+        </div>
+        <span class="flash error thumbnailError"><%= t('screens.profile.edit.validation.image_format') %></span>
+      </div>
+      <div class="line clearfix">
+        <%= file_field_tag('new_image',
+          :accept => 'image/png,image/gif,image/jpeg',
+          'data-endpoint' => @token.set_thumbnail_url(current_user.id),
+          :class => 'uploadAppTokenImage') %>
+        <span class="uploadIndicator"></span>
+      </div>
+    <%- end -%>
+  </div>
+  <div class="submitLine">
+    <%= submit_tag (@token && @token.id ? t('core.dialogs.save') : t('core.dialogs.create')), :class => 'button default' %>
+    <%= link_to(t('core.dialogs.cancel'), {:action => 'edit_app_tokens'}, {:class => 'cancelButton button'}) %>
+  </div>
+</form>

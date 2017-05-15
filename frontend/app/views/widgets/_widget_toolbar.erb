@@ -1,0 +1,56 @@
+<div class="toolbar">
+  <a href="#close" class="close"><span class="icon">Close</span></a>
+  <form class="toolbarSearchForm" action="#">
+    <div class="toolbarMessage"></div>
+    <div class="toolbarTextboxWrapper">
+      <input type="text" class="toolbarTextbox textPrompt"
+        title="Type in your search term and press enter." />
+    </div>
+  </form>
+  <form class="toolbarEmailForm" action="/views/<%= @view.id %>.json?method=sendAsEmail" method="post">
+    <div class="toolbarMessage"></div>
+    <div class="toolbarTextboxWrapper">
+      <input type="text" class="toolbarTextbox textPrompt" required
+        title="Type in recipients' email addresses, separated by commas, and press enter" />
+    </div>
+  </form>
+  <div class="toolbarClosePaneBox">
+    <div class="toolbarClosePaneName"></div>
+  </div>
+  <% cache ['widget-about-box', @view.id], :expires_in => 1.hour do %>
+    <div class="toolbarAboutBox">
+      <dl>
+        <dt>Author</dt>
+        <dd><a href="<%= profile_path(@view.owner) %>"><%= @view.owner.displayName %></a></dd>
+        <dt>Description</dt>
+        <dd><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow noreferrer external' })) || '(none)' %></dd>
+        <%- if @view.category -%>
+          <dt>Category</dt>
+          <dd><%= @view.category_display %></dd>
+        <%- end -%>
+        <%- if @view.tags -%>
+          <dt>Tags</dt>
+          <dd><%= @view.tag_display_string %></dd>
+        <%- end -%>
+        <dt>Rating</dt>
+        <dd><%= stars_control('smallStars datasetAverageRating', @view.averageRating) %></dd>
+        <%- if @view.property_or_default(['attribution']) -%>
+          <dt>Data Provided By</dt>
+          <dd><%= @view.property_or_default(['attribution']) %></dd>
+        <%- end -%>
+        <%- if @view.property_or_default(['attributionLink']) -%>
+          <dt>Source Link</dt>
+          <dd><%= link_to_url(h(@view.property_or_default(['attributionLink'])), :rel => 'nofollow noreferrer external') %></dd>
+        <%- end -%>
+        <%- if @view.property_or_default(['license']) -%>
+          <dt>License</dt>
+          <dd><%== render_license %></dd>
+        <%- end -%>
+        <%- if @view.property_or_default(['termsAndConditions']) -%>
+          <dt>Terms of Use</dt>
+          <dd><span class="wrap"><%= @view.property_or_default(['termsAndConditions']) %></span></dd>
+        <%- end -%>
+      </dl>
+    </div>
+  <% end %>
+</div>

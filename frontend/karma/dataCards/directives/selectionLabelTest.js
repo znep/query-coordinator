@@ -1,0 +1,90 @@
+import { expect, assert } from 'chai';
+const angular = require('angular');
+
+describe('selectionLabel', function() {
+  'use strict';
+
+  var $window;
+  var testHelpers;
+  var $rootScope;
+
+  beforeEach(angular.mock.module('test'));
+  beforeEach(angular.mock.module('dataCards'));
+
+  beforeEach(function() {
+    inject(['$rootScope', '$window', 'testHelpers', function(_$rootScope, _$window, _testHelpers) {
+      $rootScope = _$rootScope;
+      $window = _$window;
+      testHelpers = _testHelpers;
+    }]);
+  });
+
+  afterEach(function() {
+    testHelpers.TestDom.clear();
+  })
+
+  it('should accept a content attribute', function() {
+    var TEST_CONTENT = 'this is my test content';
+    var scope = $rootScope.$new();
+    scope.myTestContent = TEST_CONTENT;
+    var element = testHelpers.TestDom.compileAndAppend(
+      '<selection-label content="myTestContent"></selection-label>', scope);
+    assert.isTrue(element.is(':contains({0})'.format(TEST_CONTENT)));
+    expect(element.isolateScope().content).to.equal(TEST_CONTENT);
+  });
+
+  it('should update its content when the scope changes', function() {
+    var TEST_CONTENT_1 = 'test content one';
+    var TEST_CONTENT_2 = 'my new test content';
+    var scope = $rootScope.$new();
+    scope.content = TEST_CONTENT_1;
+    var element = testHelpers.TestDom.compileAndAppend(
+      '<selection-label content="content"></selection-label>', scope);
+    expect(element.find('.selection-label-inner').text()).to.equal(TEST_CONTENT_1);
+    scope.content = TEST_CONTENT_2;
+    scope.$digest();
+    expect(element.find('.selection-label-inner').text()).to.equal(TEST_CONTENT_2);
+  });
+
+  describe('auto-select', function() {
+    var TEST_CONTENT = 'test content';
+    var scope;
+    var element;
+    var $content;
+
+    beforeEach(function() {
+      scope = $rootScope.$new();
+      scope.content = TEST_CONTENT;
+      element = testHelpers.TestDom.compileAndAppend(
+        '<selection-label content="content"></selection-label>', scope);
+      $content = element.find('.selection-label-inner');
+    });
+
+    it('should select the text on mousedown/mouseup without drag', function() {
+      $content.trigger('mousedown');
+      $content.trigger('mouseup');
+      var selection = $window.getSelection();
+      expect(selection.toString()).to.equal(TEST_CONTENT);
+    });
+
+    it('should not auto-select the test on mousedown/mousedrag/mouseup', function() {
+      $content.
+        trigger('mousedown').
+        trigger('mousemove').
+        trigger('mouseup');
+      var selection = $window.getSelection();
+      expect(selection.toString()).to.equal('');
+    });
+
+    it('should not auto-select the test when scrolling the element', function() {
+      $content.
+        trigger('mousedown').
+        trigger('scroll').
+        trigger('mouseup');
+      var selection = $window.getSelection();
+      expect(selection.toString()).to.equal('');
+    });
+
+  });
+
+});

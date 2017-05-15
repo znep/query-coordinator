@@ -1,0 +1,89 @@
+<div class="embedForm commonForm">
+  <%- if view.is_form? -%>
+  <label for="form_code" class="formHeader"><%= t('controls.embed.form_plain') %></label>
+  <div class="embedCodeWrapper">
+    <%# Explicitly call CGI.escapeHTML, since h() ignores html_safe items, and
+    render generates an html_safe, which seems to be nearly impossible to undo %>
+      <%- form_string = CGI.escapeHTML(render({:partial => 'displays/form_view',
+      :locals => {:prefix => request.protocol + request.host_with_port,
+      :show_powered_tag => true}})) -%>
+      <%= text_area_tag("form_code", form_string, :class => 'htmlCode') %>
+  </div>
+  <div class="divider"><%= t('controls.embed.form_or') %></div>
+  <%- end -%>
+
+  <label for="embed_code" class="formHeader"><%= view.is_form? ?
+    t('controls.embed.form_frame') : t('controls.embed.embed') %></label>
+  <div class="embedCodeWrapper">
+    <textarea id="embed_code" name="embed_code" class="htmlCode"><%=
+      get_publish_embed_code_for_view(view, {:dimensions => { :width => "_width_",
+                                  :height => "_height_" }}, customization_id || '_variation_', cur)
+    %></textarea>
+  </div>
+
+  <div class="privateDatasetMessage flash error hide"><%= t('controls.embed.private_warning') %></div>
+
+  <div class="clearfix">
+    <div class="left">
+      <div class="formHeader"><%= t('controls.embed.size') %></div>
+      <ul class="sectionContent sizes clearfix">
+        <li data-width="500" data-height="425" class="selected">
+          <p>500x425</p>
+          <div class="sizePreview small"></div>
+        </li>
+        <li data-width="760" data-height="646">
+          <p>760x646</p>
+          <div class="sizePreview medium"></div>
+        </li>
+        <li data-width="950" data-height="808">
+          <p>950x808</p>
+          <div class="sizePreview large"></div>
+        </li>
+      </ul>
+    </div>
+    <div class="right">
+      <div class="formHeader"><%= t('controls.embed.custom_size') %></div>
+      <p class="information sizeInformation"><%= t('controls.embed.minimum_size') %></p>
+      <div class="sectionContent dimensions">
+        <div class="line clearfix">
+          <label for="embed_width"><%= t('controls.embed.width') %></label>
+          <div class="inputWrapper textWrapper">
+            <input type="text" id="embed_width" name="embed_width" value="500"/>
+          </div>
+        </div>
+        <div class="line clearfix">
+          <label for="embed_height"><%= t('controls.embed.height') %></label>
+          <div class="inputWrapper textWrapper">
+            <input type="text" id="embed_height" name="embed_height" value="425"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SDP) -%>
+    <div class="templateSection">
+      <div class="formHeader"><%= t('controls.embed.sdp_template') %></div>
+      <div class="sectionContent template">
+        <div class="line clearfix">
+          <label for="embed_template"><%= t('controls.embed.template') %></label>
+          <div class="inputWrapper">
+            <select id="embed_template" name="embed_template">
+              <%= options_from_collection_for_select(
+                    WidgetCustomization.find.reject{ |t| t.hidden }, 'uid', 'name',
+                    CurrentDomain.default_widget_customization_id) %>
+            </select>
+            <input type="hidden" value="<%= CurrentDomain.default_widget_customization_id %>" id="embed_default"/>
+          </div>
+        </div>
+        <div class="line clearfix">
+          <a class="button createTemplateButton"><%= t('controls.embed.create_template_button') %></a>
+        </div>
+      </div>
+    </div>
+  <%- end -%>
+</div>
+
+<% content_for :modals do %>
+  <%= render :partial => 'widgets/new_sdp_template', :locals => { :view_id => view.id } %>
+<% end %>

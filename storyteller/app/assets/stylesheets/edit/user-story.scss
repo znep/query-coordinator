@@ -1,0 +1,325 @@
+@import 'lib/variables';
+
+body.story-save-error .user-story-container {
+  top: $story-save-error-bar-reserved-height;
+}
+
+// This is necessary to prevent double icons from showing up in places where
+// we use the styleguide icons
+// TODO Remove this code when we move to SVG icons (EN-12794)
+.socrata-icon::before {
+  display: none;
+}
+
+.user-story-container {
+  position: relative;
+  display: block;
+  width: 100vw;
+  padding-top: calc(#{$header-height} + #{$user-story-container-vertical-padding} + #{$site-chrome-admin-header-small-height});
+  z-index: $user-story-container-z-index;
+  -webkit-font-smoothing: antialiased;
+
+  .user-story {
+    @include media-query-property(
+      'width',
+      $main-content-width-small,
+      $main-content-width-medium,
+      $main-content-width-large,
+      $main-content-width-extra-large
+    );
+    @include unselectable();
+
+    max-width: 94%;
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    padding: 0;
+    padding-bottom: $user-story-padding-bottom;
+  }
+
+  .moving & .block-edit {
+    &:hover,
+    &.active,
+    &.is-resizing {
+      border: 1px solid transparent;
+    }
+  }
+
+  .block-edit {
+    background-color: $body-bg-color;
+    border: 1px solid transparent;
+
+    &:hover,
+    &.active,
+    &.is-resizing {
+      border: 1px dashed $block-edit-hover-border-color;
+    }
+
+    .block-edit-controls {
+      position: absolute;
+      width: $block-edit-controls-width;
+      height: $block-edit-controls-height;
+      top: -1px;
+      left: -($block-edit-controls-width + 0.1rem);
+      opacity: 0;
+      background-color: $block-edit-controls-bg-color;
+      text-align: center;
+      z-index: $component-edit-controls-z-index;
+
+      &.active {
+        opacity: 1;
+      }
+
+      &.block-edit-controls-without-delete {
+        height: calc(#{$block-edit-controls-width} * 4);
+
+        .block-edit-controls-toggle-presentation-btn {
+          bottom: 0;
+        }
+      }
+
+      .block-edit-controls-move-up-btn,
+      .block-edit-controls-move-down-btn,
+      .block-edit-controls-delete-btn,
+      .block-edit-controls-toggle-presentation-btn {
+        color: $block-edit-controls-fg-color;
+        border-color: transparent;
+        position: relative;
+        display: block;
+        width: $block-edit-controls-width;
+        height: $block-edit-controls-width;
+        line-height: $block-edit-controls-width;
+        padding: 0;
+
+        &:not(.btn-disabled):hover {
+          background-color: $block-edit-controls-hover-color;
+        }
+      }
+
+      .block-edit-controls-toggle-presentation-btn {
+        position: absolute;
+        bottom: $block-edit-controls-width;
+      }
+
+      .block-edit-controls-delete-btn {
+        position: absolute;
+        bottom: 0px;
+        font-size: 1.3rem;
+      }
+
+      .block-edit-controls-presentation-flyout,
+      .block-edit-controls-move-up-flyout,
+      .block-edit-controls-move-down-flyout {
+        opacity: 1;
+        transition: opacity 0.2s ease-in 0.8s;
+
+        &.flyout-hidden {
+          opacity: 0;
+          display: block;
+          visibility: hidden;
+          pointer-events: none;
+        }
+      }
+
+      .block-edit-controls-presentation-flyout {
+        width: 210px;
+        top: 116px;
+        left: 12px;
+      }
+
+      .block-edit-controls-move-up-flyout {
+        width: 125px;
+        top: 36px;
+        left: 12px;
+      }
+
+      .block-edit-controls-move-down-flyout {
+        width: 145px;
+        top: 65px;
+        left: 12px;
+      }
+    }
+
+    .component {
+      position: relative;
+
+      &:hover,
+      &.active {
+        .component-edit-controls-container {
+          opacity: 1;
+        }
+      }
+
+      &.component-hero {
+        .component-edit-move-action-overlay {
+          width: 100vw;
+          margin-left: calc(-50vw + 50%);
+          height: 100%;
+        }
+      }
+
+      &.moving {
+        padding-bottom: 0;
+
+        .component-html,
+        .component-image {
+          .component-edit-move-action-overlay {
+            background-color: transparent;
+          }
+        }
+
+        .component-edit-controls-container,
+        .component-resize-handle {
+          display: none;
+        }
+
+        .component-edit-move-action-overlay {
+          display: flex;
+        }
+
+        &.moving-valid-destination {
+          background: none;
+
+          .component-edit-move-action-overlay {
+            background-color: rgba(255, 255, 255, 0.6);
+            box-shadow: none;
+            border: dashed 2px $alternate-2;
+          }
+
+          .btn-move-place {
+            display: block;
+          }
+        }
+
+        &.moving-source {
+          .component-edit-move-action-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 10px -2px black;
+          }
+
+          .btn-move-cancel {
+            display: block;
+          }
+        }
+      }
+
+      .component-edit-move-action-overlay {
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+        background-color: rgba(255, 255, 255, 0.95);
+
+        .btn {
+          display: none;
+          margin: auto;
+          padding: 9px 48px;
+          font-size: 18px;
+        }
+      }
+
+      .component-edit-controls-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        text-align: center;
+        margin-top: 1rem;
+        margin-right: 1rem;
+        z-index: $component-edit-controls-z-index;
+      }
+
+      .component-edit-controls {
+        .component-edit-controls-edit-btn,
+        .component-edit-controls-kebab-btn {
+          color: $block-edit-controls-fg-color;
+          background-color: $block-edit-controls-bg-color;
+          padding: $component-edit-controls-btn-padding-vertical $component-edit-controls-btn-padding-horizontal;
+          font-size: $component-edit-controls-font-size;
+          border: none;
+          outline: none;
+
+          &:hover {
+            background-color: $block-edit-controls-hover-color;
+          }
+        }
+
+        .component-edit-controls-kebab-btn {
+          border-left: solid 1px #00717c;
+        }
+
+        .picklist {
+          width: 200px;
+          text-align: left;
+          position: absolute;
+          right: 0;
+          top: calc(100% + 1px);
+
+          [class^="socrata-icon"] {
+            margin-right: 4px;
+          }
+        }
+
+        .picklist-option {
+          cursor: pointer;
+        }
+      }
+    }
+
+    &:hover,
+    &.active {
+      z-index: $active-block-edit-z-index;
+    }
+
+    .block {
+      position: relative;
+      margin: 0 $block-edit-controls-width;
+      transition: none;
+      box-sizing: border-box;
+
+      .component-blinder {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .component-html {
+        position: relative;
+
+        iframe {
+          width: 100%;
+          height: 0;
+          min-height: 0;
+          border: 0;
+          overflow: hidden;
+        }
+      }
+
+      .component-image {
+
+        img {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  #story-insertion-hint {
+    @include unselectable();
+
+    position: absolute;
+    display: inline-block;
+    margin: 0 29% 0.5rem 29%;
+    width: 42%;
+    height: 0.5rem;
+    top: $header-height + $user-story-container-vertical-padding;
+    left: 0;
+    text-align: center;
+    background-color: $story-insertion-hint-bg-color;
+  }
+}

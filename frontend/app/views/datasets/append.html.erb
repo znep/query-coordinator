@@ -1,0 +1,46 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'dataset-upload' %>
+  <title><%= @type.capitalize %> Rows to <%= h(@view.name) %> | <%= get_site_title %></title>
+<% end %>
+
+<div class="contentBox">
+  <h2><%= @type.capitalize %> Rows</h2>
+
+  <div class="mainContent">
+    <%- redirect = alt_view_url(@view) -%>
+    <%= form_tag("/views/#{@view.id}/rows.txt?redirect=#{CGI.escape(redirect)}" +
+    "&method=#{@type}&authenticity_token=#{CGI::escape(form_authenticity_token)}", :id => "appendForm",
+    :multipart => true, :class => 'commonForm') do %>
+      <div class="fieldContent clearfix">
+        <%- if @error_type -%>
+          <p class="errorMessage">
+          You cannot <%= @type %> data in a dataset that contains a photo, document,
+            nested table, or location column. Please remove or hide such
+            columns and try again, or import this data as a new file.
+          </p>
+        <%- else -%>
+          <p class="errorMessage"></p>
+          <p class="instructions">
+            Please choose the file to <%= @type %> data in
+            <%= h(@view.name) %>. The file should have the same columns and data types
+            (text, number, date, etc.) as in <%= h(@view.name) %>.
+            This action cannot be undone! Supported formats
+            are .csv, .tsv, .xml, .xls, and .xlsx.
+          </p>
+          <div class="line clearfix">
+            <label for="import_file">File to upload:</label>
+            <div class="fileInput">
+              <%= file_field_tag('import_file') %>
+            </div>
+          </div>
+        <%- end -%>
+      </div>
+
+      <div class="submitButtons clearfix">
+        <%= submit_tag('Upload and ' + @type.capitalize,
+          :class => 'button default') unless @error_type %>
+        <a class="button" href="<%= alt_view_path(@view) %>">Cancel</a>
+      </div>
+    <% end %>
+  </div>
+</div>

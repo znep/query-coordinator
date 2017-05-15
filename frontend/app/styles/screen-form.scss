@@ -1,0 +1,85 @@
+.staticRenderType .renderContent {
+  overflow: auto;
+}
+
+.formView {
+  padding: 0.5em;
+  .line {
+    min-height: 2.3em;
+    margin: 0 0 0.75em;
+  }
+  label {
+    float: left;
+    font-size: 1.2em;
+    line-height: 1.2em;
+    overflow: hidden;
+    padding-top: 0.3em;
+    text-align: right;
+    width: 10em;
+  }
+  .fieldInput {
+    float: left;
+    width: 20em;
+  }
+  select.fieldInput {
+    font-size: 1.2em;
+  }
+  .fieldContainer {
+    float: left;
+    width: 28em;
+  }
+  .dateInput {
+    .yearInput {
+      margin-right: 0.75em;
+      width: 2.9em;
+    }
+    .monthInput {
+      width: 5em;
+    }
+    .dayInput, .hourInput, .minuteInput {
+      width: 1.5em;
+    }
+    .ampmInput {
+      width: 4.7em;
+    }
+  }
+  .phoneInput {
+    input {
+      width: 12.7em;
+    }
+    select {
+      width: 7em;
+    }
+  }
+  .line {
+    &.html {
+      height: 7em;
+    }
+    &.url {
+      height: 4.2em;
+    }
+    &.location {
+      height: 12.7em;
+    }
+  }
+  .urlInput {
+    label {
+      padding-right: 0.5em;
+      text-align: left;
+      width: 5em;
+    }
+    input {
+      width: 13.9em;
+    }
+  }
+  .locationInput {
+    label {
+      padding-right: 0.5em;
+      text-align: left;
+      width: 5em;
+    }
+    input {
+      width: 13.9em;
+    }
+  }
+}

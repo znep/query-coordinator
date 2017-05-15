@@ -1,0 +1,137 @@
+<% content_for :head do %>
+<%= rendered_stylesheet_tag 'internal' %>
+<title>Property <%= @property_id %> |
+  Domain <%= @domain.nil? ? '' : @domain.name %> | Internal Panel |
+  <%= get_site_title %></title>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<%- is_json = !@property.is_a?(String) -%>
+
+<div class="contentBox withLeftNavigation internalPanelRedesign">
+  <div class='content'>
+    <%= render :partial => 'production_warning' %>
+    <h1>
+      <%= @property_key %> in
+      <%= link_to @config.name, show_config_path(org_id: @domain.organizationId,
+                                                domain_id: @domain.cname,
+                                                config_id: @config.id) %>
+      for
+      <%= link_to "#{@domain.name} (#{@domain.cname})",
+        show_domain_path(org_id: @domain.organizationId, domain_id: @domain.cname) %>
+    </h1>
+
+    <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +
+      '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
+      '/property', {:class => 'wide', :id => 'propertyForm'}) do %>
+      <div id="ace-editor"></div>
+      <%= text_area_tag 'properties[' + @property_key + ']', @property, :style => 'display: none', :id => 'preText' %>
+      <input type="submit" value="Save" id="saveButton"/>
+      <div class="flash notice hide saveMessage">Configuration Saved</div>
+    <%- end -%>
+
+    <div class="audit expandable">
+      <%= expandable_section('Audit') do %>
+        <dl class="config_type_description audit_list">
+        </dl>
+      <%- end %>
+    </div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= include_webpack_bundle 'open-data/ace.js' %>
+  <script type="text/javascript">
+  var isJson = <%= is_json == true %>;
+  var isCss  = <%= (@property_key =~ /.*css.*/) != nil %>;
+  $(function()
+  {
+      var editor = ace.edit('ace-editor');
+      editor.setTheme('ace/theme/idle_fingers');
+      editor.setShowPrintMargin(false);
+
+      var JavascriptMode = ace.require('ace/mode/json').Mode;
+      var HtmlMode       = ace.require('ace/mode/html').Mode;
+      var CssMode        = ace.require('ace/mode/css').Mode;
+      var currentMode = isCss ? CssMode : (isJson ? JavascriptMode : HtmlMode);
+      editor.getSession().setMode(new currentMode());
+
+      editor.getSession().setValue(
+        <%- if (is_json && @property)-%>
+            JSON.stringify(<%= safe_json(@property) %>, null, 4)
+        <%- else -%>
+            $('#preText').val()
+        <%- end -%>
+      );
+      var changeTimer;
+      editor.getSession().on('change', function chchchchanges() {
+          if (changeTimer) clearTimeout(changeTimer);
+          changeTimer = setTimeout(function() {
+            var notes = editor.getSession().$annotations;
+            $('#saveButton').toggleClass('disabled', !$.isEmptyObject(notes));
+          }, 1000);
+      });
+
+      var $form = $('form#propertyForm');
+      var updateJsonVal = function()
+      {
+          var bespinVal = editor.getSession().getValue();
+
+          if (!$.isBlank($.trim(bespinVal)) || confirm('Do you want to clear this field?'))
+          {
+              $form.find('textarea').val(bespinVal);
+          }
+      };
+
+      $('#saveButton').click(function(event)
+      {
+          if ($(this).hasClass('disabled')) {
+              event.preventDefault();
+              return;
+          }
+
+          updateJsonVal();
+          event.preventDefault();
+          $.ajax({
+              type: 'POST',
+              url: $form.attr('action'),
+              data: $form.serialize(),
+              success: function() {
+                  $('.saveMessage').removeClass('hide');
+                  setTimeout(function() { $('.saveMessage').addClass('hide'); }, 5000);
+              }
+          })
+      });
+
+      $form.submit(function(event)
+      {
+          updateJsonVal();
+      });
+
+      $.getJSON('/api/configurations/<%= @config.id %>/properties/<%= CGI.escape(@property_key) %>.json?method=getLastUpdaters&limit=10', function(data) {
+        _.each(data, function(datum) {
+          $('.audit_list').append(
+            $.tag2({ _: 'dt', contents: {
+              _: 'a', href: '/profile/{0}'.format(datum.uid), contents: datum.email
+            }})
+          );
+          var event_time = moment(datum.event_time * 1000).
+            tz(blist.configuration.userTimeZoneName).
+            format('LLLL z');
+          $('.audit_list').append($.tag2({_: 'dd', contents: [{
+            _: 'span', 'class': 'action', contents: (datum.action ? datum.action.capitalize() + 'd: ' : '')
+          }, {
+            _: 'span', 'class': 'time', contents: event_time
+          }]}));
+        });
+      }).fail(function(xhr) {
+        // Don't pretend it's there if we have no data.
+        // This seems to happen largely because core's CGI-unescaping does bad things with our CGI-escaped property names.
+        if (xhr.status === 404) {
+          $('.audit').remove();
+        }
+      });
+  });
+  </script>
+<% end %>

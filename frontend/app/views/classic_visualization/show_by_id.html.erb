@@ -1,0 +1,13 @@
+<% content_for :javascripts do %>
+  <%= include_webpack_bundle 'open-data/screen-classic-visualization.js' %>
+  <script type="text/javascript">
+    // screen-classic-visualization is written into a closure. Wait for that callstack
+    // to clear.
+    setTimeout(function() {
+      if (window.renderVisualization && window.blist.viewCache) {
+        var key = Object.keys(window.blist.viewCache)[0];
+        window.renderVisualization(window.blist.viewCache[key]);
+      }
+    }, 1);
+  </script>
+<% end %>

@@ -1,0 +1,92 @@
+<div id="datasetBar" class="clearfix <%= @view.is_blist? ? 'dataset' : '' %>
+  <%= @view.can_modify_data? ? 'isEditable' : '' %>
+  <%= local_assigns[:sidebar_position].present? ? 'sidebar-' + sidebar_position : '' %>">
+  <%- if local_assigns[:link_back].present? -%>
+    <a href="<%= view_path(@view) %>" class="button leftArrowNoHover backToDatasetButton">
+      <span class="icon"></span>
+      <%= t('controls.browse.back_to_dataset') %>
+    </a>
+  <%- end -%>
+  <div id="infoBox">
+    <div id="datasetIcon" class="type<%= @view.display.type.capitalize %>">
+      <span class="icon <%= 'icon-cards' if @view.data_lens? || @view.visualization_canvas? %> currentViewName"><%= @view.display.name %></span>
+      <span class="alertIcon"></span>
+    </div>
+    <div class="unsavedLine">
+      <h2 id="unsavedTitle"><%= t('screens.ds.bar.unsaved_title') %></h2>
+      <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) && !@view.is_snapshotted? && !@view.is_api? -%>
+        <a href="#Save" title="<%= t('screens.ds.bar.save_prompt') %>" data-savingText="<%= t('screens.ds.bar.save_progress') %>"
+        class="save toolbarButton"><%= t('screens.ds.bar.save_button') %></a>
+      <%- end -%>
+      <%- if show_save_as_button? -%>
+      <a href="#SaveAs" title="<%= t('screens.ds.bar.save_as_prompt') %>"
+        class="saveAs toolbarButton"><%= t('screens.ds.bar.save_as_button') %></a>
+      <%- end -%>
+      <a href="#Revert" title="<%= t('screens.ds.bar.revert_prompt') %>"
+        class="revert toolbarButton"><%= t('screens.ds.bar.revert_button') %></a>
+      <%- if @view.is_unpublished? -%>
+        <span class="unpublishedRevert revertMessage"><%= t('screens.ds.bar.unpublished_unsavable') %></span>
+      <%- end -%>
+      <%- if @view.is_snapshotted? -%>
+      <span class="revertMessage"><%= t('screens.ds.bar.unpublished_unsavable') %></span>
+      <%- end -%>
+      <%- if @view.is_api? -%>
+      <span class="revertMessage"><%= t('screens.ds.bar.unpublished_unsavable') %></span>
+      <%- end -%>
+    </div>
+
+    <%- if @view.is_unpublished? -%>
+    <h3 class="unpublished" title="<%= t('screens.ds.bar.working_copy_notice') %>"><%= t('screens.ds.bar.working_copy_title') %></h3>
+    <%- end -%>
+    <h2 id="datasetName" class="clipText currentViewName" title="<%= @view.name %>">
+      <%= @view.name %>
+      <%= dataset_provenance_tag %>
+    </h2>
+    <%- if @view.is_snapshotted? -%>
+    <h3 class="snapshotted" title="<%= t('screens.ds.bar.snapshot_notice') %>"><%= t('screens.ds.bar.snapshot_title_html', date: date_time_span(@view.publicationDate)) %></h3>
+    <%- end -%>
+
+    <%# Only show the publish button on working copies if the user is logged in and their role allows them to publish a dataset %>
+    <%- if @view.is_unpublished? && current_user && (current_user.has_right_to_publish?(@view) || current_user.is_superadmin?) -%>
+     <%# Grey out the publish button if the dataset isn't ready to publish  %>
+     <a href="#Publish" class="toolbarButton publish <%= @view.can_publish? ? '' : 'disabled' %>"
+       <%- if @view.can_publish? && dataset_landing_page_enabled? -%>
+         title="<%= t('screens.ds.bar.publish_prompt_with_dataset_landing_page') %>"
+       <%- elsif @view.can_publish? -%>
+         title="<%= t('screens.ds.bar.publish_prompt') %>"
+      <%- else -%>
+        title="<%= t('controls.grid.published.geocodes_pending') %>"
+      <%- end -%>
+        ><%= t('screens.ds.bar.publish_button') %></a>
+    <%- end -%>
+
+    <div class="basedOnParent"><%= t('screens.ds.bar.based_on_parent_html') %></div>
+    <div class="basedOnTemp">
+      <%- if @view.is_unpublished? -%>
+        <%= t('screens.ds.bar.based_on_working_copy_html', name: @view.name) %>
+      <%- else -%>
+        <%= t('screens.ds.bar.based_on_html', name: @view.name) %>
+      <%- end -%>
+    </div>
+
+    <%- if !@view.is_published? -%>
+    <a id="publishedLink"><%= t('screens.ds.bar.view_published_html') %></a>
+    <%- end -%>
+
+    <div id="description">
+      <%- if @view.is_geospatial? && @view.geoParent -%>
+        <div class="descriptionContent collapsed">
+          <%= t('screens.ds.bar.based_on_layer_html',
+            name: @view.geoParent.name, href: view_url(@view.geoParent)) %>
+        </div>
+      <%- else -%>
+        <div class="descriptionContent collapsed"><%= view_formatted_description(@view) || t('screens.ds.bar.no_description') %></div>
+        <a href="#expand" class="descriptionExpander rightArrow" title="<%= t('core.expando.prompt') %>">
+          <span class="icon"><%= t('core.expando.expand') %></span>
+        </a>
+      <%- end -%>
+    </div>
+
+  </div>
+  <%= yield :dataset_actions %>
+</div>

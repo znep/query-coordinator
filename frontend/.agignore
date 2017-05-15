@@ -1,0 +1,10 @@
+node_modules
+public/javascripts/tiny_mce
+public/geodata
+karma/dataCards/test-data/cardVisualizationChoroplethTest/
+public/packages/
+public/cache/
+public/webfonts
+test-data
+fixtures
+log

@@ -1,0 +1,29 @@
+<%- prefix = 'dataslate.permissions' -%>
+<div class="socrataDialog loading" id="configuratorPermissions">
+  <%- title = module_enabled?(:govStat) ? t('govstat.reports.permissions.title') : t('dataslate.permissions.title') -%>
+  <a href="#close" class="jqmClose cornerClose">Close</a>
+  <h2><%= title %></h2>
+
+  <div class="loadingOverlay hide">
+    <div class="loadingSpinner"></div>
+  </div>
+
+  <form class="commonForm">
+    <div class="line">
+      <input type="radio" id="configuratorPermissions_public" name="permissions" value="public" />
+      <label for="configuratorPermissions_public"><%= t("#{prefix}.public") %><span class="info"><%= t("#{prefix}.public_desc") %></span></label>
+    </div>
+    <div class="line">
+      <input type="radio" id="configuratorPermissions_domain_private" name="permissions" value="domain_private" />
+      <label for="configuratorPermissions_domain_private"><%= t("#{prefix}.shared") %><span class="info"><%= t("#{prefix}.shared_desc") %></span></label>
+    </div>
+    <div class="line">
+      <input type="radio" id="configuratorPermissions_private" name="permissions" value="private" />
+      <label for="configuratorPermissions_private"><%= t("#{prefix}.private") %><span class="info"><%= t("#{prefix}.private_desc") %></span></label>
+    </div>
+  </form>
+  <ul class="actions clearfix">
+    <li><a href="#cancel" class="jqmClose button"><%= t("#{prefix}.cancel") %></a></li>
+    <li><a href="#save" class="save button"><%= t("#{prefix}.save") %></a></li>
+  </ul>
+</div>

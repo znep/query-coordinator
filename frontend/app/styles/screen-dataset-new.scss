@@ -1,0 +1,1185 @@
+@mixin has-action-link {
+  a {
+    @include sprite-menu-icons("&");
+    float: right;
+    margin: 0.2em {
+      top: 0.7em;
+    };
+    &:hover {
+      @include opacity(0.8);
+    }
+  }
+}
+
+.headline {
+  font-size: 1.8em;
+  margin-top: 1em;
+  text-align: center;
+}
+
+.subheadline {
+  color: #444;
+  font-size: 1.4em;
+  margin: 1em 0 2em;
+  text-align: center;
+}
+
+.instructions {
+  font-size: 1.3em;
+  margin: 0 0 0.5em;
+}
+
+// PANE ZERO: choose type
+.newKindList, .importTypeList, .uploadTypeList {
+  margin: 2em auto 5em;
+  width: 71.6em;
+  li {
+    display: block;
+    float: left;
+    padding-left: 4em;
+    &:first-child {
+      padding-left: 0;
+    }
+    a, div {
+      @include new-dataset-icons;
+      @include border-radius(0.3em);
+      background-color: #f7f7f7;
+      border: 1px solid $color_chrome_box_border;
+      color: #333;
+      cursor: pointer;
+      display: block;
+      height: 9.3em;
+      text-align: center;
+      text-shadow: 1px 1px 0 #fff;
+      @include transition-property(background-color);
+      @include transition-duration(0.5s);
+      padding: 2em;
+      width: 17em;
+      &:hover {
+        background-color: #eee;
+      }
+      .icon {
+        display: block;
+        margin: 0 auto 1em;
+      }
+      &.disabled {
+        color: #888;
+        &:hover {
+          background-color: #f7f7f7;
+        }
+        .icon {
+          @include opacity(0.6);
+        }
+      }
+      p {
+        font-size: 1.4em;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.importTypeList, .uploadTypeList {
+  width: 46.4em;
+}
+
+// PANE ONE: upload
+.uploadFilePane, .crossloadFilePane {
+  .uploadFileContainer, .crossloadUrlContainer {
+    margin: 0 auto;
+    padding-top: 2.8em;
+    width: 68em;
+    .importErrorHelpText {
+      display: none;
+      font-size: 1.3em;
+    }
+    .error ~ .importErrorHelpText {
+      display: block;
+    }
+    .uploadFileErrorHelp {
+      display: none;
+      clear: both;
+      font-size: 1.1em;
+      margin: {
+        bottom: 0.5em;
+        top: 0.5em;
+      };
+    }
+    .uploadFileNameWrapper, .crossloadUrlWrapper {
+      float: left;
+      padding: 0 {
+        right: 0.5em;
+      };
+      .uploadFileName, .crossloadUrl {
+        @include border-radius(0.2em);
+        display: inline-block;
+        font-size: 1.4em;
+        margin: 0;
+        padding: 0.4em;
+        width: 40em;
+        &.error {
+          color: #b33;
+        }
+      }
+    }
+    .uploadFileButtonWrapper {
+      overflow: hidden;
+      .fileUploader-upload-button {
+        @include button;
+        color: #333;
+        font-size: 1.2em;
+        font-weight: bold;
+        padding: 0.5em 1em;
+        text-align: center;
+      }
+      .fileUploader-upload-list {
+        display: none;
+      }
+    }
+    .crossloadUrlButton {
+      margin: 0 0.3em;
+    }
+    .uploadThrobber {
+      clear: both;
+      display: none;
+      font-size: 1.1em;
+      margin: {
+        bottom: 0.5em;
+        top: 2em;
+      };
+      text-align: center;
+      .icon {
+        @include throbber-icon;
+        display: inline-block;
+        margin-right: 0.4em;
+        position: relative;
+        top: 0.3em;
+      }
+    }
+    .uploadFileFormats {
+      color: #666;
+      font-size: 1.3em;
+      margin-bottom: 2em;
+      margin-top: 2.1em;
+      text-align: center;
+      &.blobby {
+        display: none;
+      }
+      .type {
+        display: none;
+      }
+      @each $type in blist, shapefile {
+        &.#{$type} .type-#{$type} {
+          display: inline;
+        }
+      }
+    }
+  }
+}
+
+// PANE ONE POINT FIVE: import columns
+.importColumnsPane {
+  .columnsListHeader {
+    .columnHandleCell {
+      width: 1em;
+    }
+    .columnNameCell {
+      width: 20.8em;
+    }
+    .columnTypeCell {
+      width: 18.2em;
+    }
+    .columnSourceCell {
+      float: none;
+      overflow: hidden;
+      .importTypesMessageLink {
+        @include sprite-menu-icons;
+        float: right;
+        font-weight: normal;
+        .icon {
+          float: left;
+          margin-right: 0.2em;
+        }
+      }
+    }
+  }
+  .importErrorHelpText {
+    display: none;
+    font-size: 1.3em;
+  }
+  .error ~ .importErrorHelpText {
+    display: block;
+  }
+  .columnsList > li .mainLine {
+    .columnHandleCell {
+      @include drag-handle;
+      height: 2em;
+      margin-left: 0.4em;
+      margin-right: 0.5em;
+      padding: 0;
+      position: relative;
+      top: 0.8em;
+      width: 0.6em;
+    }
+    .columnNameCell {
+      width: 25em;
+      input[type=text] {
+        font-size: 1.45em;
+        width: 15em;
+      }
+    }
+    .columnTypeCell {
+      width: 22em;
+    }
+    .columnSourceCell {
+      width: 22em;
+      .uniform.selector {
+        max-width: 22em;
+        overflow: hidden;
+      }
+    }
+    .columnActionCell {
+      float: none;
+      overflow: hidden;
+      @include has-action-link;
+    }
+  }
+}
+
+.appendReplaceColumnsPane {
+  .columnsListHeader {
+    .columnSourceCell {
+      width: 20.8em;
+    }
+    .columnActionCell {
+      width: 2em;
+    }
+    .columnDestinationCell {
+      width: 20.8em;
+    }
+    .columnTypeCell {
+      float: none;
+      overflow: hidden;
+    }
+  }
+  .columnsList > li .mainLine {
+    .editableSection {
+      width: 27.8em;
+      > div {
+        float: left;
+      }
+      .columnSourceCell {
+        width: 25em;
+        select {
+          width: 20.5em;
+        }
+        .forbiddenColumnType {
+          font-size: 1.2em;
+          font-weight: bold;
+          padding: 0.7em 0.4em 0;
+        }
+      }
+      .columnActionCell {
+        width: 2em;
+        @include has-action-link;
+      }
+    }
+    .lockedSection {
+      float: none;
+      overflow: hidden;
+      @include vertical-gradient(#ccc, #ddd);
+      > div {
+        float: left;
+        font-size: 1.3em;
+        padding: 0.5em;
+      }
+      .columnDestinationCell {
+        width: 19em;
+      }
+      .columnTypeCell {
+        float: none;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+.columnsPane {
+  select option.special {
+    font-style: italic;
+  }
+  .columnsListHeader {
+    margin-bottom: 0.2em;
+    margin-top: 1em;
+    > div {
+      float: left;
+      font-size: 1.2em;
+      font-weight: bold;
+      padding: 0.4em;
+    }
+  }
+  .columnsList {
+    > li {
+      .detailsLine {
+        @include vertical-gradient(#f6f6f6, #ddd);
+        > div {
+          clear: both;
+          display: none;
+          padding: 0.5em 2em 1.5em;
+          h3 {
+            display: inline-block;
+          }
+          h4 {
+            display: inline-block;
+            font-size: 1.2em;
+            font-weight: normal;
+            margin: 0.3em 0 {
+              left: 1em;
+            };
+          }
+          .toggleSection {
+            clear: both;
+            padding: 0.3em 0 0.5em;
+            label {
+              bottom: 0.2em;
+              font-size: 1.4em;
+              position: relative;
+            }
+          }
+          fieldset {
+            margin-top: 0.3em;
+            width: 45em;
+            &.left {
+              float: left;
+              margin-left: 3.1em;
+            }
+            &.right {
+              float: right;
+            }
+            legend {
+              font-size: 1.3em;
+              margin: 0.2em 0;
+            }
+            div.line {
+              margin: 0.2em 0;
+              label {
+                display: block;
+                font-size: 1.2em;
+                height: 2em;
+                margin-bottom: -2.5em;
+                margin-top: 0.4em;
+                width: 5em;
+              }
+              div.optionGroup {
+                margin-bottom: 0.2em;
+                margin-left: 5.5em;
+              }
+              > .uniform.selector {
+                margin-bottom: 0.2em;
+                margin-left: 7.2em;
+              }
+              .uniform.radio {
+                margin: 0 0.5em 0.3em;
+              }
+              select {
+                width: 15em;
+              }
+            }
+          }
+          .importSingleColumnSection {
+            margin-left: 3.1em;
+            label {
+              display: inline-block;
+              font-size: 1.2em;
+              padding-bottom: 0.5em;
+              width: 7em;
+            }
+            select {
+              width: 15em;
+            }
+            p {
+              font-size: 1.2em;
+              padding-top: 0.4em;
+            }
+          }
+        }
+        .compositeDetails {
+          .sourceColumnsList {
+            margin: 0 0.3em;
+            li {
+              margin: 0.5em;
+              > * {
+                float: left;
+                margin-right: 0.3em;
+              }
+              .removeSourceColumnLineButton {
+                @include sprite-menu-icons;
+                padding-top: 0.6em;
+              }
+              input[type=text] {
+                display: none;
+                margin: {
+                  top: 0.2em;
+                  left: 0.5em;
+                };
+                width: 20em;
+              }
+            }
+          }
+          .newSourceColumnButton {
+            @include sprite-menu-icons;
+            .icon {
+              float: left;
+              margin-right: 0.2em;
+            }
+          }
+        }
+        .generalDetails {
+          .columnTransformsList {
+            margin: 0 0.3em;
+            li {
+              margin: 0.5em;
+              &:first-child .thenText {
+                visibility: hidden;
+              }
+              > * {
+                float: left;
+                margin-right: 0.3em;
+              }
+              .removeTransformLineButton {
+                @include sprite-menu-icons;
+                padding-top: 0.6em;
+              }
+              .thenText, label {
+                font-size: 1.2em;
+                line-height: 2.2em;
+                margin: 0 0.4em;
+              }
+              .additionalTransformOptions {
+                > * {
+                  display: none;
+                }
+                .uniform.checker {
+                  margin: 0 0 0.4em 1.5em;
+                }
+                .customExpression {
+                  width: 30em;
+                }
+                a {
+                  font-size: 1.1em;
+                  padding-left: 0.5em;
+                }
+              }
+            }
+          }
+          .newColumnTransformButton {
+            @include sprite-menu-icons;
+            .icon {
+              float: left;
+              margin-right: 0.2em;
+            }
+          }
+        }
+      }
+    }
+  }
+  .columnsToolbar {
+    display: none;
+    margin-top: 0.4em;
+    .presets {
+      float: left;
+      label {
+        font-size: 1.3em;
+        line-height: 1.2em;
+        padding-right: 0.4em;
+      }
+      .uniform.selector {
+        margin-bottom: 0.4em;
+      }
+    }
+    .actions {
+      float: right;
+      .addColumnButton {
+        @include sprite-menu-icons;
+        .icon {
+          float: left;
+          margin-right: 0.2em;
+        }
+      }
+    }
+  }
+  .warningsSection {
+    display: none;
+    .warningsHelpMessage {
+      font-size: 1.3em;
+    }
+    .columnWarningsList {
+      margin: 0.5em 0 1em;
+      li.validationError {
+        @include sprite-menu-icons;
+        padding: 0.4em;
+        .icon {
+          position: absolute;
+        }
+        .message {
+          display: block;
+          font-size: 1.3em;
+          margin-left: 1.6em;
+        }
+      }
+    }
+  }
+  .headersTableWrapper {
+    @include box-shadow(0, 0, 0.8em, rgba(0, 0, 0, 0.3), true);
+    overflow-x: auto;
+    .headersTable {
+      border: 1px solid #888;
+      width: 100%;
+      tr {
+        border-top: 1px solid #ddd;
+        &:first-child {
+          border-top: none;
+        }
+        &.header td {
+          background-color: #aaa;
+          color: #888;
+        }
+        td {
+          border-left: 1px solid #ddd;
+          font-size: 1.3em;
+          padding: 0.4em;
+          &:first-child {
+            border-left: none;
+          }
+        }
+      }
+    }
+  }
+  .headersActions {
+    margin: 0.5em 0;
+    .headersCount {
+      float: left;
+      font-size: 1.3em;
+      font-weight: bold;
+      padding: 0.8em;
+    }
+    .button {
+      @include sprite-menu-icons;
+      float: right;
+      .icon {
+        float: left;
+        margin-right: 0.3em;
+      }
+    }
+  }
+  hr {
+    border: none {
+      top: 1px solid $color_chrome_box_border;
+    };
+    color: transparent;
+    height: 0;
+  }
+}
+
+#importTypesMessage {
+  margin-left: -25em;
+  width: 46em;
+  p {
+    margin-bottom: 1em;
+  }
+}
+
+.importListHeader {
+  margin-bottom: 0.2em;
+  margin-top: 1em;
+  > div {
+    float: left;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0.4em;
+  }
+  .importHandleCell {
+    width: 1em;
+  }
+}
+
+.importList {
+  @include workspace;
+  border: 1px solid #888;
+  display: none;
+  max-height: 50em;
+  min-height: 20em;
+  padding-bottom: 2em;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  > li {
+    border: 1px solid $color_chrome_box_border;
+    clear: both;
+    &.ui-draggable-dragging {
+      @include box-shadow(0, 0, 0.5em, rgba(0, 0, 0, 0.6));
+    }
+    .mainLine {
+      background-color: #fff;
+      height: 3.4em;
+      @include vertical-gradient(#fff, #f6f6f6);
+      > div {
+        float: left;
+        padding: 0.4em;
+      }
+      .importHandleCell {
+        @include drag-handle;
+        height: 2em;
+        margin-left: 0.4em;
+        margin-right: 0.5em;
+        padding: 0;
+        position: relative;
+        top: 0.8em;
+        width: 0.6em;
+      }
+    }
+  }
+
+}
+
+#reactWizard {
+  .importList {
+    display: block;
+  }
+
+  .tooltip {
+    position: relative;
+  }
+
+  div.wizard {
+    overflow: visible;
+  }
+
+  .tooltip:hover:after {
+    background: #fefbef;
+    border-radius: 5px;
+    top: 148px;
+    color: #000;
+    content: attr(title);
+    left: -6px;
+    padding: 5px 15px;
+    position: absolute;
+    z-index: 98;
+    width: 200px;
+    text-decoration: none;
+    text-align: justify;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.6);
+    font-size: 1.1em;
+    padding: 1em 1em;
+  }
+
+  .tooltip:hover:before {
+    content: "▲";
+    color: #fefbef;
+    position: absolute;
+    margin-left: -7px;
+    top: 135px;
+    text-decoration: none;
+    z-index: 99;
+    font-size: 16px;
+    font-family: "Lucida Sans Unicode", "Arial Unicode MS";
+
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.6);
+  }
+
+  .locationTypeToggle {
+    vertical-align: top;
+  }
+
+  label.locationSingleColumnLabel {
+    width: 5em;
+  }
+
+  .toggleSection label {
+    line-height: 1.5rem;
+    padding-left: 0.2rem;
+  }
+
+  .locationLatLonLabel {
+    display: inline-block;
+    margin-right: 1em;
+  }
+
+  .uploadThrobber {
+    display: block;
+  }
+  .uploadFileFormats .type {
+    display: block;
+  }
+  .fileUploader-upload-button {
+    position: relative;
+    overflow: hidden;
+    direction: ltr;
+    input {
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      font-family: Arial;
+      font-size: 118px;
+      margin: 0px;
+      padding: 0px;
+      cursor: pointer;
+      opacity: 0;
+    }
+  }
+
+  .warningsSection {
+    display: block;
+  }
+
+  .columnsToolbar {
+    display: block;
+  }
+
+  .workingPane {
+    p.subheadline {
+      margin: 1em 0 -2em;
+      height: 1em;
+    }
+  }
+
+  .importColumnsPane {
+    li .detailsLine > div {
+      display: block;
+    }
+    .staticSourceText {
+      display: inline-block;
+    }
+  }
+  .remove {
+    cursor: pointer;
+  }
+
+  div.button.navButtons {
+    float: right;
+  }
+
+  .workingPane .notifyUploadComplete {
+    padding-top: 3em;
+    height: 3em;
+  }
+
+  .workingPane .notifyUploadContainer {
+    display: block;
+  }
+
+  .workingPane .notifyingUploadComplete {
+    display: block;
+  }
+
+  .workingPane .notifyUploadError {
+    display: block;
+    font-weight: normal;
+  }
+
+  div.uniform.selector select {
+    opacity: 1;
+    border: none;
+  }
+
+  // ***************************************************************************
+  // Below are parts of the Socrata Styleguide that have been
+  // blatantly copied and pasted for the new import wizard experience.
+  // Sometime in the future, we should actually import the styleguide itself.
+  // ***************************************************************************
+
+  /// Slightly lighten a color
+  /// @access public
+  /// @param {Color} $color - color to tint
+  /// @param {Number} $percentage - percentage of `$color` in returned color
+  /// @return {Color}
+  @function tint($color, $percentage) {
+    @return mix(white, $color, $percentage);
+  }
+
+  /// Slightly darken a color
+  /// @access public
+  /// @param {Color} $color - color to shade
+  /// @param {Number} $percentage - percentage of `$color` in returned color
+  /// @return {Color}
+  @function shade($color, $percentage) {
+    @return mix(black, $color, $percentage);
+  }
+
+  /* Colors */
+  $grey: #767676;
+  $dark-grey-1: shade($grey, 20%);
+  $light-grey-0: tint($grey, 10%);
+  $light-grey-1: tint($grey, 20%);
+  $light-grey-2: tint($grey, 40%);
+  $light-grey-3: tint($grey, 60%);
+  $light-grey-4: tint($grey, 80%);
+  $light-grey-5: tint($grey, 90%);
+  $light-grey-6: tint($grey, 93.3%);
+  $light-grey-7: tint($grey, 95%);
+  $light-grey-8: tint($grey, 97%);
+  $default-text-color: $dark-grey-1;
+  $primary: #f1f1f1;
+  $primary-light: #909090;
+  $primary-dark: shade($primary, 30%);
+  $success: lighten(#218649, 10%);
+  $success-dark: shade($success, 30%);
+  $success-light: tint($success, 90%);
+  $warning: shade(#fabe00, 8%);
+  $warning-light: tint($warning, 93%);
+  $warning-dark: shade($warning, 30%);
+  $warning-text: shade($warning, 40%);
+  $error: #ce6565;
+  $error-light: tint($error, 90%);
+  $error-dark: shade($error, 30%);
+
+  .btn-success {
+    color: white;
+    background: $success-dark;
+    border-color: $success-dark;
+    text-shadow: none;
+  }
+
+  .btn-error {
+    color: white;
+    background: $error-dark;
+    border-color: $error-dark;
+    text-shadow: none;
+  }
+
+  .flash-alert {
+    background-color: $light-grey-6;
+    border: 1px solid $light-grey-3;
+    font-size: 1.5em;
+    padding: .75em;
+    border-radius: 1px;
+    color: $default-text-color;
+
+    &.info {
+      background-color: $primary-light;
+      border-color: $primary;
+      color: $primary-dark;
+    }
+
+    &.success {
+      background-color: $success-light;
+      border-color: $success;
+      color: $success-dark;
+    }
+
+    &.warning {
+      background-color: $warning-light;
+      border-color: $warning;
+      color: $warning-text;
+    }
+
+    &.error {
+      background-color: $error-light;
+      border-color: $error;
+      color: $error-dark;
+    }
+
+    &.alert-full-width-top {
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+    }
+
+    &.alert-full-width-bottom {
+      border-bottom: 0;
+      border-left: 0;
+      border-right: 0;
+    }
+
+    li {
+      display: list-item;
+    }
+
+    ul {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+
+    p {
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    p + p { // paragraphs preceded by other paragraphs
+      padding-top: 10px;
+    }
+  }
+
+  .spinner-default {
+    @include spinner(1em, 3px, $primary, $primary-light);
+
+    &.spinner-dark {
+      border-color: $primary-light;
+      border-right-color: $primary;
+    }
+
+    &.spinner-large-center {
+      border-width: 4px;
+      width: 2em;
+      height: 2em;
+      margin: 5em calc(50% - 1em - 4px) auto;
+    }
+
+  }
+
+  .spinner-btn-primary {
+    border-color: #ffffff;
+    border-right-color: shade($primary, 20%);
+  }
+
+  // ***************************************************************************
+  // End of copied Socrata Styleguide CSS.
+  // ***************************************************************************
+
+}
+
+// PANE ONE POINT FIVE B
+.importShapefilePane {
+  span.featureCount, span.layerCount {
+    font-weight: bold;
+  }
+  .shapefileForm {
+    @include common-form(14em, 40em);
+    margin: {
+      bottom: 3.5em;
+      left: 6em;
+      top: 2em;
+    };
+    div.required {
+      margin-top: 1.5em;
+    }
+  }
+  .layersListHeader {
+    .layerNameCell {
+      width: 20.8em;
+    }
+    .layerReferenceSystemCell {
+      width: 34em;
+    }
+  }
+  .layersList {
+    > li {
+      .mainLine {
+        .layerNameCell {
+          width: 25em;
+          input[type=text] {
+            font-size: 1.45em;
+            width: 15em;
+          }
+        }
+        .layerCrsAutoDetectCell {
+          width: 12em;
+          position: relative;
+          top: 0.4em;
+          label {
+            bottom: 0.2em;
+            font-size: 1.45em;
+            position: relative;
+          }
+        }
+        .layerReferenceSystemCell {
+          margin-right: 3em;
+          margin-top: 0.25em;
+          width: 25em;
+          font-size: 1.45em;
+        }
+        .layerReplacingCell {
+          .layerReplaceDropdown {
+            width: 15em;
+          }
+        }
+        label.error {
+          font-size: 1.2em;
+          left: 1em;
+          position: relative;
+          top: 1em;
+        }
+      }
+    }
+  }
+  hr {
+    border: none {
+      top: 1px solid $color_chrome_box_border;
+    };
+    color: transparent;
+    height: 0;
+  }
+  .layerReplacingCell {
+    @include opacity(0);
+    @include transition(0.2s, opacity);
+  }
+  &.childViewsLoaded .layerReplacingCell {
+    @include opacity(1);
+  }
+}
+
+// PANE ONE POINT SEVEN FIVE
+.importWarningsPane {
+  .importWarningsList {
+    @include box-shadow(0, 0, 0.8em, rgba(0, 0, 0, 0.3), true);
+    border: 1px solid #888;
+    margin: 1em;
+    max-height: 50em;
+    overflow-y: auto;
+    li {
+      border-top: 1px solid $color_chrome_box_border;
+      font-size: 1.3em;
+      padding: 0.5em;
+      &:first-child {
+        border-top: none;
+      }
+    }
+  }
+  p.seeDocs {
+    font-size: 1.4em;
+    margin: 1em;
+  }
+}
+
+// PANE TWO: metadata
+.metadataPane {
+  .metadataForm {
+    @include common-form(14em, 40em);
+    margin: {
+      bottom: 3.5em;
+      left: 6em;
+      top: 2em;
+    };
+    div.required {
+      margin-top: 1.5em;
+    }
+    .openDataCommonsLine, .creativeCommonsLine {
+      display: none;
+    }
+    .attachmentsMetadata {
+      .attachmentsHowtoMessage {
+        padding-left: 1em;
+        margin-top: 0.5em;
+        font-size: 1.2em;
+        .about {
+          @include border-radius(0.35em);
+          color: white;
+          height: 13px;
+          padding: 0.2em 0.35em 0.25em;
+          margin: 0.2em 0 0.2em 0;
+          background-color: $sidebar_about_tab_color_top;
+          @include dataset-sidebar-icons;
+          .icon {
+            display: inline-block;
+            margin-right: 0.4em;
+            vertical-align: bottom;
+          }
+        }
+      }
+    }
+    .radioblock {
+      label {
+        padding-left: 0;
+      }
+    }
+    .customFieldsetWrapper {
+      a.expander {
+        color: #444;
+        @include sprite-menu-icons;
+        .icon {
+          float: left;
+          margin: {
+            right: 0.5em;
+            top: 0.2em;
+          };
+        }
+      }
+      label.private {
+        color: #888;
+      }
+      select {
+        width: 15em;
+      }
+    }
+    .externalDatasetMetadata {
+      display: none;
+    }
+  }
+}
+
+// PANES SOMETHING-OR-OTHER: in process...
+.workingPane {
+  padding-bottom: 5em;
+  position: relative;
+  .loadingSpinnerContainer {
+    top: 75%;
+  }
+
+  .notifyUploadButtonContainer {
+    text-align: center;
+    font-size: 1.3em;
+  }
+  .requestingNotify {
+    @include throbber-icon;
+    display: none;
+  }
+  .notifyUploadComplete {
+    padding-top: 10%;
+    height: 5em;
+  }
+
+  .notifyUploadContainer {
+    display: none;
+    width: 33em;
+    margin: auto;
+  }
+
+  .notifyUploadButtonContainer {
+    width: 23.5em;
+    float: left;
+  }
+  .notifyUploadThrobberContainer {
+    width: 16px;
+    float: left;
+    margin-top: 1.2em;
+  }
+
+  .notifyUploadError {
+    display: none;
+    font-size: 1.4em;
+    text-align: center;
+  }
+
+  .notifyingUploadComplete {
+    display: none;
+
+    .green-check {
+      font-size: 1.5em;
+      vertical-align: sub;
+      color: #3C9E15;
+    }
+    .messaging {
+      text-align: center;
+      font-size: 1.5em;
+      line-height: 1.6em;
+    }
+    .messaging.sub {
+      color: #666;
+      font-size: 1.3em;
+    }
+  }
+}
+
+// Fieldset for "privacy settings" needs to have a <legend> instead of a <label>
+// (for accessibility reasons)
+// So... gotta make the legend look like a label
+#privacy-settings {
+  position: relative;
+  left: 19em;
+}
+
+#privacy-settings-legend {
+  position: absolute;
+  left: -14.9em;
+  font-size: 1.2em;
+}

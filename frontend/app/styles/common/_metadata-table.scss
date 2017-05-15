@@ -1,0 +1,288 @@
+@import "styleguide-colors";
+@import "breakpoints";
+
+// TODO: update the StyleGuide colors so we can just use $dark-grey-2, etc.
+$grid-link-color: #5e5e5e; // Mimic color used in styleguide that doesn't follow palette
+$dark-grey-1-darkened: darken($dark-grey-1, 3%); // To pass contrast test
+
+.metadata-table-wrapper {
+  section.landing-page-section {
+    padding: 11px;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 500;
+      margin: 0;
+      padding: 11px 0;
+    }
+
+    .landing-page-header-wrapper {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      .btn-default {
+        margin-bottom: 8px;
+        align-self: center;
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .section-content {
+    background: $white;
+    border: 1px $light-grey-4 solid;
+    border-bottom-width: 2px;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  hr {
+    margin: 0 15px;
+    border-top: 1px $light-grey-4 solid;
+  }
+
+  button.contact-dataset-owner {
+    margin-top: 15px;
+  }
+
+  .metadata-column {
+    margin-right: 2%;
+    flex: 1 0;
+
+    &.fancy {
+      flex: 0 1 32%;
+      margin: 0;
+    }
+
+    &.tables {
+      overflow: hidden;
+      position: relative;
+      padding-bottom: 28px;
+
+      .metadata-table-toggle-group {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        text-align: right;
+        padding: 11px;
+        background: $white;
+
+        &.desktop {
+          display: block;
+        }
+
+        &.mobile  {
+          display: none;
+        }
+      }
+
+      a.metadata-table-toggle {
+        text-decoration: underline;
+      }
+
+      .metadata-table-toggle.more {
+        display: none;
+      }
+
+      .metadata-table-toggle.less {
+        display: inline-block;
+      }
+
+      &.collapsed {
+        .metadata-table {
+          &.hidden {
+            display: none;
+          }
+        }
+
+        .metadata-table-toggle.more {
+          display: inline-block;
+        }
+
+        .metadata-table-toggle.less {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .metadata-row {
+    margin: 0;
+
+    &.middle {
+      margin: 15px 0;
+    }
+  }
+
+  .metadata-section {
+    margin: 15px;
+  }
+
+  .metadata-flex {
+    display: flex;
+  }
+
+  .metadata-pair {
+    display: inline-block;
+    max-width: 160px;
+    margin: 0 45px 0 0;
+
+    &:last-child {
+      margin-right: 0;
+      max-width: none;
+    }
+
+    .metadata-pair-key {
+      font-size: 15px;
+    }
+
+    .metadata-pair-value {
+      font-size: 24px;
+      line-height: 27px;
+      color: $primary-dark;
+      letter-spacing: -0.5px;
+      font-weight: 600;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .metadata-detail-groups {
+    justify-content: flex-start;
+  }
+
+  .metadata-detail-group {
+    margin-right: 15px;
+  }
+
+  .metadata-detail-group-title {
+    font-size: 12px;
+    color: $dark-grey-1-darkened;
+    font-weight: 600;
+  }
+
+  .metadata-detail-group-value {
+    font-size: 12px;
+    margin: 0;
+
+    &.empty {
+      font-style: italic;
+    }
+  }
+
+  .metadata-table {
+    padding: 0 15px;
+
+    h3.metadata-table-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0;
+      margin-top: 15px;
+      letter-spacing: -0.5px;
+    }
+
+    table {
+      border-collapse: collapse;
+
+      tr:nth-of-type(odd) {
+        background: $light-grey-6;
+      }
+
+      tr {
+        td {
+          vertical-align: middle;
+
+          padding: 3px;
+
+          &:first-child {
+            color: $dark-grey-2;
+            width: 35%;
+            padding: 3px 11px;
+          }
+
+          &.empty {
+            font-style: italic;
+          }
+
+          &.attachment, &.attachment a {
+            word-break: break-all;
+            word-wrap: break-word;
+
+            .icon-copy-document {
+              margin-right: 4px;
+            }
+          }
+
+          &.attribution .icon-external-square {
+            margin-left: 4px;
+          }
+
+          img.license {
+            vertical-align: middle;
+            margin: 4px 0;
+          }
+        }
+      }
+
+      .tag-list-container {
+        .tag-list {
+          display: inline-block;
+          line-height: 24px;
+
+          button {
+            color: $dark-grey-1;
+          }
+        }
+      }
+    }
+  }
+
+  @media(max-width: $medium) {
+    .section-content {
+      flex-wrap: wrap;
+
+      .metadata-column, .metadata-column.fancy {
+        flex: 1 0 100%;
+      }
+
+      .metadata-detail-groups {
+        display: block;
+
+        &.middle {
+          margin-bottom: 0;
+        }
+
+        .metadata-detail-group {
+          display: block;
+
+          .metadata-detail-group-title {
+            display: inline-block;
+            margin: 0 4px 0 0;
+          }
+
+          .metadata-detail-group-value {
+            display: inline-block;
+          }
+        }
+      }
+
+      .metadata-column.tables {
+        padding-bottom: 40px;
+
+        .metadata-table-toggle-group.desktop {
+          display: none;
+        }
+
+        .metadata-table-toggle-group.mobile {
+          display: block;
+        }
+      }
+    }
+  }
+}

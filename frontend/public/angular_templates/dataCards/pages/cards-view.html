@@ -1,0 +1,84 @@
+<div class="cards-view">
+
+  <page-header ng-show="pageHeaderEnabled"></page-header>
+
+  <info-pane></info-pane>
+
+  <customize-bar
+    card-count="cardCount"
+    show-provenance-section="showProvenanceSection"
+    edit-mode="editMode"
+    has-changes="hasChanges"
+    is-ephemeral="isEphemeral"
+    expanded-card="expandedCard"
+    exporting-visualization="chooserMode.show"
+    revert-page="revertPage"
+    revert-initiated="revertInitiated"
+    should-enable-save="shouldEnableSave"
+    save-page="savePage"
+    save-page-as="savePageAs"
+    save-status="saveStatus"
+    page="page"
+    ng-show="shouldDisplayCustomizeBar">
+  </customize-bar>
+
+  <div class="cards-content">
+
+    <quick-filter-bar></quick-filter-bar>
+
+    <card-layout
+      id="card-container"
+      class="cards"
+      ng-class="{ 'edit-mode': editMode, 'with-site-chrome': siteChromeEnabled }"
+      page="page"
+      edit-mode="editMode"
+      global-where-clause-fragment="globalWhereClauseFragment"
+      expanded-card="expandedCard"
+      allow-add-card="!allVisualizableColumnsVisualized"
+      chooser-mode="chooserMode">
+    </card-layout>
+  </div>
+
+  <div class="manage-lens-dialogs" ng-controller="ManageLensDialogController">
+    <modal-dialog ng-if="manageLensState.show" ng-hide="newSharesState.show" dialog-state="manageLensState">
+      <manage-lens-dialog></manage-lens-dialog>
+    </modal-dialog>
+    <modal-dialog ng-if="newSharesState.show" dialog-state="newSharesState">
+      <new-share-dialog dialog-state="newSharesState" save-new-shares="saveNewShares"></new-share-dialog>
+    </modal-dialog>
+  </div>
+
+  <modal-dialog
+    ng-if="addCardState.show"
+    dialog-state="addCardState">
+
+    <add-card-dialog
+      dialog-state="addCardState"
+      page="page">
+    </add-card-dialog>
+
+  </modal-dialog>
+
+  <modal-dialog
+    class="second"
+    ng-if="customizeState.show"
+    dialog-state="customizeState">
+
+    <customize-card-dialog
+      dialog-state="customizeState"
+      page="page">
+    </customize-card-dialog>
+
+  </modal-dialog>
+
+  <modal-dialog
+    ng-if="mobileWarningState.show"
+    dialog-state="mobileWarningState">
+
+    <mobile-warning-dialog dialog-state="mobileWarningState"></mobile-warning-dialog>
+
+  </modal-dialog>
+
+  <feedback-panel></feedback-panel>
+
+</div>

@@ -1,0 +1,38 @@
+@import 'app/styles/styleguide-colors';
+
+.modalFooter {
+  margin-bottom: 1.75em;
+
+  :global {
+    .modal-footer-actions {
+      text-align: center;
+    }
+  }
+}
+
+.mainIcon {
+  font-size: 150px;
+  display: inline-block;
+  height: 190px;
+  line-height: 170px;
+  vertical-align: top;
+  overflow: hidden;
+  color: $primary-base;
+}
+
+.button {
+  composes: btn from global;
+  margin: 0 5px;
+  min-width: 150px;
+  line-height: 20px;
+}
+
+.cancelButton {
+  composes: button;
+  composes: btn-default from global;
+}
+
+.mainButton {
+  composes: button;
+  composes: btn-primary from global;
+}

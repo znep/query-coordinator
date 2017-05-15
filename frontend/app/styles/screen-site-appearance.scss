@@ -1,0 +1,623 @@
+$disabled-text: #ddd;
+$grey: #7a7a7a;
+$dark-grey: #5e5e5e;
+$red-text: #d06463;
+$red-btn: #ce6565;
+$red-btn-hover: #a55151;
+$faint-border-color: #ebebeb;
+$dark-border-color: #d6d6d6;
+$font_family: "Open Sans", "Helvetica", Arial, sans-serif;
+$link_color: #2279a6;
+
+.siteOuterWrapper {
+  background: white;
+}
+
+.site-appearance {
+  .flannel-hidden {
+    display: none;
+  }
+
+  font-family: $font_family;
+  max-width: 68rem;
+  margin: 0 auto;
+
+  h1, h2, h3, h4, h5 {
+    letter-spacing: -0.5px;
+    font-weight: 600;
+  }
+
+  .section-separator {
+    border-top: 1px solid $faint-border-color;
+    margin: 1rem 0;
+  }
+
+  button {
+    color: $grey;
+    background-color: #fff;
+    border: solid 1px #c2c2c2;
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 15px;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0;
+    margin-right: 0;
+    @include transition(0.2s, color);
+    @include transition(0.2s, background-color);
+    border-radius: 1px;
+    &:hover {
+      color: $dark-grey;
+      background-color: #e6e6e6;
+    }
+    &.primary {
+      color: #fff;
+      background-color: #288DC1;
+      border-color: #288DC1;
+      &:hover {
+        background-color: #20719a;
+      }
+    }
+    &.error {
+      color: #fff;
+      background-color: $red-btn;
+      border-color: $red-btn;
+      cursor: default;
+      &:hover {
+        background-color: $red-btn-hover;
+      }
+    }
+    &.btn-primary {
+      color: #fff;
+      background-color: $link_color;
+      border-color: #288dc1;
+    }
+    &.btn-transparent {
+      border-color: transparent;
+      background-color: transparent;
+    }
+  }
+
+  .admin-header {
+    margin-bottom: 46px;
+    overflow: hidden;
+
+    .header-title {
+      display: inline-block;
+
+      h1 {
+        display: inline-block;
+        font-size: 27px;
+        margin-bottom: 2rem;
+        }
+    }
+
+    .locale-warning {
+      float: right;
+      margin-bottom: 1rem;
+
+      .alert {
+        font-size: 13px;
+      }
+    }
+
+    .custom-content-warning {
+      margin-bottom: 1rem;
+    }
+
+    .page-controls {
+      clear: both;
+      float: right;
+
+      > a,
+      > button {
+        margin-right: 9px;
+
+        &:last-of-type {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  ul.tabs {
+    border-bottom: 1px solid $dark-border-color;
+    padding-bottom: 8px;
+    padding-left: 0;
+    clear: both;
+
+    li {
+      display: inline-block;
+      margin: 0 1rem 0 0;
+
+      a {
+        text-decoration: none;
+        color: $grey;
+        padding: 6px 9px;
+        font-size: 15px;
+
+        &:hover {
+          border-bottom: 4px solid $dark-border-color;
+          color: #3d3d3d;
+        }
+      }
+
+      &.current a {
+        border-bottom: 4px solid #288DC1;
+        color: #3d3d3d;
+      }
+    }
+  }
+
+  .tab-content {
+    display: none;
+    padding: 0 1rem;
+
+    &.current {
+      display: block;
+    }
+
+    section.settings-group {
+      display: block;
+      padding-top: 0.5rem;
+
+      &:first-of-type {
+        padding-top: 0;
+      }
+
+      h3 {
+        color: $dark-grey;
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      h6 {
+        margin-bottom: 1rem;
+      }
+
+      p {
+        margin: 0.25rem 0 1rem;
+        font-size: 13px;
+        line-height: 1.2rem;
+        color: $dark-grey;
+      }
+
+      div.radiobutton.horizontal {
+        display: inline-block;
+        margin-right: 3rem;
+
+        input[type="radio"] {
+          display: inline-block;
+          opacity: 1;
+          width: 1rem;
+          height: 1rem;
+          box-shadow: none;
+          margin: 0;
+          cursor: pointer;
+        }
+
+        label {
+          display: inline-block;
+          vertical-align: top;
+          padding-left: 0.5rem;
+        }
+      }
+
+      div.settings-form {
+        display: inline-block;
+        width: 65%;
+
+        &.half {
+          width: calc(32.5% - 1rem);
+          &:first-of-type {
+            margin-right: 2rem;
+          }
+        }
+
+        &.full {
+          width: 100%;
+          float: none;
+
+          label {
+            display: inline-block;
+            input[type="checkbox"] {
+              width: 12px;
+              margin: 0 0.5em 0 0;
+            }
+            &.indented {
+              margin-left: 1em;
+            }
+            &.disabled,
+            &.disabled > span {
+              color: $disabled-text;
+              cursor: default;
+            }
+          }
+
+          &.signin-signout {
+            aside {
+              width: 100%;
+              margin: 0.25rem 0 1rem;
+              p {
+                color: $grey;
+                font-size: 14px;
+              }
+            }
+            .signin-signout-checkbox {
+              label {
+                font-size: 14px;
+                margin-bottom: 0;
+              }
+            }
+          }
+        }
+
+        &.image {
+          .form-field-url-input {
+            width: calc(100% - 144px);
+            display: inline-block;
+          }
+
+          // Hide actual file input. Instead show styleguide button that triggers this hidden input's click.
+          .form-field-image-hidden-input {
+            display: none;
+          }
+
+          button {
+            float: right;
+            margin-right: 14px;
+            margin-bottom: 0;
+            width: 120px;
+            vertical-align: top;
+            padding: 8px 15px;
+
+            &.btn-busy {
+              display: none;
+
+              span {
+                width: 16px;
+                height: 16px;
+              }
+            }
+
+            &.form-field-image-input-button {
+              span[class^="icon-"] {
+                margin-left: 0.5rem;
+              }
+            }
+          }
+
+          .upload-failed {
+            display: none;
+            clear: both;
+            float: right;
+            margin-right: 14px;
+            font-style: 14px;
+            color: $red-text;
+          }
+        }
+
+        label {
+          display: block;
+          margin-bottom: 0.5em;
+          font-size: 15px;
+          font-weight: 400;
+          color: $grey;
+
+          &.site-appearance-input-error {
+            color: $red-text;
+            font-size: 14px;
+            float: left;
+          }
+        }
+        input {
+          width: calc(100% - 16px);
+          border: solid 1px #c2c2c2;
+          border-radius: 1px;
+          box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+          font-size: 15px;
+          padding: 8px;
+          margin-bottom: 12px;
+          font-family: $font_family;
+
+          &::-webkit-input-placeholder {
+            font-style: italic;
+          }
+          &::-moz-placeholder {
+            font-style: italic;
+          }
+          /* firefox 19+ */
+          &:-ms-input-placeholder {
+            font-style: italic;
+          }
+          /* ie */
+
+          &.site-appearance-input-error {
+            border-color: $red-text;
+          }
+
+          &[disabled] {
+            color: #bbb;
+            cursor: default;
+          }
+        }
+        div.dropdown {
+          width: calc(100% - 16px);
+          padding: 8px 11px;
+
+          ul.dropdown-options {
+            width: 100%;
+          }
+
+          span.icon-arrow-down {
+            float: right;
+            line-height: 24px;
+          }
+
+          span.placeholder {
+            font-style: italic;
+          }
+        }
+      }
+
+      aside {
+        display: inline-block;
+        width: calc(35% - 1.5rem);
+        vertical-align: middle;
+
+        a, a:visited {
+          color: $link_color;
+          font-weight: 600;
+        }
+
+        p {
+          margin: 0;
+        }
+
+        &.full {
+          float: none;
+          padding: 0;
+        }
+      }
+
+      &.no-label {
+        padding-top: 1rem;
+        aside {
+          p {
+            margin: 0;
+          }
+        }
+      }
+
+      &.list-of-links {
+
+        p {
+          margin-bottom: 0.25rem;
+        }
+
+        div.link-row-header {
+          overflow: hidden;
+
+          label {
+            margin: 0.5rem;
+            width: calc(50% - 1.2rem);
+            float: left;
+            box-sizing: border-box;
+            line-height: 1.5rem;
+            font-size: 15px;
+            color: $grey;
+          }
+        }
+
+        .link-menu-header {
+          display: block;
+          box-sizing: border-box;
+          line-height: 1.5rem;
+          font-size: 14px;
+          color: $grey;
+        }
+
+        // Hide remove-link-row for the first div.link-row
+        .links-and-menus {
+          > div:first-of-type {
+          .remove-link-row {
+            display: none;
+          }
+        }
+        }
+
+        // Top level link rows
+        div.link-row {
+          overflow: hidden;
+
+          &.default {
+            display: none;
+          }
+
+          input {
+            margin: 0.5rem;
+            padding: 0.5rem;
+            width: calc(50% - 2.5rem);
+            float: left;
+            font-size: 15px;
+            box-sizing: border-box;
+            border: solid 1px #c2c2c2;
+            border-radius: 1px;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+            font-family: $font_family;
+            &::-webkit-input-placeholder {
+              font-style: italic;
+            }
+            &::-moz-placeholder {
+              font-style: italic;
+            }
+            /* firefox 19+ */
+            &:-ms-input-placeholder {
+              font-style: italic;
+            }
+            /* ie */
+            &.site-appearance-input-error {
+              border-color: $red-text;
+            }
+          }
+
+          label.site-appearance-input-error {
+            color: $red-text;
+          }
+
+          .move-link-row {
+            float: left;
+            cursor: pointer;
+            font-size: 22px;
+            line-height: 50px;
+            position: relative;
+            left: -5px;
+          }
+
+          // Temporary img until we get the icon font in socrata-components
+          img.move-link-row {
+            height: 22px;
+            margin-top: 14px;
+          }
+
+          .remove-link-row {
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 50px;
+          }
+        }
+
+        // Link menus
+        div.link-menu {
+          margin: 0.5rem 0;
+          padding: 0.5rem;
+          overflow: hidden;
+
+          &.default {
+            display: none;
+          }
+
+          > input {
+            margin: 0.5rem;
+            padding: 0.5rem;
+            width: calc(100% - 2rem);
+            font-size: 15px;
+            box-sizing: border-box;
+            border: solid 1px #c2c2c2;
+            border-radius: 1px;
+            box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+            font-family: $font_family;
+          }
+
+          .remove-link-menu {
+            cursor: pointer;
+            font-size: 10pt;
+            line-height: 50px;
+          }
+
+          // Child link rows
+          div.link-row {
+            margin-left: 2rem;
+            width: calc(100% - 1.5rem);
+          }
+        button.add-new-link-row {
+            margin-left: 2.5rem;
+          }
+        }
+
+        button.add-new-link-row, button.add-new-link-menu {
+          margin: 0.5rem;
+          font-size: 14px;
+
+          // Copied from styleguide. Remove when styleguiding
+          &:disabled {
+            color: #767676;
+            border-color: #919191;
+            background-color: #c8c8c8;
+            cursor: not-allowed;
+          }
+
+          span.icon-add {
+            font-size: 10px;
+          }
+        }
+      }
+    }
+
+    .page-controls {
+      text-align: right;
+      margin-top: 2rem;
+      position: relative;
+
+      button {
+        [class*="icon-"] {
+          position: relative;
+          padding-left: 11px;
+        }
+
+        &:first-of-type {
+          margin-right: 9px;
+        }
+      }
+    }
+
+    .whats-new-content {
+      .whats-new-hero-image {
+        display: block;
+        margin: 0 auto;
+      }
+
+      .whats-new-title {
+        font-size: 15pt;
+        color: #288dc1;
+        margin: 16px 0 8px;
+      }
+
+      .whats-new-description {
+        > p {
+          font-size: 10pt;
+          line-height: 1.2rem;
+          margin: 0 0 16px;
+        }
+
+        a, a:visited {
+          color: $link_color;
+          font-weight: 600;
+        }
+
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  #site_appearance_activation_flannel {
+    position: fixed;
+    z-index: 1;
+    text-align: left;
+
+    p {
+      font-size: 12px;
+    }
+
+    .flyout-footer {
+      text-align: right;
+      padding-right: 1rem;
+    }
+
+    footer.flannel-actions {
+      background: transparent; // To remedy CS instances where any `footer` has a bg color.
+    }
+  }
+}
+
+#siteHeader .siteUserNav li a {
+  font-size: 12px;
+}
+
+// This hack is to override a hack purpetrated elsewhere in custom css on certain domains
+html, body {
+  height: 100% !important;
+}

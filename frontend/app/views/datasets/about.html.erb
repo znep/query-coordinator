@@ -1,0 +1,28 @@
+<% content_for :head do %>
+  <title>About <%= h(@view.name) + " | " + get_site_title %></title>
+  <%= rendered_stylesheet_tag 'dataset-about-full' %>
+<% end %>
+
+<%= render :partial => 'dataset_bar', :locals => {:no_actions => true, :link_back => true} %>
+
+<div class="outerContainer" id="aboutSection">
+  <div class="innerContainer">
+    <div class="fullHeight">
+      <%= render :partial => 'about_dataset', :locals => {:full_page => true} %>
+    </div>
+  </div>
+</div>
+
+<% content_for :templates do %>
+  <%= render :partial => 'flag_message' %>
+<% end %>
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.ds.dataset_contact %>
+  <%= render_translations LocalePart.screens.about %>
+<% end %>
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    blist.dataset = new Dataset(<%= safe_json(@view) %>);
+  </script>
+  <%= include_webpack_bundle 'open-data/dataset-about-full.js' %>
+<% end %>

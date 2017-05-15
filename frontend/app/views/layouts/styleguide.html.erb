@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="<%= I18n.locale %>">
+
+<!--
+Powered by Socrata Publica
+http://www.socrata.com
+-->
+
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css"/>
+
+    <%= yield :head %>
+
+    <%= get_favicon_tag %>
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_stylesheet_tag %>
+  </head>
+
+  <%= content_tag :body, :class => @body_classes do %>
+    <%- if render_site_admin_chrome? -%>
+      <%== site_chrome_admin_header(request, response, @site_chrome_admin_header_options || {}) %>
+    <%- end -%>
+
+    <%- if render_site_chrome? && !@suppress_site_chrome_header -%>
+      <%== site_chrome_header(request, response) %>
+    <%- end -%>
+
+    <div id="noticeContainer">
+      <%= display_styleguide_flashes %>
+    </div>
+
+    <%= yield %>
+
+    <%- if render_site_chrome? -%>
+      <%== site_chrome_footer(request, response) %>
+    <%- end -%>
+
+    <%# Ensure mixpanelConfig is defined before loading other scripts -%>
+    <%= render_mixpanel_config %>
+
+    <%= render_pendo_tracker %>
+
+    <%# dotdotdot and velocity are finicky about jQuery. -%>
+    <%# We made jquery an external, load it here and then bind it to window to be loaded into our Webpack bundle. -%>
+    <%= jquery_include('2.2.4') %>
+    <script> window.jquery = window.jQuery </script>
+
+    <%= render_ga_tracking %>
+    <%= site_chrome_analytics_tags %>
+    <%= site_chrome_javascript_tag %>
+
+    <%= yield :scripts %>
+  <% end # end of body %>
+</html>

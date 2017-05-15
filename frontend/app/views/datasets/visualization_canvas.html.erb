@@ -1,0 +1,41 @@
+<% content_for :head do %>
+  <title><%= @view.name %> | <%= get_site_title %></title>
+
+  <link rel="stylesheet" href="/stylesheets/socrata-visualizations/socrata-visualizations.css">
+  <%= rendered_stylesheet_tag 'visualization-canvas' %>
+<% end %>
+
+<div id="app" class="visualization-canvas">
+
+  <% # note that this is a placeholder for the EditBar.js component %>
+  <% if @display_placeholder_edit_bar %>
+    <nav class="edit-bar">
+      <button class="socrata-icon-stories-menu btn-menu"></button>
+      <span class="page-name"><%= @view.name %></span>
+    </nav>
+  <% end %>
+
+  <div class="placeholder-wrapper">
+    <div class="main-spinner">
+      <div class="spinner-default spinner-large"></div>
+    </div>
+  </div>
+</div>
+
+<% content_for :scripts do %>
+  <script id="visualization-canvas-initial-state">
+    var initialState = {
+      parentView: <%= raw @parent_view.as_visualization_canvas_parent.to_json %>,
+      view: <%= raw @view.as_visualization_canvas.to_json %>,
+      vifs: <%= raw @view.displayFormat.visualization_canvas_metadata[:vifs].to_json %>,
+      filters: <%= raw @view.displayFormat.visualization_canvas_metadata[:filters].to_json %>
+    };
+  </script>
+
+  <%= render_feature_flags_for_javascript %>
+  <%= render_visualization_canvas_translations %>
+  <%= render_visualization_canvas_server_config %>
+  <%= render_visualization_canvas_session_data %>
+
+  <%= include_webpack_bundle 'visualization-canvas/main.js' %>
+<% end %>

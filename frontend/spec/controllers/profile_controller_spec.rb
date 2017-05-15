@@ -4,9 +4,7 @@ describe ProfileController do
   include TestHelperMethods
 
   before(:each) do
-    init_core_session
-    init_current_domain
-    init_feature_flag_signaller
+    init_anonymous_environment
   end
 
   describe 'GET /profile' do

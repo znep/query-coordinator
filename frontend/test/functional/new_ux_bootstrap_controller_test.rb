@@ -4,11 +4,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
   context 'bootstrap' do
     setup do
-      init_core_session
-      init_current_domain
-      init_feature_flag_signaller
+      init_environment(test_user: TestHelperMethods::NO_USER, site_chrome: false, feature_flags: {
+        :use_ephemeral_bootstrap => false,
+        :create_v2_data_lens => false,
+        :enable_data_lens_page_metadata_migrations => false
+      })
       # noinspection RubyArgCount
-      CurrentDomain.stubs(domain: stub(cname: 'localhost'))
       @phidippides = Phidippides.new('localhost', 2401)
       @page_metadata_manager = PageMetadataManager.new
       @controller.stubs(
@@ -25,26 +26,29 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       # This doesn't work. #find is not an instance method
       View.any_instance.stubs(:find => test_view)
       # TODO determine why 23 tests fail or break when :use_ephemeral_bootstrap is set to true
-      stub_feature_flags_with(:use_ephemeral_bootstrap => false)
-      stub_feature_flags_with(:create_v2_data_lens => false)
-      stub_feature_flags_with(:enable_data_lens_page_metadata_migrations => false)
     end
 
-    should 'have no route if no id' do
-      assert_raises(ActionController::UrlGenerationError) do
-        get :bootstrap, app: 'dataCards'
+    context 'unauthenticated' do
+      setup do
+        stub_anonymous_user
       end
-    end
 
-    should 'return 403 if anonymous - for V1 Data Lenses' do
-      get :bootstrap, id: 'four-four', app: 'dataCards'
-      assert_response(403)
-    end
+      should 'have no route if no id' do
+        assert_raises(ActionController::UrlGenerationError) do
+          get :bootstrap, app: 'dataCards'
+        end
+      end
 
-    should 'return 403 if anonymous - even for V2 Data Lenses' do
-      stub_feature_flags_with(:create_v2_data_lens => true)
-      get :bootstrap, id: 'four-four', app: 'dataCards'
-      assert_response(403)
+      should 'return 403 if anonymous - for V1 Data Lenses' do
+        get :bootstrap, id: 'four-four', app: 'dataCards'
+        assert_response(403)
+      end
+
+      should 'return 403 if anonymous - even for V2 Data Lenses' do
+        stub_feature_flags_with(:create_v2_data_lens => true)
+        get :bootstrap, id: 'four-four', app: 'dataCards'
+        assert_response(403)
+      end
     end
 
     context 'auth' do
@@ -52,6 +56,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         # Stub out services, so we don't end up trying
         # to connect to external endpoints.
         @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {columns: nil} })
+        stub_current_user
       end
 
       should 'return 403 if role is not set, and not admin - for V1 Data Lenses' do
@@ -129,6 +134,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub_user = stub(roleName: 'administrator')
 
         @controller.stubs(current_user: stub_user)
+
+        stub_current_user
       end
 
       context 'bootstrapping old backend datasets should error' do

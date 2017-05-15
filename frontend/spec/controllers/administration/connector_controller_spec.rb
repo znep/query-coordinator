@@ -4,7 +4,7 @@ describe Administration::ConnectorController do
   include TestHelperMethods
 
   before do
-    init_current_domain
+    init_environment
     init_current_user(subject)
     stub_site_chrome
     rspec_stub_feature_flags_with(:enable_catalog_federator_connector => true)

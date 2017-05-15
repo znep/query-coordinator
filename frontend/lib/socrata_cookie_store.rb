@@ -152,10 +152,13 @@ class SocrataCookieStore
         save_core_cookie = true
       end
 
-      [
-        [save_cookie, session_data, @key],
-        [save_core_cookie, core_data, @core_key]
-      ].each do |persist|
+      cookies = [
+        [save_cookie, session_data, @key]
+      ]
+
+      cookies << [save_core_cookie, core_data, @core_key] unless FeatureFlags.derive[:core_managed_session]
+
+      cookies.each do |persist|
         if persist.first
           raise CookieOverflow if (persist[1].size) > MAX
 

@@ -17,11 +17,12 @@ module Auth0Helper
   end
 
   private
-  COOKIE_SECRET = "wm4NmtBisUd3XJ0JvQwJqTth8UdFvbYpy3LZ5IU3I3XCwG06XRa1TYXC3WySahssDzrt2cHFrbsRPT1o"
 
   def compute_signature(uid, expiration, salt)
+    cookie_secret = Rails.application.secrets.core_session_secret
+
     # Core produces a signature which is a SHA1 hash of the string "secret 4x4 expiration salt"
-    Digest::SHA1.hexdigest("#{COOKIE_SECRET} #{uid} #{expiration} #{salt}")
+    Digest::SHA1.hexdigest("#{cookie_secret} #{uid} #{expiration} #{salt}")
   end
 
   def valid_token?(auth0_hash)

@@ -3,16 +3,14 @@ require 'ostruct'
 
 class Auth0ControllerTest < ActionController::TestCase
   include UserSessionsHelper
+
   def setup
     Frontend.stubs(:auth0_configured? => true)
     Rails.application.reload_routes!
-    init_core_session
-    init_current_domain
-    init_feature_flag_signaller
+    init_environment
     OmniAuth.config.test_mode = true
     @request.env['HTTPS'] = 'on'
     @user = login
-    stub_site_chrome
   end
 
   def teardown
@@ -73,64 +71,76 @@ class Auth0ControllerTest < ActionController::TestCase
     token
   end
 
-  test 'a valid uid should create a valid cookie' do
-    OmniAuth.config.mock_auth[:auth0] = get_mock_token('auth0','auth0|abcd-efgh','auth0|abcd-edfg|username-password-staging')
+  context 'authentication successful' do
+    setup do
+      stub_authenticate_federated_success
+    end
 
-    @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
-    get :callback, :protocol => 'https'
-    assert_redirected_to('/profile')
-    refute_nil(@response.cookies['_core_session_id'])
-    assert(@response.cookies['logged_in'])
+    should 'a valid uid should create a valid cookie' do
+      OmniAuth.config.mock_auth[:auth0] = get_mock_token('auth0','auth0|abcd-efgh','auth0|abcd-edfg|username-password-staging')
+
+      @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
+      get :callback, :protocol => 'https'
+      assert_redirected_to('/profile')
+      refute_nil(@response.cookies['_core_session_id'])
+      assert(@response.cookies['logged_in'])
+    end
+
+    should 'an invalid uid should not create a cookie' do
+      OmniAuth.config.mock_auth[:auth0] = get_mock_token('auth0','auth0|thisisgarbage','auth0|thisisgarbage|username-password-staging')
+
+      @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
+      get :callback, :protocol => 'https'
+      assert_response(:error)
+      assert_nil(@response.cookies['_core_session_id'])
+      assert_nil(@response.cookies['logged_in'])
+    end
+
+    should 'Auth0 federated token is not valid' do
+      OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|thisisgarbage','samlp|thisisgarbage|')
+
+      @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
+      Auth0Controller.any_instance.expects(:valid_token?).returns(false)
+      get :callback, :protocol => 'https'
+      assert_nil(@response.cookies['_core_session_id'])
+      assert_nil(@response.cookies['logged_in'])
+      assert_response(404)
+    end
+
+    should 'Social Auth not-found should redirect to linking page' do
+      OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|someidentifier','samlp|someidentifier|socrata.com')
+      @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
+      Auth0Controller.any_instance.expects(:authentication_provider_class).returns(NotAuthenticatedStub)
+      get :callback, :protocol => 'https'
+      assert_nil(@response.cookies['_core_session_id'])
+      assert_nil(@response.cookies['logged_in'])
+      assert_response(302)
+    end
+
+    should 'Auth0 federated token should result in a user_session' do
+      OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|someidentifier','samlp|someidentifier|socrata.com')
+      @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
+      Auth0Controller.any_instance.expects(:authentication_provider_class).returns(AuthenticatedStub)
+      get :callback, :protocol => 'https'
+      refute_nil(@response.cookies['logged_in'])
+      assert_redirected_to(login_redirect_url)
+    end
   end
 
-  test 'an invalid uid should not create a cookie' do
-    OmniAuth.config.mock_auth[:auth0] = get_mock_token('auth0','auth0|thisisgarbage','auth0|thisisgarbage|username-password-staging')
+  context 'authentication failed' do
+    setup do
+      stub_authenticate_federated_failure
+    end
 
-    @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
-    get :callback, :protocol => 'https'
-    assert_response(:error)
-    assert_nil(@response.cookies['_core_session_id'])
-    assert_nil(@response.cookies['logged_in'])
-  end
+    should 'Auth0 username and password token is not valid' do
+      OmniAuth.config.mock_auth[:auth0] = get_mock_token('auth0','auth0|thisisgarbage','auth0|thisisgarbage|username-password-staging')
 
-  test 'Auth0 username and password token is not valid' do
-    OmniAuth.config.mock_auth[:auth0] = get_mock_token('auth0','auth0|thisisgarbage','auth0|thisisgarbage|username-password-staging')
-
-    @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
-    get :callback, :protocol => 'https'
-    assert_nil(@response.cookies['_core_session_id'])
-    assert_nil(@response.cookies['logged_in'])
-    assert_response(500)
-  end
-
-  test 'Auth0 federated token is not valid' do
-    OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|thisisgarbage','samlp|thisisgarbage|')
-
-    @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
-    Auth0Controller.any_instance.expects(:valid_token?).returns(false)
-    get :callback, :protocol => 'https'
-    assert_nil(@response.cookies['_core_session_id'])
-    assert_nil(@response.cookies['logged_in'])
-    assert_response(404)
-  end
-
-  test 'Social Auth not-found should redirect to linking page' do
-    OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|someidentifier','samlp|someidentifier|socrata.com')
-    @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
-    Auth0Controller.any_instance.expects(:authentication_provider_class).returns(NotAuthenticatedStub)
-    get :callback, :protocol => 'https'
-    assert_nil(@response.cookies['_core_session_id'])
-    assert_nil(@response.cookies['logged_in'])
-    assert_response(302)
-  end
-
-  test 'Auth0 federated token should result in a user_session' do
-    OmniAuth.config.mock_auth[:auth0] = get_mock_token('samlp','samlp|someidentifier','samlp|someidentifier|socrata.com')
-    @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
-    Auth0Controller.any_instance.expects(:authentication_provider_class).returns(AuthenticatedStub)
-    get :callback, :protocol => 'https'
-    refute_nil(@response.cookies['logged_in'])
-    assert_redirected_to(login_redirect_url)
+      @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]
+      get :callback, :protocol => 'https'
+      assert_nil(@response.cookies['_core_session_id'])
+      assert_nil(@response.cookies['logged_in'])
+      assert_response(500)
+    end
   end
 
   class StubAuth0Authentication < ActionController::TestCase
@@ -169,6 +179,12 @@ class Auth0ControllerTest < ActionController::TestCase
   class AuthenticatedStub < StubAuth0Authentication
     def authenticated?
       true
+    end
+
+    def response
+      {
+        'Set-Cookie' => cookie_string
+      }
     end
   end
 

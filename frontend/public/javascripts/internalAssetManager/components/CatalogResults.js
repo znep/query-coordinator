@@ -4,7 +4,6 @@ import ResultListTable from './ResultListTable';
 import Pager from '../../common/components/Pager';
 import ResultCount from './ResultCount';
 import * as Actions from '../actions/catalog';
-import ceteraUtils from '../../common/ceteraUtils';
 
 const RESULTS_PER_PAGE = 10;
 
@@ -13,7 +12,6 @@ export class CatalogResults extends React.Component {
     super(props);
 
     this.state = {
-      currentPage: 1,
       tableView: 'list'
     };
 
@@ -27,42 +25,11 @@ export class CatalogResults extends React.Component {
   }
 
   changePage(pageNumber) {
-    this.setState({ fetchingResults: true, errorMessage: null });
-
-    ceteraUtils.
-      fetch({
-        // TODO: get filters from redux. shaped like:
-        // category: categoryFilter,
-        // customMetadataFilters,
-        // limit: this.props.resultsPerPage,
-        // only: assetTypeFilter,
-        // order: this.state.sort,
-        // q: this.state.query
-        limit: RESULTS_PER_PAGE,
-        pageNumber
-      }).
-      then((response) => {
-        this.setState({ fetchingResults: false });
-        if (_.isObject(response)) {
-          this.props.updateCatalogResults(response);
-        } else {
-          this.setState({ errorMessage: response });
-        }
-      }).
-      catch((error) => {
-        this.setState({
-          errorMessage: error,
-          fetchingResults: false
-        });
-      });
-
-    this.setState({
-      currentPage: parseInt(pageNumber, 10)
-    });
+    this.props.changePage(pageNumber);
   }
 
   renderError() {
-    if (this.state.errorMessage) {
+    if (this.props.fetchingResultsError) {
       return (
         <div className="alert error">
           {_.get(I18n, 'errors.fetching_results')}
@@ -76,7 +43,8 @@ export class CatalogResults extends React.Component {
   }
 
   renderTable() {
-    const { fetchingResults, tableView } = this.state;
+    const { fetchingResults } = this.props;
+    const { tableView } = this.state;
 
     if (fetchingResults) {
       return (
@@ -95,22 +63,20 @@ export class CatalogResults extends React.Component {
   }
 
   renderFooter() {
-    if (this.state.fetchingResults) {
+    const { currentPage, fetchingResults, resultSetSize } = this.props;
+    if (fetchingResults) {
       return;
     }
 
-    const { resultSetSize } = this.props;
-    const { currentPage } = this.state;
-
     const pagerProps = {
       changePage: this.changePage,
-      currentPage: currentPage,
+      currentPage,
       resultCount: resultSetSize,
       resultsPerPage: RESULTS_PER_PAGE
     };
 
     const resultCountProps = {
-      currentPage: currentPage,
+      currentPage,
       resultsPerPage: RESULTS_PER_PAGE,
       total: resultSetSize
     };
@@ -136,16 +102,30 @@ export class CatalogResults extends React.Component {
 }
 
 CatalogResults.propTypes = {
-  updateCatalogResults: PropTypes.func.isRequired,
+  changePage: PropTypes.func.isRequired,
+  currentPage: PropTypes.number,
+  fetchingResults: PropTypes.bool,
+  fetchingResultsError: PropTypes.bool,
+  order: PropTypes.object,
   resultSetSize: PropTypes.number.isRequired
 };
 
+CatalogResults.defaultProps = {
+  currentPage: 1,
+  fetchingResults: false,
+  fetchingResultsError: false
+};
+
 const mapStateToProps = state => ({
+  currentPage: state.catalog.currentPage,
+  fetchingResults: state.catalog.fetchingResults,
+  fetchingResultsError: state.catalog.fetchingResultsError,
+  order: state.catalog.order,
   resultSetSize: state.catalog.resultSetSize
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateCatalogResults: (ceteraResponse) => dispatch(Actions.updateCatalogResults(ceteraResponse))
+  changePage: (pageNumber) => dispatch(Actions.changePage(pageNumber))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogResults);

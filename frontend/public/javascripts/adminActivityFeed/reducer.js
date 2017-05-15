@@ -1,5 +1,7 @@
 import immutable from 'immutable';
 import {
+  START_LOADING,
+  STOP_LOADING,
   SET_ACTIVITIES,
   SET_PAGINATION,
   DISMISS_ALERT,
@@ -15,6 +17,12 @@ import {
 
 export default function(state, action) {
   switch (action.type) {
+    case START_LOADING:
+      return state.set('loading', true);
+
+    case STOP_LOADING:
+      return state.set('loading', false);
+
     case SET_ACTIVITIES:
       return state.set('activities', immutable.fromJS(action.activities));
 

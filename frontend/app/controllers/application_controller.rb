@@ -300,7 +300,7 @@ class ApplicationController < ActionController::Base
     # attempting to route the request. But our templates heavily depend on the
     # current user, so let's just hook the auth controller anyways so we can
     # render the template.
-    UserSession.controller = self
+    UserSessionProvider.klass.controller = self
 
     if status_code == :not_found
       render_404

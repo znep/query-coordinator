@@ -33,7 +33,8 @@ describe('DetailsModal', () => {
     initiated_by: {
       displayName: 'initiated_by.displayName'
     },
-    file_name: 'file_name'
+    file_name: 'file_name',
+    bad_rows_url: 'a_link'
   };
 
   const httpClient = new MockHttpClient();
@@ -66,7 +67,7 @@ describe('DetailsModal', () => {
     const lineActivityInitiatedAt = output.querySelector('#line-activity-initiated-at').textContent;
     const lineActivityStartedBy = output.querySelector('#line-activity-started-by').textContent;
     const lineActivityImportMethod = output.querySelector('#line-activity-import-method').textContent;
-    const lineActivityFilename = output.querySelector('#line-activity-filename').textContent;
+    const lineActivityBadRowsDownloadLink = output.querySelector('#line-activity-bad-rows a').getAttribute('href');
 
     const expectedEventTitle = mockTranslations.show_page.
       event_messages[mockActivity.data.status][mockActivity.data.latest_event.event_type].title;
@@ -76,15 +77,16 @@ describe('DetailsModal', () => {
     const expectedInitiatedAt = `${mockTranslations.initiated_at}: ${moment(mockActivity.data.created_at).format('LLL')}`;
     const expectedStartedBy = `${mockTranslations.started_by}: ${mockActivity.initiated_by.displayName}`;
     const expectedImportMethod = `${mockTranslations.import_method}: ${mockActivity.data.service}`;
+    const expectedName = `${mockActivity.dataset.name}(${mockActivity.file_name})`;
 
     assert.equal(lineActivityType, mockActivity.data.activity_type);
-    assert.equal(lineActivityName, mockActivity.dataset.name);
+    assert.equal(lineActivityName, expectedName);
     assert.equal(lineActivityEventTitle, expectedEventTitle);
     assert.equal(lineActivityEventDesc, expectedEventDesc);
     assert.equal(lineActivityInitiatedAt, expectedInitiatedAt);
     assert.equal(lineActivityStartedBy, expectedStartedBy);
     assert.equal(lineActivityImportMethod, expectedImportMethod);
-    assert.equal(lineActivityFilename, mockActivity.file_name);
+    assert.equal(lineActivityBadRowsDownloadLink, mockActivity.bad_rows_url);
   });
 
   it('close button should fire close event', (done) => {

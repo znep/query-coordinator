@@ -5,6 +5,17 @@
   font-size: 10px;
 }
 
+.loading-in-progress {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 100%;
+  z-index: 51;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .server-error {
   width: 100%;
   margin-top: 60px;

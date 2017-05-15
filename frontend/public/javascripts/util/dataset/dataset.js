@@ -4814,8 +4814,12 @@
           }
         });
 
-        if (newFilterExistsInOldFilterCondition) {
-          _.unset(newDataset, 'query.filterCondition');
+        if (
+          newFilterExistsInOldFilterCondition &&
+          newDataset.hasOwnProperty('query') &&
+          newDataset.query.hasOwnProperty('filterCondition')
+        ) {
+          delete newDataset.query.filterCondition;
         }
       // Otherwise, we can actually iterate over newQueryFilterCondition's
       // children and compare them to the existing filters.
@@ -4839,7 +4843,12 @@
             newFiltersForQuery
           );
         } else {
-          _.unset(newDataset, 'query.filterCondition');
+          if (
+            newDataset.hasOwnProperty('query') &&
+            newDataset.query.hasOwnProperty('filterCondition')
+          ) {
+            delete newDataset.query.filterCondition;
+          }
         }
       }
     }
@@ -4923,7 +4932,13 @@
         if (!_.isEqual(originalJsonQueryWhere, newJsonQueryWhere)) {
           _.set(newDataset, 'metadata.jsonQuery.where', newJsonQueryWhere);
         } else {
-          _.unset(newDataset, 'metadata.jsonQuery.where');
+          if (
+            newDataset.hasOwnProperty('metadata') &&
+            newDataset.metadata.hasOwnProperty('jsonQuery') &&
+            newDataset.metadata.jsonQuery.hasOwnProperty('where')
+          ) {
+            delete newDataset.metadata.jsonQuery.where;
+          }
         }
       }
     }

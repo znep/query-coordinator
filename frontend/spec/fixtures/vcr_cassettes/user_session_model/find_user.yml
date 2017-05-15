@@ -1,0 +1,121 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:8080/authenticate
+    body:
+      encoding: US-ASCII
+      string: username=test%40socrata.com&password=12345678&remoteAddress=0.0.0.0
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-User-Agent:
+      - Rails Testing
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 18 Apr 2017 00:44:56 GMT
+      X-Socrata-Requestid:
+      - cgvb9zix116y9dr2jwdzjtkjh
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Set-Cookie:
+      - _core_session_id=MAGICALTOKEN;Path=/;HttpOnly
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "tugg-ikce",
+          "createdAt" : 1492472940,
+          "displayName" : "Andrew Gall",
+          "email" : "andrew.gall@socrata.com",
+          "emailUnsubscribed" : false,
+          "lastLogin" : 1492474403,
+          "oid" : 2,
+          "profileLastModified" : 1492472941,
+          "publicTables" : 0,
+          "publicViews" : 0,
+          "screenName" : "Andrew Gall"
+        }
+    http_version: 
+  recorded_at: Tue, 18 Apr 2017 00:44:57 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/users/current.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      X-Socrata-Host:
+      - localhost
+      X-User-Agent:
+      - Rails Testing
+      Cookie:
+      - _core_session_id=MAGICALTOKEN
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 18 Apr 2017 00:45:03 GMT
+      X-Socrata-Requestid:
+      - 2qrkpo8wbzbp9tfhkq0cfwu42
+      Access-Control-Allow-Origin:
+      - "*"
+      Set-Cookie:
+      - _core_session_id=MAGICALTOKEN2
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Cache-Control:
+      - no-cache
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.12.v20160915)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id" : "tugg-ikce",
+          "createdAt" : 1492472940,
+          "displayName" : "Andrew Gall",
+          "email" : "andrew.gall@socrata.com",
+          "emailUnsubscribed" : false,
+          "lastLogin" : 1492476297,
+          "oid" : 2,
+          "profileLastModified" : 1492472941,
+          "publicTables" : 0,
+          "publicViews" : 0,
+          "screenName" : "Andrew Gall"
+        }
+    http_version: 
+  recorded_at: Tue, 18 Apr 2017 00:45:03 GMT
+recorded_with: VCR 3.0.3

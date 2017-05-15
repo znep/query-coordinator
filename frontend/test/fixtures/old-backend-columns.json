@@ -41,6 +41,13 @@
       "dataTypeName": "percent",
       "renderTypeName": "percent",
       "format": {}
+    },
+    {
+      "fieldName": "voice_roughness_timing",
+      "position": 8,
+      "dataTypeName": "calendar_date",
+      "renderTypeName": "calendar_date",
+      "format": {}
     }
   ]
 }

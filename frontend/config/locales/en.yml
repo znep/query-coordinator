@@ -566,6 +566,10 @@ en:
       rows: Rows
       title: What's in this Dataset?
     default_row_label: row
+    error:
+      connection_502: We were unable to connect to the asset catalog. Please reload and try again.
+      timeout_504: We were unable to query to the asset catalog. Please reload and try again.
+      unavailable_503: We were unable to contact the asset catalog. Please reload and try again.
     external_resource_editor:
       action_buttons:
         back: Back

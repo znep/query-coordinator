@@ -4,9 +4,7 @@ describe BrowseController do
   include TestHelperMethods
 
   before(:each) do
-    init_core_session
-    init_current_domain
-    init_feature_flag_signaller
+    init_anonymous_environment
     rspec_stub_feature_flags_with(cetera_search: true)
     allow(subject).to receive(:enable_site_chrome?).and_return(false)
     allow(CurrentDomain).to receive(:configUpdatedAt).and_return(1477332911)

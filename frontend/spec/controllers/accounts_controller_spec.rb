@@ -14,9 +14,9 @@ describe AccountsController do
   let(:user) { User.new(user_data) }
 
   before do
-    init_core_session
-    init_current_domain
-    init_signaller
+    init_environment
+    stub_authenticate_success
+    stub_logout
 
     allow(subject).to receive(:enable_site_chrome?).and_return(false)
   end

@@ -3,6 +3,8 @@ import { CatalogResults } from 'components/CatalogResults';
 
 describe('components/CatalogResults', () => {
   const catalogResultsProps = (options = {}) => ({
+    changePage: () => {},
+    resultSetSize: 0,
     ...options
   });
 

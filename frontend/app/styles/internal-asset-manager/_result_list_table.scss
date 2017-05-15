@@ -10,6 +10,31 @@ table.result-list-table {
         border: 1px solid $light-grey-3;
         cursor: pointer;
         user-select: none;
+
+        &.active {
+          font-weight: 700;
+        }
+
+        &.name {
+          width: 600px;
+        }
+
+        .ascending-arrow, .descending-arrow {
+          display: none;
+          float: right;
+        }
+
+        &.ascending {
+          .ascending-arrow {
+            display: inline-block;
+          }
+        }
+
+        &.descending {
+          .descending-arrow {
+            display: inline-block;
+          }
+        }
       }
     }
   }

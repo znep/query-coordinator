@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 
-import breakpoints from '../lib/breakpoints';
 import { isUserRoled } from '../../common/user';
 import { localizeLink } from '../../common/locale';
 
@@ -125,13 +124,10 @@ export default class InfoPaneButtons extends Component {
   }
 
   renderApiButton() {
-    const { view } = this.props;
+    const { view, isMobile, isTablet } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
-    const windowWidth = document.body.offsetWidth;
-    const isMobile = windowWidth <= breakpoints.mobile;
-
-    if (isBlobbyOrHref || isMobile) {
+    if (isBlobbyOrHref || isMobile || isTablet) {
       return null;
     }
 
@@ -151,11 +147,8 @@ export default class InfoPaneButtons extends Component {
   }
 
   renderMoreActions() {
-    const { view } = this.props;
+    const { view, isMobile, isTablet } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
-
-    const windowWidth = document.body.offsetWidth;
-    const isMobile = windowWidth <= breakpoints.mobile;
 
     const { enableVisualizationCanvas } = serverConfig.featureFlags;
     const canCreateVisualizationCanvas = enableVisualizationCanvas &&
@@ -201,7 +194,7 @@ export default class InfoPaneButtons extends Component {
     }
 
     let apiLink = null;
-    if (isMobile) {
+    if (isMobile || isTablet) {
       apiLink = (
         <li>
           <a tabIndex="0" role="button" className="option" data-flannel="api-flannel">
@@ -242,5 +235,8 @@ export default class InfoPaneButtons extends Component {
 InfoPaneButtons.propTypes = {
   view: PropTypes.object.isRequired,
   onDownloadData: PropTypes.func,
-  onClickGrid: PropTypes.func
+  onClickGrid: PropTypes.func,
+  isDesktop: PropTypes.bool,
+  isTablet: PropTypes.bool,
+  isMobile: PropTypes.bool
 };

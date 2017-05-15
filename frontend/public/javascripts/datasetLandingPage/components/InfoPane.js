@@ -26,12 +26,15 @@ function mapStateToProps(state) {
       second: attribution
     },
     renderButtons(ownProps) {
-      const { onClickGrid, onDownloadData } = ownProps;
+      const { onClickGrid, onDownloadData, isDesktop, isTablet, isMobile } = ownProps;
 
       const childProps = {
         view,
         onClickGrid,
-        onDownloadData
+        onDownloadData,
+        isDesktop,
+        isTablet,
+        isMobile
       };
 
       return <InfoPaneButtons {...childProps} />;

@@ -1,5 +1,6 @@
 @import "styleguide-colors";
 
+@import "common/breakpoints";
 @import "common/feedback-panel";
 
 $admin-header-height: 32px;
@@ -20,6 +21,11 @@ body {
 
 .visualization-canvas {
   min-height: 90vh;
+
+  .container {
+    margin-left: 4px;
+    max-width: initial;
+  }
 
   .edit-menu {
     .block-label {
@@ -267,8 +273,33 @@ body {
       margin-bottom: 0;
       margin: 0 auto;
 
-      .container {
-        margin: 0 auto;
+      .collapse-info-pane-btn {
+        color: $light-grey-8;
+        padding-left: 0;
+      }
+
+      .entry-header {
+        .entry-title {
+          flex: 1 5 80%;
+        }
+
+        .entry-actions {
+          display: flex;
+          flex: 1 1 10%;
+          justify-content: flex-end;
+        }
+      }
+
+      @media(max-width: $small) {
+        .entry-header {
+          .entry-actions {
+            flex: 1 1 100%;
+
+            .btn-group, .btn-edit {
+              width: 100%;
+            }
+          }
+        }
       }
     }
 
@@ -407,6 +438,7 @@ body {
   .filter-bar-container {
     background: $light-grey-5;
     border-bottom: 1px solid $light-grey-4;
+    padding-left: 18px;
 
     .column-container {
       z-index: 7;

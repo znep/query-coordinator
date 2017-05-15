@@ -73,24 +73,28 @@
       }
     }
 
+    .dropdown-options-list .picklist-option{
+      text-overflow: inherit;
+    }
+
     .socrata-icon {
       margin-right: 5px;
     }
 
     .socrata-icon-checkmark-alt {
-      color: #36A76A;
+      color: $success-base;
     }
 
     .socrata-icon-warning-alt {
-      color: #FDCB02;
+      color: $warning-base;
     }
 
     .socrata-icon-close-circle {
-      color: #CF626D;
+      color: $error-base;
     }
 
     .socrata-icon-processing {
-      color: #7C8083;
+      color: $dark-grey-1;
     }
 
     .filter-bar-filter {

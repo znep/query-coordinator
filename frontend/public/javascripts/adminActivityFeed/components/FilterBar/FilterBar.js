@@ -147,7 +147,7 @@ class FilterBar extends React.Component {
       {title: 'Success', icon: 'checkmark-alt'},
       {title: 'SuccessWithDataErrors', icon: 'warning-alt'},
       {title: 'Failure', icon: 'close-circle'},
-      {title: 'InProgress', icon: 'processing'}
+      {title: 'InProgress', icon: 'progress'}
     ];
 
     const renderOption = (option) => {

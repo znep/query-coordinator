@@ -165,7 +165,7 @@ export default function FileUploaderStore() {
 
         errorFile(id, message);
 
-        if (message instanceof Error) {
+        if (_.isError(error)) {
           exceptionNotifier.notify(error);
         }
       });
@@ -204,7 +204,7 @@ export default function FileUploaderStore() {
 
         errorFile(id, message);
 
-        if (message instanceof Error) {
+        if (_.isError(error)) {
           exceptionNotifier.notify(error);
         }
       });
@@ -252,8 +252,14 @@ export default function FileUploaderStore() {
       (error) => {
         if (cancelled(file.id)) {
           return Promise.reject(I18n.t('editor.asset_selector.image_upload.errors.cancelled'));
+        } else if (error.statusCode === 0) {
+          return Promise.reject(new Error(
+            'Upload failed with status code 0; may be caused by incorrect S3 bucket or temporary S3 outage.'
+          ));
         } else {
-          return Promise.reject(`Failed: ${file.destination.url}, ${error.statusCode}\n${error.response}`);
+          return Promise.reject(new Error(
+            `Failed: ${file.destination.url}, ${error.statusCode}\n${error.response}`
+          ));
         }
       }
     );

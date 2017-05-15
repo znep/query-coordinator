@@ -13,10 +13,6 @@
   data-defaultSuccessRedirect="<%= def_success_redirect %>"
   action="<%= local_assigns[:prefix] || '' %>/views/<%=
     @view.id %>/rows.html?method=createForm&successRedirect=<%= CGI.escape(success_redirect) %>">
-  <%- if FeatureFlags.derive(nil, request).use_captcha_for_forms -%>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <div class="g-recaptcha" data-sitekey="<%= RECAPTCHA_2_SITE_KEY %>"></div>
-  <%- end -%>
   <%- form_columns.each do |c| -%>
     <%- if (!c.is_linked?) -%>
       <div class="line clearfix <%= c.client_type %>">
@@ -24,7 +20,11 @@
         <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
       </div>
     <%- end -%>
-
+  <%- end -%>
+  <%- if FeatureFlags.derive(nil, request).use_captcha_for_forms -%>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <div class="g-recaptcha" data-sitekey="<%= RECAPTCHA_2_SITE_KEY %>"></div>
+    <input type="hidden" name="captcha_feature_flag_enabled" id="captcha_feature_flag_enabled" value="true" />
   <%- end -%>
   <div class="submitLine">
     <input type="submit" value="Submit" />

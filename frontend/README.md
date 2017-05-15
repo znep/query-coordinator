@@ -510,6 +510,8 @@ LOCALEAPP_API_KEY=[KEY FROM LASTPASS]
 ```
 - Run the `bin/pull_translations` script
 
+After you successfully pull translations, follow the instructions here to [configure localization for a domain](https://sites.google.com/a/socrata.com/client-services/localization/localizing-content).
+
 ## Further Reading
 
 - [JavaScript documentation](doc/javascript.md)

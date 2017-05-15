@@ -3,10 +3,8 @@ require 'test_helper'
 class PageMetadataControllerTest < ActionController::TestCase
 
   def setup
-    init_core_session
-    init_current_domain
-    init_feature_flag_signaller
-    UserSession.any_instance.stubs(
+    init_environment
+    UserSessionProvider.klass.any_instance.stubs(
       save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
       find_token: true
     )
@@ -22,7 +20,6 @@ class PageMetadataControllerTest < ActionController::TestCase
       create: { body: '', status: '200' },
       update: { body: '', status: '200' }
     )
-    stub_site_chrome
   end
 
   def json_post(body = nil)

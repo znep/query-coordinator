@@ -44,8 +44,7 @@ class UserSession
   end
 
   cattr_accessor :controller
-  attr_accessor :login, :password, :new_session, :cookie, :remember_me
-  attr_writer :id
+  attr_accessor :login, :password, :new_session, :cookie, :remember_me, :id
 
   # You can initialize a session by doing any of the following:
   #
@@ -59,60 +58,10 @@ class UserSession
     end
   end
 
-  def id
-    @id
-  end
-
-  # Your login credentials in hash format.
-  def credentials
-    { :login => login, :password => password }
-  end
-
-  # Lets you set your login and password via a hash format. It's safe to use
-  # by passing in a params hash from the user; only the login and password are
-  # overwritten.
-  def credentials=(values)
-    return if values.blank? || !values.is_a?(Hash)
-
-    values.slice('login', 'password', 'remember_me').each do |field, value|
-      send("#{field}=", value)
-    end
-  end
-
   def remember_me=(value)
     @remember_me = (value == '1' || value.to_s.downcase == 'on')
   end
 
-  # Look up the authentication token based on the user's cookie information.
-  # This function is typically called on every request cycle - we're given
-  # a token representing an authenticated session, and we need to validate it
-  # and look up the user associated with that token.
-  def find_token
-    if core_session.valid?(true) # true to force load
-      user = User.find(
-        core_session.user_id,
-        'Cookie' => "#{::CoreServer::Connection::COOKIE_NAME}=#{core_session}"
-      )
-      UserSession.update_current_user(user, core_session)
-      unless controller.request.headers['x-socrata-auth'] == 'unauthenticated'
-        new_core_cookie = controller.request.env['socrata.new-core-session-cookie']
-        exp = UserSession.expiration_from_core_cookie(new_core_cookie)
-        create_core_session_credentials(user, exp) if exp > 0
-      end
-    elsif cookies['remember_token'].present?
-      response = post_cookie_authentication
-      if response.is_a?(Net::HTTPSuccess)
-        expiration = UserSession.expiration_from_core_response(response)
-        user = User.parse(response.body)
-        create_core_session_credentials(user, expiration) if expiration > 0
-        self.new_session = false
-        cookies[:logged_in] = { value: true, secure: true }
-        UserSession.update_current_user(user, core_session)
-      end
-    end
-
-    user
-  end
   # Return true if the session hasn't been saved yet.
   def persisted?
     @new_session.present?
@@ -150,7 +99,39 @@ class UserSession
   end
 
   def find_auth0_token(auth0_authentication)
+    update_cookies_from_core(auth0_authentication.response)
     find_user(auth0_authentication.user) if auth0_authentication.authenticated?
+  end
+
+  # Look up the authentication token based on the user's cookie information.
+  # This function is typically called on every request cycle - we're given
+  # a token representing an authenticated session, and we need to validate it
+  # and look up the user associated with that token.
+  def find_token
+    if core_session.valid?(force_load: true) # true to force load
+      user = User.find(
+        core_session.user_id,
+        'Cookie' => "#{::CoreServer::Connection::COOKIE_NAME}=#{core_session}"
+      )
+      UserSession.update_current_user(user, core_session)
+      unless controller.request.headers['x-socrata-auth'] == 'unauthenticated'
+        new_core_cookie = controller.request.env['socrata.new-core-session-cookie']
+        exp = UserSession.expiration_from_core_cookie(new_core_cookie)
+        create_core_session_credentials(user, exp) if exp > 0
+      end
+    elsif cookies['remember_token'].present?
+      response = post_cookie_authentication
+      if response.is_a?(Net::HTTPSuccess)
+        expiration = UserSession.expiration_from_core_response(response)
+        user = User.parse(response.body)
+        create_core_session_credentials(user, expiration) if expiration > 0
+        self.new_session = false
+        cookies[:logged_in] = { value: true, secure: true }
+        UserSession.update_current_user(user, core_session)
+      end
+    end
+
+    user
   end
 
   # Obtain a UserSession initialized based on a User object.
@@ -301,6 +282,32 @@ class UserSession
 
   def core_session
     controller.request.core_session
+  end
+
+  # Your login credentials in hash format.
+  def credentials
+    { :login => login, :password => password }
+  end
+
+  # Lets you set your login and password via a hash format. It's safe to use
+  # by passing in a params hash from the user; only the login and password are
+  # overwritten.
+  def credentials=(values)
+    return if values.blank? || !values.is_a?(Hash)
+
+    values.slice('login', 'password', 'remember_me').each do |field, value|
+      send("#{field}=", value)
+    end
+  end
+
+  def update_cookies_from_core(response)
+    CGI::Cookie.parse(response['Set-Cookie']).each do |key, value|
+      cookies[key] = {
+        :expires => value.expires,
+        :value => value.first,
+        :secure => true
+      }
+    end
   end
 end
 

@@ -5,9 +5,7 @@ describe CatalogLandingPageController do
   include TestHelperMethods
 
   before do
-    init_core_session
-    init_current_domain
-    init_signaller
+    init_anonymous_environment
     rspec_stub_feature_flags_with(cetera_search: true)
     rspec_stub_feature_flags_with(enable_catalog_landing_page: true)
     allow(subject).to receive(:get_site_title).and_return('site title')

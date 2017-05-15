@@ -18,9 +18,7 @@ describe OdysseusController do
   let(:classic_single_edit_path) { "/stat/goals/single/#{goal_id}/edit-classic" }
 
   before(:each) do
-    init_core_session
-    init_current_domain
-    init_feature_flag_signaller
+    init_anonymous_environment
     # Prevent a config request from being made
     allow(subject).to receive(:enable_site_chrome?).and_return(false)
     allow(CurrentDomain).to receive(:cname).and_return('localhost')

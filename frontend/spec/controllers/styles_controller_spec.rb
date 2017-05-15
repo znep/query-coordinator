@@ -4,9 +4,7 @@ describe StylesController do
   include TestHelperMethods
 
   before do
-    init_core_session
-    init_current_domain
-    init_signaller
+    init_environment
   end
 
   describe 'fetching merged stylesheets' do

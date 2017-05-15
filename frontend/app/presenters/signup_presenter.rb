@@ -60,6 +60,6 @@ protected
   end
 
   def login!
-    user_session = UserSession.user_no_security_check(@user)
+    user_session = UserSessionProvider.klass.user_no_security_check(@user)
   end
 end

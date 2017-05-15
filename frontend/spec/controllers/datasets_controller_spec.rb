@@ -54,17 +54,12 @@ describe DatasetsController do
   end
 
   describe 'Accessing public forms on private datasets' do
-
     before(:each) do
-      init_current_domain
-      init_core_session
-      init_feature_flag_signaller
-      stub_site_chrome
+      init_environment
       allow(subject).to receive(:enable_site_chrome?).and_return(false)
     end
 
     context 'when logged out' do
-
       it 'loads the page without error' do
         expect(View).to receive(:find).and_return(view)
         expect(subject).to receive(:using_canonical_url?).and_return(true)
@@ -77,7 +72,6 @@ describe DatasetsController do
         get :show, :id => 'dont-matr'
         expect(response).to have_http_status(:success)
       end
-
     end
 
     context 'when logged in' do
@@ -103,10 +97,8 @@ describe DatasetsController do
   describe 'SEO friendly dataset show page' do
 
     before(:each) do
-      init_core_session
-      init_current_domain
+      init_environment
       init_current_user(controller)
-      init_feature_flag_signaller
       login
       allow(subject).to receive(:get_view).and_return(view)
       allow(subject).to receive(:using_canonical_url?).and_return(true)
@@ -208,9 +200,7 @@ describe DatasetsController do
   describe 'create visualization canvas' do
 
     before(:each) do
-      init_core_session
-      init_current_domain
-      init_feature_flag_signaller
+      init_environment
       init_current_user(controller)
       login
       allow(subject).to receive(:get_view).and_return(view)
@@ -284,9 +274,7 @@ describe DatasetsController do
   describe 'email dataset' do
 
     before do
-      init_core_session
-      init_current_domain
-      init_signaller
+      init_environment
       init_current_user(controller)
       login
       stub_site_chrome
@@ -325,9 +313,7 @@ describe DatasetsController do
 
   describe 'edit_metadata' do
     before(:each) do
-      init_core_session
-      init_current_domain
-      init_feature_flag_signaller
+      init_environment
       init_current_user(controller)
       login
       allow(subject).to receive(:get_view).and_return(derived_view)
@@ -386,6 +372,7 @@ describe DatasetsController do
       end
 
       before(:each) do
+        init_environment
         allow(subject).to receive(:using_canonical_url?).and_return(true)
       end
 
@@ -437,6 +424,9 @@ describe DatasetsController do
 
     context 'GET /d/id/revisions/revision_seq' do
       before do
+        init_environment
+        init_current_user(controller)
+        login
         stub_request(:get, 'http://localhost:8080/views/test-data.json').
           with(:headers => request_headers).
           to_return(:status => 200, :body => '', :headers => {})
@@ -455,8 +445,6 @@ describe DatasetsController do
       end
 
       it 'redirects to the cannoical address, preserving the full path' do
-        init_current_user(controller)
-        login
         expect(View).to receive(:find).and_return(view)
         view.stub(:can_read? => true)
         expect(subject).to receive(:using_canonical_url?).and_return(false)
@@ -467,27 +455,26 @@ describe DatasetsController do
     end
 
     context 'GET /category/view_name/id/revisions/current' do
+      before do
+        init_environment
+        init_current_user(controller)
+        login
+      end
 
       # 4x4 is valid and has revision, redirected from 'current'
       it 'redirects without error' do
-        init_current_user(controller)
-        login
         expect(DatasetManagementAPI)
           .to receive(:get_open_revisions)
           .and_return([{'revision_seq' => 1}, {'revision_seq' => 0}])
-
         get :current_revision, :id => 'test-data'
         expect(response).to have_http_status(:redirect)
         expect(response['Location']).to end_with('/revisions/1')
       end
 
       it 'redirects without error, preserving the full path' do
-        init_current_user(controller)
-        login
         expect(DatasetManagementAPI)
           .to receive(:get_open_revisions)
           .and_return([{'revision_seq' => 1}, {'revision_seq' => 0}])
-
         get :current_revision, :id => 'test-data', :rest_of_path => '/metadata/columns'
         expect(response).to have_http_status(:redirect)
         expect(response['Location']).to end_with('/revisions/1/metadata/columns')
@@ -495,18 +482,19 @@ describe DatasetsController do
 
       # 4x4 does not have any open revisions should 404 at 'current'
       it '404s when there are no open revisions' do
-        init_current_user(controller)
-        login
         expect(DatasetManagementAPI)
           .to receive(:get_open_revisions)
           .and_return([])
-
         get :current_revision, :id => 'test-data'
         expect(response).to have_http_status(:not_found)
       end
     end
 
     context 'GET /d/id/revisions/current' do
+
+      before do
+        init_environment
+      end
 
       # 4x4 is valid and has revision, directly to path with sequence number
       it 'redirects to a path with the revision sequence' do

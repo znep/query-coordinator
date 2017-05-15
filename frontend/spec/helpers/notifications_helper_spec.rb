@@ -87,7 +87,6 @@ describe NotificationsHelper do
 
       allow_any_instance_of(UserAuthMethods).to receive(:current_user_session).and_return(FakeUserSession.new)
 
-
       VCR.use_cassette('zendesk_articles') do
         notifications = notifications_from_zendesk
 

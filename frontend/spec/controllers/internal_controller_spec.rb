@@ -7,9 +7,7 @@ describe InternalController do
   let(:domain_cname) { CurrentDomain.cname }
 
   before do
-    init_core_session
-    init_current_domain
-    stub_site_chrome
+    init_environment
 
     allow(subject).to receive(:current_user).and_return(current_user)
     allow(Domain).to receive(:find).and_return(CurrentDomain.domain)

@@ -4,9 +4,7 @@ describe SiteAppearanceController do
   include TestHelperMethods
 
   before :each do
-    init_current_domain
-    init_core_session
-    init_feature_flag_signaller
+    init_environment(test_user: TestHelperMethods::NO_USER, site_chrome: false)
     @request.host = 'localhost' # VCR tapes were recorded against localhost
   end
 
@@ -38,6 +36,7 @@ describe SiteAppearanceController do
     end
 
     it 'redirects if not logged in' do
+      stub_anonymous_user
       get :edit
       expect(response).to redirect_to(login_url)
     end
@@ -154,6 +153,7 @@ describe SiteAppearanceController do
       end
 
       it 'does not get called if params[:site_appearance] is not present' do
+        stub_anonymous_user
         VCR.use_cassette('site_appearance/controller/update_with_activation_state') do
           allow_any_instance_of(SiteAppearance).to receive(:activated?).and_return(true)
           expect_any_instance_of(SiteAppearance).not_to receive(:set_activation_state)

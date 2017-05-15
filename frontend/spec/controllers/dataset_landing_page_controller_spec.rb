@@ -18,10 +18,8 @@ describe DatasetLandingPageController do
 
   before(:each) do
     allow(subject).to receive(:enable_site_chrome?).and_return(false)
-    init_core_session
-    init_current_domain
+    init_environment
     init_current_user(controller)
-    init_feature_flag_signaller
     login
   end
 

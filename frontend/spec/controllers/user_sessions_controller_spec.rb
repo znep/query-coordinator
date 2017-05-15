@@ -14,10 +14,7 @@ describe UserSessionsController do
   let(:user) { User.new(user_data) }
 
   before do
-    init_core_session
-    init_current_domain
-    init_signaller
-    stub_site_chrome
+    init_environment
 
     allow_any_instance_of(UserSession).to receive(:save).and_return(Net::HTTPSuccess.new(1.1, 200, 'Success'))
     allow_any_instance_of(UserSession).to receive(:find_token).and_return(true)

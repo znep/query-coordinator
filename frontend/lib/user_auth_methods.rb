@@ -10,7 +10,7 @@ module UserAuthMethods
   # filter_parameter_logging :password
 
   def current_user_session
-    @current_user_session ||= UserSession.find
+    @current_user_session ||= UserSessionProvider.klass.find
   end
 
   def current_user_session=(user_session)
@@ -18,7 +18,7 @@ module UserAuthMethods
   end
 
   def current_user_session_or_basic_auth
-    @current_user_session ||= UserSession.find || basic_auth
+    @current_user_session ||= UserSessionProvider.klass.find || basic_auth
   end
 
   def current_user
@@ -33,7 +33,7 @@ module UserAuthMethods
 
   def basic_auth
     authenticate_with_http_basic do |username, password|
-      user_session = UserSession.new('login' => username, 'password' => password)
+      user_session = UserSessionProvider.klass.new('login' => username, 'password' => password)
       user_session.save
     end
   end
@@ -45,7 +45,7 @@ module UserAuthMethods
   # concerned with setting session data, so it's easiest to just plumb
   # it through.
   def hook_auth_controller
-    UserSession.controller = self
-    UserSession.update_current_user(nil, nil)
+    UserSessionProvider.klass.controller = self
+    UserSessionProvider.klass.update_current_user(nil, nil)
   end
 end

@@ -5,6 +5,7 @@ describe ApplicationHelper do
 
   before do
     init_current_domain
+    init_feature_flag_signaller
     init_current_user(
       ApplicationController.new.tap do |controller|
         session_double = double

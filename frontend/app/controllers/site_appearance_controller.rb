@@ -33,7 +33,9 @@ class SiteAppearanceController < ApplicationController
       @site_appearance.set_activation_state(params[:site_appearance])
     end
 
-    if @site_appearance.update_content(params[:stage] || :published, params[:content])
+    update_successful = @site_appearance.update_content(params[:stage] || :published, params[:content])
+
+    if update_successful
       if params[:stage] == 'draft'
         cookies[:socrata_site_chrome_preview] = true
         redirect_to browse_path

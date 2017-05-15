@@ -229,7 +229,7 @@ class SiteAppearance
         body: attributes.to_json
       )
     rescue => e
-      error_mesage = "Failed to create SiteChrome. Exception: #{e.inspect}"
+      error_message = "Failed to create SiteChrome. Exception: #{e.inspect}"
       Rails.logger.error(error_message)
       Airbrake.notify(:error_class => 'SiteAppearance', :error_message => error_message)
     end

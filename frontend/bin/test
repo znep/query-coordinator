@@ -58,6 +58,7 @@ if ./bin/should_run_tests frontend; then
   cd frontend
 
   # Ruby tests
+  export CORE_SESSION=${CORE_SESSION:-'frontend-generated'}
   bundle exec rake test:units
   bundle exec rake test:functionals
   bundle exec rspec --no-color

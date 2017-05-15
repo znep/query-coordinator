@@ -2,17 +2,13 @@ require 'test_helper'
 require 'timecop'
 
 class CustomContentControllerTest < ActionController::TestCase
-
   ANONYMOUS_USER = 'anon'.freeze
 
   PAGE_PATH = 'hello'.freeze
   BASIC_PARAMS = [[:path,  PAGE_PATH], [:action, 'page'], [:controller, 'custom_content']].sort.freeze
 
   def setup
-    init_core_session
-    init_current_domain
-    init_feature_flag_signaller
-    stub_site_chrome
+    init_environment
 
     stub_request(:get, "http://localhost:8080/pages.json?method=getLightweightRouting").
       to_return(:status => 200, :body => "", :headers => {})

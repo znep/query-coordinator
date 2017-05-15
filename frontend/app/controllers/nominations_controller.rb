@@ -20,7 +20,7 @@ class NominationsController < ApplicationController
       return render('shared/error', :status => :not_found)
     end
 
-    @user_session = UserSession.new unless current_user
+    @user_session = UserSessionProvider.klass.new unless current_user
   end
 
   def new

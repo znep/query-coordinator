@@ -46,7 +46,7 @@ class UserSessionsController < ApplicationController
     auth0
 
     @body_id = 'login'
-    @user_session = UserSession.new
+    @user_session = UserSessionProvider.klass.new
     if params[:referer_redirect] || params[:return_to]
       # If specifying a return_to param, let that override request.referer
       session[:return_to] ||= params[:return_to] || request.referer
@@ -54,7 +54,7 @@ class UserSessionsController < ApplicationController
   end
 
   def expire_if_idle
-    session_response = current_user.nil? ? {:expired => 'expired' } : UserSession.find_seconds_until_timeout
+    session_response = current_user.nil? ? {:expired => 'expired' } : UserSessionProvider.klass.find_seconds_until_timeout
     render :json => session_response, :callback => params[:callback], :content_type => 'application/json'
   end
 
@@ -90,11 +90,13 @@ class UserSessionsController < ApplicationController
     # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
     # purpose; but phusion passenger requires "".
     response.headers['ETag'] = ''
-    @user_session = UserSession.new(params[:user_session])
-    session_response = @user_session.save(true)
-    if session_response.is_a?(Net::HTTPSuccess)
+
+    @user_session = UserSessionProvider.klass.new(params[:user_session])
+
+    if @user_session.save
       # User logged in successfully, but not using auth0...
       # check if we want to require auth0 for any of the user's roles
+
       if use_auth0? && !@user_session.user.is_superadmin?
         auth0_properties = CurrentDomain.configuration('auth0').try(:properties)
 

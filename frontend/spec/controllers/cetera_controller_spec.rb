@@ -9,9 +9,7 @@ describe CeteraController do
     let(:all_results) { JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_four_user_results.json")) }
 
     before(:each) do
-      init_core_session
-      init_current_domain
-      init_feature_flag_signaller
+      init_anonymous_environment
       allow(CurrentDomain).to receive(:cname).and_return('localhost')
       allow(subject).to receive(:enable_site_chrome?).and_return(false)
     end

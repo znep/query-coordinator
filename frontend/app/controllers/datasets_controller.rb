@@ -172,7 +172,7 @@ class DatasetsController < ApplicationController
 
     @view.searchString = params[:q] if params[:q]
 
-    @user_session = UserSession.new unless current_user
+    @user_session = UserSessionProvider.klass.new unless current_user
 
     # See if the user is accessing the canonical URL; if not, redirect
     unless using_canonical_url?
@@ -741,7 +741,7 @@ class DatasetsController < ApplicationController
       return
     end
 
-    @user_session = UserSession.new if !current_user
+    @user_session = UserSessionProvider.klass.new unless current_user
 
     @page_custom_chrome = ''
     @suppress_content_wrapper = true

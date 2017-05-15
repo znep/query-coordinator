@@ -58,7 +58,13 @@ export const CalendarDateFilter = React.createClass({
   },
 
   setDate(date) {
-    return moment(date).isValid() ? date : moment().format();
+    // Checking if undefined because;
+    //   moment(null).isValid() === false
+    //   moment(undefined).isValid() === true
+    return !_.isUndefined(date) && moment(date).isValid() ?
+      // Getting default date without time to be able to compare
+      // and find out if we should disable apply button.
+      date : moment().format('YYYY-MM-DD');
   },
 
   isValidRange(value) {
@@ -90,9 +96,13 @@ export const CalendarDateFilter = React.createClass({
     const { column } = this.props;
     const { rangeMin, rangeMax } = column;
 
-    this.updateValueState({
-      start: rangeMin,
-      end: rangeMax
+    // Not using updateValueState here because start & end dates might be same.
+    // updateValueState checks if end is later then start.
+    this.setState({
+      value: {
+        start: this.setDate(rangeMin),
+        end: this.setDate(rangeMax)
+      }
     });
 
     if (typeof this.props.onClear === 'function') {

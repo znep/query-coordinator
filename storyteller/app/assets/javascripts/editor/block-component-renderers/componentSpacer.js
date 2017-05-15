@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperty } from 'common/js_utils';
 
 /**
  * @function componentSpacer
@@ -18,12 +19,12 @@ function componentSpacer(props) {
   const $this = $(this);
   const { componentData } = props;
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperty(componentData, 'type');
+  assert(
     componentData.type === 'spacer',
     `componentSpacer: Unsupported component type ${componentData.type}`
   );
-  StorytellerUtils.assert(
+  assert(
     $this.length === 1,
     'Selection must have exactly one element.'
   );

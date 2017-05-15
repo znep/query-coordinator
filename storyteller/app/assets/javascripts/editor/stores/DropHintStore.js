@@ -4,7 +4,7 @@ import Unipointer from 'unipointer';
 
 import Store from './Store';
 import Actions from '../Actions';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assertHasProperty, assertHasProperties } from 'common/js_utils';
 import { storyStore } from './StoryStore';
 
 export var dropHintStore = new DropHintStore();
@@ -60,7 +60,7 @@ export default function DropHintStore() {
    */
 
   function _storyDragOver(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement');
+    assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement');
 
     if (storyStore.doesStoryExist(payload.storyUid)) {
       var dropIndex;
@@ -102,7 +102,7 @@ export default function DropHintStore() {
   }
 
   function _storyDragLeave(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'storyUid');
+    assertHasProperties(payload, 'storyUid');
 
     if (_reorderHintPosition && _reorderHintPosition.storyUid === payload.storyUid) {
       _setReorderHintPosition(null);
@@ -110,7 +110,7 @@ export default function DropHintStore() {
   }
 
   function _storyDrop(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'storyUid');
+    assertHasProperty(payload, 'storyUid');
 
     if (self.isDraggingOverStory(payload.storyUid)) {
       _setReorderHintPosition(null);

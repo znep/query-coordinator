@@ -4,6 +4,7 @@ import _ from 'lodash';
 import '../componentBase';
 import I18n from '../I18n';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperty, assertHasProperties } from 'common/js_utils';
 
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
@@ -48,8 +49,8 @@ export default function componentGoalTile(props) {
 
   // Execution starts here
 
-  StorytellerUtils.assertHasProperties(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperties(componentData, 'type');
+  assert(
     componentData.type === 'goal.tile',
     `componentGoalTile: Unsupported component type ${componentData.type}`
   );
@@ -70,7 +71,7 @@ export default function componentGoalTile(props) {
 }
 
 function updateSrc($element, componentData) {
-  StorytellerUtils.assertHasProperties(
+  assertHasProperties(
     componentData,
     'value.domain',
     'value.goalUid',
@@ -201,7 +202,7 @@ function renderGoalTile($element, domainI18n, componentData, goalTileData) {
   let $tileMetadataContainer;
   let $tileViewGoal;
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  assertHasProperty(componentData, 'type');
 
   // If there is no story tile data provided we just want to re-ellipsify
   // the text (which we can do by mutating rather than wiping out the entire

@@ -5,6 +5,7 @@ import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperty, assertIsOneOfTypes, assertInstanceOf, assertHasProperties } from 'common/js_utils';
 import { moveComponentStore } from './MoveComponentStore';
 
 export var storyStore = StorytellerUtils.export(new StoryStore(), 'storyteller.storyStore');
@@ -311,10 +312,10 @@ export default function StoryStore() {
 
 
   function _setStoryTitle(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'storyUid');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
-    StorytellerUtils.assertHasProperty(payload, 'title');
-    StorytellerUtils.assertIsOneOfTypes(payload.title, 'string');
+    assertHasProperty(payload, 'storyUid');
+    assertIsOneOfTypes(payload.storyUid, 'string');
+    assertHasProperty(payload, 'title');
+    assertIsOneOfTypes(payload.title, 'string');
 
     var storyUid = payload.storyUid;
 
@@ -324,10 +325,10 @@ export default function StoryStore() {
   }
 
   function _setStoryDigest(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'storyUid');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
-    StorytellerUtils.assertHasProperty(payload, 'digest');
-    StorytellerUtils.assertIsOneOfTypes(payload.digest, 'string');
+    assertHasProperty(payload, 'storyUid');
+    assertIsOneOfTypes(payload.storyUid, 'string');
+    assertHasProperty(payload, 'digest');
+    assertIsOneOfTypes(payload.digest, 'string');
 
     var storyUid = payload.storyUid;
 
@@ -338,10 +339,10 @@ export default function StoryStore() {
 
   function _setStoryDescription(payload) {
 
-    StorytellerUtils.assertHasProperty(payload, 'storyUid');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
-    StorytellerUtils.assertHasProperty(payload, 'description');
-    StorytellerUtils.assertIsOneOfTypes(payload.description, 'string');
+    assertHasProperty(payload, 'storyUid');
+    assertIsOneOfTypes(payload.storyUid, 'string');
+    assertHasProperty(payload, 'description');
+    assertIsOneOfTypes(payload.description, 'string');
 
     var storyUid = payload.storyUid;
 
@@ -352,11 +353,11 @@ export default function StoryStore() {
 
   function _setStoryTileDetails(payload) {
 
-    StorytellerUtils.assertIsOneOfTypes(payload, 'object');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
-    StorytellerUtils.assertIsOneOfTypes(payload.tileConfig, 'object');
-    StorytellerUtils.assertIsOneOfTypes(payload.tileConfig.title, 'string');
-    StorytellerUtils.assertIsOneOfTypes(payload.tileConfig.description, 'string');
+    assertIsOneOfTypes(payload, 'object');
+    assertIsOneOfTypes(payload.storyUid, 'string');
+    assertIsOneOfTypes(payload.tileConfig, 'object');
+    assertIsOneOfTypes(payload.tileConfig.title, 'string');
+    assertIsOneOfTypes(payload.tileConfig.description, 'string');
 
     var storyUid = payload.storyUid;
 
@@ -366,10 +367,10 @@ export default function StoryStore() {
   }
 
   function _setStoryPermissions(payload) {
-    StorytellerUtils.assertIsOneOfTypes(payload, 'object');
-    StorytellerUtils.assertHasProperties(payload, 'storyUid', 'isPublic');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
-    StorytellerUtils.assertIsOneOfTypes(payload.isPublic, 'boolean');
+    assertIsOneOfTypes(payload, 'object');
+    assertHasProperties(payload, 'storyUid', 'isPublic');
+    assertIsOneOfTypes(payload.storyUid, 'string');
+    assertIsOneOfTypes(payload.isPublic, 'boolean');
 
     var storyUid = payload.storyUid;
 
@@ -381,9 +382,9 @@ export default function StoryStore() {
   }
 
   function _setStoryPublishedStory(payload) {
-    StorytellerUtils.assertIsOneOfTypes(payload, 'object');
-    StorytellerUtils.assertHasProperties(payload, 'storyUid', 'publishedStory');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
+    assertIsOneOfTypes(payload, 'object');
+    assertHasProperties(payload, 'storyUid', 'publishedStory');
+    assertIsOneOfTypes(payload.storyUid, 'string');
 
     var storyUid = payload.storyUid;
 
@@ -393,10 +394,10 @@ export default function StoryStore() {
   }
 
   function _setStoryTheme(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'storyUid');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
-    StorytellerUtils.assertHasProperty(payload, 'theme');
-    StorytellerUtils.assertIsOneOfTypes(payload.theme, 'string');
+    assertHasProperty(payload, 'storyUid');
+    assertIsOneOfTypes(payload.storyUid, 'string');
+    assertHasProperty(payload, 'theme');
+    assertIsOneOfTypes(payload.theme, 'string');
 
     var storyUid = payload.storyUid;
 
@@ -406,10 +407,10 @@ export default function StoryStore() {
   }
 
   function _moveBlockUp(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'storyUid');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
-    StorytellerUtils.assertHasProperty(payload, 'blockId');
-    StorytellerUtils.assertIsOneOfTypes(payload.blockId, 'string');
+    assertHasProperty(payload, 'storyUid');
+    assertIsOneOfTypes(payload.storyUid, 'string');
+    assertHasProperty(payload, 'blockId');
+    assertIsOneOfTypes(payload.blockId, 'string');
 
     var storyUid = payload.storyUid;
     var blockId = payload.blockId;
@@ -421,10 +422,10 @@ export default function StoryStore() {
   }
 
   function _moveBlockDown(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'storyUid');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
-    StorytellerUtils.assertHasProperty(payload, 'blockId');
-    StorytellerUtils.assertIsOneOfTypes(payload.blockId, 'string');
+    assertHasProperty(payload, 'storyUid');
+    assertIsOneOfTypes(payload.storyUid, 'string');
+    assertHasProperty(payload, 'blockId');
+    assertIsOneOfTypes(payload.blockId, 'string');
 
     var storyUid = payload.storyUid;
     var blockId = payload.blockId;
@@ -436,8 +437,8 @@ export default function StoryStore() {
   }
 
   function _toggleBlockPresentationVisibility(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'blockId');
-    StorytellerUtils.assertIsOneOfTypes(payload.blockId, 'string');
+    assertHasProperty(payload, 'blockId');
+    assertIsOneOfTypes(payload.blockId, 'string');
 
     var blockId = payload.blockId;
     var block = _getBlock(blockId);
@@ -448,10 +449,10 @@ export default function StoryStore() {
   }
 
   function _deleteBlock(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'storyUid');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
-    StorytellerUtils.assertHasProperty(payload, 'blockId');
-    StorytellerUtils.assertIsOneOfTypes(payload.blockId, 'string');
+    assertHasProperty(payload, 'storyUid');
+    assertIsOneOfTypes(payload.storyUid, 'string');
+    assertHasProperty(payload, 'blockId');
+    assertIsOneOfTypes(payload.blockId, 'string');
 
     var storyUid = payload.storyUid;
     var story = _getStory(storyUid);
@@ -475,10 +476,10 @@ export default function StoryStore() {
   }
 
   function _insertBlockIntoStory(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'storyUid');
-    StorytellerUtils.assertIsOneOfTypes(payload.storyUid, 'string');
-    StorytellerUtils.assertHasProperty(payload, 'insertAt');
-    StorytellerUtils.assertIsOneOfTypes(payload.insertAt, 'number');
+    assertHasProperty(payload, 'storyUid');
+    assertIsOneOfTypes(payload.storyUid, 'string');
+    assertHasProperty(payload, 'insertAt');
+    assertIsOneOfTypes(payload.insertAt, 'number');
 
     if (typeof payload.insertAt !== 'number') {
       throw new Error(
@@ -498,10 +499,10 @@ export default function StoryStore() {
   }
 
   function _updateBlockComponentAtIndex(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'componentIndex', 'type', 'value', 'blockId');
-    StorytellerUtils.assertIsOneOfTypes(payload.componentIndex, 'number', 'string');
-    StorytellerUtils.assertIsOneOfTypes(payload.type, 'string');
-    StorytellerUtils.assertIsOneOfTypes(payload.blockId, 'string');
+    assertHasProperties(payload, 'componentIndex', 'type', 'value', 'blockId');
+    assertIsOneOfTypes(payload.componentIndex, 'number', 'string');
+    assertIsOneOfTypes(payload.type, 'string');
+    assertIsOneOfTypes(payload.blockId, 'string');
 
     var block = _getBlock(payload.blockId);
     var index = parseInt(payload.componentIndex, 10);
@@ -547,8 +548,8 @@ export default function StoryStore() {
   }
 
   function _getStory(storyUid) {
-    StorytellerUtils.assertIsOneOfTypes(storyUid, 'string');
-    StorytellerUtils.assertHasProperty(
+    assertIsOneOfTypes(storyUid, 'string');
+    assertHasProperty(
       _stories,
       storyUid,
       `Story with uid ${storyUid} does not exist.`
@@ -558,8 +559,8 @@ export default function StoryStore() {
   }
 
   function _getBlock(blockId) {
-    StorytellerUtils.assertIsOneOfTypes(blockId, 'string');
-    StorytellerUtils.assertHasProperty(
+    assertIsOneOfTypes(blockId, 'string');
+    assertHasProperty(
       _blocks,
       blockId,
       `Block with id ${blockId} does not exist. Existing block IDs: ${_.keys(_blocks)}`
@@ -581,7 +582,7 @@ export default function StoryStore() {
    * this store, an error is thrown.
    */
   function _importStory(storyData) {
-    StorytellerUtils.assert(
+    assert(
       !_stories.hasOwnProperty(storyData.uid),
       StorytellerUtils.format(
         'Cannot import story: story with uid {0} already exists.',
@@ -593,7 +594,7 @@ export default function StoryStore() {
   }
 
   function _setStoryUpdatedAt(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'storyUid', 'updatedAt');
+    assertHasProperties(payload, 'storyUid', 'updatedAt');
 
     const story = _getStory(payload.storyUid);
 
@@ -670,8 +671,8 @@ export default function StoryStore() {
 
   function _validateStoryData(storyData) {
 
-    StorytellerUtils.assertIsOneOfTypes(storyData, 'object');
-    StorytellerUtils.assertHasProperties(
+    assertIsOneOfTypes(storyData, 'object');
+    assertHasProperties(
       storyData,
       'uid',
       'title',
@@ -691,17 +692,17 @@ export default function StoryStore() {
   }
 
   function _validateBlockData(blockData) {
-    StorytellerUtils.assertIsOneOfTypes(blockData, 'object');
-    StorytellerUtils.assertHasProperty(blockData, 'layout');
-    StorytellerUtils.assertHasProperty(blockData, 'components');
-    StorytellerUtils.assertInstanceOf(blockData.components, Array);
+    assertIsOneOfTypes(blockData, 'object');
+    assertHasProperty(blockData, 'layout');
+    assertHasProperty(blockData, 'components');
+    assertInstanceOf(blockData.components, Array);
 
     if (blockData.id) {
       throw new Error('Unexpected block ID in block JSON');
     }
 
     blockData.components.forEach(function(component) {
-      StorytellerUtils.assertHasProperty(component, 'type');
+      assertHasProperty(component, 'type');
     });
   }
 
@@ -720,8 +721,8 @@ export default function StoryStore() {
     var story = _getStory(storyUid);
     var storyBlockIdCount = story.blockIds.length;
 
-    StorytellerUtils.assertIsOneOfTypes(blockId, 'string');
-    StorytellerUtils.assertIsOneOfTypes(index, 'number');
+    assertIsOneOfTypes(blockId, 'string');
+    assertIsOneOfTypes(index, 'number');
 
     if (index < 0 || index > storyBlockIdCount) {
       throw new Error(
@@ -741,8 +742,8 @@ export default function StoryStore() {
   }
 
   function _swapStoryBlocksAtIndices(storyUid, index1, index2) {
-    StorytellerUtils.assertIsOneOfTypes(index1, 'number');
-    StorytellerUtils.assertIsOneOfTypes(index2, 'number');
+    assertIsOneOfTypes(index1, 'number');
+    assertIsOneOfTypes(index2, 'number');
 
     var story = _getStory(storyUid);
     var storyBlockIdCount = story.blockIds.length;
@@ -789,7 +790,7 @@ export default function StoryStore() {
   }
 
   function _finishComponentMove(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'blockId', 'componentIndex');
+    assertHasProperties(payload, 'blockId', 'componentIndex');
 
     const { blockId, componentIndex } = payload;
     const destinationBlock = _getBlock(blockId);
@@ -842,7 +843,7 @@ export default function StoryStore() {
 
     if (snapshot) {
       // The snapshot is actually a story data blob.
-      StorytellerUtils.assert(!snapshot.digest); // This should never be present. Otherwise, autosave will break.
+      assert(!snapshot.digest); // This should never be present. Otherwise, autosave will break.
 
       // Preserve annotations such as permissions that _shouldn't_ be in a history snapshot.
       var newStoryContent = _.extend(
@@ -877,7 +878,7 @@ export default function StoryStore() {
   function _shouldAppendToHistoryAndTruncateRedo(storySnapshot) {
     var historyLength = _history.length;
 
-    StorytellerUtils.assertIsOneOfTypes(storySnapshot, 'object');
+    assertIsOneOfTypes(storySnapshot, 'object');
 
     return (
       historyLength > 0 &&
@@ -890,7 +891,7 @@ export default function StoryStore() {
   function _shouldAppendToHistory(storySnapshot) {
     var historyLength = _history.length;
 
-    StorytellerUtils.assertIsOneOfTypes(storySnapshot, 'object');
+    assertIsOneOfTypes(storySnapshot, 'object');
 
     return (
       historyLength === 0 ||

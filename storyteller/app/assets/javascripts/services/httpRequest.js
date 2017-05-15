@@ -2,7 +2,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 
 import Environment from '../StorytellerEnvironment';
-import StorytellerUtils from '../StorytellerUtils';
+import { getCookie, assert, assertIsOneOfTypes } from 'common/js_utils';
 import { exceptionNotifier } from './ExceptionNotifier';
 
 const SUPPORTED_REQUEST_METHODS = ['GET', 'PUT', 'POST'];
@@ -13,7 +13,7 @@ export const coreHeaders = () => {
     notifyMissingAppToken();
   }
 
-  const csrfToken = decodeURIComponent(StorytellerUtils.getCookie('socrata-csrf-token'));
+  const csrfToken = decodeURIComponent(getCookie('socrata-csrf-token'));
 
   return {
     'X-App-Token': Environment.CORE_SERVICE_APP_TOKEN,
@@ -55,8 +55,8 @@ export default function httpRequest(method, url, options) {
   }
 
   // Sanity check for required parameters.
-  StorytellerUtils.assertIsOneOfTypes(url, 'string');
-  StorytellerUtils.assert(
+  assertIsOneOfTypes(url, 'string');
+  assert(
     _.includes(SUPPORTED_REQUEST_METHODS, method),
     `Unsupported HTTP method ${method}; supported methods: ${SUPPORTED_REQUEST_METHODS.join(', ')}`
   );

@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import Store from './Store';
 import Actions from '../Actions';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperty } from 'common/js_utils';
 
 /**
  * @class CollaboratorsStore
@@ -240,9 +240,9 @@ export default function CollaboratorsStore() {
    * @param {Object} payload - An action payload dispatched through storyteller.dispatcher.
    */
   function loadCollaborators(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'collaborators');
-    StorytellerUtils.assert(Array.isArray(payload.collaborators), 'Collaborators must be an Array.');
-    StorytellerUtils.assert(areValidCollaborators(payload.collaborators), 'InvalidCollaboratorsError');
+    assertHasProperty(payload, 'collaborators');
+    assert(Array.isArray(payload.collaborators), 'Collaborators must be an Array.');
+    assert(areValidCollaborators(payload.collaborators), 'InvalidCollaboratorsError');
 
     collaborators = _.cloneDeep(payload.collaborators);
     collaborators = _.map(collaborators, pushCollaboratorState(states.LOADED));
@@ -260,9 +260,9 @@ export default function CollaboratorsStore() {
    * @param {Object} payload - An action payload dispatched through storyteller.dispatcher.
    */
   function addCollaborator(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'collaborator');
-    StorytellerUtils.assert(isValidCollaborator(payload.collaborator), 'InvalidCollaboratorError');
-    StorytellerUtils.assert(!hasCollaborator(payload.collaborator), 'CollaboratorExistsError');
+    assertHasProperty(payload, 'collaborator');
+    assert(isValidCollaborator(payload.collaborator), 'InvalidCollaboratorError');
+    assert(!hasCollaborator(payload.collaborator), 'CollaboratorExistsError');
 
     collaborators.push(
       pushCollaboratorState(states.ADDED)(
@@ -283,9 +283,9 @@ export default function CollaboratorsStore() {
    * @param {Object} payload - An action payload dispatched through storyteller.dispatcher.
    */
   function markCollaborator(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'collaborator');
-    StorytellerUtils.assert(isValidCollaborator(payload.collaborator));
-    StorytellerUtils.assert(hasCollaborator(payload.collaborator));
+    assertHasProperty(payload, 'collaborator');
+    assert(isValidCollaborator(payload.collaborator));
+    assert(hasCollaborator(payload.collaborator));
 
     collaborators = _.map(collaborators, function(collaborator) {
       if (collaborator.email === payload.collaborator.email) {
@@ -308,9 +308,9 @@ export default function CollaboratorsStore() {
    * @param {Object} payload - An action payload dispatched through storyteller.dispatcher.
    */
   function unmarkCollaborator(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'collaborator');
-    StorytellerUtils.assert(isValidCollaborator(payload.collaborator));
-    StorytellerUtils.assert(hasCollaborator(payload.collaborator));
+    assertHasProperty(payload, 'collaborator');
+    assert(isValidCollaborator(payload.collaborator));
+    assert(hasCollaborator(payload.collaborator));
 
     collaborators = _.map(collaborators, function(collaborator) {
       if (collaborator.email === payload.collaborator.email) {
@@ -335,9 +335,9 @@ export default function CollaboratorsStore() {
    * @param {Object} payload - An action payload dispatched through storyteller.dispatcher.
    */
   function removeCollaborator(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'collaborator');
-    StorytellerUtils.assert(isValidCollaborator(payload.collaborator));
-    StorytellerUtils.assert(hasCollaborator(payload.collaborator));
+    assertHasProperty(payload, 'collaborator');
+    assert(isValidCollaborator(payload.collaborator));
+    assert(hasCollaborator(payload.collaborator));
 
     collaborators = _.chain(collaborators).
       map(function(collaborator) {
@@ -383,9 +383,9 @@ export default function CollaboratorsStore() {
    * @param {Object} payload - An action payload dispatched through storyteller.dispatcher.
    */
   function changeCollaborator(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'collaborator');
-    StorytellerUtils.assert(isValidCollaborator(payload.collaborator));
-    StorytellerUtils.assert(hasCollaborator(payload.collaborator));
+    assertHasProperty(payload, 'collaborator');
+    assert(isValidCollaborator(payload.collaborator));
+    assert(hasCollaborator(payload.collaborator));
 
     collaborators = _.map(collaborators, function(collaborator) {
       var matches = matchesCollaborator(collaborator, payload.collaborator);

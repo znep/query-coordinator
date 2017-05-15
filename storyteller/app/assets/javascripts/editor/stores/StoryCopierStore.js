@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import Store from './Store';
 import Actions from '../Actions';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assertHasProperty } from 'common/js_utils';
 
 export var storyCopierStore = new StoryCopierStore();
 export default function StoryCopierStore() {
@@ -12,7 +12,7 @@ export default function StoryCopierStore() {
   var self = this;
 
   this.register(function(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'action');
+    assertHasProperty(payload, 'action');
 
     var action = payload.action;
     switch (action) {

@@ -1,15 +1,13 @@
+import { assert, assertIsOneOfTypes, assertEqual, assertInstanceOfAny } from 'common/js_utils';
 import $ from 'jquery';
 import _ from 'lodash';
-import SocrataUtils from 'socrata-utils';
-
-import VifUtils from './VifUtils';
 
 function exportImpl(thing, as) {
   _.set(window, as, thing);
   return thing;
 }
 
-var utils = _.merge({}, SocrataUtils, VifUtils, {
+var utils = {
   export: exportImpl,
   format: function(string) {
     if (_.isString(string)) {
@@ -27,7 +25,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
    * @returns {String} - a hyphenated, lowercase Storyteller type.
    */
   typeToClassNameForComponentType: function(type) {
-    this.assertIsOneOfTypes(type, 'string');
+    assertIsOneOfTypes(type, 'string');
 
     return 'component-' + type.replace(/\./g, '-').replace(/[A-Z]/g, '-$&').toLowerCase();
   },
@@ -80,7 +78,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
    *
    */
   queryParameterMatches: function(paramKey, paramValue) {
-    return this.queryParameters().some((param) => {
+    return utils.queryParameters().some((param) => {
       const [key, value] = param;
       return key === `${paramKey}` && (_.isUndefined(paramValue) || value === `${paramValue}`);
     });
@@ -97,7 +95,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
       for (var i = 0; i < childCount; i++) {
 
         clonedElement.appendChild(
-          this.mapDOMFragmentDescending(
+          utils.mapDOMFragmentDescending(
             element.childNodes[i],
             applyFn,
             shouldTerminateFn
@@ -188,7 +186,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
 
       if (element.parentNode !== null) {
 
-        this.reduceDOMFragmentAscending(
+        utils.reduceDOMFragmentAscending(
           element.parentNode,
           applyFn,
           shouldTerminateFn,
@@ -211,7 +209,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
       var childCount = element.childNodes.length;
 
       for (var i = 0; i < childCount; i++) {
-        this.reduceDOMFragmentDescending(
+        utils.reduceDOMFragmentDescending(
           element.childNodes[i],
           applyFn,
           shouldTerminateFn,
@@ -225,10 +223,10 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
 
   generateStoryTileIframeSrc: function(storyDomain, storyUid) {
 
-    this.assertIsOneOfTypes(storyDomain, 'string');
-    this.assertIsOneOfTypes(storyUid, 'string');
-    this.assertEqual(storyDomain.match(/[^a-z0-9\.\-]/gi), null);
-    this.assert(
+    assertIsOneOfTypes(storyDomain, 'string');
+    assertIsOneOfTypes(storyUid, 'string');
+    assertEqual(storyDomain.match(/[^a-z0-9\.\-]/gi), null);
+    assert(
       storyUid.match(/^\w{4}\-\w{4}$/) !== null,
       '`storyUid` does not match anchored four-by-four pattern'
     );
@@ -238,10 +236,10 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
 
   generateStoryTileJsonSrc: function(storyDomain, storyUid) {
 
-    this.assertIsOneOfTypes(storyDomain, 'string');
-    this.assertIsOneOfTypes(storyUid, 'string');
-    this.assertEqual(storyDomain.match(/[^a-z0-9\.\-]/gi), null);
-    this.assert(
+    assertIsOneOfTypes(storyDomain, 'string');
+    assertIsOneOfTypes(storyUid, 'string');
+    assertEqual(storyDomain.match(/[^a-z0-9\.\-]/gi), null);
+    assert(
       storyUid.match(/^\w{4}\-\w{4}$/) !== null,
       '`storyUid` does not match anchored four-by-four pattern'
     );
@@ -251,10 +249,10 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
 
   generateGoalTileJsonSrc: function(goalDomain, goalUid) {
 
-    this.assertIsOneOfTypes(goalDomain, 'string');
-    this.assertIsOneOfTypes(goalUid, 'string');
-    this.assertEqual(goalDomain.match(/[^a-z0-9\.\-]/gi), null);
-    this.assert(
+    assertIsOneOfTypes(goalDomain, 'string');
+    assertIsOneOfTypes(goalUid, 'string');
+    assertEqual(goalDomain.match(/[^a-z0-9\.\-]/gi), null);
+    assert(
       goalUid.match(/^\w{4}\-\w{4}$/) !== null,
       '`goalUid` does not match anchored four-by-four pattern'
     );
@@ -264,28 +262,28 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
 
   generateGoalEmbedEditSrc: function(uid) {
 
-    this.assertIsOneOfTypes(uid, 'string');
+    assertIsOneOfTypes(uid, 'string');
 
     return `/stat/goals/single/${uid}/embed/edit`;
   },
 
   generateGoalEmbedSrc: function(uid) {
 
-    this.assertIsOneOfTypes(uid, 'string');
+    assertIsOneOfTypes(uid, 'string');
 
     return `/stat/goals/single/${uid}/embed`;
   },
 
   generateYoutubeUrl: function(youtubeId) {
 
-    this.assertIsOneOfTypes(youtubeId, 'string');
+    assertIsOneOfTypes(youtubeId, 'string');
 
     return 'https://www.youtube.com/embed/' + youtubeId;
   },
 
   generateYoutubeIframeSrc: function(youtubeId, autoplay) {
 
-    this.assertIsOneOfTypes(youtubeId, 'string');
+    assertIsOneOfTypes(youtubeId, 'string');
 
     var src = 'https://www.youtube.com/embed/' + youtubeId + '?rel=0&showinfo=0';
 
@@ -337,17 +335,17 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
    * @return {Object} - contains a blockId and componentIndex.
    */
   findBlockIdAndComponentIndex: function(element) {
-    const blockId = this.findClosestAttribute(element, 'data-block-id');
-    const componentIndex = parseInt(this.findClosestAttribute(element, 'data-component-index'), 10);
+    const blockId = utils.findClosestAttribute(element, 'data-block-id');
+    const componentIndex = parseInt(utils.findClosestAttribute(element, 'data-component-index'), 10);
 
-    this.assert(
+    assert(
       _.isString(blockId),
-      `Failed to find attribute data-block-id in the ancestors of: ${this.inspectNode(element)}`
+      `Failed to find attribute data-block-id in the ancestors of: ${utils.inspectNode(element)}`
     );
 
-    this.assert(
+    assert(
       _.isFinite(componentIndex),
-      `Failed to find an integer-valued data-component-index attribute in the ancestors of: ${this.inspectNode(element)}`
+      `Failed to find an integer-valued data-component-index attribute in the ancestors of: ${utils.inspectNode(element)}`
     );
 
     return { blockId, componentIndex };
@@ -364,10 +362,10 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
    */
   findClosestAttribute: function(element, attribute) {
 
-    this.assertInstanceOfAny(element, $, HTMLElement);
-    this.assertIsOneOfTypes(attribute, 'string');
+    assertInstanceOfAny(element, $, HTMLElement);
+    assertIsOneOfTypes(attribute, 'string');
 
-    return $(element).closest(this.format('[{0}]', attribute)).attr(attribute);
+    return $(element).closest(utils.format('[{0}]', attribute)).attr(attribute);
   },
 
   /**
@@ -391,7 +389,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
     var words;
     var truncatedWords;
 
-    this.assert(
+    assert(
       (Math.floor(lineCount) === lineCount),
       '`lineCount` must be an integer'
     );
@@ -408,7 +406,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
       $element.text(truncatedWords.join(' ') + '…');
 
       if (truncatedWords.length > 0) {
-        this.ellipsifyText($element, lineCount);
+        utils.ellipsifyText($element, lineCount);
       }
     }
   },
@@ -488,7 +486,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
   // domain: String, optional, defaults to page domain.
   fetchDomainStrings: function(locale, domain) {
     locale = locale || 'en';
-    return this.fetchDomainConfigurationHash(domain, { type: 'site_theme' }).
+    return utils.fetchDomainConfigurationHash(domain, { type: 'site_theme' }).
       then(function(configs) { return _.merge.apply(_, configs); }).
       then(function(config) {
         var strings = _.get(config, 'properties.strings', {});
@@ -559,7 +557,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
     domain = domain || window.location.hostname;
     options = _.extend({}, { merge: true, default_only: false }, options);
     return Promise.resolve($.get(
-      this.format('https://{0}/api/configurations.json?{1}', domain, $.param(options))
+      utils.format('https://{0}/api/configurations.json?{1}', domain, $.param(options))
     ));
   },
 
@@ -677,7 +675,7 @@ var utils = _.merge({}, SocrataUtils, VifUtils, {
   preventFormAutoSubmit: function() {
     $(document.body).on('submit', 'form:not([action])', _.constant(false));
   }
-});
+};
 
 exportImpl(utils, 'socrata.utils');
 export default utils;

@@ -5,6 +5,7 @@ import Store from './Store';
 import Actions from '../Actions';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assertHasProperty, assertHasProperties } from 'common/js_utils';
 import httpRequest, { coreHeaders } from '../../services/httpRequest';
 import { storyStore } from './StoryStore';
 
@@ -55,7 +56,7 @@ export default function CoreSavingStore() {
     switch (action) {
 
       case Actions.STORY_SAVE_METADATA:
-        StorytellerUtils.assertHasProperty(payload, 'storyUid');
+        assertHasProperty(payload, 'storyUid');
         _saveStoryMetadata(payload.storyUid);
         break;
     }
@@ -182,7 +183,7 @@ export default function CoreSavingStore() {
    * @return {promise<object>} The response from the server.
    */
   function _putViewMetadataToCore(metadata) {
-    StorytellerUtils.assertHasProperties(
+    assertHasProperties(
       metadata,
       'storyUid',
       'storyTitle',

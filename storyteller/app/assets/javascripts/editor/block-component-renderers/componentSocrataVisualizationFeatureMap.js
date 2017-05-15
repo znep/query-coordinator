@@ -4,7 +4,9 @@ import _ from 'lodash';
 import '../componentBase';
 import '../componentWithMapBounds';
 import Constants from '../Constants';
-import StorytellerUtils from '../../StorytellerUtils';
+import StorytellerUtils from 'StorytellerUtils';
+import { vifsAreEquivalent } from 'VifUtils';
+import { assert, assertHasProperty } from 'common/js_utils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 $.fn.componentSocrataVisualizationFeatureMap = componentSocrataVisualizationFeatureMap;
@@ -20,8 +22,8 @@ export default function componentSocrataVisualizationFeatureMap(props) {
   const $this = $(this);
   const { componentData, editMode } = props;
 
-  StorytellerUtils.assertHasProperty(props, 'componentData.type');
-  StorytellerUtils.assert(
+  assertHasProperty(props, 'componentData.type');
+  assert(
     props.componentData.type === 'socrata.visualization.featureMap',
     `componentSocrataVisualizationFeatureMap: Unsupported component type ${props.componentData.type}`
   );
@@ -41,7 +43,7 @@ export default function componentSocrataVisualizationFeatureMap(props) {
 }
 
 function _renderTemplate($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  assertHasProperty(componentData, 'type');
 
   const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
   const $componentContent = $('<div>', { class: 'component-content' });
@@ -64,13 +66,13 @@ function _renderTemplate($element, componentData) {
 }
 
 function _updateVisualization($element, props) {
-  StorytellerUtils.assertHasProperty(props, 'componentData.value.vif');
+  assertHasProperty(props, 'componentData.value.vif');
 
   const { componentData, editMode } = props;
   const renderedVif = $element.attr('data-rendered-vif') || '{}';
   const $componentContent = $element.find('.component-content');
   const vif = componentData.value.vif;
-  const areNotEquivalent = !StorytellerUtils.vifsAreEquivalent(JSON.parse(renderedVif), vif);
+  const areNotEquivalent = !vifsAreEquivalent(JSON.parse(renderedVif), vif);
 
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));

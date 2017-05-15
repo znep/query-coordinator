@@ -6,8 +6,9 @@ ENV TIMECMD="/usr/bin/time -p"
 ARG ARTIFACTORY_USER
 ARG ARTIFACTORY_PASSWORD
 
-ENV APP_DIR=/opt/socrata/storyteller \
-    APP_TMP_DIR=/opt/socrata/storyteller/tmp \
+ENV PLATFORM_UI_DIR=/opt/socrata/platform-ui \
+    APP_DIR=/opt/socrata/platform-ui/storyteller \
+    APP_TMP_DIR=/opt/socrata/platform-ui/storyteller/tmp \
     RACK_ENV=production \
     RAILS_ENV=production \
     RAILS_SERVE_STATIC_FILES=true \
@@ -22,46 +23,46 @@ RUN DEBIAN_FRONTEND=noninteractive && \
   rm -rf /var/lib/apt/lists/*
 
 RUN mkdir ${SERVICE_DIR_BASE}/storyteller
-COPY runit/web_server ${SERVICE_DIR_BASE}/storyteller/run
+COPY storyteller/runit/web_server ${SERVICE_DIR_BASE}/storyteller/run
 
 RUN mkdir ${SERVICE_DIR_BASE}/storyteller-documents-queue-worker
-COPY runit/work_documents_queue ${SERVICE_DIR_BASE}/storyteller-documents-queue-worker/run
+COPY storyteller/runit/work_documents_queue ${SERVICE_DIR_BASE}/storyteller-documents-queue-worker/run
 
 RUN mkdir ${SERVICE_DIR_BASE}/storyteller-thumbnails-queue-worker
-COPY runit/work_thumbnails_queue ${SERVICE_DIR_BASE}/storyteller-thumbnails-queue-worker/run
+COPY storyteller/runit/work_thumbnails_queue ${SERVICE_DIR_BASE}/storyteller-thumbnails-queue-worker/run
 
 RUN mkdir ${SERVICE_DIR_BASE}/storyteller-metrics-queue-worker
-COPY runit/work_metrics_queue ${SERVICE_DIR_BASE}/storyteller-metrics-queue-worker/run
+COPY storyteller/runit/work_metrics_queue ${SERVICE_DIR_BASE}/storyteller-metrics-queue-worker/run
 
 RUN mkdir ${SERVICE_DIR_BASE}/storyteller-domains-queue-worker
-COPY runit/work_domains_queue ${SERVICE_DIR_BASE}/storyteller-domains-queue-worker/run
+COPY storyteller/runit/work_domains_queue ${SERVICE_DIR_BASE}/storyteller-domains-queue-worker/run
 
 RUN mkdir ${SERVICE_DIR_BASE}/storyteller-core-events-listener
-COPY runit/core_events_listener ${SERVICE_DIR_BASE}/storyteller-core-events-listener/run
+COPY storyteller/runit/core_events_listener ${SERVICE_DIR_BASE}/storyteller-core-events-listener/run
 
 # Run this early since we don't expect it to change very often
 RUN ${TIMECMD} npm install -g n
 RUN ${TIMECMD} n 6.9.1
 
 # Only bundle install when Gemfile has changed
-COPY Gemfile* /tmp/
-COPY .ruby-version /tmp/
-COPY vendor /tmp/vendor
+COPY storyteller/Gemfile* /tmp/
+COPY storyteller/.ruby-version /tmp/
+COPY storyteller/vendor /tmp/vendor
 WORKDIR /tmp
 RUN bundle config repo.socrata.com "${ARTIFACTORY_USER}":"${ARTIFACTORY_PASSWORD}"
 RUN ${TIMECMD} bundle install
 
 # Only run npm install fresh when package.json is changed
-COPY package.json /tmp/package.json
-COPY .npmrc /tmp/.npmrc
+COPY storyteller/package.json /tmp/package.json
+COPY storyteller/.npmrc /tmp/.npmrc
 RUN cd /tmp && ${TIMECMD} npm install
-RUN mkdir -p ${APP_DIR} && mv /tmp/node_modules ${APP_DIR}/
+RUN mkdir -p ${APP_DIR} && mv /tmp/node_modules ${APP_DIR}
 
 # Add application code
-ADD . ${APP_DIR}
+ADD . ${PLATFORM_UI_DIR}
 WORKDIR ${APP_DIR}
 
-ADD config/database.yml.production ${APP_DIR}/config/database.yml
+ADD storyteller/config/database.yml.production ${APP_DIR}/config/database.yml
 
 RUN ${TIMECMD} npm run webpack
 RUN DISABLE_CACHE=true ${TIMECMD} bundle exec rake assets:precompile

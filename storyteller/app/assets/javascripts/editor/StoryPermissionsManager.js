@@ -4,7 +4,7 @@ import { dispatcher } from './Dispatcher';
 import { storyStore } from './stores/StoryStore';
 import httpRequest, { storytellerHeaders } from '../services/httpRequest';
 import Environment from '../StorytellerEnvironment';
-import StorytellerUtils from '../StorytellerUtils';
+import { assertIsOneOfTypes, assertHasProperty } from 'common/js_utils';
 import Actions from './Actions';
 import Constants from './Constants';
 
@@ -16,7 +16,7 @@ export default function StoryPermissionsManager() {
   const { IS_GOAL, STORY_UID } = Environment;
 
   this.makePublic = (errorCallback) => {
-    StorytellerUtils.assertIsOneOfTypes(errorCallback, 'undefined', 'function');
+    assertIsOneOfTypes(errorCallback, 'undefined', 'function');
 
     return setToPublic().
       then((response) => {
@@ -33,7 +33,7 @@ export default function StoryPermissionsManager() {
   };
 
   this.makePrivate = (errorCallback) => {
-    StorytellerUtils.assertIsOneOfTypes(errorCallback, 'undefined', 'function');
+    assertIsOneOfTypes(errorCallback, 'undefined', 'function');
 
     return setToPrivate().
       then(handleRequestSuccess).
@@ -41,9 +41,9 @@ export default function StoryPermissionsManager() {
   };
 
   function handleRequestSuccess({ data }) {
-    StorytellerUtils.assertIsOneOfTypes(data, 'object');
-    StorytellerUtils.assertHasProperty(data, 'isPublic');
-    StorytellerUtils.assertIsOneOfTypes(data.isPublic, 'boolean');
+    assertIsOneOfTypes(data, 'object');
+    assertHasProperty(data, 'isPublic');
+    assertIsOneOfTypes(data.isPublic, 'boolean');
 
     dispatcher.dispatch({
       action: Actions.STORY_SET_PERMISSIONS,

@@ -1,6 +1,7 @@
 import Constants from './Constants';
 import RichTextEditor from './RichTextEditor';
 import StorytellerUtils from '../StorytellerUtils';
+import { assertInstanceOf } from 'common/js_utils';
 import RichTextEditorToolbar, { richTextEditorToolbar } from './RichTextEditorToolbar';
 
 export var richTextEditorManager = StorytellerUtils.export(
@@ -9,8 +10,8 @@ export var richTextEditorManager = StorytellerUtils.export(
 );
 
 export default function RichTextEditorManager(toolbar, formats) {
-  StorytellerUtils.assertInstanceOf(toolbar, RichTextEditorToolbar);
-  StorytellerUtils.assertInstanceOf(formats, Array);
+  assertInstanceOf(toolbar, RichTextEditorToolbar);
+  assertInstanceOf(formats, Array);
 
   var _formats = formats;
   var _toolbar = toolbar;

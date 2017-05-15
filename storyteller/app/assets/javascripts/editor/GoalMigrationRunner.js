@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Showdown from 'showdown';
 
-import StorytellerUtils from '../StorytellerUtils';
+import { assert } from 'common/js_utils';
 import httpRequest, { federationHeaders } from '../services/httpRequest';
 import Actions from './Actions';
 import Constants from './Constants';
@@ -13,8 +13,8 @@ const converter = new Showdown.converter(); //eslint-disable-line new-cap
 const urlMatcher = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:''.,<>?«»“”‘’]))/ig;
 
 export default function GoalMigrationRunner(narrativeMigrationMetadata, storyData) {
-  StorytellerUtils.assert(narrativeMigrationMetadata, 'Narrative data must be provided.');
-  StorytellerUtils.assert(storyData, 'Story data must be provided.');
+  assert(narrativeMigrationMetadata, 'Narrative data must be provided.');
+  assert(storyData, 'Story data must be provided.');
 
   this.run = () => {
     dispatcher.dispatch({

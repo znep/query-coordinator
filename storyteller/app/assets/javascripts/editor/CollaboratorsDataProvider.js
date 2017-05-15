@@ -1,9 +1,10 @@
 import _ from 'lodash';
 
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 
 import Environment from '../StorytellerEnvironment';
 import StorytellerUtils from '../StorytellerUtils';
+import { assert } from 'common/js_utils';
 import { storyStore } from './stores/StoryStore';
 import httpRequest, { coreHeaders } from '../services/httpRequest';
 import { exceptionNotifier } from '../services/ExceptionNotifier';
@@ -18,7 +19,7 @@ import { exceptionNotifier } from '../services/ExceptionNotifier';
 export default function CollaboratorsDataProvider() {
 
   var uid = Environment.STORY_UID;
-  StorytellerUtils.assert(
+  assert(
     /\w{4}\-\w{4}/.test(uid),
     'A valid story UID must be provided.'
   );

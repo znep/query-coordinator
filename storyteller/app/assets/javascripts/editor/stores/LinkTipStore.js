@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import Store from './Store';
 import Actions from '../Actions';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assertHasProperties } from 'common/js_utils';
 
 /**
  * @class LinkTipStore
@@ -75,7 +75,7 @@ export default function LinkTipStore() {
   }
 
   function _openTip(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'text', 'link', 'editorId', 'openInNewWindow', 'boundingClientRect');
+    assertHasProperties(payload, 'text', 'link', 'editorId', 'openInNewWindow', 'boundingClientRect');
 
     _visible = true;
     _editorId = payload.editorId;
@@ -92,7 +92,7 @@ export default function LinkTipStore() {
   }
 
   function _setInputs(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'text', 'link', 'openInNewWindow');
+    assertHasProperties(payload, 'text', 'link', 'openInNewWindow');
 
     _inputs = {
       text: payload.text,

@@ -4,6 +4,7 @@ import _ from 'lodash';
 import '../componentBase';
 import CustomEvent from '../../CustomEvent';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertInstanceOf, assertHasProperty, assertHasProperties } from 'common/js_utils';
 
 /**
  * Creates or updates an image component
@@ -35,8 +36,8 @@ export default function componentImage(props) {
   const $this = $(this);
   const { componentData } = props;
 
-  StorytellerUtils.assertHasProperties(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperties(componentData, 'type');
+  assert(
     componentData.type === 'image',
     `componentImage: Unsupported component type ${componentData.type}`
   );
@@ -52,7 +53,7 @@ export default function componentImage(props) {
 }
 
 function _renderImage($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  assertHasProperty(componentData, 'type');
 
   const $imgElement = $(
     '<img>',
@@ -80,9 +81,9 @@ function _renderImage($element, componentData) {
 }
 
 function _updateImageAttributes($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'value');
-  StorytellerUtils.assertHasProperty(componentData.value, 'url');
-  StorytellerUtils.assertHasProperty(componentData.value, 'documentId');
+  assertHasProperty(componentData, 'value');
+  assertHasProperty(componentData.value, 'url');
+  assertHasProperty(componentData.value, 'documentId');
 
   let src;
   const $link = $element.find('a');
@@ -114,7 +115,7 @@ function _updateImageAttributes($element, componentData) {
 }
 
 function _informHeightChanges($image) {
-  StorytellerUtils.assertInstanceOf($image, $);
+  assertInstanceOf($image, $);
 
   $image.one('load', () => {
     $image[0].dispatchEvent(

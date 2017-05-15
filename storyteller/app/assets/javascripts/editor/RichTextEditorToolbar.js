@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 import { dispatcher } from './Dispatcher';
 import StorytellerUtils from '../StorytellerUtils';
+import { assertInstanceOf, assertHasProperty } from 'common/js_utils';
 import Actions from './Actions';
 import Constants from './Constants';
 import { richTextEditorColorStore } from './stores/RichTextEditorColorStore';
@@ -31,7 +32,7 @@ export var richTextEditorToolbar = new RichTextEditorToolbar(
   Constants.RICH_TEXT_FORMATS
 );
 export default function RichTextEditorToolbar(selector, formats) {
-  StorytellerUtils.assertInstanceOf(formats, Array);
+  assertInstanceOf(formats, Array);
 
   var element;
   var formatController = null;
@@ -435,7 +436,7 @@ export default function RichTextEditorToolbar(selector, formats) {
   }
 
   function updateActiveFormats(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'activeFormats');
+    assertHasProperty(payload, 'activeFormats');
 
     var activeFormats = payload.activeFormats;
     var selectElement = element.find('.rich-text-editor-toolbar-select');

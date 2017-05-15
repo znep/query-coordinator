@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import Store from './Store';
 import Actions from '../Actions';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assertHasProperties } from 'common/js_utils';
 import { moveComponentStore } from './MoveComponentStore';
 
 /* Responsible for:
@@ -48,7 +48,7 @@ export default function MapNotificationDismissalStore() {
   };
 
   function _moveDismissal(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'blockId', 'componentIndex');
+    assertHasProperties(payload, 'blockId', 'componentIndex');
 
     const sourceComponent = moveComponentStore.getSourceMoveComponent();
     const sourcePath = `${sourceComponent.blockId}_${sourceComponent.componentIndex}`;

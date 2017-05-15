@@ -7,7 +7,7 @@ import './componentResizable';
 import './withLayoutHeightFromComponentData';
 import Actions from './Actions';
 import I18n from './I18n';
-import StorytellerUtils from '../StorytellerUtils';
+import { assert, assertHasProperties } from 'common/js_utils';
 import { dispatcher } from './Dispatcher';
 import ComponentEditMenu from './ComponentEditMenu';
 
@@ -39,9 +39,9 @@ $.fn.componentBase = componentBase;
  */
 
 export default function componentBase(props) {
-  StorytellerUtils.assert(arguments.length === 1, 'Invalid invocation of componentBase');
+  assert(arguments.length === 1, 'Invalid invocation of componentBase');
 
-  StorytellerUtils.assertHasProperties(
+  assertHasProperties(
     props,
     'componentData',
     'theme',

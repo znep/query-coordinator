@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactCrop from 'react-image-crop';
 import SocrataVisualizations from 'socrata-visualizations';
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 
 import '../components/Modal';
 import I18n from '../I18n';
@@ -12,6 +12,7 @@ import Actions from '../Actions';
 import Constants from '../Constants';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertInstanceOf } from 'common/js_utils';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 import { dispatcher } from '../Dispatcher';
 import { WIZARD_STEP, assetSelectorStore } from '../stores/AssetSelectorStore';
@@ -26,7 +27,7 @@ export default function AssetSelectorRenderer(options) {
   var _lastRenderedStep = null;
   var _warnAboutInsecureHTML = false;
 
-  StorytellerUtils.assertInstanceOf(_container, $);
+  assertInstanceOf(_container, $);
 
   _container.modal();
 
@@ -320,7 +321,7 @@ export default function AssetSelectorRenderer(options) {
 
     _container.on('click', '[data-provider]', function() {
       const provider = this.getAttribute('data-provider');
-      StorytellerUtils.assert(provider, 'provider must be defined');
+      assert(provider, 'provider must be defined');
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -341,7 +342,7 @@ export default function AssetSelectorRenderer(options) {
 
     _container.on('click', '[data-resume-from-step]', function() {
       const step = this.getAttribute('data-resume-from-step');
-      StorytellerUtils.assert(step, 'step must be provided');
+      assert(step, 'step must be provided');
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import Constants from './Constants';
-import StorytellerUtils from '../StorytellerUtils';
+import { assertIsOneOfTypes } from 'common/js_utils';
 import Environment from '../StorytellerEnvironment';
 import { storySaveStatusStore } from './stores/StorySaveStatusStore';
 import { storyStore } from './stores/StoryStore';
@@ -17,7 +17,7 @@ function clearSavingFlag() {
 
 export var autosave = new Autosave(Environment.STORY_UID);
 export default function Autosave(storyUid) {
-  StorytellerUtils.assertIsOneOfTypes(Constants.AUTOSAVE_DEBOUNCE_TIME_IN_SECONDS, 'number');
+  assertIsOneOfTypes(Constants.AUTOSAVE_DEBOUNCE_TIME_IN_SECONDS, 'number');
 
   var autosaveDebounceMsec = Constants.AUTOSAVE_DEBOUNCE_TIME_IN_SECONDS * 1000;
   var saveOnceSettled;

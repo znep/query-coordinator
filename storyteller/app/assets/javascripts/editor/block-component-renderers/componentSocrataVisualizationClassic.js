@@ -4,6 +4,7 @@ import _ from 'lodash';
 import '../componentBase';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertInstanceOf, assertHasProperties, assertHasProperty } from 'common/js_utils';
 
 const COMPONENT_VALUE_CACHE_ATTR_NAME = 'classic-visualization-component-value';
 
@@ -20,12 +21,12 @@ export default function componentSocrataVisualizationClassic(props) {
   const $this = $(this);
   let { componentData } = props;
 
-  StorytellerUtils.assertHasProperties(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperties(componentData, 'type');
+  assert(
     componentData.type === 'socrata.visualization.classic',
     `componentSocrataVisualizationClassic: Unsupported component type ${componentData.type}`
   );
-  StorytellerUtils.assertHasProperty(componentData, 'value.visualization');
+  assertHasProperty(componentData, 'value.visualization');
 
   componentData = _.cloneDeep(componentData);
   _.set(componentData, 'value.visualization.displayFormat.disableZoomWheel', true);
@@ -42,7 +43,7 @@ export default function componentSocrataVisualizationClassic(props) {
 }
 
 function _renderVisualization($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  assertHasProperty(componentData, 'type');
 
   const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
   const $iframeElement = $(
@@ -76,7 +77,7 @@ function _updateVisualization($element, componentData) {
   const oldValue = $iframe.data(COMPONENT_VALUE_CACHE_ATTR_NAME);
   const newValue = componentData.value.visualization;
 
-  StorytellerUtils.assertInstanceOf($iframe, $);
+  assertInstanceOf($iframe, $);
 
   // This guard is to wait for loading.
   // The iframe load event above should invoke _updateVisualization again.

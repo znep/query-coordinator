@@ -4,6 +4,7 @@ import $ from 'jquery';
 import I18n from '../I18n';
 import Actions from '../Actions';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperties } from 'common/js_utils';
 
 $.fn.componentAssetSelector = componentAssetSelector;
 
@@ -12,8 +13,8 @@ export default function componentAssetSelector(props) {
 
   const { componentData } = props;
 
-  StorytellerUtils.assertHasProperties(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperties(componentData, 'type');
+  assert(
     componentData.type === 'assetSelector',
     `componentAssetSelector: Unsupported component type ${componentData.type}`
   );

@@ -7,6 +7,7 @@ import './componentHTML';
 import I18n from '../I18n';
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperty, assertHasProperties } from 'common/js_utils';
 import Actions from '../Actions';
 import { storyStore } from '../stores/StoryStore';
 import { richTextEditorManager } from '../RichTextEditorManager';
@@ -45,8 +46,8 @@ export default function componentHero(props) {
     defaultHeight
   } = props;
 
-  StorytellerUtils.assertHasProperties(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperties(componentData, 'type');
+  assert(
     componentData.type === 'hero',
     `componentHero: Unsupported component type ${componentData.type}`
   );
@@ -262,9 +263,9 @@ function contentChanged(event) {
 }
 
 function assertComponentDataStructure(componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'value');
-  StorytellerUtils.assertHasProperty(componentData.value, 'documentId');
-  StorytellerUtils.assertHasProperty(componentData.value, 'url');
+  assertHasProperty(componentData, 'value');
+  assertHasProperty(componentData.value, 'documentId');
+  assertHasProperty(componentData.value, 'url');
 }
 
 function typeClass() {

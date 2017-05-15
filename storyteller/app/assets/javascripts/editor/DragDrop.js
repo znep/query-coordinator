@@ -2,7 +2,7 @@ import $ from 'jquery';
 import Unidragger from 'unidragger';
 
 import Actions from './Actions';
-import StorytellerUtils from '../StorytellerUtils';
+import { assert, assertHasProperty } from 'common/js_utils';
 import { dispatcher } from './Dispatcher';
 import { dropHintStore } from './stores/DropHintStore';
 
@@ -19,8 +19,8 @@ import { dropHintStore } from './stores/DropHintStore';
  */
 export default function DragDrop(handles, ghostElement) {
 
-  StorytellerUtils.assertHasProperty(handles, 'length');
-  StorytellerUtils.assert(
+  assertHasProperty(handles, 'length');
+  assert(
     ghostElement.length === 1,
     '`ghostElement` argument must point to exactly one element'
   );

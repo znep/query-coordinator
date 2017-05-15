@@ -4,7 +4,7 @@ import 'jquery-sidebar';
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import StoryPermissionsRenderer from '../renderers/StoryPermissionsRenderer';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assertInstanceOf } from 'common/js_utils';
 import { dispatcher } from '../Dispatcher';
 import { goalTitleProvider } from '../GoalTitleProvider';
 import { shareAndEmbedStore } from '../stores/ShareAndEmbedStore';
@@ -27,7 +27,7 @@ import { goalTitleStore } from '../stores/GoalTitleStore';
 $.fn.settingsPanel = SettingsPanel;
 
 export default function SettingsPanel(toggleButton) {
-  StorytellerUtils.assertInstanceOf(toggleButton, $);
+  assertInstanceOf(toggleButton, $);
 
   var settingsContainer = $(this);
   var settingsOverlay = settingsContainer.find('#settings-panel-overlay');

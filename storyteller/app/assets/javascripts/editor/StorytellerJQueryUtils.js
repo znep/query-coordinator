@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import StorytellerUtils from '../StorytellerUtils';
+import { assertIsOneOfTypes } from 'common/js_utils';
 
 var StorytellerJQueryUtils = {
   /**
@@ -12,9 +12,9 @@ var StorytellerJQueryUtils = {
    *   Arguments: (value, attributeName). `this` is the current selection.
    */
   updateAttributeWithCallbackIfChanged: function(attributeName, value, callback) {
-    StorytellerUtils.assertIsOneOfTypes(attributeName, 'string');
-    StorytellerUtils.assertIsOneOfTypes(value, 'string');
-    StorytellerUtils.assertIsOneOfTypes(callback, 'function');
+    assertIsOneOfTypes(attributeName, 'string');
+    assertIsOneOfTypes(value, 'string');
+    assertIsOneOfTypes(callback, 'function');
 
     if (this.attr(attributeName) !== value) {
       this.attr(attributeName, value);

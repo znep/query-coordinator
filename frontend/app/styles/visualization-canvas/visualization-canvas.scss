@@ -268,6 +268,16 @@ body {
   .visualization-canvas-body {
     margin: 0 auto;
 
+    &.edit-mode, &.preview-mode {
+      .info-pane {
+        .entry-header {
+          .entry-actions {
+            display: none;
+          }
+        }
+      }
+    }
+
     .info-pane {
       padding-top: 15px;
       margin-bottom: 0;
@@ -280,7 +290,7 @@ body {
 
       .entry-header {
         .entry-title {
-          flex: 1 5 80%;
+          flex: 1 1 80%;
         }
 
         .entry-actions {

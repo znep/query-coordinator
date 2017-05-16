@@ -59,12 +59,10 @@ body {
 
   .entry-header {
     display: flex;
-    flex-wrap: wrap;
 
     .entry-title {
-      flex: 1 1 auto;
-      width: auto;
       margin-right: 20px;
+      flex: 1 10 50%;
 
       .icon-official {
         margin-right: 4px;
@@ -81,7 +79,8 @@ body {
     }
 
     .entry-actions {
-      flex: 0 1 auto;
+      display: flex;
+      flex: 1 1 auto;
       padding-top: 8px;
 
       .btn-group > .btn {
@@ -134,18 +133,37 @@ body {
     }
   }
 
+  @media(max-width: $medium) {
+    .entry-header {
+      .entry-title {
+        flex: 1 1 auto;
+      }
+
+      .entry-actions {
+        flex: 1 5 auto;
+      }
+    }
+  }
+
   @media(max-width: $small) {
     .entry-header {
+      .entry-title {
+        flex: 1 1 auto;
+      }
+
       .entry-actions {
-        flex: 1 0 auto;
+        flex: 1 5 auto;
 
         .btn-group {
-          width: 100%;
           display: flex;
 
           > .btn {
-            flex: 1 0 auto;
             text-align: center;
+          }
+
+          .dropdown {
+            display: flex;
+            align-items: center;
           }
         }
       }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Redirect, IndexRoute } from 'react-router';
 import App from './components/App';
-import ShowUpdate from './components/ShowUpdate';
+import ShowRevision from './components/ShowRevision';
 import ManageMetadata from './components/ManageMetadata';
 import ManageUploads from './components/ManageUploads';
 import ShowOutputSchema from './components/ShowOutputSchema';
@@ -13,20 +13,20 @@ import _ from 'lodash';
 const checkUploadStatus = store => (nextState, replace) => {
   const uploadExists = !_.isEmpty(store.getState().db.output_columns);
 
-  const { category, fourfour, name, updateSeq } = nextState.params;
+  const { category, fourfour, name, revisionSeq } = nextState.params;
 
   if (uploadExists) {
     store.dispatch(focusColumnEditor(nextState));
   } else {
-    replace(`/${category}/${name}/${fourfour}/revisions/${updateSeq}`);
+    replace(`/${category}/${name}/${fourfour}/revisions/${revisionSeq}`);
   }
 };
 
 const checkUpsertStatus = store => (nextState, replace, blocking) => {
   const upsertJob = _.maxBy(_.values(store.getState().db.upsert_jobs), job => job.updated_at);
 
-  const { category, fourfour, name, updateSeq } = nextState.params;
-  const newPath = `/${category}/${name}/${fourfour}/revisions/${updateSeq}`;
+  const { category, fourfour, name, revisionSeq } = nextState.params;
+  const newPath = `/${category}/${name}/${fourfour}/revisions/${revisionSeq}`;
 
   if (upsertJob && newPath !== nextState.location.pathname) {
     replace(newPath);
@@ -38,11 +38,11 @@ const checkUpsertStatus = store => (nextState, replace, blocking) => {
 export default function rootRoute(store) {
   return (
     <Route
-      path="/:category/:name/:fourfour/revisions/:updateSeq"
+      path="/:category/:name/:fourfour/revisions/:revisionSeq"
       component={App}
       onEnter={checkUpsertStatus(store)}>
 
-      <IndexRoute component={ShowUpdate} />
+      <IndexRoute component={ShowRevision} />
       <Redirect from="metadata" to="metadata/dataset" />
       <Route path="metadata/dataset" component={ManageMetadata} />
       <Route
@@ -50,7 +50,7 @@ export default function rootRoute(store) {
         component={ManageMetadata}
         onEnter={checkUploadStatus(store)} />
       <Route path="uploads" component={ManageUploads} />
-      <Route path=":sidebarSelection" component={ShowUpdate} />
+      <Route path=":sidebarSelection" component={ShowRevision} />
       <Route path="uploads/:uploadId" component={ShowUpload} />
       <Route
         path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId"

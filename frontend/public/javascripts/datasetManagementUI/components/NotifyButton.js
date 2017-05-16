@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import SocrataIcon from '../../common/components/SocrataIcon';
-import * as ApplyUpdate from 'actions/applyUpdate';
+import * as ApplyRevision from 'actions/applyRevision';
 import { STATUS_INSERTING, STATUS_SAVED } from 'lib/database/statuses';
 import styles from 'styles/NotifyButton.scss';
 
@@ -69,7 +69,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     addEmailInterest: (jobUuid) => {
-      dispatch(ApplyUpdate.addEmailInterest(jobUuid));
+      dispatch(ApplyRevision.addEmailInterest(jobUuid));
     }
   };
 }

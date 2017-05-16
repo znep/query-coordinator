@@ -1,4 +1,5 @@
 @import "styleguide-colors";
+@import "internal-asset-manager/mixins/multi_line_ellipsis";
 
 table.result-list-table {
   thead {
@@ -9,6 +10,31 @@ table.result-list-table {
         border: 1px solid $light-grey-3;
         cursor: pointer;
         user-select: none;
+
+        &.active {
+          font-weight: 700;
+        }
+
+        &.name {
+          width: 600px;
+        }
+
+        .ascending-arrow, .descending-arrow {
+          display: none;
+          float: right;
+        }
+
+        &.ascending {
+          .ascending-arrow {
+            display: inline-block;
+          }
+        }
+
+        &.descending {
+          .descending-arrow {
+            display: inline-block;
+          }
+        }
       }
     }
   }
@@ -26,6 +52,7 @@ table.result-list-table {
 
         span.description {
           display: block;
+          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $light-grey-6);
         }
       }
 

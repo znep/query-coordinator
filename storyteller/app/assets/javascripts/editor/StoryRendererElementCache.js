@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import StorytellerUtils from '../StorytellerUtils';
+import { assert, assertHasProperty } from 'common/js_utils';
 
 export default function StoryRendererElementCache() {
   var _elements = {};
@@ -15,8 +16,8 @@ export default function StoryRendererElementCache() {
   };
 
   this.getComponent = function(blockId, componentIndex) {
-    StorytellerUtils.assertHasProperty(_elements, blockId);
-    StorytellerUtils.assert(
+    assertHasProperty(_elements, blockId);
+    assert(
       _elements[blockId].components.length > componentIndex,
       StorytellerUtils.format(
         'block with id "{0}"" does not have a component at index {1}.',

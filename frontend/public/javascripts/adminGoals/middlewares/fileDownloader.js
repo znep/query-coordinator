@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { fetchOptions } from '../constants';
-import * as SharedActions from '../sections/shared/actions';
+import * as Actions from '../actions';
 import downloadBlob from '../helpers/downloadBlob';
 
 /**
@@ -66,7 +66,7 @@ export default store => next => action => {
             store.dispatch({ type: failureActionType, reason, ...getExtraActionFields(action) });
 
             const message = state.getIn(['translations', 'admin', 'default_error_message']);
-            store.dispatch(SharedActions.showGlobalMessage('goals', message));
+            store.dispatch(Actions.notifications.showNotification('error', message));
 
             clear();
           });

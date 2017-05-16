@@ -399,6 +399,7 @@ Variable Name | Type | Source | Description
 `auth0_uri` | String | Configuration | _Host name_, **not "URI"**, used to connect to the Auth0 service.
 `auth0_id` | String | Configuration | API token used to authenticate with the Auth0 service.
 `auth0_secret` | String | Configuration | Secret key used to authenticate with the Auth0 service.
+`auth0_database_connection` | String | Configuration | Which auth0 "custom database" connection to use to for username/password logins. If not defined, username/password logins submit straight to Rails.
 `bundle_gemfile` | String | Configuration | Path to the `Gemfile` used by the Bundler gem. Programmatically determined to be the base directory of the frontend, but can be overridden by setting this ENV variable.
 `canary` | Boolean | Configuration | If set to true the host will visually identify itself as the Canary.
 `catalog_landing_page_airbrake_api_key` | String | Configuration | AirBrake API token used to track CLP errors.
@@ -508,6 +509,8 @@ If you wish to test other languages locally, you can pull the LocaleApp translat
 LOCALEAPP_API_KEY=[KEY FROM LASTPASS]
 ```
 - Run the `bin/pull_translations` script
+
+After you successfully pull translations, follow the instructions here to [configure localization for a domain](https://sites.google.com/a/socrata.com/client-services/localization/localizing-content).
 
 ## Further Reading
 

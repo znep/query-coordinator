@@ -4,7 +4,7 @@ import $ from 'jquery';
 import I18n from '../I18n';
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assertInstanceOf } from 'common/js_utils';
 import { dispatcher } from '../Dispatcher';
 import { storyStore } from '../stores/StoryStore';
 import { storyCopierStore } from '../stores/StoryCopierStore';
@@ -17,7 +17,7 @@ export default function StoryCopierRenderer(options) {
   const container = options.storyCopierContainerElement || null;
   let rendered = false;
 
-  StorytellerUtils.assertInstanceOf(container, $);
+  assertInstanceOf(container, $);
 
   listenForChanges();
   attachEvents();

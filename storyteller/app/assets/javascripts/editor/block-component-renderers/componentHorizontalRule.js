@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperty } from 'common/js_utils';
 
 /**
  * @function componentHorizontalRule
@@ -15,12 +16,12 @@ export default function componentHorizontalRule(props) {
   const $this = $(this);
   const { componentData } = props;
 
-  StorytellerUtils.assertHasProperty(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperty(componentData, 'type');
+  assert(
     componentData.type === 'horizontalRule',
     `componentHorizontalRule: Unsupported component type ${componentData.type}`
   );
-  StorytellerUtils.assert(
+  assert(
     $this.length === 1,
     'Selection must have exactly one element.'
   );

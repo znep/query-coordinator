@@ -746,64 +746,6 @@ describe('StorytellerUtils', function() {
     });
   });
 
-  describe('assertInstanceOf', function() {
-    var SomeClass = function() {};
-    var SomeOtherClass = function() {};
-
-    describe('given zero or one arguments', function() {
-      it('should throw', function() {
-        assert.throws(function() { StorytellerUtils.assertInstanceOf(); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOf({}); });
-      });
-    });
-
-    describe('given an object that is not an instance of the given instantiator', function() {
-      it('should throw', function() {
-        assert.throws(function() { StorytellerUtils.assertInstanceOf(4, SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOf('', SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOf([], SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOf({}, SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOf(new SomeClass(), SomeOtherClass); });
-      });
-    });
-
-    describe('given an object that is an instance of the instantiator', function() {
-      it('should not throw', function() {
-        StorytellerUtils.assertInstanceOf(new SomeClass(), SomeClass);
-      });
-    });
-  });
-
-  describe('assertInstanceOfAny', function() {
-    var SomeClass = function() {};
-    var SomeOtherClass = function() {};
-
-    describe('given zero or one arguments', function() {
-      it('should throw', function() {
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny(); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny({}); });
-      });
-    });
-
-    describe('given an object that is not an instance of the given instantiators', function() {
-      it('should throw', function() {
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny(4, SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny('', SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny([], SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny({}, SomeClass); });
-        assert.throws(function() { StorytellerUtils.assertInstanceOfAny(new SomeClass(), SomeOtherClass); });
-      });
-    });
-
-    describe('given an object that is an instance of at least one of the given instantiators', function() {
-      it('should not throw', function() {
-        StorytellerUtils.assertInstanceOfAny(new SomeClass(), SomeClass);
-        StorytellerUtils.assertInstanceOfAny(new SomeClass(), SomeClass, SomeOtherClass);
-        StorytellerUtils.assertInstanceOfAny(new SomeClass(), SomeOtherClass, SomeClass);
-      });
-    });
-  });
-
   describe('.formatValueWithoutRounding()', function() {
 
     describe('when given non-numeric input', function() {

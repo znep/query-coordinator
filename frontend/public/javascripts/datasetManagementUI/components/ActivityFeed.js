@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import * as Links from '../links';
 import moment from 'moment';
 import SocrataIcon from '../../common/components/SocrataIcon';
-import * as ApplyUpdate from '../actions/applyUpdate';
+import * as ApplyRevision from '../actions/applyRevision';
 import styles from 'styles/ActivityFeed.scss';
 
 function ActivityFeedTimestamp({ date }) {
@@ -127,7 +127,7 @@ const upsertFailedActivity = (upsert, at) => {
 };
 
 function activitiesOf(db) {
-  const updateModel = _.values(db.updates)[0];
+  const updateModel = _.values(db.revisions)[0];
   if (!updateModel) return [];
   const update = {
     type: 'update',
@@ -163,7 +163,7 @@ function activitiesOf(db) {
 
   const finishedUpserts = _.chain(db.upsert_jobs).
     filter((upsertJob) => !!upsertJob.finished_at).
-    filter((upsertJob) => upsertJob.status === ApplyUpdate.UPSERT_JOB_SUCCESSFUL).
+    filter((upsertJob) => upsertJob.status === ApplyRevision.UPSERT_JOB_SUCCESSFUL).
     map((upsertJob) => ({
       type: 'upsertCompleted',
       value: upsertJob,
@@ -173,7 +173,7 @@ function activitiesOf(db) {
 
   const failedUpserts = _.chain(db.upsert_jobs).
     filter((upsertJob) => !!upsertJob.finished_at).
-    filter((upsertJob) => upsertJob.status === ApplyUpdate.UPSERT_JOB_FAILURE).
+    filter((upsertJob) => upsertJob.status === ApplyRevision.UPSERT_JOB_FAILURE).
     map((upsertJob) => ({
       type: 'upsertFailed',
       value: upsertJob,

@@ -14,7 +14,7 @@ class Auth0Authentication
 
 protected
   def load
-    uri = UserSession.auth_uri.clone
+    uri = UserSessionProvider.klass.auth_uri.clone
     uri.query = 'method=authenticateFederatedAuth0User'
     post = Net::HTTP::Post.new(uri.request_uri)
     post['X-Socrata-Host'] = CurrentDomain.cname
@@ -26,6 +26,7 @@ protected
 
     if @response.is_a?(Net::HTTPSuccess)
       @user = User.parse(response.body)
+
       Rails.logger.info("User: #{@user}")
     elsif @response.is_a?(Net::HTTPNotFound)
       Rails.logger.info("User not found")

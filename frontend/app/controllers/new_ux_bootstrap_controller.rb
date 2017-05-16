@@ -513,7 +513,7 @@ class NewUxBootstrapController < ActionController::Base
       @migration_metadata = {}
     end
 
-    @skip_link_id = is_from_derived_view ? @dataset_metadata[:id] : @migration_metadata[:obeId]
+    @dataset_id = is_from_derived_view ? @dataset_metadata[:id] : @migration_metadata[:obeId]
 
     request[:app] = 'dataCards'
 

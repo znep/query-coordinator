@@ -1,4 +1,5 @@
 import * as api from '../../../api';
+import * as Actions from '../../../actions';
 import * as SharedActions from '../../shared/actions';
 import * as Immutable from 'immutable';
 import * as Helpers from '../../../helpers';
@@ -7,8 +8,7 @@ import Airbrake from '../../../../common/airbrake';
 
 export const types = {
   setAll: 'goals.data.setAll',
-  updateById: 'goals.data.updateById',
-  updateAll: 'goals.data.updateAll'
+  updateById: 'goals.data.updateById'
 };
 
 export const setAll = goals => ({
@@ -20,11 +20,6 @@ export const updateById = (goalId, data) => ({
   type: types.updateById,
   goalId,
   data
-});
-
-export const updateAll = goals => ({
-  type: types.updateAll,
-  goals
 });
 
 export const load = () => (dispatch, getState) => {
@@ -40,7 +35,7 @@ export const load = () => (dispatch, getState) => {
       const message = Helpers.translator(translations, 'admin.listing.load_error');
 
       Airbrake.notify(error);
-      dispatch(SharedActions.showGlobalMessage('goals', message));
+      dispatch(Actions.notifications.showNotification('error', message));
       dispatch(SharedActions.loading.stop());
     });
 };

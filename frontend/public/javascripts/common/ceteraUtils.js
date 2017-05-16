@@ -19,16 +19,14 @@ function checkStatus(response) {
     errorMessage = response.statusText;
 
     if (response.status === 502) {
-      errorMessage = fetchTranslation('manager.error.connection_502');
+      errorMessage = fetchTranslation('common.error.connection_502');
     }
     if (response.status === 503) {
-      errorMessage = fetchTranslation('manager.error.unavailable_503');
+      errorMessage = fetchTranslation('common.error.unavailable_503');
     }
     if (response.status === 504) {
-      errorMessage = fetchTranslation('manager.error.timeout_504');
+      errorMessage = fetchTranslation('common.error.timeout_504');
     }
-
-    console.error(errorMessage);
 
     try {
       airbrake.notify({
@@ -36,6 +34,8 @@ function checkStatus(response) {
         context: { component: 'AssetSelector' }
       });
     } catch (err) {}
+
+    throw errorMessage;
   }
 }
 
@@ -51,7 +51,7 @@ function handleError(error) {
     });
   } catch (err) {}
   console.error(error);
-  return errorMessage;
+  throw error;
 }
 
 export const ceteraUtils = (() => {
@@ -82,7 +82,7 @@ export const ceteraUtils = (() => {
       };
 
       const paramString = _.reduce(paramObj, function(result, value, key) {
-        return (key && value) ? result += `${key}=${value}&` : result;
+        return (key && value) ? result += `${key}=${encodeURIComponent(value)}&` : result;
       }, '').slice(0, -1);
 
       const fetchUrl = `${CETERA_API}?${paramString}`;

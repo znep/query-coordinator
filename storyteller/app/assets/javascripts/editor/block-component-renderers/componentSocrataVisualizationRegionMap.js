@@ -4,7 +4,9 @@ import _ from 'lodash';
 import '../componentBase';
 import '../componentWithMapBounds';
 import Constants from '../Constants';
-import StorytellerUtils from '../../StorytellerUtils';
+import StorytellerUtils from 'StorytellerUtils';
+import { vifsAreEquivalent } from 'VifUtils';
+import { assert, assertHasProperty } from 'common/js_utils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 // Note that this component supports both socrata.visualization.regionMap and socrata.visualization.choroplethMap.
@@ -21,8 +23,8 @@ export default function componentSocrataVisualizationRegionMap(props) {
   const $this = $(this);
   const { componentData, editMode } = props;
 
-  StorytellerUtils.assertHasProperty(props, 'componentData.type');
-  StorytellerUtils.assert(
+  assertHasProperty(props, 'componentData.type');
+  assert(
     props.componentData.type === 'socrata.visualization.regionMap' ||
     props.componentData.type === 'socrata.visualization.choroplethMap',
     `componentSocrataVisualizationRegionMap: Unsupported component type ${props.componentData.type}`
@@ -43,7 +45,7 @@ export default function componentSocrataVisualizationRegionMap(props) {
 }
 
 function _renderTemplate($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  assertHasProperty(componentData, 'type');
 
   const $componentContent = $('<div>', { class: 'component-content' });
   const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
@@ -66,13 +68,13 @@ function _renderTemplate($element, componentData) {
 }
 
 function _updateVisualization($element, props) {
-  StorytellerUtils.assertHasProperty(props, 'componentData.value.vif');
+  assertHasProperty(props, 'componentData.value.vif');
 
   const { componentData, editMode } = props;
   const $componentContent = $element.find('.component-content');
   const renderedVif = $element.attr('data-rendered-vif') || '{}';
   const vif = componentData.value.vif;
-  const areNotEquivalent = !StorytellerUtils.vifsAreEquivalent(JSON.parse(renderedVif), vif);
+  const areNotEquivalent = !vifsAreEquivalent(JSON.parse(renderedVif), vif);
 
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));

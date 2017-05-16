@@ -12,34 +12,12 @@ class Auth0Controller < ApplicationController
     userinfo_hash = request.env['omniauth.auth']
     auth0_identifier = userinfo_hash[:extra][:raw_info][:socrata_user_id]
 
-    # Note, this isn't gonna happen the way we're currently using Auth0, though the question hasn't been fully settled
-    # Check to see if it's a username and password connection.
-    if username_password_connection?(auth0_identifier)
-      # In the username and password flow, the UID is set as part of authentication
-      # It's going to come in with the form "auth0|abcd-efgh|connection_name"
-      # Use the Auth0Helper to attempt to extract it
-      extracted_uid = extract_uid(auth0_identifier)
-
-      # Do some primitive validation on the returned UID
-      if extracted_uid.nil?
-        Rails.logger.error("Invalid UID returned from Auth0: #{extracted_uid}")
-        render_500
-      else # UID is of the form xxxx-xxxx
-        uid = extracted_uid.to_s
-        Rails.logger.info("Successful Auth0 login with UID: #{uid}")
-        cookies[:_core_session_id] = {value: "#{gen_cookie(uid)}", secure: true}
-        cookies[:logged_in] = { value: true, secure: true }
-        redirect_to '/profile'
-      end
-      return
-    end
-
     # get auth0 federated user info-hash (aka auth0 token)
     token = userinfo_hash[:extra][:raw_info]
 
     # if this is a social login attempt but social login isn't allowed, error.
     # openid_login is the social login feature flag, because naming is hard. It should be renamed.
-    if social_connection?(auth0_identifier) && !feature?('openid_login') 
+    if social_connection?(auth0_identifier) && !feature?('openid_login')
       Rails.logger.error("Tried to login with auth0 social provider on a domain with social login disabled (user_id #{auth0_identifier})")
       return render_404
     # if the token isn't valid, error
@@ -47,19 +25,36 @@ class Auth0Controller < ApplicationController
       Rails.logger.info('Token is invalid. Verify that it contains email, name and user_id in the correct format')
       return render_404
     else
+      if username_password_connection?(auth0_identifier)
+        # In the username and password flow, the UID is set as part of authentication
+        # It's going to come in with the form "auth0|abcd-efgh|connection_name"
+        # Use the Auth0Helper to attempt to extract it
+        extracted_uid = extract_uid(auth0_identifier)
+
+        # Do some primitive validation on the returned UID
+        if extracted_uid.nil?
+          Rails.logger.error("Invalid UID returned from Auth0: #{extracted_uid}")
+          return render_500
+        else # UID is of the form xxxx-xxxx
+          uid = extracted_uid.to_s
+          Rails.logger.info("Successful username/password Auth0 login with UID: #{uid}")
+        end
+      end
+
       Rails.logger.info('Token contains required fields.  Attempting to authenticate through Core.')
       auth0_authentication = authentication_provider_class.new(token.to_json)
+
       if auth0_authentication.authenticated?
-        UserSession.auth0(auth0_authentication)
-        redirect_back_or_default(login_redirect_url)
+        UserSessionProvider.klass.auth0(auth0_authentication)
+        return redirect_back_or_default(login_redirect_url)
       elsif auth0_authentication.error
-        render_500
+        return render_500
       else
         Rails.logger.error('Cannot authenticate federated user -- no user linked to this identity')
         Rails.logger.error('Starting linking process')
         # store the token in the session for later linking
         session[:auth0_link_token] = token
-        redirect_to auth0_link_path
+        return redirect_to(auth0_link_path)
       end
     end
   end
@@ -97,10 +92,10 @@ class Auth0Controller < ApplicationController
       else
         #login attempt
         @body_id = 'login'
-        @user_session = UserSession.new(params[:user_session])
+        @user_session = UserSessionProvider.klass.new(params[:user_session])
         if @user_session.save
           add_auth0_identifier(auth0_identifier)
-          return redirect_to login_redirect_url
+          return redirect_to(login_redirect_url)
         else
           flash.now[:notice_login] = "Unable to login with that username and password; please try again"
         end
@@ -111,7 +106,7 @@ class Auth0Controller < ApplicationController
 
 private
   def set_empty_user_session
-    @user_session = UserSession.new
+    @user_session = UserSessionProvider.klass.new
   end
 
   def redirect_if_logged_in

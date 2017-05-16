@@ -637,7 +637,7 @@ module BrowseActions
             if o[:value] == options[f[:param]]
               facet_item = o
             elsif !o[:children].nil?
-              facet_item = o[:children].detect { |c| c[:value] == options[f[:param]] }
+              facet_item ||= o[:children].detect { |c| c[:value] == options[f[:param]] }
             end
           end
           facet_parts << t('controls.browse.title.result.facet',

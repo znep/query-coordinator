@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import I18n from '../I18n';
 import Environment from '../../StorytellerEnvironment';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assert } from 'common/js_utils';
 import { storyPermissionsManager } from '../StoryPermissionsManager';
 import { storyStore } from '../stores/StoryStore';
 import { storySaveStatusStore} from '../stores/StorySaveStatusStore';
@@ -41,7 +41,7 @@ export const StoryPublicationStatus = React.createClass({
   },
 
   runManager(action) {
-    StorytellerUtils.assert(
+    assert(
       _.includes(['makePublic', 'makePrivate'], action),
       'The manager only offers "makePublic" and "makePrivate"'
     );

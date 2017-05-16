@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Actions from './Actions';
 import RichTextEditor from './RichTextEditor';
 import StorytellerUtils from '../StorytellerUtils';
+import { assertHasProperty, assertInstanceOf, assertIsOneOfTypes } from 'common/js_utils';
 import { exceptionNotifier } from '../services/ExceptionNotifier';
 import { dispatcher } from './Dispatcher';
 import { linkModalStore } from './stores/LinkModalStore';
@@ -30,8 +31,8 @@ import { linkTipStore } from './stores/LinkTipStore';
  *     button should appear.
  */
 export default function RichTextEditorFormatController(editor, formats) {
-  StorytellerUtils.assertInstanceOf(editor, RichTextEditor);
-  StorytellerUtils.assertInstanceOf(formats, Array);
+  assertInstanceOf(editor, RichTextEditor);
+  assertInstanceOf(formats, Array);
 
   var _editor = editor;
   var _squire = editor.getSquireInstance();
@@ -70,7 +71,7 @@ export default function RichTextEditorFormatController(editor, formats) {
    * @param {string} [data] - An optional data parameter (such as URL)
    */
   this.execute = function(commandName, data) {
-    StorytellerUtils.assertHasProperty(_commandDispatcher, commandName);
+    assertHasProperty(_commandDispatcher, commandName);
     _commandDispatcher[commandName](data);
   };
 
@@ -401,7 +402,7 @@ export default function RichTextEditorFormatController(editor, formats) {
       stripFormatsFn = _stripBlockElements;
     }
 
-    StorytellerUtils.assertIsOneOfTypes(stripFormatsFn, 'function');
+    assertIsOneOfTypes(stripFormatsFn, 'function');
 
     _squire.modifyBlocks(
       function(blockFragment) {

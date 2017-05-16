@@ -4,7 +4,7 @@ import Store from './Store';
 import Actions from '../Actions';
 import Constants from '../Constants';
 import Environment from '../../StorytellerEnvironment';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assertIsOneOfTypes } from 'common/js_utils';
 import { storyStore } from './StoryStore';
 
 /**
@@ -14,7 +14,7 @@ import { storyStore } from './StoryStore';
  */
 export var historyStore = new HistoryStore(Environment.STORY_UID);
 export default function HistoryStore(forStoryUid) {
-  StorytellerUtils.assertIsOneOfTypes(forStoryUid, 'string');
+  assertIsOneOfTypes(forStoryUid, 'string');
 
   _.extend(this, new Store());
 
@@ -95,7 +95,7 @@ export default function HistoryStore(forStoryUid) {
   function _shouldAppendToHistoryAndTruncateRedo(storySnapshot) {
     var historyLength = _history.length;
 
-    StorytellerUtils.assertIsOneOfTypes(storySnapshot, 'object');
+    assertIsOneOfTypes(storySnapshot, 'object');
 
     return (
       historyLength > 0 &&
@@ -109,7 +109,7 @@ export default function HistoryStore(forStoryUid) {
 
     var historyLength = _history.length;
 
-    StorytellerUtils.assertIsOneOfTypes(storySnapshot, 'object');
+    assertIsOneOfTypes(storySnapshot, 'object');
 
     return (
       historyLength === 0 ||

@@ -3,6 +3,7 @@ import $ from 'jquery';
 
 import '../componentBase';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperties, assertHasProperty } from 'common/js_utils';
 
 $.fn.componentYoutubeVideo = componentYoutubeVideo;
 
@@ -10,8 +11,8 @@ export default function componentYoutubeVideo(props) {
   const $this = $(this);
   const { componentData } = props;
 
-  StorytellerUtils.assertHasProperties(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperties(componentData, 'type');
+  assert(
     componentData.type === 'youtube.video',
     `componentYoutubeVideo: Unsupported component type ${componentData.type}`
   );
@@ -27,7 +28,7 @@ export default function componentYoutubeVideo(props) {
 }
 
 function _renderYoutube($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'type');
+  assertHasProperty(componentData, 'type');
 
   const $iframeElement = $(
     '<iframe>',
@@ -45,8 +46,8 @@ function _renderYoutube($element, componentData) {
 }
 
 function _updateSrcAndTitle($element, componentData) {
-  StorytellerUtils.assertHasProperty(componentData, 'value');
-  StorytellerUtils.assertHasProperty(componentData.value, 'id');
+  assertHasProperty(componentData, 'value');
+  assertHasProperty(componentData.value, 'id');
 
   const $iframeElement = $element.find('iframe');
   const title = _.get(componentData.value, 'title');

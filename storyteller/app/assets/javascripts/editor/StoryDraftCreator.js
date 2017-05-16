@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import Actions from './Actions';
 import Environment from '../StorytellerEnvironment';
-import StorytellerUtils from '../StorytellerUtils';
+import { assert, assertIsOneOfTypes } from 'common/js_utils';
 import httpRequest, { storytellerHeaders } from '../services/httpRequest';
 import { storyStore } from './stores/StoryStore';
 import { dispatcher } from './Dispatcher';
@@ -17,8 +17,8 @@ export default { saveDraft };
  * @return {Promise<string>} A promise for the new story draft's digest.
  */
 function saveDraft(storyUid) {
-  StorytellerUtils.assertIsOneOfTypes(storyUid, 'string');
-  StorytellerUtils.assert(storyStore.doesStoryExist(storyUid), 'Cannot save draft of non-existent story');
+  assertIsOneOfTypes(storyUid, 'string');
+  assert(storyStore.doesStoryExist(storyUid), 'Cannot save draft of non-existent story');
 
   const storyJson = storyStore.serializeStory(storyUid);
 

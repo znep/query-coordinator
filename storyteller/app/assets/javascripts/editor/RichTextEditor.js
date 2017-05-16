@@ -5,6 +5,7 @@ import Squire from 'squire';
 import Actions from './Actions';
 import Sanitizer from './Sanitizer';
 import StorytellerUtils from '../StorytellerUtils';
+import { assert, assertInstanceOf, assertIsOneOfTypes } from 'common/js_utils';
 import CustomEvent from '../CustomEvent';
 import RichTextEditorFormatController from './RichTextEditorFormatController';
 import { dispatcher } from './Dispatcher';
@@ -19,12 +20,12 @@ import { exceptionNotifier } from '../services/ExceptionNotifier';
  *   into the newly-created editor.
  */
 export default function RichTextEditor(element, editorId, formats, contentToPreload) {
-  StorytellerUtils.assertInstanceOf(element, $);
-  StorytellerUtils.assert(element.length !== 0, '`element` did not match any DOM nodes.');
-  StorytellerUtils.assert(element.length === 1, '`element` matches more than one DOM node.');
-  StorytellerUtils.assertIsOneOfTypes(editorId, 'number', 'string');
-  StorytellerUtils.assertIsOneOfTypes(contentToPreload, 'undefined', 'string');
-  StorytellerUtils.assertInstanceOf(formats, Array);
+  assertInstanceOf(element, $);
+  assert(element.length !== 0, '`element` did not match any DOM nodes.');
+  assert(element.length === 1, '`element` matches more than one DOM node.');
+  assertIsOneOfTypes(editorId, 'number', 'string');
+  assertIsOneOfTypes(contentToPreload, 'undefined', 'string');
+  assertInstanceOf(formats, Array);
 
   var _containerElement = element;
   var _formats = formats;

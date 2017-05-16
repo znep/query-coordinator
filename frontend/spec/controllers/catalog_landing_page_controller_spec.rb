@@ -5,9 +5,7 @@ describe CatalogLandingPageController do
   include TestHelperMethods
 
   before do
-    init_core_session
-    init_current_domain
-    init_signaller
+    init_anonymous_environment
     rspec_stub_feature_flags_with(cetera_search: true)
     rspec_stub_feature_flags_with(enable_catalog_landing_page: true)
     allow(subject).to receive(:get_site_title).and_return('site title')
@@ -27,7 +25,7 @@ describe CatalogLandingPageController do
 
         expect(subject).to render_template('styleguide')
 
-        expect(assigns(:category)).to eq('Government')
+        expect(assigns(:clp_title_param_string)).to eq(' | Government')
         expect(assigns(:featured_content).length).to eq(2)
         expect(assigns(:metadata).keys).to eq(%w(description headline))
         expect(assigns(:processed_browse)[:sidebar_config].search).to eq(false)
@@ -75,7 +73,7 @@ describe CatalogLandingPageController do
 
           expect(subject).to render_template('styleguide')
 
-          expect(assigns(:category)).to eq('Government')
+          expect(assigns(:clp_title_param_string)).to eq(' | Government')
           expect(assigns(:featured_content).length).to eq(2)
           expect(assigns(:metadata).keys.sort).to eq(%w(description headline))
 

@@ -6,6 +6,7 @@ import './componentImage';
 import './componentHTML';
 import Actions from '../Actions';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertHasProperties } from 'common/js_utils';
 import { storyStore } from '../stores/StoryStore';
 import { dispatcher } from '../Dispatcher';
 import { richTextEditorManager } from '../RichTextEditorManager';
@@ -46,8 +47,8 @@ export default function componentAuthor(props) {
 
   const { componentData, theme, blockId, componentIndex } = props;
 
-  StorytellerUtils.assertHasProperties(componentData, 'type');
-  StorytellerUtils.assert(
+  assertHasProperties(componentData, 'type');
+  assert(
     componentData.type === 'author',
     `componentAuthor: Unsupported component type ${componentData.type}`
   );

@@ -217,7 +217,7 @@ class DataLensController < ActionController::Base
     rescue
     end
 
-    @skip_link_id = is_from_derived_view ? @dataset_metadata[:id] : @migration_metadata[:obeId]
+    @dataset_id = is_from_derived_view ? @dataset_metadata[:id] : @migration_metadata[:obeId]
   end
 
   def data_lens
@@ -301,7 +301,7 @@ class DataLensController < ActionController::Base
 
       @dataset_metadata = fetch_dataset_metadata(view.nbe_view.id)
 
-      @skip_link_id = view.is_derived_view? ? @dataset_metadata[:id] : @migration_metadata[:obeId]
+      @dataset_id = view.is_derived_view? ? @dataset_metadata[:id] : @migration_metadata[:obeId]
 
     rescue AuthenticationRequired
       return redirect_to_login

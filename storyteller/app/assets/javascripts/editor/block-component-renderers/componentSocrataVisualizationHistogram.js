@@ -3,7 +3,9 @@ import _ from 'lodash';
 
 import '../componentBase';
 import Constants from '../Constants';
-import StorytellerUtils from '../../StorytellerUtils';
+import StorytellerUtils from 'StorytellerUtils';
+import { vifsAreEquivalent } from 'VifUtils';
+import { assert, assertHasProperty } from 'common/js_utils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 $.fn.componentSocrataVisualizationHistogram = componentSocrataVisualizationHistogram;
@@ -18,8 +20,8 @@ export default function componentSocrataVisualizationHistogram(props) {
 
   const $this = $(this);
 
-  StorytellerUtils.assertHasProperty(props, 'componentData.type');
-  StorytellerUtils.assert(
+  assertHasProperty(props, 'componentData.type');
+  assert(
     props.componentData.type === 'socrata.visualization.histogram',
     `componentSocrataVisualizationHistogram: Unsupported component type ${props.componentData.type}`
   );
@@ -35,7 +37,7 @@ export default function componentSocrataVisualizationHistogram(props) {
 }
 
 function _renderTemplate($element, props) {
-  StorytellerUtils.assertHasProperty(props, 'componentData.type');
+  assertHasProperty(props, 'componentData.type');
 
   const { componentData } = props;
   const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
@@ -58,13 +60,13 @@ function _renderTemplate($element, props) {
 }
 
 function _updateVisualization($element, props) {
-  StorytellerUtils.assertHasProperty(props, 'componentData.value.vif');
+  assertHasProperty(props, 'componentData.value.vif');
 
   const { componentData, editMode } = props;
   const $componentContent = $element.find('.component-content');
   const renderedVif = $element.attr('data-rendered-vif') || '{}';
   const vif = componentData.value.vif;
-  const areNotEquivalent = !StorytellerUtils.vifsAreEquivalent(JSON.parse(renderedVif), vif);
+  const areNotEquivalent = !vifsAreEquivalent(JSON.parse(renderedVif), vif);
 
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));

@@ -7,8 +7,8 @@ import propGoals, { goalsWithPublicationState } from '../../data/goalTableAction
 const EQUAL_STATE = Immutable.fromJS({
   goals: {
     data: [
-      { id: 'a', is_public: true },
-      { id: 'b', is_public: true }
+      { id: 'a', publishing_action: 'make_private', prevailing_measure: { start: 'foo' } },
+      { id: 'b', publishing_action: 'make_private', prevailing_measure: { start: 'foo' } }
     ],
     ui: {
       selectedGoalIds: ['a', 'b']
@@ -19,8 +19,8 @@ const EQUAL_STATE = Immutable.fromJS({
 const DIFFERENT_STATE = Immutable.fromJS({
   goals: {
     data: [
-      { id: 'a', is_public: false },
-      { id: 'b', is_public: true }
+      { id: 'a', publishing_action: 'pulish_latest_draft', prevailing_measure: { start: 'foo' } },
+      { id: 'b', publishing_action: 'make_private', prevailing_measure: { start: 'bar', end: 'baz' } }
     ],
     ui: {
       selectedGoalIds: ['a', 'b']
@@ -30,13 +30,16 @@ const DIFFERENT_STATE = Immutable.fromJS({
 
 describe('sections/goals/selectors/getCommonGoalData', () => {
   it('should extract common data among the given goals', () => {
-    const commonData = Selectors.getCommonData(EQUAL_STATE);
-    expect(commonData.get('is_public')).to.eq(true);
+    const commonData = Selectors.getCommonData(EQUAL_STATE).toJS();
+    assert.propertyVal(commonData, 'publishing_action', 'make_private');
+    assert.deepPropertyVal(commonData, 'prevailing_measure.start', 'foo');
   });
 
   it('should set null for differences', () => {
-    const commonData = Selectors.getCommonData(DIFFERENT_STATE);
-    expect(commonData.get('is_public')).to.eq(null);
+    const commonData = Selectors.getCommonData(DIFFERENT_STATE).toJS();
+    assert.propertyVal(commonData, 'publishing_action', null);
+    assert.deepPropertyVal(commonData, 'prevailing_measure.start', null);
+    assert.deepPropertyVal(commonData, 'prevailing_measure.end', null);
   });
 });
 

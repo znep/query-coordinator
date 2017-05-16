@@ -1,3 +1,5 @@
+export const START_LOADING = 'START_LOADING';
+export const STOP_LOADING = 'STOP_LOADING';
 export const SET_ACTIVITIES = 'SET_ACTIVITIES';
 export const SET_PAGINATION = 'SET_PAGINATION';
 export const SET_ALERT = 'SET_ALERT';

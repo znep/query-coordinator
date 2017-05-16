@@ -14,28 +14,54 @@ class DetailsModal extends React.Component {
     return !_.isNull(nextProps.activity);
   }
 
+  renderNameLine() {
+    const {activity} = this.props;
+
+    let filename;
+    if (activity.get('file_name')) {
+      filename = `(${activity.get('file_name')})`;
+    }
+
+    return (
+      <li id="line-activity-name">
+        {activity.getIn(['dataset', 'name'])}{filename}
+      </li>
+    );
+  }
+
+  renderErrorsDownloadLink() {
+    const {activity} = this.props;
+
+    const errorsDownloadUrl = activity.get('bad_rows_url');
+    if (!errorsDownloadUrl) {
+      return null;
+    }
+
+    return (
+      <li id="line-activity-bad-rows">
+        <a href={errorsDownloadUrl}>errors.csv</a>
+      </li>
+    );
+  }
+
   renderDetails() {
     const {activity} = this.props;
 
     const status = _.snakeCase(activity.getIn(['data', 'status']));
     const type =  _.snakeCase(activity.getIn(['data', 'latest_event', 'event_type']));
-    const translationPrefix = `show_page.event_messages.${status}.${type}`;
-    const filename = activity.get('file_name') || <LocalizedText localeKey="show_page.file_name_unknown"/>;
 
     return (
       <ul>
         <li id="line-activity-type">
           <span className="line-title">{activity.getIn(['data', 'activity_type'])}</span>
         </li>
-        <li id="line-activity-name">
-          {activity.getIn(['dataset', 'name'])}
-        </li>
+        {this.renderNameLine()}
         <li id="line-activity-event-title">
-          <LocalizedText localeKey={`${translationPrefix}.title`}/>
+          <LocalizedText localeKey={`show_page.event_messages.${status}.${type}.title`}/>
         </li>
         <li id="line-activity-event-desc">
           <LocalizedText
-            localeKey={`${translationPrefix}.description`}
+            localeKey={`show_page.event_messages.${status}.${type}.description`}
             data={activity.getIn(['data', 'latest_event', 'info']).toJS()}
           />
         </li>
@@ -51,7 +77,7 @@ class DetailsModal extends React.Component {
           <span className="line-title"><LocalizedText localeKey="import_method"/>: </span>
           {activity.getIn(['data', 'service'])}
         </li>
-        <li id="line-activity-filename">{filename}</li>
+        {this.renderErrorsDownloadLink()}
       </ul>
     );
   }
@@ -88,6 +114,12 @@ class DetailsModal extends React.Component {
     );
   }
 }
+
+DetailsModal.propTypes = {
+  activity: React.PropTypes.object,
+  localization: React.PropTypes.object.isRequired,
+  dispatchDismissDetailsModal: React.PropTypes.func.isRequired
+};
 
 const mapStateToProps = (state) => ({
   activity: state.get('detailsModal', null)

@@ -14,7 +14,7 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const { doAuth0Login, auth0Connections, translate, options } = this.props;
+    const { doAuth0Login, auth0Connections, translate, options, onLoginError, onLoginStart } = this.props;
     const { toggleViewMode } = options;
     return (
       <div styleName="inner-container">
@@ -23,6 +23,8 @@ class SignIn extends React.Component {
             options={options}
             translate={translate}
             doAuth0Login={doAuth0Login}
+            onLoginStart={onLoginStart}
+            onLoginError={onLoginError}
             auth0Connections={auth0Connections} />
         </div>
 
@@ -45,6 +47,8 @@ SignIn.propTypes = {
   options: OptionsPropType.isRequired,
   translate: PropTypes.func.isRequired,
   doAuth0Login: PropTypes.func.isRequired,
+  onLoginStart: PropTypes.func.isRequired,
+  onLoginError: PropTypes.func.isRequired,
   auth0Connections: PropTypes.array.isRequired,
   setLoginFormVisibility: PropTypes.func.isRequired
 };

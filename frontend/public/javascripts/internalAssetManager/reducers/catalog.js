@@ -2,7 +2,13 @@ import _ from 'lodash';
 
 const getInitialState = () => _.get(window, 'initialState.catalog', {
   columns: [],
-  results: []
+  currentPage: 1,
+  fetchingResults: false,
+  fetchingResultsError: false,
+  filters: {},
+  order: {},
+  results: [],
+  resultSetSize: 0
 });
 
 export default (state, action) => {
@@ -13,7 +19,46 @@ export default (state, action) => {
   if (action.type === 'UPDATE_CATALOG_RESULTS') {
     return {
       ...state,
-      results: action.results
+      results: action.response.results,
+      resultSetSize: action.response.resultSetSize
+    };
+  }
+
+  if (action.type === 'FETCH_RESULTS') {
+    return {
+      ...state,
+      fetchingResults: true,
+      fetchingResultsError: false
+    };
+  }
+
+  if (action.type === 'FETCH_RESULTS_SUCCESS') {
+    return {
+      ...state,
+      fetchingResults: false,
+      fetchingResultsError: false
+    };
+  }
+
+  if (action.type === 'FETCH_RESULTS_ERROR') {
+    return {
+      ...state,
+      fetchingResults: false,
+      fetchingResultsError: true
+    };
+  }
+
+  if (action.type === 'CHANGE_ORDER') {
+    return {
+      ...state,
+      order: action.order
+    };
+  }
+
+  if (action.type === 'CHANGE_PAGE') {
+    return {
+      ...state,
+      currentPage: action.pageNumber
     };
   }
 

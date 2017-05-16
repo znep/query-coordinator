@@ -3,7 +3,7 @@ class NominationsController < ApplicationController
   skip_before_filter :require_user, :only => [:index, :show]
 
   def index
-    @base_url = request.path
+    @base_url = locale_prefix + request.path
     @page_size = 10
     @params = params.reject {|k, v| k.to_s == 'controller' || k.to_s == 'action'}
     params[:page] ||= 1
@@ -20,7 +20,7 @@ class NominationsController < ApplicationController
       return render('shared/error', :status => :not_found)
     end
 
-    @user_session = UserSession.new unless current_user
+    @user_session = UserSessionProvider.klass.new unless current_user
   end
 
   def new

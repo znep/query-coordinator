@@ -265,6 +265,7 @@ module CoreServer
       raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
 
       if env.present?
+        #EN-15695: Environment value not used anywhere. Not associated any current work.
         set_cookie = result['set-cookie']
         if set_cookie.present?
           core_cookie = set_cookie.split(';')[0].split('=')[1]

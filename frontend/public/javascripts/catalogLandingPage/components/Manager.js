@@ -181,7 +181,7 @@ export class Manager extends React.Component {
       const filterValue = validFilters[filterType];
 
       const filterName = (filterType === 'limitTo') ?
-        _.get(I18n, `manager.view_types.${filterValue}`, null) :
+        _.get(I18n, `view_types.${filterValue}`, null) :
         _.startCase(filterValue);
 
       return format(

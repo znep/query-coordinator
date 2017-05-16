@@ -2,7 +2,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 
 import Store from './Store';
-import StorytellerUtils from '../../StorytellerUtils';
+import { assertIsOneOfTypes } from 'common/js_utils';
 import Constants from '../Constants';
 
 export var windowSizeBreakpointStore = new WindowSizeBreakpointStore();
@@ -64,7 +64,7 @@ export default function WindowSizeBreakpointStore() {
    */
 
   function _computeWindowSizeClasses(windowSize) {
-    StorytellerUtils.assertIsOneOfTypes(windowSize, 'number');
+    assertIsOneOfTypes(windowSize, 'number');
 
     return {
       large: windowSize >= Constants.WINDOW_SIZE_BREAK_LARGE,

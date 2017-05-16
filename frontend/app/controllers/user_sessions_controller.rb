@@ -46,7 +46,7 @@ class UserSessionsController < ApplicationController
     auth0
 
     @body_id = 'login'
-    @user_session = UserSession.new
+    @user_session = UserSessionProvider.klass.new
     if params[:referer_redirect] || params[:return_to]
       # If specifying a return_to param, let that override request.referer
       session[:return_to] ||= params[:return_to] || request.referer
@@ -54,28 +54,32 @@ class UserSessionsController < ApplicationController
   end
 
   def expire_if_idle
-    session_response = current_user.nil? ? {:expired => 'expired' } : UserSession.find_seconds_until_timeout
+    session_response = current_user.nil? ? {:expired => 'expired' } : UserSessionProvider.klass.find_seconds_until_timeout
     render :json => session_response, :callback => params[:callback], :content_type => 'application/json'
   end
 
   def create
     @body_id = 'login'
 
-    # We allow @socrata.com users to bypass auth0 if a module is turned on, but only when the fedramp module is off.
-    # The purpose of this is to restrict superadmin logins to ensure MFA through Okta, and "@socrata.com users" is a
-    # superset of superadmins.
-    # This is enforced in the javascript but we have to enforce it here as well.
+    # In general, if we get here it means that a user session has been created by submitting a login form straight to Rails
+    # If auth0 is enabled, we mostly disallow this.
     if use_auth0? &&
        params.key?(:user_session) &&
-       params[:user_session].key?(:login) &&
-       params[:user_session][:login].include?('@socrata.com')
-      if feature?('fedramp')
-        flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_fedramp')
-        redirect_to login_url and return
-      end
-      if !feature?('socrata_emails_bypass_auth0')
-        flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_default')
-        redirect_to login_url and return
+       params[:user_session].key?(:login)
+      # We allow @socrata.com users to bypass auth0 if a module is turned on, but only when the fedramp module is off.
+      # The purpose of this is to restrict superadmin logins to ensure MFA through Okta, and "@socrata.com users" is a
+      # superset of superadmins.
+      # This is enforced in the javascript but we have to enforce it here as well.
+      if Rails.env.production? && params[:user_session][:login].include?('@socrata.com')
+        if feature?('fedramp')
+          flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_fedramp')
+          redirect_to login_url and return
+        end
+
+        unless feature?('socrata_emails_bypass_auth0')
+          flash[:error] = t('screens.sign_in.sso_required_for_superadmins_by_default')
+          redirect_to login_url and return
+        end
       end
     end
 
@@ -86,11 +90,13 @@ class UserSessionsController < ApplicationController
     # Tell Rack not to generate an ETag based off this content. Newer versions of Rack accept nil for this
     # purpose; but phusion passenger requires "".
     response.headers['ETag'] = ''
-    @user_session = UserSession.new(params[:user_session])
-    session_response = @user_session.save(true)
-    if session_response.is_a?(Net::HTTPSuccess)
+
+    @user_session = UserSessionProvider.klass.new(params[:user_session])
+
+    if @user_session.save
       # User logged in successfully, but not using auth0...
       # check if we want to require auth0 for any of the user's roles
+
       if use_auth0? && !@user_session.user.is_superadmin?
         auth0_properties = CurrentDomain.configuration('auth0').try(:properties)
 

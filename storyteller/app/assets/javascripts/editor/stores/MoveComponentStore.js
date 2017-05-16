@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Store from './Store';
 import Actions from '../Actions';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assertHasProperty } from 'common/js_utils';
 import { storyStore } from './StoryStore';
 
 export const moveComponentStore = StorytellerUtils.export(new MoveComponentStore(), 'storyteller.moveComponentStore');
@@ -61,8 +62,8 @@ export default function MoveComponentStore() {
   };
 
   const moveStarted = (payload) => {
-    StorytellerUtils.assertHasProperty(payload, 'blockId');
-    StorytellerUtils.assertHasProperty(payload, 'componentIndex');
+    assertHasProperty(payload, 'blockId');
+    assertHasProperty(payload, 'componentIndex');
 
     const { blockId, componentIndex } = payload;
 

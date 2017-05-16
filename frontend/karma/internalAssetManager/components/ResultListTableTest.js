@@ -1,10 +1,10 @@
 import { expect, assert } from 'chai';
 import { ResultListTable } from 'components/ResultListTable';
 import mockCeteraResults from 'data/mockCeteraResults';
-import _ from 'lodash';
 
 describe('components/ResultListTable', () => {
   const resultListTableProps = (options = {}) => ({
+    changeOrder: () => {},
     columns: [
       'type', 'name', 'lastUpdatedDate', 'ownedBy', 'accessLevel', 'category', 'visibility', 'discoverable'
     ],

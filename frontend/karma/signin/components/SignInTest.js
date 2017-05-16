@@ -12,6 +12,8 @@ describe('<SignIn />', () => {
   const defaultProps = {
     translate: ( ) => '',
     doAuth0Login: () => { },
+    onLoginStart: () => { },
+    onLoginError: () => { },
     auth0Connections: [],
     setLoginFormVisibility: () => { },
     options: defaultOptions

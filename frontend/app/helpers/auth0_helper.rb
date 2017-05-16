@@ -17,11 +17,12 @@ module Auth0Helper
   end
 
   private
-  COOKIE_SECRET = "wm4NmtBisUd3XJ0JvQwJqTth8UdFvbYpy3LZ5IU3I3XCwG06XRa1TYXC3WySahssDzrt2cHFrbsRPT1o"
 
   def compute_signature(uid, expiration, salt)
+    cookie_secret = Rails.application.secrets.core_session_secret
+
     # Core produces a signature which is a SHA1 hash of the string "secret 4x4 expiration salt"
-    Digest::SHA1.hexdigest("#{COOKIE_SECRET} #{uid} #{expiration} #{salt}")
+    Digest::SHA1.hexdigest("#{cookie_secret} #{uid} #{expiration} #{salt}")
   end
 
   def valid_token?(auth0_hash)
@@ -136,21 +137,42 @@ module Auth0Helper
 
   # these options are passed to the login/signup screen
   def generate_auth0_options
+    # we want to keep email and screenName, in case something failed
+    # and user wants to try again after a page refresh
     params =
       (request.params[:signup] || {})
       .only('email', 'screenName')
       .map { |k, v| [k, sanitize(v)] }
       .to_h
 
+    # we only care about the database connection in production
+    database_connection = ''
+    if AUTH0_DATABASE_CONNECTION.nil?
+      if Rails.env.production?
+        throw 'AUTH0_DATABASE_CONNECTION environment variable is not set! It should be set to the proper custom database connection to use for username/password logins.'
+      elsif Rails.env.development?
+        database_connection = 'not_applicable'
+      end
+    else
+      database_connection = AUTH0_DATABASE_CONNECTION
+    end
+
     {
       auth0ClientId: AUTH0_ID,
       auth0Uri: AUTH0_URI,
+      auth0DatabaseConnection: database_connection,
+
+      # here, we basically force "form login" for development
+      # if you want to test auth0 logins locally, change this line to false
+      allowUsernamePasswordLogin: Rails.env.development? || feature?('username_password_login') == true,
       recaptchaSitekey: RECAPTCHA_2_SITE_KEY,
       baseDomainUri: request.base_url,
       authenticityToken: form_authenticity_token,
       rememberMe: feature?('remember_me'),
       showSocial: feature?('openid_login'),
       hideSocrataId: FeatureFlags.derive(nil, request).hide_socrata_id,
+
+      # "fedramp" feature trumps "socrata_emails_bypass_auth0"
       socrataEmailsBypassAuth0: feature?('socrata_emails_bypass_auth0') && !feature?('fedramp'),
       connections: @auth0_connections,
       forcedConnections: @auth0_forced_connections,

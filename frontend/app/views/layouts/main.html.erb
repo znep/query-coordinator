@@ -71,9 +71,7 @@ http://www.socrata.com
   <%- end -%>
 
   <%= render_ga_tracking %>
-
-  <%= render :partial => 'templates/mixpanel_tracking' %>
-
+  <%= render_mixpanel_tracker %>
   <%= render_pendo_tracker %>
 
   <%= get_favicon_tag %>
@@ -162,7 +160,7 @@ http://www.socrata.com
   %>
 
   <script type="text/template" id="templates">
-    <%= render :partial => 'shared/control_templates' %>
+    <%= render 'shared/control_templates' %>
     <%= yield :templates %>
 
     <%= modal :id => 'jqmAlert' do %>
@@ -331,5 +329,6 @@ http://www.socrata.com
   <% unless CurrentDomain.custom_tracking_code.blank? %>
     <%= raw CurrentDomain.custom_tracking_code %>
   <% end %>
+  <%= include_webpack_bundle 'internal-asset-manager/last-accessed.js' %>
 </body>
 </html>

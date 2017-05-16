@@ -898,6 +898,10 @@ module ApplicationHelper
     CurrentDomain.feature?(:mixpanelTracking) || CurrentDomain.feature?(:fullMixpanelTracking)
   end
 
+  def render_mixpanel_tracker
+    render 'templates/mixpanel_tracking' unless @disable_mixpanel_tracking
+  end
+
   # Renders pendo tracker code if pendo_tracking feature enabled.
   # Only runs for logged in users.
   def render_pendo_tracker

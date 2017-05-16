@@ -53,7 +53,7 @@
           <span class="login-description"><%= t('screens.sign_in.prompt_html') %></span>
           <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
         </div>
-        <%= form_for @user_session do |f| %>
+        <%= form_for(@user_session, :url => user_sessions_path, :as => "user_session")  do |f| %>
           <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
         <%- end -%>
       </div>
@@ -70,7 +70,7 @@
         <span class="login-description"><%= t('screens.sign_in.prompt_html') %></span>
         <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
       </div>
-      <%= form_for @user_session do |f| %>
+      <%= form_for(@user_session, :url => user_sessions_path, :as => "user_session")  do |f| %>
         <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
       <%- end -%>
     </div>

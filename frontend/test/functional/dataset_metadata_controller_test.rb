@@ -3,10 +3,11 @@ require 'test_helper'
 class DatasetMetadataControllerTest < ActionController::TestCase
 
   def setup
-    init_core_session
-    init_current_domain
-    init_feature_flag_signaller
-    UserSession.any_instance.stubs(
+    init_environment(test_user: TestHelperMethods::ADMIN, site_chrome: true, feature_flags: {
+      :create_v2_data_lens => false
+    })
+
+    UserSessionProvider.klass.any_instance.stubs(
       save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
       find_token: true
     )
@@ -19,8 +20,6 @@ class DatasetMetadataControllerTest < ActionController::TestCase
       :phidippides => @phidippides,
       :data_lens_manager => @data_lens_manager
     )
-    stub_feature_flags_with(:create_v2_data_lens => false)
-    stub_site_chrome
   end
 
   def setup_json_request(body = nil)

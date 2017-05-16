@@ -634,8 +634,24 @@
       filter(':has(>a[data-actionTarget=' + rootCondition.value + '])').addClass('checked');
 
       // now render each filter
-      if (rootCondition.metadata.hideBase || _.isEmpty(baseRootCondition) ||
-        _.isEmpty(baseRootCondition.children)) {
+      var hasRenderableBaseRootConditions = _.any((baseRootCondition || {}).children, function(cond) {
+        // EN-16102: We don't expose the full details of hidden columns to users
+        // without sufficient permissions, but the stored filters still leak the
+        // existence of a hidden column if it's used in a filter condition. When
+        // ONLY hidden columns are used in filters, we were showing the message
+        // "With the following base filters" but then showing no filters, which
+        // makes no sense. So we need to correlate filtered columns to available
+        // columns in order to properly detect whether to show that section.
+        var metadata = cond.metadata || {};
+        if (_.isEmpty(metadata)) {
+          return false;
+        } else {
+          return !!dataset._queryBase.columnForTCID(
+            metadata.tableColumnId[dataset._queryBase.publicationGroup]
+          );
+        }
+      });
+      if (rootCondition.metadata.hideBase || !hasRenderableBaseRootConditions) {
         $pane.find('.baseFilterConditions').addClass('hide');
       } else {
         $pane.find('.baseFilterConditions').removeClass('hide');
@@ -724,6 +740,9 @@
       // If the fallback strategy fails, then abort
       if (_.isUndefined(column)) {
         // someone must have changed the type on this or something. abort mission.
+        //
+        // EN-16102: "or something" can include the column being hidden, and thus
+        // not readable to users with insufficient permissions.
         return;
       }
 

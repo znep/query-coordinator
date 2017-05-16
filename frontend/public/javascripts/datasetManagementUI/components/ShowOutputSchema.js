@@ -23,7 +23,7 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
   const outputSchema = db.output_schemas[outputSchemaId];
 
   const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
-  const canApplyUpdate = Selectors.allTransformsDone(columns, inputSchema);
+  const canApplyRevision = Selectors.allTransformsDone(columns, inputSchema);
 
   return {
     db,
@@ -31,7 +31,7 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
     inputSchema,
     outputSchema,
     columns,
-    canApplyUpdate
+    canApplyRevision
   };
 }
 
@@ -69,7 +69,7 @@ export class ShowOutputSchema extends Component {
       outputSchema,
       columns,
       displayState,
-      canApplyUpdate,
+      canApplyRevision,
       numLoadsInProgress,
       goHome,
       routing
@@ -146,7 +146,7 @@ export class ShowOutputSchema extends Component {
           </ModalContent>
 
           <ModalFooter>
-            {canApplyUpdate ?
+            {canApplyRevision ?
               <ReadyToImport /> :
               <div />}
 
@@ -172,7 +172,7 @@ ShowOutputSchema.propTypes = {
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
   displayState: DisplayState.propType.isRequired,
-  canApplyUpdate: PropTypes.bool.isRequired,
+  canApplyRevision: PropTypes.bool.isRequired,
   numLoadsInProgress: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,

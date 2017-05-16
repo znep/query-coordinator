@@ -45,14 +45,12 @@ export function ManageMetadata(props) {
   if (onDatasetTab) {
     saveBtnProps = {
       isSaving: view.__status__ && view.__status__.type === STATUS_UPDATING,
-      isDirty: _.get(view, 'isDirty.form', false),
-      onSaveClick: onSaveDataset
+      onSaveClick: _.get(view, 'isDirty.form', false) ? onSaveDataset : onDismiss
     };
   } else {
     saveBtnProps = {
-      isDirty: _.get(view, 'colFormIsDirty.form', false),
-      onSaveClick: onSaveCol,
-      isSaving: outputSchemaStatus && outputSchemaStatus === STATUS_UPSERTING
+      isSaving: outputSchemaStatus && outputSchemaStatus === STATUS_UPSERTING,
+      onSaveClick: _.get(view, 'colFormIsDirty.form', false) ? onSaveCol : onDismiss
     };
   }
 

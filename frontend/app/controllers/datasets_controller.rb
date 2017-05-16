@@ -82,11 +82,19 @@ class DatasetsController < ApplicationController
         flash.now[:notice] = I18n.t('screens.ds.new_ux_nbe_warning', url: "<a href=#{destination_url}>#{destination_url}</a>").html_safe
       end
 
-      if !is_superadmin? && !FeatureFlags.derive(@view, request).disable_obe_redirection
-        if destination_url == '/'
-          flash.now[:notice] = I18n.t('screens.ds.unable_to_find_dataset_page')
+      if !is_superadmin?
+        if FeatureFlags.derive(@view, request).disable_obe_redirection
+          # EN-16067: even if OBE redirection is disabled,
+          # still redirect to OBE if it's not an NBE-only dataset
+          if has_nbe_migrations_entry?
+            return redirect_to destination_url
+          end
+        else
+          if destination_url == '/'
+            flash.now[:notice] = I18n.t('screens.ds.unable_to_find_dataset_page')
+          end
+          return redirect_to destination_url
         end
-        return redirect_to destination_url
       end
     end
 
@@ -164,7 +172,7 @@ class DatasetsController < ApplicationController
 
     @view.searchString = params[:q] if params[:q]
 
-    @user_session = UserSession.new unless current_user
+    @user_session = UserSessionProvider.klass.new unless current_user
 
     # See if the user is accessing the canonical URL; if not, redirect
     unless using_canonical_url?
@@ -733,7 +741,7 @@ class DatasetsController < ApplicationController
       return
     end
 
-    @user_session = UserSession.new if !current_user
+    @user_session = UserSessionProvider.klass.new unless current_user
 
     @page_custom_chrome = ''
     @suppress_content_wrapper = true
@@ -1173,6 +1181,15 @@ class DatasetsController < ApplicationController
     end
 
     false
+  end
+
+  def has_nbe_migrations_entry?
+    begin
+      nbe_migrations_entry = @view.migrations
+      return true
+    rescue CoreServer::ResourceNotFound
+      return false
+    end
   end
 
   def view_redirection_url

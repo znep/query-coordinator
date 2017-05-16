@@ -1,3 +1,5 @@
+require 'digest/sha1'
+
 class CoreSession
   include ActionDispatch::Session::StaleSessionCheck
 
@@ -7,6 +9,10 @@ class CoreSession
     @by = by
     @env = env
     @loaded = false
+
+    if FeatureFlags.derive[:core_managed_sessions]
+      raise "Should not be using Core Session if core managed sessions are enabled"
+    end
   end
 
   def to_s
@@ -21,14 +27,14 @@ class CoreSession
     to_s.size
   end
 
-  def valid?(force_load = false)
-    load! if !@loaded && force_load
-    false unless @loaded
+  def valid?(force_load: false)
+    load!(force_load: force_load)
+    false unless loaded?
     valid_expiration? && valid_signature?
   end
 
   def user_id
-    load! unless @loaded
+    load!
     @user_id
   end
 
@@ -38,7 +44,7 @@ class CoreSession
   end
 
   def expiration=(value)
-    load! unless @loaded
+    load!
     @expiration
   end
 
@@ -48,7 +54,7 @@ class CoreSession
   end
 
   def salt
-    load! unless @loaded
+    load!
     @salt
   end
 
@@ -71,14 +77,13 @@ class CoreSession
   end
 
 private
-  SECRET = "wm4NmtBisUd3XJ0JvQwJqTth8UdFvbYpy3LZ5IU3I3XCwG06XRa1TYXC3WySahssDzrt2cHFrbsRPT1o"
 
   def valid_expiration?
     (expiration > Time.now) unless expiration.nil?
   end
 
   def valid_signature?
-    load! unless @loaded
+    load!
     loaded? && (@signature == computed_signature)
   end
 
@@ -90,15 +95,20 @@ private
   end
 
   def computed_signature
-    require 'digest/sha1'
-    Digest::SHA1.hexdigest("#{SECRET} #{user_id} #{expiration.to_i} #{salt}")
+    secret = Rails.application.secrets.core_session_secret
+
+    Digest::SHA1.hexdigest("#{secret} #{user_id} #{expiration.to_i} #{salt}")
   end
 
   def loaded?
     @loaded
   end
 
-  def load!
+  def load!(force_load: false)
+    if loaded?
+      return unless force_load
+    end
+
     stale_session_check! do
       core_session = @by.send(:load_core_session, @env)
       unless core_session.blank?

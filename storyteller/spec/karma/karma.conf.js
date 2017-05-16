@@ -25,12 +25,7 @@ module.exports = function(config) { //eslint-disable-line no-undef
       require('karma-phantomjs-launcher')
     ],
 
-    webpack: {
-      resolve: webpack.resolve,
-      module: webpack.module,
-      devtool: webpack.devtool,
-      watch: webpack.watch
-    },
+    webpack: webpack,
 
     webpackMiddleware: {
       noInfo: true

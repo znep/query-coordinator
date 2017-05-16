@@ -24,9 +24,7 @@ describe PolaroidController do
   end
 
   before do
-    init_core_session
-    init_current_domain
-    init_signaller
+    init_anonymous_environment
 
     allow(subject).to receive(:polaroid).and_return(polaroid)
   end

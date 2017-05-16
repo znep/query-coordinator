@@ -1,11 +1,16 @@
 import React, { PropTypes } from 'react';
 import styles from 'styles/Table/RowError.scss';
 
+function escapeValue(value) {
+  return value
+    ? `"${value.replace('"', '\\"')}"`
+    : '';
+}
+
 export default function RowError({ row }) {
   const { rowError, rowIdx } = row;
   const SubI18n = I18n.show_output_schema.row_errors;
-
-  const malformedRowContents = rowError.contents.map(cell => `"${cell.replace('"', '\\"')}"`).join(',');
+  const malformedRowContents = rowError.contents.map(escapeValue).join(',');
 
   let malformedRowMessage;
   switch (rowError.type) {

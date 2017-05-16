@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import ShowUpdate from 'components/ShowUpdate';
+import ShowRevision from 'components/ShowRevision';
 import { getEmptyStore, getDefaultStore } from '../testStore';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import {
@@ -59,12 +59,12 @@ function insertView(store) {
   }));
 }
 
-describe('components/ShowUpdate', () => {
+describe('components/ShowRevision', () => {
 
   it('renders without errors', () => {
     const store = getEmptyStore();
     insertView(store);
-    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
+    const element = renderComponentWithStore(ShowRevision, PROPS, store);
     assert.ok(element);
   });
 
@@ -93,7 +93,7 @@ describe('components/ShowUpdate', () => {
       output_soql_type: "SoQLText"
     }));
 
-    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
+    const element = renderComponentWithStore(ShowRevision, PROPS, store);
     assert.ok(element);
 
     expect(element.querySelectorAll('.column-summary').length).to.equal(1);
@@ -126,7 +126,7 @@ describe('components/ShowUpdate', () => {
       output_soql_type: "SoQLText"
     }));
 
-    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
+    const element = renderComponentWithStore(ShowRevision, PROPS, store);
     assert.ok(element);
     assert.ok(element.querySelector('.reviewBtn'));
   });
@@ -139,7 +139,7 @@ describe('components/ShowUpdate', () => {
       status: null
     }));
 
-    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
+    const element = renderComponentWithStore(ShowRevision, PROPS, store);
     assert.ok(element);
     assert.ok(element.querySelector('.tableInfo'));
     assert.ok(element.querySelector('.emailBtnRequest'));
@@ -154,7 +154,7 @@ describe('components/ShowUpdate', () => {
       job_uuid: "001679ae-42e2-472f-ab37-720f49576d54"
     }));
 
-    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
+    const element = renderComponentWithStore(ShowRevision, PROPS, store);
     assert.ok(element);
     assert.ok(element.querySelector('.tableInfo'));
 
@@ -187,7 +187,7 @@ describe('components/ShowUpdate', () => {
       job_uuid: "001679ae-42e2-472f-ab37-720f49576d54"
     }));
 
-    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
+    const element = renderComponentWithStore(ShowRevision, PROPS, store);
     assert.ok(element);
     assert.ok(element.querySelector('.tableInfo'));
 
@@ -239,7 +239,7 @@ describe('components/ShowUpdate', () => {
       status: "successful"
     }));
 
-    const element = renderComponentWithStore(ShowUpdate, PROPS, store);
+    const element = renderComponentWithStore(ShowRevision, PROPS, store);
     assert.ok(element);
     assert.ok(element.querySelector('.socrata-paginated-table'));
   });

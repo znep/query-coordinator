@@ -6,6 +6,11 @@
 # - .env
 # - .localeapp/config.rb
 
+if [ "${LOCALEAPP_API_KEY}" = "" ]; then
+  echo 'You must first set the LOCALEAPP_API_KEY environment variable.'
+  exit 1
+fi
+
 set -e
 
 localeapp pull config/locales

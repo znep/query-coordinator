@@ -4,6 +4,7 @@ import Unidragger from 'unidragger';
 
 import Actions from './Actions';
 import StorytellerUtils from '../StorytellerUtils';
+import { assert, assertIsOneOfTypes } from 'common/js_utils';
 import { dispatcher } from './Dispatcher';
 import { storyStore } from './stores/StoryStore';
 
@@ -31,7 +32,7 @@ export default function componentResizable(options) {
   var $resizeHandle;
   options = _.extend({ minHeight: 1 }, options);
 
-  StorytellerUtils.assertIsOneOfTypes(options.minHeight, 'number');
+  assertIsOneOfTypes(options.minHeight, 'number');
 
   if (!$this.hasClass(RESIZABLE_CLASS_NAME)) {
     $this.append('<div class="component-resize-handle"><div></div></div>');
@@ -71,11 +72,11 @@ export function DragResizer($elementToResize, $resizeHandle) {
     var blockId = StorytellerUtils.findClosestAttribute($elementToResize, 'data-block-id');
     var componentIndex = StorytellerUtils.findClosestAttribute($elementToResize, 'data-component-index');
 
-    StorytellerUtils.assert(
+    assert(
       !_.isEmpty(blockId),
       'data-block-id attribute must be set on self or a parent'
     );
-    StorytellerUtils.assert(
+    assert(
       !_.isEmpty(componentIndex),
       'data-component-index attribute must be set on self or a parent'
     );

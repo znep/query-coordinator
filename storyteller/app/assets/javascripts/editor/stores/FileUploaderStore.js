@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import Environment from '../../StorytellerEnvironment';
 import StorytellerUtils from '../../StorytellerUtils';
+import { assert, assertInstanceOfAny, assertHasProperty, assertHasProperties } from 'common/js_utils';
 import I18n from '../I18n';
 import Actions from '../Actions';
 import Constants from '../Constants';
@@ -60,8 +61,8 @@ export default function FileUploaderStore() {
   };
 
   function cancelFile(payload) {
-    StorytellerUtils.assertHasProperty(payload, 'id');
-    StorytellerUtils.assert(
+    assertHasProperty(payload, 'id');
+    assert(
       self.fileExistsById(payload.id),
       StorytellerUtils.format('Cannot find a file with the id {0}', payload.id)
     );
@@ -106,14 +107,14 @@ export default function FileUploaderStore() {
   }
 
   function uploadFile(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'id', 'file');
+    assertHasProperties(payload, 'id', 'file');
 
-    StorytellerUtils.assertInstanceOfAny(payload.file, File, Blob);
-    StorytellerUtils.assert(_.isString(payload.file.name), 'File not valid; missing name.');
-    StorytellerUtils.assert(_.isFinite(payload.file.size), 'File not valid: missing size.');
-    StorytellerUtils.assert(_.isString(payload.file.type), 'File not valid: missing type.');
+    assertInstanceOfAny(payload.file, File, Blob);
+    assert(_.isString(payload.file.name), 'File not valid; missing name.');
+    assert(_.isFinite(payload.file.size), 'File not valid: missing size.');
+    assert(_.isString(payload.file.type), 'File not valid: missing type.');
 
-    StorytellerUtils.assert(
+    assert(
       !self.fileExistsById(payload.id),
       StorytellerUtils.format('The file identifier {0} already exists.', payload.id)
     );
@@ -130,9 +131,9 @@ export default function FileUploaderStore() {
   }
 
   function uploadUrl(payload) {
-    StorytellerUtils.assertHasProperties(payload, 'id', 'url');
+    assertHasProperties(payload, 'id', 'url');
 
-    StorytellerUtils.assert(
+    assert(
       !self.fileExistsById(payload.id),
       StorytellerUtils.format('The file identifier {0} already exists.', payload.id)
     );
@@ -165,7 +166,7 @@ export default function FileUploaderStore() {
 
         errorFile(id, message);
 
-        if (message instanceof Error) {
+        if (_.isError(error)) {
           exceptionNotifier.notify(error);
         }
       });
@@ -204,7 +205,7 @@ export default function FileUploaderStore() {
 
         errorFile(id, message);
 
-        if (message instanceof Error) {
+        if (_.isError(error)) {
           exceptionNotifier.notify(error);
         }
       });
@@ -252,8 +253,14 @@ export default function FileUploaderStore() {
       (error) => {
         if (cancelled(file.id)) {
           return Promise.reject(I18n.t('editor.asset_selector.image_upload.errors.cancelled'));
+        } else if (error.statusCode === 0) {
+          return Promise.reject(new Error(
+            'Upload failed with status code 0; may be caused by incorrect S3 bucket or temporary S3 outage.'
+          ));
         } else {
-          return Promise.reject(`Failed: ${file.destination.url}, ${error.statusCode}\n${error.response}`);
+          return Promise.reject(new Error(
+            `Failed: ${file.destination.url}, ${error.statusCode}\n${error.response}`
+          ));
         }
       }
     );

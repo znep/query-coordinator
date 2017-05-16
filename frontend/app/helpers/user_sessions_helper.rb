@@ -12,6 +12,12 @@ module UserSessionsHelper
     url ||= profile_index_path # Fallback to SOMEthing
   end
 
+  def load_core_session(env)
+    fake_core_session = CoreSession.new(self, @env)
+    fake_core_session.pretend_loaded
+    controller.request.core_session = fake_core_session
+  end
+
   ##
   # Check to see if auth0 is available.
   def use_auth0?

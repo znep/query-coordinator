@@ -6,6 +6,7 @@ import RestoreModal from './components/RestoreModal';
 import DetailsModal from './components/DetailsModal';
 import ActivityFeedTable from './components/ActivityFeedTable';
 import FilterBar from './components/FilterBar/FilterBar';
+import LoadingSpinner from './components/LoadingSpinner';
 
 import './App.scss';
 
@@ -14,9 +15,11 @@ class App extends React.Component {
     const alert = this.props.alert ? <Alert /> : null;
     const detailsModal = this.props.detailsModal ? <DetailsModal /> : null;
     const restoreModal = this.props.restoreModal ? <RestoreModal /> : null;
+    const loadingSpinner = this.props.loading ? <LoadingSpinner /> : null;
 
     return (
       <div>
+        {loadingSpinner}
         {alert}
         {detailsModal}
         {restoreModal}
@@ -29,6 +32,7 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
+  loading: state.get('loading'),
   alert: state.get('alert'),
   detailsModal: state.get('detailsModal'),
   restoreModal: state.get('restoreModal')

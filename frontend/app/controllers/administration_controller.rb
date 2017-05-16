@@ -1113,7 +1113,7 @@ class AdministrationController < ApplicationController
 
   def flag_out_of_date
     if authenticate_with_http_basic do |login, password|
-        user_session = UserSession.new('login' => login, 'password' => password)
+        user_session = UserSessionProvider.klass.new('login' => login, 'password' => password)
         user_session.save && check_auth_levels_any([
           UserRights::EDIT_SITE_THEME,
           UserRights::EDIT_PAGES,

@@ -1,7 +1,7 @@
 const base = '/api/publishing/v1';
 
 export const revisionBase =
-  `${base}/revision/${window.initialState.view.id}/${window.initialState.update.revision_seq}`;
+  `${base}/revision/${window.initialState.view.id}/${window.initialState.revision.revision_seq}`;
 
 export const uploadIndex = `${revisionBase}/upload`;
 export const uploadCreate = uploadIndex;
@@ -14,7 +14,7 @@ export const newOutputSchema = (uploadId, inputSchemaId) => {
   return `${base}/upload/${uploadId}/schema/${inputSchemaId}`;
 };
 
-export const applyUpdate = `${revisionBase}/apply`;
+export const applyRevision = `${revisionBase}/apply`;
 
 export const columnErrors = (uploadId, inputSchemaId, outputSchemaId, columnId, limit, offset) =>
   `${base}/upload/${uploadId}/schema/${inputSchemaId}/errors/${outputSchemaId}` +

@@ -462,6 +462,21 @@ en:
     featured_content:
       label: Featured Content in {filter}
       label_no_filter: Featured Content
+    view_types:
+      apis: APIs
+      blob: Files and Documents
+      calendars: Calendars
+      charts: Charts
+      data_lens: Data Lens pages
+      datasets: Datasets
+      draft: Draft Datasets
+      filters: Filtered Views
+      forms: Forms
+      href: External Datasets
+      maps: Maps
+      new_view: Data Lens pages
+      pulse: Pulse
+      story: Stories
     manager:
       asset_selector:
         header_title_with_filter: Select Featured Content for {filter}
@@ -508,28 +523,13 @@ en:
       show_stats:
         explanation: Choose to show some basic statistics around this category, such as how many datasets, visualizations and stories it contains.
         label: Show Stats
-      title: Feature Content
+      title: Feature Content %{params}
       unexpected_error: An unexpected error has occurred. Please reload and try again.
-      view_types:
-        apis: APIs
-        blob: Files and Documents
-        calendars: Calendars
-        charts: Charts
-        data_lens: Data Lens pages
-        datasets: Datasets
-        draft: Draft Datasets
-        filters: Filtered Views
-        forms: Forms
-        href: External Datasets
-        maps: Maps
-        new_view: Data Lens pages
-        pulse: Pulse
-        story: Stories
       you_are_not_authorized: You are not authorized to perform this operation.
       you_must_login_first: You must login first in order to save your changes.
     search:
       hint: Search
-    title: Search & Browse | %{category}
+    title: Search & Browse %{params}
   common:
     action_buttons:
       back: Back
@@ -566,6 +566,10 @@ en:
       rows: Rows
       title: What's in this Dataset?
     default_row_label: row
+    error:
+      connection_502: We were unable to connect to the asset catalog. Please reload and try again.
+      timeout_504: We were unable to query to the asset catalog. Please reload and try again.
+      unavailable_503: We were unable to contact the asset catalog. Please reload and try again.
     external_resource_editor:
       action_buttons:
         back: Back
@@ -928,7 +932,7 @@ en:
         rating: Highest Rated
         relevance: Most Relevant
       title:
-        default: Search & Browse Datasets and Views
+        default: Search & Browse
         result:
           facet: "%{facet_type} of %{facet_value}"
           facet_main: matching %{body}
@@ -2356,10 +2360,17 @@ en:
       bulk_edit:
         button_title: Edit Multiple Items...
         cancel: Cancel
+        close: Close
+        cannot_publish_drafts_not_present: "These goals must be upgraded before they can be published:"
+        configure: Configure
+        upgrade: Upgrade
         date_range_from: From
         date_range_label: Date Range
         date_range_to: To
-        failure_message: "<strong>Error.</strong> There was a problem performing this action. Try again, or cancel."
+        success_goal_count: "{0} goals saved successfully."
+        failed_goal_count: "{0} goals failed to save:"
+        failure_message: "<strong>Error.</strong> Some goals failed to save. Try again, or make your edits individually on each goal's page."
+        items_progress: "{0} of {1} processed ({2}%)"
         items_selected: "{0} Items Selected"
         not_configured_message: "<strong>Oops.</strong> It looks like one or more of your goals is unconfigured. Bulk edits can only be made to goals that have already been configured."
         override_label: Override
@@ -2373,7 +2384,10 @@ en:
         success_message: Success! {0} goals were updated.
         title: Edit Multiple Items
         update: Update
-        visibility: Visibility
+        publishing_action: Publishing Action
+        make_private: Make Private
+        make_public: Make Public
+        publish_latest_draft: Publish Latest Draft
       default_error_message: "<span><b>Oh no!</b> Something went wrong and our team has been notified. In the meantime, try your action again or refresh this page.</span>"
       export:
         Csv:
@@ -2424,9 +2438,8 @@ en:
           measure: Measure
           reduce: Reduce
         cancel: Cancel
-        cannot_publish_draft_not_present: No draft is present for this goal, so it cannot be made public.
+        cannot_publish_draft_not_present: This goal must be upgraded before publishing.
         category: Category
-        create_a_draft: Create a draft
         dashboard: Dashboard
         dataset_owner: Dataset Owner
         dataset_updated: Dataset Updated
@@ -2475,6 +2488,7 @@ en:
         success_message: Success! {0} updated.
         unit: Unit
         update_public_version: Update Public Version
+        upgrade: Upgrade
         validation:
           action:
             enum: Action should be one of Increase, Decrease, Maintain, Measure.
@@ -2614,6 +2628,7 @@ en:
       update: Update %{model}
   internal_asset_manager:
     errors:
+      fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.
     result_list_table:
       columns:
@@ -3196,7 +3211,7 @@ en:
           data_update_failures: Data Update Failures
           deleted_assets: Deleted Assets
         restore: Restore
-        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}"
+        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}"?
         restored: Restored
         show_page:
           back: Back to jobs list
@@ -5908,6 +5923,10 @@ en:
       title: Reset Password
     sign_in:
       auth0_intro: There are several ways you can sign in. If you haven't signed up for an account yet, choose the option that is most convenient for you. If you have, use the same option now.
+      auth0_invalid: Invalid username or password. For security, too many failed attempts will result in this account being locked out.
+      auth0_too_many_requests: Too many requests with same email. Please wait and try again.
+      auth0_locked_out: Your account has been blocked after multiple consecutive failed login attempts. We’ve sent you an email with instructions on how to unblock it.
+      auth0_unknown: An unknown error occurred logging in. Please contact support.
       back_to_sign_in_selection: <a class="login-back">Back to sign in options</a>
       dont_have_account: Don't have an account yet?
       error: Error logging in
@@ -5920,6 +5939,7 @@ en:
       headline: Sign In to %{site}
       mismatch: Passwords do not match. Please try again.
       new_login_message: <strong>Important!</strong> Login and signup will have a new look soon, learn more <a href="https://support.socrata.com/hc/en-us/articles/226005288" target="_blank" style="text-decoration&#58; underline;">here</a>
+      no_username_password_login: Attempted to login in an unauthorized way, please contact support.
       prompt_html: Sign in with your <strong>Socrata ID</strong>.
       sign_in_using: Sign in using
       sign_in_with: "<strong>Sign in</strong> with %{provider}"

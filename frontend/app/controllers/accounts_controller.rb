@@ -21,7 +21,7 @@ class AccountsController < ApplicationController
     @body_class = 'signup'
     @signup.user.email = params[:email] if params[:email].present?
     # This is so we can display the login screen dynamically
-    @user_session = UserSession.new unless params[:no_js].present?
+    @user_session = UserSessionProvider.klass.new unless params[:no_js].present?
   end
 
   # This is the true target of the form when signing up for a new account not '/profile/account'
@@ -48,7 +48,7 @@ class AccountsController < ApplicationController
       # verify_recaptcha test is our only protection against abuse.
       if !recaptcha_verified
         flash.now[:error] = t('recaptcha.errors.verification_failed')
-        @user_session = UserSession.new
+        @user_session = UserSessionProvider.klass.new
         format.html { render :action => :new }
         format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
         format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
@@ -72,7 +72,7 @@ class AccountsController < ApplicationController
           error = t('screens.sign_up.password_verification.failed_html')
         end
         flash.now[:error] = error
-        @user_session = UserSession.new
+        @user_session = UserSessionProvider.klass.new
         format.html { render :action => :new }
         format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
         format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
@@ -105,10 +105,10 @@ class AccountsController < ApplicationController
   end
 
   def reset_password
-    if !current_user.nil?
-      return redirect_to(forgot_password_path)
-    end
+    return redirect_to(forgot_password_path) unless current_user.nil?
     @body_id = 'resetPassword'
+    @disable_mixpanel_tracking = true
+
     if request.post?
       if params[:confirm_password] != params[:password]
         flash[:notice] = t('screens.sign_in.mismatch')
@@ -133,7 +133,7 @@ class AccountsController < ApplicationController
 
         # Awesome; let's log them in.
         user = User.parse(result.body)
-        @user_session = UserSession.new('login' => user.id, 'password' => params[:password])
+        @user_session = UserSessionProvider.klass.new('login' => user.id, 'password' => params[:password])
         if @user_session.save
           return redirect_to(login_redirect_url)
         else

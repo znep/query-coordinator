@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ModalContent, ModalFooter } from 'socrata-components';
 
 import { hideModal } from 'actions/modal';
-import { applyUpdate } from 'actions/applyUpdate';
+import { applyRevision } from 'actions/applyRevision';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Modals/PublishConfirmation.scss';
 import * as Selectors from '../../selectors';
@@ -49,7 +49,7 @@ function mapStateToProps({ db }) {
 function mapDispatchToProps(dispatch) {
   return {
     doCancel: () => dispatch(hideModal()),
-    doUpdate: (outputSchemaId) => dispatch(applyUpdate(outputSchemaId))
+    doUpdate: (outputSchemaId) => dispatch(applyRevision(outputSchemaId))
   };
 }
 

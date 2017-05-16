@@ -16,7 +16,6 @@
   <%= render_feature_flags_for_javascript %>
   <script id="storyteller-editor-environment" type="text/javascript">
 
-    window.CURRENT_USER = <%== current_user.to_json %>;
     window.CURRENT_USER_STORY_AUTHORIZATION = <%== current_user_story_authorization.to_json %>;
     window.CUSTOM_THEMES = <%== @custom_themes.to_json %>;
     window.DEFAULT_THEMES = <%== @default_themes.to_json %>;

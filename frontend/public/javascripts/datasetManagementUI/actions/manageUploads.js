@@ -281,42 +281,21 @@ function createTableAndSubscribeToTransform(transform) {
     if (!db[tableName]) {
       dispatch(createTable(tableName));
     }
-    // maybe subscribe to transform
-    if (transform.completed_at && transform.contiguous_rows_processed) {
-      // do nothing
-    } else if (transform.completed_at) {
-      const inputColumnId = transform.transform_input_columns[0].input_column_id;
-      const inputColumn = db.input_columns[inputColumnId];
-      const inputSchema = db.input_schemas[inputColumn.input_schema_id];
-      dispatch(
-        updateFromServer('transforms', {
+    const channelName = `transform_progress:${transform.id}`;
+    dispatch(joinChannel(channelName, {
+      max_ptr: (maxPtr) => {
+        dispatch(updateFromServer('transforms', {
           id: transform.id,
-          contiguous_rows_processed: inputSchema.total_rows
-        })
-      );
-    } else {
-      const channelName = `transform_progress:${transform.id}`;
-      dispatch(
-        joinChannel(channelName, {
-          max_ptr: maxPtr => {
-            dispatch(
-              updateFromServer('transforms', {
-                id: transform.id,
-                contiguous_rows_processed: maxPtr.end_row_offset
-              })
-            );
-          },
-          errors: errorsMsg => {
-            dispatch(
-              updateFromServer('transforms', {
-                id: transform.id,
-                num_transform_errors: errorsMsg.count
-              })
-            );
-          }
-        })
-      );
-    }
+          contiguous_rows_processed: maxPtr.end_row_offset
+        }));
+      },
+      errors: (errorsMsg) => {
+        dispatch(updateFromServer('transforms', {
+          id: transform.id,
+          num_transform_errors: errorsMsg.count
+        }));
+      }
+    }));
   };
 }
 
@@ -333,20 +312,14 @@ function toOutputSchema(os) {
 function subscribeToOutputSchema(outputSchema) {
   return dispatch => {
     const channelName = `output_schema:${outputSchema.id}`;
-    dispatch(
-      joinChannel(channelName, {
-        update: updatedOutputSchema => {
-          dispatch(
-            updateFromServer(
-              'output_schemas',
-              toOutputSchema({
-                ...outputSchema,
-                ...updatedOutputSchema
-              })
-            )
-          );
-        }
-      })
-    );
+
+    dispatch(joinChannel(channelName, {
+      update: (updatedOutputSchema) => {
+        dispatch(updateFromServer('output_schemas', toOutputSchema({
+          ...outputSchema,
+          ...updatedOutputSchema
+        })));
+      }
+    }));
   };
 }

@@ -58,7 +58,7 @@ RSpec.describe Aws::BucketEncrypter do
       end
     end
 
-    describe 'when fails' do
+    describe 'when failed' do
       let(:system_return_value) { false }
 
       it 'throws a "Command failed" error' do

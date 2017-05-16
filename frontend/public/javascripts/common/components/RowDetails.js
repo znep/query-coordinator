@@ -9,7 +9,6 @@ import React, { PropTypes } from 'react';
 // immediately available (i.e. column stats service is not in use) and it may be
 // expensive to get it on the fly for multi-million-row datasets (see EN-14299).
 export default function RowDetails({ rowCount, columnCount, rowLabel }) {
-
   // Renders row count info. Omitted if row count is not a number.
   function renderRowCount() {
     if (!_.isNumber(rowCount)) {

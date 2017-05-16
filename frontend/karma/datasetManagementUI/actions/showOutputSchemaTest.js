@@ -31,7 +31,6 @@ describe('actions/showOutputSchema', () => {
       unmockWS = wsmock();
 
       const store = createStore(rootReducer, applyMiddleware(thunk));
-      let fakeStore;
 
       store.dispatch(createUpload({name: 'petty_crimes.csv'}))
         .then(() => {
@@ -44,7 +43,7 @@ describe('actions/showOutputSchema', () => {
           return store.getState();
         })
         .then(state => {
-          fakeStore = mockStore(state);
+          const fakeStore = mockStore(state);
           return fakeStore.dispatch(addColumn(os, column))
             .then(() => fakeStore.getActions());
         })
@@ -103,7 +102,6 @@ describe('actions/showOutputSchema', () => {
       unmockWS = wsmock();
 
       const store = createStore(rootReducer, applyMiddleware(thunk));
-      let fakeStore;
 
       store.dispatch(createUpload({name: 'petty_crimes.csv'}))
         .then(() => {
@@ -116,7 +114,7 @@ describe('actions/showOutputSchema', () => {
           return store.getState();
         })
         .then(state => {
-          fakeStore = mockStore(state);
+          const fakeStore = mockStore(state);
           return fakeStore.dispatch(dropColumn(os, column))
             .then(() => fakeStore.getActions());
         })
@@ -176,7 +174,6 @@ describe('actions/showOutputSchema', () => {
       unmockWS = wsmock();
 
       const store = createStore(rootReducer, applyMiddleware(thunk));
-      let fakeStore;
 
       store.dispatch(createUpload({name: 'petty_crimes.csv'}))
         .then(() => {
@@ -189,7 +186,7 @@ describe('actions/showOutputSchema', () => {
           return store.getState();
         })
         .then(state => {
-          fakeStore = mockStore(state);
+          const fakeStore = mockStore(state);
           return fakeStore.dispatch(updateColumnType(os, column, 'SoQLText'))
             .then(() => fakeStore.getActions());
         })

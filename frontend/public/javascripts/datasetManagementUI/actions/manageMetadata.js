@@ -28,7 +28,7 @@ export const dismissMetadataPane = () => (dispatch, getState) => {
   const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata(\/columns|\/dataset)?/;
   const currentLocation = state.routing.history[state.routing.history.length - 1];
 
-  const helper = (history) => {
+  const helper = history => {
     const location = history[history.length - 1];
 
     if (history.length === 0) {
@@ -64,17 +64,18 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     // MetadataField looks at displayMetadataFieldErrors in store, and will show
     // field-level validation errors if it's truthy. Dispatching this action from here
     // allows us to show field-level validation errors on form submit.
-    dispatch(edit('views', {
-      id: fourfour,
-      displayMetadataFieldErrors: true
-    }));
+    dispatch(
+      edit('views', {
+        id: fourfour,
+        displayMetadataFieldErrors: true
+      })
+    );
 
     return;
   }
 
-  const publicMetadata = filterMetadata(_.pick(
-    model,
-    [
+  const publicMetadata = filterMetadata(
+    _.pick(model, [
       'id',
       'name',
       'description',
@@ -83,8 +84,8 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       'attribution',
       'attributionLink',
       'tags'
-    ]
-  ));
+    ])
+  );
 
   function filterMetadata(metadata) {
     if (metadata.licenseId === '') {
@@ -124,31 +125,33 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     id: fourfour
   };
 
-  dispatch(updateStarted('views', {
-    ...updateRecord,
-    payload: datasetMetadata
-  }));
+  dispatch(
+    updateStarted('views', {
+      ...updateRecord,
+      payload: datasetMetadata
+    })
+  );
 
   // TODO: switch this to read from redux store
   socrataFetch(`/api/views/${window.initialState.view.id}`, {
     method: 'PUT',
     body: JSON.stringify(datasetMetadata)
-  }).
-  then(checkStatus).
-  then(getJson).
-  then(resp => {
-    dispatch(setView(resp));
+  })
+    .then(checkStatus)
+    .then(getJson)
+    .then(resp => {
+      dispatch(setView(resp));
 
-    dispatch(redirectAfterInterval());
-  }).
-  catch(error => {
-    dispatch(updateFailed('views', updateRecord, error));
+      dispatch(redirectAfterInterval());
+    })
+    .catch(error => {
+      dispatch(updateFailed('views', updateRecord, error));
 
-    error.response.json().then(({ message }) => {
-      const localizedMessage = getLocalizedErrorMessage(message);
-      dispatch(showFlashMessage('error', localizedMessage));
+      error.response.json().then(({ message }) => {
+        const localizedMessage = getLocalizedErrorMessage(message);
+        dispatch(showFlashMessage('error', localizedMessage));
+      });
     });
-  });
 };
 
 export const saveColumnMetadata = () => (dispatch, getState) => {
@@ -167,10 +170,12 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
 
     // See comment in corresponding portion of saveDatasetMetadata action
-    dispatch(edit('views', {
-      id: fourfour,
-      displayMetadataFieldErrors: true
-    }));
+    dispatch(
+      edit('views', {
+        id: fourfour,
+        displayMetadataFieldErrors: true
+      })
+    );
 
     return;
   }
@@ -193,20 +198,17 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     input_schema_id: inputSchema.id
   };
 
-  const startOperations = [
-    outputSchemaUpsertStarted(),
-    upsertStarted('output_schemas', newOutputSchema)
-  ];
+  const startOperations = [outputSchemaUpsertStarted(), upsertStarted('output_schemas', newOutputSchema)];
 
   dispatch(batch(startOperations));
 
   socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
     body: JSON.stringify(payload)
-  }).
-    then(checkStatus).
-    then(getJson).
-    catch(error => {
+  })
+    .then(checkStatus)
+    .then(getJson)
+    .catch(error => {
       const errorOperations = [
         upsertFailed('output_schemas', newOutputSchema, error),
         outputSchemaUpsertFailed()
@@ -216,8 +218,11 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
         const errorDetails = err.params || {};
         let errorMessage;
 
-        const { field_name: fieldNameErrors, display_name: displayNameErrors } =
-          _.pick(errorDetails, 'field_name', 'display_name');
+        const { field_name: fieldNameErrors, display_name: displayNameErrors } = _.pick(
+          errorDetails,
+          'field_name',
+          'display_name'
+        );
 
         if (fieldNameErrors && Array.isArray(fieldNameErrors)) {
           const { reason } = fieldNameErrors[0];
@@ -237,8 +242,8 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 
         dispatch(showFlashMessage('error', errorMessage));
       });
-    }).
-    then(resp => {
+    })
+    .then(resp => {
       const successOperations = [
         outputSchemaUpsertSucceeded(),
         upsertSucceeded('output_schemas', newOutputSchema, {
@@ -249,9 +254,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 
       dispatch(batch(successOperations));
 
-      // TODO: refactor into a thunk; will be easier to test and be consistent with
-      // rest of app
-      insertChildrenAndSubscribeToOutputSchema(dispatch, resp.resource);
+      dispatch(insertChildrenAndSubscribeToOutputSchema(resp.resource));
       dispatch(redirectAfterInterval());
     });
 };
@@ -261,7 +264,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 export const DELAY_UNTIL_CLOSE_MS = 1000;
 
 function redirectAfterInterval() {
-  return (dispatch) => {
+  return dispatch => {
     setTimeout(() => {
       dispatch(dismissMetadataPane());
     }, DELAY_UNTIL_CLOSE_MS);

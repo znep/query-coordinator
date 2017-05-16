@@ -14,10 +14,7 @@ import {
   createTable,
   batch
 } from './database';
-import {
-  addNotification,
-  removeNotificationAfterTimeout
-} from './notifications';
+import { addNotification, removeNotificationAfterTimeout } from './notifications';
 import { uploadNotification } from '../lib/notifications';
 import { push } from 'react-router-redux';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
@@ -77,15 +74,16 @@ export const uploadFile = (uploadId, file) => dispatch => {
     .then(() => {
       dispatch(updateSucceeded('uploads', uploadUpdate));
 
-      dispatch(updateFromServer('uploads', {
-        id: uploadId,
-        finished_at: new Date()
-      }));
+      dispatch(
+        updateFromServer('uploads', {
+          id: uploadId,
+          finished_at: new Date()
+        })
+      );
 
       dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
     })
-    .catch(err =>
-      dispatch(updateFailed('uploads', uploadUpdate, err.xhr.status, err.percent)));
+    .catch(err => dispatch(updateFailed('uploads', uploadUpdate, err.xhr.status, err.percent)));
 };
 
 const SCHEMA_POLL_INTERVAL_MS = 500;
@@ -106,38 +104,44 @@ const pollForOutputSchema = uploadId => (dispatch, getState) => {
   }
 
   return socrataFetch(dsmapiLinks.uploadShow(uploadId))
-  .then(resp => {
-    if (resp.status === 404) {
-      pollAgain();
+    .then(resp => {
+      if (resp.status === 404) {
+        pollAgain();
 
-      throw new Error('Upload failed: trying again');
-    } else if (resp.status === 500) {
-      dispatch(updateFailed('uploads', { id: uploadId }));
+        throw new Error('Upload failed: trying again');
+      } else if (resp.status === 500) {
+        dispatch(updateFailed('uploads', { id: uploadId }));
 
-      throw new Error('Upload failed: terminating');
-    } else {
-      return resp;
-    }
-  })
-  .then(getJson)
-  .then(resp => {
-    const upload = resp.resource;
+        throw new Error('Upload failed: terminating');
+      } else {
+        return resp;
+      }
+    })
+    .then(getJson)
+    .then(resp => {
+      const upload = resp.resource;
 
-    if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
-      // TODO: subscribeToUpload not a thunk :(. Bad for testing, bad for debugging
-      // bad for establishing a standard interface for communicating with store. Convert
-      const outputSchemaIds = subscribeToUpload(dispatch, upload);
+      if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
+        const outputSchemaIds = _.chain(upload.schemas)
+          .flatMap(is => is.output_schemas)
+          .map(os => {
+            dispatch(insertChildrenAndSubscribeToOutputSchema(os));
+            return os.id;
+          })
+          .value();
 
-      dispatch(push(Links.showOutputSchema(
-        uploadId,
-        upload.schemas[0].id,
-        outputSchemaIds[0]
-      )(routing.location)));
-    } else {
-      pollAgain();
-    }
-  })
-  .catch(err => err);
+        console.log('\n\nHEY', outputSchemaIds);
+
+        dispatch(subscribeToUpload(dispatch, upload));
+
+        dispatch(
+          push(Links.showOutputSchema(uploadId, upload.schemas[0].id, outputSchemaIds[0])(routing.location))
+        );
+      } else {
+        pollAgain();
+      }
+    })
+    .catch(err => err);
 };
 
 export const createUpload = file => (dispatch, getState) => {
@@ -155,102 +159,118 @@ export const createUpload = file => (dispatch, getState) => {
       filename: file.name
     })
   })
-  .then(checkStatus)
-  .then(getJson)
-  .then(resp => {
-    const newUpload = resp.resource;
+    .then(checkStatus)
+    .then(getJson)
+    .then(resp => {
+      const newUpload = resp.resource;
 
-    dispatch(upsertSucceeded('uploads', uploadInsert, {
-      id: newUpload.id,
-      created_by: newUpload.created_by
-    }));
+      dispatch(
+        upsertSucceeded('uploads', uploadInsert, {
+          id: newUpload.id,
+          created_by: newUpload.created_by
+        })
+      );
 
-    dispatch(push(Links.showUpload(newUpload.id)(routing.location)));
+      dispatch(push(Links.showUpload(newUpload.id)(routing.location)));
 
-    return Promise.all([
-      dispatch(uploadFile(newUpload.id, file)),
-      dispatch(pollForOutputSchema(newUpload.id))
-    ]);
-  })
-  .catch(err => dispatch(upsertFailed('uploads', uploadInsert, err)));
+      return Promise.all([
+        dispatch(uploadFile(newUpload.id, file)),
+        dispatch(pollForOutputSchema(newUpload.id))
+      ]);
+    })
+    .catch(err => dispatch(upsertFailed('uploads', uploadInsert, err)));
 };
 
 export function insertAndSubscribeToUpload(dispatch, upload) {
-  dispatch(upsertFromServer('uploads', {
-    ..._.omit(upload, ['schemas']),
-    inserted_at: parseDate(upload.inserted_at),
-    finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
-    failed_at: upload.failed_at ? parseDate(upload.failed_at) : null,
-    created_by: upload.created_by
-  }));
+  dispatch(
+    upsertFromServer('uploads', {
+      ..._.omit(upload, ['schemas']),
+      inserted_at: parseDate(upload.inserted_at),
+      finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
+      failed_at: upload.failed_at ? parseDate(upload.failed_at) : null,
+      created_by: upload.created_by
+    })
+  );
 
   if (upload.failed_at) {
     dispatch(addNotification(uploadNotification(upload.id)));
   } else {
-    subscribeToUpload(dispatch, upload);
+    dispatch(subscribeToUpload(upload));
   }
 }
 
-function subscribeToUpload(dispatch, upload) {
-  const outputSchemaIds = upload.schemas.map((inputSchema) => {
-    dispatch(upsertFromServer('input_schemas', {
-      id: inputSchema.id,
-      name: inputSchema.name,
-      total_rows: inputSchema.total_rows,
-      upload_id: upload.id
-    }));
-    dispatch(subscribeToRowErrors(inputSchema.id));
-    dispatch(batch(inputSchema.input_columns.map((column) =>
-      upsertFromServer('input_columns', column))));
-    return inputSchema.output_schemas.map((outputSchema) => {
-      return insertAndSubscribeToOutputSchema(dispatch, outputSchema);
+function subscribeToUpload(upload) {
+  return dispatch =>
+    upload.schemas.forEach(inputSchema => {
+      dispatch(
+        upsertFromServer('input_schemas', {
+          id: inputSchema.id,
+          name: inputSchema.name,
+          total_rows: inputSchema.total_rows,
+          upload_id: upload.id
+        })
+      );
+
+      dispatch(subscribeToRowErrors(inputSchema.id));
+
+      dispatch(batch(inputSchema.input_columns.map(column => upsertFromServer('input_columns', column))));
     });
-  });
-  return _.flatten(outputSchemaIds);
 }
 
 function subscribeToRowErrors(inputSchemaId) {
-  return (dispatch) => {
+  return dispatch => {
     const channelName = `row_errors:${inputSchemaId}`;
-    dispatch(joinChannel(channelName, {
-      errors: (event) => {
-        dispatch(updateFromServer('input_schemas', {
-          id: inputSchemaId,
-          num_row_errors: event.errors
-        }));
-      }
-    }));
+    dispatch(
+      joinChannel(channelName, {
+        errors: event => {
+          dispatch(
+            updateFromServer('input_schemas', {
+              id: inputSchemaId,
+              num_row_errors: event.errors
+            })
+          );
+        }
+      })
+    );
   };
 }
 
-function insertAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
-  dispatch(upsertFromServer('output_schemas', toOutputSchema(outputSchemaResponse)));
-  insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaResponse);
-  return outputSchemaResponse.id;
-}
+export function insertChildrenAndSubscribeToOutputSchema(outputSchemaResponse) {
+  return dispatch => {
+    dispatch(upsertFromServer('output_schemas', toOutputSchema(outputSchemaResponse)));
 
-export function insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
-  dispatch(subscribeToOutputSchema(outputSchemaResponse));
-  const actions = [];
-  outputSchemaResponse.output_columns.forEach((outputColumn) => {
-    const transform = outputColumn.transform;
-    actions.push(upsertFromServer('transforms', transform));
+    dispatch(subscribeToOutputSchema(outputSchemaResponse));
 
-    actions.push(upsertFromServer('output_columns', {
-      ..._.omit(outputColumn, ['transform']),
-      transform_id: outputColumn.transform.id
-    }));
-    actions.push(upsertFromServer('output_schema_columns', {
-      id: `${outputSchemaResponse.id}-${outputColumn.id}`,
-      output_schema_id: outputSchemaResponse.id,
-      output_column_id: outputColumn.id,
-      is_primary_key: outputColumn.is_primary_key
-    }));
-  });
-  outputSchemaResponse.output_columns.forEach((outputColumn) => {
-    dispatch(createTableAndSubscribeToTransform(outputColumn.transform));
-  });
-  dispatch(batch(actions));
+    const actions = [];
+
+    outputSchemaResponse.output_columns.forEach(outputColumn => {
+      const transform = outputColumn.transform;
+
+      actions.push(upsertFromServer('transforms', transform));
+
+      actions.push(
+        upsertFromServer('output_columns', {
+          ..._.omit(outputColumn, ['transform']),
+          transform_id: outputColumn.transform.id
+        })
+      );
+
+      actions.push(
+        upsertFromServer('output_schema_columns', {
+          id: `${outputSchemaResponse.id}-${outputColumn.id}`,
+          output_schema_id: outputSchemaResponse.id,
+          output_column_id: outputColumn.id,
+          is_primary_key: outputColumn.is_primary_key
+        })
+      );
+    });
+
+    outputSchemaResponse.output_columns.forEach(outputColumn => {
+      dispatch(createTableAndSubscribeToTransform(outputColumn.transform));
+    });
+
+    dispatch(batch(actions));
+  };
 }
 
 function createTableAndSubscribeToTransform(transform) {
@@ -268,26 +288,34 @@ function createTableAndSubscribeToTransform(transform) {
       const inputColumnId = transform.transform_input_columns[0].input_column_id;
       const inputColumn = db.input_columns[inputColumnId];
       const inputSchema = db.input_schemas[inputColumn.input_schema_id];
-      dispatch(updateFromServer('transforms', {
-        id: transform.id,
-        contiguous_rows_processed: inputSchema.total_rows
-      }));
+      dispatch(
+        updateFromServer('transforms', {
+          id: transform.id,
+          contiguous_rows_processed: inputSchema.total_rows
+        })
+      );
     } else {
       const channelName = `transform_progress:${transform.id}`;
-      dispatch(joinChannel(channelName, {
-        max_ptr: (maxPtr) => {
-          dispatch(updateFromServer('transforms', {
-            id: transform.id,
-            contiguous_rows_processed: maxPtr.end_row_offset
-          }));
-        },
-        errors: (errorsMsg) => {
-          dispatch(updateFromServer('transforms', {
-            id: transform.id,
-            num_transform_errors: errorsMsg.count
-          }));
-        }
-      }));
+      dispatch(
+        joinChannel(channelName, {
+          max_ptr: maxPtr => {
+            dispatch(
+              updateFromServer('transforms', {
+                id: transform.id,
+                contiguous_rows_processed: maxPtr.end_row_offset
+              })
+            );
+          },
+          errors: errorsMsg => {
+            dispatch(
+              updateFromServer('transforms', {
+                id: transform.id,
+                num_transform_errors: errorsMsg.count
+              })
+            );
+          }
+        })
+      );
     }
   };
 }
@@ -303,15 +331,22 @@ function toOutputSchema(os) {
 }
 
 function subscribeToOutputSchema(outputSchema) {
-  return (dispatch) => {
+  return dispatch => {
     const channelName = `output_schema:${outputSchema.id}`;
-    dispatch(joinChannel(channelName, {
-      update: (updatedOutputSchema) => {
-        dispatch(updateFromServer('output_schemas', toOutputSchema({
-          ...outputSchema,
-          ...updatedOutputSchema
-        })));
-      }
-    }));
+    dispatch(
+      joinChannel(channelName, {
+        update: updatedOutputSchema => {
+          dispatch(
+            updateFromServer(
+              'output_schemas',
+              toOutputSchema({
+                ...outputSchema,
+                ...updatedOutputSchema
+              })
+            )
+          );
+        }
+      })
+    );
   };
 }

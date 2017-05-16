@@ -24,7 +24,6 @@
   <%- if FeatureFlags.derive(nil, request).use_captcha_for_forms -%>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <div class="g-recaptcha" data-sitekey="<%= RECAPTCHA_2_SITE_KEY %>"></div>
-    <input type="hidden" name="captcha_feature_flag_enabled" id="captcha_feature_flag_enabled" value="true" />
   <%- end -%>
   <div class="submitLine">
     <input type="submit" value="Submit" />

@@ -226,9 +226,9 @@ class FilterBar extends React.Component {
           <div className="picker-filters-header">
             <LocalizedText localeKey='index_page.filter_by' />
           </div>
+          <this.renderDateFilter />
           <this.renderEventFilter />
           <this.renderStatusFilter />
-          <this.renderDateFilter />
         </div>
       </div>
     );

@@ -30,7 +30,21 @@ DatabaseCleaner.strategy = :truncation
 if ENV['HEADLESS'] == 'true'
   require 'headless'
 
-  headless = Headless.new
+  begin
+    headless = Headless.new
+  rescue Headless::Exception => e
+    if e.to_s =~ /Display socket is taken but lock file is missing/i
+      puts('Attempting to resolve Headless error by creating tmp directory.')
+      puts('You may be prompted for your login password by sudo...')
+      system('mkdir /tmp/.X11-unix')
+      system('sudo chmod 1777 /tmp/.X11-unix')
+      system('sudo chown root /tmp/.X11-unix/')
+      headless = Headless.new
+    else
+      raise e
+    end
+  end
+
   headless.start
 
   at_exit do

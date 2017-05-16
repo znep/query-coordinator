@@ -12,20 +12,6 @@ module InternalAssetManagerHelper
     javascript_tag("window.I18n = _.extend(I18n, #{json_escape(internal_asset_manager_translations.to_json)});")
   end
 
-  def render_internal_asset_manager_mixpanel_config
-    mixpanel_config = { :token => APP_CONFIG.mixpanel_token }
-
-    if CurrentDomain.feature?(:mixpanelTracking)
-      mixpanel_config[:options] = { :cookie_expiration => nil }
-    elsif CurrentDomain.feature?(:fullMixpanelTracking)
-      mixpanel_config[:options] = { :cookie_expiration => 365 }
-    else
-      mixpanel_config[:disable] = true
-    end
-
-    javascript_tag("window.mixpanelConfig = #{json_escape(mixpanel_config.to_json)};")
-  end
-
   def render_internal_asset_manager_session_data
     session_data = {
       :userId => current_user.try(:id),

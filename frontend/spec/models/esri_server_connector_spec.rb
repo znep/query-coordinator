@@ -109,14 +109,14 @@ describe EsriServerConnector do
 
     it 'sets a filter based on the domain name' do
       expect(EsriCrawler).to receive(:get_request) do |path, query|
-        expect(query).to eq({:filters => {:socrata_domain => host}})
+        expect(query).to eq({:filters => {:domain_id => CurrentDomain.domain.id}})
         {'items' => []}
       end
       servers = EsriServerConnector.servers
     end
 
     it 'returns an array of EsriServers' do
-      query = {:query => {:filters => {:socrata_domain => host}}}
+      query = {:query => {:filters => {:domain_id => CurrentDomain.domain.id}}}
       stub_request(:get, endpoint).with(stub_contents.merge(query)).to_return(
         :status => 200,
         :body => File.read("#{fixture_prefix}/servers.json")
@@ -132,7 +132,7 @@ describe EsriServerConnector do
     let(:endpoint) { "#{base_url}/servers/1" }
 
     it 'returns a single EsriServer' do
-      query = {:query => {:filters => {:socrata_domain => host}}}
+      query = {:query => {:filters => {:domain_id => CurrentDomain.domain.id}}}
       stub_request(:get, endpoint).with(stub_contents.merge(query)).to_return(
         :status => 200,
         :body => File.read("#{fixture_prefix}/server.json")
@@ -144,7 +144,7 @@ describe EsriServerConnector do
 
   it 'sets a filter based on the domain name' do
     expect(EsriCrawler).to receive(:get_request) do |path, query|
-      expect(query).to eq({:filters => {:socrata_domain => host}})
+      expect(query).to eq({:filters => {:domain_id => CurrentDomain.domain.id}})
       {}
     end
     server = EsriServerConnector.server(1)

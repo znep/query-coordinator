@@ -147,7 +147,7 @@ class FilterBar extends React.Component {
       {title: 'Success', icon: 'checkmark-alt'},
       {title: 'SuccessWithDataErrors', icon: 'warning-alt'},
       {title: 'Failure', icon: 'close-circle'},
-      {title: 'InProgress', icon: 'processing'}
+      {title: 'InProgress', icon: 'progress'}
     ];
 
     const renderOption = (option) => {
@@ -195,11 +195,13 @@ class FilterBar extends React.Component {
     const deletedClass = quickFilter === 'deleted_assets' ? 'selected' : null;
 
     return (
-      <ul>
-        {this.renderBlockLink('all', allClass)}
-        {this.renderBlockLink('data_update_failures', failedClass)}
-        {this.renderBlockLink('deleted_assets', deletedClass)}
-      </ul>
+      <div className="quick-filters">
+        <ul>
+          {this.renderBlockLink('all', allClass)}
+          {this.renderBlockLink('data_update_failures', failedClass)}
+          {this.renderBlockLink('deleted_assets', deletedClass)}
+        </ul>
+      </div>
     );
   }
 
@@ -208,8 +210,10 @@ class FilterBar extends React.Component {
     const onClick = disabled ? null : _.wrap(value, this.onQuickFilterChange);
 
     return (
-      <li onClick={onClick} className={className}>
-        <LocalizedText localeKey={`quick_filters.${value}`}/>
+      <li>
+        <button onClick={onClick} className={className}>
+          <LocalizedText localeKey={`quick_filters.${value}`}/>
+        </button>
       </li>
     );
   }
@@ -217,16 +221,14 @@ class FilterBar extends React.Component {
   render() {
     return (
       <div className="filter-bar">
-        <div className="quick-filters">
-          <this.renderQuickFilters />
-        </div>
+        <this.renderQuickFilters />
         <div className="picker-filters">
           <div className="picker-filters-header">
             <LocalizedText localeKey='index_page.filter_by' />
           </div>
+          <this.renderDateFilter />
           <this.renderEventFilter />
           <this.renderStatusFilter />
-          <this.renderDateFilter />
         </div>
       </div>
     );

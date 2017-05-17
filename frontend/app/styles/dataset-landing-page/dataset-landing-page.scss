@@ -681,10 +681,3 @@ footer#site-chrome-footer {
   margin-top: 20px;
   visibility: hidden;
 }
-
-// firefox-specific issue
-@-moz-document url-prefix() {
-  .info-pane .entry-header .entry-actions .btn-group > button.btn {
-    line-height: 1.1;
-  }
-}

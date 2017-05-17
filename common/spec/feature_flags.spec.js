@@ -2,7 +2,7 @@ import { FeatureFlags } from 'common/feature_flags';
 
 describe('FeatureFlags', function() {
 
-  const validFeatureFlag = 'useAuth0';
+  const validFeatureFlag = 'mockFeatureFlag';
 
   before(function() {
     FeatureFlags.useTestFixture();

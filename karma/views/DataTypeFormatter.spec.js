@@ -68,6 +68,29 @@ describe('DataTypeFormatter', function() {
 
   var columnMetadata;
 
+  describe('when something goes haywire', function() {
+    let consoleErrorStub;
+    let lodashEscapeStub;
+
+    beforeEach(function() {
+      consoleErrorStub = sinon.stub(console, 'error');
+      lodashEscapeStub = sinon.stub(_, 'escape', function() {
+        throw new Error('UNESCAPABLE!');
+      });
+    });
+
+    afterEach(function() {
+      consoleErrorStub.restore();
+      lodashEscapeStub.restore();
+    });
+
+    it('records an error message', function() {
+      var cellContent = DataTypeFormatter.renderCell('anything', { renderTypeName: 'anything' });
+      expect(cellContent).to.equal(undefined);
+      sinon.assert.called(consoleErrorStub);
+    });
+  });
+
   describe('boolean cell formatting', function() {
 
     var BOOLEAN_DATA = [true, false, null];
@@ -725,6 +748,28 @@ describe('DataTypeFormatter', function() {
 
     it('should render an empty string if no data', function() {
       var cellContent = DataTypeFormatter.renderPhoneCellHTML({});
+      expect(cellContent).to.equal('');
+    });
+  });
+
+  // TODO: Remove this once we don't need to support OBE datasets
+  describe('html formatting', function() {
+    it('should render only the text contents of HTML', function() {
+      var cellContent = DataTypeFormatter.renderCell('<div>here <b>we</b> go<span style="color:red;">!</span></div>', { renderTypeName: 'html' });
+      expect(cellContent).to.equal('here we go!');
+    });
+
+    it('should not fail on text that looks like a selector', function() {
+      // EN-15513
+      var cellContent = DataTypeFormatter.renderCell('5 lb. Comm. Line for 3 Cemt.', { renderTypeName: 'html' });
+      expect(cellContent).to.equal('5 lb. Comm. Line for 3 Cemt.');
+    });
+
+    it('should render an empty string if no data', function() {
+      var cellContent = DataTypeFormatter.renderCell('', { renderTypeName: 'html' });
+      expect(cellContent).to.equal('');
+
+      cellContent = DataTypeFormatter.renderCell(undefined, { renderTypeName: 'html' });
       expect(cellContent).to.equal('');
     });
   });

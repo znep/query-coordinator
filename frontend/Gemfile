@@ -55,8 +55,12 @@ gem 'git'
 gem 'clipboard'
 gem 'jenkins_api_client'
 
-# Socrata Site Chrome
-gem 'socrata_site_chrome', path: '../common/site_chrome'
+# We use a group to disable it while building
+# the base image that frontend uses for Jenkins
+# building, testing, and linting.
+group :common do
+  gem 'socrata_site_chrome', path: '../common/site_chrome'
+end
 
 group :test do
   gem 'factory_girl'

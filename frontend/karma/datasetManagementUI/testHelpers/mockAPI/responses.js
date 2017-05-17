@@ -34,7 +34,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_number(`id`)",
-              "output_soql_type":"SoQLNumber",
+              "output_soql_type":"number",
               "id":20799,
               "completed_at":null
             },
@@ -53,7 +53,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"`case_number`",
-              "output_soql_type":"SoQLText",
+              "output_soql_type":"text",
               "id":20800,
               "completed_at":null
             },
@@ -72,7 +72,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_floating_timestamp(`date`)",
-              "output_soql_type":"SoQLFloatingTimestamp",
+              "output_soql_type":"calendar_date",
               "id":20801,
               "completed_at":null
             },
@@ -91,7 +91,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"`block`",
-              "output_soql_type":"SoQLText",
+              "output_soql_type":"text",
               "id":20802,
               "completed_at":null
             },
@@ -110,7 +110,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"`iucr`",
-              "output_soql_type":"SoQLText",
+              "output_soql_type":"text",
               "id":20803,
               "completed_at":null
             },
@@ -129,7 +129,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"`primary_type`",
-              "output_soql_type":"SoQLText",
+              "output_soql_type":"text",
               "id":20804,
               "completed_at":null
             },
@@ -148,7 +148,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"`description`",
-              "output_soql_type":"SoQLText",
+              "output_soql_type":"text",
               "id":20805,
               "completed_at":null
             },
@@ -167,7 +167,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"`location_description`",
-              "output_soql_type":"SoQLText",
+              "output_soql_type":"text",
               "id":20806,
               "completed_at":null
             },
@@ -186,7 +186,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_boolean(`arrest`)",
-              "output_soql_type":"SoQLBoolean",
+              "output_soql_type":"checkbox",
               "id":20807,
               "completed_at":null
             },
@@ -205,7 +205,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_boolean(`domestic`)",
-              "output_soql_type":"SoQLBoolean",
+              "output_soql_type":"checkbox",
               "id":20808,
               "completed_at":null
             },
@@ -224,7 +224,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_number(`beat`)",
-              "output_soql_type":"SoQLNumber",
+              "output_soql_type":"number",
               "id":20809,
               "completed_at":null
             },
@@ -243,7 +243,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_number(`district`)",
-              "output_soql_type":"SoQLNumber",
+              "output_soql_type":"number",
               "id":20810,
               "completed_at":null
             },
@@ -262,7 +262,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_number(`ward`)",
-              "output_soql_type":"SoQLNumber",
+              "output_soql_type":"number",
               "id":20811,
               "completed_at":null
             },
@@ -281,7 +281,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_number(`community_area`)",
-              "output_soql_type":"SoQLNumber",
+              "output_soql_type":"number",
               "id":20812,
               "completed_at":null
             },
@@ -300,7 +300,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"`fbi_code`",
-              "output_soql_type":"SoQLText",
+              "output_soql_type":"text",
               "id":20813,
               "completed_at":null
             },
@@ -319,7 +319,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_number(`x_coordinate`)",
-              "output_soql_type":"SoQLNumber",
+              "output_soql_type":"number",
               "id":20814,
               "completed_at":null
             },
@@ -338,7 +338,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_number(`y_coordinate`)",
-              "output_soql_type":"SoQLNumber",
+              "output_soql_type":"number",
               "id":20815,
               "completed_at":null
             },
@@ -357,7 +357,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_number(`year`)",
-              "output_soql_type":"SoQLNumber",
+              "output_soql_type":"number",
               "id":20816,
               "completed_at":null
             },
@@ -376,7 +376,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_floating_timestamp(`updated_on`)",
-              "output_soql_type":"SoQLFloatingTimestamp",
+              "output_soql_type":"calendar_date",
               "id":20817,
               "completed_at":null
             },
@@ -395,7 +395,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_number(`latitude`)",
-              "output_soql_type":"SoQLNumber",
+              "output_soql_type":"number",
               "id":20818,
               "completed_at":null
             },
@@ -414,7 +414,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"to_number(`longitude`)",
-              "output_soql_type":"SoQLNumber",
+              "output_soql_type":"number",
               "id":20819,
               "completed_at":null
             },
@@ -433,7 +433,7 @@ export const uploadBytes = {
                 }
               ],
               "transform_expr":"`location`",
-              "output_soql_type":"SoQLText",
+              "output_soql_type":"text",
               "id":20820,
               "completed_at":null
             },
@@ -461,245 +461,245 @@ export const uploadBytes = {
     "inserted_at":"2017-05-12T14:12:09.412481",
     "input_columns":[
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":0,
         "input_schema_id":945,
         "id":22277,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLNumber",
+        "guessed_soql_type":"number",
         "field_name":"id"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":1,
         "input_schema_id":945,
         "id":22278,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLText",
+        "guessed_soql_type":"text",
         "field_name":"case_number"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":2,
         "input_schema_id":945,
         "id":22279,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLFloatingTimestamp",
+        "guessed_soql_type":"calendar_date",
         "field_name":"date"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":3,
         "input_schema_id":945,
         "id":22280,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLText",
+        "guessed_soql_type":"text",
         "field_name":"block"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":4,
         "input_schema_id":945,
         "id":22281,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLText",
+        "guessed_soql_type":"text",
         "field_name":"iucr"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":5,
         "input_schema_id":945,
         "id":22282,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLText",
+        "guessed_soql_type":"text",
         "field_name":"primary_type"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":6,
         "input_schema_id":945,
         "id":22283,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLText",
+        "guessed_soql_type":"text",
         "field_name":"description"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":7,
         "input_schema_id":945,
         "id":22284,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLText",
+        "guessed_soql_type":"text",
         "field_name":"location_description"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":8,
         "input_schema_id":945,
         "id":22285,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLBoolean",
+        "guessed_soql_type":"checkbox",
         "field_name":"arrest"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":9,
         "input_schema_id":945,
         "id":22286,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLBoolean",
+        "guessed_soql_type":"checkbox",
         "field_name":"domestic"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":10,
         "input_schema_id":945,
         "id":22287,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLNumber",
+        "guessed_soql_type":"number",
         "field_name":"beat"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":11,
         "input_schema_id":945,
         "id":22288,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLNumber",
+        "guessed_soql_type":"number",
         "field_name":"district"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":12,
         "input_schema_id":945,
         "id":22289,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLNumber",
+        "guessed_soql_type":"number",
         "field_name":"ward"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":13,
         "input_schema_id":945,
         "id":22290,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLNumber",
+        "guessed_soql_type":"number",
         "field_name":"community_area"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":14,
         "input_schema_id":945,
         "id":22291,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLText",
+        "guessed_soql_type":"text",
         "field_name":"fbi_code"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":15,
         "input_schema_id":945,
         "id":22292,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLNumber",
+        "guessed_soql_type":"number",
         "field_name":"x_coordinate"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":16,
         "input_schema_id":945,
         "id":22293,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLNumber",
+        "guessed_soql_type":"number",
         "field_name":"y_coordinate"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":17,
         "input_schema_id":945,
         "id":22294,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLNumber",
+        "guessed_soql_type":"number",
         "field_name":"year"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":18,
         "input_schema_id":945,
         "id":22295,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLFloatingTimestamp",
+        "guessed_soql_type":"calendar_date",
         "field_name":"updated_on"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":19,
         "input_schema_id":945,
         "id":22296,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLNumber",
+        "guessed_soql_type":"number",
         "field_name":"latitude"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":20,
         "input_schema_id":945,
         "id":22297,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLNumber",
+        "guessed_soql_type":"number",
         "field_name":"longitude"
       },
       {
-        "soql_type":"SoQLText",
+        "soql_type":"text",
         "position":21,
         "input_schema_id":945,
         "id":22298,
         "guessed_subtypes":[
 
         ],
-        "guessed_soql_type":"SoQLText",
+        "guessed_soql_type":"text",
         "field_name":"location"
       }
     ],
@@ -733,7 +733,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_number(`id`)",
-                  "output_soql_type":"SoQLNumber",
+                  "output_soql_type":"number",
                   "id":20799,
                   "completed_at":null
                 },
@@ -752,7 +752,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"`case_number`",
-                  "output_soql_type":"SoQLText",
+                  "output_soql_type":"text",
                   "id":20800,
                   "completed_at":null
                 },
@@ -771,7 +771,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_floating_timestamp(`date`)",
-                  "output_soql_type":"SoQLFloatingTimestamp",
+                  "output_soql_type":"calendar_date",
                   "id":20801,
                   "completed_at":null
                 },
@@ -790,7 +790,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"`block`",
-                  "output_soql_type":"SoQLText",
+                  "output_soql_type":"text",
                   "id":20802,
                   "completed_at":null
                 },
@@ -809,7 +809,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"`iucr`",
-                  "output_soql_type":"SoQLText",
+                  "output_soql_type":"text",
                   "id":20803,
                   "completed_at":null
                 },
@@ -828,7 +828,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"`primary_type`",
-                  "output_soql_type":"SoQLText",
+                  "output_soql_type":"text",
                   "id":20804,
                   "completed_at":null
                 },
@@ -847,7 +847,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"`description`",
-                  "output_soql_type":"SoQLText",
+                  "output_soql_type":"text",
                   "id":20805,
                   "completed_at":null
                 },
@@ -866,7 +866,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"`location_description`",
-                  "output_soql_type":"SoQLText",
+                  "output_soql_type":"text",
                   "id":20806,
                   "completed_at":null
                 },
@@ -885,7 +885,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_boolean(`arrest`)",
-                  "output_soql_type":"SoQLBoolean",
+                  "output_soql_type":"checkbox",
                   "id":20807,
                   "completed_at":null
                 },
@@ -904,7 +904,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_boolean(`domestic`)",
-                  "output_soql_type":"SoQLBoolean",
+                  "output_soql_type":"checkbox",
                   "id":20808,
                   "completed_at":null
                 },
@@ -923,7 +923,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_number(`beat`)",
-                  "output_soql_type":"SoQLNumber",
+                  "output_soql_type":"number",
                   "id":20809,
                   "completed_at":null
                 },
@@ -942,7 +942,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_number(`district`)",
-                  "output_soql_type":"SoQLNumber",
+                  "output_soql_type":"number",
                   "id":20810,
                   "completed_at":null
                 },
@@ -961,7 +961,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_number(`ward`)",
-                  "output_soql_type":"SoQLNumber",
+                  "output_soql_type":"number",
                   "id":20811,
                   "completed_at":null
                 },
@@ -980,7 +980,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_number(`community_area`)",
-                  "output_soql_type":"SoQLNumber",
+                  "output_soql_type":"number",
                   "id":20812,
                   "completed_at":null
                 },
@@ -999,7 +999,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"`fbi_code`",
-                  "output_soql_type":"SoQLText",
+                  "output_soql_type":"text",
                   "id":20813,
                   "completed_at":null
                 },
@@ -1018,7 +1018,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_number(`x_coordinate`)",
-                  "output_soql_type":"SoQLNumber",
+                  "output_soql_type":"number",
                   "id":20814,
                   "completed_at":null
                 },
@@ -1037,7 +1037,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_number(`y_coordinate`)",
-                  "output_soql_type":"SoQLNumber",
+                  "output_soql_type":"number",
                   "id":20815,
                   "completed_at":null
                 },
@@ -1056,7 +1056,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_number(`year`)",
-                  "output_soql_type":"SoQLNumber",
+                  "output_soql_type":"number",
                   "id":20816,
                   "completed_at":null
                 },
@@ -1075,7 +1075,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_floating_timestamp(`updated_on`)",
-                  "output_soql_type":"SoQLFloatingTimestamp",
+                  "output_soql_type":"calendar_date",
                   "id":20817,
                   "completed_at":null
                 },
@@ -1094,7 +1094,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_number(`latitude`)",
-                  "output_soql_type":"SoQLNumber",
+                  "output_soql_type":"number",
                   "id":20818,
                   "completed_at":null
                 },
@@ -1113,7 +1113,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"to_number(`longitude`)",
-                  "output_soql_type":"SoQLNumber",
+                  "output_soql_type":"number",
                   "id":20819,
                   "completed_at":null
                 },
@@ -1132,7 +1132,7 @@ export const uploadShow = {
                     }
                   ],
                   "transform_expr":"`location`",
-                  "output_soql_type":"SoQLText",
+                  "output_soql_type":"text",
                   "id":20820,
                   "completed_at":null
                 },
@@ -1160,245 +1160,245 @@ export const uploadShow = {
         "inserted_at":"2017-05-12T14:12:09.412481",
         "input_columns":[
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":0,
             "input_schema_id":945,
             "id":22277,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLNumber",
+            "guessed_soql_type":"number",
             "field_name":"id"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":1,
             "input_schema_id":945,
             "id":22278,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLText",
+            "guessed_soql_type":"text",
             "field_name":"case_number"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":2,
             "input_schema_id":945,
             "id":22279,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLFloatingTimestamp",
+            "guessed_soql_type":"calendar_date",
             "field_name":"date"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":3,
             "input_schema_id":945,
             "id":22280,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLText",
+            "guessed_soql_type":"text",
             "field_name":"block"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":4,
             "input_schema_id":945,
             "id":22281,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLText",
+            "guessed_soql_type":"text",
             "field_name":"iucr"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":5,
             "input_schema_id":945,
             "id":22282,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLText",
+            "guessed_soql_type":"text",
             "field_name":"primary_type"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":6,
             "input_schema_id":945,
             "id":22283,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLText",
+            "guessed_soql_type":"text",
             "field_name":"description"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":7,
             "input_schema_id":945,
             "id":22284,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLText",
+            "guessed_soql_type":"text",
             "field_name":"location_description"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":8,
             "input_schema_id":945,
             "id":22285,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLBoolean",
+            "guessed_soql_type":"checkbox",
             "field_name":"arrest"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":9,
             "input_schema_id":945,
             "id":22286,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLBoolean",
+            "guessed_soql_type":"checkbox",
             "field_name":"domestic"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":10,
             "input_schema_id":945,
             "id":22287,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLNumber",
+            "guessed_soql_type":"number",
             "field_name":"beat"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":11,
             "input_schema_id":945,
             "id":22288,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLNumber",
+            "guessed_soql_type":"number",
             "field_name":"district"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":12,
             "input_schema_id":945,
             "id":22289,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLNumber",
+            "guessed_soql_type":"number",
             "field_name":"ward"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":13,
             "input_schema_id":945,
             "id":22290,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLNumber",
+            "guessed_soql_type":"number",
             "field_name":"community_area"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":14,
             "input_schema_id":945,
             "id":22291,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLText",
+            "guessed_soql_type":"text",
             "field_name":"fbi_code"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":15,
             "input_schema_id":945,
             "id":22292,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLNumber",
+            "guessed_soql_type":"number",
             "field_name":"x_coordinate"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":16,
             "input_schema_id":945,
             "id":22293,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLNumber",
+            "guessed_soql_type":"number",
             "field_name":"y_coordinate"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":17,
             "input_schema_id":945,
             "id":22294,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLNumber",
+            "guessed_soql_type":"number",
             "field_name":"year"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":18,
             "input_schema_id":945,
             "id":22295,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLFloatingTimestamp",
+            "guessed_soql_type":"calendar_date",
             "field_name":"updated_on"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":19,
             "input_schema_id":945,
             "id":22296,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLNumber",
+            "guessed_soql_type":"number",
             "field_name":"latitude"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":20,
             "input_schema_id":945,
             "id":22297,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLNumber",
+            "guessed_soql_type":"number",
             "field_name":"longitude"
           },
           {
-            "soql_type":"SoQLText",
+            "soql_type":"text",
             "position":21,
             "input_schema_id":945,
             "id":22298,
             "guessed_subtypes":[
 
             ],
-            "guessed_soql_type":"SoQLText",
+            "guessed_soql_type":"text",
             "field_name":"location"
           }
         ],
@@ -1440,7 +1440,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"`case_number`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20800,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1459,7 +1459,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_floating_timestamp(`date`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20801,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1478,7 +1478,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"`block`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20802,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1497,7 +1497,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"`iucr`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20803,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1516,7 +1516,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"`primary_type`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20804,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1535,7 +1535,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"`description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20805,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1554,7 +1554,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"`location_description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20806,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1573,7 +1573,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_boolean(`arrest`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20807,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1592,7 +1592,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_boolean(`domestic`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20808,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1611,7 +1611,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_number(`beat`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20809,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1630,7 +1630,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_number(`district`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20810,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1649,7 +1649,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_number(`ward`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20811,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1668,7 +1668,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_number(`community_area`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20812,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1687,7 +1687,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"`fbi_code`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20813,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1706,7 +1706,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_number(`x_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20814,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1725,7 +1725,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_number(`y_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20815,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1744,7 +1744,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_number(`year`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20816,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1763,7 +1763,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_floating_timestamp(`updated_on`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20817,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1782,7 +1782,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_number(`latitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20818,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1801,7 +1801,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"to_number(`longitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20819,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1820,7 +1820,7 @@ export const newOutputSchemaFromDrop = {
             }
           ],
           "transform_expr":"`location`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20820,
           "completed_at":"2017-05-12T14:12:23"
         },
@@ -1860,7 +1860,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_number(`id`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20799,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1879,7 +1879,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"`case_number`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20800,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1898,7 +1898,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_floating_timestamp(`date`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20801,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1917,7 +1917,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"`block`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20802,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1936,7 +1936,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"`iucr`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20803,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1955,7 +1955,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"`primary_type`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20804,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1974,7 +1974,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"`description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20805,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -1993,7 +1993,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"`location_description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20806,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2012,7 +2012,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_boolean(`arrest`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20807,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2031,7 +2031,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_boolean(`domestic`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20808,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2050,7 +2050,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_number(`beat`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20809,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2069,7 +2069,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_number(`district`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20810,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2088,7 +2088,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_number(`ward`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20811,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2107,7 +2107,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_number(`community_area`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20812,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2126,7 +2126,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"`fbi_code`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20813,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2145,7 +2145,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_number(`x_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20814,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2164,7 +2164,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_number(`y_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20815,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2183,7 +2183,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_number(`year`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20816,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2202,7 +2202,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_floating_timestamp(`updated_on`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20817,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2221,7 +2221,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_number(`latitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20818,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2240,7 +2240,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"to_number(`longitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20819,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2259,7 +2259,7 @@ export const newOutputSchemaFromAdd = {
             }
           ],
           "transform_expr":"`location`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20820,
           "completed_at":"2017-05-12T14:12:23"
         },
@@ -2299,7 +2299,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_text(id)",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20821,
           "completed_at":null
         },
@@ -2318,7 +2318,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"`case_number`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20800,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2337,7 +2337,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_floating_timestamp(`date`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20801,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2356,7 +2356,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"`block`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20802,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2375,7 +2375,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"`iucr`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20803,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2394,7 +2394,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"`primary_type`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20804,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2413,7 +2413,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"`description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20805,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2432,7 +2432,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"`location_description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20806,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2451,7 +2451,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_boolean(`arrest`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20807,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2470,7 +2470,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_boolean(`domestic`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20808,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2489,7 +2489,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_number(`beat`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20809,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2508,7 +2508,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_number(`district`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20810,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2527,7 +2527,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_number(`ward`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20811,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2546,7 +2546,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_number(`community_area`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20812,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2565,7 +2565,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"`fbi_code`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20813,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2584,7 +2584,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_number(`x_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20814,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2603,7 +2603,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_number(`y_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20815,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2622,7 +2622,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_number(`year`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20816,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2641,7 +2641,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_floating_timestamp(`updated_on`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20817,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2660,7 +2660,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_number(`latitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20818,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2679,7 +2679,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"to_number(`longitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20819,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2698,7 +2698,7 @@ export const newOutputSchemaFromTypeChange = {
             }
           ],
           "transform_expr":"`location`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20820,
           "completed_at":"2017-05-12T14:12:23"
         },
@@ -2738,7 +2738,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_text(id)",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20821,
           "completed_at":"2017-05-12T14:21:46"
         },
@@ -2757,7 +2757,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"`case_number`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20800,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2776,7 +2776,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_floating_timestamp(`date`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20801,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2795,7 +2795,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"`block`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20802,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2814,7 +2814,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"`iucr`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20803,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2833,7 +2833,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"`primary_type`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20804,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2852,7 +2852,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"`description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20805,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2871,7 +2871,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"`location_description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20806,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2890,7 +2890,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_boolean(`arrest`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20807,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2909,7 +2909,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_boolean(`domestic`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20808,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2928,7 +2928,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_number(`beat`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20809,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2947,7 +2947,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_number(`district`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20810,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2966,7 +2966,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_number(`ward`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20811,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -2985,7 +2985,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_number(`community_area`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20812,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3004,7 +3004,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"`fbi_code`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20813,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3023,7 +3023,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_number(`x_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20814,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3042,7 +3042,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_number(`y_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20815,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3061,7 +3061,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_number(`year`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20816,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3080,7 +3080,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_floating_timestamp(`updated_on`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20817,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3099,7 +3099,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_number(`latitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20818,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3118,7 +3118,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"to_number(`longitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20819,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3137,7 +3137,7 @@ export const newOutputSchemaFromSetPrimary = {
             }
           ],
           "transform_expr":"`location`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20820,
           "completed_at":"2017-05-12T14:12:23"
         },
@@ -3177,7 +3177,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_text(id)",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20821,
           "completed_at":"2017-05-12T14:21:46"
         },
@@ -3196,7 +3196,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_boolean(case_number)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20822,
           "completed_at":"2017-05-12T14:23:20"
         },
@@ -3215,7 +3215,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_floating_timestamp(`date`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20801,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3234,7 +3234,7 @@ export const rows = [
             }
           ],
           "transform_expr":"`block`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20802,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3253,7 +3253,7 @@ export const rows = [
             }
           ],
           "transform_expr":"`iucr`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20803,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3272,7 +3272,7 @@ export const rows = [
             }
           ],
           "transform_expr":"`primary_type`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20804,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3291,7 +3291,7 @@ export const rows = [
             }
           ],
           "transform_expr":"`description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20805,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3310,7 +3310,7 @@ export const rows = [
             }
           ],
           "transform_expr":"`location_description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20806,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3329,7 +3329,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_boolean(`arrest`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20807,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3348,7 +3348,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_boolean(`domestic`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20808,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3367,7 +3367,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_number(`beat`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20809,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3386,7 +3386,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_number(`district`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20810,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3405,7 +3405,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_number(`ward`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20811,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3424,7 +3424,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_number(`community_area`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20812,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3443,7 +3443,7 @@ export const rows = [
             }
           ],
           "transform_expr":"`fbi_code`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20813,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3462,7 +3462,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_number(`x_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20814,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3481,7 +3481,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_number(`y_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20815,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3500,7 +3500,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_number(`year`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20816,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3519,7 +3519,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_floating_timestamp(`updated_on`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20817,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3538,7 +3538,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_number(`latitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20818,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3557,7 +3557,7 @@ export const rows = [
             }
           ],
           "transform_expr":"to_number(`longitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20819,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -3576,7 +3576,7 @@ export const rows = [
             }
           ],
           "transform_expr":"`location`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20820,
           "completed_at":"2017-05-12T14:12:23"
         },
@@ -4314,7 +4314,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_text(id)",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20821,
           "completed_at":"2017-05-12T14:21:46"
         },
@@ -4333,7 +4333,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_boolean(case_number)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20822,
           "completed_at":"2017-05-12T14:23:20"
         },
@@ -4352,7 +4352,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_floating_timestamp(`date`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20801,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4371,7 +4371,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"`block`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20802,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4390,7 +4390,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"`iucr`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20803,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4409,7 +4409,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"`primary_type`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20804,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4428,7 +4428,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"`description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20805,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4447,7 +4447,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"`location_description`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20806,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4466,7 +4466,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_boolean(`arrest`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20807,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4485,7 +4485,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_boolean(`domestic`)",
-          "output_soql_type":"SoQLBoolean",
+          "output_soql_type":"checkbox",
           "id":20808,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4504,7 +4504,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_number(`beat`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20809,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4523,7 +4523,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_number(`district`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20810,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4542,7 +4542,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_number(`ward`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20811,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4561,7 +4561,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_number(`community_area`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20812,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4580,7 +4580,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"`fbi_code`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20813,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4599,7 +4599,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_number(`x_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20814,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4618,7 +4618,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_number(`y_coordinate`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20815,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4637,7 +4637,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_number(`year`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20816,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4656,7 +4656,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_floating_timestamp(`updated_on`)",
-          "output_soql_type":"SoQLFloatingTimestamp",
+          "output_soql_type":"calendar_date",
           "id":20817,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4675,7 +4675,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_number(`latitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20818,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4694,7 +4694,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"to_number(`longitude`)",
-          "output_soql_type":"SoQLNumber",
+          "output_soql_type":"number",
           "id":20819,
           "completed_at":"2017-05-12T14:12:22"
         },
@@ -4713,7 +4713,7 @@ export const columnErrors = [
             }
           ],
           "transform_expr":"`location`",
-          "output_soql_type":"SoQLText",
+          "output_soql_type":"text",
           "id":20820,
           "completed_at":"2017-05-12T14:12:23"
         },

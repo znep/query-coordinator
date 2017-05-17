@@ -4,12 +4,12 @@ import { ResultListRow } from 'components/ResultListRow';
 describe('components/ResultListRow', () => {
   const resultListRowProps = (options = {}) => ({
     category: 'Fun',
-    columns: ['type', 'name', 'lastUpdatedDate', 'ownedBy', 'accessLevel', 'category', 'visibility', 'discoverable'],
+    columns: ['type', 'name', 'lastUpdatedDate', 'owner', 'category', 'visibility'],
     description: 'The fifth sense: The sense of smell. The ability to smell crime before it even happens.',
+    isPublic: true,
     isPublished: true,
     link: 'https://data.seattle.gov/dataset/blah-blah/cfa5-i2ky',
     name: 'Haley Joel Osment',
-    // provenance: ''
     type: 'datalens',
     updatedAt: '2017-04-21T18:31:29.000Z',
     visibleToAnonymous: true,

@@ -31,7 +31,7 @@ describe('components/Table/TransformStatus', () => {
         <TransformStatus
           {...defaultProps}
           transform={{
-            output_soql_type: 'SoQLText',
+            output_soql_type: 'text',
             contiguous_rows_processed: 5000
           }}
           columnId={50}
@@ -47,7 +47,7 @@ describe('components/Table/TransformStatus', () => {
         <TransformStatus
           {...defaultProps}
           transform={{
-            output_soql_type: 'SoQLText',
+            output_soql_type: 'text',
             contiguous_rows_processed: 2500
           }}
           columnId={50}
@@ -63,7 +63,7 @@ describe('components/Table/TransformStatus', () => {
         <TransformStatus
           {...defaultProps}
           transform={{
-            output_soql_type: 'SoQLText',
+            output_soql_type: 'text',
             contiguous_rows_processed: 2500
           }}
           columnId={50}
@@ -80,7 +80,7 @@ describe('components/Table/TransformStatus', () => {
         <TransformStatus
           {...defaultProps}
           transform={{
-            output_soql_type: 'SoQLText',
+            output_soql_type: 'text',
             id: 5
           }}
           columnId={50}
@@ -101,7 +101,7 @@ describe('components/Table/TransformStatus', () => {
         <TransformStatus
           {...defaultProps}
           transform={{
-            output_soql_type: 'SoQLText',
+            output_soql_type: 'text',
             contiguous_rows_processed: 5000,
             num_transform_errors: 5
           }}
@@ -120,7 +120,7 @@ describe('components/Table/TransformStatus', () => {
         <TransformStatus
           {...defaultProps}
           transform={{
-            output_soql_type: 'SoQLText',
+            output_soql_type: 'text',
             contiguous_rows_processed: 2500,
             num_transform_errors: 5
           }}
@@ -145,7 +145,7 @@ describe('components/Table/TransformStatus', () => {
         <TransformStatus
           {...defaultProps}
           transform={{
-            output_soql_type: 'SoQLText',
+            output_soql_type: 'text',
             contiguous_rows_processed: 2500,
             num_transform_errors: 5
           }}

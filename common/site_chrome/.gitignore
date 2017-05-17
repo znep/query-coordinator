@@ -1,0 +1,16 @@
+.bundle/
+
+# Ignoring all locale files except en since they are stored in LocaleApp
+config/locales/*.yml
+!config/locales/en.yml
+
+Gemfile.lock
+log/*.log
+npm-debug.log
+pkg/
+public/socrata_site_chrome/stylesheets/styleguide
+spec/dummy/db/*.sqlite3
+spec/dummy/db/*.sqlite3-journal
+spec/dummy/log/*.log
+spec/dummy/tmp/
+spec/dummy/.sass-cache

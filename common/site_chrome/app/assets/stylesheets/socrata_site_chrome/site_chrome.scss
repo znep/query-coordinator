@@ -1,0 +1,23 @@
+// Place all the styles related to the site_chrome controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+@import 'common';
+
+@import 'styleguide-dropdown';
+
+@import 'admin';
+
+// TODO - find a good way to add only the current_template styles (evergreen vs rally)
+@import 'evergreen/header';
+
+@import 'rally/header';
+@import 'rally/small_header';
+
+@import 'footer';
+@import 'small_footer';
+
+@import 'mobile_menu';
+
+@import 'override_custom_css';
+
+@import '_print';

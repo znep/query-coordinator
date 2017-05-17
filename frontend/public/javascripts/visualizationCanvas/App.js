@@ -68,7 +68,7 @@ export const App = React.createClass({
     return (
       <div>
         <EditBar />
-        <div className="visualization-canvas-body">
+        <div className="visualization-canvas-body edit-mode">
           <InfoPane />
           <FilterBar isReadOnly={false} />
           <AddVisualizationButton />
@@ -87,7 +87,7 @@ export const App = React.createClass({
     return (
       <div>
         <PreviewBar />
-        <div className="visualization-canvas-body">
+        <div className="visualization-canvas-body preview-mode">
           <InfoPane />
           <FilterBar />
           <Visualizations displayShareButtons={SHARE_BUTTON_ENABLED.preview} />

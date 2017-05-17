@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import MostRecentlyUsed from 'common/most_recently_used';
 
 const userId = _.get(window, 'blist.currentUserId', // Old skool

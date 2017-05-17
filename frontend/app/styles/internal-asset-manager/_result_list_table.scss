@@ -1,5 +1,6 @@
 @import "styleguide-colors";
 @import "internal-asset-manager/mixins/multi_line_ellipsis";
+@import "internal-asset-manager/flyout";
 
 table.result-list-table {
   thead {
@@ -10,9 +11,15 @@ table.result-list-table {
         border: 1px solid $light-grey-3;
         cursor: pointer;
         user-select: none;
+        position: relative;
 
         &.active {
           font-weight: 700;
+          background: $light-grey-4;
+
+          .column-name {
+            margin-right: 1rem;
+          }
         }
 
         &.name {
@@ -21,7 +28,8 @@ table.result-list-table {
 
         .ascending-arrow, .descending-arrow {
           display: none;
-          float: right;
+          position: absolute;
+          right: 0.5rem;
         }
 
         &.ascending {
@@ -57,8 +65,11 @@ table.result-list-table {
       }
 
       &.type {
-        font-size: 18px;
         text-align: center;
+      }
+
+      &.type, &.visibility {
+        font-size: 18px;
       }
     }
   }

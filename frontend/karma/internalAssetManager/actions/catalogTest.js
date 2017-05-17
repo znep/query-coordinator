@@ -41,6 +41,22 @@ describe('actions/catalog', () => {
       });
     });
 
+    it('sets the order to the column name (descending by default for lastUpdatedDate)', () => {
+      const initialState = { catalog: { order: {} } };
+      const store = mockStore(initialState);
+
+      const expectedActions = [
+        { type: 'FETCH_RESULTS' },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse },
+        { type: 'FETCH_RESULTS_SUCCESS' },
+        { type: 'CHANGE_ORDER', order: { value: 'lastUpdatedDate', ascending: false }  }
+      ];
+
+      return store.dispatch(Actions.changeOrder('lastUpdatedDate')).then(() => {
+        assert.deepEqual(store.getActions(), expectedActions);
+      });
+    });
+
     it('sets the order to the provided column name (descending if it was previously ascending)', () => {
       const initialState = { catalog: { order: { value: 'name', ascending: true } } };
       const store = mockStore(initialState);
@@ -65,10 +81,10 @@ describe('actions/catalog', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_ORDER', order: { value: 'lastUpdatedDate', ascending: true }  }
+        { type: 'CHANGE_ORDER', order: { value: 'category', ascending: true }  }
       ];
 
-      return store.dispatch(Actions.changeOrder('lastUpdatedDate')).then(() => {
+      return store.dispatch(Actions.changeOrder('category')).then(() => {
         assert.deepEqual(store.getActions(), expectedActions);
       });
     });

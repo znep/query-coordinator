@@ -9,7 +9,7 @@ export default {
             "transform": {
               "transform_expr": "`StationName`",
               "output_column_id": 448,
-              "output_soql_type": "SoQLText",
+              "output_soql_type": "text",
               "id": 0
             },
             "field_name": "StationName",
@@ -22,7 +22,7 @@ export default {
             "transform": {
               "transform_expr": "`StationLocation`",
               "output_column_id": 449,
-              "output_soql_type": "SoQLText",
+              "output_soql_type": "text",
               "id": 1
             },
             "field_name": "StationLocation",
@@ -35,7 +35,7 @@ export default {
             "transform": {
               "transform_expr": "to_floating_timestamp(`DateTime`)",
               "output_column_id": 450,
-              "output_soql_type": "SoQLFloatingTimestamp",
+              "output_soql_type": "calendar_date",
               "id": 226
             },
             "field_name": "DateTime",
@@ -48,7 +48,7 @@ export default {
             "transform": {
               "transform_expr": "to_number(`RecordId`)",
               "output_column_id": 451,
-              "output_soql_type": "SoQLNumber",
+              "output_soql_type": "number",
               "id": 227
             },
             "field_name": "RecordId",
@@ -61,7 +61,7 @@ export default {
             "transform": {
               "transform_expr": "to_number(`RoadSurfaceTemperature`)",
               "output_column_id": 452,
-              "output_soql_type": "SoQLNumber",
+              "output_soql_type": "number",
               "id": 228
             },
             "field_name": "RoadSurfaceTemperature",
@@ -74,7 +74,7 @@ export default {
             "transform": {
               "transform_expr": "to_number(`AirTemperature`)",
               "output_column_id": 453,
-              "output_soql_type": "SoQLNumber",
+              "output_soql_type": "number",
               "id": 229
             },
             "field_name": "AirTemperature",
@@ -94,63 +94,63 @@ export default {
     "id": 6,
     "input_columns": [
       {
-        "soql_type": "SoQLText",
+        "soql_type": "text",
         "schema_id": 38,
         "field_name": "StationName",
         "position": 0,
         "id": 442,
         "guessed_subtypes": [],
-        "guessed_soql_type": "SoQLText",
+        "guessed_soql_type": "text",
         "display_name": "StationName"
       },
       {
-        "soql_type": "SoQLText",
+        "soql_type": "text",
         "schema_id": 38,
         "field_name": "StationLocation",
         "position": 1,
         "id": 443,
         "guessed_subtypes": [],
-        "guessed_soql_type": "SoQLText",
+        "guessed_soql_type": "text",
         "display_name": "StationLocation"
       },
       {
-        "soql_type": "SoQLText",
+        "soql_type": "text",
         "schema_id": 38,
         "field_name": "DateTime",
         "position": 2,
         "id": 444,
         "guessed_subtypes": [],
-        "guessed_soql_type": "SoQLFloatingTimestamp",
+        "guessed_soql_type": "calendar_date",
         "display_name": "DateTime"
       },
       {
-        "soql_type": "SoQLText",
+        "soql_type": "text",
         "schema_id": 38,
         "field_name": "RecordId",
         "position": 3,
         "id": 445,
         "guessed_subtypes": [],
-        "guessed_soql_type": "SoQLNumber",
+        "guessed_soql_type": "number",
         "display_name": "RecordId"
       },
       {
-        "soql_type": "SoQLText",
+        "soql_type": "text",
         "schema_id": 38,
         "field_name": "RoadSurfaceTemperature",
         "position": 4,
         "id": 446,
         "guessed_subtypes": [],
-        "guessed_soql_type": "SoQLNumber",
+        "guessed_soql_type": "number",
         "display_name": "RoadSurfaceTemperature"
       },
       {
-        "soql_type": "SoQLText",
+        "soql_type": "text",
         "schema_id": 38,
         "field_name": "AirTemperature",
         "position": 5,
         "id": 447,
         "guessed_subtypes": [],
-        "guessed_soql_type": "SoQLNumber",
+        "guessed_soql_type": "number",
         "display_name": "AirTemperature"
       }
     ]

@@ -178,8 +178,10 @@ export function outputColumnsWithChangedType(db, oldOutputSchema, oldColumn, new
     if (inputColumns.length !== 1) {
       console.error('expected transform', transform.id, 'to have 1 input column; has', inputColumns.length);
     }
-    return outputColumn.id === oldColumn.id
-      ? `to_${soqlProperties[newType].canonicalName}(${inputColumns[0].field_name})`
+    // This can only be called if the new type is a valid conversion target, so
+    // conversionFunction will be defined.
+    return (outputColumn.id === oldColumn.id)
+      ? `${soqlProperties[newType].conversionFunction}(${inputColumns[0].field_name})`
       : transformExpr;
   };
   return oldOutputColumns.map(c => toNewOutputColumn(c, genTransform));

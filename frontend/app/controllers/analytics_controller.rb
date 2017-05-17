@@ -116,6 +116,7 @@ module ClientAnalyticsHelper
                           browse browse-search
                           newux
                           story
+                          visualization
                           other).freeze
 
   DYNAMIC_METRIC_TYPES = %w(js-dom-load-samples js-page-load-samples js-page-load-time js-dom-load-time).freeze

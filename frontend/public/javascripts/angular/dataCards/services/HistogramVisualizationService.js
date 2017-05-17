@@ -908,7 +908,7 @@ module.exports = function HistogramVisualizationService(
     filterIcon.classList.add('socrata-icon-filter');
     $window.document.body.appendChild(filterIcon);
     var filterText = getComputedStyle(filterIcon, ':before').content.slice(1, -1);
-    filterIcon.remove();
+    $(filterIcon).remove();
 
     brushClearFilter.
       enter().
@@ -936,7 +936,7 @@ module.exports = function HistogramVisualizationService(
     closeIcon.classList.add('socrata-icon-close-2');
     $window.document.body.appendChild(closeIcon);
     var closeText = getComputedStyle(closeIcon, ':before').content.slice(1, -1);
-    closeIcon.remove();
+    $(closeIcon).remove();
 
     brushClearText.
       selectAll('.histogram-brush-clear-x').

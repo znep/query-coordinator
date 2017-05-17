@@ -60,3 +60,11 @@ storyteller/coverage
 # Build-related stuff
 /ops-tools
 dockerize.properties
+
+# site_chrome
+db/*.sqlite3
+common/site_chrome/log/*.log
+common/site_chrome/tmp/**/*
+common/site-chrome/engine/*.gem
+common/site-chrome/engine/pkg/
+common/site-chrome/engine/spec/dummy/log/*.log

@@ -6,7 +6,7 @@ describe('components/ResultListTable', () => {
   const resultListTableProps = (options = {}) => ({
     changeOrder: () => {},
     columns: [
-      'type', 'name', 'lastUpdatedDate', 'ownedBy', 'accessLevel', 'category', 'visibility', 'discoverable'
+      'type', 'name', 'lastUpdatedDate', 'owner', 'category', 'visibility'
     ],
     results: mockCeteraResults,
     ...options

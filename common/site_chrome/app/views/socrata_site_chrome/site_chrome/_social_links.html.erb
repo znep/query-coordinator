@@ -1,0 +1,12 @@
+<% valid_social_shares = valid_social_links(site_chrome_instance.general[:social_shares]) %>
+<% valid_social_shares.each do |social_share| %>
+  <% label = localized("general.social_shares.#{social_share[:type]}", site_chrome_instance.locales) %>
+  <%= link_to(site_chrome_massage_url(social_share[:url]),
+    :class => nav_link_classnames(social_link: true, is_mobile: local_assigns[:is_mobile]),
+    :target => '_blank') do %>
+    <%= content_tag(:span,
+      social_link_icon(social_share[:type]).html_safe,
+      :class => 'monosocial',
+      :title => label) -%>
+  <% end -%>
+<% end %>

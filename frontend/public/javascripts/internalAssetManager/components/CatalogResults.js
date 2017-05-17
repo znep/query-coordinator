@@ -4,6 +4,7 @@ import ResultListTable from './ResultListTable';
 import Pager from '../../common/components/Pager';
 import ResultCount from './ResultCount';
 import * as Actions from '../actions/catalog';
+import _ from 'lodash';
 
 const RESULTS_PER_PAGE = 10;
 
@@ -82,7 +83,7 @@ export class CatalogResults extends React.Component {
     };
 
     return (
-      <div>
+      <div className="catalog-footer">
         <Pager {...pagerProps} />
         <ResultCount {...resultCountProps} />
       </div>

@@ -476,6 +476,9 @@ Rails.application.routes.draw do
     # The /version page
     get '/version(.:format)' => 'version#index'
 
+    # Consul liveness check
+    get '/consul_checks/active' => 'consul_checks#active'
+
     # Static error pages to be mirrored and served outside of our infrastructure.
     get '/static_sitewide_messages/:action', :controller => 'static_sitewide_messages'
 

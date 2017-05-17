@@ -15,7 +15,6 @@ import {
 import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX } from 'lib/customMetadata';
 import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
 import { createUpload } from 'actions/manageUploads';
-import mockPhoenixSocket from '../testHelpers/mockPhoenixSocket';
 import mockAPI from '../testHelpers/mockAPI';
 import initialState from '../data/baseState';
 import { upsertFromServer, edit } from 'actions/database';

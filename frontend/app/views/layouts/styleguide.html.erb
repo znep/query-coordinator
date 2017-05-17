@@ -7,6 +7,10 @@ http://www.socrata.com
 -->
 
   <head>
+    <%= site_chrome_analytics_tags %>
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_stylesheet_tag %>
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css"/>
@@ -14,8 +18,6 @@ http://www.socrata.com
     <%= yield :head %>
 
     <%= get_favicon_tag %>
-    <%= site_chrome_meta_viewport_tag %>
-    <%= site_chrome_stylesheet_tag %>
   </head>
 
   <%= content_tag :body, :class => @body_classes do %>
@@ -48,7 +50,6 @@ http://www.socrata.com
     <script> window.jquery = window.jQuery </script>
 
     <%= render_ga_tracking %>
-    <%= site_chrome_analytics_tags %>
     <%= site_chrome_javascript_tag %>
 
     <%= yield :scripts %>

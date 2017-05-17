@@ -15,7 +15,7 @@ module SiteChromeConsumerHelpers
 
   def site_chrome_google_analytics_tag
     if site_chrome_google_analytics_tracking_code.present?
-      javascript_tag(<<-eos)
+      javascript_tag(<<-eos, :async => true)
         if (typeof window._gaSocrata === 'undefined') {
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -50,7 +50,7 @@ module SiteChromeConsumerHelpers
 
   def site_chrome_webtrends_tag
     webtrends_url = site_chrome_instance.general[:webtrends_url]
-    javascript_include_tag(webtrends_url) if webtrends_url.present?
+    javascript_include_tag(webtrends_url, :async => true) if webtrends_url.present?
   end
 
   def site_chrome_analytics_tags

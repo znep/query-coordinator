@@ -1,0 +1,8 @@
+@media print {
+
+  footer#site-chrome-footer {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+}

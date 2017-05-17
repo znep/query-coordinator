@@ -1,0 +1,12 @@
+<div class="mobile-language-dropdown noselect">
+  <a href="#" class="mobile-language-dropdown-title mobile-button">
+    <%= t('header.language') %>
+    <%= content_tag(:span, nil, :class => 'socrata-icon-arrow-down') %>
+  </a>
+
+  <div class="mobile-language-dropdown-options">
+    <% language_switcher_options.each do |option| %>
+      <%= content_tag('div', option, :class => 'mobile-language-dropdown-option mobile-button') %>
+    <% end %>
+  </div>
+</div>

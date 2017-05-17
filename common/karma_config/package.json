@@ -25,6 +25,7 @@
     "check-dependencies": "1.0.1",
     "eslint": "2.3.0",
     "eslint-base": "0.2.3",
+    "eslint-plugin-import": "1.16.0",
     "jquery": "2.2.4",
     "karma": "0.13.22",
     "karma-chai": "0.1.0",

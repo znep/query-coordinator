@@ -7,6 +7,7 @@ import mockPhoenixSocket from '../testHelpers/mockPhoenixSocket';
 import mockAPI from '../testHelpers/mockAPI';
 import initialState from '../data/baseState';
 import * as dsmapiLinks from 'dsmapiLinks';
+import wsmock from '../testHelpers/mockSocket';
 
 const mockStore = configureStore([thunk]);
 
@@ -14,13 +15,16 @@ describe('actions/manageUploads', () => {
 
   describe('actions/manageUploads/createUpload', () => {
     let unmock;
+    let unmockWS;
 
-    beforeEach(() => {
+    before(() => {
       unmock = mockAPI();
+      unmockWS = wsmock();
     });
 
-    afterEach(() => {
+    after(() => {
       unmock();
+      unmockWS.stop();
     });
 
     it('dispatches UPSERT_STARTED action with the filename', done => {

@@ -42,7 +42,6 @@ module.exports = function(overrides) {
           base: 'Chrome',
           flags: [
             '--no-sandbox',
-            '--headless',
             '--disable-gpu',
             '--remote-debugging-port=9222'
           ]

@@ -42,7 +42,7 @@ export const newOutputSchema = () => fetchMock.post('express:/api/publishing/v1/
     statusText: STATUS_TEXT.CREATED
   };
 
-  // TODO: distinguishe between type change and setting primary key
+  // TODO: distinguish between type change and setting primary key
   if(requestColumns.length > existingColumns.length) {
     return {
       ...response,
@@ -57,20 +57,6 @@ export const newOutputSchema = () => fetchMock.post('express:/api/publishing/v1/
     return response;
   }
 });
-
-// export const newOutputSchema = () => fetchMock.post('express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId', {
-//   body: JSON.stringify(responses.newOutputSchema),
-//   status: 201,
-//   statusText: STATUS_TEXT.CREATED
-// });
-// export const newOutputSchema = () => fetchMock.post((url, options) => {
-//   console.log('urll', url)
-//   console.log('options', options)
-// }, {
-//   body: JSON.stringify(responses.newOutputSchema),
-//   status: 201,
-//   statusText: STATUS_TEXT.CREATED
-// });
 
 export const rows = () => fetchMock.get('express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId/rows/:outputSchemaId', {
   body: JSON.stringify(responses.rows),
@@ -110,6 +96,21 @@ export const uploadBytesXHR = () => {
     .body(JSON.stringify(responses.uploadBytes)));
 };
 
+export const saveMetadata = () => fetchMock.put('express:/api/views/:fourfour', (url, options) => {
+  const metadata = JSON.parse(options.body);
+  const fourfour = url.split('/').pop();
+  const response = {
+    ...metadata,
+    id: fourfour
+  };
+
+  return {
+    body: JSON.stringify(response),
+    status: 200,
+    statusText: STATUS_TEXT.OK
+  };
+});
+
 const mockAPI = () => {
   uploadBytesXHR();
   uploadCreate();
@@ -121,6 +122,7 @@ const mockAPI = () => {
   rowErrors();
   validateRowIdentifier();
   errorExport();
+  saveMetadata();
 
   return () => {
     fetchMock.restore();

@@ -132,8 +132,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     })
   );
 
-  // TODO: switch this to read from redux store
-  socrataFetch(`/api/views/${window.initialState.view.id}`, {
+  return socrataFetch(`/api/views/${fourfour}`, {
     method: 'PUT',
     body: JSON.stringify(datasetMetadata)
   })
@@ -202,7 +201,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 
   dispatch(batch(startOperations));
 
-  socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
+  return socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
     body: JSON.stringify(payload)
   })
@@ -254,8 +253,8 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 
       dispatch(batch(successOperations));
 
-      dispatch(insertChildrenAndSubscribeToOutputSchema(resp.resource));
       dispatch(redirectAfterInterval());
+      return dispatch(insertChildrenAndSubscribeToOutputSchema(resp.resource));
     });
 };
 

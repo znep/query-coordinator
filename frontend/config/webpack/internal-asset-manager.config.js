@@ -24,7 +24,13 @@ module.exports = _.defaultsDeep({
   },
   module: {
     loaders: [
-      common.getBabelLoader()
+      common.getBabelLoader(),
+      {
+        // Prevent lodash from putting itself on window.
+        // See: https://github.com/lodash/lodash/issues/2671
+        test: /node_modules\/lodash/,
+        loader: 'imports?define=>undefined'
+      }
     ]
   },
   resolve: _.extend(

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { renderComponent } from '../helpers';
 import ColorPicker from 'components/ColorPicker';
+import $ from 'jquery';
 
 describe('ColorPicker', () => {
   function getProps(props) {

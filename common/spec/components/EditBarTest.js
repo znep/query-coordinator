@@ -11,23 +11,23 @@ describe('EditBar', () => {
 
   it('renders', () => {
     const element = renderPureComponent(EditBar({}));
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('menu button', () => {
     it('renders the provided icon', () => {
       const element = renderPureComponent(EditBar({ menuIcon: 'cool-icon' }));
-      expect(getMenu(element).classList.contains('cool-icon')).to.eq(true);
+      assert.deepEqual(getMenu(element).classList.contains('cool-icon'), true);
     });
 
     it('defaults the icon to the cards icon', () => {
       const element = renderPureComponent(EditBar({}));
-      expect(getMenu(element).classList.contains('socrata-icon-cards')).to.eq(true);
+      assert.deepEqual(getMenu(element).classList.contains('socrata-icon-cards'), true);
     });
 
     it('renders an aria label', () => {
       const element = renderPureComponent(EditBar({ menuLabel: 'Menu' }));
-      expect(getMenu(element).getAttribute('aria-label')).to.eq('Menu');
+      assert.deepEqual(getMenu(element).getAttribute('aria-label'), 'Menu');
     });
 
     it('invokes the click handler on click', () => {
@@ -35,19 +35,19 @@ describe('EditBar', () => {
       const element = renderPureComponent(EditBar({ onClickMenu: stub }));
 
       Simulate.click(getMenu(element));
-      expect(stub.called).to.equal(true);
+      assert.equal(stub.called, true);
     });
   });
 
   describe('page name', () => {
     it('renders if provided', () => {
       const element = renderPureComponent(EditBar({ name: 'Elephants Frolicking' }));
-      expect(getName(element).innerText).to.eq('Elephants Frolicking');
+      assert.deepEqual(getName(element).innerText, 'Elephants Frolicking');
     });
 
     it('does not render if not provided', () => {
       const element = renderPureComponent(EditBar({}));
-      expect(getName(element)).to.not.exist;
+      assert.isNull(getName(element));
     });
 
     it('calls onClickName when clicked', () => {
@@ -55,22 +55,22 @@ describe('EditBar', () => {
       const element = renderPureComponent(EditBar({ name: 'oh', onClickName: stub }));
 
       Simulate.click(getName(element));
-      expect(stub.called).to.equal(true);
+      assert.equal(stub.called, true);
     });
 
     it('does not add the page-name-clickable class when onClickName is absent', () => {
       const element = renderPureComponent(EditBar({ name: 'oh' }));
-      expect(getName(element).classList.contains('page-name-clickable')).to.equal(false);
+      assert.equal(getName(element).classList.contains('page-name-clickable'), false);
     });
 
     it('adds the page-name-clickable class when onClickName is present', () => {
       const element = renderPureComponent(EditBar({ name: 'oh', onClickName: _.noop }));
-      expect(getName(element).classList.contains('page-name-clickable')).to.equal(true);
+      assert.equal(getName(element).classList.contains('page-name-clickable'), true);
     });
   });
 
   it('renders children elements', () => {
     const element = renderPureComponent(EditBar({ children: React.createElement(Picklist) }));
-    expect(element.querySelector('.picklist')).to.exist;
+    assert.isNotNull(element.querySelector('.picklist'));
   });
 });

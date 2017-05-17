@@ -25,25 +25,25 @@ describe('AddFilter', () => {
   });
 
   it('renders an element', () => {
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('add filter button', () => {
     it('renders the add filter button', () => {
       const button = element.querySelector('.btn-add-filter');
-      expect(button).to.exist;
+      assert.isNotNull(button);
     });
 
     it('does not render the column container on load', () => {
       const columnContainer = element.querySelector('.column-container');
-      expect(columnContainer).to.not.exist;
+      assert.isNull(columnContainer);
     });
 
     it('renders the column container when add filter button is clicked', () => {
       clickAddFilter(element);
       const columnContainer = element.querySelector('.column-container');
 
-      expect(columnContainer).to.exist;
+      assert.isNotNull(columnContainer);
     });
 
     it('renders when add filter button is accessed via keyboard', () => {
@@ -51,7 +51,7 @@ describe('AddFilter', () => {
       Simulate.keyDown(button, { keyCode: SPACE });
       const columnContainer = element.querySelector('.column-container');
 
-      expect(columnContainer).to.exist;
+      assert.isNotNull(columnContainer);
     });
   });
 
@@ -60,14 +60,14 @@ describe('AddFilter', () => {
       clickAddFilter(element);
       const addFilterPicklist = element.querySelector('.add-filter-picklist');
 
-      expect(addFilterPicklist).to.exist;
+      assert.isNotNull(addFilterPicklist);
     });
 
     it('renders an add filter searchable picklist with warning with no columns', () => {
       clickAddFilter(element);
       const warning = element.querySelector('.add-filter-picklist .alert');
 
-      expect(warning).to.exist;
+      assert.isNotNull(warning);
     });
 
     it('renders an option for each column', () => {
@@ -88,7 +88,7 @@ describe('AddFilter', () => {
       clickAddFilter(element);
       const options = element.querySelectorAll('.filter-bar-column-option');
 
-      expect(options.length).to.eq(2);
+      assert.deepEqual(options.length, 2);
     });
 
     it('filters columns when term searched', () => {
@@ -114,7 +114,7 @@ describe('AddFilter', () => {
 
       const options = element.querySelectorAll('.filter-bar-column-option');
 
-      expect(options.length).to.eq(1);
+      assert.deepEqual(options.length, 1);
     });
 
     it('calls onClickColumn when option is clicked', () => {
@@ -135,7 +135,7 @@ describe('AddFilter', () => {
       const option = element.querySelector('.filter-bar-column-option');
       Simulate.click(option);
 
-      expect(onClickColumnStub).to.have.been.called;
+      sinon.assert.called(onClickColumnStub);
     });
 
     it('closes column container when option is clicked', () => {
@@ -155,7 +155,7 @@ describe('AddFilter', () => {
 
       const columnContainer = element.querySelector('.column-container');
 
-      expect(columnContainer).to.not.exist;
+      assert.isNull(columnContainer);
     });
   });
 });

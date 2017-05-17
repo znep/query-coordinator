@@ -19,7 +19,7 @@ describe('SideMenu', () => {
 
   it('renders', () => {
     const element = renderComponent(SideMenu, getProps());
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('title', () => {
@@ -27,15 +27,15 @@ describe('SideMenu', () => {
       const element = renderComponent(SideMenu, getProps());
       const title = element.querySelector('.menu-header-title');
 
-      expect(title).to.exist;
-      expect(title.innerText).to.eq('Test Wombats');
+      assert.isNotNull(title);
+      assert.deepEqual(title.innerText, 'Test Wombats');
     });
 
     it('does not render a title if not provided', () => {
       const element = renderComponent(SideMenu, getProps({
         title: null
       }));
-      expect(element.querySelector('.menu-header-title')).to.not.exist;
+      assert.isNull(element.querySelector('.menu-header-title'));
     });
   });
 
@@ -48,15 +48,15 @@ describe('SideMenu', () => {
       });
 
       it('adds the active class', () => {
-        expect(element.classList.contains('active')).to.be.true;
+        assert.isTrue(element.classList.contains('active'));
       });
 
       it('does not hide menu from screenreaders', () => {
-        expect(element.getAttribute('aria-hidden')).to.eq(null);
+        assert.deepEqual(element.getAttribute('aria-hidden'), null);
       });
 
       it('does not make the menu untabbable', () => {
-        expect(element.getAttribute('tabindex')).to.eq(null);
+        assert.deepEqual(element.getAttribute('tabindex'), null);
       });
     });
 
@@ -70,15 +70,15 @@ describe('SideMenu', () => {
       });
 
       it('does not add the active class', () => {
-        expect(element.classList.contains('active')).to.be.false;
+        assert.isFalse(element.classList.contains('active'));
       });
 
       it('hides the menu from screenreaders', () => {
-        expect(element.getAttribute('aria-hidden')).to.eq('true');
+        assert.deepEqual(element.getAttribute('aria-hidden'), 'true');
       });
 
       it('makes the menu untabbable', () => {
-        expect(element.getAttribute('tabindex')).to.eq('-1');
+        assert.deepEqual(element.getAttribute('tabindex'), '-1');
       });
     });
 
@@ -98,9 +98,9 @@ describe('SideMenu', () => {
         ReactDOM.render(React.createElement(SideMenu, getProps({ isOpen: false })), node);
         const element = node.querySelector('.side-menu');
 
-        expect(element.classList.contains('active')).to.be.false;
-        expect(element.getAttribute('aria-hidden')).to.eq('true');
-        expect(element.getAttribute('tabindex')).to.eq('-1');
+        assert.isFalse(element.classList.contains('active'));
+        assert.deepEqual(element.getAttribute('aria-hidden'), 'true');
+        assert.deepEqual(element.getAttribute('tabindex'), '-1');
       });
 
       it('shows the menu when isOpen is changed from false to true', () => {
@@ -108,9 +108,9 @@ describe('SideMenu', () => {
         ReactDOM.render(React.createElement(SideMenu, getProps({ isOpen: true })), node);
         const element = node.querySelector('.side-menu');
 
-        expect(element.classList.contains('active')).to.be.true;
-        expect(element.getAttribute('aria-hidden')).to.eq(null);
-        expect(element.getAttribute('tabindex')).to.eq(null);
+        assert.isTrue(element.classList.contains('active'));
+        assert.deepEqual(element.getAttribute('aria-hidden'), null);
+        assert.deepEqual(element.getAttribute('tabindex'), null);
       });
     });
   });
@@ -118,23 +118,23 @@ describe('SideMenu', () => {
   describe('isAnchoredLeft', () => {
     it('adds the menu-anchor-left class if true', () => {
       const element = renderComponent(SideMenu, getProps());
-      expect(element.classList.contains('menu-anchor-left')).to.be.true;
-      expect(element.classList.contains('menu-anchor-right')).to.be.false;
+      assert.isTrue(element.classList.contains('menu-anchor-left'));
+      assert.isFalse(element.classList.contains('menu-anchor-right'));
     });
 
     it('adds the menu-anchor-right class if false', () => {
       const element = renderComponent(SideMenu, getProps({
         isAnchoredLeft: false
       }));
-      expect(element.classList.contains('menu-anchor-right')).to.be.true;
-      expect(element.classList.contains('menu-anchor-left')).to.be.false;
+      assert.isTrue(element.classList.contains('menu-anchor-right'));
+      assert.isFalse(element.classList.contains('menu-anchor-left'));
     });
   });
 
   describe('onDismiss', () => {
     it('renders a dismiss button', () => {
       const element = renderComponent(SideMenu, getProps());
-      expect(element.querySelector('button.menu-header-dismiss')).to.exist;
+      assert.isNotNull(element.querySelector('button.menu-header-dismiss'));
     });
 
     it('invokes the onDismiss handler on click on dismiss button', () => {
@@ -144,7 +144,7 @@ describe('SideMenu', () => {
       }));
       Simulate.click(element.querySelector('button.menu-header-dismiss'));
 
-      expect(stub.calledOnce).to.be.true;
+      assert.isTrue(stub.calledOnce);
     });
   });
 
@@ -152,6 +152,6 @@ describe('SideMenu', () => {
     const element = renderComponent(SideMenu, getProps({
       children: <div className="test-child" />
     }));
-    expect(element.querySelector('.test-child')).to.exist;
+    assert.isNotNull(element.querySelector('.test-child'));
   });
 });

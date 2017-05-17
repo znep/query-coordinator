@@ -61,15 +61,15 @@ describe('FilterBar', () => {
   });
 
   it('renders an element', () => {
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   it('renders the add filter controls', () => {
-    expect(getAddFilter(element)).to.exist;
+    assert.isNotNull(getAddFilter(element));
   });
 
   it('renders no filters if none are provided', () => {
-    expect(getFilters(element).length).to.eq(0);
+    assert.deepEqual(getFilters(element).length, 0);
   });
 
   it('renders filters if provided', () => {
@@ -87,7 +87,7 @@ describe('FilterBar', () => {
     but that may still be on the page but hidden
     */
     const removedFilters = getRemovedFilters(element);
-    expect(filters.length - removedFilters.length).to.eq(1);
+    assert.deepEqual(filters.length - removedFilters.length, 1);
   });
 
   it('renders a hidden expand control', () => {
@@ -95,7 +95,7 @@ describe('FilterBar', () => {
       filters: [ mockValueRangeFilter ]
     });
 
-    expect(getExpandControl(element).classList.contains('is-hidden')).to.eq(true);
+    assert.deepEqual(getExpandControl(element).classList.contains('is-hidden'), true);
   });
 
   describe('when isReadOnly is true', () => {
@@ -105,7 +105,7 @@ describe('FilterBar', () => {
         isReadOnly: true
       });
 
-      expect(getAddFilter(element)).to.not.exist;
+      assert.isNull(getAddFilter(element));
     });
 
     it('does not render filters that have isHidden set to true', () => {
@@ -119,7 +119,7 @@ describe('FilterBar', () => {
         isReadOnly: true
       });
 
-      expect(getFilters(element).length).to.eq(1);
+      assert.deepEqual(getFilters(element).length, 1);
     });
 
     it('does not render if none of the filters are visible', () => {
@@ -132,7 +132,7 @@ describe('FilterBar', () => {
         isReadOnly: true
       });
 
-      expect(element.children.length).to.equal(0);
+      assert.equal(element.children.length, 0);
     });
 
     describe('when at least one filter is visible', () => {
@@ -146,15 +146,15 @@ describe('FilterBar', () => {
       });
 
       it('renders', () => {
-        expect(element).to.exist;
+        assert.isNotNull(element);
       });
 
       it('renders a filter icon', () => {
-        expect(element.querySelector('.filter-icon')).to.exist;
+        assert.isNotNull(element.querySelector('.filter-icon'));
       });
 
       it('renders a filter', () => {
-        expect(element.querySelector('.filter-bar-filter')).to.exist;
+        assert.isNotNull(element.querySelector('.filter-bar-filter'));
       });
     });
   });
@@ -165,7 +165,7 @@ describe('FilterBar', () => {
     });
 
     it('renders just the filters that will fit', () => {
-      expect(getVisibleFilters(element).length).to.eq(2);
+      assert.deepEqual(getVisibleFilters(element).length, 2);
     });
 
     it('renders the hidden collapsed filters', () => {
@@ -179,36 +179,36 @@ describe('FilterBar', () => {
       but that may still be on the page but hidden
       */
       const removedFilters = getRemovedFilters(element);
-      expect(collapsedFilters.length - removedFilters.length).to.eq(1);
+      assert.deepEqual(collapsedFilters.length - removedFilters.length, 1);
     });
 
     describe('expand control', () => {
       it('is visible', () => {
-        expect(getExpandControl(element).classList.contains('is-hidden')).to.eq(false);
+        assert.deepEqual(getExpandControl(element).classList.contains('is-hidden'), false);
       });
 
       it('renders "More" when the collapsed filters are not expanded', () => {
-        expect(getExpandControl(element).innerText).to.eq('More');
+        assert.deepEqual(getExpandControl(element).innerText, 'More');
       });
 
       it('renders "Less" when the collapsed filters are expanded', () => {
         const expandControl = getExpandControl(element);
         Simulate.click(expandControl);
 
-        expect(expandControl.innerText).to.eq('Less');
+        assert.deepEqual(expandControl.innerText, 'Less');
       });
 
       it('expands the hidden collapsed filters on click', () => {
         Simulate.click(getExpandControl(element));
 
-        expect(getContainer(element).classList.contains('filter-bar-expanded')).to.eq(true);
+        assert.deepEqual(getContainer(element).classList.contains('filter-bar-expanded'), true);
       });
 
       it('closes the visible collapsed filters on click', () => {
         Simulate.click(getExpandControl(element));
         Simulate.click(getExpandControl(element));
 
-        expect(getContainer(element).classList.contains('filter-bar-expanded')).to.eq(false);
+        assert.deepEqual(getContainer(element).classList.contains('filter-bar-expanded'), false);
       });
     });
   });

@@ -19,24 +19,24 @@ describe('FilterHeader', () => {
 
   it('renders an element', () => {
     element = renderPureComponent(FilterHeader(getProps()));
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   it('renders the provided name', () => {
     element = renderPureComponent(FilterHeader(getProps()));
-    expect(element.innerText).to.contain('Cheerful Wombats');
+    assert.include(element.innerText, 'Cheerful Wombats');
   });
 
   it('calls onClickConfig when the config button is clicked', () => {
     const stub = sinon.stub();
     element = renderPureComponent(FilterHeader(getProps({ onClickConfig: stub })));
-    expect(stub.callCount).to.equal(0);
+    assert.equal(stub.callCount, 0);
     Simulate.click(getConfigButton(element));
-    expect(stub.callCount).to.equal(1);
+    assert.equal(stub.callCount, 1);
   });
 
   it('does not render the config button if isReadOnly is true', () => {
     element = renderPureComponent(FilterHeader(getProps({ isReadOnly: true })));
-    expect(getConfigButton(element)).to.equal(null);
+    assert.equal(getConfigButton(element), null);
   });
 });

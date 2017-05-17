@@ -1,6 +1,7 @@
 import FilterItem from 'components/FilterBar/FilterItem';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
+import $ from 'jquery';
 import {
   mockValueRangeFilter,
   mockBinaryOperatorFilter,
@@ -10,6 +11,16 @@ import {
   mockNumberColumn,
   mockTextColumn
 } from './data';
+
+// Can't use jQuery's .click() event
+// because jQuery can only trigger event
+// handlers it attached itself (FilterItem
+// uses the native browser APIs.
+const clickBody = () => {
+  const clickEvent = document.createEvent('Event');
+  clickEvent.initEvent('click', true, true);
+  document.body.dispatchEvent(clickEvent);
+};
 
 describe('FilterItem', () => {
   function getProps(props) {
@@ -100,7 +111,7 @@ describe('FilterItem', () => {
     it('closes the controls when the body is clicked', () => {
       Simulate.click(getControlToggle(element));
       assert.isNotNull(getControls(element));
-      document.body.click();
+      clickBody();
       assert.isNull(getControls(element));
     });
 
@@ -131,7 +142,7 @@ describe('FilterItem', () => {
     it('closes the config when the body is clicked', () => {
       Simulate.click(getConfigToggle(element));
       assert.isNotNull(getConfig(element));
-      document.body.click();
+      clickBody();
       assert.isNull(getConfig(element));
     });
 

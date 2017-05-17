@@ -32,20 +32,20 @@ describe('Modal', () => {
       const event = { keyCode: ESCAPE };
       Simulate.keyUp(element, event);
 
-      expect(props.onDismiss.calledOnce).to.be.true;
+      assert.isTrue(props.onDismiss.calledOnce);
     });
 
     it('occurs on clicking the overlay', () => {
       Simulate.click(element);
 
-      expect(props.onDismiss.calledOnce).to.be.true;
+      assert.isTrue(props.onDismiss.calledOnce);
     });
 
     it('does not occur on pressing keys other than Esc', () => {
       const event = { keyCode: ENTER };
       Simulate.keyUp(element, event);
 
-      expect(props.onDismiss.calledOnce).to.be.false;
+      assert.isFalse(props.onDismiss.calledOnce);
     });
 
     it('does not occur when clicking inside the modal', () => {
@@ -53,7 +53,7 @@ describe('Modal', () => {
 
       Simulate.click(container);
 
-      expect(props.onDismiss.calledOnce).to.be.false;
+      assert.isFalse(props.onDismiss.calledOnce);
     });
   });
 
@@ -64,8 +64,8 @@ describe('Modal', () => {
 
     element = renderComponent(Modal, props);
 
-    expect(element).to.exist;
-    expect(element).to.have.class('testing-modal');
+    assert.isNotNull(element);
+    assert.isTrue($(element).hasClass('testing-modal'));
   });
 
   describe('in fullscreen mode', () => {
@@ -78,8 +78,8 @@ describe('Modal', () => {
     });
 
     it('renders with modal-full class applied', () => {
-      expect(element).to.exist;
-      expect(element).to.have.class('modal-full');
+      assert.isNotNull(element);
+      assert.isTrue($(element).hasClass('modal-full'));
     });
   });
 
@@ -93,8 +93,8 @@ describe('Modal', () => {
     });
 
     it('renders without modal-full class applied', () => {
-      expect(element).to.exist;
-      expect(element).to.not.have.class('modal-full');
+      assert.isNotNull(element);
+      assert.isFalse($(element).hasClass('modal-full'));
     });
 
     // NOTE: We can't actually manipulate window size from within a test.

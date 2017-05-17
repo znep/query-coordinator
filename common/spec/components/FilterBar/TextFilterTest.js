@@ -23,7 +23,7 @@ describe('TextFilter', () => {
   it('renders an element', () => {
     const element = renderComponent(TextFilter, getProps());
 
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   it('removes a suggested option from suggestedOptions when it is selected', (done) => {
@@ -96,7 +96,7 @@ describe('TextFilter', () => {
 
         Simulate.click(getApplyButton(element));
 
-        expect(onUpdateStub).to.have.been.calledWith({
+        sinon.assert.calledWith(onUpdateStub, {
           function: 'binaryOperator',
           columnName: 'some_word',
           arguments: [
@@ -131,7 +131,7 @@ describe('TextFilter', () => {
 
         Simulate.click(getApplyButton(element));
 
-        expect(onUpdateStub).to.have.been.calledWith({
+        sinon.assert.calledWith(onUpdateStub, {
           function: 'binaryOperator',
           columnName: 'some_word',
           arguments: [
@@ -156,7 +156,7 @@ describe('TextFilter', () => {
     it('renders', () => {
       const element = renderComponent(TextFilter, getProps());
 
-      expect(element.querySelector('.filter-footer')).to.exist;
+      assert.isNotNull(element.querySelector('.filter-footer'));
     });
 
     it('resets the filter when the reset button is clicked', (done) => {
@@ -185,7 +185,7 @@ describe('TextFilter', () => {
         Simulate.click(getResetButton(element));
         Simulate.click(getApplyButton(element));
 
-        expect(onUpdateStub).to.have.been.calledWith({
+        sinon.assert.calledWith(onUpdateStub, {
           function: 'noop',
           columnName: mockTextColumn.fieldName,
           arguments: null,
@@ -222,7 +222,7 @@ describe('TextFilter', () => {
 
         Simulate.click(getApplyButton(element));
 
-        expect(onUpdateStub).to.have.been.calledWith({
+        sinon.assert.calledWith(onUpdateStub, {
           function: 'noop',
           columnName: mockTextColumn.fieldName,
           arguments: null,

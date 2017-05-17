@@ -18,14 +18,14 @@ describe('ExpandableMenuListItem', () => {
 
   it('renders', () => {
     const element = renderComponent(ExpandableMenuListItem, getProps());
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('iconName', () => {
     it('renders if provided', () => {
       const element = renderComponent(ExpandableMenuListItem, getProps());
       // one for the icon, one for the chevron
-      expect(getIcons(element).length).to.eq(2);
+      assert.deepEqual(getIcons(element).length, 2);
     });
 
     it('does not render if not provided', () => {
@@ -33,13 +33,13 @@ describe('ExpandableMenuListItem', () => {
         iconName: null
       }));
       // none for the icon, one for the chevron
-      expect(getIcons(element).length).to.eq(1);
+      assert.deepEqual(getIcons(element).length, 1);
     });
   });
 
   it('renders the text', () => {
     const element = renderComponent(ExpandableMenuListItem, getProps());
-    expect(element.innerText).to.contain('Menu Item');
+    assert.include(element.innerText, 'Menu Item');
   });
 
   it('does not display the contents if isOpen is false', () => {
@@ -47,7 +47,7 @@ describe('ExpandableMenuListItem', () => {
       children: <div className="test-child" />,
       isOpen: false
     }));
-    expect(getButton(element).classList.contains('active')).to.equal(false);
+    assert.equal(getButton(element).classList.contains('active'), false);
   });
 
   it('displays the contents if isOpen is true', () => {
@@ -55,7 +55,7 @@ describe('ExpandableMenuListItem', () => {
       children: <div className="test-child" />,
       isOpen: true
     }));
-    expect(getButton(element).classList.contains('active')).to.equal(true);
+    assert.equal(getButton(element).classList.contains('active'), true);
   });
 
   it('invokes onClick when clicked', () => {
@@ -65,6 +65,6 @@ describe('ExpandableMenuListItem', () => {
     }));
     Simulate.click(getButton(element));
 
-    expect(stub.calledOnce).to.be.true;
+    assert.isTrue(stub.calledOnce);
   });
 });

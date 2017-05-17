@@ -20,24 +20,24 @@ describe('MenuListItem', () => {
   });
 
   it('renders', () => {
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('iconName', () => {
     it('renders if provided', () => {
-      expect(element.querySelector('.socrata-icon')).to.exist;
+      assert.isNotNull(element.querySelector('.socrata-icon'));
     });
 
     it('does not render if not provided', () => {
       element = renderPureComponent(MenuListItem(getProps({
         iconName: null
       })));
-      expect(element.querySelector('.socrata-icon')).to.not.exist;
+      assert.isNull(element.querySelector('.socrata-icon'));
     });
   });
 
   it('renders the text', () => {
-    expect(element.innerText).to.contain('Menu Item');
+    assert.include(element.innerText, 'Menu Item');
   });
 
   it('invokes onClick when clicked', () => {
@@ -47,6 +47,6 @@ describe('MenuListItem', () => {
     })));
     Simulate.click(element.querySelector('button'));
 
-    expect(stub.calledOnce).to.be.true;
+    assert.isTrue(stub.calledOnce);
   });
 });

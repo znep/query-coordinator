@@ -17,8 +17,8 @@ describe('FilterConfig', () => {
 
   it('renders options', () => {
     const element = renderComponent(FilterConfig, getProps());
-    expect(getHiddenOption(element)).to.exist;
-    expect(getViewersCanEditOption(element)).to.exist;
+    assert.isNotNull(getHiddenOption(element));
+    assert.isNotNull(getViewersCanEditOption(element));
   });
 
   it('calls the onUpdate prop when the hidden option is selected', () => {
@@ -27,9 +27,9 @@ describe('FilterConfig', () => {
     const expectedPayload = _.merge({}, mockTextColumn, {
       isHidden: true
     });
-    expect(onUpdate.called).to.equal(false);
+    assert.equal(onUpdate.called, false);
     Simulate.change(getHiddenOption(element), { target: { checked: true } });
-    expect(onUpdate.calledWith(expectedPayload)).to.equal(true);
+    assert.equal(onUpdate.calledWith(expectedPayload), true);
   });
 
   it('calls the onUpdate prop when the visible option is selected', () => {
@@ -38,8 +38,8 @@ describe('FilterConfig', () => {
     const expectedPayload = _.merge({}, mockTextColumn, {
       isHidden: false
     });
-    expect(onUpdate.called).to.equal(false);
+    assert.equal(onUpdate.called, false);
     Simulate.change(getViewersCanEditOption(element), { target: { checked: true } });
-    expect(onUpdate.calledWith(expectedPayload)).to.equal(true);
+    assert.equal(onUpdate.calledWith(expectedPayload), true);
   });
 });

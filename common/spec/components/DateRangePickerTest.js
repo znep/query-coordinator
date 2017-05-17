@@ -19,7 +19,7 @@ describe('DateRangePicker', () => {
 
   it('renders an element', () => {
     const element = renderComponent(DateRangePicker, getProps());
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   it('uses the start and end values if provided', () => {
@@ -32,9 +32,9 @@ describe('DateRangePicker', () => {
 
     const inputs = getInputs(element);
 
-    expect(inputs).to.have.lengthOf(2);
-    expect(inputs[0].value).to.equal('12/01/1400');
-    expect(inputs[1].value).to.equal('12/01/1800');
+    assert.lengthOf(inputs, 2);
+    assert.equal(inputs[0].value, '12/01/1400');
+    assert.equal(inputs[1].value, '12/01/1800');
   });
 
   it('invokes the onChange handler on change', () => {
@@ -47,7 +47,7 @@ describe('DateRangePicker', () => {
     inputs[0].value = '12/01/1600';
     Simulate.change(inputs[0]);
 
-    expect(stub.called).to.eq(true);
+    assert.deepEqual(stub.called, true);
   });
 
   it('invokes the onChange handler with props start date if start date is invalid', () => {
@@ -65,7 +65,7 @@ describe('DateRangePicker', () => {
       end: '1700-12-01T23:59:59'
     };
 
-    expect(stub.calledWith(expectedValues)).to.eq(true);
+    assert.deepEqual(stub.calledWith(expectedValues), true);
   });
 
   it('invokes the onChange handler with props end date if end date is invalid', () => {
@@ -83,7 +83,7 @@ describe('DateRangePicker', () => {
       end: '1700-12-01T23:59:59'
     };
 
-    expect(stub.calledWith(expectedValues)).to.eq(true);
+    assert.deepEqual(stub.calledWith(expectedValues), true);
   });
 
   it('includes the entire day for the end date', () => {
@@ -101,7 +101,7 @@ describe('DateRangePicker', () => {
       end: '1600-12-01T23:59:59'
     };
 
-    expect(stub.calledWith(expectedValues)).to.eq(true);
+    assert.deepEqual(stub.calledWith(expectedValues), true);
   });
 
   it('includes the entire day for the start date', () => {
@@ -119,6 +119,6 @@ describe('DateRangePicker', () => {
       end: '1700-12-01T23:59:59'
     };
 
-    expect(stub.calledWith(expectedValues)).to.eq(true);
+    assert.deepEqual(stub.calledWith(expectedValues), true);
   });
 });

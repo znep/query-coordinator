@@ -3,6 +3,7 @@ import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
 import { renderPureComponent } from '../../helpers';
 import FilterFooter from 'components/FilterBar/FilterFooter';
+import $ from 'jquery';
 
 describe('FilterFooter', () => {
   let handlerStub;
@@ -21,7 +22,7 @@ describe('FilterFooter', () => {
   it('renders an element', () => {
     element = renderPureComponent(FilterFooter(getProps()));
 
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('apply', () => {
@@ -34,13 +35,13 @@ describe('FilterFooter', () => {
     });
 
     it('renders a button', () => {
-      expect(button).to.exist;
+      assert.isNotNull(button);
     });
 
     it('calls handler on click', () => {
       Simulate.click(button);
 
-      expect(handlerStub).to.have.been.called;
+      sinon.assert.called(handlerStub);
     });
 
     it('renders a disabled button if disabled', () => {
@@ -49,7 +50,7 @@ describe('FilterFooter', () => {
       })));
       button = element.querySelector('.apply-btn');
 
-      expect(button).to.have.attribute('disabled');
+      assert.isDefined($(button).attr('disabled'));
     });
   });
 
@@ -63,13 +64,13 @@ describe('FilterFooter', () => {
     });
 
     it('renders a button', () => {
-      expect(button).to.exist;
+      assert.isNotNull(button);
     });
 
     it('calls handler on click', () => {
       Simulate.click(button);
 
-      expect(handlerStub).to.have.been.called;
+      sinon.assert.called(handlerStub);
     });
   });
 
@@ -83,13 +84,13 @@ describe('FilterFooter', () => {
     });
 
     it('renders a button', () => {
-      expect(button).to.exist;
+      assert.isNotNull(button);
     });
 
     it('calls handler on click', () => {
       Simulate.click(button);
 
-      expect(handlerStub).to.have.been.called;
+      sinon.assert.called(handlerStub);
     });
   });
 });

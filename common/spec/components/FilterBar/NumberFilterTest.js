@@ -2,6 +2,7 @@ import NumberFilter from 'components/FilterBar/NumberFilter';
 import { mockValueRangeFilter, mockNumberColumn } from './data';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
+import $ from 'jquery';
 
 describe('NumberFilter', () => {
   function getProps(props) {
@@ -23,28 +24,28 @@ describe('NumberFilter', () => {
 
   it('renders a title', () => {
     const element = renderComponent(NumberFilter, getProps());
-    expect(getTitle(element)).to.exist;
+    assert.isNotNull(getTitle(element));
   });
 
   it('renders a slider', () => {
     const element = renderComponent(NumberFilter, getProps());
-    expect(getSlider(element)).to.exist;
+    assert.isNotNull(getSlider(element));
   });
 
   it('renders two input fields', () => {
     const element = renderComponent(NumberFilter, getProps());
-    expect(getInputs(element)).to.have.length(2);
+    assert.lengthOf(getInputs(element), 2);
   });
 
   it('renders a footer', () => {
     const element = renderComponent(NumberFilter, getProps());
-    expect(getFooter(element)).to.exist;
+    assert.isNotNull(getFooter(element));
   });
 
   it('computes the proper step based on the minimum precision of the range', () => {
     const element = renderComponent(NumberFilter, getProps());
     const inputs = getInputs(element);
-    expect(_.map(inputs, 'step')).to.deep.equal(['0.01', '0.01']);
+    assert.deepEqual(_.map(inputs, 'step'), ['0.01', '0.01']);
   });
 
   it('disables the apply button if the range is identical to the existing range', () => {
@@ -52,17 +53,17 @@ describe('NumberFilter', () => {
     const input = getInputs(element)[0];
     const originalValue = input.value;
 
-    expect(getApplyButton(element)).to.have.attribute('disabled');
+    assert.isDefined($(getApplyButton(element)).attr('disabled'));
 
     input.value = 2;
     Simulate.change(input);
 
-    expect(getApplyButton(element)).to.not.have.attribute('disabled');
+    assert.isUndefined($(getApplyButton(element)).attr('disabled'));
 
     input.value = originalValue;
     Simulate.change(input);
 
-    expect(getApplyButton(element)).to.have.attribute('disabled');
+    assert.isDefined($(getApplyButton(element)).attr('disabled'));
   });
 
   describe('when changed', () => {
@@ -86,9 +87,9 @@ describe('NumberFilter', () => {
       Simulate.click(getApplyButton(element));
 
       const filter = spy.firstCall.args[0];
-      expect(filter.arguments.start).to.equal(2);
+      assert.equal(filter.arguments.start, 2);
 
-      expect(start.value).to.equal('2');
+      assert.equal(start.value, '2');
     });
 
     it('allows ranges outside the min and max of the column', () => {
@@ -101,11 +102,11 @@ describe('NumberFilter', () => {
       Simulate.click(getApplyButton(element));
 
       const filter = spy.firstCall.args[0];
-      expect(filter.arguments.start).to.equal(-200);
-      expect(filter.arguments.end).to.equal(2000.0001);
+      assert.equal(filter.arguments.start, -200);
+      assert.equal(filter.arguments.end, 2000.0001);
 
-      expect(start.value).to.equal('-200');
-      expect(end.value).to.equal('2000');
+      assert.equal(start.value, '-200');
+      assert.equal(end.value, '2000');
     });
 
     it('generates filters that have a small amount added to the end of the range', () => {
@@ -119,8 +120,8 @@ describe('NumberFilter', () => {
 
       // Since the smallest precision is .01, the end of the range will have .0001 added to it.
       const filter = spy.firstCall.args[0];
-      expect(filter.arguments.start).to.equal(1.01);
-      expect(filter.arguments.end).to.equal(2.4001);
+      assert.equal(filter.arguments.start, 1.01);
+      assert.equal(filter.arguments.end, 2.4001);
     });
 
     it('swaps the start and end of the range if necessary', () => {
@@ -133,8 +134,8 @@ describe('NumberFilter', () => {
       Simulate.click(getApplyButton(element));
 
       const filter = spy.firstCall.args[0];
-      expect(filter.arguments.start).to.equal(1);
-      expect(filter.arguments.end).to.equal(10.0001);
+      assert.equal(filter.arguments.start, 1);
+      assert.equal(filter.arguments.end, 10.0001);
     });
 
     it('does not reset filter visibility when resetting values', () => {
@@ -145,7 +146,7 @@ describe('NumberFilter', () => {
       Simulate.click(getApplyButton(element));
 
       const filter = spy.firstCall.args[0];
-      expect(filter.isHidden).to.be.false;
+      assert.isFalse(filter.isHidden);
     });
   });
 });

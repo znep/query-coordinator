@@ -1,1 +1,0 @@
-<li><a href="components.html#{{ id }}">{{ name }}</a></li>

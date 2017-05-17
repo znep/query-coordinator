@@ -1,13 +1,15 @@
 import * as a11y from 'common/a11y';
+import $ from 'jquery';
+
+const getTagName = (element) => element.tagName.toLowerCase();
 
 describe('a11y', () => {
   let element;
   const actionableTags = ['input', 'select', 'textarea', 'a', 'button'];
-  const getTagName = (element) => element.tagName.toLowerCase();
 
   afterEach(() => {
     if (element) {
-      element.remove();
+      $(element).remove();
       element = null;
     }
   });

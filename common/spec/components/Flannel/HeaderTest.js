@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import { Simulate } from 'react-addons-test-utils';
 import { FlannelHeader } from 'components/Flannel';
@@ -23,21 +24,21 @@ describe('FlannelHeader', () => {
   });
 
   it('renders', () => {
-    expect(element).to.exist;
-    expect(element).to.have.class('socrata-flannel-header');
+    assert.isNotNull(element);
+    assert.isTrue($(element).hasClass('socrata-flannel-header'));
   });
 
   it('renders a title', () => {
-    expect(getTitle(element)).to.exist;
-    expect(getTitle(element)).to.have.text(title);
+    assert.isNotNull(getTitle(element));
+    assert.include($(getTitle(element)).text(), title);
   });
 
   it('renders a close button', () => {
-    expect(getButton(element)).to.exist;
+    assert.isNotNull(getButton(element));
   });
 
   it('calls onDismiss when close is clicked', () => {
     Simulate.click(getButton(element));
-    expect(onDismissSpy.called).to.equal(true);
+    assert.equal(onDismissSpy.called, true);
   });
 });

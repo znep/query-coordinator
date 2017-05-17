@@ -21,7 +21,7 @@ describe('ViewCard', function() {
 
   it('renders an element', function() {
     var element = renderComponent(ViewCard, getProps());
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('markup', function() {
@@ -29,21 +29,21 @@ describe('ViewCard', function() {
       var element = renderComponent(ViewCard, getProps({
         name: 'Nollywood'
       }));
-      expect(element.querySelector('.entry-title').innerText).to.eq('Nollywood');
+      assert.deepEqual(element.querySelector('.entry-title').innerText, 'Nollywood');
     });
 
     it('renders an icon if the dataset is private', function() {
       var element = renderComponent(ViewCard, getProps({
         isPrivate: true
       }));
-      expect(element.querySelector('.socrata-icon-private')).to.exist;
+      assert.isNotNull(element.querySelector('.socrata-icon-private'));
     });
 
     it('does not render an icon if the dataset is public', function() {
       var element = renderComponent(ViewCard, getProps({
         isPrivate: false
       }));
-      expect(element.querySelector('.socrata-icon-private')).to.not.exist;
+      assert.isNull(element.querySelector('.socrata-icon-private'));
     });
 
     it('renders the metadata values', function() {
@@ -52,14 +52,14 @@ describe('ViewCard', function() {
         metadataRight: 'some more metadata'
       }));
 
-      expect(element.querySelector('.entry-meta .first').innerText).to.eq('some metadata');
-      expect(element.querySelector('.entry-meta .second').innerText).to.eq('some more metadata');
+      assert.deepEqual(element.querySelector('.entry-meta .first').innerText, 'some metadata');
+      assert.deepEqual(element.querySelector('.entry-meta .second').innerText, 'some more metadata');
     });
 
     describe('image preview', function() {
       it('renders an icon if no image is provided', function() {
         var element = renderComponent(ViewCard, getProps());
-        expect(element.querySelector('.preview-image')).to.not.exist;
+        assert.isNull(element.querySelector('.preview-image'));
       });
 
       it('renders an image if one is provided', function() {
@@ -67,9 +67,9 @@ describe('ViewCard', function() {
           imageUrl: '/image.png'
         }));
 
-        expect(element.querySelector('.preview-image')).to.exist;
-        expect(element.querySelector('.preview-image').style.backgroundImage).to.exist;
-        expect(element.querySelector('.preview-image').style.backgroundImage).to.include('/image.png');
+        assert.isNotNull(element.querySelector('.preview-image'));
+        assert.isNotNull(element.querySelector('.preview-image').style.backgroundImage);
+        assert.include(element.querySelector('.preview-image').style.backgroundImage, '/image.png');
       });
 
       it('renders an image if one is provided and resource is external', function() {
@@ -78,15 +78,15 @@ describe('ViewCard', function() {
           isExternal: true
         }));
 
-        expect(element.querySelector('.preview-image')).to.exist;
-        expect(element.querySelector('.preview-image').style.backgroundImage).to.exist;
-        expect(element.querySelector('.preview-image').style.backgroundImage).to.include('/image.png');
+        assert.isNotNull(element.querySelector('.preview-image'));
+        assert.isNotNull(element.querySelector('.preview-image').style.backgroundImage);
+        assert.include(element.querySelector('.preview-image').style.backgroundImage, '/image.png');
       });
     });
 
     it('renders the description if provided', function() {
       var element = renderComponent(ViewCard, getProps());
-      expect(element.querySelector('.entry-description')).to.exist;
+      assert.isNotNull(element.querySelector('.entry-description'));
     });
 
     it('applies linkProps to the links', function() {
@@ -97,7 +97,7 @@ describe('ViewCard', function() {
       }));
 
       _.each(element.querySelectorAll('a'), link => {
-        expect(link.getAttribute('aria-label')).to.equal('Carrots');
+        assert.equal(link.getAttribute('aria-label'), 'Carrots');
       });
     });
   });

@@ -1,9 +1,0 @@
-import React from 'react';
-
-export const {{ name }} = React.createClass({
-  render() {
-    return <div></div>;
-  }
-});
-
-export default {{ name }};

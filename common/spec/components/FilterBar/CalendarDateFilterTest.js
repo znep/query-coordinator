@@ -2,6 +2,7 @@ import CalendarDateFilter from 'components/FilterBar/CalendarDateFilter';
 import { mockTimeRangeFilter, mockCalendarDateColumn } from './data';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
+import $ from 'jquery';
 
 describe('CalendarDateFilter', () => {
   function getProps(props) {
@@ -23,22 +24,22 @@ describe('CalendarDateFilter', () => {
 
   it('renders a title', () => {
     const element = renderComponent(CalendarDateFilter, getProps());
-    expect(getTitle(element)).to.exist;
+    assert.isNotNull(getTitle(element));
   });
 
   it('renders a date picker', () => {
     const element = renderComponent(CalendarDateFilter, getProps());
-    expect(getDateRangePicker(element)).to.exist;
+    assert.isNotNull(getDateRangePicker(element));
   });
 
   it('renders two input fields', () => {
     const element = renderComponent(CalendarDateFilter, getProps());
-    expect(getDatePickerInputs(element)).to.have.length(2);
+    assert.lengthOf(getDatePickerInputs(element), 2);
   });
 
   it('renders a footer', () => {
     const element = renderComponent(CalendarDateFilter, getProps());
-    expect(getFooter(element)).to.exist;
+    assert.isNotNull(getFooter(element));
   });
 
   it('disables the apply button if the date range is undefined', () => {
@@ -54,7 +55,7 @@ describe('CalendarDateFilter', () => {
       }
     }));
 
-    expect(getApplyButton(element)).to.have.attribute('disabled');
+    assert.isDefined($(getApplyButton(element)).attr('disabled'));
   });
 
   it('disables the apply button if the date range is identical to the existing date range', () => {
@@ -63,17 +64,17 @@ describe('CalendarDateFilter', () => {
     const originalValue = input.value;
     const applyButton = getApplyButton(element);
 
-    expect(applyButton).to.have.attribute('disabled');
+    assert.isDefined($(applyButton).attr('disabled'));
 
     input.value = '12/01/1400';
     Simulate.change(input);
 
-    expect(applyButton).to.not.have.attribute('disabled');
+    assert.isUndefined($(applyButton).attr('disabled'));
 
     input.value = originalValue;
     Simulate.change(input);
 
-    expect(applyButton).to.have.attribute('disabled');
+    assert.isDefined($(applyButton).attr('disabled'));
   });
 
   // NOTE: This is not the same behavior as NumberFilter, which has a test case
@@ -89,7 +90,7 @@ describe('CalendarDateFilter', () => {
     end.value = '01/01/1000';
     Simulate.change(end);
 
-    expect(applyButton).to.have.attribute('disabled');
+    assert.isDefined($(applyButton).attr('disabled'));
   });
 
   describe('when changed', () => {
@@ -113,9 +114,9 @@ describe('CalendarDateFilter', () => {
       Simulate.click(getApplyButton(element));
 
       const filter = spy.firstCall.args[0];
-      expect(filter.arguments.start).to.equal('1450-01-01T00:00:00');
+      assert.equal(filter.arguments.start, '1450-01-01T00:00:00');
 
-      expect(start.value).to.equal('01/01/1450');
+      assert.equal(start.value, '01/01/1450');
     });
 
     it('allows ranges outside the min and max of the column', () => {
@@ -128,11 +129,11 @@ describe('CalendarDateFilter', () => {
       Simulate.click(getApplyButton(element));
 
       const filter = spy.firstCall.args[0];
-      expect(filter.arguments.start).to.equal('1000-01-01T00:00:00');
-      expect(filter.arguments.end).to.equal('2000-01-01T23:59:59');
+      assert.equal(filter.arguments.start, '1000-01-01T00:00:00');
+      assert.equal(filter.arguments.end, '2000-01-01T23:59:59');
 
-      expect(start.value).to.equal('01/01/1000');
-      expect(end.value).to.equal('01/01/2000');
+      assert.equal(start.value, '01/01/1000');
+      assert.equal(end.value, '01/01/2000');
     });
 
     it('does not reset filter visibility when resetting values', () => {
@@ -143,7 +144,7 @@ describe('CalendarDateFilter', () => {
       Simulate.click(getApplyButton(element));
 
       const filter = spy.firstCall.args[0];
-      expect(filter.isHidden).to.be.false;
+      assert.isFalse(filter.isHidden);
     });
   });
 });

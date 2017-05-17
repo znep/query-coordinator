@@ -17,7 +17,7 @@ describe('Slider', () => {
 
   it('renders an element', () => {
     const element = renderComponent(Slider, getProps());
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('when using an Object value', () => {
@@ -30,9 +30,9 @@ describe('Slider', () => {
       }));
       const labels = getLabels(element);
 
-      expect(labels).to.have.lengthOf(2);
-      expect(labels[0].innerText).to.equal('13');
-      expect(labels[1].innerText).to.equal('42');
+      assert.lengthOf(labels, 2);
+      assert.equal(labels[0].innerText, '13');
+      assert.equal(labels[1].innerText, '42');
     });
   });
 
@@ -43,8 +43,8 @@ describe('Slider', () => {
       }));
       const labels = getLabels(element);
 
-      expect(labels).to.have.lengthOf(1);
-      expect(labels[0].innerText).to.equal('13');
+      assert.lengthOf(labels, 1);
+      assert.equal(labels[0].innerText, '13');
     });
   });
 
@@ -52,7 +52,7 @@ describe('Slider', () => {
     const element = renderComponent(Slider, getProps());
     const labels = getLabels(element);
 
-    expect(labels).to.have.lengthOf(1);
-    expect(labels[0].innerText).to.equal('100');
+    assert.lengthOf(labels, 1);
+    assert.equal(labels[0].innerText, '100');
   });
 });

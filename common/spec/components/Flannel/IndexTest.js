@@ -59,32 +59,32 @@ describe('Flannel', () => {
   });
 
   it('renders', () => {
-    expect(element).to.exist;
-    expect(element).to.have.class('socrata-flannel');
+    assert.isNotNull(element);
+    assert.isTrue($(element).hasClass('socrata-flannel'));
   });
 
   it('has a predetermined class name', () => {
-    expect(element).to.have.class(className);
+    assert.isTrue($(element).hasClass(className));
   });
 
   it('has a predetermined id', () => {
-    expect(element).to.have.attribute('id', id);
+    assert.isDefined($(element).attr('id', id));
   });
 
   it('has a predetermined role and aria-label', () => {
-    expect(element).to.have.attribute('role', 'dialog');
-    expect(element).to.have.attribute('aria-label', title);
+    assert.isDefined($(element).attr('role', 'dialog'));
+    assert.isDefined($(element).attr('aria-label', title));
   });
 
   it('positions itself', () => {
-    expect(element).to.have.attribute('style');
-    expect(element.style.cssText).to.contain('left');
-    expect(element.style.cssText).to.contain('top');
+    assert.isDefined($(element).attr('style'));
+    assert.include(element.style.cssText, 'left');
+    assert.include(element.style.cssText, 'top');
   });
 
   it('dismisses itself when clicking outside', () => {
     document.body.click();
-    expect(onDismissSpy.called).to.equal(true);
+    assert.equal(onDismissSpy.called, true);
   });
 
   it('dismisses itself when ESC is pressed', () => {
@@ -92,6 +92,6 @@ describe('Flannel', () => {
 
     $(document.body).trigger(event);
 
-    expect(onDismissSpy.called).to.equal(true);
+    assert.equal(onDismissSpy.called, true);
   });
 });

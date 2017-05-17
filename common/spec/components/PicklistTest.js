@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -26,7 +27,7 @@ describe('Picklist', () => {
   });
 
   it('renders an element', () => {
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('with options', () => {
@@ -35,7 +36,7 @@ describe('Picklist', () => {
     });
 
     it('renders three options', () => {
-      expect(element.querySelectorAll('.picklist-option')).to.have.lengthOf(3);
+      assert.lengthOf(element.querySelectorAll('.picklist-option'), 3);
     });
 
     describe('with a value set', () => {
@@ -46,7 +47,7 @@ describe('Picklist', () => {
       });
 
       it('renders one selected option', () => {
-        expect(element.querySelector('.picklist-option-selected')).to.exist;
+        assert.isNotNull(element.querySelector('.picklist-option-selected'));
       });
 
       describe('with multiple options that have the same value', () => {
@@ -58,7 +59,7 @@ describe('Picklist', () => {
         });
 
         it('renders two selected options', () => {
-          expect(element.querySelectorAll('.picklist-option-selected')).to.have.lengthOf(2);
+          assert.lengthOf(element.querySelectorAll('.picklist-option-selected'), 2);
         });
       });
 
@@ -85,19 +86,19 @@ describe('Picklist', () => {
           props.value = selectedOption.value;
           component.componentWillReceiveProps(props);
 
-          expect(setSelectionSpy.called).to.be.true;
-          expect(component.state.selectedIndex).to.equal(selectedIndex);
-          expect(component.state.selectedOption).to.equal(selectedOption);
+          assert.isTrue(setSelectionSpy.called);
+          assert.equal(component.state.selectedIndex, selectedIndex);
+          assert.equal(component.state.selectedOption, selectedOption);
         });
 
         describe('when the value is null', () => {
-          it('sets selectedOption to null and the pointer to -1', () => {
+          it('sets selectedOption to undefined and the pointer to -1', () => {
             const props = getProps({ value: null });
             component.componentWillReceiveProps(props);
 
-            expect(setSelectionSpy.called).to.be.true;
-            expect(component.state.selectedIndex).to.equal(-1);
-            expect(component.state.selectedOption).to.not.exist;
+            assert.isTrue(setSelectionSpy.called);
+            assert.equal(component.state.selectedIndex, -1);
+            assert.isUndefined(component.state.selectedOption);
           });
         });
       });
@@ -118,7 +119,7 @@ describe('Picklist', () => {
       });
 
       it('renders two groups', () => {
-        expect(element.querySelectorAll(headerSelector)).to.have.lengthOf(2);
+        assert.lengthOf(element.querySelectorAll(headerSelector), 2);
       });
 
       it('renders options under the correct groups', () => {
@@ -128,8 +129,8 @@ describe('Picklist', () => {
         const optionOne = element.querySelector(optionOneSelector);
         const optionTwo = element.querySelector(optionTwoSelector);
 
-        expect(optionOne).to.have.text(options[0].title);
-        expect(optionTwo).to.have.text(options[2].title);
+        assert.include($(optionOne).text(), options[0].title);
+        assert.include($(optionTwo).text(), options[2].title);
       });
     });
 
@@ -145,11 +146,11 @@ describe('Picklist', () => {
       });
 
       it('renders a special div', () => {
-        expect(element.querySelector('.test-container')).to.exist;
+        assert.isNotNull(element.querySelector('.test-container'));
       });
 
       it('passes an option when rendering', () => {
-        expect(render.calledWith(option)).to.be.true;
+        assert.isTrue(render.calledWith(option));
       });
     });
   });
@@ -167,7 +168,7 @@ describe('Picklist', () => {
         const option = element.querySelector('.picklist-option');
 
         Simulate.click(option);
-        expect(props.onSelection.calledOnce).to.be.true;
+        assert.isTrue(props.onSelection.calledOnce);
       });
     });
 
@@ -191,17 +192,17 @@ describe('Picklist', () => {
         it('does nothing for UP', () => {
           Simulate.keyUp(element, { keyCode: UP });
           // Did... did it do something?
-          expect(element.querySelector(selectedOptionSelector)).to.not.exist;
+          assert.isNull(element.querySelector(selectedOptionSelector));
         });
 
         it('does nothing for DOWN', () => {
           Simulate.keyUp(element, { keyCode: DOWN });
-          expect(element.querySelector(selectedOptionSelector)).to.not.exist;
+          assert.isNull(element.querySelector(selectedOptionSelector));
         });
 
         it('does nothing for ENTER', () => {
           Simulate.keyUp(element, { keyCode: ENTER });
-          expect(element.querySelector('.picklist-option-selected')).to.not.exist;
+          assert.isNull(element.querySelector('.picklist-option-selected'));
         });
       });
 
@@ -212,12 +213,12 @@ describe('Picklist', () => {
           it('selects the first option', () => {
             const lastOption = _.last(options);
 
-            expect(lastOption).to.not.have.class(selectedOptionSelector);
+            assert.isFalse($(lastOption).hasClass(selectedOptionSelector));
 
             Simulate.keyUp(element, event);
 
-            expect(lastOption).to.have.class(selectedOptionSelector);
-            expect(props.onChange.calledOnce).to.be.true;
+            assert.isTrue($(lastOption).hasClass(selectedOptionSelector));
+            assert.isTrue(props.onChange.calledOnce);
           });
         });
 
@@ -225,13 +226,13 @@ describe('Picklist', () => {
           it('does nothing', () => {
             const firstOption = _.first(options);
 
-            expect(firstOption).to.not.have.class(selectedOptionSelector);
+            assert.isFalse($(firstOption).hasClass(selectedOptionSelector));
 
             Simulate.click(firstOption);
-            expect(firstOption).to.have.class(selectedOptionSelector);
+            assert.isTrue($(firstOption).hasClass(selectedOptionSelector));
 
             Simulate.keyUp(element, event);
-            expect(firstOption).to.have.class(selectedOptionSelector);
+            assert.isTrue($(firstOption).hasClass(selectedOptionSelector));
           });
         });
 
@@ -240,9 +241,9 @@ describe('Picklist', () => {
             Simulate.click(options[1]);
             Simulate.keyUp(element, event);
 
-            expect(options[0]).to.have.class(selectedOptionSelector);
-            expect(props.onSelection.calledOnce).to.be.true;
-            expect(props.onChange.calledOnce).to.be.true;
+            assert.isTrue($(options[0]).hasClass(selectedOptionSelector));
+            assert.isTrue(props.onSelection.calledOnce);
+            assert.isTrue(props.onChange.calledOnce);
           });
         });
       });
@@ -254,12 +255,12 @@ describe('Picklist', () => {
           it('selects the first option', () => {
             const firstOption = _.first(options);
 
-            expect(firstOption).to.not.have.class(selectedOptionSelector);
+            assert.isFalse($(firstOption).hasClass(selectedOptionSelector));
 
             Simulate.keyUp(element, event);
 
-            expect(firstOption).to.have.class(selectedOptionSelector);
-            expect(props.onChange.calledOnce).to.be.true;
+            assert.isTrue($(firstOption).hasClass(selectedOptionSelector));
+            assert.isTrue(props.onChange.calledOnce);
           });
         });
 
@@ -267,13 +268,13 @@ describe('Picklist', () => {
           it('does nothing', () => {
             const lastOption = _.last(options);
 
-            expect(lastOption).to.not.have.class(selectedOptionSelector);
+            assert.isFalse($(lastOption).hasClass(selectedOptionSelector));
 
             Simulate.click(lastOption);
-            expect(lastOption).to.have.class(selectedOptionSelector);
+            assert.isTrue($(lastOption).hasClass(selectedOptionSelector));
 
             Simulate.keyUp(element, event);
-            expect(lastOption).to.have.class(selectedOptionSelector);
+            assert.isTrue($(lastOption).hasClass(selectedOptionSelector));
           });
         });
 
@@ -282,9 +283,9 @@ describe('Picklist', () => {
             Simulate.click(options[1]);
             Simulate.keyUp(element, event);
 
-            expect(options[2]).to.have.class(selectedOptionSelector);
-            expect(props.onSelection.calledOnce).to.be.true;
-            expect(props.onChange.calledOnce).to.be.true;
+            assert.isTrue($(options[2]).hasClass(selectedOptionSelector));
+            assert.isTrue(props.onSelection.calledOnce);
+            assert.isTrue(props.onChange.calledOnce);
           });
         });
       });
@@ -297,10 +298,10 @@ describe('Picklist', () => {
 
         it('blurs the picklist', () => {
           Simulate.focus(element);
-          expect(element).to.have.class('picklist-focused');
+          assert.isTrue($(element).hasClass('picklist-focused'));
 
           Simulate.keyUp(element, event);
-          expect(element).to.not.have.class('picklist-focused');
+          assert.isFalse($(element).hasClass('picklist-focused'));
         });
       });
     });

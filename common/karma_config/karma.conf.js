@@ -3,17 +3,25 @@
 // Karma configuration for common code.
 var path = require('path');
 
+var root = path.resolve(__dirname, '../..');
 // TODO Move base webpack config from frontend/webpack into common, then use here.
 var webpackConfig = {
   context: __dirname,
   module: {
+    preLoaders: [
+      {
+        loader: require.resolve('raw-loader'),
+        test: /\.svg$/,
+        include: `${root}/common/components/fonts/svg`
+      }
+    ],
     loaders: [
       {
         test: /\.jsx?$/,
-        loader: 'babel-loader',
+        loader: require.resolve('babel-loader'),
         query: {
           presets: [
-            'babel-preset-es2015'
+            'babel-preset-es2015', 'babel-preset-react'
           ].map(require.resolve),
           plugins: [
             'babel-plugin-transform-object-rest-spread'
@@ -23,17 +31,16 @@ var webpackConfig = {
     ]
   },
   resolve: {
-    modules: [
+    root: [
+      root,
       // Let tests import modules (i.e, import FeatureFlags from 'common/FeatureFlags')
       path.resolve('../../'),
+      path.resolve('../../common'), // TODO Don't do this
 
       // Allow code under test to require dependencies in karma_config's package.json.
       '../karma_config/node_modules'
     ],
-    alias: {
-      'lodash': path.join(__dirname, '.', 'node_modules/lodash/index.js'),
-      'jquery': path.join(__dirname, '.', 'node_modules/jquery/dist/jquery.js')
-    }
+    modulesDirectories: [ path.resolve(root, 'packages/socrata-components/node_modules') ]
   },
   devtool: 'inline-source-map'
 };
@@ -51,7 +58,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'node_modules/sinon/pkg/sinon.js',
-      '../spec/**/*.spec.js'
+      '../spec/index.js'
     ],
 
     // list of files to exclude
@@ -61,7 +68,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       // Load specs through webpack.
-      '../spec/**/*.spec.js': ['webpack', 'sourcemap']
+      '../spec/index.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use
@@ -82,10 +89,6 @@ module.exports = function(config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
-
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false,
@@ -93,6 +96,27 @@ module.exports = function(config) {
     webpack: webpackConfig,
     webpackMiddleware: {
       noInfo: true
+    },
+
+    browserConsoleLogOptions: {
+      level: 'log',
+      format: '%b %T: %m',
+      terminal: true
+    },
+    browsers: ['ChromeNoSandboxHeadless'],
+    browserNoActivityTimeout: 1000 * 55,
+    browserDisconnectTimeout: 1000 * 10,
+    browserDisconnectTolerance: 5,
+    customLaunchers: {
+      ChromeNoSandboxHeadless: {
+        base: 'Chrome',
+        flags: [
+          '--no-sandbox',
+          '--headless',
+          '--disable-gpu',
+          '--remote-debugging-port=9222'
+        ]
+      }
     }
   });
 };

@@ -5,6 +5,7 @@ import { renderComponent } from '../../helpers';
 import SearchablePicklist from 'components/FilterBar/SearchablePicklist';
 import { ENTER } from 'common/keycodes';
 import { mockPicklistOptions } from './data';
+import $ from 'jquery';
 
 describe('SearchablePicklist', () => {
   function getProps(props) {
@@ -36,20 +37,20 @@ describe('SearchablePicklist', () => {
 
   it('renders an element', () => {
     const element = renderComponent(SearchablePicklist, getProps());
-    expect(element).to.exist;
+    assert.isNotNull(element);
   });
 
   describe('search input', () => {
     it('renders', () => {
       const element = renderComponent(SearchablePicklist, getProps());
-      expect(getSearchInput(element)).to.exist;
+      assert.isNotNull(getSearchInput(element));
     });
 
     it('displays the value in the search input if provided', () => {
       const element = renderComponent(SearchablePicklist, getProps({
         value: 'Pesto'
       }));
-      expect(getSearchInput(element).value).to.equal('Pesto');
+      assert.equal(getSearchInput(element).value, 'Pesto');
     });
 
     it('calls onChangeSearchTerm when the search input changes', () => {
@@ -62,7 +63,7 @@ describe('SearchablePicklist', () => {
       input.value = 'Pizza';
       Simulate.change(input);
 
-      expect(stub).to.have.been.calledWith('Pizza');
+      sinon.assert.calledWith(stub, 'Pizza');
     });
 
     describe('when adding an arbitrary value using <ENTER>', () => {
@@ -82,7 +83,7 @@ describe('SearchablePicklist', () => {
           canAddSearchTerm: (term) => {
             return new Promise((resolve, reject) => {
               _.defer(() => {
-                expect(getSearchInputSpinner(element)).to.not.eq(null);
+                assert.notDeepEqual(getSearchInputSpinner(element), null);
                 done();
               });
             });
@@ -97,9 +98,9 @@ describe('SearchablePicklist', () => {
           canAddSearchTerm: (term) => {
             return new Promise((resolve, reject) => {
               _.delay(resolve, 10);
-              _.delay(() => expect(getSearchInputSpinner(element)).to.not.eq(null), 5);
+              _.delay(() => assert.notDeepEqual(getSearchInputSpinner(element), null), 5);
               _.delay(() => {
-                expect(getSearchInputSpinner(element)).to.eq(null);
+                assert.deepEqual(getSearchInputSpinner(element), null);
                 done();
               }, 15)
             });
@@ -119,7 +120,7 @@ describe('SearchablePicklist', () => {
         Simulate.keyUp(getSearchInput(element), { keyCode: ENTER });
 
         _.delay(() => {
-          expect(getSearchWarning(element)).to.not.eq(null);
+          assert.notDeepEqual(getSearchWarning(element), null);
           done();
         }, 10);
       });
@@ -140,7 +141,7 @@ describe('SearchablePicklist', () => {
           canAddSearchTerm: (term) => {
             return new Promise((resolve, reject) => {
               _.defer(() => {
-                expect(getSearchInputSpinner(element)).to.not.eq(null);
+                assert.notDeepEqual(getSearchInputSpinner(element), null);
                 done();
               });
             });
@@ -155,9 +156,9 @@ describe('SearchablePicklist', () => {
           canAddSearchTerm: (term) => {
             return new Promise((resolve, reject) => {
               _.delay(resolve, 10);
-              _.delay(() => expect(getSearchInputSpinner(element)).to.not.eq(null), 5);
+              _.delay(() => assert.notDeepEqual(getSearchInputSpinner(element), null), 5);
               _.delay(() => {
-                expect(getSearchInputSpinner(element)).to.eq(null);
+                assert.deepEqual(getSearchInputSpinner(element), null);
                 done();
               }, 15)
             });
@@ -177,7 +178,7 @@ describe('SearchablePicklist', () => {
         Simulate.click(getSearchButton(element));
 
         _.delay(() => {
-          expect(getSearchWarning(element)).to.not.eq(null);
+          assert.notDeepEqual(getSearchWarning(element), null);
           done();
         }, 10);
       });
@@ -198,7 +199,7 @@ describe('SearchablePicklist', () => {
           canAddSearchTerm: (term) => {
             return new Promise((resolve, reject) => {
               _.defer(() => {
-                expect(getSearchInputSpinner(element)).to.not.eq(null);
+                assert.notDeepEqual(getSearchInputSpinner(element), null);
                 done();
               });
             });
@@ -214,9 +215,9 @@ describe('SearchablePicklist', () => {
           canAddSearchTerm: (term) => {
             return new Promise((resolve, reject) => {
               _.delay(resolve, 10);
-              _.delay(() => expect(getSearchInputSpinner(element)).to.not.eq(null), 5);
+              _.delay(() => assert.notDeepEqual(getSearchInputSpinner(element), null), 5);
               _.delay(() => {
-                expect(getSearchInputSpinner(element)).to.eq(null);
+                assert.deepEqual(getSearchInputSpinner(element), null);
                 done();
               }, 15)
             });
@@ -238,7 +239,7 @@ describe('SearchablePicklist', () => {
         Simulate.click(getSearchLink(element));
 
         _.delay(() => {
-          expect(getSearchWarning(element)).to.not.eq(null);
+          assert.notDeepEqual(getSearchWarning(element), null);
           done();
         }, 10);
       });
@@ -248,31 +249,31 @@ describe('SearchablePicklist', () => {
   describe('picklist', () => {
     it('renders', () => {
       const element = renderComponent(SearchablePicklist, getProps());
-      expect(getPicklist(element)).to.exist;
+      assert.isNotNull(getPicklist(element));
     });
 
     it('displays the no options message if no options are available', () => {
       const element = renderComponent(SearchablePicklist, getProps({
         options: []
       }));
-      expect(element.querySelector('.alert')).to.have.class('warning');
+      assert.isTrue($(element.querySelector('.alert')).hasClass('warning'));
     });
 
     it('displays the exact search prompt if input is entered', () => {
       const element = renderComponent(SearchablePicklist, getProps());
-      expect(getSearchPrompt(element)).to.equal(null);
+      assert.equal(getSearchPrompt(element), null);
 
       simulateTextInput(element);
-      expect(getSearchPrompt(element)).to.not.equal(null);
+      assert.notEqual(getSearchPrompt(element), null);
     });
 
     it('hides the exact search prompt if input is removed', () => {
       const element = renderComponent(SearchablePicklist, getProps());
       simulateTextInput(element);
-      expect(getSearchPrompt(element)).to.not.equal(null);
+      assert.notEqual(getSearchPrompt(element), null);
 
       simulateTextInput(element, '');
-      expect(getSearchPrompt(element)).to.equal(null);
+      assert.equal(getSearchPrompt(element), null);
     });
 
     it('hides the exact search prompt if the no options message is visible', (done) => {
@@ -285,8 +286,8 @@ describe('SearchablePicklist', () => {
       Simulate.click(getSearchLink(element));
 
       _.delay(() => {
-        expect(getSearchWarning(element)).to.not.equal(null);
-        expect(getSearchPrompt(element)).to.equal(null);
+        assert.notEqual(getSearchWarning(element), null);
+        assert.equal(getSearchPrompt(element), null);
         done();
       }, 10);
     });
@@ -298,7 +299,7 @@ describe('SearchablePicklist', () => {
       const picklist = getPicklist(element);
       const selectedOption = picklist.querySelector('.picklist-option-selected');
 
-      expect(selectedOption.innerText).to.equal('Pesto');
+      assert.equal(selectedOption.innerText, 'Pesto');
     });
 
     it('calls onSelection when a picklist option is clicked', () => {
@@ -311,7 +312,7 @@ describe('SearchablePicklist', () => {
 
       Simulate.click(option[1]);
 
-      expect(stub).to.have.been.calledWith({
+      sinon.assert.calledWith(stub, {
         title: 'Pesto',
         value: 'Pesto'
       });
@@ -325,14 +326,14 @@ describe('SearchablePicklist', () => {
         selectedOptions: [{title: 'Pesto', value: 'Pesto'}]
       }));
 
-      expect(getSelectedOptions(element)).to.exist;
+      assert.isNotNull(getSelectedOptions(element));
     });
 
     it('does not render if selectedOptions is empty', () => {
       const stub = sinon.stub();
       const element = renderComponent(SearchablePicklist, getProps());
 
-      expect(getSelectedOptions(element)).to.not.exist;
+      assert.isNull(getSelectedOptions(element));
     });
 
     it('calls onClickSelectedOption when a selectedOptions item is clicked', () => {
@@ -351,7 +352,7 @@ describe('SearchablePicklist', () => {
 
       Simulate.click(option[0]);
 
-      expect(stub).to.have.been.calledWith({
+      sinon.assert.calledWith(stub, {
         group: "Selected Values",
         title: 'Pesto',
         value: 'Pesto'

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import { Simulate } from 'react-addons-test-utils';
 import { renderPureComponent } from '../../helpers';
@@ -22,8 +23,8 @@ describe('Header', () => {
 
     element = renderPureComponent(Header(props));
 
-    expect(element).to.exist;
-    expect(element).to.have.class('testing-modal-header');
+    assert.isNotNull(element);
+    assert.isTrue($(element).hasClass('testing-modal-header'));
   });
 
   it('renders a title when given', () => {
@@ -33,7 +34,7 @@ describe('Header', () => {
 
     element = renderPureComponent(Header(props));
 
-    expect(element).to.have.text('My Testing Header');
+    assert.equal($(element).text(), 'My Testing Header');
   });
 
   it('calls onDismiss when the close icon is clicked', () => {
@@ -47,6 +48,6 @@ describe('Header', () => {
 
     Simulate.click(closeIcon);
 
-    expect(props.onDismiss.calledOnce).to.be.true;
+    assert.isTrue(props.onDismiss.calledOnce);
   });
 });

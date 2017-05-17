@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 import { renderPureComponent } from '../../helpers';
 
@@ -19,7 +20,7 @@ describe('Content', () => {
 
     element = renderPureComponent(Content(props));
 
-    expect(element).to.exist;
-    expect(element).to.have.class('testing-modal-content');
+    assert.isNotNull(element);
+    assert.isTrue($(element).hasClass('testing-modal-content'));
   });
 });

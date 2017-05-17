@@ -56,7 +56,7 @@ function xhrPromise(method, url, file, uploadUpdate, dispatch) {
 
     xhr.setRequestHeader('Content-type', file.type);
 
-    xhr.send();
+    xhr.send(file);
   });
 }
 
@@ -71,7 +71,7 @@ export const uploadFile = (uploadId, file) => dispatch => {
 
   return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadUpdate, dispatch)
     .then(resp => JSON.parse(resp.responseText))
-    .then(() => {
+    .then(resp => {
       dispatch(updateSucceeded('uploads', uploadUpdate));
 
       dispatch(
@@ -81,7 +81,16 @@ export const uploadFile = (uploadId, file) => dispatch => {
         })
       );
 
+      dispatch(
+        updateFromServer('input_schemas', {
+          id: resp.resource.id,
+          total_rows: resp.resource.total_rows
+        })
+      );
+
       dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
+
+      return resp;
     })
     .catch(err => dispatch(updateFailed('uploads', uploadUpdate, err.xhr.status, err.percent)));
 };
@@ -130,9 +139,8 @@ const pollForOutputSchema = uploadId => (dispatch, getState) => {
           })
           .value();
 
-        console.log('\n\nHEY', outputSchemaIds);
-
-        dispatch(subscribeToUpload(dispatch, upload));
+        // TODO: keep this from updating total rows if it's null
+        dispatch(subscribeToUpload(upload));
 
         dispatch(
           push(Links.showOutputSchema(uploadId, upload.schemas[0].id, outputSchemaIds[0])(routing.location))
@@ -282,20 +290,26 @@ function createTableAndSubscribeToTransform(transform) {
       dispatch(createTable(tableName));
     }
     const channelName = `transform_progress:${transform.id}`;
-    dispatch(joinChannel(channelName, {
-      max_ptr: (maxPtr) => {
-        dispatch(updateFromServer('transforms', {
-          id: transform.id,
-          contiguous_rows_processed: maxPtr.end_row_offset
-        }));
-      },
-      errors: (errorsMsg) => {
-        dispatch(updateFromServer('transforms', {
-          id: transform.id,
-          num_transform_errors: errorsMsg.count
-        }));
-      }
-    }));
+    dispatch(
+      joinChannel(channelName, {
+        max_ptr: maxPtr => {
+          dispatch(
+            updateFromServer('transforms', {
+              id: transform.id,
+              contiguous_rows_processed: maxPtr.end_row_offset
+            })
+          );
+        },
+        errors: errorsMsg => {
+          dispatch(
+            updateFromServer('transforms', {
+              id: transform.id,
+              num_transform_errors: errorsMsg.count
+            })
+          );
+        }
+      })
+    );
   };
 }
 
@@ -313,13 +327,20 @@ function subscribeToOutputSchema(outputSchema) {
   return dispatch => {
     const channelName = `output_schema:${outputSchema.id}`;
 
-    dispatch(joinChannel(channelName, {
-      update: (updatedOutputSchema) => {
-        dispatch(updateFromServer('output_schemas', toOutputSchema({
-          ...outputSchema,
-          ...updatedOutputSchema
-        })));
-      }
-    }));
+    dispatch(
+      joinChannel(channelName, {
+        update: updatedOutputSchema => {
+          dispatch(
+            updateFromServer(
+              'output_schemas',
+              toOutputSchema({
+                ...outputSchema,
+                ...updatedOutputSchema
+              })
+            )
+          );
+        }
+      })
+    );
   };
 }

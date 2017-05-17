@@ -29,7 +29,7 @@ describe('actions/showOutputSchema', () => {
       const db = store.getState().db;
       const oldSchema = _.find(db.output_schemas, { id: 18 });
       const oldColumn = _.find(db.output_columns, { id: 50 });
-      const newType = 'SoQLNumber';
+      const newType = 'number';
 
       const newOutputCols = outputColumnsWithChangedType(db, oldSchema, oldColumn, newType);
 
@@ -69,7 +69,7 @@ describe('actions/showOutputSchema', () => {
       const db = store.getState().db;
       const oldSchema = _.find(db.output_schemas, { id: 18 });
       const oldColumn = _.find(db.output_columns, { id: 50 });
-      const newType = 'SoQLNumber';
+      const newType = 'number';
 
       const newOutputCols = outputColumnsWithChangedType(db, oldSchema, oldColumn, newType);
 

@@ -35,7 +35,7 @@ describe('RowDetails', () => {
     }));
     store.dispatch(upsertFromServer('transforms', {
       id: 620,
-      output_soql_type: 'SoQLText'
+      output_soql_type: 'text'
     }));
     const element = renderComponentWithStore(RowDetails, {}, store);
     assert.isNotNull(element);
@@ -64,7 +64,7 @@ describe('RowDetails', () => {
     }));
     store.dispatch(upsertFromServer('transforms', {
       id: 620,
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       contiguous_rows_processed: 15
     }));
     const element = renderComponentWithStore(RowDetails, {}, store);

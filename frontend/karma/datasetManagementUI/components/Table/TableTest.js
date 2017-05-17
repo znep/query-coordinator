@@ -60,7 +60,7 @@ const defaultProps = {
           }
         ],
         "transform_expr": "to_number(`id`)",
-        "output_soql_type": "SoQLNumber",
+        "output_soql_type": "number",
         "id": 7883,
         "completed_at": "2017-05-02T21:34:09",
         "__status__": {
@@ -89,7 +89,7 @@ const defaultProps = {
           }
         ],
         "transform_expr": "`case_number`",
-        "output_soql_type": "SoQLText",
+        "output_soql_type": "text",
         "id": 7884,
         "completed_at": "2017-05-02T21:34:09",
         "__status__": {
@@ -119,7 +119,7 @@ const defaultProps = {
           }
         ],
         "transform_expr": "to_floating_timestamp(`date`)",
-        "output_soql_type": "SoQLFloatingTimestamp",
+        "output_soql_type": "calendar_date",
         "id": 7885,
         "completed_at": "2017-05-02T21:34:09",
         "__status__": {

@@ -26,9 +26,9 @@ const alertTranslationKey = containerElement.getAttribute('data-alert-translatio
 const initialState = Immutable.fromJS({
   activities: [],
   loadingFeed: false,
-  filtering: {
-    eventType: 'All',
-    eventStatus: 'All',
+  filter: {
+    event: 'All',
+    status: 'All',
     dateFrom: null,
     dateTo: null
   },

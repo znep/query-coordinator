@@ -2835,6 +2835,22 @@ en:
       canvas:
         path_must_be_unique: Path already exists; please choose a different one.
         title_cannot_be_blank: Please enter a title.
+      comment_moderation:
+        author: Author
+        approve: Approve
+        comment: Comment
+        dataset: Dataset
+        moderation: Moderation
+        moderate_comments: Moderate Comments
+        no_comments: No comments match your current filter.
+        reject: Reject
+        show: Show
+        status: Status
+        statuses:
+          all: All
+          approved: Approved
+          pending: Pending
+          rejected: Rejected
       connector:
         actions: Actions
         add_connector: Add Connector

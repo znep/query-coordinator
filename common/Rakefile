@@ -25,7 +25,6 @@ Dir.glob('site_chrome/lib/tasks/*.rake').each(&method(:load))
 desc 'Run linter'
 task lint: :deps do
   npm('karma_config', 'run lint')
-  npm('site_chrome', 'run lint')
 end
 
 task :deps do

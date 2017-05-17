@@ -53,7 +53,7 @@ describe('components/ShowOutputSchema', () => {
     const store = getStoreWithOutputSchema();
     const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
     expect(_.map(element.querySelectorAll('.colName'), 'innerText')).to.eql(['arrest', 'block']);
-    expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
+    expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['text', 'text']);
     expect(_.map(element.querySelectorAll('.colErrors'), 'innerText')).to.eql([
       I18n.show_output_schema.column_header.scanning,
       I18n.show_output_schema.column_header.scanning
@@ -219,7 +219,7 @@ describe('components/ShowOutputSchema', () => {
 
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
       expect(_.map(element.querySelectorAll('.colName'), 'innerText')).to.eql(['arrest', 'block']);
-      expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
+      expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['text', 'text']);
       expect(_.map(element.querySelectorAll('.statusText'), 'innerText')).to.eql([
         '1' + I18n.show_output_schema.column_header.error_exists,
         '42' + I18n.show_output_schema.column_header.errors_exist
@@ -243,7 +243,7 @@ describe('components/ShowOutputSchema', () => {
 
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
       expect(_.map(element.querySelectorAll('.colName'), 'innerText')).to.eql(['arrest', 'block']);
-      expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
+      expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['text', 'text']);
       expect(_.map(element.querySelectorAll('.statusText'), 'innerText')).to.eql([
         '1' + SubI18n.error_exists_scanning,
         '42' + SubI18n.errors_exist_scanning

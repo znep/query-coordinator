@@ -205,8 +205,10 @@ export function outputColumnsWithChangedType(db, oldOutputSchema, oldColumn, new
         'expected transform', transform.id, 'to have 1 input column; has', inputColumns.length
       );
     }
+    // This can only be called if the new type is a valid conversion target, so
+    // conversionFunction will be defined.
     return (outputColumn.id === oldColumn.id) ?
-      `to_${soqlProperties[newType].canonicalName}(${inputColumns[0].field_name})` :
+      `${soqlProperties[newType].conversionFunction}(${inputColumns[0].field_name})` :
       transformExpr;
   };
   return oldOutputColumns.map((c) => (

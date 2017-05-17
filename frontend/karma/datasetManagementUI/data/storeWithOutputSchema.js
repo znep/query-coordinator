@@ -40,19 +40,19 @@ export function getStoreWithOutputSchema(store = getDefaultStore()) {
   store.dispatch(upsertFromServer('input_columns', {
     id: 1,
     field_name: 'arrest',
-    soql_type: 'SoQLText',
+    soql_type: 'text',
     input_schema_id: 4
   }));
   store.dispatch(upsertFromServer('input_columns', {
     id: 2,
     field_name: 'block',
-    soql_type: 'SoQLText',
+    soql_type: 'text',
     input_schema_id: 4
   }));
   store.dispatch(upsertFromServer('transforms', {
     id: 1,
     transform_expr: 'arrest',
-    output_soql_type: 'SoQLText',
+    output_soql_type: 'text',
     transform_input_columns: [{
       input_column_id: 1
     }]
@@ -60,7 +60,7 @@ export function getStoreWithOutputSchema(store = getDefaultStore()) {
   store.dispatch(upsertFromServer('transforms', {
     id: 2,
     transform_expr: 'block',
-    output_soql_type: 'SoQLText',
+    output_soql_type: 'text',
     transform_input_columns: [{
       input_column_id: 2
     }]

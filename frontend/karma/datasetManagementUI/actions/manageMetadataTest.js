@@ -46,7 +46,7 @@ describe('actions/manageMetadata', () => {
               {
                 transform: {
                   transform_expr: 'to_number(id)',
-                  output_soql_type: 'SoQLNumber',
+                  output_soql_type: 'number',
                   id: 6105,
                   completed_at: '2017-04-03T15:49:34',
                   transform_input_columns: [
@@ -62,7 +62,7 @@ describe('actions/manageMetadata', () => {
               {
                 transform: {
                   transform_expr: 'case_number',
-                  output_soql_type: 'SoQLText',
+                  output_soql_type: 'text',
                   id: 6106,
                   completed_at: '2017-04-03T15:49:34',
                   transform_input_columns: [

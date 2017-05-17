@@ -26,19 +26,19 @@ export function getStoreWithOneColumn(store = getDefaultStore()) {
   store.dispatch(insertFromServer('input_columns', {
     id: 1,
     field_name: 'arrest',
-    soql_type: 'SoQLText',
+    soql_type: 'text',
     input_schema_id: 4
   }))
   store.dispatch(insertFromServer('input_columns', {
     id: 2,
     field_name: 'block',
-    soql_type: 'SoQLText',
+    soql_type: 'text',
     input_schema_id: 4
   }))
   store.dispatch(insertFromServer('transforms', {
     id: 1,
     transform_expr: 'arrest',
-    output_soql_type: 'SoQLText',
+    output_soql_type: 'text',
     transform_input_columns: [{
       input_column_id: 1
     }]

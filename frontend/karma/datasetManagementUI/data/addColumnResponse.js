@@ -9,7 +9,7 @@ export default {
             }
           ],
           "transform_expr": "to_text(arrest)",
-          "output_soql_type": "SoQLText",
+          "output_soql_type": "text",
           "id": 90112,
           "completed_at": "2017-04-05T16:20:37"
         },
@@ -27,7 +27,7 @@ export default {
             }
           ],
           "transform_expr": "to_text(block)",
-          "output_soql_type": "SoQLText",
+          "output_soql_type": "text",
           "id": 90113,
           "completed_at": "2017-04-05T16:28:08"
         },

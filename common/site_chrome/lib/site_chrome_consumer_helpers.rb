@@ -54,8 +54,12 @@ module SiteChromeConsumerHelpers
   end
 
   def site_chrome_analytics_tags
-    [site_chrome_google_analytics_tag, site_chrome_tealium_tags, site_chrome_webtrends_tag].
-      map(&:to_s).join.html_safe
+    if using_custom_header_footer?
+      site_chrome_custom_content.analytics_html
+    else
+      [site_chrome_google_analytics_tag, site_chrome_tealium_tags, site_chrome_webtrends_tag].
+        map(&:to_s).join.html_safe
+    end
   end
 
   def site_chrome_stylesheet_tag
@@ -68,7 +72,7 @@ module SiteChromeConsumerHelpers
   def site_chrome_javascript_tag
     if using_custom_header_footer?
       site_chrome_js_dir = "#{SocrataSiteChrome::Engine.root}/app/assets/javascripts/socrata_site_chrome"
-      node_modules_dir = "#{SocrataSiteChrome::Engine.root}/node_modules"
+      node_modules_dir = "#{Rails.root}/node_modules"
 
       safe_join([
         File.read("#{site_chrome_js_dir}/disable_preview.js"),

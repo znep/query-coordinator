@@ -103,7 +103,15 @@ module.exports = function(config) {
       format: '%b %T: %m',
       terminal: true
     },
-    browsers: ['ChromeNoSandboxHeadless'],
+    browsers: ['PhantomJS'],
+    phantomjsLauncher: {
+      options: {
+        viewportSize: {
+          width: 1024,
+          height: 768
+        }
+      }
+    },
     browserNoActivityTimeout: 1000 * 55,
     browserDisconnectTimeout: 1000 * 10,
     browserDisconnectTolerance: 5,

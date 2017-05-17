@@ -2637,9 +2637,30 @@ en:
         discoverable: Discoverable
         last_updated_date: Last Updated Date
         name: Name
-        owned_by: Owned By
+        owner: Owner
         type: Type
         visibility: Visibility
+      visibility_flyout:
+        open: Open
+        datalens_approved:
+          true: Data Lens approved
+          false: Data Lens not approved
+        hidden:
+          true: Hidden
+          false: Not Hidden
+        internal: Internal
+        moderation_approved:
+          true: View Moderation approved
+          false: View Moderation not approved
+        public:
+          true: Public
+          false: Private
+        published:
+          true: Published
+          false: Unpublished
+        routing_approved:
+          true: Routing and Approval
+          false: Routing and Approval
     title: Asset Inventory
   number:
     currency:

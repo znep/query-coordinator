@@ -60,7 +60,7 @@ module InternalAssetManagerHelper
   # Defines the default order of the columns for the internal asset manager table.
   # Eventually this will be configurable on a per-user basis.
   def internal_asset_manager_table_columns
-    %w(type name lastUpdatedDate ownedBy accessLevel category visibility discoverable)
+    %w(type name lastUpdatedDate category visibility) # TODO: add "owner" when it's available
   end
 
 end

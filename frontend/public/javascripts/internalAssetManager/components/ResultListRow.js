@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
+import VisibilityIcon from './VisibilityIcon';
+import _ from 'lodash';
 
 export class ResultListRow extends React.Component {
   constructor(props) {
@@ -13,27 +15,13 @@ export class ResultListRow extends React.Component {
   }
 
   renderCell(columnName, index) {
-    const {
-      description,
-      // TODO: will likely need isPublished, provenenace, visibleToAnonmyous once their need is understood.
-      // isPublished,
-      link,
-      name,
-      // provenance,
-      type,
-      updatedAt
-      // visibleToAnonymous
-    } = this.props;
+    const { description, link, name, type, updatedAt } = this.props;
 
     const cellTag = (value) => (
       <td scope="row" className={columnName} key={`${columnName}-${index}`}>{value}</td>
     );
 
     switch (columnName) {
-      case 'accessLevel':
-        return cellTag('TODO');
-      case 'discoverable':
-        return cellTag('TODO');
       case 'lastUpdatedDate': {
         const dateString = moment(updatedAt).format('LL');
         return cellTag(dateString);
@@ -45,13 +33,19 @@ export class ResultListRow extends React.Component {
             <span className="description">{description}</span>
           </div>
         ));
-      case 'ownedBy':
+      case 'owner':
         return cellTag('TODO');
-      case 'type':
+      case 'type': {
         return cellTag(<span className={getIconClassForDisplayType(type)} />);
-      case 'visibility':
-        // TODO: some stuff with visibleToAnonymous and isPublished and maybe provenance?
-        return cellTag('TODO');
+      }
+      case 'visibility': {
+        const visibilityIconProps = _.pick(this.props,
+          ['isDataLensApproved', 'isHidden', 'isModerationApproved', 'isPublic', 'isPublished',
+            'isRoutingApproved', 'visibleToAnonymous']
+        );
+
+        return cellTag(<VisibilityIcon {...visibilityIconProps} />);
+      }
       default:
         return cellTag(this.props[columnName]);
     }
@@ -70,13 +64,18 @@ ResultListRow.propTypes = {
   category: PropTypes.string,
   columns: PropTypes.array.isRequired,
   description: PropTypes.string,
-  // isPublished: PropTypes.bool,
+  isDataLensApproved: PropTypes.bool,
+  isHidden: PropTypes.bool,
+  isModerationApproved: PropTypes.bool,
+  isPublic: PropTypes.bool.isRequired,
+  isPublished: PropTypes.bool.isRequired,
+  isRoutingApproved: PropTypes.bool,
   link: PropTypes.string,
   name: PropTypes.string,
   // provenance: PropTypes.string,
   type: PropTypes.string,
-  updatedAt: PropTypes.string
-  // visibleToAnonymous: PropTypes.bool
+  updatedAt: PropTypes.string,
+  visibleToAnonymous: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({

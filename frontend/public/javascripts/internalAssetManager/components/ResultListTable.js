@@ -21,13 +21,19 @@ export class ResultListTable extends React.Component {
   }
 
   resultListRowProps(result) {
-    // TODO: Need "owned by"
+    // TODO: Need "owner"
     return _.merge(
       {
         category: result.classification.domain_category,
-        isPublished: !!result.metadata.is_published,
+        isDataLensApproved: result.metadata.is_datalens_approved,
+        isHidden: result.metadata.is_hidden,
+        isModerationApproved: result.metadata.is_moderation_approved,
+        isPublic: result.metadata.is_public,
+        // NOTE: this may change from a bool to a string for publication state "pending" vs "rejected":
+        isPublished: result.metadata.is_published,
+        isRoutingApproved: result.metadata.is_routing_approved,
         link: result.link,
-        visibleToAnonymous: !!result.metadata.visible_to_anonymous
+        visibleToAnonymous: result.metadata.visible_to_anonymous
       },
       _.pick(result.resource, ['description', 'name', 'provenance', 'type', 'updatedAt'])
     );
@@ -58,7 +64,7 @@ export class ResultListTable extends React.Component {
         <tr>
           {columns.map((columnName) => (
             <th {...columnHeaderProps(columnName)}>
-              {columnTranslation(columnName)}
+              <span className="column-name">{columnTranslation(columnName)}</span>
               <span className="ascending-arrow socrata-icon-arrow-down" />
               <span className="descending-arrow socrata-icon-arrow-up" />
             </th>

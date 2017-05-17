@@ -67,7 +67,8 @@ export const ceteraUtils = (() => {
       only = null,
       order = DEFAULT_ORDER,
       pageNumber = 1,
-      q = null
+      q = null,
+      showVisibility = false
     }) => {
       const paramObj = {
         categories: category,
@@ -78,7 +79,8 @@ export const ceteraUtils = (() => {
         only: assetTypeMapping(only),
         order,
         q,
-        search_context: domain
+        search_context: domain,
+        show_visibility: !!showVisibility
       };
 
       const paramString = _.reduce(paramObj, function(result, value, key) {

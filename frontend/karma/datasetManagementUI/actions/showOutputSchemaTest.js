@@ -225,7 +225,7 @@ describe('actions/showOutputSchema', () => {
         action.type === 'UPSERT_FROM_SERVER'
         && action.tableName === 'transforms'
         && action.newRecord.id === newTransformId
-        && action.newRecord.output_soql_type === 'SoQLText');
+        && action.newRecord.output_soql_type === 'text');
 
       assert.isAtLeast(expectedColumn.length, 1);
       assert.isAtLeast(expectedTransform.length, 1);

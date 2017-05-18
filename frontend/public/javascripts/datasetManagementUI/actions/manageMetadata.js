@@ -1,21 +1,16 @@
 import _ from 'lodash';
 import { push } from 'react-router-redux';
+import uuid from 'uuid';
 import * as Links from '../links';
 import { checkStatus, getJson, socrataFetch } from '../lib/http';
-import { parseDate } from '../lib/parseDate';
+import { edit, setView } from './database';
 import {
-  updateStarted,
-  updateFailed,
-  upsertStarted,
-  upsertSucceeded,
-  upsertFailed,
-  edit,
-  batch,
-  setView,
-  outputSchemaUpsertStarted,
-  outputSchemaUpsertSucceeded,
-  outputSchemaUpsertFailed
-} from './database';
+  apiCallStarted,
+  apiCallSucceeded,
+  apiCallFailed,
+  SAVE_COLUMN_METADATA,
+  SAVE_DATASET_METADATA
+} from './apiCalls';
 import { insertChildrenAndSubscribeToOutputSchema } from './manageUploads';
 import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
@@ -121,14 +116,12 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     }
   };
 
-  const updateRecord = {
-    id: fourfour
-  };
+  const callId = uuid();
 
   dispatch(
-    updateStarted('views', {
-      ...updateRecord,
-      payload: datasetMetadata
+    apiCallStarted(callId, {
+      operation: SAVE_DATASET_METADATA,
+      params: {}
     })
   );
 
@@ -141,10 +134,12 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     .then(resp => {
       dispatch(setView(resp));
 
+      dispatch(apiCallSucceeded(callId));
+
       dispatch(redirectAfterInterval());
     })
     .catch(error => {
-      dispatch(updateFailed('views', updateRecord, error));
+      dispatch(apiCallFailed(callId, error));
 
       error.response.json().then(({ message }) => {
         const localizedMessage = getLocalizedErrorMessage(message);
@@ -193,13 +188,14 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 
   const upload = db.uploads[inputSchema.upload_id];
 
-  const newOutputSchema = {
-    input_schema_id: inputSchema.id
-  };
+  const callId = uuid();
 
-  const startOperations = [outputSchemaUpsertStarted(), upsertStarted('output_schemas', newOutputSchema)];
-
-  dispatch(batch(startOperations));
+  dispatch(
+    apiCallStarted(callId, {
+      operation: SAVE_COLUMN_METADATA,
+      params: {}
+    })
+  );
 
   return socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
@@ -208,11 +204,8 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     .then(checkStatus)
     .then(getJson)
     .catch(error => {
-      const errorOperations = [
-        upsertFailed('output_schemas', newOutputSchema, error),
-        outputSchemaUpsertFailed()
-      ];
-      dispatch(batch(errorOperations));
+      dispatch(apiCallFailed(callId, error));
+
       error.response.json().then(err => {
         const errorDetails = err.params || {};
         let errorMessage;
@@ -243,16 +236,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
       });
     })
     .then(resp => {
-      const successOperations = [
-        outputSchemaUpsertSucceeded(),
-        upsertSucceeded('output_schemas', newOutputSchema, {
-          id: resp.resource.id,
-          inserted_at: parseDate(resp.resource.inserted_at)
-        })
-      ];
-
-      dispatch(batch(successOperations));
-
+      dispatch(apiCallSucceeded(callId));
       dispatch(redirectAfterInterval());
       return dispatch(insertChildrenAndSubscribeToOutputSchema(resp.resource));
     });

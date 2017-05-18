@@ -7,6 +7,12 @@ http://www.socrata.com
 -->
 
   <head>
+    <%- if enable_site_chrome? -%>
+      <%= site_chrome_analytics_tags %>
+      <%= site_chrome_meta_viewport_tag %>
+      <%= site_chrome_stylesheet_tag %>
+    <%- end -%>
+
     <%- if params[:controller] == "data_lens" -%>
       <meta name="page_name" content="Data Lens">
     <%- end -%>
@@ -24,11 +30,6 @@ http://www.socrata.com
     <!--[if IE 9]><%= rendered_stylesheet_tag 'ie9' %><![endif]-->
 
     <%= get_favicon_tag %>
-
-    <%- if enable_site_chrome? -%>
-      <%= site_chrome_meta_viewport_tag %>
-      <%= site_chrome_stylesheet_tag %>
-    <%- end -%>
 
     <%= yield :head %>
 
@@ -67,10 +68,6 @@ http://www.socrata.com
 
 
   <%= render_ga_tracking %>
-
-  <%- if enable_site_chrome? -%>
-    <%= site_chrome_analytics_tags %>
-  <%- end -%>
 
   <%= render 'templates/mixpanel_tracking' %>
   <%= render_pendo_tracker %>

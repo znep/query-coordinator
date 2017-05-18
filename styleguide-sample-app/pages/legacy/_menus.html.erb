@@ -1,0 +1,10 @@
+<h3 class="h6 styleguide-subheader">Menu Anchored to the left side</h3>
+<button class="btn btn-default" data-menu-toggle="menu-1" data-toggle>Open Left Menu</button>
+<%= partial "legacy/skeletons/offscreen_menu", :locals => { :id => "menu-1", :anchor => "left", :menu_header_title => "Hello, I'm Menu One." } %>
+<%= partial "code_sample", locals: { component: "legacy/skeletons/offscreen_menu", :partial_locals => {:id => "menu-1", :anchor => "left", :menu_header_title => "Hello, I'm Menu One." }} %>
+
+<h3 class="h6 styleguide-subheader">Menu Anchored to the right side</h3>
+<button class="btn btn-default" data-menu-toggle="menu-2" data-toggle>Open Right Menu</button>
+<%= partial "legacy/skeletons/offscreen_menu", :locals => { :id => "menu-2", :anchor => "right", :menu_header_title => "Hello, I'm Menu Two." } %>
+<%= partial "code_sample", locals: { component: "legacy/skeletons/offscreen_menu", :partial_locals => {:id => "menu-2", :anchor => "right", :menu_header_title => "Hello, I'm Menu Two." }} %>
+

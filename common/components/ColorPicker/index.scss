@@ -1,0 +1,102 @@
+.color-picker {
+  position: relative;
+  align-self: flex-end;
+  z-index: 999;
+
+  .hidden {
+    visibility: hidden;
+  }
+}
+
+.color-picker-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.color-frame {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  background-color: #efefef;
+  border: solid 1px #d8d8d8;
+  transition: border-color 0.15s ease-in;
+
+  &:hover {
+    border-color: $primary;
+  }
+
+  &:focus {
+    border-color: $alternate-3-light;
+    outline: solid 2px $alternate-3;
+  }
+
+  .caret {
+    display: inline-flex;
+    align-items: center;
+    width: 26px;
+    height: 100%;
+
+    .socrata-icon-arrow-down {
+      margin: auto;
+      font-size: 12px;
+    }
+  }
+}
+
+.selected-color-frame {
+  width: calc(100% - 26px);
+  height: 100%;
+}
+
+.color-buckets-container {
+  display: inline-block;
+  position: absolute;
+  z-index: 1;
+  top: calc(100% - 1px);
+  left: 0;
+  padding: 7px;
+  background-color: #fff;
+  border: solid 1px #d8d8d8;
+
+  &.reveal-from-top {
+    top: -121px;
+  }
+
+  input {
+    width: 100%;
+
+    &:focus {
+      outline: solid 2px $alternate-3;
+    }
+  }
+}
+
+.color-buckets {
+  display: flex;
+  flex-wrap: wrap;
+  width: 195px;
+}
+
+.color-bucket {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  border: solid 1px $white;
+}
+
+.color-24 .color-bucket:nth-child(8n) {
+  margin-right: 0;
+}
+
+.selected-color,
+.color-bucket:hover,
+.color-bucket:focus {
+  outline: 2px solid $alternate-3;
+}
+

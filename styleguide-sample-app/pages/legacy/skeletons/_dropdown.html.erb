@@ -1,0 +1,10 @@
+<div>
+  <div class="dropdown btn btn-default" data-dropdown data-orientation="bottom" data-selectable>
+    <span><%= title %></span><span class="socrata-icon-arrow-down"></span>
+    <ul class="dropdown-options">
+      <% options.each do |option| %>
+        <li><a href="#"><%= option %></a></li>
+      <% end %>
+    </ul>
+  </div>
+</div>

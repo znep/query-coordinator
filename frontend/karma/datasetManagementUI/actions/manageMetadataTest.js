@@ -12,6 +12,10 @@ import {
   SET_VIEW,
   UPDATE_SUCCEEDED
 } from 'actions/database';
+import {
+  API_CALL_STARTED,
+  SAVE_DATASET_METADATA
+} from 'actions/apiCalls';
 import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX } from 'lib/customMetadata';
 import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
 import { createUpload } from 'actions/manageUploads';
@@ -76,7 +80,7 @@ describe('actions/manageMetadata', () => {
   });
 
   describe('actions/manageMetadata/saveDatasetMetadata', () => {
-    it('dispatches an insert started action with correct data', done => {
+    it('dispatches an api call started action with correct data', done => {
       const fakeStore = mockStore(store.getState());
 
       const fourfour = Object.keys(store.getState().db.views)[0];
@@ -85,11 +89,9 @@ describe('actions/manageMetadata', () => {
         .then(() => {
           const action = store.getActions()[1];
 
-          assert.equal(action.type, UPDATE_STARTED);
+          assert.equal(action.type, API_CALL_STARTED);
 
-          assert.equal(action.tableName, 'views');
-
-          assert.equal(action.updates.id, fourfour);
+          assert.equal(action.operation, SAVE_DATASET_METADATA);
 
           done();
         })
@@ -111,7 +113,8 @@ describe('actions/manageMetadata', () => {
 
           assert.equal(action.id, fourfour);
 
-          assert.deepEqual(action.payload, metadata.model)
+          assert.deepEqual(action.payload, metadata.model);
+
           done();
         })
         .catch(err => {
@@ -167,7 +170,7 @@ describe('actions/manageMetadata', () => {
   describe('actions/manageMetadata/saveColumnMetadata', () => {
     beforeEach(done => {
       store.dispatch(createUpload({name: 'petty_crimes.csv'}))
-        .then(() => done())
+        .then(() => done());
     });
 
     it('dispatches an insert started action with correct data', done => {
@@ -188,17 +191,20 @@ describe('actions/manageMetadata', () => {
         });
     });
 
-    it('dispatches an insert succeeded action with correct data if server resonds with 200-level status', done => {
+it('dispatches an insert succeeded action with correct data if server resonds with 200-level status', done => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore.dispatch(saveColumnMetadata())
         .then(() => {
-          const action = fakeStore.getActions()[2].operations[1];
+          const action = fakeStore.getActions()[3];
 
           assert.equal(action.type, UPSERT_SUCCEEDED);
 
           assert.equal(action.tableName, 'output_schemas');
 
+          done();
+        })
+        .catch(err => {
           done();
         });
     });

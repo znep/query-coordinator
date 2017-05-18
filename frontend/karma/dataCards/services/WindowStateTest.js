@@ -96,17 +96,6 @@ describe('WindowState service', function() {
       });
       expect(WindowState.mouseClientX).to.equal(10);
       expect(WindowState.mouseClientY).to.equal(20);
-
-      body.dispatchEvent(generateFakeMouseMove(100, 200));
-
-      expect(WindowState.mousePosition$.value).to.deep.equal({
-        clientX: 100,
-        clientY: 200,
-        target: body
-      });
-      expect(WindowState.mouseClientX).to.equal(100);
-      expect(WindowState.mouseClientY).to.equal(200);
-
     });
   });
 

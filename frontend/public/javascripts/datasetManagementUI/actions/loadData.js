@@ -12,10 +12,6 @@ import {
   apiCallFailed,
   LOAD_ROWS
 } from 'actions/apiCalls';
-import {
-  STATUS_CALL_IN_PROGRESS,
-  STATUS_CALL_SUCCEEDED
-} from 'lib/apiCallStatus';
 import * as DisplayState from 'lib/displayState';
 import * as Selectors from 'selectors';
 import * as dsmapiLinks from 'dsmapiLinks';
@@ -24,10 +20,10 @@ export const PAGE_SIZE = 50;
 
 // only exported for tests...
 export function needToLoadAnything({ apiCalls, db }, displayState) {
+  // don't want to load if there's any matching api call -
+  // succeeded, in progress, or failed.
   const previousApiCall = _.find(apiCalls, (call) => (
-    (call.status === STATUS_CALL_IN_PROGRESS
-      || call.status === STATUS_CALL_SUCCEEDED)
-      && _.isEqual(call.params.displayState, displayState)
+    _.isEqual(call.params.displayState, displayState)
   ));
   switch (displayState.type) {
     case DisplayState.NORMAL: {

@@ -324,7 +324,7 @@ module CommonMetadataMethods
   def translate_core_metadata_to_legacy_structure(nbe_metadata)
     nbe_columns = nbe_metadata.fetch(:columns, []).each_with_object({}) do |column, accum|
       accum[column[:fieldName]] = {
-        cardinality: column.dig(:cachedContents, :cardinality),
+        cardinality: column.dig(:cachedContents, :cardinality).to_i,
         computationStrategy: get_computation_strategy_legacy_structure(column),
         description: column[:description],
         fred: column[:renderTypeName],
@@ -341,7 +341,9 @@ module CommonMetadataMethods
     metadata = {
       columns: nbe_columns,
       permissions: {
-        isPublic: (nbe_metadata[:grants] || []).any? { |grant| grant[:flags].include?('public') }
+        isPublic: nbe_metadata.fetch(:grants, []).any? do |grant|
+          grant.fetch(:flags, []).include?('public')
+        end
       }
     }.with_indifferent_access
 

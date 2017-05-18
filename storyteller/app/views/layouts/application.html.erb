@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>">
 <head>
+  <%= site_chrome_analytics_tags %>
+
   <%= default_meta_tags() %>
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <title><%= page_title %></title>
@@ -58,7 +60,6 @@
 <% end -%>
 <%= storyteller_javascript_include_tag 'view' %>
 <%= render 'shared/google_analytics_script' %>
-<%= site_chrome_google_analytics_tag %>
 <%= site_chrome_javascript_tag %>
 
 <% if should_launch_print_dialog_on_page_load? %>

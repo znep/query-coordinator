@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 $(function() {
   // rendering
   var directive = {
@@ -14,12 +16,14 @@ $(function() {
         '.author img@alt': 'comment.user.displayName!',
         '.author .cellInner': 'comment.user.displayName!',
         '.comment .cellInner': function(c) {
-          return (new Date(c.item.createdAt * 1000)).toLocaleString();
+          return moment(c.item.createdAt * 1000).locale(blist.locale).format('LLL');
         },
         '.comment .commentBody': 'comment.body!',
         '.dataset .cellInner@href': 'comment.view.url',
         '.dataset .cellInner': 'comment.view.name!',
-        '.status .cellInner': 'comment.status',
+        '.status .cellInner': function(c) {
+          return $.t('screens.admin.comment_moderation.statuses.' + c.item.status.toLowerCase());
+        },
         '.status .approveComment@class+': function(c) {
           return (c.item.status == 'approved') ? 'disabled' : '';
         },

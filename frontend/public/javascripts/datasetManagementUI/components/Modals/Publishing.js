@@ -8,6 +8,8 @@ import ProgressBar from 'components/ProgressBar';
 import NotifyButton from 'components/NotifyButton';
 import * as ApplyRevision from 'actions/applyRevision';
 import { hideModal } from 'actions/modal';
+import ApiCallButton from 'components/ApiCallButton';
+import { APPLY_REVISION } from 'actions/apiCalls';
 import * as Selectors from 'selectors';
 import styles from 'styles/Modals/Publishing.scss';
 
@@ -25,8 +27,8 @@ function Publishing({ upsertJob, fourfour, percentUpserted, applyRevision, onCan
       status = 'inProgress';
       icon = <SocrataIcon className={styles.inProgress} name="public-open" />;
       button = <NotifyButton className={styles.button} />;
-
       break;
+
     case ApplyRevision.UPSERT_JOB_SUCCESSFUL:
       title = I18n.home_pane.publish_modal.successful.title;
       body = I18n.home_pane.publish_modal.successful.body;
@@ -39,27 +41,29 @@ function Publishing({ upsertJob, fourfour, percentUpserted, applyRevision, onCan
           {I18n.home_pane.publish_modal.to_primer}
         </a>
       );
-
       break;
+
     default:
       title = I18n.home_pane.publish_modal.failure.title;
       body = I18n.home_pane.publish_modal.failure.body;
       status = 'error';
       icon = <SocrataIcon className={styles.failure} name="close-circle" />;
-      button = [
-        <button
-          key="cancel"
-          onClick={onCancelClick}
-          className={styles.cancelButton}>
-          {I18n.common.cancel}
-        </button>,
-        <button
-          key="try-again"
-          className={styles.tryAgainButton}
-          onClick={() => applyRevision(upsertJob)}>
-          {I18n.common.try_again}
-        </button>
-      ];
+      button = (
+        <div>
+          <button
+            key="cancel"
+            onClick={onCancelClick}
+            className={styles.cancelButton}>
+            {I18n.common.cancel}
+          </button>
+          <ApiCallButton
+            additionalClassName={styles.tryAgainButton}
+            onClick={() => { applyRevision(upsertJob); }}
+            operation={APPLY_REVISION}>
+            {I18n.common.try_again}
+          </ApiCallButton>
+        </div>
+      );
   }
 
   return (

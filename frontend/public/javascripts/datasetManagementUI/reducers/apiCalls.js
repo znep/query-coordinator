@@ -21,7 +21,8 @@ export default function apiCalls(state = initialState, action) {
           id: action.id,
           status: STATUS_CALL_IN_PROGRESS,
           operation: action.operation,
-          params: action.params
+          params: action.params,
+          startedAt: new Date()
         }
       };
     }
@@ -31,7 +32,8 @@ export default function apiCalls(state = initialState, action) {
         ...state,
         [action.id]: {
           ...call,
-          status: STATUS_CALL_SUCCEEDED
+          status: STATUS_CALL_SUCCEEDED,
+          succeededAt: new Date()
         }
       };
     }
@@ -42,7 +44,8 @@ export default function apiCalls(state = initialState, action) {
         [action.id]: {
           ...call,
           status: STATUS_CALL_FAILED,
-          error: action.error
+          error: action.error,
+          failedAt: new Date()
         }
       };
     }

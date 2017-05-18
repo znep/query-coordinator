@@ -1,0 +1,33 @@
+@import 'react-datepicker';
+
+.date-range-picker {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 1px;
+  padding-right: 5px;
+
+  .date-range-picker-start,
+  .date-range-picker-end {
+    position: relative;
+
+    .date-picker-input {
+      height: 40px;
+      max-width: 145px;
+      padding-left: 31px;
+      padding-right: 10px;
+    }
+
+    .socrata-icon {
+      position: absolute;
+      z-index: 1;
+      width: 15px;
+      height: 15px;
+      left: 11px;
+      top: 11px;
+    }
+  }
+
+  .range-separator {
+    line-height: 2.5;
+  }
+}

@@ -54,6 +54,10 @@ module SocrataSiteChrome
       get_property_by_name('activation_state').dig(:value, :custom) == true
     end
 
+    def analytics_html
+      get_property_by_name('custom_analytics')['value'].to_s.html_safe
+    end
+
     # Using translation data in custom content, seed the translations in I18n so
     # the custom html can use them.
     def populate_translations

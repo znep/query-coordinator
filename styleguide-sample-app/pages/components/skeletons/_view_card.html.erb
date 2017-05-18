@@ -1,0 +1,31 @@
+<div id="<%= container_id %>"></div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var props = {
+      name: 'Chicago Crimes',
+      description: 'This dataset reflects <b>reported incidents</b> of crime that ' +
+        'occurred in the <i>City of Chicago</i> from 2001 to present, minus the most recent ' +
+        'seven days. Also this description is really long and might even ellipsify.',
+      url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
+      imageUrl: '/images/dataLensThumbnail.png',
+      icon: 'socrata-icon-cards',
+      metadataLeft: 'Updated Jan 1, 1970',
+      metadataRight: '1,234 views',
+      isPrivate: true,
+      linkProps: { target: '_blank' },
+      onClick: function(event) {
+        console.log(event);
+      }
+    };
+
+    ReactDOM.render(
+      React.createElement(
+        styleguide.ViewCard,
+        props<% if overlay -%>,
+        React.DOM.div({ className: 'btn btn-success' }, 'Click Me!')<% end -%>
+      ),
+      document.getElementById('<%= container_id %>')
+    );
+  });
+</script>

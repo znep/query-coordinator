@@ -11,11 +11,15 @@ def bundle(path, command)
 end
 
 def rspec(path)
-  sh("cd #{path} && rspec")
+  sh("cd #{path} && rspec") do |ok, res|
+    yield(ok, res) if block_given?
+  end
 end
 
 def guard(path)
-  sh("cd #{path} && guard")
+  sh("cd #{path} && guard") do |ok, res|
+    yield(ok, res) if block_given?
+  end
 end
 
 Dir.glob('tasks/*.rake').each(&method(:load))
@@ -24,7 +28,9 @@ Dir.glob('site_chrome/lib/tasks/*.rake').each(&method(:load))
 
 desc 'Run linter'
 task lint: :deps do
-  npm('karma_config', 'run lint')
+  npm('karma_config', 'run lint') do |ok, res|
+    raise 'Lint failed' unless ok
+  end
 end
 
 task :deps do

@@ -1,0 +1,23 @@
+<h3 class="styleguide-subheader">Basic Spinning Loader</h3>
+<p class="usage">Used in the context of loading screens where the spinner is placed in-line with a heading, centered in a staging area, or within a button.</p>
+
+<h4 class="h6 styleguide-subheader">Default</h4>
+<%= partial "code_sample", locals: { component: "elements/skeletons/spinner" } %>
+
+
+<h4 class="h6 styleguide-subheader">On a Dark Background</h4>
+<div class="dark-context">
+  <%= partial "elements/skeletons/spinner_dark", locals: { component: "elements/skeletons/spinner_dark" } %>
+</div>
+<pre class="usage">
+  <code class="language-markup">
+    <%= escape_html(partial "elements/skeletons/spinner_dark", locals: { component: "elements/skeletons/spinner_dark" }) %>
+  </code>
+</pre>
+
+
+<h4 class="h6 styleguide-subheader">Large variation</h4>
+<%= partial "code_sample", locals: { component: "elements/skeletons/spinner_large" } %>
+
+<h4 class="h6 styleguide-subheader">In a Button</h4>
+<%= partial "code_sample", locals: { component: "elements/skeletons/buttons/button_primary_block_spinner" } %>

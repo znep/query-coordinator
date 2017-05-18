@@ -1,0 +1,17 @@
+<div id="<%= container_id %>"></div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    var props = {
+      name: 'Carrots',
+      description: 'I bet you don\'t carrot all about what I write here for the description.',
+      url: 'https://en.wikipedia.org/wiki/Carrot',
+      imageUrl: '/images/carrot.jpg'
+    };
+
+    ReactDOM.render(
+      React.createElement(styleguide.ExternalViewCard, props),
+      document.getElementById('<%= container_id %>')
+    );
+  });
+</script>

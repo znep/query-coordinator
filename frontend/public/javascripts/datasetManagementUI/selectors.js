@@ -137,7 +137,6 @@ export function updatedOutputColumns(db, formDataModel) {
 export function currentAndIgnoredOutputColumns(db) {
   // TODO: remove filters once we get the status out of output schema
   const osIds = Object.keys(db.output_schemas)
-    .filter(key => key !== '__status__')
     .map(_.toNumber)
     .filter(key => !!key);
 

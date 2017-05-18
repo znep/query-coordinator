@@ -47,8 +47,10 @@ if [ ! ${COMPRESS_ASSETS} = "true" ] ; then
   bundle exec rake deploy:move_resources
 fi
 
-# Make the tartifact thing
-tar cpzfX ${SERVICE_ARTIFACT} .package-ignore * .bundle .semver
+# Tar the entirety of platform-ui to be used by our docker build process.
+pushd ..
+  tar cpzfX ${SERVICE_ARTIFACT} frontend/.package-ignore *
+popd
 
 # Get build info for Decima
 echo "---" > build_info.yml

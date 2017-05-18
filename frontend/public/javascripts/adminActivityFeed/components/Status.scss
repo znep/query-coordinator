@@ -1,5 +1,4 @@
-@import "bourbon";
-@import "colors";
+@import 'app/styles/styleguide-colors';
 
 .activity-status {
   i:before {
@@ -9,22 +8,22 @@
   }
 
   &[data-status="failure"] i {
-    color: $error;
+    color: $error-base;
   }
 
   &[data-status="in_progress"] i {
-    color: $grey;
+    color: $dark-grey-1;;
   }
 
   &[data-status="not_started"] i {
-    color: $grey;
+    color: $dark-grey-1;;
   }
 
   &[data-status="success"] i {
-    color: $success;
+    color: $success-base;
   }
 
   &[data-status="success_with_data_errors"] i {
-    color: $warning;
+    color: $warning-base;
   }
 }

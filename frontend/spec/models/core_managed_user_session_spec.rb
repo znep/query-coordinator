@@ -51,4 +51,28 @@ describe CoreManagedUserSession do
       expect(User.current_user).to_not be(nil)
     end
   end
+
+  describe 'user_no_security_check' do
+    let(:user_data) do
+      {
+        email: 'test1@example.com',
+        password: 'Password1!',
+        screenName: 'Test Account'
+      }
+    end
+
+    it 'should set current_user and session cookie' do
+      VCR.use_cassette('user_session_model/user_no_security_check') do
+        user = User.create(user_data)
+        user.password = 'Password1!'
+
+        newSession = CoreManagedUserSession.user_no_security_check(user)
+        byebug
+        expect(cookie_string).to eq('_core_session_id=4294725782bf5d463f5eff2d3808451bc005c110a5c07ca4d9db2f3e7c1d3755;remember_token=5KI4OwGkG1vrPiNgBgA9lBFbduVUgbNx;Path=/')
+      end
+
+      expect(User.current_user).to_not be(nil)
+    end
+
+  end
 end

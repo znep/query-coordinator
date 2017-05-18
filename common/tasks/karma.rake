@@ -8,7 +8,9 @@ namespace 'karma' do
   end
 
   task :runonce do
-    npm('karma_config', 'test')
+    npm('karma_config', 'test') do |ok, res|
+      raise 'Karma tests failed' unless ok
+    end
   end
 
   task :watch do

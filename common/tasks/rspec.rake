@@ -6,7 +6,9 @@ namespace 'rspec' do
   end
 
   task :runonce do
-    rspec 'site_chrome'
+    rspec('site_chrome') do |ok, res|
+      raise 'Site chrome rspec tests failed' unless ok
+    end
   end
 
   task :watch do

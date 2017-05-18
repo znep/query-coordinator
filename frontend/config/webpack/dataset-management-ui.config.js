@@ -11,6 +11,10 @@ var plugins = common.plugins.concat(common.getManifestPlugin(identifier));
 if (!common.isProduction) {
   plugins.push(new webpack.HotModuleReplacementPlugin());
 
+  // mock-fetch apparently thinks it should run in node and so includes the
+  // node-fetch version of fetch in the bundle. It tries to require this module,
+  // which causes the build error. Just stubbing it out here but working on a way
+  // to not use node-fetch at all as we don't need it.
   plugins.push(
     new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, 'node-noop')
   );

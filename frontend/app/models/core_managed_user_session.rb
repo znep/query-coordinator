@@ -187,11 +187,6 @@ class CoreManagedUserSession
     response = validate_with_core
     load_session_from_core(response)
   end
-  
-  def core_session
-    cookies['_core_session_id']
-  end
-
 
   private
 

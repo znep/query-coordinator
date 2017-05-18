@@ -67,10 +67,9 @@ describe CoreManagedUserSession do
         user.password = 'Password1!'
 
         newSession = CoreManagedUserSession.user_no_security_check(user)
-        byebug
-        expect(cookie_string).to eq('_core_session_id=4294725782bf5d463f5eff2d3808451bc005c110a5c07ca4d9db2f3e7c1d3755;remember_token=5KI4OwGkG1vrPiNgBgA9lBFbduVUgbNx;Path=/')
       end
 
+      expect(User.current_user.session_token).to eq('dTNyci1qN3I5IDE0OTUxNjczMDQgMjA5YjQ5NzRmODhiZGYwMzc2ZWVhOTM3YzcwNzNhOGEgYmI2MWM5ZDkxM2JjMmQ3MDkwODg2ZTk0Mjc2Y2FkNzM5NThhNzMyMg')
       expect(User.current_user).to_not be(nil)
     end
 

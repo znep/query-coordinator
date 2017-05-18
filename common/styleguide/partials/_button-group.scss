@@ -1,0 +1,78 @@
+.btn-group,
+.btn-group-vertical {
+  display: inline-block;
+  letter-spacing: -4px;
+
+  > .btn {
+    line-height: 1.25;
+    border-radius: 0;
+    margin-right: 0;
+
+    &.btn-primary:not(.btn-inverse),
+    &.btn-secondary:not(.btn-inverse),
+    &.btn-dark {
+      border: 1px solid transparent;
+    }
+  }
+
+  > .btn:first-child {
+    border-top-left-radius: 1px;
+    border-bottom-left-radius: 1px;
+  }
+
+  > .btn:last-child {
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 1px;
+  }
+}
+
+.btn-group-vertical {
+  &.btn-primary:not(.btn-inverse),
+  &.btn-secondary:not(.btn-inverse),
+  &.btn-dark {
+    border-color: transparent;
+  }
+
+  & > .btn {
+    display: block;
+    width: 100%;
+    float: none;
+    border-bottom-width: 0;
+
+    &:first-child:not(:last-child) {
+      border-right-width: 1px;
+      border-bottom-left-radius: 0;
+      border-top-right-radius: 1px;
+      border-top-left-radius: 1px;
+    }
+
+    &:last-child:not(:first-child) {
+      border-top-right-radius: 0;
+      border-bottom-left-radius: 1px;
+      border-left-width: 1px;
+      border-bottom-width: 1px;
+    }
+  }
+}
+
+/* Prevent double borders when buttons are next to each other */
+.btn-group {
+  .btn + .btn,
+  .btn + .btn-group,
+  .btn-group + .btn,
+  .btn-group + .btn-group {
+    margin-left: -1px;
+  }
+}
+
+/* TODO: should be isolated, applies only to styleguide, see issue #72
+ * may also merit a general styleguide change in the future
+ */
+
+.styleguide-section {
+  .btn-group.complex-btn-group {
+    .dropdown {
+      padding: 0.45em 15px;
+    }
+  }
+}

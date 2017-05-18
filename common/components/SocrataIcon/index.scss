@@ -1,0 +1,21 @@
+.socrata-icon {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  line-height: 1;
+
+  &::before {
+    display: none;
+  }
+
+  & svg {
+    width: inherit;
+    height: inherit;
+    vertical-align: top;
+
+    path,
+    polygon {
+      fill: currentColor;
+    }
+  }
+}

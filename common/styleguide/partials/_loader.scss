@@ -1,0 +1,32 @@
+@include keyframes(spin) {
+  100% {
+    @include transform(rotate(360deg));
+  }
+}
+
+.spinner-default {
+  @include animation(spin 0.9s linear infinite);
+
+  border: 3px solid $primary;
+  border-right-color: $primary-light;
+  border-radius: 50%;
+  display: inline-block;
+  width: ms(1);
+  height: ms(1);
+
+  &.spinner-dark {
+    border-color: $primary-light;
+    border-right-color: $primary;
+  }
+
+  &.spinner-large {
+    border-width: 8px;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.spinner-btn-primary {
+  border-color: $white;
+  border-right-color: shade($primary, 20%);
+}

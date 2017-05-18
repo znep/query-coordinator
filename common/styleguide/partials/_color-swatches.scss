@@ -1,0 +1,243 @@
+.color-group {
+  float: left;
+  margin-right: 2em;
+}
+
+.swatch-container {
+  display: block;
+  margin-top: 0.2em;
+
+  .subcontainer {
+    display: block;
+    float: left;
+    width: 2.5em;
+  }
+
+  .box {
+    width: 6em;
+    height: 6em;
+    float: left;
+    display: block;
+    margin-bottom: 2em;
+  }
+
+  .small-box {
+    height: 3em;
+    width: 3em;
+    float: left;
+
+    span.socrata-icon-text {
+      height: 3em;
+      margin: 0 auto;
+      text-align: center;
+      display: block;
+      font-size: 1.6em;
+      margin-top: 3px;
+    }
+  }
+
+  .color-group {
+    float: left;
+    display: block;
+    margin-bottom: 2em;
+  }
+
+  .grey,
+  .black {
+    padding-left: 10px;
+  }
+
+  .text {
+    font-size: 1px;
+  }
+}
+
+.color-label {
+  font-size: ms(-2);
+  margin: 0;
+
+  &.light {
+    color: $white;
+  }
+}
+
+.primary {
+  background-color: $primary;
+
+  &.light {
+    background-color: $primary-light;
+  }
+
+  &.dark {
+    background-color: $primary-dark;
+  }
+
+  & .text {
+    color: $primary-text;
+  }
+}
+
+.alternate-1 {
+  background-color: $alternate-1;
+
+  &.light {
+    background-color: $alternate-1-light;
+  }
+
+  &.dark {
+    background-color: $alternate-1-dark;
+  }
+
+  & .text {
+    color: $alternate-1-text;
+  }
+}
+
+.alternate-2 {
+  background-color: $alternate-2;
+
+  &.light {
+    background-color: $alternate-2-light;
+  }
+
+  &.dark {
+    background-color: $alternate-2-dark;
+  }
+
+  & .text {
+    color: $alternate-2-text;
+  }
+}
+
+.alternate-3 {
+  background-color: $alternate-3;
+
+  &.light {
+    background-color: $alternate-3-light;
+  }
+
+  &.dark {
+    background-color: $alternate-3-dark;
+  }
+
+  & .text {
+    color: $alternate-3-text;
+  }
+}
+
+.alternate-4 {
+  background-color: $alternate-4;
+
+  &.light {
+    background-color: $alternate-4-light;
+  }
+
+  &.dark {
+    background-color: $alternate-4-dark;
+  }
+
+  & .text {
+    color: $alternate-4-text;
+  }
+}
+
+.success {
+  background-color: $success;
+
+  &.light {
+    background-color: $success-light;
+  }
+
+  &.dark {
+    background-color: $success-dark;
+  }
+
+  & .text {
+    color: $success-text;
+  }
+}
+
+.error {
+  background-color: $error;
+
+  &.light {
+    background-color: $error-light;
+  }
+
+  &.dark {
+    background-color: $error-dark;
+  }
+
+  & .text {
+    color: $error-text;
+  }
+}
+
+.warning {
+  background-color: $warning;
+
+  &.light {
+    background-color: $warning-light;
+  }
+
+  &.dark {
+    background-color: $warning-dark;
+  }
+
+  & .text {
+    color: $warning-text;
+  }
+}
+
+.white {
+  background-color: $white;
+  border: 1px solid $light-grey-3;
+}
+
+.black {
+  background-color: $black;
+}
+
+.grey {
+  background-color: $grey;
+
+  &.light-1 {
+    background-color: $light-grey-1;
+  }
+
+  &.light-2 {
+    background-color: $light-grey-2;
+  }
+
+  &.light-3 {
+    background-color: $light-grey-3;
+  }
+
+  &.light-4 {
+    background-color: $light-grey-4;
+  }
+
+  &.light-5 {
+    background-color: $light-grey-5;
+  }
+
+  &.light-6 {
+    background-color: $light-grey-6;
+  }
+
+  &.light-7 {
+    background-color: $light-grey-7;
+  }
+
+  &.dark-1 {
+    background-color: $dark-grey-1;
+  }
+
+  &.dark-2 {
+    background-color: $dark-grey-2;
+  }
+
+  &.dark-3 {
+    background-color: $dark-grey-3;
+  }
+}

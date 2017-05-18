@@ -1,0 +1,58 @@
+.socrata-flannel {
+  position: fixed;
+  background: $white;
+  max-width: 350px;
+  box-shadow: 0 0 8px -2px $grey;
+  border: solid 1px $light-grey-3;
+  z-index: $flannel-z-index;
+
+  @media (max-width: $small) {
+    max-width: none;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 5000;
+  }
+}
+
+.socrata-flannel-header {
+  display: flex;
+
+  .socrata-flannel-header-title {
+    margin: auto;
+    margin-left: 10px;
+    font-size: ms(1);
+  }
+}
+
+.socrata-flannel-header-dismiss {
+  color: $light-grey-1;
+
+  &:hover {
+    color: $dark-grey-1;
+  }
+}
+
+.socrata-flannel-content {
+  padding: 10px;
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.socrata-flannel-actions {
+  text-align: right;
+
+  .btn {
+    margin-right: 6px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

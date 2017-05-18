@@ -1,0 +1,23 @@
+<p>Modals can be dismissed in several ways:</p>
+
+<ul>
+  <li>By clicking outside the bounds of the modal, if not fullscreen</li>
+  <li>By clicking a close icon in the upper right corner of the header</li>
+  <li>By clicking a cancel button in the footer</li>
+  <li>By pressing the Esc key</li>
+</ul>
+
+<p>
+  The modal expects an <code>onDismiss</code> handler that should trigger in any
+  of the above situations (note, however, that the modal does not automatically
+  create a cancel button in the footer). If this component's rendering is not
+  governed by an enclosing React component, you will need to forcibly ensure
+  that the node is unmounted with <code>ReactDOM.unmountComponentAtNode</code>.
+</p>
+
+<p>
+  This handler is also suitable for dispatching actions, though the action/store
+  pattern is omitted from this documentation.
+</p>
+
+<%= partial "code_sample", locals: { component: "components/skeletons/modal" } %>

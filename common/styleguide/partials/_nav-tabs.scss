@@ -1,0 +1,42 @@
+.nav-tabs {
+  @extend .list-inline;
+
+  border-bottom: 1px solid $light-grey-3;
+  padding-bottom: ms(-6);
+
+  .current {
+    a {
+      border-bottom: 4px solid $primary;
+
+      &:hover,
+      &:focus {
+        border-bottom: 4px solid $primary-dark;
+      }
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: $dark-grey-1;
+    padding: ms(-8) ms(-4);
+
+    &.active {
+      border-bottom: 4px solid $primary;
+    }
+
+    &:hover,
+    &:focus {
+      border-bottom: 4px solid $light-grey-3;
+      color: $dark-grey-3;
+      cursor: pointer;
+    }
+  }
+}
+
+.tab-content {
+  &.current {
+    display: inherit;
+  }
+
+  display: none;
+}

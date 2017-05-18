@@ -12,7 +12,7 @@ RUN mkdir -p $APP_DIR && mkdir -p $APP_DIR/public/cache && chown socrata:socrata
 
 WORKDIR $APP_DIR
 
-# This step _extracts_ the contents of the tarball _into_ $APP_DIR, it does not copy the file itself.
-ADD frontend.tgz $APP_DIR
+# This step _extracts_ the contents of the tarball _into_ $APP_BASE_DIR, it does not copy the file itself.
+ADD platform-ui.tgz $APP_BASE_DIR
 
 COPY docker/ship.d/run /etc/ship.d/run

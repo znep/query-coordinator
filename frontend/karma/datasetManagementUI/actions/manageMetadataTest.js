@@ -1,8 +1,9 @@
 import _ from 'lodash';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
+import thunk from 'redux-thunk';
+import configureStore from 'redux-mock-store';
+import { applyMiddleware, createStore } from 'redux';
 import { saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
-import { mockFetch } from '../testHelpers/mockHTTP';
-import mockPhx from '../testHelpers/mockPhoenixSocket';
 import {
   UPSERT_SUCCEEDED,
   UPSERT_STARTED,
@@ -17,388 +18,231 @@ import {
 } from 'actions/apiCalls';
 import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX } from 'lib/customMetadata';
 import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
-import thunk from 'redux-thunk';
-import configureStore from 'redux-mock-store';
-import initialState from '../data/initialState.js';
+import { createUpload } from 'actions/manageUploads';
+import mockAPI from '../testHelpers/mockAPI';
+import initialState from '../data/baseState';
+import { upsertFromServer, edit } from 'actions/database';
+import rootReducer from 'reducers';
+import wsmock from '../testHelpers/mockSocket';
 
 const mockStore = configureStore([thunk]);
 
-describe('actions/manageMetadata', () => {
+const metadata = {
+  id: 'tw7g-jnvn',
+  model: {
+    name: 'better description',
+    tags: [
+      'one',
+      'two',
+      'three'
+    ],
+    email: 'test@socrata.com',
+  },
+  colFormModel: {
+    'display-name-18133': 'IDs',
+    'description-18133': '',
+    'field-name-18133': 'mkkk',
+    'display-name-18136': 'Case Number',
+    'description-18136': '',
+    'field-name-18136': 'case_number'
+  },
+  colFormIsDirty: {
+    fields: [
+      'field-name-18136'
+    ],
+    form: true
+  },
+  colFormSchema: {
+    isValid: true,
+    fields: {}
+  }
+};
 
-  // TODO: do better job of mocking this out, maybe use nock and have api responses
-  // in another file; would also be good to have these return promises so we could
-  // ditch setTimeout
-  const responses = {
-    '/api/views/hehe-hehe': {
-      PUT: {
-        status: 200,
-        response: {
-          id: 'hehe-hehe',
-          name: 'New Name',
-          description: 'New description',
-          category: 'New Category'
-        }
-      },
-    },
-    '/api/publishing/v1/upload/224/schema/1712': {
-      POST: {
-        status: 200,
-        response: {
-          resource: {
-            id: 57,
-            output_columns: [
-              {
-                transform: {
-                  transform_expr: 'to_number(id)',
-                  output_soql_type: 'number',
-                  id: 6105,
-                  completed_at: '2017-04-03T15:49:34',
-                  transform_input_columns: [
-                    { input_column_id: 6262 }
-                  ],
-                },
-                position: 0,
-                id: 6329,
-                field_name: 'mkkk',
-                display_name: 'IDs',
-                description: null
-              },
-              {
-                transform: {
-                  transform_expr: 'case_number',
-                  output_soql_type: 'text',
-                  id: 6106,
-                  completed_at: '2017-04-03T15:49:34',
-                  transform_input_columns: [
-                    { input_column_id: 6262 }
-                  ]
-                },
-                position: 1,
-                id: 6328,
-                field_name: 'case_number',
-                display_name: 'Case Number',
-                description: null
-              }
-            ],
-            inserted_at: '2017-04-04T00:21:53.591073'
-          }
-        }
-      }
-    }
-  };
+describe('actions/manageMetadata', () => {
+  let unmock;
+  let unmockWS;
+  let store;
+
+  before(() => {
+    unmock = mockAPI();
+    unmockWS = wsmock();
+  });
+
+  after(() => {
+    unmock();
+    unmockWS.stop();
+  });
+
+  beforeEach(() => {
+    store = createStore(rootReducer, initialState, applyMiddleware(thunk));
+
+    store.dispatch(upsertFromServer('views', metadata));
+  });
 
   describe('actions/manageMetadata/saveDatasetMetadata', () => {
-    it('dispatches an insert started action with correct data', (done) => {
-      const { unmockFetch } = mockFetch(responses, done);
+    it('dispatches an api call started action with correct data', done => {
+      const fakeStore = mockStore(store.getState());
 
-      const unmockPhx = mockPhx({
-        'output_schema:57': []
-      }, done);
+      const fourfour = Object.keys(store.getState().db.views)[0];
 
-      const store = mockStore(initialState);
+      fakeStore.dispatch(saveDatasetMetadata())
+        .then(() => {
+          const action = store.getActions()[1];
 
-      store.dispatch(saveDatasetMetadata());
+          assert.equal(action.type, API_CALL_STARTED);
 
-      setTimeout(() => {
-        const action = store.getActions()[1];
+          assert.equal(action.operation, SAVE_DATASET_METADATA);
 
-        expect(action.type).to.eq(API_CALL_STARTED);
-
-        expect(action.operation).to.eq(SAVE_DATASET_METADATA);
-
-        unmockFetch();
-
-        unmockPhx();
-
-        done();
-      }, 0);
+          done();
+        })
+        .catch(err => {
+          done();
+        });
     });
 
-    it('dispatches set view action with correct data if server responded with 200-level status', (done) => {
-      const { unmockFetch } = mockFetch(responses, done);
+    it('dispatches set view action with correct data if server responded with 200-level status', done => {
+      const fakeStore = mockStore(store.getState());
 
-      const unmockPhx = mockPhx({
-        'output_schema:57': []
-      }, done);
+      const fourfour = Object.keys(store.getState().db.views)[0];
 
-      const store = mockStore(initialState);
+      fakeStore.dispatch(saveDatasetMetadata())
+        .then(() => {
+          const action = store.getActions()[2];
 
-      store.dispatch(saveDatasetMetadata());
+          assert.equal(action.type, SET_VIEW);
 
-      setTimeout(() => {
-        const action = store.getActions()[2];
+          assert.equal(action.id, fourfour);
 
-        expect(action.type).to.eq(SET_VIEW);
+          assert.deepEqual(action.payload, metadata.model);
 
-        expect(action.id).to.eq(responses['/api/views/hehe-hehe'].PUT.response.id);
-
-        expect(action.payload).to.deep.eq(responses['/api/views/hehe-hehe'].PUT.response);
-
-        unmockFetch();
-
-        unmockPhx();
-
-        done();
-      }, 0);
+          done();
+        })
+        .catch(err => {
+          done();
+        });
     });
 
     it('shows an error message if form schema is invalid', () => {
-      const newState = Object.assign({}, initialState);
+      const fourfour = Object.keys(store.getState().db.views)[0];
 
-      newState.db.views['3kt9-pmvq'].schema = {
-        isValid: false
-      };
+      store.dispatch(edit('views', {
+        id: fourfour,
+        schema: {
+          isValid: false
+        }
+      }));
 
-      const store = mockStore(newState);
+      const fakeStore = mockStore(store.getState());
 
-      store.dispatch(saveDatasetMetadata());
+      fakeStore.dispatch(saveDatasetMetadata());
 
-      expect(store.getActions()[1].type).to.eq(SHOW_FLASH_MESSAGE);
-      expect(store.getActions()[1].kind).to.eq('error');
+      const action = fakeStore.getActions()[1];
+
+      assert.equal(action.type, SHOW_FLASH_MESSAGE);
+      assert.equal(action.kind, 'error');
     });
 
     it('shows field-level errors if form schema is invalid', () => {
-      const newState = Object.assign({}, initialState);
+      const fourfour = Object.keys(store.getState().db.views)[0];
 
-      newState.db.views['3kt9-pmvq'].schema = {
-        isValid: false
-      };
+      store.dispatch(edit('views', {
+        id: fourfour,
+        schema: {
+          isValid: false
+        }
+      }));
 
-      const store = mockStore(newState);
+      const fakeStore = mockStore(store.getState());
 
-      store.dispatch(saveDatasetMetadata());
+      fakeStore.dispatch(saveDatasetMetadata());
 
-      const action = store.getActions()[2];
+      const action = fakeStore.getActions()[2];
 
-      expect(action.type).to.eq('EDIT');
-      expect(action.tableName).to.eq('views');
-      expect(action.updates).to.deep.eq({
-        id: '3kt9-pmvq',
+      assert.equal(action.type, 'EDIT');
+      assert.equal(action.tableName, 'views');
+      assert.deepEqual(action.updates, {
+        id: fourfour,
         displayMetadataFieldErrors: true
       });
-    });
-
-    it('submits custom metadata correctly', (done) => {
-      const { unmockFetch } = mockFetch(responses, done);
-
-      const newState = Object.assign({}, initialState);
-
-      newState.db.views['3kt9-pmvq'].schema = {
-        isValid: true
-      };
-
-      newState.db.views['3kt9-pmvq'].model = {
-        ...newState.db.views['3kt9-pmvq'].model,
-        [`${CUSTOM_FIELD_PREFIX}-${btoa('fieldset')}-name`]: 'tester',
-        [`${PRIVATE_CUSTOM_FIELD_PREFIX}-${btoa('fieldset')}-secret`]: 'big secret'
-      };
-
-      const store = mockStore(newState);
-
-      store.dispatch(saveDatasetMetadata());
-
-      setTimeout(() => {
-        expect(_.map(store.getActions(), 'type')).to.deep.equal([
-          'HIDE_FLASH_MESSAGE',
-          'API_CALL_STARTED',
-          'SET_VIEW',
-          'API_CALL_SUCCEEDED'
-        ]);
-        unmockFetch();
-        done();
-      }, 0);
     });
   });
 
   describe('actions/manageMetadata/saveColumnMetadata', () => {
-    it('dispatches an insert started action with correct data', (done) => {
-      const { unmockFetch } = mockFetch(responses, () => {});
-
-      const store = mockStore(initialState);
-
-      const unmockPhx = mockPhx({
-        'output_schema:57': [],
-        'transform_progress:6105': [],
-        'transform_progress:6106': [],
-      }, () => {});
-
-      store.dispatch(saveColumnMetadata());
-
-      setTimeout(() => {
-        const actions = store.getActions();
-        const actionTypes = _.map(actions, 'type');
-        expect(actionTypes).to.deep.equal([
-          'HIDE_FLASH_MESSAGE',
-          'API_CALL_STARTED',
-          'API_CALL_SUCCEEDED',
-          'UPSERT_FROM_SERVER',
-          'CHANNEL_JOIN_STARTED',
-          'CREATE_TABLE',
-          'CHANNEL_JOIN_STARTED',
-          'CREATE_TABLE',
-          'CHANNEL_JOIN_STARTED',
-          'BATCH'
-        ]);
-        const batchAction = actions[actions.length-1];
-        expect(batchAction.operations.map(action => ([action.type, action.tableName]))).to.deep.equal([
-          ['UPSERT_FROM_SERVER', 'transforms'],
-          ['UPSERT_FROM_SERVER', 'output_columns'],
-          ['UPSERT_FROM_SERVER', 'output_schema_columns'],
-          ['UPSERT_FROM_SERVER', 'transforms'],
-          ['UPSERT_FROM_SERVER', 'output_columns'],
-          ['UPSERT_FROM_SERVER', 'output_schema_columns']
-        ]);
-
-        unmockFetch();
-        unmockPhx();
-        done();
-      }, 100);
+    beforeEach(done => {
+      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+        .then(() => done());
     });
 
-    it('dispatches an insert succeeded action with correct data if server resonds with 200-level status', (done) => {
-      const { unmockFetch } = mockFetch(responses, () => {});
+    it('dispatches an insert started action with correct data', done => {
+      const fakeStore = mockStore(store.getState());
 
-      const unmockPhx = mockPhx({
-        'output_schema:57': []
-      }, () => {});
+      fakeStore.dispatch(saveColumnMetadata())
+        .then(() => {
+          const action = fakeStore.getActions()[1].operations[1];
 
-      const store = mockStore(initialState);
+          assert.equal(action.type, UPSERT_STARTED);
 
-      store.dispatch(saveColumnMetadata());
+          assert.equal(action.tableName, 'output_schemas');
 
-      setTimeout(() => {
-        const actions = store.getActions();
-        const actionTypes = _.map(actions, 'type');
-        expect(actionTypes).to.deep.equal([
-          'HIDE_FLASH_MESSAGE',
-          'API_CALL_STARTED',
-          'API_CALL_SUCCEEDED',
-          'UPSERT_FROM_SERVER',
-          'CHANNEL_JOIN_STARTED',
-          'CREATE_TABLE',
-          'CHANNEL_JOIN_STARTED',
-          'CREATE_TABLE',
-          'CHANNEL_JOIN_STARTED',
-          'BATCH'
-        ]);
-        const batchAction = actions[actions.length-1];
-        expect(batchAction.operations.map(action => ([action.type, action.tableName]))).to.deep.equal([
-          ['UPSERT_FROM_SERVER', 'transforms'],
-          ['UPSERT_FROM_SERVER', 'output_columns'],
-          ['UPSERT_FROM_SERVER', 'output_schema_columns'],
-          ['UPSERT_FROM_SERVER', 'transforms'],
-          ['UPSERT_FROM_SERVER', 'output_columns'],
-          ['UPSERT_FROM_SERVER', 'output_schema_columns']
-        ]);
-
-        unmockFetch();
-        unmockPhx();
-        done();
-      }, 0);
+          done();
+        })
+        .catch(err => {
+          done();
+        });
     });
 
-    it('updates output_schema_columns if insert succeeded', (done) => {
-      const { unmockFetch } = mockFetch(responses, ()=> {});
+it('dispatches an insert succeeded action with correct data if server resonds with 200-level status', done => {
+      const fakeStore = mockStore(store.getState());
 
-      const unmockPhx = mockPhx({
-        'output_schema:57': [],
-        'transform_progress:6105': [],
-        'transform_progress:6106': []
-      }, ()=> {});
+      fakeStore.dispatch(saveColumnMetadata())
+        .then(() => {
+          const action = fakeStore.getActions()[3];
 
-      const store = mockStore(initialState);
+          assert.equal(action.type, UPSERT_SUCCEEDED);
 
-      store.dispatch(saveColumnMetadata());
+          assert.equal(action.tableName, 'output_schemas');
 
-      setTimeout(() => {
-        const actions = store.getActions();
-
-        expect(_.map(actions, 'type')).to.deep.equal([
-          'HIDE_FLASH_MESSAGE',
-          'API_CALL_STARTED',
-          'API_CALL_SUCCEEDED',
-          'UPSERT_FROM_SERVER',
-          'CHANNEL_JOIN_STARTED',
-          'CREATE_TABLE',
-          'CHANNEL_JOIN_STARTED',
-          'CREATE_TABLE',
-          'CHANNEL_JOIN_STARTED',
-          'BATCH'
-        ]);
-
-        const lastAction = actions[actions.length-1];
-        expect(_.map(lastAction.operations, (action) => [action.type, action.tableName])).to.deep.equal([
-          ['UPSERT_FROM_SERVER', 'transforms'],
-          ['UPSERT_FROM_SERVER', 'output_columns'],
-          ['UPSERT_FROM_SERVER', 'output_schema_columns'],
-          ['UPSERT_FROM_SERVER', 'transforms'],
-          ['UPSERT_FROM_SERVER', 'output_columns'],
-          ['UPSERT_FROM_SERVER', 'output_schema_columns']
-        ]);
-
-        const expected = {
-          id: '57-6329',
-          output_schema_id: 57,
-          output_column_id: 6329
-        };
-        expect(
-          JSON.stringify(lastAction.operations[2].newRecord)
-        ).to.deep.eq(
-          JSON.stringify(expected)
-        );
-
-        unmockFetch();
-        unmockPhx();
-        done();
-      }, 10);
+          done();
+        })
+        .catch(err => {
+          done();
+        });
     });
 
-    it('updates transforms and output_columns with any new values', (done) => {
-      const { unmockFetch } = mockFetch(responses, () => {});
+    it('updates output_schema_columns if insert succeeded', done => {
+      const fakeStore = mockStore(store.getState());
 
-      const unmockPhx = mockPhx({
-        'output_schema:57': [],
-        'transform_progress:6105': [],
-        'transform_progress:6106': []
-      }, () => {});
+      fakeStore.dispatch(saveColumnMetadata())
+        .then(() => {
+          const actions = fakeStore.getActions()[5].operations.filter(op =>
+            op.tableName === 'output_schema_columns'
+            && op.type === 'UPSERT_FROM_SERVER');
 
-      const store = mockStore(initialState);
+          assert.isAtLeast(actions.length, 1);
 
-      store.dispatch(saveColumnMetadata());
+          done();
+        })
+        .catch(err => {
+          done();
+        });
+    });
 
-      setTimeout(() => {
-        const actions = store.getActions();
+    it('updates transforms and output_columns with any new values', done => {
+      const fakeStore = mockStore(store.getState());
 
-        const batchedActions = actions[9].operations;
+      fakeStore.dispatch(saveColumnMetadata())
+        .then(() => {
+          const ops = fakeStore.getActions()[5].operations;
+          const ocActions = ops.filter(op =>
+            op.tableName === 'transforms');
 
-        expect(batchedActions.length).to.eq(6);
+          const transformActions = ops.filter(op =>
+            op.tableName === 'output_columns');
 
-        expect(batchedActions.map(action => action.type)).to.contain(UPSERT_FROM_SERVER);
-
-        expect(batchedActions.filter(action => action.tableName === 'transforms').length).to.eq(2);
-
-        expect(batchedActions.filter(action => action.tableName === 'output_columns').length).to.eq(2);
-
-        const transformUpdated = responses['/api/publishing/v1/upload/224/schema/1712']
-          .POST.response.resource.output_columns.map(column => column.transform.transform_expr);
-
-        expect(batchedActions
-          .filter(action => action.tableName === 'transforms')
-          .map(action => action.newRecord.transform_expr))
-          .to.deep.eq(transformUpdated);
-
-        const columnUpdates = responses['/api/publishing/v1/upload/224/schema/1712']
-          .POST.response.resource.output_columns.map(column => column.id);
-
-        expect(batchedActions
-          .filter(action => action.tableName === 'output_columns')
-          .map(action => action.newRecord.id))
-          .to.deep.eq(columnUpdates);
-
-        unmockFetch();
-        unmockPhx();
-        done();
-      }, 0);
+          assert.isAtLeast(ocActions.length, 1);
+          assert.isAtLeast(transformActions.length, 1);
+          done();
+        });
     });
   });
 });

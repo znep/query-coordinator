@@ -3,10 +3,7 @@ import { push } from 'react-router-redux';
 import uuid from 'uuid';
 import * as Links from '../links';
 import { checkStatus, getJson, socrataFetch } from '../lib/http';
-import {
-  edit,
-  setView
-} from './database';
+import { edit, setView } from './database';
 import {
   apiCallStarted,
   apiCallSucceeded,
@@ -14,7 +11,7 @@ import {
   SAVE_COLUMN_METADATA,
   SAVE_DATASET_METADATA
 } from './apiCalls';
-import { insertAndSubscribeToOutputSchema } from './manageUploads';
+import { insertChildrenAndSubscribeToOutputSchema } from './manageUploads';
 import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
@@ -26,7 +23,7 @@ export const dismissMetadataPane = () => (dispatch, getState) => {
   const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata(\/columns|\/dataset)?/;
   const currentLocation = state.routing.history[state.routing.history.length - 1];
 
-  const helper = (history) => {
+  const helper = history => {
     const location = history[history.length - 1];
 
     if (history.length === 0) {
@@ -62,17 +59,18 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     // MetadataField looks at displayMetadataFieldErrors in store, and will show
     // field-level validation errors if it's truthy. Dispatching this action from here
     // allows us to show field-level validation errors on form submit.
-    dispatch(edit('views', {
-      id: fourfour,
-      displayMetadataFieldErrors: true
-    }));
+    dispatch(
+      edit('views', {
+        id: fourfour,
+        displayMetadataFieldErrors: true
+      })
+    );
 
     return;
   }
 
-  const publicMetadata = filterMetadata(_.pick(
-    model,
-    [
+  const publicMetadata = filterMetadata(
+    _.pick(model, [
       'id',
       'name',
       'description',
@@ -81,8 +79,8 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       'attribution',
       'attributionLink',
       'tags'
-    ]
-  ));
+    ])
+  );
 
   function filterMetadata(metadata) {
     if (metadata.licenseId === '') {
@@ -118,25 +116,29 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     }
   };
 
-  // TODO: switch this to read from redux store
   const callId = uuid();
-  dispatch(apiCallStarted(callId, {
-    operation: SAVE_DATASET_METADATA,
-    params: {}
-  }));
-  socrataFetch(`/api/views/${window.initialState.view.id}`, {
+
+  dispatch(
+    apiCallStarted(callId, {
+      operation: SAVE_DATASET_METADATA,
+      params: {}
+    })
+  );
+
+  return socrataFetch(`/api/views/${fourfour}`, {
     method: 'PUT',
     body: JSON.stringify(datasetMetadata)
-  }).
-    then(checkStatus).
-    then(getJson).
-    then(resp => {
+  })
+    .then(checkStatus)
+    .then(getJson)
+    .then(resp => {
       dispatch(setView(resp));
+
       dispatch(apiCallSucceeded(callId));
 
       dispatch(redirectAfterInterval());
-    }).
-    catch(error => {
+    })
+    .catch(error => {
       dispatch(apiCallFailed(callId, error));
 
       error.response.json().then(({ message }) => {
@@ -162,10 +164,12 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
 
     // See comment in corresponding portion of saveDatasetMetadata action
-    dispatch(edit('views', {
-      id: fourfour,
-      displayMetadataFieldErrors: true
-    }));
+    dispatch(
+      edit('views', {
+        id: fourfour,
+        displayMetadataFieldErrors: true
+      })
+    );
 
     return;
   }
@@ -185,24 +189,32 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
   const upload = db.uploads[inputSchema.upload_id];
 
   const callId = uuid();
-  dispatch(apiCallStarted(callId, {
-    operation: SAVE_COLUMN_METADATA,
-    params: {}
-  }));
-  socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
+
+  dispatch(
+    apiCallStarted(callId, {
+      operation: SAVE_COLUMN_METADATA,
+      params: {}
+    })
+  );
+
+  return socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
     body: JSON.stringify(payload)
-  }).
-    then(checkStatus).
-    then(getJson).
-    catch(error => {
+  })
+    .then(checkStatus)
+    .then(getJson)
+    .catch(error => {
       dispatch(apiCallFailed(callId, error));
+
       error.response.json().then(err => {
         const errorDetails = err.params || {};
         let errorMessage;
 
-        const { field_name: fieldNameErrors, display_name: displayNameErrors } =
-          _.pick(errorDetails, 'field_name', 'display_name');
+        const { field_name: fieldNameErrors, display_name: displayNameErrors } = _.pick(
+          errorDetails,
+          'field_name',
+          'display_name'
+        );
 
         if (fieldNameErrors && Array.isArray(fieldNameErrors)) {
           const { reason } = fieldNameErrors[0];
@@ -222,14 +234,11 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 
         dispatch(showFlashMessage('error', errorMessage));
       });
-    }).
-    then(resp => {
+    })
+    .then(resp => {
       dispatch(apiCallSucceeded(callId));
-
-      // TODO: refactor into a thunk; will be easier to test and be consistent with
-      // rest of app
-      insertAndSubscribeToOutputSchema(dispatch, resp.resource);
       dispatch(redirectAfterInterval());
+      return dispatch(insertChildrenAndSubscribeToOutputSchema(resp.resource));
     });
 };
 
@@ -238,7 +247,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 export const DELAY_UNTIL_CLOSE_MS = 1000;
 
 function redirectAfterInterval() {
-  return (dispatch) => {
+  return dispatch => {
     setTimeout(() => {
       dispatch(dismissMetadataPane());
     }, DELAY_UNTIL_CLOSE_MS);

@@ -1,4 +1,3 @@
-'use strict';
 const $ = require('jquery');
 const _ = require('lodash');
 const utils = require('socrata-utils');
@@ -178,79 +177,85 @@ function renderCell(cellContent, column, domain, datasetUid) {
     return '';
   }
 
-  switch (column.renderTypeName) {
-    case 'checkbox':
-      cellText = _.escape(renderBooleanCell(cellContent, column));
-      break;
-    case 'number':
-      cellText = _.escape(renderNumberCell(cellContent, column));
-      break;
-    // Avoid escaping because cell content is HTML.
-    case 'geo_entity':
-      cellText = renderGeoCellHTML(cellContent);
-      break;
-    case 'point':
-    case 'line':
-    case 'polygon':
-    case 'multipoint':
-    case 'multiline':
-    case 'multipolygon':
-      cellText = renderWKTCell(cellContent);
-      break;
-    case 'calendar_date':
-      cellText = _.escape(renderTimestampCell(cellContent, column));
-      break;
+  try {
+    switch (column.renderTypeName) {
+      case 'checkbox':
+        cellText = _.escape(renderBooleanCell(cellContent, column));
+        break;
+      case 'number':
+        cellText = _.escape(renderNumberCell(cellContent, column));
+        break;
+      // Avoid escaping because cell content is HTML.
+      case 'geo_entity':
+        cellText = renderGeoCellHTML(cellContent);
+        break;
+      case 'point':
+      case 'line':
+      case 'polygon':
+      case 'multipoint':
+      case 'multiline':
+      case 'multipolygon':
+        cellText = renderWKTCell(cellContent);
+        break;
+      case 'calendar_date':
+        cellText = _.escape(renderTimestampCell(cellContent, column));
+        break;
 
-    // OBE types that are deprecated on new datasets, but are supported on migrated datasets:
-    case 'email':
-      cellText = renderEmailCellHTML(cellContent);
-      break;
-    case 'money':
-      cellText = _.escape(renderMoneyCell(cellContent, column));
-      break;
-    // OBE location columns are actually objects with latitude and longitude
-    // keys, so we need to handle them as a special case.
-    case 'location':
-      cellText = _.escape(renderObeLocation(cellContent));
-      break;
-    // EN-3548 - Note that only OBE datasets can have a column renderTypeName
-    // of 'percent'. Corresponding NBE datasets will have a column
-    // renderTypeName of 'number'. In order to keep that sort of logic somewhat
-    // contained, inside of the implementation of `renderNumberCell()` we do a
-    // few tests to figure out if we should be formatting the resulting value
-    // as a percentage.
-    case 'percent':
-      cellText = _.escape(renderNumberCell(cellContent, column));
-      break;
-    case 'phone':
-      cellText = renderPhoneCellHTML(cellContent);
-      break;
-    case 'url':
-      cellText = renderUrlCellHTML(cellContent);
-      break;
+      // OBE types that are deprecated on new datasets, but are supported on migrated datasets:
+      case 'email':
+        cellText = renderEmailCellHTML(cellContent);
+        break;
+      case 'money':
+        cellText = _.escape(renderMoneyCell(cellContent, column));
+        break;
+      // OBE location columns are actually objects with latitude and longitude
+      // keys, so we need to handle them as a special case.
+      case 'location':
+        cellText = _.escape(renderObeLocation(cellContent));
+        break;
+      // EN-3548 - Note that only OBE datasets can have a column renderTypeName
+      // of 'percent'. Corresponding NBE datasets will have a column
+      // renderTypeName of 'number'. In order to keep that sort of logic somewhat
+      // contained, inside of the implementation of `renderNumberCell()` we do a
+      // few tests to figure out if we should be formatting the resulting value
+      // as a percentage.
+      case 'percent':
+        cellText = _.escape(renderNumberCell(cellContent, column));
+        break;
+      case 'phone':
+        cellText = renderPhoneCellHTML(cellContent);
+        break;
+      case 'url':
+        cellText = renderUrlCellHTML(cellContent);
+        break;
 
-    // TODO: Remove these types once we no longer support OBE datasets
-    // OBE types that are deprecated post-NBE migration:
-    case 'date':
-      cellText = _.escape(renderTimestampCell(cellContent, column));
-      break;
-    case 'document':
-      cellText = renderDocumentCellHTML(cellContent, domain, datasetUid);
-      break;
-    case 'drop_down_list':
-      cellText = _.escape(renderMultipleChoiceCell(cellContent, column));
-      break;
-    case 'html': // Formatted Text
-      cellText = $(cellContent).text();
-      break;
-    case 'photo':
-      cellText = renderPhotoCellHTML(cellContent, domain, datasetUid);
-      break;
+      // TODO: Remove these types once we no longer support OBE datasets
+      // OBE types that are deprecated post-NBE migration:
+      case 'date':
+        cellText = _.escape(renderTimestampCell(cellContent, column));
+        break;
+      case 'document':
+        cellText = renderDocumentCellHTML(cellContent, domain, datasetUid);
+        break;
+      case 'drop_down_list':
+        cellText = _.escape(renderMultipleChoiceCell(cellContent, column));
+        break;
+      case 'html': // Formatted Text
+        cellText = $(`<p>${cellContent}</p>`).text();
+        break;
+      case 'photo':
+        cellText = renderPhotoCellHTML(cellContent, domain, datasetUid);
+        break;
 
-    default:
-      cellText = _.escape(cellContent);
-      break;
+      default:
+        cellText = _.escape(cellContent);
+        break;
+    }
+  } catch (e) {
+    console.error(`Error rendering ${cellContent} as type ${column.renderTypeName}:`);
+    console.error(e);
   }
+
   return cellText;
 }
 

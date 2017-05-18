@@ -4,20 +4,20 @@ import { Simulate } from 'react-addons-test-utils';
 import { FlannelHeader } from 'components/Flannel';
 import { renderPureComponent } from '../../helpers';
 
+const getTitle = (element) => element.querySelector('.socrata-flannel-header-title');
+const getButton = (element) => element.querySelector('.socrata-flannel-header-dismiss');
+
 describe('FlannelHeader', () => {
   let element;
   let title = 'Hello, World!';
   let onDismissSpy;
-
-  const getTitle = (element) => element.querySelector('.socrata-flannel-header-title');
-  const getButton = (element) => element.querySelector('.socrata-flannel-header-dismiss');
   const getProps = (props) => {
     return _.defaultsDeep({}, props);
   };
 
   beforeEach(() => {
     onDismissSpy = sinon.spy();
-    element = renderPureComponent(FlannelHeader(getProps({
+    element = renderPureComponent(FlannelHeader(getProps({ //eslint-disable-line new-cap
       title,
       onDismiss: onDismissSpy
     })));

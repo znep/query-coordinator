@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import React from 'react';
 import { renderComponent } from '../helpers';
 import DateRangePicker from 'components/DateRangePicker';
 import { Simulate } from 'react-addons-test-utils';

@@ -1,9 +1,9 @@
 export const noopFilter = {
-  function: 'noop'
+  'function': 'noop'
 };
 
 export const mockValueRangeFilter = {
-  function: 'valueRange',
+  'function': 'valueRange',
   columnName: 'dinosaurAge',
   arguments: {
     start: 1,
@@ -13,7 +13,7 @@ export const mockValueRangeFilter = {
 };
 
 export const mockTimeRangeFilter = {
-  function: 'timeRange',
+  'function': 'timeRange',
   columnName: 'dinosaurTime',
   arguments: {
     start: '1400-01-01T00:00:00',
@@ -23,7 +23,7 @@ export const mockTimeRangeFilter = {
 };
 
 export const mockBinaryOperatorFilter = {
-  function: 'binaryOperator',
+  'function': 'binaryOperator',
   columnName: 'dinosaurName',
   arguments: [
     {

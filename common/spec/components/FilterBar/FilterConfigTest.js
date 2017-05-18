@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import FilterConfig from 'components/FilterBar/FilterConfig';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
@@ -13,7 +14,6 @@ describe('FilterConfig', () => {
 
   const getHiddenOption = (element) => element.querySelector('.filter-options #hidden');
   const getViewersCanEditOption = (element) => element.querySelector('.filter-options #viewers-can-edit');
-  const getRemoveButton = (element) => element.querySelector('.remove-btn');
 
   it('renders options', () => {
     const element = renderComponent(FilterConfig, getProps());

@@ -5,6 +5,7 @@ import Picklist from 'components/Picklist';
 import { Simulate } from 'react-addons-test-utils';
 import { renderPureComponent } from '../helpers';
 
+/* eslint-disable new-cap */
 describe('EditBar', () => {
   const getMenu = (el) => el.querySelector('.btn-menu');
   const getName = (el) => el.querySelector('.page-name');
@@ -74,3 +75,4 @@ describe('EditBar', () => {
     assert.isNotNull(element.querySelector('.picklist'));
   });
 });
+/* eslint-enable new-cap */

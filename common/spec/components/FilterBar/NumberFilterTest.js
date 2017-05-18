@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import NumberFilter from 'components/FilterBar/NumberFilter';
 import { mockValueRangeFilter, mockNumberColumn } from './data';
 import { Simulate } from 'react-addons-test-utils';
@@ -20,7 +21,7 @@ describe('NumberFilter', () => {
   const getInputs = (element) => element.querySelectorAll('.range-input');
   const getFooter = (element) => element.querySelector('.filter-footer');
   const getApplyButton = (element) => element.querySelector('.apply-btn');
-  const getResetButton = (element) => element.querySelector('.reset-btn')
+  const getResetButton = (element) => element.querySelector('.reset-btn');
 
   it('renders a title', () => {
     const element = renderComponent(NumberFilter, getProps());

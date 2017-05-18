@@ -1,10 +1,10 @@
 import _ from 'lodash';
-import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
 import { renderPureComponent } from '../../helpers';
 import FilterFooter from 'components/FilterBar/FilterFooter';
 import $ from 'jquery';
 
+/* eslint-disable new-cap */
 describe('FilterFooter', () => {
   let handlerStub;
   let element;
@@ -94,3 +94,4 @@ describe('FilterFooter', () => {
     });
   });
 });
+/* eslint-enable new-cap */

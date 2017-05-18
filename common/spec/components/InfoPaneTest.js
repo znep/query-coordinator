@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import InfoPane from 'components/InfoPane';
 import { renderComponent } from '../helpers';
 import { Simulate } from 'react-addons-test-utils';
@@ -29,7 +30,6 @@ describe('InfoPane', () => {
   const getOfficial = (element) => element.querySelector('.tag-official');
   const getCommunity = (element) => element.querySelector('.tag-community');
   const getPrivateIcon = (element) => element.querySelector('.socrata-icon-private');
-  const getDescription = (element) => element.querySelector('.entry-description div');
   const getButtons = (element) => element.querySelector('.entry-actions');
   const getToggle = (element) => element.querySelector('.collapse-info-pane-btn');
   const getContent = (element) => element.querySelector('.entry-content');

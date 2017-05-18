@@ -1,7 +1,7 @@
+import _ from 'lodash';
 import FilterItem from 'components/FilterBar/FilterItem';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
-import $ from 'jquery';
 import {
   mockValueRangeFilter,
   mockBinaryOperatorFilter,
@@ -22,6 +22,11 @@ const clickBody = () => {
   document.body.dispatchEvent(clickEvent);
 };
 
+const getControlToggle = (element) => element.querySelector('.filter-control-toggle');
+const getConfigToggle = (element) => element.querySelector('.filter-config-toggle');
+const getControls = (element) => element.querySelector('.filter-controls');
+const getConfig = (element) => element.querySelector('.filter-config');
+
 describe('FilterItem', () => {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
@@ -39,11 +44,6 @@ describe('FilterItem', () => {
   beforeEach(() => {
     element = renderComponent(FilterItem, getProps());
   });
-
-  const getControlToggle = (element) => element.querySelector('.filter-control-toggle');
-  const getConfigToggle = (element) => element.querySelector('.filter-config-toggle');
-  const getControls = (element) => element.querySelector('.filter-controls');
-  const getConfig = (element) => element.querySelector('.filter-config');
 
   it('renders if isHidden is true and isReadOnly is false', () => {
     element = renderComponent(FilterItem, getProps({
@@ -80,7 +80,7 @@ describe('FilterItem', () => {
     });
 
     it('renders a number filter when the column is a number column', () => {
-      const element = renderComponent(FilterItem, getProps({
+      element = renderComponent(FilterItem, getProps({
         column: mockMoneyColumn
       }));
 
@@ -89,7 +89,7 @@ describe('FilterItem', () => {
     });
 
     it('renders a text filter when the column is a text column', () => {
-      const element = renderComponent(FilterItem, getProps({
+      element = renderComponent(FilterItem, getProps({
         filter: mockBinaryOperatorFilter,
         column: mockTextColumn
       }));
@@ -99,7 +99,7 @@ describe('FilterItem', () => {
     });
 
     it('renders a calendar_date filter when the column is a calendar_date column', () => {
-      const element = renderComponent(FilterItem, getProps({
+      element = renderComponent(FilterItem, getProps({
         filter: mockTimeRangeFilter,
         column: mockCalendarDateColumn
       }));

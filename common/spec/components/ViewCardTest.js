@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../helpers';
 import ViewCard from 'components/ViewCard';
 

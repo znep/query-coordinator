@@ -2,7 +2,6 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Simulate } from 'react-addons-test-utils';
-import { renderComponent } from '../../helpers';
 import FilterBar from 'components/FilterBar';
 import {
   mockBinaryOperatorFilter,
@@ -10,6 +9,16 @@ import {
   mockNumberColumn,
   mockTextColumn
 } from './data';
+
+const getAddFilter = (element) => element.querySelector('.add-filter');
+const getFilters = (element) => element.querySelectorAll('.filter-bar-filter');
+const getVisibleFilters = (element) => element.querySelectorAll('.visible-filters-container .filter-bar-filter');
+const getCollapsedFilters = (element) => element.querySelectorAll('.collapsed-filters-container .filter-bar-filter');
+const getRemovedFilters = (element) => element.querySelectorAll('.filters-leave');
+const getExpandControl = (element) => element.querySelector('.btn-expand-control');
+
+const getWrappedComponent = (component) => <div style={{ width: '450px' }}>{component}</div>;
+const getContainer = (element) => element.querySelector('.filter-bar-container');
 
 describe('FilterBar', () => {
   let element;
@@ -31,16 +40,6 @@ describe('FilterBar', () => {
       onUpdate: _.noop
     });
   }
-
-  const getAddFilter = (element) => element.querySelector('.add-filter');
-  const getFilters = (element) => element.querySelectorAll('.filter-bar-filter');
-  const getVisibleFilters = (element) => element.querySelectorAll('.visible-filters-container .filter-bar-filter');
-  const getCollapsedFilters = (element) => element.querySelectorAll('.collapsed-filters-container .filter-bar-filter');
-  const getRemovedFilters = (element) => element.querySelectorAll('.filters-leave');
-  const getExpandControl = (element) => element.querySelector('.btn-expand-control');
-
-  const getWrappedComponent = (component) => <div style={{ width: '450px' }}>{component}</div>;
-  const getContainer = (element) => element.querySelector('.filter-bar-container');
 
   const render = (props) => {
     const component = React.createElement(FilterBar, getProps(props));

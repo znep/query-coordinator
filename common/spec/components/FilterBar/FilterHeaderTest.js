@@ -1,8 +1,9 @@
-import React from 'react';
+import _ from 'lodash';
 import { Simulate } from 'react-addons-test-utils';
 import { renderPureComponent } from '../../helpers';
 import FilterHeader from 'components/FilterBar/FilterHeader';
 
+/* eslint-disable new-cap */
 describe('FilterHeader', () => {
   let element;
 
@@ -40,3 +41,4 @@ describe('FilterHeader', () => {
     assert.equal(getConfigButton(element), null);
   });
 });
+/* eslint-enable new-cap */

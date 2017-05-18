@@ -35,7 +35,12 @@ var webpackConfig = {
       root,
       // Let tests import modules (i.e, import FeatureFlags from 'common/FeatureFlags')
       path.resolve('../../'),
-      path.resolve('../../common'), // TODO Don't do this
+
+      // TODO: This is a compatibility shim that was added during the
+      // styleguide->platform-ui migration to avoid having to update
+      // the import paths of a lot of test files. This will be removed
+      // when we do EN-14559.
+      path.resolve('../../common'),
 
       // Allow code under test to require dependencies in karma_config's package.json.
       '../karma_config/node_modules'

@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import {
   mockCalendarDateColumn,
   mockMoneyColumn,

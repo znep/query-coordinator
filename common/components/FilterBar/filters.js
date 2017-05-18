@@ -99,6 +99,6 @@ export function getFilterToggleText(filter, column) {
     }
 
     default:
-      console.error(`Unsupported column type "${column.dataTypeName}"`);
+      console.error(`Unsupported column type "${column.dataTypeName}"`); //eslint-disable-line no-console
   }
 }

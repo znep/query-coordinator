@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import CalendarDateFilter from 'components/FilterBar/CalendarDateFilter';
 import { mockTimeRangeFilter, mockCalendarDateColumn } from './data';
 import { Simulate } from 'react-addons-test-utils';
@@ -45,7 +46,7 @@ describe('CalendarDateFilter', () => {
   it('disables the apply button if the date range is undefined', () => {
     const element = renderComponent(CalendarDateFilter, getProps({
       filter: {
-        function: 'timeRange',
+        'function': 'timeRange',
         columnName: 'dinosaurTime',
         arguments: {
           start: null,

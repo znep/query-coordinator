@@ -5,6 +5,7 @@ import { renderPureComponent } from '../../helpers';
 
 import Header from 'components/Modal/Header';
 
+/* eslint-disable new-cap */
 describe('Header', () => {
   let element;
 
@@ -51,3 +52,4 @@ describe('Header', () => {
     assert.isTrue(props.onDismiss.calledOnce);
   });
 });
+/* eslint-disable new-cap */

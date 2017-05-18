@@ -1,6 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
-import { renderIntoDocument, Simulate } from 'react-addons-test-utils';
+import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
 import TextFilter from 'components/FilterBar/TextFilter';
 import { mockBinaryOperatorFilter, mockTextColumn } from './data';
@@ -68,7 +67,7 @@ describe('TextFilter', () => {
 
   describe('filter generation', () => {
     const filter = {
-      function: 'noop',
+      'function': 'noop',
       columnName: 'some_word',
       arguments: null,
       isHidden: false
@@ -97,7 +96,7 @@ describe('TextFilter', () => {
         Simulate.click(getApplyButton(element));
 
         sinon.assert.calledWith(onUpdateStub, {
-          function: 'binaryOperator',
+          'function': 'binaryOperator',
           columnName: 'some_word',
           arguments: [
             {
@@ -132,7 +131,7 @@ describe('TextFilter', () => {
         Simulate.click(getApplyButton(element));
 
         sinon.assert.calledWith(onUpdateStub, {
-          function: 'binaryOperator',
+          'function': 'binaryOperator',
           columnName: 'some_word',
           arguments: [
             {
@@ -161,7 +160,7 @@ describe('TextFilter', () => {
 
     it('resets the filter when the reset button is clicked', (done) => {
       const filter = {
-        function: 'noop',
+        'function': 'noop',
         columnName: mockTextColumn.fieldName,
         arguments: [
           {
@@ -186,7 +185,7 @@ describe('TextFilter', () => {
         Simulate.click(getApplyButton(element));
 
         sinon.assert.calledWith(onUpdateStub, {
-          function: 'noop',
+          'function': 'noop',
           columnName: mockTextColumn.fieldName,
           arguments: null,
           isHidden: false // visibility should NOT be reset when values are reset!
@@ -198,7 +197,7 @@ describe('TextFilter', () => {
 
     it('calls onUpdate with noop filter when the apply button with an empty array of selectedOptions', (done) => {
       const filter = {
-        function: 'noop',
+        'function': 'noop',
         columnName: mockTextColumn.fieldName,
         arguments: [
           {
@@ -223,7 +222,7 @@ describe('TextFilter', () => {
         Simulate.click(getApplyButton(element));
 
         sinon.assert.calledWith(onUpdateStub, {
-          function: 'noop',
+          'function': 'noop',
           columnName: mockTextColumn.fieldName,
           arguments: null,
           isHidden: false // visibility should NOT be reset when values are reset!

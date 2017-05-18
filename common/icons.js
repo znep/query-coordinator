@@ -35,5 +35,5 @@ export function getIconForDataType(dataType) {
     return dataTypes[dataType];
   }
 
-  console.warn(`Unknown icon for data type "${dataType}"`);
+  console.warn(`Unknown icon for data type "${dataType}"`); //eslint-disable-line no-console
 }

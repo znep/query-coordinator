@@ -1,7 +1,5 @@
 import $ from 'jquery';
 import _ from 'lodash';
-import React from 'react';
-import { Simulate } from 'react-addons-test-utils';
 import Flannel from 'components/Flannel';
 import { renderComponent } from '../../helpers';
 import { ESCAPE } from 'common/keycodes';
@@ -88,7 +86,7 @@ describe('Flannel', () => {
   });
 
   it('dismisses itself when ESC is pressed', () => {
-    const event = $.Event('keyup', { keyCode: ESCAPE });
+    const event = $.Event('keyup', { keyCode: ESCAPE }); //eslint-disable-line new-cap
 
     $(document.body).trigger(event);
 

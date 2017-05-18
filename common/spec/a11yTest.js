@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as a11y from 'common/a11y';
 import $ from 'jquery';
 

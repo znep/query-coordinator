@@ -1,24 +1,24 @@
 import _ from 'lodash';
-import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
 import AddFilter from 'components/FilterBar/AddFilter';
 import { SPACE } from 'common/keycodes';
 
+
+function getProps(props) {
+  return _.defaultsDeep({}, props, {
+    columns: [],
+    onClickColumn: _.noop
+  });
+}
+
+function clickAddFilter(element) {
+  const button = element.querySelector('.btn-add-filter');
+  Simulate.click(button);
+}
+
 describe('AddFilter', () => {
   let element;
-
-  function getProps(props) {
-    return _.defaultsDeep({}, props, {
-      columns: [],
-      onClickColumn: _.noop
-    });
-  }
-
-  function clickAddFilter(element) {
-    const button = element.querySelector('.btn-add-filter');
-    Simulate.click(button);
-  }
 
   beforeEach(() => {
     element = renderComponent(AddFilter, getProps());

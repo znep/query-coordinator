@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent  } from '../../helpers';
 import SideMenu from 'components/SideMenu';
-import { ESCAPE } from 'common/keycodes';
 
 describe('SideMenu', () => {
   function getProps(props) {

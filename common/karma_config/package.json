@@ -30,6 +30,8 @@
     "dotdotdot": "1.7.0",
     "eslint": "2.3.0",
     "eslint-base": "0.2.3",
+    "eslint-plugin-import": "1.7.0",
+    "eslint-plugin-react": "5.0.1",
     "expose-loader": "0.7.3",
     "jquery": "2.2.4",
     "karma": "1.5.0",
@@ -68,8 +70,18 @@
     "jquery": "2.2.4"
   },
   "eslintConfig": {
-    "extends": "./node_modules/eslint-base/.eslintrc.json",
+    "extends": [
+      "./node_modules/eslint-base/.eslintrc.json",
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "parser": "babel-eslint",
+    "plugins": [
+      "react",
+      "import"
+    ],
     "rules": {
+      "react/no-danger": 0,
       "dot-notation": [
         1,
         {
@@ -78,17 +90,13 @@
         }
       ]
     },
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
     "globals": {
-      "$": true,
-      "_": true,
-      "jQuery": true,
-      "L": true,
-      "moment": true,
-      "pbf": true,
-      "socrata": true,
-      "ss": true,
-      "require": true,
-      "module": true
+      "Promise": true
     }
   }
 }

@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import React from 'react';
 import { Simulate } from 'react-addons-test-utils';
 import { MenuListItem } from 'components/SideMenu';
 import { renderPureComponent  } from '../../helpers';
 
+/* eslint-disable new-cap */
 describe('MenuListItem', () => {
   let element;
 
@@ -50,3 +50,4 @@ describe('MenuListItem', () => {
     assert.isTrue(stub.calledOnce);
   });
 });
+/* eslint-enable new-cap */

@@ -23,7 +23,7 @@ function insertRevision(store) {
     id: 5,
     fourfour: 'hehe-hehe',
     revision_seq: 0,
-    inserted_at: new Date(),
+    created_at: new Date(),
     created_by: {
       display_name: 'rozap',
       email: 'foo@bar.com',
@@ -53,7 +53,7 @@ function insertOutputSchema(store) {
   store.dispatch(upsertFromServer('output_schemas', {
     id: 0,
     input_schema_id: 0,
-    inserted_at: new Date(),
+    created_at: new Date(),
     created_by: {
       display_name: 'fred',
       email: 'foo@bar.com',
@@ -67,7 +67,7 @@ function insertUpsertInProgress(store) {
     status: 'progress',
     id: 0,
     finished_at: null,
-    inserted_at: new Date(),
+    created_at: new Date(),
     created_by: {
       display_name: 'foo',
       email: 'foo@bar.com',
@@ -81,7 +81,7 @@ function insertUpsertComplete(store) {
     status: 'successful',
     id: 0,
     finished_at: new Date(),
-    inserted_at: new Date(),
+    created_at: new Date(),
     created_by: {
       display_name: 'foo',
       email: 'foo@bar.com',
@@ -95,7 +95,7 @@ function insertUpsertFailed(store) {
     status: 'failure',
     id: 0,
     finished_at: new Date(),
-    inserted_at: new Date(),
+    created_at: new Date(),
     created_by: {
       display_name: 'foo',
       email: 'foo@bar.com',

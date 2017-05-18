@@ -28,7 +28,7 @@ const defaultProps = {
       "savedAt": "ON_SERVER"
     },
     "error_count": 0,
-    "inserted_at": "2017-05-03T00:19:34.581Z",
+    "created_at": "2017-05-03T00:19:34.581Z",
     "created_by": {
       "user_id": "tugg-ikce",
       "email": "brandon.webster@socrata.com",

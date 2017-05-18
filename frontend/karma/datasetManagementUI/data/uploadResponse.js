@@ -85,12 +85,12 @@ export default {
           }
         ],
         "name": null,
-        "inserted_at": "2017-01-20T22:36:58.466342",
+        "created_at": "2017-01-20T22:36:58.466342",
         "id": 39
       }
     ],
     "name": null,
-    "inserted_at": "2017-01-20T22:36:58.372298",
+    "created_at": "2017-01-20T22:36:58.372298",
     "id": 6,
     "input_columns": [
       {

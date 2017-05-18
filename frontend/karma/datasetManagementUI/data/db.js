@@ -533,7 +533,7 @@ const db = {
       id: 327,
       fourfour: 'acpb-icis',
       revision_seq: 0,
-      inserted_at: '2017-05-02T21:33:52.415Z',
+      created_at: '2017-05-02T21:33:52.415Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -547,7 +547,7 @@ const db = {
   },
   uploads: {
     '312': {
-      inserted_at: '2017-05-02T21:34:08.364Z',
+      created_at: '2017-05-02T21:34:08.364Z',
       id: 312,
       finished_at: '2017-05-02T21:34:09.000Z',
       filename: 'baby_crimes.csv',
@@ -581,7 +581,7 @@ const db = {
       id: 576,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:34:09.309Z',
+      created_at: '2017-05-02T21:34:09.309Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -596,7 +596,7 @@ const db = {
       id: 577,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:34:31.055Z',
+      created_at: '2017-05-02T21:34:31.055Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -611,7 +611,7 @@ const db = {
       id: 578,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:35:11.309Z',
+      created_at: '2017-05-02T21:35:11.309Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -626,7 +626,7 @@ const db = {
       id: 579,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:35:18.441Z',
+      created_at: '2017-05-02T21:35:18.441Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -641,7 +641,7 @@ const db = {
       id: 580,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:38:40.968Z',
+      created_at: '2017-05-02T21:38:40.968Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -656,7 +656,7 @@ const db = {
       id: 581,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:39:08.358Z',
+      created_at: '2017-05-02T21:39:08.358Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -671,7 +671,7 @@ const db = {
       id: 582,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:39:26.535Z',
+      created_at: '2017-05-02T21:39:26.535Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -686,7 +686,7 @@ const db = {
       id: 583,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:39:39.102Z',
+      created_at: '2017-05-02T21:39:39.102Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -701,7 +701,7 @@ const db = {
       id: 584,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:42:31.134Z',
+      created_at: '2017-05-02T21:42:31.134Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -716,7 +716,7 @@ const db = {
       id: 585,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:43:22.621Z',
+      created_at: '2017-05-02T21:43:22.621Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -731,7 +731,7 @@ const db = {
       id: 586,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:43:31.202Z',
+      created_at: '2017-05-02T21:43:31.202Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -746,7 +746,7 @@ const db = {
       id: 587,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:45:38.973Z',
+      created_at: '2017-05-02T21:45:38.973Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -761,7 +761,7 @@ const db = {
       id: 588,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:46:21.790Z',
+      created_at: '2017-05-02T21:46:21.790Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -776,7 +776,7 @@ const db = {
       id: 589,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:46:44.422Z',
+      created_at: '2017-05-02T21:46:44.422Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -791,7 +791,7 @@ const db = {
       id: 590,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:47:14.717Z',
+      created_at: '2017-05-02T21:47:14.717Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -806,7 +806,7 @@ const db = {
       id: 591,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:48:25.940Z',
+      created_at: '2017-05-02T21:48:25.940Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -821,7 +821,7 @@ const db = {
       id: 592,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:48:35.111Z',
+      created_at: '2017-05-02T21:48:35.111Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -836,7 +836,7 @@ const db = {
       id: 593,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:48:40.559Z',
+      created_at: '2017-05-02T21:48:40.559Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -851,7 +851,7 @@ const db = {
       id: 594,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:48:44.546Z',
+      created_at: '2017-05-02T21:48:44.546Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -866,7 +866,7 @@ const db = {
       id: 595,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:49:17.878Z',
+      created_at: '2017-05-02T21:49:17.878Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -881,7 +881,7 @@ const db = {
       id: 596,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:49:24.392Z',
+      created_at: '2017-05-02T21:49:24.392Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -896,7 +896,7 @@ const db = {
       id: 597,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:49:35.205Z',
+      created_at: '2017-05-02T21:49:35.205Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -911,7 +911,7 @@ const db = {
       id: 598,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:06:55.111Z',
+      created_at: '2017-05-02T22:06:55.111Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -926,7 +926,7 @@ const db = {
       id: 599,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:11:44.921Z',
+      created_at: '2017-05-02T22:11:44.921Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -941,7 +941,7 @@ const db = {
       id: 600,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:11:52.790Z',
+      created_at: '2017-05-02T22:11:52.790Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -956,7 +956,7 @@ const db = {
       id: 601,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:38:14.632Z',
+      created_at: '2017-05-02T22:38:14.632Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -971,7 +971,7 @@ const db = {
       id: 602,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:38:29.866Z',
+      created_at: '2017-05-02T22:38:29.866Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -986,7 +986,7 @@ const db = {
       id: 603,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:38:47.191Z',
+      created_at: '2017-05-02T22:38:47.191Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1001,7 +1001,7 @@ const db = {
       id: 604,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:38:54.497Z',
+      created_at: '2017-05-02T22:38:54.497Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1016,7 +1016,7 @@ const db = {
       id: 605,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:40:14.210Z',
+      created_at: '2017-05-02T22:40:14.210Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1031,7 +1031,7 @@ const db = {
       id: 606,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:40:53.465Z',
+      created_at: '2017-05-02T22:40:53.465Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1046,7 +1046,7 @@ const db = {
       id: 607,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:41:04.500Z',
+      created_at: '2017-05-02T22:41:04.500Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1061,7 +1061,7 @@ const db = {
       id: 608,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:42:19.832Z',
+      created_at: '2017-05-02T22:42:19.832Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1076,7 +1076,7 @@ const db = {
       id: 609,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:42:43.957Z',
+      created_at: '2017-05-02T22:42:43.957Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1091,7 +1091,7 @@ const db = {
       id: 610,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:43:36.079Z',
+      created_at: '2017-05-02T22:43:36.079Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1106,7 +1106,7 @@ const db = {
       id: 611,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:43:45.770Z',
+      created_at: '2017-05-02T22:43:45.770Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1121,7 +1121,7 @@ const db = {
       id: 612,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:44:01.054Z',
+      created_at: '2017-05-02T22:44:01.054Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1136,7 +1136,7 @@ const db = {
       id: 613,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:44:22.575Z',
+      created_at: '2017-05-02T22:44:22.575Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1151,7 +1151,7 @@ const db = {
       id: 614,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T23:08:26.628Z',
+      created_at: '2017-05-02T23:08:26.628Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1166,7 +1166,7 @@ const db = {
       id: 615,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-03T00:16:30.866Z',
+      created_at: '2017-05-03T00:16:30.866Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1181,7 +1181,7 @@ const db = {
       id: 616,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-03T00:16:43.352Z',
+      created_at: '2017-05-03T00:16:43.352Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1196,7 +1196,7 @@ const db = {
       id: 617,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-03T00:16:53.830Z',
+      created_at: '2017-05-03T00:16:53.830Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1211,7 +1211,7 @@ const db = {
       id: 618,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-03T00:17:09.510Z',
+      created_at: '2017-05-03T00:17:09.510Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1226,7 +1226,7 @@ const db = {
       id: 619,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-03T00:19:34.581Z',
+      created_at: '2017-05-03T00:19:34.581Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1244,7 +1244,7 @@ const db = {
         type: 'SAVED',
         savedAt: 'ON_SERVER'
       },
-      inserted_at: '2017-05-03T16:25:02.098Z',
+      created_at: '2017-05-03T16:25:02.098Z',
       error_count: 0,
       created_by: {
         user_id: 'tugg-ikce',
@@ -1260,7 +1260,7 @@ const db = {
         savedAt: 'ON_SERVER'
       },
       error_count: 0,
-      inserted_at: '2017-05-03T16:25:12.843Z',
+      created_at: '2017-05-03T16:25:12.843Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',

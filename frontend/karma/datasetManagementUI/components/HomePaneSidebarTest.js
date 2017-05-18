@@ -78,7 +78,7 @@ describe('components/HomePaneSidebar', () => {
       description: 'bar'
     }));
     store.dispatch(upsertFromServer('uploads', { id: 'baz' }));
-    store.dispatch(upsertFromServer('output_schemas', { id: 'baz', inserted_at: new Date() }));
+    store.dispatch(upsertFromServer('output_schemas', { id: 'baz', created_at: new Date() }));
     store.dispatch(upsertFromServer('output_columns', { id: 'baz', description: 'xkcd' }));
     store.dispatch(upsertFromServer('output_schema_columns', {
       output_schema_id: 'baz',

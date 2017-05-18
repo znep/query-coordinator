@@ -67,7 +67,7 @@ export function bootstrap(store, initialView, initialRevision, customMetadata) {
     id: initialRevision.id,
     fourfour: initialView.id,
     revision_seq: _.toNumber(initialRevision.revision_seq),
-    inserted_at: parseDate(initialRevision.inserted_at),
+    created_at: parseDate(initialRevision.inserted_at || initialRevision.created_at),
     created_by: initialRevision.created_by
   }));
   initialRevision.uploads.forEach((upload) => {
@@ -76,7 +76,7 @@ export function bootstrap(store, initialView, initialRevision, customMetadata) {
   initialRevision.upsert_jobs.forEach((upsertJob) => {
     operations.push(upsertFromServer('upsert_jobs', {
       ...upsertJob,
-      inserted_at: parseDate(upsertJob.inserted_at),
+      created_at: parseDate(upsertJob.inserted_at || upsertJob.created_at),
       finished_at: upsertJob.finished_at ? parseDate(upsertJob.finished_at) : null,
       created_by: upsertJob.created_by
     }));

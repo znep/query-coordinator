@@ -122,21 +122,6 @@ export const createTable = (name) => ({
 
 // no delete actions because we never delete anything lol
 
-export const OUTPUT_SCHEMA_UPSERT_STARTED = 'OUTPUT_SCHEMA_UPSERT_STARTED';
-export const outputSchemaUpsertStarted = () => ({
-  type: OUTPUT_SCHEMA_UPSERT_STARTED
-});
-
-export const OUTPUT_SCHEMA_UPSERT_SUCCEEDED = 'OUTPUT_SCHEMA_UPSERT_SUCCEEDED';
-export const outputSchemaUpsertSucceeded = () => ({
-  type: OUTPUT_SCHEMA_UPSERT_SUCCEEDED
-});
-
-export const OUTPUT_SCHEMA_UPSERT_FAILED = 'OUTPUT_SCHEMA_UPSERT_FAILED';
-export const outputSchemaUpsertFailed = () => ({
-  type: OUTPUT_SCHEMA_UPSERT_FAILED
-});
-
 export const SET_VIEW = 'SET_VIEW';
 export const setView = newView => ({
   type: SET_VIEW,

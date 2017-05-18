@@ -11,6 +11,10 @@ import {
   SET_VIEW,
   UPDATE_SUCCEEDED
 } from 'actions/database';
+import {
+  API_CALL_STARTED,
+  SAVE_DATASET_METADATA
+} from 'actions/apiCalls';
 import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX } from 'lib/customMetadata';
 import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
 import thunk from 'redux-thunk';
@@ -95,18 +99,12 @@ describe('actions/manageMetadata', () => {
 
       store.dispatch(saveDatasetMetadata());
 
-      const { routing, db } = store.getState();
-
-      const { fourfour } = routing;
-
       setTimeout(() => {
         const action = store.getActions()[1];
 
-        expect(action.type).to.eq(UPDATE_STARTED);
+        expect(action.type).to.eq(API_CALL_STARTED);
 
-        expect(action.tableName).to.eq('views');
-
-        expect(action.updates.id).to.eq(fourfour);
+        expect(action.operation).to.eq(SAVE_DATASET_METADATA);
 
         unmockFetch();
 
@@ -127,10 +125,6 @@ describe('actions/manageMetadata', () => {
 
       store.dispatch(saveDatasetMetadata());
 
-      const { routing, db } = store.getState();
-
-      const { fourfour } = routing;
-
       setTimeout(() => {
         const action = store.getActions()[2];
 
@@ -149,12 +143,6 @@ describe('actions/manageMetadata', () => {
     });
 
     it('shows an error message if form schema is invalid', () => {
-      const { unmockFetch } = mockFetch(responses, () => {});
-
-      const unmockPhx = mockPhx({
-        'output_schema:57': []
-      }, () => {});
-
       const newState = Object.assign({}, initialState);
 
       newState.db.views['3kt9-pmvq'].schema = {
@@ -170,12 +158,6 @@ describe('actions/manageMetadata', () => {
     });
 
     it('shows field-level errors if form schema is invalid', () => {
-      const { unmockFetch } = mockFetch(responses, () => {});
-
-      const unmockPhx = mockPhx({
-        'output_schema:57': []
-      }, () => {});
-
       const newState = Object.assign({}, initialState);
 
       newState.db.views['3kt9-pmvq'].schema = {
@@ -199,10 +181,6 @@ describe('actions/manageMetadata', () => {
     it('submits custom metadata correctly', (done) => {
       const { unmockFetch } = mockFetch(responses, done);
 
-      const unmockPhx = mockPhx({
-        'output_schema:57': []
-      }, done);
-
       const newState = Object.assign({}, initialState);
 
       newState.db.views['3kt9-pmvq'].schema = {
@@ -219,36 +197,14 @@ describe('actions/manageMetadata', () => {
 
       store.dispatch(saveDatasetMetadata());
 
-      const { routing, db } = store.getState();
-
-      const { fourfour } = routing;
-
-      const expectedPayload = {
-        ..._.omit(db.views[fourfour].model, [
-          'email',
-          `${PRIVATE_CUSTOM_FIELD_PREFIX}-${btoa('fieldset')}-secret`,
-          `${CUSTOM_FIELD_PREFIX}-${btoa('fieldset')}-name`
-        ]),
-        privateMetadata: {
-          email: db.views[fourfour].model.email,
-          custom_fields: {
-            fieldset: {
-              secret: 'big secret'
-            }
-          }
-        },
-        metadata: {
-          custom_fields: {
-            fieldset: {
-              name: 'tester'
-            }
-          }
-        }
-      };
-
       setTimeout(() => {
-        expect(store.getActions()[1].updates.payload).to.deep.eq(expectedPayload);
-
+        expect(_.map(store.getActions(), 'type')).to.deep.equal([
+          'HIDE_FLASH_MESSAGE',
+          'API_CALL_STARTED',
+          'SET_VIEW',
+          'API_CALL_SUCCEEDED'
+        ]);
+        unmockFetch();
         done();
       }, 0);
     });
@@ -269,18 +225,32 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[1].operations[1];
-
-        expect(action.type).to.eq(UPSERT_STARTED);
-
-        expect(action.tableName).to.eq('output_schemas');
-
-        expect(action.newRecord.input_schema_id).to.eq(1712);
+        const actions = store.getActions();
+        const actionTypes = _.map(actions, 'type');
+        expect(actionTypes).to.deep.equal([
+          'HIDE_FLASH_MESSAGE',
+          'API_CALL_STARTED',
+          'API_CALL_SUCCEEDED',
+          'UPSERT_FROM_SERVER',
+          'CHANNEL_JOIN_STARTED',
+          'CREATE_TABLE',
+          'CHANNEL_JOIN_STARTED',
+          'CREATE_TABLE',
+          'CHANNEL_JOIN_STARTED',
+          'BATCH'
+        ]);
+        const batchAction = actions[actions.length-1];
+        expect(batchAction.operations.map(action => ([action.type, action.tableName]))).to.deep.equal([
+          ['UPSERT_FROM_SERVER', 'transforms'],
+          ['UPSERT_FROM_SERVER', 'output_columns'],
+          ['UPSERT_FROM_SERVER', 'output_schema_columns'],
+          ['UPSERT_FROM_SERVER', 'transforms'],
+          ['UPSERT_FROM_SERVER', 'output_columns'],
+          ['UPSERT_FROM_SERVER', 'output_schema_columns']
+        ]);
 
         unmockFetch();
-
         unmockPhx();
-
         done();
       }, 100);
     });
@@ -297,16 +267,32 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[2].operations[1];
-
-        expect(action.type).to.eq(UPSERT_SUCCEEDED);
-
-        expect(action.tableName).to.eq('output_schemas');
+        const actions = store.getActions();
+        const actionTypes = _.map(actions, 'type');
+        expect(actionTypes).to.deep.equal([
+          'HIDE_FLASH_MESSAGE',
+          'API_CALL_STARTED',
+          'API_CALL_SUCCEEDED',
+          'UPSERT_FROM_SERVER',
+          'CHANNEL_JOIN_STARTED',
+          'CREATE_TABLE',
+          'CHANNEL_JOIN_STARTED',
+          'CREATE_TABLE',
+          'CHANNEL_JOIN_STARTED',
+          'BATCH'
+        ]);
+        const batchAction = actions[actions.length-1];
+        expect(batchAction.operations.map(action => ([action.type, action.tableName]))).to.deep.equal([
+          ['UPSERT_FROM_SERVER', 'transforms'],
+          ['UPSERT_FROM_SERVER', 'output_columns'],
+          ['UPSERT_FROM_SERVER', 'output_schema_columns'],
+          ['UPSERT_FROM_SERVER', 'transforms'],
+          ['UPSERT_FROM_SERVER', 'output_columns'],
+          ['UPSERT_FROM_SERVER', 'output_schema_columns']
+        ]);
 
         unmockFetch();
-
         unmockPhx();
-
         done();
       }, 0);
     });
@@ -325,12 +311,30 @@ describe('actions/manageMetadata', () => {
       store.dispatch(saveColumnMetadata());
 
       setTimeout(() => {
-        const action = store.getActions()[8].operations[2];
+        const actions = store.getActions();
 
-        expect(action.type).to.eq(UPSERT_FROM_SERVER);
+        expect(_.map(actions, 'type')).to.deep.equal([
+          'HIDE_FLASH_MESSAGE',
+          'API_CALL_STARTED',
+          'API_CALL_SUCCEEDED',
+          'UPSERT_FROM_SERVER',
+          'CHANNEL_JOIN_STARTED',
+          'CREATE_TABLE',
+          'CHANNEL_JOIN_STARTED',
+          'CREATE_TABLE',
+          'CHANNEL_JOIN_STARTED',
+          'BATCH'
+        ]);
 
-        expect(action.tableName).to.eq('output_schema_columns');
-
+        const lastAction = actions[actions.length-1];
+        expect(_.map(lastAction.operations, (action) => [action.type, action.tableName])).to.deep.equal([
+          ['UPSERT_FROM_SERVER', 'transforms'],
+          ['UPSERT_FROM_SERVER', 'output_columns'],
+          ['UPSERT_FROM_SERVER', 'output_schema_columns'],
+          ['UPSERT_FROM_SERVER', 'transforms'],
+          ['UPSERT_FROM_SERVER', 'output_columns'],
+          ['UPSERT_FROM_SERVER', 'output_schema_columns']
+        ]);
 
         const expected = {
           id: '57-6329',
@@ -338,15 +342,13 @@ describe('actions/manageMetadata', () => {
           output_column_id: 6329
         };
         expect(
-          JSON.stringify(action.newRecord, null, 2)
+          JSON.stringify(lastAction.operations[2].newRecord)
         ).to.deep.eq(
-          JSON.stringify(expected, null, 2)
-        ); // won't deep eq otherwise. beats me.
+          JSON.stringify(expected)
+        );
 
         unmockFetch();
-
         unmockPhx();
-
         done();
       }, 10);
     });
@@ -367,7 +369,7 @@ describe('actions/manageMetadata', () => {
       setTimeout(() => {
         const actions = store.getActions();
 
-        const batchedActions = actions[8].operations;
+        const batchedActions = actions[9].operations;
 
         expect(batchedActions.length).to.eq(6);
 
@@ -394,9 +396,7 @@ describe('actions/manageMetadata', () => {
           .to.deep.eq(columnUpdates);
 
         unmockFetch();
-
         unmockPhx();
-
         done();
       }, 0);
     });

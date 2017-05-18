@@ -180,7 +180,7 @@ function subscribeToRowErrors(inputSchemaId) {
   };
 }
 
-function insertAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
+export function insertAndSubscribeToOutputSchema(dispatch, outputSchemaResponse) {
   dispatch(upsertFromServer('output_schemas', toOutputSchema(outputSchemaResponse)));
   insertChildrenAndSubscribeToOutputSchema(dispatch, outputSchemaResponse);
   return outputSchemaResponse.id;

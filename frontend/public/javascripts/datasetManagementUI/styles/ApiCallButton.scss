@@ -14,6 +14,16 @@
   composes: btn-sm from global;
 }
 
+.successfulBtn {
+  composes: baseBtn;
+  composes: btn-success from global;
+}
+
+.errorBtn {
+  composes: baseBtn;
+  composes: btn-error from global;
+}
+
 .spinner {
   composes: spinner-default from global;
   composes: spinner-btn-primary from global;

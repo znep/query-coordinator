@@ -103,7 +103,6 @@ class CoreManagedUserSession
 
     def user_no_security_check(user)
       session = new('login' => user.email, 'password' => user.password)
-      byebug
       session.save
       session.load_user(user) && session
     end

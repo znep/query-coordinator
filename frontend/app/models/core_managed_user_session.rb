@@ -102,7 +102,8 @@ class CoreManagedUserSession
     end
 
     def user_no_security_check(user)
-      session = new('login' => user.id, 'password' => user.password)
+      session = new('login' => user.email, 'password' => user.password)
+      byebug
       session.save
       session.load_user(user) && session
     end
@@ -187,6 +188,11 @@ class CoreManagedUserSession
     response = validate_with_core
     load_session_from_core(response)
   end
+  
+  def core_session
+    cookies['_core_session_id']
+  end
+
 
   private
 

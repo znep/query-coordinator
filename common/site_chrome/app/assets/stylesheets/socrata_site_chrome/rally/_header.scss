@@ -1,0 +1,179 @@
+$banner_height: 58px;
+$divider_height: 14px;
+$rally_top_min_height: 36px;
+
+header#site-chrome-header[template="rally"] {
+  font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
+
+  .banner {
+    .header-content {
+      max-width: $max_width;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .rally-top {
+      background-color: $header_bg_color_secondary;
+      min-height: $rally_top_min_height;
+      height: max($header_logo_height, $rally_top_min_height);
+      line-height: max($header_logo_height, $rally_top_min_height);
+      padding: 16px;
+      box-sizing: content-box;
+      vertical-align: middle;
+
+      a.logo {
+        float: left;
+        text-decoration: none;
+        white-space: nowrap;
+
+        > img {
+          height: $header_logo_height;
+          width: $header_logo_width;
+          margin-right: 16px;
+          display: inline-block;
+          vertical-align: middle;
+        }
+
+        > span.site-name {
+          font-weight: 300;
+          font-size: $header_display_name_size;
+          line-height: max($header_logo_height, $header_display_name_size, $rally_top_min_height);
+          color: $header_display_name_fg_color;
+          white-space: nowrap;
+          vertical-align: middle;
+        }
+      }
+
+      .searchbox {
+        form {
+          line-height: initial;
+          display: inline-flex;
+          vertical-align: middle;
+
+          label {
+            width: auto;
+            display: block;
+            margin: auto;
+            font-size: inherit;
+          }
+
+          .search-button {
+            display: none; // appears with toggleSearchButton()
+          }
+        }
+      }
+    }
+
+    .rally-bottom {
+      color: $header_fg_color;
+      background-color: $header_bg_color;
+      height: $banner_height;
+      line-height: $banner_height;
+      padding: 0 16px;
+      clear: both;
+
+      nav {
+        font-size: 15px;
+        font-weight: 300;
+        height: 100%;
+        max-height: $banner_height;
+        opacity: 0;
+
+        &.desktop {
+          position: relative;
+
+          a.site-chrome-nav-link {
+            height: 100%;
+            display: inline-block;
+            color: $header_fg_color;
+            text-decoration: none;
+            &:hover, &:focus, &:active {
+              text-decoration: underline;
+            }
+          }
+
+          .navbar-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            .site-chrome-nav-links {
+              height: 100%;
+              white-space: nowrap;
+
+              a.site-chrome-nav-link, .site-chrome-nav-menu, div.dropdown {
+                max-height: $banner_height;
+              }
+
+              .site-chrome-nav-menu {
+                div.dropdown {
+                  ul.dropdown-options {
+                    top: $banner_height - 1px;
+                  }
+                }
+              }
+
+              a.site-chrome-nav-link {
+                display: inline-block;
+                padding: 0 $text_padding;
+                transition: background-color 0.05s;
+
+                &:hover, &:focus, &:active {
+                  text-decoration: none;
+                  background-color: $white_highlight_color;
+                }
+              }
+            }
+          }
+
+          .navbar-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            max-height: $banner_height;
+            background-color: $header_bg_color;
+
+            .site-chrome-social-links {
+              float: left;
+              max-height: $banner_height;
+
+              .site-chrome-social-link {
+                color: $header_fg_color;
+                &:hover, &:focus, &:active {
+                  text-decoration: none;
+                }
+              }
+            }
+
+            .language-switcher-container {
+              float: left;
+            }
+            a.sign-in-toggle {
+              font-size: 12px;
+              margin-left: $text_padding;
+            }
+            a.profile-link, a.admin-link, a.logout-link {
+              line-height: 48px;
+              padding: 0 $text_padding;
+              text-decoration: none;
+              &.in-header {
+                color: $header_fg_color;
+              }
+              &:hover, &:focus, &:active {
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+
+        &.mobile {
+          position: absolute;
+          right: 0;
+          .menu-toggle {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}

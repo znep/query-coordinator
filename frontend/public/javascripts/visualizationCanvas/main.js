@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import { t } from 'lib/I18n';
 import confirmUnload from 'lib/confirmUnload';
 
+import utils from 'socrata-utils';
 import airbrake from '../common/airbrake';
 import '../common/mixpanel'; // This initializes mixpanel
 
@@ -49,6 +50,13 @@ _.defer(function() {
       </Provider>,
       document.querySelector('#app')
     );
+    // initialize internal analytics
+    const analytics = new utils.Analytics();
+    analytics.sendMetric('domain', 'js-page-view', 1);
+    analytics.sendMetric('domain', 'js-page-view-visualization', 1);
+
+    // flush the metrics queue to dispatch everything
+    analytics.flushMetrics();
   } catch (e) {
     console.error(`Fatal error when rendering: ${e.stack}`);
 

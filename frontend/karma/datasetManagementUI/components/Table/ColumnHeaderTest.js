@@ -13,7 +13,7 @@ describe('components/Table/ColumnHeader', () => {
     },
     column: {
       transform: {
-        output_soql_type: 'SoQLText'
+        output_soql_type: 'text'
       },
       display_name: 'foo'
     },
@@ -42,12 +42,12 @@ describe('components/Table/ColumnHeader', () => {
     ReactDOM.render(<ColumnHeader {...props} />, element);
 
     const select = element.querySelector('select');
-    select.value = 'SoQLNumber';
+    select.value = 'number';
     TestUtils.Simulate.change(select);
     expect(spy.args[0]).to.deep.equal([
       defaultProps.outputSchema,
       defaultProps.column,
-      'SoQLNumber'
+      'number'
     ])
   });
 
@@ -72,7 +72,7 @@ describe('components/Table/ColumnHeader', () => {
       ...defaultProps,
       column: {
         transform: {
-          output_soql_type: 'SoQLText'
+          output_soql_type: 'text'
         },
         ignored: true
       },
@@ -108,12 +108,12 @@ describe('components/Table/ColumnHeader', () => {
     };
     ReactDOM.render(<ColumnHeader {...newProps} />, element);
     const select = element.querySelector('select');
-    select.value = 'SoQLNumber';
+    select.value = 'number';
     TestUtils.Simulate.change(select);
     expect(spy.args[0]).to.deep.equal([
       newProps.outputSchema,
       defaultProps.column,
-      'SoQLNumber'
+      'number'
     ]);
   });
 
@@ -124,11 +124,11 @@ describe('components/Table/ColumnHeader', () => {
     const options = element.querySelectorAll('select option');
     const values = [...options].map(option => option.value)
     expect(values).to.deep.equal([
-      'SoQLFloatingTimestamp',
-      'SoQLNumber',
-      'SoQLText',
-      'SoQLBoolean',
-      'SoQLLocation'
+      'calendar_date',
+      'number',
+      'text',
+      'checkbox',
+      'location'
     ]);
   });
 
@@ -147,7 +147,7 @@ describe('components/Table/ColumnHeader', () => {
         column: {
           id: 5,
           transform: {
-            output_soql_type: 'SoQLText'
+            output_soql_type: 'text'
           }
         },
         activeApiCallInvolvingThis: true,
@@ -174,7 +174,7 @@ describe('components/Table/ColumnHeader', () => {
       column: {
         id: 5,
         transform: {
-          output_soql_type: 'SoQLText'
+          output_soql_type: 'text'
         }
       },
       activeApiCallInvolvingThis: true,
@@ -194,7 +194,7 @@ describe('components/Table/ColumnHeader', () => {
       column: {
         id: 5,
         transform: {
-          output_soql_type: 'SoQLText'
+          output_soql_type: 'text'
         }
       },
       updateColumnType: _.noop,
@@ -213,7 +213,7 @@ describe('components/Table/ColumnHeader', () => {
       ...defaultProps,
       column: {
         transform: {
-          output_soql_type: 'SoQLText'
+          output_soql_type: 'text'
         },
         is_primary_key: true
       },

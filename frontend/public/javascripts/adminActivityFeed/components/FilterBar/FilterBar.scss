@@ -1,47 +1,52 @@
+@import 'app/styles/styleguide-colors';
+
 .filter-bar {
   width: 100%;
   margin-top: 15px;
   padding: 10px 10px 0 10px;
   display: flex;
   justify-content: space-between;
-  background-color: #FAFAFA;
-  border-bottom: 2px solid #f5f5f5;
-  color: #5E5E5E;
+  background-color: $light-grey-7;
+  border-bottom: 2px solid $light-grey-5;
+  color: $dark-grey-2;
 
   .quick-filters {
-    margin-top: 10px;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 15px;
 
     ul {
       list-style-type: none;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      height: 100%;
-    }
 
-    li {
-      float: left;
-      padding: 0 10px 5px 10px;
-      cursor: pointer;
-      color: #5F5F5F;
-      font-weight: 500;
+      li {
+        float: left;
+        padding-left: 12px;
+        padding-right: 12px;
 
-      &:hover, &.selected {
-        border-bottom: 3px solid #176289;
+        button {
+          cursor: pointer;
+          background: none;
+          padding: 9px 11px;
+          border: none;
+          font-weight: 400;
+
+          &:hover {
+            border-bottom: 4px solid $light-grey-2;
+          }
+          &.selected {
+            border-bottom: 4px solid $primary-dark;
+          }
+        }
       }
     }
   }
 
   .picker-filters {
+    color: $dark-grey-2;
     font-size: 12px;
     height: 29px;
-    margin-top: 5px;
+    margin-top: 29px;
 
     .picker-filters-header{
       font-size: 12px;
-      color: #5E5E5E;
       padding-top: 5px;
       float: left;
       margin-right: 15px;
@@ -54,38 +59,46 @@
         width: 190px;
         height: 28px;
         padding: 5px;
-        color: #5E5E5E;
-        border: 1px solid #DDDDDD;
+        color: $dark-grey-2;
+        border: 1px solid $light-grey-3;
         font-size: 12px;
 
-        .dropdown-caret {
-          font-size: 12px;
-
-          &.socrata-icon-arrow-down {
-           top: 6px;
-          }
+        &:hover {
+          background-color: $light-grey-5;
         }
+
+        &:focus {
+          border: 1px solid $light-grey-2;
+          outline: auto 5px $primary-base;
+        }
+      }
+
+      .socrata-icon-arrow-down {
+        width: 15px;
+        height: 15px;
+        top: 8px;
+        right: 6px;
       }
     }
 
-    .socrata-icon {
-      margin-right: 5px;
+    .dropdown-options-list .picklist-option{
+      text-overflow: inherit;
     }
 
     .socrata-icon-checkmark-alt {
-      color: #36A76A;
+      color: $success-base;
     }
 
     .socrata-icon-warning-alt {
-      color: #FDCB02;
+      color: $warning-base;
     }
 
     .socrata-icon-close-circle {
-      color: #CF626D;
+      color: $error-base;
     }
 
     .socrata-icon-processing {
-      color: #7C8083;
+      color: $dark-grey-1;
     }
 
     .filter-bar-filter {
@@ -93,13 +106,19 @@
     }
 
     .filter-control-container {
-      width: 190px;
+      width: 200px;
 
       .filter-control-toggle {
-        max-width: 190px;
-        width: 190px;
+        max-width: 200px;
+        width: 200px;
         max-height: 28px;
-        border: 1px solid #DDDDDD;
+        border: 1px solid $light-grey-3;
+        color: $dark-grey-2;
+
+        &:focus {
+          border: 1px solid $light-grey-2;
+          outline: auto 5px $primary-base;
+        }
       }
 
       .remove-btn {
@@ -109,6 +128,10 @@
       .filter-controls .filter-footer {
         justify-content: flex-end;
       }
+    }
+
+    .config-btn {
+      display: none;
     }
   }
 

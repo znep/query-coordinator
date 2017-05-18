@@ -1,10 +1,48 @@
 import React, { PropTypes, Component } from 'react';
 
-import breakpoints from '../lib/breakpoints';
 import { isUserRoled } from '../../common/user';
 import { localizeLink } from '../../common/locale';
 
 export default class InfoPaneButtons extends Component {
+  componentDidMount() {
+    window.addEventListener('resize', this.alignActionButtons);
+  }
+
+  componentWillUpdate(nextProps) {
+    const { isMobile, isTablet } = nextProps;
+    const apiBtn = document.querySelector('.entry-actions .api');
+    const apiLink = document.querySelector('.entry-actions .api-link');
+
+    if (apiBtn && apiLink) {
+      if (isMobile || isTablet) {
+        apiBtn.classList.add('hidden');
+        apiLink.classList.remove('hidden');
+      } else {
+        apiBtn.classList.remove('hidden');
+        apiLink.classList.add('hidden');
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.alignActionButtons);
+  }
+
+  // If the Infopane action buttons break onto the next line we
+  // want to left-align the set of buttons to be directly under the title
+  alignActionButtons() {
+    const infoPaneTitle = document.querySelector('.entry-title');
+    const infoPaneBtns = document.querySelector('.entry-actions');
+
+    if (infoPaneTitle && infoPaneBtns) {
+      if (infoPaneBtns.offsetTop > infoPaneTitle.offsetTop) {
+        infoPaneBtns.classList.add('align-left');
+      } else {
+        infoPaneBtns.classList.remove('align-left');
+      }
+    }
+  }
+
   renderViewDataButton() {
     const { view, onClickGrid } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
@@ -128,10 +166,7 @@ export default class InfoPaneButtons extends Component {
     const { view } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
-    const windowWidth = document.body.offsetWidth;
-    const isMobile = windowWidth <= breakpoints.mobile;
-
-    if (isBlobbyOrHref || isMobile) {
+    if (isBlobbyOrHref) {
       return null;
     }
 
@@ -153,9 +188,6 @@ export default class InfoPaneButtons extends Component {
   renderMoreActions() {
     const { view } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
-
-    const windowWidth = document.body.offsetWidth;
-    const isMobile = windowWidth <= breakpoints.mobile;
 
     const { enableVisualizationCanvas } = serverConfig.featureFlags;
     const canCreateVisualizationCanvas = enableVisualizationCanvas &&
@@ -201,10 +233,10 @@ export default class InfoPaneButtons extends Component {
     }
 
     let apiLink = null;
-    if (isMobile) {
+    if (!isBlobbyOrHref) {
       apiLink = (
         <li>
-          <a tabIndex="0" role="button" className="option" data-flannel="api-flannel">
+          <a tabIndex="0" role="button" className="option api-link" data-flannel="api-flannel">
             {I18n.action_buttons.api}
           </a>
         </li>
@@ -242,5 +274,8 @@ export default class InfoPaneButtons extends Component {
 InfoPaneButtons.propTypes = {
   view: PropTypes.object.isRequired,
   onDownloadData: PropTypes.func,
-  onClickGrid: PropTypes.func
+  onClickGrid: PropTypes.func,
+  isDesktop: PropTypes.bool,
+  isTablet: PropTypes.bool,
+  isMobile: PropTypes.bool
 };

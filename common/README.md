@@ -14,6 +14,7 @@ Please see the README within each folder to learn more:
 * [JS Utils](https://github.com/socrata/platform-ui/blob/master/common/js_utils/README.md)
 * [Analytics](https://github.com/socrata/platform-ui/blob/master/common/analytics/README.md)
 * [Feature Flags](https://github.com/socrata/platform-ui/blob/master/common/feature_flags/README.md)
+* [Site Chrome](https://github.com/socrata/platform-ui/blob/master/common/site_chrome/README.md)
 * [Karma tests](https://github.com/socrata/platform-ui/blob/master/common/karma_config/README.md)
 * [socrata-components legacy package](https://github.com/socrata/platform-ui/blob/master/packages/socrata-components/README.md)
 * [socrata-utils legacy package](https://github.com/socrata/platform-ui/blob/master/packages/socrata-utils/README.md)

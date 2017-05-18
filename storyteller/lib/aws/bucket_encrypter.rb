@@ -23,9 +23,9 @@ module Aws
     # server-side encryption to AES256
     def encrypt
       # Docs for this command found at https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html
-      system("aws s3 cp --region #{region} --profile #{environment} --recursive --sse --acl public-read s3://#{bucket} s3://#{bucket}")
+      zero_status = system("aws s3 cp --region #{region} --profile #{environment} --recursive --sse --acl public-read s3://#{bucket} s3://#{bucket}")
 
-      raise "Command failed with exit status #{$?.exitstatus}" unless $?.exitstatus.zero?
+      raise "Command failed with exit status #{$?&.exitstatus}" unless zero_status
     end
 
     private

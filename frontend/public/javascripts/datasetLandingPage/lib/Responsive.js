@@ -30,8 +30,8 @@ class Responsive extends Component {
     if (window.matchMedia(`(max-width: ${breakpoints.tablet}px)`).matches) {
       return {
         isDesktop: false,
-        isTablet: false,
-        isMobile: true
+        isTablet: true,
+        isMobile: false
       };
     }
 

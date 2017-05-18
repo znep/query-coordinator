@@ -2,13 +2,15 @@ import { FeatureFlags } from 'common/feature_flags';
 
 describe('FeatureFlags', function() {
 
+  const validFeatureFlag = 'mockFeatureFlag';
+
   before(function() {
     FeatureFlags.useTestFixture();
   });
 
   it('returns the feature flag value', function() {
-    FeatureFlags.useTestFixture({ useAuth0: false });
-    assert.isFalse(FeatureFlags.value('useAuth0'));
+    FeatureFlags.useTestFixture({ [validFeatureFlag]: false });
+    assert.isFalse(FeatureFlags.value(validFeatureFlag));
   });
 
   it('throws when given an invalid feature flag key', function() {
@@ -17,12 +19,12 @@ describe('FeatureFlags', function() {
 
   it('throws when featureFlags data source is not on the window', function() {
     delete(window.socrata);
-    assert.throws(function() { FeatureFlags.value('timeline'); });
+    assert.throws(function() { FeatureFlags.value(validFeatureFlag); });
   });
 
   it('throws when featureFlags data source cannot be found', function() {
     window.socrata = {};
-    assert.throws(function() { FeatureFlags.value('enablePulse'); });
+    assert.throws(function() { FeatureFlags.value(validFeatureFlag); });
   });
 
 });

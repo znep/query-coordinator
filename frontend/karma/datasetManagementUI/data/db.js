@@ -1271,12 +1271,12 @@ const db = {
   },
   input_columns: {
     '7989': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 0,
       input_schema_id: 1801,
       id: 7989,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLNumber',
+      guessed_soql_type: 'number',
       field_name: 'id',
       __status__: {
         type: 'SAVED',
@@ -1284,12 +1284,12 @@ const db = {
       }
     },
     '7990': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 1,
       input_schema_id: 1801,
       id: 7990,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'case_number',
       __status__: {
         type: 'SAVED',
@@ -1297,12 +1297,12 @@ const db = {
       }
     },
     '7991': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 2,
       input_schema_id: 1801,
       id: 7991,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLFloatingTimestamp',
+      guessed_soql_type: 'calendar_date',
       field_name: 'date',
       __status__: {
         type: 'SAVED',
@@ -1310,12 +1310,12 @@ const db = {
       }
     },
     '7992': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 3,
       input_schema_id: 1801,
       id: 7992,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'block',
       __status__: {
         type: 'SAVED',
@@ -1323,12 +1323,12 @@ const db = {
       }
     },
     '7993': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 4,
       input_schema_id: 1801,
       id: 7993,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'iucr',
       __status__: {
         type: 'SAVED',
@@ -1336,12 +1336,12 @@ const db = {
       }
     },
     '7994': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 5,
       input_schema_id: 1801,
       id: 7994,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'primary_type',
       __status__: {
         type: 'SAVED',
@@ -1349,12 +1349,12 @@ const db = {
       }
     },
     '7995': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 6,
       input_schema_id: 1801,
       id: 7995,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'description',
       __status__: {
         type: 'SAVED',
@@ -1362,12 +1362,12 @@ const db = {
       }
     },
     '7996': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 7,
       input_schema_id: 1801,
       id: 7996,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'location_description',
       __status__: {
         type: 'SAVED',
@@ -1375,12 +1375,12 @@ const db = {
       }
     },
     '7997': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 8,
       input_schema_id: 1801,
       id: 7997,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLBoolean',
+      guessed_soql_type: 'checkbox',
       field_name: 'arrest',
       __status__: {
         type: 'SAVED',
@@ -1388,12 +1388,12 @@ const db = {
       }
     },
     '7998': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 9,
       input_schema_id: 1801,
       id: 7998,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLBoolean',
+      guessed_soql_type: 'checkbox',
       field_name: 'domestic',
       __status__: {
         type: 'SAVED',
@@ -1401,12 +1401,12 @@ const db = {
       }
     },
     '7999': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 10,
       input_schema_id: 1801,
       id: 7999,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLNumber',
+      guessed_soql_type: 'number',
       field_name: 'beat',
       __status__: {
         type: 'SAVED',
@@ -1414,12 +1414,12 @@ const db = {
       }
     },
     '8000': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 11,
       input_schema_id: 1801,
       id: 8000,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLNumber',
+      guessed_soql_type: 'number',
       field_name: 'district',
       __status__: {
         type: 'SAVED',
@@ -1427,12 +1427,12 @@ const db = {
       }
     },
     '8001': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 12,
       input_schema_id: 1801,
       id: 8001,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_12',
       __status__: {
         type: 'SAVED',
@@ -1440,12 +1440,12 @@ const db = {
       }
     },
     '8002': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 13,
       input_schema_id: 1801,
       id: 8002,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_13',
       __status__: {
         type: 'SAVED',
@@ -1453,12 +1453,12 @@ const db = {
       }
     },
     '8003': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 14,
       input_schema_id: 1801,
       id: 8003,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_14',
       __status__: {
         type: 'SAVED',
@@ -1466,12 +1466,12 @@ const db = {
       }
     },
     '8004': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 15,
       input_schema_id: 1801,
       id: 8004,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_15',
       __status__: {
         type: 'SAVED',
@@ -1479,12 +1479,12 @@ const db = {
       }
     },
     '8005': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 16,
       input_schema_id: 1801,
       id: 8005,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_16',
       __status__: {
         type: 'SAVED',
@@ -1492,12 +1492,12 @@ const db = {
       }
     },
     '8006': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 17,
       input_schema_id: 1801,
       id: 8006,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_17',
       __status__: {
         type: 'SAVED',
@@ -1505,12 +1505,12 @@ const db = {
       }
     },
     '8007': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 18,
       input_schema_id: 1801,
       id: 8007,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_18',
       __status__: {
         type: 'SAVED',
@@ -9465,7 +9465,7 @@ const db = {
         }
       ],
       transform_expr: 'to_number(`id`)',
-      output_soql_type: 'SoQLNumber',
+      output_soql_type: 'number',
       id: 7883,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9481,7 +9481,7 @@ const db = {
         }
       ],
       transform_expr: '`case_number`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7884,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9497,7 +9497,7 @@ const db = {
         }
       ],
       transform_expr: 'to_floating_timestamp(`date`)',
-      output_soql_type: 'SoQLFloatingTimestamp',
+      output_soql_type: 'calendar_date',
       id: 7885,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9513,7 +9513,7 @@ const db = {
         }
       ],
       transform_expr: '`block`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7886,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9529,7 +9529,7 @@ const db = {
         }
       ],
       transform_expr: '`iucr`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7887,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9545,7 +9545,7 @@ const db = {
         }
       ],
       transform_expr: '`primary_type`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7888,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9561,7 +9561,7 @@ const db = {
         }
       ],
       transform_expr: '`description`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7889,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9577,7 +9577,7 @@ const db = {
         }
       ],
       transform_expr: '`location_description`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7890,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9593,7 +9593,7 @@ const db = {
         }
       ],
       transform_expr: 'to_boolean(`arrest`)',
-      output_soql_type: 'SoQLBoolean',
+      output_soql_type: 'checkbox',
       id: 7891,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9609,7 +9609,7 @@ const db = {
         }
       ],
       transform_expr: 'to_boolean(`domestic`)',
-      output_soql_type: 'SoQLBoolean',
+      output_soql_type: 'checkbox',
       id: 7892,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9625,7 +9625,7 @@ const db = {
         }
       ],
       transform_expr: 'to_number(`beat`)',
-      output_soql_type: 'SoQLNumber',
+      output_soql_type: 'number',
       id: 7893,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9641,7 +9641,7 @@ const db = {
         }
       ],
       transform_expr: 'to_number(`district`)',
-      output_soql_type: 'SoQLNumber',
+      output_soql_type: 'number',
       id: 7894,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9657,7 +9657,7 @@ const db = {
         }
       ],
       transform_expr: '`column_12`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7895,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9673,7 +9673,7 @@ const db = {
         }
       ],
       transform_expr: '`column_13`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7896,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9689,7 +9689,7 @@ const db = {
         }
       ],
       transform_expr: '`column_14`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7897,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9705,7 +9705,7 @@ const db = {
         }
       ],
       transform_expr: '`column_15`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7898,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9721,7 +9721,7 @@ const db = {
         }
       ],
       transform_expr: '`column_16`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7899,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9737,7 +9737,7 @@ const db = {
         }
       ],
       transform_expr: '`column_17`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7900,
       completed_at: '2017-05-02T21:34:10',
       __status__: {
@@ -9753,7 +9753,7 @@ const db = {
         }
       ],
       transform_expr: '`column_18`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7901,
       completed_at: '2017-05-02T21:34:10',
       __status__: {

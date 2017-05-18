@@ -1,0 +1,20 @@
+<div class="mobile-menu" aria-expanded="false">
+  <h2 class="menu-header-title"><%= t('header.menu') %></h2>
+  <a class="menu-toggle" aria-label="<%= t('header.close_button_aria_label') %>" href="#" onclick="mobileMenuToggle()">
+    <span class="socrata-icon-close-2"></span>
+  </a>
+
+  <div class="menu-content">
+    <%= navbar_links_div(:use_dropdown => false, :is_mobile => true) %>
+
+    <%= render 'site_chrome/mobile_user_actions' %>
+
+    <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), mobile: true %>
+
+    <div class="site-chrome-nav-links site-chrome-social-links">
+      <%= render 'site_chrome/social_links', :is_mobile => true %>
+    </div>
+
+    <%= render 'site_chrome/mobile_language_switcher' if show_language_switcher? %>
+  </div>
+</div>

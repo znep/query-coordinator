@@ -2,843 +2,621 @@ export default [
   {
     "resource" :
       {
-        "view_count" :
-          {
-            "page_views_total" : 2697,
-            "page_views_total_log" : 11.397674632948268,
-            "page_views_last_week_log" : 2.321928094887362,
-            "page_views_last_month" : 25,
-            "page_views_last_week" : 4,
-            "page_views_last_month_log" : 4.700439718141093
-          },
-        "obe_fxf" : null,
-        "description" : "Results from 131 Community Caucuses, five large group workshops, the Youth Summit and via the web for Mayor Mike McGinn’s Youth and Families Initiative.",
-        "name" : "Youth and Family Initiative All Top Priorities",
+        "description" : "This data is derived from sensor stations placed on bridges and surface streets within city limits.  Each station has a temperature sensor that measures the temperature of the street surface and a sensor that measures the ambient air temperature at the station each second.  Those values are averaged into temperature readings that are recorded by the station every minute.  The dataset is updated every fifteen minutes with new data.",
+        "type" : "dataset",
+        "download_count" : null,
         "parent_fxf" : null,
-        "nbe_fxf" : null,
-        "attribution" : "Mayor's Office",
+        "createdAt" : "2014-03-04T15:24:22.000Z",
         "provenance" : "official",
-        "columns_field_name" :
-          [
-            "workshop_date",
-            "group_name",
-            "subcatagory",
-            "priority",
-            "priority_issues"
-          ],
-        "download_count" : 0,
-        "columns_name" :
-          [
-            "Workshop Date",
-            "Group name",
-            "Subcatagory",
-            "Priority",
-            "Priority Issues"
-          ],
         "page_views" :
           {
-            "page_views_total" : 2697,
-            "page_views_total_log" : 11.397674632948268,
-            "page_views_last_week_log" : 2.321928094887362,
-            "page_views_last_month" : 25,
-            "page_views_last_week" : 4,
-            "page_views_last_month_log" : 4.700439718141093
+            "page_views_total" : 189175,
+            "page_views_total_log" : 17.52936954579258,
+            "page_views_last_week" : 22,
+            "page_views_last_week_log" : 4.523561956057013,
+            "page_views_last_month_log" : 6.066089190457772,
+            "page_views_last_month" : 66
           },
-        "updatedAt" : "2011-08-21T02:48:28.000Z",
-        "type" : "dataset",
-        "id" : "s3q4-fh73",
-        "createdAt" : "2010-06-04T20:39:36.000Z",
-        "columns_description" : [ "", "", "", "", "" ]
+        "columns_description" : [ "", "", "", "", "", "" ],
+        "name" : "Road Weather Information Stations",
+        "attribution" : "Department of Transportation",
+        "columns_name" :
+          [
+            "StationName",
+            "RoadSurfaceTemperature",
+            "StationLocation",
+            "DateTime",
+            "RecordId",
+            "AirTemperature"
+          ],
+        "id" : "egc4-d24i",
+        "columns_field_name" :
+          [
+            "stationname",
+            "roadsurfacetemperature",
+            "stationlocation",
+            "datetime",
+            "recordid",
+            "airtemperature"
+          ],
+        "view_count" :
+          {
+            "page_views_total" : 189175,
+            "page_views_total_log" : 17.52936954579258,
+            "page_views_last_week" : 22,
+            "page_views_last_week_log" : 4.523561956057013,
+            "page_views_last_month_log" : 6.066089190457772,
+            "page_views_last_month" : 66
+          },
+        "updatedAt" : "2017-05-16T23:24:39.000Z"
       },
     "classification" :
       {
         "categories" : [],
         "tags" : [],
-        "domain_category" : "Education",
+        "domain_category" : "Transportation",
         "domain_tags" :
           [
-            "education",
-            "families",
-            "family",
-            "health",
-            "neighborhood",
-            "neighborhood safety",
-            "priorities",
-            "race",
-            "social justice",
-            "youth",
-            "youth development"
+            "transportation",
+            "seattle",
+            "temperature",
+            "street",
+            "weather",
+            "road"
           ],
         "domain_metadata" :
           [
+            { "value" : "daily", "key" : "Refresh-Frequency_Frequency" },
             {
-              "value" : "Office of the Mayor",
+              "value" : "Department of Transportation",
               "key" : "Data-Owner_Owner"
+            },
+            {
+              "value" : "Transportation",
+              "key" : "Data-Owner_Department"
             }
           ]
       },
-    "metadata" : { "domain" : "data.seattle.gov" },
-    "permalink" : "https://data.seattle.gov/d/s3q4-fh73",
-    "link" : "https://data.seattle.gov/Education/Youth-and-Family-Initiative-All-Top-Priorities/s3q4-fh73"
+    "metadata" :
+      {
+        "domain" : "data.seattle.gov",
+        "license" : "Public Domain",
+        "is_public" : true,
+        "is_published" : true,
+        "is_hidden" : false,
+        "visible_to_anonymous" : true,
+        "grants" : []
+      },
+    "permalink" : "https://data.seattle.gov/d/egc4-d24i",
+    "link" : "https://data.seattle.gov/Transportation/Road-Weather-Information-Stations/egc4-d24i"
   },
   {
     "resource" :
       {
-        "view_count" :
-          {
-            "page_views_total" : 1112,
-            "page_views_total_log" : 10.12023787734196,
-            "page_views_last_week_log" : 3.5849625007211565,
-            "page_views_last_month" : 46,
-            "page_views_last_week" : 11,
-            "page_views_last_month_log" : 5.554588851677638
-          },
-        "obe_fxf" : null,
-        "description" : "Private schools in Seattle",
-        "name" : "Private Schools",
-        "parent_fxf" : null,
         "nbe_fxf" : null,
-        "attribution" : null,
-        "provenance" : "official",
-        "columns_field_name" :
-          [
-            "name",
-            "grade",
-            "phone",
-            "website",
-            "address",
-            "zip",
-            "objectid",
-            "city",
-            "shape"
-          ],
-        "download_count" : 0,
-        "columns_name" :
-          [
-            "NAME",
-            "GRADE",
-            "PHONE",
-            "WEBSITE",
-            "ADDRESS",
-            "ZIP",
-            "OBJECTID",
-            "CITY",
-            "Shape"
-          ],
-        "page_views" :
-          {
-            "page_views_total" : 1112,
-            "page_views_total_log" : 10.12023787734196,
-            "page_views_last_week_log" : 3.5849625007211565,
-            "page_views_last_month" : 46,
-            "page_views_last_week" : 11,
-            "page_views_last_month_log" : 5.554588851677638
-          },
-        "updatedAt" : "2014-07-15T21:44:36.000Z",
-        "type" : "map",
-        "id" : "gza6-uqxz",
-        "createdAt" : "2014-07-15T21:27:27.000Z",
-        "columns_description" :
-          [
-            "NAME",
-            "GRADE",
-            "PHONE",
-            "WEBSITE",
-            "ADDRESS",
-            "ZIP",
-            "OBJECTID",
-            "CITY",
-            "Shape"
-          ]
-      },
-    "classification" :
-      {
-        "categories" : [ "education" ],
-        "tags" : [],
-        "domain_category" : "Education",
-        "domain_tags" : [ "private", "schools" ],
-        "domain_metadata" :
-          [
-            {
-              "value" : "image/png",
-              "key" : "drawingInfo.renderer_symbol.contentType"
-            },
-            {
-              "value" : "esriPMS",
-              "key" : "drawingInfo.renderer_symbol.type"
-            },
-            { "value" : "0", "key" : "drawingInfo.renderer_symbol.angle" },
-            {
-              "value" : "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAYCAYAAAAlBadpAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAASlJREFUOI3l0LtKA0EUxvF/spFDsEyaNIpgLdaCSoqFxGijIFjkIggigX0Au7yIRDDEwsIqbqW1RcSoXR5gqxR2Hkl2rZJ4yY7rBSw81TB8v/lmJsEPJjFx12UOCw+bpy9jeZSquurQ5Jg0VWyeozcDbDMF7NGiSJM6aZz3h4TjaWAZWEW4Yp8WFU45IoWDTd+Mh5ME1oAVhBoHDCjjskiO7uc4AO6BBr7My43OaJkcXXPzEJ3gy6x0NKslzevD60g4roFsSkezWtG83k6KhOMiLd3VguFBBhzDN0EzjjD/E1+wwDltUuPf1Wu16AOH6CjZI57ZyOx4697ZGPsISyQoTTzcGq0aoL4mf/Haf4l9LgnoERiTd8RkSwZvcYE2EI/S5NW9D83fnhfZi1VmPD2zgwAAAABJRU5ErkJggg==",
-              "key" : "drawingInfo.renderer_symbol.imageData"
-            },
-            {
-              "value" : "18",
-              "key" : "drawingInfo.renderer_symbol.height"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.renderer_symbol.yoffset"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.renderer_symbol.xoffset"
-            },
-            {
-              "value" : "B6C876EB",
-              "key" : "drawingInfo.renderer_symbol.url"
-            },
-            {
-              "value" : "11",
-              "key" : "drawingInfo.renderer_symbol.width"
-            },
-            { "value" : "Map,Query,Data", "key" : "Basic_capabilities" },
-            { "value" : "Schools Private", "key" : "Basic_name" },
-            { "value" : "0", "key" : "Basic_maxScale" },
-            {
-              "value" : "esriServerHTMLPopupTypeAsHTMLText",
-              "key" : "Basic_htmlPopupType"
-            },
-            {
-              "value" : "esriGeometryPoint",
-              "key" : "Basic_geometryType"
-            },
-            { "value" : "false", "key" : "Basic_hasAttachments" },
-            { "value" : "false", "key" : "Basic_defaultVisibility" },
-            { "value" : "73", "key" : "Basic_id" },
-            { "value" : "102113", "key" : "Basic_Spatial-Reference-wkid" },
-            {
-              "value" : "https://gisrevprxy.seattle.gov/ArcGIS/rest/services/ext/WM_CityGISLayers/MapServer/73",
-              "key" : "Basic_Source"
-            },
-            { "value" : "NAME", "key" : "Basic_displayField" },
-            { "value" : "0", "key" : "Basic_minScale" },
-            { "value" : "Feature Layer", "key" : "Basic_type" },
-            { "value" : "10.03", "key" : "Basic_currentVersion" },
-            {
-              "value" : "Seattle City GIS Program",
-              "key" : "Data-Owner_Owner"
-            },
-            { "value" : "0", "key" : "drawingInfo_transparency" },
-            { "value" : "simple", "key" : "drawingInfo_renderer.type" }
-          ]
-      },
-    "metadata" : { "domain" : "data.seattle.gov" },
-    "permalink" : "https://data.seattle.gov/d/gza6-uqxz",
-    "link" : "https://data.seattle.gov/Education/Private-Schools/gza6-uqxz"
-  },
-  {
-    "resource" :
-      {
-        "view_count" :
-          {
-            "page_views_total" : 959,
-            "page_views_total_log" : 9.90689059560852,
-            "page_views_last_week_log" : 3.5849625007211565,
-            "page_views_last_month" : 50,
-            "page_views_last_week" : 11,
-            "page_views_last_month_log" : 5.672425341971496
-          },
-        "obe_fxf" : null,
-        "description" : "https://gisrevprxy.seattle.gov/ArcGIS/rest/services/ext/WM_CityGISLayers/MapServer/61",
-        "name" : "Public Schools",
-        "parent_fxf" : null,
-        "nbe_fxf" : null,
-        "attribution" : null,
-        "provenance" : "official",
-        "columns_field_name" :
-          [
-            "grade",
-            "address",
-            "phone",
-            "website",
-            "zip",
-            "city",
-            "name",
-            "objectid",
-            "shape",
-            "type",
-            "school"
-          ],
-        "download_count" : 0,
-        "columns_name" :
-          [
-            "GRADE",
-            "ADDRESS",
-            "PHONE",
-            "WEBSITE",
-            "ZIP",
-            "CITY",
-            "NAME",
-            "OBJECTID",
-            "Shape",
-            "TYPE",
-            "SCHOOL"
-          ],
-        "page_views" :
-          {
-            "page_views_total" : 959,
-            "page_views_total_log" : 9.90689059560852,
-            "page_views_last_week_log" : 3.5849625007211565,
-            "page_views_last_month" : 50,
-            "page_views_last_week" : 11,
-            "page_views_last_month_log" : 5.672425341971496
-          },
-        "updatedAt" : "2014-07-14T22:57:45.000Z",
-        "type" : "map",
-        "id" : "ywms-iep2",
-        "createdAt" : "2014-07-14T21:17:40.000Z",
-        "columns_description" :
-          [
-            "GRADE",
-            "ADDRESS",
-            "PHONE",
-            "WEBSITE",
-            "ZIP",
-            "CITY",
-            "NAME",
-            "OBJECTID",
-            "Shape",
-            "TYPE",
-            "SCHOOL"
-          ]
-      },
-    "classification" :
-      {
-        "categories" : [],
-        "tags" : [],
-        "domain_category" : "Education",
-        "domain_tags" :
-          [ "elementary", "high", "middlle", "public", "school" ],
-        "domain_metadata" :
-          [
-            { "value" : "Map,Query,Data", "key" : "Basic_capabilities" },
-            { "value" : "Schools Public", "key" : "Basic_name" },
-            { "value" : "0", "key" : "Basic_maxScale" },
-            {
-              "value" : "esriServerHTMLPopupTypeNone",
-              "key" : "Basic_htmlPopupType"
-            },
-            {
-              "value" : "esriGeometryPoint",
-              "key" : "Basic_geometryType"
-            },
-            { "value" : "false", "key" : "Basic_hasAttachments" },
-            { "value" : "false", "key" : "Basic_defaultVisibility" },
-            { "value" : "61", "key" : "Basic_id" },
-            { "value" : "102113", "key" : "Basic_Spatial-Reference-wkid" },
-            {
-              "value" : "https://gisrevprxy.seattle.gov/ArcGIS/rest/services/ext/WM_CityGISLayers/MapServer/61",
-              "key" : "Basic_Source"
-            },
-            { "value" : "NAME", "key" : "Basic_displayField" },
-            { "value" : "200000", "key" : "Basic_minScale" },
-            { "value" : "Feature Layer", "key" : "Basic_type" },
-            { "value" : "10.03", "key" : "Basic_currentVersion" },
-            {
-              "value" : "Seattle City GIS Program",
-              "key" : "Data-Owner_Owner"
-            },
-            {
-              "value" : "200000",
-              "key" : "drawingInfo_labelingInfo_1.minScale"
-            },
-            {
-              "value" : "[SCHOOL]",
-              "key" : "drawingInfo_labelingInfo_1.labelExpression"
-            },
-            { "value" : "simple", "key" : "drawingInfo_renderer.type" },
-            {
-              "value" : "0",
-              "key" : "drawingInfo_labelingInfo_1.maxScale"
-            },
-            {
-              "value" : "true",
-              "key" : "drawingInfo_labelingInfo_1.useCodedValues"
-            },
-            { "value" : "0", "key" : "drawingInfo_transparency" },
-            {
-              "value" : "esriServerPointLabelPlacementAboveRight",
-              "key" : "drawingInfo_labelingInfo_1.labelPlacement"
-            },
-            {
-              "value" : "image/png",
-              "key" : "drawingInfo.renderer_symbol.contentType"
-            },
-            {
-              "value" : "esriPMS",
-              "key" : "drawingInfo.renderer_symbol.type"
-            },
-            { "value" : "0", "key" : "drawingInfo.renderer_symbol.angle" },
-            {
-              "value" : "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAYCAYAAAAlBadpAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAXVJREFUOI3Vkj1LQnEUxp9zvXqvCpFgRhBpGQi9DeloH0CcGmqRhCCoNbDBoElaWnqBijIoa6qmhhChoUkiCiIK/ARi0VJeKys8LV0h8/pWS8/053/O73nOgSPiFxLLfTKzBICJ6K1uGEAngAQzzwPYJqL3emCcJJUOr9u0IUvC7JfJTqmJJhyMKhg4yCE0arYPeUybkqFoElNNNGEASDwUkFjLwmfLITRidng9pqhBL4SZ2U9EqYqwqvh9AfHVLCZcL08zgaZxl1NOVU1W5bcJ+UGnuBK50s1tOeV81Z0BwGcV8p5ucT1yoYSPFx2vpXVNeKxfvFs4++iKL1uftXo0YWuzLofDFk2wIlyL/j0cSJ8DMAFA32RGkgntCKRvinWB9rHXFvkBM3PSM5VxXyosAMBtjtV6r/qIDRung7t8TURHpck9kg5CpRGNMlkAWMqP3YD+Bj5dagVXaNSVWaoI6/XUcLIdQC30t1sXAYCIHuuOBfAJx6BpzfL1sFgAAAAASUVORK5CYII=",
-              "key" : "drawingInfo.renderer_symbol.imageData"
-            },
-            {
-              "value" : "18",
-              "key" : "drawingInfo.renderer_symbol.height"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.renderer_symbol.yoffset"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.renderer_symbol.xoffset"
-            },
-            {
-              "value" : "8E0891D0",
-              "key" : "drawingInfo.renderer_symbol.url"
-            },
-            {
-              "value" : "11",
-              "key" : "drawingInfo.renderer_symbol.width"
-            },
-            {
-              "value" : "normal",
-              "key" : "drawingInfo.labelingInfo_1.symbol_font.weight"
-            },
-            {
-              "value" : "none",
-              "key" : "drawingInfo.labelingInfo_1.symbol_font.decoration"
-            },
-            {
-              "value" : "8",
-              "key" : "drawingInfo.labelingInfo_1.symbol_font.size"
-            },
-            {
-              "value" : "Arial",
-              "key" : "drawingInfo.labelingInfo_1.symbol_font.family"
-            },
-            {
-              "value" : "normal",
-              "key" : "drawingInfo.labelingInfo_1.symbol_font.style"
-            },
-            {
-              "value" : "center",
-              "key" : "drawingInfo.labelingInfo_1_symbol.horizontalAlignment"
-            },
-            {
-              "value" : "esriTS",
-              "key" : "drawingInfo.labelingInfo_1_symbol.type"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.labelingInfo_1_symbol.angle"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.labelingInfo_1_symbol.yoffset"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.labelingInfo_1_symbol.xoffset"
-            },
-            {
-              "value" : "bottom",
-              "key" : "drawingInfo.labelingInfo_1_symbol.verticalAlignment"
-            },
-            {
-              "value" : "false",
-              "key" : "drawingInfo.labelingInfo_1_symbol.rightToLeft"
-            }
-          ]
-      },
-    "metadata" : { "domain" : "data.seattle.gov" },
-    "permalink" : "https://data.seattle.gov/d/ywms-iep2",
-    "link" : "https://data.seattle.gov/Education/Public-Schools/ywms-iep2"
-  },
-  {
-    "resource" :
-      {
-        "view_count" :
-          {
-            "page_views_total" : 820,
-            "page_views_total_log" : 9.681238411777805,
-            "page_views_last_week_log" : 1.0,
-            "page_views_last_month" : 4,
-            "page_views_last_week" : 1,
-            "page_views_last_month_log" : 2.321928094887362
-          },
-        "obe_fxf" : null,
-        "description" : "Families & Education Levy III\t\t\r\nProjected Expenditures for seven-year levy (Original Plan)\t\t\r\n\r\n7-year levy (2nd half of 2005 through 1st half of 2012)\t\t\r\nLevy programs increase 1 1/2%/year once program is fully ramped up\t\t\r\nLevy admin is capped at 5%/year\t\t\r\nCrossing Guard program expires mid-2008",
-        "name" : "Families & Education Levy III Expenditures",
-        "parent_fxf" : null,
-        "nbe_fxf" : null,
-        "attribution" : null,
-        "provenance" : "official",
-        "columns_field_name" :
-          [
-            "total",
-            "_2008",
-            "investment_area_expenditures",
-            "_2007",
-            "_2009",
-            "_2005",
-            "_2011",
-            "_2012",
-            "_2006",
-            "_2010"
-          ],
-        "download_count" : 0,
-        "columns_name" :
-          [
-            "Total",
-            "2008",
-            "Investment Area - Expenditures",
-            "2007",
-            "2009",
-            "2005",
-            "2011",
-            "2012",
-            "2006",
-            "2010"
-          ],
-        "page_views" :
-          {
-            "page_views_total" : 820,
-            "page_views_total_log" : 9.681238411777805,
-            "page_views_last_week_log" : 1.0,
-            "page_views_last_month" : 4,
-            "page_views_last_week" : 1,
-            "page_views_last_month_log" : 2.321928094887362
-          },
-        "updatedAt" : "2011-08-21T02:48:28.000Z",
+        "description" : "This dataset is all the Police responses to 9-1-1 calls within the city. Police response data shows all officers dispatched. To protect the security of a scene, the safety of officers and the public, and sensitive ongoing investigation, these events are added to the data.seattle.gov only after the incident is considered safe to close out. Data is refreshed on a 4 hour interval.",
         "type" : "dataset",
-        "id" : "9xpv-dsbc",
-        "createdAt" : "2010-06-03T15:47:01.000Z",
-        "columns_description" : [ "", "", "", "", "", "", "", "", "", "" ]
-      },
-    "classification" :
-      {
-        "categories" : [ "economy" ],
-        "tags" : [],
-        "domain_category" : "Education",
-        "domain_tags" :
-          [
-            "early learning",
-            "education",
-            "expenditures",
-            "families",
-            "family"
-          ],
-        "domain_metadata" :
-          [
-            {
-              "value" : "Office of the Mayor",
-              "key" : "Data-Owner_Owner"
-            }
-          ]
-      },
-    "metadata" : { "domain" : "data.seattle.gov" },
-    "permalink" : "https://data.seattle.gov/d/9xpv-dsbc",
-    "link" : "https://data.seattle.gov/Education/Families-Education-Levy-III-Expenditures/9xpv-dsbc"
-  },
-  {
-    "resource" :
-      {
-        "view_count" :
-          {
-            "page_views_total" : 658,
-            "page_views_total_log" : 9.364134655008051,
-            "page_views_last_week_log" : 2.807354922057604,
-            "page_views_last_month" : 28,
-            "page_views_last_week" : 6,
-            "page_views_last_month_log" : 4.857980995127573
-          },
         "obe_fxf" : null,
-        "description" : "https://gisrevprxy.seattle.gov/ArcGIS/rest/services/ext/WM_CityGISLayers/MapServer/61",
-        "name" : "Seattle schools",
-        "parent_fxf" : [ "ywms-iep2" ],
-        "nbe_fxf" : null,
-        "attribution" : null,
-        "provenance" : "community",
-        "columns_field_name" :
-          [
-            "website",
-            "type",
-            "address",
-            "objectid",
-            "shape",
-            "name",
-            "grade",
-            "city",
-            "phone",
-            "zip",
-            "school"
-          ],
-        "download_count" : 0,
-        "columns_name" :
-          [
-            "WEBSITE",
-            "TYPE",
-            "ADDRESS",
-            "OBJECTID",
-            "Shape",
-            "NAME",
-            "GRADE",
-            "CITY",
-            "PHONE",
-            "ZIP",
-            "SCHOOL"
-          ],
+        "download_count" : null,
+        "parent_fxf" : null,
+        "createdAt" : "2010-10-08T16:53:37.000Z",
+        "provenance" : "official",
         "page_views" :
           {
-            "page_views_total" : 658,
-            "page_views_total_log" : 9.364134655008051,
-            "page_views_last_week_log" : 2.807354922057604,
-            "page_views_last_month" : 28,
-            "page_views_last_week" : 6,
-            "page_views_last_month_log" : 4.857980995127573
+            "page_views_total" : 115504,
+            "page_views_total_log" : 16.817595779057132,
+            "page_views_last_week_log" : 8.614709844115207,
+            "page_views_last_week" : 391,
+            "page_views_last_month_log" : 10.711666973564347,
+            "page_views_last_month" : 1676
           },
-        "updatedAt" : "2014-07-27T06:02:42.000Z",
-        "type" : "map",
-        "id" : "uanm-dxsk",
-        "createdAt" : "2014-07-27T06:02:41.000Z",
         "columns_description" :
           [
-            "WEBSITE",
-            "TYPE",
-            "ADDRESS",
-            "OBJECTID",
-            "Shape",
-            "NAME",
-            "GRADE",
-            "CITY",
-            "PHONE",
-            "ZIP",
-            "SCHOOL"
-          ]
+            "",
+            "CAD Event Number",
+            "",
+            "Event Clearance SubGroup",
+            "Event Clearance Description",
+            "Sector",
+            "Latitude",
+            "Longitude",
+            "Event Clearance Date",
+            "Beat",
+            "Census_Tract",
+            "General Offense Number",
+            "Event Clearance Group",
+            "CAD CDW ID",
+            "Event Clearance Code",
+            "Hundred Block Location",
+            "",
+            "",
+            ""
+          ],
+        "name" : "Seattle Police Department 911 Incident Response",
+        "attribution" : "City of Seattle, Department of Information Technology, Seattle Police Department",
+        "columns_name" :
+          [
+            "At Scene Time",
+            "CAD Event Number",
+            "Initial Type Group",
+            "Event Clearance SubGroup",
+            "Event Clearance Description",
+            "District/Sector",
+            "Latitude",
+            "Longitude",
+            "Event Clearance Date",
+            "Zone/Beat",
+            "Census Tract",
+            "General Offense Number",
+            "Event Clearance Group",
+            "CAD CDW ID",
+            "Event Clearance Code",
+            "Hundred Block Location",
+            "Initial Type Description",
+            "Initial Type Subgroup",
+            "Incident Location"
+          ],
+        "columns_field_name" :
+          [
+            "at_scene_time",
+            "cad_event_number",
+            "initial_type_group",
+            "event_clearance_subgroup",
+            "event_clearance_description",
+            "district_sector",
+            "latitude",
+            "longitude",
+            "event_clearance_date",
+            "zone_beat",
+            "census_tract",
+            "general_offense_number",
+            "event_clearance_group",
+            "cad_cdw_id",
+            "event_clearance_code",
+            "hundred_block_location",
+            "initial_type_description",
+            "initial_type_subgroup",
+            "incident_location"
+          ],
+        "id" : "3k2p-39jp",
+        "view_count" :
+          {
+            "page_views_total" : 115504,
+            "page_views_total_log" : 16.817595779057132,
+            "page_views_last_week_log" : 8.614709844115207,
+            "page_views_last_week" : 391,
+            "page_views_last_month_log" : 10.711666973564347,
+            "page_views_last_month" : 1676
+          },
+        "updatedAt" : "2017-05-16T23:25:56.000Z"
       },
     "classification" :
       {
-        "categories" : [ "education" ],
+        "categories" : [ "public safety" ],
         "tags" : [],
-        "domain_category" : "Education",
+        "domain_category" : "Public Safety",
         "domain_tags" :
-          [ "elementary", "high", "middlle", "public", "school" ],
+          [
+            "census911incidents",
+            "incident response",
+            "crime",
+            "police",
+            "911"
+          ],
         "domain_metadata" :
           [
-            { "value" : "Map,Query,Data", "key" : "Basic_capabilities" },
-            { "value" : "Schools Public", "key" : "Basic_name" },
-            { "value" : "0", "key" : "Basic_maxScale" },
+            { "value" : "hourly", "key" : "Refresh-Frequency_Frequency" },
             {
-              "value" : "esriServerHTMLPopupTypeNone",
-              "key" : "Basic_htmlPopupType"
-            },
-            {
-              "value" : "esriGeometryPoint",
-              "key" : "Basic_geometryType"
-            },
-            { "value" : "false", "key" : "Basic_hasAttachments" },
-            { "value" : "false", "key" : "Basic_defaultVisibility" },
-            { "value" : "61", "key" : "Basic_id" },
-            { "value" : "102113", "key" : "Basic_Spatial-Reference-wkid" },
-            {
-              "value" : "https://gisrevprxy.seattle.gov/ArcGIS/rest/services/ext/WM_CityGISLayers/MapServer/61",
-              "key" : "Basic_Source"
-            },
-            { "value" : "NAME", "key" : "Basic_displayField" },
-            { "value" : "200000", "key" : "Basic_minScale" },
-            { "value" : "Feature Layer", "key" : "Basic_type" },
-            { "value" : "10.03", "key" : "Basic_currentVersion" },
-            {
-              "value" : "Seattle City GIS Program",
+              "value" : "Department of Information Technology",
               "key" : "Data-Owner_Owner"
-            },
-            {
-              "value" : "200000",
-              "key" : "drawingInfo_labelingInfo_1.minScale"
-            },
-            {
-              "value" : "[SCHOOL]",
-              "key" : "drawingInfo_labelingInfo_1.labelExpression"
-            },
-            { "value" : "simple", "key" : "drawingInfo_renderer.type" },
-            {
-              "value" : "0",
-              "key" : "drawingInfo_labelingInfo_1.maxScale"
-            },
-            {
-              "value" : "true",
-              "key" : "drawingInfo_labelingInfo_1.useCodedValues"
-            },
-            { "value" : "0", "key" : "drawingInfo_transparency" },
-            {
-              "value" : "esriServerPointLabelPlacementAboveRight",
-              "key" : "drawingInfo_labelingInfo_1.labelPlacement"
-            },
-            {
-              "value" : "image/png",
-              "key" : "drawingInfo.renderer_symbol.contentType"
-            },
-            {
-              "value" : "esriPMS",
-              "key" : "drawingInfo.renderer_symbol.type"
-            },
-            { "value" : "0", "key" : "drawingInfo.renderer_symbol.angle" },
-            {
-              "value" : "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAYCAYAAAAlBadpAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAXVJREFUOI3Vkj1LQnEUxp9zvXqvCpFgRhBpGQi9DeloH0CcGmqRhCCoNbDBoElaWnqBijIoa6qmhhChoUkiCiIK/ARi0VJeKys8LV0h8/pWS8/053/O73nOgSPiFxLLfTKzBICJ6K1uGEAngAQzzwPYJqL3emCcJJUOr9u0IUvC7JfJTqmJJhyMKhg4yCE0arYPeUybkqFoElNNNGEASDwUkFjLwmfLITRidng9pqhBL4SZ2U9EqYqwqvh9AfHVLCZcL08zgaZxl1NOVU1W5bcJ+UGnuBK50s1tOeV81Z0BwGcV8p5ucT1yoYSPFx2vpXVNeKxfvFs4++iKL1uftXo0YWuzLofDFk2wIlyL/j0cSJ8DMAFA32RGkgntCKRvinWB9rHXFvkBM3PSM5VxXyosAMBtjtV6r/qIDRung7t8TURHpck9kg5CpRGNMlkAWMqP3YD+Bj5dagVXaNSVWaoI6/XUcLIdQC30t1sXAYCIHuuOBfAJx6BpzfL1sFgAAAAASUVORK5CYII=",
-              "key" : "drawingInfo.renderer_symbol.imageData"
-            },
-            {
-              "value" : "18",
-              "key" : "drawingInfo.renderer_symbol.height"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.renderer_symbol.yoffset"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.renderer_symbol.xoffset"
-            },
-            {
-              "value" : "8E0891D0",
-              "key" : "drawingInfo.renderer_symbol.url"
-            },
-            {
-              "value" : "11",
-              "key" : "drawingInfo.renderer_symbol.width"
-            },
-            {
-              "value" : "normal",
-              "key" : "drawingInfo.labelingInfo_1.symbol_font.weight"
-            },
-            {
-              "value" : "none",
-              "key" : "drawingInfo.labelingInfo_1.symbol_font.decoration"
-            },
-            {
-              "value" : "8",
-              "key" : "drawingInfo.labelingInfo_1.symbol_font.size"
-            },
-            {
-              "value" : "Arial",
-              "key" : "drawingInfo.labelingInfo_1.symbol_font.family"
-            },
-            {
-              "value" : "normal",
-              "key" : "drawingInfo.labelingInfo_1.symbol_font.style"
-            },
-            {
-              "value" : "center",
-              "key" : "drawingInfo.labelingInfo_1_symbol.horizontalAlignment"
-            },
-            {
-              "value" : "esriTS",
-              "key" : "drawingInfo.labelingInfo_1_symbol.type"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.labelingInfo_1_symbol.angle"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.labelingInfo_1_symbol.yoffset"
-            },
-            {
-              "value" : "0",
-              "key" : "drawingInfo.labelingInfo_1_symbol.xoffset"
-            },
-            {
-              "value" : "bottom",
-              "key" : "drawingInfo.labelingInfo_1_symbol.verticalAlignment"
-            },
-            {
-              "value" : "false",
-              "key" : "drawingInfo.labelingInfo_1_symbol.rightToLeft"
             }
           ]
       },
-    "metadata" : { "domain" : "data.seattle.gov" },
-    "permalink" : "https://data.seattle.gov/d/uanm-dxsk",
-    "link" : "https://data.seattle.gov/Education/Seattle-schools/uanm-dxsk"
+    "metadata" :
+      {
+        "domain" : "data.seattle.gov",
+        "license" : "Creative Commons 1.0 Universal (Public Domain Dedication)",
+        "is_public" : true,
+        "is_published" : true,
+        "is_hidden" : false,
+        "visible_to_anonymous" : true,
+        "grants" : []
+      },
+    "permalink" : "https://data.seattle.gov/d/3k2p-39jp",
+    "link" : "https://data.seattle.gov/Public-Safety/Seattle-Police-Department-911-Incident-Response/3k2p-39jp"
   },
   {
     "resource" :
       {
+        "name" : "Sold Fleet Equipment",
+        "id" : "y6ef-jf2w",
+        "parent_fxf" : null,
+        "description" : "This dataset includes sales data for fleet equipment that was sold in the current and previous two years. This dataset does not include sales data for Seattle City Light (SCL) fleet equipment.",
+        "attribution" : null,
+        "type" : "dataset",
+        "updatedAt" : "2017-03-30T15:49:30.000Z",
+        "createdAt" : "2014-02-06T16:40:51.000Z",
         "view_count" :
           {
-            "page_views_total" : 564,
-            "page_views_total_log" : 9.142107057302551,
-            "page_views_last_week_log" : 1.0,
-            "page_views_last_month" : 4,
-            "page_views_last_week" : 1,
-            "page_views_last_month_log" : 2.321928094887362
+            "page_views_last_week" : 500,
+            "page_views_last_month" : 2076,
+            "page_views_total" : 88186,
+            "page_views_last_week_log" : 8.968666793195208,
+            "page_views_last_month_log" : 11.020285500844647,
+            "page_views_total_log" : 16.42827837753359
           },
-        "obe_fxf" : null,
-        "description" : "Families & Education Levy III Estimated Revenues\r\n7-year levy (2nd half of 2005 through 1st half of 2012)\t\t\r\nLevy programs increase 1 1/2%/year once program is fully ramped up\t\t\r\nLevy admin is capped at 5%/year\t\t\r\nCrossing Guard program expires mid-2008",
-        "name" : "Families & Education Levy III Estimated Revenues",
-        "parent_fxf" : null,
-        "nbe_fxf" : null,
-        "attribution" : "City of Seattle Office of Education",
-        "provenance" : "official",
-        "columns_field_name" :
-          [
-            "_2009",
-            "_2012",
-            "_2005",
-            "_2007",
-            "estimated_revenues",
-            "total",
-            "_2011",
-            "_2006",
-            "_2008",
-            "_2010"
-          ],
-        "download_count" : 0,
-        "columns_name" :
-          [
-            "2009",
-            "2012",
-            "2005",
-            "2007",
-            "Estimated Revenues",
-            "Total",
-            "2011",
-            "2006",
-            "2008",
-            "2010"
-          ],
         "page_views" :
           {
-            "page_views_total" : 564,
-            "page_views_total_log" : 9.142107057302551,
-            "page_views_last_week_log" : 1.0,
-            "page_views_last_month" : 4,
-            "page_views_last_week" : 1,
-            "page_views_last_month_log" : 2.321928094887362
+            "page_views_last_week" : 500,
+            "page_views_last_month" : 2076,
+            "page_views_total" : 88186,
+            "page_views_last_week_log" : 8.968666793195208,
+            "page_views_last_month_log" : 11.020285500844647,
+            "page_views_total_log" : 16.42827837753359
           },
-        "updatedAt" : "2011-08-21T02:48:28.000Z",
-        "type" : "dataset",
-        "id" : "vu6n-t5x5",
-        "createdAt" : "2010-06-03T17:38:39.000Z",
-        "columns_description" : [ "", "", "", "", "", "", "", "", "", "" ]
+        "columns_name" :
+          [
+            "MAKE",
+            "YEAR",
+            "MODEL",
+            "EQUIP_ID",
+            "SALE_DATE",
+            "SOLD_BY",
+            "SALE_PRICE",
+            "DESCRIPTION",
+            "DEPT"
+          ],
+        "columns_field_name" :
+          [
+            "make",
+            "year",
+            "model",
+            "equip_id",
+            "sale_date",
+            "sold_by",
+            "sale_price",
+            "description",
+            "dept"
+          ],
+        "columns_description" : [ "", "", "", "", "", "", "", "", "" ],
+        "download_count" : 1363,
+        "provenance" : "official"
       },
     "classification" :
       {
-        "categories" : [],
+        "categories" : [ "transportation", "finance" ],
         "tags" : [],
-        "domain_category" : "Education",
+        "domain_category" : "City Business",
         "domain_tags" :
-          [
-            "early learning",
-            "education",
-            "families",
-            "family",
-            "revenues"
-          ],
+          [ "surplus", "auction", "trucks", "cars", "equipment", "fleet" ],
         "domain_metadata" :
           [
+            { "value" : "Monthly", "key" : "Refresh-Frequency_Frequency" },
             {
-              "value" : "Office of the Mayor",
+              "value" : "Finance and Administrative Services",
               "key" : "Data-Owner_Owner"
             }
           ]
       },
-    "metadata" : { "domain" : "data.seattle.gov" },
-    "permalink" : "https://data.seattle.gov/d/vu6n-t5x5",
-    "link" : "https://data.seattle.gov/Education/Families-Education-Levy-III-Estimated-Revenues/vu6n-t5x5"
+    "metadata" :
+      {
+        "domain" : "data.seattle.gov",
+        "license" : "Public Domain",
+        "is_public" : true,
+        "is_published" : true,
+        "is_hidden" : false,
+        "visible_to_anonymous" : true,
+        "grants" : []
+      },
+    "permalink" : "https://data.seattle.gov/d/y6ef-jf2w",
+    "link" : "https://data.seattle.gov/City-Business/Sold-Fleet-Equipment/y6ef-jf2w"
+  },
+  {
+    "resource" :
+      {
+        "name" : "Current Fleet Surplus/Auction List",
+        "id" : "6gnm-7jex",
+        "parent_fxf" : null,
+        "description" : "Most recent list of fleet equipment sent to auction",
+        "attribution" : "Fleet Management Division",
+        "type" : "dataset",
+        "updatedAt" : "2017-03-31T18:39:32.000Z",
+        "createdAt" : "2014-03-25T17:01:36.000Z",
+        "view_count" :
+          {
+            "page_views_last_week" : 503,
+            "page_views_last_month" : 2097,
+            "page_views_total" : 80655,
+            "page_views_last_week_log" : 8.977279923499918,
+            "page_views_last_month_log" : 11.034798962577268,
+            "page_views_total_log" : 16.299494239009366
+          },
+        "page_views" :
+          {
+            "page_views_last_week" : 503,
+            "page_views_last_month" : 2097,
+            "page_views_total" : 80655,
+            "page_views_last_week_log" : 8.977279923499918,
+            "page_views_last_month_log" : 11.034798962577268,
+            "page_views_total_log" : 16.299494239009366
+          },
+        "columns_name" :
+          [
+            "YEAR",
+            "MAKE",
+            "MODEL",
+            "COLOR",
+            "EQUIP_ID",
+            "DESCRIPTION",
+            "AUCTION HOUSE",
+            "COMMENTS"
+          ],
+        "columns_field_name" :
+          [
+            "year",
+            "make",
+            "model",
+            "color",
+            "equip_id",
+            "description",
+            "auction_house",
+            "comments"
+          ],
+        "columns_description" : [ "", "", "", "", "", "", "", "" ],
+        "download_count" : 1263,
+        "provenance" : "official"
+      },
+    "classification" :
+      {
+        "categories" : [ "transportation", "finance" ],
+        "tags" : [],
+        "domain_category" : "Finance",
+        "domain_tags" : [ "auction", "surplus", "equipment", "fleet" ],
+        "domain_metadata" :
+          [
+            { "value" : "Monthly", "key" : "Refresh-Frequency_Frequency" },
+            {
+              "value" : "Finance and Administrative Services",
+              "key" : "Data-Owner_Owner"
+            }
+          ]
+      },
+    "metadata" :
+      {
+        "domain" : "data.seattle.gov",
+        "license" : "Public Domain",
+        "is_public" : true,
+        "is_published" : true,
+        "is_hidden" : false,
+        "visible_to_anonymous" : true,
+        "grants" : []
+      },
+    "permalink" : "https://data.seattle.gov/d/6gnm-7jex",
+    "link" : "https://data.seattle.gov/Finance/Current-Fleet-Surplus-Auction-List/6gnm-7jex"
+  },
+  {
+    "resource" :
+      {
+        "nbe_fxf" : null,
+        "description" : "These incidents are based on initial police reports taken by officers when responding to incidents around the city. The information enters our Records Management System (RMS) and is then transmitted out to data.seattle.gov. This information is published within 6 to 12 hours after the report is filed into the system.",
+        "type" : "dataset",
+        "obe_fxf" : null,
+        "download_count" : null,
+        "parent_fxf" : null,
+        "createdAt" : "2010-07-28T16:55:15.000Z",
+        "provenance" : "official",
+        "page_views" :
+          {
+            "page_views_total" : 70288,
+            "page_views_total_log" : 16.101011309428216,
+            "page_views_last_week_log" : 8.169925001442312,
+            "page_views_last_week" : 287,
+            "page_views_last_month_log" : 10.122827994807668,
+            "page_views_last_month" : 1114
+          },
+        "columns_description" :
+          [
+            "Zone/Beat",
+            "District/Sector",
+            "Summary Offense Code",
+            "RMS CDW ID",
+            "Offense Type",
+            "Month crime occurred, specifically added for grouping and external usage",
+            "Summarized_Offense_Description",
+            "Hundred Block Location\n",
+            "Date Reported ",
+            "Occurred Date or Date Range Start",
+            "",
+            "Census Tract 2000",
+            "Year crime occurred, specifically added for grouping and external usage",
+            "General Offense Number\n",
+            "Offense_Code",
+            "Latitude",
+            "Occurred Date Range End",
+            "Longitude",
+            "Offense_Code_Extension"
+          ],
+        "name" : "Seattle Police Department Police Report Incident",
+        "attribution" : "City of Seattle, Department of Information Technology, Seattle Police Department",
+        "columns_name" :
+          [
+            "Zone/Beat",
+            "District/Sector",
+            "Summary Offense Code",
+            "RMS CDW ID",
+            "Offense Type",
+            "Month",
+            "Summarized Offense Description",
+            "Hundred Block Location",
+            "Date Reported",
+            "Occurred Date or Date Range Start",
+            "Location",
+            "Census Tract 2000",
+            "Year",
+            "General Offense Number",
+            "Offense Code",
+            "Latitude",
+            "Occurred Date Range End",
+            "Longitude",
+            "Offense Code Extension"
+          ],
+        "columns_field_name" :
+          [
+            "zone_beat",
+            "district_sector",
+            "summary_offense_code",
+            "rms_cdw_id",
+            "offense_type",
+            "month",
+            "summarized_offense_description",
+            "hundred_block_location",
+            "date_reported",
+            "occurred_date_or_date_range_start",
+            "location",
+            "census_tract_2000",
+            "year",
+            "general_offense_number",
+            "offense_code",
+            "latitude",
+            "occurred_date_range_end",
+            "longitude",
+            "offense_code_extension"
+          ],
+        "id" : "7ais-f98f",
+        "view_count" :
+          {
+            "page_views_total" : 70288,
+            "page_views_total_log" : 16.101011309428216,
+            "page_views_last_week_log" : 8.169925001442312,
+            "page_views_last_week" : 287,
+            "page_views_last_month_log" : 10.122827994807668,
+            "page_views_last_month" : 1114
+          },
+        "updatedAt" : "2017-05-16T23:27:06.000Z"
+      },
+    "classification" :
+      {
+        "categories" : [ "public safety" ],
+        "tags" : [],
+        "domain_category" : "Public Safety",
+        "domain_tags" :
+          [ "census911incidents", "police report", "police", "crime" ],
+        "domain_metadata" :
+          [
+            { "value" : "daily", "key" : "Refresh-Frequency_Frequency" },
+            {
+              "value" : "Department of Information Technology",
+              "key" : "Data-Owner_Owner"
+            }
+          ]
+      },
+    "metadata" :
+      {
+        "domain" : "data.seattle.gov",
+        "license" : "Creative Commons 1.0 Universal (Public Domain Dedication)",
+        "is_public" : true,
+        "is_published" : true,
+        "is_hidden" : false,
+        "visible_to_anonymous" : true,
+        "grants" : [ { "user_id" : "5cvb-camt", "type" : "owner" } ]
+      },
+    "permalink" : "https://data.seattle.gov/d/7ais-f98f",
+    "link" : "https://data.seattle.gov/Public-Safety/Seattle-Police-Department-Police-Report-Incident/7ais-f98f"
+  },
+  {
+    "resource" :
+      {
+        "nbe_fxf" : null,
+        "description" : "Provides Seattle Fire Department 911 dispatches. Updated every 5 minutes.",
+        "type" : "dataset",
+        "obe_fxf" : null,
+        "download_count" : null,
+        "parent_fxf" : null,
+        "createdAt" : "2010-01-08T21:48:17.000Z",
+        "provenance" : "official",
+        "page_views" :
+          {
+            "page_views_total" : 55675,
+            "page_views_total_log" : 15.764767945128023,
+            "page_views_last_week_log" : 5.20945336562895,
+            "page_views_last_week" : 36,
+            "page_views_last_month_log" : 7.7414669864011465,
+            "page_views_last_month" : 213
+          },
+        "columns_description" :
+          [
+            "This is the longitude value. Lines of longitude run perpendicular to lines of latitude, and all pass through both poles.",
+            "Location of Incident",
+            "",
+            "The date and time of the call.",
+            "This is the latitude value. Lines of latitude are parallel to the equator.",
+            "",
+            "Response Type"
+          ],
+        "name" : "Seattle Real Time Fire 911 Calls",
+        "attribution" : "City of Seattle Fire Department MIS",
+        "columns_name" :
+          [
+            "Longitude",
+            "Address",
+            "Report Location",
+            "Datetime",
+            "Latitude",
+            "Incident Number",
+            "Type"
+          ],
+        "columns_field_name" :
+          [
+            "longitude",
+            "address",
+            "report_location",
+            "datetime",
+            "latitude",
+            "incident_number",
+            "type"
+          ],
+        "id" : "kzjm-xkqj",
+        "view_count" :
+          {
+            "page_views_total" : 55675,
+            "page_views_total_log" : 15.764767945128023,
+            "page_views_last_week_log" : 5.20945336562895,
+            "page_views_last_week" : 36,
+            "page_views_last_month_log" : 7.7414669864011465,
+            "page_views_last_month" : 213
+          },
+        "updatedAt" : "2017-05-16T23:28:12.000Z"
+      },
+    "classification" :
+      {
+        "categories" : [ "politics", "public safety" ],
+        "tags" : [],
+        "domain_category" : "Public Safety",
+        "domain_tags" :
+          [ "sfd mobile", "dispatch e911", "fire", "911", "seattle" ],
+        "domain_metadata" :
+          [
+            {
+              "value" : "5 minutes",
+              "key" : "Refresh-Frequency_Frequency"
+            },
+            {
+              "value" : "Seattle Fire Department",
+              "key" : "Data-Owner_Owner"
+            }
+          ]
+      },
+    "metadata" :
+      {
+        "domain" : "data.seattle.gov",
+        "license" : "Creative Commons 1.0 Universal (Public Domain Dedication)",
+        "is_public" : true,
+        "is_published" : true,
+        "is_hidden" : false,
+        "visible_to_anonymous" : true,
+        "grants" : [ { "user_id" : "5rii-9ghs", "type" : "owner" } ]
+      },
+    "permalink" : "https://data.seattle.gov/d/kzjm-xkqj",
+    "link" : "https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj"
   }
 ];

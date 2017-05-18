@@ -57,6 +57,19 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe '#current_editor_translations' do
+    before(:all) do
+      # If a locale that's tested below doesn't exist, we'd like
+      # to continue with the test and not raise an exception.
+      #
+      # Under normal circumstances, we're assuming that we will
+      # have all locales that are relevant to Storyteller.
+      I18n.enforce_available_locales = false
+    end
+
+    after(:all) do
+      I18n.enforce_available_locales = true
+    end
+
     around do |example|
       locale = example.metadata[:locale]
       I18n.with_locale(locale) { example.run }

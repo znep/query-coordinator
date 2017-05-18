@@ -1,0 +1,177 @@
+$content_padding: 16px;
+$addendum_content_margin: 80px;
+$links_height: 40px;
+$addendum_height: 40px;
+
+footer#site-chrome-footer {
+  display: block;
+  color: $footer_fg_color;
+  background-color: $footer_bg_color;
+  font-family: $font_family, 'Open Sans', Helvetica, Arial, 'sans-serif';
+
+  .footer-content {
+    max-width: $max_width;
+    margin: 0 auto;
+    padding: $content_padding;
+
+    > div.logo {
+      margin-bottom: $content_padding / 2;
+      > a {
+        text-decoration: none;
+        > img {
+          height: $footer_logo_height;
+          width: $footer_logo_width;
+          vertical-align: middle;
+          margin-right: $text_padding;
+        }
+
+        > span.site-name {
+          font-weight: 300;
+          font-size: $footer_display_name_size;
+          color: $footer_display_name_fg_color;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    > div.links {
+
+      ul.links-col {
+        margin: 0;
+        padding-left: 0;
+
+        li {
+          list-style-type: none;
+          display: inline-block;
+          margin-right: $text_padding * 3;
+
+          &:last-of-type {
+            margin-right: 0;
+          }
+
+          a.footer-link {
+            color: $footer_fg_color;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 14px;
+            line-height: $links_height;
+
+            &:hover, &:focus, &:active {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+
+    > div.addendum {
+
+      .site-chrome-copyright {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 300;
+        color: $footer_fg_color;
+        margin: 0 $addendum_content_margin 0 auto;
+        line-height: $addendum_height;
+        vertical-align: middle;
+      }
+
+      $social_link_margin: 14px;
+
+      .site-chrome-social-links {
+        margin-right: $addendum_content_margin - $social_link_margin;
+        display: inline-block;
+        vertical-align: middle;
+
+        a.site-chrome-social-link {
+          display: inline-block;
+          color: $footer_fg_color;
+          text-decoration: none;
+          font-size: 16px;
+          font-weight: 300;
+          margin-right: $social_link_margin;
+
+          span.monosocial {
+            line-height: $addendum_height;
+          }
+
+          &:hover, &:focus, &:active {
+            span.monosocial {
+              text-decoration: none;
+            }
+          }
+        }
+      }
+
+      .powered-by-socrata {
+        display: inline-block;
+        font-weight: 300;
+        font-size: 14px;
+        float: right;
+        line-height: $addendum_height;
+
+        .powered-by {
+          margin-right: 3px;
+        }
+        img.logo {
+          display: inline-block;
+          height: 16px;
+          vertical-align: middle;
+          margin-top: -3px;
+        }
+      }
+
+      .language-switcher-container {
+        display: inline-block;
+      }
+    }
+
+    // When no footer title is present, center the content
+    &.title-absent {
+      text-align: center;
+
+      div.addendum  {
+        .powered-by-socrata {
+          float: none; // don't float right when we're centering the content
+        }
+      }
+
+      .powered-by-socrata {
+        vertical-align: middle;
+        margin: 0 $addendum_content_margin 0 auto;
+      }
+    }
+
+    // < 670px screen width
+    @include mobile-sm {
+      > div.links {
+        height: auto;
+      }
+
+      > div.addendum {
+        height: auto;
+
+        .site-chrome-copyright {
+          margin: 0;
+          float: none;
+          display: block;
+        }
+        .site-chrome-social-links {
+          margin: 0;
+          float: none;
+          display: block;
+        }
+        .language-switcher-container {
+          display: none;
+        }
+        .powered-by-socrata {
+          clear: both;
+          text-align: center;
+          margin: 0 auto;
+          float: none;
+          display: block;
+        }
+      }
+    }
+  }
+}

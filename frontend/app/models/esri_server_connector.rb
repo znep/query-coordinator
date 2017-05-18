@@ -4,7 +4,7 @@ class EsriServerConnector
   def self.servers
     query = {
       :filters => {
-        :socrata_domain => CurrentDomain.cname
+        :domain_id => CurrentDomain.domain.id
       }
     }
     server_hashes = EsriCrawler.get_request('/servers', query)['items']
@@ -15,7 +15,7 @@ class EsriServerConnector
   def self.server(id)
     query = {
       :filters => {
-        :socrata_domain => CurrentDomain.cname
+        :domain_id => CurrentDomain.domain.id
       }
     }
     EsriServer.new(EsriCrawler.get_request("/servers/#{id}", query))

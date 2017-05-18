@@ -2023,14 +2023,14 @@ en:
         scanning: Still scanning for errors...
         set_row_id: Set as row identifier
         type_display_names:
-          SoQLBoolean: True/False
-          SoQLFixedTimestamp: Date & Time (with timezone)
-          SoQLFloatingTimestamp: Date & Time
+          checkbox: True/False
+          date: Date & Time (with timezone)
+          calendar_date: Date & Time
           location_coming_soon: Location (Coming Soon)
-          SoQLLocation: Location
-          SoQLNumber: Number
-          SoQLPoint: Point
-          SoQLText: Text
+          location: Location
+          number: Number
+          point: Point
+          text: Text
       ready_to_import:
         help_modal:
           clean_data_blurb: Once your data is clean, you can use the Append and Replace wizard to add the remaining rows.
@@ -2637,9 +2637,30 @@ en:
         discoverable: Discoverable
         last_updated_date: Last Updated Date
         name: Name
-        owned_by: Owned By
+        owner: Owner
         type: Type
         visibility: Visibility
+      visibility_flyout:
+        open: Open
+        datalens_approved:
+          true: Data Lens approved
+          false: Data Lens not approved
+        hidden:
+          true: Hidden
+          false: Not Hidden
+        internal: Internal
+        moderation_approved:
+          true: View Moderation approved
+          false: View Moderation not approved
+        public:
+          true: Public
+          false: Private
+        published:
+          true: Published
+          false: Unpublished
+        routing_approved:
+          true: Routing and Approval
+          false: Routing and Approval
     title: Asset Inventory
   number:
     currency:
@@ -2835,6 +2856,22 @@ en:
       canvas:
         path_must_be_unique: Path already exists; please choose a different one.
         title_cannot_be_blank: Please enter a title.
+      comment_moderation:
+        author: Author
+        approve: Approve
+        comment: Comment
+        dataset: Dataset
+        moderation: Moderation
+        moderate_comments: Moderate Comments
+        no_comments: No comments match your current filter.
+        reject: Reject
+        show: Show
+        status: Status
+        statuses:
+          all: All
+          approved: Approved
+          pending: Pending
+          rejected: Rejected
       connector:
         actions: Actions
         add_connector: Add Connector
@@ -3211,7 +3248,7 @@ en:
           data_update_failures: Data Update Failures
           deleted_assets: Deleted Assets
         restore: Restore
-        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}"
+        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}"?
         restored: Restored
         show_page:
           back: Back to jobs list

@@ -19,6 +19,11 @@ http://www.socrata.com
 -->
 
 <head>
+  <%- if enable_site_chrome? || enable_govstat_chrome? -%>
+    <%= site_chrome_analytics_tags %>
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_stylesheet_tag %>
+  <%- end -%>
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <%= meta_tags @meta unless @meta.blank? %>
@@ -71,20 +76,10 @@ http://www.socrata.com
   <%- end -%>
 
   <%= render_ga_tracking %>
-
-  <%- unless @disable_mixpanel_tracking %>
-  <%= render :partial => 'templates/mixpanel_tracking' %>
-  <% end -%>
-
+  <%= render_mixpanel_tracker %>
   <%= render_pendo_tracker %>
 
   <%= get_favicon_tag %>
-
-  <%- if enable_site_chrome? || enable_govstat_chrome? -%>
-    <%= site_chrome_meta_viewport_tag %>
-    <%= site_chrome_analytics_tags %>
-    <%= site_chrome_stylesheet_tag %>
-  <%- end -%>
 </head>
 
 <body class="<%= body_classes %>" data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
@@ -164,7 +159,7 @@ http://www.socrata.com
   %>
 
   <script type="text/template" id="templates">
-    <%= render :partial => 'shared/control_templates' %>
+    <%= render 'shared/control_templates' %>
     <%= yield :templates %>
 
     <%= modal :id => 'jqmAlert' do %>
@@ -333,5 +328,6 @@ http://www.socrata.com
   <% unless CurrentDomain.custom_tracking_code.blank? %>
     <%= raw CurrentDomain.custom_tracking_code %>
   <% end %>
+  <%= include_webpack_bundle 'internal-asset-manager/last-accessed.js' %>
 </body>
 </html>

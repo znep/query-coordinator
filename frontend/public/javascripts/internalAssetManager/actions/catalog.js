@@ -50,7 +50,8 @@ export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) =>
       // q,
       limit: RESULTS_PER_PAGE,
       order: ceteraOrder(),
-      pageNumber: currentPage
+      pageNumber: currentPage,
+      showVisibility: true
     }).
     then((response) => {
       if (_.isObject(response)) {
@@ -76,9 +77,13 @@ export const changePage = (pageNumber) => (dispatch, getState) => {
 
 export const changeOrder = (columnName) => (dispatch, getState) => {
   // If the user clicks on the column name already being sorted on, then toggle ascending/descending.
-  // Otherwise, default to ascending.
   const currentStateOrder = _.get(getState(), 'catalog.order', {});
-  const ascending = (columnName === currentStateOrder.value) ? !currentStateOrder.ascending : true;
+
+  const columnsThatDefaultToDescending = ['lastUpdatedDate'];
+  const defaultToAscending = !_.includes(columnsThatDefaultToDescending, columnName);
+
+  const ascending = (columnName === currentStateOrder.value) ?
+    !currentStateOrder.ascending : defaultToAscending;
   const newOrder = {
     value: columnName,
     ascending

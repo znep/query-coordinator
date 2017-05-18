@@ -14,7 +14,8 @@ if (!common.isProduction) {
 module.exports = _.defaultsDeep({
   context: path.resolve(common.root, 'public/javascripts/internalAssetManager'),
   entry: common.withHotModuleEntries({
-    'main': './main'
+    'main': './main',
+    'last-accessed': './last-accessed'
   }),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/internalAssetManager/.eslintrc.json'),
@@ -23,7 +24,13 @@ module.exports = _.defaultsDeep({
   },
   module: {
     loaders: [
-      common.getBabelLoader()
+      common.getBabelLoader(),
+      {
+        // Prevent lodash from putting itself on window.
+        // See: https://github.com/lodash/lodash/issues/2671
+        test: /node_modules\/lodash/,
+        loader: 'imports?define=>undefined'
+      }
     ]
   },
   resolve: _.extend(

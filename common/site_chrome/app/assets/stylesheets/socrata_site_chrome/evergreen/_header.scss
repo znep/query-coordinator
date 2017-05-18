@@ -1,0 +1,213 @@
+$banner_padding: 20px;
+$banner_height: calc(#{max($header_logo_height, $header_display_name_size)} + #{$banner_padding});
+$searchbox-height: 36px;
+
+header#site-chrome-header[template="evergreen"] {
+  font-family: $font_family, "Open Sans", Helvetica, Arial, "sans-serif";
+
+  .banner {
+    color: $header_fg_color;
+    background-color: $header_bg_color;
+    line-height: $banner_height;
+    font-size: 18px;
+    min-height: $banner_height;
+    position: relative;
+
+    .header-content {
+      max-width: $max_width;
+      position: relative;
+      margin: 0 auto;
+
+      > a.logo {
+        float: left;
+        padding: 0 $banner_padding / 2;
+        text-decoration: none;
+        color: $header_fg_color;
+        position: relative;
+        z-index: 2;
+
+        > img {
+          height: $header_logo_height;
+          width: $header_logo_width;
+          vertical-align: middle;
+          margin-right: $banner_padding / 2;
+        }
+
+        > span.site-name {
+          font-weight: 300;
+          font-size: $header_display_name_size;
+          line-height: max($header_logo_height, $header_display_name_size);
+          color: $header_display_name_fg_color;
+          vertical-align: middle;
+        }
+      }
+
+      > nav {
+        font-size: 15px;
+        font-weight: 300;
+        position: absolute;
+        top: 0;
+        right: 16px;
+        z-index: 3;
+        opacity: 0;
+
+        &.desktop {
+          max-height: $banner_height;
+          text-align: right;
+          white-space: nowrap;
+
+          .evergreen-link-cluster {
+            max-height: $banner_height;
+            background-color: $header_bg_color;
+            float: right;
+            position: relative;
+          }
+
+          .user-actions {
+            float: right;
+          }
+
+          .site-chrome-nav-menu {
+            div.dropdown {
+              ul.dropdown-options {
+                top: calc(#{$banner_height} - 1px);
+              }
+            }
+          }
+
+          a.site-chrome-nav-link {
+            padding: 0 $text_padding;
+            display: inline-block;
+            color: $header_fg_color;
+            text-decoration: none;
+            line-height: 20px;
+
+            &:hover, &:focus, &:active {
+              text-decoration: underline;
+            }
+
+            &.site-chrome-social-link {
+              padding: 0 5px;
+              display: inline-block;
+              max-height: $banner_height;
+              vertical-align: middle;
+              &:hover, &:focus, &:active {
+                text-decoration: none;
+              }
+            }
+          }
+
+          .site-chrome-nav-links, .site-chrome-social-links, .collapsible-search {
+            float: right;
+            max-height: $banner_height;
+          }
+
+          .site-chrome-nav-links {
+            float: none;
+            display: inline-block;
+            text-align: right;
+            white-space: nowrap;
+
+            .site-chrome-nav-link, .site-chrome-nav-menu, div.dropdown {
+              max-height: $banner_height;
+            }
+          }
+
+          .collapsible-search {
+            position: relative;
+
+            .collapsible-search-toggle {
+              cursor: pointer;
+              font-size: 18px;
+            }
+
+            .searchbox {
+              opacity: 0;
+              z-index: -1;
+
+              -webkit-transition: opacity 0.1s;
+              transition: opacity 0.1s;
+
+              input {
+                -webkit-transition: width 0.4s;
+                transition: width 0.4s;
+                width: 50px;
+              }
+              &.expanded {
+                opacity: 1;
+                /*
+                  EN-12069:
+                  101, 1 higher than the z-index set on .dropdown elements due to EN-11443.
+                  Otherwise the dropdowns will be clickable through the expanded search bar.
+                */
+                z-index: 101;
+
+                input {
+                  width: 250px;
+                }
+              }
+
+              position: absolute;
+              // This is a nested calc, which doesn't work in browsers shittier than or equal to IE11.
+              // There is javascript to position it for those browsers instead: verticallyPositionSearchbar()
+              top: calc((#{$banner_height} - #{$searchbox-height}) / 2);
+              right: 0;
+
+              form {
+                display: flex;
+
+                label {
+                  width: auto;
+                  display: block;
+                  margin: auto;
+                  font-size: inherit;
+                }
+
+                button.search-button {
+                  height: $searchbox_height;
+                  display: none; // appears with toggleSearchButton()
+                }
+              }
+            }
+          }
+
+          .collapsible-search[data-catalog-autocomplete="true"] {
+            input {
+              box-sizing: content-box !important;
+            }
+          }
+
+          .language-switcher-container {
+            float: right;
+          }
+
+          a.sign-in-toggle {
+            font-size: 12px;
+            margin-left: $text_padding;
+          }
+          a.profile-link, a.admin-link, a.logout-link {
+            padding: 0 $text_padding;
+            line-height: 48px;
+            text-decoration: none;
+            &.in-header {
+              color: $header_fg_color;
+            }
+            &:hover, &:focus, &:active {
+              text-decoration: underline;
+            }
+          }
+
+          div.divider {
+            float: right;
+          }
+        }
+
+        &.mobile {
+          .menu-toggle {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}

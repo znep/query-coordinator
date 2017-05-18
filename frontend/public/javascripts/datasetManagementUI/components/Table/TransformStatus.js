@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import * as Links from '../../links';
 import * as DisplayState from '../../lib/displayState';
 import { singularOrPlural } from '../../lib/util';
+import { soqlProperties } from '../../lib/soqlTypes';
 import styleguide from 'socrata-components';
 import ProgressBar from '../ProgressBar';
 import TypeIcon from '../TypeIcon';
@@ -24,14 +25,16 @@ function ErrorFlyout({ transform }) {
     SubI18n.column_status_flyout.error_msg_singular,
     SubI18n.column_status_flyout.error_msg_plural
   );
+  const canonicalTypeName = soqlProperties[transform.output_soql_type].canonicalName;
+
   return (
     <div id={flyoutId} className={styles.transformStatusFlyout}>
       <section className={styles.flyoutContent}>
         {msgTemplate.format({
           num_errors: commaify(transform.num_transform_errors),
-          type: SubI18n.type_display_names[transform.output_soql_type]
+          type: SubI18n.type_display_names[canonicalTypeName]
         })}
-        <TypeIcon type={transform.output_soql_type} />
+        <TypeIcon type={canonicalTypeName} />
         <br />
         <span className={styles.clickToView}>{I18n.show_output_schema.click_to_view}</span>
       </section>

@@ -20,7 +20,10 @@ export class App extends Component {
       <div>
         <PublishNotice />
         <PrivateNotice />
-        <InfoPane />
+
+        <Responsive>
+          <InfoPane />
+        </Responsive>
 
         <main className="container landing-page-container">
           <FeaturedContent />

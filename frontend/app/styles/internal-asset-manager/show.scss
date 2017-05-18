@@ -23,15 +23,19 @@ body {
       left: 0;
     }
 
-    .pager {
-      display: inline-block;
-      margin-bottom: 0;
-      margin-right: 1rem;
-    }
+    .catalog-footer {
+      padding: 0 1rem;
 
-    .result-count {
-      display: inline-block;
-      float: none;
+      .pager {
+        display: inline-block;
+        margin-bottom: 0;
+        margin-right: 1rem;
+      }
+
+      .result-count {
+        display: inline-block;
+        float: none;
+      }
     }
   }
 }

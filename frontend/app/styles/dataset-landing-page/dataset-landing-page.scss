@@ -59,12 +59,10 @@ body {
 
   .entry-header {
     display: flex;
-    flex-wrap: wrap;
 
     .entry-title {
-      flex: 1 1 auto;
-      width: auto;
       margin-right: 20px;
+      flex: 1 10 50%;
 
       .icon-official {
         margin-right: 4px;
@@ -81,8 +79,14 @@ body {
     }
 
     .entry-actions {
-      flex: 0 1 auto;
+      display: flex;
+      flex: 1 1 auto;
       padding-top: 8px;
+      justify-content: flex-end;
+
+      &.align-left {
+        justify-content: flex-start;
+      }
 
       .btn-group > .btn {
         line-height: 1.25;
@@ -96,6 +100,10 @@ body {
         ul.dropdown-options {
           z-index: 5;
         }
+      }
+
+      .api.hidden, .api-link.hidden {
+        display: none;
       }
 
       .grid, .manage, a.download {
@@ -134,18 +142,40 @@ body {
     }
   }
 
+  @media(max-width: $medium) {
+    .entry-header {
+      .entry-title {
+        flex: 1 1 auto;
+      }
+
+      .entry-actions {
+        flex: 1 5 auto;
+      }
+    }
+  }
+
   @media(max-width: $small) {
     .entry-header {
+      .entry-title {
+        flex: 1 1 auto;
+      }
+
       .entry-actions {
         flex: 1 0 auto;
 
         .btn-group {
-          width: 100%;
           display: flex;
+          width: 100%;
 
           > .btn {
             flex: 1 0 auto;
             text-align: center;
+            justify-content: center;
+          }
+
+          .dropdown {
+            display: flex;
+            align-items: center;
           }
         }
       }
@@ -650,11 +680,4 @@ a {
 footer#site-chrome-footer {
   margin-top: 20px;
   visibility: hidden;
-}
-
-// firefox-specific issue
-@-moz-document url-prefix() {
-  .info-pane .entry-header .entry-actions .btn-group > button.btn {
-    line-height: 1.1;
-  }
 }

@@ -4,15 +4,17 @@
 
 The command to run the HTTP server is:
 
-sudo nginx -c ${PWD}/dev-server/nginx.conf
+    sudo nginx -c ${PWD}/dev-server/nginx.conf
 
 There are two commands to run the frontend.  The first is a Rails server run by Unicorn:
 
-    bundle exec unicorn -c config/unicorn.rb -N
+    # This will install missing Ruby dependencies:
+    bin/start_frontend
 
 The second is [webpack dev server](#webpack), which compiles and caches Javascript:
 
-    npm run webpack-dev-server
+    # This will install and check versions:
+    bin/start_webpack
 
 ### Development Stack Setup
 

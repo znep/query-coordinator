@@ -92,8 +92,9 @@ class UserSessionsController < ApplicationController
     response.headers['ETag'] = ''
 
     @user_session = UserSessionProvider.klass.new(params[:user_session])
+    session_response = @user_session.save
 
-    if @user_session.save
+    if session_response.is_a?(Net::HTTPSuccess)
       # User logged in successfully, but not using auth0...
       # check if we want to require auth0 for any of the user's roles
 

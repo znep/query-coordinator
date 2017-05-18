@@ -19,7 +19,7 @@ module.exports = () => {
       src(path.resolve(commonRoot, 'components/') + '/**/*.js').
       pipe(gulp.dest('components')),
     gulp.
-      src(path.resolve(commonRoot, 'styleguide') + '/*.scss').
+      src(path.resolve(commonRoot, 'styleguide') + '/**/*.scss').
       pipe(gulp.dest('styles')),
     gulp.
       src(path.resolve(commonRoot, 'components/') + '/**/*.scss').

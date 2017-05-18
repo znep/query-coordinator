@@ -102,7 +102,8 @@ class CoreManagedUserSession
     end
 
     def user_no_security_check(user)
-      session = new
+      session = new('login' => user.id, 'password' => user.password)
+      session.save
       session.load_user(user) && session
     end
   end

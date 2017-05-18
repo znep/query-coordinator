@@ -17,14 +17,17 @@ class DetailsModal extends React.Component {
   renderNameLine() {
     const {activity} = this.props;
 
-    let filename;
-    if (activity.get('file_name')) {
-      filename = `(${activity.get('file_name')})`;
-    }
+    const datasetName = activity.get('dataset') ?
+      activity.getIn(['dataset', 'name']) :
+      <LocalizedText localeKey="index_page.deleted_dataset"/>;
+
+    const filename = activity.getIn(['data', 'activity_name']) ?
+      `(${activity.getIn(['data', 'activity_name'])})` :
+      <LocalizedText localeKey="show_page.file_name_unknown"/>;
 
     return (
       <li id="line-activity-name">
-        {activity.getIn(['dataset', 'name'])}{filename}
+        {datasetName} {filename}
       </li>
     );
   }
@@ -32,13 +35,14 @@ class DetailsModal extends React.Component {
   renderErrorsDownloadLink() {
     const {activity} = this.props;
 
-    const errorsDownloadUrl = activity.get('bad_rows_url');
+    const errorsDownloadUrl = activity.getIn(['data', 'latest_event', 'info', 'badRowsPath']);
     if (!errorsDownloadUrl) {
       return null;
     }
 
     return (
       <li id="line-activity-bad-rows">
+        <span className="line-title"><LocalizedText localeKey="show_page.failed_rows"/>: </span>
         <a href={errorsDownloadUrl}>errors.csv</a>
       </li>
     );
@@ -47,8 +51,8 @@ class DetailsModal extends React.Component {
   renderDetails() {
     const {activity} = this.props;
 
-    const status = _.snakeCase(activity.getIn(['data', 'status']));
-    const type =  _.snakeCase(activity.getIn(['data', 'latest_event', 'event_type']));
+    const status = _.snakeCase(activity.getIn(['data', 'latest_event', 'status']));
+    const type = activity.getIn(['data', 'latest_event', 'event_type']).replace(/-/g, '_');
 
     return (
       <ul>
@@ -57,7 +61,9 @@ class DetailsModal extends React.Component {
         </li>
         {this.renderNameLine()}
         <li id="line-activity-event-title">
-          <LocalizedText localeKey={`show_page.event_messages.${status}.${type}.title`}/>
+          <span className="line-title">
+            <LocalizedText localeKey={`show_page.event_messages.${status}.${type}.title`}/>
+          </span>
         </li>
         <li id="line-activity-event-desc">
           <LocalizedText

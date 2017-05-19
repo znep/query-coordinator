@@ -133,7 +133,6 @@
     "socrata-utils": "3.2.0",
     "socrata-visualizations": "21.6.0",
     "socrata-notifications": "1.0.8",
-    "socrata-autocomplete": "1.0.8",
     "squire-rte": "git+https://github.com/socrata-platform/Squire.git#1.4.2-fixes",
     "tether": "1.0.2",
     "tether-shepherd": "1.2.0",

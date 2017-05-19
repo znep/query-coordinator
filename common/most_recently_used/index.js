@@ -25,7 +25,7 @@ export default class MostRecentlyUsed {
   constructor({ namespace, maxItems = DEFAULT_MAX_ITEMS, maxAge = DEFAULT_MAX_AGE, logger = null }) {
     if (!namespace) {
       const msg = 'A namespace argument is required.';
-      console.error(msg); //eslint-disable-line no-console
+      console.error(msg); // eslint-disable-line no-console
       throw new Error(msg);
     }
     this.namespace = namespace;
@@ -42,7 +42,7 @@ export default class MostRecentlyUsed {
     try {
       return JSON.parse(localStorage.getItem(this.namespace) || '{}').content || {};
     } catch (err) {
-      console.error('_getMru() encountered exception: ', err); //eslint-disable-line no-console
+      console.error('_getMru() encountered exception: ', err); // eslint-disable-line no-console
     }
   }
 

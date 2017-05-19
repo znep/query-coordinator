@@ -72,13 +72,12 @@ module SiteChromeConsumerHelpers
   def site_chrome_javascript_tag
     if using_custom_header_footer?
       site_chrome_js_dir = "#{SocrataSiteChrome::Engine.root}/app/assets/javascripts/socrata_site_chrome"
-      node_modules_dir = "#{Rails.root}/node_modules"
 
       safe_join([
         File.read("#{site_chrome_js_dir}/disable_preview.js"),
         File.read("#{site_chrome_js_dir}/admin_header.js"),
-        File.read("#{node_modules_dir}/socrata-notifications/socrata-notifications.js"),
-        File.read("#{node_modules_dir}/socrata-autocomplete/socrata-autocomplete.js"),
+        File.read("#{Rails.root}/node_modules/socrata-notifications/socrata-notifications.js"),
+        File.read("#{Rails.root}/../common/autocomplete/build/socrata-autocomplete.js"),
         "window.current_user = #{site_chrome_current_user || {}};",
         raw(site_chrome_custom_header_footer_content[:header][:js]),
         raw(site_chrome_custom_header_footer_content[:footer][:js])

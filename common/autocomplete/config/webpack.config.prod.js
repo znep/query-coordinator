@@ -69,7 +69,7 @@ module.exports = {
         loaders: [
           'style-loader',
           'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
-          'autoprefixer-loader',
+          'postcss-loader',
           'sass-loader'
         ]
       }

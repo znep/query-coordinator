@@ -23,6 +23,11 @@ SERVICE_VERSION=`bundle exec semver format "%M.%m.%p"`
 
 cd "${WORKSPACE}"
 
+# Update translations for site_chrome.
+pushd common
+  rake site_chrome:build
+popd
+
 rm -f marathon.properties
 rm -f dockerize.properties
 touch dockerize.properties

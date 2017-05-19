@@ -140,7 +140,7 @@ $(function() {
               'class': 'icon'
             },
             $.arrayToSentence(_.compact(phrase), $.t('controls.nominate.and'), ','),
-            ` ${$.t('controls.nominate.on_this_suggestion')}`
+            ' ' + $.t('controls.nominate.on_this_suggestion')
           ]
         }));
       }

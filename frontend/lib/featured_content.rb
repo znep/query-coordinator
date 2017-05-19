@@ -94,18 +94,6 @@ class FeaturedContent
         end
       end
 
-      result = Cetera::Utils.search_views(
-        current_request_id,
-        current_cookies,
-        :domains => [CurrentDomain.cname],
-        :ids => featured_item['featuredLensUid']
-      ).results.first
-      raise RuntimeError.new('Unexpected result from Cetera for /catalog request') if result.blank?
-
-      view_card_mapping[:updatedAt] = result.updatedAt
-      view_card_mapping[:viewCount] = result.viewCount#dig('resource', 'view_count', 'page_views_total')
-      view_card_mapping[:displayType] = result.type
-
       view_card_mapping
     end
 

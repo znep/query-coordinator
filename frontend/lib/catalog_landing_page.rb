@@ -149,16 +149,22 @@ class CatalogLandingPage
           :displayType => 'href'
         )
       elsif item[:contentType] == 'internal'
-        view = View.find(item[:uid])
-        item.merge!(view.data.slice(*%w(createdAt rowsUpdatedAt viewCount)))
-        # EN-15660: use view.display.type instead of view.displayType :(
-        item[:displayType] = view.display.type
-        item[:isPrivate] = !view.is_public? # See View class regarding semantics of is_private?
+        begin
+          view = View.find(item[:uid])
+          item.merge!(view.data.slice(*%w(viewCount)))
+          item[:updatedAt] = view.time_last_updated_at
+          # EN-15660: use view.display.type instead of view.displayType :(
+          item[:displayType] = view.display.type
+          item[:isPrivate] = !view.is_public? # See View class regarding semantics of is_private?
+        rescue
+          # View was deleted
+          item[:deleted] = true
+        end
       else
         raise "Unknown featured content type: #{item[:contentType]}"
       end
 
-      result["item#{item[:position]}".to_sym] = item
+      result["item#{item[:position]}".to_sym] = item unless item[:deleted]
     end
 
     result

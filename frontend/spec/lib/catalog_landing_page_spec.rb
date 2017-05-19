@@ -314,6 +314,22 @@ describe CatalogLandingPage do
 
   end
 
+  context '#featured_content' do
+
+    it 'does not return featured content views  that have been deleted from the domain' do
+      allow(FeaturedContent).to receive(:fetch).and_return([{
+        :contentType => 'internal',
+        :uid => 'abcd-1234',
+        :position => 0
+      }])
+
+      allow(View).to receive(:find).and_raise
+
+      expect(subject.featured_content).to eq({})
+    end
+
+  end
+
   context '#update_featured_content' do
 
     it 'updates new or existing featured content' do

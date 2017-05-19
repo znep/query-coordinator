@@ -78,6 +78,7 @@
     "mock-socket": "^6.0.4",
     "modularscale-sass": "2.1.1",
     "ngtemplate-loader": "WearyMonkey/ngtemplate-loader#63e3461",
+    "node-noop": "^1.0.0",
     "node-sass": "3.7.0",
     "normalize.css": "4.1.1",
     "raw-loader": "0.5.1",

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
-import { formatDate } from 'socrata-components/common/dates';
+import { formatDate } from 'common/dates';
 import { t } from '../lib/I18n';
 import InfoPaneComponent from '../../common/components/InfoPaneComponent.js';
 import InfoPaneButtons from './InfoPaneButtons';

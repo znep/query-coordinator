@@ -5,7 +5,7 @@ import { formatDate } from 'common/dates';
 
 export function getDefaultFilterForColumn(column) {
   return {
-    function: 'noop',
+    'function': 'noop',
     columnName: column.fieldName,
     arguments: null,
     isHidden: true
@@ -31,7 +31,7 @@ export function getTextFilter(column, filter, values, isNegated) {
     };
 
     return _.assign({}, filter, {
-      function: 'binaryOperator',
+      'function': 'binaryOperator',
       joinOn: isNegated ? 'AND' : 'OR',
       arguments: _.map(values, toArgument)
     });
@@ -99,6 +99,6 @@ export function getFilterToggleText(filter, column) {
     }
 
     default:
-      console.error(`Unsupported column type "${column.dataTypeName}"`); //eslint-disable-line no-console
+      console.error(`Unsupported column type "${column.dataTypeName}"`); // eslint-disable-line no-console
   }
 }

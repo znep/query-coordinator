@@ -1,0 +1,18 @@
+# Socrata Fonts (really just socrata-icons).
+
+The `socrata-icons` font is generated here. Since this font is rarely changed, the
+build artifacts are checked in and referenced directly. If you need to update the
+font, see below.
+
+## Using socrata-icons
+
+Pull in both SCSS files at common/resources/fonts/dist/
+
+## Updating socrata-icons
+
+The fonts are generated via Gulp. With your UX designer, make the requisite changes to the source SVG.
+Then run:
+```sh
+cd common/resources/fonts && npm i && npm run build
+```
+Check in the changes to the files. You're done.

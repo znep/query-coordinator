@@ -1,0 +1,25 @@
+{
+  "parser": "babel-eslint",
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/no-danger": 0,
+    "dot-notation": [
+      1,
+      {
+        "allowKeywords": true,
+        "allowPattern": "^[a-z]+(_[a-z]+)+$"
+      }
+    ]
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "globals": {
+    "Promise": true
+  }
+}

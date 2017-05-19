@@ -1,6 +1,6 @@
 @function socrata-icons-path($file) {
-  @return '/stylesheets/socrata-components/fonts/' + $file;
+  @return '/webfonts/common/' + $file;
 }
 
-@import 'socrata-components/dist/fonts/socrata-icons-font-family';
-@import 'socrata-components/dist/fonts/socrata-icons';
+@import 'common/resources/fonts/dist/socrata-icons-font-family';
+@import 'common/resources/fonts/dist/socrata-icons';

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import SaveButton from './SaveButton';
 import SaveNotification from './SaveNotification';
-import { EditBar as SocrataComponentsEditBar } from 'socrata-components';
+import { EditBar as SocrataComponentsEditBar } from 'common/components';
 import { t } from '../lib/I18n';
 import { enterPreviewMode, openEditMenu } from '../actions';
 

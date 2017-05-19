@@ -5,7 +5,7 @@ export function SocrataIcon({ name, className }) {
   const attributes = {
     className: classNames('socrata-icon', `socrata-icon-${name}`, className),
     dangerouslySetInnerHTML: {
-      __html: require(`common/components/fonts/svg/${name}.svg`) // eslint-disable-line global-require
+      __html: require(`common/resources/fonts/svg/${name}.svg`) // eslint-disable-line global-require
     }
   };
 

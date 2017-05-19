@@ -94,7 +94,13 @@ function getEslintConfig(configFile) {
 
 
 function getStyleguidePreLoaders() {
+  const svgFontPath = path.resolve(root, '../common/resources/fonts/svg');
   return [
+    {
+      loader: require.resolve('raw-loader'),
+      test: /\.svg$/,
+      include: svgFontPath
+    },
     {
       test: /\.jsx?$/,
       include: [ socrataComponentsPath ],
@@ -104,7 +110,7 @@ function getStyleguidePreLoaders() {
     {
       test: /\.(eot|woff|svg|woff2|ttf)$/,
       loader: 'url-loader?limit=100000',
-      exclude: path.join(socrataComponentsPath, 'dist/fonts/svg')
+      exclude: svgFontPath
     }
   ];
 }

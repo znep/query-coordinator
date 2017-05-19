@@ -14,7 +14,7 @@ import { getFilterToggleText } from './filters';
 export const FilterItem = React.createClass({
   propTypes: {
     filter: PropTypes.shape({
-      function: PropTypes.string.isRequired,
+      'function': PropTypes.string.isRequired,
       columnName: PropTypes.string.isRequired,
       arguments: PropTypes.oneOfType([
         PropTypes.object,

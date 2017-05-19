@@ -106,7 +106,7 @@ export const NumberFilter = React.createClass({
       onUpdate(_.merge({}, getDefaultFilterForColumn(column), { isHidden }));
     } else {
       onUpdate(_.merge({}, filter, {
-        function: 'valueRange',
+        'function': 'valueRange',
         arguments: {
           start,
           end

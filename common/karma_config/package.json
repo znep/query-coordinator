@@ -8,7 +8,7 @@
     "build": "webpack",
     "prebuild": "rimraf dist",
     "check-dependencies": "check-dependencies",
-    "lint": "eslint -c package.json ../",
+    "lint": "eslint -c ../.eslintrc.json ../",
     "test": "karma start karma.conf.js --singleRun true",
     "watch": "karma start karma.conf.js -v --singleRun false"
   },
@@ -29,18 +29,13 @@
     "classnames": "2.2.5",
     "dompurify": "0.8.3",
     "dotdotdot": "1.7.0",
-    "eslint": "^3.19.0",
+    "eslint": "2.10.2",
     "eslint-base": "^2.1.2",
-    "eslint-config-airbnb": "^15.0.1",
-    "eslint-config-babel": "^6.0.0",
-    "eslint-config-postcss": "^2.0.2",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-flowtype": "^2.33.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^5.0.3",
-    "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-react": "^7.0.1",
-    "eslint-plugin-standard": "^3.0.1",
+    "eslint-loader": "1.3.0",
+    "eslint-plugin-import": "1.7.0",
+    "eslint-plugin-jsx-a11y": "1.2.2",
+    "eslint-plugin-react": "5.0.1",
+
     "expose-loader": "0.7.3",
     "jquery": "2.2.4",
     "karma": "1.5.0",
@@ -77,30 +72,5 @@
   "peerDependencies": {
     "lodash": "4.14.2",
     "jquery": "2.2.4"
-  },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "plugins": [
-      "react",
-      "import"
-    ],
-    "rules": {
-      "react/no-danger": 0,
-      "dot-notation": [
-        1,
-        {
-          "allowKeywords": true,
-          "allowPattern": "^[a-z]+(_[a-z]+)+$"
-        }
-      ]
-    },
-    "parserOptions": {
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
-    "globals": {
-      "Promise": true
-    }
   }
 }

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/socrata_logo_square.png">
+    <link rel="stylesheet" type="text/css" href="%PUBLIC_URL%/index.css">
+    <title>Autocomplete Testbed</title>
+    <script
+      src="https://code.jquery.com/jquery-3.2.0.min.js"
+      integrity="sha256-JAW99MJVpJBGcbzEuXk4Az05s/XyDdBomFqNlM3ic+I="
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="fake-header">
+      <div class="fake-header-title-container">
+        <a href="#" class="fake-header-title">Notification Bacon</a>
+      </div>
+
+      <div class="fake-header-right-side">
+
+        <!-- This is where the react app actually gets rendered -->
+        <div class="fake-header-notifications" id="notifications"></div>
+
+        <div class="fake-header-separator"></div>
+
+        <div class="fake-header-user-container">
+          <div class="fake-header-user-image">
+            <img class="fake-header-user-image" src="%PUBLIC_URL%/tetris_snuffy.png">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const options = {
+        productUpdatesText: "Product Updates",
+        viewOlderText: "View Older News",
+        errorText: "<strong>Sorry!</strong> We can't fetch notifications right now."
+      };
+
+      document.addEventListener(
+        'DOMContentLoaded',
+        () => {
+          window.headerNotifications('#notifications', options);
+        },
+        false
+      );
+    </script>
+  </body>
+</html>

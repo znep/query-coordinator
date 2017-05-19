@@ -93,7 +93,7 @@ class CoreManagedUserSession
         # gone) but without this line we're getting invalidauthenticitytoken
         # exceptions when trying to create a new dataset.
         controller.session[:user] = user.oid
-        user.session_token = session_token
+        user.session_token = session_token if user
         User.current_user = user
       else
         controller.session[:user] = nil
@@ -102,7 +102,8 @@ class CoreManagedUserSession
     end
 
     def user_no_security_check(user)
-      session = new
+      session = new('login' => user.email, 'password' => user.password)
+      session.save
       session.load_user(user) && session
     end
   end

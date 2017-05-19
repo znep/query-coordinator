@@ -173,6 +173,8 @@ class CoreManagedUserSession
   def save
     response = authenticate_with_core
     load_session_from_core(response)
+
+    response
   end
 
   def user

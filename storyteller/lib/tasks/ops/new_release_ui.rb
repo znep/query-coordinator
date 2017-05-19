@@ -115,7 +115,7 @@ Aborted.'
     dialog.infobox('Waiting for Jenkins build to complete successfully...', 4, 50)
     loop do
       begin
-        build_number = Jenkins.find_storyteller_release_build(git.object('release').sha)
+        build_number = Jenkins.find_storyteller_release_build(git.object(RELEASE_BRANCH_NAME).sha)
         break if build_number
         sleep 15
       rescue

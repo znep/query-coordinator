@@ -3,7 +3,8 @@ require 'jenkins_api_client'
 
 class Jenkins
   JENKINS_URL = 'https://jenkins-build.socrata.com'
-  STORYTELLER_RELEASE_JOB_NAME = 'storyteller-release'
+  STORYTELLER_RELEASE_JOB_NAME = 'AA Exploration Team/job/Storyteller/job/storyteller-release'
+  STORYTELLER_JOB_NAME = 'AA Exploration Team/job/Storyteller/job/storyteller'
   USERNAME_ENV_KEY = 'JENKINS_USER'
   TOKEN_ENV_KEY = 'JENKINS_API_TOKEN'
 
@@ -23,10 +24,17 @@ class Jenkins
   #
   # release_sha: Sha to search for.
   def self.find_storyteller_release_build(release_sha)
-    raise "#{STORYTELLER_RELEASE_JOB_NAME} job not found in jenkins!" unless api.job.exists?(STORYTELLER_RELEASE_JOB_NAME)
-    build_numbers = api.job.get_builds('storyteller-release').map {|rel| rel['number']}.sort.reverse
+    # JenkinsApi::Client doesn't actually support nested jobs yet -
+    # the #list and #exists? methods don't work, but fortunately
+    # the #get_builds and #get_build_details methods do!
+    begin
+      build_numbers = api.job.get_builds(STORYTELLER_RELEASE_JOB_NAME).map {|rel| rel['number']}.sort.reverse
+    rescue JenkinsApi::Exceptions::NotFound => e
+      raise "Jenkins job #{STORYTELLER_RELEASE_JOB_NAME} not found; did someone rename it?"
+    end
+
     build_numbers.find do |build_number|
-      details = api.job.get_build_details('storyteller-release', build_number)
+      details = api.job.get_build_details(STORYTELLER_RELEASE_JOB_NAME, build_number)
       if details['result'] == 'SUCCESS'
         found_action_shas = details['actions'].map do |action|
           branches = action['buildsByBranchName']
@@ -44,15 +52,25 @@ class Jenkins
   #
   # upstream_build_number: Build number to search for.
   # upstream_project: Upstream project to search within.
-  def self.find_downstream_storyteller_build(upstream_build_number, upstream_project = 'storyteller-release')
-    build_numbers = api.job.get_builds('storyteller').map {|rel| rel['number']}.sort.reverse
+  def self.find_downstream_storyteller_build(upstream_build_number, upstream_project = STORYTELLER_RELEASE_JOB_NAME)
+    # JenkinsApi::Client doesn't actually support nested jobs yet -
+    # the #list and #exists? methods don't work, but fortunately
+    # the #get_builds and #get_build_details methods do!
+    begin
+      build_numbers = api.job.get_builds(STORYTELLER_JOB_NAME).map {|rel| rel['number']}.sort.reverse
+    rescue JenkinsApi::Exceptions::NotFound => e
+      raise "Jenkins job #{STORYTELLER_JOB_NAME} not found; did someone rename it?"
+    end
+
     build_numbers.find do |build_number|
-      details = api.job.get_build_details('storyteller', build_number)
+      details = api.job.get_build_details(STORYTELLER_JOB_NAME, build_number)
       # 'actions' and 'causes' are both arrays, and 'actions' may have multiple
       # object members with a 'causes' key... hence this weird search structure.
       details['result'] == 'SUCCESS' && details['actions'].find do |action|
         action.has_key?('causes') && action['causes'].find do |cause|
-          cause['upstreamProject'] == upstream_project && cause['upstreamBuild'] == upstream_build_number
+          project_match = cause['upstreamProject'] == upstream_project.gsub('job/', '')
+          build_match = cause['upstreamBuild'] == upstream_build_number
+          project_match && build_match
         end
       end
     end
@@ -62,7 +80,7 @@ class Jenkins
   #
   # build_number: Build number to search for
   def self.get_docker_tag_from_build(build_number)
-    details = api.job.get_build_details('storyteller', build_number)
+    details = api.job.get_build_details(STORYTELLER_JOB_NAME, build_number)
 
     # We can't use the similar functionality from JenkinsApi::Client because
     # it always assumes the latest build instead of a specific build number

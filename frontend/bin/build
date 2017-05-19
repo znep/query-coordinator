@@ -52,6 +52,11 @@ pushd ..
   tar cpzfX ${SERVICE_ARTIFACT} frontend/.package-ignore *
 popd
 
+# Update translations for site_chrome.
+pushd ../common
+  rake site_chrome:build
+popd
+
 # Get build info for Decima
 echo "---" > build_info.yml
 echo "service: ${SERVICE_NAME}" >> build_info.yml

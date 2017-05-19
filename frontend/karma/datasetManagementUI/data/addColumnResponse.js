@@ -38,7 +38,7 @@ export default {
         "description": null
       }
     ],
-    "inserted_at": "2017-04-07T19:18:33.262191",
+    "created_at": "2017-04-07T19:18:33.262191",
     "input_schema_id": 4,
     "id": 90,
     "error_count": 0,

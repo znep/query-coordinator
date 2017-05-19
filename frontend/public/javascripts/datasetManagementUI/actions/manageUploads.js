@@ -193,7 +193,7 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
   dispatch(
     upsertFromServer('uploads', {
       ..._.omit(upload, ['schemas']),
-      inserted_at: parseDate(upload.inserted_at),
+      created_at: parseDate(upload.inserted_at || upload.created_at),
       finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
       failed_at: upload.failed_at ? parseDate(upload.failed_at) : null,
       created_by: upload.created_by
@@ -318,7 +318,7 @@ function toOutputSchema(os) {
     id: os.id,
     input_schema_id: os.input_schema_id,
     error_count: os.error_count,
-    inserted_at: os.inserted_at ? parseDate(os.inserted_at) : null,
+    created_at: (os.inserted_at || os.created_at) ? parseDate(os.inserted_at || os.created_at) : null,
     created_by: os.created_by
   };
 }

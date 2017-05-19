@@ -132,7 +132,7 @@ function activitiesOf(db) {
   const update = {
     type: 'update',
     value: updateModel,
-    at: updateModel.inserted_at
+    at: updateModel.created_at
   };
   const uploads = _.map(db.uploads, (upload) => ({
     type: 'upload',
@@ -144,7 +144,7 @@ function activitiesOf(db) {
     const upload = _.find(db.uploads, { id: inputSchema.upload_id });
     return {
       type: 'outputSchema',
-      at: outputSchema.inserted_at,
+      at: outputSchema.created_at,
       value: {
         outputSchema,
         inputSchema,
@@ -155,7 +155,7 @@ function activitiesOf(db) {
   const upserts = _.map(db.upsert_jobs, (upsertJob) => ({
     type: 'upsert',
     value: upsertJob,
-    at: upsertJob.inserted_at
+    at: upsertJob.created_at
   }));
 
   const finishedUpserts = _.chain(db.upsert_jobs).

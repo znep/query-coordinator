@@ -1,7 +1,7 @@
 export const uploadCreate = {
   "resource":{
     "schemas":[],
-    "inserted_at":"2017-05-12T14:12:09.293177",
+    "created_at":"2017-05-12T14:12:09.293177",
     "id":823,
     "finished_at":null,
     "filename":"petty_crimes.csv",
@@ -445,7 +445,7 @@ export const uploadBytes = {
             "description":""
           }
         ],
-        "inserted_at":"2017-05-12T14:12:21.648593",
+        "created_at":"2017-05-12T14:12:21.648593",
         "input_schema_id":945,
         "id":1145,
         "error_count":0,
@@ -458,7 +458,7 @@ export const uploadBytes = {
       }
     ],
     "name":null,
-    "inserted_at":"2017-05-12T14:12:09.412481",
+    "created_at":"2017-05-12T14:12:09.412481",
     "input_columns":[
       {
         "soql_type":"text",
@@ -1144,7 +1144,7 @@ export const uploadShow = {
                 "description":""
               }
             ],
-            "inserted_at":"2017-05-12T14:12:21.648593",
+            "created_at":"2017-05-12T14:12:21.648593",
             "input_schema_id":945,
             "id":1145,
             "error_count":0,
@@ -1157,7 +1157,7 @@ export const uploadShow = {
           }
         ],
         "name":null,
-        "inserted_at":"2017-05-12T14:12:09.412481",
+        "created_at":"2017-05-12T14:12:09.412481",
         "input_columns":[
           {
             "soql_type":"text",
@@ -1410,7 +1410,7 @@ export const uploadShow = {
         }
       }
     ],
-    "inserted_at":"2017-05-12T14:12:09.293177",
+    "created_at":"2017-05-12T14:12:09.293177",
     "id":823,
     "finished_at":"2017-05-12T14:12:22",
     "filename":"petty_crimes.csv",
@@ -1832,7 +1832,7 @@ export const newOutputSchemaFromDrop = {
         "description":""
       }
     ],
-    "inserted_at":"2017-05-12T14:18:55.922365",
+    "created_at":"2017-05-12T14:18:55.922365",
     "input_schema_id":945,
     "id":1146,
     "error_count":0,
@@ -2271,7 +2271,7 @@ export const newOutputSchemaFromAdd = {
         "description":""
       }
     ],
-    "inserted_at":"2017-05-12T14:20:36.697703",
+    "created_at":"2017-05-12T14:20:36.697703",
     "input_schema_id":945,
     "id":1147,
     "error_count":0,
@@ -2710,7 +2710,7 @@ export const newOutputSchemaFromTypeChange = {
         "description":""
       }
     ],
-    "inserted_at":"2017-05-12T14:21:45.479100",
+    "created_at":"2017-05-12T14:21:45.479100",
     "input_schema_id":945,
     "id":1148,
     "error_count":0,
@@ -3149,7 +3149,7 @@ export const newOutputSchemaFromSetPrimary = {
         "description":""
       }
     ],
-    "inserted_at":"2017-05-12T14:22:23.275188",
+    "created_at":"2017-05-12T14:22:23.275188",
     "input_schema_id":945,
     "id":1149,
     "error_count":0,
@@ -3588,7 +3588,7 @@ export const rows = [
         "description":""
       }
     ],
-    "inserted_at":"2017-05-12T14:23:20.690934",
+    "created_at":"2017-05-12T14:23:20.690934",
     "input_schema_id":945,
     "id":1150,
     "error_count":9,
@@ -4725,7 +4725,7 @@ export const columnErrors = [
         "description":""
       }
     ],
-    "inserted_at":"2017-05-12T14:23:20.690934",
+    "created_at":"2017-05-12T14:23:20.690934",
     "input_schema_id":945,
     "id":1150,
     "error_count":9,

@@ -449,13 +449,16 @@ module.exports = function tableCard(
                 // then extracting any relevant content from non-visible columns
                 // and incorporating it in the formatCellText method.
                 var additionalCellContent;
-                if (column.renderTypeName === 'url') {
+                var relatedColumnName = column.fieldName + '_description';
+                var hasDescriptionSubcolumn = _.has($scope.allColumnsMetadata, relatedColumnName) && $scope.allColumnsMetadata[relatedColumnName].isSubcolumn === true;
+
+                if (column.renderTypeName === 'url' || hasDescriptionSubcolumn) {
                   var relatedColumn = _.find(
                     $scope.allColumnsMetadata,
                     {
                       // This is the new hidden column marked (isSubcolumn: true)
                       // which stores the URL description after NBE migration.
-                      fieldName: column.fieldName + '_description'
+                      fieldName: relatedColumnName
                     }
                   );
                   if (relatedColumn) {

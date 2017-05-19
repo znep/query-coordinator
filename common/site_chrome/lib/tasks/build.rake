@@ -5,12 +5,17 @@ namespace :site_chrome do
     # Yet we stil have to map to what LocaleApp expects.
     if ENV['SITE_CHROME_LOCALEAPP_API_KEY']
       ENV['LOCALEAPP_API_KEY'] = ENV['SITE_CHROME_LOCALEAPP_API_KEY']
+    else
+      # We require a separate environment variable to reduce API key ambiguities.
+      # We don't want to accidentally push this en.yml to the wrong LocaleApp project.
+      abort('Please set SITE_CHROME_LOCALEAPP_API_KEY as environment variable to continue.')
     end
 
     Dir.chdir("#{Dir.pwd}/site_chrome") unless Dir.pwd.end_with?('site_chrome')
 
-    puts `npm install`
-    abort('Could not run npm install') unless $?.success?
+    sh('bundle check') do |ok, result|
+      sh('bundle install') unless ok
+    end
 
     puts `bin/push_base_locale -y`
     abort('Could not push to LocaleApp') unless $?.success?

@@ -1,6 +1,13 @@
 var _ = require('lodash');
 var path = require('path');
 var common = require('./common');
+var preloaders = _.clone(common.getStyleguidePreLoaders());
+
+if (common.isProduction) {
+  preloaders.push(
+    { test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/ }
+  );
+}
 
 module.exports = {
   devtool: common.isProduction ? 'source-map' : 'cheap-module-eval-source-map',
@@ -14,16 +21,9 @@ module.exports = {
     stats: 'minimal',
     hot: true
   },
-  module: {
-    preLoaders: _.compact([
-      common.isProduction ? null : { test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/ },
-      ...common.getStyleguidePreLoaders()
-    ])
-  },
+  module: { preloaders },
   sassLoader: {
-    includePaths: [
-      ...common.getStyleguideIncludePaths()
-    ]
+    includePaths: common.getStyleguideIncludePaths()
   },
   output: {
     pathinfo: !common.isProduction

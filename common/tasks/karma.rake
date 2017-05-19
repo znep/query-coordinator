@@ -8,7 +8,7 @@ namespace 'karma' do
   end
 
   task :runonce do
-    npm('run test') { |ok, res| npm('run test', path: 'autocomplete') if ok }
+    npm('run test') { |ok, res| exit(1) unless ok }
   end
 
   task :watch do

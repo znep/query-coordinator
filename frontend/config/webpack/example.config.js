@@ -25,7 +25,7 @@ module.exports = _.defaultsDeep({
         test: /node_modules\/lodash/,
         loader: 'imports?define=>undefined'
       }
-      // ...
+      // Additional loaders may go here
     ]
   },
   resolve: common.getStandardResolve([ 'public/javascripts/example' ]), // UPDATE

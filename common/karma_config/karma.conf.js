@@ -2,50 +2,100 @@
 
 // Karma configuration for common code.
 var path = require('path');
+var webpackResolve = require.resolve;
+var platformUiRoot = path.resolve(__dirname, '../..');
 
-var root = path.resolve(__dirname, '../..');
 // TODO Move base webpack config from frontend/webpack into common, then use here.
 var webpackConfig = {
   context: __dirname,
   module: {
     loaders: [
       {
-        loader: require.resolve('raw-loader'),
+        loader: webpackResolve('raw-loader'),
         test: /\.svg$/,
-        include: `${root}/common/resources/fonts/svg`
-      },
+        include: `${platformUiRoot}/common/resources/fonts/svg`
+      }
+    ],
+    loaders: [
       {
         test: /\.jsx?$/,
-        loader: require.resolve('babel-loader'),
+        loader: webpackResolve('babel-loader'),
         exclude: /node_modules/,
         query: {
           presets: [
             'babel-preset-es2015', 'babel-preset-react'
-          ].map(require.resolve),
+          ].map(webpackResolve),
           plugins: [
             'babel-plugin-transform-object-rest-spread',
             'babel-plugin-rewire'
-          ].map(require.resolve)
+          ].map(webpackResolve)
         }
-      }
+      },
+      {
+        test: /\.svg$/,
+        loader: webpackResolve('raw-loader'),
+        include: `${platformUiRoot}/common/resources/fonts/svg`
+      },
+      {
+        test: /\.(eot|woff|svg|woff2|ttf)$/,
+        loader: {
+          loader: webpackResolve('url-loader'),
+          query: 'limit=100000'
+        },
+        exclude: `${platformUiRoot}/common/resources/fonts/svg`
+      },
+      {
+        test: /\.(css|scss)$/,
+        loaders: [
+          webpackResolve('style-loader'),
+          // You may be tempted to split the query and loader path into an object with `query` and
+          // `loader` properties, a la Webpack 2.
+          // Since we're using Webpack 1, that will not work. If multiple loaders are to be specified,
+          // they must be given a query via a ? in their name after their full path
+          // (provided by webpackResolve).
+          webpackResolve('css-loader') + '?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
+          webpackResolve('autoprefixer-loader'),
+          webpackResolve('sass-loader')
+        ]
+      },
+    ]
+  },
+  sassLoader: {
+    // Sets the search path for @include directives SPECIFICALLY in *.scss files.
+    includePaths: [
+      `${platformUiRoot}/node_modules/bourbon/app/assets/stylesheets`,
+      `${platformUiRoot}/node_modules/bourbon-neat/app/assets/stylesheets`,
+      `${platformUiRoot}/node_modules/breakpoint-sass/stylesheets`,
+      `${platformUiRoot}/node_modules/modularscale-sass/stylesheets`,
+      `${platformUiRoot}/node_modules/normalize.css`,
+      `${platformUiRoot}/node_modules/react-input-range/dist`,
+      `${platformUiRoot}/node_modules/react-datepicker/dist`,
+      `${platformUiRoot}/common`,
+      platformUiRoot
     ]
   },
   resolve: {
     root: [
-      root,
-      // Let tests import modules (i.e, import FeatureFlags from 'common/FeatureFlags')
-      path.resolve('../../'),
+      platformUiRoot,
 
       // TODO: This is a compatibility shim that was added during the
       // styleguide->platform-ui migration to avoid having to update
       // the import paths of a lot of test files. This will be removed
       // when we do EN-14559.
-      path.resolve('../../common'),
+      `${platformUiRoot}/common`,
 
       // Allow code under test to require dependencies in karma_config's package.json.
-      '../karma_config/node_modules'
+      `${platformUiRoot}/common/karma_config/node_modules`
     ],
-    modulesDirectories: [ path.resolve(root, 'packages/socrata-components/node_modules') ]
+    modulesDirectories: [ path.resolve(platformUiRoot, 'packages/socrata-components/node_modules') ]
+  },
+  externals: {
+    'jsdom': 'window',
+    'cheerio': 'window',
+    'react/addons': true,
+    'react/lib/ExecutionEnvironment': true,
+    'react/lib/ReactContext': true,
+    'react/lib/ReactTestUtils': true
   },
   devtool: 'inline-source-map'
 };

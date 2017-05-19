@@ -12,16 +12,14 @@ if (!common.isProduction) {
 }
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.frontendRoot, 'public/javascripts/internalAssetManager'),
+  context: path.resolve(common.frontendRoot, '../common'),
   entry: common.withHotModuleEntries({
-    'main': './main',
+    'site_wide': './site_wide'
   }),
-  output: common.getOutput(identifier),
-  eslint: common.getEslintConfig('public/javascripts/internalAssetManager/.eslintrc.json'),
-  externals: {
-    jquery: true
-  },
   module: {
+    preLoaders: [
+      common.getStyleguidePreLoaders()
+    ],
     loaders: [
       common.getBabelLoader(),
       {
@@ -29,16 +27,19 @@ module.exports = _.defaultsDeep({
         // See: https://github.com/lodash/lodash/issues/2671
         test: /node_modules\/lodash/,
         loader: 'imports?define=>undefined'
+      },
+      {
+        test: /\.(css|scss)$/,
+        loaders: [
+          'style-loader',
+          'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
+          'autoprefixer-loader',
+          'sass-loader'
+        ]
       }
     ]
   },
-  resolve: _.extend(
-    {
-      alias: {
-        'jquery': 'jQuery'
-      }
-    },
-    common.getStandardResolve([ 'public/javascripts/internalAssetManager' ])
-  ),
-  plugins: plugins
+  output: common.getOutput(identifier),
+  plugins: plugins,
+  resolve: common.getStandardResolve()
 }, require('./base'));

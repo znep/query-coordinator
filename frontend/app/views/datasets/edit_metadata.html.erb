@@ -8,7 +8,7 @@
 <% end %>
 
 <div class="contentBox fixedWidth">
-  <%= form_tag({}, {:id => "editMetadataForm", :class => 'commonForm', :method => :post, :multipart => true}) do %>
+  <%= form_tag({}, {:id => 'editMetadataForm', :class => 'commonForm', :method => :post, :multipart => true}) do %>
     <h1><%= t('screens.edit_metadata.headline', :name => @view.name) %></h1>
     <a href="<%= view_path(@view) %>" class="returnLink"><%= t('screens.edit_metadata.return') %></a>
 
@@ -17,33 +17,33 @@
     <h2><%= t('screens.edit_metadata.general_information') %></h2>
 
     <div class="line clearfix">
-      <label for="view_name" class="required"><%= t('screens.edit_metadata.dataset_title') %></label>
-      <%= text_field_tag("view[name]", @view.name, :title => t('screens.edit_metadata.dataset_title_prompt'), :class => "textPrompt") %>
+      <%= label_tag('view[name]', t('screens.edit_metadata.dataset_title'), class: 'required') %>
+      <%= text_field_tag('view[name]', @view.name, :title => t('screens.edit_metadata.dataset_title_prompt'), :class => 'textPrompt') %>
     </div>
 
     <div class="line clearfix">
-      <label for="view_description"><%= t('screens.edit_metadata.brief_description') %></label>
-      <%= text_area_tag("view[description]", @view.description, :title => t('screens.edit_metadata.brief_description_prompt'), :class => "textPrompt") %>
+      <%= label_tag('view[description]',  t('screens.edit_metadata.brief_description')) %>
+      <%= text_area_tag('view[description]', @view.description, :title => t('screens.edit_metadata.brief_description_prompt'), :class => "textPrompt") %>
     </div>
 
     <div class="line clearfix">
-      <label for="view_category"><%= t('screens.edit_metadata.category') %></label>
-      <%= select_tag("view[category]", category_select_options(@view.category.nil? ? '' : @view.category)) %>
+      <%= label_tag('view[category]', t('screens.edit_metadata.category')) %>
+      <%= select_tag('view[category]', category_select_options(@view.category.nil? ? '' : @view.category)) %>
     </div>
 
     <div class="line clearfix">
-      <label for="view_tags"><%= t('screens.edit_metadata.tags_keywords') %></label>
-      <%= text_field_tag("view[tags]", @view.tags.nil? ? '' : @view.tags.join(', '), :title => t('screens.edit_metadata.tags_prompt'), :class => "textPrompt") %>
+      <%= label_tag('view[tags]', t('screens.edit_metadata.tags_keywords')) %>
+      <%= text_field_tag('view[tags]', @view.tags.nil? ? '' : @view.tags.join(', '), :title => t('screens.edit_metadata.tags_prompt'), :class => 'textPrompt') %>
       <div class="additionalHelp"><%= t('screens.edit_metadata.keywords_help') %></div>
     </div>
 
     <%- if @view.dataset? -%>
     <div class="line clearfix">
-      <label for="view_row_label"><%= t('screens.edit_metadata.row_label') %></label>
-      <%= text_field_tag("view[metadata][rowLabel]",
+      <%= label_tag('view[metadata][rowLabel]', t('screens.edit_metadata.row_label'))%>
+      <%= text_field_tag('view[metadata][rowLabel]',
         row_label,
         :title => t('screens.edit_metadata.row_label_prompt'),
-        :class => "textPrompt") %>
+        :class => 'textPrompt') %>
       <div class="additionalHelp"><%= t('screens.edit_metadata.row_label_help') %></div>
     </div>
     <%- end -%>
@@ -65,7 +65,7 @@
               <%# description %>
               <div class="line clearfix">
                 <%= label_tag('external_sources[][description]', t('controls.nominate.description')) %>
-                <%= text_area_tag("external_sources[][description]", entry['description'],
+                <%= text_area_tag('external_sources[][description]', entry['description'],
                   :title => t('screens.edit_metadata.brief_description_prompt'),
                   :id => nil,
                   :class => 'textPrompt') %>
@@ -73,7 +73,7 @@
                <%# Described By %>
               <div class="line clearfix">
                 <%= label_tag('external_sources[][describedBy]', t('screens.edit_metadata.described_by')) %>
-                <%= text_field_tag("external_sources[][describedBy]", entry['describedBy'],
+                <%= text_field_tag('external_sources[][describedBy]', entry['describedBy'],
                   :title => t('screens.edit_metadata.described_by_prompt'),
                   :id => nil,
                   :class => 'textPrompt') %>
@@ -127,22 +127,22 @@
 
     <h2><%= t('screens.edit_metadata.spatial_extent') %></h2>
      <div class="line clearfix">
-       <label for="view_northWest_lat"><%= t('screens.edit_metadata.northwest_latitude') %></label>
+       <%= label_tag('view[northWest[lat]]', t('screens.edit_metadata.northwest_latitude')) %>
        <%= text_field_tag 'view[northWest[lat]]', (@view.data['northWest'] || {})['lat'],
            :disabled => true, :title => t('screens.edit_metadata.northwest_latitude'), :name=> 'textPrompt'%>
      </div>
      <div class="line clearfix">
-       <label for="view_northWest_long"><%= t('screens.edit_metadata.northwest_longitude') %></label>
+       <%= label_tag('view[northWest[long]]', t('screens.edit_metadata.northwest_longitude')) %>
        <%= text_field_tag 'view[northWest[long]]', (@view.data['northWest'] || {})['long'],
            :disabled => true, :title => t('screens.edit_metadata.northwest_longitude'), :name=> 'textPrompt'%>
      </div>
      <div class="line clearfix">
-       <label for="view_southEast_lat"><%= t('screens.edit_metadata.southeast_latitude') %></label>
+       <%= label_tag('view[southEast[lat]]', t('screens.edit_metadata.southeast_latitude')) %>
        <%= text_field_tag 'view[southEast[lat]]', (@view.data['southEast'] || {})['lat'],
            :disabled => true, :title => t('screens.edit_metadata.southeast_latitude'), :name=> 'textPrompt'%>
      </div>
      <div class="line clearfix">
-       <label for="view_southEast_long"><%= t('screens.edit_metadata.southeast_longitude') %></label>
+       <%= label_tag('view[southEast[long]]', t('screens.edit_metadata.southeast_longitude')) %>
        <%= text_field_tag 'view[southEast[long]]', (@view.data['southEast'] || {})['long'],
            :disabled => true, :title => t('screens.edit_metadata.southeast_longitude'), :name=> 'textPrompt'%>
      </div>
@@ -152,22 +152,22 @@
     <%- if @view.is_tabular? -%>
     <h2><%= t('screens.edit_metadata.semantics_rdf') %></h2>
      <div class="line clearfix">
-       <label for="view_metadata_rdfClass"><%= t('screens.edit_metadata.row_class') %></label>
-         <%= select_tag("view[metadata[rdfClass]]",
+       <%= label_tag('view[metadata[rdfClass]]', t('screens.edit_metadata.row_class')) %>
+         <%= select_tag('view[metadata[rdfClass]]',
                options_for_select(
                  RdfTerm.all_class_options,
                  h(@view.metadata.nil? || @view.metadata.rdfClass.nil? ? '' : @view.metadata.rdfClass)),
                :hasCustomEdit => 1, :class => 'combo_button_edit' )
          %>
          <%= text_field_tag 'view[metadata[customRdfClass]]', @view.rdf_class, :name=>'view[metadata[customRdfClass]]',
-           :class => 'textValue hide combo_button_edit'
+           :class => 'textValue hide combo_button_edit', 'aria-label' => 'view[metadata[customRdfClass]]'.chop.gsub(/[\[\]]+/, '_')
          %>
          <ul class="comboToggle actionButtons"><li><a><%= t('screens.edit_metadata.custom') %></a></li></ul>
      </div>
 
      <div class="line clearfix">
-       <label for="view_metadata_rdfSubject"><%= t('screens.edit_metadata.subject_column') %></label>
-       <%= select_tag("view[metadata[rdfSubject]]",
+       <%= label_tag('view[metadata[rdfSubject]]', t('screens.edit_metadata.subject_column')) %>
+       <%= select_tag('view[metadata[rdfSubject]]',
            rdf_subject_select_options(
            @view.columns,
            h(@view.metadata.nil? || @view.metadata.rdfSubject.nil? ? '' : @view.metadata.rdfSubject)))
@@ -176,12 +176,12 @@
 
     <h2><%= t('screens.edit_metadata.api_endpoint') %></h2>
      <div class="line clearfix">
-       <label for="view_resourceName"><%= t('screens.edit_metadata.resource_name') %></label>
-       <%= text_field_tag("view[resourceName]", @view.resourceName, :title => t('screens.edit_metadata.resource_name_prompt'), :class => "textPrompt") %>
+       <%= label_tag('view[resourceName]', t('screens.edit_metadata.resource_name')) %>
+       <%= text_field_tag('view[resourceName]', @view.resourceName, :title => t('screens.edit_metadata.resource_name_prompt'), :class => 'textPrompt') %>
      </div>
 
      <div class="line clearfix">
-       <label for="view_metadata_rowIdentifier"><%= t('screens.edit_metadata.row_identifier') %></label>
+       <%= label_tag('view_metadata_rowIdentifier', t('screens.edit_metadata.row_identifier')) %>
        <%= row_identifier_select_tag(@isPublishedNBEView) %>
        <%- if @isPublishedNBEView %>
          <div class="additionalHelp"><%= t('screens.edit_metadata.row_identifier_help_text') %></div>
@@ -194,15 +194,15 @@
     <%- if Rails.env.development? || CurrentDomain.cname == "explore.data.gov" -%>
       <h2><%= t('screens.edit_metadata.external_id') %></h2>
       <div class="line clearfix">
-        <label for="view_externalId"><%= t('screens.edit_metadata.external_identifier') %></label>
-        <%= text_field_tag("view[externalId]", @view.externalId, :title => t('screens.edit_metadata.external_id_prompt'), :class => "textPrompt") %>
+        <%= label_tag('view[externalId]', t('screens.edit_metadata.external_identifier')) %>
+        <%= text_field_tag('view[externalId]', @view.externalId, :title => t('screens.edit_metadata.external_id_prompt'), :class => 'textPrompt') %>
       </div>
     <%- end -%>
 
     <h2><%= t('screens.edit_metadata.thumbnail_image') %></h2>
     <div class="customImage">
       <div class="line clearfix">
-        <label for="view_iconUrl"><%= t('screens.edit_metadata.upload_image') %></label>
+        <%= label_tag('view[iconUrl]', t('screens.edit_metadata.upload_image')) %>
         <%= file_field_tag('custom_image', :accept => '(jpe?g|gif|png)',
                            'data-endpoint' => "/api/views/#{@view.id}/files.txt",
                            :class => 'customDatasetImageSelect') %>
@@ -228,20 +228,20 @@
 
     <div class="attachments">
       <div class="line clearfix">
-        <label for="existing_attachments"><%= t('screens.edit_metadata.existing_attachments') %></label>
+        <label><%= t('screens.edit_metadata.existing_attachments') %></label>
         <div class="existingAttachments" id="existing_attachments">
           <ul>
             <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
               <%- @view.metadata.attachments.each do |attachment| -%>
                 <%- attachmentObj = Attachment.setup_model(attachment) -%>
                 <li>
-                  <%= hidden_field_tag("view[metadata[attachments]][][blobId]",   attachment['blobId']) %>
-                  <%= hidden_field_tag("view[metadata[attachments]][][assetId]",   attachment['assetId']) %>
-                  <%= hidden_field_tag("view[metadata[attachments]][][filename]", attachment['filename']) %>
-                  <%= text_field_tag(  "view[metadata[attachments]][][name]",     attachmentObj.displayName) %>
+                  <%= hidden_field_tag('view[metadata[attachments]][][blobId]',   attachment['blobId']) %>
+                  <%= hidden_field_tag('view[metadata[attachments]][][assetId]',   attachment['assetId']) %>
+                  <%= hidden_field_tag('view[metadata[attachments]][][filename]', attachment['filename']) %>
+                  <%= text_field_tag(  'view[metadata[attachments]][][name]',     attachmentObj.displayName) %>
                   <span class="deleteLinks">
-                    <label><%= t('screens.edit_metadata.delete') %></label>
-                    <%= check_box_tag("view[metadata[attachments]][][delete]") %>
+                    <%= label_tag('view[metadata[attachments]][][delete]', t('screens.edit_metadata.delete')) %>
+                    <%= check_box_tag('view[metadata[attachments]][][delete]') %>
                   </span>
                 </li>
               <%- end -%>
@@ -253,8 +253,8 @@
       </div>
 
       <div class="line clearfix">
-        <label for="attachment_new" class="newAttachmentLabel"><%= t('screens.edit_metadata.new_attachment') %></label>
-        <%= file_field_tag("attachment_new") %>
+        <%= label_tag('attachment_new', t('screens.edit_metadata.new_attachment')) %>
+        <%= file_field_tag('attachment_new') %>
         <span class="uploadAttachmentThrobber throbber"></span>
       </div>
     </div>

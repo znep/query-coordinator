@@ -749,15 +749,16 @@ module ApplicationHelper
                 name,
                 options_for_select(flag_config.expectedValues.split(' ').
                   reject { |value| ['true', 'false'].include? value }, flag_value),
-                :disabled => options[:disabled])
+                :disabled => options[:disabled],
+                'aria-label' => "#{name.chop.gsub(/[\[\]]+/, '_')}other")
     else
       case flag_value
       when String, Fixnum
-        html << text_field_tag(name, flag_value, :disabled => options[:disabled])
+        html << text_field_tag(name, flag_value, :disabled => options[:disabled], 'aria-label' => "#{name.chop.gsub(/[\[\]]+/, '_')}other")
       when Array
-        html << text_field_tag(name, flag_value.to_json, :disabled => options[:disabled])
+        html << text_field_tag(name, flag_value.to_json, :disabled => options[:disabled], 'aria-label' => "#{name.chop.gsub(/[\[\]]+/, '_')}other")
       else
-        html << text_field_tag(name, nil, :disabled => options[:disabled])
+        html << text_field_tag(name, nil, :disabled => options[:disabled], 'aria-label' => "#{name.chop.gsub(/[\[\]]+/, '_')}other")
       end
     end
 

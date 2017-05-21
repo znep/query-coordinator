@@ -16,7 +16,7 @@ describe UserSessionsController do
   before do
     init_environment
 
-    allow_any_instance_of(UserSession).to receive(:save).and_return(Net::HTTPSuccess.new(1.1, 200, 'Success'))
+    allow_any_instance_of(UserSession).to receive(:save).with(true).and_return(Net::HTTPSuccess.new(1.1, 200, 'Success'))
     allow_any_instance_of(UserSession).to receive(:find_token).and_return(true)
   end
 

@@ -170,11 +170,19 @@ class CoreManagedUserSession
   # the core server. On success, the core server returns a JSON payload
   # representing the logged-in user; we can use this to instantiate the User
   # model object w/o making a separate request.
-  def save
+  def save(wants_response = false)
+    result = false
     response = authenticate_with_core
-    load_session_from_core(response)
 
-    response
+    if response.is_a?(Net::HTTPSuccess)
+      load_session_from_core(response)
+      result = self
+    end
+
+    yield result if result && block_given?
+
+    wants_response ? response : result
+
   end
 
   def user

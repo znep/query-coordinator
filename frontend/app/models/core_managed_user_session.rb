@@ -276,6 +276,10 @@ class CoreManagedUserSession
     end
   end
 
+  def previously_authenticated_session?
+    auth_cookie_string.present? && auth_cookie_string.length > 0
+  end
+
   def remember_token
     cookies['remember_token']
   end
@@ -291,6 +295,8 @@ class CoreManagedUserSession
   end
 
   def validate_with_core
+    return false unless previously_authenticated_session?
+
     uri = CoreManagedUserSession.current_user_uri
     get = Net::HTTP::Get.new(uri.request_uri)
     get['X-Socrata-Host'] = CurrentDomain.cname

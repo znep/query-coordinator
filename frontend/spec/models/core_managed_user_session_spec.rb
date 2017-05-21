@@ -52,6 +52,15 @@ describe CoreManagedUserSession do
     end
   end
 
+  describe 'find with no existing session' do
+    it 'should set current_user to nil ' do
+      session = CoreManagedUserSession.find
+      expect(session).to be(nil)
+      expect(User.current_user).to be(nil)
+    end
+  end
+
+
   describe 'user_no_security_check' do
     let(:user_data) do
       {

@@ -26,13 +26,13 @@ $(document).ready(function() {
 
   addAriaExpandedAttributeToSearchBox();
   verticallyPositionSearchbar();
+
   checkMobileBreakpoint();
+  $(window).resize(checkMobileBreakpoint);
 
   // Show header nav. It has opacity set to 0 initially to prevent a flash of desktop styling on mobile.
   $siteChromeHeader.find('nav').css('opacity', 1);
 });
-
-$(window).resize(checkMobileBreakpoint);
 
 function addAriaExpandedAttributeToSearchBox() {
   $('.searchbox').attr('aria-expanded', 'false');

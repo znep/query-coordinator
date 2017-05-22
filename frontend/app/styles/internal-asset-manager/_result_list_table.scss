@@ -1,6 +1,5 @@
 @import "styleguide-colors";
 @import "internal-asset-manager/mixins/multi_line_ellipsis";
-@import "internal-asset-manager/flyout";
 
 table.result-list-table {
   thead {
@@ -69,7 +68,30 @@ table.result-list-table {
       }
 
       &.type, &.visibility {
-        font-size: 18px;
+        *[class^="socrata-icon-"] {
+          font-size: 18px;
+        }
+      }
+
+      &.visibility {
+        .title {
+          display: flex;
+          align-items: baseline;
+
+          strong {
+            margin-left: 0.25rem;
+          }
+        }
+
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+
+          li {
+            color: $light-grey-1;
+          }
+        }
       }
     }
   }

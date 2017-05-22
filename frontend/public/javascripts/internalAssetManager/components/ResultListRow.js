@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
-import VisibilityIcon from './VisibilityIcon';
+import VisibilityCell from './VisibilityCell';
 import _ from 'lodash';
 
 export class ResultListRow extends React.Component {
@@ -39,12 +39,12 @@ export class ResultListRow extends React.Component {
         return cellTag(<span className={getIconClassForDisplayType(type)} />);
       }
       case 'visibility': {
-        const visibilityIconProps = _.pick(this.props,
+        const visibilityCellProps = _.pick(this.props,
           ['isDataLensApproved', 'isHidden', 'isModerationApproved', 'isPublic', 'isPublished',
             'isRoutingApproved', 'visibleToAnonymous']
         );
 
-        return cellTag(<VisibilityIcon {...visibilityIconProps} />);
+        return cellTag(<VisibilityCell {...visibilityCellProps} />);
       }
       default:
         return cellTag(this.props[columnName]);

@@ -132,22 +132,19 @@ function activitiesOf(db) {
   const update = {
     type: 'update',
     value: updateModel,
-    at: updateModel.inserted_at
+    at: updateModel.created_at
   };
   const uploads = _.map(db.uploads, (upload) => ({
     type: 'upload',
     value: upload,
     at: upload.finished_at
   }));
-  // TODO: remove this filter when get __status__ out of the output_schemas table
-  const filteredOutputSchemas = _.filter(db.output_schemas, (val, key) =>
-    key && key !== '__status__');
-  const outputSchemas = _.map(filteredOutputSchemas, (outputSchema) => {
+  const outputSchemas = _.map(db.output_schemas, (outputSchema) => {
     const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
     const upload = _.find(db.uploads, { id: inputSchema.upload_id });
     return {
       type: 'outputSchema',
-      at: outputSchema.inserted_at,
+      at: outputSchema.created_at,
       value: {
         outputSchema,
         inputSchema,
@@ -158,7 +155,7 @@ function activitiesOf(db) {
   const upserts = _.map(db.upsert_jobs, (upsertJob) => ({
     type: 'upsert',
     value: upsertJob,
-    at: upsertJob.inserted_at
+    at: upsertJob.created_at
   }));
 
   const finishedUpserts = _.chain(db.upsert_jobs).

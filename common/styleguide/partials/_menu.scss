@@ -1,0 +1,127 @@
+.menu {
+  position: fixed;
+  width: 400px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #4a4a4a;
+  color: rgb(170, 170, 170);
+  overflow: auto;
+  z-index: 2000;
+
+  &.menu-offscreen {
+    transition: left 0.4s ease-in-out, right 0.4s ease-in-out;
+
+    &.menu-anchor-left {
+      left: -100%;
+      box-shadow: 8px 0 30px $dark-grey-1;
+      border-right: solid 2px #333;
+
+      &.active {
+        left: 0;
+      }
+    }
+
+    &.menu-anchor-right {
+      right: -100%;
+      left: auto;
+      box-shadow: 0 8px 30px #333;
+      border-left: solid 2px #333;
+
+      &.active {
+        right: 0;
+      }
+    }
+  }
+
+  > * {
+    margin: 1rem;
+  }
+
+  > *:first-child {
+    margin-top: 2rem;
+  }
+
+  > *:last-child {
+    margin-bottom: 2rem;
+  }
+
+  .menu-header-title {
+    color: white;
+    font-weight: lighter;
+    text-align: center;
+  }
+
+  .menu-header-dismiss {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: inherit;
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  .menu-navigation {
+    list-style-type: none;
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
+
+    .menu-section-title > a {
+      font-weight: 200;
+      text-transform: uppercase;
+      font-size: ms(1);
+      border-bottom: solid 1px #2a2a2a;
+
+      &:hover {
+        color: $white;
+      }
+    }
+
+    li {
+      background-color: #333;
+      border-bottom: solid 1px #2a2a2a;
+
+      & > ul {
+        list-style-type: none;
+        padding: 0;
+
+        li {
+          padding-left: ms(2);
+
+          &:hover {
+            color: white;
+            cursor: pointer;
+            background-color: #3a3a3a;
+          }
+        }
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      a {
+        display: block;
+        padding: 1rem;
+        text-decoration: none;
+        color: inherit;
+      }
+    }
+  }
+}
+
+@media (max-width: $small) {
+  .menu {
+    width: 100%;
+
+    &.menu-offscreen {
+      &.menu-anchor-right,
+      &.menu-anchor-left {
+        box-shadow: none;
+      }
+    }
+  }
+}

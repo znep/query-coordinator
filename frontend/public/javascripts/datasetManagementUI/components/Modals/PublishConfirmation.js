@@ -2,11 +2,13 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ModalContent, ModalFooter } from 'socrata-components';
 
+import SocrataIcon from '../../../common/components/SocrataIcon';
 import { hideModal } from 'actions/modal';
 import { applyRevision } from 'actions/applyRevision';
-import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from 'styles/Modals/PublishConfirmation.scss';
+import ApiCallButton from 'components/ApiCallButton';
+import { APPLY_REVISION } from 'actions/apiCalls';
 import * as Selectors from '../../selectors';
+import styles from 'styles/Modals/PublishConfirmation.scss';
 
 function PublishConfirmation({ outputSchemaId, doCancel, doUpdate }) {
   return (
@@ -22,11 +24,12 @@ function PublishConfirmation({ outputSchemaId, doCancel, doUpdate }) {
           className={styles.cancelButton}>
           {I18n.common.cancel}
         </button>
-        <button
-          onClick={() => doUpdate(outputSchemaId)}
-          className={styles.mainButton}>
+        <ApiCallButton
+          additionalClassName={styles.mainButton}
+          operation={APPLY_REVISION}
+          onClick={() => doUpdate(outputSchemaId)}>
           {I18n.home_pane.publish_confirmation.button}
-        </button>
+        </ApiCallButton>
       </ModalFooter>
     </div>
   );

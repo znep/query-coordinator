@@ -1,0 +1,118 @@
+@import "variables/colors";
+@import "partials/alerts";
+@import "partials/input-groups";
+@import "partials/forms";
+@import "./css/add-filter.scss";
+@import "./css/filter-item.scss";
+@import "./css/calendar-date-filter.scss";
+@import "./css/filter-footer.scss";
+@import "./css/number-filter.scss";
+@import "./css/searchable-picklist.scss";
+@import "./css/text-filter.scss";
+
+$filter-bar-container-padding: 20px;
+
+.filter-bar-container {
+  font-size: 12px;
+  background: $light-grey-7;
+  padding: 6px $filter-bar-container-padding;
+  position: relative;
+
+  // from http://webaim.org/techniques/css/invisiblecontent
+  .hidden {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .filter-icon {
+    display: inline-block;
+    vertical-align: top;
+
+    .socrata-icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 20px;
+      margin-top: 5px;
+      color: $light-grey-1;
+    }
+  }
+
+  .add-filter-container {
+    display: inline-block;
+  }
+
+  .btn-expand-control {
+    font-size: 12px;
+    color: $light-grey-1;
+    text-decoration: underline;
+    float: right;
+    padding: 0;
+    margin-top: 6px;
+
+    &.is-hidden {
+      visibility: hidden;
+    }
+
+    &:hover, &:focus {
+      color: $dark-grey-2;
+    }
+  }
+
+  .visible-filters-container {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .collapsed-filters-container {
+    position: absolute;
+    width: 100%;
+    margin-left: -$filter-bar-container-padding;
+    margin-top: 6px;
+    padding: 2px 20px 0 20px;
+    padding-top: 2px;
+    background: $light-grey-7;
+    visibility: hidden;
+
+    .filter-bar-filter {
+      margin-bottom: 10px;
+    }
+  }
+
+  .visible-filters-container,
+  .collapsed-filter-container {
+    .filters-enter {
+      .filter-control-toggle,
+      .filter-config-toggle {
+        background-color: $alternate-3-light;
+      }
+
+      &.filters-enter-active {
+        .filter-control-toggle,
+        .filter-config-toggle {
+          background-color: $white;
+          transition: background-color 1s ease-out;
+        }
+      }
+    }
+  }
+
+  &.filter-bar-expanded {
+    .collapsed-filters-container {
+      visibility: visible;
+    }
+  }
+
+  .filter-bar-column-option {
+    font-size: 12px;
+    display: inline-flex;
+
+    .socrata-icon {
+      margin: auto;
+      margin-right: 8px;
+    }
+  }
+}

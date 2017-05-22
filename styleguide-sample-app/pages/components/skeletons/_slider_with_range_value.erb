@@ -1,0 +1,34 @@
+<div id="slider-range-value-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    let value = {
+      start: 10,
+      end: 15
+    };
+
+    const props = {
+      rangeMin: 0,
+      rangeMax: 20,
+      step: 0.1,
+      value,
+      onChange: (newValue) => {
+        // There are rounding errors thanks to floating point numbers.
+        // We'll just bump each to the nearest decimal place.
+        newValue.start = _.round(newValue.start, 2);
+        newValue.end = _.round(newValue.end, 2);
+        props.value = newValue;
+        render();
+      }
+    };
+
+    function render() {
+      ReactDOM.render(
+        <styleguide.Slider {...props} />,
+        document.getElementById('slider-range-value-container')
+      );
+    }
+
+    render();
+  });
+</script>

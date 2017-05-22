@@ -1,0 +1,52 @@
+.input-group {
+  position: relative;
+  display: flex;
+
+  .text-input {
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    flex: 1 0;
+  }
+
+  .input-group-btn {
+    position: relative;
+
+    .btn {
+      border-left: none;
+      margin-left: 0;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+
+      &.btn-lg {
+        padding: 13px 17px;
+      }
+
+      &.btn-sm {
+        padding: 11px 13px;
+      }
+
+      &.btn-xs {
+        padding: 10px 13px;
+      }
+    }
+
+    .dropdown {
+      margin-right: -0.1px;
+
+      @include default-font;
+
+      .socrata-icon-arrow-down {
+        padding-left: ms(-2);
+        padding-right: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: $small) {
+  .input-group-btn {
+    .dropdown {
+      margin-right: 0;
+    }
+  }
+}

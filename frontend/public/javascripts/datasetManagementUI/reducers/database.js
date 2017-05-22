@@ -17,15 +17,9 @@ import {
   UPDATE_FAILED,
   CREATE_TABLE,
   BATCH,
-  SET_VIEW,
-  OUTPUT_SCHEMA_UPSERT_STARTED,
-  OUTPUT_SCHEMA_UPSERT_SUCCEEDED,
-  OUTPUT_SCHEMA_UPSERT_FAILED
+  SET_VIEW
 } from '../actions/database';
 import {
-  STATUS_UPSERTING,
-  STATUS_UPSERT_FAILED,
-  STATUS_SAVED,
   STATUS_DIRTY,
   statusDirty,
   STATUS_DIRTY_IMMUTABLE,
@@ -222,33 +216,6 @@ export default function dbReducer(db = emptyDB, action) {
       return {
         ...db,
         [action.name]: {}
-      };
-
-    case OUTPUT_SCHEMA_UPSERT_STARTED:
-      return {
-        ...db,
-        'output_schemas': {
-          ...db.output_schemas,
-          __status__: STATUS_UPSERTING
-        }
-      };
-
-    case OUTPUT_SCHEMA_UPSERT_SUCCEEDED:
-      return {
-        ...db,
-        'output_schemas': {
-          ...db.output_schemas,
-          __status__: STATUS_SAVED
-        }
-      };
-
-    case OUTPUT_SCHEMA_UPSERT_FAILED:
-      return {
-        ...db,
-        'output_schemas': {
-          ...db.output_schemas,
-          __status__: STATUS_UPSERT_FAILED
-        }
       };
 
     default:

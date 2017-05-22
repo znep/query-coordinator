@@ -7,7 +7,7 @@ import ReadyToImportConnected, { ReadyToImport } from 'components/ReadyToImport'
 describe('components/ReadyToImport', () => {
   const defaultProps = {
     "upload": {
-      "inserted_at": "2017-04-19T00:45:21.212Z",
+      "created_at": "2017-04-19T00:45:21.212Z",
       "id": 263,
       "finished_at": "2017-04-19T00:45:21.000Z",
       "filename": "baby_crimes.csv",
@@ -44,7 +44,7 @@ describe('components/ReadyToImport', () => {
         "savedAt": "ON_SERVER"
       },
       "error_count": 9,
-      "inserted_at": "2017-04-19T01:12:51.530Z",
+      "created_at": "2017-04-19T01:12:51.530Z",
       "created_by": {
         "user_id": "tugg-ikce",
         "email": "brandon.webster@socrata.com",

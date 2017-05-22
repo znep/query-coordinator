@@ -1,35 +1,37 @@
-import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import _ from 'lodash';
 import { Simulate } from 'react-addons-test-utils';
 import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
 import ShowOutputSchema from 'components/ShowOutputSchema';
-import { ShowOutputSchema as ShowOutputSchemaUnConnected } from 'components/ShowOutputSchema';
-import * as Selectors from 'selectors';
 import {
   upsertFromServer, upsertMultipleFromServer, updateFromServer
 } from 'actions/database';
-import { normal } from 'lib/displayState';
+import {
+  apiCallStarted, apiCallSucceeded,
+  LOAD_ROWS
+} from 'actions/apiCalls';
+import {
+  normal, columnErrors, rowErrors
+} from 'lib/displayState';
 
-const missingProps = {
-  numLoadsInProgress: 0,
-  displayState: {
-    "type": "NORMAL",
-    "pageNo": 1,
-    "outputSchemaId": 18
-  },
-  routing: {
-    "pathname": "/dataset/-kjh-kjh/e5t3-a5v3/revisions/0/uploads/263/schemas/1751/output/18",
-    "search": "",
-    "hash": "",
-    "action": "POP",
-    "key": null,
-    "query": {}
-  }
-};
+function getStoreWithLoadRowsCall() {
+  const store = getStoreWithOutputSchema();
+  const callId = '18';
+  store.dispatch(apiCallStarted(callId, {
+    operation: LOAD_ROWS,
+    params: { displayState: normal(1, 18) }
+  }));
+  store.dispatch(apiCallSucceeded(callId));
+  store.dispatch(updateFromServer('input_schemas', {
+    id: 4,
+    total_rows: 3
+  }));
+  return store;
+}
 
 /* eslint-disable new-cap */
 describe('components/ShowOutputSchema', () => {
+
   const defaultProps = {
     params: {
       uploadId: '5',
@@ -45,15 +47,14 @@ describe('components/ShowOutputSchema', () => {
     location: {},
     urlParams: {
       outputSchemaId: '18'
-    },
-    ...missingProps
+    }
   };
 
   it('renders a table without data', () => {
-    const store = getStoreWithOutputSchema();
+    const store = getStoreWithLoadRowsCall();
     const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
     expect(_.map(element.querySelectorAll('.colName'), 'innerText')).to.eql(['arrest', 'block']);
-    expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
+    expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['text', 'text']);
     expect(_.map(element.querySelectorAll('.colErrors'), 'innerText')).to.eql([
       I18n.show_output_schema.column_header.scanning,
       I18n.show_output_schema.column_header.scanning
@@ -61,11 +62,7 @@ describe('components/ShowOutputSchema', () => {
   });
 
   it('renders a table with data', () => {
-    const store = getStoreWithOutputSchema();
-    store.dispatch(updateFromServer('input_schemas', {
-      id: 4,
-      total_rows: 3
-    }));
+    const store = getStoreWithLoadRowsCall();
     store.dispatch(upsertMultipleFromServer('transform_1', [
       { id: 0, ok: 'foo' },
       { id: 1, error: { message: 'some transform error', inputs: { arrest: { ok: 'bar' } } } },
@@ -103,7 +100,7 @@ describe('components/ShowOutputSchema', () => {
     describe('link', () => {
 
       it('shows up when there are row errors, and links to row errors mode', () => {
-        const store = getStoreWithOutputSchema();
+        const store = getStoreWithLoadRowsCall();
         store.dispatch(updateFromServer('input_schemas', {
           id: 4,
           num_row_errors: 3
@@ -113,7 +110,7 @@ describe('components/ShowOutputSchema', () => {
       });
 
       it('doesn\'t show up when there are no row errors', () => {
-        const store = getStoreWithOutputSchema();
+        const store = getStoreWithLoadRowsCall();
         const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
         assert.isNull(element.querySelector('malformed-rows-status-text'));
       });
@@ -121,7 +118,7 @@ describe('components/ShowOutputSchema', () => {
     });
 
     it('renders row errors inline with data in normal display state', () => {
-      const store = getStoreWithOutputSchema();
+      const store = getStoreWithLoadRowsCall();
       store.dispatch(updateFromServer('input_schemas', {
         id: 4,
         num_row_errors: 1
@@ -154,6 +151,12 @@ describe('components/ShowOutputSchema', () => {
 
     it('renders only row errors when in the /row_errors display state', () => {
       const store = getStoreWithOutputSchema();
+      const callId = '18';
+      store.dispatch(apiCallStarted(callId, {
+        operation: LOAD_ROWS,
+        params: { displayState: rowErrors(1, 18) }
+      }));
+      store.dispatch(apiCallSucceeded(callId));
       store.dispatch(updateFromServer('input_schemas', {
         id: 4,
         num_row_errors: 1
@@ -200,7 +203,7 @@ describe('components/ShowOutputSchema', () => {
   describe('error counts and flyouts', () => {
 
     it('properly render when the upload is done', () => {
-      const store = getStoreWithOutputSchema();
+      const store = getStoreWithLoadRowsCall();
       store.dispatch(updateFromServer('input_schemas', {
         id: 4,
         total_rows: 3
@@ -219,7 +222,7 @@ describe('components/ShowOutputSchema', () => {
 
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
       expect(_.map(element.querySelectorAll('.colName'), 'innerText')).to.eql(['arrest', 'block']);
-      expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
+      expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['text', 'text']);
       expect(_.map(element.querySelectorAll('.statusText'), 'innerText')).to.eql([
         '1' + I18n.show_output_schema.column_header.error_exists,
         '42' + I18n.show_output_schema.column_header.errors_exist
@@ -243,7 +246,7 @@ describe('components/ShowOutputSchema', () => {
 
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
       expect(_.map(element.querySelectorAll('.colName'), 'innerText')).to.eql(['arrest', 'block']);
-      expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['SoQLText', 'SoQLText']);
+      expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['text', 'text']);
       expect(_.map(element.querySelectorAll('.statusText'), 'innerText')).to.eql([
         '1' + SubI18n.error_exists_scanning,
         '42' + SubI18n.errors_exist_scanning
@@ -267,7 +270,7 @@ describe('components/ShowOutputSchema', () => {
   describe('total row count', () => {
 
     it('shows the row count before the file has finished uploading', () => {
-      const store = getStoreWithOutputSchema();
+      const store = getStoreWithLoadRowsCall();
       store.dispatch(updateFromServer('input_schemas', {
         id: 4,
         total_rows: null // this is set to 50 in the mocks (useful for other tests); have to null it out
@@ -285,7 +288,7 @@ describe('components/ShowOutputSchema', () => {
     });
 
     it('shows the row count when the file has finished uploading', () => {
-      const store = getStoreWithOutputSchema();
+      const store = getStoreWithLoadRowsCall();
       store.dispatch(updateFromServer('input_schemas', {
         id: 4,
         total_rows: 50
@@ -299,13 +302,13 @@ describe('components/ShowOutputSchema', () => {
   describe('ReadyToImport indicator', () => {
 
     it('isn\'t shown when the file is still transforming', () => {
-      const store = getStoreWithOutputSchema();
+      const store = getStoreWithLoadRowsCall();
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
       expect(element.querySelector('.readyToImport')).to.equal(null);
     });
 
     it('is shown when the file is done transforming', () => {
-      const store = getStoreWithOutputSchema();
+      const store = getStoreWithLoadRowsCall();
       store.dispatch(updateFromServer('input_schemas', {
         id: 4,
         total_rows: 42
@@ -332,7 +335,7 @@ describe('components/ShowOutputSchema', () => {
     describe('export errors button', () => {
 
       it('is enabled and has the correct link when there are errors', () => {
-        const store = getStoreWithOutputSchema();
+        const store = getStoreWithLoadRowsCall();
         store.dispatch(updateFromServer('input_schemas', {
           id: 4,
           total_rows: 42
@@ -357,7 +360,7 @@ describe('components/ShowOutputSchema', () => {
       });
 
       it('is greyed out when there are no errors', () => {
-        const store = getStoreWithOutputSchema();
+        const store = getStoreWithLoadRowsCall();
         store.dispatch(updateFromServer('input_schemas', {
           id: 4,
           total_rows: 42

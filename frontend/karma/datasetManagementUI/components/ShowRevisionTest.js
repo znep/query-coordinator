@@ -90,7 +90,7 @@ describe('components/ShowRevision', () => {
     }));
     store.dispatch(upsertFromServer('transforms', {
       id: 620,
-      output_soql_type: "SoQLText"
+      output_soql_type: "text"
     }));
 
     const element = renderComponentWithStore(ShowRevision, PROPS, store);
@@ -123,7 +123,7 @@ describe('components/ShowRevision', () => {
     }));
     store.dispatch(upsertFromServer('transforms', {
       id: 620,
-      output_soql_type: "SoQLText"
+      output_soql_type: "text"
     }));
 
     const element = renderComponentWithStore(ShowRevision, PROPS, store);
@@ -232,7 +232,7 @@ describe('components/ShowRevision', () => {
     }));
     store.dispatch(upsertFromServer('transforms', {
       id: 620,
-      output_soql_type: "SoQLText"
+      output_soql_type: "text"
     }));
     store.dispatch(upsertFromServer('upsert_jobs', {
       id: 620,

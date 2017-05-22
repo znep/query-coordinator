@@ -10,7 +10,7 @@ const SubI18n = I18n.show_output_schema.ready_to_import;
 
 const ErrorButton = ({ disabled }) =>
   <button className={styles.errorsBtn} disabled={disabled}>
-    {I18n.export_errors}
+    {I18n.export_errors}{' '}
     <SocrataIcon name="download" />
   </button>;
 

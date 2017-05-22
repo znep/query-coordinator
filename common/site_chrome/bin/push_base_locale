@@ -41,5 +41,10 @@ confirm () {
 }
 
 if [[ ${yflag} == 'true' ]] || confirm "Would you really like to push your english locale file? [y/N]" ; then
-  localeapp push ${PWD}/config/locales/en.yml
+  if [ -z $SITE_CHROME_LOCALEAPP_API_KEY ]; then
+    echo "SITE_CHROME_LOCALEAPP_API_KEY is required to run this script."
+    exit 1
+  else
+    LOCALEAPP_API_KEY=$SITE_CHROME_LOCALEAPP_API_KEY localeapp push ${PWD}/config/locales/en.yml
+  fi
 fi

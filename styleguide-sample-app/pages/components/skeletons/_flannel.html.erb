@@ -1,0 +1,81 @@
+<div id="btn-flannel-container"></div>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    let btn;
+
+    const {
+      Flannel,
+      FlannelHeader,
+      FlannelContent,
+      FlannelFooter,
+      SocrataIcon
+    } = styleguide;
+
+    const title = 'Access this Dataset via SODA API';
+
+    const buttonProps = {
+     className: "btn btn-primary",
+     ref: (ref) => btn = ref,
+     onClick: renderFlannel,
+     'aria-haspopup': true,
+     'aria-owns': 'flannel-example'
+    };
+
+    const props = {
+      id: 'flannel-example',
+      title,
+      target: () => btn,
+      isOpen: false,
+      onDismiss: closeFlannel
+    };
+
+    const headerProps = {
+      title,
+      onDismiss: closeFlannel
+    };
+
+    function renderButton() {
+      ReactDOM.render(
+        <div>
+          <button {...buttonProps}>Click me!</button>
+          <div id="flannel-container" />
+        </div>,
+        document.getElementById('btn-flannel-container')
+      );
+    }
+
+    function renderFlannel() {
+      ReactDOM.render(
+        <Flannel {...props}>
+          <FlannelHeader {...headerProps} />
+          <FlannelContent>
+            <p>The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data.</p>
+            <div style={{marginBottom: '10px'}}>
+              <div className="btn-group">
+                <button className="btn btn-default"><SocrataIcon name="copy-document" /> API Docs</button>
+                <button className="btn btn-default"><SocrataIcon name="settings" /> Developer Portal</button>
+              </div>
+            </div>
+            <form>
+              <label className="block-label">API Endpoint</label>
+              <span className="input-group">
+                <input type="text" className="text-input" defaultValue="https://cookies.com" />
+                <span className="input-group-btn">
+                  <button className="btn btn-primary">Copy</button>
+                </span>
+              </span>
+            </form>
+          </FlannelContent>
+        </Flannel>,
+        document.getElementById('flannel-container')
+      );
+    }
+
+    function closeFlannel() {
+      ReactDOM.unmountComponentAtNode(document.getElementById('flannel-container'));
+    }
+
+    renderButton();
+  });
+</script>

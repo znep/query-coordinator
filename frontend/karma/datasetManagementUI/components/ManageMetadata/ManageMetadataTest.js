@@ -125,14 +125,14 @@ describe('components/ManageMetadata', () => {
     };
 
     // rather than test save funcitonality here, just test that it passes the correct
-    // data; test saving behavior in SaveButton tests
+    // data; test saving behavior in ApiCallButton tests
     it('passes the correct prop to SaveButton when form isn\'t dirty', () => {
       const component = shallow(<ManageMetadata {...props}/>);
 
-      assert.equal(component.find('SaveButton').props().onSaveClick, props.onDismiss);
+      assert.equal(component.find('Connect(ApiCallButton)').props().onClick, props.onDismiss);
     });
 
-    it('passes the correct prop to SaveButton when form is dirty', () => {
+    it('passes the correct prop to ApiCallButton when form is dirty', () => {
       const dirtyView = {
         ...defaultProps.views[defaultProps.fourfour],
         isDirty: {
@@ -149,7 +149,7 @@ describe('components/ManageMetadata', () => {
 
       const component = shallow(<ManageMetadata {...dirtyProps} />);
 
-      assert.equal(component.find('SaveButton').props().onSaveClick, props.onSaveDataset);
+      assert.equal(component.find('Connect(ApiCallButton)').props().onClick, props.onSaveDataset);
     });
   });
 });

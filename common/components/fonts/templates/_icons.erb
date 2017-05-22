@@ -1,0 +1,8 @@
+<h2 class="h6">
+  <span class="socrata-icon-eye"></span>con Font
+</h2>
+
+<ul class="blockgrid">
+  <% _.each(glyphs, function(glyph) { %><li class="icon-sample"><div class="preview-glyphs"><i id="<%= className %>-<%= glyph.name %>" class="<%= className %>-<%= glyph.name %>"></i></div><div class="usage"><input class="class" type="text" readonly="readonly" onClick="this.select();" value="<%= className %>-<%= glyph.name %>" /></div></li>
+  <% }); %>
+</ul>

@@ -48,6 +48,11 @@ RUN ${TIMECMD} n 6.9.1
 COPY storyteller/Gemfile* /tmp/
 COPY storyteller/.ruby-version /tmp/
 COPY storyteller/vendor /tmp/vendor
+
+# Copy site_chrome to root to bundle install successfully.
+RUN mkdir /common
+COPY common/site_chrome /common/site_chrome
+
 WORKDIR /tmp
 RUN bundle config repo.socrata.com "${ARTIFACTORY_USER}":"${ARTIFACTORY_PASSWORD}"
 RUN ${TIMECMD} bundle install

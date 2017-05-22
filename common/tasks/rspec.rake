@@ -1,12 +1,14 @@
 namespace 'rspec' do
   task :deps do
-    bundle('site_chrome', 'check') do |ok, res|
-      bundle('site_chrome', 'install') unless ok
+    bundle('check') do |ok, res|
+      bundle('install') unless ok
     end
   end
 
   task :runonce do
-    rspec 'site_chrome'
+    rspec('site_chrome') do |ok, res|
+      raise 'Site chrome rspec tests failed' unless ok
+    end
   end
 
   task :watch do

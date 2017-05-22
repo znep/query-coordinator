@@ -533,7 +533,7 @@ const db = {
       id: 327,
       fourfour: 'acpb-icis',
       revision_seq: 0,
-      inserted_at: '2017-05-02T21:33:52.415Z',
+      created_at: '2017-05-02T21:33:52.415Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -547,7 +547,7 @@ const db = {
   },
   uploads: {
     '312': {
-      inserted_at: '2017-05-02T21:34:08.364Z',
+      created_at: '2017-05-02T21:34:08.364Z',
       id: 312,
       finished_at: '2017-05-02T21:34:09.000Z',
       filename: 'baby_crimes.csv',
@@ -581,7 +581,7 @@ const db = {
       id: 576,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:34:09.309Z',
+      created_at: '2017-05-02T21:34:09.309Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -596,7 +596,7 @@ const db = {
       id: 577,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:34:31.055Z',
+      created_at: '2017-05-02T21:34:31.055Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -611,7 +611,7 @@ const db = {
       id: 578,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:35:11.309Z',
+      created_at: '2017-05-02T21:35:11.309Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -626,7 +626,7 @@ const db = {
       id: 579,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:35:18.441Z',
+      created_at: '2017-05-02T21:35:18.441Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -641,7 +641,7 @@ const db = {
       id: 580,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:38:40.968Z',
+      created_at: '2017-05-02T21:38:40.968Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -656,7 +656,7 @@ const db = {
       id: 581,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:39:08.358Z',
+      created_at: '2017-05-02T21:39:08.358Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -671,7 +671,7 @@ const db = {
       id: 582,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:39:26.535Z',
+      created_at: '2017-05-02T21:39:26.535Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -686,7 +686,7 @@ const db = {
       id: 583,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:39:39.102Z',
+      created_at: '2017-05-02T21:39:39.102Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -701,7 +701,7 @@ const db = {
       id: 584,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:42:31.134Z',
+      created_at: '2017-05-02T21:42:31.134Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -716,7 +716,7 @@ const db = {
       id: 585,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:43:22.621Z',
+      created_at: '2017-05-02T21:43:22.621Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -731,7 +731,7 @@ const db = {
       id: 586,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:43:31.202Z',
+      created_at: '2017-05-02T21:43:31.202Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -746,7 +746,7 @@ const db = {
       id: 587,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:45:38.973Z',
+      created_at: '2017-05-02T21:45:38.973Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -761,7 +761,7 @@ const db = {
       id: 588,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:46:21.790Z',
+      created_at: '2017-05-02T21:46:21.790Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -776,7 +776,7 @@ const db = {
       id: 589,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:46:44.422Z',
+      created_at: '2017-05-02T21:46:44.422Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -791,7 +791,7 @@ const db = {
       id: 590,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:47:14.717Z',
+      created_at: '2017-05-02T21:47:14.717Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -806,7 +806,7 @@ const db = {
       id: 591,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:48:25.940Z',
+      created_at: '2017-05-02T21:48:25.940Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -821,7 +821,7 @@ const db = {
       id: 592,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:48:35.111Z',
+      created_at: '2017-05-02T21:48:35.111Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -836,7 +836,7 @@ const db = {
       id: 593,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:48:40.559Z',
+      created_at: '2017-05-02T21:48:40.559Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -851,7 +851,7 @@ const db = {
       id: 594,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:48:44.546Z',
+      created_at: '2017-05-02T21:48:44.546Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -866,7 +866,7 @@ const db = {
       id: 595,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:49:17.878Z',
+      created_at: '2017-05-02T21:49:17.878Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -881,7 +881,7 @@ const db = {
       id: 596,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:49:24.392Z',
+      created_at: '2017-05-02T21:49:24.392Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -896,7 +896,7 @@ const db = {
       id: 597,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T21:49:35.205Z',
+      created_at: '2017-05-02T21:49:35.205Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -911,7 +911,7 @@ const db = {
       id: 598,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:06:55.111Z',
+      created_at: '2017-05-02T22:06:55.111Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -926,7 +926,7 @@ const db = {
       id: 599,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:11:44.921Z',
+      created_at: '2017-05-02T22:11:44.921Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -941,7 +941,7 @@ const db = {
       id: 600,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:11:52.790Z',
+      created_at: '2017-05-02T22:11:52.790Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -956,7 +956,7 @@ const db = {
       id: 601,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:38:14.632Z',
+      created_at: '2017-05-02T22:38:14.632Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -971,7 +971,7 @@ const db = {
       id: 602,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:38:29.866Z',
+      created_at: '2017-05-02T22:38:29.866Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -986,7 +986,7 @@ const db = {
       id: 603,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:38:47.191Z',
+      created_at: '2017-05-02T22:38:47.191Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1001,7 +1001,7 @@ const db = {
       id: 604,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:38:54.497Z',
+      created_at: '2017-05-02T22:38:54.497Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1016,7 +1016,7 @@ const db = {
       id: 605,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:40:14.210Z',
+      created_at: '2017-05-02T22:40:14.210Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1031,7 +1031,7 @@ const db = {
       id: 606,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:40:53.465Z',
+      created_at: '2017-05-02T22:40:53.465Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1046,7 +1046,7 @@ const db = {
       id: 607,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:41:04.500Z',
+      created_at: '2017-05-02T22:41:04.500Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1061,7 +1061,7 @@ const db = {
       id: 608,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:42:19.832Z',
+      created_at: '2017-05-02T22:42:19.832Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1076,7 +1076,7 @@ const db = {
       id: 609,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:42:43.957Z',
+      created_at: '2017-05-02T22:42:43.957Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1091,7 +1091,7 @@ const db = {
       id: 610,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:43:36.079Z',
+      created_at: '2017-05-02T22:43:36.079Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1106,7 +1106,7 @@ const db = {
       id: 611,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:43:45.770Z',
+      created_at: '2017-05-02T22:43:45.770Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1121,7 +1121,7 @@ const db = {
       id: 612,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:44:01.054Z',
+      created_at: '2017-05-02T22:44:01.054Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1136,7 +1136,7 @@ const db = {
       id: 613,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T22:44:22.575Z',
+      created_at: '2017-05-02T22:44:22.575Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1151,7 +1151,7 @@ const db = {
       id: 614,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-02T23:08:26.628Z',
+      created_at: '2017-05-02T23:08:26.628Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1166,7 +1166,7 @@ const db = {
       id: 615,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-03T00:16:30.866Z',
+      created_at: '2017-05-03T00:16:30.866Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1181,7 +1181,7 @@ const db = {
       id: 616,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-03T00:16:43.352Z',
+      created_at: '2017-05-03T00:16:43.352Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1196,7 +1196,7 @@ const db = {
       id: 617,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-03T00:16:53.830Z',
+      created_at: '2017-05-03T00:16:53.830Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1211,7 +1211,7 @@ const db = {
       id: 618,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-03T00:17:09.510Z',
+      created_at: '2017-05-03T00:17:09.510Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1226,7 +1226,7 @@ const db = {
       id: 619,
       input_schema_id: 1801,
       error_count: 0,
-      inserted_at: '2017-05-03T00:19:34.581Z',
+      created_at: '2017-05-03T00:19:34.581Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1244,7 +1244,7 @@ const db = {
         type: 'SAVED',
         savedAt: 'ON_SERVER'
       },
-      inserted_at: '2017-05-03T16:25:02.098Z',
+      created_at: '2017-05-03T16:25:02.098Z',
       error_count: 0,
       created_by: {
         user_id: 'tugg-ikce',
@@ -1260,7 +1260,7 @@ const db = {
         savedAt: 'ON_SERVER'
       },
       error_count: 0,
-      inserted_at: '2017-05-03T16:25:12.843Z',
+      created_at: '2017-05-03T16:25:12.843Z',
       created_by: {
         user_id: 'tugg-ikce',
         email: 'brandon.webster@socrata.com',
@@ -1271,12 +1271,12 @@ const db = {
   },
   input_columns: {
     '7989': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 0,
       input_schema_id: 1801,
       id: 7989,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLNumber',
+      guessed_soql_type: 'number',
       field_name: 'id',
       __status__: {
         type: 'SAVED',
@@ -1284,12 +1284,12 @@ const db = {
       }
     },
     '7990': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 1,
       input_schema_id: 1801,
       id: 7990,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'case_number',
       __status__: {
         type: 'SAVED',
@@ -1297,12 +1297,12 @@ const db = {
       }
     },
     '7991': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 2,
       input_schema_id: 1801,
       id: 7991,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLFloatingTimestamp',
+      guessed_soql_type: 'calendar_date',
       field_name: 'date',
       __status__: {
         type: 'SAVED',
@@ -1310,12 +1310,12 @@ const db = {
       }
     },
     '7992': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 3,
       input_schema_id: 1801,
       id: 7992,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'block',
       __status__: {
         type: 'SAVED',
@@ -1323,12 +1323,12 @@ const db = {
       }
     },
     '7993': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 4,
       input_schema_id: 1801,
       id: 7993,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'iucr',
       __status__: {
         type: 'SAVED',
@@ -1336,12 +1336,12 @@ const db = {
       }
     },
     '7994': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 5,
       input_schema_id: 1801,
       id: 7994,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'primary_type',
       __status__: {
         type: 'SAVED',
@@ -1349,12 +1349,12 @@ const db = {
       }
     },
     '7995': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 6,
       input_schema_id: 1801,
       id: 7995,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'description',
       __status__: {
         type: 'SAVED',
@@ -1362,12 +1362,12 @@ const db = {
       }
     },
     '7996': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 7,
       input_schema_id: 1801,
       id: 7996,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'location_description',
       __status__: {
         type: 'SAVED',
@@ -1375,12 +1375,12 @@ const db = {
       }
     },
     '7997': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 8,
       input_schema_id: 1801,
       id: 7997,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLBoolean',
+      guessed_soql_type: 'checkbox',
       field_name: 'arrest',
       __status__: {
         type: 'SAVED',
@@ -1388,12 +1388,12 @@ const db = {
       }
     },
     '7998': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 9,
       input_schema_id: 1801,
       id: 7998,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLBoolean',
+      guessed_soql_type: 'checkbox',
       field_name: 'domestic',
       __status__: {
         type: 'SAVED',
@@ -1401,12 +1401,12 @@ const db = {
       }
     },
     '7999': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 10,
       input_schema_id: 1801,
       id: 7999,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLNumber',
+      guessed_soql_type: 'number',
       field_name: 'beat',
       __status__: {
         type: 'SAVED',
@@ -1414,12 +1414,12 @@ const db = {
       }
     },
     '8000': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 11,
       input_schema_id: 1801,
       id: 8000,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLNumber',
+      guessed_soql_type: 'number',
       field_name: 'district',
       __status__: {
         type: 'SAVED',
@@ -1427,12 +1427,12 @@ const db = {
       }
     },
     '8001': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 12,
       input_schema_id: 1801,
       id: 8001,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_12',
       __status__: {
         type: 'SAVED',
@@ -1440,12 +1440,12 @@ const db = {
       }
     },
     '8002': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 13,
       input_schema_id: 1801,
       id: 8002,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_13',
       __status__: {
         type: 'SAVED',
@@ -1453,12 +1453,12 @@ const db = {
       }
     },
     '8003': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 14,
       input_schema_id: 1801,
       id: 8003,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_14',
       __status__: {
         type: 'SAVED',
@@ -1466,12 +1466,12 @@ const db = {
       }
     },
     '8004': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 15,
       input_schema_id: 1801,
       id: 8004,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_15',
       __status__: {
         type: 'SAVED',
@@ -1479,12 +1479,12 @@ const db = {
       }
     },
     '8005': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 16,
       input_schema_id: 1801,
       id: 8005,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_16',
       __status__: {
         type: 'SAVED',
@@ -1492,12 +1492,12 @@ const db = {
       }
     },
     '8006': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 17,
       input_schema_id: 1801,
       id: 8006,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_17',
       __status__: {
         type: 'SAVED',
@@ -1505,12 +1505,12 @@ const db = {
       }
     },
     '8007': {
-      soql_type: 'SoQLText',
+      soql_type: 'text',
       position: 18,
       input_schema_id: 1801,
       id: 8007,
       guessed_subtypes: [],
-      guessed_soql_type: 'SoQLText',
+      guessed_soql_type: 'text',
       field_name: 'column_18',
       __status__: {
         type: 'SAVED',
@@ -9465,7 +9465,7 @@ const db = {
         }
       ],
       transform_expr: 'to_number(`id`)',
-      output_soql_type: 'SoQLNumber',
+      output_soql_type: 'number',
       id: 7883,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9481,7 +9481,7 @@ const db = {
         }
       ],
       transform_expr: '`case_number`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7884,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9497,7 +9497,7 @@ const db = {
         }
       ],
       transform_expr: 'to_floating_timestamp(`date`)',
-      output_soql_type: 'SoQLFloatingTimestamp',
+      output_soql_type: 'calendar_date',
       id: 7885,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9513,7 +9513,7 @@ const db = {
         }
       ],
       transform_expr: '`block`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7886,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9529,7 +9529,7 @@ const db = {
         }
       ],
       transform_expr: '`iucr`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7887,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9545,7 +9545,7 @@ const db = {
         }
       ],
       transform_expr: '`primary_type`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7888,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9561,7 +9561,7 @@ const db = {
         }
       ],
       transform_expr: '`description`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7889,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9577,7 +9577,7 @@ const db = {
         }
       ],
       transform_expr: '`location_description`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7890,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9593,7 +9593,7 @@ const db = {
         }
       ],
       transform_expr: 'to_boolean(`arrest`)',
-      output_soql_type: 'SoQLBoolean',
+      output_soql_type: 'checkbox',
       id: 7891,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9609,7 +9609,7 @@ const db = {
         }
       ],
       transform_expr: 'to_boolean(`domestic`)',
-      output_soql_type: 'SoQLBoolean',
+      output_soql_type: 'checkbox',
       id: 7892,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9625,7 +9625,7 @@ const db = {
         }
       ],
       transform_expr: 'to_number(`beat`)',
-      output_soql_type: 'SoQLNumber',
+      output_soql_type: 'number',
       id: 7893,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9641,7 +9641,7 @@ const db = {
         }
       ],
       transform_expr: 'to_number(`district`)',
-      output_soql_type: 'SoQLNumber',
+      output_soql_type: 'number',
       id: 7894,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9657,7 +9657,7 @@ const db = {
         }
       ],
       transform_expr: '`column_12`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7895,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9673,7 +9673,7 @@ const db = {
         }
       ],
       transform_expr: '`column_13`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7896,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9689,7 +9689,7 @@ const db = {
         }
       ],
       transform_expr: '`column_14`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7897,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9705,7 +9705,7 @@ const db = {
         }
       ],
       transform_expr: '`column_15`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7898,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9721,7 +9721,7 @@ const db = {
         }
       ],
       transform_expr: '`column_16`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7899,
       completed_at: '2017-05-02T21:34:09',
       __status__: {
@@ -9737,7 +9737,7 @@ const db = {
         }
       ],
       transform_expr: '`column_17`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7900,
       completed_at: '2017-05-02T21:34:10',
       __status__: {
@@ -9753,7 +9753,7 @@ const db = {
         }
       ],
       transform_expr: '`column_18`',
-      output_soql_type: 'SoQLText',
+      output_soql_type: 'text',
       id: 7901,
       completed_at: '2017-05-02T21:34:10',
       __status__: {

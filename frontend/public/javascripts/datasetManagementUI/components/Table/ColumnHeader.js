@@ -87,7 +87,7 @@ class ColumnHeader extends Component {
   }
 
   columnType() {
-    return this.props.column.transform.output_soql_type;
+    return soqlProperties[this.props.column.transform.output_soql_type].canonicalName;
   }
 
   icon(isDisabled) {
@@ -106,7 +106,7 @@ class ColumnHeader extends Component {
     const types = soqlTypes.map((type) => ({
       humanName: Translations.type_display_names[type],
       systemName: type,
-      selectable: soqlProperties[type].conversionTarget
+      selectable: !!soqlProperties[type].conversionFunction
     }));
 
     const orderedTypes = _.sortBy(
@@ -168,7 +168,7 @@ class ColumnHeader extends Component {
           }
           // Not a real type-- simply to communicate to users that this type is coming soon!
           // TODO: remove once we support location columns
-          <option key="SoQLLocation" value="SoQLLocation" disabled="true">
+          <option key="location" value="location" disabled="true">
             {Translations.type_display_names.location_coming_soon}
           </option>
         </select>

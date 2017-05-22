@@ -1,0 +1,145 @@
+html.modal-open,
+body.modal-open {
+  overflow: hidden;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  z-index: 3000;
+
+  &.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  &.modal-hidden {
+    display: none;
+  }
+}
+
+.modal-container {
+  margin: 125px auto 50px;
+  max-width: 500px;
+  background-color: #fff;
+  border-radius: 1px;
+  padding: 1rem;
+  box-shadow: 0 0 10px -4px #555;
+  z-index: 1000;
+
+  > * {
+    margin-bottom: 20px;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .modal-full & {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: auto;
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+
+    > * {
+      margin-bottom: 0;
+    }
+  }
+
+  @media (max-width: $small) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+  }
+}
+
+.modal-header {
+  position: relative;
+
+  .modal-header-title {
+    margin: 0;
+  }
+
+  .modal-full & {
+    min-height: 52px;
+    padding: ms(-2) ms(2);
+    border-bottom: 1px $light-grey-3;
+    box-shadow: 0 4px 6px -2px $light-grey-3;
+
+    .modal-header-title {
+      @extend .h5;
+    }
+  }
+}
+
+.modal-header-dismiss {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0;
+  font-size: ms(-1);
+  color: $light-grey-1;
+
+  &:hover {
+    color: $dark-grey-1;
+  }
+
+  .modal-full & {
+    font-size: ms(3);
+    top: ms(-4);
+    right: ms(-4);
+  }
+}
+
+.modal-dismiss {
+  font-size: 1.25rem;
+  text-align: right;
+}
+
+.modal-content {
+  max-height: 400px;
+  overflow-y: auto;
+
+  .modal-full & {
+    max-height: 100vh;
+    margin-bottom: 63px;
+    padding: ms(2);
+  }
+
+  *:first-child {
+    margin-top: 0;
+  }
+}
+
+.modal-full .modal-footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  padding: ms(-2);
+  border-top: 1px solid $light-grey-3;
+  background-color: $light-grey-7;
+}
+
+.modal-footer-actions {
+  text-align: right;
+}
+
+.modal-actions {
+  text-align: right;
+
+  .btn {
+    margin-right: 6px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

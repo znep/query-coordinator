@@ -18,7 +18,10 @@ describe('reducers/database', () => {
 
   it('handles API_CALL_STARTED', () => {
     const initialState = apiCallsReducer(undefined, {});
-    assert.deepEqual(apiCallsReducer(initialState, apiCallStarted(0, call)), {
+    const result = apiCallsReducer(initialState, apiCallStarted(0, call));
+    assert.ok(result[0].startedAt);
+    delete result[0].startedAt;
+    assert.deepEqual(result, {
       0: {
         id: 0,
         operation: call.operation,
@@ -37,7 +40,10 @@ describe('reducers/database', () => {
         status: 'STATUS_CALL_IN_PROGRESS'
       }
     };
-    assert.deepEqual(apiCallsReducer(initialState, apiCallSucceeded(0)), {
+    const result = apiCallsReducer(initialState, apiCallSucceeded(0));
+    assert.ok(result[0].succeededAt);
+    delete result[0].succeededAt;
+    assert.deepEqual(result, {
       0: {
         id: 0,
         operation: call.operation,
@@ -56,7 +62,10 @@ describe('reducers/database', () => {
         status: 'STATUS_CALL_IN_PROGRESS'
       }
     };
-    assert.deepEqual(apiCallsReducer(initialState, apiCallFailed(0, 'some-error')), {
+    const result = apiCallsReducer(initialState, apiCallFailed(0, 'some-error'));
+    assert.ok(result[0].failedAt);
+    delete result[0].failedAt;
+    assert.deepEqual(result, {
       0: {
         id: 0,
         operation: call.operation,

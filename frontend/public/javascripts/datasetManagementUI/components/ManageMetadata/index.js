@@ -3,11 +3,18 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
 
-import { dismissMetadataPane, saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
+import {
+  dismissMetadataPane,
+  saveDatasetMetadata,
+  saveColumnMetadata
+} from 'actions/manageMetadata';
 import { hideFlashMessage } from 'actions/flashMessage';
 import { edit } from 'actions/database';
-import { STATUS_UPDATING, STATUS_UPSERTING } from 'lib/database/statuses';
-import SaveButton from 'components/ManageMetadata/SaveButton';
+import {
+  SAVE_DATASET_METADATA,
+  SAVE_COLUMN_METADATA
+} from 'actions/apiCalls';
+import ApiCallButton from 'components/ApiCallButton';
 import MetadataContent from 'components/ManageMetadata/MetadataContent';
 import styles from 'styles/ManageMetadata/ManageMetadata.scss';
 
@@ -20,8 +27,7 @@ export function ManageMetadata(props) {
     onSaveDataset,
     onSaveCol,
     columnsExist,
-    onSidebarTabClick,
-    outputSchemaStatus
+    onSidebarTabClick
   } = props;
 
   const view = _.get(views, fourfour, {});
@@ -41,16 +47,17 @@ export function ManageMetadata(props) {
   const onDatasetTab = path === 'metadata/dataset';
 
   let saveBtnProps;
-
   if (onDatasetTab) {
     saveBtnProps = {
-      isSaving: view.__status__ && view.__status__.type === STATUS_UPDATING,
-      onSaveClick: _.get(view, 'isDirty.form', false) ? onSaveDataset : onDismiss
+      operation: SAVE_DATASET_METADATA,
+      params: {},
+      onClick: _.get(view, 'isDirty.form', false) ? onSaveDataset : onDismiss
     };
   } else {
     saveBtnProps = {
-      isSaving: outputSchemaStatus && outputSchemaStatus === STATUS_UPSERTING,
-      onSaveClick: _.get(view, 'colFormIsDirty.form', false) ? onSaveCol : onDismiss
+      operation: SAVE_COLUMN_METADATA,
+      params: {},
+      onClick: _.get(view, 'colFormIsDirty.form', false) ? onSaveCol : onDismiss
     };
   }
 
@@ -70,7 +77,7 @@ export function ManageMetadata(props) {
             onClick={onDismiss}>
               {I18n.common.cancel}
           </button>
-          <SaveButton {...saveBtnProps} />
+          <ApiCallButton {...saveBtnProps} />
         </ModalFooter>
       </Modal>
     </div>
@@ -85,7 +92,6 @@ ManageMetadata.propTypes = {
   views: PropTypes.object.isRequired,
   fourfour: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
-  outputSchemaStatus: PropTypes.string,
   columnsExist: PropTypes.bool
 };
 
@@ -108,8 +114,7 @@ const mapStateToProps = (state, ownProps) => ({
   views: _.get(state, 'db.views', {}),
   fourfour: state.routing.fourfour,
   path: ownProps.route.path,
-  columnsExist: !_.isEmpty(state.db.output_columns),
-  outputSchemaStatus: state.db.output_schemas.__status__
+  columnsExist: !_.isEmpty(state.db.output_columns)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageMetadata);

@@ -93,7 +93,7 @@ class CoreManagedUserSession
         # gone) but without this line we're getting invalidauthenticitytoken
         # exceptions when trying to create a new dataset.
         controller.session[:user] = user.oid
-        user.session_token = session_token
+        user.session_token = session_token if user
         User.current_user = user
       else
         controller.session[:user] = nil
@@ -102,7 +102,8 @@ class CoreManagedUserSession
     end
 
     def user_no_security_check(user)
-      session = new
+      session = new('login' => user.email, 'password' => user.password)
+      session.save
       session.load_user(user) && session
     end
   end
@@ -169,9 +170,19 @@ class CoreManagedUserSession
   # the core server. On success, the core server returns a JSON payload
   # representing the logged-in user; we can use this to instantiate the User
   # model object w/o making a separate request.
-  def save
+  def save(wants_response = false)
+    result = false
     response = authenticate_with_core
-    load_session_from_core(response)
+
+    if response.is_a?(Net::HTTPSuccess)
+      load_session_from_core(response)
+      result = self
+    end
+
+    yield result if result && block_given?
+
+    wants_response ? response : result
+
   end
 
   def user
@@ -273,6 +284,10 @@ class CoreManagedUserSession
     end
   end
 
+  def previously_authenticated_session?
+    auth_cookie_string.present? && auth_cookie_string.length > 0
+  end
+
   def remember_token
     cookies['remember_token']
   end
@@ -288,6 +303,8 @@ class CoreManagedUserSession
   end
 
   def validate_with_core
+    return false unless previously_authenticated_session?
+
     uri = CoreManagedUserSession.current_user_uri
     get = Net::HTTP::Get.new(uri.request_uri)
     get['X-Socrata-Host'] = CurrentDomain.cname

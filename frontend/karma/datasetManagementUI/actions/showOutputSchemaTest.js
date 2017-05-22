@@ -1,137 +1,243 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import _ from 'lodash';
+import thunk from 'redux-thunk';
+import { applyMiddleware, createStore } from 'redux';
+import configureStore from 'redux-mock-store';
 import {
-  outputColumnsWithChangedType,
-  loadColumnErrors,
+  updateColumnType,
   addColumn,
   dropColumn
 } from 'actions/showOutputSchema';
-import {
-  batch,
-  insertSucceeded,
-  insertFromServerIfNotExists,
-  updateFromServer
-} from 'actions/database';
-import { statusSavedOnServer } from 'lib/database/statuses';
-import { getStoreWithOutputSchema } from '../data/storeWithOutputSchema';
-// import mockPhx from '../testHelpers/mockPhoenixSocket';
-// import { getStoreWithOneColumn } from '../data/storeWithOneColumn';
-// import errorTableResponse from '../data/errorTableResponse';
-// import addColumnResponse from '../data/addColumnResponse';
+import { createUpload } from 'actions/manageUploads';
+import { latestOutputSchema, columnsForOutputSchema } from 'selectors';
+import mockAPI from '../testHelpers/mockAPI';
+import initialState from '../data/baseState';
+import rootReducer from 'reducers';
+import wsmock from '../testHelpers/mockSocket';
+
+const mockStore = configureStore([thunk]);
 
 describe('actions/showOutputSchema', () => {
 
-  describe('outputColumnsWithChangedType', () => {
+  describe('addColumn', () => {
+    let unmock;
+    let unmockWS;
+    let recordedActions = [];
+    let os;
+    let column;
 
-    it('constructs a new output schema, given a new column', () => {
-      const store = getStoreWithOutputSchema();
+    before(done => {
+      unmock = mockAPI();
+      unmockWS = wsmock();
 
-      const db = store.getState().db;
-      const oldSchema = _.find(db.output_schemas, { id: 18 });
-      const oldColumn = _.find(db.output_columns, { id: 50 });
-      const newType = 'SoQLNumber';
+      const store = createStore(rootReducer, applyMiddleware(thunk));
 
-      const newOutputCols = outputColumnsWithChangedType(db, oldSchema, oldColumn, newType);
-
-      expect(newOutputCols).to.eql([
-        {
-          display_name: 'arrest',
-          position: 0,
-          field_name: 'arrest',
-          description: null,
-          is_primary_key: false,
-          transform: {
-            transform_expr: 'to_number(arrest)'
-          }
-        },
-        {
-          display_name: 'block',
-          position: 1,
-          field_name: 'block',
-          description: null,
-          is_primary_key: false,
-          transform: {
-            transform_expr: 'block'
-          }
-        }
-      ]);
+      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+        .then(() => {
+          const {db} = store.getState();
+          os = latestOutputSchema(db);
+          column = columnsForOutputSchema(db, os.id)[0];
+          return store.dispatch(addColumn(os, column));
+        })
+        .then(() => {
+          return store.getState();
+        })
+        .then(state => {
+          const fakeStore = mockStore(state);
+          return fakeStore.dispatch(addColumn(os, column))
+            .then(() => fakeStore.getActions());
+        })
+        .then(actions => {
+          recordedActions = actions;
+          const batch = actions.filter(action => action.type === 'BATCH')[0];
+          batch.operations.forEach(op => recordedActions.push(op));
+          done();
+        })
+        .catch(err => {
+          done();
+        });
     });
 
-    it('uses the input column\'s field name in the transform even if the output column\'s field name has changed', () => {
-      // ...than the input column's fieldname
-      const store = getStoreWithOutputSchema();
+    after(() => {
+      unmock();
+      unmockWS.stop();
+    });
 
-      store.dispatch(updateFromServer('output_columns', {
-        id: 50,
-        field_name: 'user_edited_this_fieldname'
-      }));
+    it('adds a new output schema to the store', () => {
+      const expectedAction = recordedActions.filter(action =>
+        action.type === 'UPSERT_SUCCEEDED' && action.tableName === 'output_schemas');
 
-      const db = store.getState().db;
-      const oldSchema = _.find(db.output_schemas, { id: 18 });
-      const oldColumn = _.find(db.output_columns, { id: 50 });
-      const newType = 'SoQLNumber';
+      assert.isAtLeast(expectedAction.length, 1);
+    });
 
-      const newOutputCols = outputColumnsWithChangedType(db, oldSchema, oldColumn, newType);
+    it('adds the added column to the store', () => {
+      const expectedAction = recordedActions.filter(action =>
+        action.type === 'UPSERT_FROM_SERVER'
+        && action.tableName === 'output_columns'
+        && action.newRecord.field_name === column.field_name
+        && action.newRecord.transform_id === column.transform_id);
 
-      expect(newOutputCols).to.eql([
-        {
-          display_name: 'arrest',
-          position: 0,
-          field_name: 'user_edited_this_fieldname', // save that they modified the fieldname
-          description: null,
-          is_primary_key: false,
-          transform: {
-            transform_expr: 'to_number(arrest)' // but transform from the original
-          }
-        },
-        {
-          display_name: 'block',
-          position: 1,
-          field_name: 'block',
-          description: null,
-          is_primary_key: false,
-          transform: {
-            transform_expr: 'block'
-          }
-        }
-      ]);
-    })
+      assert.isAtLeast(expectedAction.length, 1);
+    });
+
+    it('redirects to a new output schema preview', () => {
+      const expectedAction = recordedActions.filter(action =>
+        action.type === '@@router/CALL_HISTORY_METHOD')[0]
+
+      const { payload } = expectedAction;
+
+      assert.match(payload.args[0], /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/);
+    });
+  });
+
+  describe('dropColumn', () => {
+    let unmock;
+    let unmockWS;
+    let recordedActions = [];
+    let os;
+    let column;
+
+    before(done => {
+      unmock = mockAPI();
+      unmockWS = wsmock();
+
+      const store = createStore(rootReducer, applyMiddleware(thunk));
+
+      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+        .then(() => {
+          const {db} = store.getState();
+          os = latestOutputSchema(db);
+          column = columnsForOutputSchema(db, os.id)[0];
+          return store.dispatch(dropColumn(os, column));
+        })
+        .then(() => {
+          return store.getState();
+        })
+        .then(state => {
+          const fakeStore = mockStore(state);
+          return fakeStore.dispatch(dropColumn(os, column))
+            .then(() => fakeStore.getActions());
+        })
+        .then(actions => {
+          recordedActions = actions;
+          const batch = actions.filter(action => action.type === 'BATCH')[0];
+          batch.operations.forEach(op => recordedActions.push(op));
+          done();
+        })
+        .catch(err => {
+          done();
+        });
+    });
+
+    after(() => {
+      unmock();
+      unmockWS.stop();
+    });
+
+    it('adds a new output schema to the store', () => {
+      const expectedAction = recordedActions.filter(action =>
+        action.type === 'UPSERT_SUCCEEDED' && action.tableName === 'output_schemas');
+
+      assert.isAtLeast(expectedAction.length, 1);
+    });
+
+    it('does not include the droped column when updateding the store', () => {
+      const expectedAction = recordedActions.filter(action =>
+        action.type === 'UPSERT_FROM_SERVER'
+        && action.tableName === 'output_columns'
+        && action.newRecord.field_name === column.field_name
+        && action.newRecord.transform_id === column.transform_id);
+
+      assert.equal(expectedAction.length, 0);
+    });
+
+    it('redirects to a new output schema preview', () => {
+      const expectedAction = recordedActions.filter(action =>
+        action.type === '@@router/CALL_HISTORY_METHOD')[0]
+
+      const { payload } = expectedAction;
+
+      assert.match(payload.args[0], /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/);
+    });
 
   });
 
-  // This should be tested but for some reason the channel
-  // global is getting wiped out by some other test??
-  // describe('addColumn', () => {
+  describe('updateColumnType', () => {
+    let unmock;
+    let unmockWS;
+    let recordedActions = [];
+    let os;
+    let column;
 
-  //   it.only('does the thing', (done) => {
-  //     const unmockPhx = mockPhx({
-  //       'output_schema:90': [],
-  //       'row_errors:4': []
-  //     }, done);
+    before(done => {
+      unmock = mockAPI();
+      unmockWS = wsmock();
 
-  //     const store = getStoreWithOneColumn();
-  //     var db = store.getState().db;
+      const store = createStore(rootReducer, applyMiddleware(thunk));
 
-  //     const { unmockFetch } = mockFetch({
-  //       '/api/publishing/v1/upload/5/schema/4': {
-  //         POST: {
-  //           status: 200,
-  //           response: addColumnResponse
-  //         }
-  //       }
-  //     });
-  //     const outputSchema = db.output_schemas[18];
-  //     const inputColumn = db.input_columns[2];
-  //     store.dispatch(addColumn(outputSchema, inputColumn));
-  //     setTimeout(() => {
-  //       unmockFetch();
-  //       unmockPhx();
-  //       db = store.getState().db;
-  //       console.log("WATTTT")
-  //       done();
-  //     }, 0);
-  //   });
+      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+        .then(() => {
+          const {db} = store.getState();
+          os = latestOutputSchema(db);
+          column = columnsForOutputSchema(db, os.id)[0];
+          return store.dispatch(updateColumnType(os, column, 'SoQLText'));
+        })
+        .then(() => {
+          return store.getState();
+        })
+        .then(state => {
+          const fakeStore = mockStore(state);
+          return fakeStore.dispatch(updateColumnType(os, column, 'SoQLText'))
+            .then(() => fakeStore.getActions());
+        })
+        .then(actions => {
+          recordedActions = actions;
+          const batch = actions.filter(action => action.type === 'BATCH')[0];
+          batch.operations.forEach(op => recordedActions.push(op));
+          done();
+        })
+        .catch(err => {
+          done();
+        });
+    });
 
-  // });
+    after(() => {
+      unmock();
+      unmockWS.stop();
+    });
 
+    it('adds a new output schema to the store', () => {
+      const expectedAction = recordedActions.filter(action =>
+        action.type === 'UPSERT_SUCCEEDED' && action.tableName === 'output_schemas');
+
+      assert.isAtLeast(expectedAction.length, 1);
+    });
+
+    it('adds new output column / transform to the store', () => {
+      const expectedColumn = recordedActions.filter(action =>
+        action.type === 'UPSERT_FROM_SERVER'
+        && action.tableName === 'output_columns'
+        && action.newRecord.field_name === column.field_name);
+
+      const newTransformId = expectedColumn[0].newRecord.transform_id;
+
+      const expectedTransform = recordedActions.filter(action =>
+        action.type === 'UPSERT_FROM_SERVER'
+        && action.tableName === 'transforms'
+        && action.newRecord.id === newTransformId
+        && action.newRecord.output_soql_type === 'text');
+
+      assert.isAtLeast(expectedColumn.length, 1);
+      assert.isAtLeast(expectedTransform.length, 1);
+    });
+
+    it('redirects to a new output schema preview', () => {
+      const expectedAction = recordedActions.filter(action =>
+        action.type === '@@router/CALL_HISTORY_METHOD')[0]
+
+      const { payload } = expectedAction;
+
+      assert.match(payload.args[0], /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/);
+    });
+  });
 });

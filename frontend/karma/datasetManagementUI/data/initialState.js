@@ -118,7 +118,7 @@ const initialState = {
         id: 206,
         fourfour: '3kt9-pmvq',
         revision_seq: 0,
-        inserted_at: '2017-04-03T15:48:38.872Z',
+        created_at: '2017-04-03T15:48:38.872Z',
         created_by: {
           user_id: 'tugg-ikce',
           email: 'brandon.webster@socrata.com',
@@ -132,7 +132,7 @@ const initialState = {
     },
     uploads: {
       '224': {
-        inserted_at: '2017-04-03T15:49:08.524Z',
+        created_at: '2017-04-03T15:49:08.524Z',
         id: 224,
         finished_at: '2017-04-03T15:49:33.000Z',
         filename: 'petty_crimes.csv',
@@ -168,7 +168,7 @@ const initialState = {
         id: 288,
         input_schema_id: 1712,
         error_count: 0,
-        inserted_at: '2017-04-03T15:49:09.324Z',
+        created_at: '2017-04-03T15:49:09.324Z',
         created_by: {
           user_id: 'tugg-ikce',
           email: 'brandon.webster@socrata.com',
@@ -183,7 +183,7 @@ const initialState = {
         id: 289,
         input_schema_id: 1712,
         error_count: 0,
-        inserted_at: '2017-04-03T18:24:53.882Z',
+        created_at: '2017-04-03T18:24:53.882Z',
         created_by: {
           user_id: 'tugg-ikce',
           email: 'brandon.webster@socrata.com',
@@ -198,7 +198,7 @@ const initialState = {
         id: 290,
         input_schema_id: 1712,
         error_count: 0,
-        inserted_at: '2017-04-03T18:30:27.795Z',
+        created_at: '2017-04-03T18:30:27.795Z',
         created_by: {
           user_id: 'tugg-ikce',
           email: 'brandon.webster@socrata.com',
@@ -213,7 +213,7 @@ const initialState = {
         id: 291,
         input_schema_id: 1712,
         error_count: 0,
-        inserted_at: '2017-04-03T18:41:13.672Z',
+        created_at: '2017-04-03T18:41:13.672Z',
         created_by: {
           user_id: 'tugg-ikce',
           email: 'brandon.webster@socrata.com',
@@ -228,7 +228,7 @@ const initialState = {
         id: 292,
         input_schema_id: 1712,
         error_count: 0,
-        inserted_at: '2017-04-03T18:42:25.809Z',
+        created_at: '2017-04-03T18:42:25.809Z',
         created_by: {
           user_id: 'tugg-ikce',
           email: 'brandon.webster@socrata.com',
@@ -243,7 +243,7 @@ const initialState = {
         id: 293,
         input_schema_id: 1712,
         error_count: 0,
-        inserted_at: '2017-04-03T18:42:53.375Z',
+        created_at: '2017-04-03T18:42:53.375Z',
         created_by: {
           user_id: 'tugg-ikce',
           email: 'brandon.webster@socrata.com',
@@ -258,7 +258,7 @@ const initialState = {
         id: 294,
         input_schema_id: 1712,
         error_count: 0,
-        inserted_at: '2017-04-03T20:15:23.993Z',
+        created_at: '2017-04-03T20:15:23.993Z',
         created_by: {
           user_id: 'tugg-ikce',
           email: 'brandon.webster@socrata.com',
@@ -272,12 +272,12 @@ const initialState = {
     },
     input_columns: {
       '6262': {
-        soql_type: 'SoQLText',
+        soql_type: 'text',
         position: 10,
         input_schema_id: 1712,
         id: 6262,
         guessed_subtypes: [],
-        guessed_soql_type: 'SoQLNumber',
+        guessed_soql_type: 'number',
         field_name: 'beat',
         __status__: {
           type: 'SAVED',
@@ -285,12 +285,12 @@ const initialState = {
         }
       },
       '6263': {
-        soql_type: 'SoQLText',
+        soql_type: 'text',
         position: 11,
         input_schema_id: 1712,
         id: 6263,
         guessed_subtypes: [],
-        guessed_soql_type: 'SoQLNumber',
+        guessed_soql_type: 'number',
         field_name: 'district',
         __status__: {
           type: 'SAVED',
@@ -347,7 +347,7 @@ const initialState = {
     transforms: {
       '6105': {
         transform_expr: 'to_number(`id`)',
-        output_soql_type: 'SoQLNumber',
+        output_soql_type: 'number',
         id: 6105,
         completed_at: '2017-04-03T15:49:34',
         __status__: {
@@ -362,7 +362,7 @@ const initialState = {
       },
       '6106': {
         transform_expr: '`case_number`',
-        output_soql_type: 'SoQLText',
+        output_soql_type: 'text',
         id: 6106,
         completed_at: '2017-04-03T15:49:34',
         __status__: {

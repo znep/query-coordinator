@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { Analytics } from 'common/analytics';
 
 describe('analytics.js', function() {

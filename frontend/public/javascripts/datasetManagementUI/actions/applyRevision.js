@@ -1,11 +1,19 @@
-import { socrataFetch, checkStatus, checkStatusForPoll, getJson } from '../lib/http';
 import { push } from 'react-router-redux';
+import uuid from 'uuid';
+import { socrataFetch, checkStatus, checkStatusForPoll, getJson } from '../lib/http';
 import {
   upsertStarted,
   upsertSucceeded,
   upsertFailed,
-  updateFromServer
+  updateFromServer,
+  upsertFromServer
 } from '../actions/database';
+import {
+  apiCallStarted,
+  apiCallSucceeded,
+  apiCallFailed,
+  APPLY_REVISION
+} from 'actions/apiCalls';
 import { showModal } from 'actions/modal';
 import * as dsmapiLinks from '../dsmapiLinks';
 import * as Links from '../links';
@@ -22,10 +30,11 @@ export function applyRevision() {
   return (dispatch, getState) => {
     const routing = getState().routing.location;
     const outputSchemaId = Selectors.latestOutputSchema(getState().db).id;
-    const newUpsertJob = {
-      output_schema_id: outputSchemaId
-    };
-    dispatch(upsertStarted('upsert_jobs', newUpsertJob));
+    const callId = uuid();
+    dispatch(apiCallStarted(callId, {
+      operation: APPLY_REVISION,
+      params: { outputSchemaId }
+    }));
     socrataFetch(dsmapiLinks.applyRevision, {
       method: 'PUT',
       body: JSON.stringify({ output_schema_id: outputSchemaId })
@@ -33,14 +42,15 @@ export function applyRevision() {
       then(checkStatus).
       then(getJson).
       then((resp) => {
-        dispatch(upsertSucceeded('upsert_jobs', newUpsertJob, resp.resource));
+        dispatch(apiCallSucceeded(callId));
+        dispatch(upsertFromServer('upsert_jobs', resp.resource));
         dispatch(showModal('Publishing'));
         const upsertJobId = resp.resource.id;
         dispatch(pollForUpsertJobProgress(upsertJobId));
         dispatch(push(Links.home(routing)));
       }).
       catch((err) => {
-        dispatch(upsertFailed('upsert_jobs', newUpsertJob, err));
+        dispatch(apiCallFailed(callId, err));
       });
   };
 }

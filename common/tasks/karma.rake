@@ -1,18 +1,18 @@
 namespace 'karma' do
   task :deps do
-    npm('karma_config', 'run check-dependencies') do |ok, res|
+    npm('run check-dependencies') do |ok, res|
       unless ok
-        npm('karma_config', 'install')
+        npm('install') { |ok, res| npm('install', path: 'autocomplete') if ok }
       end
     end
   end
 
   task :runonce do
-    npm('karma_config', 'test')
+    npm('run test') { |ok, res| npm('run test', path: 'autocomplete') if ok }
   end
 
   task :watch do
-    npm('karma_config', 'run watch')
+    npm('run watch') { |ok, res| npm('run watch', path: 'autocomplete') if ok }
   end
 end
 

@@ -4,11 +4,8 @@ class PageMetadataControllerTest < ActionController::TestCase
 
   def setup
     init_environment
-    UserSessionProvider.klass.any_instance.stubs(
-      save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
-      find_token: true
-    )
-    User.stubs(current_user: User.new(some_user))
+
+    stub_user_session
 
     @page_metadata_manager = PageMetadataManager.new
     @controller.stubs(

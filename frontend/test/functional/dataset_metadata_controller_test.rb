@@ -7,11 +7,7 @@ class DatasetMetadataControllerTest < ActionController::TestCase
       :create_v2_data_lens => false
     })
 
-    UserSessionProvider.klass.any_instance.stubs(
-      save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
-      find_token: true
-    )
-    User.stubs(current_user: User.new(some_user))
+    stub_user_session
 
     @phidippides = Phidippides.new('localhost', 2401)
     @data_lens_manager = DataLensManager.new
@@ -24,7 +20,6 @@ class DatasetMetadataControllerTest < ActionController::TestCase
       :create_v2_data_lens => false,
       :phidippides_deprecation_metadata_source => 'phidippides-only'
     )
-    stub_site_chrome
   end
 
   def setup_json_request(body = nil)
@@ -164,13 +159,5 @@ class DatasetMetadataControllerTest < ActionController::TestCase
 
   def mock_v1_dataset_metadata
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-dataset-metadata.json"))
-  end
-
-  def some_user
-    { email: 'foo@bar.com',
-      password: 'asdf',
-      passwordConfirm: 'asdf',
-      accept_terms: true
-    }
   end
 end

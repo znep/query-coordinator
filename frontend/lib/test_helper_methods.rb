@@ -299,4 +299,19 @@ module TestHelperMethods
     'fake'
   end
 
+  def stub_user_session
+    UserSessionProvider.klass.any_instance.stubs(:save).with(true).returns(Net::HTTPSuccess.new(1.1, 200, 'Success'))
+    User.stubs(current_user: User.new(some_user))
+    UserSession.any_instance.stubs(:find_token).returns(true)
+    CoreManagedUserSession.any_instance.stubs(:auth_cookie_string).returns('Have a cookie')
+  end
+
+  def some_user
+    { email: 'foo@bar.com',
+      password: 'asdf',
+      passwordConfirm: 'asdf',
+      accept_terms: true
+    }
+  end
+
 end

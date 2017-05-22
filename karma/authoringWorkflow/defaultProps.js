@@ -5,17 +5,19 @@ import { defaultState as defaultAuthoring } from 'src/authoringWorkflow/reducers
 import { defaultState as defaultMetadata } from 'src/authoringWorkflow/reducers/metadata';
 
 export default function(overrides) {
-  var authoring = _.merge({}, defaultAuthoring, {
+  const authoring = _.merge({}, defaultAuthoring, {
     selectedVisualizationType: 'columnChart'
   });
 
-  var metadata = _.merge({}, defaultMetadata, {
+  const metadata = _.merge({}, defaultMetadata, {
+    domain: 'domain',
+    datasetUid: 'xxxx-xxxx',
     data: {columns: [{fieldName: 'test', name: 'Testing', renderTypeName: 'text'}]},
     phidippidesMetadata: {columns: {'test': {renderTypeName: 'text', name: 'Testing'}}},
     curatedRegions: [{name: 'Region', uid: 'four-four'}]
   });
 
-  return _.merge({
+  return _.merge({}, {
     vifAuthoring: {
       authoring,
       vifs: vifs()

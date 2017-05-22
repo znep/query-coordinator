@@ -5,6 +5,8 @@ import Styleguide from 'socrata-components';
 
 import { translate } from '../../I18n';
 
+import BlockLabel from './shared/BlockLabel';
+
 import {
   initiateRegionCoding,
   requestShapefileMetadata,
@@ -34,12 +36,6 @@ export var RegionSelector = React.createClass({
     onSelectRegion: PropTypes.func
   },
 
-  componentDidUpdate() {
-    if (this.selector) {
-      new Styleguide.factories.FlyoutFactory(this.selector);
-    }
-  },
-
   onSelectRegion({computedColumn, curatedRegion, domain}) {
     var {
       vifAuthoring,
@@ -59,16 +55,6 @@ export var RegionSelector = React.createClass({
         curatedRegion
       );
     }
-  },
-
-  renderRegionInfo() {
-    return (
-      <div id="region-info-flyout" className="region-general-info flyout flyout-hidden">
-        <section className="flyout-content">
-          {translate('panes.data.fields.region.region_processing')}
-        </section>
-      </div>
-    );
   },
 
   renderRegionProcessingMessage() {
@@ -143,11 +129,10 @@ export var RegionSelector = React.createClass({
 
     return (
       <div className="region-selector-container" ref={reference}>
-        <label className="block-label" htmlFor="region-selection">
-          {translate('panes.data.fields.region.title')}
-          <span className="icon-question" data-flyout="region-info-flyout"></span>
-        </label>
-        {this.renderRegionInfo()}
+        <BlockLabel
+          htmlFor="region-selection"
+          title={translate('panes.data.fields.region.title')}
+          description={translate('panes.data.fields.region.region_processing')} />
         <Styleguide.Dropdown {...regionAttributes} />
         {this.renderRegionProcessingMessage()}
         {this.renderRegionProcessingError()}

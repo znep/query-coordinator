@@ -15,7 +15,7 @@ const getPhidippidesMetadata = state => state.phidippidesMetadata;
 const hasColumnStats = state => state.hasColumnStats;
 const getError = state => state.error;
 
-export const isLoading = createSelector(getLoading, isLoading => isLoading);
+export const isLoading = createSelector(getLoading, _.identity);
 export const hasData = createSelector(getDatasetMetadata, datasetMetadata => !_.isNull(datasetMetadata));
 export const hasError = createSelector(getError, error => !_.isNull(error));
 
@@ -83,8 +83,8 @@ export const getValidDimensions = createSelector(
 );
 
 export const getRecommendedDimensions = (state, type) => {
-  var dimensions = getValidDimensions(state);
-  var visualizationType = _.find(VISUALIZATION_TYPES, visualization => visualization.type === type);
+  const dimensions = getValidDimensions(state);
+  const visualizationType = _.find(VISUALIZATION_TYPES, visualization => visualization.type === type);
 
   return _.filter(dimensions, dimension => {
     return visualizationType && _.includes(visualizationType.preferredDimensionTypes, dimension.renderTypeName);
@@ -92,12 +92,12 @@ export const getRecommendedDimensions = (state, type) => {
 };
 
 export const getRecommendedVisualizationTypes = (state, column) => {
-  var dimension = _.find(getValidDimensions(state), dimension => {
-    return column && column.columnName === dimension.fieldName
+  const dimension = _.find(getValidDimensions(state), dimension => {
+    return column && column.columnName === dimension.fieldName;
   });
 
-  var dimensionType = _.find(COLUMN_TYPES, column => {
-    return dimension && dimension.renderTypeName === column.type
+  const dimensionType = _.find(COLUMN_TYPES, column => {
+    return dimension && dimension.renderTypeName === column.type;
   });
 
   return _.filter(VISUALIZATION_TYPES, visualization => {
@@ -136,7 +136,7 @@ export const getValidCuratedRegions = createSelector(
   getCuratedRegions,
   getValidComputedColumns,
   (curatedRegions, computedColumns) =>  {
-    var notInDataset = (region) => {
+    const notInDataset = (region) => {
       return !_.some(computedColumns, {uid: region.uid});
     };
 
@@ -199,7 +199,7 @@ const injectFieldName = (column, key) => {
 };
 
 const isNumericColumn = (column) => {
-  var renderTypeName = _.get(column, 'renderTypeName');
+  const renderTypeName = _.get(column, 'renderTypeName');
 
   return (renderTypeName === 'number' || renderTypeName === 'money' || renderTypeName === 'percent');
 };

@@ -71,7 +71,7 @@ describe('DimensionGroupingColumnNameSelector', () => {
           'panes.data.fields.dimension_grouping_column_name.subtitle'
         );
 
-        expect(component.querySelector('.authoring-field-subtitle').innerHTML).
+        expect(component.querySelector('.block-label').textContent).
           to.eq(expectedMessage);
       });
 
@@ -80,11 +80,8 @@ describe('DimensionGroupingColumnNameSelector', () => {
           'panes.data.fields.dimension_grouping_column_name.description'
         );
 
-        expect(
-          component.
-            querySelector('.authoring-field-description small').
-            innerHTML
-        ).to.eq(expectedMessage);
+        expect(component.querySelector('.flyout').textContent)
+          .to.eq(expectedMessage);
       });
 
     });

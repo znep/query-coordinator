@@ -227,6 +227,10 @@
 
     .block-label {
       margin-bottom: 5px;
+
+      .icon-question {
+        margin-left: 6px;
+      }
     }
 
     .inline-label {
@@ -333,16 +337,6 @@
       width: 100%;
     }
 
-    .dataset-column-selector-option [class^="icon"] {
-      margin-right: 5px;
-      background: white;
-      color: #00be9b;
-      border-radius: 50%;
-      display: inline-block;
-      width: 24px;
-      text-align: center;
-    }
-
     .region-general-info {
       line-height: 1.2;
       z-index: 9999999;
@@ -380,6 +374,89 @@
       .icon-question {
         margin-left: 2px;
         cursor: pointer;
+      }
+    }
+
+    #dimension-flyout .flyout-content {
+      max-height: none;
+    }
+
+    .selected-dimension-indicator {
+      position: relative;
+      padding: 4px;
+      border: 1px dashed #C8C8C8;
+      background-color: #F4F5F6;
+
+      &.empty {
+        padding: 16px;
+        font-size: 14px;
+        font-style: italic;
+        color: #999;
+        line-height: 18px;
+      }
+
+      .btn-clear-dimension {
+        display: none;
+        margin: auto;
+        margin-right: 0;
+        color: #262525;
+        padding: 0;
+        line-height: 0;
+
+        .socrata-icon {
+          width: 13px;
+          height: 13px;
+        }
+      }
+
+
+      &:not(.empty):hover {
+        .btn-clear-dimension {
+          display: inline-block;
+        }
+
+        .recommended-indicator {
+          display: none;
+        }
+      }
+
+      .dimension {
+        padding: 8px;
+        border: 1px solid #C8C8C8;
+        background-color: rgba(229,249,245,0.5);
+        display: inline-flex;
+        width: 100%;
+
+        .recommended-indicator {
+          right: 14px;
+        }
+      }
+    }
+
+    .dimension {
+      position: relative;
+
+      [class^=icon] {
+        margin-right: 5px;
+        background: white;
+        color: #00be9b;
+        border-radius: 50%;
+        display: inline-block;
+        width: 24px;
+        text-align: center;
+      }
+
+      .recommended-indicator {
+        float: right;
+        position: absolute;
+        top: 50%;
+        margin-top: -3px;
+        right: 8px;
+        display: block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #1da751;
       }
     }
 
@@ -661,6 +738,12 @@
     width: 100%;
     height: 640px;
   }
+}
+
+.flyout-block-label {
+  z-index: 10000;
+
+
 }
 
 .visualization-type-flyout {

@@ -16,6 +16,8 @@ import {
 } from '../selectors/vifAuthoring';
 import { hasData, getValidMeasures } from '../selectors/metadata';
 
+import BlockLabel from './shared/BlockLabel';
+
 export const MeasureSelector = React.createClass({
   propTypes: {
     vifAuthoring: PropTypes.object,
@@ -136,14 +138,11 @@ export const MeasureSelector = React.createClass({
 
     return (
       <div ref={(ref) => this.selector = ref}>
-        <label className="block-label" htmlFor="measure-selection">{translate('panes.data.fields.measure.title')}</label>
+        <BlockLabel htmlFor="measure-selection" title={translate('panes.data.fields.measure.title')} description={translate('panes.data.fields.measure.description')} />
         <div {...measureContainerAttributes}>
           <Styleguide.Dropdown {...measureAttributes} />
           {this.renderMeasureAggregationSelector()}
         </div>
-        <p className="authoring-field-description">
-          <small>{translate('panes.data.fields.measure.description')}</small>
-        </p>
         {measureFlyout}
       </div>
     );

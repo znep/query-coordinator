@@ -28,10 +28,12 @@ import {
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
 import DebouncedInput from '../shared/DebouncedInput';
+import BlockLabel from '../shared/BlockLabel';
 
 import DimensionSelector from '../DimensionSelector';
 import MeasureSelector from '../MeasureSelector';
 import RegionSelector from '../RegionSelector';
+import SelectedDimensionIndicator from '../SelectedDimensionIndicator';
 import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
 
 export var DataPane = React.createClass({
@@ -299,6 +301,13 @@ export var DataPane = React.createClass({
     const sections = (
       <Accordion>
         <AccordionPane title={translate('panes.data.subheaders.data_selection')}>
+          <div className="authoring-field">
+            <BlockLabel
+              htmlFor="dimension-selection"
+              title={translate('panes.data.fields.dimension.title')}
+              description={translate('panes.data.fields.dimension.description')}/>
+            <SelectedDimensionIndicator />
+          </div>
           <div className="authoring-field">
             <DimensionSelector/>
           </div>

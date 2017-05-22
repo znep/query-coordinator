@@ -47,6 +47,7 @@ export default {
           title: 'Dimension',
           description: 'A dimension is a field that orders, groups, or categorizes your data, such as dates and categories. The dimension is often shown on the x-axis or as points on a map.',
           placeholder: 'Select a dimension...',
+          empty_selection: 'Select a dimension from the list below',
           groups: {
             recommended_columns: 'Recommended Columns',
             all_columns: 'All Columns'

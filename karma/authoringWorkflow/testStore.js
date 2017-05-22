@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { createStore, applyMiddleware } from 'redux';
-import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import reducer from 'src/authoringWorkflow/reducers';
@@ -13,6 +12,7 @@ export default function(stateOverrides) {
 
 export function getInitialState(stateOverrides) {
   return _.merge(
+    {},
     {
       vifAuthoring: {
         authoring: {
@@ -21,6 +21,7 @@ export function getInitialState(stateOverrides) {
         vifs: vifs()
       },
       metadata: _.merge(
+        {},
         defaultMetadata,
         {
           domain: 'test.domain',

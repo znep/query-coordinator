@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import Styleguide from 'socrata-components';
 import { AccordionPane } from './shared/Accordion.js';
+import BlockLabel from './shared/BlockLabel';
 import {
   getDimensionGroupingColumnName
 } from '../selectors/vifAuthoring';
@@ -55,15 +56,13 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
 
     return (
       <div>
-        <span className="authoring-field-subtitle">
-          {translate(`panes.data.fields.dimension_grouping_column_name.subtitle`)}
-        </span>
         <div className="authoring-field">
+          <BlockLabel 
+            title={translate(`panes.data.fields.dimension_grouping_column_name.subtitle`)}
+            htmlFor={dimensionGroupingColumnNameAttributes.id}
+            description={translate('panes.data.fields.dimension_grouping_column_name.description')} />
           <Styleguide.Dropdown {...dimensionGroupingColumnNameAttributes} />
         </div>
-        <p className="authoring-field-description">
-          <small>{translate('panes.data.fields.dimension_grouping_column_name.description')}</small>
-        </p>
       </div>
     );
   }

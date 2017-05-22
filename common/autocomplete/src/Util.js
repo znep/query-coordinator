@@ -25,6 +25,9 @@ export function getSearchUrl(query) {
   currentUrl.query.sortBy = 'relevance';
   currentUrl.query.utf8 = '✓';
 
+  // New search means we should return to the first page
+  delete currentUrl.query.page;
+
   // have to blank this out to make the 'query' object get used instead
   currentUrl.search = undefined;
 

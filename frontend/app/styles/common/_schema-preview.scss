@@ -110,6 +110,7 @@ $dark-grey-1-darkened: darken($dark-grey-1, 3%); // To pass contrast test
         width: auto;
         font-weight: 600;
         color: $primary-text;
+        word-break: break-all;
       }
 
       &.column-description {

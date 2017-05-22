@@ -363,6 +363,14 @@ main.container.landing-page-container {
     border-bottom-width: 2px;
     display: flex;
     align-items: flex-start;
+
+    @media(max-width: $medium) {
+      flex-wrap: wrap;
+
+      .metadata-column, .metadata-column.fancy {
+        flex: 1 0 100%;
+      }
+    }
   }
 
   hr {

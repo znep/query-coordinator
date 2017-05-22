@@ -563,7 +563,7 @@
           });
         }
 
-        return _.template(template[filter.value], {
+        return _.template(template[filter.value])({
           field: fieldName,
           val1: value[0],
           val2: value[1]

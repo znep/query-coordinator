@@ -450,7 +450,8 @@ module.exports = function tableCard(
                 // and incorporating it in the formatCellText method.
                 var additionalCellContent;
                 var relatedColName = column.fieldName + '_description';
-                var hasDescriptionSubcolumn = _.has($scope.allColumnsMetadata, relatedColName) && $scope.allColumnsMetadata[relatedColName].isSubcolumn;
+                var hasDescriptionSubcolumn = _.has($scope.allColumnsMetadata, relatedColName) &&
+                                              $scope.allColumnsMetadata[relatedColName].isSubcolumn;
 
                 if (column.renderTypeName === 'url' || hasDescriptionSubcolumn) {
                   var relatedColumn = _.find(

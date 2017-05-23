@@ -256,6 +256,7 @@ function augmentSocrataDataResponseWithOtherCategory(
 
   const nonDimensionWhereClauseComponent = nonDimensionFilters.
     map(SoqlHelpers.filterToWhereClauseComponent).
+    map(_.negate(_.isEmpty)).
     join(' AND ');
 
   /**

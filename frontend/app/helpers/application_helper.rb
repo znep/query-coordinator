@@ -1099,11 +1099,6 @@ module ApplicationHelper
     content_tag('form', form_contents, form_options)
   end
 
-  # Stolen from https://github.com/rails/rails/blob/b6c1ee0dfcb7ea8bfcac9daff0162876990665a3/actionview/lib/action_view/helpers/form_tag_helper.rb#L908-L910
-  def sanitize_to_id(name)
-    name.to_s.delete(']').tr('^-a-zA-Z0-9:.', "_")
-  end
-
   def canary_warning
     return unless APP_CONFIG.canary
     content_tag(:style, :type => 'text/css') do

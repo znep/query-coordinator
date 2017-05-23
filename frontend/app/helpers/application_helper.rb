@@ -727,37 +727,40 @@ module ApplicationHelper
     end
   end
 
+  def label_for(base, suffix = nil)
+    [sanitize_to_id(base), suffix].compact.join('_')
+  end
+
   def feature_flag_input(flag, flag_config, flag_value, options = {})
     name = "#{options.fetch(:namespace, 'feature_flags')}[#{flag}]"
     name = "view[metadata[#{name}]]" if options[:edit_metadata]
-
-    label_for = name.chop.gsub(/[\[\]]+/, '_')
 
     other_selected = [String, Array, Fixnum].include?(flag_value.class)
 
     html = []
     unless flag_config['disableTrueFalse']
       html << radio_button_tag(name, true, flag_value === true, :disabled => options[:disabled])
-      html << label_tag("#{label_for}_true", 'true')
+      html << label_tag(label_for(name, 'true'), 'true')
       html << radio_button_tag(name, false, flag_value === false, :disabled => options[:disabled])
-      html << label_tag("#{label_for}_false", 'false')
+      html << label_tag(label_for(name, 'false'), 'false')
       html << radio_button_tag(name, nil, other_selected, :class => 'other', :disabled => options[:disabled])
-      html << label_tag(label_for, 'Other:')
+      html << label_tag(label_for(name, ''), 'Other:')
     end
     if flag_config.expectedValues?
       html << select_tag(
                 name,
                 options_for_select(flag_config.expectedValues.split(' ').
                   reject { |value| ['true', 'false'].include? value }, flag_value),
-                :disabled => options[:disabled])
+                :disabled => options[:disabled],
+                'aria-label' => label_for(name, 'other'))
     else
       case flag_value
       when String, Fixnum
-        html << text_field_tag(name, flag_value, :disabled => options[:disabled])
+        html << text_field_tag(name, flag_value, :disabled => options[:disabled], 'aria-label' => label_for(name, 'other'))
       when Array
-        html << text_field_tag(name, flag_value.to_json, :disabled => options[:disabled])
+        html << text_field_tag(name, flag_value.to_json, :disabled => options[:disabled], 'aria-label' => label_for(name, 'other'))
       else
-        html << text_field_tag(name, nil, :disabled => options[:disabled])
+        html << text_field_tag(name, nil, :disabled => options[:disabled], 'aria-label' => label_for(name, 'other'))
       end
     end
 
@@ -1094,11 +1097,6 @@ module ApplicationHelper
         hidden_field_tag('authenticity_token', form_authenticity_token)
 
     content_tag('form', form_contents, form_options)
-  end
-
-  # Stolen from https://github.com/rails/rails/blob/b6c1ee0dfcb7ea8bfcac9daff0162876990665a3/actionview/lib/action_view/helpers/form_tag_helper.rb#L908-L910
-  def sanitize_to_id(name)
-    name.to_s.delete(']').tr('^-a-zA-Z0-9:.', "_")
   end
 
   def canary_warning

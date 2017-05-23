@@ -191,7 +191,6 @@ class DataLensController < ActionController::Base
     begin
       @dataset_metadata = fetch_dataset_metadata(
         @page_metadata[:datasetId],
-        :add_table_column => true,
         :is_from_derived_view => is_from_derived_view
       )
     rescue AuthenticationRequired
@@ -249,10 +248,7 @@ class DataLensController < ActionController::Base
     end
 
     begin
-      @dataset_metadata = fetch_dataset_metadata(
-        @page_metadata[:datasetId],
-        :add_table_column => true
-      )
+      @dataset_metadata = fetch_dataset_metadata(@page_metadata[:datasetId])
     rescue AuthenticationRequired
       return redirect_to_login
     rescue UnauthorizedDatasetMetadataRequest, UnauthorizedPageMetadataRequest
@@ -303,10 +299,7 @@ class DataLensController < ActionController::Base
         view.obe_view # Optional, dataset might be nbe only.
       ].compact
 
-      @dataset_metadata = fetch_dataset_metadata(
-        view.nbe_view.id,
-        :add_table_column => true
-      )
+      @dataset_metadata = fetch_dataset_metadata(view.nbe_view.id)
 
       @dataset_id = view.is_derived_view? ? @dataset_metadata[:id] : @migration_metadata[:obeId]
 

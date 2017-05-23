@@ -148,6 +148,7 @@ administration-sdp-template:
 - screen-admin-customizer
 administration-site-appearance:
 - screen-site-appearance
+- styleguide
 administration-stories-appearance:
 - control-pane
 - grid-sidebar
@@ -306,5 +307,7 @@ dataset-about-full:
 - screen-dataset-about
 socrata-icons:
 - socrata-icons
+styleguide-no-tag-level:
+- styleguide-no-tag-level
 styleguide:
 - styleguide

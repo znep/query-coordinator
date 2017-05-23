@@ -6,7 +6,7 @@ var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts'),
+  context: path.resolve(common.frontendRoot, 'public/javascripts'),
   entry: {
     'base': [
       './plugins/date.js',

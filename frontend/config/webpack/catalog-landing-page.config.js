@@ -12,7 +12,7 @@ if (!common.isProduction) {
 }
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/catalogLandingPage'),
+  context: path.resolve(common.frontendRoot, 'public/javascripts/catalogLandingPage'),
   entry: common.withHotModuleEntries({
     'main': './main',
     'manage': './manage',

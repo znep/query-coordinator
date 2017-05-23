@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ModalContent, ModalFooter } from 'socrata-components';
+import { ModalContent, ModalFooter } from 'common/components';
 
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { hideModal } from 'actions/modal';

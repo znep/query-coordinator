@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
-import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
+import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 

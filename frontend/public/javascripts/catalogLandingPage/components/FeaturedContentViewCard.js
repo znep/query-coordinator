@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { ExternalViewCard, ViewCard } from 'socrata-components';
+import { ExternalViewCard, ViewCard } from 'common/components';
 
 export class FeaturedContentViewCard extends React.Component {
   render() {

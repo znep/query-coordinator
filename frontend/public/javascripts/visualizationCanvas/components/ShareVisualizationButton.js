@@ -3,7 +3,7 @@ import React, { PropTypes, PureComponent } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { openShareModal } from '../actions';
-import { SocrataIcon } from 'socrata-components';
+import { SocrataIcon } from 'common/components';
 
 export class ShareVisualizationButton extends PureComponent {
   render() {

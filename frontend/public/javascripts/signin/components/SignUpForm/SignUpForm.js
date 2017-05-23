@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
-import { SocrataIcon } from 'socrata-components';
+import { SocrataIcon } from 'common/components';
 import ReCAPTCHA from 'react-google-recaptcha';
 import styles from './sign-up-form.scss';
 import {

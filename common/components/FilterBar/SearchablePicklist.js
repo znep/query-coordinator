@@ -1,3 +1,5 @@
+// This component needs to be ported to ES6 classes, see EN-16506.
+/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
@@ -73,7 +75,7 @@ export const SearchablePicklist = React.createClass({
             this.setState({ isValidating: false, textEntered: false });
           }
         }).
-        catch(() => {
+        catch(() => { // eslint-disable-line dot-notation
           if (this.isMounted) {
             _.defer(this.focusAndSelectSearchInput);
             this.setState({ isError: true, isValidating: false });

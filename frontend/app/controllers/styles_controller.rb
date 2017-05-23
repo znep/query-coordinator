@@ -12,20 +12,23 @@ end
 class StylesController < ApplicationController
   skip_before_filter :require_user, :set_user, :set_meta, :sync_logged_in_cookie, :poll_external_configs
 
+  # BEWARE /node_modules/normalize.css has to appear above /node_modules
+  # otherwise SaSS will try to read normalize.css (which is a directory)
+  # as if it's a file :facepalm:
   SCSS_LOAD_PATHS = %w(
     /../common/styleguide
     /../common
     /app/styles
-    /node_modules/bourbon/app/assets/stylesheets
-    /node_modules/bourbon-neat/app/assets/stylesheets
-    /node_modules/breakpoint-sass/stylesheets
-    /node_modules/modularscale-sass/stylesheets
-    /node_modules/normalize.css
-    /node_modules/react-input-range/dist
-    /node_modules/react-datepicker/dist
-    /node_modules
     /..
     /../common/resources/fonts/templates
+    /node_modules/normalize.css
+    /node_modules
+    /node_modules/bourbon-neat/app/assets/stylesheets
+    /node_modules/bourbon/app/assets/stylesheets
+    /node_modules/breakpoint-sass/stylesheets
+    /node_modules/modularscale-sass/stylesheets
+    /node_modules/react-datepicker/dist
+    /node_modules/react-input-range/dist
   ).map { |path| path.prepend(Rails.root.to_s) }
   BLIST_STYLE_CACHE = File.join(Dir.tmpdir, 'blist_style_cache')
 
@@ -216,14 +219,14 @@ class StylesController < ApplicationController
         File.unlink(cache_path)
       end
 
-      #if File.exist?(cache_path)
-      #  Rails.logger.debug "Reading cached stylesheet from #{cache_path}"
-      #  render :text => File.read(cache_path)
-      #else
+      if File.exist?(cache_path)
+        Rails.logger.debug "Reading cached stylesheet from #{cache_path}"
+        render :text => File.read(cache_path)
+      else
         result = yield
-      #  File.open(cache_path, 'w') { |f| f.write result }
+        File.open(cache_path, 'w') { |f| f.write result }
         render :text => result
-      #end
+      end
     else
       render :text => yield
     end

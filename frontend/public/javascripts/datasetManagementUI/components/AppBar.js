@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { EditBar } from 'socrata-components';
-import SocrataIcon from '../../common/components/SocrataIcon';
+import { EditBar } from 'common/components';
+import SocrataIcon from 'common/components/SocrataIcon';
 import * as ApplyRevision from '../actions/applyRevision';
 import PublishButton from './PublishButton';
 import styles from '../styles/AppBar.scss';

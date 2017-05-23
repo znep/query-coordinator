@@ -159,7 +159,7 @@ export class FeedbackPanel extends Component {
   }
 
   tryEscDismiss(event) {
-    // Copy some of the close behavior of socrata-components flannels because they don't
+    // Copy some of the close behavior of common/components flannels because they don't
     // support the behavior we want for the feedback panel yet.
     if (event.keyCode === ESCAPE_KEY_CODE) {
       this.onDismissFeedback();

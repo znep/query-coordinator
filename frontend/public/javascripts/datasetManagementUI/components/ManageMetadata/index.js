@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
+import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 
 import {
   dismissMetadataPane,

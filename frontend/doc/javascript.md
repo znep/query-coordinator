@@ -159,7 +159,6 @@ We also pull in a few internal libraries that allow us to share JavaScript code 
 company:
 
 - [socrata-visualizations](https://github.com/socrata/frontend-visualizations), a library of jQuery components that render visualizations.
-- [socrata-components](https://github.com/socrata/styleguide), a library of React components used to render user interface elements.
 
 These internal libraries are hosted on our private artifactory.
 

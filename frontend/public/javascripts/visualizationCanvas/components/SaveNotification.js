@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { SocrataIcon } from 'socrata-components';
+import { SocrataIcon } from 'common/components';
 import { t } from '../lib/I18n';
 import { SaveStates } from '../lib/constants';
 import { save, clearSaveState } from '../actions';

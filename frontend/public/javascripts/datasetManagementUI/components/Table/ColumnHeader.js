@@ -6,7 +6,7 @@ import { soqlTypes, soqlProperties } from '../../lib/soqlTypes';
 import * as Links from '../../links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Table/ColumnHeader.scss';
-import { Dropdown } from 'socrata-components';
+import { Dropdown } from 'common/components';
 
 const Translations = I18n.show_output_schema.column_header;
 

@@ -9,7 +9,7 @@ var className = 'icon';
 var buildTimestamp = Math.round(Date.now() / 1000);
 
 var path = require('path');
-var commonRoot = path.resolve(__dirname, '../../..');
+var commonRoot = path.resolve(__dirname, '..', '..', '..');
 
 function commonPath(p) {
   return path.resolve(commonRoot, p);

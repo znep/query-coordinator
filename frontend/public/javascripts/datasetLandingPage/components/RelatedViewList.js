@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import BootstrapAlert from './BootstrapAlert';
-import { ViewCard } from 'socrata-components';
+import { ViewCard } from 'common/components';
 import { getViewCardPropsForView } from '../../common/helpers/viewCardHelpers';
 import { RELATED_VIEWS_CHUNK_SIZE } from '../../common/constants';
 import { handleKeyPress } from '../../common/a11yHelpers';

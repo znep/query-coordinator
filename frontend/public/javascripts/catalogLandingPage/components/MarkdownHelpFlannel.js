@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Styleguide from 'socrata-components';
+import Styleguide from 'common/components';
 
 export class MarkdownHelpFlannel extends React.Component {
   render() {

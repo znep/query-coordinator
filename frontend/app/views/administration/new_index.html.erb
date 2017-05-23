@@ -1,6 +1,6 @@
 <%- prefix = 'screens.admin.index' %>
 <% content_for :head do %>
-  <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css" />
+  <%= rendered_stylesheet_tag 'styleguide' %>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css" />
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-new-index-screen' %>

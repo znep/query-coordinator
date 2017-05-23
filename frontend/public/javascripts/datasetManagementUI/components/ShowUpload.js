@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalContent } from 'socrata-components';
+import { Modal, ModalHeader, ModalContent } from 'common/components';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
 import SocrataIcon from '../../common/components/SocrataIcon';

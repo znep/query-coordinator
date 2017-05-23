@@ -6,7 +6,7 @@ var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/adminActivityFeed'),
+  context: path.resolve(common.frontendRoot, 'public/javascripts/adminActivityFeed'),
   entry: './main.js',
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/adminActivityFeed/.eslintrc.json'),
@@ -19,7 +19,8 @@ module.exports = _.defaultsDeep({
       },
       {
         test: /\.svg/,
-        loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+        loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
+        exclude: common.svgFontPath
       },
       {
         test: /\.png$/,
@@ -28,11 +29,6 @@ module.exports = _.defaultsDeep({
     ]
   },
   resolve: _.extend(
-    {
-      alias: {
-        'styleguide': 'socrata-components/dist/js/styleguide.js'
-      }
-    },
     common.getStandardResolve([ 'public/javascripts/adminActivityFeed' ])
   ),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

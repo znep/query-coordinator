@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { closeShareModal, setEmbedSize } from '../actions';
-import { Dropdown, Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
+import { Dropdown, Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { t } from '../lib/I18n';
 import { generateEmbedCode, components as SocrataVisualizations } from 'socrata-visualizations';
 

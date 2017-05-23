@@ -39,7 +39,7 @@ export function getTextFilter(column, filter, values, isNegated) {
 }
 
 export function getFilterToggleText(filter, column) {
-  if (filter.function === 'noop') {
+  if (filter.function === 'noop') { // eslint-disable-line dot-notation
     return column.name;
   }
 

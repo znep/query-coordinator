@@ -6,6 +6,10 @@
   <title><%= t('screens.admin.sdp.edit.editing', :title => @widget_customization.name) %> | <%= t('screens.admin.sdp.edit.default_title') %> | <%= get_site_title %></title>
 <% end %>
 
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.sdp.listing.default_title') %>
+<% end %>
+
 <%= render :partial => 'left_nav' %>
 
 <div class="contentBox withLeftNavigation">

@@ -16,6 +16,14 @@
   <%= render_translations LocalePart.table %>
 <% end %>
 
+<% content_for :breadcrumb do %>
+  <%= t("screens.admin.jobs.index_page.title") %>
+<% end %>
+
+<% content_for :admin_header do %>
+  <div id="activity-feed-header"></div>
+<% end %>
+
 <div
   id="app"
   data-alert-type="<%= (@alert || {}).fetch(:type, nil) %>"

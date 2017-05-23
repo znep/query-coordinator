@@ -16,6 +16,7 @@ class App extends React.Component {
     const detailsModal = this.props.detailsModal ? <DetailsModal /> : null;
     const restoreModal = this.props.restoreModal ? <RestoreModal /> : null;
     const loadingSpinner = this.props.loading ? <LoadingSpinner /> : null;
+    const filterBar = this.props.hasFilterBar ? <FilterBar /> : null;
 
     return (
       <div>
@@ -23,13 +24,17 @@ class App extends React.Component {
         {alert}
         {detailsModal}
         {restoreModal}
-        <FilterBar />
+        {filterBar}
         <ActivityFeedTable />
         <EmptyState />
       </div>
     );
   }
 }
+
+App.propTypes = {
+  hasFilterBar: React.PropTypes.bool.isRequired
+};
 
 const mapStateToProps = (state) => ({
   loading: state.get('loading'),

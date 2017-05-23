@@ -129,6 +129,10 @@ module AdminHelper
     CurrentDomain.user_can?(current_user, UserRights::USE_DATA_CONNECTORS)
   end
 
+  def render_admin_breadcrumb
+    render :partial => 'administration/admin_breadcrumb', :layout => false
+  end
+
   private
 
   def a11y_summary(opts)

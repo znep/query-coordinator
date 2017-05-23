@@ -9,6 +9,10 @@
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.routing_approval.title')  %>
+<% end %>
+
 <%= render :partial => 'left_nav' %>
 
 <div id="routingApprovalContent" class="contentBox withLeftNavigation">

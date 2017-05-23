@@ -26,5 +26,4 @@ module AdministrationHelper
     !!current_user.try(:can_use_site_appearance?) &&
       !SocrataSiteChrome::CustomContent.new(CurrentDomain.cname).activated?
   end
-
 end

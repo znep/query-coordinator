@@ -11,6 +11,7 @@ import Localization from './components/Localization/Localization';
 import serviceLocator from './middlewares/serviceLocator';
 
 import App from './App';
+import FilterBar from './components/FilterBar/FilterBar';
 
 import reducer from './reducer';
 import {
@@ -19,7 +20,21 @@ import {
   loadActivities
 } from './actions';
 
+const renderWithLocalization = (translations, children) => {
+  return (
+    <Localization
+      translations={translations}
+      locale={serverConfig.locale || 'en'}
+      localePrefix={serverConfig.localePrefix}
+      returnKeyForNotFound={true}
+      root="screens.admin.jobs">
+      {children}
+    </Localization>
+  );
+};
+
 const containerElement = document.querySelector('#app');
+const headerContainerElement = document.querySelector('#activity-feed-header');
 const alertType = containerElement.getAttribute('data-alert-type');
 const alertTranslationKey = containerElement.getAttribute('data-alert-translation-key');
 
@@ -56,17 +71,14 @@ const store = createStore(reducer, initialState, enhancer);
 
 document.addEventListener('DOMContentLoaded', () => {
   const translations = (blist || {}).translations || {};
+
   ReactDOM.render(
-    <Localization
-      translations={translations}
-      locale={serverConfig.locale || 'en'}
-      localePrefix={serverConfig.localePrefix}
-      returnKeyForNotFound={true}
-      root="screens.admin.jobs">
+    renderWithLocalization(
+      translations,
       <Provider store={store}>
-        <App />
+        <App hasFilterBar={headerContainerElement === null} />
       </Provider>
-    </Localization>,
+    ),
     containerElement,
     () => {
       const initialData = window.initialData;
@@ -85,4 +97,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   );
+
+  if (headerContainerElement) {
+    ReactDOM.render(
+      renderWithLocalization(
+        translations,
+        <Provider store={store}>
+          <FilterBar />
+        </Provider>
+      ),
+      headerContainerElement
+    );
+  }
 });

@@ -60,6 +60,10 @@ http://www.socrata.com
 
   <%= rendered_stylesheet_tag 'print', 'print' %>
 
+  <%- if render_admin_header? %>
+    <%= rendered_stylesheet_tag 'administration-header' %>
+  <%- end %>
+
   <%= jquery_include %>
   <%= javascript_error_helper_tag %>
 
@@ -128,6 +132,13 @@ http://www.socrata.com
       <%- unless enable_govstat_chrome? -%>
         <%= render_domain_template(@page_custom_chrome || 'content_chrome') %>
       <%- end -%>
+
+      <%- if render_admin_header? %>
+        <div class="admin-header">
+          <%= render_admin_breadcrumb %>
+          <%= yield :admin_header %>
+        </div>
+      <%- end %>
 
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>

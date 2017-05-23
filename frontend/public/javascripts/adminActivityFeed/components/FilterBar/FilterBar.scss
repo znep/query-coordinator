@@ -3,12 +3,13 @@
 .filter-bar {
   width: 100%;
   margin-top: 15px;
-  padding: 10px 10px 0 10px;
   display: flex;
   justify-content: space-between;
-  background-color: $light-grey-7;
-  border-bottom: 2px solid $light-grey-5;
   color: $dark-grey-2;
+
+  .filter-bar-filter {
+    margin-right: 15px;
+  }
 
   .quick-filters {
     font-size: 15px;

@@ -4,7 +4,11 @@
   <title><%= t('screens.admin.connector.title') %> | <%= get_site_title %></title>
 <% end %>
 
-<%= render 'left_nav' %>
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.connector.title')  %>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
 
 <%= include_webpack_bundle 'admin/admin-new-connector.js' %>
 

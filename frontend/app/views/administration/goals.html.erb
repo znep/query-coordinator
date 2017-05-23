@@ -6,7 +6,12 @@
   </script>
   <link rel="stylesheet" href="/stylesheets/socrata-components/css/styleguide.min.css" />
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css" />
+  <%= rendered_stylesheet_tag 'administration-screen' %>
   <title><%= t('govstat.admin.page_title') %> | <%= get_site_title %></title>
+<% end %>
+
+<% content_for :breadcrumb do %>
+  <%= t('govstat.admin.page_title') %>
 <% end %>
 
 <div id="app"></div>

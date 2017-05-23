@@ -8,8 +8,12 @@
 
 <%= display_standard_flashes %>
 
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.site_appearance.site_appearance') %>
+<% end %>
+
 <div class="site-appearance <%= 'custom' if enable_custom_chrome? %>">
-  <div class="admin-header">
+  <div class="site-appearance-admin-header">
     <div class="header-title">
       <h1><%= t('screens.admin.site_appearance.site_appearance') %></h1>
     </div>

@@ -8,7 +8,12 @@
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.users.title') %>
+<% end %>
+
 <%= render :partial => 'left_nav' %>
+
 <%- no_js = params[:no_js].present? -%>
 
 <div class="contentBox withLeftNavigation usersScreen">

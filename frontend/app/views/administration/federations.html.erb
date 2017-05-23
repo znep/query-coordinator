@@ -5,6 +5,10 @@
   <title><%= t("#{socrata_federation}.title") %> | <%= get_site_title %></title>
 <% end %>
 
+<% content_for :breadcrumb do %>
+  <%= t("#{socrata_federation}.title") %>
+<% end %>
+
 <%= render :partial => 'left_nav' %>
 
 <div id="federationContent" class="contentBox withLeftNavigation">

@@ -605,8 +605,8 @@ module ApplicationHelper
   # of your layouts/foo.html.erb:
   #
   # <% parent_layout('outer') %>
-  def parent_layout(layout)
-    @content_for_layout = self.output_buffer
+  def parent_layout(layout, &block)
+    @view_flow.get(:layout).replace(capture(&block))
     self.output_buffer = render(:file => "layouts/#{layout}")
   end
 
@@ -1125,6 +1125,15 @@ module ApplicationHelper
         #{FeatureFlags.derive(nil, request).to_json};
     OUT
     )
+  end
+
+  def render_admin_header?
+    is_admin_controller = controller_name == 'administration' ||
+                          controller_name == 'site_appearance' ||
+                          controller_name == 'connector' ||
+                          controller_name == 'routing_approval' ||
+                          controller_name == 'activity_feed'
+    is_admin_controller && FeatureFlags.derive(nil, request)[:enable_new_admin_ui]
   end
 
 end

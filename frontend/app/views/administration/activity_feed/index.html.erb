@@ -19,6 +19,10 @@
   <%= render_translations LocalePart.screens.admin.jobs.index_page %>
 <% end %>
 
+<% content_for :breadcrumb do %>
+  <%= t("screens.admin.jobs.index_page.title") %>
+<% end %>
+
 <%= render :partial => 'left_nav' %>
 
 <div class="contentBox withLeftNavigation jobsScreen">

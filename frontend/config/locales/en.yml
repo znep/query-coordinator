@@ -3112,6 +3112,7 @@ en:
           content: Content
           super_admin: Super Admin
           site_settings: Site Settings
+        page_title: Administration
         comment_moderation: Comment Moderation
         comment_moderation_description: Review and moderate comments for datasets on your site
         connectors: Connectors

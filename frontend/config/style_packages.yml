@@ -107,6 +107,8 @@ screen-login:
 administration-screen:
 - jquery.dropdown.min
 - screen-admin
+administration-header:
+- screen-admin-header
 administration-browse-widget:
 - control-pane
 - grid-sidebar

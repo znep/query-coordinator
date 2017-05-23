@@ -14,7 +14,7 @@ function App(props) {
   }
 
   return (
-    <div className="app-container">
+    <div className="app-container admin-goals-page">
       <Components.PreviewBar />
       <div className="main-section" role="main">
         <Components.HeaderBar />

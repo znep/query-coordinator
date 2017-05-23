@@ -9,7 +9,11 @@
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
-<%= render 'left_nav' %>
+<% content_for :breadcrumb do %>
+  <%= t("#{prefix}.title") %>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
 
 <div id="datasetContent" class="contentBox withLeftNavigation">
   <div class="adminHeader datasets">

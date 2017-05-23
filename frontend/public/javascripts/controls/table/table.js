@@ -2069,7 +2069,8 @@
     /*** HTML RENDERING ***/
 
     var headerStr =
-      '<input type="text" class="blist-table-navigator hiddenTextField" />' +
+      '<label for="blist-table-navigator" class="accessible">hiddenTextField</label>' +
+      '<input id="blist-table-navigator" type="text" class="blist-table-navigator hiddenTextField" />' +
       '<div class="blist-table-locked-scrolls">' +
       '   <div class="blist-table-locked-header">&nbsp;</div>' +
       '   <div class="blist-table-locked">' +

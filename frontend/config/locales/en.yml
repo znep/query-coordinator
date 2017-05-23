@@ -4862,6 +4862,7 @@ en:
         private_notice: 'Notice: This %{displayName} is currently private. Emailing will grant access to all recipients.'
         prompt_html: 'Share <span class="datasetName">%{name}</span> with the following email addresses:'
         remove_email: Remove
+        role: Role
         success: Your email has been successfully sent.
         title_html: Share &quot;<span class="datasetName">%{name}</span>&quot;
       fatrow:

@@ -79,6 +79,7 @@ module CommonMetadataMethods
         when 'phidippides-only'
           fetch_dataset_metadata_from_phidippides(dataset_id, options)
         when 'core-only'
+          raise 'The core-only metadata fetch mode is not fully supported yet!'
           fetch_dataset_metadata_from_core(dataset_id, options)
         when 'mixed-mode'
           fetch_dataset_metadata_in_mixed_mode(dataset_id, options)
@@ -107,11 +108,9 @@ module CommonMetadataMethods
     dataset_metadata = result[:body]
     dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /\A20[0-9]\z/
 
-    if options[:add_table_column]
-      add_table_column_to_dataset_metadata!(dataset_metadata)
-    end
+    add_table_column_to_dataset_metadata!(dataset_metadata)
 
-    flag_subcolumns!(dataset_metadata.fetch(:columns, {}))
+    flag_subcolumns!(dataset_metadata[:columns])
 
     dataset_metadata
   end
@@ -178,8 +177,6 @@ module CommonMetadataMethods
   def flag_subcolumns!(columns)
     # The OBE->NBE conversion doesn't add any metadata to allow us to differentiate sub-columns,
     # except that it has a naming convention of "Parent Column Name (Sub-column Name)"
-
-    return columns if columns.nil?
 
     # Create a mapping from the name, to all field_names that have that name
     field_name_by_name = Hash.new { |hash, key| hash[key] = [] }
@@ -262,17 +259,6 @@ module CommonMetadataMethods
     nbe_view = view.nbe_view
     nbe_metadata = nbe_view.nil? ? {} : nbe_view.data.with_indifferent_access
     core_metadata = translate_core_metadata_to_legacy_structure(nbe_metadata)
-    # Add dataset-level fields that phidippides is expected to return
-    # because we want to use the obe dataset's information instead of the nbe 4x4
-    core_metadata.merge!(
-      domain: CurrentDomain.cname,
-      id: view.id,
-      locale: I18n.locale,
-      name: view.name,
-      ownerId: view.owner.id,
-      updatedAt: view.time_metadata_last_updated_at
-    )
-
     { body: core_metadata, status: '200' }
   end
 

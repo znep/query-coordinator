@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames';
+import { SocrataIcon } from 'socrata-components';
 import Scrolls from '../shared/Scrolls';
 
 class AccordionPane extends React.Component {
@@ -66,7 +67,7 @@ class AccordionPane extends React.Component {
              onKeyDown={this.handleKeyDown}
              ref={(ref) => this.paneTitleElement = ref}>
           <span>{title}</span>
-          <div className="dropdown-caret"></div>
+          <SocrataIcon name="arrow-down" className="dropdown-caret" key="dropdown-caret" />
         </div>
         <div className="socrata-accordion-pane-content" ref="content">
           {children}

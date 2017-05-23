@@ -80,6 +80,7 @@ export function bootstrap(store, initialView, initialRevision, customMetadata) {
     insertAndSubscribeToUpload(store.dispatch, upload);
   });
 
+  initialRevision.upsert_jobs = initialRevision.upsert_jobs || initialRevision.task_sets; // Name transition
   initialRevision.upsert_jobs.forEach(upsertJob => {
     operations.push(
       upsertFromServer('upsert_jobs', {

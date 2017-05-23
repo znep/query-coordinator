@@ -44,6 +44,7 @@ const AXIS_GRID_COLOR = '#f1f1f1';
 const NO_VALUE_SENTINEL = '__NO_VALUE__';
 // Limits width of dimension chart labels.
 const MIN_WIDTH_RESERVED_FOR_CHART = 25;
+const SMALL_VIEWPORT_WIDTH = 400;
 
 function SvgBarChart($element, vif, options) {
   const self = this;
@@ -915,7 +916,7 @@ function SvgBarChart($element, vif, options) {
     // }
 
     d3XScale = generateXScale(minXValue, maxXValue, width);
-    d3XAxis = generateXAxis(d3XScale);
+    d3XAxis = generateXAxis(d3XScale, width);
 
     /**
      * 3. Set up the y-scale and -axis.
@@ -1506,12 +1507,18 @@ function SvgBarChart($element, vif, options) {
       range([0, width]);
   }
 
-  function generateXAxis(xScale) {
+  function generateXAxis(xScale, width) {
 
-    return d3.svg.axis().
+    const axis = d3.svg.axis().
       scale(xScale).
       orient('top').
-      tickFormat((d) => { return utils.formatNumber(d); });
+      tickFormat((d) => utils.formatNumber(d));
+
+    if (width <= SMALL_VIEWPORT_WIDTH) {
+      axis.ticks(Math.ceil(width / 100));
+    }
+
+    return axis;
   }
 
   function getSeriesIndexByMeasureIndex(measureIndex) {

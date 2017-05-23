@@ -1,4 +1,5 @@
 @import "styleguide-colors";
+@import "internal-asset-manager/action_dropdown";
 @import "internal-asset-manager/mixins/multi_line_ellipsis";
 
 table.result-list-table {
@@ -47,6 +48,16 @@ table.result-list-table {
   }
 
   tr.result-list-row {
+    &:hover {
+      background: $primary-light;
+
+      td.name {
+        span.description {
+          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $primary-light);
+        }
+      }
+    }
+
     td {
       &.name {
         a {

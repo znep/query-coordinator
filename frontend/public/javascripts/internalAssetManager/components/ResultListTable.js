@@ -33,6 +33,7 @@ export class ResultListTable extends React.Component {
         isPublished: result.metadata.is_published,
         isRoutingApproved: result.metadata.is_routing_approved,
         link: result.link,
+        uid: result.resource.id,
         visibleToAnonymous: result.metadata.visible_to_anonymous
       },
       _.pick(result.resource, ['description', 'name', 'provenance', 'type', 'updatedAt'])

@@ -1,7 +1,7 @@
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
   'internal-asset-manager.config.js',
-  [ 'karma/internalAssetManager', 'public/javascripts' ]
+  [ 'karma/internalAssetManager', 'karma/helpers', 'public/javascripts' ]
 );
 
 // In Rails, some modules are handled specially. We don't want that for tests.

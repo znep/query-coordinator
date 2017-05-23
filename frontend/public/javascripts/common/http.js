@@ -18,6 +18,11 @@ export function checkStatus(response) {
   throw error;
 }
 
+// Wrapper around `document.location.reload`, mainly to make testing easier.
+export function reload() {
+  document.location.reload();
+}
+
 // Object mapping of the current url params
 export const urlParams = () => (
   _(document.location.search.slice(1).split('&')).

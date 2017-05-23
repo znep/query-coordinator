@@ -11,6 +11,7 @@ describe('components/ResultListRow', () => {
     link: 'https://data.seattle.gov/dataset/blah-blah/cfa5-i2ky',
     name: 'Haley Joel Osment',
     type: 'datalens',
+    uid: 'abcd-1234',
     updatedAt: '2017-04-21T18:31:29.000Z',
     visibleToAnonymous: true,
     ...options

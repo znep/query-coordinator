@@ -2631,6 +2631,51 @@ en:
       fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.
     result_list_table:
+      action_dropdown:
+        title: Actions
+        add_collaborators: Add Collaborators...
+        edit_metadata: Edit Metadata...
+        change_visibility: Change Visibility...
+        change_permissions: Change Permissions...
+        transfer_ownership: Transfer Ownership...
+        delete_asset: Delete...
+      action_modal:
+        add_collaborators:
+          header: TODO
+          description: TODO
+          accept: TODO
+          dismiss: Cancel
+          error: TODO
+        edit_metadata:
+          header: TODO
+          description: TODO
+          accept: TODO
+          dismiss: Cancel
+          error: TODO
+        change_visibility:
+          header: TODO
+          description: TODO
+          accept: TODO
+          dismiss: Cancel
+          error: TODO
+        change_permissions:
+          header: TODO
+          description: TODO
+          accept: TODO
+          dismiss: Cancel
+          error: TODO
+        transfer_ownership:
+          header: TODO
+          description: TODO
+          accept: TODO
+          dismiss: Cancel
+          error: TODO
+        delete_asset:
+          header: Delete?
+          description: Are you sure you want to delete this asset?
+          accept: Delete
+          dismiss: Cancel
+          error: Sorry, there was an error deleting this asset. Please refresh and try again or contact support@socrata.com if it continues.
       columns:
         access_level: Access Level
         category: Category

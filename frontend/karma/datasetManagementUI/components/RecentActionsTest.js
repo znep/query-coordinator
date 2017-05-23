@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import ActivityFeed from 'components/ActivityFeed';
+import RecentActions from 'components/RecentActions';
 import { getEmptyStore } from '../testStore';
 import {
   upsertFromServer
@@ -104,12 +104,12 @@ function insertUpsertFailed(store) {
   }));
 }
 
-describe('components/ActivityFeed', () => {
+describe('components/RecentActions', () => {
   it('renders nothing when there is nothing', () => {
     const store = getEmptyStore();
     insertView(store);
 
-    const element = renderComponentWithStore(ActivityFeed, {}, store);
+    const element = renderComponentWithStore(RecentActions, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(0);
   });
 
@@ -118,7 +118,7 @@ describe('components/ActivityFeed', () => {
     insertView(store);
     insertRevision(store);
 
-    const element = renderComponentWithStore(ActivityFeed, {}, store);
+    const element = renderComponentWithStore(RecentActions, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(1);
     expect(element.querySelector('.createdBy').innerText).to.eql('rozap');
   });
@@ -129,7 +129,7 @@ describe('components/ActivityFeed', () => {
     insertRevision(store);
     insertUpload(store);
 
-    const element = renderComponentWithStore(ActivityFeed, {}, store);
+    const element = renderComponentWithStore(RecentActions, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(2);
     expect(element.querySelector('[data-activity-type=upload] .createdBy').innerText).to.eql('bob');
   });
@@ -141,7 +141,7 @@ describe('components/ActivityFeed', () => {
     insertUpload(store);
     insertOutputSchema(store);
 
-    const element = renderComponentWithStore(ActivityFeed, {}, store);
+    const element = renderComponentWithStore(RecentActions, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(3);
     expect(element.querySelector('[data-activity-type=outputschema] .createdBy').innerText).to.eql('fred');
   });
@@ -154,7 +154,7 @@ describe('components/ActivityFeed', () => {
     insertOutputSchema(store);
     insertUpsertInProgress(store);
 
-    const element = renderComponentWithStore(ActivityFeed, {}, store);
+    const element = renderComponentWithStore(RecentActions, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(4);
     expect(element.querySelector('[data-activity-type=upsert] .createdBy').innerText).to.eql('foo');
   });
@@ -167,7 +167,7 @@ describe('components/ActivityFeed', () => {
     insertOutputSchema(store);
     insertUpsertComplete(store);
 
-    const element = renderComponentWithStore(ActivityFeed, {}, store);
+    const element = renderComponentWithStore(RecentActions, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(5);
     assert.ok(element.querySelector('[data-activity-type=upsertcompleted]'));
   });
@@ -180,7 +180,7 @@ describe('components/ActivityFeed', () => {
     insertOutputSchema(store);
     insertUpsertFailed(store);
 
-    const element = renderComponentWithStore(ActivityFeed, {}, store);
+    const element = renderComponentWithStore(RecentActions, {}, store);
     expect(element.querySelectorAll('.activity').length).to.equal(5);
     assert.ok(element.querySelector('[data-activity-type=upsertfailed]'));
   });

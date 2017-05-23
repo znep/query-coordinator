@@ -175,7 +175,8 @@ export const createUpload = file => (dispatch, getState) => {
       dispatch(
         upsertSucceeded('uploads', uploadInsert, {
           id: newUpload.id,
-          created_by: newUpload.created_by
+          created_by: newUpload.created_by,
+          created_at: parseDate(newUpload.inserted_at || newUpload.created_at)
         })
       );
 

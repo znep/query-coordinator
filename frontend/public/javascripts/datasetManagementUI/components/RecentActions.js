@@ -6,9 +6,9 @@ import * as Links from '../links';
 import moment from 'moment';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import * as ApplyRevision from '../actions/applyRevision';
-import styles from 'styles/ActivityFeed.scss';
+import styles from 'styles/RecentActions.scss';
 
-function ActivityFeedTimestamp({ date }) {
+function RecentActionsTimestamp({ date }) {
   return (
     <span className={styles.timestamp}>
       {moment.utc(date).fromNow()}
@@ -16,7 +16,7 @@ function ActivityFeedTimestamp({ date }) {
   );
 }
 
-ActivityFeedTimestamp.propTypes = {
+RecentActionsTimestamp.propTypes = {
   date: PropTypes.object.isRequired
 };
 
@@ -38,7 +38,7 @@ const updateActivity = (update, at) => {
         <span className={styles.createdBy}>{creator(update)}</span>&nbsp;
         opened a revision
       </p>
-      <ActivityFeedTimestamp date={at} />
+      <RecentActionsTimestamp date={at} />
     </div>
   </div>);
 };
@@ -54,7 +54,7 @@ const uploadActivity = (upload, at) => {
         <span className={styles.createdBy}>{creator(upload)}</span>&nbsp;
         uploaded a file
       </p>
-      <ActivityFeedTimestamp date={at} />
+      <RecentActionsTimestamp date={at} />
     </div>
   </div>);
 };
@@ -74,7 +74,7 @@ const outputSchemaActivity = (item, at) => {
           schema
         </Link>
       </p>
-      <ActivityFeedTimestamp date={at} />
+      <RecentActionsTimestamp date={at} />
     </div>
   </div>);
 };
@@ -90,7 +90,7 @@ const upsertActivity = (upsert, at) => {
         <span className={styles.createdBy}>{creator(upsert)}</span>&nbsp;
         started data processing
       </p>
-      <ActivityFeedTimestamp date={at} />
+      <RecentActionsTimestamp date={at} />
     </div>
   </div>);
 };
@@ -106,7 +106,7 @@ const upsertCompletedActivity = (upsert, at) => {
       <p>
         Data processing successfully finished
       </p>
-      <ActivityFeedTimestamp date={at} />
+      <RecentActionsTimestamp date={at} />
     </div>
   </div>);
 };
@@ -121,7 +121,7 @@ const upsertFailedActivity = (upsert, at) => {
       <p>
         Data processing failed
       </p>
-      <ActivityFeedTimestamp date={at} />
+      <RecentActionsTimestamp date={at} />
     </div>
   </div>);
 };
@@ -137,7 +137,7 @@ function activitiesOf(db) {
   const uploads = _.map(db.uploads, (upload) => ({
     type: 'upload',
     value: upload,
-    at: upload.finished_at
+    at: upload.created_at
   }));
   const outputSchemas = _.map(db.output_schemas, (outputSchema) => {
     const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
@@ -201,10 +201,10 @@ function activitiesOf(db) {
     ...finishedUpserts,
     ...failedUpserts
   ];
-  return _.sortBy(items, 'at').map(toView);
+  return _.reverse(_.sortBy(items, 'at')).map(toView);
 }
 
-function ActivityFeed({ db }) {
+function RecentActions({ db }) {
   const items = activitiesOf(db);
   return (
     <div>
@@ -213,7 +213,7 @@ function ActivityFeed({ db }) {
   );
 }
 
-ActivityFeed.propTypes = {
+RecentActions.propTypes = {
   routing: PropTypes.object.isRequired,
   db: PropTypes.object.isRequired
 };
@@ -223,4 +223,4 @@ const mapStateToProps = ({ db, routing }) => ({
   routing: routing.location
 });
 
-export default connect(mapStateToProps)(ActivityFeed);
+export default connect(mapStateToProps)(RecentActions);

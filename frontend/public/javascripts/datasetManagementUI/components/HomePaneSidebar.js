@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
-import ActivityFeed from './ActivityFeed';
+import RecentActions from './RecentActions';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/HomePaneSidebar.scss';
 
@@ -92,7 +92,7 @@ ManageData.propTypes = {
 function HomePaneSidebar(props) {
   const { urlParams } = props;
   const showLog = urlParams.sidebarSelection === 'log';
-  const contents = showLog ? (<ActivityFeed />) : <ManageData {...props} />;
+  const contents = showLog ? (<RecentActions />) : <ManageData {...props} />;
 
   return (
     <div className={styles.sidebar}>

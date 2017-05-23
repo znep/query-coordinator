@@ -64,14 +64,15 @@ export function pollForUpsertJobProgress(upsertJobId) {
       then(getJson).
       then(resp => {
         if (resp) {
-          const update = resp.resource;
-          update.upsert_jobs.forEach((upsertJob) => {
+          const revision = resp.resource;
+          revision.upsert_jobs = revision.upsert_jobs || revision.task_sets; // Use the new name if it's available.
+          revision.upsert_jobs.forEach((upsertJob) => {
             dispatch(updateFromServer('upsert_jobs', {
               ...upsertJob,
               finished_at: parseDate(upsertJob.finished_at)
             }));
           });
-          if (_.map(update.upsert_jobs, 'status').some((status) => status === UPSERT_JOB_IN_PROGRESS)) {
+          if (_.map(revision.upsert_jobs, 'status').some((status) => status === UPSERT_JOB_IN_PROGRESS)) {
             setTimeout(() => {
               dispatch(pollForUpsertJobProgress(upsertJobId));
             }, UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS);

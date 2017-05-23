@@ -312,11 +312,8 @@ function SvgFeatureMap(element, vif, options) {
       if (locateUser) {
         mapLocateUserButton.on('click', handleLocateUserButtonClick);
 
-        if (!_.get(vif, 'configuration.isMobile')) {
+        if (!self.isMobile()) {
           mapLocateUserButton.on('mousemove', handleLocateUserButtonMousemove);
-        }
-
-        if (!vif.configuration.isMobile) {
           mapLocateUserButton.on('mouseout', hideFlyout);
         }
       }
@@ -462,7 +459,7 @@ function SvgFeatureMap(element, vif, options) {
   function handleLocateUserButtonClick() {
     updateLocateUserButtonStatus('busy');
 
-    if (!_.get(vif, 'configuration.isMobile')) {
+    if (!self.isMobile()) {
       showLocateUserButtonFlyout();
     }
 
@@ -553,7 +550,7 @@ function SvgFeatureMap(element, vif, options) {
   function handleLocateUserError() {
     updateLocateUserButtonStatus('error');
 
-    if (!_.get(vif, 'configuration.isMobile')) {
+    if (!self.isMobile()) {
       showLocateUserButtonFlyout();
     }
   }
@@ -619,7 +616,7 @@ function SvgFeatureMap(element, vif, options) {
   }
 
   function handleVectorTileClick(event) {
-    if (vif.configuration.isMobile) {
+    if (self.isMobile()) {
       flyoutData.offset = {
         x: event.originalEvent.clientX,
         y: event.originalEvent.clientY + FEATURE_MAP_FLYOUT_Y_OFFSET
@@ -629,9 +626,7 @@ function SvgFeatureMap(element, vif, options) {
     }
 
     var inspectorDataQueryConfig;
-    var position = vif.configuration.isMobile ?
-      { pageX: 0, pageY: (mapContainer.height() + mapContainer.offset().top) } :
-      { pageX: event.originalEvent.pageX, pageY: event.originalEvent.pageY };
+    var position = { pageX: event.originalEvent.pageX, pageY: event.originalEvent.pageY };
 
     if (flyoutData.count > 0 &&
       flyoutData.count <= maxRowInspectorDensity) {
@@ -643,15 +638,7 @@ function SvgFeatureMap(element, vif, options) {
         queryBounds: getQueryBounds(event.containerPoint)
       };
 
-      if (vif.configuration.isMobile) {
-        map.panTo(event.latlng);
-        var bottom = $('.map-container').height() + $('.map-container').offset().top - 120;
-        inspectorDataQueryConfig.position.pageX = 0;
-        inspectorDataQueryConfig.position.pageY = bottom;
-      }
-
       showRowInspector(inspectorDataQueryConfig);
-
     }
   }
 
@@ -721,8 +708,8 @@ function SvgFeatureMap(element, vif, options) {
     }
 
     if (
-      !_.get(vif, 'configuration.isMobile') ||
-      (_.get(vif, 'configuration.isMobile') && (manyRows || denseData))
+      !self.isMobile() ||
+      (self.isMobile() && (manyRows || denseData))
     ) {
       self.emitEvent(
         'SOCRATA_VISUALIZATION_FLYOUT_SHOW',
@@ -1001,7 +988,7 @@ function SvgFeatureMap(element, vif, options) {
         onRenderComplete: handleVectorTileRenderComplete,
         onMousemove: handleVectorTileMousemove,
         onClick: handleVectorTileClick,
-        onTap: _.get(vif, 'configuration.isMobile') ? handleVectorTileMousemove : null
+        onTap: self.isMobile() ? handleVectorTileMousemove : null
       };
 
       // Don't create duplicate layers.

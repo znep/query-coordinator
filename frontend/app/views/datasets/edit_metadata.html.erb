@@ -23,7 +23,7 @@
 
     <div class="line clearfix">
       <%= label_tag('view[description]',  t('screens.edit_metadata.brief_description')) %>
-      <%= text_area_tag('view[description]', @view.description, :title => t('screens.edit_metadata.brief_description_prompt'), :class => "textPrompt") %>
+      <%= text_area_tag('view[description]', @view.description, :title => t('screens.edit_metadata.brief_description_prompt'), :class => 'textPrompt') %>
     </div>
 
     <div class="line clearfix">
@@ -160,7 +160,7 @@
                :hasCustomEdit => 1, :class => 'combo_button_edit' )
          %>
          <%= text_field_tag 'view[metadata[customRdfClass]]', @view.rdf_class, :name=>'view[metadata[customRdfClass]]',
-           :class => 'textValue hide combo_button_edit', 'aria-label' => 'view[metadata[customRdfClass]]'.chop.gsub(/[\[\]]+/, '_')
+           :class => 'textValue hide combo_button_edit', 'aria-label' => sanitize_to_id('view[metadata[customRdfClass]]')
          %>
          <ul class="comboToggle actionButtons"><li><a><%= t('screens.edit_metadata.custom') %></a></li></ul>
      </div>

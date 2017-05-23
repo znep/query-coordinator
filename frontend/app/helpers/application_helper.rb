@@ -727,22 +727,24 @@ module ApplicationHelper
     end
   end
 
+  def label_for(base, suffix = nil)
+    [sanitize_to_id(base), suffix].compact.join('_')
+  end
+
   def feature_flag_input(flag, flag_config, flag_value, options = {})
     name = "#{options.fetch(:namespace, 'feature_flags')}[#{flag}]"
     name = "view[metadata[#{name}]]" if options[:edit_metadata]
-
-    label_for = name.chop.gsub(/[\[\]]+/, '_')
 
     other_selected = [String, Array, Fixnum].include?(flag_value.class)
 
     html = []
     unless flag_config['disableTrueFalse']
       html << radio_button_tag(name, true, flag_value === true, :disabled => options[:disabled])
-      html << label_tag("#{label_for}true", 'true')
+      html << label_tag(label_for(name, 'true'), 'true')
       html << radio_button_tag(name, false, flag_value === false, :disabled => options[:disabled])
-      html << label_tag("#{label_for}false", 'false')
+      html << label_tag(label_for(name, 'false'), 'false')
       html << radio_button_tag(name, nil, other_selected, :class => 'other', :disabled => options[:disabled])
-      html << label_tag(label_for, 'Other:')
+      html << label_tag(label_for(name, ''), 'Other:')
     end
     if flag_config.expectedValues?
       html << select_tag(
@@ -750,15 +752,15 @@ module ApplicationHelper
                 options_for_select(flag_config.expectedValues.split(' ').
                   reject { |value| ['true', 'false'].include? value }, flag_value),
                 :disabled => options[:disabled],
-                'aria-label' => "#{name.chop.gsub(/[\[\]]+/, '_')}other")
+                'aria-label' => label_for(name, 'other'))
     else
       case flag_value
       when String, Fixnum
-        html << text_field_tag(name, flag_value, :disabled => options[:disabled], 'aria-label' => "#{name.chop.gsub(/[\[\]]+/, '_')}other")
+        html << text_field_tag(name, flag_value, :disabled => options[:disabled], 'aria-label' => label_for(name, 'other'))
       when Array
-        html << text_field_tag(name, flag_value.to_json, :disabled => options[:disabled], 'aria-label' => "#{name.chop.gsub(/[\[\]]+/, '_')}other")
+        html << text_field_tag(name, flag_value.to_json, :disabled => options[:disabled], 'aria-label' => label_for(name, 'other'))
       else
-        html << text_field_tag(name, nil, :disabled => options[:disabled], 'aria-label' => "#{name.chop.gsub(/[\[\]]+/, '_')}other")
+        html << text_field_tag(name, nil, :disabled => options[:disabled], 'aria-label' => label_for(name, 'other'))
       end
     end
 

@@ -117,7 +117,7 @@ Rails.application.routes.draw do
     scope :controller => 'internal_asset_manager' do
       get '/admin/datasets',
         :action => 'show',
-        :constraints => Constraints::InternalAssetManagerConstraint.new
+        :constraints => FeatureFlags::RoutingConstraint.new(:enable_internal_asset_manager)
     end
 
     scope :path => '/admin', :controller => 'administration' do

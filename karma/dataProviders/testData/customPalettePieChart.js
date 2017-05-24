@@ -40,6 +40,10 @@ export const customPalette = {
     "index": 6
   },
   "(Other)": {
+    "color": "#fdbb69",
+    "index": 11
+  },
+  "(No value)": {
     "color": "#f06c45",
     "index": 10
   }

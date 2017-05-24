@@ -16,7 +16,7 @@ describe('CustomColorPaletteManager', () => {
     beforeEach(() => {
       const results = {
         columns: ['dimension', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1'],
-        rows: [['3',118],['8',112],['5',111],['4',110],['6',107],['9',100],['10',92],['7',90],['1',83],['2',77],['(Other)',0]]
+        rows: [['3',118],['8',112],['5',111],['4',110],['6',107],['9',100],['10',92],['7',90],['1',83],['2',77],['(Other)',0], ['(No value)', 10]]
       };
       timeStub = sinon.stub();
       timeStub.returns(Promise.resolve(results));

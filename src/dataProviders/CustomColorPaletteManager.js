@@ -4,6 +4,7 @@ const TimeDataManager = require('./TimeDataManager');
 import { assert } from 'socrata-utils';
 import { COLOR_PALETTE_VALUES } from '../authoringWorkflow/constants';
 import * as selectors from '../authoringWorkflow/selectors/vifAuthoring';
+import * as I18n from '../I18n';
 
 /**
  * Returns either a default or modified custom color palette.
@@ -87,10 +88,14 @@ const generateCustomColorPalette = (vifAuthoring) => {
 
       _.forEach(groups, (group, groupIndex) => {
         let index;
-        const [ groupName ] = group;
+        let [ groupName ] = group;
+
+        if (_.isNull(groupName)) {
+          groupName = I18n.translate('visualizations.common.no_value');
+        }
 
         // This inserts the `(Other)` group at the end of the customColorPalette
-        if (groupName === '(Other)') {
+        if (groupName === I18n.translate('visualizations.common.other_category')) {
           index = lastIndexInGroups;
           offset = 1;
         } else {
@@ -125,9 +130,12 @@ const getDisplayedColorsFromCustomPalette = (displayedColumnTitles, currentPalet
     return baseColorPalette;
   } else {
 
+    const noValue = I18n.translate('visualizations.common.no_value');
     let paletteArray = _.transform(displayedColumnTitles, (result, value, index) => {
       if (_.has(currentPalette, value)) {
         result.push(currentPalette[value].color);
+      } else if (_.isUndefined(value) && _.has(currentPalette, noValue)) {
+        result.push(currentPalette[noValue].color);
       } else {
         result.push(baseColorPalette[index]);
       }

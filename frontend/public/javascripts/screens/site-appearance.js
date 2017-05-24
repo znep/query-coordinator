@@ -384,9 +384,14 @@ $('.list-of-links').on('click', '.add-new-link-row', function() {
 
   $newLinkRow.removeClass('default');
 
+  var $urlInput = $newLinkRow.find('.url-input');
+
   // EN-11064: Unique id so jquery validate plugin can hook onto individual url-inputs
   var randomId = Math.random().toString(36).slice(2);
-  $newLinkRow.find('.url-input').attr('id', randomId);
+  $urlInput.attr('id', randomId);
+
+  // EN-16394: Make URL inputs required.
+  $urlInput.attr('required', 'required');
 
   // Append newLinkMenu to end (of either top level or inside a menu).
   $(this).siblings('.links-and-menus, .child-links').append($newLinkRow);

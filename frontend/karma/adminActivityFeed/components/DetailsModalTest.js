@@ -21,20 +21,21 @@ describe('DetailsModal', () => {
       latest_event: {
         event_type: 'archive_error',
         info: {
-          reason: 'because..'
-        }
+          reason: 'because..',
+          badRowsPath: 'a_link'
+        },
+        status: 'failure'
       },
       created_at: '2000-01-01',
-      service: 'data.service'
+      service: 'data.service',
+      activity_name: 'file_name'
     },
     dataset: {
       name: 'dataset.name'
     },
     initiated_by: {
       displayName: 'initiated_by.displayName'
-    },
-    file_name: 'file_name',
-    bad_rows_url: 'a_link'
+    }
   };
 
   const httpClient = new MockHttpClient();
@@ -77,7 +78,7 @@ describe('DetailsModal', () => {
     const expectedInitiatedAt = `${mockTranslations.initiated_at}: ${moment(mockActivity.data.created_at).format('LLL')}`;
     const expectedStartedBy = `${mockTranslations.started_by}: ${mockActivity.initiated_by.displayName}`;
     const expectedImportMethod = `${mockTranslations.import_method}: ${mockActivity.data.service}`;
-    const expectedName = `${mockActivity.dataset.name}(${mockActivity.file_name})`;
+    const expectedName = `${mockActivity.dataset.name} (${mockActivity.data.activity_name})`;
 
     assert.equal(lineActivityType, mockActivity.data.activity_type);
     assert.equal(lineActivityName, expectedName);
@@ -86,7 +87,7 @@ describe('DetailsModal', () => {
     assert.equal(lineActivityInitiatedAt, expectedInitiatedAt);
     assert.equal(lineActivityStartedBy, expectedStartedBy);
     assert.equal(lineActivityImportMethod, expectedImportMethod);
-    assert.equal(lineActivityBadRowsDownloadLink, mockActivity.bad_rows_url);
+    assert.equal(lineActivityBadRowsDownloadLink, mockActivity.data.latest_event.info.badRowsPath);
   });
 
   it('close button should fire close event', (done) => {

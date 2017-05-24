@@ -27,7 +27,7 @@ export const deleteAsset = uid => dispatch => {
 
   dispatch(performingAction(ACTION_TYPE));
 
-  return fetch(`https://localhost/api/views/${uid}.json?accessType=WEBSITE`, fetchOptions).
+  return fetch(`/api/views/${uid}.json?accessType=WEBSITE`, fetchOptions).
     then(checkStatus).
     then(() => dispatch(performingActionSuccess(ACTION_TYPE))).
     then(reload).

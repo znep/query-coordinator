@@ -699,7 +699,7 @@ module.exports = function tableCard(
               }
               var wouldSortUp = getNextSortForColumn(columnId) === 'ASC';
 
-              html.push(`<a class="caret" href="#">${I18n.t('table.sort', wouldSortUp ? ascendingString : descendingString)}</a>`);
+              html.push(`<a class="caret" aria-label="sort" href="#">${I18n.t('table.sort', wouldSortUp ? ascendingString : descendingString)}</a>`);
               return html.join('<br>');
             } else {
               return I18n.t('table.noSort');

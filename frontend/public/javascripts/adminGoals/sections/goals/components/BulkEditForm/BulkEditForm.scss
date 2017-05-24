@@ -19,10 +19,6 @@
   color: $dark-grey-1;
 }
 
-.drafts-missing-notice {
-  margin-left: 1em;
-}
-
 .edit-goal-list {
   border-bottom: 1px solid $light-grey-3;
   background: $light-grey-6;
@@ -30,8 +26,7 @@
 }
 
 .edit-goal-list {
-  width: calc(100% - 2em);
-  margin-left: 2em;
+  width: 100%;
   border-collapse: collapse;
 
   tr {
@@ -53,5 +48,7 @@
 
   .modal-footer {
     padding: 8px;
+    background: $light-grey-6;
+    border-top: 1px solid $light-grey-3;
   }
 }

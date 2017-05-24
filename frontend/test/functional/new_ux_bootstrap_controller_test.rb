@@ -21,10 +21,10 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
       Airbrake.stubs(notify: nil)
       load_sample_data('test/fixtures/sample-data.json')
-      test_view = View.find('test-data')
+      @test_view = View.find('test-data')
       # TODO Refactor all of this... Both the controller and tests are a hot mess.
       # This doesn't work. #find is not an instance method
-      View.any_instance.stubs(:find => test_view)
+      View.any_instance.stubs(:find => @test_view)
       # TODO determine why 23 tests fail or break when :use_ephemeral_bootstrap is set to true
     end
 
@@ -39,15 +39,17 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         end
       end
 
-      should 'return 403 if anonymous - for V1 Data Lenses' do
-        get :bootstrap, id: 'four-four', app: 'dataCards'
-        assert_response(403)
+      should 'redirect to dataset show page if anonymous - for V1 Data Lenses' do
+        get :bootstrap, id: 'test-data', app: 'dataCards'
+        assert_response(302)
+        assert_redirected_to(view_url(@test_view))
       end
 
-      should 'return 403 if anonymous - even for V2 Data Lenses' do
+      should 'redirect to dataset show page if anonymous - even for V2 Data Lenses' do
         stub_feature_flags_with(:create_v2_data_lens => true)
         get :bootstrap, id: 'four-four', app: 'dataCards'
-        assert_response(403)
+        assert_response(302)
+        assert_redirected_to(view_url(@test_view))
       end
     end
 

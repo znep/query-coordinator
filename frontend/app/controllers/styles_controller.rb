@@ -19,6 +19,7 @@ class StylesController < ApplicationController
     /../common/styleguide
     /../common
     /app/styles
+    /public/stylesheets/socrata-visualizations
     /..
     /../common/resources/fonts/templates
     /node_modules/normalize.css
@@ -178,6 +179,7 @@ class StylesController < ApplicationController
     rendered_styles = css_sheets.join("\n")
     rendered_styles << Sass::Engine.new(
       includes + scss_sheets.join("\n"),
+      :filesystem_importer => CSSImporter,
       :style => :compressed,
       :syntax => :scss,
       :cache => false,

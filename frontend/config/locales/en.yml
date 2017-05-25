@@ -1554,6 +1554,9 @@ en:
       remote: Please fix this field.
       required: This field is required.
       url: Please enter a valid URL.
+    view:
+      default_meta_description: View this %{type}
+      default_meta_description_last_updated: ", last updated %{updated_at}"
     view_types:
       api: API view
       blob: non-tabular file or document

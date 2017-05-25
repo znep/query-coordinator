@@ -945,20 +945,6 @@ window.socrata.featureFlags =
     end
   end
 
-  describe 'meta_keywords method' do
-    it 'returns nil when the argument is nil' do
-      expect(helper.meta_keywords(nil)).to be_nil
-    end
-    it 'returns 4 keywords by default for a view with no tags' do
-      view = Hashie::Mash.new.tap { |mash| mash.tags = nil }
-      expect(helper.meta_keywords(view).length).to eq(4)
-    end
-    it 'returns 8 keywords when there the view has four tags' do
-      view = Hashie::Mash.new.tap { |mash| mash.tags = %w(a b c d) }
-      expect(helper.meta_keywords(view).length).to eq(8)
-    end
-  end
-
   describe 'include_webpack_bundle' do
     let(:asset_manifest) { {'main.js' => 'main.js'} }
 

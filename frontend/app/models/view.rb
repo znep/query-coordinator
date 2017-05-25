@@ -973,26 +973,6 @@ class View < Model
     last_activity ? Time.at(last_activity) : nil
   end
 
-  # Returns the meta keyword tags for this view that we'll use in headers
-  @@default_meta_tags = %w(public data statistics dataset)
-  def meta_keywords
-    (tags.nil? ? @@default_meta_tags : tags + @@default_meta_tags).sort_by {rand}
-  end
-
-  # Return the description we'll use in the meta description header
-  def meta_description
-    if description.blank?
-      desc = 'View this dataset'
-      updated_at = rowsUpdatedAt.nil? ? nil : format_time(rowsUpdatedAt, 'long')
-      if updated_at
-        desc << ", last updated #{updated_at}"
-      end
-      desc
-    else
-      description
-    end
-  end
-
   def html_description
     if description
       new_lines_preserved = description.gsub(/\r?\n/, '<br />')

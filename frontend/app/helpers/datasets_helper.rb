@@ -271,11 +271,11 @@ module DatasetsHelper
     if use_icon
       # use legacy icon sprite, or new icon font (e.g. .icon-cards)
       if facet_option[:icon_font_class]
-        ret << %Q(<span aria-hidden="true" class="#{facet_option[:icon_font_class]}"></span>)
+        ret << %Q(<span class="#{facet_option[:icon_font_class]}"></span>)
       elsif options[:view_type] == 'listing'
-        ret << %Q(<span aria-hidden="true" class="asset-icon" data-display-type="#{facet_option[:value]}"></span>)
+        ret << %Q(<span class="asset-icon" data-display-type="#{facet_option[:value]}"></span>)
       else
-        ret << '<span aria-hidden="true" class="icon"></span>'
+        ret << '<span class="icon"></span>'
       end
     elsif !facet_option[:icon].nil?
       ret += '<img class="customIcon" src="' + theme_image_url(facet_option[:icon]) + '" alt="" />'

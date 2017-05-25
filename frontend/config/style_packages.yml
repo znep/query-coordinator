@@ -33,6 +33,9 @@ visualization-canvas:
 dataset-landing-page:
 - dataset-landing-page/dataset-landing-page
 
+test-thing:
+- common/test-thing
+
 asset-selector:
 - common/asset-selector/asset-selector
 

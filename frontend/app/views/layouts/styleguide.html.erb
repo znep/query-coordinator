@@ -15,13 +15,17 @@ http://www.socrata.com
 
     <%= rendered_stylesheet_tag 'styleguide' %>
 
+    <%= rendered_stylesheet_tag 'test-thing' %>
+
     <%= yield :head %>
 
     <%= get_favicon_tag %>
   </head>
 
   <%= content_tag :body, :class => @body_classes do %>
-    <a href="#mainContent" title="content">skip to content</a>
+    <a href="#mainContent" title="content" id="toContent">
+      <%= I18n.t('dataset.skip-to-content') %>
+    </a>
     <%- if render_site_admin_chrome? -%>
       <%== site_chrome_admin_header(request, response, @site_chrome_admin_header_options || {}) %>
     <%- end -%>

@@ -21,6 +21,7 @@ http://www.socrata.com
   </head>
 
   <%= content_tag :body, :class => @body_classes do %>
+    <a href="#mainContent" title="content">skip to content</a>
     <%- if render_site_admin_chrome? -%>
       <%== site_chrome_admin_header(request, response, @site_chrome_admin_header_options || {}) %>
     <%- end -%>
@@ -33,7 +34,9 @@ http://www.socrata.com
       <%= display_styleguide_flashes %>
     </div>
 
-    <%= yield %>
+    <main role="main" id="mainContent">
+      <%= yield %>
+    </main>
 
     <%- if render_site_chrome? -%>
       <%== site_chrome_footer(request, response) %>

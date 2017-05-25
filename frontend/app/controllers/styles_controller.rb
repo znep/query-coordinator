@@ -19,6 +19,7 @@ class StylesController < ApplicationController
     /../common/styleguide
     /../common
     /app/styles
+    /public/stylesheets/socrata-visualizations
     /..
     /../common/resources/fonts/templates
     /node_modules/normalize.css

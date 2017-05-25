@@ -29,7 +29,7 @@ module.exports = {
     pathinfo: !common.isProduction
   },
   resolveLoader: {
-    modulesDirectories: [ path.resolve(common.root, 'node_modules') ]
+    modulesDirectories: [ path.resolve(common.frontendRoot, 'node_modules') ]
   },
   resolve: common.getStandardResolve()
 };

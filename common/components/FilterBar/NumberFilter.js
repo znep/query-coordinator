@@ -1,3 +1,5 @@
+// This component needs to be ported to ES6 classes, see EN-16506.
+/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import Slider from '../Slider';
@@ -106,7 +108,7 @@ export const NumberFilter = React.createClass({
       onUpdate(_.merge({}, getDefaultFilterForColumn(column), { isHidden }));
     } else {
       onUpdate(_.merge({}, filter, {
-        function: 'valueRange',
+        'function': 'valueRange',
         arguments: {
           start,
           end

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import FeaturedContentModalHeader from './FeaturedContentModalHeader';
 import FormFooter from './FormFooter';
-import { ViewCard } from 'socrata-components';
+import { ViewCard } from 'common/components';
 import { getDateLabel, getViewCountLabel } from '../../../common/helpers/viewCardHelpers';
 import {
   cancelFeaturedItemEdit,

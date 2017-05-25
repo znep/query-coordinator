@@ -7,7 +7,7 @@ var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/importWizard'),
+  context: path.resolve(common.frontendRoot, 'public/javascripts/importWizard'),
   entry: './main',
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/importWizard/.eslintrc.json'),
@@ -19,7 +19,7 @@ module.exports = _.defaultsDeep({
   resolve: _.extend(
     {
       alias: {
-        'jquery.awesomereorder': path.resolve(common.root, 'public/javascripts/plugins/jquery.awesomereorder.js')
+        'jquery.awesomereorder': path.resolve(common.frontendRoot, 'public/javascripts/plugins/jquery.awesomereorder.js')
       }
     },
     common.getStandardResolve([ 'public/javascripts/importWizard' ])

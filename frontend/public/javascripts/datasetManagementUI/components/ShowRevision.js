@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { InfoPane } from 'socrata-components';
+import { InfoPane } from 'common/components';
 import MetadataTable from '../../common/components/MetadataTable';
 import SchemaPreview from './SchemaPreview';
 import HomePaneSidebar from './HomePaneSidebar';

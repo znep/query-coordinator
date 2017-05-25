@@ -8,7 +8,7 @@ var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/example'), // UPDATE
+  context: path.resolve(common.frontendRoot, 'public/javascripts/example'), // UPDATE
   entry: './main',
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('.eslintrc.json'),

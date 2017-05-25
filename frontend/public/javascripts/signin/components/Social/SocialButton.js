@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
-import { SocrataIcon } from 'socrata-components';
+import { SocrataIcon } from 'common/components';
 import styles from './social.scss';
 
 class SocialButton extends React.Component {

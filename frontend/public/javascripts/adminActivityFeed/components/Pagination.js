@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames';
 
-import { SocrataIcon } from 'socrata-components';
+import { SocrataIcon } from 'common/components';
 import './Pagination.scss';
 
 export default class Pagination extends React.Component {

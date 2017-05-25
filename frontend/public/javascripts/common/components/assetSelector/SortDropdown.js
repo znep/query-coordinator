@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Dropdown } from 'socrata-components';
+import { Dropdown } from 'common/components';
 import _ from 'lodash';
 
 const DEFAULT_SORT = 'relevance';

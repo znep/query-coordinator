@@ -1,10 +1,35 @@
 require 'tmpdir'
 require 'digest/md5'
-
+class CSSImporter < Sass::Importers::Filesystem
+  def extensions
+    {
+      'css' => :scss, # Allow direct importation of css files.
+      'scss' => :scss,
+      'sass' => :sass
+    }
+  end
+end
 class StylesController < ApplicationController
   skip_before_filter :require_user, :set_user, :set_meta, :sync_logged_in_cookie, :poll_external_configs
 
-  SCSS_LOAD_PATHS = %w(/app/styles /node_modules).map { |path| path.prepend(Rails.root.to_s) }
+  # BEWARE /node_modules/normalize.css has to appear above /node_modules
+  # otherwise SaSS will try to read normalize.css (which is a directory)
+  # as if it's a file :facepalm:
+  SCSS_LOAD_PATHS = %w(
+    /../common/styleguide
+    /../common
+    /app/styles
+    /..
+    /../common/resources/fonts/templates
+    /node_modules/normalize.css
+    /node_modules
+    /node_modules/bourbon-neat/app/assets/stylesheets
+    /node_modules/bourbon/app/assets/stylesheets
+    /node_modules/breakpoint-sass/stylesheets
+    /node_modules/modularscale-sass/stylesheets
+    /node_modules/react-datepicker/dist
+    /node_modules/react-input-range/dist
+  ).map { |path| path.prepend(Rails.root.to_s) }
   BLIST_STYLE_CACHE = File.join(Dir.tmpdir, 'blist_style_cache')
 
   # Only used in development
@@ -32,6 +57,7 @@ class StylesController < ApplicationController
           stylesheet = File.read(scss_stylesheet_filename)
           includes = get_includes
           Sass::Engine.new(includes + stylesheet,
+                           :filesystem_importer => CSSImporter,
                            :style => :nested,
                            :syntax => :scss,
                            :cache => false,
@@ -110,6 +136,7 @@ class StylesController < ApplicationController
       # render
       sheet = File.read("#{Rails.root}/app/styles/widget.scss")
       rendered_styles = Sass::Engine.new(includes + sheet,
+                                         :filesystem_importer => CSSImporter,
                                          :style => :compressed,
                                          :syntax => :scss,
                                          :cache => false,

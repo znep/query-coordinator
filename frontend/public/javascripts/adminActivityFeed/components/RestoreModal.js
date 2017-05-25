@@ -5,7 +5,7 @@ import {
   restoreDataset,
   dismissRestoreModal
 } from '../actions';
-import {Modal, ModalHeader, ModalContent, ModalFooter} from 'socrata-components';
+import {Modal, ModalHeader, ModalContent, ModalFooter} from 'common/components';
 
 import connectLocalization from './Localization/connectLocalization';
 import LocalizedText from './Localization/LocalizedText';

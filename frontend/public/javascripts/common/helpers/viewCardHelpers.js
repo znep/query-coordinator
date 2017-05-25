@@ -1,6 +1,6 @@
 import formatDate from '../formatDate';
 import utils from 'common/js_utils';
-import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
+import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
 
 export function getDateLabel(updatedAt) {
   return formatDate(typeof updatedAt === 'object' ? updatedAt : new Date(updatedAt));

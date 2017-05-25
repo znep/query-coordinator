@@ -1,15 +1,13 @@
 /* eslint-env node */
 
-var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
 var _ = require('lodash');
 var ManifestPlugin = require('webpack-manifest-plugin');
 
-var root = path.resolve(__dirname, '..', '..');
-var packageJson = require(path.resolve(root, 'package.json'));
-// realpathSync is used to support "npm link socrata-components"
-var socrataComponentsPath = fs.realpathSync(path.resolve(root, 'node_modules/socrata-components'));
+var frontendRoot = path.resolve(__dirname, '..', '..');
+var packageJson = require(path.resolve(frontendRoot, 'package.json'));
+const svgFontPath = path.resolve(frontendRoot, '../common/resources/fonts/svg');
 
 var isProduction = process.env.NODE_ENV == 'production';
 var plugins = _.compact([
@@ -34,10 +32,9 @@ var plugins = _.compact([
 var jsLoaderBaseConfig = {
   test: /\.jsx?$/,
   include: [
-    path.resolve(root, 'public/javascripts'),
-    path.resolve(root, 'karma'),
-    path.resolve(root, '../common'),
-    path.resolve(root, 'node_modules/socrata-components/common')
+    path.resolve(frontendRoot, 'public/javascripts'),
+    path.resolve(frontendRoot, 'karma'),
+    path.resolve(frontendRoot, '../common')
   ]
 };
 
@@ -67,7 +64,7 @@ function getHotModuleEntries() {
 }
 
 function getOutput(identifier) {
-  var build = path.resolve(root, 'public/javascripts/build');
+  var build = path.resolve(frontendRoot, 'public/javascripts/build');
 
   return {
     path: isProduction ? path.resolve(build, identifier) : build,
@@ -86,7 +83,7 @@ function getManifestPlugin(identifier) {
 
 function getEslintConfig(configFile) {
   return {
-    configFile: path.resolve(root, configFile),
+    configFile: path.resolve(frontendRoot, configFile),
     formatter: require('eslint/lib/formatters/compact'),
     failOnError: false
   };
@@ -96,15 +93,14 @@ function getEslintConfig(configFile) {
 function getStyleguidePreLoaders() {
   return [
     {
-      test: /\.jsx?$/,
-      include: [ socrataComponentsPath ],
-      loader: 'babel-loader',
-      query: { presets: ['react', 'es2015'] }
+      test: /\.svg$/,
+      loader: require.resolve('raw-loader'),
+      include: svgFontPath
     },
     {
       test: /\.(eot|woff|svg|woff2|ttf)$/,
       loader: 'url-loader?limit=100000',
-      exclude: path.join(socrataComponentsPath, 'dist/fonts/svg')
+      exclude: svgFontPath
     }
   ];
 }
@@ -116,13 +112,9 @@ function getStyleguideIncludePaths() {
     'node_modules/breakpoint-sass/stylesheets',
     'node_modules/modularscale-sass/stylesheets',
     'node_modules/normalize.css',
-    socrataComponentsPath,
-    path.join(socrataComponentsPath, 'styles'),
-    path.join(socrataComponentsPath, 'styles/variables'),
-    path.join(socrataComponentsPath, 'styles/partials'),
-    path.join(socrataComponentsPath, 'dist/fonts'),
     'node_modules/react-input-range/dist',
-    'node_modules/react-datepicker/dist'
+    'node_modules/react-datepicker/dist',
+    path.resolve(frontendRoot, '../')
   ];
 }
 
@@ -171,21 +163,21 @@ function getStandardLoaders() {
 function getStandardResolve(extraRoots) {
   extraRoots = extraRoots || [];
   var roots = [
-    path.resolve(root, '..')
+    path.resolve(frontendRoot, '..')
   ];
 
   _.each(extraRoots, function(extraRoot) {
-    roots.push(path.resolve(root, extraRoot));
+    roots.push(path.resolve(frontendRoot, extraRoot));
   });
 
   return {
-    modulesDirectories: [ path.resolve(root, 'node_modules') ],
+    modulesDirectories: [ path.resolve(frontendRoot, 'node_modules') ],
     root: roots
   };
 }
 
 function resolvePath(relativePath) {
-  return path.resolve(root, relativePath);
+  return path.resolve(frontendRoot, relativePath);
 }
 
 module.exports = {
@@ -205,5 +197,6 @@ module.exports = {
   packageJson: packageJson,
   plugins: plugins,
   resolvePath: resolvePath,
-  root: root
+  svgFontPath: svgFontPath,
+  frontendRoot: frontendRoot
 };

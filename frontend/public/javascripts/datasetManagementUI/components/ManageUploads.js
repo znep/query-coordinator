@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import * as Links from '../links';
 import * as Actions from '../actions/manageUploads';
-import { Modal, ModalHeader, ModalContent } from 'socrata-components';
+import { Modal, ModalHeader, ModalContent } from 'common/components';
 import {
   STATUS_INSERTING,
   STATUS_UPSERT_FAILED

@@ -1,3 +1,7 @@
+// This line is due to an eslint config mismatch between frontend and common.
+// See EN-16549
+/* eslint-disable import/default */
+
 /**
  * Main entry point of Common Components.
  * You should import this file instead of directly

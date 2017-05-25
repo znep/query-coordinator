@@ -5,7 +5,7 @@ import { Link } from 'react-router';
 import * as Links from '../../links';
 import * as DisplayState from '../../lib/displayState';
 import { singularOrPlural } from '../../lib/util';
-import styleguide from 'socrata-components';
+import styleguide from 'common/components';
 import styles from 'styles/Table/RowErrorsLink.scss';
 
 const FLYOUT_ID = 'malformed-rows-flyout';

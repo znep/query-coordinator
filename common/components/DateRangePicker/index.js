@@ -1,3 +1,5 @@
+// This component needs to be ported to ES6 classes, see EN-16506.
+/* eslint-disable react/prefer-es6-class */
 import React, { PropTypes } from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';

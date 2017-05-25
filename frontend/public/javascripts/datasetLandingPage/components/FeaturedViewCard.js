@@ -1,5 +1,5 @@
 import React, { PropTypes, PureComponent } from 'react';
-import { ViewCard, ExternalViewCard } from 'socrata-components';
+import { ViewCard, ExternalViewCard } from 'common/components';
 import { getViewCardPropsForFeaturedItem } from '../../common/helpers/viewCardHelpers';
 
 class FeaturedViewCard extends PureComponent {

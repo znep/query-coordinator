@@ -6,7 +6,7 @@ import * as Links from '../../links';
 import * as DisplayState from '../../lib/displayState';
 import { singularOrPlural } from '../../lib/util';
 import { soqlProperties } from '../../lib/soqlTypes';
-import styleguide from 'socrata-components';
+import styleguide from 'common/components';
 import ProgressBar from '../ProgressBar';
 import TypeIcon from '../TypeIcon';
 import { commaify } from '../../../common/formatNumber';

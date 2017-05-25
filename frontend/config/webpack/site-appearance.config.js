@@ -1,5 +1,4 @@
 // See also public/javascripts/site-appearance/main.js
-// See also public/stylesheets/socrata-components/styleguide.css
 
 /* eslint-env node */
 var _ = require('lodash');
@@ -14,7 +13,7 @@ if (!common.isProduction) {
 }
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/siteAppearance'),
+  context: path.resolve(common.frontendRoot, 'public/javascripts/siteAppearance'),
   entry: common.getHotModuleEntries().concat([
     './main'
   ]),
@@ -24,14 +23,18 @@ module.exports = _.defaultsDeep({
     loaders: [
       common.getBabelLoader(),
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'url-loader?limit=10000' }
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        loader: 'url-loader?limit=10000',
+        exclude: common.svgFontPath
+      }
     ]
   },
   resolve: _.extend(
     {
       alias: {
-        'react': path.resolve(common.root, 'node_modules/react'),
-        'react-dom': path.resolve(common.root, 'node_modules/react-dom')
+        'react': path.resolve(common.frontendRoot, 'node_modules/react'),
+        'react-dom': path.resolve(common.frontendRoot, 'node_modules/react-dom')
       }
     },
     common.getStandardResolve([ 'public/javascripts/siteAppearance' ])

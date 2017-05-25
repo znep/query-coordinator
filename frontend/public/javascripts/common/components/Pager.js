@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { ENTER } from 'socrata-components/common/keycodes';
+import { ENTER } from 'common/keycodes';
 import { handleKeyPress } from '../helpers/keyPressHelpers';
 
 export class Pager extends React.Component {

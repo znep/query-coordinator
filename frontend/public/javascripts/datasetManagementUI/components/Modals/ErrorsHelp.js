@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { ModalHeader, ModalContent, ModalFooter } from 'socrata-components';
+import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import _ from 'lodash';

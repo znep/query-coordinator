@@ -2,7 +2,7 @@ import 'babel-polyfill-safe';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import components from 'socrata-components';
+import components from 'common/components';
 import utils from 'socrata-utils';
 
 import airbrake from '../common/airbrake';

@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import components from 'socrata-components';
+import components from 'common/components';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { localizeLink } from '../../common/locale';
 
@@ -12,7 +12,7 @@ export class BootstrapAlert extends Component {
     this.uniqueId = _.uniqueId();
   }
 
-  // Using components.attachTo here isn't possible.  Until socrata-components is able to handle
+  // Using components.attachTo here isn't possible.  Until common/components is able to handle
   // multiple attachTo's and scope them properly, we must use the factory manually.
   componentDidMount() {
     components.factories.FlyoutFactory(ReactDOM.findDOMNode(this)); // eslint-disable-line

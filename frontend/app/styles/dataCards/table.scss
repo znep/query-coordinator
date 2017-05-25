@@ -151,6 +151,7 @@ $border-radius: 4px;
       }
     }
     .table-has-no-rows-message {
+      content: "No rows to display";
       position: absolute;
       top: 50%;
       text-align: center;

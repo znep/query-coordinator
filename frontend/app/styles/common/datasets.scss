@@ -11,10 +11,11 @@
   color: $white;
   padding-left: 0.8em;
   background-color: $primary-dark;
-  box-shadow: 2px 2px 2px $black;
   letter-spacing: 1px;
+  border-radios: 1px;
   outline: 0;
   text-decoration: none;
+  box-shadow: 0 0 8px -2px #666;
 
   &:focus, &:active {
     top: 0;

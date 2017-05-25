@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
+import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
 import ActionDropdown from './ActionDropdown';
 import VisibilityCell from './VisibilityCell';
 import _ from 'lodash';

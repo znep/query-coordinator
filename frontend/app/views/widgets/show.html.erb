@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
+  <%= meta_tags :description => view_meta_description, :keywords => view_meta_keywords %>
   <%- if @view -%>
     <link rel="canonical" href="<%= view_path(@view) %>"/>
   <%- end -%>

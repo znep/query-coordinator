@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
-import { InfoPane } from 'socrata-components';
+import { InfoPane } from 'common/components';
 import { FeatureFlags } from 'common/feature_flags';
 
 // This higher order component implements the business logic that interprets FeatureFlags to ensure

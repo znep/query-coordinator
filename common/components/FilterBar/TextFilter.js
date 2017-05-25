@@ -1,3 +1,5 @@
+// This component needs to be ported to ES6 classes, see EN-16506.
+/* eslint-disable react/prefer-es6-class */
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import Dropdown from '../Dropdown';
@@ -120,7 +122,7 @@ export const TextFilter = React.createClass({
           }
         }
       }).
-      catch(() => {
+      catch(() => { // eslint-disable-line dot-notation
         if (this.isMounted) {
           this.setState({ isValidating: false });
         }

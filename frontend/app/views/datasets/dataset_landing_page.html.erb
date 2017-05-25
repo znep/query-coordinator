@@ -2,7 +2,9 @@
   <title><%= @view.name %> | <%= get_site_title %></title>
   <link rel="canonical" href="<%= view_path(@view) %>" />
 
-  <meta name="description" content="<%= meta_description %>">
+  <%# We don't use the default view_meta_description (EN-5265) -%>
+  <%= meta_tags :description => meta_description, :keywords => view_meta_keywords %>
+
   <meta name="page_name" content="Primer">
 
   <%= rendered_stylesheet_tag("dataset-landing-page") %>

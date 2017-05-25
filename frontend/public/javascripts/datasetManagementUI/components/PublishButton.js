@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import styleguide from 'socrata-components';
+import styleguide from 'common/components';
 import { showModal } from 'actions/modal';
 import * as ApplyRevision from '../actions/applyRevision';
 import * as Selectors from '../selectors';

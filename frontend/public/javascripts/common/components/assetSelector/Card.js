@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { ViewCard } from 'socrata-components';
-import { getIconClassForDisplayType } from 'socrata-components/common/displayTypeMetadata';
+import { ViewCard } from 'common/components';
+import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
 import { getDateLabel, getViewCountLabel, getAriaLabel } from '../../helpers/viewCardHelpers';
 import { handleKeyPress } from '../../helpers/keyPressHelpers';
 

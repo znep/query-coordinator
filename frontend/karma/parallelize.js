@@ -53,9 +53,9 @@ function report(suite) {
     printStreamIfNotBlank('stderr', stderr);
     if (error) {
       if (error.code === 1) {
-        console.error('Tests failed.');
+        console.error(`${suite} tests failed.`);
       } else {
-        console.error(`Failed to run tests: ${error}`);
+        console.error(`Failed to run ${suite} tests: ${error}`);
       }
 
       process.exit(1);

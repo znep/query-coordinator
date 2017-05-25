@@ -12,7 +12,7 @@ if (!common.isProduction) {
 }
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/internalAssetManager'),
+  context: path.resolve(common.frontendRoot, 'public/javascripts/internalAssetManager'),
   entry: common.withHotModuleEntries({
     'main': './main',
     'last-accessed': './last-accessed'

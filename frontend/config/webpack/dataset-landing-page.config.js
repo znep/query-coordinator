@@ -12,7 +12,7 @@ if (!common.isProduction) {
 }
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/datasetLandingPage'),
+  context: path.resolve(common.frontendRoot, 'public/javascripts/datasetLandingPage'),
   entry: common.getHotModuleEntries().concat([
     './main'
   ]),

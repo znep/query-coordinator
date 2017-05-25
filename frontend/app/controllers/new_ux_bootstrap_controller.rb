@@ -30,6 +30,7 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   def bootstrap
+    @view = View.find(params[:id])
     # This method needs to accomplish a few things in order to enable 'new UX' views of
     # existing datasets.
     #
@@ -65,14 +66,19 @@ class NewUxBootstrapController < ActionController::Base
     # 6b. If no pages already exist, then we need to create one. This is hacky
     #     and non-deterministic.
 
-    # 1a. Check to make sure that the user is authorized to create a new view
+    # Note: As of 5/24/2017 use_ephemeral_bootstrap is true on all production domains
     use_ephemeral_bootstrap = FeatureFlags.derive(@view, request)[:use_ephemeral_bootstrap]
+
+    # 1a. Check to make sure that the user is authorized to create a new view.
+    # NOTE! Calling current_user method has side effect of creating user session.
+    unless current_user.present?
+      return redirect_to view_url(@view)
+    end
 
     # IMPORTANT: can_create_metadata? *must* come first in this conditional
     # because it has the side effect of obtaining the user session.
     # If the order is swapped, the logic is short-circuited and the call to
     # dataset_is_new_backend? will fail unexpectedly.
-
     unless can_create_metadata? || use_ephemeral_bootstrap
       return render :json => {
         error: true,

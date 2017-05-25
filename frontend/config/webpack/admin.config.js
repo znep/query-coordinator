@@ -6,7 +6,7 @@ var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/src'),
+  context: path.resolve(common.frontendRoot, 'public/javascripts/src'),
   entry: {
     'admin-georegions-screen': './screens/admin-georegions-screen',
     'admin-activity-feed': ['../plugins/daterangepicker.jquery.js', './screens/admin-activity-feed'],

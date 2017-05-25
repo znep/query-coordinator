@@ -22,7 +22,7 @@ const staticPackageConfig = {
       {
         loader: require.resolve('raw-loader'),
         test: /\.svg$/,
-        include: `${root}/common/components/fonts/svg`
+        include: `${root}/common/resources/fonts/svg`
       }
     ],
     loaders: [

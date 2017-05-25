@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { hideModal } from '../../actions/modal';
 import { connect } from 'react-redux';
-import { ModalContent, ModalFooter } from 'socrata-components';
+import { ModalContent, ModalFooter } from 'common/components';
 import styles from 'styles/Modals/RowIdentifierError.scss';
 
 const REASON_DUPLICATE = 'duplicate';

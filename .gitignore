@@ -32,7 +32,7 @@ frontend/vendor/bundler_gems
 manifest*.txt
 nbproject
 node_modules
-npm-debug.log
+npm-debug.log*
 socrata-node/DEPEND
 socrata-node/node_modules
 packages/**/dist

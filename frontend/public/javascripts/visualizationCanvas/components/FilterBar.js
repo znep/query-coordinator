@@ -1,6 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { FilterBar } from 'socrata-components';
+import { FilterBar } from 'common/components';
 import { setFilters } from '../actions';
 import { dataProviders } from 'socrata-visualizations';
 

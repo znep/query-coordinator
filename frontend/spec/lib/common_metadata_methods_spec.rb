@@ -16,6 +16,8 @@ describe CommonMetadataMethods do
 
     allow_any_instance_of(Phidippides).to receive(:connection_details).
       and_return('address' => 'localpost', 'port' => 2402)
+
+    allow_any_instance_of(Phidippides).to receive(:get_dataset_size).and_return(1)
   end
 
   describe '#flag_subcolumns!' do
@@ -144,15 +146,14 @@ describe CommonMetadataMethods do
         end
       end
 
-      # TODO: we're not ready for core-only yet!
-      xcontext 'phidippides_deprecation_metadata_source = core-only' do
+      context 'phidippides_deprecation_metadata_source = core-only' do
         before do
           rspec_stub_feature_flags_with(phidippides_deprecation_metadata_source: 'core-only')
         end
 
         it 'requests dataset metadata from core' do
           expect_any_instance_of(Phidippides).not_to receive(:fetch_dataset_metadata)
-          expect(View).to receive(:find).twice
+          expect(View).to receive(:find).exactly(3).times
           dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
         end
       end
@@ -226,7 +227,7 @@ describe CommonMetadataMethods do
     end
 
     it 'adds a table card to the metadata' do
-      result = dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+      result = dummy_class_instance.fetch_dataset_metadata('elep-hant', options.merge(:add_table_column => true))
       expect(result[:columns]['*']).not_to be_nil
     end
 

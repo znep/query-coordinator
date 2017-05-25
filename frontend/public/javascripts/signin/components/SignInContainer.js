@@ -2,7 +2,7 @@ import React from 'react';
 import Auth0 from 'auth0-js';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
-import { SocrataIcon } from 'socrata-components';
+import { SocrataIcon } from 'common/components';
 import { Translate, renderAlerts } from '../Util';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignIn from './SignIn';

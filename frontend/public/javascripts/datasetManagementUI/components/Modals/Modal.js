@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Modal as StyleGuideModal } from 'socrata-components';
+import { Modal as StyleGuideModal } from 'common/components';
 import { connect } from 'react-redux';
 import { hideModal } from 'actions/modal';
 import _ from 'lodash';

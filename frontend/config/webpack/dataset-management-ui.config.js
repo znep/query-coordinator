@@ -23,7 +23,7 @@ if (!common.isProduction) {
 module.exports = _.defaultsDeep(
   {
     context: path.resolve(
-      common.root,
+      common.frontendRoot,
       'public/javascripts/datasetManagementUI'
     ),
     entry: common.getHotModuleEntries().concat(['./main']),
@@ -41,7 +41,7 @@ module.exports = _.defaultsDeep(
         {
           test: /\.global.scss$/,
           include: [
-            path.resolve(common.root, 'public/javascripts/datasetManagementUI')
+            path.resolve(common.frontendRoot, 'public/javascripts/datasetManagementUI')
           ],
           loader: 'style?sourceMap!css!postcss!sass'
         },

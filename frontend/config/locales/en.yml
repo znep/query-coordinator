@@ -1554,6 +1554,9 @@ en:
       remote: Please fix this field.
       required: This field is required.
       url: Please enter a valid URL.
+    view:
+      default_meta_description: View this %{type}
+      default_meta_description_last_updated: ", last updated %{updated_at}"
     view_types:
       api: API view
       blob: non-tabular file or document
@@ -3544,6 +3547,9 @@ en:
             unknown_file_type:
               description: 'We do not recognize the type of the file you have provided to us (extension: %{extension}). Please ensure you are using a supported file type, and that it is valid.'
               title: Unknown file type
+            unpublished_copy_exists:
+              description: An attempt was made to update a published dataset while an unpublished copy exists.  Please publish that copy, or update it directly instead.
+              title: Unpublished copy exists
             upsert_already_in_progress_by_someone_else:
               description: Two upserts cannot be performed simultaneously on a dataset, and somebody else is already in the middle of an upsert operation.
               title: Upsert already in progress

@@ -88,9 +88,11 @@ module SiteAppearanceHelper
       ) <<
 
       text_field_tag(
-        url_path, link['url'] || '',
+        url_path,
+        link['url'] || '',
         :id => SecureRandom.uuid, # Unique id so jquery validate plugin can hook onto individual inputs
         :class => 'url-input',
+        :required => options[:child_link] && !options[:default],
         :placeholder => options.dig(:placeholder, :url)
       ) <<
       content_tag(

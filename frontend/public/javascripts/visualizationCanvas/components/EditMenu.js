@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { updateNameAndDescription, closeEditMenu } from '../actions';
 import { t } from '../lib/I18n';
-import { ExpandableMenuListItem, SideMenu } from 'socrata-components';
+import { ExpandableMenuListItem, SideMenu } from 'common/components';
 
 export class EditMenu extends Component {
   constructor(props) {

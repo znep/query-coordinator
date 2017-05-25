@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import connectLocalization from '../Localization/connectLocalization';
-import {FilterItem, Dropdown, SocrataIcon} from 'socrata-components';
+import {FilterItem, Dropdown, SocrataIcon} from 'common/components';
 import LocalizedText from '../Localization/LocalizedText';
 import * as actions from '../../actions';
 import './FilterBar.scss';

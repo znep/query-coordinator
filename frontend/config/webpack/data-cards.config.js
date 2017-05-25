@@ -6,7 +6,7 @@ var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.root, 'public/javascripts/angular/src'),
+  context: path.resolve(common.frontendRoot, 'public/javascripts/angular/src'),
   entry: './main',
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig(common.isProduction ? '.eslintrc.json' : '.eslintrc-dev.json'),
@@ -17,7 +17,7 @@ module.exports = _.defaultsDeep({
         test: /\.html$/,
         exclude: /node_modules/,
         loaders: [
-          'ngtemplate?requireAngular&relativeTo=' + path.resolve(common.root, 'public/angular_templates'),
+          'ngtemplate?requireAngular&relativeTo=' + path.resolve(common.frontendRoot, 'public/angular_templates'),
           'html?minimize=false'
         ]
       },
@@ -42,9 +42,9 @@ module.exports = _.defaultsDeep({
   resolve: _.extend(
     {
       alias: {
-        'angular_templates': path.resolve(common.root, 'public/angular_templates'),
-        plugins: path.resolve(common.root, 'public/javascripts/plugins'),
-        'jQuery': path.resolve(common.root, 'node_modules/jquery/dist/jquery.js')
+        'angular_templates': path.resolve(common.frontendRoot, 'public/angular_templates'),
+        plugins: path.resolve(common.frontendRoot, 'public/javascripts/plugins'),
+        'jQuery': path.resolve(common.frontendRoot, 'node_modules/jquery/dist/jquery.js')
       }
     },
     common.getStandardResolve()

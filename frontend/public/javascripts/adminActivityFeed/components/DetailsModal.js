@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
 import {dismissDetailsModal} from '../actions';
-import {Modal, ModalHeader, ModalContent, ModalFooter} from 'socrata-components';
+import {Modal, ModalHeader, ModalContent, ModalFooter} from 'common/components';
 
 import connectLocalization from './Localization/connectLocalization';
 import LocalizedDate from './Localization/LocalizedDate';

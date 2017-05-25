@@ -7,6 +7,7 @@ module DatasetManagementUiHelper
       websocketToken: websocket_token,
       airbrakeEnvironment: ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
       airbrakeKey: ENV['PUBLISHING_AIRBRAKE_API_KEY'] || APP_CONFIG.publishing_airbrake_api_key,
+      airbrakeProjectId: ENV['PUBLISHING_AIRBRAKE_PROJECT_ID'] || APP_CONFIG.publishing_airbrake_project_id,
       currentUserId: User.current_user.id,
       localePrefix: locale_prefix
     }

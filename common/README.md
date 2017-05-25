@@ -10,8 +10,9 @@ Some examples of shared code found here are React components, Feature Flag utili
 
 Please see the README within each folder to learn more:
 
-* [Components (previously known as Styleguide](https://github.com/socrata/platform-ui/blob/master/common/components/README.md)
+* [Components (previously known as Styleguide](https://github.com/socrata/platform-ui/blob/master/common/components/README.md))
 * [JS Utils](https://github.com/socrata/platform-ui/blob/master/common/js_utils/README.md)
+* [Airbrake](https://github.com/socrata/platform-ui/blob/master/common/airbrake/README.md)
 * [Analytics](https://github.com/socrata/platform-ui/blob/master/common/analytics/README.md)
 * [Feature Flags](https://github.com/socrata/platform-ui/blob/master/common/feature_flags/README.md)
 * [Site Chrome](https://github.com/socrata/platform-ui/blob/master/common/site_chrome/README.md)

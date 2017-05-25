@@ -1,28 +1,32 @@
 import _ from 'lodash';
 import AirbrakeJs from 'airbrake-js';
 
+import ieFilter from './filters/ie';
+import environmentFilter from './filters/environment';
+
 let airbrake;
 
 function init(projectId, projectKey) {
+  if (projectId == undefined) {
+    if (window.console && console.error) {
+      console.error('`projectId` is required for airbrake.init()');
+    }
+  }
+
+  if (projectKey == undefined) {
+    if (window.console && console.error) {
+      console.error('`projectKey` is required for airbrake.init()');
+    }
+  }
+
   airbrake = new AirbrakeJs({
     projectId,
     projectKey
   });
 
-  airbrake.addFilter((notice) => {
-    const browser = _.get(notice, 'context.userAgentInfo.browserName');
-    const browserVersion = _.toNumber(_.get(notice, 'context.userAgentInfo.browserVersion'));
-
-    if (browser === 'Internet Explorer' && browserVersion < 11) {
-      return null;
-    }
-
-    if (_.has(window.serverConfig, 'airbrakeEnvironment')) {
-      notice.context.environment = window.serverConfig.airbrakeEnvironment;
-    }
-
-    return notice;
-  });
+  // Default filters
+  airbrake.addFilter(ieFilter);
+  airbrake.addFilter(environmentFilter);
 
   airbrake.addReporter((notice) => {
     console.log('Airbrake error: ', notice);
@@ -57,8 +61,14 @@ function notify(payload) {
   });
 }
 
+function addFilter(filterCallback) {
+  getAirbrake((ab) => {
+    ab.addFilter(filterCallback);
+  });
+}
+
 export default {
   init,
-  getAirbrake,
-  notify
+  notify,
+  addFilter
 };

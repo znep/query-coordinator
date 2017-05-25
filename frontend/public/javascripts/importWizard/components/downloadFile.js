@@ -4,7 +4,6 @@ import { FlashMessage } from './flashMessage';
 import NavigationControl from './navigationControl';
 import formurlencoded from 'form-urlencoded';
 import {socrataFetch, authenticityToken, appToken} from '../server';
-// import airbrake from '../airbrake';
 import {addColumnIndicesToSummary} from '../importUtils';
 import * as SaveState from '../saveState';
 

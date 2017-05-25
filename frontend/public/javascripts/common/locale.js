@@ -1,4 +1,4 @@
-import airbrake from './airbrake';
+import airbrake from 'common/airbrake';
 import moment from 'moment';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */

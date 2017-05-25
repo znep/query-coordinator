@@ -5,7 +5,7 @@ import * as url from 'url';
 import { FlashMessage } from './flashMessage';
 import NavigationControl from './navigationControl';
 import { authenticityToken, appToken } from '../server';
-import airbrake from '../airbrake';
+import airbrake from 'common/airbrake';
 import { addColumnIndicesToSummary } from '../importUtils';
 import format from 'stringformat';
 import { goToPage } from '../wizard';

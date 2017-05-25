@@ -5,8 +5,10 @@ import { Provider } from 'react-redux';
 import components from 'common/components';
 import utils from 'socrata-utils';
 
-import airbrake from '../common/airbrake';
 import * as metrics from '../common/metrics';
+import airbrake from 'common/airbrake';
+import dslpCrossOriginErrorsFilter from 'common/airbrake/filters/dslp_cross_origin_errors';
+
 import store from './store';
 import App from './App';
 import DynamicContent from './DynamicContent';
@@ -17,8 +19,10 @@ const csrfCookie = encodeURIComponent(window.serverConfig.csrfToken);
 document.cookie = `socrata-csrf-token=${csrfCookie};secure;path=/`;
 
 // Register with Airbrake in non-dev environments.
+
 if (window.serverConfig.environment !== 'development') {
   airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
+  airbrake.addFilter(dslpCrossOriginErrorsFilter);
 }
 
 // Defer rendering so the spinner in the erb can render.

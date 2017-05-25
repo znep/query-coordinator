@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import airbrake from './airbrake';
+import airbrake from 'common/airbrake';
 import { fetchTranslation } from './locale';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */

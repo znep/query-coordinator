@@ -5,7 +5,7 @@ import { Provider, connect } from 'react-redux'; // eslint-disable-line no-unuse
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 
-import airbrake from './airbrake';
+import airbrake from 'common/airbrake';
 import * as Wizard from './wizard';
 import * as Upload from './components/uploadFile';
 import * as Download from './components/downloadFile';
@@ -31,7 +31,7 @@ if (serverConfig.reduxLogging) {
 }
 
 if (serverConfig.environment !== 'development') {
-  airbrake.init();
+  airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
 
 function identityReducer(model = null, action) { // eslint-disable-line no-unused-vars

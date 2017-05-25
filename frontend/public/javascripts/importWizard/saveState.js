@@ -1,4 +1,4 @@
-import airbrake from './airbrake';
+import airbrake from 'common/airbrake';
 import * as Server from './server';
 import * as UploadFile from './components/uploadFile';
 import * as DownloadFile from './components/downloadFile';

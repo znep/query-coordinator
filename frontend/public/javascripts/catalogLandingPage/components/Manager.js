@@ -10,7 +10,7 @@ import HelpFlyout from './HelpFlyout';
 import ManagerSectionHeader from './ManagerSectionHeader';
 import MarkdownHelpFlannel from './MarkdownHelpFlannel';
 import * as Actions from '../actions/header';
-import airbrake from '../../common/airbrake';
+import airbrake from 'common/airbrake';
 import { FeatureFlags } from 'common/feature_flags';
 import { fetchTranslation } from '../../common/locale';
 

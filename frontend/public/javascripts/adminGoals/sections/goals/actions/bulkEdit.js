@@ -2,7 +2,7 @@ import _ from 'lodash';
 import * as api from '../../../api';
 import * as DataActions from './data';
 import * as Analytics from '../../shared/analytics';
-import Airbrake from '../../../../common/airbrake';
+import Airbrake from 'common/airbrake';
 
 export const types = {
   openModal: 'goals.bulkEdit.openModal',

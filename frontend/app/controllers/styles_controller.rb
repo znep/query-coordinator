@@ -178,6 +178,7 @@ class StylesController < ApplicationController
     rendered_styles = css_sheets.join("\n")
     rendered_styles << Sass::Engine.new(
       includes + scss_sheets.join("\n"),
+      :filesystem_importer => CSSImporter,
       :style => :compressed,
       :syntax => :scss,
       :cache => false,

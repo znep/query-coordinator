@@ -10,7 +10,6 @@ describe('infoPane', function() {
   var testHelpers;
   var dependencies = [
     '$rootScope',
-    'ServerConfig',
     'Mockumentary',
     'WindowOperations'
   ];
@@ -33,6 +32,15 @@ describe('infoPane', function() {
     testHelpers.mockDirective($provide, 'relatedViews');
     testHelpers.mockDirective($provide, 'exportMenu');
     testHelpers.mockDirective($provide, 'apiExplorer');
+
+    var configService = $injector.get('ServerConfig');
+    configService.setup({
+      locales: {
+        currentLocale: 'en',
+        defaultLocale: 'en'
+      },
+      siteTitle: 'Socrata'
+    });
   }));
 
   afterEach(function() {

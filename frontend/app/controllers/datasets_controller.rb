@@ -3,6 +3,7 @@ class DatasetsController < ApplicationController
   include DatasetsHelper
   include DataLensHelper
   include CommonMetadataMethods
+  include ViewsHelper
 
   prepend_before_filter :check_chrome, :only => [:show, :alt]
   skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :contact_dataset_owner, :form_success, :external, :external_download, :download, :about]
@@ -184,7 +185,7 @@ class DatasetsController < ApplicationController
 
     # If we're displaying a single dataset, set the meta tags as appropriate.
     @meta[:title] = @meta['og:title'] = "#{@view.name} | #{get_site_title}"
-    @meta[:description] = @meta['og:description'] = @view.meta_description
+    @meta[:description] = @meta['og:description'] = view_meta_description
     @meta['og:url'] = request.url.to_s
 
     display_name = @view.display.name.to_s
@@ -192,8 +193,7 @@ class DatasetsController < ApplicationController
     @meta[:page_name] = page_name
     # TODO: when we support a dataset image, allow that here if of appropriate size
 
-    # Shuffle the default tags into the keywords list
-    @meta[:keywords] = @view.meta_keywords
+    @meta[:keywords] = view_meta_keywords
 
     # get stuff the js needs
     needs_view_js @view.id, @view

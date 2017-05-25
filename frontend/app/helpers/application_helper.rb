@@ -124,12 +124,6 @@ module ApplicationHelper
     end.join("\n").html_safe
   end
 
-  # Returns the meta keyword tags for this view that we'll use in headers
-  @@default_meta_tags = ["public", "data", "statistics", "dataset"]
-  def meta_keywords(view)
-    ((view.tags || []) + @@default_meta_tags).sort_by { rand } if view.present?
-  end
-
 # js
 
   # to load into blist.currentUser in main.html.erb

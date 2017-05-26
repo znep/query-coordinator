@@ -114,9 +114,9 @@
     <% end %>
     <% if user_can_see_activity_feed? %>
       <li class="activity-feed">
-        <%= admin_nav_link_to t('screens.admin.index.jobs'), :controller => '/administration/activity_feed', :action => 'index' %>
+        <%= admin_nav_link_to t('screens.admin.index.activity_log'), :controller => '/administration/activity_feed', :action => 'index' %>
         <span class="description">
-          <%= t('screens.admin.index.jobs_description') %>
+          <%= t('screens.admin.index.activity_log_description') %>
         </span>
       </li>
     <% end %>

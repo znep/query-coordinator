@@ -171,7 +171,7 @@ a.expander {
   }
 }
 
-i[class^="ss-"], [class*=" ss-"] {
+i[class^="ss-"], i[class*=" ss-"] {
   &:before {
     margin-right: 0.7em;
     vertical-align: middle;
@@ -179,7 +179,7 @@ i[class^="ss-"], [class*=" ss-"] {
 }
 
 #createCanvasPageContent {
-  h1[class^="ss-"], [class*=" ss-"] {
+  h1[class^="ss-"], h1[class*=" ss-"] {
     &:before {
       vertical-align: middle;
     }

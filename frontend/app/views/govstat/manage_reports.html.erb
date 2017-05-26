@@ -35,16 +35,29 @@
               <div class="title"><h2><%= report.name %></h2></div>
               <div class="secondaryAction">
                 <a href="<%= locale_link[report.path] %>?_edit_mode=true" class="button edit">
-                  <span class="actionDetails ss-write"><%= t('govstat.reports.manage.edit') %></span></a>
+                  <span class="actionDetails">
+                    <i class="ss-write" aria-hidden="true"></i>
+                    <%= t('govstat.reports.manage.edit') %></span>
+                  </a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-trash"><%= t('govstat.reports.manage.delete') %></span></a>
+                  <span class="actionDetails">
+                    <i class="ss-trash" aria-hidden="true"></i>
+                    <%= t('govstat.reports.manage.delete') %>
+                  </span>
+                </a>
                 <a href="#copy" class="button copy" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-fork"><%= t('govstat.reports.manage.copy') %></span></a>
+                  <span class="actionDetails">
+                    <i class="ss-fork" aria-hidden="true"></i>
+                    <%= t('govstat.reports.manage.copy') %>
+                  </span>
+                </a>
               </div>
               <div class="primaryAction">
-                <a href="<%= locale_link[report.path] %>"><span class="actionDetails ss-right"></span></a>
+                <a href="<%= locale_link[report.path] %>" aria-label="Link to report">
+                  <span class="actionDetails ss-right" aria-hidden="true"></span>
+                </a>
               </div>
               <div class="secondaryMetadata"><%= t('govstat.reports.manage.updated') %>: <%= long_date_span(report.updated_at) %></div>
             </div>
@@ -61,19 +74,32 @@
             <div class="singleInner" title="<%= report.name %>">
               <div class="title"><h2><%= report.name %></h2></div>
               <div class="primaryAction">
-                <a href="<%= locale_link[report.path] %>"><span class="actionDetails ss-right"></span></a>
+                <a href="<%= locale_link[report.path] %>" aria-label="Link to report">
+                  <span class="actionDetails ss-right" aria-hidden="true"></span></a>
               </div>
               <div class="secondaryAction">
                 <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_PAGES) -%>
                 <a href="<%= locale_link[report.path] %>?_edit_mode=true" class="button edit">
-                  <span class="actionDetails ss-write"><%= t('govstat.reports.manage.edit') %></span></a>
+                  <span class="actionDetails">
+                    <i class="ss-write" aria-hidden="true"></i>
+                    <%= t('govstat.reports.manage.edit') %>
+                  </span>
+                </a>
                 <a href="#delete" class="button delete" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-trash"><%= t('govstat.reports.manage.delete') %></span></a>
+                  <span class="actionDetails">
+                    <i class="ss-trash" aria-hidden="true"></i>
+                    <%= t('govstat.reports.manage.delete') %>
+                  </span>
+                </a>
                 <%- end -%>
                 <a href="#copy" class="button copy" data-id="<%= report.uid %>"
                   data-oldid="<%= report.path %>">
-                  <span class="actionDetails ss-fork"><%= t('govstat.reports.manage.copy') %></span></a>
+                  <span class="actionDetails">
+                    <i class="ss-fork" aria-hidden="true"></i>
+                    <%= t('govstat.reports.manage.copy') %>
+                  </span>
+                </a>
               </div>
               <div class="secondaryMetadata">
                 <%- o = report.owner_user

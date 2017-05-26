@@ -20,6 +20,26 @@ module SocrataSiteChrome
       role_name == 'designer'
     end
 
+    def is_publisher?
+      role_name == 'publisher'
+    end
+
+    def is_publisher_stories?
+      role_name == 'publisher_stories'
+    end
+
+    def is_editor?
+      role_name == 'editor'
+    end
+
+    def is_editor_stories?
+      role_name == 'editor_stories'
+    end
+
+    def is_viewer?
+      role_name == 'viewer'
+    end
+
     def role_name
       @data['roleName']
     end
@@ -35,6 +55,15 @@ module SocrataSiteChrome
     # Attribute helpers in an attempt to move away from method_missing.
     def profileImageUrlMedium
       @data['profileImageUrlMedium']
+    end
+
+    # Helper methods for rights
+    def can_create_datasets?
+      has_right?('create_datasets')
+    end
+
+    def can_create_stories?
+      has_right?('create_story')
     end
   end
 end

@@ -1,4 +1,9 @@
 <% if logged_in? %>
+  <script>
+    window.socrata = window.socrata || {};
+    window.socrata.siteChrome = window.socrata.siteChrome || {};
+    <%= raw "window.socrata.siteChrome.appToken = '#{app_token}';" if app_token %>
+  </script>
   <section
     id="site-chrome-admin-header"
     role="navigation"
@@ -19,6 +24,10 @@
             <a href="/browse"><%= t('shared.site_chrome.admin.data_catalog.title') %></a>
           </div>
         <% end %>
+
+        <%- if current_user_can_see_create_menu? -%>
+          <%= render 'site_chrome/admin/create_menu' %>          
+        <%- end -%>
       </div>
     </div>
 

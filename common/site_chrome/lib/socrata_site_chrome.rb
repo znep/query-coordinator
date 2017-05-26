@@ -3,7 +3,13 @@ module SocrataSiteChrome
     attr_accessor :configuration
   end
 
-  # Global configuration options for the engine go here
+  class Configuration
+    attr_accessor :app_token
+
+    def initialize
+      @app_token = nil
+    end
+  end
 
   if defined?(Rails) # If the host application is not Rails (i.e. Sinatra) do something different.
     require 'socrata_site_chrome/engine'

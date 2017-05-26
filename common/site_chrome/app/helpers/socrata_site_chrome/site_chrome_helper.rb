@@ -100,6 +100,35 @@ module SocrataSiteChrome
       site_chrome_current_user.is_superadmin? || site_chrome_current_user.has_right?(activity)
     end
 
+    def current_user_can_see_create_menu?
+      return false unless site_chrome_current_user
+
+      site_chrome_current_user.is_superadmin? ||
+        current_user_can_see_create_datasets? ||
+        current_user_can_see_create_stories? ||
+        current_user_can_see_create_datasets_beta?
+    end
+
+    def current_user_can_see_create_stories?
+      return false unless site_chrome_current_user
+
+      get_feature_flag('stories_enabled') &&
+        (site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_stories?)
+    end
+
+    def current_user_can_see_create_datasets?
+      return false unless site_chrome_current_user
+
+      site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_datasets?
+    end
+
+    def current_user_can_see_create_datasets_beta?
+      return false unless site_chrome_current_user
+
+      get_feature_flag('enable_dataset_management_ui') &&
+        (site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_datasets?)
+    end
+
     def current_user_can_see_admin_link?
       return false unless site_chrome_current_user
       site_chrome_current_user.is_superadmin? ||
@@ -367,6 +396,10 @@ module SocrataSiteChrome
         )
         error_msg
       end
+    end
+
+    def app_token
+      SocrataSiteChrome.configuration.app_token
     end
   end
 

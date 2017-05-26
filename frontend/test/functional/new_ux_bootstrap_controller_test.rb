@@ -42,14 +42,14 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       should 'redirect to dataset show page if anonymous - for V1 Data Lenses' do
         get :bootstrap, id: 'test-data', app: 'dataCards'
         assert_response(302)
-        assert_redirected_to(view_url(@test_view))
+        assert_redirected_to('/d/test-data')
       end
 
       should 'redirect to dataset show page if anonymous - even for V2 Data Lenses' do
         stub_feature_flags_with(:create_v2_data_lens => true)
         get :bootstrap, id: 'four-four', app: 'dataCards'
         assert_response(302)
-        assert_redirected_to(view_url(@test_view))
+        assert_redirected_to('/d/four-four')
       end
     end
 

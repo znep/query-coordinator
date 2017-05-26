@@ -30,7 +30,6 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   def bootstrap
-    @view = View.find(params[:id])
     # This method needs to accomplish a few things in order to enable 'new UX' views of
     # existing datasets.
     #
@@ -72,7 +71,7 @@ class NewUxBootstrapController < ActionController::Base
     # 1a. Check to make sure that the user is authorized to create a new view.
     # NOTE! Calling current_user method has side effect of creating user session.
     unless current_user.present?
-      return redirect_to view_url(@view)
+      return redirect_to "/d/#{params[:id]}"
     end
 
     # IMPORTANT: can_create_metadata? *must* come first in this conditional

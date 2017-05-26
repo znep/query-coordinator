@@ -65,6 +65,10 @@ export default function barChart(state, action) {
       }
       break;
 
+    case actions.SET_STACKED:
+      setBooleanValueOrDeleteProperty(state, 'series[0].stacked', action.stacked);
+      break;
+
     case actions.SET_CUSTOM_COLOR_PALETTE:
       const customColorPalette = action.customColorPalette;
       const grouping = action.dimensionGroupingColumnName;

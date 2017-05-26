@@ -74,7 +74,7 @@ export var DataPane = React.createClass({
     const translationKeys = {
       barChart: 'bar_chart_limit',
       pieChart: 'pie_chart_limit',
-      columnChart: 'column_chart_limit',
+      columnChart: 'column_chart_limit'
     };
     const translationKey = translationKeys[visualizationType];
     const limitCountDisabled = limitCount === null;

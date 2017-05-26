@@ -199,17 +199,17 @@ function SvgColumnChart($element, vif, options) {
 
         xAxisAndSeriesSvg.
           append('g').
-            attr('class', 'x axis').
-              call(xAxisFormatter);
+          attr('class', 'x axis').
+          call(xAxisFormatter);
 
         xAxisAndSeriesSvg.
           append('g').
           attr('class', 'x axis baseline').
-            call(
-              d3XAxis.
-                tickFormat('').
-                tickSize(0)
-            );
+          call(
+            d3XAxis.
+              tickFormat('').
+              tickSize(0)
+          );
 
         // Bind the chart data to the x-axis tick labels so that when the user
         // hovers over them we have enough information to distinctly identify
@@ -372,7 +372,7 @@ function SvgColumnChart($element, vif, options) {
           }
         ).
         attr('y', 0).
-        attr('width', d3GroupingXScale.rangeBand() - 1).
+        attr('width', Math.max(d3GroupingXScale.rangeBand() - 1, 0)).
         attr('height', height).
         attr('stroke', 'none').
         attr('fill', 'transparent').
@@ -383,86 +383,18 @@ function SvgColumnChart($element, vif, options) {
           }
         );
 
-      dimensionGroupSvgs.selectAll('.column').
-        attr(
-          'x',
-          (d, measureIndex) => {
-            return d3GroupingXScale(measureLabels[measureIndex]);
-          }
-        ).
-        attr(
-          'y',
-          (d) => {
-            // Note that _.clamp() will cast non-numeric values to the minimum,
-            // so null values become 0.
-            const value = _.clamp(d, minYValue, maxYValue);
+      const columns = dimensionGroupSvgs.selectAll('.column');
 
-            let yAttr;
-
-            if (minYValue > 0) {
-              yAttr = d3YScale(minYValue);
-            } else if (maxYValue < 0) {
-              yAttr = d3YScale(maxYValue);
-            } else {
-              yAttr = d3YScale(0);
-            }
-
-            if (value > 0) {
-              yAttr = d3YScale(value);
-            }
-
-            return yAttr;
-          }
-        ).
-        attr(
-          'width',
-          d3GroupingXScale.rangeBand() - 1
-        ).
-        attr(
-          'height',
-          (d) => {
-
-            if (d === 0 || !_.isFinite(d)) {
-              // We want the flyout for null or zero values to appear along
-              // the x axis, rather than at the top of the chart.
-              //
-              // This means that we need to push the container element for
-              // null values down to the x axis, rather than the default
-              // behavior which places it at the top of the visualization
-              // container. This is accomplished by the 'y' attribute, but
-              // that does not have the expected behavior if the element is
-              // not visible (or in this case, has a height of zero).
-              //
-              // Ultimately the way we force the column's container to
-              // actually do the intended layout is to give the element a very
-              // small height which should be more or less indiscernible,
-              // which causes the layout to do the right thing.
-              return 0.0001;
-            } else {
-              // Value of column clamped between min and max possible values.
-              const value = _.clamp(d, minYValue, maxYValue);
-
-              // Calculating baseline depending on column value
-              // Value;
-              //   > 0 : Baseline should be 0 or minYValue depending on which is
-              //         lower.
-              //   < 0 : Baseline should be 0 or maxYValue depending on which is
-              //         higher.
-              const baselineValue = value > 0 ?
-                Math.max(minYValue, 0) :
-                Math.min(maxYValue, 0);
-
-              const columnHeight = Math.abs(
-                d3YScale(value) - d3YScale(baselineValue)
-              );
-
-              // See comment about setting the y attribute above for the
-              // rationale behind ensuring a minimum height of one pixel for
-              // non-null and non-zero values.
-              return Math.max(1, columnHeight);
-            }
-          }
-        ).
+      columns.
+        attr('y', (d, measureIndex, dimensionIndex) => {
+          const position = positions[dimensionIndex][measureIndex];
+          return d3YScale(position.end);
+        }).
+        attr('height', (d, measureIndex, dimensionIndex) => {
+          const position = positions[dimensionIndex][measureIndex];
+          const value = position.end - position.start;
+          return Math.max(d3YScale(0) - d3YScale(value), 1);
+        }).
         attr('stroke', 'none').
         attr(
           'fill',
@@ -477,6 +409,19 @@ function SvgColumnChart($element, vif, options) {
             return getColor(dimensionIndex, measureIndex);
           }
         );
+
+      if (isStacked) {
+
+        columns.
+          attr('x', 0).
+          attr('width', Math.max(d3DimensionXScale.rangeBand() - 1, 0));
+
+      } else {
+
+        columns.
+          attr('x', (d, measureIndex) => d3GroupingXScale(measureLabels[measureIndex])).
+          attr('width', Math.max(d3GroupingXScale.rangeBand() - 1, 0));
+      }
 
       lastRenderedSeriesWidth = xAxisAndSeriesSvg.node().getBBox().width;
 
@@ -585,9 +530,11 @@ function SvgColumnChart($element, vif, options) {
      *    on the client at the moment).
      */
 
+    const isStacked = _.get(self.getVif(), 'series[0].stacked', false);
+
     groupedDataToRender = dataToRender.rows;
     numberOfGroups = groupedDataToRender.length;
-    numberOfItemsPerGroup = dataToRender.rows[0].length - 1;
+    numberOfItemsPerGroup = isStacked ? 1 : dataToRender.rows[0].length - 1;
 
     // Compute width based on the x-axis scaling mode.
     // if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
@@ -657,6 +604,7 @@ function SvgColumnChart($element, vif, options) {
       width,
       self.isMultiSeries()
     );
+
     // This scale is used for groupings of columns under a single dimension
     // category.
     d3GroupingXScale = generateXGroupScale(measureLabels, d3DimensionXScale);
@@ -667,14 +615,27 @@ function SvgColumnChart($element, vif, options) {
      */
 
     try {
+
+      const dataMinSummedYValue = getMinSummedYValue(
+        groupedDataToRender,
+        dataTableDimensionIndex
+      );
+
+      const dataMaxSummedYValue = getMaxSummedYValue(
+        groupedDataToRender,
+        dataTableDimensionIndex
+      );
+
       const dataMinYValue = getMinYValue(
         groupedDataToRender,
         dataTableDimensionIndex
       );
+
       const dataMaxYValue = getMaxYValue(
         groupedDataToRender,
         dataTableDimensionIndex
       );
+
       const measureAxisMinValue = self.getMeasureAxisMinValue();
       const measureAxisMaxValue = self.getMeasureAxisMaxValue();
 
@@ -693,20 +654,41 @@ function SvgColumnChart($element, vif, options) {
         return;
       }
 
-      if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMinValue) {
-        minYValue = Math.min(dataMinYValue, 0);
-      } else if (measureAxisMinValue) {
-        minYValue = measureAxisMinValue;
-      } else {
-        minYValue = dataMinYValue;
-      }
+      if (isStacked) {
 
-      if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMaxValue) {
-        maxYValue = Math.max(dataMaxYValue, 0);
-      } else if (measureAxisMaxValue) {
-        maxYValue = measureAxisMaxValue;
+        if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMinValue) {
+          minYValue = Math.min(dataMinSummedYValue, 0);
+        } else if (measureAxisMinValue) {
+          minYValue = measureAxisMinValue;
+        } else {
+          minYValue = dataMinSummedYValue;
+        }
+
+        if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMaxValue) {
+          maxYValue = Math.max(dataMaxSummedYValue, 0);
+        } else if (measureAxisMaxValue) {
+          maxYValue = measureAxisMaxValue;
+        } else {
+          maxYValue = dataMaxSummedYValue;
+        }
+
       } else {
-        maxYValue = dataMaxYValue;
+
+        if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMinValue) {
+          minYValue = Math.min(dataMinYValue, 0);
+        } else if (measureAxisMinValue) {
+          minYValue = measureAxisMinValue;
+        } else {
+          minYValue = dataMinYValue;
+        }
+
+        if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMaxValue) {
+          maxYValue = Math.max(dataMaxYValue, 0);
+        } else if (measureAxisMaxValue) {
+          maxYValue = measureAxisMaxValue;
+        } else {
+          maxYValue = dataMaxYValue;
+        }
       }
 
       if (minYValue >= maxYValue) {
@@ -736,6 +718,9 @@ function SvgColumnChart($element, vif, options) {
     /**
      * 5. Render the chart.
      */
+    const positions = isStacked ?
+      self.getStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue) :
+      self.getPositionsForRange(groupedDataToRender, minYValue, maxYValue);
 
     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
@@ -825,9 +810,7 @@ function SvgColumnChart($element, vif, options) {
       ).
       attr(
         'data-measure-index',
-        /* eslint-disable no-unused-vars */
-        (datum, measureIndex, dimensionIndex) => measureIndex
-        /* eslint-enable no-unused-vars */
+        (datum, measureIndex) => measureIndex
       );
 
     columnSvgs = dimensionGroupSvgs.selectAll('rect.column').
@@ -849,9 +832,7 @@ function SvgColumnChart($element, vif, options) {
       ).
       attr(
         'data-measure-index',
-        /* eslint-disable no-unused-vars */
-        (datum, measureIndex, dimensionIndex) => measureIndex
-        /* eslint-enable no-unused-vars */
+        (datum, measureIndex) => measureIndex
       );
 
     // TODO: Figure out how we want to handle scaling modes.
@@ -1212,6 +1193,28 @@ function SvgColumnChart($element, vif, options) {
     );
   }
 
+  function getMinSummedYValue(groupedData, dimensionIndex) {
+
+    return d3.min(
+      groupedData.map(
+        (row) => d3.sum(
+          _.filter(row.slice(dimensionIndex + 1), (i) => i < 0)
+        )
+      )
+    );
+  }
+
+  function getMaxSummedYValue(groupedData, dimensionIndex) {
+
+    return d3.max(
+      groupedData.map(
+        (row) => d3.sum(
+          _.filter(row.slice(dimensionIndex + 1), (i) => i > 0)
+        )
+      )
+    );
+  }
+
   function generateYScale(minValue, maxValue, height) {
 
     return d3.scale.linear().
@@ -1396,52 +1399,16 @@ function SvgColumnChart($element, vif, options) {
       // column (where at least one value in the group is > 0) or 0 on the
       // y-axis (where all values in the group are <= 0) and the horizontal
       // center of the group in question.
-      const flyoutElementBoundingClientRect = groupElement[0][0].
-        getBoundingClientRect();
+      const flyoutElementBoundingClientRect = groupElement[0][0].getBoundingClientRect();
       const flyoutElementWidth = flyoutElementBoundingClientRect.width;
       const flyoutElementTopOffset = flyoutElementBoundingClientRect.top;
       const flyoutElementLeftOffset = flyoutElementBoundingClientRect.left;
-      const maxFlyoutValue = d3.max(measureValues);
-      const measureAxisMaxValue = self.getMeasureAxisMaxValue();
-
-      let flyoutTopOffset;
-
-      if (maxFlyoutValue >= 0) {
-
-        if (
-          measureAxisMaxValue !== null &&
-          measureAxisMaxValue < maxFlyoutValue
-        ) {
-
-          flyoutTopOffset = (
-            flyoutElementTopOffset + d3YScale(measureAxisMaxValue)
-          );
-        } else {
-
-          flyoutTopOffset = (
-            flyoutElementTopOffset + d3YScale(maxFlyoutValue)
-          );
-        }
-      } else {
-
-        if (measureAxisMaxValue !== null && measureAxisMaxValue < 0) {
-
-          flyoutTopOffset = (
-            flyoutElementTopOffset + d3YScale(measureAxisMaxValue)
-          );
-        } else {
-
-          flyoutTopOffset = (
-            flyoutElementTopOffset + d3YScale(0)
-          );
-        }
-      }
 
       _.set(
         payload,
         'flyoutOffset',
         {
-          top: flyoutTopOffset,
+          top: flyoutElementTopOffset,
           left: flyoutElementLeftOffset + (flyoutElementWidth / 2) - 1
         }
       );

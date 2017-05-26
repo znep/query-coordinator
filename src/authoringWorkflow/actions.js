@@ -659,6 +659,14 @@ export function setDimensionGroupingColumnName(dimensionGroupingColumnName) {
   };
 }
 
+export const SET_STACKED = 'SET_STACKED';
+export function setStacked(stacked) {
+  return {
+    type: SET_STACKED,
+    stacked
+  };
+}
+
 export const SET_ORDER_BY = 'SET_ORDER_BY';
 export function setOrderBy(orderBy) {
   return {

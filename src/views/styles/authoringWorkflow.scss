@@ -489,6 +489,18 @@
       }
     }
 
+    #grouping-options-title {
+      display: block;
+      margin-top: 12px;
+    }
+
+    #grouping-display-grouped-container, #grouping-display-stacked-container {
+
+      &.disabled {
+        opacity: 0.25;
+      }      
+    }
+
     .custom-palette-container {
       border: 1px solid #c8c8c8;
       background-color: white;

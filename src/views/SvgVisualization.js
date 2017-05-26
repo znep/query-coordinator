@@ -797,6 +797,16 @@ function SvgVisualization($element, vif, options) {
     return _.get(self.getOptions(), 'displayFilterBar', false);
   };
 
+  this.getPositionsForRange = function(groupedDataToRender, minValue, maxValue) {
+    const positions = getPositions(groupedDataToRender);
+    return adjustPositionsToFitRange(positions, minValue, maxValue);
+  };
+
+  this.getStackedPositionsForRange = function(groupedDataToRender, minValue, maxValue) {
+    const positions = getStackedPositions(groupedDataToRender);
+    return adjustPositionsToFitRange(positions, minValue, maxValue);
+  };
+
   /**
    * Private methods
    */
@@ -963,6 +973,79 @@ function SvgVisualization($element, vif, options) {
     );
 
     return (isGrouping) ? 0 : seriesIndex;
+  }
+
+  function getPositions(groupedDataToRender) {
+
+    const positions = [];
+
+    groupedDataToRender.forEach(row => {
+
+      const group = [];
+
+      row.forEach((o, i) => {
+
+        if (i == 0)
+          return; // skip the dimension label
+
+        const value = o || 0;
+
+        if (value >= 0) {
+          group.push({ start: 0, end: value });
+        } else {
+          group.push({ start: value, end: 0 });
+        }
+      });
+
+      positions.push(group);
+    });
+
+    return positions;
+  }
+
+  function getStackedPositions(groupedDataToRender) {
+
+    const positions = [];
+
+    groupedDataToRender.forEach(row => {
+
+      const group = [];
+      var positiveOffset = 0;
+      var negativeOffset = 0;
+
+      row.forEach((o, i) => {
+
+        if (i == 0) {
+          return; // skip the dimension label
+        }
+
+        const value = o || 0;
+
+        if (value >= 0) {
+          group.push({ start: positiveOffset, end: positiveOffset + value });
+          positiveOffset += value;
+        } else {
+          group.push({ start: negativeOffset + value, end: negativeOffset });
+          negativeOffset += value;
+        }
+      });
+
+      positions.push(group);
+    });
+
+    return positions;
+  }
+
+  function adjustPositionsToFitRange(positions, minValue, maxValue) {
+
+    positions.forEach(group => {
+      group.forEach(position => {
+        position.start = _.clamp(position.start, minValue, maxValue);
+        position.end = _.clamp(position.end, minValue, maxValue);
+      });
+    });
+
+    return positions;
   }
 
   /**

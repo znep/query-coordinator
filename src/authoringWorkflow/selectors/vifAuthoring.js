@@ -193,6 +193,11 @@ export const getDimensionGroupingColumnName = createSelector(
   vif => _.get(vif, 'series[0].dataSource.dimension.grouping.columnName', null)
 );
 
+export const getStacked = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'series[0].stacked', false)
+);
+
 export const getColorPaletteGroupingColumnName = createSelector(
   getCurrentVif,
   getSelectedVisualizationType,

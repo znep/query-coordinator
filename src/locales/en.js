@@ -116,6 +116,11 @@ export default {
           no_value: 'No Dimension Grouping',
           description: 'Grouping dimension values breaks out your data into multiple segments based on the selected column.'
         },
+        dimension_grouping_options: {
+          title: 'Display Options',
+          grouped: 'Grouped',
+          stacked: 'Stacked'
+        },
         timeline_precision: {
           automatic: 'Automatic',
           year: 'Group by Year',

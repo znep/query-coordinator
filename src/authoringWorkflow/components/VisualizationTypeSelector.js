@@ -120,12 +120,12 @@ export const VisualizationTypeSelector = React.createClass({
   },
 
   renderVisualizationTypeButton(visualizationType) {
-    const { metadata, vifAuthoring } = this.props;
 
+    const { metadata, vifAuthoring } = this.props;
     const recommendedVisualizationTypes = getRecommendedVisualizationTypes(metadata, getAnyDimension(vifAuthoring));
     const isRecommended = _.some(recommendedVisualizationTypes, {type: visualizationType});
-    const isSelected = visualizationType === getSelectedVisualizationType(vifAuthoring);
-
+    const selectedVisualizationType = getSelectedVisualizationType(vifAuthoring)
+    const isSelected = (visualizationType === selectedVisualizationType);
     const visualizationTypeMetadata = _.find(VISUALIZATION_TYPES, {type: visualizationType});
     const flyout = this.renderVisualizationTypeFlyout(visualizationTypeMetadata, isRecommended);
 

@@ -4,14 +4,15 @@ import React, { PropTypes } from 'react';
 import Styleguide from 'socrata-components';
 import { AccordionPane } from './shared/Accordion.js';
 import BlockLabel from './shared/BlockLabel';
-import {
-  getDimensionGroupingColumnName
+import { 
+  getDimensionGroupingColumnName,
+  isBarChart,
+  isColumnChart
 } from '../selectors/vifAuthoring';
-import {
-  getValidDimensions
-} from '../selectors/metadata';
+import { getValidDimensions } from '../selectors/metadata';
 import { setDimensionGroupingColumnName } from '../actions';
 import { translate } from '../../I18n';
+import DimensionGroupingStackedSelector from './DimensionGroupingStackedSelector';
 
 export const DimensionGroupingColumnNameSelector = React.createClass({
   propTypes: {
@@ -54,6 +55,10 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
       id: 'dimension-grouping-column-name-selection'
     };
 
+    const displayOptionsContainer = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)) ? 
+      <DimensionGroupingStackedSelector /> : 
+      null;
+
     return (
       <div>
         <div className="authoring-field">
@@ -63,6 +68,10 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
             description={translate('panes.data.fields.dimension_grouping_column_name.description')} />
           <Styleguide.Dropdown {...dimensionGroupingColumnNameAttributes} />
         </div>
+        <p className="authoring-field-description">
+          <small>{translate('panes.data.fields.dimension_grouping_column_name.description')}</small>
+        </p>
+        {displayOptionsContainer}
       </div>
     );
   }
@@ -78,6 +87,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
+
   onSelectDimensionGroupingColumnName(selected) {
     dispatch(setDimensionGroupingColumnName(selected.value));
   }

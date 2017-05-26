@@ -42,6 +42,7 @@ const paths = {
   showValueLabels: 'configuration.showValueLabels',
   showValueLabelsAsPercent: 'configuration.showValueLabelsAsPercent',
   showLegend: 'configuration.showLegend',
+  stacked: 'series[0].stacked',
   title: 'title',
   treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
   unitOne: 'series[0].unit.one',
@@ -213,9 +214,12 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setShowValueLabelsAsPercent(get(paths.showValueLabelsAsPercent)));
   }
 
-
   if (has(paths.showLegend)) {
     dispatch(actions.setShowLegend(get(paths.showLegend)));
+  }
+
+  if (has(paths.stacked)) {
+    dispatch(actions.setStacked(get(paths.stacked)));
   }
 
   if (has(paths.title)) {

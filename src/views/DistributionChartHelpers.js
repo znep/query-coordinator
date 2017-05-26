@@ -131,7 +131,8 @@ var helpers = module.exports = {
         ticks(20);
 
       if (buckets.length >= 2) {
-        result.bucketSize = buckets[1] - buckets[0];
+        // We are vulnerable to floating point errors here so rounding off
+        result.bucketSize = Math.round((buckets[1] - buckets[0]) * 100) / 100;
       } else {
         result.bucketSize = 1;
       }
@@ -164,7 +165,7 @@ var helpers = module.exports = {
       return null;
     }
 
-    var dataByMagnitude = helpers.getDataByMagnitude(input);
+    var dataByMagnitude = helpers.getDataByMagnitude(input, options);
     var range = helpers.getMagnitudeRange(dataByMagnitude, options);
 
     // Map over the range, converting magnitudes into start and end keys.
@@ -196,16 +197,19 @@ var helpers = module.exports = {
   },
 
   // Returns an object mapping magnitudes to buckets. Also merges the
-  // bucket with magnitude zero into the bucket with magnitude one.
-  getDataByMagnitude: function(data) {
+  // bucket with magnitude zero into the bucket with magnitude one for logarithmic bucketing
+  getDataByMagnitude: function(data, options) {
     var dataByMagnitude = _.keyBy(_.cloneDeep(data), 'magnitude');
+    var bucketType = _.get(options, 'bucketType');
 
-    // Merge zero-bucket into one-bucket.
-    if (_.isObject(dataByMagnitude[0])) {
-      if (_.isObject(dataByMagnitude[1])) {
-        dataByMagnitude[1].value += dataByMagnitude[0].value;
-      } else {
-        dataByMagnitude[1] = {magnitude: 1, value: dataByMagnitude[0].value};
+    // Merge zero-bucket into one-bucket, if logarithmic
+    if (bucketType === 'logarithmic') {
+      if (_.isPlainObject(dataByMagnitude[0])) {
+        if (_.isPlainObject(dataByMagnitude[1])) {
+          dataByMagnitude[1].value += dataByMagnitude[0].value;
+        } else {
+          dataByMagnitude[1] = {magnitude: 1, value: dataByMagnitude[0].value};
+        }
       }
     }
 
@@ -216,11 +220,14 @@ var helpers = module.exports = {
   // continuous because of the use of an ordinal scale. The zero bucket
   // must be eliminated due to the current way zero buckets are treated.
   getMagnitudeRange: function(dataByMagnitude, options) {
+    var bucketType = _.get(options, 'bucketType');
+    var forceIncludeZero = _.get(options, 'forceIncludeZero', false);
     var extent = d3.extent(_.map(dataByMagnitude, 'magnitude'));
     var min = extent[0];
     var max = extent[1];
+    var range;
 
-    if (_.get(options, 'forceIncludeZero', false)) {
+    if (forceIncludeZero) {
       if (min > 0 && max > 0) {
         min = 0;
       } else if (min < 0 && max < 0) {
@@ -229,7 +236,17 @@ var helpers = module.exports = {
     }
 
     // +1 is there because _.range is a [min, max) range
-    return _.pull(_.range(min, max + 1), 0);
+    range = _.range(min, max + 1);
+
+    // If we artificially extended the range so that it ends with '0', we need to remove '0' after the range is created
+    // since 'getLinearBucket' will take each range value as a 'start', and set the 'end' to one magnitude above that
+    // we would end up with '0 + bucketSize' as the last tick, as opposed to '0' if we didn't omit here
+    if (forceIncludeZero && _.last(range) === 0) {
+      range.pop();
+    }
+
+    // Only pull 0's out for Logarithmic buckets
+    return bucketType === 'linear' ? range : _.pull(range, 0);
   },
 
   // Converts magnitude to start and end
@@ -268,16 +285,10 @@ var helpers = module.exports = {
 
   // Converts magnitude to start and end
   getLinearBucket: function(magnitude, value, bucketSize) {
-    var start = 0;
-    var end = 0;
-
-    if (magnitude > 0) {
-      start = (magnitude - 1) * bucketSize;
-      end = magnitude * bucketSize;
-    } else if (magnitude < 0) {
-      start = magnitude * bucketSize;
-      end = (magnitude + 1) * bucketSize;
-    }
+    // Also vulnerable to floating point weirdness here; applying same fix as above for now
+    // until we can settle on a formal way to deal with floating point math
+    var start = Math.round( (magnitude * bucketSize) * 100 ) / 100;
+    var end = Math.round( ((magnitude + 1) * bucketSize) * 100 ) / 100;
 
     return {
       start: start,

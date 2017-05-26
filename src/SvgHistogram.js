@@ -92,8 +92,6 @@ function fetchDomain(vif, seriesIndex) {
 function fetchBucketedData(bucketingOptions, vif, seriesIndex) {
 
   var soqlDataProvider = dataProvider(vif, seriesIndex);
-  var bucketingFunction;
-  var bucketingArguments;
 
   var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
     vif,
@@ -103,18 +101,7 @@ function fetchBucketedData(bucketingOptions, vif, seriesIndex) {
       'WHERE {0}'.format(whereClauseComponents) :
       '';
 
-  if (bucketingOptions.bucketType === 'linear') {
-    bucketingFunction = 'signed_magnitude_linear';
-    //TODO this will jump to scientific notation and fail to parse in SOQL.
-    bucketingArguments = [ bucketingOptions.bucketSize ];
-  } else {
-    bucketingFunction = 'signed_magnitude_10';
-    bucketingArguments = [];
-  }
-
   var queryParameters = {
-    bucketingFunction: bucketingFunction,
-    bucketingArguments: [''].concat(bucketingArguments).join(', '),
     column: SoqlHelpers.dimension(vif, seriesIndex),
     columnAlias: '__magnitude__',
     value: SoqlHelpers.aggregationClause(vif, seriesIndex, 'measure'),
@@ -122,8 +109,14 @@ function fetchBucketedData(bucketingOptions, vif, seriesIndex) {
     whereClause
   };
 
+  if (bucketingOptions.bucketType === 'linear') {
+    queryParameters.bucketingFunction = `floor(${queryParameters.column}/${bucketingOptions.bucketSize})`;
+  } else {
+    queryParameters.bucketingFunction = `signed_magnitude_10(${queryParameters.column})`;
+  }
+
   var queryTemplate = [
-    'select {bucketingFunction}({column}{bucketingArguments}) as {columnAlias}, ',
+    'select {bucketingFunction} as {columnAlias}, ',
     '{value} as {valueAlias} ',
     '{whereClause} group by {columnAlias} order by {columnAlias} limit 200'
   ].join('');
@@ -142,7 +135,7 @@ function fetchBucketedData(bucketingOptions, vif, seriesIndex) {
     queryParameters.columnAlias,
     queryParameters.valueAlias
   ).then((soqlData) => transformBucketedData(bucketingOptions, soqlData));
-};
+}
 
 /**
  * Given an object specifying bucketingOptions and data response,

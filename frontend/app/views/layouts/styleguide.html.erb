@@ -23,7 +23,7 @@ http://www.socrata.com
   </head>
 
   <%= content_tag :body, :class => @body_classes do %>
-    <a href="#mainContent" title="content" id="toContent">
+    <a href="#content" title="skip to content" class="skip-link">
       <%= I18n.t('dataset.skip-to-content') %>
     </a>
     <%- if render_site_admin_chrome? -%>
@@ -38,7 +38,7 @@ http://www.socrata.com
       <%= display_styleguide_flashes %>
     </div>
 
-    <main role="main" id="mainContent">
+    <main role="main" id="content">
       <%= yield %>
     </main>
 

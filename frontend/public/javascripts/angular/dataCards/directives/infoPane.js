@@ -37,7 +37,7 @@ module.exports = function infoPane(ServerConfig, I18n, WindowOperations) {
       var pageDescription$ = $scope.page.observe('description').map(sanitizeUserHtml);
 
       pageName$.subscribe(function(pageName) {
-        WindowOperations.setTitle(`${pageName} | Socrata`);
+        WindowOperations.setTitle(`${pageName} | ${ServerConfig.get('siteTitle')}`);
       });
 
       $scope.$bindObservable('sourceDatasetName', dataset$.observeOnLatest('name'));

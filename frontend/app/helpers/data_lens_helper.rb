@@ -52,6 +52,7 @@ module DataLensHelper
 
     {
       'assetRevisionKey' => asset_revision_key,
+      'siteTitle' => get_site_title,
       'railsEnv' => Rails.env,
       'cname' => CurrentDomain.cname,
       'locales' => {currentLocale: I18n.locale.to_s, defaultLocale: CurrentDomain.default_locale},

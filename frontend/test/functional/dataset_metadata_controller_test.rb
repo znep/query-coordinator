@@ -16,6 +16,10 @@ class DatasetMetadataControllerTest < ActionController::TestCase
       :phidippides => @phidippides,
       :data_lens_manager => @data_lens_manager
     )
+    stub_feature_flags_with(
+      :create_v2_data_lens => false,
+      :phidippides_deprecation_metadata_source => 'phidippides-only'
+    )
   end
 
   def setup_json_request(body = nil)
@@ -59,7 +63,10 @@ class DatasetMetadataControllerTest < ActionController::TestCase
     connection_stub.stubs(:get_request).returns('[{"_0": "0"}]', '')
     CoreServer::Base.stubs(connection: connection_stub)
     @controller.stubs(can_create_metadata?: true)
-    @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata, status: '200' })
+    @phidippides.stubs(
+      issue_request: { body: mock_v1_dataset_metadata, status: '200' },
+      get_dataset_size: 1
+    )
 
     get :show, id: 'four-four', format: 'json'
 

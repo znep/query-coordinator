@@ -171,6 +171,21 @@ a.expander {
   }
 }
 
+i[class^="ss-"], [class*=" ss-"] {
+  &:before {
+    margin-right: 0.7em;
+    vertical-align: middle;
+  }
+}
+
+#createCanvasPageContent {
+  h1[class^="ss-"], [class*=" ss-"] {
+    &:before {
+      vertical-align: middle;
+    }
+  }
+}
+
 [class^="ss-"], [class*=" ss-"] {
   &:not(:empty):after {
     margin-left: 0.7em;

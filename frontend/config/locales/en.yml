@@ -3267,6 +3267,7 @@ en:
         cancel: Cancel
         close: Close
         empty_message: Your site doesn't have any activity yet. <a href="%{new_dataset_url}">Create a dataset</a> to get started.
+        empty_message_filtered: There are no activities to display.
         columns:
           asset_type: Asset Type
           asset_name: Asset Name

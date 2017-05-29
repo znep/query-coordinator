@@ -9,7 +9,10 @@ SERVICE_SHA="$(git rev-parse HEAD)"
 # Testing, duh.
 echo "RUN_TESTS=${RUN_TESTS}"
 if [ "${RUN_TESTS}" = "true" ]; then
-  bin/test_on_jenkins
+  # Consider refactoring bin/test_on_jenkins
+  # if storyteller builds on Jenkins are ever
+  # built concurrently.
+  bin/test
 else
   echo "Skipping tests because RUN_TESTS is false"
 fi

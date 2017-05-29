@@ -15,9 +15,13 @@ class DatasetLandingPage
       # Wait for migrations request to complete before continuing
       threads[:migrations].join
 
+      # We need to set locale for worker threads to maintain locale in seo friendly links
+      locale = I18n.locale
+
       # We fetch 4 related views so we know if there are more than 3
       threads[:related_views] = Thread.new {
         begin
+          I18n.locale = locale
           fetch_derived_views(view, cookies, request_id, 4, 0)
         rescue Exception => e
           Rails.logger.error("Error fetching derived views for #{view.id}: " + e.message)
@@ -27,6 +31,7 @@ class DatasetLandingPage
 
       threads[:featured_content] = Thread.new {
         begin
+          I18n.locale = locale
           fetch_featured_content(view, cookies, request_id)
         rescue Exception => e
           Rails.logger.error("Error fetching featured content for #{view.id}: " + e.message)

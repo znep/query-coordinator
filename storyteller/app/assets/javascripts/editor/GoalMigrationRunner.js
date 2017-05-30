@@ -62,11 +62,12 @@ export default function GoalMigrationRunner(narrativeMigrationMetadata, storyDat
           hasMismatchedTwoColumn
         };
 
+        const migratedStory = _.cloneDeep(storyData);
+        migratedStory.blocks = migrationSummary.narrativeBlocks;
+
         dispatcher.dispatch({
           action: Actions.GOAL_MIGRATION_END,
-          story: _.merge({}, storyData, {
-            blocks: migrationSummary.narrativeBlocks
-          })
+          story: migratedStory
         });
       }).
       catch((error) => {

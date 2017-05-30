@@ -23,18 +23,14 @@ export function Header(props) {
 
 export function Content(props) {
   return (
-    <section className={ `modal-content ${props.className || ''}` }>
-      { props.children }
-    </section>
+    <section className={ `modal-content ${props.className || ''}` } children={ props.children } />
   );
 }
 
 export function Footer(props) {
   return (
     <div className={ `modal-footer ${props.className || ''}` }>
-      <div className="modal-footer-actions">
-        { props.children }
-      </div>
+      <div className="modal-footer-actions" children={ props.children } />
     </div>
   );
 }
@@ -56,9 +52,7 @@ export function Modal(props) {
 
   return (
     <div className={ modalClasses } role="dialog">
-      <div className="modal-container">
-        { props.children }
-      </div>
+      <div className="modal-container" children={ props.children } />
     </div>
   );
 }

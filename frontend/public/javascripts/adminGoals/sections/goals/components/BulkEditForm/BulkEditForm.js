@@ -324,20 +324,12 @@ class BulkEditForm extends React.Component {
     const numberOfGoals = _(goalSelectionCount).values().sum();
 
     const counts = _.map(goalSelectionCount, (count, goalPublicationStatus) =>
-      <tr className="selected-rows-count" key={ goalPublicationStatus }>
-        <td>{ translations.getIn(['admin', 'goal_values', goalPublicationStatus]) }</td>
-        <td>{ count }</td>
-      </tr>
+      `${count} ${translations.getIn(['admin', 'goal_values', goalPublicationStatus])}`
     );
-    const message = Helpers.translator(translations, 'admin.bulk_edit.items_selected', numberOfGoals);
+    const message = Helpers.translator(translations, 'admin.bulk_edit.items_selected', numberOfGoals, counts.join(', '));
     return (
       <div className="selected-rows-indicator">
         { message }
-        <table>
-          <tbody>
-            { counts }
-          </tbody>
-        </table>
       </div>
     );
   }
@@ -460,7 +452,7 @@ class BulkEditForm extends React.Component {
   }
 
   render() {
-    return (<Components.Socrata.Modal.Modal children={ this.renderEditor() }/>);
+    return (<Components.Socrata.Modal.Modal className="bulk-edit-modal" children={ this.renderEditor() }/>);
   }
 }
 

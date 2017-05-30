@@ -2,16 +2,11 @@
 
 .selected-rows-indicator {
   display: block;
-  border: 1px solid #eee;
+  border: 1px solid $light-grey-3;
   border-left: 0;
   border-right: 0;
   padding: 0;
-  line-height: 34px;
   margin-bottom: 20px;
-
-  td:first-child {
-    padding-right: 1em;
-  }
 }
 
 .selected-rows-count {
@@ -24,13 +19,14 @@
   color: $dark-grey-1;
 }
 
-.drafts-missing-notice {
-  margin-left: 1em;
+.edit-goal-list {
+  border-bottom: 1px solid $light-grey-3;
+  background: $light-grey-6;
+  padding-bottom: 8px;
 }
 
 .edit-goal-list {
-  width: calc(100% - 2em);
-  margin-left: 2em;
+  width: 100%;
   border-collapse: collapse;
 
   tr {
@@ -42,5 +38,17 @@
   td.edit-link {
     text-align: right;
     white-space: nowrap;
+  }
+}
+
+.bulk-edit-modal {
+  .modal-container {
+    max-width: 600px;
+  }
+
+  .modal-footer {
+    padding: 8px;
+    background: $light-grey-6;
+    border-top: 1px solid $light-grey-3;
   }
 }

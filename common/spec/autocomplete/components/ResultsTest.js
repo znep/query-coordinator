@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import { ResultsClass } from 'common/components/Autocomplete/components/Results/Results';
-import Result from 'common/components/Autocomplete/components/Results/Result';
+import { ResultsClass } from 'common/autocomplete/components/Results/Results';
+import Result from 'common/autocomplete/components/Results/Result';
 
 /* Note that in these tests noop functions are passed in as props to satisfy propTypes requirements */
 describe('<Results />', () => {

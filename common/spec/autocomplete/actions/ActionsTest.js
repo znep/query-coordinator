@@ -1,4 +1,4 @@
-import * as actions from 'common/components/Autocomplete/actions'
+import * as actions from 'common/autocomplete/actions'
 
 describe('actions', () => {
   it('should create query changed action', () => {

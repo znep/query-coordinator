@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import { Result } from 'common/components/Autocomplete/components/Results/Result';
+import { Result } from 'common/autocomplete/components/Results/Result';
 
 describe('<Result />', () => {
   const resultProps = {

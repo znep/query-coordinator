@@ -1,4 +1,4 @@
-import { getCeteraUrl } from 'common/components/Autocomplete/Util';
+import { getCeteraUrl } from 'common/autocomplete/Util';
 
 describe('getCeteraUrl', () => {
   it('properly generates cetera url', () => {

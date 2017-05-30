@@ -15,7 +15,7 @@ if (userId) {
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'babel-polyfill-safe';
-import StatefulAutocomplete from 'common/components/Autocomplete/components/StatefulAutocomplete';
+import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
 
 /*
  * Any elements that add data-catalog-autocomplete="true" will automatically be given the autocomplete treatment

@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import { AutocompleteClass } from 'common/components/Autocomplete/components/Autocomplete';
-import CollapsedIcon from 'common/components/Autocomplete/components/CollapsedIcon';
+import { AutocompleteClass } from 'common/autocomplete/components/Autocomplete';
+import CollapsedIcon from 'common/autocomplete/components/CollapsedIcon';
 
 /* Note that in these tests noop functions are passed in as props to satisfy propTypes requirements */
 describe('<Autocomplete />', () => {

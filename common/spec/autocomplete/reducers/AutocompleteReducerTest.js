@@ -1,5 +1,5 @@
-import reducer from 'common/components/Autocomplete/reducers/AutocompleteReducer'
-import * as actions from 'common/components/Autocomplete/actions'
+import reducer from 'common/autocomplete/reducers/AutocompleteReducer'
+import * as actions from 'common/autocomplete/actions'
 
 describe('autocomplete reducer', () => {
   const someResults = {

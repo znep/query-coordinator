@@ -105,6 +105,7 @@ function getStyleguidePreLoaders() {
   ];
 }
 
+// Sets the search path for @include directives SPECIFICALLY in *.scss files.
 function getStyleguideIncludePaths() {
   return [
     'node_modules/bourbon/app/assets/stylesheets',

@@ -1595,6 +1595,8 @@ en:
       updated: Updated
       view_count: View Count
     render_error: There was a problem rendering this page.
+  dataset:
+    skip-to-content: Skip to Main Content
   dataset_landing_page:
     action_buttons:
       api: API

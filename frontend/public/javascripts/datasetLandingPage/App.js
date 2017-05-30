@@ -25,7 +25,7 @@ export class App extends Component {
           <InfoPane />
         </Responsive>
 
-        <main className="container landing-page-container">
+        <div className="container landing-page-container">
           <FeaturedContent />
           <MetadataTable />
           <RowDetails />
@@ -35,7 +35,7 @@ export class App extends Component {
           <Responsive>
             <RelatedViewList />
           </Responsive>
-        </main>
+        </div>
       </div>
     );
   }
@@ -47,12 +47,12 @@ export class App extends Component {
         <PrivateNotice />
         <InfoPane />
 
-        <main className="container landing-page-container">
+        <div className="container landing-page-container">
           <BlobPreview />
           <FeaturedContent />
           <BlobDownload />
           <MetadataTable />
-        </main>
+        </div>
       </div>
     );
   }
@@ -64,11 +64,11 @@ export class App extends Component {
         <PrivateNotice />
         <InfoPane />
 
-        <main className="container landing-page-container">
+        <div className="container landing-page-container">
           <FeaturedContent />
           <HrefDownload />
           <MetadataTable />
-        </main>
+        </div>
       </div>
     );
   }

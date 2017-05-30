@@ -127,16 +127,17 @@ class DatasetsControllerTest < ActionController::TestCase
         end
       end
 
-      should 'get_view method returns nil when ResourceNotFound' do
-        @controller.unstub(:get_view)
-        View.stubs(:find).raises(CoreServer::ResourceNotFound.new('response'))
-        # Stubbing core_session here is an ugly hack to deal with test order sometimes causing this test to fail
-        session_double = stub(:valid? => false, :encoding => 'utf-8', :b => '')
-        UserSessionProvider.klass.any_instance.stubs(:core_session => session_double)
-        @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
-        value = @controller.send(:get_view, 'igno-reme')
-        refute(value)
-      end
+# Work to uncomment this flaky test is being tracked in EN-16533
+#      should 'get_view method returns nil when ResourceNotFound' do
+#        @controller.unstub(:get_view)
+#        View.stubs(:find).raises(CoreServer::ResourceNotFound.new('response'))
+#        # Stubbing core_session here is an ugly hack to deal with test order sometimes causing this test to fail
+#        session_double = stub(:valid? => false, :encoding => 'utf-8', :b => '')
+#        UserSessionProvider.klass.any_instance.stubs(:core_session => session_double)
+#        @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
+#        value = @controller.send(:get_view, 'igno-reme')
+#        refute(value)
+#      end
 
       should 'get_view method returns nil when CoreServerError - authentication_required' do
         @controller.unstub(:get_view)

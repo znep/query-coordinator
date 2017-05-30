@@ -23,9 +23,11 @@ http://www.socrata.com
   </head>
 
   <%= content_tag :body, :class => @body_classes do %>
-    <a href="#content" title="skip to content" class="skip-link">
-      <%= I18n.t('dataset.skip-to-content') %>
-    </a>
+    <div class="skip-links">
+      <a href="#content" title="skip to content" class="skip-link">
+        <%= I18n.t('dataset.skip-to-content') %>
+      </a>
+    </div>
     <%- if render_site_admin_chrome? -%>
       <%== site_chrome_admin_header(request, response, @site_chrome_admin_header_options || {}) %>
     <%- end -%>

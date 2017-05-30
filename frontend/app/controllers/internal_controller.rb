@@ -831,7 +831,7 @@ class InternalController < ApplicationController
     # If you put in a config type into the :config_id, it'll redirect to the default config!
     config_type = params[:config_id]
     unless config_type.match /^\d+$/
-      config = ::Configuration.find_by_type(config_type, true, params[:domain_id]).first
+      config = ::Configuration.find_by_type(config_type, true, params[:domain_id], false).first
       return render_404 if config.nil?
       redirect_to url_for(params.merge(config_id: config.id))
     end

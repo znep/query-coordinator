@@ -259,7 +259,7 @@ module CommonMetadataMethods
     # it's necessary to get nbe metadata because it contains
     # fields that are not present in obe metadata
     view = View.find(dataset_id, {'Cookie' => _cookies(options)}.compact)
-    nbe_view = view.nbe_view
+    nbe_view = view.nbe_view rescue nil
     nbe_metadata = nbe_view.nil? ? {} : nbe_view.data.with_indifferent_access
     core_metadata = translate_core_metadata_to_legacy_structure(nbe_metadata)
 

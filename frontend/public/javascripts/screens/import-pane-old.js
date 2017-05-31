@@ -1229,6 +1229,9 @@ var Interpolator = require('../util/interpolator');
           uploadEndpoint += 'blob';
         }
       }
+      if (blist.feature_flags.domain_locale) {
+        uploadEndpoint += '&locale=' + blist.feature_flags.domain_locale;
+      }
 
       var $uploadThrobber = $uploadPane.find('.uploadThrobber');
       var $uploadFileErrorHelp = $uploadPane.find('.uploadFileErrorHelp');
@@ -1334,10 +1337,14 @@ var Interpolator = require('../util/interpolator');
           $uploadThrobber.slideDown().find('.text').text(t('downloading'));
 
           var targetUrl = $crossloadPane.find('.crossloadUrl').val().trim();
+          var scanEndpoint = '/api/imports2?method=scanUrl';
+          if (blist.feature_flags.domain_locale) {
+            scanEndpoint += '&locale=' + blist.feature_flags.domain_locale;
+          }
           $.socrataServer.makeRequest({
             type: 'post',
             contentType: 'application/x-www-form-urlencoded',
-            url: '/api/imports2?method=scanUrl',
+            url: scanEndpoint,
             data: {
               url: targetUrl
             },
@@ -1809,6 +1816,9 @@ var Interpolator = require('../util/interpolator');
       };
       if (state.operation != 'import') {
         urlParams.method = state.operation;
+      }
+      if (blist.feature_flags.domain_locale) {
+        urlParams.locale = blist.feature_flags.domain_locale;
       }
 
       if (useDI2) {

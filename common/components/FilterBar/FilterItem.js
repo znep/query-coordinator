@@ -216,12 +216,20 @@ export const FilterItem = React.createClass({
       ref: _.partial(_.set, this, 'filterControl')
     };
 
-    switch (column.dataTypeName) {
-      case 'calendar_date': return <CalendarDateFilter {...filterProps} />;
-      case 'money': return <NumberFilter {...filterProps} />;
-      case 'number': return <NumberFilter {...filterProps} />;
-      case 'text': return <TextFilter {...filterProps} />;
-      default: return null;
+    // This used to be a switch statement, but the babel
+    // transpiler crashed in Storyteller when trying to
+    // compile. Transforming to an if/else resolved the
+    // crash.
+    if (column.dataTypeName === 'calendar_date') {
+      return (<CalendarDateFilter {...filterProps} />);
+    } else if (column.dataTypeName === 'money') {
+      return (<NumberFilter {...filterProps} />);
+    } else if (column.dataTypeName === 'number') {
+      return (<NumberFilter {...filterProps} />);
+    } else if (column.dataTypeName === 'text') {
+      return (<TextFilter {...filterProps} />);
+    } else {
+      return null;
     }
   },
 

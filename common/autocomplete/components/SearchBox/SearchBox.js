@@ -146,6 +146,7 @@ class SearchBox extends React.Component {
         </div>
         <label htmlFor="autocomplete-search-input" styleName="aria-not-displayed">Search:</label>
         <input
+          autoComplete="off"
           type="search"
           ref={(domNode) => { this.domNode = domNode; }}
           styleName={this.getInputStyleName()}

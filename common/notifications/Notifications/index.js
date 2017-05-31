@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import 'babel-polyfill-safe';
-import { getNotifications, updateNotificationLastSeen } from './Util';
-import Bell from './Bell';
-import NotificationList from './NotificationList';
-import styles from './notifications.scss';
+import { getNotifications, updateNotificationLastSeen } from 'common/notifications/Util';
+import Bell from 'common/notifications/Bell';
+import NotificationList from 'common/notifications/NotificationList';
+import styles from 'common/notifications/notifications.scss';
 
-require('element-closest');
+// require('element-closest');
 
 class Notifications extends Component {
   constructor(props) {

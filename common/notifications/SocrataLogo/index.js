@@ -1,6 +1,6 @@
 import React from 'react';
 import cssModules from 'react-css-modules';
-import { SocrataIcon } from 'socrata-components';
+import { SocrataIcon } from 'common/components/SocrataIcon';
 import styles from './socrata-logo.scss';
 
 function SocrataLogo() {

@@ -17,25 +17,32 @@ module.exports = _.defaultsDeep({
     'site_wide': './site_wide'
   }),
   module: {
-    preLoaders: [
-      common.getStyleguidePreLoaders()
-    ],
     loaders: [
-      common.getBabelLoader(),
       {
-        // Prevent lodash from putting itself on window.
-        // See: https://github.com/lodash/lodash/issues/2671
-        test: /node_modules\/lodash/,
-        loader: 'imports?define=>undefined'
+        test: /\.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
+        loader: 'babel',
+        query: {
+          presets: ['react', 'es2015']
+        }
       },
       {
-        test: /\.(css|scss)$/,
+        test: /\.scss$/,
         loaders: [
-          'style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
-          'autoprefixer-loader',
-          'sass-loader'
+          'style',
+          'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+          'sass'
         ]
+      },
+      {
+        test: /\.svg$/,
+        loader: 'raw-loader',
+        include: path.resolve('node_modules/socrata-components/dist/fonts/svg')
+      },
+      {
+        test: /\.(eot|woff|svg|woff2|ttf)$/,
+        loader: 'url-loader?limit=100000',
+        exclude: path.resolve('node_modules/socrata-components/dist/fonts/svg')
       }
     ]
   },

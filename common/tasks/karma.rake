@@ -2,7 +2,7 @@ namespace 'karma' do
   task :deps do
     npm('run check-dependencies') do |ok, res|
       unless ok
-        npm('install') { |ok, res| npm('install', path: 'autocomplete') if ok }
+        npm('install') { |ok, res| exit(1) unless ok }
       end
     end
   end
@@ -12,7 +12,7 @@ namespace 'karma' do
   end
 
   task :watch do
-    npm('run watch') { |ok, res| npm('run watch', path: 'autocomplete') if ok }
+    npm('run watch') { |ok, res| exit(1) unless ok }
   end
 end
 

@@ -67,12 +67,27 @@ achieves the following:
 
 1. Global checks pass (`rake test && rake lint` from the root of the repo).
 2. Passes a design review with a senior-level or above engineer, if the change:
-  1. Adds or removes a module.
-  2. Adds, changes, or removes module API.
-  3. Imports a new external library.
+    1. Adds or removes a module.
+    2. Adds, changes, or removes module API.
+    3. Imports a new external library.
 3. All usages of modified modules are updated to reflect the change, if applicable.
 4. A demo is given of the changes in all relevant projects.
 
 It is suggested that you consider these requirements _before_ you begin changing code. A series of small,
 incremental changes is often preferable and faster to implement than a large, monolithic change that must
 be merged all at once.
+
+## Adding/updating NPM dependencies (styles or Javascript)
+
+At the moment, NPM dependencies must be added in a few places. Consolidation work is planned but not implemented.
+If you wish to add a new NPM package for use in `common` code, follow these steps:
+
+1. Add your package to these `package.json` files:
+    1. `common/karma_config/package.json`
+    2. `frontend/package.json`
+    3. `storyteller/package.json`
+    4. `packages/socrata-components/package.json`
+2. If the package includes styles, tell the SCSS runtimes about them by adding an include path to:
+    1. `SCSS_LOAD_PATHS` in `frontend/app/controllers/style_controller.rb`.
+    2. `getStyleguideIncludePaths` in `frontend/config/webpack/common.js`.
+    3. The `Rails.application.config.assets.paths` list in `storyteller/config/initializers/assets.rb`.

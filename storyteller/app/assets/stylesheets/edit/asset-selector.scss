@@ -1,5 +1,5 @@
 @import 'lib/variables';
-@import 'dist/fonts/socrata-icons';
+@import 'common/resources/fonts/dist/socrata-icons';
 @import 'bourbon';
 
 @include keyframes(fadeIn) {

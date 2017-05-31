@@ -1,8 +1,8 @@
 # Socrata Platform UI
 
-Home of [Frontend](https://github.com/socrata/platform-ui/blob/master/common/resources/fonts),
-[Storyteller](https://github.com/socrata/platform-ui/blob/master/common/resources/fonts), and
-[common code](https://github.com/socrata/platform-ui/blob/master/common/resources/fonts). Please
+Home of [Frontend](https://github.com/socrata/platform-ui/tree/master/frontend#socrata-frontend),
+[Storyteller](https://github.com/socrata/platform-ui/tree/master/storyteller#storyteller), and
+[common code](https://github.com/socrata/platform-ui/tree/master/common#socrata-platform-common-code). Please
 see the READMEs in each project directory to learn more.
 
 ## Contributing
@@ -17,4 +17,4 @@ Please review the steps which are auto-populated into new pull requests before m
 
 ### Updating icons
 
-Please see the [instructions](https://github.com/socrata/platform-ui/blob/master/common/resources/fonts).
+Please see the [instructions](https://github.com/socrata/platform-ui/tree/master/common/resources/fonts#updating-socrata-icons).

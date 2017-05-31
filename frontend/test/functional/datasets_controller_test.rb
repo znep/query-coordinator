@@ -86,6 +86,7 @@ class DatasetsControllerTest < ActionController::TestCase
       setup do
         init_environment
       end
+
       # https://opendata.test-socrata.com/dataset/28-Formwidtest/zwjk-24g6.json?text=1
       # should redirect to https://opendata.test-socrata.com/resource/zwjk-24g6.json?text=1
       should 'redirects to format URLs include query string parameters' do
@@ -127,21 +128,16 @@ class DatasetsControllerTest < ActionController::TestCase
         end
       end
 
-# Work to uncomment this flaky test is being tracked in EN-16533
-#      should 'get_view method returns nil when ResourceNotFound' do
-#        @controller.unstub(:get_view)
-#        View.stubs(:find).raises(CoreServer::ResourceNotFound.new('response'))
-#        # Stubbing core_session here is an ugly hack to deal with test order sometimes causing this test to fail
-#        session_double = stub(:valid? => false, :encoding => 'utf-8', :b => '')
-#        UserSessionProvider.klass.any_instance.stubs(:core_session => session_double)
-#        @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
-#        value = @controller.send(:get_view, 'igno-reme')
-#        refute(value)
-#      end
+      should 'get_view method returns nil when ResourceNotFound' do
+        @controller.unstub(:get_view)
+        View.stubs(:find).raises(CoreServer::ResourceNotFound.new('response'))
+        @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
+        value = @controller.send(:get_view, 'igno-reme')
+        refute(value)
+      end
 
       should 'get_view method returns nil when CoreServerError - authentication_required' do
         @controller.unstub(:get_view)
-        UserSessionProvider.klass.controller = @controller
         View.stubs(:find).raises(CoreServer::CoreServerError.new('source', 'authentication_required', 'error message'))
         @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
         value = @controller.send(:get_view, 'igno-reme')
@@ -150,7 +146,6 @@ class DatasetsControllerTest < ActionController::TestCase
 
       should 'get_view method returns nil when CoreServerError - permission_denied' do
         @controller.unstub(:get_view)
-        UserSessionProvider.klass.controller = @controller
         View.stubs(:find).raises(CoreServer::CoreServerError.new('source', 'permission_denied', 'error message'))
         @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
         value = @controller.send(:get_view, 'igno-reme')
@@ -159,7 +154,6 @@ class DatasetsControllerTest < ActionController::TestCase
 
       should 'get_view method returns nil when CoreServerError - other error' do
         @controller.unstub(:get_view)
-        UserSessionProvider.klass.controller = @controller
         View.stubs(:find).raises(CoreServer::CoreServerError.new('source', 'other error', 'error message'))
         @controller.instance_variable_set('@_response', ActionDispatch::Response.new)
         value = @controller.send(:get_view, 'igno-reme')
@@ -168,7 +162,6 @@ class DatasetsControllerTest < ActionController::TestCase
 
       should 'get_view method returns nil when View#is_form? is true and View#can_add? is false' do
         @controller.unstub(:get_view)
-        UserSessionProvider.klass.controller = @controller
         mock_view = stub
         mock_view.expects(:is_form? => true)
         mock_view.expects(:can_add? => false)
@@ -180,7 +173,6 @@ class DatasetsControllerTest < ActionController::TestCase
 
       should 'get_view method returns nil when View#can_read? is false' do
         @controller.unstub(:get_view)
-        UserSessionProvider.klass.controller = @controller
         mock_view = stub
         mock_view.expects(:is_form? => false)
         mock_view.expects(:can_read? => false)
@@ -392,7 +384,6 @@ class DatasetsControllerTest < ActionController::TestCase
         end
 
         should 'login and return a JSON success result' do
-          UserSessionProvider.klass.controller = @controller
           @controller.stubs(:protect_against_forgery? => true, :verify_recaptcha => true)
           post(:validate_contact_owner, contact_form_data.merge(:id => '1234-abcd', :format => :data))
           assert_equal('200', @response.code)
@@ -464,7 +455,6 @@ class DatasetsControllerTest < ActionController::TestCase
         should 'compute extension from url if nil extension is provided' do
           assert_equal(@controller.send(:compute_extension, nil, 'test.abc'), 'abc')
         end
-
       end
     end
   end

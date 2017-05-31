@@ -83,6 +83,8 @@ module TestHelperMethods
       when TestHelperMethods::ANONYMOUS
         stub_anonymous_user
     end
+
+    UserSessionProvider.klass.controller = @controller
   end
 
   def init_anonymous_environment

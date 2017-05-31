@@ -31,7 +31,7 @@ module.exports = () => {
       src(commonRoot + '/locales/*').
       pipe(gulp.dest('common/locales')),
     gulp.
-      src(path.resolve(commonRoot, 'components/fonts/svg') + '/*').
+      src(path.resolve(commonRoot, 'resources/fonts/svg') + '/*').
       pipe(gulp.dest('dist/fonts/svg'))
   );
 };

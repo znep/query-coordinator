@@ -15,22 +15,6 @@ function commonPath(p) {
   return path.resolve(commonRoot, p);
 }
 
-function compileIconErb(stream) {
-  return (callback) => {
-    stream.on('glyphs', (glyphs) => {
-      var locals = {
-        className: 'socrata-icon',
-        glyphs
-      };
-
-      gulp.src(commonPath('components/fonts/templates/_icons.erb')).
-        pipe(consolidate('lodash', locals)).
-        pipe(gulp.dest('pages/elements')).
-        on('finish', callback);
-    });
-  };
-}
-
 function compileIconStyles(stream) {
   return (callback) => {
     stream.on('glyphs', (glyphs) => {
@@ -45,7 +29,7 @@ function compileIconStyles(stream) {
         fontName
       };
 
-      gulp.src(commonPath('components/fonts/templates/socrata-icons.scss')).
+      gulp.src(commonPath('resources/fonts/templates/socrata-icons.scss')).
         pipe(consolidate('lodash', locals)).
         pipe(gulp.dest('dist/fonts')).
         on('finish', callback);
@@ -60,7 +44,7 @@ function compileFontFamily() {
       buildTimestamp
     };
 
-    gulp.src(commonPath('components/fonts/templates/socrata-icons-font-family.scss')).
+    gulp.src(commonPath('resources/fonts/templates/socrata-icons-font-family.scss')).
       pipe(consolidate('lodash', locals)).
       pipe(gulp.dest('dist/fonts')).
       on('finish', callback);
@@ -83,13 +67,12 @@ module.exports = (done) => {
     descent: 128 // Magic! Fuck if I know. It works.
   };
 
-  var stream = gulp.src(commonPath('components/fonts/svg/*.svg')).
+  var stream = gulp.src(commonPath('resources/fonts/svg/*.svg')).
     pipe(iconfont(settings));
 
   async.parallel([
     compileFontFamily(),
     compileIconStyles(stream),
-    compileIconErb(stream),
     compileStream(stream)
   ], done);
 };

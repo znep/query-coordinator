@@ -33,6 +33,10 @@ module SocrataSiteChrome
       SocrataSiteChrome::FeatureSet.new(request.host).feature_enabled?('govstat') rescue false
     end
 
+    def new_admin_ui_enabled?
+      get_feature_flag('enable_new_admin_ui')
+    end
+
     def get_feature_flag(flag)
       Signaller.for(flag: flag).value(on_domain: request.host) rescue nil
     end
@@ -83,11 +87,32 @@ module SocrataSiteChrome
       site_chrome_current_user.try(:display_name).presence || t('header.profile')
     end
 
+    def user_has_right?(activity)
+      return false unless site_chrome_current_user
+      site_chrome_current_user.is_superadmin? || site_chrome_current_user.has_right?(activity)
+    end
+
     def current_user_can_see_admin_link?
       return false unless site_chrome_current_user
       site_chrome_current_user.is_superadmin? ||
         %w(administrator publisher publisher_stories designer editor editor_stories viewer).
           include?(site_chrome_current_user.role_name.to_s.downcase)
+    end
+
+    def current_user_can_see_activity_logs?
+      user_has_right?(:view_all_dataset_status_logs)
+    end
+
+    def current_user_can_see_asset_inventory?
+      user_has_right?(:edit_others_datasets) || user_has_right?(:edit_site_theme)
+    end
+
+    def current_user_can_see_analytics?
+      current_user_can_see_admin_link?
+    end
+
+    def current_user_can_see_users?
+      user_has_right?(:manage_users)
     end
 
     def copyright_source

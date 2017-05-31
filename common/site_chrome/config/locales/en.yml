@@ -18,6 +18,9 @@ en:
   footer:
     powered_by: Powered By
   header:
+    settings_menu:
+      title: 'Settings'
+      all_settings: 'All Settings'
     administration: Administration
     close_button_aria_label: Close
     header_links_aria_label: Header links

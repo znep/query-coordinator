@@ -31,13 +31,24 @@
 
       <div class="site-chrome-admin-separator"></div>
 
+      <%- if current_user_can_see_admin_link? && new_admin_ui_enabled? %>
+        <div 
+          class="site-chrome-admin-settings"
+          role="button"
+          aria-haspopup="true"
+          aria-label="<%= t('header.settings_menu.title') %>">
+            <%= render 'site_chrome/admin/settings' %>
+        </div>
+        <div class="site-chrome-admin-separator"></div>
+      <%- end %>
+
+
       <div
         class="site-chrome-admin-user"
         tabIndex="0"
         role="button"
         aria-haspopup="true"
-        aria-label="<%= t('header.profile') %>"
-        onClick="toggleAdminDropdown(this);">
+        aria-label="<%= t('header.profile') %>">
           <%= render 'site_chrome/admin/user' %>
       </div>
     </div>

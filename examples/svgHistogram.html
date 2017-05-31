@@ -332,6 +332,7 @@
       });
 
       vifs.push({
+        title: 'Test of Sum Aggregation',
         columnName: 'wave_period',
         domain: 'opendata-anu.rc-socrata.com',
         datasetUid: 'rfcu-t36e',
@@ -380,6 +381,55 @@
             },
             type: 'histogram',
             label: 'Sample count',
+            unit: {
+              one: 'sample',
+              other: 'samples'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        }
+      });
+
+      vifs.push({
+        title: 'Crossing Zero Test',
+        description: 'Foo Bar',
+        configuration: {
+          bucketType: 'linear',
+          axisLabels: {
+            bottom: 'Val of Col B',
+            left: 'Count of Col B'
+          }
+        },
+        series: [
+          {
+            color: {
+              primary: '#f55',
+              highlight: 'red'
+            },
+            dataSource: {
+              datasetUid: 't23p-wjam',
+              domain: 'stories.rc-socrata.com',
+              dimension: {
+                columnName: 'col_b',
+                aggregationFunction: null
+              },
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: []
+            },
+            type: 'histogram',
+            label: 'Count',
             unit: {
               one: 'sample',
               other: 'samples'

@@ -347,8 +347,9 @@ describe('DistributionChart jQuery component', function() {
       var bucketingOptions = { bucketType: 'linear', bucketSize: 1 };
 
       var result = distributionChart.transformBucketedData(bucketingOptions, [ unfiltered, filtered ]);
-      expect(result.unfiltered).to.have.length(3);
-      expect(result.filtered).to.have.length(3);
+
+      expect(result.unfiltered).to.have.length(4);
+      expect(result.filtered).to.have.length(4);
     });
 
     it('throws an error if the unfiltered data is empty', function() {

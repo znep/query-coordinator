@@ -293,6 +293,16 @@ describe('DistributionChartHelpers', function() {
         expect(result.bucketType).to.equal('linear');
         expect((input.max - input.min) / result.bucketSize).to.be.closeTo(20, 5);
       });
+
+      it('should not have floating point rounding issues', function() {
+        var input;
+        var result;
+
+        input = {min: -1.9, max: 2.3};
+        result = run(input);
+        expect(result.bucketType).to.equal('linear');
+        expect(result.bucketSize).to.equal(0.2); // and not 0.19999999999999996
+      });
     });
 
     describe('edge cases', function() {
@@ -552,8 +562,9 @@ describe('DistributionChartHelpers', function() {
           var expectedOutput = [
             {start: -34, end: -17, value: 5},
             {start: -17, end: 0, value: 5},
-            {start: 0, end: 17, value: 10},
-            {start: 17, end: 34, value: 5}
+            {start: 0, end: 17, value: 5},
+            {start: 17, end: 34, value: 5},
+            {start: 34, end: 51, value: 5}
           ];
 
           expect(output).to.deep.equal(expectedOutput);
@@ -563,7 +574,11 @@ describe('DistributionChartHelpers', function() {
           it('should extend the bucket range up to zero if all buckets are negative', function() {
             var input, output;
 
-            input = [{magnitude: -6, value: 17}, {magnitude: -5, value: 11}];
+            input = [
+              {magnitude: -6, value: 17},
+              {magnitude: -5, value: 11}
+            ];
+
             output = run(input, {bucketType: 'linear', forceIncludeZero: true, bucketSize: 25});
 
             expect(output.length).to.equal(6);
@@ -576,7 +591,7 @@ describe('DistributionChartHelpers', function() {
             input = [{magnitude: 3, value: 17}, {magnitude: 6, value: 11}];
             output = run(input, {bucketType: 'linear', forceIncludeZero: true, bucketSize: 25});
 
-            expect(output.length).to.equal(6);
+            expect(output.length).to.equal(7);
             expect(_.head(output)).to.deep.equal({start: 0, end: 25, value: 0});
           });
         });
@@ -585,7 +600,11 @@ describe('DistributionChartHelpers', function() {
           it('should maintain the true bucket range if all buckets are negative', function() {
             var input, output;
 
-            input = [{magnitude: -6, value: 17}, {magnitude: -5, value: 11}];
+            input = [
+              {magnitude: -6, value: 17},
+              {magnitude: -5, value: 11}
+            ];
+
             output = run(input, {bucketType: 'linear', bucketSize: 25});
 
             expect(output).to.deep.equal([
@@ -597,15 +616,81 @@ describe('DistributionChartHelpers', function() {
           it('should maintain the true bucket range if all buckets are positive', function() {
             var input, output;
 
-            input = [{magnitude: 3, value: 17}, {magnitude: 6, value: 11}];
+            input = [
+              {magnitude: 3, value: 17},
+              {magnitude: 6, value: 11}
+            ];
+
             output = run(input, {bucketType: 'linear', bucketSize: 25});
 
             expect(output).to.deep.equal([
-              { start: 50, end: 75, value: 17 },
-              { start: 75, end: 100, value: 0 },
+              { start: 75, end: 100, value: 17 },
               { start: 100, end: 125, value: 0 },
-              { start: 125, end: 150, value: 11 }
+              { start: 125, end: 150, value: 0 },
+              { start: 150, end: 175, value: 11 }
             ]);
+          });
+
+          describe('when bucketSize is 1', function() {
+            it('should maintain the true bucket range if all buckets are positive', function() {
+              var input, output;
+
+              input = [
+                {magnitude: 3, value: 17},
+                {magnitude: 4, value: 21},
+                {magnitude: 5, value: 9},
+                {magnitude: 6, value: 11}
+              ];
+
+              output = run(input, {bucketType: 'linear', bucketSize: 1});
+
+              expect(output).to.deep.equal([
+                { start: 3, end: 4, value: 17 },
+                { start: 4, end: 5, value: 21 },
+                { start: 5, end: 6, value: 9 },
+                { start: 6, end: 7, value: 11 }
+              ]);
+            });
+
+            it('should maintain the true bucket range if all buckets are negative', function() {
+              var input, output;
+
+              input = [
+                {magnitude: -4, value: 17},
+                {magnitude: -3, value: 21},
+                {magnitude: -2, value: 9},
+                {magnitude: -1, value: 11}
+              ];
+
+              output = run(input, {bucketType: 'linear', bucketSize: 1});
+
+              expect(output).to.deep.equal([
+                { start: -4, end: -3, value: 17 },
+                { start: -3, end: -2, value: 21 },
+                { start: -2, end: -1, value: 9 },
+                { start: -1, end: 0, value: 11 }
+              ]);
+            });
+
+            it('should create the correct buckets going from negative to postive', function() {
+              var input, output;
+
+              input = [
+                {magnitude: -2, value: 17},
+                {magnitude: -1, value: 21},
+                {magnitude: 0, value: 9},
+                {magnitude: 1, value: 11}
+              ];
+
+              output = run(input, {bucketType: 'linear', bucketSize: 1});
+
+              expect(output).to.deep.equal([
+                { start: -2, end: -1, value: 17 },
+                { start: -1, end: 0, value: 21 },
+                { start: 0, end: 1, value: 9 },
+                { start: 1, end: 2, value: 11 }
+              ])
+            });
           });
         });
       });

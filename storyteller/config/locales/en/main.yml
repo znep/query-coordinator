@@ -20,6 +20,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  accessibility:
+    skip_to_content: Skip to main content
+    skip_to_footer: Skip to footer links
   activerecord:
     errors:
       models:

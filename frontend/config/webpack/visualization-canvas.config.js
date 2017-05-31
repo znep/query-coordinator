@@ -7,15 +7,14 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/visualizationCanvas'),
-  entry: './main',
+  entry: common.withHotModuleEntries('./main'),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/visualizationCanvas/.eslintrc.json'),
   externals: {
     jquery: true
   },
   module: {
-    loaders: [
-      common.getBabelLoader(),
+    loaders: common.getStandardLoaders([
       {
         test: /\.scss|\.css$/,
         loader: 'style!css!autoprefixer-loader!sass'
@@ -24,7 +23,7 @@ module.exports = _.defaultsDeep({
         test: /\.png$/,
         loader: 'url-loader?limit=100000'
       }
-    ]
+    ])
   },
   resolve: common.getStandardResolve([ 'public/javascripts/visualizationCanvas' ]),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

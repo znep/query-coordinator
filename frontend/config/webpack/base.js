@@ -1,10 +1,11 @@
 var _ = require('lodash');
 var path = require('path');
 var common = require('./common');
-var preloaders = _.clone(common.getStyleguidePreLoaders());
+
+var preLoaders = [];
 
 if (common.isProduction) {
-  preloaders.push(
+  preLoaders.push(
     { test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/ }
   );
 }
@@ -21,7 +22,7 @@ module.exports = {
     stats: 'minimal',
     hot: true
   },
-  module: { preloaders },
+  module: { preLoaders },
   sassLoader: {
     includePaths: common.getStyleguideIncludePaths()
   },

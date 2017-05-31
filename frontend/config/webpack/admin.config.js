@@ -7,19 +7,17 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/src'),
-  entry: {
+  entry: common.withHotModuleEntries({
     'admin-georegions-screen': './screens/admin-georegions-screen',
     'admin-activity-feed': ['../plugins/daterangepicker.jquery.js', './screens/admin-activity-feed'],
     'admin-activity-feed-show': './screens/admin-activity-feed-show',
     'admin-edit-connector': './screens/admin-edit-connector',
     'admin-new-connector': './screens/admin-new-connector'
-  },
+  }),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/src/.eslintrc.json'),
   module: {
-    loaders: [
-      common.getBabelLoader()
-    ]
+    loaders: common.getStandardLoaders()
   },
   resolve: common.getStandardResolve(),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

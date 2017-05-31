@@ -7,12 +7,11 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/signin'),
-  entry: './main.js',
+  entry: common.withHotModuleEntries('./main.js'),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/signin/.eslintrc.json'),
   module: {
-    loaders: [
-      common.getBabelLoader(),
+    loaders: common.getStandardLoaders(
       {
         test: /\.(css|scss)$/,
         loaders: [
@@ -22,7 +21,7 @@ module.exports = _.defaultsDeep({
           'sass-loader'
         ]
       }
-    ]
+    )
   },
   resolve: common.getStandardResolve([ 'public/javascripts/signin' ]),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

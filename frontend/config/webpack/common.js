@@ -24,7 +24,8 @@ var plugins = _.compact([
     output: {
       comments: false
     }
-  })
+  }),
+  isProduction ? null : new webpack.HotModuleReplacementPlugin()
 ]);
 
 // Base `test` and `include` config for loaders
@@ -89,8 +90,7 @@ function getEslintConfig(configFile) {
   };
 }
 
-
-function getStyleguidePreLoaders() {
+function getSvgAndFontLoaders() {
   return [
     {
       test: /\.svg$/,
@@ -142,14 +142,25 @@ function getReactHotLoader() {
   });
 }
 
-function getStandardLoaders() {
+// Returns an array of loaders pre-configured to handle
+function getStandardLoaders(extraLoaders) {
   var loaders = [];
+
+  loaders = loaders.concat(extraLoaders || []);
 
   if (!isProduction) {
     loaders.push(getReactHotLoader());
   }
 
   loaders.push(getBabelLoader());
+  loaders = loaders.concat(getSvgAndFontLoaders());
+
+  // Prevent lodash from putting itself on window.
+  // See: https://github.com/lodash/lodash/issues/2671
+  loaders.push({
+    test: /node_modules\/lodash/,
+    loader: 'imports?define=>undefined'
+  });
 
   return loaders;
 }
@@ -192,7 +203,7 @@ module.exports = {
   getOutput: getOutput,
   getStandardLoaders: getStandardLoaders,
   getStyleguideIncludePaths: getStyleguideIncludePaths,
-  getStyleguidePreLoaders: getStyleguidePreLoaders,
+  getSvgAndFontLoaders: getSvgAndFontLoaders,
   getStandardResolve: getStandardResolve,
   isProduction: isProduction,
   packageJson: packageJson,

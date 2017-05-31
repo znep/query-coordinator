@@ -17,7 +17,7 @@
     "webpack": "webpack",
     "prebuild": "rimraf dist",
     "prepublish": "npm run build",
-    "lint": "eslint -c package.json  --ignore-path .eslintignore src/**/*.js",
+    "lint": "eslint -c package.json -- src/**/*.js",
     "test": "karma start karma.conf.js --singleRun true",
     "test-chrome": "karma start karma.conf.js --singleRun false --browsers Chrome",
     "version-bump-check": "node tools/version-bump-check.js",

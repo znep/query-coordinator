@@ -38,6 +38,11 @@ if (fetch.code === 0) {
 
     // Invalidate the cache for package.json;
     delete require.cache[require.resolve(packagePath)];
+
+    // To support a platform-ui directory structure before merge, we have to
+    // refresh the packagePath instead of using the one calculated while in the
+    // monorepo branch.
+    packagePath = path.join(__dirname, '..', 'package.json');
     masterPackageJSON = require(packagePath);
 
     var lessThanMasterVersion = semver.lt(currentBranchPackageJSON.version, masterPackageJSON.version);

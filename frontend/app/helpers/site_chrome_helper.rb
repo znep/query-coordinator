@@ -67,7 +67,7 @@ module SiteChromeHelper
   # considered to be enabled; in certain situations, we override the rendering
   # with a @suppress_chrome property.
   def render_site_chrome?
-    return false if @suppress_chrome
+    return false if @suppress_chrome || current_controller.disable_site_chrome?
 
     enable_site_chrome?
   end
@@ -129,26 +129,11 @@ module SiteChromeHelper
   end
 
   def enable_site_chrome_on_open_data?
-    # Check the site appearance model first.
-    return false unless site_appearance.is_activated_on?('open_data')
-
-    # Now we're doing a more fine-grained check about what state we're in.
-    # Eventually, we should see fewer possible states, as we converge on a
-    # single set of rules after a complete roll-out.
     case current_controller
-
-      when BrowseController, CatalogLandingPageController, DatasetsController, UserSessionsController,
-        NominationsController
-        # This *should* be the normal case in the future - just show the H/F.
-        true
-
       when StylesController
         false
-
       else
-        # This is the case for most pages right now, which is kinda wonky.
-        !enable_govstat_chrome?
-
+        site_appearance.is_activated_on?('open_data')
     end
   end
 

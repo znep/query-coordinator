@@ -126,6 +126,10 @@ class ApplicationController < ActionController::Base
       !feature_flags.disable_nbe_redirection_warning_message
   end
 
+  def disable_site_chrome?
+    false
+  end
+
   protected
 
   # v4 chrome style error messages

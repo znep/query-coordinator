@@ -25,6 +25,10 @@ class DataLensController < ActionController::Base
 
   layout 'angular'
 
+  def disable_site_chrome?
+    false
+  end
+
   def initiate_region_coding
     begin
       dataset_id = params[:datasetId]

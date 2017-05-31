@@ -4,6 +4,10 @@ describe SiteChromeHelper do
 
   class DummyController < ActionController::Base
     include ApplicationHelper # which in turn includes SiteChromeHelper
+
+    def disable_site_chrome?
+      false
+    end
   end
 
   let(:subject) { DummyController.new }
@@ -139,16 +143,7 @@ describe SiteChromeHelper do
           end
         end
 
-        context 'when activated and GovStat is enabled' do
-          let(:activated) { true }
-          let(:govstat_enabled) { true }
-
-          it 'returns false' do
-            expect(subject.enable_site_chrome?).to eq(false)
-          end
-        end
-
-        context 'when activated and GovStat is not enabled' do
+        context 'when activated' do
           let(:activated) { true }
 
           it 'returns true' do
@@ -273,6 +268,42 @@ describe SiteChromeHelper do
 
       it 'returns true' do
         expect(subject.render_site_chrome?).to eq(true)
+      end
+    end
+
+    context 'for Administration' do
+      let(:subject) { AdministrationController.new }
+      let(:chrome_enabled) { true }
+
+      it 'returns false' do
+        expect(subject.render_site_chrome?).to eq(false)
+      end
+    end
+
+    context 'for Internal' do
+      let(:subject) { InternalController.new }
+      let(:chrome_enabled) { true }
+
+      it 'returns false' do
+        expect(subject.render_site_chrome?).to eq(false)
+      end
+    end
+
+    context 'for Internal Asset Manager' do
+      let(:subject) { InternalAssetManagerController.new }
+      let(:chrome_enabled) { true }
+
+      it 'returns false' do
+        expect(subject.render_site_chrome?).to eq(false)
+      end
+    end
+
+    context 'for Site Appearance' do
+      let(:subject) { SiteAppearanceController.new }
+      let(:chrome_enabled) { true }
+
+      it 'returns false' do
+        expect(subject.render_site_chrome?).to eq(false)
       end
     end
   end

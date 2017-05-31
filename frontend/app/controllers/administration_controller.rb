@@ -44,6 +44,10 @@ class AdministrationController < ApplicationController
   before_filter :only => [:delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] { |request| request.check_auth_level(UserRights::MANAGE_STORIES) }
   before_filter :is_superadmin?, :only => [:initialize_asset_inventory]
 
+  def disable_site_chrome?
+    true
+  end
+
   def index
     if feature_flag?('enable_new_admin_ui', request)
       render 'new_index'

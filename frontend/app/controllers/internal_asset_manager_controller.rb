@@ -7,6 +7,10 @@ class InternalAssetManagerController < ApplicationController
 
   layout 'styleguide'
 
+  def disable_site_chrome?
+    true
+  end
+
   def show
     cookie = "_core_session_id=#{cookies[:_core_session_id]}"
     search_options = {

@@ -8,6 +8,10 @@ class SiteAppearanceController < ApplicationController
   before_filter :ensure_access
   before_filter :fetch_site_appearance_content
 
+  def disable_site_chrome?
+    true
+  end
+
   def tab_sections
     # EN-6943: removing "homepage" because it is not implemented yet
     %w(whats_new general header footer social)

@@ -1,0 +1,66 @@
+$filter-container-width: 260px;
+
+.catalog-filters {
+  background: $light-grey-4;
+  border-left: 1px solid $light-grey-3;
+  flex: none;
+  width: $filter-container-width;
+  margin-left: auto;
+
+  .catalog-filters-header {
+    padding: 0.5rem;
+    border-bottom: 1px solid $light-grey-3;
+
+    .title {
+      font-size: 16px;
+    }
+  }
+
+  .filter-section {
+    margin: 0.5rem;
+
+    label {
+      user-select: none;
+
+      &.filter-label {
+        display: block;
+        font-weight: 700;
+        margin: 0.5rem 0;
+      }
+    }
+
+    .dropdown-container {
+      width: 100%;
+
+      &.dropdown-focused {
+        .dropdown-placeholder {
+          border-color: $primary-light;
+          outline-color: $primary-base;
+        }
+        .dropdown-caret {
+          color: $primary-text;
+        }
+      }
+
+      .picklist-option {
+        &:hover {
+          background-color: $primary-light;
+        }
+
+        &.picklist-option-selected {
+          background-color: $primary-base;
+        }
+      }
+    }
+
+    .checkbox {
+      .fake-checkbox {
+        background: $white;
+      }
+    }
+
+    &.recently-viewed {
+      margin-bottom: 1.5rem;
+    }
+  }
+}

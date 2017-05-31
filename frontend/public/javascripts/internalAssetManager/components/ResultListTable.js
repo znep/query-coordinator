@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ResultListRow from './ResultListRow';
-import * as Actions from '../actions/catalog';
+import { changeSortOrder } from '../actions/sortOrder';
 import _ from 'lodash';
 import classNames from 'classnames';
 
@@ -16,8 +16,7 @@ export class ResultListTable extends React.Component {
   }
 
   onColumnHeaderClick(columnName) {
-    const { changeOrder } = this.props;
-    changeOrder(columnName);
+    this.props.changeSortOrder(columnName);
   }
 
   resultListRowProps(result) {
@@ -66,8 +65,8 @@ export class ResultListTable extends React.Component {
           {columns.map((columnName) => (
             <th {...columnHeaderProps(columnName)}>
               <span className="column-name">{columnTranslation(columnName)}</span>
-              <span className="ascending-arrow socrata-icon-arrow-down" />
-              <span className="descending-arrow socrata-icon-arrow-up" />
+              <span className="ascending-arrow socrata-icon-arrow-down2" />
+              <span className="descending-arrow socrata-icon-arrow-up2" />
             </th>
           ))}
         </tr>
@@ -92,7 +91,7 @@ export class ResultListTable extends React.Component {
 }
 
 ResultListTable.propTypes = {
-  changeOrder: PropTypes.func.isRequired,
+  changeSortOrder: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
   order: PropTypes.object,
   results: PropTypes.array.isRequired
@@ -109,7 +108,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  changeOrder: (columnName) => dispatch(Actions.changeOrder(columnName))
+  changeSortOrder: (columnName) => dispatch(changeSortOrder(columnName))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ResultListTable);

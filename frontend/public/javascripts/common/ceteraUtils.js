@@ -68,7 +68,8 @@ export const ceteraUtils = (() => {
       order = DEFAULT_ORDER,
       pageNumber = 1,
       q = null,
-      showVisibility = false
+      showVisibility = null,
+      visibility = null
     }) => {
       const paramObj = {
         categories: category,
@@ -80,7 +81,8 @@ export const ceteraUtils = (() => {
         order,
         q,
         search_context: domain,
-        show_visibility: !!showVisibility
+        show_visibility: showVisibility,
+        visibility
       };
 
       const paramString = _.reduce(paramObj, function(result, value, key) {

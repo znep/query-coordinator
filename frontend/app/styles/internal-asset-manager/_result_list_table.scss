@@ -1,8 +1,11 @@
 @import "styleguide-colors";
 @import "internal-asset-manager/action_dropdown";
+@import "internal-asset-manager/action_modal";
 @import "internal-asset-manager/mixins/multi_line_ellipsis";
 
 table.result-list-table {
+  margin: 0;
+
   thead {
     tr {
       th {
@@ -42,6 +45,10 @@ table.result-list-table {
           .descending-arrow {
             display: inline-block;
           }
+        }
+
+        &:last-of-type {
+          border-right: none;
         }
       }
     }

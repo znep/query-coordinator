@@ -22,7 +22,8 @@ export const fetchingResultsError = () => (
 export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) => {
   dispatch(fetchingResults());
 
-  const { currentPage, order } = _.merge({}, getState().catalog, newParamObj);
+  const { assetTypes, currentPage, order, visibility } =
+    _.merge({}, getState().catalog, getState().filters, newParamObj);
 
   const ceteraOrder = () => {
     if (_.isUndefined(order)) {
@@ -46,12 +47,13 @@ export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) =>
       // TODO:
       // category
       // customMetadataFilters,
-      // only,
       // q,
       limit: RESULTS_PER_PAGE,
+      only: assetTypes,
       order: ceteraOrder(),
       pageNumber: currentPage,
-      showVisibility: true
+      showVisibility: 'true',
+      visibility
     }).
     then((response) => {
       if (_.isObject(response)) {
@@ -65,33 +67,4 @@ export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) =>
     catch(() => {
       dispatch(fetchingResultsError());
     });
-};
-
-export const changePage = (pageNumber) => (dispatch, getState) => {
-  const onSuccess = () => {
-    dispatch({ type: 'CHANGE_PAGE', pageNumber });
-  };
-
-  return fetchResults(dispatch, getState, { currentPage: pageNumber }, onSuccess);
-};
-
-export const changeOrder = (columnName) => (dispatch, getState) => {
-  // If the user clicks on the column name already being sorted on, then toggle ascending/descending.
-  const currentStateOrder = _.get(getState(), 'catalog.order', {});
-
-  const columnsThatDefaultToDescending = ['lastUpdatedDate'];
-  const defaultToAscending = !_.includes(columnsThatDefaultToDescending, columnName);
-
-  const ascending = (columnName === currentStateOrder.value) ?
-    !currentStateOrder.ascending : defaultToAscending;
-  const newOrder = {
-    value: columnName,
-    ascending
-  };
-
-  const onSuccess = () => (
-    dispatch({ type: 'CHANGE_ORDER', order: newOrder })
-  );
-
-  return fetchResults(dispatch, getState, { order: newOrder }, onSuccess);
 };

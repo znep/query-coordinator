@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import reducer from 'reducers/catalog';
-import * as Actions from 'actions/catalog';
+import * as Actions from 'actions/cetera';
 import mockCeteraResponse from 'data/mockCeteraResponse';
 
 describe('reducers/catalog', () => {

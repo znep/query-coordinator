@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import { ResultListTable } from 'components/ResultListTable';
 import mockCeteraResults from 'data/mockCeteraResults';
 

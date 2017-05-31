@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import { VisibilityCell } from 'components/VisibilityCell';
 
 describe('components/VisibilityCell', () => {
@@ -18,7 +18,7 @@ describe('components/VisibilityCell', () => {
       const element = renderComponentWithStore(VisibilityCell, visibilityCellProps());
       assert.isNotNull(element);
       assert.equal(element.className, 'visibility-cell');
-      assert.isNotNull(element.querySelector('.title span.socrata-icon-geo'));
+      assert.isNotNull(element.querySelector('.title span.socrata-icon-public-open'));
     });
   });
 

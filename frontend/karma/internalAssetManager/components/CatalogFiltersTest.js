@@ -1,0 +1,79 @@
+import { assert } from 'chai';
+import { CatalogFilters} from 'components/CatalogFilters';
+import sinon from 'sinon';
+
+describe('components/CatalogFilters', () => {
+  const catalogFiltersProp = (options = {}) => ({
+    assetTypes: null,
+    changeAssetType: () => undefined,
+    changeLastUpdatedDate: () => undefined,
+    changeVisibility: () => undefined,
+    lastUpdatedDate: 'anyDateUpdated',
+    onlyRecentlyViewed: false,
+    toggleRecentlyViewed: () => undefined,
+    visibility: null,
+    ...options
+  });
+
+  it('renders a catalog-filters div', () => {
+    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+    assert.isNotNull(element);
+    assert.equal(element.className, 'catalog-filters');
+  });
+
+  it('renders a filterHeader', () => {
+    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+    assert.isNotNull(element.querySelector('.catalog-filters-header'));
+    assert.equal(element.querySelector('.catalog-filters-header').textContent, 'Filters');
+  });
+
+  it('renders a recently viewed filter section', () => {
+    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+    assert.isNotNull(element.querySelector('.filter-section.recently-viewed'));
+  });
+
+  it('renders a last updated date filter section', () => {
+    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+    assert.isNotNull(element.querySelector('.filter-section.last-updated-date'));
+  });
+
+  it('renders an asset types filter section', () => {
+    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+    assert.isNotNull(element.querySelector('.filter-section.asset-types'));
+  });
+
+  it('renders a visibility filter section', () => {
+    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+    assert.isNotNull(element.querySelector('.filter-section.visibility'));
+  });
+
+  describe('checkbox filters', () => {
+    it('calls onChange when checked/unchecked', () => {
+      const spy = sinon.spy();
+      const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp({
+        toggleRecentlyViewed: spy
+      }));
+
+      TestUtils.Simulate.click(element.querySelector('.filter-section.recently-viewed input'));
+      TestUtils.Simulate.change(
+        element.querySelector('.filter-section.recently-viewed input'),
+        { 'target': { 'checked': true } }
+      );
+      sinon.assert.calledOnce(spy);
+    });
+  });
+
+  describe('dropdown filters', () => {
+    it('calls onChange when an option is clicked', () => {
+      const spy = sinon.spy();
+      const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp({
+        changeVisibility: spy
+      }));
+
+      TestUtils.Simulate.click(element.querySelectorAll('.filter-section.visibility .picklist-option')[2]);
+      sinon.assert.calledOnce(spy);
+    });
+  });
+
+  // TODO: test dropdown checkbox filters once that's a thing
+});

@@ -51,7 +51,7 @@ export class VisibilityCell extends React.Component {
   render() {
     const { visibleToAnonymous } = this.props;
 
-    const visibilityCellClass = visibleToAnonymous ? 'socrata-icon-geo' : 'socrata-icon-private';
+    const visibilityCellClass = visibleToAnonymous ? 'socrata-icon-public-open' : 'socrata-icon-private';
     const visibilityCellText = this.getLocale(visibleToAnonymous ? 'open' : 'internal');
 
     return (

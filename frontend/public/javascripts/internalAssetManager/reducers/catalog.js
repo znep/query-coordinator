@@ -48,7 +48,7 @@ export default (state, action) => {
     };
   }
 
-  if (action.type === 'CHANGE_ORDER') {
+  if (action.type === 'CHANGE_SORT_ORDER') {
     return {
       ...state,
       order: action.order

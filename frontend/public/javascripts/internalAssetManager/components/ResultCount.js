@@ -4,15 +4,18 @@ import { getViewCountLabel } from '../../common/helpers/viewCardHelpers';
 export class ResultCount extends React.Component {
   render() {
     const { currentPage, resultsPerPage, total } = this.props;
-    const pageResults = {
-      first: (currentPage - 1) * resultsPerPage + 1,
-      last: Math.min(currentPage * resultsPerPage, total)
-    };
+    const first = (currentPage - 1) * resultsPerPage + 1;
+    const last = Math.min(currentPage * resultsPerPage, total);
+    const totalLabel = getViewCountLabel(total);
+
+    /* TODO: localize with i18n-js */
+    const resultCountText = (total > 0) ?
+      `${first}-${last} ${_.get(I18n, 'result_count.of')} ${totalLabel}` :
+      _.get(I18n, 'result_count.no_results');
 
     return (
       <div className="result-count">
-        {/* TODO: localize with i18n-js */}
-        {pageResults.first}-{pageResults.last} of {getViewCountLabel(total)}
+        {resultCountText}
       </div>
     );
   }

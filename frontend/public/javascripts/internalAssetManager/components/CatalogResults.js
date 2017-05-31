@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ResultListTable from './ResultListTable';
 import Pager from '../../common/components/Pager';
 import ResultCount from './ResultCount';
-import * as Actions from '../actions/catalog';
+import { changePage } from '../actions/pager';
 import _ from 'lodash';
 
 const RESULTS_PER_PAGE = 10;
@@ -40,7 +40,11 @@ export class CatalogResults extends React.Component {
   }
 
   renderTopbar() {
-    return <div className="topbar">TODO: Searchbar</div>;
+    return (
+      <div className="topbar">
+        <input type="text" placeholder="Search" />{/* TODO: autocomplete searchbar */}
+      </div>
+    );
   }
 
   renderTable() {
@@ -93,8 +97,8 @@ export class CatalogResults extends React.Component {
   render() {
     return (
       <div className="catalog-results">
-        {this.renderError()}
         {this.renderTopbar()}
+        {this.renderError()}
         {this.renderTable()}
         {this.renderFooter()}
       </div>
@@ -126,7 +130,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  changePage: (pageNumber) => dispatch(Actions.changePage(pageNumber))
+  changePage: (pageNumber) => dispatch(changePage(pageNumber))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogResults);

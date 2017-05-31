@@ -2635,6 +2635,44 @@ en:
     errors:
       fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.
+    filters:
+      asset_types:
+        label: Asset Types
+        options:
+          all: All
+          calendars: Calendars
+          charts: Charts
+          datasets: Datasets
+          datalenses: Data Lens Pages
+          external: External Datasets
+          files: Files and Documents
+          filtered: Filtered Views
+          forms: Forms
+          maps: Maps
+          stories: Stories
+      header:
+        title: Filters
+      last_updated_date:
+        label: Last Updated Date
+        options:
+          any_date_updated: Any Date Updated
+          past_3_days: Past 3 days
+          past_week: Past week
+          past_month: Past month
+          past_3_months: Past 3 months
+          past_6_months: Past 6 months
+          custom_date_range: Custom date range
+      recently_viewed:
+        label: Only my recently viewed
+      visibility:
+        label: Visibility
+        options:
+          all: All
+          internal: Internal
+          open: Open
+    result_count:
+      no_results: No results
+      of: of
     result_list_table:
       action_dropdown:
         title: Actions

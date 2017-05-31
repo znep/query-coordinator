@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import * as Actions from 'actions/catalog';
+import * as Actions from 'actions/sortOrder';
 import mockCeteraResponse from 'data/mockCeteraResponse';
 import ceteraUtils from 'common/ceteraUtils';
 
@@ -15,8 +15,8 @@ const mockStore = configureMockStore([ thunk ]);
 
 let ceteraStub;
 
-describe('actions/catalog', () => {
-  describe('changeOrder', () => {
+describe('actions/sortOrder', () => {
+  describe('changeSortOrder', () => {
     beforeEach(() => {
       ceteraStub = stubFetch();
     });
@@ -33,10 +33,10 @@ describe('actions/catalog', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_ORDER', order: { value: 'name', ascending: true }  }
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: true }  }
       ];
 
-      return store.dispatch(Actions.changeOrder('name')).then(() => {
+      return store.dispatch(Actions.changeSortOrder('name')).then(() => {
         assert.deepEqual(store.getActions(), expectedActions);
       });
     });
@@ -49,10 +49,10 @@ describe('actions/catalog', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_ORDER', order: { value: 'lastUpdatedDate', ascending: false }  }
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'lastUpdatedDate', ascending: false }  }
       ];
 
-      return store.dispatch(Actions.changeOrder('lastUpdatedDate')).then(() => {
+      return store.dispatch(Actions.changeSortOrder('lastUpdatedDate')).then(() => {
         assert.deepEqual(store.getActions(), expectedActions);
       });
     });
@@ -65,10 +65,10 @@ describe('actions/catalog', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_ORDER', order: { value: 'name', ascending: false }  }
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: false }  }
       ];
 
-      return store.dispatch(Actions.changeOrder('name')).then(() => {
+      return store.dispatch(Actions.changeSortOrder('name')).then(() => {
         assert.deepEqual(store.getActions(), expectedActions);
       });
     });
@@ -81,36 +81,10 @@ describe('actions/catalog', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_ORDER', order: { value: 'category', ascending: true }  }
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'category', ascending: true }  }
       ];
 
-      return store.dispatch(Actions.changeOrder('category')).then(() => {
-        assert.deepEqual(store.getActions(), expectedActions);
-      });
-    });
-  });
-
-  describe('changePage', () => {
-    beforeEach(() => {
-      ceteraStub = stubFetch();
-    });
-
-    afterEach(() => {
-      ceteraStub.restore();
-    });
-
-    it('sets the currentPage', () => {
-      const initialState = { catalog: { currentPage: 1 } };
-      const store = mockStore(initialState);
-
-      const expectedActions = [
-        { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse },
-        { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_PAGE', pageNumber: 4  }
-      ];
-
-      return store.dispatch(Actions.changePage(4)).then(() => {
+      return store.dispatch(Actions.changeSortOrder('category')).then(() => {
         assert.deepEqual(store.getActions(), expectedActions);
       });
     });

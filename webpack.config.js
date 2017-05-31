@@ -20,6 +20,10 @@ module.exports = [
         {
           test: /\.js$/,
           loader: 'babel-loader',
+          query: {
+            presets: ["es2015", "react"],
+            plugins: ["transform-object-rest-spread"]
+          },
           include: [
             fs.realpathSync(path.resolve('node_modules/socrata-components'))
           ]
@@ -74,6 +78,10 @@ module.exports = [
         {
           test: /\.js$/,
           loader: 'babel-loader',
+          query: {
+            presets: ["es2015", "react"],
+            plugins: ["transform-object-rest-spread"]
+          },
           include: [ path.resolve('src'), path.resolve('karma') ]
         }
       ]
@@ -105,6 +113,10 @@ module.exports = [
         {
           test: /\.js$/,
           loader: 'babel-loader',
+          query: {
+            presets: ["es2015", "react"],
+            plugins: ["transform-object-rest-spread"]
+          },
           include: [ path.resolve('src'), path.resolve('karma') ]
         },
         {
@@ -140,6 +152,10 @@ module.exports = [
         {
           test: /\.js$/,
           loader: 'babel-loader',
+          query: {
+            presets: ["es2015", "react"],
+            plugins: ["transform-object-rest-spread"]
+          },
           include: [ path.resolve('src') ]
         }
       ]

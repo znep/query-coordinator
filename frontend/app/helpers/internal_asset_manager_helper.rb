@@ -39,7 +39,8 @@ module InternalAssetManagerHelper
       :featureFlags => feature_flags,
       :locale => I18n.locale.to_s,
       :localePrefix => locale_prefix.to_s,
-      :recaptchaKey => RECAPTCHA_2_SITE_KEY
+      :recaptchaKey => RECAPTCHA_2_SITE_KEY,
+      :usersnapProjectID => '6afbcc90-6522-4475-b3b0-635c7a9874a5'
     }
 
     javascript_tag("window.serverConfig = #{json_escape(server_config.to_json)};")

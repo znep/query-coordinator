@@ -171,6 +171,35 @@
     float: left;
   }
 
+  // See also frontend/app/styles/common/datasets.scss;
+  // minor adjustments to sizing made here
+  .skip-links {
+    display: inline-block;
+    position: absolute;
+    top: -495px;
+    left: 5px;
+    z-index: 10001;
+
+    a.skip-link {
+      width: 40rem;
+      padding: 1rem;
+      padding-left: 1rem;
+      font-size: 1.8rem;
+      color: $white;
+      background-color: $primary-dark;
+      border-radius: 1px;
+      text-decoration: none;
+      box-shadow: 0 0 8px -2px #666;
+      display: inline-block;
+      position: absolute;
+
+      &:focus, &:active {
+        top: 500px;
+        z-index: 10001;
+      }
+    }
+  }
+
   .profiler-results {
     top: 46px !important;
   }

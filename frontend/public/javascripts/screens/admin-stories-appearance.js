@@ -223,14 +223,10 @@
     }
   };
 
-  function t(str, props) {
-    return $.t('screens.admin.story_appearance.' + str, props);
-  }
-
   $.Control.extend('pane_storiesTextbox', {
-    getTitle: () => t('panes.text_box.title'),
+    getTitle: _.wrap($.t('screens.admin.story_appearance.panes.text_box.title')),
 
-    getSubtitle: () => t('panes.text_box.subtitle'),
+    getSubtitle: _.wrap($.t('screens.admin.story_appearance.panes.text_box.subtitle')),
 
     _getCurrentData: function() {
       return this._super() || publishNS.resolveWorkingTheme();
@@ -239,31 +235,30 @@
     _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function() {
-      const sectionPrefix = 'panes.text_box.sections';
       return [
         {
-          title: t(`${sectionPrefix}.layout.label`),
+          title: $.t('screens.admin.story_appearance.panes.text_box.sections.layout.label'),
           name: 'overall',
           fields: [
             {
-              text: t(`${sectionPrefix}.layout.fields.orientation.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.layout.fields.orientation.text'),
               name: 'orientation',
-              prompt: t(`${sectionPrefix}.layout.fields.orientation.prompt`),
+              prompt: $.t('screens.admin.story_appearance.panes.text_box.sections.layout.fields.orientation.prompt'),
               type: 'radioSelect',
               options: [
                 {
                   value: 'left',
-                  label: t(`${sectionPrefix}.layout.fields.orientation.option_left`)
+                  label: $.t('screens.admin.story_appearance.panes.text_box.sections.layout.fields.orientation.option_left')
                 },
                 {
                   value: 'right',
-                  label: t(`${sectionPrefix}.layout.fields.orientation.option_right`)
+                  label: $.t('screens.admin.story_appearance.panes.text_box.sections.layout.fields.orientation.option_right')
                 }
               ]
             },
             {
               type: 'group',
-              text: t(`${sectionPrefix}.layout.fields.width.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.layout.fields.width.text'),
               includeLabel: true,
               lineClass: 'dimensions',
               options: [
@@ -282,7 +277,7 @@
             },
             {
               type: 'group',
-              text: t(`${sectionPrefix}.layout.fields.margin.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.layout.fields.margin.text'),
               includeLabel: true,
               lineClass: 'dimensions',
               options: [
@@ -300,17 +295,17 @@
               ]
             },
             {
-              text: t(`${sectionPrefix}.layout.fields.bg_color.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.layout.fields.bg_color.text'),
               name: 'box.color',
-              prompt: t(`${sectionPrefix}.fields.bg_color.prompt`),
+              prompt: $.t('screens.admin.story_appearance.panes.text_box.sections.fields.bg_color.prompt'),
               type: 'color',
               advanced: true,
               showLabel: true
             },
             {
-              text: t(`${sectionPrefix}.layout.fields.alpha.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.layout.fields.alpha.text'),
               name: 'box.alpha',
-              prompt: t(`${sectionPrefix}.layout.fields.prompt.text`),
+              prompt: $.t('screens.admin.story_appearance.panes.text_box.sections.layout.fields.prompt.text'),
               type: 'slider',
               minimum: 0,
               maximum: 1
@@ -322,27 +317,27 @@
           ]
         },
         {
-          title: t(`${sectionPrefix}.headline.label`),
+          title: $.t('screens.admin.story_appearance.panes.text_box.sections.headline.label'),
           name: 'text',
           fields: [
             {
-              text: t(`${sectionPrefix}.headline.fields.font_family.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.headline.fields.font_family.text'),
               name: 'box.headline.font_family',
-              prompt: t(`${sectionPrefix}.headline.fields.font_family.prompt`),
+              prompt: $.t('screens.admin.story_appearance.panes.text_box.sections.headline.fields.font_family.prompt'),
               type: 'select',
               options: publishNS.fontOptions
             },
             {
-              text: t(`${sectionPrefix}.headline.fields.font_color.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.headline.fields.font_color.text'),
               name: 'box.headline.color',
-              prompt: t(`${sectionPrefix}.headline.fields.font_color.prompt`),
+              prompt: $.t('screens.admin.story_appearance.panes.text_box.sections.headline.fields.font_color.prompt'),
               type: 'color',
               advanced: true,
               showLabel: true
             },
             {
               type: 'group',
-              text: t(`${sectionPrefix}.headline.fields.font_size.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.headline.fields.font_size.text'),
               includeLabel: true,
               lineClass: 'dimensions',
               options: [
@@ -360,9 +355,9 @@
               ]
             },
             {
-              text: t(`${sectionPrefix}.headline.fields.shadow_alpha.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.headline.fields.shadow_alpha.text'),
               name: 'box.headline.shadow.alpha',
-              prompt: t(`${sectionPrefix}.headline.fields.shadow_alpha.prompt`),
+              prompt: $.t('screens.admin.story_appearance.panes.text_box.sections.headline.fields.shadow_alpha.prompt'),
               type: 'slider',
               minimum: 0,
               maximum: 1
@@ -370,27 +365,27 @@
           ]
         },
         {
-          title: t(`${sectionPrefix}.body_text.label`),
+          title: $.t('screens.admin.story_appearance.panes.text_box.sections.body_text.label'),
           name: 'text',
           fields: [
             {
-              text: t(`${sectionPrefix}.body_text.fields.font_family.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.body_text.fields.font_family.text'),
               name: 'box.body.font_family',
-              prompt: t(`${sectionPrefix}.body_text.fields.font_family.subtitle`),
+              prompt: $.t('screens.admin.story_appearance.panes.text_box.sections.body_text.fields.font_family.subtitle'),
               type: 'select',
               options: publishNS.fontOptions
             },
             {
-              text: t(`${sectionPrefix}.body_text.fields.font_color.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.body_text.fields.font_color.text'),
               name: 'box.body.color',
-              prompt: t(`${sectionPrefix}.body_text.fields.font_color.prompt`),
+              prompt: $.t('screens.admin.story_appearance.panes.text_box.sections.body_text.fields.font_color.prompt'),
               type: 'color',
               advanced: true,
               showLabel: true
             },
             {
               type: 'group',
-              text: t(`${sectionPrefix}.body_text.fields.font_size.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.body_text.fields.font_size.text'),
               includeLabel: true,
               lineClass: 'dimensions',
               options: [
@@ -408,9 +403,9 @@
               ]
             },
             {
-              text: t(`${sectionPrefix}.body_text.fields.shadow_alpha.text`),
+              text: $.t('screens.admin.story_appearance.panes.text_box.sections.body_text.fields.shadow_alpha.text'),
               name: 'box.body.shadow.alpha',
-              prompt: t(`${sectionPrefix}.body_text.fields.shadow_alpha.prompt`),
+              prompt: $.t('screens.admin.story_appearance.panes.text_box.sections.body_text.fields.shadow_alpha.prompt'),
               type: 'slider',
               minimum: 0,
               maximum: 1
@@ -426,9 +421,9 @@
   $.gridSidebar.registerConfig('textbox', 'pane_storiesTextbox');
 
   $.Control.extend('pane_storiesPager', {
-    getTitle: () => t('panes.pager.title'),
+    getTitle: _.wrap($.t('screens.admin.story_appearance.panes.pager.title')),
 
-    getSubtitle: () => t('panes.pager.subtitle'),
+    getSubtitle: _.wrap($.t('screens.admin.story_appearance.panes.pager.subtitle')),
 
     _getCurrentData: function() {
       return this._super() || publishNS.resolveWorkingTheme();
@@ -437,57 +432,56 @@
     _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function() {
-      const sectionPrefix = 'panes.pager.sections';
       return [
         {
-          title: t(`${sectionPrefix}.layout.label`),
+          title: $.t('screens.admin.story_appearance.panes.pager.sections.layout.label'),
           name: 'pager',
           fields: [
             {
-              text: t(`${sectionPrefix}.layout.fields.position.text`),
+              text: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.position.text'),
               name: 'pager.position',
-              prompt: t(`${sectionPrefix}.layout.fields.position.prompt`),
+              prompt: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.position.prompt'),
               type: 'radioSelect',
               options: [
                 {
                   value: 'center',
-                  label: t(`${sectionPrefix}.layout.fields.position.option_center`)
+                  label: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.position.option_center')
                 },
                 {
                   value: 'box',
-                  label: t(`${sectionPrefix}.layout.fields.position.option_box`)
+                  label: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.position.option_box')
                 }
               ]
             },
             {
-              text: t(`${sectionPrefix}.layout.fields.type.text`),
+              text: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.type.text'),
               name: 'pager.type',
-              prompt: t(`${sectionPrefix}.layout.fields.type.prompt`),
+              prompt: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.type.prompt'),
               type: 'radioSelect',
               options: [
                 {
                   value: 'bullets',
-                  label: t(`${sectionPrefix}.layout.fields.type.option_bullets`)
+                  label: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.type.option_bullets')
                 },
                 {
                   value: 'numbers',
-                  label: t(`${sectionPrefix}.layout.fields.type.option_numbers`)
+                  label: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.type.option_numbers')
                 }
               ]
             },
             {
-              text: t(`${sectionPrefix}.layout.fields.disposition.text`),
+              text: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.disposition.text'),
               name: 'pager.disposition',
-              prompt: t(`${sectionPrefix}.layout.fields.disposition.subtitle`),
+              prompt: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.disposition.subtitle'),
               type: 'radioSelect',
               options: [
                 {
                   value: 'light',
-                  label: t(`${sectionPrefix}.layout.fields.disposition.option_light`)
+                  label: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.disposition.option_light')
                 },
                 {
                   value: 'dark',
-                  label: t(`${sectionPrefix}.layout.fields.disposition.option_dark`)
+                  label: $.t('screens.admin.story_appearance.panes.pager.sections.layout.fields.disposition.option_dark')
                 }
               ]
             }
@@ -502,9 +496,9 @@
   $.gridSidebar.registerConfig('pager', 'pane_storiesPager');
 
   $.Control.extend('pane_storiesOther', {
-    getTitle:  () => t('panes.pane_other.title'),
+    getTitle:  _.wrap($.t('screens.admin.story_appearance.panes.pane_other.title')),
 
-    getSubtitle: () =>  t('panes.pane_other.subtitle'),
+    getSubtitle: _.wrap($.t('screens.admin.story_appearance.panes.pane_other.subtitle')),
 
     _getCurrentData: function() {
       return this._super() || publishNS.resolveWorkingTheme();
@@ -513,15 +507,14 @@
     _changeHandler: publishNS.handleValueChanged,
 
     _getSections: function() {
-      const sectionPrefix = 'panes.pane_other.sections';
       return [
         {
-          title: t(`${sectionPrefix}.background.label`),
+          title: $.t('screens.admin.story_appearance.panes.pane_other.sections.background.label'),
           name: 'background',
           fields: [
             {
               type: 'group',
-              text: t(`${sectionPrefix}.background.fields.height.text`),
+              text: $.t('screens.admin.story_appearance.panes.pane_other.sections.background.fields.height.text'),
               includeLabel: true,
               lineClass: 'dimensions',
               options: [
@@ -539,15 +532,15 @@
               ]
             },
             {
-              text: t(`${sectionPrefix}.background.fields.slide_advance.text`),
+              text: $.t('screens.admin.story_appearance.panes.pane_other.sections.background.fields.slide_advance.text'),
               name: 'autoAdvance',
-              prompt: t(`${sectionPrefix}.background.fields.slide_advance.prompt`),
+              prompt: $.t('screens.admin.story_appearance.panes.pane_other.sections.background.fields.slide_advance.prompt'),
               type: 'slider',
               minimum: 0,
               maximum: 20
             },
             {
-              value: t(`${sectionPrefix}.background.fields.description.value`),
+              value: $.t('screens.admin.story_appearance.panes.pane_other.sections.background.fields.description.value'),
               type: 'static'
             }
           ]

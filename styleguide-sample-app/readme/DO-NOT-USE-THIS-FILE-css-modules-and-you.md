@@ -1,4 +1,7 @@
+# DO NOT USE -- INACCURATE -- DEPRECATED
+
 ## CSS Modules and You!
+
 "I want to write a fancy new react component... can I use CSS modules?"
 #### YES!
 

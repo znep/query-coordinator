@@ -2,7 +2,7 @@
 
 // Karma configuration for common code.
 var path = require('path');
-var webpackResolve = require.resolve;
+var nodeResolve = require.resolve;
 var platformUiRoot = path.resolve(__dirname, '../..');
 
 // TODO Move base webpack config from frontend/webpack into common, then use here.
@@ -11,7 +11,7 @@ var webpackConfig = {
   module: {
     loaders: [
       {
-        loader: webpackResolve('raw-loader'),
+        loader: nodeResolve('raw-loader'),
         test: /\.svg$/,
         include: `${platformUiRoot}/common/resources/fonts/svg`
       }
@@ -19,27 +19,27 @@ var webpackConfig = {
     loaders: [
       {
         test: /\.jsx?$/,
-        loader: webpackResolve('babel-loader'),
+        loader: nodeResolve('babel-loader'),
         exclude: /node_modules/,
         query: {
           presets: [
             'babel-preset-es2015', 'babel-preset-react'
-          ].map(webpackResolve),
+          ].map(nodeResolve),
           plugins: [
             'babel-plugin-transform-object-rest-spread',
             'babel-plugin-rewire'
-          ].map(webpackResolve)
+          ].map(nodeResolve)
         }
       },
       {
         test: /\.svg$/,
-        loader: webpackResolve('raw-loader'),
+        loader: nodeResolve('raw-loader'),
         include: `${platformUiRoot}/common/resources/fonts/svg`
       },
       {
         test: /\.(eot|woff|svg|woff2|ttf)$/,
         loader: {
-          loader: webpackResolve('url-loader'),
+          loader: nodeResolve('url-loader'),
           query: 'limit=100000'
         },
         exclude: `${platformUiRoot}/common/resources/fonts/svg`
@@ -47,15 +47,15 @@ var webpackConfig = {
       {
         test: /\.(css|scss)$/,
         loaders: [
-          webpackResolve('style-loader'),
+          nodeResolve('style-loader'),
           // You may be tempted to split the query and loader path into an object with `query` and
           // `loader` properties, a la Webpack 2.
           // Since we're using Webpack 1, that will not work. If multiple loaders are to be specified,
           // they must be given a query via a ? in their name after their full path
-          // (provided by webpackResolve).
-          webpackResolve('css-loader') + '?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
-          webpackResolve('autoprefixer-loader'),
-          webpackResolve('sass-loader')
+          // (provided by nodeResolve).
+          nodeResolve('css-loader') + '?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
+          nodeResolve('autoprefixer-loader'),
+          nodeResolve('sass-loader')
         ]
       },
     ]

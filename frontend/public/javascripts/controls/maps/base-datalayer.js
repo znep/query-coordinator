@@ -203,18 +203,6 @@
         console.groupEnd();
       }
 
-      // EN-14839: saveQuery saves the layer's query in the primary view's metadata.query,
-      // namespaced by the view 4x4 referenced by the layer. When ignore_metadata_query_in_tabular_map_layer
-      // is true, we don't don't use this query. Subsequently calling saveQuery triggers a dirty
-      // state, so let's not do that if the feature flag is true, since we don't want to save the
-      // query anyways. we do need to keep handleQueryChange, however, since that is how we fetch
-      // more data when the map's viewport changes.
-      if (!blist.feature_flags.ignore_metadata_query_in_tabular_map_layer) {
-        this._parent.saveQuery(this._view.id, {
-          filterCondition: this._view.cleanFilters(true)
-        });
-      }
-
       // Update local cache
       layerObj._query = layerObj._view.query;
       layerObj.clearData();

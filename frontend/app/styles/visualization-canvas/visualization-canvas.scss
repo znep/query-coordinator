@@ -510,10 +510,14 @@ footer#site-chrome-footer {
     margin-top: $edit-bar-height;
   }
 
-  #site-chrome-admin-header {
-    z-index: $edit-bar-z-index + 1;
-
-    & ~ .visualization-canvas {
+  // If the site chrome admin header is on the page,
+  // we need to reserve space for it (the .edit-bar is
+  // position: fixed).
+  //
+  // All siblings of #site-chrome-admin-header.
+  #site-chrome-admin-header ~ * {
+    // All .visualization-canvas which are under a sibling of #site-chrome-admin-header.
+    .visualization-canvas {
       .edit-bar {
         margin-top: $admin-header-height;
       }
@@ -522,6 +526,10 @@ footer#site-chrome-footer {
         margin-top: $admin-header-height + $edit-bar-height;
       }
     }
+  }
+
+  #site-chrome-admin-header {
+    z-index: $edit-bar-z-index + 1;
   }
 
   footer#site-chrome-footer {

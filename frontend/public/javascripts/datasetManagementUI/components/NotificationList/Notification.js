@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { UPLOAD_NOTIFICATION } from '../../lib/notifications';
 import UploadNotification from './UploadNotification';
 
-function Notification({ db, notification }) {
+function Notification({ entities, notification }) {
   switch (notification.type) {
     case UPLOAD_NOTIFICATION: {
-      const upload = db.uploads[notification.uploadId];
+      const upload = entities.uploads[notification.uploadId];
       return <UploadNotification upload={upload} notification={notification} />;
     }
 
@@ -18,13 +18,11 @@ function Notification({ db, notification }) {
 
 Notification.propTypes = {
   notification: PropTypes.object.isRequired,
-  db: PropTypes.object.isRequired
+  entities: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
-  return {
-    db: state.db
-  };
-}
+const mapStateToProps = ({ entities }) => ({
+  entities
+});
 
 export default connect(mapStateToProps)(Notification);

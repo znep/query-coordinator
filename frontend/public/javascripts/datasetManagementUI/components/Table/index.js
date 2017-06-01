@@ -23,15 +23,15 @@ export function Table({
   updateColumnType,
   addColumn,
   dropColumn,
-  validateThenSetRowIdentifier }) {
-
+  validateThenSetRowIdentifier
+}) {
   const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
   const numRowErrors = inputSchema.num_row_errors;
   return (
     <table className={styles.table}>
       <thead>
         <tr>
-          {outputColumns.map(column =>
+          {outputColumns.map(column => (
             <ColumnHeader
               key={column.id}
               outputSchema={outputSchema}
@@ -41,10 +41,10 @@ export function Table({
               addColumn={() => addColumn(outputSchema, column)}
               dropColumn={() => dropColumn(outputSchema, column)}
               validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)} />
-          )}
+          ))}
         </tr>
         <tr className={styles.columnStatuses}>
-          {outputColumns.map(column =>
+          {outputColumns.map(column => (
             <TransformStatus
               key={column.id}
               path={path}
@@ -53,20 +53,16 @@ export function Table({
               displayState={displayState}
               columnId={column.id}
               totalRows={inputSchema.total_rows} />
-          )}
+          ))}
         </tr>
-        {(numRowErrors > 0) &&
+        {numRowErrors > 0 &&
           <RowErrorsLink
             path={path}
             displayState={displayState}
             numRowErrors={numRowErrors}
             inRowErrorMode={inRowErrorMode} />}
       </thead>
-      <TableBody
-        db={db}
-        columns={outputColumns}
-        displayState={displayState}
-        inputSchemaId={inputSchema.id} />
+      <TableBody db={db} columns={outputColumns} displayState={displayState} inputSchemaId={inputSchema.id} />
     </table>
   );
 }
@@ -82,35 +78,34 @@ Table.propTypes = {
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
   displayState: PropTypes.object.isRequired,
   apiCallsByColumnId: PropTypes.object.isRequired,
-  outputColumns: PropTypes.arrayOf(PropTypes.shape({
-    position: PropTypes.number.isRequired,
-    field_name: PropTypes.string.isRequired,
-    display_name: PropTypes.string.isRequired,
-    description: PropTypes.string,
-    transform_id: PropTypes.number.isRequired
-  }))
+  outputColumns: PropTypes.arrayOf(
+    PropTypes.shape({
+      position: PropTypes.number.isRequired,
+      field_name: PropTypes.string.isRequired,
+      display_name: PropTypes.string.isRequired,
+      description: PropTypes.string,
+      transform_id: PropTypes.number.isRequired
+    })
+  )
 };
 
-const combineAndSort = ({ current, ignored }) =>
-  _.sortBy([...current, ...ignored], 'position');
+const combineAndSort = ({ current, ignored }) => _.sortBy([...current, ...ignored], 'position');
 
 // TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
 // fails; should probably redirect or display some message to the user
-const mapStateToProps = ({ db, apiCalls }, { path, inputSchema, outputSchema, displayState }) => {
-  const apiCallsByColumnId = _.chain(apiCalls).
-    filter((call) => (
-      _.includes(COLUMN_OPERATIONS, call.operation)
-        && call.status === STATUS_CALL_IN_PROGRESS
-    )).
-    keyBy('params.outputColumnId').
-    value();
+const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, displayState }) => {
+  const { apiCalls } = ui;
+  const apiCallsByColumnId = _.chain(apiCalls)
+    .filter(call => _.includes(COLUMN_OPERATIONS, call.operation) && call.status === STATUS_CALL_IN_PROGRESS)
+    .keyBy('params.outputColumnId')
+    .value();
   return {
-    db,
+    db: entities,
     path,
     inputSchema,
     outputSchema,
     displayState,
-    outputColumns: combineAndSort(currentAndIgnoredOutputColumns(db)),
+    outputColumns: combineAndSort(currentAndIgnoredOutputColumns(entities)),
     apiCallsByColumnId
   };
 };

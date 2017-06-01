@@ -1,16 +1,7 @@
 import _ from 'lodash';
 import * as Links from '../links';
 import * as dsmapiLinks from '../dsmapiLinks';
-import {
-  upsertFromServer,
-  updateFromServer,
-  updateStarted,
-  updateSucceeded,
-  updateFailed,
-  updateProgress,
-  createTable,
-  batch
-} from './database';
+import { upsertFromServer, updateProgress, batch } from './database';
 import { addNotification, removeNotificationAfterTimeout } from './notifications';
 import { uploadNotification } from '../lib/notifications';
 import { push } from 'react-router-redux';
@@ -59,40 +50,106 @@ function xhrPromise(method, url, file, uploadUpdate, dispatch) {
   });
 }
 
-export const uploadFile = (uploadId, file) => dispatch => {
-  const uploadUpdate = {
-    id: uploadId
-  };
+// convention should be:
+// verbNoun for async action creators
+// verbNounSuccess and/or verbNounFailure for non-async action creators that update store based on api response
+// verbNoun for ui aciton creators
+export function createUpload(file) {
+  return (dispatch, getState) => {
+    const { ui } = getState();
 
-  dispatch(updateStarted('uploads', uploadUpdate));
+    const callId = uuid();
 
-  dispatch(addNotification(uploadNotification(uploadId)));
+    const call = {
+      operation: 'CREATE_UPLOAD',
+      params: {
+        filename: file.name
+      }
+    };
 
-  return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadUpdate, dispatch)
-    .then(resp => JSON.parse(resp.responseText))
-    .then(resp => {
-      dispatch(updateSucceeded('uploads', uploadUpdate));
+    dispatch(apiCallStarted(callId, call));
 
-      dispatch(
-        updateFromServer('uploads', {
-          id: uploadId,
-          finished_at: new Date()
-        })
-      );
-
-      dispatch(
-        updateFromServer('input_schemas', {
-          id: resp.resource.id,
-          total_rows: resp.resource.total_rows
-        })
-      );
-
-      dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
-
-      return resp;
+    return socrataFetch(dsmapiLinks.uploadCreate, {
+      method: 'POST',
+      body: JSON.stringify({
+        filename: file.name
+      })
     })
-    .catch(err => dispatch(updateFailed('uploads', uploadUpdate, err.xhr.status, err.percent)));
-};
+      .then(checkStatus)
+      .then(getJson)
+      .then(resp => {
+        const { resource } = resp;
+
+        dispatch(apiCallSucceeded(callId));
+
+        dispatch(createUploadSuccess(resource.id, resource.created_by, resource.created_at, file.name));
+
+        dispatch(push(Links.showUpload(resource.id)(ui.routing.location)));
+
+        return Promise.all([
+          dispatch(uploadFile(resource.id, file)),
+          dispatch(pollForOutputSchema(resource.id))
+        ]);
+      })
+      .catch(err => {
+        console.log('err', err);
+        dispatch(apiCallFailed(callId, err));
+      });
+  };
+}
+
+function createUploadSuccess(id, createdBy, createdAt, filename) {
+  return {
+    type: 'CREATE_UPLOAD_SUCCESS',
+    id,
+    filename,
+    created_by: createdBy,
+    created_at: createdAt
+  };
+}
+
+export function uploadFile(uploadId, file) {
+  return dispatch => {
+    const uploadUpdate = {
+      id: uploadId
+    };
+
+    const callId = uuid();
+
+    const call = {
+      operation: 'UPLOAD_FILE',
+      params: uploadUpdate
+    };
+
+    dispatch(apiCallStarted(callId, call));
+
+    // dispatch(addNotification(uploadNotification(uploadId)));
+
+    return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadUpdate, dispatch)
+      .then(resp => JSON.parse(resp.responseText))
+      .then(resp => {
+        dispatch(uploadFileSuccess(uploadId, new Date(), resp.resource.id, resp.resource.total_rows));
+
+        // dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
+
+        return resp;
+      })
+      .catch(err => {
+        console.log('error here', err);
+        dispatch(apiCallFailed(callId, err));
+      });
+  };
+}
+
+function uploadFileSuccess(uploadId, finishedAt, inputSchemaId, totalRows) {
+  return {
+    type: 'UPLOAD_FILE_SUCCESS',
+    uploadId,
+    finishedAt,
+    inputSchemaId,
+    totalRows
+  };
+}
 
 const SCHEMA_POLL_INTERVAL_MS = 500;
 
@@ -102,107 +159,103 @@ const SCHEMA_POLL_INTERVAL_MS = 500;
 //     dispatch(...)
 //   }
 // });
-const pollForOutputSchema = uploadId => (dispatch, getState) => {
-  const { routing } = getState();
+function pollForOutputSchema(uploadId) {
+  return (dispatch, getState) => {
+    const { routing } = getState().ui;
 
-  function pollAgain() {
-    setTimeout(() => {
-      dispatch(pollForOutputSchema(uploadId));
-    }, SCHEMA_POLL_INTERVAL_MS);
-  }
-
-  return socrataFetch(dsmapiLinks.uploadShow(uploadId))
-    .then(resp => {
-      if (resp.status === 404) {
-        pollAgain();
-
-        throw new Error('Upload failed: trying again');
-      } else if (resp.status === 500) {
-        dispatch(updateFailed('uploads', { id: uploadId }));
-
-        throw new Error('Upload failed: terminating');
-      } else {
-        return resp;
-      }
-    })
-    .then(getJson)
-    .then(resp => {
-      const upload = resp.resource;
-
-      if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
-        const outputSchemaIds = _.chain(upload.schemas)
-          .flatMap(is => is.output_schemas)
-          .map(os => {
-            dispatch(insertChildrenAndSubscribeToOutputSchema(os));
-            return os.id;
-          })
-          .value();
-
-        // TODO: keep this from updating total rows if it's null
-        dispatch(subscribeToUpload(upload));
-
-        dispatch(
-          push(Links.showOutputSchema(uploadId, upload.schemas[0].id, outputSchemaIds[0])(routing.location))
-        );
-      } else {
-        pollAgain();
-      }
-    })
-    .catch(err => err);
-};
-
-// convetion should be:
-// verbNoun for async action creators
-// verbNounSuccess and/or verbNounFailure for non-async action creators that update store based on api response
-// verbNoun for ui aciton creators
-const createUploadSuccess = (id, createdBy, createdAt, filename) => ({
-  type: 'CREATE_UPLOAD_SUCCESS',
-  id,
-  filename,
-  created_by: createdBy,
-  created_at: createdAt
-});
-
-export const createUpload = file => (dispatch, getState) => {
-  const { ui } = getState();
-
-  const callId = uuid();
-
-  const call = {
-    operation: 'CREATE_UPLOAD',
-    params: {
-      filename: file.name
+    function pollAgain() {
+      setTimeout(() => {
+        dispatch(pollForOutputSchema(uploadId));
+      }, SCHEMA_POLL_INTERVAL_MS);
     }
+
+    return socrataFetch(dsmapiLinks.uploadShow(uploadId))
+      .then(resp => {
+        if (resp.status === 404) {
+          pollAgain();
+
+          throw new Error('Upload failed: trying again');
+        } else if (resp.status === 500) {
+          throw new Error('Upload failed: terminating');
+        } else {
+          return resp;
+        }
+      })
+      .then(getJson)
+      .then(resp => {
+        const upload = resp.resource;
+
+        if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
+          const outputSchemaIds = _.chain(upload.schemas)
+            .flatMap(is => is.output_schemas)
+            .map(os => {
+              dispatch(pollForOutputSchemaSuccess(os));
+              dispatch(subscribeToOutputSchema(os));
+              dispatch(subscribeToTransforms(os));
+              return os.id;
+            })
+            .value();
+
+          // TODO: keep this from updating total rows if it's null
+          dispatch(subscribeToUpload(upload));
+
+          dispatch(
+            push(Links.showOutputSchema(uploadId, upload.schemas[0].id, outputSchemaIds[0])(routing.location))
+          );
+        } else {
+          pollAgain();
+        }
+      })
+      .catch(err => {
+        console.log('polling error', err);
+      });
   };
+}
 
-  dispatch(apiCallStarted(callId, call));
+function pollForOutputSchemaSuccess(outputSchemaResponse) {
+  const outputSchema = toOutputSchema(outputSchemaResponse);
 
-  return socrataFetch(dsmapiLinks.uploadCreate, {
-    method: 'POST',
-    body: JSON.stringify({
-      filename: file.name
-    })
-  })
-    .then(checkStatus)
-    .then(getJson)
-    .then(resp => {
-      const { resource } = resp;
+  const transforms = outputSchemaResponse.output_columns.reduce((acc, oc) => {
+    return {
+      ...acc,
+      [oc.transform.id]: oc.transform
+    };
+  }, {});
 
-      dispatch(apiCallSucceeded(callId));
+  const outputColumns = outputSchemaResponse.output_columns.reduce((acc, oc) => {
+    const ocWithTransform = {
+      ..._.omit(oc, ['transform']),
+      transform_id: oc.transform.id
+    };
 
-      dispatch(createUploadSuccess(resource.id, resource.created_by, resource.created_at, file.name));
+    return {
+      ...acc,
+      [oc.id]: ocWithTransform
+    };
+  }, {});
 
-      dispatch(push(Links.showUpload(resource.id)(ui.routing)));
+  const outputSchemaColumns = outputSchemaResponse.output_columns.reduce((acc, oc) => {
+    const id = `${outputSchemaResponse.id}-${oc.id}`;
 
-      // return Promise.all([
-      //   dispatch(uploadFile(resource.id, file)),
-      //   dispatch(pollForOutputSchema(resource.id))
-      // ]);
-    })
-    .catch(err => {
-      dispatch(apiCallFailed(callId, err));
-    });
-};
+    return {
+      ...acc,
+      [id]: {
+        id,
+        output_schema_id: outputSchemaResponse.id,
+        output_column_id: oc.id,
+        is_primary_key: oc.is_primary_key
+      }
+    };
+  }, {});
+
+  return {
+    type: 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS',
+    outputSchema,
+    transforms,
+    outputColumns,
+    outputSchemaColumns
+  };
+}
 
 export function insertAndSubscribeToUpload(dispatch, upload) {
   dispatch(
@@ -226,7 +279,7 @@ function subscribeToUpload(upload) {
   return dispatch =>
     upload.schemas.forEach(inputSchema => {
       dispatch(
-        upsertFromServer('input_schemas', {
+        editInputSchema(inputSchema.id, {
           id: inputSchema.id,
           name: inputSchema.name,
           total_rows: inputSchema.total_rows,
@@ -236,8 +289,17 @@ function subscribeToUpload(upload) {
 
       dispatch(subscribeToRowErrors(inputSchema.id));
 
+      // TODO: get rid of this
       dispatch(batch(inputSchema.input_columns.map(column => upsertFromServer('input_columns', column))));
     });
+}
+
+function editInputSchema(id, payload) {
+  return {
+    type: 'EDIT_INPUT_SCHEMA',
+    id,
+    payload
+  };
 }
 
 function subscribeToRowErrors(inputSchemaId) {
@@ -247,8 +309,7 @@ function subscribeToRowErrors(inputSchemaId) {
       joinChannel(channelName, {
         errors: event => {
           dispatch(
-            updateFromServer('input_schemas', {
-              id: inputSchemaId,
+            editInputSchema(inputSchemaId, {
               num_row_errors: event.errors
             })
           );
@@ -257,74 +318,51 @@ function subscribeToRowErrors(inputSchemaId) {
     );
   };
 }
-
-export function insertChildrenAndSubscribeToOutputSchema(outputSchemaResponse) {
-  return dispatch => {
-    dispatch(upsertFromServer('output_schemas', toOutputSchema(outputSchemaResponse)));
-
-    dispatch(subscribeToOutputSchema(outputSchemaResponse));
-
-    const actions = [];
-
-    outputSchemaResponse.output_columns.forEach(outputColumn => {
-      const transform = outputColumn.transform;
-
-      actions.push(upsertFromServer('transforms', transform));
-
-      actions.push(
-        upsertFromServer('output_columns', {
-          ..._.omit(outputColumn, ['transform']),
-          transform_id: outputColumn.transform.id
-        })
-      );
-
-      actions.push(
-        upsertFromServer('output_schema_columns', {
-          id: `${outputSchemaResponse.id}-${outputColumn.id}`,
-          output_schema_id: outputSchemaResponse.id,
-          output_column_id: outputColumn.id,
-          is_primary_key: outputColumn.is_primary_key
-        })
-      );
+// TODO: batch here, tables aren't getting created
+function subscribeToTransforms(outputSchemaResponse) {
+  return dispatch =>
+    outputSchemaResponse.output_columns.forEach(oc => {
+      dispatch(createTableAndSubscribeToTransform(oc.transform));
     });
-
-    outputSchemaResponse.output_columns.forEach(outputColumn => {
-      dispatch(createTableAndSubscribeToTransform(outputColumn.transform));
-    });
-
-    dispatch(batch(actions));
-  };
 }
 
 function createTableAndSubscribeToTransform(transform) {
   return (dispatch, getState) => {
-    const db = getState().db;
-    // maybe create table
+    const { entities } = getState();
+
     const tableName = `transform_${transform.id}`;
-    if (!db[tableName]) {
+
+    if (!entities[tableName]) {
       dispatch(createTable(tableName));
     }
+
     const channelName = `transform_progress:${transform.id}`;
+
     dispatch(
       joinChannel(channelName, {
         max_ptr: maxPtr => {
-          dispatch(
-            updateFromServer('transforms', {
-              id: transform.id,
-              contiguous_rows_processed: maxPtr.end_row_offset
-            })
-          );
+          dispatch(editTransform(transform.id, { contiguous_rows_processed: maxPtr.end_row_offset }));
         },
         errors: errorsMsg => {
-          dispatch(
-            updateFromServer('transforms', {
-              id: transform.id,
-              num_transform_errors: errorsMsg.count
-            })
-          );
+          dispatch(editTransform(transform.id, { num_transform_errors: errorsMsg.count }));
         }
       })
     );
+  };
+}
+
+function editTransform(id, payload) {
+  return {
+    type: 'EDIT_TRANSFORM',
+    id,
+    payload
+  };
+}
+
+function createTable(tableName) {
+  return {
+    type: 'CREATE_TABLE',
+    tableName
   };
 }
 
@@ -346,16 +384,21 @@ function subscribeToOutputSchema(outputSchema) {
       joinChannel(channelName, {
         update: updatedOutputSchema => {
           dispatch(
-            updateFromServer(
-              'output_schemas',
-              toOutputSchema({
-                ...outputSchema,
-                ...updatedOutputSchema
-              })
-            )
+            editOutputSchema(outputSchema.id, {
+              ...outputSchema,
+              ...updatedOutputSchema
+            })
           );
         }
       })
     );
+  };
+}
+
+function editOutputSchema(id, payload) {
+  return {
+    type: 'EDIT_OUTPUT_SCHEMA',
+    id,
+    payload
   };
 }

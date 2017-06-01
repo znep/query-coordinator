@@ -16,17 +16,17 @@ import PagerBar from './Table/PagerBar';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ShowOutputSchema.scss';
 
-function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
+function query(entities, uploadId, inputSchemaId, outputSchemaIdStr) {
   const outputSchemaId = _.toNumber(outputSchemaIdStr);
-  const upload = db.uploads[_.toNumber(uploadId)];
-  const inputSchema = db.input_schemas[_.toNumber(inputSchemaId)];
-  const outputSchema = db.output_schemas[outputSchemaId];
+  const upload = entities.uploads[_.toNumber(uploadId)];
+  const inputSchema = entities.input_schemas[_.toNumber(inputSchemaId)];
+  const outputSchema = entities.output_schemas[outputSchemaId];
 
-  const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
+  const columns = Selectors.columnsForOutputSchema(entities, outputSchemaId);
   const canApplyRevision = Selectors.allTransformsDone(columns, inputSchema);
 
   return {
-    db,
+    db: entities,
     upload,
     inputSchema,
     outputSchema,
@@ -36,7 +36,6 @@ function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
 }
 
 export class ShowOutputSchema extends Component {
-
   componentDidMount() {
     const { displayState, dispatch, urlParams } = this.props;
 
@@ -90,7 +89,7 @@ export class ShowOutputSchema extends Component {
       title: (
         <ol className={styles.list}>
           <li>
-              {I18n.home_pane.data}
+            {I18n.home_pane.data}
             <SocrataIcon name="arrow-right" className={styles.icon} />
           </li>
           <li className={styles.active}>
@@ -119,9 +118,9 @@ export class ShowOutputSchema extends Component {
               <div className={styles.datasetAttribute}>
                 <div className={styles.datasetAttribute}>
                   <p>{I18n.data_preview.rows}</p>
-                  <p
-                    className={styles.attribute}
-                    data-cheetah-hook="total-rows-transformed">{commaify(rowsTransformed)}</p>
+                  <p className={styles.attribute} data-cheetah-hook="total-rows-transformed">
+                    {commaify(rowsTransformed)}
+                  </p>
                 </div>
                 <div className={styles.datasetAttribute}>
                   <p>{I18n.data_preview.columns}</p>
@@ -139,21 +138,15 @@ export class ShowOutputSchema extends Component {
                 outputSchema={outputSchema}
                 displayState={displayState} />
             </div>
-            <PagerBar
-              path={path}
-              routing={routing}
-              displayState={displayState} />
+            <PagerBar path={path} routing={routing} displayState={displayState} />
           </ModalContent>
 
           <ModalFooter>
-            {canApplyRevision ?
-              <ReadyToImport /> :
-              <div />}
+            {canApplyRevision ? <ReadyToImport /> : <div />}
 
             <div>
               <Link to={Links.home}>
-                <button
-                  className={styles.saveBtn}>
+                <button className={styles.saveBtn}>
                   {I18n.home_pane.save_for_later}
                 </button>
               </Link>
@@ -185,14 +178,14 @@ ShowOutputSchema.propTypes = {
 function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
   const queryResults = query(
-    state.db,
+    state.entities,
     _.toNumber(params.uploadId),
     _.toNumber(params.inputSchemaId),
     _.toNumber(params.outputSchemaId)
   );
   return {
     ...queryResults,
-    numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.apiCalls),
+    numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.ui.apiCalls),
     displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
     routing: ownProps.location,
     urlParams: ownProps.params

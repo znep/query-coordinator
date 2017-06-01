@@ -24,7 +24,7 @@ function PagerBar({ currentPage, resultCount, urlForPage, changePage }) {
 
     return (
       <div className={styles.pagerBar}>
-        {I18n.home_pane.showing} {firstPageRow}&ndash;{lastPageRow} {I18n.home_pane.of} {resultCountElem}
+        {I18n.home_pane.showing} {firstPageRow}–{lastPageRow} {I18n.home_pane.of} {resultCountElem}
 
         <Pager
           resultsPerPage={PAGE_SIZE}
@@ -34,7 +34,7 @@ function PagerBar({ currentPage, resultCount, urlForPage, changePage }) {
       </div>
     );
   } else {
-    return <div className={styles.pagerBar}></div>;
+    return <div className={styles.pagerBar} />;
   }
 }
 
@@ -66,14 +66,14 @@ function numItemsToPaginate(db, outputSchemaId, displayState) {
 function mapDispatchToProps(dispatch, ownProps) {
   const { displayState, path, routing } = ownProps;
 
-  const urlForPage = (targetPage) => {
+  const urlForPage = targetPage => {
     const targetDisplayState = { ...displayState, pageNo: targetPage };
     const targetPageUrl = DisplayState.toUiUrl(path, targetDisplayState);
 
     return targetPageUrl;
   };
 
-  const changePage = (targetPage) => {
+  const changePage = targetPage => {
     if (targetPage) {
       dispatch(push(urlForPage(targetPage)(routing)));
     }
@@ -84,9 +84,7 @@ function mapDispatchToProps(dispatch, ownProps) {
 
 function mapStateToProps(state, ownProps) {
   const currentPage = ownProps.displayState.pageNo;
-  const resultCount = numItemsToPaginate(state.db,
-                                         ownProps.path.outputSchemaId,
-                                         ownProps.displayState);
+  const resultCount = numItemsToPaginate(state.entities, ownProps.path.outputSchemaId, ownProps.displayState);
 
   return { currentPage, resultCount };
 }

@@ -42,11 +42,11 @@ function PublishReadinessFlyout({ metadataSatisfied, dataSatisfied }) {
           ? SubI18n.make_accessible
           : <div>
               {SubI18n.cant_publish_until}
-            <ul>
-              <li><LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} /></li>
-              <li><LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} /></li>
-            </ul>
-          </div>}
+              <ul>
+                <li><LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} /></li>
+                <li><LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} /></li>
+              </ul>
+            </div>}
       </section>
     </div>
   );
@@ -108,7 +108,7 @@ function mapStateToProps(state) {
   let dataSatisfied;
   const outputSchema = Selectors.latestOutputSchema(state.entities);
   if (outputSchema) {
-    const inputSchema = state.db.input_schemas[outputSchema.input_schema_id];
+    const inputSchema = state.entities.input_schemas[outputSchema.input_schema_id];
     const columns = Selectors.columnsForOutputSchema(state.entities, outputSchema.id);
     dataSatisfied = Selectors.allTransformsDone(columns, inputSchema);
   } else {

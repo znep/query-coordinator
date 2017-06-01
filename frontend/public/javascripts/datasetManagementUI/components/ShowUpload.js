@@ -14,9 +14,7 @@ function query(db, uploadId) {
 
   return {
     upload,
-    latestOutputSchema: inputSchemas.length ?
-      Selectors.latestOutputSchema(db) :
-      null
+    latestOutputSchema: inputSchemas.length ? Selectors.latestOutputSchema(db) : null
   };
 }
 
@@ -25,7 +23,7 @@ function ShowUpload({ upload, latestOutputSchema, goHome }) {
   if (!latestOutputSchema) {
     body = (
       <div className={styles.centeredContainer}>
-        <span className={styles.spinner}></span>
+        <span className={styles.spinner} />
       </div>
     );
   } else {
@@ -39,7 +37,9 @@ function ShowUpload({ upload, latestOutputSchema, goHome }) {
               <li>
                 <Link
                   to={Links.showOutputSchema(
-                    upload.id, latestOutputSchema.input_schema_id, latestOutputSchema.id
+                    upload.id,
+                    latestOutputSchema.input_schema_id,
+                    latestOutputSchema.id
                   )}>
                   {latestOutputSchema.id}
                 </Link>
@@ -60,7 +60,7 @@ function ShowUpload({ upload, latestOutputSchema, goHome }) {
     title: (
       <ol className={styles.list}>
         <li className={styles.active}>
-            {I18n.home_pane.data}
+          {I18n.home_pane.data}
           <SocrataIcon name="arrow-right" className={styles.icon} />
         </li>
         <li>
@@ -92,7 +92,7 @@ ShowUpload.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
-  return query(state.db, params.uploadId);
+  return query(state.entities, params.uploadId);
 }
 
 function mapDispatchToProps(dispatch, ownProps) {

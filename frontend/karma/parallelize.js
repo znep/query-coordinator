@@ -65,9 +65,10 @@ function report(suite) {
 
 // Execute test suites in parallel.
 suites.forEach(function(suite) {
-  console.log(`Spawning Karma tests for ${suite} [background]`);
+  const timeout_ms = 300 * 1000;
+  console.log(`Spawning Karma tests for ${suite} [background] with ${timeout_ms / 1000} second timeout`);
   var karmaCommand = `node --max_old_space_size=4096 ./node_modules/karma/bin/karma ${generateArgs(suite)}`;
-  exec(karmaCommand, report(suite));
+  exec(karmaCommand, {timeout: timeout_ms}, report(suite));
 });
 
 console.log('');

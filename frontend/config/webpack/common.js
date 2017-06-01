@@ -13,7 +13,7 @@ var isProduction = process.env.NODE_ENV === 'production';
 
 var plugins = _.compact([
   new webpack.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
   }),
   isProduction && new webpack.optimize.OccurenceOrderPlugin(),
   isProduction && new webpack.optimize.DedupePlugin(),

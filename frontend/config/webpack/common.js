@@ -9,7 +9,8 @@ var frontendRoot = path.resolve(__dirname, '..', '..');
 var packageJson = require(path.resolve(frontendRoot, 'package.json'));
 const svgFontPath = path.resolve(frontendRoot, '../common/resources/fonts/svg');
 
-var isProduction = process.env.NODE_ENV == 'production';
+var isProduction = process.env.NODE_ENV === 'production';
+
 var plugins = _.compact([
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)

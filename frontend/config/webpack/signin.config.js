@@ -7,7 +7,7 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/signin'),
-  entry: common.withHotModuleEntries('./main.js'),
+  entry: common.withHotModuleEntries('./main'),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/signin/.eslintrc.json'),
   module: {

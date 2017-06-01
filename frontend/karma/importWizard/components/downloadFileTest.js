@@ -1,12 +1,6 @@
+import _ from 'lodash';
 import { expect, assert } from 'chai';
-import {
-  fileDownloadStart,
-  fileDownloadComplete,
-  update,
-  view,
-  scanURL
-}
-from 'components/downloadFile';
+import { fileDownloadStart, fileDownloadComplete, update, view, scanURL } from 'components/downloadFile';
 import * as Download from 'components/downloadFile';
 import * as SaveState from 'saveState';
 import TestUtils from 'react-addons-test-utils';

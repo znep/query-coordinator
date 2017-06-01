@@ -4,7 +4,7 @@ import mockCeteraResults from 'data/mockCeteraResults';
 
 describe('components/ResultListTable', () => {
   const resultListTableProps = (options = {}) => ({
-    changeOrder: () => {},
+    changeSortOrder: () => {},
     columns: [
       'type', 'name', 'lastUpdatedDate', 'owner', 'category', 'visibility'
     ],

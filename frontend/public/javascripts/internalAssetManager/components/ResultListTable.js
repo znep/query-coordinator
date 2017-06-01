@@ -24,14 +24,17 @@ export class ResultListTable extends React.Component {
     return _.merge(
       {
         category: result.classification.domain_category,
-        isDataLensApproved: result.metadata.is_datalens_approved,
-        isHidden: result.metadata.is_hidden,
+        datalensStatus: result.metadata.datalens_status,
+        grants: result.metadata.grants,
+        isDatalensApproved: result.metadata.is_datalens_approved,
+        isExplicitlyHidden: result.metadata.is_hidden,
         isModerationApproved: result.metadata.is_moderation_approved,
         isPublic: result.metadata.is_public,
-        // NOTE: this may change from a bool to a string for publication state "pending" vs "rejected":
         isPublished: result.metadata.is_published,
         isRoutingApproved: result.metadata.is_routing_approved,
         link: result.link,
+        moderationStatus: result.metadata.moderation_status,
+        routingStatus: result.metadata.routing_status,
         uid: result.resource.id,
         visibleToAnonymous: result.metadata.visible_to_anonymous
       },

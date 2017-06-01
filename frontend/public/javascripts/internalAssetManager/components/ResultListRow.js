@@ -42,8 +42,9 @@ export class ResultListRow extends React.Component {
       }
       case 'visibility': {
         const visibilityCellProps = _.pick(this.props,
-          ['isDataLensApproved', 'isHidden', 'isModerationApproved', 'isPublic', 'isPublished',
-            'isRoutingApproved', 'visibleToAnonymous']
+          ['datalensStatus', 'grants', 'isDatalensApproved', 'isExplicitlyHidden', 'isModerationApproved',
+            'isPublic', 'isPublished', 'isRoutingApproved', 'moderationStatus', 'routingStatus',
+            'visibleToAnonymous']
         );
 
         return cellTag(<VisibilityCell {...visibilityCellProps} />);
@@ -67,15 +68,19 @@ export class ResultListRow extends React.Component {
 ResultListRow.propTypes = {
   category: PropTypes.string,
   columns: PropTypes.array.isRequired,
+  datalensStatus: PropTypes.string,
   description: PropTypes.string,
-  isDataLensApproved: PropTypes.bool,
-  isHidden: PropTypes.bool,
+  grants: PropTypes.array,
+  isDatalensApproved: PropTypes.bool,
+  isExplicitlyHidden: PropTypes.bool,
   isModerationApproved: PropTypes.bool,
   isPublic: PropTypes.bool.isRequired,
   isPublished: PropTypes.bool.isRequired,
   isRoutingApproved: PropTypes.bool,
   link: PropTypes.string,
+  moderationStatus: PropTypes.string,
   name: PropTypes.string,
+  routingStatus: PropTypes.string,
   type: PropTypes.string,
   uid: PropTypes.string.isRequired,
   updatedAt: PropTypes.string,

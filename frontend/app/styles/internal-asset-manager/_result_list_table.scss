@@ -94,21 +94,16 @@ table.result-list-table {
       &.visibility {
         .title {
           display: flex;
-          align-items: baseline;
+          align-items: center;
 
           strong {
             margin-left: 0.25rem;
           }
         }
 
-        ul {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-
-          li {
-            color: $light-grey-1;
-          }
+        .visibility-description {
+          color: $light-grey-1;
+          white-space: nowrap;
         }
       }
     }

@@ -2729,14 +2729,13 @@ en:
         type: Type
         visibility: Visibility
       visibility_values:
-        open: Open
-        datalens_not_approved: "View Moderation: Pending"
+        awaiting_approval: Awaiting approval
         hidden: Hidden
         internal: Internal
-        moderation_not_approved: "View Moderation: Pending"
+        open: Open
         private: Private
-        routing_not_approved: "Routing & Approval: Pending"
-        unpublished: Not Published
+        rejected: Rejected
+        shared_to_me: Shared to me
     title: Asset Inventory
   number:
     currency:

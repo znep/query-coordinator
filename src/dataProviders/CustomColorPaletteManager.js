@@ -58,6 +58,10 @@ const generateCustomColorPalette = (vifAuthoring) => {
       }, {});
 
       _.forEach(groups, (group, index) => {
+          if (_.isNull(group)) {
+            group = I18n.translate('visualizations.common.no_value');
+          }
+
           const color = _.has(currentPalette, group) ?
             currentPalette[group].color :
             COLOR_PALETTE_VALUES[baseColorPalette][index];

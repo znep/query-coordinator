@@ -1,41 +1,45 @@
 export const customPalette = {
   '1': {
+    'color': '#f06c45',
+    'index': 10
+  },
+  '2': {
     'color': '#e42022',
     'index': 9
   },
-  '2': {
+  '3': {
     'color': '#f16666',
     'index': 8
   },
-  '3': {
+  '4': {
     'color': '#dc9a88',
     'index': 7
   },
-  '4': {
+  '5': {
     'color': '#6f9e4c',
     'index': 6
   },
-  '5': {
+  '6': {
     'color': '#52af43',
     'index': 5
   },
-  '6': {
+  '7': {
     'color': '#98d277',
     'index': 4
   },
-  '7': {
+  '8': {
     'color': '#7eba98',
     'index': 3
   },
-  '8': {
+  '9': {
     'color': '#2d82af',
     'index': 2
   },
-  '9': {
+  '10': {
     'color': '#5b9ec9',
     'index': 1
   },
-  '10': {
+  '(No value)': {
     'color': '#a6cee3',
     'index': 0
   }

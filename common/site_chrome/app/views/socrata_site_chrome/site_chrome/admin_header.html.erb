@@ -54,7 +54,7 @@
         document.addEventListener(
           'DOMContentLoaded',
           function() {
-            if (window.headerNotifications && $('#site-chrome-header-notifications').length > 0) {
+            if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
               var options = {
                 productUpdatesText: "<%= t('notifications.product_updates') %>",
                 viewOlderText: "<%= t('notifications.view_older') %>",

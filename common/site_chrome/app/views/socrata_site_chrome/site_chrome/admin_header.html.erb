@@ -1,4 +1,4 @@
-<%- if logged_in? %>
+<% if logged_in? %>
   <section
     id="site-chrome-admin-header"
     role="navigation"
@@ -12,15 +12,13 @@
       <div class="site-chrome-admin-separator"></div>
 
       <div class="site-chrome-admin-menus" role="menubar">
-        <%- if open_performance_enabled? %>
+        <% if open_performance_enabled? %>
           <%= render 'site_chrome/admin/open_performance' %>
-        <%- else %>
-          <div		
-            id="site-chrome-data-catalog"		
-            class="site-chrome-admin-menu">		
-            <a href="/browse"><%= t('admin.data_catalog.title') %></a>		
+        <% else %>
+          <div id="site-chrome-data-catalog" class="site-chrome-admin-menu">
+            <a href="/browse"><%= t('admin.data_catalog.title') %></a>
           </div>
-        <%- end %>
+        <% end %>
       </div>
     </div>
 
@@ -31,17 +29,15 @@
 
       <div class="site-chrome-admin-separator"></div>
 
-      <%- if current_user_can_see_admin_link? && new_admin_ui_enabled? %>
-        <div 
-          class="site-chrome-admin-settings"
+      <% if current_user_can_see_admin_link? && new_admin_ui_enabled? %>
+        <div class="site-chrome-admin-settings"
           role="button"
           aria-haspopup="true"
           aria-label="<%= t('header.settings_menu.title') %>">
-            <%= render 'site_chrome/admin/settings' %>
+          <%= render 'site_chrome/admin/settings' %>
         </div>
         <div class="site-chrome-admin-separator"></div>
-      <%- end %>
-
+      <% end %>
 
       <div
         class="site-chrome-admin-user"
@@ -49,7 +45,7 @@
         role="button"
         aria-haspopup="true"
         aria-label="<%= t('header.profile') %>">
-          <%= render 'site_chrome/admin/user' %>
+        <%= render 'site_chrome/admin/user' %>
       </div>
     </div>
 
@@ -72,4 +68,4 @@
       </script>
     <% end %>
   </section>
-<%- end %>
+<% end %>

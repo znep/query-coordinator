@@ -10,13 +10,13 @@ import thunk from 'redux-thunk';
 import windowDBMiddleware from './lib/database/middleware';
 import * as Phoenix from 'phoenix';
 import Perf from 'react-addons-perf';
-
-import rootReducer from './reducers';
-import { bootstrap } from './bootstrap';
+import newReducer from 'reducers/newReducer';
+// import rootReducer from './reducers';
+import { bootstrap, sideEffectyStuff } from './bootstrap';
 import * as Selectors from './selectors';
 import Airbrake from '../common/airbrake';
 import rootRoute from './routes';
-import { addLocation } from 'actions/routing';
+import { addLocation, setFourfour } from 'actions/routing';
 import styleguide from './styles/style.global.scss'; //eslint-disable-line
 
 const viewId = window.initialState.view.id;
@@ -36,12 +36,14 @@ const middleware = [thunk, routerMiddleware(browserHistory)];
 if (window.serverConfig.environment === 'development') {
   window.Perf = Perf;
 
-  middleware.push(createLogger({
-    duration: true,
-    timestamp: false,
-    collapsed: true,
-    logErrors: false
-  }));
+  middleware.push(
+    createLogger({
+      duration: true,
+      timestamp: false,
+      collapsed: true,
+      logErrors: false
+    })
+  );
 
   middleware.push(windowDBMiddleware);
 
@@ -55,14 +57,17 @@ if (window.serverConfig.environment === 'development') {
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(rootReducer, composeEnhancers(
-  applyMiddleware(...middleware)
-));
+const store = createStore(newReducer, composeEnhancers(applyMiddleware(...middleware)));
 
-bootstrap(store, window.initialState.view, window.initialState.revision, window.initialState.customMetadata);
+store.dispatch(setFourfour(window.initialState.view.id));
+store.dispatch(
+  bootstrap(window.initialState.view, window.initialState.revision, window.initialState.customMetadata)
+);
+store.dispatch(sideEffectyStuff(window.initialState.revision));
+// bootstrap(store, window.initialState.view, window.initialState.revision, window.initialState.customMetadata);
 
 const history = syncHistoryWithStore(browserHistory, store, {
-  selectLocationState: state => state.routing.location
+  selectLocationState: state => state.ui.routing.location
 });
 
 history.listen(location => {
@@ -78,7 +83,7 @@ ReactDOM.render(
   document.querySelector('#app')
 );
 
-window.addEventListener('beforeunload', (evt) => {
+window.addEventListener('beforeunload', evt => {
   const uploadsInProgress = Selectors.uploadsInProgress(store.getState().db);
   if (uploadsInProgress.length !== 0) {
     const msg = I18n.upload_warning;

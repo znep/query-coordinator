@@ -3,9 +3,6 @@ import * as Links from '../links';
 import * as dsmapiLinks from '../dsmapiLinks';
 import {
   upsertFromServer,
-  upsertStarted,
-  upsertSucceeded,
-  upsertFailed,
   updateFromServer,
   updateStarted,
   updateSucceeded,
@@ -20,6 +17,8 @@ import { push } from 'react-router-redux';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import { parseDate } from '../lib/parseDate';
 import { joinChannel } from './channels';
+import uuid from 'uuid';
+import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'actions/apiCalls';
 
 function xhrPromise(method, url, file, uploadUpdate, dispatch) {
   return new Promise((res, rej) => {
@@ -152,14 +151,31 @@ const pollForOutputSchema = uploadId => (dispatch, getState) => {
     .catch(err => err);
 };
 
-export const createUpload = file => (dispatch, getState) => {
-  const { routing } = getState();
+// convetion should be:
+// verbNoun for async action creators
+// verbNounSuccess and/or verbNounFailure for non-async action creators that update store based on api response
+// verbNoun for ui aciton creators
+const createUploadSuccess = (id, createdBy, createdAt, filename) => ({
+  type: 'CREATE_UPLOAD_SUCCESS',
+  id,
+  filename,
+  created_by: createdBy,
+  created_at: createdAt
+});
 
-  const uploadInsert = {
-    filename: file.name
+export const createUpload = file => (dispatch, getState) => {
+  const { ui } = getState();
+
+  const callId = uuid();
+
+  const call = {
+    operation: 'CREATE_UPLOAD',
+    params: {
+      filename: file.name
+    }
   };
 
-  dispatch(upsertStarted('uploads', uploadInsert));
+  dispatch(apiCallStarted(callId, call));
 
   return socrataFetch(dsmapiLinks.uploadCreate, {
     method: 'POST',
@@ -170,24 +186,22 @@ export const createUpload = file => (dispatch, getState) => {
     .then(checkStatus)
     .then(getJson)
     .then(resp => {
-      const newUpload = resp.resource;
+      const { resource } = resp;
 
-      dispatch(
-        upsertSucceeded('uploads', uploadInsert, {
-          id: newUpload.id,
-          created_by: newUpload.created_by,
-          created_at: parseDate(newUpload.inserted_at || newUpload.created_at)
-        })
-      );
+      dispatch(apiCallSucceeded(callId));
 
-      dispatch(push(Links.showUpload(newUpload.id)(routing.location)));
+      dispatch(createUploadSuccess(resource.id, resource.created_by, resource.created_at, file.name));
 
-      return Promise.all([
-        dispatch(uploadFile(newUpload.id, file)),
-        dispatch(pollForOutputSchema(newUpload.id))
-      ]);
+      dispatch(push(Links.showUpload(resource.id)(ui.routing)));
+
+      // return Promise.all([
+      //   dispatch(uploadFile(resource.id, file)),
+      //   dispatch(pollForOutputSchema(resource.id))
+      // ]);
     })
-    .catch(err => dispatch(upsertFailed('uploads', uploadInsert, err)));
+    .catch(err => {
+      dispatch(apiCallFailed(callId, err));
+    });
 };
 
 export function insertAndSubscribeToUpload(dispatch, upload) {
@@ -319,7 +333,7 @@ function toOutputSchema(os) {
     id: os.id,
     input_schema_id: os.input_schema_id,
     error_count: os.error_count,
-    created_at: (os.inserted_at || os.created_at) ? parseDate(os.inserted_at || os.created_at) : null,
+    created_at: os.inserted_at || os.created_at ? parseDate(os.inserted_at || os.created_at) : null,
     created_by: os.created_by
   };
 }

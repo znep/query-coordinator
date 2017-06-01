@@ -3,9 +3,9 @@ import * as Selectors from '../selectors';
 import CommonRowDetails from '../../common/components/RowDetails';
 
 function mapStateToProps(state) {
-  const view = _.values(state.db.views)[0];
+  const view = _.values(state.entities.views)[0];
   const rowLabel = _.get(view, 'metadata.rowLabel', I18n.common.default_row_label);
-  const currentSchema = Selectors.latestOutputSchema(state.db);
+  const currentSchema = Selectors.latestOutputSchema(state.entities);
   if (!currentSchema) {
     return {
       rowLabel,
@@ -13,7 +13,7 @@ function mapStateToProps(state) {
       columnCount: 0
     };
   }
-  const columns = Selectors.columnsForOutputSchema(state.db, currentSchema.id);
+  const columns = Selectors.columnsForOutputSchema(state.entities, currentSchema.id);
   const rowCount = Selectors.rowsTransformed(columns);
   return {
     rowLabel,

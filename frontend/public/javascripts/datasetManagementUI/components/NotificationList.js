@@ -6,7 +6,7 @@ import { UPLOAD_NOTIFICATION, UPSERT_JOB_NOTIFICATION } from '../lib/notificatio
 import styles from 'styles/NotificationList.scss';
 
 function NotificationList({ notifications }) {
-  const idForNotification = (notification) => {
+  const idForNotification = notification => {
     switch (notification.type) {
       case UPLOAD_NOTIFICATION:
         return notification.uploadId;
@@ -19,7 +19,7 @@ function NotificationList({ notifications }) {
     }
   };
 
-  const items = notifications.map((notification) => (
+  const items = notifications.map(notification => (
     <Notification
       key={`${notification.type}-${idForNotification(notification)}`}
       notification={notification} />
@@ -48,7 +48,7 @@ NotificationList.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    notifications: state.notifications
+    notifications: state.ui.notifications
   };
 }
 

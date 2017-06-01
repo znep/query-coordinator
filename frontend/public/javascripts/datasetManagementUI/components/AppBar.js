@@ -9,22 +9,21 @@ import styles from '../styles/AppBar.scss';
 
 const previewLink = (
   <div className={styles.primerPreview}>
-    <a
-      href={`/d/${window.initialState.view.id}`}
-      target="_blank">
+    <a href={`/d/${window.initialState.view.id}`} target="_blank">
       Preview Primer
       <SocrataIcon name="preview" className={styles.previewIcon} />
     </a>
   </div>
 );
 
-const AppBar = ({ name, showPreviewLink }) =>
+const AppBar = ({ name, showPreviewLink }) => (
   <EditBar name={name}>
     <div className={styles.buttonContainer}>
       {showPreviewLink && previewLink}
       <PublishButton />
     </div>
-  </EditBar>;
+  </EditBar>
+);
 
 AppBar.propTypes = {
   name: PropTypes.string.isRequired,
@@ -33,12 +32,12 @@ AppBar.propTypes = {
 
 function mapStateToProps(state) {
   // only show the preview link when an upsert job has successfully completed
-  const showPreviewLink = !!_.find(state.db.upsert_jobs, {
+  const showPreviewLink = !!_.find(state.entities.task_sets, {
     status: ApplyRevision.UPSERT_JOB_SUCCESSFUL
   });
 
   return {
-    name: _.values(state.db.views)[0].name,
+    name: _.values(state.entities.views)[0].name,
     showPreviewLink
   };
 }

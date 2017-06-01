@@ -28,56 +28,50 @@ export function rowsUpserted(db, upsertJobId) {
   if (!upsertJob || !upsertJob.log) {
     return 0;
   }
-  const rowItems = upsertJob.log.
-    filter((logItem) => logItem.stage === 'rows_upserted').
-    map((logItem) => logItem.details.count);
+  const rowItems = upsertJob.log
+    .filter(logItem => logItem.stage === 'rows_upserted')
+    .map(logItem => logItem.details.count);
   return _.max(rowItems) || 0;
 }
 
-export function latestOutputSchema(db) {
-  return _.maxBy(_.values(db.output_schemas), 'id');
+export function latestOutputSchema(entities) {
+  return _.maxBy(_.values(entities.output_schemas), 'id');
 }
 
 export function columnsForInputSchema(db, inputSchemaId) {
-  const unsortedColumns = _.filter(
-    db.input_columns,
-    (ic) => ic.input_schema_id === inputSchemaId
-  );
+  const unsortedColumns = _.filter(db.input_columns, ic => ic.input_schema_id === inputSchemaId);
   return _.sortBy(unsortedColumns, 'position');
 }
 
 export function columnsForOutputSchema(db, outputSchemaId) {
-  return _.chain(db.output_schema_columns).
-    filter({ output_schema_id: outputSchemaId }).
-    map((outputSchemaColumn) => {
+  return _.chain(db.output_schema_columns)
+    .filter({ output_schema_id: outputSchemaId })
+    .map(outputSchemaColumn => {
       const outputColumn = db.output_columns[outputSchemaColumn.output_column_id];
       return {
         ...outputColumn,
         transform: db.transforms[outputColumn.transform_id],
         is_primary_key: outputSchemaColumn.is_primary_key || false
       };
-    }).
-    sortBy('position').
-    value();
+    })
+    .sortBy('position')
+    .value();
 }
 
 export function allTransformsDone(columnsWithTransforms, inputSchema) {
-  return columnsWithTransforms.every((column) => (
-    column.transform.contiguous_rows_processed &&
+  return columnsWithTransforms.every(
+    column =>
+      column.transform.contiguous_rows_processed &&
       column.transform.contiguous_rows_processed === inputSchema.total_rows
-  ));
+  );
 }
 
 export function uploadsInProgress(db) {
-  return _.filter(db.uploads, (upload) => (
-    upload.__status__.type === STATUS_UPDATING
-  ));
+  return _.filter(db.uploads, upload => upload.__status__.type === STATUS_UPDATING);
 }
 
 export function rowsTransformed(outputColumns) {
-  return _.min(
-    outputColumns.map((col) => (col.transform.contiguous_rows_processed || 0))
-  ) || 0;
+  return _.min(outputColumns.map(col => col.transform.contiguous_rows_processed || 0)) || 0;
 }
 
 export function pathForOutputSchema(db, outputSchemaId) {
@@ -92,10 +86,8 @@ export function pathForOutputSchema(db, outputSchemaId) {
 }
 
 export function rowLoadOperationsInProgress(apiCalls) {
-  return _.filter(apiCalls, (call) => (
-    call.operation === LOAD_ROWS
-      && call.status === STATUS_CALL_IN_PROGRESS
-  )).length;
+  return _.filter(apiCalls, call => call.operation === LOAD_ROWS && call.status === STATUS_CALL_IN_PROGRESS)
+    .length;
 }
 
 // Merges formDataModel with db.output_columns, then transforms that into the
@@ -136,9 +128,7 @@ export function updatedOutputColumns(db, formDataModel) {
 // - endpoints which return results
 export function currentAndIgnoredOutputColumns(db) {
   // TODO: remove filters once we get the status out of output schema
-  const osIds = Object.keys(db.output_schemas)
-    .map(_.toNumber)
-    .filter(key => !!key);
+  const osIds = Object.keys(db.output_schemas).map(_.toNumber).filter(key => !!key);
 
   const latestOutputSchemaId = Math.max(...osIds);
 
@@ -152,8 +142,9 @@ export function currentAndIgnoredOutputColumns(db) {
     .map(icid => {
       // get ids of all transforms that were run on this input column
       const matchingTransformIds = Object.keys(db.transforms).filter(tid => {
-        return db.transforms[tid].transform_input_columns
-          .filter(tic => tic.input_column_id === _.toNumber(icid)).length;
+        return db.transforms[tid].transform_input_columns.filter(
+          tic => tic.input_column_id === _.toNumber(icid)
+        ).length;
       });
 
       // of those ids, return the highest (i.e., the most recent)
@@ -165,28 +156,31 @@ export function currentAndIgnoredOutputColumns(db) {
         .filter(ocid => db.output_columns[ocid].transform_id === tid)
         .map(_.toNumber);
     })
-    .reduce((acc, ocid) => {
-      // get array of ids of all output columns in current output schema
-      const currentOutputColumnIds = _.chain(db.output_schema_columns)
-        .filter(osc => osc.output_schema_id === latestOutputSchemaId)
-        .reduce((innerAcc, osc) => {
-          return [...innerAcc, osc.output_column_id];
-        }, [])
-        .value();
+    .reduce(
+      (acc, ocid) => {
+        // get array of ids of all output columns in current output schema
+        const currentOutputColumnIds = _.chain(db.output_schema_columns)
+          .filter(osc => osc.output_schema_id === latestOutputSchemaId)
+          .reduce((innerAcc, osc) => {
+            return [...innerAcc, osc.output_column_id];
+          }, [])
+          .value();
 
-      // sort output column ids based on whether they are in the current output schema or not
-      if (currentOutputColumnIds.includes(ocid)) {
-        return {
-          ...acc,
-          current: [...acc.current, ocid]
-        };
-      } else {
-        return {
-          ...acc,
-          ignored: [...acc.ignored, ocid]
-        };
-      }
-    }, { current: [], ignored: [] })
+        // sort output column ids based on whether they are in the current output schema or not
+        if (currentOutputColumnIds.includes(ocid)) {
+          return {
+            ...acc,
+            current: [...acc.current, ocid]
+          };
+        } else {
+          return {
+            ...acc,
+            ignored: [...acc.ignored, ocid]
+          };
+        }
+      },
+      { current: [], ignored: [] }
+    )
     .thru(val => {
       // map ocids to actual oc objects
       return {
@@ -224,9 +218,7 @@ export function currentAndIgnoredOutputColumns(db) {
         .filter(oc => transformIds.filter(tid => tid === oc.transform_id).length > 1)
         .map(oc => oc.id);
 
-      const sortedIds = [...osIds]
-        .sort()
-        .reverse();
+      const sortedIds = [...osIds].sort().reverse();
 
       function crawlOutputSchemas(arr) {
         if (!arr || !arr.length) {
@@ -259,7 +251,6 @@ export function currentAndIgnoredOutputColumns(db) {
         ...val,
         ignored: newIgnored
       };
-
     })
     .thru(val => {
       // add transform data

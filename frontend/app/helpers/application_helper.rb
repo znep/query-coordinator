@@ -1120,12 +1120,8 @@ module ApplicationHelper
   end
 
   def render_admin_header?
-    is_admin_controller = controller_name == 'administration' ||
-                          controller_name == 'site_appearance' ||
-                          controller_name == 'connector' ||
-                          controller_name == 'routing_approval' ||
-                          controller_name == 'activity_feed'
-    is_admin_controller && FeatureFlags.derive(nil, request)[:enable_new_admin_ui]
+    %w(administration site_appearance connector routing_approval activity_feed).include?(controller_name) &&
+      FeatureFlags.derive(nil, request)[:enable_new_admin_ui]
   end
 
 end

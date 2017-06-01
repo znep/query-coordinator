@@ -9,6 +9,7 @@ module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/angular/src'),
   entry: common.withHotModuleEntries('./main'),
   output: common.getOutput(identifier),
+  // eslint file paths below are relative to platform-ui/frontend
   eslint: common.getEslintConfig(common.isProduction ? '.eslintrc.json' : '.eslintrc-dev.json'),
   module: {
     loaders: common.getStandardLoaders([

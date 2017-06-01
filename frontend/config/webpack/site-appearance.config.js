@@ -1,9 +1,8 @@
-// See also public/javascripts/site-appearance/main.js
+// See also siteAppearance/main.js
 
 /* eslint-env node */
 var _ = require('lodash');
 var path = require('path');
-var webpack = require('webpack');
 var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 

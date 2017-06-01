@@ -7,7 +7,7 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, '../common'),
-  entry: common.withHotModuleEntries('./site_wide'),
+  entry: common.withHotModuleEntries({'site_wide': './site_wide'}),
   module: {
     loaders: common.getStandardLoaders(
       {

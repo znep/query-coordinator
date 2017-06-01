@@ -26,7 +26,7 @@ var plugins = _.compact([
       comments: false
     }
   }),
-  isProduction ? null : new webpack.HotModuleReplacementPlugin()
+  isProduction && new webpack.HotModuleReplacementPlugin()
 ]);
 
 // Base `test` and `include` config for loaders

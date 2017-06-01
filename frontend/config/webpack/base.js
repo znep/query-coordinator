@@ -1,8 +1,7 @@
-var _ = require('lodash');
-var path = require('path');
-var common = require('./common');
+const path = require('path');
+const common = require('./common');
 
-var preLoaders = [];
+let preLoaders = [];
 
 if (common.isProduction) {
   preLoaders.push(

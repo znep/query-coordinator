@@ -1,0 +1,168 @@
+<%- page = prefix = 'screens.dataset_edit' -%>
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'dataset-new' %>
+  <title><%= t("#{prefix}.title") %> | <%= get_site_title %></title>
+  <script src="/datasync/api.js" type="text/javascript"></script>
+<% end %>
+
+<% content_for :skip_links do %>
+  <a href="<%= view_path(@view) %>/upload"><%= t("#{prefix}.upload_accessible") %></a><%# THIS LINK IS A LIE ?? %>
+<% end %>
+
+<div class="contentBox fixedWidth">
+  <form class="appendReplaceForm">
+    <h1><%= t("#{prefix}.#{@view.is_immutable?() ? 'replace_data' : 'append_and_replace'}") %></h1>
+
+    <%= display_standard_flashes %>
+
+    <div class="appendReplaceWizard wizard">
+      <ul class="clearfix">
+        <li class="selectTypePane" data-wizardpanename="selectType">
+          <p class="headline"><%= t("#{prefix}.headline") %></p>
+          <ul class="importTypeList clearfix">
+            <li>
+              <a href="#append" class="append" title="<%= t("#{prefix}.append_explain") %>">
+                <span class="icon"></span>
+                <p><%= t("#{prefix}.append") %></p>
+              </a>
+            </li>
+            <li>
+              <a href="#replace" class="replace" title="<%= t("#{prefix}.replace_explain") %>">
+                <span class="icon"></span>
+                <p><%= t("#{prefix}.replace") %></p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <%- prefix = 'screens.dataset_new.upload_file' -%>
+        <li class="uploadFilePane" data-wizardpanename="uploadFile">
+          <p class="headline"></p>
+          <div class="uploadFileContainer">
+            <div class="uploadFileNameWrapper"><input type="text" class="uploadFileName" readonly="readonly" value="<%= t('screens.dataset_new.upload_file.no_file_selected') %>"/></div>
+            <div class="button uploadFileButtonWrapper"><%= t("#{prefix}.choose_a_file") %></div>
+            <div class="uploadThrobber"><span class="icon"></span><span class="text"><%= t("#{prefix}.uploading") %></span></div>
+            <%- if @view.is_geo? -%>
+            <p class="uploadFileFormats"><%= t("#{prefix}.supported_shapefile") %></p>
+            <%- else -%>
+            <p class="uploadFileFormats"><%= t("#{prefix}.supported_blist") %></p>
+            <%- end -%>
+          </div>
+        </li>
+        <%- prefix = 'screens.dataset_new.import_shapefile' -%>
+        <li class="importShapefilePane" data-wizardpanename="importShapefile">
+          <div class="flash"></div>
+
+          <div class="shapeSummary">
+            <p class="headline"><%= raw t("#{prefix}.headline") %></p>
+            <p class="subheadline"><%= raw t("#{prefix}.subheadline") %></p>
+
+            <h2><%= t("#{prefix}.layers_list") %></h2>
+            <div class="layersListHeader importListHeader clearfix">
+              <div class="layerHandleCell importHandleCell"></div>
+              <div class="layerNameCell"><%= t("#{prefix}.name") %></div>
+              <div class="layerReferenceSystemCell"><%= t("#{prefix}.crs") %></div>
+              <div class="layerReplacingCell"><%= t('screens.dataset_edit.replace_layer') %></div>
+            </div>
+            <p class="subheadline pendingLayersMessage"><%= t("#{prefix}.pending") %></p>
+            <ul class="layersList importList">
+            </ul>
+          </div>
+          <div class="abbreviatedShapeSummary">
+            <p class="headline"><%= raw t("#{prefix}.abbreviatedSummary") %></p>
+            <p class="subheadline"><%= raw t("#{prefix}.abbreviatedSubheadline") %></p>
+          </div>
+          <hr />
+        </li>
+        <%- prefix = 'screens.dataset_new.import_columns' -%>
+        <li class="appendReplaceColumnsPane columnsPane" data-wizardpanename="appendReplaceColumns">
+          <div class="flash"></div>
+          <p class="headline"><%= raw t("screens.dataset_new.import_columns.headline") %></p>
+          <h2><%= t("#{prefix}.subheadline") %></h2>
+          <div class="columnsListHeader importListHeader clearfix">
+            <div class="columnSourceCell"><%= t("#{prefix}.source_column") %></div>
+            <div class="columnActionCell"></div>
+            <div class="columnDestinationCell"><%= t('screens.dataset_edit.import_columns.destination_column') %></div>
+            <div class="columnTypeCell"><%= t('screens.dataset_edit.import_columns.destination_data_type') %></div>
+          </div>
+          <p class="subheadline pendingColumnsMessage"><%= t("#{prefix}.pending_columns") %></p>
+          <ul class="columnsList importList">
+          </ul>
+
+          <h2><%= t("#{prefix}.headers") %></h2>
+          <p class="instructions"><%= t("#{prefix}.headers_instructions") %>:</p>
+          <div class="headersTableWrapper">
+            <table class="headersTable"><tbody></tbody></table>
+          </div>
+          <div class="headersActions clearfix">
+            <span class="headersCount"></span>
+            <a href="#more" class="button downArrow moreRowsButton"><span class="icon"></span><%= t("#{prefix}.more_rows") %></a>
+            <a href="#less" class="button upArrow lessRowsButton"><span class="icon"></span><%= t("#{prefix}.fewer_rows") %></a>
+          </div>
+
+          <div class="warningsSection">
+            <h2><%= t("#{prefix}.errors_warnings") %></h2>
+            <ul class="columnWarningsList"></ul>
+          </div>
+          <hr/>
+        </li>
+        <li class="workingPane" data-wizardpanename="importing">
+          <p class="headline"><%= t('screens.dataset_new.importing_your_data') %></p>
+          <div class="brandedSpinner"></div>
+          <p class="importStatus subheadline"></p>
+        </li>
+        <%- prefix = 'screens.dataset_new.import_warnings' -%>
+        <li class="importWarningsPane" data-wizardpanename="importWarnings">
+          <p class="headline"><%= t("#{prefix}.headline") %></p>
+          <p class="subheadline">
+            <%= t("#{prefix}.subheadline") %>
+          </p>
+
+          <ul class="importWarningsList"></ul>
+
+          <p class="seeDocs"><%= t('screens.dataset_edit.import_warnings.see_docs', { :publisher_link => 'http://dev.socrata.com/docs/datatypes/' }) %></p>
+        </li>
+        <li class="finishPane" data-wizardpanename="finish">
+          <p class="headline"><%= t('screens.dataset_edit.finish.headline') %></p>
+          <p class="subheadline"><%= t('screens.dataset_edit.finish.subheadline') %></p>
+        </li>
+      </ul>
+    </div>
+  </form>
+</div>
+
+<% content_for :templates do %>
+  <ul class="columnsListLine">
+    <li class="importColumn">
+      <div class="mainLine">
+        <div class="editableSection">
+          <div class="columnSourceCell"></div>
+          <div class="columnActionCell clearfix">
+            <a href="#options" class="options icon" title="Options"><%= t('screens.dataset_new.column_template.options') %></a>
+          </div>
+        </div>
+        <div class="lockedSection">
+          <div class="columnDestinationCell"></div>
+          <div class="columnTypeCell"></div>
+        </div>
+      </div>
+      <div class="detailsLine">
+        <div class="compositeDetails"></div>
+        <div class="locationDetails"></div>
+        <div class="generalDetails"></div>
+      </div>
+    </li>
+  </ul>
+  <%= render :partial => 'import_common' %>
+<% end %>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.importer');
+    blist.importer.dataset = new Dataset(<%= safe_json(@view) %>);
+  </script>
+  <%= include_webpack_bundle 'open-data/dataset-edit.js' %>
+<% end %>
+<%= render_translations LocalePart.screens.import_pane %>
+<%= render_translations LocalePart.screens.wizard %>
+<%= render_translations LocalePart.screens.dataset_new.upload_file %>
+<%= render_translations LocalePart.plugins.fileuploader %>

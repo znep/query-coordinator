@@ -1,0 +1,90 @@
+<%- prefix = 'screens.admin.datasets' -%>
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <title><%= t("#{prefix}.title") %> | <%= get_site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%= link_to t("#{prefix}.skip_to_dataset_listing"), '#dataset-listing' %>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
+<% end %>
+
+<% content_for :breadcrumb do %>
+  <%= t("#{prefix}.title") %>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div id="datasetContent" class="contentBox withLeftNavigation">
+  <div class="adminHeader datasets">
+    <span class="icon"></span>
+    <h1><%= t("#{prefix}.title") %></h1>
+      <div class="asset_inventory_link_wrapper">
+        <%- if @view_model.deep_value_at([:asset_inventory, :show_initialize_button]) -%>
+          <%= button_for_t("#{prefix}.asset_inventory.initialize",
+                           {:action => 'initialize_asset_inventory'},
+                           {:form => {:method => 'post'}}) %>
+        <%- else -%>
+          <%= button_for_t("#{prefix}.view_as_a_dataset",
+                           {:action => 'asset_inventory'},
+                           {:disabled => @view_model.deep_value_at([:asset_inventory, :button_disabled]),
+                            :form => { :class => 'asset_inventory_link' }}) %>
+          <%- if @view_model.deep_value_at([:asset_inventory, :button_disabled]) -%>
+                <div class="asset_inventory_link_hover_window"
+                     title="<%= t('screens.admin.datasets.asset_inventory.tooltip') %>"></div>
+          <%- end -%>
+        <%- end -%>
+      </div>
+  </div>
+
+  <%= display_standard_flashes %>
+
+  <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) -%>
+  <div class="datasetsList content">
+    <%= render_browse(@processed_browse) %>
+  </div>
+  <%- end -%>
+
+  <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
+  <%- sidebar_position = CurrentDomain.property(:position, :sidebar) || 'right' -%>
+  <div class="layoutConfig">
+    <h2><%= t("#{prefix}.layout_config") %></h2>
+    <%= form_tag({:action => 'modify_sidebar_config'}, {:method => 'post',
+      :class => 'commonForm'}) %>
+      <fieldset class="line">
+        <span class="mainLabel"><%= t("#{prefix}.sidebar_position") %></span>
+        <div class="valueBox">
+          <input type="radio" id="sidebarPosition_right"
+            name="sidebar[position]" value="right"
+            <%= sidebar_position == 'right' ? 'checked="checked"' : '' %> />
+          <label for="sidebarPosition_right"><%= t("#{prefix}.right") %></label>
+        </div>
+        <div class="valueBox">
+          <input type="radio" id="sidebarPosition_left"
+            name="sidebar[position]" value="left"
+            <%= sidebar_position == 'left' ? 'checked="checked"' : '' %> />
+          <label for="sidebarPosition_left"><%= t("#{prefix}.left") %></label>
+        </div>
+        <div class="statusTextWrapper">
+          <span class="saving">
+            <span class="icon"></span>
+            <span class="statusText"><%= t("#{prefix}.saving") %></span>
+          </span>
+          <span class="saved">
+            <span class="statusText"><%= t("#{prefix}.saved") %></span>
+          </span>
+        </div>
+      </fieldset>
+      <input type="submit" value="<%= t('core.dialogs.save') %>" />
+    </form>
+  </div>
+  <%- end -%>
+</div>
+
+<%= render_admin_qualtrics %>
+
+<%- content_for :js_footer do -%>
+  <%- unless params[:no_js] == 'true' -%>
+    <%= include_webpack_bundle 'open-data/admin-datasets.js' %>
+  <%- end -%>
+<%- end -%>

@@ -1,0 +1,29 @@
+.media-item {
+  margin: 10px;
+}
+
+.media-item, .media-label {
+  overflow: hidden;
+  _overflow: visible;
+  zoom: 1;
+  .media-element {
+    float: left;
+    margin-right: 10px;
+    img,
+    .asset-icon {
+      display: block;
+    }
+  }
+  &.alt {
+    float: right;
+    margin-left: 10px;
+  }
+}
+
+.media-element {
+  > img,
+  > .asset-icon {
+    height: 13px;
+    width: 13px;
+  }
+}

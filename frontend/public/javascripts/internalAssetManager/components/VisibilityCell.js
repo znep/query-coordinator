@@ -1,0 +1,132 @@
+import React, { PropTypes } from 'react';
+import _ from 'lodash';
+
+export class VisibilityCell extends React.Component {
+  constructor(props) {
+    super(props);
+
+    _.bindAll(this, 'getLocale', 'isOpen', 'isPrivate', 'isPrivateAndSharedToCurrentUser', 'isHidden',
+      'isHiddenAndRejected', 'isHiddenAndAwaitingApproval', 'renderVisibilityTitle',
+      'renderVisibilityDescription');
+  }
+
+  getLocale(key) {
+    return _.get(I18n, `result_list_table.visibility_values.${key}`);
+  }
+
+  isOpen() {
+    return this.props.visibleToAnonymous;
+  }
+
+  isPrivate() {
+    return !this.props.isPublic;
+  }
+
+  isPrivateAndSharedToCurrentUser() {
+    const currentUserId = _.get(window, 'serverConfig.currentUser.id');
+
+    if (!this.isPrivate() || !currentUserId) {
+      return false;
+    }
+
+    const grantsUserIds = _.reduce(this.props.grants, (result, grant) => {
+      result.push(grant.user_id);
+      return result;
+    }, []);
+
+    return grantsUserIds.indexOf(currentUserId) !== -1;
+  }
+
+  isHidden() {
+    const { isDatalensApproved, isExplicitlyHidden, isModerationApproved, isPublished, isRoutingApproved } =
+      this.props;
+
+    return (
+      !isDatalensApproved || isExplicitlyHidden || !isModerationApproved || !isPublished || !isRoutingApproved
+    );
+  }
+
+  // "Rejected" from either R&A, View Moderation, or Data Lens Approval
+  isHiddenAndRejected() {
+    const { datalensStatus, moderationStatus, routingStatus } = this.props;
+
+    return (
+      datalensStatus === 'rejected' || moderationStatus === 'rejected' || routingStatus === 'rejected'
+    );
+  }
+
+  // "Awaiting approval" from either R&A, View Moderation, or Data Lens Approval
+  isHiddenAndAwaitingApproval() {
+    const { datalensStatus, moderationStatus, routingStatus } = this.props;
+
+    return (
+      datalensStatus === 'pending' || moderationStatus === 'pending' || routingStatus === 'pending'
+    );
+  }
+
+  // Note that order here is important. An asset can be both "Private" and "Hidden", but only the private
+  // text/icon will show.
+  renderVisibilityTitle() {
+    let visibilityCellClass;
+    let visibilityCellText;
+
+    if (this.isOpen()) {
+      visibilityCellClass = 'socrata-icon-public-open';
+      visibilityCellText = this.getLocale('open');
+    } else if (this.isPrivate()) {
+      visibilityCellClass = 'socrata-icon-private';
+      visibilityCellText = this.getLocale('private');
+    } else if (this.isHidden()) {
+      visibilityCellClass = 'socrata-icon-eye-blocked';
+      visibilityCellText = this.getLocale('hidden');
+    }
+
+    return (
+      <span className="title">
+        <span alt={visibilityCellText} className={visibilityCellClass} />
+        <strong>{visibilityCellText}</strong>
+      </span>
+    );
+  }
+
+  // Note that order here is important. If multiple cases apply, "private" takes priority over "hidden",
+  // and hidden "rejected" takes priority over hidden "awaiting approval".
+  renderVisibilityDescription() {
+    let descriptionText;
+
+    if (this.isPrivateAndSharedToCurrentUser()) {
+      descriptionText = _.get(I18n, 'result_list_table.visibility_values.shared_to_me');
+    } else if (this.isHiddenAndRejected()) {
+      descriptionText = _.get(I18n, 'result_list_table.visibility_values.rejected');
+    } else if (this.isHiddenAndAwaitingApproval()) {
+      descriptionText = _.get(I18n, 'result_list_table.visibility_values.awaiting_approval');
+    }
+
+    return <div className="visibility-description">{descriptionText}</div>;
+  }
+
+  render() {
+    return (
+      <div className="visibility-cell">
+        {this.renderVisibilityTitle()}
+        {this.renderVisibilityDescription()}
+      </div>
+    );
+  }
+}
+
+VisibilityCell.propTypes = {
+  datalensStatus: PropTypes.string,
+  grants: PropTypes.array,
+  isDatalensApproved: PropTypes.bool,
+  isExplicitlyHidden: PropTypes.bool,
+  isModerationApproved: PropTypes.bool,
+  isPublic: PropTypes.bool.isRequired,
+  isPublished: PropTypes.bool.isRequired,
+  isRoutingApproved: PropTypes.bool,
+  moderationStatus: PropTypes.string,
+  routingStatus: PropTypes.string,
+  visibleToAnonymous: PropTypes.bool.isRequired
+};
+
+export default VisibilityCell;

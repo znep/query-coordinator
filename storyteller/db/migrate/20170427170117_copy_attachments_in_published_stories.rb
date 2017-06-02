@@ -1,0 +1,73 @@
+# Fixing all published stories that were affected by EN-14758
+# This migration goes through all published story blocks that have image
+# components and copies the attachments to new Documents. We keep an audit of
+# the migrated blocks so that we can rollback (and have a record of updates to
+# the block components).
+class CopyAttachmentsInPublishedStories < ActiveRecord::Migration
+
+  # Disable the transaction for the whole migration and implement individual
+  # transactions for each story migration.
+  #
+  # This migration can take a long time (hours in fedramp) while it's
+  # copying files and creating Document and Block models. As such, the
+  # `down` will rollback any blocks that were already created. There's
+  # a possibility that with this approach, we'll be left with Documents
+  # that aren't referenced in any blocks, but we shouldn't be left with
+  # files in aws that don't belong to a corresponding Document model.
+  self.disable_ddl_transaction!
+
+  def up
+    migration_time = Time.now
+
+    previously_migrated_story_ids = PublishedStoryBlockIdsMigration.where(
+      migration_version: version,
+      rolled_back_on: nil
+    ).pluck(:published_story_id)
+
+    PublishedStory.where.not(id: previously_migrated_story_ids).each do |story|
+      # we only care about stories that have blocks that contain image components
+      next unless story.has_image_component?
+
+      # We do want to wrap the operations for one story in a transaction
+      ActiveRecord::Base.transaction do
+
+        migration_audit = PublishedStoryBlockIdsMigration.from_published_story(story)
+
+        json_blocks = StoryJsonBlocks.from_story(
+          story,
+          { 'id' => story.created_by },
+          copy: true,
+          validate_document_copy: false
+        )
+
+        json_blocks.save!
+        new_block_ids = json_blocks.blocks.map(&:id)
+
+        story.update_column(:block_ids, new_block_ids)
+
+        migration_audit.new_block_ids = new_block_ids
+        migration_audit.migration_version = version
+        migration_audit.migrated_on = migration_time
+        migration_audit.save!
+      end
+    end
+  end
+
+  def down
+    ActiveRecord::Base.transaction do
+      rollback_time = Time.now
+
+      PublishedStoryBlockIdsMigration.where(
+        migration_version: version,
+        rolled_back_on: nil # in case we've rolled back and rolled forward already
+      ).each do |migration_audit|
+        story = migration_audit.published_story
+        story.update_column(:block_ids, migration_audit.original_block_ids)
+
+        Block.where(id: migration_audit.new_block_ids).update_all(deleted_at: rollback_time)
+
+        migration_audit.update_attribute(:rolled_back_on, rollback_time)
+      end
+    end
+  end
+end

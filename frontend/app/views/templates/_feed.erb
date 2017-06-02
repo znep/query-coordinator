@@ -1,0 +1,71 @@
+<div class="feedList">
+  <div class="feed">
+    <div class="feedFilterLine">
+      <span class="text"><%= t 'controls.feed.header.feed_filter_label' %></span>
+      <select class="feedFilter"></select>
+    </div>
+    <%- if local_assigns[:allow_comments] -%>
+      <a href="#post" class="button feedNewCommentButton"><%= t 'controls.feed.header.add_comment' %></a>
+    <%- end -%>
+    <div class="moderationNotice"><%= t 'controls.feed.header.pending_moderation' %></div>
+    <ul class="feedList"></ul>
+    <a href="#showMore" class="feedMoreItemsLink fullButton"></a>
+    <span class="noResults hide"><%= t 'controls.feed.listing.no_results' %></span>
+  </div>
+</div>
+<ul class="feedItem">
+  <li class="feedItem">
+    <div class="feedCommon">
+      <span class="icon"></span>
+      <a href="#" class="feedActor"></a>
+      <span class="feedBody"></span>
+    </div>
+    <div class="feedCustom"></div>
+    <p class="feedTimestamp"></p>
+    <ul class="feedChildren"></ul>
+    <a href="#allReplies" class="replyViewAllLink"><%= t 'controls.feed.listing.all_replies' %></a>
+  </li>
+</ul>
+<div class="feedItem_comment">
+  <ul class="commentActions clearfix">
+    <%- if local_assigns[:allow_comments] -%>
+    <li class="actionReply"><a class="commentReplyLink" href="#reply"><%= t 'controls.feed.comment_actions.reply' %></a></li>
+    <%- end -%>
+    <li class="actionInappropriate"><a class="commentInappropriateLink" href="#inappropriate"><%= t 'controls.feed.comment_actions.inappropriate' %></a></li>
+    <li class="actionDelete"><a class="commentDeleteLink" href="#delete"><%= t 'controls.feed.comment_actions.delete' %></a></li>
+    <li class="rateDown"><a class="icon commentRateDownLink" href="#rateDown" title="<%= t 'controls.feed.comment_actions.rate_down' %>"></a></li>
+    <li class="rateUp"><a class="icon commentRateUpLink" href="#rateUp" title="<%= t 'controls.feed.comment_actions.rate_up' %>"></a></li>
+    <li class="downRatings"></li>
+    <li class="upRatings"></li>
+  </ul>
+</div>
+<div class="feedItem_reply">
+  <ul class="commentActions clearfix">
+    <li class="actionInappropriate"><a class="commentInappropriateLink" href="#inappropriate"><%= t 'controls.feed.comment_actions.inappropriate' %></a></li>
+    <li class="actionDelete"><a class="commentDeleteLink" href="#delete"><%= t 'controls.feed.comment_actions.delete' %></a></li>
+    <li class="rateDown"><a class="icon commentRateDownLink" href="#rateDown" title="<%= t 'controls.feed.comment_actions.rate_down' %>"></a></li>
+    <li class="rateUp"><a class="icon commentRateUpLink" href="#rateUp" title="<%= t 'controls.feed.comment_actions.rate_up' %>"></a></li>
+    <li class="downRatings"></li>
+    <li class="upRatings"></li>
+  </ul>
+</div>
+<div class="feedItem_view">
+  <div class="viewDetails">
+    <span class="icon"></span>
+    <a class="viewName" href="#"></a>
+    <div class="viewDescription"></div>
+  </div>
+</div>
+<div class="feedItem_newComment">
+  <div class="newCommentForm">
+    <label for="newCommentBody"><%= t 'controls.feed.comment_form.header' %>:</label>
+    <textarea name="newCommentBody" id="newCommentBody"></textarea>
+    <div class="error"></div>
+    <a class="button postNewCommentButton" href="#post"><%= t 'controls.feed.comment_form.post_button' %></a>
+    <a class="button cancelNewCommentButton" href="#cancel"><%= t 'controls.feed.comment_form.cancel_button' %></a>
+  </div>
+</div>
+
+<%- content_for :translations do -%>
+  <%= render_translations LocalePart.controls.feed %>
+<%- end -%>

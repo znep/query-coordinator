@@ -1,0 +1,209 @@
+<div class="browse2-result" data-view-id="<%= result_id %>" itemscope itemtype="http://schema.org/Dataset">
+
+  <div class="<%= result_classes %>">
+
+    <div class="browse2-result-header clearfix">
+      <div class="browse2-result-header-content">
+
+        <div class="browse2-result-title">
+          <h2 class="browse2-result-name">
+            <%= browse2_result_link(result_name, result_link, result_is_federated, result_link_rel_type) %>
+            <%= tag(:meta, itemprop: 'url', content: result_link) %>
+            <%= tag(:meta, itemprop: 'sameAs', content: result_permalink) %>
+            <%= browse2_provenance_tag(result_provenance, result_is_data_lens) %>
+          </h2>
+
+          <%-
+            result_categories.each do |category|
+              params_for_url = user_params.merge(category: category)
+              category_url = "#{base_url}?#{params_for_url.to_param}"
+          -%>
+            <a class="browse2-result-category browse2-result-header-section"
+               href="<%= category_url %>">
+                <span itemprop="keywords"><%= category %></span></a>
+          <%- end -%>
+
+          <%- if result_is_federated -%>
+            <br>
+            <a class="browse2-result-federated-link browse2-result-header-section"
+              href="<%= result_federated_origin_url %>"
+              rel="<%= result_link_rel_type %>"
+              title="<%= t('controls.browse.browse2.federation.label_with_source', :source => federated_site_title) %>">
+              <img class="browse2-result-federated-image"
+                src="<%= result_domain_icon_href %>"
+                onerror="this.src='images/federated.svg'; this.onerror=null; this.className = this.className + ' default_icon';"
+                alt="<%= federated_site_title %>" />
+              <%= t('controls.browse.browse2.federation.label') %>
+              <span class="browse2-result-federated-source"><%= federated_site_title %></span>
+            </a>
+          <%- end -%>
+        </div>
+
+        <%- if result_display_title.present? -%>
+          <div class="browse2-result-type">
+            <span class="browse2-result-type-icon <%= result_display_type_icon_class %>" title="<%= result_display_title %>" data-display-type="<%= result_display_type %>" ></span>
+            <span class="browse2-result-type-name"><%= result_display_title %></span>
+          </div>
+        <%- end -%>
+
+      </div>
+    </div>
+
+    <div class="browse2-result-metadata">
+      <%- if result_description.present? -%>
+        <div class="browse2-result-description-container">
+          <div class="browse2-result-description" itemprop="description"><%= result_description %></div>
+          <div class="browse2-result-description-truncation-toggle-control">
+            <a class="browse2-result-description-show-more-label"
+              title="<%= t('controls.browse.browse2.description.show_more_label') %>" href="#">
+              <%= t('controls.browse.browse2.description.show_more_label') %>
+            </a>
+            <a class="browse2-result-description-show-less-label"
+              title="<%= t('controls.browse.browse2.description.show_less_label') %>" href="#">
+              <%= t('controls.browse.browse2.description.show_less_label') %>
+            </a>
+          </div>
+        </div>
+      <%- end -%>
+
+      <div class="browse2-result-topics-and-data-types clearfix">
+        <div class="browse2-result-topics">
+          <span class="browse2-result-topic-label">
+            <%= t('controls.browse.browse2.topics.label') %>
+          </span>
+
+          <%-
+          if result_topics.present?
+            top_result_topics = truncate_result_topics(result_topics, user_params, 5)
+            top_result_topics.each do |result_topic|
+          -%>
+              <%= link_to(content_tag(:span, result_topic, :itemprop => 'keywords'),
+                    browse2_result_topic_url(
+                      base_url,
+                      user_params,
+                      result_topic,
+                      result_federated_origin_url
+                    ),
+                    {
+                      'class' => 'browse2-result-topic',
+                      'aria-label' => "#{t('controls.browse.browse2.topics.label')}: #{result_topic}"
+                    }.merge(result_is_federated ? { target: '_blank' } : {})
+                  ) %>
+
+            <%- end -%>
+
+            <%- if result_topics.length > top_result_topics.length -%>
+              <%- remaining_topics_count = result_topics.length - top_result_topics.length -%>
+              <span class="browse2-remaining-topics">
+                <%= t('controls.browse.browse2.topics.more', :count => remaining_topics_count) %>
+              </span>
+            <%- end -%>
+
+          <%- else -%>
+
+            <span class="browse2-result-no-topic-content">
+              <%= t('controls.browse.browse2.topics.empty') %>
+            </span>
+
+          <%- end -%>
+        </div>
+      </div>
+
+      <div class="browse2-result-explore">
+        <%- if result_api_link.present? -%>
+          <a class="browse2-result-api-link" href="<%= result_api_link %>" title="<%= t('controls.browse.browse2.api.link.title') %>">
+            <%= t('controls.browse.browse2.api.link.label') %>
+          </a>
+        <%- end -%>
+      </div>
+
+    </div>
+
+    <div class="browse2-result-divider"></div>
+
+    <div class="browse2-result-metrics">
+      <%-
+        # Show Created instead of Updated when sorting by createdAt
+        datetime, timelabel =
+          if current_sort && current_sort[:value] == 'newest'
+            [result_created_at, t("controls.browse.browse2.created_at.label")]
+          else
+            [result_last_updated, t("controls.browse.browse2.last_updated.label")]
+          end
+      -%>
+
+      <div class="browse2-result-timestamp">
+        <div class="browse2-result-timestamp-label">
+          <%= timelabel %>
+        </div>
+        <div class="browse2-result-timestamp-value">
+          <%= datetime %>
+        </div>
+      </div>
+
+      <%- if result_view_count.present? -%>
+
+        <div class="browse2-result-view-count">
+          <div class="browse2-result-view-count-label">
+            <%= t('controls.browse.browse2.view_count.label') %>
+          </div>
+          <div class="browse2-result-view-count-value">
+            <%= result_view_count %>
+          </div>
+        </div>
+
+      <%- end -%>
+    </div>
+  </div>
+
+  <%- if result_edit_controls -%>
+
+    <div class="browse2-result-visibility-and-edit-controls clearfix">
+
+      <div class="browse2-result-visibility">
+        <%- if result_is_public -%>
+          <%= t('controls.browse.browse2.visibility.public.label') %>
+        <%- else -%>
+          <%= t('controls.browse.browse2.visibility.private.label') %>
+        <%- end -%>
+      </div>
+
+      <div class="browse2-result-edit-controls">
+        <%- if result_is_public -%>
+          <button class="browse2-result-make-private-button" title="<%= t('controls.browse.browse2.edit.make_private.title', :name => result_name) %>" data-result-id="<%= result_id %>">
+            <span class="browse2-result-make-private-icon icon-private"></span>
+            <span class="browse2-result-make-private-label">
+              <%= t('controls.browse.browse2.edit.make_private.label') %>
+            </span>
+          </button>
+        <%- end -%>
+
+        <%- if !result_is_public -%>
+          <button class="browse2-result-make-public-button" title="<%= t('controls.browse.browse2.edit.make_public.title', :name => result_name) %>" data-result-id="<%= result_id %>">
+            <span class="browse2-result-make-public-icon icon-public"></span>
+            <span class="browse2-result-make-public-label">
+              <%= t('controls.browse.browse2.edit.make_public.label') %>
+            </span>
+          </button>
+        <%- end -%>
+
+        <% if result_can_be_deleted -%>
+        <button class="browse2-result-delete-button" title="<%= t('controls.browse.browse2.edit.delete.title', :name => result_name) %>" data-result-id="<%= result_id %>">
+          <span class="browse2-result-delete-icon icon-delete"></span>
+          <span class="browse2-result-delete-label">
+            <%= t('controls.browse.browse2.edit.delete.label') %>
+          </span>
+        </button>
+        <% end -%>
+      </div>
+    </div>
+
+  <%- end -%>
+
+  <%# Some stuff for schema.org markup %>
+  <div itemscope itemprop="distribution" itemtype="http://schema.org/DataDownload">
+      <%- download_types.each do |k, v| -%>
+          <%= hidden_download_link(result_link, result_id, k, v) %>
+      <%- end -%>
+  </div>
+</div>

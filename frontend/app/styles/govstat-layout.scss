@@ -1,0 +1,34 @@
+html, body {
+  background-color: #f7f7f7;
+}
+
+div.siteInnerWrapper {
+  padding-bottom: 90px;
+  margin-top: $site-appearance-admin-header-height;
+
+  > .flash {
+    &.notice,
+    &.warning,
+    &.error {
+      margin-top: calc(#{$site-appearance-admin-header-height} + 1em);
+    }
+  }
+}
+
+.siteContentWrapper {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+#siteFooter {
+  background-color: #f1f1f1;
+
+  .siteFooterNav li a {
+    color: #666666;
+  }
+
+  body > & {
+    height: 80px;
+    margin-top: -81px;
+  }
+}

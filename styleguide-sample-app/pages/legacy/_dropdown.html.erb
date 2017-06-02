@@ -1,0 +1,22 @@
+<h3 class="styleguide-subheader">Select Menus</h3>
+<h4 class="h6">Dropdown</h4>
+
+<p class="alert warning">Due to IE11-specific issues with absolute positioning, the trigger element for a dropdown must be a <code class="language-markup">&lt;div&gt;</code> instead of a <code class="language-markup">&lt;button&gt;</code>.</p>
+
+<%= partial "code_sample", locals: {
+  component: "legacy/skeletons/dropdown",
+  partial_locals: {
+    title: "Gender",
+    options: ["An option!", "Another option!!", "A really, really, really long option!!!"]
+  }
+} %>
+
+<h4 class="h6">Dropup</h4>
+
+<%= partial "code_sample", locals: {
+  component: "legacy/skeletons/dropup",
+  partial_locals: {
+    title: "Gender",
+    options: ["An option!", "Another option!!", "A really, really, really long option!!!"]
+  }
+} %>

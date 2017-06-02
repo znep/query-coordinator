@@ -1,0 +1,172 @@
+$mobile_menu_bg_color: #f8f8f8;
+$mobile_menu_fg_color: #949195;
+$mobile_menu_shadow_color: #a9a7aa;
+$mobile_menu_border_color: #f4f4f4;
+
+$section_margin: 16px;
+$button_height: 48px;
+
+header#site-chrome-header, footer#site-chrome-footer {
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -120%;
+    bottom: 0;
+    overflow: auto;
+    z-index: 10;
+    background-color: $mobile_menu_bg_color;
+    color: $mobile_menu_fg_color;
+    width: 90%;
+    box-shadow: 0 8px 30px $mobile_menu_shadow_color;
+    transition: right 0.4s ease-in-out;
+
+    &.active {
+      right: 0;
+    }
+
+    .mobile-button {
+      color: $dark_text_color;
+      background-color: #fff;
+      display: block;
+      font-size: 15px;
+      line-height: $button_height;
+      border-top: 1px solid $mobile_menu_border_color;
+      padding: 0 $text_padding;
+      overflow: hidden;
+      text-decoration: none;
+
+      &:hover, &:focus, &:active {
+        background-color: #fafafa;
+      }
+    }
+
+    .menu-header-title {
+      color: $dark_text_color;
+      font-size: 20px;
+      font-weight: 300;
+      text-align: center;
+      margin: $section_margin;
+      letter-spacing: -0.5px;
+    }
+
+    .menu-toggle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: $section_margin;
+      font-size: 14px;
+      color: $dark_text_color;
+    }
+
+    .menu-content {
+      .site-chrome-nav-links {
+        .site-chrome-nav-menu {
+          color: $grey_text_color;
+          display: block;
+          padding: 0;
+          &:hover {
+            text-decoration: none;
+            span, a {
+              text-decoration: none;
+            }
+          }
+          .nav-menu-title {
+            display: block;
+            padding: $text_padding;
+            cursor: default;
+            font-size: 10px;
+            text-transform: uppercase;
+          }
+        }
+      }
+      .mobile-user-actions {
+        margin: $section_margin 0;
+        padding: 0 $text_padding;
+        a.site-chrome-mobile-btn {
+          display: block;
+          margin-bottom: 5px;
+        }
+      }
+      .site-chrome-social-links {
+        clear: both;
+        .site-chrome-social-link {
+          text-decoration: none;
+          &:hover, &:focus, &:active {
+            text-decoration: none;
+          }
+          .monosocial {
+            font-size: 36px;
+            float: left;
+          }
+        }
+      }
+      .searchbox {
+        display: block;
+        width: 100%;
+        height: initial;
+        margin-bottom: -1px;
+
+        form {
+          width: 100%;
+          line-height: normal;
+          position: relative;
+
+          label {
+            margin: 0;
+            width: 100%;
+          }
+          input {
+            width: calc(100% - 53px);
+            padding: 15px 40px 15px 11px;
+            font-style: 16px;
+            box-shadow: none;
+            border-color: $mobile_menu_border_color;
+            box-sizing: content-box;
+          }
+          button {
+            height: 50px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: $dark_text_color;
+            background-color: transparent;
+            border: none;
+
+            span.socrata-icon-search {
+              top: 0;
+              left: 0;
+              font-size: 20px;
+              position: relative;
+              color: $dark_text_color;
+            }
+          }
+        }
+      }
+
+      .mobile-language-dropdown {
+        margin: $section_margin 0;
+        .mobile-language-dropdown-title > span.socrata-icon-arrow-down {
+          float: right;
+          margin-top: calc(calc(#{$button_height} / 2) - 7px);
+        }
+        .mobile-language-dropdown-options {
+          display: none;
+          .mobile-language-dropdown-option {
+            a {
+              display: block;
+              color: $dark_text_color;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// If the admin header is present, we need to bump the mobile
+// header down the height of the admin header.
+#site-chrome-admin-header + #site-chrome-header {
+  .mobile-menu {
+    top: 46px;
+  }
+}

@@ -1,0 +1,45 @@
+section.landing-page-section.featured-content {
+  margin: 1rem 0;
+
+  .catalog-landing-page-help-flyout {
+    position: relative;
+    margin-left: 0.5rem;
+
+    .flyout {
+      margin-left: 8px;
+      margin-top: 8px;
+    }
+  }
+
+  .manage-prompt {
+    display: none;
+
+    &:not(:last-child) {
+      margin-bottom: 22px;
+    }
+
+    .manage-prompt-message {
+      flex: 0 1 auto;
+    }
+
+    .manage-prompt-button {
+      flex: 1 0 auto;
+      margin-left: 10px;
+      align-self: flex-start;
+    }
+  }
+
+  .media-results {
+    .result-card {
+      margin-bottom: 0;
+
+      .entry-title h3 {
+        font-weight: 700;
+
+        a:focus {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

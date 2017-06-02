@@ -1,0 +1,192 @@
+@import 'lib/variables';
+@import 'bourbon';
+
+.storyteller-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  z-index: $modal-z-index;
+  background-color: $modal-overlay-bg-color;
+
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .modal-dialog {
+    @include media-query-property(
+      'width',
+      $main-content-width-small / 1.5,
+      $main-content-width-medium / 1.5,
+      $main-content-width-large / 1.5,
+      $main-content-width-extra-large / 1.5
+    );
+    @include media-query-property(
+      'left',
+      calc((100vw - (#{$main-content-width-small} / 1.5)) / 2),
+      calc((100vw - (#{$main-content-width-medium} / 1.5)) / 2),
+      calc((100vw - (#{$main-content-width-large} / 1.5)) / 2),
+      calc((100vw - (#{$main-content-width-extra-large} / 1.5)) / 2)
+    );
+
+    position: absolute;
+    height: auto;
+    top: 10%;
+    padding: $modal-padding;
+    background-color: $modal-bg-color;
+    border-radius: $modal-border-radius;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 14px -3px $modal-box-shadow-color;
+
+    &.modal-dialog-wide {
+      width: $modal-wide-static-width;
+      max-width: 100%;
+      box-sizing: border-box;
+      left: calc(50% - (#{$modal-wide-static-width} / 2));
+
+      @media (max-width: $modal-wide-static-width) {
+        left: 0;
+      }
+    }
+
+    .modal-title {
+      padding-right: $modal-close-btn-width;
+      margin-bottom: 2rem;
+      font-size: $modal-title-font-size;
+      line-height: $modal-title-line-height;
+      color: $modal-title-color;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      padding: 0;
+      width: $modal-close-btn-width;
+      height: $modal-close-btn-width;
+      top: $modal-padding;
+      right: $modal-padding;
+      font-size: 1.5rem;
+      background-color: transparent;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      color: $modal-close-btn-color;
+
+      &:hover {
+        color: $modal-close-btn-hover-color;
+      }
+    }
+
+    .modal-warning {
+      color: $warning-bar-color;
+      font-size: 1.5rem;
+      font-weight: normal;
+      line-height: 1.4;
+      opacity: 1;
+
+      .socrata-icon-warning {
+        margin-right: 0.5rem;
+        color: $warning-bar-icon-color;
+      }
+
+      button {
+        border: none;
+        outline: none;
+        padding: 0;
+        color: $warning-bar-color;
+        background-color: transparent;
+        text-decoration: underline;
+        font-weight: bold;
+      }
+    }
+
+    .modal-input-group {
+      display: block;
+      position: relative;
+      padding: 0.5rem;
+    }
+
+    .modal-input {
+      &:invalid {
+        border: solid 1px orange;
+      }
+    }
+
+    .modal-input-label {
+      margin: 1rem 0;
+      text-align: left;
+      color: $modal-input-label-color;
+      font-size: 1.6rem;
+      font-weight: 400;
+
+      &.modal-input-label-centered {
+        text-align: center;
+      }
+    }
+
+    .modal-input[type="checkbox"] {
+      display: none;
+
+      + label span {
+        @include user-select(none);
+
+        display: inline-block;
+        width: 19px;
+        height: 19px;
+        background: #f2f2f2;
+        border: solid 1px #c5c5c5;
+        vertical-align: middle;
+        margin: -2px 1rem 0 0;
+        cursor: pointer;
+
+        &:before {
+          visibility: hidden;
+          margin-left: 1px;
+        }
+      }
+
+      &:checked {
+        + label span:before {
+          visibility: visible;
+        }
+      }
+    }
+
+    .modal-large-text {
+      font-size: 1.75rem;
+    }
+
+    input[type="checkbox"] + .modal-input-label {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 0.25rem;
+      cursor: pointer;
+    }
+
+    .modal-button-group {
+      &.r-to-l {
+        text-align: right;
+
+        [class^="btn-"], [class*=" btn-"] {
+          margin-left: 1rem;
+        }
+      }
+    }
+  }
+
+  .modal-content {
+    max-height: none;
+    overflow: hidden;
+  }
+}
+
+#error-modal-container {
+  .modal-title {
+    color: $warning-bar-color;
+  }
+}

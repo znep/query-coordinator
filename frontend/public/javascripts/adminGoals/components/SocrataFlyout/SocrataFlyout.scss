@@ -1,0 +1,20 @@
+.flyout-container {
+  position: relative;
+  display: inline-block;
+
+  .flyout {
+    z-index: 2;
+    margin-top: 7px;
+    top: 150%;
+    min-width: 150px;
+    font-size: 11px;
+
+    &.flyout-right {
+      left: 50%;
+    }
+
+    &.flyout-left {
+      right: 50%;
+    }
+  }
+}

@@ -1,0 +1,198 @@
+<% content_for :head do %>
+  <%= meta_tags :description => view_meta_description, :keywords => view_meta_keywords %>
+  <%- if @view -%>
+    <link rel="canonical" href="<%= view_path(@view) %>"/>
+  <%- end -%>
+
+  <%- if is_mobile? -%>
+    <meta name="viewport" content="width=device-height, user-scalable=no" />
+  <%- end -%>
+
+  <title><%= @view.name %> | <%= get_site_title %></title>
+
+  <%= rendered_stylesheet_tag 'embed-form' %>
+  <link type="text/css" rel="stylesheet" href="/styles/widget/<%= @theme_id %>.css" />
+<% end %>
+
+<% content_for :skip_links do %>
+    <a href="<%= alt_view_path(@view) %>" rel="external" target="_blank">Go to an accessible version of this page</a>
+<% end %>
+
+<div class="widgetWrapper">
+  <%- if @theme[:frame][:orientation] == 'downwards' -%>
+    <%= render :partial => 'widget_header' %>
+    <%= render :partial => 'widget_subheader' %>
+    <%= render :partial => 'widget_toolbar' %>
+  <%- end -%>
+
+  <div class="widgetContent">
+    <div class="widgetContentSection widgetContentGrid">
+      <div id="renderTypeContainer" class="gridContainer fullHeight">
+          <%- if @view.is_tabular? -%>
+          <div data-renderType="table" class="gridRenderType fullHeight renderTypeNode">
+            <noscript>
+              <h3><a href="<%= view_path(@view) %>"><%= @view.name %></a></h3>
+
+              <p><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow noreferrer external' })) %></p>
+
+              <a href="<%= view_path(@view) %>">Visit the full page to view this data.</a>
+            </noscript>
+          </div>
+          <%- end -%>
+
+          <div class="staticRenderType fullHeight renderTypeNode">
+            <%- if @display.can_publish? -%>
+              <%= render(:partial => @display.render_partial) if @display.render_partial %>
+            <%- end -%>
+          </div>
+
+          <%= render :partial => 'templates/fatrow' %>
+
+          <%= render :partial => 'templates/page_render_type' %>
+
+          <div class="viewErrorContainer content">
+            <%- if current_user && (current_user.id == @view.owner.id) -%>
+            <div class="viewError"><%= @view.display.invalid_message %></div>
+            <ul class="invalidActions">
+              <li><a href="<%= view_path(@view) %>" rel="external"
+                  class="editView button">Edit View</a></li>
+            </ul>
+            <%- else -%>
+            <div class="viewError">This view cannot be displayed</div>
+            <%- end -%>
+          </div>
+      </div>
+    </div>
+
+    <div class="widgetContentSection widgetContent_views"></div>
+    <div class="widgetContentSection widgetContent_downloads"></div>
+    <div class="widgetContentSection widgetContent_feed"></div>
+    <div class="widgetContentSection widgetContent_embed">
+      <%= render :partial => 'datasets/embed_form',
+                 :locals => { :view => @view, :cur => params[:cur], :customization_id => @theme_id } %>
+    </div>
+    <div class="widgetContentSection widgetContent_api">
+      <%= render(:partial => 'datasets/api_access') %>
+    </div>
+    <div class="widgetContentSection widgetContent_odata">
+      <%= render(:partial => 'datasets/odata_access') %>
+    </div>
+    <%- if @view.can_print? -%>
+    <div class="widgetContentSection widgetContent_print">
+      <%= form_tag("/views/INLINE/rows.pdf", :method => :post,
+        :target => "_blank", :class => 'commonForm needsInlineView') do %>
+        <%= render :partial => 'datasets/print_form', :locals => { :view => @view } %>
+      <% end %>
+    </div>
+    <%- end -%>
+  </div>
+
+  <%- if @theme[:frame][:orientation] == 'upwards' -%>
+    <%= render :partial => 'widget_toolbar' %>
+    <%= render :partial => 'widget_subheader' %>
+    <%= render :partial => 'widget_header' %>
+  <%- end -%>
+</div>
+
+<div class="mobileNotice">
+  You are viewing a mobile version of this dataset. To access the full
+  dataset, <a href="<%= view_path(@view, no_mobile: true) %>">tap here</a>.
+</div>
+
+<%= modal :class => 'actionInterstitial' do %>
+  <h2>Want to <span class="actionPhrase">leave a comment</span>?</h2>
+  <p>To <span class="actionPhrase">leave a comment</span>, you will be
+     redirected to the <%= CurrentDomain.strings.company %> website where
+     you will be prompted to sign in. Would you like to go to <%= CurrentDomain.cname %>?</p>
+  <ul class="actions clearfix">
+    <li>
+      <a class="jqmClose button cancel" href="#cancel"><span class="icon"></span>Cancel</a>
+    </li>
+    <li>
+      <a class="noInterstitial button accept" href="<%= view_path(@view) %>" rel="external">
+        <span class="icon"></span>
+        Yes
+      </a>
+    </li>
+  </ul>
+<%- end -%>
+
+<%= modal :class => 'leavingInterstitial' do %>
+  <h2>You are leaving <span class="serverName"><%= CurrentDomain.cname %></span>.</h2>
+  <p>Thank you for visiting our site. You will now access</p>
+  <div class="leavingLinkWrapper">
+    <a class="leavingLink noInterstitial" href="#" rel="external"></a>
+  </div>
+  <p>We hope your visit was informative and enjoyable.</p>
+  <ul class="actions clearfix">
+    <li>
+      <a class="jqmClose button cancel" href="#cancel"><span class="icon"></span>Cancel</a>
+    </li>
+    <li>
+      <a class="noInterstitial button accept" href="#" rel="external">
+        <span class="icon"></span>
+        Go now
+      </a>
+    </li>
+  </ul>
+<%- end -%>
+
+<%= modal :class => 'privateDataset' do %>
+  <h2>Notice</h2>
+  <p>This view is currently private. You can preview it here, but you will need to make it
+     public before people will be able to see it.</p>
+  <ul class="actions clearfix">
+    <li>
+      <a class="jqmClose button" href="#close">Close</a>
+    </li>
+  </ul>
+<%- end -%>
+
+<%- content_for :translations do -%>
+  <%= render_translations LocalePart.controls.browse %>
+  <%= render_translations LocalePart.controls.grid %>
+  <%= render_translations LocalePart.controls.embed %>
+  <%= render_translations LocalePart.screens.widget %>
+<%- end -%>
+
+<% content_for :templates do %>
+  <%= render :partial => 'filters_table_template' %>
+  <%= render :partial => 'datasets/downloads_table_template' %>
+  <%= render :partial => 'templates/fatrow_header' %>
+  <%= render :partial => 'templates/feed', :locals => { :allow_comments => true } %>
+  <%= render :partial => 'datasets/flag_message' %>
+<% end %>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function()
+    {
+        blist.mainSpinner = $('.widgetWrapper .widgetContent').loadingSpinner({metric: 'main', model: blist.dataset});
+    });
+
+    blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(@view, request, true).to_json) %>;
+    <%= raw @display.render_inline_setup_js('renderTypeContainer', self) %>
+    blist.namespace.fetch('blist.widget');
+    <%- if !current_user.nil? -%>
+      blist.currentUserId = "<%= current_user.id %>";
+    <%- end -%>
+
+    blist.configuration.newChartsEnabled = <%= module_enabled?(:new_charts) || true %>;
+    blist.configuration.newMapsEnabled = <%= module_enabled?(:new_maps) == true %>;
+    blist.configuration.oldChartsForced = <%= module_enabled?(:old_charts) == true %>;
+    blist.widget.theme = <%= raw json_escape(@theme.to_json) %>;
+    blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
+    blist.widget.enabledModules = <%= raw json_escape(@view.enabled_modules.to_json) %>;
+    blist.widget.showPrivateMessage = <%= !@view.is_public? && !is_mobile? %>;
+  </script>
+
+  <%= include_webpack_bundle 'open-data/widgets-show.js' %>
+
+  <%- unless @theme[:behavior][:ga_code].empty? -%>
+    <script type="text/javascript">
+    try {
+    var pageTracker2 = _gat._getTracker("<%= @theme[:behavior][:ga_code] %>");
+    pageTracker2._trackPageview();
+    } catch(err) {}</script>
+  <%- end -%>
+<% end %>

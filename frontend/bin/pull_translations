@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Import our english strings to LocaleApp
+# Pulls api key from:
+# - LOCALEAPP_API_KEY env var
+# - .env
+# - .localeapp/config.rb
+
+if [ "${LOCALEAPP_API_KEY}" = "" ]; then
+  echo 'You must first set the LOCALEAPP_API_KEY environment variable.'
+  exit 1
+fi
+
+set -e
+
+localeapp pull config/locales

@@ -1,0 +1,5 @@
+<% content_for :head do %>
+  <title><%= @processed_browse[:title] %> | <%= get_site_title %></title>
+<% end %>
+
+<%= render_browse(@processed_browse) %>

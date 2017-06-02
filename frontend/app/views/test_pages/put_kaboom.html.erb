@@ -1,0 +1,24 @@
+<a href="#" class="kaboom">Click here to put-kaboom!</a>
+<p class="result"></p>
+
+<script type="text/javascript">
+  $(function()
+  {
+      $('.kaboom').click(function(event)
+      {
+          event.preventDefault();
+          $.ajax({
+              type: 'PUT',
+              url: '/test_page/put_kaboom',
+              success: function()
+              {
+                  $('.result').text('succeeded!');
+              },
+              error: function()
+              {
+                  $('.result').text('kaboom\'ed!');
+              }
+          });
+      });
+  });
+</script>

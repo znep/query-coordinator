@@ -1,0 +1,335 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'dataset-edit-metadata' %>
+  <title><%= t('screens.edit_metadata.title') %> | <%= get_site_title %></title>
+<% end %>
+
+<% content_for :skip_links do %>
+  <%= link_to t('core.no_js'), '?no_js=true' %>
+<% end %>
+
+<div class="contentBox fixedWidth">
+  <%= form_tag({}, {:id => 'editMetadataForm', :class => 'commonForm', :method => :post, :multipart => true}) do %>
+    <h1><%= t('screens.edit_metadata.headline', :name => @view.name) %></h1>
+    <a href="<%= view_path(@view) %>" class="returnLink"><%= t('screens.edit_metadata.return') %></a>
+
+    <%= display_standard_flashes %>
+
+    <h2><%= t('screens.edit_metadata.general_information') %></h2>
+
+    <div class="line clearfix">
+      <%= label_tag('view[name]', t('screens.edit_metadata.dataset_title'), class: 'required') %>
+      <%= text_field_tag('view[name]', @view.name, :title => t('screens.edit_metadata.dataset_title_prompt'), :class => 'textPrompt') %>
+    </div>
+
+    <div class="line clearfix">
+      <%= label_tag('view[description]',  t('screens.edit_metadata.brief_description')) %>
+      <%= text_area_tag('view[description]', @view.description, :title => t('screens.edit_metadata.brief_description_prompt'), :class => 'textPrompt') %>
+    </div>
+
+    <div class="line clearfix">
+      <%= label_tag('view[category]', t('screens.edit_metadata.category')) %>
+      <%= select_tag('view[category]', category_select_options(@view.category.nil? ? '' : @view.category)) %>
+    </div>
+
+    <div class="line clearfix">
+      <%= label_tag('view[tags]', t('screens.edit_metadata.tags_keywords')) %>
+      <%= text_field_tag('view[tags]', @view.tags.nil? ? '' : @view.tags.join(', '), :title => t('screens.edit_metadata.tags_prompt'), :class => 'textPrompt') %>
+      <div class="additionalHelp"><%= t('screens.edit_metadata.keywords_help') %></div>
+    </div>
+
+    <%- if @view.dataset? -%>
+    <div class="line clearfix">
+      <%= label_tag('view[metadata][rowLabel]', t('screens.edit_metadata.row_label'))%>
+      <%= text_field_tag('view[metadata][rowLabel]',
+        row_label,
+        :title => t('screens.edit_metadata.row_label_prompt'),
+        :class => 'textPrompt') %>
+      <div class="additionalHelp"><%= t('screens.edit_metadata.row_label_help') %></div>
+    </div>
+    <%- end -%>
+
+    <%- if @view.is_href? -%>
+      <h2><%= t('screens.edit_metadata.external_dataset') %></h2>
+      <%- if @view.allAccessPoints.present? -%>
+        <div class="externalDatasetBox">
+          <%- @view.allAccessPoints.each_with_index do |entry, source_index| -%>
+            <div class="line clearfix externalSource">
+              <%# title %>
+              <div class="line clearfix">
+              <%= label_tag('external_sources[][title]', t('controls.nominate.title')) %>
+              <%= text_field_tag('external_sources[][title]', entry['title'],
+                :title => t('screens.edit_metadata.dataset_title_prompt'),
+                :id => nil,
+                :class => 'textPrompt') %>
+              </div>
+              <%# description %>
+              <div class="line clearfix">
+                <%= label_tag('external_sources[][description]', t('controls.nominate.description')) %>
+                <%= text_area_tag('external_sources[][description]', entry['description'],
+                  :title => t('screens.edit_metadata.brief_description_prompt'),
+                  :id => nil,
+                  :class => 'textPrompt') %>
+              </div>
+               <%# Described By %>
+              <div class="line clearfix">
+                <%= label_tag('external_sources[][describedBy]', t('screens.edit_metadata.described_by')) %>
+                <%= text_field_tag('external_sources[][describedBy]', entry['describedBy'],
+                  :title => t('screens.edit_metadata.described_by_prompt'),
+                  :id => nil,
+                  :class => 'textPrompt') %>
+                <%= label_tag('external_sources[][describedByType]', t('screens.edit_metadata.file_type'), class: 'fileTypeLabel') %>
+                <%= text_field_tag('external_sources[][describedByType]', entry['describedByType'],
+                  id: nil,
+                  class: 'extensionField textPrompt',
+                  title: t('screens.edit_metadata.optional')) %>
+              </div>
+              <%# links %>
+              <div class="externalLinkBox">
+                <%- entry['urls'].try(:each_with_index) do |(key, value), link_index| -%>
+                  <%- url_field_id = "external_sources[][urls][][url]#{source_index}-#{link_index}" -%>
+                  <div class="line clearfix externalLink">
+                    <%= label_tag(url_field_id, t('screens.edit_metadata.url'), class: 'required') %>
+                    <%= text_field_tag('external_sources[][urls][][url]', value,
+                      id: url_field_id,
+                      class: 'textPrompt url required') %>
+                    <%= label_tag('external_sources[][urls][][extension]', t('screens.edit_metadata.file_type'), class: 'fileTypeLabel') %>
+                    <%= text_field_tag('external_sources[][urls][][extension]', key,
+                      id: nil,
+                      class: 'extensionField textPrompt',
+                      title: t('screens.edit_metadata.optional')) %>
+                    <%- unless params[:no_js].present? -%>
+                      <a href="#remove" class="removeExternalLink addRemove button"><%= t('screens.edit_metadata.remove_link') %></a>
+                      <a href="#add_link" class="addExternalLink addRemove button"><%= t('screens.edit_metadata.add_link') %></a>
+                    <%- end -%>
+                  </div>
+                <%- end -%>
+                <%- unless params[:no_js].present? -%>
+                  <a href="#remove" class="removeExternalSource button"><%= t('screens.edit_metadata.remove') %></a>
+                <%- end -%>
+              </div>
+            </div>
+          <%- end -%>
+        </div>
+      <%- end -%>
+      <%- unless params[:no_js].present? -%>
+        <div class="line clearfix">
+          <a href="#add_source" class="addExternalSource button"><%= t('screens.edit_metadata.add_source') %></a>
+        </div>
+      <%- end -%>
+    <%- end -%>
+
+    <%= render :partial => 'edit_license' %>
+
+    <%= render :partial => 'metadata', :locals =>
+        {:meta_fields => @view.merged_metadata['custom_fields'], :fieldsets => merge_custom_metadata(@view)} %>
+
+    <%- if (!@view.data['northWest'].nil?) -%>
+
+    <h2><%= t('screens.edit_metadata.spatial_extent') %></h2>
+     <div class="line clearfix">
+       <%= label_tag('view[northWest[lat]]', t('screens.edit_metadata.northwest_latitude')) %>
+       <%= text_field_tag 'view[northWest[lat]]', (@view.data['northWest'] || {})['lat'],
+           :disabled => true, :title => t('screens.edit_metadata.northwest_latitude'), :name=> 'textPrompt'%>
+     </div>
+     <div class="line clearfix">
+       <%= label_tag('view[northWest[long]]', t('screens.edit_metadata.northwest_longitude')) %>
+       <%= text_field_tag 'view[northWest[long]]', (@view.data['northWest'] || {})['long'],
+           :disabled => true, :title => t('screens.edit_metadata.northwest_longitude'), :name=> 'textPrompt'%>
+     </div>
+     <div class="line clearfix">
+       <%= label_tag('view[southEast[lat]]', t('screens.edit_metadata.southeast_latitude')) %>
+       <%= text_field_tag 'view[southEast[lat]]', (@view.data['southEast'] || {})['lat'],
+           :disabled => true, :title => t('screens.edit_metadata.southeast_latitude'), :name=> 'textPrompt'%>
+     </div>
+     <div class="line clearfix">
+       <%= label_tag('view[southEast[long]]', t('screens.edit_metadata.southeast_longitude')) %>
+       <%= text_field_tag 'view[southEast[long]]', (@view.data['southEast'] || {})['long'],
+           :disabled => true, :title => t('screens.edit_metadata.southeast_longitude'), :name=> 'textPrompt'%>
+     </div>
+
+    <%- end -%>
+
+    <%- if @view.is_tabular? -%>
+    <h2><%= t('screens.edit_metadata.semantics_rdf') %></h2>
+     <div class="line clearfix">
+       <%= label_tag('view[metadata[rdfClass]]', t('screens.edit_metadata.row_class')) %>
+         <%= select_tag('view[metadata[rdfClass]]',
+               options_for_select(
+                 RdfTerm.all_class_options,
+                 h(@view.metadata.nil? || @view.metadata.rdfClass.nil? ? '' : @view.metadata.rdfClass)),
+               :hasCustomEdit => 1, :class => 'combo_button_edit' )
+         %>
+         <%= text_field_tag 'view[metadata[customRdfClass]]', @view.rdf_class, :name=>'view[metadata[customRdfClass]]',
+           :class => 'textValue hide combo_button_edit', 'aria-label' => sanitize_to_id('view[metadata[customRdfClass]]')
+         %>
+         <ul class="comboToggle actionButtons"><li><a><%= t('screens.edit_metadata.custom') %></a></li></ul>
+     </div>
+
+     <div class="line clearfix">
+       <%= label_tag('view[metadata[rdfSubject]]', t('screens.edit_metadata.subject_column')) %>
+       <%= select_tag('view[metadata[rdfSubject]]',
+           rdf_subject_select_options(
+           @view.columns,
+           h(@view.metadata.nil? || @view.metadata.rdfSubject.nil? ? '' : @view.metadata.rdfSubject)))
+       %>
+     </div>
+
+    <h2><%= t('screens.edit_metadata.api_endpoint') %></h2>
+     <div class="line clearfix">
+       <%= label_tag('view[resourceName]', t('screens.edit_metadata.resource_name')) %>
+       <%= text_field_tag('view[resourceName]', @view.resourceName, :title => t('screens.edit_metadata.resource_name_prompt'), :class => 'textPrompt') %>
+     </div>
+
+     <div class="line clearfix">
+       <%= label_tag('view_metadata_rowIdentifier', t('screens.edit_metadata.row_identifier')) %>
+       <%= row_identifier_select_tag(@isPublishedNBEView) %>
+       <%- if @isPublishedNBEView %>
+         <div class="additionalHelp"><%= t('screens.edit_metadata.row_identifier_help_text') %></div>
+       <%- end %>
+     </div>
+
+    <%- end -%>
+
+    <%# HACK: The only customer to really use this is Data.gov, so only show it for them %>
+    <%- if Rails.env.development? || CurrentDomain.cname == "explore.data.gov" -%>
+      <h2><%= t('screens.edit_metadata.external_id') %></h2>
+      <div class="line clearfix">
+        <%= label_tag('view[externalId]', t('screens.edit_metadata.external_identifier')) %>
+        <%= text_field_tag('view[externalId]', @view.externalId, :title => t('screens.edit_metadata.external_id_prompt'), :class => 'textPrompt') %>
+      </div>
+    <%- end -%>
+
+    <h2><%= t('screens.edit_metadata.thumbnail_image') %></h2>
+    <div class="customImage">
+      <div class="line clearfix">
+        <%= label_tag('view[iconUrl]', t('screens.edit_metadata.upload_image')) %>
+        <%= file_field_tag('custom_image', :accept => '(jpe?g|gif|png)',
+                           'data-endpoint' => "/api/views/#{@view.id}/files.txt",
+                           :class => 'customDatasetImageSelect') %>
+        <span class="uploadIndicator throbber"></span>
+        <div class="additionalHelp"><%= t('screens.edit_metadata.upload_help') %></div>
+        <span class="imageError flash error"><%= t('screens.edit_metadata.upload_error') %></span>
+        <%= hidden_field_tag('view[iconUrl]', @view.iconUrl, :class => 'iconUrlField') %>
+      </div>
+      <div class="line clearfix<%= ' hide' unless @view.iconUrl %>">
+        <div class="customImageContainer">
+          <img alt="" src="<%= @view.custom_image  %>" class="ajaxImage datasetImage" />
+        </div>
+      </div>
+      <%- if @view.iconUrl.present? -%>
+        <div class="line clearfix">
+          <label><%= t('screens.edit_metadata.remove_image') %></label>
+          <%= check_box_tag ('delete_custom_image') %>
+        </div>
+      <%- end -%>
+    </div>
+
+    <h2><%= t('screens.edit_metadata.attachments') %></h2>
+
+    <div class="attachments">
+      <div class="line clearfix">
+        <label for="existing_attachments"><%= t('screens.edit_metadata.existing_attachments') %></label>
+        <div class="existingAttachments" id="existing_attachments">
+          <ul>
+            <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
+              <%- @view.metadata.attachments.each do |attachment| -%>
+                <%- attachmentObj = Attachment.setup_model(attachment) -%>
+                <li>
+                  <%= hidden_field_tag('view[metadata[attachments]][][blobId]',   attachment['blobId']) %>
+                  <%= hidden_field_tag('view[metadata[attachments]][][assetId]',   attachment['assetId']) %>
+                  <%= hidden_field_tag('view[metadata[attachments]][][filename]', attachment['filename']) %>
+                  <%= text_field_tag(  'view[metadata[attachments]][][name]',     attachmentObj.displayName) %>
+                  <span class="deleteLinks">
+                    <%= label_tag('view[metadata[attachments]][][delete]', t('screens.edit_metadata.delete')) %>
+                    <%= check_box_tag('view[metadata[attachments]][][delete]') %>
+                  </span>
+                </li>
+              <%- end -%>
+            <%- else -%>
+              <li class="noAttachmentsItem"><%= t('screens.edit_metadata.none') %></li>
+            <%- end -%>
+          </ul>
+        </div>
+      </div>
+
+      <div class="line clearfix">
+        <%= label_tag('attachment_new', t('screens.edit_metadata.new_attachment')) %>
+        <%= file_field_tag('attachment_new') %>
+        <span class="uploadAttachmentThrobber throbber"></span>
+      </div>
+    </div>
+
+    <h2><%= t('screens.edit_metadata.contact_information') %></h2>
+    <div class="line clearfix">
+      <%= label_tag('view[privateMetadata][contactEmail]', t('screens.edit_metadata.contact_email')) %>
+      <%= text_field_tag('view[privateMetadata][contactEmail]', (@view.data['privateMetadata'] || {})['contactEmail'],
+            :title => t('screens.edit_metadata.email_address'), :class => 'textPrompt email') %>
+      <div class="additionalHelp"><%= t('screens.edit_metadata.email_help') %></div>
+    </div>
+
+    <%- if current_user.flag?('admin') -%>
+    <h2 class="featureFlags">Feature Flags (admin only)</h2>
+    <div class="featureFlags">
+    <%- domain_flags = CurrentDomain.feature_flags
+        dataset_flags = @view.metadata.try(:feature_flags) || {}
+        FeatureFlags.derive(@view).each do |key, value|
+          flag_config = Hashie::Mash.new(FeatureFlags.config_for(key))
+          disabled = !dataset_flags.has_key?(key) -%>
+      <div class="line clearfix<%= disabled ? ' disabled' : '' %>" title="<%= flag_config.description %>">
+        <label for="<%= "ff_valuebox_#{key}" %>"><%= key %><br /><span>(From Domain: <%= domain_flags[key] %>)</span></label>
+        <a class="enableButton button"><%= disabled ? 'Override' : 'Use Domain Setting' %></a>
+        <div class="valueBox" id="<%= "ff_valuebox_#{key}" %>"><%= feature_flag_input key, flag_config, value, :edit_metadata => true, :disabled => disabled %></div>
+      </div>
+    <%- end -%>
+    </div>
+    <%- end -%>
+
+    <div class="required"><%= t('screens.edit_metadata.required_field') %></div>
+    <div class="clearfix submitActions">
+      <input class="button submitButton" type="submit" title="<%= t('screens.edit_metadata.save_changes') %>" value="Save" />
+      <a class="button" href="<%= view_path(@view) %>"><%= t('screens.edit_metadata.cancel') %></a>
+    </div>
+  <%- end -%>
+</div>
+<%= render_translations LocalePart.screens.edit_metadata %>
+
+<% content_for :js_footer do %>
+  <script type='text/javascript'>
+    blist.viewId = '<%= @view.id %>'
+    blist.namespace.fetch('blist.licenses');
+    blist.licenses = <%= safe_json(ExternalConfig.for(:license).licenses) %>;
+  </script>
+  <script type="text/javascript">
+    $(function() {
+        var $form = $('div.featureFlags');
+        $('h2.featureFlags').click(function() { $form.slideToggle(); });
+        $('input:text, select', $form).bind('focus change', function()
+        {
+            $(this).siblings('input.other').click();
+        });
+        $('form').submit(function(e)
+        {
+            $('.line', $form).each(function()
+            {
+                var $this = $(this);
+                var otherNotSelected = $this.find('.other').not(':checked').exists();
+                var otherPresent = $this.find('.other').exists();
+                if (otherNotSelected && otherPresent) {
+                  $this.find('input:text, select').prop('disabled', true);
+                }
+            });
+        });
+        $('.enableButton').click(function()
+        {
+            var $this = $(this);
+            var disabled = $this.text() == 'Use Domain Setting';
+            $this.parents('.line').toggleClass('disabled', disabled)
+                   .find('input, select').prop('disabled', disabled);
+            $this.text( disabled ? 'Override' : 'Use Domain Setting' );
+        });
+    });
+  </script>
+  <%- unless params[:no_js] == 'true' -%>
+    <%= include_webpack_bundle 'open-data/dataset-edit-metadata.js' %>
+  <%- end -%>
+<% end %>

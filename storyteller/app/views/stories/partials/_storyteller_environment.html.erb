@@ -1,0 +1,27 @@
+<script id="storyteller-environment" type="text/javascript">
+  // StorytellerEnvironment bindings.
+  window.AIRBRAKE = <%= airbrake_config_for_js.to_json.html_safe %>;
+  window.CORE_SERVICE_APP_TOKEN = '<%= Rails.application.config.core_service_app_token %>';
+  window.CURRENT_USER = <%== current_user.to_json %>;
+  window.DOWNTIMES = <%== downtimes.to_json %>;
+  window.EMBED_CODE_SANDBOX_IFRAME_ALLOWANCES = '<%= embed_code_iframe_sandbox_allowances %>';
+  window.ENVIRONMENT = '<%= Rails.env %>';
+  window.IMAGES = { COVER_IMAGE_ICON: '<%= asset_path("editor/cover-image.png") %>' };
+  window.IS_GOAL = <%== @story_metadata.goal?.to_json %>;
+  window.IS_STORY_PUBLISHED = <%= @story.is_a?(PublishedStory) %>;
+  <%- if @story_metadata.goal? %>
+    window.OP_CATEGORY_UID = <%== @category_uid.to_json %>;
+    window.OP_DASHBOARD_LIST = <%== @dashboard_list.to_json %>;
+    window.OP_DASHBOARD_UID = <%== @dashboard_uid.to_json %>;
+    window.OP_GOAL_IS_CONFIGURED = <%= @goal.configured? %>;
+    window.OP_GOAL_NARRATIVE_MIGRATION_METADATA = <%== @goal.narrative_migration_metadata.to_json %>;
+  <%- end %>
+  window.PRIMARY_OWNER_UID = '<%== @primary_owner_uid %>'; <%# TODO use .to_json (and other similar instances) %>
+  window.PUBLISHED_STORY_DATA = <%== @published_story.to_json %>;
+  window.RELATIVE_URL_ROOT = '<%= config.relative_url_root %>';
+  window.STORY_DATA = <%== user_story_json %>;
+  window.STORY_UID = <%== @story_metadata.uid.to_json %>;
+  window.STORY_VIEW_URL = '<%= @story_url_for_view %>';
+  window.THEMES_ASSET_PATH = '<%= asset_path("themes/themes.css") %>';
+  window.TRANSLATIONS = <%= current_editor_translations.to_json.html_safe %>;
+</script>

@@ -1,0 +1,34 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+tbody tr.malformedRow {
+  color: $error-text;
+  background: $error-light;
+  font-size: 13px;
+
+  td {
+    border-width: 0px;
+    padding: 5px 3px 4px 7px;
+  }
+
+  .location {
+    color: $error-text;
+    font-weight: 600;
+  }
+
+  .message {
+    span {
+      font-weight: 600;
+    }
+  }
+
+  .contents {
+    overflow: visible;
+
+    span {
+      color: $dark-grey-1;
+      font-style: italic;
+    }
+  }
+}

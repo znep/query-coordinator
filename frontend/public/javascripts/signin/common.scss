@@ -1,0 +1,31 @@
+$default-font-path: "common/resources/fonts/dist/";
+
+@import "modular-scale";
+@import "bourbon";
+@import "common/styleguide/variables/colors.scss";
+@import "common/styleguide/variables/layout.scss";
+@import "common/styleguide/variables/typography.scss";
+@import "neat";
+@import "common/resources/fonts/dist/socrata-icons-font-family";
+@import "common/resources/fonts/dist/socrata-icons";
+@import "common/styleguide/partials/typography.scss";
+@import "common/styleguide/partials/buttons.scss";
+@import "common/styleguide/partials/loader.scss";
+@import "common/styleguide/partials/forms.scss";
+@import "common/styleguide/partials/alerts.scss";
+
+$break-large: 1000px;
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.spinner {
+  @extend .spinner-default;
+  @extend .spinner-large;
+
+  position: absolute;
+  left: calc(50% - 32px);
+  top: calc(50% - 32px);
+}

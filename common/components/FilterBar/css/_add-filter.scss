@@ -1,0 +1,95 @@
+@import "variables/colors.scss";
+
+.add-filter {
+  margin-right: 20px;
+  display: inline-block;
+  vertical-align: top;
+
+  .btn-add-filter {
+    font-size: 12px;
+    padding: 7px 18px;
+  }
+
+  .column-container {
+    border: 1px solid $light-grey-3;
+    position: absolute;
+    background: $white;
+    margin-top: -1px;
+    min-width: 300px;
+    z-index: 10;
+
+    .alert.info {
+      margin-top: 8px;
+    }
+
+    .add-filter-picklist-options {
+      border-top: 1px solid $light-grey-3;
+    }
+  }
+}
+
+.add-filter-picklist {
+  font-size: 12px;
+
+  .add-filter-picklist-input-container {
+    position: relative;
+    margin: 8px;
+
+    .add-filter-picklist-input {
+      width: 100%;
+      border: 1px solid $light-grey-3;
+      padding: 8px 28px;
+
+      &:focus {
+        border-color: $alternate-3-light;
+        outline: solid 2px $alternate-3;
+      }
+
+      &:disabled {
+        color: $light-grey-1;
+        background-color: $light-grey-6;
+      }
+    }
+
+    .socrata-icon {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 6px;
+      top: 6px;
+      color: $light-grey-4;
+    }
+  }
+
+  .add-filter-picklist-options {
+    max-height: 350px;
+    overflow-y: auto;
+
+    .picklist {
+      border: none;
+
+      .picklist-group-header {
+        border-left: solid 3px transparent;
+      }
+
+      &:focus {
+        border: none;
+        outline: none;
+
+        .picklist-group-header {
+          border-left: solid 3px $alternate-3;
+        }
+      }
+    }
+  }
+
+  .picklist-option {
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  .alert {
+    font-size: 12px;
+    border: none;
+  }
+}

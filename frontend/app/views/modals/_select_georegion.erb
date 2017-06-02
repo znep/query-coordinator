@@ -1,0 +1,10 @@
+<%= modal :id => 'selectDataset' do %>
+  <%- title = local_assigns[:title] || t('controls.common.dataset_picker.title') -%>
+  <h2><%= title %></h2>
+  <div class="picker-explanation"><%= t('screens.admin.georegions.picker_explanation_html') %></div>
+  <div>
+    <span class="iframe-spinner"></span>
+    <iframe frameBorder="0" title="<%= title %>" data-urltoload="<%= url_for :controller => :browse, :action => :select_georegion %><%= local_assigns[:federate] == 'true' ? '' : '?nofederate=true&cetera_search=false&suppressed_facets[]=domain&suppressed_facets[]=type&suppressed_facets[]=topic' %>"></iframe>
+  </div>
+  <p><%= t('screens.admin.georegions.picker_support_html') %></p>
+<%- end -%>

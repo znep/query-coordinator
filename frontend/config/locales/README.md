@@ -1,0 +1,1 @@
+../../doc/update-translations.md

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+<head>
+  <%= default_meta_tags %>
+  <%= csrf_meta_tags %>
+
+  <title><%= t('editor.default_page_title') %></title>
+
+  <%= site_chrome_favicon_tag %>
+  <%= site_chrome_stylesheet_tag %>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <style id="themes"><%== @bootstrap_styles[:themes] %></style>
+  <style id="custom"><%== @bootstrap_styles[:custom] %></style>
+
+  <%= render partial: 'stories/partials/storyteller_environment' %>
+  <%= render_feature_flags_for_javascript %>
+  <script id="storyteller-editor-environment" type="text/javascript">
+
+    window.CURRENT_USER_STORY_AUTHORIZATION = <%== current_user_story_authorization.to_json %>;
+    window.CUSTOM_THEMES = <%== @custom_themes.to_json %>;
+    window.DEFAULT_THEMES = <%== @default_themes.to_json %>;
+    <%- if @goal_document_ids -%>
+    window.OP_GOAL_DOCUMENT_IDS_BY_ASSET_IDS = <%== @goal_document_ids.to_json %>;
+    <%- end -%>
+  </script>
+
+  <% if Rails.env.test? -%>
+    <%= javascript_include_tag 'sinon-server-1.17.3' %>
+    <%= storyteller_javascript_include_tag 'test' %>
+  <% end -%>
+
+  <%= storyteller_javascript_include_tag 'editor' %>
+  <%= render 'shared/google_analytics_script' %>
+  <%= render 'shared/mixpanel_script' %>
+</head>
+<body id="story-edit" class="<%= render_admin_header? ? 'open-performance-enabled' : '' %>">
+  <%== site_chrome_admin_header(request, response, size: 'small') if render_admin_header? %>
+  <%= yield %>
+  <%= site_chrome_javascript_tag %>
+</body>
+</html>

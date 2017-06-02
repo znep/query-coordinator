@@ -1,0 +1,35 @@
+<div class="line">
+  <label for="story_headline" class="required"><%= t('screens.admin.new_story.headline') %></label>
+  <input type="text" name="story[headline]" id="story_headline"
+    value="<%= @story.headline unless @story.nil? %>" class="required"/>
+</div>
+<div class="line">
+  <label for="story_story" class="required"><%= t('screens.admin.new_story.contents') %></label>
+  <textarea name="story[story]" id="story_story" class="required"><%= @story.story unless @story.nil? %></textarea>
+</div>
+<div class="line">
+  <label for="story_image"><%= t('screens.admin.new_story.background_image') %></label>
+  <input type="file" name="story[image]" id="story_image"/>
+</div>
+<%- unless @story.nil? || @story.imageId.nil? -%>
+  <div class="storyImagePreviewWrapper">
+    <p><%= t('screens.admin.new_story.existing_image') %>:</p>
+    <div class="storyImagePreview">
+      <img src="/assets/<%= @story.imageId %>" alt="<%= t('screens.admin.new_story.image_preview') %>"/>
+    </div>
+  </div>
+<%- end -%>
+<div class="line linkLine">
+  <label for="story_link"><%= t('screens.admin.new_story.story_link_url') %></label>
+  <input type="text" name="story[link]" id="story_link" value="<%= @story.customization['link'] unless @story.nil? %>"/>
+  <p><%= t('screens.admin.new_story.story_link_description') %></p>
+</div>
+<div class="line colorLine">
+  <label for="story_backgroundColor" class="required"><%= t('screens.admin.new_story.background_color') %></label>
+  <input type="text" name="story[backgroundColor]" id="story_backgroundColor"
+    value="<%= @story.customization['backgroundColor'] unless @story.nil? %>" class="required"/>
+  <p><%= t('screens.admin.new_story.six_char_hex') %> ; eg #036adf</p>
+</div>
+<div class="line clearfix">
+  <input type="submit" value="<%= t('core.dialogs.save') %>" class="button"/>
+</div>

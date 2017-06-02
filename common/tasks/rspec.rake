@@ -1,0 +1,23 @@
+namespace 'rspec' do
+  task :deps do
+    bundle('check') do |ok, res|
+      bundle('install') unless ok
+    end
+  end
+
+  task :runonce do
+    rspec('site_chrome') do |ok, res|
+      raise 'Site chrome rspec tests failed' unless ok
+    end
+  end
+
+  task :watch do
+    guard 'site_chrome'
+  end
+end
+
+desc 'Run all Ruby tests'
+task spec: %w[rspec:deps rspec:runonce]
+
+desc 'Watch Ruby test files'
+task spec_watch: %w[rspec:deps rspec:watch]

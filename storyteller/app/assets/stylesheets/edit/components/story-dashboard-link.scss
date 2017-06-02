@@ -1,0 +1,17 @@
+.story-dashboard-link {
+  text-decoration: none;
+}
+
+.story-dashboard-link-icon {
+  margin-right: 5px;
+}
+
+@media (max-width: 1320px) {
+  .story-dashboard-link-icon {
+    margin-right: 0;
+  }
+
+  .story-dashboard-link-text {
+    display: none;
+  }
+}

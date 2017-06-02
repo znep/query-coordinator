@@ -1,0 +1,113 @@
+MAIN SITE:
+1-8 dataset grid sidebar tabs
+9 dataset grid active sidebar tab
+50 menu button
+100 tooltip flyout
+1000 configurator
+3000 modal dialog
+3001 modal dialog overlay
+9997 bt-wrapper
+9998 bt-wrapper canvas
+9999 bt-content
+9999 modal overlay
+10000 menu
+10100 maintenance notification
+
+
+DATASETv2:
+99 toolbar
+
+
+SIDEBAR:
+1 remove link for repeaters
+50 modal (surrounding) overlay
+60 pane overlay
+60 loading overlay
+70 column selector when picking
+80 disabled overlay
+81 disabled message
+
+
+WIDGET:
+50 subheader
+51 header
+2998: main menu dropdown
+
+
+CONTROLS:
+3001 color_selector
+3002 autocompleteComboDropdown
+6000 loading spinner overlay
+10000 loading spinner
+
+
+DATA RENDERING:
+999 map data
+1000 mapLayers, mapLegend
+1004 map controls
+
+
+DATASLATE:
+1000 sidebar
+1500 FixedContainer
+1500 editOverlay
+2000 canvas edit bar
+2001 cfViewsContainer
+2999 edit mask
+3000 focal item
+3001 resize handle
+20000 IE drag image
+
+
+Visualization Canvas:
+4 Visualizations
+5 Filter bar collapsed filters in main application
+5 Preview bar
+5 Visualization action buttons (edit, share)
+7 Filter bar columns in main application
+8 Edit bar
+9 Site chrome admin header
+53 Filter bar collapsed filters in Authoring Experience
+60 Filter bar controls in Authoring Experience
+1001 Share modal size dropdown
+
+DataCards:
+1 Cards area
+1 Cards themselves, except when dragged
+2 Cards input blocker overlay for edit mode.
+1001 Loading spinners
+1001 Search flannel
+1002 Quick filter bar
+1002 jQuery flyouts (table flyouts)
+1003 Feature map flannel
+1004 Generic tool panels (API panel, Save as panel, Other views panel, Aggregation panel)
+1004 Customize bar
+3000 Currently dragged card.
+9999 Modal translucent overlay
+10000 Modal dialog
+10010 Mouse capture overlay (InputHacks)
+99999 Uber flyouts
+
+Cards:
+ 3 Expand and delete buttons.
+ -1 expanded title (unexpanded has no z-index unless hovered)
+ 1002 expanded or unexpanded card title on hover
+
+ 1 expanded card description
+ 2 unexpanded and truncated card description
+ 3 animating expanded card description
+ 1001 static expanded card description
+
+ 99999 catcher to prevent expand button from being clicked when in edit mode.
+
+Column chart:
+ 2 expand button (>>)
+
+Timeline chart:
+ 1 dim or hidden labels
+ 1 active labels while selecting
+ 2 highlighted labels
+ 2 active labels while not selecting
+
+Table:
+ 1 Column resize thumb

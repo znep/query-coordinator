@@ -1,0 +1,15 @@
+karma
+public/javascripts/plugins
+public/javascripts/tiny_mce
+public/javascripts/mobile/app-bundle.js
+public/javascripts/jquery*
+public/javascripts/dist
+public/javascripts/build
+public/packages
+public/webfonts
+public/javascripts/util/extMouseWheel.js
+public/javascripts/util/interpolator.js
+public/javascripts/util/pluralize.js
+public/javascripts/util/polyfills.js
+public/javascripts/util/typed-arrays.js
+socrata-components

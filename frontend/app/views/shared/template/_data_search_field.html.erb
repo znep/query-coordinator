@@ -1,0 +1,16 @@
+<%= form_tag('/', :class => "search large", :method => :get) do %>
+  <div class="searchContainer">
+    <label for="search"><%= CurrentDomain.strings.search_prompt %></label>
+    <%= text_field_tag("search", @search_term, :class => "textPrompt",
+      :title => CurrentDomain.strings.search_prompt) %>
+    <%= hidden_field_tag("type", "search") %>
+
+    <div class="actionsBox">
+      <div class="clearBox">
+        <a class="clearSearch noHistory" href="#clear_search">Clear Search</a>
+      </div>
+      <%= image_submit_tag("empty.gif",
+        :name => "discoverSubmit", :class => "submit", :alt => "search") %>
+    </div>
+  </div>
+<% end %>

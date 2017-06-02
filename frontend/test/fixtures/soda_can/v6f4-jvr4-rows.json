@@ -1,0 +1,349 @@
+{
+  "meta" : {
+    "view" : {
+      "id" : "v6f4-jvr4",
+      "name" : "Things to Order By",
+      "averageRating" : 0,
+      "createdAt" : 1362845100,
+      "displayType" : "table",
+      "downloadCount" : 0,
+      "numberOfComments" : 0,
+      "oid" : 2766325,
+      "publicationAppendEnabled" : false,
+      "publicationDate" : 1362847167,
+      "publicationGroup" : 723869,
+      "publicationStage" : "published",
+      "rowsUpdatedAt" : 1362845420,
+      "rowsUpdatedBy" : "2fra-n3vu",
+      "signed" : false,
+      "tableId" : 723869,
+      "totalTimesRated" : 0,
+      "viewCount" : 1,
+      "viewLastModified" : 1362847196,
+      "viewType" : "tabular",
+      "columns" : [ {
+        "id" : -1,
+        "name" : "sid",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":sid",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "id",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":id",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "position",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":position",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "created_at",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":created_at",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "created_meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":created_meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "updated_at",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":updated_at",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "updated_meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":updated_meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : -1,
+        "name" : "meta",
+        "dataTypeName" : "meta_data",
+        "fieldName" : ":meta",
+        "position" : 0,
+        "renderTypeName" : "meta_data",
+        "format" : {
+        }
+      }, {
+        "id" : 49493123,
+        "name" : "ptext",
+        "dataTypeName" : "text",
+        "fieldName" : "ptext",
+        "position" : 1,
+        "renderTypeName" : "text",
+        "tableColumnId" : 8488507,
+        "width" : 100,
+        "cachedContents" : {
+          "non_null" : 9,
+          "smallest" : "Apple",
+          "null" : 0,
+          "largest" : "Zorrow",
+          "top" : [ {
+            "count" : 20,
+            "item" : "Apple"
+          }, {
+            "count" : 19,
+            "item" : "Bannana"
+          }, {
+            "count" : 18,
+            "item" : "Crisp"
+          }, {
+            "count" : 17,
+            "item" : "Oatmeal"
+          }, {
+            "count" : 16,
+            "item" : "Zorrow"
+          } ]
+        },
+        "format" : {
+        }
+      }, {
+        "id" : 49493124,
+        "name" : "ftext",
+        "dataTypeName" : "html",
+        "fieldName" : "ftext",
+        "position" : 2,
+        "renderTypeName" : "html",
+        "tableColumnId" : 8488508,
+        "width" : 100,
+        "cachedContents" : {
+          "non_null" : 3,
+          "smallest" : "* So don't try\n* or\n* you will",
+          "null" : 6,
+          "largest" : "Regret it",
+          "top" : [ {
+            "count" : 20,
+            "item" : "* We can't really\n* Order these\n* Things"
+          }, {
+            "count" : 19,
+            "item" : "* So don't try\n* or\n* you will"
+          }, {
+            "count" : 18,
+            "item" : "Regret it"
+          } ]
+        },
+        "format" : {
+        }
+      }, {
+        "id" : 49493173,
+        "name" : "number",
+        "dataTypeName" : "number",
+        "fieldName" : "number",
+        "position" : 3,
+        "renderTypeName" : "number",
+        "tableColumnId" : 8488509,
+        "width" : 100,
+        "cachedContents" : {
+          "non_null" : 9,
+          "smallest" : "1",
+          "sum" : "28",
+          "null" : 0,
+          "average" : "3.111111111111111",
+          "largest" : "6",
+          "top" : [ {
+            "count" : 20,
+            "item" : "1"
+          }, {
+            "count" : 19,
+            "item" : "2"
+          }, {
+            "count" : 18,
+            "item" : "3"
+          }, {
+            "count" : 17,
+            "item" : "4"
+          }, {
+            "count" : 16,
+            "item" : "5"
+          }, {
+            "count" : 15,
+            "item" : "6"
+          } ]
+        },
+        "format" : {
+        }
+      } ],
+      "grants" : [ {
+        "inherited" : false,
+        "type" : "viewer",
+        "flags" : [ "public" ]
+      } ],
+      "metadata" : {
+        "renderTypeConfig" : {
+          "visible" : {
+            "table" : true
+          }
+        },
+        "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+      },
+      "owner" : {
+        "id" : "2fra-n3vu",
+        "displayName" : "John Kew",
+        "emailUnsubscribed" : false,
+        "privacyControl" : "login",
+        "profileLastModified" : 1355365728,
+        "screenName" : "John Kew",
+        "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages" ],
+        "flags" : [ "admin" ]
+      },
+      "query" : {
+        "orderBys" : [ {
+          "ascending" : true,
+          "expression" : {
+            "columnId" : 49493123,
+            "type" : "column"
+          }
+        } ]
+      },
+      "rights" : [ "read" ],
+      "sortBys" : [ {
+        "id" : 0,
+        "viewColumnId" : 49493123,
+        "flags" : [ "asc" ]
+      } ],
+      "tableAuthor" : {
+        "id" : "2fra-n3vu",
+        "displayName" : "John Kew",
+        "emailUnsubscribed" : false,
+        "privacyControl" : "login",
+        "profileLastModified" : 1355365728,
+        "screenName" : "John Kew",
+        "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages" ],
+        "flags" : [ "admin" ]
+      },
+      "flags" : [ "default" ]
+    }
+  },
+  "entries" : [ {
+    ":updated_meta" : "658618",
+    ":updated_at" : 1362845403,
+    "ftext" : "<ol><li><span>We can't really</span></li><li><span>Order these</span></li><li><span>Things</span></li></ol>",
+    "number" : "1",
+    ":sid" : 1,
+    "ptext" : "Apple",
+    ":id" : "6685FA11-6ED6-46EC-BB4F-D8BDD6754609",
+    ":created_at" : 1362845226,
+    ":position" : 1,
+    ":created_meta" : "658618"
+  }
+, {
+    ":updated_meta" : "658618",
+    ":updated_at" : 1362845404,
+    "number" : "1",
+    ":sid" : 2,
+    "ptext" : "Apple",
+    ":id" : "677BA023-BCAE-4B39-8F70-8CABBDE177F6",
+    ":created_at" : 1362845229,
+    ":position" : 2,
+    ":created_meta" : "658618"
+  }
+, {
+    ":updated_meta" : "658618",
+    ":updated_at" : 1362845406,
+    "ftext" : "<ul><li>So don't try</li><li>or</li><li>you will</li></ul>",
+    "number" : "2",
+    ":sid" : 3,
+    "ptext" : "Apple",
+    ":id" : "F1264A93-D82F-44C5-82BB-D81F1A241DE7",
+    ":created_at" : 1362845245,
+    ":position" : 3,
+    ":created_meta" : "658618"
+  }
+, {
+    ":updated_meta" : "658618",
+    ":updated_at" : 1362845408,
+    "number" : "2",
+    ":sid" : 4,
+    "ptext" : "Bannana",
+    ":id" : "3908410E-15FA-4AFC-891E-DE0FC89B0962",
+    ":created_at" : 1362845246,
+    ":position" : 4,
+    ":created_meta" : "658618"
+  }
+, {
+    ":updated_meta" : "658618",
+    ":updated_at" : 1362845410,
+    "number" : "3",
+    ":sid" : 5,
+    "ptext" : "Bannana",
+    ":id" : "A01BB4BF-DC59-4C86-9CC8-4DFAA5261AEF",
+    ":created_at" : 1362845253,
+    ":position" : 5,
+    ":created_meta" : "658618"
+  }
+, {
+    ":updated_meta" : "658618",
+    ":updated_at" : 1362845412,
+    "number" : "4",
+    ":sid" : 6,
+    "ptext" : "Crisp",
+    ":id" : "031C7501-8121-49A1-BE57-863E3D7E0E2F",
+    ":created_at" : 1362845257,
+    ":position" : 6,
+    ":created_meta" : "658618"
+  }
+, {
+    ":updated_meta" : "658618",
+    ":updated_at" : 1362845414,
+    "ftext" : "<p><span style=\"text-decoration:line-through;\">Regret it</span></p>",
+    "number" : "4",
+    ":sid" : 7,
+    "ptext" : "Crisp",
+    ":id" : "9B9DBDC8-ED64-4DD0-A703-EA6401189D15",
+    ":created_at" : 1362845263,
+    ":position" : 7,
+    ":created_meta" : "658618"
+  }
+, {
+    ":updated_meta" : "658618",
+    ":updated_at" : 1362845416,
+    "number" : "5",
+    ":sid" : 8,
+    "ptext" : "Oatmeal",
+    ":id" : "1B6414BB-5B5D-4BCA-96B8-925505865D16",
+    ":created_at" : 1362845286,
+    ":position" : 8,
+    ":created_meta" : "658618"
+  }
+, {
+    ":updated_meta" : "658618",
+    ":updated_at" : 1362845420,
+    "number" : "6",
+    ":sid" : 9,
+    "ptext" : "Zorrow",
+    ":id" : "F951AE16-C116-4A8F-9DE9-A861A542DE90",
+    ":created_at" : 1362845293,
+    ":position" : 9,
+    ":created_meta" : "658618"
+  }
+ ]
+}

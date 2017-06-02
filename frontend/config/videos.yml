@@ -1,0 +1,84 @@
+---
+# Hey kids. The ordering here determines the ordering for the 'basics first' sort,
+# so try to preserve that order when inserting new videos.
+
+- name: sorting-datasets
+  title: Sort a Dataset
+  type: analyzing
+  audience: consumer
+  added: 2011-02-10
+  length: 1:39 mins
+  wistia:
+    embedid: e499cf99cb
+- name: find-in-dataset
+  title: Search within a Dataset
+  type: analyzing
+  audience: consumer
+  added: 2011-02-11
+  length: 1:23 min
+  wistia:
+    embedid: 81ee2ffd16
+- name: comment
+  title: Comment on a Dataset
+  type: sharing
+  audience: consumer
+  added: 2011-02-25
+  length: 2:11 mins
+  wistia:
+    embedid: da5532febd
+- name: basic-filtering
+  title: Basic Filtering
+  type: analyzing
+  audience: consumer
+  added: 2011-02-11
+  length: 3:58 mins
+  wistia:
+    embedid: a4aa44a3cb
+- name: point-map
+  title: Create a Map
+  type: maps
+  audience: consumer
+  added: 2011-02-24
+  length: 5:43 mins
+  wistia:
+    embedid: 474b3838fa
+- name: bar-chart
+  title: Create a Chart
+  type: charts
+  audience: consumer
+  added: 2011-02-24
+  length: 1:53 mins
+  wistia:
+    embedid: 39ebfbe6a1
+- name: data-lens
+  title: Use Data Lens
+  type: charts
+  audience: consumer
+  added: 2016-11-14
+  length: 2:16 mins
+  wistia:
+    embedid: hskvi9mmyl
+- name: aggregate-data
+  title: Aggregate Data
+  type: analyzing
+  audience: consumer
+  added: 2016-11-14
+  length: 4:48 mins
+  wistia:
+    embedid: xxq9zu63n5
+- name: import-dataset
+  title: Importing a Dataset
+  type: publishing
+  audience: publisher
+  added: 2016-11-14
+  length: 1:09 mins
+  wistia:
+    embedid: 9034a4cd28
+- name: dataset-publication
+  title: Publishing a Dataset
+  type: publishing
+  audience: publisher
+  added: 2011-09-26
+  length: 1:42 mins
+  wistia:
+    embedid: e698908422

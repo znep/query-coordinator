@@ -1,0 +1,46 @@
+<%= content_for :head do %>
+  <%= rendered_stylesheet_tag('asset-selector') %>
+  <%= rendered_stylesheet_tag('base') %>
+  <%= rendered_stylesheet_tag('catalog-landing-page') %>
+  <%= rendered_stylesheet_tag('external-resource-editor') %>
+  <title>
+    <%= I18n.t('catalog_landing_page.title', :params => @clp_title_param_string) %> | <%= get_site_title %>
+  </title>
+<%- end %>
+
+<div class="catalog">
+
+  <!--
+    EN-15369:
+    Use autocomplete searchbar. Short term solution is to comment out our React searchbar
+    and just use the socrata-autocomplete, which is not portable into React contexts.
+    https://github.com/socrata/socrata-autocomplete
+
+    Long term solution is to re-implement the autocomplete functionality into the common React searchbar.
+  -->
+
+  <div
+    class="search-with-autocomplete"
+    data-catalog-autocomplete="<%= FeatureFlags.derive(@view, request).browse_autocomplete %>">
+  </div>
+
+  <% unless FeatureFlags.derive(@view, request).browse_autocomplete %>
+    <div id="search-content"></div>
+  <% end %>
+
+  <%= render 'datasets/catalog', :opts => @processed_browse %>
+</div>
+
+<div id="modals">
+  <%= yield :modals %>
+</div>
+
+<%= content_for :scripts do %>
+  <script src="/javascripts/plugins/lodash.js"></script>
+  <script>var I18n = I18n || {};</script>
+  <%= render_catalog_landing_page_translations %>
+  <%= render_catalog_landing_page_session_data %>
+  <%= render_catalog_landing_page_server_config %>
+  <%== render_catalog_landing_page_initial_state %>
+  <%= include_webpack_bundle 'catalog-landing-page/main' %>
+<%- end %>

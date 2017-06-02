@@ -1,11 +1,86 @@
-bower_components/
-node_modules/
-coverage/
+.*.swp
 .DS_Store
+.bundle
+.byebug_history
+.env
+.idea/
+.localeapp/
+.npmrc
+.sass-cache
+.vimrc
 REVISION
+dev-server/*.pid
+dev-server/logs
+frontend.iml
+frontend.tgz
+frontend/!config/locales/en.yml
+frontend/app/styles/vendor
+frontend/config/locales/*.yml
+frontend/coverage
+frontend/karma/**/mockTranslations.js
+frontend/log/
+frontend/public/asset_pipeline
+frontend/public/cache
+frontend/public/geodata
+frontend/public/javascripts/dist
+frontend/public/packages
+frontend/public/stylesheets/socrata-components
+frontend/public/stylesheets/socrata-styleguide
+frontend/public/stylesheets/socrata-visualizations
+frontend/vendor/bundle
+frontend/vendor/bundler_gems
+manifest*.txt
+nbproject
+node_modules
+npm-debug.log*
+socrata-node/DEPEND
+socrata-node/node_modules
+packages/**/dist
+
+# These are generated build assets despite their
+# location in the file structure. They are here
+# for legacy reasons.
+packages/socrata-components/common
+packages/socrata-components/components
+packages/socrata-components/styles
+
+# Temporary home of styleguide sample app build.
+styleguide-sample-app/build
+styleguide-sample-app/dist
+
+# Webpacked JS
+storyteller/public/js
+webpack-assets.json
+
+# Ignore local database settings
+storyteller/config/database.yml
+
+# IDE settings
+*.sublime-project
+*.sublime-workspace
+
+# Zeus configs
+custom_plan.rb
+zeus.json
+
+# Other
+storyteller/tmp
 marathon.properties
-*.swp
-npm-debug.log
-.idea
-examples/vendor.js
-dist/
+storyteller/coverage
+
+# Build-related stuff
+/ops-tools
+dockerize.properties
+
+# site_chrome
+db/*.sqlite3
+common/site_chrome/log/*.log
+common/site_chrome/tmp/**/*
+common/site-chrome/engine/*.gem
+common/site-chrome/engine/pkg/
+common/site-chrome/engine/spec/dummy/log/*.log
+
+# frontend-visualizations
+common/frontend-visualizations/coverage/
+common/frontend-visualizations/examples/vendor.js
+common/frontend-visualizations/dist/

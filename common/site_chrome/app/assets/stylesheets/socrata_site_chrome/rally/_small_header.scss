@@ -1,0 +1,66 @@
+$small_banner_height: 38px;
+
+header#site-chrome-header[template="rally"].small {
+  .banner {
+    > .rally-top {
+      line-height: $header_logo_height;
+      padding: 8px;
+      box-sizing: content-box;
+
+      > a.logo {
+        > img {
+          height: $header_logo_height;
+        }
+        > span.site-name {
+          font-size: 22px;
+        }
+      }
+    }
+
+    > .rally-bottom {
+      height: $small_banner_height;
+      line-height: $small_banner_height;
+
+      .desktop {
+        .navbar-left {
+          .site-chrome-nav-links {
+            a.site-chrome-nav-link {
+              font-size: 14px;
+              vertical-align: top;
+            }
+
+            .site-chrome-nav-menu {
+              div.dropdown {
+                ul.dropdown-options {
+                  top: $small_banner_height - 1px;
+                }
+              }
+            }
+          }
+        }
+        .navbar-right {
+          .site-chrome-social-links {
+            .site-chrome-social-link {
+              span.monosocial {
+                vertical-align: top;
+              }
+            }
+          }
+          .user-actions {
+            .sign-in-toggle,  {
+              padding: 4px 12px;
+              font-size: 11px;
+            }
+          }
+        }
+      }
+
+      .mobile {
+        .menu-toggle {
+          padding: 4px 12px;
+          font-size: 11px;
+        }
+      }
+    }
+  }
+}

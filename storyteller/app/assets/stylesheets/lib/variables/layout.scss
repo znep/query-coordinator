@@ -1,0 +1,194 @@
+// socrata_site_chrome admin header
+$site-chrome-admin-header-height: 46px;
+$site-chrome-admin-header-small-height: 32px;
+
+// Media maximums.
+$media-small: 570px;
+$media-medium: 820px;
+$media-large: 1070px;
+$media-xlarge: 1320px;
+
+// Media window breakpoints.
+$media-query-width-small: "(max-width: #{$media-small})";
+$media-query-width-medium: "(min-width: #{$media-small}) and (max-width: #{$media-medium})";
+$media-query-width-large: "(min-width: #{$media-medium}) and (max-width: #{$media-large})";
+$media-query-width-xlarge: "(min-width: #{$media-large})";
+
+// Header
+$header-height: 6rem;
+$header-margin: 0.7rem;
+$header-title-max-width: 40rem;
+$header-title-height: 1.7em;
+$header-right-pane-padding: 1em;
+$header-box-shadow-size: 0.15rem;
+
+// Story save error bar
+$story-save-error-bar-reserved-height: 4.2rem;
+
+// Story save error bar
+$downtime-notice-bar-reserved-height: 5.8rem;
+
+// Panels
+$panel-width: 38rem;
+
+// Settings panel
+$settings-panel-width: 42rem;
+$settings-panel-close-bar-height: 2rem;
+$settings-panel-padding-width: 3rem;
+$settings-panel-publishing-label-width: 30%;
+
+$warning-bar-icon-width: 2.5rem;
+
+// Content panels
+$content-panel-padding: 2rem;
+$content-panel-close-btn-width: 1.8rem;
+$content-panel-box-shadow-size: 0.15rem;
+
+// Inspiration story
+$inspiration-block-list-close-button-padding: 0.5em;
+$inspiration-block-list-font-size: 0.5rem;
+$inspiration-block-list-block-margin: 0.5rem;
+
+// Style and presentation themes
+$theme-list-theme-margin: 0.5rem;
+$theme-list-theme-interior-margin-bottom: 1rem;
+$theme-list-theme-padding: 1rem;
+$theme-list-theme-title-font-size: 1.5rem;
+
+// Main content (the width of the user story)
+$main-content-width-small: 76.8rem;
+$main-content-width-medium: 70rem;
+$main-content-width-large: 96rem;
+$main-content-width-extra-large: 114rem;
+$main-content-width-extra-extra-large: 132rem;
+
+// User story container
+$user-story-container-vertical-padding: 8rem;
+$stack-to-single-column-width: 50rem;
+
+// User story
+$user-story-padding-bottom: 72px;
+
+// Block edit controls
+$block-edit-controls-width: 2.5rem;
+$block-edit-controls-height: 12.3rem;
+
+// Component edit controls
+$component-edit-controls-font-size: 1.2rem;
+$component-edit-controls-btn-padding-vertical: 0.6rem;
+$component-edit-controls-btn-padding-horizontal: 1.2rem;
+
+// Block component column widths (small)
+$col3-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width) * (1/4);
+$col4-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width) * (1/3);
+$col6-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width) * (1/2);
+$col8-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width) * (2/3);
+$col12-block-edit-content-width-small: $main-content-width-small - $block-edit-controls-width;
+
+// Block component column widths (medium)
+$col3-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width) * (1/4);
+$col4-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width) * (1/3);
+$col6-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width) * (1/2);
+$col8-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width) * (2/3);
+$col12-block-edit-content-width-medium: $main-content-width-medium - $block-edit-controls-width;
+
+// Block component column widths (large)
+$col3-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width) * (1/4);
+$col4-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width) * (1/3);
+$col6-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width) * (1/2);
+$col8-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width) * (2/3);
+$col12-block-edit-content-width-large: $main-content-width-large - $block-edit-controls-width;
+
+// Block component column widths (extra-large)
+$col3-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width) * (1/4);
+$col4-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width) * (1/3);
+$col6-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width) * (1/2);
+$col8-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width) * (2/3);
+$col12-block-edit-content-width-extra-large: $main-content-width-extra-large - $block-edit-controls-width;
+
+// Block component margin top values (these are controlled by page width, not component width)
+$media-component-small-margin-top: 1.6rem;
+$media-component-medium-margin-top: 2.4rem;
+$media-component-large-margin-top: 3.2rem;
+$media-component-extra-large-margin-top: 3.2rem;
+
+// Rich Text Editor toolbar
+$rich-text-editor-toolbar-top-offset: $header-height;
+$rich-text-editor-toolbar-btn-width: 4rem;
+$rich-text-editor-toolbar-btn-height: 4.2rem;
+$rich-text-editor-toolbar-select-width: 16rem;
+
+// Modal windows
+$modal-padding: 2rem;
+$modal-title-font-size: 1.8rem;
+$modal-title-line-height: 2.5rem;
+$modal-close-btn-width: 2.5rem;
+$modal-wide-static-width: 800px;
+
+// Buttons
+$btn-height: 2rem;
+$btn-padding-top-bottom: 0.9rem;
+$btn-padding-left-right: 1.5rem;
+$btn-busy-width: 2rem;
+$btn-busy-height: 2rem;
+$btn-busy-border-width: 1px;
+
+// Asset Selector
+$asset-selector-preview-border-radius: 0.3rem;
+
+// Resize UI
+$resize-bar-height: 17px;
+
+// Preview button
+$preview-btn-right-margin: 3rem;
+$preview-btn-bottom-margin: 3rem;
+
+// View Mode button
+$view-mode-button-width: 4.2rem;
+
+// Border radii
+$btn-border-radius: 1px;
+$modal-border-radius: 0.3rem;
+$input-element-border-radius: 0.1rem;
+
+// Durations
+$transition-duration: 0.2s;
+$component-fade-in-duration: 0.5s;
+
+// Flyout
+$flyout-max-width: 35rem;
+$flyout-vertical-padding: 0.5rem;
+$flyout-horizontal-padding: 1rem;
+// $flyout-hint-size must be in pixels because it is interpolated into expressions
+// that make that assumption, such as: `($flyout-hint-size + 1)`
+$flyout-hint-size: 10px;
+$flyout-last-cell-margin-left: 1.5rem;
+
+// Presentation Mode
+$presentation-mode-font-size: 1.75rem;
+$presentation-mode-button-font-size: 1.5rem;
+$presentation-mode-large-max-width: 84%;
+$presentation-mode-medium-max-width: 94%;
+$presentation-mode-small-width: auto;
+$presentation-mode-small-max-width: 96%;
+
+// Menu-list
+$menu-list-border-left-width: 7px;
+
+// Author component
+$author-component-padding: 2.9rem;
+$author-component-profile-image-padding: 0.4rem;
+$author-component-border-bottom-thickness: 1px;
+
+// Goal Embed Component
+$goal-tile-iframe-scale-small: 134%;
+$goal-tile-iframe-scale-medium: 136%;
+$goal-tile-iframe-scale-large: 126%;
+$goal-tile-iframe-scale-extra-large: 124%;
+
+$goal-tile-iframe-offset-small: -17%;
+$goal-tile-iframe-offset-medium: -18%;
+$goal-tile-iframe-offset-large: -13%;
+$goal-tile-iframe-offset-extra-large: -11%;
+
+

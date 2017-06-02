@@ -1,0 +1,211 @@
+$admin-header-z-index: 10000;
+
+.clearfix:before,
+.clearfix:after {
+  content: " "; /* 1 */
+  display: table; /* 2 */
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.alert {
+  &.hidden {
+    display: none;
+  }
+}
+
+.modal .alert {
+  margin: 5px 0 10px;
+}
+
+.external-link {
+  text-decoration: none;
+
+  .icon-external {
+    margin-left: 5px;
+    visibility: hidden;
+  }
+
+  &:hover {
+    text-decoration: underline;
+
+    .icon-external {
+      visibility: visible;
+    }
+  }
+}
+
+.sc-check-indicator {
+  display: inline;
+  margin-left: 10px;
+
+  .sc-check-indicator-revert {
+    display: none;
+  }
+
+  .btn {
+    border-color: #00BF9B;
+    background-color: #E5F9F5;
+    color: #00987c;
+
+    padding: 4px 6px;
+  }
+
+  &:hover {
+    .sc-check-indicator-check {
+      display: none;
+    }
+    .sc-check-indicator-revert {
+      display: inline;
+    }
+
+    .btn {
+      border-color: #E48424;
+      background-color: #FCF3EB;
+      color: #9e5c23;
+    }
+  }
+}
+
+.modal-container {
+  .modal-content {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+  }
+
+  .modal-footer {
+    position: relative;
+    margin: 0 -1rem -1rem -1rem;
+    width: auto;
+
+    .link-container {
+      float: left;
+      margin-top: 12px;
+    }
+  }
+}
+
+.modal-full {
+  .modal-content {
+    width: 1100px;
+    height: calc(100vh - 120px);
+  }
+
+  .modal-footer {
+    position: fixed;
+    width: 100%;
+    margin: 0;
+  }
+
+  .modal-content {
+    width: 1100px;
+    height: calc(100vh - 120px);
+  }
+}
+
+.flyout-container {
+  display: inline-block;
+
+  .flyout {
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .flyout-tooltip {
+    border-radius: 0;
+
+    .flyout-content {
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+
+    &::before {
+      top: auto;
+      transform: rotateZ(180deg);
+      bottom: -16px;
+      left: 13px;
+      margin-left: -2px;
+      border-width: 8px;
+    }
+
+    &::after {
+      top: auto;
+      transform: rotateZ(180deg);
+      bottom: -14px;
+      left: 25px;
+      border-width: 7px;
+      margin-left: -13px;
+    }
+  }
+}
+
+.bulk-actions {
+  margin: 0 3px 0 0;
+  overflow: auto;
+
+  .btn-group {
+    float: right;
+  }
+}
+
+.modal-content.bulk-edit-modal-content {
+  min-height: 400px;
+}
+
+.datepicker-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: 20px;
+  width: 140px;
+
+  .text-input {
+    margin-bottom: 0;
+  }
+
+  .icon-date {
+    position: absolute;
+    top: 50%;
+    margin-top: -12px;
+    left: 10px;
+  }
+
+  .datepicker-input {
+    width: 140px;
+    background: transparent;
+    border: 1px solid #ccc;
+    padding: 6px 6px 6px 30px;
+  }
+}
+
+.form-line {
+  margin-bottom: 15px;
+}
+
+a.btn {
+  line-height: 18.75px;
+}
+
+.btn-simple .spinner-default {
+  width: 14px;
+  height: 14px;
+}
+
+.goals-page {
+  width: 98%;
+  margin: 0 auto;
+
+  .modal-full {
+    z-index: $admin-header-z-index + 100;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.siteOuterWrapper {
+  background: #fff;
+}

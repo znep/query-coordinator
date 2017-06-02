@@ -1,0 +1,23 @@
+<ul class="subHeaderBar clearfix">
+  <%- if @view.is_tabular? -%>
+    <li class="subHeaderAction search">
+      <a href="#search" class="icon" title="Search within this Dataset">Search</a>
+    </li>
+  <%- end -%>
+  <li class="subHeaderAction about">
+    <a href="#about" class="icon" title="About this Dataset">About this Dataset</a>
+  </li>
+  <%- if @theme[:frame][:show_title] -%>
+    <li class="subHeaderAction datasetName">
+      <a href="<%= view_path(@view) %>" title="Go to this Dataset" rel="external"><%= @view.name %></a>
+    </li>
+  <%- end -%>
+  <%- if @theme[:menu][:fullscreen] -%>
+  <li class="subHeaderAction fullscreen right">
+    <a href="<%= view_path(@view) %>" class="icon" title="View this Dataset full screen" rel="external">Full screen</a>
+  </li>
+  <%- end -%>
+  <%- if @theme[:menu][:share] -%>
+  <li class="subHeaderAction share right"><div class="menu shareMenu"></div></li>
+  <%- end -%>
+</ul>

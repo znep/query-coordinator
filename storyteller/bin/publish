@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -ex
+
+# Log the author name and email of the last commit
+echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
+SERVICE_SHA="$(git rev-parse HEAD)"
+
+# Testing, duh.
+echo "RUN_TESTS=${RUN_TESTS}"
+if [ "${RUN_TESTS}" = "true" ]; then
+  # Consider refactoring bin/test_on_jenkins
+  # if storyteller builds on Jenkins are ever
+  # built concurrently.
+  bin/test
+else
+  echo "Skipping tests because RUN_TESTS is false"
+fi
+
+SERVICE_NAME='storyteller'
+SERVICE_VERSION=`bundle exec semver format "%M.%m.%p"`
+
+# We need to run the build from the root of the platform-ui repo.
+# Otherwise, docker won't be able to read files in ../common/
+# (docker builds cannot read files above the current directory).
+
+cd "${WORKSPACE}"
+
+# Update translations for site_chrome.
+pushd common
+  rake site_chrome:build
+popd
+
+rm -f marathon.properties
+rm -f dockerize.properties
+touch dockerize.properties
+
+echo "DOCKER_PATH=." >> dockerize.properties # Relative to the root of the repo!
+echo "SERVICE=${SERVICE_NAME}" >> dockerize.properties
+echo "SERVICE_BUILD_NUMBER=${BUILD_NUMBER}" >> dockerize.properties
+echo "CURRENT_REVISION_FILE_NAME=REVISION" >> dockerize.properties
+echo "SERVICE_VERSION=${SERVICE_VERSION}" >> dockerize.properties
+echo "DOCKER_BUILD_ARGS=\"-f storyteller/Dockerfile --build-arg ARTIFACTORY_USER=\${ARTIFACTORY_USER} --build-arg ARTIFACTORY_PASSWORD=\${ARTIFACTORY_PASSWORD}\"" >> dockerize.properties
+
+# Write REVISION file
+echo ${SERVICE_SHA} > "$WORKSPACE/storyteller/REVISION"
+
+echo "AUTO_DEPLOY=${AUTO_DEPLOY}"
+if [ "${AUTO_DEPLOY}" = "true" ]; then
+  ./ops-tools/jenkins/dockerize/dockerize-marathon dockerize.properties
+else
+  ./ops-tools/jenkins/dockerize/dockerize dockerize.properties
+fi

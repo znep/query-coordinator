@@ -1,0 +1,41 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:5704/whitepages/v1?q=katie
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      Cookie:
+      - "==Qi0q/ELtY7lxhg0i362p3+Gac5rtDQGDCHS8upStzxuk6dEVPoETL0uBhjX7DqocRQyGcUeff0AHtt7XjNv1+/=nekot-frsc-atarcos
+        ;=YzM5E2MhR2MiJTN5QGZxgTN3YmMiFDOiFjY0YzY2YmM3IDMlFWNmZDImZWZyITNxcjYyMjNgITO0ADNzcjN0EDIlpXO31SeuNDO=di_noisses_eroc_
+        ;762e7a39d27c5292b9dcb2a69562970b6f4be357--==AMGBwOG8Gdf5mc1RXZy5gIJRFVAsjB0lmbplgIJZEA7YQPBl3drE2K2AFbWRXeKB3T2dFdzMFergHMSl2TsZ2NGd2MNBXVNpkWVB3UwEjIJZEA7Ygblt2b09lZyN3YfBhIJdQaGBwOGIXZzVXCikkRAsjBzkDNhNzM0EGO4E2M4QDOzMWMhR2MjdTY0kjZ2UzY2kTJikkRFZgOGQWaf52bpN3clN3DikkC7hAB=di_noisses_atarcos_
+        ;eurt=ni_deggol"
+      X-Socrata-Host:
+      - opendata.rc-socrata.com
+      X-Socrata-Requestid:
+      - 55c8a53595d246c6ac8e20dd2a9bcb71
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Date:
+      - Thu, 30 Jun 2016 20:51:59 GMT
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.2.2.v20140723)
+    body:
+      encoding: UTF-8
+      string: '{ "results" : [], "resultSetSize" : 0 }'
+    http_version: 
+  recorded_at: Thu, 30 Jun 2016 20:51:59 GMT
+recorded_with: VCR 3.0.3

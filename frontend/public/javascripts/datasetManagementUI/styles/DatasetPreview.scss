@@ -1,0 +1,33 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.tableContents {
+  // this is a nice round number...
+  // because the table height needs to be divisible by
+  // the number of rows...plus...some
+  height: 543px;
+
+  clear: both;
+  border: none;
+  background: transparent;
+
+  :global {
+    .socrata-visualization {
+      border: none;
+    }
+
+    table {
+      background-color: $white; // why do i have to do this?
+    }
+
+    .socrata-table {
+      border: 1px solid $light-grey-4;
+      width: calc(100% - 2px); // Compensate for table border.
+    }
+
+    .socrata-pager {
+      border: 1px solid $light-grey-4;
+    }
+  }
+}

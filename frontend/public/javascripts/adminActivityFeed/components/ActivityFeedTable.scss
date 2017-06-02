@@ -1,0 +1,62 @@
+@import 'app/styles/styleguide-colors';
+
+.activity-feed-table {
+  background: $white;
+  padding: 16px;
+  padding-top: 26px;
+
+  display: flex;
+  flex-direction: column;
+
+  .table.table-condensed {
+    margin: 0;
+
+    thead {
+      tr {
+        border-bottom: 1px solid $light-grey-4;
+      }
+    }
+
+    th {
+      white-space: nowrap;
+    }
+
+    th[data-column-sorted] {
+      padding-right: 30px;
+
+      .sorting-indicator {
+        margin-left: 0;
+        margin-right: -25px;
+      }
+    }
+
+    th[data-column=name] {
+      width: 99%;
+    }
+
+    th[data-column=actions] {
+      min-width: 200px;
+    }
+
+    th, td {
+      padding: 10px 20px;
+    }
+
+    td {
+      white-space: nowrap;
+
+      a {
+        color: #5e5e5e;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .pagination {
+    margin: 25px 10px 10px 0;
+    align-self: flex-start;
+  }
+}

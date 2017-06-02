@@ -1,0 +1,38 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import "common/styleguide/variables/_colors.scss";
+
+.select {
+  -webkit-appearance: none;
+  appearance: none;
+  background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDI0IiBoZWlnaHQ9IjEwMjQiIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiPjx0aXRsZT4gIGFycm93LWRvd248L3RpdGxlPjxkZXNjPiAgQ3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+PGcgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2Utd2lkdGg6MTtzdHJva2U6bm9uZSI+PGcgZmlsbD0iIzVlNWU1ZSI+PHBvbHlnb24gcG9pbnRzPSI5NzIgMzEwLjUgOTE0LjUgMjUzIDUxMiA2NTUuNSAxMDkuNSAyNTMgNTIgMzEwLjUgNTEyIDc3MC41Ii8+PC9nPjwvZz48L3N2Zz4=);
+  background-size: 15px 15px;
+  background-repeat: no-repeat;
+  background-position: 96% 60%;
+  line-height: 1.25;
+  padding: 11px 15px;
+  width: 90%;
+  border-radius: 0;
+  border: 1px solid #c8c8c8;
+  padding-right: 2.3em;
+  margin-bottom: 13px;
+}
+
+.select::-ms-expand {
+    display: none; /* remove default arrow in IE 10 and 11 */
+}
+
+.selectError {
+  composes: select;
+  border-color: $error;
+  outline-color: $error;
+  background-color: lighten($error, 38%);
+  box-shadow: inset 0 0 10px lighten($error, 35%);
+  margin-bottom: 0px;
+}
+
+@media all and (max-width: 1100px) {
+  .select {
+    width: 275px;
+  }
+}

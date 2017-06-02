@@ -1,0 +1,15 @@
+<div class="g-recaptcha" data-sitekey="<%= RECAPTCHA_2_SITE_KEY %>"></div>
+<script>
+  function createRecaptchaTag() {
+    var head = document.querySelector("head");
+    var tag = document.createElement("script");
+    tag.type = "text/javascript";
+    tag.async = true;
+    tag.src = "https://www.google.com/recaptcha/api.js";
+    head.appendChild(tag);
+  }
+
+  if (window && !window.grecaptcha) {
+    createRecaptchaTag();
+  }
+</script>

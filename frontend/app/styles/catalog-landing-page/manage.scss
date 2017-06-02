@@ -1,0 +1,203 @@
+@import "styleguide-colors";
+@import "common/breakpoints";
+@import "common/mixins";
+@import "catalog-landing-page/search";
+@import "catalog-landing-page/header";
+@import "catalog-landing-page/help_flyout";
+@import "catalog-landing-page/featured_content";
+
+div.clp-manager {
+  padding: 10px;
+  max-width: 1000px;
+  margin: 0 auto;
+
+  h1.header {
+    margin: 1rem 0;
+  }
+
+  .catalog-landing-page-help-flyout {
+    position: relative;
+    margin-left: 0.5rem;
+
+    span.socrata-icon-question {
+      position: relative;
+      top: -0.1rem;
+    }
+
+    .flyout {
+      margin-left: 8px;
+      margin-top: 8px;
+    }
+  }
+
+  .explanation {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .show-stats {
+    margin-bottom: 13px;
+  }
+
+  .text-input {
+    width: 100%;
+
+    &::placeholder {
+      font-style: italic;
+    }
+  }
+
+  $markdownHelpFlannelWidth: 675px;
+
+  .acceptsMarkdown {
+    float: right;
+    text-align: right;
+    width: $markdownHelpFlannelWidth;
+  }
+
+  .markdownSyntax {
+    cursor: pointer;
+  }
+
+  .markdownHelp.socrata-flannel {
+    width: $markdownHelpFlannelWidth;
+    max-width: $markdownHelpFlannelWidth;
+
+    section.socrata-flannel-content {
+      font-size: 14px;
+      display: flex;
+
+      .info-button {
+        font-size: 40px;
+        color: $primary-dark;
+        margin-right: 7px;
+      }
+      .close-button {
+        font-size: 35px;
+        color: $light-grey-2;
+        line-height: 1.13;
+
+        i {
+          cursor: pointer;
+        }
+      }
+    }
+
+    p.heading {
+      font-weight: bold;
+      margin-top: 11px;
+    }
+  }
+
+  button.cancel-button {
+    margin-right: 10px;
+  }
+
+  .media-results {
+    display: flex;
+    justify-content: flex-start;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    overflow: hidden;
+    position: relative;
+
+    .result-card {
+      flex: 0 0 auto;
+      width: 32%;
+      height: 300px;
+      margin-right: 2%;
+
+      &.placeholder {
+        position: relative;
+        background: $light-grey-5;
+        border: 1px dashed $light-grey-3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .add-button {
+          height: 2.5rem;
+          padding: 0 2rem;
+        }
+      }
+
+      &.loading-card {
+        display: flex;
+
+        .spinner-large {
+          margin: auto;
+        }
+      }
+
+      @media(max-width: $medium) {
+        flex: 0 0 260px;
+      }
+
+      @media(min-width: $medium) {
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    .view-card-overlay {
+      .hover-target {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        cursor: pointer;
+
+        .overlay {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          background-color: rgba($primary-base, 0.1);
+          border: 3px solid $primary-base;
+
+          &.hidden {
+            display: none;
+          }
+
+          .buttons {
+            text-align: center;
+
+            button {
+              display: block;
+              max-width: 300px;
+              width: 100%;
+              text-align: left;
+
+              span {
+                display: inline;
+                margin-right: 0.3rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+
+    button:first-of-type {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+footer#site-chrome-footer {
+  margin-top: 20px;
+  visibility: hidden;
+}

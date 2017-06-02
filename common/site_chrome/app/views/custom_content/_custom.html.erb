@@ -1,0 +1,16 @@
+<%# EN-6555: Support for entirely custom headers/footers :sadpanda: %>
+
+<% site_chrome_custom_content.populate_translations %>
+
+<% section_id = "site-chrome-#{section}" %>
+<% custom_content_class = "site-chrome-custom-#{section}" %>
+
+<%= render_custom_content_html(
+  content: content,
+  section_id: section_id,
+  custom_content_class: custom_content_class,
+  size: local_assigns[:size]
+) %>
+
+<%= content_tag(:style, Sass::Engine.new(".#{custom_content_class} { #{raw(content[:css])} }",
+  SocrataSiteChrome::ThemesHelper.sass_engine_options).render.html_safe) rescue nil %>

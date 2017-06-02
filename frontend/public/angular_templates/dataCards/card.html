@@ -1,0 +1,90 @@
+<div class="card-text">
+  <card-title model="model"></card-title>
+  <div class="description"
+    ng-show="showDescription"
+    ng-class="{
+      clamped: descriptionClamped,
+      collapsed: descriptionCollapsed,
+      'with-animation': animationsOn
+    }">
+    <div class="description-truncated-content">
+      <!-- set in JS -->
+    </div>
+    <div class="description-expanded-wrapper">
+      <div class="description-expanded-content">
+        {{description}}
+      </div>
+      <div class="description-expand-button"
+        ng-class="{
+          'icon-chevron-down': descriptionCollapsed,
+          'icon-chevron-up': !descriptionCollapsed
+        }"
+        ng-click="descriptionCollapsed = !descriptionCollapsed">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card-visualization" ng-switch="cardType">
+  <choropleth ng-switch-when="choropleth"></choropleth>
+  <column-chart ng-switch-when="column"></column-chart>
+  <feature-map ng-switch-when="feature"></feature-map>
+  <distribution-chart ng-switch-when="histogram"></distribution-chart>
+  <search-card ng-switch-when="search"></search-card>
+  <table-card ng-switch-when="table" model="model" where-clause="whereClause"></table-card>
+  <timeline-chart ng-switch-when="timeline"></timeline-chart>
+  <invalid-card ng-switch-when="invalid"></invalid-card>
+</div>
+
+<!--Card controls are only available if card is not a table card, and is customizable-->
+<!--They are hidden on table cards, and visible but disabled on other non-customizable cards-->
+<div class="card-controls" ng-show="!chooserMode.show">
+  <div class="card-control icon-table debug-flyout"
+    ng-show="debugDataLens">
+  </div>
+  <div class="card-control icon-settings"
+    ng-click="customizeCard()"
+    ng-show="editMode && interactive && model.fieldName !== '*'"
+    title="{{'cardControls.customizeEnabled' | I18n}}">
+  </div>
+  <div ng-attr-title="{{ (expanded ? 'cardControls.collapseCard' : 'cardControls.expandCard') | I18n }}"
+    ng-click="toggleExpanded()"
+    ng-class="{'icon-expand': !expanded, 'icon-collapse': expanded}"
+    ng-show="!editMode && interactive"
+    class="card-control">
+  </div>
+  <div class="card-control icon-close"
+    title="{{::'cardControls.removeCard' | I18n}}"
+    ng-click="deleteCard()"
+    ng-show="editMode && interactive && model.fieldName !== '*'">
+  </div>
+</div>
+
+<div class="card-drag-overlay overlay"
+  data-card-id="{{cardState.model.uniqueId}}"
+  ng-if="editMode && model.fieldName !== '*'"></div>
+
+<div ng-show="chooserMode.show"
+  class="card-chooser overlay"
+  ng-class="{ enabled: isExportable }">
+  <div ng-switch="isExportable">
+    <button ng-switch-when="true"
+      class="action-btn action-png-export"
+      ng-click="exportCard($event)"
+      ng-class="{
+        disabled: !isExportable,
+        working: downloadState === 'loading',
+        success: downloadState === 'success',
+        error: downloadState === 'error'
+      }">
+      {{ downloadStateText(downloadState) }}
+      <spinner ng-if="downloadState === 'loading'"></spinner>
+    </button>
+    <button ng-switch-default
+      class="action-btn action-png-export export-visualization-disabled disabled">
+      {{ downloadStateText(downloadState) }}
+    </button>
+  </div>
+</div>
+
+<div class="flypaper" ng-if="!interactive"></div>

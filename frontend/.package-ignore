@@ -1,0 +1,9 @@
+*.tgz
+log/*.log
+z-index-list.txt
+README
+dev-server
+storyteller
+packages
+nbproject
+.git

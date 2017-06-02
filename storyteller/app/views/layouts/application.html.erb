@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+<head>
+  <%= site_chrome_analytics_tags %>
+
+  <%= default_meta_tags() %>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <title><%= page_title %></title>
+
+  <% if action_name == 'show' %>
+    <link rel="canonical" href="<%= @story_url_for_view %>">
+  <% end %>
+
+  <%= site_chrome_favicon_tag %>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
+  <%= stylesheet_link_tag '/themes/custom.css', media: 'all' %>
+  <%= stylesheet_link_tag 'story-view', media: 'all' %>
+  <%= stylesheet_link_tag 'print', media: 'print' %>
+  <%= site_chrome_stylesheet_tag %>
+
+  <%= render 'stories/partials/storyteller_environment' %>
+  <%= render_feature_flags_for_javascript %>
+
+  <%= google_font_code_embed %>
+
+  <!-- Twitter Sharing Metadata -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@govstories">
+  <% block_images = @story.block_images(:large) -%>
+  <% if block_images.present? %>
+    <meta name="twitter:image" content="<%= block_images.first %>">
+  <% end %>
+  <!-- Open Graph Sharing Metadata -->
+  <meta property="og:title" content="<%= @story_metadata.title %>">
+  <meta property="og:description" content="<%= @story_metadata.description %>">
+  <% block_images.each do |image| %>
+    <meta property="og:image" content="<%= image %>">
+  <% end %>
+</head>
+<body id="story-view">
+
+<%# Skiplinks for A11Y support. The hrefs correspond to element IDs. %>
+<div class="skip-links">
+  <a class="skip-link" title="<%= t('accessibility.skip_to_content') %>" href="#content"><%= t('accessibility.skip_to_content') %></a>
+  <a class="skip-link" title="<%= t('accessibility.skip_to_footer') %>" href="#site-chrome-footer"><%= t('accessibility.skip_to_footer') %></a>
+</div>
+
+<% if should_launch_print_dialog_on_page_load? %>
+<div id="print-overlay">
+  <span class="spinner-default spinner-large"></span>
+  <h3><%= t('print.preparing_story') %></h3>
+  <a
+    rel="external"
+    target="_blank"
+    href="https://socrata.zendesk.com/knowledge/articles/234584128"><%= t('print.help_link') %></a>
+  <div class="progress-bar"></div>
+</div>
+<% end %>
+
+<%= yield %>
+
+<% if Rails.env.test? -%>
+  <%= javascript_include_tag 'sinon-server-1.17.3' %>
+  <%= storyteller_javascript_include_tag 'test' %>
+<% end -%>
+<%= storyteller_javascript_include_tag 'view' %>
+<%= render 'shared/google_analytics_script' %>
+<%= site_chrome_javascript_tag %>
+
+<% if should_launch_print_dialog_on_page_load? %>
+<%# We need to wait for charts, etc to load data before printing.
+  # We don't have a way to do that that will work across all embeddable
+  # chart types (and HTML embeds, etc). So, we do a blind wait. This
+  # fake progress bar gives the user something to look at.%>
+<script>
+  $(function() {
+    var timeout = 10000;
+    var $overlay = $('#print-overlay');
+    $overlay.find('.progress-bar').animate(
+      {
+        'width': '100%'
+      },
+      timeout,
+      function() {
+        $overlay.remove();
+        window.print();
+      }
+    );
+  });
+</script>
+<% end %>
+</body>
+</html>

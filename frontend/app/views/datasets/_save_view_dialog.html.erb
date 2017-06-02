@@ -1,0 +1,33 @@
+<%= modal :class => 'saveViewDialog' do %>
+  <h2 class="normalSave"><%= t('screens.ds.save_dialog.titles.normal') %></h2>
+  <h2 class="leavingSave"><%= t('screens.ds.save_dialog.titles.prompt') %></h2>
+  <p class="leavingSave info"><%= t('screens.ds.save_dialog.descriptions.leaving') %></p>
+  <p class="reloadSave info"><%= t('screens.ds.save_dialog.descriptions.reload_save') %></p>
+  <p class="reloadUpdate info"><%= t('screens.ds.save_dialog.descriptions.reload_update') %></p>
+  <label for="newName" class="newName"><%= t('screens.ds.save_dialog.form.new_name') %></label>
+  <form class="commonForm" action="#save">
+    <input id="newName" type="text" class="viewName" />
+  </form>
+  <div class="mainError"></div>
+  <ul class="actions clearfix">
+    <li>
+      <a class="jqmClose button cancel" href="#cancel"><%= t('core.dialogs.cancel') %></a>
+    </li>
+    <li>
+      <a class="button dontSave jqmClose leavingSave"
+        href="#dontSave"><%= t('core.dialogs.dont_save') %></a>
+    </li>
+    <li>
+      <a class="button save submit" href="#save"><%= t('core.dialogs.save') %></a>
+    </li>
+    <li>
+      <a class="button update submit reloadUpdate"
+        href="#update"><%= t('core.dialogs.update') %></a>
+    </li>
+  </ul>
+<%- end -%>
+
+<%- content_for :translations do -%>
+  <%= render_translations LocalePart.screens.ds.save_dialog %>
+<%- end -%>
+

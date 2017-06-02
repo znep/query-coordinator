@@ -1,0 +1,8 @@
+<div class="actions-bar">
+  <% if can_edit_story? && is_published_view? -%>
+    <button class="btn btn-edit socrata-icon-edit" title="Edit This Story"></button>
+  <% end -%>
+  <button class="btn-presentation-previous socrata-icon-arrow-left hidden" title="<%= t('preview_mode.presentation_mode.previous') %>"></button>
+  <button class="btn-presentation-next socrata-icon-arrow-right hidden" title="<%= t('preview_mode.presentation_mode.next') %>"></button>
+  <button class="btn-presentation-mode socrata-icon-presentation" title="<%= t('preview_mode.presentation_mode.title') %>"></button>
+</div>

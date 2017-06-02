@@ -1,0 +1,61 @@
+new-share-dialog {
+  section {
+    margin-bottom: 1rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    .new-share {
+      margin-bottom: .75rem;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      label {
+        display: inline-block;
+        line-height: 29px;
+        margin-right: 0.5rem;
+      }
+      >div {
+        margin-right: 0.5rem;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+      input.email {
+        box-sizing: border-box;
+        display: inline-block;
+        position: relative;
+        margin-top: 1px;
+        padding: 0.5rem 0.6rem;
+        width: 12rem;
+        outline: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+      }
+      soc-select select {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+      }
+    }
+    textarea.optional-message {
+      overflow: auto;
+      height: 5rem;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      resize: none;
+      outline: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    .done-button, .remove-button {
+      float: right;
+    }
+    .done-button {
+      font-size: 1rem;
+    }
+    .add-more-button, .remove-button {
+      font-size: .75rem;
+    }
+  }
+}

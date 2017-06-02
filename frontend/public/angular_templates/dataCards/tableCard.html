@@ -1,0 +1,27 @@
+<div class="table-inner">
+  <div class="table-head">
+    <div
+      ng-repeat="header in headers"
+      class="th"
+      data-index="{{ header.index }}"
+      data-column-id="{{header.columnId}}"
+      ng-click="sortOnColumn($event, header.columnId)"
+      ng-class="{active: header.active, sortable: header.sortable}"
+      ng-style="{width: header.width+'px'}">
+      <div class="content">
+        <span
+          class="caret"
+          aria-label="sort"
+          ng-class="{sortUp: header.sortUp}"
+          ng-if="header.sortable"></span>
+        <span>{{header.name}}</span>
+      </div>
+      <span class="resize"></span>
+    </div>
+  </div>
+  <div class="table-body vertically-hidden">
+    <div class="table-expander"></div>
+  </div>
+  <div ng-show="showCount" class="table-label" ng-bind-html="tableLabel">{{::'table.loading' | I18n}}</div>
+  <div class="table-has-no-rows-message">{{::'table.noRows' | I18n}}</div>
+</div>

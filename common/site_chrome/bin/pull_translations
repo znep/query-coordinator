@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Import our english strings to LocaleApp
+# Pulls api key from:
+# - LOCALEAPP_API_KEY env var
+# - .env
+# - .localeapp/config.rb
+
+set -e
+
+if [ -z $SITE_CHROME_LOCALEAPP_API_KEY ]; then
+ echo "SITE_CHROME_LOCALEAPP_API_KEY is required to run this script."
+ exit 1
+else
+  LOCALEAPP_API_KEY=$SITE_CHROME_LOCALEAPP_API_KEY localeapp pull config/locales
+fi

@@ -1,0 +1,22 @@
+# We ignore database.yml. Copy this and adjust for local setup.
+# Should work for local setup by default.
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: storyteller_development
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: storyteller_test
+
+aws_migrations:
+  adapter: postgresql
+  encoding: unicode
+  host: <%= ENV['PG_DB_HOST'] %>
+  database: <%= ENV['PG_DB_NAME'] %>
+  port: <%= ENV['PG_DB_PORT'] %>
+  username: <%= ENV['PG_DB_USER'] %>
+  password: <%= ENV['PG_DB_PASSWORD'] %>

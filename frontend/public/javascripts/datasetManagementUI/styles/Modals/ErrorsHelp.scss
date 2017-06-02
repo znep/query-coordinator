@@ -1,0 +1,122 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.help {
+  composes: help from global;
+}
+
+.kinds {
+  display: flex;
+
+  h6 {
+    position: relative;
+    text-align: center;
+  }
+}
+
+.rowErrors {
+  flex-grow: 2;
+}
+
+.typeErrors {
+  flex-grow: 1;
+}
+
+.rowErrors,
+.typeErros {
+  display: inline-block;
+}
+
+.errorCount {
+  color: $error-base;
+}
+
+.typesOfErrors {
+  font-weight: 900;
+}
+
+.helpVis1a {
+  max-width: 100%;
+}
+.helpVis1b {
+  max-width: 100%;
+}
+.helpVis2 {
+  max-width: 100%;
+}
+.helpVis3 {
+  max-width: 100%;
+}
+
+.caption {
+  composes: small from global;
+}
+
+.nextButton {
+  composes: btn from global;
+  composes: btn-primary from global;
+}
+.previousButton {
+  composes: btn from global;
+  composes: btn-default from global;
+}
+
+.dot {
+  display: inline-block;
+  font-size: 20px;
+  margin: 0 5px;
+  line-height: 42px;
+  color: $light-grey-2;
+  cursor: pointer;
+}
+.dotSelected {
+  color: $primary-base;
+}
+
+.header {
+  text-align: left;
+  box-shadow: none;
+  margin-bottom: 12px;
+
+  button {
+    min-width: 0px;
+  }
+
+  :global {
+    .modal-header-dismiss {
+      font-size: 20px;
+    }
+  }
+}
+
+.content {
+  position: relative;
+  overflow: hidden;
+  padding: 0px 19px;
+  min-height: 330px;
+}
+
+.footer {
+  background: $white;
+  position: relative;
+  border: none;
+
+  :global {
+    .modal-footer-actions {
+      text-align: center;
+      position: relative;
+    }
+  }
+
+  button {
+    min-width: 120px;
+    margin-left: 12px;
+  }
+}
+
+.buttonContainer {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

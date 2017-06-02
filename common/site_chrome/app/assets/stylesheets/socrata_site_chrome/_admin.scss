@@ -1,0 +1,296 @@
+#site-chrome-admin-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right:0;
+  display: flex;
+  flex-direction: row;
+  background-color: #636a71;
+  color: #ffffff;
+  height: 46px;
+  z-index: 9999;
+  font-family: 'Open Sans', 'Helvetica', sans-serif;
+  justify-content: space-between;
+
+  &.site-chrome-small {
+    height: 32px;
+
+    a {
+      font-size: 13px;
+      padding: 6px 12px;
+    }
+
+    .site-chrome-admin-separator {
+      height: 20px;
+    }
+
+    .site-chrome-admin-menu h1 {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .site-chrome-admin-user {
+      padding: 2px 13px;
+
+      > .socrata-icon-user {
+        width: 28px;
+        height: 28px;
+        font-size: 28px;
+      }
+    }
+
+    .site-chrome-admin-settings {
+      padding: 3px 13px;
+
+      span[class^=socrata-icon] {
+        line-height: 25px;
+        display: block;
+        width: 25px;
+        height: 25px;
+        font-size: 25px;
+      }
+    }
+
+    .site-chrome-admin-user-image {
+      width: 28px;
+      height: 28px;
+
+      img {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    line-height: 1.6;
+  }
+
+  a {
+    color: #ffffff;
+    text-decoration: none;
+    height: 100%;
+    display: block;
+    padding: 11px 17px;
+    font-weight: lighter;
+    font-size: 15px;
+  }
+
+  a, [tabIndex] {
+    &:focus {
+      outline-color: #42bfff;
+      outline-style: auto;
+      outline-width: 5px;
+      outline-offset: -4px;
+    }
+  }
+
+  .site-chrome-admin-title {
+    height: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    overflow: hidden;
+
+    a {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      font-weight: 400;
+    }
+  }
+
+  .site-chrome-admin-separator {
+    margin: auto 5px;
+    width: 1px;
+    height: 32px;
+    background-color: #777777;
+  }
+
+  .site-chrome-admin-profile {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .site-chrome-admin-menus {
+    display: flex;
+    margin-left: 5px;
+    margin-right: 5px;
+    height: 100%;
+  }
+
+  .site-chrome-admin-settings {
+    span[class^=socrata-icon] {
+      line-height: 32px;
+      display: block;
+      width: 32px;
+      height: 32px;
+      font-size: 32px;
+    }
+  }
+
+  .site-chrome-admin-menu,
+  .site-chrome-admin-user,
+  .site-chrome-admin-settings {
+    &.active ul {
+      display: block;
+    }
+
+    &:hover,
+    &.active {
+      background-color: #3b454e;
+    }
+  }
+
+  .site-chrome-admin-menu {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+
+    h1 {
+      font-size: 15px;
+      font-weight: lighter;
+      padding: 11px 17px;
+      margin: 0;
+      white-space: nowrap;
+      height: 100%;
+    }
+
+    .socrata-icon-arrow-down {
+      display: inline-block;
+      margin-left: 8px;
+    }
+
+    ul {
+      display: none;
+      list-style-type: none;
+      margin: 0;
+      padding: 10px 0;
+      position: absolute;
+      left: 0;
+      top: 100%;
+      width: 225px;
+      border-top: solid 2px #636a71;
+      box-shadow: 0 0 10px #333;
+      background: #3b454e;
+
+      li {
+
+        a {
+          display: block;
+          padding: 5px 14px;
+
+          &:hover {
+            background-color: #182633;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+
+  .site-chrome-admin-header-section {
+    display: flex;
+  }
+
+  .site-chrome-admin-user,
+  .site-chrome-admin-settings {
+    position: relative;
+    margin-right: 0;
+    height: 100%;
+    padding: 6px 19px;
+
+    &:hover {
+      background-color: #3c3c3c;
+      cursor: pointer;
+    }
+
+    > .socrata-icon-user {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: white;
+      display: block;
+      color: #c3c3c3;
+      text-align: center;
+      font-size: 36px;
+      overflow: hidden;
+      line-height: 1.2;
+    }
+
+    ul {
+      display: none;
+      position: absolute;
+      right: 10px;
+      top: 100%;
+      width: 200px;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      background: white;
+      box-shadow: 0 8px 5px -3px #a5a5a5;
+      z-index: 10;
+      margin-top: 15px;
+
+      &::after {
+        position: absolute;
+        content: "";
+        display: block;
+        right: 12px;
+        top: -29px;
+        pointer-events: none;
+        border: solid 15px white;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        border-top-color: transparent;
+      }
+
+      li {
+
+        &.separator {
+          height: 1px;
+          background: #dedede;
+        }
+
+        a {
+          display: block;
+          padding: 5px 7px;
+          color: #535353;
+          border-left: solid 7px #dedede;
+
+          * {
+            vertical-align: middle;
+          }
+
+          [class^="socrata-icon-"] {
+            margin-right: 4px;
+            font-size: 18px;
+          }
+
+          &:hover {
+            background: #f2f2f2;
+            border-color: #535353;
+          }
+        }
+      }
+    }
+  }
+
+  .site-chrome-admin-user-image {
+    width: 35px;
+    height: 35px;
+    overflow: hidden;
+    border-radius: 50%;
+    border: solid 1px #000;
+
+    img {
+      width: 35px;
+      height: 35px;
+    }
+  }
+
+  #site-chrome-header-notifications {
+    width: 40px;
+    margin-top: 1px;
+  }
+}

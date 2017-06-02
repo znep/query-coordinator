@@ -1,0 +1,22 @@
+<% # sitemap isn't user-agent specific %>
+Sitemap: <%= APP_CONFIG.sitemap_s3_url || "http://#{CurrentDomain.cname}" %>/sitemap-<%= CurrentDomain.cname %>.xml
+
+User-agent: *
+<%= render "common" %>
+
+<% # We see cases with various customers where the Google Search Appliance crawler just repeatedly crawls old javascript/etc., so don't let it %>
+User-agent: gsa-crawler
+<%= render "common" %>
+Disallow: /packages/
+Disallow: /styles/
+
+<% # nys-crawler and nys-qa-crawler show similar behaviour to gsa-crawler... presumably just changed the user agent? %>
+User-agent: nys-crawler
+<%= render "common" %>
+Disallow: /packages/
+Disallow: /styles/
+
+User-agent: nys-qa-crawler
+<%= render "common" %>
+Disallow: /packages/
+Disallow: /styles/

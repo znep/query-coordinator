@@ -1,0 +1,42 @@
+<% content_for :head do %>
+  <title><%= @view.name %> | <%= t('dataset_management_ui.manage') %></title>
+  <%= rendered_stylesheet_tag('dataset-management-ui') %>
+<% end %>
+
+<% @site_chrome_admin_header_options = {size: 'small'} %>
+<% @suppress_site_chrome_header = render_site_admin_chrome? %>
+
+<%- if @suppress_site_chrome_header -%>
+<div id="app" class="no-chrome-header">
+<%- else -%>
+<div id="app">
+<%- end -%>
+  <div id="initial-spinner-container">
+    <span class="spinner-default spinner-large"></span>
+  </div>
+</div>
+
+<% content_for :scripts do %>
+  <%= render_dataset_management_ui_server_config(@websocket_token) %>
+  <%= render_dataset_management_ui_translations %>
+
+  <script>
+    var arrayToObject = function(titleAndValue) {
+      return {
+        title: titleAndValue[0],
+        value: titleAndValue[1]
+      };
+    };
+
+    var initialState = {
+      view: <%== @view.to_json %>,
+      // TODO: EN-15763: change "update" to "revision" here and everywhere else in JS stemming from here
+      revision: <%== @revision.to_json %>,
+      datasetCategories: <%== flatten_category_tree.to_json %>.map(arrayToObject),
+      datasetLicenses: <%== licenses.to_json %>.map(arrayToObject),
+      customMetadata: <%== get_dataset_management_ui_custom_metadata.to_json %>
+    };
+  </script>
+  <%= render :partial => 'templates/mixpanel_tracking_no_util' %>
+  <%= include_webpack_bundle 'dataset-management-ui/main.js' %>
+<% end %>

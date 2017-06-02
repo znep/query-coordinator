@@ -1,0 +1,26 @@
+@import 'app/styles/styleguide-colors';
+
+.pagerBar {
+  min-height: 36px;
+  border-top: 1px solid $light-grey-4;
+  padding: 5px 8px;
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  :global {
+    .pager {
+      margin-bottom: 0;
+      float: right;
+
+      .current-page-input > input {
+        text-align: right;
+      }
+    }
+  }
+}

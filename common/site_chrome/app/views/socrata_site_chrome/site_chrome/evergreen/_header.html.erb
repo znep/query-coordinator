@@ -1,0 +1,49 @@
+<header id="site-chrome-header" class="<%= size %>" role="banner" template="evergreen">
+  <div class="banner">
+    <div class="header-content">
+      <%= header_logo %>
+
+      <nav class="desktop" aria-label="<%= t('header.header_links_aria_label') %>">
+
+        <div class="evergreen-link-cluster">
+
+          <%= render 'site_chrome/user_actions' %>
+
+          <% if show_language_switcher? %>
+            <%= render 'site_chrome/language_switcher', :orientation => 'bottom' %>
+          <% else %>
+            <%= divider %>
+          <% end %>
+
+          <div class="collapsible-search" data-catalog-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>" data-catalog-autocomplete-collapsible="true">
+            <span class="socrata-icon-search collapsible-search-toggle"
+              title="<%= t('header.search') %>" onclick="toggleCollapsibleSearch(this)" role="button">
+            </span>
+            <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), vanishing_search_button: true %>
+          </div>
+
+          <% if valid_social_links(site_chrome_instance.general[:social_shares]).present? %>
+            <%= divider %>
+          <% end %>
+
+          <div class="site-chrome-social-links">
+            <%= render 'site_chrome/social_links' %>
+          </div>
+
+          <%= divider %>
+
+        </div>
+
+        <%= navbar_links_div(:use_dropdown => true) %>
+      </nav>
+
+      <nav class="mobile" aria-label="<%= t('header.header_links_aria_label') %>">
+        <a class="site-chrome-btn menu-toggle" href="#" onclick="mobileMenuToggle()">
+          <span class="socrata-icon-hamburger"></span>
+          <%= t('header.menu') %>
+        </a>
+      </nav>
+    </div>
+  </div>
+  <%= render 'site_chrome/mobile_menu' %>
+</header>

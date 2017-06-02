@@ -1,0 +1,54 @@
+@import 'app/styles/styleguide-colors';
+
+.selected-rows-indicator {
+  display: block;
+  border: 1px solid $light-grey-3;
+  border-left: 0;
+  border-right: 0;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.selected-rows-count {
+  font-size: 13px;
+}
+
+.form-light-notice {
+  display: block;
+  font-size: 13px;
+  color: $dark-grey-1;
+}
+
+.edit-goal-list {
+  border-bottom: 1px solid $light-grey-3;
+  background: $light-grey-6;
+  padding-bottom: 8px;
+}
+
+.edit-goal-list {
+  width: 100%;
+  border-collapse: collapse;
+
+  tr {
+    &:hover {
+      background: $light-grey-5;
+    }
+  }
+
+  td.edit-link {
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+.bulk-edit-modal {
+  .modal-container {
+    max-width: 600px;
+  }
+
+  .modal-footer {
+    padding: 8px;
+    background: $light-grey-6;
+    border-top: 1px solid $light-grey-3;
+  }
+}

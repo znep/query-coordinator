@@ -1,0 +1,90 @@
+source 'https://repo.socrata.com/artifactory/api/gems/rubygems-virtual/'
+
+# This needs to be included before other gems that use environment variables
+gem 'dotenv-rails', :groups => [ :development, :test ]
+
+gem 'actionpack-page_caching'
+gem 'addressable'
+gem 'airbrake', '4.3.0'
+gem 'asset-inventory', '~> 1.1.1'
+gem 'awesome_print'
+gem 'axlsx', '~> 1.3.4'
+gem 'cetera-ruby', :require => 'cetera'
+gem 'dalli', '~> 2.7', '>= 2.7.6' # Doesn't work with nutcracker / twemproxy
+gem 'dalli-elasticache', '~> 0.2.0'
+gem 'diplomat' # Used by downtime / mainenance window notices
+gem 'hashie', '2.1.2'
+gem 'httparty'
+gem 'i18n-tasks', '~> 0.9.5'
+gem 'lograge'
+gem 'memcache-client', '~> 1.8.5' # Using this unsupported gem since twemproxy doesn't support binary protocol used by Dalli
+gem 'mixpanel-ruby', '~> 1.6.0'
+gem 'money', '~> 3.7.1'
+gem 'multipart-post', '>= 1.0.1', :require => 'net/http/post/multipart'
+gem 'omniauth', '~> 1.2'
+gem 'omniauth-auth0', '~> 1.1'
+gem 'parser', '~> 2.3.3', '>= 2.3.3.1'
+gem 'rack'
+gem 'rails', '~> 4.2.8', :require => nil
+gem 'recaptcha', '0.3.5', :require => 'recaptcha/rails'
+gem 'redcarpet'
+gem 'request_store'
+gem 'rinku', :require => 'rails_rinku'
+gem 'sanitize' # Note that this is in addition to the default Rails implementation.
+gem 'sass-rails', '~> 5.0'
+gem 'semver2'
+gem 'signaller-ruby', :require => 'signaller'
+gem 'snappy'
+gem 'statsd-ruby', '~>1.3.0'
+gem 'therubyracer'
+gem 'unicorn'
+gem 'unicorn_metrics', '~> 0.2.3'
+gem 'unicorn-worker-killer'
+gem 'unparser', '~> 0.2.5'
+gem 'xray', :require => 'xray/thread_dump_signal_handler'
+gem 'zip'
+gem 'zk', '~> 1.9.2'
+gem 'zookeeper', '~> 1.4.9'
+gem 'zendesk2', '~> 1.12'
+
+# For Ops rake tasks
+gem 'net-ping'
+gem 'mrdialog'
+gem 'inifile'
+gem 'git'
+gem 'clipboard'
+gem 'jenkins_api_client'
+
+# We use a group to disable it while building
+# the base image that frontend uses for Jenkins
+# building, testing, and linting.
+group :common do
+  gem 'socrata_site_chrome', path: '../common/site_chrome'
+end
+
+group :test do
+  gem 'factory_girl'
+  gem 'guard'
+  gem 'guard-minitest'
+  gem 'guard-rspec', :require => false
+  gem 'minitest', '~> 5.8', '>= 5.8.4'
+  gem 'minitest-reporters', '~> 1.1', '>= 1.1.8'
+  gem 'mocha', :require => false
+  gem 'rails-dom-testing'
+  gem 'rb-fsevent'
+  gem 'rspec', '~> 3.4'
+  gem 'rspec-core', '~> 3.4', '>= 3.4.3'
+  gem 'rspec-rails', '~> 3.4', '>= 3.4.2'
+  gem 'shoulda-context'
+  gem 'timecop'
+  gem 'test-unit'
+  gem 'vcr'
+  gem 'webmock'
+end
+
+group :development, :test do
+  gem 'byebug'
+  gem 'rb-readline'
+  gem 'reek', '~> 4.5.6'
+  gem 'thin'
+end

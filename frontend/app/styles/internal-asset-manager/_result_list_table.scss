@@ -1,0 +1,111 @@
+@import "styleguide-colors";
+@import "internal-asset-manager/action_dropdown";
+@import "internal-asset-manager/action_modal";
+@import "internal-asset-manager/mixins/multi_line_ellipsis";
+
+table.result-list-table {
+  margin: 0;
+
+  thead {
+    tr {
+      th {
+        white-space: nowrap;
+        background: $light-grey-5;
+        border: 1px solid $light-grey-3;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+
+        &.active {
+          font-weight: 700;
+          background: $light-grey-4;
+
+          .column-name {
+            margin-right: 1rem;
+          }
+        }
+
+        &.name {
+          width: 600px;
+        }
+
+        .ascending-arrow, .descending-arrow {
+          display: none;
+          position: absolute;
+          right: 0.5rem;
+        }
+
+        &.ascending {
+          .ascending-arrow {
+            display: inline-block;
+          }
+        }
+
+        &.descending {
+          .descending-arrow {
+            display: inline-block;
+          }
+        }
+
+        &:last-of-type {
+          border-right: none;
+        }
+      }
+    }
+  }
+
+  tr.result-list-row {
+    &:hover {
+      background: $primary-light;
+
+      td.name {
+        span.description {
+          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $primary-light);
+        }
+      }
+    }
+
+    td {
+      &.name {
+        a {
+          text-decoration: none;
+        }
+
+        span.name {
+          font-size: 15px;
+        }
+
+        span.description {
+          display: block;
+          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $light-grey-6);
+        }
+      }
+
+      &.type {
+        text-align: center;
+      }
+
+      &.type, &.visibility {
+        *[class^="socrata-icon-"] {
+          font-size: 18px;
+        }
+      }
+
+      &.visibility {
+        .title {
+          display: flex;
+          align-items: center;
+
+          strong {
+            margin-left: 0.25rem;
+          }
+        }
+
+        .visibility-description {
+          color: $light-grey-1;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}

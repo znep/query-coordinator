@@ -1,0 +1,12 @@
+{
+  "extends": "../../../node_modules/eslint-base/.eslintrc-airbnb.json",
+  "rules": {
+    "padded-blocks": 0,
+    "import/default": "off"
+  },
+  "settings": {
+    "import/ignore": [
+      "\\.(scss|css)$"
+    ]
+  }
+}

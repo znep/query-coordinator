@@ -1,0 +1,59 @@
+.siteContentWrapper {
+  padding: 0;
+}
+
+.admin-link-columns {
+  display: flex;
+  flex-direction: row;
+  background: #fff;
+  padding: 1em 1.5em;
+
+  section {
+    padding: 10px 20px;
+    flex-grow: 1;
+    flex-basis: 0;
+
+    h2 {
+      padding: 5px 8px 2px;
+      border-bottom: 1px solid #e4e4e4;
+      color: #767676;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .super-admin-menu {
+      background: #f8f8f8;
+      border: 1px solid #e4e4e4;
+      margin-bottom: 30px;
+
+      ul.admin-link-list li {
+        margin-bottom: 0;
+      }
+    }
+
+    ul.admin-link-list {
+      margin: 0;
+      padding: 0;
+
+      li {
+        list-style: none;
+        margin: 0 0 17px;
+        padding: 8px;
+      }
+
+      a {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 20px;
+        color: #1C6387;
+      }
+
+      p {
+        margin: 3px 0 0;
+        font-size: 13px;
+        line-height: 16px;
+        color: #5e5e5e;
+      }
+    }
+  }
+}

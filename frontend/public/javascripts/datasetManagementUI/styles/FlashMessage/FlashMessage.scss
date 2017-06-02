@@ -1,0 +1,50 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import "common/styleguide/variables/_colors.scss";
+
+.base {
+  text-align: center;
+  font-size: 17px;
+  border-bottom: 2px solid;
+  line-height: 3.4;
+  width: 100%;
+  position: relative;
+}
+
+.success {
+  composes: base;
+  color: $success-dark;
+  background-color: lighten($success, 38%);
+  border-bottom-color: $success-dark;
+}
+
+.error {
+  composes: base;
+  color: $error-dark;
+  background-color: lighten($error, 38%);
+  border-bottom-color: $error-dark;
+}
+
+.icon {
+  margin-right: 0.5em;
+}
+
+.iconError {
+  composes: icon;
+  color: $error;
+}
+
+.iconSuccess {
+  composes: icon;
+  color: $success;
+}
+
+.closeButton {
+  position: absolute;
+  right: 10px;
+  line-height: 1;
+  cursor: pointer;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+}

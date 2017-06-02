@@ -1,0 +1,27 @@
+#viewsContent {
+  .browseSection {
+    padding-top: 1em;
+    .nameDesc {
+      .description {
+        max-width: 20em;
+        @include clip-text;
+      }
+    }
+    .datasetActions {
+      width: 20em;
+      .moderateActions {
+        position: relative;
+        top: -0.6em;
+        .textStatus {
+          display: inline-block;
+          font-weight: bold;
+          width: 5em;
+        }
+        form {
+          font-size: 0.8em;
+          display: inline;
+        }
+      }
+    }
+  }
+}

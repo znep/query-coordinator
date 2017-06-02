@@ -1,0 +1,34 @@
+<div class="suggestion-tool-panel tool-panel downwards light left" ng-show="shouldShow">
+  <div class="tool-panel-main active">
+    <div class="tool-panel-inner-container">
+      <div class="tool-panel-hint"></div>
+
+      <div class="suggestions-status">
+        <div ng-show="suggestionsLoading">
+          <div class="loading-message">{{::'searchCard.loading' | I18n}}</div>
+          <spinner class="spinner"></spinner>
+        </div>
+
+        <span ng-hide="suggestionsLoading || error">{{suggestionsStatus}}</span>
+
+        <div class="suggestions-error" ng-hide="suggestionsLoading || !error">
+          <span class="icon-warning"></span>
+          <div ng-bind-html="::'searchCard.errorExplanation' | I18n"></div>
+        </div>
+      </div>
+
+      <intractable-list
+        ng-if="suggestions"
+        list-data="suggestions"
+        datum-length="maxSuggestionLength"
+        ng-hide="suggestionsLoading">
+      </intractable-list>
+
+      <div class="suggestion-examples">
+        <div>{{suggestionsAdvice}}</div>
+        <div ng-show="showSamples && sampleOne && !sampleTwo">({{'searchCard.oneExample' | I18n:sampleOne}})</div>
+        <div ng-show="showSamples && sampleOne && sampleTwo">({{'searchCard.twoExamples' | I18n:sampleOne:sampleTwo}})</div>
+      </div>
+    </div>
+  </div>
+</div>

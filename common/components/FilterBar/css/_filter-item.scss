@@ -1,0 +1,182 @@
+$filter-z-index: 100;
+$max-filter-width: 130px;
+
+.filter-bar-filter {
+  margin-right: 8px;
+  height: 31px;
+  color: $dark-grey-2;
+  display: inline-block;
+  vertical-align: top;
+
+  .socrata-icon {
+    color: $light-grey-0;
+
+    svg {
+      vertical-align: inherit;
+    }
+  }
+
+  .filter-control-container {
+    display: inline-block;
+    position: relative;
+
+    .filter-control-toggle {
+      padding: 5px 10px;
+      padding-right: 20px;
+      border: 1px solid $light-grey-3;
+      position: relative;
+      cursor: pointer;
+      width: $max-filter-width;
+      max-width: $max-filter-width;
+      border-top-left-radius: 1px;
+      border-bottom-left-radius: 1px;
+      user-select: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      .arrow-down-icon {
+        position: absolute;
+        right: 6px;
+        top: 8px;
+        z-index: 0;
+
+        .socrata-icon svg {
+          height: 15px;
+          width: 15px;
+        }
+      }
+
+      &.left + .filter-controls {
+        left: 0;
+      }
+
+      &.right + .filter-controls {
+        right: 0;
+      }
+    }
+
+    .filter-controls {
+      position: absolute;
+      top: 100%;
+      width: 300px;
+      margin-top: -1px;
+      background: $white;
+      border-radius: 1px;
+      border: 1px solid $light-grey-3;
+      z-index: $filter-z-index;
+
+      .filter-control-title {
+        position: relative;
+        margin: 8px;
+
+        h3 {
+          font-size: 12px;
+          font-weight: normal;
+          letter-spacing: 0;
+        }
+
+        .config-btn {
+          position: absolute;
+          padding: 0;
+          top: 1px;
+          right: 0;
+
+          &:hover {
+            color: $grey;
+          }
+
+          .socrata-icon-settings {
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+
+      .range-filter-container {
+        padding: 8px;
+        margin-bottom: 10px;
+
+        .filter-control-title {
+          margin: 0;
+          margin-bottom: 8px;
+        }
+
+        .range-text-inputs-container {
+          .range-input {
+            flex-grow: 4;
+            max-width: 150px;
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+
+          .range-separator {
+            flex-grow: 1;
+            margin: 8px;
+            text-align: center;
+          }
+        }
+
+        .date-range-picker {
+          margin-top: 15px;
+        }
+      }
+    }
+  }
+
+  .filter-config-container {
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+
+    .filter-config-toggle {
+      border: 1px solid $light-grey-3;
+      margin-left: -1px;
+      padding: 7px 2px 3px 5px;
+      cursor: pointer;
+      border-top-right-radius: 1px;
+      border-bottom-right-radius: 1px;
+
+      .kebab-icon .socrata-icon svg {
+        height: 12px;
+        width: 12px;
+      }
+
+      &.left + .filter-config {
+        left: 0;
+      }
+
+      &.right + .filter-config {
+        right: 0;
+      }
+    }
+
+    .filter-config {
+      position: absolute;
+      top: 100%;
+      width: 400px;
+      margin-top: -1px;
+      background: $white;
+      border-radius: 1px;
+      border: 1px solid $light-grey-3;
+      z-index: $filter-z-index;
+
+      .filter-options {
+        margin: 15px;
+        margin-bottom: 30px;
+
+        .option-label {
+          font-weight: 600;
+        }
+
+        .setting-description {
+          margin-left: 30px;
+        }
+      }
+    }
+  }
+
+  .filter-control-toggle:focus, .filter-config-toggle:focus {
+    z-index: 1;
+  }
+}

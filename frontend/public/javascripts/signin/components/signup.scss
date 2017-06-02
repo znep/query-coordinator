@@ -1,0 +1,43 @@
+@import "../common";
+
+.container {
+  @extend .center;
+  @include base;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  background: $white;
+  border: 1px solid $light-grey-3;
+  padding-left: 3em;
+  padding-right: 3em;
+  padding-bottom: 1em;
+  padding-top: 3em;
+  min-width: 225px;
+
+  /* If the screen is big enough, take up less of it */
+  @media screen and (min-width: $break-large) {
+    max-width: 650px;
+  }
+}
+
+.divider {
+  border-top: 1px solid $light-grey-3;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.create-new-id {
+  margin-bottom: 10px;
+}
+
+.socrata-powered {
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+.disclaimer {
+  margin-top: 10px;
+}

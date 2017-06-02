@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -e
+
+cd "$(git rev-parse --show-toplevel)"
+
+# Called by Jenkins to ensure tests pass and code is free of lint.
+# Note that dependencies should be installed before running this script.  To do this,
+# run `bundle install && npm install`
+
+# Log the author name and email of the last commit
+echo "Change committed by: $(git log HEAD -1 --pretty=format:"%an (%ae)")"
+
+if ./bin/should_run_tests frontend; then
+  # Find commit where this pull request branched from
+  MERGE_BASE=$(git merge-base HEAD origin/master)
+
+  CHANGED_FILES=$(git diff --name-status ${MERGE_BASE} | grep '^\(A\|M\)') || true
+
+  # Find all javascript files that have changed on this PR
+  JAVASCRIPT_FILES=$(echo "$CHANGED_FILES" | grep '^\(A\|M\).*frontend\/.*\.jsx\?$' | cut -c3-)
+
+  # JavaScript lint
+  if ! [[ -z $JAVASCRIPT_FILES ]]; then
+    # Create an .eslintignore file that respects the monorepo directory structure, without
+    # losing the context for webpack.
+    sed 's/^/frontend\//' < frontend/.eslintignore > .eslintignore
+
+    # Run eslint on the collection of javascript files, ignoring certain files that we do not lint
+    # and ignoring warnings.  Ensure the command always succeeds by using || true to give us an
+    # opportunity to print a nicer list of lint errors.
+    NEW_PROBLEMS=$(frontend/node_modules/.bin/eslint --ignore-path .eslintignore --quiet -f compact ${JAVASCRIPT_FILES} || true)
+
+    # Remove the temporary file we created earlier.
+    rm .eslintignore
+
+    # Find all lines of eslint output that represent lint errors
+    DELTA=$(echo "${NEW_PROBLEMS}" | sed -e :a -e '$d;N;2,2ba' -e 'P;D')
+
+    # Determine how many lint errors there were
+    DELTA_COUNT=$(echo "${NEW_PROBLEMS}" | tail -n1 | cut -d ' ' -f 1)
+
+    # Display a friendly message representing the result of the lint job
+    if [[ "$DELTA_COUNT" -gt 0 ]]; then
+      echo
+      echo "JavaScript lint errors [${DELTA_COUNT}]:"
+      echo
+      echo "${DELTA}"
+      echo
+      echo "Found JavaScript lint errors, exiting"
+      exit 1
+    else
+      echo "No JavaScript lint errors"
+    fi
+  else
+    echo "No JavaScript files changed, skipping JavaScript linting."
+  fi
+
+  cd frontend
+
+  # Ruby tests
+  export CORE_SESSION=${CORE_SESSION:-'frontend-generated'}
+  bundle exec rake test:units
+  bundle exec rake test:functionals
+  bundle exec rspec --no-color
+
+  # JavaScript tests
+  bundle exec rake test:karma:parallel
+fi

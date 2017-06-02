@@ -1,0 +1,51 @@
+@import "variables/colors";
+@import "react-input-range"; // Default stylesheet for the react-input-range package.
+
+.input-range-slider {
+  margin-top: 25px;
+  margin-bottom: 30px;
+  margin-left: 6px;
+  margin-right: 6px;
+
+  // Disable transitions when dragging
+  .InputRange-track, .InputRange-slider, .InputRange-sliderContainer {
+    transition: none;
+  }
+
+  .InputRange-track {
+    background: $light-grey-4;
+    border-radius: 0;
+
+    &.InputRange-track--active {
+      background: $alternate-2;
+    }
+
+    .InputRange-labelContainer {
+      bottom: 5px;
+    }
+  }
+
+  .InputRange-slider {
+    background: $light-grey-6;
+    border: 1px solid $light-grey-2;
+    border-radius: 0;
+    width: 12px;
+    height: 25px;
+    margin-top: -15px;
+    margin-left: -6px;
+
+    &:active {
+      transform: scale(1.1);
+    }
+  }
+
+  .InputRange-label--max, .InputRange-label--min {
+    .InputRange-labelContainer {
+      left: 0;
+    }
+  }
+
+  .InputRange-label--value {
+    display: none;
+  }
+}

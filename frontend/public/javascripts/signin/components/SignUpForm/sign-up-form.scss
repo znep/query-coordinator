@@ -1,0 +1,89 @@
+@import "../../common";
+@import "common/styleguide/partials/_loader.scss";
+
+$error-color: #C4282D;
+
+.form {
+  @include form;
+  margin-bottom: 0;
+}
+
+.label {
+  margin-bottom: 0.2em;
+  display: flex;
+}
+
+.input {
+  @extend .text-input;
+  width: 100%;
+}
+
+.input-error {
+  @extend .input;
+  @extend .text-input-error;
+}
+
+.sign-up-button {
+  @extend .btn;
+  @extend .btn-primary;
+  @extend .btn-lg;
+  @include default-font;
+
+  width: 100%;
+  margin-top: 8px;
+}
+
+.required {
+  color: $error-color;
+  margin-left: 3px;
+}
+
+.label-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.error-message {
+  color: $error-color;
+  text-align: right;
+}
+
+.recaptcha-error-message {
+  @extend .error-message;
+  text-align: left;
+}
+
+.password-hint {
+  font-size: 10px;
+  margin-top: 4px;
+  margin-left: 4px;
+  display: flex;
+}
+
+.info-icon {
+  margin-left: 5px;
+  
+  & svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.terms {
+  font-size: 0.9em;
+  margin-top: 1.5em;
+
+  & a {
+    @extend .unstyled-link;
+  }
+}
+
+.signin-link {
+  @extend .unstyled-link;
+  cursor: pointer;
+}
+
+.go-to-signin {
+  text-align: center;
+  margin-top: 15px;
+}

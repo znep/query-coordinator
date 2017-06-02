@@ -1,0 +1,100 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-index-screen' %>
+  <%= rendered_stylesheet_tag 'administration-site-appearance' %>
+  <%= render_translations LocalePart.screens.admin.site_appearance %>
+  <title><%= t('screens.admin.site_appearance.editing') %> | <%= get_site_title %></title>
+<% end %>
+
+<%= display_standard_flashes %>
+
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.site_appearance.site_appearance') %>
+<% end %>
+
+<div class="site-appearance <%= 'custom' if enable_custom_chrome? %>">
+  <div class="site-appearance-admin-header">
+    <div class="header-title">
+      <h1><%= t('screens.admin.site_appearance.site_appearance') %></h1>
+    </div>
+
+    <div class="locale-warning">
+      <% if using_non_default_locale? %>
+        <div class="alert warning">
+          <%= t('screens.admin.site_appearance.warning_html') %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if enable_custom_chrome? %>
+      <%= content_tag(
+        :div,
+        t('screens.admin.site_appearance.custom_content_warning_html'),
+        :class => 'alert warning custom-content-warning') %>
+
+      <div class="page-controls">
+        <%= link_to('#') do %>
+          <button id="site_appearance_preview">
+            <%= t('screens.admin.site_appearance.preview') %>
+            <span class="icon-preview"></span>
+          </button>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="page-controls">
+        <%= link_to('#', :class => 'confirm-reload') do %>
+          <button id="site_appearance_cancel">
+            <%= t('screens.admin.site_appearance.cancel') %>
+          </button>
+        <% end %>
+        <%= link_to('#') do %>
+          <button id="site_appearance_preview">
+            <%= t('screens.admin.site_appearance.preview') %>
+            <span class="icon-preview"></span>
+          </button>
+        <% end %>
+
+        <% if @site_appearance.activated? %>
+          <%= link_to('#') do %>
+            <%= button_tag(t('screens.admin.site_appearance.update'), :id => 'site_appearance_save', :class => 'primary') %>
+          <% end %>
+        <% else %>
+          <%= link_to('#') do %>
+            <%= button_tag(t('screens.admin.site_appearance.activate'), activate_button_options) %>
+          <% end %>
+          <% if current_user.is_superadmin? %>
+            <%= link_to('#') do %>
+              <%= button_tag('Save Without Activation', :id => 'save_without_activation', :title => 'Only visible to superadmins') %>
+            <% end %>
+          <% end %>
+        <% end %>
+        <%= render 'activation_flannel' unless @site_appearance.reverted? %>
+      </div>
+
+      <ul class="tabs">
+        <% tab_sections.each_with_index do |section, i| %>
+          <li class="tab-link" data-tab-id="<%= section %>">
+            <%= link_to("#tab=#{section}") do %>
+              <%= t("screens.admin.site_appearance.tabs.#{section}.title") %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+
+      <%= form_tag update_site_appearance_path(anchor: {tab: :whats_new}), id: 'site_appearance_form', method: :put, remote: true do %>
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <% tab_sections.each_with_index do |section, i| %>
+          <div class="tab-content" data-tab-id="<%= section %>">
+            <%= render "site_appearance/tab_content/#{section}",
+              :locale_string => "screens.admin.site_appearance.tabs.#{section}.fields" %>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= include_webpack_bundle 'site-appearance/main.js' %>
+  <%= include_webpack_bundle 'open-data/admin-site-appearance.js' %>
+<% end %>

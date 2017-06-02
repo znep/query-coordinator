@@ -1,0 +1,134 @@
+---
+articles:
+- id: 226005288
+  url: https://socrata.zendesk.com/api/v2/help_center/en-us/articles/226005288-Coming-Soon-New-Sign-In-Page-Design.json
+  html_url: https://support.socrata.com/hc/en-us/articles/226005288-Coming-Soon-New-Sign-In-Page-Design
+  author_id: 228899508
+  comments_disabled: false
+  label_names:
+  - login
+  - Auth0
+  - sign in
+  - single sign on
+  - sso
+  - two factor auth
+  draft: false
+  promoted: true
+  position: 0
+  vote_sum: 0
+  vote_count: 0
+  section_id: 203977877
+  created_at: '2016-08-22T15:17:18Z'
+  updated_at: '2016-09-17T12:14:28Z'
+  name: 'Coming Soon: New Sign-In Page Design'
+  title: 'Coming Soon: New Sign-In Page Design'
+  body: |-
+    <p><strong><span style="font-weight: 400;">We are excited to announce the introduction of Auth0 for the Socrata login experience. Auth0 provides a simpler login process, and creates the foundation to easily enable </span><a href="https://support.socrata.com/hc/en-us/articles/214892617-Using-single-sign-on-SSO-with-Socrata"><span style="font-weight: 400;">Single Sign On (SSO)</span></a><span style="font-weight: 400;"> and Two Factor Auth for Open Data, Open Performance, and Perspectives.</span></strong></p>
+    <p><img class="wysiwyg-text-align-center" src="https://support.socrata.com/hc/en-us/article_attachments/210794088/Screen_Shot_2016-08-19_at_2.14.48_PM.png" alt="" width="375" height="366" /></p>
+    <p><span style="font-weight: 400;">With the change to Auth0, the look-and-feel of the login box on all Socrata Open Data and Open Performance sites will receive the new design you see above. Other than a new design there are no changes to how you login, so you can continue to sign into your Socrata domain(s) the same way you always have. You will see this new design on your site within the next month.</span></p>
+    <p><span style="font-weight: 400;">By upgrading to Auth0, it is even easier to </span><a href="https://support.socrata.com/hc/en-us/articles/214892617-Using-single-sign-on-SSO-with-Socrata"><span style="font-weight: 400;">connect with your Single Sign On (SSO) provider</span></a><span style="font-weight: 400;">. If you are interested in learning more about how to enable SSO on your Socrata site, reach out to your Customer Success Manager or support@socrata.com.</span></p>
+    <p>  </p>
+    <hr />
+    <p> </p>
+    <p><span style="font-weight: 400;">Check out our other </span><a href="https://support.socrata.com/hc/en-us/categories/202630927-Product-News"><span style="font-weight: 400;">Product News</span></a><span style="font-weight: 400;">, and give us a shout at </span><a href="mailto:support@socrata.com"><span style="font-weight: 400;">support@socrata.com</span></a><span style="font-weight: 400;"> with questions or ideas.</span></p>
+    <p><strong> </strong></p>
+  source_locale: en-us
+  locale: en-us
+  outdated: false
+  parsed_datetime: 17 Sep 2016
+- id: 218475267
+  url: https://socrata.zendesk.com/api/v2/help_center/en-us/articles/218475267-What-s-being-Deprecated-Updated-Apr-18-.json
+  html_url: https://support.socrata.com/hc/en-us/articles/218475267-What-s-being-Deprecated-Updated-Apr-18-
+  author_id: 747189807
+  comments_disabled: false
+  label_names: []
+  draft: false
+  promoted: false
+  position: 0
+  vote_sum: 4
+  vote_count: 4
+  section_id: 203977877
+  created_at: '2016-04-04T17:34:02Z'
+  updated_at: '2016-08-22T16:40:57Z'
+  name: What’s being Deprecated? [Updated Apr. 18]
+  title: What’s being Deprecated? [Updated Apr. 18]
+  body: "<p><strong><span style=\"font-weight: 400;\">To ensure we provide our customers
+    with the best possible experience, we periodically evaluate the usage and effectiveness
+    of existing product features and determine which ones should be deprecated so
+    that we can invest our engineering and support resources on the really valuable
+    and often used features.  To make the deprecation process a smooth one, we have
+    published a deprecation schedule on the Socrata Knowledge Base to provide advanced
+    notice and help you if you’re impacted by the changes.  </span></strong></p>\r\n<table>\r\n<tbody>\r\n<tr>\r\n<td>\r\n<p><strong>Being
+    Deprecated</strong></p>\r\n</td>\r\n<td>\r\n<p><strong>Announced On</strong></p>\r\n</td>\r\n<td>\r\n<p><strong>Support
+    Ends</strong></p>\r\n</td>\r\n<td>\r\n<p><strong>Removal Starts</strong></p>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><a
+    href=\"/hc/en-us/articles/218160688\"><span style=\"font-weight: 400;\">Dataset
+    Comments and Cell Level Comments</span></a></p>\r\n</td>\r\n<td>\r\n<p><span style=\"font-weight:
+    400;\">Apr. 16, 2016</span></p>\r\n</td>\r\n<td>\r\n<p><strong><span style=\"font-weight:
+    400;\">Aug. 1, 2016</span></strong></p>\r\n</td>\r\n<td>\r\n<p><strong><span style=\"font-weight:
+    400;\">Aug. 1, 2016</span></strong></p>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><a
+    href=\"/hc/en-us/articles/218160748\"><span style=\"font-weight: 400;\">Dataset
+    export in XLS, XLSX, PDF</span></a></p>\r\n</td>\r\n<td>\r\n<p><span style=\"font-weight:
+    400;\">Apr. 18, 2016</span></p>\r\n</td>\r\n<td>\r\n<p><span style=\"font-weight:
+    400;\">May. 16, 2016</span></p>\r\n</td>\r\n<td>\r\n<p><span style=\"font-weight:
+    400;\">Jun. 13, 2016</span></p>\r\n</td>\r\n</tr>\r\n<tr>\r\n<td>\r\n<p><a href=\"/hc/en-us/articles/216237567-Browser-Compatibility-Testing-Changes\"><span
+    style=\"font-weight: 400;\">Internet Explorer 9, 10</span></a></p>\r\n</td>\r\n<td>\r\n<p><span
+    style=\"font-weight: 400;\">Feb. 8, 2016</span></p>\r\n</td>\r\n<td>\r\n<p><span
+    style=\"font-weight: 400;\">Feb. 12, 2016</span></p>\r\n</td>\r\n<td>\r\n<p><span
+    style=\"font-weight: 400;\">NA</span></p>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n<h2><span
+    style=\"font-weight: 400;\">What does “Support Ends” mean?</span></h2>\r\n<p><span
+    style=\"font-weight: 400;\">Between the announcement date and the support ends
+    date, we will no longer make enhancements and take feature requests to the feature.
+     We will continue to resolve any major breakage until the feature is removed.
+     Between the support ends date and the removal starts date, we will no longer
+    provide customer support.</span></p>\r\n<p><span style=\"font-weight: 400;\">Previously,
+    we announced the scheduled deprecation of dataset RSS export endpoints. Based
+    on customer feedback, RSS export support will be maintained as is. All existing
+    RSS feeds will continue to work as expected.</span></p>\r\n<h2><span style=\"font-weight:
+    400;\">What does “Removal Starts” mean?</span></h2>\r\n<p><span style=\"font-weight:
+    400;\">After the removal start date, we will start making the feature unavailable
+    on the site.  We may remove the feature in phases.</span></p>\r\n<h2><span style=\"font-weight:
+    400;\">How do I get help?</span></h2>\r\n<p><strong><strong><span style=\"font-weight:
+    400;\">If you need help with the deprecation of an existing feature or the migration
+    to a newer version of a feature, please contact support@socrata.com.</span></strong></strong></p>\r\n<p> </p>\r\n<p> </p>"
+  source_locale: en-us
+  locale: en-us
+  outdated: false
+  parsed_datetime: 22 Aug 2016
+- id: 223269428
+  url: https://socrata.zendesk.com/api/v2/help_center/en-us/articles/223269428-Announcement-Changes-to-the-Upcoming-August-20th-Maintenance-Window-Updated-Aug-1-.json
+  html_url: https://support.socrata.com/hc/en-us/articles/223269428-Announcement-Changes-to-the-Upcoming-August-20th-Maintenance-Window-Updated-Aug-1-
+  author_id: 228899508
+  comments_disabled: false
+  label_names:
+  - status
+  - maintenance
+  draft: false
+  promoted: true
+  position: 0
+  vote_sum: 0
+  vote_count: 0
+  section_id: 203977877
+  created_at: '2016-07-21T19:42:29Z'
+  updated_at: '2016-08-01T13:36:21Z'
+  name: 'Announcement: Changes to the Upcoming August 20th Maintenance Window [Updated
+    Aug 1]'
+  title: 'Announcement: Changes to the Upcoming August 20th Maintenance Window [Updated
+    Aug 1]'
+  body: |-
+    <p><span style="font-weight: 400;">At Socrata we hold standard maintenance windows on the third Saturday of every month in order to perform critical updates to the platform. For the maintenance window currently scheduled for Saturday, August 20th, 2016, we will be </span><strong>moving the window to Friday, August 19th, 2016, and expanding the time to 3-7pm PDT (10pm-2am UTC)</strong><span style="font-weight: 400;">. </span></p>
+    <p><span style="font-weight: 400;">While we understand this time window may occur during your business hours, we analyzed usage patterns across the Socrata platform and determined that Friday afternoons in August have lower traffic than Saturdays, and as such we’ve chosen this time to minimize disruption to end-users. This expanded maintenance window will allow us to move our platform to Amazon Web Services, a more secure, reliable, and scalable cloud environment, and continue to provide the best possible service on the platform.</span></p>
+    <p><span style="font-weight: 400;">Immediately before, during, and after the maintenance window, we will communicate updates via our status site (</span><a href="http://status.socrata.com/"><span style="font-weight: 400;">status.socrata.com</span></a><span style="font-weight: 400;">). If you have any questions about Socrata’s maintenance window policy, please read </span><a href="https://support.socrata.com/hc/en-us/articles/202951578-What-is-Socrata-s-maintenance-window-policy-"><span style="font-weight: 400;">this support article</span></a><span style="font-weight: 400;">.</span></p>
+    <p><span style="font-weight: 400;">If you have any further questions and/or concerns about this change, please do not hesitate to reach out to us at </span><a href="mailto:support@socrata.com"><span style="font-weight: 400;">support@socrata.com</span></a><span style="font-weight: 400;">.</span></p>
+    <p><span style="font-weight: 400;"><strong>UPDATE</strong>: After the maintenance window on August 19th, the IP addresses for a majority of Socrata domains will change. Tools or systems that are configured to the current IP addresses will need to be adjusted. For example, you may have network firewall rules that allow traffic to certain IP addresses. If you believe you may be affected, please contact us at <a href="mailto:support@socrata.com">support@socrata.com</a> to get the new IP addresses.</span></p>
+  source_locale: en-us
+  locale: en-us
+  outdated: false
+  parsed_datetime: " 1 Aug 2016"
+page: 1
+previous_page:
+next_page: https://support.socrata.com/api/v2/help_center/en-us/sections/203977877/articles.json?page=2&per_page=3
+per_page: 3
+page_count: 3
+count: 8
+sort_by: position
+sort_order: asc

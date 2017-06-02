@@ -1,0 +1,85 @@
+<% content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-screen' %>
+  <%= rendered_stylesheet_tag 'administration-moderation' %>
+  <title><%= I18n.t('screens.admin.comment_moderation.moderation') %> | <%= get_site_title %></title>
+<% end %>
+
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.index.comment_moderation') %>
+<% end %>
+
+<%= render :partial => 'left_nav' %>
+
+<div class="contentBox withLeftNavigation">
+  <div class="adminHeader comments">
+    <span class="icon"></span>
+    <h1><%= I18n.t('screens.admin.comment_moderation.moderate_comments') %></h1>
+    <div class="commentStatusContainer">
+      <label for="commentStatusDropdown"><%= I18n.t('screens.admin.comment_moderation.show') %></label>
+      <select id="commentStatusDropdown">
+        <option value="all"><%= I18n.t('screens.admin.comment_moderation.statuses.all') %></option>
+        <option value="pending"><%= I18n.t('screens.admin.comment_moderation.statuses.pending') %></option>
+        <option value="approved"><%= I18n.t('screens.admin.comment_moderation.statuses.approved') %></option>
+        <option value="rejected"><%= I18n.t('screens.admin.comment_moderation.statuses.rejected') %></option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tableContainer">
+    <div class="moderationsTable">
+      <div class="gridListWrapper">
+        <table class="gridList commentModerationList" cellspacing="0">
+          <colgroup>
+            <col class="author" />
+            <col class="comment" />
+            <col class="dataset" />
+            <col class="status" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="author" scope="col"><div><%= I18n.t('screens.admin.comment_moderation.author') %></div><span class="icon"></span></th>
+              <th class="comment" scope="col"><div><%= I18n.t('screens.admin.comment_moderation.comment') %></div><span class="icon"></span></th>
+              <th class="dataset" scope="col"><div><%= I18n.t('screens.admin.comment_moderation.dataset') %></div><span class="icon"></span></th>
+              <th class="status" scope="col"><div><%= I18n.t('screens.admin.comment_moderation.status') %></div><span class="icon"></span></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <p class="noResultsMessage"><%= I18n.t('screens.admin.comment_moderation.no_comments') %></p>
+</div>
+
+<%= render_admin_qualtrics %>
+
+<%- content_for :templates do -%>
+  <table class="moderationItem">
+    <tr class="item">
+      <td class="author" scope="row"><a href="#" class="profileLink" rel="external">
+        <img alt="author image"/><span class="cellInner"></span>
+      </a></td>
+      <td class="comment"><div class="cellInner"></div><p class="commentBody"></p></td>
+      <td class="dataset"><a class="cellInner" rel="external"></a></td>
+      <td class="status">
+        <div class="cellInner"></div>
+        <a href="#approve" class="approveComment button" data-action="approved">
+          <span class="icon"></span><%= I18n.t('screens.admin.comment_moderation.approve') %>
+        </a>
+        <a href="#reject" class="rejectComment button" data-action="rejected">
+          <span class="icon"></span><%= I18n.t('screens.admin.comment_moderation.reject') %>
+        </a>
+      </td>
+    </tr>
+  </table>
+<%- end -%>
+
+<%- content_for :js_footer do -%>
+  <%= include_webpack_bundle 'open-data/admin-moderation.js' %>
+<%- end -%>
+
+<% content_for :translations do %>
+  <%= render_translations LocalePart.screens.admin.comment_moderation %>
+<% end %>

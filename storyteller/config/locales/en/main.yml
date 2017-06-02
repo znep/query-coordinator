@@ -1,0 +1,88 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+en:
+  accessibility:
+    skip_to_content: Skip to main content
+    skip_to_footer: Skip to footer links
+  activerecord:
+    errors:
+      models:
+        document:
+          all_cropping_values: all cropping values must be set if attempting to crop
+  add_content_panel:
+    description: 'Choose a layout with text or media!'
+    title: 'Inspiration Blocks'
+    render_error: 'There was an error'
+  common:
+    close: 'Close'
+  default_goal_title: 'New Goal'
+  default_page_title: 'Socrata Perspectives'
+  error_pages:
+    generic_404:
+      description: 'The requested page does not exist or is otherwise unavailable.'
+      title: 'Not Found'
+    generic_500:
+      description: 'The server encountered an error.'
+      title: 'Server Error'
+    stories_404:
+      description: 'This story does not exist or has not yet been published.'
+      title: 'Not Found'
+      login_notice_html: 'Do you need to <a href="/login?return_to=%{return_to}">log in</a>?'
+    migration_500:
+      description: 'An unexpected error occurred while migrating your Goal.'
+      title: 'Migration Error'
+  goals_controller:
+    failed_to_publish: 'Failed to copy goal. Please try again later.'
+    not_found_error_flash: 'Goal not found.'
+  login_successful: 'Login Successful'
+  print:
+    preparing_story: 'Preparing story for printing...'
+    help_link: 'Get help with printing.'
+  preview_mode:
+    presentation_mode:
+      next: 'Next'
+      previous: 'Previous'
+      title: 'Presentation Mode'
+    linear_mode:
+      title: 'Linear Mode'
+  sample_story:
+    title: 'Your Great Story Title'
+  stories_controller:
+    error_creating_story_flash: 'Error creating story.'
+    failed_to_publish: 'Failed to copy story. Please try again later.'
+    not_found_error_flash: 'Story not found.'
+    permissions_error_flash: 'Permissions error.'
+  style_and_presentation_panel:
+    classic_theme_description: 'Classic Theme. This one is a true classic; a throw back to the past.'
+    custom_themes_description: 'Made-to-order themes make you stand out'
+    custom_themes_title: 'Custom Themes'
+    heading_font_sample: 'Abc'
+    render_error: 'There was an error'
+    sans_theme_description: "Simple and modern style. It's the cat's meow."
+    serif_theme_description: 'A refined contemporary look for your official brief.'
+    slab_theme_description: 'Bold and strong headlines make for easy reading.'
+    standard_themes_description: 'Themes to make your story look Grrrrrrreat!'
+    standard_themes_title: 'Standard Themes'
+  taking_you_back_to_your_story: 'Taking you back to your story...'
+  tile:
+    no_description_label: 'This story has no description.'
+    read_more_prompt: 'Read more at '

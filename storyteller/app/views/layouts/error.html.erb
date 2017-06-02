@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+
+ <head>
+    <title><%= @title %></title>
+    <%= favicon_link_tag %>
+    <%= default_meta_tags() %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= stylesheet_link_tag 'error', media: 'all' %>
+    <%= render 'shared/google_analytics_script' %>
+  </head>
+
+  <body>
+
+    <%= yield %>
+
+  </body>
+
+</html>

@@ -1,0 +1,33 @@
+<div>
+  <button id="select_all_button"
+    onclick="$('.item.search-item:visible').find('input').attr('checked', true); return false;"/>
+    <%= t('screens.admin.connector.select_all') %>
+  </button>
+
+  <button id="clear_all_button"
+    onclick="$('.item.search-item:visible').find('input').attr('checked', false); return false;"/>
+    <%= t('screens.admin.connector.clear_selections') %>
+  </button>
+</div>
+
+<div class="catalog-federator-list">
+  <%- @datasets.each_with_index do |dataset, index| -%>
+    <div class="item search-item">
+      <div class="edit-item">
+        <%= check_box_tag(
+          'server[assets][]',
+          index,
+          dataset['selected'],
+          :class => ['is-disabled', dataset['importable'] ? 'importable' : 'unimportable'],
+          :id => "server_assets_#{index}",
+          :disabled => @server.federate_all?
+        ) %>
+        <span class="asset-name">
+          <label for="<%= "server_assets_#{index}" %>" title="<%= dataset['externalId'] %>">
+            <%= truncate(dataset['name'], length: 120) %>
+          </label>
+        </span>
+      </div>
+    </div>
+  <%- end -%>
+</div>

@@ -1,0 +1,270 @@
+$is-enabled-color: #5F865F;
+$is-disabled-color: #999;
+$is-failed-color: #CB1919;
+$form-checkbox-background-color: #FFF;
+$form-checkbox-border-color: #E2E2E2;
+$form-checkbox-hover-check-color: #999;
+
+#georegions-learn-more {
+  float: right;
+  padding-top: 1em;
+  .icon-info {
+    font-size: 1.4em;
+    vertical-align: text-bottom;
+  }
+}
+
+.georegions.adminHeader {
+  padding-bottom: 2.5em;
+}
+
+// override
+.gridList tbody tr td {
+  vertical-align: middle;
+}
+
+.row-status-widget-label {
+  display: inline-block;
+  vertical-align: top;
+  &.is-enabled, &.is-disabled {
+    margin-top: 0.75em;
+  }
+  &.is-failed {
+    margin-top: 0.25em;
+  }
+}
+
+.button {
+  font-size: 0.65rem;
+  position: relative;
+
+  .loading {
+    @include spinner-small;
+    position: absolute;
+    top: calc(50% - 8px);
+    left: calc(50% - 8px);
+  }
+}
+
+.form-checkbox {
+  border: solid 1px $form-checkbox-border-color;
+  border-radius: 1px;
+  background-color: $form-checkbox-background-color;
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  vertical-align: text-bottom;
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.icon-check {
+  display: inline-block;
+  vertical-align: text-top;
+  padding-left: 3px;
+  padding-top: 2px;
+
+  &.unchecked {
+    color: $form-checkbox-background-color;
+
+    &:hover,
+    &:focus,
+    &:active {
+      color: $form-checkbox-hover-check-color;
+    }
+  }
+}
+
+// the non-js version of the fake checkbox
+.a11y-version {
+  input.form-checkbox {
+    width: 19px;
+    height: 19px;
+  }
+
+  label .icon-check {
+    margin-top: -3px;
+    margin-left: -18px;
+    cursor: pointer;
+  }
+}
+
+.georegions-table {
+  .name {
+    width: 30%;
+  }
+  .status {
+    width: 30%;
+    position: relative;
+
+    form {
+      float: right;
+      width: 50%;
+    }
+
+    .substatus {
+      font-size: 0.8em;
+      padding-top: 0.4em;
+    }
+
+    .icon-check, .icon-failed {
+      font-size: 1.5em;
+      margin-right: 0.25em;
+      &:before {
+        display: inline-block;
+        padding-top: 0.3em;
+      }
+      &.status-icon-enabled {
+        color: $is-enabled-color;
+      }
+      &.status-icon-disabled {
+        color: $is-disabled-color;
+      }
+      &.status-icon-failed {
+        color: $is-failed-color;
+      }
+    }
+  }
+  .status, .edit-action {
+    input.button, button.button {
+      font-size: 0.8em;
+      opacity: 0.3;
+      @include transition-duration(0.5s);
+      @include transition-property(opacity);
+    }
+    &:hover .button:not(.disabled) {
+      opacity: 1;
+    }
+  }
+  .default {
+    min-width: 8em;
+    max-width: 10em;
+
+    .icon-info {
+      font-size: 1.3em;
+      padding-left: 0.2em;
+    }
+  }
+  .edit-action, .date-added {
+    min-width: 8em;
+  }
+  td.edit-action, th.edit-action {
+    padding-right: 0;
+  }
+}
+
+.georegions-title-custom {
+  float: left;
+}
+
+.georegions-controls-custom {
+  float: right;
+}
+
+#selectDataset {
+  margin-left: -42em;
+  width: 80em;
+
+  .picker-explanation p {
+    padding-bottom: 1em;
+  }
+
+  .iframe-spinner {
+    @include spinner-mega;
+    display: block;
+    position: absolute;
+    left: calc(50% - 32px);
+    top: calc(50% - 32px);
+    z-index: -1;
+  }
+
+  iframe {
+    border: none;
+    height: 55em;
+    width: 100%;
+  }
+}
+
+.status-icon-progress {
+  @include spinner-small;
+  margin: {
+    top: 0.5rem;
+    right: 0.5em;
+  }
+}
+
+.georegion-spinner {
+  background-color: rgba(255, 255, 255, 0.5);
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+
+  > span {
+    @include spinner-mega;
+    position: absolute;
+    left: calc(50% - 32px);
+    top: calc(50% - 32px);
+  }
+}
+
+.spatial-lens-icon {
+  margin: 0 auto;
+}
+
+.confirmation {
+  text-align: center;
+
+  p {
+    margin: 1em auto;
+  }
+}
+
+#react-modal {
+  $modal-width: 65em;
+  width: $modal-width;
+  margin-left: -($modal-width / 2);
+  .line > div {
+    width: calc(100% - 15em);
+  }
+}
+
+#react-modal, .georegions-configure-boundary {
+  form {
+    .line {
+      margin-bottom: 2em;
+    }
+
+    .form-controls {
+      float: right;
+      margin-bottom: 0;
+      margin-top: 1em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+    }
+
+    label:not(.error) {
+      width: 10em;
+    }
+
+    label.error {
+      padding-left: 0;
+      min-height: 1.8em;
+    }
+
+    p {
+      padding-top: 0.25em;
+      font-size: 1em;
+    }
+  }
+}

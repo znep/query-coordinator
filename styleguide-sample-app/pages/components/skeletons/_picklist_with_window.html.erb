@@ -1,0 +1,32 @@
+<div id="picklist-windowed-container"></div>
+
+<style>
+  #picklist-windowed-container .picklist {
+    height: 200px;
+  }
+</style>
+
+<script type="text/babel" data-presets="es2015,react">
+  $(() => {
+    const props = {
+      onSelection: (option) => {
+        console.log(`option selected: ${option.title}, ${option.value}`);
+      },
+      options: [
+        {title: 'Cascadia', value: 'cascadia', group: 'Countries'},
+        {title: 'United States of America', value: 'usa', group: 'Countries'},
+        {title: 'Republic of Texas', value: 'texas', group: 'Countries'},
+        {title: 'Cascadia', value: 'cascadia', group: 'Countries'},
+        {title: 'Seattle', value: 'seattle', group: 'Capitals'},
+        {title: 'Washington, D.C.', value: 'dc', group: 'Capitals'},
+        {title: 'Austin', value: 'austin', group: 'Capitals'},
+      ],
+      value: 'dc'
+    };
+
+    ReactDOM.render(
+      <styleguide.Picklist {...props} />,
+      document.getElementById('picklist-windowed-container')
+    );
+  });
+</script>

@@ -1,0 +1,21 @@
+{
+  "results" :
+    [
+      { "domain_tag" : "desire", "count" : 3 },
+      { "domain_tag" : "test", "count" : 3 },
+      { "domain_tag" : "hope", "count" : 2 },
+      { "domain_tag" : "astronomy", "count" : 1 },
+      { "domain_tag" : "automated test", "count" : 1 },
+      { "domain_tag" : "cetera-testing", "count" : 1 },
+      { "domain_tag" : "curiosity", "count" : 1 },
+      { "domain_tag" : "dslp", "count" : 1 },
+      { "domain_tag" : "fashion", "count" : 1 },
+      { "domain_tag" : "hate", "count" : 1 },
+      { "domain_tag" : "love", "count" : 1 },
+      { "domain_tag" : "mmm", "count" : 1 },
+      { "domain_tag" : "planets", "count" : 1 },
+      { "domain_tag" : "science", "count" : 1 }
+    ],
+  "resultSetSize" : 14,
+  "timings" : { "serviceMillis" : 173, "searchMillis" : [ 1, 162 ] }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "id": 688,
+    "service": "storyteller",
+    "environment": "rc",
+    "version": "1434646949",
+    "docker_tag": "1434646949_79_f89a7929",
+    "service_sha": "f89a7929",
+    "configuration": "{\"id\":\"/rc/storyteller\",\"container\":{\"docker\":{\"network\":\"BRIDGE\",\"portMappings\":[{\"containerPort\":3010,\"hostPort\":3010,\"protocol\":\"tcp\"}],\"image\":\"registry.docker.aws-us-west-2-infrastructure.socrata.net:5000/internal/storyteller:1434646949_79_f89a7929\"},\"type\":\"DOCKER\",\"volumes\":[]},\"env\":{\"CLORTHO_BUCKET\":\"rc-credentials-bucket-credsbucket-1ongpc15qgm18\",\"PG_DB_HOST\":\"storyteller-rc.csepcvkx1zi9.us-west-2.rds.amazonaws.com\",\"PG_DB_NAME\":\"storyteller_production\",\"PG_DB_PORT\":\"5432\",\"PG_DB_USER\":\"storyteller_rwc\",\"http_proxy\":\"http://proxy.aws-us-west-2-rc.socrata.net:3128\",\"https_proxy\":\"http://proxy.aws-us-west-2-rc.socrata.net:3128\",\"no_proxy\":\"localhost,127.0.0.1,localaddress,.localdomain.com,169.254.169.254,jenkins\",\"CLORTHO_PATH\":\"storyteller_secrets.sh\"},\"constraints\":[[\"hostname\",\"UNIQUE\"],[\"az\",\"GROUP_BY\"],[\"dmz\",\"LIKE\",\"false\"]],\"args\":[],\"cpus\":1,\"mem\":1024,\"command\":\"\",\"instances\":2,\"healthChecks\":[{\"path\":\"/stories/version\",\"protocol\":\"HTTP\",\"timeoutSeconds\":5,\"maxConsecutiveFailures\":0}]}",
+    "deployed_by": "courtney_spurgeon",
+    "deploy_method": "apps-marathon:promote",
+    "deployed_at": "2015-06-18T17:43:27Z"
+  }
+]

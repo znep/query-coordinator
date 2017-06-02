@@ -1,0 +1,86 @@
+<%= hidden_field_tag('type', 'esri_arcgis') %>
+<div class="legend">
+  <div class="legend-item">
+    <span role="presentation" class="icon-data legend-icon"></span>
+    <span class="legend-info">
+      <span class= "legend-key">
+        <%= t('screens.admin.connector.data_option') %>
+      </span>
+      - <%= t('screens.admin.connector.data_option_explanation') %>
+    </span>
+  </div>
+  <div class="legend-item">
+    <span role="presentation" class="icon-external-square legend-icon"></span>
+    <span class="legend-info">
+      <span class="legend-key">
+        <%= t('screens.admin.connector.catalog_option') %>
+      </span>
+      - <%= t('screens.admin.connector.catalog_option_explanation') %>
+    </span>
+  </div>
+</div>
+
+<div class="esri-tree">
+  <%- @tree['folders'].each do |folder| -%>
+    <div class="item folder search-item">
+      <div class="editItem">
+        <div
+          class="select-style <%= disabled_class(@server)%>"
+          id="style-div-for-<%=folder['id']%>">
+          <%= icon_for_asset(@server, folder) %>
+          <%= folder_select_tag(@server, folder) %>
+        </div>
+        <span class="asset-name">
+          <label for="server_folders_<%=folder['id']%>_sync_type">
+            <%= truncate(folder['name'], length: 120) %>
+          </label>
+        </span>
+      </div>
+
+      <%- folder['services'].each do |service| -%>
+        <div class="item child service search-item">
+          <div class="editItem">
+            <div
+              class="select-style <%=disabled_class(@server)%>"
+              id="style-div-for-<%=service['id']%>">
+              <%= icon_for_asset(@server, service) %>
+              <%= service_select_tag(@server, folder, service) %>
+            </div>
+            <a target="_blank" href="<%= service['url'] %>"
+              name="<%= service_display_string(service) %>">
+              <span class="asset-name">
+                <label for="server_folders_<%=folder['id']%>_services_<%=service['id']%>_sync_type">
+                  <%= truncate(service_display_string(service), length: 120) %>
+                </label>
+              </span>
+            </a>
+          </div>
+
+          <%- service['layers'].each do |layer| -%>
+            <div class="item child layer search-item">
+              <div class="editItem">
+                <div
+                  class="select-style <%= disabled_class(@server)%>"
+                  id="style-div-for-<%=layer['id']%>">
+                  <%= icon_for_asset(@server, layer) %>
+                  <%= layer_select_tag(@server, folder, service, layer) %>
+                </div>
+                <a target="_blank" href="<%= layer['url'] %>">
+                  <%- if layer['name'].blank? -%>
+                    <%= layer['url'] %>
+                  <%- else -%>
+                    <span class="asset-name">
+                      <label for="server_folders_<%=folder['id']%>_services_<%=service['id']%>_layers_<%=layer['id']%>_sync_type">
+                       <%= truncate(layer['name'], length: 120) %>
+                      </label>
+                    </span>
+                  <%- end -%>
+                </a>
+              </div>
+            </div>
+          <%- end -%>
+        </div>
+      <%- end -%>
+    </div>
+  <%- end -%>
+</div>

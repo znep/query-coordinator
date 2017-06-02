@@ -8,23 +8,16 @@ import { PAGE_SIZE } from '../../actions/loadData';
 import styles from 'styles/Table/TableBody.scss';
 
 class TableBody extends Component {
-
   shouldComponentUpdate(nextProps) {
     const nextStuff = {
-      columns: nextProps.columns.map((c) => (
-        c.transform ?
-          [c.transform.id, c.transform.error_indices] :
-          null
-      )),
+      columns: nextProps.columns.map(c => (c.transform ? [c.transform.id, c.transform.error_indices] : null)),
       displayState: nextProps.displayState,
       apiCalls: nextProps.apiCalls
     };
     const currentStuff = {
-      columns: this.props.columns.map((c) => (
-        c.transform ?
-          [c.transform.id, c.transform.error_indices] :
-          null
-      )),
+      columns: this.props.columns.map(
+        c => (c.transform ? [c.transform.id, c.transform.error_indices] : null)
+      ),
       displayState: this.props.displayState,
       apiCalls: this.props.apiCalls
     };
@@ -45,14 +38,15 @@ class TableBody extends Component {
         rowIndices = [];
       }
     } else if (props.displayState.type === DisplayState.ROW_ERRORS) {
-      rowIndices = _.filter(props.db.row_errors, { input_schema_id: props.inputSchemaId }).
-                     map((rowError) => rowError.offset);
+      rowIndices = _.filter(props.db.row_errors, { input_schema_id: props.inputSchemaId }).map(
+        rowError => rowError.offset
+      );
     } else {
       rowIndices = _.range(startRow, endRow);
     }
-    return rowIndices.map((rowIdx) => ({
+    return rowIndices.map(rowIdx => ({
       rowIdx,
-      transforms: this.props.columns.map((column) => {
+      transforms: this.props.columns.map(column => {
         const transform = column.transform;
         if (column.ignored) {
           return {
@@ -60,7 +54,9 @@ class TableBody extends Component {
             cell: null
           };
         } else {
-          const cell = this.props.db[`transform_${transform.id}`][rowIdx];
+          const cell = this.props.db.col_data[transform.id]
+            ? this.props.db.col_data[transform.id][rowIdx]
+            : null;
           return {
             id: transform.id,
             cell
@@ -74,19 +70,18 @@ class TableBody extends Component {
   renderNormalRow(row) {
     return (
       <tr key={row.rowIdx}>
-        {row.transforms.map((transform) => {
-          return (<TableCell
-            key={transform.id}
-            cell={transform.cell} />);
+        {row.transforms.map(transform => {
+          return <TableCell key={transform.id} cell={transform.cell} />;
         })}
-      </tr>);
+      </tr>
+    );
   }
 
   render() {
     const data = this.getData();
-    const rows = data.map(row => (
-      row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row)
-    ));
+    const rows = data.map(
+      row => (row.rowError ? <RowError key={row.rowIdx} row={row} /> : this.renderNormalRow(row))
+    );
 
     return (
       <tbody className={styles.tableBody} tabIndex="0">
@@ -94,12 +89,11 @@ class TableBody extends Component {
       </tbody>
     );
   }
-
 }
 
-function mapStateToProps(state) {
+function mapStateToProps({ ui }) {
   return {
-    apiCalls: state.apiCalls
+    apiCalls: ui.apiCalls
   };
 }
 

@@ -127,8 +127,7 @@ export function updatedOutputColumns(db, formDataModel) {
 // - starting new transforms when a new output schema is created
 // - endpoints which return results
 export function currentAndIgnoredOutputColumns(db) {
-  // TODO: remove filters once we get the status out of output schema
-  const osIds = Object.keys(db.output_schemas).map(_.toNumber).filter(key => !!key);
+  const osIds = Object.keys(db.output_schemas).map(_.toNumber);
 
   const latestOutputSchemaId = Math.max(...osIds);
 

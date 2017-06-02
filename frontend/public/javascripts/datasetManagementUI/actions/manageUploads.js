@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import * as Links from '../links';
 import * as dsmapiLinks from '../dsmapiLinks';
-import { upsertFromServer, updateProgress, batch } from './database';
+import { upsertFromServer, updateProgress } from './database';
 import { addNotification, removeNotificationAfterTimeout } from './notifications';
 import { uploadNotification } from '../lib/notifications';
 import { push } from 'react-router-redux';
@@ -275,6 +275,14 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
   }
 }
 
+function addInputColumn(column) {
+  return {
+    type: 'ADD_INPUT_COLUMN',
+    id: column.id,
+    column
+  };
+}
+
 function subscribeToUpload(upload) {
   return dispatch =>
     upload.schemas.forEach(inputSchema => {
@@ -289,8 +297,8 @@ function subscribeToUpload(upload) {
 
       dispatch(subscribeToRowErrors(inputSchema.id));
 
-      // TODO: get rid of this
-      dispatch(batch(inputSchema.input_columns.map(column => upsertFromServer('input_columns', column))));
+      // TODO: not so sure this is the best place to do this
+      inputSchema.input_columns.forEach(column => dispatch(addInputColumn(column)));
     });
 }
 
@@ -318,51 +326,56 @@ function subscribeToRowErrors(inputSchemaId) {
     );
   };
 }
-// TODO: batch here, tables aren't getting created
+
+// dotProp creates entry if it doesn't exist, so don't have to create table here anymore
 function subscribeToTransforms(outputSchemaResponse) {
   return dispatch =>
     outputSchemaResponse.output_columns.forEach(oc => {
-      dispatch(createTableAndSubscribeToTransform(oc.transform));
+      const channelName = `transform_progress:${oc.transform.id}`;
+
+      dispatch(
+        joinChannel(channelName, {
+          max_ptr: maxPtr => {
+            dispatch(editTransform(oc.transform.id, { contiguous_rows_processed: maxPtr.end_row_offset }));
+          },
+          errors: errorsMsg => {
+            dispatch(editTransform(oc.transform.id, { num_transform_errors: errorsMsg.count }));
+          }
+        })
+      );
     });
 }
 
-function createTableAndSubscribeToTransform(transform) {
-  return (dispatch, getState) => {
-    const { entities } = getState();
-
-    const tableName = `transform_${transform.id}`;
-
-    if (!entities[tableName]) {
-      dispatch(createTable(tableName));
-    }
-
-    const channelName = `transform_progress:${transform.id}`;
-
-    dispatch(
-      joinChannel(channelName, {
-        max_ptr: maxPtr => {
-          dispatch(editTransform(transform.id, { contiguous_rows_processed: maxPtr.end_row_offset }));
-        },
-        errors: errorsMsg => {
-          dispatch(editTransform(transform.id, { num_transform_errors: errorsMsg.count }));
-        }
-      })
-    );
-  };
-}
+// function createTableAndSubscribeToTransform(transform) {
+//   return (dispatch, getState) => {
+//     // const { entities } = getState();
+//
+//     // const tableName = `transform_${transform.id}`;
+//
+//     // dotProp creates entry if it doesn't exist, so can just handle this in reudcer
+//     // if (!entities[tableName]) {
+//     //   dispatch(createTable(tableName));
+//     // }
+//     const channelName = `transform_progress:${transform.id}`;
+//
+//     dispatch(
+//       joinChannel(channelName, {
+//         max_ptr: maxPtr => {
+//           dispatch(editTransform(transform.id, { contiguous_rows_processed: maxPtr.end_row_offset }));
+//         },
+//         errors: errorsMsg => {
+//           dispatch(editTransform(transform.id, { num_transform_errors: errorsMsg.count }));
+//         }
+//       })
+//     );
+//   };
+// }
 
 function editTransform(id, payload) {
   return {
     type: 'EDIT_TRANSFORM',
     id,
     payload
-  };
-}
-
-function createTable(tableName) {
-  return {
-    type: 'CREATE_TABLE',
-    tableName
   };
 }
 

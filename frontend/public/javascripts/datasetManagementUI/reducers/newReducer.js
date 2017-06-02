@@ -12,7 +12,6 @@ import apiCalls from 'reducers/apiCalls';
 const views = (state = {}) => state;
 const revisions = (state = {}) => state;
 const uploads = (state = {}) => state;
-
 const inputSchemas = (state = {}, action) => {
   switch (action.type) {
     case 'EDIT_INPUT_SCHEMA':
@@ -22,6 +21,18 @@ const inputSchemas = (state = {}, action) => {
           ...state[action.id],
           ...action.payload
         }
+      };
+    default:
+      return state;
+  }
+};
+
+const inputColumns = (state = {}, action) => {
+  switch (action.type) {
+    case 'ADD_INPUT_COLUMN':
+      return {
+        ...state,
+        [action.id]: action.column
       };
     default:
       return state;
@@ -71,6 +82,7 @@ const entities = combineReducers({
   revisions,
   uploads,
   input_schemas: inputSchemas,
+  input_columns: inputColumns,
   output_schemas: outputSchemas,
   output_columns: outputColumns,
   output_schema_columns: outputSchemaColumns,
@@ -154,18 +166,6 @@ const uploadFile = (state, action) => {
   }
 };
 
-const createTable = (state, action) => {
-  switch (action.type) {
-    case 'CREATE_TABLE':
-      return dotProp.set(state, 'entities', existingRecords => ({
-        ...existingRecords,
-        [action.tableName]: {}
-      }));
-    default:
-      return state;
-  }
-};
-
 const pollForOutputSchema = (state, action) => {
   switch (action.type) {
     case 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS': {
@@ -211,11 +211,60 @@ const pollForOutputSchema = (state, action) => {
   }
 };
 
+const loadData = (state, action) => {
+  switch (action.type) {
+    case 'LOAD_NORMAL_PREVIEW_SUCCESS': {
+      const stateWithUpdatedColData = dotProp.set(state, 'entities.col_data', existingRecords => ({
+        ...existingRecords,
+        ...action.colData
+      }));
+
+      return dotProp.set(stateWithUpdatedColData, 'entities.row_errors', existingRecords => ({
+        ...existingRecords,
+        ...action.rowErrors
+      }));
+    }
+
+    case 'LOAD_COLUMN_ERRORS_SUCCESS': {
+      const stateWithUpdatedColData = dotProp.set(state, 'entities.col_data', existingRecords => ({
+        ...existingRecords,
+        ...action.colData
+      }));
+
+      let stateWithUpdatedTransforms;
+
+      action.transformUpdates.forEach(
+        update =>
+          (stateWithUpdatedTransforms = dotProp.set(
+            stateWithUpdatedColData,
+            `entities.transforms.${update.id}`,
+            record => ({
+              ...record,
+              ...update
+            })
+          ))
+      );
+
+      return stateWithUpdatedTransforms;
+    }
+
+    case 'LOAD_ROW_ERRORS_SUCCESS': {
+      return dotProp.set(state, 'entities.row_errors', existingRecords => ({
+        ...existingRecords,
+        ...action.rowErrors
+      }));
+    }
+
+    default:
+      return state;
+  }
+};
+
 export default reduceReducers(
   combined,
   createUpload,
   bootstrapApp,
   uploadFile,
   pollForOutputSchema,
-  createTable
+  loadData
 );

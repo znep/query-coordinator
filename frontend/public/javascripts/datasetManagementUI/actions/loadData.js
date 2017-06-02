@@ -105,7 +105,7 @@ export function loadNormalPreview(apiCall) {
     const callId = uuid();
 
     dispatch(apiCallStarted(callId, apiCall));
-    socrataFetch(url).
+    return socrataFetch(url).
       then(checkStatus).
       then(getJson).
       then((resp) => {
@@ -155,7 +155,7 @@ export function loadColumnErrors(apiCall) {
     const callId = uuid();
 
     dispatch(apiCallStarted(callId, apiCall));
-    socrataFetch(url).
+    return socrataFetch(url).
       then(checkStatus).
       then(getJson).
       then((resp) => {
@@ -178,23 +178,36 @@ export function loadColumnErrors(apiCall) {
             ifNotExists: true
           });
         })));
-        dispatch(batch(newRecordsByTransform.map((newRecords, idx) => {
-          const errorIndices = _.map(newRecords, (newRecord, index) => ({
-            ...newRecord,
-            index
-          })).
-          filter(newRecord => newRecord.error).
-          map(newRecord => newRecord.index);
 
-          const transform = outputSchemaResp.output_columns[idx].transform;
+        const errorIndicesUpdateActions = newRecordsByTransform.
+          map((newRecords, idx) => {
+            const newErrorIndices = _.map(newRecords, (newRecord, index) => ({
+              ...newRecord,
+              index
+            })).
+            filter(newRecord => newRecord.error).
+            map(newRecord => newRecord.index);
 
-          return updateFromServer('transforms', {
-            id: transform.id,
-            error_indices: (existingErrorIndices) => (
-              _.union(existingErrorIndices, errorIndices)
-            )
-          });
-        })));
+            const transform = outputSchemaResp.output_columns[idx].transform;
+
+            if (newErrorIndices.length > 0) {
+              return updateFromServer('transforms', {
+                id: transform.id,
+                error_indices: (existingErrorIndices) => (
+                  setErrorIndicesForPage(
+                    existingErrorIndices,
+                    displayState.pageNo - 1,
+                    newErrorIndices
+                  )
+                )
+              });
+            } else {
+              return null;
+            }
+          }).
+          filter(maybeAction => maybeAction !== null);
+
+        dispatch(batch(errorIndicesUpdateActions));
 
         dispatch(apiCallSucceeded(callId));
       }).
@@ -202,6 +215,25 @@ export function loadColumnErrors(apiCall) {
         dispatch(apiCallFailed(callId, error));
       });
   };
+}
+
+/*
+transform.error_indices is an array of row indices for that transform, s.t. when the user
+is paging through column, we look up [pageNo*pageSize...pageNo*pageSize+pageSize], and then
+use the resulting array of row indices to get the rows that we display.
+
+The user can page through column errors non-contiguously by entering page numbers into the pager's
+box. We then make an API call which gives us the error rows. Thus, to update error_indices, we have
+to set an block of indices in the array to their row index values. Luckily, because JS arrays
+are objects under the hood, we can do this.
+*/
+function setErrorIndicesForPage(existingErrorIndices, pageNo, newErrorIndices) {
+  const cloned = _.clone(existingErrorIndices);
+  const pageBase = pageNo * PAGE_SIZE;
+  _.range(0, newErrorIndices.length).forEach((i) => {
+    cloned[pageBase + i] = newErrorIndices[i];
+  });
+  return cloned;
 }
 
 export function loadRowErrors(apiCall) {
@@ -213,7 +245,7 @@ export function loadRowErrors(apiCall) {
     const callId = uuid();
 
     dispatch(apiCallStarted(callId, apiCall));
-    socrataFetch(url).
+    return socrataFetch(url).
       then(checkStatus).
       then(getJson).
       then((rows) => {

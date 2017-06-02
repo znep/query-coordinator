@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
@@ -64,6 +63,7 @@ describe('actions/manageMetadata', () => {
   let store;
 
   before(() => {
+    console.log('fetch is now', window.fetch);
     unmock = mockAPI();
     unmockWS = wsmock();
   });

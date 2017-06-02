@@ -123,7 +123,7 @@ export function uploadFile(uploadId, file) {
 
     dispatch(apiCallStarted(callId, call));
 
-    // dispatch(addNotification(uploadNotification(uploadId)));
+    dispatch(addNotification(uploadNotification(uploadId)));
 
     return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadUpdate, dispatch)
       .then(resp => JSON.parse(resp.responseText))

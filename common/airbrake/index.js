@@ -7,13 +7,13 @@ import environmentFilter from './filters/environment';
 let airbrake;
 
 function init(projectId, projectKey) {
-  if (projectId == undefined) {
+  if (_.isNil(projectId)) {
     if (window.console && console.error) {
       console.error('`projectId` is required for airbrake.init()');
     }
   }
 
-  if (projectKey == undefined) {
+  if (_.isNil(projectKey)) {
     if (window.console && console.error) {
       console.error('`projectKey` is required for airbrake.init()');
     }

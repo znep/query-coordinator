@@ -8,23 +8,23 @@ var root = path.resolve(__dirname, '../..');
 var webpackConfig = {
   context: __dirname,
   module: {
-    preLoaders: [
+    loaders: [
       {
         loader: require.resolve('raw-loader'),
         test: /\.svg$/,
-        include: `${root}/common/components/fonts/svg`
-      }
-    ],
-    loaders: [
+        include: `${root}/common/resources/fonts/svg`
+      },
       {
         test: /\.jsx?$/,
         loader: require.resolve('babel-loader'),
+        exclude: /node_modules/,
         query: {
           presets: [
             'babel-preset-es2015', 'babel-preset-react'
           ].map(require.resolve),
           plugins: [
-            'babel-plugin-transform-object-rest-spread'
+            'babel-plugin-transform-object-rest-spread',
+            'babel-plugin-rewire'
           ].map(require.resolve)
         }
       }

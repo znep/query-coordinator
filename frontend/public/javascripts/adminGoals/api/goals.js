@@ -1,5 +1,5 @@
 import * as api from './basic';
-import Airbrake from '../../common/airbrake';
+import Airbrake from 'common/airbrake';
 
 const goalsPrefix = 'goals';
 

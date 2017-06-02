@@ -17,7 +17,7 @@ import { goToPage, goToPreviousPage } from './wizard';
 import licenses from 'licenses';
 const invertedLicenses = _.invert(licenses);
 
-import airbrake from './airbrake';
+import airbrake from 'common/airbrake';
 import 'whatwg-fetch';
 import formurlencoded from 'form-urlencoded';
 import _ from 'lodash';

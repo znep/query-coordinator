@@ -4,7 +4,7 @@ import * as SharedActions from '../../shared/actions';
 import * as Immutable from 'immutable';
 import * as Helpers from '../../../helpers';
 import * as State from '../state';
-import Airbrake from '../../../../common/airbrake';
+import Airbrake from 'common/airbrake';
 
 export const types = {
   setAll: 'goals.data.setAll',

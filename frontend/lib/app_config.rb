@@ -77,6 +77,7 @@ class AppConfig < Hashie::Dash
   property :mixpanel_token
   property :opendata_ga_tracking_code
   property :publishing_airbrake_api_key
+  property :publishing_airbrake_project_id
   property :recaptcha_2_secret_token
   property :recaptcha_2_site_key
   property :standard_ga_tracking_code

@@ -105,7 +105,7 @@
     }
   },
   "dependencies": {
-    "airbrake-js": "0.5.8",
+    "airbrake-js": "0.5.9",
     "babel-polyfill": "6.16.0",
     "bourbon": "4.2.7",
     "classnames": "2.2.5",

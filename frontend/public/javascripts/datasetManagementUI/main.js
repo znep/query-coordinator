@@ -14,7 +14,7 @@ import Perf from 'react-addons-perf';
 import rootReducer from './reducers';
 import { bootstrap } from './bootstrap';
 import * as Selectors from './selectors';
-import Airbrake from '../common/airbrake';
+import Airbrake from 'common/airbrake';
 import rootRoute from './routes';
 import { addLocation } from 'actions/routing';
 import styleguide from './styles/style.global.scss'; //eslint-disable-line
@@ -50,7 +50,7 @@ if (window.serverConfig.environment === 'development') {
   );
 } else {
   // 126728 is Publishing airbrake project id
-  Airbrake.init(126728, window.serverConfig.airbrakeKey);
+  Airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

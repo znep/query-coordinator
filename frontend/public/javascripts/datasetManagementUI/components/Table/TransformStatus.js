@@ -11,6 +11,7 @@ import ProgressBar from '../ProgressBar';
 import TypeIcon from '../TypeIcon';
 import { commaify } from '../../../common/formatNumber';
 import SocrataIcon from '../../../common/components/SocrataIcon';
+import ErrorPill from 'components/ErrorPill';
 import styles from 'styles/Table/TransformStatus.scss';
 
 function getFlyoutId(transform) {
@@ -133,7 +134,7 @@ class TransformStatus extends Component {
             className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}
             to={linkPath}
             data-flyout={getFlyoutId(transform)}>
-            <span className={styles.error}>{commaify(transform.num_transform_errors)}</span>
+            <ErrorPill number={transform.num_transform_errors} />
             {msg}
           </Link>
           {errorFlyout}

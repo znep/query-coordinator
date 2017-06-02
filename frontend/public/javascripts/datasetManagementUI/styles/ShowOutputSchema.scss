@@ -89,7 +89,7 @@ li.active {
 }
 
 .dataPreview {
-  padding: 0.5em 0.7em 0 0.7em;
+  padding: 0.5em 8px 0 8px;
   display: block;
 
   .titleWrapper {
@@ -107,7 +107,7 @@ li.active {
   .datasetAttribute {
     display: inline-block;
     text-align: right;
-    margin: 0px 0px 0px 1em;
+    margin: 0 0 0 1em;
     float: right;
 
     div {
@@ -135,4 +135,11 @@ li.active {
 
 .previewHeader {
   composes: h3 from global;
+}
+
+.pointerWrap {
+  flex-grow: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }

@@ -2010,6 +2010,9 @@ en:
       upload_failed: Upload Failed
       uploading: Uploading
     show_output_schema:
+      additional_errors:
+        singular: Additional error
+        plural: Additional errors
       click_to_view: Click to view
       column_header:
         column_options: Column Options

@@ -1,0 +1,11 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.errorPill {
+  composes: error from global;
+  padding: 0 0.7em 1px;
+  border-radius: 1.1em;
+  margin-right: 0.5em;
+  color: $white;
+}

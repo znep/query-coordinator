@@ -202,7 +202,7 @@ describe('components/ShowOutputSchema', () => {
   // these overlap a bit with ColumnStatusTest, but that's not a bad thing IMO
   describe('error counts and flyouts', () => {
 
-    it('properly render when the upload is done', () => {
+    const getStoreWithErrors = () => {
       const store = getStoreWithLoadRowsCall();
       store.dispatch(updateFromServer('input_schemas', {
         id: 4,
@@ -220,6 +220,12 @@ describe('components/ShowOutputSchema', () => {
         num_transform_errors: 42
       }));
 
+      return store;
+    };
+
+    it('properly render when the upload is done', () => {
+      const store = getStoreWithErrors();
+
       const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
       expect(_.map(element.querySelectorAll('.colName'), 'innerText')).to.eql(['arrest', 'block']);
       expect(_.map(element.querySelectorAll('select'), 'value')).to.eql(['text', 'text']);
@@ -231,6 +237,7 @@ describe('components/ShowOutputSchema', () => {
 
     it('properly render when the upload is still in progress', () => {
       const SubI18n = I18n.show_output_schema.column_header;
+      // not using getStoreWithErrors because we don't want `totalRows` to be set
       const store = getStoreWithOutputSchema();
       store.dispatch(updateFromServer('transforms', {
         id: 1,
@@ -261,6 +268,28 @@ describe('components/ShowOutputSchema', () => {
           type: 'Text'
         }) + '\nClick to view'
       ]);
+    });
+
+    describe('"additional errors" pointer', () => {
+
+      it('is rendered to the right when there are unseen errors to the right', () => {
+        const store = getStoreWithErrors();
+
+        // the component thinks its width is 0. Not sure why, but it's good for this test
+        // since we want a very small width so the columns with errors will be out of the
+        // viewport and the error pointer will show up
+        const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+        assert.isNotNull(element.querySelector('.errorPointerRight'));
+        assert.equal(element.querySelector('.errorPointerRight .errorPill').innerText, '42');
+      });
+
+      it('scrolls without errors when clicked', () => {
+        const store = getStoreWithErrors();
+
+        const element = renderComponentWithStore(ShowOutputSchema, defaultProps, store);
+        TestUtils.Simulate.click(element.querySelector('.errorPointerRight'));
+      });
+
     });
 
   });

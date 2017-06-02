@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 import jQuery from 'jquery';
 window.jQuery = jQuery;
+window._ = _;
 
 function requireAll(context) {
   context.keys().forEach(context);

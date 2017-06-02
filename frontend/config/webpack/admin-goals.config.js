@@ -7,18 +7,17 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/adminGoals'),
-  entry: './main.js',
+  entry: common.withHotModuleEntries('./main.js'),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/adminGoals/.eslintrc.json'),
   module: {
-    loaders: [
-      common.getBabelLoader(),
+    loaders: common.getStandardLoaders([
       {
         test: /\.scss|\.css$/,
         loader: 'style!css!autoprefixer-loader!sass'
       },
       {
-        test: /\.svg/,
+        test: /\.svg/, // TODO Why is this regex not anchored at EOL?
         loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
         exclude: common.svgFontPath
       },
@@ -26,7 +25,7 @@ module.exports = _.defaultsDeep({
         test: /\.png$/,
         loader: 'url-loader?limit=100000'
       }
-    ]
+    ])
   },
   resolve: _.extend(
     common.getStandardResolve([ 'public/javascripts/adminGoals' ])

@@ -339,6 +339,6 @@ http://www.socrata.com
   <% unless CurrentDomain.custom_tracking_code.blank? %>
     <%= raw CurrentDomain.custom_tracking_code %>
   <% end %>
-  <%= include_webpack_bundle 'internal-asset-manager/last-accessed.js' %>
+  <%= include_webpack_bundle 'site_wide/site_wide.js' %>
 </body>
 </html>

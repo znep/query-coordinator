@@ -9,7 +9,6 @@ import * as SaveState from 'saveState';
 
 import { withMockFetch, testThunk } from '../asyncUtils';
 
-
 describe('ImportColumns component', () => {
 
   describe('reducer', () => {

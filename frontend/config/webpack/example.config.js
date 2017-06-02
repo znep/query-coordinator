@@ -13,20 +13,13 @@ module.exports = _.defaultsDeep({
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('.eslintrc.json'),
   module: {
-    loaders: [
-      common.getBabelLoader(),
+    loaders: common.getStandardLoaders([
       {
         test: /\.png$/,
         loader: 'url-loader?limit=100000'
-      },
-      {
-        // Prevent lodash from putting itself on window.
-        // See: https://github.com/lodash/lodash/issues/2671
-        test: /node_modules\/lodash/,
-        loader: 'imports?define=>undefined'
       }
-      // ...
-    ]
+      // Additional loaders may go here
+    ])
   },
   resolve: common.getStandardResolve([ 'public/javascripts/example' ]), // UPDATE
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))

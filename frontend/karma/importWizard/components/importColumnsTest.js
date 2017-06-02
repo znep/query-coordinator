@@ -222,7 +222,7 @@ describe('ImportColumns component', () => {
       });
 
       expect(result.columns.length).to.deep.equal(4);
-      expect(result.columns[result.columns.length - 1]).to.deep.equal({
+      expect(_.last(result.columns)).to.deep.equal({
         id: 3,
         columnSource: {
           type: 'CompositeColumn',

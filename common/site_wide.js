@@ -31,12 +31,7 @@ if (userId) {
  */
 /*****************************************************************************************************/
 
-/*
- * Any elements that add data-catalog-autocomplete="true" will automatically be given the autocomplete treatment
- */
-const autocompleteContainers = document.querySelectorAll('[data-catalog-autocomplete="true"]');
-
-Array.from(autocompleteContainers).forEach((container) => {
+Array.from(document.querySelectorAll('[data-catalog-autocomplete="true"]')).forEach((container) => {
   const collapsible = container.dataset.catalogAutocompleteCollapsible === 'true';
   const animate = container.dataset.catalogAutocompleteDisableAnimation !== 'true';
   const mobile = container.dataset.catalogAutocompleteMobile === 'true';
@@ -51,31 +46,20 @@ Array.from(autocompleteContainers).forEach((container) => {
     collapsed: collapsible
   };
 
-  ReactDOM.render(
-    <StatefulAutocomplete defaultState={defaultState} options={options} />,
-    container
-  );
+  ReactDOM.render(<StatefulAutocomplete defaultState={defaultState} options={options} />, container);
 });
 
-/*
- * This throws the autocomplete function on window,
- * so that external consumers can create autocomplete components
- */
-window.autocomplete = function(container, options, defaultState) {
+// Place a reference to the autocomplete function on window, so that external consumers can use it.
+window.autocomplete = function(containerSelector, options, defaultState) {
   _.noConflict();
+  const rootNode document.querySelector(containerSelector);
 
-  let rootNode;
-  try {
-    rootNode = document.querySelector(container);
-  } catch (err) {
-    console.error(`Cannot render Autocomplete; no node matched ${container} in querySelector`);
+  if (!rootNode) {
+    console.error(`Cannot render Autocomplete; no node matched the selector: ${containerSelector}`);
     return;
   }
 
-  ReactDOM.render(
-    <StatefulAutocomplete defaultState={defaultState} options={options} />,
-    rootNode
-  );
+  ReactDOM.render(<StatefulAutocomplete defaultState={defaultState} options={options} />, rootNode);
 };
 
 /*****************************************************************************************************/
@@ -85,18 +69,13 @@ window.autocomplete = function(container, options, defaultState) {
  */
 /*****************************************************************************************************/
 
-window.headerNotifications = (container, translations) => {
-  let rootNode;
-  try {
-    /* eslint-disable */
-    rootNode = document.querySelector(container);
-  } catch (err) {
-    console.error(`Cannot render Notifications; no node matched ${container} in querySelector`);
+window.headerNotifications = (containerSelector, translations) => {
+  const rootNode = document.querySelector(containerSelector);
+
+  if (!rootNode) {
+    console.error(`Cannot render Notifications; no node matched the selector: ${containerSelector}`);
     return;
   }
 
-  ReactDOM.render(
-    <Notifications translations={translations} />,
-    rootNode
-  );
+  ReactDOM.render(<Notifications translations={translations} />, rootNode);
 };

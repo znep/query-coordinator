@@ -143,7 +143,8 @@ function getReactHotLoader() {
   });
 }
 
-// Returns an array of loaders pre-configured to handle
+// Returns an array of loaders considered standard across the entire frontend app, except for the "open-data"
+// bundle. Includes an ES2015 + React preset for babel, icon font loader, and React hot-loader.
 function getStandardLoaders(extraLoaders) {
   var loaders = [];
 

@@ -6,8 +6,6 @@ import Bell from 'common/notifications/Bell';
 import NotificationList from 'common/notifications/NotificationList';
 import styles from 'common/notifications/notifications.scss';
 
-// require('element-closest');
-
 class Notifications extends Component {
   constructor(props) {
     super(props);

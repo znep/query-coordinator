@@ -17,26 +17,12 @@
     <%- if (!c.is_linked?) -%>
       <div class="line clearfix <%= c.client_type %>">
         <label for="form_field_<%= c.fieldName %>" title="<%= c.name %>"><%= c.name %></label>
-        <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
+        <%= render 'displays/form_field', :column => c %>
       </div>
     <%- end -%>
   <%- end -%>
   <%- if FeatureFlags.derive(nil, request).use_captcha_for_forms -%>
-    <div class="g-recaptcha" data-sitekey="<%= RECAPTCHA_2_SITE_KEY %>"></div>
-    <script>
-      function createRecaptchaTag() {
-        var head = document.querySelector("head");
-        var tag = document.createElement("script");
-        tag.type = "text/javascript";
-        tag.async = true;
-        tag.src = "https://www.google.com/recaptcha/api.js";
-        head.appendChild(tag);
-      }
-
-      if (window && !window.grecaptcha) {
-        createRecaptchaTag();
-      }
-    </script>
+    <%= render 'accounts/recaptcha2' %>
   <%- end -%>
   <div class="submitLine">
     <input type="submit" value="Submit" />

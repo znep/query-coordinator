@@ -27,13 +27,13 @@
 
           <%= form_for :signup, :url => auth0_link_path,
             :html => {:id => 'signupForm', :multipart => true} do |f| %>
-            <%= render :partial => 'accounts/signup_form_data',
-              :locals => { :f => f, :hide_password => true } %>
+            <%= render 'accounts/signup_form_data',
+              :locals => { :f => f, :hide_password => true, :use_recaptcha2 => true } %>
           <% end %>
         </div>
 
         <div class="loginForm"<%= raw('style="display: none;"') unless flash[:notice_login]%>>
-          <%= render(:partial => 'login') %>
+          <%= render 'login' %>
         </div>
       </div>
     </div>

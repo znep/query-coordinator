@@ -52,7 +52,7 @@ Array.from(document.querySelectorAll('[data-catalog-autocomplete="true"]')).forE
 // Place a reference to the autocomplete function on window, so that external consumers can use it.
 window.autocomplete = function(containerSelector, options, defaultState) {
   _.noConflict();
-  const rootNode document.querySelector(containerSelector);
+  const rootNode = document.querySelector(containerSelector);
 
   if (!rootNode) {
     console.error(`Cannot render Autocomplete; no node matched the selector: ${containerSelector}`);

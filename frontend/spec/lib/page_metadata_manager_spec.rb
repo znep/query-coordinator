@@ -34,11 +34,6 @@ describe PageMetadataManager do
 
   let(:data_lens_page_metadata) { v2_page_metadata['displayFormat']['data_lens_page_metadata'] }
 
-  before(:each) do
-    init_feature_flag_signaller
-    rspec_stub_feature_flags_with(:phidippides_deprecation_metadata_source => 'phidippides-only')
-  end
-
   describe '#page_metadata_from_vif' do
 
     it 'generates a pageMetadata object representing the visualization in the VIF as one card' do
@@ -187,16 +182,11 @@ describe PageMetadataManager do
     before do
       init_current_domain
 
-      allow_any_instance_of(DataLensManager).to receive(:fetch).
-      and_return(
-        :rights => %w(read write)
-      )
       allow_any_instance_of(Phidippides).to receive(:connection_details).
         and_return(
           'address' => '127.0.0.1',
           'port' => 2401
         )
-      allow_any_instance_of(Phidippides).to receive(:get_dataset_size)
     end
 
     context 'when call to phidippides is success' do

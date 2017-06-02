@@ -21,17 +21,10 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
       Airbrake.stubs(notify: nil)
       load_sample_data('test/fixtures/sample-data.json')
-      test_view = View.find('test-data')
-      Phidippides.any_instance.stubs(:get_dataset_size => 1 )
+      @test_view = View.find('test-data')
       # TODO Refactor all of this... Both the controller and tests are a hot mess.
       # This doesn't work. #find is not an instance method
-      View.any_instance.stubs(:find => test_view)
-      stub_feature_flags_with(
-        :use_ephemeral_bootstrap => false,
-        :create_v2_data_lens => false,
-        :enable_data_lens_page_metadata_migrations => false,
-        :phidippides_deprecation_metadata_source => 'phidippides-only'
-      )
+      View.any_instance.stubs(:find => @test_view)
       # TODO determine why 23 tests fail or break when :use_ephemeral_bootstrap is set to true
     end
 
@@ -64,11 +57,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       setup do
         # Stub out services, so we don't end up trying
         # to connect to external endpoints.
-        @phidippides.stubs(fetch_dataset_metadata: {
-          status: '500',
-          body: {columns: nil}
-          }.with_indifferent_access
-        )
+        @phidippides.stubs(fetch_dataset_metadata: { status: '500', body: {columns: nil} })
         stub_current_user
       end
 

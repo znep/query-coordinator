@@ -1,0 +1,33 @@
+// Storyteller has unique issues with z-index and rem sizing, these style overrides
+// help to bring the Filter component closer to the expected look and feel
+
+@mixin filter-bar-corrections {
+  .socrata-visualization, .socrata-visualization-filter-bar-container {
+    z-index: auto;
+  }
+
+  .filter-bar-expanded {
+    z-index: 2;
+  }
+
+  .socrata-visualization-container {
+    z-index: 1;
+  }
+
+  .InputRange-label {
+    font-size: 1.2rem;
+    bottom: -2.7rem;
+  }
+
+  .InputRange-track {
+    height: 0.5rem;
+  }
+
+  .InputRange-label--min .InputRange-labelContainer {
+    left: -50%;
+  }
+
+  .InputRange-label--max .InputRange-labelContainer {
+    left: 50%;
+  }
+}

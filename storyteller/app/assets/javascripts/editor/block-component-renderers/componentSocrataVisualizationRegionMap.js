@@ -70,7 +70,7 @@ function _renderTemplate($element, componentData) {
 function _updateVisualization($element, props) {
   assertHasProperty(props, 'componentData.value.vif');
 
-  const { componentData, editMode } = props;
+  const { componentData } = props;
   const $componentContent = $element.find('.component-content');
   const renderedVif = $element.attr('data-rendered-vif') || '{}';
   const vif = componentData.value.vif;
@@ -106,7 +106,7 @@ function _updateVisualization($element, props) {
     } else {
       // Use triggerHandler since we don't want this to bubble
       $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-      $componentContent.socrataSvgRegionMap(vif, { displayFilterBar: !editMode });
+      $componentContent.socrataSvgRegionMap(vif, { displayFilterBar: true });
     }
   }
 }

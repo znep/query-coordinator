@@ -41,11 +41,12 @@ function _renderTemplate($element, props) {
 
   const { componentData } = props;
   const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
+  const $componentContent = $('<div>', { class: 'component-content' });
   const flyoutEvent = 'SOCRATA_VISUALIZATION_FLYOUT';
 
   $element.
     addClass(className).
-    on('destroy', () => { $element.triggerHandler('SOCRATA_VISUALIZATION_DESTROY'); }).
+    on('destroy', () => { $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY'); }).
     on(flyoutEvent, (event) => {
       const payload = event.originalEvent.detail;
 
@@ -55,12 +56,15 @@ function _renderTemplate($element, props) {
         flyoutRenderer.clear();
       }
     });
+
+  $element.append($componentContent);
 }
 
 function _updateVisualization($element, props) {
   assertHasProperty(props, 'componentData.value.vif');
 
-  const { componentData, editMode } = props;
+  const { componentData } = props;
+  const $componentContent = $element.find('.component-content');
   const vif = componentData.value.vif;
 
   $element.attr('data-rendered-vif', JSON.stringify(vif));
@@ -81,7 +85,7 @@ function _updateVisualization($element, props) {
     );
   } else {
     // Use triggerHandler since we don't want this to bubble
-    $element.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $element.socrataSvgPieChart(vif, { displayFilterBar: !editMode });
+    $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
+    $componentContent.socrataSvgPieChart(vif, { displayFilterBar: true });
   }
 }

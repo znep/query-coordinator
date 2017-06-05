@@ -1,9 +1,8 @@
 import _ from 'lodash';
 import * as Links from '../links';
 import * as dsmapiLinks from '../dsmapiLinks';
-import { upsertFromServer, updateProgress } from './database';
+import { upsertFromServer } from './database';
 import { addNotification, removeNotificationAfterTimeout } from './notifications';
-import { uploadNotification } from '../lib/notifications';
 import { push } from 'react-router-redux';
 import { socrataFetch, checkStatus, getJson } from '../lib/http';
 import { parseDate } from '../lib/parseDate';
@@ -11,7 +10,15 @@ import { joinChannel } from './channels';
 import uuid from 'uuid';
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'actions/apiCalls';
 
-function xhrPromise(method, url, file, uploadUpdate, dispatch) {
+function updateProgress(uploadId, percentCompleted) {
+  return {
+    type: 'UPDATE_PROGRESS',
+    uploadId,
+    percentCompleted
+  };
+}
+
+function xhrPromise(method, url, file, uploadId, dispatch) {
   return new Promise((res, rej) => {
     const xhr = new XMLHttpRequest();
 
@@ -22,7 +29,7 @@ function xhrPromise(method, url, file, uploadUpdate, dispatch) {
     if (xhr.upload) {
       xhr.upload.onprogress = evt => {
         percent = evt.loaded / evt.total * 100;
-        dispatch(updateProgress('uploads', uploadUpdate, percent));
+        dispatch(updateProgress(uploadId, percent));
       };
     }
 
@@ -123,14 +130,16 @@ export function uploadFile(uploadId, file) {
 
     dispatch(apiCallStarted(callId, call));
 
-    dispatch(addNotification(uploadNotification(uploadId)));
+    dispatch(addNotification('upload', false, callId, uploadId));
 
-    return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadUpdate, dispatch)
+    return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadId, dispatch)
       .then(resp => JSON.parse(resp.responseText))
       .then(resp => {
         dispatch(uploadFileSuccess(uploadId, new Date(), resp.resource.id, resp.resource.total_rows));
 
-        // dispatch(removeNotificationAfterTimeout(uploadNotification(uploadId)));
+        dispatch(apiCallSucceeded(callId));
+
+        dispatch(removeNotificationAfterTimeout(callId));
 
         return resp;
       })
@@ -269,7 +278,7 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
   );
 
   if (upload.failed_at) {
-    dispatch(addNotification(uploadNotification(upload.id)));
+    dispatch(addNotification('upload', true, null, upload.id));
   } else {
     dispatch(subscribeToUpload(upload));
   }

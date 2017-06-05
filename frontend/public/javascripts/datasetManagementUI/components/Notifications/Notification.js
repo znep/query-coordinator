@@ -12,16 +12,16 @@ const Notification = ({ status, progressBar, percentCompleted, customStatusMessa
     case 'success':
       classNames = [...classNames, styles.success].join(' ');
       statusIcon = <SocrataIcon name="check" className={styles.successIcon} />;
-      statusMessage = <span className={styles.success}>{I18n.progress_items.success}</span>;
+      statusMessage = <span className={styles.successMessage}>{I18n.progress_items.success}</span>;
       break;
     case 'error':
       classNames = [...classNames, styles.error].join(' ');
       statusIcon = <SocrataIcon name="warning" className={styles.errorIcon} />;
-      statusMessage = <span className={styles.error}>{I18n.progress_items.error}</span>;
+      statusMessage = <span className={styles.errorMessage}>{I18n.progress_items.error}</span>;
       break;
     case 'inProgress':
       classNames = [...classNames, styles.inProgress].join(' ');
-      statusIcon = <span className={styles.progressIcon}>Math.round(upload.percentCompleted) + '%'</span>;
+      statusIcon = <span className={styles.progressIcon}>{`${Math.round(percentCompleted)}%`}</span>;
       break;
     default:
       classNames = classNames.join(' ');

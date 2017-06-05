@@ -11,7 +11,27 @@ import apiCalls from 'reducers/apiCalls';
 
 const views = (state = {}) => state;
 const revisions = (state = {}) => state;
-const uploads = (state = {}) => state;
+
+// return {
+//   ...state,
+//   [action.id]: {
+//     ...state[action.id],
+//     percentCompleted: action.percentCompleted
+//   }
+// }
+
+const uploads = (state = {}, action) => {
+  switch (action.type) {
+    case 'UPDATE_PROGRESS':
+      return dotProp.set(state, action.uploadId, record => ({
+        ...record,
+        percentCompleted: action.percentCompleted
+      }));
+    default:
+      return state;
+  }
+};
+
 const inputSchemas = (state = {}, action) => {
   switch (action.type) {
     case 'EDIT_INPUT_SCHEMA':
@@ -135,7 +155,8 @@ const createUpload = (state, action) => {
           id: action.id,
           created_by: action.created_by,
           created_at: action.created_at,
-          filename: action.filename
+          filename: action.filename,
+          percentCompleted: 0
         }
       }));
 

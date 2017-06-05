@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED } from 'lib/apiCallStatus';
-import DetailedNotification from 'components/DetailedNotification';
-import Notification from 'components/Notification';
+import DetailedNotification from 'components/Notifications/DetailedNotification';
+import Notification from 'components/Notifications/Notification';
 import styles from 'styles/Notifications/UploadNotification.scss';
 
 const callStatusToNotificationStatus = callStatus => {
@@ -17,18 +17,37 @@ const callStatusToNotificationStatus = callStatus => {
   }
 };
 
+const errorMessage = upload => {
+  const badConnectionBodyDescription = {
+    __html: I18n.progress_items.connection_error_body_description.format(
+      `<span class="filename">${upload.filename}</span>`
+    )
+  };
+
+  const badConnection = (
+    <div className={styles.msgContainer}>
+      <h6>{I18n.progress_items.connection_error_title}</h6>
+      <p dangerouslySetInnerHTML={badConnectionBodyDescription} />
+      <p>{I18n.progress_items.connection_error_body_advice}</p>
+    </div>
+  );
+
+  return badConnection;
+};
+
 // This component is called by the NotificationList component. It's main purpose
 // is to translate upload-specific logic into props that the generic Notification
 // component can understand. It is also responsible for choosing whether to render
 // a detailed or a basic notification.
 const UploadNotification = ({ upload, callStatus, showDetails }) => {
-  let contents;
+  let message;
+  let details;
   let notificationStatus = callStatusToNotificationStatus(callStatus);
 
   switch (callStatus) {
     case STATUS_CALL_IN_PROGRESS:
     case STATUS_CALL_SUCCEEDED:
-      contents = (
+      message = (
         <span className={styles.message}>
           {I18n.progress_items.uploading}
           <span className={styles.subMessage}>{upload.filename}</span>
@@ -36,22 +55,23 @@ const UploadNotification = ({ upload, callStatus, showDetails }) => {
       );
       break;
     default:
-      contents = <span className={styles.message}>{I18n.progress_items.upload_failed}</span>;
+      message = <span className={styles.message}>{I18n.progress_items.upload_failed}</span>;
+      details = errorMessage(upload);
   }
 
   if (showDetails) {
     return (
       <DetailedNotification
         status={notificationStatus}
+        details={details}
+        message={message}
         progressBar
-        percentCompleted={upload.percentCompleted}>
-        {contents}
-      </DetailedNotification>
+        percentCompleted={upload.percentCompleted} />
     );
   } else {
     return (
       <Notification status={notificationStatus} progressBar percentCompleted={upload.percentCompleted}>
-        {contents}
+        {message}
       </Notification>
     );
   }

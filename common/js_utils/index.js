@@ -213,9 +213,31 @@ var utils = {
   },
 
   /**
+   * Returns grouping character for given locale for formatting a number, defaults to comma
+   */
+  getGroupCharacter: function(locale) {
+    try {
+      return (1234).toLocaleString(locale).match(/1(.*)234/)[1];
+    } catch (e) {
+      return ',';
+    }
+  },
+
+  /**
+   * Returns the decimal character for given locale for formatting a number, defaults to period
+   */
+  getDecimalCharacter: function(locale) {
+    try {
+      return (12.34).toLocaleString(locale).match(/12(.*)34/)[1];
+    } catch (e) {
+      return '.';
+    }
+  },
+
+  /**
    * Returns a human readable version of a number, formatted to 4 characters.
-   * options can include a groupCharacter, which defaults to the comma character,
-   * and a decimalCharacter which defaults to the period.
+   * options can include a groupCharacter, which defaults to the group character of current locale (comma for en),
+   * and a decimalCharacter which defaults to decimal character of current locale (period for en).
    *
    * Example:
    *
@@ -228,9 +250,11 @@ var utils = {
       throw new Error('`.formatNumber()` requires numeric input.');
     }
 
+    var locale = _.get(window.serverConfig, 'locale', _.get(window.blist, 'locale', 'en'));
+
     var defaultOptions = {
-      groupCharacter: ',',
-      decimalCharacter: '.'
+      groupCharacter: utils.getGroupCharacter(locale),
+      decimalCharacter: utils.getDecimalCharacter(locale)
     };
     var formatNumberOptions = _.assign({}, defaultOptions, options);
 

@@ -1,37 +1,59 @@
+@import 'styleguide-colors';
+
 .admin-header {
   min-height: 108px;
   padding: 15px 32px 0;
-  border-bottom: 1px solid #e4e4e4;
+  border-bottom: 1px solid $light-grey-4;
   font-family: Open Sans,Helvetica,Arial,sans-serif;
   box-sizing: border-box;
-  background: #f7f7f7;
+  background: $light-grey-6;
 }
 
 .admin-breadcrumb {
   h1 {
     font-weight: 600;
     font-size: 21px;
-    border-bottom: 1px solid #e4e4e4;
+    border-bottom: 1px solid $light-grey-4;
     padding-bottom: 5px;
+
+    .internal-link {
+      display: block;
+      float: right;
+      margin-top: 10px;
+      font-size: 15px;
+      font-weight: normal;
+
+      &:hover {
+        text-decoration: none;
+
+        span {
+          text-decoration: underline;
+        }
+      }
+
+      span {
+        color: $primary-dark;
+      }
+    }
   }
 
   h1, a {
-    color: #777;
+    color: $dark-grey-1;
   }
 
   .current-page {
-    color: #1C6387;
+    color: $primary-dark;
   }
 
   .separator {
-    color: #888;
+    color: $dark-grey-1;
     font-weight: 200;
     font-size: 18px;
   }
 }
 
 .siteOuterWrapper {
-  background: #fff;
+  background: $white;
 }
 
 .contentBox.withLeftNavigation {

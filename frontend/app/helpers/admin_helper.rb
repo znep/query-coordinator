@@ -85,6 +85,10 @@ module AdminHelper
     link_to_unless_current raw(%Q(<span class="icon"></span>#{title})), options
   end
 
+  def admin_new_nav_link_to(title, description, options)
+    link_to(content_tag(:strong, title) + content_tag(:span, description), options)
+  end
+
   def user_can?(user, action, current_domain = CurrentDomain)
     current_domain.user_can?(user, action)
   end

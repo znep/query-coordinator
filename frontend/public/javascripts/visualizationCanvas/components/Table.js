@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { components as SocrataVisualizations } from 'socrata-visualizations';
 import { connect } from 'react-redux';

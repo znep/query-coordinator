@@ -5,6 +5,7 @@ import Pager from '../../common/components/Pager';
 import ResultCount from './ResultCount';
 import { changePage } from '../actions/pager';
 import _ from 'lodash';
+import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
 
 const RESULTS_PER_PAGE = 10;
 
@@ -40,9 +41,20 @@ export class CatalogResults extends React.Component {
   }
 
   renderTopbar() {
+    const collapsible = false;
+    const options = {
+      collapsible,
+      animate: true,
+      mobile: false
+    };
+
+    const defaultState = {
+      collapsed: collapsible
+    };
+
     return (
       <div className="topbar">
-        <input type="text" placeholder="Search" />{/* TODO: autocomplete searchbar */}
+        <StatefulAutocomplete defaultState={defaultState} options={options} />
       </div>
     );
   }

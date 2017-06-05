@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import $ from 'jquery';
 import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';

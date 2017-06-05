@@ -1,0 +1,63 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.cf:before,
+.cf:after {
+    content: " ";
+    display: table;
+}
+
+.cf:after {
+    clear: both;
+}
+
+.messageArea {
+  float: left;
+}
+
+.statusArea {
+  float: right;
+}
+
+.progressBar {
+  background-color: $light-grey-4;
+}
+
+.progressBarContainer {
+  height: 8px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.success {
+  color: $success-text;
+  font-weight: bold;
+}
+
+.error {
+  color: $error-base;
+  font-weight: bold;
+}
+
+.icon {
+  line-height: 1;
+  font-size: 150%;
+  margin-left: 10px;
+  vertical-align: top;
+}
+
+.successIcon {
+  composes: icon;
+  color: $success-text;
+}
+
+.errorIcon {
+  composes: icon;
+  color: $error-base;
+}
+
+.progressIcon {
+  color: $primary-dark;
+  font-weight: bold;
+}

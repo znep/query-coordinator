@@ -1,0 +1,17 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.message {
+  font-weight: 600;
+  color: $dark-grey-2;
+}
+
+.subMessage {
+  font-style: italic;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+}

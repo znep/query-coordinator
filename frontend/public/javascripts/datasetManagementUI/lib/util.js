@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const singularOrPlural = (quantity, singularString, pluralString) => {
   return quantity === 1 ? singularString : pluralString;
 };

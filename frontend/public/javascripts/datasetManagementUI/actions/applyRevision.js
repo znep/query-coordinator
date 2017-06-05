@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { push } from 'react-router-redux';
 import uuid from 'uuid';
 import { socrataFetch, checkStatus, checkStatusForPoll, getJson } from '../lib/http';

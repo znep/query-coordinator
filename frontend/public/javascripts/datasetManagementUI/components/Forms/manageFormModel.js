@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
+import React, { Component, PropTypes } from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { getComponentName } from 'lib/util';
 

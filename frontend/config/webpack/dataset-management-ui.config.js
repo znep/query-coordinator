@@ -19,15 +19,10 @@ if (!common.isProduction) {
 }
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(
-    common.frontendRoot,
-    'public/javascripts/datasetManagementUI'
-  ),
-  entry: common.getHotModuleEntries().concat(['./main']),
+  context: path.resolve(common.frontendRoot, 'public/javascripts/datasetManagementUI'),
+  entry: common.withHotModuleEntries('./main'),
   output: common.getOutput(identifier),
-  eslint: common.getEslintConfig(
-    'public/javascripts/datasetManagementUI/.eslintrc.json'
-  ),
+  eslint: common.getEslintConfig('public/javascripts/datasetManagementUI/.eslintrc.json'),
   externals: {
     jquery: true
   },
@@ -46,9 +41,7 @@ module.exports = _.defaultsDeep({
       }
     ])
   },
-  resolve: common.getStandardResolve([
-    'public/javascripts/datasetManagementUI'
-  ]),
+  resolve: common.getStandardResolve([ 'public/javascripts/datasetManagementUI' ]),
   plugins: plugins,
   postcss: function() {
     return [require('autoprefixer')];

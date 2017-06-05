@@ -3,8 +3,8 @@ import ceteraUtils from '../../common/ceteraUtils';
 
 const RESULTS_PER_PAGE = 10;
 
-export const updateCatalogResults = (response) => (
-  { type: 'UPDATE_CATALOG_RESULTS', response }
+export const updateCatalogResults = (response, onlyRecentlyViewed = false) => (
+  { type: 'UPDATE_CATALOG_RESULTS', response, onlyRecentlyViewed }
 );
 
 export const fetchingResults = () => (
@@ -22,8 +22,8 @@ export const fetchingResultsError = () => (
 export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) => {
   dispatch(fetchingResults());
 
-  const { assetTypes, currentPage, order, visibility } =
-    _.merge({}, getState().catalog, getState().filters, newParamObj);
+  const { assetTypes, authority, category, currentPage, onlyRecentlyViewed, order, ownedBy, tag,
+    visibility } = _.merge({}, getState().catalog, getState().filters, newParamObj);
 
   const ceteraOrder = () => {
     if (_.isUndefined(order)) {
@@ -42,22 +42,35 @@ export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) =>
     }
   };
 
+  const lastAccessed = window.lastAccessed;
+  let lastAccessedUids;
+
+  if (lastAccessed) {
+    lastAccessedUids = onlyRecentlyViewed ? Object.keys(lastAccessed.get()) : null;
+  } else {
+    lastAccessedUids = null;
+  }
+
   return ceteraUtils.
     fetch({
       // TODO:
-      // category
       // customMetadataFilters,
       // q,
+      category,
+      forUser: _.get(ownedBy, 'id'),
+      idFilters: lastAccessedUids,
       limit: RESULTS_PER_PAGE,
       only: assetTypes,
       order: ceteraOrder(),
       pageNumber: currentPage,
+      provenance: authority,
       showVisibility: 'true',
+      tags: tag,
       visibility
     }).
     then((response) => {
       if (_.isObject(response)) {
-        dispatch(updateCatalogResults(response));
+        dispatch(updateCatalogResults(response, onlyRecentlyViewed));
         dispatch(fetchingResultsSuccess());
         onSuccess();
       } else {

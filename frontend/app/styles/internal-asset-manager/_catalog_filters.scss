@@ -62,5 +62,40 @@ $filter-container-width: 260px;
     &.recently-viewed {
       margin-bottom: 1.5rem;
     }
+
+    .searchbox-filter {
+      position: relative;
+
+      .text-input {
+        width: 100%;
+        padding-left: 2rem;
+      }
+
+      .search-icon {
+        position: absolute;
+        top: 0.45rem;
+        left: 0.5rem;
+        font-size: 18px;
+      }
+
+      .picklist-wrapper {
+        width: 100%;
+        max-height: 300px;
+        overflow-y: scroll;
+        position: absolute;
+        margin-top: -0.5rem;
+        z-index: 100;
+
+        .picklist-option {
+          &:hover {
+            background-color: $primary-light;
+          }
+
+          &.picklist-option-selected {
+            background-color: $primary-base;
+          }
+        }
+      }
+    }
   }
 }

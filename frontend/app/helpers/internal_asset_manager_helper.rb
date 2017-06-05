@@ -53,7 +53,10 @@ module InternalAssetManagerHelper
           columns: #{internal_asset_manager_table_columns},
           results: #{@catalog_results.to_json},
           resultSetSize: #{@catalog_result_set_size}
-        }
+        },
+        domainCategories: #{@domain_categories.to_json},
+        domainTags: #{@domain_tags.to_json},
+        usersList: #{@users_list.to_json}
       };
     ))
   end

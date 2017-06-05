@@ -1,9 +1,13 @@
 import { fetchResults } from './cetera';
 
-// TODO: make this actually work
-export const toggleRecentlyViewed = () => (
-  { type: 'TOGGLE_RECENTLY_VIEWED' }
-);
+export const toggleRecentlyViewed = () => (dispatch, getState) => {
+  const onSuccess = () => {
+    dispatch({ type: 'TOGGLE_RECENTLY_VIEWED' });
+  };
+
+  return fetchResults(dispatch, getState, { onlyRecentlyViewed: !getState().filters.onlyRecentlyViewed },
+    onSuccess);
+};
 
 export const changeLastUpdatedDate = (value) => (dispatch) => {
   const onSuccess = () => {
@@ -43,6 +47,52 @@ export const changeAssetType = (value) => (dispatch, getState) => {
 
   if (value !== getState().filters.assetTypes) {
     return fetchResults(dispatch, getState, { assetTypes: value }, onSuccess);
+  }
+};
+
+export const changeAuthority = (value) => (dispatch, getState) => {
+  const onSuccess = () => {
+    dispatch({ type: 'CHANGE_AUTHORITY', value });
+  };
+
+  if (value !== getState().filters.authority) {
+    return fetchResults(dispatch, getState, { authority: value }, onSuccess);
+  }
+};
+
+export const changeCategory = (option) => (dispatch, getState) => {
+  const category = option.value;
+
+  const onSuccess = () => {
+    dispatch({ type: 'CHANGE_CATEGORY', value: category });
+  };
+
+  if (category !== getState().filters.category) {
+    return fetchResults(dispatch, getState, { category }, onSuccess);
+  }
+};
+
+export const changeOwner = (option) => (dispatch, getState) => {
+  const owner = { displayName: option.title, id: option.value };
+
+  const onSuccess = () => {
+    dispatch({ type: 'CHANGE_OWNER', value: owner });
+  };
+
+  if (owner.id !== getState().filters.ownedBy.id) {
+    return fetchResults(dispatch, getState, { ownedBy: owner }, onSuccess);
+  }
+};
+
+export const changeTag = (option) => (dispatch, getState) => {
+  const tag = option.value;
+
+  const onSuccess = () => {
+    dispatch({ type: 'CHANGE_TAG', value: tag });
+  };
+
+  if (tag !== getState().filters.tag) {
+    return fetchResults(dispatch, getState, { tag }, onSuccess);
   }
 };
 

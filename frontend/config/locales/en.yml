@@ -2653,6 +2653,15 @@ en:
           forms: Forms
           maps: Maps
           stories: Stories
+      authority:
+        label: Authority
+        options:
+          all: All
+          community: Community
+          official: Official
+      category:
+        label: Category
+        placeholder: Any Category
       header:
         title: Filters
       last_updated_date:
@@ -2665,8 +2674,16 @@ en:
           past_3_months: Past 3 months
           past_6_months: Past 6 months
           custom_date_range: Custom date range
+      owned_by:
+        label: Owned By
+        placeholder: Any Owner
       recently_viewed:
         label: Only my recently viewed
+      searchbox_filter:
+        all: All
+      tags:
+        label: Tags
+        placeholder: Any Tag
       visibility:
         label: Visibility
         options:

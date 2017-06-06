@@ -184,8 +184,9 @@ module ApplicationHelper
   DEFAULT_TRANSLATIONS = [
     LocalePart.core,
     LocalePart.account.common,
-    LocalePart.controls.common,
     LocalePart.controls.charts,
+    LocalePart.controls.common,
+    LocalePart.controls.nbe_column_manager,
     LocalePart.plugins.jquery_ui
   ]
   def render_translations(part = nil)

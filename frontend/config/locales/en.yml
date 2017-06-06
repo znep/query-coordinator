@@ -681,6 +681,63 @@ en:
       view: View
       views: Views
   controls:
+    nbe_column_manager:
+      title: Manage Columns
+      error:
+        save: There was an error saving your changes. Please try again. If this problem persists, contact Socrata support.
+      controls:
+        prev: Previous
+        next: Next
+        save: Save
+        cancel: Cancel
+      field_name:
+        title: API Field Name
+      data_type:
+        title: Data Type
+        types:
+          blob: Blob (external file)
+          boolean: True/False
+          calendar_date: Date & Time
+          location: Location
+          number: Number
+          text: Text
+      column_fields:
+        preview:
+          title: Preview
+          note: "Note: Alignment and display format settings are not reflected in the preview but will be applied when you save your changes."
+        hidden:
+          title: Hide column
+        name:
+          title: Column Name (required)
+          placeholder: (Required)
+        description:
+          title: Column Description
+          placeholder: (No description)
+        alignment:
+          title: Alignment
+          left: Left
+          center: Center
+          right: Right
+        number_formatting:
+          display_format:
+            title: Display Format
+          currency:
+            title: Currency
+            common: Common
+            other: Other
+          advanced:
+            title: Advanced
+            precision: Specify decimal precision
+            show_thousands_separators: Show thousands-separators
+            override_thousands_separator:
+              title: Override thousands-separator
+              placeholder: "e.g. ,"
+            override_decimal_separator:
+              title: Override decimal-separator
+              placeholder: "e.g. ."
+        date_formatting:
+          display_format:
+            title: Display format
     browse:
       actions:
         about:

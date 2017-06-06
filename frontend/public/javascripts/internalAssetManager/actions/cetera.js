@@ -32,11 +32,12 @@ export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) =>
 
     const direction = (order.ascending) ? 'ASC' : 'DESC';
     switch (order.value) {
-      case 'name':
-        return `name ${direction}`;
+      case 'category':
+        return `domain_category ${direction}`;
       case 'lastUpdatedDate':
         return `updatedAt ${direction}`;
-      // TODO: add more cases to map orderBy's when they become available in Cetera
+      case 'type':
+        return `datatype ${direction}`;
       default:
         return `${order.value} ${direction}`;
     }

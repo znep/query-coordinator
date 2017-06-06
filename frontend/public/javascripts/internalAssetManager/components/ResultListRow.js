@@ -16,7 +16,7 @@ export class ResultListRow extends React.Component {
   }
 
   renderCell(columnName, index) {
-    const { description, link, name, type, uid, updatedAt } = this.props;
+    const { description, link, name, ownerName, type, uid, updatedAt } = this.props;
 
     const cellTag = (value) => (
       <td scope="row" className={columnName} key={`${columnName}-${index}`}>{value}</td>
@@ -36,7 +36,7 @@ export class ResultListRow extends React.Component {
           </div>
         ));
       case 'owner':
-        return cellTag('TODO');
+        return cellTag(ownerName);
       case 'type': {
         return cellTag(<span className={getIconClassForDisplayType(type)} />);
       }
@@ -80,6 +80,7 @@ ResultListRow.propTypes = {
   link: PropTypes.string,
   moderationStatus: PropTypes.string,
   name: PropTypes.string,
+  ownerName: PropTypes.string,
   routingStatus: PropTypes.string,
   type: PropTypes.string,
   uid: PropTypes.string.isRequired,

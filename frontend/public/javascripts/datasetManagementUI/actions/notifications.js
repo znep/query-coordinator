@@ -1,26 +1,28 @@
+import uuid from 'uuid';
+
 export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
-export const addNotification = (kind, showDetails, callId, uploadId) => ({
+export const addNotification = (kind, callId, uploadId) => ({
   type: ADD_NOTIFICATION,
   notification: {
+    id: uuid(),
     kind,
-    showDetails,
     callId,
     uploadId
   }
 });
 
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
-export const removeNotification = callId => ({
+export const removeNotification = id => ({
   type: REMOVE_NOTIFICATION,
-  callId
+  id
 });
 
 const NOTIFICATION_TIMEOUT_MS = 5000;
 
-export function removeNotificationAfterTimeout(callId) {
+export function removeNotificationAfterTimeout(id) {
   return dispatch => {
     setTimeout(() => {
-      dispatch(removeNotification(callId));
+      dispatch(removeNotification(id));
     }, NOTIFICATION_TIMEOUT_MS);
   };
 }

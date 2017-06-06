@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED } from 'lib/apiCallStatus';
-import DetailedNotification from 'components/Notifications/DetailedNotification';
 import Notification from 'components/Notifications/Notification';
 import styles from 'styles/Notifications/UploadNotification.scss';
 
@@ -39,7 +38,7 @@ const errorMessage = upload => {
 // is to translate upload-specific logic into props that the generic Notification
 // component can understand. It is also responsible for choosing whether to render
 // a detailed or a basic notification.
-const UploadNotification = ({ upload, callStatus, showDetails }) => {
+const UploadNotification = ({ upload, callStatus, notificationId }) => {
   let message;
   let details;
   let notificationStatus = callStatusToNotificationStatus(callStatus);
@@ -59,22 +58,16 @@ const UploadNotification = ({ upload, callStatus, showDetails }) => {
       details = errorMessage(upload);
   }
 
-  if (showDetails) {
-    return (
-      <DetailedNotification
-        status={notificationStatus}
-        details={details}
-        message={message}
-        progressBar
-        percentCompleted={upload.percentCompleted} />
-    );
-  } else {
-    return (
-      <Notification status={notificationStatus} progressBar percentCompleted={upload.percentCompleted}>
-        {message}
-      </Notification>
-    );
-  }
+  return (
+    <Notification
+      status={notificationStatus}
+      id={notificationId}
+      progressBar
+      percentCompleted={upload.percentCompleted}
+      message={message}>
+      {details}
+    </Notification>
+  );
 };
 
 UploadNotification.propTypes = {
@@ -82,13 +75,14 @@ UploadNotification.propTypes = {
     filname: PropTypes.string.isRequired
   }),
   callStatus: PropTypes.string.isRequired,
-  showDetails: PropTypes.bool
+  showDetails: PropTypes.bool,
+  notificationId: PropTypes.string
 };
 
 const mapStateToProps = ({ entities, ui }, { notification }) => ({
   upload: entities.uploads[notification.uploadId],
-  callStatus: ui.apiCalls[notification.callId].status,
-  showDetails: notification.showDetails
+  notificationId: notification.id,
+  callStatus: ui.apiCalls[notification.callId].status
 });
 
 export default connect(mapStateToProps)(UploadNotification);

@@ -116,7 +116,7 @@ function createUploadSuccess(id, createdBy, createdAt, filename) {
 }
 
 export function uploadFile(uploadId, file) {
-  return dispatch => {
+  return (dispatch, getState) => {
     const uploadUpdate = {
       id: uploadId
     };
@@ -130,7 +130,7 @@ export function uploadFile(uploadId, file) {
 
     dispatch(apiCallStarted(callId, call));
 
-    dispatch(addNotification('upload', false, callId, uploadId));
+    dispatch(addNotification('upload', callId, uploadId));
 
     return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadId, dispatch)
       .then(resp => JSON.parse(resp.responseText))
@@ -139,7 +139,11 @@ export function uploadFile(uploadId, file) {
 
         dispatch(apiCallSucceeded(callId));
 
-        dispatch(removeNotificationAfterTimeout(callId));
+        const notificationId = getState().ui.notifications.filter(
+          notification => notification.callId === callId
+        )[0].id;
+
+        dispatch(removeNotificationAfterTimeout(notificationId));
 
         return resp;
       })
@@ -278,7 +282,7 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
   );
 
   if (upload.failed_at) {
-    dispatch(addNotification('upload', true, null, upload.id));
+    dispatch(addNotification('upload', null, upload.id));
   } else {
     dispatch(subscribeToUpload(upload));
   }

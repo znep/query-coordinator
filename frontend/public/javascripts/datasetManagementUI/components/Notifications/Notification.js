@@ -1,55 +1,107 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
+import { connect } from 'react-redux';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { removeNotification } from 'actions/notifications';
 import ProgressBar from 'components/ProgressBar';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Notifications/Notification.scss';
 
-const Notification = ({ status, progressBar, percentCompleted, customStatusMessage, children }) => {
-  let classNames = [styles.notification];
-  let statusIcon;
-  let statusMessage;
+class Notification extends Component {
+  constructor() {
+    super();
 
-  switch (status) {
-    case 'success':
-      classNames = [...classNames, styles.success].join(' ');
-      statusIcon = <SocrataIcon name="check" className={styles.successIcon} />;
-      statusMessage = <span className={styles.successMessage}>{I18n.progress_items.success}</span>;
-      break;
-    case 'error':
-      classNames = [...classNames, styles.error].join(' ');
-      statusIcon = <SocrataIcon name="warning" className={styles.errorIcon} />;
-      statusMessage = <span className={styles.errorMessage}>{I18n.progress_items.error}</span>;
-      break;
-    case 'inProgress':
-      classNames = [...classNames, styles.inProgress].join(' ');
-      statusIcon = <span className={styles.progressIcon}>{`${Math.round(percentCompleted)}%`}</span>;
-      break;
-    default:
-      classNames = classNames.join(' ');
+    this.state = {
+      detailsOpen: false
+    };
+
+    _.bindAll(this, ['toggleDetails']);
   }
 
-  return (
-    <div className={classNames}>
-      <div className={styles.cf}>
-        <span className={styles.messageArea}>{children}</span>
-        <span className={styles.statusArea}>
-          {customStatusMessage || statusMessage}
-          {statusIcon}
-        </span>
+  toggleDetails() {
+    this.setState({
+      detailsOpen: !this.state.detailsOpen
+    });
+  }
+
+  render() {
+    const { status, progressBar, percentCompleted, message, children, dispatch, id } = this.props;
+    const { detailsOpen } = this.state;
+    let classNames = [styles.notification];
+    let statusIcon;
+    let statusMessage;
+
+    switch (status) {
+      case 'success':
+        classNames = [...classNames, styles.success].join(' ');
+        statusIcon = <SocrataIcon name="check" className={styles.successIcon} />;
+        statusMessage = <span className={styles.successMessage}>{I18n.progress_items.success}</span>;
+        break;
+      case 'inProgress':
+        classNames = [...classNames, styles.inProgress].join(' ');
+        statusIcon = <span className={styles.progressIcon}>{`${Math.round(percentCompleted)}%`}</span>;
+        break;
+      case 'error':
+        classNames = [...classNames, styles.error].join(' ');
+        statusIcon = <SocrataIcon name="warning" className={styles.errorIcon} />;
+        statusMessage = (
+          <a href="#" className={styles.detailsToggle} onClick={this.toggleDetails}>
+            {detailsOpen ? I18n.progress_items.hide_details : I18n.progress_items.show_details}
+          </a>
+        );
+        break;
+      default:
+        classNames = classNames.join(' ');
+    }
+
+    return (
+      <div className={classNames}>
+        <div className={styles.cf}>
+          <span className={styles.messageArea}>{message}</span>
+          <span className={styles.statusArea}>
+            {statusMessage}
+            {statusIcon}
+          </span>
+        </div>
+        {progressBar &&
+          <div className={styles.progressBarContainer}>
+            <ProgressBar percent={percentCompleted || 0} type={status} className={styles.progressBar} />
+          </div>}
+        {children &&
+          <ReactCSSTransitionGroup
+            transitionName={{
+              enter: styles.enter,
+              enterActive: styles.enterActive,
+              leave: styles.leave,
+              leaveActive: styles.leaveActive
+            }}
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={500}>
+            {detailsOpen &&
+              <div>
+                {children}
+                <div className={styles.btnContainer}>
+                  <button className={styles.button} onClick={() => dispatch(removeNotification(id))}>
+                    Dismiss
+                  </button>
+                  <a target="_blank" href="https://support.socrata.com" className={styles.contactBtn}>
+                    Contact Support
+                  </a>
+                </div>
+              </div>}
+          </ReactCSSTransitionGroup>}
       </div>
-      {progressBar &&
-        <div className={styles.progressBarContainer}>
-          <ProgressBar percent={percentCompleted || 0} type={status} className={styles.progressBar} />
-        </div>}
-    </div>
-  );
-};
+    );
+  }
+}
 
 Notification.propTypes = {
   status: PropTypes.string.isRequired,
   progressBar: PropTypes.bool,
   percentCompleted: PropTypes.number,
-  customStatusMessage: PropTypes.object,
-  children: PropTypes.object
+  children: PropTypes.object,
+  message: PropTypes.object.isRequired,
+  id: PropTypes.string,
+  dispatch: PropTypes.func
 };
 
-export default Notification;
+export default connect()(Notification);

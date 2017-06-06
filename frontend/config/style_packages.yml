@@ -151,7 +151,7 @@ administration-sdp-template:
 - screen-admin-customizer
 administration-site-appearance:
 - screen-site-appearance
-- styleguide
+- styleguide-import-shim
 administration-stories-appearance:
 - control-pane
 - grid-sidebar
@@ -311,6 +311,6 @@ dataset-about-full:
 socrata-icons:
 - socrata-icons
 styleguide-no-tag-level:
-- styleguide-no-tag-level
+- styleguide-no-tag-level-import-shim
 styleguide:
-- styleguide
+- styleguide-import-shim

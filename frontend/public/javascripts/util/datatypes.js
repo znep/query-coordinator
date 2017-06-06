@@ -713,7 +713,16 @@ blist.namespace.fetch('blist.datatypes');
     var ds = context.modelView,
       fileData;
     if (ds && (fileData = ds.fileDataForFileId(value))) {
-      if (/image\/\w+;/.test(fileData.contentType)) {
+
+      // EN-10110/EN-16623 - Render blob types as links, not inline media
+      //
+      // Treat all rendered blob cells as documents, which should result in
+      // images being rendered as links (with file sizes in kb appended to the
+      // title).
+      if (
+        !blist.feature_flags.enable_nbe_only_grid_view_optimizations &&
+        /image\/\w+;/.test(fileData.contentType)
+      ) {
         return renderPhoto.apply(null, arguments);
       } else {
         var documentObject = {

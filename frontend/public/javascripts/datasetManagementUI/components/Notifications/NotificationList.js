@@ -7,8 +7,8 @@ import styles from 'styles/Notifications/NotificationList.scss';
 
 // This component is responsible for choosing the kind of notification to display
 // (e.g. upload, socket error, etc.) and sliding all the notifications into view.
-// Status (success, error, inProgress) and all the logic needed to figure that
-// status out are handled farther down the component tree.
+// Displaying status (success, error, inProgress) and all the logic needed to figure
+// that status out are handled farther down the component tree.
 const NotificationList = ({ notifications }) => {
   const items = notifications.map((notification, idx) => {
     switch (notification.kind) {

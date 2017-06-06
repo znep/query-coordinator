@@ -19,10 +19,7 @@ export const removeNotification = id => ({
 
 const NOTIFICATION_TIMEOUT_MS = 5000;
 
-export function removeNotificationAfterTimeout(id) {
-  return dispatch => {
-    setTimeout(() => {
-      dispatch(removeNotification(id));
-    }, NOTIFICATION_TIMEOUT_MS);
-  };
-}
+export const removeNotificationAfterTimeout = id => dispatch =>
+  setTimeout(() => {
+    dispatch(removeNotification(id));
+  }, NOTIFICATION_TIMEOUT_MS);

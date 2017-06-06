@@ -36,8 +36,7 @@ const errorMessage = upload => {
 
 // This component is called by the NotificationList component. It's main purpose
 // is to translate upload-specific logic into props that the generic Notification
-// component can understand. It is also responsible for choosing whether to render
-// a detailed or a basic notification.
+// component can understand.
 const UploadNotification = ({ upload, callStatus, notificationId }) => {
   let message;
   let details;
@@ -72,7 +71,7 @@ const UploadNotification = ({ upload, callStatus, notificationId }) => {
 
 UploadNotification.propTypes = {
   upload: PropTypes.shape({
-    filname: PropTypes.string.isRequired
+    filname: PropTypes.string
   }),
   callStatus: PropTypes.string.isRequired,
   showDetails: PropTypes.bool,

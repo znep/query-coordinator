@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { translate } from '../../../I18n';
 
 import {

@@ -67,6 +67,7 @@ module CoreViewStubs
     allow(StoryAccessLogger).to receive(:log_story_view_access)
     view = {
       name: 'test story',
+      domainCName: 'example.com',
       owner: {id: 'tugg-xxxx'}
     }.merge(options)
 

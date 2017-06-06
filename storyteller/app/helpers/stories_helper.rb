@@ -168,4 +168,9 @@ module StoriesHelper
   def should_launch_print_dialog_on_page_load?
     request.query_parameters['print'] == 'true'
   end
+
+  def story_custom_theme_css_url
+    story_domain = CoreServer::get_view(@story.uid).try(:[], 'domainCName') || request.host
+    "https://#{story_domain}/stories/themes/custom.css"
+  end
 end

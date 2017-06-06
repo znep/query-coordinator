@@ -27,11 +27,12 @@
             <input id="emailRecipient" type="text" class="emailRecipient email" name="emailRecipient0" required />
           </div>
           <%- if @view && @view.has_rights?(ViewRights::GRANT) -%>
+            <%= label_tag('role-select', t('screens.ds.email.role'), class: 'accessible') %>
             <%= select_tag(
               'role',
               options_for_select(@view.share_types.map { |type| [ t("core.share_types.#{type.downcase}"), type ] }),
               :class => 'recipientRole',
-              :id => nil
+              :id => 'role-select'
             ) %>
           <%- end -%>
         </div>

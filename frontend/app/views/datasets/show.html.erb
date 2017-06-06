@@ -77,7 +77,8 @@
       <li>
         <form id="searchForm" action="#">
           <span class="icon"></span>
-          <input type="text" class="searchField textPrompt" title="<%= t('screens.ds.bar.find_prompt') %>" value="<%= params[:q] %>"/>
+          <label for="searchField" class="accessible"><%= t('screens.ds.bar.find_prompt') %></label>
+          <input id="searchField" type="text" class="searchField textPrompt" title="<%= t('screens.ds.bar.find_prompt') %>" value="<%= params[:q] %>"/>
           <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
           <input type="hidden" name="inDatasetSearch" value="true" />
         </form>

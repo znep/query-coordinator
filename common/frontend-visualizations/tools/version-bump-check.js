@@ -15,8 +15,9 @@ var masterPackageJSON;
 var path = require('path');
 var semver = require('semver');
 var findConfig = require('find-config');
+var packagePath = findConfig('package.json');
 var baseDirectory = path.join(__dirname, '..');
-var currentBranchPackageJSON = findConfig.require('package.json');
+var currentBranchPackageJSON = require(packagePath);
 
 pushd(baseDirectory);
 
@@ -35,6 +36,8 @@ if (fetch.code === 0) {
   var checkout = exec('git checkout origin/master');
 
   if (checkout.code === 0) {
+    delete require.cache[require.resolve(packagePath)];
+
     masterPackageJSON = findConfig.require('package.json');
 
     var lessThanMasterVersion = semver.lt(currentBranchPackageJSON.version, masterPackageJSON.version);

@@ -402,6 +402,64 @@ describe('utils.js', function() {
     });
   });
 
+  describe('getGroupCharacter', function() {
+    it('returns comma when locale is en', function() {
+      assert.equal(utils.getGroupCharacter('en'), ',');
+    });
+
+    it('returns comma when locale is zh', function() {
+      assert.equal(utils.getGroupCharacter('zh'), ',');
+    });
+
+    it('returns period when locale is it', function() {
+      assert.equal(utils.getGroupCharacter('it'), '.');
+    });
+
+    it('returns period when locale is es', function() {
+      assert.equal(utils.getGroupCharacter('es'), '.');
+    });
+
+    it('returns space when locale is fr', function() {
+      assert.equal(utils.getGroupCharacter('fr'), ' ');
+    });
+
+    it('returns comma by default when locale is something else', function() {
+      assert.equal(utils.getGroupCharacter(null), ',');
+      assert.equal(utils.getGroupCharacter(undefined), ',');
+      assert.equal(utils.getGroupCharacter(''), ',');
+      assert.equal(utils.getGroupCharacter('foo'), ',');
+    });
+  });
+
+  describe('getDecimalCharacter', function() {
+    it('returns period when locale is en', function() {
+      assert.equal(utils.getDecimalCharacter('en'), '.');
+    });
+
+    it('returns period when locale is zh', function() {
+      assert.equal(utils.getDecimalCharacter('zh'), '.');
+    });
+
+    it('returns comma when locale is it', function() {
+      assert.equal(utils.getDecimalCharacter('it'), ',');
+    });
+
+    it('returns comma when locale is es', function() {
+      assert.equal(utils.getDecimalCharacter('es'), ',');
+    });
+
+    it('returns comma when locale is fr', function() {
+      assert.equal(utils.getDecimalCharacter('fr'), ',');
+    });
+
+    it('returns period by default when locale is something else', function() {
+      assert.equal(utils.getDecimalCharacter(null), '.');
+      assert.equal(utils.getDecimalCharacter(undefined), '.');
+      assert.equal(utils.getDecimalCharacter(''), '.');
+      assert.equal(utils.getDecimalCharacter('foo'), '.');
+    });
+  });
+
   describe('formatNumber', function() {
 
     var VALID_FORMATTED_NUMBER = /^-?(\d\,\d{3}|((\d(\.\d{1,2})?|\d{2}(\.\d)?|\d{3})[A-Z])|\d(\.\d{1,3})?|\d{2}(\.\d{1,2})?|\d{3}(\.\d)?)$/;

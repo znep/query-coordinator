@@ -20,7 +20,7 @@ if (!common.isProduction) {
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/datasetManagementUI'),
-  entry: common.withHotModuleEntries('./main'),
+  entry: common.withHotModuleEntries({'main': './main'}),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/datasetManagementUI/.eslintrc.json'),
   externals: {

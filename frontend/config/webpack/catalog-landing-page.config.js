@@ -7,7 +7,7 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/catalogLandingPage'),
-  entry: common.withHotModuleEntries(['./main', './manage', './catalog']),
+  entry: common.withHotModuleEntries({'main': './main', 'manage': './manage', 'catalog': './catalog'}),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/catalogLandingPage/.eslintrc.json'),
   externals: {

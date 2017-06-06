@@ -7,7 +7,7 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/internalAssetManager'),
-  entry: common.withHotModuleEntries('./main'),
+  entry: common.withHotModuleEntries({'main': './main'}),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/internalAssetManager/.eslintrc.json'),
   externals: {

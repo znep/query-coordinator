@@ -7,7 +7,7 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/datasetLandingPage'),
-  entry: common.withHotModuleEntries('./main'),
+  entry: common.withHotModuleEntries({'main': './main'}),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/datasetLandingPage/.eslintrc.json'),
   externals: {

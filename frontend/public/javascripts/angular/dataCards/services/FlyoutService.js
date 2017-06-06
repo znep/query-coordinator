@@ -39,10 +39,6 @@ module.exports = function(Constants, WindowState, $window, rx) {
     var cssFlyout;
 
     if (!_.isEmpty(uberFlyout) && target) {
-
-      // Work-around for browsers with no pointer-event support.
-      target = targetUnder();
-
       var selectorHandler;
       var matcher = target.matches || target.matchesSelector || target.msMatchesSelector;
 
@@ -210,19 +206,6 @@ module.exports = function(Constants, WindowState, $window, rx) {
   hintWidth = uberFlyout.children('.hint').outerWidth();
   hintHeight = uberFlyout.children('.hint').outerHeight();
 
-  // If pointer-events are not supported and we are hovering over the
-  // flyout, this hack will get the target element underneath it.
-  function targetUnder() {
-    var mouseoverFlyout = uberFlyout.has($(target)).length > 0;
-
-    if (!Modernizr.pointerEvents && mouseoverFlyout) {
-      hide();
-      target = $window.document.elementFromPoint(mouseX, mouseY);
-      uberFlyout.show();
-    }
-    return target;
-  }
-
   // Hides the flyout
   function hide() {
     uberFlyout.hide();
@@ -321,7 +304,6 @@ module.exports = function(Constants, WindowState, $window, rx) {
       value = value || WindowState.mousePosition$.value;
       replayedMousePosition$.onNext(value);
     },
-    targetUnder: targetUnder,
     hide: hide
   };
 };

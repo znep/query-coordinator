@@ -55,22 +55,28 @@
       </li>
       <%- end -%>
       <li>
-        <%- if @view.available_display_types.length > 1 -%>
-        <ul id="renderTypeOptions" class="pillButtons">
 
-          <%- url_types = {'fatrow' => 'richList'} -%>
-          <%- @view.available_display_types.clone.
-            push('template').each do |type| -%>
-            <%- view_type_link_title = t('screens.ds.bar.view_type', type: t("screens.ds.bar.view_types.#{type}")) -%>
-          <li><a
-            href="<%= view_path(@view, defaultRender: url_types[type] || type) %>"
-            class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
-            title="<%= view_type_link_title %>">
-            <span class="icon"><%= view_type_link_title %></span>
-          </a></li>
+        <%-
+          # EN-10110/EN-16622 - Disable non-table renderTypeOptions for NBE-only datasets
+          if !FeatureFlags.derive[:enable_nbe_only_grid_view_optimizations]
+        -%>
+          <%- if @view.available_display_types.length > 1 -%>
+          <ul id="renderTypeOptions" class="pillButtons">
+
+            <%- url_types = {'fatrow' => 'richList'} -%>
+            <%- @view.available_display_types.clone.
+              push('template').each do |type| -%>
+              <%- view_type_link_title = t('screens.ds.bar.view_type', type: t("screens.ds.bar.view_types.#{type}")) -%>
+            <li><a
+              href="<%= view_path(@view, defaultRender: url_types[type] || type) %>"
+              class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
+              title="<%= view_type_link_title %>">
+              <span class="icon"><%= view_type_link_title %></span>
+            </a></li>
+            <%- end -%>
+
+          </ul>
           <%- end -%>
-
-        </ul>
         <%- end -%>
       </li>
       <%- if @view.is_tabular? && !@view.is_form? -%>

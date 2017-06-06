@@ -605,19 +605,27 @@
         cmObj.clearFilter();
         break;
       case 'hide-column':
-        if (!$.isBlank(cmObj.settings.column.parentColumn)) {
-          cmObj.settings.column.hide();
+        // EN-10110/EN-16481 - Alternate column edit mechanism for NBE-only grid view
+        if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
+          var options = {
+            id: cmObj.settings.column.id
+          };
+          blist.datasetPage.launchNbeColumnManager(options);
         } else {
-          var selHideCols = {};
-          if (_.isFunction(cmObj.settings.selectedColumns)) {
-            selHideCols = cmObj.settings.selectedColumns();
+          if (!$.isBlank(cmObj.settings.column.parentColumn)) {
+            cmObj.settings.column.hide();
+          } else {
+            var selHideCols = {};
+            if (_.isFunction(cmObj.settings.selectedColumns)) {
+              selHideCols = cmObj.settings.selectedColumns();
+            }
+            selHideCols[cmObj.settings.column.id] = true;
+            _.each(selHideCols, function(v, colId) {
+              // Don't save changes, let the user do that
+              cmObj.settings.view.columnForID(colId).hide();
+              cmObj.settings.view.trigger('columns_changed');
+            });
           }
-          selHideCols[cmObj.settings.column.id] = true;
-          _.each(selHideCols, function(v, colId) {
-            // Don't save changes, let the user do that
-            cmObj.settings.view.columnForID(colId).hide();
-            cmObj.settings.view.trigger('columns_changed');
-          });
         }
         break;
       case 'delete-column':
@@ -633,7 +641,15 @@
         }
         break;
       case 'edit-column':
-        cmObj.settings.editColumnCallback(cmObj.settings.column);
+        // EN-10110/EN-16481 - Alternate column edit mechanism for NBE-only grid view
+        if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
+          var nbeColumnManagerOptions = {
+            id: cmObj.settings.column.id
+          };
+          blist.datasetPage.launchNbeColumnManager(nbeColumnManagerOptions);
+        } else {
+          cmObj.settings.editColumnCallback(cmObj.settings.column);
+        }
         break;
     }
   };

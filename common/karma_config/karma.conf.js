@@ -10,6 +10,10 @@ var webpackConfig = {
   module: {
     loaders: [
       {
+        loaders: [require.resolve('style-loader'), require.resolve('css-loader'), require.resolve('sass-loader')],
+        test: /\.s?css$/
+      },
+      {
         loader: require.resolve('raw-loader'),
         test: /\.svg$/,
         include: `${root}/common/resources/fonts/svg`
@@ -47,7 +51,12 @@ var webpackConfig = {
     ],
     modulesDirectories: [ path.resolve(root, 'packages/socrata-components/node_modules') ]
   },
-  devtool: 'inline-source-map'
+  devtool: 'inline-source-map',
+  sassLoader: {
+    includePaths: [
+      `${root}/common/authoring_workflow`
+    ]
+  }
 };
 
 module.exports = function(config) {
@@ -58,7 +67,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'chai-dom', 'chai', 'sinon'],
 
     // list of files / patterns to load in the browser
     files: [

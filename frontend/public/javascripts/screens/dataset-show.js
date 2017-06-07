@@ -1596,8 +1596,11 @@ $(function() {
   });
 
   $('.unsavedLine a.revert, .basedOnTemp .revertLink').click(function(e) {
+    // start reloading ASAP; visual indicator and preventDefault are helpful but
+    // totally moot if the page reload begins quickly enough
+    window.location.reload();
+    $('.innerContainer .loadingSpinnerContainer').removeClass('hidden hide');
     e.preventDefault();
-    blist.dataset.reload();
   });
 
   // Publishing

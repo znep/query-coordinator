@@ -1,26 +1,30 @@
 @import 'app/styles/styleguide-colors';
 
 .filter-bar {
-  width: 100%;
   margin-top: 15px;
   display: flex;
   justify-content: space-between;
   color: $dark-grey-2;
-
-  .filter-bar-filter {
-    margin-right: 15px;
-  }
 
   .quick-filters {
     font-size: 15px;
 
     ul {
       list-style-type: none;
+      padding-left: 0;
 
       li {
         float: left;
         padding-left: 12px;
         padding-right: 12px;
+
+        &:first-child {
+          padding-left: 0;
+        }
+
+        &:last-child {
+          padding-right: 0;
+        }
 
         button {
           cursor: pointer;
@@ -32,6 +36,7 @@
           &:hover {
             border-bottom: 4px solid $light-grey-2;
           }
+
           &.selected {
             border-bottom: 4px solid $primary-dark;
           }
@@ -55,6 +60,10 @@
 
     .dropdown-container {
       margin-right: 15px;
+
+      &:last-child {
+        margin-right: 0;
+      }
 
       .dropdown-placeholder {
         width: 190px;

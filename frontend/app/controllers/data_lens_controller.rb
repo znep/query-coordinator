@@ -114,7 +114,7 @@ class DataLensController < ActionController::Base
 
       # Also send dataset metadata containing new computed column info if job was successful
       if success && result[:status] == 'completed'
-        result[:datasetMetadata] = job_status[:datasetMetadata] || fetch_dataset_metadata(dataset_id)
+        result[:datasetMetadata] = job_status[:datasetMetadata] || fetch_dataset_metadata(dataset_id, request_options)
       end
     rescue ArgumentError => exception
       status = :bad_request
@@ -195,6 +195,7 @@ class DataLensController < ActionController::Base
     begin
       @dataset_metadata = fetch_dataset_metadata(
         @page_metadata[:datasetId],
+        request_options,
         :add_table_column => true,
         :is_from_derived_view => is_from_derived_view
       )
@@ -255,6 +256,7 @@ class DataLensController < ActionController::Base
     begin
       @dataset_metadata = fetch_dataset_metadata(
         @page_metadata[:datasetId],
+        request_options,
         :add_table_column => true
       )
     rescue AuthenticationRequired
@@ -309,6 +311,7 @@ class DataLensController < ActionController::Base
 
       @dataset_metadata = fetch_dataset_metadata(
         view.nbe_view.id,
+        request_options,
         :add_table_column => true
       )
 
@@ -331,6 +334,13 @@ class DataLensController < ActionController::Base
   end
 
   private
+
+  def request_options
+    {
+      :cookies => forwardable_session_cookies,
+      :request_id => request_id
+    }.compact
+  end
 
   def fetch_page_metadata(page_id)
     begin

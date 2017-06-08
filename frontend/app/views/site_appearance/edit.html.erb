@@ -16,6 +16,9 @@
   <div class="site-appearance-admin-header">
     <div class="header-title">
       <h1><%= t('screens.admin.site_appearance.site_appearance') %></h1>
+      <%= link_to('https://support.socrata.com/hc/en-us/articles/223723227', :target => 'blank') do %>
+        <span class="socrata-icon-question"></span>
+      <% end %>
     </div>
 
     <div class="locale-warning">
@@ -81,7 +84,7 @@
         <% end %>
       </ul>
 
-      <%= form_tag update_site_appearance_path(anchor: {tab: :whats_new}), id: 'site_appearance_form', method: :put, remote: true do %>
+      <%= form_tag update_site_appearance_path(anchor: {tab: :general}), id: 'site_appearance_form', method: :put, remote: true do %>
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
         <% tab_sections.each_with_index do |section, i| %>
           <div class="tab-content" data-tab-id="<%= section %>">

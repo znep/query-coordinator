@@ -14,7 +14,7 @@ class SiteAppearanceController < ApplicationController
 
   def tab_sections
     # EN-6943: removing "homepage" because it is not implemented yet
-    %w(whats_new general header footer social)
+    %w(general header footer social)
   end
   helper_method :tab_sections
 

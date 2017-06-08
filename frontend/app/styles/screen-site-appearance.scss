@@ -84,13 +84,20 @@ $link_color: #2279a6;
     overflow: hidden;
 
     .header-title {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 2rem;
 
       h1 {
         display: inline-block;
         font-size: 27px;
-        margin-bottom: 2rem;
-        }
+        margin-right: 0.5rem;
+      }
+
+      span.socrata-icon-question {
+        color: $link_color;
+        font-size: 16px;
+      }
     }
 
     .locale-warning {
@@ -558,36 +565,6 @@ $link_color: #2279a6;
 
         &:first-of-type {
           margin-right: 9px;
-        }
-      }
-    }
-
-    .whats-new-content {
-      .whats-new-hero-image {
-        display: block;
-        margin: 0 auto;
-      }
-
-      .whats-new-title {
-        font-size: 15pt;
-        color: #288dc1;
-        margin: 16px 0 8px;
-      }
-
-      .whats-new-description {
-        > p {
-          font-size: 10pt;
-          line-height: 1.2rem;
-          margin: 0 0 16px;
-        }
-
-        a, a:visited {
-          color: $link_color;
-          font-weight: 600;
-        }
-
-        &:last-of-type {
-          margin-bottom: 0;
         }
       }
     }

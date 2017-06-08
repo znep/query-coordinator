@@ -8,6 +8,19 @@ import TimelineChart from 'common/visualizations/views/TimelineChart';
 describe('TimelineChart', function() {
   'use strict';
 
+  // Each rendering of the timeline chart potentially
+  // leaves behind DOM nodes and associated event handlers.
+  // This will cause tests to sporadically fail.
+  // Fixing this issue requires a lot of big refactors, and
+  // this codebase is no longer actively maintained.
+  // Thus, this hack is preferable.
+  afterEach((done) => {
+    setTimeout(() => {
+      $('div').remove();
+      done();
+    }, 50);
+  });
+
   var CHART_WIDTH = 640;
   var CHART_HEIGHT = 480;
 

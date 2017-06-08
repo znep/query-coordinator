@@ -1322,8 +1322,12 @@ $(function() {
   datasetPageNS.rtManager = blist.$container.renderTypeManager({
     view: blist.dataset,
     defaultTypes: defRen,
-    editEnabled: !blist.dataset.isImmutable() &&
-      (blist.dataset.isUnpublished() || blist.dataset.viewType != 'tabular'),
+    editEnabled: (
+      // EN-10110/EN-16621 - Disable cell-level editing for NBE-only datasets
+      !blist.feature_flags.enable_nbe_only_grid_view_optimizations &&
+      !blist.dataset.isImmutable() &&
+      (blist.dataset.isUnpublished() || blist.dataset.viewType != 'tabular')
+    ),
     columnEditEnabled: !blist.dataset.isImmutable(),
     common: {
       editColumnCallback: function(col) {

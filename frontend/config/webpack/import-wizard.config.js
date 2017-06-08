@@ -8,13 +8,11 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/importWizard'),
-  entry: './main',
+  entry: common.withHotModuleEntries({'main': './main'}),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/importWizard/.eslintrc.json'),
   module: {
-    loaders: [
-      common.getBabelLoader()
-    ]
+    loaders: common.getStandardLoaders()
   },
   resolve: _.extend(
     {

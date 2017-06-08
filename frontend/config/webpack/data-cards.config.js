@@ -7,37 +7,38 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/angular/src'),
-  entry: './main',
+  entry: common.withHotModuleEntries({'main': './main'}),
   output: common.getOutput(identifier),
+  // eslint file paths below are relative to platform-ui/frontend
   eslint: common.getEslintConfig(common.isProduction ? '.eslintrc.json' : '.eslintrc-dev.json'),
   module: {
-    loaders: [
-      common.getBabelLoader(),
+    loaders: common.getStandardLoaders(
+      [
+        {
+          test: /\.scss|\.css$/,
+          loader: 'style!css!autoprefixer-loader!sass'
+        },
+        {
+          test: /\.png$/,
+          loader: 'url-loader?limit=100000'
+        },
+        {
+          test: require.resolve('jquery'),
+          loader: 'expose?$!expose?jQuery'
+        },
+        {
+          test: /\.html$/,
+          exclude: /node_modules/,
+          loaders: [
+            'ngtemplate?requireAngular&relativeTo=' + path.resolve(common.frontendRoot, 'public/angular_templates'),
+            'html?minimize=false'
+          ]
+        }
+      ],
       {
-        test: /\.html$/,
-        exclude: /node_modules/,
-        loaders: [
-          'ngtemplate?requireAngular&relativeTo=' + path.resolve(common.frontendRoot, 'public/angular_templates'),
-          'html?minimize=false'
-        ]
-      },
-      {
-        test: /modernizr\.js$/,
-        loader: 'imports?this=>window'
-      },
-      {
-        test: /\.scss|\.css$/,
-        loader: 'style!css!autoprefixer-loader!sass'
-      },
-      {
-        test: /\.png$/,
-        loader: 'url-loader?limit=100000'
-      },
-      {
-        test: require.resolve('jquery'),
-        loader: 'expose?$!expose?jQuery'
+        reactHotLoader: false
       }
-    ]
+    )
   },
   resolve: _.extend(
     {

@@ -51,11 +51,16 @@ function report(suite) {
     }
     printStreamIfNotBlank('stdout', stdout);
     printStreamIfNotBlank('stderr', stderr);
+
     if (error) {
       if (error.code === 1) {
         console.error(`${suite} tests failed.`);
       } else {
-        console.error(`Failed to run ${suite} tests: ${error}`);
+        if (error.killed) {
+          console.log(`${suite} tests timeout of ${karmaTimeoutSeconds()} seconds exceeded`);
+        } else {
+          console.error(`Failed to run ${suite} tests: ${error}`);
+        }
       }
 
       process.exit(1);
@@ -63,11 +68,16 @@ function report(suite) {
   };
 }
 
+function karmaTimeoutSeconds() {
+  return (parseInt(process.env.KARMA_TIMEOUT_SECONDS || '300', 10));
+}
+
 // Execute test suites in parallel.
 suites.forEach(function(suite) {
-  console.log(`Spawning Karma tests for ${suite} [background]`);
-  var karmaCommand = `node --max_old_space_size=4096 ./node_modules/karma/bin/karma ${generateArgs(suite)}`;
-  exec(karmaCommand, report(suite));
+  const timeoutMs = karmaTimeoutSeconds() * 1000;
+  console.log(`Spawning Karma tests for ${suite} [background] with ${timeoutMs / 1000} second timeout`);
+  const karmaCommand = `node --max_old_space_size=4096 ./node_modules/karma/bin/karma ${generateArgs(suite)}`;
+  exec(karmaCommand, {timeout: timeoutMs}, report(suite));
 });
 
 console.log('');

@@ -249,15 +249,16 @@ class PageMetadataManager
   # Phidippides call for the dataset metadata - needed to fetch columns for both
   # metadb and phidippides backed page metadata.
   def fetch_dataset_columns(dataset_id, options)
-    dataset_metadata_result = phidippides.fetch_dataset_metadata(dataset_id, options)
-    if dataset_metadata_result.fetch(:status) != '200'
-      Rails.logger.error("#{self.class}##{__method__} - result: #{dataset_metadata_result}")
+    begin
+      dataset_metadata = fetch_dataset_metadata(dataset_id, options)
+    rescue => ex
+      Rails.logger.error(ex)
       raise Phidippides::NoDatasetMetadataException.new(
         "could not fetch dataset metadata for id: #{dataset_id}"
       )
     end
 
-    dataset_metadata_result.fetch(:body).fetch('columns')
+    dataset_metadata.fetch('columns')
   end
 
   def migrated_page_metadata(page_metadata, options)

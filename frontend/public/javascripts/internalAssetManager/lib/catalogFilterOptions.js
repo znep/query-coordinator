@@ -13,7 +13,7 @@ export const lastUpdatedDateOptions = [
 export const assetTypeOptions = [
   { title: getTranslation('asset_types.options.all'), value: null },
   { title: getTranslation('asset_types.options.calendars'), value: 'calendars' },
-  { title: getTranslation('asset_types.options.charts'), value: 'charts' }, // include 'visualizations'?
+  { title: getTranslation('asset_types.options.charts'), value: 'charts,visualizations' },
   { title: getTranslation('asset_types.options.datasets'), value: 'datasets' },
   { title: getTranslation('asset_types.options.datalenses'), value: 'datalenses' },
   { title: getTranslation('asset_types.options.external'), value: 'hrefs' },
@@ -22,6 +22,12 @@ export const assetTypeOptions = [
   { title: getTranslation('asset_types.options.forms'), value: 'forms' },
   { title: getTranslation('asset_types.options.maps'), value: 'maps' },
   { title: getTranslation('asset_types.options.stories'), value: 'stories' }
+];
+
+export const authorityOptions = [
+  { title: getTranslation('authority.options.all'), value: null },
+  { title: getTranslation('authority.options.official'), value: 'official' },
+  { title: getTranslation('authority.options.community'), value: 'community' }
 ];
 
 export const visibilityOptions = [

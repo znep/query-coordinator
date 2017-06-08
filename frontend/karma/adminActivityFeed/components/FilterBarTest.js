@@ -9,7 +9,12 @@ describe('FilterBar', () => {
 
   beforeEach(() => {
     const store = getDefaultStore({}, {
-      filtering: {}
+      filter: {
+        event: 'All',
+        status: 'All',
+        dateFrom: null,
+        dateTo: null
+      }
     });
 
     component = renderComponentWithLocalization(FilterBar, {}, store);

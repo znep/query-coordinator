@@ -109,29 +109,31 @@ class NewUxBootstrapController < ActionController::Base
     end
 
     # 4. Fetch the dataset metadata, which is used downstream to create cards.
-    dataset_metadata_response = phidippides.fetch_dataset_metadata(
-      params[:id],
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
-    unless dataset_metadata_response[:status] == '200' && dataset_metadata_response.try(:[], :body).present?
+    begin
+      dataset_metadata = fetch_dataset_metadata(
+        params[:id],
+        :request_id => request_id,
+        :cookies => forwardable_session_cookies
+      )
+
+    rescue => ex
+      Rails.logger.error(ex)
+
       Airbrake.notify(
         :error_class => 'BootstrapUXFailure',
         :error_message => 'Could not retrieve dataset metadata.',
         :request => { :params => params },
-        :context => { :response => dataset_metadata_response }
+        :context => { :response => dataset_metadata }
       )
       return render :nothing => true, :status => 404
     end
-
-    dataset_metadata_response_body = dataset_metadata_response[:body]
 
     # If we're in ephemeral mode, exit this logic early — we don't care about
     # controlling for the presence of existing pages, and we also don't want
     # to persist the data lens page automatically.
     if use_ephemeral_bootstrap
       begin
-        return instantiate_ephemeral_view(dataset_metadata_response_body)
+        return instantiate_ephemeral_view(dataset_metadata)
       rescue CoreServer::TimeoutError
         flash[:warning] = t('controls.grid.errors.timeout_on_bootstrap').html_safe
         return render 'shared/error', :status => 504, :layout => 'main'
@@ -160,9 +162,9 @@ class NewUxBootstrapController < ActionController::Base
     if request_successful_and_has_publisher_pages
       pages = pages_response[:body][:publisher]
 
-      if dataset_metadata_response_body[:defaultPage].present?
+      if dataset_metadata[:defaultPage].present?
         default_page = pages.find do |page|
-          page[:pageId] == dataset_metadata_response_body[:defaultPage]
+          page[:pageId] == dataset_metadata[:defaultPage]
         end
       end
 
@@ -181,7 +183,7 @@ class NewUxBootstrapController < ActionController::Base
           return redirect_to redirect_args
         else
           # Otherwise, generate a new default page and redirect to it.
-          generate_and_redirect_to_new_page(dataset_metadata_response_body)
+          generate_and_redirect_to_new_page(dataset_metadata)
         end
       else
         # In any other metadata transition phase, however, if no pages match
@@ -195,7 +197,7 @@ class NewUxBootstrapController < ActionController::Base
         if some_page.present? && page_accessible?(some_page[:pageId])
           # If we have found a qualifying default page, set it as the default
           # and then redirect to it.
-          set_default_page(dataset_metadata_response_body, some_page[:pageId])
+          set_default_page(dataset_metadata, some_page[:pageId])
           redirect_args = { controller: 'data_lens', action: 'data_lens', app: 'dataCards', id: some_page[:pageId] }
           unless I18n.locale.to_s == CurrentDomain.default_locale
             redirect_args[:locale] = I18n.locale
@@ -205,13 +207,13 @@ class NewUxBootstrapController < ActionController::Base
         else
           # If no qualifying pages exist, then generate a new page and redirect
           # to it instead.
-          generate_and_redirect_to_new_page(dataset_metadata_response_body)
+          generate_and_redirect_to_new_page(dataset_metadata)
         end
       end
 
     # 6b. If there are no pages, we will need to create a default 'New UX' page.
     elsif request_successful_but_no_pages
-      generate_and_redirect_to_new_page(dataset_metadata_response_body)
+      generate_and_redirect_to_new_page(dataset_metadata)
 
     # This is a server error so we should notify Airbrake.
     else

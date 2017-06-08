@@ -1,8 +1,8 @@
+import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import isEmail from 'validator/lib/isEmail';
 import isURL from 'validator/lib/isURL';
-import _ from 'lodash';
 
 import MetadataField from 'components/MetadataField';
 import Fieldset from 'components/MetadataFields/Fieldset';

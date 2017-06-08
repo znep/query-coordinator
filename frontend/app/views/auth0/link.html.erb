@@ -25,10 +25,8 @@
             <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
           </div>
 
-          <%= form_for :signup, :url => auth0_link_path,
-            :html => {:id => 'signupForm', :multipart => true} do |f| %>
-            <%= render 'accounts/signup_form_data',
-              :locals => { :f => f, :hide_password => true, :use_recaptcha2 => true } %>
+          <%= form_for :signup, :url => auth0_link_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
+            <%= render 'accounts/signup_form_data', { :f => f, :hide_password => true, :use_recaptcha2 => true } %>
           <% end %>
         </div>
 

@@ -16,6 +16,32 @@ const mockStore = configureMockStore([ thunk ]);
 let ceteraStub;
 
 describe('actions/filters', () => {
+  describe('toggleRecentlyViewed', () => {
+    beforeEach(() => {
+      ceteraStub = stubFetch();
+    });
+
+    afterEach(() => {
+      ceteraStub.restore();
+    });
+
+    it('toggles the recently viewed assets', () => {
+      const initialState = { filters: { onlyRecentlyViewed: false } };
+      const store = mockStore(initialState);
+
+      const expectedActions = [
+        { type: 'FETCH_RESULTS' },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: true },
+        { type: 'FETCH_RESULTS_SUCCESS' },
+        { type: 'TOGGLE_RECENTLY_VIEWED' }
+      ];
+
+      return store.dispatch(Actions.toggleRecentlyViewed()).then(() => {
+        assert.deepEqual(store.getActions(), expectedActions);
+      });
+    });
+  });
+
   describe('changeAssetType', () => {
     beforeEach(() => {
       ceteraStub = stubFetch();
@@ -31,7 +57,7 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'CHANGE_ASSET_TYPE', value: 'charts' }
       ];
@@ -57,7 +83,7 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'CHANGE_VISIBILITY', value: 'internal' }
       ];

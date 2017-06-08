@@ -29,7 +29,8 @@
           @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' || p.to_s == 'stage_id'}.to_param -%>">
           <div class="searchSection">
             <span class="icon"></span>
-            <input type="text" name="q" title="<%= t('screens.admin.routing_approval.search') %>"
+            <label for="searchBox" class="accessible"><%= t('controls.browse.search') %></label>
+            <input id="searchBox" type="text" name="q" title="<%= t('screens.admin.routing_approval.search') %>"
               class="textPrompt searchBox" value="<%= @params[:q] %>" />
             <%- if !@params[:q].blank? -%>
             <%- cp = @params.reject {|p, v| p.to_s == 'page' || p.to_s == 'q' } -%>

@@ -79,7 +79,8 @@ class TableBody extends Component {
             key={transform.id}
             cell={transform.cell} />);
         })}
-      </tr>);
+      </tr>
+    );
   }
 
   render() {

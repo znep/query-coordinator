@@ -1,3 +1,5 @@
+require 'timeout'
+
 namespace :test do
 
   desc 'Run the Karma test suites'
@@ -9,7 +11,7 @@ namespace :test do
       reporter = args.reporter || 'mocha'
 
       # Normalize case.
-      if browser =~ /^chromenosandboxheadless$/i then
+      if browser =~ /^ChromeNoSandboxHeadless$/i then
         browser = 'ChromeNoSandboxHeadless'
       elsif browser =~ /^chrome$/i then
         browser = 'Chrome'
@@ -17,9 +19,17 @@ namespace :test do
         browser = 'Firefox'
       end
 
+      timeout_secs = ENV['KARMA_TIMEOUT_SECONDS'] || 300
+
       cmd = "node --max_old_space_size=4096 ./node_modules/karma/bin/karma start karma/#{dir}/karma.conf.js --singleRun #{!watch} --browsers #{browser} --reporters #{reporter}"
-      puts cmd
-      fail("#{dir} Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
+      puts "Executing the following command with #{timeout_secs} second timeout:\n#{cmd}"
+      begin
+        Timeout.timeout(timeout_secs) do
+          fail("#{dir} Karma tests failed (exit code: #{$?.exitstatus})") unless system(cmd)
+        end
+      rescue Timeout::Error
+        fail("#{dir} Karma tests failed due to time out")
+      end
       puts "#{dir} Karma tests completed without failure."
     end
 

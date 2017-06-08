@@ -255,7 +255,10 @@ export function insertChildrenAndSubscribeToOutputSchema(outputSchemaResponse) {
     outputSchemaResponse.output_columns.forEach(outputColumn => {
       const transform = outputColumn.transform;
 
-      actions.push(upsertFromServer('transforms', transform));
+      actions.push(upsertFromServer('transforms', {
+        ...transform,
+        error_indices: []
+      }));
 
       actions.push(
         upsertFromServer('output_columns', {

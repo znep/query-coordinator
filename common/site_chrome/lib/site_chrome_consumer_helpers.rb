@@ -76,8 +76,6 @@ module SiteChromeConsumerHelpers
       safe_join([
         File.read("#{site_chrome_js_dir}/disable_preview.js"),
         File.read("#{site_chrome_js_dir}/admin_header.js"),
-        File.read("#{Rails.root}/node_modules/socrata-notifications/socrata-notifications.js"),
-        File.read("#{Rails.root}/../common/autocomplete/build/socrata-autocomplete.js"),
         "window.current_user = #{site_chrome_current_user || {}};",
         raw(site_chrome_custom_header_footer_content[:header][:js]),
         raw(site_chrome_custom_header_footer_content[:footer][:js])

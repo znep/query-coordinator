@@ -22,12 +22,14 @@ if (window.serverConfig.environment === 'development') {
 
 const store = createStore(reducer, applyMiddleware(...middleware));
 
-ReactDOM.render(
-  <Provider store={store}>
-    <Manager />
-  </Provider>,
-  document.querySelector('#catalog-landing-page-manage')
-);
+if (document.querySelector('#catalog-landing-page-manage')) {
+  ReactDOM.render(
+    <Provider store={store}>
+      <Manager />
+    </Provider>,
+    document.querySelector('#catalog-landing-page-manage')
+  );
+}
 
 // Show the footer
 const footer = document.querySelector('#site-chrome-footer');

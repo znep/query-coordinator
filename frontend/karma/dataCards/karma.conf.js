@@ -31,7 +31,6 @@ module.exports = function (karma) {
       'node_modules/jquery/dist/jquery.js',
       'node_modules/js-polyfills/timing.js',
       'public/javascripts/util/polyfills.js',
-      'public/javascripts/plugins/modernizr.js',
       'public/javascripts/plugins/squire.js',
       'public/javascripts/plugins/url.js',
 

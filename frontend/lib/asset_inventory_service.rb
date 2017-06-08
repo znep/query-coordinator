@@ -1,4 +1,5 @@
 require 'asset-inventory'
+require 'cetera'
 
 module AssetInventoryService
 

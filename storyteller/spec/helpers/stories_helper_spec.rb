@@ -325,4 +325,31 @@ RSpec.describe StoriesHelper, type: :helper do
       end
     end
   end
+
+  describe '#stories_custom_theme_css_url' do
+    let(:story) { FactoryGirl.create(:published_story) }
+    let(:cname) { 'example.org' }
+    let(:story_view) do
+      { 'domainCName' => cname }
+    end
+
+    let(:result) { helper.story_custom_theme_css_url }
+
+    before do
+      assign(:story, story)
+      allow(CoreServer).to receive(:get_view).with(story.uid).and_return(story_view)
+    end
+
+    it 'returns custom.css url with path to original view domain' do
+      expect(result).to eq("https://#{cname}/stories/themes/custom.css")
+    end
+
+    context 'when domainCName is not set in view' do
+      let(:cname) { nil }
+
+      it 'returns current_domain cname' do
+        expect(result).to start_with('https://test.host')
+      end
+    end
+  end
 end

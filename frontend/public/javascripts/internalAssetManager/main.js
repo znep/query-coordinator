@@ -35,7 +35,7 @@ ReactDOM.render(
 _.defer(() => {
   ReactDOM.render(
     <Provider store={store}>
-      <FeedbackPanel {...window.serverConfig} />
+      <FeedbackPanel {...window.serverConfig} buttonPosition="bottom" />
     </Provider>,
     document.querySelector('#dynamic-content')
   );

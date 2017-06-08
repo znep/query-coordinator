@@ -11,7 +11,10 @@ import { t } from 'lib/I18n';
 import confirmUnload from 'lib/confirmUnload';
 
 import utils from 'socrata-utils';
-import airbrake from '../common/airbrake';
+
+import * as metrics from '../common/metrics';
+import airbrake from 'common/airbrake';
+
 import '../common/mixpanel'; // This initializes mixpanel
 
 // add styling for socrata-viz maps
@@ -50,6 +53,7 @@ _.defer(function() {
       </Provider>,
       document.querySelector('#app')
     );
+
     // initialize internal analytics
     const analytics = new utils.Analytics();
     analytics.sendMetric('domain', 'js-page-view', 1);
@@ -57,6 +61,16 @@ _.defer(function() {
 
     // flush the metrics queue to dispatch everything
     analytics.flushMetrics();
+
+    /*
+      EN-15722: sending metrics through socrata-utils exclusively is not safe due to a known bug
+      That is why we are sending metrics again through core because it has been confirmed as the most robust route
+      This request prompts core to create metrics of type `view-loaded`, which are the metrics that we actually surface in `viewCount` on `/api/views/4x4`
+      and on endpoint `4x4/stats`
+    */
+    if (!window.initialState.isEphemeral) {
+      metrics.sendAnalytics(window.initialState.view.id);
+    }
   } catch (e) {
     console.error(`Fatal error when rendering: ${e.stack}`);
 

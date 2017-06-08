@@ -4,7 +4,7 @@ import mockCeteraResults from 'data/mockCeteraResults';
 
 describe('components/ResultListTable', () => {
   const resultListTableProps = (options = {}) => ({
-    changeOrder: () => {},
+    changeSortOrder: () => {},
     columns: [
       'type', 'name', 'lastUpdatedDate', 'owner', 'category', 'visibility'
     ],
@@ -20,7 +20,7 @@ describe('components/ResultListTable', () => {
 
   it('renders a table header with the correct column names', () => {
     const element = renderComponentWithStore(ResultListTable, resultListTableProps({
-      columns: ['visibility', 'name', 'type', 'category']
+      columns: ['visibility', 'name', 'type', 'category', 'owner']
     }));
     const columns = element.querySelectorAll('thead th');
 
@@ -28,7 +28,8 @@ describe('components/ResultListTable', () => {
     assert.equal(columns[1].textContent, 'Name');
     assert.equal(columns[2].textContent, 'Type');
     assert.equal(columns[3].textContent, 'Category');
-    assert.isUndefined(columns[4]);
+    assert.equal(columns[4].textContent, 'Owner');
+    assert.isUndefined(columns[5]);
   });
 
   it('renders a table body with the correct number of rows', () => {

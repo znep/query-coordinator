@@ -59,7 +59,7 @@ module CommonMetadataMethods
     @data_lens_manager ||= DataLensManager.new
   end
 
-  def fetch_dataset_metadata(dataset_id, options = {})
+  def fetch_dataset_metadata(dataset_id, request_options = {}, options = {})
     # Grab permissions from core.
     permissions = fetch_permissions_and_normalize_exceptions(dataset_id)
 
@@ -77,11 +77,11 @@ module CommonMetadataMethods
     else
       result = case FeatureFlags.derive.phidippides_deprecation_metadata_source
         when 'phidippides-only'
-          fetch_dataset_metadata_from_phidippides(dataset_id, options)
+          fetch_dataset_metadata_from_phidippides(dataset_id, request_options)
         when 'core-only'
-          fetch_dataset_metadata_from_core(dataset_id, options)
+          fetch_dataset_metadata_from_core(dataset_id, request_options)
         when 'mixed-mode'
-          fetch_dataset_metadata_in_mixed_mode(dataset_id, options)
+          fetch_dataset_metadata_in_mixed_mode(dataset_id, request_options)
       end
 
       if result[:status] != '200'
@@ -239,27 +239,33 @@ module CommonMetadataMethods
 
   private
 
-  def _cookies(options)
-    options[:cookies] || forwardable_session_cookies
+  # We have to `rescue nil` in these helpers because, due to the labyrinthine
+  # nature of this subset of Ruby code (especially the fact that we cross the
+  # boundary between app/ and lib/ in bizarre ways), we can't guarantee that we
+  # actually have access to the underlying request/cookies, so the corresponding
+  # helper methods used here will error. It's pretty dumb.
+
+  def _cookies(request_options)
+    request_options[:cookies] || (forwardable_session_cookies rescue nil)
   end
 
-  def _request_id(options)
-    options[:request_id] || request_id
+  def _request_id(request_options)
+    request_options[:request_id] || (request_id rescue nil)
   end
 
-  def fetch_dataset_metadata_from_phidippides(dataset_id, options)
+  def fetch_dataset_metadata_from_phidippides(dataset_id, request_options)
     phidippides.fetch_dataset_metadata(
       dataset_id,
-      :request_id => _request_id(options),
-      :cookies => _cookies(options)
+      :request_id => _request_id(request_options),
+      :cookies => _cookies(request_options)
     )
   end
 
-  def fetch_dataset_metadata_from_core(dataset_id, options)
+  def fetch_dataset_metadata_from_core(dataset_id, request_options)
     # it's necessary to get nbe metadata because it contains
     # fields that are not present in obe metadata
-    view = View.find(dataset_id, {'Cookie' => _cookies(options)}.compact)
-    nbe_view = view.nbe_view
+    view = View.find(dataset_id, {'Cookie' => _cookies(request_options)}.compact)
+    nbe_view = view.nbe_view rescue nil
     nbe_metadata = nbe_view.nil? ? {} : nbe_view.data.with_indifferent_access
     core_metadata = translate_core_metadata_to_legacy_structure(nbe_metadata)
 
@@ -277,9 +283,9 @@ module CommonMetadataMethods
     { body: core_metadata, status: '200' }
   end
 
-  def fetch_dataset_metadata_in_mixed_mode(dataset_id, options)
-    phidippides_metadata = fetch_dataset_metadata_from_phidippides(dataset_id, options)
-    core_metadata = fetch_dataset_metadata_from_core(dataset_id, options)
+  def fetch_dataset_metadata_in_mixed_mode(dataset_id, request_options)
+    phidippides_metadata = fetch_dataset_metadata_from_phidippides(dataset_id, request_options)
+    core_metadata = fetch_dataset_metadata_from_core(dataset_id, request_options)
 
     # allow phiddy errors to bubble up (non-200 responses from core will be handled
     # by the caller, because deep_merge gives precedence to the core response)

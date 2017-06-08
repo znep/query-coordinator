@@ -80,6 +80,10 @@ export default class MostRecentlyUsed {
     return arguments.length <= 0 ? this._getMru() : this._getMru()[key];  // eslint-disable-line prefer-rest-params
   }
 
+  keys() {
+    return _(this._getMru()).toPairs().sortBy(1).reverse().fromPairs().keys().value();
+  }
+
   count() {
     const count = Object.keys(this._getMru()).length;
     if (this.logger) {

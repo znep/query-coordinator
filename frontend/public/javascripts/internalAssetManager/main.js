@@ -5,10 +5,11 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import createLogger from 'redux-logger';
 import _ from 'lodash';
-import airbrake from '../common/airbrake';
+import airbrake from 'common/airbrake';
 import reducer from './reducers';
 import App from './App';
 import { dateLocalize } from '../common/locale';
+import FeedbackPanel from '../common/components/FeedbackPanel';
 
 const middleware = [thunk];
 
@@ -30,6 +31,15 @@ ReactDOM.render(
   </Provider>,
   document.querySelector('#internal-asset-manager-content')
 );
+
+_.defer(() => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <FeedbackPanel {...window.serverConfig} buttonPosition="bottom" />
+    </Provider>,
+    document.querySelector('#dynamic-content')
+  );
+});
 
 // TODO: hide spinner that doesn't exist yet
 

@@ -22,7 +22,7 @@
   <%= f.text_field :screenName, :maxlength => 40 %>
 </div>
 
-<%- if !local_assigns[:hide_password] -%>
+<%- unless local_assigns.fetch(:hide_password, false) -%>
 <div class="line">
   <div class="labelLine">
     <%= f.label :password, "#{t('account.common.form.password')} <span class=\"accessible\">#{t('account.common.form.password_requirements')}</span>".html_safe,
@@ -41,7 +41,13 @@
 </div>
 <%- end -%>
 
-<%= render :partial => 'accounts/captcha', :locals => local_assigns %>
+<%- if local_assigns.fetch(:use_recaptcha2, false) -%>
+  <p class="line">
+    <%= render 'accounts/recaptcha2' %>
+  </p>
+<%- else -%>
+  <%= render 'accounts/captcha', local_assigns %>
+<%- end -%>
 
 <p class="signUpHint">
   <%= t('screens.sign_up.terms_html') %>

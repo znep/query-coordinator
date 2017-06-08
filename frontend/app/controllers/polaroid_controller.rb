@@ -2,6 +2,10 @@ class PolaroidController < ActionController::Base
   include ActionControllerExtensions
   include CommonSocrataMethods
 
+  def disable_site_chrome?
+    false
+  end
+
   def proxy_request
 
     if params['renderTrackingId']

@@ -1,3 +1,8 @@
+// This file is a shim so we can configure socrata-icons-path.
+// This configuration is necessary as storyteller and frontend live
+// at different paths (storyteller has an inescapable /stories prefix),
+// and each must (potentially) serve a different version of the font.
+
 @function socrata-icons-path($file) {
   @return '/webfonts/common/' + $file;
 }

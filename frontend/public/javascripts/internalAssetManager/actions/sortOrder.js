@@ -1,4 +1,5 @@
 import { fetchResults } from './cetera';
+import { clearPage } from './pager';
 
 export const changeSortOrder = (columnName) => (dispatch, getState) => {
   // If the user clicks on the column name already being sorted on, then toggle ascending/descending.
@@ -14,9 +15,10 @@ export const changeSortOrder = (columnName) => (dispatch, getState) => {
     ascending
   };
 
-  const onSuccess = () => (
-    dispatch({ type: 'CHANGE_SORT_ORDER', order: newOrder })
-  );
+  const onSuccess = () => {
+    dispatch({ type: 'CHANGE_SORT_ORDER', order: newOrder });
+    clearPage(dispatch);
+  };
 
-  return fetchResults(dispatch, getState, { order: newOrder }, onSuccess);
+  return fetchResults(dispatch, getState, { order: newOrder, pageNumber: 1 }, onSuccess);
 };

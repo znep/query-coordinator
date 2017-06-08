@@ -100,6 +100,14 @@ describe('most_recently_used', () => {
     assert.property(mru.get(), 'fake-beef', 'expected to to find missing key: fake-beef');
   });
 
+  it('returns the sorted keys of the items', () => {
+    stubDate(1);
+    mru.add('feed-face');
+    stubDate(10);
+    mru.add('fake-beef');
+    assert.deepEqual(mru.keys(), ['fake-beef', 'feed-face'])
+  });
+
   it('catches and logs JSON parse errors', () => {
     let called, message;
     const originalConsole = window.console;

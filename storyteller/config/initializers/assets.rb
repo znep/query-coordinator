@@ -11,7 +11,13 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 Rails.application.config.assets.paths << Rails.root.join('node_modules', 'react-image-crop', 'dist')
 Rails.application.config.assets.paths << Rails.root.join('node_modules', 'leaflet', 'dist')
 Rails.application.config.assets.paths << Rails.root.join('node_modules', 'socrata-visualizations', 'dist')
-Rails.application.config.assets.paths << Rails.root.join('node_modules', 'socrata-components')
+Rails.application.config.assets.paths << Rails.root.join('node_modules', 'normalize-scss', 'sass')
+Rails.application.config.assets.paths << Rails.root.join('node_modules', 'modularscale-sass', 'stylesheets')
+Rails.application.config.assets.paths << Rails.root.join('node_modules', 'react-datepicker', 'dist')
+Rails.application.config.assets.paths << Rails.root.join('node_modules', 'react-input-range', 'dist')
+Rails.application.config.assets.paths << Rails.root.join('..')
+Rails.application.config.assets.paths << Rails.root.join('..', 'common', 'styleguide')
+Rails.application.config.assets.paths << Rails.root.join('..', 'common', 'resources', 'fonts', 'dist')
 
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.

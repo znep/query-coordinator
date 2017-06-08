@@ -5,12 +5,24 @@ import sinon from 'sinon';
 describe('components/CatalogFilters', () => {
   const catalogFiltersProp = (options = {}) => ({
     assetTypes: null,
+    authority: null,
     changeAssetType: () => undefined,
+    changeAuthority: () => undefined,
+    changeCategory: () => undefined,
     changeLastUpdatedDate: () => undefined,
+    changeOwner: () => undefined,
+    changeTag: () => undefined,
     changeVisibility: () => undefined,
+    domainCategories: [],
+    domainTags: [],
+    toggleRecentlyViewed: () => undefined,
     lastUpdatedDate: 'anyDateUpdated',
     onlyRecentlyViewed: false,
-    toggleRecentlyViewed: () => undefined,
+    ownedBy: {
+      displayName: '',
+      id: null
+    },
+    usersList: [],
     visibility: null,
     ...options
   });
@@ -27,24 +39,16 @@ describe('components/CatalogFilters', () => {
     assert.equal(element.querySelector('.catalog-filters-header').textContent, 'Filters');
   });
 
-  it('renders a recently viewed filter section', () => {
+  it('renders all filter sections', () => {
     const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
     assert.isNotNull(element.querySelector('.filter-section.recently-viewed'));
-  });
-
-  it('renders a last updated date filter section', () => {
-    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
-    assert.isNotNull(element.querySelector('.filter-section.last-updated-date'));
-  });
-
-  it('renders an asset types filter section', () => {
-    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
     assert.isNotNull(element.querySelector('.filter-section.asset-types'));
-  });
-
-  it('renders a visibility filter section', () => {
-    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+    // assert.isNotNull(element.querySelector('.filter-section.last-updated-date'));
+    assert.isNotNull(element.querySelector('.filter-section.authority'));
+    assert.isNotNull(element.querySelector('.filter-section.owned-by'));
     assert.isNotNull(element.querySelector('.filter-section.visibility'));
+    assert.isNotNull(element.querySelector('.filter-section.category'));
+    assert.isNotNull(element.querySelector('.filter-section.tags'));
   });
 
   describe('checkbox filters', () => {
@@ -74,6 +78,4 @@ describe('components/CatalogFilters', () => {
       sinon.assert.calledOnce(spy);
     });
   });
-
-  // TODO: test dropdown checkbox filters once that's a thing
 });

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import { FlashMessage } from './flashMessage';
 import NavigationControl from './navigationControl';
 import {socrataFetch, authenticityToken, appToken} from '../server';
-import airbrake from '../airbrake';
+import airbrake from 'common/airbrake';
 
 type EsriSource
   = {url: string, contactEmail: string, privacy: string}

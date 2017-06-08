@@ -109,11 +109,21 @@ export class FeedbackPanel extends Component {
   resetButtonHover() {
     // Velocity doesn't allow animation to initial state, so everything is an
     // inline style override — hence the need to forcibly reset for hover style.
-    this.button.style.right = null;
+    if (this.props.buttonPosition === 'right') {
+      this.button.style.right = null;
+    } else if (this.props.buttonPosition === 'bottom') {
+      this.button.style.bottom = null;
+    }
   }
 
   showButton(cb) {
-    velocity(this.button, { right: '-2.2rem' }, _.iteratee(cb));
+    let targetStyle;
+    if (this.props.buttonPosition === 'right') {
+      targetStyle = { right: '-2.2rem' };
+    } else if (this.props.buttonPosition === 'bottom') {
+      targetStyle = { bottom: '-0.4rem' };
+    }
+    velocity(this.button, targetStyle, _.iteratee(cb));
 
     this.makeElementAndChildrenAccessible(this.button);
     this.button.focus();
@@ -127,7 +137,13 @@ export class FeedbackPanel extends Component {
   }
 
   hideButton(cb) {
-    velocity(this.button, { right: '-12rem' }, _.iteratee(cb));
+    let targetStyle;
+    if (this.props.buttonPosition === 'right') {
+      targetStyle = { right: '-12rem' };
+    } else if (this.props.buttonPosition === 'bottom') {
+      targetStyle = { bottom: '-12rem' };
+    }
+    velocity(this.button, targetStyle, _.iteratee(cb));
     this.makeElementAndChildrenInaccessible(this.button);
   }
 
@@ -220,7 +236,7 @@ export class FeedbackPanel extends Component {
           </section>
         </div>
         <button
-          className="btn feedback-panel-button"
+          className={['btn', 'feedback-panel-button', this.props.buttonPosition].join(' ')}
           onClick={this.onClickFeedback}
           ref={(ref) => this.button = ref}>
           {t('title')}
@@ -233,7 +249,12 @@ export class FeedbackPanel extends Component {
 FeedbackPanel.propTypes = {
   currentUser: PropTypes.object,
   locale: PropTypes.string,
-  usersnapProjectID: PropTypes.string.isRequired
+  usersnapProjectID: PropTypes.string.isRequired,
+  buttonPosition: PropTypes.oneOf(['bottom', 'right']).isRequired
+};
+
+FeedbackPanel.defaultProps = {
+  buttonPosition: 'right'
 };
 
 export default FeedbackPanel;

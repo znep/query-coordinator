@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import 'whatwg-fetch';
 
 const defaultFetchOptions = {

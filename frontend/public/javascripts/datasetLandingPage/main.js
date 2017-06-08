@@ -1,3 +1,5 @@
+import _ from 'lodash';
+window._ = _;
 import 'babel-polyfill-safe';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -5,7 +7,10 @@ import { Provider } from 'react-redux';
 import components from 'common/components';
 import utils from 'socrata-utils';
 
-import airbrake from '../common/airbrake';
+import * as metrics from '../common/metrics';
+import airbrake from 'common/airbrake';
+import dslpCrossOriginErrorsFilter from 'common/airbrake/filters/dslp_cross_origin_errors';
+
 import store from './store';
 import App from './App';
 import DynamicContent from './DynamicContent';
@@ -16,8 +21,10 @@ const csrfCookie = encodeURIComponent(window.serverConfig.csrfToken);
 document.cookie = `socrata-csrf-token=${csrfCookie};secure;path=/`;
 
 // Register with Airbrake in non-dev environments.
+
 if (window.serverConfig.environment !== 'development') {
   airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
+  airbrake.addFilter(dslpCrossOriginErrorsFilter);
 }
 
 // Defer rendering so the spinner in the erb can render.
@@ -70,5 +77,13 @@ _.defer(() => {
 
     // flush the metrics queue to dispatch everything
     analytics.flushMetrics();
+
+    /*
+      EN-15722: sending metrics through socrata-utils exclusively is not safe due to a known bug
+      That is why we are sending metrics again through core because it has been confirmed as the most robust route
+      This request prompts core to create metrics of type `view-loaded`, which are the metrics that we actually surface in `viewCount` on `/api/views/4x4`
+      and on endpoint `4x4/stats`
+    */
+    metrics.sendAnalytics(window.initialState.view.id);
   });
 });

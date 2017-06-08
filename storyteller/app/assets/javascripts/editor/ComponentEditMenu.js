@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import ReactDOM from 'react-dom';
 import React, { PropTypes, Component } from 'react';
-import { Picklist } from 'socrata-components';
+import { Picklist } from 'common/components';
 
 import I18n from './I18n';
 import Actions from './Actions';

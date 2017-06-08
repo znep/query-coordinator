@@ -9,4 +9,8 @@ class ConsulChecksController < ActionController::Base
     render nothing: true, status: :ok
   end
 
+  def disable_site_chrome?
+    false
+  end
+
 end

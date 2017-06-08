@@ -77,6 +77,7 @@ class Phidippides < SocrataHttp
   # there is a migrated old backend dataset available, otherwise it will use a
   # new backend dataset
   def augment_dataset_metadata!(dataset_id, dataset_metadata)
+    return unless dataset_id
     backend_view = dataset_view(dataset_id)
     return unless backend_view
 

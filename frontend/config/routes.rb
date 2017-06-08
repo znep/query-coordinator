@@ -115,9 +115,14 @@ Rails.application.routes.draw do
     end
 
     scope :controller => 'internal_asset_manager' do
-      get '/admin/datasets',
+      get '/admin/assets',
         :action => 'show',
-        :constraints => Constraints::InternalAssetManagerConstraint.new
+        :constraints => Constraints::InternalAssetManagerBetaConstraint.new
+
+      # TODO for EN-15842: make flag enable_internal_asset_manager and uncomment:
+      # get '/admin/datasets',
+      #   :action => 'show',
+      #   :constraints => FeatureFlags::RoutingConstraint.new(:enable_internal_asset_manager)
     end
 
     scope :path => '/admin', :controller => 'administration' do

@@ -1,31 +1,50 @@
 /*eslint-env node */
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
+const process = require('process');
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
 
-var webpackConfigDirectory = path.resolve(__dirname, 'webpack');
+const webpackConfigDirectory = path.resolve(__dirname, 'webpack');
 
-var webpackBundles = _.chain(process.env.FRONTEND_WEBPACK_BUNDLES || '').
+const CONFIG_FILE_SUFFIX = '.config.js';
+const configFileNameForBundle = (bundleName) =>
+  path.resolve(webpackConfigDirectory, `${bundleName}${CONFIG_FILE_SUFFIX}`);
+
+const userSpecifiedBundles = _.chain(process.env.FRONTEND_WEBPACK_BUNDLES || '').
   split(',').
   map(_.trim).
   filter('length').
   value();
 
+_.each(userSpecifiedBundles, (bundleName) => {
+  const configFileName = configFileNameForBundle(bundleName);
+  if (!fs.existsSync(configFileName)) {
+    console.error(`Expected to find: ${configFileName} because you specified ${bundleName}, but no such file found.`);
+    process.exit(1);
+  }
+});
+
 function isWebpackConfig(filename) {
-  return _.endsWith(filename, '.config.js');
+  return _.endsWith(filename, CONFIG_FILE_SUFFIX);
 }
 
 function shouldBuild(filename) {
-  var basename = path.basename(filename, '.config.js');
-  return _.isEmpty(webpackBundles) || _.includes(webpackBundles, basename);
+  const basename = path.basename(filename, '.config.js');
+  return _.isEmpty(userSpecifiedBundles) || _.includes(userSpecifiedBundles, basename);
 }
 
 function getRequirePath(webpackConfig) {
   return path.resolve(__dirname, 'webpack', webpackConfig);
 }
 
-module.exports = fs.readdirSync(webpackConfigDirectory).
+const configFilesToBuild = fs.readdirSync(webpackConfigDirectory).
   filter(isWebpackConfig).
   filter(shouldBuild).
-  map(getRequirePath).
+  map(getRequirePath);
+
+console.log('=== Active webpack configurations ===');
+console.log(configFilesToBuild.join('\n'));
+console.log('=== End active webpack configurations ===');
+
+module.exports = configFilesToBuild.
   map(require);

@@ -1,9 +1,11 @@
+import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 
+import { interpolate, easeInOutQuad } from '../lib/interpolate';
 import { commaify } from '../../common/formatNumber';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
@@ -14,6 +16,7 @@ import Table from './Table';
 import ReadyToImport from './ReadyToImport';
 import PagerBar from './Table/PagerBar';
 import SocrataIcon from '../../common/components/SocrataIcon';
+import ErrorPointer from 'components/Table/ErrorPointer';
 import styles from 'styles/ShowOutputSchema.scss';
 
 function query(entities, uploadId, inputSchemaId, outputSchemaIdStr) {
@@ -35,7 +38,24 @@ function query(entities, uploadId, inputSchemaId, outputSchemaIdStr) {
   };
 }
 
+const COL_WIDTH_PX = 250; // matches style on td in Table.scss
+const ERROR_SCROLL_DURATION_MS = 1000;
+
 export class ShowOutputSchema extends Component {
+
+  constructor() {
+    super();
+    _.bindAll(this, ['setSize', 'scrollToColIdx']);
+    // need to keep throttled version in an instance variable since it contains state used for
+    // throttling. Putting _.throttle in JSX doesn't work because throttling state is overwritten
+    // on every rerender
+    this.throttledSetSize = _.throttle(this.setSize, ERROR_SCROLL_DURATION_MS / 2);
+    this.state = {
+      scrollLeft: null,
+      viewportWidth: null
+    };
+  }
+
   componentDidMount() {
     const { displayState, dispatch, urlParams } = this.props;
 
@@ -44,6 +64,8 @@ export class ShowOutputSchema extends Component {
     if (urlParams.outputSchemaId) {
       dispatch(setOutputSchemaId(_.toNumber(urlParams.outputSchemaId)));
     }
+    this.setSize();
+    window.addEventListener('resize', this.throttledSetSize);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,6 +80,64 @@ export class ShowOutputSchema extends Component {
     }
 
     dispatch(LoadDataActions.loadVisibleData(displayState));
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.throttledSetSize);
+  }
+
+  setSize() {
+    this.setState({
+      scrollLeft: this.tableWrap.scrollLeft,
+      viewportWidth: this.tableWrap.offsetWidth
+    });
+  }
+
+  errorsNotInView() {
+    // find the minimum and maximum column indexes visible to the user
+    const minColIdx = this.offsetToColIdx(this.state.scrollLeft);
+    const maxColIdx = this.offsetToColIdx(this.state.scrollLeft + this.state.viewportWidth);
+    // get the column objects for columns out of viewport to left and right
+    const colsToLeft = this.props.columns.slice(0, minColIdx);
+    const colsToRight = this.props.columns.slice(maxColIdx + 1);
+    // sum up errors for those columns
+    return {
+      toLeft: this.errorSumAndFirstColWithErrors(colsToLeft),
+      toRight: this.errorSumAndFirstColWithErrors(colsToRight)
+    };
+  }
+
+  errorSumAndFirstColWithErrors(columns) {
+    let firstColWithErrors = null;
+    let errorSum = 0;
+    columns.forEach((col) => {
+      const numErrors = col.transform.num_transform_errors || 0;
+      errorSum += numErrors;
+      if (firstColWithErrors === null && numErrors > 0) {
+        firstColWithErrors = col.position;
+      }
+    });
+    return {
+      errorSum,
+      firstColWithErrors
+    };
+  }
+
+  scrollToColIdx(idx) {
+    const offset = this.colIdxToOffset(idx);
+    interpolate(this.tableWrap.scrollLeft, offset, ERROR_SCROLL_DURATION_MS, easeInOutQuad, (pos) => {
+      this.tableWrap.scrollLeft = pos;
+    });
+  }
+
+  offsetToColIdx(offset) {
+    return Math.min(offset / COL_WIDTH_PX);
+  }
+
+  colIdxToOffset(colIdx) {
+    const colOffset = colIdx * COL_WIDTH_PX;
+    const centered = colOffset - this.state.viewportWidth / 2 + COL_WIDTH_PX / 2;
+    return Math.max(0, centered);
   }
 
   render() {
@@ -102,6 +182,8 @@ export class ShowOutputSchema extends Component {
 
     const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
 
+    const errorsNotInView = this.errorsNotInView();
+
     return (
       <div className={styles.outputSchemaContainer}>
         <Modal {...modalProps}>
@@ -129,14 +211,29 @@ export class ShowOutputSchema extends Component {
               </div>
             </div>
 
-            <div className={styles.tableWrap}>
-              <Table
-                db={db}
-                path={path}
-                columns={columns}
-                inputSchema={inputSchema}
-                outputSchema={outputSchema}
-                displayState={displayState} />
+            <div className={styles.pointerWrap}>
+              <div
+                className={styles.tableWrap}
+                onScroll={this.throttledSetSize}
+                ref={(tableWrap) => { this.tableWrap = tableWrap; }}>
+                <Table
+                  db={db}
+                  path={path}
+                  columns={columns}
+                  inputSchema={inputSchema}
+                  outputSchema={outputSchema}
+                  displayState={displayState} />
+              </div>
+              {errorsNotInView.toLeft.errorSum > 0 &&
+                <ErrorPointer
+                  errorInfo={errorsNotInView.toLeft}
+                  direction="left"
+                  scrollToColIdx={this.scrollToColIdx} />}
+              {errorsNotInView.toRight.errorSum > 0 &&
+                <ErrorPointer
+                  errorInfo={errorsNotInView.toRight}
+                  direction="right"
+                  scrollToColIdx={this.scrollToColIdx} />}
             </div>
             <PagerBar path={path} routing={routing} displayState={displayState} />
           </ModalContent>

@@ -16,7 +16,7 @@ export class ResultListRow extends React.Component {
   }
 
   renderCell(columnName, index) {
-    const { description, link, name, type, uid, updatedAt } = this.props;
+    const { description, link, name, ownerName, type, uid, updatedAt } = this.props;
 
     const cellTag = (value) => (
       <td scope="row" className={columnName} key={`${columnName}-${index}`}>{value}</td>
@@ -36,14 +36,15 @@ export class ResultListRow extends React.Component {
           </div>
         ));
       case 'owner':
-        return cellTag('TODO');
+        return cellTag(ownerName);
       case 'type': {
         return cellTag(<span className={getIconClassForDisplayType(type)} />);
       }
       case 'visibility': {
         const visibilityCellProps = _.pick(this.props,
-          ['isDataLensApproved', 'isHidden', 'isModerationApproved', 'isPublic', 'isPublished',
-            'isRoutingApproved', 'visibleToAnonymous']
+          ['datalensStatus', 'grants', 'isDatalensApproved', 'isExplicitlyHidden', 'isModerationApproved',
+            'isPublic', 'isPublished', 'isRoutingApproved', 'moderationStatus', 'routingStatus',
+            'visibleToAnonymous']
         );
 
         return cellTag(<VisibilityCell {...visibilityCellProps} />);
@@ -67,15 +68,20 @@ export class ResultListRow extends React.Component {
 ResultListRow.propTypes = {
   category: PropTypes.string,
   columns: PropTypes.array.isRequired,
+  datalensStatus: PropTypes.string,
   description: PropTypes.string,
-  isDataLensApproved: PropTypes.bool,
-  isHidden: PropTypes.bool,
+  grants: PropTypes.array,
+  isDatalensApproved: PropTypes.bool,
+  isExplicitlyHidden: PropTypes.bool,
   isModerationApproved: PropTypes.bool,
   isPublic: PropTypes.bool.isRequired,
   isPublished: PropTypes.bool.isRequired,
   isRoutingApproved: PropTypes.bool,
   link: PropTypes.string,
+  moderationStatus: PropTypes.string,
   name: PropTypes.string,
+  ownerName: PropTypes.string,
+  routingStatus: PropTypes.string,
   type: PropTypes.string,
   uid: PropTypes.string.isRequired,
   updatedAt: PropTypes.string,

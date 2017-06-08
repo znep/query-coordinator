@@ -14,7 +14,7 @@
   <%= site_chrome_favicon_tag %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= stylesheet_link_tag 'themes/themes.css', media: 'all' %>
-  <%= stylesheet_link_tag '/themes/custom.css', media: 'all' %>
+  <%= stylesheet_link_tag story_custom_theme_css_url, media: 'all' %>
   <%= stylesheet_link_tag 'story-view', media: 'all' %>
   <%= stylesheet_link_tag 'print', media: 'print' %>
   <%= site_chrome_stylesheet_tag %>
@@ -40,8 +40,14 @@
 </head>
 <body id="story-view">
 
+<%# Skiplinks for A11Y support. The hrefs correspond to element IDs. %>
+<div class="skip-links">
+  <a class="skip-link" title="<%= t('accessibility.skip_to_content') %>" href="#content"><%= t('accessibility.skip_to_content') %></a>
+  <a class="skip-link" title="<%= t('accessibility.skip_to_footer') %>" href="#site-chrome-footer"><%= t('accessibility.skip_to_footer') %></a>
+</div>
+
 <% if should_launch_print_dialog_on_page_load? %>
-<div id='print-overlay'>
+<div id="print-overlay">
   <span class="spinner-default spinner-large"></span>
   <h3><%= t('print.preparing_story') %></h3>
   <a

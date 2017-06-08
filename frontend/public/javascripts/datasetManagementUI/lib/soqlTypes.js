@@ -49,5 +49,5 @@ export const soqlProperties = namingTransition({
   }
 });
 
-export const soqlTypes = _.filter(Object.keys(soqlProperties),
-                                  (typeName) => soqlProperties[typeName].newStyle);
+export const soqlTypes = Object.keys(soqlProperties)
+  .filter((typeName) => soqlProperties[typeName].newStyle);

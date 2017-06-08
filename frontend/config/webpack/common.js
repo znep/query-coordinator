@@ -9,10 +9,11 @@ var frontendRoot = path.resolve(__dirname, '..', '..');
 var packageJson = require(path.resolve(frontendRoot, 'package.json'));
 const svgFontPath = path.resolve(frontendRoot, '../common/resources/fonts/svg');
 
-var isProduction = process.env.NODE_ENV == 'production';
+var isProduction = process.env.NODE_ENV === 'production';
+
 var plugins = _.compact([
   new webpack.DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
   }),
   isProduction && new webpack.optimize.OccurenceOrderPlugin(),
   isProduction && new webpack.optimize.DedupePlugin(),
@@ -24,7 +25,8 @@ var plugins = _.compact([
     output: {
       comments: false
     }
-  })
+  }),
+  !isProduction && new webpack.HotModuleReplacementPlugin()
 ]);
 
 // Base `test` and `include` config for loaders
@@ -39,26 +41,14 @@ var jsLoaderBaseConfig = {
 };
 
 function withHotModuleEntries(entry) {
-  var hotModuleEntries = getHotModuleEntries();
-
-  var entryPoints = {};
-  // Assume name is main because:
-  // https://github.com/webpack/webpack/blob/951a7603d279c93c936e4b8b801a355dc3e26292/bin/convert-argv.js#L498-L502
-  if (_.isString(entry)) {
-    entryPoints.main = [entry].concat(hotModuleEntries);
-  } else if (_.isArray(entry)) {
-    entryPoints.main = entry.concat(hotModuleEntries);
-  } else {
-    entryPoints = _.mapValues(entry, function(v) {
-      return _.castArray(v).concat(hotModuleEntries);
-    });
-  }
-  return entryPoints;
+  return _.mapValues(entry, function(v) {
+    return _.castArray(v).concat(getHotModuleEntries());
+  });
 }
 
 function getHotModuleEntries() {
   return isProduction ? [] : [
-    'webpack-dev-server/client?https://0.0.0.0:' + packageJson.config.webpackDevServerPort,
+    `webpack-dev-server/client?https://0.0.0.0:${packageJson.config.webpackDevServerPort}`,
     'webpack/hot/only-dev-server'
   ];
 }
@@ -89,8 +79,7 @@ function getEslintConfig(configFile) {
   };
 }
 
-
-function getStyleguidePreLoaders() {
+function getSvgAndFontLoaders() {
   return [
     {
       test: /\.svg$/,
@@ -105,6 +94,7 @@ function getStyleguidePreLoaders() {
   ];
 }
 
+// Sets the search path for @include directives SPECIFICALLY in *.scss files.
 function getStyleguideIncludePaths() {
   return [
     'node_modules/bourbon/app/assets/stylesheets',
@@ -141,14 +131,29 @@ function getReactHotLoader() {
   });
 }
 
-function getStandardLoaders() {
+// Returns an array of loaders considered standard across the entire frontend app, except for the "open-data"
+// bundle. Includes an ES2015 + React preset for babel, icon font loader, and React hot-loader.
+function getStandardLoaders(extraLoaders, options) {
   var loaders = [];
+  options = _.extend({
+    reactHotLoader: true
+  }, options);
 
-  if (!isProduction) {
+  loaders = loaders.concat(extraLoaders || []);
+
+  if (!isProduction && options.reactHotLoader) {
     loaders.push(getReactHotLoader());
   }
 
   loaders.push(getBabelLoader());
+  loaders = loaders.concat(getSvgAndFontLoaders());
+
+  // Prevent lodash from putting itself on window.
+  // See: https://github.com/lodash/lodash/issues/2671
+  loaders.push({
+    test: /node_modules\/lodash/,
+    loader: 'imports?define=>undefined'
+  });
 
   return loaders;
 }
@@ -191,7 +196,7 @@ module.exports = {
   getOutput: getOutput,
   getStandardLoaders: getStandardLoaders,
   getStyleguideIncludePaths: getStyleguideIncludePaths,
-  getStyleguidePreLoaders: getStyleguidePreLoaders,
+  getSvgAndFontLoaders: getSvgAndFontLoaders,
   getStandardResolve: getStandardResolve,
   isProduction: isProduction,
   packageJson: packageJson,

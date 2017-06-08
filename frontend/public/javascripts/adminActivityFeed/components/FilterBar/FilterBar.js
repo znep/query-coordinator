@@ -25,68 +25,58 @@ class FilterBar extends React.Component {
     ]);
 
     this.state = {
-      quickFilter: 'all'
+      filter: this.props.filter
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const { eventType, eventStatus } = nextProps;
-    let quickFilter = 'all';
+    this.setState({filter: nextProps.filter});
+  }
 
-    if (eventStatus === 'Failure') {
-     quickFilter = 'data_update_failures';
-    }
-
-    if (eventType === 'Delete') {
-      quickFilter = 'deleted_assets';
-    }
-
-    this.setState({quickFilter});
+  setFilter(filter) {
+    this.setState({
+      filter: _.merge(this.state.filter, filter)
+    }, () => this.props.dispatchSetFilter(this.state.filter));
   }
 
   onDateChange(event) {
-    const from = _.get(event, 'arguments.start', null);
-    const to = _.get(event, 'arguments.end', null);
+    const dateFrom = _.get(event, 'arguments.start', null);
+    const dateTo = _.get(event, 'arguments.end', null);
 
-    if (from && to) {
-      this.props.filterByDate({from, to});
+    if (dateFrom && dateTo) {
+      this.setFilter({dateFrom, dateTo});
     }
   }
 
   onDateClear() {
-    this.props.filterByDate({from: null, to: null});
+    this.setFilter({dateFrom: null, dateTo: null});
   }
 
   onEventChange(event) {
-    this.props.filterByEvent(event.value);
+    this.setFilter({event: event.value});
   }
 
   onStatusChange(event) {
-    this.props.filterByStatus(event.value);
+    this.setFilter({status: event.value});
   }
 
   onQuickFilterChange(quickFilter) {
-    this.setState({quickFilter});
+    const preFilter = {dateFrom: null, dateTo: null};
 
     switch (quickFilter) {
       case 'data_update_failures':
-        this.props.filterByStatus('Failure');
-        this.props.filterByEvent('All');
+        this.setFilter(_.merge(preFilter, { status: 'Failure', event: 'All' }));
         break;
       case 'deleted_assets':
-        this.props.filterByEvent('Delete');
-        this.props.filterByStatus('All');
+        this.setFilter(_.merge(preFilter, { event: 'Delete', status: 'All' }));
         break;
       default:
-        this.props.filterByEvent('All');
-        this.props.filterByStatus('All');
+        this.setFilter(_.merge(preFilter, { event: 'All', status: 'All' }));
     }
-
-    this.props.filterByDate({from: null, to: null});
   }
 
   renderDateFilter() {
-    const { dateFrom, dateTo } = this.props;
+    const { dateFrom, dateTo } = this.state.filter;
 
     const props = {
       column: {
@@ -115,7 +105,7 @@ class FilterBar extends React.Component {
   }
 
   renderEventFilter() {
-    const { eventType } = this.props;
+    const eventType = this.state.filter.event;
     const eventTypes = ['all', 'append', 'import', 'replace', 'upsert', 'delete', 'restore'];
     const options = _.map(
       eventTypes,
@@ -141,7 +131,7 @@ class FilterBar extends React.Component {
   }
 
   renderStatusFilter() {
-    const { eventStatus } = this.props;
+    const eventStatus = this.state.filter.status;
     const statusTypes = [
       {title: 'All'},
       {title: 'Success', icon: 'checkmark-alt'},
@@ -188,11 +178,23 @@ class FilterBar extends React.Component {
     );
   }
 
+  isNoFilterApplied() {
+    const { filter } = this.state;
+
+    return (
+      filter.event === 'All' &&
+      filter.status === 'All' &&
+      _.isNull(filter.dateFrom) &&
+      _.isNull(filter.dateTo)
+    );
+  }
+
   renderQuickFilters() {
-    const { quickFilter } = this.state;
-    const allClass = quickFilter === 'all' ? 'selected' : null;
-    const failedClass = quickFilter === 'data_update_failures' ? 'selected' : null;
-    const deletedClass = quickFilter === 'deleted_assets' ? 'selected' : null;
+    const { filter } = this.state;
+
+    const allClass = this.isNoFilterApplied() ? 'selected' : null;
+    const failedClass = filter.status === 'Failure' ? 'selected' : null;
+    const deletedClass = filter.event === 'Delete' ? 'selected' : null;
 
     return (
       <div className="quick-filters">
@@ -240,29 +242,22 @@ FilterBar.defaultProps = {
 };
 
 FilterBar.propTypes = {
-  dateFrom: React.PropTypes.string,
-  dateTo: React.PropTypes.string,
-  eventType: React.PropTypes.string,
-  eventStatus: React.PropTypes.string,
+  filter: React.PropTypes.shape({
+    event: React.PropTypes.string,
+    status: React.PropTypes.string,
+    dateFrom: React.PropTypes.string,
+    dateTo: React.PropTypes.string
+  }),
   disabled: React.PropTypes.bool
 };
 
-const mapStateToProps = (state) => {
-  const filtering = state.get('filtering').toJS();
-
-  return {
-    disabled: state.get('loading'),
-    dateFrom: _.get(filtering, 'dateFrom'),
-    dateTo: _.get(filtering, 'dateTo'),
-    eventType: _.get(filtering, 'eventType'),
-    eventStatus: _.get(filtering, 'eventStatus')
-  };
-};
+const mapStateToProps = (state) => ({
+  disabled: state.get('loading'),
+  filter: state.get('filter').toJS()
+});
 
 const mapDispatchToProps = (dispatch) => ({
-  filterByEvent: (value) => dispatch(actions.filterByEvent(value)),
-  filterByStatus: (value) => dispatch(actions.filterByStatus(value)),
-  filterByDate: (value) => dispatch(actions.filterByDate(value))
+  dispatchSetFilter: filter => dispatch(actions.setFilter(filter))
 });
 
 export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(FilterBar));

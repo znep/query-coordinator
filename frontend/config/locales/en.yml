@@ -681,6 +681,63 @@ en:
       view: View
       views: Views
   controls:
+    nbe_column_manager:
+      title: Manage Columns
+      error:
+        save: There was an error saving your changes. Please try again. If this problem persists, contact Socrata support.
+      controls:
+        prev: Previous
+        next: Next
+        save: Save
+        cancel: Cancel
+      field_name:
+        title: API Field Name
+      data_type:
+        title: Data Type
+        types:
+          blob: Blob (external file)
+          boolean: True/False
+          calendar_date: Date & Time
+          location: Location
+          number: Number
+          text: Text
+      column_fields:
+        preview:
+          title: Preview
+          note: "Note: Alignment and display format settings are not reflected in the preview but will be applied when you save your changes."
+        hidden:
+          title: Hide column
+        name:
+          title: Column Name (required)
+          placeholder: (Required)
+        description:
+          title: Column Description
+          placeholder: (No description)
+        alignment:
+          title: Alignment
+          left: Left
+          center: Center
+          right: Right
+        number_formatting:
+          display_format:
+            title: Display Format
+          currency:
+            title: Currency
+            common: Common
+            other: Other
+          advanced:
+            title: Advanced
+            precision: Specify decimal precision
+            show_thousands_separators: Show thousands-separators
+            override_thousands_separator:
+              title: Override thousands-separator
+              placeholder: "e.g. ,"
+            override_decimal_separator:
+              title: Override decimal-separator
+              placeholder: "e.g. ."
+        date_formatting:
+          display_format:
+            title: Display format
     browse:
       actions:
         about:
@@ -2011,6 +2068,9 @@ en:
       upload_failed: Upload Failed
       uploading: Uploading
     show_output_schema:
+      additional_errors:
+        singular: Additional error
+        plural: Additional errors
       click_to_view: Click to view
       column_header:
         column_options: Column Options
@@ -2651,6 +2711,15 @@ en:
           forms: Forms
           maps: Maps
           stories: Stories
+      authority:
+        label: Authority
+        options:
+          all: All
+          community: Community
+          official: Official
+      category:
+        label: Category
+        placeholder: Any Category
       header:
         title: Filters
       last_updated_date:
@@ -2663,8 +2732,16 @@ en:
           past_3_months: Past 3 months
           past_6_months: Past 6 months
           custom_date_range: Custom date range
+      owned_by:
+        label: Owned By
+        placeholder: Any Owner
       recently_viewed:
         label: Only my recently viewed
+      searchbox_filter:
+        all: All
+      tags:
+        label: Tags
+        placeholder: Any Tag
       visibility:
         label: Visibility
         options:
@@ -2730,14 +2807,13 @@ en:
         type: Type
         visibility: Visibility
       visibility_values:
-        open: Open
-        datalens_not_approved: "View Moderation: Pending"
+        awaiting_approval: Awaiting approval
         hidden: Hidden
         internal: Internal
-        moderation_not_approved: "View Moderation: Pending"
+        open: Open
         private: Private
-        routing_not_approved: "Routing & Approval: Pending"
-        unpublished: Not Published
+        rejected: Rejected
+        shared_to_me: Shared to me
     title: Asset Inventory
   number:
     currency:
@@ -2874,6 +2950,9 @@ en:
   recaptcha:
     errors:
       verification_failed: The characters entered do not match the image.
+  recaptcha2:
+    errors:
+      verification_failed: We were unable to confirm your response, please try again.
   screens:
     about:
       actions: Actions
@@ -3044,6 +3123,9 @@ en:
           initialize_success: An Asset Inventory dataset has been initialized and is being populated for this domain. Please wait a few minutes before accessing the dataset.
           tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact Socrata Support.
         description: List the assets on this domain and configure the layout of the dataset page
+        internal_asset_manager_beta:
+          header: Preview our new Asset Management experience!
+          preview: Preview...
         layout_config: Layout Configuration
         left: Left
         right: Right
@@ -3474,6 +3556,9 @@ en:
               unknown_file_type:
                 description: 'We do not recognize the type of the file you have provided to us (extension: %{extension}). Please ensure you are using a supported file type, and that it is valid.'
                 title: Unknown file type
+              unpublished_copy_exists:
+                description: An attempt was made to update a published dataset while an unpublished copy exists.  Please publish that copy, or update it directly instead.
+                title: Unpublished copy exists
               unsupported_import_type:
                 description: The import method "%{importType}" is not supported. Please use "replace", "append", or "import".
                 title: Unsupported import method
@@ -3500,100 +3585,6 @@ en:
           fallback_event_title: 'Error: %{error_code}'
           file_name_unknown: file name unknown
           import: Import
-          import_failures:
-            bad_timestamp_format:
-              description: The date value "%{pattern}" was formatted in a way that we don’t understand. Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
-              title: Bad date/time value
-            bad_timezone:
-              description: We don't understand the timezone "%{name}". Please double-check that all dates you are importing conform to the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 standard</a>.
-              title: Bad timezone
-            control_file_invalid_json:
-              description: 'Your control file was not parseable as JSON. Error message: "%{message}". Please verify that it is valid JSON.'
-              title: Malformed control file
-            control_file_malformed:
-              description: Your control file was valid JSON, but it did not match the format we expect. Please make sure your control file matches <a href="https://socrata.github.io/datasync/resources/control-config.html">this specification</a>.
-              title: Malformed control file
-            control_file_too_large:
-              description: Your control file was too large. Please reduce its size to %{limit} characters or less and try again.
-              title: Control file too large
-            corrupt_gzip:
-              description: 'The GZip-compressed file you provided could not be successfully extracted. Error message: "%{message}". Please verify that it is a valid GZip file.'
-              title: Unable to extract compressed file
-            corrupt_xz:
-              description: 'The XZ-compressed file you provided could not be successfully extracted. Error message: "%{message}". Please verify that it is a valid XZ file.'
-              title: Unable to extract compressed file
-            delete_without_user_pk:
-              description: We cannot successfully process delete operations unless a row identifier field is declared.
-              title: Cannot delete without row identifier
-            duplicated_fields_in_input:
-              description: The field name(s) %{fieldNames} is used multiple times in your data file. Please ensure that the field names are unique.
-              title: Duplicate field names specified
-            field_not_in_dataset:
-              description: The field name(s) %{fieldNames} could not be found in the dataset you are trying to import into. If you intend to import this column, please double-check your spelling and try again.
-              title: Could not find field in dataset
-            field_not_in_input:
-              description: A column we expected (%{fieldNames}) could not be found in the data file you provided, and you have not specified a row identifier column. Please double-check the provided columns and try again.
-              title: Could not find field in file
-            field_wrong_format:
-              description: The field name "%{fieldName}" provided in your data file is not legal. Valid field names must contain only ascii characters and begin with an underscore or letter.
-              title: Illegal field name given
-            geocoding_failure:
-              description: We could not geocode the given source data for an unknown reason. Please try again later, and contact <a href="https://support.socrata.com">Socrata Support</a> if the problem persists.
-              title: Unknown geocoding failure
-            geocoding_source_ignored:
-              description: Because the columns %{fieldNames.join(", ")} are a part of the geocoding source feeding into a point column, we could not ignore them as requested.
-              title: Could not ignore specified columns
-            geocoding_source_invalid_type:
-              description: We could not use the columns %{fieldNames} as the source to geocode location information. Please double-check that they are valid text or numeric columns.
-              title: Could not geocode from given columns
-            ignored_synthetic_location_column_inputs_in_nbe_dataset:
-              description: Because the columns are a part of the geocoding source feeding into a location column, we could not ignore them as requested.
-              title: Could not ignore specified columns
-            invalid_encoding:
-              description: We could not read your file because it was encoded with %{encoding}, and we only support UTF-8. For best results, please ensure that your file is a valid UTF-8 file.
-              title: Invalid file encoding
-            invalid_row_length:
-              description: 'Row #%{record} in your CSV file contained %{actual} fields, whereas your other rows contained %{expected} fields. Please ensure that your file has a consistent number of fields per row.'
-              title: Unexpected number of fields in row
-            malformed_upsert:
-              description: Your upsert payload was not parseable as JSON, near record %{record}. Please verify that it is valid JSON.
-              title: Malformed upsert
-            no_field_names_in_input:
-              description: Usually this is because the CSV file we have been given is completely empty. Please ensure your file contains data, and try again.
-              title: Could not find CSV header
-            no_identity_column:
-              description: This dataset has a row identifier column provided ("%{fieldName}"), but we couldn’t find that column in the data file you provided. Please ensure it exists, and try again.
-              title: Row identifier column not found
-            permission_denied:
-              description: The user that initiated this operation (%{user}) does not appear to have the rights needed to perform it. Please ensure your permissions have been correctly set, and try again.
-              title: Permission denied
-            record_too_large:
-              description: We aborted reading your file because we found a single record that was too large on line %{record} (it exceeded the limit of %{limit}). This is usually due to incorrect CSV escaping leading to many rows’ worth of data being read into a single cell. Please check that your file is valid.
-              title: Single record too large
-            synthetic_location_in_input:
-              description: A column (%{fieldNames}) was found in your data file matching a synthetic column on this dataset. Synthetic columns are computed automatically and may not be manually imported into.
-              title: Cannot import into synthetic column
-            too_many_errors_in_input:
-              description: The job is being aborted because too many errors were found in your input data.
-              title: Too many input errors found
-            too_many_records_in_input:
-              description: Your data file exceeded the maximum number of records we can import at once (you have %{recordCount}; max is %{maxRecordCount}). Please reduce the record count per-file and try again.
-              title: Too many records
-            uninterpretable_value:
-              description: The value "%{value}" in row %{record}, column "%{column}" could not be read as a %{expectedType}. Please ensure that all values are formatted correctly for their target columns.
-              title: Uninterpretable record value
-            unknown_domain:
-              description: We do not recognize the provided target domain of your job (%{domain}). Please ensure it is a valid Socrata target domain, and try again.
-              title: Domain not recognized
-            unknown_file_type:
-              description: 'We do not recognize the type of the file you have provided to us (extension: %{extension}). Please ensure you are using a supported file type, and that it is valid.'
-              title: Unknown file type
-            unpublished_copy_exists:
-              description: An attempt was made to update a published dataset while an unpublished copy exists.  Please publish that copy, or update it directly instead.
-              title: Unpublished copy exists
-            upsert_already_in_progress_by_someone_else:
-              description: Two upserts cannot be performed simultaneously on a dataset, and somebody else is already in the middle of an upsert operation.
-              title: Upsert already in progress
           import_method: Import method
           initiated_at: Initiated at
           no_events: No progress events have been recorded yet for this job.
@@ -4190,293 +4181,10 @@ en:
                 placeholder: http://www.youtube.com/
                 title: YouTube Profile Link
             title: Social Sharing
-          whats_new:
-            fields:
-              a_bundle_of_goodness:
-                description_html: "<p>Get excited! Socrata Primer, formerly known as the Dataset Landing Page, and your new, configurable Header/Footer are both ready to go! Read on to learn about these enhancements and how you can activate them, today.</p>"
-                title: 'A Bundle of Goodness: Two New Features Available Now'
-              a_new_configurable_header_footer:
-                description_html: <p>We've also introduced a new unified, mobile-responsive, configurable header/footer for your site. This new header/footer empowers you to control your site's logos, colors, copyright, navigational links, social icons, and more on your own, without having to contact Socrata Support.</p> <p>By the way, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then change it however you'd like - it's all yours.</p>
-                title: A New Configurable Header/Footer
-              active_both_today:
-                description_html: '<p>Primer and your new Configurable Header/Footer are both available now. Review the tabs above, update what you''d like, and when you''re ready, activate them together!</p> <p><b>Note:</b> If you haven''t configured the header/footer for your site within one month, Socrata will use our suggested configuration to activate it and Primer automatically. We''ll do this to ensure your data users are getting the most up-to-date experience available.</p> <p>For tips on configuring your header/footer, please visit our Support site here: <a href=" https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>'
-                title: Activate Both Today!
-              dataset_landing_page:
-                description_html: <p>With this upgrade, your datasets have a new front-page experience known as 'Primer'. This experience highlights commonly accessed aspects of a dataset and ensures your data users see metadata before taking action. Publishers and Administrators have the freedom to "feature" related views and visualizations, sophisticated users can explore metadata and metrics up-front, and all users can access data in the way they desire, whether this is via data visualizations, direct file downloads, or the API. And of course - the classic tabular data view is still accessible from the top navigation of this view for users who are comfortable there.</p>
-                title: Primer
-            title: What's New
         these_features: These features will empower you to better control the appearance of your site and will help data consumers explore your data even better than before. Your users are going to love them!
         these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
         update: Update
         upload_failed: Upload failed
-        warning_html: "<b>Warning!</b> You changed your language setting from the default. Check that all of your content is speaking the same language."
-        you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
-        you_are_about_html: "<p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>\n"
-        you_have_activated: You have activated your new header/footer and Dataset Landing Page.
-      site_chrome:
-        activate: Activate
-        add_new_link_menu: Add Menu
-        add_new_link_row: Add %{section} Link
-        after_clicking_ok: After clicking 'OK' below, see both features in action by visiting one of your datasets.
-        cancel: Cancel
-        congratulations: Congratulations!
-        description: Configure the appearance of your Socrata site.
-        get_excited: Get Excited!
-        link_menu_label_html: "<b>Menu</b> - <i>You can drag links to reorder them</i>"
-        move_link_row: Drag to reorder
-        ok: OK
-        preview: Preview
-        preview_changes: Preview Changes
-        remove_link_menu: Remove Link Menu
-        remove_link_row: Remove Link
-        save: Save
-        save_changes: Save Changes
-        see_both_features: See both features in action by visiting one of your datasets.
-        site_appearance: Site Appearance
-        tabs:
-          footer:
-            fields:
-              background_color_text_link_color:
-                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
-              copyright_notice:
-                description: Choose whether or not to display a copyright notice in the Footer. The notice will automatically update to the current calendar year.
-                label: Show Copyright Notice
-                title: Copyright Notice
-              copyright_notice_source:
-                description: The name of your organization, city, county or state that appears with the copyright and current year.
-                placeholder: Copyright Source
-              display_name_color_display_name_size:
-                description: Color and size of the text for Footer Display Name.
-              footer_background_color:
-                description: Background color of the Footer and the color of the text & links displayed inside the Footer area.
-                placeholder: "#123456"
-                title: Footer Background Color
-              footer_display_name:
-                description: This is the name displayed in the Footer area. Usually set to your organization's name.
-                placeholder: Footer Display Name
-                title: Footer Display Name
-              footer_display_name_color:
-                placeholder: "#123456"
-                title: Footer Display Name Color
-              footer_display_name_size:
-                placeholder: 14pt
-                title: Footer Display Name Size
-              footer_logo:
-                description: URL reference to the Footer logo. Recommended minimum size is 80 x 80 pixels.
-                placeholder: https://yoursite.gov/logos/footer_logo.png
-                title: Footer Logo
-              footer_logo_alt:
-                description: This is the text that is displayed to screen readers for accessibility for your logo.
-                placeholder: Footer Logo
-                title: Footer Logo Alt Text for Screen Readers
-              footer_logo_height:
-                description: You can optionally set a height and width for your logo displayed in the Footer.
-                error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
-                placeholder: 80px
-                title: Footer Logo Height
-              footer_logo_url:
-                description: This is the URL that visitors are redirected to upon clicking the footer logo from any page on your site. You can specify a URL here or just leave it as "/" to go to your homepage.
-                placeholder: "/"
-                title: Footer Logo URL
-              footer_logo_width:
-                description: You can optionally set a height and width for your logo displayed in the Footer.
-                error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
-                placeholder: 80px
-                title: Footer Logo Width
-              footer_text_link_color:
-                placeholder: "#ffffff"
-                title: Footer Text & Link Color
-              link_title_label: Link Label
-              link_title_placeholder: Link Text
-              logo_height_logo_width:
-                description: You can optionally set a height and width for your logo displayed in the Footer.
-              menu_links:
-                description: You may display up to 15 links in the Footer. Links will be shown in a single row, and will wrap to multiple rows for mobile and on smaller screens.
-                title: Footer Links
-              menu_title_placeholder: Menu Text
-              powered_by:
-                description: Displays "Powered by Socrata" branding in the footer, and also provides a link to socrata.com
-                label: Show Socrata branding in the Footer
-                title: Powered by Socrata
-              url_label: URL
-              url_placeholder: http://data.evergreen.gov
-            title: Footer
-          general:
-            activation:
-              all_pages_except_home: All pages except Home page
-              entire_site: Entire site
-              primer_included: Primer is also included in this update.
-              revert_html: Revert all pages to non-configurable Header/Footer and<br/>turn off Primer
-              select_where: 'Select where these Site Appearance settings will appear:'
-            fields:
-              display_language_switcher:
-                description: Use this setting to define which languages your site supports. English is required and included for all sites. To add additional languages, please contact support@socrata.com
-                label: Display Language Switcher in header and footer
-                title: Languages
-              font_family:
-                description: Choose the typeface that will be used in both Header and Footer for all text.
-                description_html: Choose the typeface that will be used in both Header and Footer for all text.
-                placeholder: Typeface
-                title: Typeface
-              google_analytics_token:
-                description: Enter the token (not the entire script) of your Google Analytics tracking code to collect analytics for your site.
-                error: 'Token should match the format: UA-XXXXX-XXXX'
-                placeholder: UA-12345678-1
-                title: Google Analytics Token
-              max_width:
-                description: Enter the maximum width (in pixels) of your Header and Footer content. If left empty, it will stretch to the dimensions of the visitor's browser window.
-                placeholder: 1200px
-                title: Max Width
-              show_signin_signout:
-                description: Show these options if your site requires a user Profile / Sign In.
-                show_profile: Show a link to Profile after Signed In
-                show_signin_signout: Show Sign In / Sign Out
-                show_signup: Show ability to create an account via Sign Up
-                title: Sign In / Sign Out
-              template:
-                description: Adjust the appearance of the header by changing the template. Supported templates are "Evergreen" (default) and "Rally".
-                description_html: Adjust the appearance of the Header by changing the template. Supported templates are <a href="https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">"Evergreen" and "Rally"</a>.
-                placeholder: Select a template
-                title: Template
-              window_icon:
-                description: URL reference to the icon displayed in the browser window, tab and URL field.
-                placeholder: https://yoursite.gov/logos/favicon.png
-                title: Browser Window or Tab Icon (favicon)
-              window_title_display:
-                description: This is the name displayed in the browser window or tab title.
-                placeholder: Browser Window or Tab Title Display
-                title: Browser Window or Tab Title Display
-            title: General Settings
-          header:
-            fields:
-              bar_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
-                placeholder: "#123456"
-                title: Bar Background Color (Primary)
-              bar_background_color_bar_secondary_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
-              bar_secondary_background_color:
-                description: Primary and secondary background colors of the Header Bar. The secondary color is only used in the Rally template for the menu area. Use HEX values for color or "transparent".
-                placeholder: "#123456"
-                title: Bar Background Color (Secondary)
-              bar_text_link_color:
-                description: Color of the text and links that sit atop the Header Bar.
-                placeholder: "#ffffff"
-                title: Bar Text & Link Color
-              display_name_color_display_name_size:
-                description: Color and size of the text for Header Display Name.
-              header_bar_logo:
-                description: URL reference to the site Header logo. Recommended minimum size is 80 x 80 pixels. This logo will be displayed at a small size.
-                placeholder: https://yoursite.gov/logos/header_logo.png
-                title: Header Bar Logo
-              header_bar_logo_alt:
-                description: This is the text that is displayed to screen readers for accessibility for your logo.
-                placeholder: Header Logo
-                title: Header Logo Alt Text for Screen Readers
-              header_display_name:
-                description: Name displayed in the Header Bar. Usually set to your organization's name.
-                placeholder: Header Display Name
-                title: Header Display Name
-              header_display_name_color:
-                placeholder: "#123456"
-                title: Header Display Name Color
-              header_display_name_size:
-                placeholder: 16pt
-                title: Header Display Name Size
-              header_logo_height:
-                description: You can optionally set the height and width for your logo displayed in the Header Bar.
-                error: 'Please enter a value to represent your desired logo height in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
-                placeholder: 80px
-                title: Header Logo Height
-              header_logo_url:
-                description: This is the URL that visitors are redirected to upon clicking the header logo from any page on your site. You can specify a URL here or just leave it as "/" to go to your homepage.
-                placeholder: "/"
-                title: Header Logo URL
-              header_logo_width:
-                description: You can optionally set the height and width for your logo displayed in the Header Bar.
-                error: 'Please enter a value to represent your desired logo width in valid CSS units. Pixels, ems, and percentages are supported. Ex: 100px'
-                placeholder: 80px
-                title: Header Logo Width
-              link_title_label: Link Label
-              link_title_placeholder: Link Text
-              logo_height_logo_width:
-                description: You can optionally set the height and width for your logo displayed in the Header Bar.
-              menu_links:
-                description: Display up to 15 links or menus with links in the Header Bar. To create a drop down menu, first add a Menu then add the link labels and associated URLs to it. The menus and other links will be placed in a single row in the Header. If the labels get too long or a visitor is viewing your site on a small device, the menus and links will automatically be collapsed into a single menu.
-                title: Header Links
-              menu_title_placeholder: Menu Text
-              url_label: URL
-              url_placeholder: http://data.evergreen.gov
-            title: Header Bar
-          social:
-            fields:
-              facebook_profile_link:
-                description: Add the URL here to display a link to your organization's Facebook profile in both the Header and Footer.
-                placeholder: http://www.facebook.com/
-                title: Facebook Profile Link
-              flickr_profile_link:
-                description: Add the URL here to display a link to your organization's Flickr profile in both the Header and Footer.
-                placeholder: http://www.flickr.com/
-                title: Flickr Profile Link
-              github_profile_link:
-                description: Add the URL here to display a link to your organization's GitHub profile in both the Header and Footer.
-                placeholder: http://www.github.com/
-                title: Github Profile Link
-              google_plus_profile_link:
-                description: Add the URL here to display a link to your organization's Google Plus profile in both the Header and Footer.
-                placeholder: http://www.plus.google.com/
-                title: Google Plus Profile Link
-              instagram_profile_link:
-                description: Add the URL here to display a link to your organization's Instagram profile in both the Header and Footer.
-                placeholder: http://www.instagram.com/
-                title: Instagram Profile Link
-              linked_in_profile_link:
-                description: Add the URL here to display a link to your organization's LinkedIn profile in both the Header and Footer.
-                placeholder: http://www.linkedin.com/
-                title: LinkedIn Profile Link
-              pinterest_profile_link:
-                description: Add the URL here to display a link to your organization's Pinterest profile in both the Header and Footer.
-                placeholder: http://www.pinterest.com/
-                title: Pinterest Profile Link
-              tumblr_profile_link:
-                description: Add the URL here to display a link to your organization's Tumblr profile in both the Header and Footer.
-                placeholder: http://www.tumblr.com/
-                title: Tumblr Profile Link
-              twitter_profile_link:
-                description: Add the URL here to display a link to your organization's Twitter profile in both the Header and Footer.
-                placeholder: http://www.twitter.com/
-                title: Twitter Profile Link
-              vimeo_profile_link:
-                description: Add the URL here to display a link to your organization's Vimeo profile in both the Header and Footer.
-                placeholder: http://www.vimeo.com/
-                title: Vimeo Profile Link
-              yammer_profile_link:
-                description: Add the URL here to display a link to your organization's Yammer profile in both the Header and Footer.
-                placeholder: http://www.yammer.com/
-                title: Yammer Profile Link
-              youtube_profile_link:
-                description: Add the URL here to display a link to your organization's YouTube profile in both the Header and Footer.
-                placeholder: http://www.youtube.com/
-                title: YouTube Profile Link
-            title: Social Sharing
-          whats_new:
-            fields:
-              a_bundle_of_goodness:
-                description_html: "<p>Get excited! Socrata Primer, formerly known as the Dataset Landing Page, and your new, configurable Header/Footer are both ready to go! Read on to learn about these enhancements and how you can activate them, today.</p>"
-                title: 'A Bundle of Goodness: Two New Features Available Now'
-              a_new_configurable_header_footer:
-                description_html: <p>We've also introduced a new unified, mobile-responsive, configurable header/footer for your site. This new header/footer empowers you to control your site's logos, colors, copyright, navigational links, social icons, and more on your own, without having to contact Socrata Support.</p> <p>By the way, we've already prepared your header and footer for preview. Click the "Preview" button above to take a look, and then change it however you'd like - it's all yours.</p>
-                title: A New Configurable Header/Footer
-              active_both_today:
-                description_html: '<p>Primer and your new Configurable Header/Footer are both available now. Review the tabs above, update what you''d like, and when you''re ready, activate them together!</p> <p><b>Note:</b> If you haven''t configured the header/footer for your site within one month, Socrata will use our suggested configuration to activate it and Primer automatically. We''ll do this to ensure your data users are getting the most up-to-date experience available.</p> <p>For tips on configuring your header/footer, please visit our Support site here: <a href=" https://support.socrata.com/hc/en-us/articles/223723227" target="_blank">https://support.socrata.com/hc/en-us/articles/223723227</a>.</p>'
-                title: Activate Both Today!
-              dataset_landing_page:
-                description_html: <p>With this upgrade, your datasets have a new front-page experience known as 'Primer'. This experience highlights commonly accessed aspects of a dataset and ensures your data users see metadata before taking action. Publishers and Administrators have the freedom to "feature" related views and visualizations, sophisticated users can explore metadata and metrics up-front, and all users can access data in the way they desire, whether this is via data visualizations, direct file downloads, or the API. And of course - the classic tabular data view is still accessible from the top navigation of this view for users who are comfortable there.</p>
-                title: Primer
-            title: What's New
-        these_features: These features will empower you to better control the appearance of your site and will help data consumers explore your data even better than before. Your users are going to love them!
-        these_features_help: These features will help users explore your data and will make it easier for you to manage the appearance of your site.
-        update: Update
         warning_html: "<b>Warning!</b> You changed your language setting from the default. Check that all of your content is speaking the same language."
         you_are_about: You are about to activate your header, footer and Dataset Landing Pages for your datasets.
         you_are_about_html: "<p>You are about to activate your header, footer, and Primer for your datasets. Your users are going to love the new look!</p> <p>To see Primer and your header/footer in action, click 'Ok' below and then navigate to one of your datasets.</p>\n"
@@ -4955,6 +4663,7 @@ en:
         private_notice: 'Notice: This %{displayName} is currently private. Emailing will grant access to all recipients.'
         prompt_html: 'Share <span class="datasetName">%{name}</span> with the following email addresses:'
         remove_email: Remove
+        role: Role
         success: Your email has been successfully sent.
         title_html: Share &quot;<span class="datasetName">%{name}</span>&quot;
       fatrow:

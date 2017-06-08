@@ -11,8 +11,6 @@
 // about supported directives.
 //
 //= require_tree .
-//= require socrata-notifications/socrata-notifications.js
-//= require autocomplete/build/socrata-autocomplete.js
 
 /**
   NOTE! this file is only included for the default site chrome case. There is also a *custom* site chrome

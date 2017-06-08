@@ -60,10 +60,17 @@ describe CommonMetadataMethods do
       rspec_stub_feature_flags_with(phidippides_deprecation_metadata_source: 'phidippides-only')
     end
 
-    let(:options) do
+    let(:request_options) do
       {
         :request_id => '12345',
         :cookies => 'abcde'
+      }
+    end
+
+    let(:options) do
+      {
+        :is_from_derived_view => false,
+        :add_table_column => false
       }
     end
 
@@ -96,7 +103,12 @@ describe CommonMetadataMethods do
 
     # NOTE: This is unaffected by phidippides_deprecation_metadata_source since it never used phiddy
     context 'data lens based on derived view' do
-      let(:options) { { :is_from_derived_view => true } }
+      let(:options) do
+        {
+          :is_from_derived_view => true,
+          :add_table_column => false
+        }
+      end
 
       before do
         allow(CurrentDomain).to receive(:cname).and_return('penguins.com')
@@ -110,7 +122,7 @@ describe CommonMetadataMethods do
         expect(View).to receive(:find_derived_view_using_read_from_nbe).and_return(test_view)
         allow(test_view).to receive(:nbe_view).and_return(View.new({ 'id' => 'four-four' }))
 
-        dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+        dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
       end
 
       it 'returns an object resembling Phidippides response' do
@@ -118,7 +130,7 @@ describe CommonMetadataMethods do
         expect(View).to receive(:find_derived_view_using_read_from_nbe).and_return(test_view)
         allow(test_view).to receive(:nbe_view).and_return(View.new({ 'id' => 'four-four' }))
 
-        result = dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+        result = dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
         expect(result.keys).to include('domain', 'locale', 'columns', 'ownerId', 'updatedAt')
       end
 
@@ -126,7 +138,7 @@ describe CommonMetadataMethods do
         allow(View).to receive(:find_derived_view_using_read_from_nbe).and_raise(CoreServer::Error)
 
         expect{
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
         }.to raise_error(CommonMetadataMethods::UnknownRequestError)
       end
 
@@ -142,7 +154,7 @@ describe CommonMetadataMethods do
         it 'requests dataset metadata from phidippides' do
           expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata)
           expect(View).not_to receive(:find)
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
         end
       end
 
@@ -154,7 +166,7 @@ describe CommonMetadataMethods do
         it 'requests dataset metadata from core' do
           expect_any_instance_of(Phidippides).not_to receive(:fetch_dataset_metadata)
           expect(View).to receive(:find).exactly(3).times
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
         end
       end
 
@@ -166,7 +178,7 @@ describe CommonMetadataMethods do
         it 'requests dataset metadata from both phidippides and core' do
           expect_any_instance_of(Phidippides).to receive(:fetch_dataset_metadata)
           expect(View).to receive(:find).exactly(3).times
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
         end
       end
 
@@ -182,7 +194,7 @@ describe CommonMetadataMethods do
         })
 
         expect {
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
         }.to raise_error(CommonMetadataMethods::AuthenticationRequired)
       end
 
@@ -193,7 +205,7 @@ describe CommonMetadataMethods do
         })
 
         expect {
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
         }.to raise_error(CommonMetadataMethods::UnauthorizedDatasetMetadataRequest)
       end
 
@@ -204,7 +216,7 @@ describe CommonMetadataMethods do
         })
 
         expect {
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
         }.to raise_error(CommonMetadataMethods::DatasetMetadataNotFound)
       end
 
@@ -215,24 +227,24 @@ describe CommonMetadataMethods do
         })
 
         expect {
-          dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+          dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
         }.to raise_error(CommonMetadataMethods::UnknownRequestError)
       end
 
     end
 
     it 'decorates the metadata with permissions' do
-      result = dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+      result = dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
       expect(result[:permissions][:rights]).to include('view')
     end
 
     it 'adds a table card to the metadata' do
-      result = dummy_class_instance.fetch_dataset_metadata('elep-hant', options.merge(:add_table_column => true))
+      result = dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options.merge(:add_table_column => true))
       expect(result[:columns]['*']).not_to be_nil
     end
 
     it 'flags subcolumns' do
-      result = dummy_class_instance.fetch_dataset_metadata('elep-hant', options)
+      result = dummy_class_instance.fetch_dataset_metadata('elep-hant', request_options, options)
       expect(result[:columns]['location_city'][:isSubcolumn]).to eq(true)
     end
 

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const dataTypeMetadata = {
   blob: {
     icon: 'icon-data',

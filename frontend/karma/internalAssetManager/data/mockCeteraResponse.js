@@ -90,7 +90,11 @@ export default {
             "grants" : []
           },
         "permalink" : "https://data.seattle.gov/d/egc4-d24i",
-        "link" : "https://data.seattle.gov/Transportation/Road-Weather-Information-Stations/egc4-d24i"
+        "link" : "https://data.seattle.gov/Transportation/Road-Weather-Information-Stations/egc4-d24i",
+        "owner": {
+          "id": "7kqb-5s8x",
+          "display_name": "Dylan"
+        }
       },
       {
         "resource" :
@@ -225,7 +229,11 @@ export default {
             "grants" : []
           },
         "permalink" : "https://data.seattle.gov/d/3k2p-39jp",
-        "link" : "https://data.seattle.gov/Public-Safety/Seattle-Police-Department-911-Incident-Response/3k2p-39jp"
+        "link" : "https://data.seattle.gov/Public-Safety/Seattle-Police-Department-911-Incident-Response/3k2p-39jp",
+        "owner": {
+          "id": "7kqb-5s8x",
+          "display_name": "Dylan"
+        }
       },
       {
         "resource" :
@@ -311,7 +319,11 @@ export default {
             "grants" : []
           },
         "permalink" : "https://data.seattle.gov/d/y6ef-jf2w",
-        "link" : "https://data.seattle.gov/City-Business/Sold-Fleet-Equipment/y6ef-jf2w"
+        "link" : "https://data.seattle.gov/City-Business/Sold-Fleet-Equipment/y6ef-jf2w",
+        "owner": {
+          "id": "7kqb-5s8x",
+          "display_name": "Dylan"
+        }
       },
       {
         "resource" :
@@ -394,7 +406,11 @@ export default {
             "grants" : []
           },
         "permalink" : "https://data.seattle.gov/d/6gnm-7jex",
-        "link" : "https://data.seattle.gov/Finance/Current-Fleet-Surplus-Auction-List/6gnm-7jex"
+        "link" : "https://data.seattle.gov/Finance/Current-Fleet-Surplus-Auction-List/6gnm-7jex",
+        "owner": {
+          "id": "7kqb-5s8x",
+          "display_name": "Dylan"
+        }
       },
       {
         "resource" :
@@ -523,7 +539,11 @@ export default {
             "grants" : [ { "user_id" : "5cvb-camt", "type" : "owner" } ]
           },
         "permalink" : "https://data.seattle.gov/d/7ais-f98f",
-        "link" : "https://data.seattle.gov/Public-Safety/Seattle-Police-Department-Police-Report-Incident/7ais-f98f"
+        "link" : "https://data.seattle.gov/Public-Safety/Seattle-Police-Department-Police-Report-Incident/7ais-f98f",
+        "owner": {
+          "id": "7kqb-5s8x",
+          "display_name": "Dylan"
+        }
       },
       {
         "resource" :
@@ -619,7 +639,11 @@ export default {
             "grants" : [ { "user_id" : "5rii-9ghs", "type" : "owner" } ]
           },
         "permalink" : "https://data.seattle.gov/d/kzjm-xkqj",
-        "link" : "https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj"
+        "link" : "https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj",
+        "owner": {
+          "id": "7kqb-5s8x",
+          "display_name": "Dylan"
+        }
       }
     ],
   "resultSetSize" : 6,

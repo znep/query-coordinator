@@ -227,6 +227,7 @@
   "site-appearance/108329b7fb89b78de14e0accdbd98993.svg": "site-appearance/108329b7fb89b78de14e0accdbd98993.svg",
   "site-appearance/main.js": "site-appearance/main.js",
   "site-appearance/main.js.map": "site-appearance/main.js.map",
+  "site_wide/site_wide.js": "site_wide/site_wide/site_wide.js",
   "visualization-canvas/main.js": "visualization-canvas/main.js",
   "visualization-canvas/main.js.map": "visualization-canvas/main.js.map"
 }

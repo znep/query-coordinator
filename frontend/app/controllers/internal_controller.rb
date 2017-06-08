@@ -19,6 +19,10 @@ class InternalController < ApplicationController
     { name: 'pendo_tracking', description: 'Enable pendo tracker on this domain.' }
   ]
 
+  def disable_site_chrome?
+    true
+  end
+
   def index
   end
 

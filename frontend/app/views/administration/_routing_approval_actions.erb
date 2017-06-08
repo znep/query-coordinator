@@ -10,7 +10,7 @@
           :approval_type => 'R'}, t('screens.admin.routing_approval.reject'), {},
           {:class => 'button reject'}) do %>
           <% '<div class="rejectionReason reasonBox">'.html_safe +
-            label_tag(t('screens.admin.routing_approval.rejection_reason')) + text_area_tag('comment') + '</div>'.html_safe %>
+            label_tag('comment', t('screens.admin.routing_approval.rejection_reason')) + text_area_tag('comment') + '</div>'.html_safe %>
       <% end %>
     <%- end -%>
   </div>
@@ -21,7 +21,7 @@
         :approval_type => 'M'}, t('screens.admin.routing_approval.resubmit'), {},
         {:class => 'button resubmit'}) do %>
         <% '<div class="resubmitReason reasonBox">'.html_safe +
-          label_tag(t('screens.admin.routing_approval.resubmission_reason')) + text_area_tag('comment') + '</div>'.html_safe %>
+          label_tag('comment', t('screens.admin.routing_approval.resubmission_reason')) + text_area_tag('comment') + '</div>'.html_safe %>
     <% end %>
   </div>
 <%- end -%>

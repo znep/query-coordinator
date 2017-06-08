@@ -55,7 +55,8 @@ export function getStoreWithOutputSchema(store = getDefaultStore()) {
     output_soql_type: 'text',
     transform_input_columns: [{
       input_column_id: 1
-    }]
+    }],
+    error_indices: []
   }));
   store.dispatch(upsertFromServer('transforms', {
     id: 2,
@@ -63,7 +64,8 @@ export function getStoreWithOutputSchema(store = getDefaultStore()) {
     output_soql_type: 'text',
     transform_input_columns: [{
       input_column_id: 2
-    }]
+    }],
+    error_indices: []
   }));
   store.dispatch(createTable('transform_1'));
   store.dispatch(createTable('transform_2'));

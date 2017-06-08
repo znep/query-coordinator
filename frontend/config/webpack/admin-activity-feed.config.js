@@ -7,26 +7,16 @@ var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/adminActivityFeed'),
-  entry: './main.js',
+  entry: common.withHotModuleEntries({'main': './main.js'}),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('public/javascripts/adminActivityFeed/.eslintrc.json'),
   module: {
-    loaders: [
-      common.getBabelLoader(),
+    loaders: common.getStandardLoaders(
       {
         test: /\.scss|\.css$/,
         loader: 'style!css!autoprefixer-loader!sass'
-      },
-      {
-        test: /\.svg/,
-        loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
-        exclude: common.svgFontPath
-      },
-      {
-        test: /\.png$/,
-        loader: 'url-loader?limit=100000'
       }
-    ]
+    )
   },
   resolve: _.extend(
     common.getStandardResolve([ 'public/javascripts/adminActivityFeed' ])

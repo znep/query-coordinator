@@ -47,7 +47,9 @@ class AccountsController < ApplicationController
       # When CSRF token validation is skipped for this method (see skip_before_filter above), this
       # verify_recaptcha test is our only protection against abuse.
       if !recaptcha_verified
-        flash.now[:error] = t('recaptcha.errors.verification_failed')
+        flash.now[:error] = FeatureFlags.derive[:use_auth0_component] ?
+          t('recaptcha2.errors.verification_failed') :
+          t('recaptcha.errors.verification_failed')
         @user_session = UserSessionProvider.klass.new
         format.html { render :action => :new }
         format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }

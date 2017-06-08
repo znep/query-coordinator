@@ -47,6 +47,10 @@ class ApplicationController < ActionController::Base
     @current_user_story_authorization ||= CoreServer.current_user_story_authorization
   end
 
+  def disable_site_chrome?
+    false
+  end
+
   def setup_site_chrome_prerequisites
     # site_chrome expects current_user and current_domain to be in place
     # to identify proper render states.

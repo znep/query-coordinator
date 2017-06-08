@@ -39,7 +39,8 @@ module InternalAssetManagerHelper
       :featureFlags => feature_flags,
       :locale => I18n.locale.to_s,
       :localePrefix => locale_prefix.to_s,
-      :recaptchaKey => RECAPTCHA_2_SITE_KEY
+      :recaptchaKey => RECAPTCHA_2_SITE_KEY,
+      :usersnapProjectID => '6afbcc90-6522-4475-b3b0-635c7a9874a5'
     }
 
     javascript_tag("window.serverConfig = #{json_escape(server_config.to_json)};")
@@ -52,7 +53,10 @@ module InternalAssetManagerHelper
           columns: #{internal_asset_manager_table_columns},
           results: #{@catalog_results.to_json},
           resultSetSize: #{@catalog_result_set_size}
-        }
+        },
+        domainCategories: #{@domain_categories.to_json},
+        domainTags: #{@domain_tags.to_json},
+        usersList: #{@users_list.to_json}
       };
     ))
   end
@@ -60,7 +64,7 @@ module InternalAssetManagerHelper
   # Defines the default order of the columns for the internal asset manager table.
   # Eventually this will be configurable on a per-user basis.
   def internal_asset_manager_table_columns
-    %w(type name lastUpdatedDate category visibility) # TODO: add "owner" when it's available
+    %w(type name lastUpdatedDate category owner visibility)
   end
 
 end

@@ -2,7 +2,12 @@ import { expect } from 'chai';
 import _ from 'lodash';
 
 import { mockFetch } from '../testHelpers/mockHTTP';
-import { normalWithErrorsResponse, rowErrorResponse, columnErrorResponse } from '../data/errorTableResponse';
+import {
+  normalWithErrorsResponse,
+  rowErrorResponse,
+  columnErrorResponse,
+  columnErrorResponseLaterPage
+} from '../data/errorTableResponse';
 import { getStoreWithOutputSchema, getStoreWithProcessedRows } from '../data/storeWithOutputSchema';
 
 import {
@@ -19,10 +24,6 @@ import {
   loadColumnErrors,
   PAGE_SIZE
 } from 'actions/loadData';
-
-function afterNextFrameRender(body) {
-  setTimeout(body, 0);
-}
 
 describe('actions/loadData', () => {
 
@@ -108,13 +109,11 @@ describe('actions/loadData', () => {
             response: normalWithErrorsResponse
           }
         }
-      });
+      }, done);
 
       const rows = _.filter(normalWithErrorsResponse.slice(1), row => row.row);
 
-      store.dispatch(loadNormalPreview(normalCall));
-
-      afterNextFrameRender(() => {
+      store.dispatch(loadNormalPreview(normalCall)).then(() => {
         unmockFetch();
         const db = store.getState().db;
 
@@ -137,6 +136,8 @@ describe('actions/loadData', () => {
         });
 
         done();
+      }).catch((err) => {
+        done(err);
       });
     });
   });
@@ -152,10 +153,9 @@ describe('actions/loadData', () => {
             response: rowErrorResponse
           }
         }
-      });
+      }, done);
 
-      store.dispatch(loadRowErrors(rowErrorsCall));
-      afterNextFrameRender(() => {
+      store.dispatch(loadRowErrors(rowErrorsCall)).then(() => {
         unmockFetch();
         const db = store.getState().db;
 
@@ -168,12 +168,15 @@ describe('actions/loadData', () => {
         });
 
         done();
+      }).catch((err) => {
+        done(err);
       });
     });
   });
 
   describe('loadColumnErrors', () => {
-    it('fetches errors, inserts them into column tables with error_indices in columns table', (done) => {
+
+    it('fetches errors, inserts them into column tables and updates error_indices', (done) => {
       const store = getStoreWithOutputSchema();
 
       const { unmockFetch } = mockFetch({
@@ -183,10 +186,9 @@ describe('actions/loadData', () => {
             response: columnErrorResponse
           }
         }
-      });
+      }, done);
 
-      store.dispatch(loadColumnErrors(columnErrorsCall));
-      afterNextFrameRender(() => {
+      store.dispatch(loadColumnErrors(columnErrorsCall)).then(() => {
         unmockFetch();
         const db = store.getState().db;
         const transform1 = _.find(db.transforms, { id: 1 });
@@ -230,7 +232,78 @@ describe('actions/loadData', () => {
           }
         });
         done();
+      }).catch((err) => {
+        done(err);
       });
     });
+
+    it('fetches a later page of errors, inserts them into column tables and updates error indices', (done) => {
+      const store = getStoreWithOutputSchema();
+
+      const { unmockFetch } = mockFetch({
+        '/api/publishing/v1/upload/5/schema/4/errors/18?limit=50&offset=50&column_id=50': {
+          GET: {
+            status: 200,
+            response: columnErrorResponseLaterPage
+          }
+        }
+      }, done);
+
+      const callWithOffset = _.cloneDeep(columnErrorsCall);
+      callWithOffset.params.displayState.pageNo = 2;
+
+      store.dispatch(loadColumnErrors(callWithOffset)).then(() => {
+        unmockFetch();
+        const db = store.getState().db;
+        const transform1 = _.find(db.transforms, { id: 1 });
+
+        const expectedErrorIndices = [];
+        expectedErrorIndices[50] = '8001';
+        expectedErrorIndices[51] = '9000';
+
+        expect(transform1.error_indices).to.deep.equal(expectedErrorIndices);
+        expect(_.sortBy(_.keys(db.transform_1))).to.deep.equal(['8001', '9000']);
+        // bizarrely, asserting against the whole object fails, but asserting against the
+        // individual keys succeeds
+        expect(db.transform_1['8001']).to.deep.equal({
+          __status__: statusSavedOnServer,
+          error: {
+            inputs: {
+              arrest: {
+                ok: '031A'
+              }
+            },
+            message: 'Failed to convert "031A" to number'
+          }
+        });
+
+        expect(db.transform_1['9000']).to.deep.equal({
+          __status__: statusSavedOnServer,
+          error: {
+            inputs: {
+              arrest: {
+                ok: '031A'
+              }
+            },
+            message: 'Failed to convert "031A" to number'
+          }
+        });
+
+        expect(db.transform_2).to.deep.equal({
+          '8001': {
+            ok: 'foo',
+            __status__: statusSavedOnServer
+          },
+          '9000': {
+            ok: 'bar',
+            __status__: statusSavedOnServer
+          }
+        });
+        done();
+      }).catch((err) => {
+        done(err);
+      });
+    });
+
   });
 });

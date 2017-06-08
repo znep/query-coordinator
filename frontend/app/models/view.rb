@@ -2023,7 +2023,8 @@ class View < Model
       # We know a view has been saved if it doesn't have an id, so we need to fetch the parent and
       # get its columns if the view has an id.
       :columns => id ? parent_view.columns.map(&:data) : columns,
-      :lastUpdatedAt => time_last_updated_at
+      :lastUpdatedAt => time_last_updated_at,
+      :viewCount => viewCount
     }
   end
 

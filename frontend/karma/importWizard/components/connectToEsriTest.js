@@ -1,9 +1,6 @@
+import _ from 'lodash';
 import { expect, assert } from 'chai';
-import {
-  update,
-  view
-}
-from 'components/connectToEsri';
+import { update, view } from 'components/connectToEsri';
 import TestUtils from 'react-addons-test-utils';
 import * as ExampleData from './exampleData';
 import { withMockFetch, testThunk } from '../asyncUtils';

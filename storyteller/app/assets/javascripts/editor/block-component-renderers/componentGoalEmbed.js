@@ -3,7 +3,7 @@ import React from 'react'; //eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
-import { Modal, ModalHeader, ModalContent, ModalFooter } from 'socrata-components'; //eslint-disable-line no-unused-vars
+import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components'; //eslint-disable-line no-unused-vars
 
 import '../componentBase';
 import StorytellerUtils from '../../StorytellerUtils';

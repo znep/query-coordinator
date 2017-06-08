@@ -1,46 +1,152 @@
 import { expect, assert } from 'chai';
 const angular = require('angular');
 
-describe('lensType', function() {
+// Note that in each of these tests, the lensType text is transformed to uppercase by a CSS rule.
+
+describe('lensType', () => {
   'use strict';
 
-  var testHelpers;
-  var rootScope;
-  var Mockumentary;
-  var element = '<lens-type />';
+  let testHelpers;
+  let rootScope;
+  let Mockumentary;
+  let ServerConfig;
+  let scope;
+
+  const element = '<lens-type />';
+  const compiledElement = () => testHelpers.TestDom.compileAndAppend(element, scope);
 
   beforeEach(angular.mock.module('test'));
   beforeEach(angular.mock.module('dataCards'));
 
-  beforeEach(inject(function($injector) {
+  beforeEach(inject(($injector) => {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
     Mockumentary = $injector.get('Mockumentary');
+    ServerConfig = $injector.get('ServerConfig');
+    scope = rootScope.$new();
   }));
 
-  afterEach(function() {
-    testHelpers.TestDom.clear();
+  afterEach(() => testHelpers.TestDom.clear());
+
+  describe('when enable_data_lens_provenance feature flag is false', () => {
+    beforeEach(() => ServerConfig.override('enableDataLensProvenance', false));
+
+    describe('when disable_authority_badge feature flag is "none"', () => {
+      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'none'));
+
+      it('should render an official lens type regardless of the provenance value', () => {
+        scope.page = Mockumentary.createPage({provenance: 'official'});
+        assert.equal(compiledElement().find('span:visible').text(), 'official');
+
+        scope.page = Mockumentary.createPage({provenance: 'community'});
+        assert.equal(compiledElement().find('span:visible').text(), 'official');
+      });
+    });
+
+    describe('when disable_authority_badge feature flag is "all"', () => {
+      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'all'));
+
+      it('should not render any lens type regardless of provenance value', () => {
+        scope.page = Mockumentary.createPage({provenance: 'official'});
+        assert.equal(compiledElement().find('span:visible').text(), '');
+
+        scope.page = Mockumentary.createPage({provenance: 'community'});
+        assert.equal(compiledElement().find('span:visible').text(), '');
+      });
+    });
+
+    describe('when disable_authority_badge feature flag is "official2"', () => {
+      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'official2'));
+
+      it('should not render any lens type regardless of provenance value', () => {
+        scope.page = Mockumentary.createPage({provenance: 'official'});
+        assert.equal(compiledElement().find('span:visible').text(), '');
+
+        scope.page = Mockumentary.createPage({provenance: 'community'});
+        assert.equal(compiledElement().find('span:visible').text(), '');
+      });
+    });
+
+    describe('when disable_authority_badge feature flag is "community"', () => {
+      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'community'));
+
+      it('should render an official lens type regardless of provenance value', () => {
+        scope.page = Mockumentary.createPage({provenance: 'official'});
+        assert.equal(compiledElement().find('span:visible').text(), 'official');
+
+        scope.page = Mockumentary.createPage({provenance: 'community'});
+        assert.equal(compiledElement().find('span:visible').text(), 'official');
+      });
+    });
   });
 
-  it('should render an official lens type when its type is official', function() {
-    var scope = rootScope.$new();
-    scope.page = Mockumentary.createPage();
-    var lensType = testHelpers.TestDom.compileAndAppend(element, scope);
-    scope.$$childHead.lensType = 'official';
-    scope.$digest();
+  describe('when enable_data_lens_provenance feature flag is true', () => {
+    beforeEach(() => ServerConfig.override('enableDataLensProvenance', true));
 
-    // Note that this text is transformed into OFFICIAL by CSS rule
-    expect(lensType.find('span:visible').text()).to.equal('official');
+    describe('when disable_authority_badge feature flag is "none"', () => {
+      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'none'));
+
+      it('should render an official lens type when provenance is official', () => {
+        scope.page = Mockumentary.createPage({provenance: 'official'});
+        assert.equal(compiledElement().find('span:visible').text(), 'official');
+      });
+
+      it('should render a community lens type when provenance is community', () => {
+        scope.page = Mockumentary.createPage({provenance: 'community'});
+        assert.equal(compiledElement().find('span:visible').text(), 'community');
+      });
+
+      it('updates the provenance on the page if the page changes provenance', () => {
+        // This can happen if the user changes the page's provenance in the
+        // "Manage" dialog.
+        scope.page = Mockumentary.createPage({provenance: 'official'});
+        assert.equal(compiledElement().find('span:visible').text(), 'official');
+        scope.page.set('provenance', 'community');
+        assert.equal(compiledElement().find('span:visible').text(), 'community');
+      });
+    });
+
+    describe('when disable_authority_badge feature flag is "all"', () => {
+      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'all'));
+
+      it('should not render a community lens type when provenance is community', () => {
+        scope.page = Mockumentary.createPage({provenance: 'official'});
+        assert.equal(compiledElement().find('span:visible').text(), '');
+      });
+
+      it('should not render a official lens type when provenance is official', () => {
+        scope.page = Mockumentary.createPage({provenance: 'official'});
+        assert.equal(compiledElement().find('span:visible').text(), '');
+      });
+    });
+
+    describe('when disable_authority_badge feature flag is "official2"', () => {
+      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'official2'));
+
+      it('should render a community lens type when provenance is community', () => {
+        scope.page = Mockumentary.createPage({provenance: 'community'});
+        assert.equal(compiledElement().find('span:visible').text(), 'community');
+      });
+
+      it('should not render a community lens type when provenance is official', () => {
+        scope.page = Mockumentary.createPage({provenance: 'official'});
+        assert.equal(compiledElement().find('span:visible').text(), '');
+      });
+    });
+
+    describe('when disable_authority_badge feature flag is "community"', () => {
+      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'community'));
+
+      it('should not render a community lens type when provenance is community', () => {
+        scope.page = Mockumentary.createPage({provenance: 'community'});
+        assert.equal(compiledElement().find('span:visible').text(), '');
+      });
+
+      it('should render a official lens type when provenance is official', () => {
+        scope.page = Mockumentary.createPage({provenance: 'official'});
+        assert.equal(compiledElement().find('span:visible').text(), 'official');
+      });
+    });
   });
 
-  it('should render a community lens type when its type is community', function() {
-    var scope = rootScope.$new();
-    scope.page = Mockumentary.createPage();
-    var lensType = testHelpers.TestDom.compileAndAppend(element, scope);
-    scope.$$childHead.lensType = 'community';
-    scope.$digest();
-
-    // Note that this text is transformed into COMMUNITY by CSS rule
-    expect(lensType.find('span:visible').text()).to.equal('community');
-  });
 });

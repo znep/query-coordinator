@@ -39,10 +39,13 @@ class AdministrationController < ApplicationController
   before_filter :only => [:sdp_templates, :sdp_template_create, :sdp_template, :sdp_set_default_template, :sdp_delete_template] { |request| request.check_auth_level(UserRights::EDIT_SDP) }
   before_filter :only => [:federations, :delete_federation, :accept_federation, :reject_federation, :create_federation] { |request| request.check_auth_level(UserRights::FEDERATIONS) && request.check_module_available('federations') }
   before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :save_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category, :modify_catalog_config, :modify_sidebar_config] { |request| request.check_auth_level(UserRights::EDIT_SITE_THEME) }
-  before_filter :only => [:jobs, :show_job] { |request| request.check_feature_flag(:show_admin_processes) && request.check_auth_level(UserRights::VIEW_ALL_DATASET_STATUS_LOGS) }
   before_filter :only => [:home, :save_featured_views] { |request| request.check_auth_levels_any([UserRights::MANAGE_STORIES, UserRights::FEATURE_ITEMS, UserRights::EDIT_SITE_THEME]) }
   before_filter :only => [:delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] { |request| request.check_auth_level(UserRights::MANAGE_STORIES) }
   before_filter :is_superadmin?, :only => [:initialize_asset_inventory]
+
+  def disable_site_chrome?
+    true
+  end
 
   def index
     if feature_flag?('enable_new_admin_ui', request)

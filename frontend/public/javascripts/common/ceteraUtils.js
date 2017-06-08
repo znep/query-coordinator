@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import airbrake from './airbrake';
+import airbrake from 'common/airbrake';
 import { fetchTranslation } from './locale';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
@@ -59,35 +59,49 @@ export const ceteraUtils = (() => {
 
   const assetTypeMapping = assetType => (assetType === 'new_view' ? 'datalenses' : assetType);
 
+  const mapIdFiltersToParam = idFilters => _.map(idFilters, (id) => `ids=${id}`).join('&');
+
   return {
     fetch: ({
       category = null,
       customMetadataFilters = {},
+      forUser = null,
+      idFilters = [],
       limit = DEFAULT_LIMIT,
       only = null,
       order = DEFAULT_ORDER,
       pageNumber = 1,
+      provenance = null,
       q = null,
       showVisibility = null,
+      tags = null,
       visibility = null
     }) => {
       const paramObj = {
         categories: category,
         ...customMetadataFilters,
         domains: domain,
+        for_user: forUser,
+        ids: mapIdFiltersToParam(idFilters),
         limit,
         offset: getOffset(pageNumber, limit),
         only: assetTypeMapping(only),
         order,
+        provenance,
         q,
         search_context: domain,
         show_visibility: showVisibility,
+        tags,
         visibility
       };
 
-      const paramString = _.reduce(paramObj, function(result, value, key) {
+      let paramString = _.reduce(_.omit(paramObj, 'ids'), function(result, value, key) {
         return (key && value) ? result += `${key}=${encodeURIComponent(value)}&` : result;
       }, '').slice(0, -1);
+
+      if (paramObj.ids) {
+        paramString += `&${paramObj.ids}`;
+      }
 
       const fetchUrl = `${CETERA_API}?${paramString}`;
 

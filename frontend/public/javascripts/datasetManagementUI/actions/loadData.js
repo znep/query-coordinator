@@ -104,7 +104,7 @@ export function loadNormalPreview(apiCall) {
     const callId = uuid();
 
     dispatch(apiCallStarted(callId, apiCall));
-    socrataFetch(url)
+    return socrataFetch(url)
       .then(checkStatus)
       .then(getJson)
       .then(resp => {
@@ -175,7 +175,7 @@ export function loadColumnErrors(apiCall) {
 
     dispatch(apiCallStarted(callId, apiCall));
 
-    socrataFetch(url)
+    return socrataFetch(url)
       .then(checkStatus)
       .then(getJson)
       .then(resp => {
@@ -263,7 +263,7 @@ export function loadRowErrors(apiCall) {
 
     dispatch(apiCallStarted(callId, apiCall));
 
-    socrataFetch(url)
+    return socrataFetch(url)
       .then(checkStatus)
       .then(getJson)
       .then(rows => {

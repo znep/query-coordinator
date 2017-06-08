@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';

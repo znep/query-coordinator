@@ -29,6 +29,10 @@ class NewUxBootstrapController < ActionController::Base
     super
   end
 
+  def disable_site_chrome?
+    false
+  end
+
   def bootstrap
     # This method needs to accomplish a few things in order to enable 'new UX' views of
     # existing datasets.

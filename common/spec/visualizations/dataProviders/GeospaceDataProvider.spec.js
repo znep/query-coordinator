@@ -393,7 +393,7 @@ describe('GeospaceDataProvider', function() {
               assert.property(error, 'soqlError');
               done();
             }
-          )['catch'](
+          ).catch(
             function(e) {
 
               // Fail the test since we shouldn't be encountering an
@@ -423,7 +423,7 @@ describe('GeospaceDataProvider', function() {
               assert.equal(error.status, ERROR_STATUS);
               done();
             }
-          )['catch'](
+          ).catch(
             function(e) {
 
               // Fail the test since we shouldn't be encountering an
@@ -453,7 +453,7 @@ describe('GeospaceDataProvider', function() {
               assert.equal(error.message.toLowerCase(), ERROR_MESSAGE.toLowerCase());
               done();
             }
-          )['catch'](
+          ).catch(
             function(e) {
 
               // Fail the test since we shouldn't be encountering an
@@ -483,7 +483,7 @@ describe('GeospaceDataProvider', function() {
               assert.deepEqual(error.soqlError, JSON.parse(SAMPLE_GEOJSON_REQUEST_ERROR));
               done();
             }
-          )['catch'](
+          ).catch(
             function(e) {
 
               // Fail the test since we shouldn't be encountering an
@@ -537,7 +537,7 @@ describe('GeospaceDataProvider', function() {
               assert.isTrue(undefined);
               done();
             }
-          )['catch'](
+          ).catch(
             function(e) {
 
               // Fail the test since we shouldn't be encountering an
@@ -603,7 +603,7 @@ describe('GeospaceDataProvider', function() {
                 assert.match(error.message, /extent/);
                 assert.equal(error.soqlError, null);
               }
-            )['catch'](
+            ).catch(
               function(e) {
 
                 // Fail the test since we shouldn't be encountering an
@@ -658,7 +658,7 @@ describe('GeospaceDataProvider', function() {
               assert.isTrue(undefined);
               done();
             }
-          )['catch'](
+          ).catch(
             function(e) {
 
               // Fail the test since we shouldn't be encountering an

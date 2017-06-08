@@ -395,7 +395,7 @@ $.fn.socrataSampleChart = function(originalVif) {
               visualization.render(newVif, dataResponses);
             }
           });
-      })['catch'](handleError);
+      }).catch(handleError);
   }
 
   // This function exists to, given a vif and a series index, create a query

@@ -55,7 +55,7 @@ describe('Accordion', function () {
     var pane2 = component.querySelectorAll('.socrata-accordion-pane')[1];
     var titleBar = pane2.querySelector('.socrata-accordion-pane-title');
 
-    TestUtils.Simulate['click'](titleBar);
+    TestUtils.Simulate.click(titleBar);
 
     var openPanes = component.querySelectorAll('.socrata-accordion-pane.open');
 

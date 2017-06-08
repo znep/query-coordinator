@@ -133,7 +133,7 @@ $.fn.socrataFeatureMap = function(vif) {
       then(
         handleDatasetMetadataRequestSuccess,
         handleDatasetMetadataRequestError
-      )['catch'](function(e) {
+      ).catch(function(e) {
         logError(e);
       });
   }
@@ -164,7 +164,7 @@ $.fn.socrataFeatureMap = function(vif) {
     then(
       handleFeatureExtentQuerySuccess,
       handleFeatureExtentQueryError.bind(this)
-    )['catch'](function(e) {
+    ).catch(function(e) {
       logError(e);
     });
 
@@ -401,7 +401,7 @@ $.fn.socrataFeatureMap = function(vif) {
       then(
         handleRowInspectorQuerySuccess,
         handleRowInspectorQueryError
-      )['catch'](function(e) {
+      ).catch(function(e) {
         logError(e);
       });
 

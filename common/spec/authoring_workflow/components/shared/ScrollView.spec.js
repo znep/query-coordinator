@@ -18,7 +18,7 @@ describe('ScrollView', () => {
     expect(component.tagName).to.equal('DIV');
     assert(component.classList.contains('class-name'));
 
-    TestUtils.Simulate['click'](component);
+    TestUtils.Simulate.click(component);
     assert(clickHandler.called);
   });
 
@@ -71,7 +71,7 @@ describe('ScrollView', () => {
       const button = component.querySelector('button#toView');
 
       expect(component.scrollTop).to.equal(0);
-      TestUtils.Simulate['click'](button);
+      TestUtils.Simulate.click(button);
 
       expect(component.scrollTop).to.equal(100);
     });
@@ -79,14 +79,14 @@ describe('ScrollView', () => {
     it('should scroll vertically', () => {
       const button = component.querySelector('button#vertical');
 
-      TestUtils.Simulate['click'](button);
+      TestUtils.Simulate.click(button);
       expect(component.scrollTop).to.equal(123);
     });
 
     it('should scroll horizontally', () => {
       const button = component.querySelector('button#horizontal');
 
-      TestUtils.Simulate['click'](button);
+      TestUtils.Simulate.click(button);
       expect(component.scrollLeft).to.equal(123);
     });
   });

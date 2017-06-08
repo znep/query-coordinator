@@ -123,7 +123,7 @@ $.fn.socrataTable = function(originalVif, locale) {
       ).
         then(function() {
           visualization.render(renderState.vif, renderState.fetchedData);
-        })['catch'](function() {
+        }).catch(function() {
           updateState({error: true});
         });
     }

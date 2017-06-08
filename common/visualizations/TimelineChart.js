@@ -1,3 +1,5 @@
+// NOTE: This file appears unused.
+// Let's remove it when we do EN-16807.
 var _ = require('lodash');
 var $ = require('jquery');
 var utils = require('socrata-utils');
@@ -455,8 +457,7 @@ $.fn.socrataTimelineChart = function(vif) {
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
 
     Promise.all([ dataPromise, precisionPromise ]).
-      then(renderDataFromPromises)
-      ['catch'](handleError);
+      then(renderDataFromPromises).catch(handleError);
 
     function mapQueryResponseToPrecision(response) {
       var startIndex = _.indexOf(response.columns, SOQL_PRECISION_START_ALIAS);
@@ -555,13 +556,13 @@ $.fn.socrataTimelineChart = function(vif) {
           dataQueryString.format(unfilteredWhereClause),
           SOQL_DATA_PROVIDER_NAME_ALIAS,
           SOQL_DATA_PROVIDER_VALUE_ALIAS
-        )['catch'](handleError);
+        ).catch(handleError);
       var filteredSoqlQuery = filteredSoqlDataProvider.
         query(
           dataQueryString.format(filteredWhereClause),
           SOQL_DATA_PROVIDER_NAME_ALIAS,
           SOQL_DATA_PROVIDER_VALUE_ALIAS
-        )['catch'](handleError);
+        ).catch(handleError);
 
       return Promise.all([unfilteredSoqlQuery, filteredSoqlQuery]);
     }

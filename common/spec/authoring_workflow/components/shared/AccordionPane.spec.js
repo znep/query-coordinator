@@ -42,7 +42,7 @@ describe('AccordionPane', function () {
       onToggle: toggleCallback
     });
 
-    TestUtils.Simulate['click'](component.querySelector(clickTargetSelector));
+    TestUtils.Simulate.click(component.querySelector(clickTargetSelector));
     assert(toggleCallback.calledWith('pane-0'));
   });
 });

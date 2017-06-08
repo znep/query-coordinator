@@ -439,8 +439,7 @@ $.fn.socrataColumnChart = function(vif) {
         unfilteredQueryString,
         SOQL_DATA_PROVIDER_NAME_ALIAS,
         SOQL_DATA_PROVIDER_VALUE_ALIAS
-      )
-      ['catch'](function(error) {
+      ).catch(function(error) {
         _logError(error);
         visualization.renderError();
       });
@@ -458,8 +457,7 @@ $.fn.socrataColumnChart = function(vif) {
         filteredQueryString,
         SOQL_DATA_PROVIDER_NAME_ALIAS,
         SOQL_DATA_PROVIDER_VALUE_ALIAS
-      )
-      ['catch'](function(error) {
+      ).catch(function(error) {
         _logError(error);
         visualization.renderError();
       });
@@ -478,8 +476,7 @@ $.fn.socrataColumnChart = function(vif) {
 
         _render(vifToRender);
         $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
-      })
-      ['catch'](function(error) {
+      }).catch(function(error) {
         _logError(error);
         visualization.renderError();
       });

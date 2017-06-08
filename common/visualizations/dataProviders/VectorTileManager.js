@@ -404,8 +404,6 @@ VectorTileFeature.prototype.drawPolygon = function(canvas, coordinateArray, comp
  * Depends on `VectorTileFeature`
  */
 
-console.log(L.TileLayer);
-
 var VectorTileLayer = L.TileLayer.Canvas.extend({
 
   initialize: function(tileManager, options) {

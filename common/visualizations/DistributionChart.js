@@ -101,9 +101,8 @@ DistributionChart.prototype.updateData = function() {
       $(this.element).trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
       this.props.data = data;
       this.props.scale = DistributionChartHelpers.getScaleForData(data);
-    }.bind(this))
-
-    ['catch'](this.handleError);
+    }.bind(this)).
+    catch(this.handleError);
 };
 
 /**
@@ -135,8 +134,8 @@ DistributionChart.prototype.fetchColumnDomain = function() {
     then(function(data) {
       return _.map(_.head(data.rows), parseFloat);
     }).
-    then(_.partial(_.zipObject, columnNames))
-    ['catch'](this.handleError);
+    then(_.partial(_.zipObject, columnNames)).
+    catch(this.handleError);
 };
 
 /**

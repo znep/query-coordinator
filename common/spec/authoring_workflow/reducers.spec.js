@@ -188,7 +188,7 @@ describe('AuthoringWorkflow reducer', function() {
       });
 
       it('should reset vif to default state', () => {
-        const newState = reducer(getTestState(), actions['RESET_STATE']);
+        const newState = reducer(getTestState(), actions.RESET_STATE);
 
         _.each(newState.vifAuthoring.vifs, (vif, type) => {
           if (type !== 'initialVif') {

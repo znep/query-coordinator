@@ -226,14 +226,12 @@ $.fn.socrataChoroplethMap = function(vif) {
       (whereClauseComponents) ? 'WHERE {0}'.format(whereClauseComponents) : ''
     );
     var unfilteredSoqlQuery = unfilteredSoqlDataProvider.
-      query(unfilteredQueryString, NAME_ALIAS, VALUE_ALIAS)
-      ['catch'](function(error) {
+      query(unfilteredQueryString, NAME_ALIAS, VALUE_ALIAS).catch(function(error) {
         logError(error);
         visualization.renderError();
       });
     var filteredSoqlQuery = filteredSoqlDataProvider.
-      query(filteredQueryString, NAME_ALIAS, VALUE_ALIAS)
-      ['catch'](function(error) {
+      query(filteredQueryString, NAME_ALIAS, VALUE_ALIAS).catch(function(error) {
         logError(error);
         visualization.renderError();
       });
@@ -278,8 +276,7 @@ $.fn.socrataChoroplethMap = function(vif) {
         );
 
         $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
-      })
-      ['catch'](function(error) {
+      }).catch(function(error) {
         logError(error);
         visualization.renderError();
       });

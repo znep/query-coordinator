@@ -298,7 +298,7 @@ $.fn.socrataSvgHistogram = function(originalVif, options) {
             }
           }
         )
-    })['catch'](handleError);
+    }).catch(handleError);
   }
 
   function makeSocrataDataRequest(vifToRender, seriesIndex) {

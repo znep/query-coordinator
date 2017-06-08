@@ -274,7 +274,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
       then(
         handleRowInspectorQuerySuccess,
         handleRowInspectorQueryError
-      )['catch'](function(e) {
+      ).catch(function(e) {
         logError(e);
       });
 

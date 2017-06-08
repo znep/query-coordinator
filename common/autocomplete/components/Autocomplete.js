@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import { connect } from 'react-redux';
+import { getSearchUrl } from '../Util';
 import { resultVisibilityChanged } from '../actions';
 import CollapsedIcon from './CollapsedIcon';
 import SearchBox from './SearchBox/SearchBox';
@@ -36,6 +37,7 @@ class Autocomplete extends React.Component {
       collapsed,
       mobile,
       onResultVisibilityChanged,
+      onChooseResult,
       getSearchResults,
       millisecondsBeforeSearch
     } = this.props;
@@ -55,7 +57,7 @@ class Autocomplete extends React.Component {
             collapsible={collapsible}
             animate={animate}
             mobile={mobile} />
-          <Results collapsible={collapsible} />
+          <Results collapsible={collapsible} onChooseResult={onChooseResult} />
         </div>
       );
     }
@@ -69,8 +71,13 @@ Autocomplete.propTypes = {
   collapsible: PropTypes.bool,
   collapsed: PropTypes.bool,
   animate: PropTypes.bool,
-  mobile: PropTypes.bool
+  mobile: PropTypes.bool,
+  onChooseResult: PropTypes.func
 };
+
+Autocomplete.defaultProps = {
+  onChooseResult: (name) => { window.location.href = getSearchUrl(name); }
+}
 
 const mapStateToProps = (state) => ({
   collapsed: state.collapsed

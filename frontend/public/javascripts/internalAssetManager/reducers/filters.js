@@ -78,5 +78,12 @@ export default (state, action) => {
     };
   }
 
+  if (action.type === 'CHANGE_Q') {
+    return {
+      ...state,
+      q: action.value
+    };
+  }
+
   return state;
 };

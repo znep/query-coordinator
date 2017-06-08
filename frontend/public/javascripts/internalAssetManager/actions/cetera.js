@@ -22,7 +22,7 @@ export const fetchingResultsError = () => (
 export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) => {
   dispatch(fetchingResults());
 
-  const { assetTypes, authority, category, onlyRecentlyViewed, order, ownedBy, pageNumber, tag,
+  const { assetTypes, authority, category, onlyRecentlyViewed, order, ownedBy, pageNumber, q, tag,
     visibility } = _.merge({}, getState().catalog, getState().filters, newParamObj);
 
   const ceteraOrder = () => {
@@ -56,7 +56,7 @@ export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) =>
     fetch({
       // TODO:
       // customMetadataFilters,
-      // q,
+      q,
       category,
       forUser: _.get(ownedBy, 'id'),
       idFilters: lastAccessedUids,

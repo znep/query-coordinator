@@ -1,53 +1,49 @@
-<%= f.hidden_field :inviteToken %>
-<%= f.hidden_field :authToken %>
-<%= f.hidden_field :firstName %>
-<%= f.hidden_field :lastName %>
+<%= form_object.hidden_field :inviteToken %>
+<%= form_object.hidden_field :authToken %>
+<%= form_object.hidden_field :firstName %>
+<%= form_object.hidden_field :lastName %>
 <%= hidden_field_tag 'signup[accept_terms]', 'true' %>
 
 <%- required_span = "<span class=\"accessible\">#{t('core.forms.required_field')}</span>" -%>
 
 <div class="line">
   <div class="labelLine">
-    <%= f.label :email, "#{t('account.common.form.email')} #{required_span}".html_safe,
+    <%= form_object.label :email, "#{t('account.common.form.email')} #{required_span}".html_safe,
       :class => 'required main' %>
   </div>
-  <%= f.text_field :email %>
+  <%= form_object.text_field :email %>
 </div>
 
 <div class="line">
   <div class="labelLine">
-    <%= f.label :screenName, "#{t('account.common.form.display_name')} #{required_span}".html_safe,
+    <%= form_object.label :screenName, "#{t('account.common.form.display_name')} #{required_span}".html_safe,
       :class => 'required main' %>
   </div>
-  <%= f.text_field :screenName, :maxlength => 40 %>
+  <%= form_object.text_field :screenName, :maxlength => 40 %>
 </div>
 
 <%- unless local_assigns.fetch(:hide_password, false) -%>
 <div class="line">
   <div class="labelLine">
-    <%= f.label :password, "#{t('account.common.form.password')} <span class=\"accessible\">#{t('account.common.form.password_requirements')}</span>".html_safe,
+    <%= form_object.label :password, "#{t('account.common.form.password')} <span class=\"accessible\">#{t('account.common.form.password_requirements')}</span>".html_safe,
       :class => 'required passwordLabel main' %>
     <span class="passwordHint about">(<%= t('account.common.form.password_restrictions') %> <span class="icon">&nbsp;</span>)</span>
   </div>
-  <%= f.password_field :password %>
+  <%= form_object.password_field :password %>
 </div>
 
 <div class="line clearfix">
   <div class="labelLine">
-    <%= f.label :passwordConfirm, "#{t('account.common.form.confirm_password')} #{required_span}".html_safe,
+    <%= form_object.label :passwordConfirm, "#{t('account.common.form.confirm_password')} #{required_span}".html_safe,
       :class => 'required main' %>
   </div>
-  <%= f.password_field :passwordConfirm %>
+  <%= form_object.password_field :passwordConfirm %>
 </div>
 <%- end -%>
 
-<%- if local_assigns.fetch(:use_recaptcha2, false) -%>
-  <p class="line">
-    <%= render 'accounts/recaptcha2' %>
-  </p>
-<%- else -%>
-  <%= render 'accounts/captcha', local_assigns %>
-<%- end -%>
+<p class="line">
+  <%= render 'accounts/recaptcha2' %>
+</p>
 
 <p class="signUpHint">
   <%= t('screens.sign_up.terms_html') %>

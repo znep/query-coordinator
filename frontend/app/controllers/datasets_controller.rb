@@ -533,7 +533,7 @@ class DatasetsController < ApplicationController
     success = false
     # When CSRF token validation is skipped for this method (see skip_before_filter above), this
     # verify_recaptcha test is our only protection against abuse.
-    if verify_recaptcha
+    if SocrataRecaptcha.valid(params['g-recaptcha-response'])
       flag_params = {}
       keys = [:id, :type, :subject, :message, :from_address]
       keys.each do |key|
@@ -589,7 +589,7 @@ class DatasetsController < ApplicationController
     end
 
     # Return early if the Recaptcha response is invalid
-    if !SocrataRecaptcha.valid(params[:recaptcha_response_token])
+    unless SocrataRecaptcha.valid(params[:recaptcha_response_token])
       return render :json => {
         :success => false,
         :message => 'Invalid Recaptcha'

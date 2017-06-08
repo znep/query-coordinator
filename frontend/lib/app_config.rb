@@ -112,10 +112,6 @@ class AppConfig < Hashie::Dash
   # Canary declaration
   property :canary, default: false
 
-  # Recaptcha keys
-  property :recaptcha_private_key
-  property :recaptcha_public_key
-
   # Caching
   property :cache_dataslate_routing, default: 1.minute
 

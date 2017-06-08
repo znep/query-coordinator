@@ -281,7 +281,6 @@ GEM
     rb-inotify (0.9.7)
       ffi (>= 0.5.0)
     rb-readline (0.5.4)
-    recaptcha (0.3.5)
     redcarpet (3.3.4)
     reek (4.5.6)
       codeclimate-engine-rb (~> 0.4.0)
@@ -451,7 +450,6 @@ DEPENDENCIES
   rails-dom-testing
   rb-fsevent
   rb-readline
-  recaptcha (= 0.3.5)
   redcarpet
   reek (~> 4.5.6)
   request_store
@@ -484,4 +482,4 @@ DEPENDENCIES
   zookeeper (~> 1.4.9)
 
 BUNDLED WITH
-   1.14.6
+   1.15.0

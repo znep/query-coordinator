@@ -457,8 +457,6 @@ Variable Name | Type | Source | Description
 `rack.session` | String | Rails | Used by `SocrataCookieStore` to find session information for every request.
 `rack.session.options` | String | Rails | Used by `SocrataCookieStore` to find session information for every request.
 `rails_serve_static_files` | Boolean | Configuration | Flag to indicate if the Rails application should serve static assetss. _Must be `true` in dockerized environments_.
-`recaptcha_public_key` | String | Configuration | Public key used to authenticate with Recaptcha.
-`recaptcha_private_key` | String | Configuration | Private key used to authenticate with Recaptcha.
 `recaptcha_2_secret_token` | String | Configuration | API token used to authenticate with Recaptcha 2.
 `recaptcha_2_site_key` | String | Configuration | API key used to authenticate with Recaptcha 2.
 `remote_addr` | String | NGINX | IP Address of the requesting user agent. Typically expected to be the browser itself.

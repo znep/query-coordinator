@@ -33,7 +33,8 @@ describe('actions/sortOrder', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: true }  }
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: true }  },
+        { type: 'CHANGE_PAGE', pageNumber: 1 }
       ];
 
       return store.dispatch(Actions.changeSortOrder('name')).then(() => {
@@ -49,7 +50,8 @@ describe('actions/sortOrder', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_SORT_ORDER', order: { value: 'lastUpdatedDate', ascending: false }  }
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'lastUpdatedDate', ascending: false }  },
+        { type: 'CHANGE_PAGE', pageNumber: 1 }
       ];
 
       return store.dispatch(Actions.changeSortOrder('lastUpdatedDate')).then(() => {
@@ -65,7 +67,8 @@ describe('actions/sortOrder', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: false }  }
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'name', ascending: false }  },
+        { type: 'CHANGE_PAGE', pageNumber: 1 }
       ];
 
       return store.dispatch(Actions.changeSortOrder('name')).then(() => {
@@ -81,7 +84,8 @@ describe('actions/sortOrder', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_SORT_ORDER', order: { value: 'category', ascending: true }  }
+        { type: 'CHANGE_SORT_ORDER', order: { value: 'category', ascending: true }  },
+        { type: 'CHANGE_PAGE', pageNumber: 1 }
       ];
 
       return store.dispatch(Actions.changeSortOrder('category')).then(() => {

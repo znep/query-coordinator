@@ -1,17 +1,24 @@
 import { fetchResults } from './cetera';
+import { clearPage } from './pager';
 
 export const toggleRecentlyViewed = () => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'TOGGLE_RECENTLY_VIEWED' });
+    clearPage(dispatch);
   };
 
-  return fetchResults(dispatch, getState, { onlyRecentlyViewed: !getState().filters.onlyRecentlyViewed },
-    onSuccess);
+  return fetchResults(
+    dispatch,
+    getState,
+    { onlyRecentlyViewed: !getState().filters.onlyRecentlyViewed, pageNumber: 1 },
+    onSuccess
+  );
 };
 
 export const changeLastUpdatedDate = (value) => (dispatch) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_LAST_UPDATED_DATE', value });
+    clearPage(dispatch);
   };
 
   /*
@@ -43,20 +50,22 @@ export const changeLastUpdatedDate = (value) => (dispatch) => {
 export const changeAssetType = (value) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_ASSET_TYPE', value });
+    clearPage(dispatch);
   };
 
   if (value !== getState().filters.assetTypes) {
-    return fetchResults(dispatch, getState, { assetTypes: value }, onSuccess);
+    return fetchResults(dispatch, getState, { assetTypes: value, pageNumber: 1 }, onSuccess);
   }
 };
 
 export const changeAuthority = (value) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_AUTHORITY', value });
+    clearPage(dispatch);
   };
 
   if (value !== getState().filters.authority) {
-    return fetchResults(dispatch, getState, { authority: value }, onSuccess);
+    return fetchResults(dispatch, getState, { authority: value, pageNumber: 1 }, onSuccess);
   }
 };
 
@@ -65,10 +74,11 @@ export const changeCategory = (option) => (dispatch, getState) => {
 
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_CATEGORY', value: category });
+    clearPage(dispatch);
   };
 
   if (category !== getState().filters.category) {
-    return fetchResults(dispatch, getState, { category }, onSuccess);
+    return fetchResults(dispatch, getState, { category, pageNumber: 1 }, onSuccess);
   }
 };
 
@@ -77,10 +87,11 @@ export const changeOwner = (option) => (dispatch, getState) => {
 
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_OWNER', value: owner });
+    clearPage(dispatch);
   };
 
   if (owner.id !== getState().filters.ownedBy.id) {
-    return fetchResults(dispatch, getState, { ownedBy: owner }, onSuccess);
+    return fetchResults(dispatch, getState, { ownedBy: owner, pageNumber: 1 }, onSuccess);
   }
 };
 
@@ -89,19 +100,21 @@ export const changeTag = (option) => (dispatch, getState) => {
 
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_TAG', value: tag });
+    clearPage(dispatch);
   };
 
   if (tag !== getState().filters.tag) {
-    return fetchResults(dispatch, getState, { tag }, onSuccess);
+    return fetchResults(dispatch, getState, { tag, pageNumber: 1 }, onSuccess);
   }
 };
 
 export const changeVisibility = (value) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_VISIBILITY', value });
+    clearPage(dispatch);
   };
 
   if (value !== getState().filters.visibility) {
-    return fetchResults(dispatch, getState, { visibility: value }, onSuccess);
+    return fetchResults(dispatch, getState, { visibility: value, pageNumber: 1 }, onSuccess);
   }
 };

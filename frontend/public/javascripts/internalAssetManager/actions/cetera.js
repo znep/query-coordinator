@@ -22,7 +22,7 @@ export const fetchingResultsError = () => (
 export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) => {
   dispatch(fetchingResults());
 
-  const { assetTypes, authority, category, currentPage, onlyRecentlyViewed, order, ownedBy, tag,
+  const { assetTypes, authority, category, onlyRecentlyViewed, order, ownedBy, pageNumber, tag,
     visibility } = _.merge({}, getState().catalog, getState().filters, newParamObj);
 
   const ceteraOrder = () => {
@@ -63,7 +63,7 @@ export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) =>
       limit: RESULTS_PER_PAGE,
       only: assetTypes,
       order: ceteraOrder(),
-      pageNumber: currentPage,
+      pageNumber,
       provenance: authority,
       showVisibility: 'true',
       tags: tag,
@@ -78,7 +78,8 @@ export const fetchResults = (dispatch, getState, newParamObj = {}, onSuccess) =>
         dispatch(fetchingResultsError());
       }
     }).
-    catch(() => {
+    catch((err) => {
+      console.error(err);
       dispatch(fetchingResultsError());
     });
 };

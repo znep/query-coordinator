@@ -3,9 +3,9 @@ import { getViewCountLabel } from '../../common/helpers/viewCardHelpers';
 
 export class ResultCount extends React.Component {
   render() {
-    const { currentPage, resultsPerPage, total } = this.props;
-    const first = (currentPage - 1) * resultsPerPage + 1;
-    const last = Math.min(currentPage * resultsPerPage, total);
+    const { pageNumber, resultsPerPage, total } = this.props;
+    const first = (pageNumber - 1) * resultsPerPage + 1;
+    const last = Math.min(pageNumber * resultsPerPage, total);
     const totalLabel = getViewCountLabel(total);
 
     /* TODO: localize with i18n-js */
@@ -22,7 +22,7 @@ export class ResultCount extends React.Component {
 }
 
 ResultCount.propTypes = {
-  currentPage: PropTypes.number.isRequired,
+  pageNumber: PropTypes.number.isRequired,
   resultsPerPage: PropTypes.number.isRequired,
   total: PropTypes.number.isRequired
 };

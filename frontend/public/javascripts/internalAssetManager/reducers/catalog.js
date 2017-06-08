@@ -2,11 +2,11 @@ import _ from 'lodash';
 
 const getInitialState = () => _.get(window, 'initialState.catalog', {
   columns: [],
-  currentPage: 1,
   fetchingResults: false,
   fetchingResultsError: false,
   filters: {},
   order: {},
+  pageNumber: 1,
   results: [],
   resultSetSize: 0
 });
@@ -73,7 +73,7 @@ export default (state, action) => {
   if (action.type === 'CHANGE_PAGE') {
     return {
       ...state,
-      currentPage: action.pageNumber
+      pageNumber: action.pageNumber
     };
   }
 

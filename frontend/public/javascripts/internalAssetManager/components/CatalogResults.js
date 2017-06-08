@@ -80,20 +80,20 @@ export class CatalogResults extends React.Component {
   }
 
   renderFooter() {
-    const { currentPage, fetchingResults, resultSetSize } = this.props;
+    const { pageNumber, fetchingResults, resultSetSize } = this.props;
     if (fetchingResults) {
       return;
     }
 
     const pagerProps = {
       changePage: this.changePage,
-      currentPage,
+      currentPage: pageNumber,
       resultCount: resultSetSize,
       resultsPerPage: RESULTS_PER_PAGE
     };
 
     const resultCountProps = {
-      currentPage,
+      pageNumber,
       resultsPerPage: RESULTS_PER_PAGE,
       total: resultSetSize
     };
@@ -120,24 +120,24 @@ export class CatalogResults extends React.Component {
 
 CatalogResults.propTypes = {
   changePage: PropTypes.func.isRequired,
-  currentPage: PropTypes.number,
   fetchingResults: PropTypes.bool,
   fetchingResultsError: PropTypes.bool,
   order: PropTypes.object,
+  pageNumber: PropTypes.number,
   resultSetSize: PropTypes.number.isRequired
 };
 
 CatalogResults.defaultProps = {
-  currentPage: 1,
   fetchingResults: false,
-  fetchingResultsError: false
+  fetchingResultsError: false,
+  pageNumber: 1
 };
 
 const mapStateToProps = state => ({
-  currentPage: state.catalog.currentPage,
   fetchingResults: state.catalog.fetchingResults,
   fetchingResultsError: state.catalog.fetchingResultsError,
   order: state.catalog.order,
+  pageNumber: state.catalog.pageNumber,
   resultSetSize: state.catalog.resultSetSize
 });
 

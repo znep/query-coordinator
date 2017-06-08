@@ -25,8 +25,8 @@ describe('actions/pager', () => {
       ceteraStub.restore();
     });
 
-    it('sets the currentPage', () => {
-      const initialState = { catalog: { currentPage: 1 } };
+    it('sets the pageNumber', () => {
+      const initialState = { catalog: { pageNumber: 1 } };
       const store = mockStore(initialState);
 
       const expectedActions = [

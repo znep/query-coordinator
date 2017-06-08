@@ -33,7 +33,8 @@ describe('actions/filters', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: true },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'TOGGLE_RECENTLY_VIEWED' }
+        { type: 'TOGGLE_RECENTLY_VIEWED' },
+        { type: 'CHANGE_PAGE', pageNumber: 1 }
       ];
 
       return store.dispatch(Actions.toggleRecentlyViewed()).then(() => {
@@ -59,7 +60,8 @@ describe('actions/filters', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_ASSET_TYPE', value: 'charts' }
+        { type: 'CHANGE_ASSET_TYPE', value: 'charts' },
+        { type: 'CHANGE_PAGE', pageNumber: 1 }
       ];
 
       return store.dispatch(Actions.changeAssetType('charts')).then(() => {
@@ -85,7 +87,8 @@ describe('actions/filters', () => {
         { type: 'FETCH_RESULTS' },
         { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
-        { type: 'CHANGE_VISIBILITY', value: 'internal' }
+        { type: 'CHANGE_VISIBILITY', value: 'internal' },
+        { type: 'CHANGE_PAGE', pageNumber: 1 }
       ];
 
       return store.dispatch(Actions.changeVisibility('internal')).then(() => {

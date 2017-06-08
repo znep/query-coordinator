@@ -471,7 +471,7 @@ describe('Table', function() {
       });
 
       it('emits event when column overflows', function(done) {
-        data.rows = [['a very gosh-darn long string of text that should overflow, I think']];
+        data.rows = [['a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think. a very gosh-darn long string of text that should overflow, I think.']];
 
         render(table, data);
 
@@ -486,7 +486,6 @@ describe('Table', function() {
         });
 
         table.element.find('td').trigger('mouseenter');
-        setTimeout(done, 100);
       });
 
       it('emits event to hide flyout on mouseleave', function(done) {

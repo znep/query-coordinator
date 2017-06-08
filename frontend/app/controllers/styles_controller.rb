@@ -206,7 +206,7 @@ class StylesController < ApplicationController
   end
 
   def with_development_cache(stylesheet_filename)
-    if use_discrete_assets?
+    if use_discrete_assets? && ENV.fetch('DISABLE_BLIST_STYLE_CACHE', 'false') == 'false'
       Dir.mkdir(BLIST_STYLE_CACHE) unless Dir.exist? BLIST_STYLE_CACHE
 
       includes_cache_key = STYLE_PACKAGES['includes'].map do |include|

@@ -67,7 +67,9 @@ Here are the versions we use for externals, which are not included in the webpac
 
 ## Examples
 
-The `examples` directory contains demos that show how each supported visualization can be consumed.
+The `packages/examples` directory contains demos that show how each supported visualization can be consumed. Please see
+the [instructions](https://github.com/socrata/platform-ui/tree/master/packages/socrata-visualizations#example-pages).
+
 
 ## Embeds
 

@@ -13,6 +13,18 @@ review groups - ask your team if those are preferred for the work you are doing.
 
 Please review the steps which are auto-populated into new pull requests before merging.
 
+## Example apps
+
+There are two example applications which are useful for testing and developing common componentry:
+
+### Visualizations Example Pages
+
+Please see the [README](https://github.com/socrata/platform-ui/tree/master/packages/socrata-visualizations#example-pages).
+
+### Styleguide Sample App
+
+Please see the [README](https://github.com/socrata/platform-ui/tree/master/styleguide-sample-app).
+
 ## Common tasks
 
 ### Updating icons

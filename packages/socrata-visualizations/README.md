@@ -18,6 +18,17 @@ Then install using npm:
 
     npm install --save socrata-visualizations
 
+## Example Pages
+
+Examples are provided for each visualization type and for the Authoring Experience.
+To build them:
+
+    npm install
+    npm run build
+
+The examples are now ready to view in the `examples/` folder - just open the `.html`
+files in your web browser.
+
 ## Publishing the package
 
 Run this:

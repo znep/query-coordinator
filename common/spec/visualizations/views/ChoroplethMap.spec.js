@@ -348,6 +348,8 @@ describe('ChoroplethMap', function() {
 
         var startTime;
 
+        const doneAfterBoth = _.after(2, done);
+
         el.on('SOCRATA_VISUALIZATION_CHOROPLETH_RENDER_START', function(e) {
 
           var payload = e.originalEvent.detail;
@@ -356,6 +358,7 @@ describe('ChoroplethMap', function() {
           expect(startTime).to.satisfy(_.isFinite);
 
           fakeClock.tick(50);
+          doneAfterBoth();
         });
 
         el.on('SOCRATA_VISUALIZATION_CHOROPLETH_RENDER_COMPLETE', function(e) {
@@ -366,7 +369,7 @@ describe('ChoroplethMap', function() {
           expect(endTime).to.satisfy(_.isFinite);
           expect(startTime).to.be.below(endTime);
 
-          done();
+          doneAfterBoth();
         });
 
         visualization.render(data, options);

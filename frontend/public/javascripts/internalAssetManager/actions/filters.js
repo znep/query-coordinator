@@ -118,3 +118,14 @@ export const changeVisibility = (value) => (dispatch, getState) => {
     return fetchResults(dispatch, getState, { visibility: value, pageNumber: 1 }, onSuccess);
   }
 };
+
+export const changeQ = (value) => (dispatch, getState) => {
+  const onSuccess = () => {
+    dispatch({ type: 'CHANGE_Q', value });
+    clearPage(dispatch);
+  };
+
+  if (value !== getState().filters.visibility) {
+    return fetchResults(dispatch, getState, { q: value, pageNumber: 1 }, onSuccess);
+  }
+};

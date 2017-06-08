@@ -4,6 +4,7 @@ import ResultListTable from './ResultListTable';
 import Pager from '../../common/components/Pager';
 import ResultCount from './ResultCount';
 import { changePage } from '../actions/pager';
+import { changeQ } from '../actions/filters';
 import _ from 'lodash';
 import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
 
@@ -19,11 +20,16 @@ export class CatalogResults extends React.Component {
 
     _.bindAll(this, [
       'changePage',
+      'changeQ',
       'renderError',
       'renderFooter',
       'renderTable',
       'renderTopbar'
     ]);
+  }
+
+  changeQ(query) {
+    this.props.changeQ(query);
   }
 
   changePage(pageNumber) {
@@ -45,7 +51,8 @@ export class CatalogResults extends React.Component {
     const options = {
       collapsible,
       animate: true,
-      mobile: false
+      mobile: false,
+      onChooseResult: this.changeQ
     };
 
     const defaultState = {
@@ -120,6 +127,7 @@ export class CatalogResults extends React.Component {
 
 CatalogResults.propTypes = {
   changePage: PropTypes.func.isRequired,
+  changeQ: PropTypes.func.isRequired,
   fetchingResults: PropTypes.bool,
   fetchingResultsError: PropTypes.bool,
   order: PropTypes.object,
@@ -142,7 +150,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  changePage: (pageNumber) => dispatch(changePage(pageNumber))
+  changePage: (pageNumber) => dispatch(changePage(pageNumber)),
+  changeQ: (query) => dispatch(changeQ(query))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogResults);

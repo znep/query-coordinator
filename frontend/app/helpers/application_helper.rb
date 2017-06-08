@@ -22,6 +22,17 @@ module ApplicationHelper
   end
   alias :t :translate
 
+# CONFIGURATIONS
+
+  # Prevent platform styling on Dataslate custom pages managed by the CS team
+  def prevent_platform_styling?
+    controller.class == CustomContentController && defined?(@page) &&
+      CurrentDomain.configuration('dataslate_config').
+        try(:properties).
+        try(:prevent_platform_styling).to_a.
+        include?(@page.try(:path))
+  end
+
 # MODULES/FEATURES
 
   def module_available(name_or_set, &block)

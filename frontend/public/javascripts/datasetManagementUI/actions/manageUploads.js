@@ -234,7 +234,7 @@ function pollForOutputSchema(uploadId) {
   };
 }
 
-function pollForOutputSchemaSuccess(outputSchemaResponse) {
+export function pollForOutputSchemaSuccess(outputSchemaResponse) {
   const outputSchema = toOutputSchema(outputSchemaResponse);
 
   const transforms = outputSchemaResponse.output_columns.reduce((acc, oc) => {
@@ -282,7 +282,7 @@ function pollForOutputSchemaSuccess(outputSchemaResponse) {
   };
 }
 
-function insertInputSchema(upload) {
+export function insertInputSchema(upload) {
   return dispatch => {
     const inputSchemaUpdates = upload.schemas.map(inputSchema => ({
       id: inputSchema.id,
@@ -307,7 +307,7 @@ function insertInputSchema(upload) {
   };
 }
 
-function subscribeToRowErrors(inputSchemaId) {
+export function subscribeToRowErrors(inputSchemaId) {
   return dispatch => {
     const channelName = `row_errors:${inputSchemaId}`;
     dispatch(
@@ -325,7 +325,7 @@ function subscribeToRowErrors(inputSchemaId) {
 }
 
 // dotProp creates entry if it doesn't exist, so don't have to create table here anymore
-function subscribeToTransforms(outputSchemaResponse) {
+export function subscribeToTransforms(outputSchemaResponse) {
   return dispatch =>
     outputSchemaResponse.output_columns.forEach(oc => {
       const channelName = `transform_progress:${oc.transform.id}`;
@@ -353,7 +353,7 @@ function toOutputSchema(os) {
   };
 }
 
-function subscribeToOutputSchema(outputSchema) {
+export function subscribeToOutputSchema(outputSchema) {
   return dispatch => {
     const channelName = `output_schema:${outputSchema.id}`;
 

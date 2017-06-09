@@ -1021,7 +1021,7 @@ class DatasetsController < ApplicationController
         end
         if params[:view][:metadata][:feature_flags].present?
           params[:view][:metadata][:feature_flags].keys.each do |flag|
-            new_feature_flags[flag] = FeatureFlags.process_value(params[:view][:metadata][:feature_flags][flag]).to_s
+            new_feature_flags[flag] = Signaller::Utils.process_value(params[:view][:metadata][:feature_flags][flag]).to_s
           end
         else
           new_feature_flags = nil

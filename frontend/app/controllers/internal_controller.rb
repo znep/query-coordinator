@@ -483,7 +483,7 @@ class InternalController < ApplicationController
       report = FeatureFlags.report(params[:for])
       @description = FeatureFlags.description_for(params[:for])
       @default = report['default']
-      @environment = FeatureFlags.process_value(report['environment'])
+      @environment = Signaller::Utils.process_value(report['environment'])
       @domains = report['domains'] || []
     else
       @version_information = Signaller.full_version_information
@@ -552,7 +552,7 @@ class InternalController < ApplicationController
 
       case params[:commit]
         when 'Set'
-          processed_value = FeatureFlags.process_value(params[:multiple_domains][params[:flag]])
+          processed_value = Signaller::Utils.process_value(params[:multiple_domains][params[:flag]])
           changed_domains = begin
             flag.set_multiple(
               to_value: processed_value,
@@ -735,7 +735,7 @@ class InternalController < ApplicationController
             message = %Q{reset to its default value of "#{FeatureFlags.default_for(flag)}".}
             FeatureFlags.reset_value(flag, domain: domain_cname)
           else
-            processed_value = FeatureFlags.process_value(value)
+            processed_value = Signaller::Utils.process_value(value)
             message = %Q{set with value "#{processed_value}".}
             FeatureFlags.set_value(flag, processed_value, domain: domain_cname)
           end
@@ -776,7 +776,7 @@ class InternalController < ApplicationController
             errors << "#{flag} is not a valid feature flag."
             next
           end
-          processed_value = FeatureFlags.process_value(value).to_s
+          processed_value = Signaller::Utils.process_value(value).to_s
           if properties[flag] == processed_value
             notices << %Q{#{flag} was already set to "#{processed_value}".}
             next

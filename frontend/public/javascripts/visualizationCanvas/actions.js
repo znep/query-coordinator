@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import 'whatwg-fetch';
 import { dataProviders as DataProviders } from 'socrata-visualizations';
 import { checkStatus, defaultHeaders } from '../common/http';

@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: SvgBarChart.js</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <!-- Include styleguide to test for style namespace collisions -->
+    <link rel="stylesheet" media="all" href="../node_modules/socrata-components/dist/css/styleguide.css">
+    <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+      }
+
+      p {
+        margin: 50px 0 20px 0;
+        font-size: 15px;
+      }
+
+      [id^="bar-chart"] {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 0 auto;
+      }
+
+      .school-district-proficiency,
+      .wright-county-final-payments,
+      .ufo-sightings-total-row-count,
+      .pet-escapes-total-row-count {
+        font-weight: bold;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Unaggregated data</p>
+    <div id="bar-chart-1"></div>
+    <p>Unaggregated data with limit = 10</p>
+    <div id="bar-chart-2"></div>
+    <p>Unaggregated data with limit = 10 and 'showOtherCategory' = true, values should sum to <span class="school-district-proficiency">(FETCHING COUNT...)</span>. Custom label width.</p>
+    <div id="bar-chart-3"></div>
+    <p>Aggregated data with dimension sorted ascending alphabetically</p>
+    <div id="bar-chart-4"></div>
+    <p>Multi-series unaggregated data</p>
+    <div id="bar-chart-5"></div>
+    <p>Unaggregated data with measure sorted descending by value</p>
+    <div id="bar-chart-6"></div>
+    <p>Multi-series aggregated data with measure axis max value</p>
+    <div id="bar-chart-7"></div>
+    <p>Multi-series unaggregated data with measure axis min and max values</p>
+    <div id="bar-chart-8"></div>
+    <p>Multi-series aggregated data configured through a dimension grouping on text columns, 'Wright' should sum to <span class="wright-county-final-payments">(FETCHING COUNT...)</span></p>
+    <div id="bar-chart-9"></div>
+    <p>Multi-series aggregated data configured through a dimension grouping on number columns, 'showOtherCategory' = true, order by dimension ascending, values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on bottom</p>
+    <div id="bar-chart-10"></div>
+    <p>Multi-series aggregated data configured through a dimension grouping on number columns, 'showOtherCategory' = true, order by dimension descending, values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on bottom</p>
+    <div id="bar-chart-11"></div>
+    <p>Multi-series aggregated data configured through a dimension grouping on number columns, 'showOtherCategory' = true, order by measure ascending, values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on bottom</p>
+    <div id="bar-chart-12"></div>
+    <p>Multi-series aggregated data configured through a dimension grouping on number columns, 'showOtherCategory' = true, order by measure descending, values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on top</p>
+    <div id="bar-chart-13"></div>
+    <p>Multiple defined series and data grouping configured simultaneously should show an error</p>
+    <div id="bar-chart-14"></div>
+    <p>Other category enabled and noop filter, should not cause invalid other category query and values should sum to <span class="pet-escapes-total-row-count">(FETCHING COUNT...)</span></p>
+    <div id="bar-chart-15"></div>
+    <p>Other category enabled and binaryOperator filter, should not cause invalid other category query and values should sum to <span class="pet-escapes-total-row-count">(FETCHING COUNT...)</span></p>
+    <div id="bar-chart-16"></div>
+    <p>Other category enabled and noop filter, should not cause invalid other category query and values should sum to <span class="ufo-sightings-total-row-count">(FETCHING COUNT...)</span>, '(Other)' category should be on top</p>
+    <div id="bar-chart-17"></div>
+    <p>Grouping values including percent symbols, should not cause an error</p>
+    <div id="bar-chart-18"></div>
+    <p>Measure summed data sorted, should sort nulls last</p>
+    <div id="bar-chart-19"></div>
+  </body>
+
+  <!-- Include external vendor -->
+  <script type="text/javascript" src="./vendor.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      function fillInExpectedValues() {
+
+        // Fetch the current sum of `proficient_2` for the iowa schools dataset where `topic` = 'Math' and `grade` = '3' and `school_year` = '2014'
+        $.ajax({
+          url: 'https://data.iowa.gov/api/id/mu6e-brbz.json?$query=SELECT SUM(`proficient_2`) WHERE `topic` = \'Math\' AND `grade` = \'3\' AND `school_year` =\'2014\'',
+          success: function(result) {
+            $('.school-district-proficiency').text(_.get(result, '[0].SUM_proficient_2'));
+          }
+        });
+
+        // Fetch the current sum of `final_payments` for the iowa payments dataset where `county_name` = 'Wright'
+        $.ajax({
+          url: 'https://data.iowa.gov/api/id/yhbr-3t8a.json?$query=SELECT SUM(`final_payments`) WHERE `county_name` = \'Wright\'',
+          success: function(result) {
+            $('.wright-county-final-payments').text(_.get(result, '[0].sum_final_payments'));
+          }
+        });
+
+        // Fetch the current total row count for the pet escapes dataset
+        $.ajax({
+          url: 'https://vertex-stories.test-socrata.com/api/id/k6cs-ww27.json?$query=SELECT COUNT(*)',
+          success: function(result) {
+            $('.ufo-sightings-total-row-count').text(_.get(result, '[0].COUNT'));
+          }
+        });
+
+        // Fetch the current total row count for the pet escapes dataset
+        $.ajax({
+          url: 'https://stories.rc-socrata.com/api/id/hw9q-ds2z.json?$query=SELECT COUNT(*)',
+          success: function(result) {
+            $('.pet-escapes-total-row-count').text(_.get(result, '[0].COUNT'));
+          }
+        });
+      }
+
+      /**
+       * Set up VIFs
+       */
+
+      var DIMENSION = 'district_name';
+      var MEASURE = 'proficient_2';
+      var MEASURE_AGGREGATION = null;
+      var DATASET_UID = 'mu6e-brbz';
+      var DOMAIN = 'data.iowa.gov';
+      var FILTERS = [
+        {
+          columnName: 'topic',
+          function: 'binaryOperator',
+          arguments: {
+            operator: '=',
+            operand: 'Math'
+          },
+          pivot: true
+        },
+        {
+          columnName: 'grade',
+          function: 'binaryOperator',
+          arguments: {
+            operator: '=',
+            operand: '3'
+          },
+          pivot: true
+        },
+        {
+          columnName: 'school_year',
+          function: 'binaryOperator',
+          arguments: {
+            operator: '=',
+            operand: '2014'
+          },
+          pivot: true
+        }
+      ];
+
+      var barChart1Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: 'School District',
+            right: '% Proficient',
+            bottom: 'School Districts in Iowa, Sorted Alphabetically',
+            left: '% of 3rd Grade Students Rated Proficient in Math (For Real)'
+          }
+        },
+        description: 'Math proficiency by school district for 3rd graders in 2014',
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa'
+            },
+            dataSource: {
+              datasetUid: DATASET_UID,
+              dimension: {
+                columnName: DIMENSION,
+                aggregationFunction: null
+              },
+              domain: DOMAIN,
+              measure: {
+                columnName: MEASURE,
+                aggregationFunction: MEASURE_AGGREGATION
+              },
+              type: 'socrata.soql',
+              filters: FILTERS,
+              orderBy: {
+                parameter: 'dimension',
+                sort: 'asc'
+              }
+            },
+            label: 'Proficient',
+            type: 'barChart',
+            unit: {
+              one: 'percent of students',
+              other: 'percent of students'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Math Proficienty for 3rd Graders - Iowa Public Schools'
+      };
+
+      var barChart2Vif = _.cloneDeep(barChart1Vif);
+      barChart2Vif.series[0].dataSource.limit = 10;
+
+      var barChart3Vif = _.cloneDeep(barChart1Vif);
+      barChart3Vif.configuration.showOtherCategory = true;
+      barChart3Vif.series[0].dataSource.limit = 10;
+      barChart3Vif.configuration.dimensionLabelAreaSize = 215;
+
+      var VIF_1_COLUMN_NAME = 'category';
+      var VIF_1_DATASET_UID = 'r6t9-rak2';
+      var VIF_1_DOMAIN = 'dataspace.demo.socrata.com';
+
+      // This is a version 1 VIF, which should be automatically migrated
+      // when passed to the visualization.
+      var barChart4Vif = {
+        'aggregation': {
+          'columnName': null,
+          'function': 'count'
+        },
+        'columnName': VIF_1_COLUMN_NAME,
+        'configuration': {},
+        'createdAt': '2014-01-01T00:00:00',
+        'datasetUid': VIF_1_DATASET_UID,
+        'domain': VIF_1_DOMAIN,
+        'filters': [],
+        'format': {
+          'type': 'visualization_interchange_format',
+          'version': 1
+        },
+        'origin': {
+          'type': 'test_data',
+          'url': 'localhost'
+        },
+        'title': VIF_1_COLUMN_NAME,
+        'type': 'barChart',
+        'unit': {
+          'one': 'case',
+          'other': 'cases'
+        }
+      };
+
+      var barChart5Vif = _.cloneDeep(barChart1Vif);
+      barChart5Vif.configuration.axisLabels = {
+        top: null,
+        right: null,
+        bottom: 'School District',
+        left: '# Proficient v.s. Total'
+      };
+      barChart5Vif.title = null;
+      barChart5Vif.description = null;
+      barChart5Vif.series = [
+        {
+          color: {
+            primary: 'silver',
+            secondary: null,
+          },
+          dataSource: {
+            datasetUid: DATASET_UID,
+            dimension: {
+              columnName: DIMENSION,
+              aggregationFunction: null
+            },
+            domain: DOMAIN,
+            measure: {
+              columnName: 'proficient_1',
+              aggregationFunction: null
+            },
+            type: 'socrata.soql',
+            filters: FILTERS.concat([
+              {
+                columnName: 'district_name',
+                function: 'binaryOperator',
+                arguments: [
+                  {
+                    operator: '=',
+                    operand: 'Ames'
+                  },
+                  {
+                    operator: '=',
+                    operand: 'Ankeny'
+                  },
+                  {
+                    operator: '=',
+                    operand: 'Cedar Falls'
+                  }
+                ]
+              }
+            ])
+          },
+          label: 'Proficient',
+          type: 'barChart',
+          unit: {
+            one: 'student',
+            other: 'students'
+          }
+        },
+        {
+          color: {
+            primary: 'gold',
+            secondary: null,
+          },
+          dataSource: {
+            datasetUid: DATASET_UID,
+            dimension: {
+              columnName: DIMENSION,
+              aggregationFunction: null
+            },
+            domain: DOMAIN,
+            measure: {
+              columnName: 'total',
+              aggregationFunction: null
+            },
+            type: 'socrata.soql',
+            filters: FILTERS.concat([
+              {
+                columnName: 'district_name',
+                function: 'binaryOperator',
+                arguments: [
+                  {
+                    operator: '=',
+                    operand: 'Ames'
+                  },
+                  {
+                    operator: '=',
+                    operand: 'Ankeny'
+                  },
+                  {
+                    operator: '=',
+                    operand: 'Cedar Falls'
+                  }
+                ]
+              }
+            ])
+          },
+          label: 'Total',
+          type: 'barChart',
+          unit: {
+            one: 'student',
+            other: 'students'
+          }
+        }
+      ];
+
+      var barChart6Vif = _.defaultsDeep({}, barChart1Vif, {
+        configuration: {
+          showOtherCategory: true
+        },
+        series: [{
+          dataSource: {
+            orderBy: {
+              parameter: 'measure',
+              sort: 'desc'
+            }
+          }
+        }]
+      });
+
+      var barChart7Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: 'Year',
+            right: null,
+            bottom: 'Grouped by county names',
+            left: 'Final Payments'
+          },
+          showOtherCategory: false,
+          measureAxisMaxValue: 100
+        },
+        description: 'This dataset contains Iowa unemployment insurance benefit payments and number of benefit recipients by county. County data is based on the recipient’s place of residence. (Annual)',
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa',
+              palette: 'categorical'
+            },
+            dataSource: {
+              datasetUid: 'yhbr-3t8a',
+              dimension: {
+                columnName: 'year',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'county_name'
+                }
+              },
+              domain: 'data.iowa.gov',
+              filters: [
+                {
+                  function: 'binaryOperator',
+                  columnName: 'year',
+                  arguments: [
+                    {
+                      operator: '=',
+                      operand: '2000'
+                    },
+                    {
+                      operator: '=',
+                      operand: '2001'
+                    },
+                    {
+                      operator: '=',
+                      operand: '2002'
+                    }
+                  ]
+                }
+              ],
+              limit: null,
+              measure: {
+                columnName: 'final_payments',
+                aggregationFunction: 'sum'
+              },
+              orderBy: {
+                parameter: 'measure',
+                sort: 'asc'
+              },
+              type: 'socrata.soql'
+            },
+            label: '',
+            type: 'barChart',
+            unit: {
+              one: 'dollar',
+              other: 'dollars'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Unemployment Insurance Recipients and UI Benefit Payments by County (Annual)'
+      };
+
+      var barChart8Vif = _.cloneDeep(barChart5Vif);
+      barChart8Vif.configuration.measureAxisMinValue = 250;
+      barChart8Vif.configuration.measureAxisMaxValue = 500;
+
+      var barChart9Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: 'Year',
+            left: 'Final Payments'
+          },
+          showOtherCategory: true
+        },
+        description: 'This dataset contains Iowa unemployment insurance benefit payments and number of benefit recipients by county. County data is based on the recipient’s place of residence. (Annual)',
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa',
+              palette: 'categorical'
+            },
+            dataSource: {
+              datasetUid: 'yhbr-3t8a',
+              dimension: {
+                columnName: 'county_name',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'year'
+                }
+              },
+              domain: 'data.iowa.gov',
+              filters: [],
+              limit: 7,
+              measure: {
+                columnName: 'final_payments',
+                aggregationFunction: 'sum'
+              },
+              orderBy: {
+                parameter: 'dimension',
+                sort: 'desc'
+              },
+              type: 'socrata.soql'
+            },
+            label: '',
+            type: 'barChart',
+            unit: {
+              one: 'dollar',
+              other: 'dollars'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Unemployment Insurance Recipients and UI Benefit Payments by County (Annual)'
+      };
+
+      var barChart10Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: 'Year',
+            left: 'Final Payments'
+          },
+          showOtherCategory: true
+        },
+        description: null,
+        series: [
+          {
+            color: {
+              palette: 'categorical2'
+            },
+            dataSource: {
+              datasetUid: 'k6cs-ww27',
+              dimension: {
+                columnName: 'blood_alcohol_level',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'plausibility'
+                }
+              },
+              domain: 'vertex-stories.test-socrata.com',
+              filters: [],
+              limit: 2,
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              orderBy: {
+                parameter: 'dimension',
+                sort: 'asc'
+              },
+              type: 'socrata.soql'
+            },
+            label: '',
+            type: 'barChart',
+            unit: {
+              one: 'dollar',
+              other: 'dollars'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: null
+      };
+
+      var barChart11Vif = _.cloneDeep(barChart10Vif);
+      barChart11Vif.series[0].dataSource.orderBy = {
+        parameter: 'dimension',
+        sort: 'desc'
+      };
+
+      var barChart12Vif = _.cloneDeep(barChart10Vif);
+      barChart12Vif.series[0].dataSource.orderBy = {
+        parameter: 'measure',
+        sort: 'asc'
+      };
+
+      var barChart13Vif = _.cloneDeep(barChart10Vif);
+      barChart13Vif.series[0].dataSource.orderBy = {
+        parameter: 'measure',
+        sort: 'desc'
+      };
+
+      var barChart14Vif = _.cloneDeep(barChart10Vif);
+      barChart14VifSecondSeries = _.cloneDeep(barChart14Vif.series[0]);
+      barChart14VifSecondSeries.dataSource.dimension.grouping = null;
+      barChart14Vif.series.push(barChart14VifSecondSeries);
+
+      var barChart15Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: null,
+            left: null
+          },
+          showOtherCategory: true
+        },
+        description: null,
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa'
+            },
+            dataSource: {
+              datasetUid: 'hw9q-ds2z',
+              dimension: {
+                columnName: 'type',
+                aggregationFunction: null
+              },
+              domain: 'stories.rc-socrata.com',
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: [
+                {
+                  'function': 'noop',
+                  columnName: 'type',
+                  arguments: null,
+                  joinOn: 'AND',
+                  isHidden: false
+                }
+              ],
+              orderBy: {
+                parameter: 'measure',
+                sort: 'desc'
+              },
+              limit: 2
+            },
+            label: 'Proficient',
+            type: 'barChart',
+            unit: {
+              one: 'percent of students',
+              other: 'percent of students'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Seattle Pet Escapes'
+      };
+
+      var barChart16Vif = _.cloneDeep(barChart15Vif);
+      barChart16Vif.series[0].dataSource.filters = [
+        {
+          'function': 'binaryOperator',
+          columnName: 'type',
+          arguments: [
+            {
+              operator: '=',
+              operand: 'dogs'
+            }
+          ],
+          joinOn: 'OR',
+          isHidden: false
+        }
+      ];
+
+      var barChart17Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: null,
+            left: null
+          },
+          showOtherCategory: true
+        },
+        description: null,
+        series: [
+          {
+            color: {
+              palette: 'categorical2'
+            },
+            dataSource: {
+              datasetUid: 'k6cs-ww27',
+              dimension: {
+                columnName: 'blood_alcohol_level',
+                aggregationFunction: null
+              },
+              domain: 'vertex-stories.test-socrata.com',
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: [
+                {
+                  'function': 'noop',
+                  columnName: 'type',
+                  arguments: null,
+                  joinOn: 'AND',
+                  isHidden: false
+                }
+              ],
+              orderBy: {
+                parameter: 'measure',
+                sort: 'desc'
+              },
+              limit: 2
+            },
+            label: 'Proficient',
+            type: 'barChart',
+            unit: {
+              one: 'percent of students',
+              other: 'percent of students'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'UFO Sightings'
+      };
+
+      var barChart18Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: null,
+            right: null,
+            bottom: null,
+            left: null
+          },
+          showOtherCategory: true
+        },
+        description: null,
+        series: [
+          {
+            color: {
+              palette: 'categorical2'
+            },
+            dataSource: {
+              datasetUid: 'vc2c-3mst',
+              dimension: {
+                columnName: 'topic',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'proficient_category'
+                }
+              },
+              domain: 'stories.test-socrata.com',
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
+              },
+              type: 'socrata.soql',
+              filters: [
+              ]
+            },
+            label: 'Proficient',
+            type: 'barChart',
+            unit: {
+              one: 'percent of students',
+              other: 'percent of students'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Reading and Math Proficiencies'
+      };
+
+      var barChart19Vif = {
+        "format": {
+          "type": "visualization_interchange_format",
+          "version": 2
+        },
+        "configuration": {
+          "viewSourceDataLink": true,
+          "showDimensionLabels": true,
+          "showValueLabels": true,
+          "xAxisScalingMode": "pan"
+        },
+        "description": "",
+        "series": [
+          {
+            "color": {
+              "primary": "#71abd9",
+              "secondary": "#71abd9",
+              "highlight": "#cccccc"
+            },
+            "dataSource": {
+              "datasetUid": "pfn7-4ih7",
+              "dimension": {
+                "columnName": "borough",
+                "aggregationFunction": null
+              },
+              "domain": "evergreen.data.socrata.com",
+              "measure": {
+                "columnName": "zip_code",
+                "aggregationFunction": "sum"
+              },
+              "orderBy": {
+                "parameter": "measure",
+                "sort": "desc"
+              },
+              "type": "socrata.soql",
+              "filters": []
+            },
+            "label": null,
+            "type": "barChart",
+            "unit": {
+              "one": "case",
+              "other": "cases"
+            }
+          }
+        ],
+        "title": "Null values sorted last"
+      };
+
+      /**
+       * Instantiate the plugins
+       */
+
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+      $('[id^=bar-chart-]').on(
+        'SOCRATA_VISUALIZATION_FLYOUT',
+        handleFlyout
+      );
+      $('[id^=bar-chart-]').on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+
+      $('#bar-chart-1').socrataSvgBarChart(barChart1Vif);
+      $('#bar-chart-2').socrataSvgBarChart(barChart2Vif);
+      $('#bar-chart-3').socrataSvgBarChart(barChart3Vif);
+      $('#bar-chart-4').socrataSvgBarChart(barChart4Vif);
+      $('#bar-chart-5').socrataSvgBarChart(barChart5Vif);
+      $('#bar-chart-6').socrataSvgBarChart(barChart6Vif);
+      $('#bar-chart-7').socrataSvgBarChart(barChart7Vif);
+      $('#bar-chart-8').socrataSvgBarChart(barChart8Vif);
+      $('#bar-chart-9').socrataSvgBarChart(barChart9Vif);
+      $('#bar-chart-10').socrataSvgBarChart(barChart10Vif);
+      $('#bar-chart-11').socrataSvgBarChart(barChart11Vif);
+      $('#bar-chart-12').socrataSvgBarChart(barChart12Vif);
+      $('#bar-chart-13').socrataSvgBarChart(barChart13Vif);
+      $('#bar-chart-14').socrataSvgBarChart(barChart14Vif);
+      $('#bar-chart-15').socrataSvgBarChart(barChart15Vif);
+      $('#bar-chart-16').socrataSvgBarChart(barChart16Vif);
+      $('#bar-chart-17').socrataSvgBarChart(barChart17Vif);
+      $('#bar-chart-18').socrataSvgBarChart(barChart18Vif);
+      $('#bar-chart-19').socrataSvgBarChart(barChart19Vif);
+
+      fillInExpectedValues();
+
+      /**
+       * Handle plugin events
+       */
+
+      function handleFlyout(event) {
+        var payload = event.originalEvent.detail;
+
+        // Render/hide a flyout
+        if (payload !== null) {
+          flyoutRenderer.render(payload);
+        } else {
+          flyoutRenderer.clear();
+        }
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
+      }
+
+      /**
+       * How to destroy the plugin:
+       */
+
+      // $('#bar-chart-1').off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $('#bar-chart-1').off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $('#bar-chart-1').trigger('SOCRATA_VISUALIZATION_DESTROY');
+    });
+  </script>
+</html>

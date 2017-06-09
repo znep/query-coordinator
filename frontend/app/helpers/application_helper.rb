@@ -22,6 +22,17 @@ module ApplicationHelper
   end
   alias :t :translate
 
+# CONFIGURATIONS
+
+  # Prevent platform styling on Dataslate custom pages managed by the CS team
+  def prevent_platform_styling?
+    controller.class == CustomContentController && defined?(@page) &&
+      CurrentDomain.configuration('dataslate_config').
+        try(:properties).
+        try(:prevent_platform_styling).to_a.
+        include?(@page.try(:path))
+  end
+
 # MODULES/FEATURES
 
   def module_available(name_or_set, &block)
@@ -184,8 +195,9 @@ module ApplicationHelper
   DEFAULT_TRANSLATIONS = [
     LocalePart.core,
     LocalePart.account.common,
-    LocalePart.controls.common,
     LocalePart.controls.charts,
+    LocalePart.controls.common,
+    LocalePart.controls.nbe_column_manager,
     LocalePart.plugins.jquery_ui
   ]
   def render_translations(part = nil)

@@ -13,6 +13,9 @@ class CustomContentControllerTest < ActionController::TestCase
     stub_request(:get, "http://localhost:8080/pages.json?method=getLightweightRouting").
       to_return(:status => 200, :body => "", :headers => {})
 
+    stub_request(:get, "http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=dataslate_config").
+      to_return(:status => 200, :body => "", :headers => {})
+
     @basic_cache_params = {
       'domain' => CurrentDomain.cname,
       'locale' => I18n.locale,

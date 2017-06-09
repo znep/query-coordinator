@@ -12,17 +12,13 @@ import {
   SET_PAGINATION,
   DISMISS_RESTORE_MODAL,
   SET_ALERT,
-  SET_FILTER_EVENT,
-  SET_FILTER_STATUS,
-  SET_FILTER_DATE
+  SET_FILTER
 } from 'actionTypes';
 import {
   loadActivities,
   restoreDataset,
   gotoPage,
-  filterByEvent,
-  filterByStatus,
-  filterByDate
+  setFilter
 } from 'actions';
 
 import mockActivities from './mockActivities';
@@ -130,16 +126,16 @@ describe('Activity Feed actions', () => {
     });
   });
 
-  it('should be able to filter by event type', () => {
+  it('should be able to filter', () => {
     mockHttpClient.respondWith('GET', /\/admin\/activity_feed\.json/, 200, mockActivities);
 
-    const action = filterByEvent('a_value');
+    const action = setFilter({event: 'a_value'});
 
     return store.dispatch(action).then(() => {
       const dispatchedActions = store.getActions();
       const expectedActions = [
         SET_PAGINATION,
-        SET_FILTER_EVENT,
+        SET_FILTER,
         START_LOADING,
         SET_ACTIVITIES,
         SET_PAGINATION,
@@ -147,46 +143,6 @@ describe('Activity Feed actions', () => {
       ];
 
       assertActionList(dispatchedActions, expectedActions)
-    });
-  });
-
-  it('should be able to filter by status', () => {
-    mockHttpClient.respondWith('GET', /\/admin\/activity_feed\.json/, 200, mockActivities);
-
-    const action = filterByStatus('a_value');
-
-    return store.dispatch(action).then(() => {
-      const dispatchedActions = store.getActions();
-      const expectedActions = [
-        SET_PAGINATION,
-        SET_FILTER_STATUS,
-        START_LOADING,
-        SET_ACTIVITIES,
-        SET_PAGINATION,
-        STOP_LOADING
-      ];
-
-      assertActionList(dispatchedActions, expectedActions)
-    });
-  });
-
-  it('should be able to filter by date range', () => {
-    mockHttpClient.respondWith('GET', /\/admin\/activity_feed\.json/, 200, mockActivities);
-
-    const action = filterByDate({from: 'a_date', to: 'future_date'});
-
-    return store.dispatch(action).then(() => {
-      const dispatchedActions = store.getActions();
-      const expectedActions = [
-        SET_PAGINATION,
-        SET_FILTER_DATE,
-        START_LOADING,
-        SET_ACTIVITIES,
-        SET_PAGINATION,
-        STOP_LOADING
-      ];
-
-      assertActionList(dispatchedActions, expectedActions);
     });
   });
 });

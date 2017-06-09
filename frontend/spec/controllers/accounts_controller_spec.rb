@@ -23,7 +23,8 @@ describe AccountsController do
 
   describe 'POST /signup' do
     before do
-     allow(User).to receive(:create).and_return(user)
+      SocrataRecaptcha.stub(:valid => true)
+      allow(User).to receive(:create).and_return(user)
     end
 
     describe 'with email verifications' do
@@ -65,7 +66,6 @@ describe AccountsController do
 
         before do
           allow(subject).to receive(:protect_against_forgery?).and_return(true)
-          allow(subject).to receive(:verify_recaptcha).and_return(true)
         end
 
         it 'succeeds when JSON' do

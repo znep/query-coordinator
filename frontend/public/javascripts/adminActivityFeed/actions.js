@@ -9,9 +9,7 @@ import {
   DISMISS_RESTORE_MODAL,
   SHOW_DETAILS_MODAL,
   DISMISS_DETAILS_MODAL,
-  SET_FILTER_EVENT,
-  SET_FILTER_STATUS,
-  SET_FILTER_DATE
+  SET_FILTER
 } from './actionTypes';
 
 export const setActivities = (activities) => ({
@@ -31,10 +29,10 @@ export const loadActivities = () => {
     const api = getService('api');
     const state = getState();
     const currentPage = state.getIn(['pagination', 'currentPage']);
-    const activityType = state.getIn(['filtering', 'eventType']);
-    const activityStatus = state.getIn(['filtering', 'eventStatus']);
-    const dateFrom = state.getIn(['filtering', 'dateFrom']);
-    const dateTo = state.getIn(['filtering', 'dateTo']);
+    const activityType = state.getIn(['filter', 'event']);
+    const activityStatus = state.getIn(['filter', 'status']);
+    const dateFrom = state.getIn(['filter', 'dateFrom']);
+    const dateTo = state.getIn(['filter', 'dateTo']);
 
     return api.get(currentPage, activityType, activityStatus, dateFrom, dateTo).then(data => {
       const pagerInfo = data['pager_info'];
@@ -117,49 +115,18 @@ export const gotoPage = (pageNumber) => {
   };
 };
 
-export const filterByEvent = (value) =>
+export const setFilter = (filter) =>
   () => (dispatch, getState) => {
     const pagination = getState().get('pagination').toJS();
     pagination.currentPage = 1;
     dispatch(setPagination(pagination));
-    dispatch(setFilterEvent(value));
+    dispatch({
+      type: SET_FILTER,
+      filter
+    });
+
     return dispatch(loadActivities());
   };
-
-export const setFilterEvent = (value) => ({
-  type: SET_FILTER_EVENT,
-  value
-});
-
-export const filterByStatus = (value) => (
-  () => (dispatch, getState) => {
-    const pagination = getState().get('pagination').toJS();
-    pagination.currentPage = 1;
-    dispatch(setPagination(pagination));
-    dispatch(setFilterStatus(value));
-    return dispatch(loadActivities());
-  }
-);
-
-export const setFilterStatus = (value) => ({
-  type: SET_FILTER_STATUS,
-  value
-});
-
-export const filterByDate = (value) => (
-  () => (dispatch, getState) => {
-    const pagination = getState().get('pagination').toJS();
-    pagination.currentPage = 1;
-    dispatch(setPagination(pagination));
-    dispatch(setFilterDate(value));
-    return dispatch(loadActivities());
-  }
-);
-
-export const setFilterDate = (value) => ({
-  type: SET_FILTER_DATE,
-  value
-});
 
 export const startLoading = () => ({
   type: START_LOADING

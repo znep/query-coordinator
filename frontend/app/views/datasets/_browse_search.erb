@@ -1,7 +1,8 @@
 <%- unless opts[:disable][:search] -%>
   <form class="searchSection">
     <span class="icon"></span>
-    <input type="text" name="browseSearch" title="<%= t('controls.browse.search') %>"
+    <label for="searchBox" class="accessible"><%= t('controls.browse.search') %></label>
+    <input id="searchBox" type="text" name="browseSearch" title="<%= t('controls.browse.search') %>"
       class="textPrompt searchBox" value="<%= opts[:q] %>" autofocus onfocus="this.value = this.value;"/>
     <%- if opts[:q].present? -%>
       <a href="<%= "#{opts[:base_url]}?#{opts[:user_params].except(:q).to_param}" %>" class="clearSearch close">

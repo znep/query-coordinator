@@ -4,7 +4,9 @@ import ResultListTable from './ResultListTable';
 import Pager from '../../common/components/Pager';
 import ResultCount from './ResultCount';
 import { changePage } from '../actions/pager';
+import { changeQ } from '../actions/filters';
 import _ from 'lodash';
+import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
 
 const RESULTS_PER_PAGE = 10;
 
@@ -18,11 +20,16 @@ export class CatalogResults extends React.Component {
 
     _.bindAll(this, [
       'changePage',
+      'changeQ',
       'renderError',
       'renderFooter',
       'renderTable',
       'renderTopbar'
     ]);
+  }
+
+  changeQ(query) {
+    this.props.changeQ(query);
   }
 
   changePage(pageNumber) {
@@ -40,9 +47,21 @@ export class CatalogResults extends React.Component {
   }
 
   renderTopbar() {
+    const collapsible = false;
+    const options = {
+      collapsible,
+      animate: true,
+      mobile: false,
+      onChooseResult: this.changeQ
+    };
+
+    const defaultState = {
+      collapsed: collapsible
+    };
+
     return (
       <div className="topbar">
-        <input type="text" placeholder="Search" />{/* TODO: autocomplete searchbar */}
+        <StatefulAutocomplete defaultState={defaultState} options={options} />
       </div>
     );
   }
@@ -68,20 +87,20 @@ export class CatalogResults extends React.Component {
   }
 
   renderFooter() {
-    const { currentPage, fetchingResults, resultSetSize } = this.props;
+    const { pageNumber, fetchingResults, resultSetSize } = this.props;
     if (fetchingResults) {
       return;
     }
 
     const pagerProps = {
       changePage: this.changePage,
-      currentPage,
+      currentPage: pageNumber,
       resultCount: resultSetSize,
       resultsPerPage: RESULTS_PER_PAGE
     };
 
     const resultCountProps = {
-      currentPage,
+      pageNumber,
       resultsPerPage: RESULTS_PER_PAGE,
       total: resultSetSize
     };
@@ -108,29 +127,31 @@ export class CatalogResults extends React.Component {
 
 CatalogResults.propTypes = {
   changePage: PropTypes.func.isRequired,
-  currentPage: PropTypes.number,
+  changeQ: PropTypes.func.isRequired,
   fetchingResults: PropTypes.bool,
   fetchingResultsError: PropTypes.bool,
   order: PropTypes.object,
+  pageNumber: PropTypes.number,
   resultSetSize: PropTypes.number.isRequired
 };
 
 CatalogResults.defaultProps = {
-  currentPage: 1,
   fetchingResults: false,
-  fetchingResultsError: false
+  fetchingResultsError: false,
+  pageNumber: 1
 };
 
 const mapStateToProps = state => ({
-  currentPage: state.catalog.currentPage,
   fetchingResults: state.catalog.fetchingResults,
   fetchingResultsError: state.catalog.fetchingResultsError,
   order: state.catalog.order,
+  pageNumber: state.catalog.pageNumber,
   resultSetSize: state.catalog.resultSetSize
 });
 
 const mapDispatchToProps = dispatch => ({
-  changePage: (pageNumber) => dispatch(changePage(pageNumber))
+  changePage: (pageNumber) => dispatch(changePage(pageNumber)),
+  changeQ: (query) => dispatch(changeQ(query))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogResults);

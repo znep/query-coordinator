@@ -55,29 +55,36 @@
       </li>
       <%- end -%>
       <li>
-        <%- if @view.available_display_types.length > 1 -%>
-        <ul id="renderTypeOptions" class="pillButtons">
 
-          <%- url_types = {'fatrow' => 'richList'} -%>
-          <%- @view.available_display_types.clone.
-            push('template').each do |type| -%>
-            <%- view_type_link_title = t('screens.ds.bar.view_type', type: t("screens.ds.bar.view_types.#{type}")) -%>
-          <li><a
-            href="<%= view_path(@view, defaultRender: url_types[type] || type) %>"
-            class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
-            title="<%= view_type_link_title %>">
-            <span class="icon"><%= view_type_link_title %></span>
-          </a></li>
+        <%-
+          # EN-10110/EN-16622 - Disable non-table renderTypeOptions for NBE-only datasets
+          if !FeatureFlags.derive[:enable_nbe_only_grid_view_optimizations]
+        -%>
+          <%- if @view.available_display_types.length > 1 -%>
+          <ul id="renderTypeOptions" class="pillButtons">
+
+            <%- url_types = {'fatrow' => 'richList'} -%>
+            <%- @view.available_display_types.clone.
+              push('template').each do |type| -%>
+              <%- view_type_link_title = t('screens.ds.bar.view_type', type: t("screens.ds.bar.view_types.#{type}")) -%>
+            <li><a
+              href="<%= view_path(@view, defaultRender: url_types[type] || type) %>"
+              class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
+              title="<%= view_type_link_title %>">
+              <span class="icon"><%= view_type_link_title %></span>
+            </a></li>
+            <%- end -%>
+
+          </ul>
           <%- end -%>
-
-        </ul>
         <%- end -%>
       </li>
       <%- if @view.is_tabular? && !@view.is_form? -%>
       <li>
         <form id="searchForm" action="#">
           <span class="icon"></span>
-          <input type="text" class="searchField textPrompt" title="<%= t('screens.ds.bar.find_prompt') %>" value="<%= params[:q] %>"/>
+          <label for="searchField" class="accessible"><%= t('screens.ds.bar.find_prompt') %></label>
+          <input id="searchField" type="text" class="searchField textPrompt" title="<%= t('screens.ds.bar.find_prompt') %>" value="<%= params[:q] %>"/>
           <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
           <input type="hidden" name="inDatasetSearch" value="true" />
         </form>

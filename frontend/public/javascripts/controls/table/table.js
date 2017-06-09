@@ -689,6 +689,7 @@
     };
 
     var editCell = function(cell, mode, newValue) {
+
       if (!mode) {
         mode = DEFAULT_EDIT_MODE;
       }
@@ -698,7 +699,19 @@
       }
       // Make sure they can edit -- if not, trigger an event
       if (!canEdit()) {
-        if (mode == DEFAULT_EDIT_MODE) {
+        if (
+          // EN-10110/EN-16481 - Alternate column edit mechanism for NBE-only
+          // grid view
+          //
+          // canEdit() will always return false when the below feature flag is
+          // enabled, but we also do not want to suggest that the user can just
+          // create a working copy to make a change, so we also do not want to
+          // trigger the 'attempted_edit' event when the feature flag is set to
+          // true, as that event eventually pops up a message offering to create
+          // a working copy so you can edit the cell etc. etc.
+          !blist.feature_flags.enable_nbe_only_grid_view_optimizations &&
+          mode == DEFAULT_EDIT_MODE
+        ) {
           $(cell).trigger('attempted_edit');
         }
         return false;
@@ -2069,7 +2082,8 @@
     /*** HTML RENDERING ***/
 
     var headerStr =
-      '<input type="text" class="blist-table-navigator hiddenTextField" />' +
+      '<label for="blist-table-navigator" class="accessible">hiddenTextField</label>' +
+      '<input id="blist-table-navigator" type="text" class="blist-table-navigator hiddenTextField" />' +
       '<div class="blist-table-locked-scrolls">' +
       '   <div class="blist-table-locked-header">&nbsp;</div>' +
       '   <div class="blist-table-locked">' +

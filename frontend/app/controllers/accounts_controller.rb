@@ -10,7 +10,7 @@ class AccountsController < ApplicationController
 
   # NOTE: This skip_before_filter must come _after_ the protect_from_forgery call above
   # When CSRF token validation is skipped for this method (see skip_before_filter above), the
-  # verify_recaptcha test in the 'create' method is our only protection against abuse.
+  # `SocrataRecaptcha.valid`` test in the 'create' method is our only protection against abuse.
   skip_before_filter :verify_authenticity_token,
     :if => lambda { |controller|
       controller.action_name == 'create' && (request.format.json? || request.format.data?)
@@ -39,22 +39,19 @@ class AccountsController < ApplicationController
 
     @signup = SignupPresenter.new(params[:signup])
     respond_to do |format|
-      recaptcha_verified = FeatureFlags.derive[:use_auth0_component] ?
-        SocrataRecaptcha.valid(params['g-recaptcha-response']) :
-        verify_recaptcha
-
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       # When CSRF token validation is skipped for this method (see skip_before_filter above), this
-      # verify_recaptcha test is our only protection against abuse.
-      if !recaptcha_verified
-        flash.now[:error] = FeatureFlags.derive[:use_auth0_component] ?
-          t('recaptcha2.errors.verification_failed') :
-          t('recaptcha.errors.verification_failed')
+      # recaptcha test is our only protection against abuse.
+      unless SocrataRecaptcha.valid(params['g-recaptcha-response'])
+        flash.now[:error] = t('recaptcha2.errors.verification_failed')
         @user_session = UserSessionProvider.klass.new
         format.html { render :action => :new }
         format.data { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
         format.json { render :json => {:error => flash[:error], :promptLogin => false}, :callback => params[:callback] }
-      elsif @signup.create
+        return
+      end
+
+      if @signup.create
         Rails.logger.info('Somebody used inline login to create an account!') if params[:inline]
         if FeatureFlags.derive[:enable_new_account_verification_email]
           flash[:notice] = t('screens.sign_up.email_verification.sent',

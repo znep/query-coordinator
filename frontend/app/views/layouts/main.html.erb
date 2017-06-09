@@ -40,29 +40,33 @@ http://www.socrata.com
   <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="<%= get_site_title %>" />
   <%= auto_discovery_link_tag(:rss, '/catalog.rss', :title => 'Subscribe to Datasets') %>
 
-  <!--[if IE]>
-  <style type="text/css">
-    v\:vmlframe{behavior:url(#default#VML);display:inline-block;}
-  </style>
-  <![endif]-->
-  <%= rendered_stylesheet_tag 'base' %>
+  <% unless prevent_platform_styling? %>
 
-    <%- if module_enabled?(:govStat) -%>
-      <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css?<%= asset_revision_key %>"/>
+    <!--[if IE]>
+    <style type="text/css">
+      v\:vmlframe{behavior:url(#default#VML);display:inline-block;}
+    </style>
+    <![endif]-->
+    <%= rendered_stylesheet_tag 'base' %>
+
+      <%- if module_enabled?(:govStat) -%>
+        <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-pika.css?<%= asset_revision_key %>"/>
 
 
-      <%- if suppress_govstat? -%>
-        <%= rendered_stylesheet_tag 'govstat-base' %>
-      <%- else -%>
-        <%= rendered_stylesheet_tag 'govstat-layout' %>
+        <%- if suppress_govstat? -%>
+          <%= rendered_stylesheet_tag 'govstat-base' %>
+        <%- else -%>
+          <%= rendered_stylesheet_tag 'govstat-layout' %>
+        <%- end -%>
       <%- end -%>
-    <%- end -%>
 
-  <%= rendered_stylesheet_tag 'print', 'print' %>
+    <%= rendered_stylesheet_tag 'print', 'print' %>
 
-  <%- if render_admin_header? %>
-    <%= rendered_stylesheet_tag 'administration-header' %>
-  <%- end %>
+    <%- if render_admin_header? %>
+      <%= rendered_stylesheet_tag 'administration-header' %>
+    <%- end %>
+
+  <% end %>
 
   <%= jquery_include %>
   <%= javascript_error_helper_tag %>

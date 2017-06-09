@@ -384,7 +384,8 @@ class DatasetsControllerTest < ActionController::TestCase
         end
 
         should 'login and return a JSON success result' do
-          @controller.stubs(:protect_against_forgery? => true, :verify_recaptcha => true)
+          SocrataRecaptcha.stubs(:valid => true)
+          @controller.stubs(:protect_against_forgery? => true)
           post(:validate_contact_owner, contact_form_data.merge(:id => '1234-abcd', :format => :data))
           assert_equal('200', @response.code)
           assert_equal({:success => true}.to_json, @response.body, 'should include a success JSON response')

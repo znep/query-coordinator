@@ -2,6 +2,7 @@ import immutable from 'immutable';
 import { assert } from 'chai';
 
 import * as actions from 'actions';
+import * as actionTypes from 'actionTypes';
 import reducer from 'reducer';
 
 import mockActivities from './mockActivities';
@@ -9,9 +10,9 @@ import mockActivities from './mockActivities';
 const initialState = immutable.fromJS({
   activities: [],
   loadingFeed: false,
-  filtering: {
-    eventType: 'All',
-    eventStatus: 'All',
+  filter: {
+    event: 'All',
+    status: 'All',
     dateFrom: null,
     dateTo: null
   },
@@ -21,7 +22,7 @@ const initialState = immutable.fromJS({
 describe('Activity Feed reducer', () => {
   it('should be able to set activities', () => {
     const newState = reducer(initialState, actions.setActivities(mockActivities.activities));
-    assert(newState.get('activities').count() === 3);
+    assert.equal(newState.get('activities').count(), 3);
   });
 
   it('should be able to set pagination', () => {
@@ -32,24 +33,12 @@ describe('Activity Feed reducer', () => {
   });
 
   it('should be able to set filtering by event type', () => {
-    const testValue = 'a_value';
-    const newState = reducer(initialState, actions.setFilterEvent(testValue));
+    const testValue = {event: 'Delete'};
+    const newState = reducer(initialState, {type: actionTypes.SET_FILTER, filter: testValue});
 
-    assert(newState.getIn(['filtering', 'eventType']) === testValue);
-  });
-
-  it('should be able to set filtering by status', () => {
-    const testValue = 'a_value';
-    const newState = reducer(initialState, actions.setFilterStatus(testValue));
-
-    assert(newState.getIn(['filtering', 'eventStatus']) === testValue);
-  });
-
-  it('should be able to set filtering by date range', () => {
-    const testValue = {from: 'a_date', to: 'future_date'};
-    const newState = reducer(initialState, actions.setFilterDate(testValue));
-
-    assert(newState.getIn(['filtering', 'dateFrom']) === testValue.from);
-    assert(newState.getIn(['filtering', 'dateTo']) === testValue.to);
+    assert.deepEqual(
+      newState.get('filter').toJS(),
+      initialState.get('filter').mergeDeep(immutable.fromJS(testValue)).toJS()
+    );
   });
 });

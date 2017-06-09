@@ -24,7 +24,7 @@
 <title><%= @page_title %></title>
 <%= meta_tags @custom_meta.merge({:title => @page_title,
                                  'og:title' => @page_title}) unless @custom_meta.blank?  %>
-<%= rendered_stylesheet_tag 'components' %>
+<%= rendered_stylesheet_tag 'components' unless prevent_platform_styling? %>
   <% end %>
 
 <%=

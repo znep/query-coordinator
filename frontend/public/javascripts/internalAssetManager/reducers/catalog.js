@@ -2,11 +2,11 @@ import _ from 'lodash';
 
 const getInitialState = () => _.get(window, 'initialState.catalog', {
   columns: [],
-  currentPage: 1,
   fetchingResults: false,
   fetchingResultsError: false,
   filters: {},
   order: {},
+  pageNumber: 1,
   results: [],
   resultSetSize: 0
 });
@@ -17,9 +17,24 @@ export default (state, action) => {
   }
 
   if (action.type === 'UPDATE_CATALOG_RESULTS') {
+    let sortedResults = [];
+
+    // If the "Only recently viewed" checkbox is clicked, we want to manually re-order the results to be
+    // in the order of the recently viewed, from local storage.
+    if (action.onlyRecentlyViewed && window.lastAccessed && !_.isEmpty(window.lastAccessed.keys())) {
+      const sortedUids = window.lastAccessed.keys();
+      sortedUids.forEach((uid) => {
+        sortedResults.push(
+          action.response.results.find((result) => (result.resource.id === uid))
+        );
+      });
+    } else {
+      sortedResults = action.response.results;
+    }
+
     return {
       ...state,
-      results: action.response.results,
+      results: _.compact(sortedResults),
       resultSetSize: action.response.resultSetSize
     };
   }
@@ -58,7 +73,7 @@ export default (state, action) => {
   if (action.type === 'CHANGE_PAGE') {
     return {
       ...state,
-      currentPage: action.pageNumber
+      pageNumber: action.pageNumber
     };
   }
 

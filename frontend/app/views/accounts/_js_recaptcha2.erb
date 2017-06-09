@@ -1,0 +1,11 @@
+<div id="<%= local_assigns[:div_id] || 'captchaPlaceholder' %>" class="placeholder"></div>
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() {
+      blist.configuration.RECAPTCHA_2_SITE_KEY = '<%= RECAPTCHA_2_SITE_KEY %>';
+    });
+  </script>
+<% end %>
+<%- content_for :translations do -%>
+  <%= render_translations LocalePart.recaptcha2 %>
+<%- end -%>

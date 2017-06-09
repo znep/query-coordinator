@@ -10,6 +10,7 @@ describe('components/ResultListRow', () => {
     isPublished: true,
     link: 'https://data.seattle.gov/dataset/blah-blah/cfa5-i2ky',
     name: 'Haley Joel Osment',
+    ownerName: 'Billy Bob',
     type: 'datalens',
     uid: 'abcd-1234',
     updatedAt: '2017-04-21T18:31:29.000Z',
@@ -25,10 +26,10 @@ describe('components/ResultListRow', () => {
 
   it('renders cells in the order specified by the "columns" prop', () => {
     const element = renderComponentWithStore(ResultListRow, resultListRowProps({
-      columns: ['visibility', 'name', 'type', 'category']
+      columns: ['visibility', 'name', 'type', 'category', 'owner']
     }));
     const cells = element.querySelectorAll('td');
-    assert.lengthOf(cells, 4);
+    assert.lengthOf(cells, 5);
     assert.equal(cells[3].textContent, 'Fun');
   });
 

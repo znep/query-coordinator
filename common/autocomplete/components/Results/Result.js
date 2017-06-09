@@ -16,14 +16,14 @@ export class Result extends React.Component {
   }
 
   handleClick() {
-    const { onQueryChanged, onResultsVisibilityChanged } = this.props;
+    const { onQueryChanged, onResultsVisibilityChanged, onChooseResult } = this.props;
 
     // set the textbox to be what was clicked and close the results
     onQueryChanged(this.props.name);
     onResultsVisibilityChanged(false);
 
     // actually search for the clicked item
-    window.location.href = getSearchUrl(this.props.name);
+    onChooseResult(this.props.name);
   }
 
   handleMouseOver() {
@@ -77,6 +77,7 @@ export class Result extends React.Component {
 }
 
 Result.propTypes = {
+  onChooseResult: PropTypes.func.isRequired,
   onResultFocusChanged: PropTypes.func.isRequired,
   onQueryChanged: PropTypes.func.isRequired,
   onResultsVisibilityChanged: PropTypes.func.isRequired,

@@ -38,7 +38,7 @@ module.exports = function ManageLensDialogProvenanceController($scope, http, $q,
   };
 
   var postSave = function() {
-    $scope.page.set('provenance', $scope.isOfficial ? 'official' : null);
+    $scope.page.set('provenance', $scope.isOfficial ? 'official' : 'community');
   };
 
   Rx.Observable.subscribeLatest(

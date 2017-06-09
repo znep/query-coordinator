@@ -40,6 +40,31 @@
       ]);
 
       var ds = this;
+
+      // EN-10110/EN-16622 - Disable non-table renderTypeOptions for NBE-only datasets
+      if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
+        // Override whatever the renderTypeConfig might actually be with ONLY
+        // the table/grid view, since that is the only one we want to support
+        // moving forward with NBE-only datasets.
+        //
+        // It seems safer to expunge the presence of unsupported
+        // renderTypeConfigs from view JSON used to instantiate the Dataset
+        // model rather than trying to track down every single thing that might
+        // be reading these properties in any number of dynamic property path
+        // constructions, blargh.
+        if (
+          v.hasOwnProperty('metadata') &&
+          v.metadata.hasOwnProperty('renderTypeConfig')
+        ) {
+
+          v.metadata.renderTypeConfig = {
+            visible: {
+              table: true
+            }
+          };
+        }
+      }
+
       // Avoid overwriting functions with static values from Rails (e.g., totalRows)
       _.each(v, function(curVal, key) {
         if (!_.isFunction(ds[key])) {

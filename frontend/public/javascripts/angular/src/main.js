@@ -12,7 +12,6 @@ require('script!../../util/jquery-extensions');
 require('../../util/lodash-mixins');
 require('imports?DOMPurify=dompurify!../../util/dompurify-extensions');
 
-require('script!plugins/modernizr');
 require('../../lib/RxExtensions');
 
 require('../dataCards/styles');

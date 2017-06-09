@@ -63,7 +63,6 @@ describe('actions/manageMetadata', () => {
   let store;
 
   before(() => {
-    console.log('fetch is now', window.fetch);
     unmock = mockAPI();
     unmockWS = wsmock();
   });

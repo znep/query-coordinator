@@ -26,7 +26,7 @@ var plugins = _.compact([
       comments: false
     }
   }),
-  isProduction && new webpack.HotModuleReplacementPlugin()
+  !isProduction && new webpack.HotModuleReplacementPlugin()
 ]);
 
 // Base `test` and `include` config for loaders
@@ -41,26 +41,14 @@ var jsLoaderBaseConfig = {
 };
 
 function withHotModuleEntries(entry) {
-  var hotModuleEntries = getHotModuleEntries();
-
-  var entryPoints = {};
-  // Assume name is main because:
-  // https://github.com/webpack/webpack/blob/951a7603d279c93c936e4b8b801a355dc3e26292/bin/convert-argv.js#L498-L502
-  if (_.isString(entry)) {
-    entryPoints.main = [entry].concat(hotModuleEntries);
-  } else if (_.isArray(entry)) {
-    entryPoints.main = entry.concat(hotModuleEntries);
-  } else {
-    entryPoints = _.mapValues(entry, function(v) {
-      return _.castArray(v).concat(hotModuleEntries);
-    });
-  }
-  return entryPoints;
+  return _.mapValues(entry, function(v) {
+    return _.castArray(v).concat(getHotModuleEntries());
+  });
 }
 
 function getHotModuleEntries() {
   return isProduction ? [] : [
-    'webpack-dev-server/client?https://0.0.0.0:' + packageJson.config.webpackDevServerPort,
+    `webpack-dev-server/client?https://0.0.0.0:${packageJson.config.webpackDevServerPort}`,
     'webpack/hot/only-dev-server'
   ];
 }
@@ -145,12 +133,15 @@ function getReactHotLoader() {
 
 // Returns an array of loaders considered standard across the entire frontend app, except for the "open-data"
 // bundle. Includes an ES2015 + React preset for babel, icon font loader, and React hot-loader.
-function getStandardLoaders(extraLoaders) {
+function getStandardLoaders(extraLoaders, options) {
   var loaders = [];
+  options = _.extend({
+    reactHotLoader: true
+  }, options);
 
   loaders = loaders.concat(extraLoaders || []);
 
-  if (!isProduction) {
+  if (!isProduction && options.reactHotLoader) {
     loaders.push(getReactHotLoader());
   }
 

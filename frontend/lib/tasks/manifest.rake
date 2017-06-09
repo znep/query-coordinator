@@ -41,7 +41,7 @@ namespace :manifest do
       # We also need to ignore changes in storyteller directories.
 
       # TODO: Remove this list once all intended repositories are merged into platform-ui.
-      ignore_list = %w[ 069316e2ea2be425925863b58c3653da54d50a84 ]
+      ignore_list = %w[ 76a15bc5f5f34f9c73199e26df04f06bd48bcb43 ]
       git_log_flags = '--no-color --right-only --cherry-pick --reverse --no-merges'
       git_log_revision_range = "#{from_tag}...#{to_tag}"
       # NOTE: Excluding storyteller via -- . ':(exclude)storyteller' also ends up ignoring empty merge

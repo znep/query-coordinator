@@ -168,11 +168,6 @@ export default function PresentationMode() {
       } else if (key === 39 || key === 34) {
         pageNext();
       }
-    } else {
-      // 80 == p
-      if (key === 80) {
-        enablePresentationMode();
-      }
     }
   }
 

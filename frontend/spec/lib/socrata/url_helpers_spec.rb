@@ -215,5 +215,22 @@ RSpec.describe 'Socrata::UrlHelpers' do
         end
       end
     end
+
+    describe '#localized_dataset_url' do
+      it 'returns link as is when it is not a dataset link' do
+        expect(helpers.localized_dataset_url('https://foo.bar/Foo/Bar')).to eq('https://foo.bar/Foo/Bar')
+      end
+
+      describe 'when given a dataset link' do
+        it 'returns link as is because it is the same locale' do
+          expect(helpers.localized_dataset_url('https://foo.bar/Foo/Bar/abcd-efgh')).to eq('https://foo.bar/Foo/Bar/abcd-efgh')
+        end
+
+        it 'returns link after appending locale' do
+          I18n.stub(:locale => :it)
+          expect(helpers.localized_dataset_url('https://foo.bar/Foo/Bar/abcd-efgh')).to eq('https://foo.bar/it/Foo/Bar/abcd-efgh')
+        end
+      end
+    end
   end
 end

@@ -130,7 +130,8 @@ module AdminHelper
   end
 
   def show_connectors?
-    CurrentDomain.user_can?(current_user, UserRights::USE_DATA_CONNECTORS)
+    rights = [UserRights::USE_DATA_CONNECTORS, UserRights::CREATE_DATASETS, UserRights::EDIT_OTHERS_DATASETS]
+    rights.all?{|r| CurrentDomain.user_can?(current_user, r)}
   end
 
   def render_admin_breadcrumb

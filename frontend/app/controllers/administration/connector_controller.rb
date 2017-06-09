@@ -10,7 +10,8 @@ class Administration::ConnectorController < AdministrationController
 
   before_filter :only =>
     %i(connectors new_connector delete_connector create_connector edit_connector update_connector) do |c|
-      c.check_auth_level(UserRights::USE_DATA_CONNECTORS)
+      c.check_auth_levels_all(
+        [UserRights::USE_DATA_CONNECTORS, UserRights::CREATE_DATASETS, UserRights::EDIT_OTHERS_DATASETS])
     end
 
   before_filter :fetch_server, :only => [:edit_connector, :update_connector, :show_connector]

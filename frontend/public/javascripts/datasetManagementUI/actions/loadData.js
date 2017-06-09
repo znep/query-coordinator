@@ -23,7 +23,6 @@ export function needToLoadAnything(entities, apiCalls, displayState) {
       const minRowsProcessed = Selectors.rowsTransformed(columns);
       const firstRowNeeded = (displayState.pageNo - 1) * PAGE_SIZE;
       const lastRowNeeded = firstRowNeeded + PAGE_SIZE;
-
       const haveWholePage = minRowsProcessed >= lastRowNeeded;
       const doneLoadingThisPage =
         minRowsProcessed === inputSchema.total_rows && minRowsProcessed >= firstRowNeeded;

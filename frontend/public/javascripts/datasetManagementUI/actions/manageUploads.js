@@ -237,15 +237,10 @@ function pollForOutputSchema(uploadId) {
 export function pollForOutputSchemaSuccess(outputSchemaResponse) {
   const outputSchema = toOutputSchema(outputSchemaResponse);
 
-  const transforms = outputSchemaResponse.output_columns.reduce((acc, oc) => {
-    return {
-      ...acc,
-      [oc.transform.id]: {
-        ...oc.transform,
-        error_indices: []
-      }
-    };
-  }, {});
+  const transformUpdates = outputSchemaResponse.output_columns.map(oc => ({
+    ...oc.transform,
+    error_indices: []
+  }));
 
   const outputColumns = outputSchemaResponse.output_columns.reduce((acc, oc) => {
     const ocWithTransform = {
@@ -276,7 +271,7 @@ export function pollForOutputSchemaSuccess(outputSchemaResponse) {
   return {
     type: POLL_FOR_OUTPUT_SCHEMA_SUCCESS,
     outputSchema,
-    transforms,
+    transformUpdates,
     outputColumns,
     outputSchemaColumns
   };

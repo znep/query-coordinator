@@ -206,14 +206,18 @@ const pollForOutputSchema = (state, action) => {
         })
       );
 
-      const stateWithUpdatedTransforms = dotProp.set(
-        stateWithUpdatedOutputSchemas,
-        'entities.transforms',
-        existingRecords => ({
-          ...existingRecords,
-          ...action.transforms
-        })
-      );
+      let stateWithUpdatedTransforms = stateWithUpdatedOutputSchemas;
+
+      action.transformUpdates.forEach(update => {
+        stateWithUpdatedTransforms = dotProp.set(
+          stateWithUpdatedTransforms,
+          `entities.transforms.${update.id}`,
+          record => ({
+            ...record,
+            ...update
+          })
+        );
+      });
 
       const stateWithUpdatedOutputColumns = dotProp.set(
         stateWithUpdatedTransforms,
@@ -259,12 +263,12 @@ const loadData = (state, action) => {
         ...action.colData
       }));
 
-      let stateWithUpdatedTransforms;
+      let stateWithUpdatedTransforms = stateWithUpdatedColData;
 
       action.transformUpdates.forEach(
         update =>
           (stateWithUpdatedTransforms = dotProp.set(
-            stateWithUpdatedColData,
+            stateWithUpdatedTransforms,
             `entities.transforms.${update.id}`,
             record => ({
               ...record,

@@ -216,10 +216,6 @@ var utils = {
    * Returns grouping character for given locale for formatting a number, defaults to comma
    */
   getGroupCharacter: function(locale) {
-    if (!!(typeof Intl == 'object' && Intl && typeof Intl.NumberFormat == 'function')) {
-      return (1234).toLocaleString(locale).match(/1(.*)234/)[1];
-    }
-
     switch (locale) {
       case 'en':
       case 'zh':
@@ -230,9 +226,16 @@ var utils = {
         return '.';
 
       case 'fr':
-        return ' ';
+        return '\u00A0';
 
       default:
+        if (locale && !!(typeof Intl == 'object' && Intl && typeof Intl.NumberFormat == 'function')) {
+          var localized = (1234).toLocaleString(locale);
+          var character = localized.match(/1(.*)234/)[1];
+
+          return character;
+        }
+
         return ',';
     }
   },
@@ -241,10 +244,6 @@ var utils = {
    * Returns the decimal character for given locale for formatting a number, defaults to period
    */
   getDecimalCharacter: function(locale) {
-    if (!!(typeof Intl == 'object' && Intl && typeof Intl.NumberFormat == 'function')) {
-      return (12.34).toLocaleString(locale).match(/12(.*)34/)[1];
-    }
-
     switch (locale) {
       case 'en':
       case 'zh':
@@ -256,6 +255,13 @@ var utils = {
         return ',';
 
       default:
+        if (locale && !!(typeof Intl == 'object' && Intl && typeof Intl.NumberFormat == 'function')) {
+          var localized = (12.34).toLocaleString(locale);
+          var character = localized.match(/12(.*)34/)[1];
+
+          return character;
+        }
+
         return '.';
     }
   },

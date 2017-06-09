@@ -2,6 +2,15 @@ import _ from 'lodash';
 import $ from 'jquery';
 import utils from 'common/js_utils';
 
+import 'intl/locale-data/jsonp/en.js';
+import 'intl/locale-data/jsonp/zh.js';
+import 'intl/locale-data/jsonp/it.js';
+import 'intl/locale-data/jsonp/es.js';
+import 'intl/locale-data/jsonp/fr.js';
+import 'intl/locale-data/jsonp/tr.js';
+
+require('karma-intl-shim');
+
 describe('utils.js', function() {
 
   'use strict';
@@ -420,7 +429,12 @@ describe('utils.js', function() {
     });
 
     it('returns space when locale is fr', function() {
-      assert.equal(utils.getGroupCharacter('fr'), ' ');
+      assert.equal(utils.getGroupCharacter('fr'), '\u00A0');
+    });
+
+    // Since tr is not a known locale
+    it('returns period when locale is tr using Intl', function() {
+      assert.equal(utils.getGroupCharacter('tr'), '.');
     });
 
     it('returns comma by default when locale is something else', function() {
@@ -450,6 +464,11 @@ describe('utils.js', function() {
 
     it('returns comma when locale is fr', function() {
       assert.equal(utils.getDecimalCharacter('fr'), ',');
+    });
+
+    // Since tr is not a known locale
+    it('returns comma when locale is tr using Intl', function() {
+      assert.equal(utils.getDecimalCharacter('tr'), ',');
     });
 
     it('returns period by default when locale is something else', function() {

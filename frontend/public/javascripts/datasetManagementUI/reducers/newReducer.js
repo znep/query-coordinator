@@ -27,8 +27,20 @@ import { EDIT_OUTPUT_SCHEMA } from 'actions/outputSchemas';
 import { EDIT_TRANSFORM } from 'actions/transforms';
 import { EDIT_INPUT_SCHEMA } from 'actions/inputSchemas';
 import { BOOTSTRAP_APP_SUCCESS } from 'actions/bootstrap';
+import { EDIT_VIEW } from 'actions/views';
 
-const views = (state = {}) => state;
+const views = (state = {}, action) => {
+  switch (action.type) {
+    case EDIT_VIEW: {
+      return dotProp.set(state, action.id, record => ({
+        ...record,
+        ...action.payload
+      }));
+    }
+    default:
+      return state;
+  }
+};
 const revisions = (state = {}) => state;
 
 const uploads = (state = {}, action) => {

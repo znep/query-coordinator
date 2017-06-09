@@ -92,8 +92,8 @@ export function rowLoadOperationsInProgress(apiCalls) {
 
 // Merges formDataModel with db.output_columns, then transforms that into the
 // shape expected by DSMAPI
-export function updatedOutputColumns(db, formDataModel) {
-  const { output_columns: outputColumns, transforms } = db;
+export function updatedOutputColumns(entities, formDataModel) {
+  const { output_columns: outputColumns, transforms } = entities;
 
   const updatedColumns = Object.keys(formDataModel).reduce((acc, key) => {
     const [id, ...rest] = key.split('-').reverse();

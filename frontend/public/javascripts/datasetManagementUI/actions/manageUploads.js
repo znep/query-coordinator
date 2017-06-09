@@ -1,13 +1,13 @@
 import _ from 'lodash';
-import * as Links from '../links';
-import * as dsmapiLinks from '../dsmapiLinks';
-import { upsertFromServer } from './database';
-import { addNotification, removeNotificationAfterTimeout } from './notifications';
 import { push } from 'react-router-redux';
-import { socrataFetch, checkStatus, getJson } from '../lib/http';
-import { parseDate } from '../lib/parseDate';
-import { joinChannel } from './channels';
 import uuid from 'uuid';
+import * as Links from 'links';
+import * as dsmapiLinks from 'dsmapiLinks';
+import { upsertFromServer } from 'actions/database';
+import { socrataFetch, checkStatus, getJson } from 'lib/http';
+import { parseDate } from 'lib/parseDate';
+import { joinChannel } from 'actions/channels';
+import { addNotification, removeNotificationAfterTimeout } from 'actions/notifications';
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'actions/apiCalls';
 
 function updateProgress(uploadId, percentCompleted) {
@@ -99,7 +99,6 @@ export function createUpload(file) {
         ]);
       })
       .catch(err => {
-        console.log('err', err);
         dispatch(apiCallFailed(callId, err));
       });
   };
@@ -148,7 +147,6 @@ export function uploadFile(uploadId, file) {
         return resp;
       })
       .catch(err => {
-        console.log('error here', err);
         dispatch(apiCallFailed(callId, err));
       });
   };
@@ -210,7 +208,8 @@ function pollForOutputSchema(uploadId) {
             .value();
 
           // TODO: keep this from updating total rows if it's null
-          dispatch(subscribeToUpload(upload));
+          dispatch(insertInputSchema(upload));
+          upload.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
 
           dispatch(
             push(Links.showOutputSchema(uploadId, upload.schemas[0].id, outputSchemaIds[0])(routing.location))
@@ -284,35 +283,34 @@ export function insertAndSubscribeToUpload(dispatch, upload) {
   if (upload.failed_at) {
     dispatch(addNotification('upload', null, upload.id));
   } else {
-    dispatch(subscribeToUpload(upload));
+    dispatch(insertInputSchema(upload));
+    upload.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
   }
 }
 
-function addInputColumn(column) {
-  return {
-    type: 'ADD_INPUT_COLUMN',
-    id: column.id,
-    column
-  };
-}
+function insertInputSchema(upload) {
+  return dispatch => {
+    const inputSchemaUpdates = upload.schemas.map(inputSchema => ({
+      id: inputSchema.id,
+      name: inputSchema.name,
+      total_rows: inputSchema.total_rows,
+      upload_id: upload.id
+    }));
 
-function subscribeToUpload(upload) {
-  return dispatch =>
-    upload.schemas.forEach(inputSchema => {
-      dispatch(
-        editInputSchema(inputSchema.id, {
-          id: inputSchema.id,
-          name: inputSchema.name,
-          total_rows: inputSchema.total_rows,
-          upload_id: upload.id
-        })
-      );
+    const inputColumns = _.chain(upload.schemas)
+      .flatMap(inputSchema => inputSchema.input_columns)
+      .reduce((acc, inputColumn) => ({
+        ...acc,
+        [inputColumn.id]: inputColumn
+      }))
+      .value();
 
-      dispatch(subscribeToRowErrors(inputSchema.id));
-
-      // TODO: not so sure this is the best place to do this
-      inputSchema.input_columns.forEach(column => dispatch(addInputColumn(column)));
+    dispatch({
+      type: 'INSERT_INPUT_SCHEMA',
+      inputSchemaUpdates,
+      inputColumns
     });
+  };
 }
 
 function editInputSchema(id, payload) {
@@ -358,31 +356,6 @@ function subscribeToTransforms(outputSchemaResponse) {
       );
     });
 }
-
-// function createTableAndSubscribeToTransform(transform) {
-//   return (dispatch, getState) => {
-//     // const { entities } = getState();
-//
-//     // const tableName = `transform_${transform.id}`;
-//
-//     // dotProp creates entry if it doesn't exist, so can just handle this in reudcer
-//     // if (!entities[tableName]) {
-//     //   dispatch(createTable(tableName));
-//     // }
-//     const channelName = `transform_progress:${transform.id}`;
-//
-//     dispatch(
-//       joinChannel(channelName, {
-//         max_ptr: maxPtr => {
-//           dispatch(editTransform(transform.id, { contiguous_rows_processed: maxPtr.end_row_offset }));
-//         },
-//         errors: errorsMsg => {
-//           dispatch(editTransform(transform.id, { num_transform_errors: errorsMsg.count }));
-//         }
-//       })
-//     );
-//   };
-// }
 
 function editTransform(id, payload) {
   return {

@@ -12,14 +12,6 @@ import apiCalls from 'reducers/apiCalls';
 const views = (state = {}) => state;
 const revisions = (state = {}) => state;
 
-// return {
-//   ...state,
-//   [action.id]: {
-//     ...state[action.id],
-//     percentCompleted: action.percentCompleted
-//   }
-// }
-
 const uploads = (state = {}, action) => {
   switch (action.type) {
     case 'UPDATE_PROGRESS':
@@ -47,17 +39,7 @@ const inputSchemas = (state = {}, action) => {
   }
 };
 
-const inputColumns = (state = {}, action) => {
-  switch (action.type) {
-    case 'ADD_INPUT_COLUMN':
-      return {
-        ...state,
-        [action.id]: action.column
-      };
-    default:
-      return state;
-  }
-};
+const inputColumns = (state = {}) => state;
 
 const outputSchemas = (state = {}, action) => {
   switch (action.type) {
@@ -281,11 +263,40 @@ const loadData = (state, action) => {
   }
 };
 
+const insertInputSchema = (state, action) => {
+  switch (action.type) {
+    case 'INSERT_INPUT_SCHEMA': {
+      let stateWithUpdatedInputSchemas = state;
+
+      action.inputSchemaUpdates.forEach(
+        update =>
+          (stateWithUpdatedInputSchemas = dotProp.set(
+            stateWithUpdatedInputSchemas,
+            `entities.input_schemas.${update.id}`,
+            record => ({
+              ...record,
+              ...update
+            })
+          ))
+      );
+
+      return dotProp.set(stateWithUpdatedInputSchemas, 'entities.input_columns', existingRecords => ({
+        ...existingRecords,
+        ...action.inputColumns
+      }));
+    }
+
+    default:
+      return state;
+  }
+};
+
 export default reduceReducers(
   combined,
   createUpload,
   bootstrapApp,
   uploadFile,
   pollForOutputSchema,
-  loadData
+  loadData,
+  insertInputSchema
 );

@@ -107,7 +107,10 @@ export const ceteraUtils = (() => {
 
       const fetchOptions = {
         credentials: 'same-origin',
-        headers: { 'X-Socrata-Host': domain }
+        headers: {
+          'X-Socrata-Host': domain,
+          'User-Agent': 'SocrataFrontend/1.0 (+https://socrata.com/)'
+        }
       };
 
       return fetch(fetchUrl, fetchOptions).

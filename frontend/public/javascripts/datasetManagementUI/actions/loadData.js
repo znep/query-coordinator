@@ -7,6 +7,9 @@ import * as Selectors from 'selectors';
 import * as dsmapiLinks from 'dsmapiLinks';
 
 export const PAGE_SIZE = 50;
+export const LOAD_ROW_ERRORS_SUCCESS = 'LOAD_ROW_ERRORS_SUCCESS';
+export const LOAD_COLUMN_ERRORS_SUCCESS = 'LOAD_COLUMN_ERRORS_SUCCESS';
+export const LOAD_NORMAL_PREVIEW_SUCCESS = 'LOAD_NORMAL_PREVIEW_SUCCESS';
 
 // only exported for tests...
 export function needToLoadAnything(entities, apiCalls, displayState) {
@@ -88,14 +91,6 @@ function urlForPreview(entities, displayState) {
   }
 }
 
-function loadNormalPreviewSuccess(colData, rowErrors) {
-  return {
-    type: 'LOAD_NORMAL_PREVIEW_SUCCESS',
-    colData,
-    rowErrors
-  };
-}
-
 export function loadNormalPreview(apiCall) {
   return (dispatch, getState) => {
     const { entities } = getState();
@@ -158,11 +153,11 @@ export function loadNormalPreview(apiCall) {
   };
 }
 
-function loadColumnErrorsSuccess(colData, transformUpdates) {
+function loadNormalPreviewSuccess(colData, rowErrors) {
   return {
-    type: 'LOAD_COLUMN_ERRORS_SUCCESS',
+    type: LOAD_NORMAL_PREVIEW_SUCCESS,
     colData,
-    transformUpdates
+    rowErrors
   };
 }
 
@@ -246,10 +241,11 @@ export function loadColumnErrors(apiCall) {
   };
 }
 
-function loadRowErrorsSuccess(rowErrors) {
+function loadColumnErrorsSuccess(colData, transformUpdates) {
   return {
-    type: 'LOAD_ROW_ERRORS_SUCCESS',
-    rowErrors
+    type: LOAD_COLUMN_ERRORS_SUCCESS,
+    colData,
+    transformUpdates
   };
 }
 
@@ -283,5 +279,12 @@ export function loadRowErrors(apiCall) {
       .catch(error => {
         dispatch(apiCallFailed(callId, error));
       });
+  };
+}
+
+function loadRowErrorsSuccess(rowErrors) {
+  return {
+    type: LOAD_ROW_ERRORS_SUCCESS,
+    rowErrors
   };
 }

@@ -12,7 +12,7 @@ import * as Phoenix from 'phoenix';
 import Perf from 'react-addons-perf';
 import newReducer from 'reducers/newReducer';
 // import rootReducer from './reducers';
-import { bootstrap, sideEffectyStuff } from './bootstrap';
+import { bootstrapApp } from 'actions/bootstrap';
 import * as Selectors from './selectors';
 import Airbrake from 'common/airbrake';
 import rootRoute from './routes';
@@ -60,11 +60,10 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(newReducer, composeEnhancers(applyMiddleware(...middleware)));
 
 store.dispatch(setFourfour(window.initialState.view.id));
+
 store.dispatch(
-  bootstrap(window.initialState.view, window.initialState.revision, window.initialState.customMetadata)
+  bootstrapApp(window.initialState.view, window.initialState.revision, window.initialState.customMetadata)
 );
-store.dispatch(sideEffectyStuff(window.initialState.revision));
-// bootstrap(store, window.initialState.view, window.initialState.revision, window.initialState.customMetadata);
 
 const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: state => state.ui.routing.location

@@ -3,20 +3,22 @@ import { push } from 'react-router-redux';
 import uuid from 'uuid';
 import * as Links from 'links';
 import * as dsmapiLinks from 'dsmapiLinks';
-import { upsertFromServer } from 'actions/database';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
 import { parseDate } from 'lib/parseDate';
 import { joinChannel } from 'actions/channels';
+import { editOutputSchema } from 'actions/outputSchemas';
+import { editTransform } from 'actions/transforms';
+import { editInputSchema } from 'actions/inputSchemas';
 import { addNotification, removeNotificationAfterTimeout } from 'actions/notifications';
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'actions/apiCalls';
 
-function updateProgress(uploadId, percentCompleted) {
-  return {
-    type: 'UPDATE_PROGRESS',
-    uploadId,
-    percentCompleted
-  };
-}
+export const INSERT_INPUT_SCHEMA = 'INSERT_INPUT_SCHEMA';
+export const POLL_FOR_OUTPUT_SCHEMA_SUCCESS = 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS';
+export const UPLOAD_FILE = 'UPLOAD_FILE';
+export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_SUCCESS';
+export const CREATE_UPLOAD = 'CREATE_UPLOAD';
+export const CREATE_UPLOAD_SUCCESS = 'CREATE_UPLOAD_SUCCESS';
+export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
 
 function xhrPromise(method, url, file, uploadId, dispatch) {
   return new Promise((res, rej) => {
@@ -57,6 +59,14 @@ function xhrPromise(method, url, file, uploadId, dispatch) {
   });
 }
 
+function updateProgress(uploadId, percentCompleted) {
+  return {
+    type: UPDATE_PROGRESS,
+    uploadId,
+    percentCompleted
+  };
+}
+
 // convention should be:
 // verbNoun for async action creators
 // verbNounSuccess and/or verbNounFailure for non-async action creators that update store based on api response
@@ -68,7 +78,7 @@ export function createUpload(file) {
     const callId = uuid();
 
     const call = {
-      operation: 'CREATE_UPLOAD',
+      operation: CREATE_UPLOAD,
       params: {
         filename: file.name
       }
@@ -106,7 +116,7 @@ export function createUpload(file) {
 
 function createUploadSuccess(id, createdBy, createdAt, filename) {
   return {
-    type: 'CREATE_UPLOAD_SUCCESS',
+    type: CREATE_UPLOAD_SUCCESS,
     id,
     filename,
     created_by: createdBy,
@@ -123,7 +133,7 @@ export function uploadFile(uploadId, file) {
     const callId = uuid();
 
     const call = {
-      operation: 'UPLOAD_FILE',
+      operation: UPLOAD_FILE,
       params: uploadUpdate
     };
 
@@ -154,7 +164,7 @@ export function uploadFile(uploadId, file) {
 
 function uploadFileSuccess(uploadId, finishedAt, inputSchemaId, totalRows) {
   return {
-    type: 'UPLOAD_FILE_SUCCESS',
+    type: UPLOAD_FILE_SUCCESS,
     uploadId,
     finishedAt,
     inputSchemaId,
@@ -230,7 +240,10 @@ function pollForOutputSchemaSuccess(outputSchemaResponse) {
   const transforms = outputSchemaResponse.output_columns.reduce((acc, oc) => {
     return {
       ...acc,
-      [oc.transform.id]: oc.transform
+      [oc.transform.id]: {
+        ...oc.transform,
+        error_indices: []
+      }
     };
   }, {});
 
@@ -261,31 +274,12 @@ function pollForOutputSchemaSuccess(outputSchemaResponse) {
   }, {});
 
   return {
-    type: 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS',
+    type: POLL_FOR_OUTPUT_SCHEMA_SUCCESS,
     outputSchema,
     transforms,
     outputColumns,
     outputSchemaColumns
   };
-}
-
-export function insertAndSubscribeToUpload(dispatch, upload) {
-  dispatch(
-    upsertFromServer('uploads', {
-      ..._.omit(upload, ['schemas']),
-      created_at: parseDate(upload.inserted_at || upload.created_at),
-      finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
-      failed_at: upload.failed_at ? parseDate(upload.failed_at) : null,
-      created_by: upload.created_by
-    })
-  );
-
-  if (upload.failed_at) {
-    dispatch(addNotification('upload', null, upload.id));
-  } else {
-    dispatch(insertInputSchema(upload));
-    upload.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
-  }
 }
 
 function insertInputSchema(upload) {
@@ -306,18 +300,10 @@ function insertInputSchema(upload) {
       .value();
 
     dispatch({
-      type: 'INSERT_INPUT_SCHEMA',
+      type: INSERT_INPUT_SCHEMA,
       inputSchemaUpdates,
       inputColumns
     });
-  };
-}
-
-function editInputSchema(id, payload) {
-  return {
-    type: 'EDIT_INPUT_SCHEMA',
-    id,
-    payload
   };
 }
 
@@ -357,14 +343,6 @@ function subscribeToTransforms(outputSchemaResponse) {
     });
 }
 
-function editTransform(id, payload) {
-  return {
-    type: 'EDIT_TRANSFORM',
-    id,
-    payload
-  };
-}
-
 function toOutputSchema(os) {
   return {
     id: os.id,
@@ -391,13 +369,5 @@ function subscribeToOutputSchema(outputSchema) {
         }
       })
     );
-  };
-}
-
-function editOutputSchema(id, payload) {
-  return {
-    type: 'EDIT_OUTPUT_SCHEMA',
-    id,
-    payload
   };
 }

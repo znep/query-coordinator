@@ -9,12 +9,31 @@ import modal from 'reducers/modal';
 import channels from 'reducers/channels';
 import apiCalls from 'reducers/apiCalls';
 
+import {
+  INSERT_INPUT_SCHEMA,
+  POLL_FOR_OUTPUT_SCHEMA_SUCCESS,
+  UPLOAD_FILE_SUCCESS,
+  CREATE_UPLOAD_SUCCESS,
+  UPDATE_PROGRESS
+} from 'actions/manageUploads';
+
+import {
+  LOAD_ROW_ERRORS_SUCCESS,
+  LOAD_COLUMN_ERRORS_SUCCESS,
+  LOAD_NORMAL_PREVIEW_SUCCESS
+} from 'actions/loadData';
+
+import { EDIT_OUTPUT_SCHEMA } from 'actions/outputSchemas';
+import { EDIT_TRANSFORM } from 'actions/transforms';
+import { EDIT_INPUT_SCHEMA } from 'actions/inputSchemas';
+import { BOOTSTRAP_APP_SUCCESS } from 'actions/bootstrap';
+
 const views = (state = {}) => state;
 const revisions = (state = {}) => state;
 
 const uploads = (state = {}, action) => {
   switch (action.type) {
-    case 'UPDATE_PROGRESS':
+    case UPDATE_PROGRESS:
       return dotProp.set(state, action.uploadId, record => ({
         ...record,
         percentCompleted: action.percentCompleted
@@ -26,7 +45,7 @@ const uploads = (state = {}, action) => {
 
 const inputSchemas = (state = {}, action) => {
   switch (action.type) {
-    case 'EDIT_INPUT_SCHEMA':
+    case EDIT_INPUT_SCHEMA:
       return {
         ...state,
         [action.id]: {
@@ -43,7 +62,7 @@ const inputColumns = (state = {}) => state;
 
 const outputSchemas = (state = {}, action) => {
   switch (action.type) {
-    case 'EDIT_OUTPUT_SCHEMA':
+    case EDIT_OUTPUT_SCHEMA:
       return {
         ...state,
         [action.id]: {
@@ -61,7 +80,7 @@ const outputSchemaColumns = (state = {}) => state;
 
 const transforms = (state = {}, action) => {
   switch (action.type) {
-    case 'EDIT_TRANSFORM':
+    case EDIT_TRANSFORM:
       return {
         ...state,
         [action.id]: {
@@ -111,7 +130,7 @@ const combined = combineReducers({
 
 const bootstrapApp = (state, action) => {
   switch (action.type) {
-    case 'BOOTSTRAP_APP': {
+    case BOOTSTRAP_APP_SUCCESS: {
       const stateWithUpdatedViews = dotProp.set(state, 'entities.views', {
         [action.initialView.id]: action.initialView
       });
@@ -120,7 +139,13 @@ const bootstrapApp = (state, action) => {
         [action.initialRevision.id]: action.initialRevision
       });
 
-      return dotProp.set(stateWithUpdatedRevisions, 'entities.task_sets', action.taskSets);
+      const stateWithUpdatedTaskSets = dotProp.set(
+        stateWithUpdatedRevisions,
+        'entities.task_sets',
+        action.taskSets
+      );
+
+      return dotProp.set(stateWithUpdatedTaskSets, 'entities.uploads', action.uploads);
     }
 
     default:
@@ -130,7 +155,7 @@ const bootstrapApp = (state, action) => {
 
 const createUpload = (state, action) => {
   switch (action.type) {
-    case 'CREATE_UPLOAD_SUCCESS':
+    case CREATE_UPLOAD_SUCCESS:
       return dotProp.set(state, 'entities.uploads', existingRecords => ({
         ...existingRecords,
         [action.id]: {
@@ -149,7 +174,7 @@ const createUpload = (state, action) => {
 
 const uploadFile = (state, action) => {
   switch (action.type) {
-    case 'UPLOAD_FILE_SUCCESS': {
+    case UPLOAD_FILE_SUCCESS: {
       const stateWithUpdatedUploads = dotProp.set(state, `entities.uploads.${action.uploadId}`, record => ({
         ...record,
         finished_at: action.finishedAt
@@ -171,7 +196,7 @@ const uploadFile = (state, action) => {
 
 const pollForOutputSchema = (state, action) => {
   switch (action.type) {
-    case 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS': {
+    case POLL_FOR_OUTPUT_SCHEMA_SUCCESS: {
       const stateWithUpdatedOutputSchemas = dotProp.set(
         state,
         'entities.output_schemas',
@@ -216,7 +241,7 @@ const pollForOutputSchema = (state, action) => {
 
 const loadData = (state, action) => {
   switch (action.type) {
-    case 'LOAD_NORMAL_PREVIEW_SUCCESS': {
+    case LOAD_NORMAL_PREVIEW_SUCCESS: {
       const stateWithUpdatedColData = dotProp.set(state, 'entities.col_data', existingRecords => ({
         ...existingRecords,
         ...action.colData
@@ -228,7 +253,7 @@ const loadData = (state, action) => {
       }));
     }
 
-    case 'LOAD_COLUMN_ERRORS_SUCCESS': {
+    case LOAD_COLUMN_ERRORS_SUCCESS: {
       const stateWithUpdatedColData = dotProp.set(state, 'entities.col_data', existingRecords => ({
         ...existingRecords,
         ...action.colData
@@ -251,7 +276,7 @@ const loadData = (state, action) => {
       return stateWithUpdatedTransforms;
     }
 
-    case 'LOAD_ROW_ERRORS_SUCCESS': {
+    case LOAD_ROW_ERRORS_SUCCESS: {
       return dotProp.set(state, 'entities.row_errors', existingRecords => ({
         ...existingRecords,
         ...action.rowErrors
@@ -265,7 +290,7 @@ const loadData = (state, action) => {
 
 const insertInputSchema = (state, action) => {
   switch (action.type) {
-    case 'INSERT_INPUT_SCHEMA': {
+    case INSERT_INPUT_SCHEMA: {
       let stateWithUpdatedInputSchemas = state;
 
       action.inputSchemaUpdates.forEach(

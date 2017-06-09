@@ -28,3 +28,4 @@ function requireAll(context) {
 
 // Run all the tests
 requireAll(require.context('.', true, /Test\.js$/));
+requireAll(require.context('.', true, /\.spec\.js$/));

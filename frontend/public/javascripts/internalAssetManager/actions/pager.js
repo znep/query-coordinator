@@ -5,7 +5,7 @@ export const changePage = (pageNumber) => (dispatch, getState) => {
     dispatch({ type: 'CHANGE_PAGE', pageNumber });
   };
 
-  return fetchResults(dispatch, getState, { pageNumber }, onSuccess);
+  return fetchResults(dispatch, getState, { action: 'CHANGE_PAGE', pageNumber }, onSuccess);
 };
 
 export const clearPage = (dispatch) => {

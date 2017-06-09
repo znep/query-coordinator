@@ -1,6 +1,6 @@
 var _ = require('lodash');
-var WebpackFailurePlugin = require('./WebpackFailurePlugin.js');
 
+var WebpackFailurePlugin = require('./WebpackFailurePlugin.js');
 var webpackCommon = require('../../config/webpack/common');
 
 /**
@@ -8,7 +8,7 @@ var webpackCommon = require('../../config/webpack/common');
  * a configuration suitable for running karma tests.
  */
 function karmaWebpackConfig(webpackConfigFile, extraResolveRoots) {
-  var webpackConfig = require('../../config/webpack/' + webpackConfigFile);
+  var webpackConfig = require(`../../config/webpack/${webpackConfigFile}`);
 
   webpackConfig = _.defaultsDeep({
     cache: true,

@@ -20,5 +20,14 @@ export const changeSortOrder = (columnName) => (dispatch, getState) => {
     clearPage(dispatch);
   };
 
-  return fetchResults(dispatch, getState, { order: newOrder, pageNumber: 1 }, onSuccess);
+  return fetchResults(
+    dispatch,
+    getState,
+    {
+      action: 'CHANGE_SORT_ORDER',
+      order: newOrder,
+      pageNumber: 1
+    },
+    onSuccess
+  );
 };

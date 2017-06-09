@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
 import airbrake from 'common/airbrake';
+import mixpanel from './mixpanel';
 import { fetchTranslation } from './locale';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
@@ -35,7 +36,7 @@ function checkStatus(response) {
       });
     } catch (err) {}
 
-    throw errorMessage;
+    throw new Error(errorMessage);
   }
 }
 
@@ -62,12 +63,13 @@ export const ceteraUtils = (() => {
   const mapIdFiltersToParam = idFilters => _.map(idFilters, (id) => `ids=${id}`).join('&');
 
   return {
-    fetch: ({
+    query: ({
       category = null,
       customMetadataFilters = {},
       forUser = null,
       idFilters = [],
       limit = DEFAULT_LIMIT,
+      mixpanelContext = null,
       only = null,
       order = DEFAULT_ORDER,
       pageNumber = 1,
@@ -77,13 +79,18 @@ export const ceteraUtils = (() => {
       tags = null,
       visibility = null
     }) => {
-      const paramObj = {
+      if (!mixpanelContext) {
+        console.warn(`No mixpanelContext provided. Mixpanel events may not be reported properly. Consider
+          adding mixpanelContext to this cetera query.`);
+      }
+      const parameters = {
         categories: category,
         ...customMetadataFilters,
         domains: domain,
         for_user: forUser,
         ids: mapIdFiltersToParam(idFilters),
         limit,
+        mixpanelContext,
         offset: getOffset(pageNumber, limit),
         only: assetTypeMapping(only),
         order,
@@ -95,15 +102,14 @@ export const ceteraUtils = (() => {
         visibility
       };
 
-      let paramString = _.reduce(_.omit(paramObj, 'ids'), function(result, value, key) {
-        return (key && value) ? result += `${key}=${encodeURIComponent(value)}&` : result;
-      }, '').slice(0, -1);
+      const queryString = _.reduce(
+        _.omit(parameters, 'ids', 'mixpanelContext'),
+        (result, value, key) =>
+          (key && value ? result.concat([`${key}=${encodeURIComponent(value)}`]) : result), []).
+        concat(parameters.ids ? [`${parameters.ids}`] : []).
+        join('&');
 
-      if (paramObj.ids) {
-        paramString += `&${paramObj.ids}`;
-      }
-
-      const fetchUrl = `${CETERA_API}?${paramString}`;
+      const fetchUrl = `${CETERA_API}?${queryString}`;
 
       const fetchOptions = {
         credentials: 'same-origin',
@@ -113,9 +119,23 @@ export const ceteraUtils = (() => {
         }
       };
 
+      const reportToMixpanel = (json) => {
+        console.debug(`reportToMixpanel: "${mixpanelContext.eventName}"`);
+        mixpanel.sendPayload(
+          mixpanelContext.eventName,
+          {
+            'Result Count': json.results.length,
+            ...mixpanelContext.params
+          }
+        );
+        return json;
+      };
+
+      // Calls whatwg-fetch and returns the promise
       return fetch(fetchUrl, fetchOptions).
         then(checkStatus).
         then(parseJSON).
+        then(reportToMixpanel).
         catch(handleError);
     },
 
@@ -137,13 +157,13 @@ export const ceteraUtils = (() => {
           ..._.pick(
             ceteraResultResource, 'id', 'uid', 'name', 'description', 'provenance', 'createdAt', 'updatedAt'
           ),
-          link: ceteraResult.link,
-          type: mapResultType(ceteraResultResource.type),
           categories: ceteraResult.classification.categories,
-          tags: ceteraResult.classification.tags,
-          previewImageUrl: ceteraResult.preview_image_url,
-          isPublic: true, // Not implemented yet. See cetera::result_row
           isFederated: resultIsFederated(ceteraResult.metadata.domain),
+          isPublic: true, // Not implemented yet. See cetera::result_row
+          link: ceteraResult.link,
+          previewImageUrl: ceteraResult.preview_image_url,
+          tags: ceteraResult.classification.tags,
+          type: mapResultType(ceteraResultResource.type),
           viewCount: parseInt(ceteraResultResource.view_count.page_views_total, 10)
         };
       });

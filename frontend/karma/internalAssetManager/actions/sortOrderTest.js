@@ -5,10 +5,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import * as Actions from 'actions/sortOrder';
 import mockCeteraResponse from 'data/mockCeteraResponse';
-import ceteraUtils from 'common/ceteraUtils';
+import ceteraUtils from 'common/cetera_utils';
 
-const stubFetch = (ceteraResponse = mockCeteraResponse) => (
-  sinon.stub(ceteraUtils, 'fetch').callsFake(_.constant(Promise.resolve(ceteraResponse)))
+const stubCeteraQuery = (ceteraResponse = mockCeteraResponse) => (
+  sinon.stub(ceteraUtils, 'query').callsFake(_.constant(Promise.resolve(ceteraResponse)))
 );
 
 const mockStore = configureMockStore([ thunk ]);
@@ -18,7 +18,7 @@ let ceteraStub;
 describe('actions/sortOrder', () => {
   describe('changeSortOrder', () => {
     beforeEach(() => {
-      ceteraStub = stubFetch();
+      ceteraStub = stubCeteraQuery();
     });
 
     afterEach(() => {

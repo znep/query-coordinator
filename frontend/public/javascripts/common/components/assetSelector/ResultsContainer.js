@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import ceteraUtils from '../../ceteraUtils';
+import ceteraUtils from '../../cetera_utils';
 import BackButton from '../BackButton';
 import Card from './Card';
 import NoResults from './NoResults';
@@ -46,7 +46,7 @@ export class ResultsContainer extends React.Component {
       const customMetadataFilters = _.omit(catalogQuery, ['category', 'custom_path', 'limitTo', 'tags']);
 
       ceteraUtils.
-        fetch({
+        query({
           category: categoryFilter,
           customMetadataFilters,
           limit: this.props.resultsPerPage,

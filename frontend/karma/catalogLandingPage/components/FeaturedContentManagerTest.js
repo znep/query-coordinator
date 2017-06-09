@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import { FeaturedContentManager } from 'components/FeaturedContentManager';
-import ceteraUtils from 'common/ceteraUtils';
+import ceteraUtils from 'common/cetera_utils';
 import _ from 'lodash';
 
 describe('components/FeaturedContentManager', () => {
@@ -20,14 +20,14 @@ describe('components/FeaturedContentManager', () => {
   };
 
   beforeEach(() => {
-    sinon.stub(ceteraUtils, 'fetch').callsFake(_.constant(Promise.resolve({
+    sinon.stub(ceteraUtils, 'query').callsFake(_.constant(Promise.resolve({
       results: [],
       resultSetSize: 0
     })))
   });
 
   afterEach(() => {
-    ceteraUtils.fetch.restore();
+    ceteraUtils.query.restore();
   });
 
   it('renders a FeaturedContentManager', () => {

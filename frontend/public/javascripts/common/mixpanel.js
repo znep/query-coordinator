@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import mixpanel from 'mixpanel-browser';
+import mixpanelBrowser from 'mixpanel-browser';
 
 const sessionData = window.sessionData;
 const config = window.mixpanelConfig;
@@ -11,34 +11,49 @@ const MIXPANEL_EVENTS = [
   'Chose Visualization Type',
   'Cleared Facets',
   'Cleared Search Field',
+  'Clicked a Related View',
   'Clicked API Docs Link',
   'Clicked Catalog Result',
   'Clicked Featured View',
   'Clicked Footer Item',
   'Clicked Header Item',
+  'Clicked Pane in Sidebar',
   'Clicked Sidebar Option',
   'Clicked Socrata News Link',
-  'Clicked Pane in Sidebar',
-  'Clicked a Related View',
   'Clicked to Add a Featured Item',
   'Clicked to Edit a Featured Item',
   'Clicked to Remove a Featured Item',
   'Clicked to Show More Views',
-  'Created a Data Lens',
   'Contacted Dataset Owner',
   'Copied API Link',
   'Copied OData Link',
+  'Created a Data Lens',
   'Downloaded Data',
   'Edited Metadata',
   'Encountered Error Message',
   'Expanded Column Info',
   'Expanded Details',
-  'Ingress: Started Wizard Page',
+  'Filtered Assets by Asset Type',
+  'Filtered Assets by Authority',
+  'Filtered Assets by Category',
+  'Filtered Assets by Custom Metadata',
+  'Filtered Assets by Last Updated Date',
+  'Filtered Assets by Owner',
+  'Filtered Assets by Tag',
+  'Filtered Assets by Visibility',
+  'Filtered Assets to Only Recently Viewed',
   'Ingress: Left Wizard Page',
+  'Ingress: Started Wizard Page',
   'Navigated to Gridpage',
   'Opened Goal Chart',
   'Saved a Featured Item',
   'Shared Dataset',
+  'Sorted Assets By Asset Type',
+  'Sorted Assets By Category',
+  'Sorted Assets By Last Updated Date',
+  'Sorted Assets By Name',
+  'Sorted Assets By Owner',
+  'Used Asset Search Field',
   'Used Search Facets',
   'Used Search Field',
   'Viewed Dataset Statistics'
@@ -80,6 +95,7 @@ const MIXPANEL_PROPERTIES = [
   'Related View Id',
   'Related View Type',
   'Render Type',
+  'Result Count',
   'Result Ids',
   'Result Number',
   'Request Id',
@@ -157,16 +173,16 @@ function registerUserProperties() {
   );
   validateProperties(properties);
 
-  if (!_.isUndefined(mixpanel)) {
-    mixpanel.register(properties);
+  if (!_.isUndefined(mixpanelBrowser)) {
+    mixpanelBrowser.register(properties);
 
     // Set user ID to mixpanels user ID if not logged in
     const userId = sessionData.userId;
-    mixpanel.identify(userId === 'Not Logged In' ? mixpanel.get_distinct_id() : userId);
+    mixpanelBrowser.identify(userId === 'Not Logged In' ? mixpanelBrowser.get_distinct_id() : userId);
 
     // set the profile information about the user
     if (_.isObject(sessionData)) {
-      mixpanel.people.set({
+      mixpanelBrowser.people.set({
         '$email': _.get(sessionData, 'email'),
         '$role:': _.get(sessionData, 'userRoleName'),
         '$id': _.get(sessionData, 'ownerId'),
@@ -190,7 +206,7 @@ function genericPagePayload() {
 }
 
 function sendPayload(eventName, properties) {
-  if (!_.isUndefined(mixpanel)) {
+  if (!_.isUndefined(mixpanelBrowser)) {
     // Make sure cookies are up-to-date
     registerUserProperties();
 
@@ -201,14 +217,14 @@ function sendPayload(eventName, properties) {
     validateEventName(eventName);
     validateProperties(mergedProperties);
 
-    mixpanel.track(eventName, mergedProperties);
+    mixpanelBrowser.track(eventName, mergedProperties);
   }
 }
 
 // Initialize Mixpanel
 // Default is no tracking, no cookies and no events saved
-if (!config.disable && !_.isUndefined(mixpanel)) {
-  mixpanel.init(config.token, config.options);
+if (!config.disable && !_.isUndefined(mixpanelBrowser)) {
+  mixpanelBrowser.init(config.token, config.options);
 } else {
   console.warn('Mixpanel has not been loaded or has been disabled.');
 }

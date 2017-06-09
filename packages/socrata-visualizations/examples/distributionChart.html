@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: Distribution Chart</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+  </head>
+  <style>
+    body {
+      font-family: sans-serif;
+      font-size: 0.85rem;
+    }
+
+    [id^="distribution-chart"] {
+      margin: 100px auto 0 auto;
+      width: 800px;
+      height: 300px;
+      border: 1px #eee solid;
+    }
+
+    text::selection {
+      background: none;
+    }
+  </style>
+  <body>
+    <div id="distribution-chart-1"></div>
+    <div id="distribution-chart-2"></div>
+    <div id="distribution-chart-3"></div>
+
+    <!-- Include external vendor -->
+    <script type="text/javascript" src="./vendor.js"></script>
+
+    <!-- Include bundle -->
+    <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+    <script>
+      function renderDistributionChart1() {
+        var element = document.querySelector('#distribution-chart-1');
+
+        // Vif
+        var vif = {
+          columnName: 'ward',
+          domain: 'dataspace.demo.socrata.com',
+          datasetUid: 'fdqy-yyme',
+          configuration: {
+            bucketType: 'linear'
+          },
+          filters: [],
+          type: 'distributionChart'
+        };
+
+        // Distribution chart
+        $(element).socrataDistributionChart(vif);
+
+        // Flyouts
+        var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+        $(element).on('SOCRATA_VISUALIZATION_DISTRIBUTION_CHART_FLYOUT', handleFlyout);
+
+        function handleFlyout(event) {
+          var payload = event.originalEvent.detail;
+
+          if (_.isNull(payload)) {
+            flyoutRenderer.clear();
+          } else {
+            flyoutRenderer.render(payload);
+          }
+        }
+
+        // Filters
+        $(element).on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
+        function handleVifUpdated(event) {
+          console.log(event.originalEvent.detail);
+        }
+      }
+
+      function renderDistributionChart2() {
+        var element = document.querySelector('#distribution-chart-2');
+
+        // Vif
+        var vif = {
+          columnName: 'water_temperature',
+          domain: 'opendata-anu.rc-socrata.com',
+          datasetUid: 'rfcu-t36e',
+          configuration: {
+            bucketType: 'linear'
+          },
+          filters: [],
+          type: 'distributionChart'
+        };
+
+        // Distribution chart
+        $(element).socrataDistributionChart(vif);
+
+        // Flyouts
+        var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+        $(element).on('SOCRATA_VISUALIZATION_DISTRIBUTION_CHART_FLYOUT', handleFlyout);
+
+        function handleFlyout(event) {
+          var payload = event.originalEvent.detail;
+
+          if (_.isNull(payload)) {
+            flyoutRenderer.clear();
+          } else {
+            flyoutRenderer.render(payload);
+          }
+        }
+
+        // Filters
+        $(element).on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
+        function handleVifUpdated(event) {
+          console.log(event.originalEvent.detail);
+        }
+      }
+
+      function renderDistributionChart3() {
+        var element = document.querySelector('#distribution-chart-3');
+
+        // Vif
+        var vif = {
+          columnName: 'wave_period',
+          domain: 'opendata-anu.rc-socrata.com',
+          datasetUid: 'rfcu-t36e',
+          configuration: {
+            bucketType: 'linear'
+          },
+          filters: [],
+          type: 'distributionChart',
+          aggregation: {
+            field: 'wave_height',
+            'function': 'sum'
+          }
+        };
+
+        // Distribution chart
+        $(element).socrataDistributionChart(vif);
+
+        // Flyouts
+        var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+        $(element).on('SOCRATA_VISUALIZATION_DISTRIBUTION_CHART_FLYOUT', handleFlyout);
+
+        function handleFlyout(event) {
+          var payload = event.originalEvent.detail;
+
+          if (_.isNull(payload)) {
+            flyoutRenderer.clear();
+          } else {
+            flyoutRenderer.render(payload);
+          }
+        }
+
+        // Filters
+        $(element).on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+
+        function handleVifUpdated(event) {
+          console.log(event.originalEvent.detail);
+        }
+      }
+
+      renderDistributionChart1();
+      renderDistributionChart2();
+      renderDistributionChart3();
+    </script>
+  </body>
+</html>

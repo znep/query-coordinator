@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: SampleChart.js</title>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <!-- Include styleguide to test for style namespace collisions -->
+    <link rel="stylesheet" media="all" href="../node_modules/socrata-components/dist/css/styleguide.css">
+    <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+      }
+
+      #sample-chart-1,
+      #sample-chart-2 {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 100px auto 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="destroy-all">Destroy All</button>
+    <div id="sample-chart-1"></div>
+    <div id="sample-chart-2"></div>
+  </body>
+
+  <!-- Include external vendor -->
+  <script type="text/javascript" src="./vendor.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      /**
+       * Set up VIFs
+       */
+
+      var DIMENSION = 'arrest';
+      var DATASET_UID = '6zsd-86xi';
+      var DOMAIN = 'data.cityofchicago.org';
+      var FILTERS = [];
+
+      var sampleChart1Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: false,
+            right: false,
+            bottom: 'Arrest made?',
+            left: false
+          }
+        },
+        description: 'Percentage of crimes for which an arrest was made in Chicago',
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa'
+            },
+            dataSource: {
+              datasetUid: DATASET_UID,
+              dimension: {
+                columnName: DIMENSION,
+                aggregationFunction: null
+              },
+              domain: DOMAIN,
+              measure: {
+                columnName: null,
+                aggregationFunction: null
+              },
+              type: 'socrata.soql',
+              filters: FILTERS
+            },
+            label: 'Arrest',
+            type: 'sampleChart',
+            unit: {
+              one: 'crime',
+              other: 'crimes'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Do You Like These Odds?'
+      };
+
+      var sampleChart2Vif = {
+        configuration: {
+          viewSourceDataLink: true,
+          axisLabels: {
+            top: false,
+            right: false,
+            bottom: 'Arrest made?',
+            left: false
+          }
+        },
+        description: '(Static Fake Data) Percentage of crimes for which an arrest was made in Fakeland',
+        series: [
+          {
+            color: {
+              secondary: null,
+              highlight: '#44ffaa'
+            },
+            dataSource: {
+              data: {
+                columns: ['dimension', 'measure'],
+                rows: [
+                  [true, 0.67],
+                  [false, 0.33]
+                ]
+              },
+              type: 'socrata.sample'
+            },
+            label: 'Arrest',
+            type: 'sampleChart',
+            unit: {
+              one: 'crime',
+              other: 'crimes'
+            }
+          }
+        ],
+        createdAt: '2014-01-01T00:00:00',
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        origin: {
+          type: 'test_data',
+          url: 'localhost'
+        },
+        title: 'Do You Like These (Static Fake Data) Odds?'
+      };
+
+      /**
+       * Instantiate the plugins
+       */
+
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+      $('#destroy-all').on('click', function() {
+
+        $sampleChart1Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+        $sampleChart1Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+        $sampleChart1Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+
+        $sampleChart2Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+        $sampleChart2Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+        $sampleChart2Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+      });
+
+      var $sampleChart1Element = $('#sample-chart-1');
+      $sampleChart1Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $sampleChart1Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $sampleChart1Element.socrataSampleChart(sampleChart1Vif);
+
+      var $sampleChart2Element = $('#sample-chart-2');
+      $sampleChart2Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      $sampleChart2Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $sampleChart2Element.socrataSampleChart(sampleChart2Vif);
+
+      /**
+       * Handle plugin events
+       */
+
+      function handleFlyout(event) {
+        var payload = event.originalEvent.detail;
+
+        // Render/hide a flyout
+        if (payload !== null) {
+
+          flyoutRenderer.render(payload);
+
+        } else {
+
+          flyoutRenderer.clear();
+        }
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
+      }
+    });
+  </script>
+</html>

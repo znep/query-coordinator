@@ -36,8 +36,13 @@ class Notifications extends Component {
     });
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('mouseup', this.hideOnOutsideClick);
+    window.removeEventListener('keyup', this.hideOnEscapeKeypress);
+  }
+
   hideOnOutsideClick(event) {
-    if (!event.target.closest('#socrata-notifications-container')) {
+    if (event.target && event.target.closest && !event.target.closest('#socrata-notifications-container')) {
       this.toggleList();
     }
   }

@@ -11,13 +11,6 @@ var webpackConfig = {
   module: {
     loaders: [
       {
-        loader: nodeResolve('raw-loader'),
-        test: /\.svg$/,
-        include: `${platformUiRoot}/common/resources/fonts/svg`
-      }
-    ],
-    loaders: [
-      {
         test: /\.jsx?$/,
         loader: nodeResolve('babel-loader'),
         exclude: /node_modules/,
@@ -56,7 +49,20 @@ var webpackConfig = {
           nodeResolve('css-loader') + '?modules&importLoaders=1&localIdentName=[path]_[name]_[local]_[hash:base64:5]',
           nodeResolve('autoprefixer-loader'),
           nodeResolve('sass-loader')
-        ]
+        ],
+        exclude: /node_modules|visualizations/
+      },
+      {
+        // Special style loader for visualizations - they can't
+        // tolerate autoprefixer, but the styleguide styles _require_
+        // autoprefixer (for phantomjs compatibility).
+        test: /\.(css|scss)$/,
+        loaders: [
+          nodeResolve('style-loader'),
+          nodeResolve('css-loader'),
+          nodeResolve('sass-loader')
+        ],
+        include: /visualizations/
       },
     ]
   },
@@ -70,6 +76,7 @@ var webpackConfig = {
       `${platformUiRoot}/node_modules/normalize.css`,
       `${platformUiRoot}/node_modules/react-input-range/dist`,
       `${platformUiRoot}/node_modules/react-datepicker/dist`,
+      `${platformUiRoot}/common/authoring_workflow`,
       `${platformUiRoot}/common`,
       platformUiRoot
     ]
@@ -108,7 +115,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'chai-dom', 'chai', 'sinon'],
 
     // list of files / patterns to load in the browser
     files: [

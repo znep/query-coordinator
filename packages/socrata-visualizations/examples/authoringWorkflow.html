@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: AuthoringWorkflow</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <link rel="stylesheet" media="all" href="../node_modules/socrata-components/dist/css/styleguide.css">
+    <link rel="stylesheet" media="all" href="../node_modules/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+
+    <style>
+      .custom-vif {
+        background-color: purple;
+      }
+
+      .custom-dataset-uid {
+        background-color: orange;
+      }
+
+      #chart {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 490px;
+      }
+
+      #outputs .text-output pre {
+        background: #ddd;
+        width: 100%;
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+
+  <body>
+    Select a preloaded VIF to launch AX:
+    <p id="vif-selections"></p>
+    <p>Or:
+      <button id="custom-vif" class="btn">Paste a VIF</button>
+      <button id="custom-dataset-uid" class="btn">Use a localhost dataset UID</button>
+      <button id="edit" class="btn btn-secondary">Edit Current</button>
+    </p>
+
+    <div id="authoring-workflow"></div>
+
+    <strong>Feature Flags:</strong>
+    <button id="edit-feature-flags">Set</button>
+    <pre id="feature-flags"></pre>
+
+    <section id='outputs'>
+      <div id="chart"></div>
+
+      <strong>Vif:</strong>
+      <div class="text-output">
+        <button class="select">Select</button>
+        <pre id="vif-output"></pre>
+      </div>
+
+      <strong>Embed code:</strong>
+      <div class="text-output">
+        <button class="select">Select</button>
+        <pre id="embed-code-output"></pre>
+      </div>
+
+      <strong>Filters:</strong>
+      <div class="text-output">
+        <pre id="filter-output"></pre>
+      </div>
+    </section>
+  </body>
+
+  <!-- Include external vendor -->
+  <script type="text/javascript" src="./vendor.js"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+  <script type="text/javascript" src="./sample-vifs.js"></script>
+
+  <script type="text/javascript">
+    var vif;
+    var filters;
+    var authoringWorkflow;
+    var AuthoringWorkflow = socrata.visualizations.AuthoringWorkflow;
+    var VisualizationRenderer = socrata.visualizations.VisualizationRenderer;
+    var container = document.querySelector('#authoring-workflow');
+    var vifOutput = document.querySelector('#vif-output');
+    var embedCodeOutput = document.querySelector('#embed-code-output');
+    var filterOutput = document.querySelector('#filter-output');
+    var chart = document.querySelector('#chart');
+    var visualization;
+
+    $('#edit, #outputs').hide();
+
+    function printFeatureFlags() {
+      $('#feature-flags').text(JSON.stringify(window.socrata.featureFlags, null, '  '));
+    }
+
+    printFeatureFlags();
+
+    $('#edit-feature-flags').click(function() {
+      var flag = prompt('Flag name');
+      if (!flag) { return; }
+      var value = prompt('Flag value');
+      if (!value) { return; }
+      if (value === 'true') {
+        value = true;
+      }
+      if (value === 'false') {
+        value = false;
+      }
+      window.socrata.featureFlags[flag] = value;
+      printFeatureFlags();
+    });
+
+    function addVifButton(vif, vifName, extraClass) {
+      return $('#vif-selections').append(
+        $('<button class="launch btn btn-primary">'+vifName+'</button>').
+          data('vif', vif).
+          addClass(extraClass)
+      );
+    }
+
+    _.each(window.socrata.sampleVifs, addVifButton);
+
+    var onComplete = function(result) {
+      vif = result.vif;
+      filters = result.filters;
+      vifOutput.innerHTML = JSON.stringify(vif, null, 2);
+      filterOutput.innerHTML = JSON.stringify(filters, null, 2);
+
+      $(embedCodeOutput).text(socrata.visualizations.generateEmbedCode(vif, {
+        height: 500,
+        width: 400
+      }));
+
+      if (visualization) {
+        visualization.destroy();
+      }
+
+      visualization = new VisualizationRenderer(result.vif, chart);
+
+      authoringWorkflow.destroy();
+      $('#edit, #outputs').show();
+    };
+
+    var onCancel = function() {
+      authoringWorkflow.destroy();
+    };
+
+    var onBack = function() {
+      console.log('Back to somewhere!');
+    };
+
+    function launchAx(vifToLoad) {
+      authoringWorkflow = new AuthoringWorkflow(container, {
+        vif: vifToLoad,
+        filters: filters,
+        backButtonText: 'Back to Dataset Selection',
+        enableFiltering: true,
+        onComplete: onComplete,
+        onCancel: onCancel,
+        onBack: onBack,
+        useLogger: true
+      });
+    }
+
+    $('#custom-vif').click(function() {
+      var customVif = prompt('Paste yer vif here.');
+      try {
+        if (customVif) {
+          customVif = JSON.parse(customVif);
+          addVifButton(customVif, _.uniqueId('Custom VIF '), 'custom-vif');
+        }
+      } catch (e) {
+        alert(e);
+      }
+    });
+
+    $('#custom-dataset-uid').click(function() {
+      var customDatasetUid = prompt('Paste your localhost four-by-four here.');
+      try {
+        if (customDatasetUid) {
+          var localhostVIF = {
+            format: {
+              type: 'visualization_interchange_format',
+              version: 2
+            },
+            series: [
+              {
+                dataSource: {
+                  domain: 'localhost',
+                  datasetUid: customDatasetUid
+                }
+              }
+            ]
+          };
+
+          addVifButton(localhostVIF, _.uniqueId('Custom Dataset UID '), 'custom-dataset-uid');
+        }
+      } catch (e) {
+        alert(e);
+      }
+    });
+
+    $('#vif-selections').on('click', 'button', function(evt) {
+      launchAx($(evt.target).data('vif'));
+    });
+    $('#edit').click(function() { launchAx(vif); });
+    $('button.select').click(function(evt) {
+      document.getSelection().removeAllRanges();
+      var range = document.createRange();
+      range.selectNode($(evt.target).nextAll('pre, code')[0]);
+      window.getSelection().addRange(range);
+    });
+  </script>
+</html>

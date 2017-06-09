@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: Table.js</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    <!-- Include styleguide to test for style namespace collisions -->
+    <link rel="stylesheet" media="all" href="../node_modules/socrata-components/dist/css/styleguide.css">
+    <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+        margin: 0;
+      }
+
+      [id^="table-"] {
+        margin: 0 2%;
+        width: 96%;
+        height: 640px;
+      }
+
+      #table-8,
+      #table-9 {
+        height: 665px;
+      }
+
+      #table-9 {
+        width: 240px;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="kill-btn">Destroy all</button>
+    <p>Chicago crimes, unfiltered</p>
+    <div id="table-1"></div>
+    <p>Chicago crimes filtered via VIF (description = POSS: CRACK)</p>
+    <div id="table-2"></div>
+    <p>Prod derived view filtered inherently (crime type = burglary)</p>
+    <div id="table-3"></div>
+    <p>Staging derived view filtered inherently (type = bunnies)</p>
+    <div id="table-4"></div>
+    <p>Tests rendering an error the table's dataset cannot be found</p>
+    <div id="table-5"></div>
+    <p>Tests rendering a table based on an OBE dataset</p>
+    <div id="table-6"></div>
+    <p>Tests rendering a table with specified column widths</p>
+    <div id="table-7"></div>
+    <p>Tests rendering a table directly from a version 2 vif</p>
+    <div id="table-8"></div>
+    <p>Tests rendering a table at a small width, which causes the pager label to be omitted</p>
+    <div id="table-9"></div>
+    <p>Tests various money column configurations. Expected values:
+      <table>
+        <tr>
+          <td>currency_1</td>
+          <td>currency_2</td>
+          <td>currency_3</td>
+          <td>currency_4</td>
+          <td>currency_5</td>
+          <td>currency_6</td>
+          <td>currency_7</td>
+          <td>currency_8</td>
+          <td>currency_9</td>
+          <td>currency_10</td>
+        </tr>
+        <tr>
+          <td>$100,000</td>
+          <td>$100,000.0</td>
+          <td>$100K</td>
+          <td>$100.00K</td>
+          <td>$100,000</td>
+          <td>$100,000</td>
+          <td>$100,000</td>
+          <td>€100,000</td>
+          <td>£100,000</td>
+          <td>руб100,000</td>
+        </tr>
+      </table>
+    </p>
+    <div id="table-10"></div>
+
+    <p>Tests hidden columns. In the example below, all columns in the dataset except for 'name' and 'birthday' have been hidden in the grid view.</p>
+    <div id="table-11"></div>
+    <p>Tests human readable location columns. In the example below, Location column should show address fields as well as latitude longitude data.
+    <div id="table-12"></div>
+    <p>Nothing here should alert on page load or user interaction. If it does, that's an XSS vulnerability which needs to be fixed immediately.</p>
+    <div id="table-xss"></div>
+    <p>Tests tables without VIF sort order.</p>
+    <div id="table-dataset-query-sort"></div>
+    <p>Tests table without VIF sort order or dataset query.</p>
+    <div id="table-system-id-sort"></div>
+    <p>Tests tables without default sort order for a grouped view.</p>
+    <div id="table-grouped-sort-order"></div>
+  </body>
+
+  <!-- Include external vendor -->
+  <script type="text/javascript" src="./vendor.js" charset="utf-8"></script>
+
+  <!-- Include bundle -->
+  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+
+  <script type="text/javascript">
+
+    // begin table VIF definitions
+
+    var COLUMN_NAME = 'block';
+    var DATASET_UID = '6zsd-86xi';
+    var DOMAIN = 'data.cityofchicago.org';
+
+    var table1VIF = {
+      'aggregation': {
+        'columnName': null,
+        'function': 'count'
+      },
+      'configuration': {
+        'order': [{
+          ascending: true,
+          columnName: COLUMN_NAME
+        }]
+      },
+      'createdAt': '2014-01-01T00:00:00',
+      'datasetUid': DATASET_UID,
+      'description': 'Crazy things are sometimes seen at night in Mississippi...',
+      'domain': DOMAIN,
+      'filters': [],
+      'format': {
+        'type': 'visualization_interchange_format',
+        'version': 1
+      },
+      'origin': {
+        'type': 'test_data',
+        'url': 'localhost'
+      },
+      'title': 'UFO Sightings',
+      'type': 'table',
+      'unit': {
+        'one': 'case',
+        'other': 'cases'
+      }
+    };
+
+    var $table1Element = $('#table-1');
+    $table1Element.socrataTable(table1VIF);
+
+    var $table2Element = $('#table-2');
+    var table2VIF = _.cloneDeep(table1VIF);
+    table2VIF.filters = [
+      {
+        'function': 'binaryOperator',
+        'columnName': 'description',
+        'arguments': {
+          'operator': '=',
+          'operand': 'POSS: CRACK'
+        }
+      }
+    ];
+    $table2Element.socrataTable(table2VIF);
+
+    var $table3Element = $('#table-3');
+    var table3VIF = _.cloneDeep(table1VIF);
+    table3VIF.columnName = 'crime_type';
+    table3VIF.configuration.order = [{
+      ascending: true,
+      columnName: 'crime_type'
+    }];
+    table3VIF.datasetUid = 'kr2s-ychr';
+    table3VIF.domain = 'stories.demo.socrata.com';
+    $table3Element.socrataTable(table3VIF);
+
+    var $table4Element = $('#table-4');
+    var table4VIF = _.cloneDeep(table1VIF);
+    table4VIF.columnName = 'crime_type';
+    table4VIF.configuration.order = [{
+      ascending: true,
+      columnName: 'date'
+    }];
+    table4VIF.datasetUid = 'fhhu-4yqk';
+    table4VIF.domain = 'vertex-stories.test-socrata.com';
+    $table4Element.socrataTable(table4VIF);
+
+    var $table5Element = $('#table-5');
+    var table5VIF = _.cloneDeep(table4VIF);
+    table5VIF.datasetUid = 'notf-ound';
+    $table5Element.socrataTable(table5VIF);
+
+    var $table6Element = $('#table-6');
+    var table6VIF = _.cloneDeep(table1VIF);
+    table6VIF.datasetUid = '7uf8-tam8';
+    table6VIF.domain = 'opendata-demo.rc-socrata.com';
+    table6VIF.configuration.allowObeDataset = true;
+    table6VIF.configuration.order = [{
+      ascending: true,
+      columnName: 'plain_text'
+    }];
+    $table6Element.socrataTable(table6VIF);
+
+    var $table7Element = $('#table-7');
+    var table7VIF = _.cloneDeep(table1VIF);
+    table7VIF.configuration.tableColumnWidths = {
+      "id":66,
+      "case_number":76,
+      "date":86,
+      "block":96,
+      "iucr":106,
+      "primary_type":116,
+      "description":126,
+      "location_description":136,
+      "arrest":146,
+      "domestic":156,
+      "beat":166,
+      "district":176,
+      "ward":186,
+      "community_area":196,
+      "fbi_code":206,
+      "x_coordinate":216,
+      "y_coordinate":226,
+      "year":236,
+      "updated_on":246,
+      "latitude":256,
+      "longitude":266,
+      "location":276
+    };
+    $table7Element.socrataTable(table7VIF);
+
+    var $table8Element = $('#table-8');
+    var table8VIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: COLUMN_NAME
+        }],
+        viewSourceDataLink: false
+      },
+      description: 'Table description',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: DATASET_UID,
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: DOMAIN,
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table title'
+    };
+    $table8Element.socrataTable(table8VIF);
+
+    var $table9Element = $('#table-9');
+    $table9Element.socrataTable(table8VIF);
+
+    var table10VIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: 'currency_1'
+        }],
+        viewSourceDataLink: false
+      },
+      description: 'Table description',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: '6a8v-tndy',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'vertex-stories.test-socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table title'
+    };
+    var $table10Element = $('#table-10');
+    $table10Element.socrataTable(table10VIF);
+
+    var table11VIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: 'name'
+        }],
+        viewSourceDataLink: false
+      },
+      description: 'Only name and birthday columns should be visible',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: 'eygp-tzh7',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'catastrophiccats.test-socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table title'
+    };
+
+    var $table11Element = $('#table-11');
+    $table11Element.socrataTable(table11VIF);
+
+    var table12VIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: 'url'
+        }],
+        viewSourceDataLink: false
+      },
+      description: 'Human readable location fields should be present in location field',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: 'h4eh-xutb',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'dataspace.demo.socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Human Readable Location'
+    };
+
+    var $table12Element = $('#table-12');
+    $table12Element.socrataTable(table12VIF);
+
+    var tableXSSVIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        order: [{
+          ascending: true,
+          columnName: 'stuff'
+        }]
+      },
+      description: 'If anything causes an alert, you done goofed',
+      series: [
+        {
+          dataSource: {
+            datasetUid: 'iws2-sdyk',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'stories.rc-socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'vulnerability',
+            other: 'vulnerabilities'
+          }
+        }
+      ],
+      title: 'XSS test'
+    };
+
+    var $tableXSSElement = $('#table-xss');
+    $tableXSSElement.socrataTable(tableXSSVIF);
+
+    var tableDatasetQuerySortVIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        viewSourceDataLink: false
+      },
+      description: 'This table sorts by the dataset query when a VIF sort order is not defined',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: DATASET_UID,
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: DOMAIN,
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table without a VIF sort order'
+    };
+
+    var $tableDatasetQuerySortElement = $('#table-dataset-query-sort');
+    $tableDatasetQuerySortElement.socrataTable(tableDatasetQuerySortVIF);
+
+    var tableSystemIdSortOrderVIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        viewSourceDataLink: false
+      },
+      description: 'This table sorts by the system id',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: 'eygp-tzh7',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'catastrophiccats.test-socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table without VIF sort order or dataset query'
+    };
+
+    var $tableSystemIdSort = $('#table-system-id-sort');
+    $tableSystemIdSort.socrataTable(tableSystemIdSortOrderVIF);
+
+
+    var tableGroupedSortOrderVIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        viewSourceDataLink: false
+      },
+      description: 'This table makes an educated guess about which column to sort by',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: '4zka-v48z',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'opendata-demo.test-socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: []
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: 'Table based on a grouped view without a VIF sort order'
+    };
+
+    var $tableGroupedSortOrderElement = $('#table-grouped-sort-order');
+    $tableGroupedSortOrderElement.socrataTable(tableGroupedSortOrderVIF );
+
+    // Begin table event handling
+
+    var $tables = $('[id^=table-]');
+    var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+    $(window).resize(function() {
+      $tables.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
+    });
+
+    $tables.on('SOCRATA_VISUALIZATION_FLYOUT', function(event) {
+      if (event.originalEvent.detail) {
+        flyoutRenderer.render(event.originalEvent.detail);
+      } else {
+        flyoutRenderer.clear();
+      }
+    });
+
+    $tables.on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(event) {
+      console.log('VIF UPDATED', event.originalEvent.detail);
+    });
+
+
+
+    /**
+     * Destroy the plugin.
+     *
+     * The plugin (and all internal modules) can be destroyed by triggering
+     * `destroy` on the element.
+     */
+    $('#kill-btn').click(function() { $tables.trigger('SOCRATA_VISUALIZATION_DESTROY'); });
+  </script>
+</html>

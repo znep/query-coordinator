@@ -2,10 +2,6 @@ import 'babel-polyfill-safe';
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import createLogger from 'redux-logger';
-import thunk from 'redux-thunk';
-import createDebounce from 'redux-debounced';
-import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { t } from 'lib/I18n';
 import confirmUnload from 'lib/confirmUnload';
@@ -20,25 +16,12 @@ import '../common/mixpanel'; // This initializes mixpanel
 // add styling for socrata-viz maps
 import 'leaflet/dist/leaflet.css';
 
-import visualizationCanvas from './reducer';
+import store from './store';
 import App from './App';
 
-import { fetchColumnStats } from './actions';
-
-const middleware = [thunk, createDebounce()];
-
-if (window.serverConfig.environment === 'development') {
-  middleware.push(createLogger({
-    duration: true,
-    timestamp: false,
-    collapsed: true
-  }));
-} else {
+if (window.serverConfig.environment !== 'development') {
   airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
-
-const store = createStore(visualizationCanvas, applyMiddleware(...middleware));
-store.dispatch(fetchColumnStats());
 
 window.onbeforeunload = confirmUnload(store);
 

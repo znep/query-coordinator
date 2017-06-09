@@ -23,8 +23,8 @@ and [jQuery](https://jquery.com).
 
 ## Examples
 
-The `packages/examples` directory contains demos that show how each supported visualization can be consumed. Please see
-the [instructions](https://github.com/socrata/platform-ui/tree/master/packages/socrata-visualizations#example-pages).
+We maintain a list of example visualizations in the Internal Panel. See the links
+[here](https://github.com/socrata/platform-ui/tree/master/#socrata-visualizations-example-pages).
 
 
 ## Embeds

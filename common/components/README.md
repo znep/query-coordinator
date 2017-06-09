@@ -91,9 +91,6 @@ There is a top-level `styleguide` stylesheet that is the entry point into `parti
 
 ## Contributing
 
-*Side note*: If your application still pulls in components via the `socrata-components` legacy package, you'll
-want to read [the legacy docs](https://github.com/socrata/platform-ui/blob/master/packages/socrata-components/README.md).
-
 The easiest way to develop changes to `components` is to use a real application (such as frontend) as a test host for
 your changes. A project to prepare the [styleguide sample app](https://github.com/socrata/platform-ui/blob/master/styleguide-sample-app/README.md)
 for usage as a test host is underway but is not ready for use.
@@ -106,7 +103,7 @@ All components must have tests for major functionality. Please place your tests 
 
 *Side note*: We should add an example component just like our ExampleTest suite.
 
-1. Ensure the component really belongs in `common`. See the [common top-level readme](https://github.com/socrata/platform-ui/blob/master/packages/socrata-components/README.md)
+1. Ensure the component really belongs in `common`. See the [common top-level readme](https://github.com/socrata/platform-ui/blob/master/common/README.md)
   for more details.
 2. Add your JS implementation under `common/components/$YOUR_NEW_COMPONENT/index.js`.
   You may add additional helper files alongside if you pull them in via `index.js`.
@@ -123,4 +120,4 @@ All components must have tests for major functionality. Please place your tests 
 4. Export your new component via `common/components/index.js`. 
 5. Pull in your styles via `common/styleguide/styleguide-no-tag-level.scss`
 6. *Write your tests.*
-7. Get a design review as outlined in the [common top-level readme](https://github.com/socrata/platform-ui/blob/master/packages/socrata-components/README.md)
+7. Get a design review as outlined in the [common top-level readme](https://github.com/socrata/platform-ui/blob/master/common/README.md)

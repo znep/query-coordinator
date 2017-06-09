@@ -19,7 +19,9 @@ There are two example applications which are useful for testing and developing c
 
 ### Visualizations Example Pages
 
-Please see the [README](https://github.com/socrata/platform-ui/tree/master/packages/socrata-visualizations#example-pages).
+These live under the internal panel:
+[localhost](https://localhost/internal/demos)
+[staging](https://stories.test-socrata.com/internal/demos)
 
 ### Styleguide Sample App
 

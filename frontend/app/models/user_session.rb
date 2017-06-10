@@ -51,7 +51,14 @@ class UserSession
   #   UserSession.new
   #   UserSession.new(:login => 'login', :password => 'password')
   def initialize(*args)
+    # NOTE: This is often caused when a request encounters an error before the before_filters
+    # can run (usually because the rails route references a missing action handler.
     raise NotActivatedError.new(self) unless self.class.activated?
+    # (comment split so it shows up in the error page more clearly). The Airbrake middleware
+    # is often responsible for triggering this error because it attempts to get the current
+    # user even if there's an error early in the routing. To work around this, you can replace
+    # the contents of UserAuthMethods#current_user with a simple 'return nil'. This will at least
+    # allow you to see the original error.
 
     if args.size == 1 && args.first.is_a?(Hash)
       self.credentials = args.first
@@ -314,6 +321,6 @@ end
 
 class NotActivatedError < StandardError
   def initialize(session)
-    super('You must first activate the authentication controller hook by setting UserSession.controller.')
+    super('You must first activate the authentication controller hook by setting UserSession.controller. This can be caused by a missing controller action.')
   end
 end

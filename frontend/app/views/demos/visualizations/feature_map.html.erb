@@ -1,41 +1,25 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Example Usage: FeatureMap.js</title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <!-- `leaflet.css` must be included or the map will render incorrectly -->
-    <link rel="stylesheet" media="all" href="../node_modules/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
-    <style type="text/css">
+<% content_for :head do %>
+  <title>Example Usage: FeatureMap.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'visualizations' %>
+  <style type="text/css">
+    #feature-map-1,
+    #feature-map-2,
+    #feature-map-3 {
+      display: block;
+      position: relative;
+      width: 640px;
+      height: 480px;
+      margin: 50px auto 0 auto;
+    }
 
-      body {
-        font-size: 10px;
-        font-family: sans-serif;
-      }
+  </style>
+<% end %>
 
-      #feature-map-1,
-      #feature-map-2,
-      #feature-map-3 {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 50px auto 0 auto;
-      }
+<% content_for :scripts do %>
+  <%= render_feature_flags_for_javascript %>
 
-    </style>
-  </head>
-  <body>
-    <div id="feature-map-1"></div>
-    <div id="feature-map-2"></div>
-    <div id="feature-map-3"></div>
-  </body>
-
-  <!-- Include external vendor -->
-  <script type="text/javascript" src="./vendor.js"></script>
-
-  <!-- Include bundle -->
-  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+  <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
 
   <script type="text/javascript">
 
@@ -196,4 +180,10 @@
       // $featureMap3Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
     });
   </script>
-</html>
+<% end %>
+
+<a href='/internal'>Internal Panel Home</a><br>
+<a href='/internal/demos/visualizations'>Back to demo list</a>
+<div id="feature-map-1"></div>
+<div id="feature-map-2"></div>
+<div id="feature-map-3"></div>

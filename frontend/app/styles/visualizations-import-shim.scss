@@ -1,4 +1,5 @@
 // Our homegrown StylesController only looks for files in app/styles. Since our SCSS runtime
 // already knows how to pull in files from common/, it's hard to justify complicating StylesController.
 // Thus, this shim serves to unite the worlds of common/ and StylesController.
-@import 'common/styleguide/styleguide-no-tag-level';
+// TODO leaflet styles missing derp.
+@import 'common/visualizations/views/styles/socrata-visualizations';

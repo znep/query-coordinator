@@ -1,87 +1,40 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Example Usage: AuthoringWorkflow</title>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<% content_for :head do %>
+  <title>Example Usage: AuthoringWorkflow</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <%= rendered_stylesheet_tag 'visualizations' %>
+  <%= rendered_stylesheet_tag 'authoring-workflow' %>
+  <style>
+    .custom-vif {
+      background-color: purple;
+    }
 
-    <link rel="stylesheet" media="all" href="../node_modules/socrata-components/dist/css/styleguide.css">
-    <link rel="stylesheet" media="all" href="../node_modules/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
+    .custom-dataset-uid {
+      background-color: orange;
+    }
 
-    <style>
-      .custom-vif {
-        background-color: purple;
-      }
+    #chart {
+      display: block;
+      position: relative;
+      width: 640px;
+      height: 490px;
+    }
 
-      .custom-dataset-uid {
-        background-color: orange;
-      }
+    #outputs .text-output pre {
+      background: #ddd;
+      width: 100%;
+      word-wrap: break-word;
+    }
+  </style>
+<% end %>
 
-      #chart {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 490px;
-      }
 
-      #outputs .text-output pre {
-        background: #ddd;
-        width: 100%;
-        word-wrap: break-word;
-      }
-    </style>
-  </head>
+<% content_for :scripts do %>
+  <%= render_feature_flags_for_javascript %>
 
-  <body>
-    Select a preloaded VIF to launch AX:
-    <p id="vif-selections"></p>
-    <p>Or:
-      <button id="custom-vif" class="btn">Paste a VIF</button>
-      <button id="custom-dataset-uid" class="btn">Use a localhost dataset UID</button>
-      <button id="edit" class="btn btn-secondary">Edit Current</button>
-    </p>
-
-    <div id="authoring-workflow"></div>
-
-    <strong>Feature Flags:</strong>
-    <button id="edit-feature-flags">Set</button>
-    <pre id="feature-flags"></pre>
-
-    <section id='outputs'>
-      <div id="chart"></div>
-
-      <strong>Vif:</strong>
-      <div class="text-output">
-        <button class="select">Select</button>
-        <pre id="vif-output"></pre>
-      </div>
-
-      <strong>Embed code:</strong>
-      <div class="text-output">
-        <button class="select">Select</button>
-        <pre id="embed-code-output"></pre>
-      </div>
-
-      <strong>Filters:</strong>
-      <div class="text-output">
-        <pre id="filter-output"></pre>
-      </div>
-    </section>
-  </body>
-
-  <!-- Include external vendor -->
-  <script type="text/javascript" src="./vendor.js"></script>
-
-  <!-- Include bundle -->
-  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
-
-  <script type="text/javascript" src="./sample-vifs.js"></script>
+  <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
 
   <script type="text/javascript">
-    var vif;
-    var filters;
-    var authoringWorkflow;
-    var AuthoringWorkflow = socrata.visualizations.AuthoringWorkflow;
+    var AuthoringWorkflow = socrata.AuthoringWorkflow;
     var VisualizationRenderer = socrata.visualizations.VisualizationRenderer;
     var container = document.querySelector('#authoring-workflow');
     var vifOutput = document.querySelector('#vif-output');
@@ -89,6 +42,7 @@
     var filterOutput = document.querySelector('#filter-output');
     var chart = document.querySelector('#chart');
     var visualization;
+    var filters;
 
     $('#edit, #outputs').hide();
 
@@ -214,4 +168,41 @@
       window.getSelection().addRange(range);
     });
   </script>
-</html>
+<% end %>
+
+<a href='/internal'>Internal Panel Home</a><br>
+<a href='/internal/demos/visualizations'>Back to demo list</a><br>
+Select a preloaded VIF to launch AX:
+<p id="vif-selections"></p>
+<p>Or:
+  <button id="custom-vif" class="btn">Paste a VIF</button>
+  <button id="custom-dataset-uid" class="btn">Use a localhost dataset UID</button>
+  <button id="edit" class="btn btn-secondary">Edit Current</button>
+</p>
+
+<div id="authoring-workflow"></div>
+
+<strong>Feature Flags:</strong>
+<button id="edit-feature-flags">Set</button>
+<pre id="feature-flags"></pre>
+
+<section id='outputs'>
+  <div id="chart"></div>
+
+  <strong>Vif:</strong>
+  <div class="text-output">
+    <button class="select">Select</button>
+    <pre id="vif-output"></pre>
+  </div>
+
+  <strong>Embed code:</strong>
+  <div class="text-output">
+    <button class="select">Select</button>
+    <pre id="embed-code-output"></pre>
+  </div>
+
+  <strong>Filters:</strong>
+  <div class="text-output">
+    <pre id="filter-output"></pre>
+  </div>
+</section>

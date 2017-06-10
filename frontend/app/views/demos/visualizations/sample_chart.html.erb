@@ -1,40 +1,24 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Example Usage: SampleChart.js</title>
-    <meta charset="utf-8">
-    <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
-    <!-- Include styleguide to test for style namespace collisions -->
-    <link rel="stylesheet" media="all" href="../node_modules/socrata-components/dist/css/styleguide.css">
-    <style type="text/css">
+<% content_for :head do %>
+  <title>Example Usage: SampleChart.js</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'visualizations' %>
+  <style type="text/css">
+    #sample-chart-1,
+    #sample-chart-2 {
+      display: block;
+      position: relative;
+      width: 640px;
+      height: 480px;
+      margin: 100px auto 0 auto;
+    }
+  </style>
+<% end %>
 
-      body {
-        font-size: 10px;
-        font-family: sans-serif;
-      }
+<% content_for :scripts do %>
+  <%= render_feature_flags_for_javascript %>
 
-      #sample-chart-1,
-      #sample-chart-2 {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 100px auto 0 auto;
-      }
-    </style>
-  </head>
-  <body>
-    <button id="destroy-all">Destroy All</button>
-    <div id="sample-chart-1"></div>
-    <div id="sample-chart-2"></div>
-  </body>
-
-  <!-- Include external vendor -->
-  <script type="text/javascript" src="./vendor.js"></script>
-
-  <!-- Include bundle -->
-  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+  <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
 
   <script type="text/javascript">
 
@@ -204,4 +188,10 @@
       }
     });
   </script>
-</html>
+<% end %>
+
+<a href='/internal'>Internal Panel Home</a><br>
+<a href='/internal/demos/visualizations'>Back to demo list</a><br>
+<button id="destroy-all">Destroy All</button>
+<div id="sample-chart-1"></div>
+<div id="sample-chart-2"></div>

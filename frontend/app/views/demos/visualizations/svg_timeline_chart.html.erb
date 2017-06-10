@@ -1,59 +1,24 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Example Usage: SvgTimelineChart.js</title>
-    <meta charset="utf-8">
-    <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
-    <!-- Include styleguide to test for style namespace collisions -->
-    <link rel="stylesheet" media="all" href="../node_modules/socrata-components/dist/css/styleguide.css">
-    <style type="text/css">
+<% content_for :head do %>
+  <title>Example Usage: SvgTimelineChart.js</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'visualizations' %>
+  <style type="text/css">
+    [id^="timeline-chart-"] {
+      display: block;
+      position: relative;
+      width: 640px;
+      height: 480px;
+      margin: 0 auto;
+    }
 
-      body {
-        font-size: 10px;
-        font-family: sans-serif;
-      }
+  </style>
+<% end %>
 
-      [id^="timeline-chart-"] {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 0 auto;
-      }
+<% content_for :scripts do %>
+  <%= render_feature_flags_for_javascript %>
 
-    </style>
-  </head>
-  <body>
-    <p>With 'precision' set to 'DAY'</p>
-    <div id="timeline-chart-1"></div>
-    <p>Identical to the above except with 'precision' set to 'MONTH'</p>
-    <div id="timeline-chart-2"></div>
-    <p>Identical to the above except with 'precision' set to 'YEAR'</p>
-    <div id="timeline-chart-3"></div>
-    <p>Chart with null values</p>
-    <div id="timeline-chart-4"></div>
-    <p>Chart with null values and 'treatNullValuesAsZero' set to true</p>
-    <div id="timeline-chart-5"></div>
-    <p>Line variant with multiple series.
-    <div id="timeline-chart-6"></div>
-    <p>Version 1 vif, migrated at runtime to version 2. The data should be identical to the first chart on this page.</p>
-    <div id="timeline-chart-7"></div>
-    <p>Chart with OBE percent column as measure</p>
-    <div id="timeline-chart-8"></div>
-    <p>Measure axis limited between 35000 and 44000</p>
-    <div id="timeline-chart-9"></div>
-    <p>With dimension grouping enabled</p>
-    <div id="timeline-chart-10"></div>
-    <p>With precision set to 'month' as well as dimension grouping, measureAxisMinValue, measureAxisMaxValue and treatNullValuesAsZero enabled</p>
-    <div id="timeline-chart-11"></div>
-  </body>
-
-  <!-- Include external vendor -->
-  <script type="text/javascript" src="./vendor.js"></script>
-
-  <!-- Include bundle -->
-  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+  <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
 
   <script type="text/javascript">
 
@@ -558,4 +523,29 @@
       // $timelineChart1Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
     });
   </script>
-</html>
+<% end %>
+
+<a href='/internal'>Internal Panel Home</a><br>
+<a href='/internal/demos/visualizations'>Back to demo list</a>
+<p>With 'precision' set to 'DAY'</p>
+<div id="timeline-chart-1"></div>
+<p>Identical to the above except with 'precision' set to 'MONTH'</p>
+<div id="timeline-chart-2"></div>
+<p>Identical to the above except with 'precision' set to 'YEAR'</p>
+<div id="timeline-chart-3"></div>
+<p>Chart with null values</p>
+<div id="timeline-chart-4"></div>
+<p>Chart with null values and 'treatNullValuesAsZero' set to true</p>
+<div id="timeline-chart-5"></div>
+<p>Line variant with multiple series.
+<div id="timeline-chart-6"></div>
+<p>Version 1 vif, migrated at runtime to version 2. The data should be identical to the first chart on this page.</p>
+<div id="timeline-chart-7"></div>
+<p>Chart with OBE percent column as measure</p>
+<div id="timeline-chart-8"></div>
+<p>Measure axis limited between 35000 and 44000</p>
+<div id="timeline-chart-9"></div>
+<p>With dimension grouping enabled</p>
+<div id="timeline-chart-10"></div>
+<p>With precision set to 'month' as well as dimension grouping, measureAxisMinValue, measureAxisMaxValue and treatNullValuesAsZero enabled</p>
+<div id="timeline-chart-11"></div>

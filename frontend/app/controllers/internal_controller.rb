@@ -26,6 +26,12 @@ class InternalController < ApplicationController
   def index
   end
 
+  def demos
+    # Right now there are only visualization demos.
+    # In the future this will be a page with a list of demos.
+    redirect_to '/internal/demos/visualizations'
+  end
+
   def analytics
   end
 

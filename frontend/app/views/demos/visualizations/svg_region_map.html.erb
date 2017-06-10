@@ -1,58 +1,28 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Example Usage: SvgRegionMap.js</title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <!-- `leaflet.css` must be included or the map will render incorrectly -->
-    <link rel="stylesheet" media="all" href="../node_modules/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
-    <!-- Include styleguide to test for style namespace collisions -->
-    <link rel="stylesheet" media="all" href="../node_modules/socrata-components/dist/css/styleguide.css">
-    <style type="text/css">
+<% content_for :head do %>
+  <title>Example Usage: SvgRegionMap.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'visualizations' %>
+  <style type="text/css">
+    #region-map-1,
+    #region-map-2,
+    #region-map-3,
+    #region-map-4,
+    #region-map-5,
+    #region-map-6,
+    #region-map-7 {
+      display: block;
+      position: relative;
+      width: 640px;
+      height: 480px;
+      margin: 50px auto 0 auto;
+    }
+  </style>
+<% end %>
 
-      body {
-        font-size: 10px;
-        font-family: sans-serif;
-      }
+<% content_for :scripts do %>
+  <%= render_feature_flags_for_javascript %>
 
-      #region-map-1,
-      #region-map-2,
-      #region-map-3,
-      #region-map-4,
-      #region-map-5,
-      #region-map-6,
-      #region-map-7 {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 50px auto 0 auto;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="region-map-1"></div>
-    <div id="region-map-2"></div>
-    <div id="region-map-3"></div>
-    <div id="region-map-4"></div>
-    <div id="region-map-5"></div>
-    <p>
-      <em>EN-8901</em><br />
-      This Region Map tests for Vif 1 -> Vif 2 migration errors (specifically, the shapefile columns defined are "name", "filtered", "unfiltered" and "selected" and should be mapped to "name", "value" and "selected" in order for the scale and region shading to work correctly). The symptom of this problem is regions with correct-looking flyouts showing non-null values but a missing legend and (uniform grey) shading indicating that all regions have no value.
-    </p>
-    <div id="region-map-6"></div>
-    <p>
-      <em>EN-10812</em><br />
-      This region map tests the behavior of the legend when there are no renderable values. The legend should not be shown.
-    </p>
-    <div id="region-map-7"></div>
-  </body>
-
-  <!-- Include external vendor -->
-  <script type="text/javascript" src="./vendor.js"></script>
-
-  <!-- Include bundle -->
-  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+  <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
 
   <script type="text/javascript">
 
@@ -364,4 +334,22 @@
       // $regionMapElement5.trigger('SOCRATA_VISUALIZATION_DESTROY');
     });
   </script>
-</html>
+<% end %>
+
+<a href='/internal'>Internal Panel Home</a><br>
+<a href='/internal/demos/visualizations'>Back to demo list</a>
+<div id="region-map-1"></div>
+<div id="region-map-2"></div>
+<div id="region-map-3"></div>
+<div id="region-map-4"></div>
+<div id="region-map-5"></div>
+<p>
+  <em>EN-8901</em><br />
+  This Region Map tests for Vif 1 -> Vif 2 migration errors (specifically, the shapefile columns defined are "name", "filtered", "unfiltered" and "selected" and should be mapped to "name", "value" and "selected" in order for the scale and region shading to work correctly). The symptom of this problem is regions with correct-looking flyouts showing non-null values but a missing legend and (uniform grey) shading indicating that all regions have no value.
+</p>
+<div id="region-map-6"></div>
+<p>
+  <em>EN-10812</em><br />
+  This region map tests the behavior of the legend when there are no renderable values. The legend should not be shown.
+</p>
+<div id="region-map-7"></div>

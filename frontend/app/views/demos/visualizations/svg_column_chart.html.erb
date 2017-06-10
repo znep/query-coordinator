@@ -1,50 +1,23 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Example Usage: SvgColumnChart.js</title>
-    <meta charset="utf-8">
-    <meta http-equiv="content-type" content="text/html; charset=UTF8">
-    <link rel="stylesheet" media="all" href="../dist/socrata-visualizations.css">
-    <!-- Include styleguide to test for style namespace collisions -->
-    <link rel="stylesheet" media="all" href="../node_modules/socrata-components/dist/css/styleguide.css">
-    <style type="text/css">
+<% content_for :head do %>
+  <title>Example Usage: SvgColumnChart.js</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'visualizations' %>
+  <style type="text/css">
+    div[id^=column-chart-] {
+      display: block;
+      position: relative;
+      width: 640px;
+      height: 480px;
+      margin: 100px auto 0 auto;
+    }
+  </style>
+<% end %>
 
-      body {
-        font-size: 10px;
-        font-family: sans-serif;
-      }
+<% content_for :scripts do %>
+  <%= render_feature_flags_for_javascript %>
 
-      div[id^=column-chart-] {
-        display: block;
-        position: relative;
-        width: 640px;
-        height: 480px;
-        margin: 100px auto 0 auto;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="column-chart-1"></div>
-    <div id="column-chart-2"></div>
-    <div id="column-chart-3"></div>
-    <div id="column-chart-4"></div>
-    <div id="column-chart-5"></div>
-    <div id="column-chart-6"></div>
-    <p>Multi-series aggregated data with measure axis max value</p>
-    <div id="column-chart-7"></div>
-    <p>Multi-series aggregated data configured through a dimension grouping on number columns</p>
-    <div id="column-chart-8"></div>
-    <p>Multiple defined series and data grouping configured simultaneously should show an error</p>
-    <div id="column-chart-9"></div>
-    <p>Legend</p>
-    <div id="column-chart-10"></div>
-  </body>
-
-  <!-- Include external vendor -->
-  <script type="text/javascript" src="./vendor.js"></script>
-
-  <!-- Include bundle -->
-  <script type="text/javascript" src="../dist/socrata-visualizations.js"></script>
+  <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
 
   <script type="text/javascript">
 
@@ -665,4 +638,21 @@
       // $columnChart1Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
     });
   </script>
-</html>
+<% end %>
+
+<a href='/internal'>Internal Panel Home</a><br>
+<a href='/internal/demos/visualizations'>Back to demo list</a>
+<div id="column-chart-1"></div>
+<div id="column-chart-2"></div>
+<div id="column-chart-3"></div>
+<div id="column-chart-4"></div>
+<div id="column-chart-5"></div>
+<div id="column-chart-6"></div>
+<p>Multi-series aggregated data with measure axis max value</p>
+<div id="column-chart-7"></div>
+<p>Multi-series aggregated data configured through a dimension grouping on number columns</p>
+<div id="column-chart-8"></div>
+<p>Multiple defined series and data grouping configured simultaneously should show an error</p>
+<div id="column-chart-9"></div>
+<p>Legend</p>
+<div id="column-chart-10"></div>

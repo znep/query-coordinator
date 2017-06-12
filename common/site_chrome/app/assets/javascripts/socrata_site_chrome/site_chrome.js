@@ -96,6 +96,14 @@ function toggleCollapsibleSearch(self) {
   });
 }
 
+function toggleCollapsibleByKeypress(event) {
+  // 13 === ENTER, 32 === SPACE
+  if ([13, 32].includes(event.which)) {
+    var clickEvent = new Event('click', { 'bubbles': true });
+    event.target.dispatchEvent(clickEvent);
+  }
+}
+
 // Button appears only if text has been entered.
 function toggleSearchButton(self) {
   var $searchButton = $(self).closest('form').find('.search-button');

@@ -288,7 +288,6 @@ const loadData = (state, action) => {
     }
 
     case LOAD_COLUMN_ERRORS_SUCCESS: {
-      debugger;
       const stateWithUpdatedColData = _.reduce(
         action.colData,
         (result, dataForTransform, transformId) => (
@@ -363,7 +362,6 @@ const insertInputSchema = (state, action) => {
             })
           ))
       );
-      debugger;
 
       return dotProp.set(stateWithUpdatedInputSchemas, 'entities.input_columns', existingRecords => ({
         ...existingRecords,

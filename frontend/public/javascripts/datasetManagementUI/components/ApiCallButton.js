@@ -53,7 +53,7 @@ ApiCallButton.propTypes = {
 const SHOW_RESULT_STATE_FOR_MS = 1000;
 
 function mapStateToProps(state, ownProps) {
-  const apiCall = _.find(state.apiCalls, (call) => (
+  const apiCall = _.find(state.ui.apiCalls, (call) => (
     _.matches(call, {
       operation: ownProps.operation,
       params: ownProps.params

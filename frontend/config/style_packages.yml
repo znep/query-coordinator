@@ -162,8 +162,6 @@ administration-users:
 - screen-admin-users
 administration-view-moderation:
 - screen-administration-views
-administration-tos:
-- screen-administration-tos
 base-control:
 - control-pane
 - control-pane-custom

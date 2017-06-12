@@ -32,7 +32,7 @@ class AdministrationController < ApplicationController
   before_filter :only => [:datasets] { |request| request.check_auth_levels_any([UserRights::EDIT_OTHERS_DATASETS, UserRights::EDIT_SITE_THEME]) }
   before_filter :only => [:canvas_pages] { |request| request.check_auth_level(UserRights::EDIT_PAGES) }
   before_filter :only => [:create_canvas_page, :post_canvas_page] { |request| request.check_auth_level(UserRights::CREATE_PAGES) }
-  before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users, :delete_future_user, :re_enable_user, :tos ] { |request| request.check_auth_level(UserRights::MANAGE_USERS) }
+  before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users, :delete_future_user, :re_enable_user ] { |request| request.check_auth_level(UserRights::MANAGE_USERS) }
   before_filter :only => [:comment_moderation] { |request| request.check_auth_level(UserRights::MODERATE_COMMENTS) && request.check_module('publisher_comment_moderation') }
   before_filter :only => [:views] { |request| request.check_auth_level(UserRights::APPROVE_NOMINATIONS) && request.check_feature(:view_moderation) }
   before_filter :only => [:set_view_moderation_status] { |request| request.check_auth_level(UserRights::APPROVE_NOMINATIONS) }
@@ -1076,26 +1076,6 @@ class AdministrationController < ApplicationController
     respond_to do |format|
       format.html { redirect_to home_administration_path }
       format.data { render :json => config.to_json }
-    end
-  end
-
-  def tos
-    @tos = CurrentDomain.strings.terms_of_service
-    return render_404 if @tos.blank?
-
-    if request.post?
-      if params[:terms_accepted].present?
-        actions = ::Configuration.find_or_create_by_type('actions', :name => 'Actions')
-        create_or_update_property(actions, 'tos_accepted',
-          :user => current_user,
-          :text => @tos,
-          :timestamp => Time.now
-        )
-        flash[:notice] = t('screens.admin.tos.accepted')
-        redirect_to :action => :index
-      else
-        flash.now[:error] = t('screens.admin.tos.must_agree')
-      end
     end
   end
 

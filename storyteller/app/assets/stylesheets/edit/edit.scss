@@ -1,6 +1,7 @@
 @import 'lib/open-sans-font';
 @import 'lib/variables';
 @import 'tool-classes';
+@import 'components/filter-bar-corrections';
 
 html {
   font-family: "Open Sans", "Helvetica", sans-serif;
@@ -391,6 +392,8 @@ ul.quick-action-menu {
   button, input, keygen, select, textarea {
     line-height: 1.25;
   }
+
+  @include filter-bar-corrections;
 }
 
 #site-chrome-admin-header {

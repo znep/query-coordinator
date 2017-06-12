@@ -323,6 +323,7 @@ const insertInputSchema = (state, action) => {
             })
           ))
       );
+      debugger;
 
       return dotProp.set(stateWithUpdatedInputSchemas, 'entities.input_columns', existingRecords => ({
         ...existingRecords,

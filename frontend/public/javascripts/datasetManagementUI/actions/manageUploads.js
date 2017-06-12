@@ -288,10 +288,13 @@ export function insertInputSchema(upload) {
 
     const inputColumns = _.chain(upload.schemas)
       .flatMap(inputSchema => inputSchema.input_columns)
-      .reduce((acc, inputColumn) => ({
-        ...acc,
-        [inputColumn.id]: inputColumn
-      }))
+      .reduce(
+        (acc, inputColumn) => ({
+          ...acc,
+          [inputColumn.id]: inputColumn
+        }),
+        {}
+      )
       .value();
 
     dispatch({

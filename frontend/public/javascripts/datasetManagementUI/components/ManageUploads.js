@@ -25,6 +25,7 @@ function query(db) {
   };
 }
 
+// this whole page soon to be replaced: EN-16150
 export function ManageUploads({ uploads, createUpload, goHome }) {
   const modalProps = {
     fullScreen: true,
@@ -122,31 +123,7 @@ function mapDispatchToProps(dispatch, ownProps) {
 export default connect(mapStateToProps, mapDispatchToProps)(ManageUploads);
 
 function UploadListItem({ upload }) {
-  if (upload.__status__.type === STATUS_INSERTING) {
-    return <span>{upload.filename}</span>;
-  } else if (upload.__status__.type === STATUS_UPSERT_FAILED) {
-    return (
-      <span>
-        {I18n.manage_uploads.failed.format({
-          filename: upload.filename,
-          status: upload.__status__.error.response.statusText
-        })}
-      </span>
-    );
-  } else if (upload.input_schemas.length === 1 && upload.input_schemas[0].output_schemas.length === 1) {
-    return (
-      <Link
-        to={Links.showOutputSchema(
-          upload.id,
-          upload.input_schemas[0].id,
-          upload.input_schemas[0].output_schemas[0].id
-        )}>
-        {upload.filename}
-      </Link>
-    );
-  } else {
-    return <Link to={Links.showUpload(upload.id)}>{upload.filename}</Link>;
-  }
+  return <Link to={Links.showUpload(upload.id)}>{upload.filename}</Link>;
 }
 
 UploadListItem.propTypes = {

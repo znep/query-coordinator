@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { combineReducers } from 'redux';
 import reduceReducers from 'reduce-reducers';
 import dotProp from 'dot-prop-immutable';
@@ -287,26 +288,28 @@ const loadData = (state, action) => {
     }
 
     case LOAD_COLUMN_ERRORS_SUCCESS: {
-      const stateWithUpdatedColData = dotProp.set(state, 'entities.col_data', existingRecords => ({
-        ...existingRecords,
-        ...action.colData
-      }));
-
-      let stateWithUpdatedTransforms = stateWithUpdatedColData;
-
-      action.transformUpdates.forEach(
-        update =>
-          (stateWithUpdatedTransforms = dotProp.set(
-            stateWithUpdatedTransforms,
-            `entities.transforms.${update.id}`,
-            record => ({
-              ...record,
-              ...update
-            })
-          ))
+      debugger;
+      const stateWithUpdatedColData = _.reduce(
+        action.colData,
+        (result, dataForTransform, transformId) => (
+          dotProp.set(result, ['entities', 'col_data', transformId], (existingDataForTransform) => ({
+            ...existingDataForTransform,
+            ...dataForTransform.record
+          }))
+        ),
+        state
       );
 
-      return stateWithUpdatedTransforms;
+      return action.transformUpdates.reduce((stateWithUpdatedTransforms, update) => (
+        dotProp.set(
+          stateWithUpdatedTransforms,
+          `entities.transforms.${update.id}`,
+          record => ({
+            ...record,
+            ...update
+          })
+        )
+      ), stateWithUpdatedColData);
     }
 
     case LOAD_ROW_ERRORS_SUCCESS: {
@@ -360,6 +363,7 @@ const insertInputSchema = (state, action) => {
             })
           ))
       );
+      debugger;
 
       return dotProp.set(stateWithUpdatedInputSchemas, 'entities.input_columns', existingRecords => ({
         ...existingRecords,

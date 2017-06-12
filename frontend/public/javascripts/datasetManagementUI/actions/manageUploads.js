@@ -70,7 +70,7 @@ function updateProgress(uploadId, percentCompleted) {
 // convention should be:
 // verbNoun for async action creators
 // verbNounSuccess and/or verbNounFailure for non-async action creators that update store based on api response
-// verbNoun for ui aciton creators
+// verbNoun for ui action creators
 export function createUpload(file) {
   return (dispatch, getState) => {
     const { ui } = getState();
@@ -288,10 +288,13 @@ export function insertInputSchema(upload) {
 
     const inputColumns = _.chain(upload.schemas)
       .flatMap(inputSchema => inputSchema.input_columns)
-      .reduce((acc, inputColumn) => ({
-        ...acc,
-        [inputColumn.id]: inputColumn
-      }))
+      .reduce(
+        (acc, inputColumn) => ({
+          ...acc,
+          [inputColumn.id]: inputColumn
+        }),
+        {}
+      )
       .value();
 
     dispatch({

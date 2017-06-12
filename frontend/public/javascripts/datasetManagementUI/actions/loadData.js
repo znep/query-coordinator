@@ -212,7 +212,7 @@ export function loadColumnErrors(apiCall) {
             {}
           );
 
-        const { exitingTransforms } = getState().entities;
+        const existingTransforms = getState().entities.transforms;
 
         const transformUpdates = newRecordsByTransform.map((newRecords, idx) => {
           const errorIndices = _.map(newRecords, (newRecord, index) => ({
@@ -226,7 +226,7 @@ export function loadColumnErrors(apiCall) {
 
           return {
             id,
-            error_indices: _.union(exitingTransforms[id]['error_indices'], errorIndices)
+            error_indices: _.union(existingTransforms[id]['error_indices'], errorIndices)
           };
         });
 

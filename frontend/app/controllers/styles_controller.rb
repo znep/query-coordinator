@@ -15,6 +15,10 @@ class StylesController < ApplicationController
   # BEWARE /node_modules/normalize.css has to appear above /node_modules
   # otherwise SaSS will try to read normalize.css (which is a directory)
   # as if it's a file :facepalm:
+  #
+  # KEEP IN SYNC with:
+  #   frontend/config/webpack/common.js#getStyleguideIncludePaths
+  #   storyteller/config/initializers/assets.rb
   SCSS_LOAD_PATHS = %w(
     /../common/styleguide
     /../common
@@ -30,6 +34,7 @@ class StylesController < ApplicationController
     /node_modules/modularscale-sass/stylesheets
     /node_modules/react-datepicker/dist
     /node_modules/react-input-range/dist
+    /node_modules/leaflet/dist
   ).map { |path| path.prepend(Rails.root.to_s) }
   BLIST_STYLE_CACHE = File.join(Dir.tmpdir, 'blist_style_cache')
 

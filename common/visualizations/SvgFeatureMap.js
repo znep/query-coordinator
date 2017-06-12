@@ -23,8 +23,7 @@ const DEFAULT_BASE_LAYER_OPACITY = 0.42;
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
- * Instantiates a Socrata FeatureMap Visualization from the
- * `socrata-visualizations` package.
+ * Instantiates a Socrata FeatureMap Visualization.
  *
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  */

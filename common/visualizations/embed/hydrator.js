@@ -1,6 +1,4 @@
 // Visualization hydrator. Replaces embed codes with real visualizations.
-// LIBRARY_VERSION comes from our Webpack config and is injected
-// directly from package.json.
 
 const $ = require('jquery');
 const VisualizationRenderer = require('../VisualizationRenderer').VisualizationRenderer;
@@ -81,7 +79,7 @@ export const hydrateEmbed = (element) => {
 
 const logWarning = (message, error) => {
   if (window.console) {
-    const args = [ `Socrata Visualizations ${LIBRARY_VERSION}: ${message}` ];
+    const args = [ `Socrata Visualizations: ${message}` ];
     if (error) {
       args.push(error);
     }

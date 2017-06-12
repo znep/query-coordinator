@@ -5,7 +5,10 @@ Rails.application.config.assets.version = '1.0'
 
 # Add additional assets to the asset load path
 # Rails.application.config.assets.paths << Emoji.images_path
-
+#
+# KEEP IN SYNC with:
+#   frontend/config/webpack/common.js#getStyleguideIncludePaths
+#   frontend/app/controllers/styles_controller.rb::SCSS_LOAD_PATHS
 Rails.application.config.assets.paths << Rails.root.join('spec', 'scripts')
 Rails.application.config.assets.paths << Rails.root.join('node_modules')
 Rails.application.config.assets.paths << Rails.root.join('node_modules', 'react-image-crop', 'dist')

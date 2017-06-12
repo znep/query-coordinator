@@ -2,6 +2,9 @@
 
 !! NOTE: This is a temporary home for this project - it will be moved into frontend soon !!
 
+As the migration effort is ongoing, you can still look at a snapshot of the deprecated sample app
+[here](http://socrata.github.io/styleguide-deprecated/).
+
 ## Goals :sparkles:
 - Provide a canonical example of how to create a page. *Note* this is work-in-progress. Do not
   consider current practices in this app as standard. In particular, gulp and middleman are _not_

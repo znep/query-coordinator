@@ -15,8 +15,7 @@ var BASE_QUERY = 'SELECT `{0}` AS {1}, {2} AS {3} {4} GROUP BY `{0}` ORDER BY {2
 var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
- * Instantiates a Socrata Choropleth Visualization from the
- * `socrata-visualizations` package.
+ * Instantiates a Socrata Choropleth Visualization.
  *
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  */

@@ -155,13 +155,6 @@ leverage existing solutions to problems. Major libraries currently in use includ
   [flux](https://facebook.github.io/flux), used as a state container for handling large amounts of
   data and events in a predictable way.
 
-We also pull in a few internal libraries that allow us to share JavaScript code throughout the
-company:
-
-- [socrata-visualizations](https://github.com/socrata/frontend-visualizations), a library of jQuery components that render visualizations.
-
-These internal libraries are hosted on our private artifactory.
-
 ### Dependency Management
 
 We have a couple of different ways of installing these libraries:

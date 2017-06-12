@@ -1,15 +1,14 @@
 // Main entry point for embeds. This file is loaded (via script tag)
 // by src/embed/loader.js.
-//
-// LIBRARY_VERSION comes from our Webpack config and is injected
-// directly from package.json.
 import $ from 'jquery';
 import generateEmbedCode from './embedCodeGenerator';
 import hydrateEmbeds from './hydrator';
 
-import '../views/styles/socrata-visualizations.scss';
-import 'leaflet/dist/leaflet.css';
-import 'socrata-components/dist/css/styleguide-no-tag-level.css';
+// NOTE: This is pulling from frontend's styles, which knows where
+// to find the icon font as served by frontend, and where to grab
+// leaflet styles from.
+import 'frontend/app/styles/visualizations-import-shim.scss';
+import 'frontend/app/styles/socrata-icons.scss';
 
 window.socrata = window.socrata || {};
 window.socrata.visualizationEmbed = window.socrata.visualizationEmbed || {};
@@ -19,7 +18,6 @@ window.socrata.visualizationEmbed = window.socrata.visualizationEmbed || {};
 // duplicate invocations of this script from conflicting.
 if (!window.socrata.visualizationEmbed.mainScriptLoaded) {
   window.socrata.visualizationEmbed.mainScriptLoaded = true;
-  window.socrata.visualizationEmbed.libraryVersion = LIBRARY_VERSION;
   window.socrata.visualizationEmbed.generateEmbedCode = generateEmbedCode;
 
   // Hydrate on doc ready (we have no guarantee of being loaded async).

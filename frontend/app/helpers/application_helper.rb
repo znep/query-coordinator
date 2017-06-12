@@ -303,7 +303,7 @@ module ApplicationHelper
     REVISION_NUMBER || Rails.env
   end
 
-  def include_webpack_bundle(resource)
+  def webpack_bundle_src(resource)
     resource_name = "#{resource}#{'.js' unless resource.end_with?('.js')}"
 
     if Rails.configuration.webpack[:use_dev_server]
@@ -317,7 +317,12 @@ module ApplicationHelper
         "build/#{resource_name}?#{asset_revision_key}"
       end
     end
-    javascript_include_tag(src)
+
+    return src
+  end
+
+  def include_webpack_bundle(resource)
+    javascript_include_tag(webpack_bundle_src(resource))
   end
 
 # TOP OF PAGE

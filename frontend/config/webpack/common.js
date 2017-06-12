@@ -95,6 +95,10 @@ function getSvgAndFontLoaders() {
 }
 
 // Sets the search path for @include directives SPECIFICALLY in *.scss files.
+//
+// KEEP IN SYNC with:
+//   frontend/app/controllers/styles_controller.rb::SCSS_LOAD_PATHS
+//   storyteller/config/initializers/assets.rb
 function getStyleguideIncludePaths() {
   return [
     'node_modules/bourbon/app/assets/stylesheets',
@@ -104,6 +108,9 @@ function getStyleguideIncludePaths() {
     'node_modules/normalize.css',
     'node_modules/react-input-range/dist',
     'node_modules/react-datepicker/dist',
+    'node_modules/leaflet/dist',
+    path.resolve(frontendRoot, '../common/resources/fonts/dist'),
+    path.resolve(frontendRoot, '../common'),
     path.resolve(frontendRoot, '../')
   ];
 }

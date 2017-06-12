@@ -47,8 +47,7 @@ String.prototype.visualLength = function(fontSize) {
 };
 
 /**
- * Instantiates a Socrata ColumnChart Visualization from the
- * `socrata-visualizations` package.
+ * Instantiates a Socrata ColumnChart Visualization.
  *
  * Supported event triggers:
  * - invalidateSize: Forces a rerender, useful if the hosting page has resized the container.

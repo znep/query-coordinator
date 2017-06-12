@@ -290,25 +290,22 @@ const loadData = (state, action) => {
     case LOAD_COLUMN_ERRORS_SUCCESS: {
       const stateWithUpdatedColData = _.reduce(
         action.colData,
-        (result, dataForTransform, transformId) => (
-          dotProp.set(result, ['entities', 'col_data', transformId], (existingDataForTransform) => ({
+        (result, dataForTransform, transformId) =>
+          dotProp.set(result, ['entities', 'col_data', transformId], existingDataForTransform => ({
             ...existingDataForTransform,
             ...dataForTransform.record
-          }))
-        ),
+          })),
         state
       );
 
-      return action.transformUpdates.reduce((stateWithUpdatedTransforms, update) => (
-        dotProp.set(
-          stateWithUpdatedTransforms,
-          `entities.transforms.${update.id}`,
-          record => ({
+      return action.transformUpdates.reduce(
+        (stateWithUpdatedTransforms, update) =>
+          dotProp.set(stateWithUpdatedTransforms, `entities.transforms.${update.id}`, record => ({
             ...record,
             ...update
-          })
-        )
-      ), stateWithUpdatedColData);
+          })),
+        stateWithUpdatedColData
+      );
     }
 
     case LOAD_ROW_ERRORS_SUCCESS: {

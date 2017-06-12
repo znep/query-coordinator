@@ -10,8 +10,7 @@ import thunk from 'redux-thunk';
 import windowDBMiddleware from './lib/database/middleware';
 import * as Phoenix from 'phoenix';
 import Perf from 'react-addons-perf';
-import newReducer from 'reducers/newReducer';
-// import rootReducer from './reducers';
+import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
 import * as Selectors from './selectors';
 import Airbrake from 'common/airbrake';
@@ -57,7 +56,7 @@ if (window.serverConfig.environment === 'development') {
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(newReducer, composeEnhancers(applyMiddleware(...middleware)));
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...middleware)));
 
 store.dispatch(setFourfour(window.initialState.view.id));
 

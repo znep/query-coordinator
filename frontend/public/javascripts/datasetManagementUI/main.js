@@ -83,7 +83,7 @@ ReactDOM.render(
 );
 
 window.addEventListener('beforeunload', evt => {
-  const uploadsInProgress = Selectors.uploadsInProgress(store.getState().db);
+  const uploadsInProgress = Selectors.uploadsInProgress(store.getState().ui.apiCalls);
   if (uploadsInProgress.length !== 0) {
     const msg = I18n.upload_warning;
     evt.returnValue = msg;

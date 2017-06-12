@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { STATUS_UPDATING } from './lib/database/statuses';
 import { STATUS_CALL_IN_PROGRESS } from './lib/apiCallStatus';
 import { UPSERT_JOB_SUCCESSFUL } from 'actions/applyRevision';
 import { LOAD_ROWS } from 'actions/apiCalls';
+import { CREATE_UPLOAD } from 'actions/manageUploads';
 
 // TODO: if perf becomes an issue, use reselect for memoization
 export function percentUpserted(db, upsertJobId) {
@@ -66,8 +66,10 @@ export function allTransformsDone(columnsWithTransforms, inputSchema) {
   );
 }
 
-export function uploadsInProgress(db) {
-  return _.filter(db.uploads, upload => upload.__status__.type === STATUS_UPDATING);
+export function uploadsInProgress(apiCalls) {
+  return _.filter(apiCalls, apiCall => (
+    apiCall.status === STATUS_CALL_IN_PROGRESS && apiCall.operation === CREATE_UPLOAD
+  ));
 }
 
 export function rowsTransformed(outputColumns) {

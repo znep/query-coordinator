@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import utils from 'socrata-utils';
+import utils from 'common/js_utils';
 
 import { translate } from './I18n';
 import { migrateVif } from './helpers/VifHelpers';
@@ -18,7 +18,7 @@ import './Table';
 import { RowInspector, FlyoutRenderer } from './views';
 
 /**
- * Instantiates a Socrata Visualization from the `socrata-visualizations` package,
+ * Instantiates a Socrata Visualization from the `visualizations` package,
  * based on the visualization type indicated in the VIF.
  *
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc

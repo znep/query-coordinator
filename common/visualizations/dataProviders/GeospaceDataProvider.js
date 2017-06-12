@@ -1,4 +1,4 @@
-const utils = require('socrata-utils');
+const utils = require('common/js_utils');
 const DataProvider = require('./DataProvider');
 const _ = require('lodash');
 

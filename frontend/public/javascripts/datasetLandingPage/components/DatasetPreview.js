@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import { components as SocrataVisualizations } from 'socrata-visualizations';
+import { components as SocrataVisualizations } from 'common/visualizations';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import { isUserRoled } from '../../common/user';
 import { localizeLink } from '../../common/locale';

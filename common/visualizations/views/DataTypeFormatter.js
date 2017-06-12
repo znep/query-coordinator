@@ -1,6 +1,6 @@
 const $ = require('jquery');
 const _ = require('lodash');
-const utils = require('socrata-utils');
+const utils = require('common/js_utils');
 const moment = require('moment');
 // Converts GeoJSON formats to text
 const wkt = require('wellknown');

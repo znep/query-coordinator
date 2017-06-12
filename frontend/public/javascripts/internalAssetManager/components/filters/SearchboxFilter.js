@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-import { Picklist } from 'socrata-components';
+import { Picklist } from 'common/components';
 import { handleEnter } from '../../../common/helpers/keyPressHelpers';
 
 export class SearchboxFilter extends React.Component {

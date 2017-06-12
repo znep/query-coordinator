@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import $ from 'jquery';
-import SocrataVisualizations from 'socrata-visualizations';
+import SocrataVisualizations from 'common/visualizations';
 
 import '../editor/componentBase';
 import '../editor/block-component-renderers/componentGoalEmbed';

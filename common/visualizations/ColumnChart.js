@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var $ = require('jquery');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var ColumnChart = require('./views/ColumnChart');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');

@@ -1,5 +1,5 @@
 var $ = require('jquery');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var Visualization = require('./Visualization.js');
 var _ = require('lodash');
 var d3 = require('d3');

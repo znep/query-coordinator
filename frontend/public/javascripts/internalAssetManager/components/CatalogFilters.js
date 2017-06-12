@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { Dropdown } from 'socrata-components';
+import { Dropdown } from 'common/components';
 import SearchboxFilter from './filters/SearchboxFilter';
 import * as filterOptions from '../lib/catalogFilterOptions';
 import * as actions from '../actions/filters';

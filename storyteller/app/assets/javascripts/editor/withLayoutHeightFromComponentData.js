@@ -41,7 +41,7 @@ export default function withLayoutHeightFromComponentData(componentData, default
         self.find('.component-content').triggerHandler('invalidateSize');
       } else {
         // Otherwise, use the standard invalidate size API used by
-        // socrata-visualizations.
+        // visualizations.
         self.find('.component-content').triggerHandler('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
       }
     }

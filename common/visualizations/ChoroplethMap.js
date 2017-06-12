@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var $ = require('jquery');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var ChoroplethMap = require('./views/ChoroplethMap');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');

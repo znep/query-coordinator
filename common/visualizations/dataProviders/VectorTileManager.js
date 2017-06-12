@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var d3 = require('d3');
 var L = require('leaflet');
 var { VectorTile } = require('vector-tile');

@@ -2,7 +2,7 @@
 // Let's remove it when we do EN-16807.
 var _ = require('lodash');
 var $ = require('jquery');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var moment = require('moment');
 var TimelineChart = require('./views/TimelineChart');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');

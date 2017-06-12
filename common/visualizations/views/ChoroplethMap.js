@@ -3,7 +3,7 @@
  * - Pass in either savedExtent or defaultExtent, rather than both
  */
 
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var d3 = require('d3');
 var ss = require('simple-statistics');
 var chroma = require('chroma-js');

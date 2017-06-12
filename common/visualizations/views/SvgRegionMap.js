@@ -1,4 +1,4 @@
-const utils = require('socrata-utils');
+const utils = require('common/js_utils');
 const d3 = require('d3');
 const $ = require('jquery');
 const _ = require('lodash');

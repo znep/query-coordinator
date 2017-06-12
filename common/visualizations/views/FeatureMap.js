@@ -1,4 +1,4 @@
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var Visualization = require('./Visualization');
 var L = require('leaflet');
 var _ = require('lodash');

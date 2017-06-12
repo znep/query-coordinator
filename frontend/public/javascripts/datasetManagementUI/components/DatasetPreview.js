@@ -20,8 +20,8 @@ Table.propTypes = {
   vif: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state, { view, outputSchema }) {
-  const [defaultSort] = columnsForOutputSchema(state.db, outputSchema.id);
+function mapStateToProps({ entities }, { view, outputSchema }) {
+  const [defaultSort] = columnsForOutputSchema(entities, outputSchema.id);
   return {
     vif: {
       format: {

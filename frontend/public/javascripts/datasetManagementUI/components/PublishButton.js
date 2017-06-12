@@ -118,14 +118,15 @@ function mapStateToProps(state) {
   return {
     metadataSatisfied: view.schema.isValid,
     dataSatisfied,
-    publishedOrPublishing: _.size(
-      _.filter(
-        state.entities.upsert_jobs,
-        job =>
-          job.status === ApplyRevision.UPSERT_JOB_SUCCESSFUL ||
-          job.status === ApplyRevision.UPSERT_JOB_IN_PROGRESS
-      )
-    ) > 0
+    publishedOrPublishing:
+      _.size(
+        _.filter(
+          state.entities.task_sets,
+          set =>
+            set.status === ApplyRevision.TASK_SET_SUCCESSFUL ||
+            set.status === ApplyRevision.TASK_SET_IN_PROGRESS
+        )
+      ) > 0
   };
 }
 

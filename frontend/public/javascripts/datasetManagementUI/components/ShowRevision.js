@@ -42,8 +42,8 @@ const noDataYetView = createUpload => (
   </div>
 );
 
-const outputSchemaView = (db, outputSchema) => {
-  const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
+const outputSchemaView = (entities, outputSchema) => {
+  const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
   if (!inputSchema) return;
   return (
     <div className={styles.tableInfo}>
@@ -73,13 +73,13 @@ const upsertInProgressView = () => {
 };
 
 // WRAPPER COMPONENT
-const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, db, createUpload }) => {
+const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, createUpload }) => {
   let child;
 
   if (upsertExists) {
-    child = upsertInProgressView(db);
+    child = upsertInProgressView(entities);
   } else if (outputSchema) {
-    child = outputSchemaView(db, outputSchema);
+    child = outputSchemaView(entities, outputSchema);
   } else {
     child = noDataYetView(createUpload);
   }
@@ -94,7 +94,7 @@ const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, db, createUpload
 WrapDataTablePlaceholder.propTypes = {
   upsertExists: PropTypes.number.isRequired,
   outputSchema: PropTypes.object,
-  db: PropTypes.object,
+  entities: PropTypes.object,
   createUpload: PropTypes.func
 };
 
@@ -106,7 +106,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMetadata }) {
+function ShowRevision({ view, routing, entities, urlParams, createUpload, pushToEditMetadata }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -170,20 +170,20 @@ function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMe
     </div>
   );
 
-  const outputSchema = latestOutputSchema(db);
+  const outputSchema = latestOutputSchema(entities);
   const doesUpsertExist = _.size(
-    _.filter(db.upsert_jobs, uj => uj.status !== ApplyRevision.UPSERT_JOB_FAILURE)
+    _.filter(entities.task_sets, uj => uj.status !== ApplyRevision.TASK_SET_FAILURE)
   );
   const isUpsertComplete =
     doesUpsertExist &&
-    _.map(db.upsert_jobs, uj => uj.status === ApplyRevision.UPSERT_JOB_SUCCESSFUL).reduce(
+    _.map(entities.task_sets, uj => uj.status === ApplyRevision.TASK_SET_SUCCESSFUL).reduce(
       (acc, success) => success || acc,
       false
     );
 
   let dataTable;
   if (isUpsertComplete) {
-    const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
+    const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
     dataTable = [
       <Link
         key="manage-data-button"
@@ -200,7 +200,7 @@ function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMe
       <WrapDataTablePlaceholder
         upsertExists={doesUpsertExist}
         outputSchema={outputSchema}
-        db={db}
+        entities={entities}
         createUpload={createUpload} />
     );
   }
@@ -210,7 +210,7 @@ function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMe
       <div className={styles.homeContent}>
         {metadataSection}
         <div className={styles.schemaPreviewContainer}>
-          <SchemaPreview db={db} />
+          <SchemaPreview db={entities} />
           <RowDetails />
         </div>
 
@@ -228,7 +228,7 @@ function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMe
 ShowRevision.propTypes = {
   view: PropTypes.object.isRequired,
   routing: PropTypes.object.isRequired,
-  db: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   urlParams: PropTypes.object.isRequired,
   createUpload: PropTypes.func.isRequired,
   pushToEditMetadata: PropTypes.func.isRequired
@@ -247,7 +247,7 @@ function mapStateToProps(state, ownProps) {
   return {
     view: _.values(state.entities.views)[0],
     routing: state.ui.routing.location,
-    db: state.entities,
+    entities: state.entities,
     urlParams: ownProps.params
   };
 }

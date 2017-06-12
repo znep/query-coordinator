@@ -1,34 +1,34 @@
 import _ from 'lodash';
 import { STATUS_UPDATING } from './lib/database/statuses';
 import { STATUS_CALL_IN_PROGRESS } from './lib/apiCallStatus';
-import { UPSERT_JOB_SUCCESSFUL } from 'actions/applyRevision';
+import { TASK_SET_SUCCESSFUL } from 'actions/applyRevision';
 import { LOAD_ROWS } from 'actions/apiCalls';
 
 // TODO: if perf becomes an issue, use reselect for memoization
-export function percentUpserted(db, upsertJobId) {
-  const upsertJob = db.upsert_jobs[upsertJobId];
+export function percentUpserted(entities, taskSetId) {
+  const taskSet = entities.task_sets[taskSetId];
 
-  if (upsertJob.status === UPSERT_JOB_SUCCESSFUL) {
+  if (taskSet.status === TASK_SET_SUCCESSFUL) {
     return 100;
   } else {
-    return 100 * (rowsUpserted(db, upsertJobId) / rowsToBeImported(db, upsertJob.output_schema_id));
+    return 100 * (rowsUpserted(entities, taskSetId) / rowsToBeImported(entities, taskSet.output_schema_id));
   }
 }
 
-export function rowsToBeImported(db, outputSchemaId) {
-  const outputSchema = db.output_schemas[outputSchemaId];
-  const inputSchema = db.input_schemas[outputSchema.input_schema_id];
+export function rowsToBeImported(entities, outputSchemaId) {
+  const outputSchema = entities.output_schemas[outputSchemaId];
+  const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
   const errorRows = outputSchema.error_count || 0;
 
   return Math.max(0, inputSchema.total_rows - errorRows);
 }
 
-export function rowsUpserted(db, upsertJobId) {
-  const upsertJob = db.upsert_jobs[upsertJobId];
-  if (!upsertJob || !upsertJob.log) {
+export function rowsUpserted(entities, taskSetId) {
+  const taskSet = entities.task_sets[taskSetId];
+  if (!taskSet || !taskSet.log) {
     return 0;
   }
-  const rowItems = upsertJob.log
+  const rowItems = taskSet.log
     .filter(logItem => logItem.stage === 'rows_upserted')
     .map(logItem => logItem.details.count);
   return _.max(rowItems) || 0;
@@ -43,14 +43,14 @@ export function columnsForInputSchema(db, inputSchemaId) {
   return _.sortBy(unsortedColumns, 'position');
 }
 
-export function columnsForOutputSchema(db, outputSchemaId) {
-  return _.chain(db.output_schema_columns)
+export function columnsForOutputSchema(entities, outputSchemaId) {
+  return _.chain(entities.output_schema_columns)
     .filter({ output_schema_id: outputSchemaId })
     .map(outputSchemaColumn => {
-      const outputColumn = db.output_columns[outputSchemaColumn.output_column_id];
+      const outputColumn = entities.output_columns[outputSchemaColumn.output_column_id];
       return {
         ...outputColumn,
-        transform: db.transforms[outputColumn.transform_id],
+        transform: entities.transforms[outputColumn.transform_id],
         is_primary_key: outputSchemaColumn.is_primary_key || false
       };
     })

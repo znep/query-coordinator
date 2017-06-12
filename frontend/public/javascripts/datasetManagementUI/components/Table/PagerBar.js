@@ -45,17 +45,17 @@ PagerBar.propTypes = {
   changePage: PropTypes.func.isRequired
 };
 
-function numItemsToPaginate(db, outputSchemaId, displayState) {
+function numItemsToPaginate(entities, outputSchemaId, displayState) {
   switch (displayState.type) {
     case DisplayState.COLUMN_ERRORS:
-      return db.transforms[displayState.transformId].num_transform_errors;
+      return entities.transforms[displayState.transformId].num_transform_errors;
 
     case DisplayState.ROW_ERRORS: {
-      const outputSchema = db.output_schemas[outputSchemaId];
-      return db.input_schemas[outputSchema.input_schema_id].num_row_errors;
+      const outputSchema = entities.output_schemas[outputSchemaId];
+      return entities.input_schemas[outputSchema.input_schema_id].num_row_errors;
     }
     case DisplayState.NORMAL: {
-      const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
+      const columns = Selectors.columnsForOutputSchema(entities, outputSchemaId);
       return Selectors.rowsTransformed(columns);
     }
     default:

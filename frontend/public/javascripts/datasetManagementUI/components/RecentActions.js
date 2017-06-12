@@ -126,22 +126,22 @@ const upsertFailedActivity = (upsert, at) => {
   </div>);
 };
 
-function activitiesOf(db) {
-  const updateModel = _.values(db.revisions)[0];
+function activitiesOf(entities) {
+  const updateModel = _.values(entities.revisions)[0];
   if (!updateModel) return [];
   const update = {
     type: 'update',
     value: updateModel,
     at: updateModel.created_at
   };
-  const uploads = _.map(db.uploads, (upload) => ({
+  const uploads = _.map(entities.uploads, (upload) => ({
     type: 'upload',
     value: upload,
     at: upload.created_at
   }));
-  const outputSchemas = _.map(db.output_schemas, (outputSchema) => {
-    const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
-    const upload = _.find(db.uploads, { id: inputSchema.upload_id });
+  const outputSchemas = _.map(entities.output_schemas, (outputSchema) => {
+    const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
+    const upload = _.find(entities.uploads, { id: inputSchema.upload_id });
     return {
       type: 'outputSchema',
       at: outputSchema.created_at,
@@ -152,15 +152,15 @@ function activitiesOf(db) {
       }
     };
   });
-  const upserts = _.map(db.upsert_jobs, (upsertJob) => ({
+  const upserts = _.map(entities.task_sets, (upsertJob) => ({
     type: 'upsert',
     value: upsertJob,
     at: upsertJob.created_at
   }));
 
-  const finishedUpserts = _.chain(db.upsert_jobs).
+  const finishedUpserts = _.chain(entities.task_sets).
     filter((upsertJob) => !!upsertJob.finished_at).
-    filter((upsertJob) => upsertJob.status === ApplyRevision.UPSERT_JOB_SUCCESSFUL).
+    filter((upsertJob) => upsertJob.status === ApplyRevision.TASK_SET_SUCCESSFUL).
     map((upsertJob) => ({
       type: 'upsertCompleted',
       value: upsertJob,
@@ -168,9 +168,9 @@ function activitiesOf(db) {
     })
   );
 
-  const failedUpserts = _.chain(db.upsert_jobs).
+  const failedUpserts = _.chain(entities.task_sets).
     filter((upsertJob) => !!upsertJob.finished_at).
-    filter((upsertJob) => upsertJob.status === ApplyRevision.UPSERT_JOB_FAILURE).
+    filter((upsertJob) => upsertJob.status === ApplyRevision.TASK_SET_FAILURE).
     map((upsertJob) => ({
       type: 'upsertFailed',
       value: upsertJob,
@@ -204,8 +204,8 @@ function activitiesOf(db) {
   return _.reverse(_.sortBy(items, 'at')).map(toView);
 }
 
-function RecentActions({ db }) {
-  const items = activitiesOf(db);
+function RecentActions({ entities }) {
+  const items = activitiesOf(entities);
   return (
     <div>
       {items}
@@ -215,12 +215,12 @@ function RecentActions({ db }) {
 
 RecentActions.propTypes = {
   routing: PropTypes.object.isRequired,
-  db: PropTypes.object.isRequired
+  entities: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ db, routing }) => ({
-  db,
-  routing: routing.location
+const mapStateToProps = ({ entities, ui }) => ({
+  entities,
+  routing: ui.routing.location
 });
 
 export default connect(mapStateToProps)(RecentActions);

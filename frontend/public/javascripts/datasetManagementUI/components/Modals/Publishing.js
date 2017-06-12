@@ -14,15 +14,15 @@ import { APPLY_REVISION } from 'actions/apiCalls';
 import * as Selectors from 'selectors';
 import styles from 'styles/Modals/Publishing.scss';
 
-function Publishing({ upsertJob, fourfour, percentUpserted, applyRevision, onCancelClick }) {
+function Publishing({ taskSet, fourfour, percentUpserted, applyRevision, onCancelClick }) {
   let title;
   let body;
   let status;
   let icon;
   let button;
 
-  switch (upsertJob.status) {
-    case ApplyRevision.UPSERT_JOB_IN_PROGRESS:
+  switch (taskSet.status) {
+    case ApplyRevision.TASK_SET_IN_PROGRESS:
       title = I18n.home_pane.publish_modal.publishing.title;
       body = I18n.home_pane.publish_modal.publishing.body;
       status = 'inProgress';
@@ -30,15 +30,13 @@ function Publishing({ upsertJob, fourfour, percentUpserted, applyRevision, onCan
       button = <NotifyButton className={styles.button} />;
       break;
 
-    case ApplyRevision.UPSERT_JOB_SUCCESSFUL:
+    case ApplyRevision.TASK_SET_SUCCESSFUL:
       title = I18n.home_pane.publish_modal.successful.title;
       body = I18n.home_pane.publish_modal.successful.body;
       status = 'success';
       icon = <SocrataIcon className={styles.success} name="checkmark-alt" />;
       button = (
-        <a
-          href={`/d/${fourfour}`}
-          className={styles.toPrimer}>
+        <a href={`/d/${fourfour}`} className={styles.toPrimer}>
           {I18n.home_pane.publish_modal.to_primer}
         </a>
       );
@@ -51,15 +49,14 @@ function Publishing({ upsertJob, fourfour, percentUpserted, applyRevision, onCan
       icon = <SocrataIcon className={styles.failure} name="close-circle" />;
       button = (
         <div>
-          <button
-            key="cancel"
-            onClick={onCancelClick}
-            className={styles.cancelButton}>
+          <button key="cancel" onClick={onCancelClick} className={styles.cancelButton}>
             {I18n.common.cancel}
           </button>
           <ApiCallButton
             additionalClassName={styles.tryAgainButton}
-            onClick={() => { applyRevision(upsertJob); }}
+            onClick={() => {
+              applyRevision(taskSet);
+            }}
             operation={APPLY_REVISION}>
             {I18n.common.try_again}
           </ApiCallButton>
@@ -85,7 +82,7 @@ function Publishing({ upsertJob, fourfour, percentUpserted, applyRevision, onCan
 }
 
 Publishing.propTypes = {
-  upsertJob: PropTypes.shape({
+  taskSet: PropTypes.shape({
     id: PropTypes.number.isRequired,
     output_schema_id: PropTypes.number.isRequired,
     status: PropTypes.string.isRequired
@@ -96,13 +93,13 @@ Publishing.propTypes = {
   onCancelClick: PropTypes.func.isRequired
 };
 
-function mapStateToProps({ db, routing }) {
-  const upsertJob = _.maxBy(_.values(db.upsert_jobs), job => job.updated_at);
-  const percentUpserted = Selectors.percentUpserted(db, upsertJob.id);
-  const fourfour = routing.fourfour;
+function mapStateToProps({ entities, ui }) {
+  const taskSet = _.maxBy(_.values(entities.task_sets), job => job.updated_at);
+  const percentUpserted = Selectors.percentUpserted(entities, taskSet.id);
+  const { fourfour } = ui.routing;
 
   return {
-    upsertJob,
+    taskSet,
     percentUpserted,
     fourfour
   };
@@ -110,7 +107,7 @@ function mapStateToProps({ db, routing }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    applyRevision: (upsertJob) => dispatch(ApplyRevision.applyRevision(upsertJob.output_schema_id)),
+    applyRevision: taskSet => dispatch(ApplyRevision.applyRevision(taskSet.output_schema_id)),
     onCancelClick: () => dispatch(hideModal())
   };
 }

@@ -8,21 +8,21 @@ import RecentActions from './RecentActions';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/HomePaneSidebar.scss';
 
-function query(db) {
-  const currentOutputSchema = Selectors.latestOutputSchema(db);
+function query(entities) {
+  const currentOutputSchema = Selectors.latestOutputSchema(entities);
   const outputColumns = currentOutputSchema
-    ? Selectors.columnsForOutputSchema(db, currentOutputSchema.id)
+    ? Selectors.columnsForOutputSchema(entities, currentOutputSchema.id)
     : [];
   return {
-    hasMetadata: !!_.values(db.views)[0].description, // TODO: do we want to have this be more strict?
-    hasData: db.uploads.length > 0,
+    hasMetadata: !!_.values(entities.views)[0].description, // TODO: do we want to have this be more strict?
+    hasData: entities.uploads.length > 0,
     anyColumnHasDescription: outputColumns.some(outputColumn => outputColumn.description)
   };
 }
 
 export const ManageData = props => {
-  const { db, columnsExist } = props;
-  const { anyColumnHasDescription } = query(db);
+  const { entities, columnsExist } = props;
+  const { anyColumnHasDescription } = query(entities);
 
   const doneCheckmark = <SocrataIcon name="checkmark-alt" className={styles.icon} />;
   const columnDescriptionCheckmark = anyColumnHasDescription ? doneCheckmark : null;
@@ -38,7 +38,8 @@ export const ManageData = props => {
         {columnDescriptionCheckmark}
 
         <h3>{I18n.home_pane.sidebar.column_descriptions}</h3>
-        <p> {I18n.home_pane.sidebar.column_descriptions_blurb} </p>
+        <p> {I18n.home_pane.sidebar.column_descriptions_blurb}{' '}
+        </p>
         <Link to={Links.columnMetadataForm()}>
           <button
             className={columnsExist ? styles.sidebarBtn : styles.sidebarBtnDisabled}
@@ -79,7 +80,7 @@ export const ManageData = props => {
 };
 
 ManageData.propTypes = {
-  db: PropTypes.object,
+  entities: PropTypes.object,
   columnsExist: PropTypes.bool
 };
 
@@ -108,16 +109,16 @@ function HomePaneSidebar(props) {
 }
 
 HomePaneSidebar.propTypes = {
-  routing: PropTypes.object.isRequired,
-  db: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   urlParams: PropTypes.object.isRequired
 };
 
-const mapStateToProps = (state, { urlParams }) => ({
-  db: state.entities,
+const mapStateToProps = ({ entities, ui }, { urlParams }) => ({
+  entities,
   urlParams,
-  routing: state.ui.routing.location,
-  columnsExist: !_.isEmpty(state.output_columns)
+  location: ui.routing.location,
+  columnsExist: !_.isEmpty(entities.output_columns)
 });
 
 export default connect(mapStateToProps)(HomePaneSidebar);

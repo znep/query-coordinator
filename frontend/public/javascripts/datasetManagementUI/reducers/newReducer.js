@@ -28,6 +28,8 @@ import { EDIT_TRANSFORM } from 'actions/transforms';
 import { EDIT_INPUT_SCHEMA } from 'actions/inputSchemas';
 import { BOOTSTRAP_APP_SUCCESS } from 'actions/bootstrap';
 import { EDIT_VIEW } from 'actions/views';
+import { POLL_FOR_TASK_SET_PROGRESS_SUCCESS } from 'actions/applyRevision';
+import { ADD_TASK_SET } from 'actions/taskSets';
 
 const views = (state = {}, action) => {
   switch (action.type) {
@@ -41,6 +43,7 @@ const views = (state = {}, action) => {
       return state;
   }
 };
+
 const revisions = (state = {}) => state;
 
 const uploads = (state = {}, action) => {
@@ -105,9 +108,23 @@ const transforms = (state = {}, action) => {
   }
 };
 
-const taskSets = (state = {}) => state;
+const taskSets = (state = {}, action) => {
+  switch (action.type) {
+    case ADD_TASK_SET:
+      return {
+        ...state,
+        [action.id]: action.taskSet
+      };
+
+    default:
+      return state;
+  }
+};
+
 const emailInterests = (state = {}) => state;
+
 const rowErrors = (state = {}) => state;
+
 const colData = (state = {}) => state;
 
 const entities = combineReducers({
@@ -304,6 +321,29 @@ const loadData = (state, action) => {
   }
 };
 
+const applyRevision = (state, action) => {
+  switch (action.type) {
+    case POLL_FOR_TASK_SET_PROGRESS_SUCCESS: {
+      const stateWithUpdatedRevision = dotProp.set(
+        state,
+        `entities.revisions.${action.revision.id}`,
+        record => ({
+          ...record,
+          ...action.revision
+        })
+      );
+
+      return dotProp.set(stateWithUpdatedRevision, `entities.task_sets.${action.taskSet.id}`, record => ({
+        ...record,
+        ...action.taskSet
+      }));
+    }
+
+    default:
+      return state;
+  }
+};
+
 const insertInputSchema = (state, action) => {
   switch (action.type) {
     case INSERT_INPUT_SCHEMA: {
@@ -339,5 +379,6 @@ export default reduceReducers(
   uploadFile,
   pollForOutputSchema,
   loadData,
-  insertInputSchema
+  insertInputSchema,
+  applyRevision
 );

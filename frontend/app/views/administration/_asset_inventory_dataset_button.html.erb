@@ -11,7 +11,7 @@
       'screens.admin.datasets.view_as_a_dataset',
       {:action => 'asset_inventory', :controller => 'administration'},
       {
-        :disabled => ,
+        :disabled => is_disabled,
         :form => { :class => 'asset_inventory_link' },
         :title => is_disabled ? t('screens.admin.datasets.asset_inventory.tooltip') : ''
       }

@@ -49,6 +49,9 @@ module InternalAssetManagerHelper
   def render_internal_asset_manager_initial_state
     javascript_tag(%Q(
       window.initialState = {
+        assetCounts: {
+          values: #{@asset_counts.to_json}
+        },
         catalog: {
           columns: #{internal_asset_manager_table_columns},
           results: #{@catalog_results.to_json},

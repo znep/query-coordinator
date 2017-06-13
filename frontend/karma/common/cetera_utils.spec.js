@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import $ from 'jquery';
 import airbrake from 'common/airbrake';
 // The import below causes the test to print WARN: 'Mixpanel has not been loaded or has been disabled.' -SOARY
 import mixpanel from 'mixpanel';

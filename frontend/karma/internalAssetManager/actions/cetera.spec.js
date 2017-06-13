@@ -5,17 +5,25 @@ import sinon from 'sinon';
 import { fetchResults } from 'actions/cetera';
 import getState from 'reducers/catalog';
 import ceteraUtils from 'common/cetera_utils';
+import mockCeteraFacetCountsResponse from 'data/mock_cetera_facet_counts_response';
 
 import mockCeteraFetchResponse from '../../internalAssetManager/data/mock_cetera_fetch_response.js';
 
 describe('cetera.js', () => {
   let ceteraStub;
+  let ceteraAssetCountsStub;
 
   beforeEach(() => {
     ceteraStub = sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(mockCeteraFetchResponse)));
+
+    ceteraAssetCountsStub = sinon.stub(ceteraUtils, 'facetCountsQuery').
+      callsFake(_.constant(Promise.resolve(mockCeteraFacetCountsResponse)));
   });
 
-  afterEach(() => ceteraStub.restore());
+  afterEach(() => {
+    ceteraStub.restore()
+    ceteraAssetCountsStub.restore();
+  });
 
   // fetchResults returns a promise
   describe('fetchResults', () => {

@@ -4,6 +4,7 @@ import { CatalogResults } from 'components/CatalogResults';
 describe('components/CatalogResults', () => {
   const catalogResultsProps = (options = {}) => ({
     changePage: () => {},
+    changeQ: () => {},
     resultSetSize: 0,
     ...options
   });

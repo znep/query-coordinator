@@ -19,6 +19,22 @@ export const fetchingResultsError = () => (
   { type: 'FETCH_RESULTS_ERROR' }
 );
 
+export const updateAssetCounts = (assetCounts) => (
+  { type: 'UPDATE_ASSET_COUNTS', assetCounts }
+);
+
+export const fetchingAssetCounts = () => (
+  { type: 'FETCH_ASSET_COUNTS' }
+);
+
+export const fetchingAssetCountsSuccess = () => (
+  { type: 'FETCH_ASSET_COUNTS_SUCCESS' }
+);
+
+export const fetchingAssetCountsError = () => (
+  { type: 'FETCH_ASSET_COUNTS_ERROR' }
+);
+
 const translateColumnToMixpanelEvent = (columnName) => {
   switch (columnName) {
     case 'asset type':
@@ -63,9 +79,7 @@ const translateParamsToMixpanelEvent = (params) => {
   }
 };
 
-export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => {
-  dispatch(fetchingResults());
-
+const ceteraUtilsParams = (getState, parameters) => {
   const { assetTypes, authority, category, onlyRecentlyViewed, order, ownedBy, pageNumber, q, tag,
     visibility } = _.merge({}, getState().catalog, getState().filters, parameters);
 
@@ -93,10 +107,8 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => 
     lastAccessedUids = onlyRecentlyViewed ? Object.keys(window.lastAccessed.get()) : null;
   }
 
-  return ceteraUtils.query({
-    // TODO:
-    // customMetadataFilters,
-    q,
+  return {
+    // TODO: customMetadataFilters,
     category,
     forUser: _.get(ownedBy, 'id'),
     idFilters: lastAccessedUids,
@@ -109,14 +121,43 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => 
     order: ceteraOrder(),
     pageNumber,
     provenance: authority,
+    q,
     showVisibility: 'true',
     tags: tag,
     visibility
-  }).then((response) => {
+  };
+};
+
+export const fetchAssetCounts = (dispatch, getState, parameters = {}) => {
+  dispatch(fetchingAssetCounts());
+
+  return ceteraUtils.facetCountsQuery(ceteraUtilsParams(getState, parameters)).then((response) => {
+    if (response && _.isArray(response) && response.length > 0) {
+      const datatypesFacet = _.filter(response, ((facetType) => facetType.facet === 'datatypes'))[0];
+
+      if (datatypesFacet && _.has(datatypesFacet, 'values')) {
+        dispatch(fetchingAssetCountsSuccess());
+        dispatch(updateAssetCounts(datatypesFacet.values));
+      }
+    } else {
+      console.error('Error fetching asset counts. Response:', response);
+      dispatch(fetchingAssetCountsError());
+    }
+  });
+};
+
+export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => {
+  const { onlyRecentlyViewed } = _.merge({}, getState().filters, parameters);
+
+  dispatch(fetchingResults());
+
+  return ceteraUtils.query(ceteraUtilsParams(getState, parameters)).then((response) => {
     if (_.isObject(response)) {
       dispatch(updateCatalogResults(response, onlyRecentlyViewed));
       dispatch(fetchingResultsSuccess());
       onSuccess();
+
+      fetchAssetCounts(dispatch, getState, parameters);
     } else {
       dispatch(fetchingResultsError());
     }

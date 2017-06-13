@@ -37,6 +37,10 @@ class InternalAssetManagerController < ApplicationController
     @domain_tags = cetera_facet_search_client.get_tags_of_views(
       request_id, forwardable_session_cookies, domains: CurrentDomain.cname
     ).to_h['results'].to_a.pluck('domain_tag').reject(&:empty?)
+
+    # Note: asset_types should match those listed in the `asset_counts` component and reducer
+    asset_types = %w(datasets charts maps stories)
+    @asset_counts = Cetera::Utils.get_asset_counts(asset_types, request_id, forwardable_session_cookies)
   end
 
   private

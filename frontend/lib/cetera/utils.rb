@@ -72,14 +72,15 @@ module Cetera
         response ? response.results : []
       end
 
-      def get_lens_counts_for_category(category, req_id, cookies = nil, options = {})
+      def get_asset_counts(asset_types, req_id, cookies = nil, options = {})
         {}.tap do |counts|
-          %w(datasets maps charts).map do |facet|
+          asset_types.map do |asset_type|
             Thread.new do
-              counts[facet] = catalog_search_client.
-                find_anonymously_viewable_views(
-                  req_id, cookies, :limit => 0, :categories => category, :only => facet, domains: CurrentDomain.cname
-                ).fetch('resultSetSize')
+              only_filter = asset_type == 'charts' ? 'charts,visualizations' : asset_type
+
+              counts[asset_type] = catalog_search_client.find_views(
+                req_id, cookies, :limit => 0, :only => only_filter, domains: CurrentDomain.cname
+              ).fetch('resultSetSize')
             end
           end.each(&:join)
         end

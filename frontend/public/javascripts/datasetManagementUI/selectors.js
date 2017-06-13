@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { STATUS_CALL_IN_PROGRESS } from './lib/apiCallStatus';
+import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import { TASK_SET_SUCCESSFUL } from 'actions/applyRevision';
 import { LOAD_ROWS } from 'actions/apiCalls';
 import { CREATE_UPLOAD } from 'actions/manageUploads';
@@ -38,8 +38,8 @@ export function latestOutputSchema(entities) {
   return _.maxBy(_.values(entities.output_schemas), 'id');
 }
 
-export function columnsForInputSchema(db, inputSchemaId) {
-  const unsortedColumns = _.filter(db.input_columns, ic => ic.input_schema_id === inputSchemaId);
+export function columnsForInputSchema(entities, inputSchemaId) {
+  const unsortedColumns = _.filter(entities.input_columns, ic => ic.input_schema_id === inputSchemaId);
   return _.sortBy(unsortedColumns, 'position');
 }
 
@@ -67,9 +67,10 @@ export function allTransformsDone(columnsWithTransforms, inputSchema) {
 }
 
 export function uploadsInProgress(apiCalls) {
-  return _.filter(apiCalls, apiCall => (
-    apiCall.status === STATUS_CALL_IN_PROGRESS && apiCall.operation === CREATE_UPLOAD
-  ));
+  return _.filter(
+    apiCalls,
+    apiCall => apiCall.status === STATUS_CALL_IN_PROGRESS && apiCall.operation === CREATE_UPLOAD
+  );
 }
 
 export function rowsTransformed(outputColumns) {
@@ -92,7 +93,7 @@ export function rowLoadOperationsInProgress(apiCalls) {
     .length;
 }
 
-// Merges formDataModel with db.output_columns, then transforms that into the
+// Merges formDataModel with entities.output_columns, then transforms that into the
 // shape expected by DSMAPI
 export function updatedOutputColumns(entities, formDataModel) {
   const { output_columns: outputColumns, transforms } = entities;
@@ -128,22 +129,22 @@ export function updatedOutputColumns(entities, formDataModel) {
 // - computation of denormalized error count for output schema
 // - starting new transforms when a new output schema is created
 // - endpoints which return results
-export function currentAndIgnoredOutputColumns(db) {
-  const osIds = Object.keys(db.output_schemas).map(_.toNumber);
+export function currentAndIgnoredOutputColumns(entities) {
+  const osIds = Object.keys(entities.output_schemas).map(_.toNumber);
 
   const latestOutputSchemaId = Math.max(...osIds);
 
   // get all input column ids
-  return _.chain(db.input_columns)
+  return _.chain(entities.input_columns)
     .filter(ic => {
-      const isid = db.output_schemas[latestOutputSchemaId].input_schema_id;
+      const isid = entities.output_schemas[latestOutputSchemaId].input_schema_id;
       return ic.input_schema_id === isid;
     })
     .map(ic => ic.id)
     .map(icid => {
       // get ids of all transforms that were run on this input column
-      const matchingTransformIds = Object.keys(db.transforms).filter(tid => {
-        return db.transforms[tid].transform_input_columns.filter(
+      const matchingTransformIds = Object.keys(entities.transforms).filter(tid => {
+        return entities.transforms[tid].transform_input_columns.filter(
           tic => tic.input_column_id === _.toNumber(icid)
         ).length;
       });
@@ -153,14 +154,14 @@ export function currentAndIgnoredOutputColumns(db) {
     })
     .flatMap(tid => {
       // get ids of ouput_columns that resulted from this transform
-      return Object.keys(db.output_columns)
-        .filter(ocid => db.output_columns[ocid].transform_id === tid)
+      return Object.keys(entities.output_columns)
+        .filter(ocid => entities.output_columns[ocid].transform_id === tid)
         .map(_.toNumber);
     })
     .reduce(
       (acc, ocid) => {
         // get array of ids of all output columns in current output schema
-        const currentOutputColumnIds = _.chain(db.output_schema_columns)
+        const currentOutputColumnIds = _.chain(entities.output_schema_columns)
           .filter(osc => osc.output_schema_id === latestOutputSchemaId)
           .reduce((innerAcc, osc) => {
             return [...innerAcc, osc.output_column_id];
@@ -185,9 +186,9 @@ export function currentAndIgnoredOutputColumns(db) {
     .thru(val => {
       // map ocids to actual oc objects
       return {
-        current: val.current.map(ocid => db.output_columns[ocid]),
+        current: val.current.map(ocid => entities.output_columns[ocid]),
         ignored: val.ignored.map(ocid => ({
-          ...db.output_columns[ocid],
+          ...entities.output_columns[ocid],
           ignored: true
         }))
       };
@@ -197,7 +198,7 @@ export function currentAndIgnoredOutputColumns(db) {
       // id as an output column in val.current, that means it is an old copy that
       // contains outdated metadata. We don't want to display this to the user so
       // we filter it out here. The ideal place to have done this is in the flatMap
-      // on line 147, but unfortunately db.output_schema_columns doesn't have the
+      // on line 147, but unfortunately entities.output_schema_columns doesn't have the
       // information we need at that point.
       const currentTransforms = val.current.map(oc => oc.transform_id);
       const newIgnored = val.ignored.filter(oc => !currentTransforms.includes(oc.transform_id));
@@ -226,7 +227,7 @@ export function currentAndIgnoredOutputColumns(db) {
           return false;
         }
         const [head, ...tail] = arr;
-        const currentOutputColumnIds = _.chain(db.output_schema_columns)
+        const currentOutputColumnIds = _.chain(entities.output_schema_columns)
           .filter(osc => osc.output_schema_id === head)
           .reduce((acc, osc) => {
             return [...acc, osc.output_column_id];
@@ -258,11 +259,11 @@ export function currentAndIgnoredOutputColumns(db) {
       return {
         current: val.current.map(oc => ({
           ...oc,
-          transform: db.transforms[oc.transform_id]
+          transform: entities.transforms[oc.transform_id]
         })),
         ignored: val.ignored.map(oc => ({
           ...oc,
-          transform: db.transforms[oc.transform_id]
+          transform: entities.transforms[oc.transform_id]
         }))
       };
     })

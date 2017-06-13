@@ -26,7 +26,6 @@ var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
  * Instantiates a Socrata ColumnChart Visualization from the
- * `socrata-visualizations` package.
  *
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  */

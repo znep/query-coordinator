@@ -38,7 +38,7 @@ over this:
 import { ColumnChart } from 'common/visualizations/charts/column_chart';
 ```
 
-You can see an example of this pattern [here](https://github.com/socrata/frontend-visualizations/blob/master/src/index.js).
+You can see an example of this pattern [here](https://github.com/socrata/platform-ui/blob/master/common/visualizations/index.js).
 
 ## Module Requirements
 

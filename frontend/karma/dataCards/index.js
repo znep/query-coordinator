@@ -10,8 +10,8 @@ require('script!public/javascripts/util/jquery-extensions.js');
 require('imports?DOMPurify=dompurify!public/javascripts/util/dompurify-extensions');
 require('public/javascripts/lib/RxExtensions.js');
 
-// This is required by socrata-components
-// TODO: figure out why we need to do this when we aren't using socrata-components in here
+// This is required by common/components.
+// TODO: figure out why we need to do this when we aren't using common/components.
 require('babel-polyfill-safe');
 
 // Initialize dataCards module

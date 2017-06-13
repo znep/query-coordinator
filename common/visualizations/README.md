@@ -18,9 +18,6 @@ $('.my-visualization').socrataColumnChart(vif);
 Raw components may be accessed via the `views` and `dataProviders` keys of the
 `SocrataVisualizations` object.
 
-This library depends on [D3](http://d3js.org), [Lodash](https://lodash.com),
-and [jQuery](https://jquery.com).
-
 ## Examples
 
 We maintain a list of example visualizations in the Internal Panel. See the links

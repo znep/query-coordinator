@@ -1,21 +1,12 @@
 import dotProp from 'dot-prop-immutable';
 import { INSERT_INPUT_SCHEMA } from 'actions/manageUploads';
+import { mergeRecords } from 'lib/util';
 
 const insertInputSchema = (state, action) => {
   switch (action.type) {
     case INSERT_INPUT_SCHEMA: {
-      let stateWithUpdatedInputSchemas = state;
-
-      action.inputSchemaUpdates.forEach(
-        update =>
-          (stateWithUpdatedInputSchemas = dotProp.set(
-            stateWithUpdatedInputSchemas,
-            `entities.input_schemas.${update.id}`,
-            record => ({
-              ...record,
-              ...update
-            })
-          ))
+      const stateWithUpdatedInputSchemas = dotProp.set(state, 'entities.input_schemas', existingRecords =>
+        mergeRecords(existingRecords, action.inputSchemas)
       );
 
       return dotProp.set(stateWithUpdatedInputSchemas, 'entities.input_columns', existingRecords => ({

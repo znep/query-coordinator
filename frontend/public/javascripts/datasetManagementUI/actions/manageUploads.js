@@ -237,10 +237,18 @@ function pollForOutputSchema(uploadId) {
 export function pollForOutputSchemaSuccess(outputSchemaResponse) {
   const outputSchema = toOutputSchema(outputSchemaResponse);
 
-  const transformUpdates = outputSchemaResponse.output_columns.map(oc => ({
-    ...oc.transform,
-    error_indices: []
-  }));
+  const transforms = outputSchemaResponse.output_columns
+    .map(oc => ({
+      ...oc.transform,
+      error_indices: []
+    }))
+    .reduce(
+      (acc, transform) => ({
+        ...acc,
+        [transform.id]: transform
+      }),
+      {}
+    );
 
   const outputColumns = outputSchemaResponse.output_columns.reduce((acc, oc) => {
     const ocWithTransform = {
@@ -271,7 +279,7 @@ export function pollForOutputSchemaSuccess(outputSchemaResponse) {
   return {
     type: POLL_FOR_OUTPUT_SCHEMA_SUCCESS,
     outputSchema,
-    transformUpdates,
+    transforms,
     outputColumns,
     outputSchemaColumns
   };
@@ -279,12 +287,20 @@ export function pollForOutputSchemaSuccess(outputSchemaResponse) {
 
 export function insertInputSchema(upload) {
   return dispatch => {
-    const inputSchemaUpdates = upload.schemas.map(inputSchema => ({
-      id: inputSchema.id,
-      name: inputSchema.name,
-      total_rows: inputSchema.total_rows,
-      upload_id: upload.id
-    }));
+    const inputSchemas = upload.schemas
+      .map(inputSchema => ({
+        id: inputSchema.id,
+        name: inputSchema.name,
+        total_rows: inputSchema.total_rows,
+        upload_id: upload.id
+      }))
+      .reduce(
+        (acc, is) => ({
+          ...acc,
+          [is.id]: is
+        }),
+        {}
+      );
 
     const inputColumns = _.chain(upload.schemas)
       .flatMap(inputSchema => inputSchema.input_columns)
@@ -299,7 +315,7 @@ export function insertInputSchema(upload) {
 
     dispatch({
       type: INSERT_INPUT_SCHEMA,
-      inputSchemaUpdates,
+      inputSchemas,
       inputColumns
     });
   };

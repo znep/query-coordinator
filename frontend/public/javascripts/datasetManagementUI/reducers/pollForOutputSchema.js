@@ -1,5 +1,6 @@
 import dotProp from 'dot-prop-immutable';
 import { POLL_FOR_OUTPUT_SCHEMA_SUCCESS } from 'actions/manageUploads';
+import { mergeRecords } from 'lib/util';
 
 const pollForOutputSchema = (state, action) => {
   switch (action.type) {
@@ -13,18 +14,11 @@ const pollForOutputSchema = (state, action) => {
         })
       );
 
-      let stateWithUpdatedTransforms = stateWithUpdatedOutputSchemas;
-
-      action.transformUpdates.forEach(update => {
-        stateWithUpdatedTransforms = dotProp.set(
-          stateWithUpdatedTransforms,
-          `entities.transforms.${update.id}`,
-          record => ({
-            ...record,
-            ...update
-          })
-        );
-      });
+      const stateWithUpdatedTransforms = dotProp.set(
+        stateWithUpdatedOutputSchemas,
+        'entities.transforms',
+        existingRecords => mergeRecords(existingRecords, action.transforms)
+      );
 
       const stateWithUpdatedOutputColumns = dotProp.set(
         stateWithUpdatedTransforms,

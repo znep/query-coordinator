@@ -114,6 +114,99 @@ describe('SvgColumnChart', () => {
     $('#chart').remove();
   };
 
+  describe('when configured to show legend and "Show Legend" button is clicked', () => {
+    let columnChart;
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
+    it('should show the legend menu', () => {
+
+      columnChart = createColumnChart(null, {
+        configuration: {
+          showLegend: true
+        }
+      });
+
+      columnChart.chart.render(null, testData);
+
+      // Verify button exists
+      //
+      const $button = columnChart.element.find('.socrata-legend-button');
+      const buttonExists = ($button.length > 0);
+      assert.isTrue(buttonExists, 'button actually does not exist')
+
+      // Verify menu exists
+      //
+      const $legendMenu = columnChart.element.find('.socrata-legend-menu');
+      const menuExists = ($legendMenu.length > 0);
+      assert.isTrue(menuExists, 'menu actually does not exist')
+
+      // Verify menu is not shown
+      //
+      let isMenuVisible = $legendMenu.is(':visible');
+      assert.isFalse(isMenuVisible, 'menu actually is visible');
+
+      $button.click();
+
+      // Verify menu is shown
+      //
+      isMenuVisible = $legendMenu.is(':visible');
+      assert.isTrue(isMenuVisible, 'menu actually is not visible');
+    });
+  });
+
+  describe('when configured to show legend', () => {
+    let columnChart;
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
+    it('should show the "Show Legend" button', () => {
+
+      columnChart = createColumnChart(null, {
+        configuration: {
+          showLegend: true
+        }
+      });
+
+      columnChart.chart.render(null, testData);
+
+      // Verify button exists
+      //      
+      const $button = columnChart.element.find('.socrata-legend-button');
+      const buttonExists = ($button.length > 0);
+      assert.isTrue(buttonExists, 'button actually does not exist')
+    });
+  });
+
+  describe('when configured to not show legend', () => {
+    let columnChart;
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
+    it('should show not the "Show Legend" button', () => {
+
+      columnChart = createColumnChart(null, {
+        configuration: {
+          showLegend: false
+        }
+      });
+
+      columnChart.chart.render(null, testData);
+
+      // Verify button exists
+      //      
+      const $button = columnChart.element.find('.socrata-legend-button');
+      const buttonExists = ($button.length > 0);
+      assert.isFalse(buttonExists, 'button actually exists')
+    });
+  });
+
   describe('when configured wrong', () => {
     let columnChart;
 

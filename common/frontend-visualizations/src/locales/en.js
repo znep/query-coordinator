@@ -299,6 +299,7 @@ export default {
       error_cardinality_too_high_for_grouping: 'The current chart configuration attempts to group values based on a column with too many unique values.',
       flyout_value_label: 'Value',
       group_separator: ',',
+      hide_legend: 'Hide Legend',
       latitude: 'Latitude',
       longitude: 'Longitude',
       map_user_current_position: 'Your current location (estimated)',
@@ -310,6 +311,7 @@ export default {
       map_pan_zoom_disabled_warning_title: 'Panning and zooming has been disabled',
       no_value: '(No value)',
       other_category: '(Other)',
+      show_legend: 'Show Legend',
       unlabeled_measure_prefix: 'Measure ',
       unit: {
         one: 'Row',

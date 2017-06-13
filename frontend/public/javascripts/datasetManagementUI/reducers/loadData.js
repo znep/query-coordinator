@@ -4,18 +4,7 @@ import {
   LOAD_COLUMN_ERRORS_SUCCESS,
   LOAD_NORMAL_PREVIEW_SUCCESS
 } from 'actions/loadData';
-
-function mergeRecords(existing = {}, updates) {
-  const updateKeys = Object.keys(updates);
-
-  return updateKeys.reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: { ...existing[key], ...updates[key] }
-    }),
-    existing
-  );
-}
+import { mergeRecords } from 'lib/util';
 
 const loadData = (state, action) => {
   switch (action.type) {
@@ -31,23 +20,12 @@ const loadData = (state, action) => {
     }
 
     case LOAD_COLUMN_ERRORS_SUCCESS: {
-      const stateWithUpdatedColData = _.reduce(
-        action.colData,
-        (result, dataForTransform, transformId) =>
-          dotProp.set(result, ['entities', 'col_data', transformId], existingDataForTransform => ({
-            ...existingDataForTransform,
-            ...dataForTransform.record
-          })),
-        state
+      const stateWithUpdatedColData = dotProp.set(state, 'entities.col_data', existingRecords =>
+        mergeRecords(existingRecords, action.colData)
       );
 
-      return action.transformUpdates.reduce(
-        (stateWithUpdatedTransforms, update) =>
-          dotProp.set(stateWithUpdatedTransforms, `entities.transforms.${update.id}`, record => ({
-            ...record,
-            ...update
-          })),
-        stateWithUpdatedColData
+      return dotProp.set(stateWithUpdatedColData, 'entities.transforms', existingRecords =>
+        mergeRecords(existingRecords, action.transforms)
       );
     }
 

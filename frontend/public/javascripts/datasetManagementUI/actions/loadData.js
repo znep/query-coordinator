@@ -201,7 +201,7 @@ export function loadColumnErrors(apiCall) {
             const id = outputSchemaResp.output_columns[idx].transform.id;
             return {
               id,
-              record
+              ...record
             };
           })
           .reduce(
@@ -214,23 +214,31 @@ export function loadColumnErrors(apiCall) {
 
         const { transforms: existingTransforms } = getState().entities;
 
-        const transformUpdates = newRecordsByTransform.map((newRecords, idx) => {
-          const errorIndices = _.map(newRecords, (newRecord, index) => ({
-            ...newRecord,
-            index
-          }))
-            .filter(newRecord => newRecord.error)
-            .map(newRecord => newRecord.index);
+        const transforms = newRecordsByTransform
+          .map((newRecords, idx) => {
+            const errorIndices = _.map(newRecords, (newRecord, index) => ({
+              ...newRecord,
+              index
+            }))
+              .filter(newRecord => newRecord.error)
+              .map(newRecord => newRecord.index);
 
-          const id = outputSchemaResp.output_columns[idx].transform.id;
+            const id = outputSchemaResp.output_columns[idx].transform.id;
 
-          return {
-            id,
-            error_indices: _.union(existingTransforms[id]['error_indices'], errorIndices)
-          };
-        });
+            return {
+              id,
+              error_indices: _.union(existingTransforms[id]['error_indices'], errorIndices)
+            };
+          })
+          .reduce(
+            (acc, a) => ({
+              ...acc,
+              [a.id]: a
+            }),
+            {}
+          );
 
-        dispatch(loadColumnErrorsSuccess(colData, transformUpdates));
+        dispatch(loadColumnErrorsSuccess(colData, transforms));
 
         dispatch(apiCallSucceeded(callId));
       })
@@ -240,11 +248,11 @@ export function loadColumnErrors(apiCall) {
   };
 }
 
-function loadColumnErrorsSuccess(colData, transformUpdates) {
+function loadColumnErrorsSuccess(colData, transforms) {
   return {
     type: LOAD_COLUMN_ERRORS_SUCCESS,
     colData,
-    transformUpdates
+    transforms
   };
 }
 

@@ -40,7 +40,7 @@ function PagerBar({ currentPage, resultCount, urlForPage, changePage }) {
 
 PagerBar.propTypes = {
   currentPage: PropTypes.number.isRequired,
-  resultCount: PropTypes.number.isRequired,
+  resultCount: PropTypes.number,
   urlForPage: PropTypes.func.isRequired,
   changePage: PropTypes.func.isRequired
 };

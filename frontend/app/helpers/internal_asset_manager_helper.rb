@@ -15,7 +15,7 @@ module InternalAssetManagerHelper
   def render_internal_asset_manager_session_data
     session_data = {
       :userId => current_user.try(:id),
-      :socrataEmployee => !!current_user.try(:is_admin?),
+      :socrataEmployee => !!current_user.try(:is_superadmin?),
       :userRoleName => current_user.try(:roleName),
       :email => current_user.try(:email)
     }

@@ -17,7 +17,7 @@ module.exports = _.defaultsDeep({
   resolve: _.extend(
     {
       alias: {
-        'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js',
+        'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js'
       }
     },
     common.getStandardResolve([ 'public/javascripts/demos/visualizations' ])

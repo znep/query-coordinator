@@ -11,11 +11,11 @@
 
 // Compatibility shim for example page's inability to import packages for itself.
 require('sample-vifs');
-window['_'] = require('lodash');
+window._ = require('lodash');
 window.socrata = window.socrata || {};
 window.socrata.visualizations = require('common/visualizations');
 window.socrata.AuthoringWorkflow = require('common/authoring_workflow');
 
 // These two are just for visualization_component.html.erb
-window['react'] = window.React = require('react');
+window.react = window.React = require('react');
 window['react-dom'] = window.ReactDOM = require('react-dom');

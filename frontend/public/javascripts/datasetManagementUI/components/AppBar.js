@@ -16,28 +16,27 @@ const previewLink = (
   </div>
 );
 
-const AppBar = ({ name, showPreviewLink }) => (
+const AppBar = ({ name, showPreviewLink }) =>
   <EditBar name={name}>
     <div className={styles.buttonContainer}>
       {showPreviewLink && previewLink}
       <PublishButton />
     </div>
-  </EditBar>
-);
+  </EditBar>;
 
 AppBar.propTypes = {
   name: PropTypes.string.isRequired,
   showPreviewLink: PropTypes.bool.isRequired
 };
 
-function mapStateToProps(state) {
+function mapStateToProps({ entities }) {
   // only show the preview link when an upsert job has successfully completed
-  const showPreviewLink = !!_.find(state.entities.task_sets, {
-    status: ApplyRevision.UPSERT_JOB_SUCCESSFUL
+  const showPreviewLink = !!_.find(entities.task_sets, {
+    status: ApplyRevision.TASK_SET_SUCCESSFUL
   });
 
   return {
-    name: _.values(state.entities.views)[0].name,
+    name: _.values(entities.views)[0].name,
     showPreviewLink
   };
 }

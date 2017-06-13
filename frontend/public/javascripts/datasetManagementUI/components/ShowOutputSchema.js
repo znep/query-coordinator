@@ -29,7 +29,6 @@ function query(entities, uploadId, inputSchemaId, outputSchemaIdStr) {
   const canApplyRevision = Selectors.allTransformsDone(columns, inputSchema);
 
   return {
-    db: entities,
     upload,
     inputSchema,
     outputSchema,
@@ -42,7 +41,6 @@ const COL_WIDTH_PX = 250; // matches style on td in Table.scss
 const ERROR_SCROLL_DURATION_MS = 1000;
 
 export class ShowOutputSchema extends Component {
-
   constructor() {
     super();
     _.bindAll(this, ['setSize', 'scrollToColIdx']);
@@ -110,7 +108,7 @@ export class ShowOutputSchema extends Component {
   errorSumAndFirstColWithErrors(columns) {
     let firstColWithErrors = null;
     let errorSum = 0;
-    columns.forEach((col) => {
+    columns.forEach(col => {
       const numErrors = col.transform.num_transform_errors || 0;
       errorSum += numErrors;
       if (firstColWithErrors === null && numErrors > 0) {
@@ -125,7 +123,7 @@ export class ShowOutputSchema extends Component {
 
   scrollToColIdx(idx) {
     const offset = this.colIdxToOffset(idx);
-    interpolate(this.tableWrap.scrollLeft, offset, ERROR_SCROLL_DURATION_MS, easeInOutQuad, (pos) => {
+    interpolate(this.tableWrap.scrollLeft, offset, ERROR_SCROLL_DURATION_MS, easeInOutQuad, pos => {
       this.tableWrap.scrollLeft = pos;
     });
   }
@@ -142,7 +140,6 @@ export class ShowOutputSchema extends Component {
 
   render() {
     const {
-      db,
       upload,
       inputSchema,
       outputSchema,
@@ -215,9 +212,10 @@ export class ShowOutputSchema extends Component {
               <div
                 className={styles.tableWrap}
                 onScroll={this.throttledSetSize}
-                ref={(tableWrap) => { this.tableWrap = tableWrap; }}>
+                ref={tableWrap => {
+                  this.tableWrap = tableWrap;
+                }}>
                 <Table
-                  db={db}
                   path={path}
                   columns={columns}
                   inputSchema={inputSchema}
@@ -256,7 +254,6 @@ export class ShowOutputSchema extends Component {
 }
 
 ShowOutputSchema.propTypes = {
-  db: PropTypes.object.isRequired,
   upload: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   inputSchema: PropTypes.object.isRequired,

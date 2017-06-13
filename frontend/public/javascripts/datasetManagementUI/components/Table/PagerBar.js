@@ -82,9 +82,9 @@ function mapDispatchToProps(dispatch, ownProps) {
   return { urlForPage, changePage };
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps({ entities }, ownProps) {
   const currentPage = ownProps.displayState.pageNo;
-  const resultCount = numItemsToPaginate(state.entities, ownProps.path.outputSchemaId, ownProps.displayState);
+  const resultCount = numItemsToPaginate(entities, ownProps.path.outputSchemaId, ownProps.displayState);
 
   return { currentPage, resultCount };
 }

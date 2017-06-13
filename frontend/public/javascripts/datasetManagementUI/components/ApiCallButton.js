@@ -1,11 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {
-  STATUS_CALL_IN_PROGRESS,
-  STATUS_CALL_SUCCEEDED,
-  STATUS_CALL_FAILED
-} from 'lib/apiCallStatus';
+import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED, STATUS_CALL_FAILED } from 'lib/apiCallStatus';
 import classNames from 'classnames';
 import styles from 'styles/ApiCallButton.scss';
 
@@ -24,7 +20,8 @@ const ApiCallButton = ({ status, onClick, additionalClassName, children }) => {
       className = styles.successfulBtn;
       break;
 
-    default: // null if it's saved
+    default:
+      // null if it's saved
       className = styles.baseBtn;
   }
   const inProgress = status === STATUS_CALL_IN_PROGRESS;
@@ -34,11 +31,7 @@ const ApiCallButton = ({ status, onClick, additionalClassName, children }) => {
       className={classNames(className, additionalClassName)}
       onClick={onClick}
       disabled={inProgress}>
-      {
-        inProgress
-          ? <span className={styles.spinner}></span>
-          : (children || I18n.common.save)
-      }
+      {inProgress ? <span className={styles.spinner} /> : children || I18n.common.save}
     </button>
   );
 };
@@ -52,15 +45,15 @@ ApiCallButton.propTypes = {
 
 const SHOW_RESULT_STATE_FOR_MS = 1000;
 
-function mapStateToProps(state, ownProps) {
-  const apiCall = _.find(state.ui.apiCalls, (call) => (
-    _.matches(call, {
-      operation: ownProps.operation,
-      params: ownProps.params
-    }) && (
-      new Date() - (call.succeededAt || call.failedAt || call.startedAt) < SHOW_RESULT_STATE_FOR_MS
-    )
-  ));
+function mapStateToProps({ ui }, ownProps) {
+  const apiCall = _.find(
+    ui.apiCalls,
+    call =>
+      _.matches(call, {
+        operation: ownProps.operation,
+        params: ownProps.params
+      }) && new Date() - (call.succeededAt || call.failedAt || call.startedAt) < SHOW_RESULT_STATE_FOR_MS
+  );
   return {
     status: apiCall ? apiCall.status : null
   };

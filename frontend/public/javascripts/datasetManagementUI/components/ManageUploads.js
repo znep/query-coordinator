@@ -6,18 +6,20 @@ import { push } from 'react-router-redux';
 import * as Links from '../links';
 import * as Actions from '../actions/manageUploads';
 import { Modal, ModalHeader, ModalContent } from 'common/components';
-import { STATUS_INSERTING, STATUS_UPSERT_FAILED } from '../lib/database/statuses';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ManageUploads.scss';
 
-function query(db) {
+function query(entities) {
   return {
-    uploads: _.map(db.uploads, upload => ({
+    uploads: _.map(entities.uploads, upload => ({
       ...upload,
-      input_schemas: _.filter(db.input_schemas, schema => schema.upload_id === upload.id).map(schema => ({
+      input_schemas: _.filter(
+        entities.input_schemas,
+        schema => schema.upload_id === upload.id
+      ).map(schema => ({
         ...schema,
         output_schemas: _.filter(
-          db.output_schemas,
+          entities.output_schemas,
           outputSchema => outputSchema.input_schema_id === schema.id
         )
       }))
@@ -78,11 +80,11 @@ export function ManageUploads({ uploads, createUpload, goHome }) {
         <form>
           <h2 className={styles.header}>{I18n.manage_uploads.previous}</h2>
           <ul>
-            {uploads.map((upload, idxInTable) => (
+            {uploads.map((upload, idxInTable) =>
               <li key={idxInTable}>
                 <UploadListItem upload={upload} />
               </li>
-            ))}
+            )}
           </ul>
           <p>
             <label id="upload-label" htmlFor="file">{I18n.manage_uploads.new_file}&nbsp;</label>

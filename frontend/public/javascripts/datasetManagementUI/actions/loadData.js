@@ -177,10 +177,10 @@ export function loadColumnErrors(apiCall) {
 
         const withoutSchemaRow = resp.slice(1);
 
-        // This will end up as an array of objects, each object reprenting a column.
+        // This will end up as an array of objects, each object representing a column.
         // This column object looks like: {0: {ok: true}, 1: {ok: 'dog'}}, etc. where
         // the keys correspond to col cell #, when going from top to bottom. Not sure
-        // why this is named newRecordsByTransform
+        // why this is named newRecordsByTransform.
         const newRecordsByTransform = [];
 
         _.range(outputSchemaResp.output_columns.length).forEach(() => {
@@ -212,7 +212,7 @@ export function loadColumnErrors(apiCall) {
             {}
           );
 
-        const existingTransforms = getState().entities.transforms;
+        const { transforms: existingTransforms } = getState().entities;
 
         const transformUpdates = newRecordsByTransform.map((newRecords, idx) => {
           const errorIndices = _.map(newRecords, (newRecord, index) => ({

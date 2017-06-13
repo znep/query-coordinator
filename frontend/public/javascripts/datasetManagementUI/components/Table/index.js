@@ -9,12 +9,12 @@ import RowErrorsLink from 'components/Table/RowErrorsLink';
 import * as ShowActions from 'actions/showOutputSchema';
 import * as DisplayState from 'lib/displayState';
 import { currentAndIgnoredOutputColumns } from 'selectors';
-import styles from 'styles/Table/Table.scss';
 import { COLUMN_OPERATIONS } from 'actions/apiCalls';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
+import styles from 'styles/Table/Table.scss';
 
 export function Table({
-  db,
+  entities,
   path,
   inputSchema,
   outputSchema,
@@ -32,7 +32,7 @@ export function Table({
     <table className={styles.table}>
       <thead>
         <tr>
-          {outputColumns.map(column => (
+          {outputColumns.map(column =>
             <ColumnHeader
               key={column.id}
               outputSchema={outputSchema}
@@ -42,10 +42,10 @@ export function Table({
               addColumn={() => addColumn(outputSchema, column)}
               dropColumn={() => dropColumn(outputSchema, column)}
               validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)} />
-          ))}
+          )}
         </tr>
         <tr className={styles.columnStatuses}>
-          {outputColumns.map(column => (
+          {outputColumns.map(column =>
             <TransformStatus
               key={column.id}
               path={path}
@@ -54,7 +54,7 @@ export function Table({
               displayState={displayState}
               columnId={column.id}
               totalRows={inputSchema.total_rows} />
-          ))}
+          )}
         </tr>
         {numRowErrors > 0 &&
           <RowErrorsLink
@@ -63,13 +63,17 @@ export function Table({
             numRowErrors={numRowErrors}
             inRowErrorMode={inRowErrorMode} />}
       </thead>
-      <TableBody db={db} columns={outputColumns} displayState={displayState} inputSchemaId={inputSchema.id} />
+      <TableBody
+        entities={entities}
+        columns={outputColumns}
+        displayState={displayState}
+        inputSchemaId={inputSchema.id} />
     </table>
   );
 }
 
 Table.propTypes = {
-  db: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   path: PropTypes.object.isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
@@ -101,7 +105,7 @@ const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, di
     .keyBy('params.outputColumnId')
     .value();
   return {
-    db: entities,
+    entities,
     path,
     inputSchema,
     outputSchema,

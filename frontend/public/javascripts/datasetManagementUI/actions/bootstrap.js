@@ -122,7 +122,7 @@ function sideEffectyStuff(revision) {
 
     revision.task_sets = revision.upsert_jobs || revision.task_sets;
     revision.task_sets.forEach(taskSet => {
-      if (taskSet.status === ApplyRevision.UPSERT_JOB_IN_PROGRESS) {
+      if (taskSet.status === ApplyRevision.TASK_SET_IN_PROGRESS) {
         dispatch(ApplyRevision.pollForUpsertJobProgress(taskSet.id));
       }
     });

@@ -1,15 +1,16 @@
 import _ from 'lodash';
-import React, { PropTypes, PureComponent } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addVisualization } from '../actions';
 import { t } from '../lib/I18n';
 
-export class AddVisualizationButton extends PureComponent {
+export class AddVisualizationButton extends Component {
   render() {
-    const { onClickHandler, vifs } = this.props;
+    console.log('a');
+    const { onClickHandler, hasVisualization } = this.props;
 
-    if (!_.isEmpty(vifs)) {
+    if (hasVisualization) {
       return null;
     }
 
@@ -28,11 +29,13 @@ export class AddVisualizationButton extends PureComponent {
 
 AddVisualizationButton.propTypes = {
   onClickHandler: PropTypes.func.isRequired,
-  vifs: PropTypes.array.isRequired
+  hasVisualization: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(state) {
-  return _.pick(state, 'vifs');
+  return {
+    hasVisualization: !_.isEmpty(state.vifs)
+  };
 }
 
 function mapDispatchToProps(dispatch) {

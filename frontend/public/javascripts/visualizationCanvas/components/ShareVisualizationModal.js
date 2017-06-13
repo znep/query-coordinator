@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import { closeShareModal, setEmbedSize } from '../actions';
 import { Dropdown, Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { t } from '../lib/I18n';
-import { generateEmbedCode, components as SocrataVisualizations } from 'common/visualizations';
+import { components as SocrataVisualizations } from 'common/visualizations';
+import generateEmbedCode from '../../visualization_embed/embedCodeGenerator';
 
 // Embed sizes, in the order they should be presented in the UI.
 const EMBED_SIZES = [

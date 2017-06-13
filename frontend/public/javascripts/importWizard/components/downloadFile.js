@@ -60,10 +60,11 @@ function fileDownloadError(error: string = I18n.screens.import_pane.unknown_erro
 }
 
 export const FILE_DOWNLOAD_COMPLETE = 'FILE_DOWNLOAD_COMPLETE';
-function fileDownloadComplete(fileId: SharedTypes.FileId, summary: SharedTypes.Summary) {
+function fileDownloadComplete(fileId: SharedTypes.FileId, transformedFilename: SharedTypes.TransformedFilename, summary: SharedTypes.Summary) {
   return {
     type: FILE_DOWNLOAD_COMPLETE,
     fileId,
+    transformedFilename,
     summary
   };
 }
@@ -95,7 +96,7 @@ function pollURL(resp) {
           case 200:
             return result.json().then((response) => {
               const summary = addColumnIndicesToSummary(response.summary);
-              dispatch(fileDownloadComplete(response.fileId, summary));
+              dispatch(fileDownloadComplete(response.fileId, response.transformedFilename, summary));
               dispatch(SaveState.save());
             });
           default:
@@ -137,7 +138,7 @@ export function scanURL(url) {
         case 200:
           return result.json().then((resp) => {
             const summary = addColumnIndicesToSummary(resp.summary);
-            dispatch(fileDownloadComplete(resp.fileId, summary));
+            dispatch(fileDownloadComplete(resp.fileId, resp.transformedFilename, summary));
             dispatch(SaveState.save());
           });
         default:
@@ -196,7 +197,7 @@ export function update(download: FileDownload = {}, action): FileDownload {
         url: download.url,
         fileId: action.fileId,
         summary: action.summary,
-        fileName: download.fileName
+        fileName: action.transformedFilename || download.fileName
       };
     case FILE_DOWNLOAD_ERROR:
       return {

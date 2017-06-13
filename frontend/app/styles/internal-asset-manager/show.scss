@@ -12,6 +12,11 @@ body {
   background: $light-grey-6;
 }
 
+.asset_inventory_link_wrapper {
+  position: absolute;
+  right: 1rem;
+}
+
 .internal-asset-manager {
   .header {
     margin: 2rem 0.5rem 0.5rem 0.5rem;

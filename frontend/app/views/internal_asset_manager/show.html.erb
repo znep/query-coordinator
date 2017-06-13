@@ -3,13 +3,10 @@
   <title><%= I18n.t('internal_asset_manager.title') %> | <%= get_site_title %></title>
 <%- end %>
 
+<%= render '/administration/asset_inventory_dataset_button' %>
+
 <div class="internal-asset-manager" id="internal-asset-manager-content"></div>
 <div id="dynamic-content"></div>
-
-<!--
-<div id="modals">
-  <%#= yield :modals %>
-</div> -->
 
 <%= content_for :scripts do %>
   <script src="/javascripts/plugins/lodash.js"></script>

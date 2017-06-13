@@ -12,6 +12,8 @@ const SHARE_MODAL_INITIAL_STATE = {
   isActive: false
 };
 
+const EDIT_PATH_REGEX = /\/edit\/?$/;
+
 const applyVifOrigin = (state, vif) => {
   const origin = {
     type: 'visualization_canvas'
@@ -60,7 +62,7 @@ const initialState = () => {
   _.assign(state, {
     authoringWorkflow: AUTHORING_WORKFLOW_INITIAL_STATE,
     shareModal: SHARE_MODAL_INITIAL_STATE,
-    mode: isEphemeral ? ModeStates.EDIT : ModeStates.VIEW,
+    mode: isEphemeral || /\/edit$/.test(window.location.pathname) ? ModeStates.EDIT : ModeStates.VIEW,
     isEditMenuActive: false,
     isEphemeral,
     isDirty: isEphemeral,
@@ -133,6 +135,11 @@ export default (state = initialState(), action) => {
       };
 
     case actions.ENTER_EDIT_MODE:
+      if (!EDIT_PATH_REGEX.test(window.location.pathname)) {
+        const pathname = window.location.pathname === '/' ? '' : window.location.pathname;
+        window.history.pushState(null, 'edit', `${pathname}/edit`);
+      }
+
       return {
         ...state,
         mode: ModeStates.EDIT
@@ -143,6 +150,17 @@ export default (state = initialState(), action) => {
         ...state,
         mode: ModeStates.PREVIEW
       };
+
+    case actions.ENTER_VIEW_MODE:
+      if (EDIT_PATH_REGEX.test(window.location.pathname)) {
+        let pathname = window.location.pathname.replace(EDIT_PATH_REGEX, '');
+        pathname = pathname === '' ? '.' : pathname;
+        const { search } = window.location;
+
+        window.history.pushState(null, 'view', `${pathname}${search}`);
+      }
+      _.set(nextState, 'mode', ModeStates.VIEW);
+      break;
 
     case actions.OPEN_EDIT_MENU:
       return {
@@ -215,7 +233,7 @@ export default (state = initialState(), action) => {
         // that we can trigger Mixpanel events.
         _.delay(() => {
           window.onbeforeunload = null;
-          window.location = `/d/${action.response.id}`;
+          window.location = `/d/${action.response.id}/edit`;
         }, 500);
       }
 

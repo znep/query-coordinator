@@ -50,6 +50,11 @@ export const enterPreviewMode = () => ({
   type: ENTER_PREVIEW_MODE
 });
 
+export const ENTER_VIEW_MODE = 'ENTER_VIEW_MODE';
+export const enterViewMode = () => ({
+  type: ENTER_VIEW_MODE
+});
+
 export const ENTER_EDIT_MODE = 'ENTER_EDIT_MODE';
 export const enterEditMode = () => ({
   type: ENTER_EDIT_MODE

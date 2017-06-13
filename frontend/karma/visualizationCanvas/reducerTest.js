@@ -9,6 +9,7 @@ import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
 import mockVif from 'data/mockVif';
 import mockFilter from 'data/mockFilter';
+import sinon from 'sinon';
 
 const INITIAL_STATES = {
   savedView: {
@@ -153,6 +154,21 @@ describe('Reducer', () => {
     });
   });
 
+  describe('starting from a saved view in edit', () => {
+    beforeEach(() => {
+      window.history.pushState(null, 'edit', '/edit');
+    })
+
+    afterEach(() => {
+      window.history.back();
+    })
+
+    it('returns an initialState in edit mode', () => {
+      state = reducer();
+      assert.equal(state.mode, ModeStates.EDIT)
+    })
+  });
+
   describe('starting from a saved view', () => {
 
     const mockVifOrigin = {
@@ -281,6 +297,33 @@ describe('Reducer', () => {
       it('sets mode to "edit"', () => {
         const state = reducer(state, actions.enterEditMode());
         assert.equal(state.mode, ModeStates.EDIT);
+      });
+
+      describe('if not at /edit path', () => {
+        it('pushes /edit onto path', () => {
+          reducer(state, actions.enterViewMode());
+          assert.notMatch(window.location.pathname, /\/edit$/)
+
+          reducer(state, actions.enterEditMode());
+          assert.match(window.location.pathname, /\/edit$/)
+        })
+      });
+    });
+
+    describe('ENTER_VIEW_MODE', () => {
+      it('sets mode to "view"', () => {
+        const state = reducer(state, actions.enterViewMode());
+        assert.equal(state.mode, ModeStates.VIEW);
+      });
+
+      describe('if it is at /edit path', () => {
+        it('removes /edit from path', () => {
+          reducer(state, actions.enterEditMode());
+          assert.match(window.location.pathname, /\/edit$/)
+
+          reducer(state, actions.enterViewMode());
+          assert.notMatch(window.location.pathname, /\/edit$/)
+        })
       });
     });
 

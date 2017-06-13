@@ -4,9 +4,6 @@ import $ from 'jquery';
 import generateEmbedCode from './embedCodeGenerator';
 import hydrateEmbeds from './hydrator';
 
-// NOTE: This is pulling from frontend's styles, which knows where
-// to find the icon font as served by frontend, and where to grab
-// leaflet styles from.
 import 'frontend/app/styles/visualizations-import-shim.scss';
 import 'frontend/app/styles/socrata-icons.scss';
 

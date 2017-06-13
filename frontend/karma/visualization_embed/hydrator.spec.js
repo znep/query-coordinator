@@ -1,6 +1,9 @@
+import { assert } from 'chai';
 import $ from 'jquery';
-import mockVif from '../mockVif';
-import { __RewireAPI__ as HydratorAPI, hydrateEmbed } from 'common/visualizations/embed/hydrator';
+import mockVif from './mockVif';
+import { __RewireAPI__ as HydratorAPI, hydrateEmbed } from 'hydrator';
+import _ from 'lodash';
+import sinon from 'sinon';
 
 let mockVisualizationRenderer;
 let mockLogWarning;

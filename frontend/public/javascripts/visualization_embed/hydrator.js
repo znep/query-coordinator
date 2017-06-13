@@ -1,7 +1,7 @@
 // Visualization hydrator. Replaces embed codes with real visualizations.
 
 const $ = require('jquery');
-const VisualizationRenderer = require('../VisualizationRenderer').VisualizationRenderer;
+const VisualizationRenderer = require('common/visualizations').VisualizationRenderer;
 
 const DEFAULT_WIDTH = '500px';
 const DEFAULT_HEIGHT = '400px';

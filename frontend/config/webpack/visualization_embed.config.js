@@ -6,7 +6,7 @@ var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
 module.exports = _.defaultsDeep({
-  context: path.resolve(common.frontendRoot, '../common/visualizations/embed'),
+  context: path.resolve(common.frontendRoot, 'public/javascripts/visualization_embed'),
   entry: common.withHotModuleEntries({
     'main': './main',
     'loader': './loader'
@@ -17,13 +17,18 @@ module.exports = _.defaultsDeep({
     jquery: true // See comment re: jquery_include in frontend/app/views/layouts/styleguide.html
   },
   module: {
-    loaders: common.getStandardLoaders([
+    loaders: common.getStandardLoaders(
+      [
+        {
+          test: /\.s?css$/,
+          // Process styles but don't inline images. We don't use them.
+          loader: 'style-loader!css-loader?url=false!sass-loader'
+        }
+      ],
       {
-        test: /\.s?css$/,
-        // Process styles but don't inline images. We don't use them.
-        loader: 'style-loader!css-loader?url=false!sass-loader'
+        babelRewirePlugin: true
       }
-    ])
+    )
   },
   resolve: _.extend(
     {
@@ -31,7 +36,7 @@ module.exports = _.defaultsDeep({
         'dotdotdot': 'dotdotdot/src/js/jquery.dotdotdot.min.js'
       }
     },
-    common.getStandardResolve([ 'public/javascripts/demos/visualizations' ])
+    common.getStandardResolve([ 'public/javascripts/visualization_embed' ])
   ),
   plugins: common.plugins.concat(common.getManifestPlugin(identifier))
 }, require('./base'));

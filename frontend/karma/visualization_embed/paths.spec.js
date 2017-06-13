@@ -1,4 +1,5 @@
-import { loaderFilename, mainLibraryFilename, loaderLibrarySrc, mainLibrarySrc } from 'common/visualizations/embed/paths';
+import { assert } from 'chai';
+import { loaderFilename, mainLibraryFilename, loaderLibrarySrc, mainLibrarySrc } from 'paths';
 
 describe('string constants', () => {
   it('should be defined', () => {

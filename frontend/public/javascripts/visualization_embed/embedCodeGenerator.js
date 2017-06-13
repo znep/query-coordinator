@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import { translate } from '../I18n';
+import { translate } from 'common/visualizations/I18n';
 import { loaderLibrarySrc } from './paths';
 
 /**

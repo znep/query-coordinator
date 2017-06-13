@@ -115,7 +115,9 @@ function getStyleguideIncludePaths() {
   ];
 }
 
-function getBabelLoader() {
+function getBabelLoader(extraPlugins = []) {
+  const babelPlugins = [ 'babel-plugin-transform-object-rest-spread' ].concat(extraPlugins);
+
   return _.extend({}, jsLoaderBaseConfig, {
     loader: 'babel',
     query: {
@@ -125,9 +127,7 @@ function getBabelLoader() {
         'babel-preset-es2015',
         'babel-preset-react'
       ].map(require.resolve),
-      plugins: [
-        'babel-plugin-transform-object-rest-spread'
-      ].map(require.resolve)
+      plugins: babelPlugins.map(require.resolve)
     }
   });
 }
@@ -143,16 +143,22 @@ function getReactHotLoader() {
 function getStandardLoaders(extraLoaders, options) {
   var loaders = [];
   options = _.extend({
-    reactHotLoader: true
+    reactHotLoader: true,
+    babelRewirePlugin: false // Only has effect outside of production.
   }, options);
 
   loaders = loaders.concat(extraLoaders || []);
+
+  const babelPlugins = [];
+  if (!isProduction && options.babelRewirePlugin) {
+    babelPlugins.push('babel-plugin-rewire');
+  }
 
   if (!isProduction && options.reactHotLoader) {
     loaders.push(getReactHotLoader());
   }
 
-  loaders.push(getBabelLoader());
+  loaders.push(getBabelLoader(babelPlugins));
   loaders = loaders.concat(getSvgAndFontLoaders());
 
   // Prevent lodash from putting itself on window.

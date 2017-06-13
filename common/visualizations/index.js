@@ -4,7 +4,6 @@ import helpers from './helpers';
 import components from './components';
 import VisualizationRenderer from './VisualizationRenderer';
 import I18n from './I18n';
-import generateEmbedCode from './embed/embedCodeGenerator';
 
 // vv these requires have the side effect of registering jQuery plugins vv
 import ChoroplethMap from './ChoroplethMap';
@@ -41,7 +40,6 @@ module.exports = {
   VisualizationRenderer,
   components,
   dataProviders,
-  generateEmbedCode,
   helpers,
   views
 };

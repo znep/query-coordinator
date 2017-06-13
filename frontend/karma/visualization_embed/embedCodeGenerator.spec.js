@@ -1,6 +1,8 @@
-import generateEmbedCode from 'common/visualizations/embed/embedCodeGenerator';
+import { assert } from 'chai';
+import generateEmbedCode from 'embedCodeGenerator';
 import $ from 'jquery';
-import mockVif from '../mockVif';
+import mockVif from './mockVif';
+import _ from 'lodash';
 
 const mockVifDomain = 'vertex-stories.test-socrata.com';
 const loaderSrc = 'https://vertex-stories.test-socrata.com/component/visualization/v1/socrata-visualizations-loader.js';

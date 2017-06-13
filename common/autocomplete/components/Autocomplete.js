@@ -56,7 +56,8 @@ class Autocomplete extends React.Component {
             millisecondsBeforeSearch={millisecondsBeforeSearch}
             collapsible={collapsible}
             animate={animate}
-            mobile={mobile} />
+            mobile={mobile}
+            onChooseResult={onChooseResult} />
           <Results collapsible={collapsible} onChooseResult={onChooseResult} />
         </div>
       );

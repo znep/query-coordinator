@@ -102,7 +102,7 @@ class SearchBox extends React.Component {
 
     // goto the search URL if we DON'T have a focused result
     if (_.isUndefined(focusedResult)) {
-      window.location.href = getSearchUrl(currentQuery);
+      onChooseResult(currentQuery);
     }
   }
 
@@ -170,6 +170,7 @@ SearchBox.propTypes = {
   /* Search config*/
   millisecondsBeforeSearch: PropTypes.number.isRequired,
   getSearchResults: PropTypes.func.isRequired,
+  onChooseResult: PropTypes.func.isRequired,
 
   /* State */
   currentQuery: PropTypes.string,

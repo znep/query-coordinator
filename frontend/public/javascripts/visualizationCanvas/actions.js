@@ -3,6 +3,14 @@ import 'whatwg-fetch';
 import { dataProviders as DataProviders } from 'socrata-visualizations';
 import { checkStatus, defaultHeaders } from '../common/http';
 
+// NOTE: In a future refactor, it might be good to separate the Mixpanel action
+// into its own module, similar to how DSLP does it. See also reducer.
+export const EMIT_MIXPANEL_EVENT = 'EMIT_MIXPANEL_EVENT';
+export const emitMixpanelEvent = (data) => ({
+  type: EMIT_MIXPANEL_EVENT,
+  data
+});
+
 export const ADD_VISUALIZATION = 'ADD_VISUALIZATION';
 export const addVisualization = () => ({
   type: ADD_VISUALIZATION

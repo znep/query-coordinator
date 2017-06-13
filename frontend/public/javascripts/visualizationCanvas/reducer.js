@@ -1,4 +1,6 @@
 import _ from 'lodash';
+
+import mixpanel from '../common/mixpanel';
 import * as actions from 'actions';
 import { ModeStates, SaveStates } from './lib/constants';
 
@@ -208,11 +210,13 @@ export default (state = initialState(), action) => {
       };
 
     case actions.HANDLE_SAVE_SUCCESS:
-      // Redirect if we're saving for the first time
       if (state.isEphemeral) {
-        window.onbeforeunload = null;
-        window.location = `/d/${action.response.id}`;
-        return state;
+        // Redirect if we're saving for the first time, with a small delay so
+        // that we can trigger Mixpanel events.
+        _.delay(() => {
+          window.onbeforeunload = null;
+          window.location = `/d/${action.response.id}`;
+        }, 500);
       }
 
       return {
@@ -258,6 +262,17 @@ export default (state = initialState(), action) => {
           embedSize: action.size
         }
       };
+
+    case actions.EMIT_MIXPANEL_EVENT:
+      // No state transformations occur; this is a side effect behavior.
+      // Allows for multiple events to be tracked in a single dispatch.
+      //
+      // NOTE: refer to comments in Mixpanel event generator modules for
+      // important information regarding event naming!
+      _.flatten([action.data]).forEach((event) => {
+        mixpanel.sendPayload(`VizCan: ${event.name}`, event.properties);
+      });
+      return state;
 
     default:
       return state;

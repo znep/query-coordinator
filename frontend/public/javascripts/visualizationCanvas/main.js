@@ -11,8 +11,6 @@ import utils from 'socrata-utils';
 import * as metrics from '../common/metrics';
 import airbrake from 'common/airbrake';
 
-import '../common/mixpanel'; // This initializes mixpanel
-
 // add styling for socrata-viz maps
 import 'leaflet/dist/leaflet.css';
 

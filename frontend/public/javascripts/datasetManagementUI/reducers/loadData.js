@@ -5,13 +5,24 @@ import {
   LOAD_NORMAL_PREVIEW_SUCCESS
 } from 'actions/loadData';
 
+function mergeRecords(existing = {}, updates) {
+  const updateKeys = Object.keys(updates);
+
+  return updateKeys.reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: { ...existing[key], ...updates[key] }
+    }),
+    existing
+  );
+}
+
 const loadData = (state, action) => {
   switch (action.type) {
     case LOAD_NORMAL_PREVIEW_SUCCESS: {
-      const stateWithUpdatedColData = dotProp.set(state, 'entities.col_data', existingRecords => ({
-        ...existingRecords,
-        ...action.colData
-      }));
+      const stateWithUpdatedColData = dotProp.set(state, 'entities.col_data', existingRecords =>
+        mergeRecords(existingRecords, action.colData)
+      );
 
       return dotProp.set(stateWithUpdatedColData, 'entities.row_errors', existingRecords => ({
         ...existingRecords,

@@ -96,7 +96,7 @@ class SearchBox extends React.Component {
   }
 
   handleFormSubmit(event) {
-    const { focusedResult, currentQuery } = this.props;
+    const { focusedResult, onChooseResult, currentQuery } = this.props;
 
     event.preventDefault();
 

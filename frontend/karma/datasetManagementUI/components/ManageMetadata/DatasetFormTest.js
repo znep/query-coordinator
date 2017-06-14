@@ -1,30 +1,32 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import { createStore, applyMiddleware } from 'redux';
-import reducer from 'reducers';
+import reducer from 'reducers/rootReducer';
 import initialState from '../../data/initialState';
 import thunk from 'redux-thunk';
+import TestUtils from 'react-addons-test-utils';
+import React from 'react';
 
 import DatasetFormConnected, { DatasetForm } from 'components/ManageMetadata/DatasetForm';
 
 describe('components/ManageMetadata/DatasetForm', () => {
   const newState = Object.assign({}, initialState);
 
-  newState.db.views['3kt9-pmvq'].customMetadataFields = [
+  newState.entities.views['kg5j-unyr'].customMetadataFields = [
     {
-      "name": "Cat Fieldset",
-      "fields": [
+      name: 'Cat Fieldset',
+      fields: [
         {
-          "name": "name",
-          "required": false
+          name: 'name',
+          required: false
         },
         {
-          "name": "age(cat years)",
-          "required": false
+          name: 'age(cat years)',
+          required: false
         },
         {
-          "name": "meow?",
-          "required": false
+          name: 'meow?',
+          required: false
         }
       ]
     }
@@ -33,13 +35,13 @@ describe('components/ManageMetadata/DatasetForm', () => {
   const store = createStore(reducer, newState, applyMiddleware(thunk));
 
   const defaultProps = {
-    fourfour: '3kt9-pmvq',
+    fourfour: 'kg5j-unyr',
     syncToStore: () => {},
     model: {}
   };
 
   it('renders correctly', () => {
-    const component = shallow(<DatasetForm {...defaultProps}/>);
+    const component = shallow(<DatasetForm {...defaultProps} />);
 
     assert.lengthOf(component.find('form'), 1);
     assert.lengthOf(component.find('Fieldset'), 4);
@@ -50,7 +52,7 @@ describe('components/ManageMetadata/DatasetForm', () => {
     assert.lengthOf(component.find('[name="tag"]'), 1);
   });
 
-  it('syncs it\'s local state to store', () => {
+  it("syncs it's local state to store", () => {
     const component = renderComponentWithStore(DatasetFormConnected, {}, store);
 
     const inputField = component.querySelector('#name');
@@ -59,10 +61,10 @@ describe('components/ManageMetadata/DatasetForm', () => {
 
     TestUtils.Simulate.change(inputField, { target: inputField });
 
-    assert.equal(store
-      .getState()
-      .db.views['3kt9-pmvq']
-      .model['name'], 'testing!!!');
+    assert.equal(
+      store.getState().entities.views['kg5j-unyr'].model['name'],
+      'testing!!!'
+    );
   });
 
   it('renders custom fieldset and fields', () => {
@@ -70,18 +72,20 @@ describe('components/ManageMetadata/DatasetForm', () => {
 
     const legends = [...component.querySelectorAll('legend')];
 
-    const customLegend = legends.filter(legend =>
-      legend.textContent === newState.db.views['3kt9-pmvq'].customMetadataFields[0].name);
+    const customLegend = legends.filter(
+      legend =>
+        legend.textContent ===
+        newState.entities.views['kg5j-unyr'].customMetadataFields[0].name
+    );
 
     const inputs = [...customLegend[0].parentNode.children]
       .filter(child => child.nodeName.toUpperCase() === 'DIV')
       .map(div => [...div.children])
-      .reduce((acc, childList) => acc.concat(childList),[])
+      .reduce((acc, childList) => acc.concat(childList), [])
       .filter(child => child.nodeName.toUpperCase() === 'INPUT');
 
     assert.lengthOf(customLegend, 1);
 
     assert.lengthOf(inputs, 3);
   });
-
 });

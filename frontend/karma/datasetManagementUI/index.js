@@ -1,10 +1,12 @@
-// import 'script!jquery';
-// import 'babel-polyfill-safe';
+import 'script!jquery';
+import 'babel-polyfill-safe';
 // ^^ needed by socrata-components
 import { Provider } from 'react-redux';
 import _ from 'lodash';
 import React from 'react';
-// window.$ = window.jQuery = require('jquery');
+import TestUtils from 'react-addons-test-utils';
+import ReactDOM from 'react-dom';
+window.$ = window.jQuery = require('jquery');
 window._ = require('lodash');
 // window.React = require('react');
 // window.ReactDOM = require('react-dom');
@@ -519,14 +521,22 @@ window.initialState = {
 // const curriedCreateElement = _.curry(React.createElement);
 // window.renderStatelessComponent = _.flow(curriedCreateElement('div', null), TestUtils.renderIntoDocument)
 // window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
-// window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
-// window.renderComponentWithStore = function(component, props, store) {
-//   store = store || getDefaultStore();
-//   return window.renderComponent(Provider, { store }, React.createElement(component, props));
-// };
+window.renderComponent = _.flow(
+  React.createElement,
+  TestUtils.renderIntoDocument,
+  ReactDOM.findDOMNode
+);
+window.renderComponentWithStore = function(component, props, store) {
+  store = store || getDefaultStore();
+  return window.renderComponent(
+    Provider,
+    { store },
+    React.createElement(component, props)
+  );
+};
 
 function requireAll(context) {
   context.keys().forEach(context);
 }
 
-requireAll(require.context('.', true, /showOutputSchemaTest\.js$/));
+requireAll(require.context('.', true, /MetadataContentTest\.js$/));

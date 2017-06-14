@@ -1,7 +1,9 @@
 import { expect, assert } from 'chai';
 import { shallow } from 'enzyme';
+import React from 'react';
 import { createStore, applyMiddleware } from 'redux';
-import reducer from 'reducers';
+import TestUtils from 'react-addons-test-utils';
+import reducer from 'reducers/rootReducer';
 import initialState from '../../data/initialState';
 import thunk from 'redux-thunk';
 
@@ -13,53 +15,51 @@ describe('components/ManageMetadata/ColumnForm', () => {
   const defaultProps = {
     currentColumns: [
       {
-        'position': 0,
-        'id': 6329,
-        'field_name': 'mkkk',
-        'display_name': 'IDs',
-        'description': null,
-        'transform_id': 6105,
-        '__status__': {
-          'type': 'SAVED',
-          'savedAt': 'ON_SERVER'
-        },
-        'transform': {
-          'transform_expr': 'to_number(`id`)',
-          'output_soql_type': 'number',
-          'id': 6105,
-          'completed_at': '2017-04-03T15:49:34',
-          '__status__': {
-            'type': 'SAVED',
-            'savedAt': 'ON_SERVER'
-          },
-          'row_fetch_started': true,
-          'contiguous_rows_processed': 423223,
-          'fetched_rows': 200
+        position: 0,
+        is_primary_key: false,
+        id: 1945,
+        field_name: 'id',
+        display_name: 'ID',
+        description: '',
+        transform_id: 1939,
+        transform: {
+          transform_input_columns: [
+            {
+              input_column_id: 1907
+            }
+          ],
+          transform_expr: 'to_number(`id`)',
+          output_soql_type: 'number',
+          id: 1939,
+          failed_at: null,
+          completed_at: '2017-06-14T00:37:21',
+          attempts: 0,
+          error_indices: [],
+          contiguous_rows_processed: 9
         }
       },
       {
-        'position': 1,
-        'id': 6328,
-        'field_name': 'case_number',
-        'display_name': 'Case Number',
-        'description': null,
-        'transform_id': 6106,
-        '__status__': {
-          'type': 'SAVED',
-          'savedAt': 'ON_SERVER'
-        },
-        'transform': {
-          'transform_expr': '`case_number`',
-          'output_soql_type': 'text',
-          'id': 6106,
-          'completed_at': '2017-04-03T15:49:34',
-          '__status__': {
-            'type': 'SAVED',
-            'savedAt': 'ON_SERVER'
-          },
-          'row_fetch_started': true,
-          'contiguous_rows_processed': 423223,
-          'fetched_rows': 200
+        position: 1,
+        is_primary_key: false,
+        id: 1946,
+        field_name: 'case_number',
+        display_name: 'Case Number',
+        description: '',
+        transform_id: 1940,
+        transform: {
+          transform_input_columns: [
+            {
+              input_column_id: 1908
+            }
+          ],
+          transform_expr: '`case_number`',
+          output_soql_type: 'text',
+          id: 1940,
+          failed_at: null,
+          completed_at: '2017-06-14T00:37:21',
+          attempts: 0,
+          error_indices: [],
+          contiguous_rows_processed: 9
         }
       }
     ],
@@ -68,26 +68,29 @@ describe('components/ManageMetadata/ColumnForm', () => {
   };
 
   it('renders correctly', () => {
-    const component = shallow(<ColumnForm {...defaultProps}/>);
+    const component = shallow(<ColumnForm {...defaultProps} />);
     expect(component.find('form')).to.have.length(1);
     expect(component.find('Fieldset')).to.have.length(1);
     expect(component.find('.row')).to.have.length(2);
     expect(component.find('.row').children()).to.have.length(6);
-    expect(component
-      .find('.row')
-      .children()
-      .map(field => field.prop('type'))
-      .filter(type => type === 'text')).to.have.length(6);
+    expect(
+      component
+        .find('.row')
+        .children()
+        .map(field => field.prop('type'))
+        .filter(type => type === 'text')
+    ).to.have.length(6);
   });
 
-  it('syncs it\'s local state to store', () => {
+  it("syncs it's local state to store", () => {
     const component = renderComponentWithStore(ColumnFormConnected, {}, store);
-    const inputField = component.querySelector('#display-name-6263');
-    inputField.value = 'testing!!!'
+    const inputField = component.querySelector('#display-name-1945');
+    inputField.value = 'testing!!!';
     TestUtils.Simulate.change(inputField, { target: inputField });
-    expect(store
-      .getState()
-      .db.views['3kt9-pmvq']
-      .colFormModel['display-name-6263']).to.eq('testing!!!');
+    expect(
+      store.getState().entities.views['kg5j-unyr'].colFormModel[
+        'display-name-1945'
+      ]
+    ).to.eq('testing!!!');
   });
 });

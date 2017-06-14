@@ -7,7 +7,6 @@ import { t } from '../lib/I18n';
 
 export class AddVisualizationButton extends Component {
   render() {
-    console.log('a');
     const { onClickHandler, hasVisualization } = this.props;
 
     if (hasVisualization) {

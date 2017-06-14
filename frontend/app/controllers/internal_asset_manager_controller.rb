@@ -3,7 +3,7 @@ class InternalAssetManagerController < ApplicationController
   include ApplicationHelper
   include InternalAssetManagerHelper
 
-  before_action :require_administrator
+  before_filter :require_roled_user
 
   layout 'styleguide'
 
@@ -45,12 +45,8 @@ class InternalAssetManagerController < ApplicationController
 
   private
 
-  def require_administrator
-    return require_user(true) unless current_user.present?
-
-    unless current_user.try(:is_any?, :administrator, :superadmin)
-      flash.now[:error] = I18n.t('internal_asset_manager.errors.insufficent_view_permission')
-      render 'shared/error', :status => :forbidden
-    end
+  def require_roled_user
+    render_forbidden(I18n.t('core.auth.need_permission')) unless (current_user || User.new).is_roled_user?
   end
+
 end

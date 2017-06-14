@@ -89,6 +89,59 @@ with markup or simple markup).
 There is a top-level `styleguide` stylesheet that is the entry point into `partials` and supported by
 `variables`. See the `Usage` section to learn more.
 
+### Importing styles into Storyteller
+
+Use SCSS @import to add your stylesheet to `storyteller/app/assets/stylesheets/styleguide-shim.scss`.
+Example:
+
+```scss
+@import 'common/authoring_workflow/authoringWorkflow';
+```
+
+You can't import the stylesheet with a Sprockets require because Sprockets is not aware of how
+our icon font works. Our SCSS runtime, however, will handle this correctly. See the comments in
+`styleguide-shim.scss` for more information.
+
+
+### Importing styles into frontend
+
+Our homegrown StylesController only looks for files in app/styles. Since our SCSS runtime
+already knows how to pull in files from common/, it's hard to justify complicating StylesController.
+The steps involved in importing a new stylesheet depends on if you want to add the styles to an
+existing styles package in `style_packages.yml` or create a new style package which will include
+only your new style.
+
+#### Existing style package
+
+Use an SCSS import in your existing stylesheet:
+
+```scss
+@import 'common/authoring_workflow/authoringWorkflow';
+```
+
+#### New style package
+
+In this example, let's import a hypothetical style which lives in `common/add-blink-tag.scss`.
+
+1. Create a shim in `frontend/app/styles/add-blink-tag-import-shim.scss`:
+
+```scss
+@import 'common/add_blink_tag.scss';
+```
+
+2. Define a new package in `style_packages.yml`.
+
+```yml
+add-blink-tag:
+- add-blink-tag-import-shim
+```
+
+3. Use your style:
+
+```erb
+<%= rendered_stylesheet_tag 'add-blink-tag' %>
+```
+
 ## Contributing
 
 The easiest way to develop changes to `components` is to use a real application (such as frontend) as a test host for

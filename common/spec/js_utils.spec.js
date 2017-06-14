@@ -479,6 +479,40 @@ describe('utils.js', function() {
     });
   });
 
+  describe('getLocale', function() {
+    it('returns locale in serverConfig when window has serverConfig', function() {
+      var result = utils.getLocale({ serverConfig: { locale: 'zh' } });
+      assert.equal(result, 'zh');
+    });
+
+    it('returns locale in blist when window has blist', function() {
+      var result1 = utils.getLocale({ blist: { locale: 'it' } });
+      assert.equal(result1, 'it');
+
+      var result2 = utils.getLocale({ serverConfig: { foo: 'bar' }, blist: { locale: 'it' } });
+      assert.equal(result2, 'it');
+    });
+
+    it('returns locale in socrataConfig when window has socrataConfig', function() {
+      var result1 = utils.getLocale({ socrataConfig: { locales: { currentLocale: 'es' } } });
+      assert.equal(result1, 'es');
+
+      var result2 = utils.getLocale({ serverConfig: { foo: 'bar' }, blist: { bar: 'foo' }, socrataConfig: { locales: { currentLocale: 'es' } } });
+      assert.equal(result2, 'es');
+    });
+
+    it('returns en by default when window is something else', function() {
+      var result1 = utils.getLocale(null);
+      assert.equal(result1, 'en');
+
+      var result2 = utils.getLocale(undefined);
+      assert.equal(result2, 'en');
+
+      var result3 = utils.getLocale({ serverConfig: { foo: 'bar' }, blist: { bar: 'foo' }, socrataConfig: { abc: 'def' } });
+      assert.equal(result3, 'en');
+    });
+  });
+
   describe('formatNumber', function() {
 
     var VALID_FORMATTED_NUMBER = /^-?(\d\,\d{3}|((\d(\.\d{1,2})?|\d{2}(\.\d)?|\d{3})[A-Z])|\d(\.\d{1,3})?|\d{2}(\.\d{1,2})?|\d{3}(\.\d)?)$/;

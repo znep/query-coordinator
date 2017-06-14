@@ -267,6 +267,13 @@ var utils = {
   },
 
   /**
+   * Gets locale from given window
+   */
+  getLocale: function(w) {
+    return !_.isObject(w) ? 'en' : _.get(w.serverConfig, 'locale', _.get(w.blist, 'locale', _.get(w.socrataConfig, 'locales.currentLocale', 'en')));
+  },
+
+  /**
    * Returns a human readable version of a number, formatted to 4 characters.
    * options can include a groupCharacter, which defaults to the group character of current locale (comma for en),
    * and a decimalCharacter which defaults to decimal character of current locale (period for en).
@@ -282,7 +289,7 @@ var utils = {
       throw new Error('`.formatNumber()` requires numeric input.');
     }
 
-    var locale = _.get(window.serverConfig, 'locale', _.get(window.blist, 'locale', 'en'));
+    var locale = utils.getLocale(window);
 
     var defaultOptions = {
       groupCharacter: utils.getGroupCharacter(locale),
@@ -369,7 +376,7 @@ var utils = {
 
     value = String(value);
 
-    var locale = _.get(window.serverConfig, 'locale', _.get(window.blist, 'locale', _.get(window.socrataConfig, 'locales.currentLocale', 'en')));
+    var locale = utils.getLocale(window);
 
     var defaultOptions = {
       groupCharacter: utils.getGroupCharacter(locale),

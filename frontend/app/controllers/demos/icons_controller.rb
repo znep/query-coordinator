@@ -6,9 +6,8 @@ class Demos::IconsController < ApplicationController
   layout 'styleguide'
 
   def index
-    @icons = Dir[Rails.root.join('..', 'common/resources/fonts/svg/*.svg')].map do |icon|
-      icon_path = Pathname.new(icon)
-      icon_path.basename.to_s.gsub(icon_path.extname, '')
+    @icons = Dir.glob(Rails.root.join('..', 'common/resources/fonts/svg/*.svg')).map do |icon|
+      File.basename(icon, '.svg')
     end
   end
 end

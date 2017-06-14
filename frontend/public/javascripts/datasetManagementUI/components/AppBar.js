@@ -16,7 +16,7 @@ const previewLink = (
   </div>
 );
 
-const AppBar = ({ name, showPreviewLink }) =>
+export const AppBar = ({ name, showPreviewLink }) =>
   <EditBar name={name}>
     <div className={styles.buttonContainer}>
       {showPreviewLink && previewLink}

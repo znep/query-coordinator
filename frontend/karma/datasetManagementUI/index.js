@@ -542,4 +542,4 @@ function requireAll(context) {
   context.keys().forEach(context);
 }
 
-requireAll(require.context('.', true, /TransformStatusTest\.js$/));
+requireAll(require.context('.', true, /HomePaneSidebarTest\.js$/));

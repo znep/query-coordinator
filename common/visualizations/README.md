@@ -9,7 +9,7 @@ First, import the visualizations:
 import SocrataVisualizations from 'common/visualizations';
 ```
 
-This importation places jQuery plugins on `$`'s prototype, which can be used like this:
+Importing SocrataVisualizations extends jQuery by adding plugins which can be used like this:
 
 ```javascript
 $('.my-visualization').socrataColumnChart(vif);
@@ -21,7 +21,7 @@ Raw components may be accessed via the `views` and `dataProviders` keys of the
 ## Examples
 
 We maintain a list of example visualizations in the Internal Panel. See the links
-[here](https://github.com/socrata/platform-ui/tree/master/#socrata-visualizations-example-pages).
+[here](https://github.com/socrata/platform-ui/tree/master/#visualizations-example-pages).
 
 
 ## Embeds

@@ -11,7 +11,7 @@ describe('App', function() {
   let server;
 
   beforeEach(() => {
-    // This stubs the network requests being made by the/ visualizations and the Authoring Workflow.
+    // This stubs the network requests being made by the visualizations and the Authoring Workflow.
     // We shouldn't be making network requests from any other components, but if we did attempt to
     // do that, this will override those requests.
     server = sinon.fakeServer.create();

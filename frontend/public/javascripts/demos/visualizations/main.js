@@ -2,7 +2,7 @@
 // However, this arrangement lives outside of how the rest of the platform manages javascript assets,
 // so the examples were pulled into frontend to alleviate maintenance costs.
 //
-// When we have some time, we should move the javascript that exists as inline <style> tags
+// When we have some time, we should move the javascript that exists as inline <script> tags
 // in app/views/demos/visualizations into .js files in this folder. Currently, the inlined
 // example javascript cannot be linted or use ES6 features such as imports or arrow functions.
 //

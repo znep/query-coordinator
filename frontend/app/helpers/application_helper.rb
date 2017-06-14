@@ -318,7 +318,7 @@ module ApplicationHelper
       end
     end
 
-    return src
+    src
   end
 
   def include_webpack_bundle(resource)

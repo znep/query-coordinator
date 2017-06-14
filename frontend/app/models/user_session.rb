@@ -52,7 +52,7 @@ class UserSession
   #   UserSession.new(:login => 'login', :password => 'password')
   def initialize(*args)
     # NOTE: This is often caused when a request encounters an error before the before_filters
-    # can run (usually because the rails route references a missing action handler.
+    # can run (usually because the rails route references a missing action handler).
     raise NotActivatedError.new(self) unless self.class.activated?
     # (comment split so it shows up in the error page more clearly). The Airbrake middleware
     # is often responsible for triggering this error because it attempts to get the current

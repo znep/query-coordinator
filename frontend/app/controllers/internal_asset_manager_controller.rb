@@ -46,7 +46,7 @@ class InternalAssetManagerController < ApplicationController
   private
 
   def require_roled_user
-    render_forbidden(I18n.t('core.auth.need_permission')) unless (current_user || User.new).is_roled_user?
+    render_forbidden(I18n.t('core.auth.need_permission')) unless (current_user || User.new).is_any?(:superadmin, :roled_user)
   end
 
 end

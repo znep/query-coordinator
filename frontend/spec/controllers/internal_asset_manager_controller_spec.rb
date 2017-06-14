@@ -27,7 +27,7 @@ describe InternalAssetManagerController do
         init_environment
         login(init_current_user(subject, 'tugg-ikce'))
         user_double = double(User)
-        expect(user_double).to receive(:is_roled_user?).and_return(true)
+        expect(user_double).to receive(:is_any?).and_return(true)
         allow(subject).to receive(:current_user).and_return(user_double)
       end
 
@@ -58,7 +58,7 @@ describe InternalAssetManagerController do
         init_environment(test_user: TestHelperMethods::NON_ROLED)
         login(init_current_user(subject, 'tugg-ikce'))
         user_double = double(User)
-        expect(user_double).to receive(:is_roled_user?).and_return(false)
+        expect(user_double).to receive(:is_any?).and_return(false)
         allow(subject).to receive(:current_user).and_return(user_double)
       end
 

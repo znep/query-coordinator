@@ -18,17 +18,17 @@ let ceteraResponse = null;
 
 describe('cetera_utils.js', () => {
 
-  let mixpanelSpy = null;
+  let mixpanelStub = null;
 
   beforeEach(() => {
-    mixpanelSpy = sinon.stub(mixpanel, 'sendPayload');
+    mixpanelStub = sinon.stub(mixpanel, 'sendPayload');
     ceteraResponse = _.cloneDeep(mockCeteraFetchResponse);
     ceteraResponse.status = 200;
     ceteraStub = stubCeteraFetch(ceteraResponse);
   });
 
   afterEach(() => {
-    mixpanelSpy.restore();
+    mixpanelStub.restore();
     ceteraStub.restore();
   });
 

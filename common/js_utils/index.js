@@ -369,9 +369,11 @@ var utils = {
 
     value = String(value);
 
+    var locale = _.get(window.serverConfig, 'locale', _.get(window.blist, 'locale', _.get(window.socrataConfig, 'locales.currentLocale', 'en')));
+
     var defaultOptions = {
-      groupCharacter: ',',
-      decimalCharacter: '.'
+      groupCharacter: utils.getGroupCharacter(locale),
+      decimalCharacter: utils.getDecimalCharacter(locale)
     };
 
     var commaifyOptions = _.assign({}, defaultOptions, options);

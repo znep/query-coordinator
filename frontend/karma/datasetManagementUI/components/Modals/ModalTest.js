@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
+import React from 'react';
 import { Modal } from 'components/Modals/Modal';
 
 describe('components/Modals/Modal', () => {
@@ -13,7 +14,7 @@ describe('components/Modals/Modal', () => {
   };
 
   it('renders null if not visible', () => {
-    const component= shallow(<Modal {...defaultProps} />);
+    const component = shallow(<Modal {...defaultProps} />);
     assert.isNull(component.html());
   });
 
@@ -26,7 +27,7 @@ describe('components/Modals/Modal', () => {
       }
     };
 
-    const component = shallow(<Modal {...newProps}/>);
+    const component = shallow(<Modal {...newProps} />);
 
     assert.isFalse(component.find('Connect(ErrorsHelp)').isEmpty());
   });
@@ -40,7 +41,7 @@ describe('components/Modals/Modal', () => {
       }
     };
 
-    const component = shallow(<Modal {...newProps}/>);
+    const component = shallow(<Modal {...newProps} />);
 
     assert.isFalse(component.find('Connect(Publishing)').isEmpty());
   });

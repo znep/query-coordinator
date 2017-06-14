@@ -520,7 +520,10 @@ window.initialState = {
 // var getDefaultStore = require('testStore').getDefaultStore;
 // const curriedCreateElement = _.curry(React.createElement);
 // window.renderStatelessComponent = _.flow(curriedCreateElement('div', null), TestUtils.renderIntoDocument)
-// window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
+window.renderPureComponent = _.flow(
+  TestUtils.renderIntoDocument,
+  ReactDOM.findDOMNode
+);
 window.renderComponent = _.flow(
   React.createElement,
   TestUtils.renderIntoDocument,
@@ -539,4 +542,4 @@ function requireAll(context) {
   context.keys().forEach(context);
 }
 
-requireAll(require.context('.', true, /ErrorsHelpTest\.js$/));
+requireAll(require.context('.', true, /TransformStatusTest\.js$/));

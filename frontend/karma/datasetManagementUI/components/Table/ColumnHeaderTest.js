@@ -1,11 +1,27 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import _ from 'lodash';
+import TestUtils from 'react-addons-test-utils';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import ColumnHeader from 'components/Table/ColumnHeader';
-import { getEmptyStore } from '../../testStore';
 import { apiCallStarted, COLUMN_OPERATIONS } from 'actions/apiCalls';
+import { createStore, applyMiddleware } from 'redux';
+import reducer from 'reducers/rootReducer';
+import thunk from 'redux-thunk';
+import { bootstrapApp } from 'actions/bootstrap';
+import wsmock from '../../testHelpers/mockSocket';
 
 describe('components/Table/ColumnHeader', () => {
+  let unmockWS;
+
+  before(() => {
+    unmockWS = wsmock();
+  });
+
+  after(() => {
+    unmockWS.stop();
+  });
 
   const defaultProps = {
     outputSchema: {
@@ -48,7 +64,7 @@ describe('components/Table/ColumnHeader', () => {
       defaultProps.outputSchema,
       defaultProps.column,
       'number'
-    ])
+    ]);
   });
 
   it('renders a disable button when not disabled', () => {
@@ -65,7 +81,6 @@ describe('components/Table/ColumnHeader', () => {
     expect(element.querySelector('.socrata-icon-eye-blocked')).to.exist;
     expect(element.querySelector('.socrata-icon-add')).to.not.exist;
   });
-
 
   it('renders an add button when disabled', () => {
     const props = {
@@ -87,7 +102,6 @@ describe('components/Table/ColumnHeader', () => {
     expect(element.querySelector('.socrata-icon-eye-blocked')).to.not.exist;
     expect(element.querySelector('.socrata-icon-plus3')).to.exist;
   });
-
 
   // testing fix for EN-12896
   it('handles column type changing after output schema changes', () => {
@@ -122,7 +136,7 @@ describe('components/Table/ColumnHeader', () => {
     ReactDOM.render(<ColumnHeader {...defaultProps} />, element);
 
     const options = element.querySelectorAll('select option');
-    const values = [...options].map(option => option.value)
+    const values = [...options].map(option => option.value);
     expect(values).to.deep.equal([
       'calendar_date',
       'number',
@@ -133,8 +147,15 @@ describe('components/Table/ColumnHeader', () => {
   });
 
   it('renders a spinner and disables if an output schema is being created that replaces this column', () => {
-    COLUMN_OPERATIONS.forEach((operation) => {
-      const store = getEmptyStore();
+    COLUMN_OPERATIONS.forEach(operation => {
+      const store = createStore(reducer, applyMiddleware(thunk));
+      store.dispatch(
+        bootstrapApp(
+          window.initialState.view,
+          window.initialState.revision,
+          window.initialState.customMetadata
+        )
+      );
       const call = {
         operation: operation,
         params: {
@@ -188,7 +209,7 @@ describe('components/Table/ColumnHeader', () => {
     expect(element.querySelector('.spinner-default')).to.exist;
   });
 
-  it('doesn\'t render a spinner if there\'s no api call in progress', () => {
+  it("doesn't render a spinner if there's no api call in progress", () => {
     const props = {
       ...defaultProps,
       column: {
@@ -208,7 +229,6 @@ describe('components/Table/ColumnHeader', () => {
   });
 
   it('renders an id icon if this is a row identifier', () => {
-    const store = getEmptyStore();
     const props = {
       ...defaultProps,
       column: {
@@ -225,5 +245,4 @@ describe('components/Table/ColumnHeader', () => {
     ReactDOM.render(<ColumnHeader {...props} />, element);
     expect(element.querySelector('.socrata-icon-id')).to.exist;
   });
-
 });

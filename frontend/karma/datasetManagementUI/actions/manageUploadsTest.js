@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 import thunk from 'redux-thunk';
+import { applyMiddleware, createStore } from 'redux';
 import configureStore from 'redux-mock-store';
 import { createUpload } from 'actions/manageUploads';
 import mockPhoenixSocket from '../testHelpers/mockPhoenixSocket';
@@ -8,14 +9,17 @@ import mockAPI from '../testHelpers/mockAPI';
 import initialState from '../data/baseState';
 import * as dsmapiLinks from 'dsmapiLinks';
 import wsmock from '../testHelpers/mockSocket';
+import rootReducer from 'reducers/rootReducer';
+import { bootstrapApp } from 'actions/bootstrap';
+import { setFourfour, addLocation } from 'actions/routing';
 
 const mockStore = configureStore([thunk]);
 
 describe('actions/manageUploads', () => {
-
   describe('actions/manageUploads/createUpload', () => {
     let unmock;
     let unmockWS;
+    let store;
 
     before(() => {
       unmock = mockAPI();
@@ -27,53 +31,96 @@ describe('actions/manageUploads', () => {
       unmockWS.stop();
     });
 
-    it('dispatches UPSERT_STARTED action with the filename', done => {
-      const store = mockStore(initialState);
+    beforeEach(() => {
+      store = createStore(rootReducer, applyMiddleware(thunk));
+      store.dispatch(
+        bootstrapApp(
+          window.initialState.view,
+          window.initialState.revision,
+          window.initialState.customMetadata
+        )
+      );
 
-      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+      store.dispatch(
+        setFourfour(Object.keys(store.getState().entities.views)[0])
+      );
+
+      store.dispatch(
+        addLocation({
+          locationBeforeTransitions: {
+            pathname:
+              '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/uploads/114/schemas/97/output/143',
+            search: '',
+            hash: '',
+            action: 'PUSH',
+            key: 'lb01bi',
+            query: {}
+          }
+        })
+      );
+    });
+
+    it('dispatches API_CALL_STARTED action with the filename', done => {
+      const fakeStore = mockStore(store.getState());
+
+      fakeStore
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
         .then(() => {
-          const actions = store.getActions();
-          assert.equal(actions[0].type, 'UPSERT_STARTED');
-          assert.equal(actions[0].newRecord.filename, 'petty_crimes.csv');
+          const actions = fakeStore.getActions();
+          assert.equal(actions[0].type, 'API_CALL_STARTED');
+          assert.equal(actions[0].params.filename, 'petty_crimes.csv');
 
           done();
+        })
+        .catch(err => {
+          done(err);
         });
     });
 
     it('redirects to ShowOutputSchema preview on successful upload creation', done => {
-      const store = mockStore(initialState);
+      const fakeStore = mockStore(store.getState());
 
-      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+      fakeStore
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
         .then(() => {
-          const actions = store.getActions();
+          const actions = fakeStore.getActions();
 
-          const redirectAction = actions.filter(action =>
-            action.type === '@@router/CALL_HISTORY_METHOD')[0];
+          const redirectAction = actions.filter(
+            action => action.type === '@@router/CALL_HISTORY_METHOD'
+          )[0];
 
-          const {payload: redirectPayload} = redirectAction;
+          const { payload: redirectPayload } = redirectAction;
 
-          assert.isAtLeast(actions.filter(action => action.type === 'UPSERT_SUCCEEDED').length, 1);
+          assert.isAtLeast(
+            actions.filter(action => action.type === 'API_CALL_SUCCEEDED')
+              .length,
+            1
+          );
           assert.equal(redirectPayload.method, 'push');
-          assert.match(redirectPayload.args[0], /\/dataset\/[a-zA-Z]+\/\w+-\w+\/revisions\/\d\/uploads\/\d+/);
+          assert.match(redirectPayload.args[0], /\/uploads\/\d+/);
 
           done();
-        });
+        })
+        .catch(err => done(err));
     });
 
-    it('kicks off an update to the uploads table', done => {
-      const store = mockStore(initialState);
+    it('dispatches a CREATE_UPLOAD_SUCCESS action with the correct uploadId', done => {
+      const fakeStore = mockStore(store.getState());
 
-      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+      fakeStore
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
         .then(() => {
-          const actions = store.getActions();
-
-          const expectedAction = actions.filter(action =>
-            action.type === 'UPDATE_STARTED' && action.tableName === 'uploads');
+          const actions = fakeStore.getActions();
+          const expectedAction = actions.filter(
+            action =>
+              action.type === 'CREATE_UPLOAD_SUCCESS' && action.id === 823
+          );
 
           assert.isAtLeast(expectedAction.length, 1);
 
           done();
-        });
+        })
+        .catch(err => done(err));
     });
   });
 });

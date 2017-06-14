@@ -28,6 +28,7 @@ export function rowsUpserted(entities, taskSetId) {
   if (!taskSet || !taskSet.log) {
     return 0;
   }
+  // TODO: upate status here to reflect new DSMAPI changes
   const rowItems = taskSet.log
     .filter(logItem => logItem.stage === 'rows_upserted')
     .map(logItem => logItem.details.count);

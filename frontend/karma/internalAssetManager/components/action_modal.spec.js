@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { ActionModal } from 'components/ActionModal';
+import { ActionModal } from 'components/action_modal';
 import sinon from 'sinon';
 
 describe('components/ActionModal', () => {

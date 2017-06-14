@@ -13,7 +13,7 @@ export const lastUpdatedDateOptions = [
 export const assetTypeOptions = [
   { title: getTranslation('asset_types.options.all'), value: null },
   { title: getTranslation('asset_types.options.calendars'), value: 'calendars' },
-  { title: getTranslation('asset_types.options.charts'), value: 'charts,visualizations' },
+  { title: getTranslation('asset_types.options.charts'), value: 'charts' },
   { title: getTranslation('asset_types.options.datasets'), value: 'datasets' },
   { title: getTranslation('asset_types.options.datalenses'), value: 'datalenses' },
   { title: getTranslation('asset_types.options.external'), value: 'hrefs' },

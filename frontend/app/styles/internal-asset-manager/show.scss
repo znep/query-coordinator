@@ -12,15 +12,62 @@ body {
   background: $light-grey-6;
 }
 
+.asset_inventory_link_wrapper {
+  position: absolute;
+  top: 4rem;
+  left: 1rem;
+}
+
 .internal-asset-manager {
   .header {
     margin: 2rem 0.5rem 0.5rem 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 
-    span {
+    a.asset-toggle {
       cursor: pointer;
-      border-bottom: 3px solid $primary-base;
+      text-decoration: none;
       padding: 0 2px 2px 2px;
       display: inline-block;
+      margin-right: 0.5rem;
+
+      &.active {
+        border-bottom: 3px solid $primary-base;
+      }
+    }
+
+    .asset-counts {
+      display: inline-block;
+
+      &.fetching {
+        opacity: 0.5;
+      }
+
+      &.has-error {
+        display: none;
+      }
+
+      .asset-counts-item {
+        display: inline-block;
+        margin-right: 2.5rem;
+
+        &:last-of-type {
+          margin-right: 0;
+        }
+
+        .item-count {
+          font-size: 2rem;
+          line-height: 1;
+          color: $primary-base;
+          margin-bottom: 0.25rem;
+        }
+
+        .item-name {
+          color: $light-grey-1;
+          font-size: 0.9rem;
+        }
+      }
     }
   }
 

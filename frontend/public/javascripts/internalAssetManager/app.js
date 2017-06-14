@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import CatalogResults from './components/CatalogResults';
-import CatalogFilters from './components/CatalogFilters';
-import Header from './components/Header';
+import CatalogResults from './components/catalog_results';
+import CatalogFilters from './components/catalog_filters';
+import Header from './components/header';
 
 export const App = () => {
   return (

@@ -435,6 +435,8 @@ Variable Name | Type | Source | Description
 `http_x_ssl_request` | String | NGINX | Protocol of the originating request. Expected to be `https` or the request will be redirected to use that scheme. Used as a fallback if `http_x_forwarded_proto` is not present. See `SslEnforcer`.
 `import_status_service_hostname` | String | Configuration | Host name to connect to for the ISS.
 `import_status_service_port` | Integer | Configuration | Port to connect to on `import_status_service_hostname`.
+`internal_asset_manager_airbrake_api_key` | String | Configuration | AirBrake API token used to track Internal Asset Manager errors.
+`internal_asset_manager_airbrake_project_id` | String | Configuration | AirBrake Project ID used to track Internal Asset Manager errors.
 `dataset_management_api_hostname` | String | Configuration | Host name to connect to for DSMAPI.
 `dataset_management_api_port` | Integer | Configuration | Port to connect to on `dataset_management_api_hostname`.
 `log_level` | String | Configuration | Log level directive used when configuring `Rails.logger`.

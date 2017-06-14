@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { VisibilityCell } from 'components/VisibilityCell';
+import { VisibilityCell } from 'components/visibility_cell';
 
 describe('components/VisibilityCell', () => {
   const visibilityCellProps = (options = {}) => ({

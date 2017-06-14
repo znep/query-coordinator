@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import * as Actions from 'actions/assetActions';
+import * as Actions from 'actions/asset_actions';
 import * as http from 'common/http';
 import { mockResponse } from 'httpHelpers';
 

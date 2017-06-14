@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import ActionModal from './ActionModal';
-import { closeModal, deleteAsset } from '../actions/assetActions';
+import ActionModal from './action_modal';
+import { closeModal, deleteAsset } from '../actions/asset_actions';
 import { handleEnter } from '../../common/helpers/keyPressHelpers';
 import _ from 'lodash';
 import classNames from 'classnames';
@@ -69,6 +69,7 @@ export class ActionDropdown extends React.Component {
 
     const dropdownButton = (
       <button
+        aria-label={_.get(I18n, 'result_list_table.action_dropdown.title')}
         className={dropdownButtonClass}
         onClick={this.handleButtonClick}
         role="button">

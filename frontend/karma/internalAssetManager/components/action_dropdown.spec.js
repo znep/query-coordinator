@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { ActionDropdown } from 'components/ActionDropdown';
+import { ActionDropdown } from 'components/action_dropdown';
 
 describe('components/ActionDropdown', () => {
   const actionDropdownProps = (options = {}) => ({

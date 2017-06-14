@@ -1,9 +1,10 @@
 import { assert } from 'chai';
-import { CatalogResults } from 'components/CatalogResults';
+import { CatalogResults } from 'components/catalog_results';
 
 describe('components/CatalogResults', () => {
   const catalogResultsProps = (options = {}) => ({
     changePage: () => {},
+    changeQ: () => {},
     resultSetSize: 0,
     ...options
   });

@@ -1141,4 +1141,19 @@ module ApplicationHelper
       FeatureFlags.derive(nil, request)[:enable_new_admin_ui]
   end
 
+  def asset_inventory_view_model
+    @asset_inventory_dataset ||= AssetInventoryService.find(!current_user.try(:is_superadmin?))
+    button_disabled = @asset_inventory_dataset.blank?
+    view_model = {
+      :asset_inventory => {
+        :button_disabled => button_disabled,
+        :show_initialize_button => button_disabled && AssetInventoryService.api_configured? && current_user.try(:is_superadmin?)
+      }
+    }
+    if @asset_inventory_dataset.blank?
+      Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
+    end
+    view_model
+  end
+
 end

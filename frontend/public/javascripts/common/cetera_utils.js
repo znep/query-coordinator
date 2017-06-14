@@ -5,7 +5,7 @@ import { fetchTranslation } from './locale';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 
-const CETERA_API = '/api/catalog/v1';
+const CETERA_RESULTS_PATH = '/api/catalog/v1';
 const DEFAULT_LIMIT = 6;
 const DEFAULT_ORDER = 'relevance';
 
@@ -62,62 +62,67 @@ export const ceteraUtils = (() => {
 
   const mapIdFiltersToParam = idFilters => _.map(idFilters, (id) => `ids=${id}`).join('&');
 
+  const fetchOptions = {
+    credentials: 'same-origin',
+    headers: {
+      'X-Socrata-Host': domain,
+      'User-Agent': 'SocrataFrontend/1.0 (+https://socrata.com/)'
+    }
+  };
+
+  // Query param string used for multiple Cetera queries (results query, facet counts query).
+  const ceteraQueryString = ({
+    category = null,
+    customMetadataFilters = {},
+    forUser = null,
+    idFilters = [],
+    limit = DEFAULT_LIMIT,
+    only = null,
+    order = DEFAULT_ORDER,
+    pageNumber = 1,
+    provenance = null,
+    q = null,
+    showVisibility = null,
+    tags = null,
+    visibility = null
+  }) => {
+    const parameters = {
+      categories: category,
+      ...customMetadataFilters,
+      domains: domain,
+      for_user: forUser,
+      ids: mapIdFiltersToParam(idFilters),
+      limit,
+      offset: getOffset(pageNumber, limit),
+      only: assetTypeMapping(only),
+      order,
+      provenance,
+      q,
+      search_context: domain,
+      show_visibility: showVisibility,
+      tags,
+      visibility
+    };
+
+    return _.reduce(
+      _.omit(parameters, 'ids'),
+      (result, value, key) =>
+        (key && value ? result.concat([`${key}=${encodeURIComponent(value)}`]) : result), []).
+      concat(parameters.ids ? [`${parameters.ids}`] : []).
+      join('&');
+  };
+
   return {
-    query: ({
-      category = null,
-      customMetadataFilters = {},
-      forUser = null,
-      idFilters = [],
-      limit = DEFAULT_LIMIT,
-      mixpanelContext = null,
-      only = null,
-      order = DEFAULT_ORDER,
-      pageNumber = 1,
-      provenance = null,
-      q = null,
-      showVisibility = null,
-      tags = null,
-      visibility = null
-    }) => {
+    query: (queryOptions) => {
+      const { mixpanelContext } = queryOptions;
+
       if (!mixpanelContext) {
         console.warn(`No mixpanelContext provided. Mixpanel events may not be reported properly. Consider
           adding mixpanelContext to this cetera query.`);
       }
-      const parameters = {
-        categories: category,
-        ...customMetadataFilters,
-        domains: domain,
-        for_user: forUser,
-        ids: mapIdFiltersToParam(idFilters),
-        limit,
-        mixpanelContext,
-        offset: getOffset(pageNumber, limit),
-        only: assetTypeMapping(only),
-        order,
-        provenance,
-        q,
-        search_context: domain,
-        show_visibility: showVisibility,
-        tags,
-        visibility
-      };
 
-      const queryString = _.reduce(
-        _.omit(parameters, 'ids', 'mixpanelContext'),
-        (result, value, key) =>
-          (key && value ? result.concat([`${key}=${encodeURIComponent(value)}`]) : result), []).
-        concat(parameters.ids ? [`${parameters.ids}`] : []).
-        join('&');
-
-      const fetchUrl = `${CETERA_API}?${queryString}`;
-
-      const fetchOptions = {
-        credentials: 'same-origin',
-        headers: {
-          'X-Socrata-Host': domain,
-          'User-Agent': 'SocrataFrontend/1.0 (+https://socrata.com/)'
-        }
-      };
+      const queryString = ceteraQueryString(queryOptions);
+      const fetchUrl = `${CETERA_RESULTS_PATH}?${queryString}`;
 
       const reportToMixpanel = (json) => {
         console.debug(`reportToMixpanel: "${mixpanelContext.eventName}"`);
@@ -136,6 +141,18 @@ export const ceteraUtils = (() => {
         then(checkStatus).
         then(parseJSON).
         then(reportToMixpanel).
+        catch(handleError);
+    },
+
+    facetCountsQuery: (queryOptions) => {
+      const queryString = ceteraQueryString(queryOptions);
+      const ceteraFacetsPath = `/api/catalog/v1/domains/${domain}/facets`;
+      const fetchUrl = `${ceteraFacetsPath}?${queryString}`;
+
+      // Calls whatwg-fetch and returns the promise
+      return fetch(fetchUrl, fetchOptions).
+        then(checkStatus).
+        then(parseJSON).
         catch(handleError);
     },
 

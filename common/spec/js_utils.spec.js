@@ -2,6 +2,15 @@ import _ from 'lodash';
 import $ from 'jquery';
 import utils from 'common/js_utils';
 
+import 'intl/locale-data/jsonp/en.js';
+import 'intl/locale-data/jsonp/zh.js';
+import 'intl/locale-data/jsonp/it.js';
+import 'intl/locale-data/jsonp/es.js';
+import 'intl/locale-data/jsonp/fr.js';
+import 'intl/locale-data/jsonp/tr.js';
+
+require('karma-intl-shim');
+
 describe('utils.js', function() {
 
   'use strict';
@@ -399,6 +408,74 @@ describe('utils.js', function() {
 
         assert.isFalse(utils.valueIsBlank('   '));
       });
+    });
+  });
+
+  describe('getGroupCharacter', function() {
+    it('returns comma when locale is en', function() {
+      assert.equal(utils.getGroupCharacter('en'), ',');
+    });
+
+    it('returns comma when locale is zh', function() {
+      assert.equal(utils.getGroupCharacter('zh'), ',');
+    });
+
+    it('returns period when locale is it', function() {
+      assert.equal(utils.getGroupCharacter('it'), '.');
+    });
+
+    it('returns period when locale is es', function() {
+      assert.equal(utils.getGroupCharacter('es'), '.');
+    });
+
+    it('returns space when locale is fr', function() {
+      assert.equal(utils.getGroupCharacter('fr'), '\u00A0');
+    });
+
+    // Since tr is not a known locale
+    it('returns period when locale is tr using Intl', function() {
+      assert.equal(utils.getGroupCharacter('tr'), '.');
+    });
+
+    it('returns comma by default when locale is something else', function() {
+      assert.equal(utils.getGroupCharacter(null), ',');
+      assert.equal(utils.getGroupCharacter(undefined), ',');
+      assert.equal(utils.getGroupCharacter(''), ',');
+      assert.equal(utils.getGroupCharacter('foo'), ',');
+    });
+  });
+
+  describe('getDecimalCharacter', function() {
+    it('returns period when locale is en', function() {
+      assert.equal(utils.getDecimalCharacter('en'), '.');
+    });
+
+    it('returns period when locale is zh', function() {
+      assert.equal(utils.getDecimalCharacter('zh'), '.');
+    });
+
+    it('returns comma when locale is it', function() {
+      assert.equal(utils.getDecimalCharacter('it'), ',');
+    });
+
+    it('returns comma when locale is es', function() {
+      assert.equal(utils.getDecimalCharacter('es'), ',');
+    });
+
+    it('returns comma when locale is fr', function() {
+      assert.equal(utils.getDecimalCharacter('fr'), ',');
+    });
+
+    // Since tr is not a known locale
+    it('returns comma when locale is tr using Intl', function() {
+      assert.equal(utils.getDecimalCharacter('tr'), ',');
+    });
+
+    it('returns period by default when locale is something else', function() {
+      assert.equal(utils.getDecimalCharacter(null), '.');
+      assert.equal(utils.getDecimalCharacter(undefined), '.');
+      assert.equal(utils.getDecimalCharacter(''), '.');
+      assert.equal(utils.getDecimalCharacter('foo'), '.');
     });
   });
 

@@ -24,8 +24,8 @@ module TestHelperMethods
     CurrentDomain.set_domain(@domain)
   end
 
-  def init_current_user(controller, name = 'test-test', session_token = '123456')
-    user = User.new('id' => name)
+  def init_current_user(controller, id = 'test-test', session_token = '123456')
+    user = User.new('id' => id)
     UserSessionProvider.klass.controller = controller
     UserSessionProvider.klass.update_current_user(user, session_token)
     user_session = UserSessionProvider.klass.new
@@ -62,6 +62,7 @@ module TestHelperMethods
   ANONYMOUS = 'anonymous'
   ADMIN = 'admin'
   NO_USER = 'no user'
+  NON_ROLED = 'non roled'
 
   def init_environment(test_user: TestHelperMethods::ADMIN, site_chrome: true, feature_flags: {})
     if respond_to? :stubs
@@ -82,6 +83,8 @@ module TestHelperMethods
         stub_authenticate_success
       when TestHelperMethods::ANONYMOUS
         stub_anonymous_user
+      when TestHelperMethods::NON_ROLED
+        stub_non_roled_user
     end
 
     UserSessionProvider.klass.controller = @controller
@@ -194,12 +197,12 @@ module TestHelperMethods
     'remember_token=5KI4OwGkG1vrPiNgBgA9lBFbduVUgbNx'
   end
 
-  def path_cookie
+  def cookie_path
     'Path=/'
   end
 
   def cookie_string
-    [core_cookie, remember_cookie, path_cookie].join(';')
+    [core_cookie, remember_cookie, cookie_path].join(';')
   end
 
   def empty_cookie_string
@@ -207,7 +210,7 @@ module TestHelperMethods
   end
 
   def stub_current_user
-    stub_request(:get, "http://localhost:8080/users/current.json")
+    stub_request(:get, 'http://localhost:8080/users/current.json')
       .with(:headers => { 'Accept'=>'*/*',
                           'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                           'User-Agent'=>'Ruby',
@@ -218,8 +221,20 @@ module TestHelperMethods
                  headers: { 'Set-Cookie' => cookie_string })
   end
 
+  def stub_non_roled_user
+    stub_request(:get, 'http://localhost:8080/users/current.json')
+      .with(:headers => { 'Accept'=>'*/*',
+                          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                          'User-Agent'=>'Ruby',
+                          'X-Socrata-Host'=>'localhost',
+                          'X-User-Agent'=>'Rails Testing'})
+      .to_return(status: 200,
+                 body: authentication_body.except('roleName').to_json,
+                 headers: { 'Set-Cookie' => cookie_string })
+  end
+
   def stub_anonymous_user
-    stub_request(:get, "http://localhost:8080/users/current.json")
+    stub_request(:get, 'http://localhost:8080/users/current.json')
       .with(:headers => { 'Accept'=>'*/*',
                           'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                           'User-Agent'=>'Ruby',
@@ -309,7 +324,8 @@ module TestHelperMethods
   end
 
   def some_user
-    { email: 'foo@bar.com',
+    {
+      email: 'foo@bar.com',
       password: 'asdf',
       passwordConfirm: 'asdf',
       accept_terms: true

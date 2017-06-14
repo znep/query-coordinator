@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
-import ActionDropdown from './ActionDropdown';
-import VisibilityCell from './VisibilityCell';
+import ActionDropdown from './action_dropdown';
+import VisibilityCell from './visibility_cell';
 import _ from 'lodash';
 
 export class ResultListRow extends React.Component {

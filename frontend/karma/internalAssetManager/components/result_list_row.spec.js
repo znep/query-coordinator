@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { ResultListRow } from 'components/ResultListRow';
+import { ResultListRow } from 'components/result_list_row';
 
 describe('components/ResultListRow', () => {
   const resultListRowProps = (options = {}) => ({

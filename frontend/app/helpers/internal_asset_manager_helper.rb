@@ -15,7 +15,7 @@ module InternalAssetManagerHelper
   def render_internal_asset_manager_session_data
     session_data = {
       :userId => current_user.try(:id),
-      :socrataEmployee => !!current_user.try(:is_admin?),
+      :socrataEmployee => !!current_user.try(:is_superadmin?),
       :userRoleName => current_user.try(:roleName),
       :email => current_user.try(:email)
     }
@@ -30,8 +30,10 @@ module InternalAssetManagerHelper
 
     server_config = {
       :airbrakeEnvironment => ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
-      # :airbrakeKey => # TODO ,
-      # :airbrakeProjectId => # TODO,
+      :airbrakeKey => ENV['INTERNAL_ASSET_MANAGER_AIRBRAKE_API_KEY'] ||
+        APP_CONFIG.internal_asset_manager_airbrake_api_key,
+      :airbrakeProjectId => ENV['INTERNAL_ASSET_MANAGER_AIRBRAKE_PROJECT_ID'] ||
+        APP_CONFIG.internal_asset_manager_airbrake_project_id,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :domain => CurrentDomain.cname,
@@ -49,6 +51,9 @@ module InternalAssetManagerHelper
   def render_internal_asset_manager_initial_state
     javascript_tag(%Q(
       window.initialState = {
+        assetCounts: {
+          values: #{@asset_counts.to_json}
+        },
         catalog: {
           columns: #{internal_asset_manager_table_columns},
           results: #{@catalog_results.to_json},

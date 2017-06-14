@@ -14,20 +14,35 @@ review groups - ask your team if those are preferred for the work you are doing.
 Please see the [steps](https://github.com/socrata/platform-ui/tree/master/.github/PULL_REQUEST_TEMPLATE)
 steps which are auto-populated into new pull requests before merging.
 
-## Example apps
+## Examples for common code
 
-There are two example applications which are useful for testing and developing common componentry:
+There are several example pages in `frontend` featuring `common` code shared across our applications:
+
+### Directory of example categories
+
+* [localhost](https://localhost/internal/demos)
+* [staging](https://stories.test-socrata.com/internal/demos)
 
 ### Visualizations Example Pages
 
 These live under the internal panel:
 
-* [localhost](https://localhost/internal/demos)
-* [staging](https://stories.test-socrata.com/internal/demos)
+* [localhost](https://localhost/internal/demos/visualizations)
+* [staging](https://stories.test-socrata.com/internal/demos/visualizations)
 
-### Styleguide Sample App
+### Components Example Pages
 
-Please see the [README](https://github.com/socrata/platform-ui/tree/master/styleguide-sample-app).
+These live under the internal panel:
+
+* [localhost](https://localhost/internal/demos/components)
+* [staging](https://stories.test-socrata.com/internal/demos/components)
+
+### Icon Example Page
+
+These live under the internal panel:
+
+* [localhost](https://localhost/internal/demos/icons)
+* [staging](https://stories.test-socrata.com/internal/demos/icons)
 
 ## Common tasks
 

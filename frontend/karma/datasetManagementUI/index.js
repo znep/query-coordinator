@@ -529,4 +529,4 @@ function requireAll(context) {
   context.keys().forEach(context);
 }
 
-requireAll(require.context('.', true, /manageMetadataTest\.js$/));
+requireAll(require.context('.', true, /showOutputSchemaTest\.js$/));

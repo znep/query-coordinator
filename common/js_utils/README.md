@@ -150,6 +150,18 @@ Gets decimal character used while formatting numbers for given locale.
 
 _(String)_ Decimal character corresponding to given locale, defaults to `period (.)`.
 
+#### getLocale(w)
+
+Gets locale from given window object. Looks for `serverConfig.locale`, `blist.locale` and `socrataConfig.locales.currentLocale` respectively.
+
+**Arguments**
+
+* `w` _(Object)_: Window object from which to get locale
+
+**Returns**
+
+_(String)_ Current locale read from given window object, defaults to `en`.
+
 #### formatNumber(value, [options])
 
 > **NOTE:** This function needs a more precise name!

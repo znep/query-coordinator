@@ -1,9 +1,10 @@
 import { assert } from 'chai';
-import { SearchboxFilter } from 'components/filters/SearchboxFilter';
+import { SearchboxFilter } from 'components/filters/searchbox_filter';
 import sinon from 'sinon';
 
 describe('components/SearchboxFilter', () => {
   const searchboxFilterProps = (options = {}) => ({
+    inputId: 'test',
     options: [{
       title: 'A fun option',
       value: 'a'

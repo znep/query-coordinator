@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import ResultListRow from './ResultListRow';
-import { changeSortOrder } from '../actions/sortOrder';
+import ResultListRow from './result_list_row';
+import { changeSortOrder } from '../actions/sort_order';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { handleEnter } from '../../common/helpers/keyPressHelpers';

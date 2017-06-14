@@ -2731,6 +2731,10 @@ en:
           past_3_months: Past 3 months
           past_6_months: Past 6 months
           custom_date_range: Custom date range
+      mobile:
+        expand: Expand Filters
+        contract: Contract Filters
+        hide: Hide
       owned_by:
         label: Owned By
         placeholder: Any Owner

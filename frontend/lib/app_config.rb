@@ -74,6 +74,8 @@ class AppConfig < Hashie::Dash
   property :dataset_landing_page_airbrake_api_key
   property :dataset_landing_page_airbrake_project_id
   property :google_maps_site_key
+  property :internal_asset_manager_airbrake_api_key
+  property :internal_asset_manager_airbrake_project_id
   property :mixpanel_token
   property :opendata_ga_tracking_code
   property :publishing_airbrake_api_key

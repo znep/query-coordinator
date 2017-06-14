@@ -30,8 +30,10 @@ module InternalAssetManagerHelper
 
     server_config = {
       :airbrakeEnvironment => ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
-      # :airbrakeKey => # TODO ,
-      # :airbrakeProjectId => # TODO,
+      :airbrakeKey => ENV['INTERNAL_ASSET_MANAGER_AIRBRAKE_API_KEY'] ||
+        APP_CONFIG.internal_asset_manager_airbrake_api_key,
+      :airbrakeProjectId => ENV['INTERNAL_ASSET_MANAGER_AIRBRAKE_PROJECT_ID'] ||
+        APP_CONFIG.internal_asset_manager_airbrake_project_id,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :domain => CurrentDomain.cname,

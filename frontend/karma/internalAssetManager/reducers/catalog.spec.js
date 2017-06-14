@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import reducer from 'reducers/catalog';
 import * as Actions from 'actions/cetera';
-import mockCeteraResponse from 'data/mockCeteraResponse';
+import mockCeteraResponse from 'data/mock_cetera_response';
 
 describe('reducers/catalog', () => {
   let state;

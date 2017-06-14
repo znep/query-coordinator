@@ -99,6 +99,7 @@ export class SearchboxFilter extends React.Component {
       <div className="searchbox-filter">
         <input
           className="text-input []"
+          id={this.props.inputId}
           type="text"
           ref={(input) => { this.filterInput = input; }}
           onChange={this.onInputChange}
@@ -115,6 +116,7 @@ export class SearchboxFilter extends React.Component {
 }
 
 SearchboxFilter.propTypes = {
+  inputId: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   onSelection: PropTypes.func.isRequired,
   placeholder: PropTypes.string,

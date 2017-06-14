@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { CatalogFilters} from 'components/CatalogFilters';
+import { CatalogFilters} from 'components/catalog_filters';
 import sinon from 'sinon';
 
 describe('components/CatalogFilters', () => {
@@ -36,7 +36,7 @@ describe('components/CatalogFilters', () => {
   it('renders a filterHeader', () => {
     const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
     assert.isNotNull(element.querySelector('.catalog-filters-header'));
-    assert.equal(element.querySelector('.catalog-filters-header').textContent, 'Filters');
+    assert.equal(element.querySelector('.catalog-filters-header .title').textContent, 'Filters');
   });
 
   it('renders all filter sections', () => {
@@ -76,6 +76,19 @@ describe('components/CatalogFilters', () => {
 
       TestUtils.Simulate.click(element.querySelectorAll('.filter-section.visibility .picklist-option')[2]);
       sinon.assert.calledOnce(spy);
+    });
+  });
+
+  describe('filter content toggle', () => {
+    it('closes and opens the filter sidebar when clicked', () => {
+      const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+      assert.isNull(element.querySelector('.filter-content.hidden')); // shown by default
+
+      TestUtils.Simulate.click(element.querySelector('.close-filters'));
+      assert.isNotNull(element.querySelector('.filter-content.hidden'));
+
+      TestUtils.Simulate.click(element.querySelector('.open-filters'));
+      assert.isNull(element.querySelector('.filter-content.hidden'));
     });
   });
 });

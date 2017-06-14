@@ -4,7 +4,7 @@ import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import * as Actions from 'actions/pager';
-import mockCeteraResponse from 'data/mockCeteraResponse';
+import mockCeteraResponse from 'data/mock_cetera_response';
 import mockCeteraFacetCountsResponse from 'data/mock_cetera_facet_counts_response';
 import ceteraUtils from 'common/cetera_utils';
 

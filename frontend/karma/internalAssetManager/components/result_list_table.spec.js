@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import { ResultListTable } from 'components/ResultListTable';
-import mockCeteraResults from 'data/mockCeteraResults';
+import { ResultListTable } from 'components/result_list_table';
+import mockCeteraResults from 'data/mock_cetera_results';
 
 describe('components/ResultListTable', () => {
   const resultListTableProps = (options = {}) => ({

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import ResultListTable from './ResultListTable';
+import ResultListTable from './result_list_table';
 import Pager from '../../common/components/Pager';
-import ResultCount from './ResultCount';
+import ResultCount from './result_count';
 import { changePage } from '../actions/pager';
 import { changeQ } from '../actions/filters';
 import _ from 'lodash';

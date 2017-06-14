@@ -1,0 +1,130 @@
+<% content_for :head do %>
+  <title>Example Usage: ViewCard</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">View Card</h2>
+
+  <div class="styleguide-example">
+    <p>View Cards are general-purpose tiles representing an asset.  They might be shown in a catalog, in
+    an asset selector, or anywhere else where a list of views needs to be rendered.  The component
+    features a title, a section for arbitrary metadata, a preview image of the asset, and a description.
+    The title and the description are automatically ellipsified.  The title and image are clickable
+    links.</p>
+
+    <div class="alert info">
+      Not sure which icon to use?  For a mapping of view display types to icon classes, see the helper
+      in <code>
+        <a href="https://github.com/socrata/platform-ui/blob/master/common/displayTypeMetadata.js">
+          common/displayTypeMetadata.js
+        </a>
+      </code>.
+    </div>
+
+    <br />
+    <div id="container-1"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+
+  <div class="styleguide-example">
+    <p>Sometimes it is helpful to render a spinner or a button on top of the card to display more
+    information or allow an action to be taken.  Simply pass the desired element as a child of the
+    ViewCard and it will be rendered as an overlay:</p>
+    <div id="container-2"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-2"></div>
+
+  <div class="styleguide-example">
+    <p>For external assets, a component ExternalViewCard is provided, which applies attributes to the
+    anchor tags informing search engines that the link is an external link, makes the link open in a new
+    tab, sets the icon to one appropriate for external links, and sets the metadataLeft prop to
+    "External Content".</p>
+    <div id="container-3"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-3"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      const props = {
+        name: 'Chicago Crimes',
+        description: 'This dataset reflects <b>reported incidents</b> of crime that ' +
+          'occurred in the <i>City of Chicago</i> from 2001 to present, minus the most recent ' +
+          'seven days. Also this description is really long and might even ellipsify.',
+        url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Patch_of_the_Chicago_Police_Department.png',
+        icon: 'socrata-icon-cards',
+        metadataLeft: 'Updated Jan 1, 1970',
+        metadataRight: '1,234 views',
+        isPrivate: true,
+        linkProps: { target: '_blank' },
+        onClick: (event) => {
+          console.log(event);
+        }
+      };
+
+      ReactDOM.render(
+        React.createElement(
+          components.ViewCard,
+          props
+        ),
+        document.getElementById('container-1')
+      );
+    });
+  </script>
+
+  <script type="text/javascript" id="example-2">
+    $(() => {
+      const props = {
+        name: 'Chicago Crimes',
+        description: 'This dataset reflects <b>reported incidents</b> of crime that ' +
+          'occurred in the <i>City of Chicago</i> from 2001 to present, minus the most recent ' +
+          'seven days. Also this description is really long and might even ellipsify.',
+        url: 'https://data.cityofchicago.org/view/5cd6-ry5g',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Chicago_Police_Interceptor_Utility.JPG/300px-Chicago_Police_Interceptor_Utility.JPG',
+        icon: 'socrata-icon-cards',
+        metadataLeft: 'Updated Jan 1, 1970',
+        metadataRight: '1,234 views',
+        isPrivate: true,
+        linkProps: { target: '_blank' },
+        onClick: (event) => {
+          console.log(event);
+        }
+      };
+
+      ReactDOM.render(
+        React.createElement(
+          components.ViewCard,
+          props,
+          React.createElement('div', { className: 'btn btn-success' }, 'Click Me!')
+        ),
+        document.getElementById('container-2')
+      );
+    });
+  </script>
+
+  <script type="text/javascript" id="example-3">
+    $(() => {
+      const props = {
+        name: 'Carrots',
+        description: 'I bet you don\'t carrot all about what I write here for the description.',
+        url: 'https://en.wikipedia.org/wiki/Carrot',
+        imageUrl: 'http://www.almanac.com/sites/default/files/styles/primary_image_in_article/public/images/carrots.jpg'
+      };
+
+      ReactDOM.render(
+        React.createElement(components.ExternalViewCard, props),
+        document.getElementById('container-3')
+      );
+    });
+  </script>
+
+<% end %>

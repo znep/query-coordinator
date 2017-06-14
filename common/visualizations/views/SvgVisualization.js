@@ -1,7 +1,7 @@
 // Vendor Imports
 const $ = require('jquery');
 const _ = require('lodash');
-const utils = require('socrata-utils');
+const utils = require('common/js_utils');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const { FilterBar, SocrataIcon } = require('common/components');

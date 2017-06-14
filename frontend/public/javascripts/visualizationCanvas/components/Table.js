@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
-import { components as SocrataVisualizations } from 'socrata-visualizations';
+import { components as SocrataVisualizations } from 'common/visualizations';
 import { connect } from 'react-redux';
 
 export class Table extends Component {

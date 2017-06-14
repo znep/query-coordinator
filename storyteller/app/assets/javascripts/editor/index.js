@@ -3,7 +3,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 import React from 'react'; //eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
-import SocrataVisualizations from 'socrata-visualizations';
+import SocrataVisualizations from 'common/visualizations';
 
 import I18n from './I18n';
 import Actions from './Actions';

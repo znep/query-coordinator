@@ -1,0 +1,75 @@
+@import 'styleguide-import-shim';
+
+.styleguide-section {
+  width: 768px;
+  min-height: 1000px;
+  margin: 20px auto;
+}
+
+.styleguide-header {
+  margin: 20px 0;
+}
+
+.styleguide-subheader {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.styleguide-example {}
+
+.styleguide-code-example {
+  margin-top: 20px;
+  padding: 1em;
+  background: #f1f1f1;
+  color: black;
+  overflow: auto;
+}
+
+.styleguide-icons {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.styleguide-icons-row {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 20px;
+
+  [class^="socrata-icon-"] {
+    display: block;
+    margin: 10px auto;
+    font-size: 32px;
+  }
+
+  input {
+    display: block;
+    margin: 10px auto;
+    padding: 4px 8px;
+  }
+}
+
+// Dropdown examples
+
+#dropdown-container .dropdown-container {
+  width: 100%;
+}
+
+.special-dropdown-option span {
+  margin-right: 10px;
+}
+
+// Modal examples
+
+#modal-target .modal {
+  z-index: 9999;
+}
+
+// Side Menu examples
+#menu-container .side-menu {
+  z-index: 9999;
+}

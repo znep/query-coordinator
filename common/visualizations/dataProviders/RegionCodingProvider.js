@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import utils from 'socrata-utils';
+import utils from 'common/js_utils';
 
 import DataProvider from './DataProvider';
 

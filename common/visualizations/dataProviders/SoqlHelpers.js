@@ -1,4 +1,4 @@
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var _ = require('lodash');
 
 var VALID_BINARY_OPERATORS = ['=', '!=', '<', '<=', '>', '>=', 'IS NULL', 'IS NOT NULL'];

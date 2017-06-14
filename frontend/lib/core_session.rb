@@ -110,6 +110,12 @@ private
     end
 
     stale_session_check! do
+      # Note: If you get a mysterious "can't add a new key into hash during iteration"
+      # error here, you probably have an initialization error in some unrelated piece
+      # of code. I have no idea why it surfaces here, but uncommenting the line below
+      # will at least let the real error surface.
+      # UNCOMMENT TO DEBUG:
+      # return
       core_session = @by.send(:load_core_session, @env)
       unless core_session.blank?
         parts = core_session.split

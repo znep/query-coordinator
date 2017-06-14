@@ -1,0 +1,268 @@
+<% content_for :head do %>
+  <title>Example Usage: SvgPieChart.js</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'visualizations' %>
+  <style type="text/css">
+    .chart {
+      display: block;
+      position: relative;
+      margin: 100px auto 0 auto;
+    }
+
+    #pie-chart-3 {
+      width: 800px;
+      height: 600px;
+    }
+
+    #pie-chart-1, #pie-chart-2, #pie-chart-4, #pie-chart-5 {
+      width: 100%;
+      height: 480px;
+    }
+  </style>
+<% end %>
+
+<% content_for :scripts do %>
+  <%= render_feature_flags_for_javascript %>
+
+  <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
+
+<script type="text/javascript">
+
+  $(document).ready(function () {
+
+    /**
+     * Set up VIFs
+     */
+    var DIMENSION = 'district_name';
+    var MEASURE = 'proficient_2';
+    var MEASURE_AGGREGATION = null;
+    var DATASET_UID = 'mu6e-brbz';
+    var DOMAIN = 'data.iowa.gov';
+    var FILTERS = [
+      {
+        columnName: 'topic',
+        function: 'binaryOperator',
+        arguments: {
+          operator: '=',
+          operand: 'Math'
+        }
+      },
+      {
+        columnName: 'grade',
+        function: 'binaryOperator',
+        arguments: {
+          operator: '=',
+          operand: '3'
+        }
+      },
+      {
+        columnName: 'school_year',
+        function: 'binaryOperator',
+        arguments: {
+          operator: '=',
+          operand: '2014'
+        }
+      }
+    ];
+
+    var pieChart1Vif = {
+      configuration: {
+        viewSourceDataLink: true
+      },
+      description: 'Math proficiency by school district for 3rd graders in 2014',
+      series: [
+        {
+          dataSource: {
+            datasetUid: DATASET_UID,
+            dimension: {
+              columnName: DIMENSION,
+              aggregationFunction: null
+            },
+            domain: DOMAIN,
+            measure: {
+              columnName: MEASURE,
+              aggregationFunction: MEASURE_AGGREGATION
+            },
+            type: 'socrata.soql',
+            filters: FILTERS
+          },
+          label: 'Proficient',
+          type: 'pieChart',
+          unit: {
+            one: 'student',
+            other: 'students'
+          }
+        }
+      ],
+      createdAt: '2014-01-01T00:00:00',
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      title: 'Math Proficienty for 3rd Graders - Iowa Public Schools'
+    };
+
+    var pieChart2Vif = _.cloneDeep(pieChart1Vif);
+    pieChart2Vif.title = 'Seattle Pet Escapes';
+    pieChart2Vif.description = null;
+    pieChart2Vif.series = [
+      {
+        color: {
+          primary: 'silver',
+          secondary: null,
+        },
+        dataSource: {
+          datasetUid: 'qj5w-fzuy',
+          dimension: {
+            columnName: 'type',
+            aggregationFunction: null
+          },
+          domain: 'vertex-stories.test-socrata.com',
+          measure: {
+            columnName: null,
+            aggregationFunction: 'count'
+          },
+          type: 'socrata.soql',
+          filters: []
+        },
+        label: 'Escapes',
+        type: 'pieChart',
+        unit: {
+          one: 'row',
+          other: 'rows'
+        }
+      }
+    ];
+
+    var pieChart3Vif = _.cloneDeep(pieChart1Vif);
+    pieChart3Vif.series = [
+      {
+        color: {
+          primary: 'silver',
+          secondary: null,
+        },
+        dataSource: {
+          datasetUid: DATASET_UID,
+          dimension: {
+            columnName: DIMENSION,
+            aggregationFunction: null
+          },
+          domain: DOMAIN,
+          measure: {
+            columnName: 'proficient_1',
+            aggregationFunction: null
+          },
+          type: 'socrata.soql',
+          filters: FILTERS.concat([
+            {
+              columnName: 'district_name',
+              function: 'binaryOperator',
+              arguments: [
+                {
+                  operator: '=',
+                  operand: 'Ames'
+                },
+                {
+                  operator: '=',
+                  operand: 'Ankeny'
+                },
+                {
+                  operator: '=',
+                  operand: 'Cedar Falls'
+                }
+              ]
+            }
+          ])
+        },
+        label: 'Proficient',
+        type: 'pieChart',
+        unit: {
+          one: 'student',
+          other: 'students'
+        }
+      }
+    ];
+
+    var pieChart4Vif = _.cloneDeep(pieChart1Vif);
+    pieChart4Vif.title = 'UFO Sightings';
+    pieChart4Vif.description = null;
+    pieChart4Vif.series = [
+      {
+        color: {
+          primary: 'silver',
+          secondary: null,
+        },
+        dataSource: {
+          datasetUid: 'ww76-ecqc',
+          dimension: {
+            columnName: 'witness_gibberish',
+            aggregationFunction: null
+          },
+          domain: 'vertex-stories.test-socrata.com',
+          measure: {
+            columnName: null,
+            aggregationFunction: 'count'
+          },
+          type: 'socrata.soql',
+          filters: []
+        },
+        label: 'Sightings',
+        type: 'pieChart',
+        unit: {
+          one: 'Occurrence',
+          other: 'Occurrence'
+        }
+      }
+    ];
+
+    var pieChart5Vif = _.cloneDeep(pieChart3Vif);
+    pieChart5Vif.configuration.showValueLabels = false;
+    pieChart5Vif.series[0].color.palette = 'alternate2';
+    
+    /**
+     * Instantiate the plugins
+     */
+
+    var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+    var $pieChart1Element = $('#pie-chart-1');
+    $pieChart1Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+    $pieChart1Element.socrataSvgPieChart(pieChart1Vif);
+
+    var $pieChart2Element = $('#pie-chart-2');
+    $pieChart2Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+    $pieChart2Element.socrataSvgPieChart(_.cloneDeep(pieChart2Vif));
+
+    var $pieChart3Element = $('#pie-chart-3');
+    $pieChart3Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+    $pieChart3Element.socrataSvgPieChart(_.cloneDeep(pieChart3Vif));
+
+    var $pieChart4Element = $('#pie-chart-4');
+    $pieChart4Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+    $pieChart4Element.socrataSvgPieChart(_.cloneDeep(pieChart4Vif));
+
+    var $pieChart5Element = $('#pie-chart-5');
+    $pieChart5Element.on('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+    $pieChart5Element.socrataSvgPieChart(_.cloneDeep(pieChart5Vif));
+
+    function handleFlyout(event) {
+      var payload = event.originalEvent.detail;
+
+      // Render/hide a flyout
+      if (payload !== null) {
+        flyoutRenderer.render(payload);
+      } else {
+        flyoutRenderer.clear();
+      }
+    }
+  });
+</script><% end %>
+
+<a href="internal">Internal Panel Home</a><br>
+<a href="internal/demos/visualizations">Back to demo list</a>
+<div class="chart" id="pie-chart-1"></div>
+<div class="chart" id="pie-chart-2"></div>
+<div class="chart" id="pie-chart-3"></div>
+<div class="chart" id="pie-chart-4"></div>
+<div class="chart" id="pie-chart-5"></div>

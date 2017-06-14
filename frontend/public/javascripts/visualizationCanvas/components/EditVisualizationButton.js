@@ -1,10 +1,10 @@
 import _ from 'lodash';
-import React, { PropTypes, PureComponent } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { editVisualization } from '../actions';
 import { t } from '../lib/I18n';
 
-export class EditVisualizationButton extends PureComponent {
+export class EditVisualizationButton extends Component {
   render() {
     const { onClickHandler, vifIndex } = this.props;
 

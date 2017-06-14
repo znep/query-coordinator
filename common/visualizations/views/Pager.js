@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const $ = require('jquery');
-const utils = require('socrata-utils');
+const utils = require('common/js_utils');
 const I18n = require('../I18n');
 
 // Passing in locale is a temporary workaround to localize the Pager

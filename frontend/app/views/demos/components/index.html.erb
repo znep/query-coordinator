@@ -1,0 +1,19 @@
+<% content_for :head do %>
+  <title>Example Usage: Components</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a href='/internal/demos' class="btn btn-default"><span class="icon-arrow-left"></span> Demos</a>
+  </p>
+  <h1 class="styleguide-header">Available demos:</h1>
+  <p>
+  <% Demos::ComponentsController::available_demos.each do |demo| %>
+    <%= link_to demo, "components/#{demo}" %><br>
+  <% end %>
+  </p>
+</section>
+

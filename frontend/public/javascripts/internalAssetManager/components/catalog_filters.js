@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { handleEnter } from '../../common/helpers/keyPressHelpers';
-import { Dropdown } from 'socrata-components';
+import { Dropdown } from 'common/components';
 import SearchboxFilter from './filters/searchbox_filter';
 import * as filterOptions from '../lib/catalog_filter_options';
 import * as actions from '../actions/filters';

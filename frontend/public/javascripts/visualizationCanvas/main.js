@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { t } from 'lib/I18n';
 import confirmUnload from 'lib/confirmUnload';
 
-import utils from 'socrata-utils';
+import { Analytics } from 'common/analytics';
 
 import * as metrics from '../common/metrics';
 import airbrake from 'common/airbrake';
@@ -38,7 +38,7 @@ _.defer(function() {
     );
 
     // initialize internal analytics
-    const analytics = new utils.Analytics();
+    const analytics = new Analytics();
     analytics.sendMetric('domain', 'js-page-view', 1);
     analytics.sendMetric('domain', 'js-page-view-visualization', 1);
 
@@ -46,7 +46,7 @@ _.defer(function() {
     analytics.flushMetrics();
 
     /*
-      EN-15722: sending metrics through socrata-utils exclusively is not safe due to a known bug
+      EN-15722: sending metrics through Analytics exclusively is not safe due to a known bug
       That is why we are sending metrics again through core because it has been confirmed as the most robust route
       This request prompts core to create metrics of type `view-loaded`, which are the metrics that we actually surface in `viewCount` on `/api/views/4x4`
       and on endpoint `4x4/stats`

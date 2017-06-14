@@ -2,7 +2,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 
 var DistributionChartView = require('./views/DistributionChart');
 var DistributionChartHelpers = require('./views/DistributionChartHelpers');

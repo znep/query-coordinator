@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FilterBar } from 'common/components';
 import { setFilters } from '../actions';
-import { dataProviders } from 'socrata-visualizations';
+import { dataProviders } from 'common/visualizations';
 
 export function mapStateToProps({ columnStats, view, filters, parentView }) {
 

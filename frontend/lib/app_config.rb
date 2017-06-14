@@ -117,10 +117,6 @@ class AppConfig < Hashie::Dash
   # Caching
   property :cache_dataslate_routing, default: 1.minute
 
-  # Visualization embeds
-  property :socrata_visualizations_v1_loader_url
-  property :socrata_visualizations_v1_embed_url
-
   # Misc
   property :secondary_group_identifier
   property :threadpool_count, default: 0, transform_with: as_int

@@ -9,7 +9,7 @@
 
 const $ = require('jquery');
 // Socrata Utils provides utility functions like asserts and polyfills.
-const utils = require('socrata-utils');
+const utils = require('common/js_utils');
 // As described above and elsewhere, this jQuery plugin wraps the underlying
 // visualization implementation, in this case located at
 // '/src/views/SampleChart.js'.

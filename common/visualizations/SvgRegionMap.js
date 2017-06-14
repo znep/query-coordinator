@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var $ = require('jquery');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var SvgRegionMap = require('./views/SvgRegionMap');
 var MetadataProvider = require('./dataProviders/MetadataProvider');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
@@ -19,8 +19,7 @@ const BASE_QUERY = (
 const WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
- * Instantiates a Socrata Region Map Visualization from the
- * `socrata-visualizations` package.
+ * Instantiates a Socrata Region Map Visualization.
  *
  * @param vif
  */

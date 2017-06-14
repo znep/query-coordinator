@@ -3,7 +3,7 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactCrop from 'react-image-crop';
-import SocrataVisualizations from 'socrata-visualizations';
+import AuthoringWorkflow from 'common/authoring_workflow';
 import { FeatureFlags } from 'common/feature_flags';
 
 import '../components/Modal';
@@ -2329,7 +2329,7 @@ export default function AssetSelectorRenderer(options) {
       };
     }
 
-    const authoringWorkflow = new SocrataVisualizations.AuthoringWorkflow(element, {
+    const authoringWorkflow = new AuthoringWorkflow(element, {
       vif: vifToEdit,
       filters: _.get(vifToEdit, 'series[0].dataSource.filters', []),
       enableFiltering: FeatureFlags.value('enable_filterable_visualizations_in_ax'),

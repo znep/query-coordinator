@@ -1,0 +1,83 @@
+<% content_for :head do %>
+  <title>Example Usage: EditBar</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Flannel</h2>
+  <div class="styleguide-example">
+    <div id="btn-flannel-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      let btn;
+
+      const {
+        Flannel,
+        FlannelHeader,
+        FlannelContent,
+        FlannelFooter,
+        SocrataIcon
+      } = components;
+
+      const title = 'Access this Dataset via SODA API';
+
+      const buttonProps = {
+       className: "btn btn-primary",
+       ref: (ref) => btn = ref,
+       onClick: renderFlannel,
+       'aria-haspopup': true,
+       'aria-owns': 'flannel-example'
+      };
+
+      const props = {
+        id: 'flannel-example',
+        title,
+        target: () => btn,
+        isOpen: false,
+        onDismiss: closeFlannel
+      };
+
+      const headerProps = {
+        title,
+        onDismiss: closeFlannel
+      };
+
+      function renderButton() {
+        ReactDOM.render(
+          React.createElement('div', null, [
+            React.createElement('button', buttonProps, 'Click me!'),
+            React.createElement('div', {id: 'flannel-container'})
+          ]),
+          document.getElementById('btn-flannel-container')
+        );
+      }
+
+      function renderFlannel() {
+        ReactDOM.render(
+          React.createElement(Flannel, props, [
+            React.createElement(FlannelHeader, headerProps),
+            React.createElement(FlannelContent, null, 'Hello, World!')
+          ]),
+          document.getElementById('flannel-container')
+        );
+      }
+
+      function closeFlannel() {
+        ReactDOM.unmountComponentAtNode(document.getElementById('flannel-container'));
+      }
+
+      renderButton();
+    });
+  </script>
+<% end %>

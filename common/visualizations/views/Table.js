@@ -1,4 +1,4 @@
-const utils = require('socrata-utils');
+const utils = require('common/js_utils');
 const $ = require('jquery');
 const _ = require('lodash');
 const SvgVisualization = require('./SvgVisualization.js');

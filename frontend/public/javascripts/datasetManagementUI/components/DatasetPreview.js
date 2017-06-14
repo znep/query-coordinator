@@ -1,5 +1,5 @@
 import React, { PropTypes, PureComponent } from 'react';
-import { components as SocrataVisualizations } from 'socrata-visualizations';
+import { components as SocrataVisualizations } from 'common/visualizations';
 import { connect } from 'react-redux';
 import { columnsForOutputSchema } from '../selectors';
 import styles from 'styles/DatasetPreview.scss';

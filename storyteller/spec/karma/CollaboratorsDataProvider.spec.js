@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 import CollaboratorsDataProvider, { __RewireAPI__ as CollaboratorsDataProviderApi } from 'editor/CollaboratorsDataProvider';
 
 describe('CollaboratorsDataProvider', () => {

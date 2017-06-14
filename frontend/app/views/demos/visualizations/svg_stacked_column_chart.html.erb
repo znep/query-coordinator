@@ -1,0 +1,286 @@
+<% content_for :head do %>
+  <title>Example Usage: SvgColumnChart.js</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'visualizations' %>
+  <style type="text/css">
+    div[id^=column-chart-] {
+      display: block;
+      position: relative;
+      width: 640px;
+      height: 640px;
+      margin: 100px auto;
+    }
+  </style>
+<% end %>
+
+<% content_for :scripts do %>
+  <%= render_feature_flags_for_javascript %>
+
+  <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      /**
+       * Set up VIFs
+       */
+
+      var DIMENSION = 'district_name';
+      var MEASURE = 'proficient_2';
+      var MEASURE_AGGREGATION = null;
+      var DATASET_UID = 'mu6e-brbz';
+      var DOMAIN = 'data.iowa.gov';
+      var FILTERS = [
+        {
+          columnName: 'topic',
+          function: 'binaryOperator',
+          arguments: {
+            operator: '=',
+            operand: 'Math'
+          }
+        },
+        {
+          columnName: 'grade',
+          function: 'binaryOperator',
+          arguments: {
+            operator: '=',
+            operand: '3'
+          }
+        },
+        {
+          columnName: 'school_year',
+          function: 'binaryOperator',
+          arguments: {
+            operator: '=',
+            operand: '2014'
+          }
+        }
+      ];
+
+      var columnChart1Vif = {
+        "format": {
+          "type": "visualization_interchange_format",
+          "version": 2
+        },
+        "configuration": {
+          "viewSourceDataLink": true,
+          "showDimensionLabels": true,
+          "xAxisScalingMode": "pan",
+          "showLegend": true
+        },
+        "description": "",
+        "series": [
+          {
+            "color": {
+              "primary": "#71abd9",
+              "secondary": "#71abd9",
+              "highlight": "#cccccc",
+              "palette": "categorical"
+            },
+            "dataSource": {
+              "datasetUid": "r6t9-rak2",
+              "dimension": {
+                "columnName": "neighborhood",
+                "aggregationFunction": null,
+                "grouping": {
+                  "columnName": "category"
+                }
+              },
+              "domain": "dataspace.demo.socrata.com",
+              "measure": {
+                "columnName": null,
+                "aggregationFunction": "count"
+              },
+              "orderBy": {
+                "parameter": "measure",
+                "sort": "desc"
+              },
+              "type": "socrata.soql",
+              "filters": []
+            },
+            "label": null,
+            "type": "columnChart",
+            "unit": {
+              "one": "case",
+              "other": "cases"
+            },
+            "stacked": true
+          }
+        ],
+        "title": "Incidences per neighborhood stacked by category"
+      };
+
+      var columnChart2Vif = {
+        "format": {
+          "type": "visualization_interchange_format",
+          "version": 2
+        },
+        "configuration": {
+          "viewSourceDataLink": true,
+          "showDimensionLabels": true,
+          "xAxisScalingMode": "pan",
+          "showLegend": true,
+          "measureAxisMinValue": 5000,
+          "measureAxisMaxValue": 10000         
+        },
+        "description": "",
+        "series": [
+          {
+            "color": {
+              "primary": "#71abd9",
+              "secondary": "#71abd9",
+              "highlight": "#cccccc",
+              "palette": "categorical"
+            },
+            "dataSource": {
+              "datasetUid": "r6t9-rak2",
+              "dimension": {
+                "columnName": "neighborhood",
+                "aggregationFunction": null,
+                "grouping": {
+                  "columnName": "category"
+                }
+              },
+              "domain": "dataspace.demo.socrata.com",
+              "measure": {
+                "columnName": null,
+                "aggregationFunction": "count"
+              },
+              "orderBy": {
+                "parameter": "measure",
+                "sort": "desc"
+              },
+              "type": "socrata.soql",
+              "filters": []
+            },
+            "label": null,
+            "type": "columnChart",
+            "unit": {
+              "one": "case",
+              "other": "cases"
+            },
+            "stacked": true
+          }
+        ],
+        "title": "Incidences per neighborhood stacked by category - (5,000 to 10,000)"
+      };
+
+      var columnChart3Vif = {
+        "format": {
+          "type": "visualization_interchange_format",
+          "version": 2
+        },
+        "configuration": {
+          "viewSourceDataLink": true,
+          "showDimensionLabels": true,
+          "xAxisScalingMode": "pan",
+          "showLegend": true
+        },
+        "description": "",
+        "series": [
+          {
+            "color": {
+              "primary": "#71abd9",
+              "secondary": "#71abd9",
+              "highlight": "#cccccc",
+              "palette": "categorical"
+            },
+            "dataSource": {
+              "datasetUid": "k6cs-ww27",
+              "dimension": {
+                "columnName": "blood_alcohol_level",
+                "aggregationFunction": null,
+                "grouping": {
+                  "columnName": "plausibility"
+                }
+              },
+              "domain": "vertex-stories.test-socrata.com",
+              "measure": {
+                "columnName": null,
+                "aggregationFunction": "count"
+              },
+              "orderBy": {
+                "parameter": "measure",
+                "sort": "desc"
+              },
+              "type": "socrata.soql",
+              "filters": []
+            },
+            "label": null,
+            "type": "columnChart",
+            "unit": {
+              "one": "Row",
+              "other": "Rows"
+            },
+            "stacked": true
+          }
+        ],
+        "title": "UFO sightings by blood alcohol level stacked by plausibility"
+      };
+
+      /**
+       * Instantiate the plugins
+       */
+
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+      $('[id^=column-chart-]').on(
+        'SOCRATA_VISUALIZATION_FLYOUT',
+        handleFlyout
+      );
+      $('[id^=column-chart-]').on(
+        'SOCRATA_VISUALIZATION_VIF_UPDATED',
+        handleVifUpdated
+      );
+
+      $('#column-chart-1').socrataSvgColumnChart(columnChart1Vif);
+      $('#column-chart-2').socrataSvgColumnChart(columnChart2Vif);
+      $('#column-chart-3').socrataSvgColumnChart(columnChart3Vif);
+
+      /**
+       * Handle plugin events
+       */
+
+      function handleFlyout(event) {
+        var payload = event.originalEvent.detail;
+
+        // Render/hide a flyout
+        if (payload !== null) {
+
+          flyoutRenderer.render(payload);
+
+        } else {
+
+          flyoutRenderer.clear();
+        }
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
+      }
+
+      /**
+       * How to destroy the plugin:
+       */
+
+      // $columnChart1Element.off('SOCRATA_VISUALIZATION_FLYOUT', handleFlyout);
+      // $columnChart1Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $columnChart1Element.trigger('SOCRATA_VISUALIZATION_DESTROY');
+    });
+  </script>
+<% end %>
+
+<a href="internal">Internal Panel Home</a><br>
+<a href="internal/demos/visualizations">Back to demo list</a>
+<div id="column-chart-1"></div>
+<div id="column-chart-2"></div>
+<div id="column-chart-3"></div>

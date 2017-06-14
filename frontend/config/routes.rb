@@ -67,6 +67,32 @@ Rails.application.routes.draw do
       get '/tiers', :action => 'index_tiers'
       get '/tiers/:name', :action => 'show_tier'
       get '/modules', :action => 'index_modules'
+      get '/demos', :action => 'demos'
+
+      namespace :demos do
+        scope :controller => 'demos' do
+          get '/', :action => 'index'
+        end
+
+        scope :controller => 'icons' do
+          get '/icons', :action => 'index'
+        end
+
+        scope :controller => 'components' do
+          get '/components', :action => 'index'
+
+          # Automatically add a route for each demo page.
+          match 'components(/:action)', :via => :get
+        end
+
+        scope :controller => 'visualizations' do
+          get '/visualizations', :action => 'index'
+
+          # Automatically add a route for each demo page.
+          match 'visualizations(/:action)', :via => :get
+        end
+      end
+
       get :config_info
       get :domains_summary
       get :organization_list

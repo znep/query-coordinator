@@ -1,0 +1,88 @@
+<% content_for :head do %>
+  <title>Example Usage: Slider</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Slider</h2>
+
+  <div class="styleguide-example">
+    <h2 class="styleguide-header">Slider with a single value selection</h2>
+    <div id="slider-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+
+  <div class="styleguide-example">
+    <h2 class="styleguide-header">Slider with a range value selection</h2>
+    <div id="slider-range-value-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-2"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      let value = 1;
+
+      const props = {
+        rangeMin: 1,
+        rangeMax: 3.2,
+        step: 0.1,
+        value,
+        onChange: (newValue) => {
+          props.value = newValue;
+          render();
+        }
+      };
+
+      function render() {
+        ReactDOM.render(
+          React.createElement(components.Slider, props),
+          document.getElementById('slider-container')
+        );
+      }
+
+      render();
+    });
+  </script>
+
+  <script type="text/javascript" id="example-2">
+    $(() => {
+      let value = {
+        start: 10,
+        end: 15
+      };
+
+      const props = {
+        rangeMin: 0,
+        rangeMax: 20,
+        step: 0.1,
+        value,
+        onChange: (newValue) => {
+          // There are rounding errors thanks to floating point numbers.
+          // We'll just bump each to the nearest decimal place.
+          newValue.start = _.round(newValue.start, 2);
+          newValue.end = _.round(newValue.end, 2);
+          props.value = newValue;
+          render();
+        }
+      };
+
+      function render() {
+        ReactDOM.render(
+          React.createElement(components.Slider, props),
+          document.getElementById('slider-range-value-container')
+        );
+      }
+
+      render();
+    });
+  </script>
+
+<% end %>

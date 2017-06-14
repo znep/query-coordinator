@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const $ = require('jquery');
-const utils = require('socrata-utils');
+const utils = require('common/js_utils');
 const Table = require('./views/Table');
 const Pager = require('./views/Pager');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');

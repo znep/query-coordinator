@@ -4,7 +4,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 import classNames from 'classnames';
 import React from 'react';
-import SocrataUtils from 'socrata-utils';
+import SocrataUtils from 'common/js_utils';
 import SocrataIcon from '../SocrataIcon';
 import Picklist from '../Picklist';
 import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from 'common/keycodes';

@@ -474,8 +474,6 @@ Variable Name | Type | Source | Description
 `shape_file_region_query_limit` | Integer | Configuration | Maximum number of regions to fetch when reading shapefiles.
 `sitemap_s3_url` | URI | Configuration | URI pointing to where in S3 robots should retrieve the sitemap from.
 `socrata.core-session` | String | Configuration | Used by `SocrataCookieStore` to find session information for every request.
-`socrata_visualizations_v1_embed_url` | URI | Configuration | URI pointing to the main bundle from socrata-visualizations.
-`socrata_visualizations_v1_loader_url` | URI | Configuration | URI pointing to the loader bundle from socrata-visualizations.
 `soda_fountain_address` | String | Configuration | Host name or IP address of the `SodaFountain` service.
 `soda_fountain_port` | Integer | Configuration | Port used when connecting to `soda_fountain_address`.
 `ssl_port` | Integer | Configuration | HTTPS server port that HTTP server listens on. _Citation needed_. _Likely deprecated_.

@@ -1,4 +1,4 @@
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var Visualization = require('./Visualization');
 var d3 = require('d3');
 var moment = require('moment');

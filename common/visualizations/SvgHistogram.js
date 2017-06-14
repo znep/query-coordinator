@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const $ = require('jquery');
-const utils = require('socrata-utils');
+const utils = require('common/js_utils');
 const DistributionChartHelpers = require('./views/DistributionChartHelpers');
 const SvgHistogram = require('./views/SvgHistogram');
 const MetadataProvider = require('./dataProviders/MetadataProvider');

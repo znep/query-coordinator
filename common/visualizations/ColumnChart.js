@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var $ = require('jquery');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var ColumnChart = require('./views/ColumnChart');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
@@ -47,8 +47,7 @@ String.prototype.visualLength = function(fontSize) {
 };
 
 /**
- * Instantiates a Socrata ColumnChart Visualization from the
- * `socrata-visualizations` package.
+ * Instantiates a Socrata ColumnChart Visualization.
  *
  * Supported event triggers:
  * - invalidateSize: Forces a rerender, useful if the hosting page has resized the container.

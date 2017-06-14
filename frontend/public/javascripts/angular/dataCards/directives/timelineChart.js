@@ -1,4 +1,4 @@
-const TimelineChart = require('socrata-visualizations').views.TimelineChart;
+const TimelineChart = require('common/visualizations').views.TimelineChart;
 const templateUrl = require('angular_templates/dataCards/timelineChart.html');
 
 module.exports = function timelineChart(

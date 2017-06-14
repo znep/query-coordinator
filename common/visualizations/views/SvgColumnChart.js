@@ -2,7 +2,7 @@
 const d3 = require('d3');
 const _ = require('lodash');
 const $ = require('jquery');
-const utils = require('socrata-utils');
+const utils = require('common/js_utils');
 // Project Imports
 const SvgVisualization = require('./SvgVisualization');
 const SvgHelpers = require('../helpers/SvgHelpers');

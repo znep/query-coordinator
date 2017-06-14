@@ -1,7 +1,7 @@
 var d3 = require('d3');
 var $ = require('jquery');
 var _ = require('lodash');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var ss = require('simple-statistics');
 var chroma = require('chroma-js');
 

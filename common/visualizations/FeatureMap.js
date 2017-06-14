@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var L = require('leaflet');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var FeatureMap = require('./views/FeatureMap');
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
 var TileserverDataProvider = require('./dataProviders/TileserverDataProvider');
@@ -17,8 +17,7 @@ var DEFAULT_BASE_LAYER_OPACITY = 0.42;
 var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
- * Instantiates a Socrata FeatureMap Visualization from the
- * `socrata-visualizations` package.
+ * Instantiates a Socrata FeatureMap Visualization.
  *
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  */

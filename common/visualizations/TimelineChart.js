@@ -2,7 +2,7 @@
 // Let's remove it when we do EN-16807.
 var _ = require('lodash');
 var $ = require('jquery');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var moment = require('moment');
 var TimelineChart = require('./views/TimelineChart');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
@@ -26,7 +26,6 @@ var WINDOW_RESIZE_RERENDER_DELAY = 200;
 
 /**
  * Instantiates a Socrata ColumnChart Visualization from the
- * `socrata-visualizations` package.
  *
  * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
  */

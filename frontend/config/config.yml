@@ -130,9 +130,6 @@ development: &development
   auth0_secret: rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI
   auth0_uri: socrata.auth0.com
 
-  socrata_visualizations_v1_loader_url: 'https://s3.amazonaws.com/sa-frontend-static-assets-us-east-1-fedramp-prod/socrata-visualizations/socrata-visualizations-loader-staging.js'
-  socrata_visualizations_v1_embed_url: 'https://s3.amazonaws.com/sa-frontend-static-assets-us-east-1-fedramp-prod/socrata-visualizations/socrata-visualizations-embed-staging.js'
-
 # Running unit tests; NOT test-socrata.com
 test:
   <<: *default

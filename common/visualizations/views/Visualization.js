@@ -1,4 +1,4 @@
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var $ = require('jquery');
 var _ = require('lodash');
 

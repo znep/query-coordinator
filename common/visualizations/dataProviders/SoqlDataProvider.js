@@ -1,5 +1,5 @@
 var $ = require('jquery');
-var utils = require('socrata-utils');
+var utils = require('common/js_utils');
 var DataProvider = require('./DataProvider');
 var _ = require('lodash');
 

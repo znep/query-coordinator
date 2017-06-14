@@ -4,71 +4,24 @@ Visualizations that we can share between frontend projects.
 
 ## Usage
 
-`socrata-visualizations` is available in the artifactory npm registry.  To configure npm to use the
-appropriate registry:
-
-```sh
-npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-virtual
+First, import the visualizations:
+```javascript
+import SocrataVisualizations from 'common/visualizations';
 ```
 
-Then install using npm:
-
-```sh
-npm install --save socrata-visualizations
-```
-
-The npm distribution includes a `dist` folder with `socrata-visualizations.js` and
-`socrata-visualizations.css`.  Both should be included on the page using `script` and `link` tags or
-using your favorite client-side build system.
-
-jQuery components are installed as jQuery plugins, which can be used like this:
+Importing SocrataVisualizations extends jQuery by adding plugins which can be used like this:
 
 ```javascript
 $('.my-visualization').socrataColumnChart(vif);
 ```
 
 Raw components may be accessed via the `views` and `dataProviders` keys of the
-`socrata-visualizations` object.  This object is available on the window
-(`window.socrata.visualizations`) or by requiring it (`require('socrata-visualizations');`).
-
-This library depends on [frontend-utils](https://github.com/socrata/frontend-utils),
-[D3](http://d3js.org), [Lodash](https://lodash.com), and [jQuery](https://jquery.com). When using
-this library as a dependency in another project, you must also include the non-Socrata libraries in
-your dependencies because they will not be automatically installed.
-
-## Pre-requisites
-
-> You must fist setup artifactory credentials in order to allow `npm` to resolve dependencies. See the `setup-environment.sh` script in the `frontend` repo for more information.
-
-```
-npm install
-```
-
-Here are the versions we use for externals, which are not included in the webpack bundle:
-
-- `d3` - 3.5.6
-- `leaflet` - 0.7.3
-- `lodash` - 3.10.0
-- `jquery` - 2.1.1
-- `vector-tile` - 0.1.1
-- `moment` - 2.10.6
-- `chroma-js` - 0.5.6
-- `simple-statistics` - 0.8.1
-
-## Useful commands
-
-- `npm test` to run the tests.
-- `npm run lint` to run the linter.
-- `npm run watch` to automatically run the tests when files change.  The tests can be debugged in
-  a browser by visiting http://localhost:9876/debug.html.
-- `npm run build` to run webpack and generate output files in `dist`.
-- `npm run release` to tag and publish a new version to the npm registry (after bumping the
-  version in `package.json`).
+`SocrataVisualizations` object.
 
 ## Examples
 
-The `packages/examples` directory contains demos that show how each supported visualization can be consumed. Please see
-the [instructions](https://github.com/socrata/platform-ui/tree/master/packages/socrata-visualizations#example-pages).
+We maintain a list of example visualizations in the Internal Panel. See the links
+[here](https://github.com/socrata/platform-ui/tree/master/#visualizations-example-pages).
 
 
 ## Embeds
@@ -98,29 +51,9 @@ Embed codes are generated via a helper in `embedCodeGenerator.js`.
 
 ### Deploying Updates
 
-The active embed version is managed by frontend via a marathon configuration. Staging is always on the latest
-version (master branch). Production and RC are fixed to a particular version.
-
-To update the version of embeds in RC or production, edit [frontend.json](https://github.com/socrata/apps-marathon/blob/master/resources/frontend.json) in `apps-marathon`. Update the version numbers at the end of the URLs
-specified in these keys:
-
-* `SOCRATA_VISUALIZATIONS_V1_EMBED_URL`
-* `SOCRATA_VISUALIZATIONS_V1_LOADER_URL`
-
-For example, to use version 1.2.3, use:
-
-```json
-    "SOCRATA_VISUALIZATIONS_V1_EMBED_URL": "https://s3.amazonaws.com/sa-frontend-static-assets-us-east-1-fedramp-prod/socrata-visualizations/socrata-visualizations-embed-1.2.3.js",
-    "SOCRATA_VISUALIZATIONS_V1_LOADER_URL": "https://s3.amazonaws.com/sa-frontend-static-assets-us-east-1-fedramp-prod/socrata-visualizations/socrata-visualizations-loader-1.2.3.js",
-```
-
-Verify the URLs load in your browser. Once you are confident you don't have any typos, refresh the frontend
-configuration in your target environment. For instance, to refresh RC, do the following from `apps-marathon`:
-```sh
-rake "marathon:app:refresh[frontend, rc]"
-```
-
-Once the deploy is complete, commit and push your changes to `apps-marathon`.
+Nothing special needs to be done - updates to this library will be deployed when the service using
+it is deployed. Visualization embeds are sourced from frontend and will thus use its version of the
+visualization code.
 
 You can verify embeds against RC on this [demo page](http://socrata-embed-testing.blogspot.com/2017/02/blog-post.html).
 

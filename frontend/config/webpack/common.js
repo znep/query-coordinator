@@ -168,6 +168,15 @@ function getStandardLoaders(extraLoaders, options) {
     loader: 'imports?define=>undefined'
   });
 
+  // dotdotdot isn't module-friendly and relies
+  // on a window'd version of jQuery. Here, we provide
+  // that global jQuery by forcibly injecting the instance that will
+  // be used by other modules.
+  loaders.push({
+    test: /jquery\.dotdotdot\.min\.js$/,
+    loader: 'imports?jQuery=jquery,$=jquery'
+  });
+
   return loaders;
 }
 

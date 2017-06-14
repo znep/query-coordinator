@@ -1,0 +1,113 @@
+<% content_for :head do %>
+  <title>Example Usage: Picklist</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Picklist</h2>
+
+  <div class="styleguide-example">
+    <div id="picklist-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+
+  <div class="styleguide-example">
+    <h3 class="styleguide-header">With a disabled state</h3>
+    <p>Simply set with a boolean value through props with "disabled" as the key.</p>
+    <div id="picklist-disabled-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-2"></div>
+
+  <div class="styleguide-example">
+    <h3 class="styleguide-header">With a scrolling window</h3>
+    <p>While no direct property configuration exists to make the picklist conform to a desired height, the effect can be achieved through a container element and a few styling adjustments.</p>
+    <div id="picklist-windowed-container"></div>
+
+    <style>
+      #picklist-windowed-container .picklist {
+        height: 200px;
+      }
+    </style>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-3"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      const props = {
+        onSelection: (option) => {
+          console.log('option selected:', option.title, option.value);
+        },
+        options: [
+          {title: 'Inoculate the Innocuous', value: 'inoculate'},
+          {title: 'Tuff Luff', value: 'tuff-luff'},
+          {title: 'Ghost Mountain', value: 'ghost-mountain'},
+          {title: 'Jellybones', value: 'jellybones'},
+          {title: 'Inoculate the Innocuous', value: 'inoculate'},
+          {title: 'Les Os', value: 'les-os'}
+        ]
+      };
+
+      ReactDOM.render(
+        React.createElement(components.Picklist, props),
+        document.getElementById('picklist-container')
+      );
+    });
+  </script>
+
+  <script type="text/javascript" id="example-2">
+    $(() => {
+      const props = {
+        onSelection: (option) => {
+          console.log(`option selected: ${option.title}, ${option.value}`);
+        },
+        options: [
+          {title: 'Inoculate the Innocuous', value: 'inoculate'},
+          {title: 'Tuff Luff', value: 'tuff-luff'},
+          {title: 'Ghost Mountain', value: 'ghost-mountain'},
+          {title: 'Jellybones', value: 'jellybones'},
+          {title: 'Les Os', value: 'les-os'}
+        ],
+        value: 'tuff-luff',
+        disabled: true
+      };
+
+      ReactDOM.render(
+        React.createElement(components.Picklist, props),
+        document.getElementById('picklist-disabled-container')
+      );
+    });
+  </script>
+
+  <script type="text/javascript" id="example-3">
+    $(() => {
+      const props = {
+        onSelection: (option) => {
+          console.log(`option selected: ${option.title}, ${option.value}`);
+        },
+        options: [
+          {title: 'Cascadia', value: 'cascadia', group: 'Countries'},
+          {title: 'United States of America', value: 'usa', group: 'Countries'},
+          {title: 'Republic of Texas', value: 'texas', group: 'Countries'},
+          {title: 'Cascadia', value: 'cascadia', group: 'Countries'},
+          {title: 'Seattle', value: 'seattle', group: 'Capitals'},
+          {title: 'Washington, D.C.', value: 'dc', group: 'Capitals'},
+          {title: 'Austin', value: 'austin', group: 'Capitals'},
+        ],
+        value: 'dc'
+      };
+
+      ReactDOM.render(
+        React.createElement(components.Picklist, props),
+        document.getElementById('picklist-windowed-container')
+      );
+    });
+  </script>
+<% end %>

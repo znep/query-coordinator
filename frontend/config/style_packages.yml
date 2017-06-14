@@ -316,3 +316,5 @@ visualizations:
 - visualizations-import-shim
 authoring-workflow:
 - authoring-workflow-import-shim
+component_example_pages:
+- demos/components

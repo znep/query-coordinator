@@ -1,0 +1,83 @@
+<% content_for :head do %>
+  <title>Example Usage: Dropdown</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section" id="color-picker">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Dropdown</h2>
+  <div class="styleguide-example">
+    <div id="dropdown-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+  <h2 class="styleguide-header">Dropdown with custom options</h2>
+  <div class="styleguide-example">
+    <div id="custom-dropdown-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-2"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      const props = {
+        onSelection: (option) => {
+          console.log('option selected:', option.title, option.value);
+        },
+        options: [
+          {title: 'Floating Frog\'s Feet', value: 'potion-one', group: 'Potions'},
+          {title: 'Skittering Spider Silk', value: 'potion-two', group: 'Potions'},
+          {title: 'Blue Barbed Berries', value: 'potion-three', group: 'Potions'},
+          {title: 'Traditionally Truffled Tapioca', value: 'potion-four', group: 'Edibles'},
+          {title: 'Pandemonious Pear Paste', value: 'potion-five', group: 'Edibles'},
+        ]
+      };
+
+      ReactDOM.render(
+        React.createElement(components.Dropdown, props),
+        document.getElementById('dropdown-container')
+      );
+    });
+  </script>
+
+  <script type="text/javascript" id="example-2">
+    $(() => {
+      const DropdownWithIcon = (props) => {
+        const { icon, title } = props;
+
+        return (
+          React.createElement('div', {className: 'special-dropdown-option'}, [
+            React.createElement('span', {className: icon, key: icon}),
+            title
+          ])
+        );
+      };
+
+      const renderOption = (option) => React.createElement(DropdownWithIcon, option);
+
+      const customRenderProps = {
+        displayTrueWidthOptions: true,
+        onSelection: (option) => {
+          const { title, value } = option;
+          console.log(`option selected: ${title}, ${value}`);
+        },
+        placeholder: () => React.createElement('button', {className: 'btn btn-alternate-3'}, 'Hello, World!'),
+        options: [
+          { title: 'Emotional technicality', value: 'emotecho', icon: 'socrata-icon-facebook', render: renderOption },
+          { title: 'Pontificate harder', value: 'ponfer', icon: 'socrata-icon-twitter', render: renderOption },
+          { title: 'No one misses these', value: 'noone', icon: 'socrata-icon-dataset', render: renderOption }
+        ]
+      };
+
+      ReactDOM.render(
+        React.createElement(components.Dropdown, customRenderProps),
+        document.getElementById('custom-dropdown-container')
+      );
+    });
+  </script>
+<% end %>

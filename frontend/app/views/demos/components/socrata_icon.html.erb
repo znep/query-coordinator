@@ -1,0 +1,77 @@
+<% content_for :head do %>
+  <title>Example Usage: SocrataIcon</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Socrata Icon</h2>
+
+  <div class="styleguide-example">
+    <p>Renders an icon as an inlined SVG rather than using the icon font.
+    Any icon from <a href="/internal/demos/icons" target="_blank">the icon list</a> can be used.</p>
+    <p>"name" here refers to the actual SVG file name</p>
+    <div id="socrata-data-icon-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+
+  <div class="styleguide-example">
+    <p>The Socrata logo can be rendered as all black, all white, with color, or all white with an orange "pie" (for dark backgrounds).</p>
+    <p>As per the brand guidelines, the logo is rendered at the minimum size of 18px, but all other icons are rendered at 15px by default.</p>
+    <div>
+      <span id="socrata-logo-icon-black-container"></span>
+      <span id="socrata-logo-icon-color-container"></span>
+      <span id="socrata-logo-icon-white-container" style="background: black;"></span>
+      <span id="socrata-logo-icon-dark-container" style="background: black;"></span>
+    </div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-2"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      const props = {
+        name: 'data'
+      };
+
+      ReactDOM.render(
+        React.createElement(components.SocrataIcon, props),
+        document.getElementById('socrata-data-icon-container')
+      );
+    });
+  </script>
+
+  <script type="text/javascript" id="example-2">
+    $(() => {
+      // black is default
+      ReactDOM.render(
+        React.createElement(components.SocrataIcon, {name: "logo"}),
+        document.getElementById('socrata-logo-icon-black-container')
+      );
+
+      // white
+      ReactDOM.render(
+        React.createElement(components.SocrataIcon, {name: "logo", className: "socrata-icon-logo-white"}),
+        document.getElementById('socrata-logo-icon-white-container')
+      );
+
+      // color
+      ReactDOM.render(
+        React.createElement(components.SocrataIcon, {name: "logo", className: "socrata-icon-logo-color"}),
+        document.getElementById('socrata-logo-icon-color-container')
+      );
+
+      // dark
+      ReactDOM.render(
+        React.createElement(components.SocrataIcon, {name: "logo", className: "socrata-icon-logo-dark"}),
+        document.getElementById('socrata-logo-icon-dark-container')
+      );
+    });
+  </script>
+<% end %>

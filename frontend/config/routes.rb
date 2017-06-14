@@ -70,6 +70,23 @@ Rails.application.routes.draw do
       get '/demos', :action => 'demos'
 
       namespace :demos do
+        scope :controller => 'demos' do
+          get '/', :action => 'index'
+        end
+
+        scope :controller => 'icons' do
+          get '/icons', :action => 'index'
+        end
+
+        scope :controller => 'components' do
+          get '/components', :action => 'index'
+
+          # Automatically add a route for each demo page.
+          Demos::ComponentsController::AVAILABLE_DEMOS.each do |demo|
+            get "/components/#{demo}", :action => demo
+          end
+        end
+
         scope :controller => 'visualizations' do
           get '/visualizations', :action => 'index'
 

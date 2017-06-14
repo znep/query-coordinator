@@ -1,0 +1,117 @@
+<% content_for :head do %>
+  <title>Example Usage: Side Menu</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Side Menu</h2>
+
+  <div class="styleguide-example">
+    <div id="menu-container"></div>
+    <button class="btn btn-default menu-trigger">Trigger Side Menu</button>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      const {
+        SideMenu,
+        ExpandableMenuListItem,
+        MenuListItem
+      } = components;
+
+      const menuProps = {
+        title: 'Sample Side Menu',
+        isAnchoredLeft: true,
+        isOpen: false,
+        onDismiss
+      };
+
+      function onDismiss() {
+        menuProps.isOpen = false;
+        render();
+      }
+
+      const menuListItemProps = {
+        iconName: 'copy-document',
+        text: 'Make a Copy'
+      };
+
+      const expandableMenuListItemProps = {
+        iconName: 'edit',
+        text: 'Edit Title and Description',
+        isOpen: true,
+        onClick() {
+          expandableMenuListItemProps.isOpen = !expandableMenuListItemProps.isOpen;
+          render();
+        }
+      };
+
+      function render() {
+        ReactDOM.render(
+          React.createElement(
+            components.SideMenu,
+            menuProps,
+            React.createElement(
+              components.ExpandableMenuListItem,
+              expandableMenuListItemProps,
+              React.createElement(
+                "div",
+                null,
+                React.createElement(
+                  "form",
+                  null,
+                  React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                      "label",
+                      { htmlFor: "edit-title-field", className: "block-label" },
+                      "Title"
+                    ),
+                    React.createElement("input", { id: "edit-title-field", className: "text-input" })
+                  ),
+                  React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                      "label",
+                      { htmlFor: "edit-description-field", className: "block-label" },
+                      "Title"
+                    ),
+                    React.createElement("textarea", { id: "edit-description-field", className: "text-input text-area" })
+                  ),
+                  React.createElement(
+                    "button",
+                    { className: "btn btn-dark btn-default update-button", disabled: true },
+                    "Update Title and Description"
+                  )
+                )
+              )
+            ),
+            React.createElement(components.MenuListItem, menuListItemProps)
+          ),
+          document.getElementById('menu-container')
+        );
+      }
+
+      render();
+
+      $('.menu-trigger').click((event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        menuProps.isOpen = true;
+        render();
+      });
+    });
+  </script>
+<% end %>

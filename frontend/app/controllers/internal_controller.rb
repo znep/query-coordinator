@@ -3,6 +3,7 @@ class InternalController < ApplicationController
   before_filter :check_auth
   before_filter :redirect_to_current_domain, :only => [ :show_domain, :feature_flags, :show_config, :show_property ]
   before_filter :redirect_to_default_config_id_from_type, :only => [ :show_config, :show_property ]
+  skip_before_filter :require_user, :only => [ :demos ]
 
   KNOWN_FEATURES = [
     { name: 'view_moderation', description: 'Allows Publishers and Admin to moderate views.' },
@@ -27,9 +28,6 @@ class InternalController < ApplicationController
   end
 
   def demos
-    # Right now there are only visualization demos.
-    # In the future this will be a page with a list of demos.
-    redirect_to '/internal/demos/visualizations'
   end
 
   def analytics

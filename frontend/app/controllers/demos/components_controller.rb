@@ -2,29 +2,16 @@
 # However, please note that we intentionally allow anonymous
 # traffic - this allows non-engineers easy access to the demos.
 class Demos::ComponentsController < ApplicationController
-  # Each of these should correspond to a template
-  # in app/views/demos/components.
-  # Would be nice to automatically populate this list.
-  # This list is used to automatically define routes.
-  AVAILABLE_DEMOS = %w(
-    color_picker
-    date_range_picker
-    dropdown
-    edit_bar
-    filter_bar
-    flannel
-    info_pane
-    modal
-    picklist
-    side_menu
-    slider
-    socrata_icon
-    view_card
-  )
-
-  #TODO check FF
   skip_before_filter :require_user
   layout 'styleguide'
+
+  def self.available_demos
+    Dir.glob("#{Rails.root}/app/views/demos/components/*.html.erb").
+      map { |file| File.basename(file, '.html.erb') }. # remove extension
+      reject { |file| file.start_with?('_') }. # omit partials
+      reject { |file| file == 'index' }. # omit index
+      sort.freeze
+  end
 
   # Override app/helpers/application_helper#modal
   def modal

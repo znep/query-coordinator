@@ -11,7 +11,7 @@
   </p>
   <h1 class="styleguide-header">Available demos:</h1>
   <p>
-  <% Demos::ComponentsController::AVAILABLE_DEMOS.each do |demo| %>
+  <% Demos::ComponentsController::available_demos.each do |demo| %>
     <%= link_to demo, "components/#{demo}" %><br>
   <% end %>
   </p>

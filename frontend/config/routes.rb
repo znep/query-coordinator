@@ -82,9 +82,7 @@ Rails.application.routes.draw do
           get '/components', :action => 'index'
 
           # Automatically add a route for each demo page.
-          Demos::ComponentsController::AVAILABLE_DEMOS.each do |demo|
-            get "/components/#{demo}", :action => demo
-          end
+          match 'components(/:action)', :via => :get
         end
 
         scope :controller => 'visualizations' do

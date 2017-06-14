@@ -11,7 +11,7 @@ window.components = components;
 
 $(() => {
   let index = 1;
-  while($(`#example-${index}`).length > 0) {
+  while ($(`#example-${index}`).length > 0) {
     const script = '    ' + $(`#example-${index}`).text().trim();
     $(`#styleguide-code-example-${index}`).html($('<pre>').append(script));
     index++;

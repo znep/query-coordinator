@@ -32,6 +32,7 @@
   <%= storyteller_javascript_include_tag 'editor' %>
   <%= render 'shared/google_analytics_script' %>
   <%= render 'shared/mixpanel_script' %>
+  <%= render_pendo_tracker %>
 </head>
 <body id="story-edit" class="<%= render_admin_header? ? 'open-performance-enabled' : '' %>">
   <%== site_chrome_admin_header(request, response, size: 'small') if render_admin_header? %>

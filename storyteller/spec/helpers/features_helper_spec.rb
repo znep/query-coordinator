@@ -215,4 +215,33 @@ RSpec.describe FeaturesHelper, type: :helper do
       end
     end
   end
+
+  describe '#pendo_tracking_enabled?' do
+    context 'when requirements not met' do
+      it 'returns false if pendo not enabled' do
+        allow(Rails.application.config).to receive(:pendo_token).and_return('token')
+        set_features([])
+
+        expect(pendo_tracking_enabled?).to be_falsey
+      end
+
+      it 'returns false if pendo token not set' do
+        allow(Rails.application.config).to receive(:pendo_token).and_return(nil)
+        set_features(['pendo_tracking'])
+
+        # Using be_falsey because .try method returns falsey (nil) not false
+        expect(pendo_tracking_enabled?).to be_falsey
+      end
+    end
+
+    context 'when we can use pendo_tracking' do
+      it 'returns true' do
+        allow(Rails.application.config).to receive(:pendo_token).and_return('token')
+        set_features(['pendo_tracking'])
+
+        expect(pendo_tracking_enabled?).to be_truthy
+      end
+    end
+  end
+
 end

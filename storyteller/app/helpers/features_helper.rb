@@ -31,6 +31,11 @@ module FeaturesHelper
     feature_enabled?('fullmixpaneltracking')
   end
 
+  def pendo_tracking_enabled?
+    Rails.application.config.pendo_token.present? &&
+      feature_enabled?('pendo_tracking')
+  end
+
   private
 
   def feature_flag_enabled?(flag)

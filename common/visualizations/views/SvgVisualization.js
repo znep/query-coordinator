@@ -18,17 +18,7 @@ import {
   DEFAULT_PRIMARY_COLOR,
   DEFAULT_SECONDARY_COLOR,
   DEFAULT_HIGHLIGHT_COLOR,
-  DEFAULT_LEGEND_TEXT_ATTRIBUTES,
   COLOR_PALETTES,
-  LEGEND_RECT_SIZE,
-  LEGEND_RECT_LABEL_GAP,
-  LEGEND_SEPARATOR_COLOR,
-  LEGEND_SEPARATOR_WIDTH,
-  LEGEND_CONTAINER_MARGIN,
-  LEGEND_COLUMN_GAP,
-  LEGEND_COLUMN_PADDING,
-  LEGEND_MINIMUM_TEXT_WIDTH,
-  MAX_LEGEND_COLUMNS,
   AXIS_LABEL_FONT_FAMILY,
   AXIS_LABEL_FONT_SIZE,
   AXIS_LABEL_COLOR,
@@ -36,11 +26,11 @@ import {
   AXIS_LABEL_TEXT_MARGIN
 } from './SvgStyleConstants';
 
-
 const DEFAULT_TYPE_VARIANTS = {
   columnChart: 'column', // others: 'bar'
   timelineChart: 'area' // others: 'line'
 };
+
 const DEFAULT_UNIT_ONE = I18n.translate('visualizations.common.unit.one');
 const DEFAULT_UNIT_OTHER = I18n.translate('visualizations.common.unit.other');
 
@@ -316,73 +306,94 @@ function SvgVisualization($element, vif, options) {
       addClass('socrata-visualization-error');
   };
 
-  let legendLayout = null;
+  this.removeLegendBar = function() {
 
-  this.renderLegend = function(svgElement, containerWidth, legendData, colorSelector, textAttributes) {
-    textAttributes = textAttributes || DEFAULT_LEGEND_TEXT_ATTRIBUTES;
-
-    if (legendLayout === null) {
-      legendLayout = SvgHelpers.textBasedColumnLayout(textAttributes).
-        margin(LEGEND_CONTAINER_MARGIN).
-        columnPadding(LEGEND_COLUMN_PADDING).
-        columnGap(LEGEND_COLUMN_GAP).
-        maxColumns(MAX_LEGEND_COLUMNS).
-        minimumTextWidth(LEGEND_MINIMUM_TEXT_WIDTH);
-    }
-
-    const columnsData = legendLayout(containerWidth, legendData);
-    const columns = svgElement.selectAll('g').data(columnsData);
-
-    renderLegendColumn(columns, colorSelector, textAttributes);
-    renderLegendColumn(columns.enter().append('g'), colorSelector, textAttributes, true);
-    columns.exit().remove();
-
-    // Render separators
-    const size = SvgHelpers.calculateElementSize(svgElement.node());
-    const margin = legendLayout.margin();
-
-    renderLegendSeparator(svgElement, 0, 0, containerWidth);
-    renderLegendSeparator(svgElement, 0, size.height + margin.top + margin.bottom, containerWidth);
-
-    return legendLayout;
+    self.$container.removeClass('socrata-visualization-legend-bar');
+    self.$container.find('.socrata-visualization-legend-bar-container').empty();
   };
 
-  function renderLegendColumn(group, colorSelector, textAttributes, append) {
-    group.attr('transform', (d) => `translate(${d.x}, ${d.y})`);
+  this.renderLegendBar = function(measureLabels, getColor) {
 
-    if (append) {
-      group.append('rect').
-        attr('x', 0).
-        attr('y', 0).
-        attr('width', LEGEND_RECT_SIZE).
-        attr('height', LEGEND_RECT_SIZE).
-        attr('fill', (d, i) => colorSelector(i));
-    }
+    self.$container.addClass('socrata-visualization-legend-bar');
 
-    const textRows = group.selectAll('text').data((d) => d.wrappedText);
-    renderLegendColumnText(textRows, textAttributes);
-    renderLegendColumnText(textRows.enter().append('text'), textAttributes);
-    textRows.exit().remove();
-  }
+    // Empty legend bar
+    //
+    const $legendBarContainer = self.$container.find('.socrata-visualization-legend-bar-container');
+    $legendBarContainer.empty();
 
-  function renderLegendColumnText(text, attributes) {
-    text.
-      attr('x', (d) => d.x + LEGEND_RECT_SIZE + LEGEND_RECT_LABEL_GAP).
-      attr('y', (d) => d.y - 1).
-      text((d) => d.text);
+    // Inner container
+    //
+    const $innerContainer = $('<div>', { 'class': 'socrata-visualization-legend-bar-inner-container' });
+    $legendBarContainer.append($innerContainer);
 
-    _.forEach(attributes, (value, attr) => text.attr(_.kebabCase(attr), value));
-  }
+    // Button
+    //
+    const $button = $('<button>', { 'class': 'socrata-legend-button' }).
+      append($('<span>', { 'class': 'socrata-icon-arrow-left'} )).
+      append($('<label>').text(I18n.translate('visualizations.common.show_legend'))).
+      append($('<span>', { 'class': 'socrata-icon-close-2'} ));
 
-  function renderLegendSeparator(container, x, y, width) {
-    container.append('line').
-      attr('x1', x).
-      attr('y1', y).
-      attr('x2', width).
-      attr('y2', y).
-      style('stroke', LEGEND_SEPARATOR_COLOR).
-      style('stroke-width', LEGEND_SEPARATOR_WIDTH);
-  }
+    $innerContainer.append($button);
+
+    // Menu
+    //
+    const $ul = $('<ul>', { 'class': 'socrata-legend-menu' });
+
+    measureLabels.forEach((label, i) => {
+
+      const color = getColor(i);
+      $ul.append(
+        $('<li>').
+          text(label).
+          append($('<span>', { 'style': `background-color:${color}`}))
+      );
+    });
+
+    $innerContainer.append($ul);
+
+    // Set menu max height so it may scroll
+    //
+    const containerHeight = self.$container.find('.socrata-visualization-container').height();
+    $ul.css({ 'max-height': containerHeight + 2 }); // slid up 1px and down 1px to cover borders
+  };
+
+  this.attachLegendBarEventHandlers = function() {
+
+    self.$container.find('.socrata-legend-button').off('click').on('click', function(event) { // note: using function because we are using $(this)
+
+      event.stopPropagation();
+
+      const menu = self.$container.find('.socrata-legend-menu').
+        toggle().
+        scrollTop(0);
+
+      const isVisible = menu.is(':visible');
+
+      const labelText = isVisible ?
+        I18n.translate('visualizations.common.hide_legend') :
+        I18n.translate('visualizations.common.show_legend');
+
+      $(this).find('label').text(labelText);
+      $(this).find('.socrata-icon-arrow-left').toggle();
+      $(this).find('.socrata-icon-close-2').toggle();
+
+      if (isVisible) {
+        $('body').on('click', self.hideLegendMenu);
+      }
+    });
+
+    self.$container.find('.socrata-legend-menu').click((event) => event.stopPropagation);
+  };
+
+  this.hideLegendMenu = function() {
+
+    self.$container.find('.socrata-legend-button label').text(I18n.translate('visualizations.common.show_legend'));
+    self.$container.find('.socrata-legend-button .socrata-icon-arrow-left').show();
+    self.$container.find('.socrata-legend-button .socrata-icon-close-2').hide();
+    self.$container.find('.socrata-legend-menu').hide();
+
+    $('body').off('click', self.hideLegendMenu);
+  };
 
   this.clearError = function() {
 
@@ -827,6 +838,7 @@ function SvgVisualization($element, vif, options) {
                   $('<div>', {'class': 'socrata-visualization-description'})
                 ),
               $('<div>', {'class': 'socrata-visualization-filter-bar-container'}),
+              $('<div>', {'class': 'socrata-visualization-legend-bar-container'}),
               $('<div>', {'class': 'socrata-visualization-container'}),
               $('<div>', {'class': 'socrata-visualization-info'}).
                 append([

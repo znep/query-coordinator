@@ -1088,7 +1088,7 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function conditionallyTruncateLabel(label) {
-    label = label || I18n.translate('visualizations.common.no_value');
+    label = _.isNull(label) ? I18n.translate('visualizations.common.no_value') : label;
 
     return (label.length >= DIMENSION_LABELS_MAX_CHARACTERS) ?
       '{0}…'.format(

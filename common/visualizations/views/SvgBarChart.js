@@ -1435,7 +1435,7 @@ function SvgBarChart($element, vif, options) {
     const noValuePlaceholder = I18n.translate('visualizations.common.no_value');
 
     function conditionallyTruncateLabel(label) {
-      label = label || noValuePlaceholder;
+      label = _.isNull(label) ? noValuePlaceholder : label;
 
       return (label.length >= allowedLabelCharCount) ?
         `${label.substring(0, allowedLabelCharCount - 1).trim()}…` :

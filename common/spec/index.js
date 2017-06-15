@@ -1,3 +1,7 @@
+import 'whatwg-fetch';
+import 'babel-polyfill';
+import 'common/visualizations/views/styles/socrata-visualizations.scss';
+
 // Since we use jQuery plugins that patch themselves globally onto window.jQuery,
 // we're forced to generate a single large test bundle (instead of karma-webpack's
 // default of generating one package per test file).

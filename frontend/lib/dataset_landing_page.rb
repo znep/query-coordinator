@@ -260,7 +260,7 @@ class DatasetLandingPage
         :name => view.name,
         :id => view.id,
         :description => view.description,
-        :url => view.try(:link) || seo_friendly_url(view),
+        :url => view.try(:link) && localized_dataset_url(view.link) || seo_friendly_url(view),
         :displayType => view.display.try(:type),
         :createdAt => view.try(:time_created_at) || view.createdAt,
         :updatedAt => view.try(:time_last_updated_at) || view.updatedAt,

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { AuthoringWorkflow } from 'socrata-visualizations';
+import AuthoringWorkflow from 'common/authoring_workflow';
 import {
   cancelEditingVisualization,
   updateVisualization

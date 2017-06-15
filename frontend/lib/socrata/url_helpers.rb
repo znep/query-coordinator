@@ -56,6 +56,10 @@ module Socrata
       ERB::Util.url_encode(seo_friendly_url(view, request))
     end
 
+    def localized_dataset_url(link)
+      link.gsub(/^(https?:\/\/[^\/]+)(\/.+)(\/[a-z0-9]{4}-[a-z0-9]{4})/, "\\1#{locale_url_prefix}\\2\\3")
+    end
+
     def tweetable_link(view)
       translation_key = view.story? ? 'controls.common.share.share_story_text' : 'controls.common.share.share_text'
       I18n.t(translation_key, :name => view.name, :site => CurrentDomain.strings.company) + short_view_url(view)

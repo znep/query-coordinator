@@ -13,7 +13,7 @@
  *= require styleguide-shim
  *= require leaflet
  *= require ReactCrop
- *= require socrata-visualizations
+ *= require common/visualizations/views/styles/socrata-visualizations
  *= require_tree ./lib
  *= require_tree ./edit
  *= require_tree ./modal

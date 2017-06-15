@@ -95,6 +95,10 @@ function getSvgAndFontLoaders() {
 }
 
 // Sets the search path for @include directives SPECIFICALLY in *.scss files.
+//
+// KEEP IN SYNC with:
+//   frontend/app/controllers/styles_controller.rb::SCSS_LOAD_PATHS
+//   storyteller/config/initializers/assets.rb
 function getStyleguideIncludePaths() {
   return [
     'node_modules/bourbon/app/assets/stylesheets',
@@ -104,11 +108,16 @@ function getStyleguideIncludePaths() {
     'node_modules/normalize.css',
     'node_modules/react-input-range/dist',
     'node_modules/react-datepicker/dist',
+    'node_modules/leaflet/dist',
+    path.resolve(frontendRoot, '../common/resources/fonts/dist'),
+    path.resolve(frontendRoot, '../common'),
     path.resolve(frontendRoot, '../')
   ];
 }
 
-function getBabelLoader() {
+function getBabelLoader(extraPlugins = []) {
+  const babelPlugins = [ 'babel-plugin-transform-object-rest-spread' ].concat(extraPlugins);
+
   return _.extend({}, jsLoaderBaseConfig, {
     loader: 'babel',
     query: {
@@ -118,9 +127,7 @@ function getBabelLoader() {
         'babel-preset-es2015',
         'babel-preset-react'
       ].map(require.resolve),
-      plugins: [
-        'babel-plugin-transform-object-rest-spread'
-      ].map(require.resolve)
+      plugins: babelPlugins.map(require.resolve)
     }
   });
 }
@@ -136,16 +143,22 @@ function getReactHotLoader() {
 function getStandardLoaders(extraLoaders, options) {
   var loaders = [];
   options = _.extend({
-    reactHotLoader: true
+    reactHotLoader: true,
+    babelRewirePlugin: false // Only has effect outside of production.
   }, options);
 
   loaders = loaders.concat(extraLoaders || []);
+
+  const babelPlugins = [];
+  if (!isProduction && options.babelRewirePlugin) {
+    babelPlugins.push('babel-plugin-rewire');
+  }
 
   if (!isProduction && options.reactHotLoader) {
     loaders.push(getReactHotLoader());
   }
 
-  loaders.push(getBabelLoader());
+  loaders.push(getBabelLoader(babelPlugins));
   loaders = loaders.concat(getSvgAndFontLoaders());
 
   // Prevent lodash from putting itself on window.
@@ -153,6 +166,15 @@ function getStandardLoaders(extraLoaders, options) {
   loaders.push({
     test: /node_modules\/lodash/,
     loader: 'imports?define=>undefined'
+  });
+
+  // dotdotdot isn't module-friendly and relies
+  // on a window'd version of jQuery. Here, we provide
+  // that global jQuery by forcibly injecting the instance that will
+  // be used by other modules.
+  loaders.push({
+    test: /jquery\.dotdotdot\.min\.js$/,
+    loader: 'imports?jQuery=jquery,$=jquery'
   });
 
   return loaders;

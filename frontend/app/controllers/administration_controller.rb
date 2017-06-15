@@ -20,19 +20,17 @@ class AdministrationController < ApplicationController
   # NOTE: AdministrationHelper is distinct from AdminHelper.
   include AdministrationHelper
 
-  # TODO: Remove this after DSLP launch
-  before_filter :display_dataset_landing_page_notice
-
-  before_filter :check_member, :only => :index
   skip_before_filter :require_user, :only => [:configuration, :flag_out_of_date]
 
+  before_filter :check_admin_or_superadmin, :only => [:goals]
   before_filter :check_member, :only => [:index, :analytics]
   before_filter :allow_georegions_access?, :only => [:georegions, :add_georegion, :enable_georegion, :disable_georegion, :set_georegion_default_status, :edit_georegion, :remove_georegion]
+  before_filter :is_superadmin?, :only => [:initialize_asset_inventory]
 
   before_filter :only => [:datasets] { |request| request.check_auth_levels_any([UserRights::EDIT_OTHERS_DATASETS, UserRights::EDIT_SITE_THEME]) }
   before_filter :only => [:canvas_pages] { |request| request.check_auth_level(UserRights::EDIT_PAGES) }
   before_filter :only => [:create_canvas_page, :post_canvas_page] { |request| request.check_auth_level(UserRights::CREATE_PAGES) }
-  before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users, :delete_future_user, :re_enable_user, :tos ] { |request| request.check_auth_level(UserRights::MANAGE_USERS) }
+  before_filter :only => [:users, :set_user_role, :reset_user_password, :bulk_create_users, :delete_future_user, :re_enable_user ] { |request| request.check_auth_level(UserRights::MANAGE_USERS) }
   before_filter :only => [:comment_moderation] { |request| request.check_auth_level(UserRights::MODERATE_COMMENTS) && request.check_module('publisher_comment_moderation') }
   before_filter :only => [:views] { |request| request.check_auth_level(UserRights::APPROVE_NOMINATIONS) && request.check_feature(:view_moderation) }
   before_filter :only => [:set_view_moderation_status] { |request| request.check_auth_level(UserRights::APPROVE_NOMINATIONS) }
@@ -41,33 +39,17 @@ class AdministrationController < ApplicationController
   before_filter :only => [:metadata, :create_metadata_fieldset, :delete_metadata_fieldset, :create_metadata_field, :save_metadata_field, :delete_metadata_field, :toggle_metadata_option, :move_metadata_field, :create_category, :delete_category, :modify_catalog_config, :modify_sidebar_config] { |request| request.check_auth_level(UserRights::EDIT_SITE_THEME) }
   before_filter :only => [:home, :save_featured_views] { |request| request.check_auth_levels_any([UserRights::MANAGE_STORIES, UserRights::FEATURE_ITEMS, UserRights::EDIT_SITE_THEME]) }
   before_filter :only => [:delete_story, :new_story, :create_story, :move_story, :edit_story, :stories_appearance, :update_stories_appearance] { |request| request.check_auth_level(UserRights::MANAGE_STORIES) }
-  before_filter :is_superadmin?, :only => [:initialize_asset_inventory]
 
   def disable_site_chrome?
     true
   end
 
   def index
-    if feature_flag?('enable_new_admin_ui', request)
-      render 'new_index'
-    else
-      render 'index'
-    end
+    render feature_flag?('enable_new_admin_ui', request) ? 'new_index' : 'index'
   end
 
   def datasets
     @meta[:page_name] = 'Admin Catalog'
-    asset_inventory = AssetInventoryService.find(!is_superadmin?)
-    button_disabled = asset_inventory.blank?
-    @view_model = {
-        :asset_inventory => {
-            :button_disabled => button_disabled,
-            :show_initialize_button => button_disabled && AssetInventoryService.api_configured? && is_superadmin?
-        }
-    }
-    if asset_inventory.blank?
-     Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
-    end
 
     vtf = view_types_facet
     datasets_index = vtf[:options].index { |option| option[:value] == 'datasets' }
@@ -108,11 +90,7 @@ class AdministrationController < ApplicationController
   # If View Moderation is OFF, pass moderation: 'any' to the ViewSearch service so that we explicitly include
   #   all views regardless of their view moderation status.
   def moderation_flag_if_needed
-    if CurrentDomain.feature?(:view_moderation)
-      {}
-    else
-      { moderation: 'any' }
-    end
+    CurrentDomain.feature?(:view_moderation) ? {} : { moderation: 'any' }
   end
 
   def modify_sidebar_config
@@ -716,7 +694,7 @@ class AdministrationController < ApplicationController
     metadata = config.properties.fieldsets || []
     field = params[:newFieldsetName]
 
-    if field.nil? || field.strip().blank?
+    if field.to_s.strip.blank?
       flash[:error] = t('screens.admin.metadata.flashes.fieldset_name_required')
       return redirect_to :action => 'metadata'
     end
@@ -743,7 +721,7 @@ class AdministrationController < ApplicationController
     config = get_configuration('metadata')
 
     field_name = params[:newFieldName]
-    if (field_name.nil? || field_name.strip().empty?)
+    if field_name.to_s.strip.empty?
       flash[:error] = t('screens.admin.metadata.flashes.field_name_required')
       return redirect_to :action => 'metadata'
     end
@@ -776,13 +754,6 @@ class AdministrationController < ApplicationController
     field = fieldset.fields.detect{ |f| f['name'].downcase == params[:field].to_s.downcase }
     if field.nil?
       return render json: { error: true, message: t('screens.admin.metadata.flashes.no_such_field') }
-    end
-
-    options = params[:options]
-    if options.blank?
-      field['type'] = 'text'
-    else
-      field['type'], field['options'] = 'fixed', options
     end
 
     save_metadata(config, metadata, t('screens.admin.metadata.flashes.field_successful_save'), true)
@@ -1079,26 +1050,6 @@ class AdministrationController < ApplicationController
     end
   end
 
-  def tos
-    @tos = CurrentDomain.strings.terms_of_service
-    return render_404 if @tos.blank?
-
-    if request.post?
-      if params[:terms_accepted].present?
-        actions = ::Configuration.find_or_create_by_type('actions', :name => 'Actions')
-        create_or_update_property(actions, 'tos_accepted',
-          :user => current_user,
-          :text => @tos,
-          :timestamp => Time.now
-        )
-        flash[:notice] = t('screens.admin.tos.accepted')
-        redirect_to :action => :index
-      else
-        flash.now[:error] = t('screens.admin.tos.must_agree')
-      end
-    end
-  end
-
   # General accessors for admins
 
   def configuration
@@ -1134,16 +1085,15 @@ class AdministrationController < ApplicationController
   end
 
   def asset_inventory
-    asset_inventory = AssetInventoryService.find
+    asset_inventory_dataset = AssetInventoryService.find
 
-    if asset_inventory.present?
-      redirect_to :controller => 'datasets', :action => 'show', :id => asset_inventory.id, :bypass_dslp => true
+    if asset_inventory_dataset.present?
+      redirect_to :controller => 'datasets', :action => 'show', :id => asset_inventory_dataset.id, :bypass_dslp => true
     else
       render 'shared/error', :status => :not_found
     end
   end
 
-  before_filter :check_admin_or_superadmin, :only => [:goals]
   def goals
     render_404 unless CurrentDomain.module_enabled?(:govStat)
   end

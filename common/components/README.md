@@ -89,10 +89,60 @@ with markup or simple markup).
 There is a top-level `styleguide` stylesheet that is the entry point into `partials` and supported by
 `variables`. See the `Usage` section to learn more.
 
-## Contributing
+### Importing styles into Storyteller
 
-*Side note*: If your application still pulls in components via the `socrata-components` legacy package, you'll
-want to read [the legacy docs](https://github.com/socrata/platform-ui/blob/master/packages/socrata-components/README.md).
+Use SCSS @import to add your stylesheet to `storyteller/app/assets/stylesheets/styleguide-shim.scss`.
+Example:
+
+```scss
+@import 'common/authoring_workflow/authoringWorkflow';
+```
+
+You can't import the stylesheet with a Sprockets require because Sprockets is not aware of how
+our icon font works. Our SCSS runtime, however, will handle this correctly. See the comments in
+`styleguide-shim.scss` for more information.
+
+
+### Importing styles into frontend
+
+Our homegrown StylesController only looks for files in app/styles. Since our SCSS runtime
+already knows how to pull in files from common/, it's hard to justify complicating StylesController.
+The steps involved in importing a new stylesheet depends on if you want to add the styles to an
+existing styles package in `style_packages.yml` or create a new style package which will include
+only your new style.
+
+#### Existing style package
+
+Use an SCSS import in your existing stylesheet:
+
+```scss
+@import 'common/authoring_workflow/authoringWorkflow';
+```
+
+#### New style package
+
+In this example, let's import a hypothetical style which lives in `common/add-blink-tag.scss`.
+
+1. Create a shim in `frontend/app/styles/add-blink-tag-import-shim.scss`:
+
+```scss
+@import 'common/add_blink_tag.scss';
+```
+
+2. Define a new package in `style_packages.yml`.
+
+```yml
+add-blink-tag:
+- add-blink-tag-import-shim
+```
+
+3. Use your style:
+
+```erb
+<%= rendered_stylesheet_tag 'add-blink-tag' %>
+```
+
+## Contributing
 
 The easiest way to develop changes to `components` is to use a real application (such as frontend) as a test host for
 your changes. A project to prepare the [styleguide sample app](https://github.com/socrata/platform-ui/blob/master/styleguide-sample-app/README.md)
@@ -106,7 +156,7 @@ All components must have tests for major functionality. Please place your tests 
 
 *Side note*: We should add an example component just like our ExampleTest suite.
 
-1. Ensure the component really belongs in `common`. See the [common top-level readme](https://github.com/socrata/platform-ui/blob/master/packages/socrata-components/README.md)
+1. Ensure the component really belongs in `common`. See the [common top-level readme](https://github.com/socrata/platform-ui/blob/master/common/README.md)
   for more details.
 2. Add your JS implementation under `common/components/$YOUR_NEW_COMPONENT/index.js`.
   You may add additional helper files alongside if you pull them in via `index.js`.
@@ -123,4 +173,4 @@ All components must have tests for major functionality. Please place your tests 
 4. Export your new component via `common/components/index.js`. 
 5. Pull in your styles via `common/styleguide/styleguide-no-tag-level.scss`
 6. *Write your tests.*
-7. Get a design review as outlined in the [common top-level readme](https://github.com/socrata/platform-ui/blob/master/packages/socrata-components/README.md)
+7. Get a design review as outlined in the [common top-level readme](https://github.com/socrata/platform-ui/blob/master/common/README.md)

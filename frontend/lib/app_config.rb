@@ -74,6 +74,8 @@ class AppConfig < Hashie::Dash
   property :dataset_landing_page_airbrake_api_key
   property :dataset_landing_page_airbrake_project_id
   property :google_maps_site_key
+  property :internal_asset_manager_airbrake_api_key
+  property :internal_asset_manager_airbrake_project_id
   property :mixpanel_token
   property :opendata_ga_tracking_code
   property :publishing_airbrake_api_key
@@ -112,16 +114,8 @@ class AppConfig < Hashie::Dash
   # Canary declaration
   property :canary, default: false
 
-  # Recaptcha keys
-  property :recaptcha_private_key
-  property :recaptcha_public_key
-
   # Caching
   property :cache_dataslate_routing, default: 1.minute
-
-  # Visualization embeds
-  property :socrata_visualizations_v1_loader_url
-  property :socrata_visualizations_v1_embed_url
 
   # Misc
   property :secondary_group_identifier

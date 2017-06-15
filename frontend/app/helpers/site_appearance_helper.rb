@@ -80,7 +80,7 @@ module SiteAppearanceHelper
       #   :title => t('screens.admin.site_appearance.move_link_row')
       # ) <<
 
-      # Temporary img until we get the icon font in socrata-components
+      # Temporary img until we get the icon font in common/resources/fonts
       image_tag(
         'admin/site_appearance/icon_move_vertical.svg',
         :class => 'move-link-row',

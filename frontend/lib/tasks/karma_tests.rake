@@ -47,7 +47,8 @@ namespace :test do
       'visualizationCanvas' => 'update_visualization_canvas_translations',
       'signin' => 'update_signin_translations',
       'oldUx' => nil,
-      'exampleTestSuite' => nil
+      'exampleTestSuite' => nil,
+      'visualization_embed' => nil
     }.each do |task_name, dependency|
       desc task_name
       task_args = { %i(watch browser reporter) => "translations:#{dependency}" }
@@ -224,7 +225,8 @@ namespace :test do
       'karma:internalAssetManager',
       'karma:oldUx',
       'karma:signin',
-      'karma:visualizationCanvas'
+      'karma:visualizationCanvas',
+      'karma:visualization_embed'
     ]
   end
 

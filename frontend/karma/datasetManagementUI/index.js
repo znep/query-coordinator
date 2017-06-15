@@ -1,6 +1,6 @@
 import 'script!jquery';
 import 'babel-polyfill-safe';
-// ^^ needed by socrata-components
+// ^^ needed by common/components.
 import { Provider } from 'react-redux';
 import _ from 'lodash';
 import React from 'react';

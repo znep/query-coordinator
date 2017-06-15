@@ -1,0 +1,79 @@
+<% content_for :head do %>
+  <title>Example Usage: Info Pane</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Info Pane</h2>
+
+  <div class="styleguide-example">
+    <h3 class="styleguide-subheader">Default Info Pane </h3>
+    <div id="info-pane-container"></div>
+
+    <h3 class="styleguide-subheader">Collapsible Info Pane <span class="small">(if passed <i>isPaneCollapsible=true</i> prop)</span></h3>
+    <div id="collapsible-info-pane-container"></div>
+  </div>
+
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      const props = {
+        name: 'A Different View',
+        description: `Now this is a story all about how
+          My life got flipped-turned upside down
+          And I'd like to take a minute
+          Just sit right there
+          I'll tell you how I became the prince of a town called Bel-Air
+
+          In west Philadelphia born and raised
+          On the playground was where I spent most of my days
+          Chillin' out maxin' relaxin' all cool
+          And all shooting some b-ball outside of the school
+          When a couple of guys who were up to no good
+          Started making trouble in my neighborhood
+          I got in one little fight and my mom got scared
+          She said, "You're movin' with your auntie and uncle in Bel-Air."`,
+        category: 'Fun',
+        isOfficial: true,
+        isPrivate: true,
+        footer: 'Athlete\'s Footer',
+        metadata: {
+          first: {
+            label: 'Updated',
+            content: 'Today'
+          },
+          second: {
+            label: 'View count',
+            content: 1
+          }
+        },
+        renderButtons: () => {
+          return React.createElement('div', {className: 'btn btn-primary'}, 'Click me!');
+        }
+      };
+
+      ReactDOM.render(
+        React.createElement(components.InfoPane, props),
+        document.getElementById('info-pane-container')
+      );
+
+      const collapsibleProps = _.merge({}, props, {
+        isPaneCollapsible: true
+      });
+
+      ReactDOM.render(
+        React.createElement(components.InfoPane, collapsibleProps),
+        document.getElementById('collapsible-info-pane-container')
+      );
+    });
+  </script>
+<% end %>

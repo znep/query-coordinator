@@ -4,7 +4,7 @@ import 'babel-polyfill';
 import _ from 'lodash';
 import { ResultsContainer } from 'components/assetSelector/ResultsContainer';
 
-import ceteraUtils from 'ceteraUtils';
+import ceteraUtils from 'cetera_utils';
 import mockCeteraResponse from 'assetSelector/data/mockCeteraResponse';
 
 describe('ResultsContainer', () => {
@@ -22,28 +22,28 @@ describe('ResultsContainer', () => {
     return {...defaultProps, ...props};
   };
 
-  const stubFetch = (ceteraResponse = { results: [], resultSetSize: 0 }) => (
-    sinon.stub(ceteraUtils, 'fetch').callsFake(_.constant(Promise.resolve({
+  const stubCeteraQuery = (ceteraResponse = { results: [], resultSetSize: 0 }) => (
+    sinon.stub(ceteraUtils, 'query').callsFake(_.constant(Promise.resolve({
       results: ceteraResponse.results,
       resultSetSize: ceteraResponse.resultSetSize
     })))
   );
 
   it('renders', () => {
-    stubFetch();
+    stubCeteraQuery();
     const element = renderComponent(ResultsContainer, getProps());
     assert.isDefined(element);
     assert.match(element.className, /results-container/);
-    ceteraUtils.fetch.restore();
+    ceteraUtils.query.restore();
   });
 
   describe('result cards', () => {
     afterEach(() => {
-      ceteraUtils.fetch.restore();
+      ceteraUtils.query.restore();
     });
 
     it('renders the "no results" element if the results array is empty', (done) => {
-      stubFetch({ results: [], resultSetSize: 0 });
+      stubCeteraQuery({ results: [], resultSetSize: 0 });
       const element = renderComponent(ResultsContainer, getProps());
 
       _.defer(() => {
@@ -53,7 +53,7 @@ describe('ResultsContainer', () => {
     });
 
     it('renders the results container if the results array is present', (done) => {
-      stubFetch(mockCeteraResponse);
+      stubCeteraQuery(mockCeteraResponse);
       const element = renderComponent(ResultsContainer, getProps());
 
       _.defer(() => {
@@ -64,7 +64,7 @@ describe('ResultsContainer', () => {
     });
 
     it('renders the total result count', (done) => {
-      stubFetch(mockCeteraResponse);
+      stubCeteraQuery(mockCeteraResponse);
       const element = renderComponent(ResultsContainer, getProps());
 
       _.defer(() => {
@@ -74,7 +74,7 @@ describe('ResultsContainer', () => {
     });
 
     it('renders the correct number of cards', (done) => {
-      stubFetch(mockCeteraResponse);
+      stubCeteraQuery(mockCeteraResponse);
       const element = renderComponent(ResultsContainer, getProps());
 
       _.defer(() => {
@@ -86,11 +86,11 @@ describe('ResultsContainer', () => {
 
   describe('additionalTopbarComponents', () => {
     beforeEach(() => {
-      stubFetch();
+      stubCeteraQuery();
     });
 
     afterEach(() => {
-      ceteraUtils.fetch.restore();
+      ceteraUtils.query.restore();
     });
 
     it('can be an empty array', () => {
@@ -123,7 +123,7 @@ describe('ResultsContainer', () => {
     });
   });
 
-  describe('when invoking ceteraUtils #fetch', () => {
+  describe('when invoking ceteraUtils #query', () => {
     const fetchDefaultOptions = {
       category: undefined,
       customMetadataFilters: {},
@@ -135,11 +135,11 @@ describe('ResultsContainer', () => {
     };
 
     afterEach(() => {
-      ceteraUtils.fetch.restore();
+      ceteraUtils.query.restore();
     });
 
     it('is called with a category filter if catalogQuery is a category', () => {
-      const stub = stubFetch();
+      const stub = stubCeteraQuery();
       const element = renderComponent(ResultsContainer, getProps({
         catalogQuery: { category: 'Dogs' }
       }));
@@ -151,7 +151,7 @@ describe('ResultsContainer', () => {
     });
 
     it('is called with an only filter if catalogQuery is a limitTo', () => {
-      const stub = stubFetch();
+      const stub = stubCeteraQuery();
       const element = renderComponent(ResultsContainer, getProps({
         catalogQuery: { limitTo: 'datasets' }
       }));
@@ -163,7 +163,7 @@ describe('ResultsContainer', () => {
     });
 
     it('is called with a custom metadata filter if catalogQuery is custom metadata', () => {
-      const stub = stubFetch();
+      const stub = stubCeteraQuery();
       const element = renderComponent(ResultsContainer, getProps({
         catalogQuery: { someCustomThing: 'abcdefg' }
       }));

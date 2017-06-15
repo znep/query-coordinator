@@ -63,7 +63,7 @@ function _renderTemplate($element, props) {
 function _updateVisualization($element, props) {
   assertHasProperty(props, 'componentData.value.vif');
 
-  const { componentData, editMode } = props;
+  const { componentData } = props;
   const $componentContent = $element.find('.component-content');
   const renderedVif = $element.attr('data-rendered-vif') || '{}';
   const vif = componentData.value.vif;
@@ -89,6 +89,6 @@ function _updateVisualization($element, props) {
 
     // Use triggerHandler since we don't want this to bubble
     $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
-    $componentContent.socrataSvgColumnChart(vif, { displayFilterBar: !editMode });
+    $componentContent.socrataSvgColumnChart(vif, { displayFilterBar: true });
   }
 }

@@ -435,6 +435,8 @@ Variable Name | Type | Source | Description
 `http_x_ssl_request` | String | NGINX | Protocol of the originating request. Expected to be `https` or the request will be redirected to use that scheme. Used as a fallback if `http_x_forwarded_proto` is not present. See `SslEnforcer`.
 `import_status_service_hostname` | String | Configuration | Host name to connect to for the ISS.
 `import_status_service_port` | Integer | Configuration | Port to connect to on `import_status_service_hostname`.
+`internal_asset_manager_airbrake_api_key` | String | Configuration | AirBrake API token used to track Internal Asset Manager errors.
+`internal_asset_manager_airbrake_project_id` | String | Configuration | AirBrake Project ID used to track Internal Asset Manager errors.
 `dataset_management_api_hostname` | String | Configuration | Host name to connect to for DSMAPI.
 `dataset_management_api_port` | Integer | Configuration | Port to connect to on `dataset_management_api_hostname`.
 `log_level` | String | Configuration | Log level directive used when configuring `Rails.logger`.
@@ -457,8 +459,6 @@ Variable Name | Type | Source | Description
 `rack.session` | String | Rails | Used by `SocrataCookieStore` to find session information for every request.
 `rack.session.options` | String | Rails | Used by `SocrataCookieStore` to find session information for every request.
 `rails_serve_static_files` | Boolean | Configuration | Flag to indicate if the Rails application should serve static assetss. _Must be `true` in dockerized environments_.
-`recaptcha_public_key` | String | Configuration | Public key used to authenticate with Recaptcha.
-`recaptcha_private_key` | String | Configuration | Private key used to authenticate with Recaptcha.
 `recaptcha_2_secret_token` | String | Configuration | API token used to authenticate with Recaptcha 2.
 `recaptcha_2_site_key` | String | Configuration | API key used to authenticate with Recaptcha 2.
 `remote_addr` | String | NGINX | IP Address of the requesting user agent. Typically expected to be the browser itself.
@@ -474,8 +474,6 @@ Variable Name | Type | Source | Description
 `shape_file_region_query_limit` | Integer | Configuration | Maximum number of regions to fetch when reading shapefiles.
 `sitemap_s3_url` | URI | Configuration | URI pointing to where in S3 robots should retrieve the sitemap from.
 `socrata.core-session` | String | Configuration | Used by `SocrataCookieStore` to find session information for every request.
-`socrata_visualizations_v1_embed_url` | URI | Configuration | URI pointing to the main bundle from socrata-visualizations.
-`socrata_visualizations_v1_loader_url` | URI | Configuration | URI pointing to the loader bundle from socrata-visualizations.
 `soda_fountain_address` | String | Configuration | Host name or IP address of the `SodaFountain` service.
 `soda_fountain_port` | Integer | Configuration | Port used when connecting to `soda_fountain_address`.
 `ssl_port` | Integer | Configuration | HTTPS server port that HTTP server listens on. _Citation needed_. _Likely deprecated_.
@@ -513,6 +511,23 @@ LOCALEAPP_API_KEY=[KEY FROM LASTPASS]
 - Run the `bin/pull_translations` script
 
 After you successfully pull translations, follow the instructions here to [configure localization for a domain](https://sites.google.com/a/socrata.com/client-services/localization/localizing-content).
+
+## Styles
+
+  We load our styles through a home-grown StylesController, which compiles SCSS to CSS and caches the results.
+
+### Help! My style changes aren't getting picked up!
+
+  StylesController does not invalidate its cache if a SCSS file's dependencies have changed
+(i.e., the file itself didn't change, but a file it imports did). The current workaround is
+to update the modification time of the root CSS file. Run this to force StylesController to recompile styles:
+
+```sh
+  touch frontend/app/styles/*shim.scss # If you only edited common components or visualizations.
+  touch frontend/app/styles/*.scss # Nuclear, slower option.
+```
+
+See the [JIRA ticket](https://socrata.atlassian.net/browse/EN-16978).
 
 ## Further Reading
 

@@ -81,6 +81,7 @@ describe("downloadFile's", () => {
   describe('thunk `scanUrl`', () => {
 
     const sampleScan = {
+      transformedFilename: 'data.csv',
       headers: 0,
       columns: [
         {

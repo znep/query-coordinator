@@ -14,15 +14,16 @@ function verify_env_var() {
 }
 
 set +x
+verify_env_var 'ARTIFACTORY_PASSWORD'
+verify_env_var 'ARTIFACTORY_USER'
+verify_env_var 'BUILD_URL'
 verify_env_var 'COMPRESS_ASSETS'
+verify_env_var 'RUN_STATIC_ANALYSIS'
 verify_env_var 'SERVICE_ARTIFACT'
 verify_env_var 'SERVICE_NAME'
-verify_env_var 'SERVICE_VERSION'
 verify_env_var 'SERVICE_SHA'
-verify_env_var 'ARTIFACTORY_USER'
-verify_env_var 'ARTIFACTORY_PASSWORD'
+verify_env_var 'SERVICE_VERSION'
 verify_env_var 'WORKSPACE'
-verify_env_var 'BUILD_URL'
 set -x
 
 # Called by Jenkins to build and package frontend in preparation for a deploy

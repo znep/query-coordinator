@@ -1,0 +1,345 @@
+$socrata-pager-height: 42px;
+$header-background-color: #f6f6f6;
+$row-background-color: transparent;
+$highlighted-row-color: #2f2f2f;
+$highlighted-row-background-color: #f6f6f6;
+
+.socrata-visualization-container.loaded {
+
+  .socrata-table,
+  .socrata-pager {
+    opacity: 1;
+  }
+}
+
+/**
+ * NOTE: The javascript implementation of the table DEPENDS ON
+ * constant-height headers and rows. If this expectation is violated,
+ * the table will break (specifically, .howManyRowsCanFitInHeight()).
+ */
+.socrata-table {
+  $header-row-height: 40px;
+  $header-cell-height: 39px;
+  $data-row-height: 25px;
+  $data-cell-height: 24px;
+  $null-row-height: 45px;
+
+  width: 100%;
+  // We subtract the pager height and then 1px to merge borders.
+  height: calc(100% - #{$socrata-pager-height} + 1px);
+  overflow-x: scroll;
+  font-family: 'Open Sans', sans-serif;
+  transition: opacity 0.25s;
+  box-sizing: content-box;
+  opacity: 0;
+
+  table {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    border-collapse: collapse;
+
+    thead {
+
+      tr {
+        height: $header-row-height;
+      }
+    }
+
+    tbody {
+
+      tr {
+        height: $data-row-height;
+
+        &:hover {
+
+          td {
+            color: $highlighted-row-color;
+            background-color: $highlighted-row-background-color;
+          }
+        }
+
+        &.null-row {
+          height: $null-row-height;
+
+          td {
+            border-color: transparent;
+          }
+        }
+
+        &:hover.null-row {
+
+          td {
+            background-color: transparent;
+          }
+        }
+      }
+    }
+
+    th,
+    td {
+      box-sizing: border-box;
+      height: 15px;
+      border: 1px solid #c0c0c0;
+      text-align: left;
+      vertical-align: middle;
+      line-height: 1.5;
+    }
+
+    th {
+      position: relative;
+      padding: 1px;
+      height: $header-cell-height;
+      line-height: $header-cell-height;
+      color: #6a6a6a;
+      background-color: $header-background-color;
+      cursor: pointer;
+      white-space: nowrap;
+
+      div.column-header-content {
+        /**
+         * The negative margins are required for the layout of borders to
+         * appear correct in non-Chrome browsers.
+         */
+        margin: 0 -2px -2px -2px;
+        padding: 0 10px;
+        height: $header-cell-height;
+        line-height: $header-cell-height;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        border: 1px solid #c8c8c8;
+        border-top: none;
+        box-sizing: content-box;
+
+        span[class^="icon-"] {
+          position: absolute;
+          height: $header-cell-height - 2;
+          right: 5px;
+          top: 1px;
+          background: #f6f6f6;
+          box-shadow: -10px 0 7px #f6f6f6;
+          opacity: 0;
+          transition: opacity 0.15s;
+        }
+
+        &[data-column-render-type="point"] {
+          cursor: default;
+        }
+
+        &[data-sort] {
+          span {
+            opacity: 1;
+          }
+        }
+      }
+
+      div.column-resize-target,
+      div.column-resize-target-last {
+        position: absolute;
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 5px;
+        height: 100%;
+        right: -3px;
+        top: 0;
+        background-color: #c0c0c0;
+        opacity: 0;
+        transition: opacity 0.15s;
+        cursor: ew-resize;
+        z-index: 2;
+
+        &:hover,
+        &.resizing {
+          opacity: 0.5;
+          background-color: #288dc1;
+        }
+      }
+
+      div.column-resize-target-last {
+        width: 3px;
+        left: auto;
+        right: 0px;
+      }
+
+      &:hover {
+        div.column-header-content {
+          span[class^="icon-"] {
+            opacity: 1;
+          }
+        }
+
+        div.column-resize-target,
+        div.column-resize-target-last {
+          opacity: 0.75;
+        }
+      }
+    }
+
+
+    td {
+      height: $data-cell-height;
+      padding: 10px;
+      line-height: $data-cell-height;
+      background-color: $row-background-color;
+
+      &[data-cell-alignment="left"] {
+        text-align: left;
+      }
+
+      &[data-cell-alignment="right"] {
+        text-align: right;
+      }
+
+      &[data-cell-alignment="center"] {
+        text-align: center;
+      }
+
+      div {
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  &.frozen-columns {
+
+    table {
+
+      table-layout: fixed;
+    }
+  }
+}
+
+.socrata-pager {
+  display: flex;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: $socrata-pager-height;
+  padding: 4px;
+  background: #f8f8f8;
+  border: solid 1px #e4e4e4;
+  transition: opacity 0.25s;
+  opacity: 0;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  overflow-y: hidden;
+
+  .pager-buttons,
+  .pager-label {
+    display: inline-flex;
+  }
+
+  &.socrata-pager-single-page {
+
+    .pager-buttons {
+      display: none;
+    }
+
+    .pager-label {
+      margin: auto;
+      margin-right: 0;
+    }
+  }
+
+  .pager-buttons {
+    height: 100%;
+
+    button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+
+      background: transparent;
+      border: solid 1px transparent;
+      color: #2279a6;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.15s, border 0.15s, color 0.15s;
+
+      &:first-child {
+        margin-right: 15px;
+      }
+
+      &:hover, &:focus {
+        background: transparent;
+        border: solid 1px #d4d4d4;
+        border-radius: 2px;
+      }
+
+      &:active {
+        background: #ddd;
+        outline: 0;
+      }
+
+      &:disabled {
+        color: #777;
+        cursor: not-allowed;
+        border: solid 1px transparent;
+      }
+
+      [class*="icon"] {
+        font-size: 15px;
+        vertical-align: top;
+      }
+    }
+  }
+
+  .pager-label {
+    margin: auto 0;
+    padding: 4px;
+    font-size: 15px;
+    color: #555;
+  }
+}
+
+.socrata-visualization-container {
+
+  .socrata-table {
+
+    th,
+    td {
+      border-top: none;
+    }
+
+    th {
+
+      &:first-child {
+        border-left: 1px solid $header-background-color;
+
+        div.column-header-content {
+          border-left: none;
+        }
+      }
+
+      &:last-child {
+        border-right: 1px solid $header-background-color;
+
+        div.column-header-content {
+          border-right: none;
+        }
+      }
+    }
+
+    td {
+
+      &:first-child {
+        border-left: 1px solid $row-background-color;
+      }
+
+      &:last-child {
+        border-right: 1px solid $row-background-color;
+      }
+    }
+  }
+
+  .socrata-pager {
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+  }
+}

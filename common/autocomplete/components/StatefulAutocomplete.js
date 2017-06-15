@@ -43,7 +43,8 @@ class StatefulAutocomplete extends React.Component {
       millisecondsBeforeSearch,
       collapsible,
       animate,
-      mobile
+      mobile,
+      onChooseResult
     } = this.props.options;
 
     const milliseconds =
@@ -63,7 +64,8 @@ class StatefulAutocomplete extends React.Component {
           millisecondsBeforeSearch={milliseconds}
           collapsible={collapsible}
           animate={animate}
-          mobile={mobile} />
+          mobile={mobile}
+          onChooseResult={onChooseResult} />
       </Provider>
     );
   }
@@ -76,7 +78,8 @@ StatefulAutocomplete.propTypes = {
     millisecondsBeforeSearch: PropTypes.number,
     collapsible: PropTypes.bool,
     animate: PropTypes.bool,
-    mobile: PropTypes.bool
+    mobile: PropTypes.bool,
+    onChooseResult: PropTypes.func
   }),
   defaultState: PropTypes.shape({
     query: PropTypes.string

@@ -10,7 +10,7 @@ helper. Other projects should adopt similar helpers, please read the frontend ve
 This is expected to be a simple object containing keys for all defined feature flags. Usage example:
 
 ```javascript
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 console.log('useAuth0 = ' + FeatureFlags.value('useAuth0'));
 ```
 
@@ -22,7 +22,7 @@ test-specific override values for one or more feature flags.
 Usage example:
 
 ```javascript
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 describe('FeatureFlags', function() {
   before(function() {
     FeatureFlags.useTestFixture();

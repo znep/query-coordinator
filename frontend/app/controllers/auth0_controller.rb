@@ -76,8 +76,7 @@ class Auth0Controller < ApplicationController
       @signup.user.email = auth0_token.email if auth0_token.email.present?
       @signup.user.screenName = auth0_token.name if auth0_token.name.present?
     when :post
-      recaptcha_verified = SocrataRecaptcha.valid(params['g-recaptcha-response'])
-      unless recaptcha_verified
+      unless SocrataRecaptcha.valid(params['g-recaptcha-response'])
         flash[:error] = t('recaptcha2.errors.verification_failed')
         return redirect_to(auth0_link_path)
       end

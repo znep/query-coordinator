@@ -8,19 +8,13 @@ Component format:
     title: "My Embedded Fragment"
   }
 }
--%>
-<% component_height = component['value']['layout'].try(:[], 'height') -%>
-<% component_height_style_attribute = component_height ? "height: #{component_height}px; " : '' -%>
-
-<%# We wrap this iframe in a div to support correct iframe rendering in mobile safari (EN-16293) -%>
-<div style="<%= component_height_style_attribute %>overflow: scroll; -webkit-overflow-scrolling: touch">
-  <iframe
-    src="<%= component['value']['url'] %>"
-    <% if component['value']['title'].present? %>
-    title="<%= component['value']['title'] %>"
-    <% end -%>
-    height="<%= component_height %>"
-    frameborder="0"
-    sandbox="<%= embed_code_iframe_sandbox_allowances %>">
-  </iframe>
-</div>
+%>
+<iframe
+  src="<%= component['value']['url'] %>"
+  <% if component['value']['title'].present? %>
+  title="<%= component['value']['title'] %>"
+  <% end -%>
+  height="<%= component['value']['layout'].try(:[], 'height') %>"
+  frameborder="0"
+  sandbox="<%= embed_code_iframe_sandbox_allowances %>">
+</iframe>

@@ -1,91 +1,68 @@
-$filter-container-width: 260px;
+$filter-content-width: 260px;
 
 .catalog-filters {
   background: $light-grey-4;
   border-left: 1px solid $light-grey-3;
   flex: none;
-  width: $filter-container-width;
   margin-left: auto;
+  z-index: 2; // styleguide table can spill on top of this in small window sizes
 
-  .catalog-filters-header {
-    padding: 0.5rem;
-    border-bottom: 1px solid $light-grey-3;
+  .filter-content-toggle {
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    color: $primary-text;
 
-    .title {
-      font-size: 16px;
+    &.open-filters {
+      padding: 0.8rem 0.3rem;
     }
   }
 
-  .filter-section {
-    margin: 0.5rem;
+  .filter-content {
+    width: $filter-content-width;
 
-    label {
-      user-select: none;
+    &.hidden {
+      display: none;
+    }
 
-      &.filter-label {
-        display: block;
-        font-weight: 700;
-        margin: 0.5rem 0;
+    .catalog-filters-header {
+      padding: 0.5rem;
+      border-bottom: 1px solid $light-grey-3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .title {
+        font-size: 16px;
       }
     }
 
-    .dropdown-container {
-      width: 100%;
+    .filter-section {
+      margin: 0.5rem;
 
-      &.dropdown-focused {
-        .dropdown-placeholder {
-          border-color: $primary-light;
-          outline-color: $primary-base;
-        }
-        .dropdown-caret {
-          color: $primary-text;
-        }
-      }
+      label {
+        user-select: none;
 
-      .picklist-option {
-        &:hover {
-          background-color: $primary-light;
-        }
-
-        &.picklist-option-selected {
-          background-color: $primary-base;
+        &.filter-label {
+          display: block;
+          font-weight: 700;
+          margin: 0.5rem 0;
         }
       }
-    }
 
-    .checkbox {
-      .fake-checkbox {
-        background: $white;
-      }
-    }
-
-    &.recently-viewed {
-      margin-bottom: 1.5rem;
-    }
-
-    .searchbox-filter {
-      position: relative;
-
-      .text-input {
+      .dropdown-container {
         width: 100%;
-        padding-left: 2rem;
-      }
 
-      .search-icon {
-        position: absolute;
-        top: 0.45rem;
-        left: 0.5rem;
-        font-size: 18px;
-        color: $light-grey-2;
-      }
-
-      .picklist-wrapper {
-        width: 100%;
-        max-height: 300px;
-        overflow-y: scroll;
-        position: absolute;
-        margin-top: -0.5rem;
-        z-index: 100;
+        &.dropdown-focused {
+          .dropdown-placeholder {
+            border-color: $primary-light;
+            outline-color: $primary-base;
+          }
+          .dropdown-caret {
+            color: $primary-text;
+          }
+        }
 
         .picklist-option {
           &:hover {
@@ -94,6 +71,52 @@ $filter-container-width: 260px;
 
           &.picklist-option-selected {
             background-color: $primary-base;
+          }
+        }
+      }
+
+      .checkbox {
+        .fake-checkbox {
+          background: $white;
+        }
+      }
+
+      &.recently-viewed {
+        margin-bottom: 1.5rem;
+      }
+
+      .searchbox-filter {
+        position: relative;
+
+        .text-input {
+          width: 100%;
+          padding-left: 2rem;
+        }
+
+        .search-icon {
+          position: absolute;
+          top: 0.45rem;
+          left: 0.5rem;
+          font-size: 18px;
+          color: $light-grey-2;
+        }
+
+        .picklist-wrapper {
+          width: 100%;
+          max-height: 300px;
+          overflow-y: scroll;
+          position: absolute;
+          margin-top: -0.5rem;
+          z-index: 100;
+
+          .picklist-option {
+            &:hover {
+              background-color: $primary-light;
+            }
+
+            &.picklist-option-selected {
+              background-color: $primary-base;
+            }
           }
         }
       }

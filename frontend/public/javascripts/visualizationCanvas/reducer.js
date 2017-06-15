@@ -19,11 +19,36 @@ const applyVifOrigin = (state, vif) => {
     origin.url = state.visualizationUrl;
   }
 
-  return _.extend(
-    {},
-    vif,
-    { origin }
-  );
+  return _.extend({}, vif, { origin });
+};
+
+// Update the vif at the position currently being edited.
+const updateVifs = (state, newVif, index = state.authoringWorkflow.vifIndex) => {
+  const updatedVifs = _.clone(state.vifs);
+  updatedVifs[index] = applyVifOrigin(state, newVif);
+
+  return updatedVifs;
+};
+
+// Apply a set of filters to each series of each vif in an array.
+const filterVifs = (vifs, filters) => {
+  return _.map(vifs, (vif) => ({
+    ...vif,
+    series: _.map(vif.series, (series) => ({
+      ...series,
+      dataSource: {
+        ...series.dataSource,
+        filters
+      }
+    }))
+  }));
+};
+
+const setMapNotification = (state, index) => {
+  const updatedNotifications = _.clone(state.mapNotificationDismissed);
+  updatedNotifications[index] = true;
+
+  return updatedNotifications;
 };
 
 const initialState = () => {
@@ -57,101 +82,130 @@ export default (state = initialState(), action) => {
     return state;
   }
 
-  state = _.cloneDeep(state);
-
   switch (action.type) {
     case actions.ADD_VISUALIZATION:
-      _.set(state, 'authoringWorkflow', {
-        isActive: true,
-        vifIndex: state.vifs.length,
-        // Default starter VIF
-        vif: {
-          format: {
-            type: 'visualization_interchange_format',
-            version: 2
-          },
-          series: [
-            {
+      return {
+        ...state,
+        authoringWorkflow: {
+          isActive: true,
+          vifIndex: state.vifs.length,
+          // Default starter VIF
+          vif: {
+            format: {
+              type: 'visualization_interchange_format',
+              version: 2
+            },
+            series: [{
               dataSource: {
                 domain: _.get(window.serverConfig, 'domain'),
                 datasetUid: state.parentView.id
               }
-            }
-          ]
+            }]
+          }
         }
-      });
-      break;
+      };
 
     case actions.EDIT_VISUALIZATION:
-      _.set(state, 'authoringWorkflow', {
-        isActive: true,
-        vifIndex: action.data.vifIndex,
-        vif: state.vifs[action.data.vifIndex]
-      });
-      break;
+      return {
+        ...state,
+        authoringWorkflow: {
+          isActive: true,
+          vifIndex: action.data.vifIndex,
+          vif: state.vifs[action.data.vifIndex]
+        }
+      };
 
     case actions.CANCEL_EDITING_VISUALIZATION:
-      _.set(state, 'authoringWorkflow', AUTHORING_WORKFLOW_INITIAL_STATE);
-      break;
+      return {
+        ...state,
+        authoringWorkflow: AUTHORING_WORKFLOW_INITIAL_STATE
+      };
 
     case actions.UPDATE_VISUALIZATION:
-      _.set(state, 'isDirty', true);
-      _.set(state, `vifs[${state.authoringWorkflow.vifIndex}]`, applyVifOrigin(state, action.data.vif));
-      _.set(state, 'authoringWorkflow', AUTHORING_WORKFLOW_INITIAL_STATE);
-      _.set(state, 'filters', action.data.filters);
-      break;
+      return {
+        ...state,
+        authoringWorkflow: AUTHORING_WORKFLOW_INITIAL_STATE,
+        vifs: updateVifs(state, action.data.vif),
+        filters: action.data.filters,
+        isDirty: true
+      };
 
     case actions.ENTER_EDIT_MODE:
-      _.set(state, 'mode', ModeStates.EDIT);
-      break;
+      return {
+        ...state,
+        mode: ModeStates.EDIT
+      };
 
     case actions.ENTER_PREVIEW_MODE:
-      _.set(state, 'mode', ModeStates.PREVIEW);
-      break;
+      return {
+        ...state,
+        mode: ModeStates.PREVIEW
+      };
 
     case actions.OPEN_EDIT_MENU:
-      _.set(state, 'isEditMenuActive', true);
-      break;
+      return {
+        ...state,
+        isEditMenuActive: true
+      };
 
     case actions.CLOSE_EDIT_MENU:
-      _.set(state, 'isEditMenuActive', false);
-      break;
+      return {
+        ...state,
+        isEditMenuActive: false
+      };
 
     case actions.UPDATE_NAME_AND_DESCRIPTION:
-      _.set(state, 'isDirty', true);
-      _.set(state, 'view.name', action.data.name);
-      _.set(state, 'view.description', action.data.description);
-      _.set(state, 'isEditMenuActive', false);
-      break;
+      return {
+        ...state,
+        view: {
+          ...state.view,
+          name: action.data.name,
+          description: action.data.description
+        },
+        isDirty: true,
+        isEditMenuActive: false
+      };
 
     case actions.SET_FILTERS:
-      _.set(state, 'isDirty', true);
-      // Set top level filters
-      _.set(state, 'filters', action.filters);
-      // Set filters in each series of each VIF
-      _.each(state.vifs, (vif) => {
-        _.each(vif.series, (series) => {
-          _.set(series, 'dataSource.filters', action.filters);
-        });
-      });
-      break;
+      return {
+        ...state,
+        filters: action.filters,
+        vifs: filterVifs(state.vifs, action.filters),
+        isDirty: true
+      };
 
     case actions.SET_MAP_CENTER_AND_ZOOM:
-      _.set(state, 'isDirty', true);
-      _.set(state, `vifs[${action.data.vifIndex}].configuration.mapCenterAndZoom`, action.data.centerAndZoom);
-      break;
+      return {
+        ...state,
+        isDirty: true,
+        vifs: updateVifs(
+          state,
+          _.set(
+            state.vifs[action.data.vifIndex],
+            'configuration.mapCenterAndZoom',
+            action.data.centerAndZoom
+          ),
+          action.data.vifIndex
+        )
+      };
 
     case actions.SET_MAP_NOTIFICATION_DISMISSED:
-      _.set(state, `mapNotificationDismissed[${action.data.vifIndex}]`, true);
-      break;
+      return {
+        ...state,
+        mapNotificationDismissed: setMapNotification(state, action.data.vifIndex)
+      };
 
     case actions.RECEIVED_COLUMN_STATS:
-      _.set(state, 'columnStats', action.stats);
-      break;
+      return {
+        ...state,
+        columnStats: action.stats
+      };
 
     case actions.REQUESTED_SAVE:
-      _.set(state, 'saveState', SaveStates.SAVING);
-      break;
+      return {
+        ...state,
+        saveState: SaveStates.SAVING
+      };
 
     case actions.HANDLE_SAVE_SUCCESS:
       // Redirect if we're saving for the first time
@@ -161,38 +215,51 @@ export default (state = initialState(), action) => {
         return state;
       }
 
-      _.set(state, 'isDirty', false);
-      _.set(state, 'saveState', SaveStates.SAVED);
-      break;
+      return {
+        ...state,
+        isDirty: false,
+        saveState: SaveStates.SAVED
+      };
 
     case actions.HANDLE_SAVE_ERROR:
-      _.set(state, 'saveState', SaveStates.ERRORED);
-      break;
+      return {
+        ...state,
+        saveState: SaveStates.ERRORED
+      };
 
     case actions.CLEAR_SAVE_STATE:
-      _.set(state, 'saveState', SaveStates.IDLE);
-      break;
+      return {
+        ...state,
+        saveState: SaveStates.IDLE
+      };
 
     case actions.OPEN_SHARE_MODAL:
-      _.set(state, 'shareModal', {
-        isActive: true,
-        vifIndex: action.data.vifIndex,
-        vif: state.vifs[action.data.vifIndex],
-        embedSize: 'large'
-      });
-      break;
+      return {
+        ...state,
+        shareModal: {
+          isActive: true,
+          vifIndex: action.data.vifIndex,
+          vif: state.vifs[action.data.vifIndex],
+          embedSize: 'large'
+        }
+      };
 
     case actions.CLOSE_SHARE_MODAL:
-      _.set(state, 'shareModal', SHARE_MODAL_INITIAL_STATE);
-      break;
+      return {
+        ...state,
+        shareModal: SHARE_MODAL_INITIAL_STATE
+      };
 
     case actions.SET_EMBED_SIZE:
-      _.set(state, 'shareModal.embedSize', action.size);
-      break;
+      return {
+        ...state,
+        shareModal: {
+          ...state.shareModal,
+          embedSize: action.size
+        }
+      };
 
     default:
-      break;
+      return state;
   }
-
-  return state;
 };

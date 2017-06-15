@@ -365,9 +365,12 @@ blist.datasetControls.datasetContact = function($sect) {
               $sect.find('.flash:not(.recaptcha_flash)').
               removeClass('notice').addClass('error').
               text($.t('screens.ds.dataset_contact.error_message')).show();
+              if (window.grecaptcha) {
+                window.grecaptcha.reset();
+              }
             },
             success: function(response) {
-              if (response.success == true) {
+              if (response.success === true) {
                 _.defer(function() {
                   $sect.find('.flash:not(.recaptcha_flash)').
                   removeClass('error').addClass('notice').
@@ -377,10 +380,13 @@ blist.datasetControls.datasetContact = function($sect) {
 
                 $sect.find('.recaptcha_flash').
                 removeClass('error').fadeOut();
-              } else if (response.success == false) {
+              } else if (response.success === false) {
                 $sect.find('.recaptcha_flash').
                 removeClass('notice').addClass('error').
-                text($.t('recaptcha.errors.verification_failed')).fadeIn();
+                text($.t('recaptcha2.errors.verification_failed')).fadeIn();
+              }
+              if (window.grecaptcha) {
+                window.grecaptcha.reset();
               }
             }
           });
@@ -391,6 +397,10 @@ blist.datasetControls.datasetContact = function($sect) {
         e.preventDefault();
         $form.submit();
       });
+    } else {
+      if (window.grecaptcha) {
+        window.grecaptcha.reset();
+      }
     }
 
     var form = $sect.find('.contactOwnerForm');

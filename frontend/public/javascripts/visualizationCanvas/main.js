@@ -2,15 +2,11 @@ import 'babel-polyfill-safe';
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import createLogger from 'redux-logger';
-import thunk from 'redux-thunk';
-import createDebounce from 'redux-debounced';
-import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { t } from 'lib/I18n';
 import confirmUnload from 'lib/confirmUnload';
 
-import utils from 'socrata-utils';
+import { Analytics } from 'common/analytics';
 
 import * as metrics from '../common/metrics';
 import airbrake from 'common/airbrake';
@@ -20,25 +16,12 @@ import '../common/mixpanel'; // This initializes mixpanel
 // add styling for socrata-viz maps
 import 'leaflet/dist/leaflet.css';
 
-import visualizationCanvas from './reducer';
+import store from './store';
 import App from './App';
 
-import { fetchColumnStats } from './actions';
-
-const middleware = [thunk, createDebounce()];
-
-if (window.serverConfig.environment === 'development') {
-  middleware.push(createLogger({
-    duration: true,
-    timestamp: false,
-    collapsed: true
-  }));
-} else {
+if (window.serverConfig.environment !== 'development') {
   airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
-
-const store = createStore(visualizationCanvas, applyMiddleware(...middleware));
-store.dispatch(fetchColumnStats());
 
 window.onbeforeunload = confirmUnload(store);
 
@@ -55,7 +38,7 @@ _.defer(function() {
     );
 
     // initialize internal analytics
-    const analytics = new utils.Analytics();
+    const analytics = new Analytics();
     analytics.sendMetric('domain', 'js-page-view', 1);
     analytics.sendMetric('domain', 'js-page-view-visualization', 1);
 
@@ -63,7 +46,7 @@ _.defer(function() {
     analytics.flushMetrics();
 
     /*
-      EN-15722: sending metrics through socrata-utils exclusively is not safe due to a known bug
+      EN-15722: sending metrics through Analytics exclusively is not safe due to a known bug
       That is why we are sending metrics again through core because it has been confirmed as the most robust route
       This request prompts core to create metrics of type `view-loaded`, which are the metrics that we actually surface in `viewCount` on `/api/views/4x4`
       and on endpoint `4x4/stats`

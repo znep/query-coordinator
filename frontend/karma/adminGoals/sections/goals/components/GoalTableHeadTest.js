@@ -49,7 +49,7 @@ describe('sections/goals/components/GoalTable/GoalTableHead', () => {
   });
 
   it('should have 8 columns in a row', () => {
-    expect(output.querySelectorAll('tr:first-child th').length).to.eq(8);
+    expect(output.querySelectorAll('tr:first-child th').length).to.eq(7);
   });
 
   it('should have columns with correct translations', () => {

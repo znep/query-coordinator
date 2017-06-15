@@ -1,0 +1,23 @@
+<% content_for :head do %>
+  <title>Example Usage: Visualizations</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <style type="text/css">
+    #content {
+      margin-left: 1em;
+    }
+    #demos {
+      margin-left: 1em;
+    }
+  </style>
+<% end %>
+
+<p>
+  <a href='/internal/demos' class="btn btn-default"><span class="icon-arrow-left"></span> Demos</a>
+</p>
+<h1>Available demos:</h1>
+<div id="demos">
+  <% Demos::VisualizationsController::available_demos.each do |demo| %>
+    <%= link_to demo, "visualizations/#{demo}" %><br>
+  <% end %>
+</div>

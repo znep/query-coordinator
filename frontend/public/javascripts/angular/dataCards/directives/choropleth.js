@@ -1,5 +1,5 @@
 var templateUrl = require('angular_templates/dataCards/choropleth.html');
-const ChoroplethMap = require('socrata-visualizations').views.ChoroplethMap;
+const ChoroplethMap = require('common/visualizations').views.ChoroplethMap;
 
 // A WORD ON TERMINOLOGY:
 //

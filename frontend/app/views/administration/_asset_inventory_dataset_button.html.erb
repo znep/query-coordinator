@@ -1,0 +1,24 @@
+<% is_disabled = asset_inventory_view_model.deep_value_at([:asset_inventory, :button_disabled]) %>
+<div class="asset_inventory_link_wrapper">
+  <%- if asset_inventory_view_model.deep_value_at([:asset_inventory, :show_initialize_button]) -%>
+    <%= button_for_t(
+      'screens.admin.datasets.asset_inventory.initialize',
+      {:action => 'initialize_asset_inventory', :controller => 'administration'},
+      {:form => {:method => 'post'}}
+    ) %>
+  <%- else -%>
+    <%= button_for_t(
+      title_translation_key,
+      {:action => 'asset_inventory', :controller => 'administration'},
+      {
+        :disabled => is_disabled,
+        :form => { :class => 'asset_inventory_link' },
+        :title => is_disabled ? t('screens.admin.datasets.asset_inventory.tooltip') : ''
+      }
+    ) %>
+    <%- if is_disabled -%>
+      <div class="asset_inventory_link_hover_window"
+        title="<%= t('screens.admin.datasets.asset_inventory.tooltip') %>"></div>
+    <%- end -%>
+  <%- end -%>
+</div>

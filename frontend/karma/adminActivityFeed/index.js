@@ -1,6 +1,6 @@
 import 'script!jquery';
 import { Provider } from 'react-redux';
-import { FeatureFlags } from 'socrata-utils';
+import { FeatureFlags } from 'common/feature_flags';
 
 import Localization from 'components/Localization/Localization';
 import mockTranslations from './mockTranslations';

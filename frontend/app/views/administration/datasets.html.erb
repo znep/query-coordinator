@@ -1,46 +1,31 @@
-<%- prefix = 'screens.admin.datasets' -%>
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
-  <title><%= t("#{prefix}.title") %> | <%= get_site_title %></title>
+  <title><%= t("screens.admin.datasets.title") %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
-  <%= link_to t("#{prefix}.skip_to_dataset_listing"), '#dataset-listing' %>
+  <%= link_to t("screens.admin.datasets.skip_to_dataset_listing"), '#dataset-listing' %>
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
 <% content_for :breadcrumb do %>
-  <%= t("#{prefix}.title") %>
+  <%= t("screens.admin.datasets.title") %>
 <% end %>
 
-<%= render :partial => 'left_nav' %>
+<%= render 'left_nav' %>
 
 <div id="datasetContent" class="contentBox withLeftNavigation">
   <div class="adminHeader datasets">
     <span class="icon"></span>
-    <h1><%= t("#{prefix}.title") %></h1>
-      <div class="asset_inventory_link_wrapper">
-        <%- if @view_model.deep_value_at([:asset_inventory, :show_initialize_button]) -%>
-          <%= button_for_t("#{prefix}.asset_inventory.initialize",
-                           {:action => 'initialize_asset_inventory'},
-                           {:form => {:method => 'post'}}) %>
-        <%- else -%>
-          <%= button_for_t("#{prefix}.view_as_a_dataset",
-                           {:action => 'asset_inventory'},
-                           {:disabled => @view_model.deep_value_at([:asset_inventory, :button_disabled]),
-                            :form => { :class => 'asset_inventory_link' }}) %>
-          <%- if @view_model.deep_value_at([:asset_inventory, :button_disabled]) -%>
-                <div class="asset_inventory_link_hover_window"
-                     title="<%= t('screens.admin.datasets.asset_inventory.tooltip') %>"></div>
-          <%- end -%>
-        <%- end -%>
-      </div>
+    <h1><%= t("screens.admin.datasets.title") %></h1>
+    <%= render 'asset_inventory_dataset_button',
+      :title_translation_key => 'screens.admin.datasets.view_as_a_dataset' %>
   </div>
 
   <% if FeatureFlags.derive(nil, request)[:enable_internal_asset_manager_beta] %>
     <div class="internal-asset-manager-preview">
-      <span class="header"><%= t("#{prefix}.internal_asset_manager_beta.header") %></span>
-      <%= link_to(t("#{prefix}.internal_asset_manager_beta.preview"), '/admin/assets') %>
+      <span class="header"><%= t("screens.admin.datasets.internal_asset_manager_beta.preview_message") %></span>
+      <%= link_to(t("screens.admin.datasets.internal_asset_manager_beta.preview"), '/admin/assets') %>
     </div>
   <% end %>
 
@@ -55,30 +40,30 @@
   <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
   <%- sidebar_position = CurrentDomain.property(:position, :sidebar) || 'right' -%>
   <div class="layoutConfig">
-    <h2><%= t("#{prefix}.layout_config") %></h2>
+    <h2><%= t("screens.admin.datasets.layout_config") %></h2>
     <%= form_tag({:action => 'modify_sidebar_config'}, {:method => 'post',
       :class => 'commonForm'}) %>
       <fieldset class="line">
-        <span class="mainLabel"><%= t("#{prefix}.sidebar_position") %></span>
+        <span class="mainLabel"><%= t("screens.admin.datasets.sidebar_position") %></span>
         <div class="valueBox">
           <input type="radio" id="sidebarPosition_right"
             name="sidebar[position]" value="right"
             <%= sidebar_position == 'right' ? 'checked="checked"' : '' %> />
-          <label for="sidebarPosition_right"><%= t("#{prefix}.right") %></label>
+          <label for="sidebarPosition_right"><%= t("screens.admin.datasets.right") %></label>
         </div>
         <div class="valueBox">
           <input type="radio" id="sidebarPosition_left"
             name="sidebar[position]" value="left"
             <%= sidebar_position == 'left' ? 'checked="checked"' : '' %> />
-          <label for="sidebarPosition_left"><%= t("#{prefix}.left") %></label>
+          <label for="sidebarPosition_left"><%= t("screens.admin.datasets.left") %></label>
         </div>
         <div class="statusTextWrapper">
           <span class="saving">
             <span class="icon"></span>
-            <span class="statusText"><%= t("#{prefix}.saving") %></span>
+            <span class="statusText"><%= t("screens.admin.datasets.saving") %></span>
           </span>
           <span class="saved">
-            <span class="statusText"><%= t("#{prefix}.saved") %></span>
+            <span class="statusText"><%= t("screens.admin.datasets.saved") %></span>
           </span>
         </div>
       </fieldset>

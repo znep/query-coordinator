@@ -119,8 +119,6 @@ development: &development
 
   # third-party app tokens
   mixpanel_token: 59b0b54697603105463834afdf20accf
-  recaptcha_public_key: 6Lc9KuoSAAAAAAYcF4Ug8hJh-ta4tz88l1lokcoV
-  recaptcha_private_key: 6Lc9KuoSAAAAAENydmvOO8b53QFNPXl7u30UV22m
   recaptcha_2_site_key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
   recaptcha_2_secret_token: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
   google_maps_site_key: AIzaSyBGFHOk32Yq_Rk9g14EIsAkVFkTARtsuC4
@@ -131,9 +129,6 @@ development: &development
   auth0_id: w59XZV0YDqx7us3GFHnHncXrAzFWkCnG
   auth0_secret: rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI
   auth0_uri: socrata.auth0.com
-
-  socrata_visualizations_v1_loader_url: 'https://s3.amazonaws.com/sa-frontend-static-assets-us-east-1-fedramp-prod/socrata-visualizations/socrata-visualizations-loader-staging.js'
-  socrata_visualizations_v1_embed_url: 'https://s3.amazonaws.com/sa-frontend-static-assets-us-east-1-fedramp-prod/socrata-visualizations/socrata-visualizations-embed-staging.js'
 
 # Running unit tests; NOT test-socrata.com
 test:

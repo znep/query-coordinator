@@ -126,6 +126,30 @@ Adds separators for numerical magnitude groups (thousands, millions, etc.) to th
 
 _(String)_ A representation of the input number with group separators for readability.
 
+#### getGroupCharacter(locale)
+
+Gets grouping character used while formatting numbers for given locale.
+
+**Arguments**
+
+* `locale` _(String)_: A locale for which to find grouping character. (e.g. `en`)
+
+**Returns**
+
+_(String)_ Grouping character corresponding to given locale, defaults to `comma (,)`.
+
+#### getDecimalCharacter(locale)
+
+Gets decimal character used while formatting numbers for given locale.
+
+**Arguments**
+
+* `locale` _(String)_: A locale for which to find decimal character. (e.g. `en`)
+
+**Returns**
+
+_(String)_ Decimal character corresponding to given locale, defaults to `period (.)`.
+
 #### formatNumber(value, [options])
 
 > **NOTE:** This function needs a more precise name!

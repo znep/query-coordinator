@@ -40,7 +40,7 @@ describe('Reducer', () => {
   const sharedExamples = {
     beforeEachSetInitialState(initialState) {
       beforeEach(() => {
-        window.initialState = initialState;
+        window.initialState = _.cloneDeep(initialState);
         state = reducer();
       });
     },

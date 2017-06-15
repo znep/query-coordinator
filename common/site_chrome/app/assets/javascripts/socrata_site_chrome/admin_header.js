@@ -2,6 +2,7 @@ $(document).ready(function() {
   $('#site-chrome-admin-header [aria-haspopup]').
     on('click', toggleAdminDropdown).
     on('blur', blurAdminDropdown).
+    on('keypress', keypressAdminDropdown).
     on('keydown', keydownAdminDropdown).
     on('keyup', keyupAdminDropdown);
   $('#site-chrome-admin-header [role="menu"] li a').
@@ -61,6 +62,17 @@ function keydownAdminDropdownItem(event) {
   if (event.keyCode === 40 || event.keyCode === 38) {
     event.preventDefault();
     event.stopPropagation();
+  }
+}
+
+/**
+ * Catch keypress and dispatch as click for accessibility purposes
+ */
+function keypressAdminDropdown(event) {
+  // 13 === ENTER, 32 === SPACE
+  if ([13, 32].includes(event.which)) {
+    var clickEvent = new Event('click', { 'bubbles': true });
+    event.target.dispatchEvent(clickEvent);
   }
 }
 

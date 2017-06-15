@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { PropTypes, PureComponent } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import VisualizationWrapper from './VisualizationWrapper';
@@ -8,7 +8,7 @@ import {
   setMapNotificationDismissed
 } from '../actions';
 
-export class Visualizations extends PureComponent {
+export class Visualizations extends Component {
   render() {
     const {
       vifs,
@@ -64,7 +64,7 @@ Visualizations.defaultProps = {
 };
 
 function mapStateToProps(state) {
-  return _.pick(state, 'vifs', 'mapNotificationDismissed');
+  return _.cloneDeep(_.pick(state, 'vifs', 'mapNotificationDismissed'));
 }
 
 function mapDispatchToProps(dispatch) {

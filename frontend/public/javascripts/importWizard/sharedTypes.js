@@ -32,6 +32,7 @@ export type Summary
       columns: Array<SourceColumn>,
       locations: Array<{ latitude: number, longitude: number }>,
       sample: Array<Array<string>>,
+      transformedFilename: string
     }
   | { // geo
       totalFeatureCount: number,

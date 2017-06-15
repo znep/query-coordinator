@@ -1,0 +1,46 @@
+<% content_for :head do %>
+  <title>Example Usage: EditBar</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section" id="color-picker">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Edit Bar</h2>
+  <div class="styleguide-example">
+    <div id="edit-bar-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      const props = {
+        name: 'Wombats in Spacesuits, Floating Gently Near the Moon',
+        menuLabel: 'Menu',
+        onClickMenu: () => console.log('Clicked menu'),
+        onClickName: () => console.log('Clicked name')
+      };
+
+      const editBar = (
+        React.createElement(components.EditBar, props, [
+          React.createElement('button', {className: 'btn btn-warning'}, 'Look, a Child Element!')
+        ])
+      );
+
+      ReactDOM.render(
+        editBar,
+        document.getElementById('edit-bar-container')
+      );
+
+      // This is normally position fixed, we're modifying it here to render it by its example code
+      const element = document.querySelector('.edit-bar');
+      element.style.position = 'relative';
+    });
+</script>
+<% end %>

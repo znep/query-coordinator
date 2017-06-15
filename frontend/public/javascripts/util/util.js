@@ -1025,17 +1025,14 @@ String.prototype.linkify = function(extra) { //eslint-disable-line no-extend-nat
   blist.isMobile = blist.util.isMobile();
 
   blist.util.loadCaptcha = function(id) {
+    window.onRecaptchaLoaded = function() {
+      window.grecaptcha.render(id, {
+        sitekey: blist.configuration.RECAPTCHA_2_SITE_KEY
+      });
+    };
     if ($('#' + id).hasClass('placeholder')) {
       blist.util.assetLoading.loadAssets({
-        javascripts: ['https://www.google.com/recaptcha/api/js/recaptcha_ajax.js']
-      }, function() {
-        // Clean out any other ReCaptcha, because it conflicts
-        $('#recaptcha_area').parent().addClass('placeholder').empty();
-        $('#' + id).removeClass('placeholder');
-        Recaptcha.create(blist.configuration.reCAPTCHA_PUK, id, {
-          theme: 'white',
-          lang: blist.locale
-        });
+        javascripts: ['https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoaded&render=explicit']
       });
     }
   };

@@ -1,6 +1,6 @@
 var templateUrl = require('angular_templates/dataCards/featureMap.html');
-const FeatureMap = require('socrata-visualizations').views.FeatureMap;
-const RowInspector = require('socrata-visualizations').views.RowInspector;
+const FeatureMap = require('common/visualizations').views.FeatureMap;
+const RowInspector = require('common/visualizations').views.RowInspector;
 
 module.exports = function featureMap(
   $compile,
@@ -184,7 +184,7 @@ module.exports = function featureMap(
       function handleHoverFlyout(e) {
         var payload = e.originalEvent.detail;
 
-        // socrata-visualizations emits the same event for feature flyouts and
+        // visualizations emit the same event for feature flyouts and
         // pan and zoom disabled warning. By checking for `flyoutOffset` on the
         // payload, we filter out the pan and zoom disabled warning. While that
         // flyout returns which element to target, the selector doesn't change,

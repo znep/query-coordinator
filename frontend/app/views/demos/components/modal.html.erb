@@ -1,0 +1,93 @@
+<% content_for :head do %>
+  <title>Example Usage: Modal</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Modal</h2>
+  <div class="styleguide-example">
+    <p>Modals can be dismissed in several ways:</p>
+
+    <ul>
+      <li>By clicking outside the bounds of the modal, if not fullscreen</li>
+      <li>By clicking a close icon in the upper right corner of the header</li>
+      <li>By clicking a cancel button in the footer</li>
+      <li>By pressing the Esc key</li>
+    </ul>
+
+    <p>
+      The modal expects an <code>onDismiss</code> handler that should trigger in any
+      of the above situations (note, however, that the modal does not automatically
+      create a cancel button in the footer). If this component's rendering is not
+      governed by an enclosing React component, you will need to forcibly ensure
+      that the node is unmounted with <code>ReactDOM.unmountComponentAtNode</code>.
+    </p>
+
+    <p>
+      This handler is also suitable for dispatching actions, though the action/store
+      pattern is omitted from this documentation.
+    </p>
+
+    <button class="btn btn-default modal-trigger" data-full-screen="false">Trigger normal modal</button>
+    <button class="btn btn-default modal-trigger" data-full-screen="true">Trigger fullscreen modal</button>
+    <div id="modal-target"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= include_webpack_bundle 'component_example_pages/main.js' %>
+
+  <script type="text/javascript" id="example-1">
+    $(() => {
+      const targetNode = document.getElementById('modal-target');
+
+      const onDismiss = () => {
+        const doDismiss = window.confirm('Are you sure you want to close this modal?');
+        if (doDismiss) {
+          // If you are unmounting a subtree, you won't have to do this, but
+          // because unmounting the root node is slightly different, the current
+          // wisdom is to wait for the stack to clear.
+          //
+          // See https://github.com/facebook/react/issues/3298#issuecomment-213225142
+          _.defer(() => ReactDOM.unmountComponentAtNode(targetNode));
+        }
+      };
+
+      $('.modal-trigger').click((event) => {
+        const fullScreen = $(event.target).data('full-screen');
+
+        const modalProps = {
+          fullScreen,
+          onDismiss
+        };
+
+        const headerProps = {
+          title: 'Example Modal',
+          onDismiss
+        };
+
+        ReactDOM.render(
+          React.createElement(components.Modal, modalProps, [
+            React.createElement(components.ModalHeader, headerProps),
+            React.createElement(components.ModalContent, null, [
+              React.createElement('p', null, 'The same onDismiss handler is used for the close icon in the upper right corner, the Esc key, the Close button in the footer, and clicking on the modal overlay.')
+            ]),
+            React.createElement(components.ModalFooter, null, [
+              React.createElement('div', null, [
+                React.createElement('button', {className: 'btn btn-default'}, 'Do Nothing'),
+                '\xA0',
+                React.createElement('button', {className: 'btn btn-primary', onClick: onDismiss}, 'Close')
+              ])
+            ])
+          ]),
+          targetNode
+        );
+      });
+    });
+  </script>
+<% end %>

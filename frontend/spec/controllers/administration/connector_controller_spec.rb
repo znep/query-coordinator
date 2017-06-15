@@ -31,7 +31,10 @@ describe Administration::ConnectorController do
     end
 
     before do
-      allow(subject).to receive(:check_auth_level).with(UserRights::USE_DATA_CONNECTORS).and_return(true)
+      allow(subject)
+        .to receive(:check_auth_levels_all)
+        .with([UserRights::USE_DATA_CONNECTORS, UserRights::CREATE_DATASETS, UserRights::EDIT_OTHERS_DATASETS])
+        .and_return(true)
     end
 
     context 'when connection type is connect all assets' do

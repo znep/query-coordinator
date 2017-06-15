@@ -1,19 +1,20 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { AddVisualizationButton } from 'components/AddVisualizationButton';
-import mockVif from 'data/mockVif';
 
 describe('AddVisualizationButton', () => {
   const getProps = (props) => {
     return {
-      vifs: [],
+      hasVisualization: false,
       onClickHandler: _.noop,
       ...props
     };
   };
 
-  it('renders an element', () => {
-    const element = renderComponent(AddVisualizationButton, getProps());
+  it('renders an element if hasVisualization is false', () => {
+    const element = renderComponent(AddVisualizationButton, getProps({
+      hasVisualization: false
+    }));
     assert.ok(element);
   });
 
@@ -28,9 +29,9 @@ describe('AddVisualizationButton', () => {
     sinon.assert.called(onClickSpy);
   });
 
-  it('does not render a button if vifs exist', () => {
+  it('does not render a button if hasVisualization is true', () => {
     const element = renderComponent(AddVisualizationButton, getProps({
-      vifs: [mockVif]
+      hasVisualization: true
     }));
 
     assert.isNull(element);

@@ -1,0 +1,197 @@
+<% content_for :head do %>
+  <title>Example Usage: TimelineChart.js</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'visualizations' %>
+  <style type="text/css">
+
+    #timeline-chart-1,
+    #timeline-chart-2,
+    #timeline-chart-3,
+    #timeline-chart-4 {
+      display: block;
+      position: relative;
+      width: 640px;
+      height: 480px;
+      margin: 100px auto 0 auto;
+      border: 1px solid #aaa;
+    }
+  </style>
+<% end %>
+
+<% content_for :scripts do %>
+  <%= render_feature_flags_for_javascript %>
+
+  <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
+
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      /**
+       * Set up VIFs
+       */
+
+      var COLUMN_NAME = 'date';
+      var DATASET_UID = '52my-2pak';
+      var DOMAIN = 'dataspace.demo.socrata.com';
+
+      var timelineChart1VIF = {
+        'aggregation': {
+          'field': null,
+          'function': 'count'
+        },
+        'columnName': COLUMN_NAME,
+        'configuration': {
+          'interactive': true,
+          // The localization values should be set by the application but are set
+          // to string literals for the purposes of this example.
+          'localization': {
+            'no_value': 'No value',
+            'flyout_unfiltered_amount_label': 'Total',
+            'flyout_filtered_amount_label': 'Filtered',
+            'flyout_selected_notice': 'This column is selected'
+          },
+          'precision': 'MONTH'
+        },
+        'createdAt': '2014-01-01T00:00:00',
+        'datasetUid': DATASET_UID,
+        'domain': DOMAIN,
+        'filters': [],
+        'format': {
+          'type': 'visualization_interchange_format',
+          'version': 1
+        },
+        'origin': {
+          'type': 'test_data',
+          'url': 'localhost'
+        },
+        'title': COLUMN_NAME,
+        'type': 'timelineChart',
+        'unit': {
+          'one': 'case',
+          'other': 'cases'
+        }
+      };
+
+      var timelineChart2VIF = _.cloneDeep(timelineChart1VIF);
+      timelineChart2VIF.datasetUid = 'r6t9-rak2';
+      timelineChart2VIF.columnName = 'opened';
+      timelineChart2VIF.filters = [
+        {
+          'columnName': 'updated',
+          'function': 'timeRange',
+          'arguments': {
+            'start': '2009-01-01T08:00:00',
+            'end': '2010-01-01T08:00:00'
+          }
+        }
+      ];
+      delete timelineChart2VIF.configuration.precision;
+
+      var timelineChart3VIF = _.cloneDeep(timelineChart1VIF);
+      timelineChart3VIF.datasetUid = 'r6t9-rak2';
+      timelineChart3VIF.columnName = 'updated';
+      timelineChart3VIF.filters = [
+        {
+          'columnName': 'updated',
+          'function': 'timeRange',
+          'arguments': {
+            'start': '2009-01-01T08:00:00',
+            'end': '2010-01-01T08:00:00'
+          }
+        }
+      ];
+      delete timelineChart3VIF.configuration.precision;
+
+      var timelineChart4VIF = _.cloneDeep(timelineChart1VIF);
+      timelineChart4VIF.aggregation = {
+        field: 'id',
+        'function': 'sum'
+      };
+      delete timelineChart4VIF.configuration.precision;
+
+      /**
+       * Instantiate the plugins
+       */
+
+      var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
+
+      var $timelineChart1Element = $('#timeline-chart-1');
+      $timelineChart1Element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      $timelineChart1Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart1Element.socrataTimelineChart(timelineChart1VIF);
+
+      var $timelineChart2Element = $('#timeline-chart-2');
+      $timelineChart2Element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      $timelineChart2Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart2Element.socrataTimelineChart(timelineChart2VIF);
+
+      var $timelineChart3Element = $('#timeline-chart-3');
+      $timelineChart3Element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      $timelineChart3Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart3Element.socrataTimelineChart(timelineChart3VIF);
+
+      var $timelineChart4Element = $('#timeline-chart-4');
+      $timelineChart4Element.on('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      $timelineChart4Element.on('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      $timelineChart4Element.socrataTimelineChart(timelineChart4VIF);
+
+      /**
+       * Handle plugin events
+       */
+
+      function handleFlyout(event) {
+        var payload = event.originalEvent.detail;
+
+        // Render/hide a flyout
+        if (payload !== null) {
+
+          flyoutRenderer.render(payload);
+
+        } else {
+
+          flyoutRenderer.clear();
+        }
+      }
+
+      function handleVifUpdated(event) {
+        var payload = event.originalEvent.detail;
+        var renderVifEvent = jQuery.Event('SOCRATA_VISUALIZATION_RENDER_VIF');
+
+        renderVifEvent.originalEvent = {
+          detail: payload
+        };
+
+        $(this).trigger(renderVifEvent);
+      }
+
+      /**
+       * Destroy the plugins
+       */
+
+      // $timelineChart1Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart1Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart1Element.trigger('destroy');
+
+      // $timelineChart2Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart2Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart2Element.trigger('destroy');
+
+      // $timelineChart3Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart3Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart3Element.trigger('destroy');
+
+      // $timelineChart4Element.off('SOCRATA_VISUALIZATION_TIMELINE_CHART_FLYOUT', handleFlyout);
+      // $timelineChart4Element.off('SOCRATA_VISUALIZATION_VIF_UPDATED', handleVifUpdated);
+      // $timelineChart4Element.trigger('destroy');
+    });
+  </script>
+<% end %>
+
+<a href="/internal">Internal Panel Home</a><br>
+<a href="/internal/demos/visualizations">Back to demo list</a>
+<div id="timeline-chart-1"></div>
+<div id="timeline-chart-2"></div>
+<div id="timeline-chart-3"></div>
+<div id="timeline-chart-4"></div>

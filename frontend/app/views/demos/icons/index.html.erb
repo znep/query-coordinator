@@ -1,0 +1,21 @@
+<% content_for :head do %>
+  <title>Example Usage: Icons</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section">
+  <p>
+    <a class="btn btn-default" href='/internal/demos'><span class="socrata-icon-arrow-left"></span> Demos</a>
+  </p>
+  <h2 class="styleguide-header">Icons</h2>
+  <div class="styleguide-icons">
+    <%- @icons.each do |icon| %>
+      <div class="styleguide-icons-row">
+        <span class="socrata-icon-<%= icon %>"></span>
+        <input type="text" class="text-input" value="socrata-icon-<%= icon %>">
+      </div>
+    <%- end %>
+  </div>
+</section>

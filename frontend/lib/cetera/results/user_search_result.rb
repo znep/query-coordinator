@@ -4,7 +4,7 @@ module Cetera
     class UserSearchResult < SearchResult
       @klass = User
 
-      def initialize(data = {})
+      def initialize(data)
         super
         data['results'].map! do |result|
           screen_name = result['screen_name']

@@ -213,9 +213,63 @@ var utils = {
   },
 
   /**
+   * Returns grouping character for given locale for formatting a number, defaults to comma
+   */
+  getGroupCharacter: function(locale) {
+    switch (locale) {
+      case 'en':
+      case 'zh':
+       return ',';
+
+      case 'it':
+      case 'es':
+        return '.';
+
+      case 'fr':
+        return '\u00A0';
+
+      default:
+        if (locale && !!(typeof Intl == 'object' && Intl && typeof Intl.NumberFormat == 'function')) {
+          var localized = (1234).toLocaleString(locale);
+          var character = localized.match(/1(.*)234/)[1];
+
+          return character;
+        }
+
+        return ',';
+    }
+  },
+
+  /**
+   * Returns the decimal character for given locale for formatting a number, defaults to period
+   */
+  getDecimalCharacter: function(locale) {
+    switch (locale) {
+      case 'en':
+      case 'zh':
+       return '.';
+
+      case 'it':
+      case 'es':
+      case 'fr':
+        return ',';
+
+      default:
+        if (locale && !!(typeof Intl == 'object' && Intl && typeof Intl.NumberFormat == 'function')) {
+          var localized = (12.34).toLocaleString(locale);
+          var character = localized.match(/12(.*)34/)[1];
+
+          return character;
+        }
+
+        return '.';
+    }
+  },
+
+  /**
    * Returns a human readable version of a number, formatted to 4 characters.
-   * options can include a groupCharacter, which defaults to the comma character,
-   * and a decimalCharacter which defaults to the period.
+   * options can include a groupCharacter, which defaults to the group character of current locale (comma for en),
+   * and a decimalCharacter which defaults to decimal character of current locale (period for en).
    *
    * Example:
    *
@@ -228,9 +282,11 @@ var utils = {
       throw new Error('`.formatNumber()` requires numeric input.');
     }
 
+    var locale = _.get(window.serverConfig, 'locale', _.get(window.blist, 'locale', 'en'));
+
     var defaultOptions = {
-      groupCharacter: ',',
-      decimalCharacter: '.'
+      groupCharacter: utils.getGroupCharacter(locale),
+      decimalCharacter: utils.getDecimalCharacter(locale)
     };
     var formatNumberOptions = _.assign({}, defaultOptions, options);
 

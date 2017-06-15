@@ -29,6 +29,7 @@ class Results extends React.Component {
       focusedResult,
       results,
       onResultFocusChanged,
+      onChooseResult,
       onQueryChanged,
       onResultsVisibilityChanged
     } = this.props;
@@ -67,13 +68,13 @@ class Results extends React.Component {
         // set the textbox to be what was clicked and close the results
         onQueryChanged(result.title);
         onResultsVisibilityChanged(false);
-        window.location.href = getSearchUrl(result.title);
+        onChooseResult(result.title);
       }
     }
   }
 
   renderResults() {
-    const { results, focusedResult } = this.props;
+    const { results, focusedResult, onChooseResult } = this.props;
 
     return results.map((result, index) =>
       <Result
@@ -81,7 +82,8 @@ class Results extends React.Component {
         matchOffsets={result.match_offsets}
         name={result.title}
         index={index}
-        focused={index === focusedResult} />
+        focused={index === focusedResult}
+        onChooseResult={onChooseResult} />
     );
   }
 

@@ -1,10 +1,12 @@
 @import 'lib/variables';
+@import 'filter-bar-corrections';
 
 .component-socrata-visualization-histogram {
   .component-content {
     position: relative;
     width: 100%;
     height: 100%;
-    z-index: $component-content-z-index;
+
+    @include filter-bar-corrections;
   }
 }

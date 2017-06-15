@@ -303,7 +303,7 @@ module ApplicationHelper
     REVISION_NUMBER || Rails.env
   end
 
-  def include_webpack_bundle(resource)
+  def webpack_bundle_src(resource)
     resource_name = "#{resource}#{'.js' unless resource.end_with?('.js')}"
 
     if Rails.configuration.webpack[:use_dev_server]
@@ -317,7 +317,12 @@ module ApplicationHelper
         "build/#{resource_name}?#{asset_revision_key}"
       end
     end
-    javascript_include_tag(src)
+
+    src
+  end
+
+  def include_webpack_bundle(resource)
+    javascript_include_tag(webpack_bundle_src(resource))
   end
 
 # TOP OF PAGE
@@ -1134,6 +1139,21 @@ module ApplicationHelper
   def render_admin_header?
     %w(administration site_appearance connector routing_approval activity_feed).include?(controller_name) &&
       FeatureFlags.derive(nil, request)[:enable_new_admin_ui]
+  end
+
+  def asset_inventory_view_model
+    @asset_inventory_dataset ||= AssetInventoryService.find(!current_user.try(:is_superadmin?))
+    button_disabled = @asset_inventory_dataset.blank?
+    view_model = {
+      :asset_inventory => {
+        :button_disabled => button_disabled,
+        :show_initialize_button => button_disabled && AssetInventoryService.api_configured? && current_user.try(:is_superadmin?)
+      }
+    }
+    if @asset_inventory_dataset.blank?
+      Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
+    end
+    view_model
   end
 
 end

@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
-import { components as SocrataVisualizations } from 'socrata-visualizations';
+import { components as SocrataVisualizations } from 'common/visualizations';
 import { SocrataIcon } from 'common/components';
 import { t } from '../lib/I18n';
 import EditVisualizationButton from './EditVisualizationButton';

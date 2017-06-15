@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import 'whatwg-fetch';
-import { dataProviders as DataProviders } from 'socrata-visualizations';
+import { dataProviders as DataProviders } from 'common/visualizations';
 import { checkStatus, defaultHeaders } from '../common/http';
 
 export const ADD_VISUALIZATION = 'ADD_VISUALIZATION';

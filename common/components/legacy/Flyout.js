@@ -1,5 +1,13 @@
 module.exports = function FlyoutFactory(element) {
-  var hoverables = Array.prototype.slice.apply(element.querySelectorAll('[data-flyout]'));
+  var hoverables = Array.prototype.slice.apply(element.querySelectorAll('[data-flyout]'))
+
+  if (element.hasAttribute('data-flyout')) {
+    hoverables.push(element);
+  }
+
+  if (hoverables.length <= 0) {
+    console.warn('FlyoutFactory: Unable to locate any hoverable elements.');
+  }
 
   hoverables.forEach(function(hoverable) {
     var flyout = element.querySelector(`#${hoverable.getAttribute('data-flyout')}`);

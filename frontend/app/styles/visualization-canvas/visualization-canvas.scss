@@ -3,7 +3,7 @@
 @import "common/breakpoints";
 @import "common/feedback-panel";
 
-@import "socrata-visualizations";
+@import "common/visualizations/views/styles/socrata-visualizations";
 
 $admin-header-height: 32px;
 $edit-bar-height: 60px;

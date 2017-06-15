@@ -12,7 +12,6 @@ import { bootstrapApp } from 'actions/bootstrap';
 import { createUpload } from 'actions/manageUploads';
 import { latestOutputSchema, columnsForOutputSchema } from 'selectors';
 import mockAPI from '../testHelpers/mockAPI';
-import initialState from '../data/baseState';
 import rootReducer from 'reducers/rootReducer';
 import wsmock from '../testHelpers/mockSocket';
 

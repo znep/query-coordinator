@@ -9,13 +9,13 @@ import * as Selectors from '../selectors';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ShowUpload.scss';
 
-function query(db, uploadId) {
-  const upload = db.uploads[_.toNumber(uploadId)];
-  const inputSchemas = _.filter(db.input_schemas, { upload_id: upload.id });
+function query(entities, uploadId) {
+  const upload = entities.uploads[_.toNumber(uploadId)];
+  const inputSchemas = _.filter(entities.input_schemas, { upload_id: upload.id });
 
   return {
     upload,
-    latestOutputSchema: inputSchemas.length ? Selectors.latestOutputSchema(db) : null
+    latestOutputSchema: inputSchemas.length ? Selectors.latestOutputSchema(entities) : null
   };
 }
 

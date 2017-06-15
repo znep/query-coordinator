@@ -16,7 +16,7 @@ import * as Actions from '../actions/manageUploads';
 import * as ApplyRevision from '../actions/applyRevision';
 import styles from 'styles/ShowRevision.scss';
 
-const noDataYetView = createUpload => (
+const noDataYetView = createUpload =>
   <div className={styles.tableInfo}>
     <h3 className={styles.previewAreaHeader}>
       {I18n.home_pane.no_data_yet}
@@ -39,8 +39,7 @@ const noDataYetView = createUpload => (
     <p className={styles.fileTypes}>
       {I18n.home_pane.supported_uploads}
     </p>
-  </div>
-);
+  </div>;
 
 const outputSchemaView = (entities, outputSchema) => {
   const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
@@ -106,7 +105,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-function ShowRevision({ view, routing, entities, urlParams, createUpload, pushToEditMetadata }) {
+export function ShowRevision({ view, routing, entities, urlParams, createUpload, pushToEditMetadata }) {
   let metadataSection;
   const paneProps = {
     name: view.name,

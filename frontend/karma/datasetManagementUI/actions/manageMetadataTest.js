@@ -15,7 +15,6 @@ import {
 import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
 import { createUpload } from 'actions/manageUploads';
 import mockAPI from '../testHelpers/mockAPI';
-import initialState from '../data/baseState';
 import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
 import { editView } from 'actions/views';

@@ -26,8 +26,6 @@ export type SourceColumn = {
 
 export type FileId = string
 
-export type TransformedFilename = string
-
 export type Summary
   = { // normal tabular
       headers: number,

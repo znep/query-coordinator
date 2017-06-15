@@ -153,7 +153,6 @@ describe("downloadFile's", () => {
               json: () => (
                 Promise.resolve({
                   fileId: ticket,
-                  transformedFilename: 'data.csv',
                   newImportSourceVersion: 123,
                   summary: sampleScan
                 })
@@ -225,7 +224,6 @@ describe("downloadFile's", () => {
                 const expectedAction = {
                   type: 'FILE_DOWNLOAD_COMPLETE',
                   fileId: ticket,
-                  transformedFilename: 'data.csv',
                   summary: scanWithIndices
                 };
                 expect(action).to.deep.equal(expectedAction);

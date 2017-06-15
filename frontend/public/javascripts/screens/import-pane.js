@@ -1368,7 +1368,7 @@
             },
             success: function(response) {
               state.scan = response;
-              state.fileName = response.transformedFilename || targetUrl.match(/\/([^\?\/]*)(\?.*)?$/i)[1] || 'your file';
+              state.fileName = targetUrl.match(/\/([^\?\/]*)(\?.*)?$/i)[1] || 'your file';
               command.next('importColumns');
             },
             error: function(xhr) {

@@ -2,6 +2,7 @@
 
 $title-height: 44px;
 $description-height: 26px;
+$legend-bar-height: 35px;
 $filter-bar-height: 43px;
 $title-description-padding: 6px;
 $info-height: 24px;
@@ -80,6 +81,79 @@ $axis-padding: 42px;
   .socrata-visualization-filter-bar-container {
     position: relative;
     z-index: 5;
+  }
+
+  .socrata-visualization-legend-bar-container {
+    position: relative;
+    text-align: right;
+
+    .socrata-visualization-legend-bar-inner-container {
+      display: inline-block;
+      margin: 0 0 0 auto;
+      text-align: left;
+
+      .socrata-legend-button {
+        background-color: #fff;
+        border-bottom: 1px solid $visualization-border-color;
+        border-left: 1px solid $visualization-border-color;
+        border-right: 0;
+        border-top: 0;
+        box-sizing: border-box;
+        color: #5e5e5e;
+        cursor: pointer;
+        font-size: 13px;
+        height: $legend-bar-height;
+        letter-spacing: -0.5px;
+        outline: none;
+        padding: 0 8px;
+        z-index: 10000;
+
+        .socrata-icon-arrow-left {
+          margin-right: 8px;
+        }
+
+        .socrata-icon-close-2 {
+          display: none;
+          margin-left: 8px;
+        }
+
+        label {
+          cursor: pointer;
+        }
+      }
+
+      .socrata-legend-menu {
+        background-color: #fff;
+        border: 1px solid $visualization-border-color;
+        display: none;
+        list-style-type: none;
+        margin: 0;
+        min-width: 120px;
+        overflow-y: scroll;
+        padding: 8px 0;
+        position: absolute;
+        right: -1px;
+        top: $legend-bar-height - 1;
+        z-index: 9999;
+
+        li {
+          box-sizing: border-box;
+          font-size: 13px;
+          letter-spacing: -0.5px;
+          padding: 8px 16px 8px 48px;
+          position: relative;
+
+          span {
+            display: inline-block;
+            position: absolute;
+            height: 16px;
+            left: 16px;
+            top: 9px;
+            width: 16px;
+          }
+        }
+      }
+    }
   }
 
   .socrata-visualization-info {
@@ -189,7 +263,6 @@ $axis-padding: 42px;
 
     .socrata-visualization-container {
       height: calc(100% - #{$title-height});
-      border-top: 1px solid $visualization-container-border-color;
     }
   }
 
@@ -208,7 +281,22 @@ $axis-padding: 42px;
 
     .socrata-visualization-container {
       height: calc(100% - #{$description-height});
-      border-top: 1px solid $visualization-container-border-color;
+    }
+  }
+
+  &.socrata-visualization-title.socrata-visualization-description {
+
+    .socrata-visualization-title-container {
+      border-bottom: none;
+    }
+
+    .socrata-visualization-description-container {
+      padding-top: 0;
+      border-bottom: 1px solid $visualization-border-color;
+    }
+
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$description-height});
     }
   }
 
@@ -236,23 +324,6 @@ $axis-padding: 42px;
     }
   }
 
-  &.socrata-visualization-title.socrata-visualization-description {
-
-    .socrata-visualization-title-container {
-      border-bottom: none;
-    }
-
-    .socrata-visualization-description-container {
-      padding-top: 0;
-      border-bottom: 1px solid $visualization-border-color;
-    }
-
-    .socrata-visualization-container {
-      height: calc(100% - #{$title-height} - #{$description-height});
-      border-top: 1px solid $visualization-container-border-color;
-    }
-  }
-
   &.socrata-visualization-info {
 
     .socrata-visualization-container {
@@ -276,7 +347,6 @@ $axis-padding: 42px;
 
     .socrata-visualization-container {
       height: calc(100% - #{$title-height} - #{$info-height});
-      border-top: 1px solid $visualization-container-border-color;
     }
   }
 
@@ -284,7 +354,6 @@ $axis-padding: 42px;
 
     .socrata-visualization-container {
       height: calc(100% - #{$description-height} - #{$info-height});
-      border-top: 1px solid $visualization-container-border-color;
     }
   }
 
@@ -310,13 +379,114 @@ $axis-padding: 42px;
 
     .socrata-visualization-container {
       height: calc(100% - #{$title-height} - #{$description-height} - #{$info-height});
-      border-top: 1px solid $visualization-container-border-color;
     }
   }
 
   &.socrata-visualization-filter-bar.socrata-visualization-title.socrata-visualization-description.socrata-visualization-info {
     .socrata-visualization-container {
       height: calc(100% - #{$title-height} - #{$description-height} - #{$filter-bar-height} - #{$info-height});
+    }
+  }
+
+  // Container heights with legend bar
+  //
+  &.socrata-visualization-legend-bar {
+
+    .socrata-visualization-container {
+      height: calc(100% - #{$legend-bar-height});
+    }
+  }
+
+  // Individually with legend-bar
+  //
+  &.socrata-visualization-title.socrata-visualization-legend-bar {
+
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-description.socrata-visualization-legend-bar {
+
+    .socrata-visualization-container {
+      height: calc(100% - #{$description-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-filter-bar.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$filter-bar-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-info.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$info-height} - #{$legend-bar-height});
+    }
+  }
+
+  // Pairs with legend-bar
+  //
+  &.socrata-visualization-title.socrata-visualization-description.socrata-visualization-legend-bar {
+
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$description-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-title.socrata-visualization-filter-bar.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$filter-bar-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-title.socrata-visualization-info.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$info-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-description.socrata-visualization-filter-bar.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$description-height} - #{$filter-bar-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-description.socrata-visualization-info.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$description-height} - #{$info-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-filter-bar.socrata-visualization-info.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$filter-bar-height} - #{$info-height} - #{$legend-bar-height});
+    }
+  }
+
+  // Triplets with legend-bar
+  //
+  &.socrata-visualization-title.socrata-visualization-description.socrata-visualization-filter-bar.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$description-height} - #{$filter-bar-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-title.socrata-visualization-description.socrata-visualization-info.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$description-height} - #{$info-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-title.socrata-visualization-filter-bar.socrata-visualization-info.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$title-height} - #{$filter-bar-height} - #{$info-height} - #{$legend-bar-height});
+    }
+  }
+
+  &.socrata-visualization-description.socrata-visualization-filter-bar.socrata-visualization-info.socrata-visualization-legend-bar {
+    .socrata-visualization-container {
+      height: calc(100% - #{$description-height} - #{$filter-bar-height} - #{$info-height} - #{$legend-bar-height});
     }
   }
 
@@ -337,14 +507,6 @@ $axis-padding: 42px;
 
     .socrata-visualization-busy-indicator-container {
       display: block;
-    }
-  }
-
-  &.socrata-visualization-title,
-  &.socrata-visualization-description {
-
-    .socrata-visualization-container {
-      border-top: 1px solid $visualization-container-border-color;
     }
   }
 

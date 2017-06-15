@@ -116,6 +116,10 @@ export default function barChart(state, action) {
       }
       break;
 
+    case actions.SET_SHOW_LEGEND:
+      _.set(state, 'configuration.showLegend', action.showLegend);
+      break;
+
     case actions.RECEIVE_METADATA:
     case actions.SET_DATASET_UID:
     case actions.SET_DESCRIPTION:

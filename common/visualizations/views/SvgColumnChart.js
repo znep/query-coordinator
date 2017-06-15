@@ -5,12 +5,10 @@ const $ = require('jquery');
 const utils = require('common/js_utils');
 // Project Imports
 const SvgVisualization = require('./SvgVisualization');
-const SvgHelpers = require('../helpers/SvgHelpers');
 const I18n = require('../I18n');
 // Constants
 import {
-  AXIS_LABEL_MARGIN,
-  LEGEND_CONTAINER_OUTER_MARGIN_BOTTOM
+  AXIS_LABEL_MARGIN
 } from './SvgStyleConstants';
 
 // The MARGINS values have been eyeballed to provide enough space for axis
@@ -28,6 +26,7 @@ const DIMENSION_LABELS_ROTATION_ANGLE = 82.5;
 const DIMENSION_LABELS_FONT_SIZE = 14;
 const DIMENSION_LABELS_FONT_COLOR = '#5e5e5e';
 const DIMENSION_LABELS_MAX_CHARACTERS = 8;
+const LEGEND_BAR_HEIGHT = 35;
 const MEASURE_LABELS_FONT_SIZE = 14;
 const MEASURE_LABELS_FONT_COLOR = '#5e5e5e';
 const DEFAULT_DESKTOP_COLUMN_WIDTH = 14;
@@ -170,10 +169,6 @@ function SvgColumnChart($element, vif, options) {
     let yAxisBound = false;
     let xAxisPanDistance;
     let xAxisPanningEnabled;
-    let legendSvg;
-    let legendSize = { width: 0, height: 0 };
-    let showLegend = self.getShowLegend();
-    let legendLayout = null;
 
     /**
      * Functions defined inside the scope of renderData() are stateful enough
@@ -497,32 +492,24 @@ function SvgColumnChart($element, vif, options) {
         );
     }
 
-    function renderLegend() {
-      legendSvg = d3.select(SvgHelpers.createSvgElement('g')).
-        attr('class', 'legend');
+    const alreadyDisplayingLegendBar = (self.$container.find('.socrata-visualization-legend-bar-inner-container').length > 0);
 
-      legendLayout = self.renderLegend(
-        legendSvg,
-        viewportWidth,
-        measureLabels,
-        (i) => getColor(dataTableDimensionIndex, i)
-      );
+    if (self.getShowLegend()) {
 
-      legendSize = SvgHelpers.calculateElementSize(legendSvg.node());
-      legendSize.height += LEGEND_CONTAINER_OUTER_MARGIN_BOTTOM;
-    }
+      self.renderLegendBar(measureLabels, (i) => { return getColor(dataTableDimensionIndex, i); });
+      self.attachLegendBarEventHandlers();
 
-    function positionLegend() {
-      const axisLabelMarginTop = (axisLabels.top ? AXIS_LABEL_MARGIN : 0) + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
-      const seriesHeight = xAxisAndSeriesSvg.node().getBBox().height;
-      const legendTranslate = `translate(0, ${seriesHeight + legendLayout.margin().top + axisLabelMarginTop})`;
-      legendSvg.attr('transform', legendTranslate);
-      viewportSvg.node().appendChild(legendSvg.node());
-    }
+      if (!alreadyDisplayingLegendBar) {
+        viewportHeight -= LEGEND_BAR_HEIGHT;
+      }
 
-    if (showLegend) {
-      renderLegend();
-      viewportHeight -= legendSize.height;
+    } else {
+
+      self.removeLegendBar();
+
+      if (alreadyDisplayingLegendBar) {
+        viewportHeight += LEGEND_BAR_HEIGHT;
+      }
     }
 
     /**
@@ -725,7 +712,7 @@ function SvgColumnChart($element, vif, options) {
     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
       attr('width', width + leftMargin + rightMargin).
-      attr('height', viewportHeight + topMargin + bottomMargin + legendSize.height);
+      attr('height', viewportHeight + topMargin + bottomMargin);
 
     // The viewport represents the area within the chart's container that can
     // be used to draw the x-axis, y-axis and chart marks.
@@ -871,7 +858,7 @@ function SvgColumnChart($element, vif, options) {
 
         self.showPanningNotice();
 
-        viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin - legendSize.height);
+        viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
 
         if (self.getShowDimensionLabels()) {
           // Note that we need to recompute height here since
@@ -1053,10 +1040,6 @@ function SvgColumnChart($element, vif, options) {
 
       chartSvg.selectAll('text').
         attr('cursor', 'default');
-    }
-
-    if (showLegend) {
-      positionLegend();
     }
 
     self.renderAxisLabels(chartSvg, {

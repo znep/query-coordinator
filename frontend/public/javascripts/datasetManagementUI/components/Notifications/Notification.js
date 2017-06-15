@@ -7,7 +7,7 @@ import ProgressBar from 'components/ProgressBar';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Notifications/Notification.scss';
 
-class Notification extends Component {
+export class Notification extends Component {
   constructor() {
     super();
 

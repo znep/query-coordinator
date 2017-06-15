@@ -1,10 +1,14 @@
 import { expect, assert } from 'chai';
 import React from 'react';
+import _ from 'lodash';
 import { ManageUploads } from 'components/ManageUploads';
 import { shallow } from 'enzyme';
 
 describe('components/ManageUploads', () => {
   const Props = {
+    goHome: _.noop,
+    createUpload: _.noop,
+    onDismiss: _.noop,
     location: {
       pathname: '/dataset/mkm/izmd-wutc/revisions/0/uploads',
       search: '',

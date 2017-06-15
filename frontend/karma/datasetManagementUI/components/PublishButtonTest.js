@@ -1,12 +1,14 @@
 import { assert } from 'chai';
 import React from 'react';
+import _ from 'lodash';
 import { shallow } from 'enzyme';
 import { PublishButton } from 'components/PublishButton';
 
 const defaultProps = {
   dataSatisfied: false,
   metadataSatisfied: false,
-  publishedOrPublishing: false
+  publishedOrPublishing: false,
+  publishDataset: _.noop
 };
 
 describe('"Publish Dataset" button and flyout', () => {

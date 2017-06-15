@@ -9,7 +9,7 @@ describe('Notifications/Notification', () => {
     percentCompleted: 90,
     progressBar: true,
     status: 'inProgress',
-    message: 'Test Notification'
+    message: <span>'Test Notification'</span>
   };
 
   it('renders correctly', () => {

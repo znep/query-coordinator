@@ -3154,6 +3154,7 @@ en:
         title: Asset Inventory
         unpublished_datasets: Working Copies
         view_as_a_dataset: View as a Dataset
+        asset_inventory_dataset: Asset Inventory Dataset
       federation:
         accept: Accept
         accepted: Accepted

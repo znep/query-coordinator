@@ -18,7 +18,8 @@
   <div class="adminHeader datasets">
     <span class="icon"></span>
     <h1><%= t("screens.admin.datasets.title") %></h1>
-    <%= render 'asset_inventory_dataset_button' %>
+    <%= render 'asset_inventory_dataset_button',
+      :title_translation_key => 'screens.admin.datasets.asset_inventory.view_as_a_dataset' %>
   </div>
 
   <% if FeatureFlags.derive(nil, request)[:enable_internal_asset_manager_beta] %>

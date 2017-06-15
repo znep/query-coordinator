@@ -125,7 +125,6 @@ export const ceteraUtils = (() => {
       const fetchUrl = `${CETERA_RESULTS_PATH}?${queryString}`;
 
       const reportToMixpanel = (json) => {
-        console.debug(`reportToMixpanel: "${mixpanelContext.eventName}"`);
         mixpanel.sendPayload(
           mixpanelContext.eventName,
           {

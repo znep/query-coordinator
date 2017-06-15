@@ -9,7 +9,7 @@ import styles from 'styles/Notifications/NotificationList.scss';
 // (e.g. upload, socket error, etc.) and sliding all the notifications into view.
 // Displaying status (success, error, inProgress) and all the logic needed to figure
 // that status out are handled farther down the component tree.
-const NotificationList = ({ notifications }) => {
+export const NotificationList = ({ notifications }) => {
   const items = notifications.map((notification, idx) => {
     switch (notification.kind) {
       case 'upload':

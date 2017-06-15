@@ -484,4 +484,4 @@ function requireAll(context) {
   context.keys().forEach(context);
 }
 
-requireAll(require.context('.', true, /NotificationTest\.js$/));
+requireAll(require.context('.', true, /RowDetailsTest\.js$/));

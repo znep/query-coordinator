@@ -37,7 +37,7 @@ const errorMessage = upload => {
 // This component is called by the NotificationList component. It's main purpose
 // is to translate upload-specific logic into props that the generic Notification
 // component can understand.
-const UploadNotification = ({ upload, callStatus, notificationId }) => {
+export const UploadNotification = ({ upload, callStatus, notificationId }) => {
   let message;
   let details;
   let notificationStatus = callStatusToNotificationStatus(callStatus);

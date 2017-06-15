@@ -6,7 +6,7 @@ class AppConfig < Hashie::Dash
   include Hashie::Extensions::IndifferentAccess
 
   as_int = lambda(&:to_i)
-  as_interval = lambda([str]:to_i.minutes)
+  as_interval = lambda { [str]:to_i.minutes }
   
   # Services and service coordination
   property :consul_host

@@ -3141,8 +3141,8 @@ en:
           tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact Socrata Support.
         description: List the assets on this domain and configure the layout of the dataset page
         internal_asset_manager_beta:
-          header: Preview our new Asset Management experience!
-          preview: Preview...
+          preview_message: We're redesigning the Asset Management experience!
+          preview: Click here to preview the new experience.
         layout_config: Layout Configuration
         left: Left
         right: Right

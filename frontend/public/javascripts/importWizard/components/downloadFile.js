@@ -196,7 +196,7 @@ export function update(download: FileDownload = {}, action): FileDownload {
         url: download.url,
         fileId: action.fileId,
         summary: action.summary,
-        fileName: download.fileName
+        fileName: action.summary.transformedFilename || download.fileName
       };
     case FILE_DOWNLOAD_ERROR:
       return {

@@ -125,13 +125,15 @@ export const ceteraUtils = (() => {
       const fetchUrl = `${CETERA_RESULTS_PATH}?${queryString}`;
 
       const reportToMixpanel = (json) => {
-        mixpanel.sendPayload(
-          mixpanelContext.eventName,
-          {
-            'Result Count': json.results.length,
-            ...mixpanelContext.params
-          }
-        );
+        if (mixpanelContext) {
+          mixpanel.sendPayload(
+            mixpanelContext.eventName,
+            {
+              'Result Count': json.results.length,
+              ...mixpanelContext.params
+            }
+          );
+        }
         return json;
       };
 

@@ -42,11 +42,11 @@ function PublishReadinessFlyout({ metadataSatisfied, dataSatisfied }) {
           ? SubI18n.make_accessible
           : <div>
               {SubI18n.cant_publish_until}
-              <ul>
-                <li><LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} /></li>
-                <li><LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} /></li>
-              </ul>
-            </div>}
+            <ul>
+              <li><LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} /></li>
+              <li><LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} /></li>
+            </ul>
+          </div>}
       </section>
     </div>
   );

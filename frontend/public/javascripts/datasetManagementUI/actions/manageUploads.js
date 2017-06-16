@@ -120,7 +120,7 @@ function createUploadSuccess(id, createdBy, createdAt, filename) {
     id,
     filename,
     created_by: createdBy,
-    created_at: createdAt
+    created_at: parseDate(createdAt)
   };
 }
 

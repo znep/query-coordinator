@@ -2740,7 +2740,7 @@ en:
         label: Owned By
         placeholder: Any Owner
       recently_viewed:
-        label: Only my recently viewed
+        label: Recently viewed
       searchbox_filter:
         all: All
       tags:

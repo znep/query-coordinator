@@ -7,10 +7,12 @@ import {
   apiCallSucceeded,
   apiCallFailed,
   APPLY_REVISION,
+  UPDATE_REVISION,
   ADD_EMAIL_INTEREST
 } from 'actions/apiCalls';
 import { showModal } from 'actions/modal';
 import { addTaskSet } from 'actions/taskSets';
+import { editRevision } from 'actions/revisions';
 import * as dsmapiLinks from 'dsmapiLinks';
 import * as Links from 'links';
 import * as Selectors from 'selectors';
@@ -23,22 +25,97 @@ export const TASK_SET_SUCCESSFUL = 'successful';
 export const TASK_SET_FAILURE = 'failure';
 export const POLL_FOR_TASK_SET_PROGRESS_SUCCESS = 'POLL_FOR_TASK_SET_PROGRESS_SUCCESS';
 
+// TODO: remove once https://github.com/socrata/dsmapi/pull/402 is deployed
+// and we can count on revision.action.permission being there
+function shapeRevision(apiResponse) {
+  let revision = apiResponse;
+
+  if (revision.action && revision.action.permission) {
+    const permission = revision.action.permission;
+
+    revision = {
+      ..._.omit(revision, 'action'),
+      permission
+    };
+  } else {
+    revision = {
+      ...revision,
+      permission: 'public'
+    };
+  }
+
+  return revision;
+}
+
+export function updateRevision(permission) {
+  return (dispatch, getState) => {
+    const { entities } = getState();
+    const { id: revisionId } = Selectors.latestRevision(entities);
+    const { permission: oldPermission } = entities.revisions[revisionId];
+
+    if (permission === oldPermission) {
+      return;
+    }
+
+    // disable btn then reenable in promise resolve
+    const callId = uuid();
+
+    dispatch(
+      apiCallStarted(callId, {
+        operation: UPDATE_REVISION,
+        params: {
+          action: {
+            permission
+          }
+        }
+      })
+    );
+
+    return socrataFetch(dsmapiLinks.revisionBase, {
+      method: 'PUT',
+      body: JSON.stringify({
+        action: {
+          permission
+        }
+      })
+    })
+      .then(checkStatus)
+      .then(getJson)
+      .then(resp => {
+        dispatch(apiCallSucceeded(callId));
+
+        const revision = shapeRevision(resp.resource);
+
+        dispatch(editRevision(revision.id, revision));
+      })
+      .catch(err => {
+        dispatch(apiCallFailed(callId, err));
+      });
+  };
+}
+
 export function applyRevision() {
   return (dispatch, getState) => {
-    const { location } = getState().ui.routing;
-    const outputSchemaId = Selectors.latestOutputSchema(getState().entities).id;
+    const { entities, ui } = getState();
+    const { location } = ui.routing;
+    const { id: outputSchemaId } = Selectors.latestOutputSchema(entities);
+
     const callId = uuid();
 
     dispatch(
       apiCallStarted(callId, {
         operation: APPLY_REVISION,
-        params: { outputSchemaId }
+        params: {
+          outputSchemaId
+        }
       })
     );
 
     return socrataFetch(dsmapiLinks.applyRevision, {
       method: 'PUT',
-      body: JSON.stringify({ output_schema_id: outputSchemaId })
+      body: JSON.stringify({
+        output_schema_id: outputSchemaId
+      })
     })
       .then(checkStatus)
       .then(getJson)
@@ -71,7 +148,7 @@ export function pollForTaskSetProgress(taskSetId) {
       .then(getJson)
       .then(resp => {
         if (resp) {
-          const revision = resp.resource;
+          const revision = shapeRevision(resp.resource);
 
           revision.task_sets.forEach(taskSet => {
             dispatch(pollForTaskSetProgressSuccess(revision, taskSet));
@@ -101,7 +178,8 @@ function pollForTaskSetProgressSuccess(revision, taskSet) {
     ...taskSet,
     finished_at: taskSet.finished_at ? parseDate(taskSet.finished_at) : null
   };
-  const updateRevision = {
+
+  const updatedRevision = {
     ...revision,
     task_sets: revision.task_sets.map(ts => ts.id)
   };
@@ -109,7 +187,7 @@ function pollForTaskSetProgressSuccess(revision, taskSet) {
   return {
     type: POLL_FOR_TASK_SET_PROGRESS_SUCCESS,
     taskSet: updatedTaskSet,
-    revision: updateRevision
+    revision: updatedRevision
   };
 }
 

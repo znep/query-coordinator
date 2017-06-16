@@ -55,6 +55,7 @@ export function bootstrapApp(view, revision, customMetadata) {
     const initialRevision = {
       id: revision.id,
       fourfour: view.id,
+      permission: _.get(revision, 'action.permission', 'public'),
       task_sets: revision.task_sets.map(taskSet => taskSet.id),
       revision_seq: _.toNumber(revision.revision_seq),
       created_at: parseDate(revision.inserted_at || revision.created_at),

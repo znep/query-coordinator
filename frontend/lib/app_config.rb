@@ -1,7 +1,7 @@
 require 'hashie/extensions/ignore_undeclared'
 require 'hashie/extensions/indifferent_access'
 
-class AppConfig < Hashie::Dash
+class AppConfig < Hashie::Trash
   include Hashie::Extensions::IgnoreUndeclared
   include Hashie::Extensions::IndifferentAccess
 

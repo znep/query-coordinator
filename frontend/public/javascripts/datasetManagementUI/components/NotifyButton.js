@@ -5,22 +5,19 @@ import classNames from 'classnames';
 
 import SocrataIcon from '../../common/components/SocrataIcon';
 import * as ApplyRevision from 'actions/applyRevision';
-import { STATUS_INSERTING, STATUS_SAVED } from 'lib/database/statuses';
+import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED } from 'lib/apiCallStatus';
 import styles from 'styles/NotifyButton.scss';
 
-function NotifyButton({ email_interests, addEmailInterest, upsertJob, className }) {
-  if (upsertJob) {
-    const upsertJobUuid = upsertJob.job_uuid;
-    const emailInterest = _.find(email_interests, { job_uuid: upsertJobUuid });
-
-    if (emailInterest) {
-      if (emailInterest.__status__.type === STATUS_INSERTING) {
+function NotifyButton({ apiCall, taskSet, addEmailInterest, className }) {
+  if (taskSet) {
+    if (apiCall) {
+      if (apiCall.status === STATUS_CALL_IN_PROGRESS) {
         return (
           <button className={classNames(className, styles.emailBtnBusy)}>
-            <span className={styles.spinner}></span>
+            <span className={styles.spinner} />
           </button>
         );
-      } else if (emailInterest.__status__.type === STATUS_SAVED) {
+      } else if (apiCall.status === STATUS_CALL_SUCCEEDED) {
         return (
           <button className={classNames(className, styles.emailBtnSuccess)}>
             <SocrataIcon name="checkmark3" className={styles.icon} />
@@ -38,7 +35,9 @@ function NotifyButton({ email_interests, addEmailInterest, upsertJob, className 
       return (
         <button
           className={classNames(className, styles.emailBtnRequest)}
-          onClick={() => { addEmailInterest(upsertJobUuid); }}>
+          onClick={() => {
+            addEmailInterest(taskSet.job_uuid);
+          }}>
           <SocrataIcon name="email" /> {I18n.home_pane.email_me}
         </button>
       );
@@ -49,28 +48,33 @@ function NotifyButton({ email_interests, addEmailInterest, upsertJob, className 
 }
 
 NotifyButton.propTypes = {
-  email_interests: PropTypes.object.isRequired,
-  addEmailInterest: PropTypes.func.isRequired,
-  upsertJob: PropTypes.shape({
+  taskSet: PropTypes.shape({
     job_uuid: PropTypes.string
   }),
+  apiCall: PropTypes.shape({
+    status: PropTypes.string.isRequired
+  }),
+  addEmailInterest: PropTypes.func.isRequired,
   className: PropTypes.string
 };
 
-function mapStateToProps(state) {
-  const upsertJob = _.find(state.db.upsert_jobs, { status: 'in_progress' }) ||
-                    _.find(state.db.upsert_jobs, { status: null });
+function mapStateToProps({ entities, ui }) {
+  // _.find returns undefined if it doesn't find anything
+  const taskSet =
+    _.find(entities.task_sets, { status: 'in_progress' }) || _.find(entities.task_sets, { status: null });
+
+  const apiCall = taskSet ? _.find(ui.apiCalls, { id: taskSet.job_uuid }) : null;
 
   return {
-    upsertJob,
-    email_interests: state.db.email_interests
+    taskSet,
+    apiCall
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    addEmailInterest: (jobUuid) => {
-      dispatch(ApplyRevision.addEmailInterest(jobUuid));
+    addEmailInterest: jobUUID => {
+      dispatch(ApplyRevision.addEmailInterest(jobUUID));
     }
   };
 }

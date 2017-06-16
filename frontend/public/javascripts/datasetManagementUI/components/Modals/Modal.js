@@ -16,14 +16,14 @@ const getModalProps = (props, contentComponentName, payload) => {
     case 'ErrorsHelp':
       return {
         ...props,
-        children: ([<ErrorsHelp key={1} />]),
+        children: [<ErrorsHelp key={1} />],
         className: styles.errorsHelp
       };
 
     case 'Publishing':
       return {
         ...props,
-        children: ([<Publishing key={1} />]),
+        children: [<Publishing key={1} />],
         className: styles.publishing,
         onDismiss: _.noop
       };
@@ -31,14 +31,14 @@ const getModalProps = (props, contentComponentName, payload) => {
     case 'PublishConfirmation':
       return {
         ...props,
-        children: ([<PublishConfirmation key={1} />]),
+        children: [<PublishConfirmation key={1} />],
         className: styles.publishConfirmation
       };
 
     case 'RowIdentifierError':
       return {
         ...props,
-        children: ([<RowIdentifierError key={1} result={payload} />]),
+        children: [<RowIdentifierError key={1} result={payload} />],
         className: styles.rowIdentifierError
       };
 
@@ -80,11 +80,11 @@ Modal.propTypes = {
   onDismiss: PropTypes.func.isRequired
 };
 
-const mapStateToProps = ({ modal }) => ({
-  modalState: modal
+const mapStateToProps = ({ ui }) => ({
+  modalState: ui.modal
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(hideModal())
 });
 

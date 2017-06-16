@@ -19,9 +19,7 @@ function PublishConfirmation({ outputSchemaId, doCancel, doUpdate }) {
         <SocrataIcon className={styles.mainIcon} name="public-open" />
       </ModalContent>
       <ModalFooter className={styles.modalFooter}>
-        <button
-          onClick={doCancel}
-          className={styles.cancelButton}>
+        <button onClick={doCancel} className={styles.cancelButton}>
           {I18n.common.cancel}
         </button>
         <ApiCallButton
@@ -41,8 +39,8 @@ PublishConfirmation.propTypes = {
   doUpdate: PropTypes.func.isRequired
 };
 
-function mapStateToProps({ db }) {
-  const outputSchemaId = Selectors.latestOutputSchema(db).id;
+function mapStateToProps({ entities }) {
+  const outputSchemaId = Selectors.latestOutputSchema(entities).id;
 
   return {
     outputSchemaId
@@ -52,7 +50,7 @@ function mapStateToProps({ db }) {
 function mapDispatchToProps(dispatch) {
   return {
     doCancel: () => dispatch(hideModal()),
-    doUpdate: (outputSchemaId) => dispatch(applyRevision(outputSchemaId))
+    doUpdate: outputSchemaId => dispatch(applyRevision(outputSchemaId))
   };
 }
 

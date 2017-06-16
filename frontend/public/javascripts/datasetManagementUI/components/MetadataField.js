@@ -69,15 +69,7 @@ export class MetadataField extends Component {
     // TODO: remove when we upgrade babel-eslint
     // babel-eslint bug: https://github.com/babel/babel-eslint/issues/249
     /* eslint-disable no-use-before-define */
-    const {
-      schema,
-      type,
-      name,
-      className,
-      label,
-      isPrivate,
-      ...other
-    } = this.props;
+    const { schema, type, name, className, label, isPrivate, ...other } = this.props;
     /* eslint-enable no-use-before-define */
 
     let element = null;
@@ -90,7 +82,8 @@ export class MetadataField extends Component {
 
     if (hasValidationErrors && errorsVisible) {
       errors = schema.fields[name].errors.map((msg, idx) =>
-        <li className={styles.errorMessage} key={idx}>{msg}</li>);
+        <li className={styles.errorMessage} key={idx}>{msg}</li>
+      );
     }
 
     const required = _.get(schema, `fields.${name}.required`, false);
@@ -129,20 +122,16 @@ export class MetadataField extends Component {
 
     return (
       <div className={className}>
-        <label
-          htmlFor={name}
-          className={labelClassNames.join(' ')}>
+        <label htmlFor={name} className={labelClassNames.join(' ')}>
           {label}
         </label>
-          {
-            isPrivate &&
-              <div>
-                <SocrataIcon name="private" className={styles.icon} />
-                <span className={styles.privateMessage}>
-                  {I18n.metadata_manage.dataset_tab.subtitles.private_field}
-                </span>
-              </div>
-          }
+        {isPrivate &&
+          <div>
+            <SocrataIcon name="private" className={styles.icon} />
+            <span className={styles.privateMessage}>
+              {I18n.metadata_manage.dataset_tab.subtitles.private_field}
+            </span>
+          </div>}
         {element}
         {errors.length ? <ul className={styles.errorList}>{errors}</ul> : null}
       </div>
@@ -166,8 +155,8 @@ MetadataField.propTypes = {
   displayMetadataFieldErrors: PropTypes.bool
 };
 
-const mapStateToProps = ({ db, routing }) => ({
-  displayMetadataFieldErrors: _.get(db, `views.${routing.fourfour}.displayMetadataFieldErrors`)
+const mapStateToProps = ({ entities, ui }) => ({
+  displayMetadataFieldErrors: _.get(entities, `views.${ui.routing.fourfour}.displayMetadataFieldErrors`)
 });
 
 export default connect(mapStateToProps)(MetadataField);

@@ -10,7 +10,7 @@ export const rowErrorResponse = [
   {
     offset: 1,
     error: {
-      contents: ["I'm the lonliest error!"]
+      contents: ["I'm the loneliest error!"]
     }
   },
   {
@@ -111,19 +111,19 @@ export const columnErrorResponseLaterPage = [
   }
 ];
 
-export const normalWithErrorsResponse = _.concat([
-  {
-    output_columns: [
-      { transform: { id: 1 } },
-      { transform: { id: 2 } }
-    ]
-  },
-  {
-    offset: 2,
-    row: [{ ok: '2' }, { ok: 'it takes two to tango' }]
-  },
-  {
-    offset: 3,
-    row: [{ ok: '3' }, { ok: 'three is a crowd' }]
-  }
-], rowErrorResponse);
+export const normalWithErrorsResponse = _.concat(
+  [
+    {
+      output_columns: [{ transform: { id: 1 } }, { transform: { id: 2 } }]
+    },
+    {
+      offset: 2,
+      row: [{ ok: '2' }, { ok: 'it takes two to tango' }]
+    },
+    {
+      offset: 3,
+      row: [{ ok: '3' }, { ok: 'three is a crowd' }]
+    }
+  ],
+  rowErrorResponse
+);

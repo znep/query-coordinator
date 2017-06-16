@@ -2,18 +2,10 @@ import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-
-import {
-  dismissMetadataPane,
-  saveDatasetMetadata,
-  saveColumnMetadata
-} from 'actions/manageMetadata';
+import { editView } from 'actions/views';
+import { dismissMetadataPane, saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
 import { hideFlashMessage } from 'actions/flashMessage';
-import { edit } from 'actions/database';
-import {
-  SAVE_DATASET_METADATA,
-  SAVE_COLUMN_METADATA
-} from 'actions/apiCalls';
+import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'actions/apiCalls';
 import ApiCallButton from 'components/ApiCallButton';
 import MetadataContent from 'components/ManageMetadata/MetadataContent';
 import styles from 'styles/ManageMetadata/ManageMetadata.scss';
@@ -63,7 +55,7 @@ export function ManageMetadata(props) {
 
   return (
     <div className={styles.manageMetadata}>
-      <Modal {...modalProps} >
+      <Modal {...modalProps}>
         <ModalHeader {...headerProps} />
 
         <ModalContent>
@@ -71,11 +63,8 @@ export function ManageMetadata(props) {
         </ModalContent>
 
         <ModalFooter>
-          <button
-            id="cancel"
-            className={styles.button}
-            onClick={onDismiss}>
-              {I18n.common.cancel}
+          <button id="cancel" className={styles.button} onClick={onDismiss}>
+            {I18n.common.cancel}
           </button>
           <ApiCallButton {...saveBtnProps} />
         </ModalFooter>
@@ -95,26 +84,22 @@ ManageMetadata.propTypes = {
   columnsExist: PropTypes.bool
 };
 
-
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(dismissMetadataPane()),
   onSaveDataset: () => dispatch(saveDatasetMetadata()),
   onSaveCol: () => dispatch(saveColumnMetadata()),
-  onSidebarTabClick: (fourfour) => {
+  onSidebarTabClick: fourfour => {
     dispatch(hideFlashMessage());
 
-    dispatch(edit('views', {
-      id: fourfour,
-      displayMetadataFieldErrors: false
-    }));
+    dispatch(editView(fourfour, { displayMetadataFieldErrors: true }));
   }
 });
 
-const mapStateToProps = (state, ownProps) => ({
-  views: _.get(state, 'db.views', {}),
-  fourfour: state.routing.fourfour,
+const mapStateToProps = ({ entities, ui }, ownProps) => ({
+  views: entities.views,
+  fourfour: ui.routing.fourfour,
   path: ownProps.route.path,
-  columnsExist: !_.isEmpty(state.db.output_columns)
+  columnsExist: !_.isEmpty(entities.output_columns)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageMetadata);

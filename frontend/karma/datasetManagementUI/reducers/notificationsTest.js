@@ -1,78 +1,33 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import notificationReducer from 'reducers/notifications';
-import {
-  addNotification,
-  removeNotification
-} from 'actions/notifications';
-import {
-  UPLOAD_NOTIFICATION,
-  UPSERT_JOB_NOTIFICATION,
-  uploadNotification,
-  upsertJobNotification
-} from 'lib/notifications';
+import { addNotification, removeNotification } from 'actions/notifications';
 
 describe('reducers/notifications', () => {
+  it('handles ADD_NOTIFICATION', () => {
+    const action = addNotification(
+      'upload',
+      '75973bf0-0cf0-450f-ad88-40e2050dad7b',
+      121
+    );
+    const state = notificationReducer(undefined, action);
 
-  it('handles ADD_NOTIFICATION with an upload notification', () => {
-    const initialState = [];
-    const action = addNotification(uploadNotification(52));
-    expect(notificationReducer(initialState, action)).to.eql([
-      {
-        type: UPLOAD_NOTIFICATION,
-        uploadId: 52
-      }
-    ]);
+    assert.equal(state[0].kind, action.notification.kind);
+    assert.equal(state[0].uploadId, 121);
   });
 
-  it('handles ADD_NOTIFICATION with an upsert job notification', () => {
-    const initialState = [];
-    const action = addNotification(upsertJobNotification(52));
-    expect(notificationReducer(initialState, action)).to.eql([
-      {
-        type: UPSERT_JOB_NOTIFICATION,
-        upsertJobId: 52
-      }
-    ]);
-  });
+  it('handles REMOVE_NOTIFICATION', () => {
+    const action = addNotification(
+      'upload',
+      '75973bf0-0cf0-450f-ad88-40e2050dad7b',
+      121
+    );
 
-  it('handles REMOVE_NOTIFICATION with an upload notification', () => {
-    const initialState = [
-      {
-        type: UPSERT_JOB_NOTIFICATION,
-        upsertJobId: 52
-      },
-      {
-        type: UPLOAD_NOTIFICATION,
-        uploadId: 52
-      }
-    ];
-    const action = removeNotification(uploadNotification(52));
-    expect(notificationReducer(initialState, action)).to.eql([
-      {
-        type: UPSERT_JOB_NOTIFICATION,
-        upsertJobId: 52
-      }
-    ]);
-  });
+    const state = notificationReducer(undefined, action);
 
-  it('handles REMOVE_NOTIFICATION with an upsert job notification', () => {
-    const initialState = [
-      {
-        type: UPSERT_JOB_NOTIFICATION,
-        upsertJobId: 52
-      },
-      {
-        type: UPLOAD_NOTIFICATION,
-        uploadId: 52
-      }
-    ];
-    const action = removeNotification(upsertJobNotification(52));
-    expect(notificationReducer(initialState, action)).to.eql([
-      {
-        type: UPLOAD_NOTIFICATION,
-        uploadId: 52
-      }
-    ]);
-  });
+    const removeAction = removeNotification(action.notification.id);
 
+    const newState = notificationReducer(state, removeAction);
+
+    assert.equal(newState.length, 0);
+  });
 });

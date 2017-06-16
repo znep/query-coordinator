@@ -2058,6 +2058,7 @@ en:
       connection_error_body_advice: Check your internet connection and make sure to keep your browser window open while the file is uploading.
       connection_error_body_description: Something went wrong when trying to upload the file {0}.
       connection_error_title: Lost Connection
+      error: Error
       hide_details: Hide Details
       import_failed: Import Failed.
       processing: Processing data

@@ -1,89 +1,87 @@
 import _ from 'lodash';
-import { STATUS_UPDATING } from './lib/database/statuses';
-import { STATUS_CALL_IN_PROGRESS } from './lib/apiCallStatus';
-import { UPSERT_JOB_SUCCESSFUL } from 'actions/applyRevision';
+import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
+import { TASK_SET_SUCCESSFUL } from 'actions/applyRevision';
 import { LOAD_ROWS } from 'actions/apiCalls';
+import { CREATE_UPLOAD } from 'actions/manageUploads';
 
 // TODO: if perf becomes an issue, use reselect for memoization
-export function percentUpserted(db, upsertJobId) {
-  const upsertJob = db.upsert_jobs[upsertJobId];
+export function percentUpserted(entities, taskSetId) {
+  const taskSet = entities.task_sets[taskSetId];
 
-  if (upsertJob.status === UPSERT_JOB_SUCCESSFUL) {
+  if (taskSet.status === TASK_SET_SUCCESSFUL) {
     return 100;
   } else {
-    return 100 * (rowsUpserted(db, upsertJobId) / rowsToBeImported(db, upsertJob.output_schema_id));
+    return 100 * (rowsUpserted(entities, taskSetId) / rowsToBeImported(entities, taskSet.output_schema_id));
   }
 }
 
-export function rowsToBeImported(db, outputSchemaId) {
-  const outputSchema = db.output_schemas[outputSchemaId];
-  const inputSchema = db.input_schemas[outputSchema.input_schema_id];
+export function rowsToBeImported(entities, outputSchemaId) {
+  const outputSchema = entities.output_schemas[outputSchemaId];
+  const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
   const errorRows = outputSchema.error_count || 0;
 
   return Math.max(0, inputSchema.total_rows - errorRows);
 }
 
-export function rowsUpserted(db, upsertJobId) {
-  const upsertJob = db.upsert_jobs[upsertJobId];
-  if (!upsertJob || !upsertJob.log) {
+export function rowsUpserted(entities, taskSetId) {
+  const taskSet = entities.task_sets[taskSetId];
+  if (!taskSet || !taskSet.log) {
     return 0;
   }
-  const rowItems = upsertJob.log.
-    filter((logItem) => logItem.stage === 'rows_upserted').
-    map((logItem) => logItem.details.count);
+  // TODO: upate status here to reflect new DSMAPI changes
+  const rowItems = taskSet.log
+    .filter(logItem => logItem.stage === 'rows_upserted')
+    .map(logItem => logItem.details.count);
   return _.max(rowItems) || 0;
 }
 
-export function latestOutputSchema(db) {
-  return _.maxBy(_.values(db.output_schemas), 'id');
+export function latestOutputSchema(entities) {
+  return _.maxBy(_.values(entities.output_schemas), 'id');
 }
 
-export function columnsForInputSchema(db, inputSchemaId) {
-  const unsortedColumns = _.filter(
-    db.input_columns,
-    (ic) => ic.input_schema_id === inputSchemaId
-  );
+export function columnsForInputSchema(entities, inputSchemaId) {
+  const unsortedColumns = _.filter(entities.input_columns, ic => ic.input_schema_id === inputSchemaId);
   return _.sortBy(unsortedColumns, 'position');
 }
 
-export function columnsForOutputSchema(db, outputSchemaId) {
-  return _.chain(db.output_schema_columns).
-    filter({ output_schema_id: outputSchemaId }).
-    map((outputSchemaColumn) => {
-      const outputColumn = db.output_columns[outputSchemaColumn.output_column_id];
+export function columnsForOutputSchema(entities, outputSchemaId) {
+  return _.chain(entities.output_schema_columns)
+    .filter({ output_schema_id: outputSchemaId })
+    .map(outputSchemaColumn => {
+      const outputColumn = entities.output_columns[outputSchemaColumn.output_column_id];
       return {
         ...outputColumn,
-        transform: db.transforms[outputColumn.transform_id],
+        transform: entities.transforms[outputColumn.transform_id],
         is_primary_key: outputSchemaColumn.is_primary_key || false
       };
-    }).
-    sortBy('position').
-    value();
+    })
+    .sortBy('position')
+    .value();
 }
 
 export function allTransformsDone(columnsWithTransforms, inputSchema) {
-  return columnsWithTransforms.every((column) => (
-    column.transform.contiguous_rows_processed &&
+  return columnsWithTransforms.every(
+    column =>
+      column.transform.contiguous_rows_processed &&
       column.transform.contiguous_rows_processed === inputSchema.total_rows
-  ));
+  );
 }
 
-export function uploadsInProgress(db) {
-  return _.filter(db.uploads, (upload) => (
-    upload.__status__.type === STATUS_UPDATING
-  ));
+export function uploadsInProgress(apiCalls) {
+  return _.filter(
+    apiCalls,
+    apiCall => apiCall.status === STATUS_CALL_IN_PROGRESS && apiCall.operation === CREATE_UPLOAD
+  );
 }
 
 export function rowsTransformed(outputColumns) {
-  return _.min(
-    outputColumns.map((col) => (col.transform.contiguous_rows_processed || 0))
-  ) || 0;
+  return _.min(outputColumns.map(col => col.transform.contiguous_rows_processed || 0)) || 0;
 }
 
-export function pathForOutputSchema(db, outputSchemaId) {
-  const outputSchema = db.output_schemas[outputSchemaId];
-  const inputSchema = db.input_schemas[outputSchema.input_schema_id];
-  const upload = db.uploads[inputSchema.upload_id];
+export function pathForOutputSchema(entities, outputSchemaId) {
+  const outputSchema = entities.output_schemas[outputSchemaId];
+  const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
+  const upload = entities.uploads[inputSchema.upload_id];
   return {
     outputSchema,
     inputSchema,
@@ -92,16 +90,14 @@ export function pathForOutputSchema(db, outputSchemaId) {
 }
 
 export function rowLoadOperationsInProgress(apiCalls) {
-  return _.filter(apiCalls, (call) => (
-    call.operation === LOAD_ROWS
-      && call.status === STATUS_CALL_IN_PROGRESS
-  )).length;
+  return _.filter(apiCalls, call => call.operation === LOAD_ROWS && call.status === STATUS_CALL_IN_PROGRESS)
+    .length;
 }
 
-// Merges formDataModel with db.output_columns, then transforms that into the
+// Merges formDataModel with entities.output_columns, then transforms that into the
 // shape expected by DSMAPI
-export function updatedOutputColumns(db, formDataModel) {
-  const { output_columns: outputColumns, transforms } = db;
+export function updatedOutputColumns(entities, formDataModel) {
+  const { output_columns: outputColumns, transforms } = entities;
 
   const updatedColumns = Object.keys(formDataModel).reduce((acc, key) => {
     const [id, ...rest] = key.split('-').reverse();
@@ -134,26 +130,24 @@ export function updatedOutputColumns(db, formDataModel) {
 // - computation of denormalized error count for output schema
 // - starting new transforms when a new output schema is created
 // - endpoints which return results
-export function currentAndIgnoredOutputColumns(db) {
-  // TODO: remove filters once we get the status out of output schema
-  const osIds = Object.keys(db.output_schemas)
-    .map(_.toNumber)
-    .filter(key => !!key);
+export function currentAndIgnoredOutputColumns(entities) {
+  const osIds = Object.keys(entities.output_schemas).map(_.toNumber);
 
   const latestOutputSchemaId = Math.max(...osIds);
 
   // get all input column ids
-  return _.chain(db.input_columns)
+  return _.chain(entities.input_columns)
     .filter(ic => {
-      const isid = db.output_schemas[latestOutputSchemaId].input_schema_id;
+      const isid = entities.output_schemas[latestOutputSchemaId].input_schema_id;
       return ic.input_schema_id === isid;
     })
     .map(ic => ic.id)
     .map(icid => {
       // get ids of all transforms that were run on this input column
-      const matchingTransformIds = Object.keys(db.transforms).filter(tid => {
-        return db.transforms[tid].transform_input_columns
-          .filter(tic => tic.input_column_id === _.toNumber(icid)).length;
+      const matchingTransformIds = Object.keys(entities.transforms).filter(tid => {
+        return entities.transforms[tid].transform_input_columns.filter(
+          tic => tic.input_column_id === _.toNumber(icid)
+        ).length;
       });
 
       // of those ids, return the highest (i.e., the most recent)
@@ -161,38 +155,41 @@ export function currentAndIgnoredOutputColumns(db) {
     })
     .flatMap(tid => {
       // get ids of ouput_columns that resulted from this transform
-      return Object.keys(db.output_columns)
-        .filter(ocid => db.output_columns[ocid].transform_id === tid)
+      return Object.keys(entities.output_columns)
+        .filter(ocid => entities.output_columns[ocid].transform_id === tid)
         .map(_.toNumber);
     })
-    .reduce((acc, ocid) => {
-      // get array of ids of all output columns in current output schema
-      const currentOutputColumnIds = _.chain(db.output_schema_columns)
-        .filter(osc => osc.output_schema_id === latestOutputSchemaId)
-        .reduce((innerAcc, osc) => {
-          return [...innerAcc, osc.output_column_id];
-        }, [])
-        .value();
+    .reduce(
+      (acc, ocid) => {
+        // get array of ids of all output columns in current output schema
+        const currentOutputColumnIds = _.chain(entities.output_schema_columns)
+          .filter(osc => osc.output_schema_id === latestOutputSchemaId)
+          .reduce((innerAcc, osc) => {
+            return [...innerAcc, osc.output_column_id];
+          }, [])
+          .value();
 
-      // sort output column ids based on whether they are in the current output schema or not
-      if (currentOutputColumnIds.includes(ocid)) {
-        return {
-          ...acc,
-          current: [...acc.current, ocid]
-        };
-      } else {
-        return {
-          ...acc,
-          ignored: [...acc.ignored, ocid]
-        };
-      }
-    }, { current: [], ignored: [] })
+        // sort output column ids based on whether they are in the current output schema or not
+        if (currentOutputColumnIds.includes(ocid)) {
+          return {
+            ...acc,
+            current: [...acc.current, ocid]
+          };
+        } else {
+          return {
+            ...acc,
+            ignored: [...acc.ignored, ocid]
+          };
+        }
+      },
+      { current: [], ignored: [] }
+    )
     .thru(val => {
       // map ocids to actual oc objects
       return {
-        current: val.current.map(ocid => db.output_columns[ocid]),
+        current: val.current.map(ocid => entities.output_columns[ocid]),
         ignored: val.ignored.map(ocid => ({
-          ...db.output_columns[ocid],
+          ...entities.output_columns[ocid],
           ignored: true
         }))
       };
@@ -202,7 +199,7 @@ export function currentAndIgnoredOutputColumns(db) {
       // id as an output column in val.current, that means it is an old copy that
       // contains outdated metadata. We don't want to display this to the user so
       // we filter it out here. The ideal place to have done this is in the flatMap
-      // on line 147, but unfortunately db.output_schema_columns doesn't have the
+      // on line 147, but unfortunately entities.output_schema_columns doesn't have the
       // information we need at that point.
       const currentTransforms = val.current.map(oc => oc.transform_id);
       const newIgnored = val.ignored.filter(oc => !currentTransforms.includes(oc.transform_id));
@@ -224,16 +221,14 @@ export function currentAndIgnoredOutputColumns(db) {
         .filter(oc => transformIds.filter(tid => tid === oc.transform_id).length > 1)
         .map(oc => oc.id);
 
-      const sortedIds = [...osIds]
-        .sort()
-        .reverse();
+      const sortedIds = [...osIds].sort().reverse();
 
       function crawlOutputSchemas(arr) {
         if (!arr || !arr.length) {
           return false;
         }
         const [head, ...tail] = arr;
-        const currentOutputColumnIds = _.chain(db.output_schema_columns)
+        const currentOutputColumnIds = _.chain(entities.output_schema_columns)
           .filter(osc => osc.output_schema_id === head)
           .reduce((acc, osc) => {
             return [...acc, osc.output_column_id];
@@ -259,18 +254,17 @@ export function currentAndIgnoredOutputColumns(db) {
         ...val,
         ignored: newIgnored
       };
-
     })
     .thru(val => {
       // add transform data
       return {
         current: val.current.map(oc => ({
           ...oc,
-          transform: db.transforms[oc.transform_id]
+          transform: entities.transforms[oc.transform_id]
         })),
         ignored: val.ignored.map(oc => ({
           ...oc,
-          transform: db.transforms[oc.transform_id]
+          transform: entities.transforms[oc.transform_id]
         }))
       };
     })

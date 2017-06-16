@@ -16,6 +16,7 @@ function RecentActionsTimestamp({ date }) {
   );
 }
 
+// Actaully expects a Date but there's no specific proptype for that
 RecentActionsTimestamp.propTypes = {
   date: PropTypes.object.isRequired
 };
@@ -29,119 +30,129 @@ function creator(item) {
 
 const updateActivity = (update, at) => {
   const key = `update-${update.id}`;
-  return (<div key={key} className={styles.activity} data-activity-type="update">
-    <div className={styles.timeline}>
-      <SocrataIcon name="plus2" className={styles.icon} />
+  return (
+    <div key={key} className={styles.activity} data-activity-type="update">
+      <div className={styles.timeline}>
+        <SocrataIcon name="plus2" className={styles.icon} />
+      </div>
+      <div>
+        <p>
+          <span className={styles.createdBy}>{creator(update)}</span>&nbsp;
+          opened a revision
+        </p>
+        <RecentActionsTimestamp date={at} />
+      </div>
     </div>
-    <div>
-      <p>
-        <span className={styles.createdBy}>{creator(update)}</span>&nbsp;
-        opened a revision
-      </p>
-      <RecentActionsTimestamp date={at} />
-    </div>
-  </div>);
+  );
 };
 
 const uploadActivity = (upload, at) => {
   const key = `upload-${upload.id}`;
-  return (<div key={key} className={styles.activity} data-activity-type="upload">
-    <div className={styles.timeline}>
-      <SocrataIcon name="data" className={styles.icon} />
+  return (
+    <div key={key} className={styles.activity} data-activity-type="upload">
+      <div className={styles.timeline}>
+        <SocrataIcon name="data" className={styles.icon} />
+      </div>
+      <div>
+        <p>
+          <span className={styles.createdBy}>{creator(upload)}</span>&nbsp;
+          uploaded a file
+        </p>
+        <RecentActionsTimestamp date={at} />
+      </div>
     </div>
-    <div>
-      <p>
-        <span className={styles.createdBy}>{creator(upload)}</span>&nbsp;
-        uploaded a file
-      </p>
-      <RecentActionsTimestamp date={at} />
-    </div>
-  </div>);
+  );
 };
-
 
 const outputSchemaActivity = (item, at) => {
   const key = `os-${item.outputSchema.id}`;
-  return (<div key={key} className={styles.activity} data-activity-type="outputschema">
-    <div className={styles.timeline}>
-      <SocrataIcon name="edit" className={styles.icon} />
+  return (
+    <div key={key} className={styles.activity} data-activity-type="outputschema">
+      <div className={styles.timeline}>
+        <SocrataIcon name="edit" className={styles.icon} />
+      </div>
+      <div>
+        <p>
+          <span className={styles.createdBy}>{creator(item.outputSchema)}</span>&nbsp;
+          changed the&nbsp;
+          <Link to={Links.showOutputSchema(item.upload.id, item.inputSchema.id, item.outputSchema.id)}>
+            schema
+          </Link>
+        </p>
+        <RecentActionsTimestamp date={at} />
+      </div>
     </div>
-    <div>
-      <p>
-        <span className={styles.createdBy}>{creator(item.outputSchema)}</span>&nbsp;
-        changed the&nbsp;
-        <Link to={Links.showOutputSchema(item.upload.id, item.inputSchema.id, item.outputSchema.id)}>
-          schema
-        </Link>
-      </p>
-      <RecentActionsTimestamp date={at} />
-    </div>
-  </div>);
+  );
 };
 
-const upsertActivity = (upsert, at) => {
-  const key = `upsert-${upsert.id}`;
-  return (<div key={key} className={styles.activity} data-activity-type="upsert">
-    <div className={styles.timeline}>
-      <SocrataIcon name="dataset" className={styles.icon} />
+const taskSetActivity = (taskSet, at) => {
+  const key = `taskSet-${taskSet.id}`;
+  return (
+    <div key={key} className={styles.activity} data-activity-type="taskSet">
+      <div className={styles.timeline}>
+        <SocrataIcon name="dataset" className={styles.icon} />
+      </div>
+      <div>
+        <p>
+          <span className={styles.createdBy}>{creator(taskSet)}</span>&nbsp;
+          started data processing
+        </p>
+        <RecentActionsTimestamp date={at} />
+      </div>
     </div>
-    <div>
-      <p>
-        <span className={styles.createdBy}>{creator(upsert)}</span>&nbsp;
-        started data processing
-      </p>
-      <RecentActionsTimestamp date={at} />
-    </div>
-  </div>);
+  );
 };
 
-
-const upsertCompletedActivity = (upsert, at) => {
-  const key = `completed-upsert-${upsert.id}`;
-  return (<div key={key} className={styles.activity} data-activity-type="upsertcompleted">
-    <div className={styles.timeline}>
-      <SocrataIcon name="checkmark3" className={styles.icon} />
+const taskSetCompletedActivity = (taskSet, at) => {
+  const key = `completed-taskSet-${taskSet.id}`;
+  return (
+    <div key={key} className={styles.activity} data-activity-type="taskSetcompleted">
+      <div className={styles.timeline}>
+        <SocrataIcon name="checkmark3" className={styles.icon} />
+      </div>
+      <div>
+        <p>
+          Data processing successfully finished
+        </p>
+        <RecentActionsTimestamp date={at} />
+      </div>
     </div>
-    <div>
-      <p>
-        Data processing successfully finished
-      </p>
-      <RecentActionsTimestamp date={at} />
-    </div>
-  </div>);
+  );
 };
 
-const upsertFailedActivity = (upsert, at) => {
-  const key = `failed-upsert-${upsert.id}`;
-  return (<div key={key} className={styles.activity} data-activity-type="upsertfailed">
-    <div className={styles.timeline}>
-      <SocrataIcon name="failed" className={styles.icon} />
+const taskSetFailedActivity = (taskSet, at) => {
+  const key = `failed-taskSet-${taskSet.id}`;
+  return (
+    <div key={key} className={styles.activity} data-activity-type="taskSetfailed">
+      <div className={styles.timeline}>
+        <SocrataIcon name="failed" className={styles.icon} />
+      </div>
+      <div>
+        <p>
+          Data processing failed
+        </p>
+        <RecentActionsTimestamp date={at} />
+      </div>
     </div>
-    <div>
-      <p>
-        Data processing failed
-      </p>
-      <RecentActionsTimestamp date={at} />
-    </div>
-  </div>);
+  );
 };
 
-function activitiesOf(db) {
-  const updateModel = _.values(db.revisions)[0];
+function activitiesOf(entities) {
+  const updateModel = _.values(entities.revisions)[0];
   if (!updateModel) return [];
   const update = {
     type: 'update',
     value: updateModel,
     at: updateModel.created_at
   };
-  const uploads = _.map(db.uploads, (upload) => ({
+  const uploads = _.map(entities.uploads, upload => ({
     type: 'upload',
     value: upload,
     at: upload.created_at
   }));
-  const outputSchemas = _.map(db.output_schemas, (outputSchema) => {
-    const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
-    const upload = _.find(db.uploads, { id: inputSchema.upload_id });
+  const outputSchemas = _.map(entities.output_schemas, outputSchema => {
+    const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
+    const upload = _.find(entities.uploads, { id: inputSchema.upload_id });
     return {
       type: 'outputSchema',
       at: outputSchema.created_at,
@@ -152,60 +163,50 @@ function activitiesOf(db) {
       }
     };
   });
-  const upserts = _.map(db.upsert_jobs, (upsertJob) => ({
-    type: 'upsert',
-    value: upsertJob,
-    at: upsertJob.created_at
+  const taskSets = _.map(entities.task_sets, taskSet => ({
+    type: 'taskSet',
+    value: taskSet,
+    at: taskSet.created_at
   }));
 
-  const finishedUpserts = _.chain(db.upsert_jobs).
-    filter((upsertJob) => !!upsertJob.finished_at).
-    filter((upsertJob) => upsertJob.status === ApplyRevision.UPSERT_JOB_SUCCESSFUL).
-    map((upsertJob) => ({
-      type: 'upsertCompleted',
-      value: upsertJob,
-      at: upsertJob.finished_at
-    })
-  );
+  const finishedTaskSets = _.chain(entities.task_sets)
+    .filter(taskSet => !!taskSet.finished_at)
+    .filter(taskSet => taskSet.status === ApplyRevision.TASK_SET_SUCCESSFUL)
+    .map(taskSet => ({
+      type: 'taskSetCompleted',
+      value: taskSet,
+      at: taskSet.finished_at
+    }));
 
-  const failedUpserts = _.chain(db.upsert_jobs).
-    filter((upsertJob) => !!upsertJob.finished_at).
-    filter((upsertJob) => upsertJob.status === ApplyRevision.UPSERT_JOB_FAILURE).
-    map((upsertJob) => ({
-      type: 'upsertFailed',
-      value: upsertJob,
-      at: upsertJob.finished_at
-    })
-  );
-
+  const failedTaskSets = _.chain(entities.task_sets)
+    .filter(taskSet => !!taskSet.finished_at)
+    .filter(taskSet => taskSet.status === ApplyRevision.TASK_SET_FAILURE)
+    .map(taskSet => ({
+      type: 'taskSetFailed',
+      value: taskSet,
+      at: taskSet.finished_at
+    }));
 
   const kinds = {
     update: updateActivity,
     upload: uploadActivity,
     outputSchema: outputSchemaActivity,
-    upsert: upsertActivity,
-    upsertCompleted: upsertCompletedActivity,
-    upsertFailed: upsertFailedActivity
+    taskSet: taskSetActivity,
+    taskSetCompleted: taskSetCompletedActivity,
+    taskSetFailed: taskSetFailedActivity
   };
 
-  const toView = (activity) => {
+  const toView = activity => {
     const fn = kinds[activity.type];
     return fn && fn(activity.value, activity.at);
   };
 
-  const items = [
-    update,
-    ...uploads,
-    ...outputSchemas,
-    ...upserts,
-    ...finishedUpserts,
-    ...failedUpserts
-  ];
+  const items = [update, ...uploads, ...outputSchemas, ...taskSets, ...finishedTaskSets, ...failedTaskSets];
   return _.reverse(_.sortBy(items, 'at')).map(toView);
 }
 
-function RecentActions({ db }) {
-  const items = activitiesOf(db);
+function RecentActions({ entities }) {
+  const items = activitiesOf(entities);
   return (
     <div>
       {items}
@@ -215,12 +216,12 @@ function RecentActions({ db }) {
 
 RecentActions.propTypes = {
   routing: PropTypes.object.isRequired,
-  db: PropTypes.object.isRequired
+  entities: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ db, routing }) => ({
-  db,
-  routing: routing.location
+const mapStateToProps = ({ entities, ui }) => ({
+  entities,
+  routing: ui.routing.location
 });
 
 export default connect(mapStateToProps)(RecentActions);

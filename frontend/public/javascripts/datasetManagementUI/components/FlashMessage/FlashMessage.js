@@ -32,10 +32,7 @@ export const FlashMessage = ({ kind, message, visible, onCloseClick }) => {
     return (
       <div className={className}>
         <SocrataIcon name={iconName} className={iconClass} />
-        <SocrataIcon
-          name="close-2"
-          className={styles.closeButton}
-          onIconClick={onCloseClick} />
+        <SocrataIcon name="close-2" className={styles.closeButton} onIconClick={onCloseClick} />
         {message}
       </div>
     );
@@ -51,13 +48,13 @@ FlashMessage.propTypes = {
   onCloseClick: PropTypes.func.isRequired
 };
 
-const mapStateToProps = ({ flashMessage }) => ({
-  kind: flashMessage.kind,
-  message: flashMessage.message,
-  visible: flashMessage.visible
+const mapStateToProps = ({ ui }) => ({
+  kind: ui.flashMessage.kind,
+  message: ui.flashMessage.message,
+  visible: ui.flashMessage.visible
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   onCloseClick: () => dispatch(hideFlashMessage())
 });
 

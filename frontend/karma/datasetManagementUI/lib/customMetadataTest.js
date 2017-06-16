@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import {
   makeNamespacedFieldName,
   fromNestedToFlat,
@@ -43,7 +43,6 @@ describe('lib/customMetadata', () => {
     });
   });
 
-
   describe('lib/customMetadata/fromNestedToFlat', () => {
     const nestedFieldset = {
       'dog info': {
@@ -62,11 +61,17 @@ describe('lib/customMetadata', () => {
     };
 
     it('converts nested fieldset object to flat namespaced object', () => {
-      assert.deepEqual(fromNestedToFlat(nestedFieldset, false), expectedFlattendObj);
+      assert.deepEqual(
+        fromNestedToFlat(nestedFieldset, false),
+        expectedFlattendObj
+      );
     });
 
     it('is isomorphic to fromFlatToNested', () => {
-      assert.deepEqual(fromFlatToNested(fromNestedToFlat(nestedFieldset, false)), nestedFieldset);
+      assert.deepEqual(
+        fromFlatToNested(fromNestedToFlat(nestedFieldset, false)),
+        nestedFieldset
+      );
     });
   });
 
@@ -88,11 +93,17 @@ describe('lib/customMetadata', () => {
     };
 
     it('converts a flat form data-model to a nested object', () => {
-      assert.deepEqual(fromFlatToNested(flattendFormDataModel), expectedNestedFieldset);
+      assert.deepEqual(
+        fromFlatToNested(flattendFormDataModel),
+        expectedNestedFieldset
+      );
     });
 
     it('is isomorphic to fromNestedToFlat', () => {
-      assert.deepEqual(fromNestedToFlat(fromFlatToNested(flattendFormDataModel)), flattendFormDataModel);
+      assert.deepEqual(
+        fromNestedToFlat(fromFlatToNested(flattendFormDataModel)),
+        flattendFormDataModel
+      );
     });
   });
 });

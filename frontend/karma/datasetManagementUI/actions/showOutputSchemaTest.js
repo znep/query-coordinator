@@ -8,17 +8,16 @@ import {
   addColumn,
   dropColumn
 } from 'actions/showOutputSchema';
+import { bootstrapApp } from 'actions/bootstrap';
 import { createUpload } from 'actions/manageUploads';
 import { latestOutputSchema, columnsForOutputSchema } from 'selectors';
 import mockAPI from '../testHelpers/mockAPI';
-import initialState from '../data/baseState';
-import rootReducer from 'reducers';
+import rootReducer from 'reducers/rootReducer';
 import wsmock from '../testHelpers/mockSocket';
 
 const mockStore = configureStore([thunk]);
 
 describe('actions/showOutputSchema', () => {
-
   describe('addColumn', () => {
     let unmock;
     let unmockWS;
@@ -31,12 +30,19 @@ describe('actions/showOutputSchema', () => {
       unmockWS = wsmock();
 
       const store = createStore(rootReducer, applyMiddleware(thunk));
-
-      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+      store.dispatch(
+        bootstrapApp(
+          window.initialState.view,
+          window.initialState.revision,
+          window.initialState.customMetadata
+        )
+      );
+      store
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
         .then(() => {
-          const {db} = store.getState();
-          os = latestOutputSchema(db);
-          column = columnsForOutputSchema(db, os.id)[0];
+          const { entities } = store.getState();
+          os = latestOutputSchema(entities);
+          column = columnsForOutputSchema(entities, os.id)[0];
           return store.dispatch(addColumn(os, column));
         })
         .then(() => {
@@ -44,17 +50,16 @@ describe('actions/showOutputSchema', () => {
         })
         .then(state => {
           const fakeStore = mockStore(state);
-          return fakeStore.dispatch(addColumn(os, column))
+          return fakeStore
+            .dispatch(addColumn(os, column))
             .then(() => fakeStore.getActions());
         })
         .then(actions => {
           recordedActions = actions;
-          const batch = actions.filter(action => action.type === 'BATCH')[0];
-          batch.operations.forEach(op => recordedActions.push(op));
           done();
         })
         .catch(err => {
-          done();
+          done(err);
         });
     });
 
@@ -64,29 +69,40 @@ describe('actions/showOutputSchema', () => {
     });
 
     it('adds a new output schema to the store', () => {
-      const expectedAction = recordedActions.filter(action =>
-        action.type === 'UPSERT_SUCCEEDED' && action.tableName === 'output_schemas');
+      const expectedAction = recordedActions.filter(
+        action =>
+          action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          _.has(action, 'outputSchema')
+      );
 
       assert.isAtLeast(expectedAction.length, 1);
     });
 
     it('adds the added column to the store', () => {
-      const expectedAction = recordedActions.filter(action =>
-        action.type === 'UPSERT_FROM_SERVER'
-        && action.tableName === 'output_columns'
-        && action.newRecord.field_name === column.field_name
-        && action.newRecord.transform_id === column.transform_id);
+      const expectedAction = recordedActions
+        .filter(
+          action =>
+            action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+            _.has(action, 'outputColumns')
+        )
+        .filter(action =>
+          Object.keys(action.outputColumns).includes(`${column.id}`)
+        );
 
       assert.isAtLeast(expectedAction.length, 1);
     });
 
     it('redirects to a new output schema preview', () => {
-      const expectedAction = recordedActions.filter(action =>
-        action.type === '@@router/CALL_HISTORY_METHOD')[0]
+      const expectedAction = recordedActions.filter(
+        action => action.type === '@@router/CALL_HISTORY_METHOD'
+      )[0];
 
       const { payload } = expectedAction;
 
-      assert.match(payload.args[0], /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/);
+      assert.match(
+        payload.args[0],
+        /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/
+      );
     });
   });
 
@@ -103,11 +119,20 @@ describe('actions/showOutputSchema', () => {
 
       const store = createStore(rootReducer, applyMiddleware(thunk));
 
-      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+      store.dispatch(
+        bootstrapApp(
+          window.initialState.view,
+          window.initialState.revision,
+          window.initialState.customMetadata
+        )
+      );
+
+      store
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
         .then(() => {
-          const {db} = store.getState();
-          os = latestOutputSchema(db);
-          column = columnsForOutputSchema(db, os.id)[0];
+          const { entities } = store.getState();
+          os = latestOutputSchema(entities);
+          column = columnsForOutputSchema(entities, os.id)[0];
           return store.dispatch(dropColumn(os, column));
         })
         .then(() => {
@@ -115,17 +140,16 @@ describe('actions/showOutputSchema', () => {
         })
         .then(state => {
           const fakeStore = mockStore(state);
-          return fakeStore.dispatch(dropColumn(os, column))
+          return fakeStore
+            .dispatch(dropColumn(os, column))
             .then(() => fakeStore.getActions());
         })
         .then(actions => {
           recordedActions = actions;
-          const batch = actions.filter(action => action.type === 'BATCH')[0];
-          batch.operations.forEach(op => recordedActions.push(op));
           done();
         })
         .catch(err => {
-          done();
+          done(err);
         });
     });
 
@@ -135,31 +159,41 @@ describe('actions/showOutputSchema', () => {
     });
 
     it('adds a new output schema to the store', () => {
-      const expectedAction = recordedActions.filter(action =>
-        action.type === 'UPSERT_SUCCEEDED' && action.tableName === 'output_schemas');
+      const expectedAction = recordedActions.filter(
+        action =>
+          action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          _.has(action, 'outputSchema')
+      );
 
       assert.isAtLeast(expectedAction.length, 1);
     });
 
-    it('does not include the droped column when updateding the store', () => {
-      const expectedAction = recordedActions.filter(action =>
-        action.type === 'UPSERT_FROM_SERVER'
-        && action.tableName === 'output_columns'
-        && action.newRecord.field_name === column.field_name
-        && action.newRecord.transform_id === column.transform_id);
+    it('does not include the droped column when updating the store', () => {
+      const expectedAction = recordedActions
+        .filter(
+          action =>
+            action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+            _.has(action, 'outputColumns')
+        )
+        .filter(action =>
+          Object.keys(action.outputColumns).includes(`${column.transform_id}`)
+        );
 
       assert.equal(expectedAction.length, 0);
     });
 
     it('redirects to a new output schema preview', () => {
-      const expectedAction = recordedActions.filter(action =>
-        action.type === '@@router/CALL_HISTORY_METHOD')[0]
+      const expectedAction = recordedActions.filter(
+        action => action.type === '@@router/CALL_HISTORY_METHOD'
+      )[0];
 
       const { payload } = expectedAction;
 
-      assert.match(payload.args[0], /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/);
+      assert.match(
+        payload.args[0],
+        /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/
+      );
     });
-
   });
 
   describe('updateColumnType', () => {
@@ -175,11 +209,20 @@ describe('actions/showOutputSchema', () => {
 
       const store = createStore(rootReducer, applyMiddleware(thunk));
 
-      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+      store.dispatch(
+        bootstrapApp(
+          window.initialState.view,
+          window.initialState.revision,
+          window.initialState.customMetadata
+        )
+      );
+
+      store
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
         .then(() => {
-          const {db} = store.getState();
-          os = latestOutputSchema(db);
-          column = columnsForOutputSchema(db, os.id)[0];
+          const { entities } = store.getState();
+          os = latestOutputSchema(entities);
+          column = columnsForOutputSchema(entities, os.id)[0];
           return store.dispatch(updateColumnType(os, column, 'SoQLText'));
         })
         .then(() => {
@@ -187,17 +230,16 @@ describe('actions/showOutputSchema', () => {
         })
         .then(state => {
           const fakeStore = mockStore(state);
-          return fakeStore.dispatch(updateColumnType(os, column, 'SoQLText'))
+          return fakeStore
+            .dispatch(updateColumnType(os, column, 'SoQLText'))
             .then(() => fakeStore.getActions());
         })
         .then(actions => {
           recordedActions = actions;
-          const batch = actions.filter(action => action.type === 'BATCH')[0];
-          batch.operations.forEach(op => recordedActions.push(op));
           done();
         })
         .catch(err => {
-          done();
+          done(err);
         });
     });
 
@@ -207,37 +249,59 @@ describe('actions/showOutputSchema', () => {
     });
 
     it('adds a new output schema to the store', () => {
-      const expectedAction = recordedActions.filter(action =>
-        action.type === 'UPSERT_SUCCEEDED' && action.tableName === 'output_schemas');
+      const expectedAction = recordedActions.filter(
+        action =>
+          action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          _.has(action, 'outputSchema')
+      );
 
       assert.isAtLeast(expectedAction.length, 1);
     });
 
     it('adds new output column / transform to the store', () => {
-      const expectedColumn = recordedActions.filter(action =>
-        action.type === 'UPSERT_FROM_SERVER'
-        && action.tableName === 'output_columns'
-        && action.newRecord.field_name === column.field_name);
+      const expectedColumn = recordedActions
+        .filter(action => action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS')
+        .map(action => action.outputColumns)
+        .reduce((acc, outputColumns) => {
+          return [
+            ...acc,
+            ...Object.keys(outputColumns).map(key => outputColumns[key])
+          ];
+        }, [])
+        .filter(
+          outputColumn =>
+            outputColumn.position === column.position &&
+            outputColumn.field_name === column.field_name
+        );
 
-      const newTransformId = expectedColumn[0].newRecord.transform_id;
+      const newTransformId = expectedColumn[0].transform_id;
 
-      const expectedTransform = recordedActions.filter(action =>
-        action.type === 'UPSERT_FROM_SERVER'
-        && action.tableName === 'transforms'
-        && action.newRecord.id === newTransformId
-        && action.newRecord.output_soql_type === 'text');
+      const expectedTransform = recordedActions
+        .filter(action => action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS')
+        .map(action => action.transforms)
+        .reduce((acc, transforms) => {
+          return [
+            ...acc,
+            ...Object.keys(transforms).map(key => transforms[key])
+          ];
+        }, [])
+        .filter(transform => transform.id === newTransformId);
 
       assert.isAtLeast(expectedColumn.length, 1);
       assert.isAtLeast(expectedTransform.length, 1);
     });
 
     it('redirects to a new output schema preview', () => {
-      const expectedAction = recordedActions.filter(action =>
-        action.type === '@@router/CALL_HISTORY_METHOD')[0]
+      const expectedAction = recordedActions.filter(
+        action => action.type === '@@router/CALL_HISTORY_METHOD'
+      )[0];
 
       const { payload } = expectedAction;
 
-      assert.match(payload.args[0], /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/);
+      assert.match(
+        payload.args[0],
+        /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/
+      );
     });
   });
 });

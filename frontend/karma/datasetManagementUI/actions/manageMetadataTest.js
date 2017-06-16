@@ -1,41 +1,34 @@
 import { assert } from 'chai';
+import _ from 'lodash';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { applyMiddleware, createStore } from 'redux';
-import { saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
 import {
-  UPSERT_SUCCEEDED,
-  UPSERT_STARTED,
-  UPSERT_FROM_SERVER,
-  UPDATE_STARTED,
-  SET_VIEW,
-  UPDATE_SUCCEEDED
-} from 'actions/database';
+  saveDatasetMetadata,
+  saveColumnMetadata
+} from 'actions/manageMetadata';
+import { API_CALL_STARTED, SAVE_DATASET_METADATA } from 'actions/apiCalls';
 import {
-  API_CALL_STARTED,
-  SAVE_DATASET_METADATA
-} from 'actions/apiCalls';
-import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX } from 'lib/customMetadata';
+  PRIVATE_CUSTOM_FIELD_PREFIX,
+  CUSTOM_FIELD_PREFIX
+} from 'lib/customMetadata';
 import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
 import { createUpload } from 'actions/manageUploads';
 import mockAPI from '../testHelpers/mockAPI';
-import initialState from '../data/baseState';
-import { upsertFromServer, edit } from 'actions/database';
-import rootReducer from 'reducers';
+import rootReducer from 'reducers/rootReducer';
+import { bootstrapApp } from 'actions/bootstrap';
+import { editView } from 'actions/views';
+import { setFourfour, addLocation } from 'actions/routing';
 import wsmock from '../testHelpers/mockSocket';
 
 const mockStore = configureStore([thunk]);
 
 const metadata = {
-  id: 'tw7g-jnvn',
+  id: 'ww72-hpm3',
   model: {
     name: 'better description',
-    tags: [
-      'one',
-      'two',
-      'three'
-    ],
-    email: 'test@socrata.com',
+    tags: ['one', 'two', 'three'],
+    email: 'test@socrata.com'
   },
   colFormModel: {
     'display-name-18133': 'IDs',
@@ -46,9 +39,7 @@ const metadata = {
     'field-name-18136': 'case_number'
   },
   colFormIsDirty: {
-    fields: [
-      'field-name-18136'
-    ],
+    fields: ['field-name-18136'],
     form: true
   },
   colFormSchema: {
@@ -73,20 +64,43 @@ describe('actions/manageMetadata', () => {
   });
 
   beforeEach(() => {
-    store = createStore(rootReducer, initialState, applyMiddleware(thunk));
+    store = createStore(rootReducer, applyMiddleware(thunk));
+    store.dispatch(
+      bootstrapApp(
+        window.initialState.view,
+        window.initialState.revision,
+        window.initialState.customMetadata
+      )
+    );
+    store.dispatch(editView(metadata.id, metadata));
+    store.dispatch(
+      setFourfour(Object.keys(store.getState().entities.views)[0])
+    );
 
-    store.dispatch(upsertFromServer('views', metadata));
+    store.dispatch(
+      addLocation({
+        locationBeforeTransitions: {
+          pathname:
+            '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/uploads/114/schemas/97/output/143',
+          search: '',
+          hash: '',
+          action: 'PUSH',
+          key: 'lb01bi',
+          query: {}
+        }
+      })
+    );
   });
 
   describe('actions/manageMetadata/saveDatasetMetadata', () => {
     it('dispatches an api call started action with correct data', done => {
       const fakeStore = mockStore(store.getState());
+      const fourfour = Object.keys(store.getState().entities.views)[0];
 
-      const fourfour = Object.keys(store.getState().db.views)[0];
-
-      fakeStore.dispatch(saveDatasetMetadata())
+      fakeStore
+        .dispatch(saveDatasetMetadata())
         .then(() => {
-          const action = store.getActions()[1];
+          const action = fakeStore.getActions()[1];
 
           assert.equal(action.type, API_CALL_STARTED);
 
@@ -95,41 +109,43 @@ describe('actions/manageMetadata', () => {
           done();
         })
         .catch(err => {
-          done();
+          done(err);
         });
     });
 
-    it('dispatches set view action with correct data if server responded with 200-level status', done => {
+    it('dispatches edit view action with correct data if server responded with 200-level status', done => {
       const fakeStore = mockStore(store.getState());
 
-      const fourfour = Object.keys(store.getState().db.views)[0];
+      const fourfour = Object.keys(store.getState().entities.views)[0];
 
-      fakeStore.dispatch(saveDatasetMetadata())
+      fakeStore
+        .dispatch(saveDatasetMetadata())
         .then(() => {
-          const action = store.getActions()[2];
+          const action = fakeStore.getActions()[2];
 
-          assert.equal(action.type, SET_VIEW);
+          assert.equal(action.type, 'EDIT_VIEW');
 
           assert.equal(action.id, fourfour);
 
-          assert.deepEqual(action.payload, metadata.model);
+          assert.deepEqual(action.payload, {
+            name: 'better description',
+            tags: ['one', 'two', 'three'],
+            privateMetadata: { email: 'test@socrata.com', custom_fields: {} },
+            metadata: { custom_fields: {} },
+            id: 'ww72-hpm3'
+          });
 
           done();
         })
         .catch(err => {
-          done();
+          done(err);
         });
     });
 
     it('shows an error message if form schema is invalid', () => {
-      const fourfour = Object.keys(store.getState().db.views)[0];
+      const fourfour = Object.keys(store.getState().entities.views)[0];
 
-      store.dispatch(edit('views', {
-        id: fourfour,
-        schema: {
-          isValid: false
-        }
-      }));
+      store.dispatch(editView(fourfour, { schema: { isValid: false } }));
 
       const fakeStore = mockStore(store.getState());
 
@@ -142,14 +158,9 @@ describe('actions/manageMetadata', () => {
     });
 
     it('shows field-level errors if form schema is invalid', () => {
-      const fourfour = Object.keys(store.getState().db.views)[0];
+      const fourfour = Object.keys(store.getState().entities.views)[0];
 
-      store.dispatch(edit('views', {
-        id: fourfour,
-        schema: {
-          isValid: false
-        }
-      }));
+      store.dispatch(editView(fourfour, { schema: { isValid: false } }));
 
       const fakeStore = mockStore(store.getState());
 
@@ -157,10 +168,9 @@ describe('actions/manageMetadata', () => {
 
       const action = fakeStore.getActions()[2];
 
-      assert.equal(action.type, 'EDIT');
-      assert.equal(action.tableName, 'views');
-      assert.deepEqual(action.updates, {
-        id: fourfour,
+      assert.equal(action.type, 'EDIT_VIEW');
+
+      assert.deepEqual(action.payload, {
         displayMetadataFieldErrors: true
       });
     });
@@ -168,79 +178,48 @@ describe('actions/manageMetadata', () => {
 
   describe('actions/manageMetadata/saveColumnMetadata', () => {
     beforeEach(done => {
-      store.dispatch(createUpload({name: 'petty_crimes.csv'}))
+      store
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
         .then(() => done());
     });
 
-    it('dispatches an insert started action with correct data', done => {
+    it('dispatches an API_CALL_STARTED started action with correct data', done => {
       const fakeStore = mockStore(store.getState());
 
-      fakeStore.dispatch(saveColumnMetadata())
+      fakeStore
+        .dispatch(saveColumnMetadata())
         .then(() => {
-          const action = fakeStore.getActions()[1].operations[1];
+          const action = fakeStore.getActions()[1];
 
-          assert.equal(action.type, UPSERT_STARTED);
+          assert.equal(action.type, 'API_CALL_STARTED');
 
-          assert.equal(action.tableName, 'output_schemas');
+          assert.equal(action.operation, 'SAVE_COLUMN_METADATA');
 
           done();
         })
         .catch(err => {
-          done();
+          done(err);
         });
     });
 
-it('dispatches an insert succeeded action with correct data if server resonds with 200-level status', done => {
+    it('dispatches a POLL_FOR_OUTPUT_SCHEMA_SUCCESS action with correct data if server resonds with 200-level status', done => {
       const fakeStore = mockStore(store.getState());
 
-      fakeStore.dispatch(saveColumnMetadata())
+      fakeStore
+        .dispatch(saveColumnMetadata())
         .then(() => {
-          const action = fakeStore.getActions()[3];
+          const action = fakeStore.getActions()[2];
 
-          assert.equal(action.type, UPSERT_SUCCEEDED);
-
-          assert.equal(action.tableName, 'output_schemas');
+          assert.equal(action.type, 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS');
+          assert.isTrue(_.has(action, 'outputSchema'));
+          assert.isTrue(_.has(action, 'transforms'));
+          assert.isTrue(_.has(action, 'outputColumns'));
+          assert.isTrue(_.has(action, 'outputSchemaColumns'));
 
           done();
         })
         .catch(err => {
-          done();
-        });
-    });
-
-    it('updates output_schema_columns if insert succeeded', done => {
-      const fakeStore = mockStore(store.getState());
-
-      fakeStore.dispatch(saveColumnMetadata())
-        .then(() => {
-          const actions = fakeStore.getActions()[5].operations.filter(op =>
-            op.tableName === 'output_schema_columns'
-            && op.type === 'UPSERT_FROM_SERVER');
-
-          assert.isAtLeast(actions.length, 1);
-
-          done();
-        })
-        .catch(err => {
-          done();
-        });
-    });
-
-    it('updates transforms and output_columns with any new values', done => {
-      const fakeStore = mockStore(store.getState());
-
-      fakeStore.dispatch(saveColumnMetadata())
-        .then(() => {
-          const ops = fakeStore.getActions()[5].operations;
-          const ocActions = ops.filter(op =>
-            op.tableName === 'transforms');
-
-          const transformActions = ops.filter(op =>
-            op.tableName === 'output_columns');
-
-          assert.isAtLeast(ocActions.length, 1);
-          assert.isAtLeast(transformActions.length, 1);
-          done();
+          done(err);
         });
     });
   });

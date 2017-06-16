@@ -50,12 +50,10 @@ class MetadataEditor extends Component {
           style={formPadding}>
           {onDatasetTab ? <DatasetForm /> : <ColumnForm />}
         </div>
-        {
-          onDatasetTab &&
-            <div className={styles.requiredNote} style={formPadding}>
-              {I18n.metadata_manage.required_note}
-            </div>
-        }
+        {onDatasetTab &&
+          <div className={styles.requiredNote} style={formPadding}>
+            {I18n.metadata_manage.required_note}
+          </div>}
       </div>
     );
   }
@@ -66,8 +64,8 @@ MetadataEditor.propTypes = {
   path: PropTypes.string.isRequired
 };
 
-const mapStateToProps = ({ flashMessage }, { path }) => ({
-  flashVisible: flashMessage.visible,
+const mapStateToProps = ({ ui }, { path }) => ({
+  flashVisible: ui.flashMessage.visible,
   path
 });
 

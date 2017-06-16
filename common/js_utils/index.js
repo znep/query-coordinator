@@ -267,10 +267,10 @@ var utils = {
   },
 
   /**
-   * Gets locale from given window
+   * Gets locale from a global object (usually window)
    */
-  getLocale: function(w) {
-    return !_.isObject(w) ? 'en' : _.get(w.serverConfig, 'locale', _.get(w.blist, 'locale', _.get(w.socrataConfig, 'locales.currentLocale', 'en')));
+  getLocale: function(global) {
+    return !_.isObject(global) ? 'en' : _.get(global.serverConfig, 'locale', _.get(global.blist, 'locale', _.get(global.socrataConfig, 'locales.currentLocale', 'en')));
   },
 
   /**

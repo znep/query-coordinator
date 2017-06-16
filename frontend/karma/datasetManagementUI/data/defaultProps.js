@@ -106,8 +106,7 @@ export const ShowOutputSchemaProps = {
         ]
       },
       {
-        path:
-          'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+        path: 'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
         childRoutes: [
           {
             path: 'page/:pageNo'
@@ -697,6 +696,348 @@ export const ShowOutputSchemaProps = {
     uploadId: '123',
     inputSchemaId: '106',
     outputSchemaId: '152'
+  }
+};
+
+export const ShowOutputSchemaErrorProps = {
+  goHome: _.noop,
+  dispatch: _.noop,
+  location: {
+    pathname:
+      '/dataset/dfsdfdsf/j5db-bk6x/revisions/0/uploads/131/schemas/114/output/168/row_errors',
+    search: '',
+    hash: '',
+    action: 'PUSH',
+    key: 'cgu5qi',
+    query: {}
+  },
+  params: {
+    category: 'dataset',
+    name: 'dfsdfdsf',
+    fourfour: 'j5db-bk6x',
+    revisionSeq: '0',
+    uploadId: '131',
+    inputSchemaId: '114',
+    outputSchemaId: '168'
+  },
+  route: {
+    path:
+      'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+    childRoutes: [
+      {
+        path: 'page/:pageNo'
+      }
+    ]
+  },
+  router: {
+    location: {
+      pathname:
+        '/dataset/dfsdfdsf/j5db-bk6x/revisions/0/uploads/131/schemas/114/output/168/row_errors',
+      search: '',
+      hash: '',
+      action: 'PUSH',
+      key: 'cgu5qi',
+      query: {}
+    },
+    params: {
+      category: 'dataset',
+      name: 'dfsdfdsf',
+      fourfour: 'j5db-bk6x',
+      revisionSeq: '0',
+      uploadId: '131',
+      inputSchemaId: '114',
+      outputSchemaId: '168'
+    },
+    routes: [
+      {
+        path: '/:category/:name/:fourfour/revisions/:revisionSeq',
+        indexRoute: {},
+        childRoutes: [
+          {
+            from: 'metadata',
+            to: 'metadata/dataset',
+            path: 'metadata'
+          },
+          {
+            path: 'metadata/dataset'
+          },
+          {
+            path: 'metadata/columns'
+          },
+          {
+            path: 'uploads'
+          },
+          {
+            path: ':sidebarSelection'
+          },
+          {
+            path: 'uploads/:uploadId'
+          },
+          {
+            path:
+              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+            childRoutes: [
+              {
+                path: 'page/:pageNo'
+              }
+            ]
+          },
+          {
+            path:
+              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
+            childRoutes: [
+              {
+                path: 'page/:pageNo'
+              }
+            ]
+          },
+          {
+            path:
+              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+            childRoutes: [
+              {
+                path: 'page/:pageNo'
+              }
+            ]
+          },
+          {
+            path: '*'
+          }
+        ]
+      },
+      {
+        path:
+          'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+        childRoutes: [
+          {
+            path: 'page/:pageNo'
+          }
+        ]
+      }
+    ]
+  },
+  routeParams: {
+    uploadId: '131',
+    inputSchemaId: '114',
+    outputSchemaId: '168'
+  },
+  routes: [
+    {
+      path: '/:category/:name/:fourfour/revisions/:revisionSeq',
+      indexRoute: {},
+      childRoutes: [
+        {
+          from: 'metadata',
+          to: 'metadata/dataset',
+          path: 'metadata'
+        },
+        {
+          path: 'metadata/dataset'
+        },
+        {
+          path: 'metadata/columns'
+        },
+        {
+          path: 'uploads'
+        },
+        {
+          path: ':sidebarSelection'
+        },
+        {
+          path: 'uploads/:uploadId'
+        },
+        {
+          path:
+            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+          childRoutes: [
+            {
+              path: 'page/:pageNo'
+            }
+          ]
+        },
+        {
+          path:
+            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
+          childRoutes: [
+            {
+              path: 'page/:pageNo'
+            }
+          ]
+        },
+        {
+          path:
+            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+          childRoutes: [
+            {
+              path: 'page/:pageNo'
+            }
+          ]
+        },
+        {
+          path: '*'
+        }
+      ]
+    },
+    {
+      path:
+        'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+      childRoutes: [
+        {
+          path: 'page/:pageNo'
+        }
+      ]
+    }
+  ],
+  children: null,
+  upload: {
+    id: 131,
+    created_by: {
+      user_id: 'tugg-ikce',
+      email: 'brandon.webster@socrata.com',
+      display_name: 'branweb'
+    },
+    created_at: '2017-06-16T17:27:47.900Z',
+    filename: 'tiny-errors.csv',
+    percentCompleted: 100,
+    finished_at: '2017-06-16T17:27:48.352Z'
+  },
+  inputSchema: {
+    total_rows: 3,
+    id: 114,
+    name: null,
+    upload_id: 131,
+    num_row_errors: 1
+  },
+  outputSchema: {
+    id: 168,
+    input_schema_id: 114,
+    error_count: 1,
+    created_at: '2017-06-16T17:27:48.212Z',
+    created_by: {
+      user_id: 'tugg-ikce',
+      email: 'brandon.webster@socrata.com',
+      display_name: 'branweb'
+    },
+    output_columns: [
+      {
+        transform: {
+          transform_input_columns: [
+            {
+              input_column_id: 2191
+            }
+          ],
+          transform_expr: '`foo`',
+          output_soql_type: 'text',
+          id: 2228,
+          failed_at: null,
+          completed_at: '2017-06-16T17:27:48',
+          attempts: 0
+        },
+        position: 0,
+        is_primary_key: false,
+        id: 2235,
+        field_name: 'foo',
+        display_name: 'foo',
+        description: ''
+      },
+      {
+        transform: {
+          transform_input_columns: [
+            {
+              input_column_id: 2192
+            }
+          ],
+          transform_expr: '`bar`',
+          output_soql_type: 'text',
+          id: 2229,
+          failed_at: null,
+          completed_at: '2017-06-16T17:27:48',
+          attempts: 0
+        },
+        position: 1,
+        is_primary_key: false,
+        id: 2236,
+        field_name: 'bar',
+        display_name: 'bar',
+        description: ''
+      }
+    ],
+    completed_at: '2017-06-16T17:27:48.000Z'
+  },
+  columns: [
+    {
+      position: 0,
+      is_primary_key: false,
+      id: 2235,
+      field_name: 'foo',
+      display_name: 'foo',
+      description: '',
+      transform_id: 2228,
+      transform: {
+        transform_input_columns: [
+          {
+            input_column_id: 2191
+          }
+        ],
+        transform_expr: '`foo`',
+        output_soql_type: 'text',
+        id: 2228,
+        failed_at: null,
+        completed_at: '2017-06-16T17:27:48',
+        attempts: 0,
+        error_indices: [],
+        contiguous_rows_processed: 3
+      }
+    },
+    {
+      position: 1,
+      is_primary_key: false,
+      id: 2236,
+      field_name: 'bar',
+      display_name: 'bar',
+      description: '',
+      transform_id: 2229,
+      transform: {
+        transform_input_columns: [
+          {
+            input_column_id: 2192
+          }
+        ],
+        transform_expr: '`bar`',
+        output_soql_type: 'text',
+        id: 2229,
+        failed_at: null,
+        completed_at: '2017-06-16T17:27:48',
+        attempts: 0,
+        error_indices: [],
+        contiguous_rows_processed: 3
+      }
+    }
+  ],
+  canApplyRevision: true,
+  numLoadsInProgress: 0,
+  displayState: {
+    type: 'ROW_ERRORS',
+    pageNo: 1,
+    outputSchemaId: 168
+  },
+  routing: {
+    pathname:
+      '/dataset/dfsdfdsf/j5db-bk6x/revisions/0/uploads/131/schemas/114/output/168/row_errors',
+    search: '',
+    hash: '',
+    action: 'PUSH',
+    key: 'cgu5qi',
+    query: {}
+  },
+  urlParams: {
+    category: 'dataset',
+    name: 'dfsdfdsf',
+    fourfour: 'j5db-bk6x',
+    revisionSeq: '0',
+    uploadId: '131',
+    inputSchemaId: '114',
+    outputSchemaId: '168'
   }
 };
 
@@ -2098,8 +2439,7 @@ export const ShowRevisionProps = {
         },
         '19': {
           id: 19,
-          ok:
-            '14507 GOLD FISH POND AVE\nAUSTIN 78728\n(30.442498, -97.682549)'
+          ok: '14507 GOLD FISH POND AVE\nAUSTIN 78728\n(30.442498, -97.682549)'
         },
         '20': {
           id: 20,

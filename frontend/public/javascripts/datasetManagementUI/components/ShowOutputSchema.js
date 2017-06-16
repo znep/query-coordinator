@@ -269,7 +269,7 @@ ShowOutputSchema.propTypes = {
   })
 };
 
-function mapStateToProps(state, ownProps) {
+export function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
   const queryResults = query(
     state.entities,

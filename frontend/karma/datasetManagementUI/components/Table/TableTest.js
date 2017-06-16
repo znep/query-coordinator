@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import { Table } from 'components/Table';
 import React from 'react';
+import dotProp from 'dot-prop-immutable';
 
 const defaultProps = {
   entities: {},
@@ -131,5 +132,16 @@ describe('components/Table', () => {
   it('renders a disabled ColumnHeader if column is ignored', () => {
     const component = shallow(<Table {...defaultProps} />);
     assert.isTrue(component.find('ColumnHeader').last().prop('column').ignored);
+  });
+
+  it('renders a row-errors link if the input schema says there are row errors', () => {
+    const propsWithRowErrors = dotProp.set(defaultProps, 'inputSchema', existing => ({
+      ...existing,
+      num_row_errors: 1
+    }))
+
+    const component = shallow(<Table {...propsWithRowErrors} />)
+
+    assert.equal(component.find('RowErrorsLink').length, 1);
   });
 });

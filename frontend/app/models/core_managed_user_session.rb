@@ -73,8 +73,7 @@ class CoreManagedUserSession
           end
         end
       end
-
-    APP_CONFIG.default_session_time_minutes
+      APP_CONFIG.default_session_time_minutes
     end
 
     def find

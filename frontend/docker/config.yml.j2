@@ -149,8 +149,6 @@ default: &default
 
   {% if DEFAULT_SESSION_TIME_MINUTES is defined -%}
   default_session_time_minutes: {{DEFAULT_SESSION_TIME_MINUTES}}
-  {% else %}
-  default_session_time_minutes: 15
   {%- endif %}
 
   {#

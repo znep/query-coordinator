@@ -6,7 +6,7 @@ class AppConfig < Hashie::Dash
   include Hashie::Extensions::IndifferentAccess
 
   as_int = lambda(&:to_i)
-  as_interval = lambda { [str]:to_i.minutes }
+  as_interval = lambda { [str] str:to_i.minutes }
   
   # Services and service coordination
   property :consul_host
@@ -95,7 +95,7 @@ class AppConfig < Hashie::Dash
   property :auth0_database_connection
 
   #Session
-  property :default_session_time_minutes, default: 15, transform_with: as_interval
+  property :default_session_time_minutes, default: 15.minutes, transform_with: as_interval
 
   # Data lens tuning parameters
   property :enable_png_download_ui

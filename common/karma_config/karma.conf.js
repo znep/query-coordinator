@@ -165,15 +165,9 @@ module.exports = function(config) {
       format: '%b %T: %m',
       terminal: true
     },
-    browsers: ['PhantomJS'],
-    phantomjsLauncher: {
-      options: {
-        viewportSize: {
-          width: 1024,
-          height: 768
-        }
-      }
-    },
+
+    browsers: ['ChromeNoSandboxHeadless'],
+    captureTimeout: 900000,
     browserNoActivityTimeout: 1000 * 55,
     browserDisconnectTimeout: 1000 * 10,
     browserDisconnectTolerance: 5,
@@ -182,11 +176,12 @@ module.exports = function(config) {
         base: 'Chrome',
         flags: [
           '--no-sandbox',
-          process.env.HEADLESS === 'false' ? '--no-headless' : '--headless',
+          '--headless',
           '--disable-gpu',
           '--remote-debugging-port=9222'
         ]
       }
     }
+
   });
 };

@@ -330,9 +330,11 @@ var utils = {
         // Adjust from e.g. 1.23e+4 to 12.3K
         newValue = newValue.replace(/^(-?\d+)(\.\d+)?$/, function(match, whole, frac) {
 
-          frac = frac || '.000';
+          frac = frac || `${formatNumberOptions.decimalCharacter}000`;
 
-          return '{0}.{1}'.format(whole + frac.slice(1, 1 + shiftAmount), frac.slice(shiftAmount));
+          return `{0}${formatNumberOptions.decimalCharacter}{1}`.format(
+            whole + frac.slice(1, 1 + shiftAmount), frac.slice(shiftAmount)
+          );
         });
       }
 
@@ -342,9 +344,10 @@ var utils = {
 
       // This branch handles values that need a magnitude suffix.
       // We use commaify to determine what magnitude we're operating in.
-      var magnitudeGroups = utils.commaify(absVal.toFixed(0)).split(',');
+      var magnitudeGroups = utils.commaify(absVal.toFixed(0), formatNumberOptions).
+        split(formatNumberOptions.groupCharacter);
       symbolIndex = magnitudeGroups.length - 2;
-      newValue = parseFloat(magnitudeGroups[0] + '.' + magnitudeGroups[1]);
+      newValue = parseFloat(`${magnitudeGroups[0]}.${magnitudeGroups[1]}`);
       newValue = newValue.toFixed(maxLength - magnitudeGroups[0].length - 1);
 
     }

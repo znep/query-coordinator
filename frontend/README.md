@@ -217,7 +217,7 @@ and uses the mocha reporter:
 
     bundle exec rake test:karma:dataCards[true,chrome,mocha]
 
-For the simple case where a single test run under PhantomJS is needed for a
+For the simple case where a single test run under Chrome is needed for a
 general pass/fail check, a faster parallelized test run is also available:
 
     bundle exec rake test:karma:parallel

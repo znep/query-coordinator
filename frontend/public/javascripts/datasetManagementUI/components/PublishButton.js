@@ -42,11 +42,11 @@ function PublishReadinessFlyout({ metadataSatisfied, dataSatisfied }) {
           ? SubI18n.make_accessible
           : <div>
               {SubI18n.cant_publish_until}
-            <ul>
-              <li><LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} /></li>
-              <li><LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} /></li>
-            </ul>
-          </div>}
+              <ul>
+                <li><LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} /></li>
+                <li><LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} /></li>
+              </ul>
+            </div>}
       </section>
     </div>
   );
@@ -75,6 +75,8 @@ export class PublishButton extends Component {
   render() {
     const { publishDataset, metadataSatisfied, dataSatisfied, publishedOrPublishing } = this.props;
     const readyToPublish = metadataSatisfied && dataSatisfied;
+    const modalName = true ? 'PublishConfirmationUSAID' : 'PublishConfirmation';
+
     return (
       <div
         ref={element => {
@@ -83,7 +85,7 @@ export class PublishButton extends Component {
         <div data-flyout={FLYOUT_ID}>
           <button
             className={styles.publishButton}
-            onClick={publishDataset}
+            onClick={() => publishDataset(modalName)}
             disabled={!readyToPublish || publishedOrPublishing}>
             {SubI18n.publish_dataset}
           </button>
@@ -132,8 +134,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    publishDataset: () => {
-      dispatch(showModal('PublishConfirmation'));
+    publishDataset: modalName => {
+      dispatch(showModal(modalName));
     }
   };
 }

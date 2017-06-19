@@ -2839,7 +2839,7 @@ en:
         access_level: Access Level
         category: Category
         discoverable: Discoverable
-        last_updated_date: Last Updated Date
+        last_updated_date: Last Updated
         name: Name
         owner: Owner
         type: Type

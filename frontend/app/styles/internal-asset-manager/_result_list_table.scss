@@ -30,6 +30,10 @@ table.result-list-table {
           width: 600px;
         }
 
+        &.last-updated-date {
+          width: 9rem;
+        }
+
         &.visibility {
           cursor: not-allowed;
         }

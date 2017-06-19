@@ -77,7 +77,7 @@ PublishConfirmationUSAID.propTypes = {
   publicSelected: PropTypes.bool.isRequired
 };
 
-function mapStateToProps({ entities, ui }) {
+export function mapStateToProps({ entities, ui }) {
   const { id: outputSchemaId } = Selectors.latestOutputSchema(entities);
   const { id: revisionId } = Selectors.latestRevision(entities);
   const permission = entities.revisions[revisionId] ? entities.revisions[revisionId].permission : 'public';

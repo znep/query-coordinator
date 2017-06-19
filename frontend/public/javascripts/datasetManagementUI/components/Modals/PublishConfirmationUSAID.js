@@ -10,9 +10,6 @@ import { APPLY_REVISION } from 'actions/apiCalls';
 import * as Selectors from '../../selectors';
 import styles from 'styles/Modals/PublishConfirmationUSAID.scss';
 
-// <button onClick={() => setPermission('public')}>public</button>
-// <button onClick={() => setPermission('private')}>private</button>
-
 export const PublishConfirmationUSAID = ({
   outputSchemaId,
   doCancel,

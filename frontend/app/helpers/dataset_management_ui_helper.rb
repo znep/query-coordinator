@@ -9,7 +9,8 @@ module DatasetManagementUiHelper
       airbrakeKey: ENV['PUBLISHING_AIRBRAKE_API_KEY'] || APP_CONFIG.publishing_airbrake_api_key,
       airbrakeProjectId: ENV['PUBLISHING_AIRBRAKE_PROJECT_ID'] || APP_CONFIG.publishing_airbrake_project_id,
       currentUserId: User.current_user.id,
-      localePrefix: locale_prefix
+      localePrefix: locale_prefix,
+      featureFlags: feature_flags_as_json
     }
   end
 

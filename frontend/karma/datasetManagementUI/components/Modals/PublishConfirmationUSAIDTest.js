@@ -9,7 +9,7 @@ import {
 import state from '../../data/stateWithRevision';
 import dotProp from 'dot-prop-immutable';
 
-describe.only('components/Modals/PublishConfirmationUSAID', () => {
+describe('components/Modals/PublishConfirmationUSAID', () => {
   let component;
   let defaultProps;
 
@@ -24,6 +24,14 @@ describe.only('components/Modals/PublishConfirmationUSAID', () => {
     };
 
     component = shallow(<PublishConfirmationUSAID {...defaultProps} />);
+  });
+
+  before(() => {
+    window.serverConfig.featureFlags.usaidFeaturesEnabled = true;
+  });
+
+  after(() => {
+    window.serverConfig.featureFlags.usaidFeaturesEnabled = false;
   });
 
   it('renders public and private options', () => {

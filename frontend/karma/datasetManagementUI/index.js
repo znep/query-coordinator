@@ -14,10 +14,13 @@ window.serverConfig = {
   csrfToken: 'abcdefgh1234',
   appToken: 'global-frontend-token',
   currentUserId: 'asdf-1234',
-  localePrefix: 'en'
+  localePrefix: 'en',
+  featureFlags: {
+    usaidFeaturesEnabled: false
+  }
 };
 
-window.initialState = windowState
+window.initialState = windowState;
 
 window.renderPureComponent = _.flow(
   TestUtils.renderIntoDocument,

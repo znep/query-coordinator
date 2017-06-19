@@ -89,6 +89,7 @@ export function updateRevision(permission) {
         dispatch(editRevision(revision.id, revision));
       })
       .catch(err => {
+        console.log(err);
         dispatch(apiCallFailed(callId, err));
       });
   };

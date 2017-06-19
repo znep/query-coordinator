@@ -75,7 +75,7 @@ export class PublishButton extends Component {
   render() {
     const { publishDataset, metadataSatisfied, dataSatisfied, publishedOrPublishing } = this.props;
     const readyToPublish = metadataSatisfied && dataSatisfied;
-    const modalName = window.serverConfig.usaidFeaturesEnabled
+    const modalName = window.serverConfig.featureFlags.usaidFeaturesEnabled
       ? 'PublishConfirmationUSAID'
       : 'PublishConfirmation';
 

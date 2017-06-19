@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalContent, ModalFooter } from 'common/components';
 
@@ -10,45 +10,62 @@ import { APPLY_REVISION } from 'actions/apiCalls';
 import * as Selectors from '../../selectors';
 import styles from 'styles/Modals/PublishConfirmationUSAID.scss';
 
-export const PublishConfirmationUSAID = ({
-  outputSchemaId,
-  doCancel,
-  doUpdate,
-  setPermission,
-  btnDisabled,
-  publicSelected
-}) =>
-  <div>
-    <h2>{I18n.home_pane.publish_confirmation.title}</h2>
-    <ModalContent>
-      <span
-        onClick={() => setPermission('public')}
-        className={publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
-        <h3>Public</h3>
-        <SocrataIcon className={styles.icon} name="public-open" />
-        Publically accessible. Discoverable through the public catalog
-      </span>
-      <span
-        onClick={() => setPermission('private')}
-        className={!publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
-        <h3>Private</h3>
-        <SocrataIcon className={styles.icon} name="private" />
-        Publically accessible. Discoverable through the public catalog
-      </span>
-    </ModalContent>
-    <ModalFooter className={styles.modalFooter}>
-      <button onClick={doCancel} className={styles.cancelButton}>
-        {I18n.common.cancel}
-      </button>
-      <ApiCallButton
-        additionalClassName={styles.mainButton}
-        operation={APPLY_REVISION}
-        forceDisable={btnDisabled}
-        onClick={() => doUpdate(outputSchemaId)}>
-        {I18n.home_pane.publish_confirmation.button}
-      </ApiCallButton>
-    </ModalFooter>
-  </div>;
+export class PublishConfirmationUSAID extends Component {
+  constructor() {
+    super();
+    // cache the initial permission in the component state so we can revert
+    // to it if the user clicks cancel
+    this.state = {
+      initialPermission: null
+    };
+  }
+
+  componentWillMount() {
+    const { publicSelected } = this.props;
+
+    this.setState({
+      initialPermission: publicSelected ? 'public' : 'private'
+    });
+  }
+
+  render() {
+    const { outputSchemaId, doCancel, doUpdate, setPermission, btnDisabled, publicSelected } = this.props;
+
+    return (
+      <div>
+        <h2>{I18n.home_pane.publish_confirmation.title}</h2>
+        <ModalContent>
+          <span
+            onClick={() => setPermission('public')}
+            className={publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
+            <h3>Public</h3>
+            <SocrataIcon className={styles.icon} name="public-open" />
+            Publically accessible. Discoverable through the public catalog
+          </span>
+          <span
+            onClick={() => setPermission('private')}
+            className={!publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
+            <h3>Private</h3>
+            <SocrataIcon className={styles.icon} name="private" />
+            Publically accessible. Discoverable through the public catalog
+          </span>
+        </ModalContent>
+        <ModalFooter className={styles.modalFooter}>
+          <button onClick={() => doCancel(this.state.initialPermission)} className={styles.cancelButton}>
+            {I18n.common.cancel}
+          </button>
+          <ApiCallButton
+            additionalClassName={styles.mainButton}
+            operation={APPLY_REVISION}
+            forceDisable={btnDisabled}
+            onClick={() => doUpdate(outputSchemaId)}>
+            {I18n.home_pane.publish_confirmation.button}
+          </ApiCallButton>
+        </ModalFooter>
+      </div>
+    );
+  }
+}
 
 PublishConfirmationUSAID.propTypes = {
   outputSchemaId: PropTypes.number.isRequired,
@@ -82,7 +99,10 @@ function mapStateToProps({ entities, ui }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    doCancel: () => dispatch(hideModal()),
+    doCancel: initialPermission => {
+      dispatch(updateRevision(initialPermission));
+      dispatch(hideModal());
+    },
     doUpdate: outputSchemaId => dispatch(applyRevision(outputSchemaId)),
     setPermission: permission => dispatch(updateRevision(permission))
   };

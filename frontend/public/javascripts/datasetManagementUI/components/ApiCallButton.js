@@ -47,14 +47,13 @@ ApiCallButton.propTypes = {
 const SHOW_RESULT_STATE_FOR_MS = 1000;
 
 function mapStateToProps({ ui }, ownProps) {
-  const apiCall = _.find(
-    ui.apiCalls,
-    call =>
-      _.matches(call, {
-        operation: ownProps.operation,
-        params: ownProps.params
-      }) && new Date() - (call.succeededAt || call.failedAt || call.startedAt) < SHOW_RESULT_STATE_FOR_MS
-  );
+  const apiCall = _.find(ui.apiCalls, call => {
+    return (
+      _.isMatch(call, { operation: ownProps.operation, params: ownProps.params }) &&
+      new Date() - (call.succeededAt || call.failedAt || call.startedAt) < SHOW_RESULT_STATE_FOR_MS
+    );
+  });
+
   return {
     status: apiCall ? apiCall.status : null
   };

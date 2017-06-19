@@ -57,6 +57,7 @@ export class PublishConfirmationUSAID extends Component {
           <ApiCallButton
             additionalClassName={styles.mainButton}
             operation={APPLY_REVISION}
+            params={{ outputSchemaId }}
             forceDisable={btnDisabled}
             onClick={() => doUpdate(outputSchemaId)}>
             {I18n.home_pane.publish_confirmation.button}

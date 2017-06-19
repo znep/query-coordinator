@@ -45,11 +45,12 @@ export class BootstrapAlert extends Component {
         </div>
 
         <a
-          href={localizeLink(bootstrapUrl)}
+          href={isDisabled ? null : localizeLink(bootstrapUrl)}
           className={className}
           data-flyout={flyoutId}
-          onClick={onClickBootstrap}
+          onClick={isDisabled ? null : onClickBootstrap}
           tabIndex="0"
+          disabled={isDisabled}
           role="link">
           {I18n.bootstrap_button}
         </a>

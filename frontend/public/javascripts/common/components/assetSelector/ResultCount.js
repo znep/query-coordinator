@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { getViewCountLabel } from '../../helpers/viewCardHelpers';
+import { getResultCountLabel } from '../../helpers/viewCardHelpers';
 
 export class ResultCount extends React.Component {
   render() {
@@ -13,7 +13,7 @@ export class ResultCount extends React.Component {
       <div className="result-count">
         {pageResults.first}-{pageResults.last}
         {` ${_.get(I18n, 'common.asset_selector.results_container.of')} `}
-        {getViewCountLabel(total)}
+        {getResultCountLabel(total)}
       </div>
     );
   }

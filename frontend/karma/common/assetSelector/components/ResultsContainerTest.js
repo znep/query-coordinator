@@ -68,7 +68,7 @@ describe('ResultsContainer', () => {
       const element = renderComponent(ResultsContainer, getProps());
 
       _.defer(() => {
-        assert.equal(element.querySelector('.result-count').textContent, '1-6 of 16 Views');
+        assert.equal(element.querySelector('.result-count').textContent, '1-6 of 16 Results');
         done();
       });
     });

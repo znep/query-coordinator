@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
-import { getViewCountLabel } from '../../common/helpers/viewCardHelpers';
+import { getResultCountLabel } from '../../common/helpers/viewCardHelpers';
 
 export class ResultCount extends React.Component {
   render() {
     const { pageNumber, resultsPerPage, total } = this.props;
     const first = (pageNumber - 1) * resultsPerPage + 1;
     const last = Math.min(pageNumber * resultsPerPage, total);
-    const totalLabel = getViewCountLabel(total);
+    const resultLabel = getResultCountLabel(total);
 
     /* TODO: localize with i18n-js */
     const resultCountText = (total > 0) ?
-      `${first}-${last} ${_.get(I18n, 'result_count.of')} ${totalLabel}` :
+      `${first}-${last} ${_.get(I18n, 'result_count.of')} ${resultLabel}` :
       _.get(I18n, 'result_count.no_results');
 
     return (

@@ -680,6 +680,9 @@ en:
       external_content: External Content
       view: View
       views: Views
+    result_count_label:
+      one: Result
+      other: Results
   controls:
     nbe_column_manager:
       title: Manage Columns

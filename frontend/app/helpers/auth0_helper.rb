@@ -135,6 +135,70 @@ module Auth0Helper
     flags.use_auth0 && flags.use_auth0_component
   end
 
+  ##
+  # Tests an Auth0 connection string for redirection eligibility.
+  # A client is redirected if:
+  # 1. The connection is present.
+  # 2. The client is making a fresh login attempt.
+  # 3. The redirect parameter is NOT set.
+  #
+  # Redirect can be overriden by using ?redirect=false.
+  def should_auth0_redirect?(connection)
+    has_redirect_param = params.fetch(:redirect, false)
+    connection.present? && !has_redirect_param
+  end
+
+  ##
+  # Tests an unknown variable with three requirements:
+  # 1. It is an array.
+  # 2. It is an array with hash maps.
+  # 3. Each hash map has two parameters: connection and a name OR buttonText.
+  def valid_auth0_connections?(connections)
+    connections.is_a?(Array) && connections.present? &&
+      connections.all? { |conn| conn[:connection].present? && (conn[:name].present? || conn[:buttonText].present?) }
+  end
+
+  def valid_auth0_forced_connections?(forced_connections)
+    forced_connections.is_a?(Array) && forced_connections.present? &&
+      forced_connections.all? { |conn| conn[:match].present? && conn[:connection].present? }
+  end
+
+  def valid_auth0_modal_config?(modal_config)
+    modal_config.present? && modal_config[:text].present?
+  end
+
+  def return_value_if_valid(properties, key)
+    value = properties.try(key)
+    valid_function_symbol = "valid_#{key}?".to_sym
+    if send(valid_function_symbol, value)
+      value
+    elsif value.present?
+      error = "#{key}, #{value.inspect}, has been specified incorrectly in the Auth0 configuration."
+
+      Rails.logger.error(error)
+      Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
+    end
+  end
+
+  def process_auth0_config
+    return unless use_auth0?
+
+    set_auth0_variables_from_config(CurrentDomain.configuration('auth0').try(:properties))
+  end
+
+  def set_auth0_variables_from_config(properties)
+    return unless properties.present?
+
+    @auth0_connections = return_value_if_valid(properties, :auth0_connections)
+
+    @auth0_forced_connections = return_value_if_valid(properties, :auth0_forced_connections)
+
+    @auth0_modal_config = return_value_if_valid(properties, :auth0_modal_config)
+
+    @auth0_message = properties.try(:auth0_message)
+    @auth0_form_message = properties.try(:auth0_form_message)
+  end
+
   # these options are passed to the login/signup screen
   def generate_auth0_options
     # we want to keep email and screenName, in case something failed
@@ -164,6 +228,7 @@ module Auth0Helper
 
       # here, we basically force "form login" for development
       # if you want to test auth0 logins locally, change this line to false
+      # (note that when doing so, the AUTH0_DATABASE_CONNECTION config value needs to be set)
       allowUsernamePasswordLogin: Rails.env.development? || feature?('username_password_login') == true,
       recaptchaSitekey: RECAPTCHA_2_SITE_KEY,
       baseDomainUri: request.base_url,
@@ -178,6 +243,7 @@ module Auth0Helper
       forcedConnections: @auth0_forced_connections,
       chooseConnectionMessage: @auth0_message || t('screens.sign_in.auth0_intro'),
       formMessage: @auth0_form_message,
+      modalConfig: @auth0_modal_config,
       flashes: formatted_flashes,
       companyName: CurrentDomain.strings.company,
       signUpDisclaimer: CurrentDomain.strings.disclaimer,

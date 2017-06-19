@@ -1,6 +1,7 @@
 import { PropTypes } from 'react';
 import ConnectionsPropType from './ConnectionsPropType';
 import ForcedConnectionsPropType from './ForcedConnectionsPropType';
+import ModalConfigPropType from './ModalConfigPropType';
 
 // This is what gets passed in to the component, generated in the auth0_helper.rb file
 export default
@@ -54,6 +55,9 @@ export default
 
     // This message is displayed above the signin form
     formMessage: PropTypes.string,
+
+    // A modal that pops up, covering any forms, that must be accepted
+    modalConfig: ModalConfigPropType,
 
     // Any flashes to display
     flashes: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),

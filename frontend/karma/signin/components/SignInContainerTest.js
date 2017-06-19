@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import _ from 'lodash';
@@ -19,33 +19,29 @@ describe('<SignInContainer />', () => {
 
     it('renders choose connection if connections are present', () => {
       const wrapper = shallow(<SignInContainer options={optionsWithConnections} translate={translate} />);
-      expect(wrapper.find(ChooseConnection)).have.length(1);
-      expect(wrapper.find(SignIn)).to.have.length(0);
+      assert.lengthOf(wrapper.find(ChooseConnection), 1);
+      assert.lengthOf(wrapper.find(SignIn), 0);
     });
 
     it('renders sign in if no connections are present', () => {
       const wrapper = mount(<SignInContainer options={defaultOptions} translate={translate} />);
-      expect(wrapper.find(ChooseConnection)).have.length(0);
-      expect(wrapper.find(SignIn)).to.have.length(1);
+      assert.lengthOf(wrapper.find(ChooseConnection), 0);
+      assert.lengthOf(wrapper.find(SignIn), 1);
     });
 
-    if(new RegExp(/PhantomJS\/1\.9\.8\.*/).test(navigator.userAgent)) {
-      console.warn('SKIPPING TESTS DUE TO OLD VERSION OF PhantomJS!!! See EN-12757');
-    } else {
-      it('shows login form after clicking Socrata ID button and allows going back', () => {
-        const wrapper = mount(<SignInContainer options={optionsWithConnections} />);
-        
-        // clicking Socrata ID button goes to SignIn component
-        wrapper.find('.signin-button-socrata-id').simulate('click');
-        expect(wrapper.find(ChooseConnection)).to.have.length(0);
-        expect(wrapper.find(SignIn)).to.have.length(1);
+    it('shows login form after clicking Socrata ID button and allows going back', () => {
+      const wrapper = mount(<SignInContainer options={optionsWithConnections} translate={translate} />);
 
-        // click the back button goes back to choose connection
-        wrapper.find('.signin-button-back-to-options').simulate('click');
-        expect(wrapper.find(SignIn)).to.have.length(0);
-        expect(wrapper.find(ChooseConnection)).to.have.length(1);
-      });
-    }
+      // clicking Socrata ID button goes to SignIn component
+      wrapper.find('.signin-button-socrata-id').simulate('click');
+      assert.lengthOf(wrapper.find(ChooseConnection), 0);
+      assert.lengthOf(wrapper.find(SignIn), 1);
+
+      // click the back button goes back to choose connection
+      wrapper.find('.signin-button-back-to-options').simulate('click');
+      assert.lengthOf(wrapper.find(SignIn), 0);
+      assert.lengthOf(wrapper.find(ChooseConnection), 1);
+    });
   });
 
   describe('form message', () => {
@@ -54,12 +50,12 @@ describe('<SignInContainer />', () => {
 
     it('renders form message when set', () => {
       const wrapper = shallow(<SignInContainer options={optionsWithFormMessage} translate={translate} />);
-      expect(wrapper.find('.signin-form-message')).to.have.length(1);
+      assert.lengthOf(wrapper.find('.signin-form-message'), 1);
     });
 
     it('renders no message when message is blank', () => {
       const wrapper = shallow(<SignInContainer options={defaultOptions} translate={translate} />);
-      expect(wrapper.find('.signin-form-message')).to.have.length(0);
+      assert.lengthOf(wrapper.find('.signin-form-message'), 0);
     });
   });
 });

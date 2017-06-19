@@ -10,7 +10,7 @@ en:
         no_account: Don't have an account?
         password: Password
         password_requirements: 'Required. Your password must be between 8 and 40 characters and satisfy three of the following four criteria: contain a digit; contain a lowercase letter; contain an uppercase letter; contain a non-alphanumeric symbol.'
-        password_requirements_html: "<p>Your password must be <b>between 8 and 40 characters</b> and satisfy <b>three of the following four criteria</b>:</p><p></p><ul><li>&bull; contain a digit</li><li>&bull; contain a lowercase letter</li><li>&bull; contain an uppercase letter</li><li>&bull; contain a non-alphanumeric symbol</li></ul>"
+        password_requirements_html: "<p>Your password must be <b>between 8 and 40 characters</b> and satisfy <b>three of the following four criteria</b>:</p><p></p><ul><li>contain a digit</li><li>contain a lowercase letter</li><li>contain an uppercase letter</li><li>contain a non-alphanumeric symbol</li></ul>"
         password_restrictions: Restrictions apply
         remember_me: Remember me
         sign_up_prompt: Sign up now
@@ -5802,6 +5802,9 @@ en:
         sign_in_button: Sign In
       headline: Sign In to %{site}
       mismatch: Passwords do not match. Please try again.
+      modal_default_accept: Accept
+      modal_default_cancel: Decline
+      modal_default_header: Notice
       new_login_message: <strong>Important!</strong> Login and signup will have a new look soon, learn more <a href="https://support.socrata.com/hc/en-us/articles/226005288" target="_blank" style="text-decoration&#58; underline;">here</a>
       no_username_password_login: Attempted to login in an unauthorized way, please contact support.
       prompt_html: Sign in with your <strong>Socrata ID</strong>.

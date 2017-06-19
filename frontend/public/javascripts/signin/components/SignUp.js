@@ -4,7 +4,7 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import Auth0 from 'auth0-js';
 import url from 'url';
-import { Translate, renderAlerts } from '../Util';
+import { renderAlerts } from '../Util';
 import signUpReducer from '../reducers/SignUpReducer';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import styles from './signup.scss';
@@ -15,7 +15,7 @@ class SignUp extends React.Component {
   constructor(props) {
     super(props);
 
-    const { auth0Uri, auth0ClientId, baseDomainUri, translations, params } = this.props.options;
+    const { auth0Uri, auth0ClientId, baseDomainUri, params } = this.props.options;
 
     const parsedUrl = url.parse(window.location.href, true);
     const urlAuthToken = _.get(parsedUrl, 'query.auth_token', '');
@@ -25,15 +25,12 @@ class SignUp extends React.Component {
     const email = _.get(parsedUrl, 'query.email', _.get(params, 'email', ''));
     const screenName = _.get(params, 'screenName', '');
 
-    const translate = new Translate(translations);
-
     this.state = {
       auth0Client: new Auth0({
         domain: auth0Uri,
         clientID: auth0ClientId,
         callbackURL: `${baseDomainUri}/auth/auth0/callback`
-      }),
-      translate: translate.get
+      })
     };
 
     const defaultState = {
@@ -74,7 +71,7 @@ class SignUp extends React.Component {
     };
 
     this.store = createStore(
-      signUpReducer(translate.get),
+      signUpReducer(props.translate),
       defaultState
     );
 
@@ -86,8 +83,9 @@ class SignUp extends React.Component {
     // only render social sign-in if module is enabled
     if (this.props.options.showSocial) {
       const { auth0Client } = this.state;
+      const { translate } = this.props;
       const doAuth0Login = auth0Client.login.bind(auth0Client);
-      return <SocialSignIn doAuth0Login={doAuth0Login} translate={this.state.translate} />;
+      return <SocialSignIn doAuth0Login={doAuth0Login} translate={translate} />;
     }
   }
 
@@ -102,8 +100,7 @@ class SignUp extends React.Component {
   }
 
   render() {
-    const { translate } = this.state;
-    const { options } = this.props;
+    const { options, translate } = this.props;
 
     const flashes = _.get(this.props, 'options.flashes', null);
 
@@ -136,6 +133,7 @@ class SignUp extends React.Component {
 }
 
 SignUp.propTypes = {
+  translate: React.PropTypes.func.isRequired,
   options: OptionsPropType.isRequired
 };
 

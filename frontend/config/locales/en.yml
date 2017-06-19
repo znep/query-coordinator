@@ -2693,6 +2693,20 @@ en:
       submit: Save %{model}
       update: Update %{model}
   internal_asset_manager:
+    asset_types:
+      blob: Files or Document
+      calendar: Calendar
+      chart: Chart
+      datalens: Data Lens
+      dataset: Dataset
+      draft: Draft Dataset
+      filter: Filtered View
+      form: Form
+      href: External Dataset
+      map: Map
+      new_view: Data Lens
+      pulse: Pulse
+      story: Story
     errors:
       fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.

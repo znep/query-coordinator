@@ -38,7 +38,12 @@ export class ResultListRow extends React.Component {
       case 'owner':
         return cellTag(ownerName);
       case 'type': {
-        return cellTag(<span className={getIconClassForDisplayType(type)} />);
+        return cellTag(
+          <span
+            className={getIconClassForDisplayType(type)}
+            data-type={type}
+            title={_.get(I18n, `asset_types.${type}`)} />
+        );
       }
       case 'visibility': {
         const visibilityCellProps = _.pick(this.props,

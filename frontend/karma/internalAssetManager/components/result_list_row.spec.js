@@ -41,6 +41,14 @@ describe('components/ResultListRow', () => {
     assert.equal(element.querySelector('td span').className, 'socrata-icon-dataset');
   });
 
+  it('renders a span with the correct title for the asset type', () => {
+    const element = renderComponentWithStore(ResultListRow, resultListRowProps({
+      columns: ['type'],
+      type: 'datalens'
+    }));
+    assert.equal(element.querySelector('td span').getAttribute('title'), 'Data Lens');
+  });
+
   it('renders a div with a "name" and "description" for the "name" cell', () => {
     const element = renderComponentWithStore(ResultListRow, resultListRowProps({
       columns: ['name']

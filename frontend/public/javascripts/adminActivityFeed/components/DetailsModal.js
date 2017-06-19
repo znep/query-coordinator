@@ -52,7 +52,9 @@ class DetailsModal extends React.Component {
     const {activity} = this.props;
 
     const status = _.snakeCase(activity.getIn(['data', 'latest_event', 'status']));
-    const type = activity.getIn(['data', 'latest_event', 'event_type']).replace(/-/g, '_');
+    const eventType = activity.getIn(['data', 'latest_event', 'event_type']);
+    const type = eventType ? eventType.replace(/-/g, '_') : 'generic';
+    const eventInfo = activity.getIn(['data', 'latest_event', 'info']);
 
     return (
       <ul>
@@ -68,7 +70,7 @@ class DetailsModal extends React.Component {
         <li id="line-activity-event-desc">
           <LocalizedText
             localeKey={`show_page.event_messages.${status}.${type}.description`}
-            data={activity.getIn(['data', 'latest_event', 'info']).toJS()}
+            data={eventInfo ? eventInfo.toJS() : {}}
           />
         </li>
         <li id="line-activity-started-by">

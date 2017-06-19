@@ -78,6 +78,9 @@ table.result-list-table {
       &.name {
         a {
           text-decoration: none;
+          &:hover, &:focus {
+            text-decoration: underline;
+          }
         }
 
         span.name {

@@ -6,6 +6,7 @@ import { Modal, ModalHeader, ModalContent } from 'common/components';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import * as Links from '../links';
 import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
+import DragDropUpload from 'components/Uploads/DragDropUpload';
 import styles from 'styles/ShowUpload.scss';
 
 export const ShowUpload = ({ inProgress, goHome, uploadId }) =>
@@ -20,7 +21,7 @@ export const ShowUpload = ({ inProgress, goHome, uploadId }) =>
               <span className={styles.spinner} />
             </div>
           : <div>
-              <section>draggable upload</section>
+              <section><DragDropUpload /></section>
               <seciton>sidebar</seciton>
             </div>}
       </ModalContent>

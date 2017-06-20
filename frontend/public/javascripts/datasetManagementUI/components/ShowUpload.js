@@ -5,16 +5,14 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'common/components';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import * as Links from '../links';
-// import { Link } from 'react-router';
-// import * as Selectors from '../selectors';
-// import SocrataIcon from '../../common/components/SocrataIcon';
+import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
 import styles from 'styles/ShowUpload.scss';
 
-export const ShowUpload = ({ inProgress, goHome }) =>
+export const ShowUpload = ({ inProgress, goHome, uploadId }) =>
   <div className={styles.showUpload}>
     <Modal fullScreen onDismiss={goHome}>
       <ModalHeader onDismiss={goHome}>
-        hey
+        <UploadBreadcrumbs atShowUpload uploadId={uploadId} />
       </ModalHeader>
       <ModalContent>
         {inProgress
@@ -40,13 +38,15 @@ export const mapStateToProps = ({ entities, ui }, { params }) => {
       call.params.id === uploadId
   );
   return {
-    inProgress: !!apiCall.length
+    inProgress: !!apiCall.length,
+    uploadId
   };
 };
 
 ShowUpload.propTypes = {
   inProgress: PropTypes.bool.isRequired,
-  goHome: PropTypes.func.isRequired
+  goHome: PropTypes.func.isRequired,
+  uploadId: PropTypes.number.isRequired
 };
 
 export const mapDispatchToProps = (dispatch, ownProps) => ({

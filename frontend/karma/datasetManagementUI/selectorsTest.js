@@ -71,6 +71,7 @@ const defaultState = {
 };
 
 describe('Selectors', () => {
+
   describe('rowsUpserted', () => {
     it('returns the number of rows upserted for an upsert job', () => {
       assert.equal(Selectors.rowsUpserted(defaultState, '26'), 20);
@@ -286,4 +287,58 @@ describe('Selectors', () => {
       assert.isAtMost(returnedColumns.length, currentInputColumns.length);
     });
   });
+
+  describe('allTransformsDone', () => {
+
+    it('returns false when transforms not done', () => {
+      const columnsWithTransforms = [
+        { transform: { contiguous_rows_processed: 2500 } },
+        { transform: { contiguous_rows_processed: 300 } }
+      ];
+      const inputSchema = {
+        total_rows: 5000
+      };
+      const result = Selectors.allTransformsDone(columnsWithTransforms, inputSchema);
+      assert.isFalse(result);
+    });
+
+    it('returns false when transform progress not defined yet', () => {
+      const columnsWithTransforms = [
+        { transform: {} },
+        { transform: { contiguous_rows_processed: 300 } }
+      ];
+      const inputSchema = {
+        total_rows: 5000
+      };
+      const result = Selectors.allTransformsDone(columnsWithTransforms, inputSchema);
+      assert.isFalse(result);
+    });
+
+    it('returns true when transform progress matches input schema', () => {
+      const columnsWithTransforms = [
+        { transform: { contiguous_rows_processed: 5000 } },
+        { transform: { contiguous_rows_processed: 5000 } }
+      ];
+      const inputSchema = {
+        total_rows: 5000
+      };
+      const result = Selectors.allTransformsDone(columnsWithTransforms, inputSchema);
+      assert.isTrue(result);
+    });
+
+    // EN-16784
+    it('returns true when input schema has 0 rows', () => {
+      const columnsWithTransforms = [
+        { transform: { contiguous_rows_processed: 0 } },
+        { transform: { contiguous_rows_processed: 0 } }
+      ];
+      const inputSchema = {
+        total_rows: 0
+      };
+      const result = Selectors.allTransformsDone(columnsWithTransforms, inputSchema);
+      assert.isTrue(result);
+    });
+
+  });
+
 });

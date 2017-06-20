@@ -50,8 +50,8 @@ export function columnsForOutputSchema(entities, outputSchemaId) {
 export function allTransformsDone(columnsWithTransforms, inputSchema) {
   return columnsWithTransforms.every(
     column =>
-      column.transform.contiguous_rows_processed &&
-      column.transform.contiguous_rows_processed === inputSchema.total_rows
+      !_.isUndefined(column.transform.contiguous_rows_processed) &&
+        column.transform.contiguous_rows_processed === inputSchema.total_rows
   );
 }
 

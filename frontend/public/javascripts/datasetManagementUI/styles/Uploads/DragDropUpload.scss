@@ -20,3 +20,17 @@
   height: 80%;
   margin: 0 auto;
 }
+
+.uploadButton {
+  composes: btn from global;
+  composes: btn-primary from global;
+}
+
+.uploadInput {
+  width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}

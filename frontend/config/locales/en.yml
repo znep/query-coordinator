@@ -2775,9 +2775,18 @@ en:
         charts:
           one: Chart
           other: Charts
+        datalenses:
+          one: Data Lens
+          other: Data Lenses
         datasets:
           one: Dataset
           other: Datasets
+        filters:
+          one: Filtered View
+          other: Filtered Views
+        hrefs:
+          one: External Dataset
+          other: External Datasets
         maps:
           one: Map
           other: Maps

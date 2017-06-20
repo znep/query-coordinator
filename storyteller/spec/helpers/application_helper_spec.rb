@@ -75,11 +75,11 @@ RSpec.describe ApplicationHelper, type: :helper do
       I18n.with_locale(locale) { example.run }
     end
 
-    it 'loads editor translations in English', locale: :en do |example|
+    it 'loads editor and common translations in English', locale: :en do |example|
       helper.params[:locale] = example.metadata[:locale]
       translations = current_editor_translations
 
-      expect(translations.keys).to eq(%w{editor})
+      expect(translations.keys).to eq(%w{editor common})
       expect(translations[:editor][:story_save_error_try_again]).to eq('Try again.')
     end
 
@@ -87,7 +87,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       helper.params[:locale] = example.metadata[:locale]
       translations = current_editor_translations
 
-      expect(translations.keys).to eq(%w{editor})
+      expect(translations.keys).to eq(%w{editor common})
       expect(translations[:editor][:story_save_error_try_again]).to eq('Try again.')
     end
   end

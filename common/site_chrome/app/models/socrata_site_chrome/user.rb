@@ -29,7 +29,7 @@ module SocrataSiteChrome
     end
 
     def has_right?(right)
-      self.rights && self.rights.include?(right)
+      rights && rights.include?(right.to_s)
     end
 
     # Attribute helpers in an attempt to move away from method_missing.

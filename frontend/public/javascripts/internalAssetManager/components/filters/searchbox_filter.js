@@ -25,6 +25,10 @@ export class SearchboxFilter extends React.Component {
     this.filterOptions();
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ inputValue: nextProps.value || '' });
+  }
+
   onEnter(event) {
     event.preventDefault();
 

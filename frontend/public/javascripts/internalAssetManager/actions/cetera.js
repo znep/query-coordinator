@@ -74,6 +74,8 @@ const translateParamsToMixpanelEvent = (params) => {
       return 'Used Asset Search Field';
     case 'CHANGE_SORT_ORDER':
       return translateColumnToMixpanelEvent(params.order.value);
+    case 'CLEAR_ALL_FILTERS':
+      return 'Clears All Asset Filters';
     default:
       return `Unknown action: ${params.action}`;
   }

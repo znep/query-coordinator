@@ -2714,6 +2714,7 @@ en:
       fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.
     filters:
+      clear: Clear All Filters
       asset_types:
         label: Asset Types
         options:

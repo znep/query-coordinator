@@ -1,7 +1,8 @@
 import React, { PropTypes, Component } from 'react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { createUpload } from 'actions/manageUploads';
-import _ from 'lodash';
+import styles from 'styles/Uploads/DragDropUpload.scss';
 
 export class DragDropUpload extends Component {
   constructor() {
@@ -22,7 +23,7 @@ export class DragDropUpload extends Component {
     if (file && this.isValidFile(file)) {
       dispatch(createUpload(file));
     } else {
-      // TODO: prob change t flash message
+      // TODO: prob change to flash message
       alert('bad file type');
     }
   }
@@ -42,14 +43,18 @@ export class DragDropUpload extends Component {
 
   render() {
     return (
-      <div
-        onDrop={this.handleDrop}
-        onDragOver={this.preventDefault}
-        style={{ border: '1px dashed blue', height: 300 }}>
-        hello
-      </div>
+      <section className={styles.container}>
+        <h2>Replace Data</h2>
+        <div onDrop={this.handleDrop} onDragOver={this.preventDefault} className={styles.dropZone}>
+          hello
+        </div>
+      </section>
     );
   }
 }
+
+DragDropUpload.propTypes = {
+  dispatch: PropTypes.func.isRequired
+};
 
 export default connect()(DragDropUpload);

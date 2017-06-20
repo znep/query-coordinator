@@ -1,0 +1,22 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.container {
+  background-color: $light-grey-7;
+  padding: 1em;
+  font-size: 1rem;
+}
+
+.container h2 {
+  width: 90%;
+  margin: 0 auto;
+  margin-bottom: 0.5em;
+}
+
+.dropZone {
+  border: 2px dashed $dark-grey-1;
+  width: 90%;
+  height: 80%;
+  margin: 0 auto;
+}

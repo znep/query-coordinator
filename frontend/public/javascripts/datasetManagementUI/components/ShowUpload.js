@@ -15,14 +15,14 @@ export const ShowUpload = ({ inProgress, goHome, uploadId }) =>
       <ModalHeader onDismiss={goHome}>
         <UploadBreadcrumbs atShowUpload uploadId={uploadId} />
       </ModalHeader>
-      <ModalContent>
+      <ModalContent className={styles.modalContent}>
         {inProgress
           ? <div className={styles.centeredContainer}>
               <span className={styles.spinner} />
             </div>
-          : <div>
-              <section><DragDropUpload /></section>
-              <seciton>sidebar</seciton>
+          : <div className={styles.uploadContainer}>
+              <DragDropUpload />
+              <section className={styles.sidebar}>sidebar</section>
             </div>}
       </ModalContent>
     </Modal>

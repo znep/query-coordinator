@@ -60,13 +60,15 @@ NotifyButton.propTypes = {
 
 function mapStateToProps({ entities, ui }) {
   // _.find returns undefined if it doesn't find anything
-  const taskSet =
-    _.find(entities.task_sets, { status: 'in_progress' }) || _.find(entities.task_sets, { status: null });
+  const inProgressTaskSet = _.find(entities.task_sets, (taskSet) => (
+    taskSet.status !== ApplyRevision.TASK_SET_SUCCESSFUL
+      && taskSet.status !== ApplyRevision.TASK_SET_FAILURE
+  ));
 
-  const apiCall = taskSet ? _.find(ui.apiCalls, { id: taskSet.job_uuid }) : null;
+  const apiCall = inProgressTaskSet ? _.find(ui.apiCalls, { id: inProgressTaskSet.job_uuid }) : null;
 
   return {
-    taskSet,
+    taskSet: inProgressTaskSet,
     apiCall
   };
 }

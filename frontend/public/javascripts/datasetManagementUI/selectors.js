@@ -1,19 +1,7 @@
 import _ from 'lodash';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
-import { TASK_SET_SUCCESSFUL } from 'actions/applyRevision';
 import { LOAD_ROWS } from 'actions/apiCalls';
 import { CREATE_UPLOAD } from 'actions/manageUploads';
-
-// TODO: if perf becomes an issue, use reselect for memoization
-export function percentUpserted(entities, taskSetId) {
-  const taskSet = entities.task_sets[taskSetId];
-
-  if (taskSet.status === TASK_SET_SUCCESSFUL) {
-    return 100;
-  } else {
-    return 100 * (rowsUpserted(entities, taskSetId) / rowsToBeImported(entities, taskSet.output_schema_id));
-  }
-}
 
 export function rowsToBeImported(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];

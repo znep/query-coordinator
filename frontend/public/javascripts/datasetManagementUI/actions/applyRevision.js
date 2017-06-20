@@ -16,11 +16,30 @@ import * as Links from 'links';
 import * as Selectors from 'selectors';
 import { parseDate } from 'lib/parseDate';
 
-// from https://github.com/socrata/dsmapi/blob/0071c4cdf5128698e6ae9ad2ed1c307e884bb386/web/models/upsert_job.ex#L32-L34
-// TODO: put these in some kind of model class?
+// match DSMAPI: https://github.com/socrata/dsmapi/blob/e4eb96e24e0734b33d5ab6ffb26351a07b1c61d1/web/models/task_set.ex#L30-L35
+export const TASK_SET_INITIALIZING = 'initializing';
+export const TASK_SET_CREATING_COLUMNS = 'creating_columns';
+export const TASK_SET_UPSERTING = 'upserting';
+export const TASK_SET_FINISHING = 'finishing';
+// all of the above are sub-states of 'in_progress'; eventually DSMAPI will just send them
+// instead of in_progress
 export const TASK_SET_IN_PROGRESS = 'in_progress';
 export const TASK_SET_SUCCESSFUL = 'successful';
 export const TASK_SET_FAILURE = 'failure';
+
+// this is the only thing we look at from the log
+export const TASK_SET_STAGE_ROWS_UPSERTED = 'rows_upserted';
+
+export const TASK_SET_STATUSES = [
+  TASK_SET_INITIALIZING,
+  TASK_SET_CREATING_COLUMNS,
+  TASK_SET_UPSERTING,
+  TASK_SET_FINISHING,
+  TASK_SET_IN_PROGRESS,
+  TASK_SET_SUCCESSFUL,
+  TASK_SET_FAILURE
+];
+
 export const POLL_FOR_TASK_SET_PROGRESS_SUCCESS = 'POLL_FOR_TASK_SET_PROGRESS_SUCCESS';
 
 export function applyRevision() {
@@ -44,9 +63,7 @@ export function applyRevision() {
       .then(getJson)
       .then(resp => {
         dispatch(apiCallSucceeded(callId));
-
         dispatch(addTaskSet(resp.resource));
-
         dispatch(showModal('Publishing'));
 
         const taskSetId = resp.resource.id;
@@ -77,7 +94,8 @@ export function pollForTaskSetProgress(taskSetId) {
             dispatch(pollForTaskSetProgressSuccess(revision, taskSet));
           });
 
-          if (_.map(revision.task_sets, 'status').some(status => status === TASK_SET_IN_PROGRESS)) {
+          if (_.map(revision.task_sets, 'status').some(status => (
+              status !== TASK_SET_FAILURE && status !== TASK_SET_SUCCESSFUL))) {
             setTimeout(() => {
               dispatch(pollForTaskSetProgress(taskSetId));
             }, TASK_SET_PROGRESS_POLL_INTERVAL_MS);
@@ -99,6 +117,7 @@ export function pollForTaskSetProgress(taskSetId) {
 function pollForTaskSetProgressSuccess(revision, taskSet) {
   const updatedTaskSet = {
     ...taskSet,
+    created_at: parseDate(taskSet.created_at),
     finished_at: taskSet.finished_at ? parseDate(taskSet.finished_at) : null
   };
   const updateRevision = {

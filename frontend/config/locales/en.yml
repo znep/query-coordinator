@@ -1979,7 +1979,7 @@ en:
         publish_dataset: Publish Dataset
       publish_modal:
         failure:
-          body: Our site is having trouble right now, please wait and try again.
+          body: Our site is having trouble right now. Please wait and try again.
           title: Something went wrong with publishing your data
         publishing:
           body: It's safe to close your browser.  The progress will not be interrupted.
@@ -1988,6 +1988,14 @@ en:
           body: You can't currently make any more changes from here.
           title: This dataset is published
         to_primer: Go to Primer
+        progress_messages:
+          initializing: Initializing
+          creating_columns: Creating columns
+          upserting: Importing data
+          finishing: Finishing
+          successful: Successful
+          failure: Failure
+          done: Done
       publishing_data_is_easy_and_fun: You'll be publishing data in no time.
       required: Required
       review_data: Review Data

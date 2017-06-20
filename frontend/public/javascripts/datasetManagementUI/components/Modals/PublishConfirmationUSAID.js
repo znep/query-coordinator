@@ -33,21 +33,23 @@ export class PublishConfirmationUSAID extends Component {
 
     return (
       <div>
-        <h2>{I18n.home_pane.publish_confirmation.title}</h2>
+        <h2>{I18n.home_pane.publish_confirmation_usaid.title}</h2>
         <ModalContent>
           <span
             onClick={() => setPermission('public')}
             className={publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
-            <h3>Public</h3>
+            <SocrataIcon name="checkmark3" className={styles.checkbox} />
+            <h3>{I18n.home_pane.publish_confirmation_usaid.public}</h3>
             <SocrataIcon className={styles.icon} name="public-open" />
-            Publically accessible. Discoverable through the public catalog
+            {I18n.home_pane.publish_confirmation_usaid.public_msg}
           </span>
           <span
             onClick={() => setPermission('private')}
             className={!publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
-            <h3>Private</h3>
+            <SocrataIcon name="checkmark3" className={styles.checkbox} />
+            <h3>{I18n.home_pane.publish_confirmation_usaid.private}</h3>
             <SocrataIcon className={styles.icon} name="private" />
-            Publically accessible. Discoverable through the public catalog
+            {I18n.home_pane.publish_confirmation_usaid.private_msg}
           </span>
         </ModalContent>
         <ModalFooter className={styles.modalFooter}>

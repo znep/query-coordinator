@@ -1964,6 +1964,12 @@ en:
       percent_uploaded: "{0}% Uploaded"
       preview: Preview
       process_data: Process Data
+      publish_confirmation_usaid:
+        title: Choose your audience
+        public: Public
+        private: Private
+        private_msg: Accessible to users on your site with permissions to view.
+        public_msg: Publically accessible. Discoverable through the public catalog.
       publish_confirmation:
         body: It will be accessible to anyone through your data catalog.
         button: Publish Now

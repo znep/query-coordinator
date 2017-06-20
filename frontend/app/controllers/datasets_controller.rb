@@ -1297,6 +1297,9 @@ class DatasetsController < ApplicationController
   end
 
   def render_as_visualization_canvas(as_edit = false)
+    # The page will momentarily render in view mode, even if as_edit is true, and
+    # setting the @site_chrome_admin_header_options @body_classes variables below is to make
+    # the transition look less jarring.
     if as_edit
       @site_chrome_admin_header_options = {size: 'small'}
       @body_classes = "hide-site-chrome"

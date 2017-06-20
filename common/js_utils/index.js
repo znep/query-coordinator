@@ -594,6 +594,22 @@ var utils = {
       timestamp.substring(14, 16),
       timestamp.substring(17, 19)
     );
+  },
+
+  /**
+   * This function converts a string to a url safe format
+   * copied from urlSafe() in util/util.js. There is also
+   * a ruby equivalent in string_extensions.rb
+   */
+  convertToUrlComponent: function(text) {
+    var output = text.
+      replace(/\s+/g, '-').
+      replace(/[^a-zA-Z0-9_\-]/g, '-').
+      replace(/\-+/g, '-');
+    if (output.length < 1) {
+      output = '-';
+    }
+    return output.slice(0, 50);
   }
 };
 

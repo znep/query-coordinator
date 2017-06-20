@@ -3,7 +3,7 @@ import sinon from 'sinon';
 
 import * as actions from 'actions';
 import * as generateFilterEventsModule from 'lib/mixpanel/eventGenerators/filters';
-import { middleware } from 'lib/mixpanel/middleware';
+import { middleware, __RewireAPI__ as middlewareAPI } from 'lib/mixpanel/middleware';
 
 describe('Mixpanel middleware', () => {
   let store;
@@ -19,12 +19,17 @@ describe('Mixpanel middleware', () => {
     next = sinon.stub().callsFake(({ type }) => `Received ${type}`);
 
     eventGeneratorStubs = {
-      filters: sinon.stub(generateFilterEventsModule, 'generateFilterEvents')
+      filters: sinon.stub()
     };
+    middlewareAPI.__Rewire__('generateFilterEvents', eventGeneratorStubs.filters);
   });
 
   afterEach(() => {
-    _.each(eventGeneratorStubs, (stub) => stub.restore());
+    _.each(eventGeneratorStubs, (stub) => {
+      if (_.isFunction(stub.restore)) {
+        stub.restore();
+      }
+    });
   });
 
   // All actions should obey this behavior; otherwise, it means we're ending the

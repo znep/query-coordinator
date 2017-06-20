@@ -52,6 +52,7 @@ RSpec.describe 'Socrata::UrlHelpers' do
     let(:can_edit_story) { true }
     let(:can_preview_story) { true }
     let(:viewing_others_profile) { false }
+    let(:is_visualization_canvas) { false }
 
     let(:view) do
       double(
@@ -64,7 +65,8 @@ RSpec.describe 'Socrata::UrlHelpers' do
         story?: is_story,
         pulse?: is_pulse,
         data_lens?: is_data_lens,
-        is_api?: false)
+        is_api?: false,
+        visualization_canvas?: is_visualization_canvas)
     end
 
     before do
@@ -105,6 +107,28 @@ RSpec.describe 'Socrata::UrlHelpers' do
           it 'returns a url including a seo-friendly path' do
             expect(helpers.view_url(view)).to eq('//example.com/stories/s/test-view-name/four-four')
           end
+        end
+      end
+
+      describe 'when encountering a visualization canvas' do
+        let(:is_visualization_canvas) { true }
+        it 'returns a visualization canvas url' do
+          expect(helpers.view_url(view)).to eq('//example.com/d/four-four')
+        end
+      end
+    end
+
+    describe '#edit_visualization_canvas_url' do
+      describe 'when encountering a plain dataset' do
+        it 'raises when encountering a plain dataset' do
+          expect { helpers.edit_visualization_canvas_url(view) }.to raise_error('view is not a visualization canvas')
+        end
+      end
+
+      describe 'when encountering a visualization canvas' do
+        let(:is_visualization_canvas) { true }
+        it 'returns the correct URL' do
+          expect(helpers.edit_visualization_canvas_url(view)).to eq('//example.com/d/four-four/edit')
         end
       end
     end

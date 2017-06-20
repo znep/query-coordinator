@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { t } from 'lib/I18n';
 import confirmUnload from 'lib/confirmUnload';
-import navigateToView from 'lib/navigateToView';
 
 import { Analytics } from 'common/analytics';
 
@@ -22,8 +21,7 @@ if (window.serverConfig.environment !== 'development') {
   airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
 
-window.onbeforeunload = confirmUnload(store);
-window.onpopstate = navigateToView(store);
+window.addEventListener('beforeunload', confirmUnload(store));
 
 // Defer rendering so the spinner in the erb can render.
 _.defer(function() {

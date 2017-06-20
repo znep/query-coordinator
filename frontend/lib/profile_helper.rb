@@ -30,6 +30,11 @@ module ProfileHelper
       return current_revision_path({:id => view.id, :view_name => view.name.convert_to_url, :category => category})
     end
 
+    if view.visualization_canvas?
+      return visualization_canvas_url(view) if viewing_others_profile?
+      return edit_visualization_canvas_url(view) if view.can_edit?
+    end
+
     super
   end
 

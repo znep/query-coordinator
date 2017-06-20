@@ -12,6 +12,8 @@ module AdministrationHelper
   def view_url(view)
     if view.story?
       edit_story_url(view)
+    elsif view.visualization_canvas?
+      edit_visualization_canvas_url(view)
     else
       # Call the original implementation, presumably in ApplicationHelper.
       # If this is throwing, a base module with a view_url implementation

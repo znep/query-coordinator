@@ -88,7 +88,7 @@ class ColumnHeader extends Component {
   }
 
   columnType() {
-    return soqlProperties[this.props.column.transform.output_soql_type].canonicalName;
+    return this.props.column.transform.output_soql_type;
   }
 
   icon(isDisabled) {

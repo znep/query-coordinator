@@ -193,7 +193,6 @@ bundle exec rake test:karma:common
 bundle exec rake test:karma:dataCards
 bundle exec rake test:karma:datasetLandingPage
 bundle exec rake test:karma:datasetManagementUI
-bundle exec rake test:karma:importWizard
 bundle exec rake test:karma:oldUx
 bundle exec rake test:karma:visualizationCanvas
 ```

@@ -41,7 +41,6 @@ namespace :test do
       'datasetLandingPage' => 'update_dataset_landing_page_translations',
       'adminGoals' => 'update_admin_goals_translations',
       'adminActivityFeed' => 'update_admin_activity_feed_translations',
-      'importWizard' => 'update_import_wizard_translations',
       'internalAssetManager' => 'update_internal_asset_manager_translations',
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
       'visualizationCanvas' => 'update_visualization_canvas_translations',
@@ -63,7 +62,6 @@ namespace :test do
       'test:karma:translations:update_catalog_landing_page_translations',
       'test:karma:translations:update_datacards_translations',
       'test:karma:translations:update_dataset_landing_page_translations',
-      'test:karma:translations:update_import_wizard_translations',
       'test:karma:translations:update_internal_asset_manager_translations',
       'test:karma:translations:update_admin_goals_translations',
       'test:karma:translations:update_admin_activity_feed_translations',
@@ -130,14 +128,6 @@ namespace :test do
         end
 
         File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
-      end
-
-      desc 'update_import_wizard_translations'
-      task :update_import_wizard_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/importWizard/mockTranslations.js'
-        all_translations = YAML.load_file(translations_filename)['en']
-        File.write(output_filename, "module.exports = #{all_translations.to_json.html_safe};")
       end
 
       desc 'update_internal_asset_manager_translations'
@@ -221,7 +211,6 @@ namespace :test do
       'karma:dataCards',
       'karma:datasetLandingPage',
       'karma:datasetManagementUI',
-      'karma:importWizard',
       'karma:internalAssetManager',
       'karma:oldUx',
       'karma:signin',

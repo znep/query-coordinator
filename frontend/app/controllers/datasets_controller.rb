@@ -24,10 +24,8 @@ class DatasetsController < ApplicationController
     @view = nil # the templates expect a @view var (for reentrancy)
     if FeatureFlags.derive(nil, request).enable_dataset_management_ui && params[:beta]
       render 'datasets/new-dsmui', layout: 'styleguide'
-    elsif FeatureFlags.derive(nil, request).ingress_reenter
-      redirect_to '/profile#create_draft'
     else
-      render 'new-old'
+      render 'new' # old jquery wizard
     end
   end
 

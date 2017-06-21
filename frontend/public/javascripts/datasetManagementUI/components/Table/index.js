@@ -110,7 +110,7 @@ const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, di
     inputSchema,
     outputSchema,
     displayState,
-    outputColumns: combineAndSort(currentAndIgnoredOutputColumns(entities)),
+    outputColumns: combineAndSort(currentAndIgnoredOutputColumns(entities, outputSchema.id)),
     apiCallsByColumnId
   };
 };

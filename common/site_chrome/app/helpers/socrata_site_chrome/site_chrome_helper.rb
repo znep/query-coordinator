@@ -115,6 +115,10 @@ module SocrataSiteChrome
       user_has_right?(:manage_users)
     end
 
+    def current_user_can_see_all_settings?
+      current_user_can_see_admin_link?
+    end
+
     def copyright_source
       localized('footer.copyright_notice_source', site_chrome_instance.locales)
     end

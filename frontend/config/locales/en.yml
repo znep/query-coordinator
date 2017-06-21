@@ -2022,7 +2022,7 @@ en:
         visualize: Visualize
         visualize_blurb: Visualize your data and explore relationships.
         visualize_button: Create New...
-      supported_uploads: 'Supported file types: .csv, .tsv, .xls, .xlsx'
+      supported_uploads: 'Supported file types:'
       table_preview: Table Preview
       upload_done: Upload Done
       uploading: Uploading {filename}...

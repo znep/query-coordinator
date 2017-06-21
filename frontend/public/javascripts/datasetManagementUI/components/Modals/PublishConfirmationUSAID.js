@@ -62,7 +62,9 @@ export class PublishConfirmationUSAID extends Component {
             params={{ outputSchemaId }}
             forceDisable={btnDisabled}
             onClick={() => doUpdate(outputSchemaId)}>
-            {I18n.home_pane.publish_confirmation.button}
+            {publicSelected
+              ? I18n.home_pane.publish_confirmation.button
+              : I18n.home_pane.publish_confirmation_usaid.button}
           </ApiCallButton>
         </ModalFooter>
       </div>

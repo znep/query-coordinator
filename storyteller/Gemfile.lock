@@ -158,9 +158,9 @@ GEM
       activesupport (>= 4.1.0)
     hashie (2.1.2)
     headless (2.3.1)
-    httparty (0.14.0)
+    httparty (0.15.5)
       multi_xml (>= 0.5.2)
-    i18n (0.8.1)
+    i18n (0.8.4)
     inifile (3.0.0)
     jbuilder (2.3.0)
       activesupport (>= 3.0.0, < 5)
@@ -193,7 +193,7 @@ GEM
     mime-types-data (3.2016.0521)
     mimemagic (0.3.2)
     mini_portile2 (2.1.0)
-    minitest (5.10.1)
+    minitest (5.10.2)
     mixlib-shellout (2.2.6)
     mrdialog (1.0.1)
     multi_json (1.12.1)
@@ -304,7 +304,7 @@ GEM
       rubyzip (~> 1.0)
       websocket (~> 1.0)
     semver2 (3.4.2)
-    signaller-ruby (0.5.0)
+    signaller-ruby (0.6.1)
       activesupport (~> 4.2)
       httparty (~> 0.13)
       semver2 (~> 3.4)
@@ -422,4 +422,4 @@ RUBY VERSION
    ruby 2.3.4p301
 
 BUNDLED WITH
-   1.15.0
+   1.15.1

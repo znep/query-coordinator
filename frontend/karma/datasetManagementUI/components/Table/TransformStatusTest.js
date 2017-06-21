@@ -1,18 +1,17 @@
 import { expect, assert } from 'chai';
 import TransformStatus from 'components/Table/TransformStatus'; // eslint-disable-line no-unused-vars
 import { normal } from 'lib/displayState';
+import React from 'react';
 
 describe('components/Table/TransformStatus', () => {
-
-  const renderInTable = (element) => (
+  const renderInTable = element =>
     renderPureComponent(
       <table>
         <thead>
           <tr>{element}</tr>
         </thead>
       </table>
-    )
-  );
+    );
 
   const defaultProps = {
     path: {
@@ -25,7 +24,6 @@ describe('components/Table/TransformStatus', () => {
   };
 
   describe('when there are no errors', () => {
-
     it('renders correctly when upload is done and column is done', () => {
       const element = renderInTable(
         <TransformStatus
@@ -35,11 +33,14 @@ describe('components/Table/TransformStatus', () => {
             contiguous_rows_processed: 5000
           }}
           columnId={50}
-          totalRows={5000} />
+          totalRows={5000}
+        />
       );
       expect(element.querySelector('.success')).to.not.equal(null);
       expect(element.querySelectorAll('.progressBar')).to.not.equal(null);
-      expect(element.innerText).to.equal(I18n.show_output_schema.column_header.no_errors_exist);
+      expect(element.innerText).to.equal(
+        I18n.show_output_schema.column_header.no_errors_exist
+      );
     });
 
     it('renders correctly when upload is done and column is in progress', () => {
@@ -51,9 +52,12 @@ describe('components/Table/TransformStatus', () => {
             contiguous_rows_processed: 2500
           }}
           columnId={50}
-          totalRows={5000} />
+          totalRows={5000}
+        />
       );
-      expect(element.innerText).to.equal(I18n.show_output_schema.column_header.scanning);
+      expect(element.innerText).to.equal(
+        I18n.show_output_schema.column_header.scanning
+      );
       const progressBar = element.querySelector('.progressBar');
       expect(progressBar.style.width).to.equal('50%');
     });
@@ -67,9 +71,12 @@ describe('components/Table/TransformStatus', () => {
             contiguous_rows_processed: 2500
           }}
           columnId={50}
-          totalRows={undefined} />
+          totalRows={undefined}
+        />
       );
-      expect(element.innerText).to.equal(I18n.show_output_schema.column_header.scanning);
+      expect(element.innerText).to.equal(
+        I18n.show_output_schema.column_header.scanning
+      );
       expect(element.querySelectorAll('.progress-bar-done')).to.not.equal(null);
       // TODO: ^^ think of a better class name. really means bar is not visible
       // can be because it's done or we're not showing it because the upload is in progress
@@ -84,18 +91,19 @@ describe('components/Table/TransformStatus', () => {
             id: 5
           }}
           columnId={50}
-          totalRows={undefined} />
+          totalRows={undefined}
+        />
       );
-      expect(element.innerText).to.equal(I18n.show_output_schema.column_header.scanning);
+      expect(element.innerText).to.equal(
+        I18n.show_output_schema.column_header.scanning
+      );
       expect(element.querySelectorAll('.progress-bar-done')).to.not.equal(null);
       // TODO: ^^ think of a better class name. really means bar is not visible
       // can be because it's done or we're not showing it because the upload is in progress
     });
-
   });
 
   describe('when there are errors', () => {
-
     it('renders correctly when upload is done and column is done', () => {
       const element = renderInTable(
         <TransformStatus
@@ -106,7 +114,8 @@ describe('components/Table/TransformStatus', () => {
             num_transform_errors: 5
           }}
           columnId={50}
-          totalRows={5000} />
+          totalRows={5000}
+        />
       );
       expect(element.querySelector('.error')).to.not.equal(null);
       expect(element.querySelectorAll('.progress-bar-done')).to.not.equal(null);
@@ -125,16 +134,21 @@ describe('components/Table/TransformStatus', () => {
             num_transform_errors: 5
           }}
           columnId={50}
-          totalRows={5000} />
+          totalRows={5000}
+        />
       );
-
 
       expect(element.querySelector('.statusText').innerText).to.equal(
         `5${I18n.show_output_schema.column_header.errors_exist_scanning}`
       );
 
       const sos = I18n.show_output_schema;
-      expect(element.innerText).to.equal(`5${sos.column_header.errors_exist_scanning}${sos.column_header.column_status_flyout.error_msg_plural.format({num_errors: 5, type: 'Text'})}\n${sos.click_to_view}`);
+      expect(element.innerText).to.equal(
+        `5${sos.column_header
+          .errors_exist_scanning}${sos.column_header.column_status_flyout.error_msg_plural.format(
+          { num_errors: 5, type: 'Text' }
+        )}\n${sos.click_to_view}`
+      );
 
       const progressBar = element.querySelector('.progressBar');
       expect(progressBar.style.width).to.equal('50%');
@@ -150,7 +164,8 @@ describe('components/Table/TransformStatus', () => {
             num_transform_errors: 5
           }}
           columnId={50}
-          totalRows={undefined} />
+          totalRows={undefined}
+        />
       );
       expect(element.querySelector('.statusText').innerText).to.equal(
         `5${I18n.show_output_schema.column_header.errors_exist_scanning}`
@@ -159,7 +174,5 @@ describe('components/Table/TransformStatus', () => {
       // TODO: ^^ think of a better class name. really means bar is not visible
       // can be because it's done or we're not showing it because the upload is in progress
     });
-
   });
-
 });

@@ -1,5 +1,6 @@
 import { fetchResults } from './cetera';
 import { clearPage } from './pager';
+import { getInitialState } from '../reducers/filters';
 
 export const toggleRecentlyViewed = () => (dispatch, getState) => {
   const onSuccess = () => {
@@ -177,4 +178,14 @@ export const changeQ = (value) => (dispatch, getState) => {
   if (value !== getState().filters.visibility) {
     return fetchResults(dispatch, getState, { action: 'CHANGE_Q', q: value, pageNumber: 1 }, onSuccess);
   }
+};
+
+export const clearAllFilters = () => (dispatch, getState) => {
+  const onSuccess = () => {
+    dispatch({ type: 'CLEAR_ALL_FILTERS' });
+    clearPage(dispatch);
+  };
+
+  const initialState = { ...getInitialState(), pageNumber: 1 };
+  return fetchResults(dispatch, getState, { ...initialState, action: 'CLEAR_ALL_FILTERS' }, onSuccess);
 };

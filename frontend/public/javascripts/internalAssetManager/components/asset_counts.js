@@ -9,7 +9,9 @@ export class AssetCounts extends React.Component {
 
     const assetTypeTranslation = (key) => _.get(I18n, `header.asset_counts.${key}`);
 
-    const assetCountItems = _.map(assetCounts, (assetCount, assetType) => {
+    const sortedAssetCounts = _(assetCounts).toPairs().sortBy(0).fromPairs().value();
+
+    const assetCountItems = _.map(sortedAssetCounts, (assetCount, assetType) => {
       if (assetCount === 0) return;
       // TODO: remove once we're on i18n-js:
       const countKey = assetCount === 1 ? 'one' : 'other';
@@ -38,10 +40,13 @@ export class AssetCounts extends React.Component {
 
 AssetCounts.propTypes = {
   assetCounts: PropTypes.shape({
-    charts: PropTypes.number.isRequired,
-    datasets: PropTypes.number.isRequired,
-    maps: PropTypes.number.isRequired,
-    stories: PropTypes.number.isRequired
+    charts: PropTypes.number,
+    datalenses: PropTypes.number,
+    datasets: PropTypes.number,
+    filters: PropTypes.number,
+    hrefs: PropTypes.number,
+    maps: PropTypes.number,
+    stories: PropTypes.number
   }).isRequired,
   fetchingAssetCounts: PropTypes.bool,
   fetchingAssetCountsError: PropTypes.bool

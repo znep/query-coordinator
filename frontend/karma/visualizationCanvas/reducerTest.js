@@ -1,4 +1,7 @@
 import { assert } from 'chai';
+import sinon from 'sinon';
+
+import mixpanel from '../../public/javascripts/common/mixpanel';
 import reducer from 'reducer';
 import * as actions from 'actions';
 import { ModeStates, SaveStates } from 'lib/constants';
@@ -111,6 +114,41 @@ describe('Reducer', () => {
           isActive: true,
           embedSize: 'large'
         });
+      });
+    });
+
+    // This action is currently untestable when state.isEphemeral === true
+    // because it triggers an un-mockable `window.location` behavior.
+    //
+    // The only way around this is to create façades around un-mockable methods;
+    // those façades can then be mocked for tests.
+    xdescribe('HANDLE_SAVE_SUCCESS', () => {
+      const response = {
+        id: 'test-view',
+        createdAt: 'today'
+      };
+
+      const makeStateDirty = () => {
+        state = reducer(state, actions.updateNameAndDescription({ name: '', description: '' }));
+        assert.isTrue(state.isDirty);
+        return state;
+      };
+
+      beforeEach(() => {
+        state = makeStateDirty();
+        state = reducer(state, actions.handleSaveSuccess(response));
+      });
+
+      it('sets the save state to saved', () => {
+        assert.equal(state.saveState, SaveStates.SAVED);
+      });
+
+      it('sets isDirty to false', () => {
+        assert.isFalse(state.isDirty);
+      });
+
+      it('performs a redirect to the new asset 4x4', () => {
+        // TODO: use sinon spy around redirect; verify called with new URL
       });
     });
   });
@@ -449,6 +487,61 @@ describe('Reducer', () => {
           const stateAfterClose = reducer(state, actions.closeShareModal());
           assert.isFalse(stateAfterClose.shareModal.isActive);
         });
+      });
+    });
+  });
+
+  describe('EMIT_MIXPANEL_EVENT', () => {
+    sharedExamples.beforeEachSetInitialState(INITIAL_STATES.savedView);
+
+    beforeEach(() => {
+      sinon.stub(mixpanel, 'sendPayload');
+    });
+
+    afterEach(() => {
+      mixpanel.sendPayload.restore();
+    });
+
+    describe('when a single event is provided', () => {
+      const event = { name: 'Twiddled Frozzbit', properties: { frozz: 9 } }
+
+      it('submits to Mixpanel', () => {
+        reducer(state, actions.emitMixpanelEvent(event));
+        sinon.assert.calledOnce(mixpanel.sendPayload);
+        sinon.assert.calledWithExactly(
+          mixpanel.sendPayload,
+          `VizCan: ${event.name}`,
+          event.properties
+        );
+      });
+
+      it('does not affect state', () => {
+        const resultState = reducer(state, actions.emitMixpanelEvent(event));
+        assert.deepEqual(state, resultState);
+      });
+    });
+
+    describe('when multiple events are provided', () => {
+      const events = [
+        { name: 'Twiddled Frozzbits', properties: { frozzIndex: 9 } },
+        { name: 'Deoptimized Flanges', properties: { quantum: true } }
+      ];
+
+      it('submits to Mixpanel', () => {
+        reducer(state, actions.emitMixpanelEvent(events));
+        sinon.assert.calledTwice(mixpanel.sendPayload);
+        _.each(events, (event) => {
+          sinon.assert.calledWithExactly(
+            mixpanel.sendPayload,
+            `VizCan: ${event.name}`,
+            event.properties
+          );
+        });
+      });
+
+      it('does not affect state', () => {
+        const resultState = reducer(state, actions.emitMixpanelEvent(events));
+        assert.deepEqual(state, resultState);
       });
     });
   });

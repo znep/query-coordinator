@@ -17,14 +17,14 @@
 
   $semi-transparent-white: rgba(255,255,255,.15);
   background: $success-base linear-gradient(
-  -45deg,
-  $semi-transparent-white 25%,
-  transparent 25%,
-  transparent 50%,
-  $semi-transparent-white 50%,
-  $semi-transparent-white 75%,
-  transparent 75%,
-  transparent
+    -45deg,
+    $semi-transparent-white 25%,
+    transparent 25%,
+    transparent 50%,
+    $semi-transparent-white 50%,
+    $semi-transparent-white 75%,
+    transparent 75%,
+    transparent
   );
   background-size: 20px 20px;
 }
@@ -34,14 +34,14 @@
 
   $semi-transparent-white: rgba(255,255,255,.15);
   background: $error-base linear-gradient(
-  -45deg,
-  $semi-transparent-white 25%,
-  transparent 25%,
-  transparent 50%,
-  $semi-transparent-white 50%,
-  $semi-transparent-white 75%,
-  transparent 75%,
-  transparent
+    -45deg,
+    $semi-transparent-white 25%,
+    transparent 25%,
+    transparent 50%,
+    $semi-transparent-white 50%,
+    $semi-transparent-white 75%,
+    transparent 75%,
+    transparent
   );
   background-size: 20px 20px;
 }
@@ -62,19 +62,23 @@
   animation: slide 10s infinite linear forwards;
   $semi-transparent-white: rgba(255,255,255,.15);
   background: $primary-base linear-gradient(
-  -45deg,
-  $semi-transparent-white 25%,
-  transparent 25%,
-  transparent 50%,
-  $semi-transparent-white 50%,
-  $semi-transparent-white 75%,
-  transparent 75%,
-  transparent
+    -45deg,
+    $semi-transparent-white 25%,
+    transparent 25%,
+    transparent 50%,
+    $semi-transparent-white 50%,
+    $semi-transparent-white 75%,
+    transparent 75%,
+    transparent
   );
   background-size: 20px 20px;
 }
 
 @keyframes slide {
-  0% { background-position: 0% 0; }
-  100% { background-position: 100% 0; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 200px 0; // multiple of stripe width
+  }
 }

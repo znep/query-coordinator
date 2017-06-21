@@ -1,28 +1,24 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import ActionModal from './action_modal';
-import { closeModal, deleteAsset } from '../actions/asset_actions';
-import { handleEnter } from '../../common/helpers/keyPressHelpers';
+import ReactDOM from 'react-dom';
+import { closeModal } from 'actions/asset_actions';
+import ChangeVisibility from './action_modals/change_visibility';
+import DeleteAsset from './action_modals/delete_asset';
+import { handleEnter } from 'common/helpers/keyPressHelpers';
 import _ from 'lodash';
 import classNames from 'classnames';
+import { redirectTo } from 'common/http';
 
 export class ActionDropdown extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      actionModalIsOpen: false,
-      isOpen: false,
-      selectedAction: null
+      activeActionModal: null,
+      dropdownIsOpen: false
     };
 
-    _.bindAll(this, [
-      'handleDocumentClick',
-      'handleButtonClick',
-      'closeActionModal',
-      'showActionModal'
-    ]);
+    _.bindAll(this, 'handleDocumentClick', 'handleButtonClick', 'handleModalClose', 'showActionModal');
   }
 
   componentDidMount() {
@@ -38,7 +34,7 @@ export class ActionDropdown extends React.Component {
   handleDocumentClick(event) {
     if (this.mounted) {
       if (!ReactDOM.findDOMNode(this).contains(event.target)) {
-        this.setState({ isOpen: false });
+        this.setState({ dropdownIsOpen: false });
       }
     }
   }
@@ -48,95 +44,98 @@ export class ActionDropdown extends React.Component {
     event.preventDefault();
 
     this.setState({
-      isOpen: !this.state.isOpen
+      dropdownIsOpen: !this.state.dropdownIsOpen
     });
   }
 
-  showActionModal(actionType) {
-    this.setState({ isOpen: false, actionModalIsOpen: true, selectedAction: actionType });
+  handleModalClose() {
+    this.setState({ activeActionModal: null });
+    this.props.closeModal();
   }
 
-  closeActionModal() {
-    this.props.closeModal();
-    this.setState({ actionModalIsOpen: false, selectedAction: null });
+  showActionModal(actionName) {
+    this.setState({ activeActionModal: actionName });
   }
 
   render() {
-    const { uid } = this.props;
-    const { actionModalIsOpen, isOpen, selectedAction } = this.state;
+    const { assetType, uid } = this.props;
+    const { dropdownIsOpen } = this.state;
 
-    const dropdownButtonClass = classNames('action-dropdown-button', { active: isOpen });
+    const getTranslation = (key) => _.get(I18n, `result_list_table.action_dropdown.${key}`);
 
     const dropdownButton = (
       <button
-        aria-label={_.get(I18n, 'result_list_table.action_dropdown.title')}
-        className={dropdownButtonClass}
+        aria-label={getTranslation('title')}
+        className={classNames('action-dropdown-button', { active: dropdownIsOpen })}
         onClick={this.handleButtonClick}
         role="button">
         <span
           className="socrata-icon-arrow-down"
-          alt={_.get(I18n, 'result_list_table.action_dropdown.title')} />
+          alt={getTranslation('title')} />
       </button>
     );
 
-    // These map to the dispatched Action names as well as the snake_cased translation keys.
-    const menuActions = [
-      'addCollaborators',
-      'editMetadata',
-      'changeVisibility',
-      'changePermissions',
-      'transferOwnership',
-      'deleteAsset'
-    ];
+    const renderDropdownOption = (optionText, onClick) => (
+      <li onClick={onClick} onKeyDown={handleEnter(onClick, true)} tabIndex={0}>{optionText}</li>
+    );
 
-    const renderedMenuActions = menuActions.map((actionType) => {
-      const actionTitle = _.get(I18n, `result_list_table.action_dropdown.${_.snakeCase(actionType)}`);
+    let changeVisibilityMenuOption;
 
-      return (
-        <li
-          key={actionType}
-          tabIndex={0}
-          onClick={() => this.showActionModal(actionType)}
-          onKeyDown={handleEnter(() => this.showActionModal(actionType), true)}>
-          {actionTitle}
-        </li>
+    if (assetType === 'story') {
+      /* TODO: Need to do something different if a story is unpublished vs published:
+        - just link to the story if it's unpublished.
+        - if it is published, use the storyteller api to toggle permissions, not the core api directly.
+          (in asset_actions) */
+    } else if (assetType === 'datalens') {
+      // TODO: Implement the "hidden" checkbox and use that for data lenses.
+    } else if (assetType === 'visualization') {
+      // TODO: Implement once new viz bootstrapping / permissions are ready to go.
+    } else {
+      changeVisibilityMenuOption = renderDropdownOption(
+        getTranslation('change_visibility'), () => this.showActionModal('changeVisibility')
       );
-    });
+    }
 
-    const dropdownMenu = isOpen ? (
+    const dropdownMenu = dropdownIsOpen ? (
       <ul className="action-dropdown-menu">
-        {renderedMenuActions}
+        {renderDropdownOption(getTranslation('edit_metadata'), () => redirectTo(`/d/${uid}/edit_metadata`))}
+        {changeVisibilityMenuOption}
+        {renderDropdownOption(getTranslation('delete_asset'), () => this.showActionModal('deleteAsset'))}
       </ul>
     ) : null;
 
-    // selectedAction name maps to the dispatched action name.
-    const actionDispatch = this.props[selectedAction];
-    const actionModal = actionModalIsOpen ? (
-      <ActionModal
-        actionType={selectedAction}
-        onAccept={() => actionDispatch(uid)}
-        onDismiss={this.closeActionModal} />
-    ) : null;
+    const actionModalProps = {
+      assetType,
+      onDismiss: this.handleModalClose,
+      uid
+    };
+
+    // Keys must map to the name of the activeActionModal on the component state.
+    const actionModals = {
+      changeVisibility: <ChangeVisibility {...actionModalProps} />,
+      deleteAsset: <DeleteAsset {...actionModalProps} />
+    };
+
+    const renderedActionModal = actionModals[this.state.activeActionModal];
 
     return (
       <div className="action-dropdown">
         {dropdownButton}
         {dropdownMenu}
-        {actionModal}
+        {renderedActionModal}
       </div>
     );
   }
 }
 
 ActionDropdown.propTypes = {
+  assetType: PropTypes.string.isRequired,
   closeModal: PropTypes.func.isRequired,
-  deleteAsset: PropTypes.func.isRequired,
   uid: PropTypes.string.isRequired
 };
 
 const mapDispatchToProps = dispatch => ({
-  closeModal: () => dispatch(closeModal()),
-  deleteAsset: (uid) => dispatch(deleteAsset(uid))
+  closeModal: () => dispatch(closeModal())
 });
 
 export default connect(null, mapDispatchToProps)(ActionDropdown);

@@ -28,12 +28,6 @@ describe('LegendsAndFlyoutsPane', function() {
   var component;
   var props;
 
-  beforeEach(function() {
-    FeatureFlags.useTestFixture({
-      visualization_authoring_enable_column_chart_legend: false
-    });
-  });
-
   function emitsEvent(id, eventName, eventType) {
     it(`should emit an ${eventName} event`, function(done) {
       TestUtils.Simulate[eventType || 'change'](component.querySelector(id));
@@ -128,31 +122,17 @@ describe('LegendsAndFlyoutsPane', function() {
       emitsEventsForUnits();
     });
 
-    describe('with visualization_authoring_enable_column_chart_legend flag set to false', function() {
+    describe('not grouping', function() {
       it('does not render the legend pane', function() {
+        renderColumnChartPane(false);
         assert.isNull(legendsPanel);
       });
     });
 
-    describe('with visualization_authoring_enable_column_chart_legend flag set to true', function() {
-      beforeEach(function() {
-        FeatureFlags.useTestFixture({
-          visualization_authoring_enable_column_chart_legend: true
-        });
-      });
-
-      describe('not grouping', function() {
-        it('does not render the legend pane', function() {
-          renderColumnChartPane(false);
-          assert.isNull(legendsPanel);
-        });
-      });
-
-      describe('grouping', function() {
-        it('renders the legend pane', function() {
-          renderColumnChartPane(true);
-          assert.isNotNull(legendsPanel);
-        });
+    describe('grouping', function() {
+      it('renders the legend pane', function() {
+        renderColumnChartPane(true);
+        assert.isNotNull(legendsPanel);
       });
     });
   });

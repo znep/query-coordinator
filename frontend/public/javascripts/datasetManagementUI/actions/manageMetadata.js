@@ -3,7 +3,6 @@ import { push } from 'react-router-redux';
 import uuid from 'uuid';
 import * as Links from '../links';
 import { checkStatus, getJson, socrataFetch } from '../lib/http';
-import { edit, setView } from './database';
 import {
   apiCallStarted,
   apiCallSucceeded,
@@ -11,17 +10,22 @@ import {
   SAVE_COLUMN_METADATA,
   SAVE_DATASET_METADATA
 } from './apiCalls';
-import { insertChildrenAndSubscribeToOutputSchema } from './manageUploads';
 import * as Selectors from '../selectors';
 import * as dsmapiLinks from '../dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
 import { getLocalizedErrorMessage } from 'lib/util';
+import {
+  pollForOutputSchemaSuccess,
+  subscribeToOutputSchema,
+  subscribeToTransforms
+} from 'actions/manageUploads';
+import { editView } from 'actions/views';
 import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX, fromFlatToNested } from 'lib/customMetadata';
 
 export const dismissMetadataPane = () => (dispatch, getState) => {
-  const state = getState();
+  const { routing } = getState().ui;
   const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata(\/columns|\/dataset)?/;
-  const currentLocation = state.routing.history[state.routing.history.length - 1];
+  const currentLocation = routing.history[routing.history.length - 1];
 
   const helper = history => {
     const location = history[history.length - 1];
@@ -35,14 +39,14 @@ export const dismissMetadataPane = () => (dispatch, getState) => {
     }
   };
 
-  helper(state.routing.history);
+  helper(routing.history);
 };
 
 export const saveDatasetMetadata = () => (dispatch, getState) => {
-  const { db, routing } = getState();
-  const { fourfour } = routing;
-  const model = _.get(db, `views.${fourfour}.model`);
-  const schema = _.get(db, `views.${fourfour}.schema`);
+  const { entities, ui } = getState();
+  const { fourfour } = ui.routing;
+  const model = _.get(entities, `views.${fourfour}.model`);
+  const schema = _.get(entities, `views.${fourfour}.schema`);
 
   dispatch(hideFlashMessage());
 
@@ -59,12 +63,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     // MetadataField looks at displayMetadataFieldErrors in store, and will show
     // field-level validation errors if it's truthy. Dispatching this action from here
     // allows us to show field-level validation errors on form submit.
-    dispatch(
-      edit('views', {
-        id: fourfour,
-        displayMetadataFieldErrors: true
-      })
-    );
+    dispatch(editView(fourfour, { displayMetadataFieldErrors: true }));
 
     return;
   }
@@ -132,7 +131,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     .then(checkStatus)
     .then(getJson)
     .then(resp => {
-      dispatch(setView(resp));
+      dispatch(editView(resp.id, resp));
 
       dispatch(apiCallSucceeded(callId));
 
@@ -149,13 +148,13 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
 };
 
 export const saveColumnMetadata = () => (dispatch, getState) => {
-  const { db, routing } = getState();
+  const { entities, ui } = getState();
 
-  const { fourfour } = routing;
+  const { fourfour } = ui.routing;
 
-  const formDataModel = _.get(db, `views.${fourfour}.colFormModel`, {});
+  const formDataModel = _.get(entities, `views.${fourfour}.colFormModel`, {});
 
-  const schema = _.get(db, `views.${fourfour}.colFormSchema`);
+  const schema = _.get(entities, `views.${fourfour}.colFormSchema`);
 
   dispatch(hideFlashMessage());
 
@@ -164,29 +163,24 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
 
     // See comment in corresponding portion of saveDatasetMetadata action
-    dispatch(
-      edit('views', {
-        id: fourfour,
-        displayMetadataFieldErrors: true
-      })
-    );
+    dispatch(editView(fourfour, { displayMetadataFieldErrors: true }));
 
     return;
   }
 
-  const currentOutputSchema = Selectors.latestOutputSchema(db);
+  const currentOutputSchema = Selectors.latestOutputSchema(entities);
 
   if (!currentOutputSchema) {
     return;
   }
 
   const payload = {
-    output_columns: Selectors.updatedOutputColumns(db, formDataModel)
+    output_columns: Selectors.updatedOutputColumns(entities, formDataModel)
   };
 
-  const inputSchema = db.input_schemas[currentOutputSchema.input_schema_id];
+  const inputSchema = entities.input_schemas[currentOutputSchema.input_schema_id];
 
-  const upload = db.uploads[inputSchema.upload_id];
+  const upload = entities.uploads[inputSchema.upload_id];
 
   const callId = uuid();
 
@@ -236,9 +230,13 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
       });
     })
     .then(resp => {
+      dispatch(pollForOutputSchemaSuccess(resp.resource));
+      dispatch(subscribeToOutputSchema(resp.resource));
+      dispatch(subscribeToTransforms(resp.resource));
+    })
+    .then(() => {
       dispatch(apiCallSucceeded(callId));
       dispatch(redirectAfterInterval());
-      return dispatch(insertChildrenAndSubscribeToOutputSchema(resp.resource));
     });
 };
 

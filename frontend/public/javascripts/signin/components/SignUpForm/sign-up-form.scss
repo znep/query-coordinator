@@ -64,8 +64,8 @@ $error-color: #C4282D;
   margin-left: 5px;
   
   & svg {
-    width: 15px;
-    height: 15px;
+    width: 15px !important;
+    height: 15px !important;
   }
 }
 

@@ -34,8 +34,8 @@ $yahoo-fill: #a200c2;
   cursor: pointer;
 
   & svg {
-    width: 45px;
-    height: 45px;
+    width: 45px !important;
+    height: 45px !important;
   }
 }
 
@@ -43,7 +43,7 @@ $yahoo-fill: #a200c2;
   @extend .social-button;
 
   & svg path {
-    fill: $facebook-fill;
+    fill: $facebook-fill !important;
   }
 }
 
@@ -51,7 +51,7 @@ $yahoo-fill: #a200c2;
   @extend .social-button;
 
   & svg path {
-    fill: $twitter-fill
+    fill: $twitter-fill !important;
   }
 }
 
@@ -59,7 +59,7 @@ $yahoo-fill: #a200c2;
   @extend .social-button;
 
   & svg path {
-    fill: $google-fill;
+    fill: $google-fill !important;
   }
 }
 
@@ -67,7 +67,7 @@ $yahoo-fill: #a200c2;
   @extend .social-button;
 
   & svg path {
-    fill: $microsoft-fill;
+    fill: $microsoft-fill !important;
   }
 }
 
@@ -75,6 +75,6 @@ $yahoo-fill: #a200c2;
   @extend .social-button;
 
   & svg path {
-    fill: $yahoo-fill;
+    fill: $yahoo-fill !important;
   }
 }

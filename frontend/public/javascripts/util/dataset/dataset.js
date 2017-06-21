@@ -479,7 +479,7 @@
       }
       var md = $.extend(true, {}, ds.metadata);
       md.renderTypeConfig.visible[rt] = true;
-      if (activeUid && activeUid != ds.id) {
+      if (activeUid && (activeUid != ds.id || force)) {
         $.deepSet(md, activeUid, 'renderTypeConfig', 'active', rt, 'id');
       }
       ds.update({

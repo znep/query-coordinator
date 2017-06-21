@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import { Picklist } from 'common/components';
-import { handleEnter } from '../../../common/helpers/keyPressHelpers';
+import { handleEnter } from 'common/helpers/keyPressHelpers';
 
 export class SearchboxFilter extends React.Component {
   constructor(props) {
@@ -23,6 +23,10 @@ export class SearchboxFilter extends React.Component {
 
   componentDidMount() {
     this.filterOptions();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ inputValue: nextProps.value || '' });
   }
 
   onEnter(event) {

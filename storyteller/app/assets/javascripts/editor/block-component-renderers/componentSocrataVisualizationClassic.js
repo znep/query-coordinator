@@ -1,7 +1,11 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { SocrataIcon } from 'common/components';
 
 import '../componentBase';
+import I18n from '../I18n';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
 import { assert, assertInstanceOf, assertHasProperties, assertHasProperty } from 'common/js_utils';
@@ -66,9 +70,26 @@ function _renderVisualization($element, componentData) {
     );
   });
 
+  const iconClass = 'socrata-visualization-view-source-data-icon';
+  const $sourceLinkElement = $(`
+    <div class="socrata-visualization-view-source-data">
+      <a href="/d/${componentData.value.visualization.id}" target="_blank">
+        <span>${I18n.t('common.view_source_data')}</span><span class="${iconClass}"></span>
+      </a>
+    </div>
+  `);
+
+  ReactDOM.render(
+    React.createElement(SocrataIcon, { name: 'external' }),
+    $sourceLinkElement.find(`.${iconClass}`)[0]
+  );
+
+  const $wrapper = $('<div>', { class: 'component-content' }).
+    append([$iframeElement, $sourceLinkElement]);
+
   $element.
     addClass(className).
-    append($iframeElement);
+    append($wrapper);
 }
 
 function _updateVisualization($element, componentData) {

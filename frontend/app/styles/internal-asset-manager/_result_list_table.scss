@@ -30,6 +30,10 @@ table.result-list-table {
           width: 600px;
         }
 
+        &.last-updated-date {
+          width: 9rem;
+        }
+
         &.visibility {
           cursor: not-allowed;
         }
@@ -74,6 +78,9 @@ table.result-list-table {
       &.name {
         a {
           text-decoration: none;
+          &:hover, &:focus {
+            text-decoration: underline;
+          }
         }
 
         span.name {

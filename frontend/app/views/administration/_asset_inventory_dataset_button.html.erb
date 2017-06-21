@@ -8,7 +8,7 @@
     ) %>
   <%- else -%>
     <%= button_for_t(
-      'screens.admin.datasets.view_as_a_dataset',
+      title_translation_key,
       {:action => 'asset_inventory', :controller => 'administration'},
       {
         :disabled => is_disabled,

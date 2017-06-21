@@ -10,8 +10,8 @@ export const getComponentName = component => component.displayName || component.
 // server-side errors to be displayed in the flash message.
 export const getLocalizedErrorMessage = msg => {
   let localizedErrorMessage;
-  const isInvalidURL = /validation failed:(.+)not a valid url/ig;
-  const requiresLicense = /validation failed:(.+)requires that attribution be specified/ig;
+  const isInvalidURL = /validation failed:(.+)not a valid url/gi;
+  const requiresLicense = /validation failed:(.+)requires that attribution be specified/gi;
 
   if (isInvalidURL.test(msg)) {
     localizedErrorMessage = I18n.edit_metadata.validation_error_url;
@@ -31,6 +31,18 @@ export function getUniqueName(arr, name, count = 1) {
   } else {
     return getUniqueName(arr, name, count + 1);
   }
+}
+
+export function mergeRecords(existing = {}, updates = {}) {
+  const updateKeys = Object.keys(updates);
+
+  return updateKeys.reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: { ...existing[key], ...updates[key] }
+    }),
+    existing
+  );
 }
 
 export const removeWhitespace = str => str.replace(/\s/g, '_');

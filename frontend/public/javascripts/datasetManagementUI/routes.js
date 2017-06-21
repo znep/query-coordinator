@@ -11,7 +11,7 @@ import NoMatch from './components/NoMatch';
 import _ from 'lodash';
 
 const checkUploadStatus = store => (nextState, replace) => {
-  const uploadExists = !_.isEmpty(store.getState().db.output_columns);
+  const uploadExists = !_.isEmpty(store.getState().entities.output_columns);
 
   const { category, fourfour, name, revisionSeq } = nextState.params;
 
@@ -23,7 +23,7 @@ const checkUploadStatus = store => (nextState, replace) => {
 };
 
 const checkUpsertStatus = store => (nextState, replace, blocking) => {
-  const upsertJob = _.maxBy(_.values(store.getState().db.upsert_jobs), job => job.updated_at);
+  const upsertJob = _.maxBy(_.values(store.getState().entities.task_sets), job => job.updated_at);
 
   const { category, fourfour, name, revisionSeq } = nextState.params;
   const newPath = `/${category}/${name}/${fourfour}/revisions/${revisionSeq}`;
@@ -45,10 +45,7 @@ export default function rootRoute(store) {
       <IndexRoute component={ShowRevision} />
       <Redirect from="metadata" to="metadata/dataset" />
       <Route path="metadata/dataset" component={ManageMetadata} />
-      <Route
-        path="metadata/columns"
-        component={ManageMetadata}
-        onEnter={checkUploadStatus(store)} />
+      <Route path="metadata/columns" component={ManageMetadata} onEnter={checkUploadStatus(store)} />
       <Route path="uploads" component={ManageUploads} />
       <Route path=":sidebarSelection" component={ShowRevision} />
       <Route path="uploads/:uploadId" component={ShowUpload} />
@@ -58,8 +55,10 @@ export default function rootRoute(store) {
         <Route path="page/:pageNo" component={ShowOutputSchema} />
       </Route>
       <Route
-        path={'uploads/:uploadId/schemas/:inputSchemaId/output/' +
-                ':outputSchemaId/column_errors/:errorsTransformId'}
+        path={
+          'uploads/:uploadId/schemas/:inputSchemaId/output/' +
+            ':outputSchemaId/column_errors/:errorsTransformId'
+        }
         component={ShowOutputSchema}>
         <Route path="page/:pageNo" component={ShowOutputSchema} />
       </Route>

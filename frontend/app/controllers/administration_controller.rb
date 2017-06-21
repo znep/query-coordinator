@@ -504,7 +504,11 @@ class AdministrationController < ApplicationController
       )
     end
 
-    redirect_to request.referer || { :action => 'views' }
+    if params[:skip_redirect] == 'true'
+      render :nothing => true
+    else
+      redirect_to request.referer || { :action => 'views' }
+    end
   end
 
   #

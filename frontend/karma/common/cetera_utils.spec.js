@@ -95,6 +95,17 @@ describe('cetera_utils.js', () => {
 
     describe('query', () => {
 
+      describe('without mixpanel', () => {
+
+        // Returns a promise
+        it('should return results', () => {
+          return ceteraUtils.query({}).then((response) => {
+            assert(response.results.length > 0);
+          });
+        });
+
+      });
+
       describe('mixpanel', () => {
 
         // Returns a promise

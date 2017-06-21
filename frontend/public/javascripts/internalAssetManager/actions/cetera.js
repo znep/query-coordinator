@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import ceteraUtils from '../../common/cetera_utils';
+import ceteraUtils from 'common/cetera_utils';
 
 const RESULTS_PER_PAGE = 10;
 
@@ -74,6 +74,8 @@ const translateParamsToMixpanelEvent = (params) => {
       return 'Used Asset Search Field';
     case 'CHANGE_SORT_ORDER':
       return translateColumnToMixpanelEvent(params.order.value);
+    case 'CLEAR_ALL_FILTERS':
+      return 'Clears All Asset Filters';
     default:
       return `Unknown action: ${params.action}`;
   }
@@ -166,4 +168,3 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => 
     dispatch(fetchingResultsError());
   });
 };
-

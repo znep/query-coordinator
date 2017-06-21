@@ -198,7 +198,10 @@ function getStandardResolve(extraRoots) {
   });
 
   return {
-    modulesDirectories: [ path.resolve(frontendRoot, 'node_modules') ],
+    modulesDirectories: [
+      path.resolve(frontendRoot, 'node_modules'),
+      path.resolve(frontendRoot, 'public/javascripts')
+    ],
     root: roots
   };
 }

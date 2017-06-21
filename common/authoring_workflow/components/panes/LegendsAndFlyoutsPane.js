@@ -86,10 +86,6 @@ export const LegendsAndFlyoutsPane = React.createClass({
   renderLegends() {
     const { vifAuthoring, onChangeShowLegend } = this.props;
 
-    if (!FeatureFlags.value('visualization_authoring_enable_column_chart_legend')) {
-      return null;
-    }
-
     // Currently legends are only available for grouping visualizations
     const isGrouping = getDimensionGroupingColumnName(vifAuthoring);
     if (!isGrouping) {
@@ -118,7 +114,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderBarChartControls() {
-    return this.renderUnits();
+    return [this.renderUnits(), this.renderLegends()];
   },
 
   renderColumnChartControls() {

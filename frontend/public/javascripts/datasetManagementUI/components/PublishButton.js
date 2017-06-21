@@ -13,9 +13,7 @@ const SubI18n = I18n.home_pane.publish_dataset_button;
 function LabelledCheckmark({ checked, text }) {
   let checkmark;
   if (checked) {
-    checkmark = (
-      <span className={styles.checked} />
-    );
+    checkmark = <span className={styles.checked} />;
   } else {
     checkmark = (
       <svg className={styles.notChecked}>
@@ -40,10 +38,10 @@ function PublishReadinessFlyout({ metadataSatisfied, dataSatisfied }) {
   return (
     <div id={FLYOUT_ID} className={styles.flyout}>
       <section className={styles.flyoutContent}>
-        {(metadataSatisfied && dataSatisfied) ?
-          SubI18n.make_accessible :
-          <div>
-            {SubI18n.cant_publish_until}
+        {metadataSatisfied && dataSatisfied
+          ? SubI18n.make_accessible
+          : <div>
+              {SubI18n.cant_publish_until}
             <ul>
               <li><LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} /></li>
               <li><LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} /></li>
@@ -59,8 +57,7 @@ PublishReadinessFlyout.propTypes = {
   dataSatisfied: PropTypes.bool.isRequired
 };
 
-class PublishButton extends Component {
-
+export class PublishButton extends Component {
   componentDidMount() {
     this.attachFlyouts();
   }
@@ -78,13 +75,19 @@ class PublishButton extends Component {
   render() {
     const { publishDataset, metadataSatisfied, dataSatisfied, publishedOrPublishing } = this.props;
     const readyToPublish = metadataSatisfied && dataSatisfied;
+    const modalName = window.serverConfig.featureFlags.usaidFeaturesEnabled
+      ? 'PublishConfirmationUSAID'
+      : 'PublishConfirmation';
+
     return (
       <div
-        ref={(element) => { this.flyoutButtonEl = element; }}>
+        ref={element => {
+          this.flyoutButtonEl = element;
+        }}>
         <div data-flyout={FLYOUT_ID}>
           <button
             className={styles.publishButton}
-            onClick={publishDataset}
+            onClick={() => publishDataset(modalName)}
             disabled={!readyToPublish || publishedOrPublishing}>
             {SubI18n.publish_dataset}
           </button>
@@ -96,7 +99,6 @@ class PublishButton extends Component {
       </div>
     );
   }
-
 }
 
 PublishButton.propTypes = {
@@ -108,31 +110,34 @@ PublishButton.propTypes = {
 
 function mapStateToProps(state) {
   let dataSatisfied;
-  const outputSchema = Selectors.latestOutputSchema(state.db);
+  const outputSchema = Selectors.latestOutputSchema(state.entities);
   if (outputSchema) {
-    const inputSchema = state.db.input_schemas[outputSchema.input_schema_id];
-    const columns = Selectors.columnsForOutputSchema(state.db, outputSchema.id);
+    const inputSchema = state.entities.input_schemas[outputSchema.input_schema_id];
+    const columns = Selectors.columnsForOutputSchema(state.entities, outputSchema.id);
     dataSatisfied = Selectors.allTransformsDone(columns, inputSchema);
   } else {
     dataSatisfied = false;
   }
-  const view = state.db.views[state.routing.fourfour];
+  const view = state.entities.views[state.ui.routing.fourfour];
   return {
     metadataSatisfied: view.schema.isValid,
     dataSatisfied,
-    publishedOrPublishing: _.size(
-      _.filter(state.db.upsert_jobs, (job) => (
-        job.status === ApplyRevision.UPSERT_JOB_SUCCESSFUL ||
-          job.status === ApplyRevision.UPSERT_JOB_IN_PROGRESS
-      ))
-    ) > 0
+    publishedOrPublishing:
+      _.size(
+        _.filter(
+          state.entities.task_sets,
+          set =>
+            set.status === ApplyRevision.TASK_SET_SUCCESSFUL ||
+            set.status === ApplyRevision.TASK_SET_IN_PROGRESS
+        )
+      ) > 0
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    publishDataset: () => {
-      dispatch(showModal('PublishConfirmation'));
+    publishDataset: modalName => {
+      dispatch(showModal(modalName));
     }
   };
 }

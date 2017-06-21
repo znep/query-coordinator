@@ -22,6 +22,37 @@ let ceteraStub;
 let ceteraAssetCountsStub;
 
 describe('actions/filters', () => {
+  describe('clearAllFilters', () => {
+    beforeEach(() => {
+      ceteraStub = stubCeteraQuery();
+      ceteraAssetCountsStub = stubCeteraAssetCountsFetch();
+    });
+
+    afterEach(() => {
+      ceteraStub.restore();
+      ceteraAssetCountsStub.restore();
+    });
+
+    it('clears the filters', () => {
+      const store = mockStore({ filters: { onlyRecentlyViewed: true } });
+
+      const expectedActions = [
+        { type: 'FETCH_RESULTS' },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
+        { type: 'FETCH_RESULTS_SUCCESS' },
+        { type: 'CLEAR_ALL_FILTERS' },
+        { type: 'CHANGE_PAGE', pageNumber: 1 },
+        { type: 'FETCH_ASSET_COUNTS' },
+        { type: 'FETCH_ASSET_COUNTS_SUCCESS' },
+        { type: 'UPDATE_ASSET_COUNTS', assetCounts: mockCeteraFacetCountsResponse[0].values }
+      ];
+
+      return store.dispatch(Actions.clearAllFilters()).then(() => {
+        assert.deepEqual(store.getActions(), expectedActions);
+      });
+    });
+  });
+
   describe('toggleRecentlyViewed', () => {
     beforeEach(() => {
       ceteraStub = stubCeteraQuery();
@@ -34,8 +65,7 @@ describe('actions/filters', () => {
     });
 
     it('toggles the recently viewed assets', () => {
-      const initialState = { filters: { onlyRecentlyViewed: false } };
-      const store = mockStore(initialState);
+      const store = mockStore({ filters: { onlyRecentlyViewed: false } });
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
@@ -66,8 +96,7 @@ describe('actions/filters', () => {
     });
 
     it('changes the current asset type', () => {
-      const initialState = { filters: { assetTypes: null } };
-      const store = mockStore(initialState);
+      const store = mockStore({ filters: { assetTypes: null } });
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
@@ -98,8 +127,7 @@ describe('actions/filters', () => {
     });
 
     it('changes the current visibility', () => {
-      const initialState = { filters: { visibility: null } };
-      const store = mockStore(initialState);
+      const store = mockStore({ filters: { visibility: null } });
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },

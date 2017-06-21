@@ -26,6 +26,7 @@ const DIMENSION_LABELS_ROTATION_ANGLE = 0;
 const DIMENSION_LABELS_FONT_SIZE = 14;
 const DIMENSION_LABELS_FONT_COLOR = '#5e5e5e';
 const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 11; // Empirically determined to work well enough.
+const LEGEND_BAR_HEIGHT = 35;
 const MEASURE_LABELS_FONT_SIZE = 14;
 const MEASURE_LABELS_FONT_COLOR = '#5e5e5e';
 const MEASURE_VALUE_TEXT_IN_BAR_MINIMUM_BAR_WIDTH = 50;
@@ -749,6 +750,26 @@ function SvgBarChart($element, vif, options) {
           'transform',
           `translate(0,${lastRenderedZoomTranslate})`
         );
+    }
+
+    const alreadyDisplayingLegendBar = (self.$container.find('.socrata-visualization-legend-bar-inner-container').length > 0);
+
+    if (self.getShowLegend()) {
+
+      self.renderLegendBar(measureLabels, (i) => { return getColor(dataTableDimensionIndex, i); });
+      self.attachLegendBarEventHandlers();
+
+      if (!alreadyDisplayingLegendBar) {
+        viewportHeight -= LEGEND_BAR_HEIGHT;
+      }
+
+    } else {
+
+      self.removeLegendBar();
+
+      if (alreadyDisplayingLegendBar) {
+        viewportHeight += LEGEND_BAR_HEIGHT;
+      }
     }
 
     /**

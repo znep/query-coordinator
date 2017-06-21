@@ -217,7 +217,7 @@ and uses the mocha reporter:
 
     bundle exec rake test:karma:dataCards[true,chrome,mocha]
 
-For the simple case where a single test run under PhantomJS is needed for a
+For the simple case where a single test run under Chrome is needed for a
 general pass/fail check, a faster parallelized test run is also available:
 
     bundle exec rake test:karma:parallel
@@ -402,6 +402,7 @@ Variable Name | Type | Source | Description
 `auth0_id` | String | Configuration | API token used to authenticate with the Auth0 service.
 `auth0_secret` | String | Configuration | Secret key used to authenticate with the Auth0 service.
 `auth0_database_connection` | String | Configuration | Which auth0 "custom database" connection to use to for username/password logins. If not defined, username/password logins submit straight to Rails.
+`default_session_time_minutes` | String | Configuration | The number of minutes the session token cookie will live as a fallback if the specific time is not specified in the expected place.
 `bundle_gemfile` | String | Configuration | Path to the `Gemfile` used by the Bundler gem. Programmatically determined to be the base directory of the frontend, but can be overridden by setting this ENV variable.
 `canary` | Boolean | Configuration | If set to true the host will visually identify itself as the Canary.
 `catalog_landing_page_airbrake_api_key` | String | Configuration | AirBrake API token used to track CLP errors.
@@ -511,6 +512,23 @@ LOCALEAPP_API_KEY=[KEY FROM LASTPASS]
 - Run the `bin/pull_translations` script
 
 After you successfully pull translations, follow the instructions here to [configure localization for a domain](https://sites.google.com/a/socrata.com/client-services/localization/localizing-content).
+
+## Styles
+
+  We load our styles through a home-grown StylesController, which compiles SCSS to CSS and caches the results.
+
+### Help! My style changes aren't getting picked up!
+
+  StylesController does not invalidate its cache if a SCSS file's dependencies have changed
+(i.e., the file itself didn't change, but a file it imports did). The current workaround is
+to update the modification time of the root CSS file. Run this to force StylesController to recompile styles:
+
+```sh
+  touch frontend/app/styles/*shim.scss # If you only edited common components or visualizations.
+  touch frontend/app/styles/*.scss # Nuclear, slower option.
+```
+
+See the [JIRA ticket](https://socrata.atlassian.net/browse/EN-16978).
 
 ## Further Reading
 

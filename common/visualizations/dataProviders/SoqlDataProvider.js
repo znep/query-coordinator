@@ -189,50 +189,13 @@ function SoqlDataProvider(config) {
   // off many data requests that perform slow queries, use with caution.
   this.getColumnStats = function(columns) {
     utils.assert(_.isArray(columns), 'columns parameter must be an array');
-
     const promises = _.map(columns, function(column) {
-      const minAlias = '__min__';
-      const maxAlias = '__max__';
-      const countAlias = '__count__';
-      const { fieldName, dataTypeName } = column;
-      let orderBy;
-      let queryString;
-      let select;
-      let path;
-
+      const { dataTypeName } = column;
       // For number and calendar_date columns, we need the min and max of the column
       if (_.includes(['money', 'number', 'calendar_date'], dataTypeName)) {
-        select = `min(${fieldName}) as ${minAlias}, max(${fieldName}) as ${maxAlias}`;
-        queryString = `$select=${select}`;
-        path = pathForQuery(queryString);
-        return makeSoqlGetRequest(path).then((result) => {
-          switch (dataTypeName) {
-            case 'money':
-            case 'number':
-              return {
-                rangeMin: _.toNumber(result[0][minAlias]),
-                rangeMax: _.toNumber(result[0][maxAlias])
-              };
-
-            case 'calendar_date':
-              return {
-                rangeMin: _.toString(result[0][minAlias]),
-                rangeMax: _.toString(result[0][maxAlias])
-              };
-          }
-        });
+        return Promise.resolve(getNumberColumnStats(column));
       } else if (dataTypeName === 'text') {
-        const escapedFieldName = escapeColumnName(fieldName);
-        select = `${escapedFieldName}+as+item,count(*)+as+${countAlias}`;
-        orderBy = `${countAlias}+DESC`;
-        queryString = `$select=${select}&$order=${orderBy}&$group=${escapedFieldName}&$limit=25`;
-        path = pathForQuery(queryString);
-
-        return makeSoqlGetRequest(path).then((result) => {
-          return {
-            top: result
-          };
-        });
+          return Promise.resolve(getTextColumnStats(column));
       } else {
         return Promise.resolve(null);
       }
@@ -314,6 +277,75 @@ function SoqlDataProvider(config) {
   function pathForQuery(queryString) {
     const datasetUid = self.getConfigurationProperty('datasetUid');
     return `api/id/${datasetUid}.json?${queryString}`;
+  }
+
+  function buildNumberRange(dataTypeName, min, max) {
+    switch (dataTypeName) {
+      case 'money':
+      case 'number':
+        return {
+          rangeMin: _.toNumber(min),
+          rangeMax: _.toNumber(max)
+        };
+
+      case 'calendar_date':
+        return {
+          rangeMin: _.toString(min),
+          rangeMax: _.toString(max)
+        };
+    }
+  }
+
+  function getNumberColumnStats(column) {
+    const { fieldName, dataTypeName, cachedContents } = column;
+
+    if (_.has(cachedContents, 'smallest') && _.has(cachedContents, 'largest')) {
+      return buildNumberRange(
+        dataTypeName,
+        _.get(cachedContents, 'smallest'),
+        _.get(cachedContents, 'largest')
+      );
+    } else {
+      const minAlias = '__min__';
+      const maxAlias = '__max__';
+
+      const select = `min(${fieldName}) as ${minAlias}, max(${fieldName}) as ${maxAlias}`;
+      const queryString = `$select=${select}`;
+      const path = pathForQuery(queryString);
+
+      return makeSoqlGetRequest(path).then((result) => {
+        return Promise.resolve(
+          buildNumberRange(dataTypeName, result[0][minAlias], result[0][maxAlias])
+        );
+      });
+    }
+
+  }
+
+
+  function getTextColumnStats(column) {
+    const { fieldName, dataTypeName, cachedContents } = column;
+
+    if (_.has(cachedContents, 'top')) {
+      return {
+        top: _.get(cachedContents, 'top')
+      }
+    } else {
+      const countAlias = '__count__';
+      const escapedFieldName = escapeColumnName(fieldName);
+
+      const select = `${escapedFieldName}+as+item,count(*)+as+${countAlias}`;
+      const where = `${escapedFieldName}+is+not+null`
+      const orderBy = `${countAlias}+DESC`;
+      const queryString = `$select=${select}&$where=${where}&$order=${orderBy}&$group=${escapedFieldName}&$limit=25`;
+      const path = pathForQuery(queryString);
+
+      return makeSoqlGetRequest(path).then((result) => {
+        return {
+          top: result
+        };
+      });
+    }
   }
 
   /**

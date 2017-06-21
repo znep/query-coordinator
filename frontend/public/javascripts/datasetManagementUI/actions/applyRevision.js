@@ -1,116 +1,233 @@
 import _ from 'lodash';
 import { push } from 'react-router-redux';
 import uuid from 'uuid';
-import { socrataFetch, checkStatus, checkStatusForPoll, getJson } from '../lib/http';
-import {
-  upsertStarted,
-  upsertSucceeded,
-  upsertFailed,
-  updateFromServer,
-  upsertFromServer
-} from '../actions/database';
+import { socrataFetch, checkStatus, checkStatusForPoll, getJson } from 'lib/http';
 import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed,
-  APPLY_REVISION
+  APPLY_REVISION,
+  UPDATE_REVISION,
+  ADD_EMAIL_INTEREST
 } from 'actions/apiCalls';
 import { showModal } from 'actions/modal';
-import * as dsmapiLinks from '../dsmapiLinks';
-import * as Links from '../links';
-import * as Selectors from '../selectors';
-import { parseDate } from '../lib/parseDate';
+import { addTaskSet } from 'actions/taskSets';
+import { editRevision } from 'actions/revisions';
+import * as dsmapiLinks from 'dsmapiLinks';
+import * as Links from 'links';
+import * as Selectors from 'selectors';
+import { parseDate } from 'lib/parseDate';
 
-// from https://github.com/socrata/dsmapi/blob/0071c4cdf5128698e6ae9ad2ed1c307e884bb386/web/models/upsert_job.ex#L32-L34
-// TODO: put these in some kind of model class?
-export const UPSERT_JOB_IN_PROGRESS = 'in_progress';
-export const UPSERT_JOB_SUCCESSFUL = 'successful';
-export const UPSERT_JOB_FAILURE = 'failure';
+// match DSMAPI: https://github.com/socrata/dsmapi/blob/e4eb96e24e0734b33d5ab6ffb26351a07b1c61d1/web/models/task_set.ex#L30-L35
+export const TASK_SET_INITIALIZING = 'initializing';
+export const TASK_SET_CREATING_COLUMNS = 'creating_columns';
+export const TASK_SET_UPSERTING = 'upserting';
+export const TASK_SET_FINISHING = 'finishing';
+// all of the above are sub-states of 'in_progress'; eventually DSMAPI will just send them
+// instead of in_progress
+export const TASK_SET_IN_PROGRESS = 'in_progress';
+export const TASK_SET_SUCCESSFUL = 'successful';
+export const TASK_SET_FAILURE = 'failure';
 
-export function applyRevision() {
+// this is the only thing we look at from the log
+export const TASK_SET_STAGE_ROWS_UPSERTED = 'rows_upserted';
+
+export const TASK_SET_STATUSES = [
+  TASK_SET_INITIALIZING,
+  TASK_SET_CREATING_COLUMNS,
+  TASK_SET_UPSERTING,
+  TASK_SET_FINISHING,
+  TASK_SET_IN_PROGRESS,
+  TASK_SET_SUCCESSFUL,
+  TASK_SET_FAILURE
+];
+
+export const POLL_FOR_TASK_SET_PROGRESS_SUCCESS = 'POLL_FOR_TASK_SET_PROGRESS_SUCCESS';
+
+// TODO: remove once https://github.com/socrata/dsmapi/pull/402 is deployed
+// and we can count on revision.action.permission being there
+function shapeRevision(apiResponse) {
+  let revision = apiResponse;
+
+  if (revision.action && revision.action.permission) {
+    const permission = revision.action.permission;
+
+    revision = {
+      ..._.omit(revision, 'action'),
+      permission
+    };
+  } else {
+    revision = {
+      ...revision,
+      permission: 'public'
+    };
+  }
+
+  return revision;
+}
+
+export function updateRevision(permission) {
   return (dispatch, getState) => {
-    const routing = getState().routing.location;
-    const outputSchemaId = Selectors.latestOutputSchema(getState().db).id;
+    const { entities } = getState();
+    const { id: revisionId } = Selectors.latestRevision(entities);
+    const { permission: oldPermission } = entities.revisions[revisionId];
+
+    if (permission === oldPermission) {
+      return;
+    }
+
+    // disable btn then reenable in promise resolve
     const callId = uuid();
-    dispatch(apiCallStarted(callId, {
-      operation: APPLY_REVISION,
-      params: { outputSchemaId }
-    }));
-    socrataFetch(dsmapiLinks.applyRevision, {
+
+    dispatch(
+      apiCallStarted(callId, {
+        operation: UPDATE_REVISION,
+        params: {
+          action: {
+            permission
+          }
+        }
+      })
+    );
+
+    return socrataFetch(dsmapiLinks.revisionBase, {
       method: 'PUT',
-      body: JSON.stringify({ output_schema_id: outputSchemaId })
-    }).
-      then(checkStatus).
-      then(getJson).
-      then((resp) => {
+      body: JSON.stringify({
+        action: {
+          permission
+        }
+      })
+    })
+      .then(checkStatus)
+      .then(getJson)
+      .then(resp => {
         dispatch(apiCallSucceeded(callId));
-        dispatch(upsertFromServer('upsert_jobs', resp.resource));
-        dispatch(showModal('Publishing'));
-        const upsertJobId = resp.resource.id;
-        dispatch(pollForUpsertJobProgress(upsertJobId));
-        dispatch(push(Links.home(routing)));
-      }).
-      catch((err) => {
+
+        const revision = shapeRevision(resp.resource);
+
+        dispatch(editRevision(revision.id, revision));
+      })
+      .catch(err => {
+        console.log(err);
         dispatch(apiCallFailed(callId, err));
       });
   };
 }
 
-const UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS = 1000;
+export function applyRevision() {
+  return (dispatch, getState) => {
+    const { entities, ui } = getState();
+    const { location } = ui.routing;
+    const { id: outputSchemaId } = Selectors.latestOutputSchema(entities);
 
-export function pollForUpsertJobProgress(upsertJobId) {
-  return (dispatch) => {
-    socrataFetch(dsmapiLinks.revisionBase).
-      then(checkStatusForPoll).
-      then(getJson).
-      then(resp => {
+    const callId = uuid();
+
+    dispatch(
+      apiCallStarted(callId, {
+        operation: APPLY_REVISION,
+        params: {
+          outputSchemaId
+        }
+      })
+    );
+
+    return socrataFetch(dsmapiLinks.applyRevision, {
+      method: 'PUT',
+      body: JSON.stringify({
+        output_schema_id: outputSchemaId
+      })
+    })
+      .then(checkStatus)
+      .then(getJson)
+      .then(resp => {
+        dispatch(apiCallSucceeded(callId));
+        dispatch(addTaskSet(resp.resource));
+        dispatch(showModal('Publishing'));
+
+        const taskSetId = resp.resource.id;
+
+        // maybe return status and then do something based on that?
+        dispatch(pollForTaskSetProgress(taskSetId));
+
+        dispatch(push(Links.home(location)));
+      })
+      .catch(err => {
+        dispatch(apiCallFailed(callId, err));
+      });
+  };
+}
+
+const TASK_SET_PROGRESS_POLL_INTERVAL_MS = 1000;
+
+export function pollForTaskSetProgress(taskSetId) {
+  return dispatch => {
+    return socrataFetch(dsmapiLinks.revisionBase)
+      .then(checkStatusForPoll)
+      .then(getJson)
+      .then(resp => {
         if (resp) {
-          const revision = resp.resource;
-          revision.upsert_jobs = revision.upsert_jobs || revision.task_sets; // Use the new name if it's available.
-          revision.upsert_jobs.forEach((upsertJob) => {
-            dispatch(updateFromServer('upsert_jobs', {
-              ...upsertJob,
-              finished_at: parseDate(upsertJob.finished_at)
-            }));
+          const revision = shapeRevision(resp.resource);
+
+          revision.task_sets.forEach(taskSet => {
+            dispatch(pollForTaskSetProgressSuccess(revision, taskSet));
           });
-          if (_.map(revision.upsert_jobs, 'status').some((status) => status === UPSERT_JOB_IN_PROGRESS)) {
+
+          if (_.map(revision.task_sets, 'status').some(status => (
+              status !== TASK_SET_FAILURE && status !== TASK_SET_SUCCESSFUL))) {
             setTimeout(() => {
-              dispatch(pollForUpsertJobProgress(upsertJobId));
-            }, UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS);
+              dispatch(pollForTaskSetProgress(taskSetId));
+            }, TASK_SET_PROGRESS_POLL_INTERVAL_MS);
           }
         } else {
           console.warn('Backend service appears to be down presently.');
 
           setTimeout(() => {
-            dispatch(pollForUpsertJobProgress(upsertJobId));
-          }, UPSERT_JOB_PROGRESS_POLL_INTERVAL_MS);
+            dispatch(pollForTaskSetProgress(taskSetId));
+          }, TASK_SET_PROGRESS_POLL_INTERVAL_MS);
         }
-      }).
-      catch((err) => {
+      })
+      .catch(err => {
         console.error('polling for upsert job progress failed', err);
       });
   };
 }
 
-export function addEmailInterest(upsertJobUuid) {
-  return (dispatch) => {
-    const newRecord = { job_uuid: upsertJobUuid };
-    dispatch(upsertStarted('email_interests', newRecord));
-    socrataFetch(`/users/${serverConfig.currentUserId}/email_interests.json`, {
+function pollForTaskSetProgressSuccess(revision, taskSet) {
+  const updatedTaskSet = {
+    ...taskSet,
+    created_at: parseDate(taskSet.created_at),
+    finished_at: taskSet.finished_at ? parseDate(taskSet.finished_at) : null
+  };
+
+  const updatedRevision = {
+    ...revision,
+    task_sets: revision.task_sets.map(ts => ts.id)
+  };
+
+  return {
+    type: POLL_FOR_TASK_SET_PROGRESS_SUCCESS,
+    taskSet: updatedTaskSet,
+    revision: updatedRevision
+  };
+}
+
+export function addEmailInterest(jobUUID) {
+  return dispatch => {
+    dispatch(
+      apiCallStarted(jobUUID, {
+        operation: ADD_EMAIL_INTEREST
+      })
+    );
+
+    return socrataFetch(`/users/${serverConfig.currentUserId}/email_interests.json`, {
       method: 'POST',
       body: JSON.stringify({
         eventTag: 'MAIL.IMPORT_ACTIVITY_COMPLETE',
-        extraInfo: upsertJobUuid
+        extraInfo: jobUUID
       })
-    }).
-      then(checkStatus).
-      then(
-        () => {
-          dispatch(upsertSucceeded('email_interests', newRecord, { id: upsertJobUuid }));
-        },
-        (err) => {
-          dispatch(upsertFailed('email_interests', newRecord, err));
-        }
-      );
+    })
+      .then(checkStatus)
+      .then(() => dispatch(apiCallSucceeded(jobUUID)))
+      .catch(err => dispatch(apiCallFailed(jobUUID, err)));
   };
 }

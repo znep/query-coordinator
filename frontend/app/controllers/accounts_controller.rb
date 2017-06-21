@@ -1,6 +1,7 @@
 class AccountsController < ApplicationController
 
   include ActionView::Helpers::TranslationHelper
+  include Auth0Helper
   include UserSessionsHelper
 
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password, :verify_email]
@@ -17,6 +18,8 @@ class AccountsController < ApplicationController
     }
 
   def new
+    process_auth0_config
+
     @signup = SignupPresenter.new({}, params[:token], params[:auth_token])
     @body_class = 'signup'
     @signup.user.email = params[:email] if params[:email].present?

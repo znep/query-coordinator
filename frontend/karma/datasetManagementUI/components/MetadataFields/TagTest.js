@@ -1,6 +1,8 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
+import React from 'react';
 import Tag from 'components/MetadataFields/Tag';
+import { shallow } from 'enzyme';
 
 describe('components/MetadataFields/Tag', () => {
   let component;
@@ -11,23 +13,20 @@ describe('components/MetadataFields/Tag', () => {
   };
 
   beforeEach(() => {
-    const shallow = TestUtils.createRenderer();
-    shallow.render(<Tag {...defaultProps}/>);
-    component = shallow.getRenderOutput();
+    component = shallow(<Tag {...defaultProps} />);
   });
 
   it('renders a  list item', () => {
-    expect(component.type).to.eq('li');
+    assert.isTrue(component.is('li'));
   });
 
   it('inserts tagName prop inside list item', () => {
-    expect(component.props.children[0]).to.eq(defaultProps.tagName);
+    assert.equal(component.childAt(0).text(), defaultProps.tagName);
   });
 
   it('inserts a close button inside the list item', () => {
-    const closeButton = component.props.children[1];
-    expect(closeButton.type.name).to.eq('SocrataIcon');
-    expect(closeButton.props.name).to.eq('close-2');
+    const closeButton = component.find('SocrataIcon');
+    assert.equal(closeButton.length, 1);
   });
 
   it('calls the onTagClick callback when tag is clicked', () => {
@@ -36,10 +35,10 @@ describe('components/MetadataFields/Tag', () => {
       onTagClick: sinon.stub()
     };
 
-    const element = renderStatelessComponent(<Tag {...newProps}/>);
+    const element = shallow(<Tag {...newProps} />);
 
-    TestUtils.Simulate.click(element.querySelector('.tag'));
+    element.find('.tag').simulate('click');
 
-    expect(newProps.onTagClick.called).to.eq(true);
+    assert.isTrue(newProps.onTagClick.called);
   });
-})
+});

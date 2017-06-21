@@ -31,14 +31,19 @@ export class ResultListRow extends React.Component {
         return (cellTag(
           <div>
             <a href={link}><span className="name">{name}</span></a>
-            <ActionDropdown uid={uid} />
+            <ActionDropdown assetType={type} uid={uid} />
             <span className="description">{description}</span>
           </div>
         ));
       case 'owner':
         return cellTag(ownerName);
       case 'type': {
-        return cellTag(<span className={getIconClassForDisplayType(type)} />);
+        return cellTag(
+          <span
+            className={getIconClassForDisplayType(type)}
+            data-type={type}
+            title={_.get(I18n, `asset_types.${type}`)} />
+        );
       }
       case 'visibility': {
         const visibilityCellProps = _.pick(this.props,

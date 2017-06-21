@@ -619,7 +619,10 @@ function SvgTimelineChart($element, vif, options) {
     d3YAxis = d3.svg.axis().
       scale(d3YScale).
       orient('left').
-      tickFormat((d) => utils.formatNumber(d));
+      tickFormat((d) => {
+        // This is a workaround for a bug in D3 v3.x, (fixed in v4.x): https://github.com/d3/d3/issues/1722
+        return Math.abs(parseFloat(d)) < 0.00000001 ? utils.formatNumber(0) : utils.formatNumber(d);
+      });
 
     d3AreaSeries = dataToRenderBySeries.map((series, seriesIndex) => {
       const seriesTypeVariant = self.getTypeVariantBySeriesIndex(seriesIndex);

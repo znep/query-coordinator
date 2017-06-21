@@ -60,164 +60,165 @@
       ];
 
       var columnChart1Vif = {
-        "format": {
-          "type": "visualization_interchange_format",
-          "version": 2
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
         },
-        "configuration": {
-          "viewSourceDataLink": true,
-          "showDimensionLabels": true,
-          "xAxisScalingMode": "pan",
-          "showLegend": true
+        configuration: {
+          viewSourceDataLink: true,
+          showDimensionLabels: true,
+          xAxisScalingMode: 'pan',
+          showLegend: true
         },
-        "description": "",
-        "series": [
+        description: 'Description',
+        series: [
           {
-            "color": {
-              "primary": "#71abd9",
-              "secondary": "#71abd9",
-              "highlight": "#cccccc",
-              "palette": "categorical"
+            color: {
+              primary: '#71abd9',
+              secondary: '#71abd9',
+              highlight: '#cccccc',
+              palette: 'categorical'
             },
-            "dataSource": {
-              "datasetUid": "r6t9-rak2",
-              "dimension": {
-                "columnName": "neighborhood",
-                "aggregationFunction": null,
-                "grouping": {
-                  "columnName": "category"
+            dataSource: {
+              datasetUid: 'r6t9-rak2',
+              dimension: {
+                columnName: 'neighborhood',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'category'
                 }
               },
-              "domain": "dataspace.demo.socrata.com",
-              "measure": {
-                "columnName": null,
-                "aggregationFunction": "count"
+              domain: 'dataspace.demo.socrata.com',
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
               },
-              "orderBy": {
-                "parameter": "measure",
-                "sort": "desc"
+              orderBy: {
+                parameter: 'measure',
+                sort: 'desc'
               },
-              "type": "socrata.soql",
-              "filters": []
+              type: 'socrata.soql',
+              filters: []
             },
-            "label": null,
-            "type": "columnChart",
-            "unit": {
-              "one": "case",
-              "other": "cases"
+            label: null,
+            type: 'columnChart',
+            unit: {
+              one: 'case',
+              other: 'cases'
             },
-            "stacked": true
+            stacked: true
           }
         ],
-        "title": "Incidences per neighborhood stacked by category"
+        title: 'Incidences per neighborhood stacked by category'
       };
 
       var columnChart2Vif = {
-        "format": {
-          "type": "visualization_interchange_format",
-          "version": 2
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
         },
-        "configuration": {
-          "viewSourceDataLink": true,
-          "showDimensionLabels": true,
-          "xAxisScalingMode": "pan",
-          "showLegend": true,
-          "measureAxisMinValue": 5000,
-          "measureAxisMaxValue": 10000         
+        configuration: {
+          viewSourceDataLink: true,
+          showDimensionLabels: true,
+          xAxisScalingMode: 'pan',
+          showLegend: true,
+          measureAxisMinValue: 5000,
+          measureAxisMaxValue: 10000,
+          showLegend: true             
         },
-        "description": "",
-        "series": [
+        description: '',
+        series: [
           {
-            "color": {
-              "primary": "#71abd9",
-              "secondary": "#71abd9",
-              "highlight": "#cccccc",
-              "palette": "categorical"
+            color: {
+              primary: '#71abd9',
+              secondary: '#71abd9',
+              highlight: '#cccccc',
+              palette: 'categorical'
             },
-            "dataSource": {
-              "datasetUid": "r6t9-rak2",
-              "dimension": {
-                "columnName": "neighborhood",
-                "aggregationFunction": null,
-                "grouping": {
-                  "columnName": "category"
+            dataSource: {
+              datasetUid: 'r6t9-rak2',
+              dimension: {
+                columnName: 'neighborhood',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'category'
                 }
               },
-              "domain": "dataspace.demo.socrata.com",
-              "measure": {
-                "columnName": null,
-                "aggregationFunction": "count"
+              domain: 'dataspace.demo.socrata.com',
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
               },
-              "orderBy": {
-                "parameter": "measure",
-                "sort": "desc"
+              orderBy: {
+                parameter: 'measure',
+                sort: 'desc'
               },
-              "type": "socrata.soql",
-              "filters": []
+              type: 'socrata.soql',
+              filters: []
             },
-            "label": null,
-            "type": "columnChart",
-            "unit": {
-              "one": "case",
-              "other": "cases"
+            label: null,
+            type: 'columnChart',
+            unit: {
+              one: 'case',
+              other: 'cases'
             },
-            "stacked": true
+            stacked: true
           }
         ],
-        "title": "Incidences per neighborhood stacked by category - (5,000 to 10,000)"
+        title: 'Incidences per neighborhood stacked by category - (5,000 to 10,000)'
       };
 
       var columnChart3Vif = {
-        "format": {
-          "type": "visualization_interchange_format",
-          "version": 2
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
         },
-        "configuration": {
-          "viewSourceDataLink": true,
-          "showDimensionLabels": true,
-          "xAxisScalingMode": "pan",
-          "showLegend": true
+        configuration: {
+          viewSourceDataLink: true,
+          showDimensionLabels: true,
+          xAxisScalingMode: 'pan',
+          showLegend: true
         },
-        "description": "",
-        "series": [
+        description: '',
+        series: [
           {
-            "color": {
-              "primary": "#71abd9",
-              "secondary": "#71abd9",
-              "highlight": "#cccccc",
-              "palette": "categorical"
+            color: {
+              primary: '#71abd9',
+              secondary: '#71abd9',
+              highlight: '#cccccc',
+              palette: 'categorical'
             },
-            "dataSource": {
-              "datasetUid": "k6cs-ww27",
-              "dimension": {
-                "columnName": "blood_alcohol_level",
-                "aggregationFunction": null,
-                "grouping": {
-                  "columnName": "plausibility"
+            dataSource: {
+              datasetUid: 'k6cs-ww27',
+              dimension: {
+                columnName: 'blood_alcohol_level',
+                aggregationFunction: null,
+                grouping: {
+                  columnName: 'plausibility'
                 }
               },
-              "domain": "vertex-stories.test-socrata.com",
-              "measure": {
-                "columnName": null,
-                "aggregationFunction": "count"
+              domain: 'vertex-stories.test-socrata.com',
+              measure: {
+                columnName: null,
+                aggregationFunction: 'count'
               },
-              "orderBy": {
-                "parameter": "measure",
-                "sort": "desc"
+              orderBy: {
+                parameter: 'measure',
+                sort: 'desc'
               },
-              "type": "socrata.soql",
-              "filters": []
+              type: 'socrata.soql',
+              filters: []
             },
-            "label": null,
-            "type": "columnChart",
-            "unit": {
-              "one": "Row",
-              "other": "Rows"
+            label: null,
+            type: 'columnChart',
+            unit: {
+              one: 'Row',
+              other: 'Rows'
             },
-            "stacked": true
+            stacked: true
           }
         ],
-        "title": "UFO sightings by blood alcohol level stacked by plausibility"
+        title: 'UFO sightings by blood alcohol level stacked by plausibility'
       };
 
       /**
@@ -279,8 +280,8 @@
   </script>
 <% end %>
 
-<a href="internal">Internal Panel Home</a><br>
-<a href="internal/demos/visualizations">Back to demo list</a>
+<a href="/internal">Internal Panel Home</a><br>
+<a href="/internal/demos/visualizations">Back to demo list</a>
 <div id="column-chart-1"></div>
 <div id="column-chart-2"></div>
 <div id="column-chart-3"></div>

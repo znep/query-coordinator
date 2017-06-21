@@ -15,7 +15,7 @@ module ApplicationHelper
 
     locale_translations.reverse_merge!(default_translations)
 
-    locale_translations.slice(:editor)
+    locale_translations.slice(:editor, :common)
   end
 
   def default_meta_tags(tags = [])

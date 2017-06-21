@@ -3,6 +3,7 @@ import { ActionDropdown } from 'components/action_dropdown';
 
 describe('components/ActionDropdown', () => {
   const actionDropdownProps = (options = {}) => ({
+    assetType: () => 'dataset',
     closeModal: () => undefined,
     deleteAsset: () => undefined,
     uid: 'abcd-1234',
@@ -38,20 +39,62 @@ describe('components/ActionDropdown', () => {
     });
 
     it('renders a list element for each action', () => {
-      const menuActions = [
-        'addCollaborators',
-        'editMetadata',
-        'changeVisibility',
-        'changePermissions',
-        'transferOwnership',
-        'deleteAsset'
-      ];
-
       const element = renderComponentWithStore(ActionDropdown, actionDropdownProps());
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
       const menu = element.querySelector('.action-dropdown-menu');
 
-      assert.lengthOf(menu.querySelectorAll('li'), menuActions.length);
+      const expectedMenuActions = [
+        'editMetadata',
+        'changeVisibility',
+        'deleteAsset'
+      ];
+
+      assert.lengthOf(menu.querySelectorAll('li'), expectedMenuActions.length);
+    });
+
+    it('does not render the changeVisibility option for data lens', () => {
+      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps({
+        assetType: 'datalens'
+      }));
+      TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
+      const menu = element.querySelector('.action-dropdown-menu');
+
+      const expectedMenuActions = [
+        'editMetadata',
+        'deleteAsset'
+      ];
+
+      assert.lengthOf(menu.querySelectorAll('li'), expectedMenuActions.length);
+    });
+
+    it('does not render the changeVisibility option for new viz', () => {
+      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps({
+        assetType: 'visualization'
+      }));
+      TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
+      const menu = element.querySelector('.action-dropdown-menu');
+
+      const expectedMenuActions = [
+        'editMetadata',
+        'deleteAsset'
+      ];
+
+      assert.lengthOf(menu.querySelectorAll('li'), expectedMenuActions.length);
+    });
+
+    it('does not render the changeVisibility option for stories', () => {
+      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps({
+        assetType: 'story'
+      }));
+      TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
+      const menu = element.querySelector('.action-dropdown-menu');
+
+      const expectedMenuActions = [
+        'editMetadata',
+        'deleteAsset'
+      ];
+
+      assert.lengthOf(menu.querySelectorAll('li'), expectedMenuActions.length);
     });
   });
 

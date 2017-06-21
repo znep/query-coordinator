@@ -7,6 +7,7 @@ import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import * as Links from '../links';
 import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
 import DragDropUpload from 'components/Uploads/DragDropUpload';
+import UploadSidebar from 'components/Uploads/UploadSidebar';
 import styles from 'styles/ShowUpload.scss';
 
 export const ShowUpload = ({ inProgress, goHome, uploadId }) =>
@@ -22,7 +23,9 @@ export const ShowUpload = ({ inProgress, goHome, uploadId }) =>
             </div>
           : <div className={styles.uploadContainer}>
               <DragDropUpload />
-              <section className={styles.sidebar}>sidebar</section>
+              <section className={styles.sidebar}>
+                <UploadSidebar uploadId={uploadId} />
+              </section>
             </div>}
       </ModalContent>
     </Modal>

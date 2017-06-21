@@ -2817,42 +2817,30 @@ en:
         transfer_ownership: Transfer Ownership...
         delete_asset: Delete...
       action_modal:
-        add_collaborators:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
-        edit_metadata:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
         change_visibility:
-          header: TODO
-          description: TODO
-          accept: TODO
+          accept: OK
+          can_not_change_visibility:
+            Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Open.
           dismiss: Cancel
-          error: TODO
-        change_permissions:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
-        transfer_ownership:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
+          error: Sorry, there was an error changing visibility for this asset. Please refresh and try again or contact support@socrata.com if it continues.
+          options:
+            open:
+              title: Open
+              description: Publicly accessible. Discoverable through the public catalog.
+            private:
+              title: Private
+              description: Only accessible to people within your organization.
+          title: Choose Visibility
         delete_asset:
-          header: Delete?
-          description: Are you sure you want to delete this asset?
           accept: Delete
+          chart: chart
+          description: Are you sure you want to delete %{name}?
+          description_related_assets: '%{count} related assets built using this dataset will also be deleted permanently.'
+          description_chart_map: This is a %{assetType} based on another dataset. The related dataset will not be deleted.
           dismiss: Cancel
           error: Sorry, there was an error deleting this asset. Please refresh and try again or contact support@socrata.com if it continues.
+          map: map
+          title: Delete?
       columns:
         access_level: Access Level
         category: Category

@@ -8,8 +8,8 @@ import _ from 'lodash';
 import airbrake from 'common/airbrake';
 import reducer from './reducers';
 import App from './app';
-import { dateLocalize } from '../common/locale';
-import FeedbackPanel from '../common/components/FeedbackPanel';
+import { dateLocalize } from 'common/locale';
+import FeedbackPanel from 'common/components/FeedbackPanel';
 
 const middleware = [thunk];
 

@@ -74,6 +74,7 @@ export const ceteraUtils = (() => {
   const ceteraQueryString = ({
     category = null,
     customMetadataFilters = {},
+    derivedFrom = null,
     forUser = null,
     idFilters = [],
     limit = DEFAULT_LIMIT,
@@ -89,6 +90,7 @@ export const ceteraUtils = (() => {
     const parameters = {
       categories: category,
       ...customMetadataFilters,
+      derived_from: derivedFrom,
       domains: domain,
       for_user: forUser,
       ids: mapIdFiltersToParam(idFilters),

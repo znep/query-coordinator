@@ -31,7 +31,7 @@ export class ResultListRow extends React.Component {
         return (cellTag(
           <div>
             <a href={link}><span className="name">{name}</span></a>
-            <ActionDropdown uid={uid} />
+            <ActionDropdown assetType={type} uid={uid} />
             <span className="description">{description}</span>
           </div>
         ));

@@ -3984,6 +3984,7 @@ en:
         link_menu_label_html: "<b>Menu</b> - <i>You can drag links to reorder them</i>"
         move_link_row: Drag to reorder
         ok: OK
+        only_visible_to_superadmins: Only visible to superadmins
         preview: Preview
         preview_changes: Preview Changes
         preview_failure: Sorry, there was an error saving your Preview data. Please refresh and try again, or notify support if this problem persists.
@@ -3991,6 +3992,7 @@ en:
         remove_link_row: Remove Link
         save: Save
         save_changes: Save Changes
+        save_without_activation: Save Without Activation
         see_both_features: See both features in action by visiting one of your datasets.
         site_appearance: Site Appearance
         tabs:

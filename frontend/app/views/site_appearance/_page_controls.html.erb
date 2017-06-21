@@ -1,0 +1,25 @@
+<div class="page-controls">
+  <%= button_tag(t('screens.admin.site_appearance.cancel'), :class => 'confirm-reload', :type => :button) %>
+  <%= button_tag(:id => 'site_appearance_preview', :type => :button) do %>
+    <%= t('screens.admin.site_appearance.preview') %>
+    <span class="icon-preview"></span>
+  <% end %>
+
+  <% if @site_appearance.activated? %>
+    <%= button_tag(t('screens.admin.site_appearance.update'),
+        :id => 'site_appearance_save', :class => 'primary', :type => :button)
+    %>
+  <% else %>
+    <%= button_tag(t('screens.admin.site_appearance.activate'), activate_button_options) %>
+    <% if current_user.is_superadmin? %>
+      <%=
+        button_tag(t('screens.admin.site_appearance.save_without_activation'),
+          :id => 'save_without_activation',
+          :title => t('screens.admin.site_appearance.only_visible_to_superadmins'),
+          :type => :button
+        )
+      %>
+    <% end %>
+  <% end %>
+  <%= render 'activation_flannel' unless @site_appearance.reverted? %>
+</div>

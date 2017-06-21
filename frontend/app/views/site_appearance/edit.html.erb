@@ -12,15 +12,15 @@
   <%= t('screens.admin.site_appearance.site_appearance') %>
 <% end %>
 
+<% content_for :admin_header do %>
+  <div class="site-appearance-header">
+    <%= render 'tabs' %>
+    <%= render 'page_controls' %>
+  </div>
+<% end %>
+
 <div class="site-appearance <%= 'custom' if enable_custom_chrome? %>">
   <div class="site-appearance-admin-header">
-    <div class="header-title">
-      <h1><%= t('screens.admin.site_appearance.site_appearance') %></h1>
-      <%= link_to('https://support.socrata.com/hc/en-us/articles/223723227', :target => 'blank') do %>
-        <span class="socrata-icon-question"></span>
-      <% end %>
-    </div>
-
     <div class="locale-warning">
       <% if using_non_default_locale? %>
         <div class="alert warning">
@@ -44,46 +44,6 @@
         <% end %>
       </div>
     <% else %>
-      <div class="page-controls">
-        <%= link_to('#', :class => 'confirm-reload') do %>
-          <button id="site_appearance_cancel">
-            <%= t('screens.admin.site_appearance.cancel') %>
-          </button>
-        <% end %>
-        <%= link_to('#') do %>
-          <button id="site_appearance_preview">
-            <%= t('screens.admin.site_appearance.preview') %>
-            <span class="icon-preview"></span>
-          </button>
-        <% end %>
-
-        <% if @site_appearance.activated? %>
-          <%= link_to('#') do %>
-            <%= button_tag(t('screens.admin.site_appearance.update'), :id => 'site_appearance_save', :class => 'primary') %>
-          <% end %>
-        <% else %>
-          <%= link_to('#') do %>
-            <%= button_tag(t('screens.admin.site_appearance.activate'), activate_button_options) %>
-          <% end %>
-          <% if current_user.is_superadmin? %>
-            <%= link_to('#') do %>
-              <%= button_tag('Save Without Activation', :id => 'save_without_activation', :title => 'Only visible to superadmins') %>
-            <% end %>
-          <% end %>
-        <% end %>
-        <%= render 'activation_flannel' unless @site_appearance.reverted? %>
-      </div>
-
-      <ul class="tabs">
-        <% tab_sections.each_with_index do |section, i| %>
-          <li class="tab-link" data-tab-id="<%= section %>">
-            <%= link_to("#tab=#{section}") do %>
-              <%= t("screens.admin.site_appearance.tabs.#{section}.title") %>
-            <% end %>
-          </li>
-        <% end %>
-      </ul>
-
       <%= form_tag update_site_appearance_path(anchor: {tab: :general}), id: 'site_appearance_form', method: :put, remote: true do %>
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
         <% tab_sections.each_with_index do |section, i| %>

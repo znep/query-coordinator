@@ -5,7 +5,7 @@ import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED, STATUS_CALL_FAILED } fr
 import classNames from 'classnames';
 import styles from 'styles/ApiCallButton.scss';
 
-const ApiCallButton = ({ status, onClick, additionalClassName, children }) => {
+const ApiCallButton = ({ status, onClick, additionalClassName, children, forceDisable }) => {
   let className;
   switch (status) {
     case STATUS_CALL_IN_PROGRESS:
@@ -30,7 +30,7 @@ const ApiCallButton = ({ status, onClick, additionalClassName, children }) => {
       id="save"
       className={classNames(className, additionalClassName)}
       onClick={onClick}
-      disabled={inProgress}>
+      disabled={forceDisable || inProgress}>
       {inProgress ? <span className={styles.spinner} /> : children || I18n.common.save}
     </button>
   );
@@ -40,20 +40,20 @@ ApiCallButton.propTypes = {
   status: PropTypes.string, // null means it's saved
   onClick: PropTypes.func.isRequired,
   additionalClassName: PropTypes.string,
-  children: PropTypes.node
+  children: PropTypes.node,
+  forceDisable: PropTypes.bool
 };
 
 const SHOW_RESULT_STATE_FOR_MS = 1000;
 
 function mapStateToProps({ ui }, ownProps) {
-  const apiCall = _.find(
-    ui.apiCalls,
-    call =>
-      _.matches(call, {
-        operation: ownProps.operation,
-        params: ownProps.params
-      }) && new Date() - (call.succeededAt || call.failedAt || call.startedAt) < SHOW_RESULT_STATE_FOR_MS
-  );
+  const apiCall = _.find(ui.apiCalls, call => {
+    return (
+      _.isMatch(call, { operation: ownProps.operation, params: ownProps.params }) &&
+      new Date() - (call.succeededAt || call.failedAt || call.startedAt) < SHOW_RESULT_STATE_FOR_MS
+    );
+  });
+
   return {
     status: apiCall ? apiCall.status : null
   };

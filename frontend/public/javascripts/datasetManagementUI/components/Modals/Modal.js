@@ -8,6 +8,7 @@ import styles from 'styles/Modals/Modal.scss';
 import ErrorsHelp from 'components/Modals/ErrorsHelp';
 import Publishing from 'components/Modals/Publishing';
 import PublishConfirmation from 'components/Modals/PublishConfirmation';
+import PublishConfirmationUSAID from 'components/Modals/PublishConfirmationUSAID';
 import RowIdentifierError from 'components/Modals/RowIdentifierError';
 
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
@@ -32,6 +33,13 @@ const getModalProps = (props, contentComponentName, payload) => {
       return {
         ...props,
         children: [<PublishConfirmation key={1} />],
+        className: styles.publishConfirmation
+      };
+
+    case 'PublishConfirmationUSAID':
+      return {
+        ...props,
+        children: [<PublishConfirmationUSAID key={1} />],
         className: styles.publishConfirmation
       };
 

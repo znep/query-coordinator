@@ -8,6 +8,7 @@ export const ADD_COLUMN = 'ADD_COLUMN';
 export const UPDATE_COLUMN_TYPE = 'UPDATE_COLUMN_TYPE';
 export const SAVE_DATASET_METADATA = 'SAVE_DATASET_METADATA';
 export const SAVE_COLUMN_METADATA = 'SAVE_COLUMN_METADATA';
+export const UPDATE_REVISION = 'UPDATE_REVISION';
 export const APPLY_REVISION = 'APPLY_REVISION';
 export const ADD_EMAIL_INTEREST = 'ADD_EMAIL_INTEREST';
 
@@ -29,7 +30,7 @@ export const apiCallStarted = (id, { operation, params }) => ({
 });
 
 export const API_CALL_SUCCEEDED = 'API_CALL_SUCCEEDED';
-export const apiCallSucceeded = (id) => ({
+export const apiCallSucceeded = id => ({
   type: API_CALL_SUCCEEDED,
   id
 });

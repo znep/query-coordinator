@@ -39,7 +39,7 @@ PublishConfirmation.propTypes = {
   doUpdate: PropTypes.func.isRequired
 };
 
-function mapStateToProps({ entities }) {
+export function mapStateToProps({ entities }) {
   const outputSchemaId = Selectors.latestOutputSchema(entities).id;
 
   return {
@@ -47,7 +47,7 @@ function mapStateToProps({ entities }) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
     doCancel: () => dispatch(hideModal()),
     doUpdate: outputSchemaId => dispatch(applyRevision(outputSchemaId))

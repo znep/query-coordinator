@@ -27,6 +27,10 @@ export function latestOutputSchema(entities) {
   return _.maxBy(_.values(entities.output_schemas), 'id');
 }
 
+export function latestRevision(entities) {
+  return _.maxBy(_.values(entities.revisions), 'id');
+}
+
 export function columnsForInputSchema(entities, inputSchemaId) {
   const unsortedColumns = _.filter(entities.input_columns, ic => ic.input_schema_id === inputSchemaId);
   return _.sortBy(unsortedColumns, 'position');

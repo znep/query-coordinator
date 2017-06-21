@@ -34,7 +34,7 @@ export function getSearchUrl(query) {
   return url.format(currentUrl);
 }
 /** Get the URL to use to hit Cetera to perform the autocomplete search */
-export function getCeteraUrl(query, category) {
+export function getCeteraUrl(query, category, anonymous) {
   let ceteraUrl = `/cetera/autocomplete?q=${escape(query)}`;
 
   if (!_.isEmpty(category)) {
@@ -47,17 +47,21 @@ export function getCeteraUrl(query, category) {
     }
   }
 
+  if (!_.isUndefined(anonymous)) {
+    ceteraUrl += `&anonymous=${anonymous}`;
+  }
+
   return ceteraUrl;
 }
 
 const DEFAULT_NUMBER_OF_RESULTS = 7;
 
-export function getCeteraResults(query, callback, numberOfResults) {
+export function getCeteraResults(query, callback, numberOfResults, anonymous) {
   if (_.isEmpty(query)) {
     return;
   }
 
-  fetch(getCeteraUrl(query), { credentials: 'same-origin' }).
+  fetch(getCeteraUrl(query, undefined, anonymous), { credentials: 'same-origin' }).
   then((response) => response.json()).
   then(
     (searchResults) => {

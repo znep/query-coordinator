@@ -1,0 +1,17 @@
+@import 'app/styles/styleguide-colors';
+
+.sidebar {
+  flex: 0 0 35%;
+  background-color: $white;
+  border-left: 1px solid $light-grey-2;
+
+  li {
+    color: $primary-base
+  }
+}
+
+.timestamp {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: $dark-grey-1;
+}

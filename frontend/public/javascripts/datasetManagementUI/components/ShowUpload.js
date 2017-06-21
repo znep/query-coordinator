@@ -23,9 +23,7 @@ export const ShowUpload = ({ inProgress, goHome, uploadId }) =>
             </div>
           : <div className={styles.uploadContainer}>
               <DragDropUpload />
-              <section className={styles.sidebar}>
-                <UploadSidebar uploadId={uploadId} />
-              </section>
+              <UploadSidebar uploadId={uploadId} />
             </div>}
       </ModalContent>
     </Modal>

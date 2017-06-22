@@ -76,16 +76,31 @@ const getLinkInfo = inputSchemas => outputSchemas => upload => {
   };
 };
 
-export const mapStateToProps = ({ entities }, { uploadId }) => {
+export const mapStateToProps = ({ entities }) => {
+  const outputSchema = Selectors.latestOutputSchema(entities);
+
+  const { input_schema_id: inputSchemaId, id: outputSchemaId } = outputSchema;
+
+  const { upload_id: uploadId } = entities.input_schemas[inputSchemaId];
+  // old
   const noncurrentUploads = _.omit(entities.uploads, uploadId);
 
-  const noncurrentUploadsList = Object.keys(noncurrentUploads).map(id => entities.uploads[id]);
+  // filter is necessary because if upload failed, we won't have an IS or OS
+  // for it, so it can't link to data preview page. Maybe we want to show the
+  // failed upload and have it do something else?
+  const noncurrentUploadsList = Object.keys(noncurrentUploads)
+    .map(id => entities.uploads[id])
+    .filter(upload => upload.finished_at);
 
   const inputSchemaList = Object.keys(entities.input_schemas).map(isid => entities.input_schemas[isid]);
 
   const addLinkInfo = getLinkInfo(inputSchemaList)(entities.output_schemas);
 
-  const currentUpload = addLinkInfo(entities.uploads[uploadId]);
+  const currentUpload = {
+    ...entities.uploads[uploadId],
+    inputSchemaId,
+    outputSchemaId
+  };
 
   const otherUploads = noncurrentUploadsList.map(addLinkInfo);
 

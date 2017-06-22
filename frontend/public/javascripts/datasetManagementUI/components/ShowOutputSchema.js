@@ -165,7 +165,7 @@ export class ShowOutputSchema extends Component {
       <div className={styles.outputSchemaContainer}>
         <Modal fullScreen onDismiss={goHome}>
           <ModalHeader onDismiss={goHome}>
-            <UploadBreadcrumbs uploadId={upload.id} />
+            <UploadBreadcrumbs />
           </ModalHeader>
           <ModalContent>
             <div className={styles.dataPreview}>

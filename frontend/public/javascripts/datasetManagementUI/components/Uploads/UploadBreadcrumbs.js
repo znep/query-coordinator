@@ -13,7 +13,7 @@ export const UploadBreadcrumbs = ({ atShowUpload, uploadId, outputSchemaId, inpu
     <li className={atShowUpload ? styles.active : null}>
       {atShowUpload
         ? I18n.home_pane.data
-        : <Link to={Links.showUpload(uploadId)}>
+        : <Link to={Links.uploads}>
             {I18n.home_pane.data}
           </Link>}
       <SocrataIcon name="arrow-right" className={styles.icon} />
@@ -34,7 +34,8 @@ UploadBreadcrumbs.propTypes = {
   inputSchemaId: PropTypes.number.isRequired
 };
 
-export const mapStateToProps = ({ entities, ui }, { uploadId, atShowUpload }) => {
+export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
+  const { id: uploadId } = Selectors.latestUpload(entities);
   const inputSchemaList = Object.keys(entities.input_schemas).map(
     isid => entities.input_schemas[Number(isid)]
   );
@@ -48,7 +49,7 @@ export const mapStateToProps = ({ entities, ui }, { uploadId, atShowUpload }) =>
 
   return {
     atShowUpload,
-    uploadId: Number(uploadId),
+    uploadId: uploadId,
     outputSchemaId: currentOutputSchema.id,
     inputSchemaId: currentInputSchema ? currentInputSchema.id : null
   };

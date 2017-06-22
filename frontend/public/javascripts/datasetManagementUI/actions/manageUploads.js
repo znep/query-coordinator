@@ -101,7 +101,7 @@ export function createUpload(file) {
 
         dispatch(createUploadSuccess(resource.id, resource.created_by, resource.created_at, file.name));
 
-        dispatch(push(Links.showUpload(resource.id)(ui.routing.location)));
+        dispatch(push(Links.uploads(ui.routing.location)));
 
         return Promise.all([
           dispatch(uploadFile(resource.id, file)),

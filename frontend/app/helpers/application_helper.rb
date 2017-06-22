@@ -24,13 +24,19 @@ module ApplicationHelper
 
 # CONFIGURATIONS
 
-  # Prevent platform styling on Dataslate custom pages managed by the CS team
+  # EN-12308: Prevent platform styling on Dataslate custom pages managed by the CS team.
   def prevent_platform_styling?
-    controller.class == CustomContentController && defined?(@page) &&
-      CurrentDomain.configuration('dataslate_config').
-        try(:properties).
-        try(:prevent_platform_styling).to_a.
-        include?(@page.try(:path))
+    return false unless controller.class == CustomContentController && defined?(@page) && @page.try(:path)
+
+    actual_path = @page.path
+
+    regex_paths_to_prevent_platform_styling = CurrentDomain.configuration('dataslate_config').
+      try(:properties).
+      try(:prevent_platform_styling).to_a
+
+    regex_paths_to_prevent_platform_styling.any? do |path|
+      Regexp.new(path) =~ actual_path
+    end
   end
 
 # MODULES/FEATURES

@@ -760,6 +760,13 @@ class AdministrationController < ApplicationController
       return render json: { error: true, message: t('screens.admin.metadata.flashes.no_such_field') }
     end
 
+    options = params[:options]
+    if options.blank?
+      field['type'] = 'text'
+    else
+      field['type'], field['options'] = 'fixed', options
+    end
+
     save_metadata(config, metadata, t('screens.admin.metadata.flashes.field_successful_save'), true)
   end
 

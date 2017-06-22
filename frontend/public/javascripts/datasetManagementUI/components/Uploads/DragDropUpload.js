@@ -47,7 +47,7 @@ export class DragDropUpload extends Component {
       dispatch(hideFlashMessage());
       dispatch(createUpload(file));
     } else {
-      dispatch(showFlashMessage('error', 'wrong kind of file, fool!'));
+      dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
     }
 
     this.setState({
@@ -73,7 +73,7 @@ export class DragDropUpload extends Component {
 
     return (
       <section className={styles.container}>
-        <h2>Replace Data</h2>
+        <h2>{I18n.show_uploads.title}</h2>
         <div
           onDrop={this.handleDrop}
           onDragOver={this.handleDragOver}
@@ -84,9 +84,9 @@ export class DragDropUpload extends Component {
           </div>
           <div className={styles.textContainer}>
             <div className={styles.content}>
-              <h2>Drag a New Data File Here</h2>
-              <div className={styles.browseMsg}>...or click Browse to choose a file from your computer</div>
-              <div className={styles.fileTypes}>Supported file types are .csv, .tsv, .xls, and .xlsx</div>
+              <h2>{I18n.show_uploads.message}</h2>
+              <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>
+              <div className={styles.fileTypes}>{I18n.show_uploads.filetypes}</div>
               <label id="upload-label" className={styles.uploadButton} htmlFor="file">
                 Browse
               </label>

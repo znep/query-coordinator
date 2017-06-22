@@ -21,11 +21,11 @@ UploadItem.propTypes = {
 
 export const UploadSidebar = ({ currentUpload, otherUploads }) =>
   <section className={styles.sidebar}>
-    <h2>Current Upload</h2>
+    <h2>{I18n.show_uploads.current}</h2>
     <ul>
       {currentUpload ? <UploadItem upload={currentUpload} /> : <span>No uploads yet :(</span>}
     </ul>
-    {!!otherUploads.length && <h2>Other Uploads</h2>}
+    {!!otherUploads.length && <h2>{I18n.show_uploads.noncurrent}</h2>}
     <ul>
       {otherUploads.map(upload => <UploadItem key={upload.id} upload={upload} />)}
     </ul>

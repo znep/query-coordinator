@@ -31,20 +31,28 @@ export const ShowUpload = ({ inProgress, goHome }) =>
   </div>;
 
 export const mapStateToProps = ({ entities, ui }) => {
-  const { id: uploadId } = Selectors.latestUpload(entities);
+  // selector returns undefined if there are no uploads
+  const upload = Selectors.latestUpload(entities);
+  let apiCall = [];
 
-  const apiCallList = Object.keys(ui.apiCalls).map(callId => ui.apiCalls[callId]);
+  if (upload && upload.id) {
+    const { id: uploadId } = upload;
+    const apiCallList = Object.keys(ui.apiCalls).map(callId => ui.apiCalls[callId]);
 
-  const apiCall = apiCallList.filter(
-    call =>
-      call.operation === 'UPLOAD_FILE' &&
-      call.status === STATUS_CALL_IN_PROGRESS &&
-      call.params &&
-      call.params.id === uploadId
-  );
+    apiCall = apiCallList.filter(
+      call =>
+        call.operation === 'UPLOAD_FILE' &&
+        call.status === STATUS_CALL_IN_PROGRESS &&
+        call.params &&
+        call.params.id === uploadId
+    );
+  }
 
+  // Include upload in the definition of inProgress because if there is no upload,
+  // we don't want to show the spinner, we want to show the actual component so the
+  // user can upload something
   return {
-    inProgress: !!apiCall.length
+    inProgress: !!upload && !!apiCall.length
   };
 };
 

@@ -19,22 +19,17 @@ UploadItem.propTypes = {
   upload: PropTypes.object.isRequired
 };
 
-export const UploadSidebar = ({ currentUpload, otherUploads }) => {
-  const items = otherUploads.map(upload => <UploadItem key={upload.id} upload={upload} />);
-
-  return (
-    <section className={styles.sidebar}>
-      <h2>Current Upload</h2>
-      <ul>
-        <UploadItem upload={currentUpload} />
-      </ul>
-      <h2>Other Uploads</h2>
-      <ul>
-        {items}
-      </ul>
-    </section>
-  );
-};
+export const UploadSidebar = ({ currentUpload, otherUploads }) =>
+  <section className={styles.sidebar}>
+    <h2>Current Upload</h2>
+    <ul>
+      {currentUpload ? <UploadItem upload={currentUpload} /> : <span>No uploads yet :(</span>}
+    </ul>
+    {!!otherUploads.length && <h2>Other Uploads</h2>}
+    <ul>
+      {otherUploads.map(upload => <UploadItem key={upload.id} upload={upload} />)}
+    </ul>
+  </section>;
 
 UploadSidebar.propTypes = {
   currentUpload: PropTypes.shape({
@@ -78,31 +73,37 @@ const getLinkInfo = inputSchemas => outputSchemas => upload => {
 
 export const mapStateToProps = ({ entities }) => {
   const outputSchema = Selectors.latestOutputSchema(entities);
+  let currentUpload = null;
+  let otherUploads = [];
 
-  const { input_schema_id: inputSchemaId, id: outputSchemaId } = outputSchema;
+  if (outputSchema) {
+    const { input_schema_id: inputSchemaId, id: outputSchemaId } = outputSchema;
 
-  const { upload_id: uploadId } = entities.input_schemas[inputSchemaId];
-  // old
-  const noncurrentUploads = _.omit(entities.uploads, uploadId);
+    const { upload_id: uploadId } = entities.input_schemas[inputSchemaId];
 
-  // filter is necessary because if upload failed, we won't have an IS or OS
-  // for it, so it can't link to data preview page. Maybe we want to show the
-  // failed upload and have it do something else?
-  const noncurrentUploadsList = Object.keys(noncurrentUploads)
-    .map(id => entities.uploads[id])
-    .filter(upload => upload.finished_at);
+    const noncurrentUploads = _.omit(entities.uploads, uploadId);
 
-  const inputSchemaList = Object.keys(entities.input_schemas).map(isid => entities.input_schemas[isid]);
+    const noncurrentUploadsList = Object.keys(noncurrentUploads).map(id => entities.uploads[id]);
 
-  const addLinkInfo = getLinkInfo(inputSchemaList)(entities.output_schemas);
+    // TODO: Not doing anything with failed uploats atm. Maybe we should. Need UX input.
+    // eslint-disable-next-line no-unused-vars
+    const [failedUploads, pendingOrSuccessfulUploads] = _.partition(
+      noncurrentUploadsList,
+      upload => upload.failed_at
+    );
 
-  const currentUpload = {
-    ...entities.uploads[uploadId],
-    inputSchemaId,
-    outputSchemaId
-  };
+    const inputSchemaList = Object.keys(entities.input_schemas).map(isid => entities.input_schemas[isid]);
 
-  const otherUploads = noncurrentUploadsList.map(addLinkInfo);
+    const addLinkInfo = getLinkInfo(inputSchemaList)(entities.output_schemas);
+
+    currentUpload = {
+      ...entities.uploads[uploadId],
+      inputSchemaId,
+      outputSchemaId
+    };
+
+    otherUploads = pendingOrSuccessfulUploads.map(addLinkInfo);
+  }
 
   return {
     currentUpload,

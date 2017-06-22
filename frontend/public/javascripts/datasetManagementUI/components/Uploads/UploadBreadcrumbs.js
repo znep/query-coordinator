@@ -19,7 +19,7 @@ export const UploadBreadcrumbs = ({ atShowUpload, uploadId, outputSchemaId, inpu
       <SocrataIcon name="arrow-right" className={styles.icon} />
     </li>
     <li className={!atShowUpload ? styles.active : null}>
-      {!atShowUpload
+      {!atShowUpload || !uploadId || !inputSchemaId || !outputSchemaId
         ? I18n.home_pane.preview
         : <Link to={Links.showOutputSchema(uploadId, inputSchemaId, outputSchemaId)}>
             {I18n.home_pane.preview}
@@ -29,29 +29,40 @@ export const UploadBreadcrumbs = ({ atShowUpload, uploadId, outputSchemaId, inpu
 
 UploadBreadcrumbs.propTypes = {
   atShowUpload: PropTypes.bool,
-  uploadId: PropTypes.number.isRequired,
-  outputSchemaId: PropTypes.number.isRequired,
-  inputSchemaId: PropTypes.number.isRequired
+  uploadId: PropTypes.number,
+  outputSchemaId: PropTypes.number,
+  inputSchemaId: PropTypes.number
 };
 
 export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
-  const { id: uploadId } = Selectors.latestUpload(entities);
-  const inputSchemaList = Object.keys(entities.input_schemas).map(
-    isid => entities.input_schemas[Number(isid)]
-  );
-  const currentInputSchema = inputSchemaList.find(is => is.upload_id === Number(uploadId));
-  const outputSchemasForCurrentInputSchema = currentInputSchema
-    ? _.pickBy(entities.output_schemas, os => os.input_schema_id === currentInputSchema.id)
-    : null;
-  const currentOutputSchema = outputSchemasForCurrentInputSchema
-    ? Selectors.latestOutputSchema({ output_schemas: outputSchemasForCurrentInputSchema })
-    : { id: null };
+  const upload = Selectors.latestUpload(entities);
+  let currentOutputSchema = { id: null };
+  let currentInputSchema = { id: null };
+  let uploadId = null;
+
+  if (upload) {
+    uploadId = upload.id;
+
+    const inputSchemaList = Object.keys(entities.input_schemas).map(
+      isid => entities.input_schemas[Number(isid)]
+    );
+
+    currentInputSchema = inputSchemaList.find(is => is.upload_id === Number(uploadId)) || { id: null };
+
+    const outputSchemasForCurrentInputSchema = currentInputSchema
+      ? _.pickBy(entities.output_schemas, os => os.input_schema_id === currentInputSchema.id)
+      : null;
+
+    currentOutputSchema = !_.isEmpty(outputSchemasForCurrentInputSchema)
+      ? Selectors.latestOutputSchema({ output_schemas: outputSchemasForCurrentInputSchema })
+      : { id: null };
+  }
 
   return {
     atShowUpload,
     uploadId: uploadId,
     outputSchemaId: currentOutputSchema.id,
-    inputSchemaId: currentInputSchema ? currentInputSchema.id : null
+    inputSchemaId: currentInputSchema.id
   };
 };
 

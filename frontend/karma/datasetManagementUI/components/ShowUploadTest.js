@@ -1,18 +1,58 @@
 import { assert } from 'chai';
-import thunk from 'redux-thunk';
-import ShowUpload from 'components/ShowUpload';
-import configureStore from 'redux-mock-store';
-import stateWithRevision from '../data/stateWithRevision';
+import { shallow } from 'enzyme';
+import React from 'react';
+import { ShowUpload, mapStateToProps } from 'components/ShowUpload';
+import _ from 'lodash';
+import dotProp from 'dot-prop-immutable';
+import state from '../data/initialState';
 
-describe('components/ShowUpload', () => {
-  const mockStore = configureStore([thunk]);
+describe.only('components/ShowUpload', () => {
+  const defaultProps = {
+    goHome: _.noop,
+    inProgress: false
+  };
 
-  it('renders without errors', () => {
-    const element = renderComponentWithStore(
-      ShowUpload,
-      { params: { uploadId: 123 } },
-      mockStore(stateWithRevision)
-    );
-    assert.ok(element);
+  const component = shallow(<ShowUpload {...defaultProps} />);
+
+  it('renders a modal', () => {
+    assert.equal(component.find('Modal').length, 1);
+  });
+
+  it('renders a spinner if in progress', () => {
+    const newProps = {
+      ...defaultProps,
+      inProgress: true
+    };
+
+    const component = shallow(<ShowUpload {...newProps} />);
+
+    assert.equal(component.find('.spinner').length, 1);
+  });
+
+  it('renders Upload index page if not in progress', () => {
+    const dragDrop = component.find('Connect(DragDropUpload)');
+    const sidebar = component.find('Connect(UploadSidebar)');
+
+    assert.equal(dragDrop.length, 1);
+    assert.equal(sidebar.length, 1);
+  });
+
+  it('sets inProgress to false if there is no upload', () => {
+    const newState = dotProp.set(state, 'entities.uploads', {});
+    const { inProgress } = mapStateToProps(newState);
+    assert.isFalse(inProgress);
+  });
+
+  it('sets inProgress to true if there is an UPLOAD_FILE api call in progress', () => {
+    const uploadId = Number(Object.keys(state.entities.uploads)[0]);
+    const newState = dotProp.set(state, 'ui.apiCalls', {
+      '1234abcd': {
+        operation: 'UPLOAD_FILE',
+        status: 'STATUS_CALL_IN_PROGRESS',
+        params: { id: uploadId }
+      }
+    });
+    const { inProgress } = mapStateToProps(newState);
+    assert.isTrue(inProgress);
   });
 });

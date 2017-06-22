@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import React from 'react';
 import { ShowOutputSchema, mapStateToProps } from 'components/ShowOutputSchema';
 import dotProp from 'dot-prop-immutable';

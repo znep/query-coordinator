@@ -1968,11 +1968,12 @@ en:
       preview: Preview
       process_data: Process Data
       publish_confirmation_usaid:
-        title: Choose your audience
-        public: Public
+        button: Done
         private: Private
-        private_msg: Accessible to users on your site with permissions to view.
+        private_msg: Only accessible to people within your organization.
+        public: Public
         public_msg: Publically accessible. Discoverable through the public catalog.
+        title: Choose your audience
       publish_confirmation:
         body: It will be accessible to anyone through your data catalog.
         button: Publish Now

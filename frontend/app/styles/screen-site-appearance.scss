@@ -465,6 +465,10 @@ $font_family: "Open Sans", "Helvetica", Arial, sans-serif;
   display: flex;
   justify-content: space-between;
 
+  &.in-page-body {
+    margin-bottom: 10px;
+  }
+
   .page-controls {
     clear: both;
     float: right;

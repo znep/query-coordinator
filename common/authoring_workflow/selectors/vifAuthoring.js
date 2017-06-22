@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
-import defaultVifs from '../vifs';
 import { COLOR_PALETTES } from '../constants';
 
 export const getVifs = state => _.get(state, 'vifs', {})
@@ -54,6 +53,16 @@ export const getAnyMeasure = createSelector(
     return _.isEmpty(vif) ?
       _.get(vifs, 'columnChart.series[0].dataSource.measure', null) :
       _.get(vif, 'series[0].dataSource.measure', null);
+  }
+);
+
+export const getMeasuresFromVif = createSelector(
+  getCurrentVif,
+  getVifs,
+  (vif, vifs) => {
+    return _.isEmpty(vif) ?
+      _.get(vifs, 'columnChart.series[0].dataSource.measures', []) :
+      _.get(vif, 'series[0].dataSource.measures', []);
   }
 );
 

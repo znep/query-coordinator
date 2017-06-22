@@ -25,6 +25,7 @@ const paths = {
   measureAxisMaxValue: 'configuration.measureAxisMaxValue',
   measureAxisMinValue: 'configuration.measureAxisMinValue',
   measureColumnName: 'series[0].dataSource.measure.columnName',
+  measures: 'series[0].dataSource.measures',
   negativeColor: 'configuration.legend.negativeColor',
   orderBy: 'series[0].dataSource.orderBy',
   pointOpacity: 'configuration.pointOpacity',
@@ -152,6 +153,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.measureColumnName)) {
     dispatch(actions.setMeasure(get(paths.measureColumnName)));
+  }
+
+  if (has(paths.measures)) {
+    dispatch(actions.setMeasures(get(paths.measures)));
   }
 
   if (has(paths.negativeColor)) {

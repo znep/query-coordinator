@@ -44,15 +44,20 @@ export default function(state, action) {
 
     case actions.SET_MEASURE:
       forEachSeries(state, series => {
-        var aggregationFunction = series.dataSource.measure.aggregationFunction;
 
         series.dataSource.measure.columnName = action.measure;
 
         if (_.isNull(action.measure)) {
           series.dataSource.measure.aggregationFunction = 'count';
-        } else if (aggregationFunction === 'count') {
+        } else if (series.dataSource.measure.aggregationFunction === 'count') {
           series.dataSource.measure.aggregationFunction = 'sum';
         }
+      });
+      break;
+
+    case actions.SET_MEASURES:
+      forEachSeries(state, series => {
+        series.dataSource.measures = action.measures;
       });
       break;
 
@@ -112,12 +117,6 @@ export default function(state, action) {
 
     case actions.SET_LABEL_RIGHT:
       setStringValueOrDeleteProperty(state, 'configuration.axisLabels.right', action.labelRight);
-      break;
-
-    case actions.SET_MEASURE_AGGREGATION:
-      forEachSeries(state, series => {
-        series.dataSource.measure.aggregationFunction = action.measureAggregation;
-      });
       break;
 
     case actions.SET_X_AXIS_SCALING_MODE:

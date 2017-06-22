@@ -466,6 +466,60 @@
       }
     }
 
+    .measure-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+
+      .measure-list-item {
+        display: flex;
+        margin: 0;
+        padding: 0;
+
+        .measure-delete-link-container {
+          display: table;
+          margin: 0 6px 0 0;
+
+          .measure-delete-link {
+            color: #5e5e5e;
+            cursor: pointer;
+            display: table-cell;
+            font-size: 25px;
+            height: 46px;
+            vertical-align: middle;
+          }
+        }
+
+        .measure-column-selector-dropdown-container {
+          width: 100%;
+        }
+
+        .measure-aggregation-selector-dropdown-container {
+          margin: 0 0 0 6px;
+          min-width: 25%;
+          width: 25%;
+
+          .dropdown-options-list {
+            left: -1px;
+          }
+        }
+      }
+    }
+
+    .measure-new-measure-link-container {
+      margin: 5px 0;
+
+      a {
+        cursor: pointer;
+        text-decoration: none;
+
+        .socrata-icon-add {
+          margin: 0 5px;
+        }
+      }
+    }
+
     .measure-selector-container {
       display: flex;
 

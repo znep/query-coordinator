@@ -3,27 +3,19 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import { factories, Dropdown } from 'common/components';
-
 import { I18n } from 'common/visualizations';
-import { AGGREGATION_TYPES, COLUMN_TYPES } from '../constants';
-import {
-  setMeasure,
-  setMeasureAggregation
-} from '../actions';
-import {
-  getAnyMeasure,
-  isFeatureMap
-} from '../selectors/vifAuthoring';
+import { AGGREGATION_TYPES, COLUMN_TYPES, MAXIMUM_MEASURES } from '../constants';
+import { setMeasures } from '../actions';
+import { getMeasuresFromVif, isFeatureMap } from '../selectors/vifAuthoring';
+import { setMeasure, setMeasureAggregation } from '../actions';
 import { hasData, getValidMeasures } from '../selectors/metadata';
-
 import BlockLabel from './shared/BlockLabel';
 
 export const MeasureSelector = React.createClass({
   propTypes: {
     vifAuthoring: PropTypes.object,
     metadata: PropTypes.object,
-    onSelectMeasure: PropTypes.func,
-    onSelectMeasureAggregation: PropTypes.func
+    onSetMeasures: PropTypes.func,
   },
 
   getDefaultProps() {
@@ -38,48 +30,107 @@ export const MeasureSelector = React.createClass({
     }
   },
 
-  renderMeasureAggregationSelector() {
+  render() {
+    const { metadata } = this.props;
+    return hasData(metadata) ? this.renderMeasureSelectors() : null;
+  },
+
+  renderMeasureSelectors() {
     const {
-      aggregationTypes,
-      onSelectMeasureAggregation,
+      metadata,
       vifAuthoring
     } = this.props;
 
-    const measure = getAnyMeasure(vifAuthoring);
-    const isNotCountingRows = !_.isNull(measure.columnName);
+    const validMeasures = getValidMeasures(metadata);
+    const options = [
+      {title: I18n.translate('panes.data.fields.measure.no_value'), value: null},
+      ...validMeasures.map(validMeasure => ({
+        title: validMeasure.name,
+        value: validMeasure.fieldName,
+        type: validMeasure.renderTypeName,
+        render: this.renderMeasureOption
+      }))
+    ];
 
-    if (isNotCountingRows) {
-      const options = [
-        {title: I18n.translate('aggregations.none'), value: null},
-        ...aggregationTypes.map(aggregationType => ({title: aggregationType.title, value: aggregationType.type}))
-      ];
-
-      const measureAggregationAttributes = {
-        options,
-        onSelection: onSelectMeasureAggregation,
-        value: measure.aggregationFunction,
-        id: 'measure-aggregation-selection',
-        disabled: isFeatureMap(vifAuthoring)
-      };
-
-      return <Dropdown {...measureAggregationAttributes} />;
-    }
-  },
-
-  renderMeasureEmptyFlyout() {
-    const flyoutAttributes = {
-      id: 'measure-empty-flyout',
-      className: 'measure-empty-flyout flyout flyout-hidden'
-    };
+    const measures = getMeasuresFromVif(vifAuthoring);
+    const items = measures.map((measure, index) => {
+      return this.renderMeasureSelector(measure, index, options);
+    });
 
     return (
-      <div {...flyoutAttributes}>
-        <section className="flyout-content">
-          <p>{I18n.translate('panes.data.fields.measure.empty_measure')}</p>
-        </section>
+      <div ref={(ref) => this.selector = ref}>
+        <BlockLabel htmlFor="measure-selection" title={I18n.translate('panes.data.fields.measure.title')} description={I18n.translate('panes.data.fields.measure.description')} />
+        <ul className="measure-list">
+          {items}
+        </ul>
+        {this.renderNewMeasureLink()}
       </div>
     );
   },
+
+  renderMeasureSelector(measure, index, options) {
+    const { vifAuthoring } = this.props;
+    const measureListItemAttributes = {
+      className: 'measure-list-item',
+      key: index
+    };
+
+    const hasOnlyDefaultValue = options.length <= 1;
+    const measureAttributes = {
+      className: 'measure-column-selector-dropdown',
+      disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
+      onSelection: (option) => this.handleOnSelectionMeasureColumn(option, index),
+      options,
+      value: measure.columnName
+    };
+
+    return (
+        <li {...measureListItemAttributes}>
+          {this.renderDeleteLink(index)}
+          <div className="measure-column-selector-dropdown-container">
+            <Dropdown {...measureAttributes} />
+          </div>
+          {this.renderMeasureAggregationSelector(measure, index)}
+        </li>
+    );    
+  },
+
+  renderDeleteLink(index) {
+    return (index > 0) ? (
+      <div className="measure-delete-link-container">
+        <a className="measure-delete-link" onClick={() => this.handleOnClickDeleteMeasure(index)}>
+          <span className="socrata-icon-close" />
+        </a>
+      </div>) : null;
+  },
+
+  renderMeasureAggregationSelector(measure, index) {
+    const {
+      aggregationTypes,
+      vifAuthoring
+    } = this.props;
+
+    if (_.isNull(measure.columnName)) {
+      return; // no aggregation dropdown when no column name is selected
+    }
+
+    const options = [
+      {title: I18n.translate('aggregations.none'), value: null},
+      ...aggregationTypes.map(aggregationType => ({title: aggregationType.title, value: aggregationType.type}))
+    ];
+
+    const measureAggregationAttributes = {
+      disabled: isFeatureMap(vifAuthoring),
+      onSelection: (option) => this.handleOnSelectionMeasureAggregation(option, index),
+      options,
+      value: measure.aggregationFunction
+    };
+
+    return (
+      <div className="measure-aggregation-selector-dropdown-container">
+        <Dropdown {...measureAggregationAttributes} />
+      </div>);
+},
 
   renderMeasureOption(option) {
     const columnType = _.find(COLUMN_TYPES, {type: option.type});
@@ -92,69 +143,68 @@ export const MeasureSelector = React.createClass({
     );
   },
 
-  renderMeasureSelector() {
-    const {
-      metadata,
-      vif,
-      onSelectMeasure,
-      vifAuthoring
-    } = this.props;
+  renderNewMeasureLink() {
+    const { vifAuthoring } = this.props;
+    const measures = getMeasuresFromVif(vifAuthoring);
 
-    const measure = getAnyMeasure(vifAuthoring);
-    const isCountingRows = _.isNull(measure.columnName);
-    const measures = getValidMeasures(metadata);
-    const visualizationType = _.get(vif, 'series[0].type');
-    const options = [
-      {title: I18n.translate('panes.data.fields.measure.no_value'), value: null},
-      ...measures.map(measure => ({
-        title: measure.name,
-        value: measure.fieldName,
-        type: measure.renderTypeName,
-        render: this.renderMeasureOption
-      }))
-    ];
-
-    const hasOnlyDefaultValue = options.length <= 1;
-
-    const measureContainerAttributes = {
-      className: classNames('measure-selector-container', {
-        'measure-selector-container-count-rows': isCountingRows
-      })
-    };
-
-    if (hasOnlyDefaultValue) {
-      measureContainerAttributes['data-flyout'] = 'measure-empty-flyout';
-    }
-
-    const measureAttributes = {
-      options,
-      onSelection: onSelectMeasure,
-      value: measure.columnName,
-      id: 'measure-selection',
-      disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue
-    };
-
-    const measureFlyout = hasOnlyDefaultValue ? this.renderMeasureEmptyFlyout() : null;
-
-    return (
-      <div ref={(ref) => this.selector = ref}>
-        <BlockLabel htmlFor="measure-selection" title={I18n.translate('panes.data.fields.measure.title')} description={I18n.translate('panes.data.fields.measure.description')} />
-        <div {...measureContainerAttributes}>
-          <Dropdown {...measureAttributes} />
-          {this.renderMeasureAggregationSelector()}
-        </div>
-        {measureFlyout}
-      </div>
-    );
+    return (measures.length < MAXIMUM_MEASURES) ? (
+      <div className="measure-new-measure-link-container">
+        <a onClick={this.handleOnClickNewMeasure}>
+          <span className="socrata-icon-add" />
+          {I18n.translate('panes.data.fields.measure.new_measure')}
+        </a>
+      </div>) : null;
   },
 
-  render() {
-    const { metadata } = this.props;
+  handleOnSelectionMeasureColumn(option, index) {
+    const { onSetMeasures } = this.props;
+    const measures = this.getClonedMeasures();  
 
-    return hasData(metadata) ?
-      this.renderMeasureSelector() :
-      null;
+    measures[index].columnName = option.value;
+
+    if (_.isNull(option.value)) {
+      measures[index].aggregationFunction = 'count';
+    } else if (measures[index].aggregationFunction === 'count') {
+      measures[index].aggregationFunction = 'sum';
+    }
+
+    onSetMeasures(measures);
+  },
+
+  handleOnSelectionMeasureAggregation(option, index) {
+    const { onSetMeasures } = this.props;
+    const measures = this.getClonedMeasures();  
+
+    measures[index].aggregationFunction = option.value;
+    onSetMeasures(measures);
+  },
+
+  handleOnClickDeleteMeasure(index) {
+    const { onSetMeasures } = this.props;
+    const measures = this.getClonedMeasures();
+
+    measures.splice(index, 1);
+    onSetMeasures(measures);
+  },
+
+  handleOnClickNewMeasure() {
+    const { onSetMeasures } = this.props;
+    const measures = this.getClonedMeasures();  
+
+    measures.push({ 
+      columnName: null,
+      aggregationFunction: 'sum'
+     });
+
+    onSetMeasures(measures);
+  },
+  
+  getClonedMeasures() {
+    const { vifAuthoring } = this.props;
+    const measures = getMeasuresFromVif(vifAuthoring);
+    return _.clone(measures);
   }
+
 });
 
 function mapStateToProps(state) {
@@ -164,13 +214,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectMeasure(measure) {
-      dispatch(setMeasure(measure.value));
+    onSetMeasures(measures) {
+      dispatch(setMeasures(measures));
     },
-
-    onSelectMeasureAggregation(measureAggregation) {
-      dispatch(setMeasureAggregation(measureAggregation.value));
-    }
   };
 }
 

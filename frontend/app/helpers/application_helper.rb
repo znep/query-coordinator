@@ -1138,7 +1138,11 @@ module ApplicationHelper
 
   def render_admin_header?
     %w(administration site_appearance connector routing_approval activity_feed).include?(controller_name) &&
-      FeatureFlags.derive(nil, request)[:enable_new_admin_ui]
+      new_admin_ui_enabled?
+  end
+
+  def new_admin_ui_enabled?
+    feature_flag?('enable_new_admin_ui', request)
   end
 
   def asset_inventory_view_model

@@ -12,14 +12,26 @@
   <%= t('screens.admin.site_appearance.site_appearance') %>
 <% end %>
 
-<% content_for :admin_header do %>
-  <div class="site-appearance-header">
-    <%= render 'tabs' %>
-    <%= render 'page_controls' %>
-  </div>
+<% if new_admin_ui_enabled? %>
+  <% content_for :admin_header do %>
+    <div class="site-appearance-header">
+      <%= render 'tabs' %>
+      <%= render 'page_controls' %>
+    </div>
+  <% end %>
 <% end %>
 
 <div class="site-appearance <%= 'custom' if enable_custom_chrome? %>">
+  <% unless new_admin_ui_enabled? %>
+    <div class="header-title">
+      <h1>
+        <%= t('screens.admin.site_appearance.site_appearance') %>
+        <%= link_to('https://support.socrata.com/hc/en-us/articles/223723227', :target => 'blank') do %>
+          <span class="socrata-icon-question"></span>
+        <% end %>
+      </h1>
+    </div>
+  <% end %>
   <div class="site-appearance-admin-header">
     <div class="locale-warning">
       <% if using_non_default_locale? %>
@@ -44,6 +56,13 @@
         <% end %>
       </div>
     <% else %>
+      <% unless new_admin_ui_enabled? %>
+        <div class="site-appearance-header in-page-body">
+          <%= render 'tabs' %>
+          <%= render 'page_controls' %>
+        </div>
+      <% end %>
+
       <%= form_tag update_site_appearance_path(anchor: {tab: :general}), id: 'site_appearance_form', method: :put, remote: true do %>
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
         <% tab_sections.each_with_index do |section, i| %>

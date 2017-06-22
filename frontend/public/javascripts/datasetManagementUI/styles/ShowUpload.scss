@@ -2,14 +2,6 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
-// .showUpload {
-//   :global {
-//     section.modal-content {
-//       height: 100%;
-//     }
-//   }
-// }
-
 .modalContent {
   flex-grow: 1;
   height: 100%;

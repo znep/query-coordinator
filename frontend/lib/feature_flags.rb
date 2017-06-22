@@ -35,7 +35,7 @@ class FeatureFlags
     end
 
     def descriptions
-      Signaller::FeatureFlags.configs
+      Signaller::FeatureFlags.configs.with_indifferent_access
     end
 
     def report(flag)

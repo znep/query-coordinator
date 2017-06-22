@@ -74,6 +74,7 @@ export const ceteraUtils = (() => {
   const ceteraQueryString = ({
     category = null,
     customMetadataFilters = {},
+    derivedFrom = null,
     forUser = null,
     idFilters = [],
     limit = DEFAULT_LIMIT,
@@ -89,6 +90,7 @@ export const ceteraUtils = (() => {
     const parameters = {
       categories: category,
       ...customMetadataFilters,
+      derived_from: derivedFrom,
       domains: domain,
       for_user: forUser,
       ids: mapIdFiltersToParam(idFilters),
@@ -125,13 +127,15 @@ export const ceteraUtils = (() => {
       const fetchUrl = `${CETERA_RESULTS_PATH}?${queryString}`;
 
       const reportToMixpanel = (json) => {
-        mixpanel.sendPayload(
-          mixpanelContext.eventName,
-          {
-            'Result Count': json.results.length,
-            ...mixpanelContext.params
-          }
-        );
+        if (mixpanelContext) {
+          mixpanel.sendPayload(
+            mixpanelContext.eventName,
+            {
+              'Result Count': json.results.length,
+              ...mixpanelContext.params
+            }
+          );
+        }
         return json;
       };
 

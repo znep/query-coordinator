@@ -59,6 +59,17 @@
 .back-to-options {
   @extend .unstyled-link;
 
+  & :global(.socrata-icon) {
+     display: block !important;
+     width: 9px;
+     height: 9px;
+     line-height: 1.618;
+
+     & svg {
+       vertical-align: middle;
+     }
+  }
+
   font-size: 85%;
   position: absolute;
   top: 12px;
@@ -71,11 +82,11 @@
   display: flex;
 
   & svg {
-    width: 9px;
-    height: 9px;
+    width: 9px !important;
+    height: 9px !important;
 
     & polygon {
-      fill: $primary-text;
+      fill: $primary-text !important;
     }
   }
 }

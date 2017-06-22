@@ -8,8 +8,8 @@ import MetadataField from 'components/MetadataField';
 import Fieldset from 'components/MetadataFields/Fieldset';
 import manageFormModel from 'components/Forms/manageFormModel';
 import validateSchema from 'components/Forms/validateSchema';
-import { edit } from 'actions/database';
 import { makeNamespacedFieldName, fromNestedToFlat } from 'lib/customMetadata';
+import { editView } from 'actions/views';
 import styles from 'styles/ManageMetadata/DatasetForm.scss';
 
 // HELPERS
@@ -59,10 +59,7 @@ const transformCustomFieldsetTwo = obj => ({
     : [{ type: 'nothing', name: 'no-field-message' }]
 });
 
-const transformCustomFieldset = _.flowRight([
-  transformCustomFieldsetTwo,
-  transformCustomFieldsetOne
-]);
+const transformCustomFieldset = _.flowRight([transformCustomFieldsetTwo, transformCustomFieldsetOne]);
 
 // fns to take fieldset objs and turn them into JSX
 const objToField = (obj, extraProps) => {
@@ -91,20 +88,16 @@ const objToFieldset = (obj, children, idx) =>
 // We export it because we want to use it on app load in bootstrap.js so that we can
 // validate incoming data from the server even if the user hasn't loaded this component
 export const createInitialModel = view => {
-
-  const metadata = _.pick(
-    view,
-    [
-      'attribution',
-      'attributionLink',
-      'category',
-      'description',
-      'id',
-      'licenseId',
-      'name',
-      'tags'
-    ]
-  );
+  const metadata = _.pick(view, [
+    'attribution',
+    'attributionLink',
+    'category',
+    'description',
+    'id',
+    'licenseId',
+    'name',
+    'tags'
+  ]);
 
   const privateMetadata = _.omit(view.privateMetadata, 'custom_fields');
 
@@ -263,9 +256,7 @@ const createCustomValidationRules = (customFieldsets = []) => {
 // Used inside mapStateToProps to create a combined validation schema
 // Also use in bootstrap when app inializes
 export const createCombinedValidationRules = (customFieldsets = []) => {
-
-  const customValidations = _
-    .chain(customFieldsets)
+  const customValidations = _.chain(customFieldsets)
     .map(transformCustomFieldset)
     .thru(createCustomValidationRules)
     .value();
@@ -302,9 +293,7 @@ export class DatasetForm extends Component {
     const { customFieldsetObjs, ...rest } = this.props;
     /* eslint-disable no-use-before-define */
 
-    const fieldsetsCombined = customFieldsetObjs
-      ? fieldsetObjs.concat(customFieldsetObjs)
-      : fieldsetObjs;
+    const fieldsetsCombined = customFieldsetObjs ? fieldsetObjs.concat(customFieldsetObjs) : fieldsetObjs;
 
     const fieldsets = fieldsetsCombined
       .map(fieldsetObj => ({
@@ -322,16 +311,20 @@ export class DatasetForm extends Component {
 }
 
 DatasetForm.propTypes = {
-  customFieldsetObjs: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string,
-    fields: PropTypes.arrayOf(PropTypes.shape({
+  customFieldsetObjs: PropTypes.arrayOf(
+    PropTypes.shape({
       name: PropTypes.string,
-      required: PropTypes.bool,
-      label: PropTypes.string,
-      type: PropTypes.string,
-      isPrivate: PropTypes.bool
-    }))
-  })),
+      fields: PropTypes.arrayOf(
+        PropTypes.shape({
+          name: PropTypes.string,
+          required: PropTypes.bool,
+          label: PropTypes.string,
+          type: PropTypes.string,
+          isPrivate: PropTypes.bool
+        })
+      )
+    })
+  ),
   syncToStore: PropTypes.func.isRequired,
   fourfour: PropTypes.string.isRequired,
   schema: PropTypes.object,
@@ -342,10 +335,10 @@ DatasetForm.propTypes = {
 // We need to pass initialModel as a prop to manageFormModel HOC if we want to pre-load
 // our form with data. Since these data come from the redux store, we create this
 // prop here in mapStateToProps.
-const mapStateToProps = ({ db, routing }) => {
-  const { fourfour } = routing;
+const mapStateToProps = ({ entities, ui }) => {
+  const { fourfour } = ui.routing;
 
-  const view = _.get(db, `views.${fourfour}`, {});
+  const view = _.get(entities, `views.${fourfour}`, {});
 
   const initialModel = createInitialModel(view);
 
@@ -362,7 +355,7 @@ const mapStateToProps = ({ db, routing }) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  syncToStore: (fourfour, key, val) => dispatch(edit('views', { id: fourfour, [key]: val }))
+  syncToStore: (fourfour, key, val) => dispatch(editView(fourfour, { [key]: val }))
 });
 
 // We want to use these higher-order components together to create data for one another.

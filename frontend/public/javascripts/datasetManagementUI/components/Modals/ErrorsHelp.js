@@ -68,11 +68,7 @@ const HowToGetRowsBackInDataset = () =>
     <p className={styles.caption}>{SubI18n.help_modal.clean_data_sub_blurb}</p>
   </div>;
 
-const pages = [
-  WhatCanIDoAboutIt,
-  WhyWontTheyImport,
-  HowToGetRowsBackInDataset
-];
+const pages = [WhatCanIDoAboutIt, WhyWontTheyImport, HowToGetRowsBackInDataset];
 
 const getHeaderTitle = (idx, errorRowCount) => {
   switch (idx) {
@@ -166,21 +162,14 @@ export class ErrorsHelp extends Component {
 
     const content = getContent(modalPage, errorRowCount);
 
-    const buttonText = modalPage === pages.length - 1
-      ? SubI18n.help_modal.done
-      : SubI18n.help_modal.next;
+    const buttonText = modalPage === pages.length - 1 ? SubI18n.help_modal.done : SubI18n.help_modal.next;
 
-    const buttonHandler = modalPage === pages.length - 1
-      ? onDismiss
-      : this.nextPage;
+    const buttonHandler = modalPage === pages.length - 1 ? onDismiss : this.nextPage;
 
     const previousButton = modalPage > 0
-      ? (
-      <button
-        onClick={this.prevPage}
-        className={styles.previousButton}>
+      ? <button onClick={this.prevPage} className={styles.previousButton}>
         {SubI18n.help_modal.previous}
-      </button>)
+      </button>
       : null;
 
     return (
@@ -193,9 +182,7 @@ export class ErrorsHelp extends Component {
           <Dots currentPageIdx={modalPage} numOfTotalPages={pages.length} setPage={this.setPage} />
           <div className={styles.buttonContainer}>
             {previousButton}
-            <button
-              onClick={buttonHandler}
-              className={styles.nextButton}>
+            <button onClick={buttonHandler} className={styles.nextButton}>
               {buttonText}
             </button>
           </div>
@@ -210,15 +197,15 @@ ErrorsHelp.propTypes = {
   onDismiss: PropTypes.func
 };
 
-const mapStateToProps = ({ db, routing }) => {
-  const { outputSchemaId } = routing;
+const mapStateToProps = ({ entities, ui }) => {
+  const { outputSchemaId } = ui.routing;
 
   return {
-    errorRowCount: db.output_schemas[outputSchemaId].error_count || 0
+    errorRowCount: entities.output_schemas[outputSchemaId].error_count || 0
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(hideModal())
 });
 

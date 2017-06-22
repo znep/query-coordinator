@@ -6,8 +6,8 @@ import MetadataField from 'components/MetadataField';
 import Fieldset from 'components/MetadataFields/Fieldset';
 import manageFormModel from 'components/Forms/manageFormModel';
 import validateSchema from 'components/Forms/validateSchema';
-import { edit } from 'actions/database';
 import * as Selectors from 'selectors';
+import { editView } from 'actions/views';
 import styles from 'styles/ManageMetadata/ColumnForm.scss';
 
 export class ColumnForm extends Component {
@@ -50,38 +50,32 @@ export class ColumnForm extends Component {
     const { currentColumns, ...rest } = this.props;
     /* eslint-disable no-use-before-define */
 
-    const colToArr = col =>
-      [
-        {
-          type: 'text',
-          label: I18n.metadata_manage.column_tab.name,
-          name: `display-name-${col.id}`,
-          ...rest
-        },
-        {
-          type: 'text',
-          label: I18n.metadata_manage.column_tab.description,
-          name: `description-${col.id}`,
-          ...rest
-        },
-        {
-          type: 'text',
-          label: I18n.metadata_manage.column_tab.field_name,
-          name: `field-name-${col.id}`,
-          ...rest
-        }
-      ];
+    const colToArr = col => [
+      {
+        type: 'text',
+        label: I18n.metadata_manage.column_tab.name,
+        name: `display-name-${col.id}`,
+        ...rest
+      },
+      {
+        type: 'text',
+        label: I18n.metadata_manage.column_tab.description,
+        name: `description-${col.id}`,
+        ...rest
+      },
+      {
+        type: 'text',
+        label: I18n.metadata_manage.column_tab.field_name,
+        name: `field-name-${col.id}`,
+        ...rest
+      }
+    ];
 
-    const arrToFields = arr =>
-      arr.map((obj, idx) => <MetadataField {...obj} key={idx} />);
+    const arrToFields = arr => arr.map((obj, idx) => <MetadataField {...obj} key={idx} />);
 
-    const fieldsToRows = (fields, idx) =>
-      <div className={styles.row} key={idx}>{fields}</div>;
+    const fieldsToRows = (fields, idx) => <div className={styles.row} key={idx}>{fields}</div>;
 
-    const rows = currentColumns
-      .map(colToArr)
-      .map(arrToFields)
-      .map(fieldsToRows);
+    const rows = currentColumns.map(colToArr).map(arrToFields).map(fieldsToRows);
 
     return (
       <form>
@@ -96,9 +90,11 @@ export class ColumnForm extends Component {
 }
 
 ColumnForm.propTypes = {
-  currentColumns: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequred
-  })),
+  currentColumns: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequred
+    })
+  ),
   syncToStore: PropTypes.func.isRequired,
   fourfour: PropTypes.string.isRequired,
   schema: PropTypes.object,
@@ -109,9 +105,7 @@ ColumnForm.propTypes = {
 const getCurrentColumns = db => {
   const currentSchema = Selectors.latestOutputSchema(db);
 
-  return currentSchema
-      ? Selectors.columnsForOutputSchema(db, currentSchema.id)
-      : [];
+  return currentSchema ? Selectors.columnsForOutputSchema(db, currentSchema.id) : [];
 };
 
 const createInitialModal = currentColumns => {
@@ -165,14 +159,13 @@ const createValidationSchema = currentColumns => {
   }, {});
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  syncToStore: (fourfour, key, val) =>
-    dispatch(edit('views', { id: fourfour, [key]: val }))
+const mapDispatchToProps = dispatch => ({
+  syncToStore: (fourfour, key, val) => dispatch(editView(fourfour, { [key]: val }))
 });
 
-const mapStateToProps = ({ db, routing }) => {
-  const currentColumns = getCurrentColumns(db);
-  const { fourfour } = routing;
+const mapStateToProps = ({ entities, ui }) => {
+  const currentColumns = getCurrentColumns(entities);
+  const { fourfour } = ui.routing;
 
   return {
     currentColumns,

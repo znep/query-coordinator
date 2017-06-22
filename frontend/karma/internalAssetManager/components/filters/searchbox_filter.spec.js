@@ -22,13 +22,13 @@ describe('components/SearchboxFilter', () => {
   });
 
   it('renders', () => {
-    const element = renderComponentWithStore(SearchboxFilter, searchboxFilterProps());
+    const element = renderComponentWithPropsAndStore(SearchboxFilter, searchboxFilterProps());
     assert.isNotNull(element);
     assert.equal(element.className, 'searchbox-filter');
   });
 
   it('opens the picklist when the input is focused', () => {
-    const element = renderComponentWithStore(SearchboxFilter, searchboxFilterProps());
+    const element = renderComponentWithPropsAndStore(SearchboxFilter, searchboxFilterProps());
     const input = element.querySelector('input[type="text"]');
     assert.isNull(element.querySelector('.picklist-wrapper'));
     TestUtils.Simulate.focus(input);
@@ -36,7 +36,7 @@ describe('components/SearchboxFilter', () => {
   });
 
   it('closes the picklist when the input is blurred', (done) => {
-    const element = renderComponentWithStore(SearchboxFilter, searchboxFilterProps());
+    const element = renderComponentWithPropsAndStore(SearchboxFilter, searchboxFilterProps());
     const input = element.querySelector('input[type="text"]');
     TestUtils.Simulate.focus(input);
     assert.isNotNull(element.querySelector('.picklist-wrapper'));
@@ -48,7 +48,7 @@ describe('components/SearchboxFilter', () => {
   });
 
   it('does not close the picklist when the input is blurred if the picklist is focused', () => {
-    const element = renderComponentWithStore(SearchboxFilter, searchboxFilterProps());
+    const element = renderComponentWithPropsAndStore(SearchboxFilter, searchboxFilterProps());
     const input = element.querySelector('input[type="text"]');
     TestUtils.Simulate.focus(input);
     assert.isNotNull(element.querySelector('.picklist-wrapper'));
@@ -58,7 +58,7 @@ describe('components/SearchboxFilter', () => {
   });
 
   it('it filters the options to the ones that contain the entered text in the input box (as well as the "All" filter), case insensitive', (done) => {
-    const element = renderComponentWithStore(SearchboxFilter, searchboxFilterProps());
+    const element = renderComponentWithPropsAndStore(SearchboxFilter, searchboxFilterProps());
     const input = element.querySelector('input[type="text"]');
     TestUtils.Simulate.focus(input);
 
@@ -72,7 +72,7 @@ describe('components/SearchboxFilter', () => {
 
   it('calls onSelection when a picklist option is clicked', () => {
     const spy = sinon.spy();
-    const element = renderComponentWithStore(SearchboxFilter, searchboxFilterProps({ onSelection: spy }));
+    const element = renderComponentWithPropsAndStore(SearchboxFilter, searchboxFilterProps({ onSelection: spy }));
     const input = element.querySelector('input[type="text"]');
     TestUtils.Simulate.focus(input);
     TestUtils.Simulate.click(element.querySelector('.picklist-option'));

@@ -2,12 +2,13 @@ import _ from 'lodash';
 import $ from 'jquery';
 import utils from 'common/js_utils';
 
+import 'intl/locale-data/jsonp/ca.js';
 import 'intl/locale-data/jsonp/en.js';
-import 'intl/locale-data/jsonp/zh.js';
-import 'intl/locale-data/jsonp/it.js';
 import 'intl/locale-data/jsonp/es.js';
 import 'intl/locale-data/jsonp/fr.js';
+import 'intl/locale-data/jsonp/it.js';
 import 'intl/locale-data/jsonp/tr.js';
+import 'intl/locale-data/jsonp/zh.js';
 
 require('karma-intl-shim');
 
@@ -441,7 +442,7 @@ describe('utils.js', function() {
       assert.equal(utils.getGroupCharacter(null), ',');
       assert.equal(utils.getGroupCharacter(undefined), ',');
       assert.equal(utils.getGroupCharacter(''), ',');
-      assert.equal(utils.getGroupCharacter('foo'), ',');
+      assert.equal(utils.getGroupCharacter('invalid'), ',');
     });
   });
 
@@ -475,7 +476,41 @@ describe('utils.js', function() {
       assert.equal(utils.getDecimalCharacter(null), '.');
       assert.equal(utils.getDecimalCharacter(undefined), '.');
       assert.equal(utils.getDecimalCharacter(''), '.');
-      assert.equal(utils.getDecimalCharacter('foo'), '.');
+      assert.equal(utils.getDecimalCharacter('invalid'), '.');
+    });
+  });
+
+  describe('getLocale', function() {
+    it('returns locale in serverConfig when window has serverConfig', function() {
+      var result = utils.getLocale({ serverConfig: { locale: 'zh' } });
+      assert.equal(result, 'zh');
+    });
+
+    it('returns locale in blist when window has blist', function() {
+      var result1 = utils.getLocale({ blist: { locale: 'it' } });
+      assert.equal(result1, 'it');
+
+      var result2 = utils.getLocale({ serverConfig: { foo: 'bar' }, blist: { locale: 'it' } });
+      assert.equal(result2, 'it');
+    });
+
+    it('returns locale in socrataConfig when window has socrataConfig', function() {
+      var result1 = utils.getLocale({ socrataConfig: { locales: { currentLocale: 'es' } } });
+      assert.equal(result1, 'es');
+
+      var result2 = utils.getLocale({ serverConfig: { foo: 'bar' }, blist: { bar: 'foo' }, socrataConfig: { locales: { currentLocale: 'es' } } });
+      assert.equal(result2, 'es');
+    });
+
+    it('returns en by default when window is something else', function() {
+      var result1 = utils.getLocale(null);
+      assert.equal(result1, 'en');
+
+      var result2 = utils.getLocale(undefined);
+      assert.equal(result2, 'en');
+
+      var result3 = utils.getLocale({ serverConfig: { foo: 'bar' }, blist: { bar: 'foo' }, socrataConfig: { abc: 'def' } });
+      assert.equal(result3, 'en');
     });
   });
 
@@ -597,32 +632,34 @@ describe('utils.js', function() {
         testValue(99999999999999999999999999, '100Y');
         testValue(100000000000000000000000000, '100Y');
 
-        assert.equal(
-          utils.formatNumber(1000000000000000000000000000),
-          '1e+27'
-        );
+        assert.equal(utils.formatNumber(1000000000000000000000000000), '1e+27');
       });
     });
 
-    it('with the group separator option', function() {
+    describe('with different separator characters', () => {
 
-      assert.equal(
-        utils.formatNumber(12.34, { groupCharacter: '|' }),
-        '12.34'
-      );
-      assert.equal(
-        utils.formatNumber(1234, { groupCharacter: '|' }),
-        '1|234'
-      );
+      it('with the group separator option', () => {
+        assert.equal(utils.formatNumber(12.34, { groupCharacter: '|' }), '12.34');
+        assert.equal(utils.formatNumber(1234, { groupCharacter: '|' }), '1|234');
+      });
+
+      it('with the decimal separator option', () => {
+        assert.equal(utils.formatNumber(12.34, { decimalCharacter: ',' }), '12,34');
+      });
+
+      describe('when locale is specified on window', () => {
+
+        beforeEach(() => window.serverConfig = { locale: 'ca' });
+
+        afterEach(() => window.serverConfig = undefined);
+
+        it('should respect the locale specified on window', () => {
+          assert.equal(utils.formatNumber(10460), '10,5K');
+        });
+      })
+
     });
 
-    it('with the decimal separator option', function() {
-
-      assert.equal(
-        utils.formatNumber(12.34, { decimalCharacter: ',' }),
-        '12,34'
-      );
-    });
   });
 
   describe('commaify', function() {

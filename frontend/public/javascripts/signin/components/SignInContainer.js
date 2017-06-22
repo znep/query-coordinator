@@ -3,7 +3,7 @@ import Auth0 from 'auth0-js';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import { SocrataIcon } from 'common/components';
-import { Translate, renderAlerts } from '../Util';
+import { renderAlerts } from '../Util';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignIn from './SignIn';
 import ChooseConnection from './ChooseConnection/ChooseConnection';
@@ -13,8 +13,7 @@ class SignInContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    const { auth0Uri, auth0ClientId, baseDomainUri, translations } = this.props.options;
-    const translate = new Translate(translations);
+    const { auth0Uri, auth0ClientId, baseDomainUri } = this.props.options;
 
     this.state = {
       auth0Client: new Auth0({
@@ -24,7 +23,6 @@ class SignInContainer extends React.Component {
       }),
       auth0Connections: [],
       renderLoginForm: false,
-      translate: translate.get,
       alerts: []
     };
 
@@ -68,8 +66,8 @@ class SignInContainer extends React.Component {
   }
 
   renderChooseConnectionOrSignInForm() {
-    const { options } = this.props;
-    const { auth0Client, auth0Connections, renderLoginForm, translate } = this.state;
+    const { options, translate } = this.props;
+    const { auth0Client, auth0Connections, renderLoginForm } = this.state;
 
     // if "auth0_connections" is set in the site config, we show a list
     // of buttons to choose a connection
@@ -77,7 +75,7 @@ class SignInContainer extends React.Component {
       return (
         <ChooseConnection
           options={options}
-          translate={this.state.translate}
+          translate={translate}
           onConnectionChosen={this.onConnectionChosen}
           setLoginFormVisibility={this.setLoginFormVisibility} />);
     } else {
@@ -111,8 +109,8 @@ class SignInContainer extends React.Component {
   }
 
   renderBackButton() {
-    const { options } = this.props;
-    const { renderLoginForm, translate } = this.state;
+    const { options, translate } = this.props;
+    const { renderLoginForm } = this.state;
 
     // only show the button to go back to "choose connection" if we're told to
     if (!_.isEmpty(options.connections) && renderLoginForm === true) {
@@ -132,8 +130,8 @@ class SignInContainer extends React.Component {
   }
 
   render() {
-    const { translate, alerts } = this.state;
-    const { options } = this.props;
+    const { alerts } = this.state;
+    const { options, translate } = this.props;
     const { flashes } = options;
     return (
       <div styleName="container">
@@ -160,6 +158,7 @@ class SignInContainer extends React.Component {
 }
 
 SignInContainer.propTypes = {
+  translate: React.PropTypes.func.isRequired,
   options: OptionsPropType.isRequired
 };
 

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { handleEnter } from '../../common/helpers/keyPressHelpers';
+import { handleEnter } from 'common/helpers/keyPressHelpers';
 import { Dropdown } from 'common/components';
 import SearchboxFilter from './filters/searchbox_filter';
 import * as filterOptions from '../lib/catalog_filter_options';
@@ -55,8 +55,8 @@ export class CatalogFilters extends React.Component {
 
   render() {
     const { assetTypes, authority, category, changeAssetType, changeAuthority, changeCategory, changeOwner,
-      changeTag, changeVisibility, domainCategories, domainTags, onlyRecentlyViewed, ownedBy, tag,
-      toggleRecentlyViewed, usersList, visibility } = this.props;
+      changeTag, changeVisibility, clearAllFilters, domainCategories, domainTags, onlyRecentlyViewed, ownedBy,
+      tag, toggleRecentlyViewed, usersList, visibility } = this.props;
 
     const { filterContentOpen } = this.state;
 
@@ -89,7 +89,13 @@ export class CatalogFilters extends React.Component {
 
     const filterHeader = (
       <div className="catalog-filters-header">
-        <span className="title">{this.getTranslation('header.title')}</span>
+        <span className="title">{this.getTranslation('header.title')}
+          <span
+            className="filter-section clear-all-filters socrata-icon-close-circle"
+            onClick={clearAllFilters}
+            title={_.get(I18n, 'filters.clear_all_filters')}>
+          </span>
+        </span>
         {closeFiltersButton}
       </div>
     );
@@ -209,6 +215,7 @@ CatalogFilters.propTypes = {
   changeOwner: PropTypes.func.isRequired,
   changeTag: PropTypes.func.isRequired,
   changeVisibility: PropTypes.func.isRequired,
+  clearAllFilters: PropTypes.func.isRequired,
   domainCategories: PropTypes.array.isRequired,
   domainTags: PropTypes.array.isRequired,
   onlyRecentlyViewed: PropTypes.bool.isRequired,
@@ -242,6 +249,7 @@ const mapDispatchToProps = dispatch => ({
   changeOwner: (value) => dispatch(actions.changeOwner(value)),
   changeTag: (value) => dispatch(actions.changeTag(value)),
   changeVisibility: (value) => dispatch(actions.changeVisibility(value)),
+  clearAllFilters: () => dispatch(actions.clearAllFilters()),
   toggleRecentlyViewed: () => dispatch(actions.toggleRecentlyViewed())
 });
 

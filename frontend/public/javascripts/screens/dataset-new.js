@@ -1,6 +1,5 @@
 /* eslint dot-location: 0 */
 
-// TODO(vilterp): remove once `ingress_reenter` feature flag is turned on for everyone
 $(function() {
 
   blist.namespace.fetch('blist.importer');

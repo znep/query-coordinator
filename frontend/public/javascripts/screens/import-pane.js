@@ -1,3 +1,5 @@
+/* eslint dot-location: 0 */
+
 // DO NOT BE CONFUSED!
 // there are many things named %column% in this file.
 //  columns are the real columns in the original dataset, id'ed by order of appearance.
@@ -10,7 +12,7 @@
 //      objects are going to be the final product. An importColumn can be composed
 //      of zero, one, or more sourceColumns.
 
-// TODO: fix the linting errors in this file and re-enable linting in the .eslintignore file
+var Interpolator = require('../util/interpolator');
 
 (function($) {
 
@@ -24,7 +26,6 @@
   // globals
   var scan,
     columns,
-    locationGroups, // eslint-disable-line no-unused-vars
     columnSelectOptions,
     sourceColumns,
     $pane,
@@ -34,7 +35,6 @@
     $sourceDropDown,
     $columnDropDown,
     $compositeColumnSourceDropDown,
-    wizardCommand, // eslint-disable-line no-unused-vars
     $headersTable,
     $headersCount,
     headersCount,
@@ -42,13 +42,8 @@
     isShown,
     submitError,
     $layerCount,
-    referenceSystem, // eslint-disable-line no-unused-vars
     $layersList,
-    layers,
-    $summary,
-    $abbreviatedSummary,
-    layerCount,
-    dataset;
+    layers;
 
   // used for reducing selectable types down to import types
   var importTypes = {
@@ -91,8 +86,7 @@
   };
 
   // Delta Importer implementation requires Web Workers.
-  var useDI2 = _.isFunction(window.Worker) && !_.isNull($.dataSync.ssync()) &&
-    blist.feature_flags.ingress_strategy === 'delta-importer';
+  var useDI2 = _.isFunction(window.Worker) && !_.isNull($.dataSync.ssync()) && blist.feature_flags.ingress_strategy === 'delta-importer';
   var useNBE = _.include(['nbe', 'delta-importer'], blist.feature_flags.ingress_strategy);
 
   // helpers
@@ -206,8 +200,8 @@
     if (isSuggested || isNeeded) {
       if ($.isBlank(column) || (column.type === type)) {
         _.each(column, function(originalColumn, field) {
-          $section.find('.' + type + $.capitalize(field) + 'Column').
-            val(originalColumn.id).trigger('change'); // and again here
+          $section.find('.' + type + $.capitalize(field) + 'Column')
+            .val(originalColumn.id).trigger('change'); // and again here
         });
       } else {
         $section.find('.' + type + 'SingleColumn').val(column.id).trigger('change');
@@ -217,12 +211,12 @@
 
     // if we have an option to select, go select it manually; otherwise events
     // get too tangled
-    $section.find(typeOptionSelector).
-      click().
-      closest('.toggleSection').
-      siblings('.toggleSection').
-      next().
-      hide();
+    $section.find(typeOptionSelector)
+      .click()
+      .closest('.toggleSection')
+      .siblings('.toggleSection')
+      .next()
+      .hide();
   };
 
   var showSubsection = function($line, section) {
@@ -401,7 +395,8 @@
       importColumn.column = column;
 
       // transforms!
-      if (importColumn.dataType != 'location' && importColumn.dataType != 'point') { // locations don't support transforms
+      // locations don't support transforms
+      if (importColumn.dataType != 'location' && importColumn.dataType != 'point') {
         importColumn.transforms = $.makeArray($line.find('.columnTransformsList').children().map(function() {
           var $transformLine = $(this);
 
@@ -637,9 +632,9 @@
     });
 
     // validate name collisions (error)
-    _.each(names, function(columnList, name) {
-      if ((columnList.length > 1) && (name.trim() !== '')) {
-        addValidationError(null, 'error', '<strong>' + $.capitalize($.wordify(columnList.length)) +
+    _.each(names, function(duplicateColumns, name) {
+      if ((duplicateColumns.length > 1) && (name.trim() !== '')) {
+        addValidationError(null, 'error', '<strong>' + $.capitalize($.wordify(duplicateColumns.length)) +
           '</strong> of your columns are named &ldquo;' + $.htmlEscape(name) + '&rdquo;. Columns ' +
           'in a dataset cannot share the same name.');
       }
@@ -654,9 +649,8 @@
     }
 
     // validate name missing (error)
-    var emptyNameColumns = _.flatten(_.select(names, function(columnList, name) {
-      return $.isBlank(name.trim());
-    }));
+    var emptyNameColumns = _.select(_.invoke(_.keys(names), 'trim'), $.isBlank);
+
     if (emptyNameColumns.length > 1) {
       addValidationError(null, 'error', '<strong>' + $.capitalize($.wordify(emptyNameColumns.length)) +
         '</strong> of your columns do not have names. Please give them names.');
@@ -765,12 +759,12 @@
     if (!$.isBlank(layer)) {
       // populate standard things
       var $layerName = $line.find('.layerName');
-      $layerName.
-        attr('id', 'layerName_' + layer.id).
-        example(function() {
+      $layerName
+        .attr('id', 'layerName_' + layer.id)
+        .example(function() {
           return $(this).attr('title');
-        }).
-        rules('add', {
+        })
+        .rules('add', {
           messages: {
             required: 'You must enter a name for this layer.'
           }
@@ -804,9 +798,9 @@
 
     $line.data('dsColumn', dsColumn);
     if (_.include(forbiddenTypes, dsColumn.dataTypeName)) {
-      $line.find('.columnSourceCell').
-        empty().
-        append($.tag({
+      $line.find('.columnSourceCell')
+        .empty()
+        .append($.tag({
           tagName: 'div',
           'class': 'forbiddenColumnType',
           contents: 'This column cannot be imported into.'
@@ -903,8 +897,7 @@
     if (scanColumns.length === dsColumns.length) {
       resultColumns = _.zip(dsColumns, scanColumns);
     } else if ((scanLocations.length > 0) && (ds.columnsForType('location'))) {
-      // see if we have a matching once we deal a bit with location
-      // columns.
+      // see if we have a matching once we deal a bit with location columns.
       var availableColumns = _.clone(columns);
       var compositeColumns = [];
       availableColumns = setAsideCompositeColumns(availableColumns, compositeColumns);
@@ -926,14 +919,13 @@
     if ($.isBlank(resultColumns)) {
       var scanIdx = 0;
       var guessedColumns = _.map(dsColumns, function(dsColumn, dsIdx) {
-        var scanColumn;
         // if we have more scan than ds columns, be more tolerant of
         // skipping; vice versa
 
         if (scanColumns.length > dsColumns.length) {
           // if the while loop continues, we are skipping a scanColumn.
           while ((scanColumns.length - scanIdx) > (dsColumns.length - dsIdx)) {
-            scanColumn = scanColumns[scanIdx];
+            var scanColumn = scanColumns[scanIdx];
             scanIdx++;
 
             // if the type is a complete mismatch, then we probably
@@ -951,30 +943,30 @@
           // submit what we have.
           return scanColumns[scanIdx++];
         } else {
-          scanColumn = scanColumns[scanIdx];
-          if ($.isBlank(scanColumn)) {
+          var currentScanColumn = scanColumns[scanIdx];
+          if ($.isBlank(scanColumns[scanIdx])) {
             return null;
           }
 
           if ((scanColumns.length - scanIdx) >= (dsColumns.length - dsIdx)) {
             // if we're in crunch time we have no choice
             scanIdx++;
-            return scanColumn;
+            return currentScanColumn;
           }
 
           // next see if column header name analysis might help. do a
           // rough levenshtein with a ~50% difference allowance
-          if (dsColumn.name.heuristicDistance(scanColumn.name) < (dsColumn.name.length * 0.5)) {
+          if (dsColumn.name.heuristicDistance(currentScanColumn.name) < (dsColumn.name.length * 0.5)) {
             scanIdx++;
-            return scanColumn;
+            return currentScanColumn;
           }
 
           // next see if we have an exact column type match, and that match
           // isn't text. if so, maybe we can accept this result.
-          if ((dsColumn.dataTypeName === scanColumn.suggestion) &&
+          if ((dsColumn.dataTypeName === currentScanColumn.suggestion) &&
             (dsColumn.dataTypeName != 'text')) {
             scanIdx++;
-            return scanColumn;
+            return currentScanColumn;
           }
 
           // otherwise we're not too sure about this. let's punt on the
@@ -1138,9 +1130,9 @@
       var $this = $(this);
       var $transformLine = $this.closest('li');
 
-      $transformLine.find('.additionalTransformOptions').children().
-        hide().
-        filter('.' + $this.val() + 'Section').show();
+      $transformLine.find('.additionalTransformOptions').children()
+        .hide()
+        .filter('.' + $this.val() + 'Section').show();
 
       updateLines($this.closest('li.importColumn'));
       validateAll();
@@ -1164,8 +1156,8 @@
       function() {
         var $section = $(this).closest('.toggleSection');
 
-        $section.siblings('.toggleSection').
-          next()[isShown ? 'slideUp' : 'hide']();
+        $section.siblings('.toggleSection')
+          .next()[isShown ? 'slideUp' : 'hide']();
         $section.next()[isShown ? 'slideDown' : 'show']();
       });
 
@@ -1192,8 +1184,7 @@
     $pane.find('.moreRowsButton').click(function(event) {
       event.preventDefault();
       var $lastHeader = $headersTable.children('.header:last');
-      (($lastHeader.length === 0) ? $headersTable.children(':first') :
-        $lastHeader.next()).addClass('header');
+      (($lastHeader.length === 0) ? $headersTable.children(':first') : $lastHeader.next()).addClass('header');
       headersCount = Math.min(5, headersCount + 1);
       setHeadersCountText();
     });
@@ -1216,11 +1207,11 @@
   // config
   importNS.uploadFilePaneConfig = {
     disableButtons: ['next'],
-    onInitialize: function($currentPane, config, state, command) {
+    onInitialize: function($uploadPane, config, state, command) {
       // update text
       var isBlist = state.type == 'blist';
-      $currentPane.find('.headline').text(t('headline_' + (isBlist ? 'import' : 'upload')));
-      $currentPane.find('.uploadFileFormats').addClass(state.type);
+      $uploadPane.find('.headline').text(t('headline_' + (isBlist ? 'import' : 'upload')));
+      $uploadPane.find('.uploadFileFormats').addClass(state.type);
 
       // uploader
       // Only the #scan and #create methods are available on NBE as of now.
@@ -1242,10 +1233,10 @@
         uploadEndpoint += '&locale=' + blist.feature_flags.domain_locale;
       }
 
-      var $uploadThrobber = $currentPane.find('.uploadThrobber');
-      var $uploadFileErrorHelp = $currentPane.find('.uploadFileErrorHelp');
+      var $uploadThrobber = $uploadPane.find('.uploadThrobber');
+      var $uploadFileErrorHelp = $uploadPane.find('.uploadFileErrorHelp');
       var uploader = blist.fileUploader({
-        element: $currentPane.find('.uploadFileButtonWrapper')[0],
+        element: $uploadPane.find('.uploadFileButtonWrapper')[0],
         action: uploadEndpoint,
         multiple: false,
         onSubmit: function(id, fileName) {
@@ -1255,9 +1246,9 @@
           } else if (state.type == 'shapefile') {
             if (!(ext && /^(zip|kml|kmz|json|geojson)$/i.test(ext))) {
               // Only accept ZIP and KML for shapefile.
-              $currentPane.find('.uploadFileName').
-                val(t('filetype_error_shapefile')).
-                addClass('error');
+              $uploadPane.find('.uploadFileName')
+                .val(t('filetype_error_shapefile'))
+                .addClass('error');
 
               mixpanelNS.trackUserError({
                 'Message Shown': 'Ingress: Invalid geodataset file extension'
@@ -1266,9 +1257,9 @@
             }
           } else if (!(ext && /^(tsv|csv|xls|xlsx)$/i.test(ext))) {
             // For all other state.type, accept only data files.
-            $currentPane.find('.uploadFileName').
-              val(t('filetype_error_blist')).
-              addClass('error');
+            $uploadPane.find('.uploadFileName')
+              .val(t('filetype_error_blist'))
+              .addClass('error');
 
             mixpanelNS.trackUserError({
               'Message Shown': 'Ingress: Invalid tabular file extension'
@@ -1277,12 +1268,12 @@
           }
           state.fileName = fileName; // save this off since the imports service needs it later
 
-          $currentPane.find('.uploadFileName').
-            val(fileName).
-            removeClass('error');
+          $uploadPane.find('.uploadFileName')
+            .val(fileName)
+            .removeClass('error');
 
-          $uploadThrobber.slideDown().
-            find('.text').text(t('uploading') + '...');
+          $uploadThrobber.slideDown()
+            .find('.text').text(t('uploading') + '...');
           $uploadFileErrorHelp.slideUp();
         },
         onProgress: function(id, fileName, loaded, total) {
@@ -1297,9 +1288,9 @@
           if ($.isBlank(response) || _.isEmpty(response) || (response.error == true)) {
             $uploadThrobber.slideUp();
             $uploadFileErrorHelp.slideDown();
-            $currentPane.find('.uploadFileName').
-              val(t('problem_' + ((state.type == 'blobby' || state.type == 'shapefile') ? 'uploading' : 'importing'))).
-              addClass('error');
+            $uploadPane.find('.uploadFileName')
+              .val(t('problem_' + ((state.type == 'blobby' || state.type == 'shapefile') ? 'uploading' : 'importing')))
+              .addClass('error');
 
             mixpanelNS.trackUserError({
               'Message Shown': 'Ingress: Unable to scan ' + state.type + ' file'
@@ -1316,7 +1307,7 @@
           setTimeout(function() {
             $uploadThrobber.slideUp();
             $uploadFileErrorHelp.slideUp();
-            $currentPane.find('.uploadFileName').val(t('no_file_selected'));
+            $uploadPane.find('.uploadFileName').val(t('no_file_selected'));
             if (state.type == 'blobby') {
               state.submittedView = new Dataset(response);
               command.next(state.afterUpload || 'metadata');
@@ -1331,12 +1322,12 @@
   };
   importNS.crossloadFilePaneConfig = {
     disableButtons: ['next'],
-    onInitialize: function($currentPane, config, state, command) {
-      $currentPane.find('.crossloadUrlButton').click(function(event) {
+    onInitialize: function($crossloadPane, config, state, command) {
+      $crossloadPane.find('.crossloadUrlButton').click(function(event) {
         event.preventDefault();
 
         var $this = $(this);
-        var $uploadThrobber = $currentPane.find('.uploadThrobber');
+        var $uploadThrobber = $crossloadPane.find('.uploadThrobber');
         if ($this.hasClass('disabled')) {
           return;
         }
@@ -1345,7 +1336,7 @@
           $this.addClass('disabled');
           $uploadThrobber.slideDown().find('.text').text(t('downloading'));
 
-          var targetUrl = $currentPane.find('.crossloadUrl').val().trim();
+          var targetUrl = $crossloadPane.find('.crossloadUrl').val().trim();
           var scanEndpoint = '/api/imports2?method=scanUrl';
           if (blist.feature_flags.domain_locale) {
             scanEndpoint += '&locale=' + blist.feature_flags.domain_locale;
@@ -1368,7 +1359,7 @@
             },
             success: function(response) {
               state.scan = response;
-              state.fileName = targetUrl.match(/\/([^\?\/]*)(\?.*)?$/i)[1] || 'your file';
+              state.fileName = response.summary.transformedFilename || targetUrl.match(/\/([^\?\/]*)(\?.*)?$/i)[1] || 'your file';
               command.next('importColumns');
             },
             error: function(xhr) {
@@ -1379,7 +1370,7 @@
                 msg = '';
               }
 
-              $currentPane.find('.flash').addClass('error').text(msg + ' ' + t('assure_accessible'));
+              $crossloadPane.find('.flash').addClass('error').text(msg + ' ' + t('assure_accessible'));
             }
           });
         }
@@ -1403,14 +1394,12 @@
   ////////////////////////////////////////////////////
   // shared helpers between import + append/replace
 
-  var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command) {
+  var prepareColumnsAndUI = function($paneLocal, paneConfig, state) {
     // update global vars
     scan = state.scan;
     scan.summary.sample = scan.summary.sample || [];
     isShown = false;
-    wizardCommand = command;
     columns = scan.summary.columns || [];
-    locationGroups = scan.summary.locations || [];
     $pane = $paneLocal;
     $columnsList = $pane.find('.columnsList');
     $warningsList = $pane.find('.columnWarningsList');
@@ -1510,13 +1499,13 @@
     isShown = true;
   };
 
-  var columnsPaneActivated = function($paneLocal) {
+  var columnsPaneActivated = function($columnsPane) {
     if (!$.isBlank(submitError)) {
-      $paneLocal.find('.flash').text(submitError).
-        removeClass('warning notice').
-        addClass('error');
+      $columnsPane.find('.flash').text(submitError)
+        .removeClass('warning notice')
+        .addClass('error');
     } else {
-      $paneLocal.find('.flash').empty().removeClass('warning notice error');
+      $columnsPane.find('.flash').empty().removeClass('warning notice error');
     }
   };
 
@@ -1545,7 +1534,7 @@
       addGuessedDatasetColumns();
     },
     onActivate: columnsPaneActivated,
-    onNext: function($paneLocal, state) {
+    onNext: function($appendReplacePane, state) {
       // as with import, double check here
       updateLines();
       if (!validateAll()) {
@@ -1573,7 +1562,7 @@
       addDefaultColumns();
     },
     onActivate: columnsPaneActivated,
-    onNext: function($paneLocal, state) {
+    onNext: function($importColumnsPane, state) {
       // just to be sure, process everything one last time.
       // browser dom events are finnicky
       updateLines();
@@ -1590,28 +1579,25 @@
 
   importNS.importShapefilePaneConfig = {
     uniform: true,
-    onInitialize: function($paneLocal, paneConfig, state, command) {
+    onInitialize: function($paneLocal, paneConfig, state) {
       // update global vars
       scan = state.scan;
       isShown = false;
-      wizardCommand = command;
       layers = scan.summary.layers;
-      $pane = $paneLocal;
-      $summary = $paneLocal.find('.shapeSummary');
-      $abbreviatedSummary = $paneLocal.find('.abbreviatedShapeSummary');
-      $layersList = $pane.find('.layersList');
-      $layerCount = $pane.find('.layerCount');
-      layerCount = scan.summary.layers.length;
+      var $summary = $paneLocal.find('.shapeSummary');
+      var $abbreviatedSummary = $paneLocal.find('.abbreviatedShapeSummary');
+      $layersList = $paneLocal.find('.layersList');
+      $layerCount = $paneLocal.find('.layerCount');
 
       // populate the dataset name field
-      $pane.find('.headline .fileName').text($.htmlEscape(state.fileName));
+      $paneLocal.find('.headline .fileName').text($.htmlEscape(state.fileName));
 
-      if (layerCount === 0) {
+      if (scan.summary.layers.length === 0) {
         $summary.hide();
       } else {
         $abbreviatedSummary.hide();
         // populate the summary data
-        $layerCount.text(layerCount);
+        $layerCount.text(scan.summary.layers.length);
 
         _.each(layers, function(layer, i) {
           layer.id = i;
@@ -1620,7 +1606,7 @@
           newLayerLine(layer);
         });
 
-        $pane.delegate('.layersList li input', 'change', function() {
+        $paneLocal.delegate('.layersList li input', 'change', function() {
           updateLayerLines($(this).closest('li.importLayer'));
         });
 
@@ -1633,7 +1619,7 @@
         $layersList.show();
       }
 
-      $pane.find('.pendingLayersMessage').hide();
+      $paneLocal.find('.pendingLayersMessage').hide();
 
       // we are now past the first init, so start animating things
       isShown = true;
@@ -1650,10 +1636,10 @@
           }).join('');
 
           $layersList.children('li').each(function(index) {
-            $(this).find('.layerReplaceDropdown').
-              attr('id', 'layerReplaceSelect_' + index).
-              append(options).
-              prop('selectedIndex', index + 1);
+            $(this).find('.layerReplaceDropdown')
+              .attr('id', 'layerReplaceSelect_' + index)
+              .append(options)
+              .prop('selectedIndex', index + 1);
           }).on('change', 'select.layerReplaceDropdown', function(event) {
             // make sure they don't select the same layer twice
             var $t = $(event.target),
@@ -1670,20 +1656,20 @@
           });
 
           $.uniform.update('select.layerReplaceDropdown');
-          $pane.addClass('childViewsLoaded');
+          $paneLocal.addClass('childViewsLoaded');
         });
       }
     },
-    onActivate: function($paneLocal) {
+    onActivate: function($importPane) {
       if (!$.isBlank(submitError)) {
-        $paneLocal.find('.flash').text(submitError).
-          removeClass('warning notice').
-          addClass('error');
+        $importPane.find('.flash').text(submitError)
+          .removeClass('warning notice')
+          .addClass('error');
       } else {
-        $paneLocal.find('.flash').empty().removeClass('warning notice error');
+        $importPane.find('.flash').empty().removeClass('warning notice error');
       }
     },
-    onNext: function($paneLocal, state) {
+    onNext: function($importPane, state) {
       updateLayerLines();
 
       state.importer = {};
@@ -1707,21 +1693,21 @@
 
   importNS.importingPaneConfig = {
     disableButtons: ['cancel', 'prev', 'next'],
-    onActivate: function($paneLocal, paneConfig, state, command) {
+    onActivate: function($importingPane, paneConfig, state, command) {
       // don't do anything here if we land here twice somehow
       if (state.importingActivated)
         return;
       state.importingActivated = true;
       submitError = null;
 
-      $paneLocal.loadingSpinner({
+      $importingPane.loadingSpinner({
         showInitially: true
       });
       if (!blist.feature_flags.notify_import_result) {
         // If the notify_import_result feature flag isn't set, make sure the working pane looks correct
-        $paneLocal.find('.notifyUploadComplete').hide();
-        $paneLocal.css('padding-bottom', '7em');
-        $paneLocal.find('.loadingSpinnerContainer').css('top', '70%');
+        $importingPane.find('.notifyUploadComplete').hide();
+        $importingPane.css('padding-bottom', '7em');
+        $importingPane.find('.loadingSpinnerContainer').css('top', '70%');
       }
 
       // let's figure out what to send to the server
@@ -1805,7 +1791,7 @@
       }
 
       // fire it all off. note that data is a form-encoded payload, not json.
-      $pane.find('.importStatus').empty();
+      $importingPane.find('.importStatus').empty();
 
       var dataPayload = {
         name: state.fileName,
@@ -1838,9 +1824,7 @@
       if (useDI2) {
         var promiseQueue = [];
 
-        if (isReimport) {
-          dataset = blist.importer.dataset;
-        } else {
+        if (!isReimport) {
 
           // Before we can DI2, we must create the view...
           promiseQueue.push(function() {
@@ -1854,9 +1838,9 @@
           });
 
           // ...and we must add the columns to that view.
-          promiseQueue.push(function(datasetLocal) {
+          promiseQueue.push(function(dataset) {
             // Adding the name to the file object for funsies.
-            datasetLocal.name = state.fileName;
+            dataset.name = state.fileName;
 
             var deferred = $.Deferred(); // eslint-disable-line new-cap
             $.serialPromiser(_.map(blueprint.columns, function(column, index) {
@@ -1868,15 +1852,15 @@
               return function() {
                 return $.socrataServer.makeRequestWithPromise({
                   type: 'post',
-                  url: '/views/' + datasetLocal.id + '/columns?nbe=true',
+                  url: '/views/' + dataset.id + '/columns?nbe=true',
                   data: JSON.stringify(colSpec)
                 }).then(function(columnData) {
                   // Adding column data to local object in order to save visibility later.
-                  datasetLocal.columns.push(columnData);
+                  dataset.columns.push(columnData);
                 });
               };
             })).then(function() {
-              deferred.resolve(datasetLocal);
+              deferred.resolve(dataset);
             }).fail(function() {
               deferred.reject();
             });
@@ -1884,10 +1868,10 @@
           });
         }
 
-        promiseQueue.push(function(datasetLocal) {
+        promiseQueue.push(function(dataset) {
           // A dataset should be passed in. If not, then this should
           // be an append, and the DS should be in blist.importer.
-          datasetLocal = datasetLocal || blist.importer.dataset;
+          dataset = dataset || blist.importer.dataset;
 
           // Bcuz core importer thinks skip:1 means 'header at line 0',
           // but delta importer thinks skip:1 means 'header at line 1'.
@@ -1977,12 +1961,21 @@
               var message = t('bytes_imported', {
                 num: p.bytes_uploaded
               });
-              $pane.find('.importStatus').text(message);
+              $importingPane.find('.importStatus').text(message);
             }
           });
         });
         $.serialPromiser(promiseQueue);
       } else {
+        var interpolator = new Interpolator(250); // eslint-disable-line no-undef
+        interpolator.addListener(function(rows) {
+          if (rows > 0) {
+            var message = t('rows_imported', {
+              num: rows
+            });
+            $importingPane.find('.importStatus').text(message);
+          }
+        });
         $.socrataServer.makeRequest({
           type: 'post',
           url: '/api/imports2.json?' + $.toParam(urlParams),
@@ -1993,6 +1986,7 @@
             state.submittedView = new Dataset(response);
             command.next($.subKeyDefined(state.submittedView, 'metadata.warnings') ?
               'importWarnings' : (isReimport ? 'finish' : 'metadata'));
+            interpolator.stop();
           },
           error: function(request) {
             setTimeout(function() {
@@ -2001,15 +1995,16 @@
                 JSON.parse(request.responseText).message;
               command.prev();
             }, 2000);
+            interpolator.stop();
           },
           pending: function(response) {
             if (blist.feature_flags.notify_import_result) {
-              var notifyButton = $pane.find('.notifyUploadButtonContainer a.setNotifyComplete');
+              var notifyButton = $importingPane.find('.notifyUploadButtonContainer a.setNotifyComplete');
               if (!notifyButton.data('handlerAdded')) {
-                $pane.find('.notifyUploadContainer').show();
+                $importingPane.find('.notifyUploadContainer').show();
                 notifyButton.click(function() {
-                  $pane.find('.notifyUploadError').hide();
-                  $pane.find('.notifyUploadThrobberContainer span.requestingNotify').show();
+                  $importingPane.find('.notifyUploadError').hide();
+                  $importingPane.find('.notifyUploadThrobberContainer span.requestingNotify').show();
                   $.socrataServer.makeRequest({
                     type: 'post',
                     contentType: 'application/json',
@@ -2020,13 +2015,13 @@
                       extraInfo: response.ticket
                     }),
                     success: function() {
-                      $pane.find('.notifyUploadThrobberContainer span.requestingNotify').hide();
-                      $pane.find('.notifyUploadContainer').hide();
-                      $pane.find('.notifyUploadError').hide();
-                      $pane.find('.notifyingUploadComplete').show();
+                      $importingPane.find('.notifyUploadThrobberContainer span.requestingNotify').hide();
+                      $importingPane.find('.notifyUploadContainer').hide();
+                      $importingPane.find('.notifyUploadError').hide();
+                      $importingPane.find('.notifyingUploadComplete').show();
                     },
                     error: function() {
-                      $pane.find('.notifyUploadError').show();
+                      $importingPane.find('.notifyUploadError').show();
                     }
                   });
                 });
@@ -2034,14 +2029,15 @@
               }
             }
             if ($.subKeyDefined(response, 'details.stage')) {
-              $pane.find('.importStatus').text(t(response.details.stage));
-            } else if ($.subKeyDefined(response, 'details.progress')) {
-              var message = t('rows_imported', {
-                num: response.details.progress
-              });
-              if ($.subKeyDefined(response, 'details.layer'))
-                message = t('layer') + '  ' + response.details.layer + ': ' + message;
-              $pane.find('.importStatus').text(message);
+              $importingPane.find('.importStatus').text(t(response.details.stage));
+            } else if ($.subKeyDefined(response, 'details.progress') && response.details.progress) {
+              if ($.subKeyDefined(response, 'details.progress')) {
+                interpolator.addEvent(response.details.progress);
+              }
+              if ($.subKeyDefined(response, 'details.layer')) {
+                var message = t('layer') + '  ' + response.details.layer + ': ' + message;
+                $importingPane.find('.importStatus').text(message);
+              }
             }
           }
         });
@@ -2050,7 +2046,7 @@
   };
 
   importNS.importWarningsPaneConfig = {
-    onActivate: function($paneLocal, paneConfig, state) {
+    onActivate: function($warningPane, paneConfig, state) {
       // pull off warnings and update the dataset to remove them
       var warnings = state.submittedView.metadata.warnings;
       var cleanedMetadata = $.extend({}, state.submittedView.metadata);
@@ -2060,7 +2056,7 @@
       });
       // don't worry about saving; that will happen when the user hits next on the metadata
 
-      var $importWarningsList = $paneLocal.find('.importWarningsList');
+      var $importWarningsList = $warningPane.find('.importWarningsList');
       _.each(warnings, function(warning) {
         $importWarningsList.append($.tag({
           tagName: 'li',
@@ -2070,11 +2066,11 @@
 
       state.hadWarnings = true; // so that the metadata pane knows to go back by 2
     },
-    onNext: function($paneLocal, state) {
+    onNext: function($warningPane, state) {
       return ((state.operation == 'append') || (state.operation == 'replace')) ?
         'finish' : 'metadata';
     },
-    onPrev: function($paneLocal, state) {
+    onPrev: function($warningPane, state) {
       if ((state.operation != 'append') && (state.operation != 'replace')) {
         state.submittedView.remove();
       }

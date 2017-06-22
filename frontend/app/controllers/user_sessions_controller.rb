@@ -170,35 +170,6 @@ class UserSessionsController < ApplicationController
   private
 
   ##
-  # Tests an Auth0 connection string for redirection eligibility.
-  # A client is redirected if:
-  # 1. The connection is present.
-  # 2. The client is making a fresh login attempt.
-  # 3. The redirect parameter is NOT set.
-  #
-  # Redirect can be overriden by using ?redirect=false.
-  def should_auth0_redirect?(connection)
-    connection_is_present = connection.present?
-    has_redirect_param = params.fetch(:redirect, false)
-    connection_is_present && !has_redirect_param
-  end
-
-  ##
-  # Tests an unknown variable with three requirements:
-  # 1. It is an array.
-  # 2. It is an array with hash maps.
-  # 3. Each hash map has two parameters: connection and a name OR buttonText.
-  def valid_auth0_connections?(connections)
-    connections.is_a?(Array) && connections.present? &&
-      connections.all? { |conn| conn[:connection].present? && (conn[:name].present? || conn[:buttonText].present?) }
-  end
-
-  def valid_auth0_forced_connections?(forced_connections)
-    forced_connections.is_a?(Array) && forced_connections.present? &&
-      forced_connections.all? { |conn| conn[:match].present? && conn[:connection].present? }
-  end
-
-  ##
   # Sets use_auth0 template variable.
   # Detects if automatic redirect is set and performs that redirect safely.
   #
@@ -208,7 +179,6 @@ class UserSessionsController < ApplicationController
     properties = CurrentDomain.configuration('auth0').try(:properties)
 
     if use_auth0? && properties.present?
-
       # Auth0 Redirection when auth0 configuration is set
       connection = properties.try(:auth0_always_redirect_connection)
       callback_uri = properties.try(:auth0_callback_uri) || "https://#{CurrentDomain.cname}/auth/auth0/callback"
@@ -218,35 +188,7 @@ class UserSessionsController < ApplicationController
         uri = generate_authorize_uri(connection, callback_uri)
         return redirect_to(uri)
       else
-
-        # If auth0 redirection is not possible/configured
-        # we send the auth0_connections to the template and render
-        # out appropriate buttons.
-
-        connections = properties.try(:auth0_connections)
-
-        if valid_auth0_connections?(connections)
-          @auth0_connections = connections
-        elsif connections.present?
-          error = "auth0_connections, #{connections}, has been specified incorrectly in the Auth0 configuration."
-
-          Rails.logger.error(error)
-          Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
-        end
-
-        forced_connections = properties.try(:auth0_forced_connections)
-
-        if valid_auth0_forced_connections?(forced_connections)
-          @auth0_forced_connections = forced_connections
-        elsif forced_connections.present?
-          error = "auth0_forced_connections, #{force_connections}, has been specified incorrectly in the Auth0 configuration."
-
-          Rails.logger.error(error)
-          Airbrake.notify(:error_class => 'UnexpectedInput', :error_message => error)
-        end
-
-        @auth0_message = properties.try(:auth0_message)
-        @auth0_form_message = properties.try(:auth0_form_message)
+        set_auth0_variables_from_config(properties)
       end
     end
   end

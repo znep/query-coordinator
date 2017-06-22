@@ -55,6 +55,6 @@ ProgressBar.propTypes = {
   ]),
   ariaLabel: PropTypes.string,
   ariaLabeledBy: PropTypes.string,
-  type: PropTypes.string,
+  type: PropTypes.oneOf(['success', 'error', 'inProgress', 'done']),
   className: PropTypes.string
 };

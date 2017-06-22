@@ -10,7 +10,7 @@ en:
         no_account: Don't have an account?
         password: Password
         password_requirements: 'Required. Your password must be between 8 and 40 characters and satisfy three of the following four criteria: contain a digit; contain a lowercase letter; contain an uppercase letter; contain a non-alphanumeric symbol.'
-        password_requirements_html: "<p>Your password must be <b>between 8 and 40 characters</b> and satisfy <b>three of the following four criteria</b>:</p><p></p><ul><li>&bull; contain a digit</li><li>&bull; contain a lowercase letter</li><li>&bull; contain an uppercase letter</li><li>&bull; contain a non-alphanumeric symbol</li></ul>"
+        password_requirements_html: "<p>Your password must be <b>between 8 and 40 characters</b> and satisfy <b>three of the following four criteria</b>:</p><p></p><ul><li>contain a digit</li><li>contain a lowercase letter</li><li>contain an uppercase letter</li><li>contain a non-alphanumeric symbol</li></ul>"
         password_restrictions: Restrictions apply
         remember_me: Remember me
         sign_up_prompt: Sign up now
@@ -680,6 +680,9 @@ en:
       external_content: External Content
       view: View
       views: Views
+    result_count_label:
+      one: Result
+      other: Results
   controls:
     nbe_column_manager:
       title: Manage Columns
@@ -1964,6 +1967,13 @@ en:
       percent_uploaded: "{0}% Uploaded"
       preview: Preview
       process_data: Process Data
+      publish_confirmation_usaid:
+        button: Done
+        private: Private
+        private_msg: Only accessible to people within your organization.
+        public: Public
+        public_msg: Publically accessible. Discoverable through the public catalog.
+        title: Choose your audience
       publish_confirmation:
         body: It will be accessible to anyone through your data catalog.
         button: Publish Now
@@ -1976,7 +1986,7 @@ en:
         publish_dataset: Publish Dataset
       publish_modal:
         failure:
-          body: Our site is having trouble right now, please wait and try again.
+          body: Our site is having trouble right now. Please wait and try again.
           title: Something went wrong with publishing your data
         publishing:
           body: It's safe to close your browser.  The progress will not be interrupted.
@@ -1985,6 +1995,14 @@ en:
           body: You can't currently make any more changes from here.
           title: This dataset is published
         to_primer: Go to Primer
+        progress_messages:
+          initializing: Initializing
+          creating_columns: Creating columns
+          upserting: Importing data
+          finishing: Finishing
+          successful: Successful
+          failure: Failure
+          done: Done
       publishing_data_is_easy_and_fun: You'll be publishing data in no time.
       required: Required
       review_data: Review Data
@@ -2005,7 +2023,7 @@ en:
         visualize: Visualize
         visualize_blurb: Visualize your data and explore relationships.
         visualize_button: Create New...
-      supported_uploads: 'Supported file types: .csv, .tsv, .xls, .xlsx'
+      supported_uploads: 'Supported file types:'
       table_preview: Table Preview
       upload_done: Upload Done
       uploading: Uploading {filename}...
@@ -2058,6 +2076,7 @@ en:
       connection_error_body_advice: Check your internet connection and make sure to keep your browser window open while the file is uploading.
       connection_error_body_description: Something went wrong when trying to upload the file {0}.
       connection_error_title: Lost Connection
+      error: Error
       hide_details: Hide Details
       import_failed: Import Failed.
       processing: Processing data
@@ -2692,10 +2711,26 @@ en:
       submit: Save %{model}
       update: Update %{model}
   internal_asset_manager:
+    asset_types:
+      blob: File or Document
+      calendar: Calendar
+      chart: Chart
+      datalens: Data Lens
+      dataset: Dataset
+      draft: Draft Dataset
+      filter: Filtered View
+      file: File or Document
+      form: Form
+      href: External Dataset
+      map: Map
+      new_view: Data Lens
+      pulse: Pulse
+      story: Story
     errors:
       fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.
     filters:
+      clear: Clear All Filters
       asset_types:
         label: Asset Types
         options:
@@ -2739,7 +2774,7 @@ en:
         label: Owned By
         placeholder: Any Owner
       recently_viewed:
-        label: Only my recently viewed
+        label: Recently viewed
       searchbox_filter:
         all: All
       tags:
@@ -2756,9 +2791,18 @@ en:
         charts:
           one: Chart
           other: Charts
+        datalenses:
+          one: Data Lens
+          other: Data Lenses
         datasets:
           one: Dataset
           other: Datasets
+        filters:
+          one: Filtered View
+          other: Filtered Views
+        hrefs:
+          one: External Dataset
+          other: External Datasets
         maps:
           one: Map
           other: Maps
@@ -2781,47 +2825,36 @@ en:
         transfer_ownership: Transfer Ownership...
         delete_asset: Delete...
       action_modal:
-        add_collaborators:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
-        edit_metadata:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
         change_visibility:
-          header: TODO
-          description: TODO
-          accept: TODO
+          accept: OK
+          can_not_change_visibility:
+            Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Open.
           dismiss: Cancel
-          error: TODO
-        change_permissions:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
-        transfer_ownership:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
+          error: Sorry, there was an error changing visibility for this asset. Please refresh and try again or contact support@socrata.com if it continues.
+          options:
+            open:
+              title: Open
+              description: Publicly accessible. Discoverable through the public catalog.
+            private:
+              title: Private
+              description: Only accessible to people within your organization.
+          title: Choose Visibility
         delete_asset:
-          header: Delete?
-          description: Are you sure you want to delete this asset?
           accept: Delete
+          chart: chart
+          description: Are you sure you want to delete %{name}?
+          description_related_assets: '%{count} related assets built using this dataset will also be deleted permanently.'
+          description_chart_map: This is a %{assetType} based on another dataset. The related dataset will not be deleted.
           dismiss: Cancel
           error: Sorry, there was an error deleting this asset. Please refresh and try again or contact support@socrata.com if it continues.
+          map: map
+          title: Delete?
       columns:
         access_level: Access Level
+        actions: Actions
         category: Category
         discoverable: Discoverable
-        last_updated_date: Last Updated Date
+        last_updated_date: Last Updated
         name: Name
         owner: Owner
         type: Type
@@ -3141,8 +3174,8 @@ en:
           tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact Socrata Support.
         description: List the assets on this domain and configure the layout of the dataset page
         internal_asset_manager_beta:
-          header: Preview our new Asset Management experience!
-          preview: Preview...
+          preview_message: We're redesigning the Asset Management experience!
+          preview: Click here to preview the new experience.
         layout_config: Layout Configuration
         left: Left
         right: Right
@@ -3346,6 +3379,7 @@ en:
         cancel: Cancel
         close: Close
         empty_message: Your site doesn't have any activity yet. <a href="%{new_dataset_url}">Create a dataset</a> to get started.
+        empty_message_filtered: There are no activities to display.
         columns:
           asset_type: Asset Type
           asset_name: Asset Name
@@ -3953,6 +3987,7 @@ en:
         link_menu_label_html: "<b>Menu</b> - <i>You can drag links to reorder them</i>"
         move_link_row: Drag to reorder
         ok: OK
+        only_visible_to_superadmins: Only visible to superadmins
         preview: Preview
         preview_changes: Preview Changes
         preview_failure: Sorry, there was an error saving your Preview data. Please refresh and try again, or notify support if this problem persists.
@@ -3960,6 +3995,7 @@ en:
         remove_link_row: Remove Link
         save: Save
         save_changes: Save Changes
+        save_without_activation: Save Without Activation
         see_both_features: See both features in action by visiting one of your datasets.
         site_appearance: Site Appearance
         tabs:
@@ -5783,6 +5819,9 @@ en:
         sign_in_button: Sign In
       headline: Sign In to %{site}
       mismatch: Passwords do not match. Please try again.
+      modal_default_accept: Accept
+      modal_default_cancel: Decline
+      modal_default_header: Notice
       new_login_message: <strong>Important!</strong> Login and signup will have a new look soon, learn more <a href="https://support.socrata.com/hc/en-us/articles/226005288" target="_blank" style="text-decoration&#58; underline;">here</a>
       no_username_password_login: Attempted to login in an unauthorized way, please contact support.
       prompt_html: Sign in with your <strong>Socrata ID</strong>.

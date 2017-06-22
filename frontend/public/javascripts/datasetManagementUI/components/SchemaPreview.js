@@ -4,26 +4,29 @@ import { Link } from 'react-router';
 import * as Links from '../links';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
 import { columnsForOutputSchema } from '../selectors';
-import { soqlProperties } from '../lib/soqlTypes';
 import _ from 'lodash';
 import styles from 'styles/SchemaPreview.scss';
 
-function mapStateToProps({ db }) {
+function mapStateToProps({ entities }) {
   // TODO: how do we know which is the correct input schema to show?
   // how do we know which is the correct output schema to show?
 
   // TODO: this is awfully slow because the DB is arrays not keyed by id
-  const latestOutputSchema = _.reduce(db.output_schemas || [], (acc, os) => {
-    if (!acc) return os;
-    if (os.id > acc.id) return os;
-    return acc;
-  }, null);
+  const latestOutputSchema = _.reduce(
+    entities.output_schemas || [],
+    (acc, os) => {
+      if (!acc) return os;
+      if (os.id > acc.id) return os;
+      return acc;
+    },
+    null
+  );
 
   if (latestOutputSchema) {
-    const columns = columnsForOutputSchema(db, latestOutputSchema.id).map((column) => {
-      const transform = db.transforms[column.transform_id];
+    const columns = columnsForOutputSchema(entities, latestOutputSchema.id).map(column => {
+      const transform = entities.transforms[column.transform_id];
       return {
-        dataTypeName: transform && soqlProperties[transform.output_soql_type].canonicalName,
+        dataTypeName: transform && transform.output_soql_type,
         description: column.description,
         fieldName: column.field_name,
         name: column.display_name
@@ -34,9 +37,7 @@ function mapStateToProps({ db }) {
       columns,
       headerButton: (
         <Link className={styles.btnWrapper} to={Links.columnMetadataForm()}>
-          <button
-            className={styles.schemaBtn}
-            tabIndex="-1">
+          <button className={styles.schemaBtn} tabIndex="-1">
             {I18n.home_pane.column_metadata_manage_button}
           </button>
         </Link>

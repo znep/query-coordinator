@@ -1,74 +1,79 @@
 import { expect, assert } from 'chai';
 import RowDetails from 'components/RowDetails';
-import { getDefaultStore } from '../testStore';
-import { upsertFromServer } from 'actions/database';
+import rootReducer from 'reducers/rootReducer';
+import { applyMiddleware, createStore } from 'redux';
+import configureStore from 'redux-mock-store';
+import { bootstrapApp } from 'actions/bootstrap';
+import thunk from 'redux-thunk';
+import wsmock from '../testHelpers/mockSocket';
+import dotProp from 'dot-prop-immutable';
 
 describe('RowDetails', () => {
+  let unmockWS;
+  let store;
+
+  before(() => {
+    unmockWS = wsmock();
+  });
+
+  after(() => {
+    unmockWS.stop();
+  });
+
+  beforeEach(() => {
+    store = createStore(rootReducer, applyMiddleware(thunk));
+    store.dispatch(
+      bootstrapApp(
+        window.initialState.view,
+        window.initialState.revision,
+        window.initialState.customMetadata
+      )
+    );
+  });
 
   it('renders when there is no output schema', () => {
-    const store = getDefaultStore();
-    const element = renderComponentWithStore(RowDetails, {}, store);
-
+    const stateWithoutOS = dotProp.set(
+      store.getState(),
+      'entities.output_schemas',
+      {}
+    );
+    const newStore = createStore(
+      rootReducer,
+      stateWithoutOS,
+      applyMiddleware(thunk)
+    );
+    const element = renderComponentWithStore(RowDetails, {}, newStore);
     assert.isNotNull(element);
   });
 
   it('renders when there is an output schema, but transforms have no rows yet', () => {
-    const store = getDefaultStore();
-    store.dispatch(upsertFromServer('uploads', { id: 1 }));
-    store.dispatch(upsertFromServer('input_schemas', { id: 1, upload_id: 1 }));
-    store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 1 }));
-    store.dispatch(upsertFromServer('output_schema_columns', {
-      output_schema_id: 1,
-      output_column_id: 1
-    }));
-    store.dispatch(upsertFromServer('output_columns', {
-      position: 0,
-      id: 1,
-      field_name: 'Address',
-      display_name: 'Address',
-      description: null,
-      transform_id: 620,
-      __status__: {
-        type: 'SAVED',
-        savedAt: 'ON_SERVER'
-      }
-    }));
-    store.dispatch(upsertFromServer('transforms', {
-      id: 620,
-      output_soql_type: 'text'
-    }));
-    const element = renderComponentWithStore(RowDetails, {}, store);
+    const transforms = store.getState().entities.transforms;
+
+    const updatedTransforms = Object.keys(transforms).reduce(
+      (acc, tid) => ({
+        ...acc,
+        [tid]: {
+          id: tid,
+          output_soql_type: transforms[tid].output_soql_type
+        }
+      }),
+      {}
+    );
+
+    const stateWithUpdatedTransforms = dotProp.set(
+      store.getState(),
+      'entities.transforms',
+      updatedTransforms
+    );
+
+    const newStore = createStore(
+      rootReducer,
+      stateWithUpdatedTransforms,
+      applyMiddleware(thunk)
+    );
+
+    const element = renderComponentWithStore(RowDetails, {}, newStore);
+
     assert.isNotNull(element);
   });
-
-  it('renders when there is an output schema, but transforms have no rows yet', () => {
-    const store = getDefaultStore();
-    store.dispatch(upsertFromServer('uploads', { id: 1 }));
-    store.dispatch(upsertFromServer('input_schemas', { id: 1, upload_id: 1 }));
-    store.dispatch(upsertFromServer('output_schemas', { id: 1, input_schema_id: 1 }));
-    store.dispatch(upsertFromServer('output_schema_columns', {
-      output_schema_id: 1,
-      output_column_id: 1
-    }));
-    store.dispatch(upsertFromServer('output_columns', {
-      position: 0,
-      id: 1,
-      field_name: 'Address',
-      display_name: 'Address',
-      description: null,
-      transform_id: 620,
-      __status__: {
-        type: 'SAVED',
-        savedAt: 'ON_SERVER'
-      }
-    }));
-    store.dispatch(upsertFromServer('transforms', {
-      id: 620,
-      output_soql_type: 'text',
-      contiguous_rows_processed: 15
-    }));
-    const element = renderComponentWithStore(RowDetails, {}, store);
-    assert.isNotNull(element);
-  });
-
 });

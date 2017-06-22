@@ -1,3 +1,5 @@
+import RegionCodingProvider from './RegionCodingProvider';
+
 var CustomColorPaletteManager = require('./CustomColorPaletteManager');
 var GeospaceDataProvider = require('./GeospaceDataProvider');
 var MetadataProvider = require('./MetadataProvider');
@@ -11,6 +13,7 @@ module.exports = {
   CustomColorPaletteManager,
   GeospaceDataProvider,
   MetadataProvider,
+  RegionCodingProvider,
   SampleDataProvider,
   SoqlDataProvider,
   SoqlHelpers,

@@ -30,7 +30,11 @@ table.result-list-table {
           width: 600px;
         }
 
-        &.visibility {
+        &.last-updated-date {
+          width: 9rem;
+        }
+
+        &.visibility, &.actions {
           cursor: not-allowed;
         }
 
@@ -74,10 +78,23 @@ table.result-list-table {
       &.name {
         a {
           text-decoration: none;
+          &:hover, &:focus {
+            text-decoration: underline;
+          }
         }
 
         span.name {
           font-size: 15px;
+        }
+
+        span.tag-official, span.tag-community {
+          margin-left: 14px;
+          font-size: 22px;
+
+          span[class*='socrata-icon-'] {
+            position: relative;
+            top: 4px; // The icons are not exactly the same height :/
+          }
         }
 
         span.description {

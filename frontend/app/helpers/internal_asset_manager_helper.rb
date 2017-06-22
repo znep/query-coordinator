@@ -25,7 +25,8 @@ module InternalAssetManagerHelper
 
   def render_internal_asset_manager_server_config
     feature_flags = FeatureFlags.derive(nil, request).slice(
-      # TODO: need any flags?
+      :disable_authority_badge,
+      :enable_internal_asset_manager_my_assets
     )
 
     server_config = {
@@ -69,7 +70,7 @@ module InternalAssetManagerHelper
   # Defines the default order of the columns for the internal asset manager table.
   # Eventually this will be configurable on a per-user basis.
   def internal_asset_manager_table_columns
-    %w(type name lastUpdatedDate category owner visibility)
+    %w(type name actions lastUpdatedDate category owner visibility)
   end
 
 end

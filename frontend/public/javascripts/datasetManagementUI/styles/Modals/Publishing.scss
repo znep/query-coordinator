@@ -59,6 +59,13 @@
 .progressBarContainer {
   height: 10px;
   width: 375px;
-  margin: -10px auto 45px;
+  margin: -10px auto 20px;
   background-color: $light-grey-4;
+}
+
+.statusMessage {
+  margin-top: -10px; // lol
+  padding-bottom: 30px;
+  font-style: italic;
+  font-size: 12px;
 }

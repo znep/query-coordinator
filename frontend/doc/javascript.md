@@ -91,7 +91,7 @@ subset of the webpack bundles, which will speed up compilation and use less memo
 of webpack bundles separated by commas:
 
 ```
-export FRONTEND_WEBPACK_BUNDLES='import-wizard,data-lens'
+export FRONTEND_WEBPACK_BUNDLES='dataset-management-ui,data-lens'
 ```
 
 For a list of webpack bundles, run this command from the root of the frontend repository:

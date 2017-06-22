@@ -95,4 +95,97 @@ describe Auth0Helper do
     end
   end
 
+  context 'auth0 config' do
+    it 'gets config values from config' do
+      auth0_connections = []
+      auth0_connections.push("name"=>"Test", "connection"=>"some-test-connection")
+
+      auth0_forced_connections = []
+      auth0_forced_connections.push("match"=>"^.*\\.[cC][tT][rR]@some\\.gov$","connection"=>"some-gov-connection")
+
+      auth0_modal_config = {"text"=>"This is a government system. Don’t do bad things."}
+
+      auth0_message = "Some message"
+      auth0_form_message = "Another message"
+
+      config = Hashie::Mash.new(
+        auth0_connections: auth0_connections,
+        auth0_forced_connections: auth0_forced_connections,
+        auth0_modal_config: auth0_modal_config,
+        auth0_message: auth0_message,
+        auth0_form_message: auth0_form_message
+      )
+
+      set_auth0_variables_from_config(config)
+
+      expect(@auth0_connections).to eq(auth0_connections)
+      expect(@auth0_forced_connections).to eq(auth0_forced_connections)
+      expect(@auth0_modal_config).to eq(auth0_modal_config)
+      expect(@auth0_message).to eq(auth0_message)
+      expect(@auth0_form_message).to eq(auth0_form_message)
+    end
+
+    it 'does nothing with empty config' do
+      set_auth0_variables_from_config(nil)
+
+      expect(@auth0_connections).to be_nil
+      expect(@auth0_forced_connections).to be_nil
+      expect(@auth0_modal_config).to be_nil
+      expect(@auth0_message).to be_nil
+      expect(@auth0_form_message).to be_nil
+    end
+
+    it 'properly validates auth0_connections' do
+      # valid
+      auth0_connections = []
+      auth0_connections.push(:name => "Test", :connection => "some-test-connection")
+      expect(valid_auth0_connections?(auth0_connections)).to be true
+
+      # must be an array
+      auth0_connections = {:name => "Test", :connection =>"some-test-connection"}
+      expect(valid_auth0_connections?(auth0_connections)).to be false
+
+      # must have name
+      auth0_connections = []
+      auth0_connections.push(:connection => "some-test-connection")
+      expect(valid_auth0_connections?(auth0_connections)).to be false
+
+      # must have connection
+      auth0_connections = []
+      auth0_connections.push(:name =>"Test")
+      expect(valid_auth0_connections?(auth0_connections)).to be false
+    end
+
+    it 'properly validates auth0_forced_connections' do
+      # valid
+      auth0_forced_connections = []
+      auth0_forced_connections.push(:match => "^.*\\.[cC][tT][rR]@some\\.gov$", :connection => "some-gov-connection")
+      expect(valid_auth0_forced_connections?(auth0_forced_connections)).to be true
+
+      # must be an array
+      auth0_forced_connections = {:match => "^.*\\.[cC][tT][rR]@some\\.gov$", :connection => "some-gov-connection"}
+      expect(valid_auth0_forced_connections?(auth0_forced_connections)).to be false
+
+      # must have match
+      auth0_forced_connections = []
+      auth0_forced_connections.push(:connection => "some-gov-connection")
+      expect(valid_auth0_forced_connections?(auth0_forced_connections)).to be false
+
+      # must have connection
+      auth0_forced_connections = []
+      auth0_forced_connections.push(:match => "^.*\\.[cC][tT][rR]@some\\.gov$")
+      expect(valid_auth0_forced_connections?(auth0_forced_connections)).to be false
+    end
+
+    it 'properly validates auth0_modal_config' do
+      # valid
+      auth0_modal_config = {:text => "This is a government system. Don’t do bad things."}
+      expect(valid_auth0_modal_config?(auth0_modal_config)).to be true
+
+      # must have text
+      auth0_modal_config = {}
+      expect(valid_auth0_modal_config?(auth0_modal_config)).to be false
+    end
+  end
+
 end

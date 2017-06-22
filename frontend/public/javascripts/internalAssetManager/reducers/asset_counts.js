@@ -3,7 +3,10 @@ import _ from 'lodash';
 const getInitialState = () => _.get(window, 'initialState.assetCounts', {
   values: {
     charts: 0,
+    datalenses: 0,
     datasets: 0,
+    filters: 0,
+    hrefs: 0,
     maps: 0,
     stories: 0
   },
@@ -26,7 +29,10 @@ export default (state, action) => {
       ...state,
       values: {
         charts: getCountForAssetType('chart'),
+        datalenses: getCountForAssetType('datalens'),
         datasets: getCountForAssetType('dataset'),
+        filters: getCountForAssetType('filter'),
+        hrefs: getCountForAssetType('href'),
         maps: getCountForAssetType('map'),
         stories: getCountForAssetType('story')
       }

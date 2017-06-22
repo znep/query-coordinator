@@ -19,17 +19,16 @@ import SocrataIcon from '../../common/components/SocrataIcon';
 import ErrorPointer from 'components/Table/ErrorPointer';
 import styles from 'styles/ShowOutputSchema.scss';
 
-function query(db, uploadId, inputSchemaId, outputSchemaIdStr) {
+function query(entities, uploadId, inputSchemaId, outputSchemaIdStr) {
   const outputSchemaId = _.toNumber(outputSchemaIdStr);
-  const upload = db.uploads[_.toNumber(uploadId)];
-  const inputSchema = db.input_schemas[_.toNumber(inputSchemaId)];
-  const outputSchema = db.output_schemas[outputSchemaId];
+  const upload = entities.uploads[_.toNumber(uploadId)];
+  const inputSchema = entities.input_schemas[_.toNumber(inputSchemaId)];
+  const outputSchema = entities.output_schemas[outputSchemaId];
 
-  const columns = Selectors.columnsForOutputSchema(db, outputSchemaId);
+  const columns = Selectors.columnsForOutputSchema(entities, outputSchemaId);
   const canApplyRevision = Selectors.allTransformsDone(columns, inputSchema);
 
   return {
-    db,
     upload,
     inputSchema,
     outputSchema,
@@ -42,7 +41,6 @@ const COL_WIDTH_PX = 250; // matches style on td in Table.scss
 const ERROR_SCROLL_DURATION_MS = 1000;
 
 export class ShowOutputSchema extends Component {
-
   constructor() {
     super();
     _.bindAll(this, ['setSize', 'scrollToColIdx']);
@@ -110,7 +108,7 @@ export class ShowOutputSchema extends Component {
   errorSumAndFirstColWithErrors(columns) {
     let firstColWithErrors = null;
     let errorSum = 0;
-    columns.forEach((col) => {
+    columns.forEach(col => {
       const numErrors = col.transform.num_transform_errors || 0;
       errorSum += numErrors;
       if (firstColWithErrors === null && numErrors > 0) {
@@ -125,7 +123,7 @@ export class ShowOutputSchema extends Component {
 
   scrollToColIdx(idx) {
     const offset = this.colIdxToOffset(idx);
-    interpolate(this.tableWrap.scrollLeft, offset, ERROR_SCROLL_DURATION_MS, easeInOutQuad, (pos) => {
+    interpolate(this.tableWrap.scrollLeft, offset, ERROR_SCROLL_DURATION_MS, easeInOutQuad, pos => {
       this.tableWrap.scrollLeft = pos;
     });
   }
@@ -142,7 +140,6 @@ export class ShowOutputSchema extends Component {
 
   render() {
     const {
-      db,
       upload,
       inputSchema,
       outputSchema,
@@ -169,7 +166,7 @@ export class ShowOutputSchema extends Component {
       title: (
         <ol className={styles.list}>
           <li>
-              {I18n.home_pane.data}
+            {I18n.home_pane.data}
             <SocrataIcon name="arrow-right" className={styles.icon} />
           </li>
           <li className={styles.active}>
@@ -200,9 +197,9 @@ export class ShowOutputSchema extends Component {
               <div className={styles.datasetAttribute}>
                 <div className={styles.datasetAttribute}>
                   <p>{I18n.data_preview.rows}</p>
-                  <p
-                    className={styles.attribute}
-                    data-cheetah-hook="total-rows-transformed">{commaify(rowsTransformed)}</p>
+                  <p className={styles.attribute} data-cheetah-hook="total-rows-transformed">
+                    {commaify(rowsTransformed)}
+                  </p>
                 </div>
                 <div className={styles.datasetAttribute}>
                   <p>{I18n.data_preview.columns}</p>
@@ -215,9 +212,10 @@ export class ShowOutputSchema extends Component {
               <div
                 className={styles.tableWrap}
                 onScroll={this.throttledSetSize}
-                ref={(tableWrap) => { this.tableWrap = tableWrap; }}>
+                ref={tableWrap => {
+                  this.tableWrap = tableWrap;
+                }}>
                 <Table
-                  db={db}
                   path={path}
                   columns={columns}
                   inputSchema={inputSchema}
@@ -235,21 +233,15 @@ export class ShowOutputSchema extends Component {
                   direction="right"
                   scrollToColIdx={this.scrollToColIdx} />}
             </div>
-            <PagerBar
-              path={path}
-              routing={routing}
-              displayState={displayState} />
+            <PagerBar path={path} routing={routing} displayState={displayState} />
           </ModalContent>
 
           <ModalFooter>
-            {canApplyRevision ?
-              <ReadyToImport /> :
-              <div />}
+            {canApplyRevision ? <ReadyToImport /> : <div />}
 
             <div>
               <Link to={Links.home}>
-                <button
-                  className={styles.saveBtn}>
+                <button className={styles.saveBtn}>
                   {I18n.home_pane.save_for_later}
                 </button>
               </Link>
@@ -262,7 +254,6 @@ export class ShowOutputSchema extends Component {
 }
 
 ShowOutputSchema.propTypes = {
-  db: PropTypes.object.isRequired,
   upload: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   inputSchema: PropTypes.object.isRequired,
@@ -278,17 +269,17 @@ ShowOutputSchema.propTypes = {
   })
 };
 
-function mapStateToProps(state, ownProps) {
+export function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
   const queryResults = query(
-    state.db,
+    state.entities,
     _.toNumber(params.uploadId),
     _.toNumber(params.inputSchemaId),
     _.toNumber(params.outputSchemaId)
   );
   return {
     ...queryResults,
-    numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.apiCalls),
+    numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.ui.apiCalls),
     displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
     routing: ownProps.location,
     urlParams: ownProps.params

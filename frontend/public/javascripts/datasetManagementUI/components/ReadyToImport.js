@@ -8,17 +8,18 @@ import styles from 'styles/ReadyToImport.scss';
 
 const SubI18n = I18n.show_output_schema.ready_to_import;
 
-const ErrorButton = ({ disabled }) =>
+const ErrorButton = ({ disabled }) => (
   <button className={styles.errorsBtn} disabled={disabled}>
     {I18n.export_errors}{' '}
     <SocrataIcon name="download" />
-  </button>;
+  </button>
+);
 
 ErrorButton.propTypes = {
   disabled: PropTypes.bool
 };
 
-export const ReadyToImport = (props) => {
+export const ReadyToImport = props => {
   const { upload, inputSchema, importableRows, errorRows, outputSchema, openModal } = props;
 
   if (!outputSchema) {
@@ -36,9 +37,7 @@ export const ReadyToImport = (props) => {
       </a>
     );
   } else {
-    errorExportButton = (
-      <ErrorButton disabled />
-    );
+    errorExportButton = <ErrorButton disabled />;
   }
 
   return (
@@ -53,9 +52,7 @@ export const ReadyToImport = (props) => {
         <span data-cheetah-hook="error-rows" className={styles.errorRows}>{commaify(errorRows)}</span>
       </p>
       {/* TODO: add flyout to help icon*/}
-      <span
-        className={styles.helpModalIcon}
-        onClick={() => openModal('ErrorsHelp')}></span>
+      <span className={styles.helpModalIcon} onClick={() => openModal('ErrorsHelp')} />
       {errorExportButton}
     </div>
   );
@@ -70,13 +67,13 @@ ReadyToImport.propTypes = {
   openModal: PropTypes.func
 };
 
-const mapStateToProps = ({ db, routing }) => {
-  const { outputSchemaId } = routing;
+const mapStateToProps = ({ entities, ui }) => {
+  const { outputSchemaId } = ui.routing;
 
   if (outputSchemaId) {
-    const outputSchema = db.output_schemas[outputSchemaId];
-    const inputSchema = db.input_schemas[outputSchema.input_schema_id];
-    const upload = db.uploads[inputSchema.upload_id];
+    const outputSchema = entities.output_schemas[outputSchemaId];
+    const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
+    const upload = entities.uploads[inputSchema.upload_id];
     const errorRows = outputSchema.error_count || 0;
     const importableRows = Math.max(0, inputSchema.total_rows - errorRows);
 
@@ -92,7 +89,7 @@ const mapStateToProps = ({ db, routing }) => {
   }
 };
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   openModal: componentName => dispatch(showModal(componentName))
 });
 

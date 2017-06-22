@@ -20,6 +20,10 @@ window.initialState = {
   filters: []
 };
 
+// Set up Mixpanel.
+window.sessionData = {};
+window.mixpanelConfig = {disable: true};
+
 // This needs to happen after setting all of the mock window data.
 var getDefaultStore = require('testStore').getDefaultStore;
 

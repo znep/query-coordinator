@@ -6,8 +6,8 @@ import TypeIcon from '../TypeIcon';
 import { soqlTypes, soqlProperties } from '../../lib/soqlTypes';
 import * as Links from '../../links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from 'styles/Table/ColumnHeader.scss';
 import { Dropdown } from 'common/components';
+import styles from 'styles/Table/ColumnHeader.scss';
 
 const Translations = I18n.show_output_schema.column_header;
 
@@ -88,7 +88,7 @@ class ColumnHeader extends Component {
   }
 
   columnType() {
-    return soqlProperties[this.props.column.transform.output_soql_type].canonicalName;
+    return this.props.column.transform.output_soql_type;
   }
 
   icon(isDisabled) {

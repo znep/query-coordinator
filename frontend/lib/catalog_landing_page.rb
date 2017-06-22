@@ -24,7 +24,11 @@ class CatalogLandingPage
   # True if there is a blacklisted param in the request that has a present value.
   # This is because clearing the searchbar can result in `?q=` leftover.
   def self.blacklisted_param_present?(request)
-    request.params.slice(*PARAMS_BLACKLIST).values.presence.to_a.any?(&:present?)
+    request.params.slice(*PARAMS_BLACKLIST).values.map(&method(:sanitize_utf8)).presence.to_a.any?(&:present?)
+  end
+
+  def self.sanitize_utf8(value)
+    value.encode!('UTF-8', 'UTF-8', invalid: :replace, undef: :replace, replace: '')
   end
 
   def self.may_activate?(request)

@@ -961,12 +961,44 @@ describe('SoqlDataProvider', () => {
       assert.match(url, /select.+max/);
     });
 
-    it('fetches stats for calendar_type columns', () => {
+    it('fetches stats for number column from core metadata if available', () => {
+      soqlDataProvider.getColumnStats([{
+        dataTypeName: 'number',
+        cachedContents: {
+          smallest: 1,
+          largest: 10
+        }
+      }]).then(
+        (stats) => {
+          assert.equal(stats[0].rangeMin, 1);
+          assert.equal(stats[0].rangeMax, 10);
+        }
+      );
+      assert.lengthOf(server.requests, 0);
+    });
+
+    it('fetches stats for calendar_date columns', () => {
       soqlDataProvider.getColumnStats([calendarDateColumn]);
       const { url } = server.requests[0];
       assert.lengthOf(server.requests, 1);
       assert.match(url, /select.+min/);
       assert.match(url, /select.+max/);
+    });
+
+    it('fetches stats for calendar_date column from core metadata if available', () => {
+      soqlDataProvider.getColumnStats([{
+        dataTypeName: 'calendar_date',
+        cachedContents: {
+          smallest: '2017-01-31T00:00:00',
+          largest: '2019-12-31T00:00:00'
+        }
+      }]).then(
+        (stats) => {
+          assert.equal(stats[0].rangeMin, '2017-01-31T00:00:00');
+          assert.equal(stats[0].rangeMax, '2019-12-31T00:00:00');
+        }
+      );
+      assert.lengthOf(server.requests, 0);
     });
 
     it('fetches stats for text columns', () => {
@@ -976,7 +1008,22 @@ describe('SoqlDataProvider', () => {
       assert.match(url, /select.+count/);
     });
 
-    it('only fetches stats for number, calendar_type, and text columns', () => {
+    it('fetches stats for text column from core metadata if available', () => {
+      soqlDataProvider.getColumnStats([{
+        dataTypeName: 'text',
+        cachedContents: {
+          top: [{item: 'best', count: 10}]
+        }
+      }]).then(
+        (stats) => {
+          assert.equal(stats[0].top, [{item: 'best', count: 10}]);
+        }
+      );
+      assert.lengthOf(server.requests, 0);
+    });
+
+
+    it('only fetches stats for number, calendar_date, and text columns', () => {
       soqlDataProvider.getColumnStats([textColumn, numberColumn, textColumn, calendarDateColumn, fakeColumn]);
       assert.lengthOf(server.requests, 4);
     });

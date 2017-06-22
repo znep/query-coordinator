@@ -9,7 +9,7 @@ export const channelJoinStarted = (channelName, channel) => ({
 
 export function joinChannel(channelName, handlers) {
   return (dispatch, getState) => {
-    const joinedChannels = getState().channels;
+    const joinedChannels = getState().ui.channels;
     if (joinedChannels[channelName]) {
       return;
     }
@@ -18,11 +18,12 @@ export function joinChannel(channelName, handlers) {
     _.forEach(handlers, (handler, eventName) => {
       channel.on(eventName, handler);
     });
-    channel.join().
-      receive('ok', (response) => {
+    channel
+      .join()
+      .receive('ok', response => {
         console.log(`successfully joined ${channelName}:`, response);
-      }).
-      receive('error', (error) => {
+      })
+      .receive('error', error => {
         console.log(`failed to join ${channelName}:`, error);
       });
   };

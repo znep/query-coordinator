@@ -54,7 +54,7 @@ data_lens_config:
   known_properties:
   - choropleth_custom_boundary
 dataslate_config:
-  description: Configuration for Dataslate pages, intended for direct manipulation by CS developers to configure how the platform should render Dataslate pages.
+  description: 'Configuration for Dataslate pages, intended for direct manipulation by CS developers to configure how the platform should render Dataslate pages. Note: `prevent_platform_styling` expects an array of RegExp strings matching the page paths you want to prevent styling on.'
   known_properties:
   - prevent_platform_styling
 email_interests:

@@ -16,36 +16,51 @@ import * as Actions from '../actions/manageUploads';
 import * as ApplyRevision from '../actions/applyRevision';
 import styles from 'styles/ShowRevision.scss';
 
-const noDataYetView = (createUpload) =>
-  <div className={styles.tableInfo}>
-    <h3 className={styles.previewAreaHeader}>
-      {I18n.home_pane.no_data_yet}
-    </h3>
-    <p>
-      {I18n.home_pane.adding_data_is_easy_and_fun}
-    </p>
+const enabledFileExtensions = _.compact([
+  '.csv',
+  '.tsv',
+  '.xls',
+  '.xlsx',
+  window.serverConfig.featureFlags.datasetManagementUiEnableShapefileUpload ? '.zip' : null
+]);
 
-    <label
-      id="upload-label"
-      className={styles.uploadButton}
-      htmlFor="file">
-      {I18n.manage_uploads.new_file}&nbsp;
-    </label>
-    <input
-      id="file"
-      name="file"
-      type="file"
-      accept=".csv,.tsv,.xls,.xlsx"
-      aria-labelledby="upload-label"
-      onChange={(evt) => (createUpload(evt.target.files[0]))} />
+function formatExpanation(format) {
+  if (format === '.zip') {
+    return '.zip (shapefile)';
+  }
+  return format;
+}
 
-    <p className={styles.fileTypes}>
-      {I18n.home_pane.supported_uploads}
-    </p>
-  </div>;
+const noDataYetView = (createUpload) => {
+  return (
+    <div className={styles.tableInfo}>
+      <h3 className={styles.previewAreaHeader}>
+        {I18n.home_pane.no_data_yet}
+      </h3>
+      <p>
+        {I18n.home_pane.adding_data_is_easy_and_fun}
+      </p>
 
-const outputSchemaView = (db, outputSchema) => {
-  const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
+      <label id="upload-label" className={styles.uploadButton} htmlFor="file">
+        {I18n.manage_uploads.new_file}&nbsp;
+      </label>
+      <input
+        id="file"
+        name="file"
+        type="file"
+        accept={enabledFileExtensions.join(',')}
+        aria-labelledby="upload-label"
+        onChange={evt => createUpload(evt.target.files[0])} />
+
+      <p className={styles.fileTypes}>
+        {I18n.home_pane.supported_uploads} {enabledFileExtensions.map(formatExpanation).join(', ')}
+      </p>
+    </div>
+  );
+};
+
+const outputSchemaView = (entities, outputSchema) => {
+  const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
   if (!inputSchema) return;
   return (
     <div className={styles.tableInfo}>
@@ -55,9 +70,7 @@ const outputSchemaView = (db, outputSchema) => {
       </p>
       <p>
         <Link to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}>
-          <button
-            className={styles.reviewBtn}
-            tabIndex="-1">
+          <button className={styles.reviewBtn} tabIndex="-1">
             {I18n.home_pane.review_data}
           </button>
         </Link>
@@ -77,20 +90,20 @@ const upsertInProgressView = () => {
 };
 
 // WRAPPER COMPONENT
-const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, db, createUpload }) => {
+const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, createUpload }) => {
   let child;
 
   if (upsertExists) {
-    child = upsertInProgressView(db);
+    child = upsertInProgressView(entities);
   } else if (outputSchema) {
-    child = outputSchemaView(db, outputSchema);
+    child = outputSchemaView(entities, outputSchema);
   } else {
     child = noDataYetView(createUpload);
   }
 
   return (
     <div className={styles.resultCard}>
-       {child}
+      {child}
     </div>
   );
 };
@@ -98,7 +111,7 @@ const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, db, createUpload
 WrapDataTablePlaceholder.propTypes = {
   upsertExists: PropTypes.number.isRequired,
   outputSchema: PropTypes.object,
-  db: PropTypes.object,
+  entities: PropTypes.object,
   createUpload: PropTypes.func
 };
 
@@ -110,7 +123,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMetadata }) {
+export function ShowRevision({ view, routing, entities, urlParams, createUpload, pushToEditMetadata }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -134,7 +147,8 @@ function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMe
   // Have to perform this check in case user deletes a field but we still have
   // data for it.
   const customMetadataFieldsets = _.pickBy(combinedCustomMetadata, (v, k) =>
-    currentAvailableFields.includes(k));
+    currentAvailableFields.includes(k)
+  );
 
   const tableProps = {
     view: {
@@ -158,7 +172,7 @@ function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMe
       ownerName: view.owner.displayName // owner.name
     },
     customMetadataFieldsets,
-    onClickEditMetadata: (e) => {
+    onClickEditMetadata: e => {
       e.preventDefault();
       pushToEditMetadata(Links.metadata(routing));
     }
@@ -173,34 +187,37 @@ function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMe
     </div>
   );
 
-  const outputSchema = latestOutputSchema(db);
-  const doesUpsertExist = _.size(_.filter(db.upsert_jobs,
-                                          uj => uj.status !== ApplyRevision.UPSERT_JOB_FAILURE));
-  const isUpsertComplete = doesUpsertExist &&
-    _.map(db.upsert_jobs, (uj) => uj.status === ApplyRevision.UPSERT_JOB_SUCCESSFUL).
-    reduce((acc, success) => success || acc, false);
+  const outputSchema = latestOutputSchema(entities);
+  const doesUpsertExist = _.size(
+    _.filter(entities.task_sets, uj => uj.status !== ApplyRevision.TASK_SET_FAILURE)
+  );
+  const isUpsertComplete =
+    doesUpsertExist &&
+    _.map(entities.task_sets, uj => uj.status === ApplyRevision.TASK_SET_SUCCESSFUL).reduce(
+      (acc, success) => success || acc,
+      false
+    );
 
   let dataTable;
   if (isUpsertComplete) {
-    const inputSchema = _.find(db.input_schemas, { id: outputSchema.input_schema_id });
-    dataTable = [(
+    const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
+    dataTable = [
       <Link
         key="manage-data-button"
         to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}
-        className={styles.manageDataLink} >
-        <button
-          className={styles.manageDataBtn}
-          tabIndex="-1">
+        className={styles.manageDataLink}>
+        <button className={styles.manageDataBtn} tabIndex="-1">
           {I18n.home_pane.data_manage_button}
         </button>
-      </Link>),
-      upsertCompleteView(view, outputSchema)];
+      </Link>,
+      upsertCompleteView(view, outputSchema)
+    ];
   } else {
     dataTable = (
       <WrapDataTablePlaceholder
         upsertExists={doesUpsertExist}
         outputSchema={outputSchema}
-        db={db}
+        entities={entities}
         createUpload={createUpload} />
     );
   }
@@ -210,7 +227,7 @@ function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMe
       <div className={styles.homeContent}>
         {metadataSection}
         <div className={styles.schemaPreviewContainer}>
-          <SchemaPreview db={db} />
+          <SchemaPreview db={entities} />
           <RowDetails />
         </div>
 
@@ -228,7 +245,7 @@ function ShowRevision({ view, routing, db, urlParams, createUpload, pushToEditMe
 ShowRevision.propTypes = {
   view: PropTypes.object.isRequired,
   routing: PropTypes.object.isRequired,
-  db: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   urlParams: PropTypes.object.isRequired,
   createUpload: PropTypes.func.isRequired,
   pushToEditMetadata: PropTypes.func.isRequired
@@ -236,7 +253,7 @@ ShowRevision.propTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    createUpload: (file) => {
+    createUpload: file => {
       dispatch(Actions.createUpload(file));
     },
     pushToEditMetadata: url => dispatch(push(url))
@@ -245,9 +262,9 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, ownProps) {
   return {
-    view: _.values(state.db.views)[0],
-    routing: state.routing.location,
-    db: state.db,
+    view: _.values(state.entities.views)[0],
+    routing: state.ui.routing.location,
+    entities: state.entities,
     urlParams: ownProps.params
   };
 }

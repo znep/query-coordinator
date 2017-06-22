@@ -73,9 +73,7 @@ class CoreManagedUserSession
           end
         end
       end
-
-      #EN-16290: Make configurable
-      15.minutes
+      APP_CONFIG.default_session_time_minutes
     end
 
     def find

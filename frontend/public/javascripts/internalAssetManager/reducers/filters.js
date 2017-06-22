@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const getInitialState = () => ({
+export const getInitialState = () => ({
   assetTypes: null,
   authority: null,
   category: null,
@@ -83,6 +83,10 @@ export default (state, action) => {
       ...state,
       q: action.value
     };
+  }
+
+  if (action.type === 'CLEAR_ALL_FILTERS') {
+    return getInitialState();
   }
 
   return state;

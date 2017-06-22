@@ -193,7 +193,6 @@ bundle exec rake test:karma:common
 bundle exec rake test:karma:dataCards
 bundle exec rake test:karma:datasetLandingPage
 bundle exec rake test:karma:datasetManagementUI
-bundle exec rake test:karma:importWizard
 bundle exec rake test:karma:oldUx
 bundle exec rake test:karma:visualizationCanvas
 ```
@@ -217,7 +216,7 @@ and uses the mocha reporter:
 
     bundle exec rake test:karma:dataCards[true,chrome,mocha]
 
-For the simple case where a single test run under PhantomJS is needed for a
+For the simple case where a single test run under Chrome is needed for a
 general pass/fail check, a faster parallelized test run is also available:
 
     bundle exec rake test:karma:parallel
@@ -402,6 +401,7 @@ Variable Name | Type | Source | Description
 `auth0_id` | String | Configuration | API token used to authenticate with the Auth0 service.
 `auth0_secret` | String | Configuration | Secret key used to authenticate with the Auth0 service.
 `auth0_database_connection` | String | Configuration | Which auth0 "custom database" connection to use to for username/password logins. If not defined, username/password logins submit straight to Rails.
+`default_session_time_minutes` | String | Configuration | The number of minutes the session token cookie will live as a fallback if the specific time is not specified in the expected place.
 `bundle_gemfile` | String | Configuration | Path to the `Gemfile` used by the Bundler gem. Programmatically determined to be the base directory of the frontend, but can be overridden by setting this ENV variable.
 `canary` | Boolean | Configuration | If set to true the host will visually identify itself as the Canary.
 `catalog_landing_page_airbrake_api_key` | String | Configuration | AirBrake API token used to track CLP errors.

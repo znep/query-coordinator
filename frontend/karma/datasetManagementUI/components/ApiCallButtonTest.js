@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import React from 'react';
+import TestUtils from 'react-addons-test-utils';
 import configureStore from 'redux-mock-store';
 import ApiCallButton from 'components/ApiCallButton';
 import {
@@ -12,17 +13,23 @@ import {
 const mockStore = configureStore();
 
 describe('components/ApiCallButton', () => {
-
   it('calls its onClick callback when clicked', () => {
     const store = mockStore({
-      apiCalls: {}
+      entities: {},
+      ui: {
+        apiCalls: {}
+      }
     });
     const saveSpy = sinon.spy();
-    const element = renderComponentWithStore(ApiCallButton, {
-      onClick: saveSpy,
-      operation: 'CHANGE_COLUMN_TYPE',
-      params: { outputSchemaId: 2, outputColumnId: 32 }
-    }, store);
+    const element = renderComponentWithStore(
+      ApiCallButton,
+      {
+        onClick: saveSpy,
+        operation: 'CHANGE_COLUMN_TYPE',
+        params: { outputSchemaId: 2, outputColumnId: 32 }
+      },
+      store
+    );
 
     TestUtils.Simulate.click(element);
 
@@ -31,14 +38,21 @@ describe('components/ApiCallButton', () => {
 
   it('renders in a default state when there is no matching api call', () => {
     const store = mockStore({
-      apiCalls: {}
+      entities: {},
+      ui: {
+        apiCalls: {}
+      }
     });
     const saveSpy = sinon.spy();
-    const element = renderComponentWithStore(ApiCallButton, {
-      onClick: saveSpy,
-      operation: 'CHANGE_COLUMN_TYPE',
-      params: { outputSchemaId: 2, outputColumnId: 32 }
-    }, store);
+    const element = renderComponentWithStore(
+      ApiCallButton,
+      {
+        onClick: saveSpy,
+        operation: 'CHANGE_COLUMN_TYPE',
+        params: { outputSchemaId: 2, outputColumnId: 32 }
+      },
+      store
+    );
 
     assert.ok(element);
     assert.isTrue(element.classList.contains('btn'));
@@ -51,40 +65,54 @@ describe('components/ApiCallButton', () => {
 
   it('renders a progress state when there is an in-progress api call', () => {
     const store = mockStore({
-      apiCalls: {
-        'asdf-some-uuid': {
-          ...apiCall,
-          status: STATUS_CALL_IN_PROGRESS,
-          startedAt: new Date()
+      entities: {},
+      ui: {
+        apiCalls: {
+          'asdf-some-uuid': {
+            ...apiCall,
+            status: STATUS_CALL_IN_PROGRESS,
+            startedAt: new Date()
+          }
         }
       }
     });
     const saveSpy = sinon.spy();
-    const element = renderComponentWithStore(ApiCallButton, {
-      onClick: saveSpy,
-      operation: 'CHANGE_COLUMN_TYPE',
-      params: { outputSchemaId: 2, outputColumnId: 32 }
-    }, store);
+    const element = renderComponentWithStore(
+      ApiCallButton,
+      {
+        onClick: saveSpy,
+        operation: 'CHANGE_COLUMN_TYPE',
+        params: { outputSchemaId: 2, outputColumnId: 32 }
+      },
+      store
+    );
     assert.isTrue(element.classList.contains('btn-busy'));
   });
 
   it('renders a success state when there is a successful api call', () => {
     const store = mockStore({
-      apiCalls: {
-        'asdf-some-uuid': {
-          ...apiCall,
-          status: STATUS_CALL_SUCCEEDED,
-          startedAt: new Date(),
-          succeededAt: new Date()
+      entities: {},
+      ui: {
+        apiCalls: {
+          'asdf-some-uuid': {
+            ...apiCall,
+            status: STATUS_CALL_SUCCEEDED,
+            startedAt: new Date(),
+            succeededAt: new Date()
+          }
         }
       }
     });
     const saveSpy = sinon.spy();
-    const element = renderComponentWithStore(ApiCallButton, {
-      onClick: saveSpy,
-      operation: 'CHANGE_COLUMN_TYPE',
-      params: { outputSchemaId: 2, outputColumnId: 32 }
-    }, store);
+    const element = renderComponentWithStore(
+      ApiCallButton,
+      {
+        onClick: saveSpy,
+        operation: 'CHANGE_COLUMN_TYPE',
+        params: { outputSchemaId: 2, outputColumnId: 32 }
+      },
+      store
+    );
 
     assert.ok(element);
     assert.isTrue(element.classList.contains('btn-success'));
@@ -92,24 +120,30 @@ describe('components/ApiCallButton', () => {
 
   it('renders a failed state when there is a failed api call', () => {
     const store = mockStore({
-      apiCalls: {
-        'asdf-some-uuid': {
-          ...apiCall,
-          status: STATUS_CALL_FAILED,
-          startedAt: new Date(),
-          succeededAt: new Date()
+      entities: {},
+      ui: {
+        apiCalls: {
+          'asdf-some-uuid': {
+            ...apiCall,
+            status: STATUS_CALL_FAILED,
+            startedAt: new Date(),
+            succeededAt: new Date()
+          }
         }
       }
     });
     const saveSpy = sinon.spy();
-    const element = renderComponentWithStore(ApiCallButton, {
-      onClick: saveSpy,
-      operation: 'CHANGE_COLUMN_TYPE',
-      params: { outputSchemaId: 2, outputColumnId: 32 }
-    }, store);
+    const element = renderComponentWithStore(
+      ApiCallButton,
+      {
+        onClick: saveSpy,
+        operation: 'CHANGE_COLUMN_TYPE',
+        params: { outputSchemaId: 2, outputColumnId: 32 }
+      },
+      store
+    );
 
     assert.ok(element);
     assert.isTrue(element.classList.contains('btn-error'));
   });
-
 });

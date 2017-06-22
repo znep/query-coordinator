@@ -45,7 +45,7 @@ class AdministrationController < ApplicationController
   end
 
   def index
-    render feature_flag?('enable_new_admin_ui', request) ? 'new_index' : 'index'
+    render new_admin_ui_enabled? ? 'new_index' : 'index'
   end
 
   def datasets
@@ -504,7 +504,11 @@ class AdministrationController < ApplicationController
       )
     end
 
-    redirect_to request.referer || { :action => 'views' }
+    if params[:skip_redirect] == 'true'
+      render :nothing => true
+    else
+      redirect_to request.referer || { :action => 'views' }
+    end
   end
 
   #

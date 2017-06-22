@@ -51,5 +51,17 @@ describe('Header', () => {
 
     assert.isTrue(props.onDismiss.calledOnce);
   });
+
+  it('does not render close button when told not to', () => {
+    const props = {
+      showCloseButton: false
+    };
+
+    element = renderPureComponent(Header(props));
+
+    const closeIcon = element.querySelector('.modal-header-dismiss');
+
+    assert.isNull(closeIcon);
+  });
 });
 /* eslint-disable new-cap */

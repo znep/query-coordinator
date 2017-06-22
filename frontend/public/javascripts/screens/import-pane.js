@@ -1731,7 +1731,8 @@ var Interpolator = require('../util/interpolator');
         blueprint.columns = _.map(importer.importColumns, function(importColumn) {
           return {
             name: importColumn.name,
-            datatype: importColumn.dataType
+            datatype: importColumn.dataType,
+            format: importColumn.column.format
           };
         });
 

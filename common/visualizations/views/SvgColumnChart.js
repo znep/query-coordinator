@@ -359,24 +359,27 @@ function SvgColumnChart($element, vif, options) {
     // inline in this function below).
     function renderSeries() {
 
-      dimensionGroupSvgs.selectAll('.column-underlay').
-        attr(
-          'x',
-          (d, measureIndex) => {
-            return d3GroupingXScale(measureLabels[measureIndex]);
-          }
-        ).
-        attr('y', 0).
-        attr('width', Math.max(d3GroupingXScale.rangeBand() - 1, 0)).
-        attr('height', height).
-        attr('stroke', 'none').
-        attr('fill', 'transparent').
-        attr(
-          'data-default-fill',
-          (measureValue, measureIndex, dimensionIndex) => {
-            return getColor(dimensionIndex, measureIndex);
-          }
-        );
+      if (!isStacked) {
+
+        dimensionGroupSvgs.selectAll('.column-underlay').
+          attr(
+            'x',
+            (d, measureIndex) => {
+              return d3GroupingXScale(measureLabels[measureIndex]);
+            }
+          ).
+          attr('y', 0).
+          attr('width', Math.max(d3GroupingXScale.rangeBand() - 1, 0)).
+          attr('height', height).
+          attr('stroke', 'none').
+          attr('fill', 'transparent').
+          attr(
+            'data-default-fill',
+            (measureValue, measureIndex, dimensionIndex) => {
+              return getColor(dimensionIndex, measureIndex);
+            }
+          );
+      }
 
       const columns = dimensionGroupSvgs.selectAll('.column');
 
@@ -778,27 +781,30 @@ function SvgColumnChart($element, vif, options) {
       }).
       attr('transform', (d) => `translate(${d3DimensionXScale(d[0])},0)`);
 
-    columnUnderlaySvgs = dimensionGroupSvgs.selectAll('rect.column-underlay').
-      data((d) => d.slice(1)).
-      enter().
-      append('rect');
+    if (!isStacked) {
 
-    columnUnderlaySvgs.
-      attr('class', 'column-underlay').
-      attr(
-        'data-dimension-value',
-        (datum, measureIndex, dimensionIndex) => {
-          return dimensionValues[dimensionIndex];
-        }
-      ).
-      attr(
-        'data-dimension-index',
-        (datum, measureIndex, dimensionIndex) => dimensionIndex
-      ).
-      attr(
-        'data-measure-index',
-        (datum, measureIndex) => measureIndex
-      );
+      columnUnderlaySvgs = dimensionGroupSvgs.selectAll('rect.column-underlay').
+        data((d) => d.slice(1)).
+        enter().
+        append('rect');
+
+      columnUnderlaySvgs.
+        attr('class', 'column-underlay').
+        attr(
+          'data-dimension-value',
+          (datum, measureIndex, dimensionIndex) => {
+            return dimensionValues[dimensionIndex];
+          }
+        ).
+        attr(
+          'data-dimension-index',
+          (datum, measureIndex, dimensionIndex) => dimensionIndex
+        ).
+        attr(
+          'data-measure-index',
+          (datum, measureIndex) => measureIndex
+        );
+    }
 
     columnSvgs = dimensionGroupSvgs.selectAll('rect.column').
       data((d) => d.slice(1)).
@@ -887,52 +893,54 @@ function SvgColumnChart($element, vif, options) {
     /**
      * 6. Set up event handlers for mouse interactions.
      */
+    if (!isStacked) {
 
-    dimensionGroupSvgs.selectAll('rect.column-underlay').
-      on(
-        'mousemove',
-        // NOTE: The below function depends on this being set by d3, so it is
-        // not possible to use the () => {} syntax here.
-        function() {
+      dimensionGroupSvgs.selectAll('rect.column-underlay').
+        on(
+          'mousemove',
+          // NOTE: The below function depends on this being set by d3, so it is
+          // not possible to use the () => {} syntax here.
+          function() {
 
-          if (!isCurrentlyPanning()) {
-            const dimensionIndex = parseInt(
-              this.getAttribute('data-dimension-index'),
-              10
-            );
-            const measureIndex = parseInt(
-              this.getAttribute('data-measure-index'),
-              10
-            );
-            const dimensionGroup = this.parentNode;
-            const siblingColumn = d3.select(dimensionGroup).select(
-              `rect.column[data-measure-index="${measureIndex}"]`
-            )[0][0];
-            const color = getColor(dimensionIndex, measureIndex);
-            const label = measureLabels[measureIndex];
-            // d3's .datum() method gives us the entire row, whereas everywhere
-            // else measureIndex refers only to measure values. We therefore
-            // add one to measure index to get the actual measure value from
-            // the raw row data provided by d3 (the value at element 0 of the
-            // array returned by .datum() is the dimension value).
-            const value = d3.select(this.parentNode).datum()[measureIndex + 1];
+            if (!isCurrentlyPanning()) {
+              const dimensionIndex = parseInt(
+                this.getAttribute('data-dimension-index'),
+                10
+              );
+              const measureIndex = parseInt(
+                this.getAttribute('data-measure-index'),
+                10
+              );
+              const dimensionGroup = this.parentNode;
+              const siblingColumn = d3.select(dimensionGroup).select(
+                `rect.column[data-measure-index="${measureIndex}"]`
+              )[0][0];
+              const color = getColor(dimensionIndex, measureIndex);
+              const label = measureLabels[measureIndex];
+              // d3's .datum() method gives us the entire row, whereas everywhere
+              // else measureIndex refers only to measure values. We therefore
+              // add one to measure index to get the actual measure value from
+              // the raw row data provided by d3 (the value at element 0 of the
+              // array returned by .datum() is the dimension value).
+              const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
-            showColumnHighlight(siblingColumn);
-            showColumnFlyout(siblingColumn, color, label, value);
+              showColumnHighlight(siblingColumn);
+              showColumnFlyout(siblingColumn, color, label, value);
+            }
           }
-        }
-      ).
-      on(
-        'mouseleave',
-        () => {
+        ).
+        on(
+          'mouseleave',
+          () => {
 
-          if (!isCurrentlyPanning()) {
+            if (!isCurrentlyPanning()) {
 
-            hideHighlight();
-            hideFlyout();
+              hideHighlight();
+              hideFlyout();
+            }
           }
-        }
-      );
+        );
+    }
 
     dimensionGroupSvgs.selectAll('rect.column').
       on(

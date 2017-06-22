@@ -22,7 +22,7 @@ describe('components/DeleteAsset', () => {
     const stub = sinon.stub();
     stub.resolves({ resultSetSize: 4 });
 
-    const element = renderComponentWithStore(DeleteAsset, deleteAssetProps({
+    const element = renderComponentWithPropsAndStore(DeleteAsset, deleteAssetProps({
       fetchChildAssets: stub
     }));
     assert.isNotNull(element);
@@ -33,7 +33,7 @@ describe('components/DeleteAsset', () => {
     const stub = sinon.stub();
     stub.resolves({ resultSetSize: 4 });
 
-    const element = renderComponentWithStore(DeleteAsset, deleteAssetProps({
+    const element = renderComponentWithPropsAndStore(DeleteAsset, deleteAssetProps({
       fetchChildAssets: stub
     }));
 
@@ -44,7 +44,7 @@ describe('components/DeleteAsset', () => {
     const stub = sinon.stub();
     stub.resolves({ resultSetSize: 4 });
 
-    const element = renderComponentWithStore(DeleteAsset, deleteAssetProps({
+    const element = renderComponentWithPropsAndStore(DeleteAsset, deleteAssetProps({
       fetchChildAssets: stub
     }));
 
@@ -59,7 +59,7 @@ describe('components/DeleteAsset', () => {
       const stub = sinon.stub();
       stub.resolves({ resultSetSize: 55 });
 
-      const element = renderComponentWithStore(DeleteAsset, deleteAssetProps({
+      const element = renderComponentWithPropsAndStore(DeleteAsset, deleteAssetProps({
         fetchChildAssets: stub
       }));
 
@@ -76,7 +76,7 @@ describe('components/DeleteAsset', () => {
       const stub = sinon.stub();
       stub.resolves({ resultSetSize: 0 });
 
-      const element = renderComponentWithStore(DeleteAsset, deleteAssetProps({
+      const element = renderComponentWithPropsAndStore(DeleteAsset, deleteAssetProps({
         assetType: 'chart',
         fetchChildAssets: stub
       }));
@@ -94,7 +94,7 @@ describe('components/DeleteAsset', () => {
       const stub = sinon.stub();
       stub.resolves({ resultSetSize: 0 });
 
-      const element = renderComponentWithStore(DeleteAsset, deleteAssetProps({
+      const element = renderComponentWithPropsAndStore(DeleteAsset, deleteAssetProps({
         assetType: 'map',
         fetchChildAssets: stub
       }));

@@ -70,7 +70,7 @@ export class ActionDropdown extends React.Component {
         onClick={this.handleButtonClick}
         role="button">
         <span
-          className="socrata-icon-arrow-down"
+          className="socrata-icon-waiting"
           alt={getTranslation('title')} />
       </button>
     );

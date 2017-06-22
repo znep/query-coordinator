@@ -19,17 +19,17 @@ describe('components/ResultListRow', () => {
   });
 
   const elementWithType = (type) => {
-    return renderComponentWithStore(ResultListRow, resultListRowProps({ columns: ['type'], type }));
+    return renderComponentWithPropsAndStore(ResultListRow, resultListRowProps({ columns: ['type'], type }));
   };
 
   it('renders a table row', () => {
-    const element = renderComponentWithStore(ResultListRow, resultListRowProps());
+    const element = renderComponentWithPropsAndStore(ResultListRow, resultListRowProps());
     assert.isNotNull(element);
     assert.equal(element.className, 'result-list-row');
   });
 
   it('renders cells in the order specified by the "columns" prop', () => {
-    const element = renderComponentWithStore(ResultListRow, resultListRowProps({
+    const element = renderComponentWithPropsAndStore(ResultListRow, resultListRowProps({
       columns: ['visibility', 'name', 'type', 'category', 'owner']
     }));
     const cells = element.querySelectorAll('td');
@@ -139,7 +139,7 @@ describe('components/ResultListRow', () => {
   });
 
   it('renders a div with a "name" and "description" for the "name" cell', () => {
-    const element = renderComponentWithStore(ResultListRow, resultListRowProps({
+    const element = renderComponentWithPropsAndStore(ResultListRow, resultListRowProps({
       columns: ['name']
     }));
     const nameCell = element.querySelector('td')

@@ -18,7 +18,7 @@ export class ResultListTable extends React.Component {
 
   onColumnHeaderClick(columnName) {
     // Sorting on visibility is not supported by Cetera
-    if (columnName !== 'visibility') {
+    if (!_.includes(['visibility', 'actions'], columnName)) {
       this.props.changeSortOrder(columnName);
     }
   }

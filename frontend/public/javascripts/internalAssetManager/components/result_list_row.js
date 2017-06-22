@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import _ from 'lodash';
+
 import { getIconClassForDisplayType } from 'common/displayTypeMetadata';
 import ActionDropdown from './action_dropdown';
+import Provenance from './provenance';
 import VisibilityCell from './visibility_cell';
-import _ from 'lodash';
 
 export class ResultListRow extends React.Component {
   constructor(props) {
@@ -16,7 +18,7 @@ export class ResultListRow extends React.Component {
   }
 
   renderCell(columnName, index) {
-    const { description, link, name, ownerName, type, uid, updatedAt } = this.props;
+    const { description, link, name, ownerName, provenance, type, uid, updatedAt } = this.props;
 
     const cellTag = (value) => (
       <td scope="row" className={columnName} key={`${columnName}-${index}`}>{value}</td>
@@ -27,11 +29,13 @@ export class ResultListRow extends React.Component {
         const dateString = moment(updatedAt).format('LL');
         return cellTag(dateString);
       }
+      case 'actions':
+        return cellTag(<ActionDropdown assetType={type} uid={uid} />);
       case 'name':
         return (cellTag(
           <div>
             <a href={link}><span className="name">{name}</span></a>
-            <ActionDropdown assetType={type} uid={uid} />
+            <Provenance provenance={provenance} includeLabel={false} />
             <span className="description">{description}</span>
           </div>
         ));
@@ -86,6 +90,7 @@ ResultListRow.propTypes = {
   moderationStatus: PropTypes.string,
   name: PropTypes.string,
   ownerName: PropTypes.string,
+  provenance: PropTypes.string,
   routingStatus: PropTypes.string,
   type: PropTypes.string,
   uid: PropTypes.string.isRequired,

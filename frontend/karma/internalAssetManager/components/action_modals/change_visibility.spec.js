@@ -19,7 +19,7 @@ describe('components/ChangeVisibility', () => {
   });
 
   it('renders a modal', () => {
-    const element = renderComponentWithStore(ChangeVisibility, changeVisibilityProps());
+    const element = renderComponentWithPropsAndStore(ChangeVisibility, changeVisibilityProps());
     assert.isNotNull(element);
     assert.equal(element.className, 'action-modal change-visibility');
   });
@@ -30,7 +30,7 @@ describe('components/ChangeVisibility', () => {
       results: [{ metadata: { visible_to_anonymous: true } }]
     });
 
-    const element = renderComponentWithStore(ChangeVisibility, changeVisibilityProps({
+    const element = renderComponentWithPropsAndStore(ChangeVisibility, changeVisibilityProps({
       assetType: 'chart',
       fetchParentVisibility: stub,
       uid: 'x2u3-er7p'
@@ -45,7 +45,7 @@ describe('components/ChangeVisibility', () => {
       results: [{ metadata: { visible_to_anonymous: true } }]
     });
 
-    const element = renderComponentWithStore(ChangeVisibility, changeVisibilityProps({
+    const element = renderComponentWithPropsAndStore(ChangeVisibility, changeVisibilityProps({
       assetType: 'chart',
       fetchParentVisibility: stub,
       uid: 'x2u3-er7p'
@@ -64,7 +64,7 @@ describe('components/ChangeVisibility', () => {
         results: [{ metadata: { visible_to_anonymous: true } }]
       });
 
-      const element = renderComponentWithStore(ChangeVisibility, changeVisibilityProps({
+      const element = renderComponentWithPropsAndStore(ChangeVisibility, changeVisibilityProps({
         assetType: 'chart',
         fetchParentVisibility: stub,
         uid: 'x2u3-er7p'
@@ -88,7 +88,7 @@ describe('components/ChangeVisibility', () => {
         results: [{ metadata: { visible_to_anonymous: false } }]
       });
 
-      const element = renderComponentWithStore(ChangeVisibility, changeVisibilityProps({
+      const element = renderComponentWithPropsAndStore(ChangeVisibility, changeVisibilityProps({
         assetType: 'chart',
         fetchParentVisibility: stub,
         uid: 'x2u3-er7p'

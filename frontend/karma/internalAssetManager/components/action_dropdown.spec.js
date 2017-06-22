@@ -12,14 +12,14 @@ describe('components/ActionDropdown', () => {
 
   describe('dropdown button', () => {
     it('renders', () => {
-      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps());
+      const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
       assert.isNotNull(element);
       assert.equal(element.className, 'action-dropdown');
       assert.isNotNull(element.querySelector('button.action-dropdown-button'));
     });
 
     it('adds the "active" class when clicked', () => {
-      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps());
+      const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
       const button = element.querySelector('button.action-dropdown-button');
       TestUtils.Simulate.click(button);
       assert.match(button.className, /active/);
@@ -28,18 +28,18 @@ describe('components/ActionDropdown', () => {
 
   describe('dropdown menu', () => {
     it('is hidden before the dropdown button is clicked', () => {
-      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps());
+      const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
       assert.isNull(element.querySelector('.action-dropdown-menu'));
     });
 
     it('renders when the dropdown button is clicked', () => {
-      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps());
+      const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
       assert.isNotNull(element.querySelector('.action-dropdown-menu'));
     });
 
     it('renders a list element for each action', () => {
-      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps());
+      const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
       const menu = element.querySelector('.action-dropdown-menu');
 
@@ -53,7 +53,7 @@ describe('components/ActionDropdown', () => {
     });
 
     it('does not render the changeVisibility option for data lens', () => {
-      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps({
+      const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps({
         assetType: 'datalens'
       }));
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
@@ -68,7 +68,7 @@ describe('components/ActionDropdown', () => {
     });
 
     it('does not render the changeVisibility option for new viz', () => {
-      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps({
+      const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps({
         assetType: 'visualization'
       }));
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
@@ -83,7 +83,7 @@ describe('components/ActionDropdown', () => {
     });
 
     it('does not render the changeVisibility option for stories', () => {
-      const element = renderComponentWithStore(ActionDropdown, actionDropdownProps({
+      const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps({
         assetType: 'story'
       }));
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));

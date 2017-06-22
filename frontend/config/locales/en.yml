@@ -2851,6 +2851,7 @@ en:
           title: Delete?
       columns:
         access_level: Access Level
+        actions: Actions
         category: Category
         discoverable: Discoverable
         last_updated_date: Last Updated

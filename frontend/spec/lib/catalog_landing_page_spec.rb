@@ -40,15 +40,14 @@ describe CatalogLandingPage do
 
   describe '.may_activate?' do
     let(:path) { '/browse' }
-    let(:request) do
-      double(:request, params: ActionController::Parameters.new(params),
-             query_parameters: params, path: path)
-    end
     let(:max_param_overlap) { 1 }
+
+    let(:request) do
+      double(:request, params: ActionController::Parameters.new(params), query_parameters: params, path: path)
+    end
+
     before(:each) do
-      init_feature_flag_signaller(with: {
-        catalog_landing_page_allows_multiple_params: max_param_overlap
-      })
+      init_feature_flag_signaller(with: {catalog_landing_page_allows_multiple_params: max_param_overlap})
     end
 
     context 'when it is just /browse' do
@@ -92,6 +91,14 @@ describe CatalogLandingPage do
       end
     end
 
+    context 'when there is a blacklisted paramenter with invalid UTF-8 characters' do
+      let(:params) { { q: "Elenco Comunit\xE0 P" } }
+
+      it 'should return false' do
+        expect(CatalogLandingPage.may_activate?(request)).to eq(false)
+      end
+    end
+
     context 'when we get too many parameters' do
       let(:params) { { category: 'Whatever', limitTo: 'charts' } }
 
@@ -110,18 +117,40 @@ describe CatalogLandingPage do
     end
   end
 
-  describe '.exists?' do
-    before(:each) do
-      allow(CurrentDomain).to receive(:configuration).
-        with(:catalog_landing_page).and_return(configuration)
+  describe '.should_route?' do
+    let(:path) { '/browse' }
+    let(:max_param_overlap) { 1 }
+
+    let(:request) do
+      double(:request, params: ActionController::Parameters.new(params), query_parameters: params, path: path)
     end
+
+    before(:each) do
+      init_feature_flag_signaller(with: {catalog_landing_page_allows_multiple_params: max_param_overlap})
+    end
+
+    context 'when there is a blacklisted paramenter with invalid UTF-8 characters' do
+      let(:params) { { q: "Elenco Comunit\xE0 P" } }
+
+      it 'should return false' do
+        expect(CatalogLandingPage.may_activate?(request)).to eq(false)
+      end
+    end
+
+  end
+
+  describe '.exists?' do
     let(:configuration) { double(:config, properties: properties) }
     let(:properties) { {} }
     let(:params) { {} }
     let(:path) { '/' }
+
     let(:request) do
-      double(:request, params: ActionController::Parameters.new(params),
-             query_parameters: params, path: path)
+      double(:request, params: ActionController::Parameters.new(params), query_parameters: params, path: path)
+    end
+
+    before(:each) do
+      allow(CurrentDomain).to receive(:configuration).with(:catalog_landing_page).and_return(configuration)
     end
 
     context 'when the configuration does not exist' do
@@ -280,6 +309,7 @@ describe CatalogLandingPage do
         stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog_landing_page').
           with(:headers => request_headers).
           to_return(:status => 200, :body => mock_configuration, :headers => {})
+
         stub_request(:put, "http://localhost:8080/configurations/65/properties/#{id}.json").
           with(:headers => request_headers).
           to_return(:status => 200, :body => mock_new_metadata.to_json, :headers => {})
@@ -295,6 +325,7 @@ describe CatalogLandingPage do
         stub_request(:get, 'http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=catalog_landing_page').
           with(:headers => request_headers).
           to_return(:status => 200, :body => mock_configuration, :headers => {})
+
         stub_request(:put, "http://localhost:8080/configurations/65/properties/#{id}.json").
           with(:headers => request_headers).
           to_return(:status => 200, :body => mock_updated_metadata.to_json, :headers => {})

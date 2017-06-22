@@ -223,7 +223,7 @@ describe('actions/showOutputSchema', () => {
           const { entities } = store.getState();
           os = latestOutputSchema(entities);
           column = columnsForOutputSchema(entities, os.id)[0];
-          return store.dispatch(updateColumnType(os, column, 'SoQLText'));
+          return store.dispatch(updateColumnType(os, column, 'text'));
         })
         .then(() => {
           return store.getState();
@@ -231,7 +231,7 @@ describe('actions/showOutputSchema', () => {
         .then(state => {
           const fakeStore = mockStore(state);
           return fakeStore
-            .dispatch(updateColumnType(os, column, 'SoQLText'))
+            .dispatch(updateColumnType(os, column, 'text'))
             .then(() => fakeStore.getActions());
         })
         .then(actions => {

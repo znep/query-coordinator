@@ -2,17 +2,40 @@ import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { createUpload } from 'actions/manageUploads';
+import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
 import styles from 'styles/Uploads/DragDropUpload.scss';
 
 export class DragDropUpload extends Component {
   constructor() {
     super();
-    _.bindAll(this, 'preventDefault', 'handleDrop');
+    this.state = {
+      draggingOver: false
+    };
+    _.bindAll(this, 'preventDefault', 'handleDrop', 'handleDragOver', 'handleDragLeave');
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch(hideFlashMessage());
   }
 
   preventDefault(e) {
     e.stopPropagation();
     e.preventDefault();
+  }
+
+  handleDragOver(e) {
+    this.preventDefault(e);
+    this.setState({
+      draggingOver: true
+    });
+  }
+
+  handleDragLeave(e) {
+    this.preventDefault(e);
+    this.setState({
+      draggingOver: false
+    });
   }
 
   handleDrop(e) {
@@ -21,11 +44,15 @@ export class DragDropUpload extends Component {
     const file = e.dataTransfer.files[0];
 
     if (file && this.isValidFile(file)) {
+      dispatch(hideFlashMessage());
       dispatch(createUpload(file));
     } else {
-      // TODO: prob change to flash message
-      alert('bad file type');
+      dispatch(showFlashMessage('error', 'wrong kind of file, fool!'));
     }
+
+    this.setState({
+      draggingOver: false
+    });
   }
 
   isValidFile(file) {
@@ -47,7 +74,11 @@ export class DragDropUpload extends Component {
     return (
       <section className={styles.container}>
         <h2>Replace Data</h2>
-        <div onDrop={this.handleDrop} onDragOver={this.preventDefault} className={styles.dropZone}>
+        <div
+          onDrop={this.handleDrop}
+          onDragOver={this.handleDragOver}
+          onDragLeave={this.handleDragLeave}
+          className={this.state.draggingOver ? styles.dropZoneDragging : styles.dropZone}>
           <div className={styles.imageContainer}>
             <img alt="upload" className={styles.image} src="/images/datasetManagementUI/copy-document.svg" />
           </div>

@@ -9,6 +9,7 @@ import * as Selectors from 'selectors';
 import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
 import DragDropUpload from 'components/Uploads/DragDropUpload';
 import UploadSidebar from 'components/Uploads/UploadSidebar';
+import FlashMessage from 'components/FlashMessage/FlashMessage';
 import styles from 'styles/ShowUpload.scss';
 
 export const ShowUpload = ({ inProgress, goHome }) =>
@@ -18,6 +19,7 @@ export const ShowUpload = ({ inProgress, goHome }) =>
         <UploadBreadcrumbs atShowUpload />
       </ModalHeader>
       <ModalContent className={styles.modalContent}>
+        <FlashMessage />
         {inProgress
           ? <div className={styles.centeredContainer}>
               <span className={styles.spinner} />

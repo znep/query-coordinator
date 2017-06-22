@@ -23,6 +23,11 @@
   margin: 0 auto;
 }
 
+.dropZoneDragging {
+  composes: dropZone;
+  background-color: $white;
+}
+
 .uploadButton {
   composes: btn from global;
   composes: btn-primary from global;

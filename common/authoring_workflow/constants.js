@@ -35,7 +35,7 @@ export const COLUMN_TYPES = [
   },
   {
     type: 'money',
-    preferredVisualizationTypes: ['barChart', 'columnChart', 'pieChart'],
+    preferredVisualizationTypes: ['barChart', 'columnChart', 'pieChart', 'histogram'],
     icon: 'icon-dollar'
   },
   {
@@ -87,7 +87,7 @@ export const VISUALIZATION_TYPES = [
     type: 'histogram',
     icon: 'icon-distribution',
     title: translate('visualizations.histogram.title'),
-    preferredDimensionTypes: ['number']
+    preferredDimensionTypes: ['money', 'number']
   },
   {
     type: 'regionMap',

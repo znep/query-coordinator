@@ -1,0 +1,46 @@
+#!/bin/bash
+# Allows the user to graphically choose which webpack bundles to start.
+# When the list is accepted, webpack is started.
+set -e
+
+if ! hash dialog 2>/dev/null; then
+  echo >&2 "I require 'dialog' but it's not installed"
+  read -p 'Install via brew/apt? [Y/n]: ' REPLY
+  if [[ "$REPLY" =~ ^[yY]?$ ]]; then
+    if hash brew 2>/dev/null; then
+      brew install dialog
+    else
+      sudo apt install dialog
+    fi
+  else
+    echo >&2 'Aborted.'
+    exit 1
+  fi
+fi
+
+REALPATH=$(python -c "import os; print(os.path.realpath('$0'))")
+BASEDIR="$(dirname "${REALPATH}")/.."
+cd "$BASEDIR"
+
+FRONTEND_WEBPACK_BUNDLES=`find config/webpack -name '*.config.js' | sed -ne 's/.*\/\(.*\).config.js/\1/p' | sort`
+BUNDLE_COUNT=`echo "$FRONTEND_WEBPACK_BUNDLES" | wc -l`
+
+# Create a temporary file and make sure it goes away when we're done.
+TMP_FILE=$(tempfile 2>/dev/null) || TMP_FILE=/tmp/test$$
+trap "rm -f $TMP_FILE" 0 1 2 5 15
+
+# Display dialog, save result into temp file.
+echo "$FRONTEND_WEBPACK_BUNDLES" |
+  sed 's/$/ off/' |
+  xargs dialog --no-items --checklist "Choose bundles (make no selection to build all):
+ <Arrows>: Move
+ <Space> : Select Item
+ <Escape>: Cancel
+ <Enter> : Accept selection and build" $((BUNDLE_COUNT + 12)) 60 $BUNDLE_COUNT 2>$TMP_FILE
+
+if [ $? -eq 0 ]; then
+  FRONTEND_WEBPACK_BUNDLES=`cat $TMP_FILE | tr ' ' ','`
+  echo -e "\nRunning command:"
+  echo "FRONTEND_WEBPACK_BUNDLES=$FRONTEND_WEBPACK_BUNDLES ./bin/start_webpack"
+  FRONTEND_WEBPACK_BUNDLES=$FRONTEND_WEBPACK_BUNDLES ./bin/start_webpack
+fi

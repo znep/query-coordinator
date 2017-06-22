@@ -17,9 +17,10 @@ var getDefaultStore = require('test_store').getDefaultStore;
 
 window.renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
 window.renderPureComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
-window.renderComponentWithStore = function(component, props, store) {
-  store = store || getDefaultStore();
-  return window.renderComponent(Provider, { store }, React.createElement(component, props));
+window.renderComponentWithPropsAndStore = function(component, props, store) {
+  const _store = store || getDefaultStore();
+  const _props = props || {};
+  return window.renderComponent(Provider, { store: _store }, React.createElement(component, _props));
 }
 
 function requireAll(context) {

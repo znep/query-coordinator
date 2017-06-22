@@ -483,6 +483,7 @@ Rails.application.routes.draw do
       get 'd/:id/stats', :action => 'stats'
       get 'd/:id/about', :action => 'about'
       get 'd/:id/data', :action => 'show', :bypass_dslp => true
+      match 'd/:id/edit_metadata', :action => 'edit_metadata', :via => [:get, :post]
       get 'd/:id/visualization', :action => 'create_visualization_canvas', :as => :create_visualization_canvas
 
       get 'd/:id/revisions/current(*rest_of_path)', :action => 'current_revision'

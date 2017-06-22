@@ -492,23 +492,6 @@
     <div class="optionsContent"></div>
   <%- end -%>
 
-  <%= modal :class => 'newDatasetModal' do %>
-    <h2><%= t('screens.widget.create_new_dataset.title') %></h2>
-
-    <%= form_tag '/datasets', :method => 'post', :class => 'newDatasetForm commonForm' do %>
-      <p class="prompt"><%= t('screens.widget.create_new_dataset.prompt') %></p>
-      <div class="line clearfix">
-        <label for="newDatasetName" class="accessible"><%= t('screens.widget.create_new_dataset.prompt') %></label>
-        <input type="text" id="newDatasetName" name="new_dataset_name" class="required"/>
-      </div>
-      <p class="explanation"><%= t('screens.widget.create_new_dataset.explanation_html').html_safe %></p>
-      <ul class="submitActions clearfix">
-        <li><a class="submitButton button"><%= t('core.dialogs.save') %></a></li>
-        <li><a class="jqmClose button"><%= t('core.dialogs.cancel') %></a></li>
-      </ul>
-    <% end %>
-  <%- end -%>
-
   <%= modal :class => 'externalDomainNotice' do %>
     <h2>
       <%= t('core.interstitial.leaving_notice_html', :site_name => CurrentDomain.cname) %>

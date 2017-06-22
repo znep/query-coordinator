@@ -4,7 +4,7 @@ import ResultListRow from './result_list_row';
 import { changeSortOrder } from '../actions/sort_order';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { handleEnter } from '../../common/helpers/keyPressHelpers';
+import { handleEnter } from 'common/helpers/keyPressHelpers';
 
 export class ResultListTable extends React.Component {
   constructor(props) {
@@ -18,7 +18,7 @@ export class ResultListTable extends React.Component {
 
   onColumnHeaderClick(columnName) {
     // Sorting on visibility is not supported by Cetera
-    if (columnName !== 'visibility') {
+    if (!_.includes(['visibility', 'actions'], columnName)) {
       this.props.changeSortOrder(columnName);
     }
   }

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { getResultCountLabel } from '../../common/helpers/viewCardHelpers';
+import { getResultCountLabel } from 'common/helpers/viewCardHelpers';
 
 export class ResultCount extends React.Component {
   render() {

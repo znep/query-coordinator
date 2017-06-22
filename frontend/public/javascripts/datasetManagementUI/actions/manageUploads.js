@@ -372,7 +372,7 @@ function toOutputSchema(os) {
     id: os.id,
     input_schema_id: os.input_schema_id,
     error_count: os.error_count,
-    created_at: os.inserted_at || os.created_at ? parseDate(os.inserted_at || os.created_at) : null,
+    created_at: os.created_at ? parseDate(os.created_at) : null,
     created_by: os.created_by
   };
 }

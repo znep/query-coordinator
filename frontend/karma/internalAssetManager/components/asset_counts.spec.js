@@ -16,13 +16,13 @@ describe('components/AssetCounts', () => {
   });
 
   it('renders an asset-counts div', () => {
-    const element = renderComponentWithStore(AssetCounts, assetCountsProps());
+    const element = renderComponentWithPropsAndStore(AssetCounts, assetCountsProps());
     assert.isNotNull(element);
     assert.equal(element.className, 'asset-counts');
   });
 
   it('renders an asset-counts-item for each non-zero item', () => {
-    const element = renderComponentWithStore(AssetCounts, assetCountsProps({
+    const element = renderComponentWithPropsAndStore(AssetCounts, assetCountsProps({
       assetCounts: {
         charts: 19,
         datasets: 0,
@@ -34,7 +34,7 @@ describe('components/AssetCounts', () => {
   });
 
   it('uses singular names for 1-count assets', () => {
-    const element = renderComponentWithStore(AssetCounts, assetCountsProps({
+    const element = renderComponentWithPropsAndStore(AssetCounts, assetCountsProps({
       assetCounts: {
         charts: 1,
         datalenses: 1,
@@ -55,7 +55,7 @@ describe('components/AssetCounts', () => {
   });
 
   it('uses plural for more-than-1-count assets', () => {
-    const element = renderComponentWithStore(AssetCounts, assetCountsProps({
+    const element = renderComponentWithPropsAndStore(AssetCounts, assetCountsProps({
       assetCounts: {
         charts: 3,
         datalenses: 3,

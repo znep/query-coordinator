@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import ceteraUtils from '../../common/cetera_utils';
+import ceteraUtils from 'common/cetera_utils';
 
 const RESULTS_PER_PAGE = 10;
 
@@ -168,4 +168,3 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => 
     dispatch(fetchingResultsError());
   });
 };
-

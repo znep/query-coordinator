@@ -451,8 +451,7 @@ module.exports = _.defaultsDeep({
       './controls/full-screen.js',
       './screens/dataset-about.js'
     ],
-    // TODO(vilterp): remove this once `ingress_reenter` feature flag is turned on
-    'dataset-new-old': [
+    'dataset-new': [
       './util/serialize.js',
       './util/datasync.js',
       './util/interpolator.js',
@@ -462,8 +461,8 @@ module.exports = _.defaultsDeep({
       './plugins/jquery.awesomereorder.js',
       './controls/attachments-editor.js',
       './controls/wizard.js',
-      './screens/import-pane-old.js',
-      './screens/dataset-new-old.js',
+      './screens/import-pane.js',
+      './screens/dataset-new.js',
       './screens/edit-license.js'
     ],
     'dataset-new-dsmui': [
@@ -476,7 +475,7 @@ module.exports = _.defaultsDeep({
       './plugins/blist.fileuploader.js',
       './plugins/jquery.awesomereorder.js',
       './controls/wizard.js',
-      './screens/import-pane-old.js',
+      './screens/import-pane.js',
       './screens/dataset-edit.js',
       './util/interpolator.js'
     ],

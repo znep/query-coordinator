@@ -6,7 +6,7 @@ import { shallow } from 'enzyme';
 import * as ApplyRevision from 'actions/applyRevision';
 import { Publishing, computeProgress, mapStateToProps } from 'components/Modals/Publishing';
 
-describe.only('components/Modals/Publishing', () => {
+describe('components/Modals/Publishing', () => {
 
   const rowsToBeUpserted = 1000;
 
@@ -120,7 +120,7 @@ describe.only('components/Modals/Publishing', () => {
 
   });
 
-  describe.only('component', () => {
+  describe('component', () => {
 
     const defaultProps = {
       taskSet: {},

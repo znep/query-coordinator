@@ -13,13 +13,13 @@ describe('components/ResultListTable', () => {
   });
 
   it('renders a result-list-table div', () => {
-    const element = renderComponentWithStore(ResultListTable, resultListTableProps());
+    const element = renderComponentWithPropsAndStore(ResultListTable, resultListTableProps());
     assert.isNotNull(element);
     assert.match(element.className, /result-list-table/);
   });
 
   it('renders a table header with the correct column names', () => {
-    const element = renderComponentWithStore(ResultListTable, resultListTableProps({
+    const element = renderComponentWithPropsAndStore(ResultListTable, resultListTableProps({
       columns: ['visibility', 'name', 'type', 'category', 'owner']
     }));
     const columns = element.querySelectorAll('thead th');
@@ -34,7 +34,7 @@ describe('components/ResultListTable', () => {
 
   it('renders a table body with the correct number of rows', () => {
     // Note: there are 6 results in mockCeteraResults
-    const element = renderComponentWithStore(ResultListTable, resultListTableProps());
+    const element = renderComponentWithPropsAndStore(ResultListTable, resultListTableProps());
     const rows = element.querySelectorAll('tr.result-list-row');
     assert.lengthOf(rows, 6);
   });

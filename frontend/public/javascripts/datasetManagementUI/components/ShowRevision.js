@@ -11,35 +11,53 @@ import NotifyButton from './NotifyButton';
 import RowDetails from '../components/RowDetails';
 import * as Links from '../links';
 import { Link } from 'react-router';
-import { latestOutputSchema } from '../selectors';
+import { latestOutputSchema } from 'selectors';
 import * as Actions from '../actions/manageUploads';
 import * as ApplyRevision from '../actions/applyRevision';
 import styles from 'styles/ShowRevision.scss';
 
-const noDataYetView = createUpload =>
-  <div className={styles.tableInfo}>
-    <h3 className={styles.previewAreaHeader}>
-      {I18n.home_pane.no_data_yet}
-    </h3>
-    <p>
-      {I18n.home_pane.adding_data_is_easy_and_fun}
-    </p>
+const enabledFileExtensions = _.compact([
+  '.csv',
+  '.tsv',
+  '.xls',
+  '.xlsx',
+  window.serverConfig.featureFlags.datasetManagementUiEnableShapefileUpload ? '.zip' : null
+]);
 
-    <label id="upload-label" className={styles.uploadButton} htmlFor="file">
-      {I18n.manage_uploads.new_file}&nbsp;
-    </label>
-    <input
-      id="file"
-      name="file"
-      type="file"
-      accept=".csv,.tsv,.xls,.xlsx"
-      aria-labelledby="upload-label"
-      onChange={evt => createUpload(evt.target.files[0])} />
+function formatExpanation(format) {
+  if (format === '.zip') {
+    return '.zip (shapefile)';
+  }
+  return format;
+}
 
-    <p className={styles.fileTypes}>
-      {I18n.home_pane.supported_uploads}
-    </p>
-  </div>;
+const noDataYetView = createUpload => {
+  return (
+    <div className={styles.tableInfo}>
+      <h3 className={styles.previewAreaHeader}>
+        {I18n.home_pane.no_data_yet}
+      </h3>
+      <p>
+        {I18n.home_pane.adding_data_is_easy_and_fun}
+      </p>
+
+      <label id="upload-label" className={styles.uploadButton} htmlFor="file">
+        {I18n.manage_uploads.new_file}&nbsp;
+      </label>
+      <input
+        id="file"
+        name="file"
+        type="file"
+        accept={enabledFileExtensions.join(',')}
+        aria-labelledby="upload-label"
+        onChange={evt => createUpload(evt.target.files[0])} />
+
+      <p className={styles.fileTypes}>
+        {I18n.home_pane.supported_uploads} {enabledFileExtensions.map(formatExpanation).join(', ')}
+      </p>
+    </div>
+  );
+};
 
 const outputSchemaView = (entities, outputSchema) => {
   const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });

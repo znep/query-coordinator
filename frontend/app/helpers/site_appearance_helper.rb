@@ -286,7 +286,8 @@ module SiteAppearanceHelper
   def activate_button_options
     {
       :id => 'site_appearance_activate',
-      :class => 'primary'
+      :class => 'primary',
+      :type => :button
     }.merge(
       @site_appearance.reverted? ? {} : { :'data-flannel' => 'site_appearance_activation_flannel' }
     )

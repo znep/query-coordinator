@@ -66,6 +66,9 @@ default: &default
   opendata_ga_tracking_code: UA-52982454-21
   standard_ga_tracking_code: UA-51039907-4
 
+  # Sessions
+  default_session_time_minutes: 15
+
   qualtrics:
     admin:
       survey_id: SI_0pQUgPVvv4upART

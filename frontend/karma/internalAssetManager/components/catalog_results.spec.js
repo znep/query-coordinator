@@ -10,18 +10,18 @@ describe('components/CatalogResults', () => {
   });
 
   it('renders a catalog-results div', () => {
-    const element = renderComponentWithStore(CatalogResults, catalogResultsProps());
+    const element = renderComponentWithPropsAndStore(CatalogResults, catalogResultsProps());
     assert.isNotNull(element);
     assert.equal(element.className, 'catalog-results');
   });
 
   it('renders a topbar', () => {
-    const element = renderComponentWithStore(CatalogResults, catalogResultsProps());
+    const element = renderComponentWithPropsAndStore(CatalogResults, catalogResultsProps());
     assert.isNotNull(element.querySelector('.topbar'));
   });
 
   it('renders a table', () => {
-    const element = renderComponentWithStore(CatalogResults, catalogResultsProps());
+    const element = renderComponentWithPropsAndStore(CatalogResults, catalogResultsProps());
     assert.isNotNull(element.querySelector('.result-list-table'));
   });
 });

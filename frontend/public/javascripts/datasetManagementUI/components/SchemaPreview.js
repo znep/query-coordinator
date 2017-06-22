@@ -4,7 +4,6 @@ import { Link } from 'react-router';
 import * as Links from '../links';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
 import { columnsForOutputSchema } from '../selectors';
-import { soqlProperties } from '../lib/soqlTypes';
 import _ from 'lodash';
 import styles from 'styles/SchemaPreview.scss';
 
@@ -27,7 +26,7 @@ function mapStateToProps({ entities }) {
     const columns = columnsForOutputSchema(entities, latestOutputSchema.id).map(column => {
       const transform = entities.transforms[column.transform_id];
       return {
-        dataTypeName: transform && soqlProperties[transform.output_soql_type].canonicalName,
+        dataTypeName: transform && transform.output_soql_type,
         description: column.description,
         fieldName: column.field_name,
         name: column.display_name

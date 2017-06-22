@@ -326,89 +326,59 @@ export default [
   {
     "resource" :
       {
-        "name" : "Current Fleet Surplus/Auction List",
-        "id" : "6gnm-7jex",
-        "parent_fxf" : null,
-        "description" : "Most recent list of fleet equipment sent to auction",
-        "attribution" : "Fleet Management Division",
-        "type" : "dataset",
-        "updatedAt" : "2017-03-31T18:39:32.000Z",
-        "createdAt" : "2014-03-25T17:01:36.000Z",
+        "name" : "<h1>a bar chart</h1>",
+        "id" : "x2u3-er7p",
+        "parent_fxf" : [ "9xzi-4fxu" ],
+        "description" : "woop woop, that's the sound of da police\r\n<script>alert('yo');</script>",
+        "attribution" : null,
+        "type" : "chart",
+        "updatedAt" : "2017-06-20T18:19:36.000Z",
+        "createdAt" : "2017-04-04T23:00:59.000Z",
         "view_count" :
           {
-            "page_views_last_week" : 503,
-            "page_views_last_month" : 2097,
-            "page_views_total" : 80655,
-            "page_views_last_week_log" : 8.977279923499918,
-            "page_views_last_month_log" : 11.034798962577268,
-            "page_views_total_log" : 16.299494239009366
+            "page_views_last_week" : 0,
+            "page_views_last_month" : 0,
+            "page_views_total" : 0,
+            "page_views_last_week_log" : 0.0,
+            "page_views_last_month_log" : 0.0,
+            "page_views_total_log" : 0.0
           },
         "page_views" :
           {
-            "page_views_last_week" : 503,
-            "page_views_last_month" : 2097,
-            "page_views_total" : 80655,
-            "page_views_last_week_log" : 8.977279923499918,
-            "page_views_last_month_log" : 11.034798962577268,
-            "page_views_total_log" : 16.299494239009366
+            "page_views_last_week" : 0,
+            "page_views_last_month" : 0,
+            "page_views_total" : 0,
+            "page_views_last_week_log" : 0.0,
+            "page_views_last_month_log" : 0.0,
+            "page_views_total_log" : 0.0
           },
-        "columns_name" :
-          [
-            "YEAR",
-            "MAKE",
-            "MODEL",
-            "COLOR",
-            "EQUIP_ID",
-            "DESCRIPTION",
-            "AUCTION HOUSE",
-            "COMMENTS"
-          ],
-        "columns_field_name" :
-          [
-            "year",
-            "make",
-            "model",
-            "color",
-            "equip_id",
-            "description",
-            "auction_house",
-            "comments"
-          ],
-        "columns_description" : [ "", "", "", "", "", "", "", "" ],
-        "download_count" : 1263,
+        "columns_name" : [ "Name", "Unit", "Age" ],
+        "columns_field_name" : [ "name", "unit", "age" ],
+        "columns_description" : [ "", "", "" ],
+        "download_count" : null,
         "provenance" : "official"
       },
     "classification" :
       {
-        "categories" : [ "transportation", "finance" ],
+        "categories" : [],
         "tags" : [],
-        "domain_category" : "Finance",
-        "domain_tags" : [ "auction", "surplus", "equipment", "fleet" ],
-        "domain_metadata" :
-          [
-            { "value" : "Monthly", "key" : "Refresh-Frequency_Frequency" },
-            {
-              "value" : "Finance and Administrative Services",
-              "key" : "Data-Owner_Owner"
-            }
-          ]
+        "domain_category" : "Government",
+        "domain_tags" : [ "crime", "police" ],
+        "domain_metadata" : []
       },
     "metadata" :
       {
-        "domain" : "data.seattle.gov",
-        "license" : "Public Domain",
+        "domain" : "localhost",
         "is_public" : true,
         "is_published" : true,
         "is_hidden" : false,
         "visible_to_anonymous" : true,
         "grants" : []
       },
-    "permalink" : "https://data.seattle.gov/d/6gnm-7jex",
-    "link" : "https://data.seattle.gov/Finance/Current-Fleet-Surplus-Auction-List/6gnm-7jex",
-    "owner": {
-      "id": "7kqb-5s8x",
-      "display_name": "Dylan"
-    }
+    "permalink" : "https://localhost/d/x2u3-er7p",
+    "link" : "https://localhost/Government/-h1-a-bar-chart-h1-/x2u3-er7p",
+    "preview_image_url" : "https://localhost/views/x2u3-er7p/files/0483e4c1-972d-4cca-a9ae-76787d4a9645",
+    "owner" : { "id" : "7kqb-5s8x", "display_name" : "Dylan" }
   },
   {
     "resource" :
@@ -498,7 +468,7 @@ export default [
             "longitude",
             "offense_code_extension"
           ],
-        "id" : "7ais-f98f",
+        "id" : "9xzi-4fxu",
         "view_count" :
           {
             "page_views_total" : 70288,

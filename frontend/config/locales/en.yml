@@ -1967,6 +1967,13 @@ en:
       percent_uploaded: "{0}% Uploaded"
       preview: Preview
       process_data: Process Data
+      publish_confirmation_usaid:
+        button: Done
+        private: Private
+        private_msg: Only accessible to people within your organization.
+        public: Public
+        public_msg: Publically accessible. Discoverable through the public catalog.
+        title: Choose your audience
       publish_confirmation:
         body: It will be accessible to anyone through your data catalog.
         button: Publish Now
@@ -2016,7 +2023,7 @@ en:
         visualize: Visualize
         visualize_blurb: Visualize your data and explore relationships.
         visualize_button: Create New...
-      supported_uploads: 'Supported file types: .csv, .tsv, .xls, .xlsx'
+      supported_uploads: 'Supported file types:'
       table_preview: Table Preview
       upload_done: Upload Done
       uploading: Uploading {filename}...
@@ -2705,13 +2712,14 @@ en:
       update: Update %{model}
   internal_asset_manager:
     asset_types:
-      blob: Files or Document
+      blob: File or Document
       calendar: Calendar
       chart: Chart
       datalens: Data Lens
       dataset: Dataset
       draft: Draft Dataset
       filter: Filtered View
+      file: File or Document
       form: Form
       href: External Dataset
       map: Map
@@ -2817,44 +2825,33 @@ en:
         transfer_ownership: Transfer Ownership...
         delete_asset: Delete...
       action_modal:
-        add_collaborators:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
-        edit_metadata:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
         change_visibility:
-          header: TODO
-          description: TODO
-          accept: TODO
+          accept: OK
+          can_not_change_visibility:
+            Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Open.
           dismiss: Cancel
-          error: TODO
-        change_permissions:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
-        transfer_ownership:
-          header: TODO
-          description: TODO
-          accept: TODO
-          dismiss: Cancel
-          error: TODO
+          error: Sorry, there was an error changing visibility for this asset. Please refresh and try again or contact support@socrata.com if it continues.
+          options:
+            open:
+              title: Open
+              description: Publicly accessible. Discoverable through the public catalog.
+            private:
+              title: Private
+              description: Only accessible to people within your organization.
+          title: Choose Visibility
         delete_asset:
-          header: Delete?
-          description: Are you sure you want to delete this asset?
           accept: Delete
+          chart: chart
+          description: Are you sure you want to delete %{name}?
+          description_related_assets: '%{count} related assets built using this dataset will also be deleted permanently.'
+          description_chart_map: This is a %{assetType} based on another dataset. The related dataset will not be deleted.
           dismiss: Cancel
           error: Sorry, there was an error deleting this asset. Please refresh and try again or contact support@socrata.com if it continues.
+          map: map
+          title: Delete?
       columns:
         access_level: Access Level
+        actions: Actions
         category: Category
         discoverable: Discoverable
         last_updated_date: Last Updated
@@ -3990,6 +3987,7 @@ en:
         link_menu_label_html: "<b>Menu</b> - <i>You can drag links to reorder them</i>"
         move_link_row: Drag to reorder
         ok: OK
+        only_visible_to_superadmins: Only visible to superadmins
         preview: Preview
         preview_changes: Preview Changes
         preview_failure: Sorry, there was an error saving your Preview data. Please refresh and try again, or notify support if this problem persists.
@@ -3997,6 +3995,7 @@ en:
         remove_link_row: Remove Link
         save: Save
         save_changes: Save Changes
+        save_without_activation: Save Without Activation
         see_both_features: See both features in action by visiting one of your datasets.
         site_appearance: Site Appearance
         tabs:

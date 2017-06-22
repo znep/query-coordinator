@@ -34,7 +34,7 @@ table.result-list-table {
           width: 9rem;
         }
 
-        &.visibility {
+        &.visibility, &.actions {
           cursor: not-allowed;
         }
 
@@ -85,6 +85,16 @@ table.result-list-table {
 
         span.name {
           font-size: 15px;
+        }
+
+        span.tag-official, span.tag-community {
+          margin-left: 14px;
+          font-size: 22px;
+
+          span[class*='socrata-icon-'] {
+            position: relative;
+            top: 4px; // The icons are not exactly the same height :/
+          }
         }
 
         span.description {

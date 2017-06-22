@@ -6,6 +6,7 @@ import { EDIT_OUTPUT_SCHEMA } from 'actions/outputSchemas';
 import { EDIT_TRANSFORM } from 'actions/transforms';
 import { EDIT_INPUT_SCHEMA } from 'actions/inputSchemas';
 import { UPDATE_PROGRESS } from 'actions/manageUploads';
+import { EDIT_REVISION } from 'actions/revisions';
 
 const views = (state = {}, action) => {
   switch (action.type) {
@@ -20,7 +21,19 @@ const views = (state = {}, action) => {
   }
 };
 
-const revisions = (state = {}) => state;
+const revisions = (state = {}, action) => {
+  switch (action.type) {
+    case EDIT_REVISION: {
+      return dotProp.set(state, action.id, record => ({
+        ...record,
+        ...action.payload
+      }));
+    }
+
+    default:
+      return state;
+  }
+};
 
 const uploads = (state = {}, action) => {
   switch (action.type) {

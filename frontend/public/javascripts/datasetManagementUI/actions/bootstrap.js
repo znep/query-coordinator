@@ -55,9 +55,10 @@ export function bootstrapApp(view, revision, customMetadata) {
     const initialRevision = {
       id: revision.id,
       fourfour: view.id,
+      permission: _.get(revision, 'action.permission', 'public'),
       task_sets: revision.task_sets.map(taskSet => taskSet.id),
       revision_seq: _.toNumber(revision.revision_seq),
-      created_at: parseDate(revision.inserted_at || revision.created_at),
+      created_at: parseDate(revision.created_at),
       created_by: revision.created_by
     };
 
@@ -66,7 +67,7 @@ export function bootstrapApp(view, revision, customMetadata) {
         ...acc,
         [taskSet.id]: {
           ...taskSet,
-          created_at: parseDate(taskSet.inserted_at || taskSet.created_at),
+          created_at: parseDate(taskSet.created_at),
           finished_at: taskSet.finished_at ? parseDate(taskSet.finished_at) : null,
           created_by: taskSet.created_by
         }
@@ -79,7 +80,7 @@ export function bootstrapApp(view, revision, customMetadata) {
         ...acc,
         [upload.id]: {
           ..._.omit(upload, ['schemas']),
-          created_at: parseDate(upload.inserted_at || upload.created_at),
+          created_at: parseDate(upload.created_at),
           finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
           failed_at: upload.failed_at ? parseDate(upload.failed_at) : null,
           created_by: upload.created_by
@@ -120,7 +121,7 @@ function sideEffectyStuff(revision) {
       }
     });
 
-    revision.task_sets = revision.upsert_jobs || revision.task_sets;
+    revision.task_sets = revision.task_sets;
     revision.task_sets.forEach(taskSet => {
       if (taskSet.status === ApplyRevision.TASK_SET_IN_PROGRESS) {
         dispatch(ApplyRevision.pollForUpsertJobProgress(taskSet.id));

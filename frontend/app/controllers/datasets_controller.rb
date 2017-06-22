@@ -21,13 +21,10 @@ class DatasetsController < ApplicationController
       # User doesn't have access to create new datasets
       return render_forbidden('You do not have permission to create new datasets')
     end
-    @view = nil # the templates expect a @view var (for reentrancy)
     if FeatureFlags.derive(nil, request).enable_dataset_management_ui && params[:beta]
       render 'datasets/new-dsmui', layout: 'styleguide'
-    elsif FeatureFlags.derive(nil, request).ingress_reenter
-      redirect_to '/profile#create_draft'
     else
-      render 'new-old'
+      render 'new' # jquery wizard
     end
   end
 
@@ -54,20 +51,6 @@ class DatasetsController < ApplicationController
     end
 
     return if @view.nil?
-
-    # Ingress & draft logic
-    if FeatureFlags.derive(nil, request).ingress_reenter
-      if @view.displayType == 'draft'
-        unless CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
-               CurrentDomain.module_enabled?(:community_creation)
-          # User doesn't have access to create new datasets
-          return render 'shared/error', :status => :not_found
-        end
-
-        # need to return so we exit this function and render/redirect don't get called again
-        return render 'new'
-      end
-    end
 
     # adjust layout to thin versions (rather than '_full')
     @page_custom_header = 'header'

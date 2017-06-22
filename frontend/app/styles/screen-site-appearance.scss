@@ -1,13 +1,6 @@
-$disabled-text: #ddd;
-$grey: #7a7a7a;
-$dark-grey: #5e5e5e;
-$red-text: #d06463;
-$red-btn: #ce6565;
-$red-btn-hover: #a55151;
-$faint-border-color: #ebebeb;
-$dark-border-color: #d6d6d6;
+@import 'styleguide-colors';
+
 $font_family: "Open Sans", "Helvetica", Arial, sans-serif;
-$link_color: #2279a6;
 
 .siteOuterWrapper {
   background: white;
@@ -20,7 +13,6 @@ $link_color: #2279a6;
 
   font-family: $font_family;
   max-width: 68rem;
-  margin: 0 auto;
 
   h1, h2, h3, h4, h5 {
     letter-spacing: -0.5px;
@@ -28,55 +20,8 @@ $link_color: #2279a6;
   }
 
   .section-separator {
-    border-top: 1px solid $faint-border-color;
+    border-top: 1px solid $light-grey-4;
     margin: 1rem 0;
-  }
-
-  button {
-    color: $grey;
-    background-color: #fff;
-    border: solid 1px #c2c2c2;
-    display: inline-block;
-    padding: 10px 15px;
-    font-size: 15px;
-    outline: none;
-    cursor: pointer;
-    text-decoration: none;
-    letter-spacing: 0;
-    margin-right: 0;
-    @include transition(0.2s, color);
-    @include transition(0.2s, background-color);
-    border-radius: 1px;
-    &:hover {
-      color: $dark-grey;
-      background-color: #e6e6e6;
-    }
-    &.primary {
-      color: #fff;
-      background-color: #288DC1;
-      border-color: #288DC1;
-      &:hover {
-        background-color: #20719a;
-      }
-    }
-    &.error {
-      color: #fff;
-      background-color: $red-btn;
-      border-color: $red-btn;
-      cursor: default;
-      &:hover {
-        background-color: $red-btn-hover;
-      }
-    }
-    &.btn-primary {
-      color: #fff;
-      background-color: $link_color;
-      border-color: #288dc1;
-    }
-    &.btn-transparent {
-      border-color: transparent;
-      background-color: transparent;
-    }
   }
 
   .site-appearance-admin-header {
@@ -95,7 +40,7 @@ $link_color: #2279a6;
       }
 
       span.socrata-icon-question {
-        color: $link_color;
+        color: $primary-text;
         font-size: 16px;
       }
     }
@@ -111,49 +56,6 @@ $link_color: #2279a6;
 
     .custom-content-warning {
       margin-bottom: 1rem;
-    }
-
-    .page-controls {
-      clear: both;
-      float: right;
-
-      > a,
-      > button {
-        margin-right: 9px;
-
-        &:last-of-type {
-          margin-right: 0;
-        }
-      }
-    }
-  }
-
-  ul.tabs {
-    border-bottom: 1px solid $dark-border-color;
-    padding-bottom: 8px;
-    padding-left: 0;
-    clear: both;
-
-    li {
-      display: inline-block;
-      margin: 0 1rem 0 0;
-
-      a {
-        text-decoration: none;
-        color: $grey;
-        padding: 6px 9px;
-        font-size: 15px;
-
-        &:hover {
-          border-bottom: 4px solid $dark-border-color;
-          color: #3d3d3d;
-        }
-      }
-
-      &.current a {
-        border-bottom: 4px solid #288DC1;
-        color: #3d3d3d;
-      }
     }
   }
 
@@ -174,7 +76,7 @@ $link_color: #2279a6;
       }
 
       h3 {
-        color: $dark-grey;
+        color: $dark-grey-2;
         font-size: 20px;
         font-weight: 600;
       }
@@ -187,7 +89,7 @@ $link_color: #2279a6;
         margin: 0.25rem 0 1rem;
         font-size: 13px;
         line-height: 1.2rem;
-        color: $dark-grey;
+        color: $dark-grey-2;
       }
 
       div.radiobutton.horizontal {
@@ -237,7 +139,7 @@ $link_color: #2279a6;
             }
             &.disabled,
             &.disabled > span {
-              color: $disabled-text;
+              color: $light-grey-3;
               cursor: default;
             }
           }
@@ -247,7 +149,7 @@ $link_color: #2279a6;
               width: 100%;
               margin: 0.25rem 0 1rem;
               p {
-                color: $grey;
+                color: $dark-grey-2;
                 font-size: 14px;
               }
             }
@@ -300,8 +202,8 @@ $link_color: #2279a6;
             clear: both;
             float: right;
             margin-right: 14px;
-            font-style: 14px;
-            color: $red-text;
+            font-size: 14px;
+            color: $error-text;
           }
         }
 
@@ -310,17 +212,17 @@ $link_color: #2279a6;
           margin-bottom: 0.5em;
           font-size: 15px;
           font-weight: 400;
-          color: $grey;
+          color: $dark-grey-1;
 
           &.site-appearance-input-error {
-            color: $red-text;
+            color: $error-text;
             font-size: 14px;
             float: left;
           }
         }
         input {
           width: calc(100% - 16px);
-          border: solid 1px #c2c2c2;
+          border: solid 1px $light-grey-2;
           border-radius: 1px;
           box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
           font-size: 15px;
@@ -341,11 +243,11 @@ $link_color: #2279a6;
           /* ie */
 
           &.site-appearance-input-error {
-            border-color: $red-text;
+            border-color: $error-text;
           }
 
           &[disabled] {
-            color: #bbb;
+            color: $light-grey-2;
             cursor: default;
           }
         }
@@ -374,7 +276,7 @@ $link_color: #2279a6;
         vertical-align: middle;
 
         a, a:visited {
-          color: $link_color;
+          color: $primary-text;
           font-weight: 600;
         }
 
@@ -413,7 +315,7 @@ $link_color: #2279a6;
             box-sizing: border-box;
             line-height: 1.5rem;
             font-size: 15px;
-            color: $grey;
+            color: $dark-grey-1;
           }
         }
 
@@ -422,7 +324,7 @@ $link_color: #2279a6;
           box-sizing: border-box;
           line-height: 1.5rem;
           font-size: 14px;
-          color: $grey;
+          color: $dark-grey-1;
         }
 
         // Hide remove-link-row for the first div.link-row
@@ -449,7 +351,7 @@ $link_color: #2279a6;
             float: left;
             font-size: 15px;
             box-sizing: border-box;
-            border: solid 1px #c2c2c2;
+            border: solid 1px $light-grey-2;
             border-radius: 1px;
             box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
             font-family: $font_family;
@@ -465,12 +367,12 @@ $link_color: #2279a6;
             }
             /* ie */
             &.site-appearance-input-error {
-              border-color: $red-text;
+              border-color: $error-text;
             }
           }
 
           label.site-appearance-input-error {
-            color: $red-text;
+            color: $error-text;
           }
 
           .move-link-row {
@@ -511,7 +413,7 @@ $link_color: #2279a6;
             width: calc(100% - 2rem);
             font-size: 15px;
             box-sizing: border-box;
-            border: solid 1px #c2c2c2;
+            border: solid 1px $light-grey-2;
             border-radius: 1px;
             box-shadow: inset 1px 1px 3px rgba(0, 0, 17, 0.1);
             font-family: $font_family;
@@ -537,11 +439,10 @@ $link_color: #2279a6;
           margin: 0.5rem;
           font-size: 14px;
 
-          // Copied from styleguide. Remove when styleguiding
           &:disabled {
-            color: #767676;
-            border-color: #919191;
-            background-color: #c8c8c8;
+            color: $light-grey-8;
+            border-color: $grey;
+            background-color: $light-grey-2;
             cursor: not-allowed;
           }
 
@@ -552,20 +453,65 @@ $link_color: #2279a6;
       }
     }
 
-    .page-controls {
-      text-align: right;
-      margin-top: 2rem;
-      position: relative;
+  }
 
-      button {
-        [class*="icon-"] {
-          position: relative;
-          padding-left: 11px;
-        }
+}
 
-        &:first-of-type {
-          margin-right: 9px;
+#siteHeader .siteUserNav li a {
+  font-size: 12px;
+}
+
+.site-appearance-header {
+  display: flex;
+  justify-content: space-between;
+
+  .page-controls {
+    clear: both;
+    float: right;
+
+    text-align: right;
+    margin-top: 10px;
+    position: relative;
+
+    button {
+      [class*="icon-"] {
+        position: relative;
+        padding-left: 11px;
+      }
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+    }
+  }
+
+  ul.tabs {
+    margin-bottom: 0;
+    border-bottom: 1px solid $light-grey-3;
+
+    padding-bottom: 8px;
+    padding-left: 0;
+    clear: both;
+
+    li {
+      display: inline-block;
+      margin: 0 1rem 0 0;
+
+      a {
+        text-decoration: none;
+        color: $dark-grey-1;
+        padding: 6px 9px;
+        font-size: 15px;
+
+        &:hover {
+          border-bottom: 4px solid $light-grey-3;
+          color: $dark-grey-3;
         }
+      }
+
+      &.current a {
+        border-bottom: 4px solid $primary-base;
+        color: $dark-grey-3;
       }
     }
   }
@@ -590,8 +536,53 @@ $link_color: #2279a6;
   }
 }
 
-#siteHeader .siteUserNav li a {
-  font-size: 12px;
+.site-appearance, .site-appearance-header {
+  button {
+    color: $dark-grey-1;
+    background-color: $white;
+    border: solid 1px $light-grey-2;
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 15px;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0;
+    margin-right: 0;
+    @include transition(0.2s, color);
+    @include transition(0.2s, background-color);
+    border-radius: 1px;
+    &:hover {
+      color: $dark-grey-2;
+      background-color: $light-grey-4;
+    }
+    &.primary {
+      color: $white;
+      background-color: $primary-base;
+      border-color: $primary-base;
+      &:hover {
+        background-color: $primary-dark;
+      }
+    }
+    &.error {
+      color: $white;
+      background-color: $error-base;
+      border-color: $error-base;
+      cursor: default;
+      &:hover {
+        background-color: $error-dark;
+      }
+    }
+    &.btn-primary {
+      color: $white;
+      background-color: $primary-text;
+      border-color: $primary-base;
+    }
+    &.btn-transparent {
+      border-color: transparent;
+      background-color: transparent;
+    }
+  }
 }
 
 // This hack is to override a hack purpetrated elsewhere in custom css on certain domains

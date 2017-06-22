@@ -146,7 +146,7 @@ socrata.sampleVifs = {
       {
         dataSource: {
           domain: 'vertex-stories.test-socrata.com',
-          datasetUid: '6ta3-xmf3'
+          datasetUid: 'fne3-4ids'
         }
       }
     ]

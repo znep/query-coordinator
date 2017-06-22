@@ -3,9 +3,10 @@ export default {
   ceteraExternalUri: 'https://example.com/api/cetera',
   currentUser: null,
   featureFlags: {
-    csrfToken: 'supersecuretoken',
+    csrfToken: 'mockCsrfToken',
     enable_internal_asset_manager: true,
-    recaptchaKey: 'superdupersecurekey'
+    recaptchaKey: 'mockRecaptchaKey',
+    disable_authority_badge: 'none'
   },
   locale: 'en',
   localePrefix: ''

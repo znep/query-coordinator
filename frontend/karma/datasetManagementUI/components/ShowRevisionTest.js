@@ -34,7 +34,22 @@ describe('components/ShowRevision', () => {
     assert.isFalse(component.find('Connect(HomePaneSidebar)').isEmpty());
   });
 
-  it('renders manange data link', () => {
+  it('renders manage data link', () => {
     assert.isFalse(component.find('.manageDataBtn').isEmpty());
   });
+
+  it('renders list of accepted file types', () => {
+    const clonedProps = _.cloneDeep(ShowRevisionProps);
+    clonedProps.entities.output_schemas = {};
+    clonedProps.entities.input_schemas = {};
+    clonedProps.entities.uploads = {};
+    clonedProps.entities.task_sets = {};
+
+    const theComponent = shallow(<ShowRevision {...clonedProps} />);
+    assert.equal(
+      theComponent.find('WrapDataTablePlaceholder').dive().find('.fileTypes').text(),
+      'Supported file types: .csv, .tsv, .xls, .xlsx'
+    );
+  });
+
 });

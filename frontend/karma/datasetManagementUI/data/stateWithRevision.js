@@ -111,6 +111,7 @@ export default {
         fourfour: 'nn5w-zj56',
         task_sets: [30],
         revision_seq: 0,
+        permission: 'public',
         created_at: new Date('2017-06-15T18:59:35.004186Z'),
         created_by: {
           user_id: 'tugg-ikce',

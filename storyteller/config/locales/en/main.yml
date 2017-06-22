@@ -34,6 +34,7 @@ en:
     render_error: 'There was an error'
   common:
     close: 'Close'
+    view_source_data: 'View Source Data' # NOTE: duplicated from common/visualizations/locales
   default_goal_title: 'New Goal'
   default_page_title: 'Socrata Perspectives'
   error_pages:

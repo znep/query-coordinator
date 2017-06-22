@@ -28,19 +28,19 @@ describe('components/CatalogFilters', () => {
   });
 
   it('renders a catalog-filters div', () => {
-    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+    const element = renderComponentWithPropsAndStore(CatalogFilters, catalogFiltersProp());
     assert.isNotNull(element);
     assert.equal(element.className, 'catalog-filters');
   });
 
   it('renders a filterHeader', () => {
-    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+    const element = renderComponentWithPropsAndStore(CatalogFilters, catalogFiltersProp());
     assert.isNotNull(element.querySelector('.catalog-filters-header'));
     assert.equal(element.querySelector('.catalog-filters-header .title').textContent, 'Filters');
   });
 
   it('renders all filter sections', () => {
-    const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+    const element = renderComponentWithPropsAndStore(CatalogFilters, catalogFiltersProp());
     assert.isNotNull(element.querySelector('.filter-section.recently-viewed'));
     assert.isNotNull(element.querySelector('.filter-section.asset-types'));
     // assert.isNotNull(element.querySelector('.filter-section.last-updated-date'));
@@ -54,7 +54,7 @@ describe('components/CatalogFilters', () => {
   describe('checkbox filters', () => {
     it('calls onChange when checked/unchecked', () => {
       const spy = sinon.spy();
-      const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp({
+      const element = renderComponentWithPropsAndStore(CatalogFilters, catalogFiltersProp({
         toggleRecentlyViewed: spy
       }));
 
@@ -70,7 +70,7 @@ describe('components/CatalogFilters', () => {
   describe('dropdown filters', () => {
     it('calls onChange when an option is clicked', () => {
       const spy = sinon.spy();
-      const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp({
+      const element = renderComponentWithPropsAndStore(CatalogFilters, catalogFiltersProp({
         changeVisibility: spy
       }));
 
@@ -81,7 +81,7 @@ describe('components/CatalogFilters', () => {
 
   describe('filter content toggle', () => {
     it('closes and opens the filter sidebar when clicked', () => {
-      const element = renderComponentWithStore(CatalogFilters, catalogFiltersProp());
+      const element = renderComponentWithPropsAndStore(CatalogFilters, catalogFiltersProp());
       assert.isNull(element.querySelector('.filter-content.hidden')); // shown by default
 
       TestUtils.Simulate.click(element.querySelector('.close-filters'));

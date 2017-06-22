@@ -257,7 +257,7 @@ Proceed?
     commits_summary << jira_query(jira_tickets)
 
     commits_summary << "\n\nJIRA tickets:\n#{jira_tickets_text}\n\n"
-    commits_summary << "Diff: https://github.com/socrata/storyteller/compare/#{last_released_commit_sha}...#{new_release_commit.sha}\n\n"
+    commits_summary << "Diff: https://github.com/socrata/platform-ui/compare/#{last_released_commit_sha}...#{new_release_commit.sha}\n\n"
     commits_summary << commits.map do |commit|
       "#{commit.author.name} #{commit.date.strftime('%m-%d-%y')} #{commit.sha}:\n#{commit.message.strip}"
     end.join("\n\n")

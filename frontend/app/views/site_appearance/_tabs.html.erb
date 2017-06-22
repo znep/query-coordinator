@@ -1,0 +1,7 @@
+<ul class="tabs">
+  <% tab_sections.each do |section| %>
+    <li class="tab-link" data-tab-id="<%= section %>">
+      <%= link_to(t("screens.admin.site_appearance.tabs.#{section}.title"), "#tab=#{section}")%>
+    </li>
+  <% end %>
+</ul>

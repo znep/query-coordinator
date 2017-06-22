@@ -27,6 +27,10 @@ export function latestOutputSchema(entities) {
   return _.maxBy(_.values(entities.output_schemas), 'id');
 }
 
+export function latestRevision(entities) {
+  return _.maxBy(_.values(entities.revisions), 'id');
+}
+
 export function latestUpload(entities) {
   return _.maxBy(_.values(entities.uploads), 'id');
 }
@@ -54,7 +58,7 @@ export function columnsForOutputSchema(entities, outputSchemaId) {
 export function allTransformsDone(columnsWithTransforms, inputSchema) {
   return columnsWithTransforms.every(
     column =>
-      column.transform.contiguous_rows_processed &&
+      !_.isUndefined(column.transform.contiguous_rows_processed) &&
       column.transform.contiguous_rows_processed === inputSchema.total_rows
   );
 }

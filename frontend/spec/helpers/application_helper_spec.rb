@@ -88,6 +88,105 @@ window.socrata.featureFlags =
 
   end
 
+  describe '#prevent_platform_styling?' do
+
+    context 'when the config does not exist' do
+      before do
+        allow(controller).to receive(:class).and_return(CustomContentController)
+        allow(CurrentDomain).to receive(:configuration).and_return(nil)
+        controller.instance_variable_set(:@page, OpenStruct.new(:path => '/custom-page'))
+      end
+
+      it 'should return false' do
+        expect(helper.prevent_platform_styling?).to eq(false)
+      end
+    end
+
+    context 'when the config exists but does not prevent the current page' do
+      before do
+        allow(controller).to receive(:class).and_return(CustomContentController)
+        allow(CurrentDomain).to receive(:configuration).and_return(
+          OpenStruct.new(:properties => OpenStruct.new(:prevent_platform_styling => ['^\/$', '^\/custom-page']))
+        )
+        controller.instance_variable_set(:@page, OpenStruct.new(:path => '/different-custom-page'))
+      end
+
+      it 'should return false' do
+        expect(helper.prevent_platform_styling?).to eq(false)
+      end
+    end
+
+    context 'when the config exists and prevents the current page' do
+      before do
+        allow(controller).to receive(:class).and_return(CustomContentController)
+        allow(CurrentDomain).to receive(:configuration).and_return(
+          OpenStruct.new(:properties => OpenStruct.new(:prevent_platform_styling => ['^\/$', '^\/custom-page']))
+        )
+        controller.instance_variable_set(:@page, OpenStruct.new(:path => '/custom-page'))
+      end
+
+      it 'should return true' do
+        expect(helper.prevent_platform_styling?).to eq(true)
+      end
+    end
+
+    context 'when the config exists and prevents the current page on a homepage' do
+      before do
+        allow(controller).to receive(:class).and_return(CustomContentController)
+        allow(CurrentDomain).to receive(:configuration).and_return(
+          OpenStruct.new(:properties => OpenStruct.new(:prevent_platform_styling => ['^\/$', '^\/custom-page']))
+        )
+        controller.instance_variable_set(:@page, OpenStruct.new(:path => '/'))
+      end
+
+      it 'should return true' do
+        expect(helper.prevent_platform_styling?).to eq(true)
+      end
+    end
+
+    context 'when the config prevents a cluster of pages that includes the current page' do
+      before do
+        allow(controller).to receive(:class).and_return(CustomContentController)
+        allow(CurrentDomain).to receive(:configuration).and_return(
+          OpenStruct.new(:properties => OpenStruct.new(:prevent_platform_styling => ['\/custom-path/blah\/.*']))
+        )
+        controller.instance_variable_set(:@page, OpenStruct.new(:path => '/custom-path/blah/some/page'))
+      end
+
+      it 'should return true' do
+        expect(helper.prevent_platform_styling?).to eq(true)
+      end
+    end
+
+    context 'when the config prevents a cluster of pages that does not include the current page' do
+      before do
+        allow(controller).to receive(:class).and_return(CustomContentController)
+        allow(CurrentDomain).to receive(:configuration).and_return(
+          OpenStruct.new(:properties => OpenStruct.new(:prevent_platform_styling => ['\/custom-path\/blah\/.*']))
+        )
+        controller.instance_variable_set(:@page, OpenStruct.new(:path => '/custom-path/blah2/some/page'))
+      end
+
+      it 'should return false' do
+        expect(helper.prevent_platform_styling?).to eq(false)
+      end
+    end
+
+    context 'when the config prevents all pages' do
+      before do
+        allow(controller).to receive(:class).and_return(CustomContentController)
+        allow(CurrentDomain).to receive(:configuration).and_return(
+          OpenStruct.new(:properties => OpenStruct.new(:prevent_platform_styling => ['.*']))
+        )
+        controller.instance_variable_set(:@page, OpenStruct.new(:path => '/custom-path/some/page'))
+      end
+
+      it 'should return true' do
+        expect(helper.prevent_platform_styling?).to eq(true)
+      end
+    end
+  end
+
   describe '#apply_custom_css?' do
     let(:custom_css) { 'body { color: rebeccapurple; }' }
     let(:govstat_enabled) { false }

@@ -19,7 +19,7 @@ describe('components/VisibilityCell', () => {
 
   describe('Open visibility', () => {
     it('renders the "open" title and icon', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps());
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps());
       assert.isNotNull(element);
       assert.equal(element.className, 'visibility-cell');
       assert.equal(element.textContent, 'Open');
@@ -29,7 +29,7 @@ describe('components/VisibilityCell', () => {
 
   describe('Private visibility', () => {
     it('renders the "private" title and icon', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isPublic: false
       }));
@@ -43,7 +43,7 @@ describe('components/VisibilityCell', () => {
       const fakeUserId = 'abcd-1234';
       window.serverConfig.currentUser = { id: fakeUserId };
 
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isPublic: false,
         grants: [{
@@ -57,7 +57,7 @@ describe('components/VisibilityCell', () => {
     it('does not show the "shared to me" description if the current user is not listed in the grants array', () => {
       window.serverConfig.currentUser = { id: 'abcd-1234' };
 
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isPublic: false,
         grants: [{
@@ -69,7 +69,7 @@ describe('components/VisibilityCell', () => {
     });
 
     it('takes priority over Hidden visibility', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isPublic: false,
         isPublished: false,
@@ -82,7 +82,7 @@ describe('components/VisibilityCell', () => {
 
   describe('Hidden visibility', () => {
     it('renders the "hidden" title and icon', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isPublished: false
       }));
@@ -93,7 +93,7 @@ describe('components/VisibilityCell', () => {
     });
 
     it('shows the "rejected" description if the asset has rejected view moderation', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isModerationApproved: false,
         moderationStatus: 'rejected'
@@ -102,7 +102,7 @@ describe('components/VisibilityCell', () => {
     });
 
     it('shows the "rejected" description if the asset has rejected routing and approval', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isRoutingApproved: false,
         routingStatus: 'rejected'
@@ -111,7 +111,7 @@ describe('components/VisibilityCell', () => {
     });
 
     it('shows the "rejected" description if the asset has rejected data lens', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isDatalensApproved: false,
         datalensStatus: 'rejected'
@@ -120,7 +120,7 @@ describe('components/VisibilityCell', () => {
     });
 
     it('shows the "pending" description if the asset has pending view moderation', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isModerationApproved: false,
         moderationStatus: 'pending'
@@ -129,7 +129,7 @@ describe('components/VisibilityCell', () => {
     });
 
     it('shows the "pending" description if the asset has pending routing and approval', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isRoutingApproved: false,
         routingStatus: 'pending'
@@ -138,7 +138,7 @@ describe('components/VisibilityCell', () => {
     });
 
     it('shows the "pending" description if the asset has pending data lens', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isDatalensApproved: false,
         datalensStatus: 'pending'
@@ -147,7 +147,7 @@ describe('components/VisibilityCell', () => {
     });
 
     it('shows "rejected" over "pending" if both apply to a given asset', () => {
-      const element = renderComponentWithStore(VisibilityCell, visibilityCellProps({
+      const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps({
         visibleToAnonymous: false,
         isDatalensApproved: false,
         datalensStatus: 'rejected',

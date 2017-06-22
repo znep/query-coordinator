@@ -2712,13 +2712,14 @@ en:
       update: Update %{model}
   internal_asset_manager:
     asset_types:
-      blob: Files or Document
+      blob: File or Document
       calendar: Calendar
       chart: Chart
       datalens: Data Lens
       dataset: Dataset
       draft: Draft Dataset
       filter: Filtered View
+      file: File or Document
       form: Form
       href: External Dataset
       map: Map

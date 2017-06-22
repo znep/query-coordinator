@@ -51,6 +51,9 @@ export const mapStateToProps = ({ entities, ui }) => {
   // Include upload in the definition of inProgress because if there is no upload,
   // we don't want to show the spinner, we want to show the actual component so the
   // user can upload something
+  // TODO: maybe tweak this in the future. For really small files, the upload finishes
+  // before polling for OS does, so the uploads page shows (instead of the spinner)
+  // for a split second before transitioning to ShowOutputSchema page
   return {
     inProgress: !!upload && !!apiCall.length
   };

@@ -6,7 +6,10 @@
   border-left: 1px solid $light-grey-2;
 
   li {
-    color: $primary-base
+    color: $primary-base;
+    a {
+      text-decoration: none;
+    }
   }
 }
 

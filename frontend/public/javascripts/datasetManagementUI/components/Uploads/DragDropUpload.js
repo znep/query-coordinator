@@ -48,18 +48,23 @@ export class DragDropUpload extends Component {
       <section className={styles.container}>
         <h2>Replace Data</h2>
         <div onDrop={this.handleDrop} onDragOver={this.preventDefault} className={styles.dropZone}>
-          hello
-          <label id="upload-label" className={styles.uploadButton} htmlFor="file">
-            Browse
-          </label>
-          <input
-            id="file"
-            name="file"
-            type="file"
-            accept=".csv,.tsv,.xls,.xlsx"
-            aria-labelledby="upload-label"
-            className={styles.uploadInput}
-            onChange={e => dispatch(createUpload(e.target.files[0]))} />
+          <div className={styles.imageContainer}>
+            <img alt="upload" className={styles.image} src="/images/datasetManagementUI/copy-document.svg" />
+          </div>
+          <div className={styles.textContainer}>
+            hellow
+            <label id="upload-label" className={styles.uploadButton} htmlFor="file">
+              Browse
+            </label>
+            <input
+              id="file"
+              name="file"
+              type="file"
+              accept=".csv,.tsv,.xls,.xlsx"
+              aria-labelledby="upload-label"
+              className={styles.uploadInput}
+              onChange={e => dispatch(createUpload(e.target.files[0]))} />
+          </div>
         </div>
       </section>
     );

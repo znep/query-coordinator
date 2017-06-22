@@ -52,18 +52,22 @@ export class DragDropUpload extends Component {
             <img alt="upload" className={styles.image} src="/images/datasetManagementUI/copy-document.svg" />
           </div>
           <div className={styles.textContainer}>
-            hellow
-            <label id="upload-label" className={styles.uploadButton} htmlFor="file">
-              Browse
-            </label>
-            <input
-              id="file"
-              name="file"
-              type="file"
-              accept=".csv,.tsv,.xls,.xlsx"
-              aria-labelledby="upload-label"
-              className={styles.uploadInput}
-              onChange={e => dispatch(createUpload(e.target.files[0]))} />
+            <div className={styles.content}>
+              <h2>Drag a New Data File Here</h2>
+              <div className={styles.browseMsg}>...or click Browse to choose a file from your computer</div>
+              <div className={styles.fileTypes}>Supported file types are .csv, .tsv, .xls, and .xlsx</div>
+              <label id="upload-label" className={styles.uploadButton} htmlFor="file">
+                Browse
+              </label>
+              <input
+                id="file"
+                name="file"
+                type="file"
+                accept=".csv,.tsv,.xls,.xlsx"
+                aria-labelledby="upload-label"
+                className={styles.uploadInput}
+                onChange={e => dispatch(createUpload(e.target.files[0]))} />
+            </div>
           </div>
         </div>
       </section>

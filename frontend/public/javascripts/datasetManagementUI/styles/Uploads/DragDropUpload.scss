@@ -10,8 +10,9 @@
 
 .container h2 {
   width: 90%;
+  font-size: 25px;
   margin: 0 auto;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.3em;
 }
 
 .dropZone {
@@ -38,7 +39,6 @@
 
 .imageContainer, .textContainer {
   height: 100%;
-  border: 1px dashed blue;
   display: inline-block;
   vertical-align: top;
 }
@@ -58,4 +58,35 @@
 
 .textContainer {
   width: 60%;
+  position: relative;
+
+  .content {
+    padding-left: 1em;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    .uploadButton {
+      padding: 11px 33px;
+    }
+  }
+
+  h2 {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .browseMsg {
+    font-size: 1.1em;
+  }
+
+  .fileTypes {
+    color: $dark-grey-1;
+  }
+}
+
+.content > * {
+  margin-bottom: 0.4em;
 }

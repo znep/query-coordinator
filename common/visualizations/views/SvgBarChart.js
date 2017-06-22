@@ -414,24 +414,27 @@ function SvgBarChart($element, vif, options) {
     // inline in this function below).
     function renderSeries() {
 
-      dimensionGroupSvgs.selectAll('rect.bar-underlay').
-        attr(
-          'y',
-          (d, measureIndex) => {
-            return d3GroupingYScale(measureLabels[measureIndex]);
-          }
-        ).
-        attr('x', 0).
-        attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0)).
-        attr('width', width).
-        attr('stroke', 'none').
-        attr('fill', 'transparent').
-        attr(
-          'data-default-fill',
-          (measureValue, measureIndex, dimensionIndex) => {
-            return getColor(dimensionIndex, measureIndex);
-          }
-        );
+      if (!isStacked) {
+
+        dimensionGroupSvgs.selectAll('rect.bar-underlay').
+          attr(
+            'y',
+            (d, measureIndex) => {
+              return d3GroupingYScale(measureLabels[measureIndex]);
+            }
+          ).
+          attr('x', 0).
+          attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0)).
+          attr('width', width).
+          attr('stroke', 'none').
+          attr('fill', 'transparent').
+          attr(
+            'data-default-fill',
+            (measureValue, measureIndex, dimensionIndex) => {
+              return getColor(dimensionIndex, measureIndex);
+            }
+          );
+      }
 
       const bars = dimensionGroupSvgs.selectAll('rect.bar');
 
@@ -1026,27 +1029,30 @@ function SvgBarChart($element, vif, options) {
       ).
       attr('transform', (d) => `translate(0,${d3DimensionYScale(d[0])})`);
 
-    barUnderlaySvgs = dimensionGroupSvgs.selectAll('rect.bar-underlay').
-      data((d) => d.slice(1)).
-      enter().
-      append('rect');
+    if (!isStacked) {
 
-    barUnderlaySvgs.
-      attr('class', 'bar-underlay').
-      attr(
-        'data-dimension-value',
-        (datum, measureIndex, dimensionIndex) => {
-          return dimensionValues[dimensionIndex];
-        }
-      ).
-      attr(
-        'data-dimension-index',
-        (datum, measureIndex, dimensionIndex) => dimensionIndex
-      ).
-      attr(
-        'data-measure-index',
-        (datum, measureIndex) => measureIndex
-      );
+      barUnderlaySvgs = dimensionGroupSvgs.selectAll('rect.bar-underlay').
+        data((d) => d.slice(1)).
+        enter().
+        append('rect');
+
+      barUnderlaySvgs.
+        attr('class', 'bar-underlay').
+        attr(
+          'data-dimension-value',
+          (datum, measureIndex, dimensionIndex) => {
+            return dimensionValues[dimensionIndex];
+          }
+        ).
+        attr(
+          'data-dimension-index',
+          (datum, measureIndex, dimensionIndex) => dimensionIndex
+        ).
+        attr(
+          'data-measure-index',
+          (datum, measureIndex) => measureIndex
+        );
+    }
 
     barSvgs = dimensionGroupSvgs.selectAll('rect.bar').
       data((d) => d.slice(1)).
@@ -1148,52 +1154,54 @@ function SvgBarChart($element, vif, options) {
     /**
      * 6. Set up event handlers for mouse interactions.
      */
+    if (!isStacked) {
 
-    dimensionGroupSvgs.selectAll('rect.bar-underlay').
-      on(
-        'mousemove',
-        // NOTE: The below function depends on this being set by d3, so it is
-        // not possible to use the () => {} syntax here.
-        function() {
+      dimensionGroupSvgs.selectAll('rect.bar-underlay').
+        on(
+          'mousemove',
+          // NOTE: The below function depends on this being set by d3, so it is
+          // not possible to use the () => {} syntax here.
+          function() {
 
-          if (!isCurrentlyPanning()) {
-            const dimensionIndex = parseInt(
-              this.getAttribute('data-dimension-index'),
-              10
-            );
-            const measureIndex = parseInt(
-              this.getAttribute('data-measure-index'),
-              10
-            );
-            const dimensionGroup = this.parentNode;
-            const siblingBar = d3.select(dimensionGroup).select(
-              `rect.bar[data-measure-index="${measureIndex}"]`
-            )[0][0];
-            const color = getColor(dimensionIndex, measureIndex);
-            const label = measureLabels[measureIndex];
-            // d3's .datum() method gives us the entire row, whereas everywhere
-            // else measureIndex refers only to measure values. We therefore
-            // add one to measure index to get the actual measure value from
-            // the raw row data provided by d3 (the value at element 0 of the
-            // array returned by .datum() is the dimension value).
-            const value = d3.select(this.parentNode).datum()[measureIndex + 1];
+            if (!isCurrentlyPanning()) {
+              const dimensionIndex = parseInt(
+                this.getAttribute('data-dimension-index'),
+                10
+              );
+              const measureIndex = parseInt(
+                this.getAttribute('data-measure-index'),
+                10
+              );
+              const dimensionGroup = this.parentNode;
+              const siblingBar = d3.select(dimensionGroup).select(
+                `rect.bar[data-measure-index="${measureIndex}"]`
+              )[0][0];
+              const color = getColor(dimensionIndex, measureIndex);
+              const label = measureLabels[measureIndex];
+              // d3's .datum() method gives us the entire row, whereas everywhere
+              // else measureIndex refers only to measure values. We therefore
+              // add one to measure index to get the actual measure value from
+              // the raw row data provided by d3 (the value at element 0 of the
+              // array returned by .datum() is the dimension value).
+              const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
-            showBarHighlight(siblingBar);
-            showBarFlyout(siblingBar, color, label, value);
+              showBarHighlight(siblingBar);
+              showBarFlyout(siblingBar, color, label, value);
+            }
           }
-        }
-      ).
-      on(
-        'mouseleave',
-        () => {
+        ).
+        on(
+          'mouseleave',
+          () => {
 
-          if (!isCurrentlyPanning()) {
+            if (!isCurrentlyPanning()) {
 
-            hideHighlight();
-            hideFlyout();
+              hideHighlight();
+              hideFlyout();
+            }
           }
-        }
-      );
+        );
+    }
 
     dimensionGroupSvgs.selectAll('rect.bar').
       on(

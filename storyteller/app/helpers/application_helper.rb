@@ -47,6 +47,24 @@ module ApplicationHelper
     page_title_parts.join(' | ')
   end
 
+  # Renders pendo tracker code if pendo_tracking feature enabled.
+  # Only runs for logged in users.
+  def render_pendo_tracker
+    if pendo_tracking_enabled? && current_user
+      pendo_config = {
+        :token => Rails.application.config.pendo_token,
+        :email => current_user['email'],
+        :socrata_id => current_user['id'],
+        :socrata_employee => current_user.try(:[], 'flags').try(:include?, 'admin') || false,
+        :role => current_user['roleName'] || 'N/A',
+        :stories_enabled => true,
+        :environment =>  Rails.env
+      }
+
+      render 'shared/pendo_tracking', :pendo_config => pendo_config
+    end
+  end
+
   private
 
   def webpack_assets

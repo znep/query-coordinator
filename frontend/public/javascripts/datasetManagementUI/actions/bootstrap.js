@@ -121,10 +121,9 @@ function sideEffectyStuff(revision) {
       }
     });
 
-    revision.task_sets = revision.task_sets;
     revision.task_sets.forEach(taskSet => {
       if (taskSet.status === ApplyRevision.TASK_SET_IN_PROGRESS) {
-        dispatch(ApplyRevision.pollForUpsertJobProgress(taskSet.id));
+        dispatch(ApplyRevision.pollForTaskSetProgress(taskSet.id));
       }
     });
 

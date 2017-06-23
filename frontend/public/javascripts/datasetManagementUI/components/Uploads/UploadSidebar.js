@@ -23,7 +23,7 @@ export const UploadSidebar = ({ currentUpload, otherUploads }) =>
   <section className={styles.sidebar}>
     <h2>{I18n.show_uploads.current}</h2>
     <ul>
-      {currentUpload ? <UploadItem upload={currentUpload} /> : <span>No uploads yet :(</span>}
+      {currentUpload ? <UploadItem upload={currentUpload} /> : <span>{I18n.show_uploads.no_uploads}</span>}
     </ul>
     {!!otherUploads.length && <h2>{I18n.show_uploads.noncurrent}</h2>}
     <ul>
@@ -33,19 +33,19 @@ export const UploadSidebar = ({ currentUpload, otherUploads }) =>
 
 UploadSidebar.propTypes = {
   currentUpload: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    inputSchemaId: PropTypes.number.isRequired,
-    outputSchemaId: PropTypes.number.isRequired,
-    filename: PropTypes.string.isRequired,
-    finished_at: PropTypes.object.isRequired
+    id: PropTypes.number,
+    inputSchemaId: PropTypes.number,
+    outputSchemaId: PropTypes.number,
+    filename: PropTypes.string,
+    finished_at: PropTypes.object
   }),
   otherUploads: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      inputSchemaId: PropTypes.number.isRequired,
-      outputSchemaId: PropTypes.number.isRequired,
-      filename: PropTypes.string.isRequired,
-      finished_at: PropTypes.object.isRequired
+      id: PropTypes.number,
+      inputSchemaId: PropTypes.number,
+      outputSchemaId: PropTypes.number,
+      filename: PropTypes.string,
+      finished_at: PropTypes.object
     })
   )
 };

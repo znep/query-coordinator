@@ -2161,13 +2161,14 @@ en:
       upload_failed: Upload Failed
       upload_in_progress: Upload In Progress
     show_uploads:
-      title: Replace Data
-      message: Drag a New Data File Here
-      submessage: ...or click Browse to choose a file from your computer
+      current: Current Upload
       filetypes: Supported file types are .csv, .tsv, .xls, and .xlsx
       flash_error_message: Unsupported file type
-      current: Current Upload
+      message: Drag a New Data File Here
+      no_uploads: No uploads yet :(
       noncurrent: Other Uploads
+      submessage: ...or click Browse to choose a file from your computer
+      title: Replace Data
     show_upsert:
       failure:
         body: I'm sorry Dave, I can't let you do that.

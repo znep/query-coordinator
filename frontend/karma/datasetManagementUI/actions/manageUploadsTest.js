@@ -96,7 +96,7 @@ describe('actions/manageUploads', () => {
             1
           );
           assert.equal(redirectPayload.method, 'push');
-          assert.match(redirectPayload.args[0], /\/uploads\/\d+/);
+          assert.match(redirectPayload.args[0], /\/uploads/);
 
           done();
         })

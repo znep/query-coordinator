@@ -6,7 +6,7 @@ import _ from 'lodash';
 import dotProp from 'dot-prop-immutable';
 import state from '../data/initialState';
 
-describe.only('components/ShowUpload', () => {
+describe('components/ShowUpload', () => {
   const defaultProps = {
     goHome: _.noop,
     inProgress: false

@@ -15,6 +15,7 @@ window._ = require('lodash');
 window.socrata = window.socrata || {};
 window.socrata.visualizations = require('common/visualizations');
 window.socrata.AuthoringWorkflow = require('common/authoring_workflow');
+window.socrata.generateEmbedCode = require('visualization_embed/embedCodeGenerator').default; //eslint-disable-line dot-notation
 
 // These two are just for visualization_component.html.erb
 window.react = window.React = require('react');

@@ -29,7 +29,9 @@ export class PublishConfirmationUSAID extends Component {
   }
 
   render() {
-    const { outputSchemaId, doCancel, doUpdate, setPermission, btnDisabled, publicSelected } = this.props;
+    const {
+      outputSchemaId, doCancel, dispatchApplyRevision, setPermission, btnDisabled, publicSelected
+    } = this.props;
 
     return (
       <div>
@@ -61,7 +63,7 @@ export class PublishConfirmationUSAID extends Component {
             operation={APPLY_REVISION}
             params={{ outputSchemaId }}
             forceDisable={btnDisabled}
-            onClick={() => doUpdate(outputSchemaId)}>
+            onClick={() => dispatchApplyRevision(outputSchemaId)}>
             {I18n.home_pane.publish_confirmation.button}
           </ApiCallButton>
         </ModalFooter>
@@ -71,16 +73,17 @@ export class PublishConfirmationUSAID extends Component {
 }
 
 PublishConfirmationUSAID.propTypes = {
-  outputSchemaId: PropTypes.number.isRequired,
+  outputSchemaId: PropTypes.number,
   doCancel: PropTypes.func.isRequired,
-  doUpdate: PropTypes.func.isRequired,
+  dispatchApplyRevision: PropTypes.func.isRequired,
   btnDisabled: PropTypes.bool,
   setPermission: PropTypes.func,
   publicSelected: PropTypes.bool.isRequired
 };
 
 export function mapStateToProps({ entities, ui }) {
-  const { id: outputSchemaId } = Selectors.latestOutputSchema(entities);
+  const latestOutputSchema = Selectors.latestOutputSchema(entities);
+  const outputSchemaId = latestOutputSchema ? latestOutputSchema.id : null;
   const { id: revisionId } = Selectors.latestRevision(entities);
   const permission = entities.revisions[revisionId] ? entities.revisions[revisionId].permission : 'public';
   const { apiCalls } = ui;
@@ -106,7 +109,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(updateRevision(initialPermission));
       dispatch(hideModal());
     },
-    doUpdate: outputSchemaId => dispatch(applyRevision(outputSchemaId)),
+    dispatchApplyRevision: outputSchemaId => dispatch(applyRevision(outputSchemaId)),
     setPermission: permission => dispatch(updateRevision(permission))
   };
 }

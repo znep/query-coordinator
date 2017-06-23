@@ -38,6 +38,16 @@ describe('components/ShowRevision', () => {
     assert.isFalse(component.find('.manageDataBtn').isEmpty());
   });
 
+  it('renders without errors when there is no output schema', () => {
+    const propsWithoutOutputSchema = _.clone(defaultProps);
+    propsWithoutOutputSchema.entities.output_schemas = {};
+    propsWithoutOutputSchema.entities.input_schemas = {};
+    propsWithoutOutputSchema.entities.task_sets = {};
+    propsWithoutOutputSchema.entities.uploads = {};
+    const theComponent = shallow(<ShowRevision {...propsWithoutOutputSchema} />);
+    assert.isFalse(theComponent.isEmpty());
+  });
+
   it('renders list of accepted file types', () => {
     const clonedProps = _.cloneDeep(ShowRevisionProps);
     clonedProps.entities.output_schemas = {};

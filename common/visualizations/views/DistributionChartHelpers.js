@@ -132,7 +132,7 @@ var helpers = module.exports = {
 
       if (buckets.length >= 2) {
         // We are vulnerable to floating point errors here so rounding off
-        result.bucketSize = Math.round((buckets[1] - buckets[0]) * 100) / 100;
+        result.bucketSize = Math.round((buckets[1] - buckets[0]) * 1000000) / 1000000;
       } else {
         result.bucketSize = 1;
       }
@@ -287,8 +287,8 @@ var helpers = module.exports = {
   getLinearBucket: function(magnitude, value, bucketSize) {
     // Also vulnerable to floating point weirdness here; applying same fix as above for now
     // until we can settle on a formal way to deal with floating point math
-    var start = Math.round( (magnitude * bucketSize) * 100 ) / 100;
-    var end = Math.round( ((magnitude + 1) * bucketSize) * 100 ) / 100;
+    var start = Math.round( (magnitude * bucketSize) * 1000000 ) / 1000000;
+    var end = Math.round( ((magnitude + 1) * bucketSize) * 1000000 ) / 1000000;
 
     return {
       start: start,

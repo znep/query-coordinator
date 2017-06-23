@@ -3,7 +3,7 @@ module LocaleCache
     # load and merge everything to start with
     @locales = locales = {}
 
-    # Add /common loccale strings
+    # Add /common locale strings
     Dir.glob("#{Rails.root}/../common/i18n/locales/*.yml") do |filename|
       locales.deep_merge!(YAML.load_file(filename) || {})
     end

@@ -156,7 +156,6 @@ module RailsI18nToJS
           '}'
         ].tap do |return_value|
           next if children.empty?
-          #return_value << 'else'
           case children.first.type
           when :if then return_value << parse_if(children.shift)
           when :sym then return_value << parse_node(children.shift)

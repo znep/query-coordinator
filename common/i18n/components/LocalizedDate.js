@@ -3,10 +3,10 @@ import moment from 'moment';
 import React from 'react';
 
 export default function LocalizedDate(props, context) {
-  const { localization } = context;
+  const { I18n } = context;
   const { date, withTime } = props;
 
-  const locale = localization.getLocale();
+  const locale = _.get(I18n, 'locale', I18n.defaultLocale);
 
   const format = withTime ? 'LLL' : 'LL';
   const formattedDate = moment(date, moment.ISO_8601).locale(locale).format(format);
@@ -22,5 +22,6 @@ LocalizedDate.propTypes = {
 };
 
 LocalizedDate.contextTypes = {
+  I18n: React.PropTypes.object,
   localization: React.PropTypes.object
 };

@@ -3,8 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 
-import Localization from 'components/Localization/Localization';
-import LocalizedLink from 'components/Localization/LocalizedLink';
+import Localization from 'common/i18n/components/Localization';
+import LocalizedLink from 'common/i18n/components/LocalizedLink';
 
 describe('LocalizedLink', () => {
   const translations = {};
@@ -14,7 +14,7 @@ describe('LocalizedLink', () => {
   it('should render a link with locale prefix if exists', () => {
     const localizationWithLocalePrefix = (
       <Localization translations={translations} locale="en" localePrefix="/en">
-        <LocalizedLink url={'/some/path'}>Some Path</LocalizedLink>
+        <LocalizedLink path={'/some/path'}>Some Path</LocalizedLink>
       </Localization>
     );
 
@@ -26,7 +26,7 @@ describe('LocalizedLink', () => {
   it('should render a link without a locale prefix if it doesn\'t provided', () => {
     const localizationWithoutLocalePrefix = (
       <Localization translations={translations} locale="en">
-        <LocalizedLink url={'/some/path'}>Some Path</LocalizedLink>
+        <LocalizedLink path={'/some/path'}>Some Path</LocalizedLink>
       </Localization>
     );
 

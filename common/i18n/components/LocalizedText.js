@@ -16,5 +16,6 @@ LocalizedText.propTypes = {
 };
 
 LocalizedText.contextTypes = {
+  I18n: React.PropTypes.object,
   localization: React.PropTypes.object
 };

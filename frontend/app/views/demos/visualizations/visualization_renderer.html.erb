@@ -9,6 +9,11 @@
       width: 640px;
       height: 490px;
     }
+    #vif {
+      font-family: monospace;
+      width: 90%;
+      height: 400px;
+    }
   </style>
 <% end %>
 
@@ -23,28 +28,49 @@
     var chart = document.getElementById('chart');
     var visualization;
 
+    var setVif = function(vif) {
+      visualization.update(vif);
+      $('#vif').val(JSON.stringify(vif, null, 2));
+    };
+
     $(function() {
-      $('button').click(function(e) {
+      $('button.sample').click(function(e) {
         e.preventDefault();
-        visualization.update(window.socrata.sampleVifsByChartType[this.id]);
+        setVif(window.socrata.sampleVifsByChartType[this.id]);
       });
 
       $('#timelineChart').focus(); // this focus is just for the effect :)
       visualization = new VisualizationRenderer(window.socrata.sampleVifsByChartType.timelineChart, chart);
+
+      $('#customVif').click(function() {
+        var customVif = prompt('Paste yer vif here.');
+        try {
+          if (customVif) {
+            customVif = JSON.parse(customVif);
+            setVif(customVif);
+          }
+        } catch (e) {
+          alert(e);
+        }
+      });
     });
   </script>
 <% end %>
 
 <a href="/internal">Internal Panel Home</a><br>
 <a href="/internal/demos/visualizations">Back to demo list</a><br>
-<button id="barChart" class="btn btn-alternate-2 btn-inverse">Bar Chart</button>
-<button id="columnChart" class="btn btn-alternate-2 btn-inverse">Column Chart</button>
-<button id="featureMap" class="btn btn-alternate-2 btn-inverse">Feature Map</button>
-<button id="histogram" class="btn btn-alternate-2 btn-inverse">Histogram</button>
-<button id="pieChart" class="btn btn-alternate-2 btn-inverse">Pie Chart</button>
-<button id="regionMap" class="btn btn-alternate-2 btn-inverse">Region Map</button>
-<button id="table" class="btn btn-alternate-2 btn-inverse">Table</button>
-<button id="timelineChart" class="btn btn-alternate-2 btn-inverse">Timeline Chart</button>
-<button id="invalidChart" class="btn btn-alternate-2 btn-inverse">Invalid VIF</button>
+<button id="customVif" class="btn btn-primary">Paste VIF</button>
+<button id="barChart" class="sample btn btn-alternate-2 btn-inverse">Bar Chart</button>
+<button id="columnChart" class="sample btn btn-alternate-2 btn-inverse">Column Chart</button>
+<button id="featureMap" class="sample btn btn-alternate-2 btn-inverse">Feature Map</button>
+<button id="histogram" class="sample btn btn-alternate-2 btn-inverse">Histogram</button>
+<button id="pieChart" class="sample btn btn-alternate-2 btn-inverse">Pie Chart</button>
+<button id="regionMap" class="sample btn btn-alternate-2 btn-inverse">Region Map</button>
+<button id="table" class="sample btn btn-alternate-2 btn-inverse">Table</button>
+<button id="timelineChart" class="sample btn btn-alternate-2 btn-inverse">Timeline Chart</button>
+<button id="invalidChart" class="sample btn btn-alternate-2 btn-inverse">Invalid VIF</button>
 
 <div id="chart"></div>
+
+<textarea id="vif">
+</textarea>

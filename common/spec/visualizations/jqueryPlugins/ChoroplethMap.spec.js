@@ -188,7 +188,8 @@ describe('ChoroplethMap jQuery component', function() {
           stubChoroplethMap = sinon.stub().returns({
             render: _.noop,
             renderError: _.noop,
-            destroy: _.noop
+            destroy: _.noop,
+            updateTileLayer: _.noop
           });
 
           SocrataChoroplethMapAPI.__Rewire__('ChoroplethMap', stubChoroplethMap);

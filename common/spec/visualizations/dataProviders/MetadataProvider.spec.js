@@ -133,87 +133,11 @@ describe('MetadataProvider', () => {
   });
 
   describe('`.getShapefileMetadata`', () => {
-    it('should merge results from the curated regions API and phidippides if they succeed', (done) => {
-      server.respondWith(/\/api\/curated_regions/, JSON.stringify({
-        geometryLabel: 'jellyfish',
-        featurePk: null
-      }));
-
-      server.respondWith(/\/metadata\/v1\/dataset/, JSON.stringify({
-        geometryLabel: 'cuttlefish',
-        featurePk: 'octopus'
-      }));
-
-      metadataProvider.
-        getShapefileMetadata().
-        then(
-          (data) => {
-            assert.equal(data.geometryLabel, 'jellyfish');
-            assert.equal(data.featurePk, 'octopus');
-            done();
-          },
-          (error) => {
-
-            // Fail the test since we expected a success response.
-            assert.isTrue(undefined);
-            done();
-          }
-        ).catch(
-          (e) => {
-
-            // Fail the test since we shouldn't be encountering an
-            // exception in any case.
-            console.log(e.message);
-            assert.isFalse(e);
-            done();
-          }
-        );
-
-      server.respond();
-    });
-
-    it('should use the results from phidippides if the curated regions request fails', (done) => {
-      server.respondWith(/\/api\/curated_regions/, [ERROR_STATUS, {}, '']);
-      server.respondWith(/\/metadata\/v1\/dataset/, JSON.stringify({
-        geometryLabel: 'cuttlefish',
-        featurePk: 'octopus'
-      }));
-
-      metadataProvider.
-        getShapefileMetadata().
-        then(
-          (data) => {
-            assert.equal(data.geometryLabel, 'cuttlefish');
-            assert.equal(data.featurePk, 'octopus');
-            done();
-          },
-          (error) => {
-
-            // Fail the test since we expected a success response.
-            assert.isTrue(undefined);
-            done();
-          }
-        ).catch(
-          (e) => {
-
-            // Fail the test since we shouldn't be encountering an
-            // exception in any case.
-            console.log(e.message);
-            assert.isFalse(e);
-            done();
-          }
-        );
-
-      server.respond();
-    });
-
-    it('should use the results from the curated regions API if the phidippides request fails', (done) => {
+    it('should use the results from the curated regions API', (done) => {
       server.respondWith(/\/api\/curated_regions/, JSON.stringify({
         geometryLabel: null,
         featurePk: 'cnidaria'
       }));
-
-      server.respondWith(/\/metadata\/v1\/dataset/, [ERROR_STATUS, {}, '']);
 
       metadataProvider.
         getShapefileMetadata().
@@ -243,9 +167,8 @@ describe('MetadataProvider', () => {
       server.respond();
     });
 
-    it('should return default values for both metadata keys if both requests fail', (done) => {
+    it('should return default values for both metadata keys if curated region request fails', (done) => {
       server.respondWith(/\/api\/curated_regions/, [ERROR_STATUS, {}, '']);
-      server.respondWith(/\/metadata\/v1\/dataset/, [ERROR_STATUS, {}, '']);
 
       metadataProvider.
         getShapefileMetadata().
@@ -543,7 +466,7 @@ describe('MetadataProvider', () => {
   describe('getDisplayableFilterableColumns', () => {
     beforeEach(() => {
       server.respondImmediately = true;
-      server.respondWith('GET', 'https://example.com/api/views/test-test.json', [200, { 'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_DATASET_METADATA)]);
+      server.respondWith('GET', 'https://example.com/api/views/test-test.json?read_from_nbe=true&version=2.1', [200, { 'Content-Type': 'application/json'}, JSON.stringify(SAMPLE_DATASET_METADATA)]);
       server.respondWith('GET', /api\/id/, [200, { 'Content-Type': 'application/json' }, JSON.stringify([{}])]);
     });
 

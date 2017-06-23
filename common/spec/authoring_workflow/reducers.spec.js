@@ -255,10 +255,6 @@ describe('AuthoringWorkflow reducer', function() {
         expect(newState.metadata.data).to.equal(null);
       });
 
-      it('clears the phidippidesMetadata key', function() {
-        expect(newState.metadata.phidippidesMetadata).to.equal(null);
-      });
-
       it('sets the domain', function() {
         expect(newState.metadata.domain).to.equal(domain);
       });
@@ -278,10 +274,9 @@ describe('AuthoringWorkflow reducer', function() {
           }
         });
 
-        action = actions.receiveMetadata([
+        action = actions.receiveMetadata(
           { id: 'data-sets', columns: [] },
-          { id: 'phid-miss', columns: {} }
-        ]);
+        );
 
         newState = reducer(state, action);
       });
@@ -292,7 +287,6 @@ describe('AuthoringWorkflow reducer', function() {
 
       it('sets the data key', function() {
         expect(newState.metadata.data).to.deep.equal({ id: 'data-sets', columns: [] });
-        expect(newState.metadata.phidippidesMetadata).to.deep.equal({ id: 'phid-miss', columns: {} });
       });
     });
 
@@ -403,25 +397,6 @@ describe('AuthoringWorkflow reducer', function() {
 
       it('clears the curatedRegions key', function() {
         expect(newState.metadata.curatedRegions).to.be.null;
-      });
-    });
-
-    describe('SET_PHIDIPPIDES_METADATA', function() {
-      var state, action, newState;
-
-      beforeEach(function() {
-        state = _.merge(getDefaultState(), {
-          metadata: {
-            phidippidesMetadata: 'oldphi'
-          }
-        });
-
-        action = actions.setPhidippidesMetadata('newphi');
-        newState = reducer(state, action);
-      });
-
-      it('sets phidippides metadata', function() {
-        expect(newState.metadata.phidippidesMetadata).to.equal('newphi');
       });
     });
 

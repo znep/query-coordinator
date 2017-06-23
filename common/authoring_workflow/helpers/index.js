@@ -61,6 +61,7 @@ export const isNonEmptyString = string => {
 };
 
 export const setUnits = (series, action) => {
+  // TODO: Fetch from OBE copy if we're on the nbe replica.
   const rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', null);
   const unitOne = _.get(series, 'unit.one', null);
   const unitOther = _.get(series, 'unit.other', null);

@@ -53,20 +53,13 @@ function MetadataProvider(config) {
    */
   this.getDatasetMetadata = () => {
     const datasetUid = this.getConfigurationProperty('datasetUid');
-    const url = `api/views/${datasetUid}.json`;
+    const url = `api/views/${datasetUid}.json?read_from_nbe=true&version=2.1`;
 
     return makeMetadataRequest(url);
   };
 
   this.getCuratedRegions = () => {
     return makeMetadataRequest('api/curated_regions');
-  };
-
-  this.getPhidippidesMetadata = () => {
-    const datasetUid = this.getConfigurationProperty('datasetUid');
-    const url = `metadata/v1/dataset/${datasetUid}.json`;
-
-    return makeMetadataRequest(url);
   };
 
   this.getDatasetMigrationMetadata = () => {
@@ -122,19 +115,12 @@ function MetadataProvider(config) {
     const curatedRegionsUrl = `api/curated_regions?method=getByViewUid&viewUid=${datasetUid}`;
     const curatedRegionsRequest = makeRequest(curatedRegionsUrl);
 
-    const phidippidesUrl = `metadata/v1/dataset/${datasetUid}.json`;
-    const phidippidesRequest = makeRequest(phidippidesUrl);
-
-    return Promise.all([curatedRegionsRequest, phidippidesRequest]).then((responses) => {
-      const [ curatedRegionsResponse, phidippidesResponse ] = responses;
-
+    return curatedRegionsRequest.then((curatedRegionsResponse) => {
       const curatedRegionsGeometryLabel = _.get(curatedRegionsResponse, 'geometryLabel', null);
-      const phidippidesGeometryLabel = _.get(phidippidesResponse, 'geometryLabel', null);
-      const geometryLabel = curatedRegionsGeometryLabel || phidippidesGeometryLabel;
+      const geometryLabel = curatedRegionsGeometryLabel;
 
       const curatedRegionsFeaturePk = _.get(curatedRegionsResponse, 'featurePk', null);
-      const phidippidesFeaturePk = _.get(phidippidesResponse, 'featurePk', null);
-      const featurePk = curatedRegionsFeaturePk || phidippidesFeaturePk || '_feature_id';
+      const featurePk = curatedRegionsFeaturePk || '_feature_id';
 
       return {
         geometryLabel: geometryLabel,

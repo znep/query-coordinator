@@ -672,8 +672,8 @@ describe('SoqlDataProvider', () => {
           assert.lengthOf(server.requests, 1);
           const { url } = server.requests[0];
 
-          assert.notInclude(url, '$$read_from_nbe=true');
-          assert.notInclude(url, '$$version=2.1');
+          assert.include(url, '$$read_from_nbe=true');
+          assert.include(url, '$$version=2.1');
         });
 
         resultantQueryParts.map((queryPart) => {
@@ -866,8 +866,8 @@ describe('SoqlDataProvider', () => {
       const { url } = server.requests[0];
 
       assert.lengthOf(server.requests, 1);
-      assert.notInclude(url, '$$read_from_nbe=true');
-      assert.notInclude(url, '$$version=2.1');
+      assert.include(url, '$$read_from_nbe=true');
+      assert.include(url, '$$version=2.1');
     });
 
     describe('on request error', () => {
@@ -1009,17 +1009,17 @@ describe('SoqlDataProvider', () => {
     });
 
     it('fetches stats for text column from core metadata if available', () => {
-      soqlDataProvider.getColumnStats([{
+      return soqlDataProvider.getColumnStats([{
         dataTypeName: 'text',
         cachedContents: {
           top: [{item: 'best', count: 10}]
         }
       }]).then(
         (stats) => {
-          assert.equal(stats[0].top, [{item: 'best', count: 10}]);
+          assert.deepEqual(stats[0].top, [{item: 'best', count: 10}]);
+          assert.lengthOf(server.requests, 0);
         }
       );
-      assert.lengthOf(server.requests, 0);
     });
 
 

@@ -15,6 +15,8 @@ import {
 } from 'common/visualizations/views/SvgStyleConstants';
 import mockVif from '../mockVif';
 import mockMultiseriesVif from '../mockMultiseriesVif';
+const mockVifDomain = mockVif.series[0].dataSource.domain;
+const mockVifDatasetUid = mockVif.series[0].dataSource.datasetUid;
 
 describe('SvgVisualization', () => {
   let $element;
@@ -54,7 +56,9 @@ describe('SvgVisualization', () => {
             right: 'Right Title',
             bottom: 'Bottom Title',
             left: 'Left Title'
-          }
+          },
+          // If you change to true, make sure to mock out the resultant MetadataProvider request.
+          viewSourceDataLink: false
         }
       });
       viz = new SvgVisualization($element, newVif);
@@ -419,11 +423,14 @@ describe('SvgVisualization', () => {
       });
 
       it('renders a source data link', (done) => {
+        const vif = _.cloneDeep(mockVif);
+        vif.configuration.viewSourceDataLink = true;
+
         const viz = new SvgVisualization($element, mockVif);
         viz.showViewSourceDataLink();
 
         _.defer(() => {
-          validateLink('https://vertex-stories.test-socrata.com/d/nbe4-four')
+          validateLink(`https://${mockVifDomain}/d/nbe4-four`)
           done();
         });
       });
@@ -434,7 +441,7 @@ describe('SvgVisualization', () => {
         viz.showViewSourceDataLink();
 
         _.defer(() => {
-          validateLink('https://vertex-stories.test-socrata.com/d/nbe4-four?referrer=embed');
+          validateLink(`https://${mockVifDomain}/d/nbe4-four?referrer=embed`);
           done();
         });
       });
@@ -452,7 +459,7 @@ describe('SvgVisualization', () => {
         viz.showViewSourceDataLink();
 
         _.defer(() => {
-          validateLink('https://vertex-stories.test-socrata.com/d/k6cs-ww27');
+          validateLink(`https://${mockVifDomain}/d/${mockVifDatasetUid}`);
           done();
         });
       });
@@ -464,7 +471,7 @@ describe('SvgVisualization', () => {
         viz.showViewSourceDataLink();
 
         _.defer(() => {
-          validateLink('https://vertex-stories.test-socrata.com/d/k6cs-ww27?referrer=embed');
+          validateLink(`https://${mockVifDomain}/d/${mockVifDatasetUid}?referrer=embed`);
           done();
         });
       });

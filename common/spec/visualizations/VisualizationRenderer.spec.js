@@ -6,21 +6,25 @@ import mockVif from './mockVif';
 describe('VisualizationRenderer', () => {
   let element;
   let visualization;
+  let mockFlyout;
 
   beforeEach(() => {
     element = document.createElement('div');
+    sinon.stub($.fn, 'socrataSvgHistogram', function() {
+      $(this).append($('div').text('mock histogram'));
+    });
+    sinon.stub($.fn, 'socrataSvgColumnChart', () => {});
+    mockFlyout = {
+      clear: sinon.stub(),
+      render: sinon.stub()
+    };
   });
 
   afterEach(() => {
     element.remove();
-    $('#socrata-flyout').remove();
     $('#socrata-row-inspector').remove();
-  });
-
-  it('renders an element', () => {
-    visualization = new VisualizationRenderer(mockVif, element);
-    expect(element.querySelector('.socrata-visualization')).to.exist;
-    visualization.destroy();
+    $.fn.socrataSvgHistogram.restore();
+    $.fn.socrataSvgColumnChart.restore();
   });
 
   describe('when VIF is missing a visualization type', () => {
@@ -33,17 +37,21 @@ describe('VisualizationRenderer', () => {
     });
 
     it('does not initialize a visualization', () => {
-      expect(element.querySelector('.socrata-visualization')).to.not.exist;
+      assert.lengthOf($(element).find('.socrata-visualization'), 0);
     });
 
     it('renders an error message', () => {
-      expect(element.querySelector('.alert.error')).to.exist;
+      assert.lengthOf($(element).find('.alert.error'), 1);
     });
   });
 
   describe('when VIF has a visualization type', () => {
     beforeEach(() => {
-      visualization = new VisualizationRenderer(mockVif, element);
+      visualization = new VisualizationRenderer(
+        mockVif,
+        element,
+        { flyoutRenderer: mockFlyout }
+      );
     });
 
     afterEach(() => {
@@ -51,7 +59,9 @@ describe('VisualizationRenderer', () => {
     });
 
     it('initializes a visualization', () => {
-      expect(element.querySelector('.socrata-visualization')).to.exist;
+      sinon.assert.calledOnce($.fn.socrataSvgHistogram);
+      sinon.assert.calledWith($.fn.socrataSvgHistogram, mockVif);
+      assert.equal($.fn.socrataSvgHistogram.getCall(0).thisValue[0], element);
     });
 
     describe('visualization event handling', () => {
@@ -69,14 +79,16 @@ describe('VisualizationRenderer', () => {
           return _.get(call, 'args[0].type') === 'SOCRATA_VISUALIZATION_RENDER_VIF';
         });
 
-        expect(triggeredUpdate).to.eq(true);
+        assert.isTrue(triggeredUpdate);
       });
 
       describe('when called with a different VIF type', () => {
+        let mockColumnChartVif;
         beforeEach(() => {
-          const mockColumnChartVif = _.cloneDeep(mockVif);
+          mockColumnChartVif = _.cloneDeep(mockVif);
           mockColumnChartVif.series[0].type = 'columnChart';
 
+          $.fn.socrataSvgHistogram.reset();
           visualization.update(mockColumnChartVif);
         });
 
@@ -85,21 +97,24 @@ describe('VisualizationRenderer', () => {
             return _.get(call, 'args[0].type') === 'SOCRATA_VISUALIZATION_RENDER_VIF';
           });
 
-          expect(triggeredUpdate).to.eq(false);
+          assert.isFalse(triggeredUpdate);
         });
 
         it('destroys the existing visualization', () => {
-          expect($.fn.trigger.calledWith('SOCRATA_VISUALIZATION_DESTROY')).to.eq(true);
+          assert.isTrue($.fn.trigger.calledWith('SOCRATA_VISUALIZATION_DESTROY'));
         });
 
         it('renders a new visualization', () => {
-          expect(element.querySelector('.socrata-visualization')).to.exist;
+          sinon.assert.notCalled($.fn.socrataSvgHistogram);
+          sinon.assert.calledOnce($.fn.socrataSvgColumnChart);
+          sinon.assert.calledWith($.fn.socrataSvgColumnChart, mockColumnChartVif);
+          assert.equal($.fn.socrataSvgColumnChart.getCall(0).thisValue[0], element);
         });
       });
 
       it('triggers destroy on unmount', () => {
         visualization.destroy();
-        expect($.fn.trigger.calledWith('SOCRATA_VISUALIZATION_DESTROY')).to.eq(true);
+        assert.isTrue($.fn.trigger.calledWith('SOCRATA_VISUALIZATION_DESTROY'));
       });
     });
 
@@ -125,11 +140,7 @@ describe('VisualizationRenderer', () => {
     });
 
     describe('flyouts', () => {
-      it('initializes FlyoutRenderer', () => {
-        expect(document.querySelector('#socrata-flyout')).to.exist;
-      });
-
-      it('invokes the FlyoutRenderer when a flyouts is dispatched', () => {
+      it('invokes the FlyoutRenderer when a flyout is dispatched', () => {
         const flyoutEvent = new $.Event('SOCRATA_VISUALIZATION_FLYOUT');
         flyoutEvent.originalEvent = {
           detail: {
@@ -138,10 +149,9 @@ describe('VisualizationRenderer', () => {
           }
         };
         $(element).trigger(flyoutEvent);
-        const flyout = document.querySelector('#socrata-flyout');
-
-        expect(flyout.classList.contains('visible')).to.eq(true);
-        expect(flyout.querySelector('.socrata-flyout-content').innerText).to.eq('wombats');
+        sinon.assert.calledOnce(mockFlyout.render);
+        sinon.assert.calledWith(mockFlyout.render, flyoutEvent.originalEvent.detail);
+        sinon.assert.notCalled(mockFlyout.clear);
       });
 
       it('clears the FlyoutRenderer when a null flyout payload is dispatched', () => {
@@ -150,10 +160,8 @@ describe('VisualizationRenderer', () => {
           detail: null
         };
         $(element).trigger(flyoutEvent);
-        const flyout = document.querySelector('#socrata-flyout');
-
-        expect(flyout.classList.contains('visible')).to.eq(false);
-        expect(flyout.querySelector('.socrata-flyout-content').innerText).to.eq('');
+        sinon.assert.calledOnce(mockFlyout.clear);
+        sinon.assert.notCalled(mockFlyout.render);
       });
     });
   });

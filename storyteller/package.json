@@ -122,6 +122,7 @@
     "dompurify": "0.8.3",
     "dotdotdot": "1.7.0",
     "flux": "3.1.2",
+    "i18n-js": "1.0.0",
     "jquery": "2.2.4",
     "jquery-sidebar": "3.3.2",
     "jquery-ujs": "1.2.0",

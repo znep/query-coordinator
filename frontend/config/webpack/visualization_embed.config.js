@@ -27,6 +27,10 @@ module.exports = _.defaultsDeep({
       ],
       {
         babelRewirePlugin: true
+      },
+      {
+        test: /\.yml$/,
+        loaders: ['json', 'yaml']
       }
     )
   },

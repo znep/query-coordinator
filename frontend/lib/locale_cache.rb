@@ -2,9 +2,17 @@ module LocaleCache
   def self.load!
     # load and merge everything to start with
     @locales = locales = {}
+
+    # Add /common loccale strings
+    Dir.glob("#{Rails.root}/../common/i18n/locales/*.yml") do |filename|
+      locales.deep_merge!(YAML.load_file(filename) || {})
+    end
+
+    # Add Frontend specific locales
     Dir.glob("#{Rails.root}/config/locales/*.yml") do |filename|
       locales.deep_merge!(YAML.load_file(filename) || {})
     end
+
 
     # merge in en as the backup fallthrough for all locales
     en_translations = locales['en']
@@ -43,5 +51,14 @@ module LocaleCache
 
     @cache[cache_key] = result
     return result
+  end
+
+  def self.render_partial_translations(part_path, with_common = true)
+    split = part_path.to_s.split('.')
+    part = split.reduce(LocalePart) { |memo, path| memo.send(path) }
+
+    render_translations([part]).tap do |translations|
+      translations.deep_merge!(render_partial_translations(:common, false)) if with_common
+    end
   end
 end

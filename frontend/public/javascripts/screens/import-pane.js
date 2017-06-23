@@ -1731,8 +1731,7 @@ var Interpolator = require('../util/interpolator');
         blueprint.columns = _.map(importer.importColumns, function(importColumn) {
           return {
             name: importColumn.name,
-            datatype: importColumn.dataType,
-            format: importColumn.column.format
+            datatype: importColumn.dataType
           };
         });
 
@@ -1794,10 +1793,13 @@ var Interpolator = require('../util/interpolator');
       // fire it all off. note that data is a form-encoded payload, not json.
       $importingPane.find('.importStatus').empty();
 
+      var columnFormats = JSON.stringify(state.scan.summary.columnFormats);
+
       var dataPayload = {
         name: state.fileName,
         translation: translation,
-        fileId: state.scan.fileId
+        fileId: state.scan.fileId,
+        columnFormats: columnFormats
       };
 
       if ((state.operation == 'import') || (state.type == 'shapefile')) {

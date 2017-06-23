@@ -83,30 +83,31 @@ describe('components/Modals/Publishing', () => {
 
   describe('mapStateToProps', () => {
 
-    it('fetches the taskSet, fourFour, and rowsToBeUpserted', () => {
-      const state = {
-        ui: {
-          routing: { fourfour: 'abcd-efgh' }
+    const state = {
+      ui: {
+        routing: { fourfour: 'abcd-efgh' }
+      },
+      entities: {
+        task_sets: {
+          0: {
+            output_schema_id: 52,
+            updated_at: '2017-06-19T23:45:16.306Z'
+          }
         },
-        entities: {
-          task_sets: {
-            0: {
-              output_schema_id: 52,
-              updated_at: '2017-06-19T23:45:16.306Z'
-            }
-          },
-          output_schemas: {
-            52: {
-              input_schema_id: 42
-            }
-          },
-          input_schemas: {
-            42: {
-              total_rows: rowsToBeUpserted
-            }
+        output_schemas: {
+          52: {
+            input_schema_id: 42
+          }
+        },
+        input_schemas: {
+          42: {
+            total_rows: rowsToBeUpserted
           }
         }
-      };
+      }
+    };
+
+    it('fetches the taskSet, fourFour, and rowsToBeUpserted', () => {
       const props = mapStateToProps(state);
       assert.deepEqual(props, {
         taskSet: {
@@ -115,6 +116,32 @@ describe('components/Modals/Publishing', () => {
         },
         fourfour: 'abcd-efgh',
         rowsToBeUpserted: 1000
+      });
+    });
+
+    it('handles case where there is no output schema', () => {
+      const stateWithNoFile = {
+        ...state,
+        entities: {
+          ...state.entities,
+          task_sets: {
+            0: {
+              updated_at: '2017-06-19T23:45:16.306Z',
+              output_schema_id: null
+            }
+          },
+          output_schemas: {},
+          input_schemas: {}
+        }
+      };
+      const props = mapStateToProps(stateWithNoFile);
+      assert.deepEqual(props, {
+        rowsToBeUpserted: null,
+        taskSet: {
+          output_schema_id: null,
+          updated_at: '2017-06-19T23:45:16.306Z'
+        },
+        fourfour: 'abcd-efgh'
       });
     });
 
@@ -133,19 +160,25 @@ describe('components/Modals/Publishing', () => {
     it('renders without errors in success state', () => {
       const withSetStatus = dotProp.set(defaultProps, 'taskSet.status', 'successful');
       const component = shallow(<Publishing {...withSetStatus} />);
-      assert.isNotNull(component);
+      assert.isFalse(component.isEmpty());
     });
 
     it('renders without errors in failure state', () => {
       const withSetStatus = dotProp.set(defaultProps, 'taskSet.status', 'failure');
       const component = shallow(<Publishing {...withSetStatus} />);
-      assert.isNotNull(component);
+      assert.isFalse(component.isEmpty());
     });
 
     it('renders without errors in in_progress state', () => {
       const withSetStatus = dotProp.set(defaultProps, 'taskSet.status', 'in_progress');
       const component = shallow(<Publishing {...withSetStatus} />);
-      assert.isNotNull(component);
+      assert.isFalse(component.isEmpty());
+    });
+
+    it('renders without errors when there is no output schema', () => {
+      const withNoRowsToBeUpserted = dotProp.set(defaultProps, 'rowsToBeUpserted', null);
+      const component = shallow(<Publishing {...withNoRowsToBeUpserted} />);
+      assert.isFalse(component.isEmpty());
     });
 
     describe('with progress statuses', () => {
@@ -157,13 +190,19 @@ describe('components/Modals/Publishing', () => {
 
       it('renders upsert progress numbers', () => {
         const component = shallow(<Publishing {...propsWithSetLog} />);
-        assert.isNotNull(component);
+        assert.isFalse(component.isEmpty());
         assert.equal(component.find('.statusMessage').text(), 'Importing data (500 / 1,000 rows)');
       });
 
       it('renders the "email me" button', () => {
         const component = shallow(<Publishing {...propsWithSetLog} />);
         assert.isNotNull(component.find('Connect(NotifyButton)'));
+      });
+
+      it('renders without errors when there is no output schema', () => {
+        const propsWithNoRowCount = dotProp.set(propsWithSetLog, 'rowsToBeUpserted', null);
+        const component = shallow(<Publishing {...propsWithNoRowCount} />);
+        assert.isFalse(component.isEmpty());
       });
 
     });

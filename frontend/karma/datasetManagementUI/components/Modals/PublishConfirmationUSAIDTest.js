@@ -18,7 +18,7 @@ describe('components/Modals/PublishConfirmationUSAID', () => {
       outputSchemaId: 174,
       btnDisabled: false,
       publicSelected: true,
-      doUpdate: sinon.spy(),
+      dispatchApplyRevision: sinon.spy(),
       doCancel: sinon.spy(),
       setPermission: sinon.spy()
     };
@@ -57,12 +57,21 @@ describe('components/Modals/PublishConfirmationUSAID', () => {
 
   it('calls applyRevision callback when you click publish button', () => {
     component.find('Connect(ApiCallButton)').first().simulate('click');
-    assert.isTrue(defaultProps.doUpdate.calledOnce);
+    assert.isTrue(defaultProps.dispatchApplyRevision.calledOnce);
   });
 
   it('calls cancel callback when you click cancel button', () => {
     component.find('.cancelButton').first().simulate('click');
     assert.isTrue(defaultProps.doCancel.calledOnce);
+  });
+
+  it('renders when there is no output schema', () => {
+    const withoutOutputSchema = {
+      ...defaultProps,
+      outputSchemaId: null
+    };
+    const theComponent = shallow(<PublishConfirmationUSAID {...withoutOutputSchema} />);
+    assert.isNotNull(theComponent);
   });
 
   it('gets the latest outputSchemaId from the store', () => {

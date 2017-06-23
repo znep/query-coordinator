@@ -28,6 +28,9 @@ const FINISHING_STAGE_FRACTION = 0.1;
 
 // TODO(vilterp): remove once DSMAPI reports fine-grained progress again
 function temporaryComputeProgress(rowsToBeUpserted, taskSet) {
+  if (rowsToBeUpserted === null) {
+    return 0.5;
+  }
   const mostRecentRowsUpsertedItem = _.find(taskSet.log || [], {
     stage: ApplyRevision.TASK_SET_STAGE_ROWS_UPSERTED
   });
@@ -54,6 +57,9 @@ export function computeProgress(rowsToBeUpserted, taskSet) {
       ) * CREATING_COLUMNS_STAGE_FRACTION;
     }
     case ApplyRevision.TASK_SET_UPSERTING: {
+      if (rowsToBeUpserted === null) {
+        return CREATING_COLUMNS_STAGE_FRACTION + UPSERTING_STAGE_FRACTION;
+      }
       const mostRecentLogItem = taskSet.log[0];
       const rowsUpserted = mostRecentLogItem.details.count || 0;
       const fractionUpserted = rowsUpserted / rowsToBeUpserted;
@@ -70,18 +76,16 @@ export function computeProgress(rowsToBeUpserted, taskSet) {
 }
 
 function inProgressMessage(rowsToBeUpserted, taskSet) {
-  switch (taskSet.status) {
-    case ApplyRevision.TASK_SET_UPSERTING: {
-      const upserting = SubI18n.progress_messages.upserting;
+  if (taskSet.status === ApplyRevision.TASK_SET_UPSERTING && rowsToBeUpserted !== null) {
+    const upserting = SubI18n.progress_messages.upserting;
 
-      const mostRecentLogItem = taskSet.log[0];
-      const upserted = commaify(mostRecentLogItem.details.count || 0);
-      const total = commaify(rowsToBeUpserted);
-      const rows = I18n.progress_items.rows;
-      return `${upserting} (${upserted} / ${total} ${rows})`;
-    }
-    default:
-      return SubI18n.progress_messages[taskSet.status];
+    const mostRecentLogItem = taskSet.log[0];
+    const upserted = commaify(mostRecentLogItem.details.count || 0);
+    const total = commaify(rowsToBeUpserted);
+    const rows = I18n.progress_items.rows;
+    return `${upserting} (${upserted} / ${total} ${rows})`;
+  } else {
+    return SubI18n.progress_messages[taskSet.status];
   }
 }
 
@@ -197,7 +201,7 @@ Publishing.propTypes = {
     status: PropTypes.oneOf(ApplyRevision.TASK_SET_STATUSES),
     created_at: PropTypes.instanceOf(Date)
   }).isRequired,
-  rowsToBeUpserted: PropTypes.number.isRequired,
+  rowsToBeUpserted: PropTypes.number,
   fourfour: PropTypes.string.isRequired,
   applyRevision: PropTypes.func.isRequired,
   onCancelClick: PropTypes.func.isRequired
@@ -206,7 +210,9 @@ Publishing.propTypes = {
 export function mapStateToProps({ entities, ui: { routing } }) {
   const taskSet = _.maxBy(_.values(entities.task_sets), job => job.updated_at);
   const fourfour = routing.fourfour;
-  const rowsToBeUpserted = Selectors.rowsToBeImported(entities, taskSet.output_schema_id);
+  const rowsToBeUpserted = taskSet.output_schema_id
+    ? Selectors.rowsToBeImported(entities, taskSet.output_schema_id)
+    : null;
 
   return {
     taskSet,

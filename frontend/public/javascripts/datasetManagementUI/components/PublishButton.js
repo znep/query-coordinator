@@ -108,7 +108,10 @@ PublishButton.propTypes = {
   publishDataset: PropTypes.func.isRequired
 };
 
-function mapStateToProps(state) {
+function isDataSatisfied(state) {
+  if (window.serverConfig.featureFlags.usaidFeaturesEnabled) {
+    return true;
+  }
   let dataSatisfied;
   const outputSchema = Selectors.latestOutputSchema(state.entities);
   if (outputSchema) {
@@ -118,6 +121,11 @@ function mapStateToProps(state) {
   } else {
     dataSatisfied = false;
   }
+  return dataSatisfied;
+}
+
+function mapStateToProps(state) {
+  const dataSatisfied = isDataSatisfied(state);
   const view = state.entities.views[state.ui.routing.fourfour];
   return {
     metadataSatisfied: view.schema.isValid,

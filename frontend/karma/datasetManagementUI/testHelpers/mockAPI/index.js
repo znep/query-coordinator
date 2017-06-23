@@ -121,6 +121,16 @@ export const validateRowIdentifier = () =>
     }
   );
 
+export const applyRevision = () =>
+  fetchMock.put(
+    'express:/api/publishing/v1/revision/ww72-hpm3/0/apply',
+    {
+      body: JSON.stringify(responses.applyRevision),
+      status: 200,
+      statusText: STATUS_TEXT.OK
+    }
+  );
+
 export const updateRevision = () =>
   fetchMock.put(
     'express:/api/publishing/v1/revision/:fourfour/:revisionSeq',
@@ -176,6 +186,7 @@ const mockAPI = () => {
   validateRowIdentifier();
   errorExport();
   saveMetadata();
+  applyRevision();
   updateRevision();
 
   return () => {

@@ -27,10 +27,15 @@ class CeteraController < ApplicationController
     params[:limit] = (params[:limit] || 30).to_i
     cetera_params = params.slice(:limit, :flags, :domain, :categories).symbolize_keys
     cetera_params[:domains] = Federation.federated_domain_cnames('') * ','
+    cetera_method =
+      if params[:anonymous] == 'false'
+        then :get_titles_of_views
+        else :get_titles_of_anonymously_viewable_views
+      end
 
     if params[:q]
       begin
-        cetera_response = autocomplete_search_client.get_titles_of_anonymously_viewable_views(
+        cetera_response = autocomplete_search_client.public_send(cetera_method,
           params[:q], current_request_id, current_cookies, cetera_params
         )
         render :json => cetera_response

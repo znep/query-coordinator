@@ -107,17 +107,18 @@ class SearchBox extends React.Component {
   }
 
   handleChange(event) {
+    const { onSearchBoxChanged, onResultsReceived, anonymous } = this.props;
     const query = event.target.value;
 
     // update state to reflect new textbox
-    this.props.onSearchBoxChanged(query);
+    onSearchBoxChanged(query);
 
     // call the debounce'd getResults function
-    this.state.debouncedGetResults(query, this.props.onResultsReceived);
+    this.state.debouncedGetResults(query, onResultsReceived, undefined, anonymous);
   }
 
   handleFocusChanged(focused) {
-    const { currentQuery, onResultsReceived, getSearchResults } = this.props;
+    const { currentQuery, onResultsReceived, getSearchResults, anonymous } = this.props;
 
     // keep "focused" state if the current search isn't empty...
     if (!_.isEmpty(currentQuery)) {
@@ -125,7 +126,7 @@ class SearchBox extends React.Component {
 
       // also get results if we're gaining focus and have a query
       if (focused === true) {
-        getSearchResults(currentQuery, onResultsReceived);
+        getSearchResults(currentQuery, onResultsReceived, undefined, anonymous);
       }
     } else {
       this.setState({ focused });
@@ -171,6 +172,7 @@ SearchBox.propTypes = {
   millisecondsBeforeSearch: PropTypes.number.isRequired,
   getSearchResults: PropTypes.func.isRequired,
   onChooseResult: PropTypes.func.isRequired,
+  anonymous: PropTypes.bool,
 
   /* State */
   currentQuery: PropTypes.string,

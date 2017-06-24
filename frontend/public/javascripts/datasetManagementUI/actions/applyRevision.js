@@ -114,12 +114,9 @@ export function updateRevision(permission) {
   };
 }
 
-export function applyRevision() {
+export function applyRevision(outputSchemaId) {
   return (dispatch, getState) => {
-    const { entities, ui } = getState();
-    const { location } = ui.routing;
-    const { id: outputSchemaId } = Selectors.latestOutputSchema(entities);
-
+    const location = getState().ui.routing.location;
     const callId = uuid();
 
     dispatch(
@@ -131,11 +128,16 @@ export function applyRevision() {
       })
     );
 
+    let body;
+    if (outputSchemaId) {
+      body = { output_schema_id: outputSchemaId };
+    } else {
+      body = {};
+    }
+
     return socrataFetch(dsmapiLinks.applyRevision, {
       method: 'PUT',
-      body: JSON.stringify({
-        output_schema_id: outputSchemaId
-      })
+      body: JSON.stringify(body)
     })
       .then(checkStatus)
       .then(getJson)

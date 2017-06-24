@@ -43,12 +43,15 @@ export default function columnChart(state, action) {
       );
 
       if (dimensionGroupingColumnName === null) {
+
         // If the dimension grouping functionality is being disabled, then we
         // also want to remove any color palette and legend visibility that has been set.
         _.unset(state, 'series[0].color.palette');
         _.unset(state, 'configuration.showLegend');
         _.unset(state, 'series[0].dataSource.dimension.grouping');
+
       } else {
+
         // Otherwise, if the color palette has not yet been set, then assign
         // the default palette.
         if (_.get(state, 'series[0].color.palette', null) === null) {

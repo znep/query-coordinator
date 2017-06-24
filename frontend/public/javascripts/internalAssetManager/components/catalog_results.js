@@ -49,6 +49,7 @@ export class CatalogResults extends React.Component {
   renderTopbar() {
     const collapsible = false;
     const options = {
+      anonymous: false,
       collapsible,
       animate: true,
       mobile: false,

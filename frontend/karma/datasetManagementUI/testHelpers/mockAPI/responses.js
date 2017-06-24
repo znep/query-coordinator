@@ -5423,6 +5423,27 @@ export const rowErrors = [
 
 export const validateRowIdentifier = { valid: true };
 
+export const applyRevsion = {
+  resource: {
+    updated_at: '2017-06-22T01:41:43.909024',
+    status: 'initializing',
+    output_schema_id: 27395,
+    log: [],
+    job_uuid: '6235f0c1-8c21-411c-8a83-1841dc5559d8',
+    id: 661,
+    finished_at: null,
+    created_by: {
+      user_id: 't9gi-nmnm',
+      email: 'peter.vilter@socrata.com',
+      display_name: 'Peter Vilter'
+    },
+    created_at: '2017-06-22T01:41:43.909017'
+  },
+  links: {
+    show: '/api/publishing/v1/revision/t27g-9az3/0/apply/661'
+  }
+};
+
 export const updateRevision = permission => ({
   resource: {
     task_sets: [],

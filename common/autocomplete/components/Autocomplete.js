@@ -33,6 +33,7 @@ class Autocomplete extends React.Component {
   render() {
     const {
       animate,
+      anonymous,
       collapsible,
       collapsed,
       mobile,
@@ -54,6 +55,7 @@ class Autocomplete extends React.Component {
           <SearchBox
             getSearchResults={getSearchResults}
             millisecondsBeforeSearch={millisecondsBeforeSearch}
+            anonymous={anonymous}
             collapsible={collapsible}
             animate={animate}
             mobile={mobile}
@@ -69,6 +71,7 @@ Autocomplete.propTypes = {
   onResultVisibilityChanged: PropTypes.func.isRequired,
   getSearchResults: PropTypes.func.isRequired,
   millisecondsBeforeSearch: PropTypes.number.isRequired,
+  anonymous: PropTypes.bool,
   collapsible: PropTypes.bool,
   collapsed: PropTypes.bool,
   animate: PropTypes.bool,

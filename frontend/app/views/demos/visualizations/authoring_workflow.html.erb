@@ -83,7 +83,7 @@
       vifOutput.innerHTML = JSON.stringify(vif, null, 2);
       filterOutput.innerHTML = JSON.stringify(filters, null, 2);
 
-      $(embedCodeOutput).text(socrata.visualizations.generateEmbedCode(vif, {
+      $(embedCodeOutput).text(socrata.generateEmbedCode(vif, {
         height: 500,
         width: 400
       }));
@@ -132,7 +132,8 @@
     });
 
     $('#custom-dataset-uid').click(function() {
-      var customDatasetUid = prompt('Paste your localhost four-by-four here.');
+      var domain = prompt('Dataset domain', 'localhost');
+      var customDatasetUid = prompt('Dataset UID');
       try {
         if (customDatasetUid) {
           var localhostVIF = {
@@ -143,14 +144,15 @@
             series: [
               {
                 dataSource: {
-                  domain: 'localhost',
+                  domain: domain,
                   datasetUid: customDatasetUid
                 }
               }
             ]
           };
 
-          addVifButton(localhostVIF, _.uniqueId('Custom Dataset UID '), 'custom-dataset-uid');
+          var datasetName = customDatasetUid + ' on ' + domain;
+          addVifButton(localhostVIF, datasetName, 'custom-dataset-uid');
         }
       } catch (e) {
         alert(e);
@@ -176,7 +178,7 @@ Select a preloaded VIF to launch AX:
 <p id="vif-selections"></p>
 <p>Or:
   <button id="custom-vif" class="btn">Paste a VIF</button>
-  <button id="custom-dataset-uid" class="btn">Use a localhost dataset UID</button>
+  <button id="custom-dataset-uid" class="btn">Use a custom dataset</button>
   <button id="edit" class="btn btn-secondary">Edit Current</button>
 </p>
 

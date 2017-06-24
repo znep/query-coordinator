@@ -200,18 +200,28 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
 
   let dataTable;
   if (isUpsertComplete) {
-    const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
-    dataTable = [
-      <Link
-        key="manage-data-button"
-        to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}
-        className={styles.manageDataLink}>
-        <button className={styles.manageDataBtn} tabIndex="-1">
-          {I18n.home_pane.data_manage_button}
-        </button>
-      </Link>,
-      upsertCompleteView(view, outputSchema)
-    ];
+    if (outputSchema) {
+      const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
+      dataTable = [
+        <Link
+          key="manage-data-button"
+          to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}
+          className={styles.manageDataLink}>
+          <button className={styles.manageDataBtn} tabIndex="-1">
+            {I18n.home_pane.data_manage_button}
+          </button>
+        </Link>,
+        upsertCompleteView(view, outputSchema)
+      ];
+    } else {
+      dataTable = (
+        <WrapDataTablePlaceholder
+          upsertExists={doesUpsertExist}
+          outputSchema={null}
+          entities={entities}
+          createUpload={createUpload} />
+      );
+    }
   } else {
     dataTable = (
       <WrapDataTablePlaceholder

@@ -9,6 +9,7 @@
   <%= stylesheet_link_tag 'admin', media: 'all' %>
   <%= storyteller_javascript_include_tag 'admin' %>
   <%= render 'shared/google_analytics_script' %>
+  <%= render_pendo_tracker %>
 </head>
 <body>
   <%== site_chrome_admin_header(request, response) if render_admin_header? %>

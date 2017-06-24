@@ -41,6 +41,7 @@ class StatefulAutocomplete extends React.Component {
     const {
       getSearchResults,
       millisecondsBeforeSearch,
+      anonymous,
       collapsible,
       animate,
       mobile,
@@ -62,6 +63,7 @@ class StatefulAutocomplete extends React.Component {
         <Autocomplete
           getSearchResults={getResults}
           millisecondsBeforeSearch={milliseconds}
+          anonymous={_.isUndefined(anonymous) ? true : anonymous}
           collapsible={collapsible}
           animate={animate}
           mobile={mobile}
@@ -76,6 +78,9 @@ StatefulAutocomplete.propTypes = {
     numberOfResults: PropTypes.number,
     getSearchResults: PropTypes.func,
     millisecondsBeforeSearch: PropTypes.number,
+    // `anonymous` is technically wrong, but until cetera-ruby is updated to use visibility
+    // concepts rather than anonymity concepts, that's what we're using for now.
+    anonymous: PropTypes.bool,
     collapsible: PropTypes.bool,
     animate: PropTypes.bool,
     mobile: PropTypes.bool,

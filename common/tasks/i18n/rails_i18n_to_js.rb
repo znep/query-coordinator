@@ -170,7 +170,7 @@ module RailsI18nToJS
           when :or_asgn then parse_or_asgn(node)
           when :lvasgn then parse_lvasgn(node)
           when :if then parse_if(node)
-          when :sym then "return ['#{node.children.last}'];" #ahahahahahahaha
+          when :sym then "return ['#{node.children.last}'];"
           when :lvar, :int then node.children.last
           when :or then node.children.map(&method(:parse_node)).join(' || ')
           when :and then node.children.map(&method(:parse_node)).join(' && ')

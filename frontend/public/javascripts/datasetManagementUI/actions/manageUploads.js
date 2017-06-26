@@ -16,6 +16,7 @@ export const INSERT_INPUT_SCHEMA = 'INSERT_INPUT_SCHEMA';
 export const POLL_FOR_OUTPUT_SCHEMA_SUCCESS = 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS';
 export const UPLOAD_FILE = 'UPLOAD_FILE';
 export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_SUCCESS';
+export const UPLOAD_FILE_FAILURE = 'UPLOAD_FILE_FAILURE';
 export const CREATE_UPLOAD = 'CREATE_UPLOAD';
 export const CREATE_UPLOAD_SUCCESS = 'CREATE_UPLOAD_SUCCESS';
 export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
@@ -101,7 +102,7 @@ export function createUpload(file) {
 
         dispatch(createUploadSuccess(resource.id, resource.created_by, resource.created_at, file.name));
 
-        dispatch(push(Links.showUpload(resource.id)(ui.routing.location)));
+        dispatch(push(Links.uploads(ui.routing.location)));
 
         return Promise.all([
           dispatch(uploadFile(resource.id, file)),
@@ -157,6 +158,7 @@ export function uploadFile(uploadId, file) {
         return resp;
       })
       .catch(err => {
+        dispatch(uploadFileFailure(uploadId));
         dispatch(apiCallFailed(callId, err));
       });
   };
@@ -169,6 +171,14 @@ function uploadFileSuccess(uploadId, finishedAt, inputSchemaId, totalRows) {
     finishedAt,
     inputSchemaId,
     totalRows
+  };
+}
+
+function uploadFileFailure(uploadId) {
+  return {
+    type: UPLOAD_FILE_FAILURE,
+    uploadId,
+    failedAt: Date.now()
   };
 }
 

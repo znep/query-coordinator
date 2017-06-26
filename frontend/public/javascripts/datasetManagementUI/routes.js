@@ -3,7 +3,6 @@ import { Route, Redirect, IndexRoute } from 'react-router';
 import App from './components/App';
 import ShowRevision from './components/ShowRevision';
 import ManageMetadata from './components/ManageMetadata';
-import ManageUploads from './components/ManageUploads';
 import ShowOutputSchema from './components/ShowOutputSchema';
 import { focusColumnEditor } from './actions/manageMetadata';
 import ShowUpload from './components/ShowUpload';
@@ -46,9 +45,8 @@ export default function rootRoute(store) {
       <Redirect from="metadata" to="metadata/dataset" />
       <Route path="metadata/dataset" component={ManageMetadata} />
       <Route path="metadata/columns" component={ManageMetadata} onEnter={checkUploadStatus(store)} />
-      <Route path="uploads" component={ManageUploads} />
+      <Route path="uploads" component={ShowUpload} />
       <Route path=":sidebarSelection" component={ShowRevision} />
-      <Route path="uploads/:uploadId" component={ShowUpload} />
       <Route
         path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId"
         component={ShowOutputSchema}>
@@ -57,7 +55,7 @@ export default function rootRoute(store) {
       <Route
         path={
           'uploads/:uploadId/schemas/:inputSchemaId/output/' +
-            ':outputSchemaId/column_errors/:errorsTransformId'
+          ':outputSchemaId/column_errors/:errorsTransformId'
         }
         component={ShowOutputSchema}>
         <Route path="page/:pageNo" component={ShowOutputSchema} />

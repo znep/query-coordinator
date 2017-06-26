@@ -13,9 +13,9 @@ import * as LoadDataActions from '../actions/loadData';
 import { setOutputSchemaId } from 'actions/routing';
 import * as DisplayState from '../lib/displayState';
 import Table from './Table';
+import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
 import ReadyToImport from './ReadyToImport';
 import PagerBar from './Table/PagerBar';
-import SocrataIcon from '../../common/components/SocrataIcon';
 import ErrorPointer from 'components/Table/ErrorPointer';
 import styles from 'styles/ShowOutputSchema.scss';
 
@@ -157,35 +157,16 @@ export class ShowOutputSchema extends Component {
       outputSchemaId: outputSchema.id
     };
 
-    const modalProps = {
-      fullScreen: true,
-      onDismiss: goHome
-    };
-    // TODO: a good candidate for a component since reused elsewhere
-    const headerProps = {
-      title: (
-        <ol className={styles.list}>
-          <li>
-            {I18n.home_pane.data}
-            <SocrataIcon name="arrow-right" className={styles.icon} />
-          </li>
-          <li className={styles.active}>
-            {I18n.home_pane.preview}
-          </li>
-        </ol>
-      ),
-      onDismiss: goHome
-    };
-
     const rowsTransformed = inputSchema.total_rows || Selectors.rowsTransformed(columns);
 
     const errorsNotInView = this.errorsNotInView();
 
     return (
       <div className={styles.outputSchemaContainer}>
-        <Modal {...modalProps}>
-          <ModalHeader {...headerProps} />
-
+        <Modal fullScreen onDismiss={goHome}>
+          <ModalHeader onDismiss={goHome}>
+            <UploadBreadcrumbs />
+          </ModalHeader>
           <ModalContent>
             <div className={styles.dataPreview}>
               <div className={styles.titleWrapper}>

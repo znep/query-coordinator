@@ -113,7 +113,6 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
   }
 
   function updateData(newVif) {
-
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
     visualization.showBusyIndicator();
     detachInteractionEvents();
@@ -238,8 +237,8 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
     // statement, unless we say to do otherwise.
     const queryLimit = limitConf && !showOtherCategory ?
       limitConf :
-      MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1;
-    const displayedValuesLimit = (limitConf || queryLimit) - 1;
+      MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 2;
+    const displayedValuesLimit = (limitConf || queryLimit);
 
     const processQueryResponse = (queryResponse) => {
       const dimensionIndex = queryResponse.columns.indexOf(dimensionAlias);
@@ -251,7 +250,6 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
       queryResponse.columns[measureIndex] = 'measure';
 
       queryResponse.rows.forEach((row) => {
-
         try {
 
           if (_.isUndefined(row[measureIndex])) {
@@ -328,7 +326,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
         // If the number of rows in the query is one more than the maximum that
         // we allow before grouping into an "other" category, then we need to do
         // a second query to count the things that are in the "other" category.
-        if (showOtherCategory && queryResponseRowCount > displayedValuesLimit) {
+        if (showOtherCategory && queryResponseRowCount >= displayedValuesLimit) {
 
           const otherCategoryName = I18n.translate(
             'visualizations.common.other_category'

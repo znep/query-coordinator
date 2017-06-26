@@ -440,7 +440,10 @@ Variable Name | Type | Source | Description
 `dataset_management_api_hostname` | String | Configuration | Host name to connect to for DSMAPI.
 `dataset_management_api_port` | Integer | Configuration | Port to connect to on `dataset_management_api_hostname`.
 `log_level` | String | Configuration | Log level directive used when configuring `Rails.logger`.
-`memcached_hosts` | String | Configuration | _Comma-separated_ list of URIs _including weighting_ used to connect to Memcached via Dalli. i.e. `10.1.0.72:11211:1,...`
+`memcached_config_endpoint` | String | Configuration | A single host/port string used to connect to Memcached via Dalli. i.e. `fronten-fedramp-prod.f35m2z.cfg.use1.cache.amazonaws.com:11211`.
+`memcached_host` | String | Configuration | A single host/port string _optionally including weighting_ used to connect to Memcached via Dalli. i.e. `10.1.0.72:11211:1` where `:1` is the optional weighting.
+`memcached_hosts` | String | Configuration | _Comma-separated_ list of host/port strings _optionally including weighting_ used to connect to Memcached via Dalli. i.e. `10.1.0.72:11211:1,...` where `:1` is the optional weighting.
+`memcached_keyspace` | String | Confiuration | String prefix used to namespace all keys stored in Memcached. Can be changed to assist with upgrades or other large-scale rollouts.
 `memcached_value_max_bytes` | Integer | Configuration | Maximum size of values allowed to be written to Memcached via Dalli.
 `metrics_dir` | String | Configuration | Directory into which runtime metrics are written for collection into balboa by a separate agent.
 `mixpanel_token` | String | Configuration | API token used to report runtime metrics to MixPanel.

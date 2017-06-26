@@ -5423,7 +5423,7 @@ export const rowErrors = [
 
 export const validateRowIdentifier = { valid: true };
 
-export const applyRevsion = {
+export const applyRevision = {
   resource: {
     updated_at: '2017-06-22T01:41:43.909024',
     status: 'initializing',
@@ -5473,3 +5473,38 @@ export const updateRevision = permission => ({
     apply: '/api/publishing/v1/revision/2ttq-aktm/0/apply'
   }
 });
+
+export const getRevision = {
+  resource: {
+    task_sets: [
+      {
+        id: 52,
+        status: 'successful'
+      }
+    ],
+    revision_seq: 0,
+    metadata: null,
+    id: 201,
+    fourfour: '2ttq-aktm',
+    created_by: {
+      user_id: 'tugg-ikce',
+      email: 'brandon.webster@socrata.com',
+      display_name: 'branweb'
+    },
+    created_at: '2017-06-19T21:47:07.086103',
+    closed_at: null,
+    action: {
+      type: 'update',
+      schema: null,
+      permission: 'public'
+    }
+  },
+  links: {
+    update: '/api/publishing/v1/revision/2ttq-aktm/0',
+    show: '/api/publishing/v1/revision/2ttq-aktm/0',
+    metadata: '/api/publishing/v1/revision/2ttq-aktm/0',
+    discard: '/api/publishing/v1/revision/2ttq-aktm/0',
+    create_upload: '/api/publishing/v1/revision/2ttq-aktm/0/upload',
+    apply: '/api/publishing/v1/revision/2ttq-aktm/0/apply'
+  }
+};

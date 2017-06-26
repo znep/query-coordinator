@@ -3,6 +3,8 @@ $header-background-color: #f6f6f6;
 $row-background-color: transparent;
 $highlighted-row-color: #2f2f2f;
 $highlighted-row-background-color: #f6f6f6;
+$highlighted-sort-menu-button-background-color: #e4e4e4;
+$highlighted-sort-menu-row-background-color: #e6f9f5;
 
 .socrata-visualization-container.loaded {
 
@@ -113,15 +115,38 @@ $highlighted-row-background-color: #f6f6f6;
         border-top: none;
         box-sizing: content-box;
 
-        span[class^="icon-"] {
-          position: absolute;
+        span[class^="socrata-icon-"] {
           height: $header-cell-height - 2;
-          right: 5px;
-          top: 1px;
-          background: #f6f6f6;
-          box-shadow: -10px 0 7px #f6f6f6;
+          margin-left: 5px;
           opacity: 0;
           transition: opacity 0.15s;
+        }
+
+        span.socrata-icon-kebab {
+          opacity: 1;
+        }
+
+        button.sort-menu-button {
+          background-color: $header-background-color;
+          border: 1px solid #c8c8c8;
+          cursor: pointer;
+          display: inline-block;
+          line-height: 23px;
+          padding: 0px;
+          position: absolute;
+          right: 5px;
+          text-align: center;
+          top: ($header-cell-height - 23) / 2;
+          width: 20px;
+
+          &:hover {
+            background-color: $highlighted-sort-menu-button-background-color;
+          }
+
+          .socrata-icon-kebab {
+            color: #6a6a6a;
+            margin: 0 auto;
+          }
         }
 
         &[data-column-render-type="point"] {
@@ -165,12 +190,6 @@ $highlighted-row-background-color: #f6f6f6;
       }
 
       &:hover {
-        div.column-header-content {
-          span[class^="icon-"] {
-            opacity: 1;
-          }
-        }
-
         div.column-resize-target,
         div.column-resize-target-last {
           opacity: 0.75;
@@ -210,6 +229,82 @@ $highlighted-row-background-color: #f6f6f6;
     table {
 
       table-layout: fixed;
+    }
+  }
+}
+
+#sort-menu {
+  $header-row-height: 40px;
+
+  background: #fff;
+  border: 1px solid #c8c8c8;
+  box-shadow: 0px 0px 4px 1px rgba(44,44,44,0.10);
+  box-sizing: border-box;
+  color: #5e5e5e;
+  cursor: auto;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: normal;
+  position: absolute;
+  right: 0;
+  top: $header-row-height;
+  width: 240px;
+  z-index: 9999;
+
+  ul {
+    border-bottom: 1px solid #c8c8c8;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      margin: 0;
+      padding: 0;
+
+      button {
+        background: #fff;
+        border: 0;
+        color: #5e5e5e;
+        cursor: pointer;
+        display: block;
+        font-size: 13px;  
+        font-weight: normal;
+        padding: 10px 15px;
+        margin: 0;
+        text-align: left;
+        width: 100%;
+
+        &:hover {
+          background-color: $highlighted-sort-menu-row-background-color;
+        }
+
+        span {
+          font-size: 18px;
+          margin-right: 15px;
+        }
+      }
+    }
+  }
+
+  #sort-menu-description-container {
+    padding: 15px;
+
+    span {
+      font-size: 20px;
+      margin-right: 15px;
+      position: relative;
+      top: 2px;
+    }
+
+    p {
+      margin: 10px 0;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+
+    a {
+      color: #2279a6;
+      cursor: pointer;
     }
   }
 }

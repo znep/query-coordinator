@@ -327,6 +327,116 @@ describe('Table', () => {
       });
     });
 
+    describe('on SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED to sort a column in ASC order', () => {
+      let vifUpdatedSpy;
+      beforeEach((done) => {
+        const calls = getTableDataSpy.getCalls();
+        assert.lengthOf(calls, 1); // Just test sanity.
+
+        vifUpdatedSpy = sinon.spy();
+        $container.on('SOCRATA_VISUALIZATION_VIF_UPDATED', vifUpdatedSpy);
+
+        emitEvent($container, 'SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', { columnName: 'district', ascending: true });
+        // Allow the mock data providers to resolve.
+        flushDataRequests(done);
+      });
+
+      it('makes a data request that sorts ASC on the "district" column', () => {
+        const calls = getTableDataSpy.getCalls();
+        assert.lengthOf(calls, 2);
+
+        assert.deepEqual(
+          getGetTableDataArgumentsHash(calls[0]),
+          {
+            columnNames: displayableColumnNames,
+            order: [ { ascending: true, columnName: 'ward' } ],
+            limit: 6,
+            offset: 0
+          }
+        );
+
+        assert.deepEqual(
+          getGetTableDataArgumentsHash(calls[1]),
+          {
+            columnNames: displayableColumnNames,
+            order: [ { ascending: true, columnName: 'district' } ],
+            limit: 6,
+            offset: 0
+          }
+        );
+      });
+
+      it('emits SOCRATA_VISUALIZATION_VIF_UPDATED', () => {
+        const calls = vifUpdatedSpy.getCalls();
+        assert.lengthOf(calls, 1);
+
+        const newVIF = calls[0].args[0].originalEvent.detail;
+        const expectedVIF = _.cloneDeep(tableVIF);
+        _.set(expectedVIF, 'configuration.order[0].columnName', 'district');
+        _.set(expectedVIF, 'configuration.order[0].ascending', true);
+
+        assert.deepEqual(
+          _.get(newVIF, 'configuration.order'),
+          _.get(expectedVIF, 'configuration.order')
+        );
+      });
+    });
+
+    describe('on SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED to sort a column in DESC order', () => {
+      let vifUpdatedSpy;
+      beforeEach((done) => {
+        const calls = getTableDataSpy.getCalls();
+        assert.lengthOf(calls, 1); // Just test sanity.
+
+        vifUpdatedSpy = sinon.spy();
+        $container.on('SOCRATA_VISUALIZATION_VIF_UPDATED', vifUpdatedSpy);
+
+        emitEvent($container, 'SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', { columnName: 'district', ascending: false });
+        // Allow the mock data providers to resolve.
+        flushDataRequests(done);
+      });
+
+      it('makes a data request that sorts DESC on the "district" column', () => {
+        const calls = getTableDataSpy.getCalls();
+        assert.lengthOf(calls, 2);
+
+        assert.deepEqual(
+          getGetTableDataArgumentsHash(calls[0]),
+          {
+            columnNames: displayableColumnNames,
+            order: [ { ascending: true, columnName: 'ward' } ],
+            limit: 6,
+            offset: 0
+          }
+        );
+
+        assert.deepEqual(
+          getGetTableDataArgumentsHash(calls[1]),
+          {
+            columnNames: displayableColumnNames,
+            order: [ { ascending: false, columnName: 'district' } ],
+            limit: 6,
+            offset: 0
+          }
+        );
+      });
+
+      it('emits SOCRATA_VISUALIZATION_VIF_UPDATED', () => {
+        const calls = vifUpdatedSpy.getCalls();
+        assert.lengthOf(calls, 1);
+
+        const newVIF = calls[0].args[0].originalEvent.detail;
+        const expectedVIF = _.cloneDeep(tableVIF);
+        _.set(expectedVIF, 'configuration.order[0].columnName', 'district');
+        _.set(expectedVIF, 'configuration.order[0].ascending', false);
+
+        assert.deepEqual(
+          _.get(newVIF, 'configuration.order'),
+          _.get(expectedVIF, 'configuration.order')
+        );
+      });
+    });
+
     describe('on SOCRATA_VISUALIZATION_COLUMN_CLICKED for a currently unsorted column', () => {
       let vifUpdatedSpy;
       beforeEach((done) => {

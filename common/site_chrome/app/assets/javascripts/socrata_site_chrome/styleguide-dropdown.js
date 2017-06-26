@@ -1,112 +1,119 @@
 // Stolen and butchered from styleguide.
-$(document).ready(function() {
-  var dropdownFactory = function(element) {
-    if (!element) { return; }
-    this.dropdowns = Array.prototype.slice.call(element.querySelectorAll('[data-dropdown]'));
-    this.dropdowns.forEach(function(dropdown) {
-      new Dropdown(dropdown);
-    });
-  };
 
-  var Dropdown = function(element) {
-    this.dd = element;
-    this.orientation = this.dd.getAttribute('data-orientation') || 'bottom';
-    this.selectable = this.dd.hasAttribute('data-selectable');
+var dropdownFactory = function(element) {
+  if (!element) { return; }
+  this.dropdowns = Array.prototype.slice.call(element.querySelectorAll('[data-dropdown]'));
+  this.dropdowns.forEach(function(dropdown) {
+    new Dropdown(dropdown);
+  });
+};
 
-    this.dd.classList.add('dropdown-orientation-' + this.orientation);
+var Dropdown = function(element) {
+  this.dd = element;
+  this.orientation = this.dd.getAttribute('data-orientation') || 'bottom';
+  this.selectable = this.dd.hasAttribute('data-selectable');
 
-    // Set the 'role' and 'aria-expanded' attributes for better ADA/508 compliance.
-    this.dd.setAttribute('role', 'button');
-    this.dd.setAttribute('aria-expanded', 'false');
+  this.dd.classList.add('dropdown-orientation-' + this.orientation);
 
-    this.placeholder = this.dd.querySelector('span');
-    this.opts = Array.prototype.slice.call(this.dd.querySelectorAll('.dropdown-options > li'));
+  // Set the 'role' and 'aria-expanded' attributes for better ADA/508 compliance.
+  this.dd.setAttribute('role', 'button');
+  this.dd.setAttribute('aria-expanded', 'false');
 
-    this.dd.dataset.value = '';
-    this.dd.dataset.index = -1;
+  this.placeholder = this.dd.querySelector('span');
+  this.opts = Array.prototype.slice.call(this.dd.querySelectorAll('.dropdown-options > li'));
 
-    this.initEvents();
-  };
+  this.dd.dataset.value = '';
+  this.dd.dataset.index = -1;
 
-  Dropdown.prototype = {
-    initEvents: function() {
-      var obj = this;
-      // Reposition dropdown if it's near the edge of the window to avoid
-      // the dropdown making the window larger than we wanted
+  this.initEvents();
+};
+
+Dropdown.prototype = {
+  initEvents: function() {
+    var obj = this;
+    // Reposition dropdown if it's near the edge of the window to avoid
+    // the dropdown making the window larger than we wanted
+    positionDropdown();
+
+    obj.dd.addEventListener('click', function() {
       positionDropdown();
+      obj.dd.classList.toggle('active');
 
-      obj.dd.addEventListener('click', function() {
-        positionDropdown();
-        obj.dd.classList.toggle('active');
-
-        if (obj.dd.classList.contains('active')) {
-          obj.dd.setAttribute('aria-expanded', 'true');
-        } else {
-          obj.dd.setAttribute('aria-expanded', 'false');
-        }
-
-        return false;
-      });
-
-      if (obj.selectable) {
-        obj.opts.forEach(function(opt) {
-          opt.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            var node = opt;
-            var index = 0;
-
-            while ((node = node.previousElementSibling) !== null) {
-              index++;
-            }
-
-            obj.dd.dataset.value = opt.textContent;
-            obj.dd.dataset.index = index;
-
-            obj.placeholder.innerHTML = opt.innerText.trim();
-
-            return false;
-          });
-        });
+      if (obj.dd.classList.contains('active')) {
+        obj.dd.setAttribute('aria-expanded', 'true');
+      } else {
+        obj.dd.setAttribute('aria-expanded', 'false');
       }
 
-      document.addEventListener('click', function(event) {
-        var node = event.target;
-        while (node.parentElement && !node.classList.contains('dropdown')) {
-          node = node.parentElement;
-        }
+      return false;
+    });
 
-        if (node !== obj.dd) {
-          obj.dd.classList.remove('active');
-        }
+    if (obj.selectable) {
+      obj.opts.forEach(function(opt) {
+        opt.addEventListener('click', function(event) {
+          event.preventDefault();
+
+          var node = opt;
+          var index = 0;
+
+          while ((node = node.previousElementSibling) !== null) {
+            index++;
+          }
+
+          obj.dd.dataset.value = opt.textContent;
+          obj.dd.dataset.index = index;
+
+          obj.placeholder.innerHTML = opt.innerText.trim();
+
+          return false;
+        });
       });
+    }
 
-      window.addEventListener('resize', function() {
-        positionDropdown();
-      });
+    document.addEventListener('click', function(event) {
+      var node = event.target;
+      while (node.parentElement && !node.classList.contains('dropdown')) {
+        node = node.parentElement;
+      }
 
-      function positionDropdown() {
-        var optionsElement = obj.dd.querySelector('.dropdown-options');
-        var optionsElementWidth = optionsElement.offsetWidth;
-        var windowWidth = document.body.offsetWidth;
+      if (node !== obj.dd) {
+        obj.dd.classList.remove('active');
+      }
+    });
 
-        // Get left to check if the dropdown options are hanging off the side of the page
-        var node = optionsElement;
-        var left = 0;
+    window.addEventListener('resize', function() {
+      positionDropdown();
+    });
 
-        do {
-          left += node.offsetLeft;
-        } while ((node = node.offsetParent) !== null);
+    function positionDropdown() {
+      var optionsElement = obj.dd.querySelector('.dropdown-options');
+      var optionsElementWidth = optionsElement.offsetWidth;
+      var windowWidth = document.body.offsetWidth;
 
-        // Update dropdown options position if needed
-        if (optionsElementWidth + left >= windowWidth || optionsElement.style.left) {
-          var dropdownWidth = obj.dd.getBoundingClientRect().width;
-          optionsElement.style.left = -(optionsElementWidth - dropdownWidth) + 'px';
-        }
+      // Get left to check if the dropdown options are hanging off the side of the page
+      var node = optionsElement;
+      var left = 0;
+
+      do {
+        left += node.offsetLeft;
+      } while ((node = node.offsetParent) !== null);
+
+      // Update dropdown options position if needed
+      if (optionsElementWidth + left >= windowWidth || optionsElement.style.left) {
+        var dropdownWidth = obj.dd.getBoundingClientRect().width;
+        optionsElement.style.left = -(optionsElementWidth - dropdownWidth) + 'px';
       }
     }
-  };
+  }
+};
 
-  dropdownFactory(document.querySelector('#site-chrome-header'));
-  dropdownFactory(document.querySelector('#site-chrome-footer'));
-});
+(function($) {
+  if (!$) {
+    return;
+  }
+
+  $(document).ready(function() {
+    dropdownFactory(document.querySelector('#site-chrome-header'));
+    dropdownFactory(document.querySelector('#site-chrome-footer'));
+  });
+})(window.$);

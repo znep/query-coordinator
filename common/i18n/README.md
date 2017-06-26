@@ -32,6 +32,8 @@ and expose an `I18n.js` object which you can use like: `I18n.t('path.to.string.h
 If you are in a React context, you can wrap the entrypoint to the app like this:
 
 ```js
+import Localization from 'common/i18n/components/Localization';
+
 ReactDOM.render(
   <Localization
     translations={translations}
@@ -57,7 +59,7 @@ const MyComponent = (props) => {
   )
 }
 
-export default connectLocalization(connect(mapStateToProps)(MyComponent)); <-- what actually makes I18n available via context
+export default connectLocalization(connect(mapStateToProps)(MyComponent)); // <-- what actually makes I18n available via context
 ```
 
 ## Updating Locale strings

@@ -54,8 +54,9 @@ $filter-content-width: 260px;
 
         &.filter-label {
           display: block;
+          font-size: 13px;
           font-weight: 700;
-          margin: 0.5rem 0;
+          margin: 0.25rem 0;
         }
       }
 
@@ -87,6 +88,10 @@ $filter-content-width: 260px;
         .fake-checkbox {
           background: $white;
         }
+
+        label {
+          font-size: 13px;
+        }
       }
 
       &.recently-viewed {
@@ -99,6 +104,7 @@ $filter-content-width: 260px;
         .text-input {
           width: 100%;
           padding-left: 2rem;
+          font-size: 13px;
         }
 
         .search-icon {

@@ -20,15 +20,17 @@ export default React.createClass({
       React.PropTypes.string,
       React.PropTypes.func
     ]),
+    size: React.PropTypes.string,
     value: React.PropTypes.string
   },
 
   getDefaultProps() {
     return {
       disabled: false,
+      onSelection: _.noop,
       options: [],
       placeholder: null,
-      onSelection: _.noop
+      size: 'large'
     };
   },
 
@@ -296,14 +298,14 @@ export default React.createClass({
   },
 
   render() {
-    const { disabled, options, id } = this.props;
+    const { disabled, id, options, size } = this.props;
     const { focused, opened, selectedOption } = this.state;
     const value = _.get(selectedOption, 'value', null);
 
     const dropdownAttributes = {
       id,
       ref: ref => this.dropdownRef = ref,
-      className: classNames('dropdown-container', {
+      className: classNames('dropdown-container', `dropdown-size-${size}`, {
         'dropdown-focused': focused,
         'dropdown-opened': opened,
         'dropdown-disabled': disabled
@@ -324,7 +326,8 @@ export default React.createClass({
       ref: ref => this.picklistRef = ref,
       onSelection: this.onClickOption,
       onFocus: this.onFocusPicklist,
-      onBlur: this.onBlurPicklist
+      onBlur: this.onBlurPicklist,
+      size
     };
 
     const placeholder = this.renderPlaceholder();

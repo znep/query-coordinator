@@ -4,6 +4,14 @@
   overflow-y: auto;
   color: $dark-grey-1;
 
+  &.picklist-size-large {
+    font-size: 15px;
+  }
+
+  &.picklist-size-medium {
+    font-size: 13px;
+  }
+
   &.picklist-disabled {
     color: $light-grey-1;
     background-color: $light-grey-6;

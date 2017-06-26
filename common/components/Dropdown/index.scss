@@ -4,6 +4,20 @@
   display: inline-block;
   box-sizing: border-box;
   position: relative;
+
+  &.dropdown-size-large {
+    .dropdown-placeholder {
+      font-size: 15px;
+      min-height: 15px;
+    }
+  }
+
+  &.dropdown-size-medium {
+    .dropdown-placeholder {
+      font-size: 13px;
+      min-height: 13px;
+    }
+  }
 }
 
 .dropdown-invisible {
@@ -12,8 +26,6 @@
 
 .dropdown-placeholder {
   position: relative;
-  font-size: 15px;
-  min-height: 15px;
   background: white;
   border: solid 1px $light-grey-3;
   cursor: pointer;

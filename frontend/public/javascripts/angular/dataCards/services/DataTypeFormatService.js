@@ -1,6 +1,6 @@
 const moment = require('moment');
 
-module.exports = function DataTypeFormatService(I18n, $window) {
+module.exports = function DataTypeFormatService(I18n, $window, $log) {
 
   /**
   * Renders a boolean value in checkbox format
@@ -58,15 +58,28 @@ module.exports = function DataTypeFormatService(I18n, $window) {
 
   /**
   * Renders a Point in plain text as a lat/lng pair.
+  * Multipolygon support added for EN-16912 even though we don't expect customers to use it.
   */
   var renderGeoCell = function(cellContent) {
+    var coordinates = _cellCoordinates(cellContent);
+    if (!coordinates) {
+      return '';
+    }
+
     var latitudeIndex = 1;
     var longitudeIndex = 0;
-    var coordinates = _cellCoordinates(cellContent);
-    if (coordinates) {
-      var latitude = coordinates[latitudeIndex];
-      var longitude = coordinates[longitudeIndex];
-      return `(${latitude}°, ${longitude}°)`;
+    var coordsToText = (coords) => `(${coords[latitudeIndex]}°, ${coords[longitudeIndex]}°)`;
+
+    if (coordinates.length === 2) {
+      return coordsToText(coordinates);
+    } else if (_.isArray(_.get(coordinates, '[0][0]'))) {
+      var multipolygonCoordinates = coordinates[0][0];
+      try {
+        return `MULTIPOLYGON(${_.map(multipolygonCoordinates, coordsToText).join(', ')})`;
+      } catch (e) {
+        $log.error(e);
+        return '';
+      }
     } else {
       return '';
     }
@@ -74,16 +87,33 @@ module.exports = function DataTypeFormatService(I18n, $window) {
 
   /**
   * Renders a Point wrapped in an HTML span element
+  * Multipolygon support added for EN-16912 even though we don't expect customers to use it.
   */
   var renderGeoCellHTML = function(cellContent) {
+    var coordinates = _cellCoordinates(cellContent);
+    if (!coordinates) {
+      return '';
+    }
+
     var latitudeIndex = 1;
     var longitudeIndex = 0;
-    var coordinates = _cellCoordinates(cellContent);
-    if (coordinates) {
-      var template = '<span title="{0}">{1}°</span>';
-      var latitude = template.format(I18n.common.latitude, coordinates[latitudeIndex]);
-      var longitude = template.format(I18n.common.longitude, coordinates[longitudeIndex]);
-      return `(${latitude}, ${longitude})`;
+    var coordsToText = (coords) => `(${coords[latitudeIndex]}°, ${coords[longitudeIndex]}°)`;
+    var coordsToHTML = (coords) => {
+      var _lat = `<span title="${I18n.common.latitude}">${coords[latitudeIndex]}°</span>`;
+      var _long = `<span title="${I18n.common.longitude}">${coords[longitudeIndex]}°</span>`;
+      return `(${_lat}, ${_long})`;
+    };
+
+    if (coordinates.length === 2) {
+      return coordsToHTML(coordinates);
+    } else if (_.isArray(_.get(coordinates, '[0][0]'))) {
+      var multipolygonCoordinates = coordinates[0][0];
+      try {
+        return `MULTIPOLYGON(${_.map(multipolygonCoordinates, coordsToText).join(', ')})`;
+      } catch (e) {
+        $log.error(e);
+        return '';
+      }
     } else {
       return '';
     }

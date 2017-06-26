@@ -997,8 +997,7 @@ function SvgColumnChart($element, vif, options) {
               `g.dimension-group[data-dimension-value="${dimensionValue}"]`
             );
 
-            showGroupHighlight(dimensionGroup);
-            showGroupFlyout(dimensionGroup, dimensionValues);
+           showGroupFlyout(dimensionGroup, dimensionValues);
           }
         }
       ).
@@ -1007,7 +1006,6 @@ function SvgColumnChart($element, vif, options) {
         () => {
 
           if (!isCurrentlyPanning()) {
-            hideHighlight();
             hideFlyout();
           }
         }
@@ -1252,35 +1250,6 @@ function SvgColumnChart($element, vif, options) {
       d3.event.buttons !== 0 :
       d3.event.which !== 0;
   }
-
-
-  function showGroupHighlight(groupElement) {
-
-    // NOTE: The below function depends on this being set by d3, so it is not
-    // possible to use the () => {} syntax here.
-    groupElement.selectAll('rect.column').each(function() {
-      const selection = d3.select(this);
-
-      selection.attr(
-        'fill',
-        // NOTE: The below function depends on this being set by d3, so it is
-        // not possible to use the () => {} syntax here.
-        function() {
-          const seriesIndex = getSeriesIndexByMeasureIndex(
-            parseInt(this.getAttribute('data-measure-index'), 10)
-          );
-          const highlightColor = self.getHighlightColorBySeriesIndex(
-            seriesIndex
-          );
-
-          return (highlightColor !== null) ?
-            highlightColor :
-            selection.attr('fill');
-        }
-      );
-    });
-  }
-
   function showColumnHighlight(columnElement) {
     const selection = d3.select(columnElement);
 
@@ -1313,7 +1282,7 @@ function SvgColumnChart($element, vif, options) {
       selection.attr('fill', selection.attr('data-default-fill'));
     });
   }
-
+  
   function showGroupFlyout(groupElement, dimensionValues) {
     const title = groupElement.attr('data-dimension-value');
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).

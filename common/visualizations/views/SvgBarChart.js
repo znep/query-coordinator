@@ -1306,7 +1306,6 @@ function SvgBarChart($element, vif, options) {
               );
               const seriesElement = yAxisAndSeriesSvg.select('g.series')[0][0];
 
-              showGroupHighlight(dimensionGroup);
               showGroupFlyout(seriesElement, dimensionGroup, dimensionValues, positions);
             }
           }
@@ -1316,7 +1315,6 @@ function SvgBarChart($element, vif, options) {
           () => {
 
             if (!isCurrentlyPanning()) {
-              hideHighlight();
               hideFlyout();
             }
           }
@@ -1569,34 +1567,7 @@ function SvgBarChart($element, vif, options) {
       d3.event.buttons !== 0 :
       d3.event.which !== 0;
   }
-
-  function showGroupHighlight(groupElement) {
-
-    // NOTE: The below function depends on this being set by d3, so it is not
-    // possible to use the () => {} syntax here.
-    groupElement.selectAll('.bar').each(function() {
-      const selection = d3.select(this);
-
-      selection.attr(
-        'fill',
-        // NOTE: The below function depends on this being set by d3, so it is
-        // not possible to use the () => {} syntax here.
-        function() {
-          const seriesIndex = getSeriesIndexByMeasureIndex(
-            parseInt(this.getAttribute('data-measure-index'), 10)
-          );
-          const highlightColor = self.getHighlightColorBySeriesIndex(
-            seriesIndex
-          );
-
-          return (highlightColor !== null) ?
-            highlightColor :
-            selection.attr('fill');
-        }
-      );
-    });
-  }
-
+  
   function showBarHighlight(barElement) {
     const selection = d3.select(barElement);
 

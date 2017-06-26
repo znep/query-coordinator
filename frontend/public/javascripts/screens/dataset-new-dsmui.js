@@ -9,7 +9,9 @@ function updateButtonDisplay() {
   const errorMessage = $('#error-message');
   const datasetTitle = document.getElementById('dataset-title-input').value;
 
-  busyBtn.hide(); disabledBtn.hide(); readyBtn.hide();
+  busyBtn.hide();
+  disabledBtn.hide();
+  readyBtn.hide();
 
   if (inProgress) {
     busyBtn.show();
@@ -23,7 +25,12 @@ function updateButtonDisplay() {
 
 function handleError(xhr, textStatus, errorThrown, fromApi) {
   // TODO: airbrake this
-  console.error('An error occurred while making a request to ' + fromApi + '.', xhr, textStatus, errorThrown);
+  console.error(
+    'An error occurred while making a request to ' + fromApi + '.',
+    xhr,
+    textStatus,
+    errorThrown
+  );
   var message = $('#error-message');
   message.show();
   inProgress = false;
@@ -31,7 +38,14 @@ function handleError(xhr, textStatus, errorThrown, fromApi) {
   updateButtonDisplay();
 }
 
-function handleRevisionError(view, xhr, textStatus, errorThrown, headers, fromApi) {
+function handleRevisionError(
+  view,
+  xhr,
+  textStatus,
+  errorThrown,
+  headers,
+  fromApi
+) {
   $.ajax({
     type: 'DELETE',
     url: '/api/views/' + view.id,
@@ -61,6 +75,8 @@ function createDataset() {
       name: datasetTitle
     }),
     success: function(newView) {
+      var locale = document.location.pathname.match(/^\/[a-zA-Z]{2}\//);
+
       $.ajax({
         type: 'POST',
         url: '/api/publishing/v1/revision/' + newView.id,
@@ -68,10 +84,18 @@ function createDataset() {
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         success: function() {
-          document.location = '/d/' + newView.id + '/revisions/0';
+          document.location =
+            (locale ? locale[0] : '/') + 'd/' + newView.id + '/revisions/0';
         },
         error: function(xhr, textStatus, errorThrown) {
-          handleRevisionError(newView, xhr, textStatus, errorThrown, headers, 'dsmapi');
+          handleRevisionError(
+            newView,
+            xhr,
+            textStatus,
+            errorThrown,
+            headers,
+            'dsmapi'
+          );
         }
       });
     },

@@ -12,20 +12,30 @@ import _ from 'lodash';
 const checkUploadStatus = store => (nextState, replace) => {
   const uploadExists = !_.isEmpty(store.getState().entities.output_columns);
 
-  const { category, fourfour, name, revisionSeq } = nextState.params;
+  const { category, fourfour, name, revisionSeq, locale } = nextState.params;
 
   if (uploadExists) {
     store.dispatch(focusColumnEditor(nextState));
   } else {
-    replace(`/${category}/${name}/${fourfour}/revisions/${revisionSeq}`);
+    let newURL = `/${category}/${name}/${fourfour}/revisions/${revisionSeq}`;
+
+    if (locale) {
+      newURL = `/${locale}${newURL}`;
+    }
+
+    replace(newURL);
   }
 };
 
 const checkUpsertStatus = store => (nextState, replace, blocking) => {
   const upsertJob = _.maxBy(_.values(store.getState().entities.task_sets), job => job.updated_at);
 
-  const { category, fourfour, name, revisionSeq } = nextState.params;
-  const newPath = `/${category}/${name}/${fourfour}/revisions/${revisionSeq}`;
+  const { category, fourfour, name, revisionSeq, locale } = nextState.params;
+  let newPath = `/${category}/${name}/${fourfour}/revisions/${revisionSeq}`;
+
+  if (locale) {
+    newPath = `/${locale}${newPath}`;
+  }
 
   if (upsertJob && newPath !== nextState.location.pathname) {
     replace(newPath);
@@ -37,7 +47,7 @@ const checkUpsertStatus = store => (nextState, replace, blocking) => {
 export default function rootRoute(store) {
   return (
     <Route
-      path="/:category/:name/:fourfour/revisions/:revisionSeq"
+      path="/(:locale/):category/:name/:fourfour/revisions/:revisionSeq"
       component={App}
       onEnter={checkUpsertStatus(store)}>
 

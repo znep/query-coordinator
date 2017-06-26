@@ -2,16 +2,20 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
-.icon {
-  color: $dark-grey-1;
-  margin: 0 0.4em;
-}
-
 .list {
   margin: 0;
   padding: 0;
   list-style: none;
   display: inline-block;
+
+
+  .active {
+    color: $dark-grey-1;
+
+    a, a:visited, a:hover, a:active {
+      color: $dark-grey-1;
+    }
+  }
 
   li {
     display: inline-block;
@@ -31,18 +35,5 @@
     a:hover, a:active {
       text-decoration: underline;
     }
-
   }
-}
-
-li.active {
-  color: $dark-grey-1;
-
-  a, a:visited, a:hover, a:active {
-    color: $dark-grey-1;
-  }
-}
-
-.header {
-  composes: h6 from global;
 }

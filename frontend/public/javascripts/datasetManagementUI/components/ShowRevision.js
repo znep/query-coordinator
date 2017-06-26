@@ -11,27 +11,13 @@ import NotifyButton from './NotifyButton';
 import RowDetails from '../components/RowDetails';
 import * as Links from '../links';
 import { Link } from 'react-router';
-import { latestOutputSchema } from '../selectors';
+import { latestOutputSchema } from 'selectors';
 import * as Actions from '../actions/manageUploads';
 import * as ApplyRevision from '../actions/applyRevision';
+import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import styles from 'styles/ShowRevision.scss';
 
-const enabledFileExtensions = _.compact([
-  '.csv',
-  '.tsv',
-  '.xls',
-  '.xlsx',
-  window.serverConfig.featureFlags.datasetManagementUiEnableShapefileUpload ? '.zip' : null
-]);
-
-function formatExpanation(format) {
-  if (format === '.zip') {
-    return '.zip (shapefile)';
-  }
-  return format;
-}
-
-const noDataYetView = (createUpload) => {
+const noDataYetView = createUpload => {
   return (
     <div className={styles.tableInfo}>
       <h3 className={styles.previewAreaHeader}>

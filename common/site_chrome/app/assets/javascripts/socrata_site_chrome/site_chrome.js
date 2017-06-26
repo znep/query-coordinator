@@ -9,30 +9,37 @@ var navLinkFullWidth;
 var navbarRightWidth;
 var initialBodyOverflowY;
 
-$(document).ready(function() {
-  $siteChromeHeader = $('#site-chrome-header');
-  $siteChromeHeaderDesktopNav = $siteChromeHeader.find('nav.desktop');
-  $siteChromeHeaderMobileNav = $siteChromeHeader.find('nav.mobile');
-  $siteChromeMobileMenu = $siteChromeHeader.find('.mobile-menu');
-  siteChromeTemplate = $siteChromeHeader.attr('template');
-  navLinkFullWidth = $siteChromeHeaderDesktopNav.find('.site-chrome-nav-links').width();
+(function($) {
+  if (!$) {
+    return;
+  }
 
-  if (siteChromeTemplate === 'evergreen')
-    navbarRightWidth = $siteChromeHeader.find('.evergreen-link-cluster').width();
-  else if (siteChromeTemplate === 'rally')
-    navbarRightWidth = $siteChromeHeader.find('.navbar-right').width();
+  $(document).ready(function() {
+    $siteChromeHeader = $('#site-chrome-header');
+    $siteChromeHeaderDesktopNav = $siteChromeHeader.find('nav.desktop');
+    $siteChromeHeaderMobileNav = $siteChromeHeader.find('nav.mobile');
+    $siteChromeMobileMenu = $siteChromeHeader.find('.mobile-menu');
+    siteChromeTemplate = $siteChromeHeader.attr('template');
+    navLinkFullWidth = $siteChromeHeaderDesktopNav.find('.site-chrome-nav-links').width();
 
-  initialBodyOverflowY = $('body').css('overflow-y') || 'visible';
+    if (siteChromeTemplate === 'evergreen')
+      navbarRightWidth = $siteChromeHeader.find('.evergreen-link-cluster').width();
+    else if (siteChromeTemplate === 'rally')
+      navbarRightWidth = $siteChromeHeader.find('.navbar-right').width();
 
-  addAriaExpandedAttributeToSearchBox();
-  verticallyPositionSearchbar();
+    initialBodyOverflowY = $('body').css('overflow-y') || 'visible';
 
-  checkMobileBreakpoint();
-  $(window).resize(checkMobileBreakpoint);
+    addAriaExpandedAttributeToSearchBox();
+    verticallyPositionSearchbar();
 
-  // Show header nav. It has opacity set to 0 initially to prevent a flash of desktop styling on mobile.
-  $siteChromeHeader.find('nav').css('opacity', 1);
-});
+    checkMobileBreakpoint();
+    $(window).resize(checkMobileBreakpoint);
+
+    // Show header nav. It has opacity set to 0 initially to prevent a flash of desktop styling on mobile.
+    $siteChromeHeader.find('nav').css('opacity', 1);
+  });
+})(window.$);
+
 
 function addAriaExpandedAttributeToSearchBox() {
   $('.searchbox').attr('aria-expanded', 'false');

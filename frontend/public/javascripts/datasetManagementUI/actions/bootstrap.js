@@ -122,7 +122,8 @@ function sideEffectyStuff(revision) {
     });
 
     revision.task_sets.forEach(taskSet => {
-      if (taskSet.status === ApplyRevision.TASK_SET_IN_PROGRESS) {
+      if (taskSet.status !== ApplyRevision.TASK_SET_SUCCESS &&
+          taskSet.status !== ApplyRevision.TASK_SET_FAILURE) {
         dispatch(ApplyRevision.pollForTaskSetProgress(taskSet.id));
       }
     });

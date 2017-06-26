@@ -1,15 +1,21 @@
-$(document).ready(function() {
-  $('#site-chrome-admin-header [aria-haspopup]').
-    on('click', toggleAdminDropdown).
-    on('blur', blurAdminDropdown).
-    on('keypress', keypressAdminDropdown).
-    on('keydown', keydownAdminDropdown).
-    on('keyup', keyupAdminDropdown);
-  $('#site-chrome-admin-header [role="menu"] li a').
-    on('blur', blurAdminDropdown).
-    on('keydown', keydownAdminDropdownItem).
-    on('keyup', keyupAdminDropdownItem);
-});
+(function($) {
+  if (!$) {
+    return;
+  }
+
+  $(document).ready(function() {
+    $('#site-chrome-admin-header [aria-haspopup]').
+      on('click', toggleAdminDropdown).
+      on('blur', blurAdminDropdown).
+      on('keypress', keypressAdminDropdown).
+      on('keydown', keydownAdminDropdown).
+      on('keyup', keyupAdminDropdown);
+    $('#site-chrome-admin-header [role="menu"] li a').
+      on('blur', blurAdminDropdown).
+      on('keydown', keydownAdminDropdownItem).
+      on('keyup', keyupAdminDropdownItem);
+  });
+})(window.$);
 
 /**
  * - Toggle active class when any click

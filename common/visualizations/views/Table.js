@@ -189,7 +189,8 @@ module.exports = function Table(element, originalVif, locale) {
           <span class="column-header-content-column-name">
             ${options.columnTitle}
           </span>
-          <span class="icon-${options.sortDirection}"></span>
+          <span class="${options.sortDirection}"></span>
+          <button class="sort-menu-button"><span class="socrata-icon-kebab"></span></button>
         </div>
         ${resizeTarget}
       </th>
@@ -272,10 +273,37 @@ module.exports = function Table(element, originalVif, locale) {
           <span class="column-header-content-column-name">
             ${options.columnTitle}
           </span>
-          <span class="icon-arrow-down"></span>
+          <span class="socrata-icon-arrow-up2"></span>
+          <button class="sort-menu-button"><span class="socrata-icon-kebab"></span></button>
         </div>
         ${resizeTarget}
       </th>
+    `;
+  }
+
+  function templateSortMenu() {
+
+    const description = I18n.translate('visualizations.table.description', locale);
+    const more = I18n.translate('visualizations.table.more', locale);
+    const sortAscending = I18n.translate('visualizations.table.sort_ascending', locale);
+    const sortDescending = I18n.translate('visualizations.table.sort_descending', locale);
+
+    return `
+      <div id="sort-menu">
+        <ul>
+          <li>
+            <button id="sort-menu-sort-asc-button"><span class="socrata-icon-arrow-up2"></span>${sortAscending}</button>
+          </li>
+          <li>
+            <button id="sort-menu-sort-desc-button"><span class="socrata-icon-arrow-down2"></span>${sortDescending}</button>
+          </li>
+        </ul>
+        <div id="sort-menu-description-container">
+          <div><span class="socrata-icon-info-inverse"></span>${description}</div>
+          <p></p>
+          <a id="sort-menu-more-link">${more}</a>
+        </div>
+      </div>
     `;
   }
 
@@ -306,8 +334,8 @@ module.exports = function Table(element, originalVif, locale) {
           columnDescription: _.escape(_.get(column, 'description', '')),
           renderTypeName: _.get(column, 'renderTypeName', ''),
           sortDirection: activeSort.ascending ?
-            'arrow-down' :
-            'arrow-up',
+            'socrata-icon-arrow-up2' :
+            'socrata-icon-arrow-down2',
           isLastColumn: (i === (filteredColumns.length - 1)),
           resizingClassIfIsResizing: resizingClassIfIsResizing
         };
@@ -470,18 +498,21 @@ module.exports = function Table(element, originalVif, locale) {
       '.socrata-table thead th .column-header-content',
       handleColumnHeaderClick
     );
-
+    self.$element.on(
+      'click',
+      '.sort-menu-button',
+      handleSortMenuButtonClick
+    );
     self.$element.on(
       'mouseenter mousemove',
-      '.socrata-table thead th',
-      showDescriptionFlyout
+      '.socrata-table thead .sort-menu-button',
+      showSortMenuButtonFlyout
     );
     self.$element.on(
       'mouseleave',
-      '.socrata-table thead th',
-      hideDescriptionFlyout
+      '.socrata-table thead .sort-menu-button',
+      hideSortMenuButtonFlyout
     );
-
     self.$element.on(
       'mouseenter mousemove',
       '.socrata-table tbody td',
@@ -509,18 +540,21 @@ module.exports = function Table(element, originalVif, locale) {
       '.socrata-table thead th .column-header-content',
       handleColumnHeaderClick
     );
-
+    self.$element.off(
+      'click',
+      '.sort-menu-button',
+      handleSortMenuButtonClick
+    );
     self.$element.off(
       'mouseenter mousemove',
-      '.socrata-table thead th',
-      showDescriptionFlyout
+      '.socrata-table thead .sort-menu-button',
+      showSortMenuButtonFlyout
     );
     self.$element.off(
       'mouseleave',
-      '.socrata-table thead th',
-      hideDescriptionFlyout
+      '.socrata-table thead .sort-menu-button',
+      hideSortMenuButtonFlyout
     );
-
     self.$element.off(
       'mouseenter mousemove',
       '.socrata-table tbody td',
@@ -533,45 +567,36 @@ module.exports = function Table(element, originalVif, locale) {
     );
   }
 
-  function showDescriptionFlyout(event) {
-    const $target = $(event.currentTarget).find('.column-header-content');
-    const title = _.escape($target.find('.column-header-content-column-name').text());
-    const description =
-      _.escape($target.attr('data-column-description')) ||
-      `<em>${I18n.translate('visualizations.table.no_column_description', locale)}</em>`;
-    const content = `
-      <span>${title}</span><br>
-      <span>${description}</span>
-    `;
+  function showSortMenuButtonFlyout() {
 
-    // Don't distract the user if they are resizing a column
-    // (activeResizeColumnName is set to the name of the column being resized
-    // at the start of the resize action, and reset to null when the resize
-    // action is complete).
-    if (activeResizeColumnName === null) {
+     // Don't distract the user if they are resizing a column
+     // (activeResizeColumnName is set to the name of the column being resized
+     // at the start of the resize action, and reset to null when the resize
+     // action is complete).
+     if (activeResizeColumnName === null) {
 
-      self.emitEvent(
-        'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-        {
-          element: $target[0],
-          content: content,
-          belowTarget: true,
-          rightSideHint: false,
-          dark: true
-        }
-      );
-    }
-  }
+       self.emitEvent(
+         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+         {
+           element: $(this)[0],
+           content: I18n.translate('visualizations.table.column_options', locale),
+           belowTarget: false,
+           rightSideHint: false,
+           dark: true
+         }
+       );
+     }
+   }
 
-  function hideDescriptionFlyout() {
+   function hideSortMenuButtonFlyout() {
 
-    self.emitEvent(
-      'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-      null
-    );
-  }
+     self.emitEvent(
+       'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
+       null
+     );
+   }
 
-  function showCellFlyout(event) {
+   function showCellFlyout(event) {
     const $target = $(event.currentTarget).find('div');
     // Sometimes $target doesn't seem to have any elements associated with it.
     const isOverflowing = (!_.isUndefined($target[0])) ?
@@ -682,12 +707,146 @@ module.exports = function Table(element, originalVif, locale) {
     }
   }
 
-  function handleColumnHeaderClick() {
-    const columnName = this.getAttribute('data-column-name');
-    const columnRenderType = this.getAttribute('data-column-render-type');
+  function handleColumnHeaderClick(event) {
+
+    event.stopPropagation();
+
+    if (self.isMobile()) {
+      handleColumnHeaderClickForMobile($(this));
+    } else {
+      handleColumnHeaderClickForDesktop($(this));
+    }
+  }
+
+  function handleColumnHeaderClickForDesktop($contentDiv) {
+
+    const columnName = $contentDiv.attr('data-column-name');
+    const columnRenderType = $contentDiv.attr('data-column-render-type');
 
     if (columnName && !isGeometryType({renderTypeName: columnRenderType})) {
       self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_CLICKED', columnName);
     }
+  }
+
+  function handleColumnHeaderClickForMobile($contentDiv) {
+
+    handleSortMenuToggle($contentDiv);
+  }
+
+  function handleSortMenuButtonClick(event) {
+
+    event.stopPropagation();
+
+    const $contentDiv = $(this).parent();
+    handleSortMenuToggle($contentDiv);
+  }
+
+  function handleSortMenuToggle($contentDiv) {
+
+    const columnName = $contentDiv.attr('data-column-name');
+    const columnRenderType = $contentDiv.attr('data-column-render-type');
+    const columnDescription = _.escape($contentDiv.attr('data-column-description')) ||
+      I18n.translate('visualizations.table.no_column_description', locale);
+
+    toggleSortMenu($contentDiv.parent(), columnName, columnRenderType, columnDescription);
+  }
+
+  function toggleSortMenu($container, columnName, columnRenderType, columnDescription) {
+
+    let $sortMenu = $('#sort-menu');
+
+    if ($sortMenu.length > 0) {
+
+      // Menu exists.  If the menu is displayed on this column already, remove it
+      //
+      if ($sortMenu.attr('sort-menu-column-name') == columnName) {
+        hideSortMenu();
+        return;
+      }
+
+    } else {
+      $sortMenu = $(templateSortMenu());
+    }
+
+    attachSortMenuEventHandlers($sortMenu, columnName, columnRenderType);
+    populateSortMenu($sortMenu, columnName, columnDescription);
+    positionSortMenu($sortMenu, $container);
+  }
+
+  function hideSortMenu() {
+
+    $('#sort-menu').remove();
+    $('body').off('click', hideSortMenu);
+  }
+
+  function attachSortMenuEventHandlers($sortMenu, columnName, columnRenderType) {
+
+    if (columnName && !isGeometryType({renderTypeName: columnRenderType})) {
+
+      $('body').on('click', hideSortMenu);
+
+      $sortMenu.find('#sort-menu-sort-asc-button').off().on('click', (event) => {
+
+        event.stopPropagation();
+        self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', { columnName, ascending: true });
+        $sortMenu.remove();
+      });
+
+      $sortMenu.find('#sort-menu-sort-desc-button').off().on('click', (event) => {
+
+        event.stopPropagation();
+        self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', { columnName, ascending: false });
+        $sortMenu.remove();
+      });
+
+      $sortMenu.find('#sort-menu-more-link').off().on('click', (event) => {
+
+        event.stopPropagation();
+        const columnDescription = $sortMenu.attr('sort-menu-column-description');
+        $sortMenu.find('#sort-menu-description-container p').text(columnDescription);
+        $(event.target).hide();
+      });
+    }
+  }
+
+  function populateSortMenu($sortMenu, columnName, columnDescription) {
+
+    $sortMenu.attr('sort-menu-column-name', columnName);
+    $sortMenu.attr('sort-menu-column-description', columnDescription);
+
+    const maxCharacters = 150;
+
+    if (columnDescription.length > maxCharacters) {
+
+      const truncatedDescription = _.truncate(
+        columnDescription,
+        {
+          length: maxCharacters,
+          separator: /,?\.* +/ // separate by spaces, including preceding commas and periods
+        });
+
+      $sortMenu.find('#sort-menu-description-container p').text(truncatedDescription);
+      $sortMenu.find('#sort-menu-more-link').show();
+
+    } else {
+
+      $sortMenu.find('#sort-menu-description-container p').text(columnDescription);
+      $sortMenu.find('#sort-menu-more-link').hide();
+    }
+  }
+
+  function positionSortMenu($sortMenu, $container) {
+
+    $sortMenu.appendTo($container);
+    $sortMenu.css('right', 0); // must be positioned first for offset calculations to work
+
+    // Move menu to the right if the left edge extends past the left table edge
+    //
+    const socrataTableScrollLeft = $container.closest('.socrata-table').scrollLeft();
+    const tableOffsetLeft = $container.closest('table').offset().left;
+    const menuOffsetLeft = $sortMenu.offset().left;
+
+    const menuOffsetRight = Math.min(menuOffsetLeft - tableOffsetLeft - socrataTableScrollLeft, 0);
+    $sortMenu.css('right', menuOffsetRight);
   }
 };

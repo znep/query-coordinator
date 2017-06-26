@@ -1,107 +1,73 @@
-import _ from 'lodash';
+/* eslint react/jsx-indent: 0 */
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'common/components';
-import * as Links from '../links';
-import * as Selectors from '../selectors';
-import SocrataIcon from '../../common/components/SocrataIcon';
+import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
+import * as Links from 'links';
+import * as Selectors from 'selectors';
+import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
+import DragDropUpload from 'components/Uploads/DragDropUpload';
+import UploadSidebar from 'components/Uploads/UploadSidebar';
+import FlashMessage from 'components/FlashMessage/FlashMessage';
 import styles from 'styles/ShowUpload.scss';
 
-function query(entities, uploadId) {
-  const upload = entities.uploads[_.toNumber(uploadId)];
-  const inputSchemas = _.filter(entities.input_schemas, { upload_id: upload.id });
+export const ShowUpload = ({ inProgress, goHome }) =>
+  <div className={styles.showUpload}>
+    <Modal fullScreen onDismiss={goHome}>
+      <ModalHeader onDismiss={goHome}>
+        <UploadBreadcrumbs atShowUpload />
+      </ModalHeader>
+      <ModalContent className={styles.modalContent}>
+        <FlashMessage />
+        {inProgress
+          ? <div className={styles.centeredContainer}>
+              <span className={styles.spinner} />
+            </div>
+          : <div className={styles.uploadContainer}>
+              <DragDropUpload />
+              <UploadSidebar />
+            </div>}
+      </ModalContent>
+    </Modal>
+  </div>;
 
-  return {
-    upload,
-    latestOutputSchema: inputSchemas.length ? Selectors.latestOutputSchema(entities) : null
-  };
-}
+export const mapStateToProps = ({ entities, ui }) => {
+  // selector returns undefined if there are no uploads
+  const upload = Selectors.latestUpload(entities);
+  let apiCall = [];
 
-function ShowUpload({ upload, latestOutputSchema, goHome }) {
-  let body;
-  if (!latestOutputSchema) {
-    body = (
-      <div className={styles.centeredContainer}>
-        <span className={styles.spinner} />
-      </div>
-    );
-  } else {
-    body = (
-      <div>
-        Layers:
-        <ul>
-          <li>
-            {latestOutputSchema.name || I18n.home_pane.only_layer}
-            <ul>
-              <li>
-                <Link
-                  to={Links.showOutputSchema(
-                    upload.id,
-                    latestOutputSchema.input_schema_id,
-                    latestOutputSchema.id
-                  )}>
-                  {latestOutputSchema.id}
-                </Link>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
+  if (upload && upload.id) {
+    const { id: uploadId } = upload;
+    const apiCallList = Object.keys(ui.apiCalls).map(callId => ui.apiCalls[callId]);
+
+    apiCall = apiCallList.filter(
+      call =>
+        call.operation === 'UPLOAD_FILE' &&
+        call.status === STATUS_CALL_IN_PROGRESS &&
+        call.params &&
+        call.params.id === uploadId
     );
   }
 
-  const modalProps = {
-    fullScreen: true,
-    onDismiss: goHome
+  // Include upload in the definition of inProgress because if there is no upload,
+  // we don't want to show the spinner, we want to show the actual component so the
+  // user can upload something
+  // TODO: maybe tweak this in the future. For really small files, the upload finishes
+  // before polling for OS does, so the uploads page shows (instead of the spinner)
+  // for a split second before transitioning to ShowOutputSchema page
+  return {
+    inProgress: !!upload && !!apiCall.length
   };
-  // Not going to style these breadcrumbs because this page is going to go away.
-  const headerProps = {
-    title: (
-      <ol className={styles.list}>
-        <li className={styles.active}>
-          {I18n.home_pane.data}
-          <SocrataIcon name="arrow-right" className={styles.icon} />
-        </li>
-        <li>
-          {I18n.home_pane.preview}
-        </li>
-      </ol>
-    ),
-    onDismiss: goHome
-  };
-
-  return (
-    <div className={styles.showUpload}>
-      <Modal {...modalProps}>
-        <ModalHeader {...headerProps} />
-
-        <ModalContent>
-          {body}
-        </ModalContent>
-      </Modal>
-    </div>
-  );
-}
+};
 
 ShowUpload.propTypes = {
-  upload: PropTypes.object.isRequired,
-  latestOutputSchema: PropTypes.object,
+  inProgress: PropTypes.bool.isRequired,
   goHome: PropTypes.func.isRequired
 };
 
-function mapStateToProps(state, ownProps) {
-  const params = ownProps.params;
-  return query(state.entities, params.uploadId);
-}
-
-function mapDispatchToProps(dispatch, ownProps) {
-  return {
-    goHome: () => {
-      dispatch(push(Links.home(ownProps.location)));
-    }
-  };
-}
+export const mapDispatchToProps = (dispatch, ownProps) => ({
+  goHome: () => dispatch(push(Links.home(ownProps.location)))
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShowUpload);

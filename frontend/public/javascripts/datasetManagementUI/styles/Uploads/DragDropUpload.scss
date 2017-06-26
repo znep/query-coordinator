@@ -1,0 +1,97 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.container {
+  background-color: $light-grey-7;
+  padding: 1em;
+  font-size: 1rem;
+}
+
+.container h2 {
+  width: 90%;
+  font-size: 25px;
+  margin: 0 auto;
+  margin-bottom: 0.3em;
+}
+
+.dropZone {
+  border: 2px dashed $dark-grey-1;
+  width: 90%;
+  height: 80%;
+  min-height: 385px;
+  margin: 0 auto;
+}
+
+.dropZoneDragging {
+  composes: dropZone;
+  background-color: $white;
+}
+
+.uploadButton {
+  composes: btn from global;
+  composes: btn-primary from global;
+}
+
+.uploadInput {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.imageContainer, .textContainer {
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.image {
+  width: 75%;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.imageContainer {
+  width: 40%;
+  position: relative;
+}
+
+.textContainer {
+  width: 60%;
+  position: relative;
+
+  .content {
+    padding-left: 1em;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    .uploadButton {
+      padding: 11px 33px;
+    }
+  }
+
+  h2 {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .browseMsg {
+    font-size: 1.1em;
+  }
+
+  .fileTypes {
+    color: $dark-grey-1;
+  }
+}
+
+.content > * {
+  margin-bottom: 0.4em;
+}

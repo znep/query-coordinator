@@ -31,6 +31,10 @@ export function latestRevision(entities) {
   return _.maxBy(_.values(entities.revisions), 'id');
 }
 
+export function latestUpload(entities) {
+  return _.maxBy(_.values(entities.uploads), 'id');
+}
+
 export function columnsForInputSchema(entities, inputSchemaId) {
   const unsortedColumns = _.filter(entities.input_columns, ic => ic.input_schema_id === inputSchemaId);
   return _.sortBy(unsortedColumns, 'position');
@@ -55,7 +59,7 @@ export function allTransformsDone(columnsWithTransforms, inputSchema) {
   return columnsWithTransforms.every(
     column =>
       !_.isUndefined(column.transform.contiguous_rows_processed) &&
-        column.transform.contiguous_rows_processed === inputSchema.total_rows
+      column.transform.contiguous_rows_processed === inputSchema.total_rows
   );
 }
 
@@ -122,10 +126,10 @@ export function updatedOutputColumns(entities, formDataModel) {
 // - computation of denormalized error count for output schema
 // - starting new transforms when a new output schema is created
 // - endpoints which return results
-export function currentAndIgnoredOutputColumns(entities) {
+export function currentAndIgnoredOutputColumns(entities, osid) {
   const osIds = Object.keys(entities.output_schemas).map(_.toNumber);
 
-  const latestOutputSchemaId = Math.max(...osIds);
+  const latestOutputSchemaId = osid || Math.max(...osIds);
 
   // get all input column ids
   return _.chain(entities.input_columns)

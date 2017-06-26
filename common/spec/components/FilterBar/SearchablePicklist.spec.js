@@ -74,7 +74,7 @@ describe('SearchablePicklist', () => {
         const searchInput = getSearchInput(element);
 
         searchInput.value = searchTerm;
-        Simulate.keyUp(getSearchInput(element), { keyCode: ENTER });
+        Simulate.keyPress(getSearchInput(element), { keyCode: ENTER });
       });
 
       it('adds a loading spinner', (done) => {
@@ -89,7 +89,7 @@ describe('SearchablePicklist', () => {
           }
         }));
 
-        Simulate.keyUp(getSearchInput(element), { keyCode: ENTER });
+        Simulate.keyPress(getSearchInput(element), { keyCode: ENTER });
       });
 
       it('hides the loading spinner after canAddSearchTerm resolves', (done) => {
@@ -106,7 +106,7 @@ describe('SearchablePicklist', () => {
           }
         }));
 
-        Simulate.keyUp(getSearchInput(element), { keyCode: ENTER });
+        Simulate.keyPress(getSearchInput(element), { keyCode: ENTER });
       });
 
       it('shows an error if the search term cannot be added', (done) => {
@@ -116,7 +116,7 @@ describe('SearchablePicklist', () => {
           }
         }));
 
-        Simulate.keyUp(getSearchInput(element), { keyCode: ENTER });
+        Simulate.keyPress(getSearchInput(element), { keyCode: ENTER });
 
         _.delay(() => {
           assert.notDeepEqual(getSearchWarning(element), null);

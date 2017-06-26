@@ -151,6 +151,16 @@ export const updateRevision = () =>
     }
   );
 
+export const getRevision = () =>
+  fetchMock.get(
+    'express:/api/publishing/v1/revision/:fourfour/:revisionSeq',
+    {
+      body: JSON.stringify(responses.getRevision),
+      status: 200,
+      statusText: STATUS_TEXT.OK
+    }
+  );
+
 export const uploadBytesXHR = () => {
   xhrMock.setup();
   xhrMock.post(/\/api\/publishing\/v1\/upload\/\d+\/?/, (req, res) =>
@@ -188,6 +198,7 @@ const mockAPI = () => {
   saveMetadata();
   applyRevision();
   updateRevision();
+  getRevision();
 
   return () => {
     fetchMock.restore();

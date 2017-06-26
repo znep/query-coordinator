@@ -388,6 +388,7 @@ module.exports = function tableCard(
                 // Avoid escaping because cell content is HTML.
                 case 'geo_entity':
                 case 'point':
+                case 'multipolygon':
                   cellText = DataTypeFormatService.renderGeoCellHTML(cellContent, column);
                   break;
                 case 'timestamp':

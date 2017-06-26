@@ -42,6 +42,7 @@ function getIconClassForDisplayType(displayType) {
     case 'file':
       return 'socrata-icon-download';
 
+    case 'blist':
     case 'dataset':
     case 'federated':
     case 'table':

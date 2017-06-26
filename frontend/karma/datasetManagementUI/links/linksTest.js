@@ -30,11 +30,6 @@ describe('links', () => {
     expect(Links.uploads(mockRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/uploads');
   })
 
-  it('creates a showUpload link', () => {
-    expect(Links.showUpload(5)(mockWrappedRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/uploads/5');
-    expect(Links.showUpload(5)(mockRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/uploads/5');
-  })
-
   it('creates a showOutputSchema link', () => {
     expect(Links.showOutputSchema(5, 10, 2)(mockWrappedRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/uploads/5/schemas/10/output/2');
     expect(Links.showOutputSchema(5, 10, 2)(mockRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/uploads/5/schemas/10/output/2');

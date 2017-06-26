@@ -396,14 +396,19 @@ export default {
     },
     table: {
       all_rows: 'Showing all rows',
+      column_options: 'Column Options',
+      description: 'Description',
       error_unable_to_render: 'We\'re having trouble displaying this table. Check to make sure the underlying dataset hasn\'t been deleted or unpublished.',
       many_rows: 'Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}',
+      more: 'More',
       next: 'Next',
       no_column_description: 'No description provided',
       no_row_count: 'Row count unavailable.',
       no_rows: 'No {unitOther}',
       only_rows: 'Showing {unitOne} {firstRowOrdinal} of {datasetRowCount}',
-      previous: 'Previous'
+      previous: 'Previous',
+      sort_ascending: 'Sort Ascending',
+      sort_descending: 'Sort Descending'
     },
     timeline_chart: {
       error_exceeded_max_row_count: 'For optimal performance and legibility timeline charts are limited to {0} points. Use filters to render a more specific chart.',

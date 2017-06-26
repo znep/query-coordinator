@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
@@ -57,6 +58,48 @@ describe('actions/applyRevision', () => {
     it('does nothing if attempting to set permission to same as current permission', () => {
       fakeStore.dispatch(updateRevision('public'));
       assert.equal(fakeStore.getActions().length, 0);
+    });
+
+  });
+
+  describe('applyRevision', () => {
+
+    it('works when an output schema is supplied', (done) => {
+      fakeStore
+        .dispatch(applyRevision(52))
+        .then(() => {
+          const actions = fakeStore.getActions();
+          assert.deepEqual(_.map(actions, 'type'), [
+            'API_CALL_STARTED',
+            'API_CALL_SUCCEEDED',
+            'ADD_TASK_SET',
+            'SHOW_MODAL',
+            '@@router/CALL_HISTORY_METHOD'
+          ]);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    it('works without an output schema (no-file case)', (done) => {
+      fakeStore
+        .dispatch(applyRevision())
+        .then(() => {
+          const actions = fakeStore.getActions();
+          assert.deepEqual(_.map(actions, 'type'), [
+            'API_CALL_STARTED',
+            'API_CALL_SUCCEEDED',
+            'ADD_TASK_SET',
+            'SHOW_MODAL',
+            '@@router/CALL_HISTORY_METHOD'
+          ]);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
     });
 
   });

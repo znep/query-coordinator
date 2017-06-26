@@ -329,8 +329,8 @@ function SvgVisualization($element, vif, options) {
     // Button
     //
     const $button = $('<button>', { 'class': 'socrata-legend-button' }).
-      append($('<span>', { 'class': 'socrata-icon-arrow-left'} )).
       append($('<label>').text(I18n.translate('visualizations.common.show_legend'))).
+      append($('<span>', { 'class': 'socrata-icon-arrow-up'} )).
       append($('<span>', { 'class': 'socrata-icon-close-2'} ));
 
     $innerContainer.append($button);
@@ -374,7 +374,7 @@ function SvgVisualization($element, vif, options) {
         I18n.translate('visualizations.common.show_legend');
 
       $(this).find('label').text(labelText);
-      $(this).find('.socrata-icon-arrow-left').toggle();
+      $(this).find('.socrata-icon-arrow-up').toggle();
       $(this).find('.socrata-icon-close-2').toggle();
 
       if (isVisible) {
@@ -388,7 +388,7 @@ function SvgVisualization($element, vif, options) {
   this.hideLegendMenu = function() {
 
     self.$container.find('.socrata-legend-button label').text(I18n.translate('visualizations.common.show_legend'));
-    self.$container.find('.socrata-legend-button .socrata-icon-arrow-left').show();
+    self.$container.find('.socrata-legend-button .socrata-icon-arrow-up').show();
     self.$container.find('.socrata-legend-button .socrata-icon-close-2').hide();
     self.$container.find('.socrata-legend-menu').hide();
 
@@ -838,8 +838,8 @@ function SvgVisualization($element, vif, options) {
                   $('<div>', {'class': 'socrata-visualization-description'})
                 ),
               $('<div>', {'class': 'socrata-visualization-filter-bar-container'}),
-              $('<div>', {'class': 'socrata-visualization-legend-bar-container'}),
               $('<div>', {'class': 'socrata-visualization-container'}),
+              $('<div>', {'class': 'socrata-visualization-legend-bar-container'}),
               $('<div>', {'class': 'socrata-visualization-info'}).
                 append([
                   $('<div>', {'class': 'socrata-visualization-view-source-data'}).append(

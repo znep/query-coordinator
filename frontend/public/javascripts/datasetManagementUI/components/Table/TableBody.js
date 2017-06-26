@@ -21,6 +21,7 @@ class TableBody extends Component {
       displayState: this.props.displayState,
       apiCalls: this.props.apiCalls
     };
+
     return !_.isEqual(nextStuff, currentStuff);
   }
 

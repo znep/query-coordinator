@@ -172,6 +172,10 @@ $.fn.socrataTable = function(originalVif, locale) {
       handleColumnClicked
     );
     $element.on(
+      'SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED',
+      handleColumnSortApplied
+    );
+    $element.on(
       'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
       handleColumnFlyout
     );
@@ -212,6 +216,10 @@ $.fn.socrataTable = function(originalVif, locale) {
       handleColumnClicked
     );
     $element.off(
+      'SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED',
+      handleColumnSortApplied
+    );
+    $element.off(
       'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
       handleColumnFlyout
     );
@@ -245,8 +253,39 @@ $.fn.socrataTable = function(originalVif, locale) {
     visualization.render(renderState.vif, renderState.fetchedData);
   }
 
+  function handleColumnSortApplied(event) {
+
+    utils.assertIsOneOfTypes(event.originalEvent.detail.columnName, 'string');
+    utils.assertIsOneOfTypes(event.originalEvent.detail.ascending, 'boolean');
+
+    if (renderState.busy) {
+      return;
+    }
+
+    const payload = event.originalEvent.detail;
+
+    utils.assert(
+      _.includes(
+        _.map(renderState.fetchedData.columns, 'fieldName'),
+        payload.columnName
+      ),
+      `Column name not found to sort by: ${payload.columnName}`
+    );
+
+    const newOrder = [payload];
+
+    _.set(renderState.vif, 'configuration.order', newOrder);
+
+    setDataQuery(
+      renderState.vif,
+      0,
+      renderState.fetchedData.pageSize,
+      _.get(renderState.vif, 'configuration.order'),
+      renderState.fetchedData.whereClauseComponents
+    );
+  }
+
   function handleColumnClicked(event) {
-    const columnName = event.originalEvent.detail;
 
     utils.assertIsOneOfTypes(event.originalEvent.detail, 'string');
 
@@ -254,12 +293,14 @@ $.fn.socrataTable = function(originalVif, locale) {
       return;
     }
 
+    const columnName = event.originalEvent.detail;
+
     utils.assert(
       _.includes(
         _.map(renderState.fetchedData.columns, 'fieldName'),
         columnName
       ),
-      'Column name not found to sort by: {0}'.format(columnName)
+      `Column name not found to sort by: ${columnName}`
     );
 
     let alreadySorted = _.isEqual(

@@ -346,7 +346,99 @@ describe('Table', function() {
       removeTable(table);
     });
 
+    describe('SOCRATA_VISUALIZATION_COLUMN_BUTTON_CLICKED', function() {
+
+      var data = {
+        columns: [
+          { fieldName: 'hello0', name: 'hello0', renderTypeName: 'text' },
+          { fieldName: 'hello1', name: 'hello1', renderTypeName: 'text', description: 'hello description' },
+        ]
+      };
+
+      it('displays the sort menu when clicking a column header button', function() {
+
+        render(table, data);
+
+        // Initially hidden
+        //
+        assert.lengthOf(table.element.find('#sort-menu'), 0);
+        
+        // Shown after click
+        //
+        table.element.find('th:first-child').find('.socrata-icon-kebab').click();
+        assert.lengthOf(table.element.find('#sort-menu'), 1);
+
+        // Hidden after second click
+        //
+        table.element.find('th:first-child').find('.socrata-icon-kebab').click();
+        assert.lengthOf(table.element.find('#sort-menu'), 0);
+      });
+
+      it('displays "No description provided" when clicking first column header button', function() {
+
+        render(table, data);
+
+        table.element.find('th:first-child').find('.socrata-icon-kebab').click();
+        assert.equal(table.element.find('#sort-menu').find('p').text().trim(), 'No description provided');
+      });
+
+      it('displays "hello description" when clicking second column header button', function() {
+
+        render(table, data);
+
+        table.element.find('th:nth-child(2)').find('.socrata-icon-kebab').click();
+        assert.equal(table.element.find('#sort-menu').find('p').text().trim(), 'hello description');
+      });
+
+      it('emits event when clicking Sort ASC button', function(done) {
+
+        render(table, data);
+
+        // Show menu
+        //
+        table.element.find('th:first-child').find('.socrata-icon-kebab').click();
+
+        table.element.on('SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', function(event) {
+          
+          var payload = event.originalEvent.detail;
+          assert.equal(payload.ascending, true);
+          assert.equal(payload.columnName, 'hello0');
+          done();
+        });
+
+        table.element.find('#sort-menu-sort-asc-button').click();
+      });
+
+      it('emits event when clicking Sort DESC button', function(done) {
+
+        render(table, data);
+
+        // Show menu
+        //
+        table.element.find('th:first-child').find('.socrata-icon-kebab').click();
+
+        table.element.on('SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', function(event) {
+          
+          var payload = event.originalEvent.detail;
+          assert.equal(payload.ascending, true);
+          assert.equal(payload.columnName, 'hello0');
+          done();
+        });
+
+        table.element.find('#sort-menu-sort-asc-button').click();
+      });
+    });
+
     describe('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function() {
+
+      beforeEach(() => {
+        sinon.stub(table.table, 'isMobile', _.constant(false));
+      });
+      
+      afterEach(() => {
+        table.table.isMobile.restore();
+      });
+
       var data = {
         columns: [
           { fieldName: 'hello', name: 'hello', renderTypeName: 'text' },
@@ -355,12 +447,13 @@ describe('Table', function() {
       };
 
       it('emits event when clicking a column header', function(done) {
+
         render(table, data);
 
         table.element.on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function(event) {
+
           var payload = event.originalEvent.detail;
           assert.equal(payload, 'hello');
-
           done();
         });
 
@@ -379,72 +472,6 @@ describe('Table', function() {
         _.delay(function() {
           done();
         }, 10);
-      });
-    });
-
-    describe('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function() {
-      var data;
-
-      var emit = function(event) {
-        return function (selector) {
-          table.element.find(selector).trigger(event);
-        }
-      };
-      var mouseenter = emit('mouseenter');
-      var mouseleave = emit('mouseleave');
-      var onmouseenter = function(callback, done) {
-        table.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
-          callback(event.originalEvent.detail);
-          done();
-        });
-      };
-
-      beforeEach(function() {
-        data = {
-          columns: [
-            { description: 'world', fieldName: 'hello', name: 'hello', renderTypeName: 'text' },
-            { description: null, fieldName: 'rawr', name: 'rawr', renderTypeName: 'text' }
-          ]
-        }
-      });
-
-      describe('when the column has a description', function() {
-        it('emits event with content that contains both the column name and description', function(done) {
-          render(table, data);
-
-          onmouseenter(function(payload) {
-            assert.property(payload, 'element');
-            assert.property(payload, 'content');
-            assert.match(payload.content, /hello/);
-            assert.match(payload.content, /world/);
-          }, done);
-
-          mouseenter('th:first-child');
-        });
-      });
-
-      describe('when the column does not have a description', function() {
-        it('emits event with content that contains the column name and no_column_description localization', function(done) {
-          render(table, data);
-
-          onmouseenter(function(payload) {
-            assert.property(payload, 'element');
-            assert.property(payload, 'content');
-            assert.match(payload.content, /no description provided/i);
-          }, done);
-
-          mouseenter('th:nth-child(2)');
-        });
-      });
-
-      it('emits event to hide flyout on mouseleave', function(done) {
-        render(table, data);
-
-        onmouseenter(function(payload) {
-          assert.isNull(payload);
-        }, done);
-
-        mouseleave('th:first-child');
       });
     });
 

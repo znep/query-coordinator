@@ -47,7 +47,7 @@
         &.current a {
           &::after {
             display: block;
-            background-color: #307395;
+            background-color: #288dc1;
           }
 
           span {
@@ -498,7 +498,7 @@
 
       &.disabled {
         opacity: 0.25;
-      }      
+      }
     }
 
     .custom-palette-container {
@@ -894,7 +894,7 @@
   }
 
   &::after {
-    background-color: #307395;
+    background-color: #288dc1;
   }
 
   .dropdown-caret {

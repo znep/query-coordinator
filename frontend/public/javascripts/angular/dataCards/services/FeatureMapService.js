@@ -191,6 +191,7 @@ module.exports = function FeatureMapService(DataTypeFormatService, linkyFilter) 
       'number': DataTypeFormatService.renderNumberCell(content, column),
       'geo_entity': DataTypeFormatService.renderGeoCell(content, column),
       'point': DataTypeFormatService.renderGeoCell(content, column),
+      'multipolygon': DataTypeFormatService.renderGeoCell(content, column),
       'timestamp': DataTypeFormatService.renderTimestampCell(content, column),
       'floating_timestamp': DataTypeFormatService.renderTimestampCell(content, column),
       'money': DataTypeFormatService.renderMoneyCell(content, column),

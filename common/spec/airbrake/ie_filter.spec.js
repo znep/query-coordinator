@@ -3,7 +3,7 @@ import ieFilter from 'common/airbrake/filters/ie';
 // User agent string examples taken from:
 // http://www.useragentstring.com/pages/useragentstring.php?name=Internet+Explorer
 
-describe.only('IE Filter', function() {
+describe('IE Filter', function() {
   it('returns null if the error is coming from an IE version under 11', function() {
     const ie10notice = {
       context: {

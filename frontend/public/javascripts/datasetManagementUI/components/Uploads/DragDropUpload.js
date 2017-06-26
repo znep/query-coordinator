@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { createUpload } from 'actions/manageUploads';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
+import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import styles from 'styles/Uploads/DragDropUpload.scss';
 
 export class DragDropUpload extends Component {
@@ -86,7 +87,9 @@ export class DragDropUpload extends Component {
             <div className={styles.content}>
               <h2>{I18n.show_uploads.message}</h2>
               <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>
-              <div className={styles.fileTypes}>{I18n.show_uploads.filetypes}</div>
+              <div className={styles.fileTypes}>
+                {`${I18n.show_uploads.filetypes} ${enabledFileExtensions.map(formatExpanation).join(', ')}`}
+              </div>
               <label id="upload-label" className={styles.uploadButton} htmlFor="file">
                 Browse
               </label>
@@ -94,7 +97,7 @@ export class DragDropUpload extends Component {
                 id="file"
                 name="file"
                 type="file"
-                accept=".csv,.tsv,.xls,.xlsx"
+                accept={enabledFileExtensions.join(',')}
                 aria-labelledby="upload-label"
                 className={styles.uploadInput}
                 onChange={e => dispatch(createUpload(e.target.files[0]))} />

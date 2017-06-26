@@ -2162,7 +2162,7 @@ en:
       upload_in_progress: Upload In Progress
     show_uploads:
       current: Current Upload
-      filetypes: Supported file types are .csv, .tsv, .xls, and .xlsx
+      filetypes: Supported file types are
       flash_error_message: Unsupported file type
       message: Drag a New Data File Here
       no_uploads: No uploads yet :(

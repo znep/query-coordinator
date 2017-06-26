@@ -51,7 +51,7 @@ export const SearchablePicklist = React.createClass({
     this.props.onClickSelectedOption(selectedOption);
   },
 
-  onKeyUpSearch(event) {
+  onKeyPressSearch(event) {
     isolateEventByKeys(event, [ENTER]);
 
     if (event.keyCode === ENTER) {
@@ -110,7 +110,7 @@ export const SearchablePicklist = React.createClass({
               aria-label={t('filter_bar.search')}
               value={value || ''}
               ref={(el) => this.search = el}
-              onKeyUp={this.onKeyUpSearch}
+              onKeyPress={this.onKeyPressSearch}
               onChange={this.onChangeSearchTerm}
               aria-invalid={isError}
               disabled={isValidating} />

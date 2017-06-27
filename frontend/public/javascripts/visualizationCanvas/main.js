@@ -21,7 +21,7 @@ if (window.serverConfig.environment !== 'development') {
   airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
 
-window.onbeforeunload = confirmUnload(store);
+window.addEventListener('beforeunload', confirmUnload(store));
 
 // Defer rendering so the spinner in the erb can render.
 _.defer(function() {

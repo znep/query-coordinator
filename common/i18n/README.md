@@ -16,7 +16,7 @@ Frontend and Storyteller so that we will also have access to the 'shared' string
 
 ### Note about namespacing
 We should remain diligent about properly namespacing our `.yml` keys since they can overwrite
-each other when combined. The strings in `/common/i18n/locales` will all be prefixed with `common`, so as long as we don't use a `common` as a top
+each other when combined. The strings in `/common/i18n/locales` will all be prefixed with `locale_common`, so as long as we don't use a `common` as a top
 level key in other apps, we should be fine.
 
 ## How this works with JS / React
@@ -24,12 +24,12 @@ In general, we are still relying on Rails to load the locale strings, and utiliz
 on `window.translations`. Once the translations are on the window, we have two main ways to get access to I18n functionality.
 
 ### 1) Directly using `import I18n from 'common/i18n'`
-If you're not in a React context, you can import the common `I18n` module directly, which will load the available translations on `window.translations`
-and expose an `I18n.js` object which you can use like: `I18n.t('path.to.string.here')`. You'll also have access to any other method on `I18nJS` which you can
+If you are not in a React context, you can import the common `I18n` module directly, which will load the available translations on `window.translations`
+and expose an `I18n.js` object which you can use like: `I18n.t('path.to.string.here')`. You will also have access to any other method on `I18n.js` which you can
 [read more about here](https://github.com/fnando/i18n-js).
 
 ### 2) Using the React `<Localization>` HOC (higher-order-component)
-If you are in a React context, you can wrap the entrypoint to the app like this:
+If you are in a React context, you can wrap the entry point to the app like this:
 
 ```js
 import Localization from 'common/i18n/components/Localization';
@@ -71,3 +71,6 @@ So if you have updates to `/common/i18n/locales/en.yml` and would like to push t
 $ cd platform-ui/
 $ bin/push_locale common <LOCALEAPP_COMMON_API_KEY>
 ```
+
+You can read more about updating translations [here](https://github.com/socrata/platform-ui/blob/master/frontend/doc/update-translations.md)
+

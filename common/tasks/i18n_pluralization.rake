@@ -7,6 +7,6 @@ namespace :i18n do
     #
     exe_path = File.expand_path(File.join(__FILE__, '../i18n/rails_i18n_to_js.rb'))
     write_path = File.expand_path(File.join(__FILE__, '../../i18n/pluralization.js'))
-    `ruby #{exe_path} > #{write_path}`
+    system("ruby #{exe_path} > #{write_path}")
   end
 end

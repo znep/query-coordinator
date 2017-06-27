@@ -243,8 +243,8 @@ module RailsI18nToJS
         ]
       end
 
-      def camelize_class_name(class_name)
-        class_name.to_s.dup.tap { |x| x[0] = x[0].downcase }
+      def camelize_class_name(class_name_symbol)
+        class_name_symbol.to_s.dup.tap { |x| x[0] = x[0].downcase }
       end
     end
   end

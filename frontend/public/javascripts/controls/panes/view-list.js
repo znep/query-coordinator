@@ -88,12 +88,18 @@
             return moment((a.context.view.publicationDate || 0) * 1000).format('LLL');
           },
           '.authorLine .date': function(a) {
-            return blist.util.humaneDate.getFromDate(
-              Math.max(a.context.view.viewLastModified || 0,
-                a.context.view.createdAt || 0) * 1000,
-              blist.util.humaneDate.DAY).capitalize();
+            var date = new Date(
+              // See also View#last_activity
+              1000 * Math.max(
+                a.context.view.viewLastModified || 0,
+                a.context.view.createdAt || 0,
+                a.context.view.rowsUpdatedAt || 0
+              )
+            );
+            // See also common/formatDate.js
+            var dateFormat = (blist.locale === 'en' || blist.locale === '') ? 'MMMM D, YYYY' : 'LL';
+            return moment(date).format(dateFormat);
           },
-          '.authorLine .author': 'view.owner.displayName!',
           '.description': function(a) {
             if ($.isBlank(a.context.view.description)) {
               return '';

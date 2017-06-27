@@ -7,37 +7,31 @@ import ShowOutputSchema from './components/ShowOutputSchema';
 import { focusColumnEditor } from './actions/manageMetadata';
 import ShowUpload from './components/ShowUpload';
 import NoMatch from './components/NoMatch';
+import { home } from 'links';
 import _ from 'lodash';
 
 const checkUploadStatus = store => (nextState, replace) => {
   const uploadExists = !_.isEmpty(store.getState().entities.output_columns);
 
-  const { category, fourfour, name, revisionSeq, locale } = nextState.params;
-
   if (uploadExists) {
     store.dispatch(focusColumnEditor(nextState));
   } else {
-    let newURL = `/${category}/${name}/${fourfour}/revisions/${revisionSeq}`;
+    const newPath = home(nextState.location);
 
-    if (locale) {
-      newURL = `/${locale}${newURL}`;
-    }
-
-    replace(newURL);
+    replace(newPath);
   }
 };
 
 const checkUpsertStatus = store => (nextState, replace, blocking) => {
-  const upsertJob = _.maxBy(_.values(store.getState().entities.task_sets), job => job.updated_at);
+  const taskSet = _.maxBy(_.values(store.getState().entities.task_sets), job => job.updated_at);
 
-  const { category, fourfour, name, revisionSeq, locale } = nextState.params;
-  let newPath = `/${category}/${name}/${fourfour}/revisions/${revisionSeq}`;
+  const newPath = home(nextState.location);
 
-  if (locale) {
-    newPath = `/${locale}${newPath}`;
-  }
-
-  if (upsertJob && newPath !== nextState.location.pathname) {
+  // The intent of this function is to redirect the user to the home screen if
+  // they have published to primer. We determine this by the presence of a task set.
+  // But we also need to make sure we're not already on the home screen before redirecting
+  // , for doing otherwise would result in an infinite redirect.
+  if (taskSet && newPath !== nextState.location.pathname) {
     replace(newPath);
   }
 

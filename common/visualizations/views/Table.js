@@ -501,24 +501,20 @@ module.exports = function Table(element, originalVif, locale) {
     );
 
     self.$element.on(
-      'touchstart',
-      '.socrata-table thead th .column-header-content',
-      handleColumnHeaderTouchStart
-    );
-
-    self.$element.on(
       'click',
       '.sort-menu-button',
       handleSortMenuButtonClick
     );
 
-    self.$element.on(
-      'click',
-      '.sort-menu-button',
-      handleSortMenuButtonTouchStart
-    );
+    if (self.isMobile()) {
 
-    if (!self.isMobile()) {
+      self.$element.on(
+        'touchstart',
+        '.socrata-table thead th .column-header-content',
+        handleColumnHeaderTouchStart
+      );
+
+    } else {
 
       self.$element.on(
         'mouseenter mousemove',
@@ -569,7 +565,15 @@ module.exports = function Table(element, originalVif, locale) {
       handleSortMenuButtonClick
     );
 
-    if (!self.isMobile()) {
+    if (self.isMobile()) {
+
+      self.$element.on(
+        'touchstart',
+        '.socrata-table thead th .column-header-content',
+        handleColumnHeaderTouchStart
+      );
+
+    } else {
 
       self.$element.off(
         'mouseenter mousemove',
@@ -750,11 +754,13 @@ module.exports = function Table(element, originalVif, locale) {
 
   function handleColumnHeaderTouchStart(event) {
 
+console.log('handleColumnHeaderTouchStart')
     event.stopPropagation();
   }
 
   function handleSortMenuButtonTouchStart(event) {
 
+console.log('handleSortMenuButtonTouchStart')
     event.stopPropagation();
   }
 
@@ -825,23 +831,29 @@ module.exports = function Table(element, originalVif, locale) {
 
       $(document).on('click touchstart', hideSortMenu);
 
-      $sortMenu.find('#sort-menu-sort-asc-button').off().on('click', (event) => {
+      $sortMenu.find('#sort-menu-sort-asc-button').off().on('click touchstart', (event) => {
 
         event.stopPropagation();
+        event.preventDefault();
+
         self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', { columnName, ascending: true });
         $sortMenu.remove();
       });
 
-      $sortMenu.find('#sort-menu-sort-desc-button').off().on('click', (event) => {
+      $sortMenu.find('#sort-menu-sort-desc-button').off().on('click touchstart', (event) => {
 
         event.stopPropagation();
+        event.preventDefault();
+
         self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', { columnName, ascending: false });
         $sortMenu.remove();
       });
 
-      $sortMenu.find('#sort-menu-more-link').off().on('click', (event) => {
+      $sortMenu.find('#sort-menu-more-link').off().on('click touchstart', (event) => {
 
         event.stopPropagation();
+        event.preventDefault();
+
         const columnDescription = $sortMenu.attr('sort-menu-column-description');
         $sortMenu.find('#sort-menu-description-container p').text(columnDescription);
         $(event.target).hide();

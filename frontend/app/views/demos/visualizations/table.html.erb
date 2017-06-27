@@ -67,7 +67,7 @@
 
     var $table1Element = $('#table-1');
     $table1Element.socrataTable(table1VIF);
-/*
+
     var $table2Element = $('#table-2');
     var table2VIF = _.cloneDeep(table1VIF);
     table2VIF.filters = [
@@ -495,7 +495,6 @@
     var $tableGroupedSortOrderElement = $('#table-grouped-sort-order');
     $tableGroupedSortOrderElement.socrataTable(tableGroupedSortOrderVIF );
 
-*/
     // Begin table event handling
 
     var $tables = $('[id^=table-]');
@@ -534,8 +533,6 @@
 <button id="kill-btn">Destroy all</button>
 <p>Chicago crimes, unfiltered</p>
 <div id="table-1"></div>
-
-<!--
 <p>Chicago crimes filtered via VIF (description = POSS: CRACK)</p>
 <div id="table-2"></div>
 <p>Prod derived view filtered inherently (crime type = burglary)</p>
@@ -594,5 +591,3 @@
 <div id="table-system-id-sort"></div>
 <p>Tests tables without default sort order for a grouped view.</p>
 <div id="table-grouped-sort-order"></div>
-
--->

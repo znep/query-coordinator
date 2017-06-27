@@ -23,7 +23,7 @@ describe('LocalizedLink', () => {
     expect(output.textContent).to.eq('Some Path');
   });
 
-  it('should render a link without a locale prefix if it doesn\'t provided', () => {
+  it('should render a link without a locale prefix if it isn\'t provided', () => {
     const localizationWithoutLocalePrefix = (
       <Localization translations={translations} locale="en">
         <LocalizedLink path={'/some/path'}>Some Path</LocalizedLink>

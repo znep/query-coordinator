@@ -11,9 +11,6 @@ export default class Localization extends React.Component {
       props.localePrefix = props.locale
     }
 
-    // Two strategies for now.
-    //
-    // I18n-JS is the new one we should use going forward.
     I18nJS.locale = props.locale;
     I18nJS.pluralization[I18nJS.locale] = pluralization[I18nJS.locale];
     _.assign(I18nJS.translations, {
@@ -24,10 +21,7 @@ export default class Localization extends React.Component {
       I18nJS.t = () => 'nyan';
     }
 
-    // Old implementation that seems to be a port from Old UX.
-    this.translate = this.translate.bind(this);
-    this.getLocale = this.getLocale.bind(this);
-    this.getLocalePrefix = this.getLocalePrefix.bind(this);
+    _.bindAll(this, ['getLocalePrefix']);
   }
 
   getChildContext() {
@@ -36,48 +30,13 @@ export default class Localization extends React.Component {
     return {
       I18n: I18nJS,
       localization: {
-        translate: (locale === 'nyan' ? (() => 'nyan') : this.translate),
-        getLocale: this.getLocale,
         getLocalePrefix: this.getLocalePrefix
       }
     };
   }
 
-  getLocale() {
-    return this.props.locale;
-  }
-
   getLocalePrefix() {
     return this.props.localePrefix;
-  }
-
-  translate(key, data) {
-    const { translations, returnKeyForNotFound, root } = this.props;
-    key = root ? `${root}.${key}` : key;
-
-    const notFoundText = returnKeyForNotFound ? key : this.props.notFoundText;
-    let translation = _.get(translations, key, null);
-
-    if (translation === null) {
-      return notFoundText;
-    }
-
-    if (_.isPlainObject(translation) && _.has(data, 'count')) {
-      if (data.count === 1) {
-        translation = translation.one;
-      } else {
-        translation = translation.other;
-      }
-
-      if (_.isNil(translation)) {
-        return notFoundText;
-      }
-    }
-
-    return translation.replace(
-      /%{[^}]+}/g,
-      (dataKey) => (data || {})[dataKey.slice(2, -1)] || ''
-    );
   }
 
   render() {
@@ -104,8 +63,6 @@ Localization.propTypes = {
 Localization.childContextTypes = {
   I18n: React.PropTypes.object,
   localization: React.PropTypes.shape({
-    translate: React.PropTypes.func,
-    getLocale: React.PropTypes.func,
     getLocalePrefix: React.PropTypes.func
   })
 };

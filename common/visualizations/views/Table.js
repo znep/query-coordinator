@@ -493,31 +493,52 @@ module.exports = function Table(element, originalVif, locale) {
       '.socrata-table thead th .column-resize-target',
       handleResizeTargetMousedown
     );
+
     self.$element.on(
       'click',
       '.socrata-table thead th .column-header-content',
       handleColumnHeaderClick
     );
+
+    self.$element.on(
+      'touchstart',
+      '.socrata-table thead th .column-header-content',
+      handleColumnHeaderTouchStart
+    );
+
     self.$element.on(
       'click',
       '.sort-menu-button',
       handleSortMenuButtonClick
     );
+
     self.$element.on(
-      'mouseenter mousemove',
-      '.socrata-table thead .sort-menu-button',
-      showSortMenuButtonFlyout
+      'click',
+      '.sort-menu-button',
+      handleSortMenuButtonTouchStart
     );
-    self.$element.on(
-      'mouseleave',
-      '.socrata-table thead .sort-menu-button',
-      hideSortMenuButtonFlyout
-    );
+
+    if (!self.isMobile()) {
+
+      self.$element.on(
+        'mouseenter mousemove',
+        '.socrata-table thead .sort-menu-button',
+        showSortMenuButtonFlyout
+      );
+
+      self.$element.on(
+        'mouseleave',
+        '.socrata-table thead .sort-menu-button',
+        hideSortMenuButtonFlyout
+      );
+    }
+
     self.$element.on(
       'mouseenter mousemove',
       '.socrata-table tbody td',
       showCellFlyout
     );
+
     self.$element.on(
       'mouseleave',
       '.socrata-table tbody td',
@@ -535,31 +556,40 @@ module.exports = function Table(element, originalVif, locale) {
       '.socrata-table thead th .column-resize-target',
       handleResizeTargetMousedown
     );
+
     self.$element.off(
       'click',
       '.socrata-table thead th .column-header-content',
       handleColumnHeaderClick
     );
+
     self.$element.off(
       'click',
       '.sort-menu-button',
       handleSortMenuButtonClick
     );
-    self.$element.off(
-      'mouseenter mousemove',
-      '.socrata-table thead .sort-menu-button',
-      showSortMenuButtonFlyout
-    );
-    self.$element.off(
-      'mouseleave',
-      '.socrata-table thead .sort-menu-button',
-      hideSortMenuButtonFlyout
-    );
+
+    if (!self.isMobile()) {
+
+      self.$element.off(
+        'mouseenter mousemove',
+        '.socrata-table thead .sort-menu-button',
+        showSortMenuButtonFlyout
+      );
+
+      self.$element.off(
+        'mouseleave',
+        '.socrata-table thead .sort-menu-button',
+        hideSortMenuButtonFlyout
+      );
+    }
+
     self.$element.off(
       'mouseenter mousemove',
       '.socrata-table tbody td',
       showCellFlyout
     );
+
     self.$element.off(
       'mouseleave',
       '.socrata-table tbody td',
@@ -718,6 +748,16 @@ module.exports = function Table(element, originalVif, locale) {
     }
   }
 
+  function handleColumnHeaderTouchStart(event) {
+
+    event.stopPropagation();
+  }
+
+  function handleSortMenuButtonTouchStart(event) {
+
+    event.stopPropagation();
+  }
+
   function handleColumnHeaderClickForDesktop($contentDiv) {
 
     const columnName = $contentDiv.attr('data-column-name');
@@ -776,14 +816,14 @@ module.exports = function Table(element, originalVif, locale) {
   function hideSortMenu() {
 
     $('#sort-menu').remove();
-    $('body').off('click', hideSortMenu);
+    $(document).off('click touchstart', hideSortMenu);
   }
 
   function attachSortMenuEventHandlers($sortMenu, columnName, columnRenderType) {
 
     if (columnName && !isGeometryType({renderTypeName: columnRenderType})) {
 
-      $('body').on('click', hideSortMenu);
+      $(document).on('click touchstart', hideSortMenu);
 
       $sortMenu.find('#sort-menu-sort-asc-button').off().on('click', (event) => {
 

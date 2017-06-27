@@ -1250,6 +1250,7 @@ function SvgColumnChart($element, vif, options) {
       d3.event.buttons !== 0 :
       d3.event.which !== 0;
   }
+
   function showColumnHighlight(columnElement) {
     const selection = d3.select(columnElement);
 
@@ -1282,7 +1283,7 @@ function SvgColumnChart($element, vif, options) {
       selection.attr('fill', selection.attr('data-default-fill'));
     });
   }
-  
+
   function showGroupFlyout(groupElement, dimensionValues) {
     const title = groupElement.attr('data-dimension-value');
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).

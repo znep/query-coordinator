@@ -1567,7 +1567,7 @@ function SvgBarChart($element, vif, options) {
       d3.event.buttons !== 0 :
       d3.event.which !== 0;
   }
-  
+
   function showBarHighlight(barElement) {
     const selection = d3.select(barElement);
 

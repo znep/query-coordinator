@@ -1,4 +1,5 @@
 require 'parser/current'
+require 'byebug'
 
 # The design of this processor is such that it's specifically designed to understand the
 # contents of the RailsI18n gem at the time I wrote it. If a significant refactor occurs,
@@ -17,6 +18,8 @@ require 'parser/current'
 module RailsI18nToJS
   KNOWN_TRANSPILING_FAILURES = %w(br cy pl tzm)
 
+  LAST_KNOWN_WORKING_VER = Gem::Version.new('5.0.4')
+
   PREAMBLE = <<~JS
     import _ from 'lodash';
     const inRange = (begin, end, count) => { return _.includes(_.range(begin, end).concat(end), count); };
@@ -25,6 +28,11 @@ module RailsI18nToJS
 
   GEM_DIR = Gem::Specification.find_all.find { |s| s.name == 'rails-i18n' }.tap do |spec|
     raise "Please run `gem install rails-i18n` in this context." if spec.nil?
+
+    if Gem::Version.new(spec.version) > LAST_KNOWN_WORKING_VER
+      raise "Warning: this script was last known to work with rails-i18n #{LAST_KNOWN_WORKING_VER}, but rails-i18n #{spec.version} was detected."\
+            " please update 'LAST_KNOWN_WORKING_VER' to #{spec.version}, run again, and see if the pluralization output still makes sense."
+    end
   end.gem_dir
 
   def self.run(io = $stdout)
@@ -189,10 +197,11 @@ module RailsI18nToJS
 
           ast = ast.children.last # Grab the #send(:with_locale, :locale)
           const_tree, _, locale = ast.children # self, :with_locale, :sym
-          class_name = const_tree.children.last # Grab the name.
+          class_name_sym = const_tree.children.last # Grab the name.
 
           specific_pluralization_name = full_path.split('/').last[0...-3]
-          general_pluralization_name = class_name.to_s.tap { |x| x[0] = x[0].downcase }
+
+          general_pluralization_name = camelize_class_name(class_name_sym)
           return [ specific_pluralization_name, general_pluralization_name ]
         end
 
@@ -200,7 +209,7 @@ module RailsI18nToJS
         ast = ast.children.first if ast.type == :begin
 
         # Dig through the module layers.
-        class_name, ast = ast.children while ast.type == :module
+        class_name_sym, ast = ast.children while ast.type == :module
 
         rule =
           if ast.type == :defs
@@ -222,7 +231,8 @@ module RailsI18nToJS
         arg_name = arguments.children.first if arguments.respond_to?(:children)
 
         use_general_plural = full_path.include?(CommonPluralizationRule.directory)
-        general_pluralization_name = parse_const(class_name).to_s.tap { |x| x[0] = x[0].downcase }
+
+        general_pluralization_name = camelize_class_name(parse_const(class_name_sym))
         specific_pluralization_name = full_path.split('/').last[0...-3].downcase.sub('-', '_')
 
         [ use_general_plural ? general_pluralization_name : specific_pluralization_name,
@@ -232,9 +242,12 @@ module RailsI18nToJS
           ]
         ]
       end
+
+      def camelize_class_name(class_name)
+        class_name.to_s.dup.tap { |x| x[0] = x[0].downcase }
+      end
     end
   end
-
 end
 
 RailsI18nToJS.run if __FILE__ == $0

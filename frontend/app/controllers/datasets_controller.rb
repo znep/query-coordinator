@@ -1118,11 +1118,10 @@ class DatasetsController < ApplicationController
   # (including row and alt views)
   # NOTE: this method relies on external state (@view, @row)
   def canonical_path_proc
-    Proc.new do |params|
+    Proc.new do |options|
       composite_params = @view.route_params
-
       composite_params.merge!(row_id: @row[':id'] || @row['sid']) unless @row.nil?
-      composite_params.merge!(params || {})
+      composite_params.merge!(options || {})
 
       if @row
         view_row_path(composite_params)

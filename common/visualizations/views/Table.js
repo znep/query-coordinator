@@ -754,13 +754,11 @@ module.exports = function Table(element, originalVif, locale) {
 
   function handleColumnHeaderTouchStart(event) {
 
-console.log('handleColumnHeaderTouchStart')
     event.stopPropagation();
   }
 
   function handleSortMenuButtonTouchStart(event) {
 
-console.log('handleSortMenuButtonTouchStart')
     event.stopPropagation();
   }
 

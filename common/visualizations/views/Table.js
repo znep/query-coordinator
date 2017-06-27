@@ -495,26 +495,18 @@ module.exports = function Table(element, originalVif, locale) {
     );
 
     self.$element.on(
-      'click',
+      'click touchstart',
       '.socrata-table thead th .column-header-content',
       handleColumnHeaderClick
     );
 
     self.$element.on(
-      'click',
+      'click touchstart',
       '.sort-menu-button',
       handleSortMenuButtonClick
     );
 
-    if (self.isMobile()) {
-
-      self.$element.on(
-        'touchstart',
-        '.socrata-table thead th .column-header-content',
-        handleStopPropagation
-      );
-
-    } else {
+    if (!self.isMobile()) {
 
       self.$element.on(
         'mouseenter mousemove',
@@ -554,26 +546,18 @@ module.exports = function Table(element, originalVif, locale) {
     );
 
     self.$element.off(
-      'click',
+      'click touchstart',
       '.socrata-table thead th .column-header-content',
       handleColumnHeaderClick
     );
 
     self.$element.off(
-      'click',
+      'click touchstart',
       '.sort-menu-button',
       handleSortMenuButtonClick
     );
 
-    if (self.isMobile()) {
-
-      self.$element.off(
-        'touchstart',
-        '.socrata-table thead th .column-header-content',
-        handleStopPropagation
-      );
-
-    } else {
+    if (!self.isMobile()) {
 
       self.$element.off(
         'mouseenter mousemove',
@@ -744,6 +728,7 @@ module.exports = function Table(element, originalVif, locale) {
   function handleColumnHeaderClick(event) {
 
     event.stopPropagation();
+    event.preventDefault();
 
     if (self.isMobile()) {
       handleColumnHeaderClickForMobile($(this));
@@ -770,6 +755,7 @@ module.exports = function Table(element, originalVif, locale) {
   function handleSortMenuButtonClick(event) {
 
     event.stopPropagation();
+    event.preventDefault();
 
     const $contentDiv = $(this).parent();
     handleSortMenuToggle($contentDiv);

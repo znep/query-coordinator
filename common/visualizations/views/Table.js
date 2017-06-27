@@ -771,11 +771,6 @@ module.exports = function Table(element, originalVif, locale) {
     toggleSortMenu($contentDiv.parent(), columnName, columnRenderType, columnDescription);
   }
 
-  function handleStopPropagation(event) {
-
-    event.stopPropagation();
-  }
-
   function toggleSortMenu($container, columnName, columnRenderType, columnDescription) {
 
     let $sortMenu = $('#sort-menu');

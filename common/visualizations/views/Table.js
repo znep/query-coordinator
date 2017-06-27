@@ -511,7 +511,7 @@ module.exports = function Table(element, originalVif, locale) {
       self.$element.on(
         'touchstart',
         '.socrata-table thead th .column-header-content',
-        handleColumnHeaderTouchStart
+        handleStopPropagation
       );
 
     } else {
@@ -567,10 +567,10 @@ module.exports = function Table(element, originalVif, locale) {
 
     if (self.isMobile()) {
 
-      self.$element.on(
+      self.$element.off(
         'touchstart',
         '.socrata-table thead th .column-header-content',
-        handleColumnHeaderTouchStart
+        handleStopPropagation
       );
 
     } else {
@@ -752,16 +752,6 @@ module.exports = function Table(element, originalVif, locale) {
     }
   }
 
-  function handleColumnHeaderTouchStart(event) {
-
-    event.stopPropagation();
-  }
-
-  function handleSortMenuButtonTouchStart(event) {
-
-    event.stopPropagation();
-  }
-
   function handleColumnHeaderClickForDesktop($contentDiv) {
 
     const columnName = $contentDiv.attr('data-column-name');
@@ -793,6 +783,11 @@ module.exports = function Table(element, originalVif, locale) {
       I18n.translate('visualizations.table.no_column_description', locale);
 
     toggleSortMenu($contentDiv.parent(), columnName, columnRenderType, columnDescription);
+  }
+
+  function handleStopPropagation(event) {
+
+    event.stopPropagation();
   }
 
   function toggleSortMenu($container, columnName, columnRenderType, columnDescription) {

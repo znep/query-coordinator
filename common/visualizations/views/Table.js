@@ -189,9 +189,11 @@ module.exports = function Table(element, originalVif, locale) {
           <span class="column-header-content-column-name">
             ${options.columnTitle}
           </span>
-          <span class="${options.sortDirection}"></span>
-          <button class="sort-menu-button"><span class="socrata-icon-kebab"></span></button>
-        </div>
+          <span class="sort-controls-container">
+            <span class="${options.sortDirection} sort-indicator"></span>
+            <button class="sort-menu-button"><span class="socrata-icon-kebab"></span></button>
+          </div>
+        </span>
         ${resizeTarget}
       </th>
     `;
@@ -273,8 +275,10 @@ module.exports = function Table(element, originalVif, locale) {
           <span class="column-header-content-column-name">
             ${options.columnTitle}
           </span>
-          <span class="socrata-icon-arrow-up2"></span>
-          <button class="sort-menu-button"><span class="socrata-icon-kebab"></span></button>
+          <span class="sort-controls-container">
+            <span class="socrata-icon-arrow-up2 sort-indicator"></span>
+            <button class="sort-menu-button"><span class="socrata-icon-kebab"></span></button>
+          </span>
         </div>
         ${resizeTarget}
       </th>
@@ -757,7 +761,7 @@ module.exports = function Table(element, originalVif, locale) {
     event.stopPropagation();
     event.preventDefault();
 
-    const $contentDiv = $(this).parent();
+    const $contentDiv = $(this).closest('.column-header-content');
     handleSortMenuToggle($contentDiv);
   }
 
@@ -768,7 +772,7 @@ module.exports = function Table(element, originalVif, locale) {
     const columnDescription = _.escape($contentDiv.attr('data-column-description')) ||
       I18n.translate('visualizations.table.no_column_description', locale);
 
-    toggleSortMenu($contentDiv.parent(), columnName, columnRenderType, columnDescription);
+    toggleSortMenu($contentDiv.closest('th'), columnName, columnRenderType, columnDescription);
   }
 
   function toggleSortMenu($container, columnName, columnRenderType, columnDescription) {

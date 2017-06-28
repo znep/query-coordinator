@@ -42,6 +42,13 @@ function withExtraBabelPlugins(extraPlugins) {
             plugins: babelPlugins.map(require.resolve)
           }
         },
+
+        // Required for auto-loading timezone data in moment-timezone.
+        {
+          loader: require.resolve('json-loader'),
+          test: /\.json$/
+        },
+
         {
           loader: require.resolve('imports-loader'),
           test: require.resolve('unidragger'),

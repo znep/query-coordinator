@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Simulate } from 'react-addons-test-utils';
 
 import renderComponent from '../renderComponent';

@@ -2,6 +2,7 @@
 module ApplicationHelper
   attr_reader :using_dataslate, :on_homepage
 
+  include ActionView::Helpers::AssetUrlHelper
   include Browse2Helper
   include BrowseHelper
   include SiteChromeConsumerHelpers
@@ -313,7 +314,7 @@ module ApplicationHelper
     resource_name = "#{resource}#{'.js' unless resource.end_with?('.js')}"
 
     if Rails.configuration.webpack[:use_dev_server]
-      src = "/javascripts/webpack/#{resource_name}?#{asset_revision_key}"
+      src = "webpack/#{resource_name}?#{asset_revision_key}"
     else
       # use compiled asset
       src = if Rails.configuration.webpack[:use_manifest]
@@ -324,7 +325,7 @@ module ApplicationHelper
       end
     end
 
-    src
+    path_to_javascript(src)
   end
 
   def include_webpack_bundle(resource)

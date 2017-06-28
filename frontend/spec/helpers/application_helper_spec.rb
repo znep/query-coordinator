@@ -242,7 +242,7 @@ window.socrata.featureFlags =
         end
 
         context 'when action is not "chromeless"' do
-          context 'when using dataslate and we\'re on the homepage' do
+          context 'when using dataslate and we are on the homepage' do
             let(:using_dataslate) { true }
             let(:on_homepage) { true }
 
@@ -1065,6 +1065,57 @@ window.socrata.featureFlags =
     it 'handles resource names without the file extension' do
       expect(Rails.configuration.webpack).to receive(:[]).with(:asset_manifest).and_return(asset_manifest)
       expect(helper.include_webpack_bundle('main')).to match(%r{javascripts/build/main.js\?.*\d+"})
+    end
+  end
+
+  describe '#webpack_bundle_src' do
+    let(:resource) { 'some-resource' }
+    let(:asset_revision_key) { 'testvalue' }
+    let(:use_dev_server) { false }
+
+    let(:result) { helper.webpack_bundle_src(resource) }
+
+    before do
+      allow(helper).to receive(:asset_revision_key).and_return(asset_revision_key)
+      allow(Rails.configuration.webpack).to receive(:[]).with(:use_dev_server).and_return(use_dev_server)
+    end
+
+    context 'when `use_dev_server` is true' do
+      let(:use_dev_server) { true }
+
+      it 'returns correct path' do
+        expect(result).to eq("/javascripts/webpack/#{resource}.js?#{asset_revision_key}")
+      end
+    end
+
+    context 'when `use_dev_server` is false' do
+      let(:use_dev_server) { false }
+      let(:use_manifest) { false }
+
+      before do
+        allow(Rails.configuration.webpack).to receive(:[]).with(:use_manifest).and_return(use_manifest)
+      end
+
+      context 'when `use_manifest` is false' do
+        let(:use_manifest) { false }
+
+        it 'returns correct path' do
+          expect(result).to eq("/javascripts/build/#{resource}.js?#{asset_revision_key}")
+        end
+      end
+
+      context 'when `use_manifest` is true' do
+        let(:use_manifest) { true }
+        let(:asset_manifest) { { "#{resource}.js" => 'some-resource-file.js' } }
+
+        before do
+          allow(Rails.configuration.webpack).to receive(:[]).with(:asset_manifest).and_return(asset_manifest)
+        end
+
+        it 'returns correct path' do
+          expect(result).to eq("/javascripts/build/some-resource-file.js?#{asset_revision_key}")
+        end
+      end
     end
   end
 

@@ -8,7 +8,8 @@ const SvgVisualization = require('./SvgVisualization');
 const I18n = require('../I18n');
 // Constants
 import {
-  AXIS_LABEL_MARGIN
+  AXIS_LABEL_MARGIN,
+  LEGEND_BAR_HEIGHT
 } from './SvgStyleConstants';
 
 // The MARGINS values have been eyeballed to provide enough space for axis
@@ -26,7 +27,6 @@ const DIMENSION_LABELS_ROTATION_ANGLE = 0;
 const DIMENSION_LABELS_FONT_SIZE = 14;
 const DIMENSION_LABELS_FONT_COLOR = '#5e5e5e';
 const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 11; // Empirically determined to work well enough.
-const LEGEND_BAR_HEIGHT = 35;
 const MEASURE_LABELS_FONT_SIZE = 14;
 const MEASURE_LABELS_FONT_COLOR = '#5e5e5e';
 const MEASURE_VALUE_TEXT_IN_BAR_MINIMUM_BAR_WIDTH = 50;
@@ -431,7 +431,7 @@ function SvgBarChart($element, vif, options) {
           attr(
             'data-default-fill',
             (measureValue, measureIndex, dimensionIndex) => {
-              return getColor(dimensionIndex, measureIndex);
+              return self.getColor(dimensionIndex, measureIndex);
             }
           );
       }
@@ -452,15 +452,13 @@ function SvgBarChart($element, vif, options) {
         attr(
           'fill',
           (value, measureIndex, dimensionIndex) => {
-
-            return getColor(dimensionIndex, measureIndex);
+            return self.getColor(dimensionIndex, measureIndex);
           }
         ).
         attr(
           'data-default-fill',
           (value, measureIndex, dimensionIndex) => {
-
-            return getColor(dimensionIndex, measureIndex);
+            return self.getColor(dimensionIndex, measureIndex);
           }
         );
 
@@ -755,23 +753,25 @@ function SvgBarChart($element, vif, options) {
         );
     }
 
-    const alreadyDisplayingLegendBar = (self.$container.find('.socrata-visualization-legend-bar-inner-container').length > 0);
+    function renderLegend() {
+      const alreadyDisplayingLegendBar = (self.$container.find('.socrata-visualization-legend-bar-inner-container').length > 0);
 
-    if (self.getShowLegend()) {
+      if (self.getShowLegend()) {
 
-      self.renderLegendBar(measureLabels, (i) => { return getColor(dataTableDimensionIndex, i); });
-      self.attachLegendBarEventHandlers();
+        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i));
+        self.attachLegendBarEventHandlers();
 
-      if (!alreadyDisplayingLegendBar) {
-        viewportHeight -= LEGEND_BAR_HEIGHT;
-      }
+        if (!alreadyDisplayingLegendBar) {
+          viewportHeight -= LEGEND_BAR_HEIGHT;
+        }
 
-    } else {
+      } else {
 
-      self.removeLegendBar();
+        self.removeLegendBar();
 
-      if (alreadyDisplayingLegendBar) {
-        viewportHeight += LEGEND_BAR_HEIGHT;
+        if (alreadyDisplayingLegendBar) {
+          viewportHeight += LEGEND_BAR_HEIGHT;
+        }
       }
     }
 
@@ -779,6 +779,8 @@ function SvgBarChart($element, vif, options) {
      * 1. Prepare the data for rendering (unfortunately we need to do grouping
      *    on the client at the moment).
      */
+    renderLegend();
+
     const isStacked = _.get(self.getVif(), 'series[0].stacked', false);
 
     groupedDataToRender = dataToRender.rows;
@@ -1176,7 +1178,7 @@ function SvgBarChart($element, vif, options) {
               const siblingBar = d3.select(dimensionGroup).select(
                 `rect.bar[data-measure-index="${measureIndex}"]`
               )[0][0];
-              const color = getColor(dimensionIndex, measureIndex);
+              const color = self.getColor(dimensionIndex, measureIndex);
               const label = measureLabels[measureIndex];
               // d3's .datum() method gives us the entire row, whereas everywhere
               // else measureIndex refers only to measure values. We therefore
@@ -1219,7 +1221,7 @@ function SvgBarChart($element, vif, options) {
               this.getAttribute('data-measure-index'),
               10
             );
-            const color = getColor(dimensionIndex, measureIndex);
+            const color = self.getColor(dimensionIndex, measureIndex);
             const label = measureLabels[measureIndex];
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
@@ -1265,7 +1267,7 @@ function SvgBarChart($element, vif, options) {
             const siblingBar = d3.select(dimensionGroup).select(
               `rect.bar[data-measure-index="${measureIndex}"]`
             )[0][0];
-            const color = getColor(dimensionIndex, measureIndex);
+            const color = self.getColor(dimensionIndex, measureIndex);
             const label = measureLabels[measureIndex];
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
@@ -1365,43 +1367,6 @@ function SvgBarChart($element, vif, options) {
       width: viewportWidth,
       height: viewportHeight -  viewportSvg.select('.x.axis').node().getBBox().height
     });
-  }
-
-  function getColor(dimensionIndex, measureIndex) {
-    const isGrouping = !_.isNull(
-      _.get(
-        self.getVif(),
-        'series[0].dataSource.dimension.grouping.columnName',
-        null
-      )
-    );
-    const usingColorPalette = _.get(
-      self.getVif(),
-      `series[${(isGrouping) ? 0 : dimensionIndex}].color.palette`,
-      false
-    );
-
-    function getColorFromPalette() {
-      const palette = usingColorPalette === 'custom' ?
-        self.getColorPaletteByColumnTitles(measureLabels) :
-        self.getColorPaletteBySeriesIndex(0);
-
-      return palette[measureIndex];
-    }
-
-    function getPrimaryColorOrNone() {
-      const primaryColor = (isGrouping) ?
-        self.getPrimaryColorBySeriesIndex(0) :
-        self.getPrimaryColorBySeriesIndex(measureIndex);
-
-      return (primaryColor !== null) ?
-        primaryColor :
-        'none';
-    }
-
-    return (usingColorPalette) ?
-      getColorFromPalette() :
-      getPrimaryColorOrNone();
   }
 
   function generateYScale(domain, height, isMultiSeries) {
@@ -1655,7 +1620,7 @@ function SvgBarChart($element, vif, options) {
       const label = measureLabels[measureIndex];
       const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
         text(label).
-        css('color', getColor(dimensionIndex, measureIndex));
+        css('color', self.getColor(dimensionIndex, measureIndex));
       const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
       const unitOne = self.getUnitOneBySeriesIndex(
         getSeriesIndexByMeasureIndex(measureIndex)

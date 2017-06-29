@@ -90,9 +90,9 @@ interval = 2
 
 begin
   puts "Checking LocaleApp job #{job_id} status..."
+  sleep interval
   job_status = HTTParty.get("https://api.localeapp.com/v1/projects/#{api_key}/imports.json")
   job_complete = job_status.parsed_response['imports'].any? { |job| job['id'] == job_id && job['state'] == 'succeeded' }
-  sleep interval
   interval = [ max_interval, interval * 2 ].min
 end until job_complete
 

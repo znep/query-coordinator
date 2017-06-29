@@ -2,13 +2,14 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 
 import mixpanel from '../../public/javascripts/common/mixpanel';
-import reducer from 'reducer';
+import reducer, { __RewireAPI__ as reducerAPI} from 'reducer';
 import * as actions from 'actions';
 import { ModeStates, SaveStates } from 'lib/constants';
 import mockView from 'data/mockView';
 import mockParentView from 'data/mockParentView';
 import mockVif from 'data/mockVif';
 import mockFilter from 'data/mockFilter';
+import utils from 'common/js_utils';
 
 const INITIAL_STATES = {
   savedView: {
@@ -114,41 +115,6 @@ describe('Reducer', () => {
           isActive: true,
           embedSize: 'large'
         });
-      });
-    });
-
-    // This action is currently untestable when state.isEphemeral === true
-    // because it triggers an un-mockable `window.location` behavior.
-    //
-    // The only way around this is to create façades around un-mockable methods;
-    // those façades can then be mocked for tests.
-    xdescribe('HANDLE_SAVE_SUCCESS', () => {
-      const response = {
-        id: 'test-view',
-        createdAt: 'today'
-      };
-
-      const makeStateDirty = () => {
-        state = reducer(state, actions.updateNameAndDescription({ name: '', description: '' }));
-        assert.isTrue(state.isDirty);
-        return state;
-      };
-
-      beforeEach(() => {
-        state = makeStateDirty();
-        state = reducer(state, actions.handleSaveSuccess(response));
-      });
-
-      it('sets the save state to saved', () => {
-        assert.equal(state.saveState, SaveStates.SAVED);
-      });
-
-      it('sets isDirty to false', () => {
-        assert.isFalse(state.isDirty);
-      });
-
-      it('performs a redirect to the new asset 4x4', () => {
-        // TODO: use sinon spy around redirect; verify called with new URL
       });
     });
   });
@@ -278,9 +244,32 @@ describe('Reducer', () => {
     });
 
     describe('ENTER_EDIT_MODE', () => {
+      let assignStub;
+
+      const rewireLocation = (pathname) => {
+        beforeEach(() => {
+          assignStub = sinon.stub();
+          reducerAPI.__Rewire__('windowLocation', {assign: assignStub, pathname: _.constant(pathname)});
+        })
+
+        afterEach(() => {
+          reducerAPI.__ResetDependency__('windowLocation');
+        })
+      }
+      rewireLocation('wombats-in-space.com/edit');
+
       it('sets mode to "edit"', () => {
         const state = reducer(state, actions.enterEditMode());
         assert.equal(state.mode, ModeStates.EDIT);
+      });
+
+      describe('if not at /edit path', () => {
+        rewireLocation('wombats-in-space.com');
+
+        it('pushes /edit onto path', () => {
+          reducer(state, actions.enterEditMode());
+          assert.isTrue(assignStub.withArgs('wombats-in-space.com/edit').calledOnce);
+        })
       });
     });
 
@@ -408,7 +397,8 @@ describe('Reducer', () => {
     describe('HANDLE_SAVE_SUCCESS', () => {
       const response = {
         id: 'test-view',
-        createdAt: 'today'
+        createdAt: 'today',
+        name: 'Wombats In Space'
       };
 
       beforeEach(() => {
@@ -422,6 +412,30 @@ describe('Reducer', () => {
 
       it('sets isDirty to false', () => {
         assert.isFalse(state.isDirty);
+      });
+
+      describe('if isEphemeral', () => {
+        let assignStub;
+        sharedExamples.beforeEachSetInitialState(INITIAL_STATES.ephemeralViewNoVif);
+
+        beforeEach(() => {
+          assignStub = sinon.stub();
+          reducerAPI.__Rewire__('windowLocation', {assign: assignStub, pathname: _.constant('wombats-in-space.com')});
+        })
+
+        afterEach(() => {
+          reducerAPI.__ResetDependency__('windowLocation');
+        })
+
+        // The 505ms delay is here to account for a delay in the reducer for mixpanel events
+        it('constructs a saved path and redirects to path/edit', (done) => {
+          reducer(state, actions.handleSaveSuccess(response));
+          const newPath = `/dataset/${utils.convertToUrlComponent(response.name)}/${response.id}/edit`;
+          _.delay(() => {
+            assert.isTrue(assignStub.withArgs(newPath).calledOnce);
+            done();
+          }, 505);
+        })
       });
     });
 

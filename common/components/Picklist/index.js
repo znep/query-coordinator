@@ -33,7 +33,8 @@ export const Picklist = React.createClass({
     // Calls a function after user navigation.
     onChange: React.PropTypes.func,
     onFocus: React.PropTypes.func,
-    onBlur: React.PropTypes.func
+    onBlur: React.PropTypes.func,
+    size: React.PropTypes.string
   },
 
   getDefaultProps() {
@@ -44,6 +45,7 @@ export const Picklist = React.createClass({
       onChange: _.noop,
       onFocus: _.noop,
       onBlur: _.noop,
+      size: 'large',
       value: null
     };
   },
@@ -254,14 +256,14 @@ export const Picklist = React.createClass({
 
   render() {
     const renderedOptions = [];
-    const { disabled, options, id } = this.props;
+    const { disabled, id, options, size } = this.props;
     const { focused, selectedOption, selectedIndex } = this.state;
     const activeDescendant = selectedOption ? `${selectedOption.value}-${selectedIndex}` : '';
     const attributes = {
       id,
       tabIndex: 0,
       ref: ref => this.picklist = ref,
-      className: classNames('picklist', {
+      className: classNames('picklist', `picklist-size-${size}`, {
         'picklist-disabled': disabled,
         'picklist-focused': focused
       }),

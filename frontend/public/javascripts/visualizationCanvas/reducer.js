@@ -3,6 +3,8 @@ import _ from 'lodash';
 import mixpanel from '../common/mixpanel';
 import * as actions from 'actions';
 import { ModeStates, SaveStates } from './lib/constants';
+import utils from 'common/js_utils';
+import * as windowLocation from './lib/windowLocation';
 
 const AUTHORING_WORKFLOW_INITIAL_STATE = {
   isActive: false
@@ -11,6 +13,8 @@ const AUTHORING_WORKFLOW_INITIAL_STATE = {
 const SHARE_MODAL_INITIAL_STATE = {
   isActive: false
 };
+
+const EDIT_PATH_REGEX = /\/edit\/?$/;
 
 const applyVifOrigin = (state, vif) => {
   const origin = {
@@ -60,7 +64,7 @@ const initialState = () => {
   _.assign(state, {
     authoringWorkflow: AUTHORING_WORKFLOW_INITIAL_STATE,
     shareModal: SHARE_MODAL_INITIAL_STATE,
-    mode: isEphemeral ? ModeStates.EDIT : ModeStates.VIEW,
+    mode: isEphemeral || EDIT_PATH_REGEX.test(window.location.pathname) ? ModeStates.EDIT : ModeStates.VIEW,
     isEditMenuActive: false,
     isEphemeral,
     isDirty: isEphemeral,
@@ -132,11 +136,20 @@ export default (state = initialState(), action) => {
         isDirty: true
       };
 
-    case actions.ENTER_EDIT_MODE:
+    case actions.ENTER_EDIT_MODE: {
+      const pathname = windowLocation.pathname();
+      const hasEditPath = EDIT_PATH_REGEX.test(pathname);
+
+      if (!hasEditPath) {
+        windowLocation.assign(`${pathname}/edit`);
+        return state;
+      }
+
       return {
         ...state,
         mode: ModeStates.EDIT
       };
+    }
 
     case actions.ENTER_PREVIEW_MODE:
       return {
@@ -215,7 +228,9 @@ export default (state = initialState(), action) => {
         // that we can trigger Mixpanel events.
         _.delay(() => {
           window.onbeforeunload = null;
-          window.location = `/d/${action.response.id}`;
+          windowLocation.assign(
+            `/dataset/${utils.convertToUrlComponent(action.response.name)}/${action.response.id}/edit`
+          );
         }, 500);
       }
 

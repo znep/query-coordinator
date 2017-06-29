@@ -49,6 +49,7 @@ export class CatalogFilters extends React.Component {
       <Dropdown
         onSelection={(option) => onChange(option.value)}
         options={options}
+        size="medium"
         value={value} />
     );
   }

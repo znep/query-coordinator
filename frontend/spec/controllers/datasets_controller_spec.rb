@@ -269,6 +269,21 @@ describe DatasetsController do
       end
     end
 
+    describe 'GET /category/view_name/id/edit' do
+      it 'should render the edit visualization canvas page' do
+        allow(subject).to receive(:current_user).and_return(double({:can_create_or_edit_visualization_canvas? => true}))
+        allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
+        allow(subject).to receive(:using_canonical_url?).and_return(false)
+        allow(view).to receive(:new_backend?).and_return(true)
+        allow(view).to receive(:visualization_canvas?).and_return(true)
+        get :edit, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+
+        expect(subject.instance_variable_get('@site_chrome_admin_header_options')).to eq({size: 'small'})
+        expect(subject.instance_variable_get('@body_classes')).to eq('hide-site-chrome')
+        expect(response).to redirect_to('http://test.host/dataset/Test-Data/test-data/edit')
+      end
+    end
+
   end
 
   describe 'email dataset' do

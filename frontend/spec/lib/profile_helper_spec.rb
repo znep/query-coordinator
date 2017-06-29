@@ -11,6 +11,7 @@ RSpec.describe ProfileHelper, type: :helper do
     let(:can_edit_story) { true }
     let(:can_preview_story) { true }
     let(:viewing_others_profile) { false }
+    let(:is_visualization_canvas) { false }
 
     let(:view) do
       double(
@@ -25,12 +26,14 @@ RSpec.describe ProfileHelper, type: :helper do
         can_edit?: can_edit,
         data_lens?: false,
         category: category,
-        is_api?: false)
+        is_api?: false,
+        visualization_canvas?: is_visualization_canvas)
     end
 
     before do
       allow_any_instance_of(ProfileHelper).to receive(:viewing_others_profile?).and_return(viewing_others_profile)
       allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(nil)
+      allow_any_instance_of(Socrata::UrlHelpers).to receive(:locale_url_prefix).and_return('')
     end
 
     describe 'when encountering a non-story view' do
@@ -104,6 +107,26 @@ RSpec.describe ProfileHelper, type: :helper do
         it 'returns a url with /revisions/current at the end' do
           allow_any_instance_of(Socrata::UrlHelpers).to receive(:view_url).and_return('mocked')
           expect(view_url(view)).to eq('mocked')
+        end
+      end
+    end
+
+    describe 'when encountering a visualization canvas' do
+      let(:is_visualization_canvas) { true }
+      let(:is_story) { false }
+
+      describe 'when the user has edit rights' do
+        let(:can_edit) { true }
+        it 'returns a url with ...' do
+          expect(view_url(view)).to eq('//example.com/d/four-four/edit')
+        end
+      end
+
+      describe "when the user is looking at someone else's profile" do
+        let(:viewing_others_profile) { true }
+
+        it 'returns the view mode url' do
+          expect(view_url(view)).to eq('//example.com/d/four-four')
         end
       end
     end

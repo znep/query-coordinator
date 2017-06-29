@@ -237,7 +237,14 @@ function SvgPieChart($element, vif, options) {
           var percent = d3.select(this.parentNode).select('.slice').attr('data-percent');
           var percentAsString = renderPercentLabel(percent);
 
-          return showPercentages ? percentAsString : utils.formatNumber(d.data[1]);
+          if (showPercentages) {
+            return percentAsString;
+          } else {
+            // makes sure pie chart labels do no break when value is null
+            return d.data[1] === null ?
+              I18n.translate('visualizations.common.no_value') :
+              utils.formatNumber(d.data[1]);
+          }
         });
   }
 

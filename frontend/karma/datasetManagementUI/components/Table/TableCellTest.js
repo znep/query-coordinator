@@ -4,6 +4,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 describe('components/Table/TableCell', () => {
+
   it('renders empty', () => {
     const element = shallow(<TableCell cell={{ ok: null }} />);
     assert.isFalse(element.isEmpty());
@@ -33,4 +34,56 @@ describe('components/Table/TableCell', () => {
     assert.isFalse(element.isEmpty());
     assert.equal(element.find('div').text(), '42');
   });
+
+  describe('geo values', () => {
+
+    it('renders a point as WKT', () => {
+      const cellValue = {
+        ok: {
+          type: 'Point',
+          coordinates: [10, 20]
+        }
+      };
+      const element = shallow(<TableCell cell={cellValue} />);
+      assert.isFalse(element.isEmpty());
+      assert.equal(element.find('div').text(), 'POINT(10 20)');
+    });
+
+    it('renders a multipolygon as WKT', () => {
+      const cellValue = {
+        ok: {
+          type: 'MultiPolygon',
+          coordinates: [
+            [
+              [
+                [10, 20],
+                [20, 30],
+                [30, 40],
+                [10, 20]
+              ]
+            ],
+            [
+              [
+                [50, 60],
+                [70, 80],
+                [90, 100],
+                [50, 60]
+              ]
+            ]
+          ]
+        }
+      };
+      const element = shallow(<TableCell cell={cellValue} />);
+      assert.isFalse(element.isEmpty());
+      assert.equal(
+        element.find('div').text(),
+        'MULTIPOLYGON(((10 20, 20 30, 30 40, 10 20)), ((50 60, 70 80, 90 100, 50 60)))'
+      );
+    });
+
+    // could add tests for all geo types, but they're all handled by the GeoJSON2WKT library
+    // so at that point we're just testing the library
+
+  });
+
 });

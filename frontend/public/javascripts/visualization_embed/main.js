@@ -4,8 +4,13 @@ import $ from 'jquery';
 import generateEmbedCode from './embedCodeGenerator';
 import hydrateEmbeds from './hydrator';
 
-import 'frontend/app/styles/visualizations-import-shim.scss';
+// Socrata-icons MUST come before styleguide. Otherwise,
+// you will get icons showing up twice (styleguide has a
+// compatibility shim for old-style socrata-icons that is
+// sensitive to style load order).
 import 'frontend/app/styles/socrata-icons.scss';
+import 'common/styleguide/styleguide-no-tag-level.scss';
+import 'frontend/app/styles/visualizations-import-shim.scss';
 
 window.socrata = window.socrata || {};
 window.socrata.visualizationEmbed = window.socrata.visualizationEmbed || {};

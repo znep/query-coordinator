@@ -5,6 +5,15 @@ class Demos::VisualizationsController < ApplicationController
   skip_before_filter :require_user
   layout 'styleguide'
 
+  def embeds
+    @with_styleguide = params[:with_styleguide] == 'true'
+    if @with_styleguide
+      render
+    else
+      render :layout => 'blank'
+    end
+  end
+
   def self.available_demos
     Dir.glob("#{Rails.root}/app/views/demos/visualizations/*.html.erb").
       map { |file| File.basename(file, '.html.erb') }. # remove extension

@@ -599,6 +599,8 @@ class DatasetsController < ApplicationController
     @view = get_view(params[:id])
     return if @view.nil?
 
+    return if render_as_visualization_canvas(true)
+
     return render_404 if @view.is_published? && @view.is_blist?
 
     unless @view.can_replace?
@@ -1116,11 +1118,10 @@ class DatasetsController < ApplicationController
   # (including row and alt views)
   # NOTE: this method relies on external state (@view, @row)
   def canonical_path_proc
-    Proc.new do |params|
+    Proc.new do |options|
       composite_params = @view.route_params
-
       composite_params.merge!(row_id: @row[':id'] || @row['sid']) unless @row.nil?
-      composite_params.merge!(params || {})
+      composite_params.merge!(options || {})
 
       if @row
         view_row_path(composite_params)
@@ -1294,11 +1295,23 @@ class DatasetsController < ApplicationController
     end
   end
 
-  def render_as_visualization_canvas
+  def render_as_visualization_canvas(as_edit = false)
+    # The page will momentarily render in view mode, even if as_edit is true, and
+    # setting the @site_chrome_admin_header_options @body_classes variables below is to make
+    # the transition look less jarring.
+    if as_edit
+      @site_chrome_admin_header_options = {size: 'small'}
+      @body_classes = "hide-site-chrome"
+    end
+
     if visualization_canvas_enabled? && @view.visualization_canvas?
       # See if the user is accessing the canonical URL; if not, redirect
       unless using_canonical_url?
-        redirect_to canonical_path
+        if as_edit
+          redirect_to "#{canonical_path}/edit"
+        else
+          redirect_to canonical_path
+        end
         return true
       end
 

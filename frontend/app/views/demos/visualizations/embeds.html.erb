@@ -19,6 +19,13 @@
 
 <a href="/internal">Internal Panel Home</a><br>
 <a href="/internal/demos/visualizations">Back to demo list</a><br>
+<% if @with_styleguide %>
+<a href="?with_styleguide=false">Turn off styleguide for this page</a><br>
+<% else %>
+<a href="?with_styleguide=true">Turn on styleguide for this page</a><br>
+<% end %>
+
+<br>
 
 Column chart:
 <div>

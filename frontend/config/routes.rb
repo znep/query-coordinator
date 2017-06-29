@@ -477,6 +477,8 @@ Rails.application.routes.draw do
       get 'dataset/:id', :action => 'show'
       get 'dataset/:id/stats', :action => 'stats'
       get 'dataset/:id/about', :action => 'about'
+      get 'dataset/:id/edit', :action => 'edit'
+
       # The ":as" option, provides the short_view_url helper method
       get 'd/:id', :action => 'show', :as => :short_view
       get 'd/:id/alt', :action => 'alt'
@@ -485,6 +487,7 @@ Rails.application.routes.draw do
       get 'd/:id/data', :action => 'show', :bypass_dslp => true
       match 'd/:id/edit_metadata', :action => 'edit_metadata', :via => [:get, :post]
       get 'd/:id/visualization', :action => 'create_visualization_canvas', :as => :create_visualization_canvas
+      get 'd/:id/edit', :action => 'edit'
 
       get 'd/:id/revisions/current(*rest_of_path)', :action => 'current_revision'
       get 'd/:id/revisions/:revision_seq(*rest_of_path)', :action => 'show_revision'

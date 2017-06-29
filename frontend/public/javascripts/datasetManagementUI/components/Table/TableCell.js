@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import styles from 'styles/Table/TableCell.scss';
+import geojson2wkt from 'geojson2wkt';
 
 class TableCell extends Component {
 
@@ -32,13 +33,21 @@ class TableCell extends Component {
     } else {
       return (
         <td className={styles.base}>
-          <div>{`${cell.ok}`}</div>
+          <div>{renderCellValue(cell.ok)}</div>
         </td>
       );
 
     }
   }
 
+}
+
+function renderCellValue(value) {
+  if (value.type) {
+    return geojson2wkt.convert(value);
+  } else {
+    return `${value}`;
+  }
 }
 
 TableCell.propTypes = {

@@ -8,6 +8,10 @@
       background-color: purple;
     }
 
+    .delete-custom-vif {
+      margin-right: 10px;
+    }
+
     .custom-dataset-uid {
       background-color: orange;
     }
@@ -44,13 +48,56 @@
     var visualization;
     var filters;
 
-    $('#edit, #outputs').hide();
+    $('#edit, #save, #outputs').hide();
 
     function printFeatureFlags() {
       $('#feature-flags').text(JSON.stringify(window.socrata.featureFlags, null, '  '));
     }
 
+    function getLocalVifs() {
+      window.localVifs = window.localVifs || {};
+      if (window.localStorage) {
+        try {
+          localVifs = JSON.parse(window.localStorage.getItem('ax-demo-vifs') || '{}');
+        } catch (e) {
+          console.error('Error reading from localStorage, nuking and starting fresh.', e);
+          window.localStorage.removeItem('ax-demo-vifs');
+        }
+      }
+
+      return localVifs;
+    }
+
+    function setLocalVifs(localVifs) {
+      window.localVifs = localVifs || {};
+      if (window.localStorage) {
+        window.localStorage.setItem('ax-demo-vifs', JSON.stringify(window.localVifs));
+      }
+    }
+
+    function renderLocalVifButtons() {
+      var localVifs = getLocalVifs();
+      var container = $('#local-vifs').empty();
+
+      if (_.isEmpty(localVifs)) {
+        $('#local-vifs').text('(empty)');
+      } else {
+        _.each(localVifs, function(vif, vifName) {
+          $('#local-vifs').append([
+            $('<button class="launch btn btn-primary custom-vif">' + vifName + '</button>').
+              data('vif', vif).
+              addClass('vif'),
+            $('<button class="delete btn btn-secondary delete-custom-vif">X</button>').
+              data('vifName', vifName).
+              addClass('delete-vif'),
+            ]
+          );
+        });
+      }
+    }
+
     printFeatureFlags();
+    renderLocalVifButtons();
 
     $('#edit-feature-flags').click(function() {
       var flag = prompt('Flag name');
@@ -67,15 +114,13 @@
       printFeatureFlags();
     });
 
-    function addVifButton(vif, vifName, extraClass) {
-      return $('#vif-selections').append(
-        $('<button class="launch btn btn-primary">'+vifName+'</button>').
+    _.each(window.socrata.sampleVifs, function(vif, vifName) {
+      $('#preloaded-vifs').append(
+        $('<button class="launch btn btn-primary">' + vifName + '</button>').
           data('vif', vif).
-          addClass(extraClass)
+          addClass('vif')
       );
-    }
-
-    _.each(window.socrata.sampleVifs, addVifButton);
+    });
 
     var onComplete = function(result) {
       vif = result.vif;
@@ -95,7 +140,7 @@
       visualization = new VisualizationRenderer(result.vif, chart);
 
       authoringWorkflow.destroy();
-      $('#edit, #outputs').show();
+      $('#edit, #save, #outputs').show();
     };
 
     var onCancel = function() {
@@ -119,12 +164,19 @@
       });
     }
 
+    function addLocalVif(vif, vifName) {
+      var localVifs = getLocalVifs();
+      localVifs[vifName] = vif;
+      setLocalVifs(localVifs);
+      renderLocalVifButtons();
+    }
+
     $('#custom-vif').click(function() {
       var customVif = prompt('Paste yer vif here.');
       try {
         if (customVif) {
           customVif = JSON.parse(customVif);
-          addVifButton(customVif, _.uniqueId('Custom VIF '), 'custom-vif');
+          addLocalVif(customVif, _.uniqueId('Custom VIF '));
         }
       } catch (e) {
         alert(e);
@@ -136,7 +188,7 @@
       var customDatasetUid = prompt('Dataset UID');
       try {
         if (customDatasetUid) {
-          var localhostVIF = {
+          var customVif = {
             format: {
               type: 'visualization_interchange_format',
               version: 2
@@ -152,17 +204,28 @@
           };
 
           var datasetName = customDatasetUid + ' on ' + domain;
-          addVifButton(localhostVIF, datasetName, 'custom-dataset-uid');
+          addLocalVif(customVif, datasetName);
         }
       } catch (e) {
         alert(e);
       }
     });
 
-    $('#vif-selections').on('click', 'button', function(evt) {
+    $(document.body).on('click', 'button.vif', function(evt) {
       launchAx($(evt.target).data('vif'));
     });
+    $(document.body).on('click', 'button.delete-vif', function(evt) {
+      var vifName = $(evt.target).data('vifName');
+      var localVifs = getLocalVifs();
+      delete localVifs[vifName];
+      setLocalVifs(localVifs);
+      renderLocalVifButtons();
+    });
     $('#edit').click(function() { launchAx(vif); });
+    $('#save').click(function() {
+      var vifName = prompt('Name your VIF:', _.uniqueId('Untitled '));
+      addLocalVif(vif, vifName);
+    });
     $('button.select').click(function(evt) {
       document.getSelection().removeAllRanges();
       var range = document.createRange();
@@ -174,19 +237,19 @@
 
 <a href="/internal">Internal Panel Home</a><br>
 <a href="/internal/demos/visualizations">Back to demo list</a><br>
-Select a preloaded VIF to launch AX:
-<p id="vif-selections"></p>
-<p>Or:
-  <button id="custom-vif" class="btn">Paste a VIF</button>
-  <button id="custom-dataset-uid" class="btn">Use a custom dataset</button>
-  <button id="edit" class="btn btn-secondary">Edit Current</button>
+<h3>My VIFs (local storage):</h3>
+<div id="local-vifs"></div>
+<p>
+  <button id="custom-vif" class="btn">+ Paste a VIF</button>
+  <button id="custom-dataset-uid" class="btn">+ Choose a dataset (any domain)</button>
 </p>
+<h3>Preloaded VIFs:</h3>
+<div id="preloaded-vifs"></div>
 
+<hr>
+<button id="edit" class="btn btn-secondary">Edit</button>
+<button id="save" class="btn btn-secondary">Save to My VIFs</button>
 <div id="authoring-workflow"></div>
-
-<strong>Feature Flags:</strong>
-<button id="edit-feature-flags">Set</button>
-<pre id="feature-flags"></pre>
 
 <section id='outputs'>
   <div id="chart"></div>
@@ -208,3 +271,7 @@ Select a preloaded VIF to launch AX:
     <pre id="filter-output"></pre>
   </div>
 </section>
+
+<strong>Feature Flags:</strong>
+<button id="edit-feature-flags">Set</button>
+<pre id="feature-flags"></pre>

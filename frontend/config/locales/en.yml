@@ -5396,9 +5396,9 @@ en:
             all: All Views
           filter_title: Show only
           item:
-            author_html: <span class="date"></span> by <span class="author"></span>
             delete: Delete this view
             expand: Click to expand
+            updated: Updated
           no_results: There are no results
           pagination:
             last: See last view

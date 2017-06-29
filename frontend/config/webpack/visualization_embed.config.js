@@ -13,9 +13,6 @@ module.exports = _.defaultsDeep({
   }),
   output: common.getOutput(identifier),
   eslint: common.getEslintConfig('.eslintrc.json'),
-  externals: {
-    jquery: true // See comment re: jquery_include in frontend/app/views/layouts/styleguide.html
-  },
   module: {
     loaders: common.getStandardLoaders(
       [
@@ -27,6 +24,10 @@ module.exports = _.defaultsDeep({
       ],
       {
         babelRewirePlugin: true
+      },
+      {
+        test: /\.yml$/,
+        loaders: ['json', 'yaml']
       }
     )
   },

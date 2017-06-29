@@ -115,6 +115,7 @@
     "airbrake-js": "0.5.9",
     "babel-polyfill": "6.16.0",
     "bourbon": "4.2.7",
+    "bowser": "1.7.0",
     "classnames": "2.2.5",
     "d3": "3.5.16",
     "dompurify": "0.8.3",

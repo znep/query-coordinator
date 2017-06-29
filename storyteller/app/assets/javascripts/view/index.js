@@ -3,6 +3,7 @@ import $ from 'jquery';
 import SocrataVisualizations from 'common/visualizations';
 
 import '../editor/componentBase';
+import '../editor/block-component-renderers/componentEmbeddedHtml';
 import '../editor/block-component-renderers/componentGoalEmbed';
 import '../editor/block-component-renderers/componentGoalTile';
 import '../editor/block-component-renderers/componentHero';
@@ -142,6 +143,10 @@ $(document).on('ready', function() {
 
         case 'socrata.visualization.timelineChart':
           $element.componentSocrataVisualizationTimelineChart(props);
+          break;
+
+        case 'embeddedHtml':
+          $element.componentEmbeddedHtml(props);
           break;
 
         default:

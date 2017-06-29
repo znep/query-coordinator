@@ -22,17 +22,10 @@ LOCALEAPP_API_SHA1_HASHES = {
   'common'      => 'be872d6478b160725d25ba9229b61b2cbd861d75'
 }
 
-LOCALEAPP_API_KEY = {
-  'frontend'    => ENV['LOCALEAPP_API_KEY'],
-  'storyteller' => ENV['STORYTELLER_LOCALEAPP_API_KEY'],
-  'common'      => ENV['COMMON_LOCALEAPP_API_KEY']
-}
-
 project_name = ARGV[0]
-api_key = ARGV[1] || LOCALEAPP_API_KEY[project_name]
+api_key = ARGV[1]
 
-is_blank = lambda { |x| x.nil? || x.empty? }
-if [ project_name, api_key ].any?(&is_blank)
+if ARGV.length != 2
   puts 'Usage: push_locale <frontend|storyteller|common> <api_key_for_project>'
   puts 'API key can be read from LastPass \'LocaleApp\' note or directly in LocaleApp UI'
   exit(1)

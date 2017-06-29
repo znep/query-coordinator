@@ -1,42 +1,46 @@
 import _ from 'lodash';
 import Cookies from 'js-cookie';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import Store from './Store';
 import Actions from '../Actions';
 import Environment from '../../StorytellerEnvironment';
 import { exceptionNotifier } from '../../services/ExceptionNotifier';
 
-function downtimeToAck(downtime) {
-  return moment(downtime.message_start).unix();
+export const DOWNTIME_MOMENT_FORMAT_STRING = 'YYYY-MM-DD[t]HH:mmZ';
+
+function downtimeToAck({ message_start }) {
+  return moment(message_start, DOWNTIME_MOMENT_FORMAT_STRING).unix();
 }
 
-function isDowntimeOpen(downtime) {
-  return moment().isBetween(downtime.message_start, downtime.message_end);
+function isDowntimeOpen({ message_start, message_end }) {
+  const messageStart = moment(message_start, DOWNTIME_MOMENT_FORMAT_STRING);
+  const messageEnd = moment(message_end, DOWNTIME_MOMENT_FORMAT_STRING);
+  return moment().isBetween(messageStart, messageEnd);
 }
 
 // Maintain interoperability with frontend cookie values, even though frontend
 // uses a crazy old jQuery cookie plugin.
-var cookies = Cookies.withConverter({
-  read: function(value, name) {
+const cookies = Cookies.withConverter({
+  read: (value, name) => {
     if (name === 'maintenance_ack') {
       return JSON.parse(unescape(value));
     }
   },
-  write: function(value, name) {
+  write: (value, name) => {
     if (name === 'maintenance_ack') {
       return escape(value);
     }
   }
 });
 
-export var downtimeStore = new DowntimeStore();
+export const downtimeStore = new DowntimeStore();
 export default function DowntimeStore() {
   _.extend(this, new Store());
 
-  var self = this;
+  const self = this;
 
-  this.register(function(payload) {
+  this.register((payload) => {
     switch (payload.action) {
       case Actions.DOWNTIME_ACKNOWLEDGE:
         _acknowledge(payload.downtime);
@@ -44,11 +48,11 @@ export default function DowntimeStore() {
     }
   });
 
-  this.getUnacknowledgedDowntimes = function() {
-    var knownDowntimes = Environment.DOWNTIMES;
-    var acks = cookies.get('maintenance_ack') || [];
+  this.getUnacknowledgedDowntimes = () => {
+    const knownDowntimes = Environment.DOWNTIMES;
+    const acks = cookies.get('maintenance_ack') || [];
 
-    return _.reject(knownDowntimes, function(downtime) {
+    return _.reject(knownDowntimes, (downtime) => {
       return _.includes(acks, downtimeToAck(downtime)) || !isDowntimeOpen(downtime);
     });
   };
@@ -59,7 +63,7 @@ export default function DowntimeStore() {
       return false;
     }
 
-    var acks = cookies.get('maintenance_ack') || [];
+    const acks = cookies.get('maintenance_ack') || [];
 
     cookies.set(
       'maintenance_ack',

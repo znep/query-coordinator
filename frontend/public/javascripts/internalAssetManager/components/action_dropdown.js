@@ -18,7 +18,8 @@ export class ActionDropdown extends React.Component {
       dropdownIsOpen: false
     };
 
-    _.bindAll(this, 'handleDocumentClick', 'handleButtonClick', 'handleModalClose', 'showActionModal');
+    _.bindAll(this, 'handleDocumentClick', 'handleButtonClick', 'handleModalClose', 'renderDropdownOption',
+      'renderEditMetadataMenuOption', 'renderChangeVisibilityMenuOption', 'showActionModal');
   }
 
   componentDidMount() {
@@ -57,6 +58,45 @@ export class ActionDropdown extends React.Component {
     this.setState({ activeActionModal: actionName });
   }
 
+  renderDropdownOption(optionText, onClick) {
+    return <li onClick={onClick} onKeyDown={handleEnter(onClick, true)} tabIndex={0}>{optionText}</li>;
+  }
+
+  renderEditMetadataMenuOption() {
+    const { assetType, uid } = this.props;
+
+    switch (assetType) {
+      case 'story':
+      case 'datalens':
+        return null; // EN-17219: (temporary fix)
+      default:
+        return this.renderDropdownOption(
+          _.get(I18n, 'result_list_table.action_dropdown.edit_metadata'),
+          () => redirectTo(`/d/${uid}/edit_metadata`)
+        );
+    }
+  }
+
+  renderChangeVisibilityMenuOption() {
+    switch (this.props.assetType) {
+      case 'story':
+        /* TODO: Need to do something different if a story is unpublished vs published:
+          - just link to the story if it's unpublished.
+          - if it is published, use the storyteller api to toggle permissions, not the core api directly.
+          (in asset_actions) */
+      case 'datalens': // eslint-disable-line no-fallthrough
+        // TODO: Implement the "hidden" checkbox and use that for data lenses.
+      case 'visualization': // eslint-disable-line no-fallthrough
+        // TODO: Implement once new viz bootstrapping / permissions are ready to go.
+        return null;
+      default:
+        return this.renderDropdownOption(
+          _.get(I18n, 'result_list_table.action_dropdown.change_visibility'),
+          () => this.showActionModal('changeVisibility')
+        );
+    }
+  }
+
   render() {
     const { assetType, uid } = this.props;
     const { dropdownIsOpen } = this.state;
@@ -75,32 +115,11 @@ export class ActionDropdown extends React.Component {
       </button>
     );
 
-    const renderDropdownOption = (optionText, onClick) => (
-      <li onClick={onClick} onKeyDown={handleEnter(onClick, true)} tabIndex={0}>{optionText}</li>
-    );
-
-    let changeVisibilityMenuOption;
-
-    if (assetType === 'story') {
-      /* TODO: Need to do something different if a story is unpublished vs published:
-        - just link to the story if it's unpublished.
-        - if it is published, use the storyteller api to toggle permissions, not the core api directly.
-          (in asset_actions) */
-    } else if (assetType === 'datalens') {
-      // TODO: Implement the "hidden" checkbox and use that for data lenses.
-    } else if (assetType === 'visualization') {
-      // TODO: Implement once new viz bootstrapping / permissions are ready to go.
-    } else {
-      changeVisibilityMenuOption = renderDropdownOption(
-        getTranslation('change_visibility'), () => this.showActionModal('changeVisibility')
-      );
-    }
-
     const dropdownMenu = dropdownIsOpen ? (
       <ul className="action-dropdown-menu">
-        {renderDropdownOption(getTranslation('edit_metadata'), () => redirectTo(`/d/${uid}/edit_metadata`))}
-        {changeVisibilityMenuOption}
-        {renderDropdownOption(getTranslation('delete_asset'), () => this.showActionModal('deleteAsset'))}
+        {this.renderEditMetadataMenuOption()}
+        {this.renderChangeVisibilityMenuOption()}
+        {this.renderDropdownOption(getTranslation('delete_asset'), () => this.showActionModal('deleteAsset'))}
       </ul>
     ) : null;
 

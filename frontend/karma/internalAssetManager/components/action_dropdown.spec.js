@@ -52,7 +52,7 @@ describe('components/ActionDropdown', () => {
       assert.lengthOf(menu.querySelectorAll('li'), expectedMenuActions.length);
     });
 
-    it('does not render the changeVisibility option for data lens', () => {
+    it('does not render the changeVisibility or editMetdata options for data lens', () => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps({
         assetType: 'datalens'
       }));
@@ -60,7 +60,6 @@ describe('components/ActionDropdown', () => {
       const menu = element.querySelector('.action-dropdown-menu');
 
       const expectedMenuActions = [
-        'editMetadata',
         'deleteAsset'
       ];
 
@@ -82,7 +81,7 @@ describe('components/ActionDropdown', () => {
       assert.lengthOf(menu.querySelectorAll('li'), expectedMenuActions.length);
     });
 
-    it('does not render the changeVisibility option for stories', () => {
+    it('does not render the changeVisibility or editMetadata option for stories', () => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps({
         assetType: 'story'
       }));
@@ -90,7 +89,6 @@ describe('components/ActionDropdown', () => {
       const menu = element.querySelector('.action-dropdown-menu');
 
       const expectedMenuActions = [
-        'editMetadata',
         'deleteAsset'
       ];
 

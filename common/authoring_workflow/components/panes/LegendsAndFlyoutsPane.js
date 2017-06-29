@@ -94,7 +94,9 @@ export const LegendsAndFlyoutsPane = React.createClass({
       return null;
     }
 
-    const showLegend = getShowLegend(vifAuthoring, isCurrentlyPieChart);
+    // Pie charts default to showing the legend
+    const defaultValue = isCurrentlyPieChart;
+    const showLegend = getShowLegend(defaultValue)(vifAuthoring);
 
     return (
       <AccordionPane key="legends" title={I18n.translate('panes.legends_and_flyouts.subheaders.legends.title')}>

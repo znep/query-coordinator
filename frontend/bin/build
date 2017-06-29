@@ -39,7 +39,7 @@ bundle check || bundle install
 
 # install build dependencies. Hate to have to do this manually, but it's not working
 # well in our build process.
-gem install localeapp
+bundle add localeapp
 
 # Write REVISION file
 git rev-parse HEAD > "${WORKSPACE}/frontend/REVISION"
@@ -50,7 +50,7 @@ bundle exec rake assets:precompile
 
 # We want to push our latest en.yml up to LocaleApp and then pull down
 # additional translations in other locales.
-bin/push_base_locale -y
+bundle exec `git rev-parse --show-toplevel`/bin/push_locale frontend
 set +e
 bin/pull_translations
 set -e

@@ -16,6 +16,10 @@ const views = (state = {}, action) => {
         ...action.payload
       }));
     }
+
+    case 'SET_VALUE': {
+      return dotProp.set(state, action.path, action.value);
+    }
     default:
       return state;
   }

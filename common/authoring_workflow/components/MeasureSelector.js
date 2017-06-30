@@ -86,11 +86,11 @@ export const MeasureSelector = React.createClass({
 
     return (
         <li {...measureListItemAttributes}>
-          {this.renderDeleteLink(index)}
           <div className="measure-column-selector-dropdown-container">
             <Dropdown {...measureAttributes} />
           </div>
           {this.renderMeasureAggregationSelector(measure, index)}
+          {this.renderDeleteLink(index)}
         </li>
     );    
   },

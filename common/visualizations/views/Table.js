@@ -867,8 +867,12 @@ module.exports = function Table(element, originalVif, locale) {
 
   function positionSortMenu($sortMenu, $container) {
 
+    const $sortMenuButton = $container.find('.sort-menu-button');
+    const buttonBottom = $sortMenuButton.position().top + $sortMenuButton.outerHeight(true);
+
     $sortMenu.appendTo($container);
     $sortMenu.css('right', 0); // must be positioned first for offset calculations to work
+    $sortMenu.css('top', buttonBottom);
 
     // Move menu to the right if the left edge extends past the left table edge
     //
@@ -876,7 +880,7 @@ module.exports = function Table(element, originalVif, locale) {
     const tableOffsetLeft = $container.closest('table').offset().left;
     const menuOffsetLeft = $sortMenu.offset().left;
 
-    const menuOffsetRight = Math.min(menuOffsetLeft - tableOffsetLeft - socrataTableScrollLeft, 0);
+    const menuOffsetRight = Math.min(menuOffsetLeft - tableOffsetLeft - socrataTableScrollLeft, 5);
     $sortMenu.css('right', menuOffsetRight);
   }
 };

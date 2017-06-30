@@ -1801,13 +1801,17 @@ var Interpolator = require('../util/interpolator');
         });
 
         var newPair = {};
-        newPair[newIndex] = format;
+        if (newIndex >= 0) {
+          newPair[newIndex] = format;
+        }
 
         return newPair;
       });
 
       var newColumnFormats = newColumnFormatsArray.reduce(function(accumulator, pair) {
-          for (var index in pair) accumulator[index] = pair[index];
+          for (var index in pair) {
+            accumulator[index] = pair[index];
+          }
 
           return accumulator;
       }, {});

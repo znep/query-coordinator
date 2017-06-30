@@ -6,11 +6,12 @@ import { I18n } from 'common/visualizations';
 
 import { isLoading, hasData, hasError } from '../../selectors/metadata';
 import {
-  getVisualizationType,
   getLimitCount,
-  getShowOtherCategory,
+  getMeasuresFromVif,
   getPrecision,
+  getShowOtherCategory,
   getTreatNullValuesAsZero,
+  getVisualizationType,
   isBarChart,
   isPieChart,
   isColumnChart,
@@ -282,8 +283,9 @@ export var DataPane = React.createClass({
       }
     }
 
+    const measures = getMeasuresFromVif(vifAuthoring);
     const dimensionGroupingAvailable = (
-      isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)
+      (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)) && (measures.length == 1)
     );
     const dimensionGroupingColumnNameTitle = I18n.translate(
       'panes.data.fields.dimension_grouping_column_name.title'

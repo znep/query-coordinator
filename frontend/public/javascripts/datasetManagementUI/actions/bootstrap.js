@@ -9,7 +9,7 @@ import {
 } from 'actions/manageUploads';
 import { addNotification } from 'actions/notifications';
 import { parseDate } from 'lib/parseDate';
-import { shapeCustomFieldsets } from 'lib/customMetadata';
+import { shapeCustomFieldsets } from 'models/forms';
 import * as ApplyRevision from 'actions/applyRevision';
 // import { createCombinedValidationRules, createInitialModel } from 'components/ManageMetadata/DatasetForm';
 // import { getValidationErrors } from 'components/Forms/validateSchema';

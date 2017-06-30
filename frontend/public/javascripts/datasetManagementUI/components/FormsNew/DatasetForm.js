@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Field, Fieldset } from 'lib/customMetadata';
 import _ from 'lodash';
 import Validation, { Success, Failure } from 'folktale/validation';
+import isEmailHelper from 'validator/lib/isEmail';
+import isURLHelper from 'validator/lib/isURL';
 
 // DATA
 const fieldsetOne = (titleValue, descriptionValue) => {
@@ -43,7 +45,7 @@ const fieldsetTwo = (categoryValue, tagsValue) => {
       window.initialState.datasetCategories
     ),
     Field.Tags(
-      'tag',
+      'tags',
       I18n.edit_metadata.tags_keywords,
       tagsValue,
       false,
@@ -118,11 +120,12 @@ const makeDataModel = fieldset =>
 // validateFieldsetOne : Fieldset -> Validation [{a :: String}] Fieldset
 const validateFieldsetOne = fieldset => {
   const model = makeDataModel(fieldset);
-  // console.log('m', model);
+
   return Validation.of()
     .concat(hasValue(model.name.name, model.name.value))
     .concat(hasValue(model.description.name, model.description.value))
-    .map(_ => fieldset);
+    .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
+    .map(() => fieldset);
 };
 
 const validateFieldsetTwo = fieldset => {
@@ -131,7 +134,65 @@ const validateFieldsetTwo = fieldset => {
   return Validation.of()
     .concat(isValidCategory(model.category.name, model.category.value))
     .concat(noDuplicates(model.tags.name, model.tags.value))
-    .map(_ => fieldset);
+    .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
+    .map(() => fieldset);
+};
+
+const validateFieldsetThree = fieldset => {
+  const model = makeDataModel(fieldset);
+
+  return Validation.of()
+    .concat(isURL(model.attributionLink.name, model.attributionLink.value || ''))
+    .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
+    .map(() => fieldset);
+};
+
+const validateFieldsetFour = fieldset => {
+  const model = makeDataModel(fieldset);
+
+  return Validation.of()
+    .concat(isEmail(model.email.name, model.email.value || ''))
+    .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
+    .map(() => fieldset);
+};
+
+// validateRegularFieldsets : List Fieldset -> Validation [{a :: String}] Fieldset
+const validateRegularFieldsets = fieldsets =>
+  Validation.of()
+    .concat(validateFieldsetOne(fieldsets[0]))
+    .concat(validateFieldsetTwo(fieldsets[1]))
+    .concat(validateFieldsetThree(fieldsets[2]))
+    .concat(validateFieldsetFour(fieldsets[3]));
+
+// validateCustomFieldset : Fieldset -> Validation [{a:: String}] Fieldset
+const validateCustomFieldset = fieldset => {
+  const validation = _.chain(fieldset.fields)
+    .filter(field => field.isRequired)
+    .map(field => hasValue(field.name, field.value))
+    .flatMap(val =>
+      val.matchWith({
+        Success: () => [],
+        Failure: x => x.value.map(f => ({ ...f, fieldset: fieldset.title }))
+      })
+    )
+    .value();
+
+  return validation.length ? Failure(validation) : Success(fieldset);
+};
+
+// validateCustomFieldsets : List Fieldset -> Validation [{a :: String}] (List Fieldset)
+const validateCustomFieldsets = fieldsets => {
+  const validations = _.chain(fieldsets)
+    .map(validateCustomFieldset)
+    .flatMap(val =>
+      val.matchWith({
+        Success: () => [],
+        Failure: x => x.value
+      })
+    )
+    .value();
+
+  return validations.length ? Failure(validations) : Success(fieldsets);
 };
 
 function hasValue(fieldName, val) {
@@ -149,21 +210,36 @@ function noDuplicates(fieldName, vals) {
     : Failure([({ fieldName }: 'Duplicate values')]);
 }
 
+function isURL(fieldName, val) {
+  return isURLHelper(val, { require_protocol: true })
+    ? Success(val)
+    : Failure([{ [fieldName]: 'Invalid url' }]);
+}
+
+function isEmail(fieldName, val) {
+  return isEmailHelper(val) ? Success(val) : Failure([{ [fieldName]: 'Invalid email' }]);
+}
+
 // COMPONENT
 export class DatasetForm extends Component {
   componentWillReceiveProps(nextProps) {
-    const { setErrors, fourfour, fieldsets } = nextProps;
-    const { fieldsets: oldFieldsets } = this.props;
-    if (!_.isEqual(oldFieldsets, fieldsets)) {
-      validateFieldsetOne(fieldsets[0]).matchWith({
-        Success: x => setErrors(fourfour, []),
-        Failure: x => setErrors(fourfour, x.value)
+    const { setErrors, regularFieldsets, customFieldsets } = nextProps;
+    const { regularFieldsets: oldRegularFieldsets, customFieldsets: oldCustomFieldsets } = this.props;
+
+    if (
+      !_.isEqual(oldRegularFieldsets, regularFieldsets) ||
+      !_.isEqual(oldCustomFieldsets, customFieldsets)
+    ) {
+      validateRegularFieldsets(regularFieldsets).concat(validateCustomFieldsets(customFieldsets)).matchWith({
+        Success: x => setErrors([]),
+        Failure: x => setErrors(x.value)
       });
     }
   }
 
   render() {
-    const { fieldsets, fourfour, setValue } = this.props;
+    const { regularFieldsets, customFieldsets, setValue } = this.props;
+    const fieldsets = [...regularFieldsets, ...customFieldsets];
     const ui = fieldsets.map(fieldset => {
       const fields = fieldset.fields.map(field => {
         return field.cata({
@@ -171,11 +247,11 @@ export class DatasetForm extends Component {
             <input
               type="text"
               value={field.value || ''}
-              onChange={e => setValue(`${fourfour}.${field.name}`, e.target.value)} />,
+              onChange={e => setValue(field.name, e.target.value)} />,
           Tags: () => <input type="text" />,
-          TextArea: () => <textarea onChange={e => setValue(`${fourfour}.${field.name}`, e.target.value)} />,
+          TextArea: () => <textarea onChange={e => setValue(field.name, e.target.value)} />,
           Select: () =>
-            <select onChange={e => setValue(`${fourfour}.${field.name}`, e.target.value)}>
+            <select onChange={e => setValue(field.name, e.target.value)}>
               {field.options.map(opt =>
                 <option>
                   {opt.value}
@@ -225,33 +301,49 @@ const mapStateToProps = ({ entities, ui }) => {
 
   const customFieldsets = Object.keys(customDatasetMetadata).map(key => customDatasetMetadata[key]);
 
-  const fieldsets = [
+  const regularFieldsets = [
     fieldsetOne(name, description),
     fieldsetTwo(category, tags),
     fieldsetThree(licenseId, attribution, attributionLink),
-    fieldsetFour(email),
-    ...customFieldsets
+    fieldsetFour(email)
   ];
 
   return {
-    fieldsets,
+    regularFieldsets,
+    customFieldsets,
     fourfour
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  setValue: (path, value) =>
-    dispatch({
-      type: 'SET_VALUE',
-      path,
-      value
-    }),
-  setErrors: (fourfour, errors) =>
+// const mapDispatchToProps = dispatch => ({
+//   setValue: (path, value) =>
+//     dispatch({
+//       type: 'SET_VALUE',
+//       path,
+//       value
+//     }),
+//   setErrors: (fourfour, errors) =>
+//     dispatch({
+//       type: 'EDIT_VIEW',
+//       id: fourfour,
+//       payload: { datasetMetadataErrors: errors }
+//     })
+// });
+
+const mergeProps = ({ fourfour, ...rest }, { dispatch }) => ({
+  ...rest,
+  setErrors: errors =>
     dispatch({
       type: 'EDIT_VIEW',
       id: fourfour,
       payload: { datasetMetadataErrors: errors }
+    }),
+  setValue: (path, value) =>
+    dispatch({
+      type: 'SET_VALUE',
+      path: `${fourfour}.${path}`,
+      value
     })
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DatasetForm);
+export default connect(mapStateToProps, null, mergeProps)(DatasetForm);

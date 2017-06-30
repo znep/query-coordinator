@@ -27,7 +27,7 @@ $filter-content-width: 260px;
     }
 
     .catalog-filters-header {
-      padding: 0.5rem;
+      padding: 0.5rem $horizontal_margin;
       border-bottom: 1px solid $light-grey-3;
       display: flex;
       align-items: center;
@@ -47,7 +47,7 @@ $filter-content-width: 260px;
     }
 
     .filter-section {
-      margin: 0.5rem;
+      margin: 0.5rem $horizontal_margin;
 
       label {
         user-select: none;

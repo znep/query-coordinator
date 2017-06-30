@@ -3,6 +3,9 @@
 @import "internal-asset-manager/action_modal";
 @import "internal-asset-manager/mixins/multi_line_ellipsis";
 
+$result_list_row_bg_color: $white;
+$result_list_row_bg_hover_color: $primary-light;
+
 table.result-list-table {
   min-width: 0;
   width: 100%;
@@ -65,12 +68,14 @@ table.result-list-table {
   }
 
   tr.result-list-row {
+    background: $result_list_row_bg_color;
+
     &:hover {
-      background: $primary-light;
+      background: $result_list_row_bg_hover_color;
 
       td.name {
         span.description {
-          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $primary-light);
+          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $result_list_row_bg_hover_color);
         }
       }
     }
@@ -100,12 +105,8 @@ table.result-list-table {
 
         span.description {
           display: block;
-          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $light-grey-6);
+          @include multiLineEllipsis($lineHeight: 1rem, $lineCount: 2, $bgColor: $result_list_row_bg_color);
         }
-      }
-
-      &.type {
-        text-align: center;
       }
 
       &.type, &.visibility {

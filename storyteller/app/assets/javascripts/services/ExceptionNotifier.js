@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import _ from 'lodash';
 import Airbrake from 'airbrake-js';
 
@@ -48,9 +47,10 @@ export default function ExceptionNotifier(options) {
   }
 
   function attachEvents() {
-    $(window).error((event) => {
-      self.notify(event.originalEvent.error);
-    });
+    window.onerror = (...args) => {
+      // args[4] is typically the Error instance.
+      self.notify(args[4]);
+    };
   }
 
   /**
@@ -101,10 +101,7 @@ export default function ExceptionNotifier(options) {
     }
 
     if (airbrake) {
-      airbrake.notify({
-        err: error,
-        params: params
-      });
+      airbrake.notify({ error, params });
     }
 
     console.error(error);

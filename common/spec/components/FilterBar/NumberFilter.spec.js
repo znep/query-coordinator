@@ -19,6 +19,7 @@ describe('NumberFilter', () => {
   const getTitle = (element) => element.querySelector('.filter-control-title');
   const getSlider = (element) => element.querySelector('.input-range-slider');
   const getInputs = (element) => element.querySelectorAll('.range-input');
+  const getCheckbox = (element) => element.querySelector('.include-nulls-toggle');
   const getFooter = (element) => element.querySelector('.filter-footer');
   const getApplyButton = (element) => element.querySelector('.apply-btn');
   const getResetButton = (element) => element.querySelector('.reset-btn');
@@ -36,6 +37,11 @@ describe('NumberFilter', () => {
   it('renders two input fields', () => {
     const element = renderComponent(NumberFilter, getProps());
     assert.lengthOf(getInputs(element), 2);
+  });
+
+  it('renders a checkbox', () => {
+    const element = renderComponent(NumberFilter, getProps());
+    assert.isNotNull(getCheckbox(element));
   });
 
   it('renders a footer', () => {
@@ -148,6 +154,16 @@ describe('NumberFilter', () => {
 
       const filter = spy.firstCall.args[0];
       assert.isFalse(filter.isHidden);
+    });
+
+    it('updates filter with new includeNullValues value when checkbox clicked', () => {
+      const checkbox = getCheckbox(element);
+      Simulate.change(checkbox, { target: { checked: false } })
+      Simulate.click(getApplyButton(element));
+      const filter = spy.firstCall.args[0];
+
+      assert.isNotTrue(checkbox.hasAttribute('checked'));
+      assert.equal(filter.arguments.includeNullValues, false);
     });
   });
 });

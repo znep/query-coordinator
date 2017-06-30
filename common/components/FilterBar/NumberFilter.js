@@ -29,7 +29,8 @@ export const NumberFilter = React.createClass({
     return {
       value: _.defaults(filter.arguments, {
         start: column.rangeMin,
-        end: column.rangeMax
+        end: column.rangeMax,
+        includeNullValues: true
       })
     };
   },
@@ -58,6 +59,12 @@ export const NumberFilter = React.createClass({
     this.updateValueState(newValue);
   },
 
+  onCheckboxChange(event) {
+    this.updateValueState({
+      includeNullValues: event.target.checked
+    });
+  },
+
   getStepInterval() {
     const { rangeMin, rangeMax } = this.props.column;
 
@@ -84,7 +91,8 @@ export const NumberFilter = React.createClass({
 
     this.updateValueState({
       start: rangeMin,
-      end: rangeMax
+      end: rangeMax,
+      includeNullValues: true
     });
   },
 
@@ -93,7 +101,7 @@ export const NumberFilter = React.createClass({
     const { value } = this.state;
 
     // Swap the start and end if necessary to ensure the range is valid
-    let { start, end } = value;
+    let { start, end, includeNullValues } = value;
     if (start > end) {
       [start, end] = [end, start];
     }
@@ -103,7 +111,10 @@ export const NumberFilter = React.createClass({
     // binaryOperator filters from this control (one >=, one <=).
     end += this.getStepInterval() / 100;
 
-    if (_.isEqual(_.at(value, 'start', 'end'), _.at(column, 'rangeMin', 'rangeMax'))) {
+    const usingDefaultValues = _.isEqual(_.at(value, 'start', 'end'), _.at(column, 'rangeMin', 'rangeMax'))
+      && includeNullValues;
+
+    if (usingDefaultValues) {
       const { isHidden } = filter;
       onUpdate(_.merge({}, getDefaultFilterForColumn(column), { isHidden }));
     } else {
@@ -111,7 +122,8 @@ export const NumberFilter = React.createClass({
         'function': 'valueRange',
         arguments: {
           start,
-          end
+          end,
+          includeNullValues
         }
       }));
     }
@@ -171,6 +183,32 @@ export const NumberFilter = React.createClass({
     return <Slider {...sliderProps} />;
   },
 
+  renderNullValueCheckbox() {
+    const { value } = this.state;
+    const nullToggleId = _.uniqueId('include-nulls-');
+    const inputAttributes = {
+      id: nullToggleId,
+      className: 'include-nulls-toggle',
+      type: 'checkbox',
+      onChange: this.onCheckboxChange,
+      defaultChecked: value.includeNullValues
+    };
+
+    return (
+      <form>
+        <div className="checkbox">
+          <input {...inputAttributes}/>
+          <label className="inline-label" htmlFor={nullToggleId}>
+            <span className="fake-checkbox">
+              <span className="icon-checkmark3"></span>
+            </span>
+            {t('filter_bar.range_filter.include_null_values')}
+          </label>
+        </div>
+      </form>
+    );
+  },
+
   render() {
     const { column, isReadOnly, onClickConfig, onRemove } = this.props;
 
@@ -194,6 +232,7 @@ export const NumberFilter = React.createClass({
           <FilterHeader {...headerProps} />
           {this.renderSlider()}
           {this.renderInputFields()}
+          {this.renderNullValueCheckbox()}
         </div>
         <FilterFooter {...footerProps} />
       </div>

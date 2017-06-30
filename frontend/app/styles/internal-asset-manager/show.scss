@@ -1,4 +1,5 @@
 @import "styleguide-colors";
+@import "internal-asset-manager/sizings";
 @import "internal-asset-manager/catalog_results";
 @import "internal-asset-manager/catalog_filters";
 @import "common/pager";
@@ -38,24 +39,31 @@ body {
 
 .internal-asset-manager {
   .header {
-    margin: 2rem 0.5rem 0.5rem 0.5rem;
+    margin: 0 $horizontal_margin;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
 
-    a.asset-toggle {
-      cursor: pointer;
-      text-decoration: none;
-      padding: 0 2px 2px 2px;
-      display: inline-block;
-      margin-right: 0.5rem;
+    .asset-toggles {
+      a.asset-toggle {
+        color: $light-grey-2;
+        cursor: pointer;
+        text-decoration: none;
+        padding: 0 2px 2px 2px;
+        display: inline-block;
+        margin-right: 0.75rem;
+        font-size: 15px;
+        font-weight: 700;
 
-      &.active {
-        border-bottom: 3px solid $primary-base;
+        &.active {
+          color: $black;
+          border-bottom: 3px solid $primary-base;
+        }
       }
     }
 
     .asset-counts {
+      margin: 3.5rem 0 0.5rem;
       display: inline-block;
 
       &.fetching {

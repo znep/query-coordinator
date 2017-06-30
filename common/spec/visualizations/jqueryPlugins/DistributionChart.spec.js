@@ -252,7 +252,7 @@ describe('DistributionChart jQuery component', function() {
       distributionChart.fetchBucketedData(bucketingOptions);
 
       expect(getUnfilteredQuery()).to.not.match(/where/);
-      expect(getFilteredQuery()).to.match(/where `year` >= 0 and `year` < 40/i);
+      expect(getFilteredQuery()).to.match(/`year` >= 0 and `year` < 40/i);
     });
 
     it('includes the aggregation clause in the queries', function() {

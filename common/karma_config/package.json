@@ -10,7 +10,8 @@
     "check-dependencies": "check-dependencies",
     "lint": "eslint -c ../.eslintrc.json ../",
     "test": "karma start karma.conf.js --singleRun true",
-    "watch": "karma start karma.conf.js -v --singleRun false"
+    "watch": "karma start karma.conf.js -v --singleRun false",
+    "watch-browser": "karma start karma.conf.js -v --singleRun false --browsers Chrome"
   },
   "dependencies": {
     "airbrake-js": "0.5.9",

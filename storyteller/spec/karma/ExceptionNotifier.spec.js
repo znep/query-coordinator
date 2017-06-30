@@ -70,7 +70,7 @@ describe('ExceptionNotifier', function() {
     describe('when airbrake is defined', function() {
       var error = 'hello';
       var notifyErrorMatcher = sinon.match((arg) => {
-        return typeof arg === 'object' && arg.err.message === error;
+        return typeof arg === 'object' && arg.error.message === error;
       });
       var consoleErrorMatcher = sinon.match((arg) => {
         return typeof arg === 'object' && arg.message === error;

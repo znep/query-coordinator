@@ -115,37 +115,39 @@ $highlighted-sort-menu-row-background-color: #e6f9f5;
         border-top: none;
         box-sizing: content-box;
 
-        span[class^="socrata-icon-"] {
+        .sort-indicator {
           height: $header-cell-height - 2;
-          margin-left: 5px;
+          margin-right: 2px;
           opacity: 0;
           transition: opacity 0.15s;
         }
 
-        span.socrata-icon-kebab {
-          opacity: 1;
-        }
-
-        button.sort-menu-button {
-          background-color: $header-background-color;
-          border: 1px solid #c8c8c8;
-          cursor: pointer;
+        .sort-controls-container {
           display: inline-block;
-          line-height: 23px;
-          padding: 0px;
           position: absolute;
           right: 5px;
-          text-align: center;
-          top: ($header-cell-height - 23) / 2;
-          width: 20px;
 
-          &:hover {
-            background-color: $highlighted-sort-menu-button-background-color;
-          }
+          .sort-menu-button {
+            background-color: $header-background-color;
+            box-shadow: -10px 0 7px #f6f6f6;
+            border: 1px solid #c8c8c8;
+            cursor: pointer;
+            display: inline-block;
+            line-height: 23px;
+            outline: none;
+            padding: 0px;
+            text-align: center;
+            top: ($header-cell-height - 23) / 2;
+            width: 20px;
 
-          .socrata-icon-kebab {
-            color: #6a6a6a;
-            margin: 0 auto;
+            &:hover {
+              background-color: $highlighted-sort-menu-button-background-color;
+            }
+
+            .socrata-icon-kebab {
+              color: #6a6a6a;
+              margin: 0 auto;
+            }
           }
         }
 
@@ -154,8 +156,17 @@ $highlighted-sort-menu-row-background-color: #e6f9f5;
         }
 
         &[data-sort] {
-          span {
+          .sort-indicator {
             opacity: 1;
+          }
+
+          .sort-controls-container {
+            background: #f6f6f6;
+            box-shadow: -10px 0 7px #f6f6f6;
+
+            .sort-menu-button {
+              box-shadow: none;
+            }
           }
         }
       }
@@ -238,7 +249,6 @@ $highlighted-sort-menu-row-background-color: #e6f9f5;
 
   background: #fff;
   border: 1px solid #c8c8c8;
-  box-shadow: 0px 0px 4px 1px rgba(44,44,44,0.10);
   box-sizing: border-box;
   color: #5e5e5e;
   cursor: auto;

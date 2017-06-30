@@ -665,6 +665,44 @@ function SvgVisualization($element, vif, options) {
     );
   };
 
+  this.getColor = function(dimensionIndex, measureIndex) {
+    const isGrouping = !_.isNull(
+      _.get(
+        self.getVif(),
+        'series[0].dataSource.dimension.grouping.columnName',
+        null
+      )
+    );
+
+    const usingColorPalette = _.get(
+      self.getVif(),
+      `series[${(isGrouping) ? 0 : dimensionIndex}].color.palette`,
+      false
+    );
+
+    function getColorFromPalette() {
+      const palette = usingColorPalette === 'custom' ?
+        self.getColorPaletteByColumnTitles(measureLabels) :
+        self.getColorPaletteBySeriesIndex(0);
+
+      return palette[measureIndex];
+    }
+
+    function getPrimaryColorOrNone() {
+      const primaryColor = (isGrouping) ?
+        self.getPrimaryColorBySeriesIndex(0) :
+        self.getPrimaryColorBySeriesIndex(measureIndex);
+
+      return (primaryColor !== null) ?
+        primaryColor :
+        'none';
+    }
+
+    return (usingColorPalette) ?
+      getColorFromPalette() :
+      getPrimaryColorOrNone();
+  }
+
   this.getColorPaletteBySeriesIndex = function(seriesIndex) {
     const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
       self.getVif(),

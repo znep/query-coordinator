@@ -4,6 +4,7 @@ export default () => ({
     "version": 2
   },
   "configuration": {
+    "showLegend": true,
     "viewSourceDataLink": true,
     "xAxisScalingMode": "fit"
   },

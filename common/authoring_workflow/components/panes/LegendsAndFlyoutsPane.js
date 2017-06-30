@@ -2,23 +2,22 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
-import { FeatureFlags } from 'common/feature_flags';
 import { I18n } from 'common/visualizations';
 
 import { COLUMN_TYPES } from '../../constants';
 import { getDisplayableColumns, hasData } from '../../selectors/metadata';
 import {
+  getDimensionGroupingColumnName,
   getRowInspectorTitleColumnName,
+  getShowLegend,
   getUnitOne,
   getUnitOther,
-  getDimensionGroupingColumnName,
-  getShowLegend,
   isBarChart,
-  isPieChart,
-  isRegionMap,
   isColumnChart,
   isFeatureMap,
   isHistogram,
+  isPieChart,
+  isRegionMap,
   isTimelineChart
 } from '../../selectors/vifAuthoring';
 
@@ -130,7 +129,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderTimelineChartControls() {
-    return this.renderUnits();
+    return [this.renderUnits(), this.renderLegends()];
   },
 
   renderFeatureMapControls() {

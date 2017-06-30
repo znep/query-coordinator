@@ -96,7 +96,10 @@ export const MeasureSelector = React.createClass({
   },
 
   renderDeleteLink(index) {
-    return (index > 0) ? (
+    const { vifAuthoring } = this.props;
+    const measures = getMeasuresFromVif(vifAuthoring);
+
+    return (measures.length > 1) ? (
       <div className="measure-delete-link-container">
         <a className="measure-delete-link" onClick={() => this.handleOnClickDeleteMeasure(index)}>
           <span className="socrata-icon-close" />

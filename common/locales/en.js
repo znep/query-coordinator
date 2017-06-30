@@ -27,7 +27,8 @@ export default {
     range_filter: {
       range_label: 'From {0} to {1}',
       greater_label: 'Greater than {0}',
-      less_label: 'Less than {0}'
+      less_label: 'Less than {0}',
+      include_null_values: 'Include missing or null values'
     },
     remove: 'Remove',
     reset: 'Reset',

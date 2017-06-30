@@ -546,10 +546,17 @@ function valueRangeWhereClauseComponent(filter) {
     'arguments.end'
   );
 
-  return '{0} >= {1} AND {0} < {2}'.format(
+  const includeNullValuesTemplate = _.get(filter, 'arguments.includeNullValues', true) ?
+    'OR {0} IS NULL' :
+    'AND {0} IS NOT NULL';
+
+  const includeNullValuesQuery = includeNullValuesTemplate.format(soqlEncodeColumnName(filter.columnName));
+
+  return '(({0} >= {1} AND {0} < {2}) {3})'.format(
     soqlEncodeColumnName(filter.columnName),
     soqlEncodeValue(filter.arguments.start),
-    soqlEncodeValue(filter.arguments.end)
+    soqlEncodeValue(filter.arguments.end),
+    includeNullValuesQuery
   );
 }
 

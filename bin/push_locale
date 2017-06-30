@@ -22,10 +22,17 @@ LOCALEAPP_API_SHA1_HASHES = {
   'common'      => 'be872d6478b160725d25ba9229b61b2cbd861d75'
 }
 
-project_name = ARGV[0]
-api_key = ARGV[1]
+LOCALEAPP_API_KEY = {
+  'frontend'    => ENV['LOCALEAPP_API_KEY'],
+  'storyteller' => ENV['STORYTELLER_LOCALEAPP_API_KEY'],
+  'common'      => ENV['COMMON_LOCALEAPP_API_KEY']
+}
 
-if ARGV.length != 2
+project_name = ARGV[0]
+api_key = ARGV[1] || LOCALEAPP_API_KEY[project_name]
+
+is_blank = lambda { |x| x.nil? || x.empty? }
+if [ project_name, api_key ].any?(&is_blank)
   puts 'Usage: push_locale <frontend|storyteller|common> <api_key_for_project>'
   puts 'API key can be read from LastPass \'LocaleApp\' note or directly in LocaleApp UI'
   exit(1)
@@ -76,12 +83,17 @@ if job_id.nil?
   exit(0)
 end
 
-# Poll localeapp api until push job is complete
+
+# Poll localeapp api until push job is complete with some backoff
+max_interval = 32
+interval = 2
+
 begin
   puts "Checking LocaleApp job #{job_id} status..."
-  sleep 3
+  sleep interval
   job_status = HTTParty.get("https://api.localeapp.com/v1/projects/#{api_key}/imports.json")
   job_complete = job_status.parsed_response['imports'].any? { |job| job['id'] == job_id && job['state'] == 'succeeded' }
+  interval = [ max_interval, interval * 2 ].min
 end until job_complete
 
 puts "Job: #{job_id} complete!"

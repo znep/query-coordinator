@@ -17,10 +17,10 @@ export class Header extends React.Component {
     return (
       <div className="header">
         <div className="asset-toggles">
+          {this.myAssetsTab()}
           <a href="#" className="asset-toggle all-assets active">
             {_.get(I18n, 'header.asset_toggles.all_assets')}
           </a>
-          {this.myAssetsTab()}
         </div>
 
         <AssetCounts />

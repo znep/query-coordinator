@@ -8,7 +8,8 @@ const SvgVisualization = require('./SvgVisualization');
 const I18n = require('../I18n');
 // Constants
 import {
-  AXIS_LABEL_MARGIN
+  AXIS_LABEL_MARGIN,
+  LEGEND_BAR_HEIGHT
 } from './SvgStyleConstants';
 
 // The MARGINS values have been eyeballed to provide enough space for axis
@@ -447,7 +448,31 @@ function SvgTimelineChart($element, vif, options) {
       renderValues();
     }
 
+    function renderLegend() {
+      const alreadyDisplayingLegendBar = (self.$container.find('.socrata-visualization-legend-bar-inner-container').length > 0);
+
+      if (self.getShowLegend()) {
+
+        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i));
+        self.attachLegendBarEventHandlers();
+
+        if (!alreadyDisplayingLegendBar) {
+          viewportHeight -= LEGEND_BAR_HEIGHT;
+        }
+
+      } else {
+
+        self.removeLegendBar();
+
+        if (alreadyDisplayingLegendBar) {
+          viewportHeight += LEGEND_BAR_HEIGHT;
+        }
+      }
+    }
+
     // Actual execution begins here.
+    //
+    renderLegend();
 
     if (self.getXAxisScalingModeBySeriesIndex(0) === 'fit') {
 

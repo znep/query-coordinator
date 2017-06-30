@@ -36,6 +36,36 @@ const soqlPropertiesList = [
     cssName: 'point',
     conversionFunction: false,
     icon: 'map'
+  },
+  {
+    canonicalName: 'multipoint',
+    cssName: 'multipoint',
+    conversionFunction: false,
+    icon: 'map'
+  },
+  {
+    canonicalName: 'line',
+    cssName: 'line',
+    conversionFunction: false,
+    icon: 'map'
+  },
+  {
+    canonicalName: 'multiline',
+    cssName: 'multiline',
+    conversionFunction: false,
+    icon: 'map'
+  },
+  {
+    canonicalName: 'polygon',
+    cssName: 'polygon',
+    conversionFunction: false,
+    icon: 'map'
+  },
+  {
+    canonicalName: 'multipolygon',
+    cssName: 'multipolygon',
+    conversionFunction: false,
+    icon: 'map'
   }
 ];
 

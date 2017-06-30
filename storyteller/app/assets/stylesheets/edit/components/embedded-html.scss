@@ -5,4 +5,16 @@
     width: 100%;
     height: 100%;
   }
+
+  // Mobile Safari doesn't handle <iframe>s that
+  // have a dimension larger than their container.
+  // This gives a similar experience to overflowing
+  // the container like most browsers do.
+  &.mobile-webkit {
+    iframe {
+      min-width: 100%;
+      width: 1px;
+      height: inherit;
+    }
+  }
 }

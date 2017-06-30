@@ -1,11 +1,14 @@
 import $ from 'jquery';
-import moment from 'moment';
+import moment from 'moment-timezone';
+import jstz from 'jstz';
 
 import I18n from '../I18n';
 import Actions from '../Actions';
 import StorytellerUtils from '../../StorytellerUtils';
 import { dispatcher } from '../Dispatcher';
-import { downtimeStore } from '../stores/DowntimeStore';
+import { downtimeStore, DOWNTIME_MOMENT_FORMAT_STRING } from '../stores/DowntimeStore';
+
+const userTimezoneName = jstz.determine().name();
 
 $.fn.downtimeNoticeBar = DowntimeNoticeBar;
 
@@ -29,8 +32,8 @@ export default function DowntimeNoticeBar() {
       $message.html(
         StorytellerUtils.format(
           I18n.t('editor.downtime'),
-          moment(downtime.downtime_start).format('LLLL [UTC]Z'),
-          moment(downtime.downtime_end).format('LLLL [UTC]Z')
+          formatTimestamp(downtime.downtime_start),
+          formatTimestamp(downtime.downtime_end)
         )
       );
 
@@ -44,6 +47,10 @@ export default function DowntimeNoticeBar() {
 
     $(document.body).toggleClass('downtime-notice', shouldDisplay);
     $this.toggleClass('visible', shouldDisplay);
+  }
+
+  function formatTimestamp(timestamp) {
+    return moment(timestamp, DOWNTIME_MOMENT_FORMAT_STRING).tz(userTimezoneName).format('LLLL z');
   }
 
   downtimeStore.addChangeListener(render);

@@ -8,11 +8,8 @@ import TextArea from 'components/FormComponents/TextArea';
 import Select from 'components/FormComponents/Select';
 import TagsInput from 'components/FormComponents/TagsInput';
 import * as Types from 'models/forms';
+import * as Actions from 'actions/views';
 import styles from 'styles/MetadataField.scss';
-
-// TODO: this is pretty ugly...maybe do another way
-const isHalfSized = field =>
-  Types.Field.Tags.is(field) || Types.Field.Select.is(field) || field.name === 'attribution';
 
 const Field = ({ field, errors, setValue, showErrors }) => {
   if (!field) {
@@ -31,7 +28,8 @@ const Field = ({ field, errors, setValue, showErrors }) => {
     Text: () => <TextInput field={field} setValue={setValue} inErrorState={inErrorState} />,
     Tags: () => <TagsInput field={field} setValue={setValue} inErrorState={inErrorState} />,
     TextArea: () => <TextArea field={field} setValue={setValue} inErrorState={inErrorState} />,
-    Select: () => <Select field={field} setValue={setValue} inErrorState={inErrorState} />
+    Select: () => <Select field={field} setValue={setValue} inErrorState={inErrorState} />,
+    NoField: () => <span>{I18n.edit_metadata.no_fields_message}</span>
   });
 
   return (
@@ -81,7 +79,28 @@ const mapStateToProps = ({ entities, ui }, { field, fieldset }) => {
   return { errors, fourfour, showErrors };
 };
 
-const forgePath = (field, fieldsetName, fourfour) => {
+// We don't use this much, but it is a nice alternative to using the component
+// as a place to put together the output of mapStateToProps and mapDispatchToProps;
+// mergeProps provides a place to do this putting-together without cluttering the
+// component. For more info/background, see discussion here:
+// https://github.com/reactjs/react-redux/issues/237#issuecomment-168816713
+const mergeProps = ({ fourfour, ...rest }, { dispatch }, ownProps) => {
+  const path = forgePath(ownProps.field, ownProps.fieldset, fourfour);
+
+  return {
+    ...rest,
+    ...ownProps,
+    setValue: value => dispatch(Actions.setValue(path, value))
+  };
+};
+
+// HELPERS
+// TODO: this is pretty lame...maybe do another way
+function isHalfSized(field) {
+  return Types.Field.Tags.is(field) || Types.Field.Select.is(field) || field.name === 'attribution';
+}
+
+function forgePath(field, fieldsetName, fourfour) {
   const isRegPrivate = f => f.isPrivate && !f.isCustom;
   const isCustomPrivate = f => f.isPrivate && f.isCustom;
   const isCustomPublic = f => !f.isPrivate && f.isCustom;
@@ -99,22 +118,6 @@ const forgePath = (field, fieldsetName, fourfour) => {
   }
 
   return path;
-};
-
-// We don't use this much, but it is a nice alternative to using the component
-// as a place to put together the output of mapStateToProps and mapDispatchToProps;
-// mergeProps provides a place to do this putting-together without cluttering the
-// component. For more info/background, see discussion here:
-// https://github.com/reactjs/react-redux/issues/237#issuecomment-168816713
-const mergeProps = ({ fourfour, ...rest }, { dispatch }, ownProps) => ({
-  ...rest,
-  ...ownProps,
-  setValue: value =>
-    dispatch({
-      type: 'SET_VALUE',
-      path: forgePath(ownProps.field, ownProps.fieldset, fourfour),
-      value
-    })
-});
+}
 
 export default connect(mapStateToProps, null, mergeProps)(Field);

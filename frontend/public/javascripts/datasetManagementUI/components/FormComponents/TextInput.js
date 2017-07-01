@@ -13,7 +13,7 @@ const TextInput = ({ field, inErrorState, setValue }) => {
       className={classNames}
       placeholder={field.placeholder}
       value={field.value || ''}
-      onChange={e => setValue(field.name, e.target.value)} />
+      onChange={e => setValue(e.target.value)} />
   );
 };
 

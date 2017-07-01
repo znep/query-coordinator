@@ -9,6 +9,7 @@ import {
   validateRegularFieldsets,
   validateCustomFieldsets
 } from 'lib/formHelpers';
+import { shapeCustomFieldsets } from 'models/forms';
 import Fieldset from 'components/FormComponents/Fieldset';
 import Field from 'components/FormComponents/Field';
 
@@ -90,7 +91,7 @@ const mapStateToProps = ({ entities, ui }) => {
     description,
     tags,
     category,
-    customDatasetMetadata,
+    customMetadataFieldsets,
     licenseId,
     attribution,
     attributionLink,
@@ -98,6 +99,8 @@ const mapStateToProps = ({ entities, ui }) => {
   } = view;
 
   const email = privateMetadata ? privateMetadata.email : null;
+
+  const customDatasetMetadata = shapeCustomFieldsets(customMetadataFieldsets, view);
 
   const customFieldsets = Object.keys(customDatasetMetadata).map(key => customDatasetMetadata[key]);
 

@@ -7,7 +7,7 @@ const Select = ({ field, inErrorState, setValue }) =>
     aria-label={field.label}
     aria-required={field.isRequired}
     className={inErrorState ? styles.selectError : styles.select}
-    onChange={e => setValue(field.name, e.target.value)}>
+    onChange={e => setValue(e.target.value)}>
     {field.options.map((option, idx) =>
       <option value={option.value} key={idx}>
         {option.title}

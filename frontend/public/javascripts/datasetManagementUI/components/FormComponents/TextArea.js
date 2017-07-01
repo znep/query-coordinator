@@ -12,7 +12,7 @@ export default function TextArea({ field, inErrorState, setValue }) {
       aria-required={field.isRequired}
       placeholder={field.placeholder}
       value={field.value || ''}
-      onChange={e => setValue(field.name, e.target.value)} />
+      onChange={e => setValue(e.target.value)} />
   );
 }
 

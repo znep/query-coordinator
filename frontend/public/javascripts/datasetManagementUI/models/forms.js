@@ -3,21 +3,21 @@ import daggy from 'daggy';
 import _ from 'lodash';
 
 export const Field = daggy.taggedSum('Field', {
-  Text: ['name', 'label', 'value', 'isPrivate', 'isRequired', 'placeholder'],
+  Text: ['name', 'label', 'value', 'isPrivate', 'isRequired', 'placeholder', 'isCustom'],
   TextArea: ['name', 'label', 'value', 'isPrivate', 'isRequired', 'placeholder'],
   Tags: ['name', 'label', 'value', 'isPrivate', 'isRequired', 'placeholder'],
-  Select: ['name', 'label', 'value', 'isPrivate', 'isRequired', 'options']
+  Select: ['name', 'label', 'value', 'isPrivate', 'isRequired', 'options', 'isCustom']
 });
 
 export const Fieldset = daggy.tagged('Fieldset', ['title', 'subtitle', 'fields']);
 
 // shapeCustomFieldsets : String a => List Obj -> {a : Fieldset}
-export const shapeCustomFieldsets = fieldsets =>
+export const shapeCustomFieldsets = (fieldsets, view) =>
   fieldsets
     .map(fieldset => ({
       ...fieldset,
       fields: fieldset.fields.map(field => {
-        const view = window.initialState.view;
+        // const view = window.initialState.view;
 
         // existing values are stored on the view, so we need to look them up;
         // they are located in a different place, depending on public/private
@@ -38,9 +38,9 @@ export const shapeCustomFieldsets = fieldsets =>
             }))
           ];
 
-          return Field.Select(field.name, field.name, value, field.private, field.required, options);
+          return Field.Select(field.name, field.name, value, field.private, field.required, options, true);
         } else {
-          return Field.Text(field.name, field.name, value, field.private, field.required, null);
+          return Field.Text(field.name, field.name, value, field.private, field.required, null, true);
         }
       })
     }))

@@ -81,23 +81,38 @@ const mapStateToProps = ({ entities, ui }, { field, fieldset }) => {
   return { errors, fourfour, showErrors };
 };
 
+const forgePath = (field, fieldsetName, fourfour) => {
+  const isRegPrivate = f => f.isPrivate && !f.isCustom;
+  const isCustomPrivate = f => f.isPrivate && f.isCustom;
+  const isCustomPublic = f => !f.isPrivate && f.isCustom;
+
+  let path;
+
+  if (isRegPrivate(field)) {
+    path = `${fourfour}.privateMetadata.${field.name}`;
+  } else if (isCustomPrivate(field)) {
+    path = `${fourfour}.privateMetadata.custom_fields.${fieldsetName}.${field.name}`;
+  } else if (isCustomPublic(field)) {
+    path = `${fourfour}.metadata.custom_fields.${fieldsetName}.${field.name}`;
+  } else {
+    path = `${fourfour}.${field.name}`;
+  }
+
+  return path;
+};
+
 // We don't use this much, but it is a nice alternative to using the component
 // as a place to put together the output of mapStateToProps and mapDispatchToProps;
 // mergeProps provides a place to do this putting-together without cluttering the
 // component. For more info/background, see discussion here:
 // https://github.com/reactjs/react-redux/issues/237#issuecomment-168816713
-
-// private reg -> fourfour.privateMetadata.fieldname
-// private custom -> fourfour.privateMetadata.custom_fields.fielsetname.fieldname
-// normal reg -> fourofur.fieldname
-// normal custom -> fourfour.metadata.custom_fields.fieldsetname.fieldname
 const mergeProps = ({ fourfour, ...rest }, { dispatch }, ownProps) => ({
   ...rest,
   ...ownProps,
-  setValue: (path, value) =>
+  setValue: value =>
     dispatch({
       type: 'SET_VALUE',
-      path: `${fourfour}.${path}`,
+      path: forgePath(ownProps.field, ownProps.fieldset, fourfour),
       value
     })
 });

@@ -14,7 +14,8 @@ export const fieldsetOne = (titleValue, descriptionValue) => {
       titleValue,
       false,
       true,
-      I18n.edit_metadata.dataset_title
+      I18n.edit_metadata.dataset_title,
+      false
     ),
     Field.TextArea(
       'description',
@@ -42,7 +43,8 @@ export const fieldsetTwo = (categoryValue, tagsValue) => {
       categoryValue,
       false,
       false,
-      window.initialState.datasetCategories
+      window.initialState.datasetCategories,
+      false
     ),
     Field.Tags(
       'tags',
@@ -70,7 +72,8 @@ export const fieldsetThree = (licenseVal, attrVal, attrLinkVal) => {
       licenseVal,
       false,
       false,
-      window.initialState.datasetLicenses
+      window.initialState.datasetLicenses,
+      false
     ),
     Field.Text(
       'attribution',
@@ -78,7 +81,8 @@ export const fieldsetThree = (licenseVal, attrVal, attrLinkVal) => {
       attrVal,
       false,
       false,
-      I18n.edit_metadata.dataset_attribution
+      I18n.edit_metadata.dataset_attribution,
+      false
     ),
     Field.Text(
       'attributionLink',
@@ -86,7 +90,8 @@ export const fieldsetThree = (licenseVal, attrVal, attrLinkVal) => {
       attrLinkVal,
       false,
       false,
-      I18n.edit_metadata.dataset_url
+      I18n.edit_metadata.dataset_url,
+      false
     )
   ];
 
@@ -102,7 +107,8 @@ export const fieldsetFour = emailVal => {
       emailVal,
       true,
       false,
-      I18n.edit_metadata.dataset_email
+      I18n.edit_metadata.dataset_email,
+      false
     )
   ];
 

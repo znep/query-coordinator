@@ -29,7 +29,7 @@ class TagsInput extends Component {
     const { setValue, field } = this.props;
 
     // TODO: make sure it's valid before adding
-    setValue(field.name, [this.state.tag, ...field.value]);
+    setValue([this.state.tag, ...field.value]);
 
     this.setState({
       tag: ''
@@ -41,7 +41,7 @@ class TagsInput extends Component {
 
     const newTags = field.value.filter(tag => tag !== tagName);
 
-    setValue(field.name, newTags);
+    setValue(newTags);
   }
 
   handleKeyPress(e) {

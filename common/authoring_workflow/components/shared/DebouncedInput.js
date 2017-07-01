@@ -26,6 +26,7 @@ export class DebouncedInput extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.timeoutId = null;
   }
 
@@ -52,13 +53,27 @@ export class DebouncedInput extends React.Component {
     }, INPUT_DEBOUNCE_MILLISECONDS)
   }
 
+  handleKeyDown(event) {
+    // fix EN-16941
+    if (this.props.forceEnterKeyHandleChange &&
+        'Enter' === event.key) {
+      event.preventDefault();
+      this.handleChange(event);
+    }
+  }
+
   render() {
-    const props = _.omit(this.props, ['onDebouncedInputStart', 'onDebouncedInputStop', 'vifAuthoring']);
+    const props = _.omit(
+      this.props,
+      ['onDebouncedInputStart',
+       'onDebouncedInputStop',
+       'vifAuthoring',
+       'forceEnterKeyHandleChange']);
 
     if (this.usingChecked) {
       return <input {...props} checked={this.state.checked} onChange={this.handleChange}/>;
     } else {
-      return <input {...props} value={this.state.value} onChange={this.handleChange}/>;
+      return <input {...props} value={this.state.value} onChange={this.handleChange} onKeyDown={this.handleKeyDown}/>;
     }
   }
 }

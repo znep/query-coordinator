@@ -64,6 +64,13 @@ var webpackConfig = {
         ],
         include: /visualizations/
       },
+      {
+        test: /\.yml$/,
+        loaders: [
+          nodeResolve('json-loader'),
+          nodeResolve('yaml-loader')
+        ]
+      }
     ]
   },
   sassLoader: {

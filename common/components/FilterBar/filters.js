@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 import { getPrecision, roundToPrecision } from 'common/numbers';
 import { formatDate } from 'common/dates';
 
@@ -51,7 +51,7 @@ export function getFilterToggleText(filter, column) {
         const startLabel = formatDate(start, 'l');
         const endLabel = formatDate(end, 'l');
 
-        return t('filter_bar.range_filter.range_label').format(startLabel, endLabel);
+        return I18n.t('shared.components.filter_bar.range_filter.range_label').format(startLabel, endLabel);
       } else {
         return column.name;
       }
@@ -69,7 +69,7 @@ export function getFilterToggleText(filter, column) {
       const hasMaxValue = _.isFinite(end) && !_.isEqual(column.rangeMax, endLabel);
 
       if (hasMinValue || hasMaxValue) {
-        return t('filter_bar.range_filter.range_label').format(startLabel, endLabel);
+        return I18n.t('shared.components.filter_bar.range_filter.range_label').format(startLabel, endLabel);
       } else {
         return column.name;
       }
@@ -83,18 +83,18 @@ export function getFilterToggleText(filter, column) {
 
       if (isNegated) {
         if (valueCount > 1) {
-          return t('filter_bar.text_filter.n_values_negated').format(valueCount);
+          return I18n.t('shared.components.filter_bar.text_filter.n_values_negated').format(valueCount);
         } else if (_.isString(firstValue)) {
-          return t('filter_bar.text_filter.single_value_negated').format(firstValue);
+          return I18n.t('shared.components.filter_bar.text_filter.single_value_negated').format(firstValue);
         } else {
-          return t('filter_bar.text_filter.no_value_negated');
+          return I18n.t('shared.components.filter_bar.text_filter.no_value_negated');
         }
       } else if (valueCount > 1) {
-        return t('filter_bar.text_filter.n_values').format(valueCount);
+        return I18n.t('shared.components.filter_bar.text_filter.n_values').format(valueCount);
       } else if (_.isString(firstValue)) {
         return firstValue;
       } else {
-        return t('filter_bar.text_filter.no_value');
+        return I18n.t('shared.components.filter_bar.text_filter.no_value');
       }
     }
 

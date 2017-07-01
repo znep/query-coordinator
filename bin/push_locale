@@ -47,7 +47,7 @@ path = case project_name
   when 'storyteller'
     File.expand_path('../storyteller/config/locales/en.yml', file_directory)
   when 'common'
-    File.expand_path('../common/i18n/locales/en.yml', file_directory)
+    File.expand_path('../common/i18n/config/locales/en.yml', file_directory)
   else
     puts "Project name should be one of: #{LOCALEAPP_API_SHA1_HASHES.keys}"
     exit(1)

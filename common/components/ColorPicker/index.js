@@ -4,7 +4,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import React from 'react';
 
-import { translate } from 'common/I18n';
+import I18n from 'common/i18n';
 import { DOWN, ENTER, ESCAPE, SPACE, isolateEventByKeys } from 'common/keycodes';
 
 export const ColorPicker = React.createClass({
@@ -142,7 +142,7 @@ export const ColorPicker = React.createClass({
       onKeyDown: this.onKeyDownColorBucket,
       style: { backgroundColor: color },
       'aria-selected': isSelectedColor,
-      'aria-label': `${translate('color_picker.pickable_color')} ${color}`,
+      'aria-label': `${I18n.t('shared.components.color_picker.pickable_color')} ${color}`,
       className: classNames('color-bucket', {
         'selected-color': isSelectedColor
       })
@@ -186,8 +186,8 @@ export const ColorPicker = React.createClass({
 
   renderColorFrame() {
     const { selectedColor } = this.state;
-    const openColorPicker = translate('color_picker.open_color_picker');
-    const withCurrentSelection = translate('color_picker.with_currently_selected_color');
+    const openColorPicker = I18n.t('shared.components.color_picker.open_color_picker');
+    const withCurrentSelection = I18n.t('shared.components.color_picker.with_currently_selected_color');
     const label = selectedColor ?
       `${openColorPicker} ${withCurrentSelection} ${selectedColor}` : openColorPicker;
     const colorFrameAttributes = {

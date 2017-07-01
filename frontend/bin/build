@@ -51,7 +51,25 @@ bundle exec rake assets:precompile
 
 # We want to push our latest en.yml up to LocaleApp and then pull down
 # additional translations in other locales.
-`git rev-parse --show-toplevel`/bin/push_locale frontend
+
+# Find commit where this pull request branched from
+MERGE_BASE=$(git merge-base HEAD origin/master)
+
+# Check if Common or Frontend locales changed
+LOCALE_COMMON_CHANGED="$(git diff --name-only ${MERGE_BASE} | egrep 'i18n/config/locales/en.yml')"
+LOCALE_FRONTEND_CHANGED="$(git diff --name-only ${MERGE_BASE} | egrep 'frontend/config/locales/en.yml')"
+
+if [ ! -z $LOCALE_COMMON_CHANGED ]; then
+  echo "Common locale change detected, pushing to LocaleApp"
+  `git rev-parse --show-toplevel`/bin/push_locale common
+fi
+
+if [ ! -z $LOCALE_FRONTEND_CHANGED ]; then
+  echo "Frontend locale change detected, pushing to LocaleApp"
+  `git rev-parse --show-toplevel`/bin/push_locale frontend
+fi
+
+# Pull translations from both common / frontend
 set +e
 bin/pull_translations
 set -e

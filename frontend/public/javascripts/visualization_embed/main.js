@@ -3,6 +3,8 @@
 import $ from 'jquery';
 import generateEmbedCode from './embedCodeGenerator';
 import hydrateEmbeds from './hydrator';
+import enLocale from 'common/i18n/config/locales/en.yml';
+import I18n from 'common/i18n';
 
 // Socrata-icons MUST come before styleguide. Otherwise,
 // you will get icons showing up twice (styleguide has a
@@ -11,6 +13,8 @@ import hydrateEmbeds from './hydrator';
 import 'frontend/app/styles/socrata-icons.scss';
 import 'common/styleguide/styleguide-no-tag-level.scss';
 import 'frontend/app/styles/visualizations-import-shim.scss';
+
+I18n.translations = enLocale;
 
 window.socrata = window.socrata || {};
 window.socrata.visualizationEmbed = window.socrata.visualizationEmbed || {};

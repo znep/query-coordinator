@@ -1,9 +1,19 @@
 import _ from 'lodash';
 import InfoPane from 'components/InfoPane';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 import { renderComponent } from '../helpers';
 import { Simulate } from 'react-addons-test-utils';
 
 describe('InfoPane', () => {
+  beforeEach(() => {
+    I18n.translations.en = allLocales.en;
+  });
+
+  afterEach(() => {
+    I18n.translations = {};
+  });
+
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       name: 'A Different View',

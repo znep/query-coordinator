@@ -9,7 +9,9 @@ module InternalAssetManagerHelper
   end
 
   def render_internal_asset_manager_translations
-    javascript_tag("window.I18n = _.extend(I18n, #{json_escape(internal_asset_manager_translations.to_json)});")
+    old_translations = json_escape(internal_asset_manager_translations.to_json)
+    new_translations = json_escape(LocaleCache.render_partial_translations(:internal_asset_manager).to_json)
+    javascript_tag("window.I18n = _.extend(I18n, #{old_translations}); window.translations = #{new_translations}")
   end
 
   def render_internal_asset_manager_session_data

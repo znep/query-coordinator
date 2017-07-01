@@ -8,7 +8,7 @@ import SearchablePicklist from './SearchablePicklist';
 import FilterFooter from './FilterFooter';
 import FilterHeader from './FilterHeader';
 import { getTextFilter } from './filters';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 
 export const TextFilter = React.createClass({
   propTypes: {
@@ -146,11 +146,11 @@ export const TextFilter = React.createClass({
         this.setState({ isNegated: option.value === 'true' });
       },
       placeholder: this.state.isNegated ?
-        t('filter_bar.text_filter.is_not') :
-        t('filter_bar.text_filter.is'),
+        I18n.t('shared.components.filter_bar.text_filter.is_not') :
+        I18n.t('shared.components.filter_bar.text_filter.is'),
       options: [
-        { title: t('filter_bar.text_filter.is'), value: 'false' },
-        { title: t('filter_bar.text_filter.is_not'), value: 'true' }
+        { title: I18n.t('shared.components.filter_bar.text_filter.is'), value: 'false' },
+        { title: I18n.t('shared.components.filter_bar.text_filter.is_not'), value: 'true' }
       ],
       disabled: isValidating
     };
@@ -190,9 +190,9 @@ export const TextFilter = React.createClass({
 
     // Create the "null" suggestion to allow filtering on empty values.
     const nullOption = {
-      title: t('filter_bar.text_filter.no_value'),
+      title: I18n.t('shared.components.filter_bar.text_filter.no_value'),
       value: null,
-      group: t('filter_bar.text_filter.suggested_values'),
+      group: I18n.t('shared.components.filter_bar.text_filter.suggested_values'),
       render: this.renderSuggestedOption
     };
 
@@ -202,7 +202,7 @@ export const TextFilter = React.createClass({
         return {
           title: text.item,
           value: text.item,
-          group: t('filter_bar.text_filter.suggested_values'),
+          group: I18n.t('shared.components.filter_bar.text_filter.suggested_values'),
           render: this.renderSuggestedOption
         };
       }).
@@ -211,7 +211,7 @@ export const TextFilter = React.createClass({
     const selectedOptions = _.map(selectedValues, (selectedValue) => {
       return {
         title: _.isNull(selectedValue) ?
-          t('filter_bar.text_filter.no_value') :
+          I18n.t('shared.components.filter_bar.text_filter.no_value') :
           selectedValue,
         value: selectedValue,
         render: this.renderSelectedOption

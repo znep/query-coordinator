@@ -23,5 +23,5 @@
   window.STORY_UID = <%== @story_metadata.uid.to_json %>;
   window.STORY_VIEW_URL = '<%= @story_url_for_view %>';
   window.THEMES_ASSET_PATH = '<%= asset_path("themes/themes.css") %>';
-  window.TRANSLATIONS = <%= current_editor_translations.to_json.html_safe %>;
+  window.TRANSLATIONS = window.translations = <%= current_editor_translations.to_json.html_safe %>;
 </script>

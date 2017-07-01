@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import Picklist from '../Picklist';
 import SocrataIcon from '../SocrataIcon';
 import { getIconForDataType } from 'common/icons';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 import { ESCAPE, ENTER, SPACE, isOneOfKeys, isolateEventByKeys } from 'common/keycodes';
 
 export const AddFilter = React.createClass({
@@ -125,7 +125,7 @@ export const AddFilter = React.createClass({
     if (_.isEmpty(picklistOptions)) {
       return (
         <div className="alert warning">
-          {t('filter_bar.no_options_found')}
+          {I18n.t('shared.components.filter_bar.no_options_found')}
         </div>
       );
     } else {
@@ -146,7 +146,7 @@ export const AddFilter = React.createClass({
         <input
           className="add-filter-picklist-input"
           type="text"
-          aria-label={t('filter_bar.search')}
+          aria-label={I18n.t('shared.components.filter_bar.search')}
           value={searchTerm || ''}
           autoFocus
           onChange={this.onChangeSearchTerm} />
@@ -161,7 +161,7 @@ export const AddFilter = React.createClass({
         ref={(el) => this.addFilterButton = el}
         onClick={this.toggleColumnPicklist}
         onKeyDown={this.onKeyDownAddFilterButton}>
-        {t('filter_bar.add_filter')}
+        {I18n.t('shared.components.filter_bar.add_filter')}
       </button>
     );
 

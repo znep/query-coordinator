@@ -5,7 +5,7 @@ import React, { PropTypes } from 'react';
 import Slider from '../Slider';
 import FilterHeader from './FilterHeader';
 import FilterFooter from './FilterFooter';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 import { ENTER, isolateEventByKeys } from 'common/keycodes';
 import { getPrecision, roundToPrecision } from 'common/numbers';
 import { getDefaultFilterForColumn } from './filters';
@@ -144,8 +144,8 @@ export const NumberFilter = React.createClass({
           step={step}
           onChange={this.onInputChange}
           onKeyUp={this.onKeyUp}
-          aria-label={t('filter_bar.from')}
-          placeholder={t('filter_bar.from')}
+          aria-label={I18n.t('shared.components.filter_bar.from')}
+          placeholder={I18n.t('shared.components.filter_bar.from')}
           ref={(el) => this.firstInput = el} />
         <span className="range-separator">-</span>
         <input
@@ -156,8 +156,8 @@ export const NumberFilter = React.createClass({
           step={step}
           onChange={this.onInputChange}
           onKeyUp={this.onKeyUp}
-          aria-label={t('filter_bar.to')}
-          placeholder={t('filter_bar.to')} />
+          aria-label={I18n.t('shared.components.filter_bar.to')}
+          placeholder={I18n.t('shared.components.filter_bar.to')} />
       </div>
     );
   },
@@ -202,7 +202,7 @@ export const NumberFilter = React.createClass({
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {t('filter_bar.range_filter.include_null_values')}
+            {I18n.t('filter_bar.range_filter.include_null_values')}
           </label>
         </div>
       </form>

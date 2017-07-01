@@ -11,12 +11,12 @@ strings within their respective `/config/locales/` directories.
 
 By default, each app will load the `.yml` files in `/config/locales/` and make those strings availabile via the `I18n` gem.
 
-In addition to loading the strings for each app, we have added `/common/i18n/locales/` to the `config.i18n.load_path` to both
+In addition to loading the strings for each app, we have added `/common/i18n/config/locales/` to the `config.i18n.load_path` to both
 Frontend and Storyteller so that we will also have access to the 'shared' strings that are common to both applications.
 
 ### Note about namespacing
 We should remain diligent about properly namespacing our `.yml` keys since they can overwrite
-each other when combined. The strings in `/common/i18n/locales` will all be prefixed with `locale_common`, so as long as we don't use a `common` as a top
+each other when combined. The strings in `/common/i18n/config/locales` will all be prefixed with `locale_common`, so as long as we don't use a `shared` as a top
 level key in other apps, we should be fine.
 
 ## How this works with JS / React
@@ -63,9 +63,9 @@ export default connectLocalization(connect(mapStateToProps)(MyComponent)); // <-
 ```
 
 ## Updating Locale strings
-To manually push new locale strings in `/common/i18n/locales` up to LocaleApp, you can use `/platform-ui/bin/push_locale`.
+To manually push new locale strings in `/common/i18n/config/locales` up to LocaleApp, you can use `/platform-ui/bin/push_locale`.
 This ruby script accepts 2 command line arguments - a project name (frontend, storyteller, common), and an API key for that project (found in LastPass).
-So if you have updates to `/common/i18n/locales/en.yml` and would like to push them up to LocaleApp, the command would look something like:
+So if you have updates to `/common/i18n/config/locales/en.yml` and would like to push them up to LocaleApp, the command would look something like:
 
 ```
 $ cd platform-ui/

@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 import { ESCAPE } from 'common/keycodes';
 import {
   focusFirstActionableElement,
@@ -133,7 +133,7 @@ export const SideMenu = React.createClass({
 
     const dismissProps = {
       className: 'btn btn-block btn-transparent menu-header-dismiss',
-      'aria-label': t('menu.aria_close'),
+      'aria-label': I18n.t('shared.components.menu.aria_close'),
       onClick: onDismiss
     };
 

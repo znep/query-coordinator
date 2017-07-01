@@ -1,3 +1,5 @@
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 import {
   mockCalendarDateColumn,
   mockMoneyColumn,
@@ -8,6 +10,13 @@ import {
 import { getFilterToggleText } from 'components/FilterBar/filters';
 
 describe('filters', () => {
+  beforeEach(() => {
+    I18n.translations.en = allLocales.en;
+  });
+
+  afterEach(() => {
+    I18n.translations = {};
+  });
   describe('getFilterToggleText', () => {
     describe('calendar_date columns', () => {
       it('returns the name of the column when the filter is a noop filter', () => {

@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 import SocrataIcon from '../SocrataIcon';
 import AddFilter from './AddFilter';
 import FilterItem from './FilterItem';
@@ -252,7 +252,7 @@ export const FilterBar = React.createClass({
 
     const renderableFilters = _.reject(filters, (filter) => isReadOnly && filter.isHidden);
 
-    const text = isExpanded ? t('filter_bar.less') : t('filter_bar.more');
+    const text = isExpanded ? I18n.t('shared.components.filter_bar.less') : I18n.t('shared.components.filter_bar.more');
     const classes = classNames('btn btn-transparent btn-expand-control', {
       'is-hidden': _.size(renderableFilters) <= maxVisibleFilters
     });

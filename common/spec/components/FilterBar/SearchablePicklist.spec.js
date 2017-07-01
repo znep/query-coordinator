@@ -1,10 +1,14 @@
 import _ from 'lodash';
+import $ from 'jquery';
 import { Simulate } from 'react-addons-test-utils';
+
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
+import { ENTER } from 'common/keycodes';
+
 import { renderComponent } from '../../helpers';
 import SearchablePicklist from 'components/FilterBar/SearchablePicklist';
-import { ENTER } from 'common/keycodes';
 import { mockPicklistOptions } from './data';
-import $ from 'jquery';
 
 describe('SearchablePicklist', () => {
   function getProps(props) {
@@ -33,6 +37,14 @@ describe('SearchablePicklist', () => {
   const getSearchInputSpinner = (element) => element.querySelector('.spinner-default');
   const getSearchWarning = (element) => element.querySelector('.alert.warning');
   const getSearchPrompt = (element) => element.querySelector('.alert.info');
+
+  beforeEach(() => {
+    I18n.translations.en = allLocales.en;
+  });
+
+  afterEach(() => {
+    I18n.translations = {};
+  });
 
   it('renders an element', () => {
     const element = renderComponent(SearchablePicklist, getProps());

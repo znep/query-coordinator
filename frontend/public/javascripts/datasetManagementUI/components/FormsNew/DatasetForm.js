@@ -9,81 +9,75 @@ import {
   validateRegularFieldsets,
   validateCustomFieldsets
 } from 'lib/formHelpers';
+import Fieldset from 'components/FormComponents/Fieldset';
+import Field from 'components/FormComponents/Field';
 
 export class DatasetForm extends Component {
+  componentWillMount() {
+    // validate on mount to handle the case in which the user tries to submit
+    // the form without triggering a props change (by not, e.g., typing in a form
+    // field); this essentially validates the values that come from the server
+    // and lets the store know about their validity
+    const { regularFieldsets, customFieldsets } = this.props;
+
+    this.validateForm(regularFieldsets, customFieldsets);
+  }
+
   componentWillReceiveProps(nextProps) {
-    const { setErrors, regularFieldsets, customFieldsets } = nextProps;
+    const { regularFieldsets, customFieldsets } = nextProps;
 
     const { regularFieldsets: oldRegularFieldsets, customFieldsets: oldCustomFieldsets } = this.props;
 
-    const oldFieldsets = [...oldRegularFieldsets, oldCustomFieldsets];
-
-    const fieldsets = [regularFieldsets, customFieldsets];
-
-    if (!_.isEqual(oldFieldsets, fieldsets)) {
-      validateRegularFieldsets(regularFieldsets).concat(validateCustomFieldsets(customFieldsets)).matchWith({
-        Success: () => setErrors([]),
-        Failure: ({ value }) => setErrors(value)
-      });
-    }
-  }
-
-  render() {
-    const { regularFieldsets, customFieldsets, setValue } = this.props;
+    const oldFieldsets = [...oldRegularFieldsets, ...oldCustomFieldsets];
 
     const fieldsets = [...regularFieldsets, ...customFieldsets];
 
-    const ui = fieldsets.map(fieldset => {
-      const fields = fieldset.fields.map(field => {
-        return field.cata({
-          Text: () =>
-            <input
-              type="text"
-              value={field.value || ''}
-              onChange={e => setValue(field.name, e.target.value)} />,
-          Tags: () => <input type="text" />,
-          TextArea: () => <textarea onChange={e => setValue(field.name, e.target.value)} />,
-          Select: () =>
-            <select onChange={e => setValue(field.name, e.target.value)}>
-              {field.options.map(opt =>
-                <option>
-                  {opt.value}
-                </option>
-              )}
-            </select>
-        });
-      });
-      return (
-        <fieldset>
-          <legend>
-            {fieldset.title}
-          </legend>
-          <span>
-            {fieldset.subtitle}
-          </span>
-          {fields}
-        </fieldset>
-      );
+    if (!_.isEqual(oldFieldsets, fieldsets)) {
+      this.validateForm(regularFieldsets, customFieldsets);
+    }
+  }
+
+  validateForm(regularFieldsets, customFieldsets) {
+    const { setErrors } = this.props;
+
+    validateRegularFieldsets(regularFieldsets).concat(validateCustomFieldsets(customFieldsets)).matchWith({
+      Success: () => setErrors([]),
+      Failure: ({ value }) => setErrors(value)
     });
+  }
+
+  render() {
+    const { regularFieldsets, customFieldsets } = this.props;
+
+    const fieldsets = [...regularFieldsets, ...customFieldsets];
+
     return (
       <form>
-        {ui}
+        {fieldsets.map(fieldset =>
+          <Fieldset title={fieldset.title} subtitle={fieldset.subtitle} key={fieldset.title}>
+            {fieldset.fields.map(field => <Field field={field} fieldset={fieldset.title} key={field.name} />)}
+          </Fieldset>
+        )}
       </form>
     );
   }
 }
 
 DatasetForm.propTypes = {
-  regularFieldsets: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    subtitle: PropTypes.string,
-    fields: PropTypes.array.isRequired
-  }),
-  customFieldsets: PropTypes.shape({
-    title: PropTypes.string,
-    fields: PropTypes.array
-  }),
-  setValue: PropTypes.func.isRequired
+  regularFieldsets: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      subtitle: PropTypes.string,
+      fields: PropTypes.array.isRequired
+    })
+  ),
+  customFieldsets: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      fields: PropTypes.array
+    })
+  ),
+  setErrors: PropTypes.func.isRequired
 };
 
 const mapStateToProps = ({ entities, ui }) => {
@@ -124,7 +118,8 @@ const mapStateToProps = ({ entities, ui }) => {
 // We don't use this much, but it is a nice alternative to using the component
 // as a place to put together the output of mapStateToProps and mapDispatchToProps;
 // mergeProps provides a place to do this putting-together without cluttering the
-// component.
+// component. For more info/background, see discussion here:
+// https://github.com/reactjs/react-redux/issues/237#issuecomment-168816713
 const mergeProps = ({ fourfour, ...rest }, { dispatch }) => ({
   ...rest,
   setErrors: errors =>
@@ -132,12 +127,6 @@ const mergeProps = ({ fourfour, ...rest }, { dispatch }) => ({
       type: 'EDIT_VIEW',
       id: fourfour,
       payload: { datasetMetadataErrors: errors }
-    }),
-  setValue: (path, value) =>
-    dispatch({
-      type: 'SET_VALUE',
-      path: `${fourfour}.${path}`,
-      value
     })
 });
 

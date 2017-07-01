@@ -4,26 +4,57 @@ import isEmailHelper from 'validator/lib/isEmail';
 import isURLHelper from 'validator/lib/isURL';
 
 export function hasValue(fieldName, val) {
-  return val ? Success(val) : Failure([{ [fieldName]: 'Cannot be empty' }]);
+  return val
+    ? Success(val)
+    : Failure([
+      {
+        message: 'Cannot be empty',
+        fieldName
+      }
+    ]);
 }
 
 export function isValidCategory(fieldName, val) {
   const validCategories = ['business', 'education', 'government'];
-  return validCategories.includes(val) ? Success(val) : Failure([{ [fieldName]: 'Invalid Category' }]);
+  return validCategories.includes(val)
+    ? Success(val)
+    : Failure([
+      {
+        message: 'Invalid Category',
+        fieldName
+      }
+    ]);
 }
 
 export function noDuplicates(fieldName, vals) {
   return [...new Set(vals)].length === vals.length
     ? Success(vals)
-    : Failure([({ fieldName }: 'Duplicate values')]);
+    : Failure([
+      {
+        message: 'Duplicate values',
+        fieldName
+      }
+    ]);
 }
 
 export function isURL(fieldName, val) {
   return isURLHelper(val, { require_protocol: true })
     ? Success(val)
-    : Failure([{ [fieldName]: 'Invalid url' }]);
+    : Failure([
+      {
+        message: 'Invalid url',
+        fieldName
+      }
+    ]);
 }
 
 export function isEmail(fieldName, val) {
-  return isEmailHelper(val) ? Success(val) : Failure([{ [fieldName]: 'Invalid email' }]);
+  return isEmailHelper(val)
+    ? Success(val)
+    : Failure([
+      {
+        message: 'Invalid email',
+        fieldName
+      }
+    ]);
 }

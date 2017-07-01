@@ -5,6 +5,7 @@ import { Field, Fieldset } from 'models/forms';
 import { hasValue, isValidCategory, noDuplicates, isURL, isEmail } from 'lib/validators';
 
 // DATASET METADATA FIELDSETS
+// fieldsetOne : String -> String -> Fieldset
 export const fieldsetOne = (titleValue, descriptionValue) => {
   const fields = [
     Field.Text(
@@ -32,6 +33,7 @@ export const fieldsetOne = (titleValue, descriptionValue) => {
   );
 };
 
+// fieldsetTwo : String -> String -> Fieldset
 export const fieldsetTwo = (categoryValue, tagsValue) => {
   const fields = [
     Field.Select(
@@ -59,6 +61,7 @@ export const fieldsetTwo = (categoryValue, tagsValue) => {
   );
 };
 
+// fieldsetThree : String -> String -> String -> Fieldset
 export const fieldsetThree = (licenseVal, attrVal, attrLinkVal) => {
   const fields = [
     Field.Select(
@@ -90,6 +93,7 @@ export const fieldsetThree = (licenseVal, attrVal, attrLinkVal) => {
   return Fieldset(I18n.metadata_manage.dataset_tab.titles.licenses_title, null, fields);
 };
 
+// fieldsetFour: String -> Fieldset
 export const fieldsetFour = emailVal => {
   const fields = [
     Field.Text(
@@ -106,6 +110,7 @@ export const fieldsetFour = emailVal => {
 };
 
 // DATASET METADATA FIELDSET VALIDATIONS
+// makeDataModel : String a => Fieldset -> {a : String}
 const makeDataModel = fieldset =>
   fieldset.fields.reduce(
     (acc, field) => ({
@@ -115,7 +120,7 @@ const makeDataModel = fieldset =>
     {}
   );
 
-// validateFieldsetOne : Fieldset -> Validation [{a :: String}] Fieldset
+// validateFieldsetOne : String a => Fieldset -> Validation (List {a : String}) Fieldset
 const validateFieldsetOne = fieldset => {
   const model = makeDataModel(fieldset);
 
@@ -126,6 +131,7 @@ const validateFieldsetOne = fieldset => {
     .map(() => fieldset);
 };
 
+// validateFieldsetTwo : String a => Fieldset -> Validation (List {a : String}) Fieldset
 const validateFieldsetTwo = fieldset => {
   const model = makeDataModel(fieldset);
 
@@ -136,6 +142,7 @@ const validateFieldsetTwo = fieldset => {
     .map(() => fieldset);
 };
 
+// validateFieldsetThree : String a => Fieldset -> Validation (List {a : String}) Fieldset
 const validateFieldsetThree = fieldset => {
   const model = makeDataModel(fieldset);
 
@@ -145,6 +152,7 @@ const validateFieldsetThree = fieldset => {
     .map(() => fieldset);
 };
 
+// validateFieldsetFour : String a => Fieldset -> Validation (List {a : String}) Fieldset
 const validateFieldsetFour = fieldset => {
   const model = makeDataModel(fieldset);
 
@@ -154,7 +162,7 @@ const validateFieldsetFour = fieldset => {
     .map(() => fieldset);
 };
 
-// validateRegularFieldsets : List Fieldset -> Validation [{a :: String}] Fieldset
+// validateRegularFieldsets : Stirng a => List Fieldset -> Validation (List {a : String}) Fieldset
 export const validateRegularFieldsets = fieldsets =>
   Validation.of()
     .concat(validateFieldsetOne(fieldsets[0]))
@@ -162,7 +170,7 @@ export const validateRegularFieldsets = fieldsets =>
     .concat(validateFieldsetThree(fieldsets[2]))
     .concat(validateFieldsetFour(fieldsets[3]));
 
-// validateCustomFieldset : Fieldset -> Validation [{a:: String}] Fieldset
+// validateCustomFieldset : String a => Fieldset -> Validation (List {a: String}) Fieldset
 const validateCustomFieldset = fieldset => {
   const validation = _.chain(fieldset.fields)
     .filter(field => field.isRequired)
@@ -178,7 +186,7 @@ const validateCustomFieldset = fieldset => {
   return validation.length ? Failure(validation) : Success(fieldset);
 };
 
-// validateCustomFieldsets : List Fieldset -> Validation [{a :: String}] (List Fieldset)
+// validateCustomFieldsets : String a => List Fieldset -> Validation (List {a : String}) Fieldset
 export const validateCustomFieldsets = fieldsets => {
   const validations = _.chain(fieldsets)
     .map(validateCustomFieldset)
@@ -190,5 +198,5 @@ export const validateCustomFieldsets = fieldsets => {
     )
     .value();
 
-  return validations.length ? Failure(validations) : Success(fieldsets);
+  return validations.length ? Failure(validations) : Success(fieldsets[fieldsets.length - 1]);
 };

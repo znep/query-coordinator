@@ -50,6 +50,7 @@ export function bootstrapApp(view, revision, customMetadataFieldsets) {
       privateMetadata: view.privateMetadata || {},
       attachments: _.get(view, 'metadata.attachments', []),
       metadata: view.metadata || {},
+      showErrors: false,
       customDatasetMetadata: shapeCustomFieldsets(customMetadataFieldsets)
     };
 

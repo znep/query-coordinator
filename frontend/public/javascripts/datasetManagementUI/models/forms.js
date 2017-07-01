@@ -11,7 +11,7 @@ export const Field = daggy.taggedSum('Field', {
 
 export const Fieldset = daggy.tagged('Fieldset', ['title', 'subtitle', 'fields']);
 
-// shapeCustomFieldsets : List Obj -> {String :: Fieldset}
+// shapeCustomFieldsets : String a => List Obj -> {a : Fieldset}
 export const shapeCustomFieldsets = fieldsets =>
   fieldsets
     .map(fieldset => ({

@@ -1786,10 +1786,36 @@ var Interpolator = require('../util/interpolator');
       // fire it all off. note that data is a form-encoded payload, not json.
       $importingPane.find('.importStatus').empty();
 
+      var columnFormats = state.scan.summary.columnFormats;
+
+      var newColumnFormatsArray = _.map(columnFormats, function(format, index) {
+        var newIndex = _.findIndex(importer.importColumns, function(col) {
+          return !$.isBlank(col.column) && col.column.id == index;
+        });
+
+        var newPair = {};
+        if (newIndex < 0) {
+          console.warn('Failed to find new index for column index ' + index + ', ignoring format options for this column!');
+        } else {
+          newPair[newIndex] = format;
+        }
+
+        return newPair;
+      });
+
+      var newColumnFormats = newColumnFormatsArray.reduce(function(accumulator, pair) {
+          for (var index in pair) {
+            accumulator[index] = pair[index];
+          }
+
+          return accumulator;
+      }, {});
+
       var dataPayload = {
         name: state.fileName,
         translation: translation,
-        fileId: state.scan.fileId
+        fileId: state.scan.fileId,
+        columnFormats: JSON.stringify(newColumnFormats)
       };
 
       if ((state.operation == 'import') || (state.type == 'shapefile')) {

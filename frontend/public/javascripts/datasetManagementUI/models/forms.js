@@ -6,7 +6,6 @@ import { hasValue, areUnique, isURL, isEmail, dependsOn } from 'lib/validators';
 
 // TODO: list
 // tests
-// omit new view props before putting into store
 
 // TYPES
 export const Field = daggy.taggedSum('Field', {

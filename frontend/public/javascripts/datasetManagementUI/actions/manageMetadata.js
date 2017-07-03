@@ -73,7 +73,12 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     .then(checkStatus)
     .then(getJson)
     .then(resp => {
-      dispatch(editView(resp.id, resp));
+      // remove fields added to the view as part of https://github.com/socrata/rfcs/pull/6/files
+      // gonna be good to use them when that ticket is done, but having them there now is just confusing
+      // TODO: remove this a rework where we pull saved metadata values when complete
+      const sanitizedResp = _.omit(resp, ['privateCustomMetadata', 'publicCustomMetadata']);
+
+      dispatch(editView(resp.id, sanitizedResp));
 
       dispatch(apiCallSucceeded(callId));
 

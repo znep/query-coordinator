@@ -812,11 +812,11 @@ function SvgVisualization($element, vif, options) {
     );
   };
 
-  this.getShowLegend = function() {
+  this.getShowLegend = function(defaultValue = false) {
     return _.get(
       self.getVif(),
       'configuration.showLegend',
-      false
+      defaultValue
     );
   };
 

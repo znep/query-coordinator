@@ -85,13 +85,17 @@ export const LegendsAndFlyoutsPane = React.createClass({
   renderLegends() {
     const { vifAuthoring, onChangeShowLegend } = this.props;
 
-    // Currently legends are only available for grouping visualizations
+    // Currently legends are only available for grouping visualizations or pie charts
     const isGrouping = getDimensionGroupingColumnName(vifAuthoring);
-    if (!isGrouping) {
+    const isCurrentlyPieChart = isPieChart(vifAuthoring);
+
+    if (!isGrouping && !isCurrentlyPieChart) {
       return null;
     }
 
-    const showLegend = getShowLegend(vifAuthoring);
+    // Pie charts default to showing the legend
+    const defaultValue = isCurrentlyPieChart;
+    const showLegend = getShowLegend(defaultValue)(vifAuthoring);
 
     return (
       <AccordionPane key="legends" title={I18n.translate('panes.legends_and_flyouts.subheaders.legends.title')}>
@@ -121,7 +125,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderPieChartControls() {
-    return this.renderUnits();
+    return [this.renderUnits(), this.renderLegends()];
   },
 
   renderHistogramControls() {

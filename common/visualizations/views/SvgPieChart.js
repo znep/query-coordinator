@@ -162,7 +162,10 @@ function SvgPieChart($element, vif, options) {
       attr('fill-opacity', 0);
 
     attachPieEvents();
-    renderLegend();
+
+    if (self.getShowLegend(true)) {
+      renderLegend();
+    }
 
     if (self.getShowValueLabels()) {
       renderArcLabels(self.getShowValueLabelsAsPercent());

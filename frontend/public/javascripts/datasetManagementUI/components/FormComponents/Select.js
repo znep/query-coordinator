@@ -6,6 +6,7 @@ const Select = ({ field, inErrorState, setValue }) =>
     id={field.name}
     aria-label={field.label}
     aria-required={field.isRequired}
+    value={field.value || ''}
     className={inErrorState ? styles.selectError : styles.select}
     onChange={e => setValue(e.target.value)}>
     {field.options.map((option, idx) =>

@@ -43,7 +43,7 @@ export function ManageMetadata(props) {
     saveBtnProps = {
       operation: SAVE_DATASET_METADATA,
       params: {},
-      onClick: _.get(view, 'isDirty.form', false) ? onSaveDataset : onDismiss
+      onClick: onSaveDataset
     };
   } else {
     saveBtnProps = {

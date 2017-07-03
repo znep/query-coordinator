@@ -266,3 +266,32 @@ export function currentAndIgnoredOutputColumns(entities, osid) {
     })
     .value();
 }
+
+// DATASET METADATA
+const filterUndefineds = val => val === undefined;
+const convertToNull = val => (val === '' ? null : val);
+
+export const regularPublic = view =>
+  _.chain(view)
+    .pick(['id', 'name', 'description', 'category', 'licenseId', 'attribution', 'attributionLink', 'tags'])
+    .omitBy(filterUndefineds)
+    .mapValues(convertToNull)
+    .value();
+
+export const regularPrivate = view =>
+  _.chain(view)
+    .get('privateMetadata')
+    .omit('custom_fields')
+    .omitBy(filterUndefineds)
+    .mapValues(convertToNull)
+    .value();
+
+export const customPublic = view =>
+  _.chain(view).get('metadata.custom_fields', {}).omitBy(filterUndefineds).mapValues(convertToNull).value();
+
+export const customPrivate = view =>
+  _.chain(view)
+    .get('privateMetadata.custom_fields', {})
+    .omitBy(filterUndefineds)
+    .mapValues(convertToNull)
+    .value();

@@ -6,9 +6,8 @@ import { hasValue, isValidCategory, noDuplicates, isURL, isEmail } from 'lib/val
 
 // TODO: list
 // refine validations
+// cancel case
 // tests
-// submitmd action
-
 
 // TYPES
 export const Field = daggy.taggedSum('Field', {

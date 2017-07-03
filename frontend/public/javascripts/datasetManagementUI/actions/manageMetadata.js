@@ -9,9 +9,9 @@ import {
   apiCallFailed,
   SAVE_COLUMN_METADATA,
   SAVE_DATASET_METADATA
-} from './apiCalls';
-import * as Selectors from '../selectors';
-import * as dsmapiLinks from '../dsmapiLinks';
+} from 'actions/apiCalls';
+import * as Selectors from 'selectors';
+import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
 import { getLocalizedErrorMessage } from 'lib/util';
 import {
@@ -20,7 +20,6 @@ import {
   subscribeToTransforms
 } from 'actions/manageUploads';
 import { editView } from 'actions/views';
-import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX, fromFlatToNested } from 'lib/customMetadata';
 
 export const dismissMetadataPane = () => (dispatch, getState) => {
   const { routing } = getState().ui;
@@ -45,73 +44,30 @@ export const dismissMetadataPane = () => (dispatch, getState) => {
 export const saveDatasetMetadata = () => (dispatch, getState) => {
   const { entities, ui } = getState();
   const { fourfour } = ui.routing;
-  const model = _.get(entities, `views.${fourfour}.model`);
-  const schema = _.get(entities, `views.${fourfour}.schema`);
+  const view = entities.views[fourfour];
+  const { datasetMetadataErrors: errors } = view;
 
   dispatch(hideFlashMessage());
 
-  // Careful here. We don't want to ping the server if the validation schema says
-  // the form is invalid. But for validations we don't do client-side, there might
-  // not be a schema period, since there are no client side validation rules to
-  // generate one. So right now if there is no schema, we assume the form is valid
-  // and allow it to hit server. If the server kicks it back for some reason, we
-  // still display the error in a flash message. Maybe we can look into putting
-  // a default empty schema that is valid into the store later.
-  if (schema && !schema.isValid) {
+  if (errors.length) {
+    dispatch(editView(fourfour, { showErrors: true }));
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
-
-    // MetadataField looks at displayMetadataFieldErrors in store, and will show
-    // field-level validation errors if it's truthy. Dispatching this action from here
-    // allows us to show field-level validation errors on form submit.
-    dispatch(editView(fourfour, { displayMetadataFieldErrors: true }));
-
     return;
   }
 
-  const publicMetadata = filterMetadata(
-    _.pick(model, [
-      'id',
-      'name',
-      'description',
-      'category',
-      'licenseId',
-      'attribution',
-      'attributionLink',
-      'tags'
-    ])
-  );
-
-  function filterMetadata(metadata) {
-    if (metadata.licenseId === '') {
-      metadata.licenseId = null;
-    }
-    return metadata;
-  }
-
-  const privateMetadata = _.pick(model, ['email']);
-
-  const isCustomField = (v, k) => {
-    const regex = new RegExp(`^${CUSTOM_FIELD_PREFIX}`);
-    return regex.test(k);
-  };
-
-  const isPrivateCustomField = (v, k) => {
-    const regex = new RegExp(`^${PRIVATE_CUSTOM_FIELD_PREFIX}`);
-    return regex.test(k);
-  };
-
-  const customMetadata = _.pickBy(model, isCustomField);
-
-  const privateCustomMetadata = _.pickBy(model, isPrivateCustomField);
+  const publicMetadata = Selectors.regularPublic(view);
+  const privateMetadata = Selectors.regularPrivate(view);
+  const customMetadata = Selectors.customPublic(view);
+  const privateCustomMetadata = Selectors.customPrivate(view);
 
   const datasetMetadata = {
     ...publicMetadata,
     privateMetadata: {
       ...privateMetadata,
-      custom_fields: fromFlatToNested(privateCustomMetadata)
+      custom_fields: privateCustomMetadata
     },
     metadata: {
-      custom_fields: fromFlatToNested(customMetadata)
+      custom_fields: customMetadata
     }
   };
 

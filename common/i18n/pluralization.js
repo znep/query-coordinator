@@ -1,160 +1,36 @@
-/* eslint-disable */
 import _ from 'lodash';
-const inRange = (begin, end, count) => { return _.includes(_.range(begin, end).concat(end), count); };
-const todo = () => { throw new Error('Need to implement this pluralization rule.'); };
-const commonPluralizationRules = {
-  eastSlavic: (n) => {if (!n) { n = 0; }const mod10 = n % 10;const mod100 = n % 100;if (mod10 === 1 && mod100 !== 11) {return ['one'];}if (inRange(2, 4, mod10) && !inRange(12, 14, mod100)) {return ['few'];}if (mod10 === 0 || inRange(5, 9, mod10) || inRange(11, 14, mod100)) {return ['many'];}return ['other'];},
-  oneOther: (n) => {if (n === 1) {return ['one'];}return ['other'];},
-  oneTwoOther: (n) => {if (n === 1) {return ['one'];}if (n === 2) {return ['two'];}return ['other'];},
-  oneUptoTwoOther: (n) => {if (n && n >= 0 && n < 2) {return ['one'];}return ['other'];},
-  oneWithZeroOther: (n) => {if (n === 0 || n === 1) {return ['one'];}return ['other'];},
-  other: () => {return ['other'];},
-  romanian: (n) => {if (!n) { n = 0; }if (n === 1) {return ['one'];}if (n === 0 || inRange(1, 19, n % 100)) {return ['few'];}return ['other'];},
-  westSlavic: (n) => {if (n === 1) {return ['one'];}if (_.includes([2, 3, 4], n)) {return ['few'];}return ['other'];}
-};
-const pluralizationRules = {
-  'ak': commonPluralizationRules.oneWithZeroOther,
-  'am': commonPluralizationRules.oneWithZeroOther,
-  'ar': (n) => {if (!n) { n = 0; }const mod100 = n % 100;if (n === 0) {return ['zero'];}if (n === 1) {return ['one'];}if (n === 2) {return ['two'];}if (inRange(3, 10, mod100)) {return ['few'];}if (inRange(11, 99, mod100)) {return ['many'];}return ['other'];},
-  'az': commonPluralizationRules.other,
-  'be': commonPluralizationRules.eastSlavic,
-  'bg': commonPluralizationRules.oneOther,
-  'bh': commonPluralizationRules.oneWithZeroOther,
-  'bm': commonPluralizationRules.other,
-  'bn': commonPluralizationRules.oneOther,
-  'bo': commonPluralizationRules.other,
-  'br': todo,
-  'bs': commonPluralizationRules.eastSlavic,
-  'by': commonPluralizationRules.eastSlavic,
-  'ca': commonPluralizationRules.oneOther,
-  'cs': commonPluralizationRules.westSlavic,
-  'cy': todo,
-  'da': commonPluralizationRules.oneOther,
-  'de-AT': commonPluralizationRules.oneOther,
-  'de-CH': commonPluralizationRules.oneOther,
-  'de-DE': commonPluralizationRules.oneOther,
-  'de': commonPluralizationRules.oneOther,
-  'dz': commonPluralizationRules.other,
-  'el': commonPluralizationRules.oneOther,
-  'en-AU': commonPluralizationRules.oneOther,
-  'en-CA': commonPluralizationRules.oneOther,
-  'en-GB': commonPluralizationRules.oneOther,
-  'en-IN': commonPluralizationRules.oneOther,
-  'en-NZ': commonPluralizationRules.oneOther,
-  'en': commonPluralizationRules.oneOther,
-  'eo': commonPluralizationRules.oneOther,
-  'es-419': commonPluralizationRules.oneOther,
-  'es-AR': commonPluralizationRules.oneOther,
-  'es-CL': commonPluralizationRules.oneOther,
-  'es-CO': commonPluralizationRules.oneOther,
-  'es-CR': commonPluralizationRules.oneOther,
-  'es-EC': commonPluralizationRules.oneOther,
-  'es-ES': commonPluralizationRules.oneOther,
-  'es-MX': commonPluralizationRules.oneOther,
-  'es-PA': commonPluralizationRules.oneOther,
-  'es-PE': commonPluralizationRules.oneOther,
-  'es-US': commonPluralizationRules.oneOther,
-  'es-VE': commonPluralizationRules.oneOther,
-  'es': commonPluralizationRules.oneOther,
-  'et': commonPluralizationRules.oneOther,
-  'eu': commonPluralizationRules.oneOther,
-  'fa': commonPluralizationRules.other,
-  'ff': commonPluralizationRules.oneUptoTwoOther,
-  'fi': commonPluralizationRules.oneOther,
-  'fil': commonPluralizationRules.oneWithZeroOther,
-  'fr-CA': commonPluralizationRules.oneUptoTwoOther,
-  'fr-CH': commonPluralizationRules.oneUptoTwoOther,
-  'fr-FR': commonPluralizationRules.oneUptoTwoOther,
-  'fr': commonPluralizationRules.oneUptoTwoOther,
-  'ga': (n) => {if (n === 1) {return ['one'];}if (n === 2) {return ['two'];}if (inRange(3, 6, n)) {return ['few'];}if (inRange(7, 10, n)) {return ['many'];}return ['other'];},
-  'gd': (n) => {if (n === 1 || n === 11) {return ['one'];}if (n === 2 || n === 12) {return ['two'];}if (inRange(3, 10, n)) {return ['few'];}return ['other'];},
-  'gl': commonPluralizationRules.oneOther,
-  'guw': commonPluralizationRules.oneWithZeroOther,
-  'gv': (n) => {if (!n) { n = 0; }if (_.includes([1, 2], n % 10) || n % 20 === 0) {return ['one'];}return ['other'];},
-  'he': commonPluralizationRules.oneOther,
-  'hi-IN': commonPluralizationRules.oneWithZeroOther,
-  'hi': commonPluralizationRules.oneWithZeroOther,
-  'hr': commonPluralizationRules.eastSlavic,
-  'hsb': (n) => {if (!n) { n = 0; }const mod100 = n % 100;if (mod100 === 1) {return ['one'];}if (mod100 === 2) {return ['two'];}if (mod100 === 3 || mod100 === 4) {return ['few'];}return ['other'];},
-  'hu': commonPluralizationRules.other,
-  'id': commonPluralizationRules.other,
-  'ig': commonPluralizationRules.other,
-  'ii': commonPluralizationRules.other,
-  'is': commonPluralizationRules.oneOther,
-  'it-CH': commonPluralizationRules.oneOther,
-  'it': commonPluralizationRules.oneOther,
-  'iu': commonPluralizationRules.oneTwoOther,
-  'ja': commonPluralizationRules.other,
-  'jv': commonPluralizationRules.other,
-  'ka': commonPluralizationRules.other,
-  'kab': commonPluralizationRules.oneUptoTwoOther,
-  'kde': commonPluralizationRules.other,
-  'kea': commonPluralizationRules.other,
-  'km': commonPluralizationRules.other,
-  'kn': commonPluralizationRules.other,
-  'ko': commonPluralizationRules.other,
-  'ksh': (n) => {if (n === 0) {return ['zero'];}if (n === 1) {return ['one'];}return ['other'];},
-  'kw': commonPluralizationRules.oneTwoOther,
-  'lag': (n) => {if (!n) { n = 0; }if (n === 0) {return ['zero'];}if (n > 0 && n < 2) {return ['one'];}return ['other'];},
-  'ln': commonPluralizationRules.oneWithZeroOther,
-  'lo': commonPluralizationRules.other,
-  'lt': (n) => {if (!n) { n = 0; }const mod10 = n % 10;const mod100 = n % 100;if (mod10 === 1 && !inRange(11, 19, mod100)) {return ['one'];}if (inRange(2, 9, mod10) && !inRange(11, 19, mod100)) {return ['few'];}return ['other'];},
-  'lv': (n) => {if (!n) { n = 0; }if (n % 10 === 1 && n % 100 !== 11) {return ['one'];}return ['other'];},
-  'mg': commonPluralizationRules.oneWithZeroOther,
-  'mk': (n) => {if (!n) { n = 0; }if (n % 10 === 1 && n !== 11) {return ['one'];}return ['other'];},
-  'ml': commonPluralizationRules.oneWithZeroOther,
-  'mn': commonPluralizationRules.oneOther,
-  'mo': commonPluralizationRules.romanian,
-  'mr-IN': commonPluralizationRules.oneWithZeroOther,
-  'ms': commonPluralizationRules.other,
-  'mt': (n) => {if (!n) { n = 0; }const mod100 = n % 100;if (n === 1) {return ['one'];}if (n === 0 || inRange(2, 10, mod100)) {return ['few'];}if (inRange(11, 19, mod100)) {return ['many'];}return ['other'];},
-  'my': commonPluralizationRules.other,
-  'naq': commonPluralizationRules.oneTwoOther,
-  'nb': commonPluralizationRules.oneOther,
-  'ne': commonPluralizationRules.oneOther,
-  'nl': commonPluralizationRules.oneOther,
-  'nn': commonPluralizationRules.oneOther,
-  'nso': commonPluralizationRules.oneWithZeroOther,
-  'or': commonPluralizationRules.oneWithZeroOther,
-  'pa': commonPluralizationRules.oneWithZeroOther,
-  'pl': todo,
-  'pt': commonPluralizationRules.oneOther,
-  'ro': commonPluralizationRules.romanian,
-  'root': commonPluralizationRules.other,
-  'ru': commonPluralizationRules.eastSlavic,
-  'sah': commonPluralizationRules.other,
-  'se': commonPluralizationRules.oneTwoOther,
-  'ses': commonPluralizationRules.other,
-  'sg': commonPluralizationRules.other,
-  'sh': commonPluralizationRules.eastSlavic,
-  'shi': commonPluralizationRules.oneWithZeroOther,
-  'sk': commonPluralizationRules.westSlavic,
-  'sl': (n) => {if (!n) { n = 0; }const mod100 = n % 100;if (mod100 === 1) {return ['one'];}if (mod100 === 2) {return ['two'];}if (mod100 === 3 || mod100 === 4) {return ['few'];}return ['other'];},
-  'sma': commonPluralizationRules.oneTwoOther,
-  'smi': commonPluralizationRules.oneTwoOther,
-  'smj': commonPluralizationRules.oneTwoOther,
-  'smn': commonPluralizationRules.oneTwoOther,
-  'sms': commonPluralizationRules.oneTwoOther,
-  'sr': commonPluralizationRules.eastSlavic,
-  'sv-SE': commonPluralizationRules.oneOther,
-  'sv': commonPluralizationRules.oneOther,
-  'sw': commonPluralizationRules.oneOther,
-  'th': commonPluralizationRules.other,
-  'ti': commonPluralizationRules.oneWithZeroOther,
-  'tl': commonPluralizationRules.oneWithZeroOther,
-  'to': commonPluralizationRules.other,
-  'tr': commonPluralizationRules.other,
-  'tzm': todo,
-  'uk': commonPluralizationRules.eastSlavic,
-  'ur': commonPluralizationRules.oneOther,
-  'vi': commonPluralizationRules.other,
-  'wa': commonPluralizationRules.oneWithZeroOther,
-  'wo': commonPluralizationRules.other,
-  'yo': commonPluralizationRules.other,
-  'zh-CN': commonPluralizationRules.other,
-  'zh-HK': commonPluralizationRules.other,
-  'zh-TW': commonPluralizationRules.other,
-  'zh-YUE': commonPluralizationRules.other,
-  'zh': commonPluralizationRules.other
-};
-export default pluralizationRules;
+import pluralRuleParser from 'cldrpluralruleparser/src/CLDRPluralRuleParser';
+import cldrData from 'cldr-core/supplemental/plurals.json';
+
+// I18nJS expects a response in the shape of ['one', 'other'].
+// You are supposed to plug this function into I18nJS:
+// - I18nJS.pluralization[I18nJS.locale] = pluralization(I18nJS.locale);
+//
+// The way this works is thus:
+// 1. This function determines which plural rules qualify for this locale and number combo.
+// 2. The returned array is used to determine which sub-key is used for the translation.
+// 
+// Example:
+// The number 4 in locale `foo` matches the rules `two`, `few`, and `other`.
+// - function(locale) returns ['two', 'few', 'other'].
+// For the current translation, `bar`, we have the sub-keys `bar.few` and `bar.other`.
+// - foo:
+//     bar:
+//       few: A few bars.
+//       other: ALL THE BARS.
+// So we'll check for `bar.two`, see it's missing, and then checks `bar.few`, finds it,
+// and selects it as the correct translation to display.
+//
+export default function(locale) {
+  return (count) => {
+    const rulesForLocale = cldrData.supplemental['plurals-type-cardinal'][locale];
+    return _.filter(
+      // convert 'pluralRule-count-one` to `one`.
+      _.map(_.keys(rulesForLocale), (key) => { return _.last(key.split('-')); }),
+      (rCount) => {
+        const rule = rulesForLocale[`pluralRule-count-${rCount}`];
+        return pluralRuleParser(rule, count);
+      }
+    );
+  }
+}

@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import dotProp from 'dot-prop-immutable';
 import { ADD_TASK_SET } from 'actions/taskSets';
 import { EDIT_VIEW, SET_VALUE } from 'actions/views';
+import { EDIT_OUTPUT_COLUMN } from 'actions/outputColumns';
 import { EDIT_OUTPUT_SCHEMA } from 'actions/outputSchemas';
 import { EDIT_TRANSFORM } from 'actions/transforms';
 import { EDIT_INPUT_SCHEMA } from 'actions/inputSchemas';
@@ -83,7 +84,21 @@ const outputSchemas = (state = {}, action) => {
   }
 };
 
-const outputColumns = (state = {}) => state;
+const outputColumns = (state = {}, action) => {
+  switch (action.type) {
+    case EDIT_OUTPUT_COLUMN:
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          ...action.payload
+        }
+      };
+    default:
+      return state;
+  }
+};
+
 const outputSchemaColumns = (state = {}) => state;
 
 const transforms = (state = {}, action) => {

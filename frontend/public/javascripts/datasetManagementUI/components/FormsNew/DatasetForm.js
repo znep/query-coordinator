@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import { makeFieldsets, validateDatasetForm } from 'models/forms';
 import Fieldset from 'components/FormComponents/Fieldset';
-import Field from 'components/FormComponents/Field';
+import DatasetField from 'components/FormComponents/DatasetField';
 
 export class DatasetForm extends Component {
   componentWillReceiveProps(nextProps) {
@@ -36,7 +36,9 @@ export class DatasetForm extends Component {
       <form>
         {fieldsets.map(fieldset =>
           <Fieldset title={fieldset.title} subtitle={fieldset.subtitle} key={fieldset.title}>
-            {fieldset.fields.map(field => <Field field={field} fieldset={fieldset.title} key={field.name} />)}
+            {fieldset.fields.map(field =>
+              <DatasetField field={field} fieldset={fieldset.title} key={field.name} />
+            )}
           </Fieldset>
         )}
       </form>

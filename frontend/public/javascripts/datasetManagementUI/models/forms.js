@@ -3,6 +3,7 @@ import daggy from 'daggy';
 import _ from 'lodash';
 import Validation, { Success, Failure } from 'folktale/validation';
 import { hasValue, areUnique, isURL, isEmail, dependsOn } from 'lib/validators';
+import * as Selectors from 'selectors';
 
 // TODO: list
 // tests
@@ -308,3 +309,72 @@ const validateCustomFieldsets = fieldsets => {
 // validateDatasetForm : String a => List Fieldsets -> List Fieldsets -> Validation (List {a: String}) Fieldset
 export const validateDatasetForm = (regularFieldsets, customFieldsets) =>
   validateRegularFieldsets(regularFieldsets).concat(validateCustomFieldsets(customFieldsets));
+
+// COLUMN METADATA HELPERS
+// columnToField : OutputColumn -> List Field
+const columnToFields = oc => [
+  Field.Text(
+    `display-name-${oc.id}`,
+    I18n.metadata_manage.column_tab.name,
+    oc.display_name,
+    false,
+    false,
+    null,
+    false
+  ),
+  Field.Text(
+    `description-${oc.id}`,
+    I18n.metadata_manage.column_tab.description,
+    oc.description,
+    false,
+    false,
+    null,
+    false
+  ),
+  Field.Text(
+    `field-name-${oc.id}`,
+    I18n.metadata_manage.column_tab.field_name,
+    oc.field_name,
+    false,
+    false,
+    null,
+    false
+  )
+];
+
+// getCurrentColumns : Entities -> List OutputColumn
+const getCurrentColumns = entities => {
+  const currentSchema = Selectors.latestOutputSchema(entities);
+
+  return currentSchema ? Selectors.columnsForOutputSchema(entities, currentSchema.id) : [];
+};
+
+// makeRows : Entities -> List Field
+export const makeRows = entities => _.chain(entities).thru(getCurrentColumns).map(columnToFields).value();
+
+// COLUMN METADATA VALIDATIONS
+// const makeDataModel = fieldset =>
+//   fieldset.fields.reduce(
+//     (acc, field) => ({
+//       ...acc,
+//       [field.name]: { value: field.value, name: field.name }
+//     }),
+//     {}
+//   );
+
+// const validateCustomFieldset = fieldset => {
+//   const validation = _.chain(fieldset.fields)
+//     .filter(field => field.isRequired)
+//     .map(field => hasValue(field.name, field.value))
+//     .flatMap(val =>
+//       val.matchWith({
+//         Success: () => [],
+//         Failure: x => x.value.map(f => ({ ...f, fieldset: fieldset.title }))
+//       })
+//     )
+//     .value();
+//
+//   return validation.length ? Failure(validation) : Success(fieldset);
+// };
+
+// const isValidFieldName = fieldName => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(fieldName);

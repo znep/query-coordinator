@@ -5,8 +5,8 @@ import Validation, { Success, Failure } from 'folktale/validation';
 import { hasValue, areUnique, isURL, isEmail, dependsOn } from 'lib/validators';
 
 // TODO: list
-// refine tags field
 // tests
+// omit new view props before putting into store
 
 // TYPES
 export const Field = daggy.taggedSum('Field', {

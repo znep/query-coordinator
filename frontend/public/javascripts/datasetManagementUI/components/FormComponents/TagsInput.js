@@ -28,7 +28,10 @@ class TagsInput extends Component {
 
     const { setValue, field } = this.props;
 
-    // TODO: make sure it's valid before adding
+    if (!this.state.tag) {
+      return;
+    }
+
     setValue([this.state.tag, ...field.value]);
 
     this.setState({
@@ -39,7 +42,9 @@ class TagsInput extends Component {
   removeTag(tagName) {
     const { field, setValue } = this.props;
 
-    const newTags = field.value.filter(tag => tag !== tagName);
+    const idxToRemove = _.findIndex(field.value, val => val === tagName);
+
+    const newTags = field.value.filter((tag, idx) => idx !== idxToRemove);
 
     setValue(newTags);
   }

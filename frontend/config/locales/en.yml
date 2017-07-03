@@ -5564,7 +5564,7 @@ en:
       validation_error_general: Couldn't submit metadata. Review your inputs and try again.
       validation_error_maxlength: "{0} must not have more than {1} characters"
       validation_error_minlength: "{0} must have at least {1} characters"
-      validation_error_no_dupes: A tag with this name already exists
+      validation_error_no_dupes: Tags must be unique 
       validation_error_required: This field is required
       validation_error_type: "{0} must be of type {1}, but got {2}"
       validation_error_url: Please enter a valid url

@@ -1801,7 +1801,9 @@ var Interpolator = require('../util/interpolator');
         });
 
         var newPair = {};
-        if (newIndex >= 0) {
+        if (newIndex < 0) {
+          console.warn('Failed to find new index for column index ' + index + ', ignoring format options for this column!');
+        } else {
           newPair[newIndex] = format;
         }
 

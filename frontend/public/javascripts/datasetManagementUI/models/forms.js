@@ -5,7 +5,7 @@ import Validation, { Success, Failure } from 'folktale/validation';
 import { hasValue, isValidCategory, noDuplicates, isURL, isEmail } from 'lib/validators';
 
 // TODO: list
-// allow form to submit if errors are in non-required fields
+// refine validations
 // tests
 // submitmd action
 

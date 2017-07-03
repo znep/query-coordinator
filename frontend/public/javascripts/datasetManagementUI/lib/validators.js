@@ -16,7 +16,7 @@ export function hasValue(fieldName, val) {
 
 export function isValidCategory(fieldName, val) {
   const validCategories = ['business', 'education', 'government'];
-  return validCategories.includes(val)
+  return !val || validCategories.includes(val)
     ? Success(val)
     : Failure([
       {
@@ -38,7 +38,7 @@ export function noDuplicates(fieldName, vals) {
 }
 
 export function isURL(fieldName, val) {
-  return isURLHelper(val, { require_protocol: true })
+  return !val || isURLHelper(val, { require_protocol: true })
     ? Success(val)
     : Failure([
       {
@@ -49,7 +49,7 @@ export function isURL(fieldName, val) {
 }
 
 export function isEmail(fieldName, val) {
-  return isEmailHelper(val)
+  return !val || isEmailHelper(val)
     ? Success(val)
     : Failure([
       {

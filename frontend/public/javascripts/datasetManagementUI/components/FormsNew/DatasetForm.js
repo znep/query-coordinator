@@ -1,50 +1,30 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import {
-  fieldsetOne,
-  fieldsetTwo,
-  fieldsetThree,
-  fieldsetFour,
-  validateRegularFieldsets,
-  validateCustomFieldsets
-} from 'lib/formHelpers';
-import { shapeCustomFieldsets } from 'models/forms';
+import { makeFieldsets, validateDatasetForm } from 'models/forms';
 import Fieldset from 'components/FormComponents/Fieldset';
 import Field from 'components/FormComponents/Field';
 
 export class DatasetForm extends Component {
-  componentWillMount() {
-    // validate on mount to handle the case in which the user tries to submit
-    // the form without triggering a props change (by not, e.g., typing in a form
-    // field); this essentially validates the values that come from the server
-    // and lets the store know about their validity
-    const { regularFieldsets, customFieldsets } = this.props;
-
-    this.validateForm(regularFieldsets, customFieldsets);
-  }
-
   componentWillReceiveProps(nextProps) {
     const { regularFieldsets, customFieldsets } = nextProps;
 
-    const { regularFieldsets: oldRegularFieldsets, customFieldsets: oldCustomFieldsets } = this.props;
+    const {
+      regularFieldsets: oldRegularFieldsets,
+      customFieldsets: oldCustomFieldsets,
+      setErrors
+    } = this.props;
 
     const oldFieldsets = [...oldRegularFieldsets, ...oldCustomFieldsets];
 
     const fieldsets = [...regularFieldsets, ...customFieldsets];
 
     if (!_.isEqual(oldFieldsets, fieldsets)) {
-      this.validateForm(regularFieldsets, customFieldsets);
+      validateDatasetForm(regularFieldsets, customFieldsets).matchWith({
+        Success: () => setErrors([]),
+        Failure: ({ value }) => setErrors(value)
+      });
     }
-  }
-
-  validateForm(regularFieldsets, customFieldsets) {
-    const { setErrors } = this.props;
-
-    validateRegularFieldsets(regularFieldsets).concat(validateCustomFieldsets(customFieldsets)).matchWith({
-      Success: () => setErrors([]),
-      Failure: ({ value }) => setErrors(value)
-    });
   }
 
   render() {
@@ -86,30 +66,7 @@ const mapStateToProps = ({ entities, ui }) => {
 
   const view = entities.views[fourfour];
 
-  const {
-    name,
-    description,
-    tags,
-    category,
-    customMetadataFieldsets,
-    licenseId,
-    attribution,
-    attributionLink,
-    privateMetadata
-  } = view;
-
-  const email = privateMetadata ? privateMetadata.email : null;
-
-  const customDatasetMetadata = shapeCustomFieldsets(customMetadataFieldsets, view);
-
-  const customFieldsets = Object.keys(customDatasetMetadata).map(key => customDatasetMetadata[key]);
-
-  const regularFieldsets = [
-    fieldsetOne(name, description),
-    fieldsetTwo(category, tags),
-    fieldsetThree(licenseId, attribution, attributionLink),
-    fieldsetFour(email)
-  ];
+  const { regular: regularFieldsets, custom: customFieldsets } = makeFieldsets(view);
 
   return {
     regularFieldsets,

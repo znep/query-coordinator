@@ -24,7 +24,9 @@ function LabelledCheckmark({ checked, text }) {
   return (
     <div>
       {checkmark}
-      <span className={styles.checkmarkLabel}>{text}</span>
+      <span className={styles.checkmarkLabel}>
+        {text}
+      </span>
     </div>
   );
 }
@@ -43,8 +45,12 @@ function PublishReadinessFlyout({ metadataSatisfied, dataSatisfied }) {
           : <div>
               {SubI18n.cant_publish_until}
             <ul>
-              <li><LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} /></li>
-              <li><LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} /></li>
+              <li>
+                <LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} />
+              </li>
+              <li>
+                <LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} />
+              </li>
             </ul>
           </div>}
       </section>
@@ -128,7 +134,7 @@ function mapStateToProps(state) {
   const dataSatisfied = isDataSatisfied(state);
   const view = state.entities.views[state.ui.routing.fourfour];
   return {
-    metadataSatisfied: view.schema.isValid,
+    metadataSatisfied: !view.datasetMetadataErrors.length,
     dataSatisfied,
     publishedOrPublishing:
       _.size(

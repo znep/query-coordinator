@@ -9,20 +9,10 @@ import {
 } from 'actions/manageUploads';
 import { addNotification } from 'actions/notifications';
 import { parseDate } from 'lib/parseDate';
-// import { shapeCustomFieldsets } from 'models/forms';
 import * as ApplyRevision from 'actions/applyRevision';
-// import { createCombinedValidationRules, createInitialModel } from 'components/ManageMetadata/DatasetForm';
-// import { getValidationErrors } from 'components/Forms/validateSchema';
+import { makeFieldsets, validateDatasetForm } from 'models/forms';
 
 export const BOOTSTRAP_APP_SUCCESS = 'BOOTSTRAP_APP_SUCCESS';
-
-// const calculateInitialSchema = (view, customMetadata) => {
-//   const validations = createCombinedValidationRules(customMetadata);
-//
-//   const model = createInitialModel(view);
-//
-//   return getValidationErrors(validations, model);
-// };
 
 export function bootstrapApp(view, revision, customMetadataFieldsets) {
   return dispatch => {
@@ -91,7 +81,19 @@ export function bootstrapApp(view, revision, customMetadataFieldsets) {
       {}
     );
 
-    dispatch(bootstrapAppSuccess(initialView, initialRevision, taskSets, uploads));
+    const { regular, custom } = makeFieldsets(initialView);
+
+    const errors = validateDatasetForm(regular, custom).matchWith({
+      Success: () => [],
+      Failure: ({ value }) => value
+    });
+
+    const intialViewWithErrors = {
+      ...initialView,
+      datasetMetadataErrors: errors
+    };
+
+    dispatch(bootstrapAppSuccess(intialViewWithErrors, initialRevision, taskSets, uploads));
     dispatch(sideEffectyStuff(revision));
   };
 }

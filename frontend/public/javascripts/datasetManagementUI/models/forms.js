@@ -2,10 +2,10 @@
 import daggy from 'daggy';
 import _ from 'lodash';
 import Validation, { Success, Failure } from 'folktale/validation';
-import { hasValue, isValidCategory, noDuplicates, isURL, isEmail } from 'lib/validators';
+import { hasValue, areUnique, isURL, isEmail, dependsOn } from 'lib/validators';
 
 // TODO: list
-// refine validations
+// refine tags field
 // tests
 
 // TYPES
@@ -232,7 +232,6 @@ const validateFieldsetOne = fieldset => {
 
   return Validation.of()
     .concat(hasValue(model.name.name, model.name.value))
-    .concat(hasValue(model.description.name, model.description.value))
     .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
     .map(() => fieldset);
 };
@@ -242,8 +241,7 @@ const validateFieldsetTwo = fieldset => {
   const model = makeDataModel(fieldset);
 
   return Validation.of()
-    .concat(isValidCategory(model.category.name, model.category.value))
-    .concat(noDuplicates(model.tags.name, model.tags.value))
+    .concat(areUnique(model.tags.name, model.tags.value))
     .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
     .map(() => fieldset);
 };
@@ -254,6 +252,7 @@ const validateFieldsetThree = fieldset => {
 
   return Validation.of()
     .concat(isURL(model.attributionLink.name, model.attributionLink.value || ''))
+    .concat(dependsOn(model.licenseId, model.attribution))
     .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
     .map(() => fieldset);
 };

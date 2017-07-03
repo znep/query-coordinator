@@ -8,30 +8,18 @@ export function hasValue(fieldName, val) {
     ? Success(val)
     : Failure([
       {
-        message: 'Cannot be empty',
+        message: I18n.edit_metadata.validation_error_required,
         fieldName
       }
     ]);
 }
 
-export function isValidCategory(fieldName, val) {
-  const validCategories = ['business', 'education', 'government'];
-  return !val || validCategories.includes(val)
-    ? Success(val)
-    : Failure([
-      {
-        message: 'Invalid Category',
-        fieldName
-      }
-    ]);
-}
-
-export function noDuplicates(fieldName, vals) {
+export function areUnique(fieldName, vals) {
   return [...new Set(vals)].length === vals.length
     ? Success(vals)
     : Failure([
       {
-        message: 'Duplicate values',
+        message: I18n.edit_metadata.validation_error_no_dupes,
         fieldName
       }
     ]);
@@ -42,7 +30,7 @@ export function isURL(fieldName, val) {
     ? Success(val)
     : Failure([
       {
-        message: 'Invalid url',
+        message: I18n.edit_metadata.validation_error_url,
         fieldName
       }
     ]);
@@ -53,8 +41,21 @@ export function isEmail(fieldName, val) {
     ? Success(val)
     : Failure([
       {
-        message: 'Invalid email',
+        message: I18n.edit_metadata.validation_error_email,
         fieldName
       }
     ]);
+}
+
+export function dependsOn(dependentField, field) {
+  if (dependentField.value && !field.value) {
+    return Failure([
+      {
+        message: I18n.edit_metadata.validation_error_attribution_required,
+        fieldName: dependentField.name
+      }
+    ]);
+  } else {
+    return Success(dependentField.value);
+  }
 }

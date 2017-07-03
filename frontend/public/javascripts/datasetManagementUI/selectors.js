@@ -271,14 +271,14 @@ export function currentAndIgnoredOutputColumns(entities, osid) {
 const filterUndefineds = val => val === undefined;
 const convertToNull = val => (val === '' ? null : val);
 
-export const regularPublic = view =>
+const regularPublic = view =>
   _.chain(view)
     .pick(['id', 'name', 'description', 'category', 'licenseId', 'attribution', 'attributionLink', 'tags'])
     .omitBy(filterUndefineds)
     .mapValues(convertToNull)
     .value();
 
-export const regularPrivate = view =>
+const regularPrivate = view =>
   _.chain(view)
     .get('privateMetadata')
     .omit('custom_fields')
@@ -286,12 +286,30 @@ export const regularPrivate = view =>
     .mapValues(convertToNull)
     .value();
 
-export const customPublic = view =>
+const customPublic = view =>
   _.chain(view).get('metadata.custom_fields', {}).omitBy(filterUndefineds).mapValues(convertToNull).value();
 
-export const customPrivate = view =>
+const customPrivate = view =>
   _.chain(view)
     .get('privateMetadata.custom_fields', {})
     .omitBy(filterUndefineds)
     .mapValues(convertToNull)
     .value();
+
+export const datasetMetadata = view => {
+  const publicMetadata = regularPublic(view);
+  const privateMetadata = regularPrivate(view);
+  const customMetadata = customPublic(view);
+  const privateCustomMetadata = customPrivate(view);
+
+  return {
+    ...publicMetadata,
+    privateMetadata: {
+      ...privateMetadata,
+      custom_fields: privateCustomMetadata
+    },
+    metadata: {
+      custom_fields: customMetadata
+    }
+  };
+};

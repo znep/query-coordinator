@@ -55,21 +55,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     return;
   }
 
-  const publicMetadata = Selectors.regularPublic(view);
-  const privateMetadata = Selectors.regularPrivate(view);
-  const customMetadata = Selectors.customPublic(view);
-  const privateCustomMetadata = Selectors.customPrivate(view);
-
-  const datasetMetadata = {
-    ...publicMetadata,
-    privateMetadata: {
-      ...privateMetadata,
-      custom_fields: privateCustomMetadata
-    },
-    metadata: {
-      custom_fields: customMetadata
-    }
-  };
+  const datasetMetadata = Selectors.datasetMetadata(view);
 
   const callId = uuid();
 

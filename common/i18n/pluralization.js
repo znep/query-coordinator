@@ -1,3 +1,4 @@
+/* eslint-disable */
 import _ from 'lodash';
 const inRange = (begin, end, count) => { return _.includes(_.range(begin, end).concat(end), count); };
 const todo = () => { throw new Error('Need to implement this pluralization rule.'); };

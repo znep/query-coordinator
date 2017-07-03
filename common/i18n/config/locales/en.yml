@@ -23,6 +23,7 @@ en:
           greater_label: Greater than {0}
           less_label: Less than {0}
           range_label: From {0} to {1}
+          include_null_values: 'Include missing or null values'
         remove: Remove
         reset: Reset
         search: Search options

@@ -202,7 +202,7 @@ export const NumberFilter = React.createClass({
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {I18n.t('filter_bar.range_filter.include_null_values')}
+            {I18n.t('shared.components.filter_bar.range_filter.include_null_values')}
           </label>
         </div>
       </form>

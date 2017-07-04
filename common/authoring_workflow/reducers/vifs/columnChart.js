@@ -1,6 +1,4 @@
 import _ from 'lodash';
-import { FeatureFlags } from 'common/feature_flags';
-
 import * as actions from '../../actions';
 import vifs from '../../vifs';
 import baseVifReducer from './base';

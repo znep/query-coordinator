@@ -57,7 +57,7 @@ export default function(state, action) {
 
     case actions.SET_MEASURES:
       forEachSeries(state, series => {
-        series.dataSource.measures = action.measures;
+        _.set(series, 'dataSource.measures', action.measures);
       });
       break;
 

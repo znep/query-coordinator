@@ -97,7 +97,10 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
   }
 
   function handleRenderVif(event) {
+
     const newVif = event.originalEvent.detail;
+
+console.log(JSON.stringify(newVif.series[0].dataSource.measures));
 
     updateData(
       VifHelpers.migrateVif(newVif)
@@ -130,15 +133,22 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
     visualization.showBusyIndicator();
     detachInteractionEvents();
 
+debugger;
+
     $.fn.socrataSvgColumnChart.validateVif(newVif).
       then(visualization.shouldDisplayFilterBar() ? datasetMetadataProvider.getDisplayableFilterableColumns : skipPromise).
       then((columns) => {
+
+debugger;
+
         return Promise.all([
           Promise.resolve(columns),
           CategoricalDataManager.getData(newVif)
         ]);
       }).
       then((resolutions) => {
+
+debugger;
         const [ newColumns, newData ] = resolutions;
         renderVisualization(newVif, newData, newColumns);
       }).

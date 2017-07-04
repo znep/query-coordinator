@@ -1,13 +1,11 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import { factories, Dropdown } from 'common/components';
 import { I18n } from 'common/visualizations';
 import { AGGREGATION_TYPES, COLUMN_TYPES, MAXIMUM_MEASURES } from '../constants';
 import { setMeasures } from '../actions';
 import { getMeasuresFromVif, isFeatureMap } from '../selectors/vifAuthoring';
-import { setMeasure, setMeasureAggregation } from '../actions';
 import { hasData, getValidMeasures } from '../selectors/metadata';
 import BlockLabel from './shared/BlockLabel';
 
@@ -15,7 +13,7 @@ export const MeasureSelector = React.createClass({
   propTypes: {
     vifAuthoring: PropTypes.object,
     metadata: PropTypes.object,
-    onSetMeasures: PropTypes.func,
+    onSelectMeasures: PropTypes.func,
   },
 
   getDefaultProps() {
@@ -160,7 +158,7 @@ export const MeasureSelector = React.createClass({
   },
 
   handleOnSelectionMeasureColumn(option, index) {
-    const { onSetMeasures } = this.props;
+    const { onSelectMeasures } = this.props;
     const measures = this.getClonedMeasures();  
 
     measures[index].columnName = option.value;
@@ -171,43 +169,42 @@ export const MeasureSelector = React.createClass({
       measures[index].aggregationFunction = 'sum';
     }
 
-    onSetMeasures(measures);
+    onSelectMeasures(measures);
   },
 
   handleOnSelectionMeasureAggregation(option, index) {
-    const { onSetMeasures } = this.props;
+    const { onSelectMeasures } = this.props;
     const measures = this.getClonedMeasures();  
 
     measures[index].aggregationFunction = option.value;
-    onSetMeasures(measures);
+    onSelectMeasures(measures);
   },
 
   handleOnClickDeleteMeasure(index) {
-    const { onSetMeasures } = this.props;
+    const { onSelectMeasures } = this.props;
     const measures = this.getClonedMeasures();
 
     measures.splice(index, 1);
-    onSetMeasures(measures);
+    onSelectMeasures(measures);
   },
 
   handleOnClickNewMeasure() {
-    const { onSetMeasures } = this.props;
+    const { onSelectMeasures } = this.props;
     const measures = this.getClonedMeasures();  
 
     measures.push({ 
       columnName: null,
-      aggregationFunction: 'sum'
-     });
+      aggregationFunction: 'count'
+    });
 
-    onSetMeasures(measures);
+    onSelectMeasures(measures);
   },
   
   getClonedMeasures() {
     const { vifAuthoring } = this.props;
     const measures = getMeasuresFromVif(vifAuthoring);
-    return _.clone(measures);
+    return _.cloneDeep(measures);
   }
-
 });
 
 function mapStateToProps(state) {
@@ -217,7 +214,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSetMeasures(measures) {
+    onSelectMeasures(measures) {
       dispatch(setMeasures(measures));
     },
   };

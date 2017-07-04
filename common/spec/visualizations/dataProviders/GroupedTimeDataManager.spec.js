@@ -2,6 +2,8 @@ import _ from 'lodash';
 import GroupedTimeDataManager, {
   __RewireAPI__ as GroupedTimeDataManagerAPI
 } from 'common/visualizations/dataProviders/GroupedTimeDataManager';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 
 const VALID_VIF_WITH_DIMENSION_GROUPING = {
   configuration: {},
@@ -86,6 +88,8 @@ describe('GroupedTimeDataManager', () => {
   let revertGroupedTimeDataManagerAPI;
 
   beforeEach(() => {
+    I18n.translations.en = allLocales.en;
+
     groupingQueryVifs = {
       '{"configuration":{},"series":[{"dataSource":{"datasetUid":"four-four","dimension":{"columnName":"incident_occurrence","aggregationFunction":null,"grouping":{"columnName":"blood_alcohol_level"}},"domain":"example.com","measure":{"columnName":null,"aggregationFunction":"count"},"type":"socrata.soql","filters":[{"arguments":{"start":"2001-01-01T00:00:00.000","end":"2003-06-01T00:00:00.000"},"columnName":"incident_occurrence","function":"timeRange"},{"function":"binaryOperator","columnName":"blood_alcohol_level","arguments":{"operator":"=","operand":"0.01"}}]},"label":"0.01","type":"timelineChart"}],"format":{"type":"visualization_interchange_format","version":2}}': {
         "columns": ["dimension","measure"],
@@ -350,6 +354,8 @@ describe('GroupedTimeDataManager', () => {
   });
 
   afterEach(() => {
+    I18n.translations = {};
+
     GroupedTimeDataManagerAPI.__ResetDependency__('SoqlDataProvider');
     GroupedTimeDataManagerAPI.__ResetDependency__('makeSocrataTimeDataRequest');
   });

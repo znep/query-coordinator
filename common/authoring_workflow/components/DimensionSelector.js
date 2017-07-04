@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import { Picklist } from 'common/components';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 import Dimension from './Dimension';
 import { setDimension } from '../actions';
@@ -52,8 +52,11 @@ export const DimensionSelector = React.createClass({
       });
     };
 
-    const toRenderableRecommendedOption = buildOption(true, I18n.translate('panes.data.fields.dimension.groups.recommended_columns'));
-    const toRenderableOption = buildOption(false, I18n.translate('panes.data.fields.dimension.groups.all_columns'));
+    const toRenderableRecommendedOption = buildOption(
+      true,
+      I18n.t('shared.visualizations.panes.data.fields.dimension.groups.recommended_columns')
+    );
+    const toRenderableOption = buildOption(false, I18n.t('shared.visualizations.panes.data.fields.dimension.groups.all_columns'));
 
     const isNotSelectedDimension = (option) => option.value !== value;
 

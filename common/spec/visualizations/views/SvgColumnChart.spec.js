@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const $ = require('jquery');
-const I18n = require('common/visualizations/I18n');
+const I18n = require('common/i18n').default;
+const allLocales = require('common/i18n/config/locales').default;
 const SvgColumnChart = require('common/visualizations/views/SvgColumnChart');
 
 describe('SvgColumnChart', () => {
@@ -114,6 +115,14 @@ describe('SvgColumnChart', () => {
     $('#chart').remove();
   };
 
+  beforeEach(() => {
+    I18n.translations.en = allLocales.en;
+  });
+
+  afterEach(() => {
+    I18n.translations = {};
+  });
+
   describe('when configured to show legend and "Show Legend" button is clicked', () => {
     let columnChart;
 
@@ -175,7 +184,7 @@ describe('SvgColumnChart', () => {
       columnChart.chart.render(null, testData);
 
       // Verify button exists
-      //      
+      //
       const $button = columnChart.element.find('.socrata-legend-button');
       const buttonExists = ($button.length > 0);
       assert.isTrue(buttonExists, 'button actually does not exist')
@@ -200,7 +209,7 @@ describe('SvgColumnChart', () => {
       columnChart.chart.render(null, testData);
 
       // Verify button exists
-      //      
+      //
       const $button = columnChart.element.find('.socrata-legend-button');
       const buttonExists = ($button.length > 0);
       assert.isFalse(buttonExists, 'button actually exists')
@@ -228,12 +237,7 @@ describe('SvgColumnChart', () => {
       const errorMessage = columnChart.element.
         find('.socrata-visualization-error-message').text();
 
-      const expectedMessage = I18n.translate(
-        'visualizations.common.validation.errors.' +
-        'measure_axis_min_should_be_lesser_then_max'
-      );
-
-      expect(errorMessage).to.equal(expectedMessage);
+      assert.equal(errorMessage, 'Please ensure your minimum value is smaller than your maximum value.');
     });
 
     it('should show an error message if configuration.measureAxisMinValue ' +
@@ -249,12 +253,7 @@ describe('SvgColumnChart', () => {
       const errorMessage = columnChart.element.
         find('.socrata-visualization-error-message').text();
 
-      const expectedMessage = I18n.translate(
-        'visualizations.common.validation.errors.' +
-        'measure_axis_biggest_value_should_be_more_than_min_limit'
-      );
-
-      expect(errorMessage).to.equal(expectedMessage);
+      assert.equal(errorMessage, 'Minimum axis value cannot exceed values within dataset.');
     });
   });
 

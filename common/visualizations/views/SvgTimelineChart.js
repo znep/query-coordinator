@@ -5,7 +5,7 @@ const $ = require('jquery');
 const utils = require('common/js_utils');
 // Project Imports
 const SvgVisualization = require('./SvgVisualization');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 // Constants
 import {
   AXIS_LABEL_MARGIN,
@@ -482,8 +482,8 @@ function SvgTimelineChart($element, vif, options) {
       if (dataToRender.rows.length > MAX_ROW_COUNT_WITHOUT_PAN) {
 
         self.renderError(
-          I18n.translate(
-            'visualizations.timeline_chart.' +
+          I18n.t(
+            'shared.visualizations.charts.timeline_chart.' +
             'error_exceeded_max_row_count_without_pan'
           ).format(MAX_ROW_COUNT_WITHOUT_PAN)
         );
@@ -577,8 +577,8 @@ function SvgTimelineChart($element, vif, options) {
       ) {
 
         self.renderError(
-          I18n.translate(
-            'visualizations.common.validation.errors.' +
+          I18n.t(
+            'shared.visualizations.charts.common.validation.errors.' +
             'measure_axis_min_should_be_lesser_then_max'
           )
         );
@@ -1036,7 +1036,7 @@ function SvgTimelineChart($element, vif, options) {
       append($title);
     const $labelValueRows = flyoutData.data.
       map((datum, seriesIndex) => {
-        const labelMatcher = new RegExp(I18n.translate('visualizations.common.unlabeled_measure_prefix') + seriesIndex);
+        const labelMatcher = new RegExp(I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + seriesIndex);
         const label = labelMatcher.test(datum.label) ? '' : datum.label;
         const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
           text(label).
@@ -1045,7 +1045,7 @@ function SvgTimelineChart($element, vif, options) {
         let datumValueString;
 
         if (datum.value === null) {
-          datumValueString = I18n.translate('visualizations.common.no_value');
+          datumValueString = I18n.t('shared.visualizations.charts.common.no_value');
         } else {
 
           const formattedDatumValue = utils.formatNumber(datum.value);

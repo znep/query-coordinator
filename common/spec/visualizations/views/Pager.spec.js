@@ -1,5 +1,8 @@
 var $ = require('jquery');
 var Pager = require('common/visualizations/views/Pager');
+var I18n = require('common/i18n').default;
+var allLocales = require('common/i18n/config/locales').default;
+
 var COLUMN_NAME = 'column_name';
 var DATASET_UID = 'asdf-fdsa';
 var DOMAIN = 'localhost';
@@ -11,7 +14,12 @@ describe('Pager', function() {
   var nextButton;
   var pagerLabel;
 
+  beforeEach(function() {
+    I18n.translations.en = allLocales.en;
+  });
+
   afterEach(function() {
+    I18n.translations = {};
     pager.destroy();
   });
 

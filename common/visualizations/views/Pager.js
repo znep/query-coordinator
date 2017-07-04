@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const $ = require('jquery');
 const utils = require('common/js_utils');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 
 // Passing in locale is a temporary workaround to localize the Pager
 module.exports = function Pager(element, locale) {
@@ -42,15 +42,15 @@ module.exports = function Pager(element, locale) {
     const endIndex = Math.min(options.datasetRowCount, options.endIndex);
 
     if (options.datasetRowCount === 0) {
-      message = I18n.translate('visualizations.table.no_rows', locale);
+      message = I18n.t('shared.visualizations.charts.table.no_rows', locale);
     } else if (options.endIndex === options.startIndex + 1) {
-      message = I18n.translate('visualizations.table.only_rows', locale);
+      message = I18n.t('shared.visualizations.charts.table.only_rows', locale);
     } else if (hasOnlyOnePage(options)) {
-      message = I18n.translate('visualizations.table.all_rows', locale);
+      message = I18n.t('shared.visualizations.charts.table.all_rows', locale);
     } else if (!_.isFinite(options.datasetRowCount)) {
-      message = I18n.translate('visualizations.table.no_row_count', locale);
+      message = I18n.t('shared.visualizations.charts.table.no_row_count', locale);
     } else {
-      message = I18n.translate('visualizations.table.many_rows', locale);
+      message = I18n.t('shared.visualizations.charts.table.many_rows', locale);
     }
 
     message = message.format({
@@ -73,8 +73,8 @@ module.exports = function Pager(element, locale) {
     ].join('\n');
 
     return template.format({
-      previous: I18n.translate('visualizations.table.previous', locale),
-      next: I18n.translate('visualizations.table.next', locale),
+      previous: I18n.t('shared.visualizations.charts.table.previous', locale),
+      next: I18n.t('shared.visualizations.charts.table.next', locale),
       previousDisabled: (options.disabled || options.startIndex === 0) ? ' disabled' : '',
       nextDisabled: (options.disabled || options.endIndex >= options.datasetRowCount) ? ' disabled' : ''
     });

@@ -4,7 +4,7 @@ const TimeDataManager = require('./TimeDataManager');
 import { assert } from 'common/js_utils';
 import { COLOR_PALETTE_VALUES } from '../../authoring_workflow/constants';
 import * as selectors from '../../authoring_workflow/selectors/vifAuthoring';
-import * as I18n from '../I18n';
+import I18n from 'common/i18n';
 
 /**
  * Returns either a default or modified custom color palette.
@@ -59,7 +59,7 @@ const generateCustomColorPalette = (vifAuthoring) => {
 
       _.forEach(groups, (group, index) => {
           if (_.isNull(group)) {
-            group = I18n.translate('visualizations.common.no_value');
+            group = I18n.t('shared.visualizations.charts.common.no_value');
           }
 
           const color = _.has(currentPalette, group) ?
@@ -95,11 +95,11 @@ const generateCustomColorPalette = (vifAuthoring) => {
         let [ groupName ] = group;
 
         if (_.isNull(groupName)) {
-          groupName = I18n.translate('visualizations.common.no_value');
+          groupName = I18n.t('shared.visualizations.charts.common.no_value');
         }
 
         // This inserts the `(Other)` group at the end of the customColorPalette
-        if (groupName === I18n.translate('visualizations.common.other_category')) {
+        if (groupName === I18n.t('shared.visualizations.charts.common.other_category')) {
           index = lastIndexInGroups;
           offset = 1;
         } else {
@@ -134,7 +134,7 @@ const getDisplayedColorsFromCustomPalette = (displayedColumnTitles, currentPalet
     return baseColorPalette;
   } else {
 
-    const noValue = I18n.translate('visualizations.common.no_value');
+    const noValue = I18n.t('shared.visualizations.charts.common.no_value');
     let paletteArray = _.transform(displayedColumnTitles, (result, value, index) => {
       if (_.has(currentPalette, value)) {
         result.push(currentPalette[value].color);

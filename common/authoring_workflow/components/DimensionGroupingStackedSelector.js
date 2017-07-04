@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 import {
   getDimensionGroupingColumnName,
   getStacked,
@@ -47,7 +47,7 @@ export const DimensionGroupingStackedSelector = React.createClass({
         <label htmlFor="display-grouped">
           <span className="fake-radiobutton"/>
         </label>
-        {I18n.translate(`panes.data.fields.dimension_grouping_options.grouped`)}
+        {I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.grouped`)}
       </div>
     );
 
@@ -70,13 +70,13 @@ export const DimensionGroupingStackedSelector = React.createClass({
         <label htmlFor="display-stacked">
           <span className="fake-radiobutton"/>
         </label>
-        {I18n.translate(`panes.data.fields.dimension_grouping_options.stacked`)}
+        {I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.stacked`)}
       </div>
     );
 
     return (
       <div>
-        <span id="grouping-options-title">{I18n.translate(`panes.data.fields.dimension_grouping_options.title`)}</span>
+        <span id="grouping-options-title">{I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.title`)}</span>
         <div className="authoring-field">
           <div className="radiobutton">
             {displayGroupedContainer}

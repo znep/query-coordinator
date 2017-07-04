@@ -3,7 +3,7 @@ const d3 = require('d3');
 const _ = require('lodash');
 const $ = require('jquery');
 const SvgVisualization = require('./SvgVisualization');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 
 // These values have been eyeballed to provide enough space for axis labels
 // that have been observed 'in the wild'. They may need to be adjusted slightly
@@ -523,7 +523,7 @@ function SvgHistogram($element, vif, options) {
 
     if (_(dataToRender).map('rows.length').max() >= MAX_BUCKET_COUNT) {
       self.renderError(
-        I18n.translate('visualizations.histogram.error_exceeded_max_bucket_count').format(MAX_BUCKET_COUNT)
+        I18n.t('shared.visualizations.charts.histogram.error_exceeded_max_bucket_count').format(MAX_BUCKET_COUNT)
       );
       return;
     }
@@ -563,7 +563,7 @@ function SvgHistogram($element, vif, options) {
       let domainCrossesOrIncludesZero = (domain[0] * domain[1]) <= 0;
       if (domainCrossesOrIncludesZero) {
         self.renderError(
-          I18n.translate('visualizations.histogram.error_domain_includes_zero')
+          I18n.t('shared.visualizations.charts.histogram.error_domain_includes_zero')
         );
         return;
       }
@@ -593,8 +593,8 @@ function SvgHistogram($element, vif, options) {
 
       if (limitMin && limitMax && limitMin >= limitMax) {
         self.renderError(
-          I18n.translate(
-            'visualizations.common.validation.errors.' +
+          I18n.t(
+            'shared.visualizations.charts.common.validation.errors.' +
             'measure_axis_min_should_be_lesser_then_max'
           )
         );
@@ -801,7 +801,7 @@ function SvgHistogram($element, vif, options) {
   function seriesLabel(seriesIndex) {
     return _.get(
       self.getVif(), ['series', seriesIndex, 'label'],
-      I18n.translate('visualizations.common.flyout_value_label')
+      I18n.t('shared.visualizations.charts.common.flyout_value_label')
     );
   }
 
@@ -829,7 +829,7 @@ function SvgHistogram($element, vif, options) {
     var $table = $('<table>', {'class': 'socrata-flyout-table'});
 
     if (value === null) {
-      valueString = I18n.translate('visualizations.common.no_value');
+      valueString = I18n.t('shared.visualizations.charts.common.no_value');
     } else {
       valueString = '{0} {1}'.
         format(

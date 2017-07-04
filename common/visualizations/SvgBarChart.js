@@ -7,7 +7,7 @@ const MetadataProvider = require('./dataProviders/MetadataProvider');
 const CategoricalDataManager = require(
   './dataProviders/CategoricalDataManager'
 );
-const I18n = require('./I18n');
+const I18n = require('common/i18n').default;
 const getSoqlVifValidator = require(
   './dataProviders/SoqlVifValidator.js'
 ).getSoqlVifValidator;
@@ -137,7 +137,7 @@ $.fn.socrataSvgBarChart = function(originalVif, options) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.translate('visualizations.common.error_generic');
+      messages = I18n.t('shared.visualizations.charts.common.error_generic');
     }
 
     visualization.renderError(messages);
@@ -188,14 +188,14 @@ $.fn.socrataSvgBarChart = function(originalVif, options) {
     if (overMaxRowCount) {
 
       visualization.renderError(
-        I18n.translate(
-          'visualizations.bar_chart.error_exceeded_max_bar_count'
+        I18n.t(
+          'shared.visualizations.charts.bar_chart.error_exceeded_max_bar_count'
         ).format(CategoricalDataManager.MAX_ROW_COUNT)
       );
     } else if (onlyNullOrZeroValues) {
 
       visualization.renderError(
-        I18n.translate('visualizations.common.error_no_data')
+        I18n.t('shared.visualizations.charts.common.error_no_data')
       );
     } else {
 

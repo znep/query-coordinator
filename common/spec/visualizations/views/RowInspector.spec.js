@@ -1,6 +1,8 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var RowInspector = require('common/visualizations/views/RowInspector');
+var I18n = require('common/i18n').default;
+var allLocales = require('common/i18n/config/locales').default;
 
 describe('RowInspector', function() {
   'use strict';
@@ -25,6 +27,7 @@ describe('RowInspector', function() {
   }
 
   before(function() {
+    I18n.translations.en = allLocales.en;
     RowInspector.setup({ isMobile: false }, null);
     $rowInspector = $('#socrata-row-inspector');
     $toolPanel = $rowInspector.find('.tool-panel');
@@ -32,6 +35,7 @@ describe('RowInspector', function() {
 
   after(function() {
     $('#socrata-row-inspector').remove();
+    I18n.translations = {};
   });
 
   afterEach(function() {

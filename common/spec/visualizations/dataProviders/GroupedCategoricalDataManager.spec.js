@@ -10,6 +10,9 @@ import GroupedCategoricalDataManager, {
 
 import SOQL_QUERY_RESPONSES from './testData/GroupedCategoricalDataManagerTestData';
 
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
+
 const VALID_VIF_WITH_DIMENSION_GROUPING = {
   configuration: {
     showOtherCategory: false
@@ -83,12 +86,16 @@ const logAndThrow = (error) => {
 
 describe('GroupedCategoricalDataManager', () => {
   beforeEach(() => {
+    I18n.translations.en = allLocales.en;
+
     makeSocrataCategoricalDataRequestAPI.__Rewire__('SoqlDataProvider', SoqlDataProviderStub);
     GroupedCategoricalDataManagerAPI.__Rewire__('SoqlDataProvider', SoqlDataProviderStub);
     GroupedCategoricalDataManagerAPI.__Rewire__('makeSocrataCategoricalDataRequest', makeSocrataCategoricalDataRequest);
   });
 
   afterEach(() => {
+    I18n.translations = {};
+
     makeSocrataCategoricalDataRequestAPI.__ResetDependency__('SoqlDataProvider');
     GroupedCategoricalDataManagerAPI.__ResetDependency__('SoqlDataProvider');
     GroupedCategoricalDataManagerAPI.__ResetDependency__('makeSocrataCategoricalDataRequest');

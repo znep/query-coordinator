@@ -6,7 +6,7 @@ import defaultProps from '../defaultProps';
 import renderComponent from '../renderComponent';
 import { DimensionGroupingColumnNameSelector } from 'common/authoring_workflow/components/DimensionGroupingColumnNameSelector';
 
-import { translate } from 'common/visualizations/I18n';
+import I18n from 'common/i18n';
 
 const metadata = {
   domain: 'test.domain',
@@ -58,8 +58,8 @@ describe('DimensionGroupingColumnNameSelector', () => {
       });
 
       it('first item is No Grouping', () => {
-        const expectedMessage = translate(
-          'panes.data.fields.dimension_grouping_column_name.no_value'
+        const expectedMessage = I18n.t(
+          'shared.visualizations.panes.data.fields.dimension_grouping_column_name.no_value'
         );
 
         expect(component.querySelector('.picklist-option span').innerHTML).
@@ -67,8 +67,8 @@ describe('DimensionGroupingColumnNameSelector', () => {
       });
 
       it('render with correct subtitle', () => {
-        const expectedMessage = translate(
-          'panes.data.fields.dimension_grouping_column_name.subtitle'
+        const expectedMessage = I18n.t(
+          'shared.visualizations.panes.data.fields.dimension_grouping_column_name.subtitle'
         );
 
         expect(component.querySelector('.block-label').textContent).
@@ -76,8 +76,8 @@ describe('DimensionGroupingColumnNameSelector', () => {
       });
 
       it('render with correct description', () => {
-        const expectedMessage = translate(
-          'panes.data.fields.dimension_grouping_column_name.description'
+        const expectedMessage = I18n.t(
+          'shared.visualizations.panes.data.fields.dimension_grouping_column_name.description'
         );
 
         expect(component.querySelector('.flyout').textContent)

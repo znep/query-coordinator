@@ -1,5 +1,7 @@
 var _ = require('lodash');
 var DataTypeFormatter = require('common/visualizations/views/DataTypeFormatter');
+var I18n = require('common/i18n').default;
+var allLocales = require('common/i18n/config/locales').default;
 
 // 123% | -12,345.678%
 var PERCENT_FORMAT_REGEX = /^-?\d{1,3}(,\d{3})*(\.\d+)?%$/;
@@ -65,6 +67,14 @@ var TIMESTAMP_NO_HR_MIN_SEC_REGEX = /^\d{4}\s\w{3}\s[0-3][0-9]$/;
 
 describe('DataTypeFormatter', function() {
   'use strict';
+
+  beforeEach(function() {
+    I18n.translations.en = allLocales.en;
+  });
+
+  afterEach(function() {
+    I18n.translations = {};
+  });
 
   var columnMetadata;
 

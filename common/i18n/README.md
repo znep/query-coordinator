@@ -16,7 +16,7 @@ Frontend and Storyteller so that we will also have access to the 'shared' string
 
 ### Note about namespacing
 We should remain diligent about properly namespacing our `.yml` keys since they can overwrite
-each other when combined. The strings in `/common/i18n/config/locales` will all be prefixed with `locale_common`, so as long as we don't use a `shared` as a top
+each other when combined. The strings in `/common/i18n/config/locales` will all be prefixed with `'shared'`, so as long as we don't use a `'shared'` as a top
 level key in other apps, we should be fine.
 
 ## How this works with JS / React

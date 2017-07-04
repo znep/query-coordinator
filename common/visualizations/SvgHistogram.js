@@ -7,7 +7,7 @@ const MetadataProvider = require('./dataProviders/MetadataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
-const I18n = require('./I18n');
+const I18n = require('common/i18n').default;
 const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
 
 const SOQL_DATA_PROVIDER_DIMENSION_ALIAS = SoqlHelpers.dimensionAlias();
@@ -228,7 +228,7 @@ $.fn.socrataSvgHistogram = function(originalVif, options) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.translate('visualizations.common.error_generic')
+      messages = I18n.t('shared.visualizations.charts.common.error_generic')
     }
 
     visualization.renderError(messages);
@@ -291,7 +291,7 @@ $.fn.socrataSvgHistogram = function(originalVif, options) {
 
             if (onlyNullOrZeroValues) {
               visualization.renderError(
-                I18n.translate('visualizations.common.error_no_data')
+                I18n.t('shared.visualizations.charts.common.error_no_data')
               );
             } else {
               visualization.render(newVif, dataResponses, newColumns);

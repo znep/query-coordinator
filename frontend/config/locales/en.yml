@@ -2873,6 +2873,7 @@ en:
         hidden: Hidden
         internal: Internal
         open: Open
+        pending: Pending
         private: Private
         rejected: Rejected
         shared_to_me: Shared to me

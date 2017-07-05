@@ -88,7 +88,7 @@ describe('components/VisibilityCell', () => {
       }));
       assert.isNotNull(element);
       assert.equal(element.className, 'visibility-cell');
-      assert.equal(element.textContent, 'Hidden');
+      assert.equal(element.textContent, 'Pending');
       assert.isNotNull(element.querySelector('.title span.socrata-icon-eye-blocked'));
     });
 

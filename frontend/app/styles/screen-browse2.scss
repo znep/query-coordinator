@@ -16,6 +16,7 @@ $loading-spinner-color-1: $white;
 $loading-spinner-color-2: $light-grey-2;
 
 $facet-pane-width: 14.5rem;
+$facet-pane-gutter: 1.375rem; // Space between facet pane and result pane.
 
 $wide-desktop-width: 1450px;
 
@@ -580,7 +581,7 @@ html {
       display: block;
       position: relative;
       float: left;
-      width: 21em;
+      width: $facet-pane-width - $facet-pane-gutter;
 
       .browse2-facets-mobile-active-filters,
       .browse2-facets-pane-mobile-back-button,

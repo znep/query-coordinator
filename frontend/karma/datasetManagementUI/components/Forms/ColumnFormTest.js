@@ -7,7 +7,7 @@ import reducer from 'reducers/rootReducer';
 import initialState from '../../data/initialState';
 import thunk from 'redux-thunk';
 
-import ColumnFormConnected, { ColumnForm } from 'components/ManageMetadata/ColumnForm';
+import ColumnFormConnected, { ColumnForm } from 'components/Forms/ColumnForm';
 
 describe('components/ManageMetadata/ColumnForm', () => {
   const store = createStore(reducer, initialState, applyMiddleware(thunk));

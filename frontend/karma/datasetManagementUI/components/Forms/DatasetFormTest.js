@@ -6,8 +6,9 @@ import initialState from '../../data/initialState';
 import thunk from 'redux-thunk';
 import TestUtils from 'react-addons-test-utils';
 import React from 'react';
-
-import DatasetFormConnected, { DatasetForm } from 'components/ManageMetadata/DatasetForm';
+import DatasetFormConnected, {
+  DatasetForm
+} from 'components/Forms/DatasetForm';
 
 describe('components/ManageMetadata/DatasetForm', () => {
   const newState = Object.assign({}, initialState);

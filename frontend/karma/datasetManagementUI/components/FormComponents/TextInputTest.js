@@ -2,8 +2,9 @@ import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import formAPI from '../../testHelpers/mockFormAPI';
-import TextInput from 'components/MetadataFields/TextInput';
+import TextInput from 'components/FormComponents/TextInput';
+
+const formAPI = {};
 
 const onChangeHandler = sinon.spy();
 
@@ -28,12 +29,12 @@ const props = {
 
 describe('MetadtaFields/TextInput', () => {
   it('renders an input field', () => {
-    const component = shallow(<TextInput {...props}/>);
+    const component = shallow(<TextInput {...props} />);
     expect(component.find('input')).to.have.length(1);
   });
 
   it('calls showErrors callback on blur', () => {
-    const component = mount(<TextInput {...props}/>);
+    const component = mount(<TextInput {...props} />);
 
     component.find('input').simulate('blur');
 
@@ -41,7 +42,7 @@ describe('MetadtaFields/TextInput', () => {
   });
 
   it('calls its onChange callback on change', () => {
-    const component = mount(<TextInput {...props}/>);
+    const component = mount(<TextInput {...props} />);
 
     component.find('input').simulate('change');
 

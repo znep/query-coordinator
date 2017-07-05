@@ -1,8 +1,10 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import Select from 'components/MetadataFields/Select';
+import Select from 'components/FormComponents/Select';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
+
+const formAPI = {};
 
 const changeListener = sinon.spy();
 
@@ -11,24 +13,24 @@ const props = {
     name,
     onChange: changeListener
   }),
-  "options": [
+  options: [
     {
-      "title": "Business",
-      "value": "Business"
+      title: 'Business',
+      value: 'Business'
     },
     {
-      "title": "Government",
-      "value": "Government"
+      title: 'Government',
+      value: 'Government'
     },
     {
-      "title": "Personal",
-      "value": "Personal"
+      title: 'Personal',
+      value: 'Personal'
     }
   ],
-  name: "category",
+  name: 'category',
   required: false,
   showErrors: sinon.spy()
-}
+};
 
 describe('Select', () => {
   it('renders a select element', () => {
@@ -50,7 +52,6 @@ describe('Select', () => {
 
     expect(element.props().showErrors.calledOnce).to.eq(true);
   });
-
 
   it('calls bindInput-supplied callback on change', () => {
     const element = mount(<Select {...props} />);

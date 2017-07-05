@@ -1,8 +1,10 @@
 import { expect, assert } from 'chai';
-import Fieldset from 'components/MetadataFields/Fieldset';
+import Fieldset from 'components/FormComponents/Fieldset';
 import TestUtils from 'react-addons-test-utils';
 import React from 'react';
 import { shallow } from 'enzyme';
+
+const formAPI = {};
 
 describe('components/MetadataFields/Fieldset', () => {
   const defaultProps = {
@@ -23,7 +25,11 @@ describe('components/MetadataFields/Fieldset', () => {
   });
 
   it('renders any elements it wraps (children)', () => {
-    const component = shallow(<Fieldset {...defaultProps}>{child}</Fieldset>);
+    const component = shallow(
+      <Fieldset {...defaultProps}>
+        {child}
+      </Fieldset>
+    );
     assert.isTrue(component.childAt(2).equals(child));
   });
 });

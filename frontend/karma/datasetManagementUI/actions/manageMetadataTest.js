@@ -8,10 +8,6 @@ import {
   saveColumnMetadata
 } from 'actions/manageMetadata';
 import { API_CALL_STARTED, SAVE_DATASET_METADATA } from 'actions/apiCalls';
-import {
-  PRIVATE_CUSTOM_FIELD_PREFIX,
-  CUSTOM_FIELD_PREFIX
-} from 'lib/customMetadata';
 import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
 import { createUpload } from 'actions/manageUploads';
 import mockAPI from '../testHelpers/mockAPI';

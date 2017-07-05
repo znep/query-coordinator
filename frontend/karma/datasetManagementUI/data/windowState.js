@@ -405,7 +405,7 @@ export default {
       value: 'UK_OGLV3.0'
     }
   ],
-  customMetadata: [
+  customMetadataFieldsets: [
     {
       name: 'FS One',
       fields: [

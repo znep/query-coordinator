@@ -19,31 +19,6 @@ import wsmock from '../testHelpers/mockSocket';
 
 const mockStore = configureStore([thunk]);
 
-const metadata = {
-  id: 'ww72-hpm3',
-  model: {
-    name: 'better description',
-    tags: ['one', 'two', 'three'],
-    email: 'test@socrata.com'
-  },
-  colFormModel: {
-    'display-name-18133': 'IDs',
-    'description-18133': '',
-    'field-name-18133': 'mkkk',
-    'display-name-18136': 'Case Number',
-    'description-18136': '',
-    'field-name-18136': 'case_number'
-  },
-  colFormIsDirty: {
-    fields: ['field-name-18136'],
-    form: true
-  },
-  colFormSchema: {
-    isValid: true,
-    fields: {}
-  }
-};
-
 describe('actions/manageMetadata', () => {
   let unmock;
   let unmockWS;
@@ -65,10 +40,10 @@ describe('actions/manageMetadata', () => {
       bootstrapApp(
         window.initialState.view,
         window.initialState.revision,
-        window.initialState.customMetadata
+        window.initialState.customMetadataFieldsets
       )
     );
-    store.dispatch(editView(metadata.id, metadata));
+    // store.dispatch(editView(metadata.id, metadata));
     store.dispatch(
       setFourfour(Object.keys(store.getState().entities.views)[0])
     );
@@ -123,14 +98,6 @@ describe('actions/manageMetadata', () => {
 
           assert.equal(action.id, fourfour);
 
-          assert.deepEqual(action.payload, {
-            name: 'better description',
-            tags: ['one', 'two', 'three'],
-            privateMetadata: { email: 'test@socrata.com', custom_fields: {} },
-            metadata: { custom_fields: {} },
-            id: 'ww72-hpm3'
-          });
-
           done();
         })
         .catch(err => {
@@ -141,13 +108,17 @@ describe('actions/manageMetadata', () => {
     it('shows an error message if form schema is invalid', () => {
       const fourfour = Object.keys(store.getState().entities.views)[0];
 
-      store.dispatch(editView(fourfour, { schema: { isValid: false } }));
+      store.dispatch(
+        editView(fourfour, {
+          datasetMetadataErrors: [{ fieldName: 'name', message: 'Is Required' }]
+        })
+      );
 
       const fakeStore = mockStore(store.getState());
 
       fakeStore.dispatch(saveDatasetMetadata());
 
-      const action = fakeStore.getActions()[1];
+      const action = fakeStore.getActions()[2];
 
       assert.equal(action.type, SHOW_FLASH_MESSAGE);
       assert.equal(action.kind, 'error');
@@ -156,18 +127,22 @@ describe('actions/manageMetadata', () => {
     it('shows field-level errors if form schema is invalid', () => {
       const fourfour = Object.keys(store.getState().entities.views)[0];
 
-      store.dispatch(editView(fourfour, { schema: { isValid: false } }));
+      store.dispatch(
+        editView(fourfour, {
+          datasetMetadataErrors: [{ fieldName: 'name', message: 'Is Required' }]
+        })
+      );
 
       const fakeStore = mockStore(store.getState());
 
       fakeStore.dispatch(saveDatasetMetadata());
 
-      const action = fakeStore.getActions()[2];
+      const action = fakeStore.getActions()[1];
 
       assert.equal(action.type, 'EDIT_VIEW');
 
       assert.deepEqual(action.payload, {
-        displayMetadataFieldErrors: true
+        showErrors: true
       });
     });
   });

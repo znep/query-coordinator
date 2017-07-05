@@ -1,10 +1,8 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import Fieldset from 'components/FormComponents/Fieldset';
 import TestUtils from 'react-addons-test-utils';
 import React from 'react';
 import { shallow } from 'enzyme';
-
-const formAPI = {};
 
 describe('components/MetadataFields/Fieldset', () => {
   const defaultProps = {

@@ -4,9 +4,7 @@ import React from 'react';
 import Tag from 'components/FormComponents/Tag';
 import { shallow } from 'enzyme';
 
-const formAPI = {};
-
-describe('components/MetadataFields/Tag', () => {
+describe('components/FormComponents/Tag', () => {
   let component;
 
   const defaultProps = {

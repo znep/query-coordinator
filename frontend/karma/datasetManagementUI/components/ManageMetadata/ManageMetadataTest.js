@@ -121,14 +121,6 @@ describe('components/ManageMetadata', () => {
       );
     });
 
-    it('is invoked when you click cancel', () => {
-      TestUtils.Simulate.click(datasetMeta.querySelector('#cancel'));
-      expect(datasetStub.called).to.eq(true);
-
-      TestUtils.Simulate.click(columnMeta.querySelector('#cancel'));
-      expect(columnStub.called).to.eq(true);
-    });
-
     it('is invoked when you click the x', () => {
       TestUtils.Simulate.click(
         datasetMeta.querySelector('.modal-header-dismiss')

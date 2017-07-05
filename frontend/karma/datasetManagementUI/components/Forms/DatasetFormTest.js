@@ -10,7 +10,7 @@ import DatasetFormConnected, {
   DatasetForm
 } from 'components/Forms/DatasetForm';
 
-describe.only('components/Forms/DatasetForm', () => {
+describe('components/Forms/DatasetForm', () => {
   const newState = Object.assign({}, initialState);
 
   newState.entities.views['kg5j-unyr'].customMetadataFieldsets = [

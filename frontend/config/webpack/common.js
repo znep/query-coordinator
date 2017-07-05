@@ -177,6 +177,11 @@ function getStandardLoaders(extraLoaders, options) {
     loader: 'imports?jQuery=jquery,$=jquery'
   });
 
+  loaders.push({
+    test: /\.json$/,
+    loader: require.resolve('json-loader')
+  });
+
   return loaders;
 }
 

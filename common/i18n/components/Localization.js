@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import I18nJS from 'i18n-js';
-import pluralization from 'common/i18n/pluralization';
+import pluralization from '../pluralization';
 
 export default class Localization extends React.Component {
   constructor(props) {
@@ -12,7 +12,7 @@ export default class Localization extends React.Component {
     }
 
     I18nJS.locale = props.locale;
-    I18nJS.pluralization[I18nJS.locale] = pluralization[I18nJS.locale];
+    I18nJS.pluralization[I18nJS.locale] = pluralization(I18nJS.locale);
     _.assign(I18nJS.translations, {
       [I18nJS.locale]: props.translations || window.translations
     })

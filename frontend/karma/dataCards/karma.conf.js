@@ -12,12 +12,6 @@ var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
 _.set(webpackConfig, 'sassLoader.includePaths', [ 'app/styles' ]);
 _.set(webpackConfig, 'resolve.alias.angular_templates', common.resolvePath('public/angular_templates'));
 
-// Allows us to load json fixture files.
-webpackConfig.module.loaders.push( {
-  test: /\.json$/,
-  loader: 'json-loader'
-});
-
 webpackConfig.module.loaders.push( {
   test: /angular\-mocks/,
   loader: 'imports-loader',

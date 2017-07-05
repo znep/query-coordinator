@@ -12,12 +12,6 @@ webpackConfig.externals = {
   'react/lib/ReactContext': 'window'
 };
 
-// Allows us to load json fixture files.
-webpackConfig.module.loaders.push( {
-  test: /\.json$/,
-  loader: 'json-loader'
-});
-
 // To make tests easier to write, we disable auto scss class prefixes.
 var styleLoader = _(webpackConfig.module.loaders).find((loader) =>
   loader.loader.indexOf('localIdentName') >= 0

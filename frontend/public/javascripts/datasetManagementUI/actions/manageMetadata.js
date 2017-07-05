@@ -96,21 +96,16 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
 
 export const saveColumnMetadata = () => (dispatch, getState) => {
   const { entities, ui } = getState();
-
   const { fourfour } = ui.routing;
-
-  const formDataModel = _.get(entities, `views.${fourfour}.colFormModel`, {});
-
-  const schema = _.get(entities, `views.${fourfour}.colFormSchema`);
+  const view = entities.views[fourfour];
+  const { columnMetadataErrors: errors } = view;
 
   dispatch(hideFlashMessage());
 
-  // see comment above in saveDatasetMetadata thunk
-  if (schema && !schema.isValid) {
+  if (errors.length) {
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
 
-    // See comment in corresponding portion of saveDatasetMetadata action
-    dispatch(editView(fourfour, { displayMetadataFieldErrors: true }));
+    dispatch(editView(fourfour, { showErrors: true }));
 
     return;
   }
@@ -122,7 +117,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
   }
 
   const payload = {
-    output_columns: Selectors.updatedOutputColumns(entities, formDataModel)
+    output_columns: Selectors.columnsForOutputSchema(entities, currentOutputSchema.id)
   };
 
   const inputSchema = entities.input_schemas[currentOutputSchema.input_schema_id];

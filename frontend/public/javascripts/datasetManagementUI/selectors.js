@@ -90,37 +90,6 @@ export function rowLoadOperationsInProgress(apiCalls) {
     .length;
 }
 
-// Merges formDataModel with entities.output_columns, then transforms that into the
-// shape expected by DSMAPI
-export function updatedOutputColumns(entities, formDataModel) {
-  const { output_columns: outputColumns, transforms } = entities;
-
-  const updatedColumns = Object.keys(formDataModel).reduce((acc, key) => {
-    const [id, ...rest] = key.split('-').reverse();
-
-    const fieldName = rest.reverse().join('_');
-
-    if (acc[id]) {
-      acc[id][fieldName] = formDataModel[key];
-    } else {
-      acc[id] = {
-        [fieldName]: formDataModel[key],
-        position: outputColumns[id].position,
-        id: _.toNumber(id),
-        transform: {
-          transform_expr: transforms[outputColumns[id].transform_id].transform_expr
-        }
-      };
-    }
-
-    return acc;
-  }, {});
-
-  const unsortedColumns = Object.keys(updatedColumns).map(id => updatedColumns[id]);
-
-  return _.sortBy(unsortedColumns, 'position');
-}
-
 // so we would store this as a boolean property of output columns, but turns out
 // this would require a lot of DSMAPI changes (probably more code than here, amazingly), in:
 // - computation of denormalized error count for output schema

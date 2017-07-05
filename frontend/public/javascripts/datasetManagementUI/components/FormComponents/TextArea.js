@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import styles from 'styles/MetadataFields/TextArea.scss';
+import styles from 'styles/FormComponents/TextArea.scss';
 
 export default function TextArea({ field, inErrorState, setValue }) {
   const classNames = inErrorState ? styles.textAreaError : styles.textArea;

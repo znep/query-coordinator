@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import styles from 'styles/MetadataFields/Select.scss';
+import styles from 'styles/FormComponents/Select.scss';
 
 const Select = ({ field, inErrorState, setValue }) =>
   <select

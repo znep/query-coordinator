@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
-import Tag from 'components/MetadataFields/Tag';
+import Tag from 'components/FormComponents/Tag';
 import classNames from 'classnames';
-import styles from 'styles/MetadataFields/TagsInput.scss';
+import styles from 'styles/FormComponents/TagsInput.scss';
 
 class TagsInput extends Component {
   constructor() {

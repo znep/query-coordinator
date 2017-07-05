@@ -1,11 +1,11 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Fieldset from 'components/MetadataFields/Fieldset';
+import Fieldset from 'components/FormComponents/Fieldset';
 import { editView } from 'actions/views';
 import { makeRows, validateColumnForm } from 'models/forms';
 import ColumnField from 'components/FormComponents/ColumnField';
-import styles from 'styles/ManageMetadata/ColumnForm.scss';
+import styles from 'styles/Forms/ColumnForm.scss';
 
 export class ColumnForm extends Component {
   componentWillMount() {

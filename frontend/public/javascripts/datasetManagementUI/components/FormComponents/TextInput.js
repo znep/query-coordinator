@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import styles from 'styles/MetadataFields/TextInput.scss';
+import styles from 'styles/FormComponents/TextInput.scss';
 
 const TextInput = ({ field, inErrorState, setValue }) => {
   const classNames = inErrorState ? styles.textInputError : styles.textInput;

@@ -6,7 +6,7 @@ import TextArea from 'components/FormComponents/TextArea';
 import Select from 'components/FormComponents/Select';
 import TagsInput from 'components/FormComponents/TagsInput';
 import * as Types from 'models/forms';
-import styles from 'styles/MetadataField.scss';
+import styles from 'styles/FormComponents/Field.scss';
 
 // TODO: this is pretty lame...maybe do another way
 function isHalfSized(field) {

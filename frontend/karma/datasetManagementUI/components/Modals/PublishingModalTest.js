@@ -88,6 +88,11 @@ describe('components/Modals/Publishing', () => {
         routing: { fourfour: 'abcd-efgh' }
       },
       entities: {
+        revisions: {
+          0: {
+            permission: 'public'
+          }
+        },
         task_sets: {
           0: {
             output_schema_id: 52,
@@ -110,6 +115,9 @@ describe('components/Modals/Publishing', () => {
     it('fetches the taskSet, fourFour, and rowsToBeUpserted', () => {
       const props = mapStateToProps(state);
       assert.deepEqual(props, {
+        revision: {
+          permission: 'public'
+        },
         taskSet: {
           output_schema_id: 52,
           updated_at: '2017-06-19T23:45:16.306Z'
@@ -137,6 +145,9 @@ describe('components/Modals/Publishing', () => {
       const props = mapStateToProps(stateWithNoFile);
       assert.deepEqual(props, {
         rowsToBeUpserted: null,
+        revision: {
+          permission: 'public'
+        },
         taskSet: {
           output_schema_id: null,
           updated_at: '2017-06-19T23:45:16.306Z'
@@ -150,6 +161,9 @@ describe('components/Modals/Publishing', () => {
   describe('component', () => {
 
     const defaultProps = {
+      revision: {
+        permission: 'public'
+      },
       taskSet: {},
       rowsToBeUpserted,
       fourfour: 'abcdefgh',
@@ -203,6 +217,23 @@ describe('components/Modals/Publishing', () => {
         const propsWithNoRowCount = dotProp.set(propsWithSetLog, 'rowsToBeUpserted', null);
         const component = shallow(<Publishing {...propsWithNoRowCount} />);
         assert.isFalse(component.isEmpty());
+      });
+
+      it('says your dataset will be public if revision\'s permission is public', () => {
+        const component = shallow(<Publishing {...propsWithSetLog} />);
+        assert.equal(
+          component.find('h2').text(),
+          'Your dataset is being processed & will be public shortly'
+        );
+      });
+
+      it('says your dataset will be private if revision\'s permission is private', () => {
+        const propsWithPrivate = dotProp.set(propsWithSetLog, 'revision.permission', 'private');
+        const component = shallow(<Publishing {...propsWithPrivate} />);
+        assert.equal(
+          component.find('h2').text(),
+          'Your dataset is being processed and will remain private'
+        );
       });
 
     });

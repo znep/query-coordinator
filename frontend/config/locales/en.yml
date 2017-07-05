@@ -1990,7 +1990,8 @@ en:
           title: Something went wrong with publishing your data
         publishing:
           body: It's safe to close your browser.  The progress will not be interrupted.
-          title: Your dataset is being processed & will be public shortly
+          title_public: Your dataset is being processed & will be public shortly
+          title_private: Your dataset is being processed and will remain private
         successful:
           body: You can't currently make any more changes from here.
           title: This dataset is published

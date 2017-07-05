@@ -2,6 +2,7 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Field from 'components/FormComponents/Field';
+import { isFieldNameField, isDisplayNameField } from 'models/forms';
 import * as Actions from 'actions/outputColumns';
 
 const mapStateToProps = ({ entities, ui }, { field }) => {
@@ -30,9 +31,9 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
 };
 
 function getPropName(fieldName) {
-  if (/^display-name/.test(fieldName)) {
+  if (isDisplayNameField(fieldName)) {
     return 'display_name';
-  } else if (/^field-name/.test(fieldName)) {
+  } else if (isFieldNameField(fieldName)) {
     return 'field_name';
   } else {
     return 'description';

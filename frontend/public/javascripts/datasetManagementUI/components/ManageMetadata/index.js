@@ -3,26 +3,31 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { editView } from 'actions/views';
+import { addOutputColumns } from 'actions/outputColumns';
 import { dismissMetadataPane, saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
 import { hideFlashMessage } from 'actions/flashMessage';
 import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'actions/apiCalls';
 import ApiCallButton from 'components/ApiCallButton';
 import MetadataContent from 'components/ManageMetadata/MetadataContent';
 import { datasetMetadata } from 'selectors';
+import { getCurrentColumns } from 'models/forms';
 import styles from 'styles/ManageMetadata/ManageMetadata.scss';
 
 export class ManageMetadata extends Component {
   constructor() {
     super();
     this.state = {
-      initialDatasetMetadata: null
+      initialDatasetMetadata: null,
+      initialColMetadata: null
     };
   }
 
   componentWillMount() {
-    const { view } = this.props;
+    const { view, currentColumns } = this.props;
+
     this.setState({
-      initialDatasetMetadata: datasetMetadata(view)
+      initialDatasetMetadata: datasetMetadata(view),
+      initialColMetadata: currentColumns
     });
   }
 
@@ -68,10 +73,7 @@ export class ManageMetadata extends Component {
           </ModalContent>
 
           <ModalFooter>
-            <button
-              id="cancel"
-              className={styles.button}
-              onClick={() => onCancel(fourfour, this.state.initialDatasetMetadata)}>
+            <button id="cancel" className={styles.button} onClick={() => onCancel(fourfour, this.state)}>
               {I18n.common.cancel}
             </button>
             <ApiCallButton {...saveBtnProps} />
@@ -91,20 +93,21 @@ ManageMetadata.propTypes = {
   view: PropTypes.object.isRequired,
   fourfour: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
-  columnsExist: PropTypes.bool
+  columnsExist: PropTypes.bool,
+  currentColumns: PropTypes.object.isRequired
 };
 
 const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(dismissMetadataPane()),
-  onCancel: (fourfour, initialDatasetMetadata) => {
-    dispatch(editView(fourfour, initialDatasetMetadata));
+  onCancel: (fourfour, localState) => {
+    dispatch(editView(fourfour, localState.initialDatasetMetadata));
+    dispatch(addOutputColumns(localState.initialColMetadata));
     dispatch(dismissMetadataPane());
   },
   onSaveDataset: () => dispatch(saveDatasetMetadata()),
   onSaveCol: () => dispatch(saveColumnMetadata()),
   onSidebarTabClick: fourfour => {
     dispatch(hideFlashMessage());
-
     dispatch(editView(fourfour, { displayMetadataFieldErrors: true }));
   }
 });
@@ -113,7 +116,12 @@ const mapStateToProps = ({ entities, ui }, ownProps) => ({
   fourfour: ui.routing.fourfour,
   view: entities.views[ui.routing.fourfour],
   path: ownProps.route.path,
-  columnsExist: !_.isEmpty(entities.output_columns)
+  columnsExist: !_.isEmpty(entities.output_columns),
+  currentColumns: _.chain(entities).thru(getCurrentColumns).map(restoreColumn).keyBy('id').value()
 });
+
+function restoreColumn(col) {
+  return _.omit(col, ['transform']);
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageMetadata);

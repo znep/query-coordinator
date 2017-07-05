@@ -2,15 +2,7 @@
 import daggy from 'daggy';
 import _ from 'lodash';
 import Validation, { Success, Failure } from 'folktale/validation';
-import {
-  hasValue,
-  areUnique,
-  isURL,
-  isEmail,
-  dependsOn,
-  isValidFieldName,
-  isValidDisplayName
-} from 'lib/validators';
+import { hasValue, areUnique, isURL, isEmail, isValidFieldName, isValidDisplayName } from 'lib/validators';
 import * as Selectors from 'selectors';
 
 // TYPES
@@ -257,7 +249,6 @@ const validateFieldsetThree = fieldset => {
 
   return Validation.of()
     .concat(isURL(model.attributionLink.name, model.attributionLink.value || ''))
-    .concat(dependsOn(model.licenseId, model.attribution))
     .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
     .map(() => fieldset);
 };
@@ -348,7 +339,7 @@ const columnToFields = oc => [
 ];
 
 // getCurrentColumns : Entities -> List OutputColumn
-const getCurrentColumns = entities => {
+export const getCurrentColumns = entities => {
   const currentSchema = Selectors.latestOutputSchema(entities);
 
   return currentSchema ? Selectors.columnsForOutputSchema(entities, currentSchema.id) : [];
@@ -365,19 +356,23 @@ const makeModel = entities =>
     .flatMap(row => row.map(field => ({ name: field.name, value: field.value })))
     .value();
 
+export const isFieldNameField = name => /^field-name/.test(name);
+
+export const isDisplayNameField = name => /^display-name/.test(name);
+
 // validateColumnForm : Entities -> List String
 export const validateColumnForm = entities => {
   const model = makeModel(entities);
 
-  const fieldNames = model.filter(field => /^field-name/.test(field.name)).map(field => field.value);
+  const fieldNames = model.filter(field => isFieldNameField(field.name)).map(field => field.value);
 
-  const displayNames = model.filter(field => /^display-name/.test(field.name)).map(field => field.value);
+  const displayNames = model.filter(field => isDisplayNameField(field.name)).map(field => field.value);
 
   return _.chain(model)
     .map(field => {
-      if (/^field-name/.test(field.name)) {
+      if (isFieldNameField(field.name)) {
         return isValidFieldName(field.name, field.value, fieldNames);
-      } else if (/^display-name/.test(field.name)) {
+      } else if (isDisplayNameField(field.name)) {
         return isValidDisplayName(field.name, field.value, displayNames);
       } else {
         // could validate description here

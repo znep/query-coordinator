@@ -10,10 +10,10 @@ import DatasetFormConnected, {
   DatasetForm
 } from 'components/Forms/DatasetForm';
 
-describe('components/ManageMetadata/DatasetForm', () => {
+describe.only('components/Forms/DatasetForm', () => {
   const newState = Object.assign({}, initialState);
 
-  newState.entities.views['kg5j-unyr'].customMetadataFields = [
+  newState.entities.views['kg5j-unyr'].customMetadataFieldsets = [
     {
       name: 'Cat Fieldset',
       fields: [
@@ -36,24 +36,59 @@ describe('components/ManageMetadata/DatasetForm', () => {
   const store = createStore(reducer, newState, applyMiddleware(thunk));
 
   const defaultProps = {
-    fourfour: 'kg5j-unyr',
-    syncToStore: () => {},
-    model: {}
+    regularFieldsets: [
+      {
+        title: 'Title and Description',
+        subtitle:
+          'Make your title and description as clear and simple as possible.',
+        fields: [
+          {
+            name: 'name',
+            label: 'Dataset Title',
+            value: 'ddd',
+            isPrivate: false,
+            isRequired: true,
+            placeholder: 'Dataset Title',
+            isCustom: false
+          },
+          {
+            name: 'description',
+            label: 'Brief Description',
+            value: 'kk',
+            isPrivate: false,
+            isRequired: false,
+            placeholder: 'Enter a description'
+          }
+        ]
+      }
+    ],
+    customFieldsets: [
+      {
+        title: 'FS One',
+        subtitle: null,
+        fields: [
+          {
+            name: 'name',
+            label: 'name',
+            value: null,
+            isRequired: false,
+            placeholder: null,
+            isCustom: true
+          }
+        ]
+      }
+    ],
+    setErrors: () => {}
   };
 
   it('renders correctly', () => {
     const component = shallow(<DatasetForm {...defaultProps} />);
-
     assert.lengthOf(component.find('form'), 1);
-    assert.lengthOf(component.find('Fieldset'), 4);
-    assert.lengthOf(component.find('[name="email"]'), 1);
-    assert.lengthOf(component.find('[name="name"]'), 1);
-    assert.lengthOf(component.find('[name="category"]'), 1);
-    assert.lengthOf(component.find('[name="description"]'), 1);
-    assert.lengthOf(component.find('[name="tag"]'), 1);
+    assert.lengthOf(component.find('Fieldset'), 2);
+    assert.lengthOf(component.find('Connect(Field)'), 3);
   });
 
-  it("syncs it's local state to store", () => {
+  it('updates values in store', () => {
     const component = renderComponentWithStore(DatasetFormConnected, {}, store);
 
     const inputField = component.querySelector('#name');
@@ -63,20 +98,19 @@ describe('components/ManageMetadata/DatasetForm', () => {
     TestUtils.Simulate.change(inputField, { target: inputField });
 
     assert.equal(
-      store.getState().entities.views['kg5j-unyr'].model['name'],
+      store.getState().entities.views['kg5j-unyr'].name,
       'testing!!!'
     );
   });
 
   it('renders custom fieldset and fields', () => {
     const component = renderComponentWithStore(DatasetFormConnected, {}, store);
-
     const legends = [...component.querySelectorAll('legend')];
 
     const customLegend = legends.filter(
       legend =>
         legend.textContent ===
-        newState.entities.views['kg5j-unyr'].customMetadataFields[0].name
+        newState.entities.views['kg5j-unyr'].customMetadataFieldsets[0].name
     );
 
     const inputs = [...customLegend[0].parentNode.children]

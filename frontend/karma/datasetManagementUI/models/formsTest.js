@@ -3,7 +3,7 @@ import * as FormModel from 'models/forms';
 import state from '../data/stateWithRevision';
 import dotProp from 'dot-prop-immutable';
 
-describe.only('models/forms', () => {
+describe('models/forms', () => {
   describe('validateDatasetForm', () => {
     it('succeeds if form is valid', () => {
       const { regular, custom } = FormModel.makeFieldsets(

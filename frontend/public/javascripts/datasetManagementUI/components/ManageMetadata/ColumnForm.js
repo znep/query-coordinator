@@ -1,13 +1,27 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import Fieldset from 'components/MetadataFields/Fieldset';
-// import * as Selectors from 'selectors';
-// import { editView } from 'actions/views';
-import { makeRows } from 'models/forms';
+import { editView } from 'actions/views';
+import { makeRows, validateColumnForm } from 'models/forms';
 import ColumnField from 'components/FormComponents/ColumnField';
 import styles from 'styles/ManageMetadata/ColumnForm.scss';
 
 export class ColumnForm extends Component {
+  componentWillMount() {
+    const { setErrors } = this.props;
+    setErrors();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { errors: oldErrors } = this.props;
+    const { setErrors, errors: currentErrors } = nextProps;
+
+    if (!_.isEqual(oldErrors, currentErrors)) {
+      setErrors();
+    }
+  }
+
   render() {
     const { rows } = this.props;
 
@@ -28,60 +42,25 @@ export class ColumnForm extends Component {
 }
 
 ColumnForm.propTypes = {
-  rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  fourfour: PropTypes.string.isRequired
+  rows: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
+  errors: PropTypes.arrayOf(PropTypes.object).isRequired,
+  setErrors: PropTypes.func.isRequired
 };
-
-// const isValidFieldName = fieldName => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(fieldName);
-
-// const createValidationSchema = currentColumns => {
-//   return currentColumns.reduce((acc, col) => {
-//     const displayNameValidaions = {
-//       [`display-name-${col.id}`]: {
-//         required: true,
-//         noDupesWith: {
-//           fieldFilter: (val, key) => /^display-name/.test(key),
-//           message: I18n.edit_metadata.validation_error_dupe_display_name
-//         }
-//       }
-//     };
-//
-//     const fieldNameValidations = {
-//       [`field-name-${col.id}`]: {
-//         required: true,
-//         noDupesWith: {
-//           fieldFilter: (val, key) => /^field-name/.test(key),
-//           message: I18n.edit_metadata.validation_error_dupe_field_name
-//         },
-//         test: val => {
-//           if (val && isValidFieldName(val)) {
-//             return null;
-//           } else {
-//             return I18n.edit_metadata.validation_error_fieldname;
-//           }
-//         }
-//       }
-//     };
-//
-//     return {
-//       ...acc,
-//       ...displayNameValidaions,
-//       ...fieldNameValidations
-//     };
-//   }, {});
-// };
-
-// const mapDispatchToProps = dispatch => ({
-//   syncToStore: (fourfour, key, val) => dispatch(editView(fourfour, { [key]: val }))
-// });
 
 const mapStateToProps = ({ entities, ui }) => {
   const { fourfour } = ui.routing;
 
   return {
     rows: makeRows(entities),
+    errors: validateColumnForm(entities),
     fourfour
   };
 };
 
-export default connect(mapStateToProps)(ColumnForm);
+const mergeProps = ({ fourfour, errors, rows }, { dispatch }) => ({
+  errors,
+  rows,
+  setErrors: () => dispatch(editView(fourfour, { columnMetadataErrors: errors }))
+});
+
+export default connect(mapStateToProps, null, mergeProps)(ColumnForm);

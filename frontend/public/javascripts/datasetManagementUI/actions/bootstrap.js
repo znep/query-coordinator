@@ -90,7 +90,8 @@ export function bootstrapApp(view, revision, customMetadataFieldsets) {
 
     const intialViewWithErrors = {
       ...initialView,
-      datasetMetadataErrors: errors
+      datasetMetadataErrors: errors,
+      columnMetadataErrors: []
     };
 
     dispatch(bootstrapAppSuccess(intialViewWithErrors, initialRevision, taskSets, uploads));

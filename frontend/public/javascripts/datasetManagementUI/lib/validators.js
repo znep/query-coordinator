@@ -1,7 +1,8 @@
 /* eslint new-cap: 0 */
-import { Success, Failure } from 'folktale/validation';
+import Validation, { Success, Failure } from 'folktale/validation';
 import isEmailHelper from 'validator/lib/isEmail';
 import isURLHelper from 'validator/lib/isURL';
+import _ from 'lodash';
 
 export function hasValue(fieldName, val) {
   return val
@@ -58,4 +59,47 @@ export function dependsOn(dependentField, field) {
   } else {
     return Success(dependentField.value);
   }
+}
+
+export function isUnique(fieldName, value, values) {
+  const idxToRemove = _.findIndex(values, val => val === value);
+  const withFirstOccuranceRemoved = values.filter((val, idx) => idx !== idxToRemove);
+  const errorMessage = /^field-name/.test(fieldName)
+    ? I18n.edit_metadata.validation_error_dupe_field_name
+    : I18n.edit_metadata.validation_error_dupe_display_name;
+
+  if (!value) {
+    return Success(value);
+  } else if (withFirstOccuranceRemoved.includes(value)) {
+    return Failure([
+      {
+        message: errorMessage,
+        fieldName
+      }
+    ]);
+  } else {
+    return Success(value);
+  }
+}
+
+function isProperFieldName(fieldName, value) {
+  return /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(value)
+    ? Success(value)
+    : Failure([
+      {
+        message: I18n.edit_metadata.validation_error_fieldname,
+        fieldName
+      }
+    ]);
+}
+
+export function isValidDisplayName(fieldName, value, displayNames) {
+  return Validation.of().concat(hasValue(fieldName, value)).concat(isUnique(fieldName, value, displayNames));
+}
+
+export function isValidFieldName(fieldName, value, fieldNames) {
+  return Validation.of()
+    .concat(hasValue(fieldName, value))
+    .concat(isUnique(fieldName, value, fieldNames))
+    .concat(isProperFieldName(fieldName, value));
 }

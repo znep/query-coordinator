@@ -2,11 +2,16 @@
 import daggy from 'daggy';
 import _ from 'lodash';
 import Validation, { Success, Failure } from 'folktale/validation';
-import { hasValue, areUnique, isURL, isEmail, dependsOn } from 'lib/validators';
+import {
+  hasValue,
+  areUnique,
+  isURL,
+  isEmail,
+  dependsOn,
+  isValidFieldName,
+  isValidDisplayName
+} from 'lib/validators';
 import * as Selectors from 'selectors';
-
-// TODO: list
-// tests
 
 // TYPES
 export const Field = daggy.taggedSum('Field', {
@@ -353,28 +358,37 @@ const getCurrentColumns = entities => {
 export const makeRows = entities => _.chain(entities).thru(getCurrentColumns).map(columnToFields).value();
 
 // COLUMN METADATA VALIDATIONS
-// const makeDataModel = fieldset =>
-//   fieldset.fields.reduce(
-//     (acc, field) => ({
-//       ...acc,
-//       [field.name]: { value: field.value, name: field.name }
-//     }),
-//     {}
-//   );
 
-// const validateCustomFieldset = fieldset => {
-//   const validation = _.chain(fieldset.fields)
-//     .filter(field => field.isRequired)
-//     .map(field => hasValue(field.name, field.value))
-//     .flatMap(val =>
-//       val.matchWith({
-//         Success: () => [],
-//         Failure: x => x.value.map(f => ({ ...f, fieldset: fieldset.title }))
-//       })
-//     )
-//     .value();
-//
-//   return validation.length ? Failure(validation) : Success(fieldset);
-// };
+// makeModel : Entities -> List {name: String, value: String}
+const makeModel = entities =>
+  _.chain(makeRows(entities))
+    .flatMap(row => row.map(field => ({ name: field.name, value: field.value })))
+    .value();
 
-// const isValidFieldName = fieldName => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(fieldName);
+// validateColumnForm : Entities -> List String
+export const validateColumnForm = entities => {
+  const model = makeModel(entities);
+
+  const fieldNames = model.filter(field => /^field-name/.test(field.name)).map(field => field.value);
+
+  const displayNames = model.filter(field => /^display-name/.test(field.name)).map(field => field.value);
+
+  return _.chain(model)
+    .map(field => {
+      if (/^field-name/.test(field.name)) {
+        return isValidFieldName(field.name, field.value, fieldNames);
+      } else if (/^display-name/.test(field.name)) {
+        return isValidDisplayName(field.name, field.value, displayNames);
+      } else {
+        // could validate description here
+        return Success(field.value);
+      }
+    })
+    .flatMap(val =>
+      val.matchWith({
+        Success: () => [],
+        Failure: x => x.value
+      })
+    )
+    .value();
+};

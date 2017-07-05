@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { editView } from 'actions/views';
 import { makeFieldsets, validateDatasetForm } from 'models/forms';
 import Fieldset from 'components/FormComponents/Fieldset';
 import DatasetField from 'components/FormComponents/DatasetField';
@@ -84,12 +85,7 @@ const mapStateToProps = ({ entities, ui }) => {
 // https://github.com/reactjs/react-redux/issues/237#issuecomment-168816713
 const mergeProps = ({ fourfour, ...rest }, { dispatch }) => ({
   ...rest,
-  setErrors: errors =>
-    dispatch({
-      type: 'EDIT_VIEW',
-      id: fourfour,
-      payload: { datasetMetadataErrors: errors }
-    })
+  setErrors: errors => dispatch(editView(fourfour, { datasetMetadataErrors: errors }))
 });
 
 export default connect(mapStateToProps, null, mergeProps)(DatasetForm);

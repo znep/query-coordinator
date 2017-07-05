@@ -24,7 +24,7 @@ const Field = ({ field, errors, setValue, showErrors }) => {
     labelClassNames.push(styles.labelRequired);
   }
 
-  const inErrorState = showErrors && errors.length;
+  const inErrorState = showErrors && !!errors.length;
 
   const element = field.cata({
     Text: () => <TextInput field={field} setValue={setValue} inErrorState={inErrorState} />,

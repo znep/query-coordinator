@@ -463,7 +463,9 @@ function SvgPieChart($element, vif, options) {
    */
   function isHorizontalLayout() {
     const padding = width * MARGINS.pieToLegendMargin;
-    const contentWidth = outerWidth + padding + MAX_HORIZONTAL_LEGEND_SIZE;
+    const contentWidth = self.getShowLegend(true) ?
+      outerWidth + padding + MAX_HORIZONTAL_LEGEND_SIZE :
+      outerWidth;
 
     return contentWidth < width;
   }
@@ -483,7 +485,10 @@ function SvgPieChart($element, vif, options) {
    */
   function horizontalLayoutOffsets() {
     const padding = width * MARGINS.pieToLegendMargin;
-    const contentWidth = outerWidth + padding + MAX_HORIZONTAL_LEGEND_SIZE;
+    const contentWidth = self.getShowLegend(true) ?
+      outerWidth + padding + MAX_HORIZONTAL_LEGEND_SIZE :
+      outerWidth;
+
     const radius = outerWidth / 2;
     const pieTop = height / 2;
     const leftPadding = (width - contentWidth) / 2;

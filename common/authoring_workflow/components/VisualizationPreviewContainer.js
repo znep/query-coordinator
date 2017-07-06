@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { SocrataIcon } from 'common/components';
 
 import VisualizationPreview from './VisualizationPreview';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 import { setMapInfoDismissed } from '../actions';
 import { hasVisualizationType, hasVisualizationDimension, isRenderableMap } from '../selectors/vifAuthoring';
 
@@ -25,8 +25,8 @@ export class VisualizationPreviewContainer extends Component {
       null :
       (
         <div className="get-started-container">
-          <h5 className="get-started-title">{I18n.translate('preview.get_started.title')}</h5>
-          <p className="get-started-description">{I18n.translate('preview.get_started.description')}</p>
+          <h5 className="get-started-title">{I18n.t('shared.visualizations.preview.get_started.title')}</h5>
+          <p className="get-started-description">{I18n.t('shared.visualizations.preview.get_started.description')}</p>
         </div>
       );
   }
@@ -42,7 +42,7 @@ export class VisualizationPreviewContainer extends Component {
       return (
         <div className="visualization-preview-map-info-container">
           <div className="visualization-preview-map-message alert info">
-            <small className="visualization-preview-map-text">{I18n.translate('preview.center_and_zoom')}</small>
+            <small className="visualization-preview-map-text">{I18n.t('shared.visualizations.preview.center_and_zoom')}</small>
             <button className="visualization-preview-map-text-dismiss btn btn-transparent" onClick={this.onDismissMapInfo}>
               <SocrataIcon name="close-2" />
             </button>

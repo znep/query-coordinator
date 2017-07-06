@@ -1,4 +1,4 @@
-import { translate } from '../visualizations/I18n';
+import I18n from 'common/i18n';
 
 export const INPUT_DEBOUNCE_MILLISECONDS = 700;
 export const MAP_SLIDER_DEBOUNCE_MILLISECONDS = 1000;
@@ -67,44 +67,44 @@ export const COLUMN_TYPES = [
 export const VISUALIZATION_TYPES = [
   {
     type: 'barChart',
-    title: translate('visualizations.bar_chart.title'),
+    title: I18n.t('shared.visualizations.charts.bar_chart.title'),
     icon: 'icon-bar-chart-horz',
     preferredDimensionTypes: ['money', 'number', 'percent', 'text']
   },
   {
     type: 'columnChart',
-    title: translate('visualizations.column_chart.title'),
+    title: I18n.t('shared.visualizations.charts.column_chart.title'),
     icon: 'icon-bar-chart',
     preferredDimensionTypes: ['money', 'number', 'percent', 'text']
   },
   {
     type: 'pieChart',
-    title: translate('visualizations.pie_chart.title'),
+    title: I18n.t('shared.visualizations.charts.pie_chart.title'),
     icon: 'icon-pie-chart',
     preferredDimensionTypes: ['text']
   },
   {
     type: 'histogram',
     icon: 'icon-distribution',
-    title: translate('visualizations.histogram.title'),
+    title: I18n.t('shared.visualizations.charts.histogram.title'),
     preferredDimensionTypes: ['money', 'number']
   },
   {
     type: 'regionMap',
     icon: 'icon-region',
-    title: translate('visualizations.region_map.title'),
+    title: I18n.t('shared.visualizations.charts.region_map.title'),
     preferredDimensionTypes: ['point', 'location']
   },
   {
     type: 'featureMap',
     icon: 'icon-map',
-    title: translate('visualizations.feature_map.title'),
+    title: I18n.t('shared.visualizations.charts.feature_map.title'),
     preferredDimensionTypes: ['point', 'location']
   },
   {
     type: 'timelineChart',
     icon: 'icon-line-chart',
-    title: translate('visualizations.timeline_chart.title'),
+    title: I18n.t('shared.visualizations.charts.timeline_chart.title'),
     preferredDimensionTypes: ['calendar_date']
   }
 ];
@@ -112,43 +112,43 @@ export const VISUALIZATION_TYPES = [
 export const AGGREGATION_TYPES = [
   {
     type: 'sum',
-    title: translate('aggregations.sum')
+    title: I18n.t('shared.visualizations.aggregations.sum')
   }
 ];
 
 export const BASE_LAYERS = [
   {
-    title: translate('base_layers.simple_blue'),
+    title: I18n.t('shared.visualizations.base_layers.simple_blue'),
     value: 'https://a.tiles.mapbox.com/v3/socrata-apps.3ecc65d4/{z}/{x}/{y}.png'
   },
   {
-    title: translate('base_layers.simple_grey'),
+    title: I18n.t('shared.visualizations.base_layers.simple_grey'),
     value: 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png'
   },
   {
-    title: translate('base_layers.esri'),
+    title: I18n.t('shared.visualizations.base_layers.esri'),
     value: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
   }
 ];
 
 export const COLOR_SCALES = [
   {
-    title: translate('color_scales.simple_blue'),
+    title: I18n.t('shared.visualizations.color_scales.simple_blue'),
     value: 'simpleBlue',
     scale: ['#c6663d', '#ffffff', '#003747']
   },
   {
-    title: translate('color_scales.simple_grey'),
+    title: I18n.t('shared.visualizations.color_scales.simple_grey'),
     value: 'simpleGrey',
     scale: ['#c8c8c8', '#bdbdbd', '#2c2c2c']
   },
   {
-    title: translate('color_scales.red_yellow'),
+    title: I18n.t('shared.visualizations.color_scales.red_yellow'),
     value: 'RdOrYl',
     scale: ['#2482bc', '#fdffac', '#ba001e']
   },
   {
-    title: translate('color_scales.green_white_purple'),
+    title: I18n.t('shared.visualizations.color_scales.green_white_purple'),
     value: 'GrWhPu',
     scale: ['#008932', '#f7f7f7', '#7c2d96']
   }
@@ -156,27 +156,27 @@ export const COLOR_SCALES = [
 
 export const COLOR_PALETTES = [
   {
-    title: translate('color_palettes.categorical'),
+    title: I18n.t('shared.visualizations.color_palettes.categorical'),
     value: 'categorical'
   },
   {
-    title: translate('color_palettes.categorical2'),
+    title: I18n.t('shared.visualizations.color_palettes.categorical2'),
     value: 'categorical2'
   },
   {
-    title: translate('color_palettes.alternate1'),
+    title: I18n.t('shared.visualizations.color_palettes.alternate1'),
     value: 'alternate1'
   },
   {
-    title: translate('color_palettes.alternate2'),
+    title: I18n.t('shared.visualizations.color_palettes.alternate2'),
     value: 'alternate2'
   },
   {
-    title: translate('color_palettes.accent'),
+    title: I18n.t('shared.visualizations.color_palettes.accent'),
     value: 'accent'
   },
   {
-    title: translate('color_palettes.dark'),
+    title: I18n.t('shared.visualizations.color_palettes.dark'),
     value: 'dark'
   }
 ];
@@ -200,46 +200,46 @@ export const COLORS = [
 
 export const CHART_SORTING = [
   {
-    title: translate('panes.axis_and_scale.fields.chart_sorting.large_to_small'),
+    title: I18n.t('shared.visualizations.panes.axis_and_scale.fields.chart_sorting.large_to_small'),
     orderBy: { parameter: 'measure', sort: 'desc' },
     icon: 'icon-sort-desc',
-    group: translate('panes.axis_and_scale.fields.chart_sorting.sort_by_value')
+    group: I18n.t('shared.visualizations.panes.axis_and_scale.fields.chart_sorting.sort_by_value')
   },
   {
-    title: translate('panes.axis_and_scale.fields.chart_sorting.small_to_large'),
+    title: I18n.t('shared.visualizations.panes.axis_and_scale.fields.chart_sorting.small_to_large'),
     orderBy: { parameter: 'measure', sort: 'asc' },
     icon: 'icon-sort-asc',
-    group: translate('panes.axis_and_scale.fields.chart_sorting.sort_by_value')
+    group: I18n.t('shared.visualizations.panes.axis_and_scale.fields.chart_sorting.sort_by_value')
   },
   {
-    title: translate('panes.axis_and_scale.fields.chart_sorting.ascending'),
+    title: I18n.t('shared.visualizations.panes.axis_and_scale.fields.chart_sorting.ascending'),
     orderBy: { parameter: 'dimension', sort: 'asc' },
     icon: 'icon-sort-az',
-    group: translate('panes.axis_and_scale.fields.chart_sorting.sort_by_label')
+    group: I18n.t('shared.visualizations.panes.axis_and_scale.fields.chart_sorting.sort_by_label')
   },
   {
-    title: translate('panes.axis_and_scale.fields.chart_sorting.descending'),
+    title: I18n.t('shared.visualizations.panes.axis_and_scale.fields.chart_sorting.descending'),
     orderBy: { parameter: 'dimension', sort: 'desc' },
     icon: 'icon-sort-za',
-    group: translate('panes.axis_and_scale.fields.chart_sorting.sort_by_label')
+    group: I18n.t('shared.visualizations.panes.axis_and_scale.fields.chart_sorting.sort_by_label')
   }
 ];
 
 export const TIMELINE_PRECISION = [
   {
-    title: translate('panes.data.fields.timeline_precision.automatic'),
+    title: I18n.t('shared.visualizations.panes.data.fields.timeline_precision.automatic'),
     value: null
   },
   {
-    title: translate('panes.data.fields.timeline_precision.year'),
+    title: I18n.t('shared.visualizations.panes.data.fields.timeline_precision.year'),
     value: 'year'
   },
   {
-    title: translate('panes.data.fields.timeline_precision.month'),
+    title: I18n.t('shared.visualizations.panes.data.fields.timeline_precision.month'),
     value: 'month'
   },
   {
-    title: translate('panes.data.fields.timeline_precision.day'),
+    title: I18n.t('shared.visualizations.panes.data.fields.timeline_precision.day'),
     value: 'day'
   }
 ];

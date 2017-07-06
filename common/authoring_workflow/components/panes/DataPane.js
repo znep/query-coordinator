@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 import { isLoading, hasData, hasError } from '../../selectors/metadata';
 import {
@@ -52,7 +52,7 @@ export var DataPane = React.createClass({
     return (
       <div className="alert">
         <div className="metadata-loading">
-          <span className="spinner-default metadata-loading-spinner"></span> {I18n.translate('panes.data.loading_metadata')}
+          <span className="spinner-default metadata-loading-spinner"></span> {I18n.t('shared.visualizations.panes.data.loading_metadata')}
         </div>
       </div>
     );
@@ -61,7 +61,7 @@ export var DataPane = React.createClass({
   renderMetadataError() {
     return (
       <div className="metadata-error alert error">
-        <strong>{I18n.translate('panes.data.uhoh')}</strong> {I18n.translate('panes.data.loading_metadata_error')}
+        <strong>{I18n.t('shared.visualizations.panes.data.uhoh')}</strong> {I18n.t('shared.visualizations.panes.data.loading_metadata_error')}
       </div>
     );
   },
@@ -100,7 +100,7 @@ export var DataPane = React.createClass({
         <label htmlFor="limit-none">
           <span className="fake-radiobutton"/>
         </label>
-        {I18n.translate(`panes.data.fields.${translationKey}.none`)}
+        {I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.none`)}
       </div>
     );
 
@@ -161,7 +161,7 @@ export var DataPane = React.createClass({
             <span className="fake-checkbox">
               <span className="icon-checkmark3"/>
             </span>
-            {I18n.translate('panes.data.fields.show_other_category.title')}
+            {I18n.t('shared.visualizations.panes.data.fields.show_other_category.title')}
           </label>
         </div>
       </div>
@@ -173,7 +173,7 @@ export var DataPane = React.createClass({
         <label htmlFor="limit-count">
           <span className="fake-radiobutton"/>
         </label>
-        {I18n.translate(`panes.data.fields.${translationKey}.count`)}
+        {I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.count`)}
         {limitCountValueContainer}
       </div>
     );
@@ -181,13 +181,13 @@ export var DataPane = React.createClass({
     const descriptionForPieChart = isPieChart(vifAuthoring) ?
       (
         <p className="authoring-field-description">
-          <small>{I18n.translate('panes.data.fields.pie_chart_limit.description')}</small>
+          <small>{I18n.t('shared.visualizations.panes.data.fields.pie_chart_limit.description')}</small>
         </p>
       ) : null;
 
     return (
-      <AccordionPane title={I18n.translate(`panes.data.fields.${translationKey}.title`)}>
-        <span id="limit-subtitle">{I18n.translate(`panes.data.fields.${translationKey}.subtitle`)}</span>
+      <AccordionPane title={I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.title`)}>
+        <span id="limit-subtitle">{I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.subtitle`)}</span>
         <div className="authoring-field">
           <div className="radiobutton">
             {limitNoneContainer}
@@ -219,7 +219,7 @@ export var DataPane = React.createClass({
     return (
       <div className="authoring-field">
         <label className="block-label" htmlFor="timeline-precision">
-          {I18n.translate('panes.data.fields.timeline_precision.title')}
+          {I18n.t('shared.visualizations.panes.data.fields.timeline_precision.title')}
         </label>
         <div id="timeline-precision" className="authoring-field">
           <Dropdown {...attributes} />
@@ -244,7 +244,7 @@ export var DataPane = React.createClass({
           <span className="fake-checkbox">
             <span className="icon-checkmark3"></span>
           </span>
-          {I18n.translate('panes.data.fields.treat_null_values_as_zero.title')}
+          {I18n.t('shared.visualizations.panes.data.fields.treat_null_values_as_zero.title')}
         </label>
       </div>
     );
@@ -255,7 +255,7 @@ export var DataPane = React.createClass({
     const treatNullValuesAsZero = this.renderTreatNullValuesAsZero();
 
     return (
-      <AccordionPane title={I18n.translate('panes.data.subheaders.timeline_options')}>
+      <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.timeline_options')}>
         {timelinePrecision}
         {treatNullValuesAsZero}
       </AccordionPane>
@@ -286,8 +286,8 @@ export var DataPane = React.createClass({
     const dimensionGroupingAvailable = (
       isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)
     );
-    const dimensionGroupingColumnNameTitle = I18n.translate(
-      'panes.data.fields.dimension_grouping_column_name.title'
+    const dimensionGroupingColumnNameTitle = I18n.t(
+      'shared.visualizations.panes.data.fields.dimension_grouping_column_name.title'
     );
     const dimensionGroupingColumnNameSelector = (dimensionGroupingAvailable) ?
       (
@@ -301,12 +301,12 @@ export var DataPane = React.createClass({
 
     const sections = (
       <Accordion>
-        <AccordionPane title={I18n.translate('panes.data.subheaders.data_selection')}>
+        <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.data_selection')}>
           <div className="authoring-field">
             <BlockLabel
               htmlFor="dimension-selection"
-              title={I18n.translate('panes.data.fields.dimension.title')}
-              description={I18n.translate('panes.data.fields.dimension.description')}/>
+              title={I18n.t('shared.visualizations.panes.data.fields.dimension.title')}
+              description={I18n.t('shared.visualizations.panes.data.fields.dimension.description')}/>
             <SelectedDimensionIndicator />
           </div>
           <div className="authoring-field">

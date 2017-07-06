@@ -2,7 +2,8 @@ import $ from 'jquery';
 import React from 'react';
 import { connect } from 'react-redux';
 import { getDatasetLink, getDatasetName, hasData } from '../selectors/metadata';
-import { VisualizationRenderer, I18n } from 'common/visualizations';
+import { VisualizationRenderer } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 export var TableView = React.createClass({
   propTypes: {
@@ -52,7 +53,7 @@ export var TableView = React.createClass({
     return (
       <div className="authoring-table-view-container">
         <h6 className="authoring-table-view-title">
-          {I18n.translate('table_view.title')}{basedOn}
+          {I18n.t('shared.visualizations.table_view.title')}{basedOn}
         </h6>
         <div className="authoring-table-view" ref={(ref) => this.tableView = ref} />
       </div>

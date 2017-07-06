@@ -1,7 +1,7 @@
 // Vendor Imports
 const _ = require('lodash');
 // Project Imports
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 const makeSocrataTimeDataRequest = require('./makeSocrataTimeDataRequest');
 // Constants
 const VALID_SORTS = ['asc', 'desc'];
@@ -67,7 +67,7 @@ function getData(vif, options) {
       const seriesLabel = _.get(series, 'label', '');
 
       return (_.isEmpty(seriesLabel)) ?
-        (I18n.translate('visualizations.common.unlabeled_measure_prefix') + i) :
+        (I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + i) :
         seriesLabel;
     });
     const uniqueDimensionValues = _.uniq(

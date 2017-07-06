@@ -8,7 +8,7 @@ const SvgTimelineChart = require('./views/SvgTimelineChart');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const TimeDataManager = require('./dataProviders/TimeDataManager');
-const I18n = require('./I18n');
+const I18n = require('common/i18n').default;
 const getSoqlVifValidator = require(
   './dataProviders/SoqlVifValidator.js'
 ).getSoqlVifValidator;
@@ -115,7 +115,7 @@ $.fn.socrataSvgTimelineChart = function(originalVif, options) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.translate('visualizations.common.error_generic')
+      messages = I18n.t('shared.visualizations.charts.common.error_generic')
     }
 
     visualization.renderError(messages);
@@ -166,21 +166,21 @@ $.fn.socrataSvgTimelineChart = function(originalVif, options) {
     if (underTwoRows) {
 
       visualization.renderError(
-        I18n.translate(
-          'visualizations.timeline_chart.error_two_or_more_rows_required'
+        I18n.t(
+          'shared.visualizations.charts.timeline_chart.error_two_or_more_rows_required'
         )
       );
     } else if (overMaxRowCount) {
 
       visualization.renderError(
-        I18n.translate(
-          'visualizations.timeline_chart.error_exceeded_max_row_count'
+        I18n.t(
+          'shared.visualizations.charts.timeline_chart.error_exceeded_max_row_count'
         ).format(TimeDataManager.MAX_ROW_COUNT)
       );
     } else if (onlyNullOrZeroValues) {
 
       visualization.renderError(
-        I18n.translate('visualizations.common.error_no_data')
+        I18n.t('shared.visualizations.charts.common.error_no_data')
       );
     } else {
 

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import utils from 'common/js_utils';
 import SoqlDataProvider from './SoqlDataProvider';
 import SoqlHelpers from './SoqlHelpers';
-import I18n from '../I18n';
+import I18n from 'common/i18n';
 import makeSocrataCategoricalDataRequest from './makeSocrataCategoricalDataRequest';
 
 const MAX_GROUP_COUNT = 12;
@@ -277,8 +277,8 @@ function getData(vif, options) {
       null
     );
     const groupingData = [];
-    const otherCategoryName = I18n.translate(
-      'visualizations.common.other_category'
+    const otherCategoryName = I18n.t(
+      'shared.visualizations.charts.common.other_category'
     );
 
     // First group dimension values by grouping value. If the dimension value is
@@ -593,8 +593,8 @@ function getData(vif, options) {
     const dataToRenderColumns = ['dimension'].concat(state.groupingValues);
 
     if (state.groupingRequiresOtherCategory) {
-      const otherCategoryName = I18n.translate(
-        'visualizations.common.other_category'
+      const otherCategoryName = I18n.t(
+        'shared.visualizations.charts.common.other_category'
       );
 
       dataToRenderColumns.push(otherCategoryName);
@@ -650,8 +650,8 @@ function getData(vif, options) {
     const dimensionIndex = 0;
     const measureIndex = 1;
 
-    const otherCategoryName = I18n.translate(
-      'visualizations.common.other_category'
+    const otherCategoryName = I18n.t(
+      'shared.visualizations.charts.common.other_category'
     );
 
     const orderBy = _.get(vif, 'series[0].dataSource.orderBy', {});

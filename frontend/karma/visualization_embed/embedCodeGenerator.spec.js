@@ -3,6 +3,8 @@ import generateEmbedCode from 'embedCodeGenerator';
 import $ from 'jquery';
 import mockVif from './mockVif';
 import _ from 'lodash';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 
 const mockVifDomain = 'vertex-stories.test-socrata.com';
 const loaderSrc = 'https://vertex-stories.test-socrata.com/component/visualization/v1/socrata-visualizations-loader.js';
@@ -10,6 +12,14 @@ const vifSerialized = JSON.stringify(mockVif).replace(/"/g, '&quot;');
 const defaultHref = 'https://vertex-stories.test-socrata.com/d/k6cs-ww27?referrer=embed';
 
 describe('embedCodeGenerator', function() {
+  beforeEach(function() {
+    I18n.translations.en = allLocales.en;
+  });
+
+  afterEach(function() {
+    I18n.translations = {};
+  });
+
   const testCase = (caseName, vif, options, expectedValue) => {
     describe(caseName, () => {
       it('should return the expected embed code', () => {

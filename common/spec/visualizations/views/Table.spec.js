@@ -1,6 +1,8 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var Table = require('common/visualizations/views/Table');
+var I18n = require('common/i18n').default;
+var allLocales = require('common/i18n/config/locales').default;
 
 describe('Table', function() {
 
@@ -108,10 +110,16 @@ describe('Table', function() {
 
   var table;
 
+  beforeEach(function(){
+    I18n.translations.en = allLocales.en;
+  });
+
   afterEach(function() {
     if ($('#table').length) {
       throw new Error('A test in this spec file did not clean up its table. This may cause downstream test failures.');
     }
+
+    I18n.translations = {};
   });
 
   describe('instantiation', function() {
@@ -356,13 +364,12 @@ describe('Table', function() {
       };
 
       it('displays the sort menu when clicking a column header button', function() {
-
         render(table, data);
 
         // Initially hidden
         //
         assert.lengthOf(table.element.find('#sort-menu'), 0);
-        
+
         // Shown after click
         //
         table.element.find('th:first-child').find('.socrata-icon-kebab').click();
@@ -399,7 +406,7 @@ describe('Table', function() {
         table.element.find('th:first-child').find('.socrata-icon-kebab').click();
 
         table.element.on('SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', function(event) {
-          
+
           var payload = event.originalEvent.detail;
           assert.equal(payload.ascending, true);
           assert.equal(payload.columnName, 'hello0');
@@ -418,7 +425,7 @@ describe('Table', function() {
         table.element.find('th:first-child').find('.socrata-icon-kebab').click();
 
         table.element.on('SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', function(event) {
-          
+
           var payload = event.originalEvent.detail;
           assert.equal(payload.ascending, true);
           assert.equal(payload.columnName, 'hello0');
@@ -434,7 +441,7 @@ describe('Table', function() {
       beforeEach(() => {
         sinon.stub(table.table, 'isMobile', _.constant(false));
       });
-      
+
       afterEach(() => {
         table.table.isMobile.restore();
       });

@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const $ = require('jquery');
-const I18n = require('common/visualizations/I18n');
+const I18n = require('common/i18n').default;
+const allLocales = require('common/i18n/config/locales').default
 const SvgBarChart = require('common/visualizations/views/SvgBarChart');
 
 describe('SvgBarChart', () => {
@@ -117,6 +118,14 @@ describe('SvgBarChart', () => {
     $('#chart').remove();
   };
 
+  beforeEach(() => {
+    I18n.translations.en = allLocales.en;
+  });
+
+  afterEach(() => {
+    I18n.translations = {};
+  });
+
   describe('when configured wrong', () => {
     let barChart;
 
@@ -138,12 +147,7 @@ describe('SvgBarChart', () => {
       const errorMessage = barChart.element.
         find('.socrata-visualization-error-message').text();
 
-      const expectedMessage = I18n.translate(
-        'visualizations.common.validation.errors.' +
-        'measure_axis_min_should_be_lesser_then_max'
-      );
-
-      expect(errorMessage).to.equal(expectedMessage);
+      assert.equal(errorMessage, 'Please ensure your minimum value is smaller than your maximum value.');
     });
 
     it('should show an error message if configuration.measureAxisMinValue ' +
@@ -159,12 +163,7 @@ describe('SvgBarChart', () => {
       const errorMessage = barChart.element.
         find('.socrata-visualization-error-message').text();
 
-      const expectedMessage = I18n.translate(
-        'visualizations.common.validation.errors.' +
-        'measure_axis_biggest_value_should_be_more_than_min_limit'
-      );
-
-      expect(errorMessage).to.equal(expectedMessage);
+      assert.equal(errorMessage, 'Minimum axis value cannot exceed values within dataset.');
     });
   });
 });

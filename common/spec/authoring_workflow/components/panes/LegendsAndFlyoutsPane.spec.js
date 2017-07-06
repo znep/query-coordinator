@@ -2,6 +2,8 @@ import _ from 'lodash';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import { FeatureFlags } from 'common/feature_flags';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 
 import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
@@ -27,6 +29,14 @@ function render(type, props) {
 describe('LegendsAndFlyoutsPane', function() {
   var component;
   var props;
+
+  beforeEach(() => {
+    I18n.translations.en = allLocales.en;
+  });
+
+  afterEach(() => {
+    I18n.translations = {};
+  });
 
   function emitsEvent(id, eventName, eventType) {
     it(`should emit an ${eventName} event`, function(done) {

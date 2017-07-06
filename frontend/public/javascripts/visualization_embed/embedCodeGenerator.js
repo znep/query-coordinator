@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import { translate } from 'common/visualizations/I18n';
+import I18n from 'common/i18n';
 import { loaderLibrarySrc } from './paths';
 
 /**
@@ -23,7 +23,7 @@ export default function generateEmbedCode(vif, options) {
   const domain = _.get(vif, 'series[0].dataSource.domain');
   const datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
   const defaultSourceHref = (domain && datasetUid) ? `https://${domain}/d/${datasetUid}?referrer=embed` : null;
-  const fallbackSourceLinkText = options.fallbackSourceLinkText || translate('visualizations.embed.explore_data_link');
+  const fallbackSourceLinkText = options.fallbackSourceLinkText || I18n.t('shared.visualizations.charts.embed.explore_data_link');
   const domainAttr = domain ? `data-socrata-domain="${domain}" ` : '';
 
   const scriptTag = `<script type="text/javascript" charset="UTF-8" ${domainAttr}src="${loaderLibrarySrc(domain)}"></script>`;

@@ -4,8 +4,17 @@ import { COLOR_PALETTES } from 'common/visualizations/views/SvgStyleConstants';
 import { customPaletteVif, customPalette } from './testData/customPalette';
 import { customPaletteVif as customPalettePieChartVif, customPalette as customPalettePieChart } from './testData/customPalettePieChart';
 import { getInitialState } from '../../authoring_workflow/testStore';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 
 describe('CustomColorPaletteManager', () => {
+  beforeEach(() => {
+    I18n.translations.en = allLocales.en;
+  });
+
+  afterEach(() => {
+    I18n.translations = {};
+  });
 
   describe('generateCustomColorPalette', () => {
     let timeStub;

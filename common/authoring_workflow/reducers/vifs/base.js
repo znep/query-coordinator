@@ -67,7 +67,7 @@ export default function(state, action) {
     case actions.SET_SHOW_LEGEND:
       _.set(state, 'configuration.showLegend', action.showLegend);
       break;
- 
+
     case actions.SET_VIEW_SOURCE_DATA_LINK:
       _.set(state, 'configuration.viewSourceDataLink', action.viewSourceDataLink);
       break;

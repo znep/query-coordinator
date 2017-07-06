@@ -3,7 +3,7 @@ const $ = require('jquery');
 const _ = require('lodash');
 const SvgVisualization = require('./SvgVisualization.js');
 const DataTypeFormatter = require('./DataTypeFormatter.js');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 
 const MINIMUM_COLUMN_WIDTH = 64;
 
@@ -65,7 +65,7 @@ module.exports = function Table(element, originalVif, locale) {
       removeClass('loaded');
 
     superRenderError(
-      I18n.translate('visualizations.table.error_unable_to_render', locale)
+      I18n.t('shared.visualizations.charts.table.error_unable_to_render', locale)
     );
   };
 
@@ -287,10 +287,10 @@ module.exports = function Table(element, originalVif, locale) {
 
   function templateSortMenu() {
 
-    const description = I18n.translate('visualizations.table.description', locale);
-    const more = I18n.translate('visualizations.table.more', locale);
-    const sortAscending = I18n.translate('visualizations.table.sort_ascending', locale);
-    const sortDescending = I18n.translate('visualizations.table.sort_descending', locale);
+    const description = I18n.t('shared.visualizations.charts.table.description', locale);
+    const more = I18n.t('shared.visualizations.charts.table.more', locale);
+    const sortAscending = I18n.t('shared.visualizations.charts.table.sort_ascending', locale);
+    const sortDescending = I18n.t('shared.visualizations.charts.table.sort_descending', locale);
 
     return `
       <div id="sort-menu">
@@ -601,7 +601,7 @@ module.exports = function Table(element, originalVif, locale) {
          'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
          {
            element: $(this)[0],
-           content: I18n.translate('visualizations.table.column_options', locale),
+           content: I18n.t('shared.visualizations.charts.table.column_options', locale),
            belowTarget: false,
            rightSideHint: false,
            dark: true
@@ -770,7 +770,7 @@ module.exports = function Table(element, originalVif, locale) {
     const columnName = $contentDiv.attr('data-column-name');
     const columnRenderType = $contentDiv.attr('data-column-render-type');
     const columnDescription = _.escape($contentDiv.attr('data-column-description')) ||
-      I18n.translate('visualizations.table.no_column_description', locale);
+      I18n.t('shared.visualizations.charts.table.no_column_description', locale);
 
     toggleSortMenu($contentDiv.closest('th'), columnName, columnRenderType, columnDescription);
   }

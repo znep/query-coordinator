@@ -11,7 +11,7 @@ import {
 } from '../selectors/vifAuthoring';
 import { getValidDimensions } from '../selectors/metadata';
 import { setDimensionGroupingColumnName } from '../actions';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 import DimensionGroupingStackedSelector from './DimensionGroupingStackedSelector';
 
 export const DimensionGroupingColumnNameSelector = React.createClass({
@@ -32,8 +32,8 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
 
     const options = [
       {
-        title: I18n.translate(
-          'panes.data.fields.dimension_grouping_column_name.no_value'
+        title: I18n.t(
+          'shared.visualizations.panes.data.fields.dimension_grouping_column_name.no_value'
         ),
         value: null
       },
@@ -63,13 +63,13 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
       <div>
         <div className="authoring-field">
           <BlockLabel
-            title={I18n.translate(`panes.data.fields.dimension_grouping_column_name.subtitle`)}
+            title={I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_column_name.subtitle`)}
             htmlFor={dimensionGroupingColumnNameAttributes.id}
-            description={I18n.translate('panes.data.fields.dimension_grouping_column_name.description')} />
+            description={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.description')} />
           <Dropdown {...dimensionGroupingColumnNameAttributes} />
         </div>
         <p className="authoring-field-description">
-          <small>{I18n.translate('panes.data.fields.dimension_grouping_column_name.description')}</small>
+          <small>{I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.description')}</small>
         </p>
         {displayOptionsContainer}
       </div>

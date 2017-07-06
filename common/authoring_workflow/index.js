@@ -7,7 +7,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import utils from 'common/js_utils';
-import { I18n, helpers } from 'common/visualizations';
+import { helpers } from 'common/visualizations';
 
 import reducer from './reducers';
 import getVifTemplates from './vifs';
@@ -59,7 +59,6 @@ module.exports = function(element, configuration) {
 
   load(this.store.dispatch, vif);
   this.store.dispatch(setFilters(filters));
-  I18n.setLocale(locale);
 
   this.render = () => {
     ReactDOM.render(

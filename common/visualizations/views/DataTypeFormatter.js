@@ -4,7 +4,7 @@ const utils = require('common/js_utils');
 const moment = require('moment');
 // Converts GeoJSON formats to text
 const wkt = require('wellknown');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 
 const CURRENCY_SYMBOLS = {
   'AFN': '؋',
@@ -276,9 +276,9 @@ function renderNumberCell(input, column) {
     precisionStyle: 'standard',
     precision: undefined,
     noCommas: false,
-    currency: I18n.translate('visualizations.common.currency_symbol'),
-    decimalSeparator: I18n.translate('visualizations.common.decimal_separator'),
-    groupSeparator: I18n.translate('visualizations.common.group_separator'),
+    currency: I18n.t('shared.visualizations.charts.common.currency_symbol'),
+    decimalSeparator: I18n.t('shared.visualizations.charts.common.decimal_separator'),
+    groupSeparator: I18n.t('shared.visualizations.charts.common.group_separator'),
     mask: null
   }, column.format || {});
 
@@ -384,8 +384,8 @@ function renderGeoCellHTML(cellContent) {
   const coordinates = _cellCoordinates(cellContent);
 
   if (coordinates) {
-    const latitudeTitle = I18n.translate('visualizations.common.latitude');
-    const longitudeTitle = I18n.translate('visualizations.common.longitude');
+    const latitudeTitle = I18n.t('shared.visualizations.charts.common.latitude');
+    const longitudeTitle = I18n.t('shared.visualizations.charts.common.longitude');
 
     const latitude = `<span title="${latitudeTitle}">${coordinates[latitudeIndex]}°</span>`;
     const longitude = `<span title="${longitudeTitle}">${coordinates[longitudeIndex]}°</span>`;

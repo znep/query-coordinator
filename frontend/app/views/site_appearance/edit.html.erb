@@ -26,9 +26,16 @@
     <div class="header-title">
       <h1>
         <%= t('screens.admin.site_appearance.site_appearance') %>
-        <%= link_to('https://support.socrata.com/hc/en-us/articles/223723227', :target => 'blank') do %>
-          <span class="socrata-icon-question"></span>
-        <% end %>
+        <div class="flyout-container">
+          <%= link_to('https://support.socrata.com/hc/en-us/articles/223723227', :target => 'blank') do %>
+            <span class="flyout-target socrata-icon-question"></span>
+          <% end %>
+          <div class="flyout flyout-right flyout-hidden">
+            <section class="flyout-content">
+              <p><%= t('screens.admin.site_appearance.need_help') %></p>
+            </section>
+          </div>
+        </div>
       </h1>
     </div>
   <% end %>

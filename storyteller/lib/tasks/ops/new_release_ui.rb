@@ -241,31 +241,19 @@ Proceed?
   # version. Example header:
   #   Storyteller v1.0.1 Manifest (old version: v1.0.0).
   def manifest_text
-    commits = git.gblob('../storyteller').log(MAX_MANIFEST_COMMITS).between(last_released_commit_sha, new_release_commit).select do |commit|
-      commit.parents.length == 1 # Ignore merge commits.
-    end
+    storyteller_gblob = git.gblob('../storyteller')
+    common_gblob = git.gblob('../common')
 
-    jira_tickets = commits.map(&:message).map do |message|
-      message.scan(/EN-\d+/)
-    end.flatten.sort.uniq
+    storyteller_commits = get_commits_for(storyteller_gblob)
+    common_commits = get_commits_for(common_gblob)
 
-    jira_tickets_text = jira_tickets.map do |ticket_id|
-      "#{ticket_id}: https://socrata.atlassian.net/browse/#{ticket_id}"
-    end.join("\n")
-
-    commits_summary = "Link to Jira query for current issues...\n"
-    commits_summary << jira_query(jira_tickets)
-
-    commits_summary << "\n\nJIRA tickets:\n#{jira_tickets_text}\n\n"
-    commits_summary << "Diff: https://github.com/socrata/platform-ui/compare/#{last_released_commit_sha}...#{new_release_commit.sha}\n\n"
-    commits_summary << commits.map do |commit|
-      "#{commit.author.name} #{commit.date.strftime('%m-%d-%y')} #{commit.sha}:\n#{commit.message.strip}"
-    end.join("\n\n")
+    storyteller_summary = jira_summary(storyteller_commits, 'Storyteller Tickets:')
+    common_summary = jira_summary(common_commits, 'Common Tickets:')
 
     if new_semver
-      "Storyteller #{new_semver} manifest (old version: #{current_release_semver})\n\n#{commits_summary}"
+      "Storyteller #{new_semver} manifest (old version: #{current_release_semver})\n\n#{storyteller_summary}\n\n#{common_summary}"
     else
-      commits_summary
+      "#{storyteller_summary}\n\n#{common_summary}"
     end
   end
 
@@ -317,9 +305,35 @@ Reset origin/#{RELEASE_BRANCH_NAME} to #{last_released_commit_sha} and try again
     end
   end
 
+  def get_commits_for(gblob)
+    gblob.log(MAX_MANIFEST_COMMITS).between(last_released_commit_sha, new_release_commit).select do |commit|
+      commit.parents.length == 1 # Ignore merge commits.
+    end
+  end
+
   def jira_query(jira_tickets)
     jira_query = "id in (#{jira_tickets.join(',')})"
     URI("https://socrata.atlassian.net/issues/?jql=#{URI.encode(jira_query)}").to_s
+  end
+
+  def jira_summary(commits, section_header)
+    jira_tickets = commits.map(&:message).map do |message|
+      message.scan(/EN-\d+/)
+    end.flatten.sort.uniq
+
+    jira_tickets_text = jira_tickets.map do |ticket_id|
+      "#{ticket_id}: https://socrata.atlassian.net/browse/#{ticket_id}"
+    end.join("\n")
+
+    commits_summary = "#{section_header}\n\n"
+    commits_summary << "Link to Jira query for current issues...\n"
+    commits_summary << jira_query(jira_tickets)
+
+    commits_summary << "\n\nJIRA tickets:\n#{jira_tickets_text}\n\n"
+    commits_summary << "Diff: https://github.com/socrata/platform-ui/compare/#{last_released_commit_sha}...#{new_release_commit.sha}\n\n"
+    commits_summary << commits.map do |commit|
+      "#{commit.author.name} #{commit.date.strftime('%m-%d-%y')} #{commit.sha}:\n#{commit.message.strip}"
+    end.join("\n\n")
   end
 
   def copy_manifest_to_clipboard

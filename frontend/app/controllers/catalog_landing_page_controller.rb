@@ -14,6 +14,11 @@ class CatalogLandingPageController < ApplicationController
 
   layout 'styleguide'
 
+  # EN-16606: only show site chrome header/footer on the anonymously visible pages ('show')
+  def disable_site_chrome?
+    action_name != 'show'
+  end
+
   def show
     @processed_browse = process_browse(request, browse_options)
     @processed_browse[:sidebar_config] = OpenStruct.new(:search => false)

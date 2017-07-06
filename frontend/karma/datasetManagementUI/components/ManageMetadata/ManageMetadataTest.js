@@ -23,9 +23,8 @@ describe('components/ManageMetadata', () => {
       category: 'category',
       tags: ['a tag'],
       rowLabel: 'row label',
-      isDirty: {
-        form: false
-      }
+      datasetFormDirty: false,
+      columnFormDirty: false
     },
     fourfour: 'hehe-hehe',
     history: [
@@ -46,7 +45,7 @@ describe('components/ManageMetadata', () => {
     onCancel: _.noop,
     onEditColumnMetadata: _.noop,
     outputColumns: [],
-    currentColumns: [],
+    currentColumns: {},
     columnsExist: true
   };
 
@@ -158,17 +157,13 @@ describe('components/ManageMetadata', () => {
 
     it('passes the correct prop to ApiCallButton when form is dirty', () => {
       const dirtyView = {
-        ...defaultProps.views[defaultProps.fourfour],
-        isDirty: {
-          form: true
-        }
+        ...defaultProps.view,
+        datasetFormDirty: true
       };
 
       const dirtyProps = {
         ...props,
-        views: {
-          [defaultProps.fourfour]: dirtyView
-        }
+        view: dirtyView
       };
 
       const component = shallow(<ManageMetadata {...dirtyProps} />);

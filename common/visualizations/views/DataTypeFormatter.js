@@ -134,6 +134,7 @@ const TIME_FORMATS = {
   date_shortmonthdy: 'MMM DD, YYYY',
   date_monthdy_time: 'MMMM DD, YYYY hh:mm:ss A',
   date_dmonthy: 'DD MMMM YYYY',
+  date_dmonthy_time: 'DD MMMM YYYY hh:mm:ss A',
   date_shortmonthdy_shorttime: 'MMM DD, YYYY hh:mm A',
   date_ymonthd: 'YYYY MMMM DD',
   date_ymonthd_time: 'YYYY MMMM DD hh:mm:ss A',

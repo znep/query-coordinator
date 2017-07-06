@@ -1009,7 +1009,6 @@ function SvgColumnChart($element, vif, options) {
         () => {
 
           if (!isCurrentlyPanning()) {
-            hideHighlight();
             hideFlyout();
           }
         }

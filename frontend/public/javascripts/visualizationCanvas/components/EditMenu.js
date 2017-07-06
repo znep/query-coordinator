@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { updateNameAndDescription, closeEditMenu } from '../actions';
-import { t } from '../lib/I18n';
+import I18n from 'common/i18n';
 import { ExpandableMenuListItem, SideMenu } from 'common/components';
 
 export class EditMenu extends Component {
@@ -88,7 +88,7 @@ export class EditMenu extends Component {
     return (
       <div>
         <label htmlFor="edit-title-field" className="block-label">
-          {t('edit_menu.title')}
+          {I18n.t('visualization_canvas.edit_menu.title')}
         </label>
         <input {...props} />
       </div>
@@ -108,7 +108,7 @@ export class EditMenu extends Component {
     return (
       <div>
         <label htmlFor="edit-description-field" className="block-label">
-          {t('edit_menu.description')}
+          {I18n.t('visualization_canvas.edit_menu.description')}
         </label>
         <textarea {...props} />
       </div>
@@ -120,7 +120,7 @@ export class EditMenu extends Component {
 
     const menuItemprops = {
       iconName: 'edit',
-      text: t('edit_menu.editTitleAndDescription'),
+      text: I18n.t('visualization_canvas.edit_menu.editTitleAndDescription'),
       isOpen: isMetadataMenuOpen,
       onClick: this.toggleMetadataMenu
     };
@@ -148,7 +148,7 @@ export class EditMenu extends Component {
 
     return (
       <button {...props}>
-        {t('edit_menu.update')}
+        {I18n.t('visualization_canvas.edit_menu.update')}
       </button>
     );
   }
@@ -156,7 +156,7 @@ export class EditMenu extends Component {
   render() {
     const { isActive, onClickDismiss } = this.props;
     const props = {
-      title: t('edit_menu_label'),
+      title: I18n.t('visualization_canvas.edit_menu_label'),
       isAnchoredLeft: true,
       isOpen: isActive,
       children: this.renderMenuItems(),

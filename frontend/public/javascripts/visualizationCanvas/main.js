@@ -3,7 +3,7 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { t } from 'lib/I18n';
+import I18n from 'common/i18n';
 import confirmUnload from 'lib/confirmUnload';
 
 import { Analytics } from 'common/analytics';
@@ -56,7 +56,7 @@ _.defer(function() {
     console.error(`Fatal error when rendering: ${e.stack}`);
 
     ReactDOM.render(
-      <div className="alert error alert-full-width-top">{t('render_error')}</div>,
+      <div className="alert error alert-full-width-top">{I18n.t('visualization_canvas.render_error')}</div>,
       document.querySelector('.placeholder-wrapper')
     );
 

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { editVisualization } from '../actions';
-import { t } from '../lib/I18n';
+import I18n from 'common/i18n';
 
 export class EditVisualizationButton extends Component {
   render() {
@@ -12,7 +12,7 @@ export class EditVisualizationButton extends Component {
       <button
         className="edit-visualization-button btn btn-alternate-2"
         onClick={onClickHandler(vifIndex)}>
-        {t('edit_visualization')}
+        {I18n.t('visualization_canvas.edit_visualization')}
       </button>
     );
   }

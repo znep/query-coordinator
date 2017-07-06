@@ -3,7 +3,7 @@ import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { components as SocrataVisualizations } from 'common/visualizations';
 import { SocrataIcon } from 'common/components';
-import { t } from '../lib/I18n';
+import I18n from 'common/i18n';
 import EditVisualizationButton from './EditVisualizationButton';
 import ShareVisualizationButton from './ShareVisualizationButton';
 
@@ -57,7 +57,9 @@ export class VisualizationWrapper extends Component {
     return isMap && isEditable && !mapNotificationDismissed ?
       <div className="visualization-notification-container">
         <div className="alert info visualization-notification-message">
-          <small className="visualization-notification-text">{t('map_pan_and_zoom_message')}</small>
+          <small className="visualization-notification-text">
+            {I18n.t('visualization_canvas.map_pan_and_zoom_message')}
+          </small>
           <button
             className="btn btn-transparent visualization-notification-dismiss"
             onClick={this.onMapNotificationDismiss}>

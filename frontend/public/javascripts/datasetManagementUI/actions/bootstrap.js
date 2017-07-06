@@ -41,7 +41,9 @@ export function bootstrapApp(view, revision, customMetadataFieldsets) {
       attachments: _.get(view, 'metadata.attachments', []),
       metadata: view.metadata || {},
       showErrors: false,
-      customMetadataFieldsets
+      customMetadataFieldsets,
+      columnFormDirty: false,
+      datasetFormDirty: false
     };
 
     const initialRevision = {

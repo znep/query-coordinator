@@ -29,7 +29,10 @@ const mergeProps = ({ fourfour, ...rest }, { dispatch }, ownProps) => {
   return {
     ...rest,
     ...ownProps,
-    setValue: value => dispatch(Actions.setValue(path, value))
+    setValue: value => {
+      dispatch(Actions.editView(fourfour, { datasetFormDirty: true }));
+      dispatch(Actions.setValue(path, value));
+    }
   };
 };
 

@@ -16,17 +16,15 @@ describe('components/ManageMetadata', () => {
   const store = createStore(reducer, initialState, applyMiddleware(thunk));
 
   const defaultProps = {
-    views: {
-      'hehe-hehe': {
-        id: 'hehe-hehe',
-        name: 'a name',
-        description: 'a description',
-        category: 'category',
-        tags: ['a tag'],
-        rowLabel: 'row label',
-        isDirty: {
-          form: false
-        }
+    view: {
+      id: 'hehe-hehe',
+      name: 'a name',
+      description: 'a description',
+      category: 'category',
+      tags: ['a tag'],
+      rowLabel: 'row label',
+      isDirty: {
+        form: false
       }
     },
     fourfour: 'hehe-hehe',
@@ -45,8 +43,11 @@ describe('components/ManageMetadata', () => {
     onSaveDataset: _.noop,
     onSaveCol: _.noop,
     onDismiss: _.noop,
+    onCancel: _.noop,
     onEditColumnMetadata: _.noop,
-    outputColumns: []
+    outputColumns: [],
+    currentColumns: [],
+    columnsExist: true
   };
 
   const defaultDatasetProps = {

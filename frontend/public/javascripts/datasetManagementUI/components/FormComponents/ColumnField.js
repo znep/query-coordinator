@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Field from 'components/FormComponents/Field';
 import { isFieldNameField, isDisplayNameField } from 'models/forms';
 import * as Actions from 'actions/outputColumns';
+import { editView } from 'actions/views';
 
 const mapStateToProps = ({ entities, ui }, { field }) => {
   const { fourfour } = ui.routing;
@@ -16,17 +17,20 @@ const mapStateToProps = ({ entities, ui }, { field }) => {
 
   const showErrors = !!entities.views[fourfour].showErrors;
 
-  return { errors, showErrors };
+  return { errors, fourfour, showErrors };
 };
 
-const mergeProps = (stateProps, { dispatch }, ownProps) => {
+const mergeProps = ({ fourfour, ...rest }, { dispatch }, ownProps) => {
   const id = _.toNumber(ownProps.field.name.split('-').reverse()[0]);
   const propName = getPropName(ownProps.field.name);
 
   return {
-    ...stateProps,
+    ...rest,
     ...ownProps,
-    setValue: value => dispatch(Actions.editOutputColumn(id, { [propName]: value }))
+    setValue: value => {
+      dispatch(editView(fourfour, { columnFormDirty: true }));
+      dispatch(Actions.editOutputColumn(id, { [propName]: value }));
+    }
   };
 };
 

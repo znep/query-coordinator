@@ -40,7 +40,8 @@ export class ManageMetadata extends Component {
       onSaveDataset,
       onSaveCol,
       columnsExist,
-      onSidebarTabClick
+      onSidebarTabClick,
+      view
     } = this.props;
 
     const metadataContentProps = { path, fourfour, onSidebarTabClick, columnsExist };
@@ -53,13 +54,13 @@ export class ManageMetadata extends Component {
       saveBtnProps = {
         operation: SAVE_DATASET_METADATA,
         params: {},
-        onClick: onSaveDataset
+        onClick: view.datasetFormDirty ? onSaveDataset : onDismiss
       };
     } else {
       saveBtnProps = {
         operation: SAVE_COLUMN_METADATA,
         params: {},
-        onClick: onSaveCol
+        onClick: view.columnFormDirty ? onSaveCol : onDismiss
       };
     }
 
@@ -100,7 +101,13 @@ ManageMetadata.propTypes = {
 const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(dismissMetadataPane()),
   onCancel: (fourfour, localState) => {
-    dispatch(editView(fourfour, localState.initialDatasetMetadata));
+    dispatch(
+      editView(fourfour, {
+        ...localState.initialDatasetMetadata,
+        columnFormDirty: false,
+        datasetFormDirty: false
+      })
+    );
     dispatch(addOutputColumns(localState.initialColMetadata));
     dispatch(dismissMetadataPane());
   },

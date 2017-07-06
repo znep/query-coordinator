@@ -78,7 +78,12 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       // TODO: remove this a rework where we pull saved metadata values when complete
       const sanitizedResp = _.omit(resp, ['privateCustomMetadata', 'publicCustomMetadata']);
 
-      dispatch(editView(resp.id, sanitizedResp));
+      dispatch(
+        editView(resp.id, {
+          ...sanitizedResp,
+          datasetFormDirty: false
+        })
+      );
 
       dispatch(apiCallSucceeded(callId));
 
@@ -177,6 +182,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
       dispatch(subscribeToTransforms(resp.resource));
     })
     .then(() => {
+      dispatch(editView(fourfour, { columnFormDirty: false }));
       dispatch(apiCallSucceeded(callId));
       dispatch(redirectAfterInterval());
     });

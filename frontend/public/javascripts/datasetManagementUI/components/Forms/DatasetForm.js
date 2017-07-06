@@ -7,6 +7,15 @@ import Fieldset from 'components/FormComponents/Fieldset';
 import DatasetField from 'components/FormComponents/DatasetField';
 
 export class DatasetForm extends Component {
+  componentWillMount() {
+    const { setErrors, regularFieldsets, customFieldsets } = this.props;
+
+    validateDatasetForm(regularFieldsets, customFieldsets).matchWith({
+      Success: () => setErrors([]),
+      Failure: ({ value }) => setErrors(value)
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     const { regularFieldsets, customFieldsets } = nextProps;
 

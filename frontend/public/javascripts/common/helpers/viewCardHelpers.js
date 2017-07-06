@@ -33,18 +33,23 @@ export function getViewCardPropsForView(view) {
   };
 }
 
-export function getViewCardPropsForExternalContent(externalContent) {
-  let imageUrl = externalContent.previewImage;
+// This is needed because sometimes previewImageId is a GUID and sometimes isn't not.
+export function translatePreviewImageIdToImageUrl(previewImageId) {
+  let imageUrl = previewImageId;
 
-  if (!_.isEmpty(imageUrl) && !/^(https?:\/\/|data:)/.test(imageUrl)) {
-    imageUrl = `/api/views/${window.initialState.view.id}/files/${imageUrl}`;
+  if (!_.isEmpty(previewImageId) && !/^(https?:\/\/|data:)/.test(previewImageId)) {
+    imageUrl = `/api/views/${window.initialState.view.id}/files/${previewImageId}`;
   }
 
+  return imageUrl;
+}
+
+export function getViewCardPropsForExternalContent(externalContent) {
   return {
     contentType: 'external',
     name: externalContent.title,
     description: externalContent.description,
-    imageUrl: imageUrl,
+    imageUrl: translatePreviewImageIdToImageUrl(externalContent.previewImageId),
     url: externalContent.url,
     linkProps: {
       'aria-label': getAriaLabel(externalContent)

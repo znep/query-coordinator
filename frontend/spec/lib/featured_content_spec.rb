@@ -114,13 +114,13 @@ describe FeaturedContent do
         VCR.use_cassette('existing_featured_content') do
           featured_content = subject.fetch(clp_parent_uid, clp_parent_type)
 
-          expect(featured_content.length).to eq(2)
+          expect(featured_content.length).to eq(3)
 
-          expect(featured_content[0]['contentType']).to eq('internal')
-          expect(featured_content[0]['uid']).to eq('vkji-3zrf')
+          expect(featured_content[0]['contentType']).to eq('external')
+          expect(featured_content[0]['imageUrl']).to eq('https://localhost/api/file_data/c6d60ec7-0961-4629-b86a-fb96925d1ccc')
 
-          expect(featured_content[1]['contentType']).to eq('external')
-          expect(featured_content[1]['imageUrl']).to eq('https://localhost/api/file_data/c3ea70bc-4068-43a7-ad1f-8d8102d3d35a')
+          expect(featured_content[1]['contentType']).to eq('internal')
+          expect(featured_content[1]['uid']).to eq('rp4e-cauq')
         end
       end
 

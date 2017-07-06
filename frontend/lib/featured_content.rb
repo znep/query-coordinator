@@ -25,7 +25,7 @@ class FeaturedContent
       end.map(&method(transformation_method))
     end
 
-    def create_or_update(parent_uid, parent_type, featured_item)
+    def create_or_update(parent_uid, parent_type, item)
       # Don't save items that already have a table id. Featured Content api doesn't actually support "update".
       # Instead it will delete and re-create the item.
       # This addresses a sharp corner whereby the id of the underlying catalog_query record can change when
@@ -34,7 +34,7 @@ class FeaturedContent
       # which leads to the creation of a new catalog_query record, which leads to state getting out of sync
       # between frontend w/r/t the catalog_query record primary key. This is discussed in the following doc:
       # https://docs.google.com/document/d/19EgLcTe-iHMpJ_wLlsl5cxge3xuwkPMriT93C9R-AU0/edit#
-      return if featured_item[:resource_id]
+      return if item[:resource_id]
 
       extra_properties = {
         :parentUid => parent_uid,
@@ -42,14 +42,14 @@ class FeaturedContent
       }
 
       # Here we strip off the leading MIME type information from the form upload element base64 data
-      if featured_item[:previewImageBase64].present?
-        imagePayload = featured_item[:previewImageBase64]
+      if item[:previewImageBase64].present?
+        imagePayload = item[:previewImageBase64]
         extra_properties[:previewImageBase64] = imagePayload[imagePayload.index(',')+1..-1]
       end
 
       formatted_featured_item(JSON.parse(
         CoreServer::Base.connection.
-          create_request('/featured_content', featured_item.merge(extra_properties.to_h).to_json)
+          create_request('/featured_content', item.merge(extra_properties.to_h).to_json)
       ))
     end
 
@@ -66,31 +66,32 @@ class FeaturedContent
 
     private
 
-    def formatted_featured_item(featured_item)
+    def formatted_featured_item(item)
       # This contentType is not to be confused with content-type in the context of HTTP requests.
       # contentType can be either 'internal' or 'external'. When it's 'internal' and parentType is
       # 'catalog_query' then the parentUid points to an entry in the catalog_queries table. When the
       # parentType is 'data_lens', then parentUid is the 4x4 of the parent view. Furthermore, the
       # parentType property is only present on 'internal' featured content items, so we check that last.
-      if featured_item.fetch('contentType') == 'internal' && featured_item.fetch('parentType') != 'catalog_query'
-        featuredView = format_view_widget(View.setup_model(featured_item['featuredView'] || featured_item['id']))
+      if item.fetch('contentType') == 'internal' && item.fetch('parentType') != 'catalog_query'
+        featuredView = format_view_widget(View.setup_model(item['featuredView'] || item['id']))
       end
-      featured_item.merge(:featuredView => featuredView).compact
+      item.merge(:featuredView => featuredView).compact
     end
 
     # This method extracts the subset of properties from a featured content item and transforms them for use
     # in the context of a View Card since the view card properties differ from what the API returns.
-    def featured_item(featured_item)
-      view_card_mapping = featured_item.slice(*%w(contentType description id position url)).with_indifferent_access
-      uid = featured_item['featuredLensUid']
+    def featured_item(item)
+      view_card_mapping = item.slice(*%w(contentType description id position url)).with_indifferent_access
+      uid = item['featuredLensUid']
       view_card_mapping[:uid] = uid
-      view_card_mapping[:name] = featured_item['title']
+      view_card_mapping[:name] = item['title']
 
-      if featured_item['previewImage'].present?
+      if item['previewImageId'].present? || item['previewImage'].present?
+        preview_image = item.values_at('previewImageId', 'previewImage').compact.first
         if view_card_mapping[:contentType] == 'internal'
-          view_card_mapping[:imageUrl] = "https://#{CurrentDomain.cname}/views/#{uid}/files/#{featured_item['previewImage']}"
+          view_card_mapping[:imageUrl] = "https://#{CurrentDomain.cname}/views/#{uid}/files/#{preview_image}"
         else
-          view_card_mapping[:imageUrl] = "https://#{CurrentDomain.cname}/api/file_data/#{featured_item['previewImage']}"
+          view_card_mapping[:imageUrl] = "https://#{CurrentDomain.cname}/api/file_data/#{preview_image}"
         end
       end
 

@@ -12,7 +12,7 @@
   <h1 class="styleguide-header">Available demos:</h1>
   <p>
   <% Demos::ComponentsController::available_demos.each do |demo| %>
-    <%= link_to demo, "components/#{demo}" %><br>
+    <%= link_to demo, "/internal/demos/components/#{demo}" %><br>
   <% end %>
   </p>
 </section>

@@ -20,8 +20,44 @@ each other when combined. The strings in `/common/i18n/config/locales` will all 
 level key in other apps, we should be fine.
 
 ## How this works with JS / React
-In general, we are still relying on Rails to load the locale strings, and utilize Rails helpers to put the translations on the browser window object
-on `window.translations`. Once the translations are on the window, we have two main ways to get access to I18n functionality.
+In general, we are still relying on Rails to load the locale strings, and utilize Rails helpers to put
+the translations on the browser window object on `window.translations`:
+
+_Frontend_ uses page-specific helpers. If you need to get translations onto a new page, it is recommended to
+  copy an existing helper and adapt it to your page. Work is ongoing to make this automatic and foolproof.
+  For example, here is how to render both `shared` and `helicopter_landing_page` translations:
+```ruby
+def helicopter_landing_page_translations
+  # Grab Helicopter Landing Page-specific translations.
+  translations = LocaleCache.render_translations([LocalePart.helicopter_landing_page])['helicopter_landing_page']
+  # Include frontend-specific common translations (NOTE! this is frontend's idea of shared translations,
+  # NOT the translations in `/common/i18n`.
+  translations.deep_merge(
+    'common' => LocaleCache.render_translations([LocalePart.common])['common']
+  )
+end
+
+def render_helicopter_landing_page_translations
+  # Old-style deprecated translations. We are working to remove these.
+  old_translations = json_escape(helicopter_landing_page_translations.to_json)
+  # Standard cross-app translations.
+  new_translations = json_escape(LocaleCache.render_partial_translations(:helicopter_landing_page).to_json)
+  javascript_tag("var I18n = #{old_translations}; var translations = #{new_translations};")
+end
+```
+Then, call `render_helicopter_landing_page_translations` in an ERB associated with your page.
+
+```erb
+<% content_for :scripts do %>
+  <%= render_helicopter_landing_page_translations %>
+<% end %>
+```
+
+_Storyteller_ should automatically have the correct translations. If not, ensure
+`_storyteller_environment.html.erb` is getting included (it should be included in the
+main application layout).
+
+Once the translations are on the window, we have two main ways to get access to I18n functionality.
 
 ### 1) Directly using `import I18n from 'common/i18n'`
 If you are not in a React context, you can import the common `I18n` module directly, which will load the available translations on `window.translations`

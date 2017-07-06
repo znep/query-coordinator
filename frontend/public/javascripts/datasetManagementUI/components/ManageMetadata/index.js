@@ -20,6 +20,8 @@ export class ManageMetadata extends Component {
       initialDatasetMetadata: null,
       initialColMetadata: null
     };
+
+    _.bindAll(this, ['revertChanges', 'handleSaveClick', 'handleCancelClick', 'handleTabClick']);
   }
 
   componentWillMount() {
@@ -31,20 +33,64 @@ export class ManageMetadata extends Component {
     });
   }
 
-  render() {
-    const {
-      fourfour,
-      path,
-      onDismiss,
-      onCancel,
-      onSaveDataset,
-      onSaveCol,
-      columnsExist,
-      onSidebarTabClick,
-      view
-    } = this.props;
+  revertChanges() {
+    const { dispatch, fourfour } = this.props;
 
-    const metadataContentProps = { path, fourfour, onSidebarTabClick, columnsExist };
+    dispatch(
+      editView(fourfour, {
+        ...this.state.initialDatasetMetadata,
+        columnFormDirty: false,
+        datasetFormDirty: false
+      })
+    );
+
+    dispatch(addOutputColumns(this.state.initialColMetadata));
+  }
+
+  handleSaveClick(e) {
+    e.preventDefault();
+
+    const { dispatch, view, currentColumns, path } = this.props;
+
+    const onDatasetTab = path === 'metadata/dataset';
+
+    if (onDatasetTab && view.datasetFormDirty) {
+      dispatch(saveDatasetMetadata()).then(() => {
+        this.setState({
+          initialDatasetMetadata: datasetMetadata(view)
+        });
+      });
+    } else if (view.columnFormDirty) {
+      dispatch(saveColumnMetadata()).then(() => {
+        this.setState({
+          initialColMetadata: currentColumns
+        });
+      });
+    } else {
+      return undefined;
+    }
+  }
+
+  handleCancelClick() {
+    const { dispatch } = this.props;
+
+    this.revertChanges();
+
+    dispatch(dismissMetadataPane());
+  }
+
+  handleTabClick() {
+    const { dispatch, fourfour } = this.props;
+
+    dispatch(hideFlashMessage());
+
+    dispatch(editView(fourfour, { showErrors: true }));
+  }
+
+  render() {
+    const { fourfour, path, columnsExist, view } = this.props;
+
+    const metadataContentProps = { path, fourfour, onSidebarTabClick: this.handleTabClick, columnsExist };
 
     const onDatasetTab = path === 'metadata/dataset';
 
@@ -54,27 +100,29 @@ export class ManageMetadata extends Component {
       saveBtnProps = {
         operation: SAVE_DATASET_METADATA,
         params: {},
-        onClick: view.datasetFormDirty ? onSaveDataset : onDismiss
+        onClick: this.handleSaveClick,
+        forceDisable: !view.datasetFormDirty
       };
     } else {
       saveBtnProps = {
         operation: SAVE_COLUMN_METADATA,
         params: {},
-        onClick: view.columnFormDirty ? onSaveCol : onDismiss
+        onClick: this.handleSaveClick,
+        forceDisable: !view.columnFormDirty
       };
     }
 
     return (
       <div className={styles.manageMetadata}>
-        <Modal fullScreen onDismiss={onDismiss}>
-          <ModalHeader title={I18n.metadata_manage.title} onDismiss={onDismiss} />
+        <Modal fullScreen onDismiss={this.handleCancelClick}>
+          <ModalHeader title={I18n.metadata_manage.title} onDismiss={this.handleCancelClick} />
 
           <ModalContent>
             <MetadataContent {...metadataContentProps} />
           </ModalContent>
 
           <ModalFooter>
-            <button id="cancel" className={styles.button} onClick={() => onCancel(fourfour, this.state)}>
+            <button id="cancel" className={styles.button} onClick={this.handleCancelClick}>
               {I18n.common.cancel}
             </button>
             <ApiCallButton {...saveBtnProps} />
@@ -86,38 +134,13 @@ export class ManageMetadata extends Component {
 }
 
 ManageMetadata.propTypes = {
-  onDismiss: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onSaveDataset: PropTypes.func.isRequired,
-  onSaveCol: PropTypes.func.isRequired,
-  onSidebarTabClick: PropTypes.func,
   view: PropTypes.object.isRequired,
   fourfour: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   columnsExist: PropTypes.bool,
-  currentColumns: PropTypes.object.isRequired
+  currentColumns: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired
 };
-
-const mapDispatchToProps = dispatch => ({
-  onDismiss: () => dispatch(dismissMetadataPane()),
-  onCancel: (fourfour, localState) => {
-    dispatch(
-      editView(fourfour, {
-        ...localState.initialDatasetMetadata,
-        columnFormDirty: false,
-        datasetFormDirty: false
-      })
-    );
-    dispatch(addOutputColumns(localState.initialColMetadata));
-    dispatch(dismissMetadataPane());
-  },
-  onSaveDataset: () => dispatch(saveDatasetMetadata()),
-  onSaveCol: () => dispatch(saveColumnMetadata()),
-  onSidebarTabClick: fourfour => {
-    dispatch(hideFlashMessage());
-    dispatch(editView(fourfour, { displayMetadataFieldErrors: true }));
-  }
-});
 
 const mapStateToProps = ({ entities, ui }, ownProps) => ({
   fourfour: ui.routing.fourfour,
@@ -131,4 +154,4 @@ function restoreColumn(col) {
   return _.omit(col, ['transform']);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManageMetadata);
+export default connect(mapStateToProps)(ManageMetadata);

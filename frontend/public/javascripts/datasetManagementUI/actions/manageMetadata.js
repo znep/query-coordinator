@@ -86,8 +86,6 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       );
 
       dispatch(apiCallSucceeded(callId));
-
-      dispatch(redirectAfterInterval());
     })
     .catch(error => {
       dispatch(apiCallFailed(callId, error));
@@ -184,21 +182,8 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     .then(() => {
       dispatch(editView(fourfour, { columnFormDirty: false }));
       dispatch(apiCallSucceeded(callId));
-      dispatch(redirectAfterInterval());
     });
 };
-
-// when save succeeds, wait this long until modal goes away
-// so user can see "saved" button is green
-export const DELAY_UNTIL_CLOSE_MS = 1000;
-
-function redirectAfterInterval() {
-  return dispatch => {
-    setTimeout(() => {
-      dispatch(dismissMetadataPane());
-    }, DELAY_UNTIL_CLOSE_MS);
-  };
-}
 
 export function focusColumnEditor(routerState) {
   return () => {

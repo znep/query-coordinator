@@ -55,17 +55,21 @@ export class ManageMetadata extends Component {
     const onDatasetTab = path === 'metadata/dataset';
 
     if (onDatasetTab && view.datasetFormDirty) {
-      dispatch(saveDatasetMetadata()).then(() => {
-        this.setState({
-          initialDatasetMetadata: datasetMetadata(view)
-        });
-      });
+      dispatch(saveDatasetMetadata())
+        .then(() => {
+          this.setState({
+            initialDatasetMetadata: datasetMetadata(view)
+          });
+        })
+        .catch(() => console.warn('Save failed'));
     } else if (view.columnFormDirty) {
-      dispatch(saveColumnMetadata()).then(() => {
-        this.setState({
-          initialColMetadata: currentColumns
-        });
-      });
+      dispatch(saveColumnMetadata())
+        .then(() => {
+          this.setState({
+            initialColMetadata: currentColumns
+          });
+        })
+        .catch(() => console.warn('Save failed'));
     } else {
       return undefined;
     }

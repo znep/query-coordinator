@@ -52,7 +52,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   if (errors.length) {
     dispatch(editView(fourfour, { showErrors: true }));
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
-    return;
+    return Promise.reject();
   }
 
   const datasetMetadata = Selectors.datasetMetadata(view);
@@ -110,13 +110,13 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 
     dispatch(editView(fourfour, { showErrors: true }));
 
-    return;
+    return Promise.reject();
   }
 
   const currentOutputSchema = Selectors.latestOutputSchema(entities);
 
   if (!currentOutputSchema) {
-    return;
+    return Promise.reject();
   }
 
   const payload = {

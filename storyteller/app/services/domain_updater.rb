@@ -3,6 +3,9 @@
 class DomainUpdater
   class << self
 
+    # Avoid OOMs from fetching a massive resultset of blocks; see EN-16884.
+    RESULT_WINDOW_SIZE = 200
+
     # Various components are aware of domains, but some of them store the domain
     # at a different path in the blob than others.
     DOMAIN_AWARE_COMPONENT_TYPES = {
@@ -29,88 +32,125 @@ class DomainUpdater
 
     # Convert usages of the old domain to the new domain.
     def migrate(old_domain, new_domain)
-      source_domains = old_domain.fetch('aliases', '').
-        split(',').map(&:strip).reject(&:empty?).concat([old_domain['cname']]).uniq
+      job_start_time = Time.current
+
       destination_domain = new_domain['cname']
-      affected_blocks = candidate_blocks(source_domains)
-      if affected_blocks.empty?
-        Rails.logger.info("No component migration needed for domain update of #{destination_domain}.")
-        return
+      source_domains = old_domain.fetch('aliases', '').split(',').map(&:strip).
+        concat([old_domain['cname'] == destination_domain ? nil : old_domain['cname']]).
+        reject(&:blank?).uniq
+
+      # Factoring this out into a lambda because we want to modify local state
+      # but need to run this separately for two different types of query.
+      offset = nil
+      block_ids = []
+      migrate_blocks = -> (blocks) do
+        return unless blocks.present?
+
+        ids = blocks.map(&:id)
+        offset = ids.max
+        block_ids += ids
+
+        # Use a consistent timestamp and log here in case we need to correlate
+        # between database records and logs.
+        update_time = Time.current
+        Rails.logger.info(
+          "Migrating components in #{blocks.size} blocks (#{ids.sort}) " +
+          "from #{source_domains.join(', ')} to #{destination_domain} at #{update_time}..."
+        )
+
+        blocks.each do |block|
+          migrate_block(block, source_domains, destination_domain, update_time)
+        end
       end
 
-      # Use a consistent timestamp and log here in case we need to correlate
-      # between database records and logs.
-      update_time = Time.current
-      Rails.logger.info(
-        "Migrating components in #{affected_blocks.size} blocks (#{affected_blocks.map(&:id).sort}) " +
-        "from #{source_domains.join(', ')} to #{destination_domain} at #{update_time}..."
-      )
+      # Migrate blocks retrieved with "vd" and "vdd" matchers.
+      offset = 0
+      begin
+        candidate_blocks = candidate_blocks_using_pure_json(source_domains, offset)
+        migrate_blocks.(candidate_blocks)
+      end while candidate_blocks.size == RESULT_WINDOW_SIZE
 
-      affected_blocks.each do |block|
-        new_components = block.components.map do |component|
-          # Check that each component _needs_ migration, because it is possible
-          # for a block to contain components associated with different domains;
-          # for example, one block may have two story tiles, one pointing to
-          # domain A and another pointing to domain B, and the latter should not
-          # update when A changes to X!
-          is_affected_component = has_domain_reference(component, source_domains)
+      # Migrate blocks retrieved with "vl" matchers.
+      offset = 0
+      begin
+        candidate_blocks = candidate_blocks_using_json_and_regexp(source_domains, offset)
+        migrate_blocks.(candidate_blocks)
+      end while candidate_blocks.size == RESULT_WINDOW_SIZE
 
-          # In plain English:
-          # * If the component isn't affected, return it.
-          # * If the component is affected, perform the appropriate migration.
-          if is_affected_component
-            case component['type']
+      # Print job summary.
+      block_count = block_ids.uniq.size
+      if block_count > 0
+        job_duration = Time.current - job_start_time
+        Rails.logger.info("Component migration for domain update of #{destination_domain} updated #{block_count} blocks in #{job_duration} seconds.")
+      else
+        Rails.logger.info("No component migration needed for domain update of #{destination_domain}.")
+      end
+    end
 
-            when 'story.tile'
-              migrate_story_tile(component, destination_domain)
+    private
 
-            when 'goal.tile'
-              migrate_goal_tile(component, destination_domain)
+    def migrate_block(block, source_domains, destination_domain, update_time)
+      new_components = block.components.map do |component|
+        # Check that each component _needs_ migration, because it is possible
+        # for a block to contain components associated with different domains;
+        # for example, one block may have two story tiles, one pointing to
+        # domain A and another pointing to domain B, and the latter should not
+        # update when A changes to X!
+        is_affected_component = has_domain_reference(component, source_domains)
 
-            when 'socrata.visualization.classic'
-              migrate_classic_visualization(component, destination_domain)
+        # In plain English:
+        # * If the component isn't affected, return it.
+        # * If the component is affected, perform the appropriate migration.
+        if is_affected_component
+          case component['type']
 
-            when /^socrata.visualization/
-              vif_version = component.dig('value', 'vif', 'format', 'version').to_i
-              case vif_version
+          when 'story.tile'
+            migrate_story_tile(component, destination_domain)
 
-              when 1
-                migrate_v1_vif(component, destination_domain)
+          when 'goal.tile'
+            migrate_goal_tile(component, destination_domain)
 
-              when 2
-                migrate_v2_vif(component, destination_domain)
+          when 'socrata.visualization.classic'
+            migrate_classic_visualization(component, destination_domain)
 
-              else
-                error_message = 'Failed to find valid VIF version during component migration!'
-                error_description = "Component structure: #{component.to_json}"
-                AirbrakeNotifier.report_error(
-                  StandardError.new("#{error_message} #{error_description}")
-                )
-                component
-              end
+          when /^socrata.visualization/
+            vif_version = component.dig('value', 'vif', 'format', 'version').to_i
+            case vif_version
 
-            when 'image'
-              migrate_image(component, destination_domain)
+            when 1
+              migrate_v1_vif(component, destination_domain)
+
+            when 2
+              migrate_v2_vif(component, destination_domain)
 
             else
-              error_message = 'Unknown affected component type in component migration!'
-              error_description = "Type #{component['type']} is marked domain-aware but has no migration case."
+              error_message = 'Failed to find valid VIF version during component migration!'
+              error_description = "Component structure: #{component.to_json}"
               AirbrakeNotifier.report_error(
                 StandardError.new("#{error_message} #{error_description}")
               )
               component
             end
 
+          when 'image'
+            migrate_image(component, destination_domain)
+
           else
+            error_message = 'Unknown affected component type in component migration!'
+            error_description = "Type #{component['type']} is marked domain-aware but has no migration case."
+            AirbrakeNotifier.report_error(
+              StandardError.new("#{error_message} #{error_description}")
+            )
             component
           end
+
+        else
+          component
         end
-
-        block.update_columns(components: new_components, updated_at: update_time)
       end
-    end
 
-    private
+      block.update_columns(components: new_components, updated_at: update_time)
+    end
 
     # Be extremely careful when adding or modifying a migration!
     # You do not want to completely muck up the component data structure!
@@ -240,73 +280,65 @@ class DomainUpdater
     #       -- and so forth, one entry per type/cname combination
     #     ]::jsonb[]);
     #
-    def candidate_blocks(domains)
-      # Sadly, our components don't have a consistent way of storing the path
-      # to the domain that they are based on, so we need to do the same thing
-      # a few times with some slight tweaks.
-      #
-      #   vd = the component stores it at value.domain
-      #   vdd = the component stores it at value.dataset.domain
-      #   vl = the component stores it at value.link (which is a URL!)
-      #
-      # I apologize for the naming, but I can't think of a good semantic way to
-      # describe why we have more than one convention.
+    # Sadly, our components don't have a consistent way of storing the path
+    # to the domain that they are based on, so we need to do the same thing
+    # a few times with some slight tweaks.
+    #
+    #   vd = the component stores it at value.domain
+    #   vdd = the component stores it at value.dataset.domain
+    #   vl = the component stores it at value.link (which is a URL!)
+    #
+    # I apologize for the naming, but I can't think of a good semantic way to
+    # describe why we have more than one convention.
 
-
-
+    def candidate_blocks_using_pure_json(domains, offset)
       # To create the component matchers for "vd" and "vdd", we need to generate
       # a cross product of all the affected types and all the affected domains.
       #
       # Then we format it for the containment predicate (the right side of @>).
       combine_and_format = -> ((type_hash, domain_hash)) { JSON.generate([type_hash.merge(domain_hash)]) }
 
-      vd_types = DOMAIN_AWARE_COMPONENT_TYPES['value.domain']
-      vd_type_hashes = vd_types.map { |type| {type: type} }
+      vd_type_hashes = DOMAIN_AWARE_COMPONENT_TYPES['value.domain'].map { |type| {type: type} }
       vd_domain_hashes = domains.map { |domain| {value: {domain: domain}} }
       vd_component_matchers = vd_type_hashes.product(vd_domain_hashes).map(&combine_and_format)
 
-      vdd_types = DOMAIN_AWARE_COMPONENT_TYPES['value.dataset.domain']
-      vdd_type_hashes = vdd_types.map { |type| {type: type} }
+      vdd_type_hashes = DOMAIN_AWARE_COMPONENT_TYPES['value.dataset.domain'].map { |type| {type: type} }
       vdd_domain_hashes = domains.map { |domain| {value: {dataset: {domain: domain}}} }
       vdd_component_matchers = vdd_type_hashes.product(vdd_domain_hashes).map(&combine_and_format)
 
-      pure_json_query = Block.where(
-        'deleted_at IS NULL AND components @> ANY (ARRAY [:matchers]::jsonb[])',
-        matchers: vd_component_matchers.concat(vdd_component_matchers)
-      )
+      Block.where(
+        'deleted_at IS NULL AND id > :offset AND components @> ANY (ARRAY [:matchers]::jsonb[])',
+        matchers: vd_component_matchers.concat(vdd_component_matchers),
+        offset: offset
+      ).order(:id).limit(RESULT_WINDOW_SIZE)
+    end
 
-
-
+    def candidate_blocks_using_json_and_regexp(domains, offset)
       # It's not possible to use only JSON manipulation functions to retrieve
       # records for the "vl" case. We have to run a separate nasty query to find
       # these affected blocks.
 
-      vl_types = DOMAIN_AWARE_COMPONENT_TYPES['value.link']
-      vl_type_hashes = vl_types.map { |type| {type: type} }
+      vl_type_hashes = DOMAIN_AWARE_COMPONENT_TYPES['value.link'].map { |type| {type: type} }
       vl_component_matchers = vl_type_hashes.map(&JSON.method(:generate))
 
       # The implicit lateral join allows us to write sane WHERE conditions
       # against the values in the components column. The substring clause
       # isolates domains in URLs in order to compare against input.
-      json_and_regexp_query = Block.find_by_sql([<<~SQL,
+      Block.find_by_sql([<<~SQL,
         SELECT DISTINCT blocks.*
         FROM blocks, jsonb_array_elements(blocks.components) block_components
         WHERE deleted_at IS NULL
           AND block_components @> ANY (ARRAY [:matchers]::jsonb[])
           AND substring(block_components#>>'{value,link}' FROM '//([^/?#]+)') IN (:domains)
+          AND blocks.id > :offset
+        ORDER BY blocks.id
+        LIMIT :window
         SQL
         matchers: vl_component_matchers,
-        domains: domains
+        domains: domains,
+        offset: offset,
+        window: RESULT_WINDOW_SIZE
       ])
-
-
-
-      # Return the union of these queries.
-      #
-      #   pure_json_query = ActiveRecord::Relation
-      #   json_and_regexp_query = Array
-      #
-      pure_json_query.to_a + json_and_regexp_query
     end
   end
 end

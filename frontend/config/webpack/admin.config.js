@@ -11,6 +11,7 @@ module.exports = _.defaultsDeep({
     'admin-georegions-screen': './screens/admin-georegions-screen',
     'admin-activity-feed': ['../plugins/daterangepicker.jquery.js', './screens/admin-activity-feed'],
     'admin-activity-feed-show': './screens/admin-activity-feed-show',
+    'admin-connector': './screens/admin-connector',
     'admin-edit-connector': './screens/admin-edit-connector',
     'admin-new-connector': './screens/admin-new-connector'
   }),

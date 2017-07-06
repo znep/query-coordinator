@@ -3177,6 +3177,7 @@ en:
         title: Manage Connectors
         type: Type
         update_selections: Update connector selections
+        whats_this: What's this?
       datasets:
         asset_inventory:
           initialize: Initialize Asset Inventory

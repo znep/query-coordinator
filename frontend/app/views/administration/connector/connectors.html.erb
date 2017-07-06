@@ -8,12 +8,24 @@
   <%= t("screens.admin.connector.title") %>
 <% end %>
 
+<%= include_webpack_bundle 'admin/admin-connector.js' %>
+
 <%= render :partial => 'left_nav' %>
 
 <div id="connector-content" class="contentBox withLeftNavigation">
 
   <div class="adminHeader connectors floating">
     <h1><%= t('screens.admin.connector.title') %></h1>
+    <div class="flyout-container">
+      <%= link_to('https://support.socrata.com/hc/en-us/articles/223722647-Using-the-Catalog-Connector-to-Federate-and-Connect-External-Assets', :target => 'blank') do %>
+        <span class="flyout-target socrata-icon-question"></span>
+      <% end %>
+      <div class="flyout flyout-right flyout-hidden">
+        <section class="flyout-content">
+          <p><%= t('screens.admin.connector.whats_this') %></p>
+        </section>
+      </div>
+    </div>
     <div class="connector-top-page-button-area">
       <div class="buttonArea">
         <%= link_to(

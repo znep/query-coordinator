@@ -121,6 +121,7 @@ administration-canvas-pages:
 - screen-admin-canvas-pages
 administration-connectors:
 - screen-administration-connectors
+- styleguide-no-tag-level-import-shim
 administration-federation:
 - screen-administration-federation
 administration-home:

@@ -1,5 +1,5 @@
 /* eslint react/jsx-indent: 0 */
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import TextInput from 'components/FormComponents/TextInput';
 import TextArea from 'components/FormComponents/TextArea';
@@ -8,60 +8,91 @@ import TagsInput from 'components/FormComponents/TagsInput';
 import * as Types from 'models/forms';
 import styles from 'styles/FormComponents/Field.scss';
 
-// TODO: this is pretty lame...maybe do another way
-function isHalfSized(field) {
-  return Types.Field.Tags.is(field) || Types.Field.Select.is(field) || field.name === 'attribution';
+class Field extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      showErrors: false
+    };
+
+    this.handleBlur = this.handleBlur.bind(this);
+  }
+
+  isHalfSized(field) {
+    return Types.Field.Tags.is(field) || Types.Field.Select.is(field) || field.name === 'attribution';
+  }
+
+  handleBlur() {
+    this.setState({
+      showErrors: true
+    });
+  }
+
+  render() {
+    const { field, errors, setValue, showErrors } = this.props;
+
+    const labelClassNames = [styles.label];
+
+    if (field.isRequired) {
+      labelClassNames.push(styles.labelRequired);
+    }
+
+    const inErrorState = (showErrors || this.state.showErrors) && !!errors.length;
+
+    const element = field.cata({
+      Text: () =>
+        <TextInput
+          field={field}
+          handleBlur={this.handleBlur}
+          setValue={setValue}
+          inErrorState={inErrorState} />,
+      Tags: () =>
+        <TagsInput
+          field={field}
+          handleBlur={this.handleBlur}
+          setValue={setValue}
+          inErrorState={inErrorState} />,
+      TextArea: () =>
+        <TextArea
+          field={field}
+          handleBlur={this.handleBlur}
+          setValue={setValue}
+          inErrorState={inErrorState} />,
+      Select: () =>
+        <Select field={field} handleBlur={this.handleBlur} setValue={setValue} inErrorState={inErrorState} />,
+      NoField: () =>
+        <span>
+          {I18n.edit_metadata.no_fields_message}
+        </span>
+    });
+
+    return (
+      <div className={this.isHalfSized(field) ? styles.halfSize : null}>
+        <label htmlFor={field.name} className={labelClassNames.join(' ')}>
+          {field.label}
+        </label>
+        {field.isPrivate &&
+          <div>
+            <SocrataIcon name="private" className={styles.icon} />
+            <span className={styles.privateMessage}>
+              {I18n.metadata_manage.dataset_tab.subtitles.private_field}
+            </span>
+          </div>}
+        {element}
+        {inErrorState
+          ? <ul className={styles.errorList}>
+              {errors.map(error =>
+                <li className={styles.errorMessage} key={error}>
+                  {error}
+                </li>
+              )}
+            </ul>
+          : null}
+      </div>
+    );
+  }
 }
-
-const Field = ({ field, errors, setValue, showErrors }) => {
-  if (!field) {
-    return null;
-  }
-
-  const labelClassNames = [styles.label];
-
-  if (field.isRequired) {
-    labelClassNames.push(styles.labelRequired);
-  }
-
-  const inErrorState = showErrors && !!errors.length;
-
-  const element = field.cata({
-    Text: () => <TextInput field={field} setValue={setValue} inErrorState={inErrorState} />,
-    Tags: () => <TagsInput field={field} setValue={setValue} inErrorState={inErrorState} />,
-    TextArea: () => <TextArea field={field} setValue={setValue} inErrorState={inErrorState} />,
-    Select: () => <Select field={field} setValue={setValue} inErrorState={inErrorState} />,
-    NoField: () =>
-      <span>
-        {I18n.edit_metadata.no_fields_message}
-      </span>
-  });
-
-  return (
-    <div className={isHalfSized(field) ? styles.halfSize : null}>
-      <label htmlFor={field.name} className={labelClassNames.join(' ')}>
-        {field.label}
-      </label>
-      {field.isPrivate &&
-        <div>
-          <SocrataIcon name="private" className={styles.icon} />
-          <span className={styles.privateMessage}>
-            {I18n.metadata_manage.dataset_tab.subtitles.private_field}
-          </span>
-        </div>}
-      {element}
-      {showErrors && errors.length
-        ? <ul className={styles.errorList}>
-            {errors.map(error =>
-              <li className={styles.errorMessage} key={error}>
-                {error}
-              </li>
-            )}
-          </ul>
-        : null}
-    </div>
-  );
-};
 
 Field.propTypes = {
   errors: PropTypes.array,

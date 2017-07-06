@@ -26,7 +26,9 @@ class TagsInput extends Component {
   addTag(e) {
     e.preventDefault();
 
-    const { setValue, field } = this.props;
+    const { setValue, field, handleBlur } = this.props;
+
+    handleBlur();
 
     if (!this.state.tag) {
       return;
@@ -58,7 +60,7 @@ class TagsInput extends Component {
   }
 
   render() {
-    const { field, inErrorState } = this.props;
+    const { field, inErrorState, handleBlur } = this.props;
 
     const classes = classNames(styles.textInput, { [styles.validationError]: inErrorState });
 
@@ -79,6 +81,7 @@ class TagsInput extends Component {
             name={field.name}
             id={field.name}
             className={classes}
+            onBlur={handleBlur}
             onChange={this.handleChange} />
           <button onClick={this.addTag} className={buttonClasses}>
             {I18n.edit_metadata.add_btn}
@@ -96,7 +99,8 @@ class TagsInput extends Component {
 TagsInput.propTypes = {
   field: PropTypes.object.isRequired,
   inErrorState: PropTypes.bool.isRequired,
-  setValue: PropTypes.func.isRequired
+  setValue: PropTypes.func.isRequired,
+  handleBlur: PropTypes.func.isRequired
 };
 
 export default TagsInput;

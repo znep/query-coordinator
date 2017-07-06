@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import styles from 'styles/FormComponents/TextInput.scss';
 
-const TextInput = ({ field, inErrorState, setValue }) => {
+const TextInput = ({ field, inErrorState, setValue, handleBlur }) => {
   const classNames = inErrorState ? styles.textInputError : styles.textInput;
 
   return (
@@ -13,6 +13,7 @@ const TextInput = ({ field, inErrorState, setValue }) => {
       className={classNames}
       placeholder={field.placeholder}
       value={field.value || ''}
+      onBlur={handleBlur}
       onChange={e => setValue(e.target.value)} />
   );
 };
@@ -20,7 +21,8 @@ const TextInput = ({ field, inErrorState, setValue }) => {
 TextInput.propTypes = {
   field: PropTypes.object.isRequired,
   inErrorState: PropTypes.bool.isRequired,
-  setValue: PropTypes.func.isRequired
+  setValue: PropTypes.func.isRequired,
+  handleBlur: PropTypes.func.isRequired
 };
 
 export default TextInput;

@@ -55,8 +55,7 @@ export class DebouncedInput extends React.Component {
 
   handleKeyDown(event) {
     // fix EN-16941
-    if (this.props.forceEnterKeyHandleChange &&
-        'Enter' === event.key) {
+    if (this.props.forceEnterKeyHandleChange && event.key === 'Enter') {
       event.preventDefault();
       this.handleChange(event);
     }
@@ -68,7 +67,8 @@ export class DebouncedInput extends React.Component {
       ['onDebouncedInputStart',
        'onDebouncedInputStop',
        'vifAuthoring',
-       'forceEnterKeyHandleChange']);
+       'forceEnterKeyHandleChange']
+    );
 
     if (this.usingChecked) {
       return <input {...props} checked={this.state.checked} onChange={this.handleChange}/>;

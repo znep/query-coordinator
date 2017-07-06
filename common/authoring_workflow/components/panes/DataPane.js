@@ -138,6 +138,7 @@ export var DataPane = React.createClass({
           showOtherCategory: this.showOtherCategoryCheckbox.checked
         });
       },
+      forceEnterKeyHandleChange: true,
       value: _.isNumber(limitCount) ? limitCount : 10,
       disabled: limitCountDisabled
     };

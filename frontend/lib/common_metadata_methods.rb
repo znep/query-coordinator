@@ -336,7 +336,7 @@ module CommonMetadataMethods
         description: column[:description],
         fred: column[:renderTypeName],
         name: column[:name],
-        physicalDatatype: column[:renderTypeName]
+        physicalDatatype: column[:renderTypeName] == 'checkbox' ? 'boolean' : column[:renderTypeName]
       }.compact
     end
 

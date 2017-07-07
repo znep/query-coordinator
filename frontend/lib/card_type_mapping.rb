@@ -30,16 +30,16 @@ module CardTypeMapping
 
     case physical_datatype
       when 'boolean' then card_type = 'column'
-      when 'calendar_date' then card_type = 'timeline'
+      when 'calendar_date', 'date' then card_type = 'timeline'
       when 'fixed_timestamp' then card_type = 'timeline'
       when 'floating_timestamp' then card_type = 'timeline'
       when 'geo_entity' then card_type = 'feature'
       when 'money' then card_type = 'histogram'
       when 'number' then card_type = has_georegion_computation_strategy?(column) ? 'choropleth' : 'histogram'
-      when 'point' then card_type = 'feature'
-      when 'multiline' then card_type = 'invalid'
-      when 'multipolygon' then card_type = 'invalid'
-      when 'text'
+      when 'point', 'location' then card_type = 'feature'
+      when 'multiline', 'line' then card_type = 'invalid'
+      when 'multipolygon', 'polygon' then card_type = 'invalid'
+      when 'text', 'url'
         if has_georegion_computation_strategy?(column)
           card_type = 'choropleth'
         # See: https://socrata.atlassian.net/browse/CORE-4755

@@ -214,14 +214,6 @@ export function setMeasureAggregation(measureAggregation) {
   };
 }
 
-export const SET_MEASURES = 'SET_MEASURES';
-export function setMeasures(measures) {
-  return {
-    type: SET_MEASURES,
-    measures
-  };
-}
-
 export const SET_VISUALIZATION_TYPE = 'SET_VISUALIZATION_TYPE';
 export function setVisualizationType(visualizationType) {
   return {

@@ -6,7 +6,6 @@ const SoqlHelpers = require('./SoqlHelpers');
 const I18n = require('../I18n');
 
 function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
-
   const series = vif.series[seriesIndex];
   const soqlDataProvider = new SoqlDataProvider({
     datasetUid: series.dataSource.datasetUid,

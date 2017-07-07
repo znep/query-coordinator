@@ -97,7 +97,6 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
   }
 
   function handleRenderVif(event) {
-
     const newVif = event.originalEvent.detail;
 
     updateData(
@@ -134,7 +133,6 @@ $.fn.socrataSvgColumnChart = function(originalVif, options) {
     $.fn.socrataSvgColumnChart.validateVif(newVif).
       then(visualization.shouldDisplayFilterBar() ? datasetMetadataProvider.getDisplayableFilterableColumns : skipPromise).
       then((columns) => {
-
         return Promise.all([
           Promise.resolve(columns),
           CategoricalDataManager.getData(newVif)

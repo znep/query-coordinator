@@ -56,16 +56,6 @@ export const getAnyMeasure = createSelector(
   }
 );
 
-export const getMeasuresFromVif = createSelector(
-  getCurrentVif,
-  getVifs,
-  (vif, vifs) => {
-    return _.isEmpty(vif) ?
-      _.get(vifs, 'columnChart.series[0].dataSource.measures', []) :
-      _.get(vif, 'series[0].dataSource.measures', []);
-  }
-);
-
 export const getSeriesFromVif = createSelector(
   getCurrentVif,
   vif =>  _.get(vif, 'series', [])

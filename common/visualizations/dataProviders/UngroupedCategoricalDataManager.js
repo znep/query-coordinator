@@ -5,9 +5,7 @@ const I18n = require('../I18n');
 const makeSocrataCategoricalDataRequest = require('./makeSocrataCategoricalDataRequest');
 
 function getData(vif, options) {
-  
   const dataRequests = vif.series.map((series, seriesIndex) => {
-
     const type = _.get(series, 'dataSource.type');
 
     switch (type) {
@@ -26,14 +24,12 @@ function getData(vif, options) {
     }
   });
 
-  function mapUngroupedDataResponsesToMultiSeriesTable(dataResponses) {
-
+  function mapUngroupedDataResponsesToMultiSeriesTable(dataResponses) { 
     const dimensionIndex = 0;
     const measureIndex = 1;
     const measureLabels = vif.series.map((series) => {
       return _.get(series, 'dataSource.measure.label', '');
     });
-
     const uniqueDimensionValues = _.uniq(
       _.flatMap(
         dataResponses.map((dataResponse) => {

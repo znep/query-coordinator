@@ -98,12 +98,6 @@ export default function(state, action) {
       selectedSeries.dataSource.measure.aggregationFunction = action.aggregationFunction;
       break;
 
-    case actions.SET_MEASURES:
-      forEachSeries(state, series => {
-        _.set(series, 'dataSource.measures', action.measures);
-      });
-      break;
-
     case actions.SET_TITLE:
       setStringValueOrDefaultValue(state, 'title', action.title, '');
       break;

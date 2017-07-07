@@ -7,8 +7,8 @@ import { I18n } from 'common/visualizations';
 import { isLoading, hasData, hasError } from '../../selectors/metadata';
 import {
   getLimitCount,
-  getMeasuresFromVif,
   getPrecision,
+  getSeriesFromVif,
   getShowOtherCategory,
   getTreatNullValuesAsZero,
   getVisualizationType,
@@ -283,9 +283,9 @@ export var DataPane = React.createClass({
       }
     }
 
-    const measures = getMeasuresFromVif(vifAuthoring);
+    const series = getSeriesFromVif(vifAuthoring);
     const dimensionGroupingAvailable = (
-      (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)) && (measures.length == 1)
+      (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)) && (series.length == 1)
     );
     const dimensionGroupingColumnNameTitle = I18n.translate(
       'panes.data.fields.dimension_grouping_column_name.title'

@@ -66,6 +66,11 @@ export const getMeasuresFromVif = createSelector(
   }
 );
 
+export const getSeriesFromVif = createSelector(
+  getCurrentVif,
+  vif =>  _.get(vif, 'series', [])
+);
+
 export const getTitle = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'title', null)

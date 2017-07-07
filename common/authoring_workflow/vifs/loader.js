@@ -21,11 +21,11 @@ const paths = {
   dimensionLabelAreaSize: 'configuration.dimensionLabelAreaSize',
   limit: 'series[0].dataSource.limit',
   mapCenterAndZoom: 'configuration.mapCenterAndZoom',
-  measureAggregationFunction: 'series[0].dataSource.measure.aggregationFunction',
+  measureAggregationFunction: 'series[{0}].dataSource.measure.aggregationFunction',
   measureAxisMaxValue: 'configuration.measureAxisMaxValue',
   measureAxisMinValue: 'configuration.measureAxisMinValue',
-  measureColumnName: 'series[0].dataSource.measure.columnName',
-  measures: 'series[0].dataSource.measures',
+  measureColumnName: 'series[{0}].dataSource.measure.columnName',
+  measureLabel: 'series[{0}].dataSource.measure.label',
   negativeColor: 'configuration.legend.negativeColor',
   orderBy: 'series[0].dataSource.orderBy',
   pointOpacity: 'configuration.pointOpacity',
@@ -35,6 +35,7 @@ const paths = {
   primaryColor: 'series[0].color.primary',
   rowInspectorTitleColumnName: 'configuration.rowInspectorTitleColumnName',
   secondaryColor: 'series[0].color.secondary',
+  series: 'series',
   shapefileGeometryLabel: 'configuration.shapefile.geometryLabel',
   shapefilePrimaryKey: 'configuration.shapefile.primaryKey',
   shapefileUid: 'configuration.shapefile.uid',
@@ -68,6 +69,28 @@ const getVifPath = (vif) => (path) => _.get(vif, path, null);
 export const load = (dispatch, vif) => {
   const has = hasVifPath(vif);
   const get = getVifPath(vif);
+
+  if (has(paths.series)) {
+
+    const seriesCount = get(paths.series).length;
+    if (seriesCount > 1) {
+      dispatch(actions.initializeSeries(seriesCount));
+    }
+
+    for (var i = 0; i < seriesCount; i++) {
+
+      const measureColumnNamePath = paths.measureColumnName.format(i);
+      const measureLabelPath = paths.measureLabel.format(i);
+      if (has(measureColumnNamePath)) {
+        dispatch(actions.setSeriesMeasureColumn(i, get(measureColumnNamePath), get(measureLabelPath)));
+      }
+
+      const measureAggregationFunctionPath = paths.measureAggregationFunction.format(i);
+      if (has(measureAggregationFunctionPath)) {
+        dispatch(actions.setSeriesMeasureAggregation(i, get(measureAggregationFunctionPath)));
+      }
+    }
+  }
 
   if (has(paths.baseLayerOpacity)) {
     dispatch(actions.setBaseLayerOpacity(get(paths.baseLayerOpacity)));
@@ -139,24 +162,12 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setCenterAndZoom(get(paths.mapCenterAndZoom)));
   }
 
-  if (has(paths.measureAggregationFunction)) {
-    dispatch(actions.setMeasureAggregation(get(paths.measureAggregationFunction)));
-  }
-
   if (has(paths.measureAxisMaxValue)) {
     dispatch(actions.setMeasureAxisMaxValue(get(paths.measureAxisMaxValue)));
   }
 
   if (has(paths.measureAxisMinValue)) {
     dispatch(actions.setMeasureAxisMinValue(get(paths.measureAxisMinValue)));
-  }
-
-  if (has(paths.measureColumnName)) {
-    dispatch(actions.setMeasure(get(paths.measureColumnName)));
-  }
-
-  if (has(paths.measures)) {
-    dispatch(actions.setMeasures(get(paths.measures)));
   }
 
   if (has(paths.negativeColor)) {

@@ -47,35 +47,6 @@ function dimensionAlias() {
  * @param {Object} vif
  * @param {Number} seriesIndex
  *
- * Note: Only works with VIF versions >= 3
- */
-function measureAtIndex(vif, seriesIndex, measureIndex) {
-  var aggregationFunction = _.get(
-    vif.series[seriesIndex],
-    `dataSource.measures[${measureIndex}].aggregationFunction`
-  );
-  var columnName = _.get(
-    vif.series[seriesIndex],
-    `dataSource.measures[${measureIndex}].columnName`
-  );
-
-  switch (aggregationFunction) {
-
-    case 'sum':
-      return ' SUM(`{0}`)'.format(columnName);
-
-    case 'count':
-      return 'COUNT(*)';
-
-    default:
-      return '`{0}`'.format(columnName);
-  }
-}
-
-/**
- * @param {Object} vif
- * @param {Number} seriesIndex
- *
  * Note: Only works with VIF versions >= 2
  */
 function measure(vif, seriesIndex) {
@@ -598,7 +569,6 @@ module.exports = {
   dimensionAlias,
   measure,
   measureAlias,
-  measureAtIndex,
   aggregationClause,
   orderByClauseFromSeries,
   whereClauseNotFilteringOwnColumn,

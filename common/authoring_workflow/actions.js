@@ -155,6 +155,49 @@ export function setDimension(dimension) {
   };
 }
 
+export const INITIALIZE_SERIES = 'INITIALIZE_SERIES';
+export function initializeSeries(seriesCount) {
+  return {
+    type: INITIALIZE_SERIES,
+    seriesCount
+  };
+}
+
+export const APPEND_SERIES_WITH_MEASURE = 'APPEND_SERIES_WITH_MEASURE';
+export function appendSeriesWithMeasure(measure) {
+  return {
+    type: APPEND_SERIES_WITH_MEASURE,
+    measure
+  };
+}
+
+export const REMOVE_SERIES = 'REMOVE_SERIES';
+export function removeSeries(seriesIndex) {
+  return {
+    type: REMOVE_SERIES,
+    seriesIndex
+  };
+}
+
+export const SET_SERIES_MEASURE_COLUMN = 'SET_SERIES_MEASURE_COLUMN';
+export function setSeriesMeasureColumn(seriesIndex, columnName, label) {
+  return {
+    type: SET_SERIES_MEASURE_COLUMN,
+    seriesIndex,
+    columnName,
+    label
+  };
+}
+
+export const SET_SERIES_MEASURE_AGGREGATION = 'SET_SERIES_MEASURE_AGGREGATION';
+export function setSeriesMeasureAggregation(seriesIndex, aggregationFunction) {
+  return {
+    type: SET_SERIES_MEASURE_AGGREGATION,
+    seriesIndex,
+    aggregationFunction
+  };
+}
+
 export const SET_MEASURE = 'SET_MEASURE';
 export function setMeasure(measure) {
   return {

@@ -6,47 +6,33 @@ const makeSocrataCategoricalDataRequest = require('./makeSocrataCategoricalDataR
 
 function getData(vif, options) {
   
-  let dataRequests = vif.series.map((series, seriesIndex) => {
+  const dataRequests = vif.series.map((series, seriesIndex) => {
 
-    return series.dataSource.measures.map((measure, measureIndex) => {
+    const type = _.get(series, 'dataSource.type');
 
-      const type = _.get(series, 'dataSource.type');
+    switch (type) {
 
-      switch (type) {
+      case 'socrata.soql':
+        return makeSocrataCategoricalDataRequest(
+          vif,
+          seriesIndex,
+          options.MAX_ROW_COUNT
+        );
 
-        case 'socrata.soql':
-          return makeSocrataCategoricalDataRequest(
-            vif,
-            seriesIndex,
-            options.MAX_ROW_COUNT,
-            measureIndex
-          );
-
-        default:
-          return Promise.reject(
-            `Invalid/unsupported series dataSource.type: "${type}".`
-          );
-      }
-    });
+      default:
+        return Promise.reject(
+          `Invalid/unsupported series dataSource.type: "${type}".`
+        );
+    }
   });
-
-  dataRequests = _.flatten(dataRequests);
 
   function mapUngroupedDataResponsesToMultiSeriesTable(dataResponses) {
 
-debugger;
-
     const dimensionIndex = 0;
     const measureIndex = 1;
-    let measureLabels = vif.series.map((series) => {
-      
-      return series.dataSource.measures.map((measure) => measure.columnName);
-//      return _.get(series, 'label', '');
+    const measureLabels = vif.series.map((series) => {
+      return _.get(series, 'dataSource.measure.label', '');
     });
-
-    measureLabels = _.flatten(measureLabels);
-
-debugger;
 
     const uniqueDimensionValues = _.uniq(
       _.flatMap(
@@ -160,9 +146,6 @@ debugger;
 
     return dataTable;
   }
-
-debugger;
-
 
   return Promise.
     all(dataRequests).

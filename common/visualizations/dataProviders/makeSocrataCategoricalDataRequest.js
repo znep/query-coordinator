@@ -5,9 +5,7 @@ const SoqlDataProvider = require('./SoqlDataProvider');
 const SoqlHelpers = require('./SoqlHelpers');
 const I18n = require('../I18n');
 
-function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount, measureIndex = 0) {
-
-console.log('makeSocrataCategoricalDataRequest - measureIndex: ' + measureIndex);
+function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
 
   const series = vif.series[seriesIndex];
   const soqlDataProvider = new SoqlDataProvider({
@@ -15,7 +13,7 @@ console.log('makeSocrataCategoricalDataRequest - measureIndex: ' + measureIndex)
     domain: series.dataSource.domain
   });
   const dimension = SoqlHelpers.dimension(vif, seriesIndex);
-  const measure = SoqlHelpers.measureAtIndex(vif, seriesIndex, measureIndex);
+  const measure = SoqlHelpers.measure(vif, seriesIndex);
   const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
     vif,
     seriesIndex
@@ -83,7 +81,6 @@ console.log('makeSocrataCategoricalDataRequest - measureIndex: ' + measureIndex)
     ].join(' ');
   }
 
-  console.log('queryString: ');
   console.log(queryString);
 
   return soqlDataProvider.

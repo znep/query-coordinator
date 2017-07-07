@@ -55,6 +55,49 @@ export default function(state, action) {
       });
       break;
 
+    case actions.INITIALIZE_SERIES:
+      for (var i = 0; i < action.seriesCount - 1; i++) {
+        const clonedSeries = _.cloneDeep(state.series[0]);
+        state.series.push(clonedSeries);
+      }
+      break;
+
+    case actions.APPEND_SERIES_WITH_MEASURE: {
+        const series = _.cloneDeep(state.series[0]);
+        series.dataSource.measure.columnName = action.measure.columnName;
+
+        if (_.isNull(action.measure.columnName)) {
+          series.dataSource.measure.aggregationFunction = 'count';
+        } else if (series.dataSource.measure.aggregationFunction === 'count') {
+          series.dataSource.measure.aggregationFunction = 'sum';
+        }
+
+        state.series.push(series);
+      }
+      break;
+
+    case actions.REMOVE_SERIES:
+      state.series.splice(action.seriesIndex, 1);
+      break;
+
+    case actions.SET_SERIES_MEASURE_COLUMN: {
+        const series = state.series[action.seriesIndex];
+        series.dataSource.measure.columnName = action.columnName;
+        series.dataSource.measure.label = action.label;
+
+        if (_.isNull(action.columnName)) {
+          series.dataSource.measure.aggregationFunction = 'count';
+        } else if (series.dataSource.measure.aggregationFunction === 'count') {
+          series.dataSource.measure.aggregationFunction = 'sum';
+        }
+      }
+      break;
+
+    case actions.SET_SERIES_MEASURE_AGGREGATION:
+      const selectedSeries = state.series[action.seriesIndex];
+      selectedSeries.dataSource.measure.aggregationFunction = action.aggregationFunction;
+      break;
+
     case actions.SET_MEASURES:
       forEachSeries(state, series => {
         _.set(series, 'dataSource.measures', action.measures);

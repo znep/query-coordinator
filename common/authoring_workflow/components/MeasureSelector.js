@@ -4,8 +4,14 @@ import React, { PropTypes } from 'react';
 import { factories, Dropdown } from 'common/components';
 import { I18n } from 'common/visualizations';
 import { AGGREGATION_TYPES, COLUMN_TYPES, MAXIMUM_MEASURES } from '../constants';
-import { setMeasures } from '../actions';
-import { getMeasuresFromVif, isFeatureMap } from '../selectors/vifAuthoring';
+
+import { 
+  appendSeriesWithMeasure, 
+  removeSeries, 
+  setSeriesMeasureColumn, 
+  setSeriesMeasureAggregation } from '../actions';
+
+import { getSeriesFromVif, isFeatureMap } from '../selectors/vifAuthoring';
 import { hasData, getValidMeasures } from '../selectors/metadata';
 import BlockLabel from './shared/BlockLabel';
 
@@ -13,7 +19,10 @@ export const MeasureSelector = React.createClass({
   propTypes: {
     vifAuthoring: PropTypes.object,
     metadata: PropTypes.object,
-    onSelectMeasures: PropTypes.func,
+    onAddMeasure: PropTypes.func,
+    onRemoveMeasure: PropTypes.func,
+    onSetMeasureColumn: PropTypes.func,
+    onSetMeasureAggregation: PropTypes.func,
   },
 
   getDefaultProps() {
@@ -50,9 +59,9 @@ export const MeasureSelector = React.createClass({
       }))
     ];
 
-    const measures = getMeasuresFromVif(vifAuthoring);
-    const items = measures.map((measure, index) => {
-      return this.renderMeasureSelector(measure, index, options);
+    const series = getSeriesFromVif(vifAuthoring);
+    const items = series.map((item, index) => {
+      return this.renderMeasureSelector(item.dataSource.measure, index, options);
     });
 
     return (
@@ -95,9 +104,9 @@ export const MeasureSelector = React.createClass({
 
   renderDeleteLink(index) {
     const { vifAuthoring } = this.props;
-    const measures = getMeasuresFromVif(vifAuthoring);
+    const series = getSeriesFromVif(vifAuthoring);
 
-    return (measures.length > 1) ? (
+    return (series.length > 1) ? (
       <div className="measure-delete-link-container">
         <a className="measure-delete-link" onClick={() => this.handleOnClickDeleteMeasure(index)}>
           <span className="socrata-icon-close" />
@@ -131,7 +140,7 @@ export const MeasureSelector = React.createClass({
       <div className="measure-aggregation-selector-dropdown-container">
         <Dropdown {...measureAggregationAttributes} />
       </div>);
-},
+  },
 
   renderMeasureOption(option) {
     const columnType = _.find(COLUMN_TYPES, {type: option.type});
@@ -146,9 +155,9 @@ export const MeasureSelector = React.createClass({
 
   renderNewMeasureLink() {
     const { vifAuthoring } = this.props;
-    const measures = getMeasuresFromVif(vifAuthoring);
+    const series = getSeriesFromVif(vifAuthoring);
 
-    return (measures.length < MAXIMUM_MEASURES) ? (
+    return (series.length < MAXIMUM_MEASURES) ? (
       <div className="measure-new-measure-link-container">
         <a onClick={this.handleOnClickNewMeasure}>
           <span className="socrata-icon-add" />
@@ -157,54 +166,28 @@ export const MeasureSelector = React.createClass({
       </div>) : null;
   },
 
-  handleOnSelectionMeasureColumn(option, index) {
-    const { onSelectMeasures } = this.props;
-    const measures = this.getClonedMeasures();  
-
-    measures[index].columnName = option.value;
-
-    if (_.isNull(option.value)) {
-      measures[index].aggregationFunction = 'count';
-    } else if (measures[index].aggregationFunction === 'count') {
-      measures[index].aggregationFunction = 'sum';
-    }
-
-    onSelectMeasures(measures);
-  },
-
-  handleOnSelectionMeasureAggregation(option, index) {
-    const { onSelectMeasures } = this.props;
-    const measures = this.getClonedMeasures();  
-
-    measures[index].aggregationFunction = option.value;
-    onSelectMeasures(measures);
-  },
-
-  handleOnClickDeleteMeasure(index) {
-    const { onSelectMeasures } = this.props;
-    const measures = this.getClonedMeasures();
-
-    measures.splice(index, 1);
-    onSelectMeasures(measures);
-  },
-
   handleOnClickNewMeasure() {
-    const { onSelectMeasures } = this.props;
-    const measures = this.getClonedMeasures();  
-
-    measures.push({ 
+    const { onAddMeasure } = this.props;
+    onAddMeasure({ 
       columnName: null,
       aggregationFunction: 'count'
     });
-
-    onSelectMeasures(measures);
   },
   
-  getClonedMeasures() {
-    const { vifAuthoring } = this.props;
-    const measures = getMeasuresFromVif(vifAuthoring);
-    return _.cloneDeep(measures);
-  }
+  handleOnClickDeleteMeasure(index) {
+    const { onRemoveMeasure } = this.props;
+    onRemoveMeasure(index);
+  },
+
+  handleOnSelectionMeasureColumn(option, index) {
+    const { onSetMeasureColumn } = this.props;
+    onSetMeasureColumn(index, option.value, option.title);
+  },
+
+  handleOnSelectionMeasureAggregation(option, index) {
+    const { onSetMeasureAggregation } = this.props;
+    onSetMeasureAggregation(index, option.value);
+  },
 });
 
 function mapStateToProps(state) {
@@ -214,8 +197,17 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onSelectMeasures(measures) {
-      dispatch(setMeasures(measures));
+    onAddMeasure(measure) {
+      dispatch(appendSeriesWithMeasure(measure));
+    },
+    onRemoveMeasure(index) {
+      dispatch(removeSeries(index));
+    },
+    onSetMeasureColumn(index, columnName, label) {
+      dispatch(setSeriesMeasureColumn(index, columnName, label));
+    },
+    onSetMeasureAggregation(index, aggregationFunction) {
+      dispatch(setSeriesMeasureAggregation(index, aggregationFunction));
     },
   };
 }

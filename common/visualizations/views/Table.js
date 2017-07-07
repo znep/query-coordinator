@@ -346,7 +346,7 @@ module.exports = function Table(element, originalVif, locale) {
 
         let template;
 
-        if (isGeometryType(column)) {
+        if (isUnsortableColumnType(column)) {
           template = templateTableUnsortableHeader(templateOptions);
         } else if (activeSort.columnName === column.fieldName) {
           template = templateTableSortedHeader(templateOptions);
@@ -650,7 +650,7 @@ module.exports = function Table(element, originalVif, locale) {
     );
   }
 
-  function isGeometryType(column) {
+  function isUnsortableColumnType(column) {
 
     return _.includes(
       [
@@ -660,7 +660,8 @@ module.exports = function Table(element, originalVif, locale) {
         'multiline',
         'polygon',
         'multipolygon',
-        'location'
+        'location',
+        'document'
       ],
       column.renderTypeName
     );
@@ -746,7 +747,7 @@ module.exports = function Table(element, originalVif, locale) {
     const columnName = $contentDiv.attr('data-column-name');
     const columnRenderType = $contentDiv.attr('data-column-render-type');
 
-    if (columnName && !isGeometryType({renderTypeName: columnRenderType})) {
+    if (columnName && !isUnsortableColumnType({renderTypeName: columnRenderType})) {
       self.emitEvent('SOCRATA_VISUALIZATION_COLUMN_CLICKED', columnName);
     }
   }
@@ -805,7 +806,7 @@ module.exports = function Table(element, originalVif, locale) {
 
   function attachSortMenuEventHandlers($sortMenu, columnName, columnRenderType) {
 
-    if (columnName && !isGeometryType({renderTypeName: columnRenderType})) {
+    if (columnName && !isUnsortableColumnType({renderTypeName: columnRenderType})) {
 
       $(document).on('click touchstart', hideSortMenu);
 

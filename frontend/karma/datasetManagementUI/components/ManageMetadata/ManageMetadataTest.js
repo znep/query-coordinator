@@ -36,7 +36,8 @@ describe('components/ManageMetadata', () => {
       }
     ],
     currentColumns: {},
-    columnsExist: true
+    columnsExist: true,
+    dispatch: () => {}
   };
 
   const defaultDatasetProps = {

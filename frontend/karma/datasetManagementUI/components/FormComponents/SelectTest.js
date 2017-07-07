@@ -35,7 +35,8 @@ const props = {
     isCustom: true
   },
   inErrorState: false,
-  setValue: sinon.spy()
+  setValue: sinon.spy(),
+  handleBlur: () => {}
 };
 
 describe('Select', () => {

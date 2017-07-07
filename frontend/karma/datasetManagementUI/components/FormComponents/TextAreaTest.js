@@ -14,7 +14,8 @@ const props = {
     placeholder: 'Enter a description'
   },
   inErrorState: false,
-  setValue: sinon.spy()
+  setValue: sinon.spy(),
+  handleBlur: () => {}
 };
 
 describe('components/FormComponents/TextArea', () => {

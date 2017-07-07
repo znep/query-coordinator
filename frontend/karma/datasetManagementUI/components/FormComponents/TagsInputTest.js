@@ -14,7 +14,8 @@ const props = {
     placeholder: 'Enter tag name'
   },
   inErrorState: false,
-  setValue: sinon.spy()
+  setValue: sinon.spy(),
+  handleBlur: () => {}
 };
 
 describe('components/FormComponents/TagsInput', () => {

@@ -45,7 +45,7 @@ describe('components/Forms/DatasetForm', () => {
           {
             name: 'name',
             label: 'Dataset Title',
-            value: 'ddd',
+            value: 'ok',
             isPrivate: false,
             isRequired: true,
             placeholder: 'Dataset Title',
@@ -54,10 +54,234 @@ describe('components/Forms/DatasetForm', () => {
           {
             name: 'description',
             label: 'Brief Description',
-            value: 'kk',
             isPrivate: false,
             isRequired: false,
             placeholder: 'Enter a description'
+          }
+        ]
+      },
+      {
+        title: 'Categories and Tags',
+        subtitle: 'Categorize your dataset to make it easier to find.',
+        fields: [
+          {
+            name: 'category',
+            label: 'Category',
+            value: 'Education',
+            isPrivate: false,
+            isRequired: false,
+            options: [
+              {
+                title: '-- No category --',
+                value: ''
+              },
+              {
+                title: 'Business',
+                value: 'Business'
+              },
+              {
+                title: 'Education',
+                value: 'Education'
+              },
+              {
+                title: 'Fun',
+                value: 'Fun'
+              },
+              {
+                title: 'Government',
+                value: 'Government'
+              },
+              {
+                title: 'Illegal',
+                value: 'Illegal'
+              },
+              {
+                title: 'Personal',
+                value: 'Personal'
+              }
+            ],
+            isCustom: false
+          },
+          {
+            name: 'tags',
+            label: 'Tags / Keywords',
+            value: ['one', 'four', 'three'],
+            isPrivate: false,
+            isRequired: false,
+            placeholder: 'Enter tag name'
+          }
+        ]
+      },
+      {
+        title: 'Licensing & Attribution',
+        subtitle: null,
+        fields: [
+          {
+            name: 'licenseId',
+            label: 'License Type',
+            value: null,
+            isPrivate: false,
+            isRequired: false,
+            options: [
+              {
+                title: '-- No License --',
+                value: ''
+              },
+              {
+                title: 'Canada Open Government Licence',
+                value: 'OGL_CANADA'
+              },
+              {
+                title:
+                  'Creative Commons 1.0 Universal (Public Domain Dedication)',
+                value: 'CC0_10'
+              },
+              {
+                title: 'Creative Commons Attribution 3.0 Australia',
+                value: 'CC_30_BY_AUS'
+              },
+              {
+                title: 'Creative Commons Attribution 3.0 IGO',
+                value: 'CC_30_BY_IGO'
+              },
+              {
+                title: 'Creative Commons Attribution 3.0 New Zealand',
+                value: 'CC_30_BY_NZ'
+              },
+              {
+                title: 'Creative Commons Attribution 3.0 Unported',
+                value: 'CC_30_BY'
+              },
+              {
+                title: 'Creative Commons Attribution 4.0 International',
+                value: 'CC_40_BY'
+              },
+              {
+                title:
+                  'Creative Commons Attribution | No Derivative Works 3.0 Unported',
+                value: 'CC_30_BY_ND'
+              },
+              {
+                title:
+                  'Creative Commons Attribution | NoDerivatives 4.0 International License',
+                value: 'CC_40_BY_ND'
+              },
+              {
+                title:
+                  'Creative Commons Attribution | Noncommercial 3.0 New Zealand',
+                value: 'CC_30_BY_NC_NZ'
+              },
+              {
+                title:
+                  'Creative Commons Attribution | Noncommercial 3.0 Unported',
+                value: 'CC_30_BY_NC'
+              },
+              {
+                title:
+                  'Creative Commons Attribution | Noncommercial | No Derivative Works 3.0 IGO',
+                value: 'CC_30_BY_NC_ND_IGO'
+              },
+              {
+                title:
+                  'Creative Commons Attribution | Noncommercial | No Derivative Works 3.0 Unported',
+                value: 'CC_30_BY_NC_ND'
+              },
+              {
+                title:
+                  'Creative Commons Attribution | Noncommercial | Share Alike 3.0 New Zealand',
+                value: 'CC_30_BY_NC_SA_NZ'
+              },
+              {
+                title:
+                  'Creative Commons Attribution | Noncommercial | Share Alike 3.0 Unported',
+                value: 'CC_30_BY_NC_SA'
+              },
+              {
+                title:
+                  'Creative Commons Attribution | Share Alike 3.0 Unported',
+                value: 'CC_30_BY_SA'
+              },
+              {
+                title:
+                  'Creative Commons Attribution | Share Alike 4.0 International',
+                value: 'CC_40_BY_SA'
+              },
+              {
+                title: 'Italian Open Data License 2.0',
+                value: 'IODL'
+              },
+              {
+                title: 'Nova Scotia Open Government Licence',
+                value: 'OGL_NOVA_SCOTIA'
+              },
+              {
+                title: 'Open Data Commons Attribution License',
+                value: 'ODC_BY'
+              },
+              {
+                title: 'Open Data Commons Open Database License',
+                value: 'ODBL'
+              },
+              {
+                title: 'Open Data Commons Public Domain Dedication and License',
+                value: 'PDDL'
+              },
+              {
+                title: 'Public Domain',
+                value: 'PUBLIC_DOMAIN'
+              },
+              {
+                title: 'Public Domain U.S. Government',
+                value: 'USGOV_WORKS'
+              },
+              {
+                title: 'See Terms of Use',
+                value: 'SEE_TERMS_OF_USE'
+              },
+              {
+                title:
+                  'Standard Reference Data Copyright U.S. Secretary of Commerce',
+                value: 'NIST_SRD'
+              },
+              {
+                title: 'UK Open Government Licence v3',
+                value: 'UK_OGLV3.0'
+              }
+            ],
+            isCustom: false
+          },
+          {
+            name: 'attribution',
+            label: 'Data Provided By',
+            value: null,
+            isPrivate: false,
+            isRequired: false,
+            placeholder: 'Individual or organization',
+            isCustom: false
+          },
+          {
+            name: 'attributionLink',
+            label: 'Source Link',
+            value: null,
+            isPrivate: false,
+            isRequired: false,
+            placeholder: 'Enter web address',
+            isCustom: false
+          }
+        ]
+      },
+      {
+        title: 'Contact Email',
+        subtitle: null,
+        fields: [
+          {
+            name: 'email',
+            label: 'Email Address',
+            value: null,
+            isPrivate: true,
+            isRequired: false,
+            placeholder: 'example@socrata.com',
+            isCustom: false
           }
         ]
       }
@@ -84,8 +308,8 @@ describe('components/Forms/DatasetForm', () => {
   it('renders correctly', () => {
     const component = shallow(<DatasetForm {...defaultProps} />);
     assert.lengthOf(component.find('form'), 1);
-    assert.lengthOf(component.find('Fieldset'), 2);
-    assert.lengthOf(component.find('Connect(Field)'), 3);
+    assert.lengthOf(component.find('Fieldset'), 5);
+    assert.lengthOf(component.find('Connect(Field)'), 9);
   });
 
   it('updates values in store', () => {

@@ -15,7 +15,8 @@ const props = {
     isCustom: false
   },
   inErrorState: false,
-  setValue: sinon.spy()
+  setValue: sinon.spy(),
+  handleBlur: () => {}
 };
 
 describe('components/FormComponents/TextInput', () => {

@@ -17,10 +17,17 @@ class Field extends Component {
     };
 
     this.handleBlur = this.handleBlur.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
   }
 
   isHalfSized(field) {
     return Types.Field.Tags.is(field) || Types.Field.Select.is(field) || field.name === 'attribution';
+  }
+
+  handleFocus() {
+    this.setState({
+      showErrors: false
+    });
   }
 
   handleBlur() {
@@ -44,23 +51,31 @@ class Field extends Component {
       Text: () =>
         <TextInput
           field={field}
+          handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
           setValue={setValue}
           inErrorState={inErrorState} />,
       Tags: () =>
         <TagsInput
           field={field}
+          handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
           setValue={setValue}
           inErrorState={inErrorState} />,
       TextArea: () =>
         <TextArea
           field={field}
+          handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
           setValue={setValue}
           inErrorState={inErrorState} />,
       Select: () =>
-        <Select field={field} handleBlur={this.handleBlur} setValue={setValue} inErrorState={inErrorState} />,
+        <Select
+          field={field}
+          handleFocus={this.handleFocus}
+          handleBlur={this.handleBlur}
+          setValue={setValue}
+          inErrorState={inErrorState} />,
       NoField: () =>
         <span>
           {I18n.edit_metadata.no_fields_message}

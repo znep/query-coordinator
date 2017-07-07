@@ -15,7 +15,8 @@ const props = {
   },
   inErrorState: false,
   setValue: sinon.spy(),
-  handleBlur: () => {}
+  handleBlur: () => {},
+  handleFocus: () => {}
 };
 
 describe('components/FormComponents/TagsInput', () => {

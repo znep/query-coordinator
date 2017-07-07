@@ -81,6 +81,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       dispatch(
         editView(resp.id, {
           ...sanitizedResp,
+          showErrors: false,
           datasetFormDirty: false
         })
       );
@@ -180,7 +181,12 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
       dispatch(subscribeToTransforms(resp.resource));
     })
     .then(() => {
-      dispatch(editView(fourfour, { columnFormDirty: false }));
+      dispatch(
+        editView(fourfour, {
+          columnFormDirty: false,
+          showErrors: false
+        })
+      );
       dispatch(apiCallSucceeded(callId));
     });
 };

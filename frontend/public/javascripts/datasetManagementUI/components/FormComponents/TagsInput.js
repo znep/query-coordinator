@@ -60,7 +60,7 @@ class TagsInput extends Component {
   }
 
   render() {
-    const { field, inErrorState, handleBlur } = this.props;
+    const { field, inErrorState, handleBlur, handleFocus } = this.props;
 
     const classes = classNames(styles.textInput, { [styles.validationError]: inErrorState });
 
@@ -82,6 +82,7 @@ class TagsInput extends Component {
             id={field.name}
             className={classes}
             onBlur={handleBlur}
+            onFocus={handleFocus}
             onChange={this.handleChange} />
           <button onClick={this.addTag} className={buttonClasses}>
             {I18n.edit_metadata.add_btn}
@@ -100,7 +101,8 @@ TagsInput.propTypes = {
   field: PropTypes.object.isRequired,
   inErrorState: PropTypes.bool.isRequired,
   setValue: PropTypes.func.isRequired,
-  handleBlur: PropTypes.func.isRequired
+  handleBlur: PropTypes.func.isRequired,
+  handleFocus: PropTypes.func.isRequired
 };
 
 export default TagsInput;

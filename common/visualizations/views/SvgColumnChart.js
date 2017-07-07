@@ -397,16 +397,12 @@ function SvgColumnChart($element, vif, options) {
         attr(
           'fill',
           (value, measureIndex, dimensionIndex) => {
-
-debugger;
-
             return self.getColor(dimensionIndex, measureIndex);
           }
         ).
         attr(
           'data-default-fill',
           (value, measureIndex, dimensionIndex) => {
-
             return self.getColor(dimensionIndex, measureIndex);
           }
         );

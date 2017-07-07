@@ -43,7 +43,7 @@ describe('actions/manageMetadata', () => {
         window.initialState.customMetadataFieldsets
       )
     );
-    // store.dispatch(editView(metadata.id, metadata));
+
     store.dispatch(
       setFourfour(Object.keys(store.getState().entities.views)[0])
     );

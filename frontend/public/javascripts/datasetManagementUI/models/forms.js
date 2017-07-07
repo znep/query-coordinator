@@ -128,7 +128,7 @@ const fieldsetFour = emailVal => {
 };
 
 // DATASET METADATA HELPERS
-// shapeCustomFieldsets : String a => View -> {a : Fieldset}
+// shapeCustomFieldsets : View -> {[string] : Fieldset}
 const shapeCustomFieldsets = view =>
   view.customMetadataFieldsets
     .map(fieldset => ({
@@ -213,7 +213,7 @@ export const makeFieldsets = view => ({
 });
 
 // DATASET METADATA FIELDSET VALIDATIONS
-// makeDataModel : String a => Fieldset -> {a : String}
+// makeDataModel : Fieldset -> {[string] : String}
 const makeDataModel = fieldset =>
   fieldset.fields.reduce(
     (acc, field) => ({
@@ -223,7 +223,7 @@ const makeDataModel = fieldset =>
     {}
   );
 
-// validateFieldsetOne : String a => Fieldset -> Validation (List {a : String}) Fieldset
+// validateFieldsetOne : Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateFieldsetOne = fieldset => {
   const model = makeDataModel(fieldset);
 
@@ -233,7 +233,7 @@ const validateFieldsetOne = fieldset => {
     .map(() => fieldset);
 };
 
-// validateFieldsetTwo : String a => Fieldset -> Validation (List {a : String}) Fieldset
+// validateFieldsetTwo : Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateFieldsetTwo = fieldset => {
   const model = makeDataModel(fieldset);
 
@@ -243,7 +243,7 @@ const validateFieldsetTwo = fieldset => {
     .map(() => fieldset);
 };
 
-// validateFieldsetThree : String a => Fieldset -> Validation (List {a : String}) Fieldset
+// validateFieldsetThree : Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateFieldsetThree = fieldset => {
   const model = makeDataModel(fieldset);
 
@@ -253,7 +253,7 @@ const validateFieldsetThree = fieldset => {
     .map(() => fieldset);
 };
 
-// validateFieldsetFour : String a => Fieldset -> Validation (List {a : String}) Fieldset
+// validateFieldsetFour : Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateFieldsetFour = fieldset => {
   const model = makeDataModel(fieldset);
 
@@ -263,7 +263,7 @@ const validateFieldsetFour = fieldset => {
     .map(() => fieldset);
 };
 
-// validateRegularFieldsets : Stirng a => List Fieldset -> Validation (List {a : String}) Fieldset
+// validateRegularFieldsets : List Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateRegularFieldsets = fieldsets =>
   Validation.of()
     .concat(validateFieldsetOne(fieldsets[0]))
@@ -271,7 +271,7 @@ const validateRegularFieldsets = fieldsets =>
     .concat(validateFieldsetThree(fieldsets[2]))
     .concat(validateFieldsetFour(fieldsets[3]));
 
-// validateCustomFieldset : String a => Fieldset -> Validation (List {a: String}) Fieldset
+// validateCustomFieldset : Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateCustomFieldset = fieldset => {
   const validation = _.chain(fieldset.fields)
     .filter(field => field.isRequired)
@@ -287,7 +287,7 @@ const validateCustomFieldset = fieldset => {
   return validation.length ? Failure(validation) : Success(fieldset);
 };
 
-// validateCustomFieldsets : String a => List Fieldset -> Validation (List {a : String}) Fieldset
+// validateCustomFieldsets : List Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateCustomFieldsets = fieldsets => {
   const validations = _.chain(fieldsets)
     .map(validateCustomFieldset)
@@ -302,7 +302,7 @@ const validateCustomFieldsets = fieldsets => {
   return validations.length ? Failure(validations) : Success(fieldsets[fieldsets.length - 1]);
 };
 
-// validateDatasetForm : String a => List Fieldsets -> List Fieldsets -> Validation (List {a: String}) Fieldset
+// validateDatasetForm : List Fieldsets -> List Fieldsets -> Validation (List {[string]: String}) Fieldset
 export const validateDatasetForm = (regularFieldsets, customFieldsets) =>
   validateRegularFieldsets(regularFieldsets).concat(validateCustomFieldsets(customFieldsets));
 

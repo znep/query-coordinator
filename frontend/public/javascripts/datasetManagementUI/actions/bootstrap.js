@@ -35,7 +35,6 @@ export function bootstrapApp(view, revision, customMetadataFieldsets) {
       licenseId: view.licenseId,
       attribution: view.attribution,
       attributionLink: view.attributionLink,
-      schema: {},
       tags: view.tags || [],
       privateMetadata: view.privateMetadata || {},
       attachments: _.get(view, 'metadata.attachments', []),

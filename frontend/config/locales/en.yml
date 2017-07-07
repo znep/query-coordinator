@@ -5538,6 +5538,7 @@ en:
       row_label_prompt: e.g. Crime, Person, Hospital
       save: Save
       save_changes: Save changes
+      save_success: Updated saved successfully.
       semantics_rdf: Semantics & RDF
       settings_saved: Your progress has been saved. Continue creating your dataset by filling out the metadata below.
       source_link: Source Link
@@ -5564,7 +5565,7 @@ en:
       validation_error_general: Couldn't submit metadata. Review your inputs and try again.
       validation_error_maxlength: "{0} must not have more than {1} characters"
       validation_error_minlength: "{0} must have at least {1} characters"
-      validation_error_no_dupes: Tags must be unique 
+      validation_error_no_dupes: Tags must be unique
       validation_error_required: This field is required
       validation_error_type: "{0} must be of type {1}, but got {2}"
       validation_error_url: Please enter a valid url

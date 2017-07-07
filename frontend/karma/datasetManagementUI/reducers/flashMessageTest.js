@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
 import flashMessage, { initialState } from 'reducers/flashMessage';
-import { hideFlashMessage, showFlashMessage } from 'actions/flashMessage';
+import { hideFlashMessage, showFlashMessage, SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
 
 describe('reducers/flashMessage', () => {
   it('returns expected default state', () => {
@@ -10,7 +10,7 @@ describe('reducers/flashMessage', () => {
   });
 
   it('responds correctly to SHOW_FLASH_MESSAGE', () => {
-    const state = flashMessage(initialState, showFlashMessage('error', 'Something went wrong'));
+    const state = flashMessage(initialState, {type: SHOW_FLASH_MESSAGE, kind: 'error', message: 'Something went wrong'});
 
     expect(state.kind).to.eq('error');
 

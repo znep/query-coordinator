@@ -87,6 +87,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       );
 
       dispatch(apiCallSucceeded(callId));
+      dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));
     })
     .catch(error => {
       dispatch(apiCallFailed(callId, error));
@@ -188,6 +189,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
         })
       );
       dispatch(apiCallSucceeded(callId));
+      dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));
     });
 };
 

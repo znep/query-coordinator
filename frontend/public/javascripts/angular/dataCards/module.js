@@ -100,7 +100,7 @@ angular.module('dataCards').
   factory('Constants', require('./services/Constants.js')).
   factory('DatasetColumnsService', require('./services/DatasetColumnsService.js')).
   factory('DataTypeFormatService', require('./services/DataTypeFormatService.js')).
-  factory('DateHelpers', require('./services/DateHelpers.js')).
+  factory('DateHelpers', () => require('common/visualizations/helpers/DateHelpers.js')).
   factory('DeveloperOverrides', require('./services/DeveloperOverrides.js')).
   factory('DeviceService', require('../common/services/DeviceService.js')).
   factory('FeatureMapService', require('./services/FeatureMapService.js')).

@@ -26,7 +26,7 @@ $spinner-margin-bottom: 295px;
   @include base;
   width: 375px;
   background-color: $background-color;
-  
+
   position: absolute;
   right: $container-right-offset;
   top: $container-top;
@@ -94,7 +94,7 @@ $spinner-margin-bottom: 295px;
 .error-message {
   @extend .alert;
   @extend .error;
-  
+
   text-align: center;
   font-size: 12px;
   border-left: 0;

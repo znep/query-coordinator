@@ -538,10 +538,10 @@ describe('SvgVisualization', () => {
     });
   });
 
-  describe('#isMultiSeries', () => {
+  describe('#isMultiSeriesOrGrouping', () => {
     it('returns true when a vif contains a grouping dimension', () => {
       const viz = new SvgVisualization($element, mockVif);
-      assert.isNotTrue(viz.isMultiSeries());
+      assert.isNotTrue(viz.isMultiSeriesOrGrouping());
 
       const copiedVif = _.cloneDeep(viz.getVif());
       const addedGrouping = {
@@ -549,12 +549,12 @@ describe('SvgVisualization', () => {
       };
       _.merge(copiedVif.series[0].dataSource.dimension, addedGrouping);
       viz.updateVif(copiedVif);
-      assert.isTrue(viz.isMultiSeries());
+      assert.isTrue(viz.isMultiSeriesOrGrouping());
     });
 
     it('returns true when a vif contains multiple series objects', () => {
       const viz = new SvgVisualization($element, mockMultiseriesVif);
-      assert.isTrue(viz.isMultiSeries());
+      assert.isTrue(viz.isMultiSeriesOrGrouping());
     });
   });
 

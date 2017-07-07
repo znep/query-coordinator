@@ -397,6 +397,9 @@ function SvgColumnChart($element, vif, options) {
         attr(
           'fill',
           (value, measureIndex, dimensionIndex) => {
+
+debugger;
+
             return self.getColor(dimensionIndex, measureIndex);
           }
         ).
@@ -595,7 +598,7 @@ function SvgColumnChart($element, vif, options) {
     d3DimensionXScale = generateXScale(
       dimensionValues,
       width,
-      self.isMultiSeries()
+      self.isMultiSeriesOrGrouping()
     );
 
     // This scale is used for groupings of columns under a single dimension

@@ -920,7 +920,7 @@ function SvgBarChart($element, vif, options) {
     d3DimensionYScale = generateYScale(
       dimensionValues,
       height,
-      self.isMultiSeries()
+      self.isMultiSeriesOrGrouping()
     );
     // This scale is used for groupings of bars under a single dimension
     // category.

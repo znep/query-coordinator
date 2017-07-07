@@ -490,17 +490,22 @@ function SvgVisualization($element, vif, options) {
     return mobile;
   };
 
+  this.isMultiSeriesOrGrouping = function() {    
+    return self.isMultiSeries() || self.isGrouping();
+  };
+
   this.isMultiSeries = function() {
+    return _.get(self.getVif(), 'series', []).length >= 2;
+  };
+
+  this.isGrouping = function() {
     const dimensionGroupingColumnName = _.get(
       self.getVif(),
       'series[0].dataSource.dimension.grouping.columnName',
       null
     );
 
-    return (
-      _.get(self.getVif(), 'series', []).length >= 2 ||
-      !_.isEmpty(dimensionGroupingColumnName)
-    );
+    return !_.isEmpty(dimensionGroupingColumnName);
   };
 
   this.getSeriesIndexByLabel = function(label) {
@@ -666,17 +671,10 @@ function SvgVisualization($element, vif, options) {
   };
 
   this.getColor = function(dimensionIndex, measureIndex) {
-    const isGrouping = !_.isNull(
-      _.get(
-        self.getVif(),
-        'series[0].dataSource.dimension.grouping.columnName',
-        null
-      )
-    );
 
     const usingColorPalette = _.get(
       self.getVif(),
-      `series[${(isGrouping) ? 0 : dimensionIndex}].color.palette`,
+      `series[${self.isGrouping() ? 0 : dimensionIndex}].color.palette`,
       false
     );
 
@@ -689,17 +687,15 @@ function SvgVisualization($element, vif, options) {
     }
 
     function getPrimaryColorOrNone() {
-      const primaryColor = (isGrouping) ?
-        self.getPrimaryColorBySeriesIndex(0) :
-        self.getPrimaryColorBySeriesIndex(measureIndex);
+      const primaryColor = self.getPrimaryColorBySeriesIndex(measureIndex);
 
-      return (primaryColor !== null) ?
-        primaryColor :
+      return (primaryColor !== null) ? 
+        primaryColor : 
         'none';
     }
 
-    return (usingColorPalette) ?
-      getColorFromPalette() :
+    return usingColorPalette ? 
+      getColorFromPalette() : 
       getPrimaryColorOrNone();
   }
 
@@ -1014,15 +1010,7 @@ function SvgVisualization($element, vif, options) {
   // series (at index zero) as opposed to one of the 'virtual' series that
   // appear to exist based on the data table.
   function defaultToSeriesIndexZeroIfGroupingIsEnabled(vifToCheck, seriesIndex) {
-    const isGrouping = !_.isNull(
-      _.get(
-        vifToCheck,
-        'series[0].dataSource.dimension.grouping.columnName',
-        null
-      )
-    );
-
-    return (isGrouping) ? 0 : seriesIndex;
+    return (self.isGrouping()) ? 0 : seriesIndex;
   }
 
   function getPositions(groupedDataToRender) {

@@ -3341,6 +3341,7 @@ en:
         title: Manage Home Page
         up: Up
       index:
+        administration: Administration
         section_headers:
           data_and_assets: Data and Assets
           content: Content

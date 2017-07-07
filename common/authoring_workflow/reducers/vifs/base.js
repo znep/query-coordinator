@@ -42,23 +42,10 @@ export default function(state, action) {
       });
       break;
 
-    case actions.SET_MEASURE:
-      forEachSeries(state, series => {
-
-        series.dataSource.measure.columnName = action.measure;
-
-        if (_.isNull(action.measure)) {
-          series.dataSource.measure.aggregationFunction = 'count';
-        } else if (series.dataSource.measure.aggregationFunction === 'count') {
-          series.dataSource.measure.aggregationFunction = 'sum';
-        }
-      });
-      break;
-
     case actions.INITIALIZE_SERIES:
       for (var i = 0; i < action.seriesCount - 1; i++) {
-        const clonedSeries = _.cloneDeep(state.series[0]);
-        state.series.push(clonedSeries);
+        const series = _.cloneDeep(state.series[0]);
+        state.series.push(series);
       }
       break;
 
@@ -80,7 +67,9 @@ export default function(state, action) {
       state.series.splice(action.seriesIndex, 1);
       break;
 
-    case actions.SET_SERIES_MEASURE_COLUMN: {
+    case actions.SET_SERIES_MEASURE_COLUMN:
+
+      if (action.seriesIndex < state.series.length) {
         const series = state.series[action.seriesIndex];
         series.dataSource.measure.columnName = action.columnName;
         series.dataSource.measure.label = action.label;
@@ -94,8 +83,10 @@ export default function(state, action) {
       break;
 
     case actions.SET_SERIES_MEASURE_AGGREGATION:
-      const selectedSeries = state.series[action.seriesIndex];
-      selectedSeries.dataSource.measure.aggregationFunction = action.aggregationFunction;
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
+        series.dataSource.measure.aggregationFunction = action.aggregationFunction;
+      }
       break;
 
     case actions.SET_TITLE:
@@ -123,12 +114,6 @@ export default function(state, action) {
     case actions.SET_UNIT_OTHER:
       forEachSeries(state, series => {
         _.set(series, 'unit.other', action.other);
-      });
-      break;
-
-    case actions.SET_MEASURE_AGGREGATION:
-      forEachSeries(state, series => {
-        series.dataSource.measure.aggregationFunction = action.measureAggregation;
       });
       break;
 

@@ -11,7 +11,13 @@ import {
   setSeriesMeasureColumn, 
   setSeriesMeasureAggregation } from '../actions';
 
-import { getSeriesFromVif, isFeatureMap } from '../selectors/vifAuthoring';
+import { 
+  getSeriesFromVif, 
+  isBarChart,
+  isColumnChart,
+  isFeatureMap,
+  isTimelineChart } from '../selectors/vifAuthoring';
+
 import { hasData, getValidMeasures } from '../selectors/metadata';
 import BlockLabel from './shared/BlockLabel';
 
@@ -156,8 +162,10 @@ export const MeasureSelector = React.createClass({
   renderNewMeasureLink() {
     const { vifAuthoring } = this.props;
     const series = getSeriesFromVif(vifAuthoring);
+    const showNewMeasureLink = (series.length < MAXIMUM_MEASURES) &&
+      (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
-    return (series.length < MAXIMUM_MEASURES) ? (
+    return showNewMeasureLink ? (
       <div className="measure-new-measure-link-container">
         <a onClick={this.handleOnClickNewMeasure}>
           <span className="socrata-icon-add" />

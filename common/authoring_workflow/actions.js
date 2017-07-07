@@ -198,22 +198,6 @@ export function setSeriesMeasureAggregation(seriesIndex, aggregationFunction) {
   };
 }
 
-export const SET_MEASURE = 'SET_MEASURE';
-export function setMeasure(measure) {
-  return {
-    type: SET_MEASURE,
-    measure
-  };
-}
-
-export const SET_MEASURE_AGGREGATION = 'SET_MEASURE_AGGREGATION';
-export function setMeasureAggregation(measureAggregation) {
-  return {
-    type: SET_MEASURE_AGGREGATION,
-    measureAggregation
-  };
-}
-
 export const SET_VISUALIZATION_TYPE = 'SET_VISUALIZATION_TYPE';
 export function setVisualizationType(visualizationType) {
   return {

@@ -187,6 +187,8 @@ class SocrataCookieStore
     def prepare!(env)
       env[ENV_SESSION_KEY] = Rack::Session::Abstract::SessionHash.new(self, env)
       env[ENV_SESSION_OPTIONS_KEY] = SocrataSessionHash.new(self, env, @default_options)
+
+      # Remove for EN-15695
       env[CORE_SESSION_KEY] = ::CoreSession.new(self, env)
     end
 

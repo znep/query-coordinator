@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import I18n from 'common/visualizations/I18n';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 import SvgHistogram from 'common/visualizations/views/SvgHistogram';
 import testHelpers from '../testHelpers';
 
@@ -134,10 +135,15 @@ describe('SvgHistogram', function() {
 
   var histogram;
 
+  beforeEach(function() {
+    I18n.translations.en = allLocales.en;
+  });
+
   afterEach(function() {
     if ($('#chart').length) {
       throw new Error('A test in this spec file did not clean up its chart. This may cause downstream test failures.');
     }
+    I18n.translations = {}
   });
 
   describe('when called with data', function() {
@@ -228,12 +234,7 @@ describe('SvgHistogram', function() {
       const errorMessage = histogram.element.
         find('.socrata-visualization-error-message').text();
 
-      const expectedMessage = I18n.translate(
-        'visualizations.common.validation.errors.' +
-        'measure_axis_min_should_be_lesser_then_max'
-      );
-
-      expect(errorMessage).to.equal(expectedMessage);
+      assert.equal(errorMessage, 'Please ensure your minimum value is smaller than your maximum value.');
     });
   });
 

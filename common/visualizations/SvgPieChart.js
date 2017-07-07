@@ -6,7 +6,7 @@ const MetadataProvider = require('./dataProviders/MetadataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
-const I18n = require('./I18n');
+const I18n = require('common/i18n').default;
 const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').
   getSoqlVifValidator;
 
@@ -106,7 +106,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.translate('visualizations.common.error_generic')
+      messages = I18n.t('shared.visualizations.charts.common.error_generic')
     }
 
     visualization.renderError(messages);
@@ -159,7 +159,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
         if (onlyNullOrZeroValues) {
 
           visualization.renderError(
-            I18n.translate('visualizations.common.error_no_data')
+            I18n.t('shared.visualizations.charts.common.error_no_data')
           );
         } else {
 
@@ -222,7 +222,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
     if (limitConf && !isLimitInRange) {
       const error = new Error();
       const errorMessage = I18n.
-        translate('visualizations.pie_chart.error_limit_out_of_bounds').
+        t('shared.visualizations.charts.pie_chart.error_limit_out_of_bounds').
         format(2, MAX_ROWS_BEFORE_FORCED_OTHER_GROUP + 1);
 
       error.errorMessages = [errorMessage];
@@ -315,8 +315,8 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
           const error = new Error();
 
           error.errorMessages = [
-            I18n.translate(
-              'visualizations.common.error_duplicated_dimension_value'
+            I18n.t(
+              'shared.visualizations.charts.common.error_duplicated_dimension_value'
             )
           ];
 
@@ -328,8 +328,8 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
         // a second query to count the things that are in the "other" category.
         if (showOtherCategory && queryResponseRowCount >= displayedValuesLimit) {
 
-          const otherCategoryName = I18n.translate(
-            'visualizations.common.other_category'
+          const otherCategoryName = I18n.t(
+            'shared.visualizations.charts.common.other_category'
           );
 
           const rowsInOtherCategory = queryResponse.rows.slice(displayedValuesLimit);
@@ -465,8 +465,8 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
               const error = new Error();
 
               error.errorMessages = [
-                I18n.translate(
-                  'visualizations.common.error_other_category_query_failed'
+                I18n.t(
+                  'shared.visualizations.charts.common.error_other_category_query_failed'
                 )
               ];
 

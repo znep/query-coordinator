@@ -5,7 +5,7 @@
 // not to provide feedback to a developer. As such, messages returned are
 // worded to make sense to a user.
 const _ = require('lodash');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 const MetadataProvider = require('./MetadataProvider');
 
 // Obtains a soqlVifValidator (see below).
@@ -134,14 +134,14 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
 
     requireAtLeastOneSeries() {
       if (allSeries.length === 0) {
-        addError(I18n.translate('visualizations.common.validation.errors.need_at_least_one_series'));
+        addError(I18n.t('shared.visualizations.charts.common.validation.errors.need_at_least_one_series'));
       }
       return validator;
     },
 
     requireExactlyOneSeries() {
       if (allSeries.length !== 1) {
-        addError(I18n.translate('visualizations.common.validation.errors.need_single_series'));
+        addError(I18n.t('shared.visualizations.charts.common.validation.errors.need_single_series'));
       }
       return validator;
     },
@@ -155,7 +155,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       const groupingIsEnabled = _.isString(groupingFromVif) && !_.isEmpty(groupingFromVif);
 
       if (allSeries.length !== 1 && groupingIsEnabled) {
-        addError(I18n.translate('visualizations.common.validation.errors.need_single_series_if_grouping_enabled'));
+        addError(I18n.t('shared.visualizations.charts.common.validation.errors.need_single_series_if_grouping_enabled'));
       }
 
       return validator;
@@ -165,7 +165,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       const allDomains = allSeries.map((series) => _.get(series, 'dataSource.domain'));
       const uniqDomains = _.uniq(allDomains);
       if (uniqDomains.length > 1) {
-        addError(I18n.translate('visualizations.common.validation.errors.need_all_series_from_same_domain'));
+        addError(I18n.t('shared.visualizations.charts.common.validation.errors.need_all_series_from_same_domain'));
       }
       return validator;
     },
@@ -173,7 +173,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
     requireNoMeasureAggregation() {
       allSeries.forEach((series) => {
         if (_.get(series, 'dataSource.measure.aggregationFunction')) {
-          addError(I18n.translate('visualizations.common.validation.errors.need_no_aggregation'));
+          addError(I18n.t('shared.visualizations.charts.common.validation.errors.need_no_aggregation'));
         }
       });
       return validator;
@@ -182,7 +182,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
     requireMeasureAggregation() {
       allSeries.forEach((series) => {
         if (!_.get(series, 'dataSource.measure.aggregationFunction')) {
-          addError(I18n.translate('visualizations.common.validation.errors.need_aggregation'));
+          addError(I18n.t('shared.visualizations.charts.common.validation.errors.need_aggregation'));
         }
       });
       return validator;
@@ -194,9 +194,9 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
         const dataTypeName = getColumn(columnName, seriesIndex).dataTypeName;
         if (dataTypeName !== 'point') {
           if (hasColumnWithType('point', seriesIndex)) {
-            addError(I18n.translate('visualizations.common.validation.errors.dimension_column_should_be_point'));
+            addError(I18n.t('shared.visualizations.charts.common.validation.errors.dimension_column_should_be_point'));
           } else {
-            addError(I18n.translate('visualizations.common.validation.errors.dataset_does_not_include_point_column'));
+            addError(I18n.t('shared.visualizations.charts.common.validation.errors.dataset_does_not_include_point_column'));
           }
         }
       });
@@ -209,9 +209,9 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
         const dataTypeName = getColumn(columnName, seriesIndex).dataTypeName;
         if (dataTypeName !== 'calendar_date') {
           if (hasColumnWithType('calendar_date', seriesIndex)) {
-            addError(I18n.translate('visualizations.common.validation.errors.dimension_column_should_be_calendar_date'));
+            addError(I18n.t('shared.visualizations.charts.common.validation.errors.dimension_column_should_be_calendar_date'));
           } else {
-            addError(I18n.translate('visualizations.common.validation.errors.dataset_does_not_include_calendar_date_column'));
+            addError(I18n.t('shared.visualizations.charts.common.validation.errors.dataset_does_not_include_calendar_date_column'));
           }
         }
       });
@@ -224,9 +224,9 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
         const dataTypeName = getColumn(columnName, seriesIndex).dataTypeName;
         if (dataTypeName !== 'number' && dataTypeName !== 'money') {
           if (hasColumnWithType('number', seriesIndex) || hasColumnWithType('money', seriesIndex)) {
-            addError(I18n.translate('visualizations.common.validation.errors.dimension_column_should_be_numeric'));
+            addError(I18n.t('shared.visualizations.charts.common.validation.errors.dimension_column_should_be_numeric'));
           } else {
-            addError(I18n.translate('visualizations.common.validation.errors.dataset_does_not_include_numeric_column'));
+            addError(I18n.t('shared.visualizations.charts.common.validation.errors.dataset_does_not_include_numeric_column'));
           }
         }
       });

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import { factories, Dropdown } from 'common/components';
 
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 import { AGGREGATION_TYPES, COLUMN_TYPES } from '../constants';
 import {
   setMeasure,
@@ -50,7 +50,7 @@ export const MeasureSelector = React.createClass({
 
     if (isNotCountingRows) {
       const options = [
-        {title: I18n.translate('aggregations.none'), value: null},
+        {title: I18n.t('shared.visualizations.aggregations.none'), value: null},
         ...aggregationTypes.map(aggregationType => ({title: aggregationType.title, value: aggregationType.type}))
       ];
 
@@ -75,7 +75,7 @@ export const MeasureSelector = React.createClass({
     return (
       <div {...flyoutAttributes}>
         <section className="flyout-content">
-          <p>{I18n.translate('panes.data.fields.measure.empty_measure')}</p>
+          <p>{I18n.t('shared.visualizations.panes.data.fields.measure.empty_measure')}</p>
         </section>
       </div>
     );
@@ -105,7 +105,7 @@ export const MeasureSelector = React.createClass({
     const measures = getValidMeasures(metadata);
     const visualizationType = _.get(vif, 'series[0].type');
     const options = [
-      {title: I18n.translate('panes.data.fields.measure.no_value'), value: null},
+      {title: I18n.t('shared.visualizations.panes.data.fields.measure.no_value'), value: null},
       ...measures.map(measure => ({
         title: measure.name,
         value: measure.fieldName,
@@ -138,7 +138,10 @@ export const MeasureSelector = React.createClass({
 
     return (
       <div ref={(ref) => this.selector = ref}>
-        <BlockLabel htmlFor="measure-selection" title={I18n.translate('panes.data.fields.measure.title')} description={I18n.translate('panes.data.fields.measure.description')} />
+        <BlockLabel
+          htmlFor="measure-selection"
+          title={I18n.t('shared.visualizations.panes.data.fields.measure.title')}
+          description={I18n.t('shared.visualizations.panes.data.fields.measure.description')} />
         <div {...measureContainerAttributes}>
           <Dropdown {...measureAttributes} />
           {this.renderMeasureAggregationSelector()}

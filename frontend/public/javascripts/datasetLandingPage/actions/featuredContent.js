@@ -124,8 +124,11 @@ export function saveFeaturedItem(options) {
       mixpanelPayload.properties['Content Type'] = 'Visualization';
       mixpanelPayload.properties['Display Type'] = 'Story';
     } else if (editType === 'externalResource') {
-      const previewImage = _.get(featuredContent.externalResource, 'previewImage', '');
-      const matches = previewImage.match(/base64,([^\s]+)$/);
+      const previewImageId = _.get(
+        featuredContent.externalResource, 'previewImageId',
+        _.get(featuredContent.externalResource, 'previewImage', '')
+      );
+      const matches = previewImageId.match(/base64,([^\s]+)$/);
       const previewImageBase64 = _.isNull(matches) ? null : matches[1];
 
       payload = {

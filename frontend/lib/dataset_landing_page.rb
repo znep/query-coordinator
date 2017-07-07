@@ -24,7 +24,7 @@ class DatasetLandingPage
           I18n.locale = locale
           fetch_derived_views(view, cookies, request_id, 4, 0)
         rescue Exception => e
-          Rails.logger.error("Error fetching derived views for #{view.id}: " + e.message)
+          Rails.logger.error("Error fetching derived views for #{view.id}: #{e.message}")
           []
         end
       }
@@ -34,7 +34,7 @@ class DatasetLandingPage
           I18n.locale = locale
           fetch_featured_content(view, cookies, request_id)
         rescue Exception => e
-          Rails.logger.error("Error fetching featured content for #{view.id}: " + e.message)
+          Rails.logger.error("Error fetching featured content for #{view.id}: #{e.message}")
           []
         end
       }
@@ -49,8 +49,8 @@ class DatasetLandingPage
       columns = view.columns.reject do |column|
         # disregard system columns that aren't hidden, i.e. computed columns
         column.fieldName.start_with?(':') ||
-        # disregard columns hidden by user
-        column.flag?('hidden')
+          # disregard columns hidden by user
+          column.flag?('hidden')
       end
 
       if view.description
@@ -277,13 +277,21 @@ class DatasetLandingPage
     end
 
     def format_featured_item(featured_item, image_url = nil)
-      if featured_item['contentType'] == 'internal'
+      result = if featured_item['contentType'] == 'internal'
         featured_item.merge(
           :featuredView => format_view_widget(View.setup_model(featured_item['featuredView']), image_url)
         )
       else
         featured_item
       end
+
+      if result['previewImageId'].present?
+        result['previewImage'] = result['previewImageId']
+      elsif result['previewImage'].present?
+        result['previewImageId'] = result['previewImage']
+      end
+
+      result
     end
 
     # TODO: Remove this OBE/NBE juggling once Cetera returns the same results for both 4x4s

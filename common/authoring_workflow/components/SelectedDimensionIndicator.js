@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 import {
   getAnyDimension,
@@ -34,7 +34,7 @@ export class SelectedDimensionIndicator extends React.Component {
   }
 
   renderEmpty() {
-    return <span>{ I18n.translate('panes.data.fields.dimension.empty_selection') }</span>;
+    return <span>{ I18n.t('shared.visualizations.panes.data.fields.dimension.empty_selection') }</span>;
   }
 
   render() {

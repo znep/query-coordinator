@@ -8,7 +8,7 @@ import columnChartData from '../testData/columnChart';
 import { SelectedDimensionIndicator } from 'common/authoring_workflow/components/SelectedDimensionIndicator';
 import ConnectedSelectedDimensionIndicator from 'common/authoring_workflow/components/SelectedDimensionIndicator';
 
-import { translate } from 'common/visualizations/I18n';
+import I18n from 'common/i18n';
 
 const validMetadata = {
   data: {
@@ -44,7 +44,7 @@ const dimensionSelectedVifAuthoring = {
 describe('SelectedDimensionIndicator', () => {
   it('should render empty selection message if there is no dimension selected', () => {
     const component = renderComponent(ConnectedSelectedDimensionIndicator, defaultProps());
-    const emptySelectionTranslation = translate('panes.data.fields.dimension.empty_selection');
+    const emptySelectionTranslation = I18n.t('shared.visualizations.panes.data.fields.dimension.empty_selection');
     assert(component.textContent === emptySelectionTranslation);
   });
 

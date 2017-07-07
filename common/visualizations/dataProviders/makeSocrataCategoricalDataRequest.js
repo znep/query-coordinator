@@ -3,7 +3,7 @@ const _ = require('lodash');
 // Project Imports
 const SoqlDataProvider = require('./SoqlDataProvider');
 const SoqlHelpers = require('./SoqlHelpers');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 
 function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
   const series = vif.series[seriesIndex];
@@ -96,8 +96,8 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
         const error = new Error();
 
         error.errorMessages = [
-          I18n.translate(
-            'visualizations.common.error_duplicated_dimension_value'
+          I18n.t(
+            'shared.visualizations.charts.common.error_duplicated_dimension_value'
           )
         ];
 
@@ -294,8 +294,8 @@ function augmentSocrataDataResponseWithOtherCategory(
     seriesIndex,
     'measure'
   );
-  const otherCategoryLabel = I18n.translate(
-    'visualizations.common.other_category'
+  const otherCategoryLabel = I18n.t(
+    'shared.visualizations.charts.common.other_category'
   );
 
   let otherCategoryWhereClause = '';
@@ -375,8 +375,8 @@ function augmentSocrataDataResponseWithOtherCategory(
       const error = new Error();
 
       error.errorMessages = [
-        I18n.translate(
-          'visualizations.common.error_other_category_query_failed'
+        I18n.t(
+          'shared.visualizations.charts.common.error_other_category_query_failed'
         )
       ];
 

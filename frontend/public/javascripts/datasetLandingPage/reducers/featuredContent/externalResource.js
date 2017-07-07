@@ -6,6 +6,8 @@ import {
   CANCEL_FEATURED_ITEM_EDIT
 } from '../../actionTypes';
 
+import { translatePreviewImageIdToImageUrl } from 'common/helpers/viewCardHelpers';
+
 const initialState = {
   description: '',
   previewImage: '',
@@ -26,10 +28,11 @@ export default function(state, action) {
   switch (action.type) {
     case EDIT_FEATURED_ITEM:
       if (action.featuredItem.contentType === 'external') {
+        const previewImage = action.featuredItem.previewImageId || action.featuredItem.previewImage;
         return {
           ...state,
           description: action.featuredItem.description,
-          previewImage: action.featuredItem.previewImage,
+          previewImage: translatePreviewImageIdToImageUrl(previewImage),
           title: action.featuredItem.title,
           url: action.featuredItem.url,
           canSave: canSave(state)

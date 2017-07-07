@@ -3,7 +3,8 @@ import utils from 'common/js_utils';
 import d3 from 'd3';
 import $ from 'jquery';
 import chroma from 'chroma-js';
-import I18n from 'common/visualizations/I18n';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 import SvgPieChart from 'common/visualizations/views/SvgPieChart';
 import testHelpers from '../testHelpers';
 
@@ -105,6 +106,14 @@ describe('SvgPieChart', () => {
     $('#chart').remove();
   };
 
+  beforeEach(() => {
+    I18n.translations.en = allLocales.en;
+  });
+
+  afterEach(() => {
+    I18n.translations = {};
+  });
+
   describe('when called with data', () => {
 
     beforeEach(() => {
@@ -182,9 +191,8 @@ describe('SvgPieChart', () => {
 
         if (text) {
           const actualValue = Number($(el).find('path').attr('data-percent'));
-          const formattedValue = Math.round(Number(actualValue)) + I18n.translate('visualizations.common.percent_symbol');
-
-          expect(formattedValue).to.equal(text);
+          const formattedValue = Math.round(Number(actualValue)) + '%';
+          assert.equal(formattedValue, text);
         }
       });
     });
@@ -194,14 +202,13 @@ describe('SvgPieChart', () => {
 
       var slice = pieChart.$element.find('.slice-group')[0];
       var percent = Math.round(Number(pieChart.$element.find('.slice-group:nth(0) .slice')[0].attributes['data-percent'].value));
-      var percentSymbol = I18n.translate('visualizations.common.percent_symbol');
 
       pieChart.$element.on('SOCRATA_VISUALIZATION_PIE_CHART_FLYOUT', event => {
         let payload = event.originalEvent.detail;
         let $content = $(payload.content);
 
-        expect($content.find('.socrata-flyout-title').text()).to.equal(testData[0].rows[0][0]);
-        expect($content.find('.socrata-flyout-cell').text()).to.contains(`(${percent}${percentSymbol})`);
+        assert.equal($content.find('.socrata-flyout-title').text(), testData[0].rows[0][0]);
+        assert.include($content.find('.socrata-flyout-cell').text(), `(${percent}%)`);
         done();
       });
 

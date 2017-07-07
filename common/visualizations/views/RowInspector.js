@@ -1,7 +1,7 @@
 const utils = require('common/js_utils');
 const _ = require('lodash');
 const $ = require('jquery');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 
 const ROW_INSPECTOR_WIDTH = 350;
 const ROW_INSPECTOR_MAX_CONTENT_HEIGHT = 250;
@@ -216,10 +216,10 @@ function setup(config, $target) {
   // Add translations
   if (!_config.isMobile) {
     _$paginationButtonPrevious.find('span').text(
-      I18n.translate('visualizations.row_inspector.previous')
+      I18n.t('shared.visualizations.charts.row_inspector.previous')
     );
     _$paginationButtonNext.find('span').text(
-      I18n.translate('visualizations.row_inspector.next')
+      I18n.t('shared.visualizations.charts.row_inspector.next')
     );
   }
 }
@@ -433,11 +433,11 @@ function _renderPagination() {
 
   if (numRows > 1) {
     _$paginationMessage.text(
-      I18n.translate('visualizations.row_inspector.showing').
+      I18n.t('shared.visualizations.charts.row_inspector.showing').
         format(labelUnit)
     );
     _$paginationPosition.text(
-      I18n.translate('visualizations.row_inspector.paging').
+      I18n.t('shared.visualizations.charts.row_inspector.paging').
         format(_state.pageIndex + 1, numRows)
     );
     _$paginationButtonPrevious.prop('disabled', _state.pageIndex === 0);
@@ -477,7 +477,7 @@ function _setState(payload) {
   _state = {
     rows: payload.error ? null : payload.data,
     titles: payload.error ? null : payload.titles,
-    labelUnit: payload.labelUnit || I18n.translate('visualizations.row_inspector.default_label_unit'),
+    labelUnit: payload.labelUnit || I18n.t('shared.visualizations.charts.row_inspector.default_label_unit'),
     error: payload.error,
     message: payload.message,
     position: payload.position,

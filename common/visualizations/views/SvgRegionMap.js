@@ -4,7 +4,7 @@ const $ = require('jquery');
 const _ = require('lodash');
 const L = require('leaflet');
 const SvgVisualization = require('./SvgVisualization');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 
 // Map configuration
 const MAP_SINGLE_CLICK_SUPPRESSION_THRESHOLD_MILLISECONDS = 200;
@@ -291,12 +291,12 @@ function SvgRegionMap(element, vif, options) {
       valueLabel: _.get(
         self.getVif(),
         'series[0].label',
-        I18n.translate('visualizations.common.flyout_value_label')
+        I18n.t('shared.visualizations.charts.common.flyout_value_label')
       ),
       // value will be overridden below if there is one.
-      value: I18n.translate('visualizations.common.no_value'),
-      selectedNotice: I18n.translate(
-        'visualizations.region_map.flyout_selected_notice'
+      value: I18n.t('shared.visualizations.charts.common.no_value'),
+      selectedNotice: I18n.t(
+        'shared.visualizations.charts.region_map.flyout_selected_notice'
       ),
       selected: feature.properties[SvgRegionMap.SHAPEFILE_REGION_IS_SELECTED]
     };
@@ -734,8 +734,8 @@ function SvgRegionMap(element, vif, options) {
 
         const logScaleNotPossibleError = new Error();
         logScaleNotPossibleError.errorMessages = [
-          I18n.translate(
-            'visualizations.region_map.error_logarithm_unavailable'
+          I18n.t(
+            'shared.visualizations.charts.region_map.error_logarithm_unavailable'
           )
         ];
 

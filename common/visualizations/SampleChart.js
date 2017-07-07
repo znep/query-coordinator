@@ -40,7 +40,7 @@ const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 // All localization in this project is handled by the I18n class, which reads
 // from locale files in /src/locales. It defaults to English. All user-facing
 // strings should be retreived from the I18n class, not hard-coded.
-const I18n = require('./I18n');
+const I18n = require('common/i18n').default;
 
 // The SoqlVifValidator class verifies that all configuration properties that
 // are required by a jQuery plugin and/or its corresponding visualization
@@ -267,7 +267,7 @@ $.fn.socrataSampleChart = function(originalVif) {
           bubbles: true
         }
       )
-    );    
+    );
   }
 
   // The base visualization class from which individual visualization
@@ -288,7 +288,7 @@ $.fn.socrataSampleChart = function(originalVif) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.translate('visualizations.common.error_generic')
+      messages = I18n.t('shared.visualizations.charts.common.error_generic')
     }
 
     visualization.renderError(messages);
@@ -385,8 +385,8 @@ $.fn.socrataSampleChart = function(originalVif) {
             if (overMaxItemCount) {
 
               visualization.renderError(
-                I18n.translate(
-                  'visualizations.sample_chart.error_exceeded_max_item_count'
+                I18n.t(
+                  'shared.visualizations.charts.sample_chart.error_exceeded_max_item_count'
                 ).format(MAX_ITEM_COUNT)
               );
             // If the data responses all conform to our requirement that they

@@ -96,6 +96,7 @@ class Results extends React.Component {
 
     return (
       <div
+        className="autocomplete-results-container"
         styleName={collapsible ? 'results-container-collapsible' : 'results-container'} >
         {this.renderResults()}
       </div>

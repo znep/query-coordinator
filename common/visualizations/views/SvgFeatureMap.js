@@ -4,7 +4,7 @@ const _ = require('lodash');
 const $ = require('jquery');
 const SvgVisualization = require('./SvgVisualization');
 const SoqlHelpers = require('../dataProviders/SoqlHelpers');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 
 // Side effect: Load VectorTileManager into Leaflet.
 require('../dataProviders/VectorTileManager');
@@ -524,8 +524,8 @@ function SvgFeatureMap(element, vif, options) {
         {
           icon: userCurrentPositionIcon,
           clickable: false,
-          title: I18n.translate('visualizations.common.map_user_current_position'),
-          alt: I18n.translate('visualizations.common.map_user_current_position')
+          title: I18n.t('shared.visualizations.charts.common.map_user_current_position'),
+          alt: I18n.t('shared.visualizations.charts.common.map_user_current_position')
         }
       );
 
@@ -672,8 +672,8 @@ function SvgFeatureMap(element, vif, options) {
         flyoutData.count,
         rowCountUnit
       ),
-      notice: I18n.translate(
-        'visualizations.feature_map.flyout_click_to_inspect_notice'
+      notice: I18n.t(
+        'shared.visualizations.charts.feature_map.flyout_click_to_inspect_notice'
       ),
       flyoutOffset: {
         left: event.originalEvent.clientX,
@@ -684,12 +684,12 @@ function SvgFeatureMap(element, vif, options) {
     if (manyRows || denseData) {
 
       if (map.getZoom() === FEATURE_MAP_MAX_ZOOM) {
-        payload.notice = I18n.translate(
-          'visualizations.feature_map.flyout_filter_notice'
+        payload.notice = I18n.t(
+          'shared.visualizations.charts.feature_map.flyout_filter_notice'
         );
       } else {
-        payload.notice = I18n.translate(
-          'visualizations.feature_map.flyout_filter_or_zoom_notice'
+        payload.notice = I18n.t(
+          'shared.visualizations.charts.feature_map.flyout_filter_or_zoom_notice'
         );
       }
 
@@ -699,8 +699,8 @@ function SvgFeatureMap(element, vif, options) {
       // prompt the user to filter and/or zoom in for accurate data.
       if (denseData) {
         payload.title = '{0} {1}'.format(
-          I18n.translate(
-            'visualizations.feature_map.flyout_dense_data_notice'
+          I18n.t(
+            'shared.visualizations.charts.feature_map.flyout_dense_data_notice'
           ),
           unitOther
         );
@@ -721,8 +721,8 @@ function SvgFeatureMap(element, vif, options) {
   function showPanZoomDisabledWarningFlyout() {
     var payload = {
       element: mapPanZoomDisabledWarning[0],
-      title: I18n.translate(
-        'visualizations.common.map_pan_zoom_disabled_warning_title'
+      title: I18n.t(
+        'shared.visualizations.charts.common.map_pan_zoom_disabled_warning_title'
       )
     };
 
@@ -740,11 +740,11 @@ function SvgFeatureMap(element, vif, options) {
 
       payload = {
         element: mapLocateUserButton[0],
-        title: I18n.translate(
-          'visualizations.common.map_click_to_locate_user_title'
+        title: I18n.t(
+          'shared.visualizations.charts.common.map_click_to_locate_user_title'
         ),
-        notice: I18n.translate(
-          'visualizations.common.map_click_to_locate_user_notice'
+        notice: I18n.t(
+          'shared.visualizations.charts.common.map_click_to_locate_user_notice'
         )
       };
 
@@ -752,8 +752,8 @@ function SvgFeatureMap(element, vif, options) {
 
       payload = {
         element: mapLocateUserButton[0],
-        title: I18n.translate(
-          'visualizations.common.map_locating_user_title'
+        title: I18n.t(
+          'shared.visualizations.charts.common.map_locating_user_title'
         ),
         notice: null
       };
@@ -762,11 +762,11 @@ function SvgFeatureMap(element, vif, options) {
 
       payload = {
         element: mapLocateUserButton[0],
-        title: I18n.translate(
-          'visualizations.common.map_locate_user_error_title'
+        title: I18n.t(
+          'shared.visualizations.charts.common.map_locate_user_error_title'
         ),
-        notice: I18n.translate(
-          'visualizations.common.map_locate_user_error_notice'
+        notice: I18n.t(
+          'shared.visualizations.charts.common.map_locate_user_error_notice'
         )
       };
 

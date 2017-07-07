@@ -149,7 +149,7 @@ class CatalogLandingPage
     FeaturedContent.fetch(id, FEATURED_CONTENT_TYPE).each do |item|
       if item[:contentType] == 'external'
         item.merge!(
-          :previewImageUrl => item[:previewImage],
+          :previewImageUrl => item.values_at(:previewImage, :previewImageId).compact.first,
           :displayType => 'href'
         )
       elsif item[:contentType] == 'internal'

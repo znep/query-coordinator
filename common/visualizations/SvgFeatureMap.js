@@ -10,7 +10,7 @@ const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const DataTypeFormatter = require('./views/DataTypeFormatter');
-const I18n = require('./I18n');
+const I18n = require('common/i18n').default;
 const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
 
 const COLUMN_NAME_PATH = 'series[0].dataSource.dimension.columnName';
@@ -135,8 +135,8 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
     var errorCode = _.get(error, 'soqlError.errorCode');
 
     if (errorCode === 'query.soql.type-mismatch') {
-      messages = I18n.translate(
-        'visualizations.feature_map.error_incompatible_column'
+      messages = I18n.t(
+        'shared.visualizations.charts.feature_map.error_incompatible_column'
       );
     } else {
       if (window.console && console.error) {
@@ -146,7 +146,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
       if (error.errorMessages) {
         messages = error.errorMessages;
       } else {
-        messages = I18n.translate('visualizations.common.error_generic')
+        messages = I18n.t('shared.visualizations.charts.common.error_generic')
       }
     }
 
@@ -315,8 +315,8 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
           detail: {
             data: null,
             error: true,
-            message: I18n.translate(
-              'visualizations.feature_map.row_inspector_row_data_query_failed'
+            message: I18n.t(
+              'shared.visualizations.charts.feature_map.row_inspector_row_data_query_failed'
             )
           },
           bubbles: true

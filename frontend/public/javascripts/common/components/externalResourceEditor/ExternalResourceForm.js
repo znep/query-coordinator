@@ -107,7 +107,7 @@ export class ExternalResourceForm extends React.Component {
       }
     };
 
-    const noFileChosenText = this.props.previewImage ? null : (
+    const noFileChosenText = this.props.previewImageId ? null : (
       <span className="preview-image-label">
         {fetchTranslation('common.external_resource_editor.form.fields.preview_image.no_file_chosen')}
       </span>
@@ -155,7 +155,7 @@ ExternalResourceForm.propTypes = {
   description: PropTypes.string,
   onEnter: PropTypes.func,
   onFieldChange: PropTypes.func.isRequired,
-  previewImage: PropTypes.string,
+  previewImageId: PropTypes.string,
   title: PropTypes.string,
   url: PropTypes.string,
   urlWarning: PropTypes.element
@@ -164,7 +164,7 @@ ExternalResourceForm.propTypes = {
 ExternalResourceForm.defaultProps = {
   description: '',
   onEnter: _.noop,
-  previewImage: '',
+  previewImageId: '',
   title: '',
   url: '',
   urlWarning: null

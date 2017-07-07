@@ -2,7 +2,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 import utils from 'common/js_utils';
 
-import { translate } from './I18n';
+import I18n from 'common/i18n';
 import { migrateVif } from './helpers/VifHelpers';
 
 // import these to make sure the jquery plugins have been initialized
@@ -117,7 +117,7 @@ export const VisualizationRenderer = function(vif, element, options) {
 
   const renderVifError = () => {
     const $errorMessage = $(
-      `<div class="alert error"><span>${translate('visualizations.common.error_generic')}</span></div>`
+      `<div class="alert error"><span>${I18n.t('shared.visualizations.charts.common.error_generic')}</span></div>`
     );
 
     $element.append($errorMessage);

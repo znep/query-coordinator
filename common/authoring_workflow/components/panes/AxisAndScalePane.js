@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 import { CHART_SORTING } from '../../constants';
 import {
@@ -72,7 +72,7 @@ export var AxisAndScalePane = React.createClass({
     };
 
     return (
-      <AccordionPane title={I18n.translate('panes.axis_and_scale.subheaders.chart_sorting')}>
+      <AccordionPane title={I18n.t('shared.visualizations.panes.axis_and_scale.subheaders.chart_sorting')}>
         <div className="authoring-field">
           <Dropdown {...attributes} />
         </div>
@@ -114,13 +114,13 @@ export var AxisAndScalePane = React.createClass({
       <div className="double-column-input-group">
         <div>
           <label className="block-label" htmlFor="measure-axis-scale-custom-min">
-            {I18n.translate('panes.axis_and_scale.fields.scale.minimum')}
+            {I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.minimum')}
           </label>
           <DebouncedInput type="number" value={limitMin} onChange={onMeasureAxisMinValueChange} className="text-input" id="measure-axis-scale-custom-min" />
         </div>
         <div>
           <label className="block-label" htmlFor="measure-axis-scale-custom-max">
-            {I18n.translate('panes.axis_and_scale.fields.scale.maximum')}
+            {I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.maximum')}
           </label>
           <DebouncedInput type="number" value={limitMax} onChange={onMeasureAxisMaxValueChange} className="text-input" id="measure-axis-scale-custom-max" />
         </div>
@@ -128,8 +128,8 @@ export var AxisAndScalePane = React.createClass({
     );
 
     return (
-      <AccordionPane title={I18n.translate('panes.axis_and_scale.subheaders.scale')}>
-        {I18n.translate('panes.axis_and_scale.fields.scale.title')}
+      <AccordionPane title={I18n.t('shared.visualizations.panes.axis_and_scale.subheaders.scale')}>
+        {I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.title')}
 
         <div className="authoring-field radiobutton">
           <div>
@@ -141,7 +141,7 @@ export var AxisAndScalePane = React.createClass({
                    checked={isAuto}/>
             <label htmlFor="measure-axis-scale-automatic">
               <span className="fake-radiobutton" />
-              <div className="translation-within-label">{I18n.translate('panes.axis_and_scale.fields.scale.automatic')}</div>
+              <div className="translation-within-label">{I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.automatic')}</div>
             </label>
           </div>
           <div>
@@ -153,7 +153,7 @@ export var AxisAndScalePane = React.createClass({
                    checked={!isAuto}/>
             <label htmlFor="measure-axis-scale-custom">
               <span className="fake-radiobutton" />
-              <div className="translation-within-label">{I18n.translate('panes.axis_and_scale.fields.scale.custom')}</div>
+              <div className="translation-within-label">{I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.custom')}</div>
             </label>
           </div>
         </div>

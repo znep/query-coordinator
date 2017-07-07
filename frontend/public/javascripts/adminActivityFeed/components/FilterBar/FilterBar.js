@@ -178,21 +178,28 @@ class FilterBar extends React.Component {
     );
   }
 
-  isNoFilterApplied() {
+  isAllQuickFilterSelected() {
     const { filter } = this.state;
 
-    return (
+    const noFilterApplied = (
       filter.event === 'All' &&
       filter.status === 'All' &&
       _.isNull(filter.dateFrom) &&
       _.isNull(filter.dateTo)
     );
+
+    const noQuickFilterApplied = (
+      filter.status !== 'Failure' &&
+      filter.event !== 'Delete'
+    );
+
+    return noFilterApplied || noQuickFilterApplied;
   }
 
   renderQuickFilters() {
     const { filter } = this.state;
 
-    const allClass = this.isNoFilterApplied() ? 'selected' : null;
+    const allClass = this.isAllQuickFilterSelected() ? 'selected' : null;
     const failedClass = filter.status === 'Failure' ? 'selected' : null;
     const deletedClass = filter.event === 'Delete' ? 'selected' : null;
 
@@ -208,8 +215,7 @@ class FilterBar extends React.Component {
   }
 
   renderBlockLink(value, className) {
-    const {disabled} = this.props;
-    const onClick = disabled ? null : _.wrap(value, this.onQuickFilterChange);
+    const onClick = _.wrap(value, this.onQuickFilterChange);
 
     return (
       <li>
@@ -237,22 +243,16 @@ class FilterBar extends React.Component {
   }
 }
 
-FilterBar.defaultProps = {
-  disabled: false
-};
-
 FilterBar.propTypes = {
   filter: React.PropTypes.shape({
     event: React.PropTypes.string,
     status: React.PropTypes.string,
     dateFrom: React.PropTypes.string,
     dateTo: React.PropTypes.string
-  }),
-  disabled: React.PropTypes.bool
+  })
 };
 
 const mapStateToProps = (state) => ({
-  disabled: state.get('loading'),
   filter: state.get('filter').toJS()
 });
 

@@ -95,7 +95,7 @@ namespace :test do
         translations_filename = 'config/locales/en.yml'
         output_filename = 'karma/dataCards/mockTranslations.js'
         translations = YAML.load_file(translations_filename)['en']['angular']['dataCards']
-        File.write(output_filename, 'window.translations = ' + translations.to_json.html_safe + ';')
+        File.write(output_filename, 'window.I18n = ' + translations.to_json.html_safe + ';')
       end
 
       desc 'Helper task that creates a js file that injects translation into browser'

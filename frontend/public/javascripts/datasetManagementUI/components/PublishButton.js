@@ -134,7 +134,7 @@ function mapStateToProps(state) {
   const dataSatisfied = isDataSatisfied(state);
   const view = state.entities.views[state.ui.routing.fourfour];
   return {
-    metadataSatisfied: !view.datasetMetadataErrors.length,
+    metadataSatisfied: view.datasetMetadataErrors.length === 0,
     dataSatisfied,
     publishedOrPublishing:
       _.size(

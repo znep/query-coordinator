@@ -5518,6 +5518,7 @@ en:
       multiple_extensions: More than one of the same extension for the same endpoint is not allowed.
       new_attachment: New Attachment
       no_fields_message: There are no fields for this fieldset.
+      no_selection: -- No Selection --
       none: "(none)"
       northwest_latitude: Northwest Latitude
       northwest_longitude: Northwest Longitude
@@ -5538,7 +5539,7 @@ en:
       row_label_prompt: e.g. Crime, Person, Hospital
       save: Save
       save_changes: Save changes
-      save_success: Updated saved successfully.
+      save_success: Saved successfully.
       semantics_rdf: Semantics & RDF
       settings_saved: Your progress has been saved. Continue creating your dataset by filling out the metadata below.
       source_link: Source Link

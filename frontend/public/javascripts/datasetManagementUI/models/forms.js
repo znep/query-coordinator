@@ -17,8 +17,8 @@ export const Field = daggy.taggedSum('Field', {
 export const Fieldset = daggy.tagged('Fieldset', ['title', 'subtitle', 'fields']);
 
 // DATASET METADATA FIELDSET DATA
-// fieldsetOne : String -> String -> Fieldset
-const fieldsetOne = (titleValue, descriptionValue) => {
+// fieldsetTitleAndDesc : String -> String -> Fieldset
+const fieldsetTitleAndDesc = (titleValue, descriptionValue) => {
   const fields = [
     Field.Text(
       'name',
@@ -46,8 +46,8 @@ const fieldsetOne = (titleValue, descriptionValue) => {
   );
 };
 
-// fieldsetTwo : String -> String -> Fieldset
-const fieldsetTwo = (categoryValue, tagsValue) => {
+// fieldsetCategoryAndTags : String -> String -> Fieldset
+const fieldsetCategoryAndTags = (categoryValue, tagsValue) => {
   const fields = [
     Field.Select(
       'category',
@@ -75,8 +75,8 @@ const fieldsetTwo = (categoryValue, tagsValue) => {
   );
 };
 
-// fieldsetThree : String -> String -> String -> Fieldset
-const fieldsetThree = (licenseVal, attrVal, attrLinkVal) => {
+// fieldsetLicense : String -> String -> String -> Fieldset
+const fieldsetLicense = (licenseVal, attrVal, attrLinkVal) => {
   const fields = [
     Field.Select(
       'licenseId',
@@ -110,8 +110,8 @@ const fieldsetThree = (licenseVal, attrVal, attrLinkVal) => {
   return Fieldset(I18n.metadata_manage.dataset_tab.titles.licenses_title, null, fields);
 };
 
-// fieldsetFour: String -> Fieldset
-const fieldsetFour = emailVal => {
+// fieldsetEmail: String -> Fieldset
+const fieldsetEmail = emailVal => {
   const fields = [
     Field.Text(
       'email',
@@ -145,7 +145,7 @@ const shapeCustomFieldsets = view =>
           if (field.options) {
             const options = [
               {
-                title: '-- No Selection --',
+                title: I18n.edit_metadata.no_selection,
                 value: ''
               },
               ...field.options.map(option => ({
@@ -199,10 +199,10 @@ export const makeRegularFieldsets = view => {
   const email = privateMetadata ? privateMetadata.email : null;
 
   return [
-    fieldsetOne(name, description),
-    fieldsetTwo(category, tags),
-    fieldsetThree(licenseId, attribution, attributionLink),
-    fieldsetFour(email)
+    fieldsetTitleAndDesc(name, description),
+    fieldsetCategoryAndTags(category, tags),
+    fieldsetLicense(licenseId, attribution, attributionLink),
+    fieldsetEmail(email)
   ];
 };
 
@@ -223,8 +223,8 @@ const makeDataModel = fieldset =>
     {}
   );
 
-// validateFieldsetOne : Fieldset -> Validation (List {[string] : String}) Fieldset
-const validateFieldsetOne = fieldset => {
+// validateFieldsetTitleAndDesc : Fieldset -> Validation (List {[string] : String}) Fieldset
+const validateFieldsetTitleAndDesc = fieldset => {
   const model = makeDataModel(fieldset);
 
   return Validation.of()
@@ -233,8 +233,8 @@ const validateFieldsetOne = fieldset => {
     .map(() => fieldset);
 };
 
-// validateFieldsetTwo : Fieldset -> Validation (List {[string] : String}) Fieldset
-const validateFieldsetTwo = fieldset => {
+// validateFieldsetCategoryAndTags : Fieldset -> Validation (List {[string] : String}) Fieldset
+const validateFieldsetCategoryAndTags = fieldset => {
   const model = makeDataModel(fieldset);
 
   return Validation.of()
@@ -243,8 +243,8 @@ const validateFieldsetTwo = fieldset => {
     .map(() => fieldset);
 };
 
-// validateFieldsetThree : Fieldset -> Validation (List {[string] : String}) Fieldset
-const validateFieldsetThree = fieldset => {
+// validateFieldsetLicense : Fieldset -> Validation (List {[string] : String}) Fieldset
+const validateFieldsetLicense = fieldset => {
   const model = makeDataModel(fieldset);
 
   return Validation.of()
@@ -253,8 +253,8 @@ const validateFieldsetThree = fieldset => {
     .map(() => fieldset);
 };
 
-// validateFieldsetFour : Fieldset -> Validation (List {[string] : String}) Fieldset
-const validateFieldsetFour = fieldset => {
+// validateFieldsetEmail : Fieldset -> Validation (List {[string] : String}) Fieldset
+const validateFieldsetEmail = fieldset => {
   const model = makeDataModel(fieldset);
 
   return Validation.of()
@@ -266,10 +266,10 @@ const validateFieldsetFour = fieldset => {
 // validateRegularFieldsets : List Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateRegularFieldsets = fieldsets =>
   Validation.of()
-    .concat(validateFieldsetOne(fieldsets[0]))
-    .concat(validateFieldsetTwo(fieldsets[1]))
-    .concat(validateFieldsetThree(fieldsets[2]))
-    .concat(validateFieldsetFour(fieldsets[3]));
+    .concat(validateFieldsetTitleAndDesc(fieldsets[0]))
+    .concat(validateFieldsetCategoryAndTags(fieldsets[1]))
+    .concat(validateFieldsetLicense(fieldsets[2]))
+    .concat(validateFieldsetEmail(fieldsets[3]));
 
 // validateCustomFieldset : Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateCustomFieldset = fieldset => {

@@ -56,7 +56,7 @@ export const MeasureSelector = React.createClass({
 
     const validMeasures = getValidMeasures(metadata);
     const options = [
-      {title: I18n.translate('shared.visualizations.aggregations.none'), value: null},
+      {title: I18n.translate('shared.visualizations.panes.data.fields.measure.no_value'), value: null},
       ...validMeasures.map(validMeasure => ({
         title: validMeasure.name,
         value: validMeasure.fieldName,
@@ -131,7 +131,7 @@ export const MeasureSelector = React.createClass({
     }
 
     const options = [
-      {title: I18n.translate('shared.visualizations.panes.data.fields.measure.no_value'), value: null},
+      {title: I18n.translate('shared.visualizations.aggregations.none'), value: null},
       ...aggregationTypes.map(aggregationType => ({title: aggregationType.title, value: aggregationType.type}))
     ];
 

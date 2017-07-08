@@ -9,10 +9,6 @@ class CoreSession
     @by = by
     @env = env
     @loaded = false
-
-    if FeatureFlags.derive[:core_managed_sessions]
-      raise "Should not be using Core Session if core managed sessions are enabled"
-    end
   end
 
   def to_s
@@ -28,6 +24,8 @@ class CoreSession
   end
 
   def valid?(force_load: false)
+    return false if FeatureFlags.derive[:core_managed_session]
+
     load!(force_load: force_load)
     false unless loaded?
     valid_expiration? && valid_signature?
@@ -101,22 +99,22 @@ private
   end
 
   def loaded?
+    return false if FeatureFlags.derive[:core_managed_session]
+
     @loaded
   end
 
   def load!(force_load: false)
+    if FeatureFlags.derive[:core_managed_session]
+      raise "Should not be using Core Session if core managed sessions are enabled"
+    end
+
     if loaded?
       return unless force_load
     end
 
     stale_session_check! do
-      # Note: If you get a mysterious "can't add a new key into hash during iteration"
-      # error here, you probably have an initialization error in some unrelated piece
-      # of code. I have no idea why it surfaces here, but uncommenting the line below
-      # will at least let the real error surface.
-      # UNCOMMENT TO DEBUG:
-      # return
-      core_session = @by.send(:load_core_session, @env)
+      core_session = @by.send(:load_core_session, @env.try(:clone))
       unless core_session.blank?
         parts = core_session.split
         if parts.length == 4

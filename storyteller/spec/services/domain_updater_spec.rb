@@ -9,7 +9,8 @@ RSpec.describe DomainUpdater do
 
     context 'when no blocks are affected' do
       it 'does nothing' do
-        allow(Block).to receive(:where).and_return([])
+        allow(DomainUpdater).to receive(:candidate_blocks_using_pure_json).and_return([])
+        allow(DomainUpdater).to receive(:candidate_blocks_using_json_and_regexp).and_return([])
 
         expect_any_instance_of(Block).not_to receive(:update_columns)
 
@@ -19,35 +20,54 @@ RSpec.describe DomainUpdater do
 
     context 'when any block is affected' do
       before do
-        allow(Block).to receive(:where).and_return([block])
         allow(block).to receive(:id).and_return('1')
       end
 
-      it 'updates only components that refer to a source domain' do
-        original_components = [
-          story_tile_component('foo.example.com'),
-          story_tile_component('bar.example.com')
-        ]
-        migrated_components = [
-          story_tile_component('foo.example.com'),
-          story_tile_component('baz.example.com')
-        ]
+      shared_examples 'a successful update' do
+        it 'updates only components that refer to a source domain' do
+          original_components = [
+            story_tile_component('foo.example.com'),
+            story_tile_component('bar.example.com')
+          ]
+          migrated_components = [
+            story_tile_component('foo.example.com'),
+            story_tile_component('baz.example.com')
+          ]
 
-        allow(DomainUpdater).to receive(:has_domain_reference).
-          with(original_components[0], anything).
-          and_return(false)
-        allow(DomainUpdater).to receive(:has_domain_reference).
-          with(original_components[1], anything).
-          and_return(true)
-        allow(DomainUpdater).to receive(:migrate_story_tile).
-          and_return(story_tile_component('baz.example.com'))
+          allow(DomainUpdater).to receive(:has_domain_reference).
+            with(original_components[0], anything).
+            and_return(false)
+          allow(DomainUpdater).to receive(:has_domain_reference).
+            with(original_components[1], anything).
+            and_return(true)
+          allow(DomainUpdater).to receive(:migrate_story_tile).
+            and_return(story_tile_component('baz.example.com'))
 
-        allow(block).to receive(:components).and_return(original_components)
+          allow(block).to receive(:components).and_return(original_components)
 
-        expect(DomainUpdater).to receive(:migrate_story_tile).once
-        expect(block).to receive(:update_columns).with(hash_including(components: migrated_components))
+          expect(DomainUpdater).to receive(:migrate_story_tile).once
+          expect(block).to receive(:update_columns).with(hash_including(components: migrated_components))
 
-        DomainUpdater.migrate(old_domain, new_domain)
+          DomainUpdater.migrate(old_domain, new_domain)
+        end
+      end
+
+      context '(found via pure JSON query)' do
+        before do
+          allow(DomainUpdater).to receive(:candidate_blocks_using_pure_json).and_return([block])
+          allow(DomainUpdater).to receive(:candidate_blocks_using_json_and_regexp).and_return([])
+        end
+
+        it_behaves_like 'a successful update'
+      end
+
+      context '(found via JSON/regexp query)' do
+        before do
+          allow(DomainUpdater).to receive(:candidate_blocks_using_pure_json).and_return([])
+          allow(DomainUpdater).to receive(:candidate_blocks_using_json_and_regexp).and_return([block])
+        end
+
+        it_behaves_like 'a successful update'
       end
     end
   end

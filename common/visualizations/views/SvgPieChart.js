@@ -3,7 +3,7 @@ const d3 = require('d3');
 const _ = require('lodash');
 const $ = require('jquery');
 const SvgVisualization = require('./SvgVisualization');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 
 const MINIMUM_PIE_CHART_WIDTH = 100;
 const MAX_HORIZONTAL_LEGEND_SIZE = 250;
@@ -162,7 +162,10 @@ function SvgPieChart($element, vif, options) {
       attr('fill-opacity', 0);
 
     attachPieEvents();
-    renderLegend();
+
+    if (self.getShowLegend(true)) {
+      renderLegend();
+    }
 
     if (self.getShowValueLabels()) {
       renderArcLabels(self.getShowValueLabelsAsPercent());
@@ -210,7 +213,7 @@ function SvgPieChart($element, vif, options) {
     const getText = index => _.get(
       dataToRender,
       `0.rows.${index}.0`,
-      I18n.translate('visualizations.common.no_value')
+      I18n.t('shared.visualizations.charts.common.no_value')
     );
 
     // create legend texts
@@ -242,7 +245,7 @@ function SvgPieChart($element, vif, options) {
           } else {
             // makes sure pie chart labels do no break when value is null
             return d.data[1] === null ?
-              I18n.translate('visualizations.common.no_value') :
+              I18n.t('shared.visualizations.charts.common.no_value') :
               utils.formatNumber(d.data[1]);
           }
         });
@@ -460,7 +463,9 @@ function SvgPieChart($element, vif, options) {
    */
   function isHorizontalLayout() {
     const padding = width * MARGINS.pieToLegendMargin;
-    const contentWidth = outerWidth + padding + MAX_HORIZONTAL_LEGEND_SIZE;
+    const contentWidth = self.getShowLegend(true) ?
+      outerWidth + padding + MAX_HORIZONTAL_LEGEND_SIZE :
+      outerWidth;
 
     return contentWidth < width;
   }
@@ -480,7 +485,10 @@ function SvgPieChart($element, vif, options) {
    */
   function horizontalLayoutOffsets() {
     const padding = width * MARGINS.pieToLegendMargin;
-    const contentWidth = outerWidth + padding + MAX_HORIZONTAL_LEGEND_SIZE;
+    const contentWidth = self.getShowLegend(true) ?
+      outerWidth + padding + MAX_HORIZONTAL_LEGEND_SIZE :
+      outerWidth;
+
     const radius = outerWidth / 2;
     const pieTop = height / 2;
     const leftPadding = (width - contentWidth) / 2;
@@ -631,11 +639,11 @@ function SvgPieChart($element, vif, options) {
     const title = _.get(
       data,
       'label',
-      I18n.translate('visualizations.common.no_value')
+      I18n.t('shared.visualizations.charts.common.no_value')
     );
     // not compatible with multiple series
-    const percentSymbol = I18n.translate(
-      'visualizations.common.percent_symbol'
+    const percentSymbol = I18n.t(
+      'shared.visualizations.charts.common.percent_symbol'
     );
     const percentAsString = (data.percent !== null) ?
       `(${data.percent}${percentSymbol})` :
@@ -655,7 +663,7 @@ function SvgPieChart($element, vif, options) {
     let valueString;
 
     if (value === null) {
-      valueString = I18n.translate('visualizations.common.no_value');
+      valueString = I18n.t('shared.visualizations.charts.common.no_value');
     } else {
 
       valueString = '{0} {1}'.format(
@@ -707,7 +715,7 @@ function SvgPieChart($element, vif, options) {
    * Formats given percentage as string
    */
   function renderPercentLabel(percent) {
-    return Math.round(Number(percent)) + I18n.translate('visualizations.common.percent_symbol');
+    return Math.round(Number(percent)) + I18n.t('shared.visualizations.charts.common.percent_symbol');
   }
 
   /**

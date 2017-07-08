@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import { factories, Dropdown } from 'common/components';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 import { AGGREGATION_TYPES, COLUMN_TYPES, MAXIMUM_MEASURES } from '../constants';
 
 import { 
@@ -56,7 +56,7 @@ export const MeasureSelector = React.createClass({
 
     const validMeasures = getValidMeasures(metadata);
     const options = [
-      {title: I18n.translate('panes.data.fields.measure.no_value'), value: null},
+      {title: I18n.translate('shared.visualizations.aggregations.none'), value: null},
       ...validMeasures.map(validMeasure => ({
         title: validMeasure.name,
         value: validMeasure.fieldName,
@@ -72,7 +72,7 @@ export const MeasureSelector = React.createClass({
 
     return (
       <div ref={(ref) => this.selector = ref}>
-        <BlockLabel htmlFor="measure-selection" title={I18n.translate('panes.data.fields.measure.title')} description={I18n.translate('panes.data.fields.measure.description')} />
+        <BlockLabel htmlFor="measure-selection" title={I18n.translate('shared.visualizations.panes.data.fields.measure.title')} description={I18n.translate('shared.visualizations.panes.data.fields.measure.description')} />
         <ul className="measure-list">
           {items}
         </ul>
@@ -105,7 +105,7 @@ export const MeasureSelector = React.createClass({
           {this.renderMeasureAggregationSelector(measure, index)}
           {this.renderDeleteLink(index)}
         </li>
-    );    
+    );
   },
 
   renderDeleteLink(index) {
@@ -131,7 +131,7 @@ export const MeasureSelector = React.createClass({
     }
 
     const options = [
-      {title: I18n.translate('aggregations.none'), value: null},
+      {title: I18n.translate('shared.visualizations.panes.data.fields.measure.no_value'), value: null},
       ...aggregationTypes.map(aggregationType => ({title: aggregationType.title, value: aggregationType.type}))
     ];
 
@@ -169,7 +169,7 @@ export const MeasureSelector = React.createClass({
       <div className="measure-new-measure-link-container">
         <a onClick={this.handleOnClickNewMeasure}>
           <span className="socrata-icon-add" />
-          {I18n.translate('panes.data.fields.measure.new_measure')}
+          {I18n.translate('shared.visualizations.panes.data.fields.measure.new_measure')}
         </a>
       </div>) : null;
   },

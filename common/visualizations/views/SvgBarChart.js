@@ -5,7 +5,7 @@ const $ = require('jquery');
 const utils = require('common/js_utils');
 // Project Imports
 const SvgVisualization = require('./SvgVisualization');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 // Constants
 import {
   AXIS_LABEL_MARGIN,
@@ -236,7 +236,7 @@ function SvgBarChart($element, vif, options) {
     // should not overwrite with the no value label. "multiple columns" === greater than 2 because
     // the first element is going to be 'dimension'.
     const hasMultipleColumns = dataToRender.columns.length > 2;
-    const noValueLabel = I18n.translate('visualizations.common.no_value');
+    const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
     measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
       map((label) => hasMultipleColumns ? label || noValueLabel : label);
 
@@ -799,8 +799,8 @@ function SvgBarChart($element, vif, options) {
     //   if (barCount >= MAX_BAR_COUNT_WITHOUT_PAN) {
 
     //     self.renderError(
-    //       I18n.translate(
-    //         'visualizations.bar_chart.' +
+    //       I18n.t(
+    //         'shared.visualizations.charts.bar_chart.' +
     //         'error_exceeded_max_bar_count_without_pan'
     //       ).format(MAX_BAR_COUNT_WITHOUT_PAN)
     //     );
@@ -866,8 +866,8 @@ function SvgBarChart($element, vif, options) {
       ) {
 
         self.renderError(
-          I18n.translate(
-            'visualizations.common.validation.errors.' +
+          I18n.t(
+            'shared.visualizations.charts.common.validation.errors.' +
             'measure_axis_min_should_be_lesser_then_max'
           )
         );
@@ -884,8 +884,8 @@ function SvgBarChart($element, vif, options) {
 
       if (minXValue >= maxXValue) {
         self.renderError(
-          I18n.translate(
-            'visualizations.common.validation.errors.' +
+          I18n.t(
+            'shared.visualizations.charts.common.validation.errors.' +
             'measure_axis_biggest_value_should_be_more_than_min_limit'
           )
         );
@@ -1308,7 +1308,6 @@ function SvgBarChart($element, vif, options) {
               );
               const seriesElement = yAxisAndSeriesSvg.select('g.series')[0][0];
 
-              showGroupHighlight(dimensionGroup);
               showGroupFlyout(seriesElement, dimensionGroup, dimensionValues, positions);
             }
           }
@@ -1318,7 +1317,6 @@ function SvgBarChart($element, vif, options) {
           () => {
 
             if (!isCurrentlyPanning()) {
-              hideHighlight();
               hideFlyout();
             }
           }
@@ -1405,7 +1403,7 @@ function SvgBarChart($element, vif, options) {
   function generateYAxis(yScale, allowedLabelWidth) {
     // This sucks, but linear interpolation seems good enough.
     const allowedLabelCharCount = Math.ceil(allowedLabelWidth / DIMENSION_LABELS_PIXEL_PER_CHARACTER);
-    const noValuePlaceholder = I18n.translate('visualizations.common.no_value');
+    const noValuePlaceholder = I18n.t('shared.visualizations.charts.common.no_value');
 
     function conditionallyTruncateLabel(label) {
       label = _.isNull(label) ? noValuePlaceholder : label;
@@ -1535,33 +1533,6 @@ function SvgBarChart($element, vif, options) {
       d3.event.which !== 0;
   }
 
-  function showGroupHighlight(groupElement) {
-
-    // NOTE: The below function depends on this being set by d3, so it is not
-    // possible to use the () => {} syntax here.
-    groupElement.selectAll('.bar').each(function() {
-      const selection = d3.select(this);
-
-      selection.attr(
-        'fill',
-        // NOTE: The below function depends on this being set by d3, so it is
-        // not possible to use the () => {} syntax here.
-        function() {
-          const seriesIndex = getSeriesIndexByMeasureIndex(
-            parseInt(this.getAttribute('data-measure-index'), 10)
-          );
-          const highlightColor = self.getHighlightColorBySeriesIndex(
-            seriesIndex
-          );
-
-          return (highlightColor !== null) ?
-            highlightColor :
-            selection.attr('fill');
-        }
-      );
-    });
-  }
-
   function showBarHighlight(barElement) {
     const selection = d3.select(barElement);
 
@@ -1601,7 +1572,7 @@ function SvgBarChart($element, vif, options) {
       append(
         $('<td>', {'colspan': 2}).text(
           (title === NO_VALUE_SENTINEL) ?
-            I18n.translate('visualizations.common.no_value') :
+            I18n.t('shared.visualizations.charts.common.no_value') :
             title
         )
       );
@@ -1632,7 +1603,7 @@ function SvgBarChart($element, vif, options) {
       let valueString;
 
       if (value === null) {
-        valueString = I18n.translate('visualizations.common.no_value');
+        valueString = I18n.t('shared.visualizations.charts.common.no_value');
       } else {
         valueString = utils.formatNumber(value);
 
@@ -1698,7 +1669,7 @@ function SvgBarChart($element, vif, options) {
   function showBarFlyout(barElement, color, label, value) {
     const title = (
       barElement.getAttribute('data-dimension-value') ||
-      I18n.translate('visualizations.common.no_value')
+      I18n.t('shared.visualizations.charts.common.no_value')
     );
     const measureIndex = self.getSeriesIndexByLabel(label);
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
@@ -1719,7 +1690,7 @@ function SvgBarChart($element, vif, options) {
     let payload = null;
 
     if (value === null) {
-      valueString = I18n.translate('visualizations.common.no_value');
+      valueString = I18n.t('shared.visualizations.charts.common.no_value');
     } else {
 
       valueString = utils.formatNumber(value);

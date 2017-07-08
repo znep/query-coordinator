@@ -6,7 +6,7 @@ import $ from 'jquery';
 import classNames from 'classnames';
 import collapsible from 'common/collapsible';
 import purify from 'common/purify';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 import SocrataIcon from '../SocrataIcon';
 
 /**
@@ -184,8 +184,8 @@ const InfoPane = React.createClass({
       'hide': false
     });
     const buttonContent = paneCollapsed ?
-      <span>{t('info_pane.more_info')} <SocrataIcon name="arrow-down" /> </span> :
-      <span>{t('info_pane.less_info')} <SocrataIcon name="arrow-up" /> </span>;
+      <span>{I18n.t('shared.components.info_pane.more_info')} <SocrataIcon name="arrow-down" /> </span> :
+      <span>{I18n.t('shared.components.info_pane.less_info')} <SocrataIcon name="arrow-up" /> </span>;
 
     return (
       <div className="collapse-info-pane-wrapper">
@@ -208,8 +208,8 @@ const InfoPane = React.createClass({
       moreToggle = null;
       lessToggle = null;
     } else {
-      moreToggle = <button className="collapse-toggle more">{t('info_pane.more')}</button>;
-      lessToggle = <button className="collapse-toggle less">{t('info_pane.less')}</button>;
+      moreToggle = <button className="collapse-toggle more">{I18n.t('shared.components.info_pane.more')}</button>;
+      lessToggle = <button className="collapse-toggle less">{I18n.t('shared.components.info_pane.less')}</button>;
     }
 
     const descriptionContainerClassName = classNames('entry-description-container collapsible', {
@@ -289,8 +289,8 @@ const InfoPane = React.createClass({
     const privateIcon = isPrivate ?
       <span
         className="socrata-icon-private"
-        aria-label={t('info_pane.private_notice')}
-        title={t('info_pane.private_notice')} /> : null;
+        aria-label={I18n.t('shared.components.info_pane.private_notice')}
+        title={I18n.t('shared.components.info_pane.private_notice')} /> : null;
 
     const categoryBadge = category ? <span className="tag-category">{_.upperFirst(category)}</span> : null;
 
@@ -299,7 +299,7 @@ const InfoPane = React.createClass({
     const provenanceBadge = (hideProvenance || !provenance) ? null :
       <span className={`tag-${provenance}`}>
         <span aria-hidden className={`socrata-icon-${provenanceIcon}`}></span>
-        {t(`info_pane.${provenance}`)}
+        {I18n.t(`shared.components.info_pane.${provenance}`)}
       </span>;
 
     const contentClassName = classNames('entry-content', {

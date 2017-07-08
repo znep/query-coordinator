@@ -27,16 +27,33 @@ $font_family: "Open Sans", "Helvetica", Arial, sans-serif;
   .site-appearance-admin-header {
     margin-bottom: 46px;
     overflow: hidden;
+  }
 
-    .header-title {
-      display: inline-flex;
-      align-items: center;
-      margin-bottom: 2rem;
+  .header-title {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 2rem;
 
-      h1 {
-        display: inline-block;
-        font-size: 27px;
-        margin-right: 0.5rem;
+    h1 {
+      display: inline-block;
+      font-size: 27px;
+      margin-right: 0.5rem;
+    }
+
+    .flyout-container {
+      display: inline-block;
+      position: relative;
+      top: -3px;
+      left: 3px;
+
+      .flyout {
+        margin-top: 5px;
+        margin-left: 7px;
+
+        .flyout-content {
+          font-size: 13px;
+          font-weight: normal;
+        }
       }
 
       span.socrata-icon-question {
@@ -44,19 +61,19 @@ $font_family: "Open Sans", "Helvetica", Arial, sans-serif;
         font-size: 16px;
       }
     }
+  }
 
-    .locale-warning {
-      float: right;
-      margin-bottom: 1rem;
+  .locale-warning {
+    float: right;
+    margin-bottom: 1rem;
 
-      .alert {
-        font-size: 13px;
-      }
+    .alert {
+      font-size: 13px;
     }
+  }
 
-    .custom-content-warning {
-      margin-bottom: 1rem;
-    }
+  .custom-content-warning {
+    margin-bottom: 1rem;
   }
 
   .tab-content {

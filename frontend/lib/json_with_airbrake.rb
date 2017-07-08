@@ -4,6 +4,7 @@ class JSONWithAirbrake
       JSON.parse(*args)
     rescue JSON::ParserError => e
       options = args.last.is_a?(Hash) ? args.pop : {}
+
       notification_args = {
         :error_class => 'JSON Parser',
         :error_message => "Parse error: #{e.to_s}",

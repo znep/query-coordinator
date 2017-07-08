@@ -51,7 +51,13 @@ bundle exec rake assets:precompile
 
 # We want to push our latest en.yml up to LocaleApp and then pull down
 # additional translations in other locales.
+echo "Pushing 'common' locales to LocaleApp"
+`git rev-parse --show-toplevel`/bin/push_locale common
+
+echo "Pushing 'frontend' locales to LocaleApp"
 `git rev-parse --show-toplevel`/bin/push_locale frontend
+
+# Pull translations from both common / frontend
 set +e
 bin/pull_translations
 set -e

@@ -762,11 +762,10 @@ class AdministrationController < ApplicationController
 
     options = params[:options]
     if options.blank?
-      field['type'] = 'text'
+      field['type'], field['options'] = 'text', nil
     else
       field['type'], field['options'] = 'fixed', options
     end
-
     save_metadata(config, metadata, t('screens.admin.metadata.flashes.field_successful_save'), true)
   end
 

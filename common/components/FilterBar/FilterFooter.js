@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import SocrataIcon from '../SocrataIcon';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 
 export default function FilterFooter(props) {
   const { disableApplyFilter, isReadOnly, onClickApply, onClickRemove, onClickReset } = props;
@@ -10,7 +10,7 @@ export default function FilterFooter(props) {
     <div /> :
     <button className="btn btn-sm btn-transparent remove-btn" onClick={onClickRemove}>
       <SocrataIcon name="close-2" />
-      {t('filter_bar.remove')}
+      {I18n.t('shared.components.filter_bar.remove')}
     </button>;
 
   return (
@@ -18,13 +18,13 @@ export default function FilterFooter(props) {
       {removeButton}
       <div className="apply-btn-container">
         <button className="btn btn-sm btn-transparent reset-btn" onClick={onClickReset}>
-          {t('filter_bar.reset')}
+          {I18n.t('shared.components.filter_bar.reset')}
         </button>
         <button
           className="btn btn-sm btn-alternate-2 apply-btn"
           onClick={onClickApply}
           disabled={disableApplyFilter}>
-          {t('filter_bar.apply')}
+          {I18n.t('shared.components.filter_bar.apply')}
         </button>
       </div>
     </div>

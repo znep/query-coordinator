@@ -5,7 +5,7 @@ const $ = require('jquery');
 const utils = require('common/js_utils');
 // Project Imports
 const SvgVisualization = require('./SvgVisualization');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 // Constants
 import {
   AXIS_LABEL_MARGIN,
@@ -143,7 +143,7 @@ function SvgColumnChart($element, vif, options) {
     // should not overwrite with the no value label. "multiple columns" === greater than 2 because
     // the first element is going to be 'dimension'.
     const hasMultipleColumns = dataToRender.columns.length > 2;
-    const noValueLabel = I18n.translate('visualizations.common.no_value');
+    const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
     measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
       map((label) => hasMultipleColumns ? label || noValueLabel : label);
 
@@ -550,8 +550,8 @@ function SvgColumnChart($element, vif, options) {
     //   if (columnCount >= MAX_COLUMN_COUNT_WITHOUT_PAN) {
 
     //     self.renderError(
-    //       I18n.translate(
-    //         'visualizations.column_chart.error_exceeded_max_column_count_without_pan'
+    //       I18n.t(
+    //         'shared.visualizations.charts.column_chart.error_exceeded_max_column_count_without_pan'
     //       ).format(MAX_COLUMN_COUNT_WITHOUT_PAN)
     //     );
     //     return;
@@ -638,8 +638,8 @@ function SvgColumnChart($element, vif, options) {
       ) {
 
         self.renderError(
-          I18n.translate(
-            'visualizations.common.validation.errors.' +
+          I18n.t(
+            'shared.visualizations.charts.common.validation.errors.' +
             'measure_axis_min_should_be_lesser_then_max'
           )
         );
@@ -685,8 +685,8 @@ function SvgColumnChart($element, vif, options) {
 
       if (minYValue >= maxYValue) {
         self.renderError(
-          I18n.translate(
-            'visualizations.common.validation.errors.' +
+          I18n.t(
+            'shared.visualizations.charts.common.validation.errors.' +
             'measure_axis_biggest_value_should_be_more_than_min_limit'
           )
         );
@@ -999,7 +999,6 @@ function SvgColumnChart($element, vif, options) {
               `g.dimension-group[data-dimension-value="${dimensionValue}"]`
             );
 
-            showGroupHighlight(dimensionGroup);
             showGroupFlyout(dimensionGroup, dimensionValues);
           }
         }
@@ -1009,7 +1008,6 @@ function SvgColumnChart($element, vif, options) {
         () => {
 
           if (!isCurrentlyPanning()) {
-            hideHighlight();
             hideFlyout();
           }
         }
@@ -1061,7 +1059,7 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function conditionallyTruncateLabel(label) {
-    label = _.isNull(label) ? I18n.translate('visualizations.common.no_value') : label;
+    label = _.isNull(label) ? I18n.t('shared.visualizations.charts.common.no_value') : label;
 
     return (label.length >= DIMENSION_LABELS_MAX_CHARACTERS) ?
       '{0}…'.format(
@@ -1218,34 +1216,6 @@ function SvgColumnChart($element, vif, options) {
       d3.event.which !== 0;
   }
 
-
-  function showGroupHighlight(groupElement) {
-
-    // NOTE: The below function depends on this being set by d3, so it is not
-    // possible to use the () => {} syntax here.
-    groupElement.selectAll('rect.column').each(function() {
-      const selection = d3.select(this);
-
-      selection.attr(
-        'fill',
-        // NOTE: The below function depends on this being set by d3, so it is
-        // not possible to use the () => {} syntax here.
-        function() {
-          const seriesIndex = getSeriesIndexByMeasureIndex(
-            parseInt(this.getAttribute('data-measure-index'), 10)
-          );
-          const highlightColor = self.getHighlightColorBySeriesIndex(
-            seriesIndex
-          );
-
-          return (highlightColor !== null) ?
-            highlightColor :
-            selection.attr('fill');
-        }
-      );
-    });
-  }
-
   function showColumnHighlight(columnElement) {
     const selection = d3.select(columnElement);
 
@@ -1285,7 +1255,7 @@ function SvgColumnChart($element, vif, options) {
       append(
         $('<td>', {'colspan': 2}).text(
           (title === NO_VALUE_SENTINEL) ?
-            I18n.translate('visualizations.common.no_value') :
+            I18n.t('shared.visualizations.charts.common.no_value') :
             title
         )
       );
@@ -1316,7 +1286,7 @@ function SvgColumnChart($element, vif, options) {
       let valueString;
 
       if (value === null) {
-        valueString = I18n.translate('visualizations.common.no_value');
+        valueString = I18n.t('shared.visualizations.charts.common.no_value');
       } else {
         valueString = utils.formatNumber(value);
 
@@ -1379,7 +1349,7 @@ function SvgColumnChart($element, vif, options) {
   function showColumnFlyout(columnElement, color, label, value) {
     const title = (
       columnElement.getAttribute('data-dimension-value') ||
-      I18n.translate('visualizations.common.no_value')
+      I18n.t('shared.visualizations.charts.common.no_value')
     );
     const measureIndex = self.getSeriesIndexByLabel(label);
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
@@ -1400,7 +1370,7 @@ function SvgColumnChart($element, vif, options) {
     let payload = null;
 
     if (value === null) {
-      valueString = I18n.translate('visualizations.common.no_value');
+      valueString = I18n.t('shared.visualizations.charts.common.no_value');
     } else {
 
       valueString = utils.formatNumber(value);

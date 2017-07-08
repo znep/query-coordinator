@@ -1990,7 +1990,8 @@ en:
           title: Something went wrong with publishing your data
         publishing:
           body: It's safe to close your browser.  The progress will not be interrupted.
-          title: Your dataset is being processed & will be public shortly
+          title_public: Your dataset is being processed & will be public shortly
+          title_private: Your dataset is being processed and will remain private
         successful:
           body: You can't currently make any more changes from here.
           title: This dataset is published
@@ -2873,6 +2874,7 @@ en:
         hidden: Hidden
         internal: Internal
         open: Open
+        pending: Pending
         private: Private
         rejected: Rejected
         shared_to_me: Shared to me
@@ -3175,6 +3177,7 @@ en:
         title: Manage Connectors
         type: Type
         update_selections: Update connector selections
+        whats_this: What's this?
       datasets:
         asset_inventory:
           initialize: Initialize Asset Inventory
@@ -3995,6 +3998,7 @@ en:
         get_excited: Get Excited!
         link_menu_label_html: "<b>Menu</b> - <i>You can drag links to reorder them</i>"
         move_link_row: Drag to reorder
+        need_help: Need help?
         ok: OK
         only_visible_to_superadmins: Only visible to superadmins
         preview: Preview

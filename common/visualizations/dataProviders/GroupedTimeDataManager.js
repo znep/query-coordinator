@@ -3,7 +3,7 @@ const _ = require('lodash');
 // Project Imports
 const SoqlDataProvider = require('./SoqlDataProvider');
 const SoqlHelpers = require('./SoqlHelpers');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 const makeSocrataTimeDataRequest = require('./makeSocrataTimeDataRequest');
 // Constants
 const MAX_GROUP_COUNT = 12;
@@ -317,8 +317,8 @@ function getData(vif, options) {
 
     if (state.groupingRequiresOtherCategory) {
 
-      const otherCategoryName = I18n.translate(
-        'visualizations.common.other_category'
+      const otherCategoryName = I18n.t(
+        'shared.visualizations.charts.common.other_category'
       );
 
       dataToRenderColumns.push(otherCategoryName);

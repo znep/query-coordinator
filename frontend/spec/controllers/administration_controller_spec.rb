@@ -477,24 +477,46 @@ describe AdministrationController do
   describe 'metadata' do
 
     before(:each) do
+      init_current_domain
       init_current_user(controller)
       allow(subject).to receive(:default_url_options).and_return({})
       allow(subject).to receive(:sync_logged_in_cookie)
       allow(subject).to receive(:set_user)
       allow(subject).to receive(:set_meta)
       allow(subject).to receive(:feature_flag?).and_return(true)
-      allow(Configuration).to receive(:find_by_type).and_return(Configuration.parse('[{}]'))
-      allow_any_instance_of(Configuration).to receive(:create_or_update_property)
       allow(CurrentDomain).to receive(:user_can?).with(anything, UserRights::EDIT_SITE_THEME).and_return(true)
     end
 
-    describe '#create_metadata_field' do
-      it 'post /metadata/:fieldset/create' do
+    context 'when no metadata has yet to be set up' do
+      before(:each) do
+        allow(Configuration).to receive(:find_by_type).and_return(Configuration.parse('[{}]'))
+        allow_any_instance_of(Configuration).to receive(:create_or_update_property)
+      end
 
-        post :create_metadata_field, :fieldset => 'foo', :newFieldName => 'new_fieldname'
+      describe '#create_metadata_field' do
+        it 'post /metadata/:fieldset/create' do
 
-        expect(flash[:notice]).to include('Field Successfully Created')
-        expect(response).to redirect_to(:action => 'metadata')
+          post :create_metadata_field, :fieldset => 'foo', :newFieldName => 'new_fieldname'
+
+          expect(flash[:notice]).to include('Field Successfully Created')
+          expect(response).to redirect_to(:action => 'metadata')
+        end
+      end
+    end
+
+    context 'when metadata_field already has choices set up' do
+      let(:expected_new_field) { [Hashie::Mash.new(:name => 'Metadata', :fields => [Hashie::Mash.new(:name => 'Field with options', :options => nil, :type => 'text')])] }
+
+      before(:each) do
+        allow(Configuration).to receive(:find_by_type).and_return(
+          Configuration.parse('[{"id": 1, "name": "Metadata configuration", "type": "metadata", "properties": [{ "name": "fieldsets", "value": [{ "name": "Metadata", "fields": [{ "name": "Field with options", "options": ["option1", "option2"], "type": "fixed" }]}]}]}]'))
+      end
+
+      describe '#save_metadata_field' do
+        it 'nullifies the options if all are removed from the field' do
+          expect_any_instance_of(AdministrationController).to receive(:save_metadata).with(anything, expected_new_field, anything, anything)
+          post :save_metadata_field, :fieldset => 0, :field => 'Field with options', :options => nil
+        end
       end
     end
 

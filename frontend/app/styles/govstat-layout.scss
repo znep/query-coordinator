@@ -2,8 +2,13 @@ html, body {
   background-color: #f7f7f7;
 }
 
+body:not(.action_datasets_show) {
+  div.siteInnerWrapper {
+    padding-bottom: 90px;
+  }
+}
+
 div.siteInnerWrapper {
-  padding-bottom: 90px;
   margin-top: $site-appearance-admin-header-height;
 
   > .flash {

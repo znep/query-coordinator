@@ -121,6 +121,10 @@ header#site-chrome-header[template="evergreen"] {
               font-size: 18px;
             }
 
+            .autocomplete-results-container {
+              top: calc(((#{$banner_height} - #{$searchbox-height}) / 2) + #{$searchbox-height});
+            }
+
             .searchbox {
               opacity: 0;
               z-index: -1;
@@ -174,6 +178,7 @@ header#site-chrome-header[template="evergreen"] {
           .collapsible-search[data-catalog-autocomplete="true"] {
             input {
               box-sizing: content-box !important;
+              top: calc((#{$banner_height} - #{$searchbox-height}) / 2);
             }
           }
 

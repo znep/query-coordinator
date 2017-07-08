@@ -2,6 +2,8 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Simulate } from 'react-addons-test-utils';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 import FilterBar from 'components/FilterBar';
 import {
   mockBinaryOperatorFilter,
@@ -51,10 +53,12 @@ describe('FilterBar', () => {
   };
 
   beforeEach(() => {
+    I18n.translations.en = allLocales.en;
     element = render();
   });
 
   afterEach(() => {
+    I18n.translations = {};
     ReactDOM.unmountComponentAtNode(container);
     document.body.removeChild(container);
   });

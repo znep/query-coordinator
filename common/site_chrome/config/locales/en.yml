@@ -18,9 +18,6 @@ en:
   footer:
     powered_by: Powered By
   header:
-    settings_menu:
-      title: 'Settings'
-      all_settings: 'All Settings'
     administration: Administration
     close_button_aria_label: Close
     header_links_aria_label: Header links
@@ -29,6 +26,9 @@ en:
     my_profile: My Profile
     profile: Profile
     search: Search
+    settings_menu:
+      all_settings: All Settings
+      title: Settings
     sign_in: Sign In
     sign_out: Sign Out
     view_profile: View Profile

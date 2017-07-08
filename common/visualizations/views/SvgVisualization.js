@@ -2,6 +2,7 @@
 const $ = require('jquery');
 const _ = require('lodash');
 const utils = require('common/js_utils');
+const I18n = require('common/i18n').default;
 const React = require('react');
 const ReactDOM = require('react-dom');
 const { FilterBar, SocrataIcon } = require('common/components');
@@ -9,7 +10,6 @@ const { FilterBar, SocrataIcon } = require('common/components');
 // Project Imports
 const VifHelpers = require('../helpers/VifHelpers');
 const SvgHelpers = require('../helpers/SvgHelpers');
-const I18n = require('../I18n');
 const CustomColorPaletteManager = require('../dataProviders/CustomColorPaletteManager');
 const MetadataProvider = require('../dataProviders/MetadataProvider');
 
@@ -31,10 +31,10 @@ const DEFAULT_TYPE_VARIANTS = {
   timelineChart: 'area' // others: 'line'
 };
 
-const DEFAULT_UNIT_ONE = I18n.translate('visualizations.common.unit.one');
-const DEFAULT_UNIT_OTHER = I18n.translate('visualizations.common.unit.other');
-
 function SvgVisualization($element, vif, options) {
+  const DEFAULT_UNIT_ONE = I18n.t('shared.visualizations.charts.common.unit.one');
+  const DEFAULT_UNIT_OTHER = I18n.t('shared.visualizations.charts.common.unit.other');
+
   const self = this;
   // See: http://stackoverflow.com/a/4819886
   const mobile = (
@@ -293,7 +293,7 @@ function SvgVisualization($element, vif, options) {
       $message.
         empty().
         append($('<h1>').text(
-          I18n.translate('visualizations.common.validation.errors.multiple_errors'))
+          I18n.t('shared.visualizations.charts.common.validation.errors.multiple_errors'))
         ).
         append($('<ul>').append(
           messages.map(function(text) { return $('<li>').text(text); })
@@ -329,7 +329,7 @@ function SvgVisualization($element, vif, options) {
     // Button
     //
     const $button = $('<button>', { 'class': 'socrata-legend-button' }).
-      append($('<label>').text(I18n.translate('visualizations.common.show_legend'))).
+      append($('<label>').text(I18n.t('shared.visualizations.charts.common.show_legend'))).
       append($('<span>', { 'class': 'socrata-icon-arrow-up'} )).
       append($('<span>', { 'class': 'socrata-icon-close-2'} ));
 
@@ -370,8 +370,8 @@ function SvgVisualization($element, vif, options) {
       const isVisible = menu.is(':visible');
 
       const labelText = isVisible ?
-        I18n.translate('visualizations.common.hide_legend') :
-        I18n.translate('visualizations.common.show_legend');
+        I18n.t('shared.visualizations.charts.common.hide_legend') :
+        I18n.t('shared.visualizations.charts.common.show_legend');
 
       $(this).find('label').text(labelText);
       $(this).find('.socrata-icon-arrow-up').toggle();
@@ -387,7 +387,7 @@ function SvgVisualization($element, vif, options) {
 
   this.hideLegendMenu = function() {
 
-    self.$container.find('.socrata-legend-button label').text(I18n.translate('visualizations.common.show_legend'));
+    self.$container.find('.socrata-legend-button label').text(I18n.t('shared.visualizations.charts.common.show_legend'));
     self.$container.find('.socrata-legend-button .socrata-icon-arrow-up').show();
     self.$container.find('.socrata-legend-button .socrata-icon-close-2').hide();
     self.$container.find('.socrata-legend-menu').hide();
@@ -560,7 +560,7 @@ function SvgVisualization($element, vif, options) {
     if (_.isString(unitOne) && !_.isEmpty(unitOne)) {
       return unitOne;
     } else if (hasSumAggregation) {
-      return I18n.translate('visualizations.common.sum_aggregation_unit');
+      return I18n.t('shared.visualizations.charts.common.sum_aggregation_unit');
     } else {
       return DEFAULT_UNIT_ONE;
     }
@@ -577,7 +577,7 @@ function SvgVisualization($element, vif, options) {
     if (_.isString(unitOther) && !_.isEmpty(unitOther)) {
       return unitOther;
     } else if (hasSumAggregation) {
-      return I18n.translate('visualizations.common.sum_aggregation_unit');
+      return I18n.t('shared.visualizations.charts.common.sum_aggregation_unit');
     } else {
       return DEFAULT_UNIT_OTHER;
     }
@@ -749,8 +749,8 @@ function SvgVisualization($element, vif, options) {
 
     if (value !== null && (check === false || isNaN(check))) {
       throw new Error(
-        I18n.translate(
-          'visualizations.common.validation.errors.' +
+        I18n.t(
+          'shared.visualizations.charts.common.validation.errors.' +
           'measure_axis_min_value_should_be_numeric'
         )
       );
@@ -770,8 +770,8 @@ function SvgVisualization($element, vif, options) {
     if (value !== null && (check === false || isNaN(check))) {
 
       throw new Error(
-        I18n.translate(
-          'visualizations.common.validation.errors.' +
+        I18n.t(
+          'shared.visualizations.charts.common.validation.errors.' +
           'measure_axis_max_value_should_be_numeric'
         )
       );
@@ -808,11 +808,11 @@ function SvgVisualization($element, vif, options) {
     );
   };
 
-  this.getShowLegend = function() {
+  this.getShowLegend = function(defaultValue = false) {
     return _.get(
       self.getVif(),
       'configuration.showLegend',
-      false
+      defaultValue
     );
   };
 
@@ -878,12 +878,12 @@ function SvgVisualization($element, vif, options) {
                 append([
                   $('<div>', {'class': 'socrata-visualization-view-source-data'}).append(
                     $('<a>', {'href': '', 'target': '_blank'}).append([
-                      $('<span>').append(I18n.translate('visualizations.common.view_source_data')),
+                      $('<span>').append(I18n.t('shared.visualizations.charts.common.view_source_data')),
                       $('<span>', {'class': 'socrata-visualization-view-source-data-icon'})
                     ])
                   ),
                   $('<div>', {'class': 'socrata-visualization-panning-notice'}).text(
-                    I18n.translate('visualizations.common.panning_notice')
+                    I18n.t('shared.visualizations.charts.common.panning_notice')
                   )
                 ]),
               $('<div>', {'class': 'socrata-visualization-error-container error light'}).

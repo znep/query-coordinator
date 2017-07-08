@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import d3 from 'd3';
-import I18n from 'common/visualizations/I18n';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 import VifHelpers from 'common/visualizations/helpers/VifHelpers';
 import SvgVisualization, {
   __RewireAPI__ as SvgVisualizationAPI
@@ -23,7 +24,8 @@ describe('SvgVisualization', () => {
   const getVizElement = () => $element.find('.socrata-visualization')[0];
   const getVizChildElement = (childClass) => $element.find(`.socrata-visualization ${childClass}`)[0];
 
-  beforeEach(() => {
+  beforeEach(function() {
+    I18n.translations.en = allLocales.en;
     $element = $('<div>');
   });
 
@@ -356,7 +358,7 @@ describe('SvgVisualization', () => {
       const customErrors = ['One Error.', 'Two Error.', 'Red Error.', 'Blue Error.'];
       viz.renderError(customErrors);
       const errorMessage = $element.find('.socrata-visualization-error-message');
-      const expectedMessage = I18n.translate('visualizations.common.validation.errors.multiple_errors');
+      const expectedMessage = I18n.t('shared.visualizations.charts.common.validation.errors.multiple_errors');
       const submessages = errorMessage.find('li');
 
       assert.include(errorMessage.text(), expectedMessage);
@@ -617,7 +619,7 @@ describe('SvgVisualization', () => {
       copiedVif.series[0].unit.one = null;
       viz.updateVif(copiedVif);
 
-      assert.equal(viz.getUnitOneBySeriesIndex(0), I18n.translate('visualizations.common.unit.one'));
+      assert.equal(viz.getUnitOneBySeriesIndex(0), 'Row');
     });
 
     it('returns the default unit if the one unit is an empty string', () => {
@@ -626,7 +628,7 @@ describe('SvgVisualization', () => {
       copiedVif.series[0].unit.one = '';
       viz.updateVif(copiedVif);
 
-      assert.equal(viz.getUnitOneBySeriesIndex(0), I18n.translate('visualizations.common.unit.one'));
+      assert.equal(viz.getUnitOneBySeriesIndex(0), 'Row');
     });
 
     it('returns the sum aggregation unit if there is an aggregation function and no specified one unit', () => {
@@ -636,7 +638,7 @@ describe('SvgVisualization', () => {
       copiedVif.series[0].dataSource.measure.aggregationFunction = 'sum';
       viz.updateVif(copiedVif);
 
-      assert.equal(viz.getUnitOneBySeriesIndex(0), I18n.translate('visualizations.common.sum_aggregation_unit'));
+      assert.equal(viz.getUnitOneBySeriesIndex(0), I18n.t('shared.visualizations.charts.common.sum_aggregation_unit'));
     });
   });
 
@@ -653,7 +655,7 @@ describe('SvgVisualization', () => {
       copiedVif.series[0].unit.other = null;
       viz.updateVif(copiedVif);
 
-      assert.equal(viz.getUnitOtherBySeriesIndex(0), I18n.translate('visualizations.common.unit.other'));
+      assert.equal(viz.getUnitOtherBySeriesIndex(0), I18n.t('shared.visualizations.charts.common.unit.other'));
     });
 
     it('returns the default unit if the other unit is an empty string', () => {
@@ -662,7 +664,7 @@ describe('SvgVisualization', () => {
       copiedVif.series[0].unit.other = '';
       viz.updateVif(copiedVif);
 
-      assert.equal(viz.getUnitOtherBySeriesIndex(0), I18n.translate('visualizations.common.unit.other'));
+      assert.equal(viz.getUnitOtherBySeriesIndex(0), I18n.t('shared.visualizations.charts.common.unit.other'));
     });
 
     it('returns the sum aggregation unit if there is an aggregation function and no specified other unit', () => {
@@ -672,7 +674,7 @@ describe('SvgVisualization', () => {
       copiedVif.series[0].dataSource.measure.aggregationFunction = 'sum';
       viz.updateVif(copiedVif);
 
-      assert.equal(viz.getUnitOtherBySeriesIndex(0), I18n.translate('visualizations.common.sum_aggregation_unit'));
+      assert.equal(viz.getUnitOtherBySeriesIndex(0), I18n.t('shared.visualizations.charts.common.sum_aggregation_unit'));
     });
   });
 
@@ -878,8 +880,8 @@ describe('SvgVisualization', () => {
 
       assert.throws(
         viz.getMeasureAxisMinValue,
-        I18n.translate(
-          'visualizations.common.validation.errors.measure_axis_min_value_should_be_numeric'
+        I18n.t(
+          'shared.visualizations.charts.common.validation.errors.measure_axis_min_value_should_be_numeric'
         )
       );
     });
@@ -910,8 +912,8 @@ describe('SvgVisualization', () => {
 
       assert.throws(
         viz.getMeasureAxisMaxValue,
-        I18n.translate(
-          'visualizations.common.validation.errors.measure_axis_max_value_should_be_numeric'
+        I18n.t(
+          'shared.visualizations.charts.common.validation.errors.measure_axis_max_value_should_be_numeric'
         )
       );
     });

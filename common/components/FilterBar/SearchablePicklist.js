@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 import { ENTER, isolateEventByKeys } from 'common/keycodes';
 import SocrataIcon from '../SocrataIcon';
 import Picklist from '../Picklist';
@@ -107,7 +107,7 @@ export const SearchablePicklist = React.createClass({
             <input
               className="searchable-picklist-input"
               type="text"
-              aria-label={t('filter_bar.search')}
+              aria-label={I18n.t('shared.components.filter_bar.search')}
               value={value || ''}
               ref={(el) => this.search = el}
               onKeyPress={this.onKeyPressSearch}
@@ -140,7 +140,7 @@ export const SearchablePicklist = React.createClass({
     const picklistProps = {
       options: selectedOptions.map((selectedOption) => {
         return {
-          group: t('filter_bar.text_filter.selected_values'),
+          group: I18n.t('shared.components.filter_bar.text_filter.selected_values'),
           ...selectedOption
         };
       }),
@@ -164,7 +164,7 @@ export const SearchablePicklist = React.createClass({
     if (_.isEmpty(options)) {
       return (
         <div className="alert warning">
-          {t('filter_bar.no_options_found')}
+          {I18n.t('shared.components.filter_bar.no_options_found')}
         </div>
       );
     }
@@ -186,16 +186,16 @@ export const SearchablePicklist = React.createClass({
 
   renderError() {
     return this.state.isError ?
-      <div className="alert warning">{t('filter_bar.text_filter.keyword_not_found')}</div> :
+      <div className="alert warning">{I18n.t('shared.components.filter_bar.text_filter.keyword_not_found')}</div> :
       null;
   },
 
   renderPrompt() {
     return (this.state.textEntered && !this.state.isError) ?
       <div className="alert info">
-        {t('filter_bar.text_filter.exact_search_prompt_main')}
+        {I18n.t('shared.components.filter_bar.text_filter.exact_search_prompt_main')}
         <a href="" onClick={this.onSearch}>
-          {t('filter_bar.text_filter.exact_search_prompt_link')}
+          {I18n.t('shared.components.filter_bar.text_filter.exact_search_prompt_link')}
         </a>
       </div> :
       null;

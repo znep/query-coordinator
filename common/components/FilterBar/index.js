@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 import SocrataIcon from '../SocrataIcon';
 import AddFilter from './AddFilter';
 import FilterItem from './FilterItem';
@@ -89,7 +89,9 @@ export const FilterBar = React.createClass({
   getInitialState() {
     return {
       isExpanded: false,
-      maxVisibleFilters: 0
+      maxVisibleFilters: 0,
+      newFilterAdded: false,
+      maxFiltersToggleWidth: 0
     };
   },
 
@@ -100,9 +102,22 @@ export const FilterBar = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
+    const { filters, isReadOnly } = this.props;
+
     if (nextProps.isReadOnly !== this.props.isReadOnly) {
       this.setState({
         isExpanded: false
+      });
+    }
+
+    // Track if a new filter was added
+    if (filters.length < nextProps.filters.length) {
+      this.setState({
+        newFilterAdded: true
+      });
+    } else if (filters.length >= nextProps.filters.length) {
+      this.setState({
+        newFilterAdded: false
       });
     }
   },
@@ -171,6 +186,12 @@ export const FilterBar = React.createClass({
 
   onWindowResize() {
     this.setMaxVisibleFilters();
+
+    if (this.state.newFilterAdded) {
+      this.setState({
+        newFilterAdded: false
+      });
+    }
   },
 
   getContainerWidth() {
@@ -188,11 +209,22 @@ export const FilterBar = React.createClass({
   },
 
   getControlsWidth() {
+    const { maxFiltersToggleWidth } = this.state;
     const addFilterWidth = this.addFilter ? this.addFilter.offsetWidth : 0;
     const filterIconWidth = this.filterIcon ? this.filterIcon.offsetWidth : 0;
-    const collapsedFiltersToggleWidth = this.expandControl ? this.expandControl.offsetWidth : 0;
+    const currentToggleWidth = this.expandControl ? this.expandControl.offsetWidth : 0;
 
-    return addFilterWidth + filterIconWidth + collapsedFiltersToggleWidth;
+    // Keeping track of the longer word used for the toggle - 'more' or 'less' (which may vary depending on
+    // locale) so that the max number of visible filters doesn't jump back and forth when you toggle visibility.
+    const maxWidth = _.max([currentToggleWidth, maxFiltersToggleWidth]);
+
+    if (currentToggleWidth > maxFiltersToggleWidth) {
+      this.setState({
+        maxFiltersToggleWidth: currentToggleWidth
+      });
+    }
+
+    return addFilterWidth + filterIconWidth + maxWidth;
   },
 
   setMaxVisibleFilters() {
@@ -252,7 +284,7 @@ export const FilterBar = React.createClass({
 
     const renderableFilters = _.reject(filters, (filter) => isReadOnly && filter.isHidden);
 
-    const text = isExpanded ? t('filter_bar.less') : t('filter_bar.more');
+    const text = isExpanded ? I18n.t('shared.components.filter_bar.less') : I18n.t('shared.components.filter_bar.more');
     const classes = classNames('btn btn-transparent btn-expand-control', {
       'is-hidden': _.size(renderableFilters) <= maxVisibleFilters
     });
@@ -268,14 +300,16 @@ export const FilterBar = React.createClass({
   },
 
   renderVisibleFilters(filterItems) {
-    const { maxVisibleFilters } = this.state;
+    const { maxVisibleFilters, newFilterAdded } = this.state;
     const filters = _.take(filterItems, maxVisibleFilters);
 
     return (
       <div className="visible-filters-container">
         <ReactCSSTransitionGroup
           transitionName="filters"
+          transitionEnter={newFilterAdded}
           transitionEnterTimeout={1000}
+          transitionLeave={false}
           transitionLeaveTimeout={1}>
           {filters}
         </ReactCSSTransitionGroup>
@@ -284,14 +318,16 @@ export const FilterBar = React.createClass({
   },
 
   renderCollapsedFilters(filterItems) {
-    const { maxVisibleFilters } = this.state;
+    const { maxVisibleFilters, newFilterAdded } = this.state;
     const filters = _.drop(filterItems, maxVisibleFilters);
 
     return (
       <div className="collapsed-filters-container">
         <ReactCSSTransitionGroup
           transitionName="filters"
+          transitionEnter={newFilterAdded}
           transitionEnterTimeout={1000}
+          transitionLeave={false}
           transitionLeaveTimeout={1}>
           {filters}
         </ReactCSSTransitionGroup>

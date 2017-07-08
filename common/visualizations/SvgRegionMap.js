@@ -8,7 +8,7 @@ var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
 var VifHelpers = require('./helpers/VifHelpers');
 var getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
-var I18n = require('./I18n');
+var I18n = require('common/i18n').default;
 
 const NAME_ALIAS = '__NAME_ALIAS__';
 const VALUE_ALIAS = '__VALUE_ALIAS__';
@@ -568,7 +568,7 @@ $.fn.socrataSvgRegionMap = function(originalVif, options) {
     if (error.errorMessages) {
       messages = error.errorMessages;
     } else {
-      messages = I18n.translate('visualizations.common.error_generic')
+      messages = I18n.t('shared.visualizations.charts.common.error_generic')
     }
 
     visualization.renderError(messages);

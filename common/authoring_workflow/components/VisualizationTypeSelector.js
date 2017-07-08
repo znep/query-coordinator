@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import { factories } from 'common/components';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 import { VISUALIZATION_TYPES } from '../constants';
 import { setVisualizationType, setColorPalette, setDimension } from '../actions';
@@ -68,13 +68,13 @@ export const VisualizationTypeSelector = React.createClass({
     const recommendedLabel = (
       <div className="visualization-type-recommended-label">
         <span className="visualization-type-recommended-indicator" />
-        <span>{I18n.translate('panes.data.fields.visualization_type.recommended')}</span>
+        <span>{I18n.t('shared.visualizations.panes.data.fields.visualization_type.recommended')}</span>
       </div>
     );
 
     const recommendedInfo = (
       <p className="visualization-type-info">
-        {I18n.translate('panes.data.fields.visualization_type.recommended_based_on')}
+        {I18n.t('shared.visualizations.panes.data.fields.visualization_type.recommended_based_on')}
       </p>
     );
 
@@ -112,8 +112,8 @@ export const VisualizationTypeSelector = React.createClass({
           <span className="icon-warning" />
         </div>
         <div>
-          <p>{I18n.translate('panes.data.fields.visualization_type.no_boundaries')}</p>
-          <p dangerouslySetInnerHTML={{__html: I18n.translate('panes.data.fields.visualization_type.ask_site_admin')}} />
+          <p>{I18n.t('shared.visualizations.panes.data.fields.visualization_type.no_boundaries')}</p>
+          <p dangerouslySetInnerHTML={{__html: I18n.t('shared.visualizations.panes.data.fields.visualization_type.ask_site_admin')}} />
         </div>
       </div>
     ) : null;

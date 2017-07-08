@@ -38,6 +38,8 @@ module DatasetManagementUiHelper
       translations = translations.merge(common: common)
     end
 
-    javascript_tag("var I18n = #{json_escape(translations.to_json)};")
+    old_translations = json_escape(translations.to_json)
+    new_translations = json_escape(LocaleCache.render_partial_translations(:dataset_management_ui).to_json)
+    javascript_tag("var I18n = #{old_translations}; var translations = #{new_translations}")
   end
 end

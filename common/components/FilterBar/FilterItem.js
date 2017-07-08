@@ -9,7 +9,7 @@ import NumberFilter from './NumberFilter';
 import TextFilter from './TextFilter';
 import FilterConfig from './FilterConfig';
 import SocrataIcon from '../SocrataIcon';
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 import { ENTER, ESCAPE, SPACE, isOneOfKeys } from 'common/keycodes';
 import { getFilterToggleText } from './filters';
 
@@ -179,7 +179,7 @@ export const FilterItem = React.createClass({
         right: !isLeftAligned,
         active: isConfigOpen
       }),
-      'aria-label': t('filter_bar.configure_filter'),
+      'aria-label': I18n.t('shared.components.filter_bar.configure_filter'),
       tabIndex: '0',
       role: 'button',
       onClick: this.toggleConfig,
@@ -243,7 +243,7 @@ export const FilterItem = React.createClass({
         right: !isLeftAligned,
         active: isControlOpen
       }),
-      'aria-label': `${t('filter_bar.filter')} ${column.name}`,
+      'aria-label': `${I18n.t('shared.components.filter_bar.filter')} ${column.name}`,
       tabIndex: '0',
       role: 'button',
       onClick: this.toggleControl,

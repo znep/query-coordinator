@@ -2,10 +2,10 @@
 
 $background-color: $white;
 
-$container-right-offset: 50px;
+$container-right-offset: 40px;
 $container-right-offset-small: 30px;
 
-$container-top: 60px;
+$container-top: 65px;
 $container-top-small: 47px;
 
 $triangle-size: 13px;
@@ -26,7 +26,7 @@ $spinner-margin-bottom: 295px;
   @include base;
   width: 375px;
   background-color: $background-color;
-  
+
   position: absolute;
   right: $container-right-offset;
   top: $container-top;
@@ -94,7 +94,7 @@ $spinner-margin-bottom: 295px;
 .error-message {
   @extend .alert;
   @extend .error;
-  
+
   text-align: center;
   font-size: 12px;
   border-left: 0;

@@ -4,7 +4,7 @@ module LocaleCache
     @locales = locales = {}
 
     # Add /common locale strings
-    Dir.glob("#{Rails.root}/../common/i18n/locales/*.yml") do |filename|
+    Dir.glob("#{Rails.root}/../common/i18n/config/locales/*.yml") do |filename|
       locales.deep_merge!(YAML.load_file(filename) || {})
     end
 
@@ -57,7 +57,7 @@ module LocaleCache
     split = part_path.to_s.split('.')
     part = split.reduce(LocalePart) { |memo, path| memo.send(path) }
 
-    render_translations([part]).tap do |translations|
+    render_translations([part, LocalePart.shared]).tap do |translations|
       translations.deep_merge!(render_partial_translations(:common, false)) if with_common
     end
   end

@@ -5,12 +5,12 @@ export class VisibilityCell extends React.Component {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, 'getLocale', 'isOpen', 'isPrivate', 'isPrivateAndSharedToCurrentUser', 'isHidden',
+    _.bindAll(this, 'getTranslation', 'isOpen', 'isPrivate', 'isPrivateAndSharedToCurrentUser', 'isHidden',
       'isHiddenAndRejected', 'isHiddenAndAwaitingApproval', 'renderVisibilityTitle',
       'renderVisibilityDescription');
   }
 
-  getLocale(key) {
+  getTranslation(key) {
     return _.get(I18n, `result_list_table.visibility_values.${key}`);
   }
 
@@ -72,13 +72,14 @@ export class VisibilityCell extends React.Component {
 
     if (this.isOpen()) {
       visibilityCellClass = 'socrata-icon-public-open';
-      visibilityCellText = this.getLocale('open');
+      visibilityCellText = this.getTranslation('open');
     } else if (this.isPrivate()) {
       visibilityCellClass = 'socrata-icon-private';
-      visibilityCellText = this.getLocale('private');
+      visibilityCellText = this.getTranslation('private');
     } else if (this.isHidden()) {
       visibilityCellClass = 'socrata-icon-eye-blocked';
-      visibilityCellText = this.getLocale('hidden');
+      // visibilityCellText = this.getTranslation('hidden'); // Temporary change due to EN-17295
+      visibilityCellText = this.getTranslation('pending');
     }
 
     return (

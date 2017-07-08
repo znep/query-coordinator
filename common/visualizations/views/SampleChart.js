@@ -15,7 +15,7 @@ const $ = require('jquery');
 // configuration properties. See API.md for a description of these
 // capabilities.
 const SvgVisualization = require('./SvgVisualization');
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 
 // In other implementations these values are eyeballed to provide enough space
 // for axis labels that have been observed 'in the wild'. In this case,
@@ -564,7 +564,7 @@ function SampleChart($element, vif) {
       find(`.datum-label[data-datum-label="${label}"]`)[0];
     const title = (
       eventTarget.getAttribute('data-datum-title') ||
-      I18n.translate('visualizations.common.no_value')
+      I18n.t('shared.visualizations.charts.common.no_value')
     );
     const value = eventTarget.getAttribute('data-datum-value');
     // Since this is a simple yes/no chart, we will only consider one series at
@@ -601,7 +601,7 @@ function SampleChart($element, vif) {
     const $table = $('<table>', {'class': 'socrata-flyout-table'});
 
     let payload = null;
-    let valueString = I18n.translate('visualizations.common.no_value');
+    let valueString = I18n.t('shared.visualizations.charts.common.no_value');
 
     if (value !== null) {
       // Since we know that this chart will only ever display percentages,

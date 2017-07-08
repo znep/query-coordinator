@@ -1,7 +1,7 @@
 // Vendor Imports
 const _ = require('lodash');
 // Project Imports
-const I18n = require('../I18n');
+const I18n = require('common/i18n').default;
 const makeSocrataCategoricalDataRequest = require('./makeSocrataCategoricalDataRequest');
 
 function getData(vif, options) {
@@ -74,8 +74,8 @@ function getData(vif, options) {
     const dimensionIndex = 0;
     const measureIndex = 1;
 
-    const otherCategoryName = I18n.translate(
-      'visualizations.common.other_category'
+    const otherCategoryName = I18n.t(
+      'shared.visualizations.charts.common.other_category'
     );
 
     const orderBy = _.get(vif, 'series[0].dataSource.orderBy', {});

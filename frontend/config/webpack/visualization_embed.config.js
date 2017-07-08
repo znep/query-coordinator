@@ -20,14 +20,14 @@ module.exports = _.defaultsDeep({
           test: /\.s?css$/,
           // Process styles but don't inline images. We don't use them.
           loader: 'style-loader!css-loader?url=false!sass-loader'
+        },
+        {
+          test: /\.yml$/,
+          loaders: ['json', 'yaml']
         }
       ],
       {
         babelRewirePlugin: true
-      },
-      {
-        test: /\.yml$/,
-        loaders: ['json', 'yaml']
       }
     )
   },

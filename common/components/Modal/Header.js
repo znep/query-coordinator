@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-import { translate as t } from 'common/I18n';
+import I18n from 'common/i18n';
 
 export const Header = (props) => {
   const { children, className, showCloseButton, title, onDismiss } = props;
@@ -21,7 +21,7 @@ export const Header = (props) => {
         type="button"
         className="btn btn-transparent modal-header-dismiss"
         onClick={onDismiss}
-        aria-label={t('modal.aria_close')}>
+        aria-label={I18n.t('shared.components.modal.aria_close')}>
         <span className="socrata-icon-close-2" />
       </button>
     );

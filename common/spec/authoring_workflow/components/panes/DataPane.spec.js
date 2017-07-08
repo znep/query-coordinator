@@ -36,9 +36,9 @@ describe('DataPane', function() {
     };
   }
 
-  function emitsEvent(id, eventName, eventType) {
+  function emitsEvent(id, eventName, eventType, eventParams) {
     it(`should emit an ${eventName} event`, function(done) {
-      TestUtils.Simulate[eventType || 'change'](component.querySelector(id));
+      TestUtils.Simulate[eventType || 'change'](component.querySelector(id), eventParams);
 
       setTimeout(() => {
         sinon.assert.calledOnce(props[eventName]);
@@ -134,6 +134,9 @@ describe('DataPane', function() {
           emitsEvent('#limit-count', 'onSelectLimitCount');
           emitsEvent('#limit-count-value', 'onChangeLimitCount');
           emitsEvent('#show-other-category', 'onChangeShowOtherCategory');
+
+          emitsEvent('#limit-count-value', 'onChangeLimitCount', 'keyDown', {key: 'Enter'});
+
         });
       });
 

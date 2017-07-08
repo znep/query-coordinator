@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import utils from 'common/js_utils';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 export const setStringValueOrDefaultValue = (object, path, value, defaultValue) => {
   const hasPath = _.has(object, path);
@@ -64,7 +64,7 @@ export const setUnits = (series, action) => {
   const rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', null);
   const unitOne = _.get(series, 'unit.one', null);
   const unitOther = _.get(series, 'unit.other', null);
-  const defaultUnitRegex = new RegExp(`^${I18n.translate('visualizations.common.unit.one')}$`);
+  const defaultUnitRegex = new RegExp(`^${I18n.t('shared.visualizations.charts.common.unit.one')}$`);
 
   // If the rowDisplayUnit looks like our default display unit, don't set it as a custom unit
   if (!_.isEmpty(rowDisplayUnit) && rowDisplayUnit.match(defaultUnitRegex)) {

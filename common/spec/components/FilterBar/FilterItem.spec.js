@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import I18n from 'common/i18n';
+import allLocales from 'common/i18n/config/locales';
 import FilterItem from 'components/FilterBar/FilterItem';
 import { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../../helpers';
@@ -42,7 +44,12 @@ describe('FilterItem', () => {
   let element;
 
   beforeEach(() => {
+    I18n.translations.en = allLocales.en;
     element = renderComponent(FilterItem, getProps());
+  });
+
+  afterEach(() => {
+    I18n.translations = {};
   });
 
   it('renders if isHidden is true and isReadOnly is false', () => {

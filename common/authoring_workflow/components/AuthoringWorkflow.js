@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 import { setXAxisScalingMode, resetState } from '../actions';
 import {
@@ -54,25 +54,25 @@ export const AuthoringWorkflow = React.createClass({
       tabs: [
         {
           id: 'authoring-data',
-          title: I18n.translate('panes.data.title'),
+          title: I18n.t('shared.visualizations.panes.data.title'),
           paneComponent: DataPane,
           icon: 'data'
         },
         {
           id: 'authoring-axis-and-scale',
-          title: I18n.translate('panes.axis_and_scale.title'),
+          title: I18n.t('shared.visualizations.panes.axis_and_scale.title'),
           paneComponent: AxisAndScalePane,
           icon: 'axis-scale',
         },
         {
           id: 'authoring-colors-and-style',
-          title: I18n.translate('panes.presentation.title'),
+          title: I18n.t('shared.visualizations.panes.presentation.title'),
           paneComponent: PresentationPane,
           icon: 'color'
         },
         {
           id: 'authoring-legends-and-flyouts',
-          title: I18n.translate('panes.legends_and_flyouts.title'),
+          title: I18n.t('shared.visualizations.panes.legends_and_flyouts.title'),
           paneComponent: LegendsAndFlyoutsPane,
           icon: 'flyout-options'
         }
@@ -97,7 +97,7 @@ export const AuthoringWorkflow = React.createClass({
 
   confirmUserCanEscape() {
     const { vifAuthoring } = this.props;
-    const message = I18n.translate('modal.changes_made_confirmation');
+    const message = I18n.t('shared.visualizations.modal.changes_made_confirmation');
     const changesMade = hasMadeChangesToVifs(vifAuthoring);
     return !changesMade || window.confirm(message);
   },
@@ -143,7 +143,7 @@ export const AuthoringWorkflow = React.createClass({
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {I18n.translate('panes.axis_and_scale.fields.x_axis_scaling_mode.title')}
+            {I18n.t('shared.visualizations.panes.axis_and_scale.fields.x_axis_scaling_mode.title')}
           </label>
         </div>
       </form>
@@ -168,7 +168,7 @@ export const AuthoringWorkflow = React.createClass({
   renderResetButton() {
     const { backButtonText, onReset } = this.props;
     const confirmDialog = () => {
-      if(confirm(I18n.translate('common.reset_confirm'))) {
+      if(confirm(I18n.t('shared.visualizations.common.reset_confirm'))) {
         onReset();
       }
     };
@@ -178,7 +178,7 @@ export const AuthoringWorkflow = React.createClass({
     return (
       <button className={className} onClick={confirmDialog}>
         <span className="icon-undo" />
-        {I18n.translate('common.reset_button_label')}
+        {I18n.t('shared.visualizations.common.reset_button_label')}
       </button>
     );
   },
@@ -193,7 +193,7 @@ export const AuthoringWorkflow = React.createClass({
 
     return (
       <Modal className="authoring-modal" fullScreen={true} onDismiss={this.onCancel} ref={(ref) => this.modal = ref}>
-        <ModalHeader title={I18n.translate('modal.title')} onDismiss={this.onCancel} />
+        <ModalHeader title={I18n.t('shared.visualizations.modal.title')} onDismiss={this.onCancel} />
         <ModalContent className="authoring-modal-content">
           {this.renderFilterBar()}
 
@@ -216,8 +216,8 @@ export const AuthoringWorkflow = React.createClass({
             {this.renderResetButton()}
           </div>
           <div className="authoring-actions">
-            <button className="btn btn-sm btn-default cancel" onClick={this.onCancel}>{I18n.translate('modal.close')}</button>
-            <button className="btn btn-sm btn-primary done" onClick={this.onComplete} onKeyUp={this.onInsertKeyup} disabled={isNotInsertable}>{I18n.translate('modal.insert')}</button>
+            <button className="btn btn-sm btn-default cancel" onClick={this.onCancel}>{I18n.t('shared.visualizations.modal.close')}</button>
+            <button className="btn btn-sm btn-primary done" onClick={this.onComplete} onKeyUp={this.onInsertKeyup} disabled={isNotInsertable}>{I18n.t('shared.visualizations.modal.insert')}</button>
           </div>
         </ModalFooter>
       </Modal>

@@ -8,7 +8,9 @@ module CatalogLandingPageHelper
   end
 
   def render_catalog_landing_page_translations
-    javascript_tag("var I18n = _.extend(I18n, #{json_escape(catalog_landing_page_translations.to_json)});")
+    old_translations = json_escape(catalog_landing_page_translations.to_json)
+    new_translations = json_escape(LocaleCache.render_partial_translations(:catalog_landing_page).to_json)
+    javascript_tag("var I18n = _.extend(I18n, #{old_translations}); var translations = #{new_translations}")
   end
 
   def render_catalog_landing_page_session_data

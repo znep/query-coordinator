@@ -1,2 +1,2 @@
-# Load all locale files from /common/i18n/locales
-I18n.load_path += Dir[Rails.root.join('..', 'common', 'i18n', 'locales', '*.yml')]
+# Load all locale files from /common/i18n/config/locales
+I18n.load_path += Dir[Rails.root.join('..', 'common', 'i18n', 'config', 'locales','*.yml')]

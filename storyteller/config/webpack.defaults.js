@@ -10,7 +10,8 @@ function withExtraBabelPlugins(extraPlugins) {
       admin: './app/assets/javascripts/admin',
       view: './app/assets/javascripts/view',
       editor: './app/assets/javascripts/editor',
-      tile: './app/assets/javascripts/tile'
+      tile: './app/assets/javascripts/tile',
+      new: './app/assets/javascripts/new'
     },
     output: {
       filename: '[name].js',

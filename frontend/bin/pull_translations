@@ -6,11 +6,23 @@
 # - .env
 # - .localeapp/config.rb
 
-if [ "${LOCALEAPP_API_KEY}" = "" ]; then
+if [ -z $LOCALEAPP_API_KEY ]; then
   echo 'You must first set the LOCALEAPP_API_KEY environment variable.'
+  exit 1
+fi
+
+if [ -z $COMMON_LOCALEAPP_API_KEY ]; then
+  echo 'You must first set the COMMON_LOCALEAPP_API_KEY environment variable.'
   exit 1
 fi
 
 set -e
 
-localeapp pull config/locales
+## Pull platform-ui/frontend locales
+LOCALEAPP_API_KEY=$LOCALEAPP_API_KEY localeapp pull config/locales
+
+## Pull platform-ui/common locales
+cd ../common/i18n/
+LOCALEAPP_API_KEY=$COMMON_LOCALEAPP_API_KEY localeapp pull config/locales
+
+

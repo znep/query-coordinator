@@ -124,12 +124,6 @@ export default function barChart(state, action) {
       }
       break;
 
-    case actions.SET_SHOW_LEGEND:
-      _.set(state, 'configuration.showLegend', action.showLegend);
-      break;
-
-    case actions.APPEND_SERIES_WITH_MEASURE:
-    case actions.INITIALIZE_SERIES:
     case actions.RECEIVE_METADATA:
     case actions.REMOVE_SERIES:
     case actions.SET_DATASET_UID:
@@ -145,6 +139,7 @@ export default function barChart(state, action) {
     case actions.SET_SECONDARY_COLOR:
     case actions.SET_SERIES_MEASURE_AGGREGATION:
     case actions.SET_SERIES_MEASURE_COLUMN:
+    case actions.SET_SHOW_LEGEND:
     case actions.SET_TITLE:
     case actions.SET_UNIT_ONE:
     case actions.SET_UNIT_OTHER:

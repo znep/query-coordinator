@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 import { COLUMN_TYPES } from '../../constants';
 import { getDisplayableColumns, hasData } from '../../selectors/metadata';
@@ -49,7 +49,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
       className: 'text-input',
       type: 'text',
       onChange: onChangeUnitOne,
-      placeholder: I18n.translate('panes.legends_and_flyouts.fields.units_one.placeholder'),
+      placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.placeholder'),
       value: unitOne
     };
 
@@ -59,23 +59,23 @@ export const LegendsAndFlyoutsPane = React.createClass({
       className: 'text-input',
       type: 'text',
       onChange: onChangeUnitOther,
-      placeholder: I18n.translate('panes.legends_and_flyouts.fields.units_other.placeholder'),
+      placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.placeholder'),
       value: unitOther
     };
 
     return (
-      <AccordionPane key="units" title={I18n.translate('panes.legends_and_flyouts.subheaders.units.title')}>
+      <AccordionPane key="units" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.units.title')}>
         <p className="authoring-field-description">
-          <small>{I18n.translate('panes.legends_and_flyouts.subheaders.units.description')}</small>
+          <small>{I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.units.description')}</small>
         </p>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="units-one">{I18n.translate('panes.legends_and_flyouts.fields.units_one.title')}</label>
+                 htmlFor="units-one">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.title')}</label>
           <DebouncedInput {...unitOneAttributes} />
         </div>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="units-other">{I18n.translate('panes.legends_and_flyouts.fields.units_other.title')}</label>
+                 htmlFor="units-other">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.title')}</label>
           <DebouncedInput {...unitOtherAttributes} />
         </div>
       </AccordionPane>
@@ -85,23 +85,27 @@ export const LegendsAndFlyoutsPane = React.createClass({
   renderLegends() {
     const { vifAuthoring, onChangeShowLegend } = this.props;
 
-    // Currently legends are only available for grouping visualizations
+    // Currently legends are only available for grouping visualizations or pie charts
     const isGrouping = getDimensionGroupingColumnName(vifAuthoring);
-    if (!isGrouping) {
+    const isCurrentlyPieChart = isPieChart(vifAuthoring);
+
+    if (!isGrouping && !isCurrentlyPieChart) {
       return null;
     }
 
-    const showLegend = getShowLegend(vifAuthoring);
+    // Pie charts default to showing the legend
+    const defaultValue = isCurrentlyPieChart;
+    const showLegend = getShowLegend(defaultValue)(vifAuthoring);
 
     return (
-      <AccordionPane key="legends" title={I18n.translate('panes.legends_and_flyouts.subheaders.legends.title')}>
+      <AccordionPane key="legends" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.legends.title')}>
         <div className="authoring-field checkbox">
           <input id="show-legends" type="checkbox" onChange={onChangeShowLegend} defaultChecked={showLegend} />
           <label className="inline-label" htmlFor="show-legends">
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {I18n.translate('panes.legends_and_flyouts.fields.show_legends.title')}
+            {I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.show_legends.title')}
           </label>
         </div>
       </AccordionPane>
@@ -121,7 +125,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderPieChartControls() {
-    return this.renderUnits();
+    return [this.renderUnits(), this.renderLegends()];
   },
 
   renderHistogramControls() {
@@ -137,7 +141,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
     const rowInspectorTitleColumnName = getRowInspectorTitleColumnName(vifAuthoring);
     const columnAttributes = {
       id: 'flyout-title-column',
-      placeholder: I18n.translate('panes.legends_and_flyouts.fields.row_inspector_title.no_value'),
+      placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.row_inspector_title.no_value'),
       options: _.map(getDisplayableColumns(metadata), column => ({
         title: column.name,
         value: column.fieldName,
@@ -149,7 +153,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
     };
 
     const rowInspector = (
-      <AccordionPane key="rowInspector" title={I18n.translate('panes.legends_and_flyouts.subheaders.row_inspector_title')}>
+      <AccordionPane key="rowInspector" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.row_inspector_title')}>
         <div className="authoring-field">
           <label className="block-label" htmlFor="flyout-title-column">Column</label>
           <div className="flyout-title-dropdown-container">

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import { Dropdown } from 'common/components';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 import BlockLabel from './shared/BlockLabel';
 
@@ -62,18 +62,18 @@ export var RegionSelector = React.createClass({
       regionCodingLastChecked
     } = this.props.vifAuthoring.authoring;
 
-    var lastCheckedMessage = I18n.translate('panes.data.fields.region.last_checked');
+    var lastCheckedMessage = I18n.t('shared.visualizations.panes.data.fields.region.last_checked');
 
     lastCheckedMessage += regionCodingLastChecked ?
       ` ${regionCodingLastChecked}` :
-      ` ${I18n.translate('panes.data.fields.region.never')}`;
+      ` ${I18n.t('shared.visualizations.panes.data.fields.region.never')}`;
 
     if (showRegionCodingProcessingMessage) {
       return (
         <div className="region-processing-info alert warning">
-          <p>{I18n.translate('panes.data.fields.region.selected_region_processing')}</p>
-          <p>{I18n.translate('panes.data.fields.region.region_coding_duration')}</p>
-          <p>{I18n.translate('panes.data.fields.region.stay_or_return_later')}</p>
+          <p>{I18n.t('shared.visualizations.panes.data.fields.region.selected_region_processing')}</p>
+          <p>{I18n.t('shared.visualizations.panes.data.fields.region.region_coding_duration')}</p>
+          <p>{I18n.t('shared.visualizations.panes.data.fields.region.stay_or_return_later')}</p>
           <p className="region-processing-info-last-checked"><span className="spinner-default"/> {lastCheckedMessage}</p>
         </div>
       );
@@ -102,7 +102,7 @@ export var RegionSelector = React.createClass({
       return {
         title: computedColumn.name,
         value: computedColumn.uid,
-        group: I18n.translate('panes.data.fields.region.groups.ready_to_use'),
+        group: I18n.t('shared.visualizations.panes.data.fields.region.groups.ready_to_use'),
         computedColumn,
         domain
       };
@@ -112,14 +112,14 @@ export var RegionSelector = React.createClass({
       return {
         title: curatedRegion.name,
         value: curatedRegion.uid,
-        group: I18n.translate('panes.data.fields.region.groups.requires_processing'),
+        group: I18n.t('shared.visualizations.panes.data.fields.region.groups.requires_processing'),
         curatedRegion
       };
     });
 
     var regionAttributes = {
       id: 'region-selection',
-      placeholder: I18n.translate('panes.data.fields.region.placeholder'),
+      placeholder: I18n.t('shared.visualizations.panes.data.fields.region.placeholder'),
       options: [ ...computedColumns, ...curatedRegions ],
       value: defaultRegion,
       onSelection: this.onSelectRegion,
@@ -130,8 +130,8 @@ export var RegionSelector = React.createClass({
       <div className="region-selector-container" ref={reference}>
         <BlockLabel
           htmlFor="region-selection"
-          title={I18n.translate('panes.data.fields.region.title')}
-          description={I18n.translate('panes.data.fields.region.region_processing')} />
+          title={I18n.t('shared.visualizations.panes.data.fields.region.title')}
+          description={I18n.t('shared.visualizations.panes.data.fields.region.region_processing')} />
         <Dropdown {...regionAttributes} />
         {this.renderRegionProcessingMessage()}
         {this.renderRegionProcessingError()}

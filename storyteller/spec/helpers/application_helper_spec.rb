@@ -79,7 +79,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       helper.params[:locale] = example.metadata[:locale]
       translations = current_editor_translations
 
-      expect(translations.keys).to eq(%w{editor common})
+      expect(translations.keys).to eq(%w{editor common shared})
       expect(translations[:editor][:story_save_error_try_again]).to eq('Try again.')
     end
 
@@ -87,7 +87,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       helper.params[:locale] = example.metadata[:locale]
       translations = current_editor_translations
 
-      expect(translations.keys).to eq(%w{editor common})
+      expect(translations.keys).to eq(%w{editor common shared})
       expect(translations[:editor][:story_save_error_try_again]).to eq('Try again.')
     end
   end

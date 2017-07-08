@@ -7,7 +7,9 @@ module VisualizationCanvasHelper
   end
 
   def render_visualization_canvas_translations
-    javascript_tag("var I18n = #{json_escape(visualization_canvas_translations.to_json)};")
+    old_translations = json_escape(visualization_canvas_translations.to_json)
+    new_translations = json_escape(LocaleCache.render_partial_translations(:visualization_canvas).to_json)
+    javascript_tag("var I18n = #{old_translations}; var translations = #{new_translations};")
   end
 
   def render_visualization_canvas_server_config

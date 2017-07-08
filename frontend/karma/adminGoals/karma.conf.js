@@ -4,12 +4,6 @@ var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
   [ 'karma/adminGoals' ]
 );
 
-// Allows us to load json fixture files.
-webpackConfig.module.loaders.push( {
-  test: /\.json$/,
-  loader: 'json-loader'
-});
-
 module.exports = function (karma) {
   karma.set(karmaConfig({
     files: [

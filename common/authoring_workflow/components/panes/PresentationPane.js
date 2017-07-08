@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Dropdown, ColorPicker } from 'common/components';
-import { I18n } from 'common/visualizations';
+import I18n from 'common/i18n';
 
 import {
   BASE_LAYERS,
@@ -58,14 +58,14 @@ export var PresentationPane = React.createClass({
     const colorPickers = series.map((item, index) => {
 
       const labelText = (series.length == 1) || _.isEmpty(item.dataSource.measure.label) ? 
-        I18n.translate('panes.presentation.fields.bar_color.title') : 
+        I18n.translate('shared.visualizations.panes.presentation.fields.bar_color.title') :
         item.dataSource.measure.label;
 
       return this.renderColorPicker(index, labelText, item.color.primary);
     });
 
     return (
-      <AccordionPane key="colors" title={I18n.translate('panes.presentation.subheaders.colors')}>
+      <AccordionPane key="colors" title={I18n.translate('shared.visualizations.panes.presentation.subheaders.colors')}>
         {colorPickers}
       </AccordionPane>
     );
@@ -94,7 +94,7 @@ export var PresentationPane = React.createClass({
     const colorPalettesWithCustomOption = [
       ...colorPalettes,
       {
-        title: I18n.translate('color_palettes.custom'),
+        title: I18n.t('shared.visualizations.color_palettes.custom'),
         value: "custom"
       }
     ];
@@ -109,9 +109,9 @@ export var PresentationPane = React.createClass({
       null;
 
     return (
-      <AccordionPane key="colors" title={I18n.translate('panes.presentation.subheaders.colors')}>
+      <AccordionPane key="colors" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
         <label className="block-label" htmlFor="color-palette">
-          {I18n.translate('panes.presentation.fields.color_palette.title')}
+          {I18n.t('shared.visualizations.panes.presentation.fields.color_palette.title')}
         </label>
         <div className="color-scale-dropdown-container">
           <Dropdown {...colorPaletteAttributes} />
@@ -158,7 +158,7 @@ export var PresentationPane = React.createClass({
     } else if (customPaletteSelected && hasCustomColorPaletteError) {
       return (
         <div className="custom-color-palette-error alert error">
-          {I18n.translate('panes.presentation.custom_color_palette_error')}
+          {I18n.t('shared.visualizations.panes.presentation.custom_color_palette_error')}
         </div>
       );
     } else {
@@ -184,7 +184,7 @@ export var PresentationPane = React.createClass({
                 <span className="fake-checkbox">
                   <span className="icon-checkmark3"></span>
                 </span>
-            {I18n.translate('panes.presentation.fields.show_dimension_labels.title')}
+            {I18n.t('shared.visualizations.panes.presentation.fields.show_dimension_labels.title')}
           </label>
         </div>
       </div>
@@ -203,7 +203,7 @@ export var PresentationPane = React.createClass({
     const dimensionLabels = dimensionLabelsVisible ? this.renderDimensionLabels() : null;
 
     return (
-      <AccordionPane key="labels" title={I18n.translate('panes.presentation.subheaders.labels')}>
+      <AccordionPane key="labels" title={I18n.t('shared.visualizations.panes.presentation.subheaders.labels')}>
         {dimensionLabels}
         {valueLabels}
         {valueLabelsAsPercent}
@@ -228,7 +228,7 @@ export var PresentationPane = React.createClass({
               <span className="fake-checkbox">
                 <span className="icon-checkmark3"></span>
               </span>
-            {I18n.translate('panes.presentation.fields.show_value_labels.title')}
+            {I18n.t('shared.visualizations.panes.presentation.fields.show_value_labels.title')}
           </label>
         </div>
       </div>
@@ -259,7 +259,7 @@ export var PresentationPane = React.createClass({
               <span className="fake-checkbox">
                 <span className="icon-checkmark3"></span>
               </span>
-            {I18n.translate('panes.presentation.fields.show_value_labels_as_percent.title')}
+            {I18n.t('shared.visualizations.panes.presentation.fields.show_value_labels_as_percent.title')}
           </label>
         </div>
       </div>
@@ -273,16 +273,16 @@ export var PresentationPane = React.createClass({
     const leftAxisLabel = _.get(axisLabels, 'left', '');
 
     return (
-      <AccordionPane key="axis-labels" title={I18n.translate('panes.presentation.subheaders.axis_titles')}>
+      <AccordionPane key="axis-labels" title={I18n.t('shared.visualizations.panes.presentation.subheaders.axis_titles')}>
         <div className="authoring-field">
           <label className="block-label" htmlFor="label-top">
-            {I18n.translate('panes.presentation.fields.top_axis_title.title')}
+            {I18n.t('shared.visualizations.panes.presentation.fields.top_axis_title.title')}
           </label>
           <DebouncedInput value={topAxisLabel} onChange={onChangeLabelTop} id="label-top" className="text-input" />
         </div>
         <div className="authoring-field">
           <label className="block-label" htmlFor="label-left">
-            {I18n.translate('panes.presentation.fields.left_axis_title.title')}
+            {I18n.t('shared.visualizations.panes.presentation.fields.left_axis_title.title')}
           </label>
           <DebouncedInput value={leftAxisLabel} onChange={onChangeLabelLeft} id="label-left" className="text-input" />
         </div>
@@ -297,16 +297,16 @@ export var PresentationPane = React.createClass({
     const bottomAxisLabel = _.get(axisLabels, 'bottom', '');
 
     return (
-      <AccordionPane key="axis-labels" title={I18n.translate('panes.presentation.subheaders.axis_titles')}>
+      <AccordionPane key="axis-labels" title={I18n.t('shared.visualizations.panes.presentation.subheaders.axis_titles')}>
         <div className="authoring-field">
           <label className="block-label" htmlFor="label-left">
-            {I18n.translate('panes.presentation.fields.left_axis_title.title')}
+            {I18n.t('shared.visualizations.panes.presentation.fields.left_axis_title.title')}
           </label>
           <DebouncedInput value={leftAxisLabel} onChange={onChangeLabelLeft} id="label-left" className="text-input" />
         </div>
         <div className="authoring-field">
           <label className="block-label" htmlFor="label-bottom">
-            {I18n.translate('panes.presentation.fields.bottom_axis_title.title')}
+            {I18n.t('shared.visualizations.panes.presentation.fields.bottom_axis_title.title')}
           </label>
           <DebouncedInput value={bottomAxisLabel} onChange={onChangeLabelBottom} id="label-bottom" className="text-input" />
         </div>
@@ -330,7 +330,7 @@ export var PresentationPane = React.createClass({
           <span className="fake-checkbox">
             <span className="icon-checkmark3"></span>
           </span>
-          {I18n.translate('panes.presentation.fields.show_source_data_link.title')}
+          {I18n.t('shared.visualizations.panes.presentation.fields.show_source_data_link.title')}
         </label>
       </div>
     );
@@ -342,7 +342,7 @@ export var PresentationPane = React.createClass({
 
     return (
       <div className="authoring-field">
-        <label className="block-label" htmlFor="title">{I18n.translate('panes.presentation.fields.title.title')}</label>
+        <label className="block-label" htmlFor="title">{I18n.t('shared.visualizations.panes.presentation.fields.title.title')}</label>
         <DebouncedInput id="title" className="text-input" type="text" onChange={onChangeTitle} value={title} />
       </div>
     );
@@ -354,7 +354,7 @@ export var PresentationPane = React.createClass({
 
     return (
       <div className="authoring-field">
-        <label className="block-label" htmlFor="description">{I18n.translate('panes.presentation.fields.description.title')}</label>
+        <label className="block-label" htmlFor="description">{I18n.t('shared.visualizations.panes.presentation.fields.description.title')}</label>
         <DebouncedTextArea id="description" className="text-input text-area" onChange={onChangeDescription} value={description} />
       </div>
     );
@@ -362,7 +362,7 @@ export var PresentationPane = React.createClass({
 
   renderGeneral() {
     return (
-      <AccordionPane title={I18n.translate('panes.presentation.subheaders.general')}>
+      <AccordionPane title={I18n.t('shared.visualizations.panes.presentation.subheaders.general')}>
         {this.renderTitleField()}
         {this.renderDescriptionField()}
         {this.renderShowSourceDataLink()}
@@ -455,22 +455,22 @@ export var PresentationPane = React.createClass({
     };
 
     const pointControls = (
-      <AccordionPane key="pointControls" title={I18n.translate('panes.presentation.subheaders.points')}>
+      <AccordionPane key="pointControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.points')}>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="point-color">{I18n.translate('panes.presentation.fields.point_color.title')}</label>
+                 htmlFor="point-color">{I18n.t('shared.visualizations.panes.presentation.fields.point_color.title')}</label>
           <ColorPicker {...pointColorAttributes} />
         </div>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="point-opacity">{I18n.translate('panes.presentation.fields.point_opacity.title')}</label>
+                 htmlFor="point-opacity">{I18n.t('shared.visualizations.panes.presentation.fields.point_opacity.title')}</label>
           <div id="point-opacity">
             <DebouncedSlider {...pointOpacityAttributes} />
           </div>
         </div>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="point-size">{I18n.translate('panes.presentation.fields.point_size.title')}</label>
+                 htmlFor="point-size">{I18n.t('shared.visualizations.panes.presentation.fields.point_size.title')}</label>
           <div id="point-size">
             <DebouncedSlider {...pointSizeAttributes} />
           </div>
@@ -501,9 +501,9 @@ export var PresentationPane = React.createClass({
     };
 
     const colorControls = (
-      <AccordionPane key="colorControls" title={I18n.translate('panes.presentation.subheaders.colors')}>
+      <AccordionPane key="colorControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
         <label className="block-label"
-               htmlFor="color-scale">{I18n.translate('panes.presentation.fields.color_scale.title')}</label>
+               htmlFor="color-scale">{I18n.t('shared.visualizations.panes.presentation.fields.color_scale.title')}</label>
         <div className="color-scale-dropdown-container">
           <Dropdown {...colorScaleAttributes} />
         </div>
@@ -536,17 +536,17 @@ export var PresentationPane = React.createClass({
     };
 
     return (
-      <AccordionPane key="mapLayerControls" title={I18n.translate('panes.presentation.subheaders.map')}>
+      <AccordionPane key="mapLayerControls" title={I18n.t('shared.visualizations.panes.presentation.subheaders.map')}>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="base-layer">{I18n.translate('panes.presentation.fields.base_layer.title')}</label>
+                 htmlFor="base-layer">{I18n.t('shared.visualizations.panes.presentation.fields.base_layer.title')}</label>
           <div className="base-layer-dropdown-container">
             <Dropdown {...baseLayerAttributes} />
           </div>
         </div>
         <div className="authoring-field">
           <label className="block-label"
-                 htmlFor="base-layer-opacity">{I18n.translate('panes.presentation.fields.base_layer_opacity.title')}</label>
+                 htmlFor="base-layer-opacity">{I18n.t('shared.visualizations.panes.presentation.fields.base_layer_opacity.title')}</label>
           <div id="base-layer-opacity">
             <DebouncedSlider {...baseLayerOpacityAttributes} />
           </div>

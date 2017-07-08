@@ -110,7 +110,9 @@ export class Publishing extends React.Component {
   }
 
   render() {
-    const { taskSet, fourfour, rowsToBeUpserted, applyRevision, onCancelClick } = this.props;
+    const {
+      revision, taskSet, fourfour, rowsToBeUpserted, applyRevision, onCancelClick
+    } = this.props;
 
     let title;
     let body;
@@ -161,7 +163,9 @@ export class Publishing extends React.Component {
 
       default:
         // in progress
-        title = SubI18n.publishing.title;
+        title = revision.permission === 'public'
+          ? SubI18n.publishing.title_public
+          : SubI18n.publishing.title_private;
         body = SubI18n.publishing.body;
         progressBarType = 'inProgress';
         message = inProgressMessage(rowsToBeUpserted, taskSet);
@@ -197,6 +201,9 @@ export class Publishing extends React.Component {
 }
 
 Publishing.propTypes = {
+  revision: PropTypes.shape({
+    permission: PropTypes.string.isRequired
+  }).isRequired,
   taskSet: PropTypes.shape({
     status: PropTypes.oneOf(ApplyRevision.TASK_SET_STATUSES),
     created_at: PropTypes.instanceOf(Date)
@@ -208,6 +215,7 @@ Publishing.propTypes = {
 };
 
 export function mapStateToProps({ entities, ui: { routing } }) {
+  const revision = _.values(entities.revisions)[0];
   const taskSet = _.maxBy(_.values(entities.task_sets), job => job.updated_at);
   const fourfour = routing.fourfour;
   const rowsToBeUpserted = taskSet.output_schema_id
@@ -215,6 +223,7 @@ export function mapStateToProps({ entities, ui: { routing } }) {
     : null;
 
   return {
+    revision,
     taskSet,
     fourfour,
     rowsToBeUpserted

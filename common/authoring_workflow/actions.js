@@ -612,17 +612,19 @@ export function setMeasureAxisMaxValue(measureAxisMaxValue) {
 }
 
 export const SET_UNIT_ONE = 'SET_UNIT_ONE';
-export function setUnitsOne(one) {
+export function setUnitsOne(seriesIndex, one) {
   return {
     type: SET_UNIT_ONE,
+    seriesIndex,
     one
   };
 }
 
 export const SET_UNIT_OTHER = 'SET_UNIT_OTHER';
-export function setUnitsOther(other) {
+export function setUnitsOther(seriesIndex, other) {
   return {
     type: SET_UNIT_OTHER,
+    seriesIndex,
     other
   };
 }

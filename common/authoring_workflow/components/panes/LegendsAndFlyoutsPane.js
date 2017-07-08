@@ -9,9 +9,8 @@ import { getDisplayableColumns, hasData } from '../../selectors/metadata';
 import {
   getDimensionGroupingColumnName,
   getRowInspectorTitleColumnName,
+  getSeriesFromVif,
   getShowLegend,
-  getUnitOne,
-  getUnitOther,
   isBarChart,
   isColumnChart,
   isFeatureMap,
@@ -43,42 +42,53 @@ export const LegendsAndFlyoutsPane = React.createClass({
 
   renderUnits() {
     const { vifAuthoring, onChangeUnitOne, onChangeUnitOther } = this.props;
-    const unitOne = getUnitOne(vifAuthoring);
-    const unitOneAttributes = {
-      id: 'units-one',
-      className: 'text-input',
-      type: 'text',
-      onChange: onChangeUnitOne,
-      placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.placeholder'),
-      value: unitOne
-    };
 
-    const unitOther = getUnitOther(vifAuthoring);
-    const unitOtherAttributes = {
-      id: 'units-other',
-      className: 'text-input',
-      type: 'text',
-      onChange: onChangeUnitOther,
-      placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.placeholder'),
-      value: unitOther
-    };
+    const series = getSeriesFromVif(vifAuthoring);
+    const unitControls = series.map((item, index) => {
+
+      const unitOneAttributes = {
+        id: 'units-one',
+        className: 'text-input',
+        type: 'text',
+        onChange: (event) => onChangeUnitOne(index, event.target.value),
+        placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.placeholder'),
+        value: item.unit.one
+      };
+
+      const unitOtherAttributes = {
+        id: 'units-other',
+        className: 'text-input',
+        type: 'text',
+        onChange: (event) => onChangeUnitOther(index, event.target.value),
+        placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.placeholder'),
+        value: item.unit.other
+      };
+
+      return this.renderUnitsForSeries(index, unitOneAttributes, unitOtherAttributes);
+    });
 
     return (
       <AccordionPane key="units" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.units.title')}>
         <p className="authoring-field-description">
           <small>{I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.units.description')}</small>
         </p>
+        {unitControls}
+      </AccordionPane>
+    );
+  },
+
+  renderUnitsForSeries(seriesIndex, unitOneAttributes, unitOtherAttributes) {
+    return (
+      <div key={seriesIndex}>
         <div className="authoring-field">
-          <label className="block-label"
-                 htmlFor="units-one">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.title')}</label>
+          <label className="block-label" htmlFor="units-one">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.title')}</label>
           <DebouncedInput {...unitOneAttributes} />
         </div>
         <div className="authoring-field">
-          <label className="block-label"
-                 htmlFor="units-other">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.title')}</label>
+          <label className="block-label" htmlFor="units-other">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.title')}</label>
           <DebouncedInput {...unitOtherAttributes} />
         </div>
-      </AccordionPane>
+      </div>
     );
   },
 
@@ -226,12 +236,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeUnitOne: (event) => {
-      dispatch(setUnitsOne(event.target.value));
+    onChangeUnitOne: (seriesIndex, unitOne) => {
+      dispatch(setUnitsOne(seriesIndex, unitOne));
     },
 
-    onChangeUnitOther: (event) => {
-      dispatch(setUnitsOther(event.target.value));
+    onChangeUnitOther: (seriesIndex, unitOther) => {
+      dispatch(setUnitsOther(seriesIndex, unitOther));
     },
 
     onSelectRowInspectorTitle: flyoutTitle => {

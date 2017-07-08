@@ -47,8 +47,8 @@ const paths = {
   stacked: 'series[0].stacked',
   title: 'title',
   treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
-  unitOne: 'series[0].unit.one',
-  unitOther: 'series[0].unit.other',
+  unitOne: 'series[{0}].unit.one',
+  unitOther: 'series[{0}].unit.other',
   viewSourceDataLink: 'configuration.viewSourceDataLink',
   visualizationType: 'series[0].type',
   zeroColor: 'configuration.legend.zeroColor'
@@ -98,6 +98,16 @@ export const load = (dispatch, vif) => {
       const secondaryColorPath = paths.primaryColor.format(i);
       if (has(secondaryColorPath)) {
         dispatch(actions.setSecondaryColor(i, get(secondaryColorPath)));
+      }
+
+      const unitOnePath = paths.unitOne.format(i);
+      if (has(unitOnePath)) {
+        dispatch(actions.setUnitsOne(i, get(unitOnePath)));
+      }
+
+      const unitOtherPath = paths.unitOther.format(i);
+      if (has(unitOtherPath)) {
+        dispatch(actions.setUnitsOther(i, get(unitOtherPath)));
       }
     }
   }
@@ -246,14 +256,6 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.treatNullValuesAsZero)) {
     dispatch(actions.setTreatNullValuesAsZero(get(paths.treatNullValuesAsZero)));
-  }
-
-  if (has(paths.unitOne)) {
-    dispatch(actions.setUnitsOne(get(paths.unitOne)));
-  }
-
-  if (has(paths.unitOther)) {
-    dispatch(actions.setUnitsOther(get(paths.unitOther)));
   }
 
   if (has(paths.viewSourceDataLink)) {

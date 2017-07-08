@@ -71,13 +71,14 @@ export default function(state, action) {
 
       if (action.seriesIndex < state.series.length) {
         const series = state.series[action.seriesIndex];
-        series.dataSource.measure.columnName = action.columnName;
-        series.dataSource.measure.label = action.label;
+
+        _.set(series, 'dataSource.measure.columnName', action.columnName);
+        _.set(series, 'dataSource.measure.label', action.label);
 
         if (_.isNull(action.columnName)) {
-          series.dataSource.measure.aggregationFunction = 'count';
+          _.set(series, 'dataSource.measure.aggregationFunction', 'count');
         } else if (series.dataSource.measure.aggregationFunction === 'count') {
-          series.dataSource.measure.aggregationFunction = 'sum';
+          _.set(series, 'dataSource.measure.aggregationFunction', 'sum');
         }
       }
       break;
@@ -85,7 +86,7 @@ export default function(state, action) {
     case actions.SET_SERIES_MEASURE_AGGREGATION:
       if (action.seriesIndex < state.series.length) {
         const series = state.series[action.seriesIndex];
-        series.dataSource.measure.aggregationFunction = action.aggregationFunction;
+        _.set(series, 'dataSource.measure.aggregationFunction', action.aggregationFunction);
       }
       break;
 
@@ -106,15 +107,17 @@ export default function(state, action) {
       break;
 
     case actions.SET_UNIT_ONE:
-      forEachSeries(state, series => {
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
         _.set(series, 'unit.one', action.one);
-      });
+      }
       break;
 
     case actions.SET_UNIT_OTHER:
-      forEachSeries(state, series => {
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
         _.set(series, 'unit.other', action.other);
-      });
+      }
       break;
 
     case actions.SET_PRIMARY_COLOR:

@@ -32,9 +32,9 @@ const paths = {
   pointSize: 'configuration.pointSize',
   positiveColor: 'configuration.legend.positiveColor',
   precision: 'series[0].dataSource.precision',
-  primaryColor: 'series[0].color.primary',
+  primaryColor: 'series[{0}].color.primary',
   rowInspectorTitleColumnName: 'configuration.rowInspectorTitleColumnName',
-  secondaryColor: 'series[0].color.secondary',
+  secondaryColor: 'series[{0}].color.secondary',
   series: 'series',
   shapefileGeometryLabel: 'configuration.shapefile.geometryLabel',
   shapefilePrimaryKey: 'configuration.shapefile.primaryKey',
@@ -88,6 +88,16 @@ export const load = (dispatch, vif) => {
       const measureAggregationFunctionPath = paths.measureAggregationFunction.format(i);
       if (has(measureAggregationFunctionPath)) {
         dispatch(actions.setSeriesMeasureAggregation(i, get(measureAggregationFunctionPath)));
+      }
+
+      const primaryColorPath = paths.primaryColor.format(i);
+      if (has(primaryColorPath)) {
+        dispatch(actions.setPrimaryColor(i, get(primaryColorPath)));
+      }
+
+      const secondaryColorPath = paths.primaryColor.format(i);
+      if (has(secondaryColorPath)) {
+        dispatch(actions.setSecondaryColor(i, get(secondaryColorPath)));
       }
     }
   }
@@ -194,16 +204,8 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setPrecision(get(paths.precision)));
   }
 
-  if (has(paths.primaryColor)) {
-    dispatch(actions.setPrimaryColor(get(paths.primaryColor)));
-  }
-
   if (has(paths.rowInspectorTitleColumnName)) {
     dispatch(actions.setRowInspectorTitleColumnName(get(paths.rowInspectorTitleColumnName)));
-  }
-
-  if (has(paths.secondaryColor)) {
-    dispatch(actions.setSecondaryColor(get(paths.secondaryColor)));
   }
 
   if (has(paths.shapefileGeometryLabel)) {

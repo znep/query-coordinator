@@ -401,17 +401,19 @@ export function setViewSourceDataLink(viewSourceDataLink) {
 }
 
 export const SET_PRIMARY_COLOR = 'SET_PRIMARY_COLOR';
-export function setPrimaryColor(primaryColor) {
+export function setPrimaryColor(seriesIndex, primaryColor) {
   return {
     type: SET_PRIMARY_COLOR,
+    seriesIndex,
     primaryColor
   };
 }
 
 export const SET_SECONDARY_COLOR = 'SET_SECONDARY_COLOR';
-export function setSecondaryColor(secondaryColor) {
+export function setSecondaryColor(secondaryColor, seriesIndex) {
   return {
     type: SET_SECONDARY_COLOR,
+    seriesIndex,
     secondaryColor
   };
 }

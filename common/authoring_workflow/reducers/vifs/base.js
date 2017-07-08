@@ -118,15 +118,17 @@ export default function(state, action) {
       break;
 
     case actions.SET_PRIMARY_COLOR:
-      forEachSeries(state, series => {
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
         setStringValueOrDeleteProperty(series, 'color.primary', action.primaryColor);
-      });
+      }
       break;
 
     case actions.SET_SECONDARY_COLOR:
-      forEachSeries(state, series => {
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
         setStringValueOrDeleteProperty(series, 'color.secondary', action.secondaryColor);
-      });
+      }
       break;
 
     case actions.SET_LABEL_TOP:

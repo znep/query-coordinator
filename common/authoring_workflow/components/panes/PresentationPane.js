@@ -52,28 +52,38 @@ export var PresentationPane = React.createClass({
   },
 
   renderPrimaryColor() {
-    const { vifAuthoring, onChangePrimaryColor } = this.props;
-    const primaryColor = selectors.getPrimaryColor(vifAuthoring);
-    const labelText = I18n.translate('panes.presentation.fields.bar_color.title');
+    const { vifAuthoring } = this.props;
+    const series = selectors.getSeriesFromVif(vifAuthoring);
+
+    const colorPickers = series.map((item, index) => {
+
+      const labelText = (series.length == 1) || _.isEmpty(item.dataSource.measure.label) ? 
+        I18n.translate('panes.presentation.fields.bar_color.title') : 
+        item.dataSource.measure.label;
+
+      return this.renderColorPicker(index, labelText, item.color.primary);
+    });
 
     return (
       <AccordionPane key="colors" title={I18n.translate('panes.presentation.subheaders.colors')}>
-        <div>
-          <label className="block-label" htmlFor="primary-color">{labelText}</label>
-          <ColorPicker handleColorChange={onChangePrimaryColor} value={primaryColor} palette={COLORS}/>
-        </div>
+        {colorPickers}
       </AccordionPane>
     );
   },
 
-  renderSecondaryColor(labelText) {
-    const { vifAuthoring, onChangeSecondaryColor } = this.props;
-    const secondaryColor = selectors.getSecondaryColor(vifAuthoring);
+  renderColorPicker(seriesIndex, labelText, primaryColor) {
+    const { onChangePrimaryColor } = this.props;
+
+    const colorPickerAttributes = {
+      handleColorChange: (selectedColor) => onChangePrimaryColor(seriesIndex, selectedColor),
+      value: primaryColor,
+      palette: COLORS
+    };
 
     return (
-      <div>
-        <label className="block-label" htmlFor="secondary-color">{labelText}</label>
-        <ColorPicker handleColorChange={onChangeSecondaryColor} value={secondaryColor} palette={COLORS}/>
+      <div className="color-picker-container" key={seriesIndex}>
+        <label className="block-label" htmlFor="primary-color">{labelText}</label>
+        <ColorPicker {...colorPickerAttributes}/>
       </div>
     );
   },
@@ -617,12 +627,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangePrimaryColor: primaryColor => {
-      dispatch(actions.setPrimaryColor(primaryColor));
-    },
-
-    onChangeSecondaryColor: secondaryColor => {
-      dispatch(actions.setSecondaryColor(secondaryColor));
+    onChangePrimaryColor: (seriesIndex, primaryColor) => {
+      dispatch(actions.setPrimaryColor(seriesIndex, primaryColor));
     },
 
     onSelectBaseLayer: baseLayer => {

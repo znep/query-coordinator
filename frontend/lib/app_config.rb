@@ -7,7 +7,7 @@ class AppConfig < Hashie::Trash
 
   as_int = lambda(&:to_i)
   as_interval = lambda { |str| str.to_i.minutes }
-  
+
   # Services and service coordination
   property :consul_host
   property :coreservice_uri
@@ -68,6 +68,7 @@ class AppConfig < Hashie::Trash
 
   # Third-party analytics and errors
   property :airbrake_api_key
+  property :airbrake_project_id
   property :admin_goals_page_airbrake_api_key
   property :admin_goals_page_airbrake_project_id
   property :catalog_landing_page_airbrake_api_key

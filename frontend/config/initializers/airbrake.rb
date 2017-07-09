@@ -48,4 +48,14 @@ if ENV['AIRBRAKE_API_KEY'].present? && ENV['AIRBRAKE_PROJECT_ID'].present?
     end
   end
 
+  Airbrake.add_filter do |notice|
+    # Merge additional useful params into the notice.
+    default_payload = ::AirbrakeNotifier.default_payload
+    [:context, :environment, :params].each do |category|
+      # set values with defaults if they're not already set (reverse_merge)
+      notice[category].reverse_merge!(default_payload[category]) unless default_payload[category].blank?
+    end
+  end
+
+
 end

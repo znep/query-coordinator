@@ -10,7 +10,6 @@ import { bootstrapApp } from 'actions/bootstrap';
 const mockStore = configureStore([thunk]);
 
 describe('bootstrap', () => {
-
   let unmockWS;
   let unmockHTTP;
   let fakeStore;
@@ -29,7 +28,7 @@ describe('bootstrap', () => {
     unmockHTTP();
   });
 
-  it('joins channels and starts polling when there are in-progress task sets', (done) => {
+  it('joins channels and starts polling when there are in-progress task sets', done => {
     const revisionWithTaskSet = {
       ...window.initialState.revision,
       task_sets: [
@@ -43,7 +42,7 @@ describe('bootstrap', () => {
       bootstrapApp(
         window.initialState.view,
         revisionWithTaskSet,
-        window.initialState.customMetadata
+        window.initialState.customMetadataFieldsets
       )
     );
     // TODO: promise-ify bootstrapApp & sideEffectyStuff so we don't have to setTimeout here?
@@ -85,5 +84,4 @@ describe('bootstrap', () => {
       done();
     }, 200);
   });
-
 });

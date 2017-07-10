@@ -61,7 +61,11 @@ const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...middl
 store.dispatch(setFourfour(window.initialState.view.id));
 
 store.dispatch(
-  bootstrapApp(window.initialState.view, window.initialState.revision, window.initialState.customMetadata)
+  bootstrapApp(
+    window.initialState.view,
+    window.initialState.revision,
+    window.initialState.customMetadataFieldsets
+  )
 );
 
 const history = syncHistoryWithStore(browserHistory, store, {

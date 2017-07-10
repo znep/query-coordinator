@@ -10,20 +10,11 @@ import {
 import { addNotification } from 'actions/notifications';
 import { parseDate } from 'lib/parseDate';
 import * as ApplyRevision from 'actions/applyRevision';
-import { createCombinedValidationRules, createInitialModel } from 'components/ManageMetadata/DatasetForm';
-import { getValidationErrors } from 'components/Forms/validateSchema';
+import { makeFieldsets, validateDatasetForm } from 'models/forms';
 
 export const BOOTSTRAP_APP_SUCCESS = 'BOOTSTRAP_APP_SUCCESS';
 
-const calculateInitialSchema = (view, customMetadata) => {
-  const validations = createCombinedValidationRules(customMetadata);
-
-  const model = createInitialModel(view);
-
-  return getValidationErrors(validations, model);
-};
-
-export function bootstrapApp(view, revision, customMetadata) {
+export function bootstrapApp(view, revision, customMetadataFieldsets) {
   return dispatch => {
     // TODO: maybe wrap in try/catch and create bootstrap failure case?
     const millis = 1000;
@@ -44,12 +35,14 @@ export function bootstrapApp(view, revision, customMetadata) {
       licenseId: view.licenseId,
       attribution: view.attribution,
       attributionLink: view.attributionLink,
-      schema: calculateInitialSchema(view, customMetadata),
       tags: view.tags || [],
       privateMetadata: view.privateMetadata || {},
       attachments: _.get(view, 'metadata.attachments', []),
       metadata: view.metadata || {},
-      customMetadataFields: window.initialState.customMetadata || []
+      showErrors: false,
+      customMetadataFieldsets,
+      columnFormDirty: false,
+      datasetFormDirty: false
     };
 
     const initialRevision = {
@@ -89,7 +82,20 @@ export function bootstrapApp(view, revision, customMetadata) {
       {}
     );
 
-    dispatch(bootstrapAppSuccess(initialView, initialRevision, taskSets, uploads));
+    const { regular, custom } = makeFieldsets(initialView);
+
+    const errors = validateDatasetForm(regular, custom).matchWith({
+      Success: () => [],
+      Failure: ({ value }) => value
+    });
+
+    const intialViewWithErrors = {
+      ...initialView,
+      datasetMetadataErrors: errors,
+      columnMetadataErrors: []
+    };
+
+    dispatch(bootstrapAppSuccess(intialViewWithErrors, initialRevision, taskSets, uploads));
     dispatch(sideEffectyStuff(revision));
   };
 }
@@ -122,8 +128,10 @@ function sideEffectyStuff(revision) {
     });
 
     revision.task_sets.forEach(taskSet => {
-      if (taskSet.status !== ApplyRevision.TASK_SET_SUCCESS &&
-          taskSet.status !== ApplyRevision.TASK_SET_FAILURE) {
+      if (
+        taskSet.status !== ApplyRevision.TASK_SET_SUCCESS &&
+        taskSet.status !== ApplyRevision.TASK_SET_FAILURE
+      ) {
         dispatch(ApplyRevision.pollForTaskSetProgress(taskSet.id));
       }
     });

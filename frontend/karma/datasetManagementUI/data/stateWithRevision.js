@@ -71,7 +71,7 @@ export default {
         privateMetadata: {},
         attachments: [],
         metadata: {},
-        customMetadataFields: [
+        customMetadataFieldsets: [
           {
             name: 'FS One',
             fields: [

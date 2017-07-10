@@ -90,37 +90,6 @@ export function rowLoadOperationsInProgress(apiCalls) {
     .length;
 }
 
-// Merges formDataModel with entities.output_columns, then transforms that into the
-// shape expected by DSMAPI
-export function updatedOutputColumns(entities, formDataModel) {
-  const { output_columns: outputColumns, transforms } = entities;
-
-  const updatedColumns = Object.keys(formDataModel).reduce((acc, key) => {
-    const [id, ...rest] = key.split('-').reverse();
-
-    const fieldName = rest.reverse().join('_');
-
-    if (acc[id]) {
-      acc[id][fieldName] = formDataModel[key];
-    } else {
-      acc[id] = {
-        [fieldName]: formDataModel[key],
-        position: outputColumns[id].position,
-        id: _.toNumber(id),
-        transform: {
-          transform_expr: transforms[outputColumns[id].transform_id].transform_expr
-        }
-      };
-    }
-
-    return acc;
-  }, {});
-
-  const unsortedColumns = Object.keys(updatedColumns).map(id => updatedColumns[id]);
-
-  return _.sortBy(unsortedColumns, 'position');
-}
-
 // so we would store this as a boolean property of output columns, but turns out
 // this would require a lot of DSMAPI changes (probably more code than here, amazingly), in:
 // - computation of denormalized error count for output schema
@@ -266,3 +235,50 @@ export function currentAndIgnoredOutputColumns(entities, osid) {
     })
     .value();
 }
+
+// DATASET METADATA
+const filterUndefineds = val => val === undefined;
+const convertToNull = val => (val === '' ? null : val);
+
+const regularPublic = view =>
+  _.chain(view)
+    .pick(['id', 'name', 'description', 'category', 'licenseId', 'attribution', 'attributionLink', 'tags'])
+    .omitBy(filterUndefineds)
+    .mapValues(convertToNull)
+    .value();
+
+const regularPrivate = view =>
+  _.chain(view)
+    .get('privateMetadata')
+    .omit('custom_fields')
+    .omitBy(filterUndefineds)
+    .mapValues(convertToNull)
+    .value();
+
+const customPublic = view =>
+  _.chain(view).get('metadata.custom_fields', {}).omitBy(filterUndefineds).mapValues(convertToNull).value();
+
+const customPrivate = view =>
+  _.chain(view)
+    .get('privateMetadata.custom_fields', {})
+    .omitBy(filterUndefineds)
+    .mapValues(convertToNull)
+    .value();
+
+export const datasetMetadata = view => {
+  const publicMetadata = regularPublic(view);
+  const privateMetadata = regularPrivate(view);
+  const customMetadata = customPublic(view);
+  const privateCustomMetadata = customPrivate(view);
+
+  return {
+    ...publicMetadata,
+    privateMetadata: {
+      ...privateMetadata,
+      custom_fields: privateCustomMetadata
+    },
+    metadata: {
+      custom_fields: customMetadata
+    }
+  };
+};

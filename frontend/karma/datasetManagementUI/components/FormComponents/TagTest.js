@@ -1,10 +1,10 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import React from 'react';
-import Tag from 'components/MetadataFields/Tag';
+import Tag from 'components/FormComponents/Tag';
 import { shallow } from 'enzyme';
 
-describe('components/MetadataFields/Tag', () => {
+describe('components/FormComponents/Tag', () => {
   let component;
 
   const defaultProps = {

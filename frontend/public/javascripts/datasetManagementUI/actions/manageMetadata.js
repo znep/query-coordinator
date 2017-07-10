@@ -9,9 +9,9 @@ import {
   apiCallFailed,
   SAVE_COLUMN_METADATA,
   SAVE_DATASET_METADATA
-} from './apiCalls';
-import * as Selectors from '../selectors';
-import * as dsmapiLinks from '../dsmapiLinks';
+} from 'actions/apiCalls';
+import * as Selectors from 'selectors';
+import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
 import { getLocalizedErrorMessage } from 'lib/util';
 import {
@@ -20,7 +20,6 @@ import {
   subscribeToTransforms
 } from 'actions/manageUploads';
 import { editView } from 'actions/views';
-import { PRIVATE_CUSTOM_FIELD_PREFIX, CUSTOM_FIELD_PREFIX, fromFlatToNested } from 'lib/customMetadata';
 
 export const dismissMetadataPane = () => (dispatch, getState) => {
   const { routing } = getState().ui;
@@ -45,75 +44,18 @@ export const dismissMetadataPane = () => (dispatch, getState) => {
 export const saveDatasetMetadata = () => (dispatch, getState) => {
   const { entities, ui } = getState();
   const { fourfour } = ui.routing;
-  const model = _.get(entities, `views.${fourfour}.model`);
-  const schema = _.get(entities, `views.${fourfour}.schema`);
+  const view = entities.views[fourfour];
+  const { datasetMetadataErrors: errors } = view;
 
   dispatch(hideFlashMessage());
 
-  // Careful here. We don't want to ping the server if the validation schema says
-  // the form is invalid. But for validations we don't do client-side, there might
-  // not be a schema period, since there are no client side validation rules to
-  // generate one. So right now if there is no schema, we assume the form is valid
-  // and allow it to hit server. If the server kicks it back for some reason, we
-  // still display the error in a flash message. Maybe we can look into putting
-  // a default empty schema that is valid into the store later.
-  if (schema && !schema.isValid) {
+  if (errors.length) {
+    dispatch(editView(fourfour, { showErrors: true }));
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
-
-    // MetadataField looks at displayMetadataFieldErrors in store, and will show
-    // field-level validation errors if it's truthy. Dispatching this action from here
-    // allows us to show field-level validation errors on form submit.
-    dispatch(editView(fourfour, { displayMetadataFieldErrors: true }));
-
-    return;
+    return Promise.reject();
   }
 
-  const publicMetadata = filterMetadata(
-    _.pick(model, [
-      'id',
-      'name',
-      'description',
-      'category',
-      'licenseId',
-      'attribution',
-      'attributionLink',
-      'tags'
-    ])
-  );
-
-  function filterMetadata(metadata) {
-    if (metadata.licenseId === '') {
-      metadata.licenseId = null;
-    }
-    return metadata;
-  }
-
-  const privateMetadata = _.pick(model, ['email']);
-
-  const isCustomField = (v, k) => {
-    const regex = new RegExp(`^${CUSTOM_FIELD_PREFIX}`);
-    return regex.test(k);
-  };
-
-  const isPrivateCustomField = (v, k) => {
-    const regex = new RegExp(`^${PRIVATE_CUSTOM_FIELD_PREFIX}`);
-    return regex.test(k);
-  };
-
-  const customMetadata = _.pickBy(model, isCustomField);
-
-  const privateCustomMetadata = _.pickBy(model, isPrivateCustomField);
-
-  const datasetMetadata = {
-    ...publicMetadata,
-    privateMetadata: {
-      ...privateMetadata,
-      custom_fields: fromFlatToNested(privateCustomMetadata)
-    },
-    metadata: {
-      custom_fields: fromFlatToNested(customMetadata)
-    }
-  };
+  const datasetMetadata = Selectors.datasetMetadata(view);
 
   const callId = uuid();
 
@@ -131,11 +73,21 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     .then(checkStatus)
     .then(getJson)
     .then(resp => {
-      dispatch(editView(resp.id, resp));
+      // remove fields added to the view as part of https://github.com/socrata/rfcs/pull/6/files
+      // gonna be good to use them when that ticket is done, but having them there now is just confusing
+      // TODO: remove this a rework where we pull saved metadata values when complete
+      const sanitizedResp = _.omit(resp, ['privateCustomMetadata', 'publicCustomMetadata']);
+
+      dispatch(
+        editView(resp.id, {
+          ...sanitizedResp,
+          showErrors: false,
+          datasetFormDirty: false
+        })
+      );
 
       dispatch(apiCallSucceeded(callId));
-
-      dispatch(redirectAfterInterval());
+      dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));
     })
     .catch(error => {
       dispatch(apiCallFailed(callId, error));
@@ -149,33 +101,28 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
 
 export const saveColumnMetadata = () => (dispatch, getState) => {
   const { entities, ui } = getState();
-
   const { fourfour } = ui.routing;
-
-  const formDataModel = _.get(entities, `views.${fourfour}.colFormModel`, {});
-
-  const schema = _.get(entities, `views.${fourfour}.colFormSchema`);
+  const view = entities.views[fourfour];
+  const { columnMetadataErrors: errors } = view;
 
   dispatch(hideFlashMessage());
 
-  // see comment above in saveDatasetMetadata thunk
-  if (schema && !schema.isValid) {
+  if (errors.length) {
     dispatch(showFlashMessage('error', I18n.edit_metadata.validation_error_general));
 
-    // See comment in corresponding portion of saveDatasetMetadata action
-    dispatch(editView(fourfour, { displayMetadataFieldErrors: true }));
+    dispatch(editView(fourfour, { showErrors: true }));
 
-    return;
+    return Promise.reject();
   }
 
   const currentOutputSchema = Selectors.latestOutputSchema(entities);
 
   if (!currentOutputSchema) {
-    return;
+    return Promise.reject();
   }
 
   const payload = {
-    output_columns: Selectors.updatedOutputColumns(entities, formDataModel)
+    output_columns: Selectors.columnsForOutputSchema(entities, currentOutputSchema.id)
   };
 
   const inputSchema = entities.input_schemas[currentOutputSchema.input_schema_id];
@@ -235,22 +182,16 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
       dispatch(subscribeToTransforms(resp.resource));
     })
     .then(() => {
+      dispatch(
+        editView(fourfour, {
+          columnFormDirty: false,
+          showErrors: false
+        })
+      );
       dispatch(apiCallSucceeded(callId));
-      dispatch(redirectAfterInterval());
+      dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));
     });
 };
-
-// when save succeeds, wait this long until modal goes away
-// so user can see "saved" button is green
-export const DELAY_UNTIL_CLOSE_MS = 1000;
-
-function redirectAfterInterval() {
-  return dispatch => {
-    setTimeout(() => {
-      dispatch(dismissMetadataPane());
-    }, DELAY_UNTIL_CLOSE_MS);
-  };
-}
 
 export function focusColumnEditor(routerState) {
   return () => {

@@ -36,7 +36,7 @@ describe('actions/manageUploads', () => {
         bootstrapApp(
           window.initialState.view,
           window.initialState.revision,
-          window.initialState.customMetadata
+          window.initialState.customMetadataFieldsets
         )
       );
 

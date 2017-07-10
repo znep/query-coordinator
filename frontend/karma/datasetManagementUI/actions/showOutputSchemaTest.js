@@ -34,7 +34,7 @@ describe('actions/showOutputSchema', () => {
         bootstrapApp(
           window.initialState.view,
           window.initialState.revision,
-          window.initialState.customMetadata
+          window.initialState.customMetadataFieldsets
         )
       );
       store
@@ -123,7 +123,7 @@ describe('actions/showOutputSchema', () => {
         bootstrapApp(
           window.initialState.view,
           window.initialState.revision,
-          window.initialState.customMetadata
+          window.initialState.customMetadataFieldsets
         )
       );
 
@@ -213,7 +213,7 @@ describe('actions/showOutputSchema', () => {
         bootstrapApp(
           window.initialState.view,
           window.initialState.revision,
-          window.initialState.customMetadata
+          window.initialState.customMetadataFieldsets
         )
       );
 

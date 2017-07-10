@@ -6,6 +6,7 @@ import chroma from 'chroma-js';
 import I18n from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';
 import SvgPieChart from 'common/visualizations/views/SvgPieChart';
+import DataTypeFormatter from 'common/visualizations/views/DataTypeFormatter';
 import testHelpers from '../testHelpers';
 
 const COLOR_PALETTES = {
@@ -39,7 +40,24 @@ describe('SvgPieChart', () => {
         ['n', 140],
         ['o', 150]
       ],
-      columns: ['dimension', 'measure']
+      columns: ['dimension', 'measure'],
+      columnFormats: {
+        'dimension_text_column': {
+          datatypeName: 'text',
+          fieldname: 'dimension_text_column',
+          format: {},
+          name: 'dimension_text_column',
+          renderTypeName: 'text'
+        },
+
+        'measure_number_column': {
+          datatypeName: 'number',
+          fieldname: 'measure_number_column',
+          format: {},
+          name: 'measure_number_column',
+          renderTypeName: 'number'
+        }
+      }
     }
   ];
 
@@ -61,12 +79,12 @@ describe('SvgPieChart', () => {
           dataSource: {
             datasetUid: 'XXXX-XXXX',
             dimension: {
-              columnName: 'dimension',
+              columnName: 'dimension_text_column',
               aggregationFunction: null
             },
             domain: 'socrata.com',
             measure: {
-              columnName: 'measure',
+              columnName: 'measure_number_column',
               aggregationFunction: null
             },
             type: 'socrata.soql',

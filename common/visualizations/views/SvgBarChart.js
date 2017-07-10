@@ -4,7 +4,9 @@ const _ = require('lodash');
 const $ = require('jquery');
 const utils = require('common/js_utils');
 // Project Imports
+const ColumnFormattingHelpers = require('../helpers/ColumnFormattingHelpers');
 const SvgVisualization = require('./SvgVisualization');
+const DataTypeFormatter = require('./DataTypeFormatter');
 const I18n = require('common/i18n').default;
 // Constants
 import {
@@ -676,8 +678,10 @@ function SvgBarChart($element, vif, options) {
               return styleAttr;
             }
           ).
-          text((d) => {
-            return (_.isNumber(d)) ? utils.formatNumber(d) : '';
+          text((d, measureIndex, dimensionIndex) => {
+            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
+            return _.isNumber(d) ? ColumnFormattingHelpers.formatValue(d, column, dataToRender, true) : '';
           });
       }
 
@@ -1022,13 +1026,13 @@ function SvgBarChart($element, vif, options) {
       attr('class', 'dimension-group').
       attr(
         'data-dimension-value',
-        (d) => {
-
-          return (d[0] === null || typeof d[0] === 'undefined') ?
+        (d, dimensionIndex, measureIndex) => {
+          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+          const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
+          return _.isNil(d[0]) ?
             NO_VALUE_SENTINEL :
-            d[0];
-        }
-      ).
+            ColumnFormattingHelpers.formatValue(d[0], column, dataToRender);
+      }).
       attr('transform', (d) => `translate(0,${d3DimensionYScale(d[0])})`);
 
     if (!isStacked) {
@@ -1043,7 +1047,9 @@ function SvgBarChart($element, vif, options) {
         attr(
           'data-dimension-value',
           (datum, measureIndex, dimensionIndex) => {
-            return dimensionValues[dimensionIndex];
+            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
+            return ColumnFormattingHelpers.formatValue(dimensionValues[dimensionIndex], column, dataToRender);
           }
         ).
         attr(
@@ -1066,7 +1072,9 @@ function SvgBarChart($element, vif, options) {
       attr(
         'data-dimension-value',
         (datum, measureIndex, dimensionIndex) => {
-          return dimensionValues[dimensionIndex];
+          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+          const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
+          return ColumnFormattingHelpers.formatValue(dimensionValues[dimensionIndex], column, dataToRender);
         }
       ).
       attr(
@@ -1089,7 +1097,9 @@ function SvgBarChart($element, vif, options) {
         attr(
           'data-dimension-value',
           (datum, measureIndex, dimensionIndex) => {
-            return dimensionValues[dimensionIndex];
+            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
+            return ColumnFormattingHelpers.formatValue(dimensionValues[dimensionIndex], column, dataToRender);
           }
         ).
         attr(
@@ -1297,12 +1307,14 @@ function SvgBarChart($element, vif, options) {
       selectAll('.y.axis .tick text').
         on(
           'mousemove',
-          (d) => {
+          (d, dimensionIndex, measureIndex) => {
 
             if (!isCurrentlyPanning()) {
-              const dimensionValue = (_.isNull(d[0]) || _.isUndefined(d[0])) ?
+              const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+              const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
+              const dimensionValue = _.isNil(d[0]) ?
                 NO_VALUE_SENTINEL :
-                d[0];
+                ColumnFormattingHelpers.formatValue(d[0], column, dataToRender);
               const dimensionGroup = yAxisAndSeriesSvg.select(
                 `g.dimension-group[data-dimension-value="${dimensionValue}"]`
               );
@@ -1406,7 +1418,7 @@ function SvgBarChart($element, vif, options) {
     const noValuePlaceholder = I18n.t('shared.visualizations.charts.common.no_value');
 
     function conditionallyTruncateLabel(label) {
-      label = _.isNull(label) ? noValuePlaceholder : label;
+      label = _.isEmpty(label) ? noValuePlaceholder : label;
 
       return (label.length >= allowedLabelCharCount) ?
         `${label.substring(0, allowedLabelCharCount - 1).trim()}…` :
@@ -1429,7 +1441,9 @@ function SvgBarChart($element, vif, options) {
         //     return '';
         //   }
         // } else {
-          return conditionallyTruncateLabel(d);
+          const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
+          const label = ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
+          return conditionallyTruncateLabel(label);
         // See TODO above.
         // }
       }).
@@ -1492,7 +1506,10 @@ function SvgBarChart($element, vif, options) {
     const axis = d3.svg.axis().
       scale(xScale).
       orient('top').
-      tickFormat((d) => utils.formatNumber(d));
+      tickFormat((d) => {
+        const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
+        return ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
+      });
 
     if (width <= SMALL_VIEWPORT_WIDTH) {
       axis.ticks(Math.ceil(width / 100));
@@ -1568,6 +1585,7 @@ function SvgBarChart($element, vif, options) {
 
   function showGroupFlyout(seriesElement, groupElement, dimensionValues, positions) {
     const title = groupElement.attr('data-dimension-value');
+
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
         $('<td>', {'colspan': 2}).text(
@@ -1583,12 +1601,12 @@ function SvgBarChart($element, vif, options) {
     const measureValues = groupElement.data()[0].slice(1);
 
     let $labelValueRows;
-    let payload = null;
 
     // 0th element of row data is always the dimension, everything after that
     // is a measure value.
     $labelValueRows = measureValues.map((value, measureIndex) => {
       const label = measureLabels[measureIndex];
+
       const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
         text(label).
         css('color', self.getColor(dimensionIndex, measureIndex));
@@ -1605,7 +1623,9 @@ function SvgBarChart($element, vif, options) {
       if (value === null) {
         valueString = I18n.t('shared.visualizations.charts.common.no_value');
       } else {
-        valueString = utils.formatNumber(value);
+        const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+        const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
+        valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
 
         if (value === 1) {
           valueString += ` ${unitOne}`;
@@ -1625,7 +1645,7 @@ function SvgBarChart($element, vif, options) {
 
     $table.append($labelValueRows);
 
-    payload = {
+    const payload = {
       content: $table,
       rightSideHint: false,
       belowTarget: false,
@@ -1671,8 +1691,7 @@ function SvgBarChart($element, vif, options) {
       barElement.getAttribute('data-dimension-value') ||
       I18n.t('shared.visualizations.charts.common.no_value')
     );
-    const measureIndex = self.getSeriesIndexByLabel(label);
-    const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
         $('<td>', {'colspan': 2}).text(
@@ -1687,13 +1706,14 @@ function SvgBarChart($element, vif, options) {
     const $table = $('<table>', {'class': 'socrata-flyout-table'});
 
     let valueString;
-    let payload = null;
 
     if (value === null) {
       valueString = I18n.t('shared.visualizations.charts.common.no_value');
     } else {
-
-      valueString = utils.formatNumber(value);
+      const measureIndex = self.getSeriesIndexByLabel(label);
+      const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
+      valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
 
       if (value === 1) {
         valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;
@@ -1714,7 +1734,7 @@ function SvgBarChart($element, vif, options) {
       $valueRow
     ]);
 
-    payload = {
+    const payload = {
       element: barElement,
       content: $table,
       rightSideHint: false,

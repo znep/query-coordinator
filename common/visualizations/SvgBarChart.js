@@ -2,6 +2,7 @@ const _ = require('lodash');
 const $ = require('jquery');
 
 const VifHelpers = require('./helpers/VifHelpers');
+const ColumnFormattingHelpers = require('./helpers/ColumnFormattingHelpers');
 const SvgBarChart = require('./views/SvgBarChart');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 const CategoricalDataManager = require(
@@ -158,11 +159,16 @@ $.fn.socrataSvgBarChart = function(originalVif, options) {
       then((columns) => {
         return Promise.all([
           Promise.resolve(columns),
-          CategoricalDataManager.getData(newVif)
+          CategoricalDataManager.getData(newVif),
+          datasetMetadataProvider.getDatasetMetadata()
         ]);
       }).
       then((resolutions) => {
-        const [ newColumns, newData ] = resolutions;
+        const [ newColumns, newData, datasetMetadata ] = resolutions;
+
+        const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
+        newData.columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
+
         renderVisualization(newVif, newData, newColumns);
       }).
       catch(handleError);

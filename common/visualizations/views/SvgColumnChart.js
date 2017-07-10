@@ -4,8 +4,11 @@ const _ = require('lodash');
 const $ = require('jquery');
 const utils = require('common/js_utils');
 // Project Imports
+const ColumnFormattingHelpers = require('../helpers/ColumnFormattingHelpers');
 const SvgVisualization = require('./SvgVisualization');
+const DataTypeFormatter = require('./DataTypeFormatter');
 const I18n = require('common/i18n').default;
+
 // Constants
 import {
   AXIS_LABEL_MARGIN,
@@ -15,12 +18,14 @@ import {
 // The MARGINS values have been eyeballed to provide enough space for axis
 // labels that have been observed 'in the wild'. They may need to be adjusted
 // slightly in the future, but the adjustments will likely be small in scale.
+// The LEFT margin has been removed because it will be dynamically calculated.
 const MARGINS = {
   TOP: 16,
   RIGHT: 0,
-  BOTTOM: 0,
-  LEFT: 50
+  BOTTOM: 0
 };
+const MINIMUM_LABEL_WIDTH = 35;
+const LABEL_PADDING_WIDTH = 15;
 const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
 const DIMENSION_LABELS_FIXED_HEIGHT = 88;
 const DIMENSION_LABELS_ROTATION_ANGLE = 82.5;
@@ -124,13 +129,15 @@ function SvgColumnChart($element, vif, options) {
       DEFAULT_DESKTOP_COLUMN_WIDTH;
 
     const axisLabels = self.getAxisLabels();
-    const leftMargin = MARGINS.LEFT + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
     const rightMargin = MARGINS.RIGHT + (axisLabels.right ? AXIS_LABEL_MARGIN : 0);
     const topMargin = MARGINS.TOP + (axisLabels.top ? AXIS_LABEL_MARGIN : 0);
     const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
 
-    const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
     let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
+
+    const leftMargin = calculateLeftMargin(viewportHeight) + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
+
+    const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
 
     const d3ClipPathId = `column-chart-clip-path-${_.uniqueId()}`;
     const dataTableDimensionIndex = dataToRender.columns.indexOf('dimension');
@@ -776,11 +783,12 @@ function SvgColumnChart($element, vif, options) {
 
     dimensionGroupSvgs.
       attr('class', 'dimension-group').
-      attr('data-dimension-value', function(d) {
-
-        return (d[0] === null || typeof d[0] === 'undefined') ?
+      attr('data-dimension-value', (datum, dimensionIndex, measureIndex) => {
+        const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+        const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
+        return _.isNil(datum[0]) ?
           NO_VALUE_SENTINEL :
-          d[0];
+          ColumnFormattingHelpers.formatValue(datum[0], column, dataToRender);
       }).
       attr('transform', (d) => `translate(${d3DimensionXScale(d[0])},0)`);
 
@@ -796,7 +804,9 @@ function SvgColumnChart($element, vif, options) {
         attr(
           'data-dimension-value',
           (datum, measureIndex, dimensionIndex) => {
-            return dimensionValues[dimensionIndex];
+            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
+            return ColumnFormattingHelpers.formatValue(dimensionValues[dimensionIndex], column, dataToRender);
           }
         ).
         attr(
@@ -819,7 +829,9 @@ function SvgColumnChart($element, vif, options) {
       attr(
         'data-dimension-value',
         (datum, measureIndex, dimensionIndex) => {
-          return dimensionValues[dimensionIndex];
+          const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+          const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
+          return ColumnFormattingHelpers.formatValue(dimensionValues[dimensionIndex], column, dataToRender);
         }
       ).
       attr(
@@ -990,12 +1002,14 @@ function SvgColumnChart($element, vif, options) {
     chartSvg.selectAll('.x.axis .tick text').
       on(
         'mousemove',
-        (d) => {
+        (datum, dimensionIndex, measureIndex) => {
 
           if (!isCurrentlyPanning()) {
-            const dimensionValue = (_.isNull(d[0]) || _.isUndefined(d[0])) ?
+            const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
+            const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
+            const dimensionValue = _.isNil(datum[0]) ?
               NO_VALUE_SENTINEL :
-              d[0];
+              ColumnFormattingHelpers.formatValue(datum[0], column, dataToRender);
             const dimensionGroup = xAxisAndSeriesSvg.select(
               `g.dimension-group[data-dimension-value="${dimensionValue}"]`
             );
@@ -1119,7 +1133,9 @@ function SvgColumnChart($element, vif, options) {
         //     return '';
         //   }
         // } else {
-          return conditionallyTruncateLabel(d);
+          const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
+          const label = ColumnFormattingHelpers.formatValue(d, column, dataToRender);
+          return conditionallyTruncateLabel(label);
         // See TODO above.
         // }
       }).
@@ -1182,7 +1198,10 @@ function SvgColumnChart($element, vif, options) {
     return d3.svg.axis().
       scale(yScale).
       orient('left').
-      tickFormat((d) => { return utils.formatNumber(d); });
+      tickFormat((d) => {
+        const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
+        return ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
+      });
   }
 
   function getSeriesIndexByMeasureIndex(measureIndex) {
@@ -1272,24 +1291,22 @@ function SvgColumnChart($element, vif, options) {
     // 0th element of row data is always the dimension, everything after that
     // is a measure value.
     $labelValueRows = measureValues.map((value, measureIndex) => {
+      const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
       const label = measureLabels[measureIndex];
       const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
         text(label).
         css('color', self.getColor(dimensionIndex, measureIndex));
       const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
-      const unitOne = self.getUnitOneBySeriesIndex(
-        getSeriesIndexByMeasureIndex(measureIndex)
-      );
-      const unitOther = self.getUnitOtherBySeriesIndex(
-        getSeriesIndexByMeasureIndex(measureIndex)
-      );
+      const unitOne = self.getUnitOneBySeriesIndex(seriesIndex);
+      const unitOther = self.getUnitOtherBySeriesIndex(seriesIndex);
 
       let valueString;
 
       if (value === null) {
         valueString = I18n.t('shared.visualizations.charts.common.no_value');
       } else {
-        valueString = utils.formatNumber(value);
+        const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
+        valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
 
         if (value === 1) {
           valueString += ` ${unitOne}`;
@@ -1373,8 +1390,8 @@ function SvgColumnChart($element, vif, options) {
     if (value === null) {
       valueString = I18n.t('shared.visualizations.charts.common.no_value');
     } else {
-
-      valueString = utils.formatNumber(value);
+      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
+      valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
 
       if (value === 1) {
         valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;
@@ -1416,6 +1433,33 @@ function SvgColumnChart($element, vif, options) {
       null
     );
   }
+
+  // Calculates the proper left margin for the chart using a simulated Y axis.
+  function calculateLeftMargin(viewportHeight) {
+    const values = _.flatMap(dataToRender.rows, (row) => _.tail(row).map(parseFloat));
+
+    // Generate a Y axis on a fake chart using our real axis generator.
+    const testSvg = d3.select('body').append('svg');
+    const testScale = generateYScale(_.min(values), _.max(values), viewportHeight);
+    testSvg.append('g').
+      attr('class', 'y axis').
+      call(generateYAxis(testScale));
+
+    // Get the widths of all generated tick labels.
+    const testLabelWidths = _.map(
+      testSvg.selectAll('.tick text')[0],
+      (el) => el.textLength.baseVal.value
+    );
+
+    // Clean up the fake chart.
+    testSvg.remove();
+
+    // Return the largest label width (minimum 35px), plus a bit of padding.
+    // For reference, the original chart width was hard-coded to 50px.
+    return _.max(testLabelWidths.concat(MINIMUM_LABEL_WIDTH)) + LABEL_PADDING_WIDTH;
+  }
+
+  // Formats a value from the dataset for rendering within the chart.
 }
 
 module.exports = SvgColumnChart;

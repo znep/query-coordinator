@@ -6,6 +6,11 @@ const moment = require('moment');
 const wkt = require('wellknown');
 const I18n = require('common/i18n').default;
 
+// IMPORTANT NOTE: This module fails to localize some things correctly. It began
+// as a port of Data Lens code, which took some serious shortcuts, and there has
+// been insufficient motivation to redo formatting properly. For a clearer idea
+// of what "properly" means, please see http://cldr.unicode.org for details.
+
 const CURRENCY_SYMBOLS = {
   'AFN': '؋',
   'ALL': 'Lek',
@@ -276,6 +281,7 @@ function renderNumberCell(input, column) {
   const format = _.extend({
     precisionStyle: 'standard',
     precision: undefined,
+    forceHumane: false, // NOTE: only used internally, cannot be set on columns
     noCommas: false,
     currency: I18n.t('shared.visualizations.charts.common.currency_symbol'),
     decimalSeparator: I18n.t('shared.visualizations.charts.common.decimal_separator'),
@@ -436,7 +442,9 @@ function renderMoneyCell(cellContent, column) {
   const amount = parseFloat(cellContent);
 
   if (_.isFinite(amount)) {
-    if (getHumaneProperty(format)) {
+    const isNegative = amount < 0;
+
+    if (getHumaneProperty(format) || format.forceHumane) {
       // We can't use formatNumber here because this use case is
       // slightly different — we want to enforce a certain precision,
       // whereas the normal humane numbers want to use the fewest
@@ -496,7 +504,10 @@ function renderMoneyCell(cellContent, column) {
         commaifyOptions
       );
     }
-    cellContent = `${amount < 0 ? '-' : ''}${currencySymbol}${cellContent}`;
+
+    const sign = isNegative ? '-' : '';
+
+    cellContent = `${sign}${currencySymbol}${cellContent}`;
   }
 
   return cellContent;
@@ -666,13 +677,18 @@ function _renderCurrencyNumber(amount, format) {
   const isNegative = amount < 0;
 
   let value = Math.abs(amount);
-  if (format.precision >= 0) {
-    value = value.toFixed(format.precision);
-  }
 
-  value = utils.commaify(value, format.commaifyOptions);
-  if (format.noCommas) {
-    value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+  if (format.forceHumane) {
+    value = utils.formatNumber(value, format);
+  } else {
+    if (format.precision >= 0) {
+      value = value.toFixed(format.precision);
+    }
+
+    value = utils.commaify(value, format.commaifyOptions);
+    if (format.noCommas) {
+      value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+    }
   }
 
   const sign = isNegative ? '-' : '';
@@ -684,13 +700,18 @@ function _renderFinancialNumber(amount, format) {
   const isNegative = amount < 0;
 
   let value = Math.abs(amount);
-  if (format.precision >= 0) {
-    value = value.toFixed(format.precision);
-  }
 
-  value = utils.commaify(value, format.commaifyOptions);
-  if (format.noCommas) {
-    value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+  if (format.forceHumane) {
+    value = utils.formatNumber(value, format);
+  } else {
+    if (format.precision >= 0) {
+      value = value.toFixed(format.precision);
+    }
+
+    value = utils.commaify(value, format.commaifyOptions);
+    if (format.noCommas) {
+      value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+    }
   }
 
   if (isNegative) {
@@ -710,14 +731,18 @@ function _renderScientificNumber(amount, format) {
 function _renderPercentageNumber(amount, format) {
   let value = amount;
 
-  if (format.precision >= 0) {
-    value = value.toFixed(format.precision);
-  }
+  if (format.forceHumane) {
+    value = utils.formatNumber(value, format);
+  } else {
+    if (format.precision >= 0) {
+      value = value.toFixed(format.precision);
+    }
 
-  value = utils.commaify(value, format.commaifyOptions);
+    value = utils.commaify(value, format.commaifyOptions);
 
-  if (format.noCommas) {
-    value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+    if (format.noCommas) {
+      value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+    }
   }
 
   return value + '%';
@@ -725,18 +750,23 @@ function _renderPercentageNumber(amount, format) {
 
 function _renderStandardNumber(amount, format) {
   let value = amount;
-  if (format.precision >= 0) {
-    value = value.toFixed(format.precision);
-  }
 
-  if (/^-?\d{4}$/.test(value)) {
-    return value;
-  }
+  if (format.forceHumane) {
+    value = utils.formatNumber(value, format);
+  } else {
+    if (format.precision >= 0) {
+      value = value.toFixed(format.precision);
+    }
 
-  value = utils.commaify(value, format.commaifyOptions);
-  // Force commaify off for four-digit numbers (workaround for year columns)
-  if (format.noCommas) {
-    value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+    if (/^-?\d{4}$/.test(value)) {
+      return value;
+    }
+
+    value = utils.commaify(value, format.commaifyOptions);
+    // Force commaify off for four-digit numbers (workaround for year columns)
+    if (format.noCommas) {
+      value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
+    }
   }
 
   return value;

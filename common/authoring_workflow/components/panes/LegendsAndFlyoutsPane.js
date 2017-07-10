@@ -64,12 +64,13 @@ export const LegendsAndFlyoutsPane = React.createClass({
         value: item.unit.other
       };
 
-      return this.renderUnitsForSeries(index, unitOneAttributes, unitOtherAttributes);
+      const measureTitle = this.getMeasureTitle(item, index);
+      return this.renderUnitsForSeries(index, measureTitle, unitOneAttributes, unitOtherAttributes);
     });
 
     return (
       <AccordionPane key="units" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.units.title')}>
-        <p className="authoring-field-description">
+        <p className="authoring-field-description units-description">
           <small>{I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.units.description')}</small>
         </p>
         {unitControls}
@@ -77,14 +78,15 @@ export const LegendsAndFlyoutsPane = React.createClass({
     );
   },
 
-  renderUnitsForSeries(seriesIndex, unitOneAttributes, unitOtherAttributes) {
+  renderUnitsForSeries(seriesIndex, measureTitle, unitOneAttributes, unitOtherAttributes) {
     return (
-      <div key={seriesIndex}>
-        <div className="authoring-field">
+      <div className="units-container" key={seriesIndex}>
+        <p>{measureTitle}</p>
+        <div className="authoring-field unit-container">
           <label className="block-label" htmlFor="units-one">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.title')}</label>
           <DebouncedInput {...unitOneAttributes} />
         </div>
-        <div className="authoring-field">
+        <div className="authoring-field unit-container">
           <label className="block-label" htmlFor="units-other">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.title')}</label>
           <DebouncedInput {...unitOtherAttributes} />
         </div>
@@ -189,6 +191,20 @@ export const LegendsAndFlyoutsPane = React.createClass({
 
   renderEmptyPane() {
     return <EmptyPane />;
+  },
+
+  getMeasureTitle(item, index) {
+    const measure = item.dataSource.measure;
+
+    if (!_.isEmpty(measure.label) && !_.isEmpty(measure.aggregationFunction)) {
+      return `${measure.label} - ${measure.aggregationFunction}`;
+    }
+    else if (!_.isEmpty(measure.label)) {
+      return measure.label;
+    }
+    else {
+        return `Series: ${index}`;
+    }
   },
 
   render() {

@@ -320,6 +320,35 @@
       }
     }
 
+    .units-description {
+      margin: 0 0 24px
+    }
+
+    .units-container {
+      margin-bottom: 24px;
+
+      p {
+        margin: 0;
+        text-transform: capitalize;
+      }
+
+      .unit-container {
+        display: flex;
+        margin: 5px 0;
+
+        .block-label {
+          line-height: 40px;
+          margin: 0 5px 0 0;
+          width: 25%;
+        }
+
+        .text-input {
+          margin: 0;
+          width: 75%;
+        }
+      }
+    }
+
     .color-picker-container {
 
       .block-label {

@@ -1,15 +1,19 @@
 import _ from 'lodash';
 
-const getInitialState = () => _.get(window, 'initialState.catalog', {
+const order = _.isEmpty(_.get(window, 'initialState.initialOrder.value')) ? undefined : {
+  ascending: !!_.get(window, 'initialState.initialOrder.ascending'),
+  value: _.get(window, 'initialState.initialOrder.value')
+};
+
+const getInitialState = () => _.merge({
   columns: [],
   fetchingResults: false,
   fetchingResultsError: false,
-  filters: {},
-  order: {},
-  pageNumber: 1,
+  order,
+  pageNumber: _.get(window, 'initialState.initialPage') || 1,
   results: [],
   resultSetSize: 0
-});
+}, _.get(window, 'initialState.catalog'));
 
 export default (state, action) => {
   if (_.isUndefined(state)) {

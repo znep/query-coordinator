@@ -76,11 +76,15 @@ module Cetera
         {}.tap do |counts|
           asset_types.map do |asset_type|
             Thread.new do
-              only_filter = asset_type == 'charts' ? 'charts,visualizations' : asset_type
+              cetera_opts = options.merge(
+                :only => asset_type,
+                :domains => CurrentDomain.cname,
+                :limit => 0
+              )
 
-              counts[asset_type] = catalog_search_client.find_views(
-                req_id, cookies, :limit => 0, :only => only_filter, domains: CurrentDomain.cname
-              ).fetch('resultSetSize')
+              counts[asset_type] = catalog_search_client.
+                find_views(req_id, cookies, cetera_opts).
+                fetch('resultSetSize')
             end
           end.each(&:join)
         end

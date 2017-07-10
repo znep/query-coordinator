@@ -1,3 +1,4 @@
+import { DateHelpers } from 'common/visualizations/helpers';
 var utils = require('common/js_utils');
 var Visualization = require('./Visualization');
 var d3 = require('d3');
@@ -20,65 +21,6 @@ var Constants = {
   TIMELINE_CHART_DRAG_HANDLE_WIDTH: 24,
   TIMELINE_CHART_MIN_LABEL_WIDTH: 150,
   TIMELINE_CHART_REQUIRED_LABEL_WIDTH: 50
-};
-
-var DateHelpers = {
-  serializeFloatingTimestamp: utils.serializeFloatingTimestamp,
-  deserializeFloatingTimestamp: utils.deserializeFloatingTimestamp,
-  decrementDateByHalfInterval: function(date, interval) {
-
-    var newDate;
-
-    switch (interval.toUpperCase()) {
-      case 'DECADE':
-        newDate = moment(date).subtract(5, 'year').toDate();
-        break;
-      case 'YEAR':
-        newDate = moment(date).subtract(6, 'month').toDate();
-        break;
-      case 'MONTH':
-        newDate = moment(date).subtract(15, 'day').toDate();
-        break;
-      case 'DAY':
-        newDate = moment(date).subtract(12, 'hour').toDate();
-        break;
-      default:
-        throw new Error(
-          'Cannot decrement date by dataset precision: invalid interval "{0}"'.
-          format(interval)
-        );
-    }
-
-    return newDate;
-  },
-
-  incrementDateByHalfInterval: function(date, interval) {
-
-    var newDate;
-
-    switch (interval.toUpperCase()) {
-      case 'DECADE':
-        newDate = moment(date).add(5, 'year').toDate();
-        break;
-      case 'YEAR':
-        newDate = moment(date).add(6, 'month').toDate();
-        break;
-      case 'MONTH':
-        newDate = moment(date).add(15, 'day').toDate();
-        break;
-      case 'DAY':
-        newDate = moment(date).add(12, 'hour').toDate();
-        break;
-      default:
-        throw new Error(
-          'Cannot increment date by dataset precision: invalid interval "{0}"'.
-          format(interval)
-        );
-    }
-
-    return newDate;
-
-  }
 };
 
 /**
@@ -611,16 +553,15 @@ function TimelineChart(element, vif) {
     );
   }
 
-  // Cache a bunch of stuff that is useful in a lot of places that don't
-  // need to be wrapped in Rx mojo.
+  // Instance state variables.
   var cachedChartDimensions = null;
   var cachedChartData = null;
 
   var lastHighlightData = {};
   var lastHighlightDataByOffset = {};
 
-  // Keep track of whether or not the mouse position is within this
-  // instance of a timeline chart's visualization area (the chart itself
+  // Keep track of whether or not the mouse position is within
+  // this chart's visualization area (the chart itself
   // and the x-axis labels beneath it).
   var mousePositionWithinChartElement = false;
   var mousePositionWithinChartDisplay = false;
@@ -634,23 +575,23 @@ function TimelineChart(element, vif) {
   // region between the filterChartData and flyout rendering functions.
   var currentDatum = null;
 
-  // datasetPrecision is used in multiple places in order to test and
-  // modify dates, but we only really have a notion of it within the
-  // context of Rx reactions; for this reason it's cached globally.
+  // Bin granularity. This is provided by the as a parameter
+  // to the chart. Expected values:
+  // * DECADE
+  // * YEAR
+  // * MONTH
+  // * DAY
   var datasetPrecision = null;
 
   var labelPrecision = null;
 
-  // The X and Y scales that d3 uses are global to the directive so
-  // that we can use the same ones between the renderChart and
-  // renderChartHighlight functions.
+  // The X and Y scales, represented as D3 Scale instances..
   // They are initialized to null so that we don't accidentally try
   // to render a highlight before a chart is rendered.
   var d3XScale = null;
   var d3YScale = null;
 
-  // The following cached jQuery/d3 selectors are used throughout the
-  // directive.
+  // DOM template parts.
   var $body = $('body');
   var $chartElement = _chartElement.find('.timeline-chart-wrapper');
   var $highlightTargetElement = _chartElement.find('.timeline-chart-highlight-target');
@@ -661,7 +602,8 @@ function TimelineChart(element, vif) {
   var $datumLabel = _chartElement.find('.datum-label');
   var d3ChartElement = d3.select($chartElement[0]);
 
-  // Keep track of the start and end of the selection.
+  // Selected date range. Set by the user dragging on the chart area or
+  // clicking on a bin label.
   var selectionStartDate = null;
   var selectionEndDate = null;
 
@@ -750,8 +692,7 @@ function TimelineChart(element, vif) {
       // Also create the root svg element to which the other d3 functions
       // will append elements.
 
-      // d3XScale is global to the directive so that we can
-      // access it without having to re-render.
+      // Note: d3XScale is an instance variable.
       d3XScale = d3.
         time.
         scale().
@@ -761,8 +702,7 @@ function TimelineChart(element, vif) {
         ]).
         range([0, width]);
 
-      // d3YScale is global to the component so that we can
-      // access it without having to re-render.
+      // Note: d3YScale is an instance variable.
       d3YScale = d3.
         scale.
         linear().
@@ -810,7 +750,7 @@ function TimelineChart(element, vif) {
       halfVisualizedDatumWidth = Math.floor(visualizedDatumWidth / 2);
 
       // Update the cached value for dataset precision.
-      // This is global to the directive, but only updated here.
+      // Note: datasetPrecision is an instance variable.
       datasetPrecision = chartPrecision;
 
       // Cache the row display unit for use in the flyout (which
@@ -1084,7 +1024,7 @@ function TimelineChart(element, vif) {
   }
 
   /**
-   * Is probably the most complicated function in the directive
+   * Is probably the most complicated function in the chart
    * simply because of all the special casing that needs to happen for
    * sensible display of axis labels across multiple time intervals.
    */
@@ -1173,9 +1113,7 @@ function TimelineChart(element, vif) {
     var jqueryAxisTickLabel;
     var finalEndDate;
 
-    // Note that labelPrecision is actually global to the directive, but
-    // it is set within the context of rendering the x-axis since it
-    // seems as reasonable to do so here as anywhere else.
+    // Note: labelPrecision is an instance variable.
     labelPrecision = deriveXAxisLabelPrecision();
 
     pixelsPerDay = cachedChartDimensions.width /
@@ -1262,9 +1200,7 @@ function TimelineChart(element, vif) {
     // decide whether or not we can draw all of them or just some.
     shouldLabelEveryN = deriveXAxisLabelDatumStep(labels);
 
-    // Note that allChartLabelsShown is also actually global to the
-    // directive and is also set within the context of rendering the
-    // x-axis since it seems as reasonable to do so as anywhere else.
+    // Note: allChartLabelsShown is an instance variable.
     allChartLabelsShown = shouldLabelEveryN === 1;
 
     // Finally, we filter the group of all labels so that we only
@@ -1894,29 +1830,19 @@ function TimelineChart(element, vif) {
   }
 
   /**
-   * @param {Number} offsetX - The left offset of the mosue cursor into
+   * @param {Number} offsetX - The left offset of the mouse cursor into
    *                           the visualization, in pixels.
    * @return {Date} The date to which the mouse position is mapped by
    *                d3's x-scale.
    */
-  function getDateFromMousePosition(offsetX) {
+  function getBinStartDateFromMouseXPosition(offsetX) {
 
     var date = d3XScale.invert(offsetX);
 
-    // Clear out unneeded precision from the date objects.
-    if (datasetPrecision === 'YEAR') {
-      date.setMonth(0);
-    } else if (datasetPrecision === 'MONTH') {
-      date.setDate(1);
-    }
-
-    date.setMilliseconds(0);
-    date.setSeconds(0);
-    date.setMinutes(0);
-    date.setHours(0);
-
-    return date;
-
+    return DateHelpers.snapToBinStartDate(
+      date,
+      datasetPrecision
+    );
   }
 
   /**
@@ -1945,7 +1871,8 @@ function TimelineChart(element, vif) {
 
     } else if (mousePositionWithinChartDisplay) {
 
-      candidateSelectionEndDate = getDateFromMousePosition(offsetX + visualizedDatumWidth);
+      // Start of next bin.
+      candidateSelectionEndDate = getBinStartDateFromMouseXPosition(offsetX + visualizedDatumWidth);
 
     } else {
 
@@ -1959,7 +1886,8 @@ function TimelineChart(element, vif) {
       // 'datasetPrecision' unit if the calculated start and end dates
       // are the same.
       if (candidateSelectionEndDate.getTime() === selectionStartDate.getTime()) {
-        candidateSelectionEndDate = getDateFromMousePosition(
+        // Start of next bin.
+        candidateSelectionEndDate = getBinStartDateFromMouseXPosition(
           offsetX + halfVisualizedDatumWidth + visualizedDatumWidth);
       }
 
@@ -2060,7 +1988,7 @@ function TimelineChart(element, vif) {
         switch (mouseStatus.position.target.getAttribute('data-selection-target')) {
           case 'left':
             selectionStartDate = selectionEndDate;
-            selectionEndDate = getDateFromMousePosition(offsetX);
+            selectionEndDate = getBinStartDateFromMouseXPosition(offsetX);
             break;
           case 'right':
             break;
@@ -2071,8 +1999,10 @@ function TimelineChart(element, vif) {
             // normal.
             if (mousePositionWithinChartDisplay) {
 
-              selectionStartDate = getDateFromMousePosition(offsetX);
-              selectionEndDate = getDateFromMousePosition(offsetX + visualizedDatumWidth);
+              // Start of this bin.
+              selectionStartDate = getBinStartDateFromMouseXPosition(offsetX);
+              // Start of next bin.
+              selectionEndDate = getBinStartDateFromMouseXPosition(offsetX + visualizedDatumWidth);
 
               if (selectionStartDate.getTime() === selectionEndDate.getTime()) {
                 selectionEndDate = moment(selectionEndDate).add(1, datasetPrecision).toDate();
@@ -2394,7 +2324,7 @@ function TimelineChart(element, vif) {
     // Clamp the index to known-good values in case rounding errors cause it to drift.
     indexIntoChartData = clampValue(indexIntoChartData, 0, cachedChartData.values.length - 1);
 
-    // Note that currentDatum is a global variable that is set when the
+    // Note that currentDatum is an instance variable that is set when the
     // user hovers over the visualization. The value of currentDatum is
     // read by the flyout code.
     currentDatum = cachedChartData.values[indexIntoChartData];
@@ -2447,7 +2377,7 @@ function TimelineChart(element, vif) {
    * and end Date objects.
    *
    * The two filter functions each have a SIDE-EFFECT: they both set
-   * the global 'currentDatum' variable to a synthetic value which is
+   * the instance variable 'currentDatum' to a synthetic value which is
    * used by the flyout code to keep the highlighted areas and their
    * corresponding flyout labels in sync.
    *
@@ -2479,7 +2409,7 @@ function TimelineChart(element, vif) {
     // Clamp the index to known-good values in case rounding errors cause it to drift.
     indexIntoChartData = clampValue(indexIntoChartData, 0, cachedChartData.values.length - 1);
 
-    // Note that currentDatum is a global variable that is set when the
+    // Note that currentDatum is an instance variable that is set when the
     // user hovers over the visualization. The value of currentDatum is
     // read by the flyout code.
     currentDatum = cachedChartData.values[indexIntoChartData];
@@ -2725,17 +2655,16 @@ function TimelineChart(element, vif) {
       offsetY = mousePosition.clientY - element.get(0).getBoundingClientRect().top;
     }
 
-    // mousePositionWithinChartElement is a global variable that is
-    // used elsewhere as well
+    // Note: mousePositionWithinChartElement is an instance variable.
     mousePositionWithinChartElement = isMouseOverChartElement(mousePositionTarget);
 
     // First figure out which region (display, labels, outside) of the
     // visualization the mouse is currently over and cache the result
     // for this and other functions to use.
     //
+    // Note:
     // mousePositionWithinChartDisplay and
-    // mousePositionWithinChartLabels are both also global variables
-    // that are used elsewhere as well.
+    // mousePositionWithinChartLabels are instance variables
     if (isMouseWithinChartDisplay(offsetX, offsetY) && mousePositionWithinChartElement) {
       mousePositionWithinChartDisplay = true;
       mousePositionWithinChartLabels = false;

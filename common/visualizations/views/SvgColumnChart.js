@@ -927,7 +927,7 @@ function SvgColumnChart($element, vif, options) {
               const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
               showColumnHighlight(siblingColumn);
-              showColumnFlyout(siblingColumn, color, label, value);
+              showColumnFlyout(siblingColumn, color, label, value, measureIndex);
             }
           }
         ).
@@ -970,7 +970,7 @@ function SvgColumnChart($element, vif, options) {
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showColumnHighlight(this);
-            showColumnFlyout(this, color, label, value);
+            showColumnFlyout(this, color, label, value, measureIndex);
           }
         }
       ).
@@ -1346,12 +1346,11 @@ function SvgColumnChart($element, vif, options) {
     );
   }
 
-  function showColumnFlyout(columnElement, color, label, value) {
+  function showColumnFlyout(columnElement, color, label, value, measureIndex) {
     const title = (
       columnElement.getAttribute('data-dimension-value') ||
       I18n.t('shared.visualizations.charts.common.no_value')
     );
-    const measureIndex = self.getSeriesIndexByLabel(label);
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(

@@ -1188,7 +1188,7 @@ function SvgBarChart($element, vif, options) {
               const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
               showBarHighlight(siblingBar);
-              showBarFlyout(siblingBar, color, label, value);
+              showBarFlyout(siblingBar, color, label, value, measureIndex);
             }
           }
         ).
@@ -1231,7 +1231,7 @@ function SvgBarChart($element, vif, options) {
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showBarHighlight(this);
-            showBarFlyout(this, color, label, value);
+            showBarFlyout(this, color, label, value, measureIndex);
           }
         }
       ).
@@ -1277,7 +1277,7 @@ function SvgBarChart($element, vif, options) {
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showBarHighlight(siblingBar);
-            showBarFlyout(siblingBar, color, label, value);
+            showBarFlyout(siblingBar, color, label, value, measureIndex);
           }
         }
       ).
@@ -1666,12 +1666,11 @@ function SvgBarChart($element, vif, options) {
     );
   }
 
-  function showBarFlyout(barElement, color, label, value) {
+  function showBarFlyout(barElement, color, label, value, measureIndex) {
     const title = (
       barElement.getAttribute('data-dimension-value') ||
       I18n.t('shared.visualizations.charts.common.no_value')
     );
-    const measureIndex = self.getSeriesIndexByLabel(label);
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(

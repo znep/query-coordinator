@@ -40,10 +40,10 @@ const revisions = (state = {}, action) => {
   }
 };
 
-const uploads = (state = {}, action) => {
+const sources = (state = {}, action) => {
   switch (action.type) {
     case UPDATE_PROGRESS:
-      return dotProp.set(state, action.uploadId, record => ({
+      return dotProp.set(state, action.sourceId, record => ({
         ...record,
         percentCompleted: action.percentCompleted
       }));
@@ -143,7 +143,7 @@ const colData = (state = {}) => state;
 export default combineReducers({
   views,
   revisions,
-  uploads,
+  sources,
   input_schemas: inputSchemas,
   input_columns: inputColumns,
   output_schemas: outputSchemas,

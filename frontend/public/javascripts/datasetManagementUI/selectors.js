@@ -31,8 +31,8 @@ export function latestRevision(entities) {
   return _.maxBy(_.values(entities.revisions), 'id');
 }
 
-export function latestUpload(entities) {
-  return _.maxBy(_.values(entities.uploads), 'id');
+export function latestSource(entities) {
+  return _.maxBy(_.values(entities.sources), 'id');
 }
 
 export function columnsForInputSchema(entities, inputSchemaId) {
@@ -63,7 +63,7 @@ export function allTransformsDone(columnsWithTransforms, inputSchema) {
   );
 }
 
-export function uploadsInProgress(apiCalls) {
+export function sourcesInProgress(apiCalls) {
   return _.filter(
     apiCalls,
     apiCall => apiCall.status === STATUS_CALL_IN_PROGRESS && apiCall.operation === CREATE_UPLOAD
@@ -77,11 +77,11 @@ export function rowsTransformed(outputColumns) {
 export function pathForOutputSchema(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];
   const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
-  const upload = entities.uploads[inputSchema.upload_id];
+  const source = entities.sources[inputSchema.source_id];
   return {
     outputSchema,
     inputSchema,
-    upload
+    source
   };
 }
 

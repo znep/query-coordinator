@@ -147,7 +147,7 @@ export default {
       type: 'replace',
       schema: null
     },
-    uploads: [
+    sources: [
       {
         schemas: [
           {
@@ -243,7 +243,10 @@ export default {
         id: 108,
         header_count: 1,
         finished_at: '2017-06-13T18:43:32',
-        filename: 'tiny-errors.csv',
+        source_type: {
+          type: 'upload',
+          filename: 'tiny-errors.csv',
+        },
         failed_at: null,
         created_by: {
           user_id: 'tugg-ikce',

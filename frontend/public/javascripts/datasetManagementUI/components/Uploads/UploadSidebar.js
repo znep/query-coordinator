@@ -7,54 +7,49 @@ import * as Links from 'links';
 import * as Selectors from 'selectors';
 import styles from 'styles/Uploads/UploadSidebar.scss';
 
-const UploadItem = ({ upload }) =>
+const UploadItem = ({ source }) =>
   <li>
-    <Link to={Links.showOutputSchema(upload.id, upload.inputSchemaId, upload.outputSchemaId)}>
-      {upload.filename}
+    <Link to={Links.showOutputSchema(source.id, source.inputSchemaId, source.outputSchemaId)}>
+      {source.source_type.filename}
     </Link>
-    <div className={styles.timestamp}>{moment.utc(upload.finished_at).fromNow()}</div>
+    <div className={styles.timestamp}>{moment.utc(source.finished_at).fromNow()}</div>
   </li>;
 
 UploadItem.propTypes = {
-  upload: PropTypes.object.isRequired
+  source: PropTypes.object.isRequired
 };
 
 export const UploadSidebar = ({ currentUpload, otherUploads }) =>
   <section className={styles.sidebar}>
     <h2>{I18n.show_uploads.current}</h2>
     <ul>
-      {currentUpload ? <UploadItem upload={currentUpload} /> : <span>{I18n.show_uploads.no_uploads}</span>}
+      {currentUpload ? <UploadItem source={currentUpload} /> : <span>{I18n.show_uploads.no_uploads}</span>}
     </ul>
     {!!otherUploads.length && <h2>{I18n.show_uploads.noncurrent}</h2>}
     <ul>
-      {otherUploads.map(upload => <UploadItem key={upload.id} upload={upload} />)}
+      {otherUploads.map(source => <UploadItem key={source.id} source={source} />)}
     </ul>
   </section>;
 
+
+const sourceProptype = PropTypes.shape({
+  id: PropTypes.number,
+  inputSchemaId: PropTypes.number,
+  outputSchemaId: PropTypes.number,
+  source_type: PropTypes.object,
+  finished_at: PropTypes.object
+});
+
 UploadSidebar.propTypes = {
-  currentUpload: PropTypes.shape({
-    id: PropTypes.number,
-    inputSchemaId: PropTypes.number,
-    outputSchemaId: PropTypes.number,
-    filename: PropTypes.string,
-    finished_at: PropTypes.object
-  }),
-  otherUploads: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      inputSchemaId: PropTypes.number,
-      outputSchemaId: PropTypes.number,
-      filename: PropTypes.string,
-      finished_at: PropTypes.object
-    })
-  )
+  currentUpload: sourceProptype,
+  otherUploads: PropTypes.arrayOf(sourceProptype)
 };
 
-const getLinkInfo = inputSchemas => outputSchemas => upload => {
+const getLinkInfo = inputSchemas => outputSchemas => source => {
   if (!inputSchemas || !inputSchemas.length || !Object.keys(outputSchemas).length) {
-    return upload;
+    return source;
   }
-  const currentInputSchema = inputSchemas.find(is => is.upload_id === upload.id);
+  const currentInputSchema = inputSchemas.find(is => is.source_id === source.id);
 
   const outputSchemasForCurrentInputSchema = currentInputSchema
     ? _.pickBy(outputSchemas, os => os.input_schema_id === currentInputSchema.id)
@@ -65,7 +60,7 @@ const getLinkInfo = inputSchemas => outputSchemas => upload => {
     : { id: null };
 
   return {
-    ...upload,
+    ...source,
     inputSchemaId: currentInputSchema ? currentInputSchema.id : null,
     outputSchemaId: currentOutputSchema.id
   };
@@ -79,17 +74,17 @@ export const mapStateToProps = ({ entities }) => {
   if (outputSchema) {
     const { input_schema_id: inputSchemaId, id: outputSchemaId } = outputSchema;
 
-    const { upload_id: uploadId } = entities.input_schemas[inputSchemaId];
+    const { source_id: sourceId } = entities.input_schemas[inputSchemaId];
 
-    const noncurrentUploads = _.omit(entities.uploads, uploadId);
+    const noncurrentUploads = _.omit(entities.sources, sourceId);
 
-    const noncurrentUploadsList = Object.keys(noncurrentUploads).map(id => entities.uploads[id]);
+    const noncurrentUploadsList = Object.keys(noncurrentUploads).map(id => entities.sources[id]);
 
     // TODO: Not doing anything with failed uploats atm. Maybe we should. Need UX input.
     // eslint-disable-next-line no-unused-vars
     const [failedUploads, pendingOrSuccessfulUploads] = _.partition(
       noncurrentUploadsList,
-      upload => upload.failed_at
+      source => source.failed_at
     );
 
     const inputSchemaList = Object.keys(entities.input_schemas).map(isid => entities.input_schemas[isid]);
@@ -97,7 +92,7 @@ export const mapStateToProps = ({ entities }) => {
     const addLinkInfo = getLinkInfo(inputSchemaList)(entities.output_schemas);
 
     currentUpload = {
-      ...entities.uploads[uploadId],
+      ...entities.sources[sourceId],
       inputSchemaId,
       outputSchemaId
     };

@@ -101,7 +101,7 @@ describe('actions/showOutputSchema', () => {
 
       assert.match(
         payload.args[0],
-        /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/
+        /\/sources\/\d+\/schemas\/\d+\/output\/\d+/
       );
     });
   });
@@ -191,7 +191,7 @@ describe('actions/showOutputSchema', () => {
 
       assert.match(
         payload.args[0],
-        /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/
+        /\/sources\/\d+\/schemas\/\d+\/output\/\d+/
       );
     });
   });
@@ -300,7 +300,7 @@ describe('actions/showOutputSchema', () => {
 
       assert.match(
         payload.args[0],
-        /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/
+        /\/sources\/\d+\/schemas\/\d+\/output\/\d+/
       );
     });
   });

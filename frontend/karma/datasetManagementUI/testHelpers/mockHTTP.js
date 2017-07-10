@@ -1,16 +1,16 @@
 export function mockXHR(status, body) {
   const realXMLHttpRequest = window.XMLHttpRequest;
 
-  // mock XHR (for actual upload bytes)
+  // mock XHR (for actual source bytes)
   window.XMLHttpRequest = function() {};
   window.XMLHttpRequest.prototype.open = function(method, url) {
     this.method = method;
     this.url = url;
-    this.upload = {};
+    this.source = {};
     this.headers = {};
   };
   window.XMLHttpRequest.prototype.send = function(payload) {
-    this.upload.onprogress({
+    this.source.onprogress({
       loaded: 50,
       total: 100
     });

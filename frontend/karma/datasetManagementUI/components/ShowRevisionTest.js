@@ -43,7 +43,7 @@ describe('components/ShowRevision', () => {
     propsWithoutOutputSchema.entities.output_schemas = {};
     propsWithoutOutputSchema.entities.input_schemas = {};
     propsWithoutOutputSchema.entities.task_sets = {};
-    propsWithoutOutputSchema.entities.uploads = {};
+    propsWithoutOutputSchema.entities.sources = {};
     const theComponent = shallow(<ShowRevision {...propsWithoutOutputSchema} />);
     assert.isFalse(theComponent.isEmpty());
   });
@@ -52,7 +52,7 @@ describe('components/ShowRevision', () => {
     const clonedProps = _.cloneDeep(ShowRevisionProps);
     clonedProps.entities.output_schemas = {};
     clonedProps.entities.input_schemas = {};
-    clonedProps.entities.uploads = {};
+    clonedProps.entities.sources = {};
     clonedProps.entities.task_sets = {};
 
     const theComponent = shallow(<ShowRevision {...clonedProps} />);

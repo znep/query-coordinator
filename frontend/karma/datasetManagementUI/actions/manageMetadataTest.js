@@ -52,7 +52,7 @@ describe('actions/manageMetadata', () => {
       addLocation({
         locationBeforeTransitions: {
           pathname:
-            '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/uploads/114/schemas/97/output/143',
+            '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/sources/114/schemas/97/output/143',
           search: '',
           hash: '',
           action: 'PUSH',

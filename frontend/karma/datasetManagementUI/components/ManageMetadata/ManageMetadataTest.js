@@ -27,7 +27,7 @@ describe('components/ManageMetadata', () => {
     history: [
       {
         pathname:
-          '/dataset/kjkjkjk/8ftf-gp92/revisions/0/uploads/244/schemas/1732/output/355',
+          '/dataset/kjkjkjk/8ftf-gp92/revisions/0/sources/244/schemas/1732/output/355',
         search: '',
         hash: '',
         action: 'POP',

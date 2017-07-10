@@ -50,7 +50,7 @@ describe('components/HomePaneSidebar', () => {
           }
         },
         updates: {},
-        uploads: {},
+        sources: {},
         input_schemas: {},
         output_schemas: {},
         input_columns: {},

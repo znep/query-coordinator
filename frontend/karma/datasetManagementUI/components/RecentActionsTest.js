@@ -38,12 +38,12 @@ describe('components/RecentActions', () => {
     );
   });
 
-  it('renders file upload activity', () => {
+  it('renders file source activity', () => {
     const activities = [...component.querySelectorAll('.activity')];
 
     assert.isAtLeast(
       activities.filter(
-        activity => activity.getAttribute('data-activity-type') === 'upload'
+        activity => activity.getAttribute('data-activity-type') === 'source'
       ).length,
       1
     );

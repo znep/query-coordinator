@@ -16,10 +16,10 @@ const callStatusToNotificationStatus = callStatus => {
   }
 };
 
-const errorMessage = upload => {
+const errorMessage = source => {
   const badConnectionBodyDescription = {
     __html: I18n.progress_items.connection_error_body_description.format(
-      `<span class="filename">${upload.filename}</span>`
+      `<span class="filename">${source.filename}</span>`
     )
   };
 
@@ -34,10 +34,15 @@ const errorMessage = upload => {
   return badConnection;
 };
 
+function getFilename(source) {
+  if (source.source_type.type === 'upload') return source.source_type.filename;
+  return 'Unknown';
+}
+
 // This component is called by the NotificationList component. It's main purpose
-// is to translate upload-specific logic into props that the generic Notification
+// is to translate source-specific logic into props that the generic Notification
 // component can understand.
-export const UploadNotification = ({ upload, callStatus, notificationId }) => {
+export const UploadNotification = ({ source, callStatus, notificationId }) => {
   let message;
   let details;
   let notificationStatus = callStatusToNotificationStatus(callStatus);
@@ -48,13 +53,13 @@ export const UploadNotification = ({ upload, callStatus, notificationId }) => {
       message = (
         <span className={styles.message}>
           {I18n.progress_items.uploading}
-          <span className={styles.subMessage}>{upload.filename}</span>
+          <span className={styles.subMessage}>{getFilename(source)}</span>
         </span>
       );
       break;
     default:
-      message = <span className={styles.message}>{I18n.progress_items.upload_failed}</span>;
-      details = errorMessage(upload);
+      message = <span className={styles.message}>{I18n.progress_items.source_failed}</span>;
+      details = errorMessage(source);
   }
 
   return (
@@ -62,7 +67,7 @@ export const UploadNotification = ({ upload, callStatus, notificationId }) => {
       status={notificationStatus}
       id={notificationId}
       progressBar
-      percentCompleted={upload.percentCompleted}
+      percentCompleted={source.percentCompleted}
       message={message}>
       {details}
     </Notification>
@@ -70,8 +75,8 @@ export const UploadNotification = ({ upload, callStatus, notificationId }) => {
 };
 
 UploadNotification.propTypes = {
-  upload: PropTypes.shape({
-    filname: PropTypes.string
+  source: PropTypes.shape({
+    source_type: PropTypes.shape({})
   }),
   callStatus: PropTypes.string.isRequired,
   showDetails: PropTypes.bool,
@@ -79,7 +84,7 @@ UploadNotification.propTypes = {
 };
 
 const mapStateToProps = ({ entities, ui }, { notification }) => ({
-  upload: entities.uploads[notification.uploadId],
+  source: entities.sources[notification.sourceId],
   notificationId: notification.id,
   callStatus: ui.apiCalls[notification.callId].status
 });

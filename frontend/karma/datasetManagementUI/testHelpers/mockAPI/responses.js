@@ -1,10 +1,13 @@
-export const uploadCreate = {
+export const sourceCreate = {
   resource: {
     schemas: [],
     created_at: '2017-05-12T14:12:09.293177',
     id: 823,
     finished_at: null,
-    filename: 'petty_crimes.csv',
+    source_type: {
+      filename: 'petty_crimes.csv',
+      type: 'upload'
+    },
     failed_at: null,
     created_by: {
       user_id: 'yczc-8men',
@@ -14,13 +17,13 @@ export const uploadCreate = {
     content_type: null
   },
   links: {
-    show: '/api/publishing/v1/upload/823',
-    bytes: '/api/publishing/v1/upload/823',
-    add_to_revision: '/api/publishing/v1/upload/823'
+    show: '/api/publishing/v1/source/823',
+    bytes: '/api/publishing/v1/source/823',
+    add_to_revision: '/api/publishing/v1/source/823'
   }
 };
 
-export const uploadBytes = {
+export const sourceBytes = {
   resource: {
     total_rows: 9,
     output_schemas: [
@@ -667,13 +670,13 @@ export const uploadBytes = {
     }
   },
   links: {
-    transform: '/api/publishing/v1/upload/823/schema/945',
-    show: '/api/publishing/v1/upload/823/schema/945',
-    latest_output: '/api/publishing/v1/upload/823/schema/945/output/latest'
+    transform: '/api/publishing/v1/source/823/schema/945',
+    show: '/api/publishing/v1/source/823/schema/945',
+    latest_output: '/api/publishing/v1/source/823/schema/945/output/latest'
   }
 };
 
-export const uploadShow = {
+export const sourceShow = {
   resource: {
     schemas: [
       {
@@ -1325,7 +1328,10 @@ export const uploadShow = {
     created_at: '2017-05-12T14:12:09.293177',
     id: 823,
     finished_at: '2017-05-12T14:12:22',
-    filename: 'petty_crimes.csv',
+    source_type: {
+      type: 'upload',
+      filename: 'petty_crimes.csv'
+    },
     failed_at: null,
     created_by: {
       user_id: 'yczc-8men',
@@ -1335,9 +1341,9 @@ export const uploadShow = {
     content_type: 'text/csv'
   },
   links: {
-    show: '/api/publishing/v1/upload/823',
-    bytes: '/api/publishing/v1/upload/823',
-    add_to_revision: '/api/publishing/v1/upload/823'
+    show: '/api/publishing/v1/source/823',
+    bytes: '/api/publishing/v1/source/823',
+    add_to_revision: '/api/publishing/v1/source/823'
   }
 };
 
@@ -1756,8 +1762,8 @@ export const newOutputSchemaFromDrop = {
     completed_at: '2017-05-12T14:18:55'
   },
   links: {
-    show: '/api/publishing/v1/upload/823/schema/945/output/1146',
-    rows: '/api/publishing/v1/upload/823/schema/945/rows/1146'
+    show: '/api/publishing/v1/source/823/schema/945/output/1146',
+    rows: '/api/publishing/v1/source/823/schema/945/rows/1146'
   }
 };
 
@@ -2195,8 +2201,8 @@ export const newOutputSchemaFromAdd = {
     completed_at: '2017-05-12T14:20:36'
   },
   links: {
-    show: '/api/publishing/v1/upload/823/schema/945/output/1147',
-    rows: '/api/publishing/v1/upload/823/schema/945/rows/1147'
+    show: '/api/publishing/v1/source/823/schema/945/output/1147',
+    rows: '/api/publishing/v1/source/823/schema/945/rows/1147'
   }
 };
 
@@ -2634,8 +2640,8 @@ export const newOutputSchemaFromTypeChange = {
     completed_at: null
   },
   links: {
-    show: '/api/publishing/v1/upload/823/schema/945/output/1148',
-    rows: '/api/publishing/v1/upload/823/schema/945/rows/1148'
+    show: '/api/publishing/v1/source/823/schema/945/output/1148',
+    rows: '/api/publishing/v1/source/823/schema/945/rows/1148'
   }
 };
 
@@ -3073,8 +3079,8 @@ export const newOutputSchemaFromSetPrimary = {
     completed_at: '2017-05-12T14:22:23'
   },
   links: {
-    show: '/api/publishing/v1/upload/823/schema/945/output/1149',
-    rows: '/api/publishing/v1/upload/823/schema/945/rows/1149'
+    show: '/api/publishing/v1/source/823/schema/945/output/1149',
+    rows: '/api/publishing/v1/source/823/schema/945/rows/1149'
   }
 };
 
@@ -5469,7 +5475,7 @@ export const updateRevision = permission => ({
     show: '/api/publishing/v1/revision/2ttq-aktm/0',
     metadata: '/api/publishing/v1/revision/2ttq-aktm/0',
     discard: '/api/publishing/v1/revision/2ttq-aktm/0',
-    create_upload: '/api/publishing/v1/revision/2ttq-aktm/0/upload',
+    create_source: '/api/publishing/v1/revision/2ttq-aktm/0/source',
     apply: '/api/publishing/v1/revision/2ttq-aktm/0/apply'
   }
 });
@@ -5504,7 +5510,7 @@ export const getRevision = {
     show: '/api/publishing/v1/revision/2ttq-aktm/0',
     metadata: '/api/publishing/v1/revision/2ttq-aktm/0',
     discard: '/api/publishing/v1/revision/2ttq-aktm/0',
-    create_upload: '/api/publishing/v1/revision/2ttq-aktm/0/upload',
+    create_source: '/api/publishing/v1/revision/2ttq-aktm/0/source',
     apply: '/api/publishing/v1/revision/2ttq-aktm/0/apply'
   }
 };

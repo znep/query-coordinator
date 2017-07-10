@@ -15,7 +15,7 @@ describe('components/Table/TransformStatus', () => {
 
   const defaultProps = {
     path: {
-      uploadId: 0,
+      sourceId: 0,
       inputSchemaId: 0,
       outputSchemaId: 0
     },
@@ -24,7 +24,7 @@ describe('components/Table/TransformStatus', () => {
   };
 
   describe('when there are no errors', () => {
-    it('renders correctly when upload is done and column is done', () => {
+    it('renders correctly when source is done and column is done', () => {
       const element = renderInTable(
         <TransformStatus
           {...defaultProps}
@@ -43,7 +43,7 @@ describe('components/Table/TransformStatus', () => {
       );
     });
 
-    it('renders correctly when upload is done and column is in progress', () => {
+    it('renders correctly when source is done and column is in progress', () => {
       const element = renderInTable(
         <TransformStatus
           {...defaultProps}
@@ -62,7 +62,7 @@ describe('components/Table/TransformStatus', () => {
       expect(progressBar.style.width).to.equal('50%');
     });
 
-    it('renders correctly when upload is in progress, column is in progress', () => {
+    it('renders correctly when source is in progress, column is in progress', () => {
       const element = renderInTable(
         <TransformStatus
           {...defaultProps}
@@ -79,10 +79,10 @@ describe('components/Table/TransformStatus', () => {
       );
       expect(element.querySelectorAll('.progress-bar-done')).to.not.equal(null);
       // TODO: ^^ think of a better class name. really means bar is not visible
-      // can be because it's done or we're not showing it because the upload is in progress
+      // can be because it's done or we're not showing it because the source is in progress
     });
 
-    it('renders correctly when neither upload progress nor column progress is known', () => {
+    it('renders correctly when neither source progress nor column progress is known', () => {
       const element = renderInTable(
         <TransformStatus
           {...defaultProps}
@@ -99,12 +99,12 @@ describe('components/Table/TransformStatus', () => {
       );
       expect(element.querySelectorAll('.progress-bar-done')).to.not.equal(null);
       // TODO: ^^ think of a better class name. really means bar is not visible
-      // can be because it's done or we're not showing it because the upload is in progress
+      // can be because it's done or we're not showing it because the source is in progress
     });
   });
 
   describe('when there are errors', () => {
-    it('renders correctly when upload is done and column is done', () => {
+    it('renders correctly when source is done and column is done', () => {
       const element = renderInTable(
         <TransformStatus
           {...defaultProps}
@@ -124,7 +124,7 @@ describe('components/Table/TransformStatus', () => {
       );
     });
 
-    it('renders correctly when upload is done and column is in progress', () => {
+    it('renders correctly when source is done and column is in progress', () => {
       const element = renderInTable(
         <TransformStatus
           {...defaultProps}
@@ -154,7 +154,7 @@ describe('components/Table/TransformStatus', () => {
       expect(progressBar.style.width).to.equal('50%');
     });
 
-    it('renders correctly when upload is in progress, column is in progress', () => {
+    it('renders correctly when source is in progress, column is in progress', () => {
       const element = renderInTable(
         <TransformStatus
           {...defaultProps}
@@ -172,7 +172,7 @@ describe('components/Table/TransformStatus', () => {
       );
       expect(element.querySelectorAll('.progress-bar-done')).to.not.equal(null);
       // TODO: ^^ think of a better class name. really means bar is not visible
-      // can be because it's done or we're not showing it because the upload is in progress
+      // can be because it's done or we're not showing it because the source is in progress
     });
   });
 });

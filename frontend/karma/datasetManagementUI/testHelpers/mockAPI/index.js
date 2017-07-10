@@ -14,37 +14,37 @@ fetchMock.configure({
   headers: { 'Content-Type': 'application/json' }
 });
 
-export const uploadCreate = () =>
+export const sourceCreate = () =>
   fetchMock.post(
-    'express:/api/publishing/v1/revision/:viewId/:revisionSeq/upload',
+    'express:/api/publishing/v1/revision/:viewId/:revisionSeq/source',
     {
-      body: JSON.stringify(responses.uploadCreate),
+      body: JSON.stringify(responses.sourceCreate),
       status: 201,
       statusText: STATUS_TEXT.CREATED
     }
   );
 
-export const uploadBytes = () =>
-  fetchMock.post('express:/api/publishing/v1/upload/:uploadId', {
-    body: JSON.stringify(responses.uploadBytes),
+export const sourceBytes = () =>
+  fetchMock.post('express:/api/publishing/v1/source/:sourceId', {
+    body: JSON.stringify(responses.sourceBytes),
     status: 200,
     statusText: STATUS_TEXT.OK
   });
 
-export const uploadShow = () =>
-  fetchMock.get('express:/api/publishing/v1/upload/:uploadId', {
-    body: JSON.stringify(responses.uploadShow),
+export const sourceShow = () =>
+  fetchMock.get('express:/api/publishing/v1/source/:sourceId', {
+    body: JSON.stringify(responses.sourceShow),
     status: 200,
     statusText: STATUS_TEXT.OK
   });
 
 export const newOutputSchema = () =>
   fetchMock.post(
-    'express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId',
+    'express:/api/publishing/v1/source/:sourceId/schema/:inputSchemaId',
     (url, options) => {
       const requestColumns = JSON.parse(options.body).output_columns || [];
       const existingColumns =
-        responses.uploadShow.resource.schemas[0].output_schemas[0]
+        responses.sourceShow.resource.schemas[0].output_schemas[0]
           .output_columns;
 
       const response = {
@@ -72,7 +72,7 @@ export const newOutputSchema = () =>
 
 export const rows = () =>
   fetchMock.get(
-    'express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId/rows/:outputSchemaId',
+    'express:/api/publishing/v1/source/:sourceId/schema/:inputSchemaId/rows/:outputSchemaId',
     {
       body: JSON.stringify(responses.rows),
       status: 200,
@@ -83,7 +83,7 @@ export const rows = () =>
 // TODO: distinguish from errorExport route by params
 export const columnErrors = () =>
   fetchMock.get(
-    'express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId/errors/:outputSchemaId',
+    'express:/api/publishing/v1/source/:sourceId/schema/:inputSchemaId/errors/:outputSchemaId',
     {
       body: JSON.stringify(responses.columnErrors),
       status: 200,
@@ -93,7 +93,7 @@ export const columnErrors = () =>
 
 export const errorExport = () =>
   fetchMock.get(
-    'express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId/errors/:outputSchemaId',
+    'express:/api/publishing/v1/source/:sourceId/schema/:inputSchemaId/errors/:outputSchemaId',
     {
       body: JSON.stringify(responses.errorExport),
       status: 200,
@@ -103,7 +103,7 @@ export const errorExport = () =>
 
 export const rowErrors = () =>
   fetchMock.get(
-    'express:/api/publishing/v1/upload/:uploadId/schema/:inputSchemaId/errors',
+    'express:/api/publishing/v1/source/:sourceId/schema/:inputSchemaId/errors',
     {
       body: JSON.stringify(responses.rowErrors),
       status: 200,
@@ -113,7 +113,7 @@ export const rowErrors = () =>
 
 export const validateRowIdentifier = () =>
   fetchMock.get(
-    'express:/api/publishing/v1/upload/:uploadId/transform/:transformId/validate_row_identifier',
+    'express:/api/publishing/v1/source/:sourceId/transform/:transformId/validate_row_identifier',
     {
       body: JSON.stringify(responses.validateRowIdentifier),
       status: 200,
@@ -161,10 +161,10 @@ export const getRevision = () =>
     }
   );
 
-export const uploadBytesXHR = () => {
+export const sourceBytesXHR = () => {
   xhrMock.setup();
-  xhrMock.post(/\/api\/publishing\/v1\/upload\/\d+\/?/, (req, res) =>
-    res.status(200).body(JSON.stringify(responses.uploadBytes))
+  xhrMock.post(/\/api\/publishing\/v1\/source\/\d+\/?/, (req, res) =>
+    res.status(200).body(JSON.stringify(responses.sourceBytes))
   );
 };
 
@@ -185,10 +185,10 @@ export const saveMetadata = () =>
   });
 
 const mockAPI = () => {
-  uploadBytesXHR();
-  uploadCreate();
-  uploadBytes();
-  uploadShow();
+  sourceBytesXHR();
+  sourceCreate();
+  sourceBytes();
+  sourceShow();
   newOutputSchema();
   rows();
   columnErrors();

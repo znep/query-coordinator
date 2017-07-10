@@ -24,7 +24,7 @@ export const ShowUpload = ({ inProgress, goHome }) =>
           ? <div className={styles.centeredContainer}>
               <span className={styles.spinner} />
             </div>
-          : <div className={styles.uploadContainer}>
+          : <div className={styles.sourceContainer}>
               <DragDropUpload />
               <UploadSidebar />
             </div>}
@@ -33,12 +33,12 @@ export const ShowUpload = ({ inProgress, goHome }) =>
   </div>;
 
 export const mapStateToProps = ({ entities, ui }) => {
-  // selector returns undefined if there are no uploads
-  const upload = Selectors.latestUpload(entities);
+  // selector returns undefined if there are no sources
+  const source = Selectors.latestSource(entities);
   let apiCall = [];
 
-  if (upload && upload.id) {
-    const { id: uploadId } = upload;
+  if (source && source.id) {
+    const { id: sourceId } = source;
     const apiCallList = Object.keys(ui.apiCalls).map(callId => ui.apiCalls[callId]);
 
     apiCall = apiCallList.filter(
@@ -46,18 +46,18 @@ export const mapStateToProps = ({ entities, ui }) => {
         call.operation === 'UPLOAD_FILE' &&
         call.status === STATUS_CALL_IN_PROGRESS &&
         call.params &&
-        call.params.id === uploadId
+        call.params.id === sourceId
     );
   }
 
-  // Include upload in the definition of inProgress because if there is no upload,
+  // Include source in the definition of inProgress because if there is no source,
   // we don't want to show the spinner, we want to show the actual component so the
-  // user can upload something
-  // TODO: maybe tweak this in the future. For really small files, the upload finishes
-  // before polling for OS does, so the uploads page shows (instead of the spinner)
+  // user can source something
+  // TODO: maybe tweak this in the future. For really small files, the source finishes
+  // before polling for OS does, so the sources page shows (instead of the spinner)
   // for a split second before transitioning to ShowOutputSchema page
   return {
-    inProgress: !!upload && !!apiCall.length
+    inProgress: !!source && !!apiCall.length
   };
 };
 

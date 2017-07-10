@@ -191,12 +191,15 @@ const initialState = {
         }
       }
     },
-    uploads: {
+    sources: {
       '115': {
         id: 115,
         header_count: 1,
         finished_at: new Date(1497400641000),
-        filename: 'petty_crimes.csv',
+        source_type: {
+          type: 'upload',
+          filename: 'petty_crimes.csv'
+        },
         failed_at: null,
         created_by: {
           user_id: 'tugg-ikce',
@@ -213,7 +216,7 @@ const initialState = {
         id: 98,
         name: null,
         total_rows: 9,
-        upload_id: 115,
+        source_id: 115,
         num_row_errors: 0
       }
     },
@@ -2415,7 +2418,7 @@ const initialState = {
       history: [
         {
           pathname:
-            '/dataset/omgwtf/kg5j-unyr/revisions/0/uploads/115/schemas/98/output/144',
+            '/dataset/omgwtf/kg5j-unyr/revisions/0/sources/115/schemas/98/output/144',
           search: '',
           hash: '',
           action: 'POP',

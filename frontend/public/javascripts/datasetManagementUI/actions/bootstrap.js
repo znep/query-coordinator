@@ -68,15 +68,15 @@ export function bootstrapApp(view, revision, customMetadataFieldsets) {
       {}
     );
 
-    const uploads = revision.uploads.reduce(
-      (acc, upload) => ({
+    const sources = revision.sources.reduce(
+      (acc, source) => ({
         ...acc,
-        [upload.id]: {
-          ..._.omit(upload, ['schemas']),
-          created_at: parseDate(upload.created_at),
-          finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
-          failed_at: upload.failed_at ? parseDate(upload.failed_at) : null,
-          created_by: upload.created_by
+        [source.id]: {
+          ..._.omit(source, ['schemas']),
+          created_at: parseDate(source.created_at),
+          finished_at: source.finished_at ? parseDate(source.finished_at) : null,
+          failed_at: source.failed_at ? parseDate(source.failed_at) : null,
+          created_by: source.created_by
         }
       }),
       {}
@@ -95,35 +95,35 @@ export function bootstrapApp(view, revision, customMetadataFieldsets) {
       columnMetadataErrors: []
     };
 
-    dispatch(bootstrapAppSuccess(intialViewWithErrors, initialRevision, taskSets, uploads));
+    dispatch(bootstrapAppSuccess(intialViewWithErrors, initialRevision, taskSets, sources));
     dispatch(sideEffectyStuff(revision));
   };
 }
 
-function bootstrapAppSuccess(initialView, initialRevision, taskSets, uploads) {
+function bootstrapAppSuccess(initialView, initialRevision, taskSets, sources) {
   return {
     type: BOOTSTRAP_APP_SUCCESS,
     initialView,
     initialRevision,
     taskSets,
-    uploads
+    sources
   };
 }
 
 function sideEffectyStuff(revision) {
   return dispatch => {
-    revision.uploads.forEach(upload => {
-      _.each(_.flatMap(upload.schemas, is => is.output_schemas), os => {
+    revision.sources.forEach(source => {
+      _.each(_.flatMap(source.schemas, is => is.output_schemas), os => {
         dispatch(pollForOutputSchemaSuccess(os));
         dispatch(subscribeToOutputSchema(os));
         dispatch(subscribeToTransforms(os));
       });
 
-      if (upload.failed_at) {
-        dispatch(addNotification('upload', null, upload.id));
+      if (source.failed_at) {
+        dispatch(addNotification('source', null, source.id));
       } else {
-        dispatch(insertInputSchema(upload));
-        upload.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
+        dispatch(insertInputSchema(source));
+        source.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
       }
     });
 

@@ -49,6 +49,6 @@ export default {
     }
   },
   "links": {
-    "show": "/api/publishing/v1/upload/991/schema/921/output/1311"
+    "show": "/api/publishing/v1/source/991/schema/921/output/1311"
   }
 }

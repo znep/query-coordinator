@@ -18,7 +18,7 @@ const bootstrapApp = (state, action) => {
         action.taskSets
       );
 
-      return dotProp.set(stateWithUpdatedTaskSets, 'entities.uploads', action.uploads);
+      return dotProp.set(stateWithUpdatedTaskSets, 'entities.sources', action.sources);
     }
 
     default:

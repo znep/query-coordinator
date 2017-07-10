@@ -47,7 +47,7 @@ if (window.serverConfig.environment === 'development') {
   middleware.push(windowDBMiddleware);
 
   console.log(
-    'for convenience, try e.g. `console.table(DB.uploads)` (only works when RAILS_ENV==development)'
+    'for convenience, try e.g. `console.table(DB.sources)` (only works when RAILS_ENV==development)'
   );
 } else {
   // 126728 is Publishing airbrake project id
@@ -86,9 +86,9 @@ ReactDOM.render(
 );
 
 window.addEventListener('beforeunload', evt => {
-  const uploadsInProgress = Selectors.uploadsInProgress(store.getState().ui.apiCalls);
-  if (uploadsInProgress.length !== 0) {
-    const msg = I18n.upload_warning;
+  const sourcesInProgress = Selectors.sourcesInProgress(store.getState().ui.apiCalls);
+  if (sourcesInProgress.length !== 0) {
+    const msg = I18n.source_warning;
     evt.returnValue = msg;
     return msg;
   }

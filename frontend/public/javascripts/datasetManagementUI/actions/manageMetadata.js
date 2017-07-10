@@ -127,7 +127,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
 
   const inputSchema = entities.input_schemas[currentOutputSchema.input_schema_id];
 
-  const upload = entities.uploads[inputSchema.upload_id];
+  const source = entities.sources[inputSchema.source_id];
 
   const callId = uuid();
 
@@ -138,7 +138,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     })
   );
 
-  return socrataFetch(dsmapiLinks.newOutputSchema(upload.id, currentOutputSchema.input_schema_id), {
+  return socrataFetch(dsmapiLinks.newOutputSchema(source.id, currentOutputSchema.input_schema_id), {
     method: 'POST',
     body: JSON.stringify(payload)
   })

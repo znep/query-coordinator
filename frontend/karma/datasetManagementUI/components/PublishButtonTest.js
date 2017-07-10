@@ -17,7 +17,7 @@ describe('"Publish Dataset" button and flyout', () => {
     assert.isFalse(component.find('button[disabled=true]').isEmpty());
   });
 
-  it('is disabled when the upload is in progress', () => {
+  it('is disabled when the source is in progress', () => {
     const updatedProps = {
       ...defaultProps,
       dataSatisfied: true,

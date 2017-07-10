@@ -13,12 +13,12 @@ module DatasetManagementAPI
     end
   end
 
-  def self.get_uploads_index(view_uid, revision_seq, cookies)
-    get("/api/publishing/v1/revision/#{view_uid}/#{revision_seq}/upload", cookies)
+  def self.get_sources_index(view_uid, revision_seq, cookies)
+    get("/api/publishing/v1/revision/#{view_uid}/#{revision_seq}/source", cookies)
   end
 
-  def self.get_upload(view_uid, revision_seq, upload_id, cookies)
-    path = "/api/publishing/v1/upload/#{upload_id}"
+  def self.get_source(view_uid, revision_seq, source_id, cookies)
+    path = "/api/publishing/v1/source/#{source_id}"
     get(path, cookies)['resource']
   end
 

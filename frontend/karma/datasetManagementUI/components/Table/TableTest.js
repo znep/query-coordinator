@@ -8,7 +8,7 @@ import dotProp from 'dot-prop-immutable';
 const defaultProps = {
   entities: {},
   path: {
-    uploadId: 312,
+    sourceId: 312,
     inputSchemaId: 1801,
     outputSchemaId: 619
   },
@@ -16,7 +16,7 @@ const defaultProps = {
     id: 1801,
     name: null,
     total_rows: 9,
-    upload_id: 312
+    source_id: 312
   },
   outputSchema: {
     input_schema_id: 1801,

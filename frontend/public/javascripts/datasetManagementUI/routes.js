@@ -11,9 +11,10 @@ import { home } from 'links';
 import _ from 'lodash';
 
 const checkUploadStatus = store => (nextState, replace) => {
-  const uploadExists = !_.isEmpty(store.getState().entities.output_columns);
+  // TODO: is this valid? You can have a source with no output schema
+  const sourceExists = !_.isEmpty(store.getState().entities.output_columns);
 
-  if (uploadExists) {
+  if (sourceExists) {
     store.dispatch(focusColumnEditor(nextState));
   } else {
     const newPath = home(nextState.location);
@@ -49,23 +50,23 @@ export default function rootRoute(store) {
       <Redirect from="metadata" to="metadata/dataset" />
       <Route path="metadata/dataset" component={ManageMetadata} />
       <Route path="metadata/columns" component={ManageMetadata} onEnter={checkUploadStatus(store)} />
-      <Route path="uploads" component={ShowUpload} />
+      <Route path="sources" component={ShowUpload} />
       <Route path=":sidebarSelection" component={ShowRevision} />
       <Route
-        path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId"
+        path="sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId"
         component={ShowOutputSchema}>
         <Route path="page/:pageNo" component={ShowOutputSchema} />
       </Route>
       <Route
         path={
-          'uploads/:uploadId/schemas/:inputSchemaId/output/' +
+          'sources/:sourceId/schemas/:inputSchemaId/output/' +
           ':outputSchemaId/column_errors/:errorsTransformId'
         }
         component={ShowOutputSchema}>
         <Route path="page/:pageNo" component={ShowOutputSchema} />
       </Route>
       <Route
-        path="uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors"
+        path="sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors"
         component={ShowOutputSchema}>
         <Route path="page/:pageNo" component={ShowOutputSchema} />
       </Route>

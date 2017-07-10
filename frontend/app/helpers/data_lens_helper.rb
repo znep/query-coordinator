@@ -13,9 +13,7 @@ module DataLensHelper
   end
 
   def render_angular_translations
-    old_translations = json_escape(angular_translations.to_json)
-    new_translations = json_escape(LocaleCache.render_partial_translations(:angular).to_json)
-    javascript_tag("var I18n = #{old_translations}; var translations = #{new_translations}")
+    javascript_tag("var translations = #{json_escape(angular_translations.to_json)};")
   end
 
   def render_user

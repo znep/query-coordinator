@@ -41,20 +41,30 @@ export default class Pagination extends React.Component {
       previousButtonText
     } = this.props;
 
+    const nextButtonDisabled = !hasNextPage || disabled;
+    const nextButtonClass = classNames(
+      'btn btn-transparent btn-page-changer btn-page-changer-next',
+      {disabled: nextButtonDisabled}
+    );
     const nextButton = (
       <button
-        className="btn btn-transparent btn-page-changer btn-page-changer-next"
-        disabled={!hasNextPage || disabled}
+        className={nextButtonClass}
+        disabled={nextButtonDisabled}
         onClick={() => onGotoPage(currentPage + 1)}>
         <span>{nextButtonText}</span>
         <SocrataIcon name="arrow-right" />
       </button>
     );
 
-    const previousButton = (
+    const prevButtonDisabled = !hasPreviousPage || disabled;
+    const prevButtonClass = classNames(
+      'btn btn-transparent btn-page-changer btn-page-changer-previous',
+      {disabled: prevButtonDisabled}
+    );
+    const prevButton = (
       <button
-        className="btn btn-transparent btn-page-changer btn-page-changer-previous"
-        disabled={!hasPreviousPage || disabled}
+        className={prevButtonClass}
+        disabled={prevButtonDisabled}
         onClick={() => onGotoPage(currentPage - 1)}>
         <SocrataIcon name="arrow-left" />
         <span>{previousButtonText}</span>
@@ -77,7 +87,7 @@ export default class Pagination extends React.Component {
 
     return (
       <div className="pagination">
-        {previousButton}
+        {prevButton}
         {pageNumbers}
         {nextButton}
       </div>

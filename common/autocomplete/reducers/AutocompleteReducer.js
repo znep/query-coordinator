@@ -50,6 +50,10 @@ function collapseChanged(state, action) {
   return { ...state, collapsed: action.collapsed, focusedResult: undefined };
 }
 
+function searchCleared(state, action) {
+  return { ...state, query: null };
+}
+
 export default function autocompleteReducer(state, action) {
   switch (action.type) {
     case actions.QUERY_CHANGED:
@@ -62,6 +66,8 @@ export default function autocompleteReducer(state, action) {
       return focusedResultChanged(state, action);
     case actions.COLLAPSE_CHANGED:
       return collapseChanged(state, action);
+    case action.SEARCH_CLEARED:
+      return searchCleared(state, action);
     default:
       return state;
   }

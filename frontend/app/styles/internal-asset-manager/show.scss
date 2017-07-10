@@ -2,6 +2,8 @@
 @import "internal-asset-manager/sizings";
 @import "internal-asset-manager/catalog_results";
 @import "internal-asset-manager/catalog_filters";
+@import "internal-asset-manager/clear_filters";
+
 @import "common/pager";
 @import "common/feedback-panel";
 
@@ -101,5 +103,9 @@ body {
     display: flex;
     border-top: 1px solid $light-grey-3;
     border-bottom: 1px solid $light-grey-3;
+
+    .catalog-results .socrata-icon-search {
+      top: -3px !important;
+    }
   }
 }

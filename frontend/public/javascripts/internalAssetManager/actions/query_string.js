@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export const updateQueryString = (dispatch, getState) => {
+export const updateQueryString = (dispatch, getState, clearSearch) => {
   if (_.get(window, 'history.pushState')) {
     const location = window.location;
     const urlPath = `${location.protocol}//${location.host}${location.pathname}`;
@@ -35,7 +35,9 @@ export const updateQueryString = (dispatch, getState) => {
       activeFilters.orderColumn = order.value;
       activeFilters.orderDirection = order.ascending ? 'asc' : 'desc';
     }
-
+    if (clearSearch) {
+      delete activeFilters.q;
+    }
     const queryString = _(activeFilters).map((value, type) => `${type}=${value}`).value().join('&');
     const newUrl = `${urlPath}?${queryString}`;
     window.history.pushState({ path: newUrl }, '', newUrl);

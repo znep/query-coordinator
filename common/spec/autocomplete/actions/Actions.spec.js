@@ -51,4 +51,10 @@ describe('actions', () => {
     };
     expect(actions.collapseChanged(collapsed)).to.eql(expectedAction);
   });
+
+  it('should create search cleared', () => {
+    const expectedAction = { type: actions.SEARCH_CLEARED, query: null };
+    expect(actions.searchCleared()).to.eql(expectedAction);
+  });
+
 })

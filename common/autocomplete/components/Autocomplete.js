@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import { connect } from 'react-redux';
 import { getSearchUrl } from '../Util';
-import { resultVisibilityChanged } from '../actions';
+import { searchCleared, resultVisibilityChanged } from '../actions';
 import CollapsedIcon from './CollapsedIcon';
 import SearchBox from './SearchBox/SearchBox';
 import Results from './Results/Results';
@@ -34,13 +34,14 @@ class Autocomplete extends React.Component {
     const {
       animate,
       anonymous,
-      collapsible,
       collapsed,
-      mobile,
-      onResultVisibilityChanged,
-      onChooseResult,
+      collapsible,
       getSearchResults,
-      millisecondsBeforeSearch
+      millisecondsBeforeSearch,
+      mobile,
+      onChooseResult,
+      onClearSearch,
+      onResultVisibilityChanged
     } = this.props;
 
     if (collapsible && collapsed) {
@@ -53,13 +54,14 @@ class Autocomplete extends React.Component {
           onFocus={() => { onResultVisibilityChanged(true); }}
           onBlur={() => { onResultVisibilityChanged(false); }} >
           <SearchBox
-            getSearchResults={getSearchResults}
-            millisecondsBeforeSearch={millisecondsBeforeSearch}
+            animate={animate}
             anonymous={anonymous}
             collapsible={collapsible}
-            animate={animate}
+            getSearchResults={getSearchResults}
+            millisecondsBeforeSearch={millisecondsBeforeSearch}
             mobile={mobile}
-            onChooseResult={onChooseResult} />
+            onChooseResult={onChooseResult}
+            onClearSearch={onClearSearch} />
           <Results collapsible={collapsible} onChooseResult={onChooseResult} />
         </div>
       );
@@ -68,15 +70,16 @@ class Autocomplete extends React.Component {
 }
 
 Autocomplete.propTypes = {
-  onResultVisibilityChanged: PropTypes.func.isRequired,
+  animate: PropTypes.bool,
+  anonymous: PropTypes.bool,
+  collapsed: PropTypes.bool,
+  collapsible: PropTypes.bool,
   getSearchResults: PropTypes.func.isRequired,
   millisecondsBeforeSearch: PropTypes.number.isRequired,
-  anonymous: PropTypes.bool,
-  collapsible: PropTypes.bool,
-  collapsed: PropTypes.bool,
-  animate: PropTypes.bool,
   mobile: PropTypes.bool,
-  onChooseResult: PropTypes.func
+  onChooseResult: PropTypes.func,
+  onClearSearch: PropTypes.func,
+  onResultVisibilityChanged: PropTypes.func.isRequired
 };
 
 Autocomplete.defaultProps = {

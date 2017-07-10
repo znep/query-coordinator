@@ -4,6 +4,12 @@
 .catalog-results {
   width: 100%;
 
+  div[class*=autocomplete_container] {
+    float: left;
+    width: 40rem;
+    padding-bottom: 8px;
+  }
+
   .catalog-results-spinner-container {
     display: flex;
     justify-content: center;

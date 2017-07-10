@@ -21,6 +21,7 @@ class InternalAssetManagerController < ApplicationController
     search_options = {
       domains: CurrentDomain.cname,
       limit: RESULTS_PER_PAGE,
+      q: params[:q],
       show_visibility: true
     }.merge(initial_filter_cetera_opts)
 

@@ -67,7 +67,7 @@ export default function(state, action) {
       state.series.splice(action.seriesIndex, 1);
       break;
 
-    case actions.SET_SERIES_MEASURE_COLUMN:
+    case actions.SET_MEASURE:
 
       if (action.seriesIndex < state.series.length) {
         const series = state.series[action.seriesIndex];
@@ -83,7 +83,7 @@ export default function(state, action) {
       }
       break;
 
-    case actions.SET_SERIES_MEASURE_AGGREGATION:
+    case actions.SET_MEASURE_AGGREGATION:
       if (action.seriesIndex < state.series.length) {
         const series = state.series[action.seriesIndex];
         _.set(series, 'dataSource.measure.aggregationFunction', action.aggregationFunction);

@@ -179,20 +179,20 @@ export function removeSeries(seriesIndex) {
   };
 }
 
-export const SET_SERIES_MEASURE_COLUMN = 'SET_SERIES_MEASURE_COLUMN';
-export function setSeriesMeasureColumn(seriesIndex, columnName, label) {
+export const SET_MEASURE = 'SET_MEASURE';
+export function setMeasure(seriesIndex, columnName, label) {
   return {
-    type: SET_SERIES_MEASURE_COLUMN,
+    type: SET_MEASURE,
     seriesIndex,
     columnName,
     label
   };
 }
 
-export const SET_SERIES_MEASURE_AGGREGATION = 'SET_SERIES_MEASURE_AGGREGATION';
-export function setSeriesMeasureAggregation(seriesIndex, aggregationFunction) {
+export const SET_MEASURE_AGGREGATION = 'SET_MEASURE_AGGREGATION';
+export function setMeasureAggregation(seriesIndex, aggregationFunction) {
   return {
-    type: SET_SERIES_MEASURE_AGGREGATION,
+    type: SET_MEASURE_AGGREGATION,
     seriesIndex,
     aggregationFunction
   };

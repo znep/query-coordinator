@@ -74,8 +74,8 @@ export default function pieChart(state, action) {
     case actions.SET_DIMENSION:
     case actions.SET_DOMAIN:
     case actions.SET_FILTERS:
-    case actions.SET_SERIES_MEASURE_AGGREGATION:
-    case actions.SET_SERIES_MEASURE_COLUMN:
+    case actions.SET_MEASURE:
+    case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_SHOW_LEGEND:
     case actions.SET_TITLE:
     case actions.SET_UNIT_ONE:

@@ -129,8 +129,8 @@ export default function columnChart(state, action) {
     case actions.SET_MEASURE_AXIS_MIN_VALUE:
     case actions.SET_PRIMARY_COLOR:
     case actions.SET_SECONDARY_COLOR:
-    case actions.SET_SERIES_MEASURE_AGGREGATION:
-    case actions.SET_SERIES_MEASURE_COLUMN:
+    case actions.SET_MEASURE:
+    case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_SHOW_LEGEND:
     case actions.SET_TITLE:
     case actions.SET_UNIT_ONE:

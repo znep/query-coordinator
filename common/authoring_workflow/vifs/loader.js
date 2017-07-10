@@ -82,12 +82,12 @@ export const load = (dispatch, vif) => {
       const measureColumnNamePath = paths.measureColumnName.format(i);
       const measureLabelPath = paths.measureLabel.format(i);
       if (has(measureColumnNamePath)) {
-        dispatch(actions.setSeriesMeasureColumn(i, get(measureColumnNamePath), get(measureLabelPath)));
+        dispatch(actions.setMeasure(i, get(measureColumnNamePath), get(measureLabelPath)));
       }
 
       const measureAggregationFunctionPath = paths.measureAggregationFunction.format(i);
       if (has(measureAggregationFunctionPath)) {
-        dispatch(actions.setSeriesMeasureAggregation(i, get(measureAggregationFunctionPath)));
+        dispatch(actions.setMeasureAggregation(i, get(measureAggregationFunctionPath)));
       }
 
       const primaryColorPath = paths.primaryColor.format(i);

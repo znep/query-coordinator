@@ -8,8 +8,8 @@ import { AGGREGATION_TYPES, COLUMN_TYPES, MAXIMUM_MEASURES } from '../constants'
 import { 
   appendSeriesWithMeasure, 
   removeSeries, 
-  setSeriesMeasureColumn, 
-  setSeriesMeasureAggregation } from '../actions';
+  setMeasure, 
+  setMeasureAggregation } from '../actions';
 
 import { 
   getSeriesFromVif, 
@@ -212,10 +212,10 @@ function mapDispatchToProps(dispatch) {
       dispatch(removeSeries(index));
     },
     onSetMeasureColumn(index, columnName, label) {
-      dispatch(setSeriesMeasureColumn(index, columnName, label));
+      dispatch(setMeasure(index, columnName, label));
     },
     onSetMeasureAggregation(index, aggregationFunction) {
-      dispatch(setSeriesMeasureAggregation(index, aggregationFunction));
+      dispatch(setMeasureAggregation(index, aggregationFunction));
     },
   };
 }

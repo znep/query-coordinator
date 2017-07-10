@@ -98,8 +98,8 @@ export default function timelineChart(state, action) {
     case actions.SET_FILTERS:
     case actions.SET_LABEL_BOTTOM:
     case actions.SET_LABEL_LEFT:
-    case actions.SET_SERIES_MEASURE_AGGREGATION:
-    case actions.SET_SERIES_MEASURE_COLUMN:
+    case actions.SET_MEASURE:
+    case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_MEASURE_AXIS_MAX_VALUE:
     case actions.SET_MEASURE_AXIS_MIN_VALUE:
     case actions.SET_PRIMARY_COLOR:

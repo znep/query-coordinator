@@ -65,24 +65,46 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       params: {}
     })
   );
-
-  return socrataFetch(`/api/views/${fourfour}`, {
-    method: 'PUT',
-    body: JSON.stringify(datasetMetadata)
-  })
-    .then(checkStatus)
-    .then(getJson)
+  // Promise.all fails if one of the operations passed into it fails. This is what
+  // we want for now because DSMAPI's "Update Revision" endpoint does no validations
+  // so we want to rely on core for that. Similarly, when DSMAPI updates start winning
+  // over what's already in core, we want to show a failure even though core update
+  // succeeds since applying the revision will overwrite that info.
+  // TODO: remove core api call (the first one here) once validations go into
+  // dsmapi and once dsmapi revisions start overriding what's in core
+  return Promise.all([
+    socrataFetch(`/api/views/${fourfour}`, {
+      method: 'PUT',
+      body: JSON.stringify(datasetMetadata)
+    }),
+    socrataFetch(dsmapiLinks.revisionBase, {
+      method: 'PUT',
+      body: JSON.stringify({
+        metadata: datasetMetadata
+      })
+    })
+  ])
     .then(resp => {
-      // remove fields added to the view as part of https://github.com/socrata/rfcs/pull/6/files
-      // gonna be good to use them when that ticket is done, but having them there now is just confusing
-      // TODO: remove this a rework where we pull saved metadata values when complete
-      const sanitizedResp = _.omit(resp, ['privateCustomMetadata', 'publicCustomMetadata']);
+      // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
+      // Because of the way .then workds, you cant just return the resp here. You get
+      // an array of promises rather than a Promise of array.
+      return Promise.all(resp.map(r => r.json()));
+    })
+    .then(resp => {
+      const [dsmapi] = resp.filter(r => r.resource).map(r => r.resource);
 
+      if (!dsmapi.metadata) {
+        throw new Error('No metadata in api response');
+      }
+      // TODO: wait on Cate's bugfix for private custom md
       dispatch(
-        editView(resp.id, {
-          ...sanitizedResp,
+        editView(dsmapi.fourfour, {
+          ..._.omit(dsmapi.metadata, 'metadata', 'private_metadata'),
+          metadata: dsmapi.metadata.metadata,
+          privateMetadata: dsmapi.metadata.private_metadata,
           showErrors: false,
-          datasetFormDirty: false
+          datasetFormDirty: false,
+          metadataLastUpdatedAt: Date.now()
         })
       );
 

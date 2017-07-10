@@ -12,7 +12,7 @@ module.exports = function I18n($log, ServerConfig, $window) {
     });
   }
 
-  var i18n = camelCaseKeys($window.I18n);
+  var i18n = camelCaseKeys($window.translations);
 
   // Retrieve a translation key
   i18n.t = function(key) {

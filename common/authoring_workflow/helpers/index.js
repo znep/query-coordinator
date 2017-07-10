@@ -85,3 +85,40 @@ export const setUnits = (series, action) => {
     setStringValueOrDefaultValue(series, 'unit.other', utils.pluralize(rowDisplayUnit));
   }
 };
+
+export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnName) => {
+
+  // Note that the 'dimension.grouping.columnName' property is only valid on
+  // the first series of a vif, so we are not setting it on all series but
+  // rather only the first.
+  //
+  // In this context, 'state' is the vif itself.
+  _.set(
+    state,
+    'series[0].dataSource.dimension.grouping.columnName',
+    dimensionGroupingColumnName
+  );
+
+  if (dimensionGroupingColumnName === null) {
+
+    // If the dimension grouping functionality is being disabled, then we
+    // also want to remove any color palette and legend visibility that has been set.
+    _.unset(state, 'series[0].color.palette');
+    _.unset(state, 'configuration.showLegend');
+    _.unset(state, 'series[0].dataSource.dimension.grouping');
+
+  } else {
+
+    // Otherwise, if the color palette has not yet been set, then assign
+    // the default palette.
+    if (_.get(state, 'series[0].color.palette', null) === null) {
+      _.set(state, 'series[0].color.palette', 'categorical');
+    }
+
+    // If legend visibility has not yet been set, then set it to visible
+    if (_.get(state, 'configuration.showLegend', null) === null) {
+      _.set(state, 'configuration.showLegend', true);
+    }
+  }
+
+};

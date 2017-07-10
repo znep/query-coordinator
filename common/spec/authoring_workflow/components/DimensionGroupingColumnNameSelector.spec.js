@@ -27,12 +27,6 @@ const metadata = {
   }
 };
 
-const validVifAuthoring = {
-  vifs: {
-    columnChart: {series: [{dataSource: {measure: {columnName: 'columnName'}}}]}
-  }
-};
-
 describe('DimensionGroupingColumnNameSelector', () => {
   let component;
 
@@ -88,14 +82,12 @@ describe('DimensionGroupingColumnNameSelector', () => {
 
     describe('with data', () => {
 
-      beforeEach(() => {
+      it('render all columns', () => {
         component = renderComponent(
           DimensionGroupingColumnNameSelector,
           { metadata }
         );
-      });
 
-      it('render all columns', () => {
         for(let option of component.querySelectorAll('.picklist-option')) {
           if (option.getAttribute('id') == 'null-0') {
             continue;
@@ -109,12 +101,49 @@ describe('DimensionGroupingColumnNameSelector', () => {
 
       });
 
+      it('does not render selected dimension column', () => {
+        const vifAuthoring = {
+          authoring: {
+            selectedVisualizationType: 'barChart'
+          },
+          vifs: {
+            barChart: {series: [{dataSource: {dimension: {columnName: metadata.data.columns[1].fieldName}}}]}
+          }
+        };
+
+        const props = {
+          metadata: metadata,
+          vifAuthoring: vifAuthoring
+        };
+
+        component = renderComponent(
+          DimensionGroupingColumnNameSelector,
+          props
+        );
+
+        const picklistOptions = component.querySelectorAll('.picklist-title');
+        const picklistTitles = _.map(
+          picklistOptions,
+          option => (option.textContent)
+        );
+
+        assert.notInclude(picklistTitles, metadata.data.columns[1].name);
+        // We add an extra field for "no dimension grouping"
+        // which is why we are not comparing to columns.length minus 1
+        assert.lengthOf(picklistTitles, metadata.data.columns.length);
+      });
+
     });
 
   });
 
   describe('events', () => {
     let component;
+    const validVifAuthoring = {
+      vifs: {
+        columnChart: {series: [{dataSource: {measure: {columnName: 'columnName'}}}]}
+      }
+    };
     const props = {
       metadata: metadata,
       vifAuthoring: validVifAuthoring,

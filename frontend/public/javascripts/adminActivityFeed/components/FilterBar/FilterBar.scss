@@ -1,10 +1,10 @@
 @import 'app/styles/styleguide-colors';
 
 .filter-bar {
-  margin-top: 15px;
   display: flex;
   justify-content: space-between;
   color: $dark-grey-2;
+  margin-top: 13px;
 
   .quick-filters {
     font-size: 15px;
@@ -12,6 +12,7 @@
     ul {
       list-style-type: none;
       padding-left: 0;
+      margin: 0;
 
       li {
         float: left;
@@ -36,12 +37,12 @@
           height: 40px;
 
           &:hover {
-            border-bottom: 4px solid $light-grey-2;
+            border-bottom: 3px solid $light-grey-2;
             padding-bottom: 5px;
           }
 
           &.selected {
-            border-bottom: 4px solid $primary-dark;
+            border-bottom: 3px solid $primary-dark;
             padding-bottom: 5px;
           }
         }
@@ -52,8 +53,7 @@
   .picker-filters {
     color: $dark-grey-2;
     font-size: 12px;
-    height: 29px;
-    margin-top: 29px;
+    margin-top: 7px;
 
     .picker-filters-header{
       font-size: 12px;

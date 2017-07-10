@@ -13,7 +13,11 @@ module.exports = function TimelineChartController(
   var cardModel$ = $scope.$observe('model').filter(_.isPresent);
   var dataset$ = cardModel$.observeOnLatest('page.dataset').filter(_.isPresent);
   var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
-  var rescaleAxis$ = cardModel$.observeOnLatest('page.enableAxisRescaling');
+  var rescaleAxis$ = cardModel$.observeOnLatest('page.enableAxisRescaling').
+    map(function(enabled) {
+      // Don't rescale for `false` or `"hidden"`.
+      return enabled === true;
+    });
   var aggregation$ = cardModel$.observeOnLatest('aggregation');
   var dataRequests$ = new Rx.Subject();
   var dataResponses$ = new Rx.Subject();

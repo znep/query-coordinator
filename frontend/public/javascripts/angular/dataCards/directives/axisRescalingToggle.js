@@ -8,12 +8,16 @@ module.exports = function axisRescalingToggle() {
     templateUrl: templateUrl,
     link: function($scope) {
       var page = $scope.page;
+      var mode = page.getCurrentValue('enableAxisRescaling');
 
-      $scope.enableAxisRescaling = page.getCurrentValue('enableAxisRescaling');
-      $scope.isHidden = !_.isBoolean($scope.enableAxisRescaling); // ng-hide is too simple for this
-      $scope.$observe('enableAxisRescaling').
-        skip(1).
-        subscribe(_.bind(page.set, page, 'enableAxisRescaling'));
+      $scope.isHidden = mode === 'hidden';
+      $scope.enableAxisRescaling = mode === true;
+
+      if (mode !== 'hidden') {
+        $scope.$observe('enableAxisRescaling').
+          skip(1).
+          subscribe(_.bind(page.set, page, 'enableAxisRescaling'));
+      }
     }
   };
 };

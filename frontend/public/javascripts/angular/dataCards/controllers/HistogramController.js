@@ -53,7 +53,11 @@ module.exports = function HistogramController(
   var cardModel$ = $scope.$observe('model').filter(_.isPresent);
   var whereClause$ = $scope.$observe('whereClause');
   var isFiltered$ = whereClause$.map(_.isPresent);
-  var rescaleAxis$ = cardModel$.observeOnLatest('page.enableAxisRescaling');
+  var rescaleAxis$ = cardModel$.observeOnLatest('page.enableAxisRescaling').
+    map(function(enabled) {
+      // Don't rescale for `false` or `"hidden"`.
+      return enabled === true;
+    });
   var dataset$ = cardModel$.observeOnLatest('page.dataset');
   var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
   var aggregation$ = cardModel$.observeOnLatest('aggregation');

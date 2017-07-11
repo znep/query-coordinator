@@ -178,7 +178,8 @@ export const MeasureSelector = React.createClass({
     const { onAddMeasure } = this.props;
     onAddMeasure({ 
       columnName: null,
-      aggregationFunction: 'count'
+      aggregationFunction: 'count',
+      label: I18n.translate('shared.visualizations.panes.data.fields.measure.no_value')
     });
   },
   

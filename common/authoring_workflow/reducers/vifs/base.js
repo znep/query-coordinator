@@ -58,15 +58,18 @@ export default function(state, action) {
 
     case actions.APPEND_SERIES_WITH_MEASURE: {
         const series = _.cloneDeep(state.series[0]);
-        series.dataSource.measure.columnName = action.measure.columnName;
 
-        if (_.isNull(action.measure.columnName)) {
-          series.dataSource.measure.aggregationFunction = 'count';
-        } else if (series.dataSource.measure.aggregationFunction === 'count') {
-          series.dataSource.measure.aggregationFunction = 'sum';
-        }
+        _.set(series, 'dataSource.measure.aggregationFunction', action.measure.aggregationFunction);
+        _.set(series, 'dataSource.measure.columnName', action.measure.columnName);
+        _.set(series, 'dataSource.measure.label', action.measure.label);
 
         state.series.push(series);
+
+        // Remove any properties that do not apply to multi-series
+        //  
+        forEachSeries(state, series => {
+          _.unset(series, 'dataSource.dimension.grouping');
+        });
       }
       break;
 

@@ -2,6 +2,7 @@ import url from 'url';
 
 import { fetchResults } from './cetera';
 import { clearPage } from './pager';
+import { clearSortOrder } from './sort_order';
 import { updateQueryString } from './query_string';
 import { getUnfilteredState } from '../reducers/filters';
 
@@ -10,6 +11,10 @@ const currentQuery = () => _.get(url.parse(window.location.href, true), 'query.q
 export const toggleRecentlyViewed = () => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'TOGGLE_RECENTLY_VIEWED' });
+
+    if (getState().filters.onlyRecentlyViewed) {
+      dispatch(clearSortOrder());
+    }
     clearPage(dispatch);
     updateQueryString(dispatch, getState);
   };
@@ -20,6 +25,7 @@ export const toggleRecentlyViewed = () => (dispatch, getState) => {
     {
       action: 'TOGGLE_RECENTLY_VIEWED',
       onlyRecentlyViewed: !getState().filters.onlyRecentlyViewed,
+      sortByRecentlyViewed: !getState().filters.onlyRecentlyViewed,
       pageNumber: 1,
       q: currentQuery()
     },

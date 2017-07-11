@@ -16,7 +16,7 @@
           <%= render 'site_chrome/admin/open_performance' %>
         <% else %>
           <div id="site-chrome-data-catalog" class="site-chrome-admin-menu">
-            <a href="/browse"><%= t('admin.data_catalog.title') %></a>
+            <a href="/browse"><%= t('shared.site_chrome.admin.data_catalog.title') %></a>
           </div>
         <% end %>
       </div>
@@ -33,7 +33,7 @@
         <div class="site-chrome-admin-settings"
           role="button"
           aria-haspopup="true"
-          aria-label="<%= t('header.settings_menu.title') %>">
+          aria-label="<%= t('shared.site_chrome.header.settings_menu.title') %>">
           <%= render 'site_chrome/admin/settings' %>
         </div>
         <div class="site-chrome-admin-separator"></div>
@@ -44,7 +44,7 @@
         tabIndex="0"
         role="button"
         aria-haspopup="true"
-        aria-label="<%= t('header.profile') %>">
+        aria-label="<%= t('shared.site_chrome.header.profile') %>">
         <%= render 'site_chrome/admin/user' %>
       </div>
     </div>
@@ -56,9 +56,9 @@
           function() {
             if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
               var options = {
-                productUpdatesText: "<%= t('notifications.product_updates') %>",
-                viewOlderText: "<%= t('notifications.view_older') %>",
-                errorText: "<%= t('notifications.error_text_html') %>"
+                productUpdatesText: "<%= t('shared.site_chrome.notifications.product_updates') %>",
+                viewOlderText: "<%= t('shared.site_chrome.notifications.view_older') %>",
+                errorText: "<%= t('shared.site_chrome.notifications.error_text_html') %>"
               };
               window.headerNotifications('#site-chrome-header-notifications', options);
             }

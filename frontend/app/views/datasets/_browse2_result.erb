@@ -178,7 +178,7 @@
           </button>
         <%- end -%>
 
-        <%- if !result_is_public -%>
+        <%- unless result_is_public -%>
           <button class="browse2-result-make-public-button" title="<%= t('controls.browse.browse2.edit.make_public.title', :name => result_name) %>" data-result-id="<%= result_id %>">
             <span class="browse2-result-make-public-icon icon-public"></span>
             <span class="browse2-result-make-public-label">
@@ -202,8 +202,8 @@
 
   <%# Some stuff for schema.org markup %>
   <div itemscope itemprop="distribution" itemtype="http://schema.org/DataDownload">
-      <%- download_types.each do |k, v| -%>
-          <%= hidden_download_link(result_link, result_id, k, v) %>
-      <%- end -%>
+    <%- download_types.each do |k, v| -%>
+      <%= hidden_download_link(result_link, result_id, k, v) %>
+    <%- end -%>
   </div>
 </div>

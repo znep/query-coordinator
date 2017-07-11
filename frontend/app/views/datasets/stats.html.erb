@@ -13,7 +13,7 @@
   <div class="contentBox clearfix">
     <div>
       <h1><%= link_to @view.name, view_path(@view) %></h1>
-      <%= render :partial => 'shared/metrics_timing' %>
+      <%= render 'shared/metrics_timing' %>
     </div>
 
     <div class="summaryDisplay clearfix container"></div>
@@ -41,8 +41,8 @@
 <div class="clearfix"></div>
 
 <% content_for :templates do %>
-  <%= render :partial => 'shared/metrics_sections' %>
-  <%= render :partial => 'shared/control_templates' %>
+  <%= render 'shared/metrics_sections' %>
+  <%= render 'shared/control_templates' %>
 <%- end -%>
 
 <% content_for :js_footer do %>

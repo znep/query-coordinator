@@ -5,7 +5,7 @@
   <title>Internal Panel | <%= get_site_title %></title>
 <% end %>
 
-<%= render :partial => 'left_nav' %>
+<%= render 'left_nav' %>
 
 <div class="contentBox withLeftNavigation">
   <div id="analyticsDataContainer" class="internalMetrics">
@@ -17,7 +17,7 @@
       </div>
 
       <h1 class="floating">Internal Analytics</h1>
-      <%= render :partial => 'shared/metrics_timing' %>
+      <%= render 'shared/metrics_timing' %>
     </div>
 
     <%- if false -%>
@@ -38,8 +38,8 @@
 </div>
 
 <% content_for :templates do %>
-  <%= render :partial => 'shared/metrics_sections' %>
-  <%= render :partial => 'shared/control_templates' %>
+  <%= render 'shared/metrics_sections' %>
+  <%= render 'shared/control_templates' %>
 <%- end -%>
 
 <% content_for :js_footer do %>

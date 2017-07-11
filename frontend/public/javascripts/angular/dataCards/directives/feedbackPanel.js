@@ -93,7 +93,7 @@ module.exports = function feedbackPanel(ServerConfig, I18n) {
 
         var scriptContent = [
           '<!-- Start of Zendesk Widget script -->',
-          '<script>',
+          '<script type="text/javascript">',
             'window.zEmbed||function(e,t){',
               'var n,o,d,i,s,a=[],r=document.createElement("iframe");',
               'window.zEmbed=function() {a.push(arguments)},',
@@ -129,7 +129,7 @@ module.exports = function feedbackPanel(ServerConfig, I18n) {
             '}("//assets.zendesk.com/embeddable_framework/main.js","socrata.zendesk.com");',
           '</script>',
           '<!-- End of Zendesk Widget script -->',
-          '<script>',
+          '<script type="text/javascript">',
             'zE(function() {',
               'zE.activate();',
             '});',

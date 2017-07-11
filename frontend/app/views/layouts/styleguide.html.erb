@@ -56,7 +56,7 @@ http://www.socrata.com
     <%# dotdotdot and velocity are finicky about jQuery. -%>
     <%# We made jquery an external, load it here and then bind it to window to be loaded into our Webpack bundle. -%>
     <%= jquery_include('2.2.4') %>
-    <script> window.jquery = window.jQuery </script>
+    <script type="text/javascript">window.jquery = window.jQuery;</script>
 
     <%= render_ga_tracking %>
     <%= site_chrome_javascript_tag %>

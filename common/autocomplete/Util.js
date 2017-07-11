@@ -23,7 +23,6 @@ export function getSearchUrl(query) {
 
   currentUrl.query.q = query;
   currentUrl.query.sortBy = 'relevance';
-  currentUrl.query.utf8 = '✓';
 
   // New search means we should return to the first page
   delete currentUrl.query.page;

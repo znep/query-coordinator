@@ -124,7 +124,6 @@ textarea {
   font-style: normal;
 }
 
-
 @font-face {
   font-family: "SSPika";
   src: url("/webfonts/ss-pika.eot?1");
@@ -133,7 +132,6 @@ textarea {
   font-style: normal;
 }
 
-
 .ruler {
   visibility: hidden;
 }
@@ -141,4 +139,15 @@ textarea {
 /* TODO: Remove this once socrata icons are SVG only. */
 .socrata-icon::before {
   display: none !important;
+}
+
+.aria-not-displayed {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }

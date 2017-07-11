@@ -74,7 +74,9 @@ http://www.socrata.com
 
   <%= include_webpack_bundle 'site_wide/site_wide.js' %>
   <% if @dataset_id %>
-    <script>if (window.lastAccessed) { window.lastAccessed.add('<%= @dataset_id %>'); }</script>
+    <script type="text/javascript">
+      if (window.lastAccessed) { window.lastAccessed.add('<%= @dataset_id %>'); }
+    </script>
   <% end %>
 
 </html>

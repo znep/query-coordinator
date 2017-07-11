@@ -36,8 +36,8 @@
 </div>
 
 <%= content_for :scripts do %>
-  <script src="/javascripts/plugins/lodash.js"></script>
-  <script>var I18n = I18n || {};</script>
+  <script type="text/javascript" src="/javascripts/plugins/lodash.js"></script>
+  <script type="text/javascript">var I18n = I18n || {};</script>
   <%= render_catalog_landing_page_translations %>
   <%= render_catalog_landing_page_session_data %>
   <%= render_catalog_landing_page_server_config %>

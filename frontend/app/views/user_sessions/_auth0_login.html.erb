@@ -14,7 +14,7 @@
 <% content_for :js_footer do %>
   <%= include_webpack_bundle 'signin/main.js' %>
 
-  <script>
+  <script type="text/javascript">
     window.auth0Login('#signin', <%= generate_auth0_options %>, <%= login %>);
   </script>
 <%- end -%>

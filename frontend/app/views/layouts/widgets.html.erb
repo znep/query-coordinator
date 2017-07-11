@@ -35,7 +35,7 @@ http://www.socrata.com
     <%- end -%>
   <% end %>
 
-  <%= render :partial => 'templates/mixpanel_tracking' %>
+  <%= render 'templates/mixpanel_tracking' %>
   <%= render_pendo_tracker %>
 
 </head>
@@ -53,8 +53,10 @@ http://www.socrata.com
   %>
 
   <script type="text/template" id="templates">
-    <%= render :partial => 'shared/control_templates' %>
-    <%= yield :templates %>
+    <!--
+      <%= render 'shared/control_templates' %>
+      <%= yield :templates %>
+    // -->
   </script>
   <div id="js-appended-templates" style="display: none" aria-hidden="true"></div>
   <%= render_translations %>

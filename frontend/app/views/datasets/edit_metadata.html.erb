@@ -294,7 +294,7 @@
 <%= render_translations LocalePart.screens.edit_metadata %>
 
 <% content_for :js_footer do %>
-  <script type='text/javascript'>
+  <script type="text/javascript">
     blist.viewId = '<%= @view.id %>'
     blist.namespace.fetch('blist.licenses');
     blist.licenses = <%= safe_json(ExternalConfig.for(:license).licenses) %>;

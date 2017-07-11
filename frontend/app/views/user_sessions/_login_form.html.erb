@@ -35,7 +35,7 @@
           <%- end -%>
           <span class="description">
             <%- if connection[:buttonText].present? -%>
-              <%== connection.buttonText %> 
+              <%== connection.buttonText %>
             <%- else -%>
               <%== t('screens.sign_in.sign_in_with', provider: connection.name) %>
             <%- end -%>
@@ -80,7 +80,7 @@
   <%- if use_auth0? %>
     <% content_for :js_footer do %>
 
-      <script src="https://cdn.auth0.com/js/lock-7.14.min.js"></script>
+      <script type="text/javascript" src="https://cdn.auth0.com/js/lock-7.14.min.js"></script>
       <script type="text/javascript">
         blist.configuration.auth0 = {
           id: '<%= AUTH0_ID %>',

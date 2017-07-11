@@ -839,8 +839,9 @@ describe Browse2Helper do
       type_name = 'JSON'
       type_info = { :extension => 'json' }
       download_link = hidden_download_link(uri, uid, type_name, type_info)
-      expect(download_link).to eq('<div id="JSON"><meta itemprop="fileFormat" /><meta itemprop="url" ' \
-                                  'content="https://☃.net/api/views/jort-jort.json?accessType=DOWNLOAD" /></div>')
+      expect(download_link).
+        to eq('<div><span itemprop="fileFormat" /><link itemprop="contentUrl" ' \
+          'content="/api/views/jort-jort.json?accessType=DOWNLOAD" /></div>')
     end
   end
 end

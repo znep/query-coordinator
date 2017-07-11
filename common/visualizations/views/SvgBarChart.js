@@ -417,15 +417,10 @@ function SvgBarChart($element, vif, options) {
       if (!isStacked) {
 
         dimensionGroupSvgs.selectAll('rect.bar-underlay').
-          attr(
-            'y',
-            (d, measureIndex) => {
-              return d3GroupingYScale(measureLabels[measureIndex]);
-            }
-          ).
           attr('x', 0).
-          attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0)).
+          attr('y', (d, measureIndex) => d3GroupingYScale(measureIndex)).
           attr('width', width).
+          attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0)).
           attr('stroke', 'none').
           attr('fill', 'transparent').
           attr(
@@ -471,7 +466,7 @@ function SvgBarChart($element, vif, options) {
       } else {
 
         bars.
-          attr('y', (d, measureIndex) => d3GroupingYScale(measureLabels[measureIndex])).
+          attr('y', (d, measureIndex) => d3GroupingYScale(measureIndex)).
           attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0));
 
       }
@@ -555,7 +550,7 @@ function SvgBarChart($element, vif, options) {
               // peculiarities, we have eyeballed an additional padding value
               // to add to the result of the above calculation which causes the
               // labels to actually appear vertically-centered in a bar.
-              return d3GroupingYScale(measureLabels[measureIndex]) +
+              return d3GroupingYScale(measureIndex) +
                 (d3GroupingYScale.rangeBand() / 2) +
                 MEASURE_VALUE_TEXT_Y_PADDING;
             }
@@ -924,7 +919,10 @@ function SvgBarChart($element, vif, options) {
     );
     // This scale is used for groupings of bars under a single dimension
     // category.
-    d3GroupingYScale = generateYGroupScale(measureLabels, d3DimensionYScale);
+    d3GroupingYScale = generateYGroupScale(
+      self.getOrdinalDomainFromMeasureLabels(measureLabels), 
+      d3DimensionYScale);
+
     d3YAxis = generateYAxis(d3DimensionYScale, dimensionLabelsWidth);
 
     /**

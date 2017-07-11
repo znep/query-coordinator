@@ -362,12 +362,7 @@ function SvgColumnChart($element, vif, options) {
       if (!isStacked) {
 
         dimensionGroupSvgs.selectAll('.column-underlay').
-          attr(
-            'x',
-            (d, measureIndex) => {
-              return d3GroupingXScale(measureLabels[measureIndex]);
-            }
-          ).
+          attr('x', (d, measureIndex) => d3GroupingXScale(measureIndex)).
           attr('y', 0).
           attr('width', Math.max(d3GroupingXScale.rangeBand() - 1, 0)).
           attr('height', height).
@@ -416,8 +411,9 @@ function SvgColumnChart($element, vif, options) {
       } else {
 
         columns.
-          attr('x', (d, measureIndex) => d3GroupingXScale(measureLabels[measureIndex])).
+          attr('x', (d, measureIndex) => d3GroupingXScale(measureIndex)).
           attr('width', Math.max(d3GroupingXScale.rangeBand() - 1, 0));
+
       }
 
       lastRenderedSeriesWidth = xAxisAndSeriesSvg.node().getBBox().width;
@@ -599,7 +595,10 @@ function SvgColumnChart($element, vif, options) {
 
     // This scale is used for groupings of columns under a single dimension
     // category.
-    d3GroupingXScale = generateXGroupScale(measureLabels, d3DimensionXScale);
+    d3GroupingXScale = generateXGroupScale(
+      self.getOrdinalDomainFromMeasureLabels(measureLabels), 
+      d3DimensionXScale);
+
     d3XAxis = generateXAxis(d3DimensionXScale);
 
     /**

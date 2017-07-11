@@ -781,6 +781,15 @@ function SvgVisualization($element, vif, options) {
     }
   };
 
+  this.getOrdinalDomainFromMeasureLabels = function(labels) {
+
+    var rg = [];
+    for (var i = 0; i < labels.length; i++) {
+      rg.push(i);
+    }
+    return rg;
+  };
+
   this.getShowDimensionLabels = function() {
 
     return _.get(

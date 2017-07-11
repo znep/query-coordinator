@@ -454,7 +454,7 @@ function SvgTimelineChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i));
+        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i, measureLabels));
         self.attachLegendBarEventHandlers();
 
         if (!alreadyDisplayingLegendBar) {

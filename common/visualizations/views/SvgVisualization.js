@@ -665,7 +665,7 @@ function SvgVisualization($element, vif, options) {
     );
   };
 
-  this.getColor = function(dimensionIndex, measureIndex) {
+  this.getColor = function(dimensionIndex, measureIndex, measureLabels) {
     const isGrouping = !_.isNull(
       _.get(
         self.getVif(),

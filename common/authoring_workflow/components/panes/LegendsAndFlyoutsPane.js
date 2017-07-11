@@ -46,12 +46,16 @@ export const LegendsAndFlyoutsPane = React.createClass({
     const series = getSeriesFromVif(vifAuthoring);
     const unitControls = series.map((item, index) => {
 
+      const hasSumAggregation = (item.dataSource.measure.aggregationFunction == 'sum');
+
       const unitOneAttributes = {
         id: 'units-one',
         className: 'text-input',
         type: 'text',
         onChange: (event) => onChangeUnitOne(index, event.target.value),
-        placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.placeholder'),
+        placeholder: hasSumAggregation ? 
+          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.sum_aggregation_unit') :
+          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.placeholder'),
         value: item.unit.one
       };
 
@@ -60,7 +64,9 @@ export const LegendsAndFlyoutsPane = React.createClass({
         className: 'text-input',
         type: 'text',
         onChange: (event) => onChangeUnitOther(index, event.target.value),
-        placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.placeholder'),
+        placeholder: hasSumAggregation ? 
+          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.sum_aggregation_unit') :
+          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.placeholder'),
         value: item.unit.other
       };
 

@@ -274,6 +274,7 @@ en:
               no_value: No Point Inspector Title
             show_legends:
               title: Show Legends
+            sum_aggregation_unit: Total
       preview:
         tabs:
           visualization: Visualization

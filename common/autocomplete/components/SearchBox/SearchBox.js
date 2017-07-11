@@ -3,19 +3,23 @@ import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import _ from 'lodash';
+import url from 'url';
+
 import { getSearchUrl } from '../../Util';
-import { queryChanged, resultsChanged, resultVisibilityChanged } from '../../actions';
+import { queryChanged, resultsChanged, resultVisibilityChanged, searchCleared } from '../../actions';
 import styles from './search-box.scss';
 
 class SearchBox extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
-    this.getIconStyleName = this.getIconStyleName.bind(this);
-    this.getInputStyleName = this.getInputStyleName.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+    _.bindAll(this,
+      'getIconStyleName',
+      'getInputStyleName',
+      'handleChange',
+      'handleFormSubmit',
+      'handleKeyDown'
+    )
 
     // focused starts out undefined to prevent an animation on page load
     this.state = {
@@ -96,7 +100,7 @@ class SearchBox extends React.Component {
   }
 
   handleFormSubmit(event) {
-    const { focusedResult, onChooseResult, currentQuery } = this.props;
+    const { focusedResult, onChooseResult, onClearSearch, currentQuery } = this.props;
 
     event.preventDefault();
 
@@ -107,8 +111,13 @@ class SearchBox extends React.Component {
   }
 
   handleChange(event) {
-    const { onSearchBoxChanged, onResultsReceived, anonymous } = this.props;
+    const { onClearSearch, onSearchBoxChanged, onResultsReceived, anonymous } = this.props;
     const query = event.target.value;
+
+    if (query.length <= 0) {
+      this.setState({ query: null });
+      onClearSearch();
+    }
 
     // update state to reflect new textbox
     onSearchBoxChanged(query);
@@ -119,6 +128,11 @@ class SearchBox extends React.Component {
 
   handleFocusChanged(focused) {
     const { currentQuery, onResultsReceived, getSearchResults, anonymous } = this.props;
+    const originalQuery = url.parse(window.location.href, true).query.q;
+
+    if (originalQuery !== currentQuery) {
+      this.props.onSearchBoxChanged(originalQuery);
+    }
 
     // keep "focused" state if the current search isn't empty...
     if (!_.isEmpty(currentQuery)) {
@@ -148,15 +162,15 @@ class SearchBox extends React.Component {
         <label htmlFor="autocomplete-search-input" styleName="aria-not-displayed">Search:</label>
         <input
           autoComplete="off"
-          type="search"
-          ref={(domNode) => { this.domNode = domNode; }}
-          styleName={this.getInputStyleName()}
+          id="autocomplete-search-input"
+          onBlur={() => { this.handleFocusChanged(false); }}
           onChange={this.handleChange}
           onFocus={() => { this.handleFocusChanged(true); }}
-          onBlur={() => { this.handleFocusChanged(false); }}
-          value={currentQuery}
           placeholder="Search"
-          id="autocomplete-search-input" />
+          ref={(domNode) => { this.domNode = domNode; }}
+          styleName={this.getInputStyleName()}
+          type="search"
+          value={currentQuery} />
       </form>
     );
   }
@@ -164,6 +178,7 @@ class SearchBox extends React.Component {
 
 SearchBox.propTypes = {
   /* Redux actions */
+  onClearSearch: PropTypes.func,
   onSearchBoxChanged: PropTypes.func.isRequired,
   onResultsReceived: PropTypes.func.isRequired,
   onResultVisibilityChanged: PropTypes.func.isRequired,

@@ -144,15 +144,18 @@ describe('Selectors', () => {
     });
   });
 
-  describe('uploadsInProgress', () => {
-    it('returns all uploads that are updating', () => {
+  describe('sourcesInProgress', () => {
+    it('returns all sources that are updating', () => {
       const apiCalls = {
         'f992f394-4785-4337-a3f8-c912813e10d7': {
           id: 'f992f394-4785-4337-a3f8-c912813e10d7',
           status: 'STATUS_CALL_IN_PROGRESS',
           operation: 'CREATE_UPLOAD',
           params: {
-            filename: 'petty_crimes.csv'
+            source_type: {
+              type: 'upload',
+              filename: 'petty_crimes.csv'
+            }
           }
         },
         '0453da56-cdba-47f7-b9d8-b0852c4d4dee': {
@@ -165,7 +168,7 @@ describe('Selectors', () => {
         }
       };
 
-      const selection = Selectors.uploadsInProgress(apiCalls);
+      const selection = Selectors.sourcesInProgress(apiCalls);
 
       assert.equal(selection.length, 1);
       assert.equal(selection[0].id, Object.keys(apiCalls)[0]);

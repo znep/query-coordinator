@@ -6,6 +6,7 @@ const SvgHistogram = require('./views/SvgHistogram');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
+const ColumnFormattingHelpers = require('./helpers/ColumnFormattingHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const I18n = require('common/i18n').default;
 const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').getSoqlVifValidator;
@@ -271,15 +272,20 @@ $.fn.socrataSvgHistogram = function(originalVif, options) {
       return Promise.
         all([
           displayableFilterableColumns,
+          datasetMetadataProvider.getDatasetMetadata(),
           ...dataRequests
         ]).
         then(
           function(resolutions) {
-            const [ newColumns, ...dataResponses ] = resolutions;
+            const [ newColumns, datasetMetadata, ...dataResponses ] = resolutions;
             const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
               const measureIndex = dataResponse.columns.indexOf('measure');
               return dataResponse.rows.map((row) => row[measureIndex]);
             });
+
+            const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
+
+            dataResponses[0].columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
 
             const onlyNullOrZeroValues = _(allSeriesMeasureValues).
               flatten().

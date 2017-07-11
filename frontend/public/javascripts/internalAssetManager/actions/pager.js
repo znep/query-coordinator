@@ -1,8 +1,10 @@
 import { fetchResults } from './cetera';
+import { updateQueryString } from './query_string';
 
 export const changePage = (pageNumber) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_PAGE', pageNumber });
+    updateQueryString(dispatch, getState);
   };
 
   return fetchResults(dispatch, getState, { action: 'CHANGE_PAGE', pageNumber }, onSuccess);

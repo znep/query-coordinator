@@ -262,12 +262,11 @@ class DatasetsController < ApplicationController
       rescue DatasetManagementAPI::ResourceNotFound
         return render_404
       end
-      uploads = DatasetManagementAPI.get_uploads_index(@view.id, params[:revision_seq], cookies)
-      full_uploads = uploads.map do |upload|
-        upload_id = upload['resource']['id']
-        DatasetManagementAPI.get_upload(@view.id, params[:revision_seq], upload_id, cookies)
+      sources = DatasetManagementAPI.get_sources_index(@view.id, params[:revision_seq], cookies)
+      @revision[:sources] = sources.map do |source|
+        source_id = source['resource']['id']
+        DatasetManagementAPI.get_source(@view.id, params[:revision_seq], source_id, cookies)
       end
-      @revision[:uploads] = full_uploads
       @websocket_token = DatasetManagementAPI.get_websocket_token(@view.id, cookies)
       render 'datasets/dataset_management_ui', :layout => 'styleguide'
     else

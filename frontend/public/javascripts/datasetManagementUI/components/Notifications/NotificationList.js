@@ -6,7 +6,7 @@ import UploadNotification from 'components/Notifications/UploadNotification';
 import styles from 'styles/Notifications/NotificationList.scss';
 
 // This component is responsible for choosing the kind of notification to display
-// (e.g. upload, socket error, etc.) and sliding all the notifications into view.
+// (e.g. source, socket error, etc.) and sliding all the notifications into view.
 // Displaying status (success, error, inProgress) and all the logic needed to figure
 // that status out are handled farther down the component tree.
 export const NotificationList = ({ notifications }) => {

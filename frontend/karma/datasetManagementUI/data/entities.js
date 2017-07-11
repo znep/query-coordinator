@@ -415,7 +415,7 @@ const entities = {
       }
     }
   },
-  uploads: {
+  sources: {
     '114': {
       id: 114,
       created_by: {
@@ -424,7 +424,10 @@ const entities = {
         display_name: 'branweb'
       },
       created_at: '2017-06-13T22:51:31.455083',
-      filename: 'petty_crimes.csv',
+      source_type: {
+        type: 'upload',
+        filename: 'petty_crimes.csv',
+      },
       percentCompleted: 100,
       finished_at: new Date(1497394297741)
     }
@@ -434,7 +437,7 @@ const entities = {
       id: 97,
       name: null,
       total_rows: 9,
-      upload_id: 114,
+      source_id: 114,
       num_row_errors: 0
     }
   },

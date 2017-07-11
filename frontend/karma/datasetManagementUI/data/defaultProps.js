@@ -5,7 +5,7 @@ export const ShowOutputSchemaProps = {
   dispatch: _.noop,
   location: {
     pathname:
-      '/dataset/okokokokokok/nn5w-zj56/revisions/0/uploads/123/schemas/106/output/152',
+      '/dataset/okokokokokok/nn5w-zj56/revisions/0/sources/123/schemas/106/output/152',
     search: '',
     hash: '',
     action: 'PUSH',
@@ -17,12 +17,12 @@ export const ShowOutputSchemaProps = {
     name: 'okokokokokok',
     fourfour: 'nn5w-zj56',
     revisionSeq: '0',
-    uploadId: '123',
+    sourceId: '123',
     inputSchemaId: '106',
     outputSchemaId: '152'
   },
   route: {
-    path: 'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+    path: 'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId',
     childRoutes: [
       {
         path: 'page/:pageNo'
@@ -32,7 +32,7 @@ export const ShowOutputSchemaProps = {
   router: {
     location: {
       pathname:
-        '/dataset/okokokokokok/nn5w-zj56/revisions/0/uploads/123/schemas/106/output/152',
+        '/dataset/okokokokokok/nn5w-zj56/revisions/0/sources/123/schemas/106/output/152',
       search: '',
       hash: '',
       action: 'PUSH',
@@ -44,7 +44,7 @@ export const ShowOutputSchemaProps = {
       name: 'okokokokokok',
       fourfour: 'nn5w-zj56',
       revisionSeq: '0',
-      uploadId: '123',
+      sourceId: '123',
       inputSchemaId: '106',
       outputSchemaId: '152'
     },
@@ -65,17 +65,17 @@ export const ShowOutputSchemaProps = {
             path: 'metadata/columns'
           },
           {
-            path: 'uploads'
+            path: 'sources'
           },
           {
             path: ':sidebarSelection'
           },
           {
-            path: 'uploads/:uploadId'
+            path: 'sources/:sourceId'
           },
           {
             path:
-              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+              'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId',
             childRoutes: [
               {
                 path: 'page/:pageNo'
@@ -84,7 +84,7 @@ export const ShowOutputSchemaProps = {
           },
           {
             path:
-              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
+              'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
             childRoutes: [
               {
                 path: 'page/:pageNo'
@@ -93,7 +93,7 @@ export const ShowOutputSchemaProps = {
           },
           {
             path:
-              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+              'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
             childRoutes: [
               {
                 path: 'page/:pageNo'
@@ -106,7 +106,7 @@ export const ShowOutputSchemaProps = {
         ]
       },
       {
-        path: 'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+        path: 'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId',
         childRoutes: [
           {
             path: 'page/:pageNo'
@@ -116,7 +116,7 @@ export const ShowOutputSchemaProps = {
     ]
   },
   routeParams: {
-    uploadId: '123',
+    sourceId: '123',
     inputSchemaId: '106',
     outputSchemaId: '152'
   },
@@ -137,17 +137,17 @@ export const ShowOutputSchemaProps = {
           path: 'metadata/columns'
         },
         {
-          path: 'uploads'
+          path: 'sources'
         },
         {
           path: ':sidebarSelection'
         },
         {
-          path: 'uploads/:uploadId'
+          path: 'sources/:sourceId'
         },
         {
           path:
-            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+            'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId',
           childRoutes: [
             {
               path: 'page/:pageNo'
@@ -156,7 +156,7 @@ export const ShowOutputSchemaProps = {
         },
         {
           path:
-            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
+            'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
           childRoutes: [
             {
               path: 'page/:pageNo'
@@ -165,7 +165,7 @@ export const ShowOutputSchemaProps = {
         },
         {
           path:
-            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+            'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
           childRoutes: [
             {
               path: 'page/:pageNo'
@@ -178,7 +178,7 @@ export const ShowOutputSchemaProps = {
       ]
     },
     {
-      path: 'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+      path: 'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId',
       childRoutes: [
         {
           path: 'page/:pageNo'
@@ -187,7 +187,7 @@ export const ShowOutputSchemaProps = {
     }
   ],
   children: null,
-  upload: {
+  source: {
     id: 123,
     created_by: {
       user_id: 'tugg-ikce',
@@ -195,7 +195,10 @@ export const ShowOutputSchemaProps = {
       display_name: 'branweb'
     },
     created_at: '2017-06-15T18:59:50.514260',
-    filename: 'austin_animal_center_stray_map.csv',
+    source_type: {
+      type: 'upload',
+      filename: 'austin_animal_center_stray_map.csv',
+    },
     percentCompleted: 100,
     finished_at: '2017-06-15T18:59:52.712Z'
   },
@@ -203,7 +206,7 @@ export const ShowOutputSchemaProps = {
     id: 106,
     name: null,
     total_rows: 143,
-    upload_id: 123,
+    source_id: 123,
     num_row_errors: 0
   },
   outputSchema: {
@@ -681,7 +684,7 @@ export const ShowOutputSchemaProps = {
   },
   routing: {
     pathname:
-      '/dataset/okokokokokok/nn5w-zj56/revisions/0/uploads/123/schemas/106/output/152',
+      '/dataset/okokokokokok/nn5w-zj56/revisions/0/sources/123/schemas/106/output/152',
     search: '',
     hash: '',
     action: 'PUSH',
@@ -693,7 +696,7 @@ export const ShowOutputSchemaProps = {
     name: 'okokokokokok',
     fourfour: 'nn5w-zj56',
     revisionSeq: '0',
-    uploadId: '123',
+    sourceId: '123',
     inputSchemaId: '106',
     outputSchemaId: '152'
   }
@@ -704,7 +707,7 @@ export const ShowOutputSchemaErrorProps = {
   dispatch: _.noop,
   location: {
     pathname:
-      '/dataset/dfsdfdsf/j5db-bk6x/revisions/0/uploads/131/schemas/114/output/168/row_errors',
+      '/dataset/dfsdfdsf/j5db-bk6x/revisions/0/sources/131/schemas/114/output/168/row_errors',
     search: '',
     hash: '',
     action: 'PUSH',
@@ -716,13 +719,13 @@ export const ShowOutputSchemaErrorProps = {
     name: 'dfsdfdsf',
     fourfour: 'j5db-bk6x',
     revisionSeq: '0',
-    uploadId: '131',
+    sourceId: '131',
     inputSchemaId: '114',
     outputSchemaId: '168'
   },
   route: {
     path:
-      'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+      'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
     childRoutes: [
       {
         path: 'page/:pageNo'
@@ -732,7 +735,7 @@ export const ShowOutputSchemaErrorProps = {
   router: {
     location: {
       pathname:
-        '/dataset/dfsdfdsf/j5db-bk6x/revisions/0/uploads/131/schemas/114/output/168/row_errors',
+        '/dataset/dfsdfdsf/j5db-bk6x/revisions/0/sources/131/schemas/114/output/168/row_errors',
       search: '',
       hash: '',
       action: 'PUSH',
@@ -744,7 +747,7 @@ export const ShowOutputSchemaErrorProps = {
       name: 'dfsdfdsf',
       fourfour: 'j5db-bk6x',
       revisionSeq: '0',
-      uploadId: '131',
+      sourceId: '131',
       inputSchemaId: '114',
       outputSchemaId: '168'
     },
@@ -765,17 +768,17 @@ export const ShowOutputSchemaErrorProps = {
             path: 'metadata/columns'
           },
           {
-            path: 'uploads'
+            path: 'sources'
           },
           {
             path: ':sidebarSelection'
           },
           {
-            path: 'uploads/:uploadId'
+            path: 'sources/:sourceId'
           },
           {
             path:
-              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+              'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId',
             childRoutes: [
               {
                 path: 'page/:pageNo'
@@ -784,7 +787,7 @@ export const ShowOutputSchemaErrorProps = {
           },
           {
             path:
-              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
+              'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
             childRoutes: [
               {
                 path: 'page/:pageNo'
@@ -793,7 +796,7 @@ export const ShowOutputSchemaErrorProps = {
           },
           {
             path:
-              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+              'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
             childRoutes: [
               {
                 path: 'page/:pageNo'
@@ -807,7 +810,7 @@ export const ShowOutputSchemaErrorProps = {
       },
       {
         path:
-          'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+          'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
         childRoutes: [
           {
             path: 'page/:pageNo'
@@ -817,7 +820,7 @@ export const ShowOutputSchemaErrorProps = {
     ]
   },
   routeParams: {
-    uploadId: '131',
+    sourceId: '131',
     inputSchemaId: '114',
     outputSchemaId: '168'
   },
@@ -838,17 +841,17 @@ export const ShowOutputSchemaErrorProps = {
           path: 'metadata/columns'
         },
         {
-          path: 'uploads'
+          path: 'sources'
         },
         {
           path: ':sidebarSelection'
         },
         {
-          path: 'uploads/:uploadId'
+          path: 'sources/:sourceId'
         },
         {
           path:
-            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+            'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId',
           childRoutes: [
             {
               path: 'page/:pageNo'
@@ -857,7 +860,7 @@ export const ShowOutputSchemaErrorProps = {
         },
         {
           path:
-            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
+            'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
           childRoutes: [
             {
               path: 'page/:pageNo'
@@ -866,7 +869,7 @@ export const ShowOutputSchemaErrorProps = {
         },
         {
           path:
-            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+            'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
           childRoutes: [
             {
               path: 'page/:pageNo'
@@ -880,7 +883,7 @@ export const ShowOutputSchemaErrorProps = {
     },
     {
       path:
-        'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+        'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
       childRoutes: [
         {
           path: 'page/:pageNo'
@@ -889,7 +892,7 @@ export const ShowOutputSchemaErrorProps = {
     }
   ],
   children: null,
-  upload: {
+  source: {
     id: 131,
     created_by: {
       user_id: 'tugg-ikce',
@@ -897,7 +900,10 @@ export const ShowOutputSchemaErrorProps = {
       display_name: 'branweb'
     },
     created_at: '2017-06-16T17:27:47.900Z',
-    filename: 'tiny-errors.csv',
+    source_type: {
+      type: 'upload',
+      filename: 'tiny-errors.csv',
+    },
     percentCompleted: 100,
     finished_at: '2017-06-16T17:27:48.352Z'
   },
@@ -905,7 +911,7 @@ export const ShowOutputSchemaErrorProps = {
     total_rows: 3,
     id: 114,
     name: null,
-    upload_id: 131,
+    source_id: 131,
     num_row_errors: 1
   },
   outputSchema: {
@@ -1023,7 +1029,7 @@ export const ShowOutputSchemaErrorProps = {
   },
   routing: {
     pathname:
-      '/dataset/dfsdfdsf/j5db-bk6x/revisions/0/uploads/131/schemas/114/output/168/row_errors',
+      '/dataset/dfsdfdsf/j5db-bk6x/revisions/0/sources/131/schemas/114/output/168/row_errors',
     search: '',
     hash: '',
     action: 'PUSH',
@@ -1035,7 +1041,7 @@ export const ShowOutputSchemaErrorProps = {
     name: 'dfsdfdsf',
     fourfour: 'j5db-bk6x',
     revisionSeq: '0',
-    uploadId: '131',
+    sourceId: '131',
     inputSchemaId: '114',
     outputSchemaId: '168'
   }
@@ -1095,17 +1101,17 @@ export const ShowRevisionProps = {
             path: 'metadata/columns'
           },
           {
-            path: 'uploads'
+            path: 'sources'
           },
           {
             path: ':sidebarSelection'
           },
           {
-            path: 'uploads/:uploadId'
+            path: 'sources/:sourceId'
           },
           {
             path:
-              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+              'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId',
             childRoutes: [
               {
                 path: 'page/:pageNo'
@@ -1114,7 +1120,7 @@ export const ShowRevisionProps = {
           },
           {
             path:
-              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
+              'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
             childRoutes: [
               {
                 path: 'page/:pageNo'
@@ -1123,7 +1129,7 @@ export const ShowRevisionProps = {
           },
           {
             path:
-              'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+              'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
             childRoutes: [
               {
                 path: 'page/:pageNo'
@@ -1160,17 +1166,17 @@ export const ShowRevisionProps = {
           path: 'metadata/columns'
         },
         {
-          path: 'uploads'
+          path: 'sources'
         },
         {
           path: ':sidebarSelection'
         },
         {
-          path: 'uploads/:uploadId'
+          path: 'sources/:sourceId'
         },
         {
           path:
-            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+            'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId',
           childRoutes: [
             {
               path: 'page/:pageNo'
@@ -1179,7 +1185,7 @@ export const ShowRevisionProps = {
         },
         {
           path:
-            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
+            'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/column_errors/:errorsTransformId',
           childRoutes: [
             {
               path: 'page/:pageNo'
@@ -1188,7 +1194,7 @@ export const ShowRevisionProps = {
         },
         {
           path:
-            'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
+            'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors',
           childRoutes: [
             {
               path: 'page/:pageNo'
@@ -1444,7 +1450,7 @@ export const ShowRevisionProps = {
         }
       }
     },
-    uploads: {
+    sources: {
       '123': {
         id: 123,
         created_by: {
@@ -1453,7 +1459,10 @@ export const ShowRevisionProps = {
           display_name: 'branweb'
         },
         created_at: '2017-06-15T18:59:50.514260',
-        filename: 'austin_animal_center_stray_map.csv',
+        source_type: {
+          type: 'upload',
+          filename: 'austin_animal_center_stray_map.csv',
+        },
         percentCompleted: 100,
         finished_at: '2017-06-15T18:59:52.712Z'
       }
@@ -1463,7 +1472,7 @@ export const ShowRevisionProps = {
         id: 106,
         name: null,
         total_rows: 143,
-        upload_id: 123,
+        source_id: 123,
         num_row_errors: 0
       }
     },

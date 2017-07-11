@@ -4,7 +4,8 @@ import {
   setStringValueOrDefaultValue,
   setStringValueOrDeleteProperty,
   setNumericValueOrDeleteProperty,
-  setUnits
+  setUnits,
+  setDimensionGroupingColumnName
 } from '../../helpers';
 
 import * as actions from '../../actions';
@@ -40,6 +41,12 @@ export default function(state, action) {
       forEachSeries(state, series => {
         setStringValueOrDefaultValue(series, 'dataSource.dimension.columnName', action.dimension, null);
       });
+
+      const groupingDimension = _.get(state, 'series[0].dataSource.dimension.grouping.columnName');
+      if (action.dimension && action.dimension === groupingDimension) {
+        setDimensionGroupingColumnName(state, null);
+      };
+
       break;
 
     case actions.INITIALIZE_SERIES:

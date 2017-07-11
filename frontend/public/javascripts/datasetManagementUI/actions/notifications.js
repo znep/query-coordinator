@@ -1,13 +1,13 @@
 import uuid from 'uuid';
 
 export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
-export const addNotification = (kind, callId, uploadId) => ({
+export const addNotification = (kind, callId, sourceId) => ({
   type: ADD_NOTIFICATION,
   notification: {
     id: uuid(),
     kind,
     callId,
-    uploadId
+    sourceId
   }
 });
 

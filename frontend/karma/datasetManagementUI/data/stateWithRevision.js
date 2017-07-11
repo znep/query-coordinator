@@ -71,7 +71,7 @@ export default {
         privateMetadata: {},
         attachments: [],
         metadata: {},
-        customMetadataFields: [
+        customMetadataFieldsets: [
           {
             name: 'FS One',
             fields: [
@@ -126,7 +126,7 @@ export default {
         }
       }
     },
-    uploads: {
+    sources: {
       '123': {
         id: 123,
         created_by: {
@@ -135,7 +135,10 @@ export default {
           display_name: 'branweb'
         },
         created_at: new Date('2017-06-15T18:59:50.514260Z'),
-        filename: 'austin_animal_center_stray_map.csv',
+        source_type: {
+          type: 'upload',
+          filename: 'austin_animal_center_stray_map.csv',
+        },
         percentCompleted: 100,
         finished_at: new Date(1497553192712)
       }
@@ -145,7 +148,7 @@ export default {
         id: 106,
         name: null,
         total_rows: 143,
-        upload_id: 123,
+        source_id: 123,
         num_row_errors: 0
       }
     },
@@ -2881,7 +2884,7 @@ export default {
           query: {}
         },
         {
-          pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0/uploads/123',
+          pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0/sources/123',
           search: '',
           hash: '',
           action: 'PUSH',
@@ -2890,7 +2893,7 @@ export default {
         },
         {
           pathname:
-            '/dataset/okokokokokok/nn5w-zj56/revisions/0/uploads/123/schemas/106/output/152',
+            '/dataset/okokokokokok/nn5w-zj56/revisions/0/sources/123/schemas/106/output/152',
           search: '',
           hash: '',
           action: 'PUSH',
@@ -4293,7 +4296,10 @@ export default {
         status: 'STATUS_CALL_SUCCEEDED',
         operation: 'CREATE_UPLOAD',
         params: {
-          filename: 'austin_animal_center_stray_map.csv'
+          source_type: {
+            type: 'upload',
+            filename: 'austin_animal_center_stray_map.csv'
+          }
         },
         startedAt: new Date(1497553190215),
         succeededAt: new Date(1497553190665)

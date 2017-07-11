@@ -46,14 +46,9 @@ export class SearchboxFilter extends React.Component {
     this.setState({ inputFocused: true });
   }
 
-  onInputBlur(event) {
+  onInputBlur() {
     // Defer, which allows tab focus to find the picklist before it is hidden.
     _.defer(() => { this.setState({ inputFocused: false }); });
-
-    // If user blurs the input when it is blank, re-fetch the original results.
-    if (!event.target.value) {
-      this.props.onSelection(this.defaultValue);
-    }
   }
 
   onPicklistFocus() {

@@ -8,20 +8,20 @@ import * as Selectors from 'selectors';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Uploads/UploadBreadcrumbs.scss';
 
-export const UploadBreadcrumbs = ({ atShowUpload, uploadId, outputSchemaId, inputSchemaId }) =>
+export const UploadBreadcrumbs = ({ atShowUpload, sourceId, outputSchemaId, inputSchemaId }) =>
   <ol className={styles.list}>
     <li className={atShowUpload ? styles.active : null}>
       {atShowUpload
         ? I18n.home_pane.data
-        : <Link to={Links.uploads}>
+        : <Link to={Links.sources}>
             {I18n.home_pane.data}
           </Link>}
       <SocrataIcon name="arrow-right" className={styles.icon} />
     </li>
     <li className={!atShowUpload ? styles.active : null}>
-      {!atShowUpload || !uploadId || !inputSchemaId || !outputSchemaId
+      {!atShowUpload || !sourceId || !inputSchemaId || !outputSchemaId
         ? I18n.home_pane.preview
-        : <Link to={Links.showOutputSchema(uploadId, inputSchemaId, outputSchemaId)}>
+        : <Link to={Links.showOutputSchema(sourceId, inputSchemaId, outputSchemaId)}>
             {I18n.home_pane.preview}
           </Link>}
     </li>
@@ -29,25 +29,25 @@ export const UploadBreadcrumbs = ({ atShowUpload, uploadId, outputSchemaId, inpu
 
 UploadBreadcrumbs.propTypes = {
   atShowUpload: PropTypes.bool,
-  uploadId: PropTypes.number,
+  sourceId: PropTypes.number,
   outputSchemaId: PropTypes.number,
   inputSchemaId: PropTypes.number
 };
 
 export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
-  const upload = Selectors.latestUpload(entities);
+  const source = Selectors.latestSource(entities);
   let currentOutputSchema = { id: null };
   let currentInputSchema = { id: null };
-  let uploadId = null;
+  let sourceId = null;
 
-  if (upload) {
-    uploadId = upload.id;
+  if (source) {
+    sourceId = source.id;
 
     const inputSchemaList = Object.keys(entities.input_schemas).map(
       isid => entities.input_schemas[Number(isid)]
     );
 
-    currentInputSchema = inputSchemaList.find(is => is.upload_id === Number(uploadId)) || { id: null };
+    currentInputSchema = inputSchemaList.find(is => is.source_id === Number(sourceId)) || { id: null };
 
     const outputSchemasForCurrentInputSchema = currentInputSchema
       ? _.pickBy(entities.output_schemas, os => os.input_schema_id === currentInputSchema.id)
@@ -60,7 +60,7 @@ export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
 
   return {
     atShowUpload,
-    uploadId: uploadId,
+    sourceId: sourceId,
     outputSchemaId: currentOutputSchema.id,
     inputSchemaId: currentInputSchema.id
   };

@@ -7,11 +7,14 @@ import ReadyToImportConnected, { ReadyToImport } from 'components/ReadyToImport'
 
 describe('components/ReadyToImport', () => {
   const defaultProps = {
-    upload: {
+    source: {
       created_at: '2017-04-19T00:45:21.212Z',
       id: 263,
       finished_at: '2017-04-19T00:45:21.000Z',
-      filename: 'baby_crimes.csv',
+      source_type: {
+        type: 'upload',
+        filename: 'baby_crimes.csv',
+      },
       failed_at: null,
       created_by: {
         user_id: 'tugg-ikce',
@@ -28,7 +31,7 @@ describe('components/ReadyToImport', () => {
       id: 1751,
       name: null,
       total_rows: 9,
-      upload_id: 263,
+      source_id: 263,
       __status__: {
         type: 'SAVED',
         savedAt: 'ON_SERVER'

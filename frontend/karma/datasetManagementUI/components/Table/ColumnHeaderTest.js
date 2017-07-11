@@ -153,7 +153,7 @@ describe('components/Table/ColumnHeader', () => {
         bootstrapApp(
           window.initialState.view,
           window.initialState.revision,
-          window.initialState.customMetadata
+          window.initialState.customMetadataFieldsets
         )
       );
       const call = {

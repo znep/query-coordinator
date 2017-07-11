@@ -31,8 +31,8 @@ export function latestRevision(entities) {
   return _.maxBy(_.values(entities.revisions), 'id');
 }
 
-export function latestUpload(entities) {
-  return _.maxBy(_.values(entities.uploads), 'id');
+export function latestSource(entities) {
+  return _.maxBy(_.values(entities.sources), 'id');
 }
 
 export function columnsForInputSchema(entities, inputSchemaId) {
@@ -63,7 +63,7 @@ export function allTransformsDone(columnsWithTransforms, inputSchema) {
   );
 }
 
-export function uploadsInProgress(apiCalls) {
+export function sourcesInProgress(apiCalls) {
   return _.filter(
     apiCalls,
     apiCall => apiCall.status === STATUS_CALL_IN_PROGRESS && apiCall.operation === CREATE_UPLOAD
@@ -77,48 +77,17 @@ export function rowsTransformed(outputColumns) {
 export function pathForOutputSchema(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];
   const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
-  const upload = entities.uploads[inputSchema.upload_id];
+  const source = entities.sources[inputSchema.source_id];
   return {
     outputSchema,
     inputSchema,
-    upload
+    source
   };
 }
 
 export function rowLoadOperationsInProgress(apiCalls) {
   return _.filter(apiCalls, call => call.operation === LOAD_ROWS && call.status === STATUS_CALL_IN_PROGRESS)
     .length;
-}
-
-// Merges formDataModel with entities.output_columns, then transforms that into the
-// shape expected by DSMAPI
-export function updatedOutputColumns(entities, formDataModel) {
-  const { output_columns: outputColumns, transforms } = entities;
-
-  const updatedColumns = Object.keys(formDataModel).reduce((acc, key) => {
-    const [id, ...rest] = key.split('-').reverse();
-
-    const fieldName = rest.reverse().join('_');
-
-    if (acc[id]) {
-      acc[id][fieldName] = formDataModel[key];
-    } else {
-      acc[id] = {
-        [fieldName]: formDataModel[key],
-        position: outputColumns[id].position,
-        id: _.toNumber(id),
-        transform: {
-          transform_expr: transforms[outputColumns[id].transform_id].transform_expr
-        }
-      };
-    }
-
-    return acc;
-  }, {});
-
-  const unsortedColumns = Object.keys(updatedColumns).map(id => updatedColumns[id]);
-
-  return _.sortBy(unsortedColumns, 'position');
 }
 
 // so we would store this as a boolean property of output columns, but turns out
@@ -266,3 +235,50 @@ export function currentAndIgnoredOutputColumns(entities, osid) {
     })
     .value();
 }
+
+// DATASET METADATA
+const filterUndefineds = val => val === undefined;
+const convertToNull = val => (val === '' ? null : val);
+
+const regularPublic = view =>
+  _.chain(view)
+    .pick(['id', 'name', 'description', 'category', 'licenseId', 'attribution', 'attributionLink', 'tags'])
+    .omitBy(filterUndefineds)
+    .mapValues(convertToNull)
+    .value();
+
+const regularPrivate = view =>
+  _.chain(view)
+    .get('privateMetadata')
+    .omit('custom_fields')
+    .omitBy(filterUndefineds)
+    .mapValues(convertToNull)
+    .value();
+
+const customPublic = view =>
+  _.chain(view).get('metadata.custom_fields', {}).omitBy(filterUndefineds).mapValues(convertToNull).value();
+
+const customPrivate = view =>
+  _.chain(view)
+    .get('privateMetadata.custom_fields', {})
+    .omitBy(filterUndefineds)
+    .mapValues(convertToNull)
+    .value();
+
+export const datasetMetadata = view => {
+  const publicMetadata = regularPublic(view);
+  const privateMetadata = regularPrivate(view);
+  const customMetadata = customPublic(view);
+  const privateCustomMetadata = customPrivate(view);
+
+  return {
+    ...publicMetadata,
+    privateMetadata: {
+      ...privateMetadata,
+      custom_fields: privateCustomMetadata
+    },
+    metadata: {
+      custom_fields: customMetadata
+    }
+  };
+};

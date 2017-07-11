@@ -36,7 +36,7 @@ describe('actions/manageUploads', () => {
         bootstrapApp(
           window.initialState.view,
           window.initialState.revision,
-          window.initialState.customMetadata
+          window.initialState.customMetadataFieldsets
         )
       );
 
@@ -48,7 +48,7 @@ describe('actions/manageUploads', () => {
         addLocation({
           locationBeforeTransitions: {
             pathname:
-              '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/uploads/114/schemas/97/output/143',
+              '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/sources/114/schemas/97/output/143',
             search: '',
             hash: '',
             action: 'PUSH',
@@ -67,7 +67,7 @@ describe('actions/manageUploads', () => {
         .then(() => {
           const actions = fakeStore.getActions();
           assert.equal(actions[0].type, 'API_CALL_STARTED');
-          assert.equal(actions[0].params.filename, 'petty_crimes.csv');
+          assert.equal(actions[0].params.source_type.filename, 'petty_crimes.csv');
 
           done();
         })
@@ -76,7 +76,7 @@ describe('actions/manageUploads', () => {
         });
     });
 
-    it('redirects to ShowOutputSchema preview on successful upload creation', done => {
+    it('redirects to ShowOutputSchema preview on successful source creation', done => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore
@@ -96,14 +96,14 @@ describe('actions/manageUploads', () => {
             1
           );
           assert.equal(redirectPayload.method, 'push');
-          assert.match(redirectPayload.args[0], /\/uploads/);
+          assert.match(redirectPayload.args[0], /\/sources/);
 
           done();
         })
         .catch(err => done(err));
     });
 
-    it('dispatches a CREATE_UPLOAD_SUCCESS action with the correct uploadId', done => {
+    it('dispatches a CREATE_UPLOAD_SUCCESS action with the correct sourceId', done => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore

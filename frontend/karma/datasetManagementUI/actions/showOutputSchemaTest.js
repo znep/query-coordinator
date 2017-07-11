@@ -34,7 +34,7 @@ describe('actions/showOutputSchema', () => {
         bootstrapApp(
           window.initialState.view,
           window.initialState.revision,
-          window.initialState.customMetadata
+          window.initialState.customMetadataFieldsets
         )
       );
       store
@@ -101,7 +101,7 @@ describe('actions/showOutputSchema', () => {
 
       assert.match(
         payload.args[0],
-        /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/
+        /\/sources\/\d+\/schemas\/\d+\/output\/\d+/
       );
     });
   });
@@ -123,7 +123,7 @@ describe('actions/showOutputSchema', () => {
         bootstrapApp(
           window.initialState.view,
           window.initialState.revision,
-          window.initialState.customMetadata
+          window.initialState.customMetadataFieldsets
         )
       );
 
@@ -191,7 +191,7 @@ describe('actions/showOutputSchema', () => {
 
       assert.match(
         payload.args[0],
-        /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/
+        /\/sources\/\d+\/schemas\/\d+\/output\/\d+/
       );
     });
   });
@@ -213,7 +213,7 @@ describe('actions/showOutputSchema', () => {
         bootstrapApp(
           window.initialState.view,
           window.initialState.revision,
-          window.initialState.customMetadata
+          window.initialState.customMetadataFieldsets
         )
       );
 
@@ -300,7 +300,7 @@ describe('actions/showOutputSchema', () => {
 
       assert.match(
         payload.args[0],
-        /\/uploads\/\d+\/schemas\/\d+\/output\/\d+/
+        /\/sources\/\d+\/schemas\/\d+\/output\/\d+/
       );
     });
   });

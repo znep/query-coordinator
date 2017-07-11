@@ -57,8 +57,8 @@ class RowErrorsLink extends Component {
     const { path, displayState, numRowErrors, inRowErrorMode } = this.props;
     const inRowErrorState = displayState.type === DisplayState.ROW_ERRORS;
     const linkPath = inRowErrorState ?
-      Links.showOutputSchema(path.uploadId, path.inputSchemaId, path.outputSchemaId) :
-      Links.showRowErrors(path.uploadId, path.inputSchemaId, path.outputSchemaId);
+      Links.showOutputSchema(path.sourceId, path.inputSchemaId, path.outputSchemaId) :
+      Links.showRowErrors(path.sourceId, path.inputSchemaId, path.outputSchemaId);
     const SubI18n = I18n.show_output_schema.row_errors;
 
     return (

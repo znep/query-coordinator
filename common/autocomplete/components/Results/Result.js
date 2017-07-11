@@ -46,7 +46,7 @@ export class Result extends React.Component {
     matchOffsets.forEach((offset, index) => {
       // Wrap each match with <span class="highlight">
       displayTitleFragments.push(
-        <span className="highlight">
+        <span className="highlight" key={index}>
           {name.substring(offset.start, offset.length + offset.start)}
         </span>
       );
@@ -67,6 +67,7 @@ export class Result extends React.Component {
   render() {
     return (
       <div
+        key={this.props.name}
         styleName={this.props.focused === true ? 'result-focused' : 'result'}
         onMouseDown={this.handleClick}
         onMouseOver={this.handleMouseOver}>

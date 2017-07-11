@@ -34,9 +34,9 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call) {
 
     const routing = ui.routing.location;
 
-    const { upload } = Selectors.pathForOutputSchema(entities, oldOutputSchema.id);
+    const { source } = Selectors.pathForOutputSchema(entities, oldOutputSchema.id);
 
-    const url = dsmapiLinks.newOutputSchema(upload.id, oldOutputSchema.input_schema_id);
+    const url = dsmapiLinks.newOutputSchema(source.id, oldOutputSchema.input_schema_id);
 
     return socrataFetch(url, {
       method: 'POST',
@@ -52,7 +52,7 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call) {
         dispatch(subscribeToTransforms(resp.resource));
 
         dispatch(
-          push(Links.showOutputSchema(upload.id, oldOutputSchema.input_schema_id, resp.resource.id)(routing))
+          push(Links.showOutputSchema(source.id, oldOutputSchema.input_schema_id, resp.resource.id)(routing))
         );
       })
       .catch(err => {
@@ -194,7 +194,7 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
 
 export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
   return (dispatch, getState) => {
-    const { upload } = Selectors.pathForOutputSchema(getState().entities, outputSchema.id);
+    const { source } = Selectors.pathForOutputSchema(getState().entities, outputSchema.id);
     const transformId = outputColumn.transform_id;
     const call = {
       operation: VALIDATE_ROW_IDENTIFIER,
@@ -206,7 +206,7 @@ export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
     const callId = uuid();
 
     dispatch(apiCallStarted(callId, call));
-    const url = dsmapiLinks.validateRowIdentifier(upload.id, transformId);
+    const url = dsmapiLinks.validateRowIdentifier(source.id, transformId);
     socrataFetch(url)
       .then(checkStatus)
       .then(getJson)

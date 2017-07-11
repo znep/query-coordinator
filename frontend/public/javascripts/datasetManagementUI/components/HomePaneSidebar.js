@@ -15,7 +15,7 @@ function query(entities) {
     : [];
   return {
     hasMetadata: !!_.values(entities.views)[0].description, // TODO: do we want to have this be more strict?
-    hasData: entities.uploads.length > 0,
+    hasData: entities.sources.length > 0,
     anyColumnHasDescription: outputColumns.some(outputColumn => outputColumn.description)
   };
 }

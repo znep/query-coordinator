@@ -7,11 +7,11 @@ describe('components/Notifications/UploadNotification', () => {
   const defaultProps = {
     notification: {
       id: '75973bf0-0cf0-450f-ad88-40e2050dad7b',
-      kind: 'upload',
+      kind: 'source',
       callId: 'cb2fe2fe-52c3-4812-a951-51ec5a9e77b6',
-      uploadId: 121
+      sourceId: 121
     },
-    upload: {
+    source: {
       id: 121,
       created_by: {
         user_id: 'tugg-ikce',
@@ -19,7 +19,10 @@ describe('components/Notifications/UploadNotification', () => {
         display_name: 'branweb'
       },
       created_at: '2017-06-15T16:13:56.789297',
-      filename: 'petty_crimes.csv',
+      source_type: {
+        type: 'upload',
+        filename: 'petty_crimes.csv',
+      },
       percentCompleted: 90
     },
     notificationId: '75973bf0-0cf0-450f-ad88-40e2050dad7b',

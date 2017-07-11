@@ -27,7 +27,7 @@ describe('components/HomePaneSidebar', () => {
       bootstrapApp(
         window.initialState.view,
         window.initialState.revision,
-        window.initialState.customMetadata
+        window.initialState.customMetadataFieldsets
       )
     );
   });
@@ -50,7 +50,7 @@ describe('components/HomePaneSidebar', () => {
           }
         },
         updates: {},
-        uploads: {},
+        sources: {},
         input_schemas: {},
         output_schemas: {},
         input_columns: {},

@@ -10,20 +10,11 @@ import {
 import { addNotification } from 'actions/notifications';
 import { parseDate } from 'lib/parseDate';
 import * as ApplyRevision from 'actions/applyRevision';
-import { createCombinedValidationRules, createInitialModel } from 'components/ManageMetadata/DatasetForm';
-import { getValidationErrors } from 'components/Forms/validateSchema';
+import { makeFieldsets, validateDatasetForm } from 'models/forms';
 
 export const BOOTSTRAP_APP_SUCCESS = 'BOOTSTRAP_APP_SUCCESS';
 
-const calculateInitialSchema = (view, customMetadata) => {
-  const validations = createCombinedValidationRules(customMetadata);
-
-  const model = createInitialModel(view);
-
-  return getValidationErrors(validations, model);
-};
-
-export function bootstrapApp(view, revision, customMetadata) {
+export function bootstrapApp(view, revision, customMetadataFieldsets) {
   return dispatch => {
     // TODO: maybe wrap in try/catch and create bootstrap failure case?
     const millis = 1000;
@@ -44,12 +35,14 @@ export function bootstrapApp(view, revision, customMetadata) {
       licenseId: view.licenseId,
       attribution: view.attribution,
       attributionLink: view.attributionLink,
-      schema: calculateInitialSchema(view, customMetadata),
       tags: view.tags || [],
       privateMetadata: view.privateMetadata || {},
       attachments: _.get(view, 'metadata.attachments', []),
       metadata: view.metadata || {},
-      customMetadataFields: window.initialState.customMetadata || []
+      showErrors: false,
+      customMetadataFieldsets,
+      columnFormDirty: false,
+      datasetFormDirty: false
     };
 
     const initialRevision = {
@@ -75,55 +68,70 @@ export function bootstrapApp(view, revision, customMetadata) {
       {}
     );
 
-    const uploads = revision.uploads.reduce(
-      (acc, upload) => ({
+    const sources = revision.sources.reduce(
+      (acc, source) => ({
         ...acc,
-        [upload.id]: {
-          ..._.omit(upload, ['schemas']),
-          created_at: parseDate(upload.created_at),
-          finished_at: upload.finished_at ? parseDate(upload.finished_at) : null,
-          failed_at: upload.failed_at ? parseDate(upload.failed_at) : null,
-          created_by: upload.created_by
+        [source.id]: {
+          ..._.omit(source, ['schemas']),
+          created_at: parseDate(source.created_at),
+          finished_at: source.finished_at ? parseDate(source.finished_at) : null,
+          failed_at: source.failed_at ? parseDate(source.failed_at) : null,
+          created_by: source.created_by
         }
       }),
       {}
     );
 
-    dispatch(bootstrapAppSuccess(initialView, initialRevision, taskSets, uploads));
+    const { regular, custom } = makeFieldsets(initialView);
+
+    const errors = validateDatasetForm(regular, custom).matchWith({
+      Success: () => [],
+      Failure: ({ value }) => value
+    });
+
+    const intialViewWithErrors = {
+      ...initialView,
+      datasetMetadataErrors: errors,
+      columnMetadataErrors: []
+    };
+
+    dispatch(bootstrapAppSuccess(intialViewWithErrors, initialRevision, taskSets, sources));
     dispatch(sideEffectyStuff(revision));
   };
 }
 
-function bootstrapAppSuccess(initialView, initialRevision, taskSets, uploads) {
+function bootstrapAppSuccess(initialView, initialRevision, taskSets, sources) {
   return {
     type: BOOTSTRAP_APP_SUCCESS,
     initialView,
     initialRevision,
     taskSets,
-    uploads
+    sources
   };
 }
 
 function sideEffectyStuff(revision) {
   return dispatch => {
-    revision.uploads.forEach(upload => {
-      _.each(_.flatMap(upload.schemas, is => is.output_schemas), os => {
+    revision.sources.forEach(source => {
+      _.each(_.flatMap(source.schemas, is => is.output_schemas), os => {
         dispatch(pollForOutputSchemaSuccess(os));
         dispatch(subscribeToOutputSchema(os));
         dispatch(subscribeToTransforms(os));
       });
 
-      if (upload.failed_at) {
-        dispatch(addNotification('upload', null, upload.id));
+      if (source.failed_at) {
+        dispatch(addNotification('source', null, source.id));
       } else {
-        dispatch(insertInputSchema(upload));
-        upload.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
+        dispatch(insertInputSchema(source));
+        source.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
       }
     });
 
     revision.task_sets.forEach(taskSet => {
-      if (taskSet.status !== ApplyRevision.TASK_SET_SUCCESS &&
-          taskSet.status !== ApplyRevision.TASK_SET_FAILURE) {
+      if (
+        taskSet.status !== ApplyRevision.TASK_SET_SUCCESS &&
+        taskSet.status !== ApplyRevision.TASK_SET_FAILURE
+      ) {
         dispatch(ApplyRevision.pollForTaskSetProgress(taskSet.id));
       }
     });

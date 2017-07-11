@@ -70,20 +70,20 @@ function loadData(apiCall) {
 }
 
 function urlForPreview(entities, displayState) {
-  const { upload, inputSchema } = Selectors.pathForOutputSchema(entities, displayState.outputSchemaId);
+  const { source, inputSchema } = Selectors.pathForOutputSchema(entities, displayState.outputSchemaId);
   const { outputSchemaId } = displayState;
   const offset = PAGE_SIZE;
   const limit = (displayState.pageNo - 1) * PAGE_SIZE;
 
   switch (displayState.type) {
     case DisplayState.NORMAL:
-      return dsmapiLinks.rows(upload.id, inputSchema.id, outputSchemaId, offset, limit);
+      return dsmapiLinks.rows(source.id, inputSchema.id, outputSchemaId, offset, limit);
     case DisplayState.ROW_ERRORS:
-      return dsmapiLinks.rowErrors(upload.id, inputSchema.id, offset, limit);
+      return dsmapiLinks.rowErrors(source.id, inputSchema.id, offset, limit);
     case DisplayState.COLUMN_ERRORS: {
       const columnId = _.find(entities.output_columns, { transform_id: displayState.transformId }).id;
 
-      return dsmapiLinks.columnErrors(upload.id, inputSchema.id, outputSchemaId, columnId, offset, limit);
+      return dsmapiLinks.columnErrors(source.id, inputSchema.id, outputSchemaId, columnId, offset, limit);
     }
     default:
       throw new TypeError(`Unknown DisplayState: ${displayState.type}`);

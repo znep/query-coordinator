@@ -87,7 +87,7 @@ class TransformStatus extends Component {
     }
 
 
-    const uploadDone = _.isNumber(totalRows);
+    const sourceDone = _.isNumber(totalRows);
     const thisColumnDone = _.isNumber(totalRows) &&
                            transform.contiguous_rows_processed === totalRows;
 
@@ -95,12 +95,12 @@ class TransformStatus extends Component {
       transform.id === displayState.transformId;
 
     const linkPath = inErrorMode ?
-      Links.showOutputSchema(path.uploadId, path.inputSchemaId, path.outputSchemaId) :
-      Links.showColumnErrors(path.uploadId, path.inputSchemaId, path.outputSchemaId, transform.id);
+      Links.showOutputSchema(path.sourceId, path.inputSchemaId, path.outputSchemaId) :
+      Links.showColumnErrors(path.sourceId, path.inputSchemaId, path.outputSchemaId, transform.id);
 
     const rowsProcessed = transform.contiguous_rows_processed || 0;
     const percentage = Math.round(rowsProcessed / totalRows * 100);
-    const progressBarType = (!uploadDone || thisColumnDone) ? 'done' : 'inProgress';
+    const progressBarType = (!sourceDone || thisColumnDone) ? 'done' : 'inProgress';
 
     const progressBar = (
       <div className={styles.columnProgressBar}>

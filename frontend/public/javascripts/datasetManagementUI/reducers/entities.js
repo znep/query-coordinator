@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 import dotProp from 'dot-prop-immutable';
 import { ADD_TASK_SET } from 'actions/taskSets';
-import { EDIT_VIEW } from 'actions/views';
+import { EDIT_VIEW, SET_VALUE } from 'actions/views';
+import { EDIT_OUTPUT_COLUMN, ADD_OUTPUT_COLUMNS } from 'actions/outputColumns';
 import { EDIT_OUTPUT_SCHEMA } from 'actions/outputSchemas';
 import { EDIT_TRANSFORM } from 'actions/transforms';
 import { EDIT_INPUT_SCHEMA } from 'actions/inputSchemas';
@@ -15,6 +16,10 @@ const views = (state = {}, action) => {
         ...record,
         ...action.payload
       }));
+    }
+
+    case SET_VALUE: {
+      return dotProp.set(state, action.path, action.value);
     }
     default:
       return state;
@@ -35,10 +40,10 @@ const revisions = (state = {}, action) => {
   }
 };
 
-const uploads = (state = {}, action) => {
+const sources = (state = {}, action) => {
   switch (action.type) {
     case UPDATE_PROGRESS:
-      return dotProp.set(state, action.uploadId, record => ({
+      return dotProp.set(state, action.sourceId, record => ({
         ...record,
         percentCompleted: action.percentCompleted
       }));
@@ -79,7 +84,26 @@ const outputSchemas = (state = {}, action) => {
   }
 };
 
-const outputColumns = (state = {}) => state;
+const outputColumns = (state = {}, action) => {
+  switch (action.type) {
+    case EDIT_OUTPUT_COLUMN:
+      return {
+        ...state,
+        [action.id]: {
+          ...state[action.id],
+          ...action.payload
+        }
+      };
+    case ADD_OUTPUT_COLUMNS:
+      return {
+        ...state,
+        ...action.payload
+      };
+    default:
+      return state;
+  }
+};
+
 const outputSchemaColumns = (state = {}) => state;
 
 const transforms = (state = {}, action) => {
@@ -119,7 +143,7 @@ const colData = (state = {}) => state;
 export default combineReducers({
   views,
   revisions,
-  uploads,
+  sources,
   input_schemas: inputSchemas,
   input_columns: inputColumns,
   output_schemas: outputSchemas,

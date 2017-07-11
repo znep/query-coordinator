@@ -5,19 +5,19 @@ import { addNotification, removeNotification } from 'actions/notifications';
 describe('reducers/notifications', () => {
   it('handles ADD_NOTIFICATION', () => {
     const action = addNotification(
-      'upload',
+      'source',
       '75973bf0-0cf0-450f-ad88-40e2050dad7b',
       121
     );
     const state = notificationReducer(undefined, action);
 
     assert.equal(state[0].kind, action.notification.kind);
-    assert.equal(state[0].uploadId, 121);
+    assert.equal(state[0].sourceId, 121);
   });
 
   it('handles REMOVE_NOTIFICATION', () => {
     const action = addNotification(
-      'upload',
+      'source',
       '75973bf0-0cf0-450f-ad88-40e2050dad7b',
       121
     );

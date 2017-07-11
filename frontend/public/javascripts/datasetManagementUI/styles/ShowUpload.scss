@@ -7,13 +7,13 @@
   height: 100%;
 }
 
-.uploadContainer {
+.sourceContainer {
   background-color: #ddd;
   height: 100%;
   display: flex;
 }
 
-.uploadContainer > section:first-child {
+.sourceContainer > section:first-child {
   flex-grow: 1;
 }
 

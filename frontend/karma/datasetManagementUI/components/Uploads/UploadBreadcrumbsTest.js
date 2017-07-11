@@ -6,7 +6,7 @@ import { UploadBreadcrumbs } from 'components/Uploads/UploadBreadcrumbs';
 describe('components/Uploads/UploadBreadcrumbs', () => {
   const defaultProps = {
     atShowUpload: true,
-    uploadId: 178,
+    sourceId: 178,
     outputSchemaId: 215,
     inputSchemaId: 159
   };

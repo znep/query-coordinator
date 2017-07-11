@@ -1,15 +1,5 @@
 const getTranslation = (key) => _.get(I18n, `filters.${key}`);
 
-export const lastUpdatedDateOptions = [
-  { title: getTranslation('last_updated_date.options.any_date_updated'), value: 'anyDateUpdated' },
-  { title: getTranslation('last_updated_date.options.past_3_days'), value: 'past3Days' },
-  { title: getTranslation('last_updated_date.options.past_week'), value: 'pastWeek' },
-  { title: getTranslation('last_updated_date.options.past_month'), value: 'pastMonth' },
-  { title: getTranslation('last_updated_date.options.past_3_months'), value: 'past3Months' },
-  { title: getTranslation('last_updated_date.options.past_6_months'), value: 'past6Months' },
-  { title: getTranslation('last_updated_date.options.custom_date_range'), value: 'customDateRange' }
-];
-
 export const assetTypeOptions = [
   { title: getTranslation('asset_types.options.all'), value: null },
   { title: getTranslation('asset_types.options.calendars'), value: 'calendars' },

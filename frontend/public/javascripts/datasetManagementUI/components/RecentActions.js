@@ -46,16 +46,16 @@ const updateActivity = (update, at) => {
   );
 };
 
-const uploadActivity = (upload, at) => {
-  const key = `upload-${upload.id}`;
+const sourceActivity = (source, at) => {
+  const key = `source-${source.id}`;
   return (
-    <div key={key} className={styles.activity} data-activity-type="upload">
+    <div key={key} className={styles.activity} data-activity-type="source">
       <div className={styles.timeline}>
         <SocrataIcon name="data" className={styles.icon} />
       </div>
       <div>
         <p>
-          <span className={styles.createdBy}>{creator(upload)}</span>&nbsp;
+          <span className={styles.createdBy}>{creator(source)}</span>&nbsp;
           uploaded a file
         </p>
         <RecentActionsTimestamp date={at} />
@@ -75,7 +75,7 @@ const outputSchemaActivity = (item, at) => {
         <p>
           <span className={styles.createdBy}>{creator(item.outputSchema)}</span>&nbsp;
           changed the&nbsp;
-          <Link to={Links.showOutputSchema(item.upload.id, item.inputSchema.id, item.outputSchema.id)}>
+          <Link to={Links.showOutputSchema(item.source.id, item.inputSchema.id, item.outputSchema.id)}>
             schema
           </Link>
         </p>
@@ -145,21 +145,21 @@ function activitiesOf(entities) {
     value: updateModel,
     at: updateModel.created_at
   };
-  const uploads = _.map(entities.uploads, upload => ({
-    type: 'upload',
-    value: upload,
-    at: upload.created_at
+  const sources = _.map(entities.sources, source => ({
+    type: 'source',
+    value: source,
+    at: source.created_at
   }));
   const outputSchemas = _.map(entities.output_schemas, outputSchema => {
     const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
-    const upload = _.find(entities.uploads, { id: inputSchema.upload_id });
+    const source = _.find(entities.sources, { id: inputSchema.source_id });
     return {
       type: 'outputSchema',
       at: outputSchema.created_at,
       value: {
         outputSchema,
         inputSchema,
-        upload
+        source
       }
     };
   });
@@ -189,7 +189,7 @@ function activitiesOf(entities) {
 
   const kinds = {
     update: updateActivity,
-    upload: uploadActivity,
+    source: sourceActivity,
     outputSchema: outputSchemaActivity,
     taskSet: taskSetActivity,
     taskSetCompleted: taskSetCompletedActivity,
@@ -201,7 +201,7 @@ function activitiesOf(entities) {
     return fn && fn(activity.value, activity.at);
   };
 
-  const items = [update, ...uploads, ...outputSchemas, ...taskSets, ...finishedTaskSets, ...failedTaskSets];
+  const items = [update, ...sources, ...outputSchemas, ...taskSets, ...finishedTaskSets, ...failedTaskSets];
   return _.reverse(_.sortBy(items, 'at')).map(toView);
 }
 

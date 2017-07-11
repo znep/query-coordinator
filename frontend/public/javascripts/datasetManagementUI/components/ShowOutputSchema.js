@@ -19,9 +19,9 @@ import PagerBar from './Table/PagerBar';
 import ErrorPointer from 'components/Table/ErrorPointer';
 import styles from 'styles/ShowOutputSchema.scss';
 
-function query(entities, uploadId, inputSchemaId, outputSchemaIdStr) {
+function query(entities, sourceId, inputSchemaId, outputSchemaIdStr) {
   const outputSchemaId = _.toNumber(outputSchemaIdStr);
-  const upload = entities.uploads[_.toNumber(uploadId)];
+  const source = entities.sources[_.toNumber(sourceId)];
   const inputSchema = entities.input_schemas[_.toNumber(inputSchemaId)];
   const outputSchema = entities.output_schemas[outputSchemaId];
 
@@ -29,7 +29,7 @@ function query(entities, uploadId, inputSchemaId, outputSchemaIdStr) {
   const canApplyRevision = Selectors.allTransformsDone(columns, inputSchema);
 
   return {
-    upload,
+    source,
     inputSchema,
     outputSchema,
     columns,
@@ -140,7 +140,7 @@ export class ShowOutputSchema extends Component {
 
   render() {
     const {
-      upload,
+      source,
       inputSchema,
       outputSchema,
       columns,
@@ -152,7 +152,7 @@ export class ShowOutputSchema extends Component {
     } = this.props;
 
     const path = {
-      uploadId: upload.id,
+      sourceId: source.id,
       inputSchemaId: inputSchema.id,
       outputSchemaId: outputSchema.id
     };
@@ -235,7 +235,7 @@ export class ShowOutputSchema extends Component {
 }
 
 ShowOutputSchema.propTypes = {
-  upload: PropTypes.object.isRequired,
+  source: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
@@ -254,7 +254,7 @@ export function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
   const queryResults = query(
     state.entities,
-    _.toNumber(params.uploadId),
+    _.toNumber(params.sourceId),
     _.toNumber(params.inputSchemaId),
     _.toNumber(params.outputSchemaId)
   );

@@ -27,7 +27,7 @@ const noDataYetView = createUpload => {
         {I18n.home_pane.adding_data_is_easy_and_fun}
       </p>
 
-      <label id="upload-label" className={styles.uploadButton} htmlFor="file">
+      <label id="source-label" className={styles.sourceButton} htmlFor="file">
         {I18n.manage_uploads.new_file}&nbsp;
       </label>
       <input
@@ -35,7 +35,7 @@ const noDataYetView = createUpload => {
         name="file"
         type="file"
         accept={enabledFileExtensions.join(',')}
-        aria-labelledby="upload-label"
+        aria-labelledby="source-label"
         onChange={evt => createUpload(evt.target.files[0])} />
 
       <p className={styles.fileTypes}>
@@ -55,7 +55,7 @@ const outputSchemaView = (entities, outputSchema) => {
         {I18n.home_pane.data_uploaded_blurb}
       </p>
       <p>
-        <Link to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}>
+        <Link to={Links.showOutputSchema(inputSchema.source_id, inputSchema.id, outputSchema.id)}>
           <button className={styles.reviewBtn} tabIndex="-1">
             {I18n.home_pane.review_data}
           </button>
@@ -191,7 +191,7 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
       dataTable = [
         <Link
           key="manage-data-button"
-          to={Links.showOutputSchema(inputSchema.upload_id, inputSchema.id, outputSchema.id)}
+          to={Links.showOutputSchema(inputSchema.source_id, inputSchema.id, outputSchema.id)}
           className={styles.manageDataLink}>
           <button className={styles.manageDataBtn} tabIndex="-1">
             {I18n.home_pane.data_manage_button}

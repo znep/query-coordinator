@@ -6,6 +6,7 @@ const moment = require('moment');
 const VifHelpers = require('./helpers/VifHelpers');
 const SvgTimelineChart = require('./views/SvgTimelineChart');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
+const ColumnFormattingHelpers = require('./helpers/ColumnFormattingHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const TimeDataManager = require('./dataProviders/TimeDataManager');
 const I18n = require('common/i18n').default;
@@ -136,11 +137,16 @@ $.fn.socrataSvgTimelineChart = function(originalVif, options) {
       then((columns) => {
         return Promise.all([
           Promise.resolve(columns),
-          TimeDataManager.getData(newVif)
+          TimeDataManager.getData(newVif),
+          datasetMetadataProvider.getDatasetMetadata()
         ]);
       }).
       then((resolutions) => {
-        const [ newColumns, newData ] = resolutions;
+        const [ newColumns, newData, datasetMetadata ] = resolutions;
+
+        const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
+        newData.columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
+
         renderVisualization(newVif, newData, newColumns);
       }).
       catch(handleError);

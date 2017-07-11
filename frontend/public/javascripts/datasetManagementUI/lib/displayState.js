@@ -42,7 +42,7 @@ export function toUiUrl(path, displayState) {
   switch (displayState.type) {
     case NORMAL:
       return Links.showOutputSchema(
-        path.uploadId,
+        path.sourceId,
         path.inputSchemaId,
         path.outputSchemaId,
         displayState.pageNo
@@ -50,7 +50,7 @@ export function toUiUrl(path, displayState) {
 
     case ROW_ERRORS:
       return Links.showRowErrors(
-        path.uploadId,
+        path.sourceId,
         path.inputSchemaId,
         path.outputSchemaId,
         displayState.pageNo
@@ -58,7 +58,7 @@ export function toUiUrl(path, displayState) {
 
     case COLUMN_ERRORS:
       return Links.showColumnErrors(
-        path.uploadId,
+        path.sourceId,
         path.inputSchemaId,
         path.outputSchemaId,
         displayState.transformId,

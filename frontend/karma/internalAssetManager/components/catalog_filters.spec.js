@@ -9,14 +9,12 @@ describe('components/CatalogFilters', () => {
     changeAssetType: () => undefined,
     changeAuthority: () => undefined,
     changeCategory: () => undefined,
-    changeLastUpdatedDate: () => undefined,
     changeOwner: () => undefined,
     changeTag: () => undefined,
     changeVisibility: () => undefined,
     domainCategories: [],
     domainTags: [],
     toggleRecentlyViewed: () => undefined,
-    lastUpdatedDate: 'anyDateUpdated',
     onlyRecentlyViewed: false,
     ownedBy: {
       displayName: '',
@@ -43,7 +41,6 @@ describe('components/CatalogFilters', () => {
     const element = renderComponentWithPropsAndStore(CatalogFilters, catalogFiltersProp());
     assert.isNotNull(element.querySelector('.filter-section.recently-viewed'));
     assert.isNotNull(element.querySelector('.filter-section.asset-types'));
-    // assert.isNotNull(element.querySelector('.filter-section.last-updated-date'));
     assert.isNotNull(element.querySelector('.filter-section.authority'));
     assert.isNotNull(element.querySelector('.filter-section.owned-by'));
     assert.isNotNull(element.querySelector('.filter-section.visibility'));

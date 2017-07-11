@@ -21,7 +21,7 @@ export const CREATE_UPLOAD = 'CREATE_UPLOAD';
 export const CREATE_UPLOAD_SUCCESS = 'CREATE_UPLOAD_SUCCESS';
 export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
 
-function xhrPromise(method, url, file, uploadId, dispatch) {
+function xhrPromise(method, url, file, sourceId, dispatch) {
   return new Promise((res, rej) => {
     const xhr = new XMLHttpRequest();
 
@@ -32,7 +32,7 @@ function xhrPromise(method, url, file, uploadId, dispatch) {
     if (xhr.upload) {
       xhr.upload.onprogress = evt => {
         percent = evt.loaded / evt.total * 100;
-        dispatch(updateProgress(uploadId, percent));
+        dispatch(updateProgress(sourceId, percent));
       };
     }
 
@@ -60,10 +60,10 @@ function xhrPromise(method, url, file, uploadId, dispatch) {
   });
 }
 
-function updateProgress(uploadId, percentCompleted) {
+function updateProgress(sourceId, percentCompleted) {
   return {
     type: UPDATE_PROGRESS,
-    uploadId,
+    sourceId,
     percentCompleted
   };
 }
@@ -78,19 +78,24 @@ export function createUpload(file) {
 
     const callId = uuid();
 
+    const sourceType = {
+      type: 'upload',
+      filename: file.name
+    };
+
     const call = {
       operation: CREATE_UPLOAD,
       params: {
-        filename: file.name
+        source_type: sourceType
       }
     };
 
     dispatch(apiCallStarted(callId, call));
 
-    return socrataFetch(dsmapiLinks.uploadCreate, {
+    return socrataFetch(dsmapiLinks.sourceCreate, {
       method: 'POST',
       body: JSON.stringify({
-        filename: file.name
+        source_type: sourceType
       })
     })
       .then(checkStatus)
@@ -99,10 +104,14 @@ export function createUpload(file) {
         const { resource } = resp;
 
         dispatch(apiCallSucceeded(callId));
+        dispatch(createUploadSuccess(
+          resource.id,
+          resource.created_by,
+          resource.created_at,
+          resource.source_type
+        ));
 
-        dispatch(createUploadSuccess(resource.id, resource.created_by, resource.created_at, file.name));
-
-        dispatch(push(Links.uploads(ui.routing.location)));
+        dispatch(push(Links.sources(ui.routing.location)));
 
         return Promise.all([
           dispatch(uploadFile(resource.id, file)),
@@ -115,20 +124,20 @@ export function createUpload(file) {
   };
 }
 
-function createUploadSuccess(id, createdBy, createdAt, filename) {
+function createUploadSuccess(id, createdBy, createdAt, sourceType) {
   return {
     type: CREATE_UPLOAD_SUCCESS,
     id,
-    filename,
+    source_type: sourceType,
     created_by: createdBy,
     created_at: parseDate(createdAt)
   };
 }
 
-export function uploadFile(uploadId, file) {
+export function uploadFile(sourceId, file) {
   return (dispatch, getState) => {
     const uploadUpdate = {
-      id: uploadId
+      id: sourceId
     };
 
     const callId = uuid();
@@ -140,12 +149,12 @@ export function uploadFile(uploadId, file) {
 
     dispatch(apiCallStarted(callId, call));
 
-    dispatch(addNotification('upload', callId, uploadId));
+    dispatch(addNotification('upload', callId, sourceId));
 
-    return xhrPromise('POST', dsmapiLinks.uploadBytes(uploadId), file, uploadId, dispatch)
+    return xhrPromise('POST', dsmapiLinks.sourceBytes(sourceId), file, sourceId, dispatch)
       .then(resp => JSON.parse(resp.responseText))
       .then(resp => {
-        dispatch(uploadFileSuccess(uploadId, new Date(), resp.resource.id, resp.resource.total_rows));
+        dispatch(uploadFileSuccess(sourceId, new Date(), resp.resource.id, resp.resource.total_rows));
 
         dispatch(apiCallSucceeded(callId));
 
@@ -158,26 +167,26 @@ export function uploadFile(uploadId, file) {
         return resp;
       })
       .catch(err => {
-        dispatch(uploadFileFailure(uploadId));
+        dispatch(uploadFileFailure(sourceId));
         dispatch(apiCallFailed(callId, err));
       });
   };
 }
 
-function uploadFileSuccess(uploadId, finishedAt, inputSchemaId, totalRows) {
+function uploadFileSuccess(sourceId, finishedAt, inputSchemaId, totalRows) {
   return {
     type: UPLOAD_FILE_SUCCESS,
-    uploadId,
+    sourceId,
     finishedAt,
     inputSchemaId,
     totalRows
   };
 }
 
-function uploadFileFailure(uploadId) {
+function uploadFileFailure(sourceId) {
   return {
     type: UPLOAD_FILE_FAILURE,
-    uploadId,
+    sourceId,
     failedAt: Date.now()
   };
 }
@@ -185,22 +194,22 @@ function uploadFileFailure(uploadId) {
 const SCHEMA_POLL_INTERVAL_MS = 500;
 
 // TODO: change from polling to websocket; would look something like
-// joinChannel('upload:${uploadId}', {
+// joinChannel('source:${sourceId}', {
 //   insert_input_schema: (inputSchema) => {
 //     dispatch(...)
 //   }
 // });
-function pollForOutputSchema(uploadId) {
+function pollForOutputSchema(sourceId) {
   return (dispatch, getState) => {
     const { routing } = getState().ui;
 
     function pollAgain() {
       setTimeout(() => {
-        dispatch(pollForOutputSchema(uploadId));
+        dispatch(pollForOutputSchema(sourceId));
       }, SCHEMA_POLL_INTERVAL_MS);
     }
 
-    return socrataFetch(dsmapiLinks.uploadShow(uploadId))
+    return socrataFetch(dsmapiLinks.sourceShow(sourceId))
       .then(resp => {
         if (resp.status === 404) {
           pollAgain();
@@ -214,10 +223,10 @@ function pollForOutputSchema(uploadId) {
       })
       .then(getJson)
       .then(resp => {
-        const upload = resp.resource;
+        const source = resp.resource;
 
-        if (_.get(upload, 'schemas[0].output_schemas.length') > 0) {
-          const outputSchemaIds = _.chain(upload.schemas)
+        if (_.get(source, 'schemas[0].output_schemas.length') > 0) {
+          const outputSchemaIds = _.chain(source.schemas)
             .flatMap(is => is.output_schemas)
             .map(os => {
               dispatch(pollForOutputSchemaSuccess(os));
@@ -228,11 +237,11 @@ function pollForOutputSchema(uploadId) {
             .value();
 
           // TODO: keep this from updating total rows if it's null
-          dispatch(insertInputSchema(upload));
-          upload.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
+          dispatch(insertInputSchema(source));
+          source.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
 
           dispatch(
-            push(Links.showOutputSchema(uploadId, upload.schemas[0].id, outputSchemaIds[0])(routing.location))
+            push(Links.showOutputSchema(sourceId, source.schemas[0].id, outputSchemaIds[0])(routing.location))
           );
         } else {
           pollAgain();
@@ -295,14 +304,14 @@ export function pollForOutputSchemaSuccess(outputSchemaResponse) {
   };
 }
 
-export function insertInputSchema(upload) {
+export function insertInputSchema(source) {
   return dispatch => {
-    const inputSchemas = upload.schemas
+    const inputSchemas = source.schemas
       .map(inputSchema => ({
         id: inputSchema.id,
         name: inputSchema.name,
         total_rows: inputSchema.total_rows,
-        upload_id: upload.id
+        source_id: source.id
       }))
       .reduce(
         (acc, is) => ({
@@ -312,7 +321,7 @@ export function insertInputSchema(upload) {
         {}
       );
 
-    const inputColumns = _.chain(upload.schemas)
+    const inputColumns = _.chain(source.schemas)
       .flatMap(inputSchema => inputSchema.input_columns)
       .reduce(
         (acc, inputColumn) => ({

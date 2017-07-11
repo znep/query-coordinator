@@ -937,6 +937,7 @@ blist.namespace.fetch('blist.datatypes');
     'date_shortmonthdy': 'M d, Y',
     'date_monthdy_shorttime': 'F d, Y',
     'date_dmonthy': 'd F Y',
+    'date_dmonthy_time': 'd F Y',
     'date_shortmonthdy_shorttime': 'M d, Y',
     'date_ymonthd_time': 'Y F d',
     'date_ymonthd': 'Y F d',
@@ -995,6 +996,9 @@ blist.namespace.fetch('blist.datatypes');
   }, {
     value: 'date_dmonthy',
     text: 'day month year'
+  }, {
+    value: 'date_dmonthy_time',
+    text: 'day month year hour:minute'
   }, {
     value: 'date_shortmonthdy_shorttime',
     text: 'month day, year hour:minute'

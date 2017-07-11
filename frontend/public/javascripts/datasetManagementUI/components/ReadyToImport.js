@@ -20,7 +20,7 @@ ErrorButton.propTypes = {
 };
 
 export const ReadyToImport = props => {
-  const { upload, inputSchema, importableRows, errorRows, outputSchema, openModal } = props;
+  const { source, inputSchema, importableRows, errorRows, outputSchema, openModal } = props;
 
   if (!outputSchema) {
     return null;
@@ -29,7 +29,7 @@ export const ReadyToImport = props => {
   let errorExportButton;
 
   if (outputSchema.error_count > 0) {
-    const errorTableLink = dsmapiLinks.errorExport(upload.id, inputSchema.id, outputSchema.id);
+    const errorTableLink = dsmapiLinks.errorExport(source.id, inputSchema.id, outputSchema.id);
 
     errorExportButton = (
       <a href={errorTableLink}>
@@ -61,7 +61,7 @@ export const ReadyToImport = props => {
 ReadyToImport.propTypes = {
   outputSchema: PropTypes.object,
   errorRows: PropTypes.number,
-  upload: PropTypes.object,
+  source: PropTypes.object,
   importableRows: PropTypes.number,
   inputSchema: PropTypes.object,
   openModal: PropTypes.func
@@ -73,12 +73,12 @@ const mapStateToProps = ({ entities, ui }) => {
   if (outputSchemaId) {
     const outputSchema = entities.output_schemas[outputSchemaId];
     const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
-    const upload = entities.uploads[inputSchema.upload_id];
+    const source = entities.sources[inputSchema.source_id];
     const errorRows = outputSchema.error_count || 0;
     const importableRows = Math.max(0, inputSchema.total_rows - errorRows);
 
     return {
-      upload,
+      source,
       inputSchema,
       importableRows,
       errorRows,

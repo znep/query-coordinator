@@ -394,8 +394,8 @@ describe DatasetsController do
       # 4x4 is valid and has revision, directly to path with sequence number
       it 'loads the page without error' do
         allow(DatasetManagementAPI).to receive(:get_revision).and_return({'id' => 1})
-        allow(DatasetManagementAPI).to receive(:get_uploads_index).and_return([{'resource' => {'id' => 2}}])
-        allow(DatasetManagementAPI).to receive(:get_upload).and_return([])
+        allow(DatasetManagementAPI).to receive(:get_sources_index).and_return([{'resource' => {'id' => 2}}])
+        allow(DatasetManagementAPI).to receive(:get_source).and_return([])
         allow(DatasetManagementAPI).to receive(:get_websocket_token).and_return('a token')
         init_current_user(controller)
         login

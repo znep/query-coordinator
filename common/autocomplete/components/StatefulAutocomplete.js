@@ -17,8 +17,8 @@ class StatefulAutocomplete extends React.Component {
     const state = _.isEmpty(defaultState) ? { } : defaultState;
 
     // we only want to set the query to the current one if we're NOT collapsible and if we're animating
-    // (the static, non-animated version is used in the header bar)
-    if (!_.isEmpty(props.options) &&
+    // the appearance of the "clear search" icon, which the version used in the header bar does not have.
+     if (!_.isEmpty(props.options) &&
       (props.options.collapsible === false && props.options.animate === true)) {
       // grab the current search query from the URL
       const parsedUrl = url.parse(window.location.href, true);
@@ -45,7 +45,8 @@ class StatefulAutocomplete extends React.Component {
       collapsible,
       animate,
       mobile,
-      onChooseResult
+      onChooseResult,
+      onClearSearch
     } = this.props.options;
 
     const milliseconds =
@@ -67,7 +68,8 @@ class StatefulAutocomplete extends React.Component {
           collapsible={collapsible}
           animate={animate}
           mobile={mobile}
-          onChooseResult={onChooseResult} />
+          onChooseResult={onChooseResult}
+          onClearSearch={onClearSearch} />
       </Provider>
     );
   }
@@ -84,7 +86,8 @@ StatefulAutocomplete.propTypes = {
     collapsible: PropTypes.bool,
     animate: PropTypes.bool,
     mobile: PropTypes.bool,
-    onChooseResult: PropTypes.func
+    onChooseResult: PropTypes.func,
+    onClearSearch: PropTypes.func
   }),
   defaultState: PropTypes.shape({
     query: PropTypes.string

@@ -45,13 +45,13 @@ describe('components/ShowOutputSchema', () => {
         name: 'dfsdfdsf',
         fourfour: 'kg5j-unyr',
         revisionSeq: '0',
-        uploadId: '115',
+        sourceId: '115',
         inputSchemaId: '98',
         outputSchemaId: '144'
       },
       location: {
         pathname:
-          '/dataset/dfsdfdsf/kg5j-unyr/revisions/0/uploads/115/schemas/98/output/144',
+          '/dataset/dfsdfdsf/kg5j-unyr/revisions/0/sources/115/schemas/98/output/144',
         search: '',
         hash: '',
         action: 'PUSH',
@@ -59,7 +59,7 @@ describe('components/ShowOutputSchema', () => {
         query: {}
       },
       route: {
-        path: 'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId',
+        path: 'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId',
         childRoutes: [
           {
             path: 'page/:pageNo'
@@ -82,7 +82,7 @@ describe('components/ShowOutputSchema', () => {
       const newProps = dotProp.set(
         ownProps,
         'route.path',
-        'uploads/:uploadId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors'
+        'sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId/row_errors'
       );
 
       const { displayState } = mapStateToProps(state, newProps);

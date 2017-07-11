@@ -1,17 +1,31 @@
 import _ from 'lodash';
+import url from 'url';
 
 export const getInitialState = () => ({
+  assetTypes: _.get(window, 'initialState.initialFilters.assetTypes'),
+  authority: _.get(window, 'initialState.initialFilters.authority'),
+  category: _.get(window, 'initialState.initialFilters.category'),
+  domainCategories: _.get(window, 'initialState.domainCategories') || [],
+  domainTags: _.get(window, 'initialState.domainTags') || [],
+  onlyRecentlyViewed: false,
+  ownedBy: _.get(window, 'initialState.initialFilters.ownedBy'),
+  tag: _.get(window, 'initialState.initialFilters.tag'),
+  usersList: _.get(window, 'initialState.usersList') || [],
+  visibility: _.get(window, 'initialState.initialFilters.visibility')
+});
+
+export const getUnfilteredState = () => ({
   assetTypes: null,
   authority: null,
   category: null,
   domainCategories: _.get(window, 'initialState.domainCategories') || [],
   domainTags: _.get(window, 'initialState.domainTags') || [],
-  lastUpdatedDate: 'anyDateUpdated',
   onlyRecentlyViewed: false,
   ownedBy: {
     displayName: '',
     id: null
   },
+  q: _.get(url.parse(window.location.href, true), 'query.q', ''),
   tag: null,
   usersList: _.get(window, 'initialState.usersList') || [],
   visibility: null
@@ -26,13 +40,6 @@ export default (state, action) => {
     return {
       ...state,
       onlyRecentlyViewed: !state.onlyRecentlyViewed
-    };
-  }
-
-  if (action.type === 'CHANGE_LAST_UPDATED_DATE') {
-    return {
-      ...state,
-      lastUpdatedDate: action.value
     };
   }
 
@@ -85,8 +92,15 @@ export default (state, action) => {
     };
   }
 
+  if (action.type === 'CLEAR_SEARCH') {
+    return {
+      ...state,
+      q: null
+    };
+  }
+
   if (action.type === 'CLEAR_ALL_FILTERS') {
-    return getInitialState();
+    return getUnfilteredState();
   }
 
   return state;

@@ -152,6 +152,32 @@ describe('AuthoringWorkflow reducer', function() {
         });
       });
 
+      describe('when a new dimension is selected', function() {
+        var state;
+
+        beforeEach(function() {
+          state = reducer(
+            getTestState(),
+            actions.setDimensionGroupingColumnName('groupingColumn')
+          );
+        });
+
+        it('should keep the grouping column if it is different from the dimension column', () => {
+          const newState = reducer(state, actions.setDimension('anotherColumn'));
+          assert.equal(
+            newState.vifAuthoring.vifs.columnChart.series[0].dataSource.dimension.grouping.columnName,
+            'groupingColumn'
+          );
+        });
+
+        it('should remove the grouping column if it is the same as the dimension column', () => {
+          const newState = reducer(state, actions.setDimension('groupingColumn'));
+          assert.isUndefined(
+            newState.vifAuthoring.vifs.columnChart.series[0].dataSource.dimension.grouping
+          );
+        });
+      });
+
       describe('when configuring a Region map', function() {
         resetsCenterAndZoomWhenChangingDimensions();
 

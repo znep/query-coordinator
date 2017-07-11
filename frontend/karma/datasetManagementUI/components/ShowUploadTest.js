@@ -37,19 +37,19 @@ describe('components/ShowUpload', () => {
     assert.equal(sidebar.length, 1);
   });
 
-  it('sets inProgress to false if there is no upload', () => {
-    const newState = dotProp.set(state, 'entities.uploads', {});
+  it('sets inProgress to false if there is no source', () => {
+    const newState = dotProp.set(state, 'entities.sources', {});
     const { inProgress } = mapStateToProps(newState);
     assert.isFalse(inProgress);
   });
 
   it('sets inProgress to true if there is an UPLOAD_FILE api call in progress', () => {
-    const uploadId = Number(Object.keys(state.entities.uploads)[0]);
+    const sourceId = Number(Object.keys(state.entities.sources)[0]);
     const newState = dotProp.set(state, 'ui.apiCalls', {
       '1234abcd': {
         operation: 'UPLOAD_FILE',
         status: 'STATUS_CALL_IN_PROGRESS',
-        params: { id: uploadId }
+        params: { id: sourceId }
       }
     });
     const { inProgress } = mapStateToProps(newState);

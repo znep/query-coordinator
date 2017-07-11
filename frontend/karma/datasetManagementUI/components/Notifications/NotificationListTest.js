@@ -10,13 +10,13 @@ describe('components/NotificationList/NotificationList', () => {
         id: '75973bf0-0cf0-450f-ad88-40e2050dad7b',
         kind: 'upload',
         callId: 'cb2fe2fe-52c3-4812-a951-51ec5a9e77b6',
-        uploadId: 121
+        sourceId: 121
       },
       {
         id: '75973bf0-0cf0-450f-ad88-40e2050d333b',
         kind: 'upload',
         callId: 'cb2fe2fe-52c3-4812-a951-51ec5a9e7333',
-        uploadId: 122
+        sourceId: 122
       }
     ]
   };

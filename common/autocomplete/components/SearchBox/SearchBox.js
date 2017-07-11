@@ -200,6 +200,10 @@ SearchBox.propTypes = {
   focusedResult: PropTypes.number
 };
 
+SearchBox.defaultProps = {
+  onClearSearch: _.noop
+};
+
 const mapStateToProps = (state) => ({
   currentQuery: _.isUndefined(state.query) ? '' : state.query,
   focusedResult: state.focusedResult

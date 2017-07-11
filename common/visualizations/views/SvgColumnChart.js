@@ -376,7 +376,7 @@ function SvgColumnChart($element, vif, options) {
           attr(
             'data-default-fill',
             (measureValue, measureIndex, dimensionIndex) => {
-              return self.getColor(dimensionIndex, measureIndex);
+              return self.getColor(dimensionIndex, measureIndex, measureLabels);
             }
           );
       }
@@ -397,14 +397,14 @@ function SvgColumnChart($element, vif, options) {
         attr(
           'fill',
           (value, measureIndex, dimensionIndex) => {
-            return self.getColor(dimensionIndex, measureIndex);
+            return self.getColor(dimensionIndex, measureIndex, measureLabels);
           }
         ).
         attr(
           'data-default-fill',
           (value, measureIndex, dimensionIndex) => {
 
-            return self.getColor(dimensionIndex, measureIndex);
+            return self.getColor(dimensionIndex, measureIndex, measureLabels);
           }
         );
 
@@ -500,7 +500,7 @@ function SvgColumnChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i));
+        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i, measureLabels)) ;
         self.attachLegendBarEventHandlers();
 
         if (!alreadyDisplayingLegendBar) {
@@ -918,7 +918,7 @@ function SvgColumnChart($element, vif, options) {
               const siblingColumn = d3.select(dimensionGroup).select(
                 `rect.column[data-measure-index="${measureIndex}"]`
               )[0][0];
-              const color = self.getColor(dimensionIndex, measureIndex);
+              const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
               const label = measureLabels[measureIndex];
               // d3's .datum() method gives us the entire row, whereas everywhere
               // else measureIndex refers only to measure values. We therefore
@@ -961,7 +961,7 @@ function SvgColumnChart($element, vif, options) {
               this.getAttribute('data-measure-index'),
               10
             );
-            const color = self.getColor(dimensionIndex, measureIndex);
+            const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
             const label = measureLabels[measureIndex];
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
@@ -1275,7 +1275,7 @@ function SvgColumnChart($element, vif, options) {
       const label = measureLabels[measureIndex];
       const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
         text(label).
-        css('color', self.getColor(dimensionIndex, measureIndex));
+        css('color', self.getColor(dimensionIndex, measureIndex, measureLabels));
       const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'});
       const unitOne = self.getUnitOneBySeriesIndex(
         getSeriesIndexByMeasureIndex(measureIndex)

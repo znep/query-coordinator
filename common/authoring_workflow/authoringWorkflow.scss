@@ -329,7 +329,6 @@
 
       p {
         margin: 0;
-        text-transform: capitalize;
       }
 
       .unit-container {
@@ -350,10 +349,6 @@
     }
 
     .color-picker-container {
-
-      .block-label {
-        text-transform: capitalize;
-      }
 
       .color-picker {
         margin-bottom: 10px;
@@ -536,7 +531,7 @@
         }
 
         .measure-aggregation-selector-dropdown-container {
-          margin: 0 0 0 6px;
+          margin: 0 0 0 -1px;
           min-width: 25%;
           width: 25%;
 

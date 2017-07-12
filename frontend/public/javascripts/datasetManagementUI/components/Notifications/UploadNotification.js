@@ -58,7 +58,7 @@ export const UploadNotification = ({ source, callStatus, notificationId }) => {
       );
       break;
     default:
-      message = <span className={styles.message}>{I18n.progress_items.source_failed}</span>;
+      message = <span className={styles.message}>{I18n.progress_items.upload_failed}</span>;
       details = errorMessage(source);
   }
 

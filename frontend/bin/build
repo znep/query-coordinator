@@ -80,9 +80,6 @@ if [ ! ${COMPRESS_ASSETS} = "true" ] ; then
   bundle exec rake deploy:move_resources
 fi
 
-# Update translations for site_chrome.
-pushd ../common && rake site_chrome:build && popd
-
 # Tar the entirety of platform-ui to be used by our docker build process.
 pushd .. && tar cpzfX ${SERVICE_ARTIFACT} frontend/.package-ignore * && popd
 

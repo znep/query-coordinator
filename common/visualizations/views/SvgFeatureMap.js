@@ -121,6 +121,8 @@ function SvgFeatureMap(element, vif, options) {
     emitRenderStart();
     self.showBusyIndicator();
 
+    let redrawNeeded = false;
+
     if (!map) {
 
       // Construct leaflet map
@@ -129,26 +131,29 @@ function SvgFeatureMap(element, vif, options) {
       // Attach events on first render only
       attachEvents();
 
-      // updating center and zoom must happen before we render the feature layer, or we will end up
-      // requesting (and rendering) the points for the previous zoom level.
-      updateCenterAndZoom(newVif);
-      updateBaseLayer(newVif);
-      updateFeatureLayer(newVif, vectorTileGetter);
+      redrawNeeded = true;
 
-      if (extent) {
-        fitBounds(buildBoundsFromExtent(extent));
-      }
     } else if (newVif && !_.isEqual(newVif, lastRenderedVif)) {
-      this.updateVif(newVif);
 
-      // updating center and zoom must happen before we render the feature layer, or we will end up
-      // requesting (and rendering) the points for the previous zoom level.
-      updateCenterAndZoom(newVif);
-      updateBaseLayer(newVif);
-      updateFeatureLayer(newVif, vectorTileGetter);
+      this.updateVif(newVif);
+      redrawNeeded = true;
+
     } else {
       // If nothing to render again call completion asynchronously
       _.defer(handleVectorTileRenderComplete);
+    }
+
+    if (redrawNeeded) {
+      // updating center and zoom must happen before we render the feature layer, or we will end up
+      // requesting (and rendering) the points for the previous zoom level.
+      updateCenterAndZoom(newVif);
+      updateBaseLayer(newVif);
+      updateFeatureLayer(newVif, vectorTileGetter);
+
+      // force updates to reflect the map's potentially different center and position
+      if (extent) {
+        fitBounds(buildBoundsFromExtent(extent));
+      }
     }
 
     if (newColumns) {
@@ -882,11 +887,11 @@ function SvgFeatureMap(element, vif, options) {
       'configuration.mapCenterAndZoom.center.lat',
       'configuration.mapCenterAndZoom.center.lng',
       'configuration.mapCenterAndZoom.zoom'
-    ).every(_.isNumber);
+    ).every(_.isNumber).value();
 
     if (userCurrentPositionBounds) {
       fitBounds(userCurrentPositionBounds);
-    } else if (centerAndZoomDefined && !_.isEqual(newCenter, lastRenderedCenter) || newZoom !== lastRenderedZoom) {
+    } else if (centerAndZoomDefined && (!_.isEqual(newCenter, lastRenderedCenter) || newZoom !== lastRenderedZoom)) {
       map.setView(newCenter, newZoom, {animate: false});
     }
   }
@@ -941,6 +946,11 @@ function SvgFeatureMap(element, vif, options) {
       _.get(lastRenderedVif, datasetUidPath)
     );
 
+    var columnPath = 'series[0].dataSource.dimension.columnName';
+    var columnPathChanged = !_.isEqual(
+      _.get(newVif, columnPath),
+      _.get(lastRenderedVif, columnPath));
+
     var newWhereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0);
     var lastRenderedWhereClause = (lastRenderedVif) ?
       SoqlHelpers.whereClauseNotFilteringOwnColumn(lastRenderedVif, 0) :
@@ -965,7 +975,7 @@ function SvgFeatureMap(element, vif, options) {
       _.get(lastRenderedVif, pointSizePath)
     );
 
-    if (datasetUidChanged || whereClauseChanged || pointColorChanged || pointOpacityChanged || pointSizeChanged) {
+    if (datasetUidChanged || columnPathChanged || whereClauseChanged || pointColorChanged || pointOpacityChanged || pointSizeChanged) {
       var layer;
       var layerId = _.uniqueId();
       var featureLayerOptions = {

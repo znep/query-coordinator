@@ -102,6 +102,10 @@ module AdminHelper
       user_can?(UserRights::EDIT_SITE_THEME)
   end
 
+  def user_can_see_goals?
+    CurrentDomain.module_enabled?(:govStat)
+  end
+
   def user_can_see_federations?
     user_can?(UserRights::FEDERATIONS) &&
       module_available?(:federations)
@@ -118,13 +122,17 @@ module AdminHelper
   end
 
   def user_can_see_home_page?
-    user_can?(UserRights::MANAGE_STORIES) ||
-      user_can?(UserRights::FEATURE_ITEMS) ||
-      user_can?(UserRights::EDIT_SITE_THEME)
+    !user_can_see_goals? &&
+      (
+        user_can?(UserRights::MANAGE_STORIES) ||
+        user_can?(UserRights::FEATURE_ITEMS) ||
+        user_can?(UserRights::EDIT_SITE_THEME)
+      )
   end
 
   def user_can_see_canvas_designer?
-    user_can?(UserRights::EDIT_PAGES) &&
+    !user_can_see_goals? &&
+      user_can?(UserRights::EDIT_PAGES) &&
       module_enabled?(:canvas_designer)
   end
 

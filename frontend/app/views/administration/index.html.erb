@@ -17,148 +17,148 @@
       </span>
     </li>
     <% if user_can_see_users? %>
-        <li class="users">
-          <%= admin_nav_link_to t('screens.admin.index.users'), :controller => '/administration', :action => 'users' %>
-          <span class="description">
-            <%= t('screens.admin.index.users_description') %>
-          </span>
-        </li>
+      <li class="users">
+        <%= admin_nav_link_to t('screens.admin.index.users'), :controller => '/administration', :action => 'users' %>
+        <span class="description">
+          <%= t('screens.admin.index.users_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_federations? %>
-        <li class="federation">
-          <%= admin_nav_link_to t('screens.admin.index.federation'), :controller => '/administration', :action => 'federations' %>
-          <span class="description">
-            <%= t('screens.admin.index.federation_description') %>
-          </span>
-        </li>
+      <li class="federation">
+        <%= admin_nav_link_to t('screens.admin.index.federation'), :controller => '/administration', :action => 'federations' %>
+        <span class="description">
+          <%= t('screens.admin.index.federation_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_comment_moderation? %>
-        <li class="comments">
-          <%= admin_nav_link_to t('screens.admin.index.comment_moderation'), :controller => '/administration', :action => 'comment_moderation' %>
-          <span class="description">
-            <%= t('screens.admin.index.comment_moderation_description') %>
-          </span>
-        </li>
+      <li class="comments">
+        <%= admin_nav_link_to t('screens.admin.index.comment_moderation'), :controller => '/administration', :action => 'comment_moderation' %>
+        <span class="description">
+          <%= t('screens.admin.index.comment_moderation_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_view_moderation? %>
-        <li class="viewmoderation">
-          <%= admin_nav_link_to t('screens.admin.index.view_moderation'), :controller => '/administration', :action => 'views' %>
-          <span class="description">
-            <%= t('screens.admin.index.view_moderation_description') %>
-          </span>
-        </li>
+      <li class="viewmoderation">
+        <%= admin_nav_link_to t('screens.admin.index.view_moderation'), :controller => '/administration', :action => 'views' %>
+        <span class="description">
+          <%= t('screens.admin.index.view_moderation_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_sdp_templates? %>
-        <li class="appearance">
-          <%= admin_nav_link_to t('screens.admin.index.sdp_templates'), :controller => '/administration', :action => 'sdp_templates' %>
-          <span class="description">
-            <%= t('screens.admin.index.sdp_templates_description') %>
-          </span>
-        </li>
+      <li class="appearance">
+        <%= admin_nav_link_to t('screens.admin.index.sdp_templates'), :controller => '/administration', :action => 'sdp_templates' %>
+        <span class="description">
+          <%= t('screens.admin.index.sdp_templates_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_canvas_designer? %>
-        <li class="contentmgmt">
-          <%= admin_nav_link_to t('screens.admin.index.dataslate_pages'), :controller => '/administration', :action => 'canvas_pages' %>
-          <span class="description">
-            <%= t('screens.admin.index.dataslate_pages_description') %>
-          </span>
-        </li>
+      <li class="contentmgmt">
+        <%= admin_nav_link_to t('screens.admin.index.dataslate_pages'), :controller => '/administration', :action => 'canvas_pages' %>
+        <span class="description">
+          <%= t('screens.admin.index.dataslate_pages_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_asset_inv? %>
-        <li class="datasets">
-          <%= admin_nav_link_to t('screens.admin.index.datasets'), :controller => '/administration', :action => 'datasets' %>
-          <span class="description">
-            <%= t('screens.admin.index.datasets_description') %>
-          </span>
-        </li>
+      <li class="datasets">
+        <%= admin_nav_link_to t('screens.admin.index.datasets'), :controller => '/administration', :action => 'datasets' %>
+        <span class="description">
+          <%= t('screens.admin.index.datasets_description') %>
+        </span>
+      </li>
     <% end %>
     <% if can_view_georegions_admin?(current_user) %>
-        <li class="georegions">
-          <%= admin_nav_link_to t('screens.admin.index.georegions'), :controller => '/administration', :action => 'georegions' %>
-          <span class="description">
-            <%= t('screens.admin.index.georegions_description') %>
-          </span>
-        </li>
+      <li class="georegions">
+        <%= admin_nav_link_to t('screens.admin.index.georegions'), :controller => '/administration', :action => 'georegions' %>
+        <span class="description">
+          <%= t('screens.admin.index.georegions_description') %>
+        </span>
+      </li>
     <% end %>
     <% if show_site_appearance_admin_panel? %>
-        <li class="homemgmt">
-          <%= admin_nav_link_to t('screens.admin.index.site_appearance'), :controller => '/site_appearance', :action => 'edit' %>
-          <span class="description">
-            <%= t('screens.admin.index.site_appearance_description') %>
-          </span>
-        </li>
+      <li class="homemgmt">
+        <%= admin_nav_link_to t('screens.admin.index.site_appearance'), :controller => '/site_appearance', :action => 'edit' %>
+        <span class="description">
+          <%= t('screens.admin.index.site_appearance_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_home_page? %>
-        <li class="homemgmt">
-          <%= admin_nav_link_to t('screens.admin.index.home_page'), :controller => '/administration', :action => 'home' %>
-          <span class="description">
-            <%= t('screens.admin.index.home_page_description') %>
-          </span>
-        </li>
+      <li class="homemgmt">
+        <%= admin_nav_link_to t('screens.admin.index.home_page'), :controller => '/administration', :action => 'home' %>
+        <span class="description">
+          <%= t('screens.admin.index.home_page_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_metadata? %>
-        <li class="metadata">
-          <%= admin_nav_link_to t('screens.admin.index.metadata'), :controller => '/administration', :action => 'metadata' %>
-          <span class="description">
-            <%= t('screens.admin.index.metadata_description') %>
-          </span>
-        </li>
+      <li class="metadata">
+        <%= admin_nav_link_to t('screens.admin.index.metadata'), :controller => '/administration', :action => 'metadata' %>
+        <span class="description">
+          <%= t('screens.admin.index.metadata_description') %>
+        </span>
+      </li>
     <% end %>
     <% if module_enabled?(:routing_approval) && current_user.can_approve? %>
-        <li class="routingApproval">
-          <%= admin_nav_link_to t('screens.admin.index.dataset_routing_and_approval'), :controller => '/administration/routing_approval', :action => 'index' %>
-          <span class="description">
-            <%= t('screens.admin.index.dataset_routing_and_approval_description') %>
-          </span>
-        </li>
+      <li class="routingApproval">
+        <%= admin_nav_link_to t('screens.admin.index.dataset_routing_and_approval'), :controller => '/administration/routing_approval', :action => 'index' %>
+        <span class="description">
+          <%= t('screens.admin.index.dataset_routing_and_approval_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_activity_feed? %>
-        <li class="activity-feed">
-          <%= admin_nav_link_to t('screens.admin.index.jobs'), :controller => '/administration/activity_feed', :action => 'index' %>
-          <span class="description">
-            <%= t('screens.admin.index.jobs_description') %>
-          </span>
-        </li>
+      <li class="activity-feed">
+        <%= admin_nav_link_to t('screens.admin.index.jobs'), :controller => '/administration/activity_feed', :action => 'index' %>
+        <span class="description">
+          <%= t('screens.admin.index.jobs_description') %>
+        </span>
+      </li>
     <% end %>
     <% if current_user.try(:is_superadmin?) %>
-        <li class="internal">
-          <%= admin_nav_link_to t('screens.admin.index.internal'), :controller => 'internal', :action => 'index' %>
-          <span class="description">
-            <%= t('screens.admin.index.internal_description') %>
-          </span>
-        </li>
+      <li class="internal">
+        <%= admin_nav_link_to t('screens.admin.index.internal'), :controller => 'internal', :action => 'index' %>
+        <span class="description">
+          <%= t('screens.admin.index.internal_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_stories? %>
-        <li class="contentmgmt">
-          <%= admin_nav_link_to t('screens.admin.index.stories'), '/stories/admin/themes' %>
-          <span class="description">
-            <%= t('screens.admin.index.stories_description') %>
-          </span>
-        </li>
+      <li class="contentmgmt">
+        <%= admin_nav_link_to t('screens.admin.index.stories'), '/stories/admin/themes' %>
+        <span class="description">
+          <%= t('screens.admin.index.stories_description') %>
+        </span>
+      </li>
     <% end %>
-    <% if CurrentDomain.module_enabled?(:govStat) %>
-        <li class="datasets">
-          <%= admin_nav_link_to t('screens.admin.index.goals'), '/admin/goals' %>
-          <span class="description">
-            <%= t('screens.admin.index.goals_description') %>
-          </span>
-        </li>
+    <% if user_can_see_goals? %>
+      <li class="datasets">
+        <%= admin_nav_link_to t('screens.admin.index.goals'), '/admin/goals' %>
+        <span class="description">
+          <%= t('screens.admin.index.goals_description') %>
+        </span>
+      </li>
     <% end %>
     <% if user_can_see_connectors? %>
-        <li class="connectors">
-          <%= admin_nav_link_to t('screens.admin.index.connectors'), :controller => '/administration/connector', :action => 'connectors' %>
-          <span class="description">
-            <%= t('screens.admin.index.connectors_description') %>
-          </span>
-        </li>
+      <li class="connectors">
+        <%= admin_nav_link_to t('screens.admin.index.connectors'), :controller => '/administration/connector', :action => 'connectors' %>
+        <span class="description">
+          <%= t('screens.admin.index.connectors_description') %>
+        </span>
+      </li>
     <% end %>
     <% if current_user.try(:is_superadmin?) %>
-        <li class="feature_flags">
-          <%= admin_nav_link_to t('screens.admin.index.feature_flags'), :controller => '/internal', :action => 'feature_flags', :domain_id => CurrentDomain.cname %>
-          <span class="description">
-            <%= t('screens.admin.index.feature_flags_description') %>
-          </span>
-        </li>
+      <li class="feature_flags">
+        <%= admin_nav_link_to t('screens.admin.index.feature_flags'), :controller => '/internal', :action => 'feature_flags', :domain_id => CurrentDomain.cname %>
+        <span class="description">
+          <%= t('screens.admin.index.feature_flags_description') %>
+        </span>
+      </li>
     <% end %>
   </ul>
 </div>

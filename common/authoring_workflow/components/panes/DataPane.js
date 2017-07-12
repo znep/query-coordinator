@@ -117,10 +117,10 @@ export var DataPane = React.createClass({
   renderGroupingOptions() {
     const { vifAuthoring } = this.props;
     const series = getSeriesFromVif(vifAuthoring);
-    const dimensionGroupingAvailable = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)) &&
-        (series.length == 1);
+    const isAvailable = (series.length == 1) &&
+      (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
-    return dimensionGroupingAvailable ? (
+    return isAvailable ? (
         <AccordionPane title={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.title')}>
           <DimensionGroupingColumnNameSelector />
         </AccordionPane>

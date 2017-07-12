@@ -3,14 +3,14 @@ import React, { PropTypes } from 'react';
 import I18n from 'common/i18n';
 import {
   getDimensionGroupingColumnName,
+  getSeriesFromVif, 
   getStacked,
 } from '../selectors/vifAuthoring';
 import {
     setStacked
 } from '../actions';
 
-export const DimensionGroupingStackedSelector = React.createClass({
-
+export const GroupedStackedSelector = React.createClass({
   propTypes: {
     metadata: PropTypes.object
   },
@@ -26,7 +26,9 @@ export const DimensionGroupingStackedSelector = React.createClass({
     } = this.props;
 
     const dimensionGroupingColumnName = getDimensionGroupingColumnName(vifAuthoring);
-    const areOptionsDisabled = (dimensionGroupingColumnName === null);
+    const series = getSeriesFromVif(vifAuthoring);
+    const areOptionsDisabled = (dimensionGroupingColumnName === null) && (series.length == 1);
+
     const isStacked = getStacked(vifAuthoring);
     const displayGroupedContainerAttributes = {
       id: 'grouping-display-grouped-container',
@@ -75,9 +77,9 @@ export const DimensionGroupingStackedSelector = React.createClass({
     );
 
     return (
-      <div>
-        <span id="grouping-options-title">{I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.title`)}</span>
+      <div className="grouped-stacked-selector-container">
         <div className="authoring-field">
+          <span>{I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.title`)}</span>
           <div className="radiobutton">
             {displayGroupedContainer}
             {displayStackedContainer}
@@ -108,4 +110,4 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DimensionGroupingStackedSelector);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupedStackedSelector);

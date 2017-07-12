@@ -2,18 +2,14 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import { Dropdown } from 'common/components';
-import { AccordionPane } from './shared/Accordion.js';
 import BlockLabel from './shared/BlockLabel';
 import {
   getDimension,
-  getDimensionGroupingColumnName,
-  isBarChart,
-  isColumnChart
+  getDimensionGroupingColumnName
 } from '../selectors/vifAuthoring';
 import { getValidDimensions } from '../selectors/metadata';
 import { setDimensionGroupingColumnName } from '../actions';
 import I18n from 'common/i18n';
-import DimensionGroupingStackedSelector from './DimensionGroupingStackedSelector';
 
 export const DimensionGroupingColumnNameSelector = React.createClass({
   propTypes: {
@@ -64,12 +60,8 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
       id: 'dimension-grouping-column-name-selection'
     };
 
-    const displayOptionsContainer = (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring)) ?
-      <DimensionGroupingStackedSelector /> :
-      null;
-
     return (
-      <div>
+      <div className="dimension-grouping-column-name-selector-container">
         <div className="authoring-field">
           <BlockLabel
             title={I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_column_name.subtitle`)}
@@ -80,7 +72,6 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
         <p className="authoring-field-description">
           <small>{I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.description')}</small>
         </p>
-        {displayOptionsContainer}
       </div>
     );
   }

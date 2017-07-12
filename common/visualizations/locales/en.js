@@ -90,20 +90,20 @@ export default {
           never: 'Never'
         },
         bar_chart_limit: {
-          title: 'Limit Displayed Bars',
+          title: 'Bar Display Options',
           subtitle: 'Number of bars to display',
           none: 'Show all',
           count: 'Show'
         },
         pie_chart_limit: {
-          title: 'Limit Displayed Slices',
+          title: 'Slice Display Options',
           subtitle: 'Number of slices to display',
           none: 'Show all',
           count: 'Show',
           description: 'Max of 12 slices. Additional values grouped into "Other"'
         },
         column_chart_limit: {
-          title: 'Limit Displayed Columns',
+          title: 'Column Display Options',
           subtitle: 'Number of columns to display',
           none: 'Show all',
           count: 'Show'

@@ -578,9 +578,12 @@
       }
     }
 
-    #grouping-options-title {
-      display: block;
-      margin-top: 12px;
+    .dimension-grouping-column-name-selector-container {
+      padding: 0 0 20px;
+    }
+
+    .grouped-stacked-selector-container {
+      margin: 0 0 30px;
     }
 
     #grouping-display-grouped-container, #grouping-display-stacked-container {

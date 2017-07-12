@@ -119,6 +119,69 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
     if (_.get(state, 'configuration.showLegend', null) === null) {
       _.set(state, 'configuration.showLegend', true);
     }
-  }
+  };
+};
 
+export const appendSeriesWithMeasure = (state, measure) => {
+
+    // Clone the first series
+    //
+    const clonedSeries = _.cloneDeep(state.series[0]);
+
+    // Set the measure properties
+    //
+    _.set(clonedSeries, 'dataSource.measure.aggregationFunction', measure.aggregationFunction);
+    _.set(clonedSeries, 'dataSource.measure.columnName', measure.columnName);
+    _.set(clonedSeries, 'dataSource.measure.label', measure.label);
+
+    // Append the series
+    //
+    state.series.push(clonedSeries);
+
+    // Adjust any other properties in the vif for multi-series
+    //
+    forEachSeries(state, series => {
+
+      // Remove any properties that do not apply to multi-series
+      //
+      _.unset(series, 'dataSource.dimension.grouping');
+
+      // If the color palette has not yet been set, then assign the default palette.
+      //
+      if (_.get(series, 'color.palette', null) === null) {
+        _.set(series, 'color.palette', 'categorical');
+      }
+    });
+
+    // If legend visibility has not yet been set, then set it to visible
+    //
+    if (_.get(state, 'configuration.showLegend', null) === null) {
+      _.set(state, 'configuration.showLegend', true);
+    }
+};
+
+export const removeSeries = (state, seriesIndex) => {
+
+  // Remove the series
+  //
+  state.series.splice(seriesIndex, 1);
+
+  // If no longer multi-series, remove multi-series properties
+  //
+  if (state.series.length == 1) {
+
+    _.unset(state, 'configuration.showLegend');
+
+    forEachSeries(state, series => {
+      _.unset(series, 'color.palette');
+    });
+  }
+};
+
+export const isGroupingOrMultiseries = (state) => {
+
+  const isGrouping = (_.get(state, 'series[0].dataSource.dimension.grouping', null) !== null);
+  const isMultiseries = (state.series.length > 1);
+
+  return isGrouping || isMultiseries;
 };

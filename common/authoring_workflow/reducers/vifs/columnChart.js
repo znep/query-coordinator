@@ -4,6 +4,7 @@ import vifs from '../../vifs';
 import baseVifReducer from './base';
 import {
   forEachSeries,
+  isGroupingOrMultiseries,
   setBooleanValueOrDefaultValue,
   setBooleanValueOrDeleteProperty,
   setStringValueOrDeleteProperty,
@@ -73,8 +74,10 @@ export default function columnChart(state, action) {
       break;
 
     case actions.SET_COLOR_PALETTE:
-      if (_.get(state, 'series[0].dataSource.dimension.grouping', null) !== null) {
-        _.set(state, 'series[0].color.palette', action.colorPalette);
+      if (isGroupingOrMultiseries(state)) {
+        forEachSeries(state, series => {
+          _.set(series, 'color.palette', action.colorPalette);
+        });
       }
       break;
 

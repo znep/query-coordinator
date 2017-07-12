@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import {
+  appendSeriesWithMeasure,
   forEachSeries,
+  removeSeries,
   setBooleanValueOrDeleteProperty,
   setStringValueOrDefaultValue,
   setStringValueOrDeleteProperty,
@@ -57,25 +59,12 @@ export default function(state, action) {
       }
       break;
 
-    case actions.APPEND_SERIES_WITH_MEASURE: {
-        const series = _.cloneDeep(state.series[0]);
-
-        _.set(series, 'dataSource.measure.aggregationFunction', action.measure.aggregationFunction);
-        _.set(series, 'dataSource.measure.columnName', action.measure.columnName);
-        _.set(series, 'dataSource.measure.label', action.measure.label);
-
-        state.series.push(series);
-
-        // Remove any properties that do not apply to multi-series
-        //  
-        forEachSeries(state, series => {
-          _.unset(series, 'dataSource.dimension.grouping');
-        });
-      }
+    case actions.APPEND_SERIES_WITH_MEASURE:
+      appendSeriesWithMeasure(state, action.measure);
       break;
 
     case actions.REMOVE_SERIES:
-      state.series.splice(action.seriesIndex, 1);
+      removeSeries(state, action.seriesIndex);
       break;
 
     case actions.SET_MEASURE:
@@ -101,7 +90,7 @@ export default function(state, action) {
       }
       break;
 
-    case actions.SET_STACKED:
+      case actions.SET_STACKED:
       forEachSeries(state, series => {
         setBooleanValueOrDeleteProperty(series, 'stacked', action.stacked);
       });

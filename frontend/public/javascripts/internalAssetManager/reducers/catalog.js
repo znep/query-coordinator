@@ -1,6 +1,11 @@
 import _ from 'lodash';
 
-const order = _.isEmpty(_.get(window, 'initialState.initialOrder.value')) ? undefined : {
+const defaultOrder = {
+  ascending: false,
+  value: 'lastUpdatedDate'
+};
+
+const order = _.isEmpty(_.get(window, 'initialState.initialOrder.value')) ? defaultOrder : {
   ascending: !!_.get(window, 'initialState.initialOrder.ascending'),
   value: _.get(window, 'initialState.initialOrder.value')
 };

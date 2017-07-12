@@ -59,7 +59,7 @@ gem 'semver2', '~> 3.4'
 gem 'request_store', '~> 1.2'
 
 # Exception notifier - required last so we get airbrake from delayed jobs
-gem 'airbrake', '~> 5.6'
+gem 'airbrake', '~> 6.2'
 
 # Getty Images' library for making OAuth2 calls to their API.
 gem 'ConnectSDK', path: 'vendor/gems/ConnectSDK'

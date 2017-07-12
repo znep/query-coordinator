@@ -114,7 +114,7 @@ const fieldsetLicense = (licenseVal, attrVal, attrLinkVal) => {
 const fieldsetEmail = emailVal => {
   const fields = [
     Field.Text(
-      'email',
+      'contactEmail',
       I18n.edit_metadata.email_address,
       emailVal,
       true,
@@ -196,7 +196,7 @@ export const makeRegularFieldsets = view => {
     privateMetadata
   } = view;
 
-  const email = privateMetadata ? privateMetadata.email : null;
+  const email = privateMetadata ? privateMetadata.contactEmail : null;
 
   return [
     fieldsetTitleAndDesc(name, description),
@@ -258,7 +258,7 @@ const validateFieldsetEmail = fieldset => {
   const model = makeDataModel(fieldset);
 
   return Validation.of()
-    .concat(isEmail(model.email.name, model.email.value || ''))
+    .concat(isEmail(model.contactEmail.name, model.contactEmail.value || ''))
     .mapFailure(f => f.map(g => ({ ...g, fieldset: fieldset.title })))
     .map(() => fieldset);
 };

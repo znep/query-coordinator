@@ -160,6 +160,26 @@ var utils = {
   },
 
   /**
+   * Ensures the given value is of Array type.
+   *
+   * @param {any} object - The object to check
+   */
+  assertIsArray: function(object) {
+    var valid = _.isArray(object);
+
+    utils.assert(valid, `Expected ${object} to be an Array, was ${typeof object}`);
+  },
+
+  /**
+   * Ensures the given value is a number.
+   *
+   * @param {any} value - The value to check
+   */
+  assertIsNumber: function(value) {
+    utils.assertIsOneOfTypes(value, 'number');
+  },
+
+  /**
    * Asserts that an object is instanceof an instantiator.
    *
    * @param {object} instance - The instance to check.

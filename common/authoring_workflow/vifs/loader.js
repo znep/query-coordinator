@@ -32,9 +32,9 @@ const paths = {
   pointSize: 'configuration.pointSize',
   positiveColor: 'configuration.legend.positiveColor',
   precision: 'series[0].dataSource.precision',
-  primaryColor: 'series[{0}].color.primary',
+  primaryColor: 'series[0].color.primary',
   rowInspectorTitleColumnName: 'configuration.rowInspectorTitleColumnName',
-  secondaryColor: 'series[{0}].color.secondary',
+  secondaryColor: 'series[0].color.secondary',
   series: 'series',
   shapefileGeometryLabel: 'configuration.shapefile.geometryLabel',
   shapefilePrimaryKey: 'configuration.shapefile.primaryKey',
@@ -147,7 +147,6 @@ export const load = (dispatch, vif) => {
     ));
   }
   
-  // This depends on dimensionGroupingColumnName being set
   if (has(paths.colorPalette)) {
     dispatch(actions.setColorPalette(get(paths.colorPalette)));
   }
@@ -214,10 +213,18 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setPrecision(get(paths.precision)));
   }
 
+  if (has(paths.primaryColor)) {
+    dispatch(actions.setPrimaryColor(get(paths.primaryColor)));
+  }
+
   if (has(paths.rowInspectorTitleColumnName)) {
     dispatch(actions.setRowInspectorTitleColumnName(get(paths.rowInspectorTitleColumnName)));
   }
 
+  if (has(paths.secondaryColor)) {
+    dispatch(actions.setSecondaryColor(get(paths.secondaryColor)));
+  }
+ 
   if (has(paths.shapefileGeometryLabel)) {
     dispatch(actions.setShapefileGeometryLabel(get(paths.shapefileGeometryLabel)));
   }

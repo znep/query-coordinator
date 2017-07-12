@@ -66,23 +66,6 @@ export var PresentationPane = React.createClass({
     );
   },
 
-  renderColorPicker(seriesIndex, labelText, primaryColor) {
-    const { onChangePrimaryColor } = this.props;
-
-    const colorPickerAttributes = {
-      handleColorChange: (selectedColor) => onChangePrimaryColor(seriesIndex, selectedColor),
-      value: primaryColor,
-      palette: COLORS
-    };
-
-    return (
-      <div className="color-picker-container" key={seriesIndex}>
-        <label className="block-label" htmlFor="primary-color">{labelText}</label>
-        <ColorPicker {...colorPickerAttributes}/>
-      </div>
-    );
-  },
-
   renderColorPalette() {
     const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
     const selectedColorPalette = selectors.getColorPalette(vifAuthoring);
@@ -625,8 +608,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangePrimaryColor: (seriesIndex, primaryColor) => {
-      dispatch(actions.setPrimaryColor(seriesIndex, primaryColor));
+    onChangePrimaryColor: primaryColor => {
+      dispatch(actions.setPrimaryColor(primaryColor));
     },
 
     onSelectBaseLayer: baseLayer => {

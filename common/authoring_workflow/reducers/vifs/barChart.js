@@ -83,9 +83,9 @@ export default function barChart(state, action) {
       break;
 
     case actions.SET_COLOR_PALETTE:
-      if (_.get(state, 'series[0].dataSource.dimension.grouping', null) !== null) {
-        _.set(state, 'series[0].color.palette', action.colorPalette);
-      }
+      forEachSeries(state, series => {
+        _.set(series, 'color.palette', action.colorPalette);
+      });
       break;
 
     case actions.APPEND_SERIES_WITH_MEASURE:

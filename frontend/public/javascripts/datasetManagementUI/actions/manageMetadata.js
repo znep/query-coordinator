@@ -89,8 +89,8 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   ])
     .then(resp => {
       // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
-      // Because of the way .then workds, you cant just return the resp here. You get
-      // an array of promises rather than a Promise of array.
+      // Because of the way .then works, you can't just return the resp here. You get
+      // an array of Promise rather than a Promise of array.
       return Promise.all(resp.map(r => r.json()));
     })
     .then(resp => {

@@ -5450,11 +5450,11 @@ export const applyRevision = {
   }
 };
 
-export const updateRevision = permission => ({
+export const updateRevision = (permission, metadata = null) => ({
   resource: {
     task_sets: [],
     revision_seq: 0,
-    metadata: null,
+    metadata: metadata,
     id: 201,
     fourfour: '2ttq-aktm',
     created_by: {

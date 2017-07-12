@@ -136,15 +136,17 @@ export const updateRevision = () =>
     'express:/api/publishing/v1/revision/:fourfour/:revisionSeq',
     (url, options) => {
       let permission;
+      let metadata;
 
       try {
         permission = JSON.parse(options.body).permission || 'public';
+        metadata = JSON.parse(options.body).metadata
       } catch (err) {
         permission = 'public';
       }
 
       return {
-        body: JSON.stringify(responses.updateRevision(permission)),
+        body: JSON.stringify(responses.updateRevision(permission, metadata)),
         status: 200,
         statusText: STATUS_TEXT.OK
       };

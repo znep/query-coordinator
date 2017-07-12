@@ -52,21 +52,16 @@ export var PresentationPane = React.createClass({
   },
 
   renderPrimaryColor() {
-    const { vifAuthoring } = this.props;
-    const series = selectors.getSeriesFromVif(vifAuthoring);
-
-    const colorPickers = series.map((item, index) => {
-
-      const labelText = (series.length == 1) || _.isEmpty(item.dataSource.measure.label) ? 
-        I18n.translate('shared.visualizations.panes.presentation.fields.bar_color.title') :
-        item.dataSource.measure.label;
-
-      return this.renderColorPicker(index, labelText, item.color.primary);
-    });
+    const { vifAuthoring, onChangePrimaryColor } = this.props;
+    const primaryColor = selectors.getPrimaryColor(vifAuthoring);
+    const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
 
     return (
-      <AccordionPane key="colors" title={I18n.translate('shared.visualizations.panes.presentation.subheaders.colors')}>
-        {colorPickers}
+      <AccordionPane key="colors" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
+        <div>
+          <label className="block-label" htmlFor="primary-color">{labelText}</label>
+          <ColorPicker handleColorChange={onChangePrimaryColor} value={primaryColor} palette={COLORS}/>
+        </div>
       </AccordionPane>
     );
   },
@@ -575,27 +570,30 @@ export var PresentationPane = React.createClass({
 
     if (selectors.isBarChart(vifAuthoring)) {
 
-      if (selectors.isGroupedBarChart(vifAuthoring)) {
+      if (selectors.isGroupingOrMultiseries(vifAuthoring)) {
         configuration = this.renderGroupedBarChartControls();
       } else {
         configuration = this.renderBarChartControls();
       }
+
     } else if (selectors.isColumnChart(vifAuthoring)) {
 
-      if (selectors.isGroupedColumnChart(vifAuthoring)) {
+      if (selectors.isGroupingOrMultiseries(vifAuthoring)) {
         configuration = this.renderGroupedColumnChartControls();
       } else {
         configuration = this.renderColumnChartControls();
       }
-    } else if (selectors.isHistogram(vifAuthoring)) {
-      configuration = this.renderHistogramControls();
+
     } else if (selectors.isTimelineChart(vifAuthoring)) {
 
-      if (selectors.isGroupedTimelineChart(vifAuthoring)) {
+      if (selectors.isGroupingOrMultiseries(vifAuthoring)) {
         configuration = this.renderGroupedTimelineChartControls();
       } else {
         configuration = this.renderTimelineChartControls();
       }
+
+    } else if (selectors.isHistogram(vifAuthoring)) {
+      configuration = this.renderHistogramControls();
     } else if (selectors.isFeatureMap(vifAuthoring)) {
       configuration = this.renderFeatureMapControls();
     } else if (selectors.isRegionMap(vifAuthoring)) {

@@ -490,8 +490,8 @@ function SvgVisualization($element, vif, options) {
     return mobile;
   };
 
-  this.isMultiSeriesOrGrouping = function() {    
-    return self.isMultiSeries() || self.isGrouping();
+  this.isGroupingOrMultiseries = function() {    
+    return self.isGrouping() || self.isMultiSeries();
   };
 
   this.isMultiSeries = function() {

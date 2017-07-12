@@ -299,17 +299,17 @@ export const isValidRegionMapVif = createSelector(
   }
 );
 
+export const isGroupingOrMultiseries = createSelector(
+  getDimensionGroupingColumnName,
+  getSeriesFromVif,
+  (dimensionGroupingColumnName, series) => {
+    return _.isString(dimensionGroupingColumnName) || (series.length > 1);
+  }
+);
+
 export const isBarChart = createSelector(
   getVisualizationType,
   type => type === 'barChart'
-);
-
-export const isGroupedBarChart = createSelector(
-  isBarChart,
-  getDimensionGroupingColumnName,
-  (isBarChart, dimensionGroupingColumnName) => {
-    return isBarChart && _.isString(dimensionGroupingColumnName);
-  }
 );
 
 export const isValidBarChartVif = createSelector(
@@ -329,14 +329,6 @@ export const isValidBarChartVif = createSelector(
 export const isColumnChart = createSelector(
   getVisualizationType,
   type => type === 'columnChart'
-);
-
-export const isGroupedColumnChart = createSelector(
-  isColumnChart,
-  getDimensionGroupingColumnName,
-  (isColumnChart, dimensionGroupingColumnName) => {
-    return isColumnChart && _.isString(dimensionGroupingColumnName);
-  }
 );
 
 export const isValidColumnChartVif = createSelector(
@@ -393,14 +385,6 @@ export const isValidFeatureMapVif = createSelector(
 export const isTimelineChart = createSelector(
   getVisualizationType,
   type => type === 'timelineChart'
-);
-
-export const isGroupedTimelineChart = createSelector(
-  isTimelineChart,
-  getDimensionGroupingColumnName,
-  (isTimelineChart, dimensionGroupingColumnName) => {
-    return isTimelineChart && _.isString(dimensionGroupingColumnName);
-  }
 );
 
 export const isValidTimelineChartVif = createSelector(

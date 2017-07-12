@@ -4,7 +4,7 @@
   <%- if current_user_can_see_activity_logs? -%>
     <li>
       <a href="<%= site_chrome_massage_url('/admin/activity_feed') %>">
-        <span><%= t("shared.site_chrome.screens.admin.index.jobs") %></span>
+        <span><%= t("screens.admin.index.jobs") %></span>
       </a>
     </li>
   <%- end -%>
@@ -12,7 +12,7 @@
   <%- if current_user_can_see_asset_inventory? -%>
     <li>
       <a href="<%= site_chrome_massage_url('/admin/datasets') %>">
-        <span><%= t("shared.site_chrome.screens.admin.index.datasets") %></span>
+        <span><%= t("screens.admin.index.datasets") %></span>
       </a>
     </li>
   <%- end -%>
@@ -20,7 +20,7 @@
   <%- if current_user_can_see_analytics? -%>
     <li>
       <a href="<%= site_chrome_massage_url('/admin/analytics') %>">
-        <span><%= t("shared.site_chrome.screens.admin.index.site_analytics") %></span>
+        <span><%= t("screens.admin.index.site_analytics") %></span>
       </a>
     </li>
   <%- end -%>
@@ -28,7 +28,7 @@
   <%- if current_user_can_see_users? -%>
     <li>
       <a href="<%= site_chrome_massage_url('/admin/users') %>">
-        <span><%= t("shared.site_chrome.screens.admin.index.users") %></span>
+        <span><%= t("screens.admin.index.users") %></span>
       </a>
     </li>
   <%- end -%>
@@ -37,7 +37,7 @@
     <li class="separator"></li>
     <li>
       <a href="<%= site_chrome_massage_url('/admin') %>">
-        <span><%= t("shared.site_chrome.header.settings_menu.all_settings") %></span>
+        <span><%= t("header.settings_menu.all_settings") %></span>
       </a>
     </li>
   <%- end -%>

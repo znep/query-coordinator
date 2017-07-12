@@ -1,6 +1,8 @@
+@import 'app/styles/styleguide-colors';
+
 .pagination {
   .btn-page-changer {
-    color: #2279a6;
+    color: $primary-text;
 
     span.icon-arrow-right {
       display: inline-block;
@@ -15,7 +17,7 @@
     &:hover {
       border-style: solid;
       border-width: 1px;
-      border-color: #d4d4d4;
+      border-color: $light-grey-3;
     }
 
     &.btn-page-changer-previous {
@@ -25,14 +27,18 @@
     &.btn-page-changer-next {
       padding:  5px 6px 5px 10px;
     }
+
+    &.disabled {
+      color: $grey;
+    }
   }
 
   .page-number {
     background: transparent;
-    color: #2279a6;
+    color: $primary-text;
 
     &.current {
-      color: #666;
+      color: $dark-grey-2;
       font-weight: bold;
     }
 

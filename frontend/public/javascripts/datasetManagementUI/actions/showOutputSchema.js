@@ -183,10 +183,14 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
     if (inputColumns.length !== 1) {
       console.error('expected transform', transform.id, 'to have 1 input column; has', inputColumns.length);
     }
-    // This can only be called if the new type is a valid conversion target, so
-    // conversionFunction will be defined.
+    const inputColumn = inputColumns[0];
+    const conversionFunc = soqlProperties[inputColumn.soql_type].conversions[newType];
+    const fieldName = inputColumn.field_name;
+    if (inputColumn.soql_type === newType) {
+      return `\`${fieldName}\``;
+    }
     return outputColumn.id === oldColumn.id
-      ? `${soqlProperties[newType].conversionFunction}(${inputColumns[0].field_name})`
+      ? `${conversionFunc}(${fieldName})`
       : transformExpr;
   };
   return oldOutputColumns.map(c => toNewOutputColumn(c, genTransform));

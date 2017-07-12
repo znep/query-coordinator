@@ -43,8 +43,8 @@ describe('axisRescalingToggle', function() {
     };
   }
 
-  it('is hidden when enableAxisRescaling is null', function() {
-    ServerConfig.override('enableDataLensAxisRescaling', null);
+  it('is hidden when enableAxisRescaling is hidden', function() {
+    ServerConfig.override('enableDataLensAxisRescaling', 'hidden');
     var context = createElement();
     assert.isTrue($(context.element.find('.axis-rescaling-toggle')).hasClass('ng-hide'));
   });

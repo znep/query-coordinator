@@ -23,7 +23,7 @@
 </div>
 
 <% content_for :scripts do %>
-  <script id="visualization-canvas-initial-state">
+  <script type="text/javascript" id="visualization-canvas-initial-state">
     var initialState = {
       parentView: <%= raw @parent_view.as_visualization_canvas_parent.to_json %>,
       view: <%= raw @view.as_visualization_canvas.to_json %>,

@@ -764,6 +764,76 @@ describe('SvgVisualization', () => {
     });
   });
 
+  describe('#getColor', () => {
+    let viz;
+    let customPalette;
+    const dimensionIndex = 0;
+    const measureIndex = 0;
+    const measureLabels = [];
+
+    beforeEach(() => {
+      viz = new SvgVisualization($element, mockVif);
+    });
+
+    it('throws if arguments are invalid', () => {
+      assert.throws(() => {
+        viz.getColor();
+      });
+
+      // no dimensionIndex
+      assert.throws(() => {
+        viz.getColor(null, 0, []);
+      });
+
+      // no measureIndex
+      assert.throws(() => {
+        viz.getColor(0, null, []);
+      });
+
+      // no measureLabels
+      assert.throws(() => {
+        viz.getColor(0, 0);
+      });
+    });
+
+    it('defaults to returning a single primary color', () => {
+      const copiedVif = _.cloneDeep(viz.getVif());
+      viz.updateVif(copiedVif);
+
+      assert.equal(viz.getColor(dimensionIndex, measureIndex, measureLabels), DEFAULT_PRIMARY_COLOR);
+    });
+
+    it('chooses a color from a palette if a palette is present on the Vif', () => {
+      const copiedVif = _.cloneDeep(viz.getVif());
+
+      copiedVif.series[0].color.palette = 'categorial';
+      viz.updateVif(copiedVif);
+
+      const color = viz.getColor(dimensionIndex, measureIndex, measureLabels);
+      assert.equal(color, COLOR_PALETTES.categorical[0])
+    });
+
+    it('uses a custom color palette if defined', () => {
+      const copiedVif = _.cloneDeep(viz.getVif());
+      const addedGrouping = {
+        grouping: { columnName: 'id' }
+      };
+      customPalette = {
+        'id': {
+          '10998': { 'color': '#5b9ec9', 'index': 1 },
+          '10999': { 'color': '#a6cee3', 'index': 0 },
+          '(Other)': { 'color': '#fe982c', 'index': 12 }
+        }
+      };
+      _.merge(copiedVif.series[0].dataSource.dimension, addedGrouping);
+      copiedVif.series[0].color.palette = 'custom';
+      copiedVif.series[0].color.customPalette = customPalette;
+      viz.updateVif(copiedVif);
+      const color = viz.getColor(dimensionIndex, measureIndex, _.keys(customPalette['id']));
+      assert.equal(color, '#5b9ec9');
+    });
+  });
+
   describe('#getColorPaletteBySeriesIndex', () => {
     it('returns the color palette for each index of a series', () => {
       const viz = new SvgVisualization($element, mockMultiseriesVif);

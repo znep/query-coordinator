@@ -33,3 +33,7 @@ export const changeSortOrder = (columnName) => (dispatch, getState) => {
     onSuccess
   );
 };
+
+export const clearSortOrder = () => (
+  { type: 'CHANGE_SORT_ORDER', order: undefined }
+);

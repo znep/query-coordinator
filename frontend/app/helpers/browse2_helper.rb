@@ -262,30 +262,28 @@ module Browse2Helper
   # File type name => extension & mime-type dictionary
   # This logic is repeated in dataset.js and templates.js...
   def download_types
-    {'CSV' => { :extension => 'csv', :mime => 'text/csv' },
-     'CSV for Excel' => { :extension => 'csv', :mime => 'text/csv', :params => '&bom=true'},
-     'JSON' => { :extension => 'json', :mime => 'application/json' },
-     'RDF' =>  { :extension => 'rdf', :mime => 'application/rdf+xml' },
-     'RSS' =>  { :extension => 'rss', :mime => 'application/rss+xml' },
-     'TSV for Excel' =>  { :extension => 'tsv', :mime => 'text/tab-separated-values' },
-     'XML' =>  { :extension => 'xml', :mime => 'application/xml' }
+    {
+      'CSV' => { :extension => 'csv', :mime => 'text/csv' },
+      'CSV for Excel' => { :extension => 'csv', :mime => 'text/csv', :params => '&bom=true' },
+      'JSON' => { :extension => 'json', :mime => 'application/json' },
+      'RDF' => { :extension => 'rdf', :mime => 'application/rdf+xml' },
+      'RSS' => { :extension => 'rss', :mime => 'application/rss+xml' },
+      'TSV for Excel' => { :extension => 'tsv', :mime => 'text/tab-separated-values' },
+      'XML' => { :extension => 'xml', :mime => 'application/xml' }
     }
   end
 
   def hidden_download_link(link, uid, type_name, type_info)
     domain = Addressable::URI.parse(link)
 
-    file_format = tag(:meta,
-                      itemprop: 'fileFormat',
-                      content: type_info[:mime])
-    url = tag(:meta,
-              itemprop: 'url',
-              content: "#{domain.scheme}://#{domain.host}/api/views/#{uid}." \
-                       "#{type_info[:extension]}?accessType=DOWNLOAD#{type_info.fetch(:params, '')}".html_safe)
+    format_tag = tag(:span, itemprop: 'fileFormat', content: type_info[:mime])
+    link_tag = tag(
+      :link,
+      itemprop: 'contentUrl',
+      content: "/api/views/#{uid}.#{type_info[:extension]}?accessType=DOWNLOAD#{type_info[:params]}".html_safe
+    )
 
-    content_tag :div, :id => type_name do
-      file_format + url
-    end
+    content_tag(:div, "#{format_tag}#{link_tag}".html_safe)
   end
 
 end

@@ -89,8 +89,95 @@ module AdminHelper
     link_to(content_tag(:strong, title) + content_tag(:span, description), options)
   end
 
-  def user_can?(user, action, current_domain = CurrentDomain)
-    current_domain.user_can?(user, action)
+  def user_can?(action)
+    Array[*action].all? { |right| CurrentDomain.user_can?(current_user, right) }
+  end
+
+  def user_can_see_activity_feed?
+    user_can?(UserRights::VIEW_ALL_DATASET_STATUS_LOGS)
+  end
+
+  def user_can_see_asset_inv?
+    user_can?(UserRights::EDIT_OTHERS_DATASETS) ||
+      user_can?(UserRights::EDIT_SITE_THEME)
+  end
+
+  def user_can_see_goals?
+    CurrentDomain.module_enabled?(:govStat)
+  end
+
+  def user_can_see_federations?
+    user_can?(UserRights::FEDERATIONS) &&
+      module_available?(:federations)
+  end
+
+  def user_can_see_view_moderation?
+    user_can?(UserRights::APPROVE_NOMINATIONS) &&
+      feature?(:view_moderation)
+  end
+
+  def user_can_see_comment_moderation?
+    user_can?(UserRights::MODERATE_COMMENTS) &&
+      module_enabled?(:publisher_comment_moderation)
+  end
+
+  def user_can_see_home_page?
+    !user_can_see_goals? &&
+      (
+        user_can?(UserRights::MANAGE_STORIES) ||
+        user_can?(UserRights::FEATURE_ITEMS) ||
+        user_can?(UserRights::EDIT_SITE_THEME)
+      )
+  end
+
+  def user_can_see_canvas_designer?
+    !user_can_see_goals? &&
+      user_can?(UserRights::EDIT_PAGES) &&
+      module_enabled?(:canvas_designer)
+  end
+
+  def user_can_see_users?
+    user_can?(UserRights::MANAGE_USERS)
+  end
+
+  def user_can_see_sdp_templates?
+    user_can?(UserRights::EDIT_SDP)
+  end
+
+  def user_can_see_metadata?
+    user_can?(UserRights::EDIT_SITE_THEME)
+  end
+
+  def user_can_see_connectors?
+    rights = [UserRights::USE_DATA_CONNECTORS, UserRights::CREATE_DATASETS, UserRights::EDIT_OTHERS_DATASETS]
+    user_can?(rights)
+  end
+
+  def user_can_see_stories?
+    current_user.try(:is_superadmin?) &&
+      (feature_flag?('stories_enabled', request) ||
+        FeatureFlags.derive(nil, request).open_performance_narrative_editor == 'storyteller')
+  end
+
+  def user_can_see_routing_approval?
+    module_enabled?(:routing_approval) &&
+      current_user.can_approve?
+  end
+
+  def user_can_see_content_section?
+    user_can_see_routing_approval? ||
+      user_can_see_view_moderation? ||
+      user_can_see_comment_moderation? ||
+      can_view_georegions_admin?(current_user) ||
+      user_can_see_home_page? ||
+      user_can_see_canvas_designer?
+  end
+
+  def user_can_see_site_settings_section?
+    user_can_see_users? ||
+      user_can_see_metadata? ||
+      show_site_appearance_admin_panel? ||
+      user_can_see_sdp_templates?
   end
 
   def a11y_metadata_category_summary(categories, columns)
@@ -127,11 +214,6 @@ module AdminHelper
 
   def render_admin_qualtrics
     render_qualtrics_survey('admin')
-  end
-
-  def show_connectors?
-    rights = [UserRights::USE_DATA_CONNECTORS, UserRights::CREATE_DATASETS, UserRights::EDIT_OTHERS_DATASETS]
-    rights.all?{|r| CurrentDomain.user_can?(current_user, r)}
   end
 
   def render_admin_breadcrumb

@@ -1,5 +1,4 @@
-<%- prefix = 'screens.admin.index' %>
-<%- unless render_admin_header? -%>
+<% unless render_admin_header? %>
   <% content_for(:relocated_content) do %><a name="above-content"></a><% end %>
   <div class="leftNavBox adminNavBox">
     <div class="hideButtonBox">
@@ -9,111 +8,104 @@
     </div>
     <ul class="navigationList adminNav">
         <li class="analytics">
-          <%= admin_nav_link_to t("#{prefix}.site_analytics"), :controller => '/administration', :action => 'analytics' %>
+          <%= admin_nav_link_to t('screens.admin.index.site_analytics'), :controller => '/administration', :action => 'analytics' %>
         </li>
-      <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_USERS) -%>
+      <% if user_can_see_users? %>
         <li class="users">
-          <%= admin_nav_link_to t("#{prefix}.users"), :controller => '/administration', :action => 'users' %>
-        </li>
-      <%- end -%>
-      <%- if CurrentDomain.user_can?(current_user, UserRights::FEDERATIONS) && module_available?(:federations) -%>
-        <li class="federation">
-          <%= admin_nav_link_to t("#{prefix}.federation"), :controller => '/administration', :action => 'federations' %>
-        </li>
-      <%- end -%>
-      <%- if CurrentDomain.user_can?(current_user, UserRights::MODERATE_COMMENTS) && module_enabled?(:publisher_comment_moderation) -%>
-        <li class="comments">
-          <%= admin_nav_link_to t("#{prefix}.comment_moderation"), :controller => '/administration', :action => 'comment_moderation' %>
-        </li>
-      <%- end -%>
-      <%- if CurrentDomain.user_can?(current_user, UserRights::APPROVE_NOMINATIONS) && feature?(:view_moderation) -%>
-        <li class="viewmoderation">
-          <%= admin_nav_link_to t("#{prefix}.view_moderation"), :controller => '/administration', :action => 'views' %>
-        </li>
-      <%- end -%>
-      <%- if user_can?(current_user, UserRights::EDIT_SDP) -%>
-        <li class="appearance">
-          <%= admin_nav_link_to t("#{prefix}.sdp_templates"), :controller => '/administration', :action => 'sdp_templates' %>
-        </li>
-      <%- end -%>
-      <%- unless CurrentDomain.module_enabled?(:govStat) -%>
-        <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_PAGES) && module_enabled?(:canvas_designer) -%>
-          <li class="contentmgmt">
-            <%= admin_nav_link_to t("#{prefix}.dataslate_pages"), :controller => '/administration', :action => 'canvas_pages' %>
-          </li>
-        <%- end -%>
-      <%- end -%>
-      <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_OTHERS_DATASETS) ||
-            CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
-        <li class="datasets">
-          <%= admin_nav_link_to t("#{prefix}.datasets"), :controller => '/administration', :action => 'datasets' %>
-        </li>
-      <%- end -%>
-      <%- if can_view_georegions_admin?(current_user) -%>
-        <li class="georegions">
-          <%= admin_nav_link_to t("#{prefix}.georegions"), :controller => '/administration', :action => 'georegions' %>
-        </li>
-      <%- end -%>
-      <%- if show_site_appearance_admin_panel? %>
-        <li class="homemgmt">
-          <%= admin_nav_link_to t("#{prefix}.site_appearance"), :controller => '/site_appearance', :action => 'edit' %>
-        </li>
-      <%- end -%>
-      <%- unless CurrentDomain.module_enabled?(:govStat) -%>
-        <%- if CurrentDomain.user_can?(current_user, UserRights::MANAGE_STORIES) ||
-                CurrentDomain.user_can?(current_user, UserRights::FEATURE_ITEMS) ||
-                CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
-          <li class="homemgmt">
-            <%= admin_nav_link_to t("#{prefix}.home_page"), :controller => '/administration', :action => 'home' %>
-          </li>
-        <%- end -%>
-      <%- end -%>
-      <%- if CurrentDomain.user_can?(current_user, UserRights::EDIT_SITE_THEME) -%>
-        <li class="metadata">
-          <%= admin_nav_link_to t("#{prefix}.metadata"), :controller => '/administration', :action => 'metadata' %>
-        </li>
-      <%- end -%>
-      <%- if CurrentDomain.user_can?(current_user, UserRights::VIEW_ALL_DATASET_STATUS_LOGS) %>
-        <li class="activity-feed">
-          <%= admin_nav_link_to t("#{prefix}.jobs"), :controller => '/administration/activity_feed', :action => 'index' %>
+          <%= admin_nav_link_to t('screens.admin.index.users'), :controller => '/administration', :action => 'users' %>
         </li>
       <% end %>
-      <%- if module_enabled?(:routing_approval) && current_user.can_approve? -%>
-        <li class="routingApproval">
-          <%= admin_nav_link_to t("#{prefix}.dataset_routing_and_approval"), :controller => '/administration/routing_approval', :action => 'index' %>
+      <% if user_can_see_federations? %>
+        <li class="federation">
+          <%= admin_nav_link_to t('screens.admin.index.federation'), :controller => '/administration', :action => 'federations' %>
         </li>
-      <%- end -%>
-      <%- if current_user.try(:is_superadmin?) -%>
-        <li class="internal">
-          <%= admin_nav_link_to t("#{prefix}.internal"), :controller => '/internal', :action => 'index' %>
+      <% end %>
+      <% if user_can_see_comment_moderation? %>
+        <li class="comments">
+          <%= admin_nav_link_to t('screens.admin.index.comment_moderation'), :controller => '/administration', :action => 'comment_moderation' %>
         </li>
-      <%- end -%>
-      <%- if current_user.try(:is_superadmin?) && (feature_flag?('stories_enabled', request) || FeatureFlags.derive(nil, request).open_performance_narrative_editor == 'storyteller') -%>
+      <% end %>
+      <% if user_can_see_view_moderation? %>
+        <li class="viewmoderation">
+          <%= admin_nav_link_to t('screens.admin.index.view_moderation'), :controller => '/administration', :action => 'views' %>
+        </li>
+      <% end %>
+      <% if user_can_see_sdp_templates? %>
+        <li class="appearance">
+          <%= admin_nav_link_to t('screens.admin.index.sdp_templates'), :controller => '/administration', :action => 'sdp_templates' %>
+        </li>
+      <% end %>
+      <% if user_can_see_canvas_designer? %>
         <li class="contentmgmt">
-          <%= admin_nav_link_to t("#{prefix}.stories"), '/stories/admin/themes' %>
+          <%= admin_nav_link_to t('screens.admin.index.dataslate_pages'), :controller => '/administration', :action => 'canvas_pages' %>
         </li>
-      <%- end -%>
-      <%- if CurrentDomain.module_enabled?(:govStat) -%>
+      <% end %>
+      <% if user_can_see_asset_inv? %>
         <li class="datasets">
-          <%= admin_nav_link_to t("#{prefix}.goals"), '/admin/goals' %>
+          <%= admin_nav_link_to t('screens.admin.index.datasets'), :controller => '/administration', :action => 'datasets' %>
         </li>
-      <%- end -%>
-      <%- if show_connectors? %>
+      <% end %>
+      <% if can_view_georegions_admin?(current_user) %>
+        <li class="georegions">
+          <%= admin_nav_link_to t('screens.admin.index.georegions'), :controller => '/administration', :action => 'georegions' %>
+        </li>
+      <% end %>
+      <% if show_site_appearance_admin_panel? %>
+        <li class="homemgmt">
+          <%= admin_nav_link_to t('screens.admin.index.site_appearance'), :controller => '/site_appearance', :action => 'edit' %>
+        </li>
+      <% end %>
+      <% if user_can_see_home_page? %>
+        <li class="homemgmt">
+          <%= admin_nav_link_to t('screens.admin.index.home_page'), :controller => '/administration', :action => 'home' %>
+        </li>
+      <% end %>
+      <% if user_can_see_metadata? %>
+        <li class="metadata">
+          <%= admin_nav_link_to t('screens.admin.index.metadata'), :controller => '/administration', :action => 'metadata' %>
+        </li>
+      <% end %>
+      <% if user_can_see_activity_feed? %>
+        <li class="activity-feed">
+          <%= admin_nav_link_to t('screens.admin.index.jobs'), :controller => '/administration/activity_feed', :action => 'index' %>
+        </li>
+      <% end %>
+      <% if module_enabled?(:routing_approval) && current_user.can_approve? %>
+        <li class="routingApproval">
+          <%= admin_nav_link_to t('screens.admin.index.dataset_routing_and_approval'), :controller => '/administration/routing_approval', :action => 'index' %>
+        </li>
+      <% end %>
+      <% if current_user.try(:is_superadmin?) %>
+        <li class="internal">
+          <%= admin_nav_link_to t('screens.admin.index.internal'), :controller => '/internal', :action => 'index' %>
+        </li>
+      <% end %>
+      <% if user_can_see_stories? %>
+        <li class="contentmgmt">
+          <%= admin_nav_link_to t('screens.admin.index.stories'), '/stories/admin/themes' %>
+        </li>
+      <% end %>
+      <% if user_can_see_goals? %>
+        <li class="datasets">
+          <%= admin_nav_link_to t('screens.admin.index.goals'), '/admin/goals' %>
+        </li>
+      <% end %>
+      <% if user_can_see_connectors? %>
         <li class="connectors">
-          <%= admin_nav_link_to t("#{prefix}.connectors"), :controller => '/administration/connector', :action => 'connectors' %>
+          <%= admin_nav_link_to t('screens.admin.index.connectors'), :controller => '/administration/connector', :action => 'connectors' %>
         </li>
-      <%- end -%>
-      <%- if current_user.try(:is_superadmin?) %>
+      <% end %>
+      <% if current_user.try(:is_superadmin?) %>
         <li class="feature_flags">
-          <%= admin_nav_link_to t("#{prefix}.feature_flags"), :controller => '/internal', :action => 'feature_flags', :domain_id => CurrentDomain.cname %>
+          <%= admin_nav_link_to t('screens.admin.index.feature_flags'), :controller => '/internal', :action => 'feature_flags', :domain_id => CurrentDomain.cname %>
         </li>
-      <%- end -%>
+      <% end %>
     </ul>
   </div>
 
   <a name="content" tabindex="-1"></a>
 
-  <%- content_for :js_footer do -%>
+  <% content_for :js_footer do %>
     <%= include_webpack_bundle 'open-data/admin-collapse-nav.js' %>
-  <%- end -%>
-<%- end -%>
+  <% end %>
+<% end %>

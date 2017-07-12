@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router';
 import TypeIcon from '../TypeIcon';
-import { soqlTypes, soqlProperties } from '../../lib/soqlTypes';
+import { soqlProperties } from '../../lib/soqlTypes';
 import * as Links from '../../links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { Dropdown } from 'common/components';
@@ -34,7 +34,7 @@ DropdownWithIcon.proptypes = {
 class ColumnHeader extends Component {
 
   shouldComponentUpdate(nextProps) {
-    return !_.isEqual(nextProps.column, this.props.column)
+    return !_.isEqual(nextProps.outputColumn, this.props.outputColumn)
       || nextProps.outputSchema.id !== this.props.outputSchema.id
       || nextProps.activeApiCallInvolvingThis !== this.props.activeApiCallInvolvingThis;
   }
@@ -48,11 +48,11 @@ class ColumnHeader extends Component {
   }
 
   onRowId() {
-    this.props.validateThenSetRowIdentifier(this.props.outputSchema, this.props.column);
+    this.props.validateThenSetRowIdentifier(this.props.outputSchema, this.props.outputColumn);
   }
 
   optionsFor() {
-    if (this.props.column.ignored) {
+    if (this.props.outputColumn.ignored) {
       return [
         {
           title: 'import_column',
@@ -74,70 +74,71 @@ class ColumnHeader extends Component {
         title: 'ignore_column',
         value: 'onDropColumn',
         icon: 'socrata-icon-eye-blocked',
-        disabled: this.props.column.is_primary_key,
+        disabled: this.props.outputColumn.is_primary_key,
         render: DropdownWithIcon
       },
       {
         title: 'set_row_id',
         value: 'onRowId',
         icon: 'socrata-icon-question',
-        disabled: this.props.column.is_primary_key,
+        disabled: this.props.outputColumn.is_primary_key,
         render: DropdownWithIcon
       }
     ];
   }
 
   columnType() {
-    return this.props.column.transform.output_soql_type;
+    return this.props.outputColumn.transform.output_soql_type;
   }
 
   icon(isDisabled) {
     if (this.props.activeApiCallInvolvingThis) {
       return (<span className={styles.progressSpinner} />);
-    } else if (this.props.column.is_primary_key) {
+    } else if (this.props.outputColumn.is_primary_key) {
       return (<span className={styles.rowIdIcon} />);
     }
     return (<TypeIcon type={this.columnType()} isDisabled={isDisabled} />);
   }
 
   render() {
-    const { outputSchema, column, updateColumnType, activeApiCallInvolvingThis } = this.props;
-    const isDisabled = column.ignored || activeApiCallInvolvingThis;
+    const { outputSchema, outputColumn, updateColumnType, activeApiCallInvolvingThis } = this.props;
+    const isDisabled = outputColumn.ignored || activeApiCallInvolvingThis;
 
-    const types = soqlTypes.map((type) => ({
-      humanName: Translations.type_display_names[type],
-      systemName: type,
-      selectable: !!soqlProperties[type].conversionFunction
+    const inputColumn = outputColumn.inputColumn;
+
+    const inputColumnTypeInfo = soqlProperties[inputColumn.soql_type];
+    const convertibleTo = _.keys(inputColumnTypeInfo.conversions);
+
+    const types = convertibleTo.map((type) => ({
+      humanName: Translations.type_display_names[type.toLowerCase()],
+      systemName: type
     }));
 
-    const orderedTypes = _.sortBy(
-      _.filter(types, 'selectable'),
-      'humanName'
-    );
+    const orderedTypes = _.sortBy(types, 'humanName');
 
     const dropdownProps = {
-      onSelection: (e) => this[e.value](column),
+      onSelection: (e) => this[e.value](outputColumn),
       displayTrueWidthOptions: true,
-      options: this.optionsFor(column),
+      options: this.optionsFor(outputColumn),
       placeholder: () => {
         return (<button className={styles.dropdownButton}></button>);
       }
     };
 
-    const header = (!column.transform) ?
+    const header = (!outputColumn.transform) ?
       (<span
         className={styles.colName}
-        id={`column-field-name-${column.id}`}
-        title={column.display_name}>
-        {column.display_name}
+        id={`column-field-name-${outputColumn.id}`}
+        title={outputColumn.display_name}>
+        {outputColumn.display_name}
       </span>) :
-      (<Link to={Links.columnMetadataForm(column.id)}>
+      (<Link to={Links.columnMetadataForm(outputColumn.id)}>
         <span
           className={styles.colName}
           data-cheetah-hook="col-name"
-          id={`column-display-name-${column.id}`}
-          title={column.display_name}>
-          {column.display_name}
+          id={`column-display-name-${outputColumn.id}`}
+          title={outputColumn.display_name}>
+          {outputColumn.display_name}
           <SocrataIcon name="edit" className={styles.icon} />
         </span>
       </Link>);
@@ -147,7 +148,7 @@ class ColumnHeader extends Component {
     });
 
     return (
-      <th key={column.id} className={className}>
+      <th key={outputColumn.id} className={className}>
         {header}
         <div className={styles.colDropdown}>
           <Dropdown {...dropdownProps} />
@@ -158,8 +159,8 @@ class ColumnHeader extends Component {
           name="col-type"
           disabled={isDisabled}
           value={this.columnType()}
-          aria-label={`col-type-${column.field_name}`}
-          onChange={(event) => updateColumnType(outputSchema, column, event.target.value)}>
+          aria-label={`col-type-${outputColumn.field_name}`}
+          onChange={(event) => updateColumnType(outputSchema, outputColumn, event.target.value)}>
           {
             orderedTypes.map((type) =>
               <option key={type.systemName} value={type.systemName}>
@@ -167,11 +168,6 @@ class ColumnHeader extends Component {
               </option>
             )
           }
-          // Not a real type-- simply to communicate to users that this type is coming soon!
-          // TODO: remove once we support location columns
-          <option key="location" value="location" disabled="true">
-            {Translations.type_display_names.location_coming_soon}
-          </option>
         </select>
       </th>
     );
@@ -180,7 +176,7 @@ class ColumnHeader extends Component {
 
 ColumnHeader.propTypes = {
   outputSchema: PropTypes.object.isRequired,
-  column: PropTypes.object.isRequired,
+  outputColumn: PropTypes.object.isRequired,
   activeApiCallInvolvingThis: PropTypes.bool.isRequired,
   updateColumnType: PropTypes.func.isRequired,
   addColumn: PropTypes.func.isRequired,

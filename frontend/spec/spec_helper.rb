@@ -142,3 +142,24 @@ end
 def json_fixture(file)
   JSON.parse(fixture(file).read).with_indifferent_access
 end
+
+def with_constants(constants, &block)
+  original_const_vals = {}
+
+  constants.each do |constant, val|
+    if Object.const_defined?(constant)
+      original_const_vals[constant] = Object.const_get(constant)
+      Object.send(:remove_const, constant)
+    end
+    Object.const_set(constant, val)
+  end
+
+  block.call
+
+  constants.each do |constant, val|
+    Object.send(:remove_const, constant)
+    if original_const_vals.has_key?(constant)
+      Object.const_set(constant, original_const_vals[constant])
+    end
+  end
+end

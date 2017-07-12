@@ -1,7 +1,7 @@
 <div class="mobile-menu" aria-expanded="false">
   <h2 class="menu-header-title"><%= t('header.menu') %></h2>
   <a class="menu-toggle" aria-label="<%= t('header.close_button_aria_label') %>" href="#" onclick="mobileMenuToggle()">
-    <span class="socrata-icon-close-2"></span>
+    <%= icon_with_aria_text('Close', :class => 'socrata-icon-close-2') %>
   </a>
 
   <div class="menu-content">

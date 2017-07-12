@@ -13,7 +13,7 @@
   <%= t('screens.stats.site_analytics') %>
 <% end %>
 
-<%= render :partial => 'left_nav' %>
+<%= render 'left_nav' %>
 
 <div id="analyticsDataContainer" class="overviewMetrics">
   <div class="contentBox withLeftNavigation analyticsDataContainer">
@@ -21,7 +21,7 @@
       <div class="adminHeader floating analytics clearfix">
         <span class="icon"></span>
         <h1 class="floating"><%= t('screens.stats.site_analytics') %></h1>
-        <%= render :partial => 'shared/metrics_timing' %>
+        <%= render 'shared/metrics_timing' %>
         <a href="#Export" rel="external" class="exportMetricsLink" data-exportbase="/api/site_metrics.csv?method=export&">
           <%= t('screens.stats.export') %>
         </a>
@@ -55,8 +55,8 @@
 <%= render_admin_qualtrics %>
 
 <% content_for :templates do %>
-  <%= render :partial => 'shared/metrics_sections' %>
-  <%= render :partial => 'shared/control_templates' %>
+  <%= render 'shared/metrics_sections' %>
+  <%= render 'shared/control_templates' %>
 <%- end -%>
 
 <% content_for :js_footer do %>

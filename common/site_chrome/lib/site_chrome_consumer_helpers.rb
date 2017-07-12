@@ -89,7 +89,14 @@ module SiteChromeConsumerHelpers
 
   def site_chrome_favicon_tag
     favicon_url = site_chrome_instance.general[:window_icon]
-    favicon_link_tag(site_chrome_massage_url(favicon_url, add_locale: false)) if favicon_url.present?
+
+    if favicon_url.present?
+      tag('link', {
+        :rel  => 'shortcut icon',
+        :type => 'image/x-icon',
+        :href => site_chrome_massage_url(favicon_url, add_locale: false)
+      })
+    end
   end
 
   def site_chrome_window_title

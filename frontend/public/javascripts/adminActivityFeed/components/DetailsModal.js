@@ -55,6 +55,7 @@ class DetailsModal extends React.Component {
     const eventType = activity.getIn(['data', 'latest_event', 'event_type']);
     const type = eventType ? eventType.replace(/-/g, '_') : 'generic';
     const eventInfo = activity.getIn(['data', 'latest_event', 'info']);
+    const serviceNameLocaleKey = `show_page.services.${activity.getIn(['data', 'service'])}`;
 
     return (
       <ul>
@@ -83,7 +84,7 @@ class DetailsModal extends React.Component {
         </li>
         <li id="line-activity-import-method">
           <span className="line-title"><LocalizedText localeKey="import_method"/>: </span>
-          {activity.getIn(['data', 'service'])}
+          <LocalizedText localeKey={serviceNameLocaleKey}/>
         </li>
         {this.renderErrorsDownloadLink()}
       </ul>

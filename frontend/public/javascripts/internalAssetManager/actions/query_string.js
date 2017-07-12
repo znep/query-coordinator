@@ -35,6 +35,8 @@ export const updateQueryString = (dispatch, getState, clearSearch) => {
       activeFilters.orderColumn = order.value;
       activeFilters.orderDirection = order.ascending ? 'asc' : 'desc';
     }
+
+    // search query
     if (clearSearch) {
       delete activeFilters.q;
     }

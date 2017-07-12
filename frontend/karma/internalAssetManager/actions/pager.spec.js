@@ -39,7 +39,7 @@ describe('actions/pager', () => {
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'CHANGE_PAGE', pageNumber: 4  },
         { type: 'FETCH_ASSET_COUNTS' },

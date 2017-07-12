@@ -2,15 +2,17 @@
 
   <div id="browse2-search-container" data-catalog-autocomplete="<%= FeatureFlags.derive(@view, request).browse_autocomplete %>">
     <form class="browse2-search">
-      <span class="browse2-search-icon icon-search"></span>
-      <label for="browse2-search-control" class="accessible"><%= t('controls.browse.browse2.search.title') %></label>
-      <input id="browse2-search-control" class="browse2-search-control searchBox" type="text" name="browseSearch" value="<%= opts[:q] %>" title="<%= t('controls.browse.browse2.search.title') %>" placeholder="<%= t('controls.browse.browse2.search.placeholder') %>" />
-      <span class="browse2-search-mobile-search-button">
-        <span class="icon-search"></span>
-      </span>
-      <%- if clear_search_url.present? -%>
-        <a class="browse2-clear-search-icon icon-close-2" href="<%= clear_search_url %>" title="<%= t('controls.browse.browse2.search.clear.title') %>"></a>
-      <%- end -%>
+      <fieldset>
+        <span class="browse2-search-icon icon-search"></span>
+        <label for="browse2-search-control" class="accessible"><%= t('controls.browse.browse2.search.title') %></label>
+        <input id="browse2-search-control" class="browse2-search-control searchBox" type="text" name="browseSearch" value="<%= opts[:q] %>" title="<%= t('controls.browse.browse2.search.title') %>" placeholder="<%= t('controls.browse.browse2.search.placeholder') %>" />
+        <span class="browse2-search-mobile-search-button">
+          <span class="icon-search"></span>
+        </span>
+        <%- if clear_search_url.present? -%>
+          <a class="browse2-clear-search-icon icon-close-2" href="<%= clear_search_url %>" title="<%= t('controls.browse.browse2.search.clear.title') %>"></a>
+        <%- end -%>
+      </fieldset>
     </form>
   </div>
 <%- end -%>

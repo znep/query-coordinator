@@ -36,7 +36,7 @@ export function Table({
             <ColumnHeader
               key={column.id}
               outputSchema={outputSchema}
-              column={column}
+              outputColumn={column}
               updateColumnType={updateColumnType}
               activeApiCallInvolvingThis={_.has(apiCallsByColumnId, column.id)}
               addColumn={() => addColumn(outputSchema, column)}
@@ -96,6 +96,16 @@ Table.propTypes = {
 
 const combineAndSort = ({ current, ignored }) => _.sortBy([...current, ...ignored], 'position');
 
+const getInputColumns = (entities, outputColumns) => outputColumns.map((outputColumn) => {
+  const transform = entities.transforms[outputColumn.transform_id];
+  const inputColumnId = transform.transform_input_columns[0].input_column_id;
+  const inputColumn = entities.input_columns[inputColumnId];
+  return {
+    ...outputColumn,
+    inputColumn
+  };
+});
+
 // TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
 // fails; should probably redirect or display some message to the user
 const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, displayState }) => {
@@ -110,7 +120,15 @@ const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, di
     inputSchema,
     outputSchema,
     displayState,
-    outputColumns: combineAndSort(currentAndIgnoredOutputColumns(entities, outputSchema.id)),
+    outputColumns: getInputColumns(
+      entities,
+      combineAndSort(
+        currentAndIgnoredOutputColumns(
+          entities,
+          outputSchema.id
+        )
+      )
+    ),
     apiCallsByColumnId
   };
 };

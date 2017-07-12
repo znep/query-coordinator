@@ -149,6 +149,7 @@ class SearchBox extends React.Component {
 
   render() {
     const { collapsible, currentQuery } = this.props;
+    const autocompleteSearchInputId = `autocomplete-search-input-${_.random(32768)}`
 
     return (
       <form
@@ -159,10 +160,10 @@ class SearchBox extends React.Component {
           onClick={() => { this.domNode.focus(); }}>
           <SocrataIcon name="search" />
         </div>
-        <label htmlFor="autocomplete-search-input" styleName="aria-not-displayed">Search:</label>
+        <label htmlFor={autocompleteSearchInputId} styleName="aria-not-displayed">Search:</label>
         <input
           autoComplete="off"
-          id="autocomplete-search-input"
+          id={autocompleteSearchInputId}
           onBlur={() => { this.handleFocusChanged(false); }}
           onChange={this.handleChange}
           onFocus={() => { this.handleFocusChanged(true); }}
@@ -198,6 +199,10 @@ SearchBox.propTypes = {
   // need to know this since if it's undefined, it means on form submission and
   // we search for what's in the textbox instead of for the selected result
   focusedResult: PropTypes.number
+};
+
+SearchBox.defaultProps = {
+  onClearSearch: _.noop
 };
 
 const mapStateToProps = (state) => ({

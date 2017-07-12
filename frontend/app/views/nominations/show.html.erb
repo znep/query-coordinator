@@ -95,7 +95,7 @@
 
 <%- content_for :js_footer do -%>
   <%= include_webpack_bundle 'open-data/screen-nomination.js' %>
-  <script type='text/javascript'>
+  <script type="text/javascript">
     blist.namespace.fetch('blist.nominations');
     blist.nomination = new Nomination(<%= safe_json(@nom) %>);
   </script>

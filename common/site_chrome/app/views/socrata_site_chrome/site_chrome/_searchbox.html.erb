@@ -4,20 +4,35 @@
   data-catalog-autocomplete-disable-animation="true"
   data-catalog-autocomplete-mobile="<%= local_assigns[:mobile] == true %>">
   <form action="<%= path %>" method="get">
-    <% unless local_assigns[:mobile] %><span class="socrata-icon-search" title="<%= t('header.search') %>"></span><% end %>
-    <label>
-      <%= text_field_tag('q', nil, id: nil, placeholder: t('header.search'),
-        onkeyup: local_assigns[:vanishing_search_button] ? 'toggleSearchButton(this)' : nil) %>
-      <span class="searchbox-label"><%= t('header.search') %></span>
-    </label>
-    <button type="submit" class="search-button site-chrome-btn btn-simple" value="">
+    <fieldset>
+      <% unless local_assigns[:mobile] %>
+        <span class="socrata-icon-search" title="<%= t('header.search') %>"></span>
+      <% end %>
+      <label>
+        <%= text_field_tag('q', nil, id: nil, placeholder: t('header.search'),
+          onkeyup: local_assigns[:vanishing_search_button] ? 'toggleSearchButton(this)' : nil) %>
+        <span class="searchbox-label"><%= t('header.search') %></span>
+      </label>
+      <button type="submit" class="search-button site-chrome-btn btn-simple" value="">
       <% if local_assigns[:mobile] %>
         <span class="socrata-icon-search" title="<%= t('header.search') %>"></span>
       <% else %>
         <%= t('header.search') %>
       <% end %>
-    </button>
-    <%# EN-12158: Force a sortBy of "relevance" on the query results %>
-    <input type="hidden" name="sortBy" value="relevance" />
+      <label>
+        <%= text_field_tag('q', nil, id: nil, placeholder: t('header.search'),
+          onkeyup: local_assigns[:vanishing_search_button] ? 'toggleSearchButton(this)' : nil) %>
+        <span class="searchbox-label"><%= t('header.search') %></span>
+      </label>
+      <button type="submit" class="search-button site-chrome-btn btn-simple" value="">
+        <% if local_assigns[:mobile] %>
+          <span class="socrata-icon-search" title="<%= t('header.search') %>"></span>
+        <% else %>
+          <%= t('header.search') %>
+        <% end %>
+      </button>
+      <%# EN-12158: Force a sortBy of "relevance" on the query results %>
+      <input type="hidden" name="sortBy" value="relevance" />
+    </fieldset>
   </form>
 </div>

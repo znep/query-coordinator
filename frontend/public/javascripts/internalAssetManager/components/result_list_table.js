@@ -74,8 +74,8 @@ export class ResultListTable extends React.Component {
           {columns.map((columnName) => (
             <th {...columnHeaderProps(columnName)}>
               <span className="column-name">{columnTranslation(columnName)}</span>
-              <span className="ascending-arrow socrata-icon-arrow-down2" />
-              <span className="descending-arrow socrata-icon-arrow-up2" />
+              <span className="ascending-arrow socrata-icon-arrow-up2" />
+              <span className="descending-arrow socrata-icon-arrow-down2" />
             </th>
           ))}
         </tr>

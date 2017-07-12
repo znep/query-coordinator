@@ -253,7 +253,7 @@
 <%= render_translations LocalePart.controls.editors %>
 
 <% content_for :js_footer do %>
-  <script>
+  <script type="text/javascript">
     $(function() { blist.mainSpinner = $('#renderTypeContainer').loadingSpinner({metric: 'main', model: blist.dataset}); });
 
     <%= raw @view.display.render_inline_setup_js('renderTypeContainer', self) %>
@@ -287,8 +287,8 @@
 
   <%= include_webpack_bundle 'open-data/dompurify.js' %>
   <%= include_webpack_bundle 'open-data/dataset-show.js' %>
-  <script>if ((typeof moment) !== 'undefined') { moment.lang(blist.locale); }</script>
-  <script>
+  <script type="text/javascript">
+    if ((typeof moment) !== 'undefined') { moment.lang(blist.locale); }
     $(document).ready(() => { if (window.lastAccessed) { window.lastAccessed.add('<%= @view.id %>'); } });
   </script>
 <% end %>

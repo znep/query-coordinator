@@ -2,27 +2,37 @@
   <div class="columnHeaders"></div>
   <div class="rowList"></div>
   <ul class="navigation">
-  <%- if !@current_user.nil? && @current_user.has_right?(UserRights::CREATE_DATASETS) &&
+    <%- if !@current_user.nil? && @current_user.has_right?(UserRights::CREATE_DATASETS) &&
         !@view.nil? && @view.has_rights?(ViewRights::UPDATE_VIEW) && !@view.is_snapshotted? -%>
-    <li class="edit"><a class="button"
-      href="<%= edit_view_rr_path(@view, defaultRender: 'richList') %>">
-      <%= t('screens.ds.fatrow.edit_layout') %>
-    </a></li>
+      <li class="edit">
+        <a class="button" href="<%= edit_view_rr_path(@view, defaultRender: 'richList') %>">
+          <%= t('screens.ds.fatrow.edit_layout') %>
+        </a>
+      </li>
     <%- end -%>
-    <li><a href="#start" title="View first page" class="start button">
-      <span class="icon"></span>
-    </a></li>
-    <li><a href="#previous" title="View previous page" class="previous button">
-      <span class="icon"></span>
-    </a></li>
-    <li class="page"><a href="#page">0</a></li>
-    <li><a href="#next" title="View next page" class="next button">
-      <span class="icon"></span>
-    </a></li>
-    <li><a href="#end" title="View last page" class="end button">
-      <span class="icon"></span>
-    </a></li>
+    <li>
+      <a href="#start" title="View first page" class="start button">
+        <%= icon_with_aria_text('View first page') %>
+      </a>
+    </li>
+    <li>
+      <a href="#previous" title="View previous page" class="previous button">
+        <%= icon_with_aria_text('View previous page') %>
+      </a>
+    </li>
+    <li class="page">
+      <a href="#page">0</a>
+    </li>
+    <li>
+      <a href="#next" title="View next page" class="next button">
+        <%= icon_with_aria_text('View next page') %>
+      </a>
+    </li>
+    <li>
+      <a href="#end" title="View last page" class="end button">
+        <%= icon_with_aria_text('View last page') %>
+      </a>
+    </li>
   </ul>
-  <div class="templateRow row clearfix">
-  </div>
+  <div class="templateRow row clearfix"></div>
 </div>

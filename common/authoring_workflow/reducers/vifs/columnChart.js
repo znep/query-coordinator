@@ -31,10 +31,6 @@ export default function columnChart(state, action) {
       setDimensionGroupingColumnName(state, action.dimensionGroupingColumnName);
       break;
 
-    case actions.SET_STACKED:
-      setBooleanValueOrDeleteProperty(state, 'series[0].stacked', action.stacked);
-      break;
-
     case actions.SET_CUSTOM_COLOR_PALETTE:
       const customColorPalette = action.customColorPalette;
       const grouping = action.dimensionGroupingColumnName;
@@ -93,13 +89,14 @@ export default function columnChart(state, action) {
     case actions.SET_FILTERS:
     case actions.SET_LABEL_BOTTOM:
     case actions.SET_LABEL_LEFT:
+    case actions.SET_MEASURE:
+    case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_MEASURE_AXIS_MAX_VALUE:
     case actions.SET_MEASURE_AXIS_MIN_VALUE:
     case actions.SET_PRIMARY_COLOR:
     case actions.SET_SECONDARY_COLOR:
-    case actions.SET_MEASURE:
-    case actions.SET_MEASURE_AGGREGATION:
     case actions.SET_SHOW_LEGEND:
+    case actions.SET_STACKED:
     case actions.SET_TITLE:
     case actions.SET_UNIT_ONE:
     case actions.SET_UNIT_OTHER:

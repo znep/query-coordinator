@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import {
   forEachSeries,
+  setBooleanValueOrDeleteProperty,
   setStringValueOrDefaultValue,
   setStringValueOrDeleteProperty,
   setNumericValueOrDeleteProperty,
@@ -98,6 +99,12 @@ export default function(state, action) {
         const series = state.series[action.seriesIndex];
         _.set(series, 'dataSource.measure.aggregationFunction', action.aggregationFunction);
       }
+      break;
+
+    case actions.SET_STACKED:
+      forEachSeries(state, series => {
+        setBooleanValueOrDeleteProperty(series, 'stacked', action.stacked);
+      });
       break;
 
     case actions.SET_TITLE:

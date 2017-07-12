@@ -3,8 +3,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
 import I18n from 'common/i18n';
-
-import { isLoading, hasData, hasError } from '../../selectors/metadata';
+import { 
+  hasData, 
+  hasError,
+  isLoading
+} from '../../selectors/metadata';
 import {
   getPrecision,
   getSeriesFromVif,
@@ -23,9 +26,8 @@ import {
 
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
-import DebouncedInput from '../shared/DebouncedInput';
 import BlockLabel from '../shared/BlockLabel';
-
+import DebouncedInput from '../shared/DebouncedInput';
 import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
 import DimensionSelector from '../DimensionSelector';
 import DisplayOptions from '../DisplayOptions';
@@ -67,9 +69,7 @@ export var DataPane = React.createClass({
     const { onSelectTimelinePrecision, timelinePrecision, vifAuthoring } = this.props;
     const defaultPrecision = getPrecision(vifAuthoring) || null;
     const options = _.map(timelinePrecision, (option) => {
-
       option.render = this.renderTimelinePrecisionOption;
-
       return option;
     });
 
@@ -169,7 +169,6 @@ export var DataPane = React.createClass({
     const { metadata } = this.props;
 
     let metadataInfo;
-
     if (hasError(metadata)) {
       metadataInfo = this.renderMetadataError();
     } else if (isLoading(metadata)) {

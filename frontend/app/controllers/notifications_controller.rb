@@ -11,7 +11,15 @@ class NotificationsController < ApplicationController
   end
 
   def set_last_notification_seen_at
-    CoreServer::Base.connection.patch_request('/notifications?method=setLastNotificationSeenAt')
+    begin
+      CoreServer::Base.connection.patch_request('/notifications?method=setLastNotificationSeenAt')
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'authentication_required'
+        return render json: {}, status: :unauthorized
+      else
+        raise e
+      end
+    end
 
     # Note that, if the above call fails, a notification gets sent to airbrake and
     # the call will silently fail in the browser (print an error message)

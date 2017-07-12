@@ -1,6 +1,11 @@
 import _ from 'lodash';
 
-const order = _.isEmpty(_.get(window, 'initialState.initialOrder.value')) ? undefined : {
+const defaultOrder = {
+  ascending: false,
+  value: 'lastUpdatedDate'
+};
+
+const order = _.isEmpty(_.get(window, 'initialState.initialOrder.value')) ? defaultOrder : {
   ascending: !!_.get(window, 'initialState.initialOrder.ascending'),
   value: _.get(window, 'initialState.initialOrder.value')
 };
@@ -23,9 +28,11 @@ export default (state, action) => {
   if (action.type === 'UPDATE_CATALOG_RESULTS') {
     let sortedResults = [];
 
-    // If the "Only recently viewed" checkbox is clicked, we want to manually re-order the results to be
-    // in the order of the recently viewed, from local storage.
-    if (action.onlyRecentlyViewed && window.lastAccessed && !_.isEmpty(window.lastAccessed.keys())) {
+    /* If the "Only recently viewed" checkbox is clicked, any sort is removed. We manually
+     * re-order the results to be in the order of the recently viewed, from local storage.
+     * EN-17000: Note: the user can then apply a new sort onto the recently viewed results, and this
+     * section will be bypassed because action.sortByRecentlyViewed will be false. See actions/cetera.js */
+    if (action.sortByRecentlyViewed && window.lastAccessed && !_.isEmpty(window.lastAccessed.keys())) {
       const sortedUids = window.lastAccessed.keys();
       sortedUids.forEach((uid) => {
         sortedResults.push(

@@ -2,7 +2,9 @@ const utils = require('common/js_utils');
 const d3 = require('d3');
 const _ = require('lodash');
 const $ = require('jquery');
+const ColumnFormattingHelpers = require('../helpers/ColumnFormattingHelpers');
 const SvgVisualization = require('./SvgVisualization');
+const DataTypeFormatter = require('./DataTypeFormatter');
 const I18n = require('common/i18n').default;
 
 const MINIMUM_PIE_CHART_WIDTH = 100;
@@ -210,11 +212,16 @@ function SvgPieChart($element, vif, options) {
       style('fill', color).
       style('stroke', color);
 
-    const getText = index => _.get(
-      dataToRender,
-      `0.rows.${index}.0`,
-      I18n.t('shared.visualizations.charts.common.no_value')
-    );
+    const getText = index => {
+      const columnValue = _.get(dataToRender, `0.rows.${index}.0`);
+
+      if (_.isNil(columnValue)) {
+        return I18n.t('shared.visualizations.charts.common.no_value')
+      } else {
+        const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
+        return ColumnFormattingHelpers.formatValue(columnValue, column, dataToRender[0]);
+      }
+    }
 
     // create legend texts
     legend.append('text').
@@ -244,9 +251,10 @@ function SvgPieChart($element, vif, options) {
             return percentAsString;
           } else {
             // makes sure pie chart labels do no break when value is null
+            const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
             return d.data[1] === null ?
               I18n.t('shared.visualizations.charts.common.no_value') :
-              utils.formatNumber(d.data[1]);
+              ColumnFormattingHelpers.formatValue(d.data[1], column, dataToRender[0], true);
           }
         });
   }
@@ -636,11 +644,24 @@ function SvgPieChart($element, vif, options) {
    * @param data
    */
   function showFlyout(element, data) {
-    const title = _.get(
+
+    const label = self.getVif().series.map(series => series.label)[0];
+    const seriesIndex = self.getSeriesIndexByLabel(label);
+
+    const titleValue = _.get(
       data,
-      'label',
-      I18n.t('shared.visualizations.charts.common.no_value')
+      'label'
     );
+
+    let title;
+
+    if (_.isNil(titleValue)) {
+      title = I18n.t('shared.visualizations.charts.common.no_value')
+    } else {
+      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`)
+      title = ColumnFormattingHelpers.formatValue(titleValue, column, dataToRender[0]);
+    }
+
     // not compatible with multiple series
     const percentSymbol = I18n.t(
       'shared.visualizations.charts.common.percent_symbol'
@@ -648,8 +669,6 @@ function SvgPieChart($element, vif, options) {
     const percentAsString = (data.percent !== null) ?
       `(${data.percent}${percentSymbol})` :
       '';
-    const label = self.getVif().series.map(series => series.label)[0];
-    const seriesIndex = self.getSeriesIndexByLabel(label);
 
     // Constructing html table for flyout content
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
@@ -665,13 +684,15 @@ function SvgPieChart($element, vif, options) {
     if (value === null) {
       valueString = I18n.t('shared.visualizations.charts.common.no_value');
     } else {
+      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`)
+      valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender[0], true);
 
-      valueString = '{0} {1}'.format(
-        utils.formatNumber(value),
-        (value === 1) ?
-          self.getUnitOneBySeriesIndex(seriesIndex) :
-          self.getUnitOtherBySeriesIndex(seriesIndex)
-      );
+      if (value === 1) {
+        valueString += ` ${self.getUnitOneBySeriesIndex(seriesIndex)}`;
+      } else {
+        valueString += ` ${self.getUnitOtherBySeriesIndex(seriesIndex)}`;
+      }
+
     }
 
     $valueCell.html(`${valueString} ${percentAsString}`);
@@ -730,6 +751,7 @@ function SvgPieChart($element, vif, options) {
     var circumference = PI2 * radius;
     return (angleDiff * circumference) / PI2;
   }
+
 }
 
 module.exports = SvgPieChart;

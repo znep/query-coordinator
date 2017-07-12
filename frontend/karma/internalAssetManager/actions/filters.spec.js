@@ -38,7 +38,7 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'CLEAR_ALL_FILTERS' },
         { type: 'CHANGE_PAGE', pageNumber: 1 },
@@ -65,11 +65,11 @@ describe('actions/filters', () => {
     });
 
     it('toggles the recently viewed assets', () => {
-      const store = mockStore({ filters: { onlyRecentlyViewed: false } });
+      const store = mockStore({ filters: { onlyRecentlyViewed: false, sortByRecentlyViewed: false } });
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: true },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: true, sortByRecentlyViewed: true },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'TOGGLE_RECENTLY_VIEWED' },
         { type: 'CHANGE_PAGE', pageNumber: 1 },
@@ -100,7 +100,7 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'CHANGE_ASSET_TYPE', value: 'charts' },
         { type: 'CHANGE_PAGE', pageNumber: 1 },
@@ -131,7 +131,7 @@ describe('actions/filters', () => {
 
       const expectedActions = [
         { type: 'FETCH_RESULTS' },
-        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false },
+        { type: 'UPDATE_CATALOG_RESULTS', response: mockCeteraResponse, onlyRecentlyViewed: false, sortByRecentlyViewed: false },
         { type: 'FETCH_RESULTS_SUCCESS' },
         { type: 'CHANGE_VISIBILITY', value: 'internal' },
         { type: 'CHANGE_PAGE', pageNumber: 1 },

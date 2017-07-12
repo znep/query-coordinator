@@ -3,9 +3,8 @@ import ceteraUtils from 'common/cetera_utils';
 
 const RESULTS_PER_PAGE = 10;
 
-export const updateCatalogResults = (response, onlyRecentlyViewed = false) => (
-  { type: 'UPDATE_CATALOG_RESULTS', response, onlyRecentlyViewed }
-);
+export const updateCatalogResults = (response, onlyRecentlyViewed = false, sortByRecentlyViewed = false) =>
+  ({ type: 'UPDATE_CATALOG_RESULTS', response, onlyRecentlyViewed, sortByRecentlyViewed });
 
 export const fetchingResults = () => (
   { type: 'FETCH_RESULTS' }
@@ -150,12 +149,20 @@ export const fetchAssetCounts = (dispatch, getState, parameters = {}) => {
 
 export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => {
   const { onlyRecentlyViewed } = _.merge({}, getState().filters, parameters);
+  let { sortByRecentlyViewed } = _.merge({}, getState().filters, parameters);
 
   dispatch(fetchingResults());
 
   return ceteraUtils.query(ceteraUtilsParams(getState, parameters)).then((response) => {
     if (_.isObject(response)) {
-      dispatch(updateCatalogResults(response, onlyRecentlyViewed));
+      /* EN-17000: If user checks "Only recently viewed", any active sort is cleared and the results are
+       * automatically sorted by most recently viewed (in the catalog.js reducer).
+       * If the user then clicks a column to sort again, we remove the sortByRecentlyViewed override and
+       * let them sort the onlyRecentlyViewed results however they want. */
+      const explicitOrder = _.get(parameters, 'order') || _.get(getState(), 'catalog.order');
+      sortByRecentlyViewed = sortByRecentlyViewed || (onlyRecentlyViewed && _.isEmpty(explicitOrder));
+
+      dispatch(updateCatalogResults(response, onlyRecentlyViewed, sortByRecentlyViewed));
       dispatch(fetchingResultsSuccess());
       onSuccess();
 

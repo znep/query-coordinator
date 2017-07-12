@@ -5,6 +5,7 @@ const $ = require('jquery');
 const utils = require('common/js_utils');
 // Project Imports
 const SvgVisualization = require('./SvgVisualization');
+const ColumnFormattingHelpers = require('../helpers/ColumnFormattingHelpers');
 const I18n = require('common/i18n').default;
 // Constants
 import {
@@ -971,11 +972,23 @@ function SvgTimelineChart($element, vif, options) {
 
     const flyoutData = dataToRenderBySeries.map((series) => {
       const measureIndex = 1;
-      const label = series.columns[measureIndex];
+
+      let label = series.columns[measureIndex];
+      // We do not want to apply formatting if the label is `(Other)` category
+      if (!_.isEqual(label, I18n.t('shared.visualizations.charts.common.other_category'))) {
+        const groupingColumn = _.get(self.getVif(), `series[0].dataSource.dimension.grouping.columnName`);
+        label = _.isNil(groupingColumn) ? label : ColumnFormattingHelpers.formatValue(label, groupingColumn, dataToRender, true);
+      }
+
+      let value = series.rows[firstSeriesIndex][measureIndex];
+      if (!_.isNil(value)) {
+        const measureColumn = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
+        value = ColumnFormattingHelpers.formatValue(value, measureColumn, dataToRender);
+      }
 
       return {
         label: label,
-        value: series.rows[firstSeriesIndex][measureIndex]
+        value: value
       };
     });
 
@@ -1037,6 +1050,8 @@ function SvgTimelineChart($element, vif, options) {
     const $labelValueRows = flyoutData.data.
       map((datum, seriesIndex) => {
         const labelMatcher = new RegExp(I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + seriesIndex);
+
+        const column = _.get(self.getVif(), `series[0].dataSource.dimension.grouping.columnName`);
         const label = labelMatcher.test(datum.label) ? '' : datum.label;
         const $labelCell = $('<td>', {'class': 'socrata-flyout-cell'}).
           text(label).
@@ -1047,13 +1062,11 @@ function SvgTimelineChart($element, vif, options) {
         if (datum.value === null) {
           datumValueString = I18n.t('shared.visualizations.charts.common.no_value');
         } else {
-
-          const formattedDatumValue = utils.formatNumber(datum.value);
           const datumValueUnit = (datum.value === 1) ?
             self.getUnitOneBySeriesIndex(seriesIndex) :
             self.getUnitOtherBySeriesIndex(seriesIndex);
 
-          datumValueString = `${formattedDatumValue} ${datumValueUnit}`;
+          datumValueString = `${datum.value} ${datumValueUnit}`;
         }
 
         const $valueCell = $('<td>', {'class': 'socrata-flyout-cell'}).

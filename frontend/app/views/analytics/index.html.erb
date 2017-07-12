@@ -8,7 +8,7 @@
   <div id="analyticsDataContainer" class="publicSiteMetrics">
     <div class="analytics">
       <h1>Site Analytics</h1>
-      <%= render :partial => 'shared/metrics_timing' %>
+      <%= render 'shared/metrics_timing' %>
     </div>
 
     <div class="summaryDisplay clearfix container"></div>
@@ -31,8 +31,8 @@
 <div class="clearfix"></div>
 
 <% content_for :templates do %>
-  <%= render :partial => 'shared/metrics_sections' %>
-  <%= render :partial => 'shared/control_templates' %>
+  <%= render 'shared/metrics_sections' %>
+  <%= render 'shared/control_templates' %>
 <%- end -%>
 
 <% content_for :js_footer do %>

@@ -1,16 +1,17 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ResultListTable from './result_list_table';
 import Pager from 'common/components/Pager';
 import ResultCount from './result_count';
 import { changePage } from '../actions/pager';
-import { changeQ } from '../actions/filters';
+import * as filters from '../actions/filters';
 import _ from 'lodash';
 import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocomplete';
+import { ClearFilters } from './clear_filters';
 
 const RESULTS_PER_PAGE = 10;
 
-export class CatalogResults extends React.Component {
+export class CatalogResults extends Component {
   constructor(props) {
     super(props);
 
@@ -18,14 +19,15 @@ export class CatalogResults extends React.Component {
       tableView: 'list'
     };
 
-    _.bindAll(this, [
+    _.bindAll(this,
       'changePage',
       'changeQ',
+      'clearSearch',
       'renderError',
       'renderFooter',
       'renderTable',
       'renderTopbar'
-    ]);
+    );
   }
 
   changeQ(query) {
@@ -34,6 +36,10 @@ export class CatalogResults extends React.Component {
 
   changePage(pageNumber) {
     this.props.changePage(pageNumber);
+  }
+
+  clearSearch() {
+    this.props.clearSearch();
   }
 
   renderError() {
@@ -48,21 +54,27 @@ export class CatalogResults extends React.Component {
 
   renderTopbar() {
     const collapsible = false;
-    const options = {
+    const autocompleteOptions = {
       anonymous: false,
       collapsible,
       animate: true,
       mobile: false,
-      onChooseResult: this.changeQ
+      onChooseResult: this.changeQ,
+      onClearSearch: this.clearSearch
     };
 
-    const defaultState = {
-      collapsed: collapsible
-    };
+    const defaultState = { collapsed: collapsible };
+
+    const { allFilters, clearAllFilters } = this.props;
 
     return (
-      <div className="topbar">
-        <StatefulAutocomplete defaultState={defaultState} options={options} />
+      <div className="topbar clearfix">
+        <StatefulAutocomplete defaultState={defaultState} options={autocompleteOptions} />
+        <ClearFilters
+          allFilters={allFilters}
+          buttonStyle
+          clearAllFilters={clearAllFilters}
+          showTitle={false} />
       </div>
     );
   }
@@ -127,8 +139,11 @@ export class CatalogResults extends React.Component {
 }
 
 CatalogResults.propTypes = {
+  allFilters: PropTypes.object,
   changePage: PropTypes.func.isRequired,
   changeQ: PropTypes.func.isRequired,
+  clearSearch: PropTypes.func,
+  clearAllFilters: PropTypes.func.isRequired,
   fetchingResults: PropTypes.bool,
   fetchingResultsError: PropTypes.bool,
   order: PropTypes.object,
@@ -142,7 +157,8 @@ CatalogResults.defaultProps = {
   pageNumber: 1
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
+  allFilters: state.filters,
   fetchingResults: state.catalog.fetchingResults,
   fetchingResultsError: state.catalog.fetchingResultsError,
   order: state.catalog.order,
@@ -150,9 +166,11 @@ const mapStateToProps = state => ({
   resultSetSize: state.catalog.resultSetSize
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   changePage: (pageNumber) => dispatch(changePage(pageNumber)),
-  changeQ: (query) => dispatch(changeQ(query))
+  changeQ: (query) => dispatch(filters.changeQ(query)),
+  clearAllFilters: () => dispatch(filters.clearAllFilters()),
+  clearSearch: () => dispatch(filters.clearSearch())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogResults);

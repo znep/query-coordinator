@@ -7,7 +7,11 @@ module.exports = function ColumnChartController($scope, CardDataService, rx) {
   var model = $scope.$observe('model').filter(_.isPresent);
   var dataset = model.observeOnLatest('page.dataset');
   var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
-  var rescaleAxis$ = model.observeOnLatest('page.enableAxisRescaling');
+  var rescaleAxis$ = model.observeOnLatest('page.enableAxisRescaling').
+    map(function(enabled) {
+      // Don't rescale for `false` or `"hidden"`.
+      return enabled === true;
+    });
   var aggregation$ = model.observeOnLatest('aggregation');
   var dataRequests$ = new Rx.Subject();
   var dataResponses$ = new Rx.Subject();

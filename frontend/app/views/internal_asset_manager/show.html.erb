@@ -7,8 +7,8 @@
 <div id="dynamic-content"></div>
 
 <%= content_for :scripts do %>
-  <script src="/javascripts/plugins/lodash.js"></script>
-  <script>var I18n = I18n || {};</script>
+  <script type="text/javascript" src="/javascripts/plugins/lodash.js"></script>
+  <script type="text/javascript">var I18n = I18n || {};</script>
 
   <%= render_internal_asset_manager_translations %>
   <%= render_internal_asset_manager_session_data %>

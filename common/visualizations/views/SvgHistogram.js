@@ -3,6 +3,7 @@ const d3 = require('d3');
 const _ = require('lodash');
 const $ = require('jquery');
 const SvgVisualization = require('./SvgVisualization');
+const ColumnFormattingHelpers = require('../helpers/ColumnFormattingHelpers');
 const I18n = require('common/i18n').default;
 
 // These values have been eyeballed to provide enough space for axis labels
@@ -795,7 +796,8 @@ function SvgHistogram($element, vif, options) {
 
   function bucketTitle(bucketData) {
     //TODO units
-    return `${utils.formatNumber(bucketData.x0)} to ${utils.formatNumber(bucketData.x1)}`;
+    const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
+    return `${ColumnFormattingHelpers.formatValue(bucketData.x0, column, dataToRender[0])} to ${ColumnFormattingHelpers.formatValue(bucketData.x1, column, dataToRender[0], true)}`;
   }
 
   function seriesLabel(seriesIndex) {
@@ -831,13 +833,17 @@ function SvgHistogram($element, vif, options) {
     if (value === null) {
       valueString = I18n.t('shared.visualizations.charts.common.no_value');
     } else {
-      valueString = '{0} {1}'.
-        format(
-          utils.formatNumber(value),
-          (value === 1) ?
-            self.getUnitOneBySeriesIndex(seriesIndex) :
-            self.getUnitOtherBySeriesIndex(seriesIndex)
-        );
+      const unitOther = self.getUnitOtherBySeriesIndex(seriesIndex);
+      const unitOne = self.getUnitOneBySeriesIndex(seriesIndex);
+
+      const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
+      valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender[0], true);
+
+      if (value == 1) {
+        valueString += ` ${unitOne}`;
+      } else {
+        valueString += ` ${unitOther}`;
+      }
     }
 
     $valueCell.

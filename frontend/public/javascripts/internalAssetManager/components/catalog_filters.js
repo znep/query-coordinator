@@ -6,7 +6,8 @@ import { handleEnter } from 'common/helpers/keyPressHelpers';
 import { Dropdown } from 'common/components';
 import SearchboxFilter from './filters/searchbox_filter';
 import * as filterOptions from '../lib/catalog_filter_options';
-import * as actions from '../actions/filters';
+import * as filters from '../actions/filters';
+import { ClearFilters } from './clear_filters';
 
 export class CatalogFilters extends React.Component {
   constructor(props) {
@@ -16,12 +17,12 @@ export class CatalogFilters extends React.Component {
       filterContentOpen: true
     };
 
-    _.bindAll(this, [
+    _.bindAll(this,
       'getTranslation',
       'handleFilterContentToggleClick',
       'renderFilterCheckbox',
       'renderFilterDropdown'
-    ]);
+    );
   }
 
   getTranslation(key) {
@@ -55,15 +56,13 @@ export class CatalogFilters extends React.Component {
   }
 
   render() {
-    const { assetTypes, authority, category, changeAssetType, changeAuthority, changeCategory, changeOwner,
-      changeTag, changeVisibility, clearAllFilters, domainCategories, domainTags, onlyRecentlyViewed, ownedBy,
-      tag, toggleRecentlyViewed, usersList, visibility } = this.props;
+    const { allFilters, assetTypes, authority, category, changeAssetType, changeAuthority, changeCategory,
+      changeOwner, changeTag, changeVisibility, clearAllFilters, domainCategories, domainTags,
+      onlyRecentlyViewed, ownedBy, tag, toggleRecentlyViewed, usersList, visibility } = this.props;
 
     const { filterContentOpen } = this.state;
 
-    const filterContentClass = classNames('filter-content', {
-      hidden: !filterContentOpen
-    });
+    const filterContentClass = classNames('filter-content', { hidden: !filterContentOpen });
 
     const openFiltersButton = !filterContentOpen ?
       <button
@@ -90,13 +89,7 @@ export class CatalogFilters extends React.Component {
 
     const filterHeader = (
       <div className="catalog-filters-header">
-        <span className="title">{this.getTranslation('header.title')}
-          <span
-            className="filter-section clear-all-filters socrata-icon-close-circle"
-            onClick={clearAllFilters}
-            title={_.get(I18n, 'filters.clear_all_filters')}>
-          </span>
-        </span>
+        <ClearFilters allFilters={allFilters} clearAllFilters={clearAllFilters} />
         {closeFiltersButton}
       </div>
     );
@@ -207,6 +200,7 @@ export class CatalogFilters extends React.Component {
 }
 
 CatalogFilters.propTypes = {
+  allFilters: PropTypes.object,
   assetTypes: PropTypes.string,
   authority: PropTypes.string,
   category: PropTypes.string,
@@ -230,7 +224,8 @@ CatalogFilters.propTypes = {
   visibility: PropTypes.string
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
+  allFilters: state.filters,
   assetTypes: state.filters.assetTypes,
   authority: state.filters.authority,
   category: state.filters.category,
@@ -243,15 +238,15 @@ const mapStateToProps = state => ({
   visibility: state.filters.visibility
 });
 
-const mapDispatchToProps = dispatch => ({
-  changeAssetType: (value) => dispatch(actions.changeAssetType(value)),
-  changeAuthority: (value) => dispatch(actions.changeAuthority(value)),
-  changeCategory: (value) => dispatch(actions.changeCategory(value)),
-  changeOwner: (value) => dispatch(actions.changeOwner(value)),
-  changeTag: (value) => dispatch(actions.changeTag(value)),
-  changeVisibility: (value) => dispatch(actions.changeVisibility(value)),
-  clearAllFilters: () => dispatch(actions.clearAllFilters()),
-  toggleRecentlyViewed: () => dispatch(actions.toggleRecentlyViewed())
+const mapDispatchToProps = (dispatch) => ({
+  changeAssetType: (value) => dispatch(filters.changeAssetType(value)),
+  changeAuthority: (value) => dispatch(filters.changeAuthority(value)),
+  changeCategory: (value) => dispatch(filters.changeCategory(value)),
+  changeOwner: (value) => dispatch(filters.changeOwner(value)),
+  changeTag: (value) => dispatch(filters.changeTag(value)),
+  changeVisibility: (value) => dispatch(filters.changeVisibility(value)),
+  clearAllFilters: () => dispatch(filters.clearAllFilters()),
+  toggleRecentlyViewed: () => dispatch(filters.toggleRecentlyViewed())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CatalogFilters);

@@ -17,15 +17,11 @@
   top: 0;
 }
 
-.server-error {
+.activity-feed-alert {
   width: 100%;
-  margin-top: 60px;
   display: flex;
   justify-content: center;
-
-  div {
-    margin-top: 10px;
-  }
+  margin-top: 16px;
 
   i {
     margin-left: 15px;

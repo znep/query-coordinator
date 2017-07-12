@@ -121,7 +121,7 @@
 <%- end -%>
 
 <% content_for :js_footer do %>
-  <script type='text/javascript'>
+  <script type="text/javascript">
     blist.namespace.fetch('blist.nominations');
     blist.nominations.items = <%= safe_json(@nominations); %>;
   </script>

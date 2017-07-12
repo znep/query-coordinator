@@ -5,8 +5,7 @@
     <h3 class="title"></h3>
   </div>
 
-  <div class="panes">
-  </div>
+  <div class="panes"></div>
 </div>
 
 <div class="sidebarPane">
@@ -39,19 +38,24 @@
 </div>
 
 <div class="itemsListBlock">
-  <a class="button createBackup hide"><%= t('screens.ds.grid_sidebar.backup.button') %></a>
+  <a class="button createBackup hide">
+    <%= t('screens.ds.grid_sidebar.backup.button') %>
+  </a>
   <div class="itemsContent">
     <div class="controlsBar clearfix">
       <div class="sortMenu menu"></div>
       <div class="showMenu menu"></div>
       <div class="searchWrapper">
         <input type="text" title="<%= t('screens.ds.grid_sidebar.view_list.search') %>" class="viewSearch textPrompt" />
-        <a class="clearViewSearch remove"
-          href="#clear"><span class="icon"></span></a>
+        <a class="clearViewSearch remove" href="#clear">
+          <%= icon_with_aria_text('Clear View Search') %>
+        </a>
       </div>
     </div>
     <ul class="itemsList"></ul>
-    <a href="#More" class="moreLink fullButton"></a>
+    <a href="#More" class="moreLink fullButton">
+      <%= icon_with_aria_text('Show More') %>
+    </a>
   </div>
   <div class="emptyResult">
     <%= t('screens.ds.grid_sidebar.view_list.no_results') %>
@@ -59,25 +63,36 @@
 </div>
 
 <ul class="viewItemContainer">
-<li class="viewItem">
-  <span class="viewIcon"><span class="icon"></span></span>
-  <a class="nameLink"><span class="pubDate"></span><span class="name"></span></a>
-  <span class="authorLine">
-    <%= t('screens.ds.grid_sidebar.view_list.item.updated') %> <span class="date"></span>
-  </span>
-  <span class="description collapsed"></span>
-  <a href="#delete" title="<%= t('screens.ds.grid_sidebar.view_list.item.delete') %>" class="remove deleteViewLink">
-    <span class="icon"></span>
-  </a>
-  <a href="#expand" title="<%= t('screens.ds.grid_sidebar.view_list.item.expand') %>" class="expand downArrow">
-    <span class="icon"></span>
-  </a>
-</li>
+  <li class="viewItem">
+    <span class="viewIcon">
+      <span class="icon"></span>
+    </span>
+    <a class="nameLink">
+      <span class="pubDate"></span>
+      <span class="name"></span>
+      <span class="aria-not-displayed">Name</span>
+    </a>
+    <span class="authorLine">
+      <%= t('screens.ds.grid_sidebar.view_list.item.updated') %>
+      <span class="date"></span>
+    </span>
+    <span class="description collapsed"></span>
+    <a href="#delete" title="<%= t('screens.ds.grid_sidebar.view_list.item.delete') %>" class="remove deleteViewLink">
+      <%= icon_with_aria_text('Delete View') %>
+    </a>
+    <a href="#expand" title="<%= t('screens.ds.grid_sidebar.view_list.item.expand') %>" class="expand downArrow">
+      <%= icon_with_aria_text('Expand') %>
+    </a>
+  </li>
 </ul>
 
 <ul class="backupItemContainer">
-<li class="backupItem">
-  <a class="backupLink"><%= t('screens.ds.grid_sidebar.backup.item_html') %></a>
-  <a href="#delete" class="remove deleteBackupLink"><span class="icon"></span></a>
-</li>
+  <li class="backupItem">
+    <a class="backupLink">
+      <%= t('screens.ds.grid_sidebar.backup.item_html') %>
+    </a>
+    <a href="#delete" class="remove deleteBackupLink">
+      <%= icon_with_aria_text('Delete Backup') %>
+    </a>
+  </li>
 </ul>

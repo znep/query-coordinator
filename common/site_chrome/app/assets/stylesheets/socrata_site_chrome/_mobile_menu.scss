@@ -6,6 +6,17 @@ $mobile_menu_border_color: #f4f4f4;
 $section_margin: 16px;
 $button_height: 48px;
 
+.aria-not-displayed {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
 header#site-chrome-header, footer#site-chrome-footer {
   .mobile-menu {
     position: fixed;

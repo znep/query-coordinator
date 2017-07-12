@@ -15,10 +15,14 @@
   <label for="embed_code" class="formHeader"><%= view.is_form? ?
     t('controls.embed.form_frame') : t('controls.embed.embed') %></label>
   <div class="embedCodeWrapper">
-    <textarea id="embed_code" name="embed_code" class="htmlCode"><%=
-      get_publish_embed_code_for_view(view, {:dimensions => { :width => "_width_",
-                                  :height => "_height_" }}, customization_id || '_variation_', cur)
-    %></textarea>
+    <textarea id="embed_code" name="embed_code" class="htmlCode" rows="2">
+      <%= get_publish_embed_code_for_view(
+        view,
+        { :dimensions => { :width => '_width_', :height => '_height_' } },
+        customization_id || '_variation_',
+        cur
+      ) %>
+    </textarea>
   </div>
 
   <div class="privateDatasetMessage flash error hide"><%= t('controls.embed.private_warning') %></div>

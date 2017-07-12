@@ -5,6 +5,7 @@ const SvgPieChart = require('./views/SvgPieChart');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
+const ColumnFormattingHelpers = require('./helpers/ColumnFormattingHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const I18n = require('common/i18n').default;
 const getSoqlVifValidator = require('./dataProviders/SoqlVifValidator.js').
@@ -113,16 +114,16 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
   }
 
   function updateData(newVif) {
+
+    const domain =  _.get(newVif, 'series[0].dataSource.domain');
+    const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
+    const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
+
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
     visualization.showBusyIndicator();
     detachInteractionEvents();
 
     $.fn.socrataSvgPieChart.validateVif(newVif).then(() => {
-      const datasetMetadataProvider = new MetadataProvider({
-        domain: _.get(newVif, 'series[0].dataSource.domain'),
-        datasetUid: _.get(newVif, 'series[0].dataSource.datasetUid')
-      });
-
       const processSeries = (series, seriesIndex) => {
         const type = _.get(series, 'dataSource.type');
 
@@ -140,7 +141,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
       };
 
       const processData = (resolutions) => {
-        const [ newColumns, ...dataResponses ] = resolutions;
+        const [ newColumns, datasetMetadata, ...dataResponses ] = resolutions;
         const allSeriesMeasureValues = dataResponses.map((dataResponse) => {
           const measureIndex = dataResponse.columns.indexOf('measure');
 
@@ -151,6 +152,10 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
           flatten().
           compact().
           isEmpty();
+
+        const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
+
+        dataResponses[0].columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
 
         $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
 
@@ -176,6 +181,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
       Promise.
         all([
           displayableFilterableColumns,
+          datasetMetadataProvider.getDatasetMetadata(),
           ...dataRequests
         ]).
         then(processData);

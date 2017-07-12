@@ -156,8 +156,11 @@ export default React.createClass({
 
     const previewImageStyling = { backgroundImage: `url(${imageUrl})` };
     const image = _.isString(imageUrl) && !_.isEmpty(imageUrl) ?
-      <div className="preview-image" style={previewImageStyling} title={name} /> :
-      <span className={`${icon} x-large-icon`}></span>;
+      (
+        <div className="preview-image" style={previewImageStyling} title={name}>
+          <span className="aria-not-displayed">Preview image</span>
+        </div>
+      ) : <span className={`${icon} x-large-icon`}></span>;
 
     return (
       <div className="result-card media view-card">

@@ -19,28 +19,28 @@
 
     <%-
       # EN-10110/EN-16622 - Disable non-table renderTypeOptions for NBE-only datasets
-      if !FeatureFlags.derive[:enable_nbe_only_grid_view_optimizations]
+      unless FeatureFlags.derive[:enable_nbe_only_grid_view_optimizations]
     -%>
     <ul id="renderTypeOptions" class="pillButtons">
-      <li><a href="<%= edit_view_rr_path(@view, defaultRender: 'richList') %>"
-        class="fatrow noRedirPrompt" title="Edit rich list layout"
-        data-displayName="Rich List">
-        <span class="icon"></span>
-      </a></li>
-      <li><a href="<%= edit_view_rr_path(@view, defaultRender: 'page') %>"
-        class="page noRedirPrompt" title="Edit single row layout"
-        data-displayName="Page">
-        <span class="icon"></span>
-      </a></li>
+      <li>
+        <a href="<%= edit_view_rr_path(@view, defaultRender: 'richList') %>"
+          class="fatrow noRedirPrompt" title="Edit rich list layout" data-displayName="Rich List">
+          <%= icon_with_aria_text('Edit rich list layout') %>
+        </a>
+      </li>
+      <li>
+        <a href="<%= edit_view_rr_path(@view, defaultRender: 'page') %>"
+          class="page noRedirPrompt" title="Edit single row layout" data-displayName="Page">
+          <%= icon_with_aria_text('Edit single row layout') %>
+        </a>
+      </li>
     </ul>
     <% end %>
   </div>
 
   <div class="mainContainer richRendererContainer">
-    <div id="layoutContainer"
-      class="navRenderType fatRowRenderType">
-      <div class="renderArea">
-      </div>
+    <div id="layoutContainer" class="navRenderType fatRowRenderType">
+      <div class="renderArea"></div>
 
       <div class="previewContainer">
         <h2>Preview</h2>
@@ -51,21 +51,29 @@
       </div>
 
       <ul class="navigation">
-        <li><a href="#start" title="View first row" class="start button">
-          <span class="icon"></span>
-        </a></li>
-        <li><a href="#previous" title="View previous row" class="previous button">
-          <span class="icon"></span>
-        </a></li>
+        <li>
+          <a href="#start" title="View first row" class="start button">
+            <%= icon_with_aria_text('View first row') %>
+          </a>
+        </li>
+        <li>
+          <a href="#previous" title="View previous row" class="previous button">
+            <%= icon_with_aria_text('View previous row') %>
+          </a>
+        </li>
         <li class="info">
           <%= t('controls.grid.viewing_row_html') %>
         </li>
-        <li><a href="#next" title="View next row" class="next button">
-          <span class="icon"></span>
-        </a></li>
-        <li><a href="#end" title="View last row" class="end button">
-          <span class="icon"></span>
-        </a></li>
+        <li>
+          <a href="#next" title="View next row" class="next button">
+            <%= icon_with_aria_text('View next row') %>
+          </a>
+        </li>
+        <li>
+          <a href="#end" title="View last row" class="end button">
+            <%= icon_with_aria_text('View last row') %>
+          </a>
+        </li>
       </ul>
     </div>
 
@@ -74,38 +82,38 @@
 </div>
 
 <% content_for :templates do %>
-<%= render(:partial => 'templates/grid_sidebar') %>
-<div class="labelPalette">
-  <div class="sectionContent">
-    <ul class="columnFields">
-      <li class="columnItem">
-        <div class="columnLabel richLabel fieldItem"></div>
-      </li>
-    </ul>
+  <%= render 'templates/grid_sidebar' %>
+  <div class="labelPalette">
+    <div class="sectionContent">
+      <ul class="columnFields">
+        <li class="columnItem">
+          <div class="columnLabel richLabel fieldItem"></div>
+        </li>
+      </ul>
+    </div>
   </div>
-</div>
-<div class="fieldPalette">
-  <div class="sectionContent">
-    <ul class="columnFields">
-      <li class="columnItem">
-        <div class="columnData richItem fieldItem noRender"></div>
-      </li>
-    </ul>
+  <div class="fieldPalette">
+    <div class="sectionContent">
+      <ul class="columnFields">
+        <li class="columnItem">
+          <div class="columnData richItem fieldItem noRender"></div>
+        </li>
+      </ul>
+    </div>
   </div>
-</div>
-<div class="staticPalette">
-  <div class="sectionContent">
-    <div class="fieldItem richLabel staticLabel defaultData">(Static text)</div>
+  <div class="staticPalette">
+    <div class="sectionContent">
+      <div class="fieldItem richLabel staticLabel defaultData">(Static text)</div>
+    </div>
   </div>
-</div>
 <% end %>
 
 <% content_for :modals do %>
-<%= render :partial => 'save_view_dialog' %>
+  <%= render 'save_view_dialog' %>
 <% end %>
 
 <% content_for :js_footer do %>
-  <script type='text/javascript'>
+  <script type="text/javascript">
     blist.dataset = new Dataset(<%= safe_json(@view) %>);
   </script>
   <%= include_webpack_bundle 'open-data/dataset-edit-rr.js' %>

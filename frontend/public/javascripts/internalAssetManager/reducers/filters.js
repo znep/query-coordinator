@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import url from 'url';
 
 export const getInitialState = () => ({
   assetTypes: _.get(window, 'initialState.initialFilters.assetTypes'),
@@ -24,6 +25,7 @@ export const getUnfilteredState = () => ({
     displayName: '',
     id: null
   },
+  q: _.get(url.parse(window.location.href, true), 'query.q', ''),
   tag: null,
   usersList: _.get(window, 'initialState.usersList') || [],
   visibility: null
@@ -87,6 +89,13 @@ export default (state, action) => {
     return {
       ...state,
       q: action.value
+    };
+  }
+
+  if (action.type === 'CLEAR_SEARCH') {
+    return {
+      ...state,
+      q: null
     };
   }
 

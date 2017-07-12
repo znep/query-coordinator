@@ -10,7 +10,7 @@ import styles from 'styles/Uploads/UploadSidebar.scss';
 const UploadItem = ({ source }) =>
   <li>
     <Link to={Links.showOutputSchema(source.id, source.inputSchemaId, source.outputSchemaId)}>
-      {source.source_type.filename}
+      {source.source_type && source.source_type.filename}
     </Link>
     <div className={styles.timestamp}>{moment.utc(source.finished_at).fromNow()}</div>
   </li>;

@@ -59,7 +59,7 @@
   <%= render_dataset_landing_page_session_data %>
   <%= render_dataset_landing_page_server_config %>
 
-  <script>
+  <script type="text/javascript">
     var initialState = {
       view: <%= raw @dataset_landing_page_view.to_json %>,
       relatedViews: <%= raw @related_views.to_json %>,
@@ -69,5 +69,5 @@
 
   <%= include_webpack_bundle 'dataset-landing-page/main.js' %>
 
-  <script src="https://www.google.com/recaptcha/api.js?render=explicit" async></script>
+  <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?render=explicit" async></script>
 <% end %>

@@ -20,7 +20,7 @@ class Alert extends React.Component {
     const alertData = alert.has('data') && alert.get('data') ? alert.get('data').toJS() : null;
 
     return (
-      <div className="server-error">
+      <div className="activity-feed-alert">
         <div className={classNames('alert', alert.get('type'))}>
           <LocalizedText localeKey={localeKey} data={alertData}/>
           <i className="socrata-icon-close" onClick={dispatchDismissAlert}/>

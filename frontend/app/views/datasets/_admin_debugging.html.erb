@@ -17,6 +17,12 @@
     <dt>Migrations</dt>
     <dd><%= link_to nil, "/api/migrations/#{@view.id}" %></dd>
 
+    <dt>NBE UID</dt>
+    <dd><%= @view.nbe_view.try(:id) || 'N/A' %></dd>
+
+    <dt>OBE UID</dt>
+    <dd><%= @view.obe_view.try(:id) || 'N/A' %></dd>
+
     <dt>Rows last updated by</dt> <%# Dataset only, so cannot be added to lenses %>
     <dd><%= link_to nil, "/profile/#{@view.rowsUpdatedBy}" %></dd>
 

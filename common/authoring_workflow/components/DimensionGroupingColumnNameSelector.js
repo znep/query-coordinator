@@ -5,6 +5,7 @@ import { Dropdown } from 'common/components';
 import { AccordionPane } from './shared/Accordion.js';
 import BlockLabel from './shared/BlockLabel';
 import {
+  getDimension,
   getDimensionGroupingColumnName,
   isBarChart,
   isColumnChart
@@ -30,6 +31,20 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
       vifAuthoring
     } = this.props;
 
+    const validDimensions = _.map(
+      getValidDimensions(metadata),
+      dimension => ({
+        title: dimension.name,
+        value: dimension.fieldName
+      })
+    );
+
+    const selectedDimension = getDimension(vifAuthoring);
+    const validGroupingDimensions = _.reject(
+      validDimensions,
+      { value: _.get(selectedDimension, 'columnName') }
+    );
+
     const options = [
       {
         title: I18n.t(
@@ -37,13 +52,7 @@ export const DimensionGroupingColumnNameSelector = React.createClass({
         ),
         value: null
       },
-      ..._.map(
-        getValidDimensions(metadata),
-        dimension => ({
-          title: dimension.name,
-          value: dimension.fieldName
-        })
-      )
+      ...validGroupingDimensions
     ];
 
     const dimensionGroupingColumnName = getDimensionGroupingColumnName(vifAuthoring);

@@ -34,7 +34,7 @@ class TagsInput extends Component {
       return;
     }
 
-    setValue([this.state.tag, ...field.value]);
+    setValue([...field.value, this.state.tag]);
 
     this.setState({
       tag: ''

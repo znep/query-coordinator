@@ -27,7 +27,7 @@ describe('DetailsModal', () => {
         status: 'failure'
       },
       created_at: '2000-01-01',
-      service: 'data.service',
+      service: 'DeltaImporter2',
       activity_name: 'file_name'
     },
     dataset: {
@@ -77,7 +77,7 @@ describe('DetailsModal', () => {
       description.replace('%{reason}', mockActivity.data.latest_event.info.reason);
     const expectedInitiatedAt = `${mockTranslations.initiated_at}: ${moment(mockActivity.data.created_at).format('LLL')}`;
     const expectedStartedBy = `${mockTranslations.started_by}: ${mockActivity.initiated_by.displayName}`;
-    const expectedImportMethod = `${mockTranslations.import_method}: ${mockActivity.data.service}`;
+    const expectedImportMethod = `${mockTranslations.import_method}: ${mockTranslations.show_page.services[mockActivity.data.service]}`;
     const expectedName = `${mockActivity.dataset.name} (${mockActivity.data.activity_name})`;
 
     assert.equal(lineActivityType, mockActivity.data.activity_type);

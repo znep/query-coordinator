@@ -2114,8 +2114,13 @@ en:
           location_coming_soon: Location (Coming Soon)
           location: Location
           number: Number
-          point: Point
           text: Text
+          point: Point
+          multipoint: MultiPoint
+          line: Line
+          multiline: MultiLine
+          polygon: Polygon
+          multipolygon: MultiPolygon
       ready_to_import:
         help_modal:
           clean_data_blurb: Once your data is clean, you can use the Append and Replace wizard to add the remaining rows.

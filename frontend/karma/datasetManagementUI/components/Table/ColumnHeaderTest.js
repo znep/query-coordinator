@@ -11,6 +11,7 @@ import reducer from 'reducers/rootReducer';
 import thunk from 'redux-thunk';
 import { bootstrapApp } from 'actions/bootstrap';
 import wsmock from '../../testHelpers/mockSocket';
+import dotProp from 'dot-prop-immutable';
 
 describe('components/Table/ColumnHeader', () => {
   let unmockWS;
@@ -27,11 +28,14 @@ describe('components/Table/ColumnHeader', () => {
     outputSchema: {
       id: 52
     },
-    column: {
+    outputColumn: {
+      display_name: 'foo',
       transform: {
         output_soql_type: 'text'
       },
-      display_name: 'foo'
+      inputColumn: {
+        soql_type: 'text'
+      }
     },
     activeApiCallInvolvingThis: false,
     updateColumnType: _.noop,
@@ -62,7 +66,7 @@ describe('components/Table/ColumnHeader', () => {
     TestUtils.Simulate.change(select);
     expect(spy.args[0]).to.deep.equal([
       defaultProps.outputSchema,
-      defaultProps.column,
+      defaultProps.outputColumn,
       'number'
     ]);
   });
@@ -85,9 +89,12 @@ describe('components/Table/ColumnHeader', () => {
   it('renders an add button when disabled', () => {
     const props = {
       ...defaultProps,
-      column: {
+      outputColumn: {
         transform: {
           output_soql_type: 'text'
+        },
+        inputColumn: {
+          soql_type: 'text'
         },
         ignored: true
       },
@@ -126,24 +133,54 @@ describe('components/Table/ColumnHeader', () => {
     TestUtils.Simulate.change(select);
     expect(spy.args[0]).to.deep.equal([
       newProps.outputSchema,
-      defaultProps.column,
+      defaultProps.outputColumn,
       'number'
     ]);
   });
 
-  it('renders correct list of types', () => {
-    const element = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...defaultProps} />, element);
+  describe('type list', () => {
 
-    const options = element.querySelectorAll('select option');
-    const values = [...options].map(option => option.value);
-    expect(values).to.deep.equal([
-      'calendar_date',
-      'number',
-      'text',
-      'checkbox',
-      'location'
-    ]);
+    it('renders correct list of types for a text input column', () => {
+      const element = document.createElement('tr');
+      ReactDOM.render(<ColumnHeader {...defaultProps} />, element);
+
+      const options = element.querySelectorAll('select option');
+      const values = [...options].map(option => option.value);
+      expect(values).to.deep.equal([
+        'calendar_date',
+        'number',
+        'text',
+        'checkbox'
+      ]);
+    });
+
+    it('renders correct list of types for a geo input column', () => {
+      const element = document.createElement('tr');
+      const withGeoInput = dotProp.set(defaultProps, 'outputColumn.inputColumn.soql_type', 'multipolygon');
+      ReactDOM.render(<ColumnHeader {...withGeoInput} />, element);
+
+      const options = element.querySelectorAll('select option');
+      const values = [...options].map(option => option.value);
+      expect(values).to.deep.equal([
+        'multipolygon',
+        'text'
+      ]);
+    });
+
+    it('renders correct list of types for a number column', () => {
+      const element = document.createElement('tr');
+      const withNumInput = dotProp.set(defaultProps, 'outputColumn.inputColumn.soql_type', 'number');
+      ReactDOM.render(<ColumnHeader {...withNumInput} />, element);
+
+      const options = element.querySelectorAll('select option');
+      const values = [...options].map(option => option.value);
+      expect(values).to.deep.equal([
+        'number',
+        'text',
+        'checkbox'
+      ]);
+    });
+
   });
 
   it('renders a spinner and disables if an output schema is being created that replaces this column', () => {
@@ -165,7 +202,10 @@ describe('components/Table/ColumnHeader', () => {
       store.dispatch(apiCallStarted(0, call));
       const props = {
         ...defaultProps,
-        column: {
+        outputColumn: {
+          inputColumn: {
+            soql_type: 'text'
+          },
           id: 5,
           transform: {
             output_soql_type: 'text'
@@ -184,15 +224,12 @@ describe('components/Table/ColumnHeader', () => {
   });
 
   it('renders a spinner and disables if this column is being validated as a row identifier', () => {
-    const call = {
-      operation: 'VALIDATE_ROW_IDENTIFIER',
-      params: {
-        outputColumnId: 5
-      }
-    };
     const props = {
       ...defaultProps,
-      column: {
+      outputColumn: {
+        inputColumn: {
+          soql_type: 'text'
+        },
         id: 5,
         transform: {
           output_soql_type: 'text'
@@ -212,7 +249,10 @@ describe('components/Table/ColumnHeader', () => {
   it("doesn't render a spinner if there's no api call in progress", () => {
     const props = {
       ...defaultProps,
-      column: {
+      outputColumn: {
+        inputColumn: {
+          soql_type: 'text'
+        },
         id: 5,
         transform: {
           output_soql_type: 'text'
@@ -231,7 +271,10 @@ describe('components/Table/ColumnHeader', () => {
   it('renders an id icon if this is a row identifier', () => {
     const props = {
       ...defaultProps,
-      column: {
+      outputColumn: {
+        inputColumn: {
+          soql_type: 'text'
+        },
         transform: {
           output_soql_type: 'text'
         },

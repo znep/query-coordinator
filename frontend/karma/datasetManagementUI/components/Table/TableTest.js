@@ -131,7 +131,7 @@ describe('components/Table', () => {
 
   it('renders a disabled ColumnHeader if column is ignored', () => {
     const component = shallow(<Table {...defaultProps} />);
-    assert.isTrue(component.find('ColumnHeader').last().prop('column').ignored);
+    assert.isTrue(component.find('ColumnHeader').last().prop('outputColumn').ignored);
   });
 
   it('renders a row-errors link if the input schema says there are row errors', () => {

@@ -23,7 +23,10 @@
     </div>
 
     <div class="site-chrome-admin-header-section">
-      <div id="site-chrome-header-notifications" tabIndex="-1">
+      <div
+        id="site-chrome-header-notifications"
+        tabIndex="-1"
+        class="<%= 'site-chrome-with-settings-button' if current_user_can_see_admin_link? && new_admin_ui_enabled? %>">
         <%# This gets filled in by notifications JS %>
       </div>
 

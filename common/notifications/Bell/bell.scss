@@ -45,27 +45,24 @@ $bell-light: #FFFFFF;
 
 :global(.site-chrome-small) {
   & .button {
-    padding-left: 11px;
-    padding-right: 11px;
-    padding-top: 6px;
-    padding-bottom: 1px;
+    padding: 7px 10px 1px;
 
     & :global(.socrata-icon) {
-      width: 16px;
-      height: 16px;
+      width: 12px;
+      height: 12px;
 
       & svg {
-        fill: $bell-light;
-        color: $bell-light;
+        width: 12px;
+        height: 12px;
       }
     }
   }
 }
 
 :global(.site-chrome-small) .unread-icon {
-  width: 9px;
-  top: 3px;
-  left: 20px;
+  width: 6px;
+  top: 8px;
+  left: 17px;
 }
 
 .button:hover {

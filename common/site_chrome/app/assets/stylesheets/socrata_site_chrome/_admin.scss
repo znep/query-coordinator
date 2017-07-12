@@ -21,7 +21,8 @@
     }
 
     .site-chrome-admin-separator {
-      height: 20px;
+      margin-top: 8px;
+      height: 16px;
     }
 
     .site-chrome-admin-menu h1 {
@@ -30,38 +31,33 @@
     }
 
     .site-chrome-admin-user {
-      padding: 2px 13px;
-
-      > ul::after {
-        right: 6px;
-      }
+      padding: 5px 10px;
 
       > .socrata-icon-user {
-        width: 20px;
-        height: 20px;
-        font-size: 20px;
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
       }
     }
 
     .site-chrome-admin-settings {
-      padding: 3px 13px;
+      padding: 5px 10px 0 10px;
 
       span[class^=socrata-icon] {
-        line-height: 25px;
         display: block;
-        width: 25px;
-        height: 25px;
-        font-size: 25px;
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
       }
     }
 
     .site-chrome-admin-user-image {
-      width: 28px;
-      height: 28px;
+      width: 16px;
+      height: 16px;
 
       img {
-        width: 28px;
-        height: 28px;
+        width: 16px;
+        height: 16px;
       }
     }
   }
@@ -124,8 +120,9 @@
   }
 
   .site-chrome-admin-settings {
+    padding: 8px 8px;
+
     span[class^=socrata-icon] {
-      line-height: 32px;
       display: block;
       width: 18px;
       height: 18px;
@@ -143,6 +140,10 @@
     &:hover,
     &.active {
       background-color: #3b454e;
+    }
+
+    ul {
+      right: 0;
     }
   }
 
@@ -197,12 +198,19 @@
     display: flex;
   }
 
+  .site-chrome-admin-user {
+    padding: 7px 8px;
+
+    ul {
+      right: 2px;
+    }
+  }
+
   .site-chrome-admin-user,
   .site-chrome-admin-settings {
     position: relative;
     margin-right: 0;
     height: 100%;
-    padding: 7px 8px;
 
     &:hover {
       background-color: #3c3c3c;
@@ -226,15 +234,13 @@
     ul {
       display: none;
       position: absolute;
-      right: 2px;
       top: 100%;
       list-style-type: none;
       padding: 0;
-      margin: 0;
       background: white;
-      filter: drop-shadow(0 3px 5px #888888);
+      filter: drop-shadow(0px 2px 5px #999);
       z-index: 10;
-      margin-top: 15px;
+      margin: 15px 0 0 0;
 
       &::after {
         position: absolute;

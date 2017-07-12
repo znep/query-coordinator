@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import { LOAD_ROWS } from 'actions/apiCalls';
 import { CREATE_UPLOAD } from 'actions/manageUploads';
+import { snakeCase } from 'lib/util';
 
 export function rowsToBeImported(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];
@@ -245,6 +246,7 @@ const regularPublic = view =>
     .pick(['id', 'name', 'description', 'category', 'licenseId', 'attribution', 'attributionLink', 'tags'])
     .omitBy(filterUndefineds)
     .mapValues(convertToNull)
+    .mapKeys((v, k) => snakeCase(k))
     .value();
 
 const regularPrivate = view =>
@@ -273,7 +275,7 @@ export const datasetMetadata = view => {
 
   return {
     ...publicMetadata,
-    privateMetadata: {
+    private_metadata: {
       ...privateMetadata,
       custom_fields: privateCustomMetadata
     },

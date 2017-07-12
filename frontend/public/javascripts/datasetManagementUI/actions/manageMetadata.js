@@ -13,7 +13,7 @@ import {
 import * as Selectors from 'selectors';
 import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
-import { getLocalizedErrorMessage } from 'lib/util';
+import { getLocalizedErrorMessage, camelCamelCamel } from 'lib/util';
 import {
   pollForOutputSchemaSuccess,
   subscribeToOutputSchema,
@@ -57,6 +57,9 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
 
   const datasetMetadata = Selectors.datasetMetadata(view);
 
+  // TODO: remove once dsmapi form stuff is done
+  const datasetMetadataForCore = camelCamelCamel(Selectors.datasetMetadata(view));
+
   const callId = uuid();
 
   dispatch(
@@ -75,7 +78,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   return Promise.all([
     socrataFetch(`/api/views/${fourfour}`, {
       method: 'PUT',
-      body: JSON.stringify(datasetMetadata)
+      body: JSON.stringify(datasetMetadataForCore)
     }),
     socrataFetch(dsmapiLinks.revisionBase, {
       method: 'PUT',
@@ -96,7 +99,6 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       if (!dsmapi.metadata) {
         throw new Error('No metadata in api response');
       }
-      // TODO: wait on Cate's bugfix for private custom md
       dispatch(
         editView(dsmapi.fourfour, {
           ..._.omit(dsmapi.metadata, 'metadata', 'private_metadata'),

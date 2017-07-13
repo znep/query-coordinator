@@ -78,10 +78,43 @@ function SoqlDataProvider(config) {
       then(
         function(data) {
           return parseInt(
-            _.get(
-              data,
-              `[0]${alias}`
-            ),
+            _.get(data, `[0]${alias}`),
+            10
+          );
+        }
+      );
+  };
+
+  // EN-17489 - Add SoQL query parameter passthrough to SoqlDataProvider
+  //
+  // This is an experimental method using pre-computed SoQL query parameters as
+  // opposed to a query configuration expressed using the standard vif
+  // properties.
+  this.getRowCountWithQueryParams = function(queryParams) {
+    const alias = '__count_alias__'; // lowercase in order to deal with OBE norms
+    const encodedWhereClause = (queryParams.where.length > 0) ?
+      ` WHERE ${encodeURIComponent(queryParams.where)}` :
+      '';
+    const encodedGroupByClause = (queryParams.group.length > 0) ?
+      ` GROUP BY ${encodeURIComponent(queryParams.group)}` :
+      '';
+    const encodedSearchClause = (queryParams.search.length > 0) ?
+      ` SEARCH '${encodeURIComponent(queryParams.search)}'` :
+      '';
+    const path = pathForQuery(
+      `$query=SELECT ${encodeURIComponent(queryParams.select)}{0}{1}{2} |> SELECT COUNT(*) AS {3}`.format(
+        encodedWhereClause,
+        encodedGroupByClause,
+        encodedSearchClause,
+        alias
+      )
+    );
+
+    return makeSoqlGetRequest(path).
+      then(
+        function(data) {
+          return parseInt(
+            _.get(data, `[0]${alias}`),
             10
           );
         }
@@ -174,6 +207,37 @@ function SoqlDataProvider(config) {
         limit,
         offset,
         whereClauseComponents ? '&$where=' + encodeURIComponent(whereClauseComponents) : ''
+      );
+    const path = pathForQuery(queryString);
+
+    return makeSoqlGetRequest(path).
+      then(
+        function(data) {
+          return mapRowsResponseToTable(columnNames, data);
+        }
+      );
+  };
+
+  // EN-17489 - Add SoQL query parameter passthrough to SoqlDataProvider
+  //
+  // This is an experimental method using pre-computed SoQL query parameters as
+  // opposed to a query configuration expressed using the standard vif
+  // properties.
+  this.getTableDataWithQueryParams = function(columnNames, queryParams, offset, limit) {
+    utils.assertInstanceOf(columnNames, Array);
+    utils.assertIsOneOfTypes(offset, 'number');
+    utils.assertIsOneOfTypes(limit, 'number');
+
+    const queryString =
+      '{0}{1}{2}{3}{4}{5}{6}'.
+      format(
+        `$select=${queryParams.select}`,
+        (queryParams.group.length > 0) ? `&$group=${encodeURIComponent(queryParams.group)}` : '',
+        (queryParams.where.length > 0) ? `&$where=${encodeURIComponent(queryParams.where)}` : '',
+        `&$order=${queryParams.order}`,
+        `&$limit=${limit}`,
+        `&$offset=${offset}`,
+        `&$search=${queryParams.search}`
       );
     const path = pathForQuery(queryString);
 

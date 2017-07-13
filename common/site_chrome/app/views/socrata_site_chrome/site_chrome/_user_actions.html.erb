@@ -2,19 +2,19 @@
   <%- if show_signin_signout? %>
     <%- if logged_in? %>
       <%- profile_link = capture do %>
-        <%= link_to(t('header.my_profile'), site_chrome_massage_url('/profile'), :class => 'profile-link') %>
+        <%= link_to(t('shared.site_chrome.header.my_profile'), site_chrome_massage_url('/profile'), :class => 'profile-link') %>
       <%- end if show_profile? %>
       <%- admin_link = capture do %>
-        <%= link_to(t('header.administration'), site_chrome_massage_url('/admin'), :class => 'admin-link') %>
+        <%= link_to(t('shared.site_chrome.header.administration'), site_chrome_massage_url('/admin'), :class => 'admin-link') %>
       <%- end if current_user_can_see_admin_link? %>
       <%- logout_link = capture do %>
-        <%= link_to(t('header.sign_out'), site_chrome_massage_url('/logout'), :class => 'logout-link') %>
+        <%= link_to(t('shared.site_chrome.header.sign_out'), site_chrome_massage_url('/logout'), :class => 'logout-link') %>
       <%- end %>
       <%= dropdown("#{username}", [ profile_link, admin_link, logout_link ]) %>
     <% else %>
-      <%= link_to(t('header.sign_in'), site_chrome_massage_url('/login'), :class => "sign-in-toggle site-chrome-btn") %>
+      <%= link_to(t('shared.site_chrome.header.sign_in'), site_chrome_massage_url('/login'), :class => "sign-in-toggle site-chrome-btn") %>
     <% end %>
   <%- elsif current_user_can_see_admin_link? %>
-    <%= link_to(t('header.administration'), site_chrome_massage_url('/admin'), :class => 'admin-link in-header') %>
+    <%= link_to(t('shared.site_chrome.header.administration'), site_chrome_massage_url('/admin'), :class => 'admin-link in-header') %>
   <%- end %>
 </div>

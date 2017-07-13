@@ -1,11 +1,11 @@
 <div class="mobile-user-actions noselect">
   <% if logged_in? %>
-    <%= link_to(t('header.my_profile'), site_chrome_massage_url('/profile'), :class => 'profile-link site-chrome-mobile-btn inverse-btn') %>
+    <%= link_to(t('shared.site_chrome.header.my_profile'), site_chrome_massage_url('/profile'), :class => 'profile-link site-chrome-mobile-btn inverse-btn') %>
     <%- if current_user_can_see_admin_link? %>
-      <%= link_to(t('header.administration'), site_chrome_massage_url('/admin'), :class => 'admin-link site-chrome-mobile-btn inverse-btn') %>
+      <%= link_to(t('shared.site_chrome.header.administration'), site_chrome_massage_url('/admin'), :class => 'admin-link site-chrome-mobile-btn inverse-btn') %>
     <%- end %>
-    <%= link_to(t('header.sign_out'), site_chrome_massage_url('/logout'), :class => 'logout-link site-chrome-mobile-btn') %>
+    <%= link_to(t('shared.site_chrome.header.sign_out'), site_chrome_massage_url('/logout'), :class => 'logout-link site-chrome-mobile-btn') %>
   <% else %>
-    <%= link_to(t('header.sign_in'), site_chrome_massage_url('/login'), :class => 'sign-in-toggle site-chrome-mobile-btn') %>
+    <%= link_to(t('shared.site_chrome.header.sign_in'), site_chrome_massage_url('/login'), :class => 'sign-in-toggle site-chrome-mobile-btn') %>
   <% end %>
 </div>

@@ -56,6 +56,20 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
+  describe 'aria helper methods' do
+    context 'icon_with_aria_text' do
+      it 'returns a span with class "icon" with an inner span containing aria text' do
+        expect(helper.icon_with_aria_text('aria text')).
+          to eq('<span class="icon"><span class="aria-not-displayed">aria text</span></span>')
+      end
+
+      it 'returns a span with a custom class with an inner span containing aria text' do
+        expect(helper.icon_with_aria_text('aria text', :class => 'custom-icon-class')).
+          to eq('<span class="custom-icon-class"><span class="aria-not-displayed">aria text</span></span>')
+      end
+    end
+  end
+
   describe '#current_editor_translations' do
     before(:all) do
       # If a locale that's tested below doesn't exist, we'd like

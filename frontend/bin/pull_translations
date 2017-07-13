@@ -16,6 +16,9 @@ if [ -z $COMMON_LOCALEAPP_API_KEY ]; then
   exit 1
 fi
 
+mkdir -p log
+touch log/localeapp.yml
+
 set -e
 
 ## Pull platform-ui/frontend locales
@@ -23,6 +26,6 @@ LOCALEAPP_API_KEY=$LOCALEAPP_API_KEY localeapp pull config/locales
 
 ## Pull platform-ui/common locales
 cd ../common/i18n/
+mkdir -p log
+touch log/localeapp.yml
 LOCALEAPP_API_KEY=$COMMON_LOCALEAPP_API_KEY localeapp pull config/locales
-
-

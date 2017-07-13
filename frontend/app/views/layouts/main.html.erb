@@ -174,26 +174,24 @@ http://www.socrata.com
   %>
 
     <script type="text/template" id="templates">
-      <!--
-        <%= render 'shared/control_templates' %>
-        <%= yield :templates %>
+      <%= render 'shared/control_templates' %>
+      <%= yield :templates %>
 
-        <%= modal :id => 'jqmAlert' do %>
-          <h2>Alert</h2>
-          <p class="alertMessage"></p>
-          <ul class="actions clearfix">
-            <li><a href="#close" class="button jqmClose">Close</a></li>
-          </ul>
-        <%- end -%>
-        <%= modal :id => 'jqmConfirm' do %>
-          <h2>Alert</h2>
-          <p class="confirmMessage"></p>
-          <ul class="actions clearfix">
-            <li><a href="#close" class="button jqmClose default yes">Yes</a></li>
-            <li><a href="#close" class="button jqmClose no">No</a></li>
-          </ul>
-        <%- end -%>
-      // -->
+      <%= modal :id => 'jqmAlert' do %>
+        <h2>Alert</h2>
+        <p class="alertMessage"></p>
+        <ul class="actions clearfix">
+          <li><a href="#close" class="button jqmClose">Close</a></li>
+        </ul>
+      <%- end -%>
+      <%= modal :id => 'jqmConfirm' do %>
+        <h2>Alert</h2>
+        <p class="confirmMessage"></p>
+        <ul class="actions clearfix">
+          <li><a href="#close" class="button jqmClose default yes">Yes</a></li>
+          <li><a href="#close" class="button jqmClose no">No</a></li>
+        </ul>
+      <%- end -%>
     </script>
   </div>
   <div id="js-appended-templates" style="display: none" aria-hidden="true"></div>

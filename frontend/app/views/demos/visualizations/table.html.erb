@@ -493,7 +493,55 @@
     };
 
     var $tableGroupedSortOrderElement = $('#table-grouped-sort-order');
-    $tableGroupedSortOrderElement.socrataTable(tableGroupedSortOrderVIF );
+    $tableGroupedSortOrderElement.socrataTable(tableGroupedSortOrderVIF);
+
+    var tableQueryParamsVIF = {
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      },
+      configuration: {
+        viewSourceDataLink: false
+      },
+      description: 'This table makes queries based on the queryParams property in the data source',
+      series: [
+        {
+          color: {
+          },
+          dataSource: {
+            datasetUid: 'kdxd-e4ar',
+            dimension: {
+              columnName: null,
+              aggregationFunction: null
+            },
+            domain: 'dataspace.demo.socrata.com',
+            measure: {
+              columnName: null,
+              aggregationFunction: 'count'
+            },
+            type: 'socrata.soql',
+            filters: [],
+            queryParams: {
+              select: 'class_description,agency,count(incident_id) as incident_id',
+              group: 'class_description,agency',
+              where: '(dispatch_date_time>\'2015-04-20T00:00:00\')',
+              order: 'class_description',
+              search: ''
+            }
+          },
+          label: null,
+          type: 'table',
+          unit: {
+            one: 'case',
+            other: 'cases'
+          }
+        }
+      ],
+      title: '`queryParams` property in the data source'
+    };
+
+    var $tableQueryParamsElement = $('#table-query-params');
+    $tableQueryParamsElement.socrataTable(tableQueryParamsVIF);
 
     // Begin table event handling
 
@@ -591,3 +639,5 @@
 <div id="table-system-id-sort"></div>
 <p>Tests tables without default sort order for a grouped view.</p>
 <div id="table-grouped-sort-order"></div>
+<p>Tests tables with explicit query params specified in the VIF's dataSource.</p>
+<div id="table-query-params"></div>

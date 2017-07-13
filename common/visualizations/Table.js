@@ -38,12 +38,27 @@ $.fn.socrataTable = function(originalVif, locale) {
     },
     function(soqlDataProvider, whereClauseComponents, lastUpdate) {
       const domain = soqlDataProvider.getConfigurationProperty('domain');
-      const datasetUid = soqlDataProvider.getConfigurationProperty('domain');
+      const datasetUid = soqlDataProvider.getConfigurationProperty('datasetUid');
 
       return `${domain}_${datasetUid}_${whereClauseComponents}_${lastUpdate}`;
     }
   );
+  // This is stored as a variable and not a function since we need to capture
+  // the output of _.memoize.
+  const getMemoizedRowCountWithQueryParams = _.memoize(
+    function(soqlDataProvider, queryParams) {
+      return soqlDataProvider.getRowCountWithQueryParams(queryParams);
+    },
+    function(soqlDataProvider, queryParams, lastUpdate) {
+      const domain = soqlDataProvider.getConfigurationProperty('domain');
+      const datasetUid = soqlDataProvider.getConfigurationProperty('datasetUid');
 
+      return (
+        `${domain}_${datasetUid}_${queryParams.select}_${queryParams.where}_` +
+        `${queryParams.group}_${queryParams.search}_${lastUpdate}`
+      );
+    }
+  );
   let visualization = null;
   let pager = null;
   // Holds all state regarding the table's visual presentation.
@@ -605,41 +620,88 @@ $.fn.socrataTable = function(originalVif, locale) {
 
     function getSoqlDataUsingDatasetMetadata(datasetMetadata) {
       const displayableColumns = new MetadataProvider(dataProviderConfig).
-        getDisplayableColumns(datasetMetadata);
-      const displayableColumnsFieldNames = _.map(
-        displayableColumns,
-        'fieldName'
-      ).
+        getDisplayableColumns(datasetMetadata).
         slice(0, MAX_COLUMN_COUNT);
+      const queryParams = _.get(
+        vifForDataQuery,
+        'series[0].dataSource.queryParams',
+        false
+      );
 
-      // If the order in the VIF is undefined, we need to find a column to sort the table by
-      if (_.isUndefined(order)) {
-        order = getSortOrder(datasetMetadata, displayableColumns);
+      let displayableColumnsFieldNames = _.map(displayableColumns, 'fieldName');
 
-        // Update order in vifForDataQuery so we can visually indicate which column the table is
-        // being sorted by
-        _.set(vifForDataQuery, 'configuration.order', order);
+      if (queryParams) {
+        // Note: this will extract aliases, not original column fieldNames for
+        // columns that are aliased in the SELECT statement.
+        let columnNamesInSelect = queryParams.select.
+          split(',').
+          map((select) => {
+            return select.replace(/\`/g, '').replace(/(.*) as (.*)/, '$2')
+          });
 
-      } else if (order.length !== 1) {
-        return Promise.reject(
-          'Order parameter must be an array with exactly one element.'
-        );
+        displayableColumnsFieldNames = displayableColumnsFieldNames.
+          filter((columnName) => {
+
+            return (
+              queryParams.select.match(/\*/) ||
+              _.includes(
+                columnNamesInSelect,
+                columnName
+              )
+            );
+          });
+      } else {
+
+        // If the order in the VIF is undefined, we need to find a column to sort the table by
+        if (_.isUndefined(order)) {
+          order = getSortOrder(datasetMetadata, displayableColumns);
+
+          // Update order in vifForDataQuery so we can visually indicate which column the table is
+          // being sorted by
+          _.set(vifForDataQuery, 'configuration.order', order);
+
+        } else if (order.length !== 1) {
+          return Promise.reject(
+            'Order parameter must be an array with exactly one element.'
+          );
+        }
       }
 
       const soqlDataProvider = new SoqlDataProvider(dataProviderConfig);
-      const soqlRowCountPromise = getMemoizedRowCount(
-        soqlDataProvider,
-        whereClauseComponents,
-        datasetMetadata.rowsUpdatedAt
-      );
-      const soqlDataPromise = soqlDataProvider.
-        getTableData(
-          displayableColumnsFieldNames,
-          order,
-          startIndex,
-          pageSize,
-          whereClauseComponents
+
+      let soqlRowCountPromise;
+      let soqlDataPromise;
+
+      if (queryParams) {
+
+        soqlRowCountPromise = getMemoizedRowCountWithQueryParams(
+          soqlDataProvider,
+          queryParams,
+          datasetMetadata.rowsUpdatedAt
         );
+        soqlDataPromise = soqlDataProvider.
+          getTableDataWithQueryParams(
+            displayableColumnsFieldNames,
+            queryParams,
+            startIndex,
+            pageSize
+          );
+      } else {
+
+        soqlRowCountPromise = getMemoizedRowCount(
+          soqlDataProvider,
+          whereClauseComponents,
+          datasetMetadata.rowsUpdatedAt
+        );
+        soqlDataPromise = soqlDataProvider.
+          getTableData(
+            displayableColumnsFieldNames,
+            order,
+            startIndex,
+            pageSize,
+            whereClauseComponents
+          );
+      }
 
       Promise.all([
         soqlRowCountPromise,
@@ -647,13 +709,19 @@ $.fn.socrataTable = function(originalVif, locale) {
       ]).
         then(function(responses) {
           const [soqlRowCount, soqlData] = responses;
+          const columns = displayableColumns.filter((displayableColumn) => {
+            return _.includes(
+              displayableColumnsFieldNames,
+              displayableColumn.fieldName
+            )
+          });
           const newState = {
             busy: false,
             datasetRowCount: soqlRowCount,
             error: false,
             fetchedData: {
               rows: [],
-              columns: displayableColumns,
+              columns: columns,
               startIndex: startIndex,
               pageSize: pageSize,
               order: order,
@@ -672,7 +740,7 @@ $.fn.socrataTable = function(originalVif, locale) {
               soqlData.rows,
               (row) =>
                 !row ||
-                row.length === displayableColumns.length ||
+                row.length === displayableColumnsFieldNames.length ||
                 row.length === MAX_COLUMN_COUNT
             )
           );

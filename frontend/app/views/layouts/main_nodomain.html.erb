@@ -62,18 +62,16 @@ http://www.socrata.com
   %>
 
   <script type="text/template" id="templates">
-    <!--
-      <%= render :partial => 'shared/control_templates' %>
-      <%= yield :templates %>
+    <%= render :partial => 'shared/control_templates' %>
+    <%= yield :templates %>
 
-      <%= modal :id => 'jqmAlert' do %>
-        <h2>Alert</h2>
-        <p class="alertMessage"></p>
-        <div class="finishButtons">
-          <a href="#close" class="button jqmClose">Close</a>
-        </div>
-      <%- end -%>
-    // -->
+    <%= modal :id => 'jqmAlert' do %>
+      <h2>Alert</h2>
+      <p class="alertMessage"></p>
+      <div class="finishButtons">
+        <a href="#close" class="button jqmClose">Close</a>
+      </div>
+    <%- end -%>
   </script>
   <div id="js-appended-templates" style="display: none" aria-hidden="true"></div>
 

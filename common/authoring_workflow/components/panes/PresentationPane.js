@@ -142,7 +142,6 @@ export var PresentationPane = React.createClass({
     } else {
       return null;
     }
-
   },
 
   renderDimensionLabels() {
@@ -553,7 +552,7 @@ export var PresentationPane = React.createClass({
 
     if (selectors.isBarChart(vifAuthoring)) {
 
-      if (selectors.isGroupingOrMultiseries(vifAuthoring)) {
+      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
         configuration = this.renderGroupedBarChartControls();
       } else {
         configuration = this.renderBarChartControls();
@@ -561,7 +560,7 @@ export var PresentationPane = React.createClass({
 
     } else if (selectors.isColumnChart(vifAuthoring)) {
 
-      if (selectors.isGroupingOrMultiseries(vifAuthoring)) {
+      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
         configuration = this.renderGroupedColumnChartControls();
       } else {
         configuration = this.renderColumnChartControls();
@@ -569,7 +568,7 @@ export var PresentationPane = React.createClass({
 
     } else if (selectors.isTimelineChart(vifAuthoring)) {
 
-      if (selectors.isGroupingOrMultiseries(vifAuthoring)) {
+      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
         configuration = this.renderGroupedTimelineChartControls();
       } else {
         configuration = this.renderTimelineChartControls();

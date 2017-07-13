@@ -178,10 +178,10 @@ export const removeSeries = (state, seriesIndex) => {
   }
 };
 
-export const isGroupingOrMultiseries = (state) => {
+export const isGroupingOrMultiSeries = (state) => {
 
   const isGrouping = (_.get(state, 'series[0].dataSource.dimension.grouping', null) !== null);
-  const isMultiseries = (state.series.length > 1);
+  const isMultiSeries = (state.series.length > 1);
 
-  return isGrouping || isMultiseries;
+  return isGrouping || isMultiSeries;
 };

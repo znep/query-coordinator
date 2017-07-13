@@ -299,7 +299,7 @@ export const isValidRegionMapVif = createSelector(
   }
 );
 
-export const isGroupingOrMultiseries = createSelector(
+export const isGroupingOrMultiSeries = createSelector(
   getDimensionGroupingColumnName,
   getSeriesFromVif,
   (dimensionGroupingColumnName, series) => {

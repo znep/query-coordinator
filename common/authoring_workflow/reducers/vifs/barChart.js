@@ -4,7 +4,7 @@ import vifs from '../../vifs';
 import baseVifReducer from './base';
 import {
   forEachSeries,
-  isGroupingOrMultiseries,
+  isGroupingOrMultiSeries,
   setBooleanValueOrDefaultValue,
   setBooleanValueOrDeleteProperty,
   setStringValueOrDeleteProperty,
@@ -84,7 +84,7 @@ export default function barChart(state, action) {
       break;
 
     case actions.SET_COLOR_PALETTE:
-      if (isGroupingOrMultiseries(state)) {
+      if (isGroupingOrMultiSeries(state)) {
         forEachSeries(state, series => {
           _.set(series, 'color.palette', action.colorPalette);
         });

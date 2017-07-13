@@ -4,7 +4,7 @@ import vifs from '../../vifs';
 import baseVifReducer from './base';
 import {
   forEachSeries,
-  isGroupingOrMultiseries,
+  isGroupingOrMultiSeries,
   setBooleanValueOrDeleteProperty,
   setDimensionGroupingColumnName
 } from '../../helpers';
@@ -54,7 +54,7 @@ export default function timelineChart(state, action) {
       break;
 
     case actions.SET_COLOR_PALETTE:
-      if (isGroupingOrMultiseries(state)) {
+      if (isGroupingOrMultiSeries(state)) {
         forEachSeries(state, series => {
           _.set(series, 'color.palette', action.colorPalette);
         });

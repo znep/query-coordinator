@@ -597,7 +597,7 @@ function SvgColumnChart($element, vif, options) {
     d3DimensionXScale = generateXScale(
       dimensionValues,
       width,
-      self.isGroupingOrMultiseries()
+      self.isGroupingOrMultiSeries()
     );
 
     // This scale is used for groupings of columns under a single dimension

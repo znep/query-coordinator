@@ -87,8 +87,6 @@ describe('actions/manageMetadata', () => {
     it('dispatches edit view action with correct data if server responded with 200-level status', done => {
       const fakeStore = mockStore(store.getState());
 
-      const fourfour = Object.keys(store.getState().entities.views)[0];
-
       fakeStore
         .dispatch(saveDatasetMetadata())
         .then(() => {
@@ -96,7 +94,7 @@ describe('actions/manageMetadata', () => {
 
           assert.equal(action.type, 'EDIT_VIEW');
 
-          assert.equal(action.id, fourfour);
+          assert.equal(action.id, '2ttq-aktm');
 
           done();
         })

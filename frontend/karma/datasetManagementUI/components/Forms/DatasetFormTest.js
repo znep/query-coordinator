@@ -275,7 +275,7 @@ describe('components/Forms/DatasetForm', () => {
         subtitle: null,
         fields: [
           {
-            name: 'email',
+            name: 'contactEmail',
             label: 'Email Address',
             value: null,
             isPrivate: true,

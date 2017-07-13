@@ -219,7 +219,7 @@ function SvgPieChart($element, vif, options) {
         return I18n.t('shared.visualizations.charts.common.no_value')
       } else {
         const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
-        return ColumnFormattingHelpers.formatValue(columnValue, column, dataToRender[0]);
+        return _.unescape(ColumnFormattingHelpers.formatValue(columnValue, column, dataToRender[0]));
       }
     }
 

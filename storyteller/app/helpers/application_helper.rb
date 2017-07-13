@@ -39,6 +39,12 @@ module ApplicationHelper
     content_tag('script', '', :type => 'text/javascript', :src => uri)
   end
 
+  def icon_with_aria_text(text, opts = {})
+    content_tag(:span, :class => opts.fetch(:class, 'icon')) do
+      content_tag(:span, text, :class  => 'aria-not-displayed')
+    end
+  end
+
   def page_title
     page_title_parts = []
     page_title_parts << @story_metadata.title

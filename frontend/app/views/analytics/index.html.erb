@@ -1,13 +1,13 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-analytics-screen' %>
   <%= rendered_stylesheet_tag 'analytics-shared' %>
-  <title>Site Analytics | <%= get_site_title %></title>
+  <title><%= t('screens.stats.site_analytics') %> | <%= get_site_title %></title>
 <% end %>
 
 <div class="contentBox clearfix">
   <div id="analyticsDataContainer" class="publicSiteMetrics">
     <div class="analytics">
-      <h1>Site Analytics</h1>
+      <h1><%= t('screens.stats.site_analytics') %></h1>
       <%= render 'shared/metrics_timing' %>
     </div>
 
@@ -15,7 +15,7 @@
 
     <div class="chartsDisplay container">
       <div class="flash error message errorMessage">
-        <h3>An error occurred loading the metrics data. Please try again later</h3>
+        <h3><%= t('screens.stats.error_loading_metrics') %></h3>
       </div>
     </div>
 

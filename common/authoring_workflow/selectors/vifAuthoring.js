@@ -56,7 +56,7 @@ export const getAnyMeasure = createSelector(
   }
 );
 
-export const getSeriesFromVif = createSelector(
+export const getSeries = createSelector(
   getCurrentVif,
   vif =>  _.get(vif, 'series', [])
 );
@@ -104,7 +104,7 @@ export const getColorScale = createSelector(
 
 export const getColorPalette = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].color.palette', _.first(COLOR_PALETTES).value)
+  vif => _.get(vif, 'series[0].color.palette', null)
 );
 
 export const getBaseLayer = createSelector(
@@ -197,11 +197,6 @@ export const getDimensionGroupingColumnName = createSelector(
   vif => _.get(vif, 'series[0].dataSource.dimension.grouping.columnName', null)
 );
 
-export const getStacked = createSelector(
-  getCurrentVif,
-  vif => _.get(vif, 'series[0].stacked', false)
-);
-
 export const getColorPaletteGroupingColumnName = createSelector(
   getCurrentVif,
   getSelectedVisualizationType,
@@ -269,6 +264,26 @@ export const hasVisualizationDimension = createSelector(
   dimension => dimension !== null
 );
 
+export const isMultiSeries = createSelector(
+  getSeries,
+  series => series.length > 1
+);
+
+export const isGroupingOrMultiSeries = createSelector(
+  getDimensionGroupingColumnName,
+  isMultiSeries,
+  (dimensionGroupingColumnName, isMultiSeries) => {
+    return _.isString(dimensionGroupingColumnName) || isMultiSeries;
+  }
+);
+
+export const isStacked = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'series[0].stacked', false)
+
+);
+
+
 export const isRegionMap = createSelector(
   getVisualizationType,
   type => type === 'regionMap'
@@ -296,14 +311,6 @@ export const isValidRegionMapVif = createSelector(
       hasDatasetUid &&
       hasDomain &&
       hasMeasureAggregation;
-  }
-);
-
-export const isGroupingOrMultiSeries = createSelector(
-  getDimensionGroupingColumnName,
-  getSeriesFromVif,
-  (dimensionGroupingColumnName, series) => {
-    return _.isString(dimensionGroupingColumnName) || (series.length > 1);
   }
 );
 

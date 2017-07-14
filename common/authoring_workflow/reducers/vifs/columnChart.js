@@ -76,7 +76,7 @@ export default function columnChart(state, action) {
     case actions.SET_COLOR_PALETTE:
       if (isGroupingOrMultiSeries(state)) {
         forEachSeries(state, series => {
-          _.set(series, 'color.palette', action.colorPalette);
+          setStringValueOrDeleteProperty(series, 'color.palette', action.colorPalette);
         });
       }
       break;

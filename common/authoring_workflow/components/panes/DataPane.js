@@ -10,12 +10,12 @@ import {
 } from '../../selectors/metadata';
 import {
   getPrecision,
-  getSeriesFromVif,
   getTreatNullValuesAsZero,
   getVisualizationType,
   isBarChart,
-  isPieChart,
   isColumnChart,
+  isMultiSeries,
+  isPieChart,
   isTimelineChart,
 } from '../../selectors/vifAuthoring';
 import { TIMELINE_PRECISION } from '../../constants';
@@ -116,8 +116,7 @@ export var DataPane = React.createClass({
 
   renderGroupingOptions() {
     const { vifAuthoring } = this.props;
-    const series = getSeriesFromVif(vifAuthoring);
-    const isAvailable = (series.length == 1) &&
+    const isAvailable = !isMultiSeries(vifAuthoring) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
     return isAvailable ? (

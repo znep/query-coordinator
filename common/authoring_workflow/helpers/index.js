@@ -146,9 +146,10 @@ export const appendSeriesWithMeasure = (state, measure) => {
       //
       _.unset(series, 'dataSource.dimension.grouping');
 
-      // If the color palette has not yet been set, then assign the default palette.
+      // If the color palette is null or custom, then assign the default palette.
       //
-      if (_.get(series, 'color.palette', null) === null) {
+      const colorPalette = _.get(series, 'color.palette', null);
+      if ((colorPalette === null) || (colorPalette == 'custom')) {
         _.set(series, 'color.palette', 'categorical');
       }
     });

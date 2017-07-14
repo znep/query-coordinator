@@ -12,10 +12,11 @@ import {
   setMeasureAggregation } from '../actions';
 
 import { 
-  getSeriesFromVif, 
+  getSeries, 
   isBarChart,
   isColumnChart,
   isFeatureMap,
+  isMultiSeries,
   isTimelineChart } from '../selectors/vifAuthoring';
 
 import { hasData, getValidMeasures } from '../selectors/metadata';
@@ -65,7 +66,7 @@ export const MeasureSelector = React.createClass({
       }))
     ];
 
-    const series = getSeriesFromVif(vifAuthoring);
+    const series = getSeries(vifAuthoring);
     const items = series.map((item, index) => {
       return this.renderMeasureSelector(item.dataSource.measure, index, options);
     });
@@ -110,9 +111,8 @@ export const MeasureSelector = React.createClass({
 
   renderDeleteLink(index) {
     const { vifAuthoring } = this.props;
-    const series = getSeriesFromVif(vifAuthoring);
 
-    return (series.length > 1) ? (
+    return isMultiSeries(vifAuthoring) ? (
       <div className="measure-delete-link-container">
         <a className="measure-delete-link" onClick={() => this.handleOnClickDeleteMeasure(index)}>
           <span className="socrata-icon-close" />
@@ -161,7 +161,7 @@ export const MeasureSelector = React.createClass({
 
   renderNewMeasureLink() {
     const { vifAuthoring } = this.props;
-    const series = getSeriesFromVif(vifAuthoring);
+    const series = getSeries(vifAuthoring);
     const showNewMeasureLink = (series.length < MAXIMUM_MEASURES) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 

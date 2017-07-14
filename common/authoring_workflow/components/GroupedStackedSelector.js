@@ -3,8 +3,8 @@ import React, { PropTypes } from 'react';
 import I18n from 'common/i18n';
 import {
   getDimensionGroupingColumnName,
-  getSeriesFromVif, 
-  getStacked,
+  isMultiSeries,
+  isStacked
 } from '../selectors/vifAuthoring';
 import {
     setStacked
@@ -26,10 +26,8 @@ export const GroupedStackedSelector = React.createClass({
     } = this.props;
 
     const dimensionGroupingColumnName = getDimensionGroupingColumnName(vifAuthoring);
-    const series = getSeriesFromVif(vifAuthoring);
-    const areOptionsDisabled = (dimensionGroupingColumnName === null) && (series.length == 1);
+    const areOptionsDisabled = (dimensionGroupingColumnName === null) && !isMultiSeries(vifAuthoring);
 
-    const isStacked = getStacked(vifAuthoring);
     const displayGroupedContainerAttributes = {
       id: 'grouping-display-grouped-container',
       className: `${areOptionsDisabled ? 'disabled': ''}`
@@ -39,7 +37,7 @@ export const GroupedStackedSelector = React.createClass({
       type: 'radio',
       name: 'display-grouped-radio',
       onChange: this.props.onSelectGrouped,
-      checked: !isStacked,
+      checked: !isStacked(vifAuthoring),
       disabled: areOptionsDisabled
     };
 

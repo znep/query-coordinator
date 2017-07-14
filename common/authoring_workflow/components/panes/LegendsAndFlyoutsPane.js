@@ -9,7 +9,7 @@ import { getDisplayableColumns, hasData } from '../../selectors/metadata';
 import {
   getDimensionGroupingColumnName,
   getRowInspectorTitleColumnName,
-  getSeriesFromVif,
+  getSeries,
   getShowLegend,
   isBarChart,
   isColumnChart,
@@ -43,7 +43,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
   renderUnits() {
     const { vifAuthoring, onChangeUnitOne, onChangeUnitOther } = this.props;
 
-    const series = getSeriesFromVif(vifAuthoring);
+    const series = getSeries(vifAuthoring);
     const unitControls = series.map((item, index) => {
 
       const hasSumAggregation = (item.dataSource.measure.aggregationFunction == 'sum');

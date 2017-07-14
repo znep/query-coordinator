@@ -652,9 +652,9 @@ en:
         list: List
         location: Location
         money: Money
-        multiline: Line
-        multipoint: Point
-        multipolygon: Polygon
+        multiline: MultiLine
+        multipoint: MultiPoint
+        multipolygon: MultiPolygon
         nested_table: Nested Table
         number: Number
         object: Object

@@ -67,15 +67,15 @@ const dataTypeMetadata = {
   },
   multiline: {
     icon: 'icon-geo',
-    sodaType: 'line'
+    sodaType: 'multiline'
   },
   multipoint: {
     icon: 'icon-geo',
-    sodaType: 'point'
+    sodaType: 'multipoint'
   },
   multipolygon: {
     icon: 'icon-geo',
-    sodaType: 'polygon'
+    sodaType: 'multipolygon'
   },
   nested_table: {
     icon: 'icon-table',

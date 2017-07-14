@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import I18n from 'common/i18n';
 import {
   appendSeriesWithMeasure,
   forEachSeries,
@@ -71,9 +72,10 @@ export default function(state, action) {
 
       if (action.seriesIndex < state.series.length) {
         const series = state.series[action.seriesIndex];
+        const label = action.label || I18n.translate('shared.visualizations.panes.data.fields.measure.no_value')
 
         _.set(series, 'dataSource.measure.columnName', action.columnName);
-        _.set(series, 'dataSource.measure.label', action.label);
+        _.set(series, 'dataSource.measure.label', label);
 
         if (_.isNull(action.columnName)) {
           _.set(series, 'dataSource.measure.aggregationFunction', 'count');

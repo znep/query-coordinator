@@ -12,7 +12,8 @@ import {
   setMeasureAggregation } from '../actions';
 
 import { 
-  getSeries, 
+  getDimensionGroupingColumnName,
+  getSeries,
   isBarChart,
   isColumnChart,
   isFeatureMap,
@@ -71,13 +72,15 @@ export const MeasureSelector = React.createClass({
       return this.renderMeasureSelector(item.dataSource.measure, index, options);
     });
 
+    const newMeasureLink = this.renderNewMeasureLink();
+
     return (
       <div ref={(ref) => this.selector = ref}>
         <BlockLabel htmlFor="measure-selection" title={I18n.translate('shared.visualizations.panes.data.fields.measure.title')} description={I18n.translate('shared.visualizations.panes.data.fields.measure.description')} />
         <ul className="measure-list">
           {items}
         </ul>
-        {this.renderNewMeasureLink()}
+        {newMeasureLink}
       </div>
     );
   },
@@ -163,6 +166,7 @@ export const MeasureSelector = React.createClass({
     const { vifAuthoring } = this.props;
     const series = getSeries(vifAuthoring);
     const showNewMeasureLink = (series.length < MAXIMUM_MEASURES) &&
+      _.isEmpty(getDimensionGroupingColumnName(vifAuthoring)) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
     return showNewMeasureLink ? (
@@ -171,7 +175,8 @@ export const MeasureSelector = React.createClass({
           <span className="socrata-icon-add" />
           {I18n.translate('shared.visualizations.panes.data.fields.measure.new_measure')}
         </a>
-      </div>) : null;
+      </div>) :
+      null;
   },
 
   handleOnClickNewMeasure() {

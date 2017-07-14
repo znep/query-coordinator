@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Dropdown, ColorPicker } from 'common/components';
 import I18n from 'common/i18n';
+import { getMeasureTitle } from '../../helpers';
 
 import {
   BASE_LAYERS,
@@ -141,7 +142,7 @@ export var PresentationPane = React.createClass({
         value: item.color.primary,
       };
 
-      const title = this.getMeasureTitle(item, index);
+      const title = getMeasureTitle(item, index);
 
       return (
         <div className="custom-color-container" key={index}>
@@ -156,20 +157,6 @@ export var PresentationPane = React.createClass({
         {colorSelectors}
       </div>
     );
-  },
-
-  getMeasureTitle(item, index) {
-    const measure = item.dataSource.measure;
-
-    if (!_.isEmpty(measure.label) && !_.isEmpty(measure.aggregationFunction)) {
-      return `${measure.label} - ${measure.aggregationFunction}`;
-    }
-    else if (!_.isEmpty(measure.label)) {
-      return measure.label;
-    }
-    else {
-        return `Series: ${index}`;
-    }
   },
 
   renderSingleSeriesCustomColorSelector() {

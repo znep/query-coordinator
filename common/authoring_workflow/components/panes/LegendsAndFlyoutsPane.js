@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
 import I18n from 'common/i18n';
+import { getMeasureTitle } from '../../helpers';
 
 import { COLUMN_TYPES } from '../../constants';
 import { getDisplayableColumns, hasData } from '../../selectors/metadata';
@@ -70,7 +71,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
         value: item.unit.other
       };
 
-      const measureTitle = this.getMeasureTitle(item, index);
+      const measureTitle = getMeasureTitle(item, index);
       return this.renderUnitsForSeries(index, measureTitle, unitOneAttributes, unitOtherAttributes);
     });
 
@@ -197,20 +198,6 @@ export const LegendsAndFlyoutsPane = React.createClass({
 
   renderEmptyPane() {
     return <EmptyPane />;
-  },
-
-  getMeasureTitle(item, index) {
-    const measure = item.dataSource.measure;
-
-    if (!_.isEmpty(measure.label) && !_.isEmpty(measure.aggregationFunction)) {
-      return `${measure.label} - ${measure.aggregationFunction}`;
-    }
-    else if (!_.isEmpty(measure.label)) {
-      return measure.label;
-    }
-    else {
-        return `Series: ${index}`;
-    }
   },
 
   render() {

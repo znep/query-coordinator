@@ -186,3 +186,18 @@ export const isGroupingOrMultiSeries = (state) => {
 
   return isGrouping || isMultiSeries;
 };
+
+export const getMeasureTitle = (series, index) => {
+  
+  const measure = series.dataSource.measure;
+
+  if (!_.isEmpty(measure.label) && !_.isEmpty(measure.aggregationFunction) && (measure.aggregationFunction !== 'count')) {
+    return `${measure.label} - ${measure.aggregationFunction}`;
+  }
+  else if (!_.isEmpty(measure.label)) {
+    return measure.label;
+  }
+  else {
+    return I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.series_title').format(index);
+  }
+};

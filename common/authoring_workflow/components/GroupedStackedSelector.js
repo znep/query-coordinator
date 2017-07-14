@@ -27,6 +27,7 @@ export const GroupedStackedSelector = React.createClass({
 
     const dimensionGroupingColumnName = getDimensionGroupingColumnName(vifAuthoring);
     const areOptionsDisabled = (dimensionGroupingColumnName === null) && !isMultiSeries(vifAuthoring);
+    const stacked = isStacked(vifAuthoring);
 
     const displayGroupedContainerAttributes = {
       id: 'grouping-display-grouped-container',
@@ -37,7 +38,7 @@ export const GroupedStackedSelector = React.createClass({
       type: 'radio',
       name: 'display-grouped-radio',
       onChange: this.props.onSelectGrouped,
-      checked: !isStacked(vifAuthoring),
+      checked: !stacked,
       disabled: areOptionsDisabled
     };
 
@@ -60,7 +61,7 @@ export const GroupedStackedSelector = React.createClass({
       type: 'radio',
       name: 'display-grouped-radio',
       onChange: this.props.onSelectStacked,
-      checked: isStacked,
+      checked: stacked,
       disabled: areOptionsDisabled
     };
 

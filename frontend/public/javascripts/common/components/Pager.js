@@ -100,7 +100,7 @@ export class Pager extends React.Component {
       className: 'prev-link',
       iconClass: 'socrata-icon-arrow-left',
       linkIsDisabled: prevLinkDisabled,
-      linkTabIndex: prevLinkDisabled ? -1 : 1,
+      linkTabIndex: prevLinkDisabled ? -1 : 0,
       onClick: (e) => this.prevLinkClick(e),
       onKeyDown: handleKeyPress((e) => this.prevLinkClick(e)),
       text: _.get(I18n, 'common.asset_selector.results_container.pager.previous_page')
@@ -111,7 +111,7 @@ export class Pager extends React.Component {
       className: 'next-link',
       iconClass: 'socrata-icon-arrow-right',
       linkIsDisabled: nextLinkDisabled,
-      linkTabIndex: nextLinkDisabled ? -1 : 1,
+      linkTabIndex: nextLinkDisabled ? -1 : 0,
       onClick: (e) => this.nextLinkClick(e),
       onKeyDown: handleKeyPress((e) => this.nextLinkClick(e)),
       text: _.get(I18n, 'common.asset_selector.results_container.pager.next_page')

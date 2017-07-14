@@ -28,7 +28,7 @@ function getData(vif, options) {
     const dimensionIndex = 0;
     const measureIndex = 1;
     const measureLabels = vif.series.map((series) => {
-      return _.get(series, 'dataSource.measure.label', '');
+      return _.get(series, 'label', '');
     });
     const uniqueDimensionValues = _.uniq(
       _.flatMap(

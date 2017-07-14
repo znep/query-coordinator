@@ -8,6 +8,8 @@
     <%= render_admin_server_config %>
     <%= render_admin_activity_feed_initial_data %>
     <%= render_mixpanel_config %>
+    <% translations = json_escape(LocaleCache.render_partial_translations('shared.components.filter_bar').to_json) %>
+    <%= javascript_tag("window.translations = #{translations};") %>
 <% end %>
 
 <% content_for :translations do %>

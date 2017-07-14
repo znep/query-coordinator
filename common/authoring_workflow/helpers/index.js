@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import utils from 'common/js_utils';
 import I18n from 'common/i18n';
-import { COLOR_PALETTE_VALUES } from '../constants';
+import { AGGREGATION_TYPES, COLOR_PALETTE_VALUES } from '../constants';
 
 export const setStringValueOrDefaultValue = (object, path, value, defaultValue) => {
   const hasPath = _.has(object, path);
@@ -204,16 +204,20 @@ export const isGroupingOrMultiSeries = (state) => {
 };
 
 export const getMeasureTitle = (series, index) => {
-  
-  const measure = series.dataSource.measure;
 
-  if (!_.isEmpty(measure.label) && !_.isEmpty(measure.aggregationFunction) && (measure.aggregationFunction !== 'count')) {
-    return `${measure.label} - ${measure.aggregationFunction}`;
+  const measure = series.dataSource.measure;
+  const aggregationTypes = AGGREGATION_TYPES.filter(item => item.type === measure.aggregationFunction);
+  const aggregationType = (aggregationTypes.length > 0) ? aggregationTypes[0] : null;
+
+  if (!_.isEmpty(measure.label) && (aggregationType !== null) && !_.isEmpty(aggregationType.title)) {
+
+    return I18n.t('shared.visualizations.panes.data.fields.measure.color_and_flyout_label').
+      format(measure.label, aggregationType.title);
   }
   else if (!_.isEmpty(measure.label)) {
     return measure.label;
   }
   else {
-    return I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.series_title').format(index);
+    return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
   }
 };

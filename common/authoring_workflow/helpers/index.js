@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import utils from 'common/js_utils';
 import I18n from 'common/i18n';
+import { COLOR_PALETTE_VALUES } from '../constants';
 
 export const setStringValueOrDefaultValue = (object, path, value, defaultValue) => {
   const hasPath = _.has(object, path);
@@ -124,41 +125,56 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
 
 export const appendSeriesWithMeasure = (state, measure) => {
 
-    // Clone the first series
-    //
-    const clonedSeries = _.cloneDeep(state.series[0]);
+  // For multi-series, we use the color palette on the first series, but the palettes on all series should be in sync
+  // so that if the first series is deleted, the palette can be obtained from the second (now first) series.
+  // 
+  // The 'custom' palette for multi-series, does not apply.  We simply set the primary color on each series.
+  //
+  // Since we are transitioning to multi-series in this method (if we aren't already), we want to check for the 
+  // 'custom' palette and then reset all palettes to 'categorical'.
+  //
+  const colorPalette = _.get(state.series[0], 'color.palette', null);
 
-    // Set the measure properties
-    //
-    _.set(clonedSeries, 'dataSource.measure.aggregationFunction', measure.aggregationFunction);
-    _.set(clonedSeries, 'dataSource.measure.columnName', measure.columnName);
-    _.set(clonedSeries, 'dataSource.measure.label', measure.label);
-
-    // Append the series
-    //
-    state.series.push(clonedSeries);
-
-    // Adjust any other properties in the vif for multi-series
-    //
+  if (colorPalette === 'custom') {
     forEachSeries(state, series => {
-
-      // Remove any properties that do not apply to multi-series
-      //
-      _.unset(series, 'dataSource.dimension.grouping');
-
-      // If the color palette is null or custom, then assign the default palette.
-      //
-      const colorPalette = _.get(series, 'color.palette', null);
-      if ((colorPalette === null) || (colorPalette == 'custom')) {
-        _.set(series, 'color.palette', 'categorical');
-      }
+      _.set(series, 'color.palette', 'categorical');
     });
+  }
 
-    // If legend visibility has not yet been set, then set it to visible
-    //
-    if (_.get(state, 'configuration.showLegend', null) === null) {
-      _.set(state, 'configuration.showLegend', true);
-    }
+  // Now create the new series, by cloning the first series.
+  //
+  const clonedSeries = _.cloneDeep(state.series[0]);
+
+  // Set the measure properties
+  //
+  _.set(clonedSeries, 'dataSource.measure.aggregationFunction', measure.aggregationFunction);
+  _.set(clonedSeries, 'dataSource.measure.columnName', measure.columnName);
+  _.set(clonedSeries, 'dataSource.measure.label', measure.label);
+
+  // Set primary color equal to the index color of the current color palette.  If no palette is set, use categorical.
+  //
+  const palette = _.get(clonedSeries, 'color.palette', 'categorical');
+  const colors = COLOR_PALETTE_VALUES[palette];
+  const index = state.series.length % colors.length;
+
+  _.set(clonedSeries, 'color.primary', colors[index]);
+  _.set(clonedSeries, 'color.secondary', colors[index]);
+
+  // Append the series
+  //
+  state.series.push(clonedSeries);
+
+  // Adjust any other properties in the vif for multi-series
+  //
+  forEachSeries(state, series => {
+    _.unset(series, 'dataSource.dimension.grouping');
+  });
+
+  // If legend visibility has not yet been set, then set it to visible.
+  //
+  if (_.get(state, 'configuration.showLegend', null) === null) {
+    _.set(state, 'configuration.showLegend', true);
+  }
 };
 
 export const removeSeries = (state, seriesIndex) => {

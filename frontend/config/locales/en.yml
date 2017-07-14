@@ -1957,6 +1957,9 @@ en:
       email_me_error: An error has occurred.
       email_me_success: We'll send you an email!
       getting_started: Getting Started
+      home_pane_sidebar:
+        manage: Manage
+        recent_actions: Recent Actions
       metadata: Metadata
       metadata_blurb: Tell people about this dataset.
       metadata_manage_button: Manage Metadata

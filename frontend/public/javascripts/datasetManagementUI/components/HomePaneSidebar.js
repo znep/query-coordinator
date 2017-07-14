@@ -86,20 +86,20 @@ ManageData.propTypes = {
 
 function HomePaneSidebar(props) {
   const { urlParams } = props;
-  const showLog = urlParams.sidebarSelection === 'log';
-  const contents = showLog ? <RecentActions /> : <ManageData {...props} />;
+  const showManageTab = urlParams.sidebarSelection === 'manageTab';
+  const contents = showManageTab ? <ManageData {...props} /> : <RecentActions />;
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.nav}>
         <Link to={Links.home}>
-          <button className={!showLog ? styles.navBtnEnabled : styles.navBtn}>
-            Manage
+          <button className={!showManageTab ? styles.navBtnEnabled : styles.navBtn}>
+            {I18n.home_pane.home_pane_sidebar.recent_actions}
           </button>
         </Link>
-        <Link to={Links.activityLog}>
-          <button className={showLog ? styles.navBtnEnabled : styles.navBtn}>
-            Recent Actions
+        <Link to={Links.manageTab}>
+          <button className={showManageTab ? styles.navBtnEnabled : styles.navBtn}>
+            {I18n.home_pane.home_pane_sidebar.manage}
           </button>
         </Link>
       </div>

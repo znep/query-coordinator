@@ -9,7 +9,7 @@ export const home = routing => {
   return matches[0];
 };
 
-export const activityLog = routing => `${home(routing)}/log`;
+export const manageTab = routing => `${home(routing)}/manageTab`;
 export const metadata = routing => `${home(routing)}/metadata`;
 export const datasetMetadataForm = routing => `${home(routing)}/metadata/dataset`;
 export const columnMetadataForm = columnId => routing =>

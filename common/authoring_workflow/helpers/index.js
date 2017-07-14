@@ -130,15 +130,10 @@ export const appendSeriesWithMeasure = (state, measure) => {
   // 
   // The 'custom' palette for multi-series, does not apply.  We simply set the primary color on each series.
   //
-  // Since we are transitioning to multi-series in this method (if we aren't already), we want to check for the 
-  // 'custom' palette and then reset all palettes to 'categorical'.
+  // If we are transitioning to multi-series in this method, set the palette to 'categorical'.
   //
-  const colorPalette = _.get(state.series[0], 'color.palette', null);
-
-  if (colorPalette === 'custom') {
-    forEachSeries(state, series => {
-      _.set(series, 'color.palette', 'categorical');
-    });
+  if (state.series.length == 1) {
+    _.set(state, 'series[0].color.palette', 'categorical');
   }
 
   // Now create the new series, by cloning the first series.
@@ -188,10 +183,11 @@ export const removeSeries = (state, seriesIndex) => {
   if (state.series.length == 1) {
 
     _.unset(state, 'configuration.showLegend');
+    _.unset(state, 'series[0].color.palette');
 
-    forEachSeries(state, series => {
-      _.unset(series, 'color.palette');
-    });
+    const color = COLOR_PALETTE_VALUES.categorical[0];
+    _.set(state, 'series[0].color.primary', color);
+    _.set(state, 'series[0].color.secondary', color);
   }
 };
 

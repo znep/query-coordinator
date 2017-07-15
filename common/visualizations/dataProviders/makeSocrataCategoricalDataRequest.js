@@ -80,8 +80,6 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
     ].join(' ');
   }
 
-  console.log(queryString);
-
   return soqlDataProvider.
     query(
       queryString,

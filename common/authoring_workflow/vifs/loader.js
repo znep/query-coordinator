@@ -95,7 +95,7 @@ export const load = (dispatch, vif) => {
         dispatch(actions.setPrimaryColor(i, get(primaryColorPath)));
       }
 
-      const secondaryColorPath = paths.primaryColor.format(i);
+      const secondaryColorPath = paths.secondaryColor.format(i);
       if (has(secondaryColorPath)) {
         dispatch(actions.setSecondaryColor(i, get(secondaryColorPath)));
       }

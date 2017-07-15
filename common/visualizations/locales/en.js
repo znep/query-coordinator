@@ -261,7 +261,6 @@ export default {
         row_inspector_title: {
           no_value: 'No Point Inspector Title'
         },
-        series_title: 'Series: {0}',
         show_legends: {
           title: 'Show Legends'
         },

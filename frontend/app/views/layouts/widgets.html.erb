@@ -53,10 +53,8 @@ http://www.socrata.com
   %>
 
   <script type="text/template" id="templates">
-    <!--
-      <%= render 'shared/control_templates' %>
-      <%= yield :templates %>
-    // -->
+    <%= render 'shared/control_templates' %>
+    <%= yield :templates %>
   </script>
   <div id="js-appended-templates" style="display: none" aria-hidden="true"></div>
   <%= render_translations %>

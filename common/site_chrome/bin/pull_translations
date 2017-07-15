@@ -8,6 +8,9 @@
 
 set -e
 
+mkdir -p log
+touch log/localeapp.yml
+
 if [ -z $SITE_CHROME_LOCALEAPP_API_KEY ]; then
  echo "SITE_CHROME_LOCALEAPP_API_KEY is required to run this script."
  exit 1

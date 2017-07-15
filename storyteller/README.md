@@ -57,7 +57,7 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 
 Run all three processes in the same terminal window with foreman.
 
-    bundle exec foreman start
+    bin/start_all_storyteller_services
 
 #### Alternatively you can start each process separately
 

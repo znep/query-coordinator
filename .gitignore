@@ -75,7 +75,7 @@ dockerize.properties
 
 # site_chrome
 db/*.sqlite3
-common/site_chrome/log/*.log
+common/site_chrome/log/
 common/site_chrome/tmp/**/*
 common/site-chrome/engine/*.gem
 common/site-chrome/engine/pkg/
@@ -89,3 +89,4 @@ common/frontend-visualizations/dist/
 # common locales
 common/i18n/config/locales/*.yml
 !common/i18n/config/locales/en.yml
+/common/i18n/log

@@ -26,9 +26,9 @@ SERVICE_VERSION=`bundle exec semver format "%M.%m.%p"`
 
 cd "${WORKSPACE}"
 
-# Update translations for site_chrome.
-pushd common
-  rake site_chrome:build
+## Pull platform-ui/common locales
+pushd common/i18n
+  LOCALEAPP_API_KEY=$COMMON_LOCALEAPP_API_KEY localeapp pull config/locales
 popd
 
 rm -f marathon.properties

@@ -432,6 +432,21 @@ Required |Optional
 :-------:|:---------------------------:
 |    -   |Bar Chart, Column Chart, Histogram, Pie Chart, Timeline Chart|
 
+* The `queryParams` property specifies pre-computed query parameters that should be used instead of the 'standard' VIF metadata specifying a query. If present, its type is `<object>`. If it is of type `<object>` it must have the following properties, all of type `<string>`:
+
+   * `select`
+   * `group`
+   * `where`
+   * `order`
+   * `search`
+
+   Each of these properties will be mapped directly to query string parameters, and each should be a valid SoQL query component. Refer to the 'SoQL Clauses' section of https://dev.socrata.com/docs/queries/ for more information on SoQL semantics.
+
+Required |Optional
+:-------:|:---------------------------:
+|    -   |Table|
+
+
 If `type` is `'socrata.sample'`, the following properties are also required:
 
 * The `data` property specifies data stored inline in the vif. Its type is `<object>` and it must adhere to the standard tabular data format (see API.md).

@@ -7,6 +7,12 @@ module SocrataSiteChrome
   module SiteChromeHelper
     include SharedHelperMethods
 
+    def icon_with_aria_text(text, opts = {})
+      content_tag(:span, :class => opts.fetch(:class, 'icon')) do
+        content_tag(:span, text, :class  => 'aria-not-displayed')
+      end
+    end
+
     def divider
       content_tag(:div, :class => 'divider') do
         content_tag(:span, nil)
@@ -14,7 +20,7 @@ module SocrataSiteChrome
     end
 
     def my_profile
-      t('admin.user.my_profile')
+      t('shared.site_chrome.admin.user.my_profile')
     end
 
     def admin_title
@@ -84,7 +90,7 @@ module SocrataSiteChrome
     end
 
     def username
-      site_chrome_current_user.try(:display_name).presence || t('header.profile')
+      site_chrome_current_user.try(:display_name).presence || t('shared.site_chrome.header.profile')
     end
 
     def user_has_right?(activity)
@@ -293,7 +299,7 @@ module SocrataSiteChrome
     end
 
     def locale_full_name(locale_key)
-      t('current_language', :locale => locale_key, :default => locale_key) rescue locale_key
+      t('shared.site_chrome.current_language', :locale => locale_key, :default => locale_key) rescue locale_key
     end
 
     def default_locale
@@ -361,4 +367,5 @@ module SocrataSiteChrome
       end
     end
   end
+
 end

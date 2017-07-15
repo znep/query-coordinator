@@ -580,11 +580,6 @@
       field: prefix + 'plotStyle',
       value: 'point'
     };
-    var quantity = {
-      field: prefix + 'plotStyle',
-      value: 'point',
-      negate: true
-    };
     var flyouts = {
       field: prefix + 'plotStyle',
       value: 'rastermap',
@@ -594,6 +589,7 @@
       field: prefix + 'plotStyle',
       value: 'heatmap'
     };
+
     return [{
         text: $.t('screens.ds.grid_sidebar.map.data_layer.base_color'),
         name: prefix + 'color',
@@ -664,7 +660,7 @@
       {
         text: $.t('screens.ds.grid_sidebar.map.data_layer.quantity'),
         name: prefix + 'plot.quantityId',
-        onlyIf: quantity,
+        onlyIf: boundaryOnly,
         type: 'columnSelect',
         isTableColumn: true,
         columns: {

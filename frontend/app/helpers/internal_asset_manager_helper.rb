@@ -113,7 +113,7 @@ module InternalAssetManagerHelper
   end
 
   def page_number_to_offset(page)
-    (page.to_i - 1) * RESULTS_PER_PAGE if page.present? && page.to_i > 1
+    (page.to_i - 1) * InternalAssetManagerController::RESULTS_PER_PAGE if page.present? && page.to_i > 1
   end
 
   # Map url param filters for "catalog results" and "asset counts" cetera requests.

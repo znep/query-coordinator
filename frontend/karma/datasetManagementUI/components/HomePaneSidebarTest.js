@@ -72,22 +72,35 @@ describe('components/HomePaneSidebar', () => {
   it('shows 0 checkmarks when nothing is done', () => {
     const props = {
       urlParams: {
+        sidebarSelection: 'manageTab'
+      }
+    };
+
+    const element = renderComponentWithStore(HomePaneSidebar, props, store);
+    const manageContents = element.querySelector('.sidebarData');
+    expect(manageContents.querySelectorAll('span.finished').length).to.equal(0);
+  });
+
+  it('shows the activity feed by default', () => {
+    const props = {
+      urlParams: {
         sidebarSelection: null
       }
     };
 
     const element = renderComponentWithStore(HomePaneSidebar, props, store);
-    expect(element.querySelectorAll('span.finished').length).to.equal(0);
+    assert.isNotNull(element.querySelector('.timeline'));
   });
 
-  it('shows the activity feed when the url says to', () => {
+  it('shows the manage actions when the url says to', () => {
     const props = {
       urlParams: {
-        sidebarSelection: 'log'
+        sidebarSelection: 'manageTab'
       }
     };
 
     const element = renderComponentWithStore(HomePaneSidebar, props, store);
-    assert.ok(element.querySelectorAll('.activity-feed'));
+    assert.isNotNull(element.querySelectorAll('.sidebarData'));
   });
+
 });

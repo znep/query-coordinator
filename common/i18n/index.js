@@ -6,7 +6,7 @@ I18nJS.locale = _.get(window, 'serverConfig.locale', 'en');
 I18nJS.pluralization[I18nJS.locale] = pluralization(I18nJS.locale);
 
 _.assign(I18nJS.translations, {
-  [I18nJS.locale]: window.translations
+  [I18nJS.locale]: window.datalensTranslations || window.translations
 });
 
 export default I18nJS;

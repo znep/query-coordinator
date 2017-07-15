@@ -194,8 +194,10 @@ export const MeasureSelector = React.createClass({
   },
 
   handleOnSelectionMeasureColumn(option, index) {
-    const { onSetMeasureColumn } = this.props;
-    onSetMeasureColumn(index, option.value, option.title);
+    const { onSetMeasureColumn, vifAuthoring } = this.props;
+    const removeAdditionalSeries = !isBarChart(vifAuthoring) && !isColumnChart(vifAuthoring) && !isTimelineChart(vifAuthoring);
+
+    onSetMeasureColumn(index, option.value, option.title, removeAdditionalSeries);
   },
 
   handleOnSelectionMeasureAggregation(option, index) {
@@ -217,8 +219,8 @@ function mapDispatchToProps(dispatch) {
     onRemoveMeasure(index) {
       dispatch(removeSeries(index));
     },
-    onSetMeasureColumn(index, columnName, label) {
-      dispatch(setMeasure(index, columnName, label));
+    onSetMeasureColumn(index, columnName, label, removeAdditionalSeries) {
+      dispatch(setMeasure(index, columnName, label, removeAdditionalSeries));
     },
     onSetMeasureAggregation(index, aggregationFunction) {
       dispatch(setMeasureAggregation(index, aggregationFunction));

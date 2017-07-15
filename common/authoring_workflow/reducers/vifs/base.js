@@ -74,6 +74,9 @@ export default function(state, action) {
         const series = state.series[action.seriesIndex];
         const label = action.label || I18n.translate('shared.visualizations.panes.data.fields.measure.no_value')
 
+        const initialMeasureColumnName = _.get(series, 'dataSource.measure.columnName');
+        const initialMeasureAggregationFunction = _.get(series, 'dataSource.measure.aggregationFunction');
+
         _.set(series, 'dataSource.measure.columnName', action.columnName);
         _.set(series, 'dataSource.measure.label', label);
 
@@ -81,6 +84,16 @@ export default function(state, action) {
           _.set(series, 'dataSource.measure.aggregationFunction', 'count');
         } else if (series.dataSource.measure.aggregationFunction === 'count') {
           _.set(series, 'dataSource.measure.aggregationFunction', 'sum');
+        }
+
+        // If the measure has changed and removeAdditionaSeries is true, remove all but the first series.
+        //
+        if (action.removeAdditionalSeries && 
+          (action.seriesIndex == 0) &&
+          (action.columnName != initialMeasureColumnName) &&
+          (action.aggregationFunction != initialMeasureAggregationFunction)) {
+
+            state.series.length = 1;
         }
       }
       break;

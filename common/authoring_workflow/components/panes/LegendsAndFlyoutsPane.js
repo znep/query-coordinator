@@ -48,6 +48,8 @@ export const LegendsAndFlyoutsPane = React.createClass({
     const unitControls = series.map((item, index) => {
 
       const hasSumAggregation = (item.dataSource.measure.aggregationFunction == 'sum');
+      const unitOne = _.get(item, 'unit.one', '');
+      const unitOther = _.get(item, 'unit.other', '');
 
       const unitOneAttributes = {
         id: 'units-one',
@@ -57,7 +59,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
         placeholder: hasSumAggregation ? 
           I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.sum_aggregation_unit') :
           I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.placeholder'),
-        value: item.unit.one
+        value: unitOne
       };
 
       const unitOtherAttributes = {
@@ -68,7 +70,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
         placeholder: hasSumAggregation ? 
           I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.sum_aggregation_unit') :
           I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.placeholder'),
-        value: item.unit.other
+        value: unitOther
       };
 
       const measureTitle = getMeasureTitle(item, index);

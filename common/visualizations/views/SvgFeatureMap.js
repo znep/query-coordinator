@@ -127,6 +127,9 @@ function SvgFeatureMap(element, vif, options) {
 
       // Construct leaflet map
       map = L.map(mapElement[0], mapOptions);
+      // XXX: Nasty to expose the leaflet map object, but there aren't many good
+      // options for testing the behavior of the guts of this code.
+      this._map = map;
 
       // Attach events on first render only
       attachEvents();

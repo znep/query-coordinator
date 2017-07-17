@@ -650,6 +650,14 @@ module.exports = function Table(element, originalVif, locale) {
     );
   }
 
+  // EN-17490 - Socrata Viz Table incorrectly allows sorting by blob type
+  //
+  // This function was previously called `isGeometryType()`, but it was being
+  // used to determine whether or not to allow sorting by a column. This was
+  // problematic because document and blob columns are also not sortable, but we
+  // were allowing the user to attempt to sort by them, which made the resulting
+  // query fail in such a way as to put the table into an unrecoverable broken
+  // state.
   function isUnsortableColumnType(column) {
 
     return _.includes(
@@ -661,7 +669,8 @@ module.exports = function Table(element, originalVif, locale) {
         'polygon',
         'multipolygon',
         'location',
-        'document'
+        'document',
+        'blob'
       ],
       column.renderTypeName
     );

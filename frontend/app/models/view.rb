@@ -336,7 +336,7 @@ class View < Model
   end
 
   def self.category_tree
-    categories = CurrentDomain.configuration('view_categories').properties
+    categories = CurrentDomain.configuration('view_categories').raw_properties
     top_level_cats = @@default_categories.clone
     categories.each do |c, o|
       next if !o.enabled

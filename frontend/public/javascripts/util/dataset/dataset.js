@@ -360,7 +360,13 @@
     },
 
     save: function(successCallback, errorCallback, allowedKeys) {
-      var ds = restoreOriginalTypeMetadata(cleanViewForSave(this, allowedKeys));
+      var ds;
+
+      if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
+        ds = restoreOriginalTypeMetadata(cleanViewForSave(this, allowedKeys));
+      } else {
+        ds = cleanViewForSave(this, allowedKeys);
+      }
 
       if (!ds.hasRight(blist.rights.view.UPDATE_VIEW)) {
         return false;
@@ -406,7 +412,13 @@
           successCallback(newDS);
         }
       };
-      var ds = restoreOriginalTypeMetadata(cleanViewForCreate(this));
+      var ds;
+
+      if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
+        ds = restoreOriginalTypeMetadata(cleanViewForCreate(this));
+      } else {
+        ds = cleanViewForCreate(this);
+      }
 
       // Munge permissions for forms, since those don't get carried over
       // or inherited
@@ -5067,10 +5079,18 @@
   // attempt to save the dataset, because Core Server will just overwrite the
   // previous values with whatever happens to be in the view that we send it.
   function restoreOriginalTypeMetadata(view) {
-    var originalTypeMetadata = window.blist.originalDatasetTypeMetadata;
+    var originalTypeMetadata = _.get(window, 'blist.originalDatasetTypeMetadata');
 
-    _.set(view, 'metadata.availableDisplayTypes', originalTypeMetadata.availableDisplayTypes);
-    _.set(view, 'metadata.renderTypeConfig', originalTypeMetadata.renderTypeConfig);
+    if (originalTypeMetadata) {
+
+      if (originalTypeMetadata.hasOwnProperty('availableDisplayTypes')) {
+        _.set(view, 'metadata.availableDisplayTypes', originalTypeMetadata.availableDisplayTypes);
+      }
+
+      if (originalTypeMetadata.hasOwnProperty('renderTypeConfig')) {
+        _.set(view, 'metadata.renderTypeConfig', originalTypeMetadata.renderTypeConfig);
+      }
+    }
 
     return view;
   }

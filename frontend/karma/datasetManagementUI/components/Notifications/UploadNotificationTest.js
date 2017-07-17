@@ -26,7 +26,9 @@ describe('components/Notifications/UploadNotification', () => {
       percentCompleted: 90
     },
     notificationId: '75973bf0-0cf0-450f-ad88-40e2050dad7b',
-    callStatus: 'STATUS_CALL_IN_PROGRESS'
+    apiCall: {
+      status: 'STATUS_CALL_IN_PROGRESS'
+    }
   };
 
   it('renders the correct kind of notification depending on callStatus', () => {
@@ -36,11 +38,45 @@ describe('components/Notifications/UploadNotification', () => {
 
     const newProps = {
       ...defaultProps,
-      callStatus: 'STATUS_CALL_SUCCEEDED'
+      apiCall: {
+        status: 'STATUS_CALL_SUCCEEDED'
+      }
     };
 
     component = shallow(<UploadNotification {...newProps} />);
 
     assert.equal(component.prop('status'), 'success');
   });
+
+  it('renders a "lost connection" error if we don\'t have a specific error message', () => {
+    const newProps = {
+      ...defaultProps,
+      apiCall: {
+        ...defaultProps.apiCall,
+        status: 'STATUS_CALL_FAILED'
+      }
+    };
+
+    const component = shallow(<UploadNotification {...newProps} />);
+    assert.equal(component.prop('status'), 'error');
+    assert.include(component.find('.msgContainer').text(), 'Lost Connection');
+  });
+
+  it('renders a specific error message when the API gives it', () => {
+    const newProps = {
+      ...defaultProps,
+      apiCall: {
+        ...defaultProps.apiCall,
+        status: 'STATUS_CALL_FAILED',
+        error: {
+          english: 'Multilayer shapefiles are not supported.'
+        }
+      }
+    };
+
+    const component = shallow(<UploadNotification {...newProps} />);
+    assert.equal(component.prop('status'), 'error');
+    assert.include(component.find('.msgContainer').text(), 'Multilayer shapefiles are not supported.');
+  });
+
 });

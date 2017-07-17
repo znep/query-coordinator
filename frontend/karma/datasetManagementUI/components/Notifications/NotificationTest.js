@@ -39,6 +39,8 @@ describe('Notifications/Notification', () => {
         <span className="details-msg">Test Message</span>
       </Notification>
     );
+    assert.equal(component.find('.details-msg').length, 1);
+    component.find('.detailsToggle').simulate('click');
     assert.equal(component.find('.details-msg').length, 0);
     component.find('.detailsToggle').simulate('click');
     assert.equal(component.find('.details-msg').length, 1);

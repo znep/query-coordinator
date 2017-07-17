@@ -2075,7 +2075,7 @@ en:
       subtitle: Sorry, couldn't find that!
       suggestion: Try going back to the update.
       title: Not Found
-    progress_items:
+    notifications:
       connection_error_body: Something went wrong with your connection. Make sure you are connected to the internet.
       connection_error_body_advice: Check your internet connection and make sure to keep your browser window open while the file is uploading.
       connection_error_body_description: Something went wrong when trying to upload the file {0}.

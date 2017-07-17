@@ -952,7 +952,8 @@ function SvgFeatureMap(element, vif, options) {
     var columnPath = 'series[0].dataSource.dimension.columnName';
     var columnPathChanged = !_.isEqual(
       _.get(newVif, columnPath),
-      _.get(lastRenderedVif, columnPath));
+      _.get(lastRenderedVif, columnPath)
+    );
 
     var newWhereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(newVif, 0);
     var lastRenderedWhereClause = (lastRenderedVif) ?

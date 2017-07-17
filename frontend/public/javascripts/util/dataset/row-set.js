@@ -179,7 +179,7 @@
       if (rs._dataset.resourceName !== 'datasets' && !rs._isComplete && (rs._parent || {})._isComplete &&
         rs._jsonQuery.search === rs._parent._jsonQuery.search &&
         _.isEmpty(rs._jsonQuery.group) && _.isEmpty(rs._parent._jsonQuery.group)) {
-        var newRows = _.map(_.select(rs._parent._rows, function(rowItem) {
+        var newRows = _.map(_.filter(rs._parent._rows, function(rowItem) {
           return rs._doesBelong(rowItem);
         }), function(rowItem) {
           return $.extend({}, rowItem);
@@ -217,7 +217,7 @@
         sorts.push({
           ascending: true
         });
-        newRows = _.pluck(sortVals.sort(function(left, right) {
+        newRows = _.map(sortVals.sort(function(left, right) {
           var a = left.sorts;
           var b = right.sorts;
           var sortIndex = 0;
@@ -548,7 +548,7 @@
       filter(function(col) {
         return col.renderTypeName === 'blob';
       }).
-      pluck('lookup').
+      map('lookup').
       value();
 
       var fileIds = _(rs._rows).
@@ -574,7 +574,7 @@
       filter(function(col) {
         return col.renderTypeName === 'blob';
       }).
-      pluck('lookup').
+      map('lookup').
       value();
 
       if (_.isUndefined(rs._fileIdToRowMapping)) {
@@ -1011,23 +1011,21 @@
       }
     },
 
-    _makeSODA2Request: function(args) {
+    _generateQueryParams: function(args) {
       var rs = this;
-      if ($.isBlank(rs._dataset._queryBase)) {
-        rs._dataset.getQueryBase(function() {
-          rs._makeSODA2Request(args);
-        });
-        return;
+
+      if (_.isUndefined(args)) {
+        args = {};
       }
 
-      var viewId = this._dataset.nbe_view_id || this._dataset._queryBase.id;
-      args.isSODA = true;
-      args.url = args.url || '/api/id/{0}.json'.format(viewId);
-      args.params = args.params || {};
-      if (blist.feature_flags.send_soql_version) {
-        args.params.$$version = '2.0';
+      if ($.isBlank(this._dataset._queryBase)) {
+        throw new Error(
+          'Please ensure that <Dataset>.getQueryBase() is called before ' +
+          'attempting to call <RowSet>._generateQueryParams().'
+        );
       }
 
+      var params = args.params || {};
       var baseQuery = rs._dataset._queryBase.metadata.jsonQuery;
       var hasGroups = !_.isEmpty(rs._jsonQuery.group);
       var hasBaseQueryGroups = !_.isEmpty(baseQuery.group);
@@ -1037,7 +1035,7 @@
       var adjSearchString = rs._jsonQuery.search === baseQuery.search ? '' : rs._jsonQuery.search;
 
       if (!$.isBlank(adjSearchString)) {
-        args.params.$search = adjSearchString;
+        params.$search = adjSearchString;
       }
 
       if (!_.isEmpty(rs._jsonQuery.where)) {
@@ -1069,8 +1067,8 @@
             soqlWhere += rs._jsonQuery.where.soql;
           }
 
-          args.params.$where = !$.isBlank(args.params.$where) ?
-            (args.params.$where + ' and ' + soqlWhere) : soqlWhere;
+          params.$where = !$.isBlank(params.$where) ?
+            (params.$where + ' and ' + soqlWhere) : soqlWhere;
         }
       }
 
@@ -1089,8 +1087,8 @@
           soqlHaving = having;
         }
 
-        args.params.$having = !$.isBlank(args.params.$having) ?
-          (args.params.$having + ' and ' + soqlHaving) : soqlHaving;
+        params.$having = !$.isBlank(params.$having) ?
+          (params.$having + ' and ' + soqlHaving) : soqlHaving;
       }
 
       // If queryBase has any group bys, we can't add more
@@ -1116,8 +1114,8 @@
         });
 
         soqlGroup = _.uniq(soqlGroup).join(',');
-        args.params.$group = !$.isBlank(args.params.$group) ?
-          (args.params.$group + ',' + soqlGroup) : soqlGroup;
+        params.$group = !$.isBlank(params.$group) ?
+          (params.$group + ',' + soqlGroup) : soqlGroup;
 
         groupSelect = _.uniq(
           groupSelect.concat(
@@ -1142,16 +1140,16 @@
           )
         ).join(',');
 
-        var sel = (args.params.$select || '').replace(/:\*,\*/, '');
+        var sel = (params.$select || '').replace(/:\*,\*/, '');
 
-        args.params.$select = !$.isBlank(sel) ? (sel + ',' + groupSelect) : groupSelect;
+        params.$select = !$.isBlank(sel) ? (sel + ',' + groupSelect) : groupSelect;
       }
 
       if (!_.isEmpty(rs._jsonQuery.order)) {
-        var selectCols = _.reject((args.params.$select || '').split(','), _.isEmpty).map($.trim),
+        var selectCols = _.reject((params.$select || '').split(','), _.isEmpty).map($.trim),
           selectingAllCols = _.isEmpty(selectCols) || _.include(selectCols, '*');
         // Just apply all orderBys, because they can safely be applied on top without harm
-        args.params.$order = _.compact(_.map(rs._jsonQuery.order, function(ob) {
+        params.$order = _.compact(_.map(rs._jsonQuery.order, function(ob) {
           var orderByColumn = rs._dataset.columnForIdentifier(ob.columnFieldName);
           if ($.isBlank(orderByColumn)) {
             return null;
@@ -1172,14 +1170,36 @@
         })).join(',');
       }
       if (args.sortOrderForRequest === 'reversed') {
-        var orderBys = args.params.$order.split(',');
-        args.params.$order = orderBys.map(function(orderBy) {
+        var orderBys = params.$order.split(',');
+        params.$order = orderBys.map(function(orderBy) {
           if (_.endsWith(orderBy, ' desc')) {
             return orderBy.split(' ')[0]; // desc -> asc
           } else {
             return orderBy + ' desc'; // asc -> desc
           }
         }).join(',');
+      }
+
+      return params;
+    },
+
+    _makeSODA2Request: function(args) {
+      var rs = this;
+
+      if ($.isBlank(rs._dataset._queryBase)) {
+        rs._dataset.getQueryBase(function() {
+          rs._makeSODA2Request(args);
+        });
+        return;
+      }
+
+      var viewId = this._dataset.nbe_view_id || this._dataset._queryBase.id;
+
+      args.isSODA = true;
+      args.url = args.url || '/api/id/{0}.json'.format(viewId);
+      args.params = this._generateQueryParams(args);
+      if (blist.feature_flags.send_soql_version) {
+        args.params.$$version = '2.0';
       }
 
       rs._dataset.makeRequest(args);
@@ -1866,7 +1886,7 @@
     var parDeriveCache = {};
     var processOther = function(expr) {
       if (_.isArray(expr.children)) {
-        var leftoverChildren = _.select(expr.children, processOther);
+        var leftoverChildren = _.filter(expr.children, processOther);
         // If all children are added, then just add this expr, not each child
         if (leftoverChildren.length === expr.children.length) {
           return true;

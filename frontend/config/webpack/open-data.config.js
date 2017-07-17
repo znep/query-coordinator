@@ -227,7 +227,8 @@ module.exports = _.defaultsDeep({
       './controls/scrollable.js',
       './controls/column-menu.js',
       './controls/dataset-controls.js',
-      './controls/table/dataset-grid.js'
+      './controls/table/dataset-grid.js',
+      './controls/table/socrata-viz-dataset-grid.js'
     ],
     'shared-map': [
       './plugins/OpenLayers.js',

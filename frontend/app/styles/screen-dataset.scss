@@ -999,3 +999,11 @@ html, body {
     }
   }
 }
+
+.outerContainer {
+  .innerContainer {
+    .socrata-visualization {
+      font-family: "Open Sans", sans-serif;
+    }
+  }
+}

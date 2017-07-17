@@ -2,11 +2,13 @@
 
 $background-color: $white;
 
-$container-right-offset: 40px;
-$container-right-offset-small: 30px;
+$container-right-offset: 3px;
+$container-right-offset-small: 1px;
+$container-right-with-settings-button: 40px;
+$container-right-with-settings-button-small: 38px;
 
 $container-top: 65px;
-$container-top-small: 47px;
+$container-top-small: 50px;
 
 $triangle-size: 13px;
 $triangle-position: 340px;
@@ -30,7 +32,7 @@ $spinner-margin-bottom: 295px;
   position: absolute;
   right: $container-right-offset;
   top: $container-top;
-  filter: drop-shadow(0 3px 5px #888888);
+  filter: drop-shadow(0px 2px 5px #999);;
 }
 
 .container * {
@@ -40,6 +42,14 @@ $spinner-margin-bottom: 295px;
 :global(.site-chrome-small) .container {
   top: $container-top-small;
   right: $container-right-offset-small;
+}
+
+:global(.site-chrome-with-settings-button) .container {
+  right: $container-right-with-settings-button;
+}
+
+:global(.site-chrome-with-settings-button, .site-chrome-small) .container {
+  right: $container-right-with-settings-button-small;
 }
 
 /* the :before here actually sets up the triangle above the container */

@@ -26,7 +26,9 @@
         </a>
         <%- if has_child_options -%>
           <a class="browse2-facet-section-child-option-toggle" href="#" title="<%= t('controls.browse.browse2.facets.expand.title') %>">
-            <span class="browse2-facet-section-expand-contract-icon icon-arrow-down" href="#"></span>
+            <span class="browse2-facet-section-expand-contract-icon icon-arrow-down">
+              <%= aria_text_span(t('controls.browse.browse2.facets.expand.title')) %>
+            </span>
           </a>
 
           <ul class="browse2-facet-section-child-options">

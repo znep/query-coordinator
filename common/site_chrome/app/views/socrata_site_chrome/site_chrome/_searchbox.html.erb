@@ -13,7 +13,7 @@
           onkeyup: local_assigns[:vanishing_search_button] ? 'toggleSearchButton(this)' : nil) %>
         <span class="searchbox-label"><%= t('shared.site_chrome.header.search') %></span>
       </label>
-      <button type="submit" class="search-button site-chrome-btn btn-simple" value="">
+      <button type="submit" class="search-button site-chrome-btn btn-simple" value="" />
       <% if local_assigns[:mobile] %>
         <span class="socrata-icon-search" title="<%= t('shared.site_chrome.header.search') %>"></span>
       <% else %>

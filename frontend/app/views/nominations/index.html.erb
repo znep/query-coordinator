@@ -70,7 +70,7 @@
 </div>
 
 <%- content_for :modals do -%>
-  <%= render :partial => 'edit_modal' %>
+  <%= render 'edit_modal' %>
 <%- end -%>
 
 <% content_for :templates do %>
@@ -78,17 +78,17 @@
   <tbody>
     <tr class="item">
       <td class="user" scope="row">
-        <%- if !current_user.nil? &&
-                current_user.has_right?(UserRights::EDIT_NOMINATIONS) -%>
-        <a href="#Remove" title="<%= t('controls.nominate.delete_suggestion') %>" class="delete"></a>
+        <%- if current_user && current_user.has_right?(UserRights::EDIT_NOMINATIONS) -%>
+          <a href="#Remove" title="<%= t('controls.nominate.delete_suggestion') %>" class="delete">
+            <%= aria_text_span('Remove') %>
+          </a>
         <%- end -%>
         <a class="userLink"><img /><span class="userName"></span></a>
       </td>
       <td class="details">
         <a href="#" class="titleLink"><span class="title"></span></a>
-        <%- if !current_user.nil? &&
-                current_user.has_right?(UserRights::EDIT_NOMINATIONS) -%>
-        <a href="#Edit" title="<%= t('controls.nominate.edit_suggestion') %>" class="edit"><%= t('controls.nominate.edit') %></a>
+        <%- if current_user && current_user.has_right?(UserRights::EDIT_NOMINATIONS) -%>
+          <a href="#Edit" title="<%= t('controls.nominate.edit_suggestion') %>" class="edit"><%= t('controls.nominate.edit') %></a>
         <%- end -%>
         <div class="submitTime">
           <span class="fullTime"></span>
@@ -99,17 +99,17 @@
       </td>
       <td class="rating nomRating">
         <span class="value"></span>
-        <%- if !current_user.nil? -%>
-        <a class="rateLink rateDown" title="<%= t('controls.nominate.rate_down') %>" href="#Rate down">
-          <span class="icon"></span>
-        </a>
-        <a class="rateLink rateUp" title="<%= t('controls.nominate.rate_up') %>" href="#Rate up">
-          <span class="icon"></span>
-        </a>
+        <%- if current_user -%>
+          <a class="rateLink rateDown" title="<%= t('controls.nominate.rate_down') %>" href="#Rate down">
+            <span class="icon"></span>
+          </a>
+          <a class="rateLink rateUp" title="<%= t('controls.nominate.rate_up') %>" href="#Rate up">
+            <span class="icon"></span>
+          </a>
         <%- end -%>
       </td>
       <td class="status">
-        <%= render :partial => 'nom_status' %>
+        <%= render 'nom_status' %>
       </td>
     </tr>
   </tbody>

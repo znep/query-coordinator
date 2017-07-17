@@ -484,6 +484,7 @@ class AdministrationController < ApplicationController
     )
   end
 
+  # Used by changeVisibility in SIAM for datalens (uses setPermission in Core for datasets)
   def set_view_moderation_status
     begin
       view = View.find(params[:id])

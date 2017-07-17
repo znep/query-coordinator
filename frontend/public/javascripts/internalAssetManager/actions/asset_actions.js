@@ -59,7 +59,7 @@ export const changeVisibility = (uid, assetType, newVisibility) => (dispatch) =>
   } else {
     let visibilityValue = newVisibility;
     if (visibilityValue === 'open') {
-      // TODO: public.read vs public.add, if asset is a form?
+      // TODO: public.read vs public.add or public.write if asset is a form
       visibilityValue = 'public.read';
     }
 

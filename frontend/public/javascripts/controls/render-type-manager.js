@@ -240,6 +240,41 @@
           }, settings.common,
           settings.blob));
       }
+    },
+
+    // EN-17053/EN-16787 - Use socrata-viz table for NBE-only grid view
+    //
+    // This 'Render Type' defines the usage of the 'socrataVizTable' in the
+    // context of the /dataset/four-four 'grid view'. It is meant to be a
+    // mostly-drop-in replacement for the 'table' 'Render Type', which is the
+    // grid view that was in use until July 2017 (and later, if the
+    // 'enable_nbe_only_grid_view_optimizations' feature flag is set to 'false'
+    // on the domain in question.
+    socrataVizTable: {
+      name: 'socrataVizTable',
+      domId: 'gridRenderType',
+      javascripts: [{
+        assets: 'shared-table-render'
+      }],
+      stylesheets: [],
+      initFunction: function($dom, settings) {
+        var settingsForSocrataVizDatasetGrid = $.extend(
+          {
+            view: settings.view,
+            columnDeleteEnabled: false,
+            columnPropertiesEnabled: false,
+            columnNameEdit: false,
+            showAddColumns: false,
+            editEnabled: false
+          },
+          settings.common,
+          settings.table
+        );
+
+        $dom.socrataVizDatasetGrid(settingsForSocrataVizDatasetGrid);
+      },
+      scrollsInline: true,
+      translations: []
     }
   };
 
@@ -319,6 +354,7 @@
         }
 
         _.each(defTypes, function(v, t) {
+
           if (v) {
             rtmObj.show(t);
           }
@@ -508,10 +544,13 @@
 
   var initType = function(rtmObj, type, defArgs) {
     var typeInfo = getConfig(rtmObj, type);
+
     if (typeInfo._initialized) {
       return;
     }
+
     initDom(rtmObj, type);
+
     var $dom = typeInfo.$dom;
     var $content = $dom.find('.renderContent');
 
@@ -532,7 +571,6 @@
           }));
         }
         // Else: no init function specified!
-
         $content.trigger('show');
       });
     };
@@ -546,6 +584,27 @@
     if (typeInfo._assetsLoaded) {
       finishCallback();
     } else {
+
+      // HEY, LISTEN!
+      //
+      // The function `blist.util.assetLoading.loadAssets()` makes internal use
+      // of lab.js, which swallows ALL exceptions. Since we basically do
+      // everything of consequence w/r/t rendering the grid view in the
+      // `finishCallback` passed in below, that means that basically ANY sort of
+      // error anywhere in this file or any of the Render Type implementations
+      // (such as `socrata-viz-dataset-grid.js`) will be sacrificed to the
+      // choleric and bloodthirsty progressive-loading gods. You will see no
+      // evidence of any error aside from the fact that nothing is rendered.
+      //
+      // AAARRGHGGHGH!
+      //
+      // You can avoid a _LOT_ of frustration by setting the `debug_labjs`
+      // feature flag to true while working in this area of the code base. This
+      // will cause labjs to become _VERY_ chatty in a Tourette's Syndrome sort
+      // of way, but at least it will no longer swallow exceptions from
+      // basically everywhere with a rapacious appetite that would be pretty
+      // hilarious if it weren't so clearly a Communist conspiracy to sabotage
+      // Capitalist developer productivity.
       blist.util.assetLoading.loadAssets(typeInfo, finishCallback,
         function() {
           // Some display types (grid) need more prodding than resize

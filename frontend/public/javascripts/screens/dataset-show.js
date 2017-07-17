@@ -1130,6 +1130,7 @@ blist.datasetPage.updateValidView = function() {
 })(jQuery);
 
 $(function() {
+
   // Before we do anything else, clear away the about metadata.
   $('.aboutLoad .aboutDataset').appendTo('#js-appended-templates');
   $('.aboutLoad').remove();
@@ -1319,6 +1320,7 @@ $(function() {
       }
     }
   }
+
   datasetPageNS.rtManager = blist.$container.renderTypeManager({
     view: blist.dataset,
     defaultTypes: defRen,
@@ -1349,12 +1351,24 @@ $(function() {
         });
       }
     },
+    socrataVizTable: {
+      addColumnCallback: function(parId) {
+        datasetPageNS.sidebar.show('edit.addColumn', {
+          parentId: parId
+        });
+      }
+    },
     page: {
       defaultRowId: blist.initialRowId
     }
   });
 
-  var $dataGrid = datasetPageNS.rtManager.$domForType('table');
+  var $dataGrid;
+  if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
+    $dataGrid = datasetPageNS.rtManager.$domForType('socrataVizTable');
+  } else {
+    $dataGrid = datasetPageNS.rtManager.$domForType('table');
+  }
 
   $(document).bind(blist.events.DISPLAY_ROW, function(e, rowId, updateOnly) {
     var uid;
@@ -1375,9 +1389,19 @@ $(function() {
   });
 
   // sidebar and sidebar tabs
+  var $columnChoosersDomForType;
+  var waitOnDataset;
+  if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
+    $columnChoosersDomForType = blist.$container.renderTypeManager().$domForType('socrataVizTable');
+    waitOnDataset = false;
+  } else {
+    $columnChoosersDomForType = blist.$container.renderTypeManager().$domForType('table');
+    waitOnDataset = blist.dataset.type != 'form' && blist.dataset.valid;
+  }
+
   datasetPageNS.sidebar = $('#gridSidebar').gridSidebar({
     position: blist.sidebarPosition || 'right',
-    waitOnDataset: blist.dataset.type != 'form' && blist.dataset.valid,
+    waitOnDataset: waitOnDataset,
     onSidebarShown: function(primaryPane) {
       var $opts = $('#sidebarOptions');
       $opts.find('li').removeClass('active');
@@ -1394,7 +1418,7 @@ $(function() {
       $('#sidebarOptions').css('background-color', 'transparent').
       find('li').removeClass('active');
     },
-    columnChoosers: blist.$container.renderTypeManager().$domForType('table'),
+    columnChoosers: $columnChoosersDomForType,
     renderTypeManager: blist.$container.renderTypeManager(),
     resizeNeighbor: blist.$container,
     setSidebarTop: false,

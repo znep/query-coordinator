@@ -57,11 +57,26 @@
           v.metadata.hasOwnProperty('renderTypeConfig')
         ) {
 
+          // Store the original values so that we can replace them when we make
+          // updates to the server's notion of the view, since we want the below
+          // change to be transparent and client-side only.
+          //
+          // Note that for some reason when loading a grid view page the Dataset
+          // model gets instantiated twice (?!) so we need to guard against
+          // overwriting the original stashed values with the overridden ones.
+          if (!window.blist.hasOwnProperty('originalDatasetTypeMetadata')) {
+            window.blist.originalDatasetTypeMetadata = {
+              availableDisplayTypes: _.cloneDeep(v.metadata.availableDisplayTypes),
+              renderTypeConfig: _.cloneDeep(v.metadata.renderTypeConfig)
+            };
+          }
+
           v.metadata.renderTypeConfig = {
             visible: {
-              table: true
+              socrataVizTable: true
             }
           };
+          v.metadata.availableDisplayTypes = ['socrataVizTable'];
         }
       }
 
@@ -345,7 +360,8 @@
     },
 
     save: function(successCallback, errorCallback, allowedKeys) {
-      var ds = this;
+      var ds = restoreOriginalTypeMetadata(cleanViewForSave(this, allowedKeys));
+
       if (!ds.hasRight(blist.rights.view.UPDATE_VIEW)) {
         return false;
       }
@@ -368,7 +384,7 @@
       this.makeRequest({
         url: '/views/' + this.id + '.json',
         type: 'PUT',
-        data: JSON.stringify(cleanViewForSave(this, allowedKeys)),
+        data: JSON.stringify(ds),
         error: errorCallback,
         success: dsSaved
       });
@@ -390,8 +406,7 @@
           successCallback(newDS);
         }
       };
-
-      var ds = cleanViewForCreate(this);
+      var ds = restoreOriginalTypeMetadata(cleanViewForCreate(this));
 
       // Munge permissions for forms, since those don't get carried over
       // or inherited
@@ -411,6 +426,7 @@
 
     update: function(newDS, fullUpdate, minorUpdate) {
       var ds = this;
+
       // If any updated key exists but is set to invalid, then we can't save
       // it on this dataset; so make minorUpdate false
       if (!_.isEqual(newDS, ds._cleanUnsaveable(newDS))) {
@@ -1055,7 +1071,7 @@
     },
 
     blobColumns: function() {
-      return _.select(this.realColumns, function(col) {
+      return _.filter(this.realColumns, function(col) {
         return col.renderTypeName === 'blob';
       });
     },
@@ -1100,7 +1116,7 @@
           ds._fileDataForFileId[data.id] = data;
           return ds._activeRowSet.applyFileDataToRow(data);
         }).
-        select(_.identity). // Dump falses.
+        filter(_.identity). // Dump falses.
         value();
 
         if (rowsChanged.length > 0) {
@@ -2438,12 +2454,12 @@
       var ds = this;
       if ($.isBlank(ds._snapshotViews)) {
         ds._loadPublicationViews(function() {
-          callback(_.select(ds._snapshotViews, function(v) {
+          callback(_.filter(ds._snapshotViews, function(v) {
             return v.isDefault();
           }));
         });
       } else {
-        callback(_.select(ds._snapshotViews, function(v) {
+        callback(_.filter(ds._snapshotViews, function(v) {
           return v.isDefault();
         }));
       }
@@ -2970,8 +2986,8 @@
           } else {
             // Find existing set to derive from
             var parRS = _.detect(_.sortBy(ds._availableRowSets,
-                function(rs, key) {
-                  return -(rs._isComplete ? 1000000 : 1) * key.length;
+                function(rs) {
+                  return -(rs._isComplete ? 1000000 : 1) * rs._key.length;
                 }),
               function(rs) {
                 return rs.canDerive(jsonQ);
@@ -3252,7 +3268,7 @@
       });
 
       var newGroupAggs = {};
-      var columnsWithGroupAggregate = _.select(ds.realColumns, function(c) {
+      var columnsWithGroupAggregate = _.filter(ds.realColumns, function(c) {
         return !$.isBlank(c.format.grouping_aggregate);
       });
 
@@ -3297,7 +3313,28 @@
         ds.updateColumns();
       }
 
-      if (colsChanged) {
+      if (
+        colsChanged ||
+        // EN-16787 - Use socrata-viz table for NBE-only grid view
+        //
+        // In order to consistently render the Socrata Viz table in a way that
+        // reflects the state of the UI we need to be notified if the
+        // aggregation has changed, even if the other column metadata has not.
+        //
+        // Given this, the easiest way to do so is to fire the 'columns_changed'
+        // event even if the only change was the aggregation function, since
+        // we already respond to that event and calculate the query that the
+        // Socrata Viz table will make from 'first principles' based on the
+        // Dataset model's internal state in any case (in effect, we
+        // 'invalidateAll' every time any type of change is made to the Dataset
+        // model at all, so this approach seems consistent with the use of
+        // 'invalidateAll' on the Dataset model when the grouping aggregations
+        // change that happens inside the !_.isEqual() check below).
+        (
+          blist.feature_flags.enable_nbe_only_grid_view_optimizations &&
+          !_.isEqual(oldGroupAggs, newGroupAggs)
+        )
+      ) {
         ds.trigger('columns_changed');
       }
 
@@ -3321,7 +3358,7 @@
       var ds = this;
       if (ds.isGrouped()) {
         // Hide columns not grouped or rolled-up
-        visColIds = _.select(visColIds, function(cId) {
+        visColIds = _.filter(visColIds, function(cId) {
           var c = ds.columnForID(cId);
           return !$.isBlank(c.format.grouping_aggregate) ||
             _.any(ds.query.groupBys, function(g) {
@@ -3929,10 +3966,10 @@
           return nv;
         });
 
-        ds._publishedViews = _.select(views, function(v) {
+        ds._publishedViews = _.filter(views, function(v) {
           return v.isPublished();
         });
-        ds._snapshotViews = _.select(views, function(v) {
+        ds._snapshotViews = _.filter(views, function(v) {
           return v.isSnapshot();
         });
         // There should be only one
@@ -4350,7 +4387,7 @@
       if (!$.isBlank(fc) && fc.type == 'operator' && _.isArray(fc.children) && fc.children.length > 0) {
         var havingCols = _.compact(_.map(ds.query.groupBys, function(gb) {
           return ds.columnForIdentifier(gb.columnId);
-        }).concat(_.select(ds.realColumns,
+        }).concat(_.filter(ds.realColumns,
           function(c) {
             return $.subKeyDefined(c, 'format.grouping_aggregate');
           })));
@@ -4408,7 +4445,7 @@
         defaults: translateSubFilter(splitDefault, ds, false, false)
       };
     } else {
-      var defaults = _.isEmpty(fc) ? null : _.select(fc, function(cond) {
+      var defaults = _.isEmpty(fc) ? null : _.filter(fc, function(cond) {
         return _.isEmpty(cond.children);
       });
       return {
@@ -5020,6 +5057,22 @@
         20000
       );
     }
+  }
+
+  // EN-17053/EN-16787 - Use socrata-viz table for NBE-only grid view
+  //
+  // Since we want to override view.metadata.availableDisplayTypes and
+  // view.metadata.renderTypeConfig at runtime only, we need to stash the
+  // original properties of these values somewhere and restore them before we
+  // attempt to save the dataset, because Core Server will just overwrite the
+  // previous values with whatever happens to be in the view that we send it.
+  function restoreOriginalTypeMetadata(view) {
+    var originalTypeMetadata = window.blist.originalDatasetTypeMetadata;
+
+    _.set(view, 'metadata.availableDisplayTypes', originalTypeMetadata.availableDisplayTypes);
+    _.set(view, 'metadata.renderTypeConfig', originalTypeMetadata.renderTypeConfig);
+
+    return view;
   }
 
   function cleanViewForSave(ds, allowedKeys) {

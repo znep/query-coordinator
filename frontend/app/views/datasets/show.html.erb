@@ -5,6 +5,14 @@
   <%= rendered_stylesheet_tag 'base-control-third-party' %>
   <%= rendered_stylesheet_tag 'dataset-show' %>
 
+  <%-
+    # EN-16787 - Use socrata-viz table for NBE-only grid view
+    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+  -%>
+    <%= rendered_stylesheet_tag 'socrata-icons' %>
+    <%= rendered_stylesheet_tag 'visualizations' %>
+  <%- end -%>
+
   <%- if is_mobile? -%>
     <meta name="apple-mobile-web-app-capable" content="yes" />
   <%- end -%>
@@ -21,6 +29,18 @@
   <%- if @view.has_rights?(ViewRights::UPDATE_VIEW) -%>
     <%= link_to 'Edit the metadata of this dataset', edit_view_metadata_path(@view) %>
   <%- end -%>
+
+  <%-
+    # EN-16787 - Use socrata-viz table for NBE-only grid view
+    #
+    # Note that this must be in the <head> because there is a load order
+    # dependency with the Socrata Visualizations I18n module; if the
+    # translations are not present on the window when that code bootstraps no
+    # translations will be available.
+    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+  -%>
+    <%= render_socrata_visualizations_translations %>
+  <%- end -%>
 <% end %>
 
 <%= display_standard_flashes %>
@@ -30,72 +50,89 @@
 
 <% content_for :dataset_actions do %>
   <div id="actionBox" class="clearfix">
-    <ul id="toolbarOptions" class="clearfix">
-      <%- if @view.is_published? && !@view.is_api? -%>
-      <li>
-        <ul id="shareOptions">
-          <%- if @view.is_public? && @view.is_tabular? -%>
-            <li class="subscribe">
-              <a class="subscribe" href="#subscribe" title="<%= t('screens.ds.bar.subscribe_prompt') %>">
-              <span class="icon"><%= t('screens.ds.bar.subscribe') %></span></a>
-            </li>
-          <%- end -%>
-          <%- socialize_menu_options(@view).each_pair do |network, data| %>
-          <li><a class="<%= network %>" rel="external" title="<%= t("screens.ds.bar.share_#{network}") %>" href="<%= data['href'] %>">
-            <span class="icon"><%= t("screens.ds.bar.share_#{network}") %></span></a></li>
-          <%- end %>
-          <%-
-          # See comment on implementation in `application_helpers.rb`
-          if user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
-          -%>
-            <li><a class="email" href="#email" title="<%= t('screens.ds.bar.share_email') %>">
-              <span class="icon"><%= t('screens.ds.bar.share_email') %></span></a></li>
-          <%- end -%>
-        </ul>
-      </li>
-      <%- end -%>
-      <li>
+    <%- if is_nbe_only_grid_view? -%>
+      <form id="searchForm" action="#">
+        <span class="icon"></span>
+        <label for="searchField" class="accessible"><%= t('screens.ds.bar.find_prompt') %></label>
+        <input id="searchField" type="text" class="searchField textPrompt" title="<%= t('screens.ds.bar.find_prompt') %>" value="<%= params[:q] %>"/>
+        <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
+        <input type="hidden" name="inDatasetSearch" value="true" />
+      </form>
+    <%- else -%>
+      <ul id="toolbarOptions" class="clearfix">
+        <%- if @view.is_published? && !@view.is_api? -%>
+          <li>
+            <ul id="shareOptions">
+              <%- if @view.is_public? && @view.is_tabular? -%>
+                <li class="subscribe">
+                  <a class="subscribe" href="#subscribe" title="<%= t('screens.ds.bar.subscribe_prompt') %>">
+                  <span class="icon"><%= t('screens.ds.bar.subscribe') %></span></a>
+                </li>
+              <%- end -%>
+              <%- socialize_menu_options(@view).each_pair do |network, data| %>
+                <li>
+                  <a class="<%= network %>" rel="external" title="<%= t("screens.ds.bar.share_#{network}") %>" href="<%= data['href'] %>">
+                    <span class="icon"><%= t("screens.ds.bar.share_#{network}") %></span>
+                  </a>
+                </li>
+              <%- end %>
+              <%-
+                # See comment on implementation in `application_helpers.rb`
+                if user_has_domain_role_or_unauthenticated_share_by_email_enabled?(@view)
+              -%>
+                <li>
+                  <a class="email" href="#email" title="<%= t('screens.ds.bar.share_email') %>">
+                    <span class="icon"><%= t('screens.ds.bar.share_email') %></span>
+                  </a>
+                </li>
+              <%- end -%>
+            </ul>
+          </li>
+        <%- end -%>
 
         <%-
           # EN-10110/EN-16622 - Disable non-table renderTypeOptions for NBE-only datasets
-          if !FeatureFlags.derive[:enable_nbe_only_grid_view_optimizations]
+          if !FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
         -%>
-          <%- if @view.available_display_types.length > 1 -%>
-          <ul id="renderTypeOptions" class="pillButtons">
-
-            <%- url_types = {'fatrow' => 'richList'} -%>
-            <%- @view.available_display_types.clone.
-              push('template').each do |type| -%>
-              <%- view_type_link_title = t('screens.ds.bar.view_type', type: t("screens.ds.bar.view_types.#{type}")) -%>
-            <li><a
-              href="<%= view_path(@view, defaultRender: url_types[type] || type) %>"
-              class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
-              title="<%= view_type_link_title %>">
-              <span class="icon"><%= view_type_link_title %></span>
-            </a></li>
+          <li>
+            <%- if @view.available_display_types.length > 1 -%>
+              <ul id="renderTypeOptions" class="pillButtons">
+                <%- url_types = {'fatrow' => 'richList'} -%>
+                <%- @view.available_display_types.clone.push('template').each do |type| -%>
+                  <%- view_type_link_title = t('screens.ds.bar.view_type', type: t("screens.ds.bar.view_types.#{type}")) -%>
+                  <li>
+                    <a
+                      href="<%= view_path(@view, defaultRender: url_types[type] || type) %>"
+                      class="<%= type %> noRedirPrompt<%= ' hide' if type == 'template' %>"
+                      title="<%= view_type_link_title %>">
+                      <span class="icon"><%= view_type_link_title %></span>
+                    </a>
+                  </li>
+                <%- end -%>
+              </ul>
             <%- end -%>
-
-          </ul>
-          <%- end -%>
+          </li>
         <%- end -%>
-      </li>
-      <%- if @view.is_tabular? && !@view.is_form? -%>
-      <li>
-        <form id="searchForm" action="#">
-          <span class="icon"></span>
-          <label for="searchField" class="accessible"><%= t('screens.ds.bar.find_prompt') %></label>
-          <input id="searchField" type="text" class="searchField textPrompt" title="<%= t('screens.ds.bar.find_prompt') %>" value="<%= params[:q] %>"/>
-          <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
-          <input type="hidden" name="inDatasetSearch" value="true" />
-        </form>
-      </li>
-      <%- end -%>
-    </ul>
+        <%- if @view.is_tabular? && !@view.is_form? -%>
+          <li>
+            <form id="searchForm" action="#">
+              <span class="icon"></span>
+              <label for="searchField" class="accessible"><%= t('screens.ds.bar.find_prompt') %></label>
+              <input id="searchField" type="text" class="searchField textPrompt" title="<%= t('screens.ds.bar.find_prompt') %>" value="<%= params[:q] %>"/>
+              <a href="#clear" class="clearSearch close"><span class="icon"></span></a>
+              <input type="hidden" name="inDatasetSearch" value="true" />
+            </form>
+          </li>
+        <%- end -%>
+      </ul>
+    <%- end -%>
   </div>
 
-  <a href="#toggleFullScreen" class="fullscreenButton maximize" title="<%= t('screens.ds.bar.full_screen') %>">
-    <span class="icon"><%= t('screens.ds.bar.full_screen') %></span>
-  </a>
+  <%- if !is_nbe_only_grid_view? -%>
+    <a href="#toggleFullScreen" class="fullscreenButton maximize" title="<%= t('screens.ds.bar.full_screen') %>">
+      <span class="icon"><%= t('screens.ds.bar.full_screen') %></span>
+    </a>
+  <%- end -%>
 
   <div id="actionBar" class="clearfix position-<%= sidebar_position %>">
     <%- if @view.can_modify_data? -%>
@@ -287,6 +324,19 @@
 
   <%= include_webpack_bundle 'open-data/dompurify.js' %>
   <%= include_webpack_bundle 'open-data/dataset-show.js' %>
+
+  <%-
+    # EN-16787 - Use socrata-viz table for NBE-only grid view
+    #
+    # Note that these come at the bottom of the <body> due to the load-order
+    # dependency detailed in the comment with this ticket number at the top
+    # of this file (tl;dr: the translations must exist on the window when
+    # we boostrap the Socrata Viz package).
+    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+  -%>
+    <%= include_webpack_bundle 'grid_view_socrata_visualizations/main.js' %>
+  <%- end -%>
+
   <script type="text/javascript">
     if ((typeof moment) !== 'undefined') { moment.lang(blist.locale); }
     $(document).ready(() => { if (window.lastAccessed) { window.lastAccessed.add('<%= @view.id %>'); } });

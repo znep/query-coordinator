@@ -66,19 +66,3 @@
   length: 4:48 mins
   wistia:
     embedid: xxq9zu63n5
-- name: import-dataset
-  title: Importing a Dataset
-  type: publishing
-  audience: publisher
-  added: 2016-11-14
-  length: 1:09 mins
-  wistia:
-    embedid: 9034a4cd28
-- name: dataset-publication
-  title: Publishing a Dataset
-  type: publishing
-  audience: publisher
-  added: 2011-09-26
-  length: 1:42 mins
-  wistia:
-    embedid: e698908422

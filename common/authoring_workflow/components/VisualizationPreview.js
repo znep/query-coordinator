@@ -58,7 +58,12 @@ export var VisualizationPreview = React.createClass({
     const nextMapCenterAndZoom = _.get(nextProps.vif, 'configuration.mapCenterAndZoom');
     const mapCenterAndZoom = _.get(vif, 'configuration.mapCenterAndZoom');
 
-    return vifChanged && _.isEqual(mapCenterAndZoom, nextMapCenterAndZoom);
+    if (_.isUndefined(nextMapCenterAndZoom) || _.isUndefined(mapCenterAndZoom)) {
+      return vifChanged;
+    }
+    else {
+      return vifChanged && _.isEqual(mapCenterAndZoom, nextMapCenterAndZoom);
+    }
   },
 
   onCenterAndZoomChanged(event) {

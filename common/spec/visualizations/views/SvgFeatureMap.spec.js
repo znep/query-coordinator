@@ -68,28 +68,9 @@ describe('SvgFeatureMap', function() {
     return L.latLngBounds(southWest, northEast);
   }
 
-  function createFeatureMap(width, height, overrideConfig) {
+  function makeVif(overrides) {
 
-    if (!_.isNumber(width)) {
-      width = MAP_WIDTH;
-    }
-
-    if (!_.isNumber(height)) {
-      height = MAP_HEIGHT;
-    }
-
-    var element = $(
-      '<div>',
-      {
-        'id': 'map',
-        'style': 'width:' + width + 'px;height:' + height + 'px;'
-      }
-    );
-
-    $('body').append(element);
-
-    // The visualization itself handles rendering and interaction events.
-    var featureMapVIF = {
+    const base = {
       format: {
         type: 'visualization_interchange_format',
         version: 2
@@ -116,6 +97,40 @@ describe('SvgFeatureMap', function() {
       }]
     };
 
+    return Object.assign({}, base, overrides);
+
+  }
+
+  function makeRenderOptions() {
+    return {
+      extent: VALID_EXTENT,
+      vectorTileGetter: mockVectorTileGetter
+    };
+  }
+
+  function createFeatureMap(width, height, overrideConfig) {
+
+    if (!_.isNumber(width)) {
+      width = MAP_WIDTH;
+    }
+
+    if (!_.isNumber(height)) {
+      height = MAP_HEIGHT;
+    }
+
+    var element = $(
+      '<div>',
+      {
+        'id': 'map',
+        'style': 'width:' + width + 'px;height:' + height + 'px;'
+      }
+    );
+
+    $('body').append(element);
+
+    // The visualization itself handles rendering and interaction events.
+    var featureMapVIF = makeVif();
+
     if (overrideConfig) {
       _.merge(featureMapVIF, overrideConfig);
     }
@@ -124,10 +139,7 @@ describe('SvgFeatureMap', function() {
 
     // The visualizationRenderOptions may change in response to user actions
     // and are passed as an argument to every render call.
-    var renderOptions = {
-      extent: VALID_EXTENT,
-      vectorTileGetter: mockVectorTileGetter
-    };
+    var renderOptions = makeRenderOptions();
 
     map.render(featureMapVIF, renderOptions);
 
@@ -374,6 +386,61 @@ describe('SvgFeatureMap', function() {
           assert.equal($('.feature-map-user-current-position-icon').length, 1);
         });
       });
+
     });
+
+    describe('rendering behavior when switching VIF dimension column', () => {
+
+      let vif1 = makeVif({
+        series: [{
+          dataSource: {
+            type: 'featureMap',
+            domain: '',
+            datasetUid: '',
+            dimension: {columnName: 'col1'},
+            filters: []
+          }
+        }]
+      });
+
+      let vif2 = makeVif({
+        series: [{
+          dataSource: {
+            type: 'featureMap',
+            domain: '',
+            datasetUid: '',
+            dimension: {columnName: 'col2'},
+            filters: []
+          }
+        }]
+      });
+
+      let renderOptions = makeRenderOptions();
+      let featureMap;
+
+      beforeEach(() => {
+        featureMap = createFeatureMap(MAP_WIDTH, MAP_HEIGHT, vif1);
+      });
+
+      afterEach(() => {
+        removeFeatureMap(featureMap);
+      });
+
+      it('should not rerender the map when the column does not change', () => {
+        let boundsChangedSpy = sinon.spy(featureMap.map._map, 'fitBounds');
+        featureMap.map.render(vif1, renderOptions);
+        expect(boundsChangedSpy.callCount).to.equal(0);
+        featureMap.map._map.fitBounds.restore();
+      });
+
+      it('should rerender the map when the series dimension changes', () => {
+        let boundsChangedSpy = sinon.spy(featureMap.map._map, 'fitBounds');
+        featureMap.map.render(vif2, makeRenderOptions());
+        expect(boundsChangedSpy.callCount).to.equal(1);
+        featureMap.map._map.fitBounds.restore();
+      });
+
+    });
+
   });
 });

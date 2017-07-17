@@ -3666,6 +3666,7 @@ en:
             DeltaImporter2: DataSync
             Imports2: Web Interface
             ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">Resource API</a>
+            PublishingAPI: Publishing API
           started_by: Started by
           title: Data Job Detail
           to: to

@@ -8,9 +8,11 @@ module SocrataSiteChrome
     include SharedHelperMethods
 
     def icon_with_aria_text(text, opts = {})
-      content_tag(:span, :class => opts.fetch(:class, 'icon')) do
-        content_tag(:span, text, :class  => 'aria-not-displayed')
-      end
+      content_tag(:span, aria_text_span(text), :class => opts.fetch(:class, 'icon'))
+    end
+
+    def aria_text_span(text)
+      content_tag(:span, text, :class => 'aria-not-displayed')
     end
 
     def divider

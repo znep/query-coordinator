@@ -15,9 +15,13 @@
     <%- end -%>
   </ul>
   <div class="storyTextbox"></div>
-  <%= content_tag('a', '', :class => 'storyLink',
-                           :style => ('display:block' unless stories.first.customization['link'].blank?),
-                           :href => stories.first.customization['link']) unless stories.empty? %>
+  <%= content_tag(
+    'a',
+    content_tag('span', 'Story', :class => 'aria-not-displayed'),
+    :class => 'storyLink',
+    :style => stories.first.customization['link'].present? ? 'display: block' : nil,
+    :href => stories.first.customization['link'].presence || '#'
+  ) unless stories.empty? %>
   <ul class="storyImages">
     <%- stories.each do |story| -%>
       <%- bg_color = story.customization['backgroundColor'] -%>

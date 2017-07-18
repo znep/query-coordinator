@@ -14,6 +14,7 @@ export const TextFilter = React.createClass({
   propTypes: {
     filter: PropTypes.object.isRequired,
     column: PropTypes.object.isRequired,
+    controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
     isReadOnly: PropTypes.bool,
     isValidTextFilterColumnValue: PropTypes.func,
     onClickConfig: PropTypes.func.isRequired,
@@ -132,7 +133,7 @@ export const TextFilter = React.createClass({
   },
 
   renderHeader() {
-    const { column, isReadOnly, onClickConfig } = this.props;
+    const { column, controlSize, isReadOnly, onClickConfig } = this.props;
     const { isValidating } = this.state;
 
     const headerProps = {
@@ -152,6 +153,7 @@ export const TextFilter = React.createClass({
         { title: I18n.t('shared.components.filter_bar.text_filter.is'), value: 'false' },
         { title: I18n.t('shared.components.filter_bar.text_filter.is_not'), value: 'true' }
       ],
+      size: controlSize,
       disabled: isValidating
     };
 
@@ -185,7 +187,7 @@ export const TextFilter = React.createClass({
   },
 
   render() {
-    const { column, isReadOnly, onRemove } = this.props;
+    const { column, controlSize, isReadOnly, onRemove } = this.props;
     const { value, selectedValues, isValidating } = this.state;
 
     // Create the "null" suggestion to allow filtering on empty values.
@@ -227,6 +229,7 @@ export const TextFilter = React.createClass({
       }),
       value,
       selectedOptions,
+      size: controlSize,
       onClickSelectedOption: this.onUnselectOption,
       canAddSearchTerm: this.canAddSearchTerm
     };

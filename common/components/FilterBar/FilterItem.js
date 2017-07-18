@@ -28,6 +28,7 @@ export const FilterItem = React.createClass({
       dataTypeName: PropTypes.oneOf(['calendar_date', 'money', 'number', 'text']),
       name: PropTypes.string.isRequired
     }).isRequired,
+    controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
     isReadOnly: PropTypes.bool.isRequired,
     onUpdate: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
@@ -197,8 +198,14 @@ export const FilterItem = React.createClass({
   },
 
   renderFilterControl() {
-    const { filter, column, isReadOnly, isValidTextFilterColumnValue } = this.props;
     const { isControlOpen } = this.state;
+    const {
+      filter,
+      column,
+      controlSize,
+      isReadOnly,
+      isValidTextFilterColumnValue
+    } = this.props;
 
     if (!isControlOpen) {
       return null;
@@ -207,6 +214,7 @@ export const FilterItem = React.createClass({
     const filterProps = {
       filter,
       column,
+      controlSize,
       isReadOnly,
       isValidTextFilterColumnValue,
       onClickConfig: this.toggleConfig,

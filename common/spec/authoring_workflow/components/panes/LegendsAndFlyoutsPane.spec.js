@@ -116,10 +116,29 @@ describe('LegendsAndFlyoutsPane', function() {
       }
 
       var renderedParts = render('columnChart', props);
-
       component = renderedParts.component;
       props = renderedParts.props;
       legendsPanel = component.querySelector('[aria-label=Legends]')
+    }
+
+    function renderMultiSeriesColumnChartPane() {
+      props = {};
+
+      _.set(
+        props,
+        'vifAuthoring.vifs.columnChart.series[0].dataSource.measure.columnName',
+        'something'
+      );
+
+      _.set(
+        props,
+        'vifAuthoring.vifs.columnChart.series[1].dataSource.measure.columnName',
+        'something'
+      );
+
+      var renderedParts = render('columnChart', props);
+      component = renderedParts.component;
+      props = renderedParts.props;
     }
 
     beforeEach(function() { renderColumnChartPane(false); });
@@ -143,6 +162,14 @@ describe('LegendsAndFlyoutsPane', function() {
       it('renders the legend pane', function() {
         renderColumnChartPane(true);
         assert.isNotNull(legendsPanel);
+      });
+    });
+
+    describe('multi-series', function() {
+      it('renders multiple units containers', function() {
+        renderMultiSeriesColumnChartPane();
+        assert.isNotNull(component.querySelector('#units-container-0'));
+        assert.isNotNull(component.querySelector('#units-container-1'));
       });
     });
   });
@@ -186,21 +213,50 @@ describe('LegendsAndFlyoutsPane', function() {
     });
   });
 
-
   describe('timelineChart', function() {
-    beforeEach(function() {
-      var renderedParts = render('timelineChart');
 
+    function renderTimelineChartPane() {
+      var renderedParts = render('timelineChart');
       component = renderedParts.component;
       props = renderedParts.props;
-    });
+    }
 
+    function renderMultiSeriesTimelineChartPane() {
+      props = {};
+
+      _.set(
+        props,
+        'vifAuthoring.vifs.timelineChart.series[0].dataSource.measure.columnName',
+        'something'
+      );
+
+      _.set(
+        props,
+        'vifAuthoring.vifs.timelineChart.series[1].dataSource.measure.columnName',
+        'something'
+      );
+
+      var renderedParts = render('timelineChart', props);
+      component = renderedParts.component;
+      props = renderedParts.props;
+    }
+    
     describe('rendering', function() {
+      renderTimelineChartPane();
       rendersEditableUnits();
     });
 
     describe('events', function() {
+      renderTimelineChartPane();
       emitsEventsForUnits();
+    });
+
+    describe.only('multi-series', function() {
+      it('renders multiple units containers', function() {
+        renderMultiSeriesTimelineChartPane();
+        assert.isNotNull(component.querySelector('#units-container-0'));
+        assert.isNotNull(component.querySelector('#units-container-1'));
+      });
     });
   });
 });

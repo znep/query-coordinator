@@ -88,8 +88,14 @@ export const LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderUnitsForSeries(seriesIndex, measureTitle, unitOneAttributes, unitOtherAttributes) {
+    const containerAttributes = {
+      id: `units-container-${seriesIndex}`,
+      className: 'units-container',
+      key: seriesIndex
+    };
+    
     return (
-      <div className="units-container" key={seriesIndex}>
+      <div {...containerAttributes}>
         <p>{measureTitle}</p>
         <div className="authoring-field unit-container">
           <label className="block-label" htmlFor="units-one">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.title')}</label>

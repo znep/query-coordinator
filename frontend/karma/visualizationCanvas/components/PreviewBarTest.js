@@ -38,6 +38,6 @@ describe('PreviewBar', () => {
   });
 
   it('renders the preview title', () => {
-    assert.equal(element.innerText, I18n.preview);
+    assert.equal(element.innerText, translations.visualization_canvas.preview);
   });
 });

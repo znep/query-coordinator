@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { SocrataIcon } from 'common/components';
-import { t } from '../lib/I18n';
+import I18n from 'common/i18n';
 import { SaveStates } from '../lib/constants';
 import { save, clearSaveState } from '../actions';
 
@@ -22,7 +22,7 @@ export class SaveNotification extends Component {
 
     const buttonProps = {
       className: 'btn btn-transparent btn-dismiss',
-      'aria-label': t('dismiss'),
+      'aria-label': I18n.t('visualization_canvas.dismiss'),
       onClick: dismiss
     };
 
@@ -42,9 +42,9 @@ export class SaveNotification extends Component {
         content = (
           <div className="alert-overlay">
             <div className="alert error">
-              {t('save_error')}
+              {I18n.t('visualization_canvas.save_error')}
               <button className="btn btn-transparent btn-retry" onClick={retry}>
-                {t('save_error_retry_prompt')}
+                {I18n.t('visualization_canvas.save_error_retry_prompt')}
               </button>
               {this.renderDismissButton()}
             </div>
@@ -55,7 +55,7 @@ export class SaveNotification extends Component {
       case SaveStates.SAVED:
         content = (
           <div className="alert success">
-            {t('save_success')}
+            {I18n.t('visualization_canvas.save_success')}
             {this.renderDismissButton()}
           </div>
         );

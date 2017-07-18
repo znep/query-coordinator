@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { closeShareModal, setEmbedSize } from '../actions';
 import { Dropdown, Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import { t } from '../lib/I18n';
+import I18n from 'common/i18n';
 import { components as SocrataVisualizations } from 'common/visualizations';
 import generateEmbedCode from '../../visualization_embed/embedCodeGenerator';
 
@@ -44,14 +44,14 @@ export class ShareVisualizationModal extends Component {
 
     const notAvailableMessage = (
       <div className="alert info">
-        {t('share_modal.no_web_link_available')}
+        {I18n.t('visualization_canvas.share_modal.no_web_link_available')}
       </div>
     );
 
     return (
       <div>
         <label htmlFor="share-link-field" className="block-label">
-          {t('share_modal.web_link')}
+          {I18n.t('visualization_canvas.share_modal.web_link')}
         </label>
         {copyableLinkUrl ? field : notAvailableMessage}
       </div>
@@ -71,7 +71,7 @@ export class ShareVisualizationModal extends Component {
     return (
       <div>
         <label htmlFor="share-embed-code-field" className="block-label">
-          {t('share_modal.embed_code')}
+          {I18n.t('visualization_canvas.share_modal.embed_code')}
         </label>
         <textarea {...textareaProps} />
       </div>
@@ -79,10 +79,10 @@ export class ShareVisualizationModal extends Component {
   }
 
   renderSizeField() {
-    const options = EMBED_SIZES.map((size) => (
+    const options = EMBED_SIZES.map(({ name, width, height }) => (
       {
-        title: `${t(`share_modal.sizes.${size.name}`)} (${size.width}x${size.height})`,
-        value: size.name
+        title: `${I18n.t(`visualization_canvas.share_modal.sizes.${name}`)} (${width}x${height})`,
+        value: name
       }
     ));
 
@@ -94,7 +94,7 @@ export class ShareVisualizationModal extends Component {
 
     return (
       <div>
-        <div>{t('share_modal.size_options')}</div>
+        <div>{I18n.t('visualization_canvas.share_modal.size_options')}</div>
         <Dropdown {...dropdownProps} />
       </div>
     );
@@ -106,7 +106,7 @@ export class ShareVisualizationModal extends Component {
 
     return (
       <div>
-        {t('share_modal.preview')}
+        {I18n.t('visualization_canvas.share_modal.preview')}
         <div style={{ width, height }} ref={(vis) => this.visualizationContainer = vis}>
           <SocrataVisualizations.Visualization vif={vif} />
         </div>
@@ -123,7 +123,7 @@ export class ShareVisualizationModal extends Component {
 
     return (
       <Modal className="share-modal" onDismiss={onDismiss} >
-        <ModalHeader title={t('share_modal.title')} onDismiss={onDismiss} />
+        <ModalHeader title={I18n.t('visualization_canvas.share_modal.title')} onDismiss={onDismiss} />
 
         <ModalContent>
           <form>
@@ -136,7 +136,7 @@ export class ShareVisualizationModal extends Component {
 
         <ModalFooter>
           <button className="btn btn-sm btn-default" onClick={onDismiss}>
-            {t('share_modal.close')}
+            {I18n.t('visualization_canvas.share_modal.close')}
           </button>
         </ModalFooter>
       </Modal>
@@ -179,7 +179,7 @@ function mapStateToProps(state) {
       width,
       height,
       sourceHref: `${state.dataSourceUrl}?referrer=embed`,
-      fallbackSourceLinkText: t('share_modal.fallback_link_text')
+      fallbackSourceLinkText: I18n.t('visualization_canvas.share_modal.fallback_link_text')
     }
   );
 

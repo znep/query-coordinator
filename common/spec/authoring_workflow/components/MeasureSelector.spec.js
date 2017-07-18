@@ -69,7 +69,7 @@ var validVifAuthoringMultiSeriesMax = {
   }
 };
 
-describe.only('MeasureSelector', function() {
+describe('MeasureSelector', function() {
   describe('rendering', function() {
     var component;
 
@@ -236,7 +236,7 @@ describe.only('MeasureSelector', function() {
       emitsClickEvent('#measure-new-measure-link', 'onAddMeasure');
     });
 
-    describe.only('when clicking a delete link', function() {
+    describe('when clicking a delete link', function() {
       emitsClickEvent('#measure-delete-link-0', 'onRemoveMeasure');
     });
   });

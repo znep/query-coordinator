@@ -41,6 +41,15 @@ var validVifAuthoring = {
   }
 };
 
+var validVifAuthoringMultiSeries = {
+  vifs: {
+    columnChart: {series: [
+      {dataSource: {measure: {columnName: 'columnName0'}}},
+      {dataSource: {measure: {columnName: 'columnName1'}}}
+    ]}
+  }
+};
+
 var validVifAuthoringMultiSeriesMax = {
   vifs: {
     columnChart: {series: [
@@ -55,7 +64,7 @@ var validVifAuthoringMultiSeriesMax = {
       {dataSource: {measure: {columnName: 'columnName8'}}},
       {dataSource: {measure: {columnName: 'columnName9'}}},
       {dataSource: {measure: {columnName: 'columnName10'}}},
-      {dataSource: {measure: {columnName: 'columnName11'}}},
+      {dataSource: {measure: {columnName: 'columnName11'}}}
     ]}
   }
 };
@@ -187,10 +196,11 @@ describe.only('MeasureSelector', function() {
     var component;
     var overrides = {
       metadata: validMetadata,
-      vifAuthoring: validVifAuthoring,
+      vifAuthoring: validVifAuthoringMultiSeries,
       onSetMeasureColumn: sinon.stub(),
       onSetMeasureAggregation: sinon.stub(),
-      onAddMeasure: sinon.stub()
+      onAddMeasure: sinon.stub(),
+      onRemoveMeasure: sinon.stub()
     };
 
     var emitsDropdownEvent = function(selector, eventName) {
@@ -224,6 +234,10 @@ describe.only('MeasureSelector', function() {
 
     describe('when clicking the "New Measure" link', function() {
       emitsClickEvent('#measure-new-measure-link', 'onAddMeasure');
+    });
+
+    describe.only('when clicking a delete link', function() {
+      emitsClickEvent('#measure-delete-link-0', 'onRemoveMeasure');
     });
   });
 });

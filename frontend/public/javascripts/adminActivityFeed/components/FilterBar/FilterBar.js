@@ -119,6 +119,7 @@ class FilterBar extends React.Component {
 
     const props = {
       id: 'eventFilter',
+      size: 'small',
       onSelection: this.onEventChange,
       options,
       placeholder,
@@ -167,6 +168,7 @@ class FilterBar extends React.Component {
 
     const props = {
       id: 'statusFilter',
+      size: 'small',
       onSelection: this.onStatusChange,
       options,
       placeholder,

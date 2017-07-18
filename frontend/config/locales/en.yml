@@ -2815,6 +2815,9 @@ en:
         datasets:
           one: Dataset
           other: Datasets
+        files:
+          one: File/Doc
+          other: Files/Docs
         filters:
           one: Filtered View
           other: Filtered Views

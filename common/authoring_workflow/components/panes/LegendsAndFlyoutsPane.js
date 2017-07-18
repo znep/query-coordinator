@@ -52,7 +52,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
       const unitOther = _.get(item, 'unit.other', '');
 
       const unitOneAttributes = {
-        id: 'units-one',
+        id: `units-one-${index}`,
         className: 'text-input',
         type: 'text',
         onChange: (event) => onChangeUnitOne(index, event.target.value),
@@ -63,7 +63,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
       };
 
       const unitOtherAttributes = {
-        id: 'units-other',
+        id: `units-other-${index}`,
         className: 'text-input',
         type: 'text',
         onChange: (event) => onChangeUnitOther(index, event.target.value),
@@ -93,16 +93,26 @@ export const LegendsAndFlyoutsPane = React.createClass({
       className: 'units-container',
       key: seriesIndex
     };
-    
+
+    const unitsOneLabelAttributes = {
+      className: 'block-label',
+      htmlFor: `units-one-${seriesIndex}`
+    };
+
+    const unitsOtherLabelAttributes = {
+      className: 'block-label',
+      htmlFor: `units-other-${seriesIndex}`
+    };
+
     return (
       <div {...containerAttributes}>
         <p>{measureTitle}</p>
         <div className="authoring-field unit-container">
-          <label className="block-label" htmlFor="units-one">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.title')}</label>
+          <label {...unitsOneLabelAttributes}>{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.title')}</label>
           <DebouncedInput {...unitOneAttributes} />
         </div>
         <div className="authoring-field unit-container">
-          <label className="block-label" htmlFor="units-other">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.title')}</label>
+          <label {...unitsOtherLabelAttributes}>{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.title')}</label>
           <DebouncedInput {...unitOtherAttributes} />
         </div>
       </div>

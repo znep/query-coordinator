@@ -51,21 +51,21 @@ describe('LegendsAndFlyoutsPane', function() {
 
   function rendersEditableUnits() {
     it('renders a units one input', function() {
-      expect(component.querySelector('#units-one')).to.exist;
+      expect(component.querySelector('#units-one-0')).to.exist;
     });
 
     it('renders a units other input', function() {
-      expect(component.querySelector('#units-other')).to.exist;
+      expect(component.querySelector('#units-other-0')).to.exist;
     });
   }
 
   function emitsEventsForUnits() {
     describe('when changing the units for one', function() {
-      emitsEvent('#units-one', 'onChangeUnitOne');
+      emitsEvent('#units-one-0', 'onChangeUnitOne');
     });
 
     describe('when changing the units for other', function() {
-      emitsEvent('#units-other', 'onChangeUnitOther');
+      emitsEvent('#units-other-0', 'onChangeUnitOther');
     });
   }
 
@@ -215,13 +215,24 @@ describe('LegendsAndFlyoutsPane', function() {
 
   describe('timelineChart', function() {
 
-    function renderTimelineChartPane() {
+    beforeEach(function() {
       var renderedParts = render('timelineChart');
       component = renderedParts.component;
       props = renderedParts.props;
-    }
+    });
 
-    function renderMultiSeriesTimelineChartPane() {
+    describe('rendering', function() {
+      rendersEditableUnits();
+    });
+
+    describe('events', function() {
+      emitsEventsForUnits();
+    });
+  });
+
+  describe('multi-series timelineChart', function() {
+
+    beforeEach(function() {
       props = {};
 
       _.set(
@@ -239,21 +250,10 @@ describe('LegendsAndFlyoutsPane', function() {
       var renderedParts = render('timelineChart', props);
       component = renderedParts.component;
       props = renderedParts.props;
-    }
+    });
     
-    describe('rendering', function() {
-      renderTimelineChartPane();
-      rendersEditableUnits();
-    });
-
-    describe('events', function() {
-      renderTimelineChartPane();
-      emitsEventsForUnits();
-    });
-
     describe('multi-series', function() {
       it('renders multiple units containers', function() {
-        renderMultiSeriesTimelineChartPane();
         assert.isNotNull(component.querySelector('#units-container-0'));
         assert.isNotNull(component.querySelector('#units-container-1'));
       });

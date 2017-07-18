@@ -661,6 +661,7 @@ module.exports = function Table(element, originalVif, locale) {
         'polygon',
         'multipolygon',
         'location',
+        'phone',
         'document'
       ],
       column.renderTypeName

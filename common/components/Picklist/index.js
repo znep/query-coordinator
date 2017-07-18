@@ -34,7 +34,7 @@ export const Picklist = React.createClass({
     onChange: React.PropTypes.func,
     onFocus: React.PropTypes.func,
     onBlur: React.PropTypes.func,
-    size: React.PropTypes.string
+    size: React.PropTypes.oneOf(['small', 'medium', 'large'])
   },
 
   getDefaultProps() {

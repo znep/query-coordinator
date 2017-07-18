@@ -11,6 +11,7 @@ import Picklist from '../Picklist';
 export const SearchablePicklist = React.createClass({
   propTypes: {
     options: PropTypes.arrayOf(PropTypes.object),
+    size: PropTypes.oneOf(['small', 'medium', 'large']),
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     selectedOptions: PropTypes.arrayOf(PropTypes.object),
     onChangeSearchTerm: PropTypes.func.isRequired,
@@ -130,7 +131,7 @@ export const SearchablePicklist = React.createClass({
   },
 
   renderSelectedOptionsPicklist() {
-    const { selectedOptions, onBlur, value } = this.props;
+    const { selectedOptions, onBlur, size, value } = this.props;
     const { isValidating } = this.state;
 
     if (_.isEmpty(selectedOptions)) {
@@ -147,6 +148,7 @@ export const SearchablePicklist = React.createClass({
       onSelection: this.onClickSelectedOption,
       onBlur,
       disabled: isValidating,
+      size,
       value
     };
 
@@ -158,7 +160,7 @@ export const SearchablePicklist = React.createClass({
   },
 
   renderPicklist() {
-    const { options, value, onSelection, onBlur } = this.props;
+    const { options, size, value, onSelection, onBlur } = this.props;
     const { isValidating } = this.state;
 
     if (_.isEmpty(options)) {
@@ -171,6 +173,7 @@ export const SearchablePicklist = React.createClass({
 
     const picklistProps = {
       options,
+      size,
       value,
       onSelection,
       onBlur,

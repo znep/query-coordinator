@@ -20,7 +20,7 @@ export default React.createClass({
       React.PropTypes.string,
       React.PropTypes.func
     ]),
-    size: React.PropTypes.string,
+    size: React.PropTypes.oneOf(['small', 'medium', 'large']),
     value: React.PropTypes.string
   },
 

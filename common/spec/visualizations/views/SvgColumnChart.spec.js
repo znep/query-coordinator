@@ -23,6 +23,19 @@ describe('SvgColumnChart', () => {
     ]
   };
 
+  const multiSeriesTestData = {
+    columns: [
+      'dimension', 'measure'
+    ],
+    rows: [
+      ['10', 10, 10, 10],
+      ['20', 20, 20, 20],
+      ['30', 30, 30, 30],
+      ['40', 40, 40, 40],
+      ['50', 50, 50, 50]
+    ]
+  };
+
   const createColumnChart = (width, overrideVIF)  => {
 
     if (!width) {
@@ -257,4 +270,18 @@ describe('SvgColumnChart', () => {
     });
   });
 
+  describe.only('when rendering multi-series', () => {
+    let columnChart;
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
+    it('should show multiple columns', () => {
+      columnChart = createColumnChart();
+      columnChart.chart.render(null, multiSeriesTestData);
+      const $columns = columnChart.element.find('.dimension-group:first > .column');
+      assert.equal($columns.length, 3);
+    });
+  });
 });

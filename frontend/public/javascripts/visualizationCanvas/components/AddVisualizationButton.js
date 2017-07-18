@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addVisualization } from '../actions';
-import { t } from '../lib/I18n';
+import I18n from 'common/i18n';
 
 export class AddVisualizationButton extends Component {
   render() {
@@ -19,7 +19,7 @@ export class AddVisualizationButton extends Component {
           className="btn btn-primary"
           onClick={onClickHandler}>
           <span className="socrata-icon-add" role="presentation" />
-          {t('add_visualization')}
+          {I18n.t('visualization_canvas.add_visualization')}
         </button>
       </div>
     );

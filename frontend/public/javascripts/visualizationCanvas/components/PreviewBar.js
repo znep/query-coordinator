@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes, PureComponent } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { t } from '../lib/I18n';
+import I18n from 'common/i18n';
 import { enterEditMode } from '../actions';
 
 export class PreviewBar extends PureComponent {
@@ -15,16 +15,16 @@ export class PreviewBar extends PureComponent {
           className="btn btn-transparent btn-back"
           href="#"
           onClick={onClickExit}
-          aria-label={t('exit_preview_mode')}
+          aria-label={I18n.t('visualization_canvas.exit_preview_mode')}
           autoFocus>
           <span className="socrata-icon-arrow-prev" role="presentation" />
         </button>
-        <span>{t('preview')}</span>
+        <span>{I18n.t('visualization_canvas.preview')}</span>
         <button
           className="btn btn-transparent btn-exit"
           href="#"
           onClick={onClickExit}
-          aria-label={t('exit_preview_mode')}>
+          aria-label={I18n.t('visualization_canvas.exit_preview_mode')}>
           <span className="socrata-icon-close-2" role="presentation" />
         </button>
       </div>

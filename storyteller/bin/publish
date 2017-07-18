@@ -28,6 +28,8 @@ cd "${WORKSPACE}"
 
 ## Pull platform-ui/common locales
 pushd common/i18n
+  mkdir -p log
+  touch log/localeapp.yml
   LOCALEAPP_API_KEY=$COMMON_LOCALEAPP_API_KEY localeapp pull config/locales
 popd
 

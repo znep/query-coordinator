@@ -41,7 +41,26 @@ var validVifAuthoring = {
   }
 };
 
-describe('MeasureSelector', function() {
+var validVifAuthoringMultiSeriesMax = {
+  vifs: {
+    columnChart: {series: [
+      {dataSource: {measure: {columnName: 'columnName0'}}},
+      {dataSource: {measure: {columnName: 'columnName1'}}},
+      {dataSource: {measure: {columnName: 'columnName2'}}},
+      {dataSource: {measure: {columnName: 'columnName3'}}},
+      {dataSource: {measure: {columnName: 'columnName4'}}},
+      {dataSource: {measure: {columnName: 'columnName5'}}},
+      {dataSource: {measure: {columnName: 'columnName6'}}},
+      {dataSource: {measure: {columnName: 'columnName7'}}},
+      {dataSource: {measure: {columnName: 'columnName8'}}},
+      {dataSource: {measure: {columnName: 'columnName9'}}},
+      {dataSource: {measure: {columnName: 'columnName10'}}},
+      {dataSource: {measure: {columnName: 'columnName11'}}},
+    ]}
+  }
+};
+
+describe.only('MeasureSelector', function() {
   describe('rendering', function() {
     var component;
 
@@ -94,6 +113,72 @@ describe('MeasureSelector', function() {
           expect(component.querySelector('#measure-selection-0.dropdown-disabled')).to.exist;
         });
       });
+
+      it('does not render the delete measure link', function() {
+        expect(component.querySelector('#measure-delete-link-0')).to.be.null;
+      });
+
+      it('renders the "New Measure" link', function() {
+        expect(component.querySelector('#measure-new-measure-link')).to.exist;
+      });
+
+      describe('with multi-series measures', function() {
+        beforeEach(function() {
+          component = renderComponent(MeasureSelector, defaultProps({
+            metadata: validMetadata,
+            vifAuthoring: validVifAuthoringMultiSeriesMax
+          }));
+        });
+
+        it('renders measure selection', function() {
+          expect(component.querySelector('#measure-selection-0')).to.exist;
+          expect(component.querySelector('#measure-selection-1')).to.exist;
+          expect(component.querySelector('#measure-selection-2')).to.exist;
+          expect(component.querySelector('#measure-selection-3')).to.exist;
+          expect(component.querySelector('#measure-selection-4')).to.exist;
+          expect(component.querySelector('#measure-selection-5')).to.exist;
+          expect(component.querySelector('#measure-selection-6')).to.exist;
+          expect(component.querySelector('#measure-selection-7')).to.exist;
+          expect(component.querySelector('#measure-selection-8')).to.exist;
+          expect(component.querySelector('#measure-selection-9')).to.exist;
+          expect(component.querySelector('#measure-selection-10')).to.exist;
+          expect(component.querySelector('#measure-selection-11')).to.exist;
+        });
+
+        it('renders measure aggregation selection', function() {
+          expect(component.querySelector('#measure-aggregation-selection-0')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-1')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-2')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-3')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-4')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-5')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-6')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-7')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-8')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-9')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-10')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-11')).to.exist;
+        });
+
+        it('renders measure delete link', function() {
+          expect(component.querySelector('#measure-delete-link-0')).to.exist;
+          expect(component.querySelector('#measure-delete-link-1')).to.exist;
+          expect(component.querySelector('#measure-delete-link-2')).to.exist;
+          expect(component.querySelector('#measure-delete-link-3')).to.exist;
+          expect(component.querySelector('#measure-delete-link-4')).to.exist;
+          expect(component.querySelector('#measure-delete-link-5')).to.exist;
+          expect(component.querySelector('#measure-delete-link-6')).to.exist;
+          expect(component.querySelector('#measure-delete-link-7')).to.exist;
+          expect(component.querySelector('#measure-delete-link-8')).to.exist;
+          expect(component.querySelector('#measure-delete-link-9')).to.exist;
+          expect(component.querySelector('#measure-delete-link-10')).to.exist;
+          expect(component.querySelector('#measure-delete-link-11')).to.exist;
+        });
+
+        it('does not render the "New Measure" link with 12 measures showing', function() {
+          expect(component.querySelector('#measure-new-measure-link')).to.be.null;
+        });
+      });
     });
   });
 
@@ -104,12 +189,21 @@ describe('MeasureSelector', function() {
       metadata: validMetadata,
       vifAuthoring: validVifAuthoring,
       onSetMeasureColumn: sinon.stub(),
-      onSetMeasureAggregation: sinon.stub()
+      onSetMeasureAggregation: sinon.stub(),
+      onAddMeasure: sinon.stub()
     };
 
     var emitsDropdownEvent = function(selector, eventName) {
       it(`should emit an ${eventName} event.`, function() {
         var option = component.querySelector(`${selector} .picklist-option`);
+        TestUtils.Simulate.click(option);
+        sinon.assert.calledOnce(props[eventName]);
+      });
+    };
+
+    var emitsClickEvent = function(selector, eventName) {
+      it(`should emit an ${eventName} event.`, function() {
+        var option = component.querySelector(`${selector}`);
         TestUtils.Simulate.click(option);
         sinon.assert.calledOnce(props[eventName]);
       });
@@ -126,6 +220,10 @@ describe('MeasureSelector', function() {
 
     describe('when changing the measure aggregation dropdown', function() {
       emitsDropdownEvent('#measure-aggregation-selection-0', 'onSetMeasureAggregation');
+    });
+
+    describe('when clicking the "New Measure" link', function() {
+      emitsClickEvent('#measure-new-measure-link', 'onAddMeasure');
     });
   });
 });

@@ -251,7 +251,7 @@ describe('LegendsAndFlyoutsPane', function() {
       emitsEventsForUnits();
     });
 
-    describe.only('multi-series', function() {
+    describe('multi-series', function() {
       it('renders multiple units containers', function() {
         renderMultiSeriesTimelineChartPane();
         assert.isNotNull(component.querySelector('#units-container-0'));

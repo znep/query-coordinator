@@ -43,6 +43,7 @@ AssetCounts.propTypes = {
     charts: PropTypes.number,
     datalenses: PropTypes.number,
     datasets: PropTypes.number,
+    files: PropTypes.number,
     filters: PropTypes.number,
     hrefs: PropTypes.number,
     maps: PropTypes.number,

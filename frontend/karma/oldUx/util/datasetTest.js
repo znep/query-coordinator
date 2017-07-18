@@ -5,10 +5,55 @@ describe('blist.dataset', function () {
   beforeEach(function() {
     blist.configuration = {};
     blist.feature_flags = {};
+    blist.rights = {
+      view: {}
+    }
   });
 
   it('should instantiate', function() {
     new Dataset();
+  });
+
+  describe('saving', function() {
+
+    describe('when the `enable_nbe_only_grid_view_optimizations` feature flag is set to false', function() {
+      var dataset;
+
+      beforeEach(function() {
+        delete blist.feature_flags.enable_nbe_only_grid_view_optimizations;
+        dataset = new Dataset({metadata:{renderTypeConfig:{}}});
+        sinon.stub(dataset, 'makeRequest');
+      });
+
+      it('should succeed', function() {
+        expect(function() { dataset.save(); }).to.not.throw();
+      });
+    });
+
+    describe('when the `enable_nbe_only_grid_view_optimizations` feature flag is set to true', function() {
+      var dataset;
+
+      beforeEach(function() {
+        blist.feature_flags.enable_nbe_only_grid_view_optimizations = true;
+        dataset = new Dataset({metadata:{renderTypeConfig:{}}});
+        sinon.stub(dataset, 'makeRequest');
+      });
+
+      afterEach(function() {
+        delete blist.feature_flags.enable_nbe_only_grid_view_optimizations;
+      });
+
+
+      it('should succeed', function() {
+        expect(function() { dataset.save(); }).to.not.throw();
+      });
+
+      it('should fail when there is somehow no originalDatasetTypeMetadata to restore', function() {
+        delete window.blist.originalDatasetTypeMetadata;
+
+        expect(function() { dataset.save(); }).to.throw();
+      });
+    });
   });
 
   describe('_getRelatedDataLenses', function() {

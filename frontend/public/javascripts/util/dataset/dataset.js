@@ -41,7 +41,6 @@
 
       var ds = this;
 
-      // EN-10110/EN-16622 - Disable non-table renderTypeOptions for NBE-only datasets
       if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
         // Override whatever the renderTypeConfig might actually be with ONLY
         // the table/grid view, since that is the only one we want to support
@@ -71,12 +70,36 @@
             };
           }
 
-          v.metadata.renderTypeConfig = {
-            visible: {
-              socrataVizTable: true
-            }
-          };
-          v.metadata.availableDisplayTypes = ['socrataVizTable'];
+          if (_.has(v, 'metadata.renderTypeConfig.visible.table')) {
+            delete v.metadata.renderTypeConfig.visible.table;
+
+            v.metadata.renderTypeConfig.visible.socrataVizTable = true;
+          }
+
+          if (_.has(v, 'metadata.renderTypeConfig.visible.fatrow')) {
+            delete v.metadata.renderTypeConfig.visible.fatrow;
+          }
+
+          if (_.has(v, 'metadata.renderTypeConfig.visible.page')) {
+            delete v.metadata.renderTypeConfig.visible.page;
+          }
+
+          if (
+            _.has(v, 'metadata.availableDisplayTypes') &&
+            _.isArray(v.metadata.availableDisplayTypes)
+          ) {
+
+            v.metadata.availableDisplayTypes = v.metadata.availableDisplayTypes.
+              filter(function(availableDisplayType) {
+
+                return !_.include(
+                  ['table', 'fatrow', 'page'],
+                  availableDisplayType
+                );
+              });
+
+            v.metadata.availableDisplayTypes.push('socrataVizTable');
+          }
         }
       }
 
@@ -360,12 +383,10 @@
     },
 
     save: function(successCallback, errorCallback, allowedKeys) {
-      var ds;
+      var ds = this;
 
       if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
-        ds = restoreOriginalTypeMetadata(cleanViewForSave(this, allowedKeys));
-      } else {
-        ds = cleanViewForSave(this, allowedKeys);
+        ds = restoreOriginalTypeMetadata(ds);
       }
 
       if (!ds.hasRight(blist.rights.view.UPDATE_VIEW)) {
@@ -390,7 +411,7 @@
       this.makeRequest({
         url: '/views/' + this.id + '.json',
         type: 'PUT',
-        data: JSON.stringify(ds),
+        data: JSON.stringify(cleanViewForSave(ds, allowedKeys)),
         error: errorCallback,
         success: dsSaved
       });
@@ -412,12 +433,10 @@
           successCallback(newDS);
         }
       };
-      var ds;
+      var ds = cleanViewForCreate(this);
 
       if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
-        ds = restoreOriginalTypeMetadata(cleanViewForCreate(this));
-      } else {
-        ds = cleanViewForCreate(this);
+        ds = restoreOriginalTypeMetadata(ds);
       }
 
       // Munge permissions for forms, since those don't get carried over
@@ -5081,15 +5100,20 @@
   function restoreOriginalTypeMetadata(view) {
     var originalTypeMetadata = _.get(window, 'blist.originalDatasetTypeMetadata');
 
-    if (originalTypeMetadata) {
+    if (!originalTypeMetadata) {
 
-      if (originalTypeMetadata.hasOwnProperty('availableDisplayTypes')) {
-        _.set(view, 'metadata.availableDisplayTypes', originalTypeMetadata.availableDisplayTypes);
-      }
+      throw new Error(
+        'restoreOriginalTypeMetadata() was called but ' +
+        'window.blist.originalTypeMetadata does not exist.'
+      );
+    }
 
-      if (originalTypeMetadata.hasOwnProperty('renderTypeConfig')) {
-        _.set(view, 'metadata.renderTypeConfig', originalTypeMetadata.renderTypeConfig);
-      }
+    if (originalTypeMetadata.hasOwnProperty('availableDisplayTypes')) {
+      _.set(view, 'metadata.availableDisplayTypes', originalTypeMetadata.availableDisplayTypes);
+    }
+
+    if (originalTypeMetadata.hasOwnProperty('renderTypeConfig')) {
+      _.set(view, 'metadata.renderTypeConfig', originalTypeMetadata.renderTypeConfig);
     }
 
     return view;

@@ -270,7 +270,7 @@ describe('SvgColumnChart', () => {
     });
   });
 
-  describe.only('when rendering multi-series', () => {
+  describe('when rendering multi-series', () => {
     let columnChart;
 
     afterEach(function() {

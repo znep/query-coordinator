@@ -85,16 +85,6 @@ export default function(state, action) {
         } else if (series.dataSource.measure.aggregationFunction === 'count') {
           _.set(series, 'dataSource.measure.aggregationFunction', 'sum');
         }
-
-        // If the measure has changed and removeAdditionaSeries is true, remove all but the first series.
-        //
-        if (action.removeAdditionalSeries && 
-          (action.seriesIndex == 0) &&
-          (action.columnName != initialMeasureColumnName) &&
-          (action.aggregationFunction != initialMeasureAggregationFunction)) {
-
-            state.series.length = 1;
-        }
       }
       break;
 

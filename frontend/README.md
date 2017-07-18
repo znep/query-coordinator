@@ -450,6 +450,7 @@ Variable Name | Type | Source | Description
 `odysseus_app_name` | String | Configuration | The name of the `Odysseus` application server. _Not the name of the app_.
 `opendata_ga_tracking_code` | String | Configuration | Google Analytics tracking code used for the Open Data Portal.
 `path_info` | String | Rails | The path portion of the incoming request. Used to determine `locale` in some cases. See also `request_path` and `request_uri`. See also `RequestLoggerMiddleware`.
+`pendo_token` | String | Configuration | Pendo API token required to load pendo tracking script.
 `phidippides_address` | String | Configuration | Host name or IP address of the Phidippides service.
 `phidippides_port` | Integer | Configuration | Port to connect to on `phidippides_address`.
 `polaroid_hostname` | String | Configuration | Host name to connect to for the Polaroid page snapshot service.

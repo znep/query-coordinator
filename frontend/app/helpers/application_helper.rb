@@ -926,13 +926,28 @@ module ApplicationHelper
   # Renders pendo tracker code if pendo_tracking feature enabled.
   # Only runs for logged in users.
   def render_pendo_tracker
-    if CurrentDomain.feature?(:pendo_tracking) && @current_user
+    if CurrentDomain.feature?(:pendo_tracking) && current_user
+      first_name = ''
+      last_name = ''
+      display_name = current_user.displayName
+
+      if display_name
+        names = display_name.split
+        if names.length == 1 || names.length > 2
+          first_name = display_name
+        elsif names.length == 2
+          first_name, last_name = names
+        end
+      end
+
       pendo_config = {
         :token => APP_CONFIG.pendo_token,
-        :email => @current_user.try(:email),
-        :socrata_id => @current_user.try(:id),
-        :socrata_employee => @current_user.try(:is_superadmin?) || false,
-        :role => @current_user.try(:roleName) || 'N/A',
+        :email => current_user.email,
+        :first_name => first_name,
+        :last_name => last_name,
+        :socrata_id => current_user.id,
+        :socrata_employee => current_user.is_superadmin? || false,
+        :role => current_user.role_name || 'N/A',
         :stories_enabled => FeatureFlags.has?(:stories_enabled),
         :environment =>  Rails.env
       }

@@ -90,11 +90,11 @@ describe('AuthoringWorkflow reducer', function() {
 
       shouldSetVif('setDimension', 'dimension', 'series[0].dataSource.dimension.columnName', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
 
-      shouldSetVif('setMeasure', 'anything', 'series[0].dataSource.measure.columnName', ['regionMap', 'columnChart', 'timelineChart', 'histogram', 'pieChart']);
-      shouldSetVif('setMeasureAggregation', 'count', 'series[0].dataSource.measure.aggregationFunction');
+      shouldSetVif('setMeasure', [0, 'anything'], 'series[0].dataSource.measure.columnName', ['regionMap', 'columnChart', 'timelineChart', 'histogram', 'pieChart']);
+      shouldSetVif('setMeasureAggregation', [0, 'count'], 'series[0].dataSource.measure.aggregationFunction', null);
 
-      shouldSetVif('setPrimaryColor', '#00F', 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram', 'featureMap']);
-      shouldSetVif('setSecondaryColor', '#00F', 'series[0].color.secondary', ['columnChart', 'histogram']);
+      shouldSetVif('setPrimaryColor', [0, '#00F'], 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram', 'featureMap']);
+      shouldSetVif('setSecondaryColor', [0, '#00F'], 'series[0].color.secondary', ['columnChart', 'histogram']);
 
       shouldSetVif('setPointSize', 1.3, 'configuration.pointSize', ['featureMap']);
 
@@ -120,8 +120,8 @@ describe('AuthoringWorkflow reducer', function() {
       shouldSetVif('setShowValueLabelsAsPercent', true, 'configuration.showValueLabelsAsPercent', ['pieChart']);
       shouldSetVif('setShowLegend', true, 'configuration.showLegend', ['barChart', 'columnChart']);
 
-      shouldSetVif('setUnitsOne', 'Thought', 'series[0].unit.one', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
-      shouldSetVif('setUnitsOther', 'Thought', 'series[0].unit.other', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
+      shouldSetVif('setUnitsOne', [0, 'Thought'], 'series[0].unit.one', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
+      shouldSetVif('setUnitsOther', [0, 'Thought'], 'series[0].unit.other', ['regionMap', 'columnChart', 'featureMap', 'timelineChart', 'histogram', 'pieChart']);
 
       shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap']);
 

@@ -76,7 +76,7 @@ export const MeasureSelector = React.createClass({
 
     return (
       <div ref={(ref) => this.selector = ref}>
-        <BlockLabel htmlFor="measure-selection" title={I18n.translate('shared.visualizations.panes.data.fields.measure.title')} description={I18n.translate('shared.visualizations.panes.data.fields.measure.description')} />
+        <BlockLabel title={I18n.translate('shared.visualizations.panes.data.fields.measure.title')} description={I18n.translate('shared.visualizations.panes.data.fields.measure.description')} />
         <ul className="measure-list">
           {items}
         </ul>
@@ -94,8 +94,8 @@ export const MeasureSelector = React.createClass({
 
     const hasOnlyDefaultValue = options.length <= 1;
     const measureAttributes = {
-      className: 'measure-column-selector-dropdown',
       disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
+      id: `measure-selection-${index}`,
       onSelection: (option) => this.handleOnSelectionMeasureColumn(option, index),
       options,
       value: measure.columnName
@@ -140,6 +140,7 @@ export const MeasureSelector = React.createClass({
 
     const measureAggregationAttributes = {
       disabled: isFeatureMap(vifAuthoring),
+      id: `measure-aggregation-selection-${index}`,
       onSelection: (option) => this.handleOnSelectionMeasureAggregation(option, index),
       options,
       value: measure.aggregationFunction

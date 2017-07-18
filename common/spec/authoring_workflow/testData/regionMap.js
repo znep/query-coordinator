@@ -33,7 +33,8 @@ export default () => ({
         "domain": "vertex-stories.test-socrata.com",
         "measure": {
           "columnName": null,
-          "aggregationFunction": "count"
+          "aggregationFunction": "count",
+          "label": "Blood Alcohol Level"
         },
         "type": "socrata.soql",
         "filters": []

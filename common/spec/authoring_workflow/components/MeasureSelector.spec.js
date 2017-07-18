@@ -65,8 +65,8 @@ describe('MeasureSelector', function() {
       });
 
       it('renders measure selection', function() {
-        expect(component.querySelector('#measure-selection')).to.exist;
-        expect(component.querySelectorAll('#measure-selection .picklist-option').length).to.equal(4);
+        expect(component.querySelector('#measure-selection-0')).to.exist;
+        expect(component.querySelectorAll('#measure-selection-0 .picklist-option').length).to.equal(4);
       });
 
       describe('with a measure selected', function() {
@@ -78,7 +78,7 @@ describe('MeasureSelector', function() {
         });
 
         it('renders measure aggregation selection', function() {
-          expect(component.querySelector('#measure-aggregation-selection')).to.exist;
+          expect(component.querySelector('#measure-aggregation-selection-0')).to.exist;
         });
       });
 
@@ -91,11 +91,7 @@ describe('MeasureSelector', function() {
         });
 
         it('renders a disabled selector', function() {
-          expect(component.querySelector('#measure-selection.dropdown-disabled')).to.exist;
-        });
-
-        it('renders a flyout', function() {
-          expect(component.querySelector('.measure-empty-flyout')).to.exist;
+          expect(component.querySelector('#measure-selection-0.dropdown-disabled')).to.exist;
         });
       });
     });
@@ -107,8 +103,8 @@ describe('MeasureSelector', function() {
     var overrides = {
       metadata: validMetadata,
       vifAuthoring: validVifAuthoring,
-      onSelectMeasure: sinon.stub(),
-      onSelectMeasureAggregation: sinon.stub()
+      onSetMeasureColumn: sinon.stub(),
+      onSetMeasureAggregation: sinon.stub()
     };
 
     var emitsDropdownEvent = function(selector, eventName) {
@@ -125,11 +121,11 @@ describe('MeasureSelector', function() {
     });
 
     describe('when changing the measure dropdown', function() {
-      emitsDropdownEvent('#measure-selection', 'onSelectMeasure');
+      emitsDropdownEvent('#measure-selection-0', 'onSetMeasureColumn');
     });
 
     describe('when changing the measure aggregation dropdown', function() {
-      emitsDropdownEvent('#measure-aggregation-selection', 'onSelectMeasureAggregation');
+      emitsDropdownEvent('#measure-aggregation-selection-0', 'onSetMeasureAggregation');
     });
   });
 });

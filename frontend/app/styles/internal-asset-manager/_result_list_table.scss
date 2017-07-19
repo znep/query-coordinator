@@ -7,7 +7,9 @@ $result_list_row_bg_color: $white;
 $result_list_row_bg_hover_color: $primary-light;
 
 table.result-list-table {
-  min-width: 0;
+  table-layout: fixed;
+  min-width: 985px; // below this point, the percentage-width column headers start to
+                    // collide with the asc/desc arrow.
   width: 100%;
   margin: 0;
 
@@ -24,18 +26,30 @@ table.result-list-table {
         &.active {
           font-weight: 700;
           background: $light-grey-4;
-
-          .column-name {
-            margin-right: 1rem;
-          }
         }
 
+        // EN-16995: fixed percentage widths for columns. If a new column is added,
+        // these will need to be re-calculated to add up to 100%.
+        &.type {
+          width: 7%;
+        }
         &.name {
-          width: 600px;
+          width: 35%
         }
-
+        &.actions {
+          width: 6%;
+        }
         &.last-updated-date {
-          width: 9rem;
+          width: 12%;
+        }
+        &.category {
+          width: 15%;
+        }
+        &.owner {
+          width: 15%;
+        }
+        &.visibility {
+          width: 10%;
         }
 
         &.visibility, &.actions {

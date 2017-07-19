@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import React from 'react';
 
 export default function LocalizedDate(props, context) {

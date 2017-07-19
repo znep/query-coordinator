@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import airbrake from 'common/airbrake';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 
@@ -30,9 +31,22 @@ export const fetchTranslation = (key) => {
   return message;
 };
 
+const getLocale = () => _.get(window.blist, 'locale', _.get(window.serverConfig, 'locale', 'en'));
+
+const getTimezone = () => _.get(
+  window.blist,
+  'configuration.userTimeZoneName',
+  jstz.determine().name() // eslint-disable-line no-undef
+);
+
+// If any of this logic changes, please make corresponding changes to:
+// frontend/public/javascripts/screens/all-screens.js
+// On or about ~L230:$('.dateLocalize').each(function() { ...
+// Also in frontend/public/javascripts/common/formatDate.js:formatDate()
 export const dateLocalize = (element) => {
   const $dateSpan = $(element);
   const format = $dateSpan.data('format');
   const rawdate = $dateSpan.data('rawdatetime') * 1000;
-  $dateSpan.text(moment(rawdate).locale(serverConfig.locale).format(format));
+
+  $dateSpan.text(moment(rawdate).tz(getTimezone()).locale(getLocale()).format(format));
 };

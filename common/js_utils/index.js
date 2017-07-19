@@ -6,6 +6,7 @@
 
 var _ = require('lodash');
 var $ = require('jquery');
+var jstz = require('jstz');
 
 if (typeof window.Promise !== 'function') {
   window.Promise = require('es6-promise-polyfill').Promise;
@@ -290,7 +291,20 @@ var utils = {
    * Gets locale from a global object (usually window)
    */
   getLocale: function(global) {
-    return !_.isObject(global) ? 'en' : _.get(global.serverConfig, 'locale', _.get(global.blist, 'locale', _.get(global.socrataConfig, 'locales.currentLocale', 'en')));
+    return !_.isObject(global) ?
+      'en' :
+      _.get(global.serverConfig, 'locale',
+        _.get(global.blist, 'locale',
+          _.get(global.socrataConfig, 'locales.currentLocale', 'en')
+        )
+      );
+  },
+
+  /**
+   * Gets the user timezone from the browser
+   */
+  getTimeZone: function() {
+    jstz.determine().name()
   },
 
   /**

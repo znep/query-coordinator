@@ -4,10 +4,8 @@ import ReactDOM from 'react-dom';
 import { closeModal } from 'actions/asset_actions';
 import ChangeVisibility from './action_modals/change_visibility';
 import DeleteAsset from './action_modals/delete_asset';
-import { handleEnter } from 'common/helpers/keyPressHelpers';
 import _ from 'lodash';
 import classNames from 'classnames';
-import { redirectTo } from 'common/http';
 
 export class ActionDropdown extends React.Component {
   constructor(props) {
@@ -58,8 +56,8 @@ export class ActionDropdown extends React.Component {
     this.setState({ activeActionModal: actionName });
   }
 
-  renderDropdownOption(optionText, onClick) {
-    return <li onClick={onClick} onKeyDown={handleEnter(onClick, true)} tabIndex={0}>{optionText}</li>;
+  renderDropdownOption(optionText, onClick, href = '#') {
+    return <a href={href} onClick={onClick} tabIndex={0}>{optionText}</a>;
   }
 
   renderEditMetadataMenuOption() {
@@ -72,7 +70,8 @@ export class ActionDropdown extends React.Component {
       default:
         return this.renderDropdownOption(
           _.get(I18n, 'result_list_table.action_dropdown.edit_metadata'),
-          () => redirectTo(`/d/${uid}/edit_metadata`)
+          _.noop,
+          `/d/${uid}/edit_metadata`
         );
     }
   }
@@ -116,11 +115,11 @@ export class ActionDropdown extends React.Component {
     );
 
     const dropdownMenu = dropdownIsOpen ? (
-      <ul className="action-dropdown-menu">
+      <div className="action-dropdown-menu">
         {this.renderEditMetadataMenuOption()}
         {this.renderChangeVisibilityMenuOption()}
         {this.renderDropdownOption(getTranslation('delete_asset'), () => this.showActionModal('deleteAsset'))}
-      </ul>
+      </div>
     ) : null;
 
     const actionModalProps = {

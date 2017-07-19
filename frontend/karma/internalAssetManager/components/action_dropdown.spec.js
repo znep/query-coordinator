@@ -38,7 +38,7 @@ describe('components/ActionDropdown', () => {
       assert.isNotNull(element.querySelector('.action-dropdown-menu'));
     });
 
-    it('renders a list element for each action', () => {
+    it('renders a link for each action', () => {
       const element = renderComponentWithPropsAndStore(ActionDropdown, actionDropdownProps());
       TestUtils.Simulate.click(element.querySelector('button.action-dropdown-button'));
       const menu = element.querySelector('.action-dropdown-menu');
@@ -49,7 +49,7 @@ describe('components/ActionDropdown', () => {
         'deleteAsset'
       ];
 
-      assert.lengthOf(menu.querySelectorAll('li'), expectedMenuActions.length);
+      assert.lengthOf(menu.querySelectorAll('a'), expectedMenuActions.length);
     });
 
     it('does not render the changeVisibility or editMetdata options for data lens', () => {
@@ -63,7 +63,7 @@ describe('components/ActionDropdown', () => {
         'deleteAsset'
       ];
 
-      assert.lengthOf(menu.querySelectorAll('li'), expectedMenuActions.length);
+      assert.lengthOf(menu.querySelectorAll('a'), expectedMenuActions.length);
     });
 
     it('does not render the changeVisibility option for new viz', () => {
@@ -78,7 +78,7 @@ describe('components/ActionDropdown', () => {
         'deleteAsset'
       ];
 
-      assert.lengthOf(menu.querySelectorAll('li'), expectedMenuActions.length);
+      assert.lengthOf(menu.querySelectorAll('a'), expectedMenuActions.length);
     });
 
     it('does not render the changeVisibility or editMetadata option for stories', () => {
@@ -92,7 +92,7 @@ describe('components/ActionDropdown', () => {
         'deleteAsset'
       ];
 
-      assert.lengthOf(menu.querySelectorAll('li'), expectedMenuActions.length);
+      assert.lengthOf(menu.querySelectorAll('a'), expectedMenuActions.length);
     });
   });
 

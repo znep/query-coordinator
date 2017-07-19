@@ -2,13 +2,14 @@ import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import FeaturedViewCard from './FeaturedViewCard';
-import { isUserAdminOrPublisher } from '../../common/user';
+import { userHasRight } from '../../common/user';
+import * as Rights from '../../common/rights';
 
 export class FeaturedContent extends Component {
   renderManagePrompt() {
     const { isBlobby, isHref } = this.props;
 
-    if (!isUserAdminOrPublisher()) {
+    if (!userHasRight(Rights.edit_others_datasets)) {
       return null;
     }
 
@@ -47,7 +48,7 @@ export class FeaturedContent extends Component {
   render() {
     const { contentList } = this.props;
 
-    if (!_.some(contentList) && !isUserAdminOrPublisher()) {
+    if (!_.some(contentList) && !userHasRight(Rights.create_datasets)) {
       return null;
     }
 

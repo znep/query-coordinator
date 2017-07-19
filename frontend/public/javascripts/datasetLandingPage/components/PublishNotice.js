@@ -5,7 +5,8 @@ import React, { PropTypes, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { handleKeyPress } from '../../common/a11yHelpers';
-import { isUserAdminOrPublisher } from '../../common/user';
+import { userHasRight } from '../../common/user';
+import * as Rights from '../../common/rights';
 import { publishView, clearViewPublishError } from '../actions/view';
 import { localizeLink } from '../../common/locale';
 
@@ -67,7 +68,7 @@ export class PublishNotice extends Component {
       buttonContents = <div className="spinner-default spinner-btn-primary" />;
     }
 
-    const button = isUserAdminOrPublisher() ?
+    const button = userHasRight(Rights.edit_others_datasets) ?
       <button {...buttonProps}>{buttonContents}</button> :
       null;
 

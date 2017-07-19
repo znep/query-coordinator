@@ -1,9 +1,13 @@
 import { expect, assert } from 'chai';
 import {
   isUserRoled,
-  isUserAdminOrPublisher,
+  userHasRight,
   isUserSuperadmin
 } from 'user';
+import {
+  create_datasets,
+  edit_others_datasets
+} from 'rights';
 
 describe('user', () => {
   describe('isUserRoled', () => {
@@ -31,33 +35,32 @@ describe('user', () => {
     });
   });
 
-  describe('isUserAdminOrPublisher', () => {
+  describe('userHasRight', () => {
     afterEach(() => {
       delete window.serverConfig.currentUser;
     });
 
-    it('returns true if the user has an administrator role', () => {
-      window.serverConfig.currentUser = { roleName: 'administrator' };
-      assert.isTrue(isUserAdminOrPublisher());
+    it('returns true if the user has the given right', () => {
+      window.serverConfig.currentUser = { rights: [ 'create_datasets', 'edit_others_datasets' ]};
+      assert.isTrue(userHasRight(create_datasets));
+      assert.isTrue(userHasRight(edit_others_datasets));
     });
 
-    it('returns true if the user has a publisher role', () => {
-      window.serverConfig.currentUser = { roleName: 'publisher' };
-      assert.isTrue(isUserAdminOrPublisher());
+    it('returns false if the user does not have the given right', () => {
+      window.serverConfig.currentUser = { rights: [ 'not_a_right' ]};
+      assert.isFalse(userHasRight(create_datasets));
+      assert.isFalse(userHasRight(edit_others_datasets));
     });
 
     it('returns true if the user is a superadmin', () => {
       window.serverConfig.currentUser = { flags: ['admin'] };
-      assert.isTrue(isUserAdminOrPublisher());
-    });
-
-    it('returns false if the user role that is not administrator or publisher', () => {
-      window.serverConfig.currentUser = { roleName: 'something' };
-      assert.isFalse(isUserAdminOrPublisher());
+      assert.isTrue(userHasRight(create_datasets));
+      assert.isTrue(userHasRight(edit_others_datasets));
     });
 
     it('returns false if no user exists', () => {
-      assert.isFalse(isUserAdminOrPublisher());
+      assert.isFalse(userHasRight(create_datasets));
+      assert.isFalse(userHasRight(edit_others_datasets));
     });
   });
 

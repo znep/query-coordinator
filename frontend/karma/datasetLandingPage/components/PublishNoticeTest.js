@@ -16,7 +16,7 @@ describe('components/PublishNotice', () => {
   }
 
   beforeEach(() => {
-    window.serverConfig.currentUser = { roleName: 'publisher' };
+    window.serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
   });
 
   afterEach(() => {

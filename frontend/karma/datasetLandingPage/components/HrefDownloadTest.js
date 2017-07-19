@@ -62,13 +62,13 @@ describe('components/HrefDownload', function() {
     });
 
     it('is visible if the user is a publisher or an admin', function() {
-      window.serverConfig.currentUser = { roleName: 'publisher' };
+      window.serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
       var element = renderComponent(HrefDownload, getProps());
       assert.ok(element.querySelector('.edit-prompt'));
     });
 
     it('has a button that links to the edit page', function() {
-      window.serverConfig.currentUser = { roleName: 'publisher' };
+      window.serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
       var element = renderComponent(HrefDownload, getProps());
       expect(element.querySelector('.edit-prompt a.btn').getAttribute('href')).to.equal('/editThatMetadata');
     });

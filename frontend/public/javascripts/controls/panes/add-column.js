@@ -525,13 +525,25 @@ function launchNbeGeocodingConfigurator(columns, columnToAdd, showSpinner, addCo
   };
   var $nbeGeocodingModal = $(
     '<div id="nbe-geocoding" class="commonForm formSection">' +
-      '<div class="subtitleBlock">' +
-        '<p class="subtitle">' +
-          $.t('screens.ds.grid_sidebar.add_column.nbe_geocoding_configuration.subtitle') +
-        '</p>' +
-      '</div>' +
       '<div class="paneContent">' +
-        '<div class="formSection">' +
+        '<div>' +
+          '<input id="create-point-column" name="create-point-column-type" type="radio" checked>' +
+          '<label for="create-point-column">' +
+            $.t('screens.ds.grid_sidebar.add_column.nbe_geocoding_configuration.create_point_column') +
+          '</label>' +
+        '</div>' +
+        '<div>' +
+          '<input id="create-geocoded-point-column" name="create-point-column-type" type="radio">' +
+          '<label for="create-geocoded-point-column">' +
+            $.t('screens.ds.grid_sidebar.add_column.nbe_geocoding_configuration.create_geocoded_point_column') +
+          '</label>' +
+        '</div>' +
+        '<div id="create-geocoded-point-column-fields" class="formSection" style="display: none;">' +
+          '<div class="subtitleBlock">' +
+            '<p class="subtitle">' +
+              $.t('screens.ds.grid_sidebar.add_column.nbe_geocoding_configuration.subtitle') +
+            '</p>' +
+          '</div>' +
           '<div class="nbe-geocoding-fields sectionContent" name="nbe-geocoding-fields">' +
             generateSelectFromColumnList(columns, 'address') +
             generateSelectFromColumnList(columns, 'locality') +
@@ -540,12 +552,12 @@ function launchNbeGeocodingConfigurator(columns, columnToAdd, showSpinner, addCo
             generateSelectFromColumnList(columns, 'postal_code') +
             generateSelectFromColumnList(columns, 'country') +
           '</div>' +
+          '<span class="required">' +
+            $.t('core.forms.required_field') +
+          '</span>' +
         '</div>' +
-        '<span class="required">' +
-          $.t('core.forms.required_field') +
-        '</span>' +
         '<div class="nbe-geocoding-buttons finishButtons">' +
-          '<a id="nbe-geocoding-submit" href="#" class="button arrowButton requiresLogin submit disabled">' +
+          '<a id="nbe-geocoding-submit" href="#" class="button arrowButton requiresLogin submit">' +
             $.t('core.dialogs.create') +
           '</a>' +
           '<a id="nbe-geocoding-cancel" href="#" class="button requiresLogin">' +
@@ -579,6 +591,19 @@ function launchNbeGeocodingConfigurator(columns, columnToAdd, showSpinner, addCo
     return isValid;
   };
 
+  $nbeGeocodingModal.find('#create-point-column').on('click', function() {
+
+    $('#nbe-geocoding-submit').toggleClass('disabled', false);
+    $('#create-geocoded-point-column-fields').hide();
+  });
+
+  $nbeGeocodingModal.find('#create-geocoded-point-column').on('click', function() {
+
+    validateColumnMapping();
+
+    $('#create-geocoded-point-column-fields').show();
+  });
+
   $nbeGeocodingModal.find('select').on('change', function(e) {
     // $(...).value() will return null if the value is an empty string, which is
     // what we want. $(...).val(), on the other hand, will return an empty string,
@@ -602,36 +627,50 @@ function launchNbeGeocodingConfigurator(columns, columnToAdd, showSpinner, addCo
   });
 
   $nbeGeocodingModal.find('#nbe-geocoding-submit').on('click', function() {
+    var createGeocodedPointColumn = $('#create-geocoded-point-column').value();
 
-    if (validateColumnMapping()) {
-      var sources = _.cloneDeep(columnMapping);
-      var sourceColumns = [];
-      var defaults = {};
+    if (createGeocodedPointColumn) {
 
-      Object.keys(sources).forEach(function(sourceKey) {
-        // Remove keys for which the value is null.
-        if (_.isNull(sources[sourceKey])) {
-          delete sources[sourceKey];
-        // Add columns to sourceColumns if they are being used.
-        } else {
-          sourceColumns.push(_.get(sources, sourceKey));
-        }
-      });
+      // If we're creating a geocoded point column, we need to add a computation
+      // strategy to the column metadata so that it will be sent off for
+      // computation.
+      if (validateColumnMapping()) {
+        var sources = _.cloneDeep(columnMapping);
+        var sourceColumns = [];
+        var defaults = {};
 
-      var columnWithComputationStrategy = _.cloneDeep(columnToAdd);
-      columnWithComputationStrategy.computationStrategy = {
-        type: 'geocoding',
-        source_columns: sourceColumns,
-        parameters: {
-          sources: sources,
-          defaults: defaults,
-          version: 'v1'
-        }
-      };
+        Object.keys(sources).forEach(function(sourceKey) {
+          // Remove keys for which the value is null.
+          if (_.isNull(sources[sourceKey])) {
+            delete sources[sourceKey];
+          // Add columns to sourceColumns if they are being used.
+          } else {
+            sourceColumns.push(_.get(sources, sourceKey));
+          }
+        });
 
+        var columnWithComputationStrategy = _.cloneDeep(columnToAdd);
+        columnWithComputationStrategy.computationStrategy = {
+          type: 'geocoding',
+          source_columns: sourceColumns,
+          parameters: {
+            sources: sources,
+            defaults: defaults,
+            version: 'v1'
+          }
+        };
+
+        $nbeGeocodingModal.remove();
+        showSpinner();
+        addColumnCallback(columnWithComputationStrategy);
+      }
+    } else {
+
+      // If we're just creating a 'normal' point column, we don't need to mutate
+      // the column object that was passed in and so we just pass it along.
       $nbeGeocodingModal.remove();
       showSpinner();
-      addColumnCallback(columnWithComputationStrategy);
+      addColumnCallback(columnToAdd);
     }
   });
 

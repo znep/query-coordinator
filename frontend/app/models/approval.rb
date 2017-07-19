@@ -1,5 +1,4 @@
 class Approval < Model
-  cattr_accessor :notification_intervals
 
   def stages
     data['stages'] || []
@@ -17,16 +16,18 @@ class Approval < Model
     stages.any? {|s| (s['approverUids'] || []).include?(user.id)}
   end
 
-  @@notification_intervals = {
-    "60" => I18n.t('screens.admin.routing_approval.hour', :count => 1),
-    "120" => I18n.t('screens.admin.routing_approval.hour', :count => 2),
-    "240" => I18n.t('screens.admin.routing_approval.hour', :count => 4),
-    "1440" => I18n.t('screens.admin.routing_approval.day', :count => 1),
-    "2880" => I18n.t('screens.admin.routing_approval.day', :count => 2),
-    "4320" => I18n.t('screens.admin.routing_approval.day', :count => 3),
-    "5760" => I18n.t('screens.admin.routing_approval.day', :count => 4),
-    "7200" => I18n.t('screens.admin.routing_approval.day', :count => 5)
-  }
+  def self.notification_intervals
+    {
+      60 => I18n.t('screens.admin.routing_approval.hour', :count => 1),
+      120 => I18n.t('screens.admin.routing_approval.hour', :count => 2),
+      240 => I18n.t('screens.admin.routing_approval.hour', :count => 4),
+      1440 => I18n.t('screens.admin.routing_approval.day', :count => 1),
+      2880 => I18n.t('screens.admin.routing_approval.day', :count => 2),
+      4320 => I18n.t('screens.admin.routing_approval.day', :count => 3),
+      5760 => I18n.t('screens.admin.routing_approval.day', :count => 4),
+      7200 => I18n.t('screens.admin.routing_approval.day', :count => 5)
+    }
+  end
 
 protected
   # Turn class name into core server service name

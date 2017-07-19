@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
+import classNames from 'classnames';
 import { Picklist } from 'common/components';
 import { handleEnter } from 'common/helpers/keyPressHelpers';
 
@@ -9,7 +10,7 @@ export class SearchboxFilter extends React.Component {
 
     this.state = {
       filteredOptions: [],
-      inputValue: this.props.value || ''
+      inputDisplayText: this.props.value || ''
     };
 
     this.defaultValue = {
@@ -26,7 +27,7 @@ export class SearchboxFilter extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ inputValue: nextProps.value || '' });
+    this.setState({ inputDisplayText: nextProps.value || '' });
   }
 
   onEnter(event) {
@@ -39,7 +40,7 @@ export class SearchboxFilter extends React.Component {
   }
 
   onInputChange(event) {
-    this.setState({ inputValue: event.target.value }, this.filterOptions);
+    this.setState({ inputDisplayText: event.target.value }, this.filterOptions);
   }
 
   onInputFocus() {
@@ -60,7 +61,7 @@ export class SearchboxFilter extends React.Component {
   }
 
   onSelection(value) {
-    this.setState({ inputValue: value.title, inputFocused: false, picklistFocused: false });
+    this.setState({ inputDisplayText: value.title, inputFocused: false, picklistFocused: false });
     this.props.onSelection(value);
     this.filterInput.blur();
   }
@@ -73,7 +74,7 @@ export class SearchboxFilter extends React.Component {
 
   filterOptions() {
     const filteredOptions = _.filter(this.props.options, (option) => (
-      _.toLower(option.title).indexOf(_.toLower(this.state.inputValue)) > -1
+      _.toLower(option.title).indexOf(_.toLower(this.state.inputDisplayText)) > -1
     ));
 
     this.setState({ filteredOptions });
@@ -94,10 +95,23 @@ export class SearchboxFilter extends React.Component {
         <Picklist {...picklistAttributes} />
       </div> : null;
 
+    // this.props.value is the display text for the current value. What inputValue represents is the
+    // actual value related to that display text.
+    // For example, in the case that the selected option is: { title: 'All', value: null }
+    // then this.props.value is 'All' and inputValue is null.
+    const inputValue = _.get(
+      _.find(this.getPicklistOptions(), (option) => (option.title === this.props.value)),
+      'value'
+    );
+
+    const searchboxFilterInputClassnames = classNames('text-input []', {
+      'searchbox-selected': !!inputValue
+    });
+
     return (
       <div className="searchbox-filter">
         <input
-          className="text-input []"
+          className={searchboxFilterInputClassnames}
           id={this.props.inputId}
           type="text"
           ref={(input) => { this.filterInput = input; }}
@@ -106,7 +120,7 @@ export class SearchboxFilter extends React.Component {
           onBlur={this.onInputBlur}
           onKeyDown={handleEnter(this.onEnter)}
           placeholder={this.props.placeholder}
-          value={this.state.inputValue} />
+          value={this.state.inputDisplayText} />
         <span className="search-icon socrata-icon-search" />
         {picklist}
       </div>

@@ -62,6 +62,12 @@ $filter-content-width: 260px;
           }
         }
 
+        .dropdown-placeholder {
+          &.dropdown-selected {
+            color: $primary-text;
+          }
+        }
+
         .picklist-option {
           &:hover {
             background-color: $primary-light;
@@ -94,6 +100,10 @@ $filter-content-width: 260px;
           width: 100%;
           padding-left: 2rem;
           font-size: 13px;
+
+          &.searchbox-selected {
+            color: $primary-text;
+          }
         }
 
         .search-icon {

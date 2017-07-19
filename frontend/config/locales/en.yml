@@ -727,7 +727,7 @@ en:
           currency:
             title: Currency
             common: Common
-            other: Other
+            other_currency: Other
           advanced:
             title: Advanced
             precision: Specify decimal precision
@@ -4767,6 +4767,8 @@ en:
             option: Option
             title: Multiple Choice Options
           nbe_geocoding_configuration:
+            create_point_column: Create Point Column
+            create_geocoded_point_column: Create Geocoded Point Column
             address_label: Address
             cancel_configuration_prompt: Are you sure you want to cancel geocoding configuration? Configuration must be completed at the time of column creation.
             country_label: Country

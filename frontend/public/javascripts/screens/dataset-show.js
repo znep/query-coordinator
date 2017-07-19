@@ -198,7 +198,7 @@ blist.datasetPage.launchNbeColumnManager = function(options) {
             renderCurrencies(common) +
           '</optgroup>' +
           '<optgroup ' +
-            'label="' + $.t('controls.nbe_column_manager.column_fields.number_formatting.currency.other') + '">' +
+            'label="' + $.t('controls.nbe_column_manager.column_fields.number_formatting.currency.other_currency') + '">' +
             renderCurrencies(other) +
           '</optgroup>'
         );

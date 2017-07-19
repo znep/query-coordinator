@@ -44,7 +44,7 @@ export class ResultListRow extends React.Component {
       case 'type': {
         return cellTag(
           <span
-            className={getIconClassForDisplayType(type)}
+            className={getIconClassForDisplayType(type, this.props.isPublished)}
             data-type={type}
             title={_.get(I18n, `asset_types.${type}`)} />
         );

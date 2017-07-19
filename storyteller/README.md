@@ -83,6 +83,15 @@ The jobs can be processed manually with a rake task:
 
     bin/test_setup
 
+##### Running the Jenkins test script locally
+login to your postgres instance and run the following commands *before* running `bin/test_setup`
+
+      CREATE ROLE storyteller_su;
+      ALTER ROLE storyteller_su WITH LOGIN;
+      ALTER ROLE storyteller_su WITH CREATEDB;
+
+logout and run the script `bin/test_setup`
+
 #### tl;dr: Run all tests (the default rake task is "test")
 
     bundle exec rake

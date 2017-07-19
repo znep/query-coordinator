@@ -79,6 +79,12 @@ en:
       header:
         administration: Administration
         close_button_aria_label: Close
+        create_menu:
+          dataset: Dataset
+          dataset_beta: Tabular Dataset (beta)
+          story: Story
+          title: Create
+          default_story_title: Untitled Story
         header_links_aria_label: Header links
         language: Language
         menu: Menu

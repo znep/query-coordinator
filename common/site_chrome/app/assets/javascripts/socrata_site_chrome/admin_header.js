@@ -3,18 +3,25 @@
     return;
   }
 
-  $(document).ready(function() {
-    $('#site-chrome-admin-header [aria-haspopup]').
-      on('click', toggleAdminDropdown).
-      on('blur', blurAdminDropdown).
-      on('keypress', keypressAdminDropdown).
-      on('keydown', keydownAdminDropdown).
-      on('keyup', keyupAdminDropdown);
-    $('#site-chrome-admin-header [role="menu"] li a').
-      on('blur', blurAdminDropdown).
-      on('keydown', keydownAdminDropdownItem).
-      on('keyup', keyupAdminDropdownItem);
-  });
+  $('#site-chrome-admin-header [aria-haspopup]').
+    on('click', toggleAdminDropdown).
+    on('blur', blurAdminDropdown).
+    on('keypress', keypressAdminDropdown).
+    on('keydown', keydownAdminDropdown).
+    on('keyup', keyupAdminDropdown);
+
+  $('#site-chrome-admin-header [role="menu"] li a').
+    on('blur', blurAdminDropdown).
+    on('keydown', keydownAdminDropdownItem).
+    on('keyup', keyupAdminDropdownItem);
+
+  if (getAppToken()) {
+    $('#site-chrome-create-menu .create-story').
+      on('click', createStoryButtonHandler);
+  } else {
+    $('#site-chrome-create-menu .create-story').
+      hide();
+  }
 })(window.$);
 
 /**
@@ -131,4 +138,89 @@ function blurAdminDropdown(event) {
         attr('aria-hidden', 'true');
     }
   }, 1);
+}
+
+/**
+ * Creates a story and then redirects to its edit page
+ */
+function createStoryButtonHandler() {
+  if (!getAppToken()) {
+    return console.error('AppToken is not accessible!');
+  }
+
+  var defaultTitle = $(this).data('default-title');
+  var now = new Date();
+  var datePieces = [
+    String(now.getMonth() + 1).padStart(2, 0),
+    String(now.getDate()).padStart(2, 0),
+    now.getFullYear()
+  ];
+  var newStoryName = defaultTitle + ' - ' + datePieces.join('-');
+
+  var newStoryData = {
+    displayFormat: {},
+    displayType: 'story',
+    metadata: {
+      availableDisplayTypes: ['story'],
+      initialized: false,
+      isStorytellerAsset: true,
+      jsonQuery: {},
+      renderTypeConfig: {
+        visible: {
+          story: true
+        }
+      },
+      tileConfig: {}
+    },
+    name: newStoryName,
+    query: {}
+  };
+
+  $.ajax({
+    url: '/api/views.json',
+    type: 'POST',
+    data: JSON.stringify(newStoryData),
+    headers: {
+      'Content-type': 'application/json',
+      'X-App-Token': getAppToken()
+    }
+  }).
+    then(function (response) {
+      if (response.hasOwnProperty('id') && validate4x4(response.id)) {
+        var publishUrl = '/api/views/' + response.id + '/publication.json?accessType=WEBSITE';
+
+        return $.ajax({
+          url: publishUrl, 
+          type: 'POST',
+          headers: {
+            'X-App-Token': getAppToken()
+          }
+        });
+      } else {
+        throw response;
+      }
+    }).
+    then(function (response) {
+      if (response.hasOwnProperty('id') && validate4x4(response.id)) {
+        window.location.href = '/stories/s/' + response.id + '/create';
+      } else {
+        throw response;
+      }
+    }).
+    fail(console.error);
+}
+
+/**
+ * Validates given string is 4x4 id
+ * @param {String} testString
+ */
+function validate4x4(testString) {
+  return /^[a-z0-9]{4}-[a-z0-9]{4}$/i.test(testString);
+}
+
+function getAppToken() {
+  var siteChromeAppToken = window.socrata && window.socrata.siteChrome && window.socrata.siteChrome.appToken;
+  var blistAppToken = window.blist && window.blist.configuration && window.blist.configuration.appToken;
+
+  return siteChromeAppToken || blistAppToken || null;
 }

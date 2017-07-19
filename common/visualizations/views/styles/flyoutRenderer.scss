@@ -1,8 +1,15 @@
 $flyout-background-color-dark: #2f2f2f;
 
+// Max allowed width of flyout.
+$flyout-max-width: 35em;
+
+// The flyout contains a 2-column table. Extra padding is afforded to the 2nd
+// column of this table - this variable controls how much.
+$flyout-2nd-column-side-padding: 1.5em;
+
 #socrata-flyout {
   position: fixed;
-  max-width: 25em;
+  max-width: $flyout-max-width;
   font-size: 14px;
   font-style: normal;
   font-weight: 200;
@@ -52,9 +59,14 @@ $flyout-background-color-dark: #2f2f2f;
 }
 
 #socrata-flyout .socrata-flyout-content .socrata-flyout-table .socrata-flyout-row .socrata-flyout-cell:nth-child(2) {
-  padding-left: 1.5em;
+  padding-left: $flyout-2nd-column-side-padding;
   text-align: right;
+
+  // Next 4 rules allow text inside the cell to overflow with an ellipsis.
+  text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: $flyout-max-width - 2 * $flyout-2nd-column-side-padding;
+  overflow: hidden;
 }
 
 #socrata-flyout .socrata-flyout-hint {

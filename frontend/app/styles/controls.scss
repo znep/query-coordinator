@@ -1345,4 +1345,28 @@ ul.autocompleteComboDropdown {
   height: 100%;
   background-color: #f7f7f7;
   z-index: 1;
+
+  .nbe-geocoding-option.line {
+    margin-bottom: 0;
+
+    &.input {
+      margin-top: 0;
+      margin-bottom: 2em;
+
+      label {
+        position: relative;
+        display: block;
+        float: left;
+        width: auto;
+        top: 0;
+        overflow: visible;
+      }
+
+      input {
+        float: right;
+        margin-right: 6px;
+        width: 56.75%;
+      }
+    }
+  }
 }

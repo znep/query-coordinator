@@ -95,7 +95,7 @@ export default function(state, action) {
       }
       break;
 
-      case actions.SET_STACKED:
+    case actions.SET_STACKED:
       forEachSeries(state, series => {
         setBooleanValueOrDeleteProperty(series, 'stacked', action.stacked);
       });

@@ -57,8 +57,8 @@ export const MeasureSelector = React.createClass({
     } = this.props;
 
     const validMeasures = getValidMeasures(metadata);
-    const options = [
-      {title: I18n.translate('shared.visualizations.panes.data.fields.measure.no_value'), value: null},
+    const options = [{
+      title: I18n.translate('shared.visualizations.panes.data.fields.measure.no_value'), value: null},
       ...validMeasures.map(validMeasure => ({
         title: validMeasure.name,
         value: validMeasure.fieldName,
@@ -101,13 +101,16 @@ export const MeasureSelector = React.createClass({
       value: measure.columnName
     };
 
+    const measureAggregationSelector = this.renderMeasureAggregationSelector(measure, index);
+    const deleteLink = this.renderDeleteLink(index);
+
     return (
         <li {...measureListItemAttributes}>
           <div className="measure-column-selector-dropdown-container">
             <Dropdown {...measureAttributes} />
           </div>
-          {this.renderMeasureAggregationSelector(measure, index)}
-          {this.renderDeleteLink(index)}
+          {measureAggregationSelector}
+          {deleteLink}
         </li>
     );
   },
@@ -126,7 +129,8 @@ export const MeasureSelector = React.createClass({
         <a {...deleteLinkAttributes}>
           <span className="socrata-icon-close" />
         </a>
-      </div>) : null;
+      </div>) : 
+      null;
   },
 
   renderMeasureAggregationSelector(measure, index) {

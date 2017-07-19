@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import marked from 'marked';
 import { FeatureFlags } from 'common/feature_flags';
+import Description from './Description';
 
 const Header = (props) => {
-  var { headline, description } = props;
+  const { headline } = props;
 
   let managementPageHref;
   if (_.get(props, 'query.custom_path')) {
@@ -33,14 +33,8 @@ const Header = (props) => {
     </a>);
   };
 
-  const interpretedDescription = (() => {
-    if (FeatureFlags.value('enable_markdown_for_catalog_landing_page_description')) {
-      const markedDescription = { __html: marked(description || '', { sanitize: true }) };
-      return <div className="description" dangerouslySetInnerHTML={markedDescription} />;
-    } else {
-      return <div className="description">{description}</div>;
-    }
-  })();
+  const renderedDescription = FeatureFlags.value('clp_move_description_below_featured_content') ?
+    null : <Description />;
 
   const headerClassname = _.isEmpty(headline) ? 'no-headline' : '';
 
@@ -50,14 +44,13 @@ const Header = (props) => {
         {headline}
         {window.serverConfig.currentUserMayManage && renderManagementButton()}
       </h1>
-      {interpretedDescription}
+      {renderedDescription}
     </div>
   );
 };
 
 Header.propTypes = {
   headline: PropTypes.string,
-  description: PropTypes.string,
   query: PropTypes.object.isRequired
 };
 

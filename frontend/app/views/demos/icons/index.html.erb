@@ -10,6 +10,34 @@
     <a class="btn btn-default" href='/internal/demos'><span class="socrata-icon-arrow-left"></span> Demos</a>
   </p>
   <h2 class="styleguide-header">Icons</h2>
+  <h3>Usage</h3>
+  <p>
+    If you are in a React context, you may be interested in the
+    <a href="/internal/demos/components/socrata_icon">socrata-icon</a> component.
+  </p>
+  <h3>Simple usage</h3>
+  <p>Hello, <span class="socrata-icon-public-open"></span></p>
+  <pre class="styleguide-code-example">
+Hello, &lt;span class=&quot;socrata-icon-public-open&quot;&gt;&lt;/span&gt;</pre>
+  <h3>Buttons with Icons</h3>
+  <button class="btn btn-default">
+    <span class="socrata-icon-eye"></span>
+  </button>
+  <pre class="styleguide-code-example">
+&lt;button class=&quot;btn btn-default&quot;&gt;
+  &lt;span class=&quot;socrata-icon-eye&quot;&gt;&lt;/span&gt;
+&lt;/button&gt;</pre>
+  <button class="btn btn-default">
+    <span class="socrata-icon-linked"></span>
+    Hello, World!
+  </button>
+  <pre class="styleguide-code-example">
+&lt;button class=&quot;btn btn-default&quot;&gt;
+  &lt;span class=&quot;socrata-icon-linked&quot;&gt;&lt;/span&gt;
+  Hello, World!
+&lt;/button&gt;</pre>
+
+  <h3>Available icons</h3>
   <div class="styleguide-icons">
     <%- @icons.each do |icon| %>
       <div class="styleguide-icons-row">

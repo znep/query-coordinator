@@ -50,20 +50,3 @@ export const removeWhitespace = str => str.replace(/\s/g, '_');
 export const getUniqueFieldName = _.flowRight(removeWhitespace, getUniqueName);
 
 export const titleCase = word => word.slice(0, 1).toUpperCase() + word.slice(1).toLowerCase();
-
-export const camelCase = str =>
-  str.split('_').map((word, idx) => (idx === 0 ? word : titleCase(word))).join('');
-
-export const snakeCase = str => str.split(/(?=[A-Z])/).map(word => word.toLowerCase()).join('_');
-
-export const camelCamelCamel = obj => {
-  return Object.keys(obj).reduce((acc, key) => {
-    // I know right? wtf on the custom fields thing!? core expects it snake cased :(
-    const newKey = key === 'custom_fields' ? key : camelCase(key);
-
-    return {
-      ...acc,
-      [newKey]: _.isPlainObject(obj[key]) && key !== 'custom_fields' ? camelCamelCamel(obj[key]) : obj[key]
-    };
-  }, {});
-};

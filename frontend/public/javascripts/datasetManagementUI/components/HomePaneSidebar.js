@@ -44,7 +44,6 @@ export const ManageData = props => {
         <h3>{I18n.home_pane.sidebar.column_descriptions}</h3>
         <p> {I18n.home_pane.sidebar.column_descriptions_blurb}{' '}
         </p>
-        // TODO: latestOutputSchema here is wrong
         <Link to={columnDescriptionLink}>
           <button
             className={columnsExist ? styles.sidebarBtn : styles.sidebarBtnDisabled}

@@ -23,7 +23,7 @@ import { editView } from 'actions/views';
 
 export const dismissMetadataPane = (currentOutputSchemaPath) => (dispatch, getState) => {
   const { routing } = getState().ui;
-  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata(\/\d+)?\/(\/columns|\/dataset)?/; // eslint-disable-line
+  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
   const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
 
   const currentLocation = routing.history[routing.history.length - 1];
@@ -33,10 +33,10 @@ export const dismissMetadataPane = (currentOutputSchemaPath) => (dispatch, getSt
 
     if (history.length === 0) {
       dispatch(push(Links.home(currentLocation)));
-    } else if (isDatasetModalPath.test(location.pathname)) {
-      helper(history.slice(0, -1));
     } else if (currentOutputSchemaPath && isBigTablePage.test(location.pathname)) {
       dispatch(push(currentOutputSchemaPath));
+    } else if (isDatasetModalPath.test(location.pathname)) {
+      helper(history.slice(0, -1));
     } else {
       dispatch(push(location));
     }

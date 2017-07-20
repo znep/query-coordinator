@@ -35,7 +35,7 @@ export const MeasureSelector = React.createClass({
 
   getDefaultProps() {
     return {
-      aggregationTypes: AGGREGATION_TYPES
+      aggregationTypes: AGGREGATION_TYPES,
     };
   },
 
@@ -72,7 +72,7 @@ export const MeasureSelector = React.createClass({
       return this.renderMeasureSelector(item.dataSource.measure, index, options);
     });
 
-    const newMeasureLink = this.renderNewMeasureLink();
+    const addMeasureLink = this.renderAddMeasureLink();
 
     return (
       <div ref={(ref) => this.selector = ref}>
@@ -80,7 +80,7 @@ export const MeasureSelector = React.createClass({
         <ul className="measure-list">
           {items}
         </ul>
-        {newMeasureLink}
+        {addMeasureLink}
       </div>
     );
   },
@@ -102,7 +102,7 @@ export const MeasureSelector = React.createClass({
     };
 
     const measureAggregationSelector = this.renderMeasureAggregationSelector(measure, index);
-    const deleteLink = this.renderDeleteLink(index);
+    const deleteMeasureLink = this.renderDeleteMeasureLink(index);
 
     return (
         <li {...measureListItemAttributes}>
@@ -110,27 +110,9 @@ export const MeasureSelector = React.createClass({
             <Dropdown {...measureAttributes} />
           </div>
           {measureAggregationSelector}
-          {deleteLink}
+          {deleteMeasureLink}
         </li>
     );
-  },
-
-  renderDeleteLink(index) {
-    const { vifAuthoring } = this.props;
-
-    const deleteLinkAttributes = {
-      className: 'measure-delete-link',
-      id: `measure-delete-link-${index}`,
-      onClick: () => this.handleOnClickDeleteMeasure(index)
-    };
-
-    return isMultiSeries(vifAuthoring) ? (
-      <div className="measure-delete-link-container">
-        <a {...deleteLinkAttributes}>
-          <span className="socrata-icon-close" />
-        </a>
-      </div>) : 
-      null;
   },
 
   renderMeasureAggregationSelector(measure, index) {
@@ -173,16 +155,34 @@ export const MeasureSelector = React.createClass({
     );
   },
 
-  renderNewMeasureLink() {
+  renderDeleteMeasureLink(index) {
+    const { vifAuthoring } = this.props;
+
+    const deleteLinkAttributes = {
+      className: 'measure-delete-link',
+      id: `measure-delete-link-${index}`,
+      onClick: () => this.handleOnClickDeleteMeasure(index)
+    };
+
+    return isMultiSeries(vifAuthoring) ? (
+      <div className="measure-delete-link-container">
+        <a {...deleteLinkAttributes}>
+          <span className="socrata-icon-close" />
+        </a>
+      </div>) : 
+      null;
+  },
+
+  renderAddMeasureLink() {
     const { vifAuthoring } = this.props;
     const series = getSeries(vifAuthoring);
-    const showNewMeasureLink = (series.length < MAXIMUM_MEASURES) &&
+    const showAddMeasureLink = (series.length < MAXIMUM_MEASURES) &&
       _.isEmpty(getDimensionGroupingColumnName(vifAuthoring)) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
-    return showNewMeasureLink ? (
+    return showAddMeasureLink ? (
       <div className="measure-add-measure-link-container">
-        <a id="measure-add-measure-link" onClick={this.handleOnClickNewMeasure}>
+        <a id="measure-add-measure-link" onClick={this.handleOnClickAddMeasure}>
           <span className="socrata-icon-add" />
           {I18n.translate('shared.visualizations.panes.data.fields.measure.add_measure')}
         </a>
@@ -190,7 +190,7 @@ export const MeasureSelector = React.createClass({
       null;
   },
 
-  handleOnClickNewMeasure() {
+  handleOnClickAddMeasure() {
     const { onAddMeasure } = this.props;
     onAddMeasure({ 
       columnName: null,

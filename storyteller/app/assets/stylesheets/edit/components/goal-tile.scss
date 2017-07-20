@@ -42,6 +42,10 @@
         font-family: 'Open Sans', sans-serif;
         opacity: 0;
         transition: opacity $transition-duration;
+        overflow-wrap: break-word;
+        // word-wrap was changed to 'overflow-wrap' in CSS3
+        // this remains for IE support
+        word-wrap: break-word;
       }
 
       .goal-tile-title-container {

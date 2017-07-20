@@ -32,7 +32,6 @@ module SocrataSiteChrome
   require 'socrata_site_chrome/middleware'
   require 'socrata_site_chrome/shared_helper_methods'
   require 'socrata_site_chrome/site_chrome'
-  require 'socrata_site_chrome/version'
 
   require 'site_chrome_consumer_helpers' # Helper methods for the host application
   require 'socrata_site_chrome/test/helpers'

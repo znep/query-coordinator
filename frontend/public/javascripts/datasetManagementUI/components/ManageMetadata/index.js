@@ -9,9 +9,10 @@ import { hideFlashMessage } from 'actions/flashMessage';
 import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'actions/apiCalls';
 import ApiCallButton from 'components/ApiCallButton';
 import MetadataContent from 'components/ManageMetadata/MetadataContent';
-import { datasetMetadata } from 'selectors';
 import { getCurrentColumns } from 'models/forms';
 import styles from 'styles/ManageMetadata/ManageMetadata.scss';
+import * as Selectors from 'selectors';
+import * as Links from '../../links';
 
 export class ManageMetadata extends Component {
   constructor() {
@@ -28,9 +29,14 @@ export class ManageMetadata extends Component {
     const { view, currentColumns } = this.props;
 
     this.setState({
-      initialDatasetMetadata: datasetMetadata(view),
+      initialDatasetMetadata: Selectors.datasetMetadata(view),
       initialColMetadata: currentColumns
     });
+  }
+
+
+  onDatasetTab() {
+    return this.props.path === 'metadata/dataset';
   }
 
   revertChanges() {
@@ -47,23 +53,23 @@ export class ManageMetadata extends Component {
     dispatch(addOutputColumns(this.state.initialColMetadata));
   }
 
+
   handleSaveClick(e) {
     e.preventDefault();
 
-    const { dispatch, view, currentColumns, path } = this.props;
+    const { dispatch, view, currentColumns, outputSchemaId } = this.props;
 
-    const onDatasetTab = path === 'metadata/dataset';
-
-    if (onDatasetTab && view.datasetFormDirty) {
+    if (this.onDatasetTab() && view.datasetFormDirty) {
       dispatch(saveDatasetMetadata())
         .then(() => {
           this.setState({
-            initialDatasetMetadata: datasetMetadata(view)
+            initialDatasetMetadata: Selectors.datasetMetadata(view)
           });
         })
         .catch(() => console.warn('Save failed'));
     } else if (view.columnFormDirty) {
-      dispatch(saveColumnMetadata())
+
+      dispatch(saveColumnMetadata(outputSchemaId))
         .then(() => {
           this.setState({
             initialColMetadata: currentColumns
@@ -80,7 +86,21 @@ export class ManageMetadata extends Component {
 
     this.revertChanges();
 
-    dispatch(dismissMetadataPane());
+    let path;
+    if (!this.onDatasetTab()) {
+      const {
+        source,
+        inputSchema,
+        outputSchema
+      } = Selectors.treeForOutputSchema(this.props.entities, this.props.outputSchemaId);
+      path = Links.showOutputSchema(
+        source.id,
+        inputSchema.id,
+        outputSchema.id
+      )(this.props.location);
+    }
+
+    dispatch(dismissMetadataPane(path));
   }
 
   handleTabClick() {
@@ -92,15 +112,19 @@ export class ManageMetadata extends Component {
   }
 
   render() {
-    const { fourfour, path, columnsExist, view } = this.props;
+    const { fourfour, columnsExist, view, outputSchemaId } = this.props;
 
-    const metadataContentProps = { path, fourfour, onSidebarTabClick: this.handleTabClick, columnsExist };
-
-    const onDatasetTab = path === 'metadata/dataset';
+    const metadataContentProps = {
+      onDatasetTab: this.onDatasetTab(),
+      fourfour,
+      onSidebarTabClick: this.handleTabClick,
+      columnsExist,
+      outputSchemaId
+    };
 
     let saveBtnProps;
 
-    if (onDatasetTab) {
+    if (this.onDatasetTab()) {
       saveBtnProps = {
         operation: SAVE_DATASET_METADATA,
         params: {},
@@ -143,16 +167,28 @@ ManageMetadata.propTypes = {
   path: PropTypes.string.isRequired,
   columnsExist: PropTypes.bool,
   currentColumns: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired
+  entities: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  outputSchemaId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }, ownProps) => ({
-  fourfour: ui.routing.fourfour,
-  view: entities.views[ui.routing.fourfour],
-  path: ownProps.route.path,
-  columnsExist: !_.isEmpty(entities.output_columns),
-  currentColumns: _.chain(entities).thru(getCurrentColumns).map(restoreColumn).keyBy('id').value()
-});
+const mapStateToProps = ({ entities, ui }, ownProps) => {
+  const outputSchemaId = parseInt(ownProps.params.outputSchemaId, 10);
+  return {
+    fourfour: ui.routing.fourfour,
+    view: entities.views[ui.routing.fourfour],
+    path: ownProps.route.path,
+    location: ui.routing.location,
+    columnsExist: !_.isEmpty(entities.output_columns),
+    outputSchemaId,
+    entities: entities,
+    currentColumns: _.chain(getCurrentColumns(outputSchemaId, entities))
+      .map(restoreColumn)
+      .keyBy('id')
+      .value()
+  };
+};
 
 function restoreColumn(col) {
   return _.omit(col, ['transform']);

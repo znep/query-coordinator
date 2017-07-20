@@ -49,7 +49,10 @@ export default function rootRoute(store) {
       <IndexRoute component={ShowRevision} />
       <Redirect from="metadata" to="metadata/dataset" />
       <Route path="metadata/dataset" component={ManageMetadata} />
-      <Route path="metadata/columns" component={ManageMetadata} onEnter={checkUploadStatus(store)} />
+      <Route
+        path="metadata/:outputSchemaId/columns"
+        component={ManageMetadata}
+        onEnter={checkUploadStatus(store)} />
       <Route path="sources" component={ShowUpload} />
       <Route path=":sidebarSelection" component={ShowRevision} />
       <Route

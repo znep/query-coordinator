@@ -1,5 +1,6 @@
 import { assert } from 'chai';
 import * as FormModel from 'models/forms';
+import * as Selectors from 'selectors';
 import state from '../data/stateWithRevision';
 import dotProp from 'dot-prop-immutable';
 
@@ -52,7 +53,8 @@ describe('models/forms', () => {
 
   describe('validateColumnForm', () => {
     it('returns an empty array if valid', () => {
-      const res = FormModel.validateColumnForm(state.entities);
+      const outputSchemaId = Selectors.latestOutputSchema(state.entities).id;
+      const res = FormModel.validateColumnForm(outputSchemaId, state.entities);
 
       assert.deepEqual(res, []);
     });
@@ -63,7 +65,8 @@ describe('models/forms', () => {
         `output_columns.${2125}.field_name`,
         'intake_date'
       );
-      const res = FormModel.validateColumnForm(invalidEntities);
+      const outputSchemaId = Selectors.latestOutputSchema(state.entities).id;
+      const res = FormModel.validateColumnForm(outputSchemaId, invalidEntities);
 
       const expectedRes = [
         { message: 'Field names must be unique', fieldName: 'field-name-2124' },

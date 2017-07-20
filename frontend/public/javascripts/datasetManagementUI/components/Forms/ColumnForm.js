@@ -44,22 +44,24 @@ export class ColumnForm extends Component {
 ColumnForm.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
   errors: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setErrors: PropTypes.func.isRequired
+  setErrors: PropTypes.func.isRequired,
+  outputSchemaId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }) => {
+const mapStateToProps = ({ entities, ui }, { outputSchemaId }) => {
   const { fourfour } = ui.routing;
-
   return {
-    rows: makeRows(entities),
-    errors: validateColumnForm(entities),
-    fourfour
+    rows: makeRows(outputSchemaId, entities),
+    errors: validateColumnForm(outputSchemaId, entities),
+    fourfour,
+    outputSchemaId
   };
 };
 
-const mergeProps = ({ fourfour, errors, rows }, { dispatch }) => ({
+const mergeProps = ({ fourfour, outputSchemaId, errors, rows }, { dispatch }) => ({
   errors,
   rows,
+  outputSchemaId,
   setErrors: () => dispatch(editView(fourfour, { columnMetadataErrors: errors }))
 });
 

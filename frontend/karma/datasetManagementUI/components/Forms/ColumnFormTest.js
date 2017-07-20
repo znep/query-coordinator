@@ -122,7 +122,9 @@ describe('components/ManageMetadata/ColumnForm', () => {
   });
 
   it("syncs it's local state to store", () => {
-    const component = renderComponentWithStore(ColumnFormConnected, {}, store);
+    const component = renderComponentWithStore(ColumnFormConnected, {
+      outputSchemaId: 144
+    }, store);
     const inputField = component.querySelector('#display-name-1945');
     inputField.value = 'testing!!!';
     TestUtils.Simulate.change(inputField, { target: inputField });

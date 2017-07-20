@@ -22,6 +22,6 @@ export const authorityOptions = [
 
 export const visibilityOptions = [
   { title: getTranslation('visibility.options.all'), value: null },
-  { title: getTranslation('visibility.options.open'), value: 'open' },
-  { title: getTranslation('visibility.options.internal'), value: 'internal' }
+  { title: getTranslation('visibility.options.public'), value: 'open' },
+  { title: getTranslation('visibility.options.private'), value: 'internal' }
 ];

@@ -1,4 +1,4 @@
-JIRA_TICKET_REGEX = /[A-Z]+\-\d+/ # EN-12345
+JIRA_TICKET_REGEX = /[A-z]+\-\d+/ # EN-12345, en-12345
 
 namespace :manifest do
   %w[ staging release ].each do |environment|
@@ -30,8 +30,6 @@ namespace :manifest do
       manifest_output = ("\n\n= FRONTEND = (from #{from_tag} to #{to_tag})")
       manifest_output << "\n\nGit diff: https://github.com/socrata/frontend/compare/#{from_tag}...#{to_tag}"
 
-      manifest_output << "\nDiff Command: `git log --no-color --right-only --cherry-pick --reverse #{from_tag}...#{to_tag}`\n"
-
       # We put JIRA ticket references in commit subjects.
       # Some place ticket references in each normal commit.
       # Some place ticket references in the merge commit only.
@@ -47,8 +45,10 @@ namespace :manifest do
       # NOTE: Excluding storyteller via -- . ':(exclude)storyteller' also ends up ignoring empty merge
       # commits (because of the '.' that is required for excludes to work). If you need to get merges,
       # pass --full-history (though note this will end up including non-frontend merges).
-      git_log_query = "^#{ignore_list.join(' ^')} -- . ':(exclude)storyteller'"
+      git_log_query = "^#{ignore_list.join(' ^')} -- :/ ':(exclude)storyteller'"
       git_log_cmd = "git log #{git_log_flags} #{git_log_revision_range} #{git_log_query}"
+
+      manifest_output << "\nDiff Command: #{git_log_cmd}`\n"
 
       git_log_output = `#{git_log_cmd}`
 

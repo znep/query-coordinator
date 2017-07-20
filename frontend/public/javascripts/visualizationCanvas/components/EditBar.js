@@ -8,6 +8,8 @@ import SaveNotification from './SaveNotification';
 import { EditBar as SocrataComponentsEditBar } from 'common/components';
 import I18n from 'common/i18n';
 import { enterPreviewMode, openEditMenu } from '../actions';
+import AddVisualizationButton from './AddVisualizationButton';
+
 
 // Note that there is a placeholder version of this component in visualization_canvas.html.erb,
 // so be sure to verify the placeholder looks fine if you make significant changes to this
@@ -27,6 +29,7 @@ export class EditBar extends PureComponent {
     return (
       <SocrataComponentsEditBar {...editBarProps}>
         <div className="edit-bar-child">
+          <AddVisualizationButton />
           <SaveButton />
           <SaveNotification />
           <button className="btn btn-transparent btn-preview" onClick={onClickPreview}>

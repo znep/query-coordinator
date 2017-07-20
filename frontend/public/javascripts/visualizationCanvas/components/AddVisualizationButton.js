@@ -9,15 +9,12 @@ export class AddVisualizationButton extends Component {
   render() {
     const { onClickHandler, hasVisualization } = this.props;
 
-    if (hasVisualization) {
-      return null;
-    }
-
     return (
       <div className="add-visualization-button-container">
         <button
           className="btn btn-primary"
-          onClick={onClickHandler}>
+          onClick={onClickHandler}
+          disabled={hasVisualization}>
           <span className="socrata-icon-add" role="presentation" />
           {I18n.t('visualization_canvas.add_visualization')}
         </button>

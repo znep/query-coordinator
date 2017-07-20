@@ -181,10 +181,10 @@ export const MeasureSelector = React.createClass({
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
     return showNewMeasureLink ? (
-      <div className="measure-new-measure-link-container">
-        <a id="measure-new-measure-link" onClick={this.handleOnClickNewMeasure}>
+      <div className="measure-add-measure-link-container">
+        <a id="measure-add-measure-link" onClick={this.handleOnClickNewMeasure}>
           <span className="socrata-icon-add" />
-          {I18n.translate('shared.visualizations.panes.data.fields.measure.new_measure')}
+          {I18n.translate('shared.visualizations.panes.data.fields.measure.add_measure')}
         </a>
       </div>) :
       null;

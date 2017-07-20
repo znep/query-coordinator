@@ -127,8 +127,8 @@ describe('MeasureSelector', function() {
         expect(component.querySelector('#measure-delete-link-0')).to.be.null;
       });
 
-      it('renders the "New Measure" link', function() {
-        expect(component.querySelector('#measure-new-measure-link')).to.exist;
+      it('renders the "Add Measure" link', function() {
+        expect(component.querySelector('#measure-add-measure-link')).to.exist;
       });
 
       describe('with multi-series measures', function() {
@@ -184,8 +184,8 @@ describe('MeasureSelector', function() {
           expect(component.querySelector('#measure-delete-link-11')).to.exist;
         });
 
-        it('does not render the "New Measure" link with 12 measures showing', function() {
-          expect(component.querySelector('#measure-new-measure-link')).to.be.null;
+        it('does not render the "Add Measure" link with 12 measures showing', function() {
+          expect(component.querySelector('#measure-add-measure-link')).to.be.null;
         });
       });
     });
@@ -232,8 +232,8 @@ describe('MeasureSelector', function() {
       emitsDropdownEvent('#measure-aggregation-selection-0', 'onSetMeasureAggregation');
     });
 
-    describe('when clicking the "New Measure" link', function() {
-      emitsClickEvent('#measure-new-measure-link', 'onAddMeasure');
+    describe('when clicking the "Add Measure" link', function() {
+      emitsClickEvent('#measure-add-measure-link', 'onAddMeasure');
     });
 
     describe('when clicking a delete link', function() {

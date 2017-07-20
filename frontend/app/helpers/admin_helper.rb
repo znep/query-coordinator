@@ -176,7 +176,7 @@ module AdminHelper
       user_can_see_canvas_designer?
   end
 
-  def user_can_see_site_settings_section?
+  def user_can_see_administration_section?
     user_can_see_users? ||
       user_can_see_metadata? ||
       show_site_appearance_admin_panel? ||

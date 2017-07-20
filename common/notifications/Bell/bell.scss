@@ -10,7 +10,7 @@ $bell-light: #FFFFFF;
   background: none;
   border: none;
   width: 100%;
-  height: 100%;
+  height: 46px;
 
   /*
    * Note that these next three lines don't actually do anything,
@@ -46,6 +46,7 @@ $bell-light: #FFFFFF;
 :global(.site-chrome-small) {
   & .button {
     padding: 7px 10px 1px;
+    height: 32px;
 
     & :global(.socrata-icon) {
       width: 12px;

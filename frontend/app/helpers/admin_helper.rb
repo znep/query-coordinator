@@ -77,29 +77,37 @@ module AdminHelper
   end
 
   def notification_interval_select_options(selected_option = nil)
-    options_for_select(Approval.notification_intervals.invert.sort { |a, b|
-      a.last.to_i - b.last.to_i }, (selected_option || '').to_s)
+    options_for_select(
+      Approval.notification_intervals.invert.sort { |a, b| a.last.to_i - b.last.to_i },
+      selected_option.to_s
+    )
   end
 
-  def admin_nav_link_to(title, options)
-    link_to_unless_current raw(%Q(<span class="icon"></span>#{title})), options
+  def admin_nav_link_to(title_key, options)
+    link_to_unless_current(content_tag(:span, nil, :class => 'icon') + I18n.t(title_key), options)
   end
 
-  def admin_new_nav_link_to(title, description, options)
-    link_to(content_tag(:strong, title) + content_tag(:span, description), options)
+  def admin_nav_link(title_key, options)
+    link_to(
+      content_tag(:strong, I18n.t(title_key)) + content_tag(:span, I18n.t("#{title_key}_description")),
+      options
+    )
   end
 
-  def user_can?(action)
-    Array[*action].all? { |right| CurrentDomain.user_can?(current_user, right) }
+  def user_can?(*actions)
+    Array[*actions].all? { |right| CurrentDomain.user_can?(current_user, right) }
   end
 
   def user_can_see_activity_feed?
     user_can?(UserRights::VIEW_ALL_DATASET_STATUS_LOGS)
   end
 
-  def user_can_see_asset_inv?
-    user_can?(UserRights::EDIT_OTHERS_DATASETS) ||
-      user_can?(UserRights::EDIT_SITE_THEME)
+  def user_can_see_asset_inventory?
+    user_can?(UserRights::EDIT_OTHERS_DATASETS) || user_can?(UserRights::EDIT_SITE_THEME)
+  end
+
+  def use_internal_asset_manager?
+    !!FeatureFlags.derive(nil, request).use_internal_asset_manager
   end
 
   def user_can_see_goals?
@@ -107,18 +115,15 @@ module AdminHelper
   end
 
   def user_can_see_federations?
-    user_can?(UserRights::FEDERATIONS) &&
-      module_available?(:federations)
+    user_can?(UserRights::FEDERATIONS) && module_available?(:federations)
   end
 
   def user_can_see_view_moderation?
-    user_can?(UserRights::APPROVE_NOMINATIONS) &&
-      feature?(:view_moderation)
+    user_can?(UserRights::APPROVE_NOMINATIONS) && feature?(:view_moderation)
   end
 
   def user_can_see_comment_moderation?
-    user_can?(UserRights::MODERATE_COMMENTS) &&
-      module_enabled?(:publisher_comment_moderation)
+    user_can?(UserRights::MODERATE_COMMENTS) && module_enabled?(:publisher_comment_moderation)
   end
 
   def user_can_see_home_page?
@@ -149,8 +154,7 @@ module AdminHelper
   end
 
   def user_can_see_connectors?
-    rights = [UserRights::USE_DATA_CONNECTORS, UserRights::CREATE_DATASETS, UserRights::EDIT_OTHERS_DATASETS]
-    user_can?(rights)
+    user_can?(UserRights::USE_DATA_CONNECTORS, UserRights::CREATE_DATASETS, UserRights::EDIT_OTHERS_DATASETS)
   end
 
   def user_can_see_stories?
@@ -160,8 +164,7 @@ module AdminHelper
   end
 
   def user_can_see_routing_approval?
-    module_enabled?(:routing_approval) &&
-      current_user.can_approve?
+    module_enabled?(:routing_approval) && current_user.can_approve?
   end
 
   def user_can_see_content_section?

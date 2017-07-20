@@ -45,7 +45,7 @@ class AdministrationController < ApplicationController
   end
 
   def index
-    render new_admin_ui_enabled? ? 'new_index' : 'index'
+    render new_admin_ui_enabled? ? 'sectioned_index' : 'index'
   end
 
   def datasets

@@ -689,7 +689,7 @@ window.socrata.featureFlags =
 
       it 'outputs google font for govstat' do
         expect(helper.font_tags).to eq(
-          '<link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic" rel="stylesheet" type="text/css">'
+          '<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic" />'
         )
       end
 

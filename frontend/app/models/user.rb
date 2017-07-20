@@ -186,31 +186,37 @@ class User < Model
   def is_owner?(view)
     view.owner.id == id
   end
+  alias :owner? :is_owner?
 
   def is_roled_user?
     role_name.present?
   end
+  alias :roled_user? :is_roled_user?
 
   # Recently renamed from is_admin? to avoid confusion. Renamed in the Javascript code as well.
   def is_superadmin?
     flag?('admin')
   end
+  alias :superadmin? :is_superadmin?
 
   def is_administrator?
     role_name == 'administrator'
   end
+  alias :administrator? :is_administrator?
 
   def is_publisher?
     role_name == 'publisher'
   end
+  alias publisher? :is_publisher?
+
+  def is_designer?
+    role_name == 'designer'
+  end
+  alias :designer? :is_designer?
 
   def has_right_to_publish?(view)
     # Taken from View.java canUpdateView:1257 in core
     view.rights_include?(ViewRights::UPDATE_VIEW) || has_right?(UserRights::EDIT_OTHERS_DATASETS)
-  end
-
-  def is_designer?
-    role_name == 'designer'
   end
 
   def has_right?(right)

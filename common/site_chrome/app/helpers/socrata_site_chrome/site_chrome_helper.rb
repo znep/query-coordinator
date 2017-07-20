@@ -16,9 +16,7 @@ module SocrataSiteChrome
     end
 
     def divider
-      content_tag(:div, :class => 'divider') do
-        content_tag(:span, nil)
-      end
+      content_tag(:div, content_tag(:span), :class => 'divider')
     end
 
     def my_profile
@@ -43,6 +41,10 @@ module SocrataSiteChrome
 
     def new_admin_ui_enabled?
       get_feature_flag('enable_new_admin_ui')
+    end
+
+    def use_internal_asset_manager?
+      get_feature_flag('use_internal_asset_manager')
     end
 
     def get_feature_flag(flag)

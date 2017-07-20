@@ -957,18 +957,16 @@ module ApplicationHelper
   end
 
   def font_tags
-    out = ''
-
-    if CurrentDomain.properties.typekit_id.present?
-      out << <<-eos
-        <script type="text/javascript" src="//use.typekit.net/#{CurrentDomain.properties.typekit_id}.js"></script>
-        <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-      eos
-    elsif module_enabled?(:govStat)
-      out << '<link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic" rel="stylesheet" type="text/css">'
-    end
-
-    out.html_safe
+    String.new.tap do |tags|
+      if CurrentDomain.properties.typekit_id.present?
+        tags << <<-eos
+          <script type="text/javascript" src="//use.typekit.net/#{CurrentDomain.properties.typekit_id}.js"></script>
+          <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+        eos
+      elsif module_enabled?(:govStat)
+        tags << google_font_link(family: 'PT+Sans', weights: [400, 700])
+      end
+    end.html_safe
   end
 
   # Takes dataset id and returns link to the alternate version of the dataset
@@ -1188,6 +1186,17 @@ module ApplicationHelper
       Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
     end
     view_model
+  end
+
+  # There are over 600 font families to choose from at https://fonts.google.com/
+  def google_font_link(family: 'Open+Sans', weights: [300, 400, 600, 700], italic: true)
+    italics = italic ? weights.map { |weight| "#{weight}italic" } : []
+    tag(
+      :link,
+      :type => 'text/css',
+      :rel => 'stylesheet',
+      :href => "https://fonts.googleapis.com/css?family=#{family}:#{(weights + italics).join(',')}"
+    )
   end
 
 end

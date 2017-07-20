@@ -1,7 +1,7 @@
 <% content_for :head do %>
     <%= render_feature_flags_for_javascript %>
     <%= rendered_stylesheet_tag 'styleguide' %>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css" />
+    <%= google_font_link %>
     <%= rendered_stylesheet_tag 'administration-screen' %>
     <title><%= t("screens.admin.jobs.index_page.title") %> | <%= get_site_title %></title>
     <%= render_admin_session_data %>

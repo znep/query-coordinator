@@ -13,7 +13,7 @@ import {
 import * as Selectors from 'selectors';
 import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
-import { getLocalizedErrorMessage, camelCamelCamel } from 'lib/util';
+import { getLocalizedErrorMessage } from 'lib/util';
 import {
   pollForOutputSchemaSuccess,
   subscribeToOutputSchema,
@@ -57,9 +57,6 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
 
   const datasetMetadata = Selectors.datasetMetadata(view);
 
-  // TODO: remove once dsmapi form stuff is done
-  const datasetMetadataForCore = camelCamelCamel(Selectors.datasetMetadata(view));
-
   const callId = uuid();
 
   dispatch(
@@ -78,7 +75,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   return Promise.all([
     socrataFetch(`/api/views/${fourfour}`, {
       method: 'PUT',
-      body: JSON.stringify(datasetMetadataForCore)
+      body: JSON.stringify(datasetMetadata)
     }),
     socrataFetch(dsmapiLinks.revisionBase, {
       method: 'PUT',
@@ -101,9 +98,9 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       }
       dispatch(
         editView(dsmapi.fourfour, {
-          ..._.omit(dsmapi.metadata, 'metadata', 'private_metadata'),
+          ..._.omit(dsmapi.metadata, 'metadata', 'privateMetadata'),
           metadata: dsmapi.metadata.metadata,
-          privateMetadata: dsmapi.metadata.private_metadata,
+          privateMetadata: dsmapi.metadata.privateMetadata,
           showErrors: false,
           datasetFormDirty: false,
           metadataLastUpdatedAt: Date.now()

@@ -13,22 +13,11 @@
           onkeyup: local_assigns[:vanishing_search_button] ? 'toggleSearchButton(this)' : nil) %>
         <span class="searchbox-label"><%= t('shared.site_chrome.header.search') %></span>
       </label>
-      <button type="submit" class="search-button site-chrome-btn btn-simple" value="" />
-      <% if local_assigns[:mobile] %>
-        <span class="socrata-icon-search" title="<%= t('shared.site_chrome.header.search') %>"></span>
-      <% else %>
-        <%= t('shared.site_chrome.header.search') %>
-      <% end %>
-      <label>
-        <%= text_field_tag('q', nil, id: nil, placeholder: t('header.search'),
-          onkeyup: local_assigns[:vanishing_search_button] ? 'toggleSearchButton(this)' : nil) %>
-        <span class="searchbox-label"><%= t('header.search') %></span>
-      </label>
       <button type="submit" class="search-button site-chrome-btn btn-simple" value="">
         <% if local_assigns[:mobile] %>
-          <span class="socrata-icon-search" title="<%= t('header.search') %>"></span>
+          <span class="socrata-icon-search" title="<%= t('shared.site_chrome.header.search') %>"></span>
         <% else %>
-          <%= t('header.search') %>
+          <%= t('shared.site_chrome.header.search') %>
         <% end %>
       </button>
       <%# EN-12158: Force a sortBy of "relevance" on the query results %>

@@ -68,6 +68,12 @@ en:
           home: Performance Home
           reports: Reports
           title: Performance
+        settings:
+          activity_log: Activity Log
+          all_settings: All Settings
+          analytics: Analytics
+          asset_inventory: Asset Inventory
+          users: Users
         user:
           administration: Administration
           get_help: Get Help

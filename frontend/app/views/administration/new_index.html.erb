@@ -15,7 +15,7 @@
       <ul class="admin-link-list">
         <% if user_can_see_activity_feed? %>
           <li>
-            <%= admin_new_nav_link_to t('screens.admin.index.jobs'), t('screens.admin.index.jobs_description'), :controller => '/administration/activity_feed', :action => 'index' %>
+            <%= admin_new_nav_link_to t('screens.admin.index.activity_log'), t('screens.admin.index.activity_log_description'), :controller => '/administration/activity_feed', :action => 'index' %>
           </li>
         <% end %>
         <li><%= admin_new_nav_link_to t('screens.admin.index.site_analytics'), t('screens.admin.index.site_analytics_description'), :controller => '/administration', :action => 'analytics' %></li>

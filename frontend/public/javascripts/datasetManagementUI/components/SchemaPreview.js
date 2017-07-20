@@ -36,7 +36,7 @@ function mapStateToProps({ entities }) {
     return {
       columns,
       headerButton: (
-        <Link className={styles.btnWrapper} to={Links.columnMetadataForm()}>
+        <Link className={styles.btnWrapper} to={Links.columnMetadataForm(latestOutputSchema.id)}>
           <button className={styles.schemaBtn} tabIndex="-1">
             {I18n.home_pane.column_metadata_manage_button}
           </button>

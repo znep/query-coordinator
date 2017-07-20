@@ -21,9 +21,11 @@ import {
 } from 'actions/manageUploads';
 import { editView } from 'actions/views';
 
-export const dismissMetadataPane = () => (dispatch, getState) => {
+export const dismissMetadataPane = (currentOutputSchemaPath) => (dispatch, getState) => {
   const { routing } = getState().ui;
-  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata(\/columns|\/dataset)?/;
+  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata(\/\d+)?\/(\/columns|\/dataset)?/; // eslint-disable-line
+  const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
+
   const currentLocation = routing.history[routing.history.length - 1];
 
   const helper = history => {
@@ -33,6 +35,8 @@ export const dismissMetadataPane = () => (dispatch, getState) => {
       dispatch(push(Links.home(currentLocation)));
     } else if (isDatasetModalPath.test(location.pathname)) {
       helper(history.slice(0, -1));
+    } else if (currentOutputSchemaPath && isBigTablePage.test(location.pathname)) {
+      dispatch(push(currentOutputSchemaPath));
     } else {
       dispatch(push(location));
     }
@@ -99,7 +103,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     });
 };
 
-export const saveColumnMetadata = () => (dispatch, getState) => {
+export const saveColumnMetadata = (outputSchemaId) => (dispatch, getState) => {
   const { entities, ui } = getState();
   const { fourfour } = ui.routing;
   const view = entities.views[fourfour];
@@ -115,7 +119,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     return Promise.reject();
   }
 
-  const currentOutputSchema = Selectors.latestOutputSchema(entities);
+  const currentOutputSchema = entities.output_schemas[outputSchemaId];
 
   if (!currentOutputSchema) {
     return Promise.reject();
@@ -180,8 +184,9 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
       dispatch(pollForOutputSchemaSuccess(resp.resource));
       dispatch(subscribeToOutputSchema(resp.resource));
       dispatch(subscribeToTransforms(resp.resource));
+      return resp;
     })
-    .then(() => {
+    .then(({ resource: { id } }) => {
       dispatch(
         editView(fourfour, {
           columnFormDirty: false,
@@ -189,6 +194,11 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
         })
       );
       dispatch(apiCallSucceeded(callId));
+      // This is subtly wrong, could be a race with another user
+      const { routing } = getState().ui;
+      const redirect = Links.columnMetadataForm(id)(routing.location);
+      dispatch(push(redirect));
+
       dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));
     });
 };

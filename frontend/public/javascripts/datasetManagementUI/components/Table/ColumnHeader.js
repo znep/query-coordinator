@@ -125,14 +125,14 @@ class ColumnHeader extends Component {
       }
     };
 
-    const header = (!outputColumn.transform) ?
+    const header = (!outputColumn.transform || outputColumn.ignored) ?
       (<span
         className={styles.colName}
         id={`column-field-name-${outputColumn.id}`}
         title={outputColumn.display_name}>
         {outputColumn.display_name}
       </span>) :
-      (<Link to={Links.columnMetadataForm(outputColumn.id)}>
+      (<Link to={Links.columnMetadataForm(outputSchema.id, outputColumn.id)}>
         <span
           className={styles.colName}
           data-cheetah-hook="col-name"

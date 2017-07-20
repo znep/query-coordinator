@@ -124,7 +124,6 @@ export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
       outputColumnId: column.id
     }
   };
-
   const { current } = Selectors.currentAndIgnoredOutputColumns(entities);
 
   const newOutputColumns = current

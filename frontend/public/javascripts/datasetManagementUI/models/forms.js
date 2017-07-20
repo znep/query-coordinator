@@ -338,21 +338,22 @@ const columnToFields = oc => [
   )
 ];
 
-// getCurrentColumns : Entities -> List OutputColumn
-export const getCurrentColumns = entities => {
-  const currentSchema = Selectors.latestOutputSchema(entities);
-
-  return currentSchema ? Selectors.columnsForOutputSchema(entities, currentSchema.id) : [];
+// getCurrentColumns : Number -> Entities -> List OutputColumn
+export const getCurrentColumns = (outputSchemaId, entities) => {
+  const outputSchema = entities.output_schemas[outputSchemaId];
+  return outputSchema ? Selectors.columnsForOutputSchema(entities, outputSchemaId) : [];
 };
 
-// makeRows : Entities -> List Field
-export const makeRows = entities => _.chain(entities).thru(getCurrentColumns).map(columnToFields).value();
+// makeRows : Number -> Entities -> List Field
+export const makeRows = (outputSchemaId, entities) => _.chain(
+    getCurrentColumns(outputSchemaId, entities)
+  ).map(columnToFields).value();
 
 // COLUMN METADATA VALIDATIONS
 
-// makeModel : Entities -> List {name: String, value: String}
-const makeModel = entities =>
-  _.chain(makeRows(entities))
+// makeModel : Number -> Entities -> List {name: String, value: String}
+const makeModel = (outputSchemaId, entities) =>
+  _.chain(makeRows(outputSchemaId, entities))
     .flatMap(row => row.map(field => ({ name: field.name, value: field.value })))
     .value();
 
@@ -361,8 +362,8 @@ export const isFieldNameField = name => /^field-name/.test(name);
 export const isDisplayNameField = name => /^display-name/.test(name);
 
 // validateColumnForm : Entities -> List String
-export const validateColumnForm = entities => {
-  const model = makeModel(entities);
+export const validateColumnForm = (outputSchemaId, entities) => {
+  const model = makeModel(outputSchemaId, entities);
 
   const fieldNames = model.filter(field => isFieldNameField(field.name)).map(field => field.value);
 

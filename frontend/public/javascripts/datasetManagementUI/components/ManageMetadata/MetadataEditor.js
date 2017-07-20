@@ -30,9 +30,7 @@ class MetadataEditor extends Component {
   }
 
   render() {
-    const { flashVisible, path } = this.props;
-
-    const onDatasetTab = path === 'metadata/dataset';
+    const { flashVisible, onDatasetTab, outputSchemaId } = this.props;
 
     // push form down to make room for flash notification if it's visible
     let formPadding = {
@@ -47,7 +45,7 @@ class MetadataEditor extends Component {
         <div
           className={onDatasetTab ? styles.datasetFormContainer : styles.columnFormContainer}
           style={formPadding}>
-          {onDatasetTab ? <DatasetForm /> : <ColumnForm />}
+          {onDatasetTab ? <DatasetForm /> : <ColumnForm outputSchemaId={outputSchemaId} />}
         </div>
         {onDatasetTab &&
           <div className={styles.requiredNote} style={formPadding}>
@@ -60,12 +58,14 @@ class MetadataEditor extends Component {
 
 MetadataEditor.propTypes = {
   flashVisible: PropTypes.bool.isRequired,
-  path: PropTypes.string.isRequired
+  onDatasetTab: PropTypes.bool.isRequired,
+  outputSchemaId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = ({ ui }, { path }) => ({
+const mapStateToProps = ({ ui }, { onDatasetTab, outputSchemaId }) => ({
   flashVisible: ui.flashMessage.visible,
-  path
+  onDatasetTab,
+  outputSchemaId
 });
 
 export default connect(mapStateToProps)(MetadataEditor);

@@ -35,7 +35,7 @@ export const MeasureSelector = React.createClass({
 
   getDefaultProps() {
     return {
-      aggregationTypes: AGGREGATION_TYPES,
+      aggregationTypes: AGGREGATION_TYPES
     };
   },
 

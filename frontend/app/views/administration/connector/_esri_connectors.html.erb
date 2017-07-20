@@ -43,7 +43,7 @@
           :server_id => server.id,
           :type => 'esri_arcgis'
         },
-        :class => "button buttonArea #{'disabled' unless server.last_synced && !server.sync_in_progress?}"
+        :class => "button buttonArea #{'disabled' unless server.last_synced}"
       ) %>
       <%= form_button(
         {

@@ -107,7 +107,7 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
 
       # Verify that the new custom color was applied
       within_frame(@squire_frame) do
-        current_h1_color = page.find('h1 > .colour').native.css_value('color')
+        current_h1_color = page.find('h1 .colour').native.css_value('color')
 
         expect(current_text_selection).to eq(initial_selection)
         expect(current_h1_color).to_not eq(initial_h1_color)
@@ -123,7 +123,7 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
 
       # Verify that the default color was applied
       within_frame(@squire_frame) do
-        current_h1_color = page.find('h1 > .colour').native.css_value('color')
+        current_h1_color = page.find('h1 .colour').native.css_value('color')
 
         expect(current_text_selection).to eq(initial_selection)
         expect(current_h1_color).to_not eq(initial_h1_color)
@@ -143,7 +143,7 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
 
       # Verify that the saved custom color was applied
       within_frame(@squire_frame) do
-        current_h1_color = page.find('h1 > .colour').native.css_value('color')
+        current_h1_color = page.find('h1 .colour').native.css_value('color')
 
         expect(current_text_selection).to eq(initial_selection)
         expect(current_h1_color).to_not eq(initial_h1_color)

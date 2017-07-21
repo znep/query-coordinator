@@ -175,6 +175,18 @@ describe('DataTypeFormatter', function() {
           expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
           expect(cellContent).to.not.match(/^-?0\d/);
         });
+
+        columnMetadata = {
+          renderTypeName: 'percent',
+          format: {
+            noCommas: 'true'
+          }
+        };
+        NUMBER_DATA.forEach(function(value) {
+          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
+          expect(cellContent).to.not.match(/^-?0\d/);
+        });
       });
 
       it('should respect custom separators', function() {
@@ -235,6 +247,19 @@ describe('DataTypeFormatter', function() {
           expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
           expect(cellContent).to.not.match(/^-?0\d/);
         });
+
+        columnMetadata = {
+          renderTypeName: 'number',
+          format: {
+            noCommas: 'true',
+            view: 'percent_bar_and_text'
+          }
+        };
+        NUMBER_DATA.forEach(function(value) {
+          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
+          expect(cellContent).to.not.match(/^-?0\d/);
+        });
       });
 
       it('should respect custom separators', function() {
@@ -283,6 +308,17 @@ describe('DataTypeFormatter', function() {
           renderTypeName: 'number',
           format: {
             noCommas: true
+          }
+        };
+        NUMBER_DATA.forEach(function(value) {
+          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          expect(cellContent).to.match(NUMBER_NOCOMMAS_FORMAT_REGEX);
+        });
+
+        columnMetadata = {
+          renderTypeName: 'number',
+          format: {
+            noCommas: 'true'
           }
         };
         NUMBER_DATA.forEach(function(value) {
@@ -359,6 +395,18 @@ describe('DataTypeFormatter', function() {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
           expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
         });
+
+        columnMetadata = {
+          renderTypeName: 'number',
+          format: {
+            precisionStyle: 'percentage',
+            noCommas: 'true'
+          }
+        };
+        NUMBER_DATA.forEach(function(value) {
+          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
+        });
       });
 
       it('should respect custom separators', function() {
@@ -413,6 +461,18 @@ describe('DataTypeFormatter', function() {
           format: {
             precisionStyle: 'currency',
             noCommas: true
+          }
+        };
+        NUMBER_DATA.forEach(function(value) {
+          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          expect(cellContent).to.match(CURRENCY_NOCOMMAS_FORMAT_REGEX);
+        });
+
+        columnMetadata = {
+          renderTypeName: 'number',
+          format: {
+            precisionStyle: 'currency',
+            noCommas: 'true'
           }
         };
         NUMBER_DATA.forEach(function(value) {
@@ -474,6 +534,18 @@ describe('DataTypeFormatter', function() {
           format: {
             precisionStyle: 'financial',
             noCommas: true
+          }
+        };
+        NUMBER_DATA.forEach(function(value) {
+          var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+          expect(cellContent).to.match(FINANCIAL_NOCOMMAS_FORMAT_REGEX);
+        });
+
+        columnMetadata = {
+          renderTypeName: 'number',
+          format: {
+            precisionStyle: 'financial',
+            noCommas: 'true'
           }
         };
         NUMBER_DATA.forEach(function(value) {

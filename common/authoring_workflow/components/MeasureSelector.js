@@ -34,9 +34,11 @@ export const MeasureSelector = React.createClass({
   },
 
   getDefaultProps() {
-    return {
-      aggregationTypes: AGGREGATION_TYPES
-    };
+    return { aggregationTypes: AGGREGATION_TYPES };
+  },
+
+  getInitialState() {
+    return { isSeriesPending:  false };
   },
 
   componentDidUpdate() {
@@ -51,10 +53,8 @@ export const MeasureSelector = React.createClass({
   },
 
   renderMeasureSelectors() {
-    const {
-      metadata,
-      vifAuthoring
-    } = this.props;
+    const { metadata, vifAuthoring } = this.props;
+    const { isSeriesPending } = this.state;
 
     const validMeasures = getValidMeasures(metadata);
     const options = [{
@@ -68,9 +68,15 @@ export const MeasureSelector = React.createClass({
     ];
 
     const series = getSeries(vifAuthoring);
-    const items = series.map((item, index) => {
+    const measureSelectors = series.map((item, index) => {
       return this.renderMeasureSelector(item.dataSource.measure, index, options);
     });
+
+    let pendingMeasureSelector;
+
+    if (isSeriesPending) {
+      pendingMeasureSelector = this.renderPendingMeasureSelector(options.length, options);
+    }
 
     const addMeasureLink = this.renderAddMeasureLink();
 
@@ -78,10 +84,36 @@ export const MeasureSelector = React.createClass({
       <div ref={(ref) => this.selector = ref}>
         <BlockLabel title={I18n.translate('shared.visualizations.panes.data.fields.measure.title')} description={I18n.translate('shared.visualizations.panes.data.fields.measure.description')} />
         <ul className="measure-list">
-          {items}
+          {measureSelectors}
+          {pendingMeasureSelector}
         </ul>
         {addMeasureLink}
       </div>
+    );
+  },
+
+  renderPendingMeasureSelector(index, options) {
+    const { vifAuthoring } = this.props;
+    const measureListItemAttributes = {
+      className: 'measure-list-item',
+      key: index
+    };
+
+    const hasOnlyDefaultValue = options.length <= 1;
+    const measureAttributes = {
+      disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
+      id: `measure-selection-${index}`,
+      onSelection: (option) => this.handleOnSelectionMeasureColumn(option, index),
+      options,
+      placeholder: I18n.translate('shared.visualizations.panes.data.fields.measure.select_column')
+    };
+
+    return (
+      <li {...measureListItemAttributes}>
+        <div className="measure-column-selector-dropdown-container">
+          <Dropdown {...measureAttributes} />
+        </div>
+      </li>
     );
   },
 
@@ -105,24 +137,21 @@ export const MeasureSelector = React.createClass({
     const deleteMeasureLink = this.renderDeleteMeasureLink(index);
 
     return (
-        <li {...measureListItemAttributes}>
-          <div className="measure-column-selector-dropdown-container">
-            <Dropdown {...measureAttributes} />
-          </div>
-          {measureAggregationSelector}
-          {deleteMeasureLink}
-        </li>
+      <li {...measureListItemAttributes}>
+        <div className="measure-column-selector-dropdown-container">
+          <Dropdown {...measureAttributes} />
+        </div>
+        {measureAggregationSelector}
+        {deleteMeasureLink}
+      </li>
     );
   },
 
   renderMeasureAggregationSelector(measure, index) {
-    const {
-      aggregationTypes,
-      vifAuthoring
-    } = this.props;
+    const { aggregationTypes, vifAuthoring } = this.props;
 
     if (_.isNull(measure.columnName)) {
-      return; // no aggregation dropdown when no column name is selected
+      return null; // no aggregation dropdown when no column name is selected
     }
 
     const options = [
@@ -145,7 +174,7 @@ export const MeasureSelector = React.createClass({
   },
 
   renderMeasureOption(option) {
-    const columnType = _.find(COLUMN_TYPES, {type: option.type});
+    const columnType = _.find(COLUMN_TYPES, { type: option.type });
     const icon = columnType ? columnType.icon : '';
 
     return (
@@ -175,14 +204,23 @@ export const MeasureSelector = React.createClass({
 
   renderAddMeasureLink() {
     const { vifAuthoring } = this.props;
+    const { isSeriesPending } = this.state;
+
     const series = getSeries(vifAuthoring);
-    const showAddMeasureLink = (series.length < MAXIMUM_MEASURES) &&
-      _.isEmpty(getDimensionGroupingColumnName(vifAuthoring)) &&
+    const isVisible = (series.length < MAXIMUM_MEASURES) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
-    return showAddMeasureLink ? (
+    const isDisabled = isSeriesPending || !_.isEmpty(getDimensionGroupingColumnName(vifAuthoring));
+
+    const addMeasureLinkAttributes = {
+      id: 'measure-add-measure-link',
+      className: isDisabled ? 'disabled' : '',
+      onClick: isDisabled ? null : this.handleOnClickAddMeasure
+    };
+
+    return isVisible ? (
       <div className="measure-add-measure-link-container">
-        <a id="measure-add-measure-link" onClick={this.handleOnClickAddMeasure}>
+        <a {...addMeasureLinkAttributes}>
           <span className="socrata-icon-add" />
           {I18n.translate('shared.visualizations.panes.data.fields.measure.add_measure')}
         </a>
@@ -191,12 +229,7 @@ export const MeasureSelector = React.createClass({
   },
 
   handleOnClickAddMeasure() {
-    const { onAddMeasure } = this.props;
-    onAddMeasure({ 
-      columnName: null,
-      aggregationFunction: 'count',
-      label: I18n.translate('shared.visualizations.panes.data.fields.measure.no_value')
-    });
+    this.setState({ isSeriesPending: true });
   },
   
   handleOnClickDeleteMeasure(index) {
@@ -205,8 +238,17 @@ export const MeasureSelector = React.createClass({
   },
 
   handleOnSelectionMeasureColumn(option, index) {
-    const { onSetMeasureColumn } = this.props;
-    onSetMeasureColumn(index, option.value, option.title);
+    const { onAddMeasure, onSetMeasureColumn } = this.props;
+    const { isSeriesPending } = this.state;
+    
+    if (isSeriesPending) {
+      onAddMeasure(option.value, option.title);
+    }
+    else {
+      onSetMeasureColumn(index, option.value, option.title);
+    }
+
+    this.setState({ isSeriesPending: false });
   },
 
   handleOnSelectionMeasureAggregation(option, index) {
@@ -222,8 +264,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onAddMeasure(measure) {
-      dispatch(appendSeriesWithMeasure(measure));
+    onAddMeasure(columnName, label) {
+      dispatch(appendSeriesWithMeasure(columnName, label));
     },
     onRemoveMeasure(index) {
       dispatch(removeSeries(index));

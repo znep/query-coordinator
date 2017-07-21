@@ -552,6 +552,11 @@
         .socrata-icon-add {
           margin: 0 5px;
         }
+
+        &.disabled {
+          color: #777;
+          cursor: not-allowed;
+        }
       }
     }
 

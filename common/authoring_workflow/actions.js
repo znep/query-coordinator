@@ -164,10 +164,11 @@ export function initializeSeries(seriesCount) {
 }
 
 export const APPEND_SERIES_WITH_MEASURE = 'APPEND_SERIES_WITH_MEASURE';
-export function appendSeriesWithMeasure(measure) {
+export function appendSeriesWithMeasure(columnName, label) {
   return {
     type: APPEND_SERIES_WITH_MEASURE,
-    measure
+    columnName,
+    label
   };
 }
 

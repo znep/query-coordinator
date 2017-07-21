@@ -61,7 +61,7 @@ export default function(state, action) {
       break;
 
     case actions.APPEND_SERIES_WITH_MEASURE:
-      appendSeriesWithMeasure(state, action.measure);
+      appendSeriesWithMeasure(state, action.columnName, action.label);
       break;
 
     case actions.REMOVE_SERIES:

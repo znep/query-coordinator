@@ -5,7 +5,6 @@ var path = require('path');
 var common = require('./common');
 var identifier = path.basename(__filename, '.config.js');
 
-console.log(identifier);
 module.exports = _.defaultsDeep({
   context: path.resolve(common.frontendRoot, 'public/javascripts/demos/components'),
   entry: common.withHotModuleEntries({'main': './main'}),

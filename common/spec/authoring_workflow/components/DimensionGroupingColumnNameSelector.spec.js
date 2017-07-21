@@ -56,8 +56,7 @@ describe('DimensionGroupingColumnNameSelector', () => {
           'shared.visualizations.panes.data.fields.dimension_grouping_column_name.no_value'
         );
 
-        expect(component.querySelector('.picklist-option span').innerHTML).
-          to.eq(expectedMessage);
+        expect(component.querySelector('.picklist-option span').innerText).to.eq(expectedMessage);
       });
 
       it('render with correct subtitle', () => {
@@ -74,8 +73,7 @@ describe('DimensionGroupingColumnNameSelector', () => {
           'shared.visualizations.panes.data.fields.dimension_grouping_column_name.description'
         );
 
-        expect(component.querySelector('.flyout').textContent)
-          .to.eq(expectedMessage);
+        expect(component.querySelector('.flyout').textContent).to.eq(expectedMessage);
       });
 
     });
@@ -94,7 +92,7 @@ describe('DimensionGroupingColumnNameSelector', () => {
           }
 
           const foundTitle = _.some(metadata.data.columns,
-            column => column.name == option.querySelector('span').innerHTML);
+            column => column.name == option.querySelector('span').innerText);
 
           expect(foundTitle).to.be.true;
         }

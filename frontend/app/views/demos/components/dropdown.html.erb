@@ -6,18 +6,28 @@
 
 <section class="styleguide-section" id="color-picker">
   <p>
-    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+    <a class="btn btn-default" href='/internal/demos/components'>
+      <span class="socrata-icon-arrow-left"></span>
+      Components
+    </a>
   </p>
   <h2 class="styleguide-header">Dropdown</h2>
   <div class="styleguide-example">
     <div id="dropdown-container"></div>
   </div>
   <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
-  <h2 class="styleguide-header">Dropdown with custom options</h2>
+
+  <h2 class="styleguide-header">Dropdown with icons</h2>
+  <div class="styleguide-example">
+    <div id="icon-dropdown-container"></div>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-2"></div>
+
+  <h2 class="styleguide-header">Dropdown with custom renderer &amp; placeholder</h2>
   <div class="styleguide-example">
     <div id="custom-dropdown-container"></div>
   </div>
-  <div class="styleguide-code-example" id="styleguide-code-example-2"></div>
+  <div class="styleguide-code-example" id="styleguide-code-example-3"></div>
 </section>
 
 <% content_for :scripts do %>
@@ -31,11 +41,11 @@
           console.log('option selected:', option.title, option.value);
         },
         options: [
-          {title: 'Floating Frog\'s Feet', value: 'potion-one', group: 'Potions'},
-          {title: 'Skittering Spider Silk', value: 'potion-two', group: 'Potions'},
-          {title: 'Blue Barbed Berries', value: 'potion-three', group: 'Potions'},
-          {title: 'Traditionally Truffled Tapioca', value: 'potion-four', group: 'Edibles'},
-          {title: 'Pandemonious Pear Paste', value: 'potion-five', group: 'Edibles'},
+          { title: "Floating Frog's Feet", value: 'potion-one', group: 'Potions' },
+          { title: 'Skittering Spider Silk', value: 'potion-two', group: 'Potions' },
+          { title: 'Blue Barbed Berries', value: 'potion-three', group: 'Potions' },
+          { title: 'Traditionally Truffled Tapioca', value: 'potion-four', group: 'Edibles' },
+          { title: 'Pandemonious Pear Paste', value: 'potion-five', group: 'Edibles' },
         ]
       };
 
@@ -48,18 +58,47 @@
 
   <script type="text/javascript" id="example-2">
     $(() => {
-      const DropdownWithIcon = (props) => {
-        const { icon, title } = props;
+      const facebookIcon = React.createElement(components.SocrataIcon, { name: 'facebook' });
+      const twitterIcon = React.createElement(components.SocrataIcon, { name: 'twitter' });
+      const datasetIcon = React.createElement(components.SocrataIcon, { name: 'dataset' });
+
+      const props = {
+        displayTrueWidthOptions: true,
+        onSelection: (option) => {
+          const { title, value } = option;
+          console.log(`option selected: ${title}, ${value}`);
+        },
+        options: [
+          { title: 'Emotional technicality', value: 'emotecho', icon: facebookIcon },
+          { title: 'Pontificate harder', value: 'ponfer', icon: twitterIcon },
+          { title: 'No one misses these', value: 'noone', icon: datasetIcon }
+        ]
+      };
+
+      ReactDOM.render(
+        React.createElement(components.Dropdown, props),
+        document.getElementById('icon-dropdown-container')
+      );
+    });
+  </script>
+
+  <script type="text/javascript" id="example-3">
+    $(() => {
+      const DropdownWithRenderer = (props) => {
+        const { iconClassName, title, value } = props;
 
         return (
           React.createElement('div', {className: 'special-dropdown-option'}, [
-            React.createElement('span', {className: icon, key: icon}),
-            title
+            React.createElement('div', { key: 'enclosing_div' }, title.toUpperCase()),
+            React.createElement('span', {className: iconClassName, key: value}),
+            React.createElement('span', {className: iconClassName, key: value + '1'}),
+            React.createElement('span', {className: iconClassName, key: value + '2'}),
+            React.createElement('span', {className: iconClassName, key: value + '3'})
           ])
         );
       };
 
-      const renderOption = (option) => React.createElement(DropdownWithIcon, option);
+      const renderer = (option) => React.createElement(DropdownWithRenderer, option);
 
       const customRenderProps = {
         displayTrueWidthOptions: true,
@@ -69,9 +108,9 @@
         },
         placeholder: () => React.createElement('button', {className: 'btn btn-alternate-3'}, 'Hello, World!'),
         options: [
-          { title: 'Emotional technicality', value: 'emotecho', icon: 'socrata-icon-facebook', render: renderOption },
-          { title: 'Pontificate harder', value: 'ponfer', icon: 'socrata-icon-twitter', render: renderOption },
-          { title: 'No one misses these', value: 'noone', icon: 'socrata-icon-dataset', render: renderOption }
+          { title: 'Classless society', value: 'noclass', iconClassName: 'socrata-icon-official2', render: renderer },
+          { title: 'Voltaic pile', value: 'paragraph-center3', iconClassName: 'socrata-icon-paragraph-center3', render: renderer },
+          { title: "It's blist!", value: 'blist', iconClassName: 'socrata-icon-logo', render: renderer }
         ]
       };
 

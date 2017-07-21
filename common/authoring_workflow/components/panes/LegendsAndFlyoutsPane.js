@@ -73,7 +73,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
         value: unitOther
       };
 
-      const measureTitle = getMeasureTitle(item, index);
+      const measureTitle = getMeasureTitle(item);
       return this.renderUnitsForSeries(index, measureTitle, unitOneAttributes, unitOtherAttributes);
     });
 

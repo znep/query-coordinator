@@ -199,7 +199,7 @@ export const isGroupingOrMultiSeries = (state) => {
   return isGrouping || isMultiSeries;
 };
 
-export const getMeasureTitle = (series, index) => {
+export const getMeasureTitle = (series) => {
 
   const measure = series.dataSource.measure;
   const aggregationTypes = AGGREGATION_TYPES.filter(item => item.type === measure.aggregationFunction);

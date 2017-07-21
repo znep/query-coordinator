@@ -142,7 +142,7 @@ export var PresentationPane = React.createClass({
         value: item.color.primary,
       };
 
-      const title = getMeasureTitle(item, index);
+      const title = getMeasureTitle(item);
 
       return (
         <div className="custom-color-container" key={index}>

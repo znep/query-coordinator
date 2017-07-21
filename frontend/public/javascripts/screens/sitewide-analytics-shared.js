@@ -7,7 +7,7 @@ $(function() {
 
   var storiesEnabled = !!blist.feature_flags.stories_enabled;
   var storiesMetricName = 'lense-story-published-v1';
-  var datasetsMetricName = 'datasets-published-v2';
+  var datasetsMetricName = 'datasets-published-' + blist.feature_flags.datasets_published_count_version;
   var pageViewsName = t('browser_page_views');
   var datasetsListHeader = blist.feature_flags.embetter_analytics_browser_views_only ?
     pageViewsName : '';

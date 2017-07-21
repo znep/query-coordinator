@@ -31,7 +31,7 @@ if ENV['HEADLESS'] == 'true'
   require 'headless'
 
   begin
-    headless = Headless.new
+    headless = Headless.new(:reuse => false)
   rescue Headless::Exception => e
     if e.to_s =~ /Display socket is taken but lock file is missing/i
       puts('Attempting to resolve Headless error by creating tmp directory.')

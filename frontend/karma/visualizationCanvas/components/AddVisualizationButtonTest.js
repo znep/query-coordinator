@@ -11,11 +11,14 @@ describe('AddVisualizationButton', () => {
     };
   };
 
-  it('renders an element if hasVisualization is false', () => {
+  it('renders an active button if hasVisualization is false', () => {
     const element = renderComponent(AddVisualizationButton, getProps({
       hasVisualization: false
     }));
+    const btn = element.querySelector('button');
+
     assert.ok(element);
+    assert.isFalse(btn.hasAttribute('disabled'));
   });
 
   it('invokes onClickHandler on click', () => {
@@ -29,11 +32,12 @@ describe('AddVisualizationButton', () => {
     sinon.assert.called(onClickSpy);
   });
 
-  it('does not render a button if hasVisualization is true', () => {
+  it('disables the button if hasVisualization is true', () => {
     const element = renderComponent(AddVisualizationButton, getProps({
       hasVisualization: true
     }));
+    const btn = element.querySelector('button');
 
-    assert.isNull(element);
+    assert.isTrue(btn.hasAttribute('disabled'));
   });
 });

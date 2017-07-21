@@ -6,7 +6,6 @@ import { ModeStates } from './lib/constants';
 import EditBar from './components/EditBar';
 import PreviewBar from './components/PreviewBar';
 import InfoPane from './components/InfoPane';
-import AddVisualizationButton from './components/AddVisualizationButton';
 import AuthoringWorkflowModal from './components/AuthoringWorkflowModal';
 import ShareVisualizationModal from './components/ShareVisualizationModal';
 import EditMenu from './components/EditMenu';
@@ -71,7 +70,6 @@ export const App = React.createClass({
         <div className="visualization-canvas-body edit-mode">
           <InfoPane />
           <FilterBar isReadOnly={false} />
-          <AddVisualizationButton />
           <Visualizations isEditable displayShareButtons={SHARE_BUTTON_ENABLED.edit} />
           <Table />
         </div>

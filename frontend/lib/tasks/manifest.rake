@@ -42,12 +42,11 @@ namespace :manifest do
       ignore_list = %w[ 76a15bc5f5f34f9c73199e26df04f06bd48bcb43 ]
       git_log_flags = '--no-color --right-only --cherry-pick --reverse --no-merges'
       git_log_revision_range = "#{from_tag}...#{to_tag}"
-      # NOTE: Excluding storyteller via -- . ':(exclude)storyteller' also ends up ignoring empty merge
+      # NOTE: Excluding storyteller via -- :/ ':(exclude)../storyteller' also ends up ignoring empty merge
       # commits (because of the '.' that is required for excludes to work). If you need to get merges,
       # pass --full-history (though note this will end up including non-frontend merges).
-      git_log_query = "^#{ignore_list.join(' ^')} -- :/ ':(exclude)storyteller'"
+      git_log_query = "^#{ignore_list.join(' ^')} -- :/ ':(exclude)../storyteller'"
       git_log_cmd = "git log #{git_log_flags} #{git_log_revision_range} #{git_log_query}"
-
       manifest_output << "\nDiff Command: #{git_log_cmd}`\n"
 
       git_log_output = `#{git_log_cmd}`

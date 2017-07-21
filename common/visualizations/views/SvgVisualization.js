@@ -706,7 +706,7 @@ function SvgVisualization($element, vif, options) {
     }
 
     return usingColorPalette ?
-      getColorFromPalette() : 
+      getColorFromPalette() :
       getPrimaryColorOrNone();
   }
 

@@ -63,6 +63,12 @@ export const changeVisibility = (uid, assetType, newVisibility) => (dispatch) =>
       visibilityValue = 'public.read';
     }
 
+    const validVisibilityValues = ['private', 'public.read', 'public.add'];
+    if (!_.include(validVisibilityValues, visibilityValue)) {
+      throw new Error(
+        `Invalid visibilityValue: '${visibilityValue}'. Must be one of ${validVisibilityValues.join(', ')}`
+      );
+    }
     apiPath = `/views/${uid}.json?method=setPermission&value=${visibilityValue}`;
     method = 'PUT';
   }

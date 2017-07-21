@@ -225,9 +225,9 @@ $(document).ready(function() {
   onLoadOrClickingSigninSignoutCheckbox();
   $('#content_general_show_signin_signout').on('click change', onLoadOrClickingSigninSignoutCheckbox);
 
-  $('.flyout-target').hover((e) => {
+  $('.flyout-target').hover(function(e) {
     $(e.target).closest('.flyout-container').find('.flyout').removeClass('flyout-hidden');
-  }, (e) => {
+  }, function(e) {
     $(e.target).closest('.flyout-container').find('.flyout').addClass('flyout-hidden');
   });
 

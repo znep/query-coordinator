@@ -829,7 +829,7 @@ describe('SvgVisualization', () => {
       copiedVif.series[0].color.palette = 'custom';
       copiedVif.series[0].color.customPalette = customPalette;
       viz.updateVif(copiedVif);
-      const color = viz.getColor(dimensionIndex, measureIndex, _.keys(customPalette['id']));
+      const color = viz.getColor(dimensionIndex, measureIndex, _.keys(customPalette.id));
       assert.equal(color, '#5b9ec9');
     });
   });

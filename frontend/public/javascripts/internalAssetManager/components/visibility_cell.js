@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 
+import { SocrataIcon } from 'common/components';
+
 export class VisibilityCell extends React.Component {
   constructor(props) {
     super(props);
@@ -67,24 +69,24 @@ export class VisibilityCell extends React.Component {
   // Note that order here is important. An asset can be both "Private" and "Hidden", but only the private
   // text/icon will show.
   renderVisibilityTitle() {
-    let visibilityCellClass;
     let visibilityCellText;
+    let visibilityIconName;
 
     if (this.isOpen()) {
-      visibilityCellClass = 'socrata-icon-public-open';
-      visibilityCellText = this.getTranslation('open');
+      visibilityIconName = 'public-open';
+      visibilityCellText = this.getTranslation('public');
     } else if (this.isPrivate()) {
-      visibilityCellClass = 'socrata-icon-private';
+      visibilityIconName = 'private';
       visibilityCellText = this.getTranslation('private');
     } else if (this.isHidden()) {
-      visibilityCellClass = 'socrata-icon-eye-blocked';
+      visibilityIconName = 'eye-blocked';
       // visibilityCellText = this.getTranslation('hidden'); // Temporary change due to EN-17295
       visibilityCellText = this.getTranslation('pending');
     }
 
     return (
       <span className="title">
-        <span alt={visibilityCellText} className={visibilityCellClass} />
+        <SocrataIcon name={visibilityIconName} />
         <strong>{visibilityCellText}</strong>
       </span>
     );

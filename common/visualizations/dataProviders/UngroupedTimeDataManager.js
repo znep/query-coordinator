@@ -64,7 +64,11 @@ function getData(vif, options) {
       ascendingComparator :
       descendingComparator;
     const measureLabels = vif.series.map((series, i) => {
-      const seriesLabel = _.get(series, 'label', '');
+      let seriesLabel = _.get(series, 'label', '');
+
+      if (_.isEmpty(seriesLabel)) {
+         seriesLabel = _.get(series, 'dataSource.measure.label', '');
+      }
 
       return (_.isEmpty(seriesLabel)) ?
         (I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + i) :

@@ -116,10 +116,10 @@ export var DataPane = React.createClass({
 
   renderGroupingOptions() {
     const { vifAuthoring } = this.props;
-    const isAvailable = !isMultiSeries(vifAuthoring) &&
+    const isVisible = !isMultiSeries(vifAuthoring) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
-    return isAvailable ? (
+    return isVisible ? (
         <AccordionPane title={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.title')}>
           <DimensionGroupingColumnNameSelector />
         </AccordionPane>
@@ -131,8 +131,9 @@ export var DataPane = React.createClass({
     const { vifAuthoring } = this.props;
     const timelinePrecision = this.renderTimelinePrecision();
     const treatNullValuesAsZero = this.renderTreatNullValuesAsZero();
+    const isVisible = isTimelineChart(vifAuthoring);
 
-    return isTimelineChart(vifAuthoring) ? (
+    return isVisible ? (
         <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.timeline_options')}>
           {timelinePrecision}
           {treatNullValuesAsZero}
@@ -143,11 +144,7 @@ export var DataPane = React.createClass({
 
   renderDisplayOptions() {
     const { vifAuthoring } = this.props;
-    const showLimitAndShowOtherCategory =
-      isBarChart(vifAuthoring) ||
-      isPieChart(vifAuthoring) ||
-      isColumnChart(vifAuthoring);
-
+    const isVisible = isBarChart(vifAuthoring) || isPieChart(vifAuthoring) || isColumnChart(vifAuthoring);
     const visualizationType = getVisualizationType(vifAuthoring);
     const translationKeys = {
       barChart: 'bar_chart_limit',
@@ -156,7 +153,7 @@ export var DataPane = React.createClass({
     };
     const translationKey = translationKeys[visualizationType];
 
-    return showLimitAndShowOtherCategory ? (
+    return isVisible ? (
         <AccordionPane title={I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.title`)}>
           <DisplayOptions />
         </AccordionPane>

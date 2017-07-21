@@ -283,7 +283,6 @@ export const isStacked = createSelector(
 
 );
 
-
 export const isRegionMap = createSelector(
   getVisualizationType,
   type => type === 'regionMap'

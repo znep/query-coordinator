@@ -700,12 +700,12 @@ function SvgVisualization($element, vif, options) {
     function getPrimaryColorOrNone() {
       const primaryColor = self.getPrimaryColorBySeriesIndex(measureIndex);
 
-      return (primaryColor !== null) ? 
-        primaryColor : 
+      return (primaryColor !== null) ?
+        primaryColor :
         'none';
     }
 
-    return usingColorPalette ? 
+    return usingColorPalette ?
       getColorFromPalette() : 
       getPrimaryColorOrNone();
   }
@@ -1030,7 +1030,7 @@ function SvgVisualization($element, vif, options) {
   // series (at index zero) as opposed to one of the 'virtual' series that
   // appear to exist based on the data table.
   function defaultToSeriesIndexZeroIfGroupingIsEnabled(vifToCheck, seriesIndex) {
-    return (self.isGrouping()) ? 0 : seriesIndex;
+    return self.isGrouping() ? 0 : seriesIndex;
   }
 
   function getPositions(groupedDataToRender) {

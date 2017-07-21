@@ -83,7 +83,7 @@
       <% end %>
       <% if current_user.try(:is_superadmin?) %>
         <li class="internal">
-          <%= admin_nav_link_to('screens.admin.index.internal', '/internal/index') %>
+          <%= admin_nav_link_to('screens.admin.index.internal', '/internal') %>
         </li>
       <% end %>
       <% if user_can_see_stories? %>

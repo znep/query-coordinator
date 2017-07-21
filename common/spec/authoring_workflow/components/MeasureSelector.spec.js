@@ -232,10 +232,6 @@ describe('MeasureSelector', function() {
       emitsDropdownEvent('#measure-aggregation-selection-0', 'onSetMeasureAggregation');
     });
 
-    describe('when clicking the "Add Measure" link', function() {
-      emitsClickEvent('#measure-add-measure-link', 'onAddMeasure');
-    });
-
     describe('when clicking a delete link', function() {
       emitsClickEvent('#measure-delete-link-0', 'onRemoveMeasure');
     });

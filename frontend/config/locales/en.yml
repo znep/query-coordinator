@@ -3357,7 +3357,7 @@ en:
           data_and_assets: Data and Assets
           content: Content
           super_admin: Super Admin
-          administration: Administration
+          site_settings: Site Settings
         page_title: Administration
         comment_moderation: Comment Moderation
         comment_moderation_description: Review and approve comments submitted on your assets by users

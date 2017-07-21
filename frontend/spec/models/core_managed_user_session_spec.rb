@@ -8,6 +8,7 @@ describe CoreManagedUserSession do
 
   before do
     init_current_domain
+    init_feature_flag_signaller
     @controller = ApplicationController.new
     @controller.request = request
     CoreManagedUserSession.controller = @controller

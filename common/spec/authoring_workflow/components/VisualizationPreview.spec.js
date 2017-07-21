@@ -254,5 +254,23 @@ describe('VisualizationPreview', () => {
       render(container, newProps);
       expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(false);
     });
+
+    it('updates when mapCenterAndZoom is undefined in the original VIF', () => {
+      _.unset(props, 'vif.configuration.mapCenterAndZoom');
+      const newProps = _.cloneDeep(props);
+      // make a minor change to the VIF
+      _.set(newProps, 'vif.series[0].dataSource.dimension.columnName', 'something_new');
+      render(container, newProps);
+      expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(true);
+    });
+
+    it('updates when the VIF changes and mapCenterAndZoom is undefined in the new VIF', () => {
+      const newProps = _.cloneDeep(props);
+      _.unset(newProps, 'vif.configuration.mapCenterAndZoom');
+      // make a minor change to the VIF
+      _.set(newProps, 'vif.series[0].dataSource.dimension.columnName', 'something_new');
+      render(container, newProps);
+      expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(true);
+    });
   });
 });

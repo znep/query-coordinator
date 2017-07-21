@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 
@@ -16,18 +17,26 @@ const callStatusToNotificationStatus = callStatus => {
   }
 };
 
-const errorMessage = source => {
+const errorMessage = (apiCall, source) => {
+  if (_.get(apiCall, 'error.english', null)) {
+    return (
+      <div className={styles.msgContainer}>
+        {apiCall.error.english || apiCall.error.message}
+      </div>
+    );
+  }
+
   const badConnectionBodyDescription = {
-    __html: I18n.progress_items.connection_error_body_description.format(
-      `<span class="filename">${source.filename}</span>`
+    __html: I18n.notifications.connection_error_body_description.format(
+      `<span class="filename">${getFilename(source)}</span>`
     )
   };
 
   const badConnection = (
     <div className={styles.msgContainer}>
-      <h6>{I18n.progress_items.connection_error_title}</h6>
+      <h6>{I18n.notifications.connection_error_title}</h6>
       <p dangerouslySetInnerHTML={badConnectionBodyDescription} />
-      <p>{I18n.progress_items.connection_error_body_advice}</p>
+      <p>{I18n.notifications.connection_error_body_advice}</p>
     </div>
   );
 
@@ -39,12 +48,13 @@ function getFilename(source) {
   return 'Unknown';
 }
 
-// This component is called by the NotificationList component. It's main purpose
+// This component is called by the NotificationList component. Its main purpose
 // is to translate source-specific logic into props that the generic Notification
 // component can understand.
-export const UploadNotification = ({ source, callStatus, notificationId }) => {
+export const UploadNotification = ({ source, apiCall, notificationId }) => {
   let message;
   let details;
+  const callStatus = apiCall.status;
   let notificationStatus = callStatusToNotificationStatus(callStatus);
 
   switch (callStatus) {
@@ -52,14 +62,14 @@ export const UploadNotification = ({ source, callStatus, notificationId }) => {
     case STATUS_CALL_SUCCEEDED:
       message = (
         <span className={styles.message}>
-          {I18n.progress_items.uploading}
+          {I18n.notifications.uploading}
           <span className={styles.subMessage}>{getFilename(source)}</span>
         </span>
       );
       break;
     default:
-      message = <span className={styles.message}>{I18n.progress_items.upload_failed}</span>;
-      details = errorMessage(source);
+      message = <span className={styles.message}>{I18n.notifications.upload_failed}</span>;
+      details = errorMessage(apiCall, source);
   }
 
   return (
@@ -78,7 +88,12 @@ UploadNotification.propTypes = {
   source: PropTypes.shape({
     source_type: PropTypes.shape({})
   }),
-  callStatus: PropTypes.string.isRequired,
+  apiCall: PropTypes.shape({
+    status: PropTypes.string.isRequired,
+    error: PropTypes.shape({
+      english: PropTypes.string.isRequired
+    })
+  }).isRequired,
   showDetails: PropTypes.bool,
   notificationId: PropTypes.string
 };
@@ -86,7 +101,7 @@ UploadNotification.propTypes = {
 const mapStateToProps = ({ entities, ui }, { notification }) => ({
   source: entities.sources[notification.sourceId],
   notificationId: notification.id,
-  callStatus: ui.apiCalls[notification.callId].status
+  apiCall: ui.apiCalls[notification.callId]
 });
 
 export default connect(mapStateToProps)(UploadNotification);

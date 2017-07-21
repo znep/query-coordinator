@@ -14,9 +14,40 @@ Today we have two types of components in our repository
 - Legacy components
 - React components
 
-First, ensure you're pulling in `styleguide.scss` or `styleguide-no-tag-level.scss` in your page. See
+### Prerequisites
+
+If you're in frontend, the `styleguide` layout takes care of these prerequisites for you. In Storyteller, all existing
+pages are already set up.
+
+If you need to set up the prerequisites yourself:
+
+1. Ensure you're pulling in `styleguide.scss` or `styleguide-no-tag-level.scss` in your page. See
 the [styleguide css](https://github.com/socrata/platform-ui/blob/master/common/styleguide/README.md)
-page for more information. Once that is complete, your next step is based on what kind of component you're using:
+page for more information. Storyteller already does this via its `application.css`.
+```erb
+  <!-- frontend only -->
+  <%= rendered_stylesheet_tag 'styleguide' %>
+```
+2. If you're in frontend, load jQuery in a _very specific_ way. Refer to `jquery_include` call in the [styleguide layout](https://github.com/socrata/platform-ui/blob/master/frontend/app/views/layouts/styleguide.html.erb). Storyteller should just work.
+```erb
+  <!-- frontend only -->
+  <%# dotdotdot and velocity are finicky about jQuery. -%>
+  <%# We made jquery an external, load it here and then bind it to window to be loaded into our Webpack bundle. -%>
+  <%= jquery_include('2.2.4') %>
+  <script type="text/javascript">window.jquery = window.jQuery;</script>
+```
+3. Get other prerequisites onto the page.
+```erb
+  <!-- frontend flavor-->
+  <%= render_feature_flags_for_javascript %>
+  <%= include_webpack_bundle 'site_wide/site_wide.js' %>
+
+  <!-- storyteller flavor -->
+  <%= render_feature_flags_for_javascript %>
+
+```
+
+Once prerequisites are taken care of, your next step is based on what kind of component you're using:
 
 #### React Components - `common/components/`
 These are written in React, jQuery, and lodash and are designed like any popular React component library

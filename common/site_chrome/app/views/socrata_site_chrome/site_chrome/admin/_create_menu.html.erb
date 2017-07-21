@@ -1,0 +1,33 @@
+<div
+  id="site-chrome-create-menu"
+  class="site-chrome-admin-menu"
+  tabIndex="0"
+  role="menuitem"
+  aria-haspopup="true"
+  aria-labelledby="site-chrome-create-menu-title">
+  <h1>
+    <span id="site-chrome-create-menu-title"><%= t('shared.site_chrome.header.create_menu.title') %></span>
+    <span class="socrata-icon-arrow-down"></span>
+  </h1>
+  <ul role="menu" aria-hidden="true">
+    <%- if current_user_can_see_create_datasets? %>
+      <li role="menuitem">
+        <%= link_to(t('shared.site_chrome.header.create_menu.dataset'), site_chrome_massage_url('/datasets/new')) %>
+      </li>
+    <%- end %>
+
+    <%- if current_user_can_see_create_stories? -%>
+      <li role="menuitem">
+        <a class="create-story" data-default-title="<%= t('shared.site_chrome.header.create_menu.default_story_title') %>">
+          <%= t('shared.site_chrome.header.create_menu.story') %>
+        </a>
+      </li>
+    <%- end -%>
+
+    <%- if current_user_can_see_create_datasets_beta? -%>
+      <li role="menuitem">
+        <%= link_to(t('shared.site_chrome.header.create_menu.dataset_beta'), site_chrome_massage_url('/datasets/new?beta=true')) %>
+      </li>
+    <%- end -%>
+  </ul>
+</div>

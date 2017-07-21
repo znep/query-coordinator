@@ -82,7 +82,7 @@ function inProgressMessage(rowsToBeUpserted, taskSet) {
     const mostRecentLogItem = taskSet.log[0];
     const upserted = commaify(mostRecentLogItem.details.count || 0);
     const total = commaify(rowsToBeUpserted);
-    const rows = I18n.progress_items.rows;
+    const rows = I18n.notifications.rows;
     return `${upserting} (${upserted} / ${total} ${rows})`;
   } else {
     return SubI18n.progress_messages[taskSet.status];

@@ -3,7 +3,13 @@ module SocrataSiteChrome
     attr_accessor :configuration
   end
 
-  # Global configuration options for the engine go here
+  class Configuration
+    attr_accessor :app_token
+
+    def initialize
+      @app_token = nil
+    end
+  end
 
   if defined?(Rails) # If the host application is not Rails (i.e. Sinatra) do something different.
     require 'socrata_site_chrome/engine'
@@ -26,7 +32,6 @@ module SocrataSiteChrome
   require 'socrata_site_chrome/middleware'
   require 'socrata_site_chrome/shared_helper_methods'
   require 'socrata_site_chrome/site_chrome'
-  require 'socrata_site_chrome/version'
 
   require 'site_chrome_consumer_helpers' # Helper methods for the host application
   require 'socrata_site_chrome/test/helpers'

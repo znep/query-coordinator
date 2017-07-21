@@ -8,15 +8,15 @@ module SocrataSiteChrome
     include SharedHelperMethods
 
     def icon_with_aria_text(text, opts = {})
-      content_tag(:span, :class => opts.fetch(:class, 'icon')) do
-        content_tag(:span, text, :class  => 'aria-not-displayed')
-      end
+      content_tag(:span, aria_text_span(text), :class => opts.fetch(:class, 'icon'))
+    end
+
+    def aria_text_span(text)
+      content_tag(:span, text, :class => 'aria-not-displayed')
     end
 
     def divider
-      content_tag(:div, :class => 'divider') do
-        content_tag(:span, nil)
-      end
+      content_tag(:div, content_tag(:span), :class => 'divider')
     end
 
     def my_profile
@@ -41,6 +41,10 @@ module SocrataSiteChrome
 
     def new_admin_ui_enabled?
       get_feature_flag('enable_new_admin_ui')
+    end
+
+    def use_internal_asset_manager?
+      get_feature_flag('use_internal_asset_manager')
     end
 
     def get_feature_flag(flag)
@@ -96,6 +100,35 @@ module SocrataSiteChrome
     def user_has_right?(activity)
       return false unless site_chrome_current_user
       site_chrome_current_user.is_superadmin? || site_chrome_current_user.has_right?(activity)
+    end
+
+    def current_user_can_see_create_menu?
+      return false unless site_chrome_current_user
+
+      site_chrome_current_user.is_superadmin? ||
+        current_user_can_see_create_datasets? ||
+        current_user_can_see_create_stories? ||
+        current_user_can_see_create_datasets_beta?
+    end
+
+    def current_user_can_see_create_stories?
+      return false unless site_chrome_current_user
+
+      get_feature_flag('stories_enabled') &&
+        (site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_stories?)
+    end
+
+    def current_user_can_see_create_datasets?
+      return false unless site_chrome_current_user
+
+      site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_datasets?
+    end
+
+    def current_user_can_see_create_datasets_beta?
+      return false unless site_chrome_current_user
+
+      get_feature_flag('enable_dataset_management_ui') &&
+        (site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_datasets?)
     end
 
     def current_user_can_see_admin_link?
@@ -365,6 +398,10 @@ module SocrataSiteChrome
         )
         error_msg
       end
+    end
+
+    def app_token
+      SocrataSiteChrome.configuration.app_token
     end
   end
 

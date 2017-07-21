@@ -38,17 +38,12 @@ $(function() {
   var $videoListClone = $('.videoList').clone();
 
   // sort and filter data
-  var processData = function(filterCriteria, audienceCriteria, sortCriteria) {
+  var processData = function(filterCriteria, sortCriteria) {
     var $data = $videoListClone.find('li');
 
     // filter
     if (filterCriteria !== 'all') {
       $data = $data.filter('[data-type=' + filterCriteria + ']');
-    }
-
-    // audience
-    if (audienceCriteria !== 'all') {
-      $data = $data.filter('[data-audience=' + audienceCriteria + ']');
     }
 
     // sort
@@ -87,7 +82,6 @@ $(function() {
 
     // process data
     var processedData = processData($('.filterCriteria').find('a.selected').attr('data-filter'),
-      $('.audienceCriteria').find('a.selected').attr('data-audience'),
       $('.sortCriteria').find('a.selected').attr('data-sort'));
 
     // magic

@@ -22,7 +22,7 @@ export const CREATE_UPLOAD_SUCCESS = 'CREATE_UPLOAD_SUCCESS';
 export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
 
 function xhrPromise(method, url, file, sourceId, dispatch) {
-  return new Promise((res, rej) => {
+  return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
     xhr.open(method, url);
@@ -38,20 +38,20 @@ function xhrPromise(method, url, file, sourceId, dispatch) {
 
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
-        res(xhr);
+        resolve(xhr);
       } else {
-        rej({
-          xhr,
-          percent
-        });
+        let error;
+        try {
+          error = JSON.parse(xhr.response);
+        } catch (_err) {
+          error = { message: xhr.response };
+        }
+        reject(error);
       }
     };
 
-    xhr.onerror = () => {
-      rej({
-        xhr,
-        percent
-      });
+    xhr.onerror = (error) => {
+      reject(error);
     };
 
     xhr.setRequestHeader('Content-type', file.type);
@@ -201,7 +201,8 @@ const SCHEMA_POLL_INTERVAL_MS = 500;
 // });
 function pollForOutputSchema(sourceId) {
   return (dispatch, getState) => {
-    const { routing } = getState().ui;
+    const state = getState();
+    const routing = state.ui.routing;
 
     function pollAgain() {
       setTimeout(() => {
@@ -224,6 +225,11 @@ function pollForOutputSchema(sourceId) {
       .then(getJson)
       .then(resp => {
         const source = resp.resource;
+
+        if (uploadHasFailed(state, sourceId)) {
+          // our upload has failed; not going to get an output schema. So, stop polling.
+          return null;
+        }
 
         if (_.get(source, 'schemas[0].output_schemas.length') > 0) {
           const outputSchemaIds = _.chain(source.schemas)
@@ -251,6 +257,11 @@ function pollForOutputSchema(sourceId) {
         console.log('polling error', err);
       });
   };
+}
+
+function uploadHasFailed(state, sourceId) {
+  const source = state.entities.sources[sourceId];
+  return _.has(source, 'failed_at');
 }
 
 export function pollForOutputSchemaSuccess(outputSchemaResponse) {

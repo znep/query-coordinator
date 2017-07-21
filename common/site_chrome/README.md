@@ -1,11 +1,13 @@
-# Chrome
+# Socrata Site Chrome
 
 A Rails engine that supplies common header, footer, and navigation elements for use in Socrata
 applications written in Rails.
 
 ## Installation
 
-### From Artifactory
+### From Artifactory [DEPRECATED]
+
+_Note: this is deprecated following the monorepo work. The latest updates to Site Chrome are no longer being deployed to Artifactory. All consumers of Site Chrome must use it from source (see below)._
 
 Ensure the `rubygems-virtual` artifactory source is in your Gemfile:
 
@@ -24,11 +26,9 @@ Or specify the source directly:
 
 ### From Source
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile (the path to common/site_chrome may vary depending on your project's root):
 
-    ruby gem 'socrata_site_chrome', :path => 'engine' # Where 'engine' is the gem path
-
-> An example of the gem path might be `../socrata_site_chrome/engine`
+    ruby gem 'socrata_site_chrome', path: '../common/site_chrome'
 
 Then execute:
 
@@ -397,13 +397,9 @@ LOCALEAPP_API_KEY=[KEY FROM LASTPASS]
 ```
 - Run the `bin/pull_translations` script
 
-## Making a release
+### Manual Deploy to Socrata Artifactory [DEPRECATED]
 
-To make a release, bump the version of the gem by editing `lib/socrata_site_chrome/version.rb`
-and push to the master branch. There is a jenkins job that will watch for version
-bump changes and automatically publish the gem to artifactory.
-
-### Manual Deploy to Socrata Artifactory
+_Note: this is deprecated following the monorepo work. The latest updates to Site Chrome are no longer being deployed to Artifactory._
 
 _**If the automated publishing job fails, below you'll find the steps to manually deploy
 the gem to artifactory**_

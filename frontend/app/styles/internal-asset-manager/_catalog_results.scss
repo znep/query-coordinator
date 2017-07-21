@@ -1,8 +1,11 @@
 @import "internal-asset-manager/topbar";
 @import "internal-asset-manager/result_list_table";
+@import "common/breakpoints";
 
 .catalog-results {
-  width: 100%;
+  @media screen and (min-width: $medium) {
+    width: 100%;
+  }
 
   div[class*=autocomplete_container] {
     float: left;

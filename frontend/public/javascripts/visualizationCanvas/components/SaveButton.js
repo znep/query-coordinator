@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import { t } from '../lib/I18n';
+import I18n from 'common/i18n';
 import { save } from '../actions';
 import { SaveStates } from '../lib/constants';
 
@@ -24,8 +24,8 @@ export class SaveButton extends PureComponent {
     };
 
     const buttonContents = isSaving ?
-      <span className="spinner-default spinner-dark" aria-label={t('saving')} /> :
-      t('save');
+      <span className="spinner-default spinner-dark" aria-label={I18n.t('visualization_canvas.saving')} /> :
+      I18n.t('visualization_canvas.save');
 
     return <button {...buttonProps}>{buttonContents}</button>;
   }

@@ -5,16 +5,21 @@ import TestUtils, { Simulate } from 'react-addons-test-utils';
 import { renderComponent } from '../helpers';
 import Picklist from 'components/Picklist';
 import { UP, DOWN, ESCAPE, ENTER } from 'common/keycodes';
+import { SocrataIcon } from 'common/components';
 
 describe('Picklist', () => {
   let element;
+  // Be careful about adding react components as props to this component, since internally it uses _.isEqual
+  // for certain comparisons (i.e. isSelected in renderOptions), which can lead to problems.
+  const theOneAndOnlyIcon = <SocrataIcon name="official2" />;
 
+  // If the incoming props contain a "value" key, that is used to selected item(s) in the picklist
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       options: [
-        {title: 'John Henry', value: 'john-henry'},
-        {title: 'Railroads', value: 'railroads'},
-        {title: 'Steel', value: 'steel'}
+        { title: 'John Henry', value: 'john-henry', icon: theOneAndOnlyIcon },
+        { title: 'Railroads', value: 'railroads', icon: theOneAndOnlyIcon },
+        { title: 'Steel', value: 'steel' }
       ],
       onSelection: _.noop,
       onChange: _.noop
@@ -38,11 +43,19 @@ describe('Picklist', () => {
       assert.lengthOf(element.querySelectorAll('.picklist-option'), 3);
     });
 
+    describe('with an optional icon', () => {
+      beforeEach(() => {
+        element = renderComponent(Picklist, getProps({ value: 'railroads' }));
+      });
+
+      it('renders an icon when selected option', () => {
+        assert.isNotNull(element.querySelector('.picklist-option-selected .socrata-icon'));
+      });
+    });
+
     describe('with a value set', () => {
       beforeEach(() => {
-        element = renderComponent(Picklist, getProps({
-          value: 'steel'
-        }));
+        element = renderComponent(Picklist, getProps({ value: 'steel' }));
       });
 
       it('renders one selected option', () => {
@@ -138,9 +151,8 @@ describe('Picklist', () => {
       let option;
 
       beforeEach(() => {
-        render = sinon.spy(() => <div className="test-container" />);
+        render = sinon.spy((option) => <div className="test-container" />);
         option = { title: 'I remember', value: 'i-remember', render };
-
         element = renderComponent(Picklist, getProps({ options: [option] }));
       });
 
@@ -149,7 +161,9 @@ describe('Picklist', () => {
       });
 
       it('passes an option when rendering', () => {
-        assert.isTrue(render.calledWith(option));
+        assert.isTrue(render.calledOnce);
+        assert.equal(option.title, render.getCall(0).args[0].title)
+        assert.equal(option.value, render.getCall(0).args[0].value)
       });
     });
   });

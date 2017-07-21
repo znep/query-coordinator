@@ -38,6 +38,28 @@ $filter-content-width: 260px;
     .filter-section {
       margin: 0.5rem $horizontal_margin;
 
+      &.authority {
+        .picklist-option {
+          .picklist-title > .socrata-icon {
+            &.socrata-icon-official2 {
+              color: $alternate-1;
+              width: 21px;
+              height: 21px;
+            }
+            &.socrata-icon-community {
+              color: $primary-base;
+            }
+          }
+        }
+        .picklist-option-selected {
+          .picklist-title > .socrata-icon {
+            &.socrata-icon-community {
+              color: white;
+            }
+          }
+        }
+      }
+
       label {
         user-select: none;
 
@@ -52,12 +74,34 @@ $filter-content-width: 260px;
       .dropdown-container {
         width: 100%;
 
+        .dropdown-placeholder {
+          border-color: $primary-light;
+          outline-color: $primary-base;
+
+          &.dropdown-selected > .socrata-icon {
+            &.socrata-icon-official2 {
+              color: $alternate-1;
+              width: 21px;
+              height: 21px;
+            }
+            &.socrata-icon-community {
+              color: $primary-base;
+            }
+          }
+        }
+
         &.dropdown-focused {
           .dropdown-placeholder {
             border-color: $primary-light;
             outline-color: $primary-base;
           }
           .dropdown-caret {
+            color: $primary-text;
+          }
+        }
+
+        .dropdown-placeholder {
+          &.dropdown-selected {
             color: $primary-text;
           }
         }
@@ -94,6 +138,10 @@ $filter-content-width: 260px;
           width: 100%;
           padding-left: 2rem;
           font-size: 13px;
+
+          &.searchbox-selected {
+            color: $primary-text;
+          }
         }
 
         .search-icon {

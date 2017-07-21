@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { t } from '../lib/I18n';
+import I18n from 'common/i18n';
 import { isUserRoled } from '../../common/user';
 import { enterEditMode } from '../actions';
 import { ModeStates } from '../lib/constants';
@@ -15,7 +15,7 @@ export class InfoPaneButtons extends PureComponent {
       if (mode === ModeStates.VIEW && isUserRoled()) {
         return (
           <button className="btn btn-simple btn-sm btn-edit" onClick={onClickEdit}>
-            {t('edit_visualization')}
+            {I18n.t('visualization_canvas.edit_visualization')}
           </button>
         );
       } else {

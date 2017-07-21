@@ -13,7 +13,7 @@ import {
 import * as Selectors from 'selectors';
 import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
-import { getLocalizedErrorMessage, camelCamelCamel } from 'lib/util';
+import { getLocalizedErrorMessage } from 'lib/util';
 import {
   pollForOutputSchemaSuccess,
   subscribeToOutputSchema,
@@ -21,9 +21,11 @@ import {
 } from 'actions/manageUploads';
 import { editView } from 'actions/views';
 
-export const dismissMetadataPane = () => (dispatch, getState) => {
+export const dismissMetadataPane = (currentOutputSchemaPath) => (dispatch, getState) => {
   const { routing } = getState().ui;
-  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata(\/columns|\/dataset)?/;
+  const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
+  const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
+
   const currentLocation = routing.history[routing.history.length - 1];
 
   const helper = history => {
@@ -31,6 +33,8 @@ export const dismissMetadataPane = () => (dispatch, getState) => {
 
     if (history.length === 0) {
       dispatch(push(Links.home(currentLocation)));
+    } else if (currentOutputSchemaPath && isBigTablePage.test(location.pathname)) {
+      dispatch(push(currentOutputSchemaPath));
     } else if (isDatasetModalPath.test(location.pathname)) {
       helper(history.slice(0, -1));
     } else {
@@ -57,9 +61,6 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
 
   const datasetMetadata = Selectors.datasetMetadata(view);
 
-  // TODO: remove once dsmapi form stuff is done
-  const datasetMetadataForCore = camelCamelCamel(Selectors.datasetMetadata(view));
-
   const callId = uuid();
 
   dispatch(
@@ -78,7 +79,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
   return Promise.all([
     socrataFetch(`/api/views/${fourfour}`, {
       method: 'PUT',
-      body: JSON.stringify(datasetMetadataForCore)
+      body: JSON.stringify(datasetMetadata)
     }),
     socrataFetch(dsmapiLinks.revisionBase, {
       method: 'PUT',
@@ -101,9 +102,9 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
       }
       dispatch(
         editView(dsmapi.fourfour, {
-          ..._.omit(dsmapi.metadata, 'metadata', 'private_metadata'),
+          ..._.omit(dsmapi.metadata, 'metadata', 'privateMetadata'),
           metadata: dsmapi.metadata.metadata,
-          privateMetadata: dsmapi.metadata.private_metadata,
+          privateMetadata: dsmapi.metadata.privateMetadata,
           showErrors: false,
           datasetFormDirty: false,
           metadataLastUpdatedAt: Date.now()
@@ -123,7 +124,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     });
 };
 
-export const saveColumnMetadata = () => (dispatch, getState) => {
+export const saveColumnMetadata = (outputSchemaId) => (dispatch, getState) => {
   const { entities, ui } = getState();
   const { fourfour } = ui.routing;
   const view = entities.views[fourfour];
@@ -139,7 +140,7 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
     return Promise.reject();
   }
 
-  const currentOutputSchema = Selectors.latestOutputSchema(entities);
+  const currentOutputSchema = entities.output_schemas[outputSchemaId];
 
   if (!currentOutputSchema) {
     return Promise.reject();
@@ -204,8 +205,9 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
       dispatch(pollForOutputSchemaSuccess(resp.resource));
       dispatch(subscribeToOutputSchema(resp.resource));
       dispatch(subscribeToTransforms(resp.resource));
+      return resp;
     })
-    .then(() => {
+    .then(({ resource: { id } }) => {
       dispatch(
         editView(fourfour, {
           columnFormDirty: false,
@@ -213,6 +215,11 @@ export const saveColumnMetadata = () => (dispatch, getState) => {
         })
       );
       dispatch(apiCallSucceeded(callId));
+      // This is subtly wrong, could be a race with another user
+      const { routing } = getState().ui;
+      const redirect = Links.columnMetadataForm(id)(routing.location);
+      dispatch(push(redirect));
+
       dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));
     });
 };

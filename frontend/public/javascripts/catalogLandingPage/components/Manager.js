@@ -77,7 +77,7 @@ export class Manager extends React.Component {
         if (featuredContentItem.imageUrl) {
           const previewImageId = featuredContentItem.imageUrl.match(/(([a-z0-9]+-){4})[a-z0-9]+$/);
           if (previewImageId && previewImageId[0]) {
-            featuredContentPayload[key].previewImage = previewImageId[0];
+            featuredContentPayload[key].previewImageId = previewImageId[0];
           }
         }
       }

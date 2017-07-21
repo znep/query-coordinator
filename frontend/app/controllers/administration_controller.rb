@@ -45,7 +45,7 @@ class AdministrationController < ApplicationController
   end
 
   def index
-    render new_admin_ui_enabled? ? 'new_index' : 'index'
+    render new_admin_ui_enabled? ? 'sectioned_index' : 'index'
   end
 
   def datasets
@@ -484,6 +484,7 @@ class AdministrationController < ApplicationController
     )
   end
 
+  # Used by changeVisibility in SIAM for datalens (uses setPermission in Core for datasets)
   def set_view_moderation_status
     begin
       view = View.find(params[:id])

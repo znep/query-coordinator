@@ -8,6 +8,7 @@ import SearchboxFilter from './filters/searchbox_filter';
 import * as filterOptions from '../lib/catalog_filter_options';
 import * as filters from '../actions/filters';
 import { ClearFilters } from './clear_filters';
+import { FeatureFlags } from 'common/feature_flags';
 
 export class CatalogFilters extends React.Component {
   constructor(props) {
@@ -105,11 +106,16 @@ export class CatalogFilters extends React.Component {
       </div>
     );
 
+    let assetTypeOptions = filterOptions.assetTypeOptions;
+    if (!FeatureFlags.value('stories_enabled')) {
+      assetTypeOptions = _.reject(assetTypeOptions, (option) => option.value === 'stories');
+    }
+
     const assetTypesFilterSection = (
       <div className="filter-section asset-types">
         <label className="filter-label">{this.getTranslation('asset_types.label')}</label>
         {this.renderFilterDropdown({
-          options: filterOptions.assetTypeOptions,
+          options: assetTypeOptions,
           value: assetTypes,
           onChange: changeAssetType
         })}

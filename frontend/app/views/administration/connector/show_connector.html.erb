@@ -75,13 +75,11 @@
                 <%= t('screens.admin.connector.dataset') %>
               </span>
             </th>
-            <%- if @data_connection_on %>
-              <th class="connection_type" scope="col">
-                <span>
-                  <%= t('screens.admin.connector.connection_type') %>
-                </span>
-              </th>
-            <%- end %>
+            <th class="connection_type" scope="col">
+              <span>
+                <%= t('screens.admin.connector.connection_type') %>
+              </span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -93,17 +91,15 @@
               <td class="dataset" scope="row">
                 <%= link_to(layer['name'], "/dataset/#{layer['fourfour']}", :target => "_blank") %>
               </td>
-              <%- if @data_connection_on %>
-                <td class="connection_type" scope="row">
-                  <%- if layer['sync_type'] == 'ignored' -%>
-                    <span role="presentation" class="socrata-icon-close-circle"> </span>
-                    <%= t('screens.admin.connector.deleted_pending') %>
-                  <%- else %>
-                    <span role="presentation" class=<%=sync_type_icon(layer['sync_type'])%> ></span>
-                    <%= t("screens.admin.connector.#{layer['sync_type']}") %>
-                  <%- end -%>
-                </td>
-              <%- end %>
+              <td class="connection_type" scope="row">
+                <%- if layer['sync_type'] == 'ignored' -%>
+                  <span role="presentation" class="socrata-icon-close-circle"> </span>
+                  <%= t('screens.admin.connector.deleted_pending') %>
+                <%- else %>
+                  <span role="presentation" class=<%=sync_type_icon(layer['sync_type'])%> ></span>
+                  <%= t("screens.admin.connector.#{layer['sync_type']}") %>
+                <%- end -%>
+              </td>
             </tr>
           <%- end -%>
         </tbody>

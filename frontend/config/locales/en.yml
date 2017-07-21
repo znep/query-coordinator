@@ -727,7 +727,7 @@ en:
           currency:
             title: Currency
             common: Common
-            other: Other
+            other_currency: Other
           advanced:
             title: Advanced
             precision: Specify decimal precision
@@ -2075,7 +2075,7 @@ en:
       subtitle: Sorry, couldn't find that!
       suggestion: Try going back to the update.
       title: Not Found
-    progress_items:
+    notifications:
       connection_error_body: Something went wrong with your connection. Make sure you are connected to the internet.
       connection_error_body_advice: Check your internet connection and make sure to keep your browser window open while the file is uploading.
       connection_error_body_description: Something went wrong when trying to upload the file {0}.
@@ -2804,6 +2804,8 @@ en:
           all: All
           internal: Internal
           open: Open
+          private: Private
+          public: Public
     header:
       asset_counts:
         charts:
@@ -2815,6 +2817,9 @@ en:
         datasets:
           one: Dataset
           other: Datasets
+        files:
+          one: File/Doc
+          other: Files/Docs
         filters:
           one: Filtered View
           other: Filtered Views
@@ -2851,7 +2856,7 @@ en:
           error: Sorry, there was an error changing visibility for this asset. Please refresh and try again or contact support@socrata.com if it continues.
           options:
             open:
-              title: Open
+              title: Public
               description: Publicly accessible. Discoverable through the public catalog.
             private:
               title: Private
@@ -2884,6 +2889,7 @@ en:
         open: Open
         pending: Pending
         private: Private
+        public: Public
         rejected: Rejected
         shared_to_me: Shared to me
     title: Asset Inventory
@@ -3087,7 +3093,7 @@ en:
         comment: Comment
         dataset: Dataset
         moderation: Moderation
-        moderate_comments: Moderate Comments
+        moderate_comments: Comment Moderation
         no_comments: No comments match your current filter.
         reject: Reject
         show: Show
@@ -3182,7 +3188,7 @@ en:
         success: Success
         sync_policy: Synchronization Policy
         terminate: Terminate
-        title: Manage Connectors
+        title: Connectors
         type: Type
         update_selections: Update connector selections
         whats_this: What's this?
@@ -3236,7 +3242,7 @@ en:
         status: Status
         target_domain: Target Domain
         terminate: Terminate
-        title: Open Data Federation
+        title: Federations
       georegions:
         actions: Actions
         choose_a_dataset: Choose a Layer
@@ -3288,7 +3294,7 @@ en:
           service_unavailable_html: <p>We are experiencing technical issues with some services related to Spatial Lens.</p><p>Please contact <a href="https://support.socrata.com">Socrata support</a> if the issue persists.</p>
         learn_more: Learn more about how to <a href="https://support.socrata.com/hc/en-us/articles/212862177">Manage Spatial Lens on your domain</a>
         page_subtitle: You have set %{default_count} of %{available_count} available boundaries as auto-encoded boundaries.
-        page_title: Manage Spatial Lens
+        page_title: Spatial Lens
         picker_explanation: Choose a geospatial layer that you want to use as the basis for your Spatial Lens. You can click on the name to preview the layer in a new browser tab.
         picker_explanation_html: "<p>Choose a geospatial layer that you want to use as the basis for your Spatial Lens.</p><p>You can click on the name to preview the layer in a new browser tab.</p>"
         picker_support_html: Can't find what you're looking for? View the article <a href="https://support.socrata.com/hc/en-us/articles/212862177">Creating Spatial Lens Boundaries</a> to learn more.
@@ -3346,7 +3352,7 @@ en:
         set_a_thumbnail: Set a Thumbnail
         text: Text
         thumbnail: Thumbnail
-        title: Manage Home Page
+        title: Homepage Content
         up: Up
       index:
         administration: Administration
@@ -3354,48 +3360,48 @@ en:
           data_and_assets: Data and Assets
           content: Content
           super_admin: Super Admin
-          site_settings: Site Settings
+          administration: Administration
         page_title: Administration
         comment_moderation: Comment Moderation
-        comment_moderation_description: Review and moderate comments for datasets on your site
+        comment_moderation_description: Review and approve comments submitted on your assets by users
         connectors: Connectors
-        connectors_description: Register a connector to bulk create and manage connected datasets.
-        dataset_routing_and_approval: Dataset Routing & Approval
-        dataset_routing_and_approval_description: Review datasets that are in the approval process, and manage the steps of the approval process
+        connectors_description: Manage data and metadata connections with third-party providers
+        dataset_routing_and_approval: Routing and Approval
+        dataset_routing_and_approval_description: Define the dataset approval process and manage a queue of submitted assets
         datasets: Asset Inventory
-        datasets_description: List the assets on this domain and configure the layout of the dataset page
+        datasets_description: Create, review, and manage all assets on your Socrata site
         dataslate_pages: DataSlate Pages
-        dataslate_pages_description: List and manage the DataSlate pages on this domain
+        dataslate_pages_description: Manage DataSlate reports and pages
         feature_flags: Feature Flags
-        feature_flags_description: Manage feature flags for this domain
-        federation: Federation
-        federation_description: Manage connections and data sharing with other sites via Open Data Federation Services
+        feature_flags_description: Manage domain feature flags
+        federation: Federations
+        federation_description: Manage data connections with other Socrata-powered sites
         georegions: Spatial Lens
-        georegions_description: Configure custom boundaries that can be used to create Spatial Lens maps
+        georegions_description: Configure custom map boundaries for Data Lens maps
         goals: Goal Management
         goals_description: Manage all Open Performance goals on this domain.
-        home_page: Home Page
-        home_page_description: Configure what content is featured on the home page
-        internal: Internal
-        internal_description: Change and add modules, sites, and more
-        jobs: Jobs
-        jobs_description: See all current and recent long-running data processing jobs happening on your platform
+        home_page: Homepage Content
+        home_page_description: Configure content featured on the home page
+        internal: Internal Panel
+        internal_description: Socrata Super-Admin settings
+        activity_log: Activity Log
+        activity_log_description: Monitor updates, data jobs, and other activity on your Socrata site
         metadata: Metadata
-        metadata_description: Manage the dataset metadata fields, including categories and custom fields
-        sdp_templates: SDP Templates
-        sdp_templates_description: Manage and customize the templates used for publishing your data via Socrata Data Players
-        site_analytics: Site Analytics
-        site_analytics_description: View sitewide statistics for datasets, views, visitors and more
+        metadata_description: Structure and customize site-wide dataset metadata, including categories and custom fields
+        sdp_templates: Embed (Social Data Player) Templates
+        sdp_templates_description: Style and customize templates used to embed your data around the web
+        site_analytics: Analytics
+        site_analytics_description: View site-wide metrics for your assets and data catalog
         site_appearance: Site Appearance
-        site_appearance_description: Configure the appearance of your Socrata site
+        site_appearance_description: Configure the header, footer, and general appearance of your Socrata site
         site_chrome: Site Appearance
         site_chrome_description: Configure the appearance of your Socrata site
-        stories: Stories
-        stories_description: Edit custom story themes
+        stories: Stories Themes
+        stories_description: Edit custom story themes (Socrata Super-Admins only)
         users: Users
-        users_description: Manage users on your site and what permissions and abilities they have
+        users_description: Create and manage user roles on your site
         view_moderation: View Moderation
-        view_moderation_description: View and manage user-created views, including filters, charts, and maps. Approve a view to have it show up in your data catalog.
+        view_moderation_description: Review and manage user-created views for inclusion in your catalog
       jobs:
         cancel: Cancel
         close: Close
@@ -3472,7 +3478,7 @@ en:
           showing_most_recent: Showing the most recent %{limit} jobs
           started: Started
           status: Status
-          title: Data Jobs
+          title: Activity Log
           to_working_copy: to working copy
           with_problems: with problems
         initiated_at: Initiated At
@@ -3666,6 +3672,7 @@ en:
             DeltaImporter2: DataSync
             Imports2: Web Interface
             ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">Resource API</a>
+            PublishingAPI: Publishing API
           started_by: Started by
           title: Data Job Detail
           to: to
@@ -3728,11 +3735,10 @@ en:
         metadata_field_table_description: Metadata Fields for '%{name}'
         no_data: No custom dataset fields have been defined for your domain yet. Enter a name below and click 'Create' to begin.
         no_fields_defined: This field set does not have any fields defined yet
-        page_title: Manage Dataset Metadata
         parent: Parent
         remove: Remove
         shown: Shown?
-        title: Manage Metadata
+        title: Metadata
         'true': true
         up: Up
       new_story:
@@ -3830,7 +3836,7 @@ en:
         stages: stages
         stuck_datasets: Stuck Datasets
         take_action: Take Action
-        title: Dataset Routing & Approval
+        title: Routing and Approval
         today: Today
         unconfigured_message: Dataset Routing & Approval is not configured
       sdp:
@@ -3979,7 +3985,7 @@ en:
         listing:
           create_new_template: Create a New Template
           current_default: Current Default
-          default_title: Social Data Player Templates
+          default_title: Embed (Social Data Player) Templates
           delete: Delete
           edit: Edit
           errors:
@@ -4430,7 +4436,7 @@ en:
         search: Search
         search_for_users: Search for Users to Add
         search_results: Search Results for '%{term}'
-        title: Manage Users
+        title: Users
         user_saved: User saved
         users_table_description: Users
       view_moderation:
@@ -4764,6 +4770,8 @@ en:
             option: Option
             title: Multiple Choice Options
           nbe_geocoding_configuration:
+            create_point_column: Create Point Column
+            create_geocoded_point_column: Create Geocoded Point Column
             address_label: Address
             cancel_configuration_prompt: Are you sure you want to cancel geocoding configuration? Configuration must be completed at the time of column creation.
             country_label: Country
@@ -5986,7 +5994,7 @@ en:
       sdp: SDP
       select_chart_type: Select a chart type to display from the menu
       show_more: Show More
-      site_analytics: Site Analytics
+      site_analytics: Analytics
       snapshot_created: snapshot created
       snapshots: Snapshots
       snapshots_added: Snapshots Added

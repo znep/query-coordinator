@@ -40,9 +40,11 @@ module ApplicationHelper
   end
 
   def icon_with_aria_text(text, opts = {})
-    content_tag(:span, :class => opts.fetch(:class, 'icon')) do
-      content_tag(:span, text, :class  => 'aria-not-displayed')
-    end
+    content_tag(:span, aria_text_span(text), :class => opts.fetch(:class, 'icon'))
+  end
+
+  def aria_text_span(text)
+    content_tag(:span, text, :class => 'aria-not-displayed')
   end
 
   def page_title
@@ -57,9 +59,23 @@ module ApplicationHelper
   # Only runs for logged in users.
   def render_pendo_tracker
     if pendo_tracking_enabled? && current_user
+      first_name = ''
+      last_name = ''
+      display_name = current_user['displayName']
+      if display_name
+        names = display_name.split
+        if names.length == 1 || names.length > 2
+          first_name = display_name
+        elsif names.length == 2
+          first_name, last_name = names
+        end
+      end
+
       pendo_config = {
         :token => Rails.application.config.pendo_token,
         :email => current_user['email'],
+        :first_name => first_name,
+        :last_name => last_name,
         :socrata_id => current_user['id'],
         :socrata_employee => current_user.try(:[], 'flags').try(:include?, 'admin') || false,
         :role => current_user['roleName'] || 'N/A',

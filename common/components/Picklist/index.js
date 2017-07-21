@@ -34,7 +34,7 @@ export const Picklist = React.createClass({
     onChange: React.PropTypes.func,
     onFocus: React.PropTypes.func,
     onBlur: React.PropTypes.func,
-    size: React.PropTypes.string
+    size: React.PropTypes.oneOf(['small', 'medium', 'large'])
   },
 
   getDefaultProps() {
@@ -245,7 +245,10 @@ export const Picklist = React.createClass({
 
     const content = hasRenderFunction ?
       option.render(option) :
-      <span className="picklist-title" key={index}>{option.title}</span>;
+      <span className="picklist-title" key={index}>
+        {option.icon}
+        {option.title}
+      </span>;
 
     return (
       <div {...attributes}>

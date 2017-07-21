@@ -2,7 +2,8 @@ import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { handleKeyPress } from '../../common/a11yHelpers';
-import { isUserAdminOrPublisher } from '../../common/user';
+import { userHasRight } from '../../common/user';
+import * as Rights from '../../common/rights';
 import { localizeLink } from '../../common/locale';
 
 export class PrivateNotice extends Component {
@@ -56,7 +57,7 @@ export class PrivateNotice extends Component {
       return null;
     }
 
-    const manageLink = isUserAdminOrPublisher() ?
+    const manageLink = userHasRight(Rights.edit_others_datasets) ?
       <a href={`${localizeLink(view.gridUrl)}?pane=manage`}>
         {I18n.manage_prompt}
       </a> :

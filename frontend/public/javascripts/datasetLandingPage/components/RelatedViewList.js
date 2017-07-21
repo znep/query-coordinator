@@ -7,7 +7,8 @@ import { ViewCard } from 'common/components';
 import { getViewCardPropsForView } from '../../common/helpers/viewCardHelpers';
 import { RELATED_VIEWS_CHUNK_SIZE } from '../../common/constants';
 import { handleKeyPress } from '../../common/a11yHelpers';
-import { isUserAdminOrPublisher } from '../../common/user';
+import { userHasRight } from '../../common/user';
+import * as Rights from '../../common/rights';
 import { emitMixpanelEvent } from '../actions/mixpanel';
 import {
   loadMoreRelatedViews,
@@ -79,7 +80,7 @@ export class RelatedViewList extends Component {
       isLoading
     } = this.props;
 
-    if (isUserAdminOrPublisher() && _.isEmpty(viewList)) {
+    if (userHasRight(Rights.edit_others_datasets) && _.isEmpty(viewList)) {
       return this.renderEmptyListAlert();
     }
 
@@ -179,7 +180,7 @@ export class RelatedViewList extends Component {
   render() {
     const { viewList } = this.props;
 
-    if (_.isEmpty(viewList) && !isUserAdminOrPublisher()) {
+    if (_.isEmpty(viewList) && !userHasRight(Rights.edit_others_datasets)) {
       return null;
     }
 

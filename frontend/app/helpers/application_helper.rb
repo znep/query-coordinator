@@ -926,13 +926,28 @@ module ApplicationHelper
   # Renders pendo tracker code if pendo_tracking feature enabled.
   # Only runs for logged in users.
   def render_pendo_tracker
-    if CurrentDomain.feature?(:pendo_tracking) && @current_user
+    if CurrentDomain.feature?(:pendo_tracking) && current_user
+      first_name = ''
+      last_name = ''
+      display_name = current_user.displayName
+
+      if display_name
+        names = display_name.split
+        if names.length == 1 || names.length > 2
+          first_name = display_name
+        elsif names.length == 2
+          first_name, last_name = names
+        end
+      end
+
       pendo_config = {
         :token => APP_CONFIG.pendo_token,
-        :email => @current_user.try(:email),
-        :socrata_id => @current_user.try(:id),
-        :socrata_employee => @current_user.try(:is_superadmin?) || false,
-        :role => @current_user.try(:roleName) || 'N/A',
+        :email => current_user.email,
+        :first_name => first_name,
+        :last_name => last_name,
+        :socrata_id => current_user.id,
+        :socrata_employee => current_user.is_superadmin? || false,
+        :role => current_user.role_name || 'N/A',
         :stories_enabled => FeatureFlags.has?(:stories_enabled),
         :environment =>  Rails.env
       }
@@ -942,18 +957,16 @@ module ApplicationHelper
   end
 
   def font_tags
-    out = ''
-
-    if CurrentDomain.properties.typekit_id.present?
-      out << <<-eos
-        <script type="text/javascript" src="//use.typekit.net/#{CurrentDomain.properties.typekit_id}.js"></script>
-        <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-      eos
-    elsif module_enabled?(:govStat)
-      out << '<link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic" rel="stylesheet" type="text/css">'
-    end
-
-    out.html_safe
+    String.new.tap do |tags|
+      if CurrentDomain.properties.typekit_id.present?
+        tags << <<-eos
+          <script type="text/javascript" src="//use.typekit.net/#{CurrentDomain.properties.typekit_id}.js"></script>
+          <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+        eos
+      elsif module_enabled?(:govStat)
+        tags << google_font_link(family: 'PT+Sans', weights: [400, 700])
+      end
+    end.html_safe
   end
 
   # Takes dataset id and returns link to the alternate version of the dataset
@@ -1067,9 +1080,11 @@ module ApplicationHelper
   end
 
   def icon_with_aria_text(text, opts = {})
-    content_tag(:span, :class => opts.fetch(:class, 'icon')) do
-      content_tag(:span, text, :class  => 'aria-not-displayed')
-    end
+    content_tag(:span, aria_text_span(text), :class => opts.fetch(:class, 'icon'))
+  end
+
+  def aria_text_span(text)
+    content_tag(:span, text, :class => 'aria-not-displayed')
   end
 
   def request_ip_address
@@ -1171,6 +1186,17 @@ module ApplicationHelper
       Rails.logger.error("Asset Inventory feature flag is enabled for #{CurrentDomain.cname} but no dataset of display type assetinventory is found.")
     end
     view_model
+  end
+
+  # There are over 600 font families to choose from at https://fonts.google.com/
+  def google_font_link(family: 'Open+Sans', weights: [300, 400, 600, 700], italic: true)
+    italics = italic ? weights.map { |weight| "#{weight}italic" } : []
+    tag(
+      :link,
+      :type => 'text/css',
+      :rel => 'stylesheet',
+      :href => "https://fonts.googleapis.com/css?family=#{family}:#{(weights + italics).join(',')}"
+    )
   end
 
 end

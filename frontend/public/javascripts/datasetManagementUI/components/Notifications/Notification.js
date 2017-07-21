@@ -12,7 +12,7 @@ export class Notification extends Component {
     super();
 
     this.state = {
-      detailsOpen: false
+      detailsOpen: true
     };
 
     _.bindAll(this, ['toggleDetails']);
@@ -35,7 +35,7 @@ export class Notification extends Component {
       case 'success':
         classNames = [...classNames, styles.success].join(' ');
         statusIcon = <SocrataIcon name="check" className={styles.successIcon} />;
-        statusMessage = <span className={styles.successMessage}>{I18n.progress_items.success}</span>;
+        statusMessage = <span className={styles.successMessage}>{I18n.notifications.success}</span>;
         break;
       case 'inProgress':
         classNames = [...classNames, styles.inProgress].join(' ');
@@ -46,7 +46,7 @@ export class Notification extends Component {
         statusIcon = <SocrataIcon name="warning" className={styles.errorIcon} />;
         statusMessage = (
           <a href="#" className={styles.detailsToggle} onClick={this.toggleDetails}>
-            {detailsOpen ? I18n.progress_items.hide_details : I18n.progress_items.show_details}
+            {detailsOpen ? I18n.notifications.hide_details : I18n.notifications.show_details}
           </a>
         );
         break;

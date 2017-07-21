@@ -62,6 +62,12 @@ body {
   &.hero-body * {
     text-shadow: 0 0 10px $hero-text-shadow-color;
   }
+
+  // Overcome a Squire quirk that dissociates underline color from text color.
+  // See also RichTextEditorFormatController.
+  u span.colour, a span.colour {
+    text-decoration: underline;
+  }
 }
 
 

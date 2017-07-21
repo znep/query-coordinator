@@ -76,11 +76,11 @@ module Cetera
         {}.tap do |counts|
           asset_types.map do |asset_type|
             Thread.new do
-              cetera_opts = options.merge(
+              cetera_opts = {
                 :only => asset_type,
                 :domains => CurrentDomain.cname,
                 :limit => 0
-              )
+              }.merge(options)
 
               counts[asset_type] = catalog_search_client.
                 find_views(req_id, cookies, cetera_opts).

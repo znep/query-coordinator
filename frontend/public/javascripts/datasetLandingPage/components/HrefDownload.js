@@ -1,13 +1,14 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import { isUserAdminOrPublisher } from '../../common/user';
+import { userHasRight } from '../../common/user';
+import * as Rights from '../../common/rights';
 import { localizeLink } from '../../common/locale';
 
 export class HrefDownload extends Component {
   renderManagePrompt() {
     const { view } = this.props;
 
-    if (!isUserAdminOrPublisher()) {
+    if (!userHasRight(Rights.edit_others_datasets)) {
       return null;
     }
 

@@ -6,8 +6,10 @@ import { connect } from 'react-redux';
 import SaveButton from './SaveButton';
 import SaveNotification from './SaveNotification';
 import { EditBar as SocrataComponentsEditBar } from 'common/components';
-import { t } from '../lib/I18n';
+import I18n from 'common/i18n';
 import { enterPreviewMode, openEditMenu } from '../actions';
+import AddVisualizationButton from './AddVisualizationButton';
+
 
 // Note that there is a placeholder version of this component in visualization_canvas.html.erb,
 // so be sure to verify the placeholder looks fine if you make significant changes to this
@@ -18,7 +20,7 @@ export class EditBar extends PureComponent {
 
     const editBarProps = {
       name,
-      menuLabel: t('edit_menu_label'),
+      menuLabel: I18n.t('visualization_canvas.edit_menu_label'),
       menuIcon: 'socrata-icon-stories-menu',
       onClickMenu,
       onClickName
@@ -27,10 +29,11 @@ export class EditBar extends PureComponent {
     return (
       <SocrataComponentsEditBar {...editBarProps}>
         <div className="edit-bar-child">
+          <AddVisualizationButton />
           <SaveButton />
           <SaveNotification />
           <button className="btn btn-transparent btn-preview" onClick={onClickPreview}>
-            {t('preview')}
+            {I18n.t('visualization_canvas.preview')}
             <span className="socrata-icon-preview" role="presentation" />
           </button>
         </div>

@@ -1,4 +1,5 @@
 export const home = routing => {
+
   if (!routing.locationBeforeTransitions && !routing.pathname) {
     // on initial action, routes haven't been loaded
     return '';
@@ -12,8 +13,9 @@ export const home = routing => {
 export const manageTab = routing => `${home(routing)}/manageTab`;
 export const metadata = routing => `${home(routing)}/metadata`;
 export const datasetMetadataForm = routing => `${home(routing)}/metadata/dataset`;
-export const columnMetadataForm = columnId => routing =>
-  `${home(routing)}/metadata/columns${columnId ? `#${columnId}` : ''}`;
+export const columnMetadataForm = (outputSchemaId, columnId) => routing => (
+  `${home(routing)}/metadata/${outputSchemaId}/columns${columnId ? `#${columnId}` : ''}`
+);
 export const sources = routing => `${home(routing)}/sources`;
 
 export const showOutputSchema = (sourceId, inputSchemaId, outputSchemaId, pageNo) => routing =>

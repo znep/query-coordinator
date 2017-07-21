@@ -209,6 +209,14 @@ body {
         }
       }
     }
+
+    .add-visualization-button-container {
+      margin-right: 15px;
+
+      .btn {
+        height: 100%;
+      }
+    }
   }
 
   .preview-bar {
@@ -313,19 +321,6 @@ body {
             }
           }
         }
-      }
-    }
-
-    .add-visualization-button-container {
-      padding: 200px 0px;
-      display: flex;
-
-      .btn {
-        margin: auto;
-      }
-
-      .socrata-icon-add {
-        padding-right: 10px;
       }
     }
 

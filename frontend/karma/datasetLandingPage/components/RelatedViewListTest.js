@@ -48,7 +48,7 @@ describe('components/RelatedViewList', function() {
   });
 
   it('does not render if the user is not an admin or publisher and the list is empty', function() {
-    window.serverConfig.currentUser = { roleName: 'wizard' };
+    window.serverConfig.currentUser = { roleName: 'wizard', rights: [ ] };
     var element = renderComponent(RelatedViewList, _.assign(defaultProps, {
       viewList: []
     }));
@@ -58,7 +58,7 @@ describe('components/RelatedViewList', function() {
 
   describe('contents', function() {
     it('renders an alert if the viewList of related views is empty and the user is privileged', function() {
-      window.serverConfig.currentUser = { roleName: 'publisher' };
+      window.serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
       var element = renderComponentWithStore(RelatedViewList, _.assign(defaultProps, {
         viewList: []
       }));

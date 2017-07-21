@@ -22,7 +22,7 @@ describe('components/VisibilityCell', () => {
       const element = renderComponentWithPropsAndStore(VisibilityCell, visibilityCellProps());
       assert.isNotNull(element);
       assert.equal(element.className, 'visibility-cell');
-      assert.equal(element.textContent, 'Open');
+      assert.equal(element.querySelector('strong').textContent, 'Public');
       assert.isNotNull(element.querySelector('.title span.socrata-icon-public-open'));
     });
   });
@@ -35,7 +35,7 @@ describe('components/VisibilityCell', () => {
       }));
       assert.isNotNull(element);
       assert.equal(element.className, 'visibility-cell');
-      assert.equal(element.textContent, 'Private');
+      assert.equal(element.querySelector('strong').textContent, 'Private');
       assert.isNotNull(element.querySelector('.title span.socrata-icon-private'));
     });
 
@@ -75,7 +75,7 @@ describe('components/VisibilityCell', () => {
         isPublished: false,
         isModerationApproved: false
       }));
-      assert.equal(element.textContent, 'Private');
+      assert.equal(element.querySelector('strong').textContent, 'Private');
       assert.isNotNull(element.querySelector('.title span.socrata-icon-private'));
     });
   });
@@ -88,7 +88,7 @@ describe('components/VisibilityCell', () => {
       }));
       assert.isNotNull(element);
       assert.equal(element.className, 'visibility-cell');
-      assert.equal(element.textContent, 'Pending');
+      assert.equal(element.querySelector('strong').textContent, 'Pending');
       assert.isNotNull(element.querySelector('.title span.socrata-icon-eye-blocked'));
     });
 

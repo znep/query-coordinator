@@ -59,14 +59,16 @@ RSpec.describe 'autosave', type: :feature, js: true do
     trigger_change!
 
     # New state: unsaved. Preview disabled.
-    expect(is_story_dirty?).to be_truthy
-    expect(preview_disabled?).to be_truthy
+    wait_until do
+      is_story_dirty? && preview_disabled?
+    end
 
     # wait expected delay
     sleep(expected_delay_before_autosave)
 
     # Last state: saved. Preview re-enabled.
-    expect(is_story_dirty?).to be_falsey
-    expect(preview_disabled?).to be_falsey
+    wait_until do
+      !is_story_dirty? && !preview_disabled?
+    end
   end
 end

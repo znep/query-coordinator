@@ -46,14 +46,14 @@ describe('components/BlobDownload', function() {
       assert.isNull(element.querySelector('.edit-prompt'));
     });
 
-    it('is visible if the user is a publisher or an admin', function() {
-      window.serverConfig.currentUser = { roleName: 'publisher' };
+    it('is visible if the user has the edit_others_datasets right', function() {
+      window.serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
       var element = renderComponent(BlobDownload, getProps());
       assert.ok(element.querySelector('.edit-prompt'));
     });
 
     it('has a button that links to the edit page', function() {
-      window.serverConfig.currentUser = { roleName: 'publisher' };
+      window.serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
       var element = renderComponent(BlobDownload, getProps());
       expect(element.querySelector('.edit-prompt a.btn').getAttribute('href')).to.contain('/edit');
     });

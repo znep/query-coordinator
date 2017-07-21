@@ -468,6 +468,16 @@ export default function RichTextEditorFormatController(editor, formats) {
 
   function _setTextColor(color) {
     _squire.setTextColour(color);
+
+    // Set text-decoration-color on all coloring spans; in conjunction with a
+    // CSS rule applied to all themes, this style will allow the underlines of
+    // <a> and <u> elements to stay consistent with the text color.
+    _squire.changeFormat({
+      tag: 'span',
+      attributes: {
+        style: 'text-decoration-color: ' + color
+      }
+    });
   }
 
   function _toggleBold() {

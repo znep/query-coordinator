@@ -1,11 +1,13 @@
+import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import * as Links from '../../links';
 import MetadataEditor from '../ManageMetadata/MetadataEditor';
 import styles from 'styles/ManageMetadata/MetadataContent.scss';
+import * as Selectors from '../../selectors';
 
 // TODO : should probably abstract sidebar to its own component
-const MetadataContent = ({ path, fourfour, onSidebarTabClick, columnsExist }) =>
+const MetadataContent = ({ entities, onDatasetTab, fourfour, outputSchemaId, onSidebarTabClick, columnsExist }) =>  // eslint-disable-line
   <div>
     <div className={styles.sidebar}>
       <Link
@@ -17,7 +19,7 @@ const MetadataContent = ({ path, fourfour, onSidebarTabClick, columnsExist }) =>
       </Link>
       {columnsExist ?
         <Link
-          to={Links.columnMetadataForm()}
+          to={Links.columnMetadataForm(outputSchemaId || Selectors.latestOutputSchema(entities).id)}
           className={styles.tab}
           onClick={() => onSidebarTabClick(fourfour)}
           activeClassName={styles.selected}>
@@ -29,14 +31,22 @@ const MetadataContent = ({ path, fourfour, onSidebarTabClick, columnsExist }) =>
           {I18n.metadata_manage.column_metadata_label}
         </span>}
     </div>
-    <MetadataEditor path={path} />
+    <MetadataEditor onDatasetTab={onDatasetTab} outputSchemaId={outputSchemaId} />
   </div>;
 
+
 MetadataContent.propTypes = {
-  path: PropTypes.string.isRequired,
   onSidebarTabClick: PropTypes.func,
   fourfour: PropTypes.string.isRequired,
-  columnsExist: PropTypes.bool
+  columnsExist: PropTypes.bool,
+  entities: PropTypes.object.isRequired,
+  outputSchemaId: PropTypes.number.isOptional,
+  onDatasetTab: PropTypes.bool.isRequired
 };
 
-export default MetadataContent;
+const mapStateToProps = ({ entities, ui }, props) => ({
+  ...props,
+  entities
+});
+
+export default connect(mapStateToProps)(MetadataContent);

@@ -28,7 +28,8 @@ module InternalAssetManagerHelper
   def render_internal_asset_manager_server_config
     feature_flags = FeatureFlags.derive(nil, request).slice(
       :disable_authority_badge,
-      :enable_internal_asset_manager_my_assets
+      :enable_internal_asset_manager_my_assets,
+      :stories_enabled
     )
 
     server_config = {

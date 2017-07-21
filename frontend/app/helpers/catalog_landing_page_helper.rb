@@ -28,6 +28,7 @@ module CatalogLandingPageHelper
     # Figure out if we need a locale prefix on links
     feature_flags = FeatureFlags.derive(nil, request).slice(
       :browse_autocomplete,
+      :clp_move_description_below_featured_content,
       :default_to_catalog_landing_page,
       :enable_catalog_landing_page,
       :enable_markdown_for_catalog_landing_page_description,

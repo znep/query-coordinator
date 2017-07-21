@@ -1,8 +1,13 @@
 import { assert } from 'chai';
 import { CatalogFilters} from 'components/catalog_filters';
+import { FeatureFlags } from 'common/feature_flags';
 import sinon from 'sinon';
 
 describe('components/CatalogFilters', () => {
+  before(() => {
+    FeatureFlags.useTestFixture({ stories_enabled: true });
+  })
+
   const catalogFiltersProp = (options = {}) => ({
     assetTypes: null,
     authority: null,

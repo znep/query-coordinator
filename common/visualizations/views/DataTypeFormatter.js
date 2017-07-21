@@ -686,7 +686,7 @@ function _renderCurrencyNumber(amount, format) {
     }
 
     value = utils.commaify(value, format.commaifyOptions);
-    if (format.noCommas) {
+    if (format.noCommas === true || format.noCommas === "true") {
       value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
     }
   }
@@ -709,7 +709,7 @@ function _renderFinancialNumber(amount, format) {
     }
 
     value = utils.commaify(value, format.commaifyOptions);
-    if (format.noCommas) {
+    if (format.noCommas === true || format.noCommas === "true") {
       value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
     }
   }
@@ -740,7 +740,7 @@ function _renderPercentageNumber(amount, format) {
 
     value = utils.commaify(value, format.commaifyOptions);
 
-    if (format.noCommas) {
+    if (format.noCommas === true || format.noCommas === "true") {
       value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
     }
   }
@@ -763,8 +763,9 @@ function _renderStandardNumber(amount, format) {
     }
 
     value = utils.commaify(value, format.commaifyOptions);
+
     // Force commaify off for four-digit numbers (workaround for year columns)
-    if (format.noCommas) {
+    if (format.noCommas === true || format.noCommas === "true") {
       value = value.replace(new RegExp('\\' + format.groupSeparator, 'g'), '');
     }
   }

@@ -90,8 +90,8 @@ describe('components/ResultListRow', () => {
       assert.equal(elementWithType('form').querySelector('td span').className, 'socrata-icon-list2');
     });
     it('renders the correct icon for type "file", or "blob"', () => {
-      assert.equal(elementWithType('blob').querySelector('td span').className, 'socrata-icon-download');
-      assert.equal(elementWithType('file').querySelector('td span').className, 'socrata-icon-download');
+      assert.equal(elementWithType('blob').querySelector('td span').className, 'socrata-icon-attachment');
+      assert.equal(elementWithType('file').querySelector('td span').className, 'socrata-icon-attachment');
     });
     it('renders a generic data icon for unknown types', () => {
       assert.equal(elementWithType('unknown').querySelector('td span').className, 'socrata-icon-data');

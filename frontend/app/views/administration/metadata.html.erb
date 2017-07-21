@@ -18,7 +18,7 @@
 <div class="contentBox withLeftNavigation metadataScreen">
    <div class="adminHeader floating metadata">
     <span class="icon"></span>
-    <h1><%= t("#{prefix}.page_title") %></h1>
+    <h1><%= t("#{prefix}.title") %></h1>
   </div>
 </div>
 
@@ -56,10 +56,10 @@
               </colgroup>
               <thead>
                 <tr>
-                  <td class="required" scope="col"><div>&nbsp;</div></td>
+                  <th class="required" scope="col"><div>&nbsp;</div></th>
                   <th class="name" scope="col"><div><%= t("#{prefix}.field_name") %></div><span class="icon"></span></th>
                   <th class="options" scope="col"><div><%= t("#{prefix}.allowed_values") %></div><span class="icon"></span></th>
-                  <td class="actions" scope="col"><div>&nbsp;</div><span class="icon"></span></td>
+                  <th class="actions" scope="col"><div>&nbsp;</div><span class="icon"></span></th>
                 </tr>
               </thead>
               <tbody>
@@ -68,9 +68,9 @@
                     <%- required   = field['required'].present?
                         privstatus = field['private'].present? -%>
                       <tr class="item<%= (required ? ' required' : '') + (privstatus ? ' private' : '') %>" data-fieldname="<%= field.name %>" data-fieldset="<%= fs_index %>">
-                      <td class="required">
+                      <th class="required row-header">
                           <span class="requiredField"></span>
-                      </td>
+                      </th>
                       <th class="name row-header" scope="row">
                         <span class="cellInner">
                           <%= field.displayName || field.name %>
@@ -213,8 +213,8 @@
             <%- end -%>
             <th class="parent"><div><%= t("#{prefix}.parent") %></div><span class="icon"></span></th>
             <th class="shown"><div><%= t("#{prefix}.shown") %></div><span class="icon"></span></th>
-            <td class="actions"><div>&nbsp;</div><span class="icon"></span></td>
-            <td class="deleteAction"><div>&nbsp;</div><span class="icon"></span></td>
+            <th class="actions"><div>&nbsp;</div><span class="icon"></span></th>
+            <th class="deleteAction"><div>&nbsp;</div><span class="icon"></span></th>
           </tr>
         </thead>
         <tbody>

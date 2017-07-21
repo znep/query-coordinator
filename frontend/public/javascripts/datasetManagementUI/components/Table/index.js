@@ -89,16 +89,24 @@ Table.propTypes = {
       field_name: PropTypes.string.isRequired,
       display_name: PropTypes.string.isRequired,
       description: PropTypes.string,
-      transform_id: PropTypes.number.isRequired
+      transform_id: PropTypes.number.isRequired,
+      transform: PropTypes.shape({
+        attempts: PropTypes.number.isRequired,
+        error_indices: PropTypes.array.isRequired,
+        id: PropTypes.number.isRequired,
+        output_soql_type: PropTypes.string.isRequired,
+        transform_expr: PropTypes.string.isRequired,
+        transform_input_columns: PropTypes.array.isRequired
+      })
     })
   )
 };
 
 const combineAndSort = ({ current, ignored }) => _.sortBy([...current, ...ignored], 'position');
 
+// TODO: this is wrong...this only gets a single input column....not all
 const getInputColumns = (entities, outputColumns) => outputColumns.map((outputColumn) => {
-  const transform = entities.transforms[outputColumn.transform_id];
-  const inputColumnId = transform.transform_input_columns[0].input_column_id;
+  const inputColumnId = outputColumn.transform.transform_input_columns[0].input_column_id;
   const inputColumn = entities.input_columns[inputColumnId];
   return {
     ...outputColumn,

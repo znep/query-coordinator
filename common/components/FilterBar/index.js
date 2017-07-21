@@ -45,6 +45,14 @@ export const FilterBar = React.createClass({
     filters: PropTypes.arrayOf(PropTypes.object),
 
     /**
+     * A size string that will be inherited by child controls.
+     * See Dropdown and Picklist for examples of size-dependent controls that
+     * may exist within FilterItem components; note that explicit styles may not
+     * be specified for each size (in which case default styles will apply).
+     */
+    controlSize: PropTypes.oneOf(['small', 'medium', 'large']),
+
+    /**
      * Whether to display the filter bar's settings, including the option to add new filters and
      * individual filter settings. If this is set to true and none of the provided filters are
      * visible, the FilterBar will not render anything. Defaults to true.
@@ -81,6 +89,7 @@ export const FilterBar = React.createClass({
   getDefaultProps() {
     return {
       filters: [],
+      controlSize: 'small',
       isReadOnly: true,
       onUpdate: _.noop
     };
@@ -336,8 +345,14 @@ export const FilterBar = React.createClass({
   },
 
   render() {
-    const { columns, filters, isReadOnly, isValidTextFilterColumnValue } = this.props;
     const { isExpanded } = this.state;
+    const {
+      columns,
+      filters,
+      controlSize,
+      isReadOnly,
+      isValidTextFilterColumnValue
+    } = this.props;
 
     // We are mapping and then compacting here, instead of first filtering out the filters we
     // wouldn't be rendering, because we need to keep track of the filter's actual index in the
@@ -352,6 +367,7 @@ export const FilterBar = React.createClass({
         const props = {
           column,
           filter,
+          controlSize,
           isReadOnly,
           onUpdate: _.partialRight(this.onFilterUpdate, index),
           onRemove: _.partial(this.onFilterRemove, index),

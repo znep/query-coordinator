@@ -20,8 +20,13 @@
       padding: 6px 12px;
     }
 
+    .site-chrome-admin-menus {
+      height: 32px;
+    }
+
     .site-chrome-admin-separator {
-      height: 20px;
+      margin-top: 8px;
+      height: 16px;
     }
 
     .site-chrome-admin-menu h1 {
@@ -30,38 +35,34 @@
     }
 
     .site-chrome-admin-user {
-      padding: 2px 13px;
-
-      > ul::after {
-        right: 6px;
-      }
+      padding: 5px 10px;
+      height: 32px;
 
       > .socrata-icon-user {
-        width: 20px;
-        height: 20px;
-        font-size: 20px;
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
       }
     }
 
     .site-chrome-admin-settings {
-      padding: 3px 13px;
+      padding: 5px 10px 0 10px;
+      height: 32px;
 
       span[class^=socrata-icon] {
-        line-height: 25px;
-        display: block;
-        width: 25px;
-        height: 25px;
-        font-size: 25px;
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
       }
     }
 
     .site-chrome-admin-user-image {
-      width: 28px;
-      height: 28px;
+      width: 16px;
+      height: 16px;
 
       img {
-        width: 28px;
-        height: 28px;
+        width: 16px;
+        height: 16px;
       }
     }
   }
@@ -120,12 +121,13 @@
     display: flex;
     margin-left: 5px;
     margin-right: 5px;
-    height: 100%;
+    height: 46px;
   }
 
   .site-chrome-admin-settings {
+    padding: 8px 8px;
+
     span[class^=socrata-icon] {
-      line-height: 32px;
       display: block;
       width: 18px;
       height: 18px;
@@ -143,6 +145,10 @@
     &:hover,
     &.active {
       background-color: #3b454e;
+    }
+
+    ul {
+      right: 0;
     }
   }
 
@@ -197,12 +203,19 @@
     display: flex;
   }
 
+  .site-chrome-admin-user {
+    padding: 7px 8px;
+
+    ul {
+      right: 2px;
+    }
+  }
+
   .site-chrome-admin-user,
   .site-chrome-admin-settings {
     position: relative;
     margin-right: 0;
-    height: 100%;
-    padding: 7px 8px;
+    height: 46px;
 
     &:hover {
       background-color: #3c3c3c;
@@ -210,14 +223,14 @@
     }
 
     > .socrata-icon-user {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       background: white;
       display: block;
       color: #c3c3c3;
       text-align: center;
-      font-size: 24px;
+      font-size: 22px;
       overflow: hidden;
       line-height: 1.2;
       margin-top: 5px;
@@ -226,15 +239,13 @@
     ul {
       display: none;
       position: absolute;
-      right: 2px;
       top: 100%;
       list-style-type: none;
       padding: 0;
-      margin: 0;
       background: white;
-      filter: drop-shadow(0 3px 5px #888888);
+      filter: drop-shadow(0px 2px 5px #999);
       z-index: 10;
-      margin-top: 15px;
+      margin: 15px 0 0 0;
 
       &::after {
         position: absolute;
@@ -282,8 +293,8 @@
   }
 
   .site-chrome-admin-user-image {
-    width: 23px;
-    height: 23px;
+    width: 22px;
+    height: 22px;
     overflow: hidden;
     border-radius: 50%;
     border: solid 1px #000;

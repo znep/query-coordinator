@@ -145,10 +145,9 @@ Rails.application.routes.draw do
         :action => 'show',
         :constraints => Constraints::InternalAssetManagerBetaConstraint.new
 
-      # TODO for EN-15842: make flag enable_internal_asset_manager and uncomment:
-      # get '/admin/datasets',
-      #   :action => 'show',
-      #   :constraints => FeatureFlags::RoutingConstraint.new(:enable_internal_asset_manager)
+      get '/admin/datasets',
+        :action => 'show',
+        :constraints => FeatureFlags::RoutingConstraint.new(:use_internal_asset_manager)
     end
 
     scope :path => '/admin', :controller => 'administration' do
@@ -158,7 +157,7 @@ Rails.application.routes.draw do
       get :users
       get :comment_moderation
       get :sdp_templates
-      get :datasets # 💀
+      get :datasets # Once we no longer use the use_internal_asset_manager feature flag, 💀 this route
       post :initialize_asset_inventory
       get :data_slate, :as => 'canvas_admin', :action => 'canvas_pages'
       get 'data_slate/create', :as => 'canvas_create', :action => 'create_canvas_page'

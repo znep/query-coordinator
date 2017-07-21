@@ -31,6 +31,10 @@ export const ManageData = props => {
   const visualizationDoneCheckmark = null;
   const featuredDoneCheckmark = null;
 
+  const columnDescriptionLink = columnsExist ?
+    Links.columnMetadataForm(Selectors.latestOutputSchema(entities).id) :
+    '';
+
   return (
     <div className={styles.sidebarData}>
       <div>
@@ -40,7 +44,7 @@ export const ManageData = props => {
         <h3>{I18n.home_pane.sidebar.column_descriptions}</h3>
         <p> {I18n.home_pane.sidebar.column_descriptions_blurb}{' '}
         </p>
-        <Link to={Links.columnMetadataForm()}>
+        <Link to={columnDescriptionLink}>
           <button
             className={columnsExist ? styles.sidebarBtn : styles.sidebarBtnDisabled}
             title={!columnsExist && I18n.home_pane.sidebar.no_columns_msg}

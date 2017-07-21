@@ -41,7 +41,7 @@ describe('components/FeaturedContent', function() {
 
   describe('manage prompt', function() {
     it('renders the manage prompt if the user is a publisher', function() {
-      serverConfig.currentUser = { roleName: 'publisher' };
+      serverConfig.currentUser = { rights: [ 'edit_others_datasets' ] };
       var element = renderComponent(FeaturedContent, getProps());
       assert.ok(element.querySelector('.manage-prompt'));
     });

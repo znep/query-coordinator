@@ -1,3 +1,9 @@
+import React from 'react';
+import { SocrataIcon } from 'common/components';
+
+const communityIcon = <SocrataIcon name="community" />;
+const officialIcon = <SocrataIcon name="official2" />;
+
 const getTranslation = (key) => _.get(I18n, `filters.${key}`);
 
 export const assetTypeOptions = [
@@ -16,12 +22,12 @@ export const assetTypeOptions = [
 
 export const authorityOptions = [
   { title: getTranslation('authority.options.all'), value: null },
-  { title: getTranslation('authority.options.official'), value: 'official' },
-  { title: getTranslation('authority.options.community'), value: 'community' }
+  { title: getTranslation('authority.options.official'), value: 'official', icon: officialIcon },
+  { title: getTranslation('authority.options.community'), value: 'community', icon: communityIcon }
 ];
 
 export const visibilityOptions = [
   { title: getTranslation('visibility.options.all'), value: null },
-  { title: getTranslation('visibility.options.open'), value: 'open' },
-  { title: getTranslation('visibility.options.internal'), value: 'internal' }
+  { title: getTranslation('visibility.options.public'), value: 'open' },
+  { title: getTranslation('visibility.options.private'), value: 'internal' }
 ];

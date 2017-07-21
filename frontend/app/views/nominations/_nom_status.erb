@@ -1,17 +1,28 @@
 <span class="currentStatus"><%= status if local_assigns[:status] %></span>
-<%- if !current_user.nil? &&
-        current_user.has_right?(UserRights::MODERATE_COMMENTS) -%>
-<a href="#Moderate"
-  title="<%= t('controls.nominate.moderate_tip') %>"
-  data-status="pending"
-  class="moderate moderateLink unmoderatedLink"><%= t('controls.nominate.moderate') %></a>
-<a href="#Remove" title="<%= t('controls.nominate.remove_tip') %>"
-  class="delete unmoderatedLink"><%= t('controls.nominate.remove') %></a>
+
+<%- if current_user && current_user.has_right?(UserRights::MODERATE_COMMENTS) -%>
+  <a href="#Moderate"
+    title="<%= t('controls.nominate.moderate_tip') %>"
+    data-status="pending"
+    class="moderate moderateLink unmoderatedLink">
+    <%= t('controls.nominate.moderate') %>
+  </a>
+  <a href="#Remove" title="<%= t('controls.nominate.remove_tip') %>" class="delete unmoderatedLink">
+    <%= t('controls.nominate.remove') %>
+  </a>
 <%- end -%>
-<%- if !current_user.nil? &&
-        current_user.has_right?(UserRights::APPROVE_NOMINATIONS) -%>
-<a href="#Approve" title="<%= t('controls.nominate.approve_tip') %>" data-status="approved"
-  class="approve moderateLink moderatedLink"><%= t('controls.nominate.approve') %></a>
-<a href="#Reject" title="<%= t('controls.nominate.remove_tip') %>" data-status="rejected"
-  class="reject moderateLink moderatedLink"><%= t('controls.nominate.reject') %></a>
+
+<%- if current_user && current_user.has_right?(UserRights::APPROVE_NOMINATIONS) -%>
+  <a href="#Approve"
+    title="<%= t('controls.nominate.approve_tip') %>"
+    data-status="approved"
+    class="approve moderateLink moderatedLink">
+    <%= t('controls.nominate.approve') %>
+  </a>
+  <a href="#Reject"
+    title="<%= t('controls.nominate.remove_tip') %>"
+    data-status="rejected"
+    class="reject moderateLink moderatedLink">
+    <%= t('controls.nominate.reject') %>
+  </a>
 <%- end -%>

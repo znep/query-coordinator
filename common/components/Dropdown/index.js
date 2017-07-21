@@ -20,7 +20,7 @@ export default React.createClass({
       React.PropTypes.string,
       React.PropTypes.func
     ]),
-    size: React.PropTypes.string,
+    size: React.PropTypes.oneOf(['small', 'medium', 'large']),
     value: React.PropTypes.string
   },
 
@@ -263,6 +263,7 @@ export default React.createClass({
 
   renderPlaceholder() {
     let { placeholder } = this.props;
+    let icon = null;
     const { selectedOption } = this.state;
     const caret = <SocrataIcon name="arrow-down" className="dropdown-caret" key="dropdown-caret" />;
     const placeholderText = text => <span key="placeholder">{text}</span>;
@@ -279,7 +280,7 @@ export default React.createClass({
       ref: ref => this.placeholderRef = ref,
       className: classNames({
         'dropdown-placeholder': !placeholderIsFunction,
-        'dropdown-selected': !!selectedOption
+        'dropdown-selected': !!_.get(selectedOption, 'value')
       }),
       role: 'button'
     };
@@ -288,13 +289,14 @@ export default React.createClass({
       placeholder = placeholder();
     } else if (selectedOption) {
       placeholder = [placeholderText(selectedOption.title), caret];
+      icon = selectedOption.icon;
     } else if (placeholderIsString) {
       placeholder = [placeholderText(placeholder), caret];
     } else if (placeholder === null) {
       placeholder = [placeholderText('Select...'), caret];
     }
 
-    return <div {...attributes}>{placeholder}</div>;
+    return <div {...attributes}>{icon}{placeholder}</div>;
   },
 
   render() {

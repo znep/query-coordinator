@@ -2,7 +2,7 @@
   <link type="text/css" media="all" rel="stylesheet" href="/webfonts/ss-standard.css"/>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-canvas-pages' %>
-  <title>DataSlate Pages | <%= get_site_title %></title>
+  <title><%= t("screens.admin.index.dataslate_pages") %> | <%= get_site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -18,7 +18,7 @@
 <div id="canvasPagesContent" class="contentBox withLeftNavigation">
   <div class="adminHeader contentmgmt">
     <span class="icon"></span>
-    <h1>DataSlate Pages</h1>
+    <h1><%= t("screens.admin.index.dataslate_pages") %></h1>
   </div>
 
   <%= display_standard_flashes %>

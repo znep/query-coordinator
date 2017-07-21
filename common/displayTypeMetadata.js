@@ -1,4 +1,4 @@
-function getIconClassForDisplayType(displayType) {
+function getIconClassForDisplayType(displayType, isPublished = true) {
   switch (displayType) {
     case 'filter':
     case 'grouped':
@@ -40,13 +40,13 @@ function getIconClassForDisplayType(displayType) {
 
     case 'blob':
     case 'file':
-      return 'socrata-icon-download';
+      return 'socrata-icon-attachment';
 
     case 'blist':
     case 'dataset':
     case 'federated':
     case 'table':
-      return 'socrata-icon-dataset';
+      return isPublished ? 'socrata-icon-dataset' : 'socrata-icon-working-copy';
 
     default:
       return 'socrata-icon-data';

@@ -507,7 +507,7 @@ function SvgColumnChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i, measureLabels)) ;
+        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i, measureLabels));
         self.attachLegendBarEventHandlers();
 
         if (!alreadyDisplayingLegendBar) {

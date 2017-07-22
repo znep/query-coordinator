@@ -27,10 +27,6 @@ export const DisplayOptions = React.createClass({
     vifAuthoring: PropTypes.object,
   },
 
-  getDefaultProps() {
-    return {};
-  },
-
   render() {
     const { vifAuthoring, onChangeLimitCount, onSelectLimitCount } = this.props;
     const limitCount = getLimitCount(vifAuthoring);
@@ -42,21 +38,21 @@ export const DisplayOptions = React.createClass({
       columnChart: 'column_chart_limit'
     };
     const translationKey = translationKeys[visualizationType];
-    const limitCountDisabled = limitCount === null;
+    const limitCountDisabled = (limitCount === null);
 
     // 'Do not limit results' radio button
     const limitNoneInputAttributes = {
-      id: 'limit-none',
-      type: 'radio',
-      name: 'limit-radio',
+      checked: limitCountDisabled,
       disabled: isPieChart(vifAuthoring),
+      id: 'limit-none',
       onChange: this.props.onSelectLimitNone,
-      checked: limitCountDisabled
+      name: 'limit-radio',
+      type: 'radio'
     };
 
     const limitNoneContainerAttributes = {
-      id: 'limit-none-container',
-      className: `${isPieChart(vifAuthoring) ? 'disabled': ''}`
+      className: `${isPieChart(vifAuthoring) ? 'disabled': ''}`,
+      id: 'limit-none-container'
     }
 
     const limitNoneContainer = (
@@ -71,9 +67,8 @@ export const DisplayOptions = React.createClass({
 
     // 'Limit results' radio button
     const limitCountInputAttributes = {
+      checked: !limitCountDisabled,
       id: 'limit-count',
-      type: 'radio',
-      name: 'limit-radio',
       onChange: (event) => {
         const limitCountValueInput = this.limitCountValueContainerRef.querySelector('#limit-count-value');
         onSelectLimitCount({
@@ -81,40 +76,41 @@ export const DisplayOptions = React.createClass({
           showOtherCategory: this.showOtherCategoryCheckbox.checked
         });
       },
-      checked: !limitCountDisabled
+      name: 'limit-radio',
+      type: 'radio'
     };
 
     // 'Limit results to' number input and other category group checkbox
     const limitCountValueContainerAttributes = {
+      className: `authoring-field${(limitCountDisabled) ? ' disabled' : ''}`,
       id: 'limit-count-value-container',
-      ref: (ref) => this.limitCountValueContainerRef = ref,
-      className: `authoring-field${(limitCountDisabled) ? ' disabled' : ''}`
+      ref: (ref) => this.limitCountValueContainerRef = ref
     };
 
     const limitCountValueInputAttributes = {
       className: 'text-input',
+      disabled: limitCountDisabled,
+      forceEnterKeyHandleChange: true,
       id: 'limit-count-value',
-      type: 'number',
       min: 1,
-      step: 1,
       onChange: (event) => {
         onChangeLimitCount({
           limitCount: parseInt(event.target.value, 10),
           showOtherCategory: this.showOtherCategoryCheckbox.checked
         });
       },
-      forceEnterKeyHandleChange: true,
-      value: _.isNumber(limitCount) ? limitCount : 10,
-      disabled: limitCountDisabled
+      step: 1,
+      type: 'number',
+      value: _.isNumber(limitCount) ? limitCount : 10
     };
 
     const showOtherCategoryInputAttributes = {
-      id: 'show-other-category',
-      ref: (ref) => this.showOtherCategoryCheckbox = ref,
-      type: 'checkbox',
-      onChange: this.props.onChangeShowOtherCategory,
       defaultChecked: showOtherCategory,
-      disabled: limitCountDisabled
+      disabled: limitCountDisabled,
+      id: 'show-other-category',
+      onChange: this.props.onChangeShowOtherCategory,
+      ref: (ref) => this.showOtherCategoryCheckbox = ref,
+      type: 'checkbox'
     };
 
     const limitCountValueContainer = (

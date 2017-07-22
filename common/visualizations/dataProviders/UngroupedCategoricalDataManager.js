@@ -24,7 +24,7 @@ function getData(vif, options) {
     }
   });
 
-  function mapUngroupedDataResponsesToMultiSeriesTable(dataResponses) { 
+  function mapUngroupedDataResponsesToMultiSeriesTable(dataResponses) {
     const dimensionIndex = 0;
     const measureIndex = 1;
     const measureLabels = vif.series.map((series) => {

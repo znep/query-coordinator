@@ -5,7 +5,7 @@ export class ClearFilters extends Component {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, 'activeFilters');
+    _.bindAll(this, 'activeFilters', 'clearAllFiltersAndQuery');
   }
 
   activeFilters() {
@@ -13,6 +13,13 @@ export class ClearFilters extends Component {
       _(['assetTypes', 'authority', 'category', 'onlyRecentlyViewed', 'ownedBy.id', 'q', 'tag',
         'visibility']).map((assetType) => _.get(this.props.allFilters, assetType)).compact().value()
     );
+  }
+
+  clearAllFiltersAndQuery() {
+    this.props.clearAllFilters();
+
+    // =(
+    document.querySelector('.autocomplete-input').value = '';
   }
 
   render() {
@@ -26,9 +33,9 @@ export class ClearFilters extends Component {
 
     const wrapperClass = buttonStyle ? 'clear-filters-wrapper button' : 'clear-filters-wrapper';
 
-    const handleIconOnClick = buttonStyle ? null : clearAllFilters;
+    const handleIconOnClick = buttonStyle ? null : this.clearAllFiltersAndQuery;
 
-    const handleButtonOnClick = buttonStyle ? clearAllFilters : null;
+    const handleButtonOnClick = buttonStyle ? this.clearAllFiltersAndQuery : null;
 
     const clearFiltersControls = this.activeFilters().length > 0 ?
       <span>

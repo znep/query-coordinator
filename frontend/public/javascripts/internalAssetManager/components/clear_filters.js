@@ -10,8 +10,8 @@ export class ClearFilters extends Component {
 
   activeFilters() {
     return _.map(
-      _(['assetTypes', 'authority', 'category', 'onlyRecentlyViewed', 'ownedBy.id', 'tag', 'visibility']).
-        map((assetType) => _.get(this.props.allFilters, assetType)).compact().value()
+      _(['assetTypes', 'authority', 'category', 'onlyRecentlyViewed', 'ownedBy.id', 'q', 'tag',
+        'visibility']).map((assetType) => _.get(this.props.allFilters, assetType)).compact().value()
     );
   }
 

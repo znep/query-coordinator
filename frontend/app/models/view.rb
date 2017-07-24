@@ -1099,6 +1099,16 @@ class View < Model
     end
   end
 
+  def csv_resource_url(request = nil)
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{preferred_id}.csv"
+  end
+
+  def geojson_resource_url(request = nil)
+    if can_add_map? && nbe_view
+      "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{nbe_view.id}.geojson"
+    end
+  end
+
   # EN-5634: Don't prefer NBE id for OData endpoint as it truncates rows
   def odata_url(request = nil)
     "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{id}"

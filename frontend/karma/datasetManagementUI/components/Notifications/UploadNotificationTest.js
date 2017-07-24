@@ -69,7 +69,8 @@ describe('components/Notifications/UploadNotification', () => {
         ...defaultProps.apiCall,
         status: 'STATUS_CALL_FAILED',
         error: {
-          english: 'Multilayer shapefiles are not supported.'
+          reason: 'Multilayer shapefiles are not supported.',
+          message: 'your request had invalid values'
         }
       }
     };

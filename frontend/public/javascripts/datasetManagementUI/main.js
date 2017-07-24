@@ -1,15 +1,16 @@
 import 'babel-polyfill-safe';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
-import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux';
-import createLogger from 'redux-logger';
-import thunk from 'redux-thunk';
-import windowDBMiddleware from './lib/database/middleware';
+import { syncHistoryWithStore } from 'react-router-redux';
+// import createLoggerMiddleware from 'redux-logger';
+// import thunkMiddleware from 'redux-thunk';
+// import windowDBMiddleware from './lib/database/middleware';
 import * as Phoenix from 'phoenix';
 import Perf from 'react-addons-perf';
+import middleware from 'middleware';
 import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
 import * as Selectors from './selectors';
@@ -30,25 +31,25 @@ window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/publishing/v1/socket', {
 window.DSMAPI_PHOENIX_SOCKET.connect();
 
 // middleware
-const middleware = [thunk, routerMiddleware(browserHistory)];
+// const middleware = [thunkMiddleware, routerMiddleware(browserHistory)];
 
 if (window.serverConfig.environment === 'development') {
   window.Perf = Perf;
 
-  middleware.push(
-    createLogger({
-      duration: true,
-      timestamp: false,
-      collapsed: true,
-      logErrors: false
-    })
-  );
-
-  middleware.push(windowDBMiddleware);
-
-  console.log(
-    'for convenience, try e.g. `console.table(DB.sources)` (only works when RAILS_ENV==development)'
-  );
+  // middleware.push(
+  //   createLogger({
+  //     duration: true,
+  //     timestamp: false,
+  //     collapsed: true,
+  //     logErrors: false
+  //   })
+  // );
+  //
+  // middleware.push(windowDBMiddleware);
+  //
+  // console.log(
+  //   'for convenience, try e.g. `console.table(ENTITIES.sources)` (only works when RAILS_ENV==development)'
+  // );
 } else {
   // 126728 is Publishing airbrake project id
   Airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
@@ -56,7 +57,7 @@ if (window.serverConfig.environment === 'development') {
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(...middleware)));
+const store = createStore(rootReducer, composeEnhancers(middleware));
 
 store.dispatch(setFourfour(window.initialState.view.id));
 

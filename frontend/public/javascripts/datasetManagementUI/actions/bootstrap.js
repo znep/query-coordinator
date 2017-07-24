@@ -15,7 +15,8 @@ import { makeFieldsets, validateDatasetForm } from 'models/forms';
 export const BOOTSTRAP_APP_SUCCESS = 'BOOTSTRAP_APP_SUCCESS';
 
 export function bootstrapApp(view, revision, customMetadataFieldsets) {
-  return dispatch => {
+  return (dispatch, getState, socket) => {
+    console.log('s', socket);
     // TODO: maybe wrap in try/catch and create bootstrap failure case?
     const millis = 1000;
 

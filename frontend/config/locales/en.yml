@@ -2763,6 +2763,7 @@ en:
           forms: Forms
           maps: Maps
           stories: Stories
+          working_copies: Working Copies
       authority:
         label: Authority
         options:

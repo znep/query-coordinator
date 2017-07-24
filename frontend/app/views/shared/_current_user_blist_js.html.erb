@@ -2,10 +2,8 @@
   <% if User.current_user %>
     window.blist =  window.blist || {}
     window.blist.currentUserId = '<%= User.current_user.id %>';
-
-    // this ruby is escaped with == because it has been pre-sanitized. do not try at home
-    window.blist.currentUserJson = JSON.parse(
-      '<%== json_escape(current_user_to_sanitized_json(User.current_user)) %>'
-    );
+    window.blist.currentUserJson = <%==
+      json_escape(current_user_to_sanitized_json(User.current_user))
+    %>;
   <% end %>
 </script>

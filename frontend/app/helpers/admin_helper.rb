@@ -127,12 +127,9 @@ module AdminHelper
   end
 
   def user_can_see_home_page?
-    !user_can_see_goals? &&
-      (
-        user_can?(UserRights::MANAGE_STORIES) ||
-        user_can?(UserRights::FEATURE_ITEMS) ||
-        user_can?(UserRights::EDIT_SITE_THEME)
-      )
+    user_can?(UserRights::MANAGE_STORIES) ||
+    user_can?(UserRights::FEATURE_ITEMS) ||
+    user_can?(UserRights::EDIT_SITE_THEME)
   end
 
   def user_can_see_canvas_designer?

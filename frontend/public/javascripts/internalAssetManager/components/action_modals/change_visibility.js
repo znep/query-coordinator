@@ -34,11 +34,14 @@ export class ChangeVisibility extends React.Component {
             parentVisibilityIsOpen: _.get(response, 'results.0.metadata.visible_to_anonymous')
           });
         } else {
-          throw new Error('Invalid response', response);
+          throw new Error(`Invalid response (could not find any results): ${JSON.stringify(response)}`);
         }
       }).catch(err => {
         console.error('Error fetching parent visibility', err);
-        this.setState({ fetchingParentVisibility: false });
+        this.setState({
+          fetchingParentVisibility: false,
+          parentVisibilityIsOpen: false
+        });
       });
     } else {
       this.setState({ fetchingParentVisibility: false });
@@ -49,9 +52,20 @@ export class ChangeVisibility extends React.Component {
     return _.get(I18n, `result_list_table.action_modal.change_visibility.${key}`);
   }
 
-  currentAsset() {
-    // Get current asset's cetera properties from the results array.
-    return _.find(_.filter(this.props.results, result => result.resource.id === this.props.uid));
+  getVisibility() {
+    let { visibility } = this.state;
+    if (visibility === null) {
+      visibility = this.initialVisibility().open ? 'open' : 'private';
+    }
+    return visibility;
+  }
+
+  initialVisibility() {
+    return {
+      'open': this.currentAsset().metadata.visible_to_anonymous,
+      'private': !this.currentAsset().metadata.is_public
+      // TODO: implement "hidden"
+    };
   }
 
   canNotChangeVisibilityForAsset() {
@@ -67,8 +81,13 @@ export class ChangeVisibility extends React.Component {
     }
   }
 
+  currentAsset() {
+    // Get current asset's cetera properties from the results array.
+    return _.find(_.filter(this.props.results, result => result.resource.id === this.props.uid));
+  }
+
   renderModalContent() {
-    const { visibility, fetchingParentVisibility } = this.state;
+    const { fetchingParentVisibility } = this.state;
 
     if (fetchingParentVisibility) {
       return <span className="spinner-default" />;
@@ -79,20 +98,17 @@ export class ChangeVisibility extends React.Component {
     }
 
     const setNewVisibility = (newVisibility) => {
-      if (visibility !== newVisibility) {
+      if (this.getVisibility() !== newVisibility) {
         this.setState({ visibility: newVisibility });
       }
     };
 
-    const initialVisibility = {
-      open: this.currentAsset().metadata.visible_to_anonymous,
-      'private': !this.currentAsset().metadata.is_public
-      // TODO: implement "hidden"
+    const visibilityOptionClass = (option) => {
+      return classNames('change-visibility-option', option, {
+        active: this.getVisibility() === option ||
+          (this.initialVisibility()[option] === true && this.getVisibility() === null)
+      });
     };
-
-    const visibilityOptionClass = (option) => classNames('change-visibility-option', option, {
-      active: visibility === option || (initialVisibility[option] === true && visibility === null)
-    });
 
     const iconClass = (option) => {
       if (option === 'open') {
@@ -126,7 +142,6 @@ export class ChangeVisibility extends React.Component {
 
   render() {
     const { assetActions, assetType, onDismiss, uid } = this.props;
-    const { visibility } = this.state;
 
     const modalProps = { fullScreen: false, onDismiss };
     const headerProps = { onDismiss, title: this.getTranslation('title') };
@@ -158,7 +173,7 @@ export class ChangeVisibility extends React.Component {
               {this.getTranslation('dismiss')}
             </button>
             <button
-              onClick={() => this.props.changeVisibility(uid, assetType, visibility)}
+              onClick={() => this.props.changeVisibility(uid, assetType, this.getVisibility())}
               className={okButtonClass}>
               {okButtonText}
             </button>

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { showModal } from 'actions/modal';
 import {
-  pollForOutputSchemaSuccess,
+  listenForOutputSchemaSuccess,
   subscribeToOutputSchema,
   subscribeToTransforms,
   insertInputSchema,
@@ -68,7 +68,7 @@ export function bootstrapApp(view, revision, customMetadataFieldsets) {
       {}
     );
 
-    const sources = revision.sources.reduce(
+    const sources = revision.sources.map(source => source.resource).reduce(
       (acc, source) => ({
         ...acc,
         [source.id]: {
@@ -96,7 +96,7 @@ export function bootstrapApp(view, revision, customMetadataFieldsets) {
     };
 
     dispatch(bootstrapAppSuccess(intialViewWithErrors, initialRevision, taskSets, sources));
-    // dispatch(sideEffectyStuff(revision));
+    dispatch(sideEffectyStuff(revision));
   };
 }
 
@@ -112,19 +112,34 @@ function bootstrapAppSuccess(initialView, initialRevision, taskSets, sources) {
 
 function sideEffectyStuff(revision) {
   return dispatch => {
-    revision.sources.forEach(source => {
-      _.each(_.flatMap(source.schemas, is => is.output_schemas), os => {
-        dispatch(pollForOutputSchemaSuccess(os));
-        dispatch(subscribeToOutputSchema(os));
-        dispatch(subscribeToTransforms(os));
-      });
+    // partition failed and successful sources (ie uploads) since we only want
+    // to insert into store and subscribe to row errors if it succeeded
+    const [failed, succeeded] = _.partition(revision.sources, source => source.failed_at);
 
-      if (source.failed_at) {
-        dispatch(addNotification('source', null, source.id));
-      } else {
-        dispatch(insertInputSchema(source));
-        source.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
-      }
+    failed.forEach(source => dispatch(addNotification('source', null, source.id)));
+
+    const inputSchemas = _.flatMap(succeeded, source =>
+      source.resource.schemas.map(schema => ({
+        ...schema,
+        source_id: source.resource.id
+      }))
+    );
+
+    const outputSchemas = _.flatMap(inputSchemas, is => is.output_schemas);
+
+    inputSchemas.forEach(is => {
+      dispatch(insertInputSchema(is, is.source_id));
+      dispatch(subscribeToRowErrors(is));
+    });
+
+    outputSchemas.forEach(os => dispatch(listenForOutputSchemaSuccess(os)));
+
+    // TODO: Once we swap out the view logic that uses client-supplied attributes
+    // (contiguous_rows_processed, num_transform_errors) and make it use server-side
+    // attributes (completed_at on the os), than add this line here: .filter(os => os.completed_at === null)
+    outputSchemas.forEach(os => {
+      dispatch(subscribeToOutputSchema(os));
+      dispatch(subscribeToTransforms(os));
     });
 
     revision.task_sets.forEach(taskSet => {

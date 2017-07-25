@@ -184,10 +184,9 @@ function uploadFileFailure(sourceId) {
 
 function listenForOutputSchema(sourceId) {
   return (dispatch, getState, socket) => {
-    const channel = socket.channel(`source:${sourceId}`);
     const { routing } = getState().ui;
 
-    channel.join();
+    const channel = socket.channel(`source:${sourceId}`);
 
     channel.on('insert_input_schema', is => {
       // it seems to be a quirk of dsmapi that it broadcasts a list of os here
@@ -195,11 +194,13 @@ function listenForOutputSchema(sourceId) {
       const [os] = is.output_schemas;
 
       dispatch(insertInputSchema(is, sourceId));
-      dispatch(pollForOutputSchemaSuccess(os));
+      dispatch(listenForOutputSchemaSuccess(os));
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));
       dispatch(push(Links.showOutputSchema(sourceId, is.id, os.id)(routing.location)));
     });
+
+    channel.join();
   };
 }
 
@@ -213,7 +214,7 @@ function toOutputSchema(os) {
   };
 }
 
-export function pollForOutputSchemaSuccess(outputSchemaResponse) {
+export function listenForOutputSchemaSuccess(outputSchemaResponse) {
   const outputSchema = toOutputSchema(outputSchemaResponse);
 
   const transforms = outputSchemaResponse.output_columns
@@ -293,8 +294,6 @@ export function subscribeToRowErrors(is) {
   return (dispatch, getState, socket) => {
     const channel = socket.channel(`row_errors:${is.id}`);
 
-    channel.join();
-
     channel.on('errors', ({ errors }) =>
       dispatch(
         editInputSchema(is.id, {
@@ -302,6 +301,8 @@ export function subscribeToRowErrors(is) {
         })
       )
     );
+
+    channel.join();
   };
 }
 
@@ -309,8 +310,6 @@ export function subscribeToTransforms(os) {
   return (dispatch, getState, socket) => {
     os.output_columns.forEach(oc => {
       const channel = socket.channel(`transform_progress:${oc.transform.id}`);
-
-      channel.join();
 
       channel.on('max_ptr', ({ end_row_offset }) =>
         dispatch(
@@ -327,6 +326,8 @@ export function subscribeToTransforms(os) {
           })
         )
       );
+
+      channel.join();
     });
   };
 }
@@ -334,8 +335,6 @@ export function subscribeToTransforms(os) {
 export function subscribeToOutputSchema(os) {
   return (dispatch, getState, socket) => {
     const channel = socket.channel(`output_schema:${os.id}`);
-
-    channel.join();
 
     channel.on('update', newOS => {
       const updatedOS = {
@@ -345,5 +344,7 @@ export function subscribeToOutputSchema(os) {
 
       dispatch(editOutputSchema(os.id, updatedOS));
     });
+
+    channel.join();
   };
 }

@@ -23,7 +23,7 @@ export class ClearFilters extends Component {
   }
 
   render() {
-    const { buttonStyle, clearAllFilters, showTitle } = this.props;
+    const { buttonStyle, showTitle } = this.props;
 
     if (!showTitle && this.activeFilters().length <= 0) {
       return null;

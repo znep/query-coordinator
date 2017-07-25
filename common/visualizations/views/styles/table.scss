@@ -129,8 +129,8 @@ $highlighted-sort-menu-row-background-color: #e6f9f5;
 
           .sort-menu-button {
             background-color: $header-background-color;
-            box-shadow: -10px 0 7px #f6f6f6;
-            border: 1px solid #c8c8c8;
+            border: none;
+            box-shadow: -7px 0 7px #f6f6f6;
             cursor: pointer;
             display: inline-block;
             line-height: 23px;

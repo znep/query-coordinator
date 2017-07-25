@@ -44,7 +44,7 @@ export class ApiFlannel extends Component {
     const resourceTypes = {};
 
     resourceTypes.canonical = {
-      label: I18n.api_flannel.canonical,
+      label: I18n.api_flannel.json,
       url: view.resourceUrl
     };
 
@@ -55,16 +55,24 @@ export class ApiFlannel extends Component {
       };
     }
 
+    if (view.geoJsonResourceUrl) {
+      resourceTypes.geoJson = {
+        label: I18n.api_flannel.geojson,
+        url: view.geoJsonResourceUrl
+      };
+    }
+
+    resourceTypes.csv = {
+      label: I18n.api_flannel.csv,
+      url: view.csvResourceUrl
+    };
+
     return resourceTypes;
   }
 
   renderResourceToggle() {
     const { resourceType } = this.state;
     const resourceTypes = this.getResourceTypes();
-
-    if (_.size(resourceTypes) < 2) {
-      return null;
-    }
 
     const setResourceType = (newResourceType) => (
       () => {

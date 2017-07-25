@@ -4773,17 +4773,23 @@ en:
             option: Option
             title: Multiple Choice Options
           nbe_geocoding_configuration:
-            create_point_column: Create Point Column
-            create_geocoded_point_column: Create Geocoded Point Column
             address_label: Address
+            address_default_label: Default value for Address
             cancel_configuration_prompt: Are you sure you want to cancel geocoding configuration? Configuration must be completed at the time of column creation.
             country_label: Country
+            country_default_label: Default value for Country
+            create_point_column: Create Point Column
+            create_geocoded_point_column: Create Geocoded Point Column
+            default_placeholder: (Leave blank for no default)
             locality_label: Locality
-            optional_select_header: "(Infer / Use default)"
+            locality_default_label: Default value for Locality
+            select_header: "(Infer / Use default)"
             postal_code_label: Postal Code
+            postal_code_default_label: Default value for Postal Code
             region_label: Region
-            required_select_header: Select a column...
+            region_default_label: Default value for Region
             subregion_label: Sub-region
+            subregion_default_label: Default value for Sub-region
             subtitle: Configure Geocoding Source Columns
           nested_table:
             default_column_name: Untitled

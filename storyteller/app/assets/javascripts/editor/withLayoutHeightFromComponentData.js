@@ -33,7 +33,7 @@ export default function withLayoutHeightFromComponentData(componentData, default
     function() {
       var renderedVif = self[0].getAttribute('data-rendered-vif');
 
-      self.height(height);
+      self.outerHeight(height);
 
       if (renderedVif === null) {
         // If there is no `data-rendered-vif` attribute on the element, then

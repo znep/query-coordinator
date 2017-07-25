@@ -1,6 +1,5 @@
 import * as React  from 'react';
 import * as ReactRedux from 'react-redux';
-import * as Feedback from '../feedback';
 
 import './PreviewBar.scss';
 
@@ -20,9 +19,6 @@ class PreviewBar extends React.Component {
               { translations.getIn(['admin', 'preview_bar', 'learn_more']) } <span className="icon-external" />
             </a>
           </div>
-          <div className="feedback-link">
-            <a onClick={ this.props.openFeedbackFlannel }>{ translations.getIn(['admin', 'preview_bar', 'feedback']) }</a>
-          </div>
         </div>
       </div>
     );
@@ -33,8 +29,4 @@ const mapStateToProps = state => ({
   translations: state.get('translations')
 });
 
-const mapDispatchToProps = dispatch => ({
-  openFeedbackFlannel: event => dispatch(Feedback.Flannel.actions.open(event.target))
-});
-
-export default ReactRedux.connect(mapStateToProps, mapDispatchToProps)(PreviewBar);
+export default ReactRedux.connect(mapStateToProps, null)(PreviewBar);

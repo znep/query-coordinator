@@ -5,14 +5,7 @@ import * as Components from '../../components';
 
 import './App.scss';
 
-function App(props) {
-  const { feedbackFlannelVisible, translations } = props;
-
-  let feedbackFlannel = null;
-  if (feedbackFlannelVisible) {
-    feedbackFlannel = <Components.Feedback.Flannel.View statePath={['feedback']} translations={translations.getIn(['admin', 'feedback_flannel'])} />;
-  }
-
+function App() {
   return (
     <div className="app-container admin-goals-page">
       <Components.PreviewBar />
@@ -20,14 +13,12 @@ function App(props) {
         <Components.HeaderBar />
         <Goals.Page />
       </div>
-      { feedbackFlannel }
     </div>
   );
 }
 
 const mapStateToProps = state => ({
-  translations: state.get('translations'),
-  feedbackFlannelVisible: state.getIn(['feedback', 'visible'])
+  translations: state.get('translations')
 });
 
 export default ReactRedux.connect(mapStateToProps, null)(App);

@@ -7,18 +7,6 @@
     text-overflow: ellipsis;
     margin-right: 120px;
   }
-
-  a.feedback {
-    position: absolute;
-    right: 50px;
-    top: 12px;
-    text-decoration: none;
-    cursor: pointer;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
 }
 
 .modal-content {

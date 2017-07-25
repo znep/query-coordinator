@@ -7,7 +7,6 @@ import * as Immutable from 'immutable';
 import * as GoalsActions from '../../actions';
 import * as Actions from '../../../../actions';
 import * as Helpers from '../../../../helpers';
-import * as SharedActions from '../../../shared/actions';
 import * as State from '../../state';
 import * as Selectors from '../../selectors';
 import * as Components from '../../../../components';
@@ -185,9 +184,6 @@ class QuickEditForm extends React.Component {
         <form onSubmit={ this.save }>
           <Components.Socrata.Modal.Header title={ goalTitle } onClose={ this.props.handleNavigateAway }
                                className="modal-header-with-link">
-            <a className="feedback" onClick={ this.props.openFeedbackFlannel }>
-              { translations.getIn(['admin', 'quick_edit', 'feedback']) }
-            </a>
           </Components.Socrata.Modal.Header>
           <Components.Socrata.Modal.Content>
             { this.renderSaveError() }
@@ -246,7 +242,6 @@ const mapDispatchToProps = dispatch => ({
   dismissModal: () => dispatch(GoalsActions.QuickEdit.closeModal()),
   saveGoal: () => dispatch(GoalsActions.QuickEdit.save()),
   updateFormData: newData => dispatch(GoalsActions.QuickEdit.updateFormData(newData)),
-  openFeedbackFlannel: event => dispatch(SharedActions.showFeedbackFlannel(event.target)),
   notificationActions: Redux.bindActionCreators(Actions.notifications, dispatch)
 });
 

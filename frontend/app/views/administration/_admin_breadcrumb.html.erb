@@ -1,11 +1,9 @@
 <div class="admin-breadcrumb">
   <h1>
+    <%= admin_nav_link_to('screens.admin.index.page_title', '/admin') %>
     <%- if content_for?(:breadcrumb) %>
-      <%= admin_nav_link_to('screens.admin.index.page_title', '/admin') %>
       <span class="socrata-icon-arrow-right separator"></span>
       <span class="current-page"><%= yield :breadcrumb %></span>
-    <%- else %>
-      <%= t('screens.admin.index.page_title') %>
     <%- end %>
     <%- if current_user.try(:is_superadmin?) -%>
       <a class="internal-link" href="<%= url_for :controller => '/internal', :action => 'index' %>">

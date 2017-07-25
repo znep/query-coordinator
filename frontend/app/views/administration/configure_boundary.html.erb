@@ -11,7 +11,7 @@
   <%= link_to t('core.no_js'), '?no_js=true' %>
 <% end %>
 
-<%= render :partial => 'left_nav' %>
+<%= render '/internal/left_nav' %>
 
 <div class="contentBox withLeftNavigation georegionsScreen">
   <div id="flash-container"><%= display_standard_flashes %></div>
@@ -20,7 +20,6 @@
     <h1><%= t("#{prefix}.configure_boundary.page_title") %></h1>
   </div>
 </div>
-
 
 <div class="contentBox withLeftNavigation georegionsScreen">
   <div class="georegions-configure-boundary">

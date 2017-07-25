@@ -3,7 +3,12 @@
   <title><%= I18n.t('internal_asset_manager.title') %> | <%= get_site_title %></title>
 <%- end %>
 
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.assets.asset_inventory') %>
+<% end %>
+
 <div class="internal-asset-manager" id="internal-asset-manager-content"></div>
+
 <div id="dynamic-content"></div>
 
 <%= content_for :scripts do %>

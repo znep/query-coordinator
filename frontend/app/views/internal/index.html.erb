@@ -1,9 +1,9 @@
 <% content_for :head do %>
-<%= rendered_stylesheet_tag 'internal' %>
-<title>Internal Panel | <%= get_site_title %></title>
+  <%= rendered_stylesheet_tag 'internal' %>
+  <title>Internal Panel | <%= get_site_title %></title>
 <% end %>
 
-<%= render :partial => 'left_nav' %>
+<%= render 'left_nav' %>
 
 <div class="contentBox withLeftNavigation">
   <div class='content'>

@@ -3088,6 +3088,8 @@ en:
       visits: Visits
       your: Your Rating
     admin:
+      assets:
+        asset_inventory: Assets
       canvas:
         path_must_be_unique: Path already exists; please choose a different one.
         title_cannot_be_blank: Please enter a title.
@@ -3406,6 +3408,8 @@ en:
         users_description: Create and manage user roles on your site
         view_moderation: View Moderation
         view_moderation_description: Review and manage user-created views for inclusion in your catalog
+      internal:
+        feature_flags: Feature Flags
       jobs:
         cancel: Cancel
         close: Close

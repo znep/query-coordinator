@@ -40,6 +40,13 @@ http://www.socrata.com
       <%= display_styleguide_flashes %>
     </div>
 
+    <%- if render_admin_header? %>
+      <div class="admin-header">
+        <%= render 'administration/admin_breadcrumb' %>
+        <%= yield :admin_header %>
+      </div>
+    <%- end %>
+
     <main role="main" id="content">
       <%= yield %>
     </main>

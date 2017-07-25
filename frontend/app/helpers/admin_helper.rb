@@ -84,7 +84,7 @@ module AdminHelper
   end
 
   def admin_nav_link_to(title_key, options)
-    link_to_unless_current(content_tag(:span, nil, :class => 'icon') + I18n.t(title_key), options)
+    link_to(content_tag(:span, nil, :class => 'icon') + I18n.t(title_key), options)
   end
 
   def admin_nav_link(title_key, options)
@@ -214,10 +214,6 @@ module AdminHelper
 
   def render_admin_qualtrics
     render_qualtrics_survey('admin')
-  end
-
-  def render_admin_breadcrumb
-    render :partial => 'administration/admin_breadcrumb', :layout => false
   end
 
   private

@@ -11,17 +11,14 @@
 
 .preview-bar-header {
   color: #2279A6;
-  padding: 15px 30px 15px 30px;
+  padding: 15px 30px;
   border-bottom: 1px solid #176289;
   letter-spacing: -0.3px;
   background-color: #EAF4F9;
-  display: flex;
-  flex-direction: row;
 
   .back-link {
     color: #2279a6;
-    flex: 1;
-    text-align: left;
+    float: left;
 
     a {
       margin-left: 5px;
@@ -34,7 +31,6 @@
   }
 
   .header {
-    flex: 1;
     text-align: center;
 
     span {
@@ -46,11 +42,5 @@
       margin-right: 18px;
       font-size: 11px;
     }
-  }
-
-  .feedback-link {
-    text-align: right;
-    flex: 1;
-    cursor: pointer;
   }
 }

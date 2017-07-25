@@ -280,7 +280,7 @@ export default React.createClass({
       ref: ref => this.placeholderRef = ref,
       className: classNames({
         'dropdown-placeholder': !placeholderIsFunction,
-        'dropdown-selected': !!_.get(selectedOption, 'value')
+        'dropdown-selected': !!selectedOption
       }),
       role: 'button'
     };

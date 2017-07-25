@@ -356,12 +356,14 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
     // Tileserver serves tile data using the standard {z}/{x}/{y} URL
     // format. It returns protocol buffers containing point offsets from
     // the tile origin (top left).
-    tileserverDataProvider = new TileserverDataProvider({
-      domain,
-      datasetUid,
-      columnName,
-      featuresPerTile: DEFAULT_FEATURES_PER_TILE
-    });
+    tileserverDataProvider = new TileserverDataProvider(
+      {
+        domain,
+        datasetUid,
+        columnName,
+        featuresPerTile: DEFAULT_FEATURES_PER_TILE
+      },
+      true);
 
     // SoQL returns row results for display in the row inspector
     soqlDataProvider = new SoqlDataProvider({ domain, datasetUid });

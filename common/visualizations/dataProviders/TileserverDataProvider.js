@@ -19,13 +19,6 @@ function TileserverDataProvider(config, useCache = false) {
 
   _.extend(this, new DataProvider(config));
 
-  if (useCache) {
-    let cached = this.cachedInstance("TileserverDataProvider");
-    if (cached) {
-      return cached;
-    }
-  }
-
   utils.assertHasProperty(config, 'domain');
   utils.assertHasProperty(config, 'datasetUid');
   utils.assertHasProperty(config, 'columnName');
@@ -35,6 +28,13 @@ function TileserverDataProvider(config, useCache = false) {
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
   utils.assertIsOneOfTypes(config.columnName, 'string');
   utils.assertIsOneOfTypes(config.featuresPerTile, 'number');
+
+  if (useCache) {
+    let cached = this.cachedInstance("TileserverDataProvider");
+    if (cached) {
+      return cached;
+    }
+  }
 
   var _self = this;
 

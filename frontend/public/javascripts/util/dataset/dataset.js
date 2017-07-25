@@ -3017,8 +3017,8 @@
           } else {
             // Find existing set to derive from
             var parRS = _.detect(_.sortBy(ds._availableRowSets,
-                function(rs) {
-                  return -(rs._isComplete ? 1000000 : 1) * rs._key.length;
+                function(rs, key) {
+                  return -(rs._isComplete ? 1000000 : 1) * key.length;
                 }),
               function(rs) {
                 return rs.canDerive(jsonQ);

@@ -15,9 +15,16 @@ var DEFAULT_FEATURES_PER_TILE = 50000;
  *     expected per tile. This defaults to (256 * 256). This value will be
  *     provided as the `LIMIT` parameter in the query string.
  */
-function TileserverDataProvider(config) {
+function TileserverDataProvider(config, useCache = false) {
 
   _.extend(this, new DataProvider(config));
+
+  if (useCache) {
+    let cached = this.cachedInstance("TileserverDataProvider");
+    if (cached) {
+      return cached;
+    }
+  }
 
   utils.assertHasProperty(config, 'domain');
   utils.assertHasProperty(config, 'datasetUid');

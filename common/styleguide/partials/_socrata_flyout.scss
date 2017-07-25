@@ -1,4 +1,27 @@
-@import 'lib/variables';
+// Warning! There is also a _flyout.scss. There isn't a strong consensus on which one to use.
+// Maybe you want to be the champion of unity?
+
+@import 'common/styleguide/variables/mixins';
+
+$flyout-z-index: 65535;
+
+$flyout-max-width: 35rem;
+$flyout-vertical-padding: 0.25rem;
+$flyout-horizontal-padding: 0.5rem;
+// $flyout-hint-size must be in pixels because it is interpolated into expressions
+// that make that assumption, such as: `($flyout-hint-size + 1)`
+$flyout-hint-size: 10px;
+
+// The flyout contains a 2-column table. Extra padding is afforded to the 2nd
+// column of this table - this variable controls how much.
+$flyout-2nd-column-side-padding: 1.5rem;
+
+$flyout-background-color-dark: #2f2f2f;
+$flyout-color: #8a8686;
+$flyout-bg-color: #f1eeee;
+$flyout-border-color: #ccc;
+
+$flyout-font-size: 1.4rem;
 
 #socrata-flyout {
   @include unselectable();
@@ -14,6 +37,7 @@
   border: 1px solid $flyout-border-color;
   pointer-events: none;
   z-index: $flyout-z-index;
+  line-height: 1.618;
 
   &.visible {
     visibility: visible;
@@ -33,9 +57,14 @@
       .socrata-flyout-row {
 
         .socrata-flyout-cell:nth-child(2) {
-          padding-left: $flyout-last-cell-margin-left;
+          padding-left: $flyout-2nd-column-side-padding;
           text-align: right;
+
+          // Next 4 rules allow text inside the cell to overflow with an ellipsis.
+          text-overflow: ellipsis;
           white-space: nowrap;
+          max-width: $flyout-max-width - 2 * $flyout-2nd-column-side-padding - 2 * $flyout-horizontal-padding;
+          overflow: hidden;
         }
       }
     }
@@ -130,5 +159,60 @@
         border-color: transparent transparent $flyout-border-color transparent;
       }
     }
+  }
+}
+
+#socrata-flyout.dark {
+  font-size: 12px;
+  font-weight: 200;
+  color: #fff;
+  background-color: $flyout-background-color-dark;
+  border: none;
+  border-radius: 1px;
+  box-shadow: 0px 0px 4px 1px rgba(44,44,44,0.10);
+
+  .socrata-flyout-content .socrata-flyout-title {
+    font-size: 15px;
+    font-weight: 200;
+  }
+
+  &.southwest .socrata-flyout-hint {
+    left: 5px;
+  }
+
+  &.southwest .socrata-flyout-hint:after {
+    border-color: transparent;
+  }
+
+  &.southwest .socrata-flyout-hint:before {
+    border-color: $flyout-background-color-dark transparent transparent transparent;
+  }
+
+  &.southeast .socrata-flyout-hint:after {
+    border-color: transparent $flyout-background-color-dark transparent transparent;
+  }
+
+  &.southeast .socrata-flyout-hint:before {
+    border-color: transparent;
+  }
+
+  &.northwest .socrata-flyout-hint {
+    left: 5px;
+  }
+
+  &.northwest .socrata-flyout-hint:after {
+    border-color: transparent transparent transparent $flyout-background-color-dark;
+  }
+
+  &.northwest .socrata-flyout-hint:before {
+    border-color: transparent;
+  }
+
+  &.northeast .socrata-flyout-hint:after {
+    border-color: transparent transparent $flyout-background-color-dark transparent;
+  }
+
+  &.northeast .socrata-flyout-hint:before {
+    border-color: transparent;
   }
 }

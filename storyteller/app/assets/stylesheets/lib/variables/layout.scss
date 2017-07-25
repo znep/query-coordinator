@@ -155,15 +155,6 @@ $input-element-border-radius: 0.1rem;
 $transition-duration: 0.2s;
 $component-fade-in-duration: 0.5s;
 
-// Flyout
-$flyout-max-width: 35rem;
-$flyout-vertical-padding: 0.5rem;
-$flyout-horizontal-padding: 1rem;
-// $flyout-hint-size must be in pixels because it is interpolated into expressions
-// that make that assumption, such as: `($flyout-hint-size + 1)`
-$flyout-hint-size: 10px;
-$flyout-last-cell-margin-left: 1.5rem;
-
 // Presentation Mode
 $presentation-mode-font-size: 1.75rem;
 $presentation-mode-button-font-size: 1.5rem;

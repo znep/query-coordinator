@@ -17,7 +17,8 @@ export const assetTypeOptions = [
   { title: getTranslation('asset_types.options.filtered'), value: 'filters' },
   { title: getTranslation('asset_types.options.forms'), value: 'forms' },
   { title: getTranslation('asset_types.options.maps'), value: 'maps' },
-  { title: getTranslation('asset_types.options.stories'), value: 'stories' }
+  { title: getTranslation('asset_types.options.stories'), value: 'stories' },
+  { title: getTranslation('asset_types.options.working_copies'), value: 'workingCopies' }
 ];
 
 export const authorityOptions = [

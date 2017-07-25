@@ -106,6 +106,14 @@ export const ceteraUtils = (() => {
       visibility
     };
 
+    // Special-case "working copies" because they're not an asset type, but a subset of
+    // an asset type with an extra condition attached. This will totally not come back
+    // to bite us if we add a filter for un/published.
+    if (parameters.only === 'workingCopies') {
+      parameters.only = 'datasets';
+      parameters.published = 'false';
+    }
+
     return _.reduce(
       _.omit(parameters, 'ids'),
       (result, value, key) =>

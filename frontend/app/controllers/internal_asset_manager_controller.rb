@@ -26,6 +26,10 @@ class InternalAssetManagerController < ApplicationController
       show_visibility: true
     }.merge(initial_filter_cetera_opts)
 
+    if params[:assetTypes] == 'workingCopies'
+      search_options.merge!(published: false, only: 'datasets')
+    end
+
     catalog_results_response = begin
       AssetInventoryService::InternalAssetManager.find(request_id, cookie, search_options).to_h
     rescue => e

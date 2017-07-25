@@ -11,28 +11,100 @@ describe('components/InfoPaneButtons', () => {
     });
   }
 
-  describe('view data button', () => {
-    it('exists if the dataset is tabular', () => {
+  describe('explore data button', () => {
+    it('should exists', () => {
       const element = renderComponent(InfoPaneButtons, getProps());
-      assert.ok(element.querySelector('.btn.grid'));
+      assert.ok(element.querySelector('.btn.explore-dropdown'));
     });
 
-    it('does not exist if the dataset is blobby or an href', () => {
-      let element = renderComponent(InfoPaneButtons, getProps({
-        view: {
-          isBlobby: true
-        }
-      }));
+    describe('visualize link', () => {
+      beforeEach(() =>  {
+        window.serverConfig.currentUser = { roleName: 'anything' };
+        window.serverConfig.featureFlags.enableVisualizationCanvas = true;
+      });
 
-      assert.isNull(element.querySelector('.btn.grid'));
+      afterEach(() => {
+        window.serverConfig.currentUser = null;
+        window.serverConfig.featureFlags.enableVisualizationCanvas = false;
+      });
 
-      element = renderComponent(InfoPaneButtons, getProps({
-        view: {
-          isHref: true
-        }
-      }));
+      it('exists if the bootstrapUrl is defined', () => {
+        const element = renderComponent(InfoPaneButtons, getProps());
+        assert.ok(element.querySelector('a[href="bootstrapUrl"]'));
+      });
 
-      assert.isNull(element.querySelector('.btn.grid'));
+      it('does not exist if the bootstrapUrl is blank', () => {
+        const element = renderComponent(InfoPaneButtons, getProps({
+          view: {
+            bootstrapUrl: null
+          }
+        }));
+
+        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
+      });
+
+      it('does not exist if the feature flag is disabled', () => {
+        window.serverConfig.featureFlags.enableVisualizationCanvas = false;
+        const element = renderComponent(InfoPaneButtons, getProps());
+        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
+      });
+
+      it('does not exist if the user lacks a role', () => {
+        window.serverConfig.currentUser = {};
+        const element = renderComponent(InfoPaneButtons, getProps());
+        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
+      });
+    });
+
+    describe('view data button', () => {
+      it('exists if the dataset is tabular', () => {
+        const element = renderComponent(InfoPaneButtons, getProps());
+        assert.ok(element.querySelector('.grid-link'));
+      });
+
+      it('does not exist if the dataset is blobby or an href', () => {
+        let element = renderComponent(InfoPaneButtons, getProps({
+          view: {
+            isBlobby: true
+          }
+        }));
+
+        assert.isNull(element.querySelector('.grid-link'));
+
+        element = renderComponent(InfoPaneButtons, getProps({
+          view: {
+            isHref: true
+          }
+        }));
+
+        assert.isNull(element.querySelector('.grid-link'));
+      });
+    });
+
+    describe('carto modal button', () => {
+      it('not exists if no carto url present', () => {
+        const element = renderComponent(InfoPaneButtons, getProps());
+        assert.isNull(element.querySelector('a[data-modal=carto-modal]'));
+      });
+
+      it('exists if a carto url present', () => {
+        const element = renderComponent(InfoPaneButtons, getProps({
+          view: {
+            cartoUrl: 'something'
+          }
+        }));
+        assert.ok(element.querySelector('a[data-modal=carto-modal]'));
+      });
+    });
+
+    it('includes a plot.ly modal button', () => {
+      const element = renderComponent(InfoPaneButtons, getProps());
+      assert.ok(element.querySelector('a[data-modal=plotly-modal]'));
+    });
+
+    it('should include a more button', () => {
+      const element = renderComponent(InfoPaneButtons, getProps());
+      assert.ok(element.querySelector('.explore-dropdown .more-options-button'));
     });
   });
 
@@ -190,45 +262,6 @@ describe('components/InfoPaneButtons', () => {
   });
 
   describe('more actions dropdown', () => {
-    describe('visualize link', () => {
-      beforeEach(() =>  {
-        window.serverConfig.currentUser = { roleName: 'anything' };
-        window.serverConfig.featureFlags.enableVisualizationCanvas = true;
-      });
-
-      afterEach(() => {
-        window.serverConfig.currentUser = null;
-        window.serverConfig.featureFlags.enableVisualizationCanvas = false;
-      });
-
-      it('exists if the bootstrapUrl is defined', () => {
-        const element = renderComponent(InfoPaneButtons, getProps());
-        assert.ok(element.querySelector('a[href="bootstrapUrl"]'));
-      });
-
-      it('does not exist if the bootstrapUrl is blank', () => {
-        const element = renderComponent(InfoPaneButtons, getProps({
-          view: {
-            bootstrapUrl: null
-          }
-        }));
-
-        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
-      });
-
-      it('does not exist if the feature flag is disabled', () => {
-        window.serverConfig.featureFlags.enableVisualizationCanvas = false;
-        const element = renderComponent(InfoPaneButtons, getProps());
-        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
-      });
-
-      it('does not exist if the user lacks a role', () => {
-        window.serverConfig.currentUser = {};
-        const element = renderComponent(InfoPaneButtons, getProps());
-        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
-      });
-    });
-
     describe('comment link', () => {
       it('exists if commentUrl is defined', () => {
         const element = renderComponent(InfoPaneButtons, getProps());

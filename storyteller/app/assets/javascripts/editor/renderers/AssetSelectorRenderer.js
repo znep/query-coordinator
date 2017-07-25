@@ -2332,7 +2332,7 @@ export default function AssetSelectorRenderer(options) {
     const authoringWorkflow = new AuthoringWorkflow(element, {
       vif: vifToEdit,
       filters: _.get(vifToEdit, 'series[0].dataSource.filters', []),
-      enableFiltering: FeatureFlags.value('enable_filterable_visualizations_in_ax'),
+      enableFiltering: true,
       backButtonText: I18n.t('editor.asset_selector.visualization.authoring_visualization_back_button'),
       onBack: () => {
         authoringWorkflow.destroy();

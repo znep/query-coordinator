@@ -191,10 +191,19 @@ function TileserverDataProvider(config, useCache = false) {
    *
    * @return {Promise}
    */
+  let arrayBufferPromiseCache = {};
   function _getArrayBuffer(url, configuration) {
 
-    return (
-      new Promise(
+    let cacheKey = url;
+    let cachedPromise = arrayBufferPromiseCache[cacheKey];
+
+    if (cachedPromise) {
+      return cachedPromise;
+    }
+
+    else {
+
+      let loadTilesPromise = new Promise(
         function(resolve, reject) {
           var xhr = new XMLHttpRequest();
 
@@ -250,9 +259,16 @@ function TileserverDataProvider(config, useCache = false) {
         function(error) {
           throw error;
         }
-      )
-    );
+      );
+
+      arrayBufferPromiseCache[cacheKey] = loadTilesPromise;
+
+      return loadTilesPromise;
+
+    }
+
   }
+
 }
 
 module.exports = TileserverDataProvider;

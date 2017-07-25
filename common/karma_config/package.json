@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "airbrake-js": "0.5.9",
-    "es6-promise-polyfill": "1.2.0"
+    "es6-promise-polyfill": "1.2.0",
+    "jstz": "1.0.10",
+    "moment-timezone": "^0.5.13"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
@@ -73,7 +75,7 @@
     "lodash": "4.14.2",
     "mocha": "2.5.3",
     "modularscale-sass": "2.1.1",
-    "moment": "2.14.1",
+    "moment-timezone": "0.5.13",
     "node-sass": "^4.5.3",
     "normalize.css": "4.1.1",
     "pbf": "1.3.5",

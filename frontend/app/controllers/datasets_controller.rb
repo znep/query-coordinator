@@ -263,10 +263,7 @@ class DatasetsController < ApplicationController
         return render_404
       end
       sources = DatasetManagementAPI.get_sources_index(@view.id, params[:revision_seq], cookies)
-      @revision[:sources] = sources.map do |source|
-        source_id = source['resource']['id']
-        DatasetManagementAPI.get_source(@view.id, params[:revision_seq], source_id, cookies)
-      end
+      @revision[:sources] = sources
       @websocket_token = DatasetManagementAPI.get_websocket_token(@view.id, cookies)
       render 'datasets/dataset_management_ui', :layout => 'styleguide'
     else

@@ -5,14 +5,16 @@ import { DragDropUpload } from 'components/Uploads/DragDropUpload';
 import _ from 'lodash';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-const mockStore = configureStore([thunk]);
 import mockAPI from '../../testHelpers/mockAPI';
-import wsmock from '../../testHelpers/mockSocket';
+import mockSocket from '../../testHelpers/mockSocket';
 import state from '../../data/initialState';
+import { bootstrapChannels } from '../../data/socketChannels';
+
+const socket = mockSocket(bootstrapChannels);
+const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 
 describe('components/Uploads/DragDropUpload', () => {
   let unmock;
-  let unmockWS;
 
   const fakeEvent = {
     dataTransfer: { files: [{ name: 'testfile.csv' }] },
@@ -22,12 +24,10 @@ describe('components/Uploads/DragDropUpload', () => {
 
   before(() => {
     unmock = mockAPI();
-    unmockWS = wsmock();
   });
 
   after(() => {
     unmock();
-    unmockWS.stop();
   });
 
   it('calls createUpload on drop', done => {

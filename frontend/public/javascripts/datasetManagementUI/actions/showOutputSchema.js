@@ -18,7 +18,7 @@ import { soqlProperties } from 'lib/soqlTypes';
 import * as Selectors from 'selectors';
 import { showModal } from 'actions/modal';
 import {
-  pollForOutputSchemaSuccess,
+  listenForOutputSchemaSuccess,
   subscribeToOutputSchema,
   subscribeToTransforms
 } from 'actions/manageUploads';
@@ -47,7 +47,7 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call) {
       .then(resp => {
         dispatch(apiCallSucceeded(callId));
 
-        dispatch(pollForOutputSchemaSuccess(resp.resource));
+        dispatch(listenForOutputSchemaSuccess(resp.resource));
         dispatch(subscribeToOutputSchema(resp.resource));
         dispatch(subscribeToTransforms(resp.resource));
 
@@ -188,9 +188,7 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
     if (inputColumn.soql_type === newType) {
       return `\`${fieldName}\``;
     }
-    return outputColumn.id === oldColumn.id
-      ? `${conversionFunc}(${fieldName})`
-      : transformExpr;
+    return outputColumn.id === oldColumn.id ? `${conversionFunc}(${fieldName})` : transformExpr;
   };
   return oldOutputColumns.map(c => toNewOutputColumn(c, genTransform));
 }

@@ -5,7 +5,7 @@ import ui from 'reducers/ui';
 import createUpload from 'reducers/createUpload';
 import bootstrapApp from 'reducers/bootstrapApp';
 import uploadFile from 'reducers/uploadFile';
-import pollForOutputSchema from 'reducers/pollForOutputSchema';
+import listenForOutputSchema from 'reducers/listenForOutputSchema';
 import loadData from 'reducers/loadData';
 import insertInputSchema from 'reducers/insertInputSchema';
 import applyRevision from 'reducers/applyRevision';
@@ -20,7 +20,7 @@ export default reduceReducers(
   createUpload,
   bootstrapApp,
   uploadFile,
-  pollForOutputSchema,
+  listenForOutputSchema,
   loadData,
   insertInputSchema,
   applyRevision

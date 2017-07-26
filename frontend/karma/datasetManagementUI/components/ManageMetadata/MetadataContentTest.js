@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
 import MetadataContent from 'components/ManageMetadata/MetadataContent';
@@ -13,8 +13,8 @@ describe('components/ManageMetadata/MetadataContent', () => {
     fourfour: 'hehe-hehe',
     onSidebarTabClick: () => {},
     columnsExist: false,
+    onDatasetTab: true,
     store: createStore(reducer, initialState, applyMiddleware(thunk))
-
   };
 
   it('shows a disabled columns tab if columnsExist is falsey', () => {

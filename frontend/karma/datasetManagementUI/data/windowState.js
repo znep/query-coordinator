@@ -149,113 +149,115 @@ export default {
     },
     sources: [
       {
-        schemas: [
-          {
-            total_rows: 3,
-            output_schemas: [
-              {
-                output_columns: [
-                  {
-                    transform: {
-                      transform_input_columns: [
-                        {
-                          input_column_id: 1773
-                        }
-                      ],
-                      transform_expr: '`foo`',
-                      output_soql_type: 'text',
-                      id: 1800,
-                      failed_at: null,
-                      completed_at: '2017-06-13T18:43:32',
-                      attempts: 0
+        resource: {
+          schemas: [
+            {
+              total_rows: 3,
+              output_schemas: [
+                {
+                  output_columns: [
+                    {
+                      transform: {
+                        transform_input_columns: [
+                          {
+                            input_column_id: 1773
+                          }
+                        ],
+                        transform_expr: '`foo`',
+                        output_soql_type: 'text',
+                        id: 1800,
+                        failed_at: null,
+                        completed_at: '2017-06-13T18:43:32',
+                        attempts: 0
+                      },
+                      position: 0,
+                      is_primary_key: false,
+                      id: 1805,
+                      field_name: 'foo',
+                      display_name: 'foo',
+                      description: ''
                     },
-                    position: 0,
-                    is_primary_key: false,
-                    id: 1805,
-                    field_name: 'foo',
-                    display_name: 'foo',
-                    description: ''
+                    {
+                      transform: {
+                        transform_input_columns: [
+                          {
+                            input_column_id: 1774
+                          }
+                        ],
+                        transform_expr: '`bar`',
+                        output_soql_type: 'text',
+                        id: 1801,
+                        failed_at: null,
+                        completed_at: '2017-06-13T18:43:32',
+                        attempts: 0
+                      },
+                      position: 1,
+                      is_primary_key: false,
+                      id: 1806,
+                      field_name: 'bar',
+                      display_name: 'bar',
+                      description: ''
+                    }
+                  ],
+                  input_schema_id: 91,
+                  id: 127,
+                  error_count: 1,
+                  created_by: {
+                    user_id: 'tugg-ikce',
+                    email: 'brandon.webster@socrata.com',
+                    display_name: 'branweb'
                   },
-                  {
-                    transform: {
-                      transform_input_columns: [
-                        {
-                          input_column_id: 1774
-                        }
-                      ],
-                      transform_expr: '`bar`',
-                      output_soql_type: 'text',
-                      id: 1801,
-                      failed_at: null,
-                      completed_at: '2017-06-13T18:43:32',
-                      attempts: 0
-                    },
-                    position: 1,
-                    is_primary_key: false,
-                    id: 1806,
-                    field_name: 'bar',
-                    display_name: 'bar',
-                    description: ''
-                  }
-                ],
-                input_schema_id: 91,
-                id: 127,
-                error_count: 1,
-                created_by: {
-                  user_id: 'tugg-ikce',
-                  email: 'brandon.webster@socrata.com',
-                  display_name: 'branweb'
+                  created_at: '2017-06-13T18:43:32.033034',
+                  completed_at: '2017-06-13T18:43:32'
+                }
+              ],
+              name: null,
+              input_columns: [
+                {
+                  soql_type: 'text',
+                  position: 1,
+                  input_schema_id: 91,
+                  id: 1774,
+                  guessed_subtypes: [],
+                  guessed_soql_type: 'text',
+                  field_name: 'bar'
                 },
-                created_at: '2017-06-13T18:43:32.033034',
-                completed_at: '2017-06-13T18:43:32'
-              }
-            ],
-            name: null,
-            input_columns: [
-              {
-                soql_type: 'text',
-                position: 1,
-                input_schema_id: 91,
-                id: 1774,
-                guessed_subtypes: [],
-                guessed_soql_type: 'text',
-                field_name: 'bar'
+                {
+                  soql_type: 'text',
+                  position: 0,
+                  input_schema_id: 91,
+                  id: 1773,
+                  guessed_subtypes: [],
+                  guessed_soql_type: 'text',
+                  field_name: 'foo'
+                }
+              ],
+              id: 91,
+              created_by: {
+                user_id: 'tugg-ikce',
+                email: 'brandon.webster@socrata.com',
+                display_name: 'branweb'
               },
-              {
-                soql_type: 'text',
-                position: 0,
-                input_schema_id: 91,
-                id: 1773,
-                guessed_subtypes: [],
-                guessed_soql_type: 'text',
-                field_name: 'foo'
-              }
-            ],
-            id: 91,
-            created_by: {
-              user_id: 'tugg-ikce',
-              email: 'brandon.webster@socrata.com',
-              display_name: 'branweb'
-            },
-            created_at: '2017-06-13T18:43:31.918460'
-          }
-        ],
-        id: 108,
-        header_count: 1,
-        finished_at: '2017-06-13T18:43:32',
-        source_type: {
-          type: 'upload',
-          filename: 'tiny-errors.csv',
-        },
-        failed_at: null,
-        created_by: {
-          user_id: 'tugg-ikce',
-          email: 'brandon.webster@socrata.com',
-          display_name: 'branweb'
-        },
-        created_at: '2017-06-13T18:43:31.586356',
-        content_type: 'text/csv',
-        column_header: 1
+              created_at: '2017-06-13T18:43:31.918460'
+            }
+          ],
+          id: 108,
+          header_count: 1,
+          finished_at: '2017-06-13T18:43:32',
+          source_type: {
+            type: 'upload',
+            filename: 'tiny-errors.csv'
+          },
+          failed_at: null,
+          created_by: {
+            user_id: 'tugg-ikce',
+            email: 'brandon.webster@socrata.com',
+            display_name: 'branweb'
+          },
+          created_at: '2017-06-13T18:43:31.586356',
+          content_type: 'text/csv',
+          column_header: 1
+        }
       }
     ]
   },

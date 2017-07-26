@@ -15,27 +15,42 @@ import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
 import { editView } from 'actions/views';
 import { setFourfour, addLocation } from 'actions/routing';
-import wsmock from '../testHelpers/mockSocket';
+import mockSocket from '../testHelpers/mockSocket';
+import { bootstrapChannels } from '../data/socketChannels';
 
-const mockStore = configureStore([thunk]);
+// create the mock socket and insert it into the fake store
+const socket = mockSocket(
+  bootstrapChannels.map(bc => {
+    if (bc.evt === 'insert_input_schema') {
+      return {
+        ...bc,
+        channel: 'source:823'
+      };
+    } else {
+      return bc;
+    }
+  })
+);
+
+const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 
 describe('actions/manageMetadata', () => {
   let unmock;
-  let unmockWS;
   let store;
 
   before(() => {
     unmock = mockAPI();
-    unmockWS = wsmock();
   });
 
   after(() => {
     unmock();
-    unmockWS.stop();
   });
 
   beforeEach(() => {
-    store = createStore(rootReducer, applyMiddleware(thunk));
+    store = createStore(
+      rootReducer,
+      applyMiddleware(thunk.withExtraArgument(socket))
+    );
     store.dispatch(
       bootstrapApp(
         window.initialState.view,
@@ -66,7 +81,6 @@ describe('actions/manageMetadata', () => {
   describe('actions/manageMetadata/saveDatasetMetadata', () => {
     it('dispatches an api call started action with correct data', done => {
       const fakeStore = mockStore(store.getState());
-      const fourfour = Object.keys(store.getState().entities.views)[0];
 
       fakeStore
         .dispatch(saveDatasetMetadata())
@@ -171,7 +185,7 @@ describe('actions/manageMetadata', () => {
         });
     });
 
-    it('dispatches a POLL_FOR_OUTPUT_SCHEMA_SUCCESS action with correct data if server resonds with 200-level status', done => {
+    it('dispatches a LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS action with correct data if server resonds with 200-level status', done => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore
@@ -179,7 +193,7 @@ describe('actions/manageMetadata', () => {
         .then(() => {
           const action = fakeStore.getActions()[2];
 
-          assert.equal(action.type, 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS');
+          assert.equal(action.type, 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS');
           assert.isTrue(_.has(action, 'outputSchema'));
           assert.isTrue(_.has(action, 'transforms'));
           assert.isTrue(_.has(action, 'outputColumns'));

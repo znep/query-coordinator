@@ -15,6 +15,7 @@ describe('components/ManageMetadata/ColumnForm', () => {
 
   const defaultProps = {
     setErrors: () => {},
+    outputSchemaId: 3,
     errors: [],
     rows: [
       [

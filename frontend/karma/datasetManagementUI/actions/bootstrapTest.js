@@ -65,44 +65,41 @@ describe('bootstrap', () => {
     unmockHTTP();
   });
 
-  it.only(
-    'joins channels and starts polling when there are in-progress task sets',
-    done => {
-      const revisionWithTaskSet = {
-        ...window.initialState.revision,
-        task_sets: [
-          {
-            id: 52,
-            status: 'upserting'
-          }
-        ]
-      };
-      fakeStore.dispatch(
-        bootstrapApp(
-          window.initialState.view,
-          revisionWithTaskSet,
-          window.initialState.customMetadataFieldsets
-        )
-      );
-      // TODO: promise-ify bootstrapApp & sideEffectyStuff so we don't have to setTimeout here?
-      setTimeout(() => {
-        const actions = fakeStore.getActions();
-        const actionTypes = _.map(actions, 'type');
-        assert.deepEqual(actionTypes, [
-          'BOOTSTRAP_APP_SUCCESS',
-          'INSERT_INPUT_SCHEMA',
-          'EDIT_INPUT_SCHEMA',
-          'POLL_FOR_OUTPUT_SCHEMA_SUCCESS',
-          'EDIT_OUTPUT_SCHEMA',
-          'EDIT_TRANSFORM',
-          'EDIT_TRANSFORM',
-          'EDIT_TRANSFORM',
-          'EDIT_TRANSFORM',
-          'SHOW_MODAL',
-          'POLL_FOR_TASK_SET_PROGRESS_SUCCESS'
-        ]);
-        done();
-      }, 200);
-    }
-  );
+  it('joins channels and starts polling when there are in-progress task sets', done => {
+    const revisionWithTaskSet = {
+      ...window.initialState.revision,
+      task_sets: [
+        {
+          id: 52,
+          status: 'upserting'
+        }
+      ]
+    };
+    fakeStore.dispatch(
+      bootstrapApp(
+        window.initialState.view,
+        revisionWithTaskSet,
+        window.initialState.customMetadataFieldsets
+      )
+    );
+    // TODO: promise-ify bootstrapApp & sideEffectyStuff so we don't have to setTimeout here?
+    setTimeout(() => {
+      const actions = fakeStore.getActions();
+      const actionTypes = _.map(actions, 'type');
+      assert.deepEqual(actionTypes, [
+        'BOOTSTRAP_APP_SUCCESS',
+        'INSERT_INPUT_SCHEMA',
+        'EDIT_INPUT_SCHEMA',
+        'POLL_FOR_OUTPUT_SCHEMA_SUCCESS',
+        'EDIT_OUTPUT_SCHEMA',
+        'EDIT_TRANSFORM',
+        'EDIT_TRANSFORM',
+        'EDIT_TRANSFORM',
+        'EDIT_TRANSFORM',
+        'SHOW_MODAL',
+        'POLL_FOR_TASK_SET_PROGRESS_SUCCESS'
+      ]);
+      done();
+    }, 200);
+  });
 });

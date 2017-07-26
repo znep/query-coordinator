@@ -9,6 +9,7 @@ export const getInitialState = () => ({
   domainTags: _.get(window, 'initialState.domainTags') || [],
   onlyRecentlyViewed: false,
   ownedBy: _.get(window, 'initialState.initialFilters.ownedBy'),
+  q: _.get(url.parse(window.location.href, true), 'query.q', ''),
   tag: _.get(window, 'initialState.initialFilters.tag'),
   usersList: _.get(window, 'initialState.usersList') || [],
   visibility: _.get(window, 'initialState.initialFilters.visibility')
@@ -25,7 +26,7 @@ export const getUnfilteredState = () => ({
     displayName: '',
     id: null
   },
-  q: _.get(url.parse(window.location.href, true), 'query.q', ''),
+  q: null,
   tag: null,
   usersList: _.get(window, 'initialState.usersList') || [],
   visibility: null

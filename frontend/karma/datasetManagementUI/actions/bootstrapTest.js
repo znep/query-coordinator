@@ -5,47 +5,11 @@ import configureStore from 'redux-mock-store';
 import state from '../data/stateWithRevision';
 import mockAPI from '../testHelpers/mockAPI';
 import mockSocket from '../testHelpers/mockSocket';
+import { bootstrapChannels } from '../data/socketChannels';
 import { bootstrapApp } from 'actions/bootstrap';
 
-// get input and output schemas from dummy data
-const iss = _.flatMap(
-  window.initialState.revision.sources,
-  r => r.resource.schemas
-);
-
-const oss = _.flatMap(iss, is => is.output_schemas);
-
-// build up mock ws channels
-const one = _.flatMap(oss, os =>
-  os.output_columns.map(oc => ({
-    channel: `transform_progress:${oc.transform.id}`,
-    evt: 'max_ptr',
-    msg: { end_row_offset: 5 }
-  }))
-);
-
-const two = _.flatMap(oss, os =>
-  os.output_columns.map(oc => ({
-    channel: `transform_progress:${oc.transform.id}`,
-    evt: 'errors',
-    msg: { errors: 0 }
-  }))
-);
-
-const three = oss.map(os => ({
-  channel: `output_schema:${os.id}`,
-  msg: os,
-  evt: 'update'
-}));
-
-const four = iss.map(is => ({
-  channel: `row_errors:${is.id}`,
-  evt: 'errors',
-  msg: { errors: 0 }
-}));
-
 // create the mock socket and insert it into the fake store
-const socket = mockSocket([...one, ...two, ...three, ...four]);
+const socket = mockSocket(bootstrapChannels);
 
 const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 

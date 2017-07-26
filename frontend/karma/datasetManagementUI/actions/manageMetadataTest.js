@@ -15,27 +15,31 @@ import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
 import { editView } from 'actions/views';
 import { setFourfour, addLocation } from 'actions/routing';
-import wsmock from '../testHelpers/mockSocket';
+import mockSocket from '../testHelpers/mockSocket';
+import { bootstrapChannels } from '../data/socketChannels';
 
-const mockStore = configureStore([thunk]);
+// create the mock socket and insert it into the fake store
+const socket = mockSocket(bootstrapChannels);
+
+const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 
 describe('actions/manageMetadata', () => {
   let unmock;
-  let unmockWS;
   let store;
 
   before(() => {
     unmock = mockAPI();
-    unmockWS = wsmock();
   });
 
   after(() => {
     unmock();
-    unmockWS.stop();
   });
 
   beforeEach(() => {
-    store = createStore(rootReducer, applyMiddleware(thunk));
+    store = createStore(
+      rootReducer,
+      applyMiddleware(thunk.withExtraArgument(socket))
+    );
     store.dispatch(
       bootstrapApp(
         window.initialState.view,
@@ -66,7 +70,6 @@ describe('actions/manageMetadata', () => {
   describe('actions/manageMetadata/saveDatasetMetadata', () => {
     it('dispatches an api call started action with correct data', done => {
       const fakeStore = mockStore(store.getState());
-      const fourfour = Object.keys(store.getState().entities.views)[0];
 
       fakeStore
         .dispatch(saveDatasetMetadata())

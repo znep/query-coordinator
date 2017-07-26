@@ -1,37 +1,48 @@
 import { assert } from 'chai';
-import _ from 'lodash';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore } from 'redux';
 import configureStore from 'redux-mock-store';
 import { createUpload } from 'actions/manageUploads';
-import mockPhoenixSocket from '../testHelpers/mockPhoenixSocket';
 import mockAPI from '../testHelpers/mockAPI';
-import * as dsmapiLinks from 'dsmapiLinks';
-import wsmock from '../testHelpers/mockSocket';
+import mockSocket from '../testHelpers/mockSocket';
+import { bootstrapChannels } from '../data/socketChannels';
 import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
 import { setFourfour, addLocation } from 'actions/routing';
 
-const mockStore = configureStore([thunk]);
+const socket = mockSocket(
+  bootstrapChannels.map(bc => {
+    if (bc.evt === 'insert_input_schema') {
+      return {
+        ...bc,
+        channel: 'source:823'
+      };
+    } else {
+      return bc;
+    }
+  })
+);
+
+const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 
 describe('actions/manageUploads', () => {
   describe('actions/manageUploads/createUpload', () => {
     let unmock;
-    let unmockWS;
     let store;
 
     before(() => {
       unmock = mockAPI();
-      unmockWS = wsmock();
     });
 
     after(() => {
       unmock();
-      unmockWS.stop();
     });
 
     beforeEach(() => {
-      store = createStore(rootReducer, applyMiddleware(thunk));
+      store = createStore(
+        rootReducer,
+        applyMiddleware(thunk.withExtraArgument(socket))
+      );
       store.dispatch(
         bootstrapApp(
           window.initialState.view,
@@ -67,7 +78,10 @@ describe('actions/manageUploads', () => {
         .then(() => {
           const actions = fakeStore.getActions();
           assert.equal(actions[0].type, 'API_CALL_STARTED');
-          assert.equal(actions[0].params.source_type.filename, 'petty_crimes.csv');
+          assert.equal(
+            actions[0].params.source_type.filename,
+            'petty_crimes.csv'
+          );
 
           done();
         })
@@ -78,12 +92,12 @@ describe('actions/manageUploads', () => {
 
     it('redirects to ShowOutputSchema preview on successful source creation', done => {
       const fakeStore = mockStore(store.getState());
+      const fourfour = Object.keys(store.getState().entities.views)[0];
 
       fakeStore
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }, fourfour))
         .then(() => {
           const actions = fakeStore.getActions();
-
           const redirectAction = actions.filter(
             action => action.type === '@@router/CALL_HISTORY_METHOD'
           )[0];

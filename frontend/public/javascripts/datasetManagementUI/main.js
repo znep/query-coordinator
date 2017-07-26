@@ -5,10 +5,6 @@ import { createStore, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
-// import createLoggerMiddleware from 'redux-logger';
-// import thunkMiddleware from 'redux-thunk';
-// import windowDBMiddleware from './lib/database/middleware';
-import * as Phoenix from 'phoenix';
 import Perf from 'react-addons-perf';
 import middleware from 'middleware';
 import rootReducer from 'reducers/rootReducer';
@@ -19,37 +15,8 @@ import rootRoute from './routes';
 import { addLocation, setFourfour } from 'actions/routing';
 import styleguide from './styles/style.global.scss'; //eslint-disable-line
 
-const viewId = window.initialState.view.id;
-
-window.DSMAPI_PHOENIX_SOCKET = new Phoenix.Socket('/api/publishing/v1/socket', {
-  params: {
-    fourfour: viewId,
-    token: window.serverConfig.websocketToken
-  }
-});
-
-window.DSMAPI_PHOENIX_SOCKET.connect();
-
-// middleware
-// const middleware = [thunkMiddleware, routerMiddleware(browserHistory)];
-
 if (window.serverConfig.environment === 'development') {
   window.Perf = Perf;
-
-  // middleware.push(
-  //   createLogger({
-  //     duration: true,
-  //     timestamp: false,
-  //     collapsed: true,
-  //     logErrors: false
-  //   })
-  // );
-  //
-  // middleware.push(windowDBMiddleware);
-  //
-  // console.log(
-  //   'for convenience, try e.g. `console.table(ENTITIES.sources)` (only works when RAILS_ENV==development)'
-  // );
 } else {
   // 126728 is Publishing airbrake project id
   Airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);

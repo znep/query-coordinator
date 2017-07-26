@@ -1174,8 +1174,17 @@ module ApplicationHelper
   end
 
   def render_admin_header?
-    %w(administration site_appearance connector routing_approval activity_feed).include?(controller_name) &&
-      new_admin_ui_enabled?
+    return false unless new_admin_ui_enabled?
+
+    %w(
+      activity_feed
+      administration
+      connector
+      internal
+      internal_asset_manager
+      routing_approval
+      site_appearance
+    ).include?(controller_name)
   end
 
   def new_admin_ui_enabled?

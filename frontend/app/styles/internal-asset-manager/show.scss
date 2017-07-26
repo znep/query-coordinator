@@ -9,6 +9,10 @@
 
 $admin-header-height: 46px;
 
+.admin-header {
+  min-height: $admin-header-height;
+}
+
 body {
   margin: 0;
   padding: $admin-header-height 0 0 0;

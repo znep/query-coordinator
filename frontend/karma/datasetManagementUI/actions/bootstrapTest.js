@@ -54,7 +54,7 @@ describe('bootstrap', () => {
         'BOOTSTRAP_APP_SUCCESS',
         'INSERT_INPUT_SCHEMA',
         'EDIT_INPUT_SCHEMA',
-        'POLL_FOR_OUTPUT_SCHEMA_SUCCESS',
+        'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS',
         'EDIT_OUTPUT_SCHEMA',
         'EDIT_TRANSFORM',
         'EDIT_TRANSFORM',

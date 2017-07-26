@@ -185,7 +185,7 @@ describe('actions/manageMetadata', () => {
         });
     });
 
-    it('dispatches a POLL_FOR_OUTPUT_SCHEMA_SUCCESS action with correct data if server resonds with 200-level status', done => {
+    it('dispatches a LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS action with correct data if server resonds with 200-level status', done => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore
@@ -193,7 +193,7 @@ describe('actions/manageMetadata', () => {
         .then(() => {
           const action = fakeStore.getActions()[2];
 
-          assert.equal(action.type, 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS');
+          assert.equal(action.type, 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS');
           assert.isTrue(_.has(action, 'outputSchema'));
           assert.isTrue(_.has(action, 'transforms'));
           assert.isTrue(_.has(action, 'outputColumns'));

@@ -76,7 +76,7 @@ describe('actions/showOutputSchema', () => {
     it('adds a new output schema to the store', () => {
       const expectedAction = recordedActions.filter(
         action =>
-          action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS' &&
           _.has(action, 'outputSchema')
       );
 
@@ -86,7 +86,7 @@ describe('actions/showOutputSchema', () => {
     it('adds the added column to the store', () => {
       const expectedAction = recordedActions.filter(
         action =>
-          action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS' &&
           _.has(action, 'outputColumns')
       );
 
@@ -162,7 +162,7 @@ describe('actions/showOutputSchema', () => {
     it('adds a new output schema to the store', () => {
       const expectedAction = recordedActions.filter(
         action =>
-          action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS' &&
           _.has(action, 'outputSchema')
       );
 
@@ -173,7 +173,7 @@ describe('actions/showOutputSchema', () => {
       const expectedAction = recordedActions
         .filter(
           action =>
-            action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+            action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS' &&
             _.has(action, 'outputColumns')
         )
         .filter(action =>
@@ -252,7 +252,7 @@ describe('actions/showOutputSchema', () => {
     it('adds a new output schema to the store', () => {
       const expectedAction = recordedActions.filter(
         action =>
-          action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS' &&
+          action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS' &&
           _.has(action, 'outputSchema')
       );
 
@@ -261,7 +261,7 @@ describe('actions/showOutputSchema', () => {
 
     // it.only('adds new output column / transform to the store', () => {
     //   const expectedColumn = recordedActions
-    //     .filter(action => action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS')
+    //     .filter(action => action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS')
     //     .map(action => action.outputColumns)
     //     .reduce((acc, outputColumns) => {
     //       return [
@@ -278,7 +278,7 @@ describe('actions/showOutputSchema', () => {
     //   const newTransformId = expectedColumn[0].transform_id;
     //
     //   const expectedTransform = recordedActions
-    //     .filter(action => action.type === 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS')
+    //     .filter(action => action.type === 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS')
     //     .map(action => action.transforms)
     //     .reduce((acc, transforms) => {
     //       return [

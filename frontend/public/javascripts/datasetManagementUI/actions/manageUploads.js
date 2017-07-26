@@ -12,7 +12,7 @@ import { addNotification, removeNotificationAfterTimeout } from 'actions/notific
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'actions/apiCalls';
 
 export const INSERT_INPUT_SCHEMA = 'INSERT_INPUT_SCHEMA';
-export const POLL_FOR_OUTPUT_SCHEMA_SUCCESS = 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS';
+export const LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS = 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS';
 export const UPLOAD_FILE = 'UPLOAD_FILE';
 export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_SUCCESS';
 export const UPLOAD_FILE_FAILURE = 'UPLOAD_FILE_FAILURE';
@@ -257,7 +257,7 @@ export function listenForOutputSchemaSuccess(outputSchemaResponse) {
   }, {});
 
   return {
-    type: POLL_FOR_OUTPUT_SCHEMA_SUCCESS,
+    type: LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS,
     outputSchema,
     transforms,
     outputColumns,

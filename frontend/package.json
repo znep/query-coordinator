@@ -83,7 +83,6 @@
     "karma-sourcemap-loader": "0.3.7",
     "karma-webpack": "1.7.0",
     "mocha": "3.2.0",
-    "mock-socket": "^6.0.4",
     "modularscale-sass": "2.1.1",
     "ngtemplate-loader": "WearyMonkey/ngtemplate-loader#63e3461",
     "node-noop": "^1.0.0",

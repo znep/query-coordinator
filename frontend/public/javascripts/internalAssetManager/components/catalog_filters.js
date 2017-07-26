@@ -52,7 +52,7 @@ export class CatalogFilters extends React.Component {
         onSelection={(option) => onChange(option.value)}
         options={options}
         size="medium"
-        value={value} />
+        value={value || null} />
     );
   }
 

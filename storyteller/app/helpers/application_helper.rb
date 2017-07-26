@@ -58,10 +58,11 @@ module ApplicationHelper
   # Renders pendo tracker code if pendo_tracking feature enabled.
   # Only runs for logged in users.
   def render_pendo_tracker
-    if pendo_tracking_enabled? && current_user
+    if pendo_tracking_enabled?
       first_name = ''
       last_name = ''
-      display_name = current_user['displayName']
+      display_name = current_user && current_user['displayName']
+
       if display_name
         names = display_name.split
         if names.length == 1 || names.length > 2
@@ -73,14 +74,20 @@ module ApplicationHelper
 
       pendo_config = {
         :token => Rails.application.config.pendo_token,
-        :email => current_user['email'],
-        :first_name => first_name,
-        :last_name => last_name,
-        :socrata_id => current_user['id'],
-        :socrata_employee => current_user.try(:[], 'flags').try(:include?, 'admin') || false,
-        :role => current_user['roleName'] || 'N/A',
-        :stories_enabled => true,
-        :environment =>  Rails.env
+        :visitor => {
+          :id => current_user && current_user['email'],
+          :socrataID => (current_user && current_user['id']) || 'N/A',
+          :userRole => (current_user && current_user['roleName']) || 'N/A',
+          :firstName => first_name,
+          :lastName => last_name,
+          :socrataEmployee => current_user.try(:[], 'flags').try(:include?, 'admin') || false
+        },
+        :account => {
+          :id => request.host,
+          :domain => request.host,
+          :environment => Rails.env,
+          :hasPerspectives => true
+        }
       }
 
       render 'shared/pendo_tracking', :pendo_config => pendo_config

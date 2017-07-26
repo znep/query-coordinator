@@ -935,10 +935,10 @@ module ApplicationHelper
   # Renders pendo tracker code if pendo_tracking feature enabled.
   # Only runs for logged in users.
   def render_pendo_tracker
-    if CurrentDomain.feature?(:pendo_tracking) && current_user
+    if CurrentDomain.feature?(:pendo_tracking)
       first_name = ''
       last_name = ''
-      display_name = current_user.displayName
+      display_name = current_user.try(:displayName)
 
       if display_name
         names = display_name.split
@@ -951,14 +951,20 @@ module ApplicationHelper
 
       pendo_config = {
         :token => APP_CONFIG.pendo_token,
-        :email => current_user.email,
-        :first_name => first_name,
-        :last_name => last_name,
-        :socrata_id => current_user.id,
-        :socrata_employee => current_user.is_superadmin? || false,
-        :role => current_user.role_name || 'N/A',
-        :stories_enabled => FeatureFlags.has?(:stories_enabled),
-        :environment =>  Rails.env
+        :visitor => {
+          :id => current_user.try(:email),
+          :socrataID => current_user.try(:id) || 'N/A',
+          :userRole => current_user.try(:role_name) || 'N/A',
+          :firstName => first_name,
+          :lastName => last_name,
+          :socrataEmployee => current_user.try(:is_superadmin?) || false
+        },
+        :account => {
+          :id => request.host,
+          :domain => request.host,
+          :environment => Rails.env,
+          :hasPerspectives => FeatureFlags.has?(:stories_enabled)
+        }
       }
 
       render 'templates/pendo_tracking', :pendo_config => pendo_config

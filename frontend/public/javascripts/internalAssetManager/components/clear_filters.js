@@ -19,7 +19,9 @@ export class ClearFilters extends Component {
     this.props.clearAllFilters();
 
     // =(
-    document.querySelector('.autocomplete-input').value = '';
+    if (document.querySelector('.autocomplete-input')) {
+      document.querySelector('.autocomplete-input').value = '';
+    }
   }
 
   render() {

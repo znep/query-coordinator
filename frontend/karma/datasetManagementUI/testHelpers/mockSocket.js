@@ -1,30 +1,23 @@
-import { SocketIO, Server} from 'mock-socket';
+const join = () => ({
+  receive: (msg, cb) => {
+    cb({});
+    return join();
+  }
+});
 
-// TODO: refine to be able to actually do channels
-function wsmock() {
-  const mockServer = new Server('/api/publishing/v1/socket');
-
-  mockServer.on('connection', server => {
-    mockServer.emit('ok', 'connected fine');
-    mockServer.emit('errors', {count: 0});
-    mockServer.emit('max_ptr', {
-      "seq_num":0,
-      "row_offset":0,
-      "end_row_offset":4999
-    });
-    mockServer.emit('updated', {error_count: 3});
-  });
-
-  window.DSMAPI_PHOENIX_SOCKET = {
-    channel: function(name){
-      const chan = new SocketIO('/api/publishing/v1/socket');
-      chan.join = function() { return this }
-      chan.receive = function() { return this }
-      return chan;
+const channel = broadcasts => name => ({
+  join: join,
+  on: (evt, callback) => {
+    const broadcast = broadcasts.find(b => b.evt === evt && b.channel === name);
+    if (broadcast) {
+      return callback(broadcast.msg);
     }
-  };
+  }
+});
 
-  return mockServer;
-}
+const mockSocket = broadcasts => ({
+  connect: () => {},
+  channel: channel(broadcasts)
+});
 
-export default wsmock;
+export default mockSocket;

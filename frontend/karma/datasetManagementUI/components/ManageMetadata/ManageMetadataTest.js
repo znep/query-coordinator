@@ -37,7 +37,10 @@ describe('components/ManageMetadata', () => {
     ],
     currentColumns: {},
     columnsExist: true,
-    dispatch: () => {}
+    dispatch: () => {},
+    entities: {},
+    location: {},
+    outputSchemaId: 86
   };
 
   const defaultDatasetProps = {
@@ -51,37 +54,30 @@ describe('components/ManageMetadata', () => {
   };
 
   it('renders dataset metadata tab without errors', () => {
-    const component = renderComponentWithStore(
-      ManageMetadata,
-      defaultDatasetProps,
-      store
-    );
+    const component = shallow(<ManageMetadata {...defaultDatasetProps} />);
     assert.ok(component);
   });
 
   it('renders column metadata tab without errors', () => {
-    const columnMeta = renderComponentWithStore(
-      ManageMetadata,
-      defaultColumnProps,
-      store
-    );
-    assert.ok(columnMeta);
+    const component = shallow(<ManageMetadata {...defaultColumnProps} />);
+
+    assert.ok(component);
   });
 
   it('renders a title', () => {
-    const datasetMeta = renderComponentWithStore(
-      ManageMetadata,
-      defaultDatasetProps,
-      store
+    const datasetComponent = shallow(
+      <ManageMetadata {...defaultDatasetProps} />
     );
-    expect(datasetMeta.innerText).to.contain(I18n.home_pane.metadata);
 
-    const columnMeta = renderComponentWithStore(
-      ManageMetadata,
-      defaultColumnProps,
-      store
-    );
-    expect(columnMeta.innerText).to.contain(I18n.home_pane.metadata);
+    const datasetTitle = datasetComponent.find('Header').prop('title');
+
+    assert.include(datasetTitle, I18n.home_pane.metadata);
+
+    const columnComponent = shallow(<ManageMetadata {...defaultColumnProps} />);
+
+    const columnTitle = columnComponent.find('Header').prop('title');
+
+    assert.include(columnTitle, I18n.home_pane.metadata);
   });
 
   describe('onSave handling', () => {

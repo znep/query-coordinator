@@ -3,26 +3,22 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
-import { editView } from 'actions/views';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import HomePaneSidebar, { ManageData } from 'components/HomePaneSidebar';
-import wsmock from '../testHelpers/mockSocket';
+import mockSocket from '../testHelpers/mockSocket';
+import { bootstrapChannels } from '../data/socketChannels';
 
 describe('components/HomePaneSidebar', () => {
   let store;
-  let unmockWS;
 
-  before(() => {
-    unmockWS = wsmock();
-  });
-
-  after(() => {
-    unmockWS.stop();
-  });
+  const socket = mockSocket(bootstrapChannels);
 
   beforeEach(() => {
-    store = createStore(rootReducer, applyMiddleware(thunk));
+    store = createStore(
+      rootReducer,
+      applyMiddleware(thunk.withExtraArgument(socket))
+    );
     store.dispatch(
       bootstrapApp(
         window.initialState.view,
@@ -102,5 +98,4 @@ describe('components/HomePaneSidebar', () => {
     const element = renderComponentWithStore(HomePaneSidebar, props, store);
     assert.isNotNull(element.querySelectorAll('.sidebarData'));
   });
-
 });

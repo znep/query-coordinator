@@ -19,7 +19,18 @@ import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
 
 // create the mock socket and insert it into the fake store
-const socket = mockSocket(bootstrapChannels);
+const socket = mockSocket(
+  bootstrapChannels.map(bc => {
+    if (bc.evt === 'insert_input_schema') {
+      return {
+        ...bc,
+        channel: 'source:823'
+      };
+    } else {
+      return bc;
+    }
+  })
+);
 
 const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 

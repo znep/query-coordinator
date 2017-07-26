@@ -2,7 +2,7 @@ import dotProp from 'dot-prop-immutable';
 import { LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS } from 'actions/manageUploads';
 import { mergeRecords } from 'lib/util';
 
-const pollForOutputSchema = (state, action) => {
+const listenForOutputSchema = (state, action) => {
   switch (action.type) {
     case LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS: {
       const stateWithUpdatedOutputSchemas = dotProp.set(
@@ -44,4 +44,4 @@ const pollForOutputSchema = (state, action) => {
   }
 };
 
-export default pollForOutputSchema;
+export default listenForOutputSchema;

@@ -78,8 +78,11 @@ class InternalAssetManagerController < ApplicationController
 
   def fetch_users
     begin
-      roled_users = Cetera::Utils.user_search_client.find_all_with_roles(request_id, forwardable_session_cookies)
-      Cetera::Results::UserSearchResult.new(roled_users).results
+      dataset_owners = Cetera::Utils.user_search_client.find_all_owners(
+        request_id,
+        forwardable_session_cookies
+      )
+      Cetera::Results::UserSearchResult.new(dataset_owners).results
     rescue => e
       report_error("Error fetching Cetera user results: #{e.inspect}")
       []

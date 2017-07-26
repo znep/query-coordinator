@@ -36,7 +36,7 @@ describe InternalAssetManagerController do
         expect(AssetInventoryService::InternalAssetManager).to receive(:find)
 
         cetera_user_search_client_double = double(Cetera::UserSearch)
-        expect(cetera_user_search_client_double).to receive(:find_all_with_roles).and_return('results' => [])
+        expect(cetera_user_search_client_double).to receive(:find_all_owners).and_return('results' => [])
         expect(Cetera::Utils).to receive(:user_search_client).and_return(cetera_user_search_client_double)
 
         cetera_facet_search_client_double = double(Cetera::FacetSearch)

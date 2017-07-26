@@ -1662,11 +1662,10 @@ en:
       api: API
       comment: Comment on this Dataset
       contact_owner: Contact Dataset Owner
-      data: View Data
       download: Download
+      explore_data: Explore Data
       odata: Access Data via OData
       share: Share
-      visualize: Visualize and Explore
     add: Add
     api_flannel:
       canonical: Canonical ID
@@ -1696,6 +1695,11 @@ en:
     change: Change
     choose: Choose
     close: Close
+    carto_modal:
+      alert: Note that Carto has a file size limit of 250MB.
+      modal_content: This will redirect your browser and open this data set in Carto. Would you like to open this dataset in Carto?
+      learn_more_link: Learn about more external integrations at
+      title: Open this dataset in Carto
     contact_dataset_owner: Contact Dataset Owner
     contact_dataset_owner_modal:
       description: Send a short message to the dataset owner to ask a question, make a comment, or point out something about the data.
@@ -1736,7 +1740,7 @@ en:
       previous: Previous
       title: Table Preview
       unable_to_render: We're having trouble displaying this table.
-      visualize_link: Visualize and Explore (preview)
+      visualize_link: Visualize and Filter (preview)
     default_row_label: row
     done: Done
     download:
@@ -1748,6 +1752,13 @@ en:
       shapefile: Shapefile
       tsv_for_excel: TSV for Excel
     error: Error
+    explore_data:
+      more: More...
+      openin_carto: Carto
+      openin_plotly: Plot.ly
+      openin_separator: OPEN IN...
+      view_data: View Data
+      visualize_and_filter: Visualize and Filter (preview)
     featured_content:
       manage_prompt:
         button: Manage Featured Content
@@ -1835,6 +1846,12 @@ en:
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
       title: Access this Dataset via OData
     official: Official
+    open: Open
+    plotly_modal:
+      alert: Note that Plot.ly has a file size limit of 5MB.
+      modal_content: This will redirect your browser and open this data set in Plot.ly. Would you like to open this dataset in Plot.ly?
+      learn_more_link: Learn about more external integrations at
+      title: Open this dataset in Plot.ly
     popular_views:
       load_more_error: There was a problem loading additional content.
       title: Popular Content Using this Data

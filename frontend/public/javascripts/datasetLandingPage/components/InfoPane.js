@@ -52,6 +52,28 @@ function mapDispatchToProps(dispatch) {
       dispatch(emitMixpanelEvent(payload));
     },
 
+    onClickVisualizeAndFilter(event) {
+      var payload = {
+        name: 'Navigated to Visualize And Filter',
+        properties: {
+          id: event.target.dataset.id
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
+    onClickPlotly(event) {
+      var payload = {
+        name: 'Opened in Plot.ly',
+        properties: {
+          id: event.target.dataset.id
+        }
+      };
+
+      dispatch(emitMixpanelEvent(payload));
+    },
+
     onDownloadData(event) {
       var payload = {
         name: 'Downloaded Data',

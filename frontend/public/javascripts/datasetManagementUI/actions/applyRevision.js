@@ -54,6 +54,7 @@ function shapeRevision(apiResponse) {
 
     revision = {
       ..._.omit(revision, 'action'),
+      created_at: parseDate(revision.created_at),
       permission
     };
   } else {
@@ -198,6 +199,7 @@ function pollForTaskSetProgressSuccess(revision, taskSet) {
   const updatedTaskSet = {
     ...taskSet,
     created_at: parseDate(taskSet.created_at),
+    updated_at: parseDate(taskSet.updated_at),
     finished_at: taskSet.finished_at ? parseDate(taskSet.finished_at) : null
   };
 

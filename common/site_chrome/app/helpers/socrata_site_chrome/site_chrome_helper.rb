@@ -154,7 +154,7 @@ module SocrataSiteChrome
       user_has_right?(:manage_users)
     end
 
-    def current_user_can_see_all_settings?
+    def current_user_can_see_administration?
       current_user_can_see_admin_link?
     end
 

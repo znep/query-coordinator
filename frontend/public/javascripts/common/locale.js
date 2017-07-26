@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import airbrake from 'common/airbrake';
 import moment from 'moment-timezone';
+import jstz from 'jstz';
 
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 
@@ -33,11 +34,7 @@ export const fetchTranslation = (key) => {
 
 const getLocale = () => _.get(window.blist, 'locale', _.get(window.serverConfig, 'locale', 'en'));
 
-const getTimezone = () => _.get(
-  window.blist,
-  'configuration.userTimeZoneName',
-  jstz.determine().name() // eslint-disable-line no-undef
-);
+const getTimezone = () => _.get(window.blist, 'configuration.userTimeZoneName', jstz.determine().name());
 
 // If any of this logic changes, please make corresponding changes to:
 // frontend/public/javascripts/screens/all-screens.js

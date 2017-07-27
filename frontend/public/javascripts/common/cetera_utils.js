@@ -117,10 +117,8 @@ export const ceteraUtils = (() => {
     if (parameters.only === 'workingCopies') {
       parameters.only = 'datasets';
       parameters.published = 'false';
-    }
-
-    // When we're searching for plain old datasets, we need to omit the working copies
-    if (parameters.only === 'datasets') {
+    } else if (parameters.only === 'datasets') {
+      // When we're searching for plain old datasets, we need to omit the working copies
       parameters.published = 'true';
     }
 

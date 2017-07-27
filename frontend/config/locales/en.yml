@@ -2754,8 +2754,10 @@ en:
       calendar: Calendar
       chart: Chart
       datalens: Data Lens
+      data_lens: Data Lens
       dataset: Dataset
       draft: Draft Dataset
+      federated_href: Federated External Dataset
       filter: Filtered View
       file: File or Document
       form: Form
@@ -2764,6 +2766,7 @@ en:
       new_view: Data Lens
       pulse: Pulse
       story: Story
+      working_copy: Working Copy
     errors:
       fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.

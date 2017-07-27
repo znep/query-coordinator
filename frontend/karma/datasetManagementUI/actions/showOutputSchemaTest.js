@@ -5,6 +5,7 @@ import { applyMiddleware, createStore } from 'redux';
 import configureStore from 'redux-mock-store';
 import {
   updateColumnType,
+  outputColumnsWithChangedType,
   addColumn,
   dropColumn
 } from 'actions/showOutputSchema';
@@ -21,6 +22,7 @@ const socket = mockSocket(bootstrapChannels);
 const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 
 describe('actions/showOutputSchema', () => {
+
   describe('addColumn', () => {
     let unmock;
     let recordedActions = [];
@@ -305,4 +307,72 @@ describe('actions/showOutputSchema', () => {
       );
     });
   });
+
+  describe('outputColumnsWithChangedType', () => {
+
+    // EN-17865
+    it('updates the column the user changed, and no other columns', () => {
+      const entities = {
+        output_schemas: {
+          0: { id: 0 }
+        },
+        input_columns: {
+          0: { id: 0, soql_type: 'text', field_name: 'a' },
+          1: { id: 1, soql_type: 'text', field_name: 'b' }
+        },
+        transforms: {
+          0: {
+            id: 0,
+            transform_input_columns: [ { input_column_id: 0 } ],
+            output_soql_type: 'number',
+            transform_expr: '`to_number(a)`'
+          },
+          1: {
+            id: 1,
+            transform_input_columns: [ { input_column_id: 1 } ],
+            output_soql_type: 'number',
+            transform_expr: 'to_number(b)'
+          },
+        },
+        output_columns: {
+          0: { id: 0, transform_id: 0, field_name: 'a', display_name: 'a', position: 0 },
+          1: { id: 1, transform_id: 1, field_name: 'b', display_name: 'b', position: 1 }
+        },
+        output_schema_columns: {
+          '0-0': { output_schema_id: 0, output_column_id: 0 },
+          '0-1': { output_schema_id: 0, output_column_id: 1 }
+        }
+      };
+      const oldOutputSchema = entities.output_schemas[0];
+      const oldColumn = entities.output_columns[0];
+      const newType = 'text';
+
+      const actual = outputColumnsWithChangedType(entities, oldOutputSchema, oldColumn, newType);
+
+      assert.deepEqual(actual, [
+        {
+          description: undefined,
+          display_name: "a",
+          field_name: "a",
+          is_primary_key: false,
+          position: 0,
+          transform: {
+            transform_expr: "`a`"
+          }
+        },
+        {
+          description: undefined,
+          display_name: "b",
+          field_name: "b",
+          is_primary_key: false,
+          position: 1,
+          transform: {
+            transform_expr: "to_number(b)"
+          }
+        }
+      ]);
+    });
+
+  });
+
 });

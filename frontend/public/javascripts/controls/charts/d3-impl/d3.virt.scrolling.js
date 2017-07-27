@@ -1469,10 +1469,12 @@
 
       var maxVisibleWidth = Math.tan(Math.PI * (90 - rotAngleDegrees) / 180) * (cc.valueLabelBuffer || vizObj.defaults.valueLabelBuffer);
 
-      var isInView = function(d) {
-        var xPos = cc.dataDim.pluckX.apply(null, offset(d));
-        return vizObj._isXRangeInViewport(xPos - maxVisibleWidth, xPos + maxVisibleWidth);
-      };
+      var isInView = vizObj.settings.deoptimizeRender ?
+        _.constant(true) :
+        function(d) {
+          var xPos = cc.dataDim.pluckX.apply(null, offset(d));
+          return vizObj._isXRangeInViewport(xPos - maxVisibleWidth, xPos + maxVisibleWidth);
+        };
 
       var transform = function(d) {
         var o = offset(d);

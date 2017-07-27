@@ -561,6 +561,7 @@
         if (_.isFunction($.fn[typeInfo.initFunction])) {
           $content[typeInfo.initFunction]($.extend({
               view: view,
+              deoptimizeRender: rtmObj.settings.deoptimizeRender,
               editEnabled: rtmObj.settings.editEnabled
             },
             rtmObj.settings.common, rtmObj.settings[typeInfo.name],

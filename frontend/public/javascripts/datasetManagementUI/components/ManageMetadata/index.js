@@ -89,7 +89,7 @@ export class ManageMetadata extends Component {
         this.props.entities,
         this.props.outputSchemaId
       );
-      path = Links.showOutputSchema(source.id, inputSchema.id, outputSchema.id)(this.props.location);
+      path = Links.showOutputSchema(location.pathname, source.id, inputSchema.id, outputSchema.id);
     }
 
     dispatch(dismissMetadataPane(path, location));
@@ -104,11 +104,12 @@ export class ManageMetadata extends Component {
   }
 
   render() {
-    const { fourfour, columnsExist, view, outputSchemaId } = this.props;
+    const { fourfour, columnsExist, view, outputSchemaId, location } = this.props;
 
     const metadataContentProps = {
       onDatasetTab: this.onDatasetTab(),
       fourfour,
+      location,
       onSidebarTabClick: this.handleTabClick,
       columnsExist,
       outputSchemaId

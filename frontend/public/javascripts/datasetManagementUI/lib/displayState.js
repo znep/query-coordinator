@@ -38,10 +38,11 @@ export function fromUiUrl({ params, route }) {
   }
 }
 
-export function toUiUrl(path, displayState) {
+export function toUiUrl(path, location, displayState) {
   switch (displayState.type) {
     case NORMAL:
       return Links.showOutputSchema(
+        location.pathname,
         path.sourceId,
         path.inputSchemaId,
         path.outputSchemaId,
@@ -50,6 +51,7 @@ export function toUiUrl(path, displayState) {
 
     case ROW_ERRORS:
       return Links.showRowErrors(
+        location.pathname,
         path.sourceId,
         path.inputSchemaId,
         path.outputSchemaId,
@@ -58,6 +60,7 @@ export function toUiUrl(path, displayState) {
 
     case COLUMN_ERRORS:
       return Links.showColumnErrors(
+        location.pathname,
         path.sourceId,
         path.inputSchemaId,
         path.outputSchemaId,

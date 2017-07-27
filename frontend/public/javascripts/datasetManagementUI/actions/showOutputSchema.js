@@ -50,7 +50,12 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, location
         dispatch(subscribeToTransforms(resp.resource));
 
         browserHistory.push(
-          Links.showOutputSchema(source.id, oldOutputSchema.input_schema_id, resp.resource.id)(location)
+          Links.showOutputSchema(
+            location.pathname,
+            source.id,
+            oldOutputSchema.input_schema_id,
+            resp.resource.id
+          )
         );
       })
       .catch(err => {

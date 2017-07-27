@@ -8,12 +8,12 @@ import * as Selectors from '../../selectors';
 
 // TODO : should probably abstract sidebar to its own component
 export const MetadataContent = (
-  { entities, onDatasetTab, fourfour, outputSchemaId, onSidebarTabClick, columnsExist } // eslint-disable-line
+  { entities, onDatasetTab, fourfour, outputSchemaId, location, onSidebarTabClick, columnsExist } // eslint-disable-line
 ) =>
   <div>
     <div className={styles.sidebar}>
       <Link
-        to={Links.datasetMetadataForm}
+        to={Links.datasetMetadataForm(location.pathname)}
         className={styles.tab}
         onClick={() => onSidebarTabClick(fourfour)}
         activeClassName={styles.selected}>
@@ -21,7 +21,10 @@ export const MetadataContent = (
       </Link>
       {columnsExist
         ? <Link
-          to={Links.columnMetadataForm(outputSchemaId || Selectors.latestOutputSchema(entities).id)}
+          to={Links.columnMetadataForm(
+              location.pathname,
+              outputSchemaId || Selectors.latestOutputSchema(entities).id
+            )}
           className={styles.tab}
           onClick={() => onSidebarTabClick(fourfour)}
           activeClassName={styles.selected}>
@@ -40,7 +43,10 @@ MetadataContent.propTypes = {
   columnsExist: PropTypes.bool,
   entities: PropTypes.object.isRequired,
   outputSchemaId: PropTypes.number,
-  onDatasetTab: PropTypes.bool.isRequired
+  onDatasetTab: PropTypes.bool.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string
+  }).isRequired
 };
 
 const mapStateToProps = ({ entities }, props) => ({

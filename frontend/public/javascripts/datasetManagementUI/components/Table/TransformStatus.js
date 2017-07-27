@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router';
 import * as Links from '../../links';
 import * as DisplayState from '../../lib/displayState';
 import { singularOrPlural } from '../../lib/util';
@@ -36,7 +36,9 @@ function ErrorFlyout({ transform }) {
         })}
         <TypeIcon type={canonicalTypeName} />
         <br />
-        <span className={styles.clickToView}>{I18n.show_output_schema.click_to_view}</span>
+        <span className={styles.clickToView}>
+          {I18n.show_output_schema.click_to_view}
+        </span>
       </section>
     </div>
   );
@@ -59,7 +61,6 @@ class TransformStatus extends Component {
     this.attachFlyouts();
   }
 
-
   attachFlyouts() {
     if (this.flyoutParentEl) {
       styleguide.attachTo(this.flyoutParentEl);
@@ -67,16 +68,13 @@ class TransformStatus extends Component {
   }
 
   render() {
-    const { transform, totalRows, path, displayState, columnId, isIgnored } = this.props;
+    const { transform, totalRows, path, displayState, columnId, isIgnored, location } = this.props;
     const SubI18n = I18n.show_output_schema.column_header;
     if (isIgnored) {
       return (
         <th className={styles.disabledColumn}>
           <div className={styles.columnProgressBar}>
-            <ProgressBar
-              type="done"
-              percent={100}
-              ariaLabeledBy={`column-display-name-${columnId}`} />
+            <ProgressBar type="done" percent={100} ariaLabeledBy={`column-display-name-${columnId}`} />
           </div>
           <div className={styles.statusText}>
             <SocrataIcon name="eye-blocked" className={styles.disabledIcon} />
@@ -86,21 +84,25 @@ class TransformStatus extends Component {
       );
     }
 
-
     const sourceDone = _.isNumber(totalRows);
-    const thisColumnDone = _.isNumber(totalRows) &&
-                           transform.contiguous_rows_processed === totalRows;
+    const thisColumnDone = _.isNumber(totalRows) && transform.contiguous_rows_processed === totalRows;
 
-    const inErrorMode = displayState.type === DisplayState.COLUMN_ERRORS &&
-      transform.id === displayState.transformId;
+    const inErrorMode =
+      displayState.type === DisplayState.COLUMN_ERRORS && transform.id === displayState.transformId;
 
-    const linkPath = inErrorMode ?
-      Links.showOutputSchema(path.sourceId, path.inputSchemaId, path.outputSchemaId) :
-      Links.showColumnErrors(path.sourceId, path.inputSchemaId, path.outputSchemaId, transform.id);
+    const linkPath = inErrorMode
+      ? Links.showOutputSchema(location.pathname, path.sourceId, path.inputSchemaId, path.outputSchemaId)
+      : Links.showColumnErrors(
+          location.pathname,
+          path.sourceId,
+          path.inputSchemaId,
+          path.outputSchemaId,
+          transform.id
+        );
 
     const rowsProcessed = transform.contiguous_rows_processed || 0;
     const percentage = Math.round(rowsProcessed / totalRows * 100);
-    const progressBarType = (!sourceDone || thisColumnDone) ? 'done' : 'inProgress';
+    const progressBarType = !sourceDone || thisColumnDone ? 'done' : 'inProgress';
 
     const progressBar = (
       <div className={styles.columnProgressBar}>
@@ -114,17 +116,19 @@ class TransformStatus extends Component {
     const errorFlyout = <ErrorFlyout transform={transform} />;
 
     if (transform.num_transform_errors > 0) {
-      const msg = thisColumnDone ?
-        singularOrPlural(
-          transform.num_transform_errors, SubI18n.error_exists, SubI18n.errors_exist
-        ) :
-        singularOrPlural(
-          transform.num_transform_errors, SubI18n.error_exists_scanning, SubI18n.errors_exist_scanning
-        );
+      const msg = thisColumnDone
+        ? singularOrPlural(transform.num_transform_errors, SubI18n.error_exists, SubI18n.errors_exist)
+        : singularOrPlural(
+            transform.num_transform_errors,
+            SubI18n.error_exists_scanning,
+            SubI18n.errors_exist_scanning
+          );
       return (
         <th
           key={transform.id}
-          ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}
+          ref={flyoutParentEl => {
+            this.flyoutParentEl = flyoutParentEl;
+          }}
           data-flyout={getFlyoutId(transform)}
           data-cheetah-hook="col-errors"
           className={classNames(styles.colErrors, { [styles.colErrorsSelected]: inErrorMode })}>
@@ -155,7 +159,7 @@ class TransformStatus extends Component {
           <th key={transform.id} data-cheetah-hook="col-errors" className={styles.colErrors}>
             {progressBar}
             <div className={styles.statusText}>
-              <span className={styles.spinner}></span>
+              <span className={styles.spinner} />
               {SubI18n.scanning}
             </div>
           </th>
@@ -171,7 +175,10 @@ TransformStatus.propTypes = {
   columnId: PropTypes.number.isRequired,
   displayState: DisplayState.propType.isRequired,
   path: PropTypes.object.isRequired,
-  totalRows: PropTypes.number
+  totalRows: PropTypes.number,
+  location: PropTypes.shape({
+    pathname: PropTypes.string
+  }).isRequired
 };
 
-export default TransformStatus;
+export default withRouter(TransformStatus);

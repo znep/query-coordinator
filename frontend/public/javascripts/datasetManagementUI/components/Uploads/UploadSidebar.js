@@ -2,35 +2,49 @@ import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router';
 import * as Links from 'links';
 import * as Selectors from 'selectors';
 import styles from 'styles/Uploads/UploadSidebar.scss';
 
-const UploadItem = ({ source }) =>
+const UploadItem = ({ source, location }) =>
   <li>
-    <Link to={Links.showOutputSchema(source.id, source.inputSchemaId, source.outputSchemaId)}>
+    <Link
+      to={Links.showOutputSchema(location.pathname, source.id, source.inputSchemaId, source.outputSchemaId)}>
       {source.source_type && source.source_type.filename}
     </Link>
-    <div className={styles.timestamp}>{moment.utc(source.finished_at).fromNow()}</div>
+    <div className={styles.timestamp}>
+      {moment.utc(source.finished_at).fromNow()}
+    </div>
   </li>;
 
 UploadItem.propTypes = {
-  source: PropTypes.object.isRequired
+  source: PropTypes.object.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string
+  })
 };
 
-export const UploadSidebar = ({ currentUpload, otherUploads }) =>
+export const UploadSidebar = ({ currentUpload, otherUploads, location }) =>
   <section className={styles.sidebar}>
-    <h2>{I18n.show_uploads.current}</h2>
+    <h2>
+      {I18n.show_uploads.current}
+    </h2>
     <ul>
-      {currentUpload ? <UploadItem source={currentUpload} /> : <span>{I18n.show_uploads.no_uploads}</span>}
+      {currentUpload
+        ? <UploadItem source={currentUpload} location={location} />
+        : <span>
+            {I18n.show_uploads.no_uploads}
+        </span>}
     </ul>
-    {!!otherUploads.length && <h2>{I18n.show_uploads.noncurrent}</h2>}
+    {!!otherUploads.length &&
+      <h2>
+        {I18n.show_uploads.noncurrent}
+      </h2>}
     <ul>
       {otherUploads.map(source => <UploadItem key={source.id} source={source} />)}
     </ul>
   </section>;
-
 
 const sourceProptype = PropTypes.shape({
   id: PropTypes.number,
@@ -42,7 +56,10 @@ const sourceProptype = PropTypes.shape({
 
 UploadSidebar.propTypes = {
   currentUpload: sourceProptype,
-  otherUploads: PropTypes.arrayOf(sourceProptype)
+  otherUploads: PropTypes.arrayOf(sourceProptype),
+  location: PropTypes.shape({
+    pathname: PropTypes.string
+  })
 };
 
 const getLinkInfo = inputSchemas => outputSchemas => source => {
@@ -106,4 +123,4 @@ export const mapStateToProps = ({ entities }) => {
   };
 };
 
-export default connect(mapStateToProps)(UploadSidebar);
+export default withRouter(connect(mapStateToProps)(UploadSidebar));

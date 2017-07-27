@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Link, browserHistory } from 'react-router';
+import { Link, browserHistory, withRouter } from 'react-router';
 import * as DisplayState from '../../lib/displayState';
 import { PAGE_SIZE } from '../../actions/loadData';
 import * as Selectors from '../../selectors';
@@ -66,11 +66,11 @@ function numItemsToPaginate(entities, outputSchemaId, displayState) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const { displayState, path, routing } = ownProps;
+  const { displayState, path, routing, location } = ownProps;
 
   const urlForPage = targetPage => {
     const targetDisplayState = { ...displayState, pageNo: targetPage };
-    const targetPageUrl = DisplayState.toUiUrl(path, targetDisplayState);
+    const targetPageUrl = DisplayState.toUiUrl(path, location, targetDisplayState);
 
     return targetPageUrl;
   };
@@ -99,4 +99,4 @@ ConnectedPagerBar.propTypes = {
   displayState: DisplayState.propType.isRequired
 };
 
-export default ConnectedPagerBar;
+export default withRouter(ConnectedPagerBar);

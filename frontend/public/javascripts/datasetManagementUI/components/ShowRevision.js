@@ -44,7 +44,7 @@ const noDataYetView = (createUpload, location) => {
   );
 };
 
-const outputSchemaView = (entities, outputSchema) => {
+const outputSchemaView = (entities, outputSchema, location) => {
   const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
   if (!inputSchema) return;
   return (
@@ -56,7 +56,13 @@ const outputSchemaView = (entities, outputSchema) => {
         {I18n.home_pane.data_uploaded_blurb}
       </p>
       <p>
-        <Link to={Links.showOutputSchema(inputSchema.source_id, inputSchema.id, outputSchema.id)}>
+        <Link
+          to={Links.showOutputSchema(
+            location.pathname,
+            inputSchema.source_id,
+            inputSchema.id,
+            outputSchema.id
+          )}>
           <button className={styles.reviewBtn} tabIndex="-1">
             {I18n.home_pane.review_data}
           </button>
@@ -89,7 +95,7 @@ const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, create
   if (upsertExists) {
     child = upsertInProgressView(entities);
   } else if (outputSchema) {
-    child = outputSchemaView(entities, outputSchema);
+    child = outputSchemaView(entities, outputSchema, location);
   } else {
     child = noDataYetView(createUpload, location);
   }
@@ -117,7 +123,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-export function ShowRevision({ view, location, entities, params, createUpload, pushToEditMetadata }) {
+export function ShowRevision({ view, location, entities, createUpload, pushToEditMetadata }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -168,7 +174,7 @@ export function ShowRevision({ view, location, entities, params, createUpload, p
     customMetadataFieldsets,
     onClickEditMetadata: e => {
       e.preventDefault();
-      pushToEditMetadata(Links.metadata(location));
+      pushToEditMetadata(Links.metadata(location.pathname));
     }
   };
 
@@ -199,7 +205,12 @@ export function ShowRevision({ view, location, entities, params, createUpload, p
       dataTable = [
         <Link
           key="manage-data-button"
-          to={Links.showOutputSchema(inputSchema.source_id, inputSchema.id, outputSchema.id)}
+          to={Links.showOutputSchema(
+            location.pathname,
+            inputSchema.source_id,
+            inputSchema.id,
+            outputSchema.id
+          )}
           className={styles.manageDataLink}>
           <button className={styles.manageDataBtn} tabIndex="-1">
             {I18n.home_pane.data_manage_button}
@@ -245,7 +256,7 @@ export function ShowRevision({ view, location, entities, params, createUpload, p
           {dataTable}
         </section>
       </div>
-      <HomePaneSidebar urlParams={params} />
+      <HomePaneSidebar />
     </div>
   );
 }
@@ -254,7 +265,6 @@ ShowRevision.propTypes = {
   view: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
-  params: PropTypes.object.isRequired,
   createUpload: PropTypes.func.isRequired,
   pushToEditMetadata: PropTypes.func.isRequired
 };
@@ -272,8 +282,7 @@ function mapStateToProps(state, ownProps) {
   return {
     view: _.values(state.entities.views)[0],
     location: ownProps.location,
-    entities: state.entities,
-    params: ownProps.params
+    entities: state.entities
   };
 }
 

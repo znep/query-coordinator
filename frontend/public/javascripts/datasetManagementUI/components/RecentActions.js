@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router';
 import * as Links from '../links';
 import moment from 'moment';
 import SocrataIcon from '../../common/components/SocrataIcon';
@@ -62,7 +62,7 @@ const sourceActivity = (source, at) => {
   );
 };
 
-const outputSchemaActivity = (item, at) => {
+const outputSchemaActivity = (item, at, location) => {
   const key = `os-${item.outputSchema.id}`;
   return (
     <div key={key} className={styles.activity} data-activity-type="outputschema">
@@ -72,7 +72,13 @@ const outputSchemaActivity = (item, at) => {
       <div>
         <p>
           <span className={styles.createdBy}>{creator(item.outputSchema)}</span>&nbsp; changed the&nbsp;
-          <Link to={Links.showOutputSchema(item.source.id, item.inputSchema.id, item.outputSchema.id)}>
+          <Link
+            to={Links.showOutputSchema(
+              location.pathname,
+              item.source.id,
+              item.inputSchema.id,
+              item.outputSchema.id
+            )}>
             schema
           </Link>
         </p>
@@ -129,18 +135,20 @@ const taskSetFailedActivity = (taskSet, at) => {
   );
 };
 
-function activitiesOf(entities) {
+function activitiesOf(entities, location) {
   const updateModel = _.values(entities.revisions)[0];
   if (!updateModel) return [];
   const update = {
     type: 'update',
     value: updateModel,
-    at: updateModel.created_at
+    at: updateModel.created_at,
+    location
   };
   const sources = _.map(entities.sources, source => ({
     type: 'source',
     value: source,
-    at: source.created_at
+    at: source.created_at,
+    location
   }));
   const outputSchemas = _.map(entities.output_schemas, outputSchema => {
     const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
@@ -152,13 +160,15 @@ function activitiesOf(entities) {
         outputSchema,
         inputSchema,
         source
-      }
+      },
+      location
     };
   });
   const taskSets = _.map(entities.task_sets, taskSet => ({
     type: 'taskSet',
     value: taskSet,
-    at: taskSet.created_at
+    at: taskSet.created_at,
+    location
   }));
 
   const finishedTaskSets = _.chain(entities.task_sets)
@@ -167,7 +177,8 @@ function activitiesOf(entities) {
     .map(taskSet => ({
       type: 'taskSetCompleted',
       value: taskSet,
-      at: taskSet.finished_at
+      at: taskSet.finished_at,
+      location
     }));
 
   const failedTaskSets = _.chain(entities.task_sets)
@@ -176,7 +187,8 @@ function activitiesOf(entities) {
     .map(taskSet => ({
       type: 'taskSetFailed',
       value: taskSet,
-      at: taskSet.finished_at
+      at: taskSet.finished_at,
+      location
     }));
 
   const kinds = {
@@ -190,15 +202,15 @@ function activitiesOf(entities) {
 
   const toView = activity => {
     const fn = kinds[activity.type];
-    return fn && fn(activity.value, activity.at);
+    return fn && fn(activity.value, activity.at, activity.location);
   };
 
   const items = [update, ...sources, ...outputSchemas, ...taskSets, ...finishedTaskSets, ...failedTaskSets];
   return _.reverse(_.sortBy(items, 'at')).map(toView);
 }
 
-function RecentActions({ entities }) {
-  const items = activitiesOf(entities);
+function RecentActions({ entities, location }) {
+  const items = activitiesOf(entities, location);
   return (
     <div>
       {items}
@@ -207,11 +219,14 @@ function RecentActions({ entities }) {
 }
 
 RecentActions.propTypes = {
-  entities: PropTypes.object.isRequired
+  entities: PropTypes.object.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string
+  }).isRequired
 };
 
 const mapStateToProps = ({ entities }) => ({
   entities
 });
 
-export default connect(mapStateToProps)(RecentActions);
+export default withRouter(connect(mapStateToProps)(RecentActions));

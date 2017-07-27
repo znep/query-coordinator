@@ -151,7 +151,7 @@ export function applyRevision(outputSchemaId, location) {
         // maybe return status and then do something based on that?
         dispatch(pollForTaskSetProgress(taskSetId));
 
-        browserHistory.push(Links.home(location));
+        browserHistory.push(Links.home(location.pathname));
       })
       .catch(err => {
         dispatch(apiCallFailed(callId, err));

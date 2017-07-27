@@ -195,7 +195,7 @@ function listenForOutputSchema(sourceId, location) {
       dispatch(listenForOutputSchemaSuccess(os));
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));
-      browserHistory.push(Links.showOutputSchema(sourceId, is.id, os.id)(location));
+      browserHistory.push(Links.showOutputSchema(location.pathname, sourceId, is.id, os.id));
     });
 
     channel.join();

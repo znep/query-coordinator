@@ -130,7 +130,7 @@ class ColumnHeader extends Component {
           title={outputColumn.display_name}>
             {outputColumn.display_name}
         </span>
-        : <Link to={Links.columnMetadataForm(outputSchema.id, outputColumn.id)}>
+        : <Link to={Links.columnMetadataForm(location.pathname, outputSchema.id, outputColumn.id)}>
           <span
             className={styles.colName}
             data-cheetah-hook="col-name"

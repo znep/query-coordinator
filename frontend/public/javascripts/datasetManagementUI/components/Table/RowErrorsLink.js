@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import { commaify } from '../../../common/formatNumber';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router';
 import * as Links from '../../links';
 import * as DisplayState from '../../lib/displayState';
 import { singularOrPlural } from '../../lib/util';
@@ -19,9 +19,7 @@ function ErrorFlyout({ numRowErrors }) {
     SubI18n.flyout_message_plural.format(commaify(numRowErrors))
   );
   return (
-    <div
-      id={FLYOUT_ID}
-      className="malformed-rows-flyout flyout flyout-hidden">
+    <div id={FLYOUT_ID} className="malformed-rows-flyout flyout flyout-hidden">
       <section className="flyout-content">
         {message} {SubI18n.flyout_message_explanation}
         <br />
@@ -36,7 +34,6 @@ ErrorFlyout.propTypes = {
 };
 
 class RowErrorsLink extends Component {
-
   componentDidMount() {
     this.attachFlyouts();
   }
@@ -54,24 +51,26 @@ class RowErrorsLink extends Component {
   }
 
   render() {
-    const { path, displayState, numRowErrors, inRowErrorMode } = this.props;
+    const { path, displayState, numRowErrors, inRowErrorMode, location } = this.props;
     const inRowErrorState = displayState.type === DisplayState.ROW_ERRORS;
-    const linkPath = inRowErrorState ?
-      Links.showOutputSchema(path.sourceId, path.inputSchemaId, path.outputSchemaId) :
-      Links.showRowErrors(path.sourceId, path.inputSchemaId, path.outputSchemaId);
+    const linkPath = inRowErrorState
+      ? Links.showOutputSchema(location.pathname, path.sourceId, path.inputSchemaId, path.outputSchemaId)
+      : Links.showRowErrors(location.pathname, path.sourceId, path.inputSchemaId, path.outputSchemaId);
     const SubI18n = I18n.show_output_schema.row_errors;
 
     return (
       <tr className={styles.rowErrorsCount}>
         <th
-          className={classNames(
-            styles.rowErrorsCount,
-            { [styles.rowErrorsCountSelected]: inRowErrorMode }
-          )}>
-          <div ref={(flyoutParentEl) => { this.flyoutParentEl = flyoutParentEl; }}>
+          className={classNames(styles.rowErrorsCount, { [styles.rowErrorsCountSelected]: inRowErrorMode })}>
+          <div
+            ref={flyoutParentEl => {
+              this.flyoutParentEl = flyoutParentEl;
+            }}>
             <Link to={linkPath}>
               <div className={styles.malformedRowsStatusText} data-flyout={FLYOUT_ID}>
-                <span className={styles.error}>{commaify(numRowErrors)}</span>
+                <span className={styles.error}>
+                  {commaify(numRowErrors)}
+                </span>
                 {singularOrPlural(numRowErrors, SubI18n.malformed_row, SubI18n.malformed_rows)}
               </div>
               <ErrorFlyout numRowErrors={numRowErrors} />
@@ -81,14 +80,16 @@ class RowErrorsLink extends Component {
       </tr>
     );
   }
-
 }
 
 RowErrorsLink.propTypes = {
   path: PropTypes.object.isRequired,
   displayState: DisplayState.propType.isRequired,
   numRowErrors: PropTypes.number.isRequired,
-  inRowErrorMode: PropTypes.bool.isRequired
+  inRowErrorMode: PropTypes.bool.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string
+  }).isRequired
 };
 
-export default RowErrorsLink;
+export default withRouter(RowErrorsLink);

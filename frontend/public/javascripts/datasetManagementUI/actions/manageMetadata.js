@@ -32,7 +32,7 @@ export const dismissMetadataPane = (currentOutputSchemaPath, initialLocation) =>
     const location = hist[hist.length - 1];
 
     if (hist.length === 0) {
-      browserHistory.push(Links.home(currentLocation));
+      browserHistory.push(Links.home(currentLocation.pathname));
     } else if (currentOutputSchemaPath && isBigTablePage.test(location.pathname)) {
       browserHistory.push(currentOutputSchemaPath);
     } else if (isDatasetModalPath.test(location.pathname)) {
@@ -214,8 +214,7 @@ export const saveColumnMetadata = (outputSchemaId, fourfour, location) => (dispa
       );
       dispatch(apiCallSucceeded(callId));
       // This is subtly wrong, could be a race with another user
-      // const { routing } = getState().ui;
-      const redirect = Links.columnMetadataForm(id)(location);
+      const redirect = Links.columnMetadataForm(location.pathname, id);
       browserHistory.push(redirect);
 
       dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));

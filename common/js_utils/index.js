@@ -242,8 +242,10 @@ var utils = {
       case 'zh':
        return ',';
 
-      case 'it':
+      case 'ca':
       case 'es':
+      case 'it':
+      case 'nl':
         return '.';
 
       case 'fr':
@@ -270,9 +272,11 @@ var utils = {
       case 'zh':
        return '.';
 
-      case 'it':
+      case 'ca':
       case 'es':
       case 'fr':
+      case 'it':
+      case 'nl':
         return ',';
 
       default:
@@ -407,9 +411,10 @@ var utils = {
   },
 
   // Given a number or a string representing a number, returns a string delimited
-  // by options.groupCharacter (default ,) that separates digits into groups of 3.
-  // The decimal portion will be separated by options.decimalCharacter (default .).
+  // by options.groupCharacter (default , for en locale) that separates digits into groups of 3.
+  // The decimal portion will be separated by options.decimalCharacter (default . for en locale).
   commaify: function(value, options) {
+    var isNumeric = _.isNumber(value);
 
     value = String(value);
 
@@ -422,12 +427,15 @@ var utils = {
 
     var commaifyOptions = _.assign({}, defaultOptions, options);
 
-    var pos = value.indexOf(defaultOptions.decimalCharacter);
+    // Because if input is numberic, this will always be . (period)
+    var decimalCharacterToLookFor = isNumeric ? '.' : defaultOptions.decimalCharacter;
+
+    var pos = value.indexOf(decimalCharacterToLookFor);
 
     if (pos === -1) {
       pos = value.length;
     } else {
-      value = value.replace(defaultOptions.decimalCharacter, commaifyOptions.decimalCharacter);
+      value = value.replace(decimalCharacterToLookFor, commaifyOptions.decimalCharacter);
     }
 
     pos -= 3;

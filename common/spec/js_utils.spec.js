@@ -7,6 +7,7 @@ import 'intl/locale-data/jsonp/en.js';
 import 'intl/locale-data/jsonp/es.js';
 import 'intl/locale-data/jsonp/fr.js';
 import 'intl/locale-data/jsonp/it.js';
+import 'intl/locale-data/jsonp/nl.js';
 import 'intl/locale-data/jsonp/tr.js';
 import 'intl/locale-data/jsonp/zh.js';
 
@@ -429,6 +430,14 @@ describe('utils.js', function() {
       assert.equal(utils.getGroupCharacter('es'), '.');
     });
 
+    it('returns period when locale is ca', function() {
+      assert.equal(utils.getGroupCharacter('ca'), '.');
+    });
+
+    it('returns period when locale is nl', function() {
+      assert.equal(utils.getGroupCharacter('nl'), '.');
+    });
+
     it('returns space when locale is fr', function() {
       assert.equal(utils.getGroupCharacter('fr'), '\u00A0');
     });
@@ -461,6 +470,14 @@ describe('utils.js', function() {
 
     it('returns comma when locale is es', function() {
       assert.equal(utils.getDecimalCharacter('es'), ',');
+    });
+
+    it('returns comma when locale is ca', function() {
+      assert.equal(utils.getDecimalCharacter('ca'), ',');
+    });
+
+    it('returns comma when locale is nl', function() {
+      assert.equal(utils.getDecimalCharacter('nl'), ',');
     });
 
     it('returns comma when locale is fr', function() {
@@ -659,7 +676,6 @@ describe('utils.js', function() {
       })
 
     });
-
   });
 
   describe('commaify', function() {
@@ -730,6 +746,38 @@ describe('utils.js', function() {
         utils.commaify('20000.1234'),
         '20,000.1234'
       );
+
+      assert.equal(
+        utils.commaify('20,000.1234'),
+        '20,000.1234'
+      );
+
+      assert.equal(
+        utils.commaify("20000.1234", { groupCharacter: '-', decimalCharacter: '/' }),
+        '20-000/1234'
+      );
+    });
+
+    describe('with string numbers', function() {
+      beforeEach(() => window.serverConfig = { locale: 'it' });
+      afterEach(() => window.serverConfig = undefined);
+
+      it('should convert correctly with locale', function() {
+        assert.equal(
+          utils.commaify('20000,1234'),
+          '20.000,1234'
+        );
+
+        assert.equal(
+          utils.commaify('20.000,1234'),
+          '20.000,1234'
+        );
+
+        assert.equal(
+          utils.commaify("20000,1234", { groupCharacter: '-', decimalCharacter: '/' }),
+          '20-000/1234'
+        );
+      });
     });
   });
 

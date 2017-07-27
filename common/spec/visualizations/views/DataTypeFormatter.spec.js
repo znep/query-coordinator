@@ -202,6 +202,22 @@ describe('DataTypeFormatter', function() {
           expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
+
+      describe('when there is a custom locale', function() {
+        beforeEach(function() { window.serverConfig = { locale: 'es' }; });
+        afterEach(function() { window.serverConfig = undefined;  });
+
+        it('should respect custom locale', function() {
+          columnMetadata = {
+            renderTypeName: 'percent'
+          };
+
+          NUMBER_DATA.forEach(function(value) {
+            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          });
+        });
+      });
     });
 
     describe('with percent data type (NBE style)', function() {
@@ -274,6 +290,24 @@ describe('DataTypeFormatter', function() {
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
           expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
+        });
+      });
+
+      describe('when there is a custom locale', function() {
+        beforeEach(function() { window.serverConfig = { locale: 'it' }; });
+        afterEach(function() { window.serverConfig = undefined;  });
+
+        it('should respect custom locale', function() {
+          columnMetadata = {
+            renderTypeName: 'number',
+            format: {
+              view: 'percent_bar_and_text'
+            }
+          };
+          NUMBER_DATA.forEach(function(value) {
+            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          });
         });
       });
     });
@@ -352,6 +386,20 @@ describe('DataTypeFormatter', function() {
         });
       });
 
+      describe('when there is a custom locale', function() {
+        beforeEach(function() { window.serverConfig = { locale: 'es' }; });
+        afterEach(function() { window.serverConfig = undefined;  });
+
+        it('should respect custom locale', function() {
+          columnMetadata = {
+            renderTypeName: 'number'
+          };
+          NUMBER_DATA.forEach(function(value) {
+            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            expect(cellContent).to.match(NUMBER_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          });
+        });
+      });
     });
 
     describe('with percent precisionStyle', function() {
@@ -424,6 +472,23 @@ describe('DataTypeFormatter', function() {
         });
       });
 
+      describe('when there is a custom locale', function() {
+        beforeEach(function() { window.serverConfig = { locale: 'it' }; });
+        afterEach(function() { window.serverConfig = undefined;  });
+
+        it('should respect custom locale', function() {
+          columnMetadata = {
+            renderTypeName: 'number',
+            format: {
+              precisionStyle: 'percentage'
+            }
+          };
+          NUMBER_DATA.forEach(function(value) {
+            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          });
+        });
+      });
     });
 
     describe('with currency precisionStyle', function() {
@@ -497,6 +562,24 @@ describe('DataTypeFormatter', function() {
         });
       });
 
+      describe('when there is a custom locale', function() {
+        beforeEach(function() { window.serverConfig = { locale: 'es' }; });
+        afterEach(function() { window.serverConfig = undefined;  });
+
+        it('should respect custom locale', function() {
+          columnMetadata = {
+            renderTypeName: 'number',
+            format: {
+              precisionStyle: 'currency',
+              currency: '£'
+            }
+          };
+          NUMBER_DATA.forEach(function(value) {
+            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            expect(cellContent).to.match(CURRENCY_CUSTOM_SEPARATOR_AND_SYMBOL_FORMAT_REGEX);
+          });
+        });
+      });
     });
 
     describe('with financial precisionStyle', function() {
@@ -569,6 +652,23 @@ describe('DataTypeFormatter', function() {
         });
       });
 
+      describe('when there is a custom locale', function() {
+        beforeEach(function() { window.serverConfig = { locale: 'it' }; });
+        afterEach(function() { window.serverConfig = undefined;  });
+
+        it('should respect custom locale', function() {
+          columnMetadata = {
+            renderTypeName: 'number',
+            format: {
+              precisionStyle: 'financial'
+            }
+          };
+          NUMBER_DATA.forEach(function(value) {
+            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            expect(cellContent).to.match(FINANCIAL_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          });
+        });
+      });
     });
 
     describe('with scientific precisionStyle', function() {
@@ -613,8 +713,25 @@ describe('DataTypeFormatter', function() {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
           expect(cellContent).to.match(SCIENTIFIC_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
-      })
+      });
 
+      describe('when there is a custom locale', function() {
+        beforeEach(function() { window.serverConfig = { locale: 'es' }; });
+        afterEach(function() { window.serverConfig = undefined;  });
+
+        it('should respect the custom locale', function() {
+          columnMetadata = {
+            renderTypeName: 'number',
+            format: {
+              precisionStyle: 'scientific'
+            }
+          };
+          NUMBER_DATA.forEach(function(value) {
+            var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
+            expect(cellContent).to.match(SCIENTIFIC_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          });
+        });
+      });
     });
 
     it('should render number cells according to a custom mask', function() {

@@ -194,6 +194,7 @@ function listenForOutputSchema(sourceId) {
       const [os] = is.output_schemas;
 
       dispatch(insertInputSchema(is, sourceId));
+      dispatch(subscribeToRowErrors(is));
       dispatch(listenForOutputSchemaSuccess(os));
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));

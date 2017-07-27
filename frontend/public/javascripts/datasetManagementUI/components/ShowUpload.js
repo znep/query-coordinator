@@ -1,6 +1,6 @@
 /* eslint react/jsx-indent: 0 */
 import React, { PropTypes } from 'react';
-import { push } from 'react-router-redux';
+import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'common/components';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
@@ -67,7 +67,7 @@ ShowUpload.propTypes = {
 };
 
 export const mapDispatchToProps = (dispatch, ownProps) => ({
-  goHome: () => dispatch(push(Links.home(ownProps.location)))
+  goHome: () => browserHistory.push(Links.home(ownProps.location))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShowUpload);

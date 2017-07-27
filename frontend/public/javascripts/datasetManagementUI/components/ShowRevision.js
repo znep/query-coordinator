@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { browserHistory, Link } from 'react-router';
 import { InfoPane } from 'common/components';
 import MetadataTable from '../../common/components/MetadataTable';
 import SchemaPreview from './SchemaPreview';
@@ -10,14 +10,13 @@ import DatasetPreview from './DatasetPreview';
 import NotifyButton from './NotifyButton';
 import RowDetails from '../components/RowDetails';
 import * as Links from '../links';
-import { Link } from 'react-router';
 import { latestOutputSchema } from 'selectors';
 import * as Actions from '../actions/manageUploads';
 import * as ApplyRevision from '../actions/applyRevision';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import styles from 'styles/ShowRevision.scss';
 
-const noDataYetView = (createUpload, params) => {
+const noDataYetView = (createUpload, location) => {
   return (
     <div className={styles.tableInfo}>
       <h3 className={styles.previewAreaHeader}>
@@ -36,7 +35,7 @@ const noDataYetView = (createUpload, params) => {
         type="file"
         accept={enabledFileExtensions.join(',')}
         aria-labelledby="source-label"
-        onChange={evt => createUpload(evt.target.files[0], params.fourfour, params.revisionSeq)} />
+        onChange={evt => createUpload(evt.target.files[0], location)} />
 
       <p className={styles.fileTypes}>
         {I18n.home_pane.supported_uploads} {enabledFileExtensions.map(formatExpanation).join(', ')}
@@ -84,7 +83,7 @@ const upsertInProgressView = () => {
 };
 
 // WRAPPER COMPONENT
-const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, createUpload, params }) => {
+const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, createUpload, location }) => {
   let child;
 
   if (upsertExists) {
@@ -92,7 +91,7 @@ const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, create
   } else if (outputSchema) {
     child = outputSchemaView(entities, outputSchema);
   } else {
-    child = noDataYetView(createUpload, params);
+    child = noDataYetView(createUpload, location);
   }
 
   return (
@@ -107,7 +106,7 @@ WrapDataTablePlaceholder.propTypes = {
   outputSchema: PropTypes.object,
   entities: PropTypes.object,
   createUpload: PropTypes.func,
-  params: PropTypes.object
+  location: PropTypes.object.isRequired
 };
 
 function upsertCompleteView(view, outputSchema) {
@@ -118,7 +117,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-export function ShowRevision({ view, routing, entities, urlParams, createUpload, pushToEditMetadata }) {
+export function ShowRevision({ view, location, entities, params, createUpload, pushToEditMetadata }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -169,7 +168,7 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
     customMetadataFieldsets,
     onClickEditMetadata: e => {
       e.preventDefault();
-      pushToEditMetadata(Links.metadata(routing));
+      pushToEditMetadata(Links.metadata(location));
     }
   };
 
@@ -214,7 +213,7 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
           upsertExists={doesUpsertExist}
           outputSchema={null}
           entities={entities}
-          params={urlParams}
+          location={location}
           createUpload={createUpload} />
       );
     }
@@ -224,7 +223,7 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
         upsertExists={doesUpsertExist}
         outputSchema={outputSchema}
         entities={entities}
-        params={urlParams}
+        location={location}
         createUpload={createUpload} />
     );
   }
@@ -246,35 +245,35 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
           {dataTable}
         </section>
       </div>
-      <HomePaneSidebar urlParams={urlParams} />
+      <HomePaneSidebar urlParams={params} />
     </div>
   );
 }
 
 ShowRevision.propTypes = {
   view: PropTypes.object.isRequired,
-  routing: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
-  urlParams: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   createUpload: PropTypes.func.isRequired,
   pushToEditMetadata: PropTypes.func.isRequired
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    createUpload: (file, fourfour, revisionSequence) => {
-      dispatch(Actions.createUpload(file, fourfour, revisionSequence));
+    createUpload: (file, location) => {
+      dispatch(Actions.createUpload(file, location));
     },
-    pushToEditMetadata: url => dispatch(push(url))
+    pushToEditMetadata: url => browserHistory.push(url)
   };
 }
 
 function mapStateToProps(state, ownProps) {
   return {
     view: _.values(state.entities.views)[0],
-    routing: state.ui.routing.location,
+    location: ownProps.location,
     entities: state.entities,
-    urlParams: ownProps.params
+    params: ownProps.params
   };
 }
 

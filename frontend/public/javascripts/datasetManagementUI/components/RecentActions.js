@@ -37,8 +37,7 @@ const updateActivity = (update, at) => {
       </div>
       <div>
         <p>
-          <span className={styles.createdBy}>{creator(update)}</span>&nbsp;
-          opened a revision
+          <span className={styles.createdBy}>{creator(update)}</span>&nbsp; opened a revision
         </p>
         <RecentActionsTimestamp date={at} />
       </div>
@@ -55,8 +54,7 @@ const sourceActivity = (source, at) => {
       </div>
       <div>
         <p>
-          <span className={styles.createdBy}>{creator(source)}</span>&nbsp;
-          uploaded a file
+          <span className={styles.createdBy}>{creator(source)}</span>&nbsp; uploaded a file
         </p>
         <RecentActionsTimestamp date={at} />
       </div>
@@ -73,8 +71,7 @@ const outputSchemaActivity = (item, at) => {
       </div>
       <div>
         <p>
-          <span className={styles.createdBy}>{creator(item.outputSchema)}</span>&nbsp;
-          changed the&nbsp;
+          <span className={styles.createdBy}>{creator(item.outputSchema)}</span>&nbsp; changed the&nbsp;
           <Link to={Links.showOutputSchema(item.source.id, item.inputSchema.id, item.outputSchema.id)}>
             schema
           </Link>
@@ -94,8 +91,7 @@ const taskSetActivity = (taskSet, at) => {
       </div>
       <div>
         <p>
-          <span className={styles.createdBy}>{creator(taskSet)}</span>&nbsp;
-          started data processing
+          <span className={styles.createdBy}>{creator(taskSet)}</span>&nbsp; started data processing
         </p>
         <RecentActionsTimestamp date={at} />
       </div>
@@ -111,9 +107,7 @@ const taskSetCompletedActivity = (taskSet, at) => {
         <SocrataIcon name="checkmark3" className={styles.icon} />
       </div>
       <div>
-        <p>
-          Data processing successfully finished
-        </p>
+        <p>Data processing successfully finished</p>
         <RecentActionsTimestamp date={at} />
       </div>
     </div>
@@ -128,9 +122,7 @@ const taskSetFailedActivity = (taskSet, at) => {
         <SocrataIcon name="failed" className={styles.icon} />
       </div>
       <div>
-        <p>
-          Data processing failed
-        </p>
+        <p>Data processing failed</p>
         <RecentActionsTimestamp date={at} />
       </div>
     </div>
@@ -215,13 +207,11 @@ function RecentActions({ entities }) {
 }
 
 RecentActions.propTypes = {
-  routing: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }) => ({
-  entities,
-  routing: ui.routing.location
+const mapStateToProps = ({ entities }) => ({
+  entities
 });
 
 export default connect(mapStateToProps)(RecentActions);

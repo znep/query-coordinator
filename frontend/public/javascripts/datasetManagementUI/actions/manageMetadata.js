@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { push } from 'react-router-redux';
+import { browserHistory } from 'react-router';
 import uuid from 'uuid';
 import * as Links from '../links';
 import { checkStatus, getJson, socrataFetch } from '../lib/http';
@@ -21,7 +21,7 @@ import {
 } from 'actions/manageUploads';
 import { editView } from 'actions/views';
 
-export const dismissMetadataPane = (currentOutputSchemaPath) => (dispatch, getState) => {
+export const dismissMetadataPane = currentOutputSchemaPath => (dispatch, getState) => {
   const { routing } = getState().ui;
   const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
   const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
@@ -32,22 +32,21 @@ export const dismissMetadataPane = (currentOutputSchemaPath) => (dispatch, getSt
     const location = history[history.length - 1];
 
     if (history.length === 0) {
-      dispatch(push(Links.home(currentLocation)));
+      browserHistory.push(Links.home(currentLocation));
     } else if (currentOutputSchemaPath && isBigTablePage.test(location.pathname)) {
-      dispatch(push(currentOutputSchemaPath));
+      browserHistory.push(currentOutputSchemaPath);
     } else if (isDatasetModalPath.test(location.pathname)) {
       helper(history.slice(0, -1));
     } else {
-      dispatch(push(location));
+      browserHistory.push(location);
     }
   };
 
   helper(routing.history);
 };
 
-export const saveDatasetMetadata = () => (dispatch, getState) => {
-  const { entities, ui } = getState();
-  const { fourfour } = ui.routing;
+export const saveDatasetMetadata = fourfour => (dispatch, getState) => {
+  const { entities } = getState();
   const view = entities.views[fourfour];
   const { datasetMetadataErrors: errors } = view;
 
@@ -124,9 +123,8 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     });
 };
 
-export const saveColumnMetadata = (outputSchemaId) => (dispatch, getState) => {
-  const { entities, ui } = getState();
-  const { fourfour } = ui.routing;
+export const saveColumnMetadata = (outputSchemaId, fourfour, location) => (dispatch, getState) => {
+  const { entities } = getState();
   const view = entities.views[fourfour];
   const { columnMetadataErrors: errors } = view;
 
@@ -216,9 +214,9 @@ export const saveColumnMetadata = (outputSchemaId) => (dispatch, getState) => {
       );
       dispatch(apiCallSucceeded(callId));
       // This is subtly wrong, could be a race with another user
-      const { routing } = getState().ui;
-      const redirect = Links.columnMetadataForm(id)(routing.location);
-      dispatch(push(redirect));
+      // const { routing } = getState().ui;
+      const redirect = Links.columnMetadataForm(id)(location);
+      browserHistory.push(redirect);
 
       dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));
     });

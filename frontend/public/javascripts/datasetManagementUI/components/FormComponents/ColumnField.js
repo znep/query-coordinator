@@ -1,13 +1,14 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import _ from 'lodash';
 import Field from 'components/FormComponents/Field';
 import { isFieldNameField, isDisplayNameField } from 'models/forms';
 import * as Actions from 'actions/outputColumns';
 import { editView } from 'actions/views';
 
-const mapStateToProps = ({ entities, ui }, { field }) => {
-  const { fourfour } = ui.routing;
+const mapStateToProps = ({ entities, ui }, { field, params }) => {
+  const { fourfour } = params;
 
   const errors = _.chain(entities)
     .get(`views.${fourfour}.columnMetadataErrors`, [])
@@ -44,4 +45,4 @@ function getPropName(fieldName) {
   }
 }
 
-export default connect(mapStateToProps, null, mergeProps)(Field);
+export default withRouter(connect(mapStateToProps, null, mergeProps)(Field));

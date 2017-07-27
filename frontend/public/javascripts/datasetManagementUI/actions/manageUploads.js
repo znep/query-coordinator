@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { push } from 'react-router-redux';
+import { browserHistory } from 'react-router';
 import uuid from 'uuid';
 import * as Links from 'links';
 import * as dsmapiLinks from 'dsmapiLinks';
@@ -71,7 +71,7 @@ function updateProgress(sourceId, percentCompleted) {
 // verbNoun for async action creators
 // verbNounSuccess and/or verbNounFailure for non-async action creators that update store based on api response
 // verbNoun for ui action creators
-export function createUpload(file, fourfour) {
+export function createUpload(file, location) {
   return dispatch => {
     const callId = uuid();
 
@@ -105,7 +105,7 @@ export function createUpload(file, fourfour) {
           createUploadSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
         );
 
-        dispatch(listenForOutputSchema(resource.id, fourfour));
+        dispatch(listenForOutputSchema(resource.id, location));
 
         return dispatch(uploadFile(resource.id, file));
       })
@@ -182,10 +182,8 @@ function uploadFileFailure(sourceId) {
   };
 }
 
-function listenForOutputSchema(sourceId) {
+function listenForOutputSchema(sourceId, location) {
   return (dispatch, getState, socket) => {
-    const { routing } = getState().ui;
-
     const channel = socket.channel(`source:${sourceId}`);
 
     channel.on('insert_input_schema', is => {
@@ -197,7 +195,7 @@ function listenForOutputSchema(sourceId) {
       dispatch(listenForOutputSchemaSuccess(os));
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));
-      dispatch(push(Links.showOutputSchema(sourceId, is.id, os.id)(routing.location)));
+      browserHistory.push(Links.showOutputSchema(sourceId, is.id, os.id)(location));
     });
 
     channel.join();

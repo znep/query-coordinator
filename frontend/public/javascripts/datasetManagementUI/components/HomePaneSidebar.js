@@ -31,9 +31,9 @@ export const ManageData = props => {
   const visualizationDoneCheckmark = null;
   const featuredDoneCheckmark = null;
 
-  const columnDescriptionLink = columnsExist ?
-    Links.columnMetadataForm(Selectors.latestOutputSchema(entities).id) :
-    '';
+  const columnDescriptionLink = columnsExist
+    ? Links.columnMetadataForm(Selectors.latestOutputSchema(entities).id)
+    : '';
 
   return (
     <div className={styles.sidebarData}>
@@ -41,8 +41,11 @@ export const ManageData = props => {
         <SocrataIcon name="column-info" className={styles.icon} />
         {columnDescriptionCheckmark}
 
-        <h3>{I18n.home_pane.sidebar.column_descriptions}</h3>
-        <p> {I18n.home_pane.sidebar.column_descriptions_blurb}{' '}
+        <h3>
+          {I18n.home_pane.sidebar.column_descriptions}
+        </h3>
+        <p>
+          {' '}{I18n.home_pane.sidebar.column_descriptions_blurb}{' '}
         </p>
         <Link to={columnDescriptionLink}>
           <button
@@ -58,7 +61,9 @@ export const ManageData = props => {
       <div>
         <SocrataIcon name="cards" className={styles.icon} />
         {visualizationDoneCheckmark}
-        <h3>{I18n.home_pane.sidebar.visualize}</h3>
+        <h3>
+          {I18n.home_pane.sidebar.visualize}
+        </h3>
         <p>
           {I18n.home_pane.sidebar.visualize_blurb}
         </p>
@@ -70,7 +75,9 @@ export const ManageData = props => {
       <div>
         <SocrataIcon name="featured" className={styles.icon} />
         {featuredDoneCheckmark}
-        <h3>{I18n.home_pane.sidebar.feature}</h3>
+        <h3>
+          {I18n.home_pane.sidebar.feature}
+        </h3>
         <p>
           {I18n.home_pane.sidebar.feature_blurb}
         </p>
@@ -113,15 +120,13 @@ function HomePaneSidebar(props) {
 }
 
 HomePaneSidebar.propTypes = {
-  location: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
   urlParams: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }, { urlParams }) => ({
+const mapStateToProps = ({ entities }, { urlParams }) => ({
   entities,
   urlParams,
-  location: ui.routing.location,
   columnsExist: !_.isEmpty(entities.output_columns)
 });
 

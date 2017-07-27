@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { createStore, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
-import { syncHistoryWithStore } from 'react-router-redux';
 import Perf from 'react-addons-perf';
 import middleware from 'middleware';
 import rootReducer from 'reducers/rootReducer';
@@ -12,7 +11,6 @@ import { bootstrapApp } from 'actions/bootstrap';
 import * as Selectors from './selectors';
 import Airbrake from 'common/airbrake';
 import rootRoute from './routes';
-import { addLocation, setFourfour } from 'actions/routing';
 import styleguide from './styles/style.global.scss'; //eslint-disable-line
 
 if (window.serverConfig.environment === 'development') {
@@ -26,8 +24,6 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(rootReducer, composeEnhancers(middleware));
 
-store.dispatch(setFourfour(window.initialState.view.id));
-
 store.dispatch(
   bootstrapApp(
     window.initialState.view,
@@ -36,17 +32,13 @@ store.dispatch(
   )
 );
 
-const history = syncHistoryWithStore(browserHistory, store, {
-  selectLocationState: state => state.ui.routing.location
-});
-
-history.listen(location => {
-  store.dispatch(addLocation(location));
-});
+// browserHistory.listen(location => {
+//   store.dispatch(addLocation(location));
+// });
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router history={history}>
+    <Router history={browserHistory}>
       {rootRoute(store)}
     </Router>
   </Provider>,

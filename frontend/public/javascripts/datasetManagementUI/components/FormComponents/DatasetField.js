@@ -1,11 +1,12 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import _ from 'lodash';
 import Field from 'components/FormComponents/Field';
 import * as Actions from 'actions/views';
 
-const mapStateToProps = ({ entities, ui }, { field, fieldset }) => {
-  const { fourfour } = ui.routing;
+const mapStateToProps = ({ entities, ui }, { field, fieldset, params }) => {
+  const { fourfour } = params;
 
   const datasetMetadataErrors = _.get(entities, `views.${fourfour}.datasetMetadataErrors`, []);
 
@@ -57,4 +58,4 @@ function forgePath(field, fieldsetName, fourfour) {
   return path;
 }
 
-export default connect(mapStateToProps, null, mergeProps)(Field);
+export default withRouter(connect(mapStateToProps, null, mergeProps)(Field));

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { commaify } from '../../common/formatNumber';
 import * as dsmapiLinks from '../dsmapiLinks';
 import { showModal } from 'actions/modal';
@@ -8,12 +9,10 @@ import styles from 'styles/ReadyToImport.scss';
 
 const SubI18n = I18n.show_output_schema.ready_to_import;
 
-const ErrorButton = ({ disabled }) => (
+const ErrorButton = ({ disabled }) =>
   <button className={styles.errorsBtn} disabled={disabled}>
-    {I18n.export_errors}{' '}
-    <SocrataIcon name="download" />
-  </button>
-);
+    {I18n.export_errors} <SocrataIcon name="download" />
+  </button>;
 
 ErrorButton.propTypes = {
   disabled: PropTypes.bool
@@ -43,13 +42,16 @@ export const ReadyToImport = props => {
   return (
     <div className={styles.readyToImport}>
       <p>
-        {SubI18n.ready_to_import}{' '}
-        <span className={styles.importableRows}>{commaify(importableRows)}</span>{' '}
+        {SubI18n.ready_to_import} <span className={styles.importableRows}>
+          {commaify(importableRows)}
+        </span>{' '}
         {SubI18n.rows}
       </p>
       <p>
         {SubI18n.will_not_be_imported}{' '}
-        <span data-cheetah-hook="error-rows" className={styles.errorRows}>{commaify(errorRows)}</span>
+        <span data-cheetah-hook="error-rows" className={styles.errorRows}>
+          {commaify(errorRows)}
+        </span>
       </p>
       {/* TODO: add flyout to help icon*/}
       <span className={styles.helpModalIcon} onClick={() => openModal('ErrorsHelp')} />
@@ -67,8 +69,8 @@ ReadyToImport.propTypes = {
   openModal: PropTypes.func
 };
 
-const mapStateToProps = ({ entities, ui }) => {
-  const { outputSchemaId } = ui.routing;
+const mapStateToProps = ({ entities }, { params }) => {
+  const { outputSchemaId } = params;
 
   if (outputSchemaId) {
     const outputSchema = entities.output_schemas[outputSchemaId];
@@ -93,4 +95,4 @@ const mapDispatchToProps = dispatch => ({
   openModal: componentName => dispatch(showModal(componentName))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReadyToImport);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ReadyToImport));

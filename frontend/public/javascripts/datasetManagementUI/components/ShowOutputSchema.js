@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
 
 import { interpolate, easeInOutQuad } from '../lib/interpolate';
@@ -10,7 +9,6 @@ import { commaify } from '../../common/formatNumber';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
 import * as LoadDataActions from '../actions/loadData';
-import { setOutputSchemaId } from 'actions/routing';
 import * as DisplayState from '../lib/displayState';
 import Table from './Table';
 import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
@@ -55,27 +53,18 @@ export class ShowOutputSchema extends Component {
   }
 
   componentDidMount() {
-    const { displayState, dispatch, urlParams } = this.props;
+    const { displayState, dispatch } = this.props;
 
     dispatch(LoadDataActions.loadVisibleData(displayState));
 
-    if (urlParams.outputSchemaId) {
-      dispatch(setOutputSchemaId(_.toNumber(urlParams.outputSchemaId)));
-    }
     this.setSize();
+
     window.addEventListener('resize', this.throttledSetSize);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { dispatch, urlParams } = this.props;
-    const { urlParams: nextUrlParams, displayState } = nextProps;
-
-    const oldOutputSchemaId = urlParams.outputSchemaId;
-    const newOutputSchemaId = nextUrlParams.outputSchemaId;
-
-    if (oldOutputSchemaId !== newOutputSchemaId) {
-      dispatch(setOutputSchemaId(_.toNumber(newOutputSchemaId)));
-    }
+    const { dispatch } = this.props;
+    const { displayState } = nextProps;
 
     dispatch(LoadDataActions.loadVisibleData(displayState));
   }
@@ -177,14 +166,20 @@ export class ShowOutputSchema extends Component {
               </div>
               <div className={styles.datasetAttribute}>
                 <div className={styles.datasetAttribute}>
-                  <p>{I18n.data_preview.rows}</p>
+                  <p>
+                    {I18n.data_preview.rows}
+                  </p>
                   <p className={styles.attribute} data-cheetah-hook="total-rows-transformed">
                     {commaify(rowsTransformed)}
                   </p>
                 </div>
                 <div className={styles.datasetAttribute}>
-                  <p>{I18n.data_preview.columns}</p>
-                  <p className={styles.attribute}>{columns.length}</p>
+                  <p>
+                    {I18n.data_preview.columns}
+                  </p>
+                  <p className={styles.attribute}>
+                    {columns.length}
+                  </p>
                 </div>
               </div>
             </div>
@@ -270,7 +265,7 @@ export function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   return {
     goHome: () => {
-      dispatch(push(Links.home(ownProps.location)));
+      browserHistory.push(Links.home(ownProps.location));
     },
     dispatch
   };

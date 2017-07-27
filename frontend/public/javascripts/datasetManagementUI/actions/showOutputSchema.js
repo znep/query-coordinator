@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { push } from 'react-router-redux';
+import { browserHistory } from 'react-router';
 import uuid from 'uuid';
 import * as dsmapiLinks from 'dsmapiLinks';
 import * as Links from 'links';
@@ -24,15 +24,13 @@ import {
 } from 'actions/manageUploads';
 import { getUniqueName, getUniqueFieldName } from 'lib/util';
 
-function createNewOutputSchema(oldOutputSchema, newOutputColumns, call) {
+function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, location) {
   return (dispatch, getState) => {
     const callId = uuid();
 
     dispatch(apiCallStarted(callId, call));
 
-    const { entities, ui } = getState();
-
-    const routing = ui.routing.location;
+    const { entities } = getState();
 
     const { source } = Selectors.pathForOutputSchema(entities, oldOutputSchema.id);
 
@@ -51,8 +49,8 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call) {
         dispatch(subscribeToOutputSchema(resp.resource));
         dispatch(subscribeToTransforms(resp.resource));
 
-        dispatch(
-          push(Links.showOutputSchema(source.id, oldOutputSchema.input_schema_id, resp.resource.id)(routing))
+        browserHistory.push(
+          Links.showOutputSchema(source.id, oldOutputSchema.input_schema_id, resp.resource.id)(location)
         );
       })
       .catch(err => {
@@ -61,7 +59,7 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call) {
   };
 }
 
-export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch, getState) => {
+export const updateColumnType = (outputSchema, oldColumn, newType, location) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -74,10 +72,10 @@ export const updateColumnType = (outputSchema, oldColumn, newType) => (dispatch,
 
   const newOutputColumns = outputColumnsWithChangedType(entities, outputSchema, oldColumn, newType);
 
-  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call));
+  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, location));
 };
 
-export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) => {
+export const addColumn = (outputSchema, outputColumn, location) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -111,10 +109,10 @@ export const addColumn = (outputSchema, outputColumn) => (dispatch, getState) =>
     toNewOutputColumn(oc, sameTransform(entities))
   );
 
-  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call));
+  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, location));
 };
 
-export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
+export const dropColumn = (outputSchema, column, location) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -130,7 +128,7 @@ export const dropColumn = (outputSchema, column) => (dispatch, getState) => {
     .filter(oc => oc.id !== column.id)
     .map(oc => toNewOutputColumn(oc, sameTransform(entities)));
 
-  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call));
+  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, location));
 };
 
 export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, getState) => {
@@ -148,7 +146,7 @@ export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, 
     }))
     .map(oc => toNewOutputColumn(oc, sameTransform(entities)));
 
-  dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call));
+  dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, location));
 };
 
 function toNewOutputColumn(outputColumn, genTransform) {

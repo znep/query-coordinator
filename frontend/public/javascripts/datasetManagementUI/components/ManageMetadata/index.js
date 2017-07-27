@@ -34,7 +34,6 @@ export class ManageMetadata extends Component {
     });
   }
 
-
   onDatasetTab() {
     return this.props.path === 'metadata/dataset';
   }
@@ -53,14 +52,13 @@ export class ManageMetadata extends Component {
     dispatch(addOutputColumns(this.state.initialColMetadata));
   }
 
-
   handleSaveClick(e) {
     e.preventDefault();
 
-    const { dispatch, view, currentColumns, outputSchemaId } = this.props;
+    const { dispatch, view, currentColumns, outputSchemaId, fourfour, location } = this.props;
 
     if (this.onDatasetTab() && view.datasetFormDirty) {
-      dispatch(saveDatasetMetadata())
+      dispatch(saveDatasetMetadata(fourfour))
         .then(() => {
           this.setState({
             initialDatasetMetadata: Selectors.datasetMetadata(view)
@@ -68,8 +66,7 @@ export class ManageMetadata extends Component {
         })
         .catch(() => console.warn('Save failed'));
     } else if (view.columnFormDirty) {
-
-      dispatch(saveColumnMetadata(outputSchemaId))
+      dispatch(saveColumnMetadata(outputSchemaId, fourfour, location))
         .then(() => {
           this.setState({
             initialColMetadata: currentColumns
@@ -88,16 +85,11 @@ export class ManageMetadata extends Component {
 
     let path;
     if (!this.onDatasetTab()) {
-      const {
-        source,
-        inputSchema,
-        outputSchema
-      } = Selectors.treeForOutputSchema(this.props.entities, this.props.outputSchemaId);
-      path = Links.showOutputSchema(
-        source.id,
-        inputSchema.id,
-        outputSchema.id
-      )(this.props.location);
+      const { source, inputSchema, outputSchema } = Selectors.treeForOutputSchema(
+        this.props.entities,
+        this.props.outputSchemaId
+      );
+      path = Links.showOutputSchema(source.id, inputSchema.id, outputSchema.id)(this.props.location);
     }
 
     dispatch(dismissMetadataPane(path));
@@ -173,13 +165,13 @@ ManageMetadata.propTypes = {
   outputSchemaId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }, ownProps) => {
+const mapStateToProps = ({ entities }, ownProps) => {
   const outputSchemaId = parseInt(ownProps.params.outputSchemaId, 10);
   return {
-    fourfour: ui.routing.fourfour,
-    view: entities.views[ui.routing.fourfour],
+    fourfour: ownProps.params.fourfour,
+    view: entities.views[ownProps.params.fourfour],
     path: ownProps.route.path,
-    location: ui.routing.location,
+    location: ownProps.location,
     columnsExist: !_.isEmpty(entities.output_columns),
     outputSchemaId,
     entities: entities,

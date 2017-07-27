@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
+import { withRouter } from 'react-router';
 import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -24,33 +25,47 @@ const WhyWontTheyImport = () =>
 
     <div className={styles.kinds}>
       <div className={styles.typeErrors}>
-        <h6>{SubI18n.help_modal.type_errors}</h6>
+        <h6>
+          {SubI18n.help_modal.type_errors}
+        </h6>
         <img
           alt={SubI18n.help_modal.type_errors}
           className={styles.helpVis1a}
           src="/images/datasetManagementUI/help-visual-1a.png" />
-        <p className={styles.caption}>{SubI18n.help_modal.type_error_blurb}</p>
+        <p className={styles.caption}>
+          {SubI18n.help_modal.type_error_blurb}
+        </p>
       </div>
       <div className={styles.rowErrors}>
-        <h6>{SubI18n.help_modal.row_errors}</h6>
+        <h6>
+          {SubI18n.help_modal.row_errors}
+        </h6>
         <img
           alt={SubI18n.help_modal.row_errors}
           className={styles.helpVis1b}
           src="/images/datasetManagementUI/help-visual-1b.png" />
-        <p className={styles.caption}>{SubI18n.help_modal.row_error_blurb}</p>
+        <p className={styles.caption}>
+          {SubI18n.help_modal.row_error_blurb}
+        </p>
       </div>
     </div>
   </div>;
 
 const WhatCanIDoAboutIt = ({ errorRowCount }) =>
   <div className={styles.help}>
-    <p>{SubI18n.help_modal.error_file_blurb}</p>
-    <h6>{makeErrorString('you_can_download_start', 'you_can_download_end', errorRowCount)}</h6>
+    <p>
+      {SubI18n.help_modal.error_file_blurb}
+    </p>
+    <h6>
+      {makeErrorString('you_can_download_start', 'you_can_download_end', errorRowCount)}
+    </h6>
     <img
       alt={SubI18n.help_modal.error_file_blurb}
       className={styles.helpVis2}
       src="/images/datasetManagementUI/help-visual-2.png" />
-    <p className={styles.caption}>{SubI18n.help_modal.error_file_sub_blurb}</p>
+    <p className={styles.caption}>
+      {SubI18n.help_modal.error_file_sub_blurb}
+    </p>
   </div>;
 
 WhatCanIDoAboutIt.propTypes = {
@@ -59,13 +74,19 @@ WhatCanIDoAboutIt.propTypes = {
 
 const HowToGetRowsBackInDataset = () =>
   <div className={styles.help}>
-    <p>{SubI18n.help_modal.get_rows_into_dataset_blurb}</p>
-    <h6>{SubI18n.help_modal.clean_data_blurb}</h6>
+    <p>
+      {SubI18n.help_modal.get_rows_into_dataset_blurb}
+    </p>
+    <h6>
+      {SubI18n.help_modal.clean_data_blurb}
+    </h6>
     <img
       alt={SubI18n.help_modal.get_rows_into_dataset_blurb}
       className={styles.helpVis3}
       src="/images/datasetManagementUI/help-visual-3.png" />
-    <p className={styles.caption}>{SubI18n.help_modal.clean_data_sub_blurb}</p>
+    <p className={styles.caption}>
+      {SubI18n.help_modal.clean_data_sub_blurb}
+    </p>
   </div>;
 
 const pages = [WhatCanIDoAboutIt, WhyWontTheyImport, HowToGetRowsBackInDataset];
@@ -166,11 +187,12 @@ export class ErrorsHelp extends Component {
 
     const buttonHandler = modalPage === pages.length - 1 ? onDismiss : this.nextPage;
 
-    const previousButton = modalPage > 0
-      ? <button onClick={this.prevPage} className={styles.previousButton}>
-        {SubI18n.help_modal.previous}
-      </button>
-      : null;
+    const previousButton =
+      modalPage > 0
+        ? <button onClick={this.prevPage} className={styles.previousButton}>
+            {SubI18n.help_modal.previous}
+        </button>
+        : null;
 
     return (
       <div>
@@ -197,8 +219,8 @@ ErrorsHelp.propTypes = {
   onDismiss: PropTypes.func
 };
 
-const mapStateToProps = ({ entities, ui }) => {
-  const { outputSchemaId } = ui.routing;
+const mapStateToProps = ({ entities }, { params }) => {
+  const { outputSchemaId } = params;
 
   return {
     errorRowCount: entities.output_schemas[outputSchemaId].error_count || 0
@@ -209,4 +231,4 @@ const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(hideModal())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ErrorsHelp);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ErrorsHelp));

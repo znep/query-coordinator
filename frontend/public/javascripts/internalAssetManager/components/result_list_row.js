@@ -43,7 +43,7 @@ export class ResultListRow extends React.Component {
         return cellTag(ownerName);
       case 'type': {
         let assetTypeTooltip = _.get(I18n, `asset_types.${type}`);
-        if (type === 'dataset' && !this.props.isPublished) {
+        if (type === 'dataset' && !isPublished) {
           assetTypeTooltip = _.get(I18n, 'asset_types.working_copy');
         }
         return cellTag(

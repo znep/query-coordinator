@@ -15,7 +15,13 @@ export class AssetCounts extends React.Component {
       if (assetCount === 0) return;
       // TODO: remove once we're on i18n-js:
       const countKey = assetCount === 1 ? 'one' : 'other';
-      const assetTypeName = assetTypeTranslation(`${assetType}.${countKey}`);
+      let assetTypeName;
+
+      if (this.props.filters.assetTypes === 'workingCopies') {
+        assetTypeName = assetTypeTranslation(`workingCopies.${countKey}`);
+      } else {
+        assetTypeName = assetTypeTranslation(`${assetType}.${countKey}`);
+      }
 
       return (
         <div className={`asset-counts-item ${assetType}`} key={assetType}>
@@ -50,13 +56,17 @@ AssetCounts.propTypes = {
     stories: PropTypes.number
   }).isRequired,
   fetchingAssetCounts: PropTypes.bool,
-  fetchingAssetCountsError: PropTypes.bool
+  fetchingAssetCountsError: PropTypes.bool,
+  filters: PropTypes.shape({
+    assetTypes: PropTypes.string
+  })
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   assetCounts: state.assetCounts.values,
   fetchingAssetCounts: state.assetCounts.fetchingAssetCounts,
-  fetchingAssetCountsError: state.assetCounts.fetchingAssetCountsError
+  fetchingAssetCountsError: state.assetCounts.fetchingAssetCountsError,
+  filters: state.filters
 });
 
 export default connect(mapStateToProps)(AssetCounts);

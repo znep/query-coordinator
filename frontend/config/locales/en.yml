@@ -2853,6 +2853,9 @@ en:
         stories:
           one: Story
           other: Stories
+        workingCopies:
+          one: Working Copy
+          other: Working Copies
       asset_toggles:
         all_assets: All Assets
         my_assets: My Assets

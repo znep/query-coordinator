@@ -106,12 +106,22 @@ export const ceteraUtils = (() => {
       visibility
     };
 
+    /*
+     * Note, changes to filters and search options here must match the corresponding implementation in
+     * platform-ui/frontend/app/controllers/internal_asset_manager_controller.rb
+     */
+
     // Special-case "working copies" because they're not an asset type, but a subset of
     // an asset type with an extra condition attached. This will totally not come back
     // to bite us if we add a filter for un/published.
     if (parameters.only === 'workingCopies') {
       parameters.only = 'datasets';
       parameters.published = 'false';
+    }
+
+    // When we're searching for plain old datasets, we need to omit the working copies
+    if (parameters.only === 'datasets') {
+      parameters.published = 'true';
     }
 
     return _.reduce(

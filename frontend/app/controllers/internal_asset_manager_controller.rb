@@ -18,6 +18,10 @@ class InternalAssetManagerController < ApplicationController
 
   def show
     cookie = "_core_session_id=#{cookies[:_core_session_id]}"
+
+    # Note, changes to filters and search options in this method must match the corresponding implementation
+    # in platform-ui/frontend/public/javascripts/common/cetera_utils.js
+
     search_options = {
       domains: CurrentDomain.cname,
       limit: RESULTS_PER_PAGE,
@@ -28,6 +32,10 @@ class InternalAssetManagerController < ApplicationController
 
     if params[:assetTypes] == 'workingCopies'
       search_options.merge!(published: false, only: 'datasets')
+    end
+
+    if params[:assetTypes] == 'datasets'
+      search_options.merge!(published: true)
     end
 
     catalog_results_response = begin

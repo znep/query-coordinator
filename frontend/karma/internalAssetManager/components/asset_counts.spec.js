@@ -12,6 +12,9 @@ describe('components/AssetCounts', () => {
     },
     fetchingAssetCounts: false,
     fetchingAssetCountsError: false,
+    filters: {
+      assetTypes: 'datasets'
+    },
     ...options
   });
 

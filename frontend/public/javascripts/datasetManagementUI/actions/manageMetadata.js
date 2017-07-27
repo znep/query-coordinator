@@ -15,34 +15,34 @@ import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
 import { getLocalizedErrorMessage } from 'lib/util';
 import {
-  pollForOutputSchemaSuccess,
+  listenForOutputSchemaSuccess,
   subscribeToOutputSchema,
   subscribeToTransforms
 } from 'actions/manageUploads';
 import { editView } from 'actions/views';
 
-export const dismissMetadataPane = currentOutputSchemaPath => (dispatch, getState) => {
-  const { routing } = getState().ui;
+export const dismissMetadataPane = (currentOutputSchemaPath, initialLocation) => (dispatch, getState) => {
+  const { history } = getState().ui;
   const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
   const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
 
-  const currentLocation = routing.history[routing.history.length - 1];
+  const currentLocation = initialLocation;
 
-  const helper = history => {
-    const location = history[history.length - 1];
+  const helper = hist => {
+    const location = hist[hist.length - 1];
 
-    if (history.length === 0) {
+    if (hist.length === 0) {
       browserHistory.push(Links.home(currentLocation));
     } else if (currentOutputSchemaPath && isBigTablePage.test(location.pathname)) {
       browserHistory.push(currentOutputSchemaPath);
     } else if (isDatasetModalPath.test(location.pathname)) {
-      helper(history.slice(0, -1));
+      helper(hist.slice(0, -1));
     } else {
       browserHistory.push(location);
     }
   };
 
-  helper(routing.history);
+  helper(history);
 };
 
 export const saveDatasetMetadata = fourfour => (dispatch, getState) => {
@@ -200,7 +200,7 @@ export const saveColumnMetadata = (outputSchemaId, fourfour, location) => (dispa
       });
     })
     .then(resp => {
-      dispatch(pollForOutputSchemaSuccess(resp.resource));
+      dispatch(listenForOutputSchemaSuccess(resp.resource));
       dispatch(subscribeToOutputSchema(resp.resource));
       dispatch(subscribeToTransforms(resp.resource));
       return resp;

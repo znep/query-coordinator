@@ -79,7 +79,7 @@ export class ManageMetadata extends Component {
   }
 
   handleCancelClick() {
-    const { dispatch } = this.props;
+    const { dispatch, location } = this.props;
 
     this.revertChanges();
 
@@ -92,7 +92,7 @@ export class ManageMetadata extends Component {
       path = Links.showOutputSchema(source.id, inputSchema.id, outputSchema.id)(this.props.location);
     }
 
-    dispatch(dismissMetadataPane(path));
+    dispatch(dismissMetadataPane(path, location));
   }
 
   handleTabClick() {

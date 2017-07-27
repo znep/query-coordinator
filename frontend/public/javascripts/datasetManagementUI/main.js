@@ -11,6 +11,7 @@ import { bootstrapApp } from 'actions/bootstrap';
 import * as Selectors from './selectors';
 import Airbrake from 'common/airbrake';
 import rootRoute from './routes';
+import { addLocation } from 'actions/history';
 import styleguide from './styles/style.global.scss'; //eslint-disable-line
 
 if (window.serverConfig.environment === 'development') {
@@ -32,9 +33,9 @@ store.dispatch(
   )
 );
 
-// browserHistory.listen(location => {
-//   store.dispatch(addLocation(location));
-// });
+browserHistory.listen(location => {
+  store.dispatch(addLocation(location));
+});
 
 ReactDOM.render(
   <Provider store={store}>

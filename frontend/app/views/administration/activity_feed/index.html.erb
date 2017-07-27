@@ -108,9 +108,9 @@
           <td><%= t("screens.admin.jobs.actions.#{activity.activity_type}") %></td>
           <td>
             <% if activity.dataset.nil? %>
-              <span class="import-status-deleted">(<%= t('screens.admin.jobs.index_page.deleted_dataset') %>)</span>
+              <span class="import-status-deleted"><%= t('screens.admin.jobs.index_page.deleted_dataset') %></span>
             <% elsif activity.dataset.deleted %>
-              <%= activity.dataset.name %> <span class="import-status-deleted"><%= "(#{t('screens.admin.jobs.index_page.deleted')})" %></span>
+              <%= activity.dataset.name %> <span class="import-status-deleted"><%= t('screens.admin.jobs.index_page.deleted') %></span>
             <% else %>
               <%= link_to activity.dataset.name, view_path(activity.dataset) %>
             <% end %>

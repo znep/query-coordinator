@@ -102,7 +102,7 @@ export const load = (dispatch, vif) => {
       columnName
     ));
   }
-  
+
   // This depends on dimensionGroupingColumnName being set
   if (has(paths.colorPalette)) {
     dispatch(actions.setColorPalette(get(paths.colorPalette)));

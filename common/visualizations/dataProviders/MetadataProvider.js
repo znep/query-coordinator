@@ -62,6 +62,64 @@ function MetadataProvider(config) {
     return makeMetadataRequest('api/curated_regions');
   };
 
+
+  // In short, a view's base view is the view which supplies a view's metadata blob.
+  // I'm sorry about how complicated this is. We're in a split world where
+  //   A) We place important things into the view metadata (i.e. rowLabel),
+  //   B) AX and the visualizations primarily work with NBE replicas,
+  //   C) We have an OBE->NBE sync which does _not_ sync over the view metadata field,
+  //   D) We're given any one of these as datasetUid:
+  //    1. UID of NBE-only dataset.
+  //    2. UID of NBE replica of OBE dataset.
+  //    3. UID of a derived view (they don't have separate NBE UIDs).
+  //      3a. The derived view may have a modifyingViewUid.
+  // This means that we must always
+  //   1) Check to see which of the 3 types of UIDs we've been given.
+  //   2) If derived view, find parent view.
+  //   3) Read metadata from OBE replica, if it exists.
+  //      If it does not exist, read from base view.
+  //      If that too does not exist, read from datasetUid.
+  //
+  // Important note: This method may fail due to permissions issues. If it does,
+  // the recommended course of action is to fall back to the plain dataset metadata
+  // from getDatasetMetadata - it is likely impossible for the user to obtain access
+  // to the base view (especially when it comes to modifyingViewUid, which exists
+  // purely to allow users to create derived views on datasets they have access to only
+  // through a redacted derived view).
+  this.getBaseViewMetadata = () => {
+    const domain = this.getConfigurationProperty('domain');
+    const datasetUid = this.getConfigurationProperty('datasetUid');
+
+    return this.getDatasetMigrationMetadata().then(
+      (migrationMetadata) =>
+        // If there's a migration, we're definitely A) a default view, and
+        // B) the OBE view has the correct metadata.
+        new MetadataProvider({ domain, datasetUid: migrationMetadata.obeId }).
+          getDatasetMetadata(),
+      () => {
+        // Lack of migration means we're either A) NBE-only, B) derived
+        // In either case, we can call core to getDefaultView.
+        // That should traverse through modifyingViewUid, but I'm not 100%
+        // sure. If the view still has a modifyingViewUid, grab its metadata.
+        return this.getDefaultView().then((defaultView) => {
+          if (defaultView.modifyingViewUid) {
+            return new MetadataProvider({ domain, datasetUid: defaultView.modifyingViewUid }).
+              getDatasetMetadata();
+          } else {
+            return defaultView;
+          }
+        });
+      }
+    );
+  }
+
+  this.getDefaultView = () => {
+    const datasetUid = this.getConfigurationProperty('datasetUid');
+    const url = `api/views/${datasetUid}.json?method=getDefaultView&accessType=WEBSITE`;
+
+    return makeMetadataRequest(url);
+  };
+
   this.getDatasetMigrationMetadata = () => {
     const datasetUid = this.getConfigurationProperty('datasetUid');
     const url = `api/migrations/${datasetUid}.json`;

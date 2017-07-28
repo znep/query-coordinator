@@ -24,18 +24,26 @@ export function setDataSource(domain, datasetUid) {
 
     dispatch(requestMetadata(domain, datasetUid));
 
-    const finishMetadataRequests = (datasetMetadata, hasColumnStats) => {
-      dispatch(receiveMetadata(datasetMetadata, hasColumnStats));
+    const finishMetadataRequests = (datasetMetadata, baseViewMetadata, hasColumnStats) => {
+      dispatch(receiveMetadata(datasetMetadata, baseViewMetadata, hasColumnStats));
       dispatch(setVifCheckpoint(getVifs(getState().vifAuthoring)));
     };
 
-    return datasetMetadataProvider.getDatasetMetadata().then((datasetMetadata) => {
-      soqlDataProvider.getColumnStats(datasetMetadata.columns).then((columnStats) => {
+    return Promise.all([
+      // See comment in implementation to learn why we catch-all.
+      datasetMetadataProvider.getBaseViewMetadata().catch(() => null),
+      datasetMetadataProvider.getDatasetMetadata()
+    ]).then((resolutions) => {
+      const datasetMetadata = resolutions[1];
+      const baseViewMetadata = resolutions[0] || datasetMetadata;
+
+      return soqlDataProvider.getColumnStats(datasetMetadata.columns).then((columnStats) => {
         datasetMetadata.columns = _.merge([], columnStats, datasetMetadata.columns);
-        finishMetadataRequests(datasetMetadata, true);
+        finishMetadataRequests(datasetMetadata, baseViewMetadata, true);
       }).catch(() => {
-        finishMetadataRequests(datasetMetadata, false);
+        finishMetadataRequests(datasetMetadata, baseViewMetadata, false);
       });
+
     }).catch((error) => {
       console.error(error);
       dispatch(handleMetadataError());
@@ -53,10 +61,11 @@ export function requestMetadata(domain, datasetUid) {
 }
 
 export const RECEIVE_METADATA = 'RECEIVE_METADATA';
-export function receiveMetadata(datasetMetadata, hasColumnStats) {
+export function receiveMetadata(datasetMetadata, baseViewMetadata, hasColumnStats) {
   return {
     type: RECEIVE_METADATA,
     datasetMetadata,
+    baseViewMetadata,
     hasColumnStats
   };
 }

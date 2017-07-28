@@ -265,6 +265,8 @@ describe('AuthoringWorkflow reducer', function() {
     });
 
     describe('RECEIVE_METADATA', function() {
+      const datasetMetadata = { id: 'data-sets', columns: [] };
+      const baseViewMetadata = { id: 'base-view', columns: [] };
       var state, action, newState;
 
       beforeEach(function() {
@@ -275,18 +277,19 @@ describe('AuthoringWorkflow reducer', function() {
         });
 
         action = actions.receiveMetadata(
-          { id: 'data-sets', columns: [] },
+          datasetMetadata,
+          baseViewMetadata
         );
 
         newState = reducer(state, action);
       });
 
       it('sets isLoading to false', function() {
-        expect(newState.metadata.isLoading).to.equal(false);
+        assert.isFalse(newState.metadata.isLoading);
       });
 
       it('sets the data key', function() {
-        expect(newState.metadata.data).to.deep.equal({ id: 'data-sets', columns: [] });
+        assert.deepEqual(newState.metadata.data, datasetMetadata);
       });
     });
 

@@ -175,6 +175,17 @@ export const ceteraUtils = (() => {
         catch(handleError);
     },
 
+    domainUsersQuery: (queryOptions) => {
+      const queryString = ceteraQueryString(queryOptions);
+      const path = '/api/catalog/v1/users';
+      const fetchUrl = `${path}?${queryString}`;
+
+      return fetch(fetchUrl, fetchOptions).
+        then(checkStatus).
+        then(parseJSON).
+        catch(handleError);
+    },
+
     mapToAssetSelectorResult: (ceteraResults) => {
       const mapResultType = (type) => {
         // :sadpanda:

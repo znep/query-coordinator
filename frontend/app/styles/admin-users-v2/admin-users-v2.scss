@@ -1,0 +1,73 @@
+@import "common/metadata-table";
+@import "common/schema-preview";
+@import "common/row-details";
+@import "common/pager";
+
+@import "common/visualizations/views/styles/socrata-visualizations";
+
+// this is in the erb, so can't move to within react app
+#initial-spinner-container {
+  text-align: center;
+  padding-top: 10em;
+  padding-bottom: 10em;
+}
+
+.siteContentWrapper {
+  padding-top: 0;
+}
+
+#app {
+  #users-table {
+    margin: 0;
+  }
+
+  thead.results-list-header {
+    background-color: $light-grey-6;
+    th {
+      font-weight: bold;
+    }
+  }
+
+  .role-picker-cell {
+    padding-top: 0;
+    padding-bottom: 0;
+    vertical-align: bottom;
+    width: 15em;
+    position: relative;
+  }
+
+  .pending-action-span {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 100;
+    text-align: right;
+
+    .pending-action-cover {
+      position: absolute;
+      height: 100%;
+      width: 50px;
+      background: white;
+      right: 0;
+    }
+
+    .spinner-default {
+      margin: 10px 25px 10px 0px;
+    }
+  }
+
+  .dropdown-placeholder {
+    border: none;
+    outline: none;
+  }
+
+  .socrata-icon-user {
+    padding-right: 2em;
+  }
+
+  .dropdown-container {
+    width: 100%;
+  }
+}

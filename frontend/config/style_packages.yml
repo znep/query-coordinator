@@ -161,6 +161,8 @@ administration-stories-appearance:
 - screen-admin-customizer
 administration-users:
 - screen-admin-users
+admin-users-v2:
+- admin-users-v2/admin-users-v2
 administration-view-moderation:
 - screen-administration-views
 base-control:

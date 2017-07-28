@@ -21,7 +21,7 @@ export default (state, action) => {
   }
 
   if (action.type === 'UPDATE_ASSET_COUNTS') {
-    const getCountForAssetType = assetType => {
+    const getCountForAssetType = (assetType) => {
       const asset = _.filter(action.assetCounts, (assetCount => assetCount.value === assetType))[0];
       return (asset && _.has(asset, 'count')) ? asset.count : 0;
     };

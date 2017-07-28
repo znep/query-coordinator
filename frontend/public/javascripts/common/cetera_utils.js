@@ -60,7 +60,7 @@ export const ceteraUtils = (() => {
 
   const assetTypeMapping = assetType => (assetType === 'new_view' ? 'datalenses' : assetType);
 
-  const mapIdFiltersToParam = idFilters => _.map(idFilters, (id) => `ids=${id}`).join('&');
+  const mapIdFiltersToParam = (idFilters) => _.map(idFilters, (id) => `ids=${id}`).join('&');
 
   const fetchOptions = {
     credentials: 'same-origin',

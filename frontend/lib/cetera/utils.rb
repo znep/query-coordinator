@@ -82,6 +82,8 @@ module Cetera
                 :limit => 0
               }.merge(options)
 
+              cetera_opts.merge!(published: false, only: 'datasets') if asset_type == 'workingCopies'
+
               counts[asset_type] = catalog_search_client.
                 find_views(req_id, cookies, cetera_opts).
                 fetch('resultSetSize')

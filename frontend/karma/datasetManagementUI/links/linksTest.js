@@ -1,64 +1,82 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import * as Links from 'links';
 
 describe('Links', () => {
-
-  // comes from react state
-  const mockWrappedRouting = {
-    locationBeforeTransitions: {
-      pathname: '/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/sources'
-    }
+  const params = {
+    category: 'dataset',
+    name: 'mm',
+    fourfour: 'kp42-jdvd',
+    revisionSeq: '0'
   };
 
-  //come from calling Link_to and passing in a function
-  const mockRouting = {
-    pathname: '/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/sources'
-  };
+  const expectedBase = '/dataset/mm/kp42-jdvd/revisions/0';
 
   it('creates a home link', () => {
-    expect(Links.home(mockWrappedRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0');
-    expect(Links.home(mockRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0');
+    const link = Links.home(params);
+
+    assert.equal(link, expectedBase);
   });
 
-  it('creates a home link when there\'s a locale prefix', () => {
-    const wrappedRoutingWithLocale = {
-      locationBeforeTransitions: {
-        pathname: '/en/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/sources'
-      }
-    };
-    const routingWithLocale = {
-      pathname: '/en/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/sources'
-    };
-    expect(Links.home(wrappedRoutingWithLocale)).to.eq('/en/dataset/Herp-Derp-27/p4k7-ka86/revisions/0');
-    expect(Links.home(routingWithLocale)).to.eq('/en/dataset/Herp-Derp-27/p4k7-ka86/revisions/0');
-  });
+  it('creates a manageTab link', () => {
+    const link = Links.manageTab(params);
 
-  it('creates a home link when there\'s a multi-word custom category', () => {
-    const wrappedRoutingWithLocale = {
-      locationBeforeTransitions: {
-        pathname: '/my-category/Herp-Derp-27/p4k7-ka86/revisions/0/sources'
-      }
-    };
-    const routingWithLocale = {
-      pathname: '/my-category/Herp-Derp-27/p4k7-ka86/revisions/0/sources'
-    };
-    expect(Links.home(wrappedRoutingWithLocale)).to.eq('/my-category/Herp-Derp-27/p4k7-ka86/revisions/0');
-    expect(Links.home(routingWithLocale)).to.eq('/my-category/Herp-Derp-27/p4k7-ka86/revisions/0');
+    assert.equal(link, `${expectedBase}/manageTab`);
   });
 
   it('creates a metadata link', () => {
-    expect(Links.metadata(mockWrappedRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/metadata');
-    expect(Links.metadata(mockRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/metadata');
+    const link = Links.metadata(params);
+
+    assert.equal(link, `${expectedBase}/metadata`);
   });
 
-  it('creates an sources link', () => {
-    expect(Links.sources(mockWrappedRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/sources');
-    expect(Links.sources(mockRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/sources');
+  it('creates an edit dataset metadata link', () => {
+    const link = Links.datasetMetadataForm(params);
+
+    assert.equal(link, `${expectedBase}/metadata/dataset`);
   });
 
-  it('creates a showOutputSchema link', () => {
-    expect(Links.showOutputSchema(5, 10, 2)(mockWrappedRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/sources/5/schemas/10/output/2');
-    expect(Links.showOutputSchema(5, 10, 2)(mockRouting)).to.eq('/dataset/Herp-Derp-27/p4k7-ka86/revisions/0/sources/5/schemas/10/output/2');
+  it('creates an edit column metadata link', () => {
+    const link = Links.columnMetadataForm(params, 200);
+
+    assert.equal(link, `${expectedBase}/metadata/200/columns`);
   });
 
+  it('creates an edit column metadata link with a column id', () => {
+    const link = Links.columnMetadataForm(params, 200, 2758);
+
+    assert.equal(link, `${expectedBase}/metadata/200/columns#2758`);
+  });
+
+  it('creates a sources link', () => {
+    const link = Links.sources(params);
+
+    assert.equal(link, `${expectedBase}/sources`);
+  });
+
+  it('creates a showOuptutSchema link', () => {
+    const link = Links.showOutputSchema(params, 81, 200, 888, 4);
+
+    assert.equal(
+      link,
+      `${expectedBase}/sources/81/schemas/200/output/888/page/4`
+    );
+  });
+
+  it('creates a showColumnErrors link', () => {
+    const link = Links.showColumnErrors(params, 81, 200, 888, 99, 4);
+
+    assert.equal(
+      link,
+      `${expectedBase}/sources/81/schemas/200/output/888/column_errors/99/page/4`
+    );
+  });
+
+  it('creates a showRowErrors link', () => {
+    const link = Links.showRowErrors(params, 81, 200, 888, 2);
+
+    assert.equal(
+      link,
+      `${expectedBase}/sources/81/schemas/200/output/888/row_errors/page/2`
+    );
+  });
 });

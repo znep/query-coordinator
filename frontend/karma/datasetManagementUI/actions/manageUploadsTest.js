@@ -8,7 +8,6 @@ import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
 import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
-import { setFourfour, addLocation } from 'actions/routing';
 
 const socket = mockSocket(
   bootstrapChannels.map(bc => {

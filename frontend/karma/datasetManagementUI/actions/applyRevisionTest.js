@@ -9,7 +9,6 @@ import mockAPI from '../testHelpers/mockAPI';
 const mockStore = configureStore([thunk]);
 
 describe('actions/applyRevision', () => {
-
   let unmock;
   let fakeStore;
 
@@ -26,7 +25,6 @@ describe('actions/applyRevision', () => {
   });
 
   describe('updateRevision', () => {
-
     it('launches an UPDATE_REVISION api call', done => {
       fakeStore
         .dispatch(updateRevision('private'))
@@ -59,49 +57,50 @@ describe('actions/applyRevision', () => {
       fakeStore.dispatch(updateRevision('public'));
       assert.equal(fakeStore.getActions().length, 0);
     });
-
   });
 
   describe('applyRevision', () => {
+    const params = {
+      category: 'dataset',
+      name: 'mm',
+      fourfour: 'kp42-jdvd',
+      revisionSeq: '0'
+    };
 
-    it('works when an output schema is supplied', (done) => {
+    it('works when an output schema is supplied', done => {
       fakeStore
-        .dispatch(applyRevision(52))
+        .dispatch(applyRevision(52, params))
         .then(() => {
           const actions = fakeStore.getActions();
           assert.deepEqual(_.map(actions, 'type'), [
             'API_CALL_STARTED',
             'API_CALL_SUCCEEDED',
             'ADD_TASK_SET',
-            'SHOW_MODAL',
-            '@@router/CALL_HISTORY_METHOD'
+            'SHOW_MODAL'
           ]);
           done();
         })
-        .catch((err) => {
+        .catch(err => {
           done(err);
         });
     });
 
-    it('works without an output schema (no-file case)', (done) => {
+    it('works without an output schema (no-file case)', done => {
       fakeStore
-        .dispatch(applyRevision())
+        .dispatch(applyRevision(null, params))
         .then(() => {
           const actions = fakeStore.getActions();
           assert.deepEqual(_.map(actions, 'type'), [
             'API_CALL_STARTED',
             'API_CALL_SUCCEEDED',
             'ADD_TASK_SET',
-            'SHOW_MODAL',
-            '@@router/CALL_HISTORY_METHOD'
+            'SHOW_MODAL'
           ]);
           done();
         })
-        .catch((err) => {
+        .catch(err => {
           done(err);
         });
     });
-
   });
-
 });

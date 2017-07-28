@@ -16,15 +16,18 @@ describe('components/ShowOutputSchema', () => {
     const component = shallow(<ShowOutputSchema {...defaultProps} />);
 
     it('renders Table', () => {
-      assert.equal(component.find('Connect(Table)').length, 1);
+      assert.equal(component.find('withRouter(Connect(Table))').length, 1);
     });
 
     it('renders ReadyToImport', () => {
-      assert.equal(component.find('Connect(ReadyToImport)').length, 1);
+      assert.equal(
+        component.find('withRouter(Connect(ReadyToImport))').length,
+        1
+      );
     });
 
     it('renders the Pagerbar if needed', () => {
-      assert.equal(component.find('Connect(PagerBar)').length, 1);
+      assert.equal(component.find('withRouter(Connect(PagerBar))').length, 1);
     });
 
     it('renders the correct number of rows and columns', () => {

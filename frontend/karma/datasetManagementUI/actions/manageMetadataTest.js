@@ -14,7 +14,7 @@ import mockAPI from '../testHelpers/mockAPI';
 import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
 import { editView } from 'actions/views';
-import { setFourfour, addLocation } from 'actions/routing';
+import { addLocation } from 'actions/history';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
 
@@ -34,7 +34,7 @@ const socket = mockSocket(
 
 const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 
-describe('actions/manageMetadata', () => {
+describe.only('actions/manageMetadata', () => {
   let unmock;
   let store;
 
@@ -60,20 +60,14 @@ describe('actions/manageMetadata', () => {
     );
 
     store.dispatch(
-      setFourfour(Object.keys(store.getState().entities.views)[0])
-    );
-
-    store.dispatch(
       addLocation({
-        locationBeforeTransitions: {
-          pathname:
-            '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/sources/114/schemas/97/output/143',
-          search: '',
-          hash: '',
-          action: 'PUSH',
-          key: 'lb01bi',
-          query: {}
-        }
+        pathname:
+          '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/sources/114/schemas/97/output/143',
+        search: '',
+        hash: '',
+        action: 'PUSH',
+        key: 'lb01bi',
+        query: {}
       })
     );
   });
@@ -81,6 +75,8 @@ describe('actions/manageMetadata', () => {
   describe('actions/manageMetadata/saveDatasetMetadata', () => {
     it('dispatches an api call started action with correct data', done => {
       const fakeStore = mockStore(store.getState());
+
+      const { fourfour } = window.initialState.view.id;
 
       fakeStore
         .dispatch(saveDatasetMetadata())

@@ -95,7 +95,7 @@ ManageData.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-function HomePaneSidebar({ params, entities, columnsExist }) {
+export function HomePaneSidebar({ params, entities, columnsExist }) {
   const showManageTab = params.sidebarSelection === 'manageTab';
   const contents = showManageTab
     ? <ManageData entities={entities} columnsExist={columnsExist} params={params} />

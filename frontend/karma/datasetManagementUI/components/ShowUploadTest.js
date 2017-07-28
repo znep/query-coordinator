@@ -30,8 +30,8 @@ describe('components/ShowUpload', () => {
   });
 
   it('renders Upload index page if not in progress', () => {
-    const dragDrop = component.find('Connect(DragDropUpload)');
-    const sidebar = component.find('Connect(UploadSidebar)');
+    const dragDrop = component.find('withRouter(Connect(DragDropUpload))');
+    const sidebar = component.find('withRouter(Connect(UploadSidebar))');
 
     assert.equal(dragDrop.length, 1);
     assert.equal(sidebar.length, 1);

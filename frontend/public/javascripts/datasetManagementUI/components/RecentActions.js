@@ -204,7 +204,7 @@ function activitiesOf(entities, params) {
   return _.reverse(_.sortBy(items, 'at')).map(toView);
 }
 
-function RecentActions({ entities, params }) {
+export function RecentActions({ entities, params }) {
   const items = activitiesOf(entities, params);
   return (
     <div>

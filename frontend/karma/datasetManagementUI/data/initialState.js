@@ -2412,47 +2412,33 @@ const initialState = {
       kind: '',
       visible: false
     },
-    routing: {
-      fourfour: 'kg5j-unyr',
-      outputSchemaId: 144,
-      history: [
-        {
-          pathname:
-            '/dataset/omgwtf/kg5j-unyr/revisions/0/sources/115/schemas/98/output/144',
-          search: '',
-          hash: '',
-          action: 'POP',
-          key: null,
-          query: {}
-        },
-        {
-          pathname: '/dataset/omgwtf/kg5j-unyr/revisions/0',
-          search: '',
-          hash: '',
-          action: 'PUSH',
-          key: '4umla7',
-          query: {}
-        },
-        {
-          pathname: '/dataset/omgwtf/kg5j-unyr/revisions/0/metadata/columns',
-          search: '',
-          hash: '',
-          action: 'PUSH',
-          key: 'jnpde4',
-          query: {}
-        }
-      ],
-      location: {
-        locationBeforeTransitions: {
-          pathname: '/dataset/omgwtf/kg5j-unyr/revisions/0/metadata/columns',
-          search: '',
-          hash: '',
-          action: 'PUSH',
-          key: 'jnpde4',
-          query: {}
-        }
+    history: [
+      {
+        pathname:
+          '/dataset/omgwtf/kg5j-unyr/revisions/0/sources/115/schemas/98/output/144',
+        search: '',
+        hash: '',
+        action: 'POP',
+        key: null,
+        query: {}
+      },
+      {
+        pathname: '/dataset/omgwtf/kg5j-unyr/revisions/0',
+        search: '',
+        hash: '',
+        action: 'PUSH',
+        key: '4umla7',
+        query: {}
+      },
+      {
+        pathname: '/dataset/omgwtf/kg5j-unyr/revisions/0/metadata/columns',
+        search: '',
+        hash: '',
+        action: 'PUSH',
+        key: 'jnpde4',
+        query: {}
       }
-    },
+    ],
     notifications: [],
     modal: {
       visible: false,

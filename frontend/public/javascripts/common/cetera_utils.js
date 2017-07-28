@@ -98,6 +98,7 @@ export const ceteraUtils = (() => {
       offset: getOffset(pageNumber, limit),
       only: assetTypeMapping(only),
       order,
+      published: true,
       provenance,
       q,
       search_context: domain,
@@ -114,7 +115,7 @@ export const ceteraUtils = (() => {
     // Special-case "working copies" because they're not an asset type, but a subset of
     // an asset type with an extra condition attached. This will totally not come back
     // to bite us if we add a filter for un/published.
-    if (parameters.only === 'workingCopies') {
+    if (only === 'workingCopies') {
       parameters.only = 'datasets';
       parameters.published = 'false';
     } else if (parameters.only === 'datasets') {

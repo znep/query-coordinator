@@ -82,11 +82,13 @@ module Cetera
                 :limit => 0
               }.merge(options)
 
-              cetera_opts.merge!(published: false, only: 'datasets') if asset_type == 'workingCopies'
+              if asset_type == 'workingCopies'
+                cetera_opts.merge!(only: 'datasets', published: false)
+              elsif asset_type == 'datasets'
+                cetera_opts.merge!(only: 'datasets', published: true)
+              end
 
-              counts[asset_type] = catalog_search_client.
-                find_views(req_id, cookies, cetera_opts).
-                fetch('resultSetSize')
+              counts[asset_type] = catalog_search_client.find_views(req_id, cookies, cetera_opts).fetch('resultSetSize')
             end
           end.each(&:join)
         end

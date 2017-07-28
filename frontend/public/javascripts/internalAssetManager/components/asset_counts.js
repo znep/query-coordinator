@@ -2,30 +2,44 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import classNames from 'classnames';
+import connectLocalization from 'common/i18n/components/connectLocalization';
+
+import * as filters from '../actions/filters';
 
 export class AssetCounts extends React.Component {
   render() {
     const { assetCounts, fetchingAssetCounts, fetchingAssetCountsError } = this.props;
+    const { I18n } = this.props;
 
-    const assetTypeTranslation = (key) => _.get(I18n, `header.asset_counts.${key}`);
+    const scope = 'internal_asset_manager.header.asset_counts';
+    const assetTypeTranslation = (key, count) => I18n.t(key, { count, scope });
 
     const sortedAssetCounts = _(assetCounts).toPairs().sortBy(0).fromPairs().value();
 
     const assetCountItems = _.map(sortedAssetCounts, (assetCount, assetType) => {
       if (assetCount === 0) return;
-      // TODO: remove once we're on i18n-js:
-      const countKey = assetCount === 1 ? 'one' : 'other';
       let assetTypeName;
 
       if (this.props.filters.assetTypes === 'workingCopies') {
-        assetTypeName = assetTypeTranslation(`workingCopies.${countKey}`);
+        assetTypeName = assetTypeTranslation('workingCopies', assetCount);
       } else {
-        assetTypeName = assetTypeTranslation(`${assetType}.${countKey}`);
+        assetTypeName = assetTypeTranslation(assetType, assetCount);
+      }
+
+      let assetCountLink = null;
+      if (this.props.filters.assetTypes === assetType || this.props.filters.assetTypes === 'workingCopies') {
+        assetCountLink = assetCount;
+      } else {
+        assetCountLink = (
+          <a onClick={() => this.props.changeAssetType(assetType)}>
+            {assetCount}
+          </a>
+        );
       }
 
       return (
         <div className={`asset-counts-item ${assetType}`} key={assetType}>
-          <div className="item-count">{assetCount}</div>
+          <div className="item-count">{assetCountLink}</div>
           <div className="item-name">{assetTypeName}</div>
         </div>
       );
@@ -55,11 +69,13 @@ AssetCounts.propTypes = {
     maps: PropTypes.number,
     stories: PropTypes.number
   }).isRequired,
+  changeAssetType: PropTypes.func,
   fetchingAssetCounts: PropTypes.bool,
   fetchingAssetCountsError: PropTypes.bool,
   filters: PropTypes.shape({
     assetTypes: PropTypes.string
-  })
+  }),
+  I18n: PropTypes.object
 };
 
 const mapStateToProps = (state) => ({
@@ -69,4 +85,8 @@ const mapStateToProps = (state) => ({
   filters: state.filters
 });
 
-export default connect(mapStateToProps)(AssetCounts);
+const mapDispatchToProps = (dispatch) => ({
+  changeAssetType: (value) => dispatch(filters.changeAssetType(value))
+});
+
+export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(AssetCounts));

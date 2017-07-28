@@ -26,6 +26,7 @@ class InternalAssetManagerController < ApplicationController
       domains: CurrentDomain.cname,
       limit: RESULTS_PER_PAGE,
       order: 'updatedAt DESC',
+      published: 'true',
       q: params[:q],
       show_visibility: true
     }.merge(initial_filter_cetera_opts)
@@ -48,14 +49,12 @@ class InternalAssetManagerController < ApplicationController
     @catalog_results = catalog_results_response['results'].to_a
     @catalog_result_set_size = catalog_results_response['resultSetSize'].to_i
 
-    asset_type_filter = search_options[:only]
-    asset_types =
-      if asset_type_filter.present?
-        [asset_type_filter]
-      else
-        # Note: these asset_types should match those listed in the `asset_counts` component and reducer
-        %w(charts datalenses datasets files filters hrefs maps stories)
-      end
+    if params[:assetTypes].present?
+      asset_types = [params[:assetTypes]]
+    else
+      # Note: these asset_types should match those listed in the `asset_counts` component and reducer
+      asset_types = %w(charts datalenses datasets files filters hrefs maps stories)
+    end
 
     @asset_counts = begin
       Cetera::Utils.get_asset_counts(asset_types, request_id, forwardable_session_cookies, search_options)

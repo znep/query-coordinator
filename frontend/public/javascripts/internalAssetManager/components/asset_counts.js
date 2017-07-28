@@ -26,7 +26,7 @@ export class AssetCounts extends React.Component {
       }
 
       let assetCountLink = null;
-      if (this.props.filters.assetTypes === assetType) {
+      if (this.props.filters.assetTypes === assetType || this.props.filters.assetTypes == 'workingCopies') {
         assetCountLink = assetCount;
       } else {
         assetCountLink = (

@@ -6,6 +6,10 @@ require 'json'
 require 'httparty'
 require 'timeout'
 
+# Force console output to show up immediately. We're having issues
+# with the jenkins console being very slow to report sync progress.
+$stdout.sync = true
+
 # Overriding LocaleApp's default #report_success method
 # so we can get access to the job_id within the response
 class Pusher < Localeapp::CLI::Push

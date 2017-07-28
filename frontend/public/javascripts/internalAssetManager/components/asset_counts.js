@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import classNames from 'classnames';
 
+import * as filters from '../actions/filters';
+
 export class AssetCounts extends React.Component {
   render() {
     const { assetCounts, fetchingAssetCounts, fetchingAssetCountsError } = this.props;
@@ -23,9 +25,20 @@ export class AssetCounts extends React.Component {
         assetTypeName = assetTypeTranslation(`${assetType}.${countKey}`);
       }
 
+      let assetCountLink = null;
+      if (this.props.filters.assetTypes === assetType) {
+        assetCountLink = assetCount;
+      } else {
+        assetCountLink = (
+          <a onClick={() => this.props.changeAssetType(assetType)} >
+            {assetCount}
+          </a>
+        );
+      }
+
       return (
         <div className={`asset-counts-item ${assetType}`} key={assetType}>
-          <div className="item-count">{assetCount}</div>
+          <div className="item-count">{assetCountLink}</div>
           <div className="item-name">{assetTypeName}</div>
         </div>
       );
@@ -55,6 +68,7 @@ AssetCounts.propTypes = {
     maps: PropTypes.number,
     stories: PropTypes.number
   }).isRequired,
+  changeAssetType: PropTypes.func,
   fetchingAssetCounts: PropTypes.bool,
   fetchingAssetCountsError: PropTypes.bool,
   filters: PropTypes.shape({
@@ -69,4 +83,8 @@ const mapStateToProps = (state) => ({
   filters: state.filters
 });
 
-export default connect(mapStateToProps)(AssetCounts);
+const mapDispatchToProps = (dispatch) => ({
+  changeAssetType: (value) => dispatch(filters.changeAssetType(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AssetCounts);

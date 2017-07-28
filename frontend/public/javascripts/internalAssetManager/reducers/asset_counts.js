@@ -32,7 +32,7 @@ export default (state, action) => {
         charts: getCountForAssetType('chart'),
         datalenses: getCountForAssetType('datalens'),
         datasets: getCountForAssetType('dataset'),
-        files: getCountForAssetType('files'),
+        files: getCountForAssetType('file'),
         filters: getCountForAssetType('filter'),
         hrefs: getCountForAssetType('href'),
         maps: getCountForAssetType('map'),

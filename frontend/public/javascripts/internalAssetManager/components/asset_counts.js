@@ -31,7 +31,7 @@ export class AssetCounts extends React.Component {
         assetCountLink = assetCount;
       } else {
         assetCountLink = (
-          <a onClick={() => this.props.changeAssetType(assetType)} >
+          <a onClick={() => this.props.changeAssetType(assetType)}>
             {assetCount}
           </a>
         );

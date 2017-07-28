@@ -49,13 +49,19 @@ git rev-parse HEAD > "${WORKSPACE}/frontend/REVISION"
 npm run build:prod
 bundle exec rake assets:precompile
 
-# We want to push our latest en.yml up to LocaleApp and then pull down
-# additional translations in other locales.
-echo "Pushing 'common' locales to LocaleApp"
-`git rev-parse --show-toplevel`/bin/push_locale common
+shopt -s nocasematch
+if [[ ${SKIP_PUSH_LOCALE_DANGEROUS} != "true" ]]; then
+  # We want to push our latest en.yml up to LocaleApp and then pull down
+  # additional translations in other locales.
+  echo "Pushing 'common' locales to LocaleApp"
+  `git rev-parse --show-toplevel`/bin/push_locale common
 
-echo "Pushing 'frontend' locales to LocaleApp"
-`git rev-parse --show-toplevel`/bin/push_locale frontend
+  echo "Pushing 'frontend' locales to LocaleApp"
+  `git rev-parse --show-toplevel`/bin/push_locale frontend
+else
+  echo 'Skipping LocaleApp push because SKIP_PUSH_LOCALE_DANGEROUS is set'
+fi
+shopt -u nocasematch
 
 # Pull translations from both common / frontend
 set +e

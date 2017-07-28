@@ -26,6 +26,7 @@ class InternalAssetManagerController < ApplicationController
       domains: CurrentDomain.cname,
       limit: RESULTS_PER_PAGE,
       order: 'updatedAt DESC',
+      published: 'true',
       q: params[:q],
       show_visibility: true
     }.merge(initial_filter_cetera_opts)

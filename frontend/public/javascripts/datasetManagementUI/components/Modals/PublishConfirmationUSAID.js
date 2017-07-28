@@ -37,7 +37,7 @@ export class PublishConfirmationUSAID extends Component {
       setPermission,
       btnDisabled,
       publicSelected,
-      location
+      params
     } = this.props;
 
     return (
@@ -76,7 +76,7 @@ export class PublishConfirmationUSAID extends Component {
             operation={APPLY_REVISION}
             params={{ outputSchemaId }}
             forceDisable={btnDisabled}
-            onClick={() => dispatchApplyRevision(outputSchemaId, location)}>
+            onClick={() => dispatchApplyRevision(outputSchemaId, params)}>
             {publicSelected
               ? I18n.home_pane.publish_confirmation.button
               : I18n.home_pane.publish_confirmation_usaid.button}
@@ -94,9 +94,7 @@ PublishConfirmationUSAID.propTypes = {
   btnDisabled: PropTypes.bool,
   setPermission: PropTypes.func,
   publicSelected: PropTypes.bool.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  })
+  params: PropTypes.object.isRequired
 };
 
 export function mapStateToProps({ entities, ui }) {
@@ -127,7 +125,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(updateRevision(initialPermission));
       dispatch(hideModal());
     },
-    dispatchApplyRevision: (outputSchemaId, location) => dispatch(applyRevision(outputSchemaId, location)),
+    dispatchApplyRevision: (outputSchemaId, params) => dispatch(applyRevision(outputSchemaId, params)),
     setPermission: permission => dispatch(updateRevision(permission))
   };
 }

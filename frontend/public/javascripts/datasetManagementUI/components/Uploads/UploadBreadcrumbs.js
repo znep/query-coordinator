@@ -8,12 +8,12 @@ import * as Selectors from 'selectors';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Uploads/UploadBreadcrumbs.scss';
 
-export const UploadBreadcrumbs = ({ atShowUpload, sourceId, outputSchemaId, inputSchemaId, location }) =>
+export const UploadBreadcrumbs = ({ atShowUpload, sourceId, outputSchemaId, inputSchemaId, params }) =>
   <ol className={styles.list}>
     <li className={atShowUpload ? styles.active : null}>
       {atShowUpload
         ? I18n.home_pane.data
-        : <Link to={Links.sources(location.pathname)}>
+        : <Link to={Links.sources(params)}>
             {I18n.home_pane.data}
           </Link>}
       <SocrataIcon name="arrow-right" className={styles.icon} />
@@ -21,7 +21,7 @@ export const UploadBreadcrumbs = ({ atShowUpload, sourceId, outputSchemaId, inpu
     <li className={!atShowUpload ? styles.active : null}>
       {!atShowUpload || !sourceId || !inputSchemaId || !outputSchemaId
         ? I18n.home_pane.preview
-        : <Link to={Links.showOutputSchema(location.pathname, sourceId, inputSchemaId, outputSchemaId)}>
+        : <Link to={Links.showOutputSchema(params, sourceId, inputSchemaId, outputSchemaId)}>
             {I18n.home_pane.preview}
           </Link>}
     </li>
@@ -32,9 +32,7 @@ UploadBreadcrumbs.propTypes = {
   sourceId: PropTypes.number,
   outputSchemaId: PropTypes.number,
   inputSchemaId: PropTypes.number,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  }).isRequired
+  params: PropTypes.object.isRequired
 };
 
 export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
@@ -63,7 +61,7 @@ export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
 
   return {
     atShowUpload,
-    sourceId: sourceId,
+    sourceId,
     outputSchemaId: currentOutputSchema.id,
     inputSchemaId: currentInputSchema.id
   };

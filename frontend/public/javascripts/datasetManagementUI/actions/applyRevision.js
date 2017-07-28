@@ -115,7 +115,7 @@ export function updateRevision(permission) {
   };
 }
 
-export function applyRevision(outputSchemaId, location) {
+export function applyRevision(outputSchemaId, params) {
   return dispatch => {
     const callId = uuid();
 
@@ -151,7 +151,7 @@ export function applyRevision(outputSchemaId, location) {
         // maybe return status and then do something based on that?
         dispatch(pollForTaskSetProgress(taskSetId));
 
-        browserHistory.push(Links.home(location.pathname));
+        browserHistory.push(Links.home(params));
       })
       .catch(err => {
         dispatch(apiCallFailed(callId, err));

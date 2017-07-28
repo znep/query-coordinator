@@ -7,10 +7,9 @@ import * as Links from 'links';
 import * as Selectors from 'selectors';
 import styles from 'styles/Uploads/UploadSidebar.scss';
 
-const UploadItem = ({ source, location }) =>
+const UploadItem = ({ source, params }) =>
   <li>
-    <Link
-      to={Links.showOutputSchema(location.pathname, source.id, source.inputSchemaId, source.outputSchemaId)}>
+    <Link to={Links.showOutputSchema(params, source.id, source.inputSchemaId, source.outputSchemaId)}>
       {source.source_type && source.source_type.filename}
     </Link>
     <div className={styles.timestamp}>
@@ -20,19 +19,17 @@ const UploadItem = ({ source, location }) =>
 
 UploadItem.propTypes = {
   source: PropTypes.object.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  })
+  params: PropTypes.object.isRequired
 };
 
-export const UploadSidebar = ({ currentUpload, otherUploads, location }) =>
+export const UploadSidebar = ({ currentUpload, otherUploads, params }) =>
   <section className={styles.sidebar}>
     <h2>
       {I18n.show_uploads.current}
     </h2>
     <ul>
       {currentUpload
-        ? <UploadItem source={currentUpload} location={location} />
+        ? <UploadItem source={currentUpload} params={params} />
         : <span>
             {I18n.show_uploads.no_uploads}
         </span>}
@@ -42,7 +39,7 @@ export const UploadSidebar = ({ currentUpload, otherUploads, location }) =>
         {I18n.show_uploads.noncurrent}
       </h2>}
     <ul>
-      {otherUploads.map(source => <UploadItem key={source.id} source={source} />)}
+      {otherUploads.map(source => <UploadItem key={source.id} params={params} source={source} />)}
     </ul>
   </section>;
 
@@ -57,9 +54,7 @@ const sourceProptype = PropTypes.shape({
 UploadSidebar.propTypes = {
   currentUpload: sourceProptype,
   otherUploads: PropTypes.arrayOf(sourceProptype),
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  })
+  params: PropTypes.object.isRequired
 };
 
 const getLinkInfo = inputSchemas => outputSchemas => source => {

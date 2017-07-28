@@ -117,7 +117,7 @@ export class Publishing extends React.Component {
       rowsToBeUpserted,
       applyRevision,
       onCancelClick,
-      location
+      params
     } = this.props;
 
     let title;
@@ -155,7 +155,7 @@ export class Publishing extends React.Component {
             <ApiCallButton
               additionalClassName={styles.tryAgainButton}
               onClick={() => {
-                applyRevision(taskSet, location);
+                applyRevision(taskSet, params);
               }}
               operation={APPLY_REVISION}>
               {I18n.common.try_again}
@@ -219,9 +219,7 @@ Publishing.propTypes = {
   fourfour: PropTypes.string.isRequired,
   applyRevision: PropTypes.func.isRequired,
   onCancelClick: PropTypes.func.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  })
+  params: PropTypes.object.isRequired
 };
 
 export function mapStateToProps({ entities }, { params }) {
@@ -242,8 +240,8 @@ export function mapStateToProps({ entities }, { params }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    applyRevision: (taskSet, location) =>
-      dispatch(ApplyRevision.applyRevision(taskSet.output_schema_id, location)),
+    applyRevision: (taskSet, params) =>
+      dispatch(ApplyRevision.applyRevision(taskSet.output_schema_id, params)),
     onCancelClick: () => dispatch(hideModal())
   };
 }

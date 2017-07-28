@@ -39,10 +39,10 @@ export class ManageMetadata extends Component {
   }
 
   revertChanges() {
-    const { dispatch, fourfour } = this.props;
+    const { dispatch, params } = this.props;
 
     dispatch(
-      editView(fourfour, {
+      editView(params.fourfour, {
         ...this.state.initialDatasetMetadata,
         columnFormDirty: false,
         datasetFormDirty: false
@@ -55,10 +55,10 @@ export class ManageMetadata extends Component {
   handleSaveClick(e) {
     e.preventDefault();
 
-    const { dispatch, view, currentColumns, outputSchemaId, fourfour, location } = this.props;
+    const { dispatch, view, currentColumns, outputSchemaId, params } = this.props;
 
     if (this.onDatasetTab() && view.datasetFormDirty) {
-      dispatch(saveDatasetMetadata(fourfour))
+      dispatch(saveDatasetMetadata(params.fourfour))
         .then(() => {
           this.setState({
             initialDatasetMetadata: Selectors.datasetMetadata(view)
@@ -66,7 +66,7 @@ export class ManageMetadata extends Component {
         })
         .catch(() => console.warn('Save failed'));
     } else if (view.columnFormDirty) {
-      dispatch(saveColumnMetadata(outputSchemaId, fourfour, location))
+      dispatch(saveColumnMetadata(outputSchemaId, params))
         .then(() => {
           this.setState({
             initialColMetadata: currentColumns
@@ -79,7 +79,7 @@ export class ManageMetadata extends Component {
   }
 
   handleCancelClick() {
-    const { dispatch, location } = this.props;
+    const { dispatch, params } = this.props;
 
     this.revertChanges();
 
@@ -89,27 +89,26 @@ export class ManageMetadata extends Component {
         this.props.entities,
         this.props.outputSchemaId
       );
-      path = Links.showOutputSchema(location.pathname, source.id, inputSchema.id, outputSchema.id);
+      path = Links.showOutputSchema(params, source.id, inputSchema.id, outputSchema.id);
     }
 
-    dispatch(dismissMetadataPane(path, location));
+    dispatch(dismissMetadataPane(path, params));
   }
 
   handleTabClick() {
-    const { dispatch, fourfour } = this.props;
+    const { dispatch, params } = this.props;
 
     dispatch(hideFlashMessage());
 
-    dispatch(editView(fourfour, { showErrors: true }));
+    dispatch(editView(params.fourfour, { showErrors: true }));
   }
 
   render() {
-    const { fourfour, columnsExist, view, outputSchemaId, location } = this.props;
+    const { columnsExist, view, outputSchemaId, params } = this.props;
 
     const metadataContentProps = {
       onDatasetTab: this.onDatasetTab(),
-      fourfour,
-      location,
+      params,
       onSidebarTabClick: this.handleTabClick,
       columnsExist,
       outputSchemaId
@@ -156,12 +155,11 @@ export class ManageMetadata extends Component {
 
 ManageMetadata.propTypes = {
   view: PropTypes.object.isRequired,
-  fourfour: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   columnsExist: PropTypes.bool,
   currentColumns: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   outputSchemaId: PropTypes.number.isRequired
 };
@@ -169,10 +167,9 @@ ManageMetadata.propTypes = {
 const mapStateToProps = ({ entities }, ownProps) => {
   const outputSchemaId = parseInt(ownProps.params.outputSchemaId, 10);
   return {
-    fourfour: ownProps.params.fourfour,
     view: entities.views[ownProps.params.fourfour],
     path: ownProps.route.path,
-    location: ownProps.location,
+    params: ownProps.params,
     columnsExist: !_.isEmpty(entities.output_columns),
     outputSchemaId,
     entities: entities,

@@ -71,7 +71,7 @@ export class DragDropUpload extends Component {
   }
 
   render() {
-    const { dispatch, location } = this.props;
+    const { dispatch, params } = this.props;
 
     return (
       <section className={styles.container}>
@@ -107,7 +107,7 @@ export class DragDropUpload extends Component {
                 accept={enabledFileExtensions.join(',')}
                 aria-labelledby="upload-label"
                 className={styles.uploadInput}
-                onChange={e => dispatch(createUpload(e.target.files[0], location))} />
+                onChange={e => dispatch(createUpload(e.target.files[0], params))} />
             </div>
           </div>
         </div>
@@ -118,9 +118,7 @@ export class DragDropUpload extends Component {
 
 DragDropUpload.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  })
+  params: PropTypes.object.isRequired
 };
 
 export default withRouter(connect()(DragDropUpload));

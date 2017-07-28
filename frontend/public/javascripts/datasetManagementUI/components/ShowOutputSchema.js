@@ -137,6 +137,7 @@ export class ShowOutputSchema extends Component {
       canApplyRevision,
       numLoadsInProgress,
       goHome,
+      urlParams,
       routing
     } = this.props;
 
@@ -216,7 +217,7 @@ export class ShowOutputSchema extends Component {
             {canApplyRevision ? <ReadyToImport /> : <div />}
 
             <div>
-              <Link to={Links.home(routing.pathname)}>
+              <Link to={Links.home(urlParams)}>
                 <button className={styles.saveBtn}>
                   {I18n.home_pane.save_for_later}
                 </button>
@@ -265,7 +266,7 @@ export function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   return {
     goHome: () => {
-      browserHistory.push(Links.home(ownProps.location.pathname));
+      browserHistory.push(Links.home(ownProps.params));
     },
     dispatch
   };

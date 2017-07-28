@@ -62,7 +62,7 @@ const sourceActivity = (source, at) => {
   );
 };
 
-const outputSchemaActivity = (item, at, location) => {
+const outputSchemaActivity = (item, at, params) => {
   const key = `os-${item.outputSchema.id}`;
   return (
     <div key={key} className={styles.activity} data-activity-type="outputschema">
@@ -73,12 +73,7 @@ const outputSchemaActivity = (item, at, location) => {
         <p>
           <span className={styles.createdBy}>{creator(item.outputSchema)}</span>&nbsp; changed the&nbsp;
           <Link
-            to={Links.showOutputSchema(
-              location.pathname,
-              item.source.id,
-              item.inputSchema.id,
-              item.outputSchema.id
-            )}>
+            to={Links.showOutputSchema(params, item.source.id, item.inputSchema.id, item.outputSchema.id)}>
             schema
           </Link>
         </p>
@@ -135,20 +130,20 @@ const taskSetFailedActivity = (taskSet, at) => {
   );
 };
 
-function activitiesOf(entities, location) {
+function activitiesOf(entities, params) {
   const updateModel = _.values(entities.revisions)[0];
   if (!updateModel) return [];
   const update = {
     type: 'update',
     value: updateModel,
     at: updateModel.created_at,
-    location
+    params
   };
   const sources = _.map(entities.sources, source => ({
     type: 'source',
     value: source,
     at: source.created_at,
-    location
+    params
   }));
   const outputSchemas = _.map(entities.output_schemas, outputSchema => {
     const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
@@ -161,14 +156,14 @@ function activitiesOf(entities, location) {
         inputSchema,
         source
       },
-      location
+      params
     };
   });
   const taskSets = _.map(entities.task_sets, taskSet => ({
     type: 'taskSet',
     value: taskSet,
     at: taskSet.created_at,
-    location
+    params
   }));
 
   const finishedTaskSets = _.chain(entities.task_sets)
@@ -178,7 +173,7 @@ function activitiesOf(entities, location) {
       type: 'taskSetCompleted',
       value: taskSet,
       at: taskSet.finished_at,
-      location
+      params
     }));
 
   const failedTaskSets = _.chain(entities.task_sets)
@@ -188,7 +183,7 @@ function activitiesOf(entities, location) {
       type: 'taskSetFailed',
       value: taskSet,
       at: taskSet.finished_at,
-      location
+      params
     }));
 
   const kinds = {
@@ -202,15 +197,15 @@ function activitiesOf(entities, location) {
 
   const toView = activity => {
     const fn = kinds[activity.type];
-    return fn && fn(activity.value, activity.at, activity.location);
+    return fn && fn(activity.value, activity.at, activity.params);
   };
 
   const items = [update, ...sources, ...outputSchemas, ...taskSets, ...finishedTaskSets, ...failedTaskSets];
   return _.reverse(_.sortBy(items, 'at')).map(toView);
 }
 
-function RecentActions({ entities, location }) {
-  const items = activitiesOf(entities, location);
+function RecentActions({ entities, params }) {
+  const items = activitiesOf(entities, params);
   return (
     <div>
       {items}
@@ -220,9 +215,7 @@ function RecentActions({ entities, location }) {
 
 RecentActions.propTypes = {
   entities: PropTypes.object.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  }).isRequired
+  params: PropTypes.object.isRequired
 };
 
 const mapStateToProps = ({ entities }) => ({

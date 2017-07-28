@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router';
 import * as Links from '../links';
 import styles from 'styles/NoMatch.scss';
 
-export function NoMatch({ location }) {
+export function NoMatch({ params }) {
   return (
     <div className={styles.noMatch}>
       <h1>
@@ -13,7 +13,7 @@ export function NoMatch({ location }) {
         {I18n.no_match.subtitle}
       </p>
       <p>
-        <Link to={Links.home(location.pathname)}>
+        <Link to={Links.home(params)}>
           {I18n.no_match.suggestion}
         </Link>
       </p>
@@ -22,9 +22,7 @@ export function NoMatch({ location }) {
 }
 
 NoMatch.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  }).isRequired
+  params: PropTypes.object.isRequired
 };
 
 export default withRouter(NoMatch);

@@ -1,33 +1,36 @@
-export const home = pathname => pathname;
+export const home = params =>
+  `${params.locale
+    ? params.locale
+    : ''}/${params.category}/${params.name}/${params.fourfour}/revisions/${params.revisionSeq}`;
 
-export const manageTab = pathname => `${pathname}/manageTab`;
+export const manageTab = params => `${home(params)}/manageTab`;
 
-export const metadata = pathname => `${pathname}/metadata`;
+export const metadata = params => `${home(params)}/metadata`;
 
-export const datasetMetadataForm = pathname => `${pathname}/metadata/dataset`;
+export const datasetMetadataForm = params => `${home(params)}/metadata/dataset`;
 
-export const columnMetadataForm = (pathname, outputSchemaId, columnId) =>
-  `${pathname}/metadata/${outputSchemaId}/columns${columnId ? `#${columnId}` : ''}`;
+export const columnMetadataForm = (params, outputSchemaId, columnId) =>
+  `${home(params)}/metadata/${outputSchemaId}/columns${columnId ? `#${columnId}` : ''}`;
 
-export const sources = pathname => `${pathname}}/sources`;
+export const sources = params => `${home(params)}/sources`;
 
-export const showOutputSchema = (pathname, sourceId, inputSchemaId, outputSchemaId, pageNo) =>
-  `${pathname}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
+export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId, pageNo) =>
+  `${home(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/${outputSchemaId}` +
   `${pageNo ? `/page/${pageNo}` : ''}`;
 
 export const showColumnErrors = (
-  pathname,
+  params,
   sourceId,
   inputSchemaId,
   outputSchemaId,
   errorsTransformId,
   pageNo
 ) =>
-  `${pathname}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +
+  `${home(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +
   `${outputSchemaId}/column_errors/${errorsTransformId}` +
   `${pageNo ? `/page/${pageNo}` : ''}`;
 
-export const showRowErrors = (pathname, sourceId, inputSchemaId, outputSchemaId, pageNo) =>
-  `${pathname}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +
+export const showRowErrors = (params, sourceId, inputSchemaId, outputSchemaId, pageNo) =>
+  `${home(params)}/sources/${sourceId}/schemas/${inputSchemaId}/output/` +
   `${outputSchemaId}/row_errors` +
   `${pageNo ? `/page/${pageNo}` : ''}`;

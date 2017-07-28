@@ -98,7 +98,7 @@ class ColumnHeader extends Component {
   }
 
   render() {
-    const { outputSchema, outputColumn, updateColumnType, activeApiCallInvolvingThis, location } = this.props;
+    const { outputSchema, outputColumn, updateColumnType, activeApiCallInvolvingThis, params } = this.props;
     const isDisabled = outputColumn.ignored || activeApiCallInvolvingThis;
 
     const inputColumn = outputColumn.inputColumn;
@@ -130,7 +130,7 @@ class ColumnHeader extends Component {
           title={outputColumn.display_name}>
             {outputColumn.display_name}
         </span>
-        : <Link to={Links.columnMetadataForm(location.pathname, outputSchema.id, outputColumn.id)}>
+        : <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
           <span
             className={styles.colName}
             data-cheetah-hook="col-name"
@@ -158,7 +158,7 @@ class ColumnHeader extends Component {
           disabled={isDisabled}
           value={this.columnType()}
           aria-label={`col-type-${outputColumn.field_name}`}
-          onChange={event => updateColumnType(outputSchema, outputColumn, event.target.value, location)}>
+          onChange={event => updateColumnType(outputSchema, outputColumn, event.target.value, params)}>
           {orderedTypes.map(type =>
             <option key={type.systemName} value={type.systemName}>
               {type.humanName}
@@ -178,9 +178,7 @@ ColumnHeader.propTypes = {
   addColumn: PropTypes.func.isRequired,
   dropColumn: PropTypes.func.isRequired,
   validateThenSetRowIdentifier: PropTypes.func.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  })
+  params: PropTypes.object.isRequired
 };
 
 export default withRouter(ColumnHeader);

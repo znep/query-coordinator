@@ -20,7 +20,7 @@ function query(entities) {
   };
 }
 
-export const ManageData = ({ entities, columnsExist, location }) => {
+export const ManageData = ({ entities, columnsExist, params }) => {
   const { anyColumnHasDescription } = query(entities);
 
   const doneCheckmark = <SocrataIcon name="checkmark-alt" className={styles.icon} />;
@@ -31,7 +31,7 @@ export const ManageData = ({ entities, columnsExist, location }) => {
   const featuredDoneCheckmark = null;
 
   const columnDescriptionLink = columnsExist
-    ? Links.columnMetadataForm(location.pathname, Selectors.latestOutputSchema(entities).id)
+    ? Links.columnMetadataForm(params, Selectors.latestOutputSchema(entities).id)
     : '';
 
   return (
@@ -92,26 +92,24 @@ export const ManageData = ({ entities, columnsExist, location }) => {
 ManageData.propTypes = {
   entities: PropTypes.object,
   columnsExist: PropTypes.bool,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  }).isRequired
+  params: PropTypes.object.isRequired
 };
 
-function HomePaneSidebar({ params, location, entities, columnsExist }) {
+function HomePaneSidebar({ params, entities, columnsExist }) {
   const showManageTab = params.sidebarSelection === 'manageTab';
   const contents = showManageTab
-    ? <ManageData entities={entities} columnsExist={columnsExist} location={location} />
+    ? <ManageData entities={entities} columnsExist={columnsExist} params={params} />
     : <RecentActions />;
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.nav}>
-        <Link to={Links.home(location.pathname)}>
+        <Link to={Links.home(params)}>
           <button className={!showManageTab ? styles.navBtnEnabled : styles.navBtn}>
             {I18n.home_pane.home_pane_sidebar.recent_actions}
           </button>
         </Link>
-        <Link to={Links.manageTab(location.pathname)}>
+        <Link to={Links.manageTab(params)}>
           <button className={showManageTab ? styles.navBtnEnabled : styles.navBtn}>
             {I18n.home_pane.home_pane_sidebar.manage}
           </button>
@@ -123,12 +121,9 @@ function HomePaneSidebar({ params, location, entities, columnsExist }) {
 }
 
 HomePaneSidebar.propTypes = {
-  params: PropTypes.object.isRequired,
   entities: PropTypes.object,
   columnsExist: PropTypes.bool,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  }).isRequired
+  params: PropTypes.object.isRequired
 };
 
 const mapStateToProps = ({ entities }) => ({

@@ -71,7 +71,7 @@ function updateProgress(sourceId, percentCompleted) {
 // verbNoun for async action creators
 // verbNounSuccess and/or verbNounFailure for non-async action creators that update store based on api response
 // verbNoun for ui action creators
-export function createUpload(file, location) {
+export function createUpload(file, params) {
   return dispatch => {
     const callId = uuid();
 
@@ -105,7 +105,7 @@ export function createUpload(file, location) {
           createUploadSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
         );
 
-        dispatch(listenForOutputSchema(resource.id, location));
+        dispatch(listenForOutputSchema(resource.id, params));
 
         return dispatch(uploadFile(resource.id, file));
       })
@@ -182,7 +182,7 @@ function uploadFileFailure(sourceId) {
   };
 }
 
-function listenForOutputSchema(sourceId, location) {
+function listenForOutputSchema(sourceId, params) {
   return (dispatch, getState, socket) => {
     const channel = socket.channel(`source:${sourceId}`);
 
@@ -195,7 +195,7 @@ function listenForOutputSchema(sourceId, location) {
       dispatch(listenForOutputSchemaSuccess(os));
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));
-      browserHistory.push(Links.showOutputSchema(location.pathname, sourceId, is.id, os.id));
+      browserHistory.push(Links.showOutputSchema(params, sourceId, is.id, os.id));
     });
 
     channel.join();

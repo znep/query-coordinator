@@ -66,18 +66,18 @@ function numItemsToPaginate(entities, outputSchemaId, displayState) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const { displayState, path, routing, location } = ownProps;
+  const { displayState, path, params } = ownProps;
 
   const urlForPage = targetPage => {
     const targetDisplayState = { ...displayState, pageNo: targetPage };
-    const targetPageUrl = DisplayState.toUiUrl(path, location, targetDisplayState);
+    const targetPageUrl = DisplayState.toUiUrl(path, params, targetDisplayState);
 
     return targetPageUrl;
   };
 
   const changePage = targetPage => {
     if (targetPage) {
-      browserHistory.push(urlForPage(targetPage)(routing));
+      browserHistory.push(urlForPage(targetPage));
     }
   };
 

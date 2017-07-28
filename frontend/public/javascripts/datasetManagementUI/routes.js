@@ -17,7 +17,7 @@ const checkUploadStatus = store => (nextState, replace) => {
   if (sourceExists) {
     store.dispatch(focusColumnEditor(nextState));
   } else {
-    const newPath = Links.home(nextState.location.pathname);
+    const newPath = Links.home(nextState.params);
 
     replace(newPath);
   }
@@ -26,7 +26,7 @@ const checkUploadStatus = store => (nextState, replace) => {
 const checkUpsertStatus = store => (nextState, replace, blocking) => {
   const taskSet = _.maxBy(_.values(store.getState().entities.task_sets), job => job.updated_at);
 
-  const newPath = Links.home(nextState.location.pathname);
+  const newPath = Links.home(nextState.params);
 
   // The intent of this function is to redirect the user to the home screen if
   // they have published to primer. We determine this by the presence of a task set.

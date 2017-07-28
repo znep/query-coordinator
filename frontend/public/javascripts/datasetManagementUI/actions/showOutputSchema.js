@@ -24,7 +24,7 @@ import {
 } from 'actions/manageUploads';
 import { getUniqueName, getUniqueFieldName } from 'lib/util';
 
-function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, location) {
+function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, params) {
   return (dispatch, getState) => {
     const callId = uuid();
 
@@ -50,12 +50,7 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, location
         dispatch(subscribeToTransforms(resp.resource));
 
         browserHistory.push(
-          Links.showOutputSchema(
-            location.pathname,
-            source.id,
-            oldOutputSchema.input_schema_id,
-            resp.resource.id
-          )
+          Links.showOutputSchema(params, source.id, oldOutputSchema.input_schema_id, resp.resource.id)
         );
       })
       .catch(err => {
@@ -64,7 +59,7 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, location
   };
 }
 
-export const updateColumnType = (outputSchema, oldColumn, newType, location) => (dispatch, getState) => {
+export const updateColumnType = (outputSchema, oldColumn, newType, params) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -77,10 +72,10 @@ export const updateColumnType = (outputSchema, oldColumn, newType, location) => 
 
   const newOutputColumns = outputColumnsWithChangedType(entities, outputSchema, oldColumn, newType);
 
-  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, location));
+  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, params));
 };
 
-export const addColumn = (outputSchema, outputColumn, location) => (dispatch, getState) => {
+export const addColumn = (outputSchema, outputColumn, params) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -114,10 +109,10 @@ export const addColumn = (outputSchema, outputColumn, location) => (dispatch, ge
     toNewOutputColumn(oc, sameTransform(entities))
   );
 
-  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, location));
+  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, params));
 };
 
-export const dropColumn = (outputSchema, column, location) => (dispatch, getState) => {
+export const dropColumn = (outputSchema, column, params) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -133,10 +128,10 @@ export const dropColumn = (outputSchema, column, location) => (dispatch, getStat
     .filter(oc => oc.id !== column.id)
     .map(oc => toNewOutputColumn(oc, sameTransform(entities)));
 
-  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, location));
+  return dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, params));
 };
 
-export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, getState) => {
+export const setRowIdentifier = (outputSchema, outputColumnToSet, params) => (dispatch, getState) => {
   const { entities } = getState();
 
   const call = {
@@ -151,7 +146,7 @@ export const setRowIdentifier = (outputSchema, outputColumnToSet) => (dispatch, 
     }))
     .map(oc => toNewOutputColumn(oc, sameTransform(entities)));
 
-  dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, location));
+  dispatch(createNewOutputSchema(outputSchema, newOutputColumns, call, params));
 };
 
 function toNewOutputColumn(outputColumn, genTransform) {
@@ -196,7 +191,7 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
   return oldOutputColumns.map(c => toNewOutputColumn(c, genTransform));
 }
 
-export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
+export function validateThenSetRowIdentifier(outputSchema, outputColumn, params) {
   return (dispatch, getState) => {
     const { source } = Selectors.pathForOutputSchema(getState().entities, outputSchema.id);
     const transformId = outputColumn.transform_id;
@@ -219,7 +214,7 @@ export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
         if (!result.valid) {
           dispatch(showModal('RowIdentifierError', result));
         } else {
-          dispatch(setRowIdentifier(outputSchema, outputColumn));
+          dispatch(setRowIdentifier(outputSchema, outputColumn, params));
         }
       })
       .catch(error => {

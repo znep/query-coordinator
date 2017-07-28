@@ -8,25 +8,22 @@ import * as Selectors from '../../selectors';
 
 // TODO : should probably abstract sidebar to its own component
 export const MetadataContent = (
-  { entities, onDatasetTab, fourfour, outputSchemaId, location, onSidebarTabClick, columnsExist } // eslint-disable-line
+  { entities, onDatasetTab, outputSchemaId, params, onSidebarTabClick, columnsExist } // eslint-disable-line
 ) =>
   <div>
     <div className={styles.sidebar}>
       <Link
-        to={Links.datasetMetadataForm(location.pathname)}
+        to={Links.datasetMetadataForm(params)}
         className={styles.tab}
-        onClick={() => onSidebarTabClick(fourfour)}
+        onClick={() => onSidebarTabClick(params.fourfour)}
         activeClassName={styles.selected}>
         {I18n.metadata_manage.dataset_metadata_label}
       </Link>
       {columnsExist
         ? <Link
-          to={Links.columnMetadataForm(
-              location.pathname,
-              outputSchemaId || Selectors.latestOutputSchema(entities).id
-            )}
+          to={Links.columnMetadataForm(params, outputSchemaId || Selectors.latestOutputSchema(entities).id)}
           className={styles.tab}
-          onClick={() => onSidebarTabClick(fourfour)}
+          onClick={() => onSidebarTabClick(params.fourfour)}
           activeClassName={styles.selected}>
             {I18n.metadata_manage.column_metadata_label}
         </Link>
@@ -39,14 +36,11 @@ export const MetadataContent = (
 
 MetadataContent.propTypes = {
   onSidebarTabClick: PropTypes.func,
-  fourfour: PropTypes.string.isRequired,
   columnsExist: PropTypes.bool,
   entities: PropTypes.object.isRequired,
   outputSchemaId: PropTypes.number,
   onDatasetTab: PropTypes.bool.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  }).isRequired
+  params: PropTypes.object.isRequired
 };
 
 const mapStateToProps = ({ entities }, props) => ({

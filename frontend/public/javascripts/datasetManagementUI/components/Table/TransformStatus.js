@@ -68,7 +68,7 @@ class TransformStatus extends Component {
   }
 
   render() {
-    const { transform, totalRows, path, displayState, columnId, isIgnored, location } = this.props;
+    const { transform, totalRows, path, displayState, columnId, isIgnored, params } = this.props;
     const SubI18n = I18n.show_output_schema.column_header;
     if (isIgnored) {
       return (
@@ -91,14 +91,8 @@ class TransformStatus extends Component {
       displayState.type === DisplayState.COLUMN_ERRORS && transform.id === displayState.transformId;
 
     const linkPath = inErrorMode
-      ? Links.showOutputSchema(location.pathname, path.sourceId, path.inputSchemaId, path.outputSchemaId)
-      : Links.showColumnErrors(
-          location.pathname,
-          path.sourceId,
-          path.inputSchemaId,
-          path.outputSchemaId,
-          transform.id
-        );
+      ? Links.showOutputSchema(params, path.sourceId, path.inputSchemaId, path.outputSchemaId)
+      : Links.showColumnErrors(params, path.sourceId, path.inputSchemaId, path.outputSchemaId, transform.id);
 
     const rowsProcessed = transform.contiguous_rows_processed || 0;
     const percentage = Math.round(rowsProcessed / totalRows * 100);
@@ -176,9 +170,7 @@ TransformStatus.propTypes = {
   displayState: DisplayState.propType.isRequired,
   path: PropTypes.object.isRequired,
   totalRows: PropTypes.number,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  }).isRequired
+  params: PropTypes.object.isRequired
 };
 
 export default withRouter(TransformStatus);

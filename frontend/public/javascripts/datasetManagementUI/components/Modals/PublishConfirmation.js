@@ -11,7 +11,7 @@ import { APPLY_REVISION } from 'actions/apiCalls';
 import * as Selectors from '../../selectors';
 import styles from 'styles/Modals/PublishConfirmation.scss';
 
-function PublishConfirmation({ outputSchemaId, doCancel, doUpdate, location }) {
+function PublishConfirmation({ outputSchemaId, doCancel, doUpdate, params }) {
   return (
     <div>
       <h2>
@@ -30,7 +30,7 @@ function PublishConfirmation({ outputSchemaId, doCancel, doUpdate, location }) {
         <ApiCallButton
           additionalClassName={styles.mainButton}
           operation={APPLY_REVISION}
-          onClick={() => doUpdate(outputSchemaId, location)}>
+          onClick={() => doUpdate(outputSchemaId, params)}>
           {I18n.home_pane.publish_confirmation.button}
         </ApiCallButton>
       </ModalFooter>
@@ -42,9 +42,7 @@ PublishConfirmation.propTypes = {
   outputSchemaId: PropTypes.number.isRequired,
   doCancel: PropTypes.func.isRequired,
   doUpdate: PropTypes.func.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  })
+  params: PropTypes.object.isRequired
 };
 
 export function mapStateToProps({ entities }) {
@@ -58,7 +56,7 @@ export function mapStateToProps({ entities }) {
 export function mapDispatchToProps(dispatch) {
   return {
     doCancel: () => dispatch(hideModal()),
-    doUpdate: (outputSchemaId, location) => dispatch(applyRevision(outputSchemaId, location))
+    doUpdate: (outputSchemaId, params) => dispatch(applyRevision(outputSchemaId, params))
   };
 }
 

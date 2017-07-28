@@ -21,18 +21,16 @@ import {
 } from 'actions/manageUploads';
 import { editView } from 'actions/views';
 
-export const dismissMetadataPane = (currentOutputSchemaPath, initialLocation) => (dispatch, getState) => {
+export const dismissMetadataPane = (currentOutputSchemaPath, params) => (dispatch, getState) => {
   const { history } = getState().ui;
   const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
   const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
-
-  const currentLocation = initialLocation;
 
   const helper = hist => {
     const location = hist[hist.length - 1];
 
     if (hist.length === 0) {
-      browserHistory.push(Links.home(currentLocation.pathname));
+      browserHistory.push(Links.home(params));
     } else if (currentOutputSchemaPath && isBigTablePage.test(location.pathname)) {
       browserHistory.push(currentOutputSchemaPath);
     } else if (isDatasetModalPath.test(location.pathname)) {
@@ -123,8 +121,9 @@ export const saveDatasetMetadata = fourfour => (dispatch, getState) => {
     });
 };
 
-export const saveColumnMetadata = (outputSchemaId, fourfour, location) => (dispatch, getState) => {
+export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getState) => {
   const { entities } = getState();
+  const { fourfour } = params;
   const view = entities.views[fourfour];
   const { columnMetadataErrors: errors } = view;
 
@@ -214,7 +213,7 @@ export const saveColumnMetadata = (outputSchemaId, fourfour, location) => (dispa
       );
       dispatch(apiCallSucceeded(callId));
       // This is subtly wrong, could be a race with another user
-      const redirect = Links.columnMetadataForm(location.pathname, id);
+      const redirect = Links.columnMetadataForm(params, id);
       browserHistory.push(redirect);
 
       dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));

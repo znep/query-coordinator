@@ -51,11 +51,11 @@ class RowErrorsLink extends Component {
   }
 
   render() {
-    const { path, displayState, numRowErrors, inRowErrorMode, location } = this.props;
+    const { path, displayState, numRowErrors, inRowErrorMode, params } = this.props;
     const inRowErrorState = displayState.type === DisplayState.ROW_ERRORS;
     const linkPath = inRowErrorState
-      ? Links.showOutputSchema(location.pathname, path.sourceId, path.inputSchemaId, path.outputSchemaId)
-      : Links.showRowErrors(location.pathname, path.sourceId, path.inputSchemaId, path.outputSchemaId);
+      ? Links.showOutputSchema(params, path.sourceId, path.inputSchemaId, path.outputSchemaId)
+      : Links.showRowErrors(params, path.sourceId, path.inputSchemaId, path.outputSchemaId);
     const SubI18n = I18n.show_output_schema.row_errors;
 
     return (
@@ -87,9 +87,7 @@ RowErrorsLink.propTypes = {
   displayState: DisplayState.propType.isRequired,
   numRowErrors: PropTypes.number.isRequired,
   inRowErrorMode: PropTypes.bool.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  }).isRequired
+  params: PropTypes.object.isRequired
 };
 
 export default withRouter(RowErrorsLink);

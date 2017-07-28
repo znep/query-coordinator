@@ -24,7 +24,7 @@ export function Table({
   updateColumnType,
   addColumn,
   dropColumn,
-  location,
+  params,
   validateThenSetRowIdentifier
 }) {
   const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
@@ -40,9 +40,10 @@ export function Table({
               outputColumn={column}
               updateColumnType={updateColumnType}
               activeApiCallInvolvingThis={_.has(apiCallsByColumnId, column.id)}
-              addColumn={() => addColumn(outputSchema, column, location)}
-              dropColumn={() => dropColumn(outputSchema, column, location)}
-              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)} />
+              addColumn={() => addColumn(outputSchema, column, params)}
+              dropColumn={() => dropColumn(outputSchema, column, params)}
+              validateThenSetRowIdentifier={() =>
+                validateThenSetRowIdentifier(outputSchema, column, params)} />
           )}
         </tr>
         <tr className={styles.columnStatuses}>
@@ -101,9 +102,7 @@ Table.propTypes = {
       })
     })
   ),
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  })
+  params: PropTypes.object.isRequired
 };
 
 const combineAndSort = ({ current, ignored }) => _.sortBy([...current, ...ignored], 'position');
@@ -142,14 +141,13 @@ const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, di
 };
 
 const mapDispatchToProps = dispatch => ({
-  addColumn: (outputSchema, column, location) =>
-    dispatch(ShowActions.addColumn(outputSchema, column, location)),
-  dropColumn: (outputSchema, column, location) =>
-    dispatch(ShowActions.dropColumn(outputSchema, column, location)),
-  updateColumnType: (oldSchema, oldColumn, newType, location) =>
-    dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType, location)),
-  validateThenSetRowIdentifier: (outputSchema, column) =>
-    dispatch(ShowActions.validateThenSetRowIdentifier(outputSchema, column))
+  addColumn: (outputSchema, column, params) => dispatch(ShowActions.addColumn(outputSchema, column, params)),
+  dropColumn: (outputSchema, column, params) =>
+    dispatch(ShowActions.dropColumn(outputSchema, column, params)),
+  updateColumnType: (oldSchema, oldColumn, newType, params) =>
+    dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType, params)),
+  validateThenSetRowIdentifier: (outputSchema, column, params) =>
+    dispatch(ShowActions.validateThenSetRowIdentifier(outputSchema, column, params))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Table));

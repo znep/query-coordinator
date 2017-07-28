@@ -16,7 +16,7 @@ import * as ApplyRevision from '../actions/applyRevision';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import styles from 'styles/ShowRevision.scss';
 
-const noDataYetView = (createUpload, location) => {
+const noDataYetView = (createUpload, params) => {
   return (
     <div className={styles.tableInfo}>
       <h3 className={styles.previewAreaHeader}>
@@ -35,7 +35,7 @@ const noDataYetView = (createUpload, location) => {
         type="file"
         accept={enabledFileExtensions.join(',')}
         aria-labelledby="source-label"
-        onChange={evt => createUpload(evt.target.files[0], location)} />
+        onChange={evt => createUpload(evt.target.files[0], params)} />
 
       <p className={styles.fileTypes}>
         {I18n.home_pane.supported_uploads} {enabledFileExtensions.map(formatExpanation).join(', ')}
@@ -44,7 +44,7 @@ const noDataYetView = (createUpload, location) => {
   );
 };
 
-const outputSchemaView = (entities, outputSchema, location) => {
+const outputSchemaView = (entities, outputSchema, params) => {
   const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
   if (!inputSchema) return;
   return (
@@ -56,13 +56,7 @@ const outputSchemaView = (entities, outputSchema, location) => {
         {I18n.home_pane.data_uploaded_blurb}
       </p>
       <p>
-        <Link
-          to={Links.showOutputSchema(
-            location.pathname,
-            inputSchema.source_id,
-            inputSchema.id,
-            outputSchema.id
-          )}>
+        <Link to={Links.showOutputSchema(params, inputSchema.source_id, inputSchema.id, outputSchema.id)}>
           <button className={styles.reviewBtn} tabIndex="-1">
             {I18n.home_pane.review_data}
           </button>
@@ -89,15 +83,15 @@ const upsertInProgressView = () => {
 };
 
 // WRAPPER COMPONENT
-const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, createUpload, location }) => {
+const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, createUpload, params }) => {
   let child;
 
   if (upsertExists) {
     child = upsertInProgressView(entities);
   } else if (outputSchema) {
-    child = outputSchemaView(entities, outputSchema, location);
+    child = outputSchemaView(entities, outputSchema, params);
   } else {
-    child = noDataYetView(createUpload, location);
+    child = noDataYetView(createUpload, params);
   }
 
   return (
@@ -112,7 +106,7 @@ WrapDataTablePlaceholder.propTypes = {
   outputSchema: PropTypes.object,
   entities: PropTypes.object,
   createUpload: PropTypes.func,
-  location: PropTypes.object.isRequired
+  params: PropTypes.object.isRequired
 };
 
 function upsertCompleteView(view, outputSchema) {
@@ -123,7 +117,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-export function ShowRevision({ view, location, entities, createUpload, pushToEditMetadata }) {
+export function ShowRevision({ view, params, entities, createUpload, pushToEditMetadata }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -174,7 +168,7 @@ export function ShowRevision({ view, location, entities, createUpload, pushToEdi
     customMetadataFieldsets,
     onClickEditMetadata: e => {
       e.preventDefault();
-      pushToEditMetadata(Links.metadata(location.pathname));
+      pushToEditMetadata(Links.metadata(params));
     }
   };
 
@@ -206,7 +200,7 @@ export function ShowRevision({ view, location, entities, createUpload, pushToEdi
         <Link
           key="manage-data-button"
           to={Links.showOutputSchema(
-            location.pathname,
+            params,
             inputSchema.source_id,
             inputSchema.id,
             outputSchema.id
@@ -224,7 +218,7 @@ export function ShowRevision({ view, location, entities, createUpload, pushToEdi
           upsertExists={doesUpsertExist}
           outputSchema={null}
           entities={entities}
-          location={location}
+          params={params}
           createUpload={createUpload} />
       );
     }
@@ -234,7 +228,7 @@ export function ShowRevision({ view, location, entities, createUpload, pushToEdi
         upsertExists={doesUpsertExist}
         outputSchema={outputSchema}
         entities={entities}
-        location={location}
+        params={params}
         createUpload={createUpload} />
     );
   }
@@ -263,7 +257,7 @@ export function ShowRevision({ view, location, entities, createUpload, pushToEdi
 
 ShowRevision.propTypes = {
   view: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
   createUpload: PropTypes.func.isRequired,
   pushToEditMetadata: PropTypes.func.isRequired
@@ -271,18 +265,18 @@ ShowRevision.propTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    createUpload: (file, location) => {
-      dispatch(Actions.createUpload(file, location));
+    createUpload: (file, params) => {
+      dispatch(Actions.createUpload(file, params));
     },
     pushToEditMetadata: url => browserHistory.push(url)
   };
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state, { params }) {
   return {
     view: _.values(state.entities.views)[0],
-    location: ownProps.location,
-    entities: state.entities
+    entities: state.entities,
+    params
   };
 }
 

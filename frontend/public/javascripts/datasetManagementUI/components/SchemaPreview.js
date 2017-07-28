@@ -7,7 +7,7 @@ import { columnsForOutputSchema } from '../selectors';
 import _ from 'lodash';
 import styles from 'styles/SchemaPreview.scss';
 
-function mapStateToProps({ entities }, { location }) {
+function mapStateToProps({ entities }, { params }) {
   // TODO: how do we know which is the correct input schema to show?
   // how do we know which is the correct output schema to show?
 
@@ -36,9 +36,7 @@ function mapStateToProps({ entities }, { location }) {
     return {
       columns,
       headerButton: (
-        <Link
-          className={styles.btnWrapper}
-          to={Links.columnMetadataForm(location.pathname, latestOutputSchema.id)}>
+        <Link className={styles.btnWrapper} to={Links.columnMetadataForm(params, latestOutputSchema.id)}>
           <button className={styles.schemaBtn} tabIndex="-1">
             {I18n.home_pane.column_metadata_manage_button}
           </button>

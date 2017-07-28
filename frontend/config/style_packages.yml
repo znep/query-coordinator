@@ -313,6 +313,9 @@ styleguide-no-tag-level:
 - styleguide-no-tag-level-import-shim
 styleguide:
 - styleguide-import-shim
+styleguide-layout:
+- styleguide-import-shim
+- styleguide-layout
 visualizations:
 - visualizations-import-shim
 authoring-workflow:

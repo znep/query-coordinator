@@ -2,6 +2,8 @@ import $ from 'jquery';
 import 'jquery-ujs';
 import StorytellerUtils from '../StorytellerUtils';
 
+import 'common/notifications/main';
+
 function hookUpSectionCollapseCheckboxes() {
   $('.form-section').each(function() {
     var sectionName = this.getAttribute('data-section-name');

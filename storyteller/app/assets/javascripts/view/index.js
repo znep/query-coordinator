@@ -26,6 +26,8 @@ import { windowSizeBreakpointStore } from '../editor/stores/WindowSizeBreakpoint
 
 import MostRecentlyUsed from 'common/most_recently_used';
 
+import 'common/notifications/main';
+
 $(document).on('ready', function() {
 
   var analytics = new Analytics();

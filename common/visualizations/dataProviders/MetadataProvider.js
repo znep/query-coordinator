@@ -53,7 +53,12 @@ function MetadataProvider(config) {
    */
   this.getDatasetMetadata = () => {
     const datasetUid = this.getConfigurationProperty('datasetUid');
-    const url = `api/views/${datasetUid}.json?read_from_nbe=true&version=2.1`;
+    const readFromNbe = this.getOptionalConfigurationProperty('readFromNbe', true);
+    let url = `api/views/${datasetUid}.json`;
+
+    if (readFromNbe) {
+      url = url + '?read_from_nbe=true&version=2.1';
+    }
 
     return makeMetadataRequest(url);
   };

@@ -300,6 +300,8 @@ function SvgVisualization($element, vif, options) {
         ));
     }
 
+    $message.data('vif', self.getVif());
+
     self.
       $container.
       removeClass('socrata-visualization-busy').

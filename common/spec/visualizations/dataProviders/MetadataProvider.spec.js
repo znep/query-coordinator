@@ -205,7 +205,26 @@ describe('MetadataProvider', () => {
       assert.lengthOf(server.requests, 1);
       assert.include(
         server.requests[0].url,
-        '/api/views/test-test.json'
+        '/api/views/test-test.json?read_from_nbe=true&version=2.1'
+      );
+    });
+
+    it('should query the OBE if configured', () => {
+      const metadataProviderOptions = {
+        domain: window.location.hostname,
+        datasetUid: VALID_DATASET_UID,
+        readFromNbe: false
+      };
+      metadataProvider = new MetadataProvider(metadataProviderOptions);
+      metadataProvider.getDatasetMetadata(); // Discard the response, we don't care.
+      assert.lengthOf(server.requests, 1);
+      assert.notInclude(
+        server.requests[0].url,
+        'read_from_nbe=true'
+      );
+      assert.notInclude(
+        server.requests[0].url,
+        'version=2.1'
       );
     });
 

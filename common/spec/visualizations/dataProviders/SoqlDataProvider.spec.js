@@ -861,13 +861,27 @@ describe('SoqlDataProvider', () => {
       server.restore();
     });
 
-    it('should query', () => {
+    it('should query the NBE by default', () => {
       soqlDataProvider.getRowCount(); // Discard response, we don't care.
       const { url } = server.requests[0];
 
       assert.lengthOf(server.requests, 1);
       assert.include(url, '$$read_from_nbe=true');
       assert.include(url, '$$version=2.1');
+    });
+
+    it('should query the OBE if configured', () => {
+      soqlDataProvider = new SoqlDataProvider({
+        domain: VALID_DOMAIN,
+        datasetUid: VALID_DATASET_UID,
+        readFromNbe: false
+      });
+      soqlDataProvider.getRowCount(); // Discard response, we don't care.
+      const { url } = server.requests[0];
+
+      assert.lengthOf(server.requests, 1);
+      assert.notInclude(url, '$$read_from_nbe=true');
+      assert.notInclude(url, '$$version=2.1');
     });
 
     describe('on request error', () => {

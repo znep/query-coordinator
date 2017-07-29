@@ -340,7 +340,13 @@ function SoqlDataProvider(config) {
 
   function pathForQuery(queryString) {
     const datasetUid = self.getConfigurationProperty('datasetUid');
-    return `api/id/${datasetUid}.json?${queryString}&$$read_from_nbe=true&$$version=2.1`;
+    const readFromNbe = self.getOptionalConfigurationProperty('readFromNbe', true);
+    let path = `api/id/${datasetUid}.json?${queryString}`;
+    if (readFromNbe) {
+      path = path + '&$$read_from_nbe=true&$$version=2.1';
+    }
+
+    return path;
   }
 
   function buildNumberRange(dataTypeName, min, max) {

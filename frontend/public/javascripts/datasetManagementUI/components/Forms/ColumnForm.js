@@ -57,7 +57,7 @@ const mapStateToProps = ({ entities, ui }, { outputSchemaId }) => {
   };
 };
 
-const mergeProps = ({ fourfour, outputSchemaId, errors, rows }, { dispatch }, { params }) => ({
+const mergeProps = ({ outputSchemaId, errors, rows }, { dispatch }, { params }) => ({
   errors,
   rows,
   outputSchemaId,

@@ -1,17 +1,25 @@
-import { expect, assert } from 'chai';
-import { shallow } from 'enzyme';
+import { assert } from 'chai';
+import { shallow, mount } from 'enzyme';
 import React from 'react';
 import { createStore, applyMiddleware } from 'redux';
-import TestUtils from 'react-addons-test-utils';
 import reducer from 'reducers/rootReducer';
 import initialState from '../../data/initialState';
 import thunk from 'redux-thunk';
 import * as Types from 'models/forms';
-
 import ColumnFormConnected, { ColumnForm } from 'components/Forms/ColumnForm';
 
-describe('components/ManageMetadata/ColumnForm', () => {
-  const store = createStore(reducer, initialState, applyMiddleware(thunk));
+describe.only('components/Forms/ColumnForm', () => {
+  const testStore = createStore(reducer, initialState, applyMiddleware(thunk));
+
+  const testParams = {
+    category: 'dataset',
+    name: 'dfsdfdsf',
+    fourfour: 'kg5j-unyr',
+    revisionSeq: '0',
+    sourceId: '115',
+    inputSchemaId: '98',
+    outputSchemaId: '144'
+  };
 
   const defaultProps = {
     setErrors: () => {},
@@ -110,27 +118,53 @@ describe('components/ManageMetadata/ColumnForm', () => {
 
   it('renders correctly', () => {
     const component = shallow(<ColumnForm {...defaultProps} />);
-    expect(component.find('form')).to.have.length(1);
-    expect(component.find('Fieldset')).to.have.length(1);
-    expect(component.find('.row')).to.have.length(3);
-    expect(component.find('.row').children()).to.have.length(9);
-    expect(
+
+    assert.equal(component.find('form').length, 1);
+    assert.equal(component.find('Fieldset').length, 1);
+    assert.equal(component.find('.row').length, 3);
+    assert.equal(component.find('.row').children().length, 9);
+    assert.equal(
       component
         .find('.row')
         .children()
-        .map(f => Types.Field.Text.is(f.prop('field')))
-    ).to.have.length(9);
+        .map(f => Types.Field.Text.is(f.prop('field'))).length,
+      9
+    );
   });
 
   it("syncs it's local state to store", () => {
-    const component = renderComponentWithStore(ColumnFormConnected, {
-      outputSchemaId: 144
-    }, store);
-    const inputField = component.querySelector('#display-name-1945');
-    inputField.value = 'testing!!!';
-    TestUtils.Simulate.change(inputField, { target: inputField });
-    expect(store.getState().entities.output_columns['1945'].display_name).to.eq(
-      'testing!!!'
+    // prob better to test this in the ColumnField component since that is where
+    // this syncing function is defined, but figured I'd leave this hear as an
+    // example in case we need to test something like this later.
+    const component = mount(<ColumnFormConnected outputSchemaId={144} />, {
+      context: {
+        store: testStore,
+        router: {
+          params: testParams,
+          push: () => {},
+          replace: () => {},
+          go: () => {},
+          goBack: () => {},
+          goForward: () => {},
+          createHref: () => {},
+          createPath: () => {},
+          setRouteLeaveHook: () => {},
+          isActive: () => {}
+        }
+      },
+      childContextTypes: {
+        store: React.PropTypes.object
+      }
+    });
+
+    component
+      .find('#display-name-1945')
+      .first()
+      .simulate('change', { target: { value: 'hey' } });
+
+    assert.equal(
+      testStore.getState().entities.output_columns['1945'].display_name,
+      'hey'
     );
   });
 });

@@ -188,7 +188,7 @@ describe('components/Table/ColumnHeader', () => {
 
     const component = shallow(<ColumnHeader {...props} />);
 
-    assert.isAtLeast(component.find('progressSpinner').length, 1);
+    assert.isAtLeast(component.find('.progressSpinner').length, 1);
   });
 
   it('does not render a spinner if activeApiCallInvolvingThis is false', () => {

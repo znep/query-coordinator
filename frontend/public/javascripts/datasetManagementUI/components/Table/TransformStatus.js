@@ -48,7 +48,7 @@ ErrorFlyout.propTypes = {
   transform: PropTypes.object.isRequired
 };
 
-class TransformStatus extends Component {
+export class TransformStatus extends Component {
   componentDidMount() {
     this.attachFlyouts();
   }

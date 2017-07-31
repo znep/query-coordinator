@@ -7,6 +7,15 @@ import dotProp from 'dot-prop-immutable';
 
 const defaultProps = {
   entities: {},
+  params: {
+    category: 'dataset',
+    name: 'dfsdfdsf',
+    fourfour: 'kg5j-unyr',
+    revisionSeq: '0',
+    sourceId: '312',
+    inputSchemaId: '1801',
+    outputSchemaId: '619'
+  },
   path: {
     sourceId: 312,
     inputSchemaId: 1801,
@@ -111,7 +120,7 @@ describe('components/Table', () => {
   it('renders a column header for each output column', () => {
     const component = shallow(<Table {...defaultProps} />);
     assert.equal(
-      component.find('ColumnHeader').length,
+      component.find('withRouter(ColumnHeader)').length,
       defaultProps.outputColumns.length
     );
   });
@@ -119,7 +128,7 @@ describe('components/Table', () => {
   it('renders a status for each output column', () => {
     const component = shallow(<Table {...defaultProps} />);
     assert.equal(
-      component.find('TransformStatus').length,
+      component.find('withRouter(TransformStatus)').length,
       defaultProps.outputColumns.length
     );
   });
@@ -131,17 +140,24 @@ describe('components/Table', () => {
 
   it('renders a disabled ColumnHeader if column is ignored', () => {
     const component = shallow(<Table {...defaultProps} />);
-    assert.isTrue(component.find('ColumnHeader').last().prop('outputColumn').ignored);
+    assert.isTrue(
+      component.find('withRouter(ColumnHeader)').last().prop('outputColumn')
+        .ignored
+    );
   });
 
   it('renders a row-errors link if the input schema says there are row errors', () => {
-    const propsWithRowErrors = dotProp.set(defaultProps, 'inputSchema', existing => ({
-      ...existing,
-      num_row_errors: 1
-    }))
+    const propsWithRowErrors = dotProp.set(
+      defaultProps,
+      'inputSchema',
+      existing => ({
+        ...existing,
+        num_row_errors: 1
+      })
+    );
 
-    const component = shallow(<Table {...propsWithRowErrors} />)
+    const component = shallow(<Table {...propsWithRowErrors} />);
 
-    assert.equal(component.find('RowErrorsLink').length, 1);
+    assert.equal(component.find('withRouter(RowErrorsLink)').length, 1);
   });
 });

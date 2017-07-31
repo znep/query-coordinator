@@ -8,7 +8,16 @@ describe('components/Uploads/UploadBreadcrumbs', () => {
     atShowUpload: true,
     sourceId: 178,
     outputSchemaId: 215,
-    inputSchemaId: 159
+    inputSchemaId: 159,
+    params: {
+      category: 'dataset',
+      name: 'dfsdfdsf',
+      fourfour: 'kg5j-unyr',
+      revisionSeq: '0',
+      sourceId: '178',
+      inputSchemaId: '215',
+      outputSchemaId: '159'
+    }
   };
 
   it('renders a link to ShowOutputSchema when on ShowUploads page', () => {

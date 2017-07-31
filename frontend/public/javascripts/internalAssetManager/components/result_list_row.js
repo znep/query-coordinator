@@ -18,7 +18,7 @@ export class ResultListRow extends React.Component {
   }
 
   renderCell(columnName, index) {
-    const { description, link, name, ownerName, provenance, type, uid, updatedAt } = this.props;
+    const { description, isPublished, link, name, ownerName, provenance, type, uid, updatedAt } = this.props;
 
     const cellTag = (value) => (
       <td scope="row" className={columnName} key={`${columnName}-${index}`}>{value}</td>
@@ -42,11 +42,15 @@ export class ResultListRow extends React.Component {
       case 'owner':
         return cellTag(ownerName);
       case 'type': {
+        let assetTypeTooltip = _.get(I18n, `asset_types.${type}`);
+        if (type === 'dataset' && !isPublished) {
+          assetTypeTooltip = _.get(I18n, 'asset_types.working_copy');
+        }
         return cellTag(
           <span
-            className={getIconClassForDisplayType(type, this.props.isPublished)}
+            className={getIconClassForDisplayType(type, isPublished)}
             data-type={type}
-            title={_.get(I18n, `asset_types.${type}`)} />
+            title={assetTypeTooltip} />
         );
       }
       case 'visibility': {

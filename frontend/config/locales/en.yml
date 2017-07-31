@@ -1697,9 +1697,9 @@ en:
     close: Close
     carto_modal:
       alert: Note that Carto has a file size limit of 250MB.
-      modal_content: This will redirect your browser and open this data set in Carto. Would you like to open this dataset in Carto?
+      modal_content: Your browser will be redirected to Carto, would you like to proceed?
       learn_more_link: Learn about more external integrations at
-      title: Open this dataset in Carto
+      title: Open this dataset in Carto?
     contact_dataset_owner: Contact Dataset Owner
     contact_dataset_owner_modal:
       description: Send a short message to the dataset owner to ask a question, make a comment, or point out something about the data.
@@ -1849,9 +1849,9 @@ en:
     open: Open
     plotly_modal:
       alert: Note that Plot.ly has a file size limit of 5MB.
-      modal_content: This will redirect your browser and open this data set in Plot.ly. Would you like to open this dataset in Plot.ly?
+      modal_content: Your browser will be redirected to Plot.ly, would you like to proceed?
       learn_more_link: Learn about more external integrations at
-      title: Open this dataset in Plot.ly
+      title: Open this dataset in Plot.ly?
     popular_views:
       load_more_error: There was a problem loading additional content.
       title: Popular Content Using this Data
@@ -2754,8 +2754,10 @@ en:
       calendar: Calendar
       chart: Chart
       datalens: Data Lens
+      data_lens: Data Lens
       dataset: Dataset
       draft: Draft Dataset
+      federated_href: Federated External Dataset
       filter: Filtered View
       file: File or Document
       form: Form
@@ -2764,6 +2766,7 @@ en:
       new_view: Data Lens
       pulse: Pulse
       story: Story
+      working_copy: Working Copy
     errors:
       fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.
@@ -2853,6 +2856,9 @@ en:
         stories:
           one: Story
           other: Stories
+        workingCopies:
+          one: Working Copy
+          other: Working Copies
       asset_toggles:
         all_assets: All Assets
         my_assets: My Assets
@@ -3484,8 +3490,8 @@ en:
             restore_success: Success! Your dataset was restored.
             server_error: We're having trouble loading this information right now. Please try again soon, or email support@socrata.com to get help.
           dataset: Dataset
-          deleted: Deleted
-          deleted_dataset: Deleted dataset
+          deleted: (Deleted)
+          deleted_dataset: (Deleted dataset)
           deleted_user: User has been deleted
           export_as_csv: Export As CSV
           filter_by: Filter By

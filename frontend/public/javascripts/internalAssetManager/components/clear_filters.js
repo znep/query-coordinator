@@ -18,9 +18,13 @@ export class ClearFilters extends Component {
   clearAllFiltersAndQuery() {
     this.props.clearAllFilters();
 
-    // =(
-    if (document.querySelector('.autocomplete-input')) {
-      document.querySelector('.autocomplete-input').value = '';
+    // EN-17287: As of now, Autocomplete search has its own Redux store to manage its state. We want to
+    // essentially dispatch the `searchCleared` autocomplete action, and unfortunately there does not seem
+    // to be a good way to do that without a more significant refactor. For now, we simply query for the
+    // autocomplete input and manually set its value to an empty string.
+    // For more information, see: https://github.com/socrata/platform-ui/pull/5176
+    if (document.querySelector('.internal-asset-manager .autocomplete-input')) {
+      document.querySelector('.internal-asset-manager .autocomplete-input').value = '';
     }
   }
 

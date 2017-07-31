@@ -66,6 +66,7 @@ $(function() {
       renderTypeManager({
         view: dataset,
         editEnabled: false,
+        deoptimizeRender: true, // see EN-17277 and forgive me
         hideDividers: true
       });
     } else {

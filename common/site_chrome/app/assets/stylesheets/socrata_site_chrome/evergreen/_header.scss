@@ -116,6 +116,10 @@ header#site-chrome-header[template="evergreen"] {
           .collapsible-search {
             position: relative;
 
+            & svg path {
+              fill: $header_fg_color;
+            }
+
             .collapsible-search-toggle {
               cursor: pointer;
               font-size: 18px;
@@ -140,7 +144,7 @@ header#site-chrome-header[template="evergreen"] {
               &.expanded {
                 opacity: 1;
                 /*
-                  EN-12069:
+                  EN-12069 and EN-16931
                   101, 1 higher than the z-index set on .dropdown elements due to EN-11443.
                   Otherwise the dropdowns will be clickable through the expanded search bar.
                 */
@@ -179,6 +183,7 @@ header#site-chrome-header[template="evergreen"] {
             input {
               box-sizing: content-box !important;
               top: calc((#{$banner_height} - #{$searchbox-height}) / 2);
+              z-index: 101; /* EN-16931 See also EN-12069 above */
             }
           }
 

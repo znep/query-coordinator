@@ -174,6 +174,12 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
   const genTransform = outputColumn => {
     const transform = entities.transforms[outputColumn.transform_id];
     const transformExpr = transform.transform_expr;
+
+    if (outputColumn.id !== oldColumn.id) {
+      // user is not updating this column
+      return transformExpr;
+    }
+
     const inputColumns = transform.transform_input_columns.map(
       inputColumnRef => entities.input_columns[inputColumnRef.input_column_id]
     );
@@ -183,10 +189,10 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
     const inputColumn = inputColumns[0];
     const conversionFunc = soqlProperties[inputColumn.soql_type].conversions[newType];
     const fieldName = inputColumn.field_name;
-    if (inputColumn.soql_type === newType) {
-      return `\`${fieldName}\``;
-    }
-    return outputColumn.id === oldColumn.id ? `${conversionFunc}(${fieldName})` : transformExpr;
+
+    return inputColumn.soql_type === newType
+      ? `\`${fieldName}\``
+      : `${conversionFunc}(${fieldName})`;
   };
   return oldOutputColumns.map(c => toNewOutputColumn(c, genTransform));
 }

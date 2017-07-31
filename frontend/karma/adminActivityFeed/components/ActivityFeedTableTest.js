@@ -73,4 +73,41 @@ describe('ActivityFeedTable', () => {
       filter(row => statusesForDetails.includes(getRowStatus(row))).
       forEach(row => assert(getRowAction(row) === 'View Details'));
   });
+
+  describe('should render deleted datasets names correctly', () => {
+    it('should render asset name as link if activity type is not delete', () => {
+      const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
+      const rows = [].slice.call(output.querySelectorAll('tbody tr'));
+
+      assert.equal(
+        rows[0].querySelector('td[data-column=name]').textContent,
+        mockActivities.activities[0].dataset.name
+      );
+
+      assert.equal(
+        rows[0].querySelector('td[data-column=name] a').tagName,
+        'A'
+      );
+    });
+
+    it('when dataset completely deleted', () => {
+      const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
+      const rows = [].slice.call(output.querySelectorAll('tbody tr'));
+
+      assert.equal(
+        rows[1].querySelector('td[data-column=name]').textContent,
+        `${mockActivities.activities[1].dataset.name} ${mockTranslations.index_page.deleted}`
+      );
+    });
+
+    it('when dataset marked deleted', () => {
+      const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
+      const rows = [].slice.call(output.querySelectorAll('tbody tr'));
+
+      assert.equal(
+        rows[2].querySelector('td[data-column=name]').textContent,
+        `${mockTranslations.index_page.deleted_dataset}`
+      );
+    });
+  });
 });

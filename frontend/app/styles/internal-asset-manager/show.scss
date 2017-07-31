@@ -19,6 +19,10 @@ body {
   background: $light-grey-6;
 }
 
+.alert.error {
+  clear: both;
+}
+
 .asset_inventory_link_wrapper {
   float: right;
   position: relative;
@@ -90,10 +94,20 @@ body {
         }
 
         .item-count {
-          font-size: 2rem;
+          font-size: 1.5rem;
           line-height: 1;
-          color: $primary-base;
+          color: $dark-grey-1;
           margin-bottom: 0.25rem;
+
+          a {
+            color: $primary-base;
+            text-decoration: none;
+
+            &:hover {
+              text-decoration: underline;
+              cursor: pointer;
+            }
+          }
         }
 
         .item-name {

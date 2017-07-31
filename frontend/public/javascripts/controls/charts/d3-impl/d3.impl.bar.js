@@ -366,10 +366,12 @@
 
         var xDatumPositionForSeries = vizObj._xDatumPosition(seriesIndex);
 
-        var barInView = function(d) {
-          var xPos = xDatumPositionForSeries(d);
-          return vizObj._isXRangeInViewport(xPos - cc.barWidth, xPos);
-        };
+        var barInView = vizObj.settings.deoptimizeRender ?
+          _.constant(true) :
+          function(d) {
+            var xPos = xDatumPositionForSeries(d);
+            return vizObj._isXRangeInViewport(xPos - cc.barWidth, xPos);
+          };
 
         // figure out what data we can actually render
         var dataInView = _.filter(data, barInView);

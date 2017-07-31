@@ -278,14 +278,15 @@ function renderBooleanCell(cellContent) {
 */
 function renderNumberCell(input, column) {
   const amount = parseFloat(input);
+  const locale = utils.getLocale(window);
   const format = _.extend({
     precisionStyle: 'standard',
     precision: undefined,
     forceHumane: false, // NOTE: only used internally, cannot be set on columns
     noCommas: false,
     currency: I18n.t('shared.visualizations.charts.common.currency_symbol'),
-    decimalSeparator: I18n.t('shared.visualizations.charts.common.decimal_separator'),
-    groupSeparator: I18n.t('shared.visualizations.charts.common.group_separator'),
+    decimalSeparator: utils.getDecimalCharacter(locale),
+    groupSeparator: utils.getGroupCharacter(locale),
     mask: null
   }, column.format || {});
 

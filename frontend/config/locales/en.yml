@@ -3490,8 +3490,8 @@ en:
             restore_success: Success! Your dataset was restored.
             server_error: We're having trouble loading this information right now. Please try again soon, or email support@socrata.com to get help.
           dataset: Dataset
-          deleted: Deleted
-          deleted_dataset: Deleted dataset
+          deleted: (Deleted)
+          deleted_dataset: (Deleted dataset)
           deleted_user: User has been deleted
           export_as_csv: Export As CSV
           filter_by: Filter By

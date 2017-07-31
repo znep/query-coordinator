@@ -877,6 +877,7 @@ en:
             one: Showing 1 result
             other: Showing %{start}-%{end} of %{count} results
           count: Showing %{this} of %{total} results
+          page_title: Page %{page_number} of %{page_count}
         search:
           clear:
             title: Clear search

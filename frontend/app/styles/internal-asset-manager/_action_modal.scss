@@ -1,5 +1,9 @@
 .action-modal {
   .modal-footer {
+    button {
+      min-width: 5rem;
+    }
+
     .accept-button {
       margin-left: 0.5rem;
 

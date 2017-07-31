@@ -42,7 +42,8 @@ export function Table({
               activeApiCallInvolvingThis={_.has(apiCallsByColumnId, column.id)}
               addColumn={() => addColumn(outputSchema, column, params)}
               dropColumn={() => dropColumn(outputSchema, column, params)}
-              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column, params)} />
+              validateThenSetRowIdentifier={() =>
+                validateThenSetRowIdentifier(outputSchema, column, params)} />
           )}
         </tr>
         <tr className={styles.columnStatuses}>
@@ -140,7 +141,8 @@ const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, di
 };
 
 const mapDispatchToProps = dispatch => ({
-  addColumn: (outputSchema, column, params) => dispatch(ShowActions.addColumn(outputSchema, column, params)),
+  addColumn: (outputSchema, column, params) =>
+    dispatch(ShowActions.addColumn(outputSchema, column, params)),
   dropColumn: (outputSchema, column, params) =>
     dispatch(ShowActions.dropColumn(outputSchema, column, params)),
   updateColumnType: (oldSchema, oldColumn, newType, params) =>

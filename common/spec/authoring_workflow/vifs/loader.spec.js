@@ -12,10 +12,31 @@ describe('loader', function() {
         expect(store.getState().vifAuthoring.vifs[visualizationType]).to.eql(testData[visualizationType]());
       });
     };
+    let server;
+
+    const mockMetadata = {
+      columns: []
+    };
 
     beforeEach(function() {
+      server = sinon.fakeServer.create();
+      server.respondImmediately = true;
+      server.respondWith(
+        'GET',
+        'https://example.com/api/views/mock-viif.json?read_from_nbe=true&version=2.1',
+        [200, { 'Content-Type': 'application/json'}, JSON.stringify(mockMetadata)]
+      );
+      server.respondWith(
+        'GET',
+        'https://example.com/api/curated_regions',
+        [200, { 'Content-Type': 'application/json'}, '{}']
+      );
       store = testStore();
       dispatch = store.dispatch;
+    });
+
+    afterEach(() => {
+      server.restore();
     });
 
     describe('barChart', function() {

@@ -49,7 +49,9 @@ describe('SvgColumnChart', () => {
           right: 'right',
           bottom: 'bottom',
           left: 'left'
-        }
+        },
+        // If you change to true, make sure to mock out the resultant MetadataProvider request.
+        viewSourceDataLink: false
       },
       series: [
         {

@@ -16,12 +16,6 @@ const validMetadata = {
       { name: 'column1', fieldName: 'column1', renderTypeName: 'number' },
       { name: 'column2', fieldName: 'column2', renderTypeName: 'number' }
     ]
-  },
-  phidippidesMetadata: {
-    columns: {
-      column1: { name: 'column1', renderTypeName: 'number' },
-      column2: { name: 'column2', renderTypeName: 'number' }
-    }
   }
 };
 

@@ -12,13 +12,6 @@ var validMetadata = {
       {name: 'Number', fieldName: 'number', renderTypeName: 'number'},
       {name: 'Percent', fieldName: 'percent', renderTypeName: 'percent'}
     ]
-  },
-  phidippidesMetadata: {
-    columns: {
-      money: {name: 'Money', renderTypeName: 'money'},
-      number: {name: 'Number', renderTypeName: 'number'},
-      percent: {name: 'Percent', renderTypeName: 'percent'}
-    }
   }
 };
 
@@ -27,11 +20,6 @@ var nonNumericMetadata = {
     columns: [
       {name: 'Text', fieldName: 'text', renderTypeName: 'text'}
     ]
-  },
-  phidippidesMetadata: {
-    columns: {
-      number: {name: 'Text', renderTypeName: 'text'}
-    }
   }
 };
 

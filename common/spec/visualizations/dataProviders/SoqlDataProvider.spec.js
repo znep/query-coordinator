@@ -672,8 +672,8 @@ describe('SoqlDataProvider', () => {
           assert.lengthOf(server.requests, 1);
           const { url } = server.requests[0];
 
-          assert.notInclude(url, '$$read_from_nbe=true');
-          assert.notInclude(url, '$$version=2.1');
+          assert.include(url, '$$read_from_nbe=true');
+          assert.include(url, '$$version=2.1');
         });
 
         resultantQueryParts.map((queryPart) => {
@@ -861,7 +861,21 @@ describe('SoqlDataProvider', () => {
       server.restore();
     });
 
-    it('should query', () => {
+    it('should query the NBE by default', () => {
+      soqlDataProvider.getRowCount(); // Discard response, we don't care.
+      const { url } = server.requests[0];
+
+      assert.lengthOf(server.requests, 1);
+      assert.include(url, '$$read_from_nbe=true');
+      assert.include(url, '$$version=2.1');
+    });
+
+    it('should query the OBE if configured', () => {
+      soqlDataProvider = new SoqlDataProvider({
+        domain: VALID_DOMAIN,
+        datasetUid: VALID_DATASET_UID,
+        readFromNbe: false
+      });
       soqlDataProvider.getRowCount(); // Discard response, we don't care.
       const { url } = server.requests[0];
 
@@ -1009,17 +1023,17 @@ describe('SoqlDataProvider', () => {
     });
 
     it('fetches stats for text column from core metadata if available', () => {
-      soqlDataProvider.getColumnStats([{
+      return soqlDataProvider.getColumnStats([{
         dataTypeName: 'text',
         cachedContents: {
           top: [{item: 'best', count: 10}]
         }
       }]).then(
         (stats) => {
-          assert.equal(stats[0].top, [{item: 'best', count: 10}]);
+          assert.deepEqual(stats[0].top, [{item: 'best', count: 10}]);
+          assert.lengthOf(server.requests, 0);
         }
       );
-      assert.lengthOf(server.requests, 0);
     });
 
 

@@ -133,7 +133,7 @@ describe('FeatureMap jQuery component', function() {
         SocrataFeatureMapAPI.__Rewire__('TileserverDataProvider', function() {
           this.buildTileGetter = function(whereClause) {
             return function tileGetter(zoom, x, y) {
-              return Promise.resolve(new VBArray([]).toArray());
+              return Promise.resolve([]);
             }
           }
         });

@@ -24,22 +24,26 @@ export function setDataSource(domain, datasetUid) {
 
     dispatch(requestMetadata(domain, datasetUid));
 
-    const finishMetadataRequests = (resolutions, hasColumnStats) => {
-      dispatch(receiveMetadata(resolutions, hasColumnStats));
+    const finishMetadataRequests = (datasetMetadata, baseViewMetadata, hasColumnStats) => {
+      dispatch(receiveMetadata(datasetMetadata, baseViewMetadata, hasColumnStats));
       dispatch(setVifCheckpoint(getVifs(getState().vifAuthoring)));
     };
 
     return Promise.all([
-      datasetMetadataProvider.getDatasetMetadata(),
-      datasetMetadataProvider.getPhidippidesMetadata()
+      // See comment in implementation to learn why we catch-all.
+      datasetMetadataProvider.getBaseViewMetadata().catch(() => null),
+      datasetMetadataProvider.getDatasetMetadata()
     ]).then((resolutions) => {
-      const datasetMetadata = resolutions[0];
-      soqlDataProvider.getColumnStats(datasetMetadata.columns).then((columnStats) => {
-        resolutions[0].columns = _.merge([], columnStats, resolutions[0].columns);
-        finishMetadataRequests(resolutions, true);
+      const datasetMetadata = resolutions[1];
+      const baseViewMetadata = resolutions[0] || datasetMetadata;
+
+      return soqlDataProvider.getColumnStats(datasetMetadata.columns).then((columnStats) => {
+        datasetMetadata.columns = _.merge([], columnStats, datasetMetadata.columns);
+        finishMetadataRequests(datasetMetadata, baseViewMetadata, true);
       }).catch(() => {
-        finishMetadataRequests(resolutions, false);
+        finishMetadataRequests(datasetMetadata, baseViewMetadata, false);
       });
+
     }).catch((error) => {
       console.error(error);
       dispatch(handleMetadataError());
@@ -57,11 +61,11 @@ export function requestMetadata(domain, datasetUid) {
 }
 
 export const RECEIVE_METADATA = 'RECEIVE_METADATA';
-export function receiveMetadata(resolutions, hasColumnStats) {
+export function receiveMetadata(datasetMetadata, baseViewMetadata, hasColumnStats) {
   return {
     type: RECEIVE_METADATA,
-    datasetMetadata: resolutions[0],
-    phidippidesMetadata: resolutions[1],
+    datasetMetadata,
+    baseViewMetadata,
     hasColumnStats
   };
 }
@@ -112,14 +116,6 @@ export const HANDLE_CURATED_REGIONS_ERROR = 'HANDLE_CURATED_REGIONS_ERROR';
 export function handleCuratedRegionsError() {
   return {
     type: HANDLE_CURATED_REGIONS_ERROR
-  };
-}
-
-export const SET_PHIDIPPIDES_METADATA = 'SET_PHIDIPPIDES_METADATA';
-export function setPhidippidesMetadata(phidippidesMetadata) {
-  return {
-    type: SET_PHIDIPPIDES_METADATA,
-    phidippidesMetadata
   };
 }
 
@@ -190,20 +186,15 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
     };
     const handleCompletion = () => {
       datasetMetadataProvider.
-        getPhidippidesMetadata().
+        getDatasetMetadata().
         then((metadata) => {
-          const columns = _.map(metadata.columns, (column, key) => {
-            column.fieldName = key;
-            return column;
-          });
-
           const computedColumn = _.find(columns, (column) => {
             return _.get(column, 'computationStrategy.parameters.region', '').slice(1) === curatedRegion.uid;
           });
 
           dispatch(finishRegionCoding());
           dispatch(setComputedColumn(computedColumn.fieldName));
-          dispatch(setPhidippidesMetadata(metadata));
+          dispatch(setDatasetMetadata(metadata));
         }).
         catch(handleError);
     };

@@ -54,7 +54,9 @@ describe('SvgRegionMap', function() {
           "geometryLabel": null,
           "primaryKey": "primaryKey",
           "uid": "snuk-a5kv"
-        }
+        },
+        // If you change to true, make sure to mock out the resultant MetadataProvider request.
+        "viewSourceDataLink": false
       },
       "description": "An example Region Map",
       "format": {

@@ -110,14 +110,58 @@
     $table5Element.socrataTable(table5VIF);
 
     var $table6Element = $('#table-6');
-    var table6VIF = _.cloneDeep(table1VIF);
-    table6VIF.datasetUid = '7uf8-tam8';
-    table6VIF.domain = 'opendata-demo.rc-socrata.com';
-    table6VIF.configuration.allowObeDataset = true;
-    table6VIF.configuration.order = [{
-      ascending: true,
-      columnName: 'plain_text'
-    }];
+    var table6VIF = {
+      "configuration": {
+        "axisLabels": {
+          "top": false,
+          "right": false,
+          "bottom": false,
+          "left": false
+        },
+        "localization": {},
+        "order": [
+          {
+            "ascending": true,
+            "columnName": "plain_text"
+          }
+        ]
+      },
+      "createdAt": "2014-01-01T00:00:00",
+      "description": null,
+      "format": {
+        "type": "visualization_interchange_format",
+        "version": 2
+      },
+      "series": [
+        {
+          "dataSource": {
+            "datasetUid": "7uf8-tam8",
+            "dimension": {
+              "aggregationFunction": null
+            },
+            "domain": "opendata-demo.rc-socrata.com",
+            "measure": {
+              "columnName": null,
+              "aggregationFunction": "count"
+            },
+            "filters": [],
+            "type": "socrata.soql",
+            "readFromNbe": false
+          },
+          "label": "Value",
+          "unit": {
+            "one": "case",
+            "other": "cases"
+          },
+          "type": "table"
+        }
+      ],
+      "title": null,
+      "origin": {
+        "type": "test_data",
+        "url": "localhost"
+      }
+    };
     $table6Element.socrataTable(table6VIF);
 
     var $table7Element = $('#table-7');
@@ -313,7 +357,8 @@
               aggregationFunction: 'count'
             },
             type: 'socrata.soql',
-            filters: []
+            filters: [],
+            readFromNbe: false
           },
           label: null,
           type: 'table',

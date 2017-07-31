@@ -179,7 +179,8 @@ describe('components/Modals/Publishing', () => {
       rowsToBeUpserted,
       fourfour: 'abcdefgh',
       applyRevision: _.noop,
-      onCancelClick: _.noop
+      onCancelClick: _.noop,
+      params: {}
     };
 
     it('renders without errors in success state', () => {

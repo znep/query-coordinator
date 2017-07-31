@@ -53,6 +53,8 @@ const defaultProps = {
       description: '',
       transform_id: 7883,
       transform: {
+        attempts: 1,
+        error_indicies: [],
         transform_input_columns: [
           {
             input_column_id: 7989
@@ -74,6 +76,8 @@ const defaultProps = {
       description: '',
       transform_id: 7884,
       transform: {
+        attempts: 1,
+        error_indicies: [],
         transform_input_columns: [
           {
             input_column_id: 7990
@@ -96,6 +100,8 @@ const defaultProps = {
       ignored: true,
       transform_id: 7885,
       transform: {
+        attempts: 1,
+        error_indicies: [],
         transform_input_columns: [
           {
             input_column_id: 7991

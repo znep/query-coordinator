@@ -42,8 +42,7 @@ export function Table({
               activeApiCallInvolvingThis={_.has(apiCallsByColumnId, column.id)}
               addColumn={() => addColumn(outputSchema, column, params)}
               dropColumn={() => dropColumn(outputSchema, column, params)}
-              validateThenSetRowIdentifier={() =>
-                validateThenSetRowIdentifier(outputSchema, column, params)} />
+              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column, params)} />
           )}
         </tr>
         <tr className={styles.columnStatuses}>
@@ -94,7 +93,7 @@ Table.propTypes = {
       transform_id: PropTypes.number.isRequired,
       transform: PropTypes.shape({
         attempts: PropTypes.number.isRequired,
-        error_indices: PropTypes.array.isRequired,
+        error_indices: PropTypes.array,
         id: PropTypes.number.isRequired,
         output_soql_type: PropTypes.string.isRequired,
         transform_expr: PropTypes.string.isRequired,

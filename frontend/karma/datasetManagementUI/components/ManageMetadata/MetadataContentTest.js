@@ -14,7 +14,8 @@ describe('components/ManageMetadata/MetadataContent', () => {
     onSidebarTabClick: () => {},
     columnsExist: false,
     onDatasetTab: true,
-    store: createStore(reducer, initialState, applyMiddleware(thunk))
+    store: createStore(reducer, initialState, applyMiddleware(thunk)),
+    params: {}
   };
 
   it('shows a disabled columns tab if columnsExist is falsey', () => {

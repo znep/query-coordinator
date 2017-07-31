@@ -362,7 +362,8 @@ module DatasetsHelper
     span << content_tag(:span, '', :class => 'alertIcon') if include_alert_icon
     pane = 'feed' if pane == 'discuss' # Goddamnit Jeff!
     if pane == 'more' # Goddamnit Jeff!
-      content_tag(:a, span, :href => link, :title => translated_title, :class => 'other')
+      aria_label = t('screens.ds.grid_sidebar.tabs.more_asset_actions')
+      content_tag(:a, span, :href => link, :title => translated_title, :class => 'other', :'aria-label' => aria_label)
     else
       content_tag(:a, span, :href => link, :title => translated_title, :class => pane, 'data-paneName' => pane)
     end

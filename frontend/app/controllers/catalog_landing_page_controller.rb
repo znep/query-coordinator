@@ -112,9 +112,6 @@ class CatalogLandingPageController < ApplicationController
     title_fragments = params.except('controller', 'action', 'custom_path', 'page').map do |key, value|
       key == 'limitTo' ? I18n.t("catalog_landing_page.view_types.#{value}", :default => value) : value
     end
-    total = @processed_browse[:view_count]
-    startIndex = @processed_browse[:limit] * (@processed_browse[:page] - 1) + 1
-    endIndex = [startIndex + @processed_browse[:limit] - 1, total].min
     title_fragments << t('controls.browse.browse2.results.page_title',
       :page_number => @processed_browse[:page],
       :page_count => (@processed_browse[:view_count] / @processed_browse[:limit].to_f).ceil

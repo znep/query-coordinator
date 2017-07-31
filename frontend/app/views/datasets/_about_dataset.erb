@@ -8,7 +8,7 @@
   <%- end -%>
   <div class="aboutHeader clearfix">
     <a class="aboutAuthorImageLink" href="<%= profile_path(@view.owner) %>">
-      <img class="aboutAuthorImage" alt="<%= @view.owner.displayName %>"
+      <img class="aboutAuthorImage" alt="<%= t('screens.about.profile_picture') %>"
         src="<%= @view.owner.profile_image_path("medium") %>"/>
     </a>
     <a class="aboutAuthorName" href="<%= profile_path(@view.owner) %>"><%= @view.owner.displayName %></a>

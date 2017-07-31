@@ -3,7 +3,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { ShowRevision } from 'components/ShowRevision';
 import _ from 'lodash';
-import { ShowRevisionProps } from '../data/defaultProps'
+import { ShowRevisionProps } from '../data/defaultProps';
 
 describe('components/ShowRevision', () => {
   const defaultProps = ShowRevisionProps;
@@ -23,7 +23,9 @@ describe('components/ShowRevision', () => {
   });
 
   it('renders the SchemaPreview', () => {
-    assert.isFalse(component.find('Connect(SchemaPreview)').isEmpty());
+    assert.isFalse(
+      component.find('withRouter(Connect(SchemaPreview))').isEmpty()
+    );
   });
 
   it('renders RowDetails', () => {
@@ -31,7 +33,9 @@ describe('components/ShowRevision', () => {
   });
 
   it('renders the HomePaneSidebar', () => {
-    assert.isFalse(component.find('Connect(HomePaneSidebar)').isEmpty());
+    assert.isFalse(
+      component.find('withRouter(Connect(HomePaneSidebar))').isEmpty()
+    );
   });
 
   it('renders manage data link', () => {
@@ -44,7 +48,9 @@ describe('components/ShowRevision', () => {
     propsWithoutOutputSchema.entities.input_schemas = {};
     propsWithoutOutputSchema.entities.task_sets = {};
     propsWithoutOutputSchema.entities.sources = {};
-    const theComponent = shallow(<ShowRevision {...propsWithoutOutputSchema} />);
+    const theComponent = shallow(
+      <ShowRevision {...propsWithoutOutputSchema} />
+    );
     assert.isFalse(theComponent.isEmpty());
   });
 
@@ -57,9 +63,12 @@ describe('components/ShowRevision', () => {
 
     const theComponent = shallow(<ShowRevision {...clonedProps} />);
     assert.equal(
-      theComponent.find('WrapDataTablePlaceholder').dive().find('.fileTypes').text(),
+      theComponent
+        .find('WrapDataTablePlaceholder')
+        .dive()
+        .find('.fileTypes')
+        .text(),
       'Supported file types: .csv, .tsv, .xls, .xlsx'
     );
   });
-
 });

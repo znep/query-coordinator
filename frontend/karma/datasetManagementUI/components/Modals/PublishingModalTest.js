@@ -4,10 +4,13 @@ import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
 import * as ApplyRevision from 'actions/applyRevision';
-import { Publishing, computeProgress, mapStateToProps } from 'components/Modals/Publishing';
+import {
+  Publishing,
+  computeProgress,
+  mapStateToProps
+} from 'components/Modals/Publishing';
 
 describe('components/Modals/Publishing', () => {
-
   const rowsToBeUpserted = 1000;
 
   const jobWithOutputSchema = {
@@ -16,7 +19,6 @@ describe('components/Modals/Publishing', () => {
   };
 
   describe('computeProgress', () => {
-
     it('returns 1 for a successful job', () => {
       const job = {
         status: ApplyRevision.TASK_SET_SUCCESSFUL
@@ -44,7 +46,10 @@ describe('components/Modals/Publishing', () => {
         status: ApplyRevision.TASK_SET_INITIALIZING
       };
       const result = computeProgress(rowsToBeUpserted, job);
-      assert.isTrue(result >= 0 && result <= 0.1, 'doneFraction between 0 and 0.1');
+      assert.isTrue(
+        result >= 0 && result <= 0.1,
+        'doneFraction between 0 and 0.1'
+      );
     });
 
     it('returns between 0 and 0.1 for a job with status `creating_columns`', () => {
@@ -53,7 +58,10 @@ describe('components/Modals/Publishing', () => {
         status: ApplyRevision.TASK_SET_CREATING_COLUMNS
       };
       const result = computeProgress(rowsToBeUpserted, job);
-      assert.isTrue(result >= 0 && result <= 0.1, 'doneFraction between 0 and 0.1');
+      assert.isTrue(
+        result >= 0 && result <= 0.1,
+        'doneFraction between 0 and 0.1'
+      );
     });
 
     it('returns between 0.1 and 0.9 for a job with status `upserting`', () => {
@@ -61,7 +69,10 @@ describe('components/Modals/Publishing', () => {
         ...jobWithOutputSchema,
         status: ApplyRevision.TASK_SET_UPSERTING,
         log: [
-          { stage: ApplyRevision.TASK_SET_STAGE_ROWS_UPSERTED, details: { count: 500 } },
+          {
+            stage: ApplyRevision.TASK_SET_STAGE_ROWS_UPSERTED,
+            details: { count: 500 }
+          },
           { stage: 'columns_created' },
           { stage: 'started' }
         ]
@@ -78,15 +89,11 @@ describe('components/Modals/Publishing', () => {
       const result = computeProgress(rowsToBeUpserted, job);
       assert.closeTo(result, 0.95, 0.01);
     });
-
   });
 
   describe('mapStateToProps', () => {
-
     const state = {
-      ui: {
-        routing: { fourfour: 'abcd-efgh' }
-      },
+      ui: {},
       entities: {
         revisions: {
           0: {
@@ -112,8 +119,14 @@ describe('components/Modals/Publishing', () => {
       }
     };
 
+    const ownProps = {
+      params: {
+        fourfour: 'abcd-efgh'
+      }
+    };
+
     it('fetches the taskSet, fourFour, and rowsToBeUpserted', () => {
-      const props = mapStateToProps(state);
+      const props = mapStateToProps(state, ownProps);
       assert.deepEqual(props, {
         revision: {
           permission: 'public'
@@ -142,7 +155,7 @@ describe('components/Modals/Publishing', () => {
           input_schemas: {}
         }
       };
-      const props = mapStateToProps(stateWithNoFile);
+      const props = mapStateToProps(stateWithNoFile, ownProps);
       assert.deepEqual(props, {
         rowsToBeUpserted: null,
         revision: {
@@ -155,11 +168,9 @@ describe('components/Modals/Publishing', () => {
         fourfour: 'abcd-efgh'
       });
     });
-
   });
 
   describe('component', () => {
-
     const defaultProps = {
       revision: {
         permission: 'public'
@@ -168,36 +179,55 @@ describe('components/Modals/Publishing', () => {
       rowsToBeUpserted,
       fourfour: 'abcdefgh',
       applyRevision: _.noop,
-      onCancelClick: _.noop,
+      onCancelClick: _.noop
     };
 
     it('renders without errors in success state', () => {
-      const withSetStatus = dotProp.set(defaultProps, 'taskSet.status', 'successful');
+      const withSetStatus = dotProp.set(
+        defaultProps,
+        'taskSet.status',
+        'successful'
+      );
       const component = shallow(<Publishing {...withSetStatus} />);
       assert.isFalse(component.isEmpty());
     });
 
     it('renders without errors in failure state', () => {
-      const withSetStatus = dotProp.set(defaultProps, 'taskSet.status', 'failure');
+      const withSetStatus = dotProp.set(
+        defaultProps,
+        'taskSet.status',
+        'failure'
+      );
       const component = shallow(<Publishing {...withSetStatus} />);
       assert.isFalse(component.isEmpty());
     });
 
     it('renders without errors in in_progress state', () => {
-      const withSetStatus = dotProp.set(defaultProps, 'taskSet.status', 'in_progress');
+      const withSetStatus = dotProp.set(
+        defaultProps,
+        'taskSet.status',
+        'in_progress'
+      );
       const component = shallow(<Publishing {...withSetStatus} />);
       assert.isFalse(component.isEmpty());
     });
 
     it('renders without errors when there is no output schema', () => {
-      const withNoRowsToBeUpserted = dotProp.set(defaultProps, 'rowsToBeUpserted', null);
+      const withNoRowsToBeUpserted = dotProp.set(
+        defaultProps,
+        'rowsToBeUpserted',
+        null
+      );
       const component = shallow(<Publishing {...withNoRowsToBeUpserted} />);
       assert.isFalse(component.isEmpty());
     });
 
     describe('with progress statuses', () => {
-
-      const propsWithSetStatus = dotProp.set(defaultProps, 'taskSet.status', 'upserting');
+      const propsWithSetStatus = dotProp.set(
+        defaultProps,
+        'taskSet.status',
+        'upserting'
+      );
       const propsWithSetLog = dotProp.set(propsWithSetStatus, 'taskSet.log', [
         { details: { count: 500 } }
       ]);
@@ -205,7 +235,10 @@ describe('components/Modals/Publishing', () => {
       it('renders upsert progress numbers', () => {
         const component = shallow(<Publishing {...propsWithSetLog} />);
         assert.isFalse(component.isEmpty());
-        assert.equal(component.find('.statusMessage').text(), 'Importing data (500 / 1,000 rows)');
+        assert.equal(
+          component.find('.statusMessage').text(),
+          'Importing data (500 / 1,000 rows)'
+        );
       });
 
       it('renders the "email me" button', () => {
@@ -214,12 +247,16 @@ describe('components/Modals/Publishing', () => {
       });
 
       it('renders without errors when there is no output schema', () => {
-        const propsWithNoRowCount = dotProp.set(propsWithSetLog, 'rowsToBeUpserted', null);
+        const propsWithNoRowCount = dotProp.set(
+          propsWithSetLog,
+          'rowsToBeUpserted',
+          null
+        );
         const component = shallow(<Publishing {...propsWithNoRowCount} />);
         assert.isFalse(component.isEmpty());
       });
 
-      it('says your dataset will be public if revision\'s permission is public', () => {
+      it("says your dataset will be public if revision's permission is public", () => {
         const component = shallow(<Publishing {...propsWithSetLog} />);
         assert.equal(
           component.find('h2').text(),
@@ -227,17 +264,18 @@ describe('components/Modals/Publishing', () => {
         );
       });
 
-      it('says your dataset will be private if revision\'s permission is private', () => {
-        const propsWithPrivate = dotProp.set(propsWithSetLog, 'revision.permission', 'private');
+      it("says your dataset will be private if revision's permission is private", () => {
+        const propsWithPrivate = dotProp.set(
+          propsWithSetLog,
+          'revision.permission',
+          'private'
+        );
         const component = shallow(<Publishing {...propsWithPrivate} />);
         assert.equal(
           component.find('h2').text(),
           'Your dataset is being processed and will remain private'
         );
       });
-
     });
-
   });
-
 });

@@ -27,7 +27,7 @@ DropdownWithIcon.proptypes = {
   title: PropTypes.string.isRequired
 };
 
-class ColumnHeader extends Component {
+export class ColumnHeader extends Component {
   shouldComponentUpdate(nextProps) {
     return (
       !_.isEqual(nextProps.outputColumn, this.props.outputColumn) ||

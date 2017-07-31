@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import * as Types from 'models/forms';
 import ColumnFormConnected, { ColumnForm } from 'components/Forms/ColumnForm';
 
-describe.only('components/Forms/ColumnForm', () => {
+describe('components/Forms/ColumnForm', () => {
   const testStore = createStore(reducer, initialState, applyMiddleware(thunk));
 
   const testParams = {

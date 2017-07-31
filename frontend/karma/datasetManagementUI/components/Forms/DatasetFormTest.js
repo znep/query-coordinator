@@ -1,10 +1,9 @@
 import { assert } from 'chai';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from 'reducers/rootReducer';
 import initialState from '../../data/initialState';
 import thunk from 'redux-thunk';
-import TestUtils from 'react-addons-test-utils';
 import React from 'react';
 import DatasetFormConnected, {
   DatasetForm
@@ -13,7 +12,7 @@ import DatasetFormConnected, {
 describe('components/Forms/DatasetForm', () => {
   const newState = Object.assign({}, initialState);
 
-  newState.entities.views['kg5j-unyr'].customMetadataFieldsets = [
+  const customFieldsets = [
     {
       name: 'Cat Fieldset',
       fields: [
@@ -33,7 +32,21 @@ describe('components/Forms/DatasetForm', () => {
     }
   ];
 
-  const store = createStore(reducer, newState, applyMiddleware(thunk));
+  newState.entities.views[
+    'kg5j-unyr'
+  ].customMetadataFieldsets = customFieldsets;
+
+  const testStore = createStore(reducer, newState, applyMiddleware(thunk));
+
+  const testParams = {
+    category: 'dataset',
+    name: 'dfsdfdsf',
+    fourfour: 'kg5j-unyr',
+    revisionSeq: '0',
+    sourceId: '115',
+    inputSchemaId: '98',
+    outputSchemaId: '144'
+  };
 
   const defaultProps = {
     regularFieldsets: [
@@ -309,42 +322,67 @@ describe('components/Forms/DatasetForm', () => {
     const component = shallow(<DatasetForm {...defaultProps} />);
     assert.lengthOf(component.find('form'), 1);
     assert.lengthOf(component.find('Fieldset'), 5);
-    assert.lengthOf(component.find('Connect(Field)'), 9);
+    assert.lengthOf(component.find('withRouter(Connect(Field))'), 9);
   });
 
   it('updates values in store', () => {
-    const component = renderComponentWithStore(DatasetFormConnected, {}, store);
+    const component = mount(<DatasetFormConnected outputSchemaId={144} />, {
+      context: {
+        store: testStore,
+        router: {
+          params: testParams,
+          push: () => {},
+          replace: () => {},
+          go: () => {},
+          goBack: () => {},
+          goForward: () => {},
+          createHref: () => {},
+          createPath: () => {},
+          setRouteLeaveHook: () => {},
+          isActive: () => {}
+        }
+      },
+      childContextTypes: {
+        store: React.PropTypes.object
+      }
+    });
 
-    const inputField = component.querySelector('#name');
+    component
+      .find('#name')
+      .first()
+      .simulate('change', { target: { value: 'hey' } });
 
-    inputField.value = 'testing!!!';
-
-    TestUtils.Simulate.change(inputField, { target: inputField });
-
-    assert.equal(
-      store.getState().entities.views['kg5j-unyr'].name,
-      'testing!!!'
-    );
+    assert.equal(testStore.getState().entities.views['kg5j-unyr'].name, 'hey');
   });
 
   it('renders custom fieldset and fields', () => {
-    const component = renderComponentWithStore(DatasetFormConnected, {}, store);
-    const legends = [...component.querySelectorAll('legend')];
+    const component = mount(<DatasetFormConnected outputSchemaId={144} />, {
+      context: {
+        store: testStore,
+        router: {
+          params: testParams,
+          push: () => {},
+          replace: () => {},
+          go: () => {},
+          goBack: () => {},
+          goForward: () => {},
+          createHref: () => {},
+          createPath: () => {},
+          setRouteLeaveHook: () => {},
+          isActive: () => {}
+        }
+      },
+      childContextTypes: {
+        store: React.PropTypes.object
+      }
+    });
 
-    const customLegend = legends.filter(
-      legend =>
-        legend.textContent ===
-        newState.entities.views['kg5j-unyr'].customMetadataFieldsets[0].name
+    const legends = component.find('legend');
+
+    const customLegends = legends.filterWhere(
+      legend => legend.text() === customFieldsets[0].name
     );
 
-    const inputs = [...customLegend[0].parentNode.children]
-      .filter(child => child.nodeName.toUpperCase() === 'DIV')
-      .map(div => [...div.children])
-      .reduce((acc, childList) => acc.concat(childList), [])
-      .filter(child => child.nodeName.toUpperCase() === 'INPUT');
-
-    assert.lengthOf(customLegend, 1);
-
-    assert.lengthOf(inputs, 3);
+    assert.lengthOf(customLegends, 1);
   });
 });

@@ -1,22 +1,22 @@
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import _ from 'lodash';
-import TestUtils from 'react-addons-test-utils';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import ColumnHeader from 'components/Table/ColumnHeader';
-import { apiCallStarted, COLUMN_OPERATIONS } from 'actions/apiCalls';
-import { createStore, applyMiddleware } from 'redux';
-import reducer from 'reducers/rootReducer';
-import thunk from 'redux-thunk';
-import { bootstrapApp } from 'actions/bootstrap';
-import mockSocket from '../../testHelpers/mockSocket';
+import { shallow } from 'enzyme';
+import { ColumnHeader } from 'components/Table/ColumnHeader';
 import dotProp from 'dot-prop-immutable';
-import { bootstrapChannels } from '../../data/socketChannels';
-
-const socket = mockSocket(bootstrapChannels);
 
 describe('components/Table/ColumnHeader', () => {
+  const testParams = {
+    category: 'dataset',
+    name: 'dfsdfdsf',
+    fourfour: 'kg5j-unyr',
+    revisionSeq: '0',
+    sourceId: '115',
+    inputSchemaId: '98',
+    outputSchemaId: '52'
+  };
+
   const defaultProps = {
     outputSchema: {
       id: 52
@@ -34,233 +34,167 @@ describe('components/Table/ColumnHeader', () => {
     updateColumnType: _.noop,
     addColumn: _.noop,
     dropColumn: _.noop,
-    validateThenSetRowIdentifier: _.noop
+    validateThenSetRowIdentifier: _.noop,
+    params: testParams
   };
 
   it('renders without errors', () => {
-    const element = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...defaultProps} />, element);
-    assert.ok(element);
+    const component = shallow(<ColumnHeader {...defaultProps} />);
+    assert.isFalse(component.isEmpty());
   });
 
   it('handles column type changing', () => {
     const spy = sinon.spy();
+
     const props = {
       ...defaultProps,
       updateColumnType: spy,
       addColumn: _.noop,
       dropColumn: _.noop
     };
-    const element = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...props} />, element);
 
-    const select = element.querySelector('select');
-    select.value = 'number';
-    TestUtils.Simulate.change(select);
-    expect(spy.args[0]).to.deep.equal([
+    const component = shallow(<ColumnHeader {...props} />);
+
+    const select = component.find('select').first();
+
+    select.simulate('change', { target: { value: 'number' } });
+
+    assert.deepEqual(spy.args[0], [
       defaultProps.outputSchema,
       defaultProps.outputColumn,
-      'number'
+      'number',
+      defaultProps.params
     ]);
   });
 
-  it('renders a disable button when not disabled', () => {
+  it('renders an Ignore Column button when not ignored', () => {
     const props = {
       ...defaultProps,
       updateColumnType: _.noop,
       addColumn: _.noop,
       dropColumn: _.noop
     };
-    const element = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...props} />, element);
 
-    TestUtils.Simulate.click(element.querySelector('.dropdownButton'));
-    expect(element.querySelector('.socrata-icon-eye-blocked')).to.exist;
-    expect(element.querySelector('.socrata-icon-add')).to.not.exist;
+    const component = shallow(<ColumnHeader {...props} />);
+
+    const dropdown = component.find('Dropdown').dive().find('Picklist').dive();
+
+    assert.isAtLeast(dropdown.find('.socrata-icon-eye-blocked').length, 1);
+
+    assert.equal(dropdown.find('.socrata-icon-add').length, 0);
   });
 
-  it('renders an add button when disabled', () => {
+  it('renders an Add Column button when ignored', () => {
     const props = {
       ...defaultProps,
       outputColumn: {
-        transform: {
-          output_soql_type: 'text'
-        },
-        inputColumn: {
-          soql_type: 'text'
-        },
+        ...defaultProps.outputColumn,
         ignored: true
       },
       updateColumnType: _.noop,
       addColumn: _.noop,
       dropColumn: _.noop
     };
-    const element = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...props} />, element);
 
-    TestUtils.Simulate.click(element.querySelector('.dropdownButton'));
-    expect(element.querySelector('.socrata-icon-eye-blocked')).to.not.exist;
-    expect(element.querySelector('.socrata-icon-plus3')).to.exist;
+    const component = shallow(<ColumnHeader {...props} />);
+
+    const dropdown = component.find('Dropdown').dive().find('Picklist').dive();
+
+    assert.equal(dropdown.find('.socrata-icon-eye-blocked').length, 0);
+
+    assert.equal(dropdown.find('.socrata-icon-plus3').length, 1);
   });
 
   // testing fix for EN-12896
   it('handles column type changing after output schema changes', () => {
     const spy = sinon.spy();
-    const propsWithSpy = {
+
+    const props = {
       ...defaultProps,
-      updateColumnType: spy
+      updateColumnType: spy,
+      addColumn: _.noop,
+      dropColumn: _.noop
     };
-    // render for the first time
-    const element = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...propsWithSpy} />, element);
-    // render for the second time, with new output schema
+
     const newProps = {
-      ...propsWithSpy,
       outputSchema: {
         id: 53
+      },
+      params: {
+        ...testParams,
+        outputSchemaId: '53'
       }
     };
-    ReactDOM.render(<ColumnHeader {...newProps} />, element);
-    const select = element.querySelector('select');
-    select.value = 'number';
-    TestUtils.Simulate.change(select);
-    expect(spy.args[0]).to.deep.equal([
+
+    const component = shallow(<ColumnHeader {...props} />);
+
+    component.setProps(newProps);
+
+    const select = component.find('select').first();
+
+    select.simulate('change', { target: { value: 'number' } });
+
+    assert.deepEqual(spy.args[0], [
       newProps.outputSchema,
       defaultProps.outputColumn,
-      'number'
+      'number',
+      newProps.params
     ]);
   });
 
   describe('type list', () => {
     it('renders correct list of types for a text input column', () => {
-      const element = document.createElement('tr');
-      ReactDOM.render(<ColumnHeader {...defaultProps} />, element);
+      const component = shallow(<ColumnHeader {...defaultProps} />);
 
-      const options = element.querySelectorAll('select option');
-      const values = [...options].map(option => option.value);
-      expect(values).to.deep.equal([
-        'calendar_date',
-        'number',
-        'text',
-        'checkbox'
-      ]);
+      const values = component.find('option').map(o => o.prop('value'));
+
+      assert.deepEqual(values, ['calendar_date', 'number', 'text', 'checkbox']);
     });
 
     it('renders correct list of types for a geo input column', () => {
-      const element = document.createElement('tr');
       const withGeoInput = dotProp.set(
         defaultProps,
         'outputColumn.inputColumn.soql_type',
         'multipolygon'
       );
-      ReactDOM.render(<ColumnHeader {...withGeoInput} />, element);
 
-      const options = element.querySelectorAll('select option');
-      const values = [...options].map(option => option.value);
-      expect(values).to.deep.equal(['multipolygon', 'text']);
+      const component = shallow(<ColumnHeader {...withGeoInput} />);
+
+      const values = component.find('option').map(o => o.prop('value'));
+
+      assert.deepEqual(values, ['multipolygon', 'text']);
     });
 
     it('renders correct list of types for a number column', () => {
-      const element = document.createElement('tr');
       const withNumInput = dotProp.set(
         defaultProps,
         'outputColumn.inputColumn.soql_type',
         'number'
       );
-      ReactDOM.render(<ColumnHeader {...withNumInput} />, element);
 
-      const options = element.querySelectorAll('select option');
-      const values = [...options].map(option => option.value);
-      expect(values).to.deep.equal(['number', 'text', 'checkbox']);
+      const component = shallow(<ColumnHeader {...withNumInput} />);
+
+      const values = component.find('option').map(o => o.prop('value'));
+
+      assert.deepEqual(values, ['number', 'text', 'checkbox']);
     });
   });
 
-  it('renders a spinner and disables if an output schema is being created that replaces this column', () => {
-    COLUMN_OPERATIONS.forEach(operation => {
-      const store = createStore(
-        reducer,
-        applyMiddleware(thunk.withExtraArgument(socket))
-      );
-      store.dispatch(
-        bootstrapApp(
-          window.initialState.view,
-          window.initialState.revision,
-          window.initialState.customMetadataFieldsets
-        )
-      );
-      const call = {
-        operation: operation,
-        params: {
-          outputColumnId: 5
-        }
-      };
-      store.dispatch(apiCallStarted(0, call));
-      const props = {
-        ...defaultProps,
-        outputColumn: {
-          inputColumn: {
-            soql_type: 'text'
-          },
-          id: 5,
-          transform: {
-            output_soql_type: 'text'
-          }
-        },
-        activeApiCallInvolvingThis: true,
-        updateColumnType: _.noop,
-        addColumn: _.noop,
-        dropColumn: _.noop
-      };
-      const element = document.createElement('tr');
-      ReactDOM.render(<ColumnHeader {...props} />, element);
-
-      expect(element.querySelector('.spinner-default')).to.exist;
-    });
-  });
-
-  it('renders a spinner and disables if this column is being validated as a row identifier', () => {
+  it('renders a spinner if activeApiCallInvolvingThis is true', () => {
     const props = {
       ...defaultProps,
-      outputColumn: {
-        inputColumn: {
-          soql_type: 'text'
-        },
-        id: 5,
-        transform: {
-          output_soql_type: 'text'
-        }
-      },
-      activeApiCallInvolvingThis: true,
-      updateColumnType: _.noop,
-      addColumn: _.noop,
-      dropColumn: _.noop
+      activeApiCallInvolvingThis: true
     };
-    const element = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...props} />, element);
 
-    expect(element.querySelector('.spinner-default')).to.exist;
+    const component = shallow(<ColumnHeader {...props} />);
+
+    assert.isAtLeast(component.find('progressSpinner').length, 1);
   });
 
-  it("doesn't render a spinner if there's no api call in progress", () => {
-    const props = {
-      ...defaultProps,
-      outputColumn: {
-        inputColumn: {
-          soql_type: 'text'
-        },
-        id: 5,
-        transform: {
-          output_soql_type: 'text'
-        }
-      },
-      updateColumnType: _.noop,
-      addColumn: _.noop,
-      dropColumn: _.noop
-    };
-    const element = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...props} />, element);
+  it('does not render a spinner if activeApiCallInvolvingThis is false', () => {
+    const component = shallow(<ColumnHeader {...defaultProps} />);
 
-    expect(element.querySelector('.spinner-default')).to.not.exist;
+    assert.equal(component.find('progressSpinner').length, 0);
   });
 
   it('renders an id icon if this is a row identifier', () => {
@@ -279,8 +213,9 @@ describe('components/Table/ColumnHeader', () => {
       addColumn: _.noop,
       dropColumn: _.noop
     };
-    const element = document.createElement('tr');
-    ReactDOM.render(<ColumnHeader {...props} />, element);
-    expect(element.querySelector('.socrata-icon-id')).to.exist;
+
+    const component = shallow(<ColumnHeader {...props} />);
+
+    assert.isAtLeast(component.find('.socrata-icon-id').length, 1);
   });
 });

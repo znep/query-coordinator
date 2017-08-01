@@ -623,6 +623,8 @@ module BrowseActions
 
   private
 
+  # See also similar implementation in:
+  # platform-ui/frontend/app/controllers/catalog_landing_page_controller.rb#compute_page_title
   def get_title(options, facets)
     title_fragments = []
 

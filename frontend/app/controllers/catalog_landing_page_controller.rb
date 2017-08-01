@@ -107,6 +107,7 @@ class CatalogLandingPageController < ApplicationController
     @metadata = @catalog_landing_page.try(:metadata).to_h
   end
 
+  # See also platform-ui/frontend/lib/browse_actions.rb#get_title
   def compute_page_title
     # EN-15349: String used in page <title> to differentiate between different CLPs.
     # EN-17885: NASA 508 Compliance - Make page titles more different

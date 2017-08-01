@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
+import { Modal, ModalHeader, ModalContent, ModalFooter, SocrataIcon } from 'common/components';
 import { changeVisibility, fetchParentVisibility } from 'actions/asset_actions';
 import { handleEnter } from 'common/helpers/keyPressHelpers';
 import _ from 'lodash';
@@ -129,6 +129,9 @@ export class ChangeVisibility extends React.Component {
             onClick={() => setNewVisibility(option)}
             onKeyDown={handleEnter(() => setNewVisibility(option), true)}
             tabIndex={0}>
+            <div className="checkbox-container">
+              <SocrataIcon name="checkmark3" />
+            </div>
             <div className="option-title">{this.getTranslation(`options.${option}.title`)}</div>
             <span
               className={`option-icon ${iconClass(option)}`}

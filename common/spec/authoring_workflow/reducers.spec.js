@@ -255,10 +255,6 @@ describe('AuthoringWorkflow reducer', function() {
         expect(newState.metadata.data).to.equal(null);
       });
 
-      it('clears the phidippidesMetadata key', function() {
-        expect(newState.metadata.phidippidesMetadata).to.equal(null);
-      });
-
       it('sets the domain', function() {
         expect(newState.metadata.domain).to.equal(domain);
       });
@@ -269,6 +265,8 @@ describe('AuthoringWorkflow reducer', function() {
     });
 
     describe('RECEIVE_METADATA', function() {
+      const datasetMetadata = { id: 'data-sets', columns: [] };
+      const baseViewMetadata = { id: 'base-view', columns: [] };
       var state, action, newState;
 
       beforeEach(function() {
@@ -278,21 +276,20 @@ describe('AuthoringWorkflow reducer', function() {
           }
         });
 
-        action = actions.receiveMetadata([
-          { id: 'data-sets', columns: [] },
-          { id: 'phid-miss', columns: {} }
-        ]);
+        action = actions.receiveMetadata(
+          datasetMetadata,
+          baseViewMetadata
+        );
 
         newState = reducer(state, action);
       });
 
       it('sets isLoading to false', function() {
-        expect(newState.metadata.isLoading).to.equal(false);
+        assert.isFalse(newState.metadata.isLoading);
       });
 
       it('sets the data key', function() {
-        expect(newState.metadata.data).to.deep.equal({ id: 'data-sets', columns: [] });
-        expect(newState.metadata.phidippidesMetadata).to.deep.equal({ id: 'phid-miss', columns: {} });
+        assert.deepEqual(newState.metadata.data, datasetMetadata);
       });
     });
 
@@ -403,25 +400,6 @@ describe('AuthoringWorkflow reducer', function() {
 
       it('clears the curatedRegions key', function() {
         expect(newState.metadata.curatedRegions).to.be.null;
-      });
-    });
-
-    describe('SET_PHIDIPPIDES_METADATA', function() {
-      var state, action, newState;
-
-      beforeEach(function() {
-        state = _.merge(getDefaultState(), {
-          metadata: {
-            phidippidesMetadata: 'oldphi'
-          }
-        });
-
-        action = actions.setPhidippidesMetadata('newphi');
-        newState = reducer(state, action);
-      });
-
-      it('sets phidippides metadata', function() {
-        expect(newState.metadata.phidippidesMetadata).to.equal('newphi');
       });
     });
 

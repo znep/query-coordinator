@@ -85,6 +85,13 @@ Rails.application.routes.draw do
           match 'components(/:action)', :via => :get
         end
 
+        scope :controller => 'elements' do
+          get '/elements', :action => 'index'
+
+          # Automatically add a route for each demo page.
+          match 'elements(/:action)', :via => :get
+        end
+
         scope :controller => 'visualizations' do
           get '/visualizations', :action => 'index'
 

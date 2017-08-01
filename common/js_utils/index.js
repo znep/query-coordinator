@@ -6,6 +6,7 @@
 
 var _ = require('lodash');
 var $ = require('jquery');
+var jstz = require('jstz');
 
 if (typeof window.Promise !== 'function') {
   window.Promise = require('es6-promise-polyfill').Promise;
@@ -241,8 +242,10 @@ var utils = {
       case 'zh':
        return ',';
 
-      case 'it':
+      case 'ca':
       case 'es':
+      case 'it':
+      case 'nl':
         return '.';
 
       case 'fr':
@@ -269,9 +272,11 @@ var utils = {
       case 'zh':
        return '.';
 
-      case 'it':
+      case 'ca':
       case 'es':
       case 'fr':
+      case 'it':
+      case 'nl':
         return ',';
 
       default:
@@ -290,7 +295,20 @@ var utils = {
    * Gets locale from a global object (usually window)
    */
   getLocale: function(global) {
-    return !_.isObject(global) ? 'en' : _.get(global.serverConfig, 'locale', _.get(global.blist, 'locale', _.get(global.socrataConfig, 'locales.currentLocale', 'en')));
+    return !_.isObject(global) ?
+      'en' :
+      _.get(global.serverConfig, 'locale',
+        _.get(global.blist, 'locale',
+          _.get(global.socrataConfig, 'locales.currentLocale', 'en')
+        )
+      );
+  },
+
+  /**
+   * Gets the user timezone from the browser
+   */
+  getTimeZone: function() {
+    jstz.determine().name()
   },
 
   /**
@@ -393,9 +411,10 @@ var utils = {
   },
 
   // Given a number or a string representing a number, returns a string delimited
-  // by options.groupCharacter (default ,) that separates digits into groups of 3.
-  // The decimal portion will be separated by options.decimalCharacter (default .).
+  // by options.groupCharacter (default , for en locale) that separates digits into groups of 3.
+  // The decimal portion will be separated by options.decimalCharacter (default . for en locale).
   commaify: function(value, options) {
+    var isNumeric = _.isNumber(value);
 
     value = String(value);
 
@@ -408,12 +427,15 @@ var utils = {
 
     var commaifyOptions = _.assign({}, defaultOptions, options);
 
-    var pos = value.indexOf(defaultOptions.decimalCharacter);
+    // Because if input is numberic, this will always be . (period)
+    var decimalCharacterToLookFor = isNumeric ? '.' : defaultOptions.decimalCharacter;
+
+    var pos = value.indexOf(decimalCharacterToLookFor);
 
     if (pos === -1) {
       pos = value.length;
     } else {
-      value = value.replace(defaultOptions.decimalCharacter, commaifyOptions.decimalCharacter);
+      value = value.replace(decimalCharacterToLookFor, commaifyOptions.decimalCharacter);
     }
 
     pos -= 3;

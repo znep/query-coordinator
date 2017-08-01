@@ -54,6 +54,7 @@ function shapeRevision(apiResponse) {
 
     revision = {
       ..._.omit(revision, 'action'),
+      created_at: parseDate(revision.created_at),
       permission
     };
   } else {
@@ -114,7 +115,7 @@ export function updateRevision(permission) {
   };
 }
 
-export function applyRevision(outputSchemaId) {
+export function applyRevision() {
   return (dispatch, getState) => {
     const location = getState().ui.routing.location;
     const callId = uuid();
@@ -122,22 +123,12 @@ export function applyRevision(outputSchemaId) {
     dispatch(
       apiCallStarted(callId, {
         operation: APPLY_REVISION,
-        params: {
-          outputSchemaId
-        }
+        params: {}
       })
     );
 
-    let body;
-    if (outputSchemaId) {
-      body = { output_schema_id: outputSchemaId };
-    } else {
-      body = {};
-    }
-
     return socrataFetch(dsmapiLinks.applyRevision, {
-      method: 'PUT',
-      body: JSON.stringify(body)
+      method: 'PUT'
     })
       .then(checkStatus)
       .then(getJson)
@@ -198,6 +189,7 @@ function pollForTaskSetProgressSuccess(revision, taskSet) {
   const updatedTaskSet = {
     ...taskSet,
     created_at: parseDate(taskSet.created_at),
+    updated_at: parseDate(taskSet.updated_at),
     finished_at: taskSet.finished_at ? parseDate(taskSet.finished_at) : null
   };
 

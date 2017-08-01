@@ -220,13 +220,31 @@ $(function() {
   blist.pageOpened = Math.round(new Date().getTime() / 1000);
 
   // Fix dates for local timezone and blist locale
-  moment.locale(blist.locale);
+
+  var getLocale = function() {
+    return _.get(window.blist, 'locale', _.get(window.serverConfig, 'locale', 'en'));
+  };
+  moment.locale(getLocale());
+
+  var getTimezone = function() {
+    return _.get(
+      window.blist,
+      'configuration.userTimeZoneName',
+      jstz.determine().name() // eslint-disable-line no-undef
+    );
+  };
+
   blist.configuration.userTimeZoneName = jstz.determine().name(); // eslint-disable-line no-undef
+
+  // If any of this logic changes, please make corrsponding changes to dateLocalize() in
+  // frontend/public/javascripts/common/locale.js:dateLocalize()
+  // Also in frontend/public/javascripts/common/formatDate.js:formatDate()
   $('.dateLocalize').each(function() {
     var $dateSpan = $(this);
     var format = $dateSpan.data('format');
     var rawdate = $dateSpan.data('rawdatetime') * 1000;
-    $dateSpan.text(moment(rawdate).tz(blist.configuration.userTimeZoneName).format(format));
+
+    $dateSpan.text(moment(rawdate).tz(getTimezone()).locale(getLocale()).format(format));
   });
 
   // Special clean-up for maintenance message

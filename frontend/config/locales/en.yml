@@ -877,6 +877,7 @@ en:
             one: Showing 1 result
             other: Showing %{start}-%{end} of %{count} results
           count: Showing %{this} of %{total} results
+          page_title: Page %{page_number} of %{page_count}
         search:
           clear:
             title: Clear search
@@ -1662,18 +1663,20 @@ en:
       api: API
       comment: Comment on this Dataset
       contact_owner: Contact Dataset Owner
-      data: View Data
       download: Download
+      explore_data: Explore Data
       odata: Access Data via OData
       share: Share
-      visualize: Visualize and Explore
     add: Add
     api_flannel:
       canonical: Canonical ID
+      csv: CSV
       description: The Socrata Open Data API (SODA) provides programmatic access to this dataset including the ability to filter, query, and aggregate data.
       developer_portal_button: Developer Portal
       endpoint_title: API Endpoint
       foundry_button: API Docs
+      geojson: GeoJSON
+      json: JSON
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own documentation and API Endpoint below.
       name: Name
       resource_type: Resource Type
@@ -1693,6 +1696,11 @@ en:
     change: Change
     choose: Choose
     close: Close
+    carto_modal:
+      alert: Note that Carto has a file size limit of 250MB.
+      modal_content: Your browser will be redirected to Carto, would you like to proceed?
+      learn_more_link: Learn about more external integrations at
+      title: Open this dataset in Carto?
     contact_dataset_owner: Contact Dataset Owner
     contact_dataset_owner_modal:
       description: Send a short message to the dataset owner to ask a question, make a comment, or point out something about the data.
@@ -1733,7 +1741,7 @@ en:
       previous: Previous
       title: Table Preview
       unable_to_render: We're having trouble displaying this table.
-      visualize_link: Visualize and Explore (preview)
+      visualize_link: Visualize and Filter (preview)
     default_row_label: row
     done: Done
     download:
@@ -1745,6 +1753,13 @@ en:
       shapefile: Shapefile
       tsv_for_excel: TSV for Excel
     error: Error
+    explore_data:
+      more: More...
+      openin_carto: Carto
+      openin_plotly: Plot.ly
+      openin_separator: OPEN IN...
+      view_data: View Data
+      visualize_and_filter: Visualize and Filter (preview)
     featured_content:
       manage_prompt:
         button: Manage Featured Content
@@ -1832,6 +1847,12 @@ en:
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
       title: Access this Dataset via OData
     official: Official
+    open: Open
+    plotly_modal:
+      alert: Note that Plot.ly has a file size limit of 5MB.
+      modal_content: Your browser will be redirected to Plot.ly, would you like to proceed?
+      learn_more_link: Learn about more external integrations at
+      title: Open this dataset in Plot.ly?
     popular_views:
       load_more_error: There was a problem loading additional content.
       title: Popular Content Using this Data
@@ -2174,9 +2195,10 @@ en:
       filetypes: Supported file types are
       flash_error_message: Unsupported file type
       message: Drag a New Data File Here
-      no_uploads: No uploads yet :(
+      no_uploads: No uploads yet
       noncurrent: Other Uploads
       submessage: ...or click Browse to choose a file from your computer
+      uploads: Uploads
       title: Replace Data
     show_upsert:
       failure:
@@ -2734,8 +2756,10 @@ en:
       calendar: Calendar
       chart: Chart
       datalens: Data Lens
+      data_lens: Data Lens
       dataset: Dataset
       draft: Draft Dataset
+      federated_href: Federated External Dataset
       filter: Filtered View
       file: File or Document
       form: Form
@@ -2744,6 +2768,7 @@ en:
       new_view: Data Lens
       pulse: Pulse
       story: Story
+      working_copy: Working Copy
     errors:
       fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.
@@ -2763,6 +2788,7 @@ en:
           forms: Forms
           maps: Maps
           stories: Stories
+          working_copies: Working Copies
       authority:
         label: Authority
         options:
@@ -2832,6 +2858,9 @@ en:
         stories:
           one: Story
           other: Stories
+        workingCopies:
+          one: Working Copy
+          other: Working Copies
       asset_toggles:
         all_assets: All Assets
         my_assets: My Assets
@@ -3059,6 +3088,7 @@ en:
       permanent_links: Permanent Links
       permissions: Permissions
       private: Private
+      profile_picture: Profile Picture
       public: Public
       raters: Raters
       resource_name: Resource Name
@@ -3084,6 +3114,8 @@ en:
       visits: Visits
       your: Your Rating
     admin:
+      assets:
+        asset_inventory: Assets
       canvas:
         path_must_be_unique: Path already exists; please choose a different one.
         title_cannot_be_blank: Please enter a title.
@@ -3360,7 +3392,7 @@ en:
           data_and_assets: Data and Assets
           content: Content
           super_admin: Super Admin
-          administration: Administration
+          site_settings: Site Settings
         page_title: Administration
         comment_moderation: Comment Moderation
         comment_moderation_description: Review and approve comments submitted on your assets by users
@@ -3402,6 +3434,8 @@ en:
         users_description: Create and manage user roles on your site
         view_moderation: View Moderation
         view_moderation_description: Review and manage user-created views for inclusion in your catalog
+      internal:
+        feature_flags: Feature Flags
       jobs:
         cancel: Cancel
         close: Close
@@ -3459,8 +3493,8 @@ en:
             restore_success: Success! Your dataset was restored.
             server_error: We're having trouble loading this information right now. Please try again soon, or email support@socrata.com to get help.
           dataset: Dataset
-          deleted: Deleted
-          deleted_dataset: Deleted dataset
+          deleted: (Deleted)
+          deleted_dataset: (Deleted dataset)
           deleted_user: User has been deleted
           export_as_csv: Export As CSV
           filter_by: Filter By
@@ -4770,17 +4804,23 @@ en:
             option: Option
             title: Multiple Choice Options
           nbe_geocoding_configuration:
-            create_point_column: Create Point Column
-            create_geocoded_point_column: Create Geocoded Point Column
             address_label: Address
+            address_default_label: Default value for Address
             cancel_configuration_prompt: Are you sure you want to cancel geocoding configuration? Configuration must be completed at the time of column creation.
             country_label: Country
+            country_default_label: Default value for Country
+            create_point_column: Create Point Column
+            create_geocoded_point_column: Create Geocoded Point Column
+            default_placeholder: (Leave blank for no default)
             locality_label: Locality
-            optional_select_header: "(Infer / Use default)"
+            locality_default_label: Default value for Locality
+            select_header: "(Infer / Use default)"
             postal_code_label: Postal Code
+            postal_code_default_label: Default value for Postal Code
             region_label: Region
-            required_select_header: Select a column...
+            region_default_label: Default value for Region
             subregion_label: Sub-region
+            subregion_default_label: Default value for Sub-region
             subtitle: Configure Geocoding Source Columns
           nested_table:
             default_column_name: Untitled
@@ -5408,6 +5448,7 @@ en:
           filter: Filter
           manage: Manage
           more: More
+          more_asset_actions: Click here for more asset actions
           more_views: More Views
           visualize: Visualize
         view_list:

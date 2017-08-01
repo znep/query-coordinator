@@ -163,6 +163,7 @@ class SearchBox extends React.Component {
         <label htmlFor={autocompleteSearchInputId} styleName="aria-not-displayed">Search:</label>
         <input
           autoComplete="off"
+          className="autocomplete-input"
           id={autocompleteSearchInputId}
           onBlur={() => { this.handleFocusChanged(false); }}
           onChange={this.handleChange}

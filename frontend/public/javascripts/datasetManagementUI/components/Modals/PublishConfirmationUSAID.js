@@ -84,7 +84,7 @@ PublishConfirmationUSAID.propTypes = {
 };
 
 export function mapStateToProps({ entities, ui }) {
-  const latestOutputSchema = Selectors.latestOutputSchema(entities);
+  const latestOutputSchema = Selectors.currentOutputSchema(entities);
   const outputSchemaId = latestOutputSchema ? latestOutputSchema.id : null;
   const { id: revisionId } = Selectors.latestRevision(entities);
   const permission = entities.revisions[revisionId] ? entities.revisions[revisionId].permission : 'public';

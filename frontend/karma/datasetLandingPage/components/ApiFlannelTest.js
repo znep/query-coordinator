@@ -29,12 +29,22 @@ describe('components/ApiFlannel', () => {
     }));
 
     assert.ok(getDropdownToggle(element));
+    expect(getDropdownOptions(element).length).to.equal(3);
+  });
+
+  it('renders resource dropdown without geojson if location column doesnt exist', () => {
+    const element = renderComponent(ApiFlannel, getProps());
     expect(getDropdownOptions(element).length).to.equal(2);
   });
 
-  it('does not render a dropdown for the resource type if the view does not have a named resource url', () => {
-    const element = renderComponent(ApiFlannel, getProps());
-    expect(getDropdownOptions(element).length).to.equal(0);
+  it('renders resource dropdown with geojson if location column exists', () => {
+    const customProps = {
+      view: {
+        geoJsonResourceUrl: 'something'
+      }
+    };
+    const element = renderComponent(ApiFlannel, getProps(customProps));
+    expect(getDropdownOptions(element).length).to.equal(3);
   });
 
   it('switches the resource text when clicking the dropdown options', () => {

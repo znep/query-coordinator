@@ -280,7 +280,7 @@ export default React.createClass({
       ref: ref => this.placeholderRef = ref,
       className: classNames({
         'dropdown-placeholder': !placeholderIsFunction,
-        'dropdown-selected': !!_.get(selectedOption, 'value')
+        'dropdown-selected': !!selectedOption
       }),
       role: 'button'
     };
@@ -289,7 +289,11 @@ export default React.createClass({
       placeholder = placeholder();
     } else if (selectedOption) {
       placeholder = [placeholderText(selectedOption.title), caret];
-      icon = selectedOption.icon;
+      // TODO: Make this an explicit test for a SocrataIcon,
+      // or make it wrap a string into a SocrataIcon.
+      if (typeof selectedOption.icon === 'object') {
+        icon = selectedOption.icon;
+      }
     } else if (placeholderIsString) {
       placeholder = [placeholderText(placeholder), caret];
     } else if (placeholder === null) {

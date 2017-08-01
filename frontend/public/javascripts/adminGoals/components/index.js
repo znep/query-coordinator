@@ -1,7 +1,5 @@
-import * as Feedback from './feedback';
 import * as Socrata from './socrata';
 
-export { Feedback };
 export { Socrata };
 
 export { default as PreviewBar } from './PreviewBar/PreviewBar';

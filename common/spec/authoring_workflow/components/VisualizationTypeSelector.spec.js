@@ -115,11 +115,6 @@ describe('VisualizationTypeSelector', function() {
           name: 'Location Column'
         });
 
-        props.metadata.phidippidesMetadata.columns.location_column = {
-          renderTypeName: 'point',
-          name: 'Location Column'
-        };
-
         component = renderComponent(VisualizationTypeSelector, props);
       });
 

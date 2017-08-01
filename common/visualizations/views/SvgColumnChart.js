@@ -6,7 +6,6 @@ const utils = require('common/js_utils');
 // Project Imports
 const ColumnFormattingHelpers = require('../helpers/ColumnFormattingHelpers');
 const SvgVisualization = require('./SvgVisualization');
-const DataTypeFormatter = require('./DataTypeFormatter');
 const I18n = require('common/i18n').default;
 
 // Constants
@@ -43,6 +42,9 @@ const AXIS_DEFAULT_COLOR = '#979797';
 const AXIS_TICK_COLOR = '#adadad';
 const AXIS_GRID_COLOR = '#f1f1f1';
 const NO_VALUE_SENTINEL = '__NO_VALUE__';
+
+const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
+const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
 
 function SvgColumnChart($element, vif, options) {
   const self = this;
@@ -150,7 +152,6 @@ function SvgColumnChart($element, vif, options) {
     // should not overwrite with the no value label. "multiple columns" === greater than 2 because
     // the first element is going to be 'dimension'.
     const hasMultipleColumns = dataToRender.columns.length > 2;
-    const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
     measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
       map((label) => hasMultipleColumns ? label || noValueLabel : label);
 
@@ -502,7 +503,7 @@ function SvgColumnChart($element, vif, options) {
 
       if (self.getShowLegend()) {
 
-        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i, measureLabels)) ;
+        self.renderLegendBar(measureLabels, (i) => self.getColor(dataTableDimensionIndex, i, measureLabels));
         self.attachLegendBarEventHandlers();
 
         if (!alreadyDisplayingLegendBar) {
@@ -784,9 +785,14 @@ function SvgColumnChart($element, vif, options) {
       attr('data-dimension-value', (datum, dimensionIndex, measureIndex) => {
         const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
         const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-        return _.isNil(datum[0]) ?
-          NO_VALUE_SENTINEL :
-          ColumnFormattingHelpers.formatValue(datum[0], column, dataToRender);
+
+        if (_.isNil(datum[0])) {
+          return NO_VALUE_SENTINEL;
+        } else if (datum[0] === otherLabel) {
+          return otherLabel;
+        } else {
+          return ColumnFormattingHelpers.formatValue(datum[0], column, dataToRender);
+        }
       }).
       attr('transform', (d) => `translate(${d3DimensionXScale(d[0])},0)`);
 
@@ -804,7 +810,15 @@ function SvgColumnChart($element, vif, options) {
           (datum, measureIndex, dimensionIndex) => {
             const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
             const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-            return ColumnFormattingHelpers.formatValue(dimensionValues[dimensionIndex], column, dataToRender);
+            const value = dimensionValues[dimensionIndex];
+
+            if (_.isNil(value)) {
+              return noValueLabel;
+            } else if (value === otherLabel) {
+              return otherLabel;
+            } else {
+              return ColumnFormattingHelpers.formatValue(value, column, dataToRender);
+            }
           }
         ).
         attr(
@@ -829,7 +843,13 @@ function SvgColumnChart($element, vif, options) {
         (datum, measureIndex, dimensionIndex) => {
           const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
           const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-          return ColumnFormattingHelpers.formatValue(dimensionValues[dimensionIndex], column, dataToRender);
+          const value = dimensionValues[dimensionIndex];
+
+          if (value === otherLabel) {
+            return otherLabel;
+          } else {
+            return ColumnFormattingHelpers.formatValue(value, column, dataToRender);
+          }
         }
       ).
       attr(
@@ -1005,9 +1025,16 @@ function SvgColumnChart($element, vif, options) {
           if (!isCurrentlyPanning()) {
             const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
             const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`);
-            const dimensionValue = _.isNil(datum[0]) ?
-              NO_VALUE_SENTINEL :
-              ColumnFormattingHelpers.formatValue(datum[0], column, dataToRender);
+            let dimensionValue;
+
+            if (_.isNil(datum[0])) {
+              dimensionValue = NO_VALUE_SENTINEL;
+            } else if (datum[0] === otherLabel) {
+              dimensionValue = otherLabel;
+            } else {
+              dimensionValue = ColumnFormattingHelpers.formatValue(datum[0], column, dataToRender);
+            }
+
             const dimensionGroup = xAxisAndSeriesSvg.select(
               `g.dimension-group[data-dimension-value="${dimensionValue}"]`
             );
@@ -1072,7 +1099,7 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function conditionallyTruncateLabel(label) {
-    label = _.isNull(label) ? I18n.t('shared.visualizations.charts.common.no_value') : label;
+    label = _.isNull(label) ? noValueLabel : label;
 
     return (label.length >= DIMENSION_LABELS_MAX_CHARACTERS) ?
       '{0}…'.format(
@@ -1132,7 +1159,16 @@ function SvgColumnChart($element, vif, options) {
         //   }
         // } else {
           const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
-          const label = ColumnFormattingHelpers.formatValue(d, column, dataToRender);
+          let label;
+
+          if (_.isNil(d)) {
+            label = noValueLabel;
+          } else if (d === otherLabel) {
+            label = otherLabel;
+          } else {
+            label = ColumnFormattingHelpers.formatValue(d, column, dataToRender);
+          }
+
           return conditionallyTruncateLabel(label);
         // See TODO above.
         // }
@@ -1272,9 +1308,7 @@ function SvgColumnChart($element, vif, options) {
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
         $('<td>', {'colspan': 2}).text(
-          (title === NO_VALUE_SENTINEL) ?
-            I18n.t('shared.visualizations.charts.common.no_value') :
-            title
+          (title === NO_VALUE_SENTINEL) ? noValueLabel : title
         )
       );
     const $table = $('<table>', {'class': 'socrata-flyout-table'}).
@@ -1301,7 +1335,7 @@ function SvgColumnChart($element, vif, options) {
       let valueString;
 
       if (value === null) {
-        valueString = I18n.t('shared.visualizations.charts.common.no_value');
+        valueString = noValueLabel;
       } else {
         const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
         valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
@@ -1363,10 +1397,7 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function showColumnFlyout(columnElement, color, label, value, measureIndex) {
-    const title = (
-      columnElement.getAttribute('data-dimension-value') ||
-      I18n.t('shared.visualizations.charts.common.no_value')
-    );
+    const title = columnElement.getAttribute('data-dimension-value') || noValueLabel;
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
@@ -1385,7 +1416,7 @@ function SvgColumnChart($element, vif, options) {
     let payload = null;
 
     if (value === null) {
-      valueString = I18n.t('shared.visualizations.charts.common.no_value');
+      valueString = noValueLabel;
     } else {
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
       valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);

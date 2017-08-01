@@ -62,7 +62,7 @@ export const isNonEmptyString = string => {
 };
 
 export const setUnits = (series, action) => {
-  const rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', null);
+  const rowDisplayUnit = _.get(action, 'baseViewMetadata.metadata.rowLabel', null);
   const unitOne = _.get(series, 'unit.one', null);
   const unitOther = _.get(series, 'unit.other', null);
   const defaultUnitRegex = new RegExp(`^${I18n.t('shared.visualizations.charts.common.unit.one')}$`);

@@ -13,7 +13,7 @@ http://www.socrata.com
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <%= rendered_stylesheet_tag 'styleguide' %>
+    <%= rendered_stylesheet_tag 'styleguide-layout' %>
 
     <%= rendered_stylesheet_tag 'datasets-common' %>
 
@@ -39,6 +39,13 @@ http://www.socrata.com
     <div id="noticeContainer">
       <%= display_styleguide_flashes %>
     </div>
+
+    <%- if render_admin_header? %>
+      <div class="admin-header">
+        <%= render 'administration/admin_breadcrumb' %>
+        <%= yield :admin_header %>
+      </div>
+    <%- end %>
 
     <main role="main" id="content">
       <%= yield %>

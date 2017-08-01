@@ -9,6 +9,7 @@ describe('<Result />', () => {
     index: 0,
     matchOffsets: [{ start: 0, length: 2 }, { start: 3, length: 2 }],
     name: 'An antsy airplane',
+    onChooseResult: () => {},
     onResultFocusChanged: () => {},
     onQueryChanged: () => {},
     onResultsVisibilityChanged: () => {}

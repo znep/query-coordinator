@@ -11,13 +11,13 @@ import NotifyButton from './NotifyButton';
 import RowDetails from '../components/RowDetails';
 import * as Links from '../links';
 import { Link } from 'react-router';
-import { latestOutputSchema } from 'selectors';
+import * as Selectors from 'selectors';
 import * as Actions from '../actions/manageUploads';
 import * as ApplyRevision from '../actions/applyRevision';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import styles from 'styles/ShowRevision.scss';
 
-const noDataYetView = createUpload => {
+const noDataYetView = (createUpload, params) => {
   return (
     <div className={styles.tableInfo}>
       <h3 className={styles.previewAreaHeader}>
@@ -36,7 +36,7 @@ const noDataYetView = createUpload => {
         type="file"
         accept={enabledFileExtensions.join(',')}
         aria-labelledby="source-label"
-        onChange={evt => createUpload(evt.target.files[0])} />
+        onChange={evt => createUpload(evt.target.files[0], params.fourfour, params.revisionSeq)} />
 
       <p className={styles.fileTypes}>
         {I18n.home_pane.supported_uploads} {enabledFileExtensions.map(formatExpanation).join(', ')}
@@ -50,7 +50,9 @@ const outputSchemaView = (entities, outputSchema) => {
   if (!inputSchema) return;
   return (
     <div className={styles.tableInfo}>
-      <h3 className={styles.previewAreaHeader}>{I18n.home_pane.data_uploaded}</h3>
+      <h3 className={styles.previewAreaHeader}>
+        {I18n.home_pane.data_uploaded}
+      </h3>
       <p>
         {I18n.home_pane.data_uploaded_blurb}
       </p>
@@ -68,15 +70,21 @@ const outputSchemaView = (entities, outputSchema) => {
 const upsertInProgressView = () => {
   return (
     <div className={styles.tableInfo}>
-      <h3 className={styles.previewAreaHeader}>{I18n.home_pane.being_processed}</h3>
-      <p>{I18n.home_pane.being_processed_detail}</p>
-      <div><NotifyButton /></div>
+      <h3 className={styles.previewAreaHeader}>
+        {I18n.home_pane.being_processed}
+      </h3>
+      <p>
+        {I18n.home_pane.being_processed_detail}
+      </p>
+      <div>
+        <NotifyButton />
+      </div>
     </div>
   );
 };
 
 // WRAPPER COMPONENT
-const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, createUpload }) => {
+const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, createUpload, params }) => {
   let child;
 
   if (upsertExists) {
@@ -84,7 +92,7 @@ const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, create
   } else if (outputSchema) {
     child = outputSchemaView(entities, outputSchema);
   } else {
-    child = noDataYetView(createUpload);
+    child = noDataYetView(createUpload, params);
   }
 
   return (
@@ -98,7 +106,8 @@ WrapDataTablePlaceholder.propTypes = {
   upsertExists: PropTypes.number.isRequired,
   outputSchema: PropTypes.object,
   entities: PropTypes.object,
-  createUpload: PropTypes.func
+  createUpload: PropTypes.func,
+  params: PropTypes.object
 };
 
 function upsertCompleteView(view, outputSchema) {
@@ -173,7 +182,7 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
     </div>
   );
 
-  const outputSchema = latestOutputSchema(entities);
+  const outputSchema = Selectors.currentOutputSchema(entities);
   const doesUpsertExist = _.size(
     _.filter(entities.task_sets, uj => uj.status !== ApplyRevision.TASK_SET_FAILURE)
   );
@@ -205,6 +214,7 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
           upsertExists={doesUpsertExist}
           outputSchema={null}
           entities={entities}
+          params={urlParams}
           createUpload={createUpload} />
       );
     }
@@ -214,6 +224,7 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
         upsertExists={doesUpsertExist}
         outputSchema={outputSchema}
         entities={entities}
+        params={urlParams}
         createUpload={createUpload} />
     );
   }
@@ -223,12 +234,14 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
       <div className={styles.homeContent}>
         {metadataSection}
         <div className={styles.schemaPreviewContainer}>
-          <SchemaPreview db={entities} />
+          <SchemaPreview />
           <RowDetails />
         </div>
 
         <section className={styles.tableContainer}>
-          <h2 className={styles.header}>{I18n.home_pane.table_preview}</h2>
+          <h2 className={styles.header}>
+            {I18n.home_pane.table_preview}
+          </h2>
 
           {dataTable}
         </section>
@@ -249,8 +262,8 @@ ShowRevision.propTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    createUpload: file => {
-      dispatch(Actions.createUpload(file));
+    createUpload: (file, fourfour, revisionSequence) => {
+      dispatch(Actions.createUpload(file, fourfour, revisionSequence));
     },
     pushToEditMetadata: url => dispatch(push(url))
   };

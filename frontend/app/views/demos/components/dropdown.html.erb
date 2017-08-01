@@ -68,6 +68,10 @@
           const { title, value } = option;
           console.log(`option selected: ${title}, ${value}`);
         },
+        placeholder: () => React.createElement('div', {key: 0}, [
+          React.createElement(components.SocrataIcon, {key: 1, name: 'featured'}),
+          React.createElement('span', {key: 2}, ' Select a thing...')
+        ]),
         options: [
           { title: 'Emotional technicality', value: 'emotecho', icon: facebookIcon },
           { title: 'Pontificate harder', value: 'ponfer', icon: twitterIcon },

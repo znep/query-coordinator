@@ -198,15 +198,14 @@ export const clearAllFilters = () => (dispatch, getState) => {
     updateQueryString(dispatch, getState);
   };
 
-  const initialState = { ...getUnfilteredState(), q: null, pageNumber: 1 };
+  const initialState = { ...getUnfilteredState(), pageNumber: 1 };
 
   return fetchResults(
     dispatch,
     getState,
     {
       ...initialState,
-      action: 'CLEAR_ALL_FILTERS',
-      q: currentQuery()
+      action: 'CLEAR_ALL_FILTERS'
     },
     onSuccess
   );

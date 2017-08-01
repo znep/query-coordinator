@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
+import $ from 'jquery';
 
 import Visualization from 'common/visualizations/components/Visualization';
 
@@ -13,17 +14,25 @@ describe('Visualization', () => {
   const renderComponent = _.flow(React.createElement, TestUtils.renderIntoDocument);
   const getDefaultProps = () => ( { vif: mockVif } );
 
+  beforeEach(() => {
+    sinon.stub($.fn, 'socrataSvgHistogram', () => {});
+  });
+
+  afterEach(() => {
+    $.fn.socrataSvgHistogram.restore();
+  });
+
+
   it('renders an element', () => {
     element = renderComponent(Visualization, getDefaultProps());
 
-    expect(ReactDOM.findDOMNode(element)).to.exist;
+    assert.isNotNull(ReactDOM.findDOMNode(element));
   });
 
   it('initializes a visualization', () => {
     element = renderComponent(Visualization, getDefaultProps());
-    const container = ReactDOM.findDOMNode(element).querySelector('.socrata-visualization-container');
-
-    expect(container).to.exist;
+    sinon.assert.calledOnce($.fn.socrataSvgHistogram);
+    sinon.assert.calledWith($.fn.socrataSvgHistogram, mockVif);
   });
 
   describe('visualization event handling', () => {
@@ -35,14 +44,14 @@ describe('Visualization', () => {
       const updateSpy = sinon.spy(element.visualization, 'update');
       element.componentDidUpdate();
 
-      expect(updateSpy.called).to.eq(true);
+      sinon.assert.called(updateSpy);
     });
 
     it('removes the visualization on unmount', () => {
       element.componentWillUnmount();
       const container = ReactDOM.findDOMNode(element).querySelector('.socrata-visualization-container');
 
-      expect(container).to.not.exist;
+      assert.isNull(container);
     });
   });
 });

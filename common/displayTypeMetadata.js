@@ -4,6 +4,7 @@ function getIconClassForDisplayType(displayType, isPublished = true) {
     case 'grouped':
       return 'socrata-icon-filter';
 
+    case 'federated_href':
     case 'href':
       return 'socrata-icon-external';
 

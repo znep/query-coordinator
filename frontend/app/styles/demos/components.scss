@@ -2,7 +2,6 @@
 
 .styleguide-section {
   width: 768px;
-  min-height: 1000px;
   margin: 20px auto;
 }
 
@@ -72,4 +71,48 @@
 // Side Menu examples
 #menu-container .side-menu {
   z-index: 9999;
+}
+
+// Flyout examples
+#example-flyout-trigger {
+  background: $dark-grey-0;
+  color: $white;
+  padding: 5em;
+}
+
+// Specimens
+.specimen,
+.speciment-meta {
+  display: block;
+}
+
+.specimen {
+  font-size: ms(2);
+
+  &.italic {
+    font-style: italic;
+  }
+
+  &.light {
+    font-weight: 200;
+
+  }
+
+  &.semibold {
+    font-weight: 600;
+  }
+
+  &.bold {
+    font-weight: 700;
+  }
+}
+
+.specimen-meta {
+  font-size: ms(-1);
+  margin-bottom: ms(2);
+}
+
+.dark-context {
+  background-color: $black;
+  padding: ms(-3);
 }

@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
-import { Link } from 'react-router';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { push } from 'react-router-redux';
 import { connect } from 'react-redux';
@@ -9,7 +8,9 @@ import { interpolate, easeInOutQuad } from '../lib/interpolate';
 import { commaify } from '../../common/formatNumber';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
+import * as Actions from '../actions/showOutputSchema';
 import * as LoadDataActions from '../actions/loadData';
+import { SAVE_CURRENT_OUTPUT_SCHEMA } from '../actions/apiCalls';
 import { setOutputSchemaId } from 'actions/routing';
 import * as DisplayState from '../lib/displayState';
 import Table from './Table';
@@ -17,25 +18,8 @@ import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
 import ReadyToImport from './ReadyToImport';
 import PagerBar from './Table/PagerBar';
 import ErrorPointer from 'components/Table/ErrorPointer';
+import ApiCallButton from 'components/ApiCallButton';
 import styles from 'styles/ShowOutputSchema.scss';
-
-function query(entities, sourceId, inputSchemaId, outputSchemaIdStr) {
-  const outputSchemaId = _.toNumber(outputSchemaIdStr);
-  const source = entities.sources[_.toNumber(sourceId)];
-  const inputSchema = entities.input_schemas[_.toNumber(inputSchemaId)];
-  const outputSchema = entities.output_schemas[outputSchemaId];
-
-  const columns = Selectors.columnsForOutputSchema(entities, outputSchemaId);
-  const canApplyRevision = Selectors.allTransformsDone(columns, inputSchema);
-
-  return {
-    source,
-    inputSchema,
-    outputSchema,
-    columns,
-    canApplyRevision
-  };
-}
 
 const COL_WIDTH_PX = 250; // matches style on td in Table.scss
 const ERROR_SCROLL_DURATION_MS = 1000;
@@ -140,6 +124,7 @@ export class ShowOutputSchema extends Component {
 
   render() {
     const {
+      revision,
       source,
       inputSchema,
       outputSchema,
@@ -147,6 +132,7 @@ export class ShowOutputSchema extends Component {
       displayState,
       canApplyRevision,
       numLoadsInProgress,
+      saveCurrentOutputSchema,
       goHome,
       routing
     } = this.props;
@@ -221,11 +207,12 @@ export class ShowOutputSchema extends Component {
             {canApplyRevision ? <ReadyToImport /> : <div />}
 
             <div>
-              <Link to={Links.home}>
-                <button className={styles.saveBtn}>
-                  {I18n.home_pane.save_for_later}
-                </button>
-              </Link>
+              <ApiCallButton
+                onClick={() => saveCurrentOutputSchema(revision, outputSchema.id)}
+                operation={SAVE_CURRENT_OUTPUT_SCHEMA}
+                params={{ outputSchemaId: outputSchema.id }}>
+                {I18n.home_pane.save_for_later}
+              </ApiCallButton>
             </div>
           </ModalFooter>
         </Modal>
@@ -235,6 +222,7 @@ export class ShowOutputSchema extends Component {
 }
 
 ShowOutputSchema.propTypes = {
+  revision: PropTypes.object.isRequired,
   source: PropTypes.object.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   inputSchema: PropTypes.object.isRequired,
@@ -243,6 +231,7 @@ ShowOutputSchema.propTypes = {
   canApplyRevision: PropTypes.bool.isRequired,
   numLoadsInProgress: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
+  saveCurrentOutputSchema: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   routing: PropTypes.object.isRequired,
   urlParams: PropTypes.shape({
@@ -252,14 +241,25 @@ ShowOutputSchema.propTypes = {
 
 export function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
-  const queryResults = query(
-    state.entities,
-    _.toNumber(params.sourceId),
-    _.toNumber(params.inputSchemaId),
-    _.toNumber(params.outputSchemaId)
-  );
+  const entities = state.entities;
+
+  const revisionSeq = _.toNumber(params.revisionSeq);
+  const revision = _.find(entities.revisions, { fourfour: params.fourfour, revision_seq: revisionSeq });
+  const outputSchemaId = _.toNumber(params.outputSchemaId);
+  const source = entities.sources[_.toNumber(params.sourceId)];
+  const inputSchema = entities.input_schemas[_.toNumber(params.inputSchemaId)];
+  const outputSchema = entities.output_schemas[params.outputSchemaId];
+
+  const columns = Selectors.columnsForOutputSchema(entities, outputSchemaId);
+  const canApplyRevision = Selectors.allTransformsDone(columns, inputSchema);
+
   return {
-    ...queryResults,
+    revision,
+    source,
+    inputSchema,
+    outputSchema,
+    columns,
+    canApplyRevision,
     numLoadsInProgress: Selectors.rowLoadOperationsInProgress(state.ui.apiCalls),
     displayState: DisplayState.fromUiUrl(_.pick(ownProps, ['params', 'route'])),
     routing: ownProps.location,
@@ -271,6 +271,12 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     goHome: () => {
       dispatch(push(Links.home(ownProps.location)));
+    },
+    saveCurrentOutputSchema: (revision, outputSchemaId) => {
+      dispatch(Actions.saveCurrentOutputSchemaId(revision, outputSchemaId))
+        .then(() => {
+          dispatch(push(Links.home(ownProps.location)));
+        });
     },
     dispatch
   };

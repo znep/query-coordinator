@@ -43,7 +43,35 @@ export default class InfoPaneButtons extends Component {
     }
   }
 
-  renderViewDataButton() {
+  renderVisualizeAndFilterLink() {
+    const { view, onClickVisualizeAndFilter } = this.props;
+    const isBlobbyOrHref = view.isBlobby || view.isHref;
+
+    const { enableVisualizationCanvas } = serverConfig.featureFlags;
+    const canCreateVisualizationCanvas = enableVisualizationCanvas &&
+      isUserRoled() &&
+      _.isString(view.bootstrapUrl);
+
+    if (isBlobbyOrHref || !canCreateVisualizationCanvas) {
+      return null;
+    }
+
+    return (
+      <li>
+        <a
+          tabIndex="0"
+          role="button"
+          data-id={view.id}
+          className="option"
+          href={localizeLink(view.bootstrapUrl)}
+          onClick={onClickVisualizeAndFilter}>
+          {I18n.explore_data.visualize_and_filter}
+        </a>
+      </li>
+    );
+  }
+
+  renderViewDataLink() {
     const { view, onClickGrid } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
@@ -52,12 +80,85 @@ export default class InfoPaneButtons extends Component {
     }
 
     return (
-      <a
-        href={localizeLink(view.gridUrl)}
-        className="btn btn-simple btn-sm unstyled-link grid"
-        onClick={onClickGrid}>
-        {I18n.action_buttons.data}
-      </a>
+      <li>
+        <a className="grid-link" role="menuitem" href={localizeLink(view.gridUrl)} onClick={onClickGrid}>
+          {I18n.explore_data.view_data}
+        </a>
+      </li>
+    );
+  }
+
+  renderOpenInCartoLink() {
+    const { view } = this.props;
+
+    if (!view.cartoUrl) {
+      return null;
+    }
+
+    return (
+      <li key="carto">
+        <a role="menuitem" data-modal="carto-modal">
+          {I18n.explore_data.openin_carto}
+        </a>
+      </li>
+    );
+  }
+
+  renderOpenInPlotlyLink() {
+    return (
+      <li key="plotly">
+        <a role="menuitem" data-modal="plotly-modal">
+          {I18n.explore_data.openin_plotly}
+        </a>
+      </li>
+    );
+  }
+
+  renderExternalIntegrations() {
+    const { enableExternalDataIntegrations } = serverConfig.featureFlags;
+
+    if (!enableExternalDataIntegrations) {
+      return [];
+    }
+
+    const listItems = [];
+
+    listItems.push(
+      <li key="separator" className="openin-separator">
+        {I18n.explore_data.openin_separator}
+      </li>
+    );
+
+    listItems.push(this.renderOpenInCartoLink());
+    listItems.push(this.renderOpenInPlotlyLink());
+
+    listItems.push(
+      <li key="more">
+        <a
+          className="more-options-button"
+          href="https://support.socrata.com/hc/en-us/articles/115010730868">
+          {I18n.explore_data.more}
+        </a>
+      </li>
+    );
+
+    return listItems;
+  }
+
+  renderExploreDataDropdown() {
+    return (
+      <div
+        className="dropdown explore-dropdown btn btn-simple btn-sm"
+        data-dropdown
+        data-orientation="bottom">
+        <span className="btn-label" aria-hidden>{I18n.action_buttons.explore_data}</span>
+        <span className="icon icon-arrow-down" />
+        <ul role="menu" aria-label={I18n.action_buttons.explore_data} className="dropdown-options">
+          {this.renderVisualizeAndFilterLink()}
+          {this.renderViewDataLink()}
+          {this.renderExternalIntegrations()}
+        </ul>
+      </div>
     );
   }
 
@@ -189,22 +290,6 @@ export default class InfoPaneButtons extends Component {
     const { view } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
-    const { enableVisualizationCanvas } = serverConfig.featureFlags;
-    const canCreateVisualizationCanvas = enableVisualizationCanvas &&
-      isUserRoled() &&
-      _.isString(view.bootstrapUrl);
-
-    let visualizeLink = null;
-    if (!isBlobbyOrHref && canCreateVisualizationCanvas) {
-      visualizeLink = (
-        <li>
-          <a tabIndex="0" role="button" className="option" href={localizeLink(view.bootstrapUrl)}>
-            {I18n.action_buttons.visualize}
-          </a>
-        </li>
-      );
-    }
-
     const contactFormLink = !view.disableContactDatasetOwner ? (
       <li>
         <a tabIndex="0" role="button" className="option" data-modal="contact-form">
@@ -247,7 +332,6 @@ export default class InfoPaneButtons extends Component {
       <div className="btn btn-simple btn-sm dropdown more" data-dropdown data-orientation="bottom">
         <span aria-hidden className="icon-waiting"></span>
         <ul className="dropdown-options">
-          {visualizeLink}
           {contactFormLink}
           {commentLink}
           {odataLink}
@@ -260,7 +344,7 @@ export default class InfoPaneButtons extends Component {
   render() {
     return (
       <div className="btn-group">
-        {this.renderViewDataButton()}
+        {this.renderExploreDataDropdown()}
         {this.renderManageButton()}
         {this.renderDownloadDropdown()}
         {this.renderApiButton()}
@@ -275,6 +359,7 @@ InfoPaneButtons.propTypes = {
   view: PropTypes.object.isRequired,
   onDownloadData: PropTypes.func,
   onClickGrid: PropTypes.func,
+  onClickVisualizeAndFilter: PropTypes.func,
   isDesktop: PropTypes.bool,
   isTablet: PropTypes.bool,
   isMobile: PropTypes.bool

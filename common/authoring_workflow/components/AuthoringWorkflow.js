@@ -47,6 +47,7 @@ export const AuthoringWorkflow = React.createClass({
 
   getDefaultProps() {
     return {
+      enableFiltering: true,
       onComplete: _.noop,
       onBack: _.noop,
       onReset: _.noop,

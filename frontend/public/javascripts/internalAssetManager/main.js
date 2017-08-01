@@ -10,6 +10,7 @@ import reducer from './reducers';
 import App from './app';
 import { dateLocalize } from 'common/locale';
 import FeedbackPanel from 'common/components/FeedbackPanel';
+import Localization from 'common/i18n/components/Localization';
 
 const middleware = [thunk];
 
@@ -26,9 +27,11 @@ if (_.get(window, 'serverConfig.environment') === 'development') {
 const store = createStore(reducer, applyMiddleware(...middleware));
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <Localization locale={serverConfig.locale || 'en'}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </Localization>,
   document.querySelector('#internal-asset-manager-content')
 );
 

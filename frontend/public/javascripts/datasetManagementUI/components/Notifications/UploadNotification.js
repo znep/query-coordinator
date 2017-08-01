@@ -18,10 +18,10 @@ const callStatusToNotificationStatus = callStatus => {
 };
 
 const errorMessage = (apiCall, source) => {
-  if (_.get(apiCall, 'error.english', null)) {
+  if (_.get(apiCall, 'error.reason', null)) {
     return (
       <div className={styles.msgContainer}>
-        {apiCall.error.english || apiCall.error.message}
+        {apiCall.error.reason}
       </div>
     );
   }
@@ -91,7 +91,7 @@ UploadNotification.propTypes = {
   apiCall: PropTypes.shape({
     status: PropTypes.string.isRequired,
     error: PropTypes.shape({
-      english: PropTypes.string.isRequired
+      reason: PropTypes.string.isRequired
     })
   }).isRequired,
   showDetails: PropTypes.bool,

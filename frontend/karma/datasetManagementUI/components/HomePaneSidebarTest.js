@@ -3,26 +3,22 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
-import { editView } from 'actions/views';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import HomePaneSidebar, { ManageData } from 'components/HomePaneSidebar';
-import wsmock from '../testHelpers/mockSocket';
+import mockSocket from '../testHelpers/mockSocket';
+import { bootstrapChannels } from '../data/socketChannels';
 
 describe('components/HomePaneSidebar', () => {
   let store;
-  let unmockWS;
 
-  before(() => {
-    unmockWS = wsmock();
-  });
-
-  after(() => {
-    unmockWS.stop();
-  });
+  const socket = mockSocket(bootstrapChannels);
 
   beforeEach(() => {
-    store = createStore(rootReducer, applyMiddleware(thunk));
+    store = createStore(
+      rootReducer,
+      applyMiddleware(thunk.withExtraArgument(socket))
+    );
     store.dispatch(
       bootstrapApp(
         window.initialState.view,
@@ -35,18 +31,16 @@ describe('components/HomePaneSidebar', () => {
   it("shows a disabled 'Describe Columns' button if columnsExist is falsey", () => {
     const defaultProps = {
       entities: {
-        __loads__: {},
+        revisions: {
+          0: { id: 0 }
+        },
         views: {
           's396-jk8m': {
             id: 's396-jk8m',
             name: 'vsgfdfg',
             viewCount: 0,
             downloadCount: 0,
-            license: {},
-            __status__: {
-              type: 'SAVED',
-              savedAt: 'ON_SERVER'
-            }
+            license: {}
           }
         },
         updates: {},
@@ -102,5 +96,4 @@ describe('components/HomePaneSidebar', () => {
     const element = renderComponentWithStore(HomePaneSidebar, props, store);
     assert.isNotNull(element.querySelectorAll('.sidebarData'));
   });
-
 });

@@ -5,7 +5,6 @@ import * as Links from 'links';
 import * as dsmapiLinks from 'dsmapiLinks';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
 import { parseDate } from 'lib/parseDate';
-import { joinChannel } from 'actions/channels';
 import { editOutputSchema } from 'actions/outputSchemas';
 import { editTransform } from 'actions/transforms';
 import { editInputSchema } from 'actions/inputSchemas';
@@ -13,7 +12,7 @@ import { addNotification, removeNotificationAfterTimeout } from 'actions/notific
 import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'actions/apiCalls';
 
 export const INSERT_INPUT_SCHEMA = 'INSERT_INPUT_SCHEMA';
-export const POLL_FOR_OUTPUT_SCHEMA_SUCCESS = 'POLL_FOR_OUTPUT_SCHEMA_SUCCESS';
+export const LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS = 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS';
 export const UPLOAD_FILE = 'UPLOAD_FILE';
 export const UPLOAD_FILE_SUCCESS = 'UPLOAD_FILE_SUCCESS';
 export const UPLOAD_FILE_FAILURE = 'UPLOAD_FILE_FAILURE';
@@ -50,7 +49,7 @@ function xhrPromise(method, url, file, sourceId, dispatch) {
       }
     };
 
-    xhr.onerror = (error) => {
+    xhr.onerror = error => {
       reject(error);
     };
 
@@ -72,10 +71,8 @@ function updateProgress(sourceId, percentCompleted) {
 // verbNoun for async action creators
 // verbNounSuccess and/or verbNounFailure for non-async action creators that update store based on api response
 // verbNoun for ui action creators
-export function createUpload(file) {
-  return (dispatch, getState) => {
-    const { ui } = getState();
-
+export function createUpload(file, fourfour) {
+  return dispatch => {
     const callId = uuid();
 
     const sourceType = {
@@ -104,19 +101,13 @@ export function createUpload(file) {
         const { resource } = resp;
 
         dispatch(apiCallSucceeded(callId));
-        dispatch(createUploadSuccess(
-          resource.id,
-          resource.created_by,
-          resource.created_at,
-          resource.source_type
-        ));
+        dispatch(
+          createUploadSuccess(resource.id, resource.created_by, resource.created_at, resource.source_type)
+        );
 
-        dispatch(push(Links.sources(ui.routing.location)));
+        dispatch(listenForOutputSchema(resource.id, fourfour));
 
-        return Promise.all([
-          dispatch(uploadFile(resource.id, file)),
-          dispatch(pollForOutputSchema(resource.id))
-        ]);
+        return dispatch(uploadFile(resource.id, file));
       })
       .catch(err => {
         dispatch(apiCallFailed(callId, err));
@@ -191,80 +182,40 @@ function uploadFileFailure(sourceId) {
   };
 }
 
-const SCHEMA_POLL_INTERVAL_MS = 500;
+function listenForOutputSchema(sourceId) {
+  return (dispatch, getState, socket) => {
+    const { routing } = getState().ui;
 
-// TODO: change from polling to websocket; would look something like
-// joinChannel('source:${sourceId}', {
-//   insert_input_schema: (inputSchema) => {
-//     dispatch(...)
-//   }
-// });
-function pollForOutputSchema(sourceId) {
-  return (dispatch, getState) => {
-    const state = getState();
-    const routing = state.ui.routing;
+    const channel = socket.channel(`source:${sourceId}`);
 
-    function pollAgain() {
-      setTimeout(() => {
-        dispatch(pollForOutputSchema(sourceId));
-      }, SCHEMA_POLL_INTERVAL_MS);
-    }
+    channel.on('insert_input_schema', is => {
+      // it seems to be a quirk of dsmapi that it broadcasts a list of os here
+      // there should only every be one, so we just take the first one here
+      const [os] = is.output_schemas;
 
-    return socrataFetch(dsmapiLinks.sourceShow(sourceId))
-      .then(resp => {
-        if (resp.status === 404) {
-          pollAgain();
+      dispatch(insertInputSchema(is, sourceId));
+      dispatch(subscribeToRowErrors(is));
+      dispatch(listenForOutputSchemaSuccess(os));
+      dispatch(subscribeToOutputSchema(os));
+      dispatch(subscribeToTransforms(os));
+      dispatch(push(Links.showOutputSchema(sourceId, is.id, os.id)(routing.location)));
+    });
 
-          throw new Error('Upload failed: trying again');
-        } else if (resp.status === 500) {
-          throw new Error('Upload failed: terminating');
-        } else {
-          return resp;
-        }
-      })
-      .then(getJson)
-      .then(resp => {
-        const source = resp.resource;
-
-        if (uploadHasFailed(state, sourceId)) {
-          // our upload has failed; not going to get an output schema. So, stop polling.
-          return null;
-        }
-
-        if (_.get(source, 'schemas[0].output_schemas.length') > 0) {
-          const outputSchemaIds = _.chain(source.schemas)
-            .flatMap(is => is.output_schemas)
-            .map(os => {
-              dispatch(pollForOutputSchemaSuccess(os));
-              dispatch(subscribeToOutputSchema(os));
-              dispatch(subscribeToTransforms(os));
-              return os.id;
-            })
-            .value();
-
-          // TODO: keep this from updating total rows if it's null
-          dispatch(insertInputSchema(source));
-          source.schemas.forEach(schema => dispatch(subscribeToRowErrors(schema.id)));
-
-          dispatch(
-            push(Links.showOutputSchema(sourceId, source.schemas[0].id, outputSchemaIds[0])(routing.location))
-          );
-        } else {
-          pollAgain();
-        }
-      })
-      .catch(err => {
-        console.log('polling error', err);
-      });
+    channel.join();
   };
 }
 
-function uploadHasFailed(state, sourceId) {
-  const source = state.entities.sources[sourceId];
-  return _.has(source, 'failed_at');
+function toOutputSchema(os) {
+  return {
+    id: os.id,
+    input_schema_id: os.input_schema_id,
+    error_count: os.error_count,
+    created_at: os.created_at ? parseDate(os.created_at) : null,
+    created_by: os.created_by
+  };
 }
 
-export function pollForOutputSchemaSuccess(outputSchemaResponse) {
+export function listenForOutputSchemaSuccess(outputSchemaResponse) {
   const outputSchema = toOutputSchema(outputSchemaResponse);
 
   const transforms = outputSchemaResponse.output_columns
@@ -307,7 +258,7 @@ export function pollForOutputSchemaSuccess(outputSchemaResponse) {
   }, {});
 
   return {
-    type: POLL_FOR_OUTPUT_SCHEMA_SUCCESS,
+    type: LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS,
     outputSchema,
     transforms,
     outputColumns,
@@ -315,103 +266,86 @@ export function pollForOutputSchemaSuccess(outputSchemaResponse) {
   };
 }
 
-export function insertInputSchema(source) {
-  return dispatch => {
-    const inputSchemas = source.schemas
-      .map(inputSchema => ({
-        id: inputSchema.id,
-        name: inputSchema.name,
-        total_rows: inputSchema.total_rows,
-        source_id: source.id
-      }))
-      .reduce(
-        (acc, is) => ({
-          ...acc,
-          [is.id]: is
-        }),
-        {}
-      );
-
-    const inputColumns = _.chain(source.schemas)
-      .flatMap(inputSchema => inputSchema.input_columns)
-      .reduce(
-        (acc, inputColumn) => ({
-          ...acc,
-          [inputColumn.id]: inputColumn
-        }),
-        {}
-      )
-      .value();
-
-    dispatch({
-      type: INSERT_INPUT_SCHEMA,
-      inputSchemas,
-      inputColumns
-    });
+export function insertInputSchema(is, sourceId) {
+  const inputSchemas = {
+    [is.id]: {
+      id: is.id,
+      name: is.name,
+      total_rows: is.total_rows,
+      source_id: sourceId
+    }
   };
-}
 
-export function subscribeToRowErrors(inputSchemaId) {
-  return dispatch => {
-    const channelName = `row_errors:${inputSchemaId}`;
-    dispatch(
-      joinChannel(channelName, {
-        errors: event => {
-          dispatch(
-            editInputSchema(inputSchemaId, {
-              num_row_errors: event.errors
-            })
-          );
-        }
-      })
-    );
-  };
-}
+  const inputColumns = is.input_columns.reduce(
+    (acc, ic) => ({
+      ...acc,
+      [ic.id]: ic
+    }),
+    {}
+  );
 
-// dotProp creates entry if it doesn't exist, so don't have to create table here anymore
-export function subscribeToTransforms(outputSchemaResponse) {
-  return dispatch =>
-    outputSchemaResponse.output_columns.forEach(oc => {
-      const channelName = `transform_progress:${oc.transform.id}`;
-
-      dispatch(
-        joinChannel(channelName, {
-          max_ptr: maxPtr => {
-            dispatch(editTransform(oc.transform.id, { contiguous_rows_processed: maxPtr.end_row_offset }));
-          },
-          errors: errorsMsg => {
-            dispatch(editTransform(oc.transform.id, { num_transform_errors: errorsMsg.count }));
-          }
-        })
-      );
-    });
-}
-
-function toOutputSchema(os) {
   return {
-    id: os.id,
-    input_schema_id: os.input_schema_id,
-    error_count: os.error_count,
-    created_at: os.created_at ? parseDate(os.created_at) : null,
-    created_by: os.created_by
+    type: INSERT_INPUT_SCHEMA,
+    inputSchemas,
+    inputColumns
   };
 }
 
-export function subscribeToOutputSchema(outputSchema) {
-  return dispatch => {
-    const channelName = `output_schema:${outputSchema.id}`;
+export function subscribeToRowErrors(is) {
+  return (dispatch, getState, socket) => {
+    const channel = socket.channel(`row_errors:${is.id}`);
 
-    dispatch(
-      joinChannel(channelName, {
-        update: updatedOutputSchema => {
-          dispatch(
-            editOutputSchema(outputSchema.id, {
-              ...outputSchema,
-              ...updatedOutputSchema
-            })
-          );
-        }
-      })
+    channel.on('errors', ({ errors }) =>
+      dispatch(
+        editInputSchema(is.id, {
+          num_row_errors: errors
+        })
+      )
     );
+
+    channel.join();
+  };
+}
+
+export function subscribeToTransforms(os) {
+  return (dispatch, getState, socket) => {
+    os.output_columns.forEach(oc => {
+      const channel = socket.channel(`transform_progress:${oc.transform.id}`);
+
+      channel.on('max_ptr', ({ end_row_offset }) =>
+        dispatch(
+          editTransform(oc.transform.id, {
+            contiguous_rows_processed: end_row_offset
+          })
+        )
+      );
+
+      channel.on('errors', ({ count }) =>
+        dispatch(
+          editTransform(oc.transform.id, {
+            num_transform_errors: count
+          })
+        )
+      );
+
+      channel.join();
+    });
+  };
+}
+
+export function subscribeToOutputSchema(os) {
+  return (dispatch, getState, socket) => {
+    const channel = socket.channel(`output_schema:${os.id}`);
+
+    channel.on('update', newOS => {
+      const updatedOS = {
+        ...os,
+        ...newOS
+      };
+
+      dispatch(editOutputSchema(os.id, updatedOS));
+    });
+
+    channel.join();
   };
 }

@@ -1,0 +1,18 @@
+// The styleguide css is used in multiple places (i.e. storyteller) that don't necessarily
+// want to pull in all of these styles. These styles are specific to the styleguide layout
+// and should not apply anywhere else.
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  flex-basis: auto;
+}

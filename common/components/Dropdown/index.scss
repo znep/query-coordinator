@@ -1,5 +1,21 @@
 @import "variables/colors";
 
+@mixin dropdown-caret {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  right: 10px;
+  top: 13px;
+  z-index: 10;
+  color: $light-grey-1;
+  transition: color 0.15s ease-in-out;
+  pointer-events: none;
+
+  .dropdown-focused & {
+    color: $alternate-3;
+  }
+}
+
 .dropdown-container {
   display: inline-block;
   box-sizing: border-box;
@@ -55,19 +71,7 @@
     }
 
     .dropdown-caret.socrata-icon-arrow-down {
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      right: 10px;
-      top: 13px;
-      z-index: 10;
-      color: $light-grey-1;
-      transition: color 0.15s ease-in-out;
-      pointer-events: none;
-
-      .dropdown-focused & {
-        color: $alternate-3;
-      }
+      @include dropdown-caret;
     }
   }
 
@@ -83,6 +87,10 @@
     color: $light-grey-1;
     pointer-events: none;
   }
+}
+
+.dropdown-caret.socrata-icon-arrow-down {
+  @include dropdown-caret;
 }
 
 .dropdown-options-list {

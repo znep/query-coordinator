@@ -32,7 +32,7 @@ describe('withLayoutHeightFromComponentData jQuery plugin', function() {
       assert.lengthOf($componentContent, 1);
       assert.lengthOf($notComponentContent, 1);
 
-      heightFunctionSpy = sinon.spy($component, 'height');
+      heightFunctionSpy = sinon.spy($component, 'outerHeight');
       invalidateSizeStubOnComponentContent = sinon.stub();
       invalidateSizeStubOnNotComponentContent = sinon.stub();
 
@@ -48,7 +48,7 @@ describe('withLayoutHeightFromComponentData jQuery plugin', function() {
       $component.withLayoutHeightFromComponentData({ value: { layout: { height: 100 } } });
     });
 
-    it('should call self.height() with correct args only if the height changed', function() {
+    it('should call self.outerHeight() with correct args only if the height changed', function() {
       assert.deepEqual(
         _.map(heightFunctionSpy.getCalls(), 'args'),
         [[100], [200], [100]]
@@ -73,7 +73,7 @@ describe('withLayoutHeightFromComponentData jQuery plugin', function() {
       assert.lengthOf($componentContent, 1);
       assert.lengthOf($notComponentContent, 1);
 
-      heightFunctionSpy = sinon.spy($component, 'height');
+      heightFunctionSpy = sinon.spy($component, 'outerHeight');
       invalidateSizeStubOnComponentContent = sinon.stub();
       invalidateSizeStubOnNotComponentContent = sinon.stub();
 

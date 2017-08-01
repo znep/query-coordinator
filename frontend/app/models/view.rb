@@ -1099,6 +1099,26 @@ class View < Model
     end
   end
 
+  def csv_resource_url(request = nil)
+    "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{preferred_id}.csv"
+  end
+
+  def geojson_resource_url(request = nil)
+    if can_add_map? && nbe_view
+      "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/resource/#{nbe_view.id}.geojson"
+    end
+  end
+
+  def carto_url(request = nil)
+    if can_add_map? && nbe_view
+      "http://oneclick.cartodb.com/?file=#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/api/views/#{nbe_view.id}/rows.geojson?accessType=DOWNLOAD"
+    end
+  end
+
+  def plotly_url(request = nil)
+    "https://plot.ly/external/?url=#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/api/views/#{self.id}/rows.csv?accessType=DOWNLOAD"
+  end
+
   # EN-5634: Don't prefer NBE id for OData endpoint as it truncates rows
   def odata_url(request = nil)
     "#{request.try(:scheme) || 'https'}://#{CurrentDomain.cname}/OData.svc/#{id}"

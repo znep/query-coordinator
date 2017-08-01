@@ -5,18 +5,31 @@ export class ClearFilters extends Component {
   constructor(props) {
     super(props);
 
-    _.bindAll(this, 'activeFilters');
+    _.bindAll(this, 'activeFilters', 'clearAllFiltersAndQuery');
   }
 
   activeFilters() {
     return _.map(
-      _(['assetTypes', 'authority', 'category', 'onlyRecentlyViewed', 'ownedBy.id', 'tag', 'visibility']).
-        map((assetType) => _.get(this.props.allFilters, assetType)).compact().value()
+      _(['assetTypes', 'authority', 'category', 'onlyRecentlyViewed', 'ownedBy.id', 'q', 'tag',
+        'visibility']).map((assetType) => _.get(this.props.allFilters, assetType)).compact().value()
     );
   }
 
+  clearAllFiltersAndQuery() {
+    this.props.clearAllFilters();
+
+    // EN-17287: As of now, Autocomplete search has its own Redux store to manage its state. We want to
+    // essentially dispatch the `searchCleared` autocomplete action, and unfortunately there does not seem
+    // to be a good way to do that without a more significant refactor. For now, we simply query for the
+    // autocomplete input and manually set its value to an empty string.
+    // For more information, see: https://github.com/socrata/platform-ui/pull/5176
+    if (document.querySelector('.internal-asset-manager .autocomplete-input')) {
+      document.querySelector('.internal-asset-manager .autocomplete-input').value = '';
+    }
+  }
+
   render() {
-    const { buttonStyle, clearAllFilters, showTitle } = this.props;
+    const { buttonStyle, showTitle } = this.props;
 
     if (!showTitle && this.activeFilters().length <= 0) {
       return null;
@@ -26,9 +39,9 @@ export class ClearFilters extends Component {
 
     const wrapperClass = buttonStyle ? 'clear-filters-wrapper button' : 'clear-filters-wrapper';
 
-    const handleIconOnClick = buttonStyle ? null : clearAllFilters;
+    const handleIconOnClick = buttonStyle ? null : this.clearAllFiltersAndQuery;
 
-    const handleButtonOnClick = buttonStyle ? clearAllFilters : null;
+    const handleButtonOnClick = buttonStyle ? this.clearAllFiltersAndQuery : null;
 
     const clearFiltersControls = this.activeFilters().length > 0 ?
       <span>

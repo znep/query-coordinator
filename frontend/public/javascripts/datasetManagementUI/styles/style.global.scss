@@ -2,16 +2,10 @@
 @import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
 @import 'app/styles/styleguide-colors';
 
-body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
 #app {
   display: flex;
   flex-grow: 1;
-  flex-basis: fill;
+  flex-basis: auto;
   flex-direction: column;
 
   .modal-header {

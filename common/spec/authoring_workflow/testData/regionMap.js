@@ -25,12 +25,12 @@ export default () => ({
     {
       "color": {},
       "dataSource": {
-        "datasetUid": "k6cs-ww27",
+        "datasetUid": "mock-viif",
         "dimension": {
           "columnName": "incident_location",
           "aggregationFunction": null
         },
-        "domain": "vertex-stories.test-socrata.com",
+        "domain": "example.com",
         "measure": {
           "columnName": null,
           "aggregationFunction": "count",

@@ -5,21 +5,5 @@
       y=e.createElement(n);y.async=!0;y.src='https://cdn.pendo.io/agent/static/<%= pendo_config[:token] %>/pendo.js';
       z=e.getElementsByTagName(n)[0];z.parentNode.insertBefore(y,z);})(window,document,'script','pendo');
 
-    pendo.initialize({
-      apiKey: '<%= pendo_config[:token] %>',
-      visitor: {
-        id: '<%= pendo_config[:email] %>',
-        socrataID: '<%= pendo_config[:socrata_id] %>',
-        userRole: '<%= pendo_config[:role] %>',
-        firstName: '<%= pendo_config[:first_name] %>',
-        lastName: '<%= pendo_config[:last_name] %>',
-        socrataEmployee: <%= pendo_config[:socrata_employee] %>
-      },
-      account: {
-        id: window.location.host,
-        domain: window.location.host,
-        environment: '<%= pendo_config[:environment] %>',
-        hasPerspectives: <%= pendo_config[:stories_enabled] %>
-      }
-    });
+    pendo.initialize(<%= raw pendo_config.to_json %>);
 </script>

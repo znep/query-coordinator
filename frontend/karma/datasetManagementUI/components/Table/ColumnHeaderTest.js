@@ -10,20 +10,13 @@ import { createStore, applyMiddleware } from 'redux';
 import reducer from 'reducers/rootReducer';
 import thunk from 'redux-thunk';
 import { bootstrapApp } from 'actions/bootstrap';
-import wsmock from '../../testHelpers/mockSocket';
+import mockSocket from '../../testHelpers/mockSocket';
 import dotProp from 'dot-prop-immutable';
+import { bootstrapChannels } from '../../data/socketChannels';
+
+const socket = mockSocket(bootstrapChannels);
 
 describe('components/Table/ColumnHeader', () => {
-  let unmockWS;
-
-  before(() => {
-    unmockWS = wsmock();
-  });
-
-  after(() => {
-    unmockWS.stop();
-  });
-
   const defaultProps = {
     outputSchema: {
       id: 52
@@ -139,7 +132,6 @@ describe('components/Table/ColumnHeader', () => {
   });
 
   describe('type list', () => {
-
     it('renders correct list of types for a text input column', () => {
       const element = document.createElement('tr');
       ReactDOM.render(<ColumnHeader {...defaultProps} />, element);
@@ -156,36 +148,39 @@ describe('components/Table/ColumnHeader', () => {
 
     it('renders correct list of types for a geo input column', () => {
       const element = document.createElement('tr');
-      const withGeoInput = dotProp.set(defaultProps, 'outputColumn.inputColumn.soql_type', 'multipolygon');
+      const withGeoInput = dotProp.set(
+        defaultProps,
+        'outputColumn.inputColumn.soql_type',
+        'multipolygon'
+      );
       ReactDOM.render(<ColumnHeader {...withGeoInput} />, element);
 
       const options = element.querySelectorAll('select option');
       const values = [...options].map(option => option.value);
-      expect(values).to.deep.equal([
-        'multipolygon',
-        'text'
-      ]);
+      expect(values).to.deep.equal(['multipolygon', 'text']);
     });
 
     it('renders correct list of types for a number column', () => {
       const element = document.createElement('tr');
-      const withNumInput = dotProp.set(defaultProps, 'outputColumn.inputColumn.soql_type', 'number');
+      const withNumInput = dotProp.set(
+        defaultProps,
+        'outputColumn.inputColumn.soql_type',
+        'number'
+      );
       ReactDOM.render(<ColumnHeader {...withNumInput} />, element);
 
       const options = element.querySelectorAll('select option');
       const values = [...options].map(option => option.value);
-      expect(values).to.deep.equal([
-        'number',
-        'text',
-        'checkbox'
-      ]);
+      expect(values).to.deep.equal(['number', 'text', 'checkbox']);
     });
-
   });
 
   it('renders a spinner and disables if an output schema is being created that replaces this column', () => {
     COLUMN_OPERATIONS.forEach(operation => {
-      const store = createStore(reducer, applyMiddleware(thunk));
+      const store = createStore(
+        reducer,
+        applyMiddleware(thunk.withExtraArgument(socket))
+      );
       store.dispatch(
         bootstrapApp(
           window.initialState.view,

@@ -145,9 +145,18 @@ module ApplicationHelper
 # js
 
   # to load into blist.currentUser in main.html.erb
-  def current_user_to_sanitized_json(current_user, options = nil)
-    Hash[
-      current_user.prepare_json.map do |key, value|
+  #
+  # CAUTION: The description and htmlDescription fields are eliminated because
+  # they don't serve any purpose in the JS code, and there were legacy problems
+  # with escaping across the Ruby/JS boundary. I have attempted to resolve the
+  # character-escaping problems as well, but you should verify that users who
+  # have descriptions with single-/double-quotes, angle brackets, etc. don't end
+  # up with malformed blist.currentUserJson objects if you restore descriptions
+  # to this function's output.
+  def current_user_to_sanitized_json(current_user)
+    Hash[current_user.prepare_json.
+      reject { |key| key =~ /description/i }. # EN-17426
+      map do |key, value|
         if value.kind_of?(Array)
           [key, value.map {|v| sanitize_string(v, autolink: false)}]
         elsif value.kind_of?(Numeric)
@@ -156,7 +165,7 @@ module ApplicationHelper
           [key, sanitize_string(value, autolink: false)]
         end
       end
-    ].to_json(options)
+    ].to_json
   end
 
   def jquery_include(version = '1.7.1')
@@ -926,10 +935,10 @@ module ApplicationHelper
   # Renders pendo tracker code if pendo_tracking feature enabled.
   # Only runs for logged in users.
   def render_pendo_tracker
-    if CurrentDomain.feature?(:pendo_tracking) && current_user
+    if CurrentDomain.feature?(:pendo_tracking)
       first_name = ''
       last_name = ''
-      display_name = current_user.displayName
+      display_name = current_user.try(:displayName)
 
       if display_name
         names = display_name.split
@@ -942,14 +951,20 @@ module ApplicationHelper
 
       pendo_config = {
         :token => APP_CONFIG.pendo_token,
-        :email => current_user.email,
-        :first_name => first_name,
-        :last_name => last_name,
-        :socrata_id => current_user.id,
-        :socrata_employee => current_user.is_superadmin? || false,
-        :role => current_user.role_name || 'N/A',
-        :stories_enabled => FeatureFlags.has?(:stories_enabled),
-        :environment =>  Rails.env
+        :visitor => {
+          :id => current_user.try(:email),
+          :socrataID => current_user.try(:id) || 'N/A',
+          :userRole => current_user.try(:role_name) || 'N/A',
+          :firstName => first_name,
+          :lastName => last_name,
+          :socrataEmployee => current_user.try(:is_superadmin?) || false
+        },
+        :account => {
+          :id => request.host,
+          :domain => request.host,
+          :environment => Rails.env,
+          :hasPerspectives => FeatureFlags.has?(:stories_enabled)
+        }
       }
 
       render 'templates/pendo_tracking', :pendo_config => pendo_config
@@ -1165,8 +1180,17 @@ module ApplicationHelper
   end
 
   def render_admin_header?
-    %w(administration site_appearance connector routing_approval activity_feed).include?(controller_name) &&
-      new_admin_ui_enabled?
+    return false unless new_admin_ui_enabled?
+
+    %w(
+      activity_feed
+      administration
+      connector
+      internal
+      internal_asset_manager
+      routing_approval
+      site_appearance
+    ).include?(controller_name)
   end
 
   def new_admin_ui_enabled?

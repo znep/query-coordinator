@@ -37,10 +37,6 @@ RSpec.describe 'resize component', type: :feature, js: true do
       component = page.find(component_selector)
       handle = page.find(resize_handle_selector)
 
-      # handle.native.size.height isn't quite right, we'd need to account for
-      # that + css top and bottom properties
-      handle_height = 17
-
       original_height_in_value = height_from_store
       original_height_according_to_browser = component.native.size.height
       embiggen_by = 200
@@ -51,7 +47,7 @@ RSpec.describe 'resize component', type: :feature, js: true do
         release.
         perform
 
-      expect(height_from_store).to eq(original_height_in_value + embiggen_by - handle_height)
+      expect(height_from_store).to eq(original_height_in_value + embiggen_by)
       expect(component.native.size.height).to eq(original_height_according_to_browser + embiggen_by)
     end
   end

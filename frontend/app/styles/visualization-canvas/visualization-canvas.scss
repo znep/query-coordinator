@@ -216,6 +216,16 @@ body {
       .btn {
         height: 100%;
       }
+
+      .btn:disabled {
+        background-color: transparent;
+        color: $edit-bar-font-color;
+        border-color: $light-grey-8;
+      }
+
+      .socrata-icon-add {
+        padding-right: 5px;
+      }
     }
   }
 

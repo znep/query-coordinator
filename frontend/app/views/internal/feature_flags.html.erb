@@ -1,13 +1,17 @@
 <% content_for :head do %>
-<%= rendered_stylesheet_tag 'internal' %>
-<title>Feature Flags for Domain <%= @domain.try(:name) %>
+  <%= rendered_stylesheet_tag 'internal' %>
+  <title>Feature Flags for Domain <%= @domain.try(:name) %>
   | Internal Panel | <%= get_site_title %></title>
 <% end %>
 
-<%= render :partial => 'left_nav' %>
+<%= render 'left_nav' %>
+
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.internal.feature_flags') %>
+<% end %>
 
 <div class="contentBox withLeftNavigation featureFlags">
-  <%= render :partial => 'production_warning' %>
+  <%= render 'production_warning' %>
   <h1>Feature Flags for
     <%= link_to "#{@domain.name} (#{@domain.cname})",
       show_domain_path(org_id: @domain.organizationId, domain_id: @domain.cname) %>

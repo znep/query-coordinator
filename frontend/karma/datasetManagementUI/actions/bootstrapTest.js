@@ -4,13 +4,16 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import state from '../data/stateWithRevision';
 import mockAPI from '../testHelpers/mockAPI';
-import wsmock from '../testHelpers/mockSocket';
+import mockSocket from '../testHelpers/mockSocket';
+import { bootstrapChannels } from '../data/socketChannels';
 import { bootstrapApp } from 'actions/bootstrap';
 
-const mockStore = configureStore([thunk]);
+// create the mock socket and insert it into the fake store
+const socket = mockSocket(bootstrapChannels);
+
+const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 
 describe('bootstrap', () => {
-  let unmockWS;
   let unmockHTTP;
   let fakeStore;
 
@@ -19,12 +22,10 @@ describe('bootstrap', () => {
   });
 
   before(() => {
-    unmockWS = wsmock();
     unmockHTTP = mockAPI();
   });
 
   after(() => {
-    unmockWS.stop();
     unmockHTTP();
   });
 
@@ -49,37 +50,18 @@ describe('bootstrap', () => {
     setTimeout(() => {
       const actions = fakeStore.getActions();
       const actionTypes = _.map(actions, 'type');
-      // why are there so many EDIT_TRANSORMs
       assert.deepEqual(actionTypes, [
         'BOOTSTRAP_APP_SUCCESS',
-        'POLL_FOR_OUTPUT_SCHEMA_SUCCESS',
-        'CHANNEL_JOIN_STARTED',
-        'CHANNEL_JOIN_STARTED',
-        'CHANNEL_JOIN_STARTED',
         'INSERT_INPUT_SCHEMA',
-        'CHANNEL_JOIN_STARTED',
+        'EDIT_INPUT_SCHEMA',
+        'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS',
+        'EDIT_OUTPUT_SCHEMA',
+        'EDIT_TRANSFORM',
+        'EDIT_TRANSFORM',
+        'EDIT_TRANSFORM',
+        'EDIT_TRANSFORM',
         'SHOW_MODAL',
-        'POLL_FOR_TASK_SET_PROGRESS_SUCCESS',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM',
-        'EDIT_INPUT_SCHEMA',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM',
-        'EDIT_INPUT_SCHEMA',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM',
-        'EDIT_INPUT_SCHEMA',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM',
-        'EDIT_INPUT_SCHEMA',
-        'EDIT_TRANSFORM',
-        'EDIT_TRANSFORM'
+        'POLL_FOR_TASK_SET_PROGRESS_SUCCESS'
       ]);
       done();
     }, 200);

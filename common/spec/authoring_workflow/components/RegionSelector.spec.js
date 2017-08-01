@@ -117,17 +117,18 @@ describe('RegionSelector', function() {
           curatedRegions: [
             {name: 'Curated Region', uid: 'four-five'}
           ],
-          phidippidesMetadata: {
-            columns: {
-              ':@computed_column': {
+          data: {
+            columns: [
+              {
                 name: 'Computed Column',
+                fieldName: ':@computed_column',
                 computationStrategy: {
                   parameters: {
                     region: 'four-four'
                   }
                 }
               }
-            }
+            ]
           }
         },
         onSelectComputedColumn: sinon.stub(),

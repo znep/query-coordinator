@@ -4,7 +4,6 @@ const _ = require('lodash');
 const $ = require('jquery');
 const ColumnFormattingHelpers = require('../helpers/ColumnFormattingHelpers');
 const SvgVisualization = require('./SvgVisualization');
-const DataTypeFormatter = require('./DataTypeFormatter');
 const I18n = require('common/i18n').default;
 
 const MINIMUM_PIE_CHART_WIDTH = 100;
@@ -28,6 +27,9 @@ const PERCENT_LABEL_THRESHOLD = 20;
 const VALUE_LABEL_THRESHOLD = 25;
 
 const PI2 = Math.PI * 2;
+
+const noValueLabel = I18n.t('shared.visualizations.charts.common.no_value');
+const otherLabel = I18n.t('shared.visualizations.charts.common.other_category');
 
 function SvgPieChart($element, vif, options) {
   const self = this;
@@ -216,7 +218,9 @@ function SvgPieChart($element, vif, options) {
       const columnValue = _.get(dataToRender, `0.rows.${index}.0`);
 
       if (_.isNil(columnValue)) {
-        return I18n.t('shared.visualizations.charts.common.no_value')
+        return noValueLabel;
+      } else if (columnValue === otherLabel) {
+        return otherLabel;
       } else {
         const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
         return _.unescape(ColumnFormattingHelpers.formatValue(columnValue, column, dataToRender[0]));
@@ -252,9 +256,15 @@ function SvgPieChart($element, vif, options) {
           } else {
             // makes sure pie chart labels do no break when value is null
             const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
-            return d.data[1] === null ?
-              I18n.t('shared.visualizations.charts.common.no_value') :
-              ColumnFormattingHelpers.formatValue(d.data[1], column, dataToRender[0], true);
+            const value = d.data[1];
+
+            if (_.isNil(value)) {
+              return noValueLabel;
+            } else if (value === otherLabel) {
+              return otherLabel;
+            } else {
+              return ColumnFormattingHelpers.formatValue(value, column, dataToRender[0], true);
+            }
           }
         });
   }
@@ -656,7 +666,9 @@ function SvgPieChart($element, vif, options) {
     let title;
 
     if (_.isNil(titleValue)) {
-      title = I18n.t('shared.visualizations.charts.common.no_value')
+      title = noValueLabel;
+    } else if (titleValue === otherLabel) {
+      title = otherLabel;
     } else {
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.dimension.columnName`)
       title = ColumnFormattingHelpers.formatValue(titleValue, column, dataToRender[0]);
@@ -682,7 +694,7 @@ function SvgPieChart($element, vif, options) {
     let valueString;
 
     if (value === null) {
-      valueString = I18n.t('shared.visualizations.charts.common.no_value');
+      valueString = noValueLabel;
     } else {
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`)
       valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender[0], true);

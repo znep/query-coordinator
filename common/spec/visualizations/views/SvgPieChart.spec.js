@@ -6,7 +6,6 @@ import chroma from 'chroma-js';
 import I18n from 'common/i18n';
 import allLocales from 'common/i18n/config/locales';
 import SvgPieChart from 'common/visualizations/views/SvgPieChart';
-import DataTypeFormatter from 'common/visualizations/views/DataTypeFormatter';
 import testHelpers from '../testHelpers';
 
 const COLOR_PALETTES = {

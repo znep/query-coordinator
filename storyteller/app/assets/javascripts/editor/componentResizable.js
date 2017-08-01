@@ -58,7 +58,7 @@ export function DragResizer($elementToResize, $resizeHandle) {
 
   self.dragStart = function() {
     $elementToResize.closest('.block-edit').add(document.body).addClass('is-resizing');
-    self.heightAtDragStart = $elementToResize.height();
+    self.heightAtDragStart = $elementToResize.outerHeight();
     self.minHeight = parseInt($elementToResize.attr(MIN_HEIGHT_DATA_ATTR_NAME), 10);
   };
 

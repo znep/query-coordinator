@@ -53,7 +53,6 @@ angular.module('dataCards').
   directive('distributionChart', require('./directives/distributionChart.js')).
   directive('exportMenu', require('./directives/exportMenu.js')).
   directive('featureMap', require('./directives/featureMap.js')).
-  directive('feedbackPanel', require('./directives/feedbackPanel.js')).
   directive('histogram', require('./directives/histogram.js')).
   directive('infoPane', require('./directives/infoPane.js')).
   directive('invalidCard', require('./directives/invalidCard.js')).

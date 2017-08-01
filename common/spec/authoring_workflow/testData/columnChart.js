@@ -23,7 +23,7 @@ export default () => ({
         "palette": "accent"
       },
       "dataSource": {
-        "datasetUid": "k6cs-ww27",
+        "datasetUid": "mock-viif",
         "dimension": {
           "columnName": "blood_alcohol_level",
           "aggregationFunction": null,
@@ -31,7 +31,7 @@ export default () => ({
             "columnName": "plausibility"
           }
         },
-        "domain": "vertex-stories.test-socrata.com",
+        "domain": "example.com",
         "measure": {
           "columnName": "blood_alcohol_level",
           "aggregationFunction": "sum",

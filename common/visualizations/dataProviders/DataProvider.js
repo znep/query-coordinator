@@ -14,6 +14,8 @@ function DataProvider(config) {
   /**
    * @param {String} property - The desired configuration property key.
    *
+   * @throws if the property key is not found.
+   *
    * @return {*} - The configuration property value that was passed in
    *   at instantiation.
    */
@@ -24,6 +26,22 @@ function DataProvider(config) {
       throw new Error(
         'Configuration property `{0}` does not exist.'.format(property)
       );
+    }
+
+    return _config[property];
+  };
+
+  /**
+   * @param {String} property - The desired configuration property key.
+   * @param {*} default - The value to return if the configuration is not set.
+   *
+   * @return {*} - The configuration property value that was passed in
+   *   at instantiation, or the default value if the value was not configured.
+   */
+  this.getOptionalConfigurationProperty = function(property, defaultValue) {
+
+    if (!_.has(_config, property)) {
+      return defaultValue;
     }
 
     return _config[property];

@@ -139,7 +139,7 @@ http://www.socrata.com
 
       <%- if render_admin_header? %>
         <div class="admin-header">
-          <%= render_admin_breadcrumb %>
+          <%= render 'administration/admin_breadcrumb' %>
           <%= yield :admin_header %>
         </div>
       <%- end %>

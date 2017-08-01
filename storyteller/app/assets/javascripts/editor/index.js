@@ -24,6 +24,8 @@ import CollaboratorsDataProvider from './CollaboratorsDataProvider';
 import StoryPublicationStatus from './components/StoryPublicationStatus'; //eslint-disable-line no-unused-vars
 import MostRecentlyUsed from 'common/most_recently_used';
 
+import 'common/notifications/main';
+
 const {
   ENVIRONMENT,
   IS_GOAL,

@@ -797,7 +797,7 @@ function SvgHistogram($element, vif, options) {
   function bucketTitle(bucketData) {
     //TODO units
     const column = _.get(self.getVif(), `series[0].dataSource.dimension.columnName`);
-    return `${ColumnFormattingHelpers.formatValue(bucketData.x0, column, dataToRender[0])} to ${ColumnFormattingHelpers.formatValue(bucketData.x1, column, dataToRender[0], true)}`;
+    return `${ColumnFormattingHelpers.formatValue(bucketData.x0, column, dataToRender[0], true)} to ${ColumnFormattingHelpers.formatValue(bucketData.x1, column, dataToRender[0], true)}`;
   }
 
   function seriesLabel(seriesIndex) {

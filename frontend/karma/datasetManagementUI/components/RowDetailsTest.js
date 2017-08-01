@@ -1,27 +1,23 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import RowDetails from 'components/RowDetails';
 import rootReducer from 'reducers/rootReducer';
 import { applyMiddleware, createStore } from 'redux';
-import configureStore from 'redux-mock-store';
 import { bootstrapApp } from 'actions/bootstrap';
 import thunk from 'redux-thunk';
-import wsmock from '../testHelpers/mockSocket';
+import mockSocket from '../testHelpers/mockSocket';
 import dotProp from 'dot-prop-immutable';
+import { bootstrapChannels } from '../data/socketChannels';
 
 describe('RowDetails', () => {
-  let unmockWS;
   let store;
 
-  before(() => {
-    unmockWS = wsmock();
-  });
-
-  after(() => {
-    unmockWS.stop();
-  });
+  const socket = mockSocket(bootstrapChannels);
 
   beforeEach(() => {
-    store = createStore(rootReducer, applyMiddleware(thunk));
+    store = createStore(
+      rootReducer,
+      applyMiddleware(thunk.withExtraArgument(socket))
+    );
     store.dispatch(
       bootstrapApp(
         window.initialState.view,

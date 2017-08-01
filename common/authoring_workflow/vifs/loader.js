@@ -146,7 +146,7 @@ export const load = (dispatch, vif) => {
       columnName
     ));
   }
-  
+
   if (has(paths.colorPalette)) {
     dispatch(actions.setColorPalette(get(paths.colorPalette)));
   }

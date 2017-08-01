@@ -1,7 +1,8 @@
 // Visualization hydrator. Replaces embed codes with real visualizations.
 
-const $ = require('jquery');
-const VisualizationRenderer = require('common/visualizations').VisualizationRenderer;
+import $ from 'jquery';
+import { views as visualizationViews, VisualizationRenderer } from 'common/visualizations';
+const { FlyoutRenderer } = visualizationViews;
 
 const DEFAULT_WIDTH = '500px';
 const DEFAULT_HEIGHT = '400px';
@@ -68,7 +69,12 @@ export const hydrateEmbed = (element) => {
     $(element).replaceWith(target);
 
     try {
-      new VisualizationRenderer(vif, target, { displayFilterBar: true });
+      new VisualizationRenderer(vif, target, {
+        // Since tag-level Styleguide is not on the page, instruct flyouts to aggressively
+        // apply their own text formatting.
+        flyoutRenderer: new FlyoutRenderer({ inheritTextStyle: false }),
+        displayFilterBar: true
+      });
     } catch (e) {
       logWarning('Visualization failed to render', e);
       // TODO better error UX.

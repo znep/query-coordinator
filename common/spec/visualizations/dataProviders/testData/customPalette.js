@@ -66,7 +66,7 @@ export const customPaletteVif = {
         "palette": "custom"
       },
       "dataSource": {
-        "datasetUid": "k6cs-ww27",
+        "datasetUid": "mock-viif",
         "dimension": {
           "columnName": "plausibility",
           "aggregationFunction": null,
@@ -74,7 +74,7 @@ export const customPaletteVif = {
             "columnName": "plausibility"
           }
         },
-        "domain": "vertex-stories.test-socrata.com",
+        "domain": "example.com",
         "measure": {
           "columnName": null,
           "aggregationFunction": "count"

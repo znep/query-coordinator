@@ -631,9 +631,15 @@ ul.autocomplete {
   }
 }
 
-.audit_list {
+.config_type_description.audit_list {
   .action {
     font-family: monospace;
     font-size: 125%;
+  }
+
+  dt { width: 21rem; }
+  dd {
+    padding-left: 21rem;
+    width: calc(100% - 21rem);
   }
 }

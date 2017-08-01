@@ -6,7 +6,7 @@ export const home = routing => {
   }
 
   const path = routing.pathname ? routing.pathname : routing.locationBeforeTransitions.pathname;
-  const matches = path.match(/^\/(\w{2}\/)?\w+\/[^\/]+\/\w{4}-\w{4}\/revisions\/\d+/);
+  const matches = path.match(/^\/(\w{2}\/)?[\w-]+\/[^\/]+\/\w{4}-\w{4}\/revisions\/\d+/);
   return matches[0];
 };
 

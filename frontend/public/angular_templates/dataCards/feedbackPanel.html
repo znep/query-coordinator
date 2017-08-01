@@ -1,7 +1,0 @@
-<div class="feedback-panel-content" ng-class="{ active: showFeedbackContent }" ng-click="switchFeedbackInterfaceState($event)">
-  <h2>{{::'feedbackPanel.screenshotPrompt' | I18n}}</h2>
-  <p ng-bind-html="::'feedbackPanel.screenshotDescription' | I18n"></p>
-  <button class="action-btn dark l-to-r include-screenshot" ng-click="includeScreenshot($event)">{{::'feedbackPanel.screenshotYes' | I18n}}</button>
-  <button class="action-btn dark l-to-r do-not-include-screenshot" ng-click="doNotIncludeScreenshot($event)">{{::'feedbackPanel.screenshotNo' | I18n}}</button>
-</div>
-<button class="feedback-panel-button" ng-class="{ active: showFeedbackButton }" ng-click="switchFeedbackInterfaceState($event)">{{::'feedbackPanel.feedback' | I18n}}</button>

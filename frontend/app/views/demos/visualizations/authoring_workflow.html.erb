@@ -183,8 +183,10 @@
       }
     });
 
+    var lastDomain = 'localhost';
     $('#custom-dataset-uid').click(function() {
-      var domain = prompt('Dataset domain', 'localhost');
+      var domain = prompt('Dataset domain', lastDomain);
+      lastDomain = domain;
       var customDatasetUid = prompt('Dataset UID');
       try {
         if (customDatasetUid) {
@@ -203,8 +205,9 @@
             ]
           };
 
-          var datasetName = customDatasetUid + ' on ' + domain;
-          addLocalVif(customVif, datasetName);
+          var defaultName = customDatasetUid + ' on ' + domain;
+          var vifName = prompt('Name your VIF:', defaultName);
+          addLocalVif(customVif, vifName);
         }
       } catch (e) {
         alert(e);

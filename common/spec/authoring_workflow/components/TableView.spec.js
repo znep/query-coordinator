@@ -13,9 +13,6 @@ function defaultProps() {
       data: null,
       datasetUid: 'test-test',
       domain: 'example.com',
-      phidippidesMetadata: {
-        name: 'Test Table'
-      }
     },
     vif: vifsCloned.table
   }
@@ -67,7 +64,6 @@ describe('TableView', function() {
       'metadata',
       {
         data: { id: 'test-test', columns: [] },
-        phidippidesMetadata: { id: 'test-test', columns: {} },
         curatedRegions: {}
       }
     );

@@ -60,7 +60,7 @@ export const ceteraUtils = (() => {
 
   const assetTypeMapping = assetType => (assetType === 'new_view' ? 'datalenses' : assetType);
 
-  const mapIdFiltersToParam = idFilters => _.map(idFilters, (id) => `ids=${id}`).join('&');
+  const mapIdFiltersToParam = (idFilters) => _.map(idFilters, (id) => `ids=${id}`).join('&');
 
   const fetchOptions = {
     credentials: 'same-origin',
@@ -98,6 +98,7 @@ export const ceteraUtils = (() => {
       offset: getOffset(pageNumber, limit),
       only: assetTypeMapping(only),
       order,
+      published: true,
       provenance,
       q,
       search_context: domain,
@@ -105,6 +106,22 @@ export const ceteraUtils = (() => {
       tags,
       visibility
     };
+
+    /*
+     * Note, changes to filters and search options here must match the corresponding implementation in
+     * platform-ui/frontend/app/controllers/internal_asset_manager_controller.rb
+     */
+
+    // Special-case "working copies" because they're not an asset type, but a subset of
+    // an asset type with an extra condition attached. This will totally not come back
+    // to bite us if we add a filter for un/published.
+    if (only === 'workingCopies') {
+      parameters.only = 'datasets';
+      parameters.published = 'false';
+    } else if (parameters.only === 'datasets') {
+      // When we're searching for plain old datasets, we need to omit the working copies
+      parameters.published = 'true';
+    }
 
     return _.reduce(
       _.omit(parameters, 'ids'),
@@ -153,6 +170,17 @@ export const ceteraUtils = (() => {
       const fetchUrl = `${ceteraFacetsPath}?${queryString}`;
 
       // Calls whatwg-fetch and returns the promise
+      return fetch(fetchUrl, fetchOptions).
+        then(checkStatus).
+        then(parseJSON).
+        catch(handleError);
+    },
+
+    domainUsersQuery: (queryOptions) => {
+      const queryString = ceteraQueryString(queryOptions);
+      const path = '/api/catalog/v1/users';
+      const fetchUrl = `${path}?${queryString}`;
+
       return fetch(fetchUrl, fetchOptions).
         then(checkStatus).
         then(parseJSON).

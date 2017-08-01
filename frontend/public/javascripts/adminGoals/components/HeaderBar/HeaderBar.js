@@ -1,6 +1,5 @@
 import * as React  from 'react';
 import * as ReactRedux from 'react-redux';
-import * as Feedback from '../feedback';
 import * as RootActions from '../../actions';
 import { SocrataBulkActions } from '../../sections/goals/components';
 import SocrataAlert from '../../components/SocrataAlert';
@@ -37,7 +36,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  openFeedbackFlannel: event => dispatch(Feedback.Flannel.actions.open(event.target)),
   onDismissNotification: () => dispatch(RootActions.notifications.dismissNotification())
 });
 

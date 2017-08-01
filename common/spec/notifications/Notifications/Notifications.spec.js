@@ -9,7 +9,8 @@ const translations = {
   viewOlderText: 'view older'
 };
 
-describe('Notifications', () => {
+// Disabled, see EN-17895
+xdescribe('Notifications', () => {
   let server;
 
   beforeEach(() => {

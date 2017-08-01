@@ -7,7 +7,9 @@ import styles from 'styles/ManageMetadata/MetadataContent.scss';
 import * as Selectors from '../../selectors';
 
 // TODO : should probably abstract sidebar to its own component
-const MetadataContent = ({ entities, onDatasetTab, fourfour, outputSchemaId, onSidebarTabClick, columnsExist }) =>  // eslint-disable-line
+export const MetadataContent = (
+  { entities, onDatasetTab, fourfour, outputSchemaId, onSidebarTabClick, columnsExist } // eslint-disable-line
+) =>
   <div>
     <div className={styles.sidebar}>
       <Link
@@ -17,34 +19,31 @@ const MetadataContent = ({ entities, onDatasetTab, fourfour, outputSchemaId, onS
         activeClassName={styles.selected}>
         {I18n.metadata_manage.dataset_metadata_label}
       </Link>
-      {columnsExist ?
-        <Link
-          to={Links.columnMetadataForm(outputSchemaId || Selectors.latestOutputSchema(entities).id)}
+      {columnsExist
+        ? <Link
+          to={Links.columnMetadataForm(outputSchemaId || Selectors.currentOutputSchema(entities).id)}
           className={styles.tab}
           onClick={() => onSidebarTabClick(fourfour)}
           activeClassName={styles.selected}>
             {I18n.metadata_manage.column_metadata_label}
-        </Link> :
-        <span
-          className={styles.disabled}
-          title={I18n.home_pane.sidebar.no_columns_msg}>
-          {I18n.metadata_manage.column_metadata_label}
+        </Link>
+        : <span className={styles.disabled} title={I18n.home_pane.sidebar.no_columns_msg}>
+            {I18n.metadata_manage.column_metadata_label}
         </span>}
     </div>
     <MetadataEditor onDatasetTab={onDatasetTab} outputSchemaId={outputSchemaId} />
   </div>;
-
 
 MetadataContent.propTypes = {
   onSidebarTabClick: PropTypes.func,
   fourfour: PropTypes.string.isRequired,
   columnsExist: PropTypes.bool,
   entities: PropTypes.object.isRequired,
-  outputSchemaId: PropTypes.number.isOptional,
+  outputSchemaId: PropTypes.number,
   onDatasetTab: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }, props) => ({
+const mapStateToProps = ({ entities }, props) => ({
   ...props,
   entities
 });

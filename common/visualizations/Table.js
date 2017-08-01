@@ -560,6 +560,10 @@ $.fn.socrataTable = function(originalVif, locale) {
       domain: _.get(vifForDataQuery, 'series[0].dataSource.domain')
     };
 
+    if (_.has(vifForDataQuery, 'series[0].dataSource.readFromNbe')) {
+      dataProviderConfig.readFromNbe = _.get(vifForDataQuery, 'series[0].dataSource.readFromNbe');
+    }
+
     function isNotGeoColumn(column) {
       return !column.dataTypeName.match(/(location|point|polygon|line)$/i);
     }

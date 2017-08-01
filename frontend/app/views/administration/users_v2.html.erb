@@ -1,0 +1,27 @@
+<% content_for :head do %>
+  <title><%= t('screens.admin.users.title') %> | <%= get_site_title %></title>
+  <%= rendered_stylesheet_tag 'styleguide' %>
+  <%= rendered_stylesheet_tag 'admin-users-v2' %>
+<% end %>
+
+<% content_for :breadcrumb do %>
+  <%= t('screens.admin.users.title') %>
+<% end %>
+
+<% @site_chrome_admin_header_options = {size: 'small'} %>
+<% @suppress_site_chrome_header = render_site_admin_chrome? %>
+
+<%- if @suppress_site_chrome_header -%>
+<div id="app" class="no-chrome-header">
+<%- else -%>
+<div id="app">
+<%- end -%>
+  <div id="initial-spinner-container">
+    <span class="spinner-default spinner-large"></span>
+  </div>
+</div>
+
+<script type="text/javascript">window.jquery = window.jQuery;</script>
+<%= render_admin_users_v2_data %>
+<%= include_webpack_bundle 'admin-users-v2/main.js' %>
+<%= render_translations LocalePart.screens.admin.users %>

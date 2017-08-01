@@ -8,7 +8,9 @@ export default {
     "bucketType": "linear",
     "viewSourceDataLink": true,
     "measureAxisMinValue": 50,
-    "measureAxisMaxValue": 200
+    "measureAxisMaxValue": 200,
+    // If you change to true, make sure to mock out the resultant MetadataProvider request.
+    "viewSourceDataLink": false
   },
   "series": [
     {
@@ -18,12 +20,12 @@ export default {
         "highlight": "#cccccc"
       },
       "dataSource": {
-        "datasetUid": "k6cs-ww27",
+        "datasetUid": "mock-viif",
         "dimension": {
           "columnName": "plausibility",
           "aggregationFunction": null
         },
-        "domain": "vertex-stories.test-socrata.com",
+        "domain": "example.com",
         "measure": {
           "columnName": null,
           "aggregationFunction": "count"
@@ -45,12 +47,12 @@ export default {
         "highlight": "#000000"
       },
       "dataSource": {
-        "datasetUid": "k6cs-ww27",
+        "datasetUid": "mock-viif",
         "dimension": {
           "columnName": "plausibility",
           "aggregationFunction": null
         },
-        "domain": "vertex-stories.test-socrata.com",
+        "domain": "example.com",
         "measure": {
           "columnName": null,
           "aggregationFunction": "sum"

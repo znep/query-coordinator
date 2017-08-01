@@ -527,8 +527,10 @@ After you successfully pull translations, follow the instructions here to [confi
 to update the modification time of the root CSS file. Run this to force StylesController to recompile styles:
 
 ```sh
-  touch frontend/app/styles/*shim.scss # If you only edited common components or visualizations.
-  touch frontend/app/styles/*.scss # Nuclear, slower option.
+  # If you only edited common components or visualizations.
+  touch frontend/app/styles/*shim.scss frontend/app/styles/visualization-canvas/*
+  # Nuclear, slower option.
+  touch frontend/app/styles/*.scss
 ```
 
 See the [JIRA ticket](https://socrata.atlassian.net/browse/EN-16978).

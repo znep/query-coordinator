@@ -70,7 +70,7 @@ en:
           title: Performance
         settings:
           activity_log: Activity Log
-          all_settings: All Settings
+          administration: Administration
           analytics: Analytics
           asset_inventory: Asset Inventory
           users: Users
@@ -256,7 +256,7 @@ en:
         changes_made_confirmation: Are you sure you want to close without saving changes?
         close: Close
         insert: Insert
-        title: Edit Visualization
+        title: Configure Visualization
       panes:
         axis_and_scale:
           fields:

@@ -21,10 +21,12 @@ class CatalogLandingPageController < ApplicationController
 
   def show
     @processed_browse = process_browse(request, browse_options)
+    compute_page_title
     @processed_browse[:sidebar_config] = OpenStruct.new(:search => false)
   end
 
   def manage
+    compute_page_title
   end
 
   def manage_write
@@ -101,18 +103,26 @@ class CatalogLandingPageController < ApplicationController
 
   def fetch_catalog_landing_page
     @catalog_landing_page = CatalogLandingPage.new(current_domain, params)
-
-    # EN-15349: String used in page <title> to differentiate between different CLPs.
-    @clp_title_param_string = ''
-    clp_title_params = params.except('controller', 'action', 'custom_path')
-    clp_title_params.each do |key, value|
-      value_string = key == 'limitTo' ?
-        I18n.t("catalog_landing_page.view_types.#{value}", :default => value) : value
-      @clp_title_param_string << " | #{value_string}"
-    end
-
     @featured_content = @catalog_landing_page.try(:featured_content)
     @metadata = @catalog_landing_page.try(:metadata).to_h
+  end
+
+  # See also platform-ui/frontend/lib/browse_actions.rb#get_title
+  def compute_page_title
+    # EN-15349: String used in page <title> to differentiate between different CLPs.
+    # EN-17885: NASA 508 Compliance - Make page titles more different
+    title_fragments = params.except('controller', 'action', 'custom_path', 'page').map do |key, value|
+      key == 'limitTo' ? I18n.t("catalog_landing_page.view_types.#{value}", :default => value) : value
+    end
+
+    if @processed_browse.to_h.with_indifferent_access.values_at(:page, :view_count, :limit).all?(&:present?)
+      title_fragments << t('controls.browse.browse2.results.page_title',
+        :page_number => @processed_browse[:page],
+        :page_count => (@processed_browse[:view_count].to_f / @processed_browse[:limit].to_f).ceil
+      )
+    end
+
+    @clp_title_param_string = title_fragments.join(' | ')
   end
 
 end

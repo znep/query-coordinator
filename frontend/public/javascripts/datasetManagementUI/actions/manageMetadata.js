@@ -15,13 +15,14 @@ import * as dsmapiLinks from 'dsmapiLinks';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
 import { getLocalizedErrorMessage } from 'lib/util';
 import {
-  pollForOutputSchemaSuccess,
+  listenForOutputSchemaSuccess,
   subscribeToOutputSchema,
   subscribeToTransforms
 } from 'actions/manageUploads';
+import { editRevision } from 'actions/revisions';
 import { editView } from 'actions/views';
 
-export const dismissMetadataPane = (currentOutputSchemaPath) => (dispatch, getState) => {
+export const dismissMetadataPane = currentOutputSchemaPath => (dispatch, getState) => {
   const { routing } = getState().ui;
   const isDatasetModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
   const isBigTablePage = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line
@@ -124,7 +125,7 @@ export const saveDatasetMetadata = () => (dispatch, getState) => {
     });
 };
 
-export const saveColumnMetadata = (outputSchemaId) => (dispatch, getState) => {
+export const saveColumnMetadata = outputSchemaId => (dispatch, getState) => {
   const { entities, ui } = getState();
   const { fourfour } = ui.routing;
   const view = entities.views[fourfour];
@@ -202,22 +203,26 @@ export const saveColumnMetadata = (outputSchemaId) => (dispatch, getState) => {
       });
     })
     .then(resp => {
-      dispatch(pollForOutputSchemaSuccess(resp.resource));
+      dispatch(listenForOutputSchemaSuccess(resp.resource));
       dispatch(subscribeToOutputSchema(resp.resource));
       dispatch(subscribeToTransforms(resp.resource));
       return resp;
     })
-    .then(({ resource: { id } }) => {
+    .then(({ resource: { id: newOutputSchemaId } }) => {
       dispatch(
         editView(fourfour, {
           columnFormDirty: false,
           showErrors: false
         })
       );
+      const revision = Selectors.latestRevision(entities);
+      dispatch(editRevision(revision.id, {
+        output_schema_id: newOutputSchemaId
+      }));
       dispatch(apiCallSucceeded(callId));
       // This is subtly wrong, could be a race with another user
       const { routing } = getState().ui;
-      const redirect = Links.columnMetadataForm(id)(routing.location);
+      const redirect = Links.columnMetadataForm(newOutputSchemaId)(routing.location);
       dispatch(push(redirect));
 
       dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));

@@ -12,13 +12,15 @@ import {
   DROP_COLUMN,
   SET_ROW_IDENTIFIER,
   UPDATE_COLUMN_TYPE,
-  VALIDATE_ROW_IDENTIFIER
+  VALIDATE_ROW_IDENTIFIER,
+  SAVE_CURRENT_OUTPUT_SCHEMA
 } from 'actions/apiCalls';
+import { editRevision } from 'actions/revisions';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Selectors from 'selectors';
 import { showModal } from 'actions/modal';
 import {
-  pollForOutputSchemaSuccess,
+  listenForOutputSchemaSuccess,
   subscribeToOutputSchema,
   subscribeToTransforms
 } from 'actions/manageUploads';
@@ -47,7 +49,7 @@ function createNewOutputSchema(oldOutputSchema, newOutputColumns, call) {
       .then(resp => {
         dispatch(apiCallSucceeded(callId));
 
-        dispatch(pollForOutputSchemaSuccess(resp.resource));
+        dispatch(listenForOutputSchemaSuccess(resp.resource));
         dispatch(subscribeToOutputSchema(resp.resource));
         dispatch(subscribeToTransforms(resp.resource));
 
@@ -176,6 +178,12 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
   const genTransform = outputColumn => {
     const transform = entities.transforms[outputColumn.transform_id];
     const transformExpr = transform.transform_expr;
+
+    if (outputColumn.id !== oldColumn.id) {
+      // user is not updating this column
+      return transformExpr;
+    }
+
     const inputColumns = transform.transform_input_columns.map(
       inputColumnRef => entities.input_columns[inputColumnRef.input_column_id]
     );
@@ -185,12 +193,10 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
     const inputColumn = inputColumns[0];
     const conversionFunc = soqlProperties[inputColumn.soql_type].conversions[newType];
     const fieldName = inputColumn.field_name;
-    if (inputColumn.soql_type === newType) {
-      return `\`${fieldName}\``;
-    }
-    return outputColumn.id === oldColumn.id
-      ? `${conversionFunc}(${fieldName})`
-      : transformExpr;
+
+    return inputColumn.soql_type === newType
+      ? `\`${fieldName}\``
+      : `${conversionFunc}(${fieldName})`;
   };
   return oldOutputColumns.map(c => toNewOutputColumn(c, genTransform));
 }
@@ -220,6 +226,38 @@ export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
         } else {
           dispatch(setRowIdentifier(outputSchema, outputColumn));
         }
+      })
+      .catch(error => {
+        dispatch(apiCallFailed(callId, error));
+      });
+  };
+}
+
+export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
+  return (dispatch) => {
+    const call = {
+      operation: SAVE_CURRENT_OUTPUT_SCHEMA,
+      params: { outputSchemaId }
+    };
+
+    const callId = uuid();
+
+    dispatch(apiCallStarted(callId, call));
+    const url = dsmapiLinks.revisionBase;
+    return socrataFetch(url, {
+      method: 'PUT',
+      body: JSON.stringify({
+        ...revision,
+        output_schema_id: outputSchemaId
+      })
+    })
+      .then(checkStatus)
+      .then(getJson)
+      .then(() => {
+        dispatch(apiCallSucceeded(callId));
+        dispatch(editRevision(revision.id, {
+          output_schema_id: outputSchemaId
+        }));
       })
       .catch(error => {
         dispatch(apiCallFailed(callId, error));

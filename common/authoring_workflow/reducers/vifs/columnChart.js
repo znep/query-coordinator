@@ -81,8 +81,7 @@ export default function columnChart(state, action) {
       }
       break;
 
-    case actions.APPEND_SERIES_WITH_MEASURE:
-    case actions.INITIALIZE_SERIES:
+    case actions.APPEND_SERIES:
     case actions.RECEIVE_METADATA:
     case actions.REMOVE_SERIES:
     case actions.SET_DATASET_UID:

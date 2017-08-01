@@ -151,20 +151,10 @@ export function setDimension(dimension) {
   };
 }
 
-export const INITIALIZE_SERIES = 'INITIALIZE_SERIES';
-export function initializeSeries(seriesCount) {
+export const APPEND_SERIES = 'APPEND_SERIES';
+export function appendSeries() {
   return {
-    type: INITIALIZE_SERIES,
-    seriesCount
-  };
-}
-
-export const APPEND_SERIES_WITH_MEASURE = 'APPEND_SERIES_WITH_MEASURE';
-export function appendSeriesWithMeasure(columnName, label) {
-  return {
-    type: APPEND_SERIES_WITH_MEASURE,
-    columnName,
-    label
+    type: APPEND_SERIES
   };
 }
 

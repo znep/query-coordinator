@@ -73,11 +73,12 @@ export const load = (dispatch, vif) => {
   if (has(paths.series)) {
 
     const seriesCount = get(paths.series).length;
-    if (seriesCount > 1) {
-      dispatch(actions.initializeSeries(seriesCount));
-    }
 
     for (var i = 0; i < seriesCount; i++) {
+
+      if (i > 0) { // the first series already exists in the vif templates, no need to create it.
+        dispatch(actions.appendSeries());
+      }
 
       const measureColumnNamePath = paths.measureColumnName.format(i);
       const measureLabelPath = paths.measureLabel.format(i);

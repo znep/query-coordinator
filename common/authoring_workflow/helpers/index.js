@@ -123,7 +123,7 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
   };
 };
 
-export const appendSeriesWithMeasure = (state, columnName, label) => {
+export const appendSeries = (state) => {
 
   // For multi-series, we use the color palette on the first series, but the palettes on all series should be in sync
   // so that if the first series is deleted, the palette can be obtained from the second (now first) series.
@@ -142,9 +142,8 @@ export const appendSeriesWithMeasure = (state, columnName, label) => {
 
   // Set the measure properties
   //
-  _.set(clonedSeries, 'dataSource.measure.aggregationFunction', _.isNull(columnName) ? 'count' : 'sum');
-  _.set(clonedSeries, 'dataSource.measure.columnName', columnName);
-  _.set(clonedSeries, 'dataSource.measure.label', label);
+  _.set(clonedSeries, 'dataSource.measure.aggregationFunction', 'count');
+  _.set(clonedSeries, 'dataSource.measure.columnName', null);
 
   // Set primary color equal to the index color of the current color palette.  If no palette is set, use categorical.
   //

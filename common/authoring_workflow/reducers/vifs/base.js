@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import I18n from 'common/i18n';
 import {
-  appendSeriesWithMeasure,
+  appendSeries,
   forEachSeries,
   removeSeries,
   setBooleanValueOrDeleteProperty,
@@ -50,18 +50,10 @@ export default function(state, action) {
       if (action.dimension && action.dimension === groupingDimension) {
         setDimensionGroupingColumnName(state, null);
       };
-
       break;
 
-    case actions.INITIALIZE_SERIES:
-      for (var i = 0; i < action.seriesCount - 1; i++) {
-        const series = _.cloneDeep(state.series[0]);
-        state.series.push(series);
-      }
-      break;
-
-    case actions.APPEND_SERIES_WITH_MEASURE:
-      appendSeriesWithMeasure(state, action.columnName, action.label);
+    case actions.APPEND_SERIES:
+      appendSeries(state);
       break;
 
     case actions.REMOVE_SERIES:

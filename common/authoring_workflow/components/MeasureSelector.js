@@ -6,7 +6,7 @@ import I18n from 'common/i18n';
 import { AGGREGATION_TYPES, COLUMN_TYPES, MAXIMUM_MEASURES } from '../constants';
 
 import { 
-  appendSeriesWithMeasure, 
+  appendSeries, 
   removeSeries, 
   setMeasure, 
   setMeasureAggregation } from '../actions';
@@ -68,14 +68,14 @@ export const MeasureSelector = React.createClass({
     ];
 
     const series = getSeries(vifAuthoring);
-    const measureSelectors = series.map((item, index) => {
-      return this.renderMeasureSelector(item.dataSource.measure, index, options);
+    const measureSelectors = series.map((item, seriesIndex) => {
+      return this.renderMeasureSelector(seriesIndex, item.dataSource.measure, options);
     });
 
     let pendingMeasureSelector;
 
     if (isSeriesPending) {
-      pendingMeasureSelector = this.renderPendingMeasureSelector(options.length, options);
+      pendingMeasureSelector = this.renderPendingMeasureSelector(series.length, options);
     }
 
     const addMeasureLink = this.renderAddMeasureLink();
@@ -92,18 +92,18 @@ export const MeasureSelector = React.createClass({
     );
   },
 
-  renderPendingMeasureSelector(index, options) {
+  renderPendingMeasureSelector(seriesIndex, options) {
     const { vifAuthoring } = this.props;
     const measureListItemAttributes = {
       className: 'measure-list-item',
-      key: index
+      key: seriesIndex
     };
 
     const hasOnlyDefaultValue = options.length <= 1;
     const measureAttributes = {
       disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
-      id: `measure-selection-${index}`,
-      onSelection: (option) => this.handleOnSelectionMeasureColumn(option, index),
+      id: `measure-selection-${seriesIndex}`,
+      onSelection: (option) => this.handleOnSelectionMeasureColumn(seriesIndex, option),
       options,
       placeholder: I18n.translate('shared.visualizations.panes.data.fields.measure.select_column')
     };
@@ -117,24 +117,24 @@ export const MeasureSelector = React.createClass({
     );
   },
 
-  renderMeasureSelector(measure, index, options) {
+  renderMeasureSelector(seriesIndex, measure, options) {
     const { vifAuthoring } = this.props;
     const measureListItemAttributes = {
       className: 'measure-list-item',
-      key: index
+      key: seriesIndex
     };
 
     const hasOnlyDefaultValue = options.length <= 1;
     const measureAttributes = {
       disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
-      id: `measure-selection-${index}`,
-      onSelection: (option) => this.handleOnSelectionMeasureColumn(option, index),
+      id: `measure-selection-${seriesIndex}`,
+      onSelection: (option) => this.handleOnSelectionMeasureColumn(seriesIndex, option),
       options,
       value: measure.columnName
     };
 
-    const measureAggregationSelector = this.renderMeasureAggregationSelector(measure, index);
-    const deleteMeasureLink = this.renderDeleteMeasureLink(index);
+    const measureAggregationSelector = this.renderMeasureAggregationSelector(seriesIndex, measure);
+    const deleteMeasureLink = this.renderDeleteMeasureLink(seriesIndex);
 
     return (
       <li {...measureListItemAttributes}>
@@ -147,7 +147,7 @@ export const MeasureSelector = React.createClass({
     );
   },
 
-  renderMeasureAggregationSelector(measure, index) {
+  renderMeasureAggregationSelector(seriesIndex, measure) {
     const { aggregationTypes, vifAuthoring } = this.props;
 
     if (_.isNull(measure.columnName)) {
@@ -161,8 +161,8 @@ export const MeasureSelector = React.createClass({
 
     const measureAggregationAttributes = {
       disabled: isFeatureMap(vifAuthoring),
-      id: `measure-aggregation-selection-${index}`,
-      onSelection: (option) => this.handleOnSelectionMeasureAggregation(option, index),
+      id: `measure-aggregation-selection-${seriesIndex}`,
+      onSelection: (option) => this.handleOnSelectionMeasureAggregation(seriesIndex, option),
       options,
       value: measure.aggregationFunction
     };
@@ -185,13 +185,13 @@ export const MeasureSelector = React.createClass({
     );
   },
 
-  renderDeleteMeasureLink(index) {
+  renderDeleteMeasureLink(seriesIndex) {
     const { vifAuthoring } = this.props;
 
     const deleteLinkAttributes = {
       className: 'measure-delete-link',
-      id: `measure-delete-link-${index}`,
-      onClick: () => this.handleOnClickDeleteMeasure(index)
+      id: `measure-delete-link-${seriesIndex}`,
+      onClick: () => this.handleOnClickDeleteMeasure(seriesIndex)
     };
 
     return isMultiSeries(vifAuthoring) ? (
@@ -233,28 +233,28 @@ export const MeasureSelector = React.createClass({
     this.setState({ isSeriesPending: true });
   },
   
-  handleOnClickDeleteMeasure(index) {
+  handleOnClickDeleteMeasure(seriesIndex) {
     const { onRemoveMeasure } = this.props;
-    onRemoveMeasure(index);
+    onRemoveMeasure(seriesIndex);
   },
 
-  handleOnSelectionMeasureColumn(option, index) {
+  handleOnSelectionMeasureColumn(seriesIndex, option) {
     const { onAddMeasure, onSetMeasureColumn } = this.props;
     const { isSeriesPending } = this.state;
-    
+
     if (isSeriesPending) {
-      onAddMeasure(option.value, option.title);
+      onAddMeasure(seriesIndex, option.value, option.title);
     }
     else {
-      onSetMeasureColumn(index, option.value, option.title);
+      onSetMeasureColumn(seriesIndex, option.value, option.title);
     }
 
     this.setState({ isSeriesPending: false });
   },
 
-  handleOnSelectionMeasureAggregation(option, index) {
+  handleOnSelectionMeasureAggregation(seriesIndex, option) {
     const { onSetMeasureAggregation } = this.props;
-    onSetMeasureAggregation(index, option.value);
+    onSetMeasureAggregation(seriesIndex, option.value);
   },
 });
 
@@ -265,17 +265,18 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onAddMeasure(columnName, label) {
-      dispatch(appendSeriesWithMeasure(columnName, label));
+    onAddMeasure(seriesIndex, columnName, label) {
+      dispatch(appendSeries());
+      dispatch(setMeasure(seriesIndex, columnName, label));
     },
-    onRemoveMeasure(index) {
-      dispatch(removeSeries(index));
+    onRemoveMeasure(seriesIndex) {
+      dispatch(removeSeries(seriesIndex));
     },
-    onSetMeasureColumn(index, columnName, label) {
-      dispatch(setMeasure(index, columnName, label));
+    onSetMeasureColumn(seriesIndex, columnName, label) {
+      dispatch(setMeasure(seriesIndex, columnName, label));
     },
-    onSetMeasureAggregation(index, aggregationFunction) {
-      dispatch(setMeasureAggregation(index, aggregationFunction));
+    onSetMeasureAggregation(seriesIndex, aggregationFunction) {
+      dispatch(setMeasureAggregation(seriesIndex, aggregationFunction));
     },
   };
 }

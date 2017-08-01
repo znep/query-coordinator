@@ -8,6 +8,7 @@ window.ReactDOM = require('react-dom');
 window.TestUtils = require('react-addons-test-utils');
 window.redux = require('redux');
 window.I18n = require('mockTranslations');
+window.translations = { internal_asset_manager: require('mockTranslations') };
 window.mixpanelConfig = require('./data/mock_mixpanel_config').default;
 window.sessionData = require('./data/mock_session_data').default;
 window.serverConfig = require('./data/mock_server_config').default;

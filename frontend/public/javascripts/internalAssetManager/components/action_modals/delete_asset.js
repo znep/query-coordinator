@@ -138,7 +138,7 @@ DeleteAsset.propTypes = {
   onDismiss: PropTypes.func,
   results: PropTypes.array.isRequired,
   uid: PropTypes.string.isRequired,
-  I18n: PropTypes.object
+  I18n: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({

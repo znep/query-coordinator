@@ -1,5 +1,6 @@
 import { assert } from 'chai';
 import { DeleteAsset } from 'components/action_modals/delete_asset';
+import I18nJS from 'i18n-js';
 import mockCeteraResults from 'data/mock_cetera_results';
 import sinon from 'sinon';
 
@@ -15,6 +16,7 @@ describe('components/DeleteAsset', () => {
     onDismiss: () => {},
     results: mockCeteraResults,
     uid: '9xzi-4fxu',
+    I18n: I18nJS,
     ...options
   });
 

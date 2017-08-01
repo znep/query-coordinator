@@ -26,6 +26,7 @@ class CatalogLandingPageController < ApplicationController
   end
 
   def manage
+    compute_page_title
   end
 
   def manage_write

@@ -624,11 +624,12 @@ module BrowseActions
   private
 
   def get_title(options, facets)
-    title = []
+    title_fragments = []
 
     if options[:q].present?
-      title << t('controls.browse.title.result.term', :term => options[:q])
+      title_fragments << t('controls.browse.title.result.term', :term => options[:q])
     end
+
     facet_parts = []
     facets.each do |facet|
       if options[facet[:param]].present?
@@ -654,15 +655,23 @@ module BrowseActions
         end
       end
     end
+
     if facet_parts.present?
-      title << t('controls.browse.title.result.facet_main', :body => facet_parts.compact.to_sentence)
+      title_fragments << t('controls.browse.title.result.facet_main', :body => facet_parts.compact.to_sentence)
     end
 
-    if title.empty?
+    title = if title_fragments.empty?
       options[:default_title] || t('controls.browse.title.default')
     else
-      t('controls.browse.title.result.main', :body => title.join(', '))
-    end.to_str # force this string to be marked html unsafe
+      t('controls.browse.title.result.main', :body => title_fragments.join(', '))
+    end
+
+    title << ' | ' + t('controls.browse.browse2.results.page_title',
+      :page_number => options[:page],
+      :page_count => (options[:view_count] / options[:limit].to_f).ceil
+    )
+
+    title.to_str  # force this string to be marked html unsafe
   end
 
   # Yes, there is conflation between browse2 and cetera.

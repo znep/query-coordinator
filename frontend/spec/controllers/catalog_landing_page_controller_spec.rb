@@ -25,7 +25,7 @@ describe CatalogLandingPageController do
 
         expect(subject).to render_template('styleguide')
 
-        expect(assigns(:clp_title_param_string)).to eq(' | Government')
+        expect(assigns(:clp_title_param_string)).to eq(' | Government | Page 1 of 1')
         expect(assigns(:featured_content).length).to eq(2)
         expect(assigns(:metadata).keys).to eq(%w(description headline))
         expect(assigns(:processed_browse)[:sidebar_config].search).to eq(false)

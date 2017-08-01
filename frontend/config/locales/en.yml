@@ -2893,9 +2893,12 @@ en:
           title: Choose Visibility
         delete_asset:
           accept: Delete
+          assets:
+            one: asset
+            other: assets
           chart: chart
-          description: Are you sure you want to delete %{name}?
-          description_related_assets: '%{count} related assets built using this dataset will also be deleted permanently.'
+          description: Are you sure you want to delete "%{name}"?
+          description_related_assets: '%{count} related %{assets} built using this dataset will also be deleted permanently.'
           description_chart_map: This is a %{assetType} based on another dataset. The related dataset will not be deleted.
           dismiss: Cancel
           error: Sorry, there was an error deleting this asset. Please refresh and try again or contact support@socrata.com if it continues.

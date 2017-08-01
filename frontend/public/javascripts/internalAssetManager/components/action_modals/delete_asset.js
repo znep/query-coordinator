@@ -21,7 +21,7 @@ export class DeleteAsset extends React.Component {
     const { assetType, uid } = this.props;
 
     if (assetType === 'dataset') {
-      this.props.fetchChildAssets(uid).then(response => {
+      this.props.fetchChildAssets(uid).then((response) => {
         if (_.has(response, 'resultSetSize')) {
           this.setState({
             currentAssetChildrenCount: response.resultSetSize,
@@ -30,7 +30,7 @@ export class DeleteAsset extends React.Component {
         } else {
           throw new Error('Invalid response', response);
         }
-      }).catch(err => {
+      }).catch((err) => {
         console.error('Error fetching current asset child count', err);
         this.setState({ fetchingChildCount: false });
       });
@@ -48,8 +48,7 @@ export class DeleteAsset extends React.Component {
     const { assetActions, assetType, onDismiss, uid } = this.props;
     const { currentAssetChildrenCount, fetchingChildCount } = this.state;
 
-    const getTranslation = (key) =>
-      _.get(I18n, `result_list_table.action_modal.delete_asset.${key}`);
+    const getTranslation = (key) => _.get(I18n, `result_list_table.action_modal.delete_asset.${key}`);
 
     const modalProps = {
       fullScreen: false,
@@ -60,6 +59,13 @@ export class DeleteAsset extends React.Component {
       onDismiss,
       title: getTranslation('title')
     };
+
+    const deleteConfirmationMessage = getTranslation('description_related_assets').
+      replace('%{count}', currentAssetChildrenCount).
+      replace('%{assets}', currentAssetChildrenCount === 1 ?
+        getTranslation('assets.one') :
+        getTranslation('assets.other')
+      );
 
     let description;
     let subDescription;
@@ -76,7 +82,7 @@ export class DeleteAsset extends React.Component {
       if (currentAssetChildrenCount > 0) {
         subDescription = (
           <div className="sub-description">
-            {getTranslation('description_related_assets').replace('%{count}', currentAssetChildrenCount)}
+            {deleteConfirmationMessage}
           </div>
         );
       } else if (assetType === 'chart' || assetType === 'map') {

@@ -55,7 +55,7 @@ describe('components/DeleteAsset', () => {
   });
 
   describe('datasets', () => {
-    it('shows the number of children that will be deleted along with the dataset', () => {
+    it('shows the number of children that will be deleted along with the dataset', (done) => {
       const stub = sinon.stub();
       stub.resolves({ resultSetSize: 55 });
 
@@ -66,6 +66,36 @@ describe('components/DeleteAsset', () => {
       _.defer(() => {
         assert.equal(element.querySelector('.sub-description').textContent,
           '55 related assets built using this dataset will also be deleted permanently.');
+        done();
+      });
+    });
+
+    it('uses the singular term when only one related asset will be deleted', (done) => {
+      const stub = sinon.stub();
+      stub.resolves({ resultSetSize: 1 });
+
+      const element = renderComponentWithPropsAndStore(DeleteAsset, deleteAssetProps({
+        fetchChildAssets: stub
+      }));
+
+      _.defer(() => {
+        assert.equal(element.querySelector('.sub-description').textContent,
+          '1 related asset built using this dataset will also be deleted permanently.');
+        done();
+      });
+    });
+
+    it('quotes the name of the asset being deleted', (done) => {
+      const stub = sinon.stub();
+      stub.resolves({ resultSetSize: 55 });
+
+      const element = renderComponentWithPropsAndStore(DeleteAsset, deleteAssetProps({
+        fetchChildAssets: stub
+      }));
+
+      _.defer(() => {
+        assert.equal(element.querySelector('.description').textContent,
+          'Are you sure you want to delete "Seattle Police Department Police Report Incident"?');
         done();
       });
     });

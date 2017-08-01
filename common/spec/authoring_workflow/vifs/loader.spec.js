@@ -10,7 +10,6 @@ describe('loader', function() {
       it('propagates changes to the store', function() {
         load(dispatch, testData[visualizationType]());
 
-        const o = store.getState().vifAuthoring.vifs[visualizationType];
         expect(store.getState().vifAuthoring.vifs[visualizationType]).to.eql(testData[visualizationType]());
       });
     };

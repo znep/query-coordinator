@@ -28,11 +28,7 @@ function getData(vif, options) {
     const dimensionIndex = 0;
     const measureIndex = 1;
     const measureLabels = vif.series.map((series, i) => {
-      let seriesLabel = _.get(series, 'label', '');
-
-      return _.isEmpty(seriesLabel) ?
-        (I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + i) :
-        seriesLabel;
+      return _.get(series, 'label', '');
     });
     const uniqueDimensionValues = _.uniq(
       _.flatMap(

@@ -12,8 +12,10 @@ import {
   DROP_COLUMN,
   SET_ROW_IDENTIFIER,
   UPDATE_COLUMN_TYPE,
-  VALIDATE_ROW_IDENTIFIER
+  VALIDATE_ROW_IDENTIFIER,
+  SAVE_CURRENT_OUTPUT_SCHEMA
 } from 'actions/apiCalls';
+import { editRevision } from 'actions/revisions';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Selectors from 'selectors';
 import { showModal } from 'actions/modal';
@@ -224,6 +226,38 @@ export function validateThenSetRowIdentifier(outputSchema, outputColumn) {
         } else {
           dispatch(setRowIdentifier(outputSchema, outputColumn));
         }
+      })
+      .catch(error => {
+        dispatch(apiCallFailed(callId, error));
+      });
+  };
+}
+
+export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
+  return (dispatch) => {
+    const call = {
+      operation: SAVE_CURRENT_OUTPUT_SCHEMA,
+      params: { outputSchemaId }
+    };
+
+    const callId = uuid();
+
+    dispatch(apiCallStarted(callId, call));
+    const url = dsmapiLinks.revisionBase;
+    return socrataFetch(url, {
+      method: 'PUT',
+      body: JSON.stringify({
+        ...revision,
+        output_schema_id: outputSchemaId
+      })
+    })
+      .then(checkStatus)
+      .then(getJson)
+      .then(() => {
+        dispatch(apiCallSucceeded(callId));
+        dispatch(editRevision(revision.id, {
+          output_schema_id: outputSchemaId
+        }));
       })
       .catch(error => {
         dispatch(apiCallFailed(callId, error));

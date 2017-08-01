@@ -14,11 +14,6 @@
   margin-left: 12px;
 }
 
-.saveBtn {
-  composes: btn;
-  composes: btn-default from global;
-}
-
 .processBtn {
   composes: btn;
   composes: btn-primary from global;

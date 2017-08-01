@@ -2195,9 +2195,10 @@ en:
       filetypes: Supported file types are
       flash_error_message: Unsupported file type
       message: Drag a New Data File Here
-      no_uploads: No uploads yet :(
+      no_uploads: No uploads yet
       noncurrent: Other Uploads
       submessage: ...or click Browse to choose a file from your computer
+      uploads: Uploads
       title: Replace Data
     show_upsert:
       failure:

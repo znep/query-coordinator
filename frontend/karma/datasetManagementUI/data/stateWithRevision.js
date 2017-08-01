@@ -109,6 +109,7 @@ export default {
       '187': {
         id: 187,
         fourfour: 'nn5w-zj56',
+        output_schema_id: 152,
         task_sets: [30],
         revision_seq: 0,
         permission: 'public',

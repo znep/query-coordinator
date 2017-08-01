@@ -115,7 +115,7 @@ export function updateRevision(permission) {
   };
 }
 
-export function applyRevision(outputSchemaId) {
+export function applyRevision() {
   return (dispatch, getState) => {
     const location = getState().ui.routing.location;
     const callId = uuid();
@@ -123,22 +123,12 @@ export function applyRevision(outputSchemaId) {
     dispatch(
       apiCallStarted(callId, {
         operation: APPLY_REVISION,
-        params: {
-          outputSchemaId
-        }
+        params: {}
       })
     );
 
-    let body;
-    if (outputSchemaId) {
-      body = { output_schema_id: outputSchemaId };
-    } else {
-      body = {};
-    }
-
     return socrataFetch(dsmapiLinks.applyRevision, {
-      method: 'PUT',
-      body: JSON.stringify(body)
+      method: 'PUT'
     })
       .then(checkStatus)
       .then(getJson)

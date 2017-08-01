@@ -19,6 +19,7 @@ import {
   subscribeToOutputSchema,
   subscribeToTransforms
 } from 'actions/manageUploads';
+import { editRevision } from 'actions/revisions';
 import { editView } from 'actions/views';
 
 export const dismissMetadataPane = currentOutputSchemaPath => (dispatch, getState) => {
@@ -207,17 +208,21 @@ export const saveColumnMetadata = outputSchemaId => (dispatch, getState) => {
       dispatch(subscribeToTransforms(resp.resource));
       return resp;
     })
-    .then(({ resource: { id } }) => {
+    .then(({ resource: { id: newOutputSchemaId } }) => {
       dispatch(
         editView(fourfour, {
           columnFormDirty: false,
           showErrors: false
         })
       );
+      const revision = Selectors.latestRevision(entities);
+      dispatch(editRevision(revision.id, {
+        output_schema_id: newOutputSchemaId
+      }));
       dispatch(apiCallSucceeded(callId));
       // This is subtly wrong, could be a race with another user
       const { routing } = getState().ui;
-      const redirect = Links.columnMetadataForm(id)(routing.location);
+      const redirect = Links.columnMetadataForm(newOutputSchemaId)(routing.location);
       dispatch(push(redirect));
 
       dispatch(showFlashMessage('success', I18n.edit_metadata.save_success, 3500));

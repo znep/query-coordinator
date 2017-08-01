@@ -11,7 +11,7 @@ import {
 } from 'actions/showOutputSchema';
 import { bootstrapApp } from 'actions/bootstrap';
 import { createUpload } from 'actions/manageUploads';
-import { latestOutputSchema, columnsForOutputSchema } from 'selectors';
+import { currentOutputSchema, columnsForOutputSchema } from 'selectors';
 import mockAPI from '../testHelpers/mockAPI';
 import rootReducer from 'reducers/rootReducer';
 import mockSocket from '../testHelpers/mockSocket';
@@ -49,7 +49,7 @@ describe('actions/showOutputSchema', () => {
         .dispatch(createUpload({ name: 'petty_crimes.csv' }))
         .then(() => {
           const { entities } = store.getState();
-          os = latestOutputSchema(entities);
+          os = currentOutputSchema(entities);
           column = columnsForOutputSchema(entities, os.id)[0];
           return store.dispatch(addColumn(os, column));
         })
@@ -135,7 +135,7 @@ describe('actions/showOutputSchema', () => {
         .dispatch(createUpload({ name: 'petty_crimes.csv' }))
         .then(() => {
           const { entities } = store.getState();
-          os = latestOutputSchema(entities);
+          os = currentOutputSchema(entities);
           column = columnsForOutputSchema(entities, os.id)[0];
           return store.dispatch(dropColumn(os, column));
         })
@@ -225,7 +225,7 @@ describe('actions/showOutputSchema', () => {
         .dispatch(createUpload({ name: 'petty_crimes.csv' }))
         .then(() => {
           const { entities } = store.getState();
-          os = latestOutputSchema(entities);
+          os = currentOutputSchema(entities);
           column = columnsForOutputSchema(entities, os.id)[0];
           return store.dispatch(updateColumnType(os, column, 'text'));
         })

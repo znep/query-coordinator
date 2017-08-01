@@ -119,7 +119,7 @@ function isDataSatisfied(state) {
     return true;
   }
   let dataSatisfied;
-  const outputSchema = Selectors.latestOutputSchema(state.entities);
+  const outputSchema = Selectors.currentOutputSchema(state.entities);
   if (outputSchema) {
     const inputSchema = state.entities.input_schemas[outputSchema.input_schema_id];
     const columns = Selectors.columnsForOutputSchema(state.entities, outputSchema.id);

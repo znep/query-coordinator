@@ -31,18 +31,16 @@ describe('components/HomePaneSidebar', () => {
   it("shows a disabled 'Describe Columns' button if columnsExist is falsey", () => {
     const defaultProps = {
       entities: {
-        __loads__: {},
+        revisions: {
+          0: { id: 0 }
+        },
         views: {
           's396-jk8m': {
             id: 's396-jk8m',
             name: 'vsgfdfg',
             viewCount: 0,
             downloadCount: 0,
-            license: {},
-            __status__: {
-              type: 'SAVED',
-              savedAt: 'ON_SERVER'
-            }
+            license: {}
           }
         },
         updates: {},

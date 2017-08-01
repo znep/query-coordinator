@@ -2,28 +2,15 @@ import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import * as Links from '../links';
+import * as Selectors from '../selectors';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
-import { columnsForOutputSchema } from '../selectors';
-import _ from 'lodash';
 import styles from 'styles/SchemaPreview.scss';
 
 function mapStateToProps({ entities }) {
-  // TODO: how do we know which is the correct input schema to show?
-  // how do we know which is the correct output schema to show?
+  const currentOutputSchema = Selectors.currentOutputSchema(entities);
 
-  // TODO: this is awfully slow because the DB is arrays not keyed by id
-  const latestOutputSchema = _.reduce(
-    entities.output_schemas || [],
-    (acc, os) => {
-      if (!acc) return os;
-      if (os.id > acc.id) return os;
-      return acc;
-    },
-    null
-  );
-
-  if (latestOutputSchema) {
-    const columns = columnsForOutputSchema(entities, latestOutputSchema.id).map(column => {
+  if (currentOutputSchema) {
+    const columns = Selectors.columnsForOutputSchema(entities, currentOutputSchema.id).map(column => {
       const transform = entities.transforms[column.transform_id];
       return {
         dataTypeName: transform && transform.output_soql_type,
@@ -36,7 +23,7 @@ function mapStateToProps({ entities }) {
     return {
       columns,
       headerButton: (
-        <Link className={styles.btnWrapper} to={Links.columnMetadataForm(latestOutputSchema.id)}>
+        <Link className={styles.btnWrapper} to={Links.columnMetadataForm(currentOutputSchema.id)}>
           <button className={styles.schemaBtn} tabIndex="-1">
             {I18n.home_pane.column_metadata_manage_button}
           </button>

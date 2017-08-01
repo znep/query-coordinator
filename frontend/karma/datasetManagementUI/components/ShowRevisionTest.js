@@ -34,8 +34,8 @@ describe('components/ShowRevision', () => {
     assert.isFalse(component.find('Connect(HomePaneSidebar)').isEmpty());
   });
 
-  it('renders manage data link', () => {
-    assert.isFalse(component.find('.manageDataBtn').isEmpty());
+  it('renders table placeholder', () => {
+    assert.isFalse(component.find('WrapDataTablePlaceholder').isEmpty());
   });
 
   it('renders without errors when there is no output schema', () => {

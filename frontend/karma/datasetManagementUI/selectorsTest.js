@@ -175,22 +175,38 @@ describe('Selectors', () => {
     });
   });
 
-  describe('latestOutputSchema', () => {
-    it('returns schema with the highest id', () => {
+  describe('currentOutputSchema', () => {
+    it('returns output schema pointed at by the revision', () => {
       const entities = {
+        revisions: {
+          0: { id: 0, output_schema_id: 1 }
+        },
         output_schemas: {
           1: { id: 1 },
           2: { id: 2 }
         }
       };
-      assert.deepEqual(Selectors.latestOutputSchema(entities), { id: 2 });
+      assert.deepEqual(Selectors.currentOutputSchema(entities), { id: 1 });
     });
 
-    it('returns undefined if there are no output schemas', () => {
+    it('returns null if there is no output_schema_id on the revision', () => {
       const entities = {
+        revisions: {
+          0: { id: 0 }
+        },
         output_schemas: {}
       };
-      assert.deepEqual(Selectors.latestOutputSchema(entities), undefined);
+      assert.isNull(Selectors.currentOutputSchema(entities));
+    });
+
+    it('returns null if there is no output_schema_id on the revision is null', () => {
+      const entities = {
+        revisions: {
+          0: { id: 0, output_schema_id: null }
+        },
+        output_schemas: {}
+      };
+      assert.isNull(Selectors.currentOutputSchema(entities));
     });
   });
 
@@ -225,10 +241,10 @@ describe('Selectors', () => {
         .map(_.toNumber)
         .filter(key => !!key);
 
-      const latestOutputSchemaId = Math.max(...outputSchemaIds);
+      const currentOutputSchemaId = Math.max(...outputSchemaIds);
 
       const currentOutputColumnIds = _.chain(entities.output_schema_columns)
-        .filter(osc => osc.output_schema_id === latestOutputSchemaId)
+        .filter(osc => osc.output_schema_id === currentOutputSchemaId)
         .reduce((innerAcc, osc) => {
           return [...innerAcc, osc.output_column_id];
         }, [])
@@ -275,10 +291,10 @@ describe('Selectors', () => {
         .map(_.toNumber)
         .filter(key => !!key);
 
-      const latestOutputSchemaId = Math.max(...outputSchemaIds);
+      const currentOutputSchemaId = Math.max(...outputSchemaIds);
 
       const currentInputSchemaId =
-        entities.output_schemas[latestOutputSchemaId].input_schema_id;
+        entities.output_schemas[currentOutputSchemaId].input_schema_id;
 
       const currentInputColumns = Object.keys(entities.input_columns).filter(
         icid =>
@@ -340,6 +356,40 @@ describe('Selectors', () => {
       };
       const result = Selectors.allTransformsDone(columnsWithTransforms, inputSchema);
       assert.isTrue(result);
+    });
+
+  });
+
+  describe('latestOutputSchemaForSource', () => {
+
+    it('returns null if the source has no output schemas', () => {
+      const entities = {
+        sources: {
+          0: { id: 0 }
+        },
+        input_schemas: {}
+      };
+
+      assert.isNull(Selectors.latestOutputSchemaForSource(entities, 0));
+    });
+
+    it('returns the latest output schema for a source', () => {
+      const entities = {
+        sources: {
+          0: { id: 0 }
+        },
+        input_schemas: {
+          0: { id: 0, source_id: 0 }
+        },
+        output_schemas: {
+          0: { id: 0, input_schema_id: 0 },
+          1: { id: 1, input_schema_id: 0 },
+          2: { id: 2, input_schema_id: 1 }
+        }
+      };
+
+      const latestOutputSchema = Selectors.latestOutputSchemaForSource(entities, 0);
+      assert.equal(latestOutputSchema.id, 1);
     });
 
   });

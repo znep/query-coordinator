@@ -133,6 +133,7 @@ export default {
   revision: {
     task_sets: [],
     revision_seq: 0,
+    output_schema_id: 127,
     metadata: null,
     id: 172,
     fourfour: 'ww72-hpm3',

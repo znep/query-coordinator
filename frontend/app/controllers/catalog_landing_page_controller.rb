@@ -112,10 +112,13 @@ class CatalogLandingPageController < ApplicationController
     title_fragments = params.except('controller', 'action', 'custom_path', 'page').map do |key, value|
       key == 'limitTo' ? I18n.t("catalog_landing_page.view_types.#{value}", :default => value) : value
     end
-    title_fragments << t('controls.browse.browse2.results.page_title',
-      :page_number => @processed_browse[:page],
-      :page_count => (@processed_browse[:view_count] / @processed_browse[:limit].to_f).ceil
-    )
+
+    if @processed_browse.to_h.with_indifferent_access.values_at(:page, :view_count, :limit).all?(&:present?)
+      title_fragments << t('controls.browse.browse2.results.page_title',
+        :page_number => @processed_browse[:page],
+        :page_count => (@processed_browse[:view_count].to_f / @processed_browse[:limit].to_f).ceil
+      )
+    end
 
     @clp_title_param_string = ' | ' + title_fragments.join(' | ')
   end

@@ -170,7 +170,8 @@ export const MeasureSelector = React.createClass({
     return (
       <div className="measure-aggregation-selector-dropdown-container">
         <Dropdown {...measureAggregationAttributes} />
-      </div>);
+      </div>
+    );
   },
 
   renderMeasureOption(option) {
@@ -207,7 +208,7 @@ export const MeasureSelector = React.createClass({
     const { isSeriesPending } = this.state;
 
     const series = getSeries(vifAuthoring);
-    const isVisible = (series.length < MAXIMUM_MEASURES) &&
+    const shouldRender = (series.length < MAXIMUM_MEASURES) &&
       (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
     const isDisabled = isSeriesPending || !_.isEmpty(getDimensionGroupingColumnName(vifAuthoring));
@@ -218,7 +219,7 @@ export const MeasureSelector = React.createClass({
       onClick: isDisabled ? null : this.handleOnClickAddMeasure
     };
 
-    return isVisible ? (
+    return shouldRender ? (
       <div className="measure-add-measure-link-container">
         <a {...addMeasureLinkAttributes}>
           <span className="socrata-icon-add" />

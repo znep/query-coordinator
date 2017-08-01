@@ -61,16 +61,9 @@ export default function(state, action) {
       break;
 
     case actions.SET_MEASURE:
-
       if (action.seriesIndex < state.series.length) {
         const series = state.series[action.seriesIndex];
-        const label = action.label || I18n.translate('shared.visualizations.panes.data.fields.measure.no_value')
-
-        const initialMeasureColumnName = _.get(series, 'dataSource.measure.columnName');
-        const initialMeasureAggregationFunction = _.get(series, 'dataSource.measure.aggregationFunction');
-
         _.set(series, 'dataSource.measure.columnName', action.columnName);
-        _.set(series, 'dataSource.measure.label', label);
 
         if (_.isNull(action.columnName)) {
           _.set(series, 'dataSource.measure.aggregationFunction', 'count');

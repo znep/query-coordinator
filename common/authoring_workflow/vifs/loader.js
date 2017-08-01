@@ -25,7 +25,6 @@ const paths = {
   measureAxisMaxValue: 'configuration.measureAxisMaxValue',
   measureAxisMinValue: 'configuration.measureAxisMinValue',
   measureColumnName: 'series[{0}].dataSource.measure.columnName',
-  measureLabel: 'series[{0}].dataSource.measure.label',
   negativeColor: 'configuration.legend.negativeColor',
   orderBy: 'series[0].dataSource.orderBy',
   pointOpacity: 'configuration.pointOpacity',
@@ -81,9 +80,8 @@ export const load = (dispatch, vif) => {
       }
 
       const measureColumnNamePath = paths.measureColumnName.format(i);
-      const measureLabelPath = paths.measureLabel.format(i);
       if (has(measureColumnNamePath)) {
-        dispatch(actions.setMeasure(i, get(measureColumnNamePath), get(measureLabelPath)));
+        dispatch(actions.setMeasure(i, get(measureColumnNamePath)));
       }
 
       const measureAggregationFunctionPath = paths.measureAggregationFunction.format(i);

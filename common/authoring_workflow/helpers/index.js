@@ -204,13 +204,13 @@ export const getMeasureTitle = (series) => {
   const aggregationTypes = AGGREGATION_TYPES.filter(item => item.type === measure.aggregationFunction);
   const aggregationType = (aggregationTypes.length > 0) ? aggregationTypes[0] : null;
 
-  if (!_.isEmpty(measure.label) && (aggregationType !== null) && !_.isEmpty(aggregationType.title)) {
+  if (!_.isEmpty(measure.columnName) && (aggregationType !== null) && !_.isEmpty(aggregationType.title)) {
 
     return I18n.t('shared.visualizations.panes.data.fields.measure.color_and_flyout_label').
-      format(measure.label, aggregationType.title);
+      format(measure.columnName, aggregationType.title);
   }
-  else if (!_.isEmpty(measure.label)) {
-    return measure.label;
+  else if (!_.isEmpty(measure.columnName)) {
+    return measure.columnName;
   }
   else {
     return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');

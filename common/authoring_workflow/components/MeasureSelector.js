@@ -243,10 +243,10 @@ export const MeasureSelector = React.createClass({
     const { isSeriesPending } = this.state;
 
     if (isSeriesPending) {
-      onAddMeasure(seriesIndex, option.value, option.title);
+      onAddMeasure(seriesIndex, option.value);
     }
     else {
-      onSetMeasureColumn(seriesIndex, option.value, option.title);
+      onSetMeasureColumn(seriesIndex, option.value);
     }
 
     this.setState({ isSeriesPending: false });
@@ -265,15 +265,15 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onAddMeasure(seriesIndex, columnName, label) {
+    onAddMeasure(seriesIndex, columnName) {
       dispatch(appendSeries());
-      dispatch(setMeasure(seriesIndex, columnName, label));
+      dispatch(setMeasure(seriesIndex, columnName));
     },
     onRemoveMeasure(seriesIndex) {
       dispatch(removeSeries(seriesIndex));
     },
-    onSetMeasureColumn(seriesIndex, columnName, label) {
-      dispatch(setMeasure(seriesIndex, columnName, label));
+    onSetMeasureColumn(seriesIndex, columnName) {
+      dispatch(setMeasure(seriesIndex, columnName));
     },
     onSetMeasureAggregation(seriesIndex, aggregationFunction) {
       dispatch(setMeasureAggregation(seriesIndex, aggregationFunction));

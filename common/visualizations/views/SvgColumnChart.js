@@ -151,9 +151,24 @@ function SvgColumnChart($element, vif, options) {
     // the no value label. If there are not multiple columns, that's an expected null that we
     // should not overwrite with the no value label. "multiple columns" === greater than 2 because
     // the first element is going to be 'dimension'.
-    const hasMultipleColumns = dataToRender.columns.length > 2;
-    measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
-      map((label) => hasMultipleColumns ? label || noValueLabel : label);
+    const columns = dataToRender.columns.slice(dataTableDimensionIndex + 1);
+
+    if (self.isMultiSeries()) {
+      measureLabels = columns.map((column, index) => {
+        const measureColumnName = _.get(self.getVif(), `series[${index}].dataSource.measure.columnName`);
+
+        if (_.isEmpty(measureColumnName)) {
+          return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
+        }
+
+        const measureColumnFormat = dataToRender.columnFormats[measureColumnName];
+        return _.isUndefined(measureColumnFormat) ? column : measureColumnFormat.name;
+      });
+    }
+    else {
+      measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
+      map((label) => self.isGrouping() ? label || noValueLabel : label);
+    }
 
     let width;
     let height;
@@ -950,6 +965,7 @@ function SvgColumnChart($element, vif, options) {
               )[0][0];
               const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
               const label = measureLabels[measureIndex];
+
               // d3's .datum() method gives us the entire row, whereas everywhere
               // else measureIndex refers only to measure values. We therefore
               // add one to measure index to get the actual measure value from
@@ -1418,6 +1434,7 @@ function SvgColumnChart($element, vif, options) {
     if (value === null) {
       valueString = noValueLabel;
     } else {
+
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
       valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
 

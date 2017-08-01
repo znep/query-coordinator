@@ -167,12 +167,11 @@ export function removeSeries(seriesIndex) {
 }
 
 export const SET_MEASURE = 'SET_MEASURE';
-export function setMeasure(seriesIndex, columnName, label) {
+export function setMeasure(seriesIndex, columnName) {
   return {
     type: SET_MEASURE,
     seriesIndex,
-    columnName,
-    label
+    columnName
   };
 }
 

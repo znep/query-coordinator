@@ -73,6 +73,14 @@ function withExtraBabelPlugins(extraPlugins) {
           loader: require.resolve('expose-loader'),
           query: 'jQuery',
           test: require.resolve('jquery')
+        },
+        {
+          test: /\.scss$/,
+          loaders: [
+            require.resolve('style-loader'),
+            require.resolve('css-loader') + '?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+            require.resolve('sass-loader')
+          ]
         }
       ]
     },

@@ -81,30 +81,65 @@ describe('components/InfoPaneButtons', () => {
       });
     });
 
-    describe('carto modal button', () => {
-      it('not exists if no carto url present', () => {
-        const element = renderComponent(InfoPaneButtons, getProps());
-        assert.isNull(element.querySelector('a[data-modal=carto-modal]'));
+    describe('external integrations section', () => {
+      describe('carto modal button', () => {
+        it('not exists if no carto url present', () => {
+          window.serverConfig.featureFlags.enableExternalDataIntegrations = true;
+
+          const element = renderComponent(InfoPaneButtons, getProps());
+          assert.isNull(element.querySelector('a[data-modal=carto-modal]'));
+        });
+
+        it('not exists if disabled by feature flag', () => {
+          window.serverConfig.featureFlags.enableExternalDataIntegrations = false;
+
+          const element = renderComponent(InfoPaneButtons, getProps());
+          assert.isNull(element.querySelector('a[data-modal=carto-modal]'));
+        });
+
+        it('exists if a carto url present', () => {
+          window.serverConfig.featureFlags.enableExternalDataIntegrations = true;
+
+          const element = renderComponent(InfoPaneButtons, getProps({
+            view: {
+              cartoUrl: 'something'
+            }
+          }));
+          assert.ok(element.querySelector('a[data-modal=carto-modal]'));
+        });
       });
 
-      it('exists if a carto url present', () => {
-        const element = renderComponent(InfoPaneButtons, getProps({
-          view: {
-            cartoUrl: 'something'
-          }
-        }));
-        assert.ok(element.querySelector('a[data-modal=carto-modal]'));
+      describe('plot.ly modal button', () => {
+        it('not exists if disabled by feature flag', () => {
+          window.serverConfig.featureFlags.enableExternalDataIntegrations = false;
+
+          const element = renderComponent(InfoPaneButtons, getProps());
+          assert.isNull(element.querySelector('a[data-modal=plotly-modal]'));
+        });
+
+        it('includes a plot.ly modal button', () => {
+          window.serverConfig.featureFlags.enableExternalDataIntegrations = true;
+
+          const element = renderComponent(InfoPaneButtons, getProps());
+          assert.ok(element.querySelector('a[data-modal=plotly-modal]'));
+        });
       });
-    });
 
-    it('includes a plot.ly modal button', () => {
-      const element = renderComponent(InfoPaneButtons, getProps());
-      assert.ok(element.querySelector('a[data-modal=plotly-modal]'));
-    });
+      describe('more button', () => {
+        it('not exists if disabled by feature flag', () => {
+          window.serverConfig.featureFlags.enableExternalDataIntegrations = false;
 
-    it('should include a more button', () => {
-      const element = renderComponent(InfoPaneButtons, getProps());
-      assert.ok(element.querySelector('.explore-dropdown .more-options-button'));
+          const element = renderComponent(InfoPaneButtons, getProps());
+          assert.isNull(element.querySelector('.explore-dropdown .more-options-button'));
+        });
+
+        it('should include a more button', () => {
+          window.serverConfig.featureFlags.enableExternalDataIntegrations = true;
+
+          const element = renderComponent(InfoPaneButtons, getProps());
+          assert.ok(element.querySelector('.explore-dropdown .more-options-button'));
+        });
+      });
     });
   });
 

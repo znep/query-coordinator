@@ -666,10 +666,13 @@ module BrowseActions
       t('controls.browse.title.result.main', :body => title_fragments.join(', '))
     end
 
-    title << ' | ' + t('controls.browse.browse2.results.page_title',
-      :page_number => options[:page],
-      :page_count => (options[:view_count] / options[:limit].to_f).ceil
-    )
+    # EN-17885: NASA 508 Compliance - Make page titles more different
+    if options.to_h.with_indifferent_access.values_at(:page, :view_count, :limit).all?(&:present?)
+      title << ' | ' + t('controls.browse.browse2.results.page_title',
+        :page_number => options[:page],
+        :page_count => (options[:view_count].to_f / options[:limit].to_f).ceil
+      )
+    end
 
     title.to_str  # force this string to be marked html unsafe
   end

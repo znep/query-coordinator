@@ -111,6 +111,7 @@ export class SearchboxFilter extends React.Component {
     return (
       <div className="searchbox-filter">
         <input
+          autoComplete="off"
           className={searchboxFilterInputClassnames}
           id={this.props.inputId}
           type="text"

@@ -4,6 +4,7 @@ import cssModules from 'react-css-modules';
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import _ from 'lodash';
 import url from 'url';
+import connectLocalization from 'common/i18n/components/connectLocalization';
 
 import { getSearchUrl } from '../../Util';
 import { queryChanged, resultsChanged, resultVisibilityChanged, searchCleared } from '../../actions';
@@ -149,6 +150,7 @@ class SearchBox extends React.Component {
 
   render() {
     const { collapsible, currentQuery } = this.props;
+    const { I18n } = this.props;
     const autocompleteSearchInputId = `autocomplete-search-input-${_.random(32768)}`
 
     return (
@@ -160,7 +162,7 @@ class SearchBox extends React.Component {
           onClick={() => { this.domNode.focus(); }}>
           <SocrataIcon name="search" />
         </div>
-        <label htmlFor={autocompleteSearchInputId} styleName="aria-not-displayed">Search:</label>
+        <label htmlFor={autocompleteSearchInputId} styleName="aria-not-displayed">{I18n.t('shared.site_chrome.header.search')}</label>
         <input
           autoComplete="off"
           className="autocomplete-input"
@@ -168,7 +170,7 @@ class SearchBox extends React.Component {
           onBlur={() => { this.handleFocusChanged(false); }}
           onChange={this.handleChange}
           onFocus={() => { this.handleFocusChanged(true); }}
-          placeholder="Search"
+          placeholder={I18n.t('shared.site_chrome.header.search')}
           ref={(domNode) => { this.domNode = domNode; }}
           styleName={this.getInputStyleName()}
           type="search"
@@ -199,7 +201,10 @@ SearchBox.propTypes = {
 
   // need to know this since if it's undefined, it means on form submission and
   // we search for what's in the textbox instead of for the selected result
-  focusedResult: PropTypes.number
+  focusedResult: PropTypes.number,
+
+  // I18n
+  I18n: PropTypes.object
 };
 
 SearchBox.defaultProps = {
@@ -217,4 +222,4 @@ const mapDispatchToProps = (dispatch) => ({
   onResultVisibilityChanged: (visible) => { dispatch(resultVisibilityChanged(visible)); }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(cssModules(SearchBox, styles));
+export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(cssModules(SearchBox, styles)));

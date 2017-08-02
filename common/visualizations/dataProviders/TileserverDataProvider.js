@@ -194,78 +194,74 @@ function TileserverDataProvider(config, useCache = false) {
   let arrayBufferPromiseCache = {};
   function _getArrayBuffer(url, configuration) {
 
-    let cacheKey = url;
-    let cachedPromise = arrayBufferPromiseCache[cacheKey];
+    const cacheKey = url;
 
+    let cachedPromise = arrayBufferPromiseCache[cacheKey];
     if (cachedPromise) {
       return cachedPromise;
     }
 
-    else {
+    let loadTilesPromise = new Promise(
+      function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
 
-      let loadTilesPromise = new Promise(
-        function(resolve, reject) {
-          var xhr = new XMLHttpRequest();
+        function onFail() {
 
-          function onFail() {
+          return reject({
+            status: parseInt(xhr.status, 10),
+            headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+            config: configuration,
+            statusText: xhr.statusText
+          });
+        }
 
-            return reject({
-              status: parseInt(xhr.status, 10),
-              headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-              config: configuration,
-              statusText: xhr.statusText
-            });
+        xhr.onload = function() {
+
+          var arrayBuffer;
+          var status = parseInt(xhr.status, 10);
+
+          if (status === 200) {
+
+            arrayBuffer = _typedArrayFromArrayBufferResponse(xhr);
+
+            if (!_.isUndefined(arrayBuffer)) {
+
+              return resolve({
+                data: arrayBuffer,
+                status: status,
+                headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+                config: configuration,
+                statusText: xhr.statusText
+              });
+            }
           }
 
-          xhr.onload = function() {
+          onFail();
+        };
 
-            var arrayBuffer;
-            var status = parseInt(xhr.status, 10);
+        xhr.onabort = onFail;
+        xhr.onerror = onFail;
 
-            if (status === 200) {
+        xhr.open('GET', url, true);
 
-              arrayBuffer = _typedArrayFromArrayBufferResponse(xhr);
+        // Set user-defined headers.
+        _.each(configuration.headers, function(value, key) {
+          xhr.setRequestHeader(key, value);
+        });
 
-              if (!_.isUndefined(arrayBuffer)) {
+        xhr.responseType = 'arraybuffer';
 
-                return resolve({
-                  data: arrayBuffer,
-                  status: status,
-                  headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-                  config: configuration,
-                  statusText: xhr.statusText
-                });
-              }
-            }
+        xhr.send();
+      }
+    ).catch(
+      function(error) {
+        throw error;
+      }
+    );
 
-            onFail();
-          };
+    arrayBufferPromiseCache[cacheKey] = loadTilesPromise;
 
-          xhr.onabort = onFail;
-          xhr.onerror = onFail;
-
-          xhr.open('GET', url, true);
-
-          // Set user-defined headers.
-          _.each(configuration.headers, function(value, key) {
-            xhr.setRequestHeader(key, value);
-          });
-
-          xhr.responseType = 'arraybuffer';
-
-          xhr.send();
-        }
-      ).catch(
-        function(error) {
-          throw error;
-        }
-      );
-
-      arrayBufferPromiseCache[cacheKey] = loadTilesPromise;
-
-      return loadTilesPromise;
-
-    }
+    return loadTilesPromise;
 
   }
 

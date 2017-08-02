@@ -19,8 +19,8 @@ export function setDataSource(domain, datasetUid) {
       return;
     }
 
-    const soqlDataProvider = new dataProviders.SoqlDataProvider({ domain, datasetUid });
     const datasetMetadataProvider = new dataProviders.MetadataProvider({ domain, datasetUid }, true);
+    const soqlDataProvider = new dataProviders.SoqlDataProvider({ domain, datasetUid }, true);
 
     dispatch(requestMetadata(domain, datasetUid));
 

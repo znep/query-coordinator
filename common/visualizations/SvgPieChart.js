@@ -194,7 +194,7 @@ $.fn.socrataSvgPieChart = function(originalVif, options) {
     const soqlDataProvider = new SoqlDataProvider({
       datasetUid: series.dataSource.datasetUid,
       domain: series.dataSource.domain
-    });
+    }, true);
     const dimension = SoqlHelpers.dimension(vifToRender, seriesIndex);
     const dimensionAlias = SoqlHelpers.dimensionAlias();
     const measure = SoqlHelpers.measure(vifToRender, seriesIndex);

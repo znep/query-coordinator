@@ -10,7 +10,8 @@ function makeSocrataCategoricalDataRequest(vif, seriesIndex, maxRowCount) {
   const soqlDataProvider = new SoqlDataProvider({
     datasetUid: series.dataSource.datasetUid,
     domain: series.dataSource.domain
-  });
+  },
+                                               true);
   const dimension = SoqlHelpers.dimension(vif, seriesIndex);
   const measure = SoqlHelpers.measure(vif, seriesIndex);
   const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
@@ -343,7 +344,8 @@ function augmentSocrataDataResponseWithOtherCategory(
   const soqlDataProvider = new SoqlDataProvider({
     datasetUid: series.dataSource.datasetUid,
     domain: series.dataSource.domain
-  });
+  },
+                                               true);
 
   return soqlDataProvider.
     query(

@@ -161,7 +161,7 @@ export const getAnyLocationColumn = createSelector(
 export const getSoqlDataProvider = createSelector(
   getDomain,
   getDatasetUid,
-  (domain, datasetUid) => new dataProviders.SoqlDataProvider({ domain, datasetUid })
+  (domain, datasetUid) => new dataProviders.SoqlDataProvider({ domain, datasetUid }, true)
 );
 
 const toDatasetMetadata = (metadata) => (column) => _.find(metadata.columns, {fieldName: column.fieldName});

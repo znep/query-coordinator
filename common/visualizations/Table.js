@@ -738,7 +738,7 @@ $.fn.socrataTable = function(originalVif, locale) {
         );
       }
 
-      const soqlDataProvider = new SoqlDataProvider(dataProviderConfig);
+      const soqlDataProvider = new SoqlDataProvider(dataProviderConfig, true);
 
       const soqlRowCountPromise = getMemoizedRowCount(
         soqlDataProvider,

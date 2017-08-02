@@ -69,7 +69,7 @@ describe('MeasureSelector', function() {
       });
 
       it('does not render a dropdown', function() {
-        expect(component).to.be.null;
+        assert.isNull(component);
       });
     });
 
@@ -81,8 +81,8 @@ describe('MeasureSelector', function() {
       });
 
       it('renders measure selection', function() {
-        expect(component.querySelector('#measure-selection-0')).to.exist;
-        expect(component.querySelectorAll('#measure-selection-0 .picklist-option').length).to.equal(4);
+        assert.isNotNull(component.querySelector('#measure-selection-0'));
+        assert.equal(component.querySelectorAll('#measure-selection-0 .picklist-option').length, 4);
       });
 
       describe('with a measure selected', function() {
@@ -94,7 +94,7 @@ describe('MeasureSelector', function() {
         });
 
         it('renders measure aggregation selection', function() {
-          expect(component.querySelector('#measure-aggregation-selection-0')).to.exist;
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-0'));
         });
       });
 
@@ -107,16 +107,16 @@ describe('MeasureSelector', function() {
         });
 
         it('renders a disabled selector', function() {
-          expect(component.querySelector('#measure-selection-0.dropdown-disabled')).to.exist;
+          assert.isNotNull(component.querySelector('#measure-selection-0.dropdown-disabled'));
         });
       });
 
       it('does not render the delete measure link', function() {
-        expect(component.querySelector('#measure-delete-link-0')).to.be.null;
+        assert.isNull(component.querySelector('#measure-delete-link-0'));
       });
 
       it('renders the "Add Measure" link', function() {
-        expect(component.querySelector('#measure-add-measure-link')).to.exist;
+        assert.isNotNull(component.querySelector('#measure-add-measure-link'));
       });
 
       describe('with multi-series measures', function() {
@@ -128,52 +128,52 @@ describe('MeasureSelector', function() {
         });
 
         it('renders measure selection', function() {
-          expect(component.querySelector('#measure-selection-0')).to.exist;
-          expect(component.querySelector('#measure-selection-1')).to.exist;
-          expect(component.querySelector('#measure-selection-2')).to.exist;
-          expect(component.querySelector('#measure-selection-3')).to.exist;
-          expect(component.querySelector('#measure-selection-4')).to.exist;
-          expect(component.querySelector('#measure-selection-5')).to.exist;
-          expect(component.querySelector('#measure-selection-6')).to.exist;
-          expect(component.querySelector('#measure-selection-7')).to.exist;
-          expect(component.querySelector('#measure-selection-8')).to.exist;
-          expect(component.querySelector('#measure-selection-9')).to.exist;
-          expect(component.querySelector('#measure-selection-10')).to.exist;
-          expect(component.querySelector('#measure-selection-11')).to.exist;
+          assert.isNotNull(component.querySelector('#measure-selection-0'));
+          assert.isNotNull(component.querySelector('#measure-selection-1'));
+          assert.isNotNull(component.querySelector('#measure-selection-2'));
+          assert.isNotNull(component.querySelector('#measure-selection-3'));
+          assert.isNotNull(component.querySelector('#measure-selection-4'));
+          assert.isNotNull(component.querySelector('#measure-selection-5'));
+          assert.isNotNull(component.querySelector('#measure-selection-6'));
+          assert.isNotNull(component.querySelector('#measure-selection-7'));
+          assert.isNotNull(component.querySelector('#measure-selection-8'));
+          assert.isNotNull(component.querySelector('#measure-selection-9'));
+          assert.isNotNull(component.querySelector('#measure-selection-10'));
+          assert.isNotNull(component.querySelector('#measure-selection-11'));
         });
 
         it('renders measure aggregation selection', function() {
-          expect(component.querySelector('#measure-aggregation-selection-0')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-1')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-2')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-3')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-4')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-5')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-6')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-7')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-8')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-9')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-10')).to.exist;
-          expect(component.querySelector('#measure-aggregation-selection-11')).to.exist;
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-0'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-1'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-2'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-3'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-4'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-5'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-6'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-7'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-8'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-9'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-10'));
+          assert.isNotNull(component.querySelector('#measure-aggregation-selection-11'));
         });
 
         it('renders measure delete link', function() {
-          expect(component.querySelector('#measure-delete-link-0')).to.exist;
-          expect(component.querySelector('#measure-delete-link-1')).to.exist;
-          expect(component.querySelector('#measure-delete-link-2')).to.exist;
-          expect(component.querySelector('#measure-delete-link-3')).to.exist;
-          expect(component.querySelector('#measure-delete-link-4')).to.exist;
-          expect(component.querySelector('#measure-delete-link-5')).to.exist;
-          expect(component.querySelector('#measure-delete-link-6')).to.exist;
-          expect(component.querySelector('#measure-delete-link-7')).to.exist;
-          expect(component.querySelector('#measure-delete-link-8')).to.exist;
-          expect(component.querySelector('#measure-delete-link-9')).to.exist;
-          expect(component.querySelector('#measure-delete-link-10')).to.exist;
-          expect(component.querySelector('#measure-delete-link-11')).to.exist;
+          assert.isNotNull(component.querySelector('#measure-delete-link-0'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-1'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-2'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-3'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-4'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-5'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-6'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-7'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-8'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-9'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-10'));
+          assert.isNotNull(component.querySelector('#measure-delete-link-11'));
         });
 
         it('does not render the "Add Measure" link with 12 measures showing', function() {
-          expect(component.querySelector('#measure-add-measure-link')).to.be.null;
+          assert.isNull(component.querySelector('#measure-add-measure-link'));
         });
       });
     });

@@ -46,7 +46,7 @@ describe('DataPane', function() {
   function rendersTimelinePrecision() {
     describe('rendering', function() {
       it('renders a dropdown with timeline precision options', function() {
-        expect(component.querySelector('#timeline-precision-selection')).to.exist;
+        assert.isNotNull(component.querySelector('#timeline-precision-selection'));
       });
     });
 
@@ -60,7 +60,7 @@ describe('DataPane', function() {
   function rendersTreatNullValuesAsZeroAndEmitsEvents() {
     describe('rendering', function() {
       it('renders a treat null values as zero checkbox', function() {
-        expect(component.querySelector('#treat-null-values-as-zero')).to.exist;
+        assert.isNotNull(component.querySelector('#treat-null-values-as-zero'));
       });
     });
 
@@ -78,7 +78,7 @@ describe('DataPane', function() {
           metadata: { error: true }
         }));
 
-        expect(component.querySelector('.metadata-error')).to.exist;
+        assert.isNotNull(component.querySelector('.metadata-error'));
       });
     });
 
@@ -88,7 +88,7 @@ describe('DataPane', function() {
           metadata: { isLoading: true }
         }));
 
-        expect(component.querySelector('.metadata-loading')).to.exist;
+        assert.isNotNull(component.querySelector('.metadata-loading'));
       });
     });
   });
@@ -98,19 +98,19 @@ describe('DataPane', function() {
     beforeEach(setUpVisualization(''));
 
     it('does not render a limit none radio button', function() {
-      expect(component.querySelector('#limit-none')).to.not.exist;
+      assert.isNull(component.querySelector('#limit-none'));
     });
 
     it('does not render a limit count radio button', function() {
-      expect(component.querySelector('#limit-count')).to.not.exist;
+      assert.isNull(component.querySelector('#limit-count'));
     });
 
     it('does not render a limit count number input field', function() {
-      expect(component.querySelector('#limit-count-value')).to.not.exist;
+      assert.isNull(component.querySelector('#limit-count-value'));
     });
 
     it('does not render a show other category checkbox', function() {
-      expect(component.querySelector('#show-other-category')).to.not.exist;
+      assert.isNull(component.querySelector('#show-other-category'));
     });
   });
 

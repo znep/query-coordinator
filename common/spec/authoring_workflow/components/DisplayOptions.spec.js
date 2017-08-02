@@ -46,6 +46,7 @@ describe('DisplayOptions', function() {
   }
 
   describe('rendering', function() {
+
     describe('limit and other category', () => {
 
       ['barChart', 'columnChart', 'pieChart'].forEach((chartType) => {
@@ -55,10 +56,10 @@ describe('DisplayOptions', function() {
           beforeEach(setUpVisualization(chartType));
 
           it('renders a limit none radio button', function() {
-            expect(component.querySelector('#limit-none')).to.exist;
+            assert.isNotNull(component.querySelector('#limit-none'));
 
             if (chartType === 'pieChart') {
-              expect(component.querySelector('#limit-none').hasAttribute('disabled')).to.equal(true);
+              assert.isTrue(component.querySelector('#limit-none').hasAttribute('disabled'));
             }
           });
 
@@ -69,15 +70,15 @@ describe('DisplayOptions', function() {
           });
 
           it('renders a limit count radio button', function() {
-            expect(component.querySelector('#limit-count')).to.exist;
+            assert.isNotNull(component.querySelector('#limit-count'));
           });
 
           it('renders a limit count number input field', function() {
-            expect(component.querySelector('#limit-count-value')).to.exist;
+            assert.isNotNull(component.querySelector('#limit-count-value'));
           });
 
           it('renders a show other category checkbox', function() {
-            expect(component.querySelector('#show-other-category')).to.exist;
+            assert.isNotNull(component.querySelector('#show-other-category'));
           });
 
           emitsEvent('#limit-none', 'onSelectLimitNone');

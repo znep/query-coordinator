@@ -51,11 +51,11 @@ describe('LegendsAndFlyoutsPane', function() {
 
   function rendersEditableUnits() {
     it('renders a units one input', function() {
-      expect(component.querySelector('#units-one-0')).to.exist;
+      assert.isNotNull(component.querySelector('#units-one-0'));
     });
 
     it('renders a units other input', function() {
-      expect(component.querySelector('#units-other-0')).to.exist;
+      assert.isNotNull(component.querySelector('#units-other-0'));
     });
   }
 
@@ -79,7 +79,7 @@ describe('LegendsAndFlyoutsPane', function() {
 
     describe('rendering', function() {
       it('renders an empty pane info message', function() {
-        expect(component.querySelector('.authoring-empty-pane')).to.exist;
+        assert.isNotNull(component.querySelector('.authoring-empty-pane'));
       });
     });
   });
@@ -203,7 +203,7 @@ describe('LegendsAndFlyoutsPane', function() {
       rendersEditableUnits();
 
       it('should render a dropdown with columns', function() {
-        expect(component.querySelector('#flyout-title-column')).to.exist;
+        assert.isNotNull(component.querySelector('#flyout-title-column'));
       });
     });
 

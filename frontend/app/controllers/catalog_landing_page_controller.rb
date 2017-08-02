@@ -122,7 +122,7 @@ class CatalogLandingPageController < ApplicationController
       )
     end
 
-    @clp_title_param_string = title_fragments.join(' | ')
+    @clp_title_param_string = title_fragments.reject(&:blank?).join(' | ')
   end
 
 end

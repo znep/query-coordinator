@@ -18,32 +18,46 @@ if (!common.isProduction) {
   );
 }
 
-module.exports = _.defaultsDeep({
-  context: path.resolve(common.frontendRoot, 'public/javascripts/datasetManagementUI'),
-  entry: common.withHotModuleEntries({'main': './main'}),
-  output: common.getOutput(identifier),
-  eslint: common.getEslintConfig('public/javascripts/datasetManagementUI/.eslintrc.json'),
-  externals: {
-    jquery: true
+module.exports = _.defaultsDeep(
+  {
+    context: path.resolve(
+      common.frontendRoot,
+      'public/javascripts/datasetManagementUI'
+    ),
+    entry: common.withHotModuleEntries({ main: ['babel-polyfill', './main'] }),
+    output: common.getOutput(identifier),
+    eslint: common.getEslintConfig(
+      'public/javascripts/datasetManagementUI/.eslintrc.json'
+    ),
+    externals: {
+      jquery: true
+    },
+    module: {
+      loaders: common.getStandardLoaders([
+        {
+          test: /\.global.scss$/,
+          include: [
+            path.resolve(
+              common.frontendRoot,
+              'public/javascripts/datasetManagementUI'
+            )
+          ],
+          loader: 'style?sourceMap!css!postcss!sass'
+        },
+        {
+          test: /^((?!\.global).)*(scss|css)$/,
+          loader:
+            'style?sourceMap!css?modules&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=1!postcss!sass'
+        }
+      ])
+    },
+    resolve: common.getStandardResolve([
+      'public/javascripts/datasetManagementUI'
+    ]),
+    plugins: plugins,
+    postcss: function() {
+      return [require('autoprefixer')];
+    }
   },
-  module: {
-    loaders: common.getStandardLoaders([
-      {
-        test: /\.global.scss$/,
-        include: [
-          path.resolve(common.frontendRoot, 'public/javascripts/datasetManagementUI')
-        ],
-        loader: 'style?sourceMap!css!postcss!sass'
-      },
-      {
-        test: /^((?!\.global).)*(scss|css)$/,
-        loader: 'style?sourceMap!css?modules&localIdentName=[name]___[local]---[hash:base64:5]&importLoaders=1!postcss!sass'
-      }
-    ])
-  },
-  resolve: common.getStandardResolve([ 'public/javascripts/datasetManagementUI' ]),
-  plugins: plugins,
-  postcss: function() {
-    return [require('autoprefixer')];
-  }
-}, require('./base'));
+  require('./base')
+);

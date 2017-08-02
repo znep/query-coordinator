@@ -1,5 +1,5 @@
 /* eslint new-cap: 0 */
-import daggy from 'daggy';
+import daggy from 'lib/daggy';
 import _ from 'lodash';
 import Validation, { Success, Failure } from 'folktale/validation';
 import { hasValue, areUnique, isURL, isEmail, isValidFieldName, isValidDisplayName } from 'lib/validators';

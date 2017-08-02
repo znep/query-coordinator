@@ -30,8 +30,7 @@ export default () => ({
         "domain": "example.com",
         "measure": {
           "columnName": "blood_alcohol_level",
-          "aggregationFunction": "sum",
-          "label": "Blood Alcohol Level"
+          "aggregationFunction": "sum"
         },
         "type": "socrata.soql",
         "filters": [],

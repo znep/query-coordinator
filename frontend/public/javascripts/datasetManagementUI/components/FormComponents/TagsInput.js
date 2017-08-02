@@ -26,9 +26,9 @@ class TagsInput extends Component {
   addTag(e) {
     e.preventDefault();
 
-    const { setValue, onBlur, value } = this.props;
+    const { setValue, handleBlur, value } = this.props;
 
-    onBlur();
+    handleBlur();
 
     if (!this.state.tag) {
       return;
@@ -60,7 +60,9 @@ class TagsInput extends Component {
   }
 
   render() {
-    const { value, name, inErrorState, ...rest } = this.props;
+    const { inErrorState, handleFocus, handleBlur, ...data } = this.props;
+
+    const { name, value, placeholder } = data;
 
     const classes = classNames(styles.textInput, { [styles.validationError]: inErrorState });
 
@@ -74,13 +76,15 @@ class TagsInput extends Component {
       <div>
         <div className={styles.container}>
           <input
-            {...rest}
             onKeyPress={this.handleKeyPress}
             type="text"
             value={this.state.tag}
             name={name}
             id={name}
+            placeholder={placeholder}
             className={classes}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             onChange={this.handleChange} />
           <button onClick={this.addTag} className={buttonClasses}>
             {I18n.edit_metadata.add_btn}
@@ -97,16 +101,14 @@ class TagsInput extends Component {
 
 TagsInput.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.string,
+  value: PropTypes.array,
   label: PropTypes.string,
   placeholder: PropTypes.string,
-  isPrivate: PropTypes.bool.isRequired,
   isRequired: PropTypes.bool.isRequired,
-  isCustom: PropTypes.bool.isRequired,
   inErrorState: PropTypes.bool.isRequired,
   setValue: PropTypes.func.isRequired,
-  onBlur: PropTypes.func.isRequired,
-  onFocus: PropTypes.func.isRequired
+  handleBlur: PropTypes.func.isRequired,
+  handleFocus: PropTypes.func.isRequired
 };
 
 export default TagsInput;

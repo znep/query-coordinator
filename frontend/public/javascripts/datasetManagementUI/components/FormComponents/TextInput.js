@@ -1,17 +1,23 @@
 import React, { PropTypes } from 'react';
 import styles from 'styles/FormComponents/TextInput.scss';
 
-const TextInput = ({ inErrorState, name, label, isRequired, ...rest }) => {
+const TextInput = ({ inErrorState, handleFocus, handleBlur, handleChange, ...data }) => {
   const classNames = inErrorState ? styles.textInputError : styles.textInput;
+  const { isRequired, label, name, value, placeholder } = data;
 
   return (
     <input
-      {...rest}
       type="text"
       id={name}
+      name={name}
+      value={value || ''}
+      placeholder={placeholder}
       aria-label={label}
       aria-required={isRequired}
-      className={classNames} />
+      className={classNames}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      onChange={handleChange} />
   );
 };
 
@@ -20,13 +26,11 @@ TextInput.propTypes = {
   value: PropTypes.string,
   label: PropTypes.string,
   placeholder: PropTypes.string,
-  isPrivate: PropTypes.bool.isRequired,
   isRequired: PropTypes.bool.isRequired,
-  isCustom: PropTypes.bool.isRequired,
   inErrorState: PropTypes.bool.isRequired,
-  onChange: PropTypes.func.isRequired,
-  onBlur: PropTypes.func.isRequired,
-  onFocus: PropTypes.func.isRequired
+  handleChange: PropTypes.func.isRequired,
+  handleBlur: PropTypes.func.isRequired,
+  handleFocus: PropTypes.func.isRequired
 };
 
 export default TextInput;

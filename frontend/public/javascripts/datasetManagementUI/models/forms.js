@@ -21,16 +21,8 @@ export const Field = daggy.taggedSum('Field', {
   TextArea: ['data'],
   Tags: ['data'],
   Select: ['data', 'options'],
-  NoField: ['name']
+  NoField: ['data']
 });
-
-// export const Field = daggy.taggedSum('Field', {
-//   Text: ['name', 'label', 'value', 'isPrivate', 'isRequired', 'placeholder', 'isCustom'],
-//   TextArea: ['name', 'label', 'value', 'isPrivate', 'isRequired', 'placeholder'],
-//   Tags: ['name', 'label', 'value', 'isPrivate', 'isRequired', 'placeholder'],
-//   Select: ['name', 'label', 'value', 'isPrivate', 'isRequired', 'options', 'isCustom'],
-//   NoField: ['name']
-// });
 
 export const Fieldset = daggy.tagged('Fieldset', ['title', 'subtitle', 'fields']);
 
@@ -195,7 +187,7 @@ const shapeCustomFieldsets = view =>
             return Field.Text(fieldData);
           }
         })
-        : [Field.NoField('no field')]
+        : [Field.NoField(FieldData('no field', null, null, null, null, null, null))]
     }))
     .reduce(
       (acc, fieldset) => ({
@@ -246,7 +238,7 @@ const makeDataModel = fieldset =>
   fieldset.fields.reduce(
     (acc, field) => ({
       ...acc,
-      [field.name]: { value: field.value, name: field.name }
+      [field.data.name]: { value: field.data.value, name: field.data.name }
     }),
     {}
   );
@@ -302,8 +294,8 @@ const validateRegularFieldsets = fieldsets =>
 // validateCustomFieldset : Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateCustomFieldset = fieldset => {
   const validation = _.chain(fieldset.fields)
-    .filter(field => field.isRequired)
-    .map(field => hasValue(field.name, field.value))
+    .filter(field => field.data.isRequired)
+    .map(field => hasValue(field.data.name, field.data.value))
     .flatMap(val =>
       val.matchWith({
         Success: () => [],
@@ -385,7 +377,7 @@ export const makeRows = (outputSchemaId, entities) =>
 // makeModel : Number -> Entities -> List {name: String, value: String}
 const makeModel = (outputSchemaId, entities) =>
   _.chain(makeRows(outputSchemaId, entities))
-    .flatMap(row => row.map(field => ({ name: field.name, value: field.value })))
+    .flatMap(row => row.map(field => ({ name: field.data.name, value: field.data.value })))
     .value();
 
 export const isFieldNameField = name => /^field-name/.test(name);

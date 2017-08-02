@@ -21,7 +21,7 @@ class Field extends Component {
   }
 
   isHalfSized(field) {
-    return Types.Field.Tags.is(field) || Types.Field.Select.is(field) || field.name === 'attribution';
+    return Types.Field.Tags.is(field) || Types.Field.Select.is(field) || field.data.name === 'attribution';
   }
 
   handleFocus() {
@@ -41,7 +41,7 @@ class Field extends Component {
 
     const labelClassNames = [styles.label];
 
-    if (field.isRequired) {
+    if (field.data.isRequired) {
       labelClassNames.push(styles.labelRequired);
     }
 
@@ -51,15 +51,15 @@ class Field extends Component {
       Text: data =>
         <TextInput
           {...data}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          onChange={({ target }) => setValue(target.value)}
+          handleFocus={this.handleFocus}
+          handleBlur={this.handleBlur}
+          handleChange={({ target }) => setValue(target.value)}
           inErrorState={inErrorState} />,
       Tags: data =>
         <TagsInput
           {...data}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
+          handleFocus={this.handleFocus}
+          handleBlur={this.handleBlur}
           setValue={setValue}
           inErrorState={inErrorState} />,
       TextArea: data =>
@@ -67,7 +67,7 @@ class Field extends Component {
           {...data}
           handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
-          onChange={({ target }) => setValue(target.value)}
+          handleChange={({ target }) => setValue(target.value)}
           inErrorState={inErrorState} />,
       Select: (data, options) =>
         <Select
@@ -75,7 +75,7 @@ class Field extends Component {
           options={options}
           handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
-          setValue={setValue}
+          handleChange={({ target }) => setValue(target.value)}
           inErrorState={inErrorState} />,
       NoField: () =>
         <span>
@@ -85,10 +85,10 @@ class Field extends Component {
 
     return (
       <div className={this.isHalfSized(field) ? styles.halfSize : null}>
-        <label htmlFor={field.name} className={labelClassNames.join(' ')}>
-          {field.label}
+        <label htmlFor={field.data.name} className={labelClassNames.join(' ')}>
+          {field.data.label}
         </label>
-        {field.isPrivate &&
+        {field.data.isPrivate &&
           <div>
             <SocrataIcon name="private" className={styles.icon} />
             <span className={styles.privateMessage}>

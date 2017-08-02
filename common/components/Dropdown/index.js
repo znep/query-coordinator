@@ -279,6 +279,7 @@ export default React.createClass({
       tabIndex: '0',
       ref: ref => this.placeholderRef = ref,
       className: classNames({
+        'default': _.get(selectedOption, 'defaultOption'),
         'dropdown-placeholder': !placeholderIsFunction,
         'dropdown-selected': !!selectedOption
       }),

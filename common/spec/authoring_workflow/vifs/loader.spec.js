@@ -9,7 +9,6 @@ describe('loader', function() {
     var propagatesChangesStore = function(visualizationType) {
       it('propagates changes to the store', function() {
         load(dispatch, testData[visualizationType]());
-
         expect(store.getState().vifAuthoring.vifs[visualizationType]).to.eql(testData[visualizationType]());
       });
     };

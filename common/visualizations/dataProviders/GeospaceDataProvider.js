@@ -2,7 +2,7 @@ const utils = require('common/js_utils');
 const DataProvider = require('./DataProvider');
 const _ = require('lodash');
 
-function GeospaceDataProvider(config) {
+function GeospaceDataProvider(config, useCache = false) {
 
   _.extend(this, new DataProvider(config));
 
@@ -12,11 +12,20 @@ function GeospaceDataProvider(config) {
   utils.assertIsOneOfTypes(config.domain, 'string');
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
+  if (useCache) {
+    let cached = this.cachedInstance("GeospaceDataProvider");
+    if (cached) {
+      return cached;
+    }
+  }
+
   /**
    * Public methods
    */
 
+  let featureExtentPromiseCache = {};
   this.getFeatureExtent = function(columnName) {
+
     const url = 'https://{0}/resource/{1}.json?$select=extent({2})&$$read_from_nbe=true&$$version=2.1'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid'),
@@ -26,8 +35,15 @@ function GeospaceDataProvider(config) {
       Accept: 'application/json'
     };
 
-    return (
-      new Promise(function(resolve, reject) {
+    const cacheKey = url;
+
+    let cachedPromise = featureExtentPromiseCache[cacheKey];
+    if (cachedPromise) {
+      return cachedPromise;
+    }
+
+    let loadFeatureExtentPromise = new Promise(
+      function(resolve, reject) {
         const xhr = new XMLHttpRequest();
 
         function onFail() {
@@ -87,11 +103,18 @@ function GeospaceDataProvider(config) {
         });
 
         xhr.send();
-      })
+      }
     );
+
+    featureExtentPromiseCache[cacheKey] = loadFeatureExtentPromise;
+
+    return loadFeatureExtentPromise;
+
   };
 
+  let shapefilePromiseCache = {};
   this.getShapefile = function(extent) {
+
     let url = 'https://{0}/resource/{1}.geojson'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid')
@@ -130,8 +153,15 @@ function GeospaceDataProvider(config) {
       }
     }
 
-    return (
-      new Promise(function(resolve, reject) {
+    const cacheKey = url;
+
+    let cachedPromise = shapefilePromiseCache[cacheKey];
+    if (cachedPromise) {
+      return cachedPromise;
+    }
+
+    let loadShapefilePromise = new Promise(
+      function(resolve, reject) {
         const xhr = new XMLHttpRequest();
 
         function onFail() {
@@ -183,8 +213,13 @@ function GeospaceDataProvider(config) {
         });
 
         xhr.send();
-      })
+      }
     );
+
+    shapefilePromiseCache[cacheKey] = loadShapefilePromise;
+
+    return loadShapefilePromise;
+
   };
 
   function extentIsValid(extent) {

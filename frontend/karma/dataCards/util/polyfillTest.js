@@ -248,4 +248,39 @@ describe('polyfills', function() {
 
   });
 
+  describe('ES2015 Array.from', function() {
+    var Array = polyfills.Array;
+
+    it('should return an array from a String', function() {
+      assert.deepEqual(Array.from('foo'), ['f', 'o', 'o']);
+    });
+
+    // Unsupported by the polyfill due to Iterators
+    xit('should return an array from a Set', function() {
+      assert.deepEqual(Array.from(new Set(['foo', 'bar', 'baz'])), ['foo', 'bar', 'baz']);
+    });
+
+    // Unsupported by the polyfill due to Iterators
+    xit('should return an array from a Map', function() {
+      assert.deepEqual(
+        Array.from(new Map([['foo', 'FOO'], ['bar', 'BAR'], ['baz', 'BAZ']])),
+        [['foo', 'FOO'], ['bar', 'BAR'], ['baz', 'BAZ']]
+      );
+    });
+
+    it('should return an array from a Array-like object (i.e. arguments)', function() {
+      var fn = function() { return Array.from(arguments); };
+      assert.deepEqual(fn('foo', 'bar', 'baz'), ['foo', 'bar', 'baz']);
+    });
+
+    it('should handle transformation functions', function() {
+      var fn = function(n) { return n * 2; };
+      assert.deepEqual(Array.from([1, 2, 3], fn), [2, 4, 6]);
+    });
+
+    it('should generate a sequence of numbers', function() {
+      assert.deepEqual(Array.from({length: 5}, function(v, i) { return i; }), [0, 1, 2, 3, 4]);
+    });
+  });
+
 });

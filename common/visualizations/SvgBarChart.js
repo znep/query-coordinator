@@ -148,7 +148,7 @@ $.fn.socrataSvgBarChart = function(originalVif, options) {
     const skipPromise = _.constant(Promise.resolve(null));
     const domain = _.get(newVif, 'series[0].dataSource.domain');
     const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
-    const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
+    const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid }, true);
 
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
     visualization.showBusyIndicator();

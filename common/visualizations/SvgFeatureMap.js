@@ -367,7 +367,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
 
     // SoQL returns row results for display in the row inspector
     soqlDataProvider = new SoqlDataProvider({ domain, datasetUid });
-    metadataProvider = new MetadataProvider({ domain, datasetUid });
+    metadataProvider = new MetadataProvider({ domain, datasetUid }, true);
   }
 
   function initializeVisualization(newVif) {

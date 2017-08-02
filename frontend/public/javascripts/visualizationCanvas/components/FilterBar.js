@@ -13,7 +13,8 @@ export function mapStateToProps({ columnStats, view, filters, parentView }) {
   const metadataProvider = new dataProviders.MetadataProvider({
     domain: serverConfig.domain,
     datasetUid: parentView.id
-  });
+  },
+                                                             true);
 
   // Get displayable columns only, subcolumns and system columns are omitted
   const displayableColumns = metadataProvider.getDisplayableColumns({

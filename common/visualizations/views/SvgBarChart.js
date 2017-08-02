@@ -234,11 +234,7 @@ function SvgBarChart($element, vif, options) {
     const dimensionValues = dataToRender.rows.map(
       (row) => row[dataTableDimensionIndex]
     );
-    // Grouped bar charts will have multiple columns. If one of those columns is null (which is
-    // a valid value for it to be if there are nulls in the dataset), we need to replace it with
-    // the no value label. If there are not multiple columns, that's an expected null that we
-    // should not overwrite with the no value label. "multiple columns" === greater than 2 because
-    // the first element is going to be 'dimension'.
+
     const columns = dataToRender.columns.slice(dataTableDimensionIndex + 1);
 
     if (self.isMultiSeries()) {
@@ -254,6 +250,12 @@ function SvgBarChart($element, vif, options) {
       });
     }
     else {
+
+      // Grouped bar charts will have multiple columns. If one of those columns is null (which is
+      // a valid value for it to be if there are nulls in the dataset), we need to replace it with
+      // the no value label. If there are not multiple columns, that's an expected null that we
+      // should not overwrite with the no value label.
+
       measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
       map((label) => self.isGrouping() ? label || noValueLabel : label);
     }

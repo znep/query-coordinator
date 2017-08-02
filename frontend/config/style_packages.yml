@@ -107,6 +107,8 @@ strip-chrome:
 - strip-chrome
 screen-login:
 - screen-login
+screen-signed-out:
+- screen-signed-out
 administration-screen:
 - jquery.dropdown.min
 - screen-admin

@@ -41,6 +41,10 @@ en:
         password_short: Please enter at least 8 characters.
         recaptcha2: Please confirm you are not a robot by checking the box below.
         terms: You must accept the terms of service and privacy policy.
+      signed_out:
+        title: You are now signed out.
+        message: We hope to see you again soon.
+        sign_back_in: Sign back in
   angular:
     dataCards:
       add_card_dialog:

@@ -1,0 +1,11 @@
+<%- content_for :head do -%>
+  <%= rendered_stylesheet_tag 'screen-signed-out' %>
+<%- end -%>
+
+<div class="signed-out-container">
+  <div class="signed-out">
+    <h2 class="signed-out-title"><%= t('account.common.signed_out.title')%></h2>
+    <p class="signed-out-message"><%= t('account.common.signed_out.message')%></p>
+    <a class="btn btn-primary sign-back-in-button" href="/login"><%= t('account.common.signed_out.sign_back_in') %></a>
+  </div>
+</div>

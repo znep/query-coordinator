@@ -333,7 +333,7 @@ function SvgVisualization($element, vif, options) {
     const $button = $('<button>', { 'class': 'socrata-legend-button' }).
       append($('<label>').text(I18n.t('shared.visualizations.charts.common.show_legend'))).
       append($('<span>', { 'class': 'socrata-icon-arrow-up'} )).
-      append($('<span>', { 'class': 'socrata-icon-close-2'} ));
+      append($('<span>', { 'class': 'socrata-icon-close-2 legend-button-display-none' }));
 
     $innerContainer.append($button);
 
@@ -376,8 +376,8 @@ function SvgVisualization($element, vif, options) {
         I18n.t('shared.visualizations.charts.common.show_legend');
 
       $(this).find('label').text(labelText);
-      $(this).find('.socrata-icon-arrow-up').toggle();
-      $(this).find('.socrata-icon-close-2').toggle();
+      $(this).find('.socrata-icon-arrow-up').toggleClass('legend-button-display-none');
+      $(this).find('.socrata-icon-close-2').toggleClass('legend-button-display-none');
 
       if (isVisible) {
         $('body').on('click', self.hideLegendMenu);
@@ -390,8 +390,8 @@ function SvgVisualization($element, vif, options) {
   this.hideLegendMenu = function() {
 
     self.$container.find('.socrata-legend-button label').text(I18n.t('shared.visualizations.charts.common.show_legend'));
-    self.$container.find('.socrata-legend-button .socrata-icon-arrow-up').show();
-    self.$container.find('.socrata-legend-button .socrata-icon-close-2').hide();
+    self.$container.find('.socrata-legend-button .socrata-icon-arrow-up').toggleClass('legend-button-display-none');
+    self.$container.find('.socrata-legend-button .socrata-icon-close-2').toggleClass('legend-button-display-none');
     self.$container.find('.socrata-legend-menu').hide();
 
     $('body').off('click', self.hideLegendMenu);

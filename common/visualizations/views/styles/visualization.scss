@@ -113,8 +113,12 @@ $axis-padding: 42px;
         }
 
         .socrata-icon-close-2 {
-          display: none;
+          display: inline;
           margin-left: 8px;
+        }
+
+        .legend-button-display-none {
+          display: none;
         }
 
         label {

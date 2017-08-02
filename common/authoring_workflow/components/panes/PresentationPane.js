@@ -94,8 +94,7 @@ export var PresentationPane = React.createClass({
     else if (isMultiSeries && (colorPaletteFromVif === null)) {
       colorPaletteValue = 'custom';
       customColorSelector = this.renderMultiSeriesCustomColorSelector();
-    }
-    else {
+    } else {
       colorPaletteValue = colorPaletteFromVif;
     }
 

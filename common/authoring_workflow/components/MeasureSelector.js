@@ -244,8 +244,7 @@ export const MeasureSelector = React.createClass({
 
     if (isSeriesPending) {
       onAddMeasure(seriesIndex, option.value);
-    }
-    else {
+    } else {
       onSetMeasureColumn(seriesIndex, option.value);
     }
 

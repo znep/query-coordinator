@@ -60,8 +60,7 @@ export var VisualizationPreview = React.createClass({
 
     if (_.isUndefined(nextMapCenterAndZoom) || _.isUndefined(mapCenterAndZoom)) {
       return vifChanged;
-    }
-    else {
+    } else {
       return vifChanged && _.isEqual(mapCenterAndZoom, nextMapCenterAndZoom);
     }
   },

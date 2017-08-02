@@ -208,11 +208,9 @@ export const getMeasureTitle = (metadata, series) => {
   if (!_.isUndefined(column) && !_.isEmpty(column.name) && (aggregationType !== null) && !_.isEmpty(aggregationType.title)) {
     return I18n.t('shared.visualizations.panes.data.fields.measure.color_and_flyout_label').
       format(column.name, aggregationType.title);
-  }
-  else if (!_.isUndefined(column) && !_.isEmpty(column.name)) {
+  } else if (!_.isUndefined(column) && !_.isEmpty(column.name)) {
     return column.name;
-  }
-  else {
+  } else {
     return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
   }
 };

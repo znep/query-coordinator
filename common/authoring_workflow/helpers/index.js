@@ -198,19 +198,19 @@ export const isGroupingOrMultiSeries = (state) => {
   return isGrouping || isMultiSeries;
 };
 
-export const getMeasureTitle = (series) => {
+export const getMeasureTitle = (metadata, series) => {
 
   const measure = series.dataSource.measure;
+  const column = _.find(metadata.data.columns, (column) => column.fieldName === measure.columnName);
   const aggregationTypes = AGGREGATION_TYPES.filter(item => item.type === measure.aggregationFunction);
   const aggregationType = (aggregationTypes.length > 0) ? aggregationTypes[0] : null;
 
-  if (!_.isEmpty(measure.columnName) && (aggregationType !== null) && !_.isEmpty(aggregationType.title)) {
-
+  if (!_.isUndefined(column) && !_.isEmpty(column.name) && (aggregationType !== null) && !_.isEmpty(aggregationType.title)) {
     return I18n.t('shared.visualizations.panes.data.fields.measure.color_and_flyout_label').
-      format(measure.columnName, aggregationType.title);
+      format(column.name, aggregationType.title);
   }
-  else if (!_.isEmpty(measure.columnName)) {
-    return measure.columnName;
+  else if (!_.isUndefined(column) && !_.isEmpty(column.name)) {
+    return column.name;
   }
   else {
     return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');

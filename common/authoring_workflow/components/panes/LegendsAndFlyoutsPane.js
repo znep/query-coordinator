@@ -42,7 +42,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderUnits() {
-    const { vifAuthoring, onChangeUnitOne, onChangeUnitOther } = this.props;
+    const { vifAuthoring, onChangeUnitOne, onChangeUnitOther, metadata } = this.props;
 
     const series = getSeries(vifAuthoring);
     const unitControls = series.map((item, index) => {
@@ -73,7 +73,7 @@ export const LegendsAndFlyoutsPane = React.createClass({
         value: unitOther
       };
 
-      const measureTitle = getMeasureTitle(item);
+      const measureTitle = getMeasureTitle(metadata, item);
       return this.renderUnitsForSeries(index, measureTitle, unitOneAttributes, unitOtherAttributes);
     });
 

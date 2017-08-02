@@ -131,7 +131,7 @@ export var PresentationPane = React.createClass({
   },
 
   renderMultiSeriesCustomColorSelector() {
-    const { vifAuthoring, onChangePrimaryColor } = this.props;
+    const { vifAuthoring, onChangePrimaryColor, metadata } = this.props;
     const series = selectors.getSeries(vifAuthoring);
 
     const colorSelectors = series.map((item, index) => {
@@ -142,7 +142,7 @@ export var PresentationPane = React.createClass({
         value: item.color.primary,
       };
 
-      const title = getMeasureTitle(item);
+      const title = getMeasureTitle(metadata, item);
 
       return (
         <div className="custom-color-container" key={index}>
@@ -661,7 +661,8 @@ export var PresentationPane = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    vifAuthoring: state.vifAuthoring
+    vifAuthoring: state.vifAuthoring,
+    metadata: state.metadata
   };
 }
 

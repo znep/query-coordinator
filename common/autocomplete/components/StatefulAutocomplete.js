@@ -7,6 +7,7 @@ import 'whatwg-fetch';
 import { getCeteraResults } from '../Util';
 import AutocompleteReducer from '../reducers/AutocompleteReducer';
 import Autocomplete from './Autocomplete';
+import Localization from 'common/i18n/components/Localization';
 
 class StatefulAutocomplete extends React.Component {
   constructor(props) {
@@ -60,17 +61,19 @@ class StatefulAutocomplete extends React.Component {
         getSearchResults;
 
     return (
-      <Provider store={this.store}>
-        <Autocomplete
-          getSearchResults={getResults}
-          millisecondsBeforeSearch={milliseconds}
-          anonymous={_.isUndefined(anonymous) ? true : anonymous}
-          collapsible={collapsible}
-          animate={animate}
-          mobile={mobile}
-          onChooseResult={onChooseResult}
-          onClearSearch={onClearSearch} />
-      </Provider>
+      <Localization>
+        <Provider store={this.store}>
+          <Autocomplete
+            getSearchResults={getResults}
+            millisecondsBeforeSearch={milliseconds}
+            anonymous={_.isUndefined(anonymous) ? true : anonymous}
+            collapsible={collapsible}
+            animate={animate}
+            mobile={mobile}
+            onChooseResult={onChooseResult}
+            onClearSearch={onClearSearch} />
+        </Provider>
+      </Localization>
     );
   }
 }

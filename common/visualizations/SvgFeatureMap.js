@@ -351,7 +351,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
 
     // Geospace has knowledge of the extents of a column, which
     // we use to modify point data queries with a WITHIN_BOX clause.
-    geospaceDataProvider = new GeospaceDataProvider({ domain, datasetUid });
+    geospaceDataProvider = new GeospaceDataProvider({ domain, datasetUid }, true);
 
     // Tileserver serves tile data using the standard {z}/{x}/{y} URL
     // format. It returns protocol buffers containing point offsets from

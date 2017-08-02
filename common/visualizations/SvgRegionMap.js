@@ -436,14 +436,14 @@ $.fn.socrataSvgRegionMap = function(originalVif, options) {
       const filters = _.get(vifToRender, 'series[0].dataSource.filters', []);
 
       const dataSource = { domain, datasetUid };
-      const datasetGeospaceDataProvider = new GeospaceDataProvider(dataSource);
       const datasetMetadataProvider = new MetadataProvider(dataSource, true);
+      const datasetGeospaceDataProvider = new GeospaceDataProvider(dataSource, true);
       const soqlDataProvider = new SoqlDataProvider(dataSource, true);
       const datasetColumnExtentDataProvider = new SoqlDataProvider(dataSource, true);
 
       const shapefileDataSource = { domain, datasetUid: shapefileUid };
-      const shapefileGeospaceDataProvider = new GeospaceDataProvider(shapefileDataSource);
       const shapefileMetadataProvider = new MetadataProvider(shapefileDataSource, true);
+      const shapefileGeospaceDataProvider = new GeospaceDataProvider(shapefileDataSource, true);
 
       const aggregationClause = SoqlHelpers.aggregationClause(vifToRender, 0, 'measure');
 

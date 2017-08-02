@@ -48,30 +48,31 @@ class Field extends Component {
     const inErrorState = (showErrors || this.state.showErrors) && !!errors.length;
 
     const element = field.cata({
-      Text: () =>
+      Text: data =>
         <TextInput
-          field={field}
-          handleFocus={this.handleFocus}
-          handleBlur={this.handleBlur}
-          setValue={setValue}
+          {...data}
+          onFocus={this.handleFocus}
+          onBlur={this.handleBlur}
+          onChange={({ target }) => setValue(target.value)}
           inErrorState={inErrorState} />,
-      Tags: () =>
+      Tags: data =>
         <TagsInput
-          field={field}
-          handleFocus={this.handleFocus}
-          handleBlur={this.handleBlur}
+          {...data}
+          onFocus={this.handleFocus}
+          onBlur={this.handleBlur}
           setValue={setValue}
           inErrorState={inErrorState} />,
-      TextArea: () =>
+      TextArea: data =>
         <TextArea
-          field={field}
+          {...data}
           handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
-          setValue={setValue}
+          onChange={({ target }) => setValue(target.value)}
           inErrorState={inErrorState} />,
-      Select: () =>
+      Select: (data, options) =>
         <Select
-          field={field}
+          {...data}
+          options={options}
           handleFocus={this.handleFocus}
           handleBlur={this.handleBlur}
           setValue={setValue}

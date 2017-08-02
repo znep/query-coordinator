@@ -1,30 +1,32 @@
 import React, { PropTypes } from 'react';
 import styles from 'styles/FormComponents/TextInput.scss';
 
-const TextInput = ({ field, inErrorState, setValue, handleBlur, handleFocus }) => {
+const TextInput = ({ inErrorState, name, label, isRequired, ...rest }) => {
   const classNames = inErrorState ? styles.textInputError : styles.textInput;
 
   return (
     <input
+      {...rest}
       type="text"
-      id={field.name}
-      aria-label={field.label}
-      aria-required={field.isRequired}
-      className={classNames}
-      placeholder={field.placeholder}
-      value={field.value || ''}
-      onBlur={handleBlur}
-      onFocus={handleFocus}
-      onChange={e => setValue(e.target.value)} />
+      id={name}
+      aria-label={label}
+      aria-required={isRequired}
+      className={classNames} />
   );
 };
 
 TextInput.propTypes = {
-  field: PropTypes.object.isRequired,
+  name: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  label: PropTypes.string,
+  placeholder: PropTypes.string,
+  isPrivate: PropTypes.bool.isRequired,
+  isRequired: PropTypes.bool.isRequired,
+  isCustom: PropTypes.bool.isRequired,
   inErrorState: PropTypes.bool.isRequired,
-  setValue: PropTypes.func.isRequired,
-  handleBlur: PropTypes.func.isRequired,
-  handleFocus: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  onFocus: PropTypes.func.isRequired
 };
 
 export default TextInput;

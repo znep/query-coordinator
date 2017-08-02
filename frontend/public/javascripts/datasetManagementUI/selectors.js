@@ -32,9 +32,13 @@ export function latestRevision(entities) {
 export function currentOutputSchema(entities) {
   const revision = latestRevision(entities);
   if (!_.isNumber(revision.output_schema_id)) {
-    return null;
+    return latestOutputSchema(entities);
   }
   return entities.output_schemas[revision.output_schema_id];
+}
+
+function latestOutputSchema(entities) {
+  return _.maxBy(_.values(entities.output_schemas), 'id');
 }
 
 export function latestSource(entities) {

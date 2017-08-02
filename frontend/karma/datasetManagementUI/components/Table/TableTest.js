@@ -49,6 +49,8 @@ const defaultProps = {
             input_column_id: 7989
           }
         ],
+        attempts: 0,
+        error_indices: [],
         transform_expr: 'to_number(`id`)',
         output_soql_type: 'number',
         id: 7883,
@@ -70,6 +72,8 @@ const defaultProps = {
             input_column_id: 7990
           }
         ],
+        attempts: 0,
+        error_indices: [],
         transform_expr: '`case_number`',
         output_soql_type: 'text',
         id: 7884,
@@ -92,6 +96,8 @@ const defaultProps = {
             input_column_id: 7991
           }
         ],
+        attempts: 0,
+        error_indices: [],
         transform_expr: 'to_floating_timestamp(`date`)',
         output_soql_type: 'calendar_date',
         id: 7885,

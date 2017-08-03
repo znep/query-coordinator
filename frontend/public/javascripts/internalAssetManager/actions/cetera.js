@@ -14,8 +14,8 @@ export const fetchingResultsSuccess = () => (
   { type: 'FETCH_RESULTS_SUCCESS' }
 );
 
-export const fetchingResultsError = () => (
-  { type: 'FETCH_RESULTS_ERROR' }
+export const fetchingResultsError = (errMsg = null) => (
+  { type: 'FETCH_RESULTS_ERROR', details: errMsg }
 );
 
 export const updateAssetCounts = (assetCounts) => (
@@ -172,6 +172,6 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => 
     }
   }).catch((err) => {
     console.error(err);
-    dispatch(fetchingResultsError());
+    dispatch(fetchingResultsError(err.message));
   });
 };

@@ -112,12 +112,12 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
 
     // Otherwise, if the color palette has not yet been set, then assign
     // the default palette.
-    if (_.get(state, 'series[0].color.palette', null) === null) {
+    if (_.get(state, 'series[0].color.palette') === undefined) {
       _.set(state, 'series[0].color.palette', 'categorical');
     }
 
     // If legend visibility has not yet been set, then set it to visible
-    if (_.get(state, 'configuration.showLegend', null) === null) {
+    if (_.get(state, 'configuration.showLegend') === undefined) {
       _.set(state, 'configuration.showLegend', true);
     }
   };
@@ -166,7 +166,7 @@ export const appendSeries = (state) => {
 
   // If legend visibility has not yet been set, then set it to visible.
   //
-  if (_.get(state, 'configuration.showLegend', null) === null) {
+  if (_.get(state, 'configuration.showLegend') === undefined) {
     _.set(state, 'configuration.showLegend', true);
   }
 };
@@ -192,7 +192,7 @@ export const removeSeries = (state, seriesIndex) => {
 
 export const isGroupingOrMultiSeries = (state) => {
 
-  const isGrouping = (_.get(state, 'series[0].dataSource.dimension.grouping', null) !== null);
+  const isGrouping = (_.get(state, 'series[0].dataSource.dimension.grouping') !== undefined);
   const isMultiSeries = (state.series.length > 1);
 
   return isGrouping || isMultiSeries;

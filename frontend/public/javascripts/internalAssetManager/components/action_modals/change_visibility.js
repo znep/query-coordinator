@@ -122,7 +122,7 @@ export class ChangeVisibility extends React.Component {
 
     return (
       <ul className="change-visibility-options">
-        {['open', 'private'].map((option) => (
+        {['private', 'open'].map((option) => (
           <li
             className={visibilityOptionClass(option)}
             key={option}
@@ -147,7 +147,7 @@ export class ChangeVisibility extends React.Component {
     const { assetActions, assetType, onDismiss, uid } = this.props;
 
     const modalProps = { fullScreen: false, onDismiss };
-    const headerProps = { onDismiss, title: this.getTranslation('title') };
+    const headerProps = { onDismiss, title: this.getTranslation('title'), showCloseButton: false };
 
     const hasError = assetActions.performingActionFailure;
     const errorMessage = hasError ? (

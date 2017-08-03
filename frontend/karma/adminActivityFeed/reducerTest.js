@@ -22,7 +22,7 @@ const initialState = immutable.fromJS({
 describe('Activity Feed reducer', () => {
   it('should be able to set activities', () => {
     const newState = reducer(initialState, actions.setActivities(mockActivities.activities));
-    assert.equal(newState.get('activities').count(), 3);
+    assert.equal(newState.get('activities').count(), 5);
   });
 
   it('should be able to set pagination', () => {

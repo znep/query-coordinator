@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 export function getEntityType(activity) {
   const hasJsonQuery = activity.hasIn(['dataset', 'metadata', 'jsonQuery', 'where']);
@@ -53,6 +54,13 @@ export function isRestorable(activity) {
 export function isRestored(activity) {
   return activity.getIn(['data', 'activity_type']) === 'Delete' &&
     !activity.getIn(['dataset', 'deleted']);
+}
+
+export function isRestoreExpired(activity) {
+  const eventDate = moment(activity.getIn(['data', 'latest_event', 'event_time']));
+  const twoWeeksAgo = moment().subtract(14, 'days');
+
+  return eventDate.isBefore(twoWeeksAgo);
 }
 
 export function hasDetails(activity) {

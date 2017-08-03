@@ -6,7 +6,7 @@ import { hasValue, areUnique, isURL, isEmail, isValidFieldName, isValidDisplayNa
 import * as Selectors from 'selectors';
 
 // TYPES
-const FieldData = daggy.tagged('FieldData', [
+const FieldDescriptor = daggy.tagged('FieldDescriptor', [
   'name',
   'value',
   'label',
@@ -29,7 +29,7 @@ export const Fieldset = daggy.tagged('Fieldset', ['title', 'subtitle', 'fields']
 // DATASET METADATA FIELDSET DATA
 // fieldsetTitleAndDesc : String -> String -> Fieldset
 const fieldsetTitleAndDesc = (titleValue, descriptionValue) => {
-  const titleData = FieldData(
+  const titleDescr = FieldDescriptor(
     'name',
     titleValue,
     I18n.edit_metadata.dataset_title,
@@ -39,7 +39,7 @@ const fieldsetTitleAndDesc = (titleValue, descriptionValue) => {
     false
   );
 
-  const descriptionData = FieldData(
+  const descriptionDescr = FieldDescriptor(
     'description',
     descriptionValue,
     I18n.edit_metadata.brief_description,
@@ -49,7 +49,7 @@ const fieldsetTitleAndDesc = (titleValue, descriptionValue) => {
     false
   );
 
-  const fields = [Field.Text(titleData), Field.TextArea(descriptionData)];
+  const fields = [Field.Text(titleDescr), Field.TextArea(descriptionDescr)];
 
   return Fieldset(
     I18n.metadata_manage.dataset_tab.titles.dataset_title,
@@ -60,7 +60,7 @@ const fieldsetTitleAndDesc = (titleValue, descriptionValue) => {
 
 // fieldsetCategoryAndTags : String -> String -> Fieldset
 const fieldsetCategoryAndTags = (categoryValue, tagsValue) => {
-  const categoryData = FieldData(
+  const categoryDescr = FieldDescriptor(
     'category',
     categoryValue,
     I18n.edit_metadata.category,
@@ -70,7 +70,7 @@ const fieldsetCategoryAndTags = (categoryValue, tagsValue) => {
     false
   );
 
-  const tagsData = FieldData(
+  const tagsDescr = FieldDescriptor(
     'tags',
     tagsValue,
     I18n.edit_metadata.tags_keywords,
@@ -80,7 +80,7 @@ const fieldsetCategoryAndTags = (categoryValue, tagsValue) => {
     false
   );
 
-  const fields = [Field.Select(categoryData, window.initialState.datasetCategories), Field.Tags(tagsData)];
+  const fields = [Field.Select(categoryDescr, window.initialState.datasetCategories), Field.Tags(tagsDescr)];
 
   return Fieldset(
     I18n.metadata_manage.dataset_tab.titles.tags_title,
@@ -91,7 +91,7 @@ const fieldsetCategoryAndTags = (categoryValue, tagsValue) => {
 
 // fieldsetLicense : String -> String -> String -> Fieldset
 const fieldsetLicense = (licenseVal, attrVal, attrLinkVal) => {
-  const licenseData = FieldData(
+  const licenseDescr = FieldDescriptor(
     'licenseId',
     licenseVal,
     I18n.edit_metadata.license_type,
@@ -101,7 +101,7 @@ const fieldsetLicense = (licenseVal, attrVal, attrLinkVal) => {
     false
   );
 
-  const attributionData = FieldData(
+  const attributionDescr = FieldDescriptor(
     'attribution',
     attrVal,
     I18n.edit_metadata.attribution,
@@ -111,7 +111,7 @@ const fieldsetLicense = (licenseVal, attrVal, attrLinkVal) => {
     false
   );
 
-  const attributionLinkData = FieldData(
+  const attributionLinkDescr = FieldDescriptor(
     'attributionLink',
     attrLinkVal,
     I18n.edit_metadata.attribution_link,
@@ -122,9 +122,9 @@ const fieldsetLicense = (licenseVal, attrVal, attrLinkVal) => {
   );
 
   const fields = [
-    Field.Select(licenseData, window.initialState.datasetLicenses),
-    Field.Text(attributionData),
-    Field.Text(attributionLinkData)
+    Field.Select(licenseDescr, window.initialState.datasetLicenses),
+    Field.Text(attributionDescr),
+    Field.Text(attributionLinkDescr)
   ];
 
   return Fieldset(I18n.metadata_manage.dataset_tab.titles.licenses_title, null, fields);
@@ -132,7 +132,7 @@ const fieldsetLicense = (licenseVal, attrVal, attrLinkVal) => {
 
 // fieldsetEmail: String -> Fieldset
 const fieldsetEmail = emailVal => {
-  const emailData = FieldData(
+  const emailDescr = FieldDescriptor(
     'contactEmail',
     emailVal,
     I18n.edit_metadata.email_address,
@@ -141,7 +141,7 @@ const fieldsetEmail = emailVal => {
     false,
     false
   );
-  const fields = [Field.Text(emailData)];
+  const fields = [Field.Text(emailDescr)];
 
   return Fieldset(I18n.metadata_manage.dataset_tab.titles.contact_title, null, fields);
 };
@@ -161,7 +161,7 @@ const shapeCustomFieldsets = view =>
               ? _.get(view, `privateMetadata.custom_fields.${fieldset.name}.${field.name}`, null)
               : _.get(view, `metadata.custom_fields.${fieldset.name}.${field.name}`, null);
 
-          const fieldData = FieldData(
+          const fieldData = FieldDescriptor(
               field.name,
               value,
               field.name,
@@ -187,7 +187,7 @@ const shapeCustomFieldsets = view =>
             return Field.Text(fieldData);
           }
         })
-        : [Field.NoField(FieldData('no field', null, null, null, null, null, null))]
+        : [Field.NoField(FieldDescriptor('no field', null, null, null, null, null, null))]
     }))
     .reduce(
       (acc, fieldset) => ({
@@ -294,6 +294,7 @@ const validateRegularFieldsets = fieldsets =>
 // validateCustomFieldset : Fieldset -> Validation (List {[string] : String}) Fieldset
 const validateCustomFieldset = fieldset => {
   const validation = _.chain(fieldset.fields)
+    .filter(field => !Field.NoField.is(field))
     .filter(field => field.data.isRequired)
     .map(field => hasValue(field.data.name, field.data.value))
     .flatMap(val =>
@@ -329,7 +330,7 @@ export const validateDatasetForm = (regularFieldsets, customFieldsets) =>
 // COLUMN METADATA HELPERS
 // columnToField : OutputColumn -> List Field
 const columnToFields = oc => {
-  const displayNameData = FieldData(
+  const displayNameData = FieldDescriptor(
     `display-name-${oc.id}`,
     oc.display_name,
     I18n.metadata_manage.column_tab.name,
@@ -339,7 +340,7 @@ const columnToFields = oc => {
     false
   );
 
-  const descriptionData = FieldData(
+  const descriptionData = FieldDescriptor(
     `description-${oc.id}`,
     oc.description,
     I18n.metadata_manage.column_tab.description,
@@ -349,7 +350,7 @@ const columnToFields = oc => {
     false
   );
 
-  const fieldNameData = FieldData(
+  const fieldNameData = FieldDescriptor(
     `field-name-${oc.id}`,
     oc.field_name,
     I18n.metadata_manage.column_tab.field_name,

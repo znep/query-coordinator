@@ -26,7 +26,7 @@ class TagsInput extends Component {
   addTag(e) {
     e.preventDefault();
 
-    const { setValue, field, handleBlur } = this.props;
+    const { setValue, handleBlur, value } = this.props;
 
     handleBlur();
 
@@ -34,7 +34,7 @@ class TagsInput extends Component {
       return;
     }
 
-    setValue([...field.value, this.state.tag]);
+    setValue([...value, this.state.tag]);
 
     this.setState({
       tag: ''
@@ -42,11 +42,11 @@ class TagsInput extends Component {
   }
 
   removeTag(tagName) {
-    const { field, setValue } = this.props;
+    const { value, setValue } = this.props;
 
-    const idxToRemove = _.findIndex(field.value, val => val === tagName);
+    const idxToRemove = _.findIndex(value, val => val === tagName);
 
-    const newTags = field.value.filter((tag, idx) => idx !== idxToRemove);
+    const newTags = value.filter((tag, idx) => idx !== idxToRemove);
 
     setValue(newTags);
   }
@@ -60,13 +60,15 @@ class TagsInput extends Component {
   }
 
   render() {
-    const { field, inErrorState, handleBlur, handleFocus } = this.props;
+    const { inErrorState, handleFocus, handleBlur, ...data } = this.props;
+
+    const { name, value, placeholder } = data;
 
     const classes = classNames(styles.textInput, { [styles.validationError]: inErrorState });
 
     const buttonClasses = classNames(styles.button, { [styles.validationError]: inErrorState });
 
-    const listItems = field.value.map((tag, idx) =>
+    const listItems = value.map((tag, idx) =>
       <Tag key={idx} tagName={tag} onTagClick={() => this.removeTag(tag)} />
     );
 
@@ -75,14 +77,14 @@ class TagsInput extends Component {
         <div className={styles.container}>
           <input
             onKeyPress={this.handleKeyPress}
-            placeholder={field.placeholder}
             type="text"
             value={this.state.tag}
-            name={field.name}
-            id={field.name}
+            name={name}
+            id={name}
+            placeholder={placeholder}
             className={classes}
-            onBlur={handleBlur}
             onFocus={handleFocus}
+            onBlur={handleBlur}
             onChange={this.handleChange} />
           <button onClick={this.addTag} className={buttonClasses}>
             {I18n.edit_metadata.add_btn}
@@ -98,7 +100,11 @@ class TagsInput extends Component {
 }
 
 TagsInput.propTypes = {
-  field: PropTypes.object.isRequired,
+  name: PropTypes.string.isRequired,
+  value: PropTypes.array,
+  label: PropTypes.string,
+  placeholder: PropTypes.string,
+  isRequired: PropTypes.bool.isRequired,
   inErrorState: PropTypes.bool.isRequired,
   setValue: PropTypes.func.isRequired,
   handleBlur: PropTypes.func.isRequired,

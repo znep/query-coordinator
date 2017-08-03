@@ -1,20 +1,18 @@
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import TextArea from 'components/FormComponents/TextArea';
 
 const props = {
-  field: {
-    name: 'description',
-    label: 'Brief Description',
-    value: 'kk',
-    isPrivate: false,
-    isRequired: false,
-    placeholder: 'Enter a description'
-  },
+  name: 'description',
+  label: 'Brief Description',
+  value: 'kk',
+  isPrivate: false,
+  isRequired: false,
+  placeholder: 'Enter a description',
   inErrorState: false,
-  setValue: sinon.spy(),
+  handleChange: sinon.spy(),
   handleBlur: () => {},
   handleFocus: () => {}
 };
@@ -22,7 +20,7 @@ const props = {
 describe('components/FormComponents/TextArea', () => {
   it('renders a textarea', () => {
     const component = shallow(<TextArea {...props} />);
-    expect(component.find('textarea')).to.have.length(1);
+    assert.equal(component.find('textarea').length, 1);
   });
 
   it('calls setValue callback on change', () => {
@@ -30,6 +28,6 @@ describe('components/FormComponents/TextArea', () => {
 
     component.find('textarea').simulate('change');
 
-    expect(component.props().setValue.calledOnce).to.eq(true);
+    assert.isTrue(component.props().handleChange.calledOnce);
   });
 });

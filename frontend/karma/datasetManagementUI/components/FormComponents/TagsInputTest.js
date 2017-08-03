@@ -1,18 +1,16 @@
 import sinon from 'sinon';
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import TagsInput from 'components/FormComponents/TagsInput';
 
 const props = {
-  field: {
-    name: 'tags',
-    label: 'Tags / Keywords',
-    value: ['one', 'four', 'three'],
-    isPrivate: false,
-    isRequired: false,
-    placeholder: 'Enter tag name'
-  },
+  name: 'tags',
+  label: 'Tags / Keywords',
+  value: ['one', 'four', 'three'],
+  isPrivate: false,
+  isRequired: false,
+  placeholder: 'Enter tag name',
   inErrorState: false,
   setValue: sinon.spy(),
   handleBlur: () => {},
@@ -28,15 +26,15 @@ describe('components/FormComponents/TagsInput', () => {
     });
 
     it('renders an input field and a tags list area', () => {
-      expect(component.find('input[type="text"]')).to.have.length(1);
+      assert.equal(component.find('input[type="text"]').length, 1);
     });
 
     it('renders an add button', () => {
-      expect(component.find('button')).to.have.length(1);
+      assert.equal(component.find('button').length, 1);
     });
 
     it('renders a tag component for each tag in the form data-model', () => {
-      expect(component.find('Tag')).to.have.length(3);
+      assert.equal(component.find('Tag').length, 3);
     });
   });
 
@@ -54,7 +52,7 @@ describe('components/FormComponents/TagsInput', () => {
 
       addBtn.simulate('click');
 
-      expect(component.props().setValue.calledOnce).to.eq(true);
+      assert.isTrue(component.props().setValue.calledOnce);
     });
 
     it('updates its internal state when change occurs in text input', () => {

@@ -20,89 +20,107 @@ describe('components/ManageMetadata/ColumnForm', () => {
     rows: [
       [
         {
-          name: 'display-name-3200',
-          label: 'Column Name',
-          value: 'Type',
-          isPrivate: false,
-          isRequired: false,
-          placeholder: null,
-          isCustom: false
+          data: {
+            name: 'display-name-3200',
+            label: 'Column Name',
+            value: 'Type',
+            isPrivate: false,
+            isRequired: false,
+            placeholder: null,
+            isCustom: false
+          }
         },
         {
-          name: 'description-3200',
-          label: 'Column Description',
-          value: '',
-          isPrivate: false,
-          isRequired: false,
-          placeholder: null,
-          isCustom: false
+          data: {
+            name: 'description-3200',
+            label: 'Column Description',
+            value: '',
+            isPrivate: false,
+            isRequired: false,
+            placeholder: null,
+            isCustom: false
+          }
         },
         {
-          name: 'field-name-3200',
-          label: 'API Field Name',
-          value: 'ok',
-          isPrivate: false,
-          isRequired: false,
-          placeholder: null,
-          isCustom: false
+          data: {
+            name: 'field-name-3200',
+            label: 'API Field Name',
+            value: 'ok',
+            isPrivate: false,
+            isRequired: false,
+            placeholder: null,
+            isCustom: false
+          }
         }
       ],
       [
         {
-          name: 'display-name-3188',
-          label: 'Column Name',
-          value: 'Found Location',
-          isPrivate: false,
-          isRequired: false,
-          placeholder: null,
-          isCustom: false
+          data: {
+            name: 'display-name-3188',
+            label: 'Column Name',
+            value: 'Found Location',
+            isPrivate: false,
+            isRequired: false,
+            placeholder: null,
+            isCustom: false
+          }
         },
         {
-          name: 'description-3188',
-          label: 'Column Description',
-          value: '',
-          isPrivate: false,
-          isRequired: false,
-          placeholder: null,
-          isCustom: false
+          data: {
+            name: 'description-3188',
+            label: 'Column Description',
+            value: '',
+            isPrivate: false,
+            isRequired: false,
+            placeholder: null,
+            isCustom: false
+          }
         },
         {
-          name: 'field-name-3188',
-          label: 'API Field Name',
-          value: 'found_location',
-          isPrivate: false,
-          isRequired: false,
-          placeholder: null,
-          isCustom: false
+          data: {
+            name: 'field-name-3188',
+            label: 'API Field Name',
+            value: 'found_location',
+            isPrivate: false,
+            isRequired: false,
+            placeholder: null,
+            isCustom: false
+          }
         }
       ],
       [
         {
-          name: 'display-name-3198',
-          label: 'Column Name',
-          value: 'okkj',
-          isPrivate: false,
-          isRequired: false,
-          placeholder: null,
-          isCustom: false
+          data: {
+            name: 'display-name-3198',
+            label: 'Column Name',
+            value: 'okkj',
+            isPrivate: false,
+            isRequired: false,
+            placeholder: null,
+            isCustom: false
+          }
         },
         {
-          name: 'description-3198',
-          label: 'Column Description',
-          value: '',
-          isPrivate: false,
-          isRequired: false,
-          placeholder: null,
-          isCustom: false
+          data: {
+            name: 'description-3198',
+            label: 'Column Description',
+            value: '',
+            isPrivate: false,
+            isRequired: false,
+            placeholder: null,
+            isCustom: false
+          }
         },
         {
-          name: 'field-name-3198',
-          label: 'API Field Name',
-          value: 'at_aac',
-          isPrivate: false,
-          isRequired: false,
-          placeholder: null,
-          isCustom: false
+          data: {
+            name: 'field-name-3198',
+            label: 'API Field Name',
+            value: 'at_aac',
+            isPrivate: false,
+            isRequired: false,
+            placeholder: null,
+            isCustom: false
+          }
         }
       ]
     ]
@@ -123,9 +141,13 @@ describe('components/ManageMetadata/ColumnForm', () => {
   });
 
   it("syncs it's local state to store", () => {
-    const component = renderComponentWithStore(ColumnFormConnected, {
-      outputSchemaId: 144
-    }, store);
+    const component = renderComponentWithStore(
+      ColumnFormConnected,
+      {
+        outputSchemaId: 144
+      },
+      store
+    );
     const inputField = component.querySelector('#display-name-1945');
     inputField.value = 'testing!!!';
     TestUtils.Simulate.change(inputField, { target: inputField });

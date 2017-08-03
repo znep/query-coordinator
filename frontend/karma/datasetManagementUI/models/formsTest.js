@@ -28,7 +28,13 @@ describe('models/forms', () => {
 
       const invalid = {
         ...head,
-        fields: head.fields.map(field => ({ ...field, value: null }))
+        fields: head.fields.map(field => ({
+          ...field,
+          data: {
+            ...field.data,
+            value: null
+          }
+        }))
       };
 
       const invalidRegular = [invalid, ...tail];

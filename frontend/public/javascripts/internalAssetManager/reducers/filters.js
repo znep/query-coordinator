@@ -2,8 +2,8 @@ import _ from 'lodash';
 import url from 'url';
 
 export const getInitialState = () => ({
-  assetTypes: _.get(window, 'initialState.initialFilters.assetTypes'),
-  authority: _.get(window, 'initialState.initialFilters.authority'),
+  assetTypes: _.get(window, 'initialState.initialFilters.assetTypes', null),
+  authority: _.get(window, 'initialState.initialFilters.authority', null),
   category: _.get(window, 'initialState.initialFilters.category'),
   domainCategories: _.get(window, 'initialState.domainCategories') || [],
   domainTags: _.get(window, 'initialState.domainTags') || [],
@@ -12,7 +12,7 @@ export const getInitialState = () => ({
   q: _.get(url.parse(window.location.href, true), 'query.q', ''),
   tag: _.get(window, 'initialState.initialFilters.tag'),
   usersList: _.get(window, 'initialState.usersList') || [],
-  visibility: _.get(window, 'initialState.initialFilters.visibility')
+  visibility: _.get(window, 'initialState.initialFilters.visibility', null)
 });
 
 export const getUnfilteredState = () => ({

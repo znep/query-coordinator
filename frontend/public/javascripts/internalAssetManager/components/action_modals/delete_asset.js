@@ -60,6 +60,7 @@ export class DeleteAsset extends React.Component {
 
     const headerProps = {
       onDismiss,
+      showCloseButton: false,
       title: getTranslation('title')
     };
 

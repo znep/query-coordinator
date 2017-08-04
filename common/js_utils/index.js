@@ -234,6 +234,29 @@ var utils = {
   },
 
   /**
+   * Returns the currency name for given locale for formatting a number, defaults to USD
+   */
+  getCurrency: function(locale) {
+    switch (locale) {
+      case 'en':
+        return 'USD';
+
+      case 'ca':
+      case 'es':
+      case 'fr':
+      case 'it':
+      case 'nl':
+        return 'EUR';
+
+      case 'zh':
+        return 'CNY';
+
+      default:
+        return 'USD';
+    }
+  },
+
+  /**
    * Returns grouping character for given locale for formatting a number, defaults to comma
    */
   getGroupCharacter: function(locale) {
@@ -427,8 +450,11 @@ var utils = {
 
     var commaifyOptions = _.assign({}, defaultOptions, options);
 
-    // Because if input is numberic, this will always be . (period)
-    var decimalCharacterToLookFor = isNumeric ? '.' : defaultOptions.decimalCharacter;
+    // If input is numeric, decimal will always be period. Otherwise look for period, comma and default character respectively.
+    var periodIndex = value.lastIndexOf('.');
+    var commaIndex = value.lastIndexOf(',');
+    var nonNumericDecimalCharacter = periodIndex > commaIndex ? '.' : (commaIndex != -1 ? ',' : defaultOptions.decimalCharacter);
+    var decimalCharacterToLookFor = isNumeric ? '.' : nonNumericDecimalCharacter;
 
     var pos = value.indexOf(decimalCharacterToLookFor);
 

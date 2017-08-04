@@ -413,6 +413,44 @@ describe('utils.js', function() {
     });
   });
 
+  describe('getCurrency', function() {
+    it('returns USD when locale is en', function() {
+      assert.equal(utils.getCurrency('en'), 'USD');
+    });
+
+    it('returns EUR when locale is ca', function() {
+      assert.equal(utils.getCurrency('ca'), 'EUR');
+    });
+
+    it('returns EUR when locale is es', function() {
+      assert.equal(utils.getCurrency('es'), 'EUR');
+    });
+
+    it('returns EUR when locale is fr', function() {
+      assert.equal(utils.getCurrency('fr'), 'EUR');
+    });
+
+    it('returns EUR when locale is it', function() {
+      assert.equal(utils.getCurrency('it'), 'EUR');
+    });
+
+    it('returns EUR when locale is nl', function() {
+      assert.equal(utils.getCurrency('nl'), 'EUR');
+    });
+
+    it('returns CNY when locale is zh', function() {
+      assert.equal(utils.getCurrency('zh'), 'CNY');
+    });
+
+    it('returns USD by default when locale is something else', function() {
+      assert.equal(utils.getCurrency(null), 'USD');
+      assert.equal(utils.getCurrency(undefined), 'USD');
+      assert.equal(utils.getCurrency(''), 'USD');
+      assert.equal(utils.getCurrency('tr'), 'USD');
+      assert.equal(utils.getCurrency('invalid'), 'USD');
+    });
+  });
+
   describe('getGroupCharacter', function() {
     it('returns comma when locale is en', function() {
       assert.equal(utils.getGroupCharacter('en'), ',');
@@ -753,6 +791,11 @@ describe('utils.js', function() {
       );
 
       assert.equal(
+        utils.commaify('20000,1234'),
+        '20,000.1234'
+      );
+
+      assert.equal(
         utils.commaify("20000.1234", { groupCharacter: '-', decimalCharacter: '/' }),
         '20-000/1234'
       );
@@ -770,6 +813,11 @@ describe('utils.js', function() {
 
         assert.equal(
           utils.commaify('20.000,1234'),
+          '20.000,1234'
+        );
+
+        assert.equal(
+          utils.commaify('20000.1234'),
           '20.000,1234'
         );
 

@@ -415,11 +415,12 @@ function renderWKTCell(cellContent) {
 * Render a numeric value as currency
 */
 function renderMoneyCell(cellContent, column) {
+  const locale = utils.getLocale(window);
   const format = _.extend(
     {
-      currency: 'USD',
-      decimalSeparator: '.',
-      groupSeparator: ',',
+      currency: utils.getCurrency(locale),
+      decimalSeparator: utils.getDecimalCharacter(locale),
+      groupSeparator: utils.getGroupCharacter(locale),
       humane: 'false',
       precision: 2
     },
@@ -471,7 +472,7 @@ function renderMoneyCell(cellContent, column) {
         // For instance, "12,345,678" will become an array of three
         // substrings, and the first two will combine into "12.345"
         // so that our toFixed call can work its magic.
-        const scaleGroupedVal = utils.commaify(Math.floor(absVal)).split(',');
+        const scaleGroupedVal = utils.commaify(Math.floor(absVal)).split(format.groupSeparator);
         const symbols = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
         let symbolIndex = scaleGroupedVal.length - 2;
 

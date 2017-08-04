@@ -671,7 +671,8 @@ module.exports = function Table(element, originalVif, locale) {
         'location',
         'phone',
         'document',
-        'blob'
+        'blob',
+        'photo'
       ],
       column.renderTypeName
     );

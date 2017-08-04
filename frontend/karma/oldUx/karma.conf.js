@@ -36,10 +36,13 @@ module.exports = function (karma) {
       'public/javascripts/util/base-model.js',
       'public/javascripts/util/socrata-server.js',
       'public/javascripts/util/dataset/dataset.js',
+      'public/javascripts/util/dataset/column.js',
       'public/javascripts/util/dataset/column-container.js',
       'public/javascripts/util/dataset/row-set.js',
       'public/javascripts/util/view-cache.js',
       'public/javascripts/util/filter.js',
+      'karma/oldUx/feature_flag_faker.js',
+      'public/javascripts/controls/table/socrata-viz-dataset-grid.js',
 
       // Utilities/Libraries
       'public/javascripts/plugins/html4-defs.js',

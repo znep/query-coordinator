@@ -166,6 +166,7 @@ module.exports = {
   renderUrlCellHTML: renderUrlCellHTML,
   renderEmailCellHTML: renderEmailCellHTML,
   renderPhoneCellHTML: renderPhoneCellHTML,
+  renderBlobCellHTML: renderBlobCellHTML,
   renderPhotoCellHTML: renderPhotoCellHTML,
   renderDocumentCellHTML: renderDocumentCellHTML,
   renderMultipleChoiceCell: renderMultipleChoiceCell,
@@ -206,7 +207,9 @@ function renderCell(cellContent, column, domain, datasetUid) {
       case 'calendar_date':
         cellText = _.escape(renderTimestampCell(cellContent, column));
         break;
-
+      case 'blob':
+        cellText = renderBlobCellHTML(cellContent, domain, datasetUid);
+        break;
       // OBE types that are deprecated on new datasets, but are supported on migrated datasets:
       case 'email':
         cellText = renderEmailCellHTML(cellContent);
@@ -409,6 +412,18 @@ function renderGeoCellHTML(cellContent) {
 */
 function renderWKTCell(cellContent) {
   return wkt.stringify(cellContent);
+}
+
+/**
+* Render a blob cell.
+*/
+function renderBlobCellHTML(cellContent, domain, datasetUid) {
+  if (!_.isEmpty(cellContent)) {
+    const href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
+    return `<a href="${href}" target="_blank" rel="external">${cellContent}</a>`;
+  }
+
+  return '';
 }
 
 /**

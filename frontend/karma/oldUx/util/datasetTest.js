@@ -8,10 +8,72 @@ describe('blist.dataset', function () {
     blist.rights = {
       view: {}
     }
+    blist.datatypes = {
+      text: {}
+    };
   });
 
   it('should instantiate', function() {
     new Dataset();
+  });
+
+  describe('cleanCopyIncludingRenderTypeName', function() {
+
+    it('returns a JSON representation of the dataset in which columns have a "renderTypeName" property', function() {
+      var dataset = new Dataset({
+        columns: [
+          {
+            id: 1,
+            fieldName: 'test',
+            dataTypeName: 'text',
+            renderTypeName: 'text'
+          }
+        ]
+      });
+
+      var outputWithoutRenderTypeName = dataset.cleanCopy();
+      var outputWithRenderTypeName = dataset.cleanCopyIncludingRenderTypeName();
+
+      expect(_.get(outputWithoutRenderTypeName, 'columns[0].renderTypeName', 'wrong')).to.equal('wrong');
+      expect(_.get(outputWithRenderTypeName, 'columns[0].renderTypeName', 'wrong')).to.equal('text');
+
+      delete outputWithRenderTypeName.columns[0].renderTypeName;
+
+      expect(outputWithoutRenderTypeName).to.deep.equal(outputWithRenderTypeName);
+    });
+
+    it('returns a JSON representation of the column that has a "renderTypeName" property', function() {
+      var column = new Column({
+        id: 1,
+        fieldName: 'test',
+        dataTypeName: 'text',
+        renderTypeName: 'text'
+      });
+
+      var outputWithoutRenderTypeName = column.cleanCopy();
+      var outputWithRenderTypeName = column.cleanCopyIncludingRenderTypeName();
+
+      expect(_.get(outputWithoutRenderTypeName, 'renderTypeName', 'wrong')).to.equal('wrong');
+      expect(_.get(outputWithRenderTypeName, 'renderTypeName', 'wrong')).to.equal('text');
+
+      delete outputWithRenderTypeName.renderTypeName;
+
+      expect(outputWithoutRenderTypeName).to.deep.equal(outputWithRenderTypeName);
+    });
+
+    it('returns a JSON representation of the base model that is identical to a normal clean copy', function() {
+      var model = new Model({
+        id: 1,
+        fieldName: 'test',
+        dataTypeName: 'text',
+        renderTypeName: 'text'
+      });
+
+      var outputWithoutRenderTypeName = model.cleanCopy();
+      var outputWithRenderTypeName = model.cleanCopyIncludingRenderTypeName();
+
+      expect(outputWithoutRenderTypeName).to.deep.equal(outputWithRenderTypeName);
+    });
   });
 
   describe('saving', function() {
@@ -48,10 +110,10 @@ describe('blist.dataset', function () {
         expect(function() { dataset.save(); }).to.not.throw();
       });
 
-      it('should fail when there is somehow no originalDatasetTypeMetadata to restore', function() {
+      it('should not fail when there is somehow no originalDatasetTypeMetadata to restore', function() {
         delete window.blist.originalDatasetTypeMetadata;
 
-        expect(function() { dataset.save(); }).to.throw();
+        expect(function() { dataset.save(); }).to.not.throw();
       });
     });
   });

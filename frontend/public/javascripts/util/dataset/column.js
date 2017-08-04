@@ -399,6 +399,51 @@
       return col;
     },
 
+    // EN-17875 - Make grid view Socrata Viz table respond to OBE/NBE read
+    // queries using old query path
+    //
+    // We need to pass a JSON representation of the view along to the Table
+    // renderer by including the equivalent output of the /api/views endpoint in
+    // the vif with which we instantiate the Table.
+    //
+    // Unfortunately, the `.cleanCopy()` method on the Dataset model omits the
+    // `renderTypeName` property (since it is not a valid property to send back
+    // to Core Server--presumably we assign a renderTypeName when we persist the
+    // updated view).
+    //
+    // Accordingly, and in the spirit of making as few changes to existing code
+    // as possible, I am adding an additional method that does not omit the
+    // renderTypeName property for the specific use case described above.
+    //
+    // This is the Column component of the work; there are also similar
+    // implementations in the Dataset and Base models located in this project at
+    // `platform-ui/frontend/public/javascripts/util/dataset/dataset.js` and
+    // `platform-ui/frontend/public/javascripts/util/base-model.js`,
+    // respectively.
+    //
+    // BECAUSE YOU ASKED, here is a slightly more verbose explanation for why we
+    // need to do this (taken from github.com/socrata/platform-ui/pull/5232):
+    //
+    //   It's actually the Column object that has the renderTypeName property.
+    //   But one gets the serialized columns by getting the serialized view (the
+    //   dataset implementation of the function with the same name, which
+    //   function on dataset basically maps the list of visible columns with the
+    //   version of the cleanCopyIncludingRenderTypeName implemented in the
+    //   column model, and both will attempt to call
+    //   cleanCopyIncludingRenderTypeName on the base model because they both
+    //   call self._super(), and it's the whole big mess of the inheritance
+    //   stuff that we abused so badly circa 2011.
+    //
+    // USE AT YOUR OWN RISK etc. etc.
+    cleanCopyIncludingRenderTypeName: function() {
+      var col = this._super();
+      // Support for linked columns
+      if (_.include(['dataset_link'], col.dataTypeName)) {
+        delete col.dropDownList;
+      }
+      return col;
+    },
+
     _setUpColumn: function() {
       var col = this;
       this.format = this.format || {};

@@ -1470,6 +1470,8 @@ en:
       weeks_past: "%{time} weeks ago"
       years_future: "%{time} years from now"
       years_past: "%{time} years ago"
+    default_row_label_one: row
+    default_row_label_other: rows
     dialogs:
       apply: Apply
       back: Back

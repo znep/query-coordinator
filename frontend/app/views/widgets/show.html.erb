@@ -12,6 +12,20 @@
 
   <%= rendered_stylesheet_tag 'embed-form' %>
   <link type="text/css" rel="stylesheet" href="/styles/widget/<%= @theme_id %>.css" />
+
+  <%-
+    # EN-17875 - Make grid view Socrata Viz table respond to OBE/NBE read queries using old query path
+    #
+    # Note that this must be in the <head> because there is a load order
+    # dependency with the Socrata Visualizations I18n module; if the
+    # translations are not present on the window when that code bootstraps no
+    # translations will be available.
+    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+  -%>
+    <%= rendered_stylesheet_tag 'socrata-icons' %>
+    <%= rendered_stylesheet_tag 'visualizations' %>
+    <%= render_socrata_visualizations_translations %>
+  <%- end -%>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -186,6 +200,17 @@
     blist.widget.showPrivateMessage = <%= !@view.is_public? && !is_mobile? %>;
   </script>
 
+  <%-
+    # EN-17875 - Make grid view Socrata Viz table respond to OBE/NBE read queries using old query path
+    #
+    # Note that these come at the bottom of the <body> due to the load-order
+    # dependency detailed in the comment with this ticket number at the top
+    # of this file (tl;dr: the translations must exist on the window when
+    # we boostrap the Socrata Viz package).
+    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+  -%>
+    <%= include_webpack_bundle 'grid_view_socrata_visualizations/main.js' %>
+  <%- end -%>
   <%= include_webpack_bundle 'open-data/widgets-show.js' %>
 
   <%- unless @theme[:behavior][:ga_code].empty? -%>

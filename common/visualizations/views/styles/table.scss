@@ -5,6 +5,7 @@ $highlighted-row-color: #2f2f2f;
 $highlighted-row-background-color: #f6f6f6;
 $highlighted-sort-menu-button-background-color: #e4e4e4;
 $highlighted-sort-menu-row-background-color: #e6f9f5;
+$cell-border-color: #e4e4e4;
 
 .socrata-visualization-container.loaded {
 
@@ -22,9 +23,9 @@ $highlighted-sort-menu-row-background-color: #e6f9f5;
 .socrata-table {
   $header-row-height: 40px;
   $header-cell-height: 39px;
-  $data-row-height: 25px;
-  $data-cell-height: 24px;
-  $null-row-height: 45px;
+  $data-row-height: 21px;
+  $data-cell-height: 20px;
+  $null-row-height: 31px;
 
   width: 100%;
   // We subtract the pager height and then 1px to merge borders.
@@ -39,7 +40,7 @@ $highlighted-sort-menu-row-background-color: #e6f9f5;
     width: 100%;
     margin: 0;
     padding: 0;
-    font-size: 13px;
+    font-size: 12px;
     border-collapse: collapse;
 
     thead {
@@ -83,7 +84,7 @@ $highlighted-sort-menu-row-background-color: #e6f9f5;
     td {
       box-sizing: border-box;
       height: 15px;
-      border: 1px solid #c0c0c0;
+      border: 1px solid $cell-border-color;
       text-align: left;
       vertical-align: middle;
       line-height: 1.5;
@@ -211,7 +212,7 @@ $highlighted-sort-menu-row-background-color: #e6f9f5;
 
     td {
       height: $data-cell-height;
-      padding: 10px;
+      padding: 5px 7px;
       line-height: $data-cell-height;
       background-color: $row-background-color;
 
@@ -225,6 +226,15 @@ $highlighted-sort-menu-row-background-color: #e6f9f5;
 
       &[data-cell-alignment="center"] {
         text-align: center;
+      }
+
+      &[data-cell-render-type="blob"],
+      &[data-cell-render-type="url"],
+      &[data-cell-render-type="email"],
+      &[data-cell-render-type="phone"],
+      &[data-cell-render-type="document"],
+      &[data-cell-render-type="photo"] {
+        text-decoration: underline !important;
       }
 
       div {

@@ -17,6 +17,14 @@ function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
+    if (response.status === 400) {
+      return response.json().then((json) => {
+        if (json.error === 'Sum of `offset` and `limit` cannot exceed 10000') {
+          throw new Error('offset_too_large');
+        }
+      });
+    }
+
     errorMessage = response.statusText;
 
     if (response.status === 502) {

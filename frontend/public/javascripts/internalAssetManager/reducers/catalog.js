@@ -70,7 +70,8 @@ export default (state, action) => {
     return {
       ...state,
       fetchingResults: false,
-      fetchingResultsError: true
+      fetchingResultsError: true,
+      fetchingResultsErrorType: action.details
     };
   }
 

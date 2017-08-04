@@ -20,6 +20,10 @@ export const CREATE_UPLOAD = 'CREATE_UPLOAD';
 export const CREATE_UPLOAD_SUCCESS = 'CREATE_UPLOAD_SUCCESS';
 export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
 
+// Each render takes approx 10ms, so this should be plenty slow to allow rendering
+// to catch up even on slower machines
+const PROGRESS_THROTTLE_TIME = 250;
+
 function xhrPromise(method, url, file, sourceId, dispatch) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -312,21 +316,23 @@ export function subscribeToTransforms(os) {
     os.output_columns.forEach(oc => {
       const channel = socket.channel(`transform_progress:${oc.transform.id}`);
 
-      channel.on('max_ptr', ({ end_row_offset }) =>
+      channel.on('max_ptr', _.throttle(({ end_row_offset }) =>
         dispatch(
           editTransform(oc.transform.id, {
             contiguous_rows_processed: end_row_offset
           })
-        )
-      );
+        ),
+        PROGRESS_THROTTLE_TIME
+      ));
 
-      channel.on('errors', ({ count }) =>
+      channel.on('errors', _.throttle(({ count }) =>
         dispatch(
           editTransform(oc.transform.id, {
             num_transform_errors: count
           })
-        )
-      );
+        ),
+        PROGRESS_THROTTLE_TIME
+      ));
 
       channel.join();
     });

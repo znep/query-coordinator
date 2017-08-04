@@ -73,6 +73,7 @@ en:
           administration: Administration
           analytics: Analytics
           asset_inventory: Asset Inventory
+          datasets: Datasets
           users: Users
         user:
           administration: Administration

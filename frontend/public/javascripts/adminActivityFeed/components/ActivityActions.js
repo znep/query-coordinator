@@ -49,10 +49,11 @@ export default class ActivityActions extends React.Component {
     const hasDetails = helpers.activities.hasDetails(activity);
     const isRestorable = helpers.activities.isRestorable(activity);
     const isRestored = helpers.activities.isRestored(activity);
+    const isRestoreExpired = helpers.activities.isRestoreExpired(activity);
 
     if (isRestorable) {
       return this.renderRestoreButton();
-    } else if (isRestored) {
+    } else if (isRestored && !isRestoreExpired) {
       return this.renderRestoredIndicator();
     } else if (hasDetails) {
       return this.renderDetailsButton();

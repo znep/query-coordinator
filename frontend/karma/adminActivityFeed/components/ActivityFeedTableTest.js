@@ -55,7 +55,9 @@ describe('ActivityFeedTable', () => {
     const expectedDateColumns = [
       'March 14, 2017',
       'March 7, 2017',
-      'March 7, 2017'
+      'March 7, 2017',
+      'August 3, 2017',
+      'April 24, 2017'
     ];
 
     assert.deepEqual(expectedDateColumns, dateColumns);
@@ -110,4 +112,27 @@ describe('ActivityFeedTable', () => {
       );
     });
   });
+
+  describe('restored datasets', () => {
+    it('should has (Restored)', () => {
+      const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
+      const rows = [].slice.call(output.querySelectorAll('tbody tr'));
+
+      assert.equal(
+        rows[3].querySelector('td[data-column=actions]').textContent,
+        `${mockTranslations.restored}`
+      );
+    });
+
+    it('should not has (Restored) if 14 days past', () => {
+      const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
+      const rows = [].slice.call(output.querySelectorAll('tbody tr'));
+
+      assert.notEqual(
+        rows[4].querySelector('td[data-column=actions]').textContent,
+        `${mockTranslations.restored}`
+      );
+    });
+  });
+
 });

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 
-import LocalizedLink from './Localization/LocalizedLink';
+import LocalizedLink from 'common/i18n/components/LocalizedLink';
 
 export default class UserName extends React.Component {
   render() {

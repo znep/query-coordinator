@@ -2,7 +2,7 @@ import 'script!jquery';
 import { Provider } from 'react-redux';
 import { FeatureFlags } from 'common/feature_flags';
 
-import Localization from 'components/Localization/Localization';
+import Localization from 'common/i18n/components/Localization';
 import mockTranslations from './mockTranslations';
 
 window._ = require('lodash');

@@ -14,7 +14,7 @@ export default class ActivityFeedTableHeaderColumn extends React.Component {
     }
 
     return (
-      <th data-column-sorted={sorted} data-column={column.id} className="activity-feed-table-header-column">
+      <th data-column-sorted={sorted} data-column={column.id} className='activity-feed-table-header-column'>
         { column.title }
         { sortingIndicator }
       </th>

@@ -1,7 +1,7 @@
 import React from 'react';
 import * as helpers from '../helpers';
 
-import LocalizedText from './Localization/LocalizedText';
+import LocalizedText from 'common/i18n/components/LocalizedText';
 
 export default class ActivityActions extends React.Component {
   constructor(props) {
@@ -23,22 +23,22 @@ export default class ActivityActions extends React.Component {
 
   renderRestoreButton() {
     return (
-      <button className="restore-modal-link button-as-link" onClick={this.handleRestoreClicked}>
-        <LocalizedText localeKey='restore'/>
+      <button className='restore-modal-link button-as-link' onClick={this.handleRestoreClicked}>
+        <LocalizedText localeKey='screens.admin.jobs.restore'/>
       </button>
     );
   }
 
   renderRestoredIndicator() {
-    return <LocalizedText localeKey='restored' className="restored-dataset"/>;
+    return <LocalizedText localeKey='screens.admin.jobs.restored' className='restored-dataset'/>;
   }
 
   renderDetailsButton() {
     return (
       <button
-        className="details-modal-link button-as-link"
+        className='details-modal-link button-as-link'
         onClick={this.handleShowDetailsClicked}>
-        <LocalizedText localeKey='view_details'/>
+        <LocalizedText localeKey='screens.admin.jobs.view_details'/>
       </button>
     );
   }

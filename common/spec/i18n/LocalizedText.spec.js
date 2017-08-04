@@ -6,11 +6,14 @@ import TestUtils from 'react-addons-test-utils';
 import Localization from 'common/i18n/components/Localization';
 import LocalizedText from 'common/i18n/components/LocalizedText';
 
-
 describe('LocalizedText', () => {
-  const locale = 'en';
   const translations = {
-    test: 'Test in english'
+    greeting: 'Hello, %{name}',
+    test: 'Test in english',
+    product: {
+      one: 'product',
+      other: '%{count} products'
+    }
   };
 
   const renderComponent = _.flow(TestUtils.renderIntoDocument, ReactDOM.findDOMNode);
@@ -23,7 +26,42 @@ describe('LocalizedText', () => {
     );
 
     const output = renderComponent(component);
-    assert(output.tagName === 'SPAN');
-    assert(output.textContent === translations.test);
+    assert.equal(output.tagName, 'SPAN');
+    assert.equal(output.textContent, translations.test);
+  });
+
+  it('translate(key,data) should replace sub keys in translation with fields provided in data', () => {
+    const component = (
+      <Localization translations={translations} locale="en">
+        <LocalizedText localeKey="greeting" data={{ name: 'John Doe' }}/>
+      </Localization>
+    );
+
+    const output = renderComponent(component);
+    assert(output.textContent === 'Hello, John Doe');
+  });
+
+  describe('should respect count data', () => {
+    it('singular', () => {
+      const component = (
+        <Localization translations={translations} locale="en">
+          <LocalizedText localeKey="product" data={{ count: 1 }}/>
+        </Localization>
+      );
+
+      const output = renderComponent(component);
+      assert.equal(output.textContent, 'product');
+    });
+
+    it('plural', () => {
+      const component = (
+        <Localization translations={translations} locale="en">
+          <LocalizedText localeKey="product" data={{ count: 5 }}/>
+        </Localization>
+      );
+
+      const output = renderComponent(component);
+      assert.equal(output.textContent, '5 products');
+    });
   });
 });

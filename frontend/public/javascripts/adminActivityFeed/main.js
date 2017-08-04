@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 
 import HttpClient from './frontendApi/HttpClient';
 import ActivityFeedApi from './frontendApi/ActivityFeedApi';
-import Localization from './components/Localization/Localization';
+import Localization from 'common/i18n/components/Localization';
 import serviceLocator from './middlewares/serviceLocator';
 
 import App from './App';

@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import React from 'react';
 import {connect} from 'react-redux';
-import connectLocalization from '../Localization/connectLocalization';
 import {FilterItem, Dropdown, SocrataIcon} from 'common/components';
-import LocalizedText from '../Localization/LocalizedText';
+import LocalizedText from 'common/i18n/components/LocalizedText';
+import I18n from 'common/i18n';
 import * as actions from '../../actions';
 import './FilterBar.scss';
 
@@ -80,7 +80,7 @@ class FilterBar extends React.Component {
 
     const props = {
       column: {
-        name: this.props.localization.translate('columns.date_started'),
+        name: I18n.t('screens.admin.jobs.columns.date_started'),
         fieldName: 'date',
         dataTypeName: 'calendar_date'
       },
@@ -110,12 +110,12 @@ class FilterBar extends React.Component {
     const options = _.map(
       eventTypes,
       item => ({
-        title: this.props.localization.translate(`actions.${item}`),
+        title: I18n.t(`screens.admin.jobs.actions.${item}`),
         value: _.upperFirst(item)
       })
     );
     const value = eventType !== 'All' ? eventType : null;
-    const placeholder = this.props.localization.translate('columns.event');
+    const placeholder = I18n.t('screens.admin.jobs.columns.event');
 
     const props = {
       id: 'eventFilter',
@@ -158,13 +158,13 @@ class FilterBar extends React.Component {
     const options = _.map(
       statusTypes,
       item => ({
-        title: this.props.localization.translate(`statuses.${_.snakeCase(item.title)}`),
+        title: I18n.t(`screens.admin.jobs.statuses.${_.snakeCase(item.title)}`),
         value: item.title,
         render: renderOption
       })
     );
     const value = eventStatus !== 'All' ? eventStatus : null;
-    const placeholder = this.props.localization.translate('columns.status');
+    const placeholder = I18n.t('screens.admin.jobs.columns.status');
 
     const props = {
       id: 'statusFilter',
@@ -222,7 +222,7 @@ class FilterBar extends React.Component {
     return (
       <li>
         <button onClick={onClick} className={className}>
-          <LocalizedText localeKey={`quick_filters.${value}`}/>
+          <LocalizedText localeKey={`screens.admin.jobs.quick_filters.${value}`}/>
         </button>
       </li>
     );
@@ -234,7 +234,7 @@ class FilterBar extends React.Component {
         <this.renderQuickFilters />
         <div className="picker-filters">
           <div className="picker-filters-header">
-            <LocalizedText localeKey='index_page.filter_by' />
+            <LocalizedText localeKey='screens.admin.jobs.index_page.filter_by' />
           </div>
           <this.renderDateFilter />
           <this.renderEventFilter />
@@ -262,4 +262,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchSetFilter: filter => dispatch(actions.setFilter(filter))
 });
 
-export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(FilterBar));
+export default connect(mapStateToProps, mapDispatchToProps)(FilterBar);

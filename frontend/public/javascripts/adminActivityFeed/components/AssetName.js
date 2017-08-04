@@ -1,7 +1,7 @@
 import React from 'react';
 
-import LocalizedLink from './Localization/LocalizedLink';
-import LocalizedText from './Localization/LocalizedText';
+import LocalizedLink from 'common/i18n/components/LocalizedLink';
+import LocalizedText from 'common/i18n/components/LocalizedText';
 
 import * as helpers from '../helpers';
 
@@ -19,19 +19,19 @@ export default class AssetName extends React.Component {
         return (
           <div>
             <span className='asset-name'>{activityName} </span>
-            <LocalizedText className='asset-deleted' localeKey='index_page.deleted' />
+            <LocalizedText className='asset-deleted' localeKey='screens.admin.jobs.index_page.deleted' />
           </div>
         );
       } else { // Present dataset
         const activityUrl = helpers.activities.getUrl(activity);
         return (
           <span className='asset-name without-extra'>
-            <LocalizedLink url={activityUrl}>{activityName}</LocalizedLink>
+            <LocalizedLink className='unstyled-link' path={activityUrl}>{activityName}</LocalizedLink>
           </span>
         );
       }
     } else { // Case of dataset is nil
-      return <LocalizedText className='asset-deleted' localeKey='index_page.deleted_dataset' />;
+      return <LocalizedText className='asset-deleted' localeKey='screens.admin.jobs.index_page.deleted_dataset' />;
     }
   }
 }

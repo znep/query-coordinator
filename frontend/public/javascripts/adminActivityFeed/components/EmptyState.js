@@ -1,8 +1,8 @@
 import { fromJS } from 'immutable';
 import React from 'react';
-import connectLocalization from './Localization/connectLocalization';
 import { connect } from 'react-redux';
-import LocalizedText from './Localization/LocalizedText';
+import I18n from 'common/i18n';
+import LocalizedText from 'common/i18n/components/LocalizedText';
 
 import './EmptyState.scss';
 
@@ -13,19 +13,21 @@ class EmptyState extends React.Component {
   }
 
   getEmptyTableMessage() {
-    const { localization } = this.props;
+    const messageData = {
+      new_dataset_url: `${I18n.locale}/datasets/new`
+    };
 
-    const message = localization.translate('empty_message', {
-      new_dataset_url: `${localization.getLocalePrefix()}/datasets/new`
-    });
-
-    return <div className="emptyState" dangerouslySetInnerHTML={{__html: message}} />;
+    return (
+      <div className='emptyState'>
+        <LocalizedText localeKey='screens.admin.jobs.empty_message' data={messageData}/>
+      </div>
+    );
   }
 
   getFilteredEmptyTableMessage() {
     return (
-      <div className="emptyState">
-        <LocalizedText localeKey='empty_message_filtered'/>
+      <div className='emptyState'>
+        <LocalizedText localeKey='screens.admin.jobs.empty_message_filtered'/>
       </div>
     );
   }
@@ -53,4 +55,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connectLocalization(connect(mapStateToProps)(EmptyState));
+export default connect(mapStateToProps)(EmptyState);

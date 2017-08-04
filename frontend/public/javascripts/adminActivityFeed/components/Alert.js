@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { dismissAlert } from '../actions';
-import LocalizedText from './Localization/LocalizedText';
+import LocalizedText from 'common/i18n/components/LocalizedText';
 
 class Alert extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -16,14 +16,14 @@ class Alert extends React.Component {
 
   render() {
     const { dispatchDismissAlert, alert } = this.props;
-    const localeKey = `index_page.alerts.${alert.get('translationKey')}`;
+    const localeKey = `screens.admin.jobs.index_page.alerts.${alert.get('translationKey')}`;
     const alertData = alert.has('data') && alert.get('data') ? alert.get('data').toJS() : null;
 
     return (
-      <div className="activity-feed-alert">
+      <div className='activity-feed-alert'>
         <div className={classNames('alert', alert.get('type'))}>
           <LocalizedText localeKey={localeKey} data={alertData}/>
-          <i className="socrata-icon-close" onClick={dispatchDismissAlert}/>
+          <i className='socrata-icon-close' onClick={dispatchDismissAlert}/>
         </div>
       </div>
     );

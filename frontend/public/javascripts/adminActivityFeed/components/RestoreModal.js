@@ -6,9 +6,8 @@ import {
   dismissRestoreModal
 } from '../actions';
 import {Modal, ModalHeader, ModalContent, ModalFooter} from 'common/components';
-
-import connectLocalization from './Localization/connectLocalization';
-import LocalizedText from './Localization/LocalizedText';
+import I18n from 'common/i18n';
+import LocalizedText from 'common/i18n/components/LocalizedText';
 
 class RestoreModal extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -16,7 +15,7 @@ class RestoreModal extends React.Component {
   }
 
   render() {
-    const {datasetName, localization, dispatchRestoreDataset, dispatchDismissRestoreModal} = this.props;
+    const {datasetName, dispatchRestoreDataset, dispatchDismissRestoreModal} = this.props;
 
     const modalProps = {
       fullScreen: false,
@@ -24,7 +23,7 @@ class RestoreModal extends React.Component {
     };
 
     const headerProps = {
-      title: localization.translate('restore'),
+      title: I18n.t('screens.admin.jobs.restore'),
       onDismiss: dispatchDismissRestoreModal
     };
 
@@ -34,18 +33,18 @@ class RestoreModal extends React.Component {
 
         <ModalContent>
           <p>
-            <LocalizedText localeKey='restore_confirmation' data={ {dataset: datasetName} }/>
+            <LocalizedText localeKey='screens.admin.jobs.restore_confirmation' data={ {dataset: datasetName} }/>
           </p>
         </ModalContent>
 
         <ModalFooter>
           <div>
-            <button className="btn btn-default" onClick={dispatchDismissRestoreModal}>
-              <LocalizedText localeKey='cancel'/>
+            <button className='btn btn-default' onClick={dispatchDismissRestoreModal}>
+              <LocalizedText localeKey='screens.admin.jobs.cancel'/>
             </button>
             &nbsp;
-            <button className="btn btn-primary" onClick={dispatchRestoreDataset}>
-              <LocalizedText localeKey='restore'/>
+            <button className='btn btn-primary' onClick={dispatchRestoreDataset}>
+              <LocalizedText localeKey='screens.admin.jobs.restore'/>
             </button>
           </div>
         </ModalFooter>
@@ -62,4 +61,4 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchDismissRestoreModal: () => dispatch(dismissRestoreModal())
 });
 
-export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(RestoreModal));
+export default connect(mapStateToProps, mapDispatchToProps)(RestoreModal);

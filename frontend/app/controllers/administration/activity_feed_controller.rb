@@ -49,6 +49,8 @@ class Administration::ActivityFeedController < AdministrationController
         :endDate => end_date
       )
       @activities = activities_response[:activities]
+      @activities.each { |activity| activity.initiated_by.profile_url = profile_path(activity.initiated_by) }
+
       @pager_info = {
         :next_page => page_idx + 1,
         :prev_page => [page_idx - 1, 1].max,

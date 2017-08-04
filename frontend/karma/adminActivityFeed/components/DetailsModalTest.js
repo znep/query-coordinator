@@ -3,6 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import { assert } from 'chai';
 import { Simulate } from 'react-addons-test-utils';
+import I18nJS from 'i18n-js';
 
 const MockHttpClient = require('../MockHttpClient').default;
 const ActivityFeedApi = require('frontendApi/ActivityFeedApi').default;
@@ -16,7 +17,7 @@ describe('DetailsModal', () => {
 
   const mockActivity = {
     data: {
-      activity_type: 'data.activity_type',
+      activity_type: 'restore',
       status: 'failure',
       latest_event: {
         event_type: 'archive_error',
@@ -51,7 +52,7 @@ describe('DetailsModal', () => {
     detailsModal: fromJS(mockActivity)
   });
 
-  it('should render restore modal with correct title', () => {
+  it('should render details modal with correct title', () => {
     const output = renderComponentWithLocalization(DetailsModal, {}, store);
     const title = output.querySelector('.modal-header-title').textContent;
     const expectedTitle = mockTranslations.details;
@@ -59,7 +60,7 @@ describe('DetailsModal', () => {
     assert.equal(title, expectedTitle);
   });
 
-  it('should render restore modal with correct content', () => {
+  it('should render details modal with correct content', () => {
     const output = renderComponentWithLocalization(DetailsModal, {}, store);
     const lineActivityType = output.querySelector('#line-activity-type').textContent;
     const lineActivityName = output.querySelector('#line-activity-name').textContent;
@@ -80,7 +81,7 @@ describe('DetailsModal', () => {
     const expectedImportMethod = `${mockTranslations.import_method}: ${mockTranslations.show_page.services[mockActivity.data.service]}`;
     const expectedName = `${mockActivity.dataset.name} (${mockActivity.data.activity_name})`;
 
-    assert.equal(lineActivityType, mockActivity.data.activity_type);
+    assert.equal(lineActivityType, I18nJS.t('screens.admin.jobs.actions.restore'));
     assert.equal(lineActivityName, expectedName);
     assert.equal(lineActivityEventTitle, expectedEventTitle);
     assert.equal(lineActivityEventDesc, expectedEventDesc);

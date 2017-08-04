@@ -1,19 +1,25 @@
 import React from 'react';
 import * as helpers from '../helpers';
 
+import LocalizedLink from 'common/i18n/components/LocalizedLink';
+
 export default class InitiatedBy extends React.Component {
   render() {
     const { activity } = this.props;
 
     if (helpers.user.isSuperAdmin(activity)) {
       return (
-        <div>
+        <LocalizedLink path={activity.getIn(['initiated_by', 'profile_url'])} className='unstyled-link'>
           <span>{helpers.user.getDisplayName(activity)}</span>
           <span> (Socrata)</span>
-        </div>
+        </LocalizedLink>
       );
     } else {
-      return <span>{helpers.user.getDisplayName(activity)}</span>;
+      return (
+        <LocalizedLink path={activity.getIn(['initiated_by', 'profile_url'])} className='unstyled-link'>
+          {helpers.user.getDisplayName(activity)}
+        </LocalizedLink>
+      );
     }
   }
 }

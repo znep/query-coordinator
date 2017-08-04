@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { Dropdown, ColorPicker } from 'common/components';
 import I18n from 'common/i18n';
 import { getMeasureTitle } from '../../helpers';
+import { hasData } from '../../selectors/metadata';
 
 import {
   BASE_LAYERS,
@@ -131,8 +132,12 @@ export var PresentationPane = React.createClass({
 
   renderMultiSeriesCustomColorSelector() {
     const { vifAuthoring, onChangePrimaryColor, metadata } = this.props;
-    const series = selectors.getSeries(vifAuthoring);
 
+    if (!hasData(metadata)) {
+      return null;
+    }
+
+    const series = selectors.getSeries(vifAuthoring);
     const colorSelectors = series.map((item, index) => {
 
       const colorPickerAttributes = {

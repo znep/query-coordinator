@@ -123,16 +123,16 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
   };
 };
 
-export const appendSeries = (state) => {
+export const appendSeries = (state, isInitialLoad) => {
 
   // For multi-series, we use the color palette on the first series, but the palettes on all series should be in sync
   // so that if the first series is deleted, the palette can be obtained from the second (now first) series.
   // 
   // The 'custom' palette for multi-series, does not apply.  We simply set the primary color on each series.
   //
-  // If we are transitioning to multi-series in this method, set the palette to 'categorical'.
+  // If we are transitioning to multi-series in this method (and not during the initial load), set the palette to 'categorical'.
   //
-  if (state.series.length == 1) {
+  if ((state.series.length == 1) && !isInitialLoad) {
     _.set(state, 'series[0].color.palette', 'categorical');
   }
 

@@ -53,7 +53,7 @@ export default function(state, action) {
       break;
 
     case actions.APPEND_SERIES:
-      appendSeries(state);
+      appendSeries(state, action.isInitialLoad);
       break;
 
     case actions.REMOVE_SERIES:

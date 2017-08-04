@@ -152,9 +152,10 @@ export function setDimension(dimension) {
 }
 
 export const APPEND_SERIES = 'APPEND_SERIES';
-export function appendSeries() {
+export function appendSeries(isInitialLoad = false) {
   return {
-    type: APPEND_SERIES
+    type: APPEND_SERIES,
+    isInitialLoad
   };
 }
 

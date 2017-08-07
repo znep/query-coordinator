@@ -112,12 +112,12 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
 
     // Otherwise, if the color palette has not yet been set, then assign
     // the default palette.
-    if (_.get(state, 'series[0].color.palette') === undefined) {
+    if (_.isEmpty(_.get(state, 'series[0].color.palette'))) {
       _.set(state, 'series[0].color.palette', 'categorical');
     }
 
     // If legend visibility has not yet been set, then set it to visible
-    if (_.get(state, 'configuration.showLegend') === undefined) {
+    if (_.isEmpty(_.get(state, 'configuration.showLegend'))) {
       _.set(state, 'configuration.showLegend', true);
     }
   };

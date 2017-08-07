@@ -69,7 +69,7 @@ export const MeasureSelector = React.createClass({
 
     const series = getSeries(vifAuthoring);
     const measureSelectors = series.map((item, seriesIndex) => {
-      return this.renderMeasureSelector(seriesIndex, item.dataSource.measure, options);
+      return this.renderMeasureSelector(item.dataSource.measure, seriesIndex, options);
     });
 
     let pendingMeasureSelector;
@@ -117,7 +117,7 @@ export const MeasureSelector = React.createClass({
     );
   },
 
-  renderMeasureSelector(seriesIndex, measure, options) {
+  renderMeasureSelector(measure, seriesIndex, options) {
     const { vifAuthoring } = this.props;
     const measureListItemAttributes = {
       className: 'measure-list-item',
@@ -133,7 +133,7 @@ export const MeasureSelector = React.createClass({
       value: measure.columnName
     };
 
-    const measureAggregationSelector = this.renderMeasureAggregationSelector(seriesIndex, measure);
+    const measureAggregationSelector = this.renderMeasureAggregationSelector(measure, seriesIndex);
     const deleteMeasureLink = this.renderDeleteMeasureLink(seriesIndex);
 
     return (
@@ -147,7 +147,7 @@ export const MeasureSelector = React.createClass({
     );
   },
 
-  renderMeasureAggregationSelector(seriesIndex, measure) {
+  renderMeasureAggregationSelector(measure, seriesIndex) {
     const { aggregationTypes, vifAuthoring } = this.props;
 
     if (_.isNull(measure.columnName)) {

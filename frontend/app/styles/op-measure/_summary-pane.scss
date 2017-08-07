@@ -1,0 +1,32 @@
+@import "styleguide-colors";
+
+@import "common/metadata-table";
+
+.pane[data-pane="summary"] {
+  .metadata-table-wrapper {
+    border: 1px solid $light-grey-3;
+    background-color: $white;
+    padding: 2px 0;
+  }
+
+  .metadata-section hr {
+    margin: 0 0 20px;
+  }
+
+  .metadata-pair {
+    margin-bottom: 20px;
+  }
+
+  .summary-pane-description {
+    max-width: 948px; // TODO: figure out what's actually going on here
+    margin-top: 20px;
+
+    h4 {
+      margin-bottom: 20px;
+    }
+
+    p {
+      margin-top: 0;
+    }
+  }
+}

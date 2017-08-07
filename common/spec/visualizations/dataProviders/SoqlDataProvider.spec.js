@@ -1036,10 +1036,9 @@ describe('SoqlDataProvider', () => {
       );
     });
 
-
     it('only fetches stats for number, calendar_date, and text columns', () => {
-      soqlDataProvider.getColumnStats([textColumn, numberColumn, textColumn, calendarDateColumn, fakeColumn]);
-      assert.lengthOf(server.requests, 4);
+      soqlDataProvider.getColumnStats([textColumn, numberColumn, calendarDateColumn, fakeColumn]);
+      assert.lengthOf(server.requests, 3);
     });
 
     it('passes through errors', (done) => {

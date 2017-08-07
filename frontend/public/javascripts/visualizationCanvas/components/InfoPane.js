@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { formatDate } from 'common/dates';
 import I18n from 'common/i18n';
-import InfoPaneComponent from '../../common/components/InfoPaneComponent.js';
+import InfoPaneComponent from '../../common/components/InfoPaneComponent';
 import InfoPaneButtons from './InfoPaneButtons';
 
 function mapStateToProps(state) {

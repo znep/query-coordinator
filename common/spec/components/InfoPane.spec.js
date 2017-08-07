@@ -148,4 +148,11 @@ describe('InfoPane', () => {
       });
     });
   });
+
+  describe('when there is no content for the lower section', () => {
+    it('renders nothing', () => {
+      const element = renderComponent(InfoPane, { name: 'Just the Title' });
+      assert.isNull(getContent(element));
+    });
+  });
 });

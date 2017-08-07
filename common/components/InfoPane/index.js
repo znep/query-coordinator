@@ -144,6 +144,10 @@ const InfoPane = React.createClass({
   },
 
   ellipsify() {
+    if (_.isEmpty(this.description)) {
+      return;
+    }
+
     if (this.metadataPane && this.description && this.description.firstChild) {
       const metadataHeight = this.metadataPane.getBoundingClientRect().height;
       const descriptionHeight = this.description.firstChild.getBoundingClientRect().height;
@@ -201,6 +205,10 @@ const InfoPane = React.createClass({
 
   renderDescription() {
     const { description, isPaneCollapsible } = this.props;
+    if (_.isEmpty(description)) {
+      return null;
+    }
+
     let moreToggle;
     let lessToggle;
 
@@ -272,6 +280,34 @@ const InfoPane = React.createClass({
     );
   },
 
+  renderContent() {
+    const { isPaneCollapsible } = this.props;
+    const { paneCollapsed } = this.state;
+
+    const contentClassName = classNames('entry-content', {
+      'hide': paneCollapsed && isPaneCollapsible
+    });
+
+    const description = this.renderDescription();
+    const footer = this.renderFooter();
+    const metadata = this.renderMetadata();
+
+    if (description || footer || metadata) {
+      return (
+        <div className={contentClassName}>
+          <div className="entry-main">
+            {description}
+            {footer}
+          </div>
+
+          {metadata}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  },
+
   render() {
     const {
       category,
@@ -280,11 +316,8 @@ const InfoPane = React.createClass({
       renderButtons,
       provenance,
       provenanceIcon,
-      hideProvenance,
-      isPaneCollapsible
+      hideProvenance
     } = this.props;
-
-    const { paneCollapsed } = this.state;
 
     const privateIcon = isPrivate ?
       <span
@@ -301,10 +334,6 @@ const InfoPane = React.createClass({
         <span aria-hidden className={`socrata-icon-${provenanceIcon}`}></span>
         {I18n.t(`shared.components.info_pane.${provenance}`)}
       </span>;
-
-    const contentClassName = classNames('entry-content', {
-      'hide': paneCollapsed && isPaneCollapsible
-    });
 
     return (
       <div className="info-pane result-card">
@@ -326,14 +355,7 @@ const InfoPane = React.createClass({
             {this.renderCollapsePaneToggle()}
           </div>
 
-          <div className={contentClassName}>
-            <div className="entry-main">
-              {this.renderDescription()}
-              {this.renderFooter()}
-            </div>
-
-            {this.renderMetadata()}
-          </div>
+          {this.renderContent()}
         </div>
       </div>
     );

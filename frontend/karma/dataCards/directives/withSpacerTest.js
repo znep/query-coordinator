@@ -54,6 +54,7 @@ describe('withSpacer directive', function() {
   });
 
   it('should auto-change the spacer\'s dimensions to match the element\'s', function(done) {
+    this.timeout(4000);
     var scope = $rootScope.$new();
     var el = testHelpers.TestDom.compileAndAppend('<div with-spacer></div>', scope);
 

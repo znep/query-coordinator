@@ -20,7 +20,7 @@ class InfoPaneComponent extends Component {
   // Hide if there is no provenance or if the provenanceIcon is either 'all', 'official2', or 'community'
   hideProvenance() {
     return this.props.provenance === null ||
-      _.includes(['all', this.provenanceIcon()], FeatureFlags.value('disableAuthorityBadge'));
+      _.includes(['all', this.provenanceIcon()], FeatureFlags.value('disable_authority_badge'));
   }
 
   render() {

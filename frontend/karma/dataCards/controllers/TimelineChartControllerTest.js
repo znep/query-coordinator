@@ -202,7 +202,7 @@ describe('TimelineChartController', function() {
   });
 
   it('sets rescaleAxis to reflect the value of page.enableAxisRescaling', function() {
-    ServerConfig.override('enableDataLensAxisRescaling', false);
+    ServerConfig.override('enable_data_lens_axis_rescaling', false);
     makeDirective();
     expect($scope.rescaleAxis).to.equal(false);
     $scope.model.page.set('enableAxisRescaling', true);

@@ -106,7 +106,7 @@ export class FeaturedItemSelector extends Component {
 
     if (_.isNull(contentList[index])) {
       if (showPlaceholderDetails[index]) {
-        if (window.serverConfig.featureFlags.storiesEnabled) {
+        if (window.serverConfig.featureFlags.stories_enabled) {
           return ([
             this.renderAddButton(index, 'visualization', I18n.featured_content_modal.visualization),
             this.renderAddButton(index, 'story', I18n.featured_content_modal.story),

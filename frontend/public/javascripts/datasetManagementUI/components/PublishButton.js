@@ -81,7 +81,7 @@ export class PublishButton extends Component {
   render() {
     const { publishDataset, metadataSatisfied, dataSatisfied, publishedOrPublishing } = this.props;
     const readyToPublish = metadataSatisfied && dataSatisfied;
-    const modalName = window.serverConfig.featureFlags.usaidFeaturesEnabled
+    const modalName = window.serverConfig.featureFlags.usaid_features_enabled
       ? 'PublishConfirmationUSAID'
       : 'PublishConfirmation';
 
@@ -115,7 +115,7 @@ PublishButton.propTypes = {
 };
 
 function isDataSatisfied(state) {
-  if (window.serverConfig.featureFlags.usaidFeaturesEnabled) {
+  if (window.serverConfig.featureFlags.usaid_features_enabled) {
     return true;
   }
   let dataSatisfied;

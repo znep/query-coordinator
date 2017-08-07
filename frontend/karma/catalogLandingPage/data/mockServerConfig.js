@@ -5,9 +5,8 @@ export default {
   featureFlags: {
     csrfToken: 'supersecuretoken',
     defaultToCatalogLandingPage: true,
-    enableCatalogLandingPage: true,
+    enable_catalog_landing_page: true,
     enable_markdown_for_catalog_landing_page_description: false,
-    storiesEnabled: true,
     recaptchaKey: 'superdupersecurekey'
   },
   locale: 'en',

@@ -10,7 +10,7 @@ export class DatasetPreview extends Component {
   renderActionButton() {
     const { view, onClickGrid } = this.props;
 
-    const { enableVisualizationCanvas } = serverConfig.featureFlags;
+    const enableVisualizationCanvas = serverConfig.featureFlags.enable_visualization_canvas;
     const canCreateVisualizationCanvas = enableVisualizationCanvas &&
       isUserRoled() &&
       _.isString(view.bootstrapUrl);

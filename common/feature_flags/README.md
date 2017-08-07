@@ -11,7 +11,7 @@ This is expected to be a simple object containing keys for all defined feature f
 
 ```javascript
 import { FeatureFlags } from 'common/feature_flags';
-console.log('useAuth0 = ' + FeatureFlags.value('useAuth0'));
+console.log('useAuth0 = ' + FeatureFlags.value('use_auth0'));
 ```
 
 ## In tests
@@ -29,12 +29,12 @@ describe('FeatureFlags', function() {
   });
 
   it('should return the value for feature flag', function() {
-    expect(FeatureFlags.value('useAuth0')).to.equal(false);
+    expect(FeatureFlags.value('use_auth0')).to.equal(false);
   });
 
   it('allows values to be overridden in the test fixture', function() {
-    FeatureFlags.useTestFixture({ useAuth0: true });
-    expect(FeatureFlags.value('useAuth0')).to.equal(true);
+    FeatureFlags.useTestFixture({ use_auth0: true });
+    expect(FeatureFlags.value('use_auth0')).to.equal(true);
   });
 });
 ```
@@ -43,8 +43,8 @@ describe('FeatureFlags', function() {
 
 ```json
 featureFlags: {
-    "allowDataLensOwnerChange": true,
-    "auth0Social": false,
+    "allow_data_lens_owner_change": true,
+    "auth0_social": false,
    ... Removed for brevity. See common/FeatureFlags/index.js for more.
 }
 ```

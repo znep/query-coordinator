@@ -27,11 +27,11 @@ describe('components/Modals/PublishConfirmationUSAID', () => {
   });
 
   before(() => {
-    window.serverConfig.featureFlags.usaidFeaturesEnabled = true;
+    window.serverConfig.featureFlags.usaid_features_enabled = true;
   });
 
   after(() => {
-    window.serverConfig.featureFlags.usaidFeaturesEnabled = false;
+    window.serverConfig.featureFlags.usaid_features_enabled = false;
   });
 
   it('renders public and private options', () => {

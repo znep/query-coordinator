@@ -534,13 +534,13 @@ module.exports = function CardDataService(
 
     getDefaultFeatureExtent: function() {
       var defaultFeatureExtent;
-      var defaultFeatureExtentString = ServerConfig.get('featureMapDefaultExtent');
+      var defaultFeatureExtentString = ServerConfig.get('feature_map_default_extent');
       if (_.isPresent(defaultFeatureExtentString)) {
         try {
           defaultFeatureExtent = JSON.parse(_.trim(defaultFeatureExtentString, '\''));
         } catch (error) {
           $log.warn(
-            `Unable to parse featureMapDefaultExtent to JSON: ${defaultFeatureExtentString}
+            `Unable to parse feature_map_default_extent to JSON: ${defaultFeatureExtentString}
 ${error}`
           );
           return;
@@ -553,7 +553,7 @@ ${error}`
         var errors = JJV.validate('extent', defaultFeatureExtent);
         if (errors) {
           $log.warn(
-            `Unable to validate featureMapDefaultExtent to JSON: ${defaultFeatureExtentString}
+            `Unable to validate feature_map_default_extent to JSON: ${defaultFeatureExtentString}
 ${JSON.stringify(errors)}`
           );
           return;
@@ -663,7 +663,7 @@ ${JSON.stringify(errors)}`
 
       // If the configuration specifying a custom polygon for the regions exists, and the feature flag
       // to use it is turned on, fetch all regions contained completely in this region and return.
-      var useCustomBoundary = ServerConfig.get('useDataLensChoroplethCustomBoundary');
+      var useCustomBoundary = ServerConfig.get('use_data_lens_choropleth_custom_boundary');
       var customBoundary = ServerConfig.get('choroplethCustomBoundary');
       if (useCustomBoundary && customBoundary) {
         geoJsonUrl = $.baseUrl(`/resource/${shapefileId}.geojson`);

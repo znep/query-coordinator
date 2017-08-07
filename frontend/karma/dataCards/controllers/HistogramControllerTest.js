@@ -272,7 +272,7 @@ describe('HistogramController', function() {
   });
 
   it('sets rescaleAxis to be the value of page.enableAxisRescaling', function() {
-    ServerConfig.override('enableDataLensAxisRescaling', false);
+    ServerConfig.override('enable_data_lens_axis_rescaling', false);
     var histogram = createHistogram();
     expect(histogram.$scope.rescaleAxis).to.equal(false);
     histogram.$scope.model.page.set('enableAxisRescaling', true);

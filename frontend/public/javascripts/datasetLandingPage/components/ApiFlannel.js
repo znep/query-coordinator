@@ -115,7 +115,8 @@ export class ApiFlannel extends Component {
   renderEndpoint() {
     const { view, onClickCopy } = this.props;
     const { resourceType } = this.state;
-    const { enableDatasetLandingPageFoundryLinks } = serverConfig.featureFlags;
+    const enableDatasetLandingPageFoundryLinks =
+      serverConfig.featureFlags.enable_dataset_landing_page_foundry_links;
     const resourceTypes = this.getResourceTypes();
     let foundryLinks = null;
 

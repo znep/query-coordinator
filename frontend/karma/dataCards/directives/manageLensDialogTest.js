@@ -167,7 +167,7 @@ describe('manageLensDialog', function() {
   describe('when view moderation is enabled', function() {
     beforeEach(function() {
       ServerConfig.override('featureSet', {view_moderation: true});
-      ServerConfig.override('allowDataLensOwnerChange', false);
+      ServerConfig.override('allow_data_lens_owner_change', false);
     });
 
     it('should have three options if the page has no moderation status', function() {

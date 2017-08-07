@@ -100,7 +100,7 @@ describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
   });
 
   it('does not render a story button on placeholder when Perspectives is not enabled', function() {
-    window.serverConfig.featureFlags.storiesEnabled = false;
+    window.serverConfig.featureFlags.stories_enabled = false;
     var element = renderComponent(FeaturedItemSelector, getProps({
       contentList: [null, null, null]
     }));

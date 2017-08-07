@@ -28,7 +28,7 @@ module.exports = function CardDirective(
       var descriptionTruncatedContent;
       var descriptionElementsWithMaxSize;
 
-      $scope.debugDataLens = ServerConfig.get('debugDataLens');
+      $scope.debugDataLens = ServerConfig.get('debug_data_lens');
 
       $scope.descriptionCollapsed = true;
       $scope.$bindObservable('expanded', model$.observeOnLatest('expanded'));

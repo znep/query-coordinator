@@ -14,7 +14,7 @@ describe('ManageLensDialogController', function() {
 
   beforeEach(inject(function(_$controller_, _$window_, _ViewRights_, $rootScope, ServerConfig, Mockumentary) {
     // TODO: remove override when owner change is fully enabled and flag is removed
-    ServerConfig.override('allowDataLensOwnerChange', true);
+    ServerConfig.override('allow_data_lens_owner_change', true);
 
     $controller = _$controller_;
     $window = _$window_;

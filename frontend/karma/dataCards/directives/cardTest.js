@@ -161,8 +161,8 @@ describe('card directive', function() {
     var el;
     var cardModel;
 
-    it('should not be shown when debugDataLens feature flag is false', function() {
-      sinon.stub(ServerConfig, 'get').withArgs('debugDataLens').returns(false);
+    it('should not be shown when debug_data_lens feature flag is false', function() {
+      sinon.stub(ServerConfig, 'get').withArgs('debug_data_lens').returns(false);
       var directive = createDirective({
         columns: {}
       });
@@ -175,8 +175,8 @@ describe('card directive', function() {
       ServerConfig.get.restore();
     });
 
-    it('should be shown when debugDataLens feature flag is true', function() {
-      sinon.stub(ServerConfig, 'get').withArgs('debugDataLens').returns(true);
+    it('should be shown when debug_data_lens feature flag is true', function() {
+      sinon.stub(ServerConfig, 'get').withArgs('debug_data_lens').returns(true);
       var directive = createDirective({
         columns: {}
       });

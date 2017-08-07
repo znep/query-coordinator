@@ -29,10 +29,10 @@ describe('lensType', () => {
   afterEach(() => testHelpers.TestDom.clear());
 
   describe('when enable_data_lens_provenance feature flag is false', () => {
-    beforeEach(() => ServerConfig.override('enableDataLensProvenance', false));
+    beforeEach(() => ServerConfig.override('enable_data_lens_provenance', false));
 
     describe('when disable_authority_badge feature flag is "none"', () => {
-      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'none'));
+      beforeEach(() => ServerConfig.override('disable_authority_badge', 'none'));
 
       it('should render an official lens type regardless of the provenance value', () => {
         scope.page = Mockumentary.createPage({provenance: 'official'});
@@ -44,7 +44,7 @@ describe('lensType', () => {
     });
 
     describe('when disable_authority_badge feature flag is "all"', () => {
-      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'all'));
+      beforeEach(() => ServerConfig.override('disable_authority_badge', 'all'));
 
       it('should not render any lens type regardless of provenance value', () => {
         scope.page = Mockumentary.createPage({provenance: 'official'});
@@ -56,7 +56,7 @@ describe('lensType', () => {
     });
 
     describe('when disable_authority_badge feature flag is "official2"', () => {
-      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'official2'));
+      beforeEach(() => ServerConfig.override('disable_authority_badge', 'official2'));
 
       it('should not render any lens type regardless of provenance value', () => {
         scope.page = Mockumentary.createPage({provenance: 'official'});
@@ -68,7 +68,7 @@ describe('lensType', () => {
     });
 
     describe('when disable_authority_badge feature flag is "community"', () => {
-      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'community'));
+      beforeEach(() => ServerConfig.override('disable_authority_badge', 'community'));
 
       it('should render an official lens type regardless of provenance value', () => {
         scope.page = Mockumentary.createPage({provenance: 'official'});
@@ -81,10 +81,10 @@ describe('lensType', () => {
   });
 
   describe('when enable_data_lens_provenance feature flag is true', () => {
-    beforeEach(() => ServerConfig.override('enableDataLensProvenance', true));
+    beforeEach(() => ServerConfig.override('enable_data_lens_provenance', true));
 
     describe('when disable_authority_badge feature flag is "none"', () => {
-      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'none'));
+      beforeEach(() => ServerConfig.override('disable_authority_badge', 'none'));
 
       it('should render an official lens type when provenance is official', () => {
         scope.page = Mockumentary.createPage({provenance: 'official'});
@@ -107,7 +107,7 @@ describe('lensType', () => {
     });
 
     describe('when disable_authority_badge feature flag is "all"', () => {
-      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'all'));
+      beforeEach(() => ServerConfig.override('disable_authority_badge', 'all'));
 
       it('should not render a community lens type when provenance is community', () => {
         scope.page = Mockumentary.createPage({provenance: 'official'});
@@ -121,7 +121,7 @@ describe('lensType', () => {
     });
 
     describe('when disable_authority_badge feature flag is "official2"', () => {
-      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'official2'));
+      beforeEach(() => ServerConfig.override('disable_authority_badge', 'official2'));
 
       it('should render a community lens type when provenance is community', () => {
         scope.page = Mockumentary.createPage({provenance: 'community'});
@@ -135,7 +135,7 @@ describe('lensType', () => {
     });
 
     describe('when disable_authority_badge feature flag is "community"', () => {
-      beforeEach(() => ServerConfig.override('disableAuthorityBadge', 'community'));
+      beforeEach(() => ServerConfig.override('disable_authority_badge', 'community'));
 
       it('should not render a community lens type when provenance is community', () => {
         scope.page = Mockumentary.createPage({provenance: 'community'});

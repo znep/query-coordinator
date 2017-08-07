@@ -28,7 +28,7 @@ describe('Page model', function() {
     ServerConfig = $injector.get('ServerConfig');
 
     // Set the current page metadata verison to 1
-    ServerConfig.override('currentPageMetadataVersion', CURRENT_PAGE_METADATA_VERSION);
+    ServerConfig.override('current_page_metadata_version', CURRENT_PAGE_METADATA_VERSION);
 
     sampleVif = _.clone(sampleVifJson);
   }));
@@ -249,16 +249,16 @@ describe('Page model', function() {
   });
 
   describe('enableAxisRescaling', function() {
-    it('reflects the value of enableDataLensAxisRescaling', function() {
-      ServerConfig.override('enableDataLensAxisRescaling', null);
+    it('reflects the value of enable_data_lens_axis_rescaling', function() {
+      ServerConfig.override('enable_data_lens_axis_rescaling', null);
       var instance = Mockumentary.createPage();
       expect(instance.getCurrentValue('enableAxisRescaling')).to.equal(null);
 
-      ServerConfig.override('enableDataLensAxisRescaling', true);
+      ServerConfig.override('enable_data_lens_axis_rescaling', true);
       instance = Mockumentary.createPage();
       expect(instance.getCurrentValue('enableAxisRescaling')).to.equal(true);
 
-      ServerConfig.override('enableDataLensAxisRescaling', false);
+      ServerConfig.override('enable_data_lens_axis_rescaling', false);
       instance = Mockumentary.createPage();
       expect(instance.getCurrentValue('enableAxisRescaling')).to.equal(false);
     });

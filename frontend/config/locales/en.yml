@@ -2973,6 +2973,10 @@ en:
     percentage:
       format:
         format: "%n%"
+  open_performance:
+    measure:
+      reporting_period: Reporting Period
+    render_error: There was a problem rendering this page.
   plugins:
     daterangepicker:
       clear: Clear

@@ -91,6 +91,9 @@ class DatasetsController < ApplicationController
     # Storyteller case
     return if render_as_story
 
+    # OP Measures case
+    return if render_as_op_measure
+
     # We're going to some version of the grid/classic viz page
 
     # Mobile case
@@ -1331,6 +1334,18 @@ class DatasetsController < ApplicationController
   def render_as_story
     if @view.story?
       redirect_to story_url(@view)
+      true
+    else
+      false
+    end
+  end
+
+  def render_as_op_measure
+    if op_standalone_measures_enabled? && @view.op_measure?
+      render 'op_measure', :layout => 'styleguide'
+      true
+    elsif !op_standalone_measures_enabled? && @view.op_measure?
+      render_404
       true
     else
       false

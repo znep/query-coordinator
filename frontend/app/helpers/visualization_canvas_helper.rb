@@ -22,6 +22,7 @@ module VisualizationCanvasHelper
       :appToken => APP_CONFIG.app_token,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
+      :customConfigurations => visualization_canvas_configurations,
       :domain => CurrentDomain.cname,
       :environment => Rails.env,
       :usersnapProjectID => 'e4969b77-3ec6-4628-a022-6c12ba02cbea'
@@ -44,6 +45,11 @@ module VisualizationCanvasHelper
     }
 
     javascript_tag("var sessionData = #{json_escape(session_data.to_json)};")
+  end
+
+  def visualization_canvas_configurations
+    configs = CurrentDomain.configuration(:visualization_canvas).try(:properties) || {}
+    configs.deep_transform_keys { |key| key.to_s.camelize(first_letter = :lower) }
   end
 
 end

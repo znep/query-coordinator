@@ -1,11 +1,10 @@
 import _ from 'lodash';
-import { FeatureFlags } from 'common/feature_flags';
-
 import * as actions from '../../actions';
 import vifs from '../../vifs';
 import baseVifReducer from './base';
 import {
   forEachSeries,
+  isGroupingOrMultiSeries,
   setBooleanValueOrDefaultValue,
   setBooleanValueOrDeleteProperty,
   setStringValueOrDeleteProperty,
@@ -31,10 +30,6 @@ export default function columnChart(state, action) {
 
     case actions.SET_DIMENSION_GROUPING_COLUMN_NAME:
       setDimensionGroupingColumnName(state, action.dimensionGroupingColumnName);
-      break;
-
-    case actions.SET_STACKED:
-      setBooleanValueOrDeleteProperty(state, 'series[0].stacked', action.stacked);
       break;
 
     case actions.SET_CUSTOM_COLOR_PALETTE:
@@ -79,12 +74,16 @@ export default function columnChart(state, action) {
       break;
 
     case actions.SET_COLOR_PALETTE:
-      if (_.get(state, 'series[0].dataSource.dimension.grouping', null) !== null) {
-        _.set(state, 'series[0].color.palette', action.colorPalette);
+      if (isGroupingOrMultiSeries(state)) {
+        forEachSeries(state, series => {
+          setStringValueOrDeleteProperty(series, 'color.palette', action.colorPalette);
+        });
       }
       break;
 
+    case actions.APPEND_SERIES:
     case actions.RECEIVE_METADATA:
+    case actions.REMOVE_SERIES:
     case actions.SET_DATASET_UID:
     case actions.SET_DESCRIPTION:
     case actions.SET_DIMENSION:
@@ -99,6 +98,7 @@ export default function columnChart(state, action) {
     case actions.SET_PRIMARY_COLOR:
     case actions.SET_SECONDARY_COLOR:
     case actions.SET_SHOW_LEGEND:
+    case actions.SET_STACKED:
     case actions.SET_TITLE:
     case actions.SET_UNIT_ONE:
     case actions.SET_UNIT_OTHER:

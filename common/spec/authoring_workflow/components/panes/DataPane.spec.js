@@ -9,10 +9,6 @@ import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants
 function render(type) {
   var props = defaultProps({
     vifAuthoring: { authoring: { selectedVisualizationType: type } },
-    onSelectLimitNone: sinon.spy(),
-    onSelectLimitCount: sinon.spy(),
-    onChangeLimitCount: sinon.spy(),
-    onChangeShowOtherCategory: sinon.spy(),
     onSelectTimelinePrecision: sinon.spy(),
     onChangeTreatNullValuesAsZero: sinon.spy()
   });
@@ -50,7 +46,7 @@ describe('DataPane', function() {
   function rendersTimelinePrecision() {
     describe('rendering', function() {
       it('renders a dropdown with timeline precision options', function() {
-        expect(component.querySelector('#timeline-precision-selection')).to.exist;
+        assert.isNotNull(component.querySelector('#timeline-precision-selection'));
       });
     });
 
@@ -64,7 +60,7 @@ describe('DataPane', function() {
   function rendersTreatNullValuesAsZeroAndEmitsEvents() {
     describe('rendering', function() {
       it('renders a treat null values as zero checkbox', function() {
-        expect(component.querySelector('#treat-null-values-as-zero')).to.exist;
+        assert.isNotNull(component.querySelector('#treat-null-values-as-zero'));
       });
     });
 
@@ -82,7 +78,7 @@ describe('DataPane', function() {
           metadata: { error: true }
         }));
 
-        expect(component.querySelector('.metadata-error')).to.exist;
+        assert.isNotNull(component.querySelector('.metadata-error'));
       });
     });
 
@@ -92,79 +88,33 @@ describe('DataPane', function() {
           metadata: { isLoading: true }
         }));
 
-        expect(component.querySelector('.metadata-loading')).to.exist;
-      });
-    });
-
-    describe('limit and other category', () => {
-
-      ['barChart', 'columnChart', 'pieChart'].forEach((chartType) => {
-
-        describe(`when the current visualization type is "${chartType}"`, () => {
-
-          beforeEach(setUpVisualization(chartType));
-
-          it('renders a limit none radio button', function() {
-            expect(component.querySelector('#limit-none')).to.exist;
-
-            if (chartType === 'pieChart') {
-              expect(component.querySelector('#limit-none').hasAttribute('disabled')).to.equal(true);
-            }
-          });
-
-          it('renders class \'disabled\' on #limit-none-container when in pie chart', () => {
-            if (chartType === 'pieChart') {
-              assert.isTrue(component.querySelector('#limit-none-container').classList.contains('disabled'))
-            }
-          });
-
-          it('renders a limit count radio button', function() {
-            expect(component.querySelector('#limit-count')).to.exist;
-          });
-
-          it('renders a limit count number input field', function() {
-            expect(component.querySelector('#limit-count-value')).to.exist;
-          });
-
-          it('renders a show other category checkbox', function() {
-            expect(component.querySelector('#show-other-category')).to.exist;
-          });
-
-          emitsEvent('#limit-none', 'onSelectLimitNone');
-          emitsEvent('#limit-count', 'onSelectLimitCount');
-          emitsEvent('#limit-count-value', 'onChangeLimitCount');
-          emitsEvent('#show-other-category', 'onChangeShowOtherCategory');
-
-          emitsEvent('#limit-count-value', 'onChangeLimitCount', 'keyDown', {key: 'Enter'});
-
-        });
-      });
-
-      describe('when the current visualization type is not "barChart or pieChart or columnChart"', function() {
-
-        beforeEach(setUpVisualization(''));
-
-        it('renders a limit none radio button', function() {
-          expect(component.querySelector('#limit-none')).to.not.exist;
-        });
-
-        it('renders a limit count radio button', function() {
-          expect(component.querySelector('#limit-count')).to.not.exist;
-        });
-
-        it('renders a limit count number input field', function() {
-          expect(component.querySelector('#limit-count-value')).to.not.exist;
-        });
-
-        it('renders a show other category checkbox', function() {
-          expect(component.querySelector('#show-other-category')).to.not.exist;
-        });
+        assert.isNotNull(component.querySelector('.metadata-loading'));
       });
     });
   });
 
-  describe('timelineChart', function() {
+  describe('when the current visualization type is not "barChart or pieChart or columnChart"', function() {
 
+    beforeEach(setUpVisualization(''));
+
+    it('does not render a limit none radio button', function() {
+      assert.isNull(component.querySelector('#limit-none'));
+    });
+
+    it('does not render a limit count radio button', function() {
+      assert.isNull(component.querySelector('#limit-count'));
+    });
+
+    it('does not render a limit count number input field', function() {
+      assert.isNull(component.querySelector('#limit-count-value'));
+    });
+
+    it('does not render a show other category checkbox', function() {
+      assert.isNull(component.querySelector('#show-other-category'));
+    });
+  });
+
+  describe('timelineChart', function() {
     beforeEach(setUpVisualization('timelineChart'));
 
     rendersTimelinePrecision();

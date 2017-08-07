@@ -320,6 +320,34 @@
       }
     }
 
+    .units-description {
+      margin: 0 0 24px
+    }
+
+    .units-container {
+      margin-bottom: 24px;
+
+      p {
+        margin: 0;
+      }
+
+      .unit-container {
+        display: flex;
+        margin: 5px 0;
+
+        .block-label {
+          line-height: 40px;
+          margin: 0 5px 0 0;
+          width: 25%;
+        }
+
+        .text-input {
+          margin: 0;
+          width: 75%;
+        }
+      }
+    }
+
     .color-picker {
       width: 263px;
       z-index: auto;
@@ -466,6 +494,65 @@
       }
     }
 
+    .measure-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+
+      .measure-list-item {
+        display: flex;
+        margin: 0;
+        padding: 0;
+
+        .measure-delete-link-container {
+          display: table;
+          margin: 0 0 0 10px;
+
+          .measure-delete-link {
+            color: #5e5e5e;
+            cursor: pointer;
+            display: table-cell;
+            font-size: 25px;
+            height: 46px;
+            vertical-align: middle;
+          }
+        }
+
+        .measure-column-selector-dropdown-container {
+          width: 100%;
+        }
+
+        .measure-aggregation-selector-dropdown-container {
+          margin: 0 0 0 -1px;
+          min-width: 25%;
+          width: 25%;
+
+          .dropdown-options-list {
+            left: -1px;
+          }
+        }
+      }
+    }
+
+    .measure-add-measure-link-container {
+      margin: 5px 0;
+
+      a {
+        cursor: pointer;
+        text-decoration: none;
+
+        .socrata-icon-add {
+          margin: 0 5px;
+        }
+
+        &.disabled {
+          color: #777;
+          cursor: not-allowed;
+        }
+      }
+    }
+
     .measure-selector-container {
       display: flex;
 
@@ -489,9 +576,12 @@
       }
     }
 
-    #grouping-options-title {
-      display: block;
-      margin-top: 12px;
+    .dimension-grouping-column-name-selector-container {
+      padding: 0 0 20px;
+    }
+
+    .grouped-stacked-selector-container {
+      margin: 0 0 30px;
     }
 
     #grouping-display-grouped-container, #grouping-display-stacked-container {

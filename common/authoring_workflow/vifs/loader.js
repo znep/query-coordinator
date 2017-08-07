@@ -21,19 +21,20 @@ const paths = {
   dimensionLabelAreaSize: 'configuration.dimensionLabelAreaSize',
   limit: 'series[0].dataSource.limit',
   mapCenterAndZoom: 'configuration.mapCenterAndZoom',
-  measureAggregationFunction: 'series[0].dataSource.measure.aggregationFunction',
+  measureAggregationFunction: 'series[{0}].dataSource.measure.aggregationFunction',
   measureAxisMaxValue: 'configuration.measureAxisMaxValue',
   measureAxisMinValue: 'configuration.measureAxisMinValue',
-  measureColumnName: 'series[0].dataSource.measure.columnName',
+  measureColumnName: 'series[{0}].dataSource.measure.columnName',
   negativeColor: 'configuration.legend.negativeColor',
   orderBy: 'series[0].dataSource.orderBy',
   pointOpacity: 'configuration.pointOpacity',
   pointSize: 'configuration.pointSize',
   positiveColor: 'configuration.legend.positiveColor',
   precision: 'series[0].dataSource.precision',
-  primaryColor: 'series[0].color.primary',
+  primaryColor: 'series[{0}].color.primary',
   rowInspectorTitleColumnName: 'configuration.rowInspectorTitleColumnName',
-  secondaryColor: 'series[0].color.secondary',
+  secondaryColor: 'series[{0}].color.secondary',
+  series: 'series',
   shapefileGeometryLabel: 'configuration.shapefile.geometryLabel',
   shapefilePrimaryKey: 'configuration.shapefile.primaryKey',
   shapefileUid: 'configuration.shapefile.uid',
@@ -45,8 +46,8 @@ const paths = {
   stacked: 'series[0].stacked',
   title: 'title',
   treatNullValuesAsZero: 'configuration.treatNullValuesAsZero',
-  unitOne: 'series[0].unit.one',
-  unitOther: 'series[0].unit.other',
+  unitOne: 'series[{0}].unit.one',
+  unitOther: 'series[{0}].unit.other',
   viewSourceDataLink: 'configuration.viewSourceDataLink',
   visualizationType: 'series[0].type',
   zeroColor: 'configuration.legend.zeroColor'
@@ -67,6 +68,48 @@ const getVifPath = (vif) => (path) => _.get(vif, path, null);
 export const load = (dispatch, vif) => {
   const has = hasVifPath(vif);
   const get = getVifPath(vif);
+
+  if (has(paths.series)) {
+
+    const seriesCount = get(paths.series).length;
+
+    for (var i = 0; i < seriesCount; i++) {
+
+      if (i > 0) { // the first series already exists in the vif templates, no need to create it.
+        dispatch(actions.appendSeries());
+      }
+
+      const measureColumnNamePath = paths.measureColumnName.format(i);
+      if (has(measureColumnNamePath)) {
+        dispatch(actions.setMeasure(i, get(measureColumnNamePath)));
+      }
+
+      const measureAggregationFunctionPath = paths.measureAggregationFunction.format(i);
+      if (has(measureAggregationFunctionPath)) {
+        dispatch(actions.setMeasureAggregation(i, get(measureAggregationFunctionPath)));
+      }
+
+      const primaryColorPath = paths.primaryColor.format(i);
+      if (has(primaryColorPath)) {
+        dispatch(actions.setPrimaryColor(i, get(primaryColorPath)));
+      }
+
+      const secondaryColorPath = paths.secondaryColor.format(i);
+      if (has(secondaryColorPath)) {
+        dispatch(actions.setSecondaryColor(i, get(secondaryColorPath)));
+      }
+
+      const unitOnePath = paths.unitOne.format(i);
+      if (has(unitOnePath)) {
+        dispatch(actions.setUnitsOne(i, get(unitOnePath)));
+      }
+
+      const unitOtherPath = paths.unitOther.format(i);
+      if (has(unitOtherPath)) {
+        dispatch(actions.setUnitsOther(i, get(unitOtherPath)));
+      }
+    }
+  }
 
   if (has(paths.baseLayerOpacity)) {
     dispatch(actions.setBaseLayerOpacity(get(paths.baseLayerOpacity)));
@@ -103,7 +146,6 @@ export const load = (dispatch, vif) => {
     ));
   }
 
-  // This depends on dimensionGroupingColumnName being set
   if (has(paths.colorPalette)) {
     dispatch(actions.setColorPalette(get(paths.colorPalette)));
   }
@@ -138,20 +180,12 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setCenterAndZoom(get(paths.mapCenterAndZoom)));
   }
 
-  if (has(paths.measureAggregationFunction)) {
-    dispatch(actions.setMeasureAggregation(get(paths.measureAggregationFunction)));
-  }
-
   if (has(paths.measureAxisMaxValue)) {
     dispatch(actions.setMeasureAxisMaxValue(get(paths.measureAxisMaxValue)));
   }
 
   if (has(paths.measureAxisMinValue)) {
     dispatch(actions.setMeasureAxisMinValue(get(paths.measureAxisMinValue)));
-  }
-
-  if (has(paths.measureColumnName)) {
-    dispatch(actions.setMeasure(get(paths.measureColumnName)));
   }
 
   if (has(paths.negativeColor)) {
@@ -178,16 +212,8 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setPrecision(get(paths.precision)));
   }
 
-  if (has(paths.primaryColor)) {
-    dispatch(actions.setPrimaryColor(get(paths.primaryColor)));
-  }
-
   if (has(paths.rowInspectorTitleColumnName)) {
     dispatch(actions.setRowInspectorTitleColumnName(get(paths.rowInspectorTitleColumnName)));
-  }
-
-  if (has(paths.secondaryColor)) {
-    dispatch(actions.setSecondaryColor(get(paths.secondaryColor)));
   }
 
   if (has(paths.shapefileGeometryLabel)) {
@@ -228,14 +254,6 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.treatNullValuesAsZero)) {
     dispatch(actions.setTreatNullValuesAsZero(get(paths.treatNullValuesAsZero)));
-  }
-
-  if (has(paths.unitOne)) {
-    dispatch(actions.setUnitsOne(get(paths.unitOne)));
-  }
-
-  if (has(paths.unitOther)) {
-    dispatch(actions.setUnitsOther(get(paths.unitOther)));
   }
 
   if (has(paths.viewSourceDataLink)) {

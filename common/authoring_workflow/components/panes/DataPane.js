@@ -3,38 +3,37 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
 import I18n from 'common/i18n';
-
-import { isLoading, hasData, hasError } from '../../selectors/metadata';
+import { 
+  hasData, 
+  hasError,
+  isLoading
+} from '../../selectors/metadata';
 import {
-  getVisualizationType,
-  getLimitCount,
-  getShowOtherCategory,
   getPrecision,
   getTreatNullValuesAsZero,
+  getVisualizationType,
   isBarChart,
-  isPieChart,
   isColumnChart,
-  isTimelineChart
+  isMultiSeries,
+  isPieChart,
+  isTimelineChart,
 } from '../../selectors/vifAuthoring';
 import { TIMELINE_PRECISION } from '../../constants';
 import {
-  setLimitNoneAndShowOtherCategory,
-  setLimitCountAndShowOtherCategory,
-  setShowOtherCategory,
   setPrecision,
   setTreatNullValuesAsZero
 } from '../../actions';
 
 import Accordion from '../shared/Accordion';
 import AccordionPane from '../shared/AccordionPane';
-import DebouncedInput from '../shared/DebouncedInput';
 import BlockLabel from '../shared/BlockLabel';
-
+import DebouncedInput from '../shared/DebouncedInput';
+import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
 import DimensionSelector from '../DimensionSelector';
+import DisplayOptions from '../DisplayOptions';
 import MeasureSelector from '../MeasureSelector';
 import RegionSelector from '../RegionSelector';
 import SelectedDimensionIndicator from '../SelectedDimensionIndicator';
-import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
 
 export var DataPane = React.createClass({
   propTypes: {
@@ -66,146 +65,11 @@ export var DataPane = React.createClass({
     );
   },
 
-  renderLimitAndShowOtherCategory() {
-    const { vifAuthoring, onChangeLimitCount, onSelectLimitCount } = this.props;
-    const limitCount = getLimitCount(vifAuthoring);
-    const showOtherCategory = getShowOtherCategory(vifAuthoring);
-    const visualizationType = getVisualizationType(vifAuthoring);
-    const translationKeys = {
-      barChart: 'bar_chart_limit',
-      pieChart: 'pie_chart_limit',
-      columnChart: 'column_chart_limit'
-    };
-    const translationKey = translationKeys[visualizationType];
-    const limitCountDisabled = limitCount === null;
-
-    // 'Do not limit results' radio button
-    const limitNoneInputAttributes = {
-      id: 'limit-none',
-      type: 'radio',
-      name: 'limit-radio',
-      disabled: isPieChart(vifAuthoring),
-      onChange: this.props.onSelectLimitNone,
-      checked: limitCountDisabled
-    };
-
-    const limitNoneContainerAttributes = {
-      id: 'limit-none-container',
-      className: `${isPieChart(vifAuthoring) ? 'disabled': ''}`
-    }
-
-    const limitNoneContainer = (
-      <div {...limitNoneContainerAttributes}>
-        <input {...limitNoneInputAttributes} />
-        <label htmlFor="limit-none">
-          <span className="fake-radiobutton"/>
-        </label>
-        {I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.none`)}
-      </div>
-    );
-
-    // 'Limit results' radio button
-    const limitCountInputAttributes = {
-      id: 'limit-count',
-      type: 'radio',
-      name: 'limit-radio',
-      onChange: (event) => {
-        const limitCountValueInput = this.limitCountValueContainerRef.querySelector('#limit-count-value');
-        onSelectLimitCount({
-          limitCount: parseInt(limitCountValueInput.value, 10),
-          showOtherCategory: this.showOtherCategoryCheckbox.checked
-        });
-      },
-      checked: !limitCountDisabled
-    };
-
-    // 'Limit results to' number input and other category group checkbox
-    const limitCountValueContainerAttributes = {
-      id: 'limit-count-value-container',
-      ref: (ref) => this.limitCountValueContainerRef = ref,
-      className: `authoring-field${(limitCountDisabled) ? ' disabled' : ''}`
-    };
-
-    const limitCountValueInputAttributes = {
-      className: 'text-input',
-      id: 'limit-count-value',
-      type: 'number',
-      min: 1,
-      step: 1,
-      onChange: (event) => {
-        onChangeLimitCount({
-          limitCount: parseInt(event.target.value, 10),
-          showOtherCategory: this.showOtherCategoryCheckbox.checked
-        });
-      },
-      forceEnterKeyHandleChange: true,
-      value: _.isNumber(limitCount) ? limitCount : 10,
-      disabled: limitCountDisabled
-    };
-
-    const showOtherCategoryInputAttributes = {
-      id: 'show-other-category',
-      ref: (ref) => this.showOtherCategoryCheckbox = ref,
-      type: 'checkbox',
-      onChange: this.props.onChangeShowOtherCategory,
-      defaultChecked: showOtherCategory,
-      disabled: limitCountDisabled
-    };
-
-    const limitCountValueContainer = (
-      <div {...limitCountValueContainerAttributes}>
-        <DebouncedInput {...limitCountValueInputAttributes} />
-        <div id="show-other-category-container" className="checkbox">
-          <input {...showOtherCategoryInputAttributes}/>
-          <label className="inline-label" htmlFor="show-other-category">
-            <span className="fake-checkbox">
-              <span className="icon-checkmark3"/>
-            </span>
-            {I18n.t('shared.visualizations.panes.data.fields.show_other_category.title')}
-          </label>
-        </div>
-      </div>
-    );
-
-    const limitCountContainer = (
-      <div id="limit-count-container">
-        <input {...limitCountInputAttributes} />
-        <label htmlFor="limit-count">
-          <span className="fake-radiobutton"/>
-        </label>
-        {I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.count`)}
-        {limitCountValueContainer}
-      </div>
-    );
-
-    const descriptionForPieChart = isPieChart(vifAuthoring) ?
-      (
-        <p className="authoring-field-description">
-          <small>{I18n.t('shared.visualizations.panes.data.fields.pie_chart_limit.description')}</small>
-        </p>
-      ) : null;
-
-    return (
-      <AccordionPane title={I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.title`)}>
-        <span id="limit-subtitle">{I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.subtitle`)}</span>
-        <div className="authoring-field">
-          <div className="radiobutton">
-            {limitNoneContainer}
-            {limitCountContainer}
-          </div>
-        </div>
-        {descriptionForPieChart}
-      </AccordionPane>
-    );
-  },
-
   renderTimelinePrecision() {
     const { onSelectTimelinePrecision, timelinePrecision, vifAuthoring } = this.props;
     const defaultPrecision = getPrecision(vifAuthoring) || null;
     const options = _.map(timelinePrecision, (option) => {
-
       option.render = this.renderTimelinePrecisionOption;
-
       return option;
     });
 
@@ -250,54 +114,66 @@ export var DataPane = React.createClass({
     );
   },
 
-  renderTimelineOptions() {
-    const timelinePrecision = this.renderTimelinePrecision();
-    const treatNullValuesAsZero = this.renderTreatNullValuesAsZero();
+  renderGroupingOptions() {
+    const { vifAuthoring } = this.props;
+    const shouldRender = !isMultiSeries(vifAuthoring) &&
+      (isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring));
 
-    return (
-      <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.timeline_options')}>
-        {timelinePrecision}
-        {treatNullValuesAsZero}
-      </AccordionPane>
-    );
-  },
-
-  render() {
-    const { metadata, vifAuthoring } = this.props;
-
-    let metadataInfo;
-    let limitAndShowOtherCategory;
-
-    if (hasError(metadata)) {
-      metadataInfo = this.renderMetadataError();
-    } else if (isLoading(metadata)) {
-      metadataInfo = this.renderMetadataLoading();
-    } else {
-      const showLimitAndShowOtherCategory =
-        isBarChart(vifAuthoring) ||
-        isPieChart(vifAuthoring) ||
-        isColumnChart(vifAuthoring);
-
-      if (showLimitAndShowOtherCategory) {
-        limitAndShowOtherCategory = this.renderLimitAndShowOtherCategory();
-      }
-    }
-
-    const dimensionGroupingAvailable = (
-      isBarChart(vifAuthoring) || isColumnChart(vifAuthoring) || isTimelineChart(vifAuthoring)
-    );
-    const dimensionGroupingColumnNameTitle = I18n.t(
-      'shared.visualizations.panes.data.fields.dimension_grouping_column_name.title'
-    );
-    const dimensionGroupingColumnNameSelector = (dimensionGroupingAvailable) ?
-      (
-        <AccordionPane title={dimensionGroupingColumnNameTitle}>
+    return shouldRender ? (
+        <AccordionPane title={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.title')}>
           <DimensionGroupingColumnNameSelector />
         </AccordionPane>
       ) :
       null;
+  },
 
-    const timelineOptions = isTimelineChart(vifAuthoring) ? this.renderTimelineOptions() : null;
+  renderTimelineOptions() {
+    const { vifAuthoring } = this.props;
+    const timelinePrecision = this.renderTimelinePrecision();
+    const treatNullValuesAsZero = this.renderTreatNullValuesAsZero();
+    const shouldRender = isTimelineChart(vifAuthoring);
+
+    return shouldRender ? (
+        <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.timeline_options')}>
+          {timelinePrecision}
+          {treatNullValuesAsZero}
+        </AccordionPane>
+      ) :
+      null;
+  },
+
+  renderDisplayOptions() {
+    const { vifAuthoring } = this.props;
+    const shouldRender = isBarChart(vifAuthoring) || isPieChart(vifAuthoring) || isColumnChart(vifAuthoring);
+    const visualizationType = getVisualizationType(vifAuthoring);
+    const translationKeys = {
+      barChart: 'bar_chart_limit',
+      pieChart: 'pie_chart_limit',
+      columnChart: 'column_chart_limit'
+    };
+    const translationKey = translationKeys[visualizationType];
+
+    return shouldRender ? (
+        <AccordionPane title={I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.title`)}>
+          <DisplayOptions />
+        </AccordionPane>
+      ) : 
+      null;
+  },
+
+  render() {
+    const { metadata } = this.props;
+
+    let metadataInfo;
+    if (hasError(metadata)) {
+      metadataInfo = this.renderMetadataError();
+    } else if (isLoading(metadata)) {
+      metadataInfo = this.renderMetadataLoading();
+    }
+
+    const groupingOptions = this.renderGroupingOptions();
+    const timelineOptions = this.renderTimelineOptions();
+    const displayOptions = this.renderDisplayOptions();
 
     const sections = (
       <Accordion>
@@ -319,9 +195,9 @@ export var DataPane = React.createClass({
             <RegionSelector/>
           </div>
         </AccordionPane>
-        {dimensionGroupingColumnNameSelector}
+        {groupingOptions}
         {timelineOptions}
-        {limitAndShowOtherCategory}
+        {displayOptions}
       </Accordion>
     );
 
@@ -342,24 +218,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-
-    onSelectLimitNone: (event) => {
-      const limitNone = event.target.checked;
-      dispatch(setLimitNoneAndShowOtherCategory(limitNone, false));
-    },
-
-    onSelectLimitCount: (values) => {
-      dispatch(setLimitCountAndShowOtherCategory(values.limitCount, values.showOtherCategory));
-    },
-
-    onChangeLimitCount: (values) => {
-      dispatch(setLimitCountAndShowOtherCategory(values.limitCount, values.showOtherCategory));
-    },
-
-    onChangeShowOtherCategory: (event) => {
-      const showOtherCategory = event.target.checked;
-      dispatch(setShowOtherCategory(showOtherCategory));
-    },
 
     onSelectTimelinePrecision: (timelinePrecision) => {
       dispatch(setPrecision(timelinePrecision.value));

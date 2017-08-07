@@ -1,6 +1,10 @@
 import _ from 'lodash';
+import I18n from 'common/i18n';
 import {
+  appendSeries,
   forEachSeries,
+  removeSeries,
+  setBooleanValueOrDeleteProperty,
   setStringValueOrDefaultValue,
   setStringValueOrDeleteProperty,
   setNumericValueOrDeleteProperty,
@@ -46,20 +50,39 @@ export default function(state, action) {
       if (action.dimension && action.dimension === groupingDimension) {
         setDimensionGroupingColumnName(state, null);
       };
+      break;
 
+    case actions.APPEND_SERIES:
+      appendSeries(state);
+      break;
+
+    case actions.REMOVE_SERIES:
+      removeSeries(state, action.seriesIndex);
       break;
 
     case actions.SET_MEASURE:
-      forEachSeries(state, series => {
-        var aggregationFunction = series.dataSource.measure.aggregationFunction;
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
+        _.set(series, 'dataSource.measure.columnName', action.columnName);
 
-        series.dataSource.measure.columnName = action.measure;
-
-        if (_.isNull(action.measure)) {
-          series.dataSource.measure.aggregationFunction = 'count';
-        } else if (aggregationFunction === 'count') {
-          series.dataSource.measure.aggregationFunction = 'sum';
+        if (_.isNull(action.columnName)) {
+          _.set(series, 'dataSource.measure.aggregationFunction', 'count');
+        } else if (series.dataSource.measure.aggregationFunction === 'count') {
+          _.set(series, 'dataSource.measure.aggregationFunction', 'sum');
         }
+      }
+      break;
+
+    case actions.SET_MEASURE_AGGREGATION:
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
+        _.set(series, 'dataSource.measure.aggregationFunction', action.aggregationFunction);
+      }
+      break;
+
+    case actions.SET_STACKED:
+      forEachSeries(state, series => {
+        setBooleanValueOrDeleteProperty(series, 'stacked', action.stacked);
       });
       break;
 
@@ -80,33 +103,31 @@ export default function(state, action) {
       break;
 
     case actions.SET_UNIT_ONE:
-      forEachSeries(state, series => {
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
         _.set(series, 'unit.one', action.one);
-      });
+      }
       break;
 
     case actions.SET_UNIT_OTHER:
-      forEachSeries(state, series => {
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
         _.set(series, 'unit.other', action.other);
-      });
-      break;
-
-    case actions.SET_MEASURE_AGGREGATION:
-      forEachSeries(state, series => {
-        series.dataSource.measure.aggregationFunction = action.measureAggregation;
-      });
+      }
       break;
 
     case actions.SET_PRIMARY_COLOR:
-      forEachSeries(state, series => {
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
         setStringValueOrDeleteProperty(series, 'color.primary', action.primaryColor);
-      });
+      }
       break;
 
     case actions.SET_SECONDARY_COLOR:
-      forEachSeries(state, series => {
+      if (action.seriesIndex < state.series.length) {
+        const series = state.series[action.seriesIndex];
         setStringValueOrDeleteProperty(series, 'color.secondary', action.secondaryColor);
-      });
+      }
       break;
 
     case actions.SET_LABEL_TOP:
@@ -123,12 +144,6 @@ export default function(state, action) {
 
     case actions.SET_LABEL_RIGHT:
       setStringValueOrDeleteProperty(state, 'configuration.axisLabels.right', action.labelRight);
-      break;
-
-    case actions.SET_MEASURE_AGGREGATION:
-      forEachSeries(state, series => {
-        series.dataSource.measure.aggregationFunction = action.measureAggregation;
-      });
       break;
 
     case actions.SET_X_AXIS_SCALING_MODE:

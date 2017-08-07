@@ -234,14 +234,31 @@ function SvgBarChart($element, vif, options) {
     const dimensionValues = dataToRender.rows.map(
       (row) => row[dataTableDimensionIndex]
     );
-    // Grouped bar charts will have multiple columns. If one of those columns is null (which is
-    // a valid value for it to be if there are nulls in the dataset), we need to replace it with
-    // the no value label. If there are not multiple columns, that's an expected null that we
-    // should not overwrite with the no value label. "multiple columns" === greater than 2 because
-    // the first element is going to be 'dimension'.
-    const hasMultipleColumns = dataToRender.columns.length > 2;
-    measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
-      map((label) => hasMultipleColumns ? label || noValueLabel : label);
+
+    const columns = dataToRender.columns.slice(dataTableDimensionIndex + 1);
+
+    if (self.isMultiSeries()) {
+      measureLabels = columns.map((column, index) => {
+        const measureColumnName = _.get(self.getVif(), `series[${index}].dataSource.measure.columnName`);
+
+        if (_.isEmpty(measureColumnName)) {
+          return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
+        }
+
+        const measureColumnFormat = dataToRender.columnFormats[measureColumnName];
+        return _.isUndefined(measureColumnFormat) ? column : measureColumnFormat.name;
+      });
+    }
+    else {
+
+      // Grouped bar charts will have multiple columns. If one of those columns is null (which is
+      // a valid value for it to be if there are nulls in the dataset), we need to replace it with
+      // the no value label. If there are not multiple columns, that's an expected null that we
+      // should not overwrite with the no value label.
+
+      measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
+      map((label) => self.isGrouping() ? label || noValueLabel : label);
+    }
 
     let width;
     let height;
@@ -420,15 +437,10 @@ function SvgBarChart($element, vif, options) {
       if (!isStacked) {
 
         dimensionGroupSvgs.selectAll('rect.bar-underlay').
-          attr(
-            'y',
-            (d, measureIndex) => {
-              return d3GroupingYScale(measureLabels[measureIndex]);
-            }
-          ).
           attr('x', 0).
-          attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0)).
+          attr('y', (d, measureIndex) => d3GroupingYScale(measureIndex)).
           attr('width', width).
+          attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0)).
           attr('stroke', 'none').
           attr('fill', 'transparent').
           attr(
@@ -474,7 +486,7 @@ function SvgBarChart($element, vif, options) {
       } else {
 
         bars.
-          attr('y', (d, measureIndex) => d3GroupingYScale(measureLabels[measureIndex])).
+          attr('y', (d, measureIndex) => d3GroupingYScale(measureIndex)).
           attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0));
 
       }
@@ -558,7 +570,7 @@ function SvgBarChart($element, vif, options) {
               // peculiarities, we have eyeballed an additional padding value
               // to add to the result of the above calculation which causes the
               // labels to actually appear vertically-centered in a bar.
-              return d3GroupingYScale(measureLabels[measureIndex]) +
+              return d3GroupingYScale(measureIndex) +
                 (d3GroupingYScale.rangeBand() / 2) +
                 MEASURE_VALUE_TEXT_Y_PADDING;
             }
@@ -934,11 +946,14 @@ function SvgBarChart($element, vif, options) {
     d3DimensionYScale = generateYScale(
       dimensionValues,
       height,
-      self.isMultiSeries()
+      self.isGroupingOrMultiSeries()
     );
     // This scale is used for groupings of bars under a single dimension
     // category.
-    d3GroupingYScale = generateYGroupScale(measureLabels, d3DimensionYScale);
+    d3GroupingYScale = generateYGroupScale(
+      self.getOrdinalDomainFromMeasureLabels(measureLabels), 
+      d3DimensionYScale);
+
     d3YAxis = generateYAxis(d3DimensionYScale, dimensionLabelsWidth);
 
     /**
@@ -1235,7 +1250,7 @@ function SvgBarChart($element, vif, options) {
               const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
               showBarHighlight(siblingBar);
-              showBarFlyout(siblingBar, color, label, value);
+              showBarFlyout(siblingBar, color, label, value, measureIndex);
             }
           }
         ).
@@ -1278,7 +1293,7 @@ function SvgBarChart($element, vif, options) {
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showBarHighlight(this);
-            showBarFlyout(this, color, label, value);
+            showBarFlyout(this, color, label, value, measureIndex);
           }
         }
       ).
@@ -1324,7 +1339,7 @@ function SvgBarChart($element, vif, options) {
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showBarHighlight(siblingBar);
-            showBarFlyout(siblingBar, color, label, value);
+            showBarFlyout(siblingBar, color, label, value, measureIndex);
           }
         }
       ).
@@ -1736,8 +1751,9 @@ function SvgBarChart($element, vif, options) {
     );
   }
 
-  function showBarFlyout(barElement, color, label, value) {
+  function showBarFlyout(barElement, color, label, value, measureIndex) {
     const title = barElement.getAttribute('data-dimension-value') || noValueLabel;
+    const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
 
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
@@ -1757,7 +1773,6 @@ function SvgBarChart($element, vif, options) {
     if (value === null) {
       valueString = noValueLabel;
     } else {
-      const measureIndex = self.getSeriesIndexByLabel(label);
       const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
       valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);

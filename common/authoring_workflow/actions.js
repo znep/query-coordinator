@@ -151,19 +151,36 @@ export function setDimension(dimension) {
   };
 }
 
+export const APPEND_SERIES = 'APPEND_SERIES';
+export function appendSeries() {
+  return {
+    type: APPEND_SERIES
+  };
+}
+
+export const REMOVE_SERIES = 'REMOVE_SERIES';
+export function removeSeries(seriesIndex) {
+  return {
+    type: REMOVE_SERIES,
+    seriesIndex
+  };
+}
+
 export const SET_MEASURE = 'SET_MEASURE';
-export function setMeasure(measure) {
+export function setMeasure(seriesIndex, columnName) {
   return {
     type: SET_MEASURE,
-    measure
+    seriesIndex,
+    columnName
   };
 }
 
 export const SET_MEASURE_AGGREGATION = 'SET_MEASURE_AGGREGATION';
-export function setMeasureAggregation(measureAggregation) {
+export function setMeasureAggregation(seriesIndex, aggregationFunction) {
   return {
     type: SET_MEASURE_AGGREGATION,
-    measureAggregation
+    seriesIndex,
+    aggregationFunction
   };
 }
 
@@ -365,17 +382,19 @@ export function setViewSourceDataLink(viewSourceDataLink) {
 }
 
 export const SET_PRIMARY_COLOR = 'SET_PRIMARY_COLOR';
-export function setPrimaryColor(primaryColor) {
+export function setPrimaryColor(seriesIndex, primaryColor) {
   return {
     type: SET_PRIMARY_COLOR,
+    seriesIndex,
     primaryColor
   };
 }
 
 export const SET_SECONDARY_COLOR = 'SET_SECONDARY_COLOR';
-export function setSecondaryColor(secondaryColor) {
+export function setSecondaryColor(seriesIndex, secondaryColor) {
   return {
     type: SET_SECONDARY_COLOR,
+    seriesIndex,
     secondaryColor
   };
 }
@@ -574,17 +593,19 @@ export function setMeasureAxisMaxValue(measureAxisMaxValue) {
 }
 
 export const SET_UNIT_ONE = 'SET_UNIT_ONE';
-export function setUnitsOne(one) {
+export function setUnitsOne(seriesIndex, one) {
   return {
     type: SET_UNIT_ONE,
+    seriesIndex,
     one
   };
 }
 
 export const SET_UNIT_OTHER = 'SET_UNIT_OTHER';
-export function setUnitsOther(other) {
+export function setUnitsOther(seriesIndex, other) {
   return {
     type: SET_UNIT_OTHER,
+    seriesIndex,
     other
   };
 }

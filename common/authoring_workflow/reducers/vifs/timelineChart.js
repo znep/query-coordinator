@@ -4,8 +4,10 @@ import vifs from '../../vifs';
 import baseVifReducer from './base';
 import {
   forEachSeries,
+  isGroupingOrMultiSeries,
   setBooleanValueOrDeleteProperty,
-  setDimensionGroupingColumnName
+  setDimensionGroupingColumnName,
+  setStringValueOrDeleteProperty
 } from '../../helpers';
 
 import * as actions from '../../actions';
@@ -53,12 +55,16 @@ export default function timelineChart(state, action) {
       break;
 
     case actions.SET_COLOR_PALETTE:
-      if (_.get(state, 'series[0].dataSource.dimension.grouping', null) !== null) {
-        _.set(state, 'series[0].color.palette', action.colorPalette);
+      if (isGroupingOrMultiSeries(state)) {
+        forEachSeries(state, series => {
+          setStringValueOrDeleteProperty(series, 'color.palette', action.colorPalette);
+        });
       }
       break;
 
+    case actions.APPEND_SERIES:
     case actions.RECEIVE_METADATA:
+    case actions.REMOVE_SERIES:
     case actions.SET_DATASET_UID:
     case actions.SET_DESCRIPTION:
     case actions.SET_DIMENSION:

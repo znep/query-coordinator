@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
-import defaultVifs from '../vifs';
 import { COLOR_PALETTES } from '../constants';
 
 export const getVifs = state => _.get(state, 'vifs', {})
@@ -57,6 +56,11 @@ export const getAnyMeasure = createSelector(
   }
 );
 
+export const getSeries = createSelector(
+  getCurrentVif,
+  vif =>  _.get(vif, 'series', [])
+);
+
 export const getTitle = createSelector(
   getCurrentVif,
   vif => _.get(vif, 'title', null)
@@ -100,7 +104,7 @@ export const getColorScale = createSelector(
 
 export const getColorPalette = createSelector(
   getCurrentVif,
-  vif => _.get(vif, 'series[0].color.palette', _.first(COLOR_PALETTES).value)
+  vif => _.get(vif, 'series[0].color.palette', null)
 );
 
 export const getBaseLayer = createSelector(
@@ -193,11 +197,6 @@ export const getDimensionGroupingColumnName = createSelector(
   vif => _.get(vif, 'series[0].dataSource.dimension.grouping.columnName', null)
 );
 
-export const getStacked = createSelector(
-  getCurrentVif,
-  vif => _.get(vif, 'series[0].stacked', false)
-);
-
 export const getColorPaletteGroupingColumnName = createSelector(
   getCurrentVif,
   getSelectedVisualizationType,
@@ -265,6 +264,25 @@ export const hasVisualizationDimension = createSelector(
   dimension => dimension !== null
 );
 
+export const isMultiSeries = createSelector(
+  getSeries,
+  series => series.length > 1
+);
+
+export const isGroupingOrMultiSeries = createSelector(
+  getDimensionGroupingColumnName,
+  isMultiSeries,
+  (dimensionGroupingColumnName, isMultiSeries) => {
+    return _.isString(dimensionGroupingColumnName) || isMultiSeries;
+  }
+);
+
+export const isStacked = createSelector(
+  getCurrentVif,
+  vif => _.get(vif, 'series[0].stacked', false)
+
+);
+
 export const isRegionMap = createSelector(
   getVisualizationType,
   type => type === 'regionMap'
@@ -300,14 +318,6 @@ export const isBarChart = createSelector(
   type => type === 'barChart'
 );
 
-export const isGroupedBarChart = createSelector(
-  isBarChart,
-  getDimensionGroupingColumnName,
-  (isBarChart, dimensionGroupingColumnName) => {
-    return isBarChart && _.isString(dimensionGroupingColumnName);
-  }
-);
-
 export const isValidBarChartVif = createSelector(
   getDimension,
   getMeasure,
@@ -325,14 +335,6 @@ export const isValidBarChartVif = createSelector(
 export const isColumnChart = createSelector(
   getVisualizationType,
   type => type === 'columnChart'
-);
-
-export const isGroupedColumnChart = createSelector(
-  isColumnChart,
-  getDimensionGroupingColumnName,
-  (isColumnChart, dimensionGroupingColumnName) => {
-    return isColumnChart && _.isString(dimensionGroupingColumnName);
-  }
 );
 
 export const isValidColumnChartVif = createSelector(
@@ -389,14 +391,6 @@ export const isValidFeatureMapVif = createSelector(
 export const isTimelineChart = createSelector(
   getVisualizationType,
   type => type === 'timelineChart'
-);
-
-export const isGroupedTimelineChart = createSelector(
-  isTimelineChart,
-  getDimensionGroupingColumnName,
-  (isTimelineChart, dimensionGroupingColumnName) => {
-    return isTimelineChart && _.isString(dimensionGroupingColumnName);
-  }
 );
 
 export const isValidTimelineChartVif = createSelector(

@@ -88,7 +88,11 @@ export function getSoqlVifValidator(vif) {
 //   as a rejection.
 export function soqlVifValidator(vif, datasetMetadataPerSeries) {
   const errorMessages = [];
-  const addError = (errorMessage) => errorMessages.push(errorMessage);
+  const addError = (errorMessage) => {
+    if (!errorMessages.includes(errorMessage)) {
+      errorMessages.push(errorMessage);
+    }
+  };
   const allSeries = _.get(vif, 'series', []);
   const getColumn = (columnName, seriesIndex) => {
 

@@ -9,7 +9,6 @@ import { VISUALIZATION_TYPES } from '../constants';
 import { setVisualizationType, setColorPalette, setDimension } from '../actions';
 import {
   getAnyDimension,
-  getColorPalette,
   getSelectedVisualizationType,
   hasCustomColorPalette,
   isRegionMap,

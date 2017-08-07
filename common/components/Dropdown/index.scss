@@ -78,6 +78,7 @@
   .dropdown-focused & {
     border-color: $alternate-3-light;
     outline: solid 2px $alternate-3;
+    z-index: 51;
   }
 
   .dropdown-disabled & {

@@ -43,6 +43,7 @@
 
       <% if current_user_can_see_admin_link? && new_admin_ui_enabled? %>
         <div class="site-chrome-admin-settings"
+          tabIndex="0"
           role="button"
           aria-haspopup="true"
           aria-label="<%= t('shared.site_chrome.header.settings_menu.title') %>">

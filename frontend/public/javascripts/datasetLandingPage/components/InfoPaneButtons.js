@@ -47,8 +47,8 @@ export default class InfoPaneButtons extends Component {
     const { view, onClickVisualizeAndFilter } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
-    const { enableVisualizationCanvas } = serverConfig.featureFlags;
-    const canCreateVisualizationCanvas = enableVisualizationCanvas &&
+    const vizCanvasEnabled = window.serverConfig.featureFlags.enable_visualization_canvas;
+    const canCreateVisualizationCanvas = vizCanvasEnabled &&
       isUserRoled() &&
       _.isString(view.bootstrapUrl);
 
@@ -115,9 +115,10 @@ export default class InfoPaneButtons extends Component {
   }
 
   renderExternalIntegrations() {
-    const { enableExternalDataIntegrations } = serverConfig.featureFlags;
+    const externalDataIntegrationsEnabled =
+      window.serverConfig.featureFlags.enable_external_data_integrations;
 
-    if (!enableExternalDataIntegrations) {
+    if (!externalDataIntegrationsEnabled) {
       return [];
     }
 

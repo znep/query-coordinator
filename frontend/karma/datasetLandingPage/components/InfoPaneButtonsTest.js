@@ -20,12 +20,12 @@ describe('components/InfoPaneButtons', () => {
     describe('visualize link', () => {
       beforeEach(() =>  {
         window.serverConfig.currentUser = { roleName: 'anything' };
-        window.serverConfig.featureFlags.enableVisualizationCanvas = true;
+        window.serverConfig.featureFlags.enable_visualization_canvas = true;
       });
 
       afterEach(() => {
         window.serverConfig.currentUser = null;
-        window.serverConfig.featureFlags.enableVisualizationCanvas = false;
+        window.serverConfig.featureFlags.enable_visualization_canvas = false;
       });
 
       it('exists if the bootstrapUrl is defined', () => {
@@ -44,7 +44,7 @@ describe('components/InfoPaneButtons', () => {
       });
 
       it('does not exist if the feature flag is disabled', () => {
-        window.serverConfig.featureFlags.enableVisualizationCanvas = false;
+        window.serverConfig.featureFlags.enable_visualization_canvas = false;
         const element = renderComponent(InfoPaneButtons, getProps());
         assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
@@ -84,21 +84,21 @@ describe('components/InfoPaneButtons', () => {
     describe('external integrations section', () => {
       describe('carto modal button', () => {
         it('not exists if no carto url present', () => {
-          window.serverConfig.featureFlags.enableExternalDataIntegrations = true;
+          window.serverConfig.featureFlags.enable_external_data_integrations = true;
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.isNull(element.querySelector('a[data-modal=carto-modal]'));
         });
 
         it('not exists if disabled by feature flag', () => {
-          window.serverConfig.featureFlags.enableExternalDataIntegrations = false;
+          window.serverConfig.featureFlags.enable_external_data_integrations = false;
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.isNull(element.querySelector('a[data-modal=carto-modal]'));
         });
 
         it('exists if a carto url present', () => {
-          window.serverConfig.featureFlags.enableExternalDataIntegrations = true;
+          window.serverConfig.featureFlags.enable_external_data_integrations = true;
 
           const element = renderComponent(InfoPaneButtons, getProps({
             view: {
@@ -111,14 +111,14 @@ describe('components/InfoPaneButtons', () => {
 
       describe('plot.ly modal button', () => {
         it('not exists if disabled by feature flag', () => {
-          window.serverConfig.featureFlags.enableExternalDataIntegrations = false;
+          window.serverConfig.featureFlags.enable_external_data_integrations = false;
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.isNull(element.querySelector('a[data-modal=plotly-modal]'));
         });
 
         it('includes a plot.ly modal button', () => {
-          window.serverConfig.featureFlags.enableExternalDataIntegrations = true;
+          window.serverConfig.featureFlags.enable_external_data_integrations = true;
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.ok(element.querySelector('a[data-modal=plotly-modal]'));
@@ -127,14 +127,14 @@ describe('components/InfoPaneButtons', () => {
 
       describe('more button', () => {
         it('not exists if disabled by feature flag', () => {
-          window.serverConfig.featureFlags.enableExternalDataIntegrations = false;
+          window.serverConfig.featureFlags.enable_external_data_integrations = false;
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.isNull(element.querySelector('.explore-dropdown .more-options-button'));
         });
 
         it('should include a more button', () => {
-          window.serverConfig.featureFlags.enableExternalDataIntegrations = true;
+          window.serverConfig.featureFlags.enable_external_data_integrations = true;
 
           const element = renderComponent(InfoPaneButtons, getProps());
           assert.ok(element.querySelector('.explore-dropdown .more-options-button'));

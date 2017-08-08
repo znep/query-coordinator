@@ -98,19 +98,19 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
     end
 
     describe 'when updating the story\'s permissions' do
-      let(:admin) { false }
+      let(:edit_others_stories) { false }
       let(:owner) { false }
       let(:action) { :update }
 
       before do
         permissions_updater = instance_double('CorePermissionsUpdater', :update_permissions => true)
         allow(CorePermissionsUpdater).to receive(:new).and_return(permissions_updater)
-        allow_any_instance_of(ApplicationController).to receive(:admin?).and_return(admin)
+        allow_any_instance_of(ApplicationController).to receive(:has_domain_right?).with('edit_others_stories').and_return(edit_others_stories)
         allow_any_instance_of(ApplicationController).to receive(:owner?).and_return(owner)
       end
 
-      describe 'when user is admin' do
-        let(:admin) { true }
+      describe 'when user has edit_others_stories right' do
+        let(:edit_others_stories) { true }
 
         it 'does not 403' do
           get_request

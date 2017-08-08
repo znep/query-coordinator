@@ -20,12 +20,12 @@ export default function PermissionStore() {
   const state = Environment.CURRENT_USER_STORY_AUTHORIZATION;
 
   this.canPublishCurrentStory = () => {
-    const { domainRights, domainRole, superAdmin, viewRole } = state;
+    const { domainRights, viewRole } = state;
 
-    const isAdminLike = superAdmin === true || domainRole === 'administrator';
+    const canEditOthersStories = _.includes(domainRights, 'edit_others_stories');
     const isOwner = viewRole === 'owner';
     const isAuthorizedByRight = _.includes(domainRights, 'manage_story_public_version');
 
-    return isAdminLike || (isOwner && isAuthorizedByRight);
+    return canEditOthersStories || (isOwner && isAuthorizedByRight);
   };
 }

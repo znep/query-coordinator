@@ -11,19 +11,18 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
   let(:presentation_nav_next) { '.btn-presentation-next' }
   let(:valid_showing_block_selector) { '.block[data-page-index]:not(.hidden)' }
   let(:blacklisted_hidden_block_selector) { '.block:not([data-page-index]).hidden' }
-  let(:domain_role) { '' }
+  let(:domain_rights) { [] }
   let(:user) {
     {
       'id' => 'tugg-xxxx',
       'createdAt' => 1425577015,
       'displayName' => 'testuser',
-      'domainRole' => domain_role,
-      'domainRights' => []
+      'domainRights' => domain_rights
     }
   }
   let(:user_story_authorization) {
     {
-      'domainRole' => domain_role
+      'domainRights' => domain_rights
     }
   }
 
@@ -138,7 +137,7 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
 
   context 'using /' do
     describe 'as a user that can edit' do
-      let(:domain_role) { 'administrator' }
+      let(:domain_rights) { ['edit_others_stories'] }
 
       describe 'edit mode button' do
         it 'has an edit mode button' do

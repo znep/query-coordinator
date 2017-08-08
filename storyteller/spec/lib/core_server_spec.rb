@@ -74,9 +74,8 @@ describe CoreServer do
     let(:grants) { [] }
     let(:view_rights) { [] }
     let(:user_id) { 'here-iams' }
-    let(:user_role) { 'user_role' }
     let(:user_rights) { ['user_rights'] }
-    let(:user) { { 'id' => user_id, 'roleName' => user_role, 'rights' => user_rights } }
+    let(:user) { { 'id' => user_id, 'rights' => user_rights } }
     let(:view) { { 'owner' => { 'id' => 'here-iams' }, 'grants' => grants, 'rights' => view_rights} }
     let(:subject) { CoreServer.current_user_story_authorization }
 
@@ -99,7 +98,7 @@ describe CoreServer do
         end
       end
       describe 'if the user has the admin flag' do
-        let(:user) { { 'id' => user_id, 'roleName' => user_role, 'rights' => user_rights, 'flags' => [ 'admin' ] } }
+        let(:user) { { 'id' => user_id, 'rights' => user_rights, 'flags' => [ 'admin' ] } }
 
         it 'returns an object with superAdmin = true' do
           expect(subject['superAdmin']).to eql(true)
@@ -109,14 +108,12 @@ describe CoreServer do
 
     describe 'when a user without a role or rights' do
       let(:user_id) { 'note-this' }
-      let(:user_role) { nil }
       let(:user_rights) { nil }
 
       it "returns role 'unknown' and an empty list of rights" do
         expect(subject).to eql({
           'viewRole' => 'unknown',
           'viewRights' => [],
-          'domainRole' => 'unknown',
           'domainRights' => []
         })
       end
@@ -127,7 +124,6 @@ describe CoreServer do
         expect(subject).to eql({
           'viewRole' => 'owner',
           'viewRights' => view_rights,
-          'domainRole' => user_role,
           'domainRights' => user_rights,
           'primary' => true
         })
@@ -142,21 +138,18 @@ describe CoreServer do
         expect(subject).to eql({
           'viewRole' => 'contributor',
           'viewRights' => view_rights,
-          'domainRole' => user_role,
           'domainRights' => user_rights
         })
       end
     end
 
     describe 'when unknown (usually super admin)' do
-      let(:user_role) { nil }
       let(:user_id) { 'supe-radm' }
 
       it 'returns role, rights' do
         expect(subject).to eql({
           'viewRole' => 'unknown',
           'viewRights' => view_rights,
-          'domainRole' => 'unknown',
           'domainRights' => user_rights
         })
       end

@@ -13,7 +13,6 @@ div.container {
 
   .modal-overlay {
     position: static;
-    height: 100%;
     flex-grow: 1;
     align-items: stretch;
   }
@@ -78,9 +77,4 @@ div.container {
   .error {
     display: none;
   }
-}
-
-main {
-  display: flex;
-  flex-grow: 1;
 }

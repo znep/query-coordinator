@@ -1224,8 +1224,6 @@ module ApplicationHelper
   end
 
   def render_admin_header?
-    return false unless enable_new_admin_ui?
-
     %w(
       activity_feed
       administration
@@ -1240,10 +1238,6 @@ module ApplicationHelper
 
   def admin_page_with_left_nav_class
     !render_admin_header? ? 'withLeftNavigation' : nil
-  end
-
-  def enable_new_admin_ui?
-    feature_flag?('enable_new_admin_ui', request)
   end
 
   def asset_inventory_view_model

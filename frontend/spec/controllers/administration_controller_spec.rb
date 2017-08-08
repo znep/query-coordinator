@@ -33,10 +33,8 @@ describe AdministrationController do
       expect(response).to have_http_status(:ok)
     end
 
-    context 'when enable_new_admin_ui is enabled' do
+    context 'showing admin index' do
       before do
-        rspec_stub_feature_flags_with(:enable_new_admin_ui => true)
-        allow(subject).to receive(:enable_new_admin_ui?).and_return(true)
         allow(CuratedRegion).to receive(:all).and_return([])
         allow(User).to receive(:roles_list).and_return([])
       end
@@ -63,25 +61,6 @@ describe AdministrationController do
         end
       end
     end
-
-    context 'when enable_new_admin_ui is disabled' do
-      before do
-        rspec_stub_feature_flags_with(:enable_new_admin_ui => false)
-        allow(subject).to receive(:enable_new_admin_ui?).and_return(false)
-        allow(subject).to receive(:check_auth_level).with(UserRights::MANAGE_USERS).and_return(true)
-        allow(User).to receive(:roles_list).and_return([])
-      end
-
-      %i(index users analytics).each do |page|
-        it "renders the superadmin section on the '#{page}' page" do
-          get page
-          expect(response).to have_http_status(:ok)
-          assert_select('.super-admin-menu', :count => 0)
-          assert_select('.leftNavBox.adminNavBox')
-          assert_select('.leftNavBox.internalPanel', :count => 0)
-        end
-      end
-    end
   end
 
   describe 'when logged in as admin user', :verify_stubs => false do
@@ -102,7 +81,6 @@ describe AdministrationController do
       it 'does not render the internal panel in the superadmin section' do
         get :index
         assert_select('.super-admin-menu', :count => 0)
-        assert_select('.leftNavBox.adminNavBox')
         assert_select('.leftNavBox.adminNavBox .internal', :count => 0)
       end
     end

@@ -131,8 +131,6 @@ administration-activity-feed:
 - ui.daterangepicker
 administration-index-screen:
 - screen-admin-index
-administration-new-index-screen:
-- screen-admin-new-index
 administration-analytics-screen:
 - screen-metrics
 administration-georegions:

@@ -147,9 +147,9 @@ describe('SoqlVifValidator', function() {
       };
       const datasetMetadata = {
         columns: [
-          { fieldName: 'number', dataTypeName: 'number' },
-          { fieldName: 'point', dataTypeName: 'point' },
-          { fieldName: 'date', dataTypeName: 'calendar_date' }
+          { fieldName: 'number', renderTypeName: 'number' },
+          { fieldName: 'point', renderTypeName: 'point' },
+          { fieldName: 'date', renderTypeName: 'calendar_date' }
         ]
       };
 
@@ -183,7 +183,7 @@ describe('SoqlVifValidator', function() {
         ]
       };
       const datasetMetadata = { columns: [
-        { fieldName: 'number', dataTypeName: 'number' }
+        { fieldName: 'number', renderTypeName: 'number' }
       ]};
 
       validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
@@ -213,7 +213,7 @@ describe('SoqlVifValidator', function() {
         ]
       };
       const datasetMetadata = { columns: [
-        { fieldName: 'money', dataTypeName: 'money' }
+        { fieldName: 'money', renderTypeName: 'money' }
       ]};
 
       validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
@@ -242,7 +242,7 @@ describe('SoqlVifValidator', function() {
         ]
       };
       const datasetMetadata = { columns: [
-        { fieldName: 'point', dataTypeName: 'point' }
+        { fieldName: 'point', renderTypeName: 'point' }
       ]};
 
       validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
@@ -272,7 +272,7 @@ describe('SoqlVifValidator', function() {
         ]
       };
       const datasetMetadata = { columns: [
-        { fieldName: 'date', dataTypeName: 'calendar_date' }
+        { fieldName: 'date', renderTypeName: 'calendar_date' }
       ]};
 
       validatePasses('requireAtLeastOneSeries', vif, [ datasetMetadata ]);
@@ -302,7 +302,7 @@ describe('SoqlVifValidator', function() {
         ]
       };
       const datasetMetadata = { columns: [
-        { fieldName: 'date', dataTypeName: 'calendar_date' }
+        { fieldName: 'date', renderTypeName: 'calendar_date' }
       ]};
 
       validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
@@ -336,8 +336,8 @@ describe('SoqlVifValidator', function() {
         ]
       };
       const datasetMetadata = { columns: [
-        { fieldName: 'number', dataTypeName: 'number' },
-        { fieldName: 'number2', dataTypeName: 'number' }
+        { fieldName: 'number', renderTypeName: 'number' },
+        { fieldName: 'number2', renderTypeName: 'number' }
       ]};
 
       validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata, datasetMetadata ]);
@@ -361,7 +361,7 @@ describe('SoqlVifValidator', function() {
         ]
       };
       const datasetMetadata = { columns: [
-        { fieldName: 'number', dataTypeName: 'number' }
+        { fieldName: 'number', renderTypeName: 'number' }
       ]};
 
       validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
@@ -385,8 +385,8 @@ describe('SoqlVifValidator', function() {
         ]
       };
       const datasetMetadata = { columns: [
-        { fieldName: 'number', dataTypeName: 'number' },
-        { fieldName: 'number2', dataTypeName: 'number' }
+        { fieldName: 'number', renderTypeName: 'number' },
+        { fieldName: 'number2', renderTypeName: 'number' }
       ]};
 
       validateFails('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
@@ -410,7 +410,7 @@ describe('SoqlVifValidator', function() {
         ]
       };
       const datasetMetadata = { columns: [
-        { fieldName: 'number', dataTypeName: 'number' }
+        { fieldName: 'number', renderTypeName: 'number' }
       ]};
 
       validatePasses('requireNoMeasureAggregation', vif, [ datasetMetadata ]);
@@ -445,8 +445,8 @@ describe('SoqlVifValidator', function() {
       };
       const datasetMetadata = {
         columns: [
-          { fieldName: 'number', dataTypeName: 'number' },
-          { fieldName: 'point', dataTypeName: 'point' }
+          { fieldName: 'number', renderTypeName: 'number' },
+          { fieldName: 'point', renderTypeName: 'point' }
         ]
       };
 

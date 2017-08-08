@@ -108,7 +108,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
   };
 
   const hasColumnWithType = (type, seriesIndex) => {
-    const column = _.find(datasetMetadataPerSeries[seriesIndex].columns, (c) => c.dataTypeName === type);
+    const column = _.find(datasetMetadataPerSeries[seriesIndex].columns, (c) => c.renderTypeName === type);
     return !_.isUndefined(column);
   };
 
@@ -191,8 +191,8 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
     requirePointDimension() {
       allSeries.forEach((series, seriesIndex) => {
         const columnName = _.get(series, 'dataSource.dimension.columnName');
-        const dataTypeName = getColumn(columnName, seriesIndex).dataTypeName;
-        if (dataTypeName !== 'point') {
+        const renderTypeName = getColumn(columnName, seriesIndex).renderTypeName;
+        if (renderTypeName !== 'point') {
           if (hasColumnWithType('point', seriesIndex)) {
             addError(I18n.t('shared.visualizations.charts.common.validation.errors.dimension_column_should_be_point'));
           } else {
@@ -206,8 +206,8 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
     requireCalendarDateDimension() {
       allSeries.forEach((series, seriesIndex) => {
         const columnName = _.get(series, 'dataSource.dimension.columnName');
-        const dataTypeName = getColumn(columnName, seriesIndex).dataTypeName;
-        if (dataTypeName !== 'calendar_date') {
+        const renderTypeName = getColumn(columnName, seriesIndex).renderTypeName;
+        if (renderTypeName !== 'calendar_date') {
           if (hasColumnWithType('calendar_date', seriesIndex)) {
             addError(I18n.t('shared.visualizations.charts.common.validation.errors.dimension_column_should_be_calendar_date'));
           } else {
@@ -221,8 +221,8 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
     requireNumericDimension() {
       allSeries.forEach((series, seriesIndex) => {
         const columnName = _.get(series, 'dataSource.dimension.columnName');
-        const dataTypeName = getColumn(columnName, seriesIndex).dataTypeName;
-        if (dataTypeName !== 'number' && dataTypeName !== 'money') {
+        const renderTypeName = getColumn(columnName, seriesIndex).renderTypeName;
+        if (renderTypeName !== 'number' && renderTypeName !== 'money') {
           if (hasColumnWithType('number', seriesIndex) || hasColumnWithType('money', seriesIndex)) {
             addError(I18n.t('shared.visualizations.charts.common.validation.errors.dimension_column_should_be_numeric'));
           } else {

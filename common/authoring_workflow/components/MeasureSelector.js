@@ -265,7 +265,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onAddMeasure(seriesIndex, columnName) {
-      dispatch(appendSeries());
+      dispatch(appendSeries({ isInitialLoad: false }));
       dispatch(setMeasure(seriesIndex, columnName));
     },
     onRemoveMeasure(seriesIndex) {

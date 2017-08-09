@@ -58,15 +58,17 @@ class StylesController < ApplicationController
       #    output and return it.
 
       if File.exist?(scss_stylesheet_filename)
-        with_development_cache(scss_stylesheet_filename) do
-          stylesheet = File.read(scss_stylesheet_filename)
-          includes = get_includes
-          Sass::Engine.new(includes + stylesheet,
-                           :filesystem_importer => CSSImporter,
-                           :style => :nested,
-                           :syntax => :scss,
-                           :cache => false,
-                           :load_paths => SCSS_LOAD_PATHS).render
+        stylesheet = File.read(scss_stylesheet_filename)
+        engine = Sass::Engine.new(get_includes + stylesheet,
+                         :filesystem_importer => CSSImporter,
+                         :style => :nested,
+                         :syntax => :scss,
+                         :cache => false,
+                         :load_paths => SCSS_LOAD_PATHS)
+        dependencies = engine.dependencies.map { |dependency| dependency.options[:filename] }
+        source_files = [ scss_stylesheet_filename ] + dependencies
+        render_with_development_cache(source_files) do
+          engine.render
         end
       elsif File.exist?(css_stylesheet_filename)
         render :text => File.read(css_stylesheet_filename)
@@ -209,21 +211,27 @@ class StylesController < ApplicationController
     end.join + get_includes_recurse(CurrentDomain.theme, @@site_theme_parse)
   end
 
-  def with_development_cache(stylesheet_filename)
+  # Given a list of files, returns an opaque cache key comprised
+  # of the file names and file modification times.
+  def cache_key_for_file_list(files)
+    files.map do |filename|
+      "#{filename}:#{File.new(filename).mtime.to_i}"
+    end.join
+  end
+
+  def render_with_development_cache(source_files)
     if use_discrete_assets? && ENV.fetch('DISABLE_BLIST_STYLE_CACHE', 'false') == 'false'
       Dir.mkdir(BLIST_STYLE_CACHE) unless Dir.exist? BLIST_STYLE_CACHE
 
-      includes_cache_key = STYLE_PACKAGES['includes'].map do |include|
-        File.new(File.join(Rails.root, 'app/styles', "#{include}.scss")).mtime.to_s
-      end.join
+      # Generate a cache file path using the cache key.
+      # Passing the key through hexdigest gives us a few advantages:
+      #   - No possibility of special characters messing up our file name.
+      #   - No possibility of running into OS-level path length limits.
+      cache_key = Digest::MD5.hexdigest(
+        "#{CurrentDomain.cname}-#{cache_key_for_file_list(source_files)}"
+      )
 
-      cache_key = Digest::MD5.hexdigest(stylesheet_filename + includes_cache_key +
-                    File.new(stylesheet_filename).mtime.to_s + CurrentDomain.cname)
       cache_path = File.join(BLIST_STYLE_CACHE, cache_key)
-
-      if stylesheet_or_siblings_newer_than_cache?(stylesheet_filename, cache_path)
-        File.unlink(cache_path)
-      end
 
       if File.exist?(cache_path)
         Rails.logger.debug "Reading cached stylesheet from #{cache_path}"
@@ -235,16 +243,6 @@ class StylesController < ApplicationController
       end
     else
       render :text => yield
-    end
-  end
-
-  def stylesheet_or_siblings_newer_than_cache?(stylesheet, cached_file)
-    return false unless File.exist?(cached_file)
-
-    cached_file_mtime = File.mtime(cached_file)
-    stylesheet_dir = File.dirname(stylesheet)
-    Dir.glob(File.join("#{stylesheet_dir}/**", "*.*ss")).any? do |file|
-      File.mtime(file) >= cached_file_mtime
     end
   end
 

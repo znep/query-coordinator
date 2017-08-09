@@ -1,5 +1,56 @@
 require 'tmpdir'
 require 'digest/md5'
+require 'listen'
+require 'singleton'
+
+# BEWARE /node_modules/normalize.css has to appear above /node_modules
+# otherwise SaSS will try to read normalize.css (which is a directory)
+# as if it's a file :facepalm:
+#
+# KEEP IN SYNC with:
+#   frontend/config/webpack/common.js#getStyleguideIncludePaths
+#   storyteller/config/initializers/assets.rb
+SCSS_LOAD_PATHS = %w(
+  /../common/styleguide
+  /../common
+  /app/styles
+  /..
+  /../common/resources/fonts/templates
+  /node_modules/normalize.css
+  /node_modules
+  /node_modules/bourbon-neat/app/assets/stylesheets
+  /node_modules/bourbon/app/assets/stylesheets
+  /node_modules/modularscale-sass/stylesheets
+  /node_modules/react-datepicker/dist
+  /node_modules/react-input-range/dist
+  /node_modules/leaflet/dist
+).map { |path| path.prepend(Rails.root.to_s) }
+
+#NOTE A reasonable implementation might look at SCSS_LOAD_PATHS, but:
+#  1. This includes .., which resolves to the entirety of platform-ui, and
+#  2. the paths are nested. For instance, both node_modules and
+#     node_modules/leaflet/dist are included.
+# This causes performance/stability/duplicate notification issues. So we
+# define some conservative set of paths and throw instructive errors if
+# a file ends up depending on a path we're not watching.
+# We can't incrementally build up this list at runtime because finding
+# dependencies involves compiling the files in the first place. If all
+# files are already cached, we won't know what files to listen to at all!
+SCSS_WATCH_PATHS = %w(
+  /../common
+  /app/styles
+  /node_modules
+).map do |path|
+  Pathname.new(path.prepend(Rails.root.to_s)).realpath.to_s
+end
+
+# Don't watch stuff in here - no need to, and the large file count
+# is expensive to watch.
+# Note! This must be a regexp.
+SCSS_WATCH_EXCLUDE = %r{common/karma_config}
+
+STYLE_CACHE_PATH = File.join(Dir.tmpdir, 'blist_style_cache')
+
 class CSSImporter < Sass::Importers::Filesystem
   def extensions
     {
@@ -9,33 +60,197 @@ class CSSImporter < Sass::Importers::Filesystem
     }
   end
 end
+
+# Our use of SCSS predates the asset pipeline. Ideally, we'd port our app to
+# use plain old Rails SCSS support, but that is a big job (and will run into
+# issues with custom site themes). Since we can't take advantage of the nice
+# caching system that the asset pipeline affords, we are forced to implement
+# our own (or suffer really long page load times in development mode).
+# This cache implementation is fairly complicated because it must invalidate
+# a compiled style if it or any file it depends upon are changed. It must
+# therefore maintain some idea of a dependency graph.
+#
+# We use this dependency graph to cache compiled styles using a cache key
+# comprised of the names and mtimes of all files that were involved in compiling
+# a particular stylesheet. This means that if a style or its dependencies change,
+# the cache key will also change (due to the mtime difference) and therefore the
+# cache will be invalidated.
+#
+# Unfortunately, obtaining a stylesheet's dependencies is order-of-magnitude equivalent
+# to outright compiling the stylesheet. Thus, we cache the dependency list until
+# we detect a file change using OS-level file watchers. Then, when the stylesheet
+# is actually loaded, we can be sure we're building a cache key which involves
+# the latest set of dependencies. By invalidating the cache only on file change
+# notifications, we can drastically lower the cost of checking cache staleness on
+# stylesheet load time.
+#
+# On startup, our dependency graph cache is empty. It is populated on-demand
+# on a per-stylesheet basis.
+class DevelopmentCache
+  include Singleton
+
+  # Maps a dependency (absolute filesystem path of an @included file)
+  # to a Set of top-level scss files (in style_packages.yml) having
+  # that dependency (direct or indirect).
+  # In other words, tells you what depends on a given scss file.
+  #
+  # Example:
+  # a.scss:
+  #   @import 'b.scss'
+  # b.scss:
+  #   h1 { color: red; }
+  # c.scss:
+  #   @import 'a.scss'
+  #
+  # reverse_dependencies = {
+  #   'b.scss' => Set<'a.scss', 'c.scss'>,
+  #   'a.scss' => Set<'c.scss'>
+  # }
+  attr_accessor :reverse_dependencies
+
+  # Maps stylesheets to the set of files they @import (depend upon).
+  # Regular ol' dependencies.
+  # In the above example, would be:
+  # forward_dependencies = {
+  #   'a.scss' => Set<'b.scss'>,
+  #   'b.scss' => Set<>
+  #   'c.scss' => Set<'a.scss', 'b.scss'>
+  # }
+  attr_accessor :forward_dependencies
+
+  def initialize
+    @reverse_dependencies = {}
+    @forward_dependencies = {}
+    listener = Listen.to(
+      *SCSS_WATCH_PATHS,
+      :only => /\.scss/,
+      :ignore => SCSS_WATCH_EXCLUDE
+    ) do |modified, added, removed|
+      (modified + added + removed).uniq.each do |path|
+        record_file_change(path)
+      end
+    end
+    listener.start # Nice-to-have: Shutdown cleanly if rails hot-reloads this class.
+  end
+
+  # Fetches a rendered stylesheet from the cache, or renders the stylesheet if the cache misses.
+  # Expects to be given a block that yields a Sass::Engine instance set up to render the
+  # stylesheet.
+  def get(top_level_stylesheet_filename)
+    raise 'Block required' unless block_given?
+
+    # This process has never rendered this stylesheet. In order to validate its staleness
+    # in the (on-disk, petsistent) cache, we must know the stylesheet's dependency list.
+    unless knows_dependencies?(top_level_stylesheet_filename)
+      Rails.logger.info("Styles Cache: Dependencies not yet known for #{top_level_stylesheet_filename}")
+      engine = yield
+      record_dependencies(top_level_stylesheet_filename, engine.dependencies)
+    end
+
+    if stale?(top_level_stylesheet_filename)
+      Rails.logger.info("Styles Cache: Rendering #{top_level_stylesheet_filename}")
+      engine = yield if engine.nil?
+      result = engine.render
+      cache_result(top_level_stylesheet_filename, result)
+      result
+    else
+      Rails.logger.info("Styles Cache: Hit #{top_level_stylesheet_filename}")
+      File.read(cache_filename(top_level_stylesheet_filename))
+    end
+  end
+
+  private
+
+  def cache_result(top_level_stylesheet_filename, result)
+    File.open(cache_filename(top_level_stylesheet_filename), 'w') { |f| f.write result }
+  end
+
+  # Called when a scss file changes. Invalidates cache for anything that
+  # depends on this file.
+  def record_file_change(stylesheet_filename)
+    Rails.logger.info("Styles Cache: #{stylesheet_filename} changed")
+    reverse_dependencies.fetch(stylesheet_filename, []).each do |now_stale_filename|
+      Rails.logger.info("Styles cache: Dependent stylesheet invalidated: #{now_stale_filename}")
+    end
+  end
+
+  # When we render a stylesheet, we remember its dependencies so we can properly
+  # invalidate its cache when dependencies are updated.
+  def record_dependencies(top_level_stylesheet_filename, dependencies)
+    dependency_file_names = dependencies.map { |dependency| dependency.options[:filename] }
+
+    # Record the stylesheet's dependencies. We use this to compute cache keys
+    # that take into account the mtime of the stylesheet AND its dependencies.
+    # This enables us to detect changes to dependencies and recompile, even
+    # if Rails was not running at the time of file update.
+    forward_dependencies[top_level_stylesheet_filename] = dependency_file_names
+
+    # Record the set of stylesheets that caused a particular dependency to be
+    # included. This is used to efficiently invalidate cache while rails is
+    # actually running.
+    # For each file the stylesheet depends on...
+    dependency_file_names.each do |dependency_file_name|
+      # We only watch a subset of files for performance reasons. Error if
+      # it turns out we actually needed to watch a broader set of files.
+      assert_watching(dependency_file_name)
+
+      # Record the stylesheet that imported us (initialize the set if necessary).
+      dependents = reverse_dependencies.fetch(dependency_file_name) { Set.new }
+      dependents.add(top_level_stylesheet_filename)
+      reverse_dependencies[dependency_file_name] = dependents;
+    end
+  end
+
+  # Raise unless we're watching the given file for changes.
+  # We only watch a subset of files for performance reasons. Error if
+  # it turns out we actually needed to watch a broader set of files.
+  def assert_watching(file)
+    unless SCSS_WATCH_PATHS.any? { |watched| file.include?(watched) }
+      raise "Not watching #{file}. Add its containing directory to SCSS_WATCH_PATHS"
+    end
+  end
+
+  def stale?(top_level_stylesheet_filename)
+    !File.exists?(cache_filename(top_level_stylesheet_filename))
+  end
+
+  # Check if we already know a stylesheet's dependencies.
+  # We need to know dependencies to compute a sane cache key.
+  def knows_dependencies?(top_level_stylesheet_filename)
+    forward_dependencies.has_key?(top_level_stylesheet_filename)
+  end
+
+  def cache_filename(top_level_stylesheet_filename)
+    # We expect this to be called after recording dependencies in
+    # DevelopmentCache#get. Were new code paths just added?
+    unless knows_dependencies?(top_level_stylesheet_filename)
+      raise "Dependencies not known for #{top_level_stylesheet_filename}, there's a bug in StylesController"
+    end
+
+    top_level_cache_key =
+      "#{top_level_stylesheet_filename}-#{File.new(top_level_stylesheet_filename).mtime.to_i}"
+
+    deps_cache_key = forward_dependencies[top_level_stylesheet_filename].sort.map do |dep|
+      "#{dep}-#{File.new(dep).mtime.to_i}"
+    end.join
+
+    # Passing the key through hexdigest gives us a few advantages:
+    #   - No possibility of special characters messing up our file name.
+    #   - No possibility of running into OS-level path length limits.
+    cache_key = Digest::MD5.hexdigest(
+      [
+        CurrentDomain.cname,
+        top_level_cache_key,
+        deps_cache_key
+      ].join
+    )
+
+    File.join(STYLE_CACHE_PATH, cache_key)
+  end
+end
+
 class StylesController < ApplicationController
   skip_before_filter :require_user, :set_user, :set_meta, :sync_logged_in_cookie, :poll_external_configs
-
-  # BEWARE /node_modules/normalize.css has to appear above /node_modules
-  # otherwise SaSS will try to read normalize.css (which is a directory)
-  # as if it's a file :facepalm:
-  #
-  # KEEP IN SYNC with:
-  #   frontend/config/webpack/common.js#getStyleguideIncludePaths
-  #   storyteller/config/initializers/assets.rb
-  SCSS_LOAD_PATHS = %w(
-    /../common/styleguide
-    /../common
-    /app/styles
-    /..
-    /../common/resources/fonts/templates
-    /node_modules/normalize.css
-    /node_modules
-    /node_modules/bourbon-neat/app/assets/stylesheets
-    /node_modules/bourbon/app/assets/stylesheets
-    /node_modules/breakpoint-sass/stylesheets
-    /node_modules/modularscale-sass/stylesheets
-    /node_modules/react-datepicker/dist
-    /node_modules/react-input-range/dist
-    /node_modules/leaflet/dist
-  ).map { |path| path.prepend(Rails.root.to_s) }
-  BLIST_STYLE_CACHE = File.join(Dir.tmpdir, 'blist_style_cache')
 
   # Only used in development
   def individual
@@ -58,18 +273,18 @@ class StylesController < ApplicationController
       #    output and return it.
 
       if File.exist?(scss_stylesheet_filename)
-        stylesheet = File.read(scss_stylesheet_filename)
-        engine = Sass::Engine.new(get_includes + stylesheet,
-                         :filesystem_importer => CSSImporter,
-                         :style => :nested,
-                         :syntax => :scss,
-                         :cache => false,
-                         :load_paths => SCSS_LOAD_PATHS)
-        dependencies = engine.dependencies.map { |dependency| dependency.options[:filename] }
-        source_files = [ scss_stylesheet_filename ] + dependencies
-        render_with_development_cache(source_files) do
-          engine.render
+        result = DevelopmentCache.instance.get(scss_stylesheet_filename) do
+          stylesheet = File.read(scss_stylesheet_filename)
+          Sass::Engine.new(
+            get_includes + stylesheet,
+            :filesystem_importer => CSSImporter,
+            :style => :nested,
+            :syntax => :scss,
+            :cache => false,
+            :load_paths => SCSS_LOAD_PATHS
+          )
         end
+        render :text => result
       elsif File.exist?(css_stylesheet_filename)
         render :text => File.read(css_stylesheet_filename)
       else
@@ -209,41 +424,6 @@ class StylesController < ApplicationController
     STYLE_PACKAGES['includes'].map do |incl|
       "@import \"#{incl}.scss\";\n"
     end.join + get_includes_recurse(CurrentDomain.theme, @@site_theme_parse)
-  end
-
-  # Given a list of files, returns an opaque cache key comprised
-  # of the file names and file modification times.
-  def cache_key_for_file_list(files)
-    files.map do |filename|
-      "#{filename}:#{File.new(filename).mtime.to_i}"
-    end.join
-  end
-
-  def render_with_development_cache(source_files)
-    if use_discrete_assets? && ENV.fetch('DISABLE_BLIST_STYLE_CACHE', 'false') == 'false'
-      Dir.mkdir(BLIST_STYLE_CACHE) unless Dir.exist? BLIST_STYLE_CACHE
-
-      # Generate a cache file path using the cache key.
-      # Passing the key through hexdigest gives us a few advantages:
-      #   - No possibility of special characters messing up our file name.
-      #   - No possibility of running into OS-level path length limits.
-      cache_key = Digest::MD5.hexdigest(
-        "#{CurrentDomain.cname}-#{cache_key_for_file_list(source_files)}"
-      )
-
-      cache_path = File.join(BLIST_STYLE_CACHE, cache_key)
-
-      if File.exist?(cache_path)
-        Rails.logger.debug "Reading cached stylesheet from #{cache_path}"
-        render :text => File.read(cache_path)
-      else
-        result = yield
-        File.open(cache_path, 'w') { |f| f.write result }
-        render :text => result
-      end
-    else
-      render :text => yield
-    end
   end
 
   def normalize_color(color, want_pound = true)

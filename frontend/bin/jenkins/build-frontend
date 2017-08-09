@@ -1,0 +1,132 @@
+#! /usr/bin/env bash
+## IMPORTANT ##
+# If you're making a temporary change here, please
+# put your name and ideally JIRA ticket ID next to your
+# modifications.
+uname -a
+lsb_release -a
+node -v
+set -xe
+# pipefail doesn't work in the version of bash installed in Jenkins.
+#set -o pipefail
+
+###########################################
+# Set up build environment
+
+mkdir -p /home/jenkins/workspace
+cp -r /mnt/frontend /home/jenkins/workspace/
+export HOME=/home/jenkins
+cd ${HOME}/workspace/frontend
+
+source ${HOME}/.profile
+
+# EN-14539 Giacomo: Temporary shim for monorepo work. We can directly CD to the correct directory once https://github.com/socrata/frontend/pull/4238 is in.
+if [ -d frontend ]; then
+  cd frontend
+fi
+
+# copy bundle packages from docker image to build directory
+cp -r ~/vendor/bundle vendor/ || mkdir -p vendor
+cp -r ~/node_modules . || mkdir -p node_modules
+
+sudo cp /tmp/build_home/.npmrc ${HOME}/.npmrc
+sudo chown jenkins ${HOME}/.npmrc
+cp Gemfile ${HOME}
+cp Gemfile.lock ${HOME}
+cp package.json ${HOME}
+
+rm -rf public/stylesheets/socrata-visualizations # test for EN-8509
+npm install && npm install
+npm rebuild node-sass
+
+# Giacomo: This is dangerous. Temporarily disabled.
+#mkdir -p ~/node_modules
+#cp -an node_modules/ ~/node_modules/ # merge the results of `npm install` into ${HOME}.
+
+echo "Configuring bundler to use repo.socrata.com..."
+set +x
+bundle config repo.socrata.com "${ARTIFACTORY_USER}":"${ARTIFACTORY_PASSWORD}"
+set -x
+bundle install --without=development --deployment
+
+# Note, if ClamAV is failing, see https://wiki.jenkins-ci.org/display/JENKINS/ClamAV+Plugin
+# for appropriate changes to clamd.conf
+
+# Environment vars
+export LANG=en_US.UTF-8
+export RUBYOPT="-E utf-8"
+export SAUCE_START_SAUCE_CONNECT=false
+export SAUCE_TUNNEL_IDENTIFIER="aws-jenkins-tunnel"
+
+# Don't want to initialize zookeeper during building/testing
+export DISABLE_ZOOKEEPER=true
+
+# Service variables used in other sections
+export SERVICE_NAME="frontend"
+
+# Conditionally set the SERVICE_VERSION according to release or not
+# The release build version will resemble this: release.2016.03.17.2046
+if [ "${RELEASE_BUILD}" = true ]; then
+  export SERVICE_VERSION=$(git tag|grep frontend-release|tail -1|tr / .)
+else
+  export SERVICE_VERSION=$(bundle exec rake version|tail -1)
+fi
+
+export SERVICE_SHA=$(git rev-parse HEAD | cut -c1-8)
+export SERVICE_ARTIFACT="platform-ui.tgz"
+
+set +x
+echo "SERVICE_NAME: ${SERVICE_NAME}"
+echo "SERVICE_SHA: ${SERVICE_SHA}"
+echo "SERVICE_VERSION: ${SERVICE_VERSION}"
+echo "BRANCH_SPECIFIER: ${BRANCH_SPECIFIER}"
+echo "DEPLOY_ENVIRONMENT: ${MARATHON_DEPLOY_ENVIRONMENT}"
+echo "LOCALEAPP_API_KEY: ${LOCALEAPP_API_KEY}" # Randy did this 3/24/2017
+set -x
+
+# Run the build script
+if [ -x "bin/build" ]; then
+  bin/build
+elif [ -x "tools/jenkins/build.sh" ]; then
+  ./tools/jenkins/build.sh
+else
+  echo "Could not find build script"
+  exit 1
+fi
+
+# Write dockerize.properties file if we are running the dockerize job after this
+cd ${WORKSPACE}
+rm -f dockerize.properties
+if ${TRIGGER_DOCKERIZE}; then  
+  touch dockerize.properties
+  echo "SERVICE=${SERVICE_NAME}" >> dockerize.properties
+  echo "SERVICE_NAME_PATTERN=${SERVICE_NAME}" >> dockerize.properties
+  echo "SERVICE_BUILD_NUMBER=${BUILD_NUMBER}" >> dockerize.properties
+  echo "SERVICE_SHA=$(git rev-parse HEAD)" >> dockerize.properties
+  echo "SERVICE_VERSION=${SERVICE_VERSION}" >> dockerize.properties
+  echo "DOCKER_REPO=${GIT_URL}" >> dockerize.properties
+  
+  if [ -d frontend ]; then
+  	echo "DOCKER_PATH=frontend/" >> dockerize.properties
+  else
+    echo "DOCKER_PATH=." >> dockerize.properties
+  fi
+  
+  echo "DOCKER_ARTIFACT_JOB=${JOB_NAME}" >> dockerize.properties
+  echo "DOCKER_ARTIFACT=${SERVICE_ARTIFACT}" >> dockerize.properties
+  echo "BRANCH_SPECIFIER=${BRANCH_SPECIFIER}" >> dockerize.properties
+  echo "MARATHON_DEPLOY_ENVIRONMENT=${MARATHON_DEPLOY_ENVIRONMENT}" >> dockerize.properties
+fi
+
+copy_file_to_host_workspace () {
+  if [ -f "${1}" ]; then
+    sudo cp ${1} /mnt/workspace/$(basename ${1})
+    sudo chown ${JENKINS_HOST_UID}:${JENKINS_HOST_GID} /mnt/workspace/$(basename ${1})
+  else
+    echo "Not copying ${1} to host workspace because it is not a regular file."
+  fi
+}
+
+copy_file_to_host_workspace dockerize.properties
+copy_file_to_host_workspace platform-ui.tgz
+copy_file_to_host_workspace frontend/eslint-results.xml

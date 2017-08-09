@@ -8,18 +8,24 @@ import InfoPaneButtons from './InfoPaneButtons';
 
 function mapStateToProps(state) {
   const { view, isEphemeral } = state;
+  const { hideDataSourceLink } = _.get(window, 'serverConfig.customConfigurations', {});
 
   const updatedDate = isEphemeral ?
     I18n.t('visualization_canvas.info_pane.unsaved') :
     formatDate(view.lastUpdatedAt);
 
-  const footer = (
+  let footer = (
     <a href={state.parentView.path} target="_blank">
       {I18n.t('visualization_canvas.info_pane.based_on')}
       {' '}
       <em>{state.parentView.name}</em>
     </a>
   );
+  if (hideDataSourceLink === 'true') {
+    // See EN-17469.
+    // Need to render *some* text in order to make borders look correct.
+    footer = (<span>&nbsp;</span>);
+  }
 
   return {
     name: view.name,

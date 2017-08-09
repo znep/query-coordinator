@@ -46,7 +46,7 @@ Localization.defaultProps = {
   notFoundText: '(no translation available)',
   returnKeyForNotFound: false,
   localePrefix: '',
-  translations: window.translations,
+  translations: window.translations || _.get(window, 'blist.translations'),
   locale: _.get(window, 'serverConfig.locale', _.get(window, 'blist.locale', 'en'))
 };
 

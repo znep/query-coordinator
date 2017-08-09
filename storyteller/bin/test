@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script is expected to run on build/test machines, especially those which
+# may not have the test database configured already. If you're testing locally,
+# you only need to run `bin/test_setup` once, then run `bundle exec rake test`
+# without the HEADLESS argument.
+
 set -e
 
 rbenv install -s `cat .ruby-version`

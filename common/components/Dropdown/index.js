@@ -93,7 +93,7 @@ export default React.createClass({
    * container because the user is scrolling outside of component.
    */
   onAnyScroll(event) {
-    if (event) {
+    if (event && this.state.opened) {
       const list = $(event.target).closest('.dropdown-options-list');
       const nonrelated = list.length === 0;
 

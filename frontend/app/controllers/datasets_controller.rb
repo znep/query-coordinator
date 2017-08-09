@@ -1344,7 +1344,8 @@ class DatasetsController < ApplicationController
     if op_standalone_measures_enabled? && @view.op_measure?
       render 'op_measure', :layout => 'styleguide'
       true
-    elsif !op_standalone_measures_enabled? && @view.op_measure?
+    elsif !op_standalone_measures_enabled? && @view.op_measure? && false
+      # TODO: remove false check when View#op_measure? has a valid implementation
       render_404
       true
     else

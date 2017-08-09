@@ -221,7 +221,8 @@ module ApplicationHelper
     LocalePart.controls.charts,
     LocalePart.controls.common,
     LocalePart.controls.nbe_column_manager,
-    LocalePart.plugins.jquery_ui
+    LocalePart.plugins.jquery_ui,
+    LocalePart.shared
   ]
   def render_translations(part = nil)
     @rendered_translations ||= Set.new

@@ -199,6 +199,7 @@ function listenForOutputSchema(sourceId) {
 
       dispatch(insertInputSchema(is, sourceId));
       dispatch(subscribeToRowErrors(is));
+      dispatch(subscribeToTotalRows(is));
       dispatch(listenForOutputSchemaSuccess(os));
       dispatch(subscribeToOutputSchema(os));
       dispatch(subscribeToTransforms(os));
@@ -305,6 +306,20 @@ export function subscribeToRowErrors(is) {
           num_row_errors: errors
         })
       )
+    );
+
+    channel.join();
+  };
+}
+
+export function subscribeToTotalRows(is) {
+  return (dispatch, getState, socket) => {
+    const channel = socket.channel(`input_schema:${is.id}`);
+
+    channel.on('update', ({ total_rows }) =>
+      dispatch(editInputSchema(is.id, {
+        total_rows
+      }))
     );
 
     channel.join();

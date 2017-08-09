@@ -5,7 +5,8 @@ import {
   subscribeToOutputSchema,
   subscribeToTransforms,
   insertInputSchema,
-  subscribeToRowErrors
+  subscribeToRowErrors,
+  subscribeToTotalRows
 } from 'actions/manageUploads';
 import { addNotification } from 'actions/notifications';
 import { parseDate } from 'lib/parseDate';
@@ -131,6 +132,7 @@ function sideEffectyStuff(revision) {
     inputSchemas.forEach(is => {
       dispatch(insertInputSchema(is, is.source_id));
       dispatch(subscribeToRowErrors(is));
+      dispatch(subscribeToTotalRows(is));
     });
 
     outputSchemas.forEach(os => dispatch(listenForOutputSchemaSuccess(os)));

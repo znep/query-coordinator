@@ -1,0 +1,74 @@
+@import "styleguide-colors";
+
+@import "common/breakpoints";
+
+@import "op-measure/metadata-pane";
+@import "op-measure/summary-pane";
+@import "op-measure/reporting-period";
+@import "op-measure/metric-card";
+
+body {
+  // TODO: Viz Canvas has some kind of initial padding/margin around the whole
+  // thing, need to figure out where that comes from
+  margin: 0;
+  padding: 0;
+  background: $light-grey-6;
+}
+
+.op-measure {
+  .info-pane {
+    margin-bottom: 0; // decrease space above nav tabs
+
+    .entry-header {
+      padding-left: 2em;
+    }
+  }
+
+  .measure-content {
+    display: flex;
+    margin: 0 2em;
+  }
+
+  .measure-panes {
+    flex-grow: 1;
+
+    .nav-tabs {
+      margin-left: 0; // remove overall shift to the left
+
+      li:first-child {
+        padding-left: 0; // remove divider extension to the left
+      }
+    }
+  }
+
+  .measure-sidebar {
+    flex-basis: 330px;
+    display: flex;
+    flex-direction: column;
+    margin-left: 2em;
+  }
+}
+
+.main-spinner {
+  display: flex;
+  height: 400px;
+  opacity: 0;
+  animation-name: fadeIn;
+  animation-duration: .5s;
+  animation-delay: 1s;
+  animation-fill-mode: forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  .spinner-large {
+    margin: auto;
+  }
+}

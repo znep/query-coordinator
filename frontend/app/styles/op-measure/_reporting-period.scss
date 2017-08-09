@@ -1,0 +1,74 @@
+// .reporting-period repeats most of the declarations from common/FilterItem -
+// the dropdown may look the same, but the logic behind a FilterItem is too
+// specialized to be used in this case.
+
+@import "styleguide-colors";
+
+.reporting-period {
+  align-self: flex-end;
+  height: 58px; // aligns bottom of .reporting-period-wrapper to .nav-tabs
+  margin-bottom: 26px; // aligns top of .metric-card to .pane
+  font-size: 12px;
+  display: flex;
+  flex-direction: column-reverse;
+
+  .reporting-period-control-container {
+    display: inline-block;
+    position: relative;
+  }
+
+  .reporting-period-config-container {
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+  }
+
+  .reporting-period-control-toggle {
+    border: 1px solid $light-grey-3;
+    background-color: $white;
+    padding: 5px 10px;
+    padding-right: 20px;
+    position: relative;
+    cursor: pointer;
+    min-width: 140px;
+    max-width: 200px;
+    border-top-left-radius: 1px;
+    border-bottom-left-radius: 1px;
+    user-select: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .arrow-down-icon {
+      position: absolute;
+      right: 6px;
+      top: 4px;
+      z-index: 0;
+
+      .socrata-icon svg {
+        height: 15px;
+        width: 15px;
+      }
+    }
+  }
+
+  .reporting-period-config-toggle {
+    border: 1px solid $light-grey-3;
+    background-color: $white;
+    margin-left: -1px;
+    padding: 5px 2px 3px 5px;
+    cursor: pointer;
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 1px;
+    position: relative;
+
+    .socrata-icon {
+      height: 17px;
+
+      svg {
+        height: 12px;
+        width: 12px;
+      }
+    }
+  }
+}

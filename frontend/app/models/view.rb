@@ -1497,6 +1497,11 @@ class View < Model
     (viewType == 'href' && displayType == 'story') || viewType == 'story'
   end
 
+  def op_measure?
+    # displayType == 'measure' && viewType == 'something'
+    true
+  end
+
   def is_href?
     viewType == 'href'
   end

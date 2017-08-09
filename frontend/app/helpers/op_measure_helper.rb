@@ -7,23 +7,24 @@ module OpMeasureHelper
   end
 
   def render_op_measure_translations
+    old_translations = json_escape(op_measure_translations.to_json)
     new_translations = json_escape(LocaleCache.render_partial_translations(:open_performance).to_json)
-    javascript_tag("var translations = #{new_translations};")
+    javascript_tag("var I18n = #{old_translations}; var translations = #{new_translations};")
   end
 
   def render_op_measure_server_config
     server_config = {
       :airbrakeEnvironment => ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
-      # :airbrakeKey => ENV['OP_MEASURE_AIRBRAKE_API_KEY'] ||
-      #   APP_CONFIG.op_measure_airbrake_api_key,
-      # :airbrakeProjectId => ENV['OP_MEASURE_AIRBRAKE_PROJECT_ID'] ||
-      #   APP_CONFIG.op_measure_airbrake_project_id,
+      :airbrakeKey => ENV['OP_MEASURE_AIRBRAKE_API_KEY'] ||
+        APP_CONFIG.op_measure_airbrake_api_key,
+      :airbrakeProjectId => ENV['OP_MEASURE_AIRBRAKE_PROJECT_ID'] ||
+        APP_CONFIG.op_measure_airbrake_project_id,
       :appToken => APP_CONFIG.app_token,
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :domain => CurrentDomain.cname,
-      :environment => Rails.env
-      # :usersnapProjectID => 'TODO'
+      :environment => Rails.env,
+      :usersnapProjectID => '4e60055c-c036-4884-a35a-53d921c21cb1'
     }
 
     javascript_tag("var serverConfig = #{json_escape(server_config.to_json)};")

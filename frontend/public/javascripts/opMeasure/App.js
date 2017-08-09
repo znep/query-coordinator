@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import FeedbackPanel from '../common/components/FeedbackPanel';
 import InfoPane from './components/InfoPane';
 import PaneTabs from './components/PaneTabs';
 import SummaryPane from './components/SummaryPane';
@@ -25,6 +26,7 @@ export class App extends Component {
             <MetricCard />
           </div>
         </div>
+        <FeedbackPanel {...window.serverConfig} />
       </div>
     );
   }

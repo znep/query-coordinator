@@ -211,7 +211,7 @@ describe DatasetsController do
         expect(response).to render_template(:op_measure)
       end
 
-      it 'does not render the OP measure if the module/feature flag combo is disabled' do
+      xit 'does not render the OP measure if the module/feature flag combo is disabled' do
         allow(subject).to receive(:op_standalone_measures_enabled?).and_return(false)
         get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
 

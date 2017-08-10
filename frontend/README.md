@@ -523,21 +523,6 @@ After you successfully pull translations, follow the instructions here to [confi
 
   We load our styles through a home-grown StylesController, which compiles SCSS to CSS and caches the results.
 
-### Help! My style changes aren't getting picked up!
-
-  StylesController does not invalidate its cache if a SCSS file's dependencies have changed
-(i.e., the file itself didn't change, but a file it imports did). The current workaround is
-to update the modification time of the root CSS file. Run this to force StylesController to recompile styles:
-
-```sh
-  # If you only edited common components or visualizations.
-  touch frontend/app/styles/*shim.scss frontend/app/styles/visualization-canvas/*
-  # Nuclear, slower option.
-  touch frontend/app/styles/*.scss
-```
-
-See the [JIRA ticket](https://socrata.atlassian.net/browse/EN-16978).
-
 ## Further Reading
 
 - [JavaScript documentation](doc/javascript.md)

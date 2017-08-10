@@ -449,6 +449,8 @@ Variable Name | Type | Source | Description
 `mixpanel_token` | String | Configuration | API token used to report runtime metrics to MixPanel.
 `odysseus_app_name` | String | Configuration | The name of the `Odysseus` application server. _Not the name of the app_.
 `opendata_ga_tracking_code` | String | Configuration | Google Analytics tracking code used for the Open Data Portal.
+`op_measure_airbrake_api_key` | String | Configuration | AirBrake API token used specifically to track OP measure errors.
+`op_measure_airbrake_project_id` | String | Configuration | AirBrake project associated with OP measure assets.
 `path_info` | String | Rails | The path portion of the incoming request. Used to determine `locale` in some cases. See also `request_path` and `request_uri`. See also `RequestLoggerMiddleware`.
 `pendo_token` | String | Configuration | Pendo API token required to load pendo tracking script.
 `phidippides_address` | String | Configuration | Host name or IP address of the Phidippides service.
@@ -491,6 +493,7 @@ Variable Name | Type | Source | Description
 `unicorn_timeout` | Integer | Configuration | Number of milliseconds a Unicorn worker will wait for a request to be serviced by Rails before giving up.
 `unicorn_worker_processes` | Integer | Configuration | Number of Unicorn worker processes to run at startup.
 `visualization_canvas_airbrake_api_key` | String | Configuration | AirBrake API token used specifically to track vizcan errors.
+`visualization_canvas_airbrake_project_id` | String | Configuration | AirBrake project associated with vizcan assets.
 `qualtrics_admin_survey_id` | String | Configuration | Qualtrics survey identifier
 `qualtrics_profile_survey_id` | String | Configuration | Qualtrics survey identifier
 `zendesk_notifications` | String | Configuration | ZenDesk configuration information for collecting what's new news articles from the API.

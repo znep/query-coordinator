@@ -59,7 +59,7 @@ function activate() {
     console.error('Attempted to open UserSnap without initialization!');
   } else {
     return usersnapPromise.then(() => {
-      window.UserSnap.openReportWindow();
+      window.UserSnap.start();
     });
   }
 }

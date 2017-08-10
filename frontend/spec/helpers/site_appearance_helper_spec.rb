@@ -310,17 +310,6 @@ describe SiteAppearanceHelper do
     end
   end
 
-  describe '#page_controls' do
-    it 'returns a page controls div with a save, preview, and cancel button' do
-      result = Nokogiri::HTML.parse(subject.page_controls)
-      expect(result.search('.page-controls').length).to eq(1)
-      expect(result.search('button').length).to eq(3)
-      expect(result.search('#site_appearance_save').length).to eq(1)
-      expect(result.search('#site_appearance_cancel').length).to eq(1)
-      expect(result.search('#site_appearance_preview').length).to eq(1)
-    end
-  end
-
   describe '#dropdown_option_tags' do
     it 'returns an empty string for an empty array of options' do
       result = subject.dropdown_option_tags([])

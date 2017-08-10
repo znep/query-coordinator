@@ -209,33 +209,6 @@ module SiteAppearanceHelper
     end
   end
 
-  def page_controls
-    content_tag(:div, :class => 'page-controls') do
-      safe_join([
-        link_to('#', :class => 'confirm-reload') do
-          content_tag(
-            :button,
-            t('screens.admin.site_appearance.cancel'),
-            :id => 'site_appearance_cancel')
-        end,
-        link_to('#') do
-          content_tag(:button, :id => 'site_appearance_preview') do
-            [
-              t('screens.admin.site_appearance.preview'),
-              content_tag(:span, nil, :class => 'icon-preview')
-            ].join(' ').html_safe
-          end
-        end,
-        content_tag(
-          :button,
-          t('screens.admin.site_appearance.update'),
-          :class => 'primary',
-          :id => 'site_appearance_save'
-        )
-      ])
-    end
-  end
-
   def site_appearance_form_field(section, fields, locale_string)
     render(
       'site_appearance/tab_content/form_field',

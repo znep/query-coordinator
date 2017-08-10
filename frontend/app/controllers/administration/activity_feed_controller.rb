@@ -78,11 +78,7 @@ class Administration::ActivityFeedController < AdministrationController
       }
 
       format.html {
-        if feature_flag?('enable_new_activity_log_ui', request)
-          render 'new_index'
-        else
-          render 'index'
-        end
+        render 'index'
       }
     end
   end

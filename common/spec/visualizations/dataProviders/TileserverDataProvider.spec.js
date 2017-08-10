@@ -197,4 +197,32 @@ describe('TileserverDataProvider', function() {
       tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
     });
   });
+
+  describe('caching behavior', () => {
+
+    let tileserverDataProvider;
+
+    beforeEach(() => {
+      tileserverDataProvider = new TileserverDataProvider(VALID_CONFIG);
+    });
+
+    it('only sends one request', (done) => {
+
+      let tileGetter = tileserverDataProvider.buildTileGetter(VALID_WHERE_CLAUSE, false);
+
+      let counter = 0;
+      onXhrSend = (request) => {
+        counter++;
+        assert.equal(counter, 1);
+        done();
+      };
+
+      tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
+      tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
+      tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
+
+    });
+
+  });
+
 });

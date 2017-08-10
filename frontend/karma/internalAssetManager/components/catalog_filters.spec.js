@@ -5,7 +5,7 @@ import sinon from 'sinon';
 
 describe('components/CatalogFilters', () => {
   before(() => {
-    FeatureFlags.useTestFixture({ stories_enabled: true });
+    FeatureFlags.useTestFixture({ stories_enabled: true, enable_internal_asset_manager_my_assets: true });
   })
 
   const catalogFiltersProp = (options = {}) => ({

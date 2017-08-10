@@ -40,6 +40,13 @@ export const updateQueryString = (dispatch, getState, clearSearch) => {
     if (clearSearch) {
       delete activeFilters.q;
     }
+
+    // active tab
+    const activeTab = _.get(getState(), 'header.activeTab');
+    if (!_.isEmpty(activeTab)) {
+      activeFilters.tab = activeTab;
+    }
+
     const queryString = _(activeFilters).map((value, type) => `${type}=${value}`).value().join('&');
     const newUrl = `${urlPath}?${queryString}`;
     window.history.pushState({ path: newUrl }, '', newUrl);

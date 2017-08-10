@@ -3,10 +3,12 @@ import { Provenance} from 'components/provenance';
 import { FeatureFlags } from 'common/feature_flags';
 
 describe('components/provenance', () => {
-  let disable_authority_badge = null;
+  before(() => {
+    FeatureFlags.useTestFixture({ enable_internal_asset_manager_my_assets: true });
+  });
 
   describe('when disable_authority_badge is "none"', () => {
-    beforeEach(() => FeatureFlags.useTestFixture({ disable_authority_badge: 'none' }));
+    beforeEach(() => FeatureFlags.updateTestFixture({ disable_authority_badge: 'none' }));
 
     it('renders the official provenance badge', () => {
       const element = renderComponentWithPropsAndStore(Provenance, { provenance: 'official' });
@@ -24,7 +26,7 @@ describe('components/provenance', () => {
   });
 
   describe('when disable_authority_badge is "official2"', () => {
-    beforeEach(() => FeatureFlags.useTestFixture({ disable_authority_badge: 'official2' }));
+    beforeEach(() => FeatureFlags.updateTestFixture({ disable_authority_badge: 'official2' }));
 
     it('renders the community provenance badge', () => {
       const element = renderComponentWithPropsAndStore(Provenance, { provenance: 'community' });
@@ -40,7 +42,7 @@ describe('components/provenance', () => {
   });
 
   describe('when disable_authority_badge is "community"', () => {
-    beforeEach(() => FeatureFlags.useTestFixture({ disable_authority_badge: 'community' }));
+    beforeEach(() => FeatureFlags.updateTestFixture({ disable_authority_badge: 'community' }));
 
     it('renders the official provenance badge', () => {
       const element = renderComponentWithPropsAndStore(Provenance, { provenance: 'official' });
@@ -56,7 +58,7 @@ describe('components/provenance', () => {
   });
 
   describe('when disable_authority_badge is "all"', () => {
-    beforeEach(() => FeatureFlags.useTestFixture({ disable_authority_badge: 'all' }));
+    beforeEach(() => FeatureFlags.updateTestFixture({ disable_authority_badge: 'all' }));
 
     it('does not render the official provenance badge', () => {
       const element = renderComponentWithPropsAndStore(Provenance, { provenance: 'official' });
@@ -70,7 +72,7 @@ describe('components/provenance', () => {
   });
 
   describe('when provenance is null', () => {
-    beforeEach(() => FeatureFlags.useTestFixture({ disable_authority_badge: 'none' }));
+    beforeEach(() => FeatureFlags.updateTestFixture({ disable_authority_badge: 'none' }));
 
     it('does not render the official provenance badge', () => {
       const element = renderComponentWithPropsAndStore(Provenance, { provenance: null });
@@ -84,7 +86,7 @@ describe('components/provenance', () => {
   });
 
   describe('when includeLabel is false', () => {
-    beforeEach(() => FeatureFlags.useTestFixture({ disable_authority_badge: 'none' }));
+    beforeEach(() => FeatureFlags.updateTestFixture({ disable_authority_badge: 'none' }));
 
     it('does not render the official provenance badge', () => {
       const element = renderComponentWithPropsAndStore(Provenance, { provenance: 'official', includeLabel: false });
@@ -100,7 +102,7 @@ describe('components/provenance', () => {
   });
 
   describe('when provenance is null', () => {
-    beforeEach(() => FeatureFlags.useTestFixture({ disable_authority_badge: 'none' }));
+    beforeEach(() => FeatureFlags.updateTestFixture({ disable_authority_badge: 'none' }));
 
     it('does not render the official provenance badge', () => {
       const element = renderComponentWithPropsAndStore(Provenance, { provenance: null });

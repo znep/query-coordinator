@@ -57,8 +57,8 @@ export class CatalogFilters extends React.Component {
   }
 
   render() {
-    const { allFilters, assetTypes, authority, category, changeAssetType, changeAuthority, changeCategory,
-      changeOwner, changeTag, changeVisibility, clearAllFilters, domainCategories, domainTags,
+    const { activeTab, allFilters, assetTypes, authority, category, changeAssetType, changeAuthority,
+      changeCategory, changeOwner, changeTag, changeVisibility, clearAllFilters, domainCategories, domainTags,
       onlyRecentlyViewed, ownedBy, tag, toggleRecentlyViewed, usersList, visibility } = this.props;
 
     const { filterContentOpen } = this.state;
@@ -122,7 +122,7 @@ export class CatalogFilters extends React.Component {
       </div>
     );
 
-    const authorityFilterSection = (
+    const authorityFilterSection = activeTab === 'myAssets' ? null : (
       <div className="filter-section authority">
         <label className="filter-label">{this.getTranslation('authority.label')}</label>
         {this.renderFilterDropdown({
@@ -133,7 +133,7 @@ export class CatalogFilters extends React.Component {
       </div>
     );
 
-    const ownedByFilterSection = (
+    const ownedByFilterSection = activeTab === 'myAssets' ? null : (
       <div className="filter-section owned-by">
         <label className="filter-label" htmlFor="owned-by-filter">
           {this.getTranslation('owned_by.label')}
@@ -206,6 +206,7 @@ export class CatalogFilters extends React.Component {
 }
 
 CatalogFilters.propTypes = {
+  activeTab: PropTypes.string.isRequired,
   allFilters: PropTypes.object,
   assetTypes: PropTypes.string,
   authority: PropTypes.string,
@@ -231,6 +232,7 @@ CatalogFilters.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
+  activeTab: state.header.activeTab,
   allFilters: state.filters,
   assetTypes: state.filters.assetTypes,
   authority: state.filters.authority,

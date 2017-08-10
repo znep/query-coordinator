@@ -29,6 +29,10 @@ export var FeatureFlags = {
   useTestFixture: function(options) {
     window.socrata = window.socrata || {};
     window.socrata.featureFlags = options || {};
+  },
+
+  updateTestFixture: function(options) {
+    window.socrata.featureFlags = _.merge(window.socrata.featureFlags, options);
   }
 };
 

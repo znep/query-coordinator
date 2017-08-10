@@ -9,7 +9,7 @@ describe('components/Header', () => {
   });
 
   it('does not render My Assets unless feature flag is set', () => {
-    FeatureFlags.useTestFixture({ enable_internal_asset_manager_my_assets: false });
+    FeatureFlags.updateTestFixture({ enable_internal_asset_manager_my_assets: false });
     const element = renderComponentWithPropsAndStore(Header);
     assert.isNotNull(element);
     assert.equal(element.querySelectorAll('.all-assets').length, 1);
@@ -17,7 +17,7 @@ describe('components/Header', () => {
   });
 
   it('does render My Assets when feature flag is set', () => {
-    FeatureFlags.useTestFixture({ enable_internal_asset_manager_my_assets: true });
+    FeatureFlags.updateTestFixture({ enable_internal_asset_manager_my_assets: true });
     const element = renderComponentWithPropsAndStore(Header);
     assert.isNotNull(element);
     assert.equal(element.querySelectorAll('.all-assets').length, 1);

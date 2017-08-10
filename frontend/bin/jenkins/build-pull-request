@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+## IMPORTANT ##
+# If you're making a temporary change here, please
+# put your name and ideally JIRA ticket ID next to your
+# modifications.
+
+set -e -x
+
+export HOME=/home/jenkins
+mkdir -p ${HOME}/workspace
+cp -r /mnt/frontend-pull-request-test ${HOME}/workspace/
+source ~/.profile
+rbenv versions
+cd ${HOME}/workspace/frontend-pull-request-test/frontend
+
+if [ -e ../bin/should_run_tests ]; then
+  if ! ../bin/should_run_tests frontend; then
+    exit 0;
+  fi
+fi
+
+# copy bundle packages from docker image to build directory
+cp -r ~/vendor/bundle vendor/ || mkdir -p vendor
+cp -r ~/node_modules . || mkdir -p node_modules
+
+sudo cp /tmp/build_home/.npmrc ${HOME}/.npmrc
+sudo chown jenkins ${HOME}/.npmrc
+cp Gemfile ${HOME}
+cp Gemfile.lock ${HOME}
+cp package.json ${HOME}
+
+# TODO: fix this, `n` is not installed on the docker image that runs this build
+# n $(cat .node-version)
+echo "progress=false" >> ${HOME}/.npmrc # Randy added this on March 28, 2017
+npm install 2>&1 >/dev/null # Randy changed this on March 28, 2017
+npm rebuild node-sass
+
+# Installing bundler shouldn't be necessary (should already be installed). Installing it nonetheless to guarantee
+# the following commands can be executed. Install is a NOOP anyway if it's already installed.
+echo ${PATH}
+rbenv install -s `cat .ruby-version` # Trey changed this on May 16, 2017
+ruby --version
+whereis gem
+
+gem install bundler
+set +x # Added by Randy on March 28, 2017
+bundle config repo.socrata.com "${ARTIFACTORY_USER}":"${ARTIFACTORY_PASSWORD}"
+set -x # Added by Randy on March 28, 2017
+bundle install --without=development --deployment --quiet # --quiet added by Randy on March 28, 2017
+
+# Note, if ClamAV is failing, see https://wiki.jenkins-ci.org/display/JENKINS/ClamAV+Plugin
+# for appropriate changes to clamd.conf
+
+# Environment vars
+export LANG=en_US.UTF-8
+export RUBYOPT="-E utf-8"
+export SAUCE_START_SAUCE_CONNECT=false
+export SAUCE_TUNNEL_IDENTIFIER="aws-jenkins-tunnel"
+export CHROME_BIN=/usr/local/bin/chrome
+
+bin/test

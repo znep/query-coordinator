@@ -501,4 +501,14 @@ describe('MetadataProvider', () => {
       });
     });
   });
+
+  describe('cache behavior', () => {
+    it('should only make one actual request for the three underlying calls', () => {
+      metadataProvider.getDatasetMetadata();
+      metadataProvider.getDatasetMetadata();
+      metadataProvider.getDatasetMetadata();
+      assert.lengthOf(server.requests, 1);
+    });
+  });
+
 });

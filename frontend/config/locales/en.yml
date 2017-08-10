@@ -2887,12 +2887,12 @@ en:
         change_visibility:
           accept: OK
           can_not_change_visibility:
-            Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Open.
+            Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Public.
           dismiss: Cancel
           error: Sorry, there was an error changing visibility for this asset. Please refresh and try again or contact support@socrata.com if it continues.
           options:
             open:
-              title: Open
+              title: Public
               description: Publicly accessible. Discoverable through the public catalog.
             private:
               title: Private

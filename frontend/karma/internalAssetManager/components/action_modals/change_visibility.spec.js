@@ -74,7 +74,7 @@ describe('components/ChangeVisibility', () => {
         assert.isNull(element.querySelector('.modal-content .change-visibility-options'));
         assert.equal(
           element.querySelector('.modal-content').textContent,
-          'Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Open.'
+          'Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Public.'
         );
         done();
       });

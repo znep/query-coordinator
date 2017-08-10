@@ -51,7 +51,13 @@ export class FeedbackPanel extends Component {
       locale: locale,
       // Restore the feedback button after the user quits UserSnap.
       // UserSnap politely exposes event listeners.
-      onClose: _.partial(this.showButton, this.resetButtonHover),
+      //
+      // NOTE: The onClose event will fire during usersnap.init if your domain
+      // is localhost; they also emit a console notice which indicates that they
+      // mess with localhost invocations. If you see the button reappear when
+      // you open the panel for the first time, this is the reason. You can see
+      // a more accurate behavior if you use a substitute domain like local.dev.
+      onClose: () => this.showButton(this.resetButtonHover),
       user: currentUser
     });
 
@@ -84,7 +90,7 @@ export class FeedbackPanel extends Component {
     // Restore the feedback button after the user quits Zendesk.
     // The Zendesk Web Widget API is extremely limited, so we detect a change
     // in state on the iframe as a signal for completion.
-    const isFrameActive = () => $('.zEWidget-ticketSubmissionForm--active').length === 1;
+    const isFrameActive = () => $('.zEWidget-webWidget--active').length === 1;
     const handleClose = () => {
       const reset = setInterval(() => {
         if (!isFrameActive()) {

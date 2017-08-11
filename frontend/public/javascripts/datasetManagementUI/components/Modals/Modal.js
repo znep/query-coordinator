@@ -1,15 +1,12 @@
 import React, { PropTypes } from 'react';
 import { Modal as StyleGuideModal } from 'common/components';
-import { connect } from 'react-redux';
-import { hideModal } from 'actions/modal';
 import _ from 'lodash';
+import ErrorsHelp from 'components/Modals/ErrorsHelpContainer';
+import Publishing from 'components/Modals/PublishingContainer';
+import PublishConfirmation from 'components/Modals/PublishConfirmationContainer';
+import PublishConfirmationUSAID from 'components/Modals/PublishConfirmationUSAIDContainer';
+import RowIdentifierError from 'components/Modals/RowIdentifierErrorContainer';
 import styles from 'styles/Modals/Modal.scss';
-
-import ErrorsHelp from 'components/Modals/ErrorsHelp';
-import Publishing from 'components/Modals/Publishing';
-import PublishConfirmation from 'components/Modals/PublishConfirmation';
-import PublishConfirmationUSAID from 'components/Modals/PublishConfirmationUSAID';
-import RowIdentifierError from 'components/Modals/RowIdentifierError';
 
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
 const getModalProps = (props, contentComponentName, payload) => {
@@ -55,7 +52,7 @@ const getModalProps = (props, contentComponentName, payload) => {
   }
 };
 
-export const Modal = ({ modalState, onDismiss }) => {
+const Modal = ({ modalState, onDismiss }) => {
   const { visible = false, contentComponentName, payload } = modalState;
 
   if (!visible) {
@@ -88,12 +85,4 @@ Modal.propTypes = {
   onDismiss: PropTypes.func.isRequired
 };
 
-const mapStateToProps = ({ ui }) => ({
-  modalState: ui.modal
-});
-
-const mapDispatchToProps = dispatch => ({
-  onDismiss: () => dispatch(hideModal())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Modal);
+export default Modal;

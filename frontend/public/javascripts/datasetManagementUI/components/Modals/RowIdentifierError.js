@@ -1,6 +1,4 @@
 import React, { PropTypes } from 'react';
-import { hideModal } from '../../actions/modal';
-import { connect } from 'react-redux';
 import { ModalContent, ModalFooter } from 'common/components';
 import styles from 'styles/Modals/RowIdentifierError.scss';
 
@@ -31,13 +29,15 @@ function RowIdentifierError({ result, doCancel }) {
     <div>
       <h2>Error setting row identifier</h2>
       <ModalContent>
-        <p>{errorMessage(result)}</p>
-        <p>{SubI18n.what_to_do}</p>
+        <p>
+          {errorMessage(result)}
+        </p>
+        <p>
+          {SubI18n.what_to_do}
+        </p>
       </ModalContent>
       <ModalFooter>
-        <button
-          onClick={doCancel}
-          className={styles.cancelButton}>
+        <button onClick={doCancel} className={styles.cancelButton}>
           {I18n.common.ok}
         </button>
       </ModalFooter>
@@ -55,14 +55,4 @@ RowIdentifierError.propTypes = {
   doCancel: PropTypes.func.isRequired
 };
 
-function mapStateToProps() {
-  return {}; // ?
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    doCancel: () => { dispatch(hideModal()); }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RowIdentifierError);
+export default RowIdentifierError;

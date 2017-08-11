@@ -1,19 +1,13 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-
 import { ModalContent, ModalFooter } from 'common/components';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { commaify } from '../../../common/formatNumber';
-
 import ProgressBar from 'components/ProgressBar';
 import NotifyButton from 'components/NotifyButton';
 import * as ApplyRevision from 'actions/applyRevision';
-import { hideModal } from 'actions/modal';
 import ApiCallButton from 'components/ApiCallButton';
 import { APPLY_REVISION } from 'actions/apiCalls';
-import * as Selectors from 'selectors';
 import styles from 'styles/Modals/Publishing.scss';
 
 const SubI18n = I18n.home_pane.publish_modal;
@@ -21,7 +15,8 @@ const SubI18n = I18n.home_pane.publish_modal;
 // creating columns takes up 10% of the progress bar
 const CREATING_COLUMNS_STAGE_FRACTION = 0.1;
 const CREATING_COLUMNS_STAGE_TIME_GUESS_MS = 7000;
-const CREATING_COLUMNS_FRACTION_WHEN_OVER = 0.9; // hold at this until column creation succeeds
+// hold at this until column creation succeeds
+const CREATING_COLUMNS_FRACTION_WHEN_OVER = 0.9;
 // actually upserting the data takes 80% of the progress bar
 const UPSERTING_STAGE_FRACTION = 0.8;
 // everything after reaching 100% data upserted takes up 10% of the progress bar
@@ -92,7 +87,7 @@ function inProgressMessage(rowsToBeUpserted, taskSet) {
 
 const TICK_MS = 500;
 
-export class Publishing extends React.Component {
+class Publishing extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -222,28 +217,4 @@ Publishing.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-export function mapStateToProps({ entities }, { params }) {
-  const revision = _.values(entities.revisions)[0];
-  const taskSet = _.maxBy(_.values(entities.task_sets), job => job.updated_at);
-  const { fourfour } = params;
-  const rowsToBeUpserted = taskSet.output_schema_id
-    ? Selectors.rowsToBeImported(entities, taskSet.output_schema_id)
-    : null;
-
-  return {
-    revision,
-    taskSet,
-    fourfour,
-    rowsToBeUpserted
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    applyRevision: (params) =>
-      dispatch(ApplyRevision.applyRevision(params)),
-    onCancelClick: () => dispatch(hideModal())
-  };
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Publishing));
+export default Publishing;

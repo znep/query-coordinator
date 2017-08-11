@@ -1,11 +1,6 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { ModalContent, ModalFooter } from 'common/components';
-import { withRouter } from 'react-router';
-
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import { hideModal } from 'actions/modal';
-import { applyRevision } from 'actions/applyRevision';
 import ApiCallButton from 'components/ApiCallButton';
 import { APPLY_REVISION } from 'actions/apiCalls';
 import styles from 'styles/Modals/PublishConfirmation.scss';
@@ -43,11 +38,4 @@ PublishConfirmation.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-export function mapDispatchToProps(dispatch) {
-  return {
-    doCancel: () => dispatch(hideModal()),
-    doUpdate: (params) => dispatch(applyRevision(params))
-  };
-}
-
-export default withRouter(connect(null, mapDispatchToProps)(PublishConfirmation));
+export default PublishConfirmation;

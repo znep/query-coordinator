@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { ErrorsHelp } from 'components/Modals/ErrorsHelp';
+import ErrorsHelp from 'components/Modals/ErrorsHelp';
 
 describe('components/Modals/ErrorsHelp', () => {
   const defaultProps = {

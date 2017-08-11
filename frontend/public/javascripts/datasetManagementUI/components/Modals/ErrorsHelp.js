@@ -1,10 +1,8 @@
+/* eslint react/jsx-indent: 0 */
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
-import { withRouter } from 'react-router';
 import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { hideModal } from 'actions/modal';
 import styles from 'styles/Modals/ErrorsHelp.scss';
 
 const SubI18n = I18n.show_output_schema.ready_to_import;
@@ -146,7 +144,7 @@ Dots.propTypes = {
   setPage: PropTypes.func.isRequired
 };
 
-export class ErrorsHelp extends Component {
+class ErrorsHelp extends Component {
   constructor() {
     super();
 
@@ -191,7 +189,7 @@ export class ErrorsHelp extends Component {
       modalPage > 0
         ? <button onClick={this.prevPage} className={styles.previousButton}>
             {SubI18n.help_modal.previous}
-        </button>
+          </button>
         : null;
 
     return (
@@ -219,16 +217,4 @@ ErrorsHelp.propTypes = {
   onDismiss: PropTypes.func
 };
 
-const mapStateToProps = ({ entities }, { params }) => {
-  const { outputSchemaId } = params;
-
-  return {
-    errorRowCount: entities.output_schemas[outputSchemaId].error_count || 0
-  };
-};
-
-const mapDispatchToProps = dispatch => ({
-  onDismiss: () => dispatch(hideModal())
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ErrorsHelp));
+export default ErrorsHelp;

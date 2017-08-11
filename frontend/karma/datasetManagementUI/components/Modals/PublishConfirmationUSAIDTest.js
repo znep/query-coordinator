@@ -2,10 +2,8 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
-import {
-  PublishConfirmationUSAID,
-  mapStateToProps
-} from 'components/Modals/PublishConfirmationUSAID';
+import PublishConfirmationUSAID from 'components/Modals/PublishConfirmationUSAID';
+import { mapStateToProps } from 'components/Modals/PublishConfirmationUSAIDContainer'
 import state from '../../data/stateWithRevision';
 import dotProp from 'dot-prop-immutable';
 

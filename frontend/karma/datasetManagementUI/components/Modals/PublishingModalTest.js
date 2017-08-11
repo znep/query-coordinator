@@ -4,11 +4,8 @@ import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
 import * as ApplyRevision from 'actions/applyRevision';
-import {
-  Publishing,
-  computeProgress,
-  mapStateToProps
-} from 'components/Modals/Publishing';
+import Publishing, { computeProgress } from 'components/Modals/Publishing';
+import { mapStateToProps } from 'components/Modals/PublishingContainer'
 
 describe('components/Modals/Publishing', () => {
   const rowsToBeUpserted = 1000;

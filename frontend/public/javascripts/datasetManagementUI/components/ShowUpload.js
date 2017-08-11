@@ -1,6 +1,6 @@
 /* eslint react/jsx-indent: 0 */
 import React, { PropTypes } from 'react';
-import { push } from 'react-router-redux';
+import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent } from 'common/components';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
@@ -53,9 +53,6 @@ export const mapStateToProps = ({ entities, ui }) => {
   // Include source in the definition of inProgress because if there is no source,
   // we don't want to show the spinner, we want to show the actual component so the
   // user can source something
-  // TODO: maybe tweak this in the future. For really small files, the source finishes
-  // before polling for OS does, so the sources page shows (instead of the spinner)
-  // for a split second before transitioning to ShowOutputSchema page
   return {
     inProgress: !!source && !!apiCall.length
   };
@@ -67,7 +64,7 @@ ShowUpload.propTypes = {
 };
 
 export const mapDispatchToProps = (dispatch, ownProps) => ({
-  goHome: () => dispatch(push(Links.home(ownProps.location)))
+  goHome: () => browserHistory.push(Links.home(ownProps.params))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShowUpload);

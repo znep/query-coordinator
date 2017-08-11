@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { createUpload } from 'actions/manageUploads';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
@@ -70,11 +71,13 @@ export class DragDropUpload extends Component {
   }
 
   render() {
-    const { dispatch } = this.props;
+    const { dispatch, params } = this.props;
 
     return (
       <section className={styles.container}>
-        <h2>{I18n.show_uploads.title}</h2>
+        <h2>
+          {I18n.show_uploads.title}
+        </h2>
         <div
           onDrop={this.handleDrop}
           onDragOver={this.handleDragOver}
@@ -85,8 +88,12 @@ export class DragDropUpload extends Component {
           </div>
           <div className={styles.textContainer}>
             <div className={styles.content}>
-              <h2>{I18n.show_uploads.message}</h2>
-              <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>
+              <h2>
+                {I18n.show_uploads.message}
+              </h2>
+              <div className={styles.browseMsg}>
+                {I18n.show_uploads.submessage}
+              </div>
               <div className={styles.fileTypes}>
                 {`${I18n.show_uploads.filetypes} ${enabledFileExtensions.map(formatExpanation).join(', ')}`}
               </div>
@@ -100,7 +107,7 @@ export class DragDropUpload extends Component {
                 accept={enabledFileExtensions.join(',')}
                 aria-labelledby="upload-label"
                 className={styles.uploadInput}
-                onChange={e => dispatch(createUpload(e.target.files[0]))} />
+                onChange={e => dispatch(createUpload(e.target.files[0], params))} />
             </div>
           </div>
         </div>
@@ -110,7 +117,8 @@ export class DragDropUpload extends Component {
 }
 
 DragDropUpload.propTypes = {
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
+  params: PropTypes.object.isRequired
 };
 
-export default connect()(DragDropUpload);
+export default withRouter(connect()(DragDropUpload));

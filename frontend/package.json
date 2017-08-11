@@ -161,7 +161,6 @@
     "react-radio-group": "2.2.0",
     "react-redux": "4.4.5",
     "react-router": "3.0.0",
-    "react-router-redux": "4.0.7",
     "recursive-diff": "0.1.2",
     "reduce-reducers": "0.1.2",
     "redux": "3.5.2",

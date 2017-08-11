@@ -2,8 +2,6 @@ import { applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { Socket } from 'phoenix';
 import loggerMiddleware from 'redux-logger';
-import { browserHistory } from 'react-router';
-import { routerMiddleware } from 'react-router-redux';
 import entitiesMiddleware from 'middleware/entities';
 
 const socket = new Socket('/api/publishing/v1/socket', {
@@ -15,7 +13,7 @@ const socket = new Socket('/api/publishing/v1/socket', {
 
 socket.connect();
 
-const middleware = [thunkMiddleware.withExtraArgument(socket), routerMiddleware(browserHistory)];
+const middleware = [thunkMiddleware.withExtraArgument(socket)];
 
 if (window.serverConfig.environment === 'development') {
   middleware.push(

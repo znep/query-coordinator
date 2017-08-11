@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
 import styles from 'styles/SchemaPreview.scss';
 
-function mapStateToProps({ entities }) {
+function mapStateToProps({ entities }, { params }) {
   const currentOutputSchema = Selectors.currentOutputSchema(entities);
 
   if (currentOutputSchema) {
@@ -23,7 +23,7 @@ function mapStateToProps({ entities }) {
     return {
       columns,
       headerButton: (
-        <Link className={styles.btnWrapper} to={Links.columnMetadataForm(currentOutputSchema.id)}>
+        <Link className={styles.btnWrapper} to={Links.columnMetadataForm(params, currentOutputSchema.id)}>
           <button className={styles.schemaBtn} tabIndex="-1">
             {I18n.home_pane.column_metadata_manage_button}
           </button>
@@ -44,4 +44,4 @@ function mapDispatchToProps() {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommonSchemaPreview);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CommonSchemaPreview));

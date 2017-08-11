@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
-import { Link } from 'react-router';
+import { Link, browserHistory, withRouter } from 'react-router';
 import * as DisplayState from '../../lib/displayState';
 import { PAGE_SIZE } from '../../actions/loadData';
 import * as Selectors from '../../selectors';
@@ -17,7 +16,11 @@ function PagerBar({ currentPage, resultCount, urlForPage, changePage }) {
 
     let resultCountElem;
     if (resultCount > PAGE_SIZE) {
-      resultCountElem = <Link to={lastPage}>{commaify(resultCount)}</Link>;
+      resultCountElem = (
+        <Link to={lastPage}>
+          {commaify(resultCount)}
+        </Link>
+      );
     } else {
       resultCountElem = commaify(resultCount);
     }
@@ -25,7 +28,6 @@ function PagerBar({ currentPage, resultCount, urlForPage, changePage }) {
     return (
       <div className={styles.pagerBar}>
         {I18n.home_pane.showing} {firstPageRow}–{lastPageRow} {I18n.home_pane.of} {resultCountElem}
-
         <Pager
           resultsPerPage={PAGE_SIZE}
           currentPage={currentPage}
@@ -64,18 +66,18 @@ function numItemsToPaginate(entities, outputSchemaId, displayState) {
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-  const { displayState, path, routing } = ownProps;
+  const { displayState, path, params } = ownProps;
 
   const urlForPage = targetPage => {
     const targetDisplayState = { ...displayState, pageNo: targetPage };
-    const targetPageUrl = DisplayState.toUiUrl(path, targetDisplayState);
+    const targetPageUrl = DisplayState.toUiUrl(path, params, targetDisplayState);
 
     return targetPageUrl;
   };
 
   const changePage = targetPage => {
     if (targetPage) {
-      dispatch(push(urlForPage(targetPage)(routing)));
+      browserHistory.push(urlForPage(targetPage));
     }
   };
 
@@ -93,8 +95,7 @@ const ConnectedPagerBar = connect(mapStateToProps, mapDispatchToProps)(PagerBar)
 
 ConnectedPagerBar.propTypes = {
   path: PropTypes.object.isRequired,
-  routing: PropTypes.object.isRequired,
   displayState: DisplayState.propType.isRequired
 };
 
-export default ConnectedPagerBar;
+export default withRouter(ConnectedPagerBar);

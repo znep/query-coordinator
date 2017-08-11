@@ -20,7 +20,8 @@ describe('components/Modals/PublishConfirmationUSAID', () => {
       publicSelected: true,
       dispatchApplyRevision: sinon.spy(),
       doCancel: sinon.spy(),
-      setPermission: sinon.spy()
+      setPermission: sinon.spy(),
+      params: {}
     };
 
     component = shallow(<PublishConfirmationUSAID {...defaultProps} />);
@@ -70,7 +71,9 @@ describe('components/Modals/PublishConfirmationUSAID', () => {
       ...defaultProps,
       outputSchemaId: null
     };
-    const theComponent = shallow(<PublishConfirmationUSAID {...withoutOutputSchema} />);
+    const theComponent = shallow(
+      <PublishConfirmationUSAID {...withoutOutputSchema} />
+    );
     assert.isNotNull(theComponent);
   });
 

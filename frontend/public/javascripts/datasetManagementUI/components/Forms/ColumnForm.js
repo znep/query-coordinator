@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import _ from 'lodash';
 import Fieldset from 'components/FormComponents/Fieldset';
 import { editView } from 'actions/views';
@@ -49,20 +50,18 @@ ColumnForm.propTypes = {
 };
 
 const mapStateToProps = ({ entities, ui }, { outputSchemaId }) => {
-  const { fourfour } = ui.routing;
   return {
     rows: makeRows(outputSchemaId, entities),
     errors: validateColumnForm(outputSchemaId, entities),
-    fourfour,
     outputSchemaId
   };
 };
 
-const mergeProps = ({ fourfour, outputSchemaId, errors, rows }, { dispatch }) => ({
+const mergeProps = ({ outputSchemaId, errors, rows }, { dispatch }, { params }) => ({
   errors,
   rows,
   outputSchemaId,
-  setErrors: () => dispatch(editView(fourfour, { columnMetadataErrors: errors }))
+  setErrors: () => dispatch(editView(params.fourfour, { columnMetadataErrors: errors }))
 });
 
-export default connect(mapStateToProps, null, mergeProps)(ColumnForm);
+export default withRouter(connect(mapStateToProps, null, mergeProps)(ColumnForm));

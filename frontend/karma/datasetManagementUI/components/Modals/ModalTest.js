@@ -29,7 +29,7 @@ describe('components/Modals/Modal', () => {
 
     const component = shallow(<Modal {...newProps} />);
 
-    assert.isFalse(component.find('Connect(ErrorsHelp)').isEmpty());
+    assert.isFalse(component.find('withRouter(Connect(ErrorsHelp))').isEmpty());
   });
 
   it('renders Publishing modal', () => {
@@ -43,6 +43,6 @@ describe('components/Modals/Modal', () => {
 
     const component = shallow(<Modal {...newProps} />);
 
-    assert.isFalse(component.find('Connect(Publishing)').isEmpty());
+    assert.isFalse(component.find('withRouter(Connect(Publishing))').isEmpty());
   });
 });

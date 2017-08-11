@@ -34,16 +34,15 @@ export class ManageMetadata extends Component {
     });
   }
 
-
   onDatasetTab() {
     return this.props.path === 'metadata/dataset';
   }
 
   revertChanges() {
-    const { dispatch, fourfour } = this.props;
+    const { dispatch, params } = this.props;
 
     dispatch(
-      editView(fourfour, {
+      editView(params.fourfour, {
         ...this.state.initialDatasetMetadata,
         columnFormDirty: false,
         datasetFormDirty: false
@@ -53,14 +52,13 @@ export class ManageMetadata extends Component {
     dispatch(addOutputColumns(this.state.initialColMetadata));
   }
 
-
   handleSaveClick(e) {
     e.preventDefault();
 
-    const { dispatch, view, currentColumns, outputSchemaId } = this.props;
+    const { dispatch, view, currentColumns, outputSchemaId, params } = this.props;
 
     if (this.onDatasetTab() && view.datasetFormDirty) {
-      dispatch(saveDatasetMetadata())
+      dispatch(saveDatasetMetadata(params.fourfour))
         .then(() => {
           this.setState({
             initialDatasetMetadata: Selectors.datasetMetadata(view)
@@ -68,8 +66,7 @@ export class ManageMetadata extends Component {
         })
         .catch(() => console.warn('Save failed'));
     } else if (view.columnFormDirty) {
-
-      dispatch(saveColumnMetadata(outputSchemaId))
+      dispatch(saveColumnMetadata(outputSchemaId, params))
         .then(() => {
           this.setState({
             initialColMetadata: currentColumns
@@ -82,41 +79,36 @@ export class ManageMetadata extends Component {
   }
 
   handleCancelClick() {
-    const { dispatch } = this.props;
+    const { dispatch, params } = this.props;
 
     this.revertChanges();
 
     let path;
     if (!this.onDatasetTab()) {
-      const {
-        source,
-        inputSchema,
-        outputSchema
-      } = Selectors.treeForOutputSchema(this.props.entities, this.props.outputSchemaId);
-      path = Links.showOutputSchema(
-        source.id,
-        inputSchema.id,
-        outputSchema.id
-      )(this.props.location);
+      const { source, inputSchema, outputSchema } = Selectors.treeForOutputSchema(
+        this.props.entities,
+        this.props.outputSchemaId
+      );
+      path = Links.showOutputSchema(params, source.id, inputSchema.id, outputSchema.id);
     }
 
-    dispatch(dismissMetadataPane(path));
+    dispatch(dismissMetadataPane(path, params));
   }
 
   handleTabClick() {
-    const { dispatch, fourfour } = this.props;
+    const { dispatch, params } = this.props;
 
     dispatch(hideFlashMessage());
 
-    dispatch(editView(fourfour, { showErrors: true }));
+    dispatch(editView(params.fourfour, { showErrors: true }));
   }
 
   render() {
-    const { fourfour, columnsExist, view, outputSchemaId } = this.props;
+    const { columnsExist, view, outputSchemaId, params } = this.props;
 
     const metadataContentProps = {
       onDatasetTab: this.onDatasetTab(),
-      fourfour,
+      params,
       onSidebarTabClick: this.handleTabClick,
       columnsExist,
       outputSchemaId
@@ -163,23 +155,21 @@ export class ManageMetadata extends Component {
 
 ManageMetadata.propTypes = {
   view: PropTypes.object.isRequired,
-  fourfour: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   columnsExist: PropTypes.bool,
   currentColumns: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   outputSchemaId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }, ownProps) => {
+const mapStateToProps = ({ entities }, ownProps) => {
   const outputSchemaId = parseInt(ownProps.params.outputSchemaId, 10);
   return {
-    fourfour: ui.routing.fourfour,
-    view: entities.views[ui.routing.fourfour],
+    view: entities.views[ownProps.params.fourfour],
     path: ownProps.route.path,
-    location: ui.routing.location,
+    params: ownProps.params,
     columnsExist: !_.isEmpty(entities.output_columns),
     outputSchemaId,
     entities: entities,

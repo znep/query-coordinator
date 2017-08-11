@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router';
 import * as Links from '../links';
 import * as Selectors from '../selectors';
 import RecentActions from './RecentActions';
@@ -20,8 +20,7 @@ function query(entities) {
   };
 }
 
-export const ManageData = props => {
-  const { entities, columnsExist } = props;
+export const ManageData = ({ entities, columnsExist, params }) => {
   const { anyColumnHasDescription } = query(entities);
 
   const doneCheckmark = <SocrataIcon name="checkmark-alt" className={styles.icon} />;
@@ -33,7 +32,7 @@ export const ManageData = props => {
 
   const currentOutputSchema = Selectors.currentOutputSchema(entities);
   const columnDescriptionLink = currentOutputSchema
-    ? Links.columnMetadataForm(currentOutputSchema.id)
+    ? Links.columnMetadataForm(params, currentOutputSchema.id)
     : '';
 
   return (
@@ -42,8 +41,11 @@ export const ManageData = props => {
         <SocrataIcon name="column-info" className={styles.icon} />
         {columnDescriptionCheckmark}
 
-        <h3>{I18n.home_pane.sidebar.column_descriptions}</h3>
-        <p> {I18n.home_pane.sidebar.column_descriptions_blurb}{' '}
+        <h3>
+          {I18n.home_pane.sidebar.column_descriptions}
+        </h3>
+        <p>
+          {' '}{I18n.home_pane.sidebar.column_descriptions_blurb}{' '}
         </p>
         <Link to={columnDescriptionLink}>
           <button
@@ -59,7 +61,9 @@ export const ManageData = props => {
       <div>
         <SocrataIcon name="cards" className={styles.icon} />
         {visualizationDoneCheckmark}
-        <h3>{I18n.home_pane.sidebar.visualize}</h3>
+        <h3>
+          {I18n.home_pane.sidebar.visualize}
+        </h3>
         <p>
           {I18n.home_pane.sidebar.visualize_blurb}
         </p>
@@ -71,7 +75,9 @@ export const ManageData = props => {
       <div>
         <SocrataIcon name="featured" className={styles.icon} />
         {featuredDoneCheckmark}
-        <h3>{I18n.home_pane.sidebar.feature}</h3>
+        <h3>
+          {I18n.home_pane.sidebar.feature}
+        </h3>
         <p>
           {I18n.home_pane.sidebar.feature_blurb}
         </p>
@@ -86,23 +92,25 @@ export const ManageData = props => {
 
 ManageData.propTypes = {
   entities: PropTypes.object,
-  columnsExist: PropTypes.bool
+  columnsExist: PropTypes.bool,
+  params: PropTypes.object.isRequired
 };
 
-function HomePaneSidebar(props) {
-  const { urlParams } = props;
-  const showManageTab = urlParams.sidebarSelection === 'manageTab';
-  const contents = showManageTab ? <ManageData {...props} /> : <RecentActions />;
+export function HomePaneSidebar({ params, entities, columnsExist }) {
+  const showManageTab = params.sidebarSelection === 'manageTab';
+  const contents = showManageTab
+    ? <ManageData entities={entities} columnsExist={columnsExist} params={params} />
+    : <RecentActions />;
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.nav}>
-        <Link to={Links.home}>
+        <Link to={Links.home(params)}>
           <button className={!showManageTab ? styles.navBtnEnabled : styles.navBtn}>
             {I18n.home_pane.home_pane_sidebar.recent_actions}
           </button>
         </Link>
-        <Link to={Links.manageTab}>
+        <Link to={Links.manageTab(params)}>
           <button className={showManageTab ? styles.navBtnEnabled : styles.navBtn}>
             {I18n.home_pane.home_pane_sidebar.manage}
           </button>
@@ -114,16 +122,14 @@ function HomePaneSidebar(props) {
 }
 
 HomePaneSidebar.propTypes = {
-  location: PropTypes.object.isRequired,
-  entities: PropTypes.object.isRequired,
-  urlParams: PropTypes.object.isRequired
+  entities: PropTypes.object,
+  columnsExist: PropTypes.bool,
+  params: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }, { urlParams }) => ({
+const mapStateToProps = ({ entities }) => ({
   entities,
-  urlParams,
-  location: ui.routing.location,
   columnsExist: !_.isEmpty(entities.output_columns)
 });
 
-export default connect(mapStateToProps)(HomePaneSidebar);
+export default withRouter(connect(mapStateToProps)(HomePaneSidebar));

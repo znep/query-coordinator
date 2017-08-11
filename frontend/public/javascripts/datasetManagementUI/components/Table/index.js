@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-
+import { withRouter } from 'react-router';
 import ColumnHeader from 'components/Table/ColumnHeader';
 import TransformStatus from 'components/Table/TransformStatus';
 import TableBody from 'components/Table/TableBody';
@@ -24,6 +24,7 @@ export function Table({
   updateColumnType,
   addColumn,
   dropColumn,
+  params,
   validateThenSetRowIdentifier
 }) {
   const inRowErrorMode = displayState.type === DisplayState.ROW_ERRORS;
@@ -39,9 +40,10 @@ export function Table({
               outputColumn={column}
               updateColumnType={updateColumnType}
               activeApiCallInvolvingThis={_.has(apiCallsByColumnId, column.id)}
-              addColumn={() => addColumn(outputSchema, column)}
-              dropColumn={() => dropColumn(outputSchema, column)}
-              validateThenSetRowIdentifier={() => validateThenSetRowIdentifier(outputSchema, column)} />
+              addColumn={() => addColumn(outputSchema, column, params)}
+              dropColumn={() => dropColumn(outputSchema, column, params)}
+              validateThenSetRowIdentifier={() =>
+                validateThenSetRowIdentifier(outputSchema, column, params)} />
           )}
         </tr>
         <tr className={styles.columnStatuses}>
@@ -92,27 +94,29 @@ Table.propTypes = {
       transform_id: PropTypes.number.isRequired,
       transform: PropTypes.shape({
         attempts: PropTypes.number.isRequired,
-        error_indices: PropTypes.array.isRequired,
+        error_indices: PropTypes.array,
         id: PropTypes.number.isRequired,
         output_soql_type: PropTypes.string.isRequired,
         transform_expr: PropTypes.string.isRequired,
         transform_input_columns: PropTypes.array.isRequired
       })
     })
-  )
+  ),
+  params: PropTypes.object.isRequired
 };
 
 const combineAndSort = ({ current, ignored }) => _.sortBy([...current, ...ignored], 'position');
 
 // TODO: this is wrong...this only gets a single input column....not all
-const getInputColumns = (entities, outputColumns) => outputColumns.map((outputColumn) => {
-  const inputColumnId = outputColumn.transform.transform_input_columns[0].input_column_id;
-  const inputColumn = entities.input_columns[inputColumnId];
-  return {
-    ...outputColumn,
-    inputColumn
-  };
-});
+const getInputColumns = (entities, outputColumns) =>
+  outputColumns.map(outputColumn => {
+    const inputColumnId = outputColumn.transform.transform_input_columns[0].input_column_id;
+    const inputColumn = entities.input_columns[inputColumnId];
+    return {
+      ...outputColumn,
+      inputColumn
+    };
+  });
 
 // TODO: we currently don't handle the case where currentAndIgnoredOutputColumns
 // fails; should probably redirect or display some message to the user
@@ -130,24 +134,21 @@ const mapStateToProps = ({ entities, ui }, { path, inputSchema, outputSchema, di
     displayState,
     outputColumns: getInputColumns(
       entities,
-      combineAndSort(
-        currentAndIgnoredOutputColumns(
-          entities,
-          outputSchema.id
-        )
-      )
+      combineAndSort(currentAndIgnoredOutputColumns(entities, outputSchema.id))
     ),
     apiCallsByColumnId
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  addColumn: (outputSchema, column) => dispatch(ShowActions.addColumn(outputSchema, column)),
-  dropColumn: (outputSchema, column) => dispatch(ShowActions.dropColumn(outputSchema, column)),
-  updateColumnType: (oldSchema, oldColumn, newType) =>
-    dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType)),
-  validateThenSetRowIdentifier: (outputSchema, column) =>
-    dispatch(ShowActions.validateThenSetRowIdentifier(outputSchema, column))
+  addColumn: (outputSchema, column, params) =>
+    dispatch(ShowActions.addColumn(outputSchema, column, params)),
+  dropColumn: (outputSchema, column, params) =>
+    dispatch(ShowActions.dropColumn(outputSchema, column, params)),
+  updateColumnType: (oldSchema, oldColumn, newType, params) =>
+    dispatch(ShowActions.updateColumnType(oldSchema, oldColumn, newType, params)),
+  validateThenSetRowIdentifier: (outputSchema, column, params) =>
+    dispatch(ShowActions.validateThenSetRowIdentifier(outputSchema, column, params))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Table);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Table));

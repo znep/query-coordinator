@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { push } from 'react-router-redux';
+import { browserHistory } from 'react-router';
 import uuid from 'uuid';
 import { socrataFetch, checkStatus, checkStatusForPoll, getJson } from 'lib/http';
 import {
@@ -115,9 +115,8 @@ export function updateRevision(permission) {
   };
 }
 
-export function applyRevision() {
-  return (dispatch, getState) => {
-    const location = getState().ui.routing.location;
+export function applyRevision(params) {
+  return dispatch => {
     const callId = uuid();
 
     dispatch(
@@ -142,7 +141,7 @@ export function applyRevision() {
         // maybe return status and then do something based on that?
         dispatch(pollForTaskSetProgress(taskSetId));
 
-        dispatch(push(Links.home(location)));
+        browserHistory.push(Links.home(params));
       })
       .catch(err => {
         dispatch(apiCallFailed(callId, err));
@@ -165,8 +164,11 @@ export function pollForTaskSetProgress(taskSetId) {
             dispatch(pollForTaskSetProgressSuccess(revision, taskSet));
           });
 
-          if (_.map(revision.task_sets, 'status').some(status => (
-              status !== TASK_SET_FAILURE && status !== TASK_SET_SUCCESSFUL))) {
+          if (
+            _.map(revision.task_sets, 'status').some(
+              status => status !== TASK_SET_FAILURE && status !== TASK_SET_SUCCESSFUL
+            )
+          ) {
             setTimeout(() => {
               dispatch(pollForTaskSetProgress(taskSetId));
             }, TASK_SET_PROGRESS_POLL_INTERVAL_MS);

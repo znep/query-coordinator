@@ -1,19 +1,19 @@
 /* eslint react/jsx-indent: 0 */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router';
 import * as Links from 'links';
 import _ from 'lodash';
 import * as Selectors from 'selectors';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Uploads/UploadBreadcrumbs.scss';
 
-export const UploadBreadcrumbs = ({ atShowUpload, sourceId, outputSchemaId, inputSchemaId }) =>
+export const UploadBreadcrumbs = ({ atShowUpload, sourceId, outputSchemaId, inputSchemaId, params }) =>
   <ol className={styles.list}>
     <li className={atShowUpload ? styles.active : null}>
       {atShowUpload
         ? I18n.home_pane.data
-        : <Link to={Links.sources}>
+        : <Link to={Links.sources(params)}>
             {I18n.home_pane.data}
           </Link>}
       <SocrataIcon name="arrow-right" className={styles.icon} />
@@ -21,7 +21,7 @@ export const UploadBreadcrumbs = ({ atShowUpload, sourceId, outputSchemaId, inpu
     <li className={!atShowUpload ? styles.active : null}>
       {!atShowUpload || !sourceId || !inputSchemaId || !outputSchemaId
         ? I18n.home_pane.preview
-        : <Link to={Links.showOutputSchema(sourceId, inputSchemaId, outputSchemaId)}>
+        : <Link to={Links.showOutputSchema(params, sourceId, inputSchemaId, outputSchemaId)}>
             {I18n.home_pane.preview}
           </Link>}
     </li>
@@ -31,7 +31,8 @@ UploadBreadcrumbs.propTypes = {
   atShowUpload: PropTypes.bool,
   sourceId: PropTypes.number,
   outputSchemaId: PropTypes.number,
-  inputSchemaId: PropTypes.number
+  inputSchemaId: PropTypes.number,
+  params: PropTypes.object.isRequired
 };
 
 export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
@@ -60,10 +61,10 @@ export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
 
   return {
     atShowUpload,
-    sourceId: sourceId,
+    sourceId,
     outputSchemaId: currentOutputSchema.id,
     inputSchemaId: currentInputSchema.id
   };
 };
 
-export default connect(mapStateToProps)(UploadBreadcrumbs);
+export default withRouter(connect(mapStateToProps)(UploadBreadcrumbs));

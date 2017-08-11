@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
+import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import styleguide from 'common/components';
 import { showModal } from 'actions/modal';
@@ -130,9 +131,10 @@ function isDataSatisfied(state) {
   return dataSatisfied;
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, { params }) {
   const dataSatisfied = isDataSatisfied(state);
-  const view = state.entities.views[state.ui.routing.fourfour];
+  const { fourfour } = params;
+  const view = state.entities.views[fourfour];
   return {
     metadataSatisfied: view.datasetMetadataErrors.length === 0,
     dataSatisfied,
@@ -156,4 +158,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishButton);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PublishButton));

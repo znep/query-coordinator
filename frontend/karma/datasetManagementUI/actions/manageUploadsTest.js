@@ -6,9 +6,9 @@ import { createUpload } from 'actions/manageUploads';
 import mockAPI from '../testHelpers/mockAPI';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
+import { addLocation } from 'actions/history';
 import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
-import { setFourfour, addLocation } from 'actions/routing';
 
 const socket = mockSocket(
   bootstrapChannels.map(bc => {
@@ -24,6 +24,16 @@ const socket = mockSocket(
 );
 
 const mockStore = configureStore([thunk.withExtraArgument(socket)]);
+
+const params = {
+  category: 'dataset',
+  name: 'dfsdfdsf',
+  fourfour: window.initialState.view.id,
+  revisionSeq: '0',
+  sourceId: '115',
+  inputSchemaId: '98',
+  outputSchemaId: '144'
+};
 
 describe('actions/manageUploads', () => {
   describe('actions/manageUploads/createUpload', () => {
@@ -52,20 +62,14 @@ describe('actions/manageUploads', () => {
       );
 
       store.dispatch(
-        setFourfour(Object.keys(store.getState().entities.views)[0])
-      );
-
-      store.dispatch(
         addLocation({
-          locationBeforeTransitions: {
-            pathname:
-              '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/sources/114/schemas/97/output/143',
-            search: '',
-            hash: '',
-            action: 'PUSH',
-            key: 'lb01bi',
-            query: {}
-          }
+          pathname:
+            '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/sources/114/schemas/97/output/143',
+          search: '',
+          hash: '',
+          action: 'PUSH',
+          key: 'lb01bi',
+          query: {}
         })
       );
     });
@@ -74,7 +78,7 @@ describe('actions/manageUploads', () => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
         .then(() => {
           const actions = fakeStore.getActions();
           assert.equal(actions[0].type, 'API_CALL_STARTED');
@@ -90,38 +94,11 @@ describe('actions/manageUploads', () => {
         });
     });
 
-    it('redirects to ShowOutputSchema preview on successful source creation', done => {
-      const fakeStore = mockStore(store.getState());
-      const fourfour = Object.keys(store.getState().entities.views)[0];
-
-      fakeStore
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }, fourfour))
-        .then(() => {
-          const actions = fakeStore.getActions();
-          const redirectAction = actions.filter(
-            action => action.type === '@@router/CALL_HISTORY_METHOD'
-          )[0];
-
-          const { payload: redirectPayload } = redirectAction;
-
-          assert.isAtLeast(
-            actions.filter(action => action.type === 'API_CALL_SUCCEEDED')
-              .length,
-            1
-          );
-          assert.equal(redirectPayload.method, 'push');
-          assert.match(redirectPayload.args[0], /\/sources/);
-
-          done();
-        })
-        .catch(err => done(err));
-    });
-
     it('dispatches a CREATE_UPLOAD_SUCCESS action with the correct sourceId', done => {
       const fakeStore = mockStore(store.getState());
 
       fakeStore
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
         .then(() => {
           const actions = fakeStore.getActions();
           const expectedAction = actions.filter(

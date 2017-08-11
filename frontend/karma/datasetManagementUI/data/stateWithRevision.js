@@ -138,7 +138,7 @@ export default {
         created_at: new Date('2017-06-15T18:59:50.514260Z'),
         source_type: {
           type: 'upload',
-          filename: 'austin_animal_center_stray_map.csv',
+          filename: 'austin_animal_center_stray_map.csv'
         },
         percentCompleted: 100,
         finished_at: new Date(1497553192712)
@@ -2872,63 +2872,49 @@ export default {
       kind: '',
       visible: false
     },
-    routing: {
-      fourfour: 'nn5w-zj56',
-      outputSchemaId: 152,
-      history: [
-        {
-          pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0',
-          search: '',
-          hash: '',
-          action: 'POP',
-          key: null,
-          query: {}
-        },
-        {
-          pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0/sources/123',
-          search: '',
-          hash: '',
-          action: 'PUSH',
-          key: 'u9pj0n',
-          query: {}
-        },
-        {
-          pathname:
-            '/dataset/okokokokokok/nn5w-zj56/revisions/0/sources/123/schemas/106/output/152',
-          search: '',
-          hash: '',
-          action: 'PUSH',
-          key: 'uuhxjl',
-          query: {}
-        },
-        {
-          pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0',
-          search: '',
-          hash: '',
-          action: 'PUSH',
-          key: 'mx2nmy',
-          query: {}
-        },
-        {
-          pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0',
-          search: '',
-          hash: '',
-          action: 'REPLACE',
-          key: 'q8r0ua',
-          query: {}
-        }
-      ],
-      location: {
-        locationBeforeTransitions: {
-          pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0',
-          search: '',
-          hash: '',
-          action: 'REPLACE',
-          key: 'q8r0ua',
-          query: {}
-        }
+    history: [
+      {
+        pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0',
+        search: '',
+        hash: '',
+        action: 'POP',
+        key: null,
+        query: {}
+      },
+      {
+        pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0/sources/123',
+        search: '',
+        hash: '',
+        action: 'PUSH',
+        key: 'u9pj0n',
+        query: {}
+      },
+      {
+        pathname:
+          '/dataset/okokokokokok/nn5w-zj56/revisions/0/sources/123/schemas/106/output/152',
+        search: '',
+        hash: '',
+        action: 'PUSH',
+        key: 'uuhxjl',
+        query: {}
+      },
+      {
+        pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0',
+        search: '',
+        hash: '',
+        action: 'PUSH',
+        key: 'mx2nmy',
+        query: {}
+      },
+      {
+        pathname: '/dataset/okokokokokok/nn5w-zj56/revisions/0',
+        search: '',
+        hash: '',
+        action: 'REPLACE',
+        key: 'q8r0ua',
+        query: {}
       }
-    },
+    ],
     notifications: [],
     modal: {
       visible: true,

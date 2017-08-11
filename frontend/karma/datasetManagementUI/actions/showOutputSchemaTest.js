@@ -21,6 +21,16 @@ const socket = mockSocket(bootstrapChannels);
 
 const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 
+const params = {
+  category: 'dataset',
+  name: 'dfsdfdsf',
+  fourfour: window.initialState.view.id,
+  revisionSeq: '0',
+  sourceId: '115',
+  inputSchemaId: '98',
+  outputSchemaId: '144'
+};
+
 describe('actions/showOutputSchema', () => {
 
   describe('addColumn', () => {
@@ -46,12 +56,12 @@ describe('actions/showOutputSchema', () => {
       );
 
       store
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
         .then(() => {
           const { entities } = store.getState();
           os = currentOutputSchema(entities);
           column = columnsForOutputSchema(entities, os.id)[0];
-          return store.dispatch(addColumn(os, column));
+          return store.dispatch(addColumn(os, column, params));
         })
         .then(() => {
           return store.getState();
@@ -59,7 +69,7 @@ describe('actions/showOutputSchema', () => {
         .then(state => {
           const fakeStore = mockStore(state);
           return fakeStore
-            .dispatch(addColumn(os, column))
+            .dispatch(addColumn(os, column, params))
             .then(() => fakeStore.getActions());
         })
         .then(actions => {
@@ -94,19 +104,6 @@ describe('actions/showOutputSchema', () => {
 
       assert.isAtLeast(expectedAction.length, 1);
     });
-
-    it('redirects to a new output schema preview', () => {
-      const expectedAction = recordedActions.filter(
-        action => action.type === '@@router/CALL_HISTORY_METHOD'
-      )[0];
-
-      const { payload } = expectedAction;
-
-      assert.match(
-        payload.args[0],
-        /\/sources\/\d+\/schemas\/\d+\/output\/\d+/
-      );
-    });
   });
 
   describe('dropColumn', () => {
@@ -132,12 +129,12 @@ describe('actions/showOutputSchema', () => {
       );
 
       store
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
         .then(() => {
           const { entities } = store.getState();
           os = currentOutputSchema(entities);
           column = columnsForOutputSchema(entities, os.id)[0];
-          return store.dispatch(dropColumn(os, column));
+          return store.dispatch(dropColumn(os, column, params));
         })
         .then(() => {
           return store.getState();
@@ -145,7 +142,7 @@ describe('actions/showOutputSchema', () => {
         .then(state => {
           const fakeStore = mockStore(state);
           return fakeStore
-            .dispatch(dropColumn(os, column))
+            .dispatch(dropColumn(os, column, params))
             .then(() => fakeStore.getActions());
         })
         .then(actions => {
@@ -184,19 +181,6 @@ describe('actions/showOutputSchema', () => {
 
       assert.equal(expectedAction.length, 0);
     });
-
-    it('redirects to a new output schema preview', () => {
-      const expectedAction = recordedActions.filter(
-        action => action.type === '@@router/CALL_HISTORY_METHOD'
-      )[0];
-
-      const { payload } = expectedAction;
-
-      assert.match(
-        payload.args[0],
-        /\/sources\/\d+\/schemas\/\d+\/output\/\d+/
-      );
-    });
   });
 
   describe('updateColumnType', () => {
@@ -222,12 +206,12 @@ describe('actions/showOutputSchema', () => {
       );
 
       store
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
         .then(() => {
           const { entities } = store.getState();
           os = currentOutputSchema(entities);
           column = columnsForOutputSchema(entities, os.id)[0];
-          return store.dispatch(updateColumnType(os, column, 'text'));
+          return store.dispatch(updateColumnType(os, column, 'text', params));
         })
         .then(() => {
           return store.getState();
@@ -235,7 +219,7 @@ describe('actions/showOutputSchema', () => {
         .then(state => {
           const fakeStore = mockStore(state);
           return fakeStore
-            .dispatch(updateColumnType(os, column, 'text'))
+            .dispatch(updateColumnType(os, column, 'text', params))
             .then(() => fakeStore.getActions());
         })
         .then(actions => {
@@ -293,19 +277,6 @@ describe('actions/showOutputSchema', () => {
     //   assert.isAtLeast(expectedColumn.length, 1);
     //   assert.isAtLeast(expectedTransform.length, 1);
     // });
-
-    it('redirects to a new output schema preview', () => {
-      const expectedAction = recordedActions.filter(
-        action => action.type === '@@router/CALL_HISTORY_METHOD'
-      )[0];
-
-      const { payload } = expectedAction;
-
-      assert.match(
-        payload.args[0],
-        /\/sources\/\d+\/schemas\/\d+\/output\/\d+/
-      );
-    });
   });
 
   describe('outputColumnsWithChangedType', () => {

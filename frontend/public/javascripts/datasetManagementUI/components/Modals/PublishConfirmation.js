@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ModalContent, ModalFooter } from 'common/components';
+import { withRouter } from 'react-router';
 
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { hideModal } from 'actions/modal';
@@ -9,12 +10,16 @@ import ApiCallButton from 'components/ApiCallButton';
 import { APPLY_REVISION } from 'actions/apiCalls';
 import styles from 'styles/Modals/PublishConfirmation.scss';
 
-function PublishConfirmation({ doCancel, doUpdate }) {
+function PublishConfirmation({ doCancel, doUpdate, params }) {
   return (
     <div>
-      <h2>{I18n.home_pane.publish_confirmation.title}</h2>
+      <h2>
+        {I18n.home_pane.publish_confirmation.title}
+      </h2>
       <ModalContent>
-        <p>{I18n.home_pane.publish_confirmation.body}</p>
+        <p>
+          {I18n.home_pane.publish_confirmation.body}
+        </p>
         <SocrataIcon className={styles.mainIcon} name="public-open" />
       </ModalContent>
       <ModalFooter className={styles.modalFooter}>
@@ -24,7 +29,7 @@ function PublishConfirmation({ doCancel, doUpdate }) {
         <ApiCallButton
           additionalClassName={styles.mainButton}
           operation={APPLY_REVISION}
-          onClick={doUpdate}>
+          onClick={() => doUpdate(params)}>
           {I18n.home_pane.publish_confirmation.button}
         </ApiCallButton>
       </ModalFooter>
@@ -34,14 +39,15 @@ function PublishConfirmation({ doCancel, doUpdate }) {
 
 PublishConfirmation.propTypes = {
   doCancel: PropTypes.func.isRequired,
-  doUpdate: PropTypes.func.isRequired
+  doUpdate: PropTypes.func.isRequired,
+  params: PropTypes.object.isRequired
 };
 
 export function mapDispatchToProps(dispatch) {
   return {
     doCancel: () => dispatch(hideModal()),
-    doUpdate: () => dispatch(applyRevision())
+    doUpdate: (params) => dispatch(applyRevision(params))
   };
 }
 
-export default connect(null, mapDispatchToProps)(PublishConfirmation);
+export default withRouter(connect(null, mapDispatchToProps)(PublishConfirmation));

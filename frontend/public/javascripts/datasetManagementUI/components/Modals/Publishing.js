@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import { ModalContent, ModalFooter } from 'common/components';
 import SocrataIcon from '../../../common/components/SocrataIcon';
@@ -51,10 +52,10 @@ export function computeProgress(rowsToBeUpserted, taskSet) {
     case ApplyRevision.TASK_SET_INITIALIZING:
     case ApplyRevision.TASK_SET_CREATING_COLUMNS: {
       const fractionOfTimeEstimate = (now - taskSet.created_at) / CREATING_COLUMNS_STAGE_TIME_GUESS_MS;
-      return Math.min(
-        fractionOfTimeEstimate,
-        CREATING_COLUMNS_FRACTION_WHEN_OVER
-      ) * CREATING_COLUMNS_STAGE_FRACTION;
+      return (
+        Math.min(fractionOfTimeEstimate, CREATING_COLUMNS_FRACTION_WHEN_OVER) *
+        CREATING_COLUMNS_STAGE_FRACTION
+      );
     }
     case ApplyRevision.TASK_SET_UPSERTING: {
       if (rowsToBeUpserted === null) {
@@ -63,7 +64,7 @@ export function computeProgress(rowsToBeUpserted, taskSet) {
       const mostRecentLogItem = taskSet.log[0];
       const rowsUpserted = mostRecentLogItem.details.count || 0;
       const fractionUpserted = rowsUpserted / rowsToBeUpserted;
-      return CREATING_COLUMNS_STAGE_FRACTION + (fractionUpserted * UPSERTING_STAGE_FRACTION);
+      return CREATING_COLUMNS_STAGE_FRACTION + fractionUpserted * UPSERTING_STAGE_FRACTION;
     }
     case ApplyRevision.TASK_SET_SUCCESSFUL:
       return 1;
@@ -92,7 +93,6 @@ function inProgressMessage(rowsToBeUpserted, taskSet) {
 const TICK_MS = 500;
 
 export class Publishing extends React.Component {
-
   constructor() {
     super();
     this.state = {
@@ -111,7 +111,13 @@ export class Publishing extends React.Component {
 
   render() {
     const {
-      revision, taskSet, fourfour, rowsToBeUpserted, applyRevision, onCancelClick
+      revision,
+      taskSet,
+      fourfour,
+      rowsToBeUpserted,
+      applyRevision,
+      onCancelClick,
+      params
     } = this.props;
 
     let title;
@@ -129,9 +135,7 @@ export class Publishing extends React.Component {
         message = SubI18n.progress_messages.done;
         icon = <SocrataIcon className={styles.success} name="checkmark-alt" />;
         button = (
-          <a
-            href={`/d/${fourfour}`}
-            className={styles.toPrimer}>
+          <a href={`/d/${fourfour}`} className={styles.toPrimer}>
             {SubI18n.to_primer}
           </a>
         );
@@ -145,15 +149,14 @@ export class Publishing extends React.Component {
         icon = <SocrataIcon className={styles.failure} name="close-circle" />;
         button = (
           <div>
-            <button
-              key="cancel"
-              onClick={onCancelClick}
-              className={styles.cancelButton}>
+            <button key="cancel" onClick={onCancelClick} className={styles.cancelButton}>
               {I18n.common.cancel}
             </button>
             <ApiCallButton
               additionalClassName={styles.tryAgainButton}
-              onClick={() => { applyRevision(taskSet); }}
+              onClick={() => {
+                applyRevision(params);
+              }}
               operation={APPLY_REVISION}>
               {I18n.common.try_again}
             </ApiCallButton>
@@ -163,9 +166,10 @@ export class Publishing extends React.Component {
 
       default:
         // in progress
-        title = revision.permission === 'public'
-          ? SubI18n.publishing.title_public
-          : SubI18n.publishing.title_private;
+        title =
+          revision.permission === 'public'
+            ? SubI18n.publishing.title_public
+            : SubI18n.publishing.title_private;
         body = SubI18n.publishing.body;
         progressBarType = 'inProgress';
         message = inProgressMessage(rowsToBeUpserted, taskSet);
@@ -176,9 +180,13 @@ export class Publishing extends React.Component {
 
     return (
       <div>
-        <h2>{title}</h2>
+        <h2>
+          {title}
+        </h2>
         <ModalContent>
-          <p>{body}</p>
+          <p>
+            {body}
+          </p>
           {icon}
           <div className={styles.progressBarContainer}>
             <ProgressBar
@@ -197,7 +205,6 @@ export class Publishing extends React.Component {
       </div>
     );
   }
-
 }
 
 Publishing.propTypes = {
@@ -211,13 +218,14 @@ Publishing.propTypes = {
   rowsToBeUpserted: PropTypes.number,
   fourfour: PropTypes.string.isRequired,
   applyRevision: PropTypes.func.isRequired,
-  onCancelClick: PropTypes.func.isRequired
+  onCancelClick: PropTypes.func.isRequired,
+  params: PropTypes.object.isRequired
 };
 
-export function mapStateToProps({ entities, ui: { routing } }) {
+export function mapStateToProps({ entities }, { params }) {
   const revision = _.values(entities.revisions)[0];
   const taskSet = _.maxBy(_.values(entities.task_sets), job => job.updated_at);
-  const fourfour = routing.fourfour;
+  const { fourfour } = params;
   const rowsToBeUpserted = taskSet.output_schema_id
     ? Selectors.rowsToBeImported(entities, taskSet.output_schema_id)
     : null;
@@ -232,9 +240,10 @@ export function mapStateToProps({ entities, ui: { routing } }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    applyRevision: taskSet => dispatch(ApplyRevision.applyRevision(taskSet.output_schema_id)),
+    applyRevision: (params) =>
+      dispatch(ApplyRevision.applyRevision(params)),
     onCancelClick: () => dispatch(hideModal())
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Publishing);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Publishing));

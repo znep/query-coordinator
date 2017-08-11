@@ -11,10 +11,11 @@ import { API_CALL_STARTED, SAVE_DATASET_METADATA } from 'actions/apiCalls';
 import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
 import { createUpload } from 'actions/manageUploads';
 import mockAPI from '../testHelpers/mockAPI';
+import {} from '../testHelpers/mockAPI/responses';
 import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
 import { editView } from 'actions/views';
-import { setFourfour, addLocation } from 'actions/routing';
+import { addLocation } from 'actions/history';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
 
@@ -33,6 +34,16 @@ const socket = mockSocket(
 );
 
 const mockStore = configureStore([thunk.withExtraArgument(socket)]);
+
+const params = {
+  category: 'dataset',
+  name: 'dfsdfdsf',
+  fourfour: window.initialState.view.id,
+  revisionSeq: '0',
+  sourceId: '115',
+  inputSchemaId: '98',
+  outputSchemaId: '144'
+};
 
 describe('actions/manageMetadata', () => {
   let unmock;
@@ -60,20 +71,14 @@ describe('actions/manageMetadata', () => {
     );
 
     store.dispatch(
-      setFourfour(Object.keys(store.getState().entities.views)[0])
-    );
-
-    store.dispatch(
       addLocation({
-        locationBeforeTransitions: {
-          pathname:
-            '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/sources/114/schemas/97/output/143',
-          search: '',
-          hash: '',
-          action: 'PUSH',
-          key: 'lb01bi',
-          query: {}
-        }
+        pathname:
+          '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/sources/114/schemas/97/output/143',
+        search: '',
+        hash: '',
+        action: 'PUSH',
+        key: 'lb01bi',
+        query: {}
       })
     );
   });
@@ -82,8 +87,10 @@ describe('actions/manageMetadata', () => {
     it('dispatches an api call started action with correct data', done => {
       const fakeStore = mockStore(store.getState());
 
+      const fourfour = window.initialState.view.id;
+
       fakeStore
-        .dispatch(saveDatasetMetadata())
+        .dispatch(saveDatasetMetadata(fourfour))
         .then(() => {
           const action = fakeStore.getActions()[1];
 
@@ -101,8 +108,10 @@ describe('actions/manageMetadata', () => {
     it('dispatches edit view action with correct data if server responded with 200-level status', done => {
       const fakeStore = mockStore(store.getState());
 
+      const fourfour = window.initialState.view.id;
+
       fakeStore
-        .dispatch(saveDatasetMetadata())
+        .dispatch(saveDatasetMetadata(fourfour))
         .then(() => {
           const action = fakeStore.getActions()[2];
 
@@ -118,7 +127,7 @@ describe('actions/manageMetadata', () => {
     });
 
     it('shows an error message if form schema is invalid', () => {
-      const fourfour = Object.keys(store.getState().entities.views)[0];
+      const fourfour = window.initialState.view.id;
 
       store.dispatch(
         editView(fourfour, {
@@ -128,7 +137,7 @@ describe('actions/manageMetadata', () => {
 
       const fakeStore = mockStore(store.getState());
 
-      fakeStore.dispatch(saveDatasetMetadata());
+      fakeStore.dispatch(saveDatasetMetadata(fourfour));
 
       const action = fakeStore.getActions()[2];
 
@@ -137,7 +146,7 @@ describe('actions/manageMetadata', () => {
     });
 
     it('shows field-level errors if form schema is invalid', () => {
-      const fourfour = Object.keys(store.getState().entities.views)[0];
+      const fourfour = window.initialState.view.id;
 
       store.dispatch(
         editView(fourfour, {
@@ -147,7 +156,7 @@ describe('actions/manageMetadata', () => {
 
       const fakeStore = mockStore(store.getState());
 
-      fakeStore.dispatch(saveDatasetMetadata());
+      fakeStore.dispatch(saveDatasetMetadata(fourfour));
 
       const action = fakeStore.getActions()[1];
 
@@ -162,15 +171,19 @@ describe('actions/manageMetadata', () => {
   describe('actions/manageMetadata/saveColumnMetadata', () => {
     beforeEach(done => {
       store
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }))
+        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
         .then(() => done());
     });
 
     it('dispatches an API_CALL_STARTED started action with correct data', done => {
       const fakeStore = mockStore(store.getState());
 
+      const osid = Number(
+        Object.keys(store.getState().entities.output_schemas)[0]
+      );
+
       fakeStore
-        .dispatch(saveColumnMetadata())
+        .dispatch(saveColumnMetadata(osid, params))
         .then(() => {
           const action = fakeStore.getActions()[1];
 
@@ -188,8 +201,12 @@ describe('actions/manageMetadata', () => {
     it('dispatches a LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS action with correct data if server resonds with 200-level status', done => {
       const fakeStore = mockStore(store.getState());
 
+      const osid = Number(
+        Object.keys(store.getState().entities.output_schemas)[0]
+      );
+
       fakeStore
-        .dispatch(saveColumnMetadata())
+        .dispatch(saveColumnMetadata(osid, params))
         .then(() => {
           const action = fakeStore.getActions()[2];
 

@@ -7,7 +7,7 @@ import ShowOutputSchema from './components/ShowOutputSchema';
 import { focusColumnEditor } from './actions/manageMetadata';
 import ShowUpload from './components/ShowUpload';
 import NoMatch from './components/NoMatch';
-import { home } from 'links';
+import * as Links from 'links';
 import _ from 'lodash';
 
 const checkUploadStatus = store => (nextState, replace) => {
@@ -17,7 +17,7 @@ const checkUploadStatus = store => (nextState, replace) => {
   if (sourceExists) {
     store.dispatch(focusColumnEditor(nextState));
   } else {
-    const newPath = home(nextState.location);
+    const newPath = Links.home(nextState.params);
 
     replace(newPath);
   }
@@ -26,7 +26,7 @@ const checkUploadStatus = store => (nextState, replace) => {
 const checkUpsertStatus = store => (nextState, replace, blocking) => {
   const taskSet = _.maxBy(_.values(store.getState().entities.task_sets), job => job.updated_at);
 
-  const newPath = home(nextState.location);
+  const newPath = Links.home(nextState.params);
 
   // The intent of this function is to redirect the user to the home screen if
   // they have published to primer. We determine this by the presence of a task set.
@@ -45,7 +45,6 @@ export default function rootRoute(store) {
       path="/(:locale/):category/:name/:fourfour/revisions/:revisionSeq"
       component={App}
       onEnter={checkUpsertStatus(store)}>
-
       <IndexRoute component={ShowRevision} />
       <Redirect from="metadata" to="metadata/dataset" />
       <Route path="metadata/dataset" component={ManageMetadata} />

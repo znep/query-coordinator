@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalContent, ModalFooter } from 'common/components';
+import { withRouter } from 'react-router';
 
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { hideModal } from 'actions/modal';
@@ -30,18 +31,28 @@ export class PublishConfirmationUSAID extends Component {
 
   render() {
     const {
-      outputSchemaId, doCancel, dispatchApplyRevision, setPermission, btnDisabled, publicSelected
+      outputSchemaId,
+      doCancel,
+      dispatchApplyRevision,
+      setPermission,
+      btnDisabled,
+      publicSelected,
+      params
     } = this.props;
 
     return (
       <div>
-        <h2>{I18n.home_pane.publish_confirmation_usaid.title}</h2>
+        <h2>
+          {I18n.home_pane.publish_confirmation_usaid.title}
+        </h2>
         <ModalContent>
           <span
             onClick={() => setPermission('public')}
             className={publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
             <SocrataIcon name="checkmark3" className={styles.checkbox} />
-            <h3>{I18n.home_pane.publish_confirmation_usaid.public}</h3>
+            <h3>
+              {I18n.home_pane.publish_confirmation_usaid.public}
+            </h3>
             <SocrataIcon className={styles.icon} name="public-open" />
             {I18n.home_pane.publish_confirmation_usaid.public_msg}
           </span>
@@ -49,7 +60,9 @@ export class PublishConfirmationUSAID extends Component {
             onClick={() => setPermission('private')}
             className={!publicSelected ? styles.privacySelectorActive : styles.privacySelector}>
             <SocrataIcon name="checkmark3" className={styles.checkbox} />
-            <h3>{I18n.home_pane.publish_confirmation_usaid.private}</h3>
+            <h3>
+              {I18n.home_pane.publish_confirmation_usaid.private}
+            </h3>
             <SocrataIcon className={styles.icon} name="private" />
             {I18n.home_pane.publish_confirmation_usaid.private_msg}
           </span>
@@ -63,7 +76,7 @@ export class PublishConfirmationUSAID extends Component {
             operation={APPLY_REVISION}
             params={{ outputSchemaId }}
             forceDisable={btnDisabled}
-            onClick={() => dispatchApplyRevision(outputSchemaId)}>
+            onClick={() => dispatchApplyRevision(params)}>
             {publicSelected
               ? I18n.home_pane.publish_confirmation.button
               : I18n.home_pane.publish_confirmation_usaid.button}
@@ -80,7 +93,8 @@ PublishConfirmationUSAID.propTypes = {
   dispatchApplyRevision: PropTypes.func.isRequired,
   btnDisabled: PropTypes.bool,
   setPermission: PropTypes.func,
-  publicSelected: PropTypes.bool.isRequired
+  publicSelected: PropTypes.bool.isRequired,
+  params: PropTypes.object.isRequired
 };
 
 export function mapStateToProps({ entities, ui }) {
@@ -111,9 +125,9 @@ function mapDispatchToProps(dispatch) {
       dispatch(updateRevision(initialPermission));
       dispatch(hideModal());
     },
-    dispatchApplyRevision: outputSchemaId => dispatch(applyRevision(outputSchemaId)),
+    dispatchApplyRevision: (params) => dispatch(applyRevision(params)),
     setPermission: permission => dispatch(updateRevision(permission))
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublishConfirmationUSAID);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PublishConfirmationUSAID));

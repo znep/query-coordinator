@@ -2,15 +2,15 @@ import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router';
 import * as Links from 'links';
 import * as Selectors from 'selectors';
 import styles from 'styles/Uploads/UploadSidebar.scss';
 
-const UploadItem = ({ entities, source }) => {
+const UploadItem = ({ entities, source, params }) => {
   const outputSchema = Selectors.latestOutputSchemaForSource(entities, source.id);
   const linkTarget = outputSchema
-    ? Links.showOutputSchema(source.id, outputSchema.input_schema_id, outputSchema.id)
+    ? Links.showOutputSchema(params, source.id, outputSchema.input_schema_id, outputSchema.id)
     : null;
   return (
     <li>
@@ -24,10 +24,11 @@ const UploadItem = ({ entities, source }) => {
 
 UploadItem.propTypes = {
   entities: PropTypes.object.isRequired,
-  source: PropTypes.object.isRequired
+  source: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired
 };
 
-export const UploadSidebar = ({ entities, currentUpload, otherUploads }) => {
+export const UploadSidebar = ({ entities, currentUpload, otherUploads, params }) => {
   let content;
   if (currentUpload === null && otherUploads.length === 0) {
     content = (
@@ -41,7 +42,7 @@ export const UploadSidebar = ({ entities, currentUpload, otherUploads }) => {
             <h2>{I18n.show_uploads.current}</h2>
             <ul>
               {currentUpload
-                ? <UploadItem entities={entities} source={currentUpload} />
+                ? <UploadItem entities={entities} source={currentUpload} params={params} />
                 : <span>{I18n.show_uploads.no_uploads}</span>}
             </ul>
           </div>
@@ -51,7 +52,7 @@ export const UploadSidebar = ({ entities, currentUpload, otherUploads }) => {
             <h2>{currentUpload === null ? I18n.show_uploads.uploads : I18n.show_uploads.noncurrent}</h2>
             <ul>
               {otherUploads.map(source =>
-                <UploadItem key={source.id} entities={entities} source={source} />
+                <UploadItem key={source.id} entities={entities} source={source} params={params} />
               )}
             </ul>
           </div>
@@ -79,7 +80,8 @@ const sourceProptype = PropTypes.shape({
 UploadSidebar.propTypes = {
   currentUpload: sourceProptype,
   otherUploads: PropTypes.arrayOf(sourceProptype),
-  entities: PropTypes.object.isRequired
+  entities: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired
 };
 
 export const mapStateToProps = ({ entities }) => {
@@ -110,4 +112,4 @@ export const mapStateToProps = ({ entities }) => {
   };
 };
 
-export default connect(mapStateToProps)(UploadSidebar);
+export default withRouter(connect(mapStateToProps)(UploadSidebar));

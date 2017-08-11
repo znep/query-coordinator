@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { browserHistory, Link } from 'react-router';
 import { InfoPane } from 'common/components';
 import MetadataTable from '../../common/components/MetadataTable';
 import SchemaPreview from './SchemaPreview';
@@ -10,7 +10,6 @@ import DatasetPreview from './DatasetPreview';
 import NotifyButton from './NotifyButton';
 import RowDetails from '../components/RowDetails';
 import * as Links from '../links';
-import { Link } from 'react-router';
 import * as Selectors from 'selectors';
 import * as Actions from '../actions/manageUploads';
 import * as ApplyRevision from '../actions/applyRevision';
@@ -36,7 +35,7 @@ const noDataYetView = (createUpload, params) => {
         type="file"
         accept={enabledFileExtensions.join(',')}
         aria-labelledby="source-label"
-        onChange={evt => createUpload(evt.target.files[0], params.fourfour, params.revisionSeq)} />
+        onChange={evt => createUpload(evt.target.files[0], params)} />
 
       <p className={styles.fileTypes}>
         {I18n.home_pane.supported_uploads} {enabledFileExtensions.map(formatExpanation).join(', ')}
@@ -45,7 +44,7 @@ const noDataYetView = (createUpload, params) => {
   );
 };
 
-const outputSchemaView = (entities, outputSchema) => {
+const outputSchemaView = (entities, outputSchema, params) => {
   const inputSchema = _.find(entities.input_schemas, { id: outputSchema.input_schema_id });
   if (!inputSchema) return;
   return (
@@ -57,7 +56,7 @@ const outputSchemaView = (entities, outputSchema) => {
         {I18n.home_pane.data_uploaded_blurb}
       </p>
       <p>
-        <Link to={Links.showOutputSchema(inputSchema.source_id, inputSchema.id, outputSchema.id)}>
+        <Link to={Links.showOutputSchema(params, inputSchema.source_id, inputSchema.id, outputSchema.id)}>
           <button className={styles.reviewBtn} tabIndex="-1">
             {I18n.home_pane.review_data}
           </button>
@@ -90,7 +89,7 @@ const WrapDataTablePlaceholder = ({ upsertExists, outputSchema, entities, create
   if (upsertExists) {
     child = upsertInProgressView(entities);
   } else if (outputSchema) {
-    child = outputSchemaView(entities, outputSchema);
+    child = outputSchemaView(entities, outputSchema, params);
   } else {
     child = noDataYetView(createUpload, params);
   }
@@ -107,7 +106,7 @@ WrapDataTablePlaceholder.propTypes = {
   outputSchema: PropTypes.object,
   entities: PropTypes.object,
   createUpload: PropTypes.func,
-  params: PropTypes.object
+  params: PropTypes.object.isRequired
 };
 
 function upsertCompleteView(view, outputSchema) {
@@ -118,7 +117,7 @@ function upsertCompleteView(view, outputSchema) {
   );
 }
 
-export function ShowRevision({ view, routing, entities, urlParams, createUpload, pushToEditMetadata }) {
+export function ShowRevision({ view, params, entities, createUpload, pushToEditMetadata }) {
   let metadataSection;
   const paneProps = {
     name: view.name,
@@ -169,7 +168,7 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
     customMetadataFieldsets,
     onClickEditMetadata: e => {
       e.preventDefault();
-      pushToEditMetadata(Links.metadata(routing));
+      pushToEditMetadata(Links.metadata(params));
     }
   };
 
@@ -200,7 +199,12 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
       dataTable = [
         <Link
           key="manage-data-button"
-          to={Links.showOutputSchema(inputSchema.source_id, inputSchema.id, outputSchema.id)}
+          to={Links.showOutputSchema(
+            params,
+            inputSchema.source_id,
+            inputSchema.id,
+            outputSchema.id
+          )}
           className={styles.manageDataLink}>
           <button className={styles.manageDataBtn} tabIndex="-1">
             {I18n.home_pane.data_manage_button}
@@ -214,7 +218,7 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
           upsertExists={doesUpsertExist}
           outputSchema={null}
           entities={entities}
-          params={urlParams}
+          params={params}
           createUpload={createUpload} />
       );
     }
@@ -224,7 +228,7 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
         upsertExists={doesUpsertExist}
         outputSchema={outputSchema}
         entities={entities}
-        params={urlParams}
+        params={params}
         createUpload={createUpload} />
     );
   }
@@ -246,35 +250,33 @@ export function ShowRevision({ view, routing, entities, urlParams, createUpload,
           {dataTable}
         </section>
       </div>
-      <HomePaneSidebar urlParams={urlParams} />
+      <HomePaneSidebar />
     </div>
   );
 }
 
 ShowRevision.propTypes = {
   view: PropTypes.object.isRequired,
-  routing: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   entities: PropTypes.object.isRequired,
-  urlParams: PropTypes.object.isRequired,
   createUpload: PropTypes.func.isRequired,
   pushToEditMetadata: PropTypes.func.isRequired
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    createUpload: (file, fourfour, revisionSequence) => {
-      dispatch(Actions.createUpload(file, fourfour, revisionSequence));
+    createUpload: (file, params) => {
+      dispatch(Actions.createUpload(file, params));
     },
-    pushToEditMetadata: url => dispatch(push(url))
+    pushToEditMetadata: url => browserHistory.push(url)
   };
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state, { params }) {
   return {
     view: _.values(state.entities.views)[0],
-    routing: state.ui.routing.location,
     entities: state.entities,
-    urlParams: ownProps.params
+    params
   };
 }
 

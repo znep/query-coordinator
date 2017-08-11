@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import _ from 'lodash';
 import { editView } from 'actions/views';
 import { makeFieldsets, validateDatasetForm } from 'models/forms';
@@ -73,8 +74,8 @@ DatasetForm.propTypes = {
   setErrors: PropTypes.func.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }) => {
-  const { fourfour } = ui.routing;
+const mapStateToProps = ({ entities }, { params }) => {
+  const { fourfour } = params;
 
   const view = entities.views[fourfour];
 
@@ -82,8 +83,7 @@ const mapStateToProps = ({ entities, ui }) => {
 
   return {
     regularFieldsets,
-    customFieldsets,
-    fourfour
+    customFieldsets
   };
 };
 
@@ -92,9 +92,9 @@ const mapStateToProps = ({ entities, ui }) => {
 // mergeProps provides a place to do this putting-together without cluttering the
 // component. For more info/background, see discussion here:
 // https://github.com/reactjs/react-redux/issues/237#issuecomment-168816713
-const mergeProps = ({ fourfour, ...rest }, { dispatch }) => ({
+const mergeProps = ({ fourfour, ...rest }, { dispatch }, { params }) => ({
   ...rest,
-  setErrors: errors => dispatch(editView(fourfour, { datasetMetadataErrors: errors }))
+  setErrors: errors => dispatch(editView(params.fourfour, { datasetMetadataErrors: errors }))
 });
 
-export default connect(mapStateToProps, null, mergeProps)(DatasetForm);
+export default withRouter(connect(mapStateToProps, null, mergeProps)(DatasetForm));

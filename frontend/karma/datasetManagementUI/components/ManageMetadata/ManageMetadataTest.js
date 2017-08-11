@@ -40,7 +40,8 @@ describe('components/ManageMetadata', () => {
     dispatch: () => {},
     entities: {},
     location: {},
-    outputSchemaId: 86
+    outputSchemaId: 86,
+    params: {}
   };
 
   const defaultDatasetProps = {

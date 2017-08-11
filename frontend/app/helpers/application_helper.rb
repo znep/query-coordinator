@@ -917,6 +917,15 @@ module ApplicationHelper
     end
   end
 
+  # this should be called in templates with an array of translation keys
+  # can be called multiple times to build up keys across templates
+  # the translations themselves are eventually rendered in the layout
+  # e.x.
+  # <% translations_for('screens.sign_in', 'screens.sign_up', 'account.common') %>
+  def translations_for(*partial_paths)
+    @translation_keys = (@translation_keys ||= []) + Array(partial_paths).flatten
+  end
+
   def render_mixpanel_config
     mixpanel_config = {
       :token => APP_CONFIG.mixpanel_token

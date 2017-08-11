@@ -68,6 +68,9 @@ http://www.socrata.com
     <%= render_ga_tracking %>
     <%= site_chrome_javascript_tag %>
 
+    <script type="text/javascript">
+      window.translations = <%== json_escape(LocaleCache.render_all_translation_keys(@translation_keys).to_json) %>
+    </script>
     <%= yield :scripts %>
     <%= include_webpack_bundle 'site_wide/site_wide.js' %>
   <% end # end of body %>

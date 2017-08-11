@@ -213,13 +213,17 @@ describe('TileserverDataProvider', function() {
       let counter = 0;
       onXhrSend = (request) => {
         counter++;
-        assert.equal(counter, 1);
-        done();
+        request.respond(200);
       };
 
-      tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
-      tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
-      tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
+      const p1 = tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
+      const p2 = tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
+      const p3 = tileGetter(VALID_ZOOM, VALID_X, VALID_Y);
+
+      Promise.all([p1, p2, p3]).then((values) => {
+        assert.equal(counter, 1);
+        done();
+      });
 
     });
 

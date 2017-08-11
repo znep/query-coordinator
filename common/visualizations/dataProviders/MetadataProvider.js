@@ -36,7 +36,7 @@ function MetadataProvider(config, useCache = false) {
   _.extend(this, new DataProvider(config));
 
   if (useCache) {
-    let cached = this.cachedInstance("MetadataProvider");
+    const cached = this.cachedInstance("MetadataProvider");
     if (cached) {
       return cached;
     }
@@ -345,19 +345,19 @@ function MetadataProvider(config, useCache = false) {
       });
   };
 
-  let metadataRequestCache = {};
+  const metadataRequestCache = {};
   const makeMetadataRequest = (path) => {
     const domain = this.getConfigurationProperty('domain');
     const url = `https://${domain}/${path}`;
 
     const cacheKey = `${domain}-${url}`;
 
-    let cachedPromise = metadataRequestCache[cacheKey];
+    const cachedPromise = metadataRequestCache[cacheKey];
     if (cachedPromise) {
       return cachedPromise;
     }
 
-    let metadataRequestPromise = new Promise((resolve, reject) => {
+    const metadataRequestPromise = new Promise((resolve, reject) => {
       function handleError(jqXHR) {
         reject({
           status: parseInt(jqXHR.status, 10),

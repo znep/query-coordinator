@@ -26,7 +26,7 @@ function SoqlDataProvider(config, useCache = false) {
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
   if (useCache) {
-    let cached = this.cachedInstance("SoqlDataProvider");
+    const cached = this.cachedInstance("SoqlDataProvider");
     if (cached) {
       return cached;
     }
@@ -233,7 +233,7 @@ function SoqlDataProvider(config, useCache = false) {
   //   message: status text,
   //   soqlError: response JSON
   // }
-  let soqlGetRequestPromiseCache = {};
+  const soqlGetRequestPromiseCache = {};
   const makeSoqlGetRequest = (path) => {
     const domain = this.getConfigurationProperty('domain');
     const url = `https://${domain}/${path}`;
@@ -252,12 +252,12 @@ function SoqlDataProvider(config, useCache = false) {
 
     const cacheKey = `${domain}-${url}-${JSON.stringify(headers)}`;
 
-    let cachedPromise = soqlGetRequestPromiseCache[cacheKey];
+    const cachedPromise = soqlGetRequestPromiseCache[cacheKey];
     if (cachedPromise) {
       return cachedPromise;
     }
 
-    let soqlGetRequestPromise = new Promise(
+    const soqlGetRequestPromise = new Promise(
       function(resolve, reject) {
 
         function handleError(jqXHR) {

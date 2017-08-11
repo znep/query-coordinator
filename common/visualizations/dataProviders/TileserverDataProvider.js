@@ -30,7 +30,7 @@ function TileserverDataProvider(config, useCache = false) {
   utils.assertIsOneOfTypes(config.featuresPerTile, 'number');
 
   if (useCache) {
-    let cached = this.cachedInstance("TileserverDataProvider");
+    const cached = this.cachedInstance("TileserverDataProvider");
     if (cached) {
       return cached;
     }
@@ -191,22 +191,21 @@ function TileserverDataProvider(config, useCache = false) {
    *
    * @return {Promise}
    */
-  let arrayBufferPromiseCache = {};
+  const arrayBufferPromiseCache = {};
   function _getArrayBuffer(url, configuration) {
 
     const cacheKey = url;
 
-    let cachedPromise = arrayBufferPromiseCache[cacheKey];
+    const cachedPromise = arrayBufferPromiseCache[cacheKey];
     if (cachedPromise) {
       return cachedPromise;
     }
 
-    let loadTilesPromise = new Promise(
-      function(resolve, reject) {
-        var xhr = new XMLHttpRequest();
+    const loadTilesPromise = new Promise(
+      (resolve, reject) => {
+        const xhr = new XMLHttpRequest();
 
         function onFail() {
-
           return reject({
             status: parseInt(xhr.status, 10),
             headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
@@ -216,16 +215,10 @@ function TileserverDataProvider(config, useCache = false) {
         }
 
         xhr.onload = function() {
-
-          var arrayBuffer;
-          var status = parseInt(xhr.status, 10);
-
+          const status = parseInt(xhr.status, 10);
           if (status === 200) {
-
-            arrayBuffer = _typedArrayFromArrayBufferResponse(xhr);
-
+            const arrayBuffer = _typedArrayFromArrayBufferResponse(xhr);
             if (!_.isUndefined(arrayBuffer)) {
-
               return resolve({
                 data: arrayBuffer,
                 status: status,
@@ -235,7 +228,6 @@ function TileserverDataProvider(config, useCache = false) {
               });
             }
           }
-
           onFail();
         };
 
@@ -254,7 +246,7 @@ function TileserverDataProvider(config, useCache = false) {
         xhr.send();
       }
     ).catch(
-      function(error) {
+      (error) => {
         throw error;
       }
     );

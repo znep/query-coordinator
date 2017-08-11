@@ -1087,6 +1087,11 @@ describe('SoqlDataProvider', () => {
 
     let soqlDataProvider;
 
+    const textColumn = {
+      fieldName: 'textColumn',
+      dataTypeName: 'text'
+    };
+
     beforeEach(() => {
       server = sinon.fakeServer.create();
       soqlDataProvider = new SoqlDataProvider({
@@ -1098,11 +1103,6 @@ describe('SoqlDataProvider', () => {
     afterEach(() => {
       server.restore();
     });
-
-    const textColumn = {
-      fieldName: 'textColumn',
-      dataTypeName: 'text'
-    };
 
     it('only performs one request even though the data are requested multiple times', () => {
       soqlDataProvider.getColumnStats([textColumn, textColumn, textColumn, textColumn]);

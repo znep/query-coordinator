@@ -8,13 +8,13 @@ import { getMeasureTitle } from '../../helpers';
 import { COLUMN_TYPES } from '../../constants';
 import { getDisplayableColumns, hasData } from '../../selectors/metadata';
 import {
-  getDimensionGroupingColumnName,
   getRowInspectorTitleColumnName,
   getSeries,
   getShowLegend,
   isBarChart,
   isColumnChart,
   isFeatureMap,
+  isGroupingOrMultiSeries,
   isHistogram,
   isPieChart,
   isRegionMap,
@@ -122,11 +122,10 @@ export const LegendsAndFlyoutsPane = React.createClass({
   renderLegends() {
     const { vifAuthoring, onChangeShowLegend } = this.props;
 
-    // Currently legends are only available for grouping visualizations or pie charts
-    const isGrouping = getDimensionGroupingColumnName(vifAuthoring);
+    // Currently legends are only available for grouping or multi-series visualizations or pie charts
     const isCurrentlyPieChart = isPieChart(vifAuthoring);
 
-    if (!isGrouping && !isCurrentlyPieChart) {
+    if (!isGroupingOrMultiSeries(vifAuthoring) && !isCurrentlyPieChart) {
       return null;
     }
 

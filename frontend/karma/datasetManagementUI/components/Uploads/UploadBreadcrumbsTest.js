@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { UploadBreadcrumbs } from 'components/Uploads/UploadBreadcrumbs';
+import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
 
 describe('components/Uploads/UploadBreadcrumbs', () => {
   const defaultProps = {

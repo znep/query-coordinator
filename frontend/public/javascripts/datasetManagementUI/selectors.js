@@ -125,8 +125,8 @@ export function currentAndIgnoredOutputColumns(entities, osid) {
 
   const actualColumns = columnsForOutputSchema(entities, latestOutputSchemaId);
 
-  const referencedInputColumns = _.flatMap(
-    actualColumns, oc => oc.transform.transform_input_columns.map(tic => tic.input_column_id)
+  const referencedInputColumns = _.flatMap(actualColumns, oc =>
+    oc.transform.transform_input_columns.map(tic => tic.input_column_id)
   );
 
   const unreferencedInputColumns = Object.values(entities.input_columns)
@@ -134,15 +134,17 @@ export function currentAndIgnoredOutputColumns(entities, osid) {
     .filter(ic => referencedInputColumns.indexOf(ic.id) === -1);
 
   const ocSortedByNewest = _.chain(entities.output_schemas)
-    .sortBy([(oc) => -oc.id])
+    .sortBy([oc => -oc.id])
     .flatMap(os => columnsForOutputSchema(entities, os.id))
     .value();
 
   const unreferencedOutputColumns = _.flatMap(unreferencedInputColumns, ic => {
-    const outCol = _.find(ocSortedByNewest, (oc) => {
-      if (oc.transform &&
+    const outCol = _.find(ocSortedByNewest, oc => {
+      if (
+        oc.transform &&
         oc.transform.transform_input_columns &&
-        oc.transform.transform_input_columns.length === 1) {
+        oc.transform.transform_input_columns.length === 1
+      ) {
         return oc.transform.transform_input_columns[0].input_column_id === ic.id;
       }
       return false;
@@ -158,6 +160,7 @@ export function currentAndIgnoredOutputColumns(entities, osid) {
 
 export const latestOutputSchemaForSource = (entities, sourceId) => {
   const inputSchema = _.filter(entities.input_schemas, { source_id: sourceId })[0];
+
   if (!inputSchema) {
     return null; // an input schema has not yet been parsed out of this upload
   }

@@ -6,9 +6,9 @@ import { Modal, ModalHeader, ModalContent } from 'common/components';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import * as Links from 'links';
 import * as Selectors from 'selectors';
-import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
+import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbsContainer';
 import DragDropUpload from 'components/Uploads/DragDropUpload';
-import UploadSidebar from 'components/Uploads/UploadSidebar';
+import UploadSidebar from 'components/Uploads/UploadSidebarContainer';
 import FlashMessage from 'components/FlashMessage/FlashMessageContainer';
 import styles from 'styles/ShowUpload.scss';
 

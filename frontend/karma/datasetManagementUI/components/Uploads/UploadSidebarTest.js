@@ -1,10 +1,8 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import {
-  UploadSidebar,
-  mapStateToProps
-} from 'components/Uploads/UploadSidebar';
+import UploadSidebar from 'components/Uploads/UploadSidebar';
+import { mapStateToProps } from 'components/Uploads/UploadSidebarContainer';
 import dotProp from 'dot-prop-immutable';
 import state from '../../data/initialState';
 

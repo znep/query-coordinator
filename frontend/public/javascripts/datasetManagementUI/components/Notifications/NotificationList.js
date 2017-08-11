@@ -1,16 +1,14 @@
 import React, { PropTypes } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { connect } from 'react-redux';
-
-import UploadNotification from 'components/Notifications/UploadNotification';
+import UploadNotification from 'components/Notifications/UploadNotificationContainer';
 import styles from 'styles/Notifications/NotificationList.scss';
 
 // This component is responsible for choosing the kind of notification to display
 // (e.g. source, socket error, etc.) and sliding all the notifications into view.
 // Displaying status (success, error, inProgress) and all the logic needed to figure
 // that status out are handled farther down the component tree.
-export const NotificationList = ({ notifications }) => {
-  const items = notifications.map((notification) => {
+const NotificationList = ({ notifications }) => {
+  const items = notifications.map(notification => {
     switch (notification.kind) {
       case 'upload':
         return <UploadNotification notification={notification} key={notification.id} />;
@@ -40,8 +38,4 @@ NotificationList.propTypes = {
   notifications: PropTypes.arrayOf(PropTypes.object)
 };
 
-const mapStateToProps = ({ ui }) => ({
-  notifications: ui.notifications
-});
-
-export default connect(mapStateToProps)(NotificationList);
+export default NotificationList;

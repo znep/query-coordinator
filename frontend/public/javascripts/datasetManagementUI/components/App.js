@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import AppBar from './AppBar';
-import NotificationList from 'components/Notifications/NotificationList';
-import Modal from 'components/Modals/Modal';
+import NotificationList from 'components/Notifications/NotificationListContainer';
+import Modal from 'components/Modals/ModalContainer';
 import styles from 'styles/App.scss';
 
 const App = ({ children }) =>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { assert } from 'chai';
-import { Notification } from 'components/Notifications/Notification';
+import Notification from 'components/Notifications/Notification';
 
 describe('Notifications/Notification', () => {
   const defaultProps = {

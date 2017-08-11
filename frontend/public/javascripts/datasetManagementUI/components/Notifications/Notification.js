@@ -1,13 +1,11 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { removeNotification } from 'actions/notifications';
 import ProgressBar from 'components/ProgressBar';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/Notifications/Notification.scss';
 
-export class Notification extends Component {
+class Notification extends Component {
   constructor() {
     super();
 
@@ -25,7 +23,7 @@ export class Notification extends Component {
   }
 
   render() {
-    const { status, progressBar, percentCompleted, message, children, dispatch, id } = this.props;
+    const { status, progressBar, percentCompleted, message, children, removeNotification, id } = this.props;
     const { detailsOpen } = this.state;
     let classNames = [styles.notification];
     let statusIcon;
@@ -35,7 +33,11 @@ export class Notification extends Component {
       case 'success':
         classNames = [...classNames, styles.success].join(' ');
         statusIcon = <SocrataIcon name="check" className={styles.successIcon} />;
-        statusMessage = <span className={styles.successMessage}>{I18n.notifications.success}</span>;
+        statusMessage = (
+          <span className={styles.successMessage}>
+            {I18n.notifications.success}
+          </span>
+        );
         break;
       case 'inProgress':
         classNames = [...classNames, styles.inProgress].join(' ');
@@ -57,7 +59,9 @@ export class Notification extends Component {
     return (
       <div className={classNames}>
         <div className={styles.cf}>
-          <span className={styles.messageArea}>{message}</span>
+          <span className={styles.messageArea}>
+            {message}
+          </span>
           <span className={styles.statusArea}>
             {statusMessage}
             {statusIcon}
@@ -81,7 +85,7 @@ export class Notification extends Component {
               <div>
                 {children}
                 <div className={styles.btnContainer}>
-                  <button className={styles.button} onClick={() => dispatch(removeNotification(id))}>
+                  <button className={styles.button} onClick={() => removeNotification(id)}>
                     Dismiss
                   </button>
                   <a target="_blank" href="https://support.socrata.com" className={styles.contactBtn}>
@@ -102,7 +106,7 @@ Notification.propTypes = {
   children: PropTypes.object,
   message: PropTypes.object.isRequired,
   id: PropTypes.string,
-  dispatch: PropTypes.func
+  removeNotification: PropTypes.func.isRequired
 };
 
-export default connect()(Notification);
+export default Notification;

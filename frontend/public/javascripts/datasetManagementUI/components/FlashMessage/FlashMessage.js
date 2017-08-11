@@ -1,11 +1,8 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-
-import { hideFlashMessage } from 'actions/flashMessage';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from 'styles/FlashMessage/FlashMessage.scss';
 
-export const FlashMessage = ({ kind, message, visible, onCloseClick }) => {
+const FlashMessage = ({ kind, message, visible, onCloseClick }) => {
   let className;
   let iconName;
   let iconClass;
@@ -48,14 +45,4 @@ FlashMessage.propTypes = {
   onCloseClick: PropTypes.func.isRequired
 };
 
-const mapStateToProps = ({ ui }) => ({
-  kind: ui.flashMessage.kind,
-  message: ui.flashMessage.message,
-  visible: ui.flashMessage.visible
-});
-
-const mapDispatchToProps = dispatch => ({
-  onCloseClick: () => dispatch(hideFlashMessage())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FlashMessage);
+export default FlashMessage;

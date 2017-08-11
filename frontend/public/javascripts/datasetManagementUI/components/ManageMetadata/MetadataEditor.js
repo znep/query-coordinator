@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import DatasetForm from 'components/Forms/DatasetForm';
 import ColumnForm from 'components/Forms/ColumnForm';
-import FlashMessage from 'components/FlashMessage/FlashMessage';
+import FlashMessage from 'components/FlashMessage/FlashMessageContainer';
 import styles from 'styles/ManageMetadata/MetadataEditor.scss';
 
 class MetadataEditor extends Component {

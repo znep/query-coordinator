@@ -9,7 +9,7 @@ import * as Selectors from 'selectors';
 import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
 import DragDropUpload from 'components/Uploads/DragDropUpload';
 import UploadSidebar from 'components/Uploads/UploadSidebar';
-import FlashMessage from 'components/FlashMessage/FlashMessage';
+import FlashMessage from 'components/FlashMessage/FlashMessageContainer';
 import styles from 'styles/ShowUpload.scss';
 
 export const ShowUpload = ({ inProgress, goHome }) =>

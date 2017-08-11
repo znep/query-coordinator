@@ -10,11 +10,11 @@ export function mapStateToProps({ columnStats, view, filters, parentView }) {
   // Merge columns with column stats
   const columnsWithColumnStats = _.merge([], columnStats, view.columns);
 
-  const metadataProvider = new dataProviders.MetadataProvider({
-    domain: serverConfig.domain,
-    datasetUid: parentView.id
-  },
-                                                             true);
+  const metadataProvider = new dataProviders.MetadataProvider(
+    {
+      domain: serverConfig.domain,
+      datasetUid: parentView.id
+    }, true);
 
   // Get displayable columns only, subcolumns and system columns are omitted
   const displayableColumns = metadataProvider.getDisplayableColumns({

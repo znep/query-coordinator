@@ -5,6 +5,9 @@ import _ from 'lodash';
 import Field from 'components/FormComponents/Field';
 import * as Actions from 'actions/views';
 
+// See comments in ColumnFieldContainer for a quick overview of the purpose of
+// this component
+
 const mapStateToProps = ({ entities, ui }, { field, fieldset, params }) => {
   const { fourfour } = params;
 

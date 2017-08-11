@@ -1,4 +1,3 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import _ from 'lodash';
@@ -6,6 +5,15 @@ import Field from 'components/FormComponents/Field';
 import { isFieldNameField, isDisplayNameField } from 'models/forms';
 import * as Actions from 'actions/outputColumns';
 import { editView } from 'actions/views';
+
+/*
+This component is just a more specialized version of Field. Field decides,
+based on its props, what kind of form component to display--input, textarea, etc.
+This component tells field how to wire that component to the store--specifically,
+it points Field towards the part of the store for Column metadata. The DatasetField
+does the same thing but for Dataset metadata. This allows us to use the same Field
+component for both Datset and Column forms.
+*/
 
 const mapStateToProps = ({ entities, ui }, { field, params }) => {
   const { fourfour } = params;

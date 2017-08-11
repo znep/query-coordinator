@@ -6,7 +6,8 @@ import reducer from 'reducers/rootReducer';
 import initialState from '../../data/initialState';
 import thunk from 'redux-thunk';
 import * as Types from 'models/forms';
-import ColumnFormConnected, { ColumnForm } from 'components/Forms/ColumnForm';
+import ColumnFormConnected 'components/Forms/ColumnFormContainer'
+import ColumnForm from 'components/Forms/ColumnForm';
 
 describe('components/Forms/ColumnForm', () => {
   const testStore = createStore(reducer, initialState, applyMiddleware(thunk));

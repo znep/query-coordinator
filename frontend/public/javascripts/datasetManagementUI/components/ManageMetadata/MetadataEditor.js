@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import DatasetForm from 'components/Forms/DatasetForm';
-import ColumnForm from 'components/Forms/ColumnForm';
+import DatasetForm from 'components/Forms/DatasetFormContainer';
+import ColumnForm from 'components/Forms/ColumnFormContainer';
 import FlashMessage from 'components/FlashMessage/FlashMessageContainer';
 import styles from 'styles/ManageMetadata/MetadataEditor.scss';
 

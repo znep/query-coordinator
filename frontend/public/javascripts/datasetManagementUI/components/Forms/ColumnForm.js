@@ -1,14 +1,10 @@
 import React, { PropTypes, Component } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import _ from 'lodash';
 import Fieldset from 'components/FormComponents/Fieldset';
-import { editView } from 'actions/views';
-import { makeRows, validateColumnForm } from 'models/forms';
-import ColumnField from 'components/FormComponents/ColumnField';
+import ColumnField from 'components/FormComponents/ColumnFieldContainer';
 import styles from 'styles/Forms/ColumnForm.scss';
 
-export class ColumnForm extends Component {
+class ColumnForm extends Component {
   componentWillMount() {
     const { setErrors } = this.props;
     setErrors();
@@ -49,19 +45,4 @@ ColumnForm.propTypes = {
   outputSchemaId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }, { outputSchemaId }) => {
-  return {
-    rows: makeRows(outputSchemaId, entities),
-    errors: validateColumnForm(outputSchemaId, entities),
-    outputSchemaId
-  };
-};
-
-const mergeProps = ({ outputSchemaId, errors, rows }, { dispatch }, { params }) => ({
-  errors,
-  rows,
-  outputSchemaId,
-  setErrors: () => dispatch(editView(params.fourfour, { columnMetadataErrors: errors }))
-});
-
-export default withRouter(connect(mapStateToProps, null, mergeProps)(ColumnForm));
+export default ColumnForm;

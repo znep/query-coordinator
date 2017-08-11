@@ -5,9 +5,8 @@ import reducer from 'reducers/rootReducer';
 import initialState from '../../data/initialState';
 import thunk from 'redux-thunk';
 import React from 'react';
-import DatasetFormConnected, {
-  DatasetForm
-} from 'components/Forms/DatasetForm';
+import DatasetFormConnected from 'components/Forms/DatasetFormContainer';
+import DatasetForm from 'components/Forms/DatasetForm';
 
 describe('components/Forms/DatasetForm', () => {
   const newState = Object.assign({}, initialState);

@@ -12,6 +12,7 @@ class Field extends Component {
   constructor() {
     super();
 
+    // This lets us show and hide errors based on blur/focus
     this.state = {
       showErrors: false
     };
@@ -45,6 +46,14 @@ class Field extends Component {
       labelClassNames.push(styles.labelRequired);
     }
 
+    // The showErrors prop is supplied by the connected containers for this component.
+    // It is a boolean that lives in the store. The reason we don't manage all error
+    // showing locally is because the form is in that lame fullscreen modal, and the
+    // submit button for the form is in the modal footer, outside the form. So we need
+    // to have a way to show errors on submit (say for example a required field that
+    // the user didn't touch in any way, thus not triggering the local showError state)
+    // If we got rid of the modal, and moved the save button inside the form, we could
+    // manage error state in the local state of the form component.
     const inErrorState = (showErrors || this.state.showErrors) && !!errors.length;
 
     const element = field.cata({

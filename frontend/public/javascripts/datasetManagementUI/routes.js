@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Redirect, IndexRoute } from 'react-router';
 import App from './components/App';
 import ShowRevision from './components/ShowRevision';
-import ManageMetadata from './components/ManageMetadata';
+import ManageMetadata from 'components/ManageMetadata/ManageMetadataContainer';
 import ShowOutputSchema from './components/ShowOutputSchema';
 import { focusColumnEditor } from './actions/manageMetadata';
 import ShowUpload from './components/ShowUpload';

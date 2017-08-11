@@ -11,6 +11,7 @@ describe('components/ManageMetadata/MetadataContent', () => {
   const defaultProps = {
     path: '/dataset/columns',
     fourfour: 'hehe-hehe',
+    currentOutputSchemaId: null,
     onSidebarTabClick: () => {},
     columnsExist: false,
     onDatasetTab: true,

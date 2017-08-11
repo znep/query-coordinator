@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import { editView } from 'actions/views';
 import { addOutputColumns } from 'actions/outputColumns';
@@ -8,13 +7,12 @@ import { dismissMetadataPane, saveDatasetMetadata, saveColumnMetadata } from 'ac
 import { hideFlashMessage } from 'actions/flashMessage';
 import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'actions/apiCalls';
 import ApiCallButton from 'components/ApiCallButton';
-import MetadataContent from 'components/ManageMetadata/MetadataContent';
-import { getCurrentColumns } from 'models/forms';
-import styles from 'styles/ManageMetadata/ManageMetadata.scss';
+import MetadataContent from 'components/ManageMetadata/MetadataContentContainer';
 import * as Selectors from 'selectors';
-import * as Links from '../../links';
+import * as Links from 'links';
+import styles from 'styles/ManageMetadata/ManageMetadata.scss';
 
-export class ManageMetadata extends Component {
+class ManageMetadata extends Component {
   constructor() {
     super();
     this.state = {
@@ -41,6 +39,9 @@ export class ManageMetadata extends Component {
   revertChanges() {
     const { dispatch, params } = this.props;
 
+    // The metadata forms connect directly to the store, so if the user clicks
+    // cancel, we want to reset the data in the store back to what it was when
+    // this component first mounted (which we've cached in the local state here)
     dispatch(
       editView(params.fourfour, {
         ...this.state.initialDatasetMetadata,
@@ -164,24 +165,4 @@ ManageMetadata.propTypes = {
   outputSchemaId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = ({ entities }, ownProps) => {
-  const outputSchemaId = parseInt(ownProps.params.outputSchemaId, 10);
-  return {
-    view: entities.views[ownProps.params.fourfour],
-    path: ownProps.route.path,
-    params: ownProps.params,
-    columnsExist: !_.isEmpty(entities.output_columns),
-    outputSchemaId,
-    entities: entities,
-    currentColumns: _.chain(getCurrentColumns(outputSchemaId, entities))
-      .map(restoreColumn)
-      .keyBy('id')
-      .value()
-  };
-};
-
-function restoreColumn(col) {
-  return _.omit(col, ['transform']);
-}
-
-export default connect(mapStateToProps)(ManageMetadata);
+export default ManageMetadata;

@@ -1,14 +1,13 @@
-import { connect } from 'react-redux';
+/* eslint react/jsx-indent: 0 */
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import * as Links from '../../links';
-import MetadataEditor from '../ManageMetadata/MetadataEditor';
+import * as Links from 'links';
+import MetadataEditor from 'components/ManageMetadata/MetadataEditorContainer';
 import styles from 'styles/ManageMetadata/MetadataContent.scss';
-import * as Selectors from '../../selectors';
 
 // TODO : should probably abstract sidebar to its own component
-export const MetadataContent = (
-  { entities, onDatasetTab, outputSchemaId, params, onSidebarTabClick, columnsExist } // eslint-disable-line
+const MetadataContent = (
+  { currentOutputSchemaId, onDatasetTab, outputSchemaId, params, onSidebarTabClick, columnsExist } // eslint-disable-line
 ) =>
   <div>
     <div className={styles.sidebar}>
@@ -21,15 +20,15 @@ export const MetadataContent = (
       </Link>
       {columnsExist
         ? <Link
-          to={Links.columnMetadataForm(params, outputSchemaId || Selectors.currentOutputSchema(entities).id)}
+          to={Links.columnMetadataForm(params, outputSchemaId || currentOutputSchemaId)}
           className={styles.tab}
           onClick={() => onSidebarTabClick(params.fourfour)}
           activeClassName={styles.selected}>
             {I18n.metadata_manage.column_metadata_label}
-        </Link>
+          </Link>
         : <span className={styles.disabled} title={I18n.home_pane.sidebar.no_columns_msg}>
             {I18n.metadata_manage.column_metadata_label}
-        </span>}
+          </span>}
     </div>
     <MetadataEditor onDatasetTab={onDatasetTab} outputSchemaId={outputSchemaId} />
   </div>;
@@ -37,15 +36,10 @@ export const MetadataContent = (
 MetadataContent.propTypes = {
   onSidebarTabClick: PropTypes.func,
   columnsExist: PropTypes.bool,
-  entities: PropTypes.object.isRequired,
+  currentOutputSchemaId: PropTypes.object.isRequired,
   outputSchemaId: PropTypes.number,
   onDatasetTab: PropTypes.bool.isRequired,
   params: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ entities }, props) => ({
-  ...props,
-  entities
-});
-
-export default connect(mapStateToProps)(MetadataContent);
+export default MetadataContent;

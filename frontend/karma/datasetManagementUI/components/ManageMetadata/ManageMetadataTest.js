@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import { ManageMetadata } from 'components/ManageMetadata';
+import ManageMetadata from 'components/ManageMetadata/ManageMetadata';
 import React from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from 'reducers/rootReducer';

@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import DatasetForm from 'components/Forms/DatasetFormContainer';
 import ColumnForm from 'components/Forms/ColumnFormContainer';
@@ -62,10 +61,4 @@ MetadataEditor.propTypes = {
   outputSchemaId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = ({ ui }, { onDatasetTab, outputSchemaId }) => ({
-  flashVisible: ui.flashMessage.visible,
-  onDatasetTab,
-  outputSchemaId
-});
-
-export default connect(mapStateToProps)(MetadataEditor);
+export default MetadataEditor;

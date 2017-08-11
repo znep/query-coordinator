@@ -1,5 +1,5 @@
 import React from 'react';
-import Auth0 from 'auth0-js';
+import auth0 from 'auth0-js';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import { SocrataIcon } from 'common/components';
@@ -16,10 +16,11 @@ class SignInContainer extends React.Component {
     const { auth0Uri, auth0ClientId, baseDomainUri } = this.props.options;
 
     this.state = {
-      auth0Client: new Auth0({
+      auth0Client: new auth0.WebAuth({
         domain: auth0Uri,
         clientID: auth0ClientId,
-        callbackURL: `${baseDomainUri}/auth/auth0/callback`
+        responseType: 'code',
+        redirectUri: `${baseDomainUri}/auth/auth0/callback`
       }),
       auth0Connections: [],
       renderLoginForm: false,
@@ -38,18 +39,15 @@ class SignInContainer extends React.Component {
     // get a list of all connections from auth0
     // setting the state forces a re-render but then all child components have access to the list
     // the list is used for i.e. finding email domains that use SSO
-    this.state.auth0Client.getConnections((error, auth0Connections) => {
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      this.setState({ auth0Connections });
+    fetch(`${this.props.options.baseDomainUri}/auth/auth0/connections`).then((response) => {
+      return response.json().then((connections) => {
+        this.setState({ auth0Connections: connections });
+      });
     });
   }
 
   onConnectionChosen(connection) {
-    this.state.auth0Client.login({ connection });
+    this.state.auth0Client.authorize({ connection });
   }
 
   onLoginStart() {
@@ -79,12 +77,14 @@ class SignInContainer extends React.Component {
           onConnectionChosen={this.onConnectionChosen}
           setLoginFormVisibility={this.setLoginFormVisibility} />);
     } else {
-      const doAuth0Login = auth0Client.login.bind(auth0Client);
+      const doAuth0Authorize = auth0Client.authorize.bind(auth0Client);
+      const doAuth0Login = auth0Client.redirect.loginWithCredentials.bind(auth0Client);
       return (
         // either there aren't any specific connections set up,
         // or the "Sign in with a Socrata ID" button was clicked
         <SignIn
           translate={translate}
+          doAuth0Authorize={doAuth0Authorize}
           doAuth0Login={doAuth0Login}
           onLoginStart={this.onLoginStart}
           onLoginError={this.onLoginError}

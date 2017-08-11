@@ -13,6 +13,7 @@ import PollingInput from 'components/SignInForm/PollingInput';
 describe('<SignInForm />', () => {
   const defaultProps = {
     translate: () => '',
+    doAuth0Authorize: () => { },
     doAuth0Login: () => { },
     onLoginStart: () => { },
     onLoginError: () => { },

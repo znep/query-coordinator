@@ -1,7 +1,9 @@
 require 'base64'
 require 'digest/sha1'
-require 'securerandom'
 require 'httparty'
+require 'net/http'
+require 'securerandom'
+require 'uri'
 
 module Auth0Helper
   SOCIAL_DOMAINS = %w(twitter facebook google_oauth2 windowslive yahoo).freeze
@@ -138,6 +140,36 @@ module Auth0Helper
     }
 
     "https://#{AUTH0_URI}/v2/logout?" << parameters.to_param
+  end
+
+  def get_authorization_token
+    url = URI("https://#{AUTH0_URI}/oauth/token")
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    request = Net::HTTP::Post.new(url,
+      'content-type' => 'application/json'
+    )
+    request.body = {
+      'client_id' => AUTH0_ID, 
+      'client_secret' => AUTH0_SECRET, 
+      'audience' => 'https://socrata.auth0.com/api/v2/', 
+      'grant_type' => 'client_credentials'
+    }.to_json
+    JSON.parse(http.request(request).read_body)['access_token']
+  end
+
+  def get_auth0_connections
+    url = URI("https://#{AUTH0_URI}/api/v2/connections?fields=name,options&include_fields=true")
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    request = Net::HTTP::Get.new(url,
+      'content-type' => 'application/json',
+      'authorization' => "Bearer #{get_authorization_token}"
+    )
+    connections = transform_connections(JSON.parse(http.request(request).read_body))
+    render :json => connections
   end
 
   def use_auth0_component(view, request)

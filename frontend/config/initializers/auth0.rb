@@ -5,7 +5,8 @@ Rails.application.config.middleware.use OmniAuth::Builder do
       AUTH0_ID,
       AUTH0_SECRET,
       AUTH0_URI,
-      callback_path: "/auth/auth0/callback"
+      callback_path: "/auth/auth0/callback",
+      provider_ignores_state: true
     )
   end
 end

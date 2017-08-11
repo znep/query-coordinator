@@ -11,7 +11,7 @@ class SignInButton extends React.Component {
     super(props);
 
     this.doSignIn = this.doSignIn.bind(this);
-    this.auth0Login = this.auth0Login.bind(this);
+    this.auth0Authorize = this.auth0Authorize.bind(this);
   }
 
   doSignIn(event) {
@@ -34,7 +34,7 @@ class SignInButton extends React.Component {
 
     if (!_.isEmpty(connectionName)) {
       // we were passed a connection name; just use that
-      this.auth0Login(connectionName);
+      this.auth0Authorize(connectionName);
     } else if (!_.isEmpty(email)) {
       // make sure we really shouldn't have a connection...
       const foundConnection = findForcedOrEmailDomainConnection(
@@ -46,7 +46,7 @@ class SignInButton extends React.Component {
 
       if (!_.isEmpty(foundConnection)) {
         // if an email was entered and matched a connection, use that connection
-        this.auth0Login(foundConnection);
+        this.auth0Authorize(foundConnection);
       } else if (!_.isEmpty(password)) {
         // otherwise do a regular ol login
         onLoginStart();
@@ -55,15 +55,15 @@ class SignInButton extends React.Component {
     }
   }
 
-  auth0Login(connectionName) {
+  auth0Authorize(connectionName) {
     const {
-      doAuth0Login,
+      doAuth0Authorize,
       onLoginStart
     } = this.props;
     onLoginStart();
 
-    // SSO connection
-    doAuth0Login({
+    // execute Auth0 authorize method for named SSO connection
+    doAuth0Authorize({
       connection: connectionName
     });
   }
@@ -82,7 +82,7 @@ SignInButton.propTypes = {
   onLoginError: PropTypes.func.isRequired,
   onLoginStart: PropTypes.func.isRequired,
   connectionName: PropTypes.string,
-  doAuth0Login: PropTypes.func.isRequired,
+  doAuth0Authorize: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
   email: PropTypes.string,
   password: PropTypes.string,

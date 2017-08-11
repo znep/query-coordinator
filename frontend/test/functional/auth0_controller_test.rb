@@ -143,6 +143,52 @@ class Auth0ControllerTest < ActionController::TestCase
     end
   end
 
+  context 'link' do
+    setup do
+      stub_auth0_identifiers
+      stub_recaptcha_valid_success
+    end
+
+    should 'get without arguments fails' do
+      assert_raises(NoMethodError) do 
+        get :link, :protocol => 'https'
+      end
+    end
+
+    should 'get successful' do
+      auth0_link_token = {
+        :socrata_user_id => 1
+      }
+      auth0_link_token.extend(StubAuthLinkToken)
+      @request.session[:auth0_link_token] = auth0_link_token
+      get :link, :protocol => 'https'
+      assert_response(200)
+    end
+
+    should 'post sign in successful' do
+      auth0_link_token = {
+        :socrata_user_id => 1
+      }
+      auth0_link_token.extend(StubAuthLinkToken)
+      @request.session[:auth0_link_token] = auth0_link_token
+      user_session = {}
+      post :link, :protocol => 'https', :user_session => user_session
+      assert_response(302)
+    end
+
+    should 'post sign up fail recaptcha' do
+      auth0_link_token = {
+        :socrata_user_id => 1
+      }
+      auth0_link_token.extend(StubAuthLinkToken)
+      @request.session[:auth0_link_token] = auth0_link_token
+      post :link, :protocol => 'https'
+      assert_response(302)
+      assert_redirected_to('/auth/auth0/link')
+      assert_equal(@controller.flash[:error], 'We were unable to confirm your response, please try again.')
+    end
+  end
+
   class StubAuth0Authentication < ActionController::TestCase
     def initialize(token)
     end
@@ -185,6 +231,16 @@ class Auth0ControllerTest < ActionController::TestCase
       {
         'Set-Cookie' => cookie_string
       }
+    end
+  end
+
+  module StubAuthLinkToken
+    def name
+      "John Foo"
+    end
+
+    def email
+      "johnfoo@example.org"
     end
   end
 

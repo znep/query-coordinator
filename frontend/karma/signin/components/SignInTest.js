@@ -11,6 +11,7 @@ import SocialSignIn from 'components/Social/SocialSignIn';
 describe('<SignIn />', () => {
   const defaultProps = {
     translate: ( ) => '',
+    doAuth0Authorize: () => { },
     doAuth0Login: () => { },
     onLoginStart: () => { },
     onLoginError: () => { },

@@ -2,7 +2,7 @@ import React from 'react';
 import cssModules from 'react-css-modules';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import Auth0 from 'auth0-js';
+import auth0 from 'auth0-js';
 import url from 'url';
 import { renderAlerts } from '../Util';
 import signUpReducer from '../reducers/SignUpReducer';
@@ -26,10 +26,11 @@ class SignUp extends React.Component {
     const screenName = _.get(params, 'screenName', '');
 
     this.state = {
-      auth0Client: new Auth0({
+      auth0Client: new auth0.WebAuth({
         domain: auth0Uri,
         clientID: auth0ClientId,
-        callbackURL: `${baseDomainUri}/auth/auth0/callback`
+        responseType: 'token',
+        redirectUri: `${baseDomainUri}/auth/auth0/callback`
       })
     };
 
@@ -84,8 +85,8 @@ class SignUp extends React.Component {
     if (this.props.options.showSocial) {
       const { auth0Client } = this.state;
       const { translate } = this.props;
-      const doAuth0Login = auth0Client.login.bind(auth0Client);
-      return <SocialSignIn doAuth0Login={doAuth0Login} translate={translate} />;
+      const doAuth0Authorize = auth0Client.authorize.bind(auth0Client);
+      return <SocialSignIn doAuth0Authorize={doAuth0Authorize} translate={translate} />;
     }
   }
 

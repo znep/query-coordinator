@@ -136,11 +136,11 @@ class SignInForm extends React.Component {
   }
 
   auth0Login(connectionName) {
-    const { doAuth0Login } = this.props;
+    const { doAuth0Authorize } = this.props;
     this.onLoginStart();
 
-    // SSO connection
-    doAuth0Login({
+    // execute Auth0 authorize method for named SSO connection
+    doAuth0Authorize({
       connection: connectionName
     });
   }
@@ -205,6 +205,7 @@ class SignInForm extends React.Component {
     if (allowUsernamePasswordLogin) {
       this.formDomNode.submit();
     } else {
+      // execute Auth0 login method with user credentials
       doAuth0Login({
         connection: auth0DatabaseConnection,
         username: email,
@@ -282,6 +283,7 @@ class SignInForm extends React.Component {
 SignInForm.propTypes = {
   options: OptionsPropType.isRequired,
   translate: PropTypes.func.isRequired,
+  doAuth0Authorize: PropTypes.func.isRequired,
   doAuth0Login: PropTypes.func.isRequired,
   onLoginStart: PropTypes.func.isRequired,
   onLoginError: PropTypes.func.isRequired,

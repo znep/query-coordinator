@@ -33,13 +33,10 @@ describe('components/Table/TransformStatus', () => {
   describe('when there are no errors', () => {
     it('renders correctly when source is done and column is done', () => {
       const component = shallow(<TransformStatus {...defaultProps} />);
-
-      assert.isAtLeast(component.find('.success').length, 1);
       assert.isAtLeast(component.find('ProgressBar').length, 1);
       assert.equal(
-        component.text(),
-        `<ProgressBar /><SocrataIcon />${I18n.show_output_schema.column_header
-          .no_errors_exist}`
+        component.find('StatusText').prop('message'),
+        I18n.show_output_schema.column_header.no_errors_exist
       );
     });
 
@@ -57,8 +54,8 @@ describe('components/Table/TransformStatus', () => {
       assert.equal(component.find('ProgressBar').prop('percent'), 50);
 
       assert.equal(
-        component.text(),
-        `<ProgressBar />${I18n.show_output_schema.column_header.scanning}`
+        component.find('StatusText').prop('message'),
+        I18n.show_output_schema.column_header.scanning
       );
     });
 
@@ -75,8 +72,8 @@ describe('components/Table/TransformStatus', () => {
       const component = shallow(<TransformStatus {...props} />);
 
       assert.equal(
-        component.text(),
-        `<ProgressBar />${I18n.show_output_schema.column_header.scanning}`
+        component.find('StatusText').prop('message'),
+        I18n.show_output_schema.column_header.scanning
       );
     });
 
@@ -93,8 +90,8 @@ describe('components/Table/TransformStatus', () => {
       const component = shallow(<TransformStatus {...props} />);
 
       assert.equal(
-        component.text(),
-        `<ProgressBar />${I18n.show_output_schema.column_header.scanning}`
+        component.find('StatusText').prop('message'),
+        I18n.show_output_schema.column_header.scanning
       );
     });
   });

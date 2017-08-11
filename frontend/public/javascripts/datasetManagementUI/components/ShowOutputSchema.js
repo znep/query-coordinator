@@ -11,10 +11,10 @@ import * as Actions from '../actions/showOutputSchema';
 import * as LoadDataActions from '../actions/loadData';
 import { SAVE_CURRENT_OUTPUT_SCHEMA } from '../actions/apiCalls';
 import * as DisplayState from '../lib/displayState';
-import Table from './Table';
+import Table from 'components/Table/TableContainer';
 import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
 import ReadyToImport from './ReadyToImport';
-import PagerBar from './Table/PagerBar';
+import PagerBar from './Table/PagerBarContainer';
 import ErrorPointer from 'components/Table/ErrorPointer';
 import ApiCallButton from 'components/ApiCallButton';
 import styles from 'styles/ShowOutputSchema.scss';
@@ -268,10 +268,9 @@ function mapDispatchToProps(dispatch, ownProps) {
       browserHistory.push(Links.home(ownProps.params));
     },
     saveCurrentOutputSchema: (revision, outputSchemaId) => {
-      dispatch(Actions.saveCurrentOutputSchemaId(revision, outputSchemaId))
-        .then(() => {
-          browserHistory.push(Links.home(ownProps.params));
-        });
+      dispatch(Actions.saveCurrentOutputSchemaId(revision, outputSchemaId)).then(() => {
+        browserHistory.push(Links.home(ownProps.params));
+      });
     },
     dispatch
   };

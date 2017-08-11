@@ -14,6 +14,7 @@ class TableBody extends Component {
       displayState: nextProps.displayState,
       apiCalls: nextProps.apiCalls
     };
+
     const currentStuff = {
       columns: this.props.columns.map(
         c => (c.transform ? [c.transform.id, c.transform.error_indices] : null)
@@ -31,6 +32,7 @@ class TableBody extends Component {
     const startRow = (props.displayState.pageNo - 1) * PAGE_SIZE;
     const endRow = startRow + PAGE_SIZE;
     let rowIndices;
+
     if (props.displayState.type === DisplayState.COLUMN_ERRORS) {
       const errorsTransform = props.entities.transforms[props.displayState.transformId];
       if (errorsTransform.error_indices) {

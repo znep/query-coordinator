@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import { Table } from 'components/Table';
+import Table from 'components/Table/Table';
 import React from 'react';
 import dotProp from 'dot-prop-immutable';
 

@@ -96,7 +96,7 @@ describe('DataTypeFormatter', function() {
 
     it('records an error message', function() {
       var cellContent = DataTypeFormatter.renderCell('anything', { renderTypeName: 'anything' });
-      expect(cellContent).to.equal(undefined);
+      assert.equal(cellContent, undefined);
       sinon.assert.called(consoleErrorStub);
     });
   });
@@ -108,7 +108,7 @@ describe('DataTypeFormatter', function() {
     it('should render boolean cells with checkboxes for true, empty for false', function() {
       BOOLEAN_DATA.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderBooleanCell(value);
-        expect(cellContent).to.equal(value ? '✓' : '');
+        assert.equal(cellContent, value ? '✓' : '');
       });
     });
 
@@ -134,8 +134,8 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_FORMAT_REGEX);
-          expect(cellContent).to.not.match(/^-?0\d/);
+          assert.match(cellContent, PERCENT_FORMAT_REGEX);
+          assert.notMatch(cellContent, /^-?0\d/);
         });
       });
 
@@ -147,7 +147,7 @@ describe('DataTypeFormatter', function() {
           }
         };
 
-        expect(DataTypeFormatter.renderNumberCell(100, columnMetadata)).to.equal('100%');
+        assert.equal(DataTypeFormatter.renderNumberCell(100, columnMetadata), '100%');
       });
 
       it('should respect fixed precision', function() {
@@ -159,7 +159,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_FIXED_FORMAT_REGEX);
+          assert.match(cellContent, PERCENT_FIXED_FORMAT_REGEX);
         });
       });
 
@@ -172,8 +172,8 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
-          expect(cellContent).to.not.match(/^-?0\d/);
+          assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
+          assert.notMatch(cellContent, /^-?0\d/);
         });
 
         columnMetadata = {
@@ -184,8 +184,8 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
-          expect(cellContent).to.not.match(/^-?0\d/);
+          assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
+          assert.notMatch(cellContent, /^-?0\d/);
         });
       });
 
@@ -199,13 +199,13 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
 
       describe('when there is a custom locale', function() {
         beforeEach(function() { window.serverConfig = { locale: 'es' }; });
-        afterEach(function() { window.serverConfig = undefined;  });
+        afterEach(function() { delete window.serverConfig; });
 
         it('should respect custom locale', function() {
           columnMetadata = {
@@ -214,7 +214,7 @@ describe('DataTypeFormatter', function() {
 
           NUMBER_DATA.forEach(function(value) {
             var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-            expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
+            assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
       });
@@ -231,8 +231,8 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_FORMAT_REGEX);
-          expect(cellContent).to.not.match(/^-?0\d/);
+          assert.match(cellContent, PERCENT_FORMAT_REGEX);
+          assert.notMatch(cellContent, /^-?0\d/);
         });
       });
 
@@ -246,7 +246,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_FIXED_FORMAT_REGEX);
+          assert.match(cellContent, PERCENT_FIXED_FORMAT_REGEX);
         });
       });
 
@@ -260,8 +260,8 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
-          expect(cellContent).to.not.match(/^-?0\d/);
+          assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
+          assert.notMatch(cellContent, /^-?0\d/);
         });
 
         columnMetadata = {
@@ -273,8 +273,8 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
-          expect(cellContent).to.not.match(/^-?0\d/);
+          assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
+          assert.notMatch(cellContent, /^-?0\d/);
         });
       });
 
@@ -289,13 +289,13 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
 
       describe('when there is a custom locale', function() {
         beforeEach(function() { window.serverConfig = { locale: 'it' }; });
-        afterEach(function() { window.serverConfig = undefined;  });
+        afterEach(function() { delete window.serverConfig; });
 
         it('should respect custom locale', function() {
           columnMetadata = {
@@ -306,7 +306,7 @@ describe('DataTypeFormatter', function() {
           };
           NUMBER_DATA.forEach(function(value) {
             var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-            expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
+            assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
       });
@@ -320,7 +320,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(NUMBER_FORMAT_REGEX);
+          assert.match(cellContent, NUMBER_FORMAT_REGEX);
         });
       });
 
@@ -333,7 +333,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(NUMBER_FIXED_FORMAT_REGEX);
+          assert.match(cellContent, NUMBER_FIXED_FORMAT_REGEX);
         });
       });
 
@@ -346,7 +346,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(NUMBER_NOCOMMAS_FORMAT_REGEX);
+          assert.match(cellContent, NUMBER_NOCOMMAS_FORMAT_REGEX);
         });
 
         columnMetadata = {
@@ -357,7 +357,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(NUMBER_NOCOMMAS_FORMAT_REGEX);
+          assert.match(cellContent, NUMBER_NOCOMMAS_FORMAT_REGEX);
         });
       });
 
@@ -368,7 +368,7 @@ describe('DataTypeFormatter', function() {
         var values = _.filter(NUMBER_DATA, function(value) { return /^\-?\d{4}$/.test(value); })
         values.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(/\d{4}/);
+          assert.match(cellContent, /\d{4}/);
         });
       });
 
@@ -382,13 +382,13 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(NUMBER_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          assert.match(cellContent, NUMBER_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
 
       describe('when there is a custom locale', function() {
         beforeEach(function() { window.serverConfig = { locale: 'es' }; });
-        afterEach(function() { window.serverConfig = undefined;  });
+        afterEach(function() { delete window.serverConfig; });
 
         it('should respect custom locale', function() {
           columnMetadata = {
@@ -396,7 +396,7 @@ describe('DataTypeFormatter', function() {
           };
           NUMBER_DATA.forEach(function(value) {
             var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-            expect(cellContent).to.match(NUMBER_CUSTOM_SEPARATOR_FORMAT_REGEX);
+            assert.match(cellContent, NUMBER_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
       });
@@ -413,7 +413,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_FORMAT_REGEX);
+          assert.match(cellContent, PERCENT_FORMAT_REGEX);
         });
       });
 
@@ -427,7 +427,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_FIXED_FORMAT_REGEX);
+          assert.match(cellContent, PERCENT_FIXED_FORMAT_REGEX);
         });
       });
 
@@ -441,7 +441,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
+          assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
         });
 
         columnMetadata = {
@@ -453,7 +453,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_NOCOMMAS_FORMAT_REGEX);
+          assert.match(cellContent, PERCENT_NOCOMMAS_FORMAT_REGEX);
         });
       });
 
@@ -468,13 +468,13 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
 
       describe('when there is a custom locale', function() {
         beforeEach(function() { window.serverConfig = { locale: 'it' }; });
-        afterEach(function() { window.serverConfig = undefined;  });
+        afterEach(function() { delete window.serverConfig; });
 
         it('should respect custom locale', function() {
           columnMetadata = {
@@ -485,7 +485,7 @@ describe('DataTypeFormatter', function() {
           };
           NUMBER_DATA.forEach(function(value) {
             var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-            expect(cellContent).to.match(PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
+            assert.match(cellContent, PERCENT_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
       });
@@ -502,7 +502,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(CURRENCY_FORMAT_REGEX);
+          assert.match(cellContent, CURRENCY_FORMAT_REGEX);
         });
       });
 
@@ -516,7 +516,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(CURRENCY_FIXED_FORMAT_REGEX);
+          assert.match(cellContent, CURRENCY_FIXED_FORMAT_REGEX);
         });
       });
 
@@ -530,7 +530,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(CURRENCY_NOCOMMAS_FORMAT_REGEX);
+          assert.match(cellContent, CURRENCY_NOCOMMAS_FORMAT_REGEX);
         });
 
         columnMetadata = {
@@ -542,7 +542,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(CURRENCY_NOCOMMAS_FORMAT_REGEX);
+          assert.match(cellContent, CURRENCY_NOCOMMAS_FORMAT_REGEX);
         });
       });
 
@@ -558,13 +558,13 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(CURRENCY_CUSTOM_SEPARATOR_AND_SYMBOL_FORMAT_REGEX);
+          assert.match(cellContent, CURRENCY_CUSTOM_SEPARATOR_AND_SYMBOL_FORMAT_REGEX);
         });
       });
 
       describe('when there is a custom locale', function() {
         beforeEach(function() { window.serverConfig = { locale: 'es' }; });
-        afterEach(function() { window.serverConfig = undefined;  });
+        afterEach(function() { delete window.serverConfig; });
 
         it('should respect custom locale', function() {
           columnMetadata = {
@@ -576,7 +576,7 @@ describe('DataTypeFormatter', function() {
           };
           NUMBER_DATA.forEach(function(value) {
             var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-            expect(cellContent).to.match(CURRENCY_CUSTOM_SEPARATOR_AND_SYMBOL_FORMAT_REGEX);
+            assert.match(cellContent, CURRENCY_CUSTOM_SEPARATOR_AND_SYMBOL_FORMAT_REGEX);
           });
         });
       });
@@ -593,7 +593,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(FINANCIAL_FORMAT_REGEX);
+          assert.match(cellContent, FINANCIAL_FORMAT_REGEX);
         });
       });
 
@@ -607,7 +607,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(FINANCIAL_FIXED_FORMAT_REGEX);
+          assert.match(cellContent, FINANCIAL_FIXED_FORMAT_REGEX);
         });
       });
 
@@ -621,7 +621,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(FINANCIAL_NOCOMMAS_FORMAT_REGEX);
+          assert.match(cellContent, FINANCIAL_NOCOMMAS_FORMAT_REGEX);
         });
 
         columnMetadata = {
@@ -633,7 +633,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(FINANCIAL_NOCOMMAS_FORMAT_REGEX);
+          assert.match(cellContent, FINANCIAL_NOCOMMAS_FORMAT_REGEX);
         });
       });
 
@@ -648,13 +648,13 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(FINANCIAL_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          assert.match(cellContent, FINANCIAL_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
 
       describe('when there is a custom locale', function() {
         beforeEach(function() { window.serverConfig = { locale: 'it' }; });
-        afterEach(function() { window.serverConfig = undefined;  });
+        afterEach(function() { delete window.serverConfig; });
 
         it('should respect custom locale', function() {
           columnMetadata = {
@@ -665,7 +665,7 @@ describe('DataTypeFormatter', function() {
           };
           NUMBER_DATA.forEach(function(value) {
             var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-            expect(cellContent).to.match(FINANCIAL_CUSTOM_SEPARATOR_FORMAT_REGEX);
+            assert.match(cellContent, FINANCIAL_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
       });
@@ -682,7 +682,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(SCIENTIFIC_FORMAT_REGEX);
+          assert.match(cellContent, SCIENTIFIC_FORMAT_REGEX);
         });
       });
 
@@ -696,7 +696,7 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(SCIENTIFIC_FIXED_FORMAT_REGEX);
+          assert.match(cellContent, SCIENTIFIC_FIXED_FORMAT_REGEX);
         });
       });
 
@@ -711,13 +711,13 @@ describe('DataTypeFormatter', function() {
         };
         NUMBER_DATA.forEach(function(value) {
           var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-          expect(cellContent).to.match(SCIENTIFIC_CUSTOM_SEPARATOR_FORMAT_REGEX);
+          assert.match(cellContent, SCIENTIFIC_CUSTOM_SEPARATOR_FORMAT_REGEX);
         });
       });
 
       describe('when there is a custom locale', function() {
         beforeEach(function() { window.serverConfig = { locale: 'es' }; });
-        afterEach(function() { window.serverConfig = undefined;  });
+        afterEach(function() { delete window.serverConfig; });
 
         it('should respect the custom locale', function() {
           columnMetadata = {
@@ -728,7 +728,7 @@ describe('DataTypeFormatter', function() {
           };
           NUMBER_DATA.forEach(function(value) {
             var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-            expect(cellContent).to.match(SCIENTIFIC_CUSTOM_SEPARATOR_FORMAT_REGEX);
+            assert.match(cellContent, SCIENTIFIC_CUSTOM_SEPARATOR_FORMAT_REGEX);
           });
         });
       });
@@ -744,7 +744,7 @@ describe('DataTypeFormatter', function() {
       };
       NUMBER_DATA.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderNumberCell(value, columnMetadata);
-        expect(cellContent).to.match(MASK_FORMAT_REGEX);
+        assert.match(cellContent, MASK_FORMAT_REGEX);
       });
     });
 
@@ -773,7 +773,7 @@ describe('DataTypeFormatter', function() {
     it('should render point cells as plain text', function() {
       POINT_DATA.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderGeoCell(value, columnMetadata);
-        expect(cellContent).to.match(COORDINATES_REGEX);
+        assert.match(cellContent, COORDINATES_REGEX);
       });
     });
 
@@ -787,14 +787,14 @@ describe('DataTypeFormatter', function() {
           return span.trim();
         });
 
-        expect(pointCellSpans).to.have.length(2);
+        assert.lengthOf(pointCellSpans, 2);
 
-        expect(pointCellSpans[0]).to.match(COORDINATES_HTML_REGEX);
+        assert.match(pointCellSpans[0], COORDINATES_HTML_REGEX);
         var matchLat = COORDINATES_HTML_REGEX.exec(pointCellSpans[0]);
-        expect(matchLat[1]).to.equal('Latitude');
-        expect(pointCellSpans[1]).to.match(COORDINATES_HTML_REGEX);
+        assert.equal(matchLat[1], 'Latitude');
+        assert.match(pointCellSpans[1], COORDINATES_HTML_REGEX);
         var matchLng = COORDINATES_HTML_REGEX.exec(pointCellSpans[1]);
-        expect(matchLng[1]).to.equal('Longitude');
+        assert.equal(matchLng[1], 'Longitude');
       });
     });
   });
@@ -812,7 +812,7 @@ describe('DataTypeFormatter', function() {
       };
       MONEY_DATA.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderMoneyCell(value, columnMetadata);
-        expect(cellContent).to.match(MONEY_REGEX);
+        assert.match(cellContent, MONEY_REGEX);
       });
     });
 
@@ -827,7 +827,7 @@ describe('DataTypeFormatter', function() {
       };
       MONEY_DATA.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderMoneyCell(value, columnMetadata);
-        expect(cellContent).to.match(MONEY_WITH_USER_FORMAT_REGEX);
+        assert.match(cellContent, MONEY_WITH_USER_FORMAT_REGEX);
       });
     });
 
@@ -840,10 +840,25 @@ describe('DataTypeFormatter', function() {
       };
       MONEY_DATA.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderMoneyCell(value, columnMetadata);
-        expect(cellContent).to.match(MONEY_HUMANE_FORMAT_REGEX);
+        assert.match(cellContent, MONEY_HUMANE_FORMAT_REGEX);
       });
     });
 
+    describe('when there is a custom locale', function() {
+      beforeEach(function() { window.serverConfig = { locale: 'it' }; });
+      afterEach(function() { window.serverConfig = undefined; });
+
+      it('should respect custom locale', function() {
+        columnMetadata = {
+          renderTypeName: 'money',
+          format: {}
+        };
+        MONEY_DATA.forEach(function(value) {
+          var cellContent = DataTypeFormatter.renderMoneyCell(value, columnMetadata);
+          assert.match(cellContent, MONEY_WITH_USER_FORMAT_REGEX);
+        });
+      });
+    });
   });
 
   // TODO: verify behavior and fix!
@@ -866,7 +881,7 @@ describe('DataTypeFormatter', function() {
       };
       TIMESTAMP_DATA.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderTimestampCell(value, columnMetadata);
-        expect(cellContent).to.match(TIMESTAMP_REGEX);
+        assert.match(cellContent, TIMESTAMP_REGEX);
       });
     });
 
@@ -879,7 +894,7 @@ describe('DataTypeFormatter', function() {
       };
       TIMESTAMP_DATA.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderTimestampCell(value, columnMetadata);
-        expect(cellContent).to.match(TIMESTAMP_WITH_USER_FORMAT_REGEX);
+        assert.match(cellContent, TIMESTAMP_WITH_USER_FORMAT_REGEX);
       });
     });
 
@@ -890,7 +905,7 @@ describe('DataTypeFormatter', function() {
       var values = _.filter(TIMESTAMP_DATA, function(value) { return /00:00:00$/.test(value); });
       values.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderTimestampCell(value, columnMetadata);
-        expect(cellContent).to.match(TIMESTAMP_NO_HR_MIN_SEC_REGEX);
+        assert.match(cellContent, TIMESTAMP_NO_HR_MIN_SEC_REGEX);
       });
     });
 
@@ -901,7 +916,7 @@ describe('DataTypeFormatter', function() {
       var values = _.map(TIMESTAMP_DATA, function(value) { return value + 'xx'; });
       values.forEach(function(value) {
         var cellContent = DataTypeFormatter.renderTimestampCell(value, columnMetadata);
-        expect(cellContent).to.equal('');
+        assert.equal(cellContent, '');
       });
     });
 
@@ -914,12 +929,12 @@ describe('DataTypeFormatter', function() {
         description: 'wombats'
       });
       var expected = '<a href="https://socrata.com" target="_blank" rel="external">wombats</a>';
-      expect(cellContent).to.equal(expected);
+      assert.equal(cellContent, expected);
     });
 
     it('should render an empty string if no data', function() {
       var cellContent = DataTypeFormatter.renderUrlCellHTML({});
-      expect(cellContent).to.equal('');
+      assert.equal(cellContent, '');
     });
   });
 
@@ -927,12 +942,12 @@ describe('DataTypeFormatter', function() {
     it('should render a link', function() {
       var cellContent = DataTypeFormatter.renderEmailCellHTML('a@b.com');
       var expected = '<a href="mailto:a@b.com" target="_blank" rel="external">a@b.com</a>';
-      expect(cellContent).to.equal(expected);
+      assert.equal(cellContent, expected);
     });
 
     it('should render an empty string if no data', function() {
       var cellContent = DataTypeFormatter.renderEmailCellHTML({});
-      expect(cellContent).to.equal('');
+      assert.equal(cellContent, '');
     });
   });
 
@@ -942,12 +957,12 @@ describe('DataTypeFormatter', function() {
         phone_number: 'Other: 555-5555'
       });
       var expected = '<a href="tel:555-5555" target="_blank" rel="external">Other: 555-5555</a>';
-      expect(cellContent).to.equal(expected);
+      assert.equal(cellContent, expected);
     });
 
     it('should render an empty string if no data', function() {
       var cellContent = DataTypeFormatter.renderPhoneCellHTML({});
-      expect(cellContent).to.equal('');
+      assert.equal(cellContent, '');
     });
   });
 
@@ -955,21 +970,21 @@ describe('DataTypeFormatter', function() {
   describe('html formatting', function() {
     it('should render only the text contents of HTML', function() {
       var cellContent = DataTypeFormatter.renderCell('<div>here <b>we</b> go<span style="color:red;">!</span></div>', { renderTypeName: 'html' });
-      expect(cellContent).to.equal('here we go!');
+      assert.equal(cellContent, 'here we go!');
     });
 
     it('should not fail on text that looks like a selector', function() {
       // EN-15513
       var cellContent = DataTypeFormatter.renderCell('5 lb. Comm. Line for 3 Cemt.', { renderTypeName: 'html' });
-      expect(cellContent).to.equal('5 lb. Comm. Line for 3 Cemt.');
+      assert.equal(cellContent, '5 lb. Comm. Line for 3 Cemt.');
     });
 
     it('should render an empty string if no data', function() {
       var cellContent = DataTypeFormatter.renderCell('', { renderTypeName: 'html' });
-      expect(cellContent).to.equal('');
+      assert.equal(cellContent, '');
 
       cellContent = DataTypeFormatter.renderCell(undefined, { renderTypeName: 'html' });
-      expect(cellContent).to.equal('');
+      assert.equal(cellContent, '');
     });
   });
 
@@ -978,12 +993,12 @@ describe('DataTypeFormatter', function() {
     it('should render a link', function() {
       var cellContent = DataTypeFormatter.renderPhotoCellHTML('hi', 'neat.co', 'abcd-1234');
       var expected = '<a href="https://neat.co/views/abcd-1234/files/hi" target="_blank" rel="external">hi</a>';
-      expect(cellContent).to.equal(expected);
+      assert.equal(cellContent, expected);
     });
 
     it('should render an empty string if no data', function() {
       var cellContent = DataTypeFormatter.renderPhotoCellHTML('');
-      expect(cellContent).to.equal('');
+      assert.equal(cellContent, '');
     });
   });
 
@@ -999,12 +1014,12 @@ describe('DataTypeFormatter', function() {
         'peng-uins'
       );
       var expected = '<a href="https://neat.co/views/peng-uins/files/hello" target="_blank" rel="external">dolly</a>';
-      expect(cellContent).to.equal(expected);
+      assert.equal(cellContent, expected);
     });
 
     it('should render an empty string if no data', function() {
       var cellContent = DataTypeFormatter.renderDocumentCellHTML({});
-      expect(cellContent).to.equal('');
+      assert.equal(cellContent, '');
     });
   });
 
@@ -1028,12 +1043,12 @@ describe('DataTypeFormatter', function() {
           }
         }
       );
-      expect(cellContent).to.equal('bar');
+      assert.equal(cellContent, 'bar');
     });
 
     it('should render an empty string if no data', function() {
       var cellContent = DataTypeFormatter.renderMultipleChoiceCell('', {});
-      expect(cellContent).to.equal('');
+      assert.equal(cellContent, '');
     });
   });
 
@@ -1063,27 +1078,27 @@ describe('DataTypeFormatter', function() {
 
     it('should render location as latitude and longitude', function() {
       const locationOutput = DataTypeFormatter.renderCell(LOCATION, { renderTypeName: 'location' });
-      expect(locationOutput).to.equal('(47.615267°, -122.317664°)');
+      assert.equal(locationOutput, '(47.615267°, -122.317664°)');
     });
 
     it('should render location with human address', function() {
       const locationOutput = DataTypeFormatter.renderCell(LOCATION_WITH_HUMAN_ADDESS, { renderTypeName: 'location' });
       const address = JSON.parse(LOCATION_WITH_HUMAN_ADDESS.human_address);
       const point = `(${LOCATION_WITH_HUMAN_ADDESS.latitude}°, ${LOCATION_WITH_HUMAN_ADDESS.longitude}°)`;
-      expect(locationOutput).to.equal(`${address.address} ${address.city} ${address.state} ${address.zip} ${point}`);
+      assert.equal(locationOutput, `${address.address} ${address.city} ${address.state} ${address.zip} ${point}`);
     });
 
     it('should render only the parts of given human address', function() {
       const locationOutput = DataTypeFormatter.renderCell(LOCATION_WITH_PARTIAL_HUMAN_ADDRESS, { renderTypeName: 'location' });
       const address = JSON.parse(LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.human_address);
       const point = `(${LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.latitude}°, ${LOCATION_WITH_PARTIAL_HUMAN_ADDRESS.longitude}°)`;
-      expect(locationOutput).to.equal(`${address.address} ${address.zip} ${point}`);
+      assert.equal(locationOutput, `${address.address} ${address.zip} ${point}`);
     });
 
     it('should render only the latitude and longitude if human address is not a valid json', function () {
       const locationOutput = DataTypeFormatter.renderCell(LOCATION_WITH_HUMAN_ADDRESS_ERROR, { renderTypeName: 'location' });
       const point = `(${LOCATION_WITH_HUMAN_ADDRESS_ERROR.latitude}°, ${LOCATION_WITH_HUMAN_ADDRESS_ERROR.longitude}°)`;
-      expect(locationOutput).to.equal(`${point}`);
+      assert.equal(locationOutput, `${point}`);
     });
   });
 });

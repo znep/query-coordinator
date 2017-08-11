@@ -598,6 +598,19 @@ ul.autocomplete {
     width: auto;
   }
 
+  .signallerEnvironment {
+    float: right;
+
+    label {
+      font-size: 1.1em;
+    }
+
+    span {
+      font-size: 1.4em;
+      font-weight: bold;
+    }
+  }
+
   .domainFeatureFlags > div {
     margin-top: 0.5em;
 

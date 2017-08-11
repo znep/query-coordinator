@@ -16,7 +16,7 @@ window.serverConfig = {
   currentUserId: 'asdf-1234',
   localePrefix: 'en',
   featureFlags: {
-    usaidFeaturesEnabled: false
+    usaid_features_enabled: false
   }
 };
 

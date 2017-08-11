@@ -9,7 +9,7 @@ import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/HomePaneSidebar.scss';
 
 function query(entities) {
-  const currentOutputSchema = Selectors.latestOutputSchema(entities);
+  const currentOutputSchema = Selectors.currentOutputSchema(entities);
   const outputColumns = currentOutputSchema
     ? Selectors.columnsForOutputSchema(entities, currentOutputSchema.id)
     : [];
@@ -30,8 +30,9 @@ export const ManageData = ({ entities, columnsExist, params }) => {
   const visualizationDoneCheckmark = null;
   const featuredDoneCheckmark = null;
 
-  const columnDescriptionLink = columnsExist
-    ? Links.columnMetadataForm(params, Selectors.latestOutputSchema(entities).id)
+  const currentOutputSchema = Selectors.currentOutputSchema(entities);
+  const columnDescriptionLink = currentOutputSchema
+    ? Links.columnMetadataForm(params, currentOutputSchema.id)
     : '';
 
   return (

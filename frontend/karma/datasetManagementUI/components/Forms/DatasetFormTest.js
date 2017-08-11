@@ -56,20 +56,24 @@ describe('components/Forms/DatasetForm', () => {
           'Make your title and description as clear and simple as possible.',
         fields: [
           {
-            name: 'name',
-            label: 'Dataset Title',
-            value: 'ok',
-            isPrivate: false,
-            isRequired: true,
-            placeholder: 'Dataset Title',
-            isCustom: false
+            data: {
+              name: 'name',
+              label: 'Dataset Title',
+              value: 'ok',
+              isPrivate: false,
+              isRequired: true,
+              placeholder: 'Dataset Title',
+              isCustom: false
+            }
           },
           {
-            name: 'description',
-            label: 'Brief Description',
-            isPrivate: false,
-            isRequired: false,
-            placeholder: 'Enter a description'
+            data: {
+              name: 'description',
+              label: 'Brief Description',
+              isPrivate: false,
+              isRequired: false,
+              placeholder: 'Enter a description'
+            }
           }
         ]
       },
@@ -78,11 +82,14 @@ describe('components/Forms/DatasetForm', () => {
         subtitle: 'Categorize your dataset to make it easier to find.',
         fields: [
           {
-            name: 'category',
-            label: 'Category',
-            value: 'Education',
-            isPrivate: false,
-            isRequired: false,
+            data: {
+              name: 'category',
+              label: 'Category',
+              value: 'Education',
+              isPrivate: false,
+              isRequired: false,
+              isCustom: false
+            },
             options: [
               {
                 title: '-- No category --',
@@ -112,16 +119,17 @@ describe('components/Forms/DatasetForm', () => {
                 title: 'Personal',
                 value: 'Personal'
               }
-            ],
-            isCustom: false
+            ]
           },
           {
-            name: 'tags',
-            label: 'Tags / Keywords',
-            value: ['one', 'four', 'three'],
-            isPrivate: false,
-            isRequired: false,
-            placeholder: 'Enter tag name'
+            data: {
+              name: 'tags',
+              label: 'Tags / Keywords',
+              value: ['one', 'four', 'three'],
+              isPrivate: false,
+              isRequired: false,
+              placeholder: 'Enter tag name'
+            }
           }
         ]
       },
@@ -130,11 +138,14 @@ describe('components/Forms/DatasetForm', () => {
         subtitle: null,
         fields: [
           {
-            name: 'licenseId',
-            label: 'License Type',
-            value: null,
-            isPrivate: false,
-            isRequired: false,
+            data: {
+              name: 'licenseId',
+              label: 'License Type',
+              value: null,
+              isPrivate: false,
+              isRequired: false,
+              isCustom: false
+            },
             options: [
               {
                 title: '-- No License --',
@@ -260,26 +271,29 @@ describe('components/Forms/DatasetForm', () => {
                 title: 'UK Open Government Licence v3',
                 value: 'UK_OGLV3.0'
               }
-            ],
-            isCustom: false
+            ]
           },
           {
-            name: 'attribution',
-            label: 'Data Provided By',
-            value: null,
-            isPrivate: false,
-            isRequired: false,
-            placeholder: 'Individual or organization',
-            isCustom: false
+            data: {
+              name: 'attribution',
+              label: 'Data Provided By',
+              value: null,
+              isPrivate: false,
+              isRequired: false,
+              placeholder: 'Individual or organization',
+              isCustom: false
+            }
           },
           {
-            name: 'attributionLink',
-            label: 'Source Link',
-            value: null,
-            isPrivate: false,
-            isRequired: false,
-            placeholder: 'Enter web address',
-            isCustom: false
+            data: {
+              name: 'attributionLink',
+              label: 'Source Link',
+              value: null,
+              isPrivate: false,
+              isRequired: false,
+              placeholder: 'Enter web address',
+              isCustom: false
+            }
           }
         ]
       },
@@ -288,13 +302,15 @@ describe('components/Forms/DatasetForm', () => {
         subtitle: null,
         fields: [
           {
-            name: 'contactEmail',
-            label: 'Email Address',
-            value: null,
-            isPrivate: true,
-            isRequired: false,
-            placeholder: 'example@socrata.com',
-            isCustom: false
+            data: {
+              name: 'contactEmail',
+              label: 'Email Address',
+              value: null,
+              isPrivate: true,
+              isRequired: false,
+              placeholder: 'example@socrata.com',
+              isCustom: false
+            }
           }
         ]
       }
@@ -305,12 +321,14 @@ describe('components/Forms/DatasetForm', () => {
         subtitle: null,
         fields: [
           {
-            name: 'name',
-            label: 'name',
-            value: null,
-            isRequired: false,
-            placeholder: null,
-            isCustom: true
+            data: {
+              name: 'name',
+              label: 'name',
+              value: null,
+              isRequired: false,
+              placeholder: null,
+              isCustom: true
+            }
           }
         ]
       }

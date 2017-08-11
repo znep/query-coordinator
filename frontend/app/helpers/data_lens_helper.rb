@@ -69,8 +69,7 @@ module DataLensHelper
       end
 
       FeatureFlags.list.each do |feature_key|
-        js_feature_key = feature_key.camelize(:lower)
-        config.merge!(js_feature_key => FeatureFlags.derive(nil, request)[feature_key.to_sym])
+        config.merge!(feature_key => FeatureFlags.derive(nil, request)[feature_key.to_sym])
       end
 
       data_lens_config.each do |key, value|

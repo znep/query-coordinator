@@ -146,14 +146,32 @@ function SvgColumnChart($element, vif, options) {
     const dimensionValues = dataToRender.rows.map(
       (row) => row[dataTableDimensionIndex]
     );
-    // Grouped column charts will have multiple columns. If one of those columns is null (which is
-    // a valid value for it to be if there are nulls in the dataset), we need to replace it with
-    // the no value label. If there are not multiple columns, that's an expected null that we
-    // should not overwrite with the no value label. "multiple columns" === greater than 2 because
-    // the first element is going to be 'dimension'.
-    const hasMultipleColumns = dataToRender.columns.length > 2;
-    measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).
-      map((label) => hasMultipleColumns ? label || noValueLabel : label);
+
+    const columns = dataToRender.columns.slice(dataTableDimensionIndex + 1);
+
+    if (self.isMultiSeries()) {
+      measureLabels = columns.map((column, index) => {
+        const measureColumnName = _.get(self.getVif(), `series[${index}].dataSource.measure.columnName`);
+
+        if (_.isEmpty(measureColumnName)) {
+          return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
+        }
+
+        const measureColumnFormat = dataToRender.columnFormats[measureColumnName];
+        return _.isUndefined(measureColumnFormat) ? column : measureColumnFormat.name;
+      });
+    }
+    else {
+
+      // Grouped column charts will have multiple columns. If one of those columns is null (which is
+      // a valid value for it to be if there are nulls in the dataset), we need to replace it with
+      // the no value label. If there are not multiple columns, that's an expected null that we
+      // should not overwrite with the no value label.
+
+      measureLabels = dataToRender.columns.slice(dataTableDimensionIndex + 1).map((label) => {
+        return self.isGrouping() ? label || noValueLabel : label;
+      });
+    }
 
     let width;
     let height;
@@ -370,12 +388,7 @@ function SvgColumnChart($element, vif, options) {
       if (!isStacked) {
 
         dimensionGroupSvgs.selectAll('.column-underlay').
-          attr(
-            'x',
-            (d, measureIndex) => {
-              return d3GroupingXScale(measureLabels[measureIndex]);
-            }
-          ).
+          attr('x', (d, measureIndex) => d3GroupingXScale(measureIndex)).
           attr('y', 0).
           attr('width', Math.max(d3GroupingXScale.rangeBand() - 1, 0)).
           attr('height', height).
@@ -411,7 +424,6 @@ function SvgColumnChart($element, vif, options) {
         attr(
           'data-default-fill',
           (value, measureIndex, dimensionIndex) => {
-
             return self.getColor(dimensionIndex, measureIndex, measureLabels);
           }
         );
@@ -425,8 +437,9 @@ function SvgColumnChart($element, vif, options) {
       } else {
 
         columns.
-          attr('x', (d, measureIndex) => d3GroupingXScale(measureLabels[measureIndex])).
+          attr('x', (d, measureIndex) => d3GroupingXScale(measureIndex)).
           attr('width', Math.max(d3GroupingXScale.rangeBand() - 1, 0));
+
       }
 
       lastRenderedSeriesWidth = xAxisAndSeriesSvg.node().getBBox().width;
@@ -603,12 +616,15 @@ function SvgColumnChart($element, vif, options) {
     d3DimensionXScale = generateXScale(
       dimensionValues,
       width,
-      self.isMultiSeries()
+      self.isGroupingOrMultiSeries()
     );
 
     // This scale is used for groupings of columns under a single dimension
     // category.
-    d3GroupingXScale = generateXGroupScale(measureLabels, d3DimensionXScale);
+    d3GroupingXScale = generateXGroupScale(
+      self.getOrdinalDomainFromMeasureLabels(measureLabels), 
+      d3DimensionXScale);
+
     d3XAxis = generateXAxis(d3DimensionXScale);
 
     /**
@@ -952,6 +968,7 @@ function SvgColumnChart($element, vif, options) {
               )[0][0];
               const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
               const label = measureLabels[measureIndex];
+
               // d3's .datum() method gives us the entire row, whereas everywhere
               // else measureIndex refers only to measure values. We therefore
               // add one to measure index to get the actual measure value from
@@ -960,7 +977,7 @@ function SvgColumnChart($element, vif, options) {
               const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
               showColumnHighlight(siblingColumn);
-              showColumnFlyout(siblingColumn, color, label, value);
+              showColumnFlyout(siblingColumn, color, label, value, measureIndex);
             }
           }
         ).
@@ -1003,7 +1020,7 @@ function SvgColumnChart($element, vif, options) {
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
             showColumnHighlight(this);
-            showColumnFlyout(this, color, label, value);
+            showColumnFlyout(this, color, label, value, measureIndex);
           }
         }
       ).
@@ -1398,9 +1415,8 @@ function SvgColumnChart($element, vif, options) {
     );
   }
 
-  function showColumnFlyout(columnElement, color, label, value) {
+  function showColumnFlyout(columnElement, color, label, value, measureIndex) {
     const title = columnElement.getAttribute('data-dimension-value') || noValueLabel;
-    const measureIndex = self.getSeriesIndexByLabel(label);
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
@@ -1421,6 +1437,7 @@ function SvgColumnChart($element, vif, options) {
     if (value === null) {
       valueString = noValueLabel;
     } else {
+
       const column = _.get(self.getVif(), `series[${seriesIndex}].dataSource.measure.columnName`);
       valueString = ColumnFormattingHelpers.formatValue(value, column, dataToRender, true);
 

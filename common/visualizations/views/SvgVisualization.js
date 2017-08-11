@@ -300,6 +300,8 @@ function SvgVisualization($element, vif, options) {
         ));
     }
 
+    $message.data('vif', self.getVif());
+
     self.
       $container.
       removeClass('socrata-visualization-busy').
@@ -331,7 +333,7 @@ function SvgVisualization($element, vif, options) {
     const $button = $('<button>', { 'class': 'socrata-legend-button' }).
       append($('<label>').text(I18n.t('shared.visualizations.charts.common.show_legend'))).
       append($('<span>', { 'class': 'socrata-icon-arrow-up'} )).
-      append($('<span>', { 'class': 'socrata-icon-close-2'} ));
+      append($('<span>', { 'class': 'socrata-icon-close-2 legend-button-display-none' }));
 
     $innerContainer.append($button);
 
@@ -374,8 +376,8 @@ function SvgVisualization($element, vif, options) {
         I18n.t('shared.visualizations.charts.common.show_legend');
 
       $(this).find('label').text(labelText);
-      $(this).find('.socrata-icon-arrow-up').toggle();
-      $(this).find('.socrata-icon-close-2').toggle();
+      $(this).find('.socrata-icon-arrow-up').toggleClass('legend-button-display-none');
+      $(this).find('.socrata-icon-close-2').toggleClass('legend-button-display-none');
 
       if (isVisible) {
         $('body').on('click', self.hideLegendMenu);
@@ -388,8 +390,8 @@ function SvgVisualization($element, vif, options) {
   this.hideLegendMenu = function() {
 
     self.$container.find('.socrata-legend-button label').text(I18n.t('shared.visualizations.charts.common.show_legend'));
-    self.$container.find('.socrata-legend-button .socrata-icon-arrow-up').show();
-    self.$container.find('.socrata-legend-button .socrata-icon-close-2').hide();
+    self.$container.find('.socrata-legend-button .socrata-icon-arrow-up').toggleClass('legend-button-display-none');
+    self.$container.find('.socrata-legend-button .socrata-icon-close-2').toggleClass('legend-button-display-none');
     self.$container.find('.socrata-legend-menu').hide();
 
     $('body').off('click', self.hideLegendMenu);
@@ -490,17 +492,22 @@ function SvgVisualization($element, vif, options) {
     return mobile;
   };
 
+  this.isGroupingOrMultiSeries = function() {    
+    return self.isGrouping() || self.isMultiSeries();
+  };
+
   this.isMultiSeries = function() {
+    return _.get(self.getVif(), 'series', []).length >= 2;
+  };
+
+  this.isGrouping = function() {
     const dimensionGroupingColumnName = _.get(
       self.getVif(),
       'series[0].dataSource.dimension.grouping.columnName',
       null
     );
 
-    return (
-      _.get(self.getVif(), 'series', []).length >= 2 ||
-      !_.isEmpty(dimensionGroupingColumnName)
-    );
+    return !_.isEmpty(dimensionGroupingColumnName);
   };
 
   this.getSeriesIndexByLabel = function(label) {
@@ -680,7 +687,7 @@ function SvgVisualization($element, vif, options) {
 
     const usingColorPalette = _.get(
       self.getVif(),
-      `series[${(isGrouping) ? 0 : dimensionIndex}].color.palette`,
+      `series[${self.isGrouping() ? 0 : dimensionIndex}].color.palette`,
       false
     );
 
@@ -693,16 +700,14 @@ function SvgVisualization($element, vif, options) {
     }
 
     function getPrimaryColorOrNone() {
-      const primaryColor = (isGrouping) ?
-        self.getPrimaryColorBySeriesIndex(0) :
-        self.getPrimaryColorBySeriesIndex(measureIndex);
+      const primaryColor = self.getPrimaryColorBySeriesIndex(measureIndex);
 
       return (primaryColor !== null) ?
         primaryColor :
         'none';
     }
 
-    return (usingColorPalette) ?
+    return usingColorPalette ?
       getColorFromPalette() :
       getPrimaryColorOrNone();
   }
@@ -787,6 +792,15 @@ function SvgVisualization($element, vif, options) {
     } else {
       return value;
     }
+  };
+
+  this.getOrdinalDomainFromMeasureLabels = function(labels) {
+
+    var rg = [];
+    for (var i = 0; i < labels.length; i++) {
+      rg.push(i);
+    }
+    return rg;
   };
 
   this.getShowDimensionLabels = function() {
@@ -1018,15 +1032,7 @@ function SvgVisualization($element, vif, options) {
   // series (at index zero) as opposed to one of the 'virtual' series that
   // appear to exist based on the data table.
   function defaultToSeriesIndexZeroIfGroupingIsEnabled(vifToCheck, seriesIndex) {
-    const isGrouping = !_.isNull(
-      _.get(
-        vifToCheck,
-        'series[0].dataSource.dimension.grouping.columnName',
-        null
-      )
-    );
-
-    return (isGrouping) ? 0 : seriesIndex;
+    return self.isGrouping() ? 0 : seriesIndex;
   }
 
   function getPositions(groupedDataToRender) {

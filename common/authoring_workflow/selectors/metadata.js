@@ -9,7 +9,6 @@ const getDomain = state => state.domain;
 const getDatasetUid = state => state.datasetUid;
 const getDatasetMetadata = state => state.data;
 const getCuratedRegions = state => state.curatedRegions;
-const getPhidippidesMetadata = state => state.phidippidesMetadata;
 const hasColumnStats = state => state.hasColumnStats;
 const getError = state => state.error;
 
@@ -60,13 +59,11 @@ export const getValidDimensions = createSelector(
   getDomain,
   getDatasetUid,
   getDatasetMetadata,
-  getPhidippidesMetadata,
-  (domain, datasetUid, datasetMetadata, phidippidesMetadata) => {
+  (domain, datasetUid, datasetMetadata) => {
     const datasetMetadataProvider = new dataProviders.MetadataProvider({domain, datasetUid});
 
-    return _.chain(phidippidesMetadata).
+    return _.chain(datasetMetadata).
       get('columns').
-      map(injectFieldName).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).
       filter(
@@ -105,10 +102,8 @@ export const getRecommendedVisualizationTypes = (state, column) => {
 
 export const getValidMeasures = createSelector(
   getDatasetMetadata,
-  getPhidippidesMetadata,
-  (datasetMetadata, phidippidesMetadata) => {
-    return _.chain(phidippidesMetadata.columns).
-      map(injectFieldName).
+  (datasetMetadata) => {
+    return _.chain(datasetMetadata.columns).
       filter(isNumericColumn).
       filter(isNotSystemColumn).
       filter(isNotComputedColumn).
@@ -119,10 +114,9 @@ export const getValidMeasures = createSelector(
 );
 
 export const getValidComputedColumns = createSelector(
-  getPhidippidesMetadata,
-  (phidippidesMetadata) => {
-    return _.chain(phidippidesMetadata.columns).
-      map(injectFieldName).
+  getDatasetMetadata,
+  (datasetMetadata) => {
+    return _.chain(datasetMetadata.columns).
       filter(isComputedColumn).
       map(pluckComputedColumnNameAndUid).
       sortBy('name').

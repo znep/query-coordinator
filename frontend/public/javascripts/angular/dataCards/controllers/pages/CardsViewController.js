@@ -144,7 +144,7 @@ module.exports = function CardsViewController(
 
   $scope.page = page;
   $scope.siteChromeEnabled = ServerConfig.get('siteChromeEnabled');
-  $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader') && !$scope.siteChromeEnabled;
+  $scope.pageHeaderEnabled = ServerConfig.get('show_newux_page_header') && !$scope.siteChromeEnabled;
   $scope.$bindObservable('moderationStatusIsPublic', page.observe('moderationStatus'));
   $scope.$bindObservable('isEphemeral', page.observe('id').map(_.negate(_.isPresent)));
   $scope.$bindObservable('dataset', page.observe('dataset'));
@@ -231,7 +231,7 @@ module.exports = function CardsViewController(
   // CORE-7419: Hide provenance toggle if user doesn't have rights
   // or enable_data_lens_provenance feature flag is disabled
   $scope.showProvenanceSection = $scope.currentUserHasProvenanceRight &&
-    ServerConfig.get('enableDataLensProvenance');
+    ServerConfig.get('enable_data_lens_provenance');
 
   shouldDisplayCustomizeBar$.subscribe(function(hasCustomizeBar) {
     $('body').toggleClass('with-customize-bar', hasCustomizeBar);

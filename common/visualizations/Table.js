@@ -5,6 +5,7 @@ const Table = require('./views/Table');
 const Pager = require('./views/Pager');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const VifHelpers = require('./helpers/VifHelpers');
+const InlineDataProvider = require('./dataProviders/InlineDataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 
@@ -43,22 +44,6 @@ $.fn.socrataTable = function(originalVif, locale) {
       return `${domain}_${datasetUid}_${whereClauseComponents}_${lastUpdate}`;
     }
   );
-  // This is stored as a variable and not a function since we need to capture
-  // the output of _.memoize.
-  const getMemoizedRowCountWithQueryParams = _.memoize(
-    function(soqlDataProvider, queryParams) {
-      return soqlDataProvider.getRowCountWithQueryParams(queryParams);
-    },
-    function(soqlDataProvider, queryParams, lastUpdate) {
-      const domain = soqlDataProvider.getConfigurationProperty('domain');
-      const datasetUid = soqlDataProvider.getConfigurationProperty('datasetUid');
-
-      return (
-        `${domain}_${datasetUid}_${queryParams.select}_${queryParams.where}_` +
-        `${queryParams.group}_${queryParams.search}_${lastUpdate}`
-      );
-    }
-  );
   let visualization = null;
   let pager = null;
   // Holds all state regarding the table's visual presentation.
@@ -94,12 +79,6 @@ $.fn.socrataTable = function(originalVif, locale) {
 
   function initialize() {
 
-    utils.assertHasProperties(
-      originalVif,
-      'series[0].dataSource.datasetUid',
-      'series[0].dataSource.domain'
-    );
-
     renderState.vif = originalVif;
 
     $element.addClass('socrata-paginated-table');
@@ -133,8 +112,7 @@ $.fn.socrataTable = function(originalVif, locale) {
         renderState.vif,
         0, // Offset
         pageSize,
-        _.get(renderState.vif, 'configuration.order'),
-        SoqlHelpers.whereClauseFilteringOwnColumn(renderState.vif, 0)
+        _.get(renderState.vif, 'configuration.order')
       ).
         then(function() {
           visualization.render(renderState.vif, renderState.fetchedData);
@@ -269,6 +247,11 @@ $.fn.socrataTable = function(originalVif, locale) {
   }
 
   function handleColumnSortApplied(event) {
+    const dataSourceType = _.get(renderState, 'vif.series[0].dataSource.type');
+
+    if (dataSourceType === 'socrata.inline') {
+      return;
+    }
 
     utils.assertIsOneOfTypes(event.originalEvent.detail.columnName, 'string');
     utils.assertIsOneOfTypes(event.originalEvent.detail.ascending, 'boolean');
@@ -295,12 +278,16 @@ $.fn.socrataTable = function(originalVif, locale) {
       renderState.vif,
       0,
       renderState.fetchedData.pageSize,
-      _.get(renderState.vif, 'configuration.order'),
-      renderState.fetchedData.whereClauseComponents
+      _.get(renderState.vif, 'configuration.order')
     );
   }
 
   function handleColumnClicked(event) {
+    const dataSourceType = _.get(renderState, 'vif.series[0].dataSource.type');
+
+    if (dataSourceType === 'socrata.inline') {
+      return;
+    }
 
     utils.assertIsOneOfTypes(event.originalEvent.detail, 'string');
 
@@ -346,8 +333,7 @@ $.fn.socrataTable = function(originalVif, locale) {
       renderState.vif,
       0,
       renderState.fetchedData.pageSize,
-      _.get(renderState.vif, 'configuration.order'),
-      renderState.fetchedData.whereClauseComponents
+      _.get(renderState.vif, 'configuration.order')
     );
   }
 
@@ -380,6 +366,11 @@ $.fn.socrataTable = function(originalVif, locale) {
   }
 
   function handlePrevious() {
+    const dataSourceType = _.get(renderState, 'vif.series[0].dataSource.type');
+
+    if (dataSourceType === 'socrata.inline') {
+      return;
+    }
 
     setDataQuery(
       renderState.vif,
@@ -388,19 +379,22 @@ $.fn.socrataTable = function(originalVif, locale) {
         renderState.fetchedData.startIndex - renderState.fetchedData.pageSize
       ),
       renderState.fetchedData.pageSize,
-      _.get(renderState.vif, 'configuration.order'),
-      renderState.fetchedData.whereClauseComponents
+      _.get(renderState.vif, 'configuration.order')
     );
   }
 
   function handleNext() {
+    const dataSourceType = _.get(renderState, 'vif.series[0].dataSource.type');
+
+    if (dataSourceType === 'socrata.inline') {
+      return;
+    }
 
     setDataQuery(
       renderState.vif,
       renderState.fetchedData.startIndex + renderState.fetchedData.pageSize,
       renderState.fetchedData.pageSize,
-      _.get(renderState.vif, 'configuration.order'),
-      renderState.fetchedData.whereClauseComponents
+      _.get(renderState.vif, 'configuration.order')
     );
   }
 
@@ -439,8 +433,7 @@ $.fn.socrataTable = function(originalVif, locale) {
         renderState.vif,
         _.get(renderState, 'fetchedData.startIndex', 0),
         pageSize,
-        _.get(renderState.vif, 'configuration.order'),
-        SoqlHelpers.whereClauseFilteringOwnColumn(renderState.vif, 0)
+        _.get(renderState.vif, 'configuration.order')
       );
     }
   }
@@ -469,8 +462,7 @@ $.fn.socrataTable = function(originalVif, locale) {
           newVif,
           0,
           pageSize,
-          _.get(newVif, 'configuration.order'),
-          SoqlHelpers.whereClauseFilteringOwnColumn(newVif, 0)
+          _.get(newVif, 'configuration.order')
         );
       }
     }
@@ -551,14 +543,121 @@ $.fn.socrataTable = function(originalVif, locale) {
     vifForDataQuery,
     startIndex,
     pageSize,
-    order,
-    whereClauseComponents
+    order
   ) {
+
+    const dataSourceType = _.get(vifForDataQuery, 'series[0].dataSource.type');
+
+    switch (dataSourceType) {
+
+      case 'socrata.inline':
+        return setInlineDataQuery(vifForDataQuery);
+
+      case 'socrata.soql':
+        return setSoqlDataQuery(vifForDataQuery, startIndex, pageSize, order);
+
+      default:
+        return Promise.reject(
+          `Invalid data source type in vif: '${dataSourceType}'.`
+        );
+    }
+  }
+
+  function setInlineDataQuery(vifWithInlineData) {
+
+    if (renderState.busy) {
+      throw new Error(
+        'Cannot call setDataQuery while a request already in progress.'
+      );
+    }
+
+    $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
+
+    // Temporarily detach interaction events so that intermediate states in the
+    // data request and render cycle do not trigger flyouts or other UI
+    // changes. Interaction events are reattached when the visualization is no
+    // longer 'busy'.
+    detachInteractionEvents();
+
+    updateState({ busy: true });
+
+    const inlineDataProvider = new InlineDataProvider(vifWithInlineData);
+    const newState = {
+      busy: false,
+      datasetRowCount: inlineDataProvider.getTotalRowCount(),
+      error: false,
+      fetchedData: {
+        columns: inlineDataProvider.getColumns(),
+        order: null,
+        pageSize: inlineDataProvider.getRowCount(),
+        rows: inlineDataProvider.getRows(),
+        startIndex: inlineDataProvider.getStartIndex(),
+      },
+      vif: vifWithInlineData
+    };
+
+    $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_COMPLETE');
+
+    utils.assert(
+      // Rows can either be undefined OR of the exact length of the
+      // displayableColumns OR MAX_COLUMN_COUNT, if the
+      // displayableColumns has more than MAX_COLUMN_COUNT items.
+      _.every(
+        newState.fetchedData.rows,
+        (row) =>
+          !row ||
+          row.length === newState.fetchedData.columns.length ||
+          row.length === MAX_COLUMN_COUNT
+      ),
+      'Encountered row with length other than view column count or ' +
+      `MAX_COLUMN_COUNT (${MAX_COLUMN_COUNT}).`
+    );
+
+    // Pad/trim row count to fit display.
+    if (newState.fetchedData.rows.length >= newState.fetchedData.pageSize) {
+      newState.fetchedData.rows.length = newState.fetchedData.pageSize;
+    } else {
+
+      let numberOfRowsToPad = (
+        newState.fetchedData.pageSize - newState.fetchedData.rows.length
+      );
+
+      for (let i = 0; i < numberOfRowsToPad; i++) {
+        newState.fetchedData.rows.push(null);
+      }
+    }
+
+    updateState(newState);
+
+    return Promise.resolve(true);
+  }
+
+  function setSoqlDataQuery(
+    vifForDataQuery,
+    startIndex,
+    pageSize,
+    order
+  ) {
+
+    utils.assertHasProperties(
+      originalVif,
+      'series[0].dataSource.datasetUid',
+      'series[0].dataSource.domain'
+    );
+
+    const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
+      vifForDataQuery,
+      0
+    );
 
     const dataProviderConfig = {
       datasetUid: _.get(vifForDataQuery, 'series[0].dataSource.datasetUid'),
       domain: _.get(vifForDataQuery, 'series[0].dataSource.domain')
     };
+
+    if (_.has(vifForDataQuery, 'series[0].dataSource.readFromNbe')) {
+      dataProviderConfig.readFromNbe = _.get(vifForDataQuery, 'series[0].dataSource.readFromNbe');
+    }
 
     function isNotGeoColumn(column) {
       return !column.dataTypeName.match(/(location|point|polygon|line)$/i);
@@ -622,86 +721,37 @@ $.fn.socrataTable = function(originalVif, locale) {
       const displayableColumns = new MetadataProvider(dataProviderConfig).
         getDisplayableColumns(datasetMetadata).
         slice(0, MAX_COLUMN_COUNT);
-      const queryParams = _.get(
-        vifForDataQuery,
-        'series[0].dataSource.queryParams',
-        false
-      );
 
       let displayableColumnsFieldNames = _.map(displayableColumns, 'fieldName');
 
-      if (queryParams) {
-        // Note: this will extract aliases, not original column fieldNames for
-        // columns that are aliased in the SELECT statement.
-        let columnNamesInSelect = queryParams.select.
-          split(',').
-          map((select) => {
-            return select.replace(/\`/g, '').replace(/(.*) as (.*)/, '$2')
-          });
+      // If the order in the VIF is undefined, we need to find a column to sort the table by
+      if (_.isUndefined(order)) {
+        order = getSortOrder(datasetMetadata, displayableColumns);
 
-        displayableColumnsFieldNames = displayableColumnsFieldNames.
-          filter((columnName) => {
+        // Update order in vifForDataQuery so we can visually indicate which column the table is
+        // being sorted by
+        _.set(vifForDataQuery, 'configuration.order', order);
 
-            return (
-              queryParams.select.match(/\*/) ||
-              _.includes(
-                columnNamesInSelect,
-                columnName
-              )
-            );
-          });
-      } else {
-
-        // If the order in the VIF is undefined, we need to find a column to sort the table by
-        if (_.isUndefined(order)) {
-          order = getSortOrder(datasetMetadata, displayableColumns);
-
-          // Update order in vifForDataQuery so we can visually indicate which column the table is
-          // being sorted by
-          _.set(vifForDataQuery, 'configuration.order', order);
-
-        } else if (order.length !== 1) {
-          return Promise.reject(
-            'Order parameter must be an array with exactly one element.'
-          );
-        }
+      } else if (order.length !== 1) {
+        return Promise.reject(
+          'Order parameter must be an array with exactly one element.'
+        );
       }
 
       const soqlDataProvider = new SoqlDataProvider(dataProviderConfig);
 
-      let soqlRowCountPromise;
-      let soqlDataPromise;
-
-      if (queryParams) {
-
-        soqlRowCountPromise = getMemoizedRowCountWithQueryParams(
-          soqlDataProvider,
-          queryParams,
-          datasetMetadata.rowsUpdatedAt
-        );
-        soqlDataPromise = soqlDataProvider.
-          getTableDataWithQueryParams(
-            displayableColumnsFieldNames,
-            queryParams,
-            startIndex,
-            pageSize
-          );
-      } else {
-
-        soqlRowCountPromise = getMemoizedRowCount(
-          soqlDataProvider,
-          whereClauseComponents,
-          datasetMetadata.rowsUpdatedAt
-        );
-        soqlDataPromise = soqlDataProvider.
-          getTableData(
-            displayableColumnsFieldNames,
-            order,
-            startIndex,
-            pageSize,
-            whereClauseComponents
-          );
-      }
+      const soqlRowCountPromise = getMemoizedRowCount(
+        soqlDataProvider,
+        whereClauseComponents,
+        datasetMetadata.rowsUpdatedAt
+      );
+      const soqlDataPromise = soqlDataProvider.getTableData(
+        displayableColumnsFieldNames,
+        order,
+        startIndex,
+        pageSize,
+        whereClauseComponents
+      );
 
       Promise.all([
         soqlRowCountPromise,
@@ -742,7 +792,9 @@ $.fn.socrataTable = function(originalVif, locale) {
                 !row ||
                 row.length === displayableColumnsFieldNames.length ||
                 row.length === MAX_COLUMN_COUNT
-            )
+            ),
+            'Encountered row with length other than view column count or ' +
+            `MAX_COLUMN_COUNT (${MAX_COLUMN_COUNT}).`
           );
 
           // Pad/trim row count to fit display.
@@ -777,7 +829,7 @@ $.fn.socrataTable = function(originalVif, locale) {
 
     // Temporarily detach interaction events so that intermediate states in the
     // data request and render cycle do not trigger flyouts or other UI
-    // changes. Interaction vents are reattached when the visualization is no
+    // changes. Interaction events are reattached when the visualization is no
     // longer 'busy'.
     detachInteractionEvents();
 

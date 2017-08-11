@@ -4,7 +4,7 @@ export default {
   domain: 'localhost',
   featureFlags: {
     csrfToken: 'supersecuretoken',
-    storiesEnabled: true,
+    stories_enabled: true,
     recaptchaKey: 'superdupersecurekey'
   },
   locale: 'en',

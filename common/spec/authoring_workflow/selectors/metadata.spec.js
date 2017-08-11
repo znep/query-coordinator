@@ -17,17 +17,6 @@ function getDefaultState() {
         {renderTypeName: 'percent', fieldName: 'percent', name: 'percent' }
       ]
     },
-    phidippidesMetadata: {
-      columns: {
-        'text': {renderTypeName: 'text', name: 'Text'},
-        'number': {renderTypeName: 'number', name: 'Number'},
-        'point': {renderTypeName: 'point', name: 'Point'},
-        'location': {renderTypeName: 'location', name: 'Location'},
-        'calendar_date': {renderTypeName: 'calendar_date', name: 'Calendar Date', fieldName: 'calendar_date'},
-        'money': {renderTypeName: 'money', name: 'Money', fieldName: 'money'},
-        'percent': {renderTypeName: 'percent', name: 'Percent', fieldName: 'percent'}
-      }
-    },
     domain: 'test.domain',
     datasetUid: 'xxxx-xxxx'
   };

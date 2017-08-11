@@ -12,7 +12,7 @@ const mapStateToProps = ({ entities, ui }, { field, params }) => {
 
   const errors = _.chain(entities)
     .get(`views.${fourfour}.columnMetadataErrors`, [])
-    .filter(error => error.fieldName === field.name)
+    .filter(error => error.fieldName === field.data.name)
     .map(error => error.message)
     .value();
 
@@ -22,8 +22,8 @@ const mapStateToProps = ({ entities, ui }, { field, params }) => {
 };
 
 const mergeProps = ({ fourfour, ...rest }, { dispatch }, ownProps) => {
-  const id = _.toNumber(ownProps.field.name.split('-').reverse()[0]);
-  const propName = getPropName(ownProps.field.name);
+  const id = _.toNumber(ownProps.field.data.name.split('-').reverse()[0]);
+  const propName = getPropName(ownProps.field.data.name);
 
   return {
     ...rest,

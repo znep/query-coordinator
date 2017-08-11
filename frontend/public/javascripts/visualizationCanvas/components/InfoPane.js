@@ -3,23 +3,29 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { formatDate } from 'common/dates';
 import I18n from 'common/i18n';
-import InfoPaneComponent from '../../common/components/InfoPaneComponent.js';
+import InfoPaneComponent from '../../common/components/InfoPaneComponent';
 import InfoPaneButtons from './InfoPaneButtons';
 
 function mapStateToProps(state) {
   const { view, isEphemeral } = state;
+  const { hideDataSourceLink } = _.get(window, 'serverConfig.customConfigurations', {});
 
   const updatedDate = isEphemeral ?
     I18n.t('visualization_canvas.info_pane.unsaved') :
     formatDate(view.lastUpdatedAt);
 
-  const footer = (
+  let footer = (
     <a href={state.parentView.path} target="_blank">
       {I18n.t('visualization_canvas.info_pane.based_on')}
       {' '}
       <em>{state.parentView.name}</em>
     </a>
   );
+  if (hideDataSourceLink === 'true') {
+    // See EN-17469.
+    // Need to render *some* text in order to make borders look correct.
+    footer = (<span>&nbsp;</span>);
+  }
 
   return {
     name: view.name,

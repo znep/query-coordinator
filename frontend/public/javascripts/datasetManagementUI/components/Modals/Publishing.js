@@ -155,7 +155,7 @@ export class Publishing extends React.Component {
             <ApiCallButton
               additionalClassName={styles.tryAgainButton}
               onClick={() => {
-                applyRevision(taskSet, params);
+                applyRevision(params);
               }}
               operation={APPLY_REVISION}>
               {I18n.common.try_again}
@@ -240,8 +240,8 @@ export function mapStateToProps({ entities }, { params }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    applyRevision: (taskSet, params) =>
-      dispatch(ApplyRevision.applyRevision(taskSet.output_schema_id, params)),
+    applyRevision: (params) =>
+      dispatch(ApplyRevision.applyRevision(params)),
     onCancelClick: () => dispatch(hideModal())
   };
 }

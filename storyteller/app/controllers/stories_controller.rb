@@ -203,7 +203,7 @@ class StoriesController < ApplicationController
   # +before_action+
   def check_lockdown
     if staging_lockdown_enabled?
-      render_story_404 unless roled_user? || super_admin?
+      render_story_404 unless has_any_domain_rights?
     end
   end
 

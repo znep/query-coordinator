@@ -140,7 +140,8 @@ export default (state = initialState(), action) => {
       const pathname = windowLocation.pathname();
       const hasEditPath = EDIT_PATH_REGEX.test(pathname);
 
-      if (!hasEditPath) {
+      // Only push /edit onto path for a saved visualization that's not already in edit mode
+      if (!state.isEphemeral && !hasEditPath) {
         windowLocation.assign(`${pathname}/edit`);
         return state;
       }

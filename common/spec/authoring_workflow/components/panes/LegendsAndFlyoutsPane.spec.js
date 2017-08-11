@@ -51,21 +51,21 @@ describe('LegendsAndFlyoutsPane', function() {
 
   function rendersEditableUnits() {
     it('renders a units one input', function() {
-      expect(component.querySelector('#units-one')).to.exist;
+      assert.isNotNull(component.querySelector('#units-one-0'));
     });
 
     it('renders a units other input', function() {
-      expect(component.querySelector('#units-other')).to.exist;
+      assert.isNotNull(component.querySelector('#units-other-0'));
     });
   }
 
   function emitsEventsForUnits() {
     describe('when changing the units for one', function() {
-      emitsEvent('#units-one', 'onChangeUnitOne');
+      emitsEvent('#units-one-0', 'onChangeUnitOne');
     });
 
     describe('when changing the units for other', function() {
-      emitsEvent('#units-other', 'onChangeUnitOther');
+      emitsEvent('#units-other-0', 'onChangeUnitOther');
     });
   }
 
@@ -79,7 +79,7 @@ describe('LegendsAndFlyoutsPane', function() {
 
     describe('rendering', function() {
       it('renders an empty pane info message', function() {
-        expect(component.querySelector('.authoring-empty-pane')).to.exist;
+        assert.isNotNull(component.querySelector('.authoring-empty-pane'));
       });
     });
   });
@@ -116,10 +116,29 @@ describe('LegendsAndFlyoutsPane', function() {
       }
 
       var renderedParts = render('columnChart', props);
-
       component = renderedParts.component;
       props = renderedParts.props;
       legendsPanel = component.querySelector('[aria-label=Legends]')
+    }
+
+    function renderMultiSeriesColumnChartPane() {
+      props = {};
+
+      _.set(
+        props,
+        'vifAuthoring.vifs.columnChart.series[0].dataSource.measure.columnName',
+        'something'
+      );
+
+      _.set(
+        props,
+        'vifAuthoring.vifs.columnChart.series[1].dataSource.measure.columnName',
+        'something'
+      );
+
+      var renderedParts = render('columnChart', props);
+      component = renderedParts.component;
+      props = renderedParts.props;
     }
 
     beforeEach(function() { renderColumnChartPane(false); });
@@ -143,6 +162,14 @@ describe('LegendsAndFlyoutsPane', function() {
       it('renders the legend pane', function() {
         renderColumnChartPane(true);
         assert.isNotNull(legendsPanel);
+      });
+    });
+
+    describe('multi-series', function() {
+      it('renders multiple units containers', function() {
+        renderMultiSeriesColumnChartPane();
+        assert.isNotNull(component.querySelector('#units-container-0'));
+        assert.isNotNull(component.querySelector('#units-container-1'));
       });
     });
   });
@@ -176,7 +203,7 @@ describe('LegendsAndFlyoutsPane', function() {
       rendersEditableUnits();
 
       it('should render a dropdown with columns', function() {
-        expect(component.querySelector('#flyout-title-column')).to.exist;
+        assert.isNotNull(component.querySelector('#flyout-title-column'));
       });
     });
 
@@ -186,11 +213,10 @@ describe('LegendsAndFlyoutsPane', function() {
     });
   });
 
-
   describe('timelineChart', function() {
+
     beforeEach(function() {
       var renderedParts = render('timelineChart');
-
       component = renderedParts.component;
       props = renderedParts.props;
     });
@@ -201,6 +227,36 @@ describe('LegendsAndFlyoutsPane', function() {
 
     describe('events', function() {
       emitsEventsForUnits();
+    });
+  });
+
+  describe('multi-series timelineChart', function() {
+
+    beforeEach(function() {
+      props = {};
+
+      _.set(
+        props,
+        'vifAuthoring.vifs.timelineChart.series[0].dataSource.measure.columnName',
+        'something'
+      );
+
+      _.set(
+        props,
+        'vifAuthoring.vifs.timelineChart.series[1].dataSource.measure.columnName',
+        'something'
+      );
+
+      var renderedParts = render('timelineChart', props);
+      component = renderedParts.component;
+      props = renderedParts.props;
+    });
+    
+    describe('multi-series', function() {
+      it('renders multiple units containers', function() {
+        assert.isNotNull(component.querySelector('#units-container-0'));
+        assert.isNotNull(component.querySelector('#units-container-1'));
+      });
     });
   });
 });

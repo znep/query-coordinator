@@ -76,14 +76,6 @@
             v.metadata.renderTypeConfig.visible.socrataVizTable = true;
           }
 
-          if (_.has(v, 'metadata.renderTypeConfig.visible.fatrow')) {
-            delete v.metadata.renderTypeConfig.visible.fatrow;
-          }
-
-          if (_.has(v, 'metadata.renderTypeConfig.visible.page')) {
-            delete v.metadata.renderTypeConfig.visible.page;
-          }
-
           if (
             _.has(v, 'metadata.availableDisplayTypes') &&
             _.isArray(v.metadata.availableDisplayTypes)
@@ -93,7 +85,7 @@
               filter(function(availableDisplayType) {
 
                 return !_.include(
-                  ['table', 'fatrow', 'page'],
+                  ['table', 'socrataVizTable'],
                   availableDisplayType
                 );
               });
@@ -2621,6 +2613,58 @@
       return dsCopy;
     },
 
+    // EN-17875 - Make grid view Socrata Viz table respond to OBE/NBE read
+    // queries using old query path
+    //
+    // We need to pass a JSON representation of the view along to the Table
+    // renderer by including the equivalent output of the /api/views endpoint in
+    // the vif with which we instantiate the Table.
+    //
+    // Unfortunately, the `.cleanCopy()` method on the Dataset model omits the
+    // `renderTypeName` property (since it is not a valid property to send back
+    // to Core Server--presumably we assign a renderTypeName when we persist the
+    // updated view).
+    //
+    // Accordingly, and in the spirit of making as few changes to existing code
+    // as possible, I am adding an additional method that does not omit the
+    // renderTypeName property for the specific use case described above.
+    //
+    // This is the Dataset component of the work; there are also similar
+    // implementations in the Column and Base models located in this project at
+    // `platform-ui/frontend/public/javascripts/util/dataset/column.js` and
+    // `platform-ui/frontend/public/javascripts/util/base-model.js`,
+    // respectively.
+    //
+    // BECAUSE YOU ASKED, here is a slightly more verbose explanation for why we
+    // need to do this (taken from github.com/socrata/platform-ui/pull/5232):
+    //
+    //   It's actually the Column object that has the renderTypeName property.
+    //   But one gets the serialized columns by getting the serialized view (the
+    //   dataset implementation of the function with the same name, which
+    //   function on dataset basically maps the list of visible columns with the
+    //   version of the cleanCopyIncludingRenderTypeName implemented in the
+    //   column model, and both will attempt to call
+    //   cleanCopyIncludingRenderTypeName on the base model because they both
+    //   call self._super(), and it's the whole big mess of the inheritance
+    //   stuff that we abused so badly circa 2011.
+    //
+    // USE AT YOUR OWN RISK etc. etc.
+    cleanCopyIncludingRenderTypeName: function() {
+      var dsCopy = this._super();
+      if (!$.isBlank(dsCopy.query)) {
+        dsCopy.query.filterCondition = this.cleanFilters();
+        delete dsCopy.query.namedFilters;
+      }
+      if ($.subKeyDefined(dsCopy, 'metadata.jsonQuery')) {
+        $.extend(dsCopy.metadata.jsonQuery, this.cleanJsonFilters());
+        delete dsCopy.metadata.jsonQuery.namedFilters;
+      }
+      dsCopy.columns = this.realColumns.map(function(column) {
+        return column.cleanCopyIncludingRenderTypeName();
+      });
+      return dsCopy;
+    },
+
     changeOwner: function(userId, successCallback, errorCallback) {
       var ds = this;
 
@@ -3018,7 +3062,8 @@
             // Find existing set to derive from
             var parRS = _.detect(_.sortBy(ds._availableRowSets,
                 function(rs, key) {
-                  return -(rs._isComplete ? 1000000 : 1) * key.length;
+                  // Sometimes the key argument is undefined :-(
+                  return -(rs._isComplete ? 1000000 : 1) * (key ? key.length : 1);
                 }),
               function(rs) {
                 return rs.canDerive(jsonQ);
@@ -5100,20 +5145,15 @@
   function restoreOriginalTypeMetadata(view) {
     var originalTypeMetadata = _.get(window, 'blist.originalDatasetTypeMetadata');
 
-    if (!originalTypeMetadata) {
+    if (originalTypeMetadata) {
 
-      throw new Error(
-        'restoreOriginalTypeMetadata() was called but ' +
-        'window.blist.originalTypeMetadata does not exist.'
-      );
-    }
+      if (originalTypeMetadata.hasOwnProperty('availableDisplayTypes')) {
+        _.set(view, 'metadata.availableDisplayTypes', originalTypeMetadata.availableDisplayTypes);
+      }
 
-    if (originalTypeMetadata.hasOwnProperty('availableDisplayTypes')) {
-      _.set(view, 'metadata.availableDisplayTypes', originalTypeMetadata.availableDisplayTypes);
-    }
-
-    if (originalTypeMetadata.hasOwnProperty('renderTypeConfig')) {
-      _.set(view, 'metadata.renderTypeConfig', originalTypeMetadata.renderTypeConfig);
+      if (originalTypeMetadata.hasOwnProperty('renderTypeConfig')) {
+        _.set(view, 'metadata.renderTypeConfig', originalTypeMetadata.renderTypeConfig);
+      }
     }
 
     return view;

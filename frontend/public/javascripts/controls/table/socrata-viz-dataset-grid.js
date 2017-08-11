@@ -1,27 +1,21 @@
-// EN-17053/EN-16787 - Use socrata-viz table for NBE-only grid view
-//
-// We don't actually want this code to run if we are not showing the Socrata Viz
-// table in the grid view, so the whole thing needs to be inside the feature
-// flag check. Since this is NOT a fancy-shmancy JavaScript module that gets
-// imported or required, this is no problem!
 if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
 
-  // Importing socrata-visualizations causes a lodash version conflict, which
-  // breaks the page in less-than-verbose ways and was pretty frustrating to
-  // shake out. So we need to alias the stuff the old frontend code is calling
-  // to their equivalents in newer versions of lodash.
-  (function() {
-    _.detect = _.find;
-    _.include = _.includes;
-    _.any = _.some;
-    _.select = _.filter;
-    _.contains = _.includes;
-    _.all = _.every;
-  })();
-
-  // The actual implementation begins here.
   (function($) {
-    $.fn.socrataTable = window.blist.Visualizations.Table;
+    $.fn.socrataTable = _.get(
+      window,
+      'blist.Visualizations.Table',
+      // Provide a stub as a default so that things don't explode if the Socrata
+      // Viz table is somehow not available. This will really only ever get
+      // called on a jQuery selection, and doesn't really need to do anything.
+      function() {
+        if (console && console.error) {
+          console.error(
+            'The Socrata Visualizations Table could not be instantiated not ' +
+            'because it is not defined.'
+          );
+        }
+      }
+    );
 
     $.fn.isSocrataVizDatasetGrid = function() {
       return !_.isUndefined($(this[0]).data('socrataVizDatasetGrid'));
@@ -39,6 +33,126 @@ if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
         /* eslint-enable new-cap */
       }
       return socrataVizDatasetGrid;
+    };
+
+    // Static method for generating inline data given a view, rows and some
+    // additional dataset/query metadata.
+    $.fn.socrataVizDatasetGrid.generateInlineData = function(
+      view,
+      rows,
+      startIndex,
+      endIndex,
+      totalRowCount
+    ) {
+      var serializedView = view.cleanCopyIncludingRenderTypeName();
+      var columns = _.get(serializedView, 'columns', []);
+      var columnsSortedByPosition = _.sortBy(columns, 'position');
+      var isNewBackend = _.get(view, 'newBackend', false);
+      var transformedRows = rows.map(function(row) {
+
+        return columnsSortedByPosition.map(function(column) {
+          var identifier = (isNewBackend) ? column.fieldName : column.id;
+
+          return _.get(row, ['data', identifier], null);
+        });
+      });
+
+      return {
+        columns: columnsSortedByPosition,
+        endIndex: endIndex,
+        order: null,
+        rows: transformedRows,
+        rowCount: rows.length,
+        totalRowCount: totalRowCount,
+        startIndex: startIndex,
+        view: serializedView,
+        // The CNAME doesn't get serialized when you call .cleanCopy...(), so
+        // we need to pull it from the live model instance. We could get the id
+        // from the serialized view, but it's conceptually very closely related
+        // with the domain in terms of its use, so we'll pull it from the live
+        // model instance also.
+        domain: view.domainCName,
+        datasetUid: view.id
+      };
+    };
+
+    // Static method for generating a vif from the output of
+    // $.fn.socrataVizDatasetGrid.generateInlineData().
+    $.fn.socrataVizDatasetGrid.generateVifFromInlineData = function(
+      inlineData
+    ) {
+
+      var tableColumnWidths = {};
+      var rowLabelFromView = _.get(
+        inlineData,
+        'view.metadata.rowLabel',
+        null
+      );
+      var rowLabelOne = null;
+      var rowLabelOther = null;
+      var dataSource = _.merge({type: 'socrata.inline'}, inlineData);
+
+      function generateVifOrderFromView() {
+        var jsonQuery = _.get(inlineData, 'view.metadata.jsonQuery');
+        var vifOrder;
+
+        if (!_.isArray(_.get(jsonQuery, 'order'))) {
+          vifOrder = null;
+        } else {
+          vifOrder = jsonQuery.order.
+            map(function(orderParam) {
+
+              return {
+                ascending: orderParam.ascending,
+                columnName: orderParam.columnFieldName
+              };
+            });
+        }
+
+        return vifOrder;
+      }
+
+      inlineData.columns.forEach(function(column) {
+        tableColumnWidths[column.fieldName] = column.width;
+      });
+
+      if (!_.isEmpty(rowLabelFromView)) {
+        rowLabelOne = rowLabelFromView;
+        // Wow, this is hacky. $.pluralize() will return something like
+        // "2 rows", and we just want what it thinks is the plural form
+        // of the unit we passed it. Since we control the quantity (and
+        // we know it will be 2) we can just take everything past the
+        // "2 " in $.pluralize()'s return value.
+        rowLabelOther = $.pluralize(2, rowLabelFromView).substring(2);
+      } else {
+        rowLabelOne = $.t('core.default_row_label_one');
+        rowLabelOther = $.t('core.default_row_label_other');
+      }
+
+      return {
+        format: {
+          type: 'visualization_interchange_format',
+          version: 2
+        },
+        configuration: {
+          order: generateVifOrderFromView(),
+          tableColumnWidths: tableColumnWidths,
+          viewSourceDataLink: false
+        },
+        description: null,
+        series: [
+          {
+            dataSource: dataSource,
+            label: null,
+            type: 'table',
+            unit: {
+              one: rowLabelOne,
+              other: rowLabelOther
+            }
+          }
+        ],
+        title: null
+      };
     };
 
     $.socrataVizDatasetGridObject = function(options, grid) {
@@ -71,306 +185,218 @@ if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
 
         prototype: {
           init: function() {
+            var PAGE_SIZE = 50; // Number of rows per page.
 
-            function generateSelectFromJsonQuery(jsonQuery) {
-              var select;
+            var self = this;
+            var currentStartIndex;
+            var currentEndIndex;
+            var currentTotalRowCount;
+            var lastRenderedVif;
+            var $datasetGrid;
 
-              if (jsonQuery.hasOwnProperty('select')) {
+            // If the only thing changing is pagination, you can just call
+            // 'loadRowsFromModel(startIndex, endIndex)' instead of resetting
+            // all the state and rerendering everything based on the vif.
+            function renderTableFromScratch() {
 
-                select = jsonQuery.select.
-                  map(function(column) {
-                    if (column.hasOwnProperty('aggregate')) {
-                      var aggregation = column.aggregate.toUpperCase();
-                      var fieldName = column.columnFieldName;
+              currentStartIndex = 0;
+              currentEndIndex = PAGE_SIZE;
+              currentTotalRowCount = 0;
+              lastRenderedVif = null;
 
-                      return aggregation + '(' + fieldName + ') as `' + fieldName + '`';
-                    } else {
-                      return '`' + column.columnFieldName + '`';
-                    }
-                  }).
-                  join(',');
-              } else {
-                select = '*';
-              }
-
-              return select;
+              loadRowsFromModel(currentStartIndex, currentEndIndex);
             }
 
-            function generateGroupFromJsonQuery(jsonQuery) {
-              var groups;
-
-              if (jsonQuery.hasOwnProperty('group')) {
-
-                groups = jsonQuery.group.
-                  map(function(column) {
-                    return column.columnFieldName;
-                  }).
-                  join(',');
-              } else {
-                groups = '';
-              }
-
-              return groups;
-            }
-
-            function generateOrderFromColumnsAndJsonQuery(columns, jsonQuery) {
-              var order = '';
-
-              if (jsonQuery.hasOwnProperty('order')) {
-
-                order = jsonQuery.order.
-                  map(
-                    function(orderParam) {
-                      var direction = (orderParam.ascending) ? 'ASC' : 'DESC';
-
-                      return '`' + orderParam.columnFieldName + '` ' + direction;
-                    }
-                  ).
-                  join(',');
-              } else {
-                order = '`' + columns[0].fieldName + '` ASC';
-              }
-
-              return order;
-            }
-
-            function generateNewVifFromDatasetState() {
-              var newVif = _.cloneDeep(lastRenderedVif);
-              var params = view._activeRowSet._generateQueryParams();
-              var queryParams = {
-                select: null,
-                // We don't want to get into the business of writing yet another
-                // parser for the crazy way that the Dataset model represents
-                // filters, so instead we'll just rely on it mapping its
-                // internal model to a SoQL string instead of deriving it from
-                // the jsonQuery object like we do for select, group and order.
-                where: params.$where || '',
-                group: null,
-                order: null,
-                search: params.$search || ''
-              };
-              var jsonQuery;
-              var columns = view.visibleColumns.sort(function(a,b) {
-                return (b.position >= a.position) ? -1 : 1;
-              });
-              var order;
-
-              view._syncQueries();
-
-              jsonQuery = _.get(view, 'metadata.jsonQuery', {});
-
-              queryParams.select = generateSelectFromJsonQuery(jsonQuery);
-              queryParams.group = generateGroupFromJsonQuery(jsonQuery);
-              queryParams.order = generateOrderFromColumnsAndJsonQuery(
-                columns,
-                jsonQuery
-              );
-
-              _.set(newVif, 'series[0].dataSource.queryParams', queryParams);
-
-              order = (jsonQuery.order || []).map(function(orderClause) {
-                return {
-                  columnName: orderClause.columnFieldName,
-                  ascending: orderClause.ascending
-                };
-              });
-
-              _.set(newVif, 'configuration.order', order);
-
-              return newVif;
-            }
-
-            function updateViewWithNewOrderFromVif(viewToUpdate, newOrderFromVif) {
-              var newMetadata = $.extend(true, {}, viewToUpdate.metadata);
-              var newOrder = [{
-                columnFieldName: newOrderFromVif[0].columnName,
-                ascending: newOrderFromVif[0].ascending
-              }];
-
-              _.set(newMetadata, 'jsonQuery.order', newOrder);
-
-              viewToUpdate.update(
+            function renderInlineData(inlineData) {
+              var newVifToRender = $.fn.socrataVizDatasetGrid.
+                generateVifFromInlineData(inlineData);
+              var renderVifEvent = new window.CustomEvent(
+                'SOCRATA_VISUALIZATION_RENDER_VIF',
                 {
-                  metadata: newMetadata
-                },
-                false,
-                (newOrder || []).length < 2
-              );
-            }
-
-            function updateViewWithNewTableColumnWidthsFromVif(
-              viewToUpdate,
-              newColumnWidthsFromVif
-            ) {
-              var newDataset = _.cloneDeep(viewToUpdate.cleanCopy());
-
-              newDataset.columns.forEach(function(column) {
-
-                if (newColumnWidthsFromVif.hasOwnProperty(column.fieldName)) {
-
-                  column.width = newColumnWidthsFromVif[column.fieldName];
+                  detail: newVifToRender,
+                  bubbles: false
                 }
-              });
-
-              viewToUpdate.update(
-                newDataset,
-                false,
-                false
               );
-            }
+              var $socrataVisualization = $datasetGrid.
+                children('.socrata-visualization');
 
-            function initializeTable() {
-
-              function rerenderTableOnDatasetStateChange() {
-                var newVifToRender = generateNewVifFromDatasetState();
-                var renderVifEvent = new window.CustomEvent(
-                  'SOCRATA_VISUALIZATION_RENDER_VIF',
-                  {
-                    detail: newVifToRender,
-                    bubbles: false
-                  }
-                );
-
-                $socrataVizDatasetGrid[0].dispatchEvent(renderVifEvent);
-
-                lastRenderedVif = _.cloneDeep(newVifToRender);
+              if ($socrataVisualization.length === 0) {
+                $datasetGrid.socrataTable(newVifToRender);
+              } else {
+                $datasetGrid[0].dispatchEvent(renderVifEvent);
               }
 
-              function rerenderTableOnViewportSizeChange() {
-                var invalidateSizeEvent = new window.CustomEvent(
-                  'SOCRATA_VISUALIZATION_INVALIDATE_SIZE'
-                );
+              lastRenderedVif = newVifToRender;
+            }
 
-                $socrataVizDatasetGrid[0].dispatchEvent(invalidateSizeEvent);
-              }
+            function loadRowsFromModel(startIndex, endIndex) {
 
-              var newVif = generateNewVifFromDatasetState();
+              self._model.loadRows(
+                startIndex,
+                endIndex,
+                function(rows) {
 
-              $socrataVizDatasetGrid.data('socrataVizDatasetGrid', this);
-              $socrataVizDatasetGrid.socrataTable(newVif);
+                  currentTotalRowCount = _.get(
+                    self._view,
+                    '_activeRowSet._totalCount',
+                    null
+                  );
 
-              lastRenderedVif = _.cloneDeep(newVif);
-
-              view.bind('query_change', rerenderTableOnDatasetStateChange);
-              view.bind('columns_changed', rerenderTableOnDatasetStateChange);
-
-              $socrataVizDatasetGrid.
-                on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(e) {
-
-                var lastRenderedOrder = _.get(
-                  lastRenderedVif,
-                  'configuration.order',
-                  null
-                );
-                var lastRenderedTableColumnWidths = _.get(
-                  lastRenderedVif,
-                  'configuration.tableColumnWidths',
-                  null
-                );
-                var updatedVif = e.originalEvent.detail;
-                var updatedOrder = _.get(
-                  updatedVif,
-                  'configuration.order',
-                  null
-                );
-                var updatedTableColumnWidths = _.get(
-                  updatedVif,
-                  'configuration.tableColumnWidths',
-                  null
-                );
-                var orderEqual = _.isEqual(lastRenderedOrder, updatedOrder);
-                var tableColumnWidthsEqual = _.isEqual(
-                  lastRenderedTableColumnWidths,
-                  updatedTableColumnWidths
-                );
-
-                if (!orderEqual) {
-                  updateViewWithNewOrderFromVif(view, updatedOrder);
-                }
-
-                if (!tableColumnWidthsEqual) {
-
-                  updateViewWithNewTableColumnWidthsFromVif(
-                    view,
-                    updatedTableColumnWidths
+                  renderInlineData(
+                    $.fn.socrataVizDatasetGrid.generateInlineData(
+                      self._view,
+                      rows,
+                      startIndex,
+                      endIndex,
+                      currentTotalRowCount
+                    )
                   );
                 }
-              });
-
-              $(window).on('resize', rerenderTableOnViewportSizeChange);
+              );
             }
 
-            var $socrataVizDatasetGrid = this.$dom();
-            var view = this.settings.view;
-            var tableColumnWidths = {};
+            function attachTableEventHandlers() {
 
-            this.settings.view.realColumns.forEach(function(realColumn) {
-              tableColumnWidths[realColumn.fieldName] = realColumn.width;
-            });
+              function updateViewWithColumnWidthsFromVif(tableColumnWidths) {
+                var newView = _.cloneDeep(self._view.cleanCopy());
 
-            var vif = {
-              format: {
-                type: 'visualization_interchange_format',
-                version: 2
-              },
-              configuration: {
-                order: [],
-                tableColumnWidths: tableColumnWidths,
-                viewSourceDataLink: false
-              },
-              description: null,
-              series: [
-                {
-                  color: {
-                  },
-                  dataSource: {
-                    datasetUid: view.id,
-                    dimension: {
-                      columnName: null,
-                      aggregationFunction: null
-                    },
-                    domain: view.domainCName,
-                    measure: {
-                      columnName: null,
-                      aggregationFunction: 'count'
-                    },
-                    type: 'socrata.soql',
-                    filters: []
-                  },
-                  label: null,
-                  type: 'table',
-                  unit: {
-                    one: 'case',
-                    other: 'cases'
+                newView.columns.forEach(function(column) {
+
+                  if (tableColumnWidths.hasOwnProperty(column.fieldName)) {
+
+                    column.width = tableColumnWidths[column.fieldName];
                   }
-                }
-              ],
-              title: null
-            };
-            var lastRenderedVif = _.cloneDeep(vif);
+                });
 
-            // <RowSet>._generateQueryParams() requires that the in-memory
-            // dataset object has a 'query base', which is apparently calculated
-            // asynchronously. We therefore have to use a callback to actually
-            // initialize the table, since we don't know if a 'query base' has
-            // been set on the in-memory dataset object--it won't have been if
-            // the user started on a default view, for example. The in-memory
-            // dataset object is mutated by <Dataset>.getQueryBase() to set the
-            // query base.
-            if ($.isBlank(view._queryBase)) {
+                self._view.update(newView, false, false);
+              }
 
-              view.getQueryBase(function() {
-                initializeTable();
-              });
-            } else {
-              initializeTable();
+              $datasetGrid.
+                on('SOCRATA_VISUALIZATION_VIF_UPDATED', function(e) {
+                  var updatedVif = e.originalEvent.detail;
+                  var lastRenderedTableColumnWidths = _.get(
+                    lastRenderedVif,
+                    'configuration.tableColumnWidths',
+                    null
+                  );
+                  var updatedTableColumnWidths = _.get(
+                    updatedVif,
+                    'configuration.tableColumnWidths',
+                    null
+                  );
+                  var tableColumnWidthsEqual = _.isEqual(
+                    lastRenderedTableColumnWidths,
+                    updatedTableColumnWidths
+                  );
+
+                  if (!tableColumnWidthsEqual) {
+                    updateViewWithColumnWidthsFromVif(updatedTableColumnWidths);
+                  }
+                });
+
+              $datasetGrid.
+                on('SOCRATA_VISUALIZATION_COLUMN_CLICKED', function(e) {
+                  var columnName = e.originalEvent.detail;
+                  var existingOrder = _.cloneDeep(
+                    _.get(self._view, 'metadata.jsonQuery.order', [])
+                  );
+                  var newOrder;
+                  var newMetadata = $.extend(true, {}, self._view.metadata);
+
+                  if (
+                    existingOrder.length === 1 &&
+                    (existingOrder[0].columnFieldName === columnName)
+                  ) {
+
+                    newOrder = [{
+                      columnFieldName: columnName,
+                      ascending: !existingOrder[0].ascending
+                    }];
+                  } else {
+
+                    newOrder = [{
+                      columnFieldName: columnName,
+                      ascending: true
+                    }];
+                  }
+
+                  _.set(newMetadata, 'jsonQuery.order', newOrder);
+
+                  self._view.update(
+                    {
+                      metadata: newMetadata
+                    },
+                    false,
+                    true
+                  );
+                });
+
+              $datasetGrid.
+                on('SOCRATA_VISUALIZATION_COLUMN_SORT_APPLIED', function(e) {
+                  var newOrder = [{
+                    columnFieldName: e.originalEvent.detail.columnName,
+                    ascending: e.originalEvent.detail.ascending
+                  }];
+                  var newMetadata = $.extend(true, {}, self._view.metadata);
+
+                  _.set(newMetadata, 'jsonQuery.order', newOrder);
+
+                  self._view.update(
+                    {
+                      metadata: newMetadata
+                    },
+                    false,
+                    true
+                  );
+                });
+
+              // The table will not emit events that will take us outsize the
+              // [0, totalRowCount] interval, so we can be very naive here about
+              // how we respond to the ...PAGINATION_PREVIOUS and
+              // ...PAGINATION_NEXT events.
+              $datasetGrid.
+                on('SOCRATA_VISUALIZATION_PAGINATION_PREVIOUS', function() {
+
+                  currentStartIndex -= PAGE_SIZE;
+                  currentEndIndex -= PAGE_SIZE;
+
+                  loadRowsFromModel(currentStartIndex, currentEndIndex);
+                });
+
+              // See comment above handler for the ...PAGINATION_PREVIOUS event.
+              $datasetGrid.
+                on('SOCRATA_VISUALIZATION_PAGINATION_NEXT', function() {
+
+                  currentStartIndex += PAGE_SIZE;
+                  currentEndIndex += PAGE_SIZE;
+
+                  loadRowsFromModel(currentStartIndex, currentEndIndex);
+                });
             }
+
+            /**
+             * Execution starts here!
+             */
+
+            self.setView(this.settings.view);
+            // Override the NBE bucket size because we are now using a paginated
+            // table rather than requesting 1000 rows at a time in order to make
+            // the infini-scrolling table somewhat responsive.
+            self._view.bucketSize = PAGE_SIZE;
+            self._view.bind('query_change', renderTableFromScratch);
+            self._view.bind('columns_changed', renderTableFromScratch);
+
+            $datasetGrid = self.$dom();
+            $datasetGrid.data('datasetGrid', self);
+
+            renderTableFromScratch();
+            attachTableEventHandlers();
           },
 
           /* eslint-disable no-unused-vars */
-          // Not sure that this method ever gets called. Keeping the argument
-          // in place, however, in case someone else gets a bright idea based on
-          // the name 'drillLink'.
+          // Not sure that this method ever gets called. Keeping the argument in
+          // place, however, in case someone else gets a bright idea based on the
+          // name 'drillLink'.
           drillDown: function(drillLink) {},
           /* eslint-enable no-unused-vars */
 
@@ -383,6 +409,11 @@ if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
 
           setView: function(newView) {
             this._view = newView;
+
+            if (!this._model) {
+              this._model = $().blistModel();
+            }
+
             this._model.options({
               view: newView
             });

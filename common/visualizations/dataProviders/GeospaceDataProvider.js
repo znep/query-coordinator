@@ -17,7 +17,7 @@ function GeospaceDataProvider(config) {
    */
 
   this.getFeatureExtent = function(columnName) {
-    const url = 'https://{0}/resource/{1}.json?$select=extent({2})'.format(
+    const url = 'https://{0}/resource/{1}.json?$select=extent({2})&$$read_from_nbe=true&$$version=2.1'.format(
       this.getConfigurationProperty('domain'),
       this.getConfigurationProperty('datasetUid'),
       columnName

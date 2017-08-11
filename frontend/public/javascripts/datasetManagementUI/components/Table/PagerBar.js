@@ -95,7 +95,6 @@ const ConnectedPagerBar = connect(mapStateToProps, mapDispatchToProps)(PagerBar)
 
 ConnectedPagerBar.propTypes = {
   path: PropTypes.object.isRequired,
-  routing: PropTypes.object.isRequired,
   displayState: DisplayState.propType.isRequired
 };
 

@@ -13,7 +13,6 @@ export default function(overrides) {
     domain: 'domain',
     datasetUid: 'xxxx-xxxx',
     data: {columns: [{fieldName: 'test', name: 'Testing', renderTypeName: 'text'}]},
-    phidippidesMetadata: {columns: {'test': {renderTypeName: 'text', name: 'Testing'}}},
     curatedRegions: [{name: 'Region', uid: 'four-four'}]
   });
 

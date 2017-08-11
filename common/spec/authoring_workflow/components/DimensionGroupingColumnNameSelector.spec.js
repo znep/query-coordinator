@@ -17,13 +17,6 @@ const metadata = {
       {name: 'Number', fieldName: 'number', renderTypeName: 'number'},
       {name: 'Percent', fieldName: 'percent', renderTypeName: 'percent'}
     ]
-  },
-  phidippidesMetadata: {
-    columns: {
-      money: {name: 'Money', renderTypeName: 'money'},
-      number: {name: 'Number', renderTypeName: 'number'},
-      percent: {name: 'Percent', renderTypeName: 'percent'}
-    }
   }
 };
 

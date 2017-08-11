@@ -11,7 +11,7 @@ const mapStateToProps = ({ entities, ui }, { field, fieldset, params }) => {
   const datasetMetadataErrors = _.get(entities, `views.${fourfour}.datasetMetadataErrors`, []);
 
   const errors = datasetMetadataErrors
-    .filter(error => error.fieldset === fieldset && error.fieldName === field.name)
+    .filter(error => error.fieldset === fieldset && error.fieldName === field.data.name)
     .map(error => error.message);
 
   const showErrors = !!entities.views[fourfour].showErrors;
@@ -39,20 +39,20 @@ const mergeProps = ({ fourfour, ...rest }, { dispatch }, ownProps) => {
 
 // HELPERS
 function forgePath(field, fieldsetName, fourfour) {
-  const isRegPrivate = f => f.isPrivate && !f.isCustom;
-  const isCustomPrivate = f => f.isPrivate && f.isCustom;
-  const isCustomPublic = f => !f.isPrivate && f.isCustom;
+  const isRegPrivate = f => f.data.isPrivate && !f.data.isCustom;
+  const isCustomPrivate = f => f.data.isPrivate && f.data.isCustom;
+  const isCustomPublic = f => !f.data.isPrivate && f.data.isCustom;
 
   let path;
 
   if (isRegPrivate(field)) {
-    path = `${fourfour}.privateMetadata.${field.name}`;
+    path = `${fourfour}.privateMetadata.${field.data.name}`;
   } else if (isCustomPrivate(field)) {
-    path = `${fourfour}.privateMetadata.custom_fields.${fieldsetName}.${field.name}`;
+    path = `${fourfour}.privateMetadata.custom_fields.${fieldsetName}.${field.data.name}`;
   } else if (isCustomPublic(field)) {
-    path = `${fourfour}.metadata.custom_fields.${fieldsetName}.${field.name}`;
+    path = `${fourfour}.metadata.custom_fields.${fieldsetName}.${field.data.name}`;
   } else {
-    path = `${fourfour}.${field.name}`;
+    path = `${fourfour}.${field.data.name}`;
   }
 
   return path;

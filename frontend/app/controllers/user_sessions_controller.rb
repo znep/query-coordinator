@@ -114,7 +114,6 @@ class UserSessionsController < ApplicationController
         end
       end
 
-      Rails.logger.info('Somebody used inline login!') if params[:inline]
       meter 'login.success'
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
       respond_to do |format|
@@ -155,19 +154,31 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
-    if current_user_session
-      current_user_session.destroy
-    end
-    cookies.delete :remember_token
-    flash[:notice] = t('core.dialogs.logout')
+    kill_session_and_cookies
+
     if use_auth0?
+      # here, we redirect them to auth0 and then back to "signed_out"
       redirect_to(generate_auth0_logout_uri)
     else
+      # not using auth0, so display the flash and go back to "login"
+      flash[:notice] = t('core.dialogs.logout')
       redirect_to(login_path)
     end
   end
 
+  def signed_out
+    kill_session_and_cookies
+    render :layout => 'styleguide'
+  end
+
   private
+
+  def kill_session_and_cookies
+    if current_user_session
+      current_user_session.destroy
+    end
+    cookies.delete :remember_token
+  end
 
   ##
   # Sets use_auth0 template variable.

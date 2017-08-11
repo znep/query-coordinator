@@ -16,7 +16,9 @@ describe('Table', function() {
         order: [{
           columnName: 'test',
           ascending: true
-        }]
+        }],
+        // If you change to true, make sure to mock out the resultant MetadataProvider request.
+        viewSourceDataLink: false
       },
       datasetUid: 'test-test',
       domain: 'example.com',
@@ -169,7 +171,9 @@ describe('Table', function() {
       table = createTable(
         {
           configuration:{
-            order: [{ascending: true, columnName: 'hello'}]
+            order: [{ascending: true, columnName: 'hello'}],
+            // If you change to true, make sure to mock out the resultant MetadataProvider request.
+            viewSourceDataLink: false
           }
         }
       );

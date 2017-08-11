@@ -80,6 +80,8 @@ class AppConfig < Hashie::Trash
   property :internal_asset_manager_airbrake_project_id
   property :mixpanel_token
   property :opendata_ga_tracking_code
+  property :op_measure_airbrake_api_key
+  property :op_measure_airbrake_project_id
   property :publishing_airbrake_api_key
   property :publishing_airbrake_project_id
   property :recaptcha_2_secret_token

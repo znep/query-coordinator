@@ -15,13 +15,8 @@ describe('PermissionStore', () => {
   });
 
   describe('publishing authorization', () => {
-    it('returns true for super-admins', () => {
-      const store = getStore({ superAdmin: true });
-      assert.isTrue(store.canPublishCurrentStory());
-    });
-
-    it('returns true for domain admins', () => {
-      const store = getStore({ domainRole: 'administrator' });
+    it('returns true for users with edit_others_stories right', () => {
+      const store = getStore({ domainRights: ['edit_others_stories'] });
       assert.isTrue(store.canPublishCurrentStory());
     });
 
@@ -32,7 +27,6 @@ describe('PermissionStore', () => {
 
     it('returns false if none of the above criteria are met', () => {
       const store = getStore({
-        domainRole: 'publisher',
         viewRole: 'contributor',
         domainRights: ['edit_story']
       });

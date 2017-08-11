@@ -15,6 +15,7 @@ var webpackConfig = {
         loader: nodeResolve('babel-loader'),
         exclude: /node_modules/,
         query: {
+          cacheDirectory: './babelCache',
           presets: [
             'babel-preset-es2015', 'babel-preset-react'
           ].map(nodeResolve),

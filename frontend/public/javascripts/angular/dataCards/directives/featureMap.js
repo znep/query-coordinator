@@ -50,7 +50,7 @@ module.exports = function featureMap(
         configuration: {
           baseLayerOpacity: Constants.DEFAULT_MAP_BASE_LAYER_OPACITY,
           baseLayerUrl: Constants.MAPBOX_SIMPLE_BLUE_BASE_LAYER_URL,
-          debug: ServerConfig.get('debugDataLens'),
+          debug: ServerConfig.get('debug_data_lens'),
           hover: true,
           localization: {
             flyout_filter_notice: I18n.flyout.filterPrompt,

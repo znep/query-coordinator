@@ -117,10 +117,20 @@ module Auth0Helper
 
   # Documentation for Auth0 logout API is here: https://auth0.com/docs/logout
   def generate_auth0_logout_uri
+    action_name = 'new'
+
+    # if the "auth0_always_redirect_connection" config is defined,
+    # then we want to redirect to /signed_out since redirecting back
+    # to /login will just automatically log the user back in
+    properties = CurrentDomain.configuration('auth0').try(:properties)
+    if properties.present? && properties.auth0_always_redirect_connection.present?
+      action_name = 'signed_out'
+    end
+
     parameters = {
       :client_id => AUTH0_ID,
       :returnTo => url_for(
-        :action => 'new',
+        :action => action_name,
         :controller => 'user_sessions',
         :only_path => false,
         :protocol => 'https'

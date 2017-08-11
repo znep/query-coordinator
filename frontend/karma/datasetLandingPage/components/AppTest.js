@@ -13,7 +13,7 @@ import { FeatureFlags } from 'common/feature_flags';
 describe('App', function() {
   before(function() {
     FeatureFlags.useTestFixture({
-      disableAuthorityBadge: false
+      disable_authority_badge: false
     });
   });
 

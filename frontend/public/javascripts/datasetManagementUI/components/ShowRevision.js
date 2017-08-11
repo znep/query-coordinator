@@ -10,7 +10,7 @@ import DatasetPreview from './DatasetPreview';
 import NotifyButton from './NotifyButton';
 import RowDetails from '../components/RowDetails';
 import * as Links from '../links';
-import { latestOutputSchema } from 'selectors';
+import * as Selectors from 'selectors';
 import * as Actions from '../actions/manageUploads';
 import * as ApplyRevision from '../actions/applyRevision';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
@@ -181,7 +181,7 @@ export function ShowRevision({ view, params, entities, createUpload, pushToEditM
     </div>
   );
 
-  const outputSchema = latestOutputSchema(entities);
+  const outputSchema = Selectors.currentOutputSchema(entities);
   const doesUpsertExist = _.size(
     _.filter(entities.task_sets, uj => uj.status !== ApplyRevision.TASK_SET_FAILURE)
   );
@@ -238,7 +238,7 @@ export function ShowRevision({ view, params, entities, createUpload, pushToEditM
       <div className={styles.homeContent}>
         {metadataSection}
         <div className={styles.schemaPreviewContainer}>
-          <SchemaPreview db={entities} />
+          <SchemaPreview />
           <RowDetails />
         </div>
 

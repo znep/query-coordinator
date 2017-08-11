@@ -23,12 +23,22 @@ export function rowsUpserted(entities, taskSetId) {
   return _.max(rowItems) || 0;
 }
 
-export function latestOutputSchema(entities) {
-  return _.maxBy(_.values(entities.output_schemas), 'id');
+export function latestRevision(entities) {
+  // TODO: this selector should go away for revisionless DSMUI
+  // and be replaced by getting it from the URL
+  return _.maxBy(_.values(entities.revisions), 'id');
 }
 
-export function latestRevision(entities) {
-  return _.maxBy(_.values(entities.revisions), 'id');
+export function currentOutputSchema(entities) {
+  const revision = latestRevision(entities);
+  if (!_.isNumber(revision.output_schema_id)) {
+    return latestOutputSchema(entities);
+  }
+  return entities.output_schemas[revision.output_schema_id];
+}
+
+function latestOutputSchema(entities) {
+  return _.maxBy(_.values(entities.output_schemas), 'id');
 }
 
 export function latestSource(entities) {
@@ -145,6 +155,17 @@ export function currentAndIgnoredOutputColumns(entities, osid) {
     ignored: unreferencedOutputColumns.map(oc => ({ ...oc, ignored: true }))
   };
 }
+
+export const latestOutputSchemaForSource = (entities, sourceId) => {
+  const inputSchema = _.filter(entities.input_schemas, { source_id: sourceId })[0];
+  if (!inputSchema) {
+    return null; // an input schema has not yet been parsed out of this upload
+  }
+
+  const outputSchemas = _.filter(entities.output_schemas, { input_schema_id: inputSchema.id });
+
+  return _.maxBy(_.values(outputSchemas), 'id');
+};
 
 // DATASET METADATA
 const filterUndefineds = val => val === undefined;

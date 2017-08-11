@@ -6,6 +6,7 @@ class DatasetsControllerTest < ActionController::TestCase
     load_sample_data('test/fixtures/sample-data.json')
     @test_view = View.find('test-data')
     View.any_instance.stubs(
+      :op_measure? => false,
       :find_related => [@test_view],
       :user_granted? => false
     )

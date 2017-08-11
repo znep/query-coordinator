@@ -102,8 +102,15 @@ module ApplicationHelper
     !!SiteAppearance.find.try(:dslp_enabled?) || site_chrome_preview_mode?
   end
 
+# VISUALIZATION CANVAS
   def visualization_canvas_enabled?
     FeatureFlags.derive(nil, request).enable_visualization_canvas
+  end
+
+# OP MEASURES
+  def op_standalone_measures_enabled?
+    CurrentDomain.module_enabled?(:govStat) &&
+      FeatureFlags.derive(nil, request).open_performance_standalone_measures
   end
 
 # DATASET MANAGEMENT PAGE
@@ -214,7 +221,8 @@ module ApplicationHelper
     LocalePart.controls.charts,
     LocalePart.controls.common,
     LocalePart.controls.nbe_column_manager,
-    LocalePart.plugins.jquery_ui
+    LocalePart.plugins.jquery_ui,
+    LocalePart.shared
   ]
   def render_translations(part = nil)
     @rendered_translations ||= Set.new

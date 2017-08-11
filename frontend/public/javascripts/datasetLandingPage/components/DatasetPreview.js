@@ -10,7 +10,7 @@ export class DatasetPreview extends Component {
   renderActionButton() {
     const { view, onClickGrid } = this.props;
 
-    const { enableVisualizationCanvas } = serverConfig.featureFlags;
+    const enableVisualizationCanvas = serverConfig.featureFlags.enable_visualization_canvas;
     const canCreateVisualizationCanvas = enableVisualizationCanvas &&
       isUserRoled() &&
       _.isString(view.bootstrapUrl);
@@ -97,7 +97,13 @@ function mapStateToProps({ view }) {
             dimension: {},
             domain: window.serverConfig.domain,
             type: 'socrata.soql',
-            filters: []
+            filters: [],
+
+            // In most contexts, visualizations (including the table) will read from the NBE.
+            // However, we have a product requirement here to display the OBE data directly
+            // (to avoid confusing the user with mismatches in the column count and types
+            // introduced by the obe -> nbe migration).
+            readFromNbe: false
           },
           type: 'table',
           unit: {

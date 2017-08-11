@@ -55,7 +55,7 @@ export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {
       : null;
 
     currentOutputSchema = !_.isEmpty(outputSchemasForCurrentInputSchema)
-      ? Selectors.latestOutputSchema({ output_schemas: outputSchemasForCurrentInputSchema })
+      ? _.maxBy(_.values(outputSchemasForCurrentInputSchema), 'id') // TODO: use revision current output schema if it's on this input schema
       : { id: null };
   }
 

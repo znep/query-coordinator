@@ -542,6 +542,7 @@ Rails.application.routes.draw do
       post '/login/extend', :to => 'user_sessions#extend', :as => 'login_extend'
       get '/logout', :to => 'user_sessions#destroy', :as => 'logout'
       get '/logout/expire_if_idle', :to => 'user_sessions#expire_if_idle', :as => 'expire_if_idle'
+      get '/signed_out', :to => 'user_sessions#signed_out', :as => 'signed_out'
       post '/signup.json', :to => 'accounts#create', :format => 'json', :as => 'signup_json'
       get '/signup', :to => 'accounts#new', :as => 'signup'
       post '/signup', :to => 'accounts#create', :as => 'signup_submit'

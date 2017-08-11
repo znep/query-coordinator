@@ -76,7 +76,7 @@ export class PublishConfirmationUSAID extends Component {
             operation={APPLY_REVISION}
             params={{ outputSchemaId }}
             forceDisable={btnDisabled}
-            onClick={() => dispatchApplyRevision(outputSchemaId, params)}>
+            onClick={() => dispatchApplyRevision(params)}>
             {publicSelected
               ? I18n.home_pane.publish_confirmation.button
               : I18n.home_pane.publish_confirmation_usaid.button}
@@ -98,7 +98,7 @@ PublishConfirmationUSAID.propTypes = {
 };
 
 export function mapStateToProps({ entities, ui }) {
-  const latestOutputSchema = Selectors.latestOutputSchema(entities);
+  const latestOutputSchema = Selectors.currentOutputSchema(entities);
   const outputSchemaId = latestOutputSchema ? latestOutputSchema.id : null;
   const { id: revisionId } = Selectors.latestRevision(entities);
   const permission = entities.revisions[revisionId] ? entities.revisions[revisionId].permission : 'public';
@@ -125,7 +125,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(updateRevision(initialPermission));
       dispatch(hideModal());
     },
-    dispatchApplyRevision: (outputSchemaId, params) => dispatch(applyRevision(outputSchemaId, params)),
+    dispatchApplyRevision: (params) => dispatch(applyRevision(params)),
     setPermission: permission => dispatch(updateRevision(permission))
   };
 }

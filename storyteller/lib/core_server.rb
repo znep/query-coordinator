@@ -110,10 +110,8 @@ class CoreServer
 
     if user.present?
       uid = ::RequestStore.store[:story_uid]
-      domain_role = user['roleName'] || 'unknown'
       domain_rights = user['rights'] || []
       authorization = {
-        'domainRole' => domain_role,
         'domainRights' => domain_rights,
         'viewRole' => 'unknown',
         'viewRights' => []

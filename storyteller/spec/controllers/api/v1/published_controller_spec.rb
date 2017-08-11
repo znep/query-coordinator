@@ -147,7 +147,7 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
     end
 
     describe 'when creating a published story' do
-      let(:admin) { false }
+      let(:edit_others_stories) { false }
       let(:owner) { false }
       let(:action) { 'create' }
 
@@ -155,13 +155,14 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
         story = double('story', :attributes => {})
         story_publisher = instance_double('story_publisher', :publish => true, :story => story)
 
-        allow_any_instance_of(ApplicationController).to receive(:admin?).and_return(admin)
+        
+        allow_any_instance_of(ApplicationController).to receive(:has_domain_right?).with('edit_others_stories').and_return(edit_others_stories)
         allow_any_instance_of(ApplicationController).to receive(:owner?).and_return(owner)
         allow(StoryPublisher).to receive(:new).and_return(story_publisher)
       end
 
-      describe 'and the user is an admin' do
-        let(:admin) { true }
+      describe 'and the user has the edit_others_stories right' do
+        let(:edit_others_stories) { true }
 
         it 'does not 403' do
           get_request

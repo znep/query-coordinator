@@ -282,7 +282,7 @@ class ApplicationController < ActionController::Base
     case action
       when 'update'
         if current_user.present?
-          return render nothing: true, status: 403 unless admin? || owner?
+          return render nothing: true, status: 403 unless has_domain_right?('edit_others_stories') || owner?
         else
           handle_unauthorized_request
         end
@@ -299,7 +299,7 @@ class ApplicationController < ActionController::Base
         return render_story_404 if CoreServer.view_inaccessible?(params[:uid])
       when 'create'
         if current_user.present?
-          return render nothing: true, status: 403 unless admin? || owner?
+          return render nothing: true, status: 403 unless has_domain_right?('edit_others_stories') || owner?
         else
           handle_unauthorized_request
         end

@@ -9,22 +9,6 @@ import Notifications from 'common/notifications/Notifications';
 
 /*****************************************************************************************************/
 /*
- * This adds inline CSS to the #content element on the page so that the footer is properly sticky
- */
-/*****************************************************************************************************/
-(() => {
-  const content = document.querySelector('#content');
-
-  if (!_.isNull(content)) {
-    const headerHeight = _.get(document.querySelector('header'), 'clientHeight', 0);
-    const footerHeight = _.get(document.querySelector('footer'), 'clientHeight', 0);
-
-    content.style.minHeight = `calc(100% - ${headerHeight + footerHeight}px)`;
-  }
-})();
-
-/*****************************************************************************************************/
-/*
  * This adds a "lastAccessed" objecdt on window that is used for keeping track when users access a dataset
  * by adding a 4x4 and timestamp.
  */

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import utils from 'common/js_utils';
 import I18n from 'common/i18n';
+import { AGGREGATION_TYPES, COLOR_PALETTE_VALUES } from '../constants';
 
 export const setStringValueOrDefaultValue = (object, path, value, defaultValue) => {
   const hasPath = _.has(object, path);
@@ -61,7 +62,7 @@ export const isNonEmptyString = string => {
 };
 
 export const setUnits = (series, action) => {
-  const rowDisplayUnit = _.get(action, 'phidippidesMetadata.rowDisplayUnit', null);
+  const rowDisplayUnit = _.get(action, 'baseViewMetadata.metadata.rowLabel', null);
   const unitOne = _.get(series, 'unit.one', null);
   const unitOther = _.get(series, 'unit.other', null);
   const defaultUnitRegex = new RegExp(`^${I18n.t('shared.visualizations.charts.common.unit.one')}$`);
@@ -111,14 +112,98 @@ export const setDimensionGroupingColumnName = (state, dimensionGroupingColumnNam
 
     // Otherwise, if the color palette has not yet been set, then assign
     // the default palette.
-    if (_.get(state, 'series[0].color.palette', null) === null) {
+    if (_.isEmpty(_.get(state, 'series[0].color.palette'))) {
       _.set(state, 'series[0].color.palette', 'categorical');
     }
 
     // If legend visibility has not yet been set, then set it to visible
-    if (_.get(state, 'configuration.showLegend', null) === null) {
+    if (_.isEmpty(_.get(state, 'configuration.showLegend'))) {
       _.set(state, 'configuration.showLegend', true);
     }
+  };
+};
+
+export const appendSeries = (state, { isInitialLoad }) => {
+
+  // For multi-series, we use the color palette on the first series, but the palettes on all series should be in sync
+  // so that if the first series is deleted, the palette can be obtained from the second (now first) series.
+  // 
+  // If we are transitioning to multi-series in this method (and not during the initial load), set the palette to 'categorical'.
+  //
+  if ((state.series.length == 1) && !isInitialLoad) {
+     _.set(state, 'series[0].color.palette', 'categorical');
   }
 
+  // Now create the new series, by cloning the first series.
+  //
+  const clonedSeries = _.cloneDeep(state.series[0]);
+
+  // Set the measure properties
+  //
+  _.set(clonedSeries, 'dataSource.measure.aggregationFunction', 'count');
+  _.set(clonedSeries, 'dataSource.measure.columnName', null);
+
+  // Set primary color equal to the index color of the current color palette.  If no palette is set, use categorical.
+  //
+  const palette = _.get(clonedSeries, 'color.palette', 'categorical');
+  const colors = COLOR_PALETTE_VALUES[palette];
+  const index = state.series.length % colors.length;
+
+  _.set(clonedSeries, 'color.primary', colors[index]);
+  _.set(clonedSeries, 'color.secondary', colors[index]);
+
+  // Append the series
+  //
+  state.series.push(clonedSeries);
+
+  // Adjust any other properties in the vif for multi-series
+  //
+  forEachSeries(state, series => {
+    _.unset(series, 'dataSource.dimension.grouping');
+  });
+
+  // If legend visibility has not yet been set, then set it to visible.
+  //
+  if (_.get(state, 'configuration.showLegend') === undefined) {
+    _.set(state, 'configuration.showLegend', true);
+  }
+};
+
+export const removeSeries = (state, seriesIndex) => {
+
+  // Remove the series
+  //
+  state.series.splice(seriesIndex, 1);
+
+  // If no longer multi-series, remove multi-series properties
+  //
+  if (state.series.length == 1) {
+    _.unset(state, 'configuration.showLegend');
+    _.unset(state, 'series[0].color.palette');
+  }
+};
+
+export const isGroupingOrMultiSeries = (state) => {
+
+  const isGrouping = (_.get(state, 'series[0].dataSource.dimension.grouping') !== undefined);
+  const isMultiSeries = (state.series.length > 1);
+
+  return isGrouping || isMultiSeries;
+};
+
+export const getMeasureTitle = (metadata, series) => {
+
+  const measure = series.dataSource.measure;
+  const column = _.find(metadata.data.columns, (column) => column.fieldName === measure.columnName);
+  const aggregationTypes = AGGREGATION_TYPES.filter(item => item.type === measure.aggregationFunction);
+  const aggregationType = (aggregationTypes.length > 0) ? aggregationTypes[0] : null;
+
+  if (!_.isUndefined(column) && !_.isEmpty(column.name) && (aggregationType !== null) && !_.isEmpty(aggregationType.title)) {
+    return I18n.t('shared.visualizations.panes.data.fields.measure.color_and_flyout_label').
+      format(column.name, aggregationType.title);
+  } else if (!_.isUndefined(column) && !_.isEmpty(column.name)) {
+    return column.name;
+  } else {
+    return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
+  }
 };

@@ -43,6 +43,8 @@ module UserRights
     view_others_datasets
     view_story
     view_unpublished_story
+    edit_others_stories
+    view_stories_stats
   }
 
   SOURCE_ARRAY.each do |right|

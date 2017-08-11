@@ -43,7 +43,7 @@ describe('pageHeader', function() {
 
   it('should display if the feature flag is set to true', function() {
     stubServerConfigGetTheme();
-    sinon.stub(ServerConfig, 'get').withArgs('showNewuxPageHeader').returns(true);
+    sinon.stub(ServerConfig, 'get').withArgs('show_newux_page_header').returns(true);
 
     var element = createPageHeader();
     assert.isFalse($(element.find('.page-header')).hasClass('ng-hide'));

@@ -86,7 +86,7 @@ module InternalAssetManagerHelper
   # Parse filters from url params
   def initial_filters
     request.query_parameters.slice(
-      :assetTypes, :authority, :category, :q, :tag, :visibility
+      :assetTypes, :authority, :category, :q, :tab, :tag, :visibility
     ).merge(
       ownedBy: {
         displayName: query_param_value('ownerName'),

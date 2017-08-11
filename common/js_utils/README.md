@@ -126,6 +126,18 @@ Adds separators for numerical magnitude groups (thousands, millions, etc.) to th
 
 _(String)_ A representation of the input number with group separators for readability.
 
+#### getCurrency(locale)
+
+Gets currency name used while formatting numbers for given locale.
+
+**Arguments**
+
+* `locale` _(String)_: A locale for which to find currency name. (e.g. `en`)
+
+**Returns**
+
+_(String)_ Currency name corresponding to given locale, defaults to `USD`.
+
 #### getGroupCharacter(locale)
 
 Gets grouping character used while formatting numbers for given locale.

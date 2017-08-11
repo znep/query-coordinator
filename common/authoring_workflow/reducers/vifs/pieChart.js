@@ -4,7 +4,6 @@ import vifs from '../../vifs';
 import baseVifReducer from './base';
 import {
   forEachSeries,
-  setStringValueOrDeleteProperty,
   setBooleanValueOrDefaultValue,
   setBooleanValueOrDeleteProperty
 } from '../../helpers';

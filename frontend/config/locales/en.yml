@@ -41,6 +41,10 @@ en:
         password_short: Please enter at least 8 characters.
         recaptcha2: Please confirm you are not a robot by checking the box below.
         terms: You must accept the terms of service and privacy policy.
+      signed_out:
+        title: You are now signed out.
+        message: We hope to see you again soon.
+        sign_back_in: Sign back in
   angular:
     dataCards:
       add_card_dialog:
@@ -877,6 +881,7 @@ en:
             one: Showing 1 result
             other: Showing %{start}-%{end} of %{count} results
           count: Showing %{this} of %{total} results
+          page_title: Page %{page_number} of %{page_count}
         search:
           clear:
             title: Clear search
@@ -1465,6 +1470,8 @@ en:
       weeks_past: "%{time} weeks ago"
       years_future: "%{time} years from now"
       years_past: "%{time} years ago"
+    default_row_label_one: row
+    default_row_label_other: rows
     dialogs:
       apply: Apply
       back: Back
@@ -2194,9 +2201,10 @@ en:
       filetypes: Supported file types are
       flash_error_message: Unsupported file type
       message: Drag a New Data File Here
-      no_uploads: No uploads yet :(
+      no_uploads: No uploads yet
       noncurrent: Other Uploads
       submessage: ...or click Browse to choose a file from your computer
+      uploads: Uploads
       title: Replace Data
     show_upsert:
       failure:
@@ -2770,6 +2778,7 @@ en:
     errors:
       fetching_results: Sorry, there was an error fetching results. Please reload the page and try again.
       insufficent_view_permission: You do not have permission to view this page.
+      offset_too_large: Sorry, we do not support paging over a large set of results. You should try filtering down the result set first.
     filters:
       clear: Clear All Filters
       asset_types:
@@ -2878,7 +2887,7 @@ en:
         change_visibility:
           accept: OK
           can_not_change_visibility:
-            Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Open.
+            Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Public.
           dismiss: Cancel
           error: Sorry, there was an error changing visibility for this asset. Please refresh and try again or contact support@socrata.com if it continues.
           options:
@@ -2887,13 +2896,15 @@ en:
               description: Publicly accessible. Discoverable through the public catalog.
             private:
               title: Private
-              description: Only accessible to people within your organization.
+              description: Only accessible to you and people you've shared to within your organization.
           title: Choose Visibility
         delete_asset:
           accept: Delete
           chart: chart
-          description: Are you sure you want to delete %{name}?
-          description_related_assets: '%{count} related assets built using this dataset will also be deleted permanently.'
+          description: Are you sure you want to delete "%{name}"?
+          description_related_assets:
+            one: '%{count} related asset built using this dataset will also be deleted permanently.'
+            other: '%{count} related assets built using this dataset will also be deleted permanently.'
           description_chart_map: This is a %{assetType} based on another dataset. The related dataset will not be deleted.
           dismiss: Cancel
           error: Sorry, there was an error deleting this asset. Please refresh and try again or contact support@socrata.com if it continues.
@@ -2962,6 +2973,10 @@ en:
     percentage:
       format:
         format: "%n%"
+  open_performance:
+    measure:
+      reporting_period: Reporting Period
+    render_error: There was a problem rendering this page.
   plugins:
     daterangepicker:
       clear: Clear
@@ -3086,6 +3101,7 @@ en:
       permanent_links: Permanent Links
       permissions: Permissions
       private: Private
+      profile_picture: Profile Picture
       public: Public
       raters: Raters
       resource_name: Resource Name
@@ -5445,6 +5461,7 @@ en:
           filter: Filter
           manage: Manage
           more: More
+          more_asset_actions: Click here for more asset actions
           more_views: More Views
           visualize: Visualize
         view_list:

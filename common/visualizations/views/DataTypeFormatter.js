@@ -166,6 +166,7 @@ module.exports = {
   renderUrlCellHTML: renderUrlCellHTML,
   renderEmailCellHTML: renderEmailCellHTML,
   renderPhoneCellHTML: renderPhoneCellHTML,
+  renderBlobCellHTML: renderBlobCellHTML,
   renderPhotoCellHTML: renderPhotoCellHTML,
   renderDocumentCellHTML: renderDocumentCellHTML,
   renderMultipleChoiceCell: renderMultipleChoiceCell,
@@ -206,7 +207,9 @@ function renderCell(cellContent, column, domain, datasetUid) {
       case 'calendar_date':
         cellText = _.escape(renderTimestampCell(cellContent, column));
         break;
-
+      case 'blob':
+        cellText = renderBlobCellHTML(cellContent, domain, datasetUid);
+        break;
       // OBE types that are deprecated on new datasets, but are supported on migrated datasets:
       case 'email':
         cellText = renderEmailCellHTML(cellContent);
@@ -412,14 +415,27 @@ function renderWKTCell(cellContent) {
 }
 
 /**
+* Render a blob cell.
+*/
+function renderBlobCellHTML(cellContent, domain, datasetUid) {
+  if (!_.isEmpty(cellContent)) {
+    const href = `https://${domain}/views/${datasetUid}/files/${cellContent}`;
+    return `<a href="${href}" target="_blank" rel="external">${cellContent}</a>`;
+  }
+
+  return '';
+}
+
+/**
 * Render a numeric value as currency
 */
 function renderMoneyCell(cellContent, column) {
+  const locale = utils.getLocale(window);
   const format = _.extend(
     {
-      currency: 'USD',
-      decimalSeparator: '.',
-      groupSeparator: ',',
+      currency: utils.getCurrency(locale),
+      decimalSeparator: utils.getDecimalCharacter(locale),
+      groupSeparator: utils.getGroupCharacter(locale),
       humane: 'false',
       precision: 2
     },
@@ -471,7 +487,7 @@ function renderMoneyCell(cellContent, column) {
         // For instance, "12,345,678" will become an array of three
         // substrings, and the first two will combine into "12.345"
         // so that our toFixed call can work its magic.
-        const scaleGroupedVal = utils.commaify(Math.floor(absVal)).split(',');
+        const scaleGroupedVal = utils.commaify(Math.floor(absVal)).split(format.groupSeparator);
         const symbols = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
         let symbolIndex = scaleGroupedVal.length - 2;
 

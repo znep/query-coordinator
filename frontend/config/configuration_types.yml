@@ -171,3 +171,8 @@ view_categories:
   discourage_in_creation_ui:
     reason: :not_intended_for_direct_manipulation
     instead: :metadata_administration
+visualization_canvas:
+  cs_wiki: https://sites.google.com/a/socrata.com/client-services/creating-and-configuring-platform-domains/additional-platform-configurations/visualization-canvas-customizations
+  description: Customer-specific tweaks to the Visualization Canvas asset type.
+  known_properties:
+  - hide_data_source_link

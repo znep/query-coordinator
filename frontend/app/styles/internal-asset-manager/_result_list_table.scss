@@ -95,7 +95,16 @@ table.result-list-table {
     }
 
     td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &.actions {
+        overflow: visible; // Prevent action flyout from being cut off
+      }
+
       &.name {
+        overflow: visible; // Name column handles its text overflow separately (see multiLineEllipsis)
+
         a {
           text-decoration: none;
           &:hover, &:focus {

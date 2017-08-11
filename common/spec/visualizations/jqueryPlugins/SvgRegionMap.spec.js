@@ -31,6 +31,8 @@ describe('SvgRegionMap jQuery component', function() {
     columnName: 'ward',
     configuration: {
       computedColumnName: ':@wards',
+      // If you change to true, make sure to mock out the resultant MetadataProvider request.
+      viewSourceDataLink: false,
       defaultExtent : {
         southwest: [41.45919537950706, -90.24169921875],
         northeast: [42.20817645934742, -85.242919921875]
@@ -130,14 +132,19 @@ describe('SvgRegionMap jQuery component', function() {
 
         // Mock data providers
         SocrataSvgRegionMapAPI.__Rewire__('getSoqlVifValidator', function(vif) {
-          const validator = soqlVifValidator(vif, [{
-            columns: [{
-              fieldName: 'ward',
-              dataTypeName: 'point'
-            }]
-          }]);
+          const mock = {
+            requireAtLeastOneSeries: () => mock,
+            requireMeasureAggregation: () => mock,
+            requirePointDimension: () => mock,
+            toPromise: () => new Promise(() => {
+              // IMPORTANT: We never resolve the soqlVifValidator promise here in tests
+              // because otherwise, we'd have to know when to reset the DataProvider
+              // mocks (this isn't easy - the map makes many chained requests which
+              // must _all_ finish before we can reset the dependency).
+            })
+          };
 
-          return Promise.resolve(validator);
+          return Promise.resolve(mock);
         });
 
         SocrataSvgRegionMapAPI.__Rewire__('MetadataProvider', function() {
@@ -183,7 +190,8 @@ describe('SvgRegionMap jQuery component', function() {
             renderError: _.noop,
             showBusyIndicator: _.noop,
             hideBusyIndicator: _.noop,
-            destroy: _.noop
+            destroy: _.noop,
+            shouldDisplayFilterBar: _.constant(false)
           });
 
           SocrataSvgRegionMapAPI.__Rewire__('SvgRegionMap', stubRegionMap);
@@ -195,66 +203,9 @@ describe('SvgRegionMap jQuery component', function() {
 
         it('invokes $.fn.socrataSvgRegionMap', function() {
           $container.socrataSvgRegionMap(regionMapVif);
-          assert.isTrue(stubRegionMap.called);
+          sinon.assert.calledOnce(stubRegionMap);
         });
       });
-    });
-  });
-
-  describe('events', function() {
-    beforeEach(function() {
-
-      GEOJSON_RESPONSE = choroplethTestData.multiPolygonData2;
-      SHAPEFILE_METADATA_RESPONSE = choroplethTestData.shapefileMetadataResponse;
-      FEATURE_EXTENT_RESPONSE = choroplethTestData.featureExtentResponse;
-
-      // Mock data providers
-      SocrataSvgRegionMapAPI.__Rewire__('getSoqlVifValidator', function(vif) {
-        const validator = soqlVifValidator(vif, [{
-          columns: [{
-            fieldName: 'ward',
-            dataTypeName: 'point'
-          }]
-        }]);
-        return Promise.resolve(
-          validator
-        );
-      });
-
-      SocrataSvgRegionMapAPI.__Rewire__('MetadataProvider', function() {
-        this.getDatasetMetadata = function() {
-          return new Promise(function(resolve, reject) { return resolve(SHAPEFILE_METADATA_RESPONSE); });
-        };
-      });
-
-      SocrataSvgRegionMapAPI.__Rewire__('GeospaceDataProvider', function() {
-        this.getShapefile = function() {
-          return new Promise(function(resolve, reject) { return resolve(GEOJSON_RESPONSE); });
-        };
-        this.getFeatureExtent = function() {
-          return new Promise(function(resolve, reject) { return resolve(FEATURE_EXTENT_RESPONSE); });
-        };
-      });
-
-      SocrataSvgRegionMapAPI.__Rewire__('SoqlDataProvider', function() {
-        this.query = function() {
-          return new Promise(function(resolve, reject) { return resolve(SOQL_RESPONSE); });
-        };
-      });
-    });
-
-    // TODO: write tests
-
-    afterEach(function() {
-
-      // Restore old data providers
-      SocrataSvgRegionMapAPI.__ResetDependency__('getSoqlVifValidator');
-      SocrataSvgRegionMapAPI.__ResetDependency__('MetadataProvider');
-      SocrataSvgRegionMapAPI.__ResetDependency__('GeospaceDataProvider');
-      SocrataSvgRegionMapAPI.__ResetDependency__('SoqlDataProvider');
-
-      // Remove visualizaton
-      destroyVisualization($container);
     });
   });
 });

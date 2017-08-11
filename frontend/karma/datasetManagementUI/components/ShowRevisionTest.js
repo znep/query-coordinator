@@ -38,7 +38,7 @@ describe('components/ShowRevision', () => {
     );
   });
 
-  it('renders manage data link', () => {
+  it('renders "manage data" button', () => {
     assert.isFalse(component.find('.manageDataBtn').isEmpty());
   });
 

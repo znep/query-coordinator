@@ -65,13 +65,13 @@ describe('components/ApiFlannel', () => {
 
   describe('API foundry link', () => {
     it('is visible if the feature flag is enabled', () => {
-      window.serverConfig.featureFlags.enableDatasetLandingPageFoundryLinks = true;
+      window.serverConfig.featureFlags.enable_dataset_landing_page_foundry_links = true;
       const element = renderComponent(ApiFlannel, getProps());
       expect(getFoundryLinks(element)).to.have.length(2);
     });
 
     it('is not visible if the feature flag is disabled', () => {
-      window.serverConfig.featureFlags.enableDatasetLandingPageFoundryLinks = false;
+      window.serverConfig.featureFlags.enable_dataset_landing_page_foundry_links = false;
       const element = renderComponent(ApiFlannel, getProps());
       expect(getFoundryLinks(element)).to.have.length(0);
     });

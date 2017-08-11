@@ -76,7 +76,7 @@ module.exports = function VisualizationAddController(
       }
 
       computedColumn = dataset.getCurrentValue('columns')[computedColumnName];
-      defaultExtentFeatureFlagValue = $window.socrataConfig.featureMapDefaultExtent;
+      defaultExtentFeatureFlagValue = $window.socrataConfig.feature_map_default_extent;
 
       // If the domain default extent is not set, it will manifest in the
       // feature flag output as an empty string. If this is the case, we

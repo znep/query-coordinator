@@ -250,12 +250,13 @@ describe('Reducer', () => {
         beforeEach(() => {
           assignStub = sinon.stub();
           reducerAPI.__Rewire__('windowLocation', {assign: assignStub, pathname: _.constant(pathname)});
-        })
+        });
 
         afterEach(() => {
           reducerAPI.__ResetDependency__('windowLocation');
-        })
-      }
+        });
+      };
+
       rewireLocation('wombats-in-space.com/edit');
 
       it('sets mode to "edit"', () => {
@@ -263,13 +264,38 @@ describe('Reducer', () => {
         assert.equal(state.mode, ModeStates.EDIT);
       });
 
-      describe('if not at /edit path', () => {
+      describe('for ephemeral visualizations', () => {
+        sharedExamples.beforeEachSetInitialState(INITIAL_STATES.ephemeralViewNoVif);
+
         rewireLocation('wombats-in-space.com');
 
-        it('pushes /edit onto path', () => {
+        it('does not push /edit onto path', () => {
           reducer(state, actions.enterEditMode());
-          assert.isTrue(assignStub.withArgs('wombats-in-space.com/edit').calledOnce);
-        })
+          sinon.assert.notCalled(assignStub);
+        });
+      });
+
+      describe('for saved visualizations', () => {
+        sharedExamples.beforeEachSetInitialState(INITIAL_STATES.savedView);
+
+        describe('in view mode', () => {
+          rewireLocation('wombats-in-space.com');
+
+          it('pushes /edit onto path', () => {
+            reducer(state, actions.enterEditMode());
+
+            assert.isTrue(assignStub.withArgs('wombats-in-space.com/edit').calledOnce);
+          });
+        });
+
+        describe('already in edit mode', () => {
+          rewireLocation('wombats-in-space.com/edit');
+
+          it('does not push /edit onto path if in edit mode', () => {
+            reducer(state, actions.enterEditMode());
+            sinon.assert.notCalled(assignStub);
+          });
+        });
       });
     });
 

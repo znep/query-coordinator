@@ -3,14 +3,14 @@ import React, { PropTypes } from 'react';
 import I18n from 'common/i18n';
 import {
   getDimensionGroupingColumnName,
-  getStacked,
+  isMultiSeries,
+  isStacked
 } from '../selectors/vifAuthoring';
 import {
     setStacked
 } from '../actions';
 
-export const DimensionGroupingStackedSelector = React.createClass({
-
+export const GroupedStackedSelector = React.createClass({
   propTypes: {
     metadata: PropTypes.object
   },
@@ -26,8 +26,9 @@ export const DimensionGroupingStackedSelector = React.createClass({
     } = this.props;
 
     const dimensionGroupingColumnName = getDimensionGroupingColumnName(vifAuthoring);
-    const areOptionsDisabled = (dimensionGroupingColumnName === null);
-    const isStacked = getStacked(vifAuthoring);
+    const areOptionsDisabled = (dimensionGroupingColumnName === null) && !isMultiSeries(vifAuthoring);
+    const stacked = isStacked(vifAuthoring);
+
     const displayGroupedContainerAttributes = {
       id: 'grouping-display-grouped-container',
       className: `${areOptionsDisabled ? 'disabled': ''}`
@@ -37,7 +38,7 @@ export const DimensionGroupingStackedSelector = React.createClass({
       type: 'radio',
       name: 'display-grouped-radio',
       onChange: this.props.onSelectGrouped,
-      checked: !isStacked,
+      checked: !stacked,
       disabled: areOptionsDisabled
     };
 
@@ -60,7 +61,7 @@ export const DimensionGroupingStackedSelector = React.createClass({
       type: 'radio',
       name: 'display-grouped-radio',
       onChange: this.props.onSelectStacked,
-      checked: isStacked,
+      checked: stacked,
       disabled: areOptionsDisabled
     };
 
@@ -75,9 +76,9 @@ export const DimensionGroupingStackedSelector = React.createClass({
     );
 
     return (
-      <div>
-        <span id="grouping-options-title">{I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.title`)}</span>
+      <div className="grouped-stacked-selector-container">
         <div className="authoring-field">
+          <span>{I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.title`)}</span>
           <div className="radiobutton">
             {displayGroupedContainer}
             {displayStackedContainer}
@@ -108,4 +109,4 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DimensionGroupingStackedSelector);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupedStackedSelector);

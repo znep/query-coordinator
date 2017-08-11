@@ -13,9 +13,7 @@ export default class Localization extends React.Component {
 
     I18nJS.locale = props.locale;
     I18nJS.pluralization[I18nJS.locale] = pluralization(I18nJS.locale);
-    _.assign(I18nJS.translations, {
-      [I18nJS.locale]: props.translations || window.translations
-    })
+    _.assign(I18nJS.translations, { [I18nJS.locale]: props.translations })
 
     if (I18nJS.locale === 'nyan') {
       I18nJS.t = () => 'nyan';
@@ -47,12 +45,14 @@ export default class Localization extends React.Component {
 Localization.defaultProps = {
   notFoundText: '(no translation available)',
   returnKeyForNotFound: false,
-  localePrefix: ''
+  localePrefix: '',
+  translations: window.translations || _.get(window, 'blist.translations'),
+  locale: _.get(window, 'serverConfig.locale', _.get(window, 'blist.locale', 'en'))
 };
 
 Localization.propTypes = {
-  translations: React.PropTypes.object.isRequired,
-  locale: React.PropTypes.string.isRequired,
+  translations: React.PropTypes.object,
+  locale: React.PropTypes.string,
   notFoundText: React.PropTypes.string.isRequired,
   returnKeyForNotFound: React.PropTypes.bool.isRequired,
   root: React.PropTypes.string,

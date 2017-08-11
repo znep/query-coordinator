@@ -28,7 +28,13 @@ describe('models/forms', () => {
 
       const invalid = {
         ...head,
-        fields: head.fields.map(field => ({ ...field, value: null }))
+        fields: head.fields.map(field => ({
+          ...field,
+          data: {
+            ...field.data,
+            value: null
+          }
+        }))
       };
 
       const invalidRegular = [invalid, ...tail];
@@ -53,7 +59,7 @@ describe('models/forms', () => {
 
   describe('validateColumnForm', () => {
     it('returns an empty array if valid', () => {
-      const outputSchemaId = Selectors.latestOutputSchema(state.entities).id;
+      const outputSchemaId = Selectors.currentOutputSchema(state.entities).id;
       const res = FormModel.validateColumnForm(outputSchemaId, state.entities);
 
       assert.deepEqual(res, []);
@@ -65,7 +71,7 @@ describe('models/forms', () => {
         `output_columns.${2125}.field_name`,
         'intake_date'
       );
-      const outputSchemaId = Selectors.latestOutputSchema(state.entities).id;
+      const outputSchemaId = Selectors.currentOutputSchema(state.entities).id;
       const res = FormModel.validateColumnForm(outputSchemaId, invalidEntities);
 
       const expectedRes = [

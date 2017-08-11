@@ -2,4 +2,4 @@
 // already knows how to pull in files from common/, it's hard to justify complicating StylesController.
 // Thus, this shim serves to unite the worlds of common/ and StylesController.
 @import 'common/visualizations/views/styles/socrata-visualizations';
-@import 'leaflet'
+@import 'leaflet';

@@ -14,8 +14,8 @@ export const fetchingResultsSuccess = () => (
   { type: 'FETCH_RESULTS_SUCCESS' }
 );
 
-export const fetchingResultsError = () => (
-  { type: 'FETCH_RESULTS_ERROR' }
+export const fetchingResultsError = (errMsg = null) => (
+  { type: 'FETCH_RESULTS_ERROR', details: errMsg }
 );
 
 export const updateAssetCounts = (assetCounts) => (
@@ -81,7 +81,7 @@ const translateParamsToMixpanelEvent = (params) => {
 };
 
 const ceteraUtilsParams = (getState, parameters) => {
-  const { assetTypes, authority, category, onlyRecentlyViewed, order, ownedBy, pageNumber, q, tag,
+  const { activeTab, assetTypes, authority, category, onlyRecentlyViewed, order, ownedBy, pageNumber, q, tag,
     visibility } = _.merge({}, getState().catalog, getState().filters, parameters);
 
   const ceteraOrder = () => {
@@ -108,10 +108,15 @@ const ceteraUtilsParams = (getState, parameters) => {
     lastAccessedUids = onlyRecentlyViewed ? Object.keys(window.lastAccessed.get()) : null;
   }
 
+  let forUser = _.get(ownedBy, 'id');
+  if (activeTab === 'myAssets') {
+    forUser = _.get(window, 'serverConfig.currentUser.id');
+  }
+
   return {
     // TODO: customMetadataFilters,
     category,
-    forUser: _.get(ownedBy, 'id'),
+    forUser,
     idFilters: lastAccessedUids,
     limit: RESULTS_PER_PAGE,
     mixpanelContext: {
@@ -172,6 +177,6 @@ export const fetchResults = (dispatch, getState, parameters = {}, onSuccess) => 
     }
   }).catch((err) => {
     console.error(err);
-    dispatch(fetchingResultsError());
+    dispatch(fetchingResultsError(err.message));
   });
 };

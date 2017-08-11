@@ -4,6 +4,7 @@ import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components
 import { deleteAsset, fetchChildAssets } from 'actions/asset_actions';
 import _ from 'lodash';
 import classNames from 'classnames';
+import connectLocalization from 'common/i18n/components/connectLocalization';
 
 export class DeleteAsset extends React.Component {
   constructor(props) {
@@ -21,7 +22,7 @@ export class DeleteAsset extends React.Component {
     const { assetType, uid } = this.props;
 
     if (assetType === 'dataset') {
-      this.props.fetchChildAssets(uid).then(response => {
+      this.props.fetchChildAssets(uid).then((response) => {
         if (_.has(response, 'resultSetSize')) {
           this.setState({
             currentAssetChildrenCount: response.resultSetSize,
@@ -30,7 +31,7 @@ export class DeleteAsset extends React.Component {
         } else {
           throw new Error('Invalid response', response);
         }
-      }).catch(err => {
+      }).catch((err) => {
         console.error('Error fetching current asset child count', err);
         this.setState({ fetchingChildCount: false });
       });
@@ -47,9 +48,10 @@ export class DeleteAsset extends React.Component {
   render() {
     const { assetActions, assetType, onDismiss, uid } = this.props;
     const { currentAssetChildrenCount, fetchingChildCount } = this.state;
+    const { I18n } = this.props;
 
-    const getTranslation = (key) =>
-      _.get(I18n, `result_list_table.action_modal.delete_asset.${key}`);
+    const scope = 'internal_asset_manager.result_list_table.action_modal.delete_asset';
+    const getTranslation = (key) => I18n.t(key, { scope });
 
     const modalProps = {
       fullScreen: false,
@@ -58,8 +60,13 @@ export class DeleteAsset extends React.Component {
 
     const headerProps = {
       onDismiss,
+      showCloseButton: false,
       title: getTranslation('title')
     };
+
+    const deleteConfirmationMessage = I18n.t('description_related_assets', {
+      scope, count: currentAssetChildrenCount
+    });
 
     let description;
     let subDescription;
@@ -69,20 +76,20 @@ export class DeleteAsset extends React.Component {
     } else {
       description = (
         <div className="description">
-          {getTranslation('description').replace('%{name}', _.get(this.currentAsset(), 'resource.name'))}
+          {I18n.t('description', { scope, name: _.get(this.currentAsset(), 'resource.name') })}
         </div>
       );
 
       if (currentAssetChildrenCount > 0) {
         subDescription = (
           <div className="sub-description">
-            {getTranslation('description_related_assets').replace('%{count}', currentAssetChildrenCount)}
+            {deleteConfirmationMessage}
           </div>
         );
       } else if (assetType === 'chart' || assetType === 'map') {
         subDescription = (
           <div className="sub-description">
-            {getTranslation('description_chart_map').replace('%{assetType}', getTranslation(assetType))}
+            {I18n.t('description_chart_map', { scope, assetType: getTranslation(assetType) })}
           </div>
         );
       }
@@ -131,7 +138,8 @@ DeleteAsset.propTypes = {
   fetchChildAssets: PropTypes.func.isRequired,
   onDismiss: PropTypes.func,
   results: PropTypes.array.isRequired,
-  uid: PropTypes.string.isRequired
+  uid: PropTypes.string.isRequired,
+  I18n: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -144,4 +152,4 @@ const mapDispatchToProps = dispatch => ({
   fetchChildAssets: (uid) => dispatch(fetchChildAssets(uid))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteAsset);
+export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(DeleteAsset));

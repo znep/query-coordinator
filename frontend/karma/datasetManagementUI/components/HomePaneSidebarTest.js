@@ -23,6 +23,22 @@ describe('components/HomePaneSidebar', () => {
           license: {}
         }
       },
+      revisions: {
+        '317': {
+          id: 317,
+          fourfour: 's396-jk8m',
+          permission: 'public',
+          task_sets: [],
+          revision_seq: 0,
+          output_schema_id: null,
+          created_at: '2017-08-10T21:33:14.893Z',
+          created_by: {
+            user_id: 'tugg-ikce',
+            email: 'test@socrata.com',
+            display_name: 'test'
+          }
+        }
+      },
       updates: {},
       sources: {},
       input_schemas: {},

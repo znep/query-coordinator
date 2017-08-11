@@ -37,6 +37,7 @@ npm-debug.log*
 socrata-node/DEPEND
 socrata-node/node_modules
 packages/**/dist
+babelCache
 
 # These are generated build assets despite their
 # location in the file structure. They are here
@@ -44,10 +45,6 @@ packages/**/dist
 packages/socrata-components/common
 packages/socrata-components/components
 packages/socrata-components/styles
-
-# Temporary home of styleguide sample app build.
-styleguide-sample-app/build
-styleguide-sample-app/dist
 
 # Webpacked JS
 storyteller/public/js

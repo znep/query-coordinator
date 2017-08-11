@@ -39,6 +39,11 @@ class InternalAssetManagerController < ApplicationController
       search_options.merge!(published: true)
     end
 
+    # EN-15849
+    if FeatureFlags.derive(nil, request).enable_internal_asset_manager_my_assets
+      search_options.merge!(for_user: current_user.id)
+    end
+
     catalog_results_response = begin
       AssetInventoryService::InternalAssetManager.find(request_id, cookie, search_options).to_h
     rescue => e

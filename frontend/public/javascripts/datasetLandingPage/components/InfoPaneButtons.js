@@ -47,8 +47,8 @@ export default class InfoPaneButtons extends Component {
     const { view, onClickVisualizeAndFilter } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
-    const { enableVisualizationCanvas } = serverConfig.featureFlags;
-    const canCreateVisualizationCanvas = enableVisualizationCanvas &&
+    const vizCanvasEnabled = window.serverConfig.featureFlags.enable_visualization_canvas;
+    const canCreateVisualizationCanvas = vizCanvasEnabled &&
       isUserRoled() &&
       _.isString(view.bootstrapUrl);
 
@@ -96,7 +96,7 @@ export default class InfoPaneButtons extends Component {
     }
 
     return (
-      <li>
+      <li key="carto">
         <a role="menuitem" data-modal="carto-modal">
           {I18n.explore_data.openin_carto}
         </a>
@@ -106,12 +106,44 @@ export default class InfoPaneButtons extends Component {
 
   renderOpenInPlotlyLink() {
     return (
-      <li>
+      <li key="plotly">
         <a role="menuitem" data-modal="plotly-modal">
           {I18n.explore_data.openin_plotly}
         </a>
       </li>
     );
+  }
+
+  renderExternalIntegrations() {
+    const externalDataIntegrationsEnabled =
+      window.serverConfig.featureFlags.enable_external_data_integrations;
+
+    if (!externalDataIntegrationsEnabled) {
+      return [];
+    }
+
+    const listItems = [];
+
+    listItems.push(
+      <li key="separator" className="openin-separator">
+        {I18n.explore_data.openin_separator}
+      </li>
+    );
+
+    listItems.push(this.renderOpenInCartoLink());
+    listItems.push(this.renderOpenInPlotlyLink());
+
+    listItems.push(
+      <li key="more">
+        <a
+          className="more-options-button"
+          href="https://support.socrata.com/hc/en-us/articles/115010730868">
+          {I18n.explore_data.more}
+        </a>
+      </li>
+    );
+
+    return listItems;
   }
 
   renderExploreDataDropdown() {
@@ -125,18 +157,7 @@ export default class InfoPaneButtons extends Component {
         <ul role="menu" aria-label={I18n.action_buttons.explore_data} className="dropdown-options">
           {this.renderVisualizeAndFilterLink()}
           {this.renderViewDataLink()}
-          <li className="openin_separator">
-            {I18n.explore_data.openin_separator}
-          </li>
-          {this.renderOpenInCartoLink()}
-          {this.renderOpenInPlotlyLink()}
-          <li>
-            <a
-              className="more-options-button"
-              href="https://support.socrata.com/hc/en-us/articles/115010730868">
-              {I18n.explore_data.more}
-            </a>
-          </li>
+          {this.renderExternalIntegrations()}
         </ul>
       </div>
     );

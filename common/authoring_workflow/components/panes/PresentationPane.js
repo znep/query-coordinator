@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Dropdown, ColorPicker } from 'common/components';
 import I18n from 'common/i18n';
+import { getMeasureTitle } from '../../helpers';
+import { hasData } from '../../selectors/metadata';
 
 import {
   BASE_LAYERS,
@@ -56,47 +58,64 @@ export var PresentationPane = React.createClass({
     const primaryColor = selectors.getPrimaryColor(vifAuthoring);
     const labelText = I18n.t('shared.visualizations.panes.presentation.fields.bar_color.title');
 
+    const colorPickerAttributes = {
+      handleColorChange: (primaryColor) => onChangePrimaryColor(0, primaryColor),
+      palette: COLORS,
+      value: primaryColor,
+    };
+
     return (
       <AccordionPane key="colors" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
         <div>
           <label className="block-label" htmlFor="primary-color">{labelText}</label>
-          <ColorPicker handleColorChange={onChangePrimaryColor} value={primaryColor} palette={COLORS}/>
+          <ColorPicker {...colorPickerAttributes} />
         </div>
       </AccordionPane>
     );
   },
 
-  renderSecondaryColor(labelText) {
-    const { vifAuthoring, onChangeSecondaryColor } = this.props;
-    const secondaryColor = selectors.getSecondaryColor(vifAuthoring);
-
-    return (
-      <div>
-        <label className="block-label" htmlFor="secondary-color">{labelText}</label>
-        <ColorPicker handleColorChange={onChangeSecondaryColor} value={secondaryColor} palette={COLORS}/>
-      </div>
-    );
-  },
-
   renderColorPalette() {
     const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
-    const selectedColorPalette = selectors.getColorPalette(vifAuthoring);
+    const colorPaletteFromVif = selectors.getColorPalette(vifAuthoring);
+    const isMultiSeries = selectors.isMultiSeries(vifAuthoring);    
+
+    let colorPaletteValue;
+    let customColorSelector;
+
+    // If single-series and palette=='custom', set colorPaletteValue = colorPaletteFromVif and render the single-series
+    // custom color picker.
+    //
+    if (!isMultiSeries && (colorPaletteFromVif === 'custom')) {
+      colorPaletteValue = colorPaletteFromVif;
+      customColorSelector = this.renderSingleSeriesCustomColorSelector();
+    }
+    // If multi-series and palette is null, set colorPaletteValue = 'custom' and render the multi-series custom color 
+    // picker.
+    //
+    else if (isMultiSeries && (colorPaletteFromVif === null)) {
+      colorPaletteValue = 'custom';
+      customColorSelector = this.renderMultiSeriesCustomColorSelector();
+    } else {
+      colorPaletteValue = colorPaletteFromVif;
+    }
+
     const colorPalettesWithCustomOption = [
       ...colorPalettes,
       {
         title: I18n.t('shared.visualizations.color_palettes.custom'),
-        value: "custom"
+        value: 'custom'
       }
     ];
     const colorPaletteAttributes = {
       id: 'color-palette',
       options: colorPalettesWithCustomOption,
-      value: selectedColorPalette,
-      onSelection: onSelectColorPalette
+      value: colorPaletteValue,
+      onSelection: (event) => {
+
+        const selectedColorPalette = (isMultiSeries && (event.value === 'custom')) ? null : event.value;
+        onSelectColorPalette(selectedColorPalette);
+      }
     };
-    const customColorSelectors = selectedColorPalette === 'custom' ?
-      this.renderCustomColorSelector() :
-      null;
 
     return (
       <AccordionPane key="colors" title={I18n.t('shared.visualizations.panes.presentation.subheaders.colors')}>
@@ -106,12 +125,45 @@ export var PresentationPane = React.createClass({
         <div className="color-scale-dropdown-container">
           <Dropdown {...colorPaletteAttributes} />
         </div>
-        {customColorSelectors}
+        {customColorSelector}
       </AccordionPane>
     );
   },
 
-  renderCustomColorSelector() {
+  renderMultiSeriesCustomColorSelector() {
+    const { vifAuthoring, onChangePrimaryColor, metadata } = this.props;
+
+    if (!hasData(metadata)) {
+      return null;
+    }
+
+    const series = selectors.getSeries(vifAuthoring);
+    const colorSelectors = series.map((item, index) => {
+
+      const colorPickerAttributes = {
+        handleColorChange: (primaryColor) => onChangePrimaryColor(index, primaryColor),
+        palette: COLORS,
+        value: item.color.primary,
+      };
+
+      const title = getMeasureTitle(metadata, item);
+
+      return (
+        <div className="custom-color-container" key={index}>
+          <ColorPicker {...colorPickerAttributes} />
+          <label className="color-value">{title}</label>
+        </div>
+      );
+    });
+
+    return (
+      <div className="custom-palette-container">
+        {colorSelectors}
+      </div>
+    );
+  },
+
+  renderSingleSeriesCustomColorSelector() {
     const { vifAuthoring, onChangeCustomColorPalette } = this.props;
     const dimensionColumnName = selectors.getColorPaletteGroupingColumnName(vifAuthoring);
     const customColorPalette = selectors.getCustomColorPalette(vifAuthoring);
@@ -154,7 +206,6 @@ export var PresentationPane = React.createClass({
     } else {
       return null;
     }
-
   },
 
   renderDimensionLabels() {
@@ -419,9 +470,9 @@ export var PresentationPane = React.createClass({
     var pointSize = selectors.getPointSize(vifAuthoring);
 
     var pointColorAttributes = {
-      handleColorChange: onChangePrimaryColor,
-      value: pointColor,
-      palette: COLORS
+      handleColorChange: (primaryColor) => onChangePrimaryColor(0, primaryColor),
+      palette: COLORS,
+      value: pointColor
     };
 
     var pointOpacityAttributes = {
@@ -565,27 +616,30 @@ export var PresentationPane = React.createClass({
 
     if (selectors.isBarChart(vifAuthoring)) {
 
-      if (selectors.isGroupedBarChart(vifAuthoring)) {
+      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
         configuration = this.renderGroupedBarChartControls();
       } else {
         configuration = this.renderBarChartControls();
       }
+
     } else if (selectors.isColumnChart(vifAuthoring)) {
 
-      if (selectors.isGroupedColumnChart(vifAuthoring)) {
+      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
         configuration = this.renderGroupedColumnChartControls();
       } else {
         configuration = this.renderColumnChartControls();
       }
-    } else if (selectors.isHistogram(vifAuthoring)) {
-      configuration = this.renderHistogramControls();
+
     } else if (selectors.isTimelineChart(vifAuthoring)) {
 
-      if (selectors.isGroupedTimelineChart(vifAuthoring)) {
+      if (selectors.isGroupingOrMultiSeries(vifAuthoring)) {
         configuration = this.renderGroupedTimelineChartControls();
       } else {
         configuration = this.renderTimelineChartControls();
       }
+
+    } else if (selectors.isHistogram(vifAuthoring)) {
+      configuration = this.renderHistogramControls();
     } else if (selectors.isFeatureMap(vifAuthoring)) {
       configuration = this.renderFeatureMapControls();
     } else if (selectors.isRegionMap(vifAuthoring)) {
@@ -611,18 +665,15 @@ export var PresentationPane = React.createClass({
 
 function mapStateToProps(state) {
   return {
-    vifAuthoring: state.vifAuthoring
+    vifAuthoring: state.vifAuthoring,
+    metadata: state.metadata
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangePrimaryColor: primaryColor => {
-      dispatch(actions.setPrimaryColor(primaryColor));
-    },
-
-    onChangeSecondaryColor: secondaryColor => {
-      dispatch(actions.setSecondaryColor(secondaryColor));
+    onChangePrimaryColor: (seriesIndex, primaryColor) => {
+      dispatch(actions.setPrimaryColor(seriesIndex, primaryColor));
     },
 
     onSelectBaseLayer: baseLayer => {
@@ -675,8 +726,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.setColorScale(...colorScale.scale));
     },
 
-    onSelectColorPalette: (event) => {
-      dispatch(actions.setColorPalette(event.value));
+    onSelectColorPalette: (colorPalette) => {
+      dispatch(actions.setColorPalette(colorPalette));
     },
 
     onChangeCustomColorPalette: (selectedColor, group, dimensionColumnName) => {

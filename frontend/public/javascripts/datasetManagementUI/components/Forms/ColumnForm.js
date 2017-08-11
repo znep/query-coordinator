@@ -33,7 +33,7 @@ export class ColumnForm extends Component {
           subtitle={I18n.metadata_manage.column_tab.subtitle}>
           {rows.map((row, idx) =>
             <div className={styles.row} key={idx}>
-              {row.map(field => <ColumnField field={field} key={field.name} />)}
+              {row.map(field => <ColumnField field={field} key={field.data.name} />)}
             </div>
           )}
         </Fieldset>

@@ -3,6 +3,19 @@
   <%- @style_packages.each do |pkg| -%>
     <%= rendered_stylesheet_tag pkg %>
   <%- end -%>
+  <%-
+    # EN-17875 - Make grid view Socrata Viz table respond to OBE/NBE read queries using old query path
+    #
+    # Note that this must be in the <head> because there is a load order
+    # dependency with the Socrata Visualizations I18n module; if the
+    # translations are not present on the window when that code bootstraps no
+    # translations will be available.
+    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+  -%>
+    <%= rendered_stylesheet_tag 'socrata-icons' %>
+    <%= rendered_stylesheet_tag 'visualizations' %>
+    <%= render_socrata_visualizations_translations %>
+  <%- end -%>
 <%- end -%>
 
 <div id="janus">
@@ -19,6 +32,7 @@
 </div>
 
 <%- content_for :js_footer do -%>
+  <%= include_webpack_bundle 'grid_view_socrata_visualizations/main.js' %>
   <%- @script_packages.each do |pkg| -%>
     <%= include_webpack_bundle "open-data/#{pkg}.js" %>
   <%- end -%>

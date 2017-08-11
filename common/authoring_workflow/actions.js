@@ -24,22 +24,26 @@ export function setDataSource(domain, datasetUid) {
 
     dispatch(requestMetadata(domain, datasetUid));
 
-    const finishMetadataRequests = (resolutions, hasColumnStats) => {
-      dispatch(receiveMetadata(resolutions, hasColumnStats));
+    const finishMetadataRequests = (datasetMetadata, baseViewMetadata, hasColumnStats) => {
+      dispatch(receiveMetadata(datasetMetadata, baseViewMetadata, hasColumnStats));
       dispatch(setVifCheckpoint(getVifs(getState().vifAuthoring)));
     };
 
     return Promise.all([
-      datasetMetadataProvider.getDatasetMetadata(),
-      datasetMetadataProvider.getPhidippidesMetadata()
+      // See comment in implementation to learn why we catch-all.
+      datasetMetadataProvider.getBaseViewMetadata().catch(() => null),
+      datasetMetadataProvider.getDatasetMetadata()
     ]).then((resolutions) => {
-      const datasetMetadata = resolutions[0];
-      soqlDataProvider.getColumnStats(datasetMetadata.columns).then((columnStats) => {
-        resolutions[0].columns = _.merge([], columnStats, resolutions[0].columns);
-        finishMetadataRequests(resolutions, true);
+      const datasetMetadata = resolutions[1];
+      const baseViewMetadata = resolutions[0] || datasetMetadata;
+
+      return soqlDataProvider.getColumnStats(datasetMetadata.columns).then((columnStats) => {
+        datasetMetadata.columns = _.merge([], columnStats, datasetMetadata.columns);
+        finishMetadataRequests(datasetMetadata, baseViewMetadata, true);
       }).catch(() => {
-        finishMetadataRequests(resolutions, false);
+        finishMetadataRequests(datasetMetadata, baseViewMetadata, false);
       });
+
     }).catch((error) => {
       console.error(error);
       dispatch(handleMetadataError());
@@ -57,11 +61,11 @@ export function requestMetadata(domain, datasetUid) {
 }
 
 export const RECEIVE_METADATA = 'RECEIVE_METADATA';
-export function receiveMetadata(resolutions, hasColumnStats) {
+export function receiveMetadata(datasetMetadata, baseViewMetadata, hasColumnStats) {
   return {
     type: RECEIVE_METADATA,
-    datasetMetadata: resolutions[0],
-    phidippidesMetadata: resolutions[1],
+    datasetMetadata,
+    baseViewMetadata,
     hasColumnStats
   };
 }
@@ -115,14 +119,6 @@ export function handleCuratedRegionsError() {
   };
 }
 
-export const SET_PHIDIPPIDES_METADATA = 'SET_PHIDIPPIDES_METADATA';
-export function setPhidippidesMetadata(phidippidesMetadata) {
-  return {
-    type: SET_PHIDIPPIDES_METADATA,
-    phidippidesMetadata
-  };
-}
-
 export const SET_DATASET_UID = 'SET_DATASET_UID';
 export function setDatasetUid(datasetUid) {
   return {
@@ -155,19 +151,37 @@ export function setDimension(dimension) {
   };
 }
 
+export const APPEND_SERIES = 'APPEND_SERIES';
+export function appendSeries({ isInitialLoad }) {
+  return {
+    type: APPEND_SERIES,
+    isInitialLoad
+  };
+}
+
+export const REMOVE_SERIES = 'REMOVE_SERIES';
+export function removeSeries(seriesIndex) {
+  return {
+    type: REMOVE_SERIES,
+    seriesIndex
+  };
+}
+
 export const SET_MEASURE = 'SET_MEASURE';
-export function setMeasure(measure) {
+export function setMeasure(seriesIndex, columnName) {
   return {
     type: SET_MEASURE,
-    measure
+    seriesIndex,
+    columnName
   };
 }
 
 export const SET_MEASURE_AGGREGATION = 'SET_MEASURE_AGGREGATION';
-export function setMeasureAggregation(measureAggregation) {
+export function setMeasureAggregation(seriesIndex, aggregationFunction) {
   return {
     type: SET_MEASURE_AGGREGATION,
-    measureAggregation
+    seriesIndex,
+    aggregationFunction
   };
 }
 
@@ -190,20 +204,15 @@ export function initiateRegionCoding(domain, datasetUid, sourceColumn, curatedRe
     };
     const handleCompletion = () => {
       datasetMetadataProvider.
-        getPhidippidesMetadata().
+        getDatasetMetadata().
         then((metadata) => {
-          const columns = _.map(metadata.columns, (column, key) => {
-            column.fieldName = key;
-            return column;
-          });
-
           const computedColumn = _.find(columns, (column) => {
             return _.get(column, 'computationStrategy.parameters.region', '').slice(1) === curatedRegion.uid;
           });
 
           dispatch(finishRegionCoding());
           dispatch(setComputedColumn(computedColumn.fieldName));
-          dispatch(setPhidippidesMetadata(metadata));
+          dispatch(setDatasetMetadata(metadata));
         }).
         catch(handleError);
     };
@@ -374,17 +383,19 @@ export function setViewSourceDataLink(viewSourceDataLink) {
 }
 
 export const SET_PRIMARY_COLOR = 'SET_PRIMARY_COLOR';
-export function setPrimaryColor(primaryColor) {
+export function setPrimaryColor(seriesIndex, primaryColor) {
   return {
     type: SET_PRIMARY_COLOR,
+    seriesIndex,
     primaryColor
   };
 }
 
 export const SET_SECONDARY_COLOR = 'SET_SECONDARY_COLOR';
-export function setSecondaryColor(secondaryColor) {
+export function setSecondaryColor(seriesIndex, secondaryColor) {
   return {
     type: SET_SECONDARY_COLOR,
+    seriesIndex,
     secondaryColor
   };
 }
@@ -583,17 +594,19 @@ export function setMeasureAxisMaxValue(measureAxisMaxValue) {
 }
 
 export const SET_UNIT_ONE = 'SET_UNIT_ONE';
-export function setUnitsOne(one) {
+export function setUnitsOne(seriesIndex, one) {
   return {
     type: SET_UNIT_ONE,
+    seriesIndex,
     one
   };
 }
 
 export const SET_UNIT_OTHER = 'SET_UNIT_OTHER';
-export function setUnitsOther(other) {
+export function setUnitsOther(seriesIndex, other) {
   return {
     type: SET_UNIT_OTHER,
+    seriesIndex,
     other
   };
 }

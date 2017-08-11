@@ -193,6 +193,13 @@ class ApplicationController < ActionController::Base
     cookies.delete(:logged_in) unless current_user
   end
 
+  def auth0_redirect_configured?
+    properties = CurrentDomain.configuration('auth0').try(:properties)
+    properties.present? && properties.auth0_always_redirect_connection.present?
+  rescue StandardError
+    false
+  end
+
   # +before_filter+
   def require_user(force_login = false)
     unless current_user_session && !force_login
@@ -200,7 +207,7 @@ class ApplicationController < ActionController::Base
         render_forbidden(I18n.t('core.auth.need_permission'))
       else
         store_location
-        flash[:notice] = I18n.t('core.auth.need_login')
+        flash[:notice] = I18n.t('core.auth.need_login') unless auth0_redirect_configured?
         redirect_to login_url
       end
       return false

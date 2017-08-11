@@ -73,6 +73,7 @@ en:
           administration: Administration
           analytics: Analytics
           asset_inventory: Asset Inventory
+          datasets: Datasets
           users: Users
         user:
           administration: Administration
@@ -285,12 +286,12 @@ en:
               count: Show
               none: Show all
               subtitle: Number of bars to display
-              title: Limit Displayed Bars
+              title: Bar Display Options
             column_chart_limit:
               count: Show
               none: Show all
               subtitle: Number of columns to display
-              title: Limit Displayed Columns
+              title: Column Display Options
             dimension:
               description: A dimension is a field that orders, groups, or categorizes your data, such as dates and categories. The dimension is often shown on the x-axis or as points on a map.
               empty_selection: Select a dimension from the list below
@@ -307,11 +308,14 @@ en:
             dimension_grouping_options:
               grouped: Grouped
               stacked: Stacked
-              title: Display Options
+              title: Multi-Series Display Options
             measure:
               description: A measure is a numeric field or the count of rows associated with the selected dimension.
+              color_and_flyout_label: '{0} ({1})'
               empty_measure: Your dataset must contain a column with numeric values in order to use the measure aggregation function.
+              add_measure: Add Measure
               no_value: "(Count of Rows)"
+              select_column: Select Column...
               title: Measure
             measure_aggregation:
               no_value: No Measure Aggregation
@@ -321,7 +325,7 @@ en:
               description: Max of 12 slices. Additional values grouped into "Other"
               none: Show all
               subtitle: Number of slices to display
-              title: Limit Displayed Slices
+              title: Slice Display Options
             region:
               groups:
                 ready_to_use: Ready To Use
@@ -372,6 +376,7 @@ en:
             units_other:
               placeholder: Rows
               title: Plural
+            sum_aggregation_unit: Total
           subheaders:
             legends:
               title: Legends

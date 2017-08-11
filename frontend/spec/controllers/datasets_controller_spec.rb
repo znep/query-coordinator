@@ -64,6 +64,7 @@ describe DatasetsController do
         expect(View).to receive(:find).and_return(view)
         expect(subject).to receive(:using_canonical_url?).and_return(true)
         view.stub(
+          :op_measure? => false,
           :is_form? => true,
           :can_add? => true,
           :can_read? => false
@@ -82,6 +83,7 @@ describe DatasetsController do
         expect(View).to receive(:find).and_return(view)
         expect(subject).to receive(:using_canonical_url?).and_return(true)
         view.stub(
+          :op_measure? => false,
           :is_form? => true,
           :can_add? => true,
           :can_read? => false
@@ -193,6 +195,27 @@ describe DatasetsController do
 
         expect(response).to have_http_status(302)
         expect(response).to redirect_to('//example.com/stories/s/My-Test-Story/test-stry')
+      end
+    end
+
+    context 'for a published OP measure' do
+      before(:each) do
+        allow(view).to receive(:op_measure?).and_return(true)
+      end
+
+      it 'renders the OP measure if the module/feature flag combo is enabled' do
+        allow(subject).to receive(:op_standalone_measures_enabled?).and_return(true)
+        get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+
+        expect(response).to have_http_status(:success)
+        expect(response).to render_template(:op_measure)
+      end
+
+      xit 'does not render the OP measure if the module/feature flag combo is disabled' do
+        allow(subject).to receive(:op_standalone_measures_enabled?).and_return(false)
+        get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

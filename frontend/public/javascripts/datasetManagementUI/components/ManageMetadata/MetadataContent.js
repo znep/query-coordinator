@@ -21,7 +21,7 @@ export const MetadataContent = (
       </Link>
       {columnsExist
         ? <Link
-          to={Links.columnMetadataForm(params, outputSchemaId || Selectors.latestOutputSchema(entities).id)}
+          to={Links.columnMetadataForm(params, outputSchemaId || Selectors.currentOutputSchema(entities).id)}
           className={styles.tab}
           onClick={() => onSidebarTabClick(params.fourfour)}
           activeClassName={styles.selected}>

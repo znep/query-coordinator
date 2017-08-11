@@ -24,11 +24,15 @@ export var FeatureFlags = {
   },
 
   // Intended usage in tests/specs:
-  //   FeatureFlags.useTestFixture({ useAuth0: false });
-  //   expect(FeatureFlags.value('useAuth0')).to.equal(false);
+  //   FeatureFlags.useTestFixture({ use_auth0: false });
+  //   expect(FeatureFlags.value('use_auth0')).to.equal(false);
   useTestFixture: function(options) {
     window.socrata = window.socrata || {};
     window.socrata.featureFlags = options || {};
+  },
+
+  updateTestFixture: function(options) {
+    window.socrata.featureFlags = _.merge(window.socrata.featureFlags, options);
   }
 };
 

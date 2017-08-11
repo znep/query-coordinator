@@ -33,6 +33,9 @@ visualization-canvas:
 dataset-landing-page:
 - dataset-landing-page/dataset-landing-page
 
+op-measure:
+- op-measure/op-measure
+
 datasets-common:
 - common/datasets
 
@@ -107,6 +110,8 @@ strip-chrome:
 - strip-chrome
 screen-login:
 - screen-login
+screen-signed-out:
+- screen-signed-out
 administration-screen:
 - jquery.dropdown.min
 - screen-admin

@@ -6,7 +6,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Notifications from './index';
+import Notifications from './Notifications';
 
 window.headerNotifications = (container, translations) => {
   let rootNode;

@@ -48,7 +48,7 @@ export class DatasetForm extends Component {
         {fieldsets.map(fieldset =>
           <Fieldset title={fieldset.title} subtitle={fieldset.subtitle} key={fieldset.title}>
             {fieldset.fields.map(field =>
-              <DatasetField field={field} fieldset={fieldset.title} key={field.name} />
+              <DatasetField field={field} fieldset={fieldset.title} key={field.data.name} />
             )}
           </Fieldset>
         )}

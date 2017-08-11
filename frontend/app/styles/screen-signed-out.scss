@@ -1,0 +1,44 @@
+@import "styleguide-colors";
+
+main {
+  background-color: $light-grey-7;
+}
+
+.signed-out-container {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.signed-out {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid $light-grey-4;
+  background-color: white;
+  width: 50%;
+  max-width: 400px;
+  min-width: 220px;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  padding: 30px;
+}
+
+.signed-out-title {
+  font-size: 19px;
+}
+
+.signed-out-message {
+  margin-top: 3px;
+  margin-bottom: 30px;
+  font-size: 15px;
+}
+
+.sign-back-in-button {
+  width: 90%;
+  max-width: 240px;
+  text-align: center;
+}
+

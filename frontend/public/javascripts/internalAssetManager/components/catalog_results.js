@@ -44,9 +44,12 @@ export class CatalogResults extends Component {
 
   renderError() {
     if (this.props.fetchingResultsError) {
+      const subkey = _.get(this.props, 'fetchingResultsErrorType', 'fetching_results');
+      const errorMessageTranslationKey = `errors.${subkey}`;
+
       return (
         <div className="alert error">
-          {_.get(I18n, 'errors.fetching_results')}
+          {_.get(I18n, errorMessageTranslationKey)}
         </div>
       );
     }
@@ -146,6 +149,7 @@ CatalogResults.propTypes = {
   clearAllFilters: PropTypes.func.isRequired,
   fetchingResults: PropTypes.bool,
   fetchingResultsError: PropTypes.bool,
+  fetchingResultsErrorType: PropTypes.string,
   order: PropTypes.object,
   pageNumber: PropTypes.number,
   resultSetSize: PropTypes.number.isRequired
@@ -161,6 +165,7 @@ const mapStateToProps = (state) => ({
   allFilters: state.filters,
   fetchingResults: state.catalog.fetchingResults,
   fetchingResultsError: state.catalog.fetchingResultsError,
+  fetchingResultsErrorType: state.catalog.fetchingResultsErrorType,
   order: state.catalog.order,
   pageNumber: state.catalog.pageNumber,
   resultSetSize: state.catalog.resultSetSize

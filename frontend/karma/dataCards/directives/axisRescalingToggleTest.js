@@ -23,7 +23,7 @@ describe('axisRescalingToggle', function() {
 
   afterEach(function() {
     testHelpers.TestDom.clear();
-    ServerConfig.override('enableDataLensAxisRescaling', false);
+    ServerConfig.override('enable_data_lens_axis_rescaling', false);
   });
 
   function createElement(pageData) {
@@ -43,21 +43,21 @@ describe('axisRescalingToggle', function() {
     };
   }
 
-  it('is hidden when enableAxisRescaling is hidden', function() {
-    ServerConfig.override('enableDataLensAxisRescaling', 'hidden');
+  it('is hidden when enable_data_lens_axis_rescaling is hidden', function() {
+    ServerConfig.override('enable_data_lens_axis_rescaling', 'hidden');
     var context = createElement();
     assert.isTrue($(context.element.find('.axis-rescaling-toggle')).hasClass('ng-hide'));
   });
 
-  it('is visible and unchecked when enableAxisRescaling is false', function() {
-    ServerConfig.override('enableDataLensAxisRescaling', false);
+  it('is visible and unchecked when enable_data_lens_axis_rescaling is false', function() {
+    ServerConfig.override('enable_data_lens_axis_rescaling', false);
     var context = createElement();
     assert.isFalse($(context.element.find('.axis-rescaling-toggle')).hasClass('ng-hide'));
     expect(context.element.find('input:checked')).to.have.length(0);
   });
 
-  it('is visible and checked when enableAxisRescaling is true', function() {
-    ServerConfig.override('enableDataLensAxisRescaling', true);
+  it('is visible and checked when enable_data_lens_axis_rescaling is true', function() {
+    ServerConfig.override('enable_data_lens_axis_rescaling', true);
     var context = createElement();
     assert.isFalse($(context.element.find('.axis-rescaling-toggle')).hasClass('ng-hide'));
     expect(context.element.find('input:checked')).to.have.length(1);

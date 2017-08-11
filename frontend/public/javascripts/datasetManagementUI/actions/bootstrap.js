@@ -5,7 +5,8 @@ import {
   subscribeToOutputSchema,
   subscribeToTransforms,
   insertInputSchema,
-  subscribeToRowErrors
+  subscribeToRowErrors,
+  subscribeToTotalRows
 } from 'actions/manageUploads';
 import { addNotification } from 'actions/notifications';
 import { parseDate } from 'lib/parseDate';
@@ -51,6 +52,7 @@ export function bootstrapApp(view, revision, customMetadataFieldsets) {
       permission: _.get(revision, 'action.permission', 'public'),
       task_sets: revision.task_sets.map(taskSet => taskSet.id),
       revision_seq: _.toNumber(revision.revision_seq),
+      output_schema_id: revision.output_schema_id,
       created_at: parseDate(revision.created_at),
       created_by: revision.created_by
     };
@@ -130,6 +132,7 @@ function sideEffectyStuff(revision) {
     inputSchemas.forEach(is => {
       dispatch(insertInputSchema(is, is.source_id));
       dispatch(subscribeToRowErrors(is));
+      dispatch(subscribeToTotalRows(is));
     });
 
     outputSchemas.forEach(os => dispatch(listenForOutputSchemaSuccess(os)));

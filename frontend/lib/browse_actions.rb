@@ -623,39 +623,60 @@ module BrowseActions
 
   private
 
+  # See also similar implementation in:
+  # platform-ui/frontend/app/controllers/catalog_landing_page_controller.rb#compute_page_title
   def get_title(options, facets)
-    title = []
+    title_fragments = []
 
-    title << t('controls.browse.title.result.term', :term => options[:q]) unless options[:q].blank?
+    if options[:q].present?
+      title_fragments << t('controls.browse.title.result.term', :term => options[:q])
+    end
+
     facet_parts = []
-    facets.each do |f|
-      if !options[f[:param]].blank?
-        if !f[:singular_description].blank?
+    facets.each do |facet|
+      if options[facet[:param]].present?
+        if facet[:singular_description].present?
           facet_item = nil
-          facet_options = f[:options] + f[:extra_options].to_a
-          facet_options.each do |o|
-            if o[:value] == options[f[:param]]
-              facet_item = o
-            elsif !o[:children].nil?
-              facet_item ||= o[:children].detect { |c| c[:value] == options[f[:param]] }
+          facet_options = facet[:options] + facet[:extra_options].to_a
+          facet_options.each do |facet_option|
+            if facet_option[:value] == options[facet[:param]]
+              facet_item = facet_option
+            elsif facet_option[:children].present?
+              facet_item ||= facet_option[:children].detect { |child| child[:value] == options[facet[:param]] }
             end
           end
-          facet_parts << t('controls.browse.title.result.facet',
-                           :facet_type => f[:type],
-                           :facet_value => facet_item[:text]) unless facet_item.nil?
-        elsif !f[:custom_description].blank?
-          facet_parts << f[:custom_description].call(options)
+          if facet_item.present?
+            facet_parts << t(
+              'controls.browse.title.result.facet',
+              :facet_type => facet[:type],
+              :facet_value => facet_item[:text]
+            )
+          end
+        elsif facet[:custom_description].present?
+          facet_parts << facet[:custom_description].call(options)
         end
       end
     end
-    title << t('controls.browse.title.result.facet_main',
-               :body => facet_parts.compact.to_sentence) unless facet_parts.empty?
 
-    if title.empty?
+    if facet_parts.present?
+      title_fragments << t('controls.browse.title.result.facet_main', :body => facet_parts.compact.to_sentence)
+    end
+
+    title = if title_fragments.empty?
       options[:default_title] || t('controls.browse.title.default')
     else
-      t('controls.browse.title.result.main', :body => title.join(', '))
-    end.to_str # force this string to be marked html unsafe
+      t('controls.browse.title.result.main', :body => title_fragments.join(', '))
+    end
+
+    # EN-17885: NASA 508 Compliance - Make page titles more different
+    if options.to_h.with_indifferent_access.values_at(:page, :view_count, :limit).all?(&:present?)
+      title << ' | ' << t('controls.browse.browse2.results.page_title',
+        :page_number => options[:page],
+        :page_count => (options[:view_count].to_f / options[:limit].to_f).ceil
+      )
+    end
+
+    title.to_str  # force this string to be marked html unsafe
   end
 
   # Yes, there is conflation between browse2 and cetera.

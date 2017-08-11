@@ -7,41 +7,67 @@ import * as Links from 'links';
 import * as Selectors from 'selectors';
 import styles from 'styles/Uploads/UploadSidebar.scss';
 
-const UploadItem = ({ source, params }) =>
-  <li>
-    <Link to={Links.showOutputSchema(params, source.id, source.inputSchemaId, source.outputSchemaId)}>
-      {source.source_type && source.source_type.filename}
-    </Link>
-    <div className={styles.timestamp}>
-      {moment.utc(source.finished_at).fromNow()}
-    </div>
-  </li>;
+const UploadItem = ({ entities, source, params }) => {
+  const outputSchema = Selectors.latestOutputSchemaForSource(entities, source.id);
+  const linkTarget = outputSchema
+    ? Links.showOutputSchema(params, source.id, outputSchema.input_schema_id, outputSchema.id)
+    : null;
+  return (
+    <li>
+      <Link to={linkTarget}>
+        {source.source_type && source.source_type.filename}
+      </Link>
+      <div className={styles.timestamp}>{moment.utc(source.finished_at).fromNow()}</div>
+    </li>
+  );
+};
 
 UploadItem.propTypes = {
+  entities: PropTypes.object.isRequired,
   source: PropTypes.object.isRequired,
   params: PropTypes.object.isRequired
 };
 
-export const UploadSidebar = ({ currentUpload, otherUploads, params }) =>
-  <section className={styles.sidebar}>
-    <h2>
-      {I18n.show_uploads.current}
-    </h2>
-    <ul>
-      {currentUpload
-        ? <UploadItem source={currentUpload} params={params} />
-        : <span>
-            {I18n.show_uploads.no_uploads}
-        </span>}
-    </ul>
-    {!!otherUploads.length &&
-      <h2>
-        {I18n.show_uploads.noncurrent}
-      </h2>}
-    <ul>
-      {otherUploads.map(source => <UploadItem key={source.id} params={params} source={source} />)}
-    </ul>
-  </section>;
+export const UploadSidebar = ({ entities, currentUpload, otherUploads, params }) => {
+  let content;
+  if (currentUpload === null && otherUploads.length === 0) {
+    content = (
+      <span>{I18n.show_uploads.no_uploads}</span>
+    );
+  } else {
+    content = (
+      <div>
+        {currentUpload &&
+          <div>
+            <h2>{I18n.show_uploads.current}</h2>
+            <ul>
+              {currentUpload
+                ? <UploadItem entities={entities} source={currentUpload} params={params} />
+                : <span>{I18n.show_uploads.no_uploads}</span>}
+            </ul>
+          </div>
+        }
+        {otherUploads.length > 0 &&
+          <div>
+            <h2>{currentUpload === null ? I18n.show_uploads.uploads : I18n.show_uploads.noncurrent}</h2>
+            <ul>
+              {otherUploads.map(source =>
+                <UploadItem key={source.id} entities={entities} source={source} params={params} />
+              )}
+            </ul>
+          </div>
+        }
+      </div>
+    );
+  }
+
+  return (
+    <section className={styles.sidebar}>
+      {content}
+    </section>
+  );
+};
+
 
 const sourceProptype = PropTypes.shape({
   id: PropTypes.number,
@@ -54,67 +80,35 @@ const sourceProptype = PropTypes.shape({
 UploadSidebar.propTypes = {
   currentUpload: sourceProptype,
   otherUploads: PropTypes.arrayOf(sourceProptype),
+  entities: PropTypes.object.isRequired,
   params: PropTypes.object.isRequired
 };
 
-const getLinkInfo = inputSchemas => outputSchemas => source => {
-  if (!inputSchemas || !inputSchemas.length || !Object.keys(outputSchemas).length) {
-    return source;
-  }
-  const currentInputSchema = inputSchemas.find(is => is.source_id === source.id);
-
-  const outputSchemasForCurrentInputSchema = currentInputSchema
-    ? _.pickBy(outputSchemas, os => os.input_schema_id === currentInputSchema.id)
-    : null;
-
-  const currentOutputSchema = outputSchemasForCurrentInputSchema
-    ? Selectors.latestOutputSchema({ output_schemas: outputSchemasForCurrentInputSchema })
-    : { id: null };
-
-  return {
-    ...source,
-    inputSchemaId: currentInputSchema ? currentInputSchema.id : null,
-    outputSchemaId: currentOutputSchema.id
-  };
-};
-
 export const mapStateToProps = ({ entities }) => {
-  const outputSchema = Selectors.latestOutputSchema(entities);
-  let currentUpload = null;
-  let otherUploads = [];
+  const currentOutputSchema = Selectors.currentOutputSchema(entities);
+  let currentUpload;
+  let otherUploads;
 
-  if (outputSchema) {
-    const { input_schema_id: inputSchemaId, id: outputSchemaId } = outputSchema;
+  const pendingOrSuccessfulSources = _.chain(entities.sources)
+    .values()
+    .filter((source) => !source.failed_at)
+    .value();
 
+  if (currentOutputSchema) {
+    const { input_schema_id: inputSchemaId } = currentOutputSchema;
     const { source_id: sourceId } = entities.input_schemas[inputSchemaId];
 
-    const noncurrentUploads = _.omit(entities.sources, sourceId);
-
-    const noncurrentUploadsList = Object.keys(noncurrentUploads).map(id => entities.sources[id]);
-
-    // TODO: Not doing anything with failed uploats atm. Maybe we should. Need UX input.
-    // eslint-disable-next-line no-unused-vars
-    const [failedUploads, pendingOrSuccessfulUploads] = _.partition(
-      noncurrentUploadsList,
-      source => source.failed_at
-    );
-
-    const inputSchemaList = Object.keys(entities.input_schemas).map(isid => entities.input_schemas[isid]);
-
-    const addLinkInfo = getLinkInfo(inputSchemaList)(entities.output_schemas);
-
-    currentUpload = {
-      ...entities.sources[sourceId],
-      inputSchemaId,
-      outputSchemaId
-    };
-
-    otherUploads = pendingOrSuccessfulUploads.map(addLinkInfo);
+    currentUpload = entities.sources[sourceId];
+    otherUploads = pendingOrSuccessfulSources.filter((source) => source.id !== sourceId);
+  } else {
+    // rare case where you have uploads but not a current upload
+    currentUpload = null;
+    otherUploads = pendingOrSuccessfulSources;
   }
-
   return {
     currentUpload,
-    otherUploads
+    otherUploads,
+    entities
   };
 };
 

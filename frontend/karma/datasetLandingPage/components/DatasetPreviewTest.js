@@ -40,15 +40,15 @@ describe('components/DatasetPreview', function() {
   });
 
   describe('action button', () => {
-    describe('when enableVisualizationCanvas is set to true', () => {
+    describe('when enable_visualization_canvas is set to true', () => {
       beforeEach(() =>  {
         window.serverConfig.currentUser = { roleName: 'anything' };
-        window.serverConfig.featureFlags.enableVisualizationCanvas = true;
+        window.serverConfig.featureFlags.enable_visualization_canvas = true;
       });
 
       afterEach(() => {
         window.serverConfig.currentUser = null;
-        window.serverConfig.featureFlags.enableVisualizationCanvas = false;
+        window.serverConfig.featureFlags.enable_visualization_canvas = false;
       });
 
       it('renders the visualize link if the bootstrapUrl is defined', () => {
@@ -83,10 +83,10 @@ describe('components/DatasetPreview', function() {
       });
     });
 
-    describe('when enableVisualizationCanvas is set to false', () => {
+    describe('when enable_visualization_canvas is set to false', () => {
       beforeEach(() => {
         window.serverConfig.currentUser = { roleName: 'anything' };
-        window.serverConfig.featureFlags.enableVisualizationCanvas = false;
+        window.serverConfig.featureFlags.enable_visualization_canvas = false;
       });
 
       it('renders the grid view link', function() {
@@ -103,7 +103,7 @@ describe('components/DatasetPreview', function() {
     describe('when the user lacks a role', () => {
       beforeEach(() => {
         window.serverConfig.currentUser = {};
-        window.serverConfig.featureFlags.enableVisualizationCanvas = true;
+        window.serverConfig.featureFlags.enable_visualization_canvas = true;
       });
 
       it('renders the grid view link', function() {

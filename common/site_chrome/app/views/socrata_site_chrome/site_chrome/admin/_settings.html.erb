@@ -13,13 +13,13 @@
     <% if use_internal_asset_manager? %>
       <li>
         <a href="<%= site_chrome_massage_url('/admin/assets') %>">
-          <span><%= t("shared.site_chrome.admin.settings.asset_inventory") %></span>
+          <span><%= t('shared.site_chrome.admin.settings.asset_inventory') %></span>
         </a>
       </li>
     <% else %>
       <li>
         <a href="<%= site_chrome_massage_url('/admin/datasets') %>">
-          <span><%= t("shared.site_chrome.screens.admin.index.datasets") %></span>
+          <span><%= t('shared.site_chrome.admin.settings.datasets') %></span>
         </a>
       </li>
     <%- end -%>

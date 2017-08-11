@@ -21,10 +21,10 @@ module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, F
       this._super();
 
       function getDefaultPageMetadataVersion() {
-        var currentPageMetadataVersion = parseInt(ServerConfig.get('currentPageMetadataVersion'), 10);
+        var currentPageMetadataVersion = parseInt(ServerConfig.get('current_page_metadata_version'), 10);
         if (_.isNaN(currentPageMetadataVersion)) {
           currentPageMetadataVersion = 1;
-          $log.warn('currentPageMetadataVersion could not be parsed as an integer; falling back to "1"');
+          $log.warn('current_page_metadata_version could not be parsed as an integer; falling back to "1"');
         }
         return currentPageMetadataVersion;
       }
@@ -64,7 +64,7 @@ module.exports = function PageModelFactory(ServerConfig, Card, Dataset, Model, F
       self.defineEphemeralObservableProperty('moderationStatus', pageMetadata.moderationStatus);
       self.defineEphemeralObservableProperty('ownerId', pageMetadata.ownerId);
       self.defineEphemeralObservableProperty('ownerDisplayName', pageMetadata.ownerDisplayName);
-      self.defineEphemeralObservableProperty('enableAxisRescaling', ServerConfig.get('enableDataLensAxisRescaling'));
+      self.defineEphemeralObservableProperty('enableAxisRescaling', ServerConfig.get('enable_data_lens_axis_rescaling'));
 
       var rowDisplayUnit$ = self.observe('dataset.rowDisplayUnit');
 

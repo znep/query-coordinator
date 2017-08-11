@@ -28,11 +28,24 @@ describe('InfoPane', () => {
     });
   });
 
-  it('generates the correct link for the footer', () => {
-    const element = renderComponentWithStore(InfoPane, {});
-    const footer = element.querySelector('.entry-meta.first a');
+  describe('footer', () => {
+    it('generates the correct link for the footer', () => {
+      const element = renderComponentWithStore(InfoPane, {});
+      const footer = element.querySelector('.entry-meta.first a');
 
-    assert.equal(footer.innerText, 'Based on ' + mockParentView.name);
-    assert.isTrue(footer.href.includes(mockParentView.path));
+      assert.equal(footer.innerText, 'Based on ' + mockParentView.name);
+      assert.isTrue(footer.href.includes(mockParentView.path));
+    });
+
+    it('hides the link when the hideDataSourceLink configuration is set', () => {
+      _.set(window, 'serverConfig.customConfigurations.hideDataSourceLink', 'true');
+
+      const element = renderComponentWithStore(InfoPane, {});
+      const footer = element.querySelector('.entry-meta.first a');
+
+      assert.isNull(footer);
+
+      delete window.serverConfig.customConfigurations;
+    });
   });
 });

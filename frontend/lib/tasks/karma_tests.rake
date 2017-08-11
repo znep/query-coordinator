@@ -35,19 +35,21 @@ namespace :test do
 
     # ADD NEW TEST SUITES HERE
     {
+      'adminActivityFeed' => 'update_admin_activity_feed_translations',
+      'adminGoals' => 'update_admin_goals_translations',
+      'adminUsersV2' => 'update_admin_users_v2_translations',
       'catalogLandingPage' => 'update_catalog_landing_page_translations',
       'common' => 'update_common_translations',
       'dataCards' => 'update_datacards_translations',
       'datasetLandingPage' => 'update_dataset_landing_page_translations',
-      'adminGoals' => 'update_admin_goals_translations',
-      'adminActivityFeed' => 'update_admin_activity_feed_translations',
-      'adminUsersV2' => 'update_admin_users_v2_translations',
-      'internalAssetManager' => 'update_internal_asset_manager_translations',
       'datasetManagementUI' => 'update_dataset_management_ui_translations',
-      'visualizationCanvas' => 'update_visualization_canvas_translations',
+      'internalAssetManager' => 'update_internal_asset_manager_translations',
+      'opMeasure' => 'update_op_measure_translations',
       'signin' => 'update_signin_translations',
-      'oldUx' => nil,
+      'visualizationCanvas' => 'update_visualization_canvas_translations',
+
       'exampleTestSuite' => nil,
+      'oldUx' => nil,
       'visualization_embed' => nil
     }.each do |task_name, dependency|
       desc task_name
@@ -59,17 +61,18 @@ namespace :test do
 
     # an opinionated JS test runner for a parallelized single run
     parallel_deps = [
-      'test:karma:translations:update_common_translations',
+      'test:karma:translations:update_admin_activity_feed_translations',
+      'test:karma:translations:update_admin_goals_translations',
+      'test:karma:translations:update_admin_users_v2_translations',
       'test:karma:translations:update_catalog_landing_page_translations',
+      'test:karma:translations:update_common_translations',
       'test:karma:translations:update_datacards_translations',
       'test:karma:translations:update_dataset_landing_page_translations',
-      'test:karma:translations:update_internal_asset_manager_translations',
-      'test:karma:translations:update_admin_goals_translations',
-      'test:karma:translations:update_admin_activity_feed_translations',
-      'test:karma:translations:update_admin_users_v2_translations',
       'test:karma:translations:update_dataset_management_ui_translations',
-      'test:karma:translations:update_visualization_canvas_translations',
-      'test:karma:translations:update_signin_translations'
+      'test:karma:translations:update_internal_asset_manager_translations',
+      'test:karma:translations:update_op_measure_translations',
+      'test:karma:translations:update_signin_translations',
+      'test:karma:translations:update_visualization_canvas_translations'
     ]
     desc 'parallel'
     task :parallel => parallel_deps do
@@ -80,135 +83,185 @@ namespace :test do
 
     desc 'mock translations in support of Karma tests'
     namespace :translations do
-      desc 'Helper task that creates a js file that injects translation into browser'
-      task :update_common_translations do
+      # Task helper to reduce repetition.
+      #
+      # Use a blank key in the translation map to indicate that the translations
+      # at the corresponding path should be located at the root of the output.
+      # Use a dot delimiter to indicate nested paths in the YAML source.
+      #
+      # The fewer transformations your app makes between the YAML source and the
+      # exported output, the happier you will be.
+      def update_translations(translation_map, destination_file, export = 'export default')
         translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/common/mockTranslations.js'
         all_translations = YAML.load_file(translations_filename)['en']
-        translations = {
-          :common => all_translations['common'],
-          :dataset_landing_page => all_translations['dataset_landing_page']
+
+        translations = translation_map.reduce({}) do |acc, (key, path)|
+          translation_group = all_translations.dig(*path.split('.'))
+
+          if key.present?
+            acc[key] = if acc.key?(key)
+              acc[key].merge(translation_group)
+            else
+              translation_group
+            end
+          else
+            acc.merge!(translation_group)
+          end
+
+          acc
+        end
+
+        translations = all_translations if translations.empty?
+
+        File.write(destination_file, "#{export} #{translations.to_json.html_safe};")
+      end
+
+      task :update_common_translations do
+        translation_map = {
+          common: 'common',
+          dataset_landing_page: 'dataset_landing_page'
         }
-        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
+
+        update_translations(
+          translation_map,
+          'karma/common/mockTranslations.js',
+          export = 'module.exports ='
+        )
       end
 
       desc 'Helper task that creates a js file that injects translation into browser'
       task :update_datacards_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/dataCards/mockTranslations.js'
-        translations = YAML.load_file(translations_filename)['en']['angular']['dataCards']
-        File.write(output_filename, 'window.translations = ' + translations.to_json.html_safe + ';')
-      end
-
-      desc 'Helper task that creates a js file that injects translation into browser'
-      task :update_catalog_landing_page_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/catalogLandingPage/mockTranslations.js'
-        all_translations = YAML.load_file(translations_filename)['en']
-        translations = all_translations['catalog_landing_page'].merge(
-          common: all_translations['common'],
-          data_types: all_translations['core']['data_types']
-        )
-        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
-      end
-
-      desc 'Helper task that creates a js file that injects translation into browser'
-      task :update_dataset_landing_page_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/datasetLandingPage/mockTranslations.js'
-        all_translations = YAML.load_file(translations_filename)['en']
-        translations = all_translations['dataset_landing_page'].merge(
-          data_types: all_translations['core']['data_types'],
-        )
-
-        common = all_translations['common']
-
-        if translations.key?('common')
-          translations['common'] = translations['common'].merge(common)
-        else
-          translations = translations.merge(common: common)
-        end
-
-        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
-      end
-
-      desc 'update_internal_asset_manager_translations'
-      task :update_internal_asset_manager_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/internalAssetManager/mockTranslations.js'
-        all_translations = YAML.load_file(translations_filename)['en']
-        translations = all_translations['internal_asset_manager'].merge(
-          common: all_translations['common']
-        )
-        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
-      end
-
-      desc 'update_dataset_management_ui_translations'
-      task :update_dataset_management_ui_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/datasetManagementUI/mockTranslations.js'
-        all_translations = YAML.load_file(translations_filename)['en']
-        translations = all_translations['dataset_management_ui'].merge(
-          data_types: all_translations['core']['data_types'],
-          edit_metadata: all_translations['screens']['edit_metadata'],
-          schema_preview: all_translations['dataset_landing_page']['schema_preview']
-
-        )
-
-        common = all_translations['common']
-
-        if translations.key?('common')
-          translations['common'] = translations['common'].merge(common)
-        else
-          translations = translations.merge(common: common)
-        end
-
-        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
-      end
-
-      desc 'update_admin_goals_translations'
-      task :update_admin_goals_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/adminGoals/mockTranslations.js'
-        translations = YAML.load_file(translations_filename)['en']['govstat']
-        File.write(output_filename, "export default #{translations.to_json.html_safe};")
-      end
-
-      desc 'update_admin_activity_feed_translations'
-      task :update_admin_activity_feed_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/adminActivityFeed/mockTranslations.js'
-        translations = YAML.load_file(translations_filename)['en']['screens']['admin']['jobs']
-        File.write(output_filename, "export default #{translations.to_json.html_safe};")
-      end
-
-      desc 'update_admin_users_v2_translations'
-      task :update_admin_users_v2_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/adminUsersV2/mockTranslations.js'
-        translations = YAML.load_file(translations_filename)['en']['screens']['admin']['jobs']
-        File.write(output_filename, "export default #{translations.to_json.html_safe};")
-      end
-
-      desc 'update_visualization_canvas_translations'
-      task :update_visualization_canvas_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/visualizationCanvas/mockTranslations.js'
-        translations = YAML.load_file(translations_filename)['en']['visualization_canvas']
-        File.write(output_filename, "export default #{translations.to_json.html_safe};")
-      end
-
-      desc 'update_signin_translations'
-      task :update_signin_translations do
-        translations_filename = 'config/locales/en.yml'
-        output_filename = 'karma/signin/mockTranslations.js'
-        all_translations = YAML.load_file(translations_filename)['en']
-        translations = {
-          screens: {
-            sign_in: all_translations['screens']['sign_in']
-          }
+        translation_map = {
+          '': 'angular.dataCards'
         }
-        File.write(output_filename, "module.exports = #{translations.to_json.html_safe};")
+
+        update_translations(
+          translation_map,
+          'karma/dataCards/mockTranslations.js',
+          export = 'window.translations ='
+        )
+      end
+
+      task :update_catalog_landing_page_translations do
+        translation_map = {
+          '': 'catalog_landing_page',
+          common: 'common',
+          data_types: 'core.data_types'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/catalogLandingPage/mockTranslations.js',
+          export = 'module.exports ='
+        )
+      end
+
+      task :update_dataset_landing_page_translations do
+        translation_map = {
+          '': 'dataset_landing_page',
+          data_types: 'core.data_types',
+          common: 'common'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/datasetLandingPage/mockTranslations.js',
+          export = 'module.exports ='
+        )
+      end
+
+      task :update_internal_asset_manager_translations do
+        translation_map = {
+          '': 'internal_asset_manager',
+          common: 'common'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/internalAssetManager/mockTranslations.js',
+          export = 'module.exports ='
+        )
+      end
+
+      task :update_dataset_management_ui_translations do
+        translation_map = {
+          '': 'dataset_management_ui',
+          data_types: 'core.data_types',
+          edit_metadata: 'screens.edit_metadata',
+          schema_preview: 'dataset_landing_page.schema_preview',
+          common: 'common'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/datasetManagementUI/mockTranslations.js',
+          export = 'module.exports ='
+        )
+      end
+
+      task :update_admin_goals_translations do
+        translation_map = {
+          '': 'govstat'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/adminGoals/mockTranslations.js'
+        )
+      end
+
+      task :update_admin_activity_feed_translations do
+        translation_map = {
+          '': 'screens.admin.jobs'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/adminActivityFeed/mockTranslations.js'
+        )
+      end
+
+      task :update_admin_users_v2_translations do
+        translation_map = {
+          '': 'screens.admin.jobs'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/adminUsersV2/mockTranslations.js'
+        )
+      end
+
+      task :update_visualization_canvas_translations do
+        translation_map = {
+          '': 'visualization_canvas'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/visualizationCanvas/mockTranslations.js'
+        )
+      end
+
+      task :update_op_measure_translations do
+        translation_map = {
+          '': 'open_performance'
+        }
+
+        update_translations(
+          translation_map,
+          'karma/opMeasure/mockTranslations.js'
+        )
+      end
+
+      task :update_signin_translations do
+        translation_map = {}
+
+        update_translations(
+          translation_map,
+          'karma/signin/mockTranslations.js',
+          export = 'module.exports ='
+        )
       end
     end
 
@@ -224,6 +277,7 @@ namespace :test do
       'karma:datasetManagementUI',
       'karma:internalAssetManager',
       'karma:oldUx',
+      'karma:opMeasure',
       'karma:signin',
       'karma:visualizationCanvas',
       'karma:visualization_embed'

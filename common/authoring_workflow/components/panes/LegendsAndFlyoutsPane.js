@@ -3,15 +3,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
 import I18n from 'common/i18n';
+import { getMeasureTitle } from '../../helpers';
 
 import { COLUMN_TYPES } from '../../constants';
 import { getDisplayableColumns, hasData } from '../../selectors/metadata';
 import {
   getDimensionGroupingColumnName,
   getRowInspectorTitleColumnName,
+  getSeries,
   getShowLegend,
-  getUnitOne,
-  getUnitOther,
   isBarChart,
   isColumnChart,
   isFeatureMap,
@@ -42,43 +42,80 @@ export const LegendsAndFlyoutsPane = React.createClass({
   },
 
   renderUnits() {
-    const { vifAuthoring, onChangeUnitOne, onChangeUnitOther } = this.props;
-    const unitOne = getUnitOne(vifAuthoring);
-    const unitOneAttributes = {
-      id: 'units-one',
-      className: 'text-input',
-      type: 'text',
-      onChange: onChangeUnitOne,
-      placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.placeholder'),
-      value: unitOne
-    };
+    const { vifAuthoring, onChangeUnitOne, onChangeUnitOther, metadata } = this.props;
 
-    const unitOther = getUnitOther(vifAuthoring);
-    const unitOtherAttributes = {
-      id: 'units-other',
-      className: 'text-input',
-      type: 'text',
-      onChange: onChangeUnitOther,
-      placeholder: I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.placeholder'),
-      value: unitOther
-    };
+    const series = getSeries(vifAuthoring);
+    const unitControls = series.map((item, index) => {
+
+      const hasSumAggregation = (item.dataSource.measure.aggregationFunction == 'sum');
+      const unitOne = _.get(item, 'unit.one', '');
+      const unitOther = _.get(item, 'unit.other', '');
+
+      const unitOneAttributes = {
+        id: `units-one-${index}`,
+        className: 'text-input',
+        type: 'text',
+        onChange: (event) => onChangeUnitOne(index, event.target.value),
+        placeholder: hasSumAggregation ? 
+          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.sum_aggregation_unit') :
+          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.placeholder'),
+        value: unitOne
+      };
+
+      const unitOtherAttributes = {
+        id: `units-other-${index}`,
+        className: 'text-input',
+        type: 'text',
+        onChange: (event) => onChangeUnitOther(index, event.target.value),
+        placeholder: hasSumAggregation ? 
+          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.sum_aggregation_unit') :
+          I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.placeholder'),
+        value: unitOther
+      };
+
+      const measureTitle = getMeasureTitle(metadata, item);
+      return this.renderUnitsForSeries(index, measureTitle, unitOneAttributes, unitOtherAttributes);
+    });
 
     return (
       <AccordionPane key="units" title={I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.units.title')}>
-        <p className="authoring-field-description">
+        <p className="authoring-field-description units-description">
           <small>{I18n.t('shared.visualizations.panes.legends_and_flyouts.subheaders.units.description')}</small>
         </p>
-        <div className="authoring-field">
-          <label className="block-label"
-                 htmlFor="units-one">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.title')}</label>
+        {unitControls}
+      </AccordionPane>
+    );
+  },
+
+  renderUnitsForSeries(seriesIndex, measureTitle, unitOneAttributes, unitOtherAttributes) {
+    const containerAttributes = {
+      id: `units-container-${seriesIndex}`,
+      className: 'units-container',
+      key: seriesIndex
+    };
+
+    const unitsOneLabelAttributes = {
+      className: 'block-label',
+      htmlFor: `units-one-${seriesIndex}`
+    };
+
+    const unitsOtherLabelAttributes = {
+      className: 'block-label',
+      htmlFor: `units-other-${seriesIndex}`
+    };
+
+    return (
+      <div {...containerAttributes}>
+        <p>{measureTitle}</p>
+        <div className="authoring-field unit-container">
+          <label {...unitsOneLabelAttributes}>{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_one.title')}</label>
           <DebouncedInput {...unitOneAttributes} />
         </div>
-        <div className="authoring-field">
-          <label className="block-label"
-                 htmlFor="units-other">{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.title')}</label>
+        <div className="authoring-field unit-container">
+          <label {...unitsOtherLabelAttributes}>{I18n.t('shared.visualizations.panes.legends_and_flyouts.fields.units_other.title')}</label>
           <DebouncedInput {...unitOtherAttributes} />
         </div>
-      </AccordionPane>
+      </div>
     );
   },
 
@@ -226,12 +263,12 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeUnitOne: (event) => {
-      dispatch(setUnitsOne(event.target.value));
+    onChangeUnitOne: (seriesIndex, unitOne) => {
+      dispatch(setUnitsOne(seriesIndex, unitOne));
     },
 
-    onChangeUnitOther: (event) => {
-      dispatch(setUnitsOther(event.target.value));
+    onChangeUnitOther: (seriesIndex, unitOther) => {
+      dispatch(setUnitsOther(seriesIndex, unitOther));
     },
 
     onSelectRowInspectorTitle: flyoutTitle => {

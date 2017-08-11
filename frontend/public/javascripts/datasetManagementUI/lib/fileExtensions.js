@@ -5,7 +5,7 @@ export const enabledFileExtensions = _.compact([
   '.tsv',
   '.xls',
   '.xlsx',
-  window.serverConfig.featureFlags.datasetManagementUiEnableShapefileUpload ? '.zip' : null
+  window.serverConfig.featureFlags.dataset_management_ui_enable_shapefile_upload ? '.zip' : null
 ]);
 
 export function formatExpanation(format) {

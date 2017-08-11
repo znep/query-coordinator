@@ -889,7 +889,19 @@ class View < Model
     dhash['averageRating'] = averageRating
     dhash['totalTimesRated'] = totalTimesRated
     dhash['columns'] = (columns || []).map(&:to_core)
-    if !@cached_rows.nil?
+    # EN-17875 - Make grid view Socrata Viz table respond to OBE/NBE read queries using old query path
+    #
+    # Because we put together the Socrata Viz data on the client side, things
+    # get pretty confused if the Dataset model tries to read initial rows from
+    # the page and the number of initial rows differs from the number of rows
+    # that the Socrata Viz table thinks it is requesting. As such, maybe this is
+    # an opportunity for us to start unwinding the tangle of cacheing strategies
+    # and more often rely on HTTP-level cacheing.
+    should_include_initial_rows = (
+      !@cached_rows.nil? &&
+      !FeatureFlags.derive(@view, nil).enable_nbe_only_grid_view_optimizations
+    )
+    if should_include_initial_rows
       dhash['initialRows'] = {
         rows: @cached_rows[:rows] || [],
         start: @cached_rows[:start] || 0,
@@ -1483,6 +1495,11 @@ class View < Model
     # Once our migration is complete, we will cease to support the first case,
     # relying only on viewType == 'story'.
     (viewType == 'href' && displayType == 'story') || viewType == 'story'
+  end
+
+  def op_measure?
+    # displayType == 'measure' && viewType == 'something'
+    true
   end
 
   def is_href?

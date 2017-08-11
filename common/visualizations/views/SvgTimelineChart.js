@@ -153,7 +153,25 @@ function SvgTimelineChart($element, vif, options) {
   // predictibility as opposed to rendering performance).
   function mapDataTableToDataTablesBySeries(dataTable) {
     const dataTableDimensionIndex = dataTable.columns.indexOf('dimension');
-    measureLabels = dataTable.columns.slice(dataTableDimensionIndex + 1);
+    const columns = dataTable.columns.slice(dataTableDimensionIndex + 1);
+
+    if (self.isMultiSeries()) {
+      measureLabels = columns.map((column, index) => {
+        const measureColumnName = _.get(self.getVif(), `series[${index}].dataSource.measure.columnName`);
+
+        if (_.isEmpty(measureColumnName)) {
+          return I18n.t('shared.visualizations.panes.data.fields.measure.no_value');
+        }
+
+        const measureColumnFormat = dataTable.columnFormats[measureColumnName];
+        return _.isUndefined(measureColumnFormat) ? column : measureColumnFormat.name;
+      });
+    }
+    else {
+      measureLabels = dataTable.columns.slice(dataTableDimensionIndex + 1).
+      map((label) => self.isGrouping() ? label || noValueLabel : label);
+    }
+
     const dataTablesBySeries = measureLabels.map((measureLabel, i) => {
       const dataTableMeasureIndex = dataTableDimensionIndex + 1 + i;
       const rows = dataTable.rows.map((row) => {

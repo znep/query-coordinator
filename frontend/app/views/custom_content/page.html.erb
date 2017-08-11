@@ -1,3 +1,19 @@
+<% content_for :head do %>
+  <%-
+    # EN-17875 - Make grid view Socrata Viz table respond to OBE/NBE read queries using old query path
+    #
+    # Note that this must be in the <head> because there is a load order
+    # dependency with the Socrata Visualizations I18n module; if the
+    # translations are not present on the window when that code bootstraps no
+    # translations will be available.
+    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+  -%>
+    <%= rendered_stylesheet_tag 'socrata-icons' %>
+    <%= rendered_stylesheet_tag 'visualizations' %>
+    <%= render_socrata_visualizations_translations %>
+  <%- end -%>
+<% end %>
+
 <%-
   expiry = FeatureFlags.value_for(:zealous_dataslate_cache_expiry) || Rails.application.config.cache_ttl_fragment
   prerendered_cache @cache_key, @cached_fragment, :expires_in => expiry do -%>
@@ -49,6 +65,17 @@
 
 <%- content_for :js_footer do -%>
   <%= render :partial => 'canvas_js', :locals => { :page => @page, :template => nil } %>
+  <%-
+    # EN-17875 - Make grid view Socrata Viz table respond to OBE/NBE read queries using old query path
+    #
+    # Note that these come at the bottom of the <body> due to the load-order
+    # dependency detailed in the comment with this ticket number at the top
+    # of this file (tl;dr: the translations must exist on the window when
+    # we boostrap the Socrata Viz package).
+    if FeatureFlags.derive(@view, request).enable_nbe_only_grid_view_optimizations
+  -%>
+    <%= include_webpack_bundle 'grid_view_socrata_visualizations/main.js' %>
+  <%- end -%>
 <%- end -%>
 
 <%- end -%>

@@ -1089,7 +1089,7 @@ describe('CardDataService', function() {
     });
 
     it('should return undefined for an incorrectly formatted feature flag value', function() {
-      ServerConfig.override('featureMapDefaultExtent', '{"southwest":[41.87537684702812,-87.6587963104248]}');
+      ServerConfig.override('feature_map_default_extent', '{"southwest":[41.87537684702812,-87.6587963104248]}');
       assert.isUndefined(CardDataService.getDefaultFeatureExtent());
     });
 
@@ -1098,12 +1098,12 @@ describe('CardDataService', function() {
         "southwest":[41.87537684702812,-87.6587963104248],
         "northeast":[41.89026600256849,-87.5951099395752]
       };
-      ServerConfig.override('featureMapDefaultExtent', JSON.stringify(expectedValue));
+      ServerConfig.override('feature_map_default_extent', JSON.stringify(expectedValue));
       expect(CardDataService.getDefaultFeatureExtent()).to.eql(expectedValue);
     });
 
     it('should not throw on improperly formatted JSON', function() {
-      ServerConfig.override('featureMapDefaultExtent', '{"southwest":[41.87537684702812,-87.6587963104248]');
+      ServerConfig.override('feature_map_default_extent', '{"southwest":[41.87537684702812,-87.6587963104248]');
       expect(function() {
         var returnValue = CardDataService.getDefaultFeatureExtent();
         assert.isUndefined(returnValue);
@@ -1206,8 +1206,8 @@ describe('CardDataService', function() {
         ServerConfig.override('choroplethCustomBoundary', 'asdf');
       });
 
-      it('uses the custom polygon to fetch regions useDataLensChoroplethCustomBoundary is true', function() {
-        ServerConfig.override('useDataLensChoroplethCustomBoundary', true);
+      it('uses the custom polygon to fetch regions use_data_lens_choropleth_custom_boundary is true', function() {
+        ServerConfig.override('use_data_lens_choropleth_custom_boundary', true);
         $httpBackend.expectGET(/where=within_polygon%28the_geom%2C%27asdf%27%29/).respond([]);
         CardDataService.getChoroplethRegionsUsingSourceColumn('four-four', 'location', 'shap-file');
         $httpBackend.flush();

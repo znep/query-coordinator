@@ -1,0 +1,31 @@
+<% content_for :head do %>
+  <title><%= @view.name %> | <%= get_site_title %></title>
+  <%= meta_tags :description => view_meta_description, :keywords => view_meta_keywords %>
+
+  <%= rendered_stylesheet_tag 'op-measure' %>
+<% end %>
+
+<div id="app" class="op-measure">
+  <!-- TODO -->
+
+  <div class="placeholder-wrapper">
+    <div class="main-spinner">
+      <div class="spinner-default spinner-large"></div>
+    </div>
+  </div>
+</div>
+
+<% content_for :scripts do %>
+  <script type="text/javascript" id="op-measure-initial-state">
+    var initialState = {
+
+    };
+  </script>
+
+  <%= render_feature_flags_for_javascript %>
+  <%= render_op_measure_translations %>
+  <%= render_op_measure_server_config %>
+  <%= render_op_measure_session_data %>
+
+  <%= include_webpack_bundle 'op-measure/main.js' %>
+<% end %>

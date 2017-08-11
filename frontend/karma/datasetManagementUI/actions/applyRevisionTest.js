@@ -69,7 +69,7 @@ describe('actions/applyRevision', () => {
 
     it('works when an output schema is supplied', done => {
       fakeStore
-        .dispatch(applyRevision(52, params))
+        .dispatch(applyRevision(params))
         .then(() => {
           const actions = fakeStore.getActions();
           assert.deepEqual(_.map(actions, 'type'), [
@@ -87,7 +87,7 @@ describe('actions/applyRevision', () => {
 
     it('works without an output schema (no-file case)', done => {
       fakeStore
-        .dispatch(applyRevision(null, params))
+        .dispatch(applyRevision(params))
         .then(() => {
           const actions = fakeStore.getActions();
           assert.deepEqual(_.map(actions, 'type'), [

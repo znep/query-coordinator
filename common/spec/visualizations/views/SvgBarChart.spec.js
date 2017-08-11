@@ -23,6 +23,19 @@ describe('SvgBarChart', () => {
     ]
   };
 
+  const multiSeriesTestData = {
+    columns: [
+      'dimension', 'measure'
+    ],
+    rows: [
+      ['10', 10, 10, 10],
+      ['20', 20, 20, 20],
+      ['30', 30, 30, 30],
+      ['40', 40, 40, 40],
+      ['50', 50, 50, 50]
+    ]
+  };
+
   const createBarChart = (width, overrideVIF)  => {
 
     if (!width) {
@@ -49,7 +62,9 @@ describe('SvgBarChart', () => {
           right: 'right',
           bottom: 'bottom',
           left: 'left'
-        }
+        },
+        // If you change to true, make sure to mock out the resultant MetadataProvider request.
+        viewSourceDataLink: false
       },
       series: [
         {
@@ -164,6 +179,21 @@ describe('SvgBarChart', () => {
         find('.socrata-visualization-error-message').text();
 
       assert.equal(errorMessage, 'Minimum axis value cannot exceed values within dataset.');
+    });
+  });
+
+  describe('when rendering multi-series', () => {
+    let barChart;
+
+    afterEach(function() {
+      removeBarChart(barChart);
+    });
+
+    it('should show multiple bars', () => {
+      barChart = createBarChart();
+      barChart.chart.render(null, multiSeriesTestData);
+      const $bars = barChart.element.find('.dimension-group:first > .bar');
+      assert.equal($bars.length, 3);
     });
   });
 });

@@ -419,7 +419,7 @@ function SvgVisualization($element, vif, options) {
 
       const domain = _.get(self.getVif(), 'series[0].dataSource.domain');
       const datasetUid = _.get(self.getVif(), 'series[0].dataSource.datasetUid');
-      const metadataProvider = new MetadataProvider({domain, datasetUid});
+      const metadataProvider = new MetadataProvider({domain, datasetUid}, true);
       const renderLink = function(linkableDatasetUid) {
 
         let href = `https://${domain}/d/${linkableDatasetUid}`;

@@ -351,21 +351,23 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
 
     // Geospace has knowledge of the extents of a column, which
     // we use to modify point data queries with a WITHIN_BOX clause.
-    geospaceDataProvider = new GeospaceDataProvider({ domain, datasetUid });
+    geospaceDataProvider = new GeospaceDataProvider({ domain, datasetUid }, true);
 
     // Tileserver serves tile data using the standard {z}/{x}/{y} URL
     // format. It returns protocol buffers containing point offsets from
     // the tile origin (top left).
-    tileserverDataProvider = new TileserverDataProvider({
-      domain,
-      datasetUid,
-      columnName,
-      featuresPerTile: DEFAULT_FEATURES_PER_TILE
-    });
+    tileserverDataProvider = new TileserverDataProvider(
+      {
+        domain,
+        datasetUid,
+        columnName,
+        featuresPerTile: DEFAULT_FEATURES_PER_TILE
+      },
+      true);
 
     // SoQL returns row results for display in the row inspector
-    soqlDataProvider = new SoqlDataProvider({ domain, datasetUid });
-    metadataProvider = new MetadataProvider({ domain, datasetUid });
+    soqlDataProvider = new SoqlDataProvider({ domain, datasetUid }, true);
+    metadataProvider = new MetadataProvider({ domain, datasetUid }, true);
   }
 
   function initializeVisualization(newVif) {

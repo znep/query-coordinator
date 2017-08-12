@@ -671,6 +671,16 @@ describe('GeospaceDataProvider', function() {
 
         server.respond();
       });
+
+      describe('caching behavior', () => {
+        it('only sends one request', () => {
+          geospaceDataProvider.getShapefile(VALID_EXTENT);
+          geospaceDataProvider.getShapefile(VALID_EXTENT);
+          geospaceDataProvider.getShapefile(VALID_EXTENT);
+          assert.lengthOf(server.requests, 1);
+        });
+      });
+
     });
   });
 });

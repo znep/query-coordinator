@@ -15,7 +15,7 @@ var DEFAULT_FEATURES_PER_TILE = 50000;
  *     expected per tile. This defaults to (256 * 256). This value will be
  *     provided as the `LIMIT` parameter in the query string.
  */
-function TileserverDataProvider(config) {
+function TileserverDataProvider(config, useCache = false) {
 
   _.extend(this, new DataProvider(config));
 
@@ -28,6 +28,13 @@ function TileserverDataProvider(config) {
   utils.assertIsOneOfTypes(config.datasetUid, 'string');
   utils.assertIsOneOfTypes(config.columnName, 'string');
   utils.assertIsOneOfTypes(config.featuresPerTile, 'number');
+
+  if (useCache) {
+    const cached = this.cachedInstance("TileserverDataProvider");
+    if (cached) {
+      return cached;
+    }
+  }
 
   var _self = this;
 
@@ -184,68 +191,72 @@ function TileserverDataProvider(config) {
    *
    * @return {Promise}
    */
+  const arrayBufferPromiseCache = {};
   function _getArrayBuffer(url, configuration) {
 
-    return (
-      new Promise(
-        function(resolve, reject) {
-          var xhr = new XMLHttpRequest();
+    const cacheKey = url;
 
-          function onFail() {
+    const cachedPromise = arrayBufferPromiseCache[cacheKey];
+    if (cachedPromise) {
+      return cachedPromise;
+    }
 
-            return reject({
-              status: parseInt(xhr.status, 10),
-              headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-              config: configuration,
-              statusText: xhr.statusText
-            });
-          }
+    const loadTilesPromise = new Promise(
+      (resolve, reject) => {
+        const xhr = new XMLHttpRequest();
 
-          xhr.onload = function() {
-
-            var arrayBuffer;
-            var status = parseInt(xhr.status, 10);
-
-            if (status === 200) {
-
-              arrayBuffer = _typedArrayFromArrayBufferResponse(xhr);
-
-              if (!_.isUndefined(arrayBuffer)) {
-
-                return resolve({
-                  data: arrayBuffer,
-                  status: status,
-                  headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-                  config: configuration,
-                  statusText: xhr.statusText
-                });
-              }
-            }
-
-            onFail();
-          };
-
-          xhr.onabort = onFail;
-          xhr.onerror = onFail;
-
-          xhr.open('GET', url, true);
-
-          // Set user-defined headers.
-          _.each(configuration.headers, function(value, key) {
-            xhr.setRequestHeader(key, value);
+        function onFail() {
+          return reject({
+            status: parseInt(xhr.status, 10),
+            headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+            config: configuration,
+            statusText: xhr.statusText
           });
-
-          xhr.responseType = 'arraybuffer';
-
-          xhr.send();
         }
-      ).catch(
-        function(error) {
-          throw error;
-        }
-      )
+
+        xhr.onload = function() {
+          const status = parseInt(xhr.status, 10);
+          if (status === 200) {
+            const arrayBuffer = _typedArrayFromArrayBufferResponse(xhr);
+            if (!_.isUndefined(arrayBuffer)) {
+              return resolve({
+                data: arrayBuffer,
+                status: status,
+                headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+                config: configuration,
+                statusText: xhr.statusText
+              });
+            }
+          }
+          onFail();
+        };
+
+        xhr.onabort = onFail;
+        xhr.onerror = onFail;
+
+        xhr.open('GET', url, true);
+
+        // Set user-defined headers.
+        _.each(configuration.headers, function(value, key) {
+          xhr.setRequestHeader(key, value);
+        });
+
+        xhr.responseType = 'arraybuffer';
+
+        xhr.send();
+      }
+    ).catch(
+      (error) => {
+        throw error;
+      }
     );
+
+    arrayBufferPromiseCache[cacheKey] = loadTilesPromise;
+
+    return loadTilesPromise;
+
   }
+
 }
 
 module.exports = TileserverDataProvider;

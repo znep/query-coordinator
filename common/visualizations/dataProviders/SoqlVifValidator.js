@@ -26,7 +26,7 @@ export function getSoqlVifValidator(vif) {
           datasetUid: _.get(series, 'dataSource.datasetUid')
         };
 
-        metadataPromise = new MetadataProvider(metadataProviderConfig).
+        metadataPromise = new MetadataProvider(metadataProviderConfig, true).
           getDatasetMetadata();
       } else {
         metadataPromise = Promise.resolve({});

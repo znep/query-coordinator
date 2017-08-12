@@ -91,8 +91,24 @@ function DataProvider(config) {
   };
 
   /**
+   * @param {string} namespace for disambiguating data providers with the same configurations
+   *
+   * @return {Object} a DataProvider instance or undefined in case of a cache miss
+   */
+  this.cachedInstance = function(namespace) {
+    const cacheKey = JSON.stringify(_config);
+    let instance = _.get(DataProvider._instanceCache, [namespace, cacheKey]);
+    if (!instance) {
+      _.set(DataProvider._instanceCache, [namespace, cacheKey], this);
+    }
+    return instance;
+  };
+
+  /**
    * Private methods
    */
 }
+
+DataProvider._instanceCache = {};
 
 module.exports = DataProvider;

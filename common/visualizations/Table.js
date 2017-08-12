@@ -22,7 +22,7 @@ $.fn.socrataTable = function(originalVif, locale) {
   // the output of _.memoize.
   const getMemoizedDatasetMetadata = _.memoize(
     function(metadataProviderConfig) {
-      return new MetadataProvider(metadataProviderConfig).getDatasetMetadata();
+      return new MetadataProvider(metadataProviderConfig, true).getDatasetMetadata();
     },
     function(metadataProviderConfig) {
       const domain = metadataProviderConfig.domain;
@@ -718,7 +718,7 @@ $.fn.socrataTable = function(originalVif, locale) {
     }
 
     function getSoqlDataUsingDatasetMetadata(datasetMetadata) {
-      const displayableColumns = new MetadataProvider(dataProviderConfig).
+      const displayableColumns = new MetadataProvider(dataProviderConfig, true).
         getDisplayableColumns(datasetMetadata).
         slice(0, MAX_COLUMN_COUNT);
 
@@ -738,7 +738,7 @@ $.fn.socrataTable = function(originalVif, locale) {
         );
       }
 
-      const soqlDataProvider = new SoqlDataProvider(dataProviderConfig);
+      const soqlDataProvider = new SoqlDataProvider(dataProviderConfig, true);
 
       const soqlRowCountPromise = getMemoizedRowCount(
         soqlDataProvider,

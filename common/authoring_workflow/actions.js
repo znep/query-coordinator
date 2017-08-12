@@ -19,8 +19,8 @@ export function setDataSource(domain, datasetUid) {
       return;
     }
 
-    const datasetMetadataProvider = new dataProviders.MetadataProvider({ domain, datasetUid });
-    const soqlDataProvider = new dataProviders.SoqlDataProvider({ domain, datasetUid });
+    const datasetMetadataProvider = new dataProviders.MetadataProvider({ domain, datasetUid }, true);
+    const soqlDataProvider = new dataProviders.SoqlDataProvider({ domain, datasetUid }, true);
 
     dispatch(requestMetadata(domain, datasetUid));
 
@@ -84,7 +84,7 @@ export function setCuratedRegions(domain, datasetUid) {
       return;
     }
 
-    const datasetMetadataProvider = new dataProviders.MetadataProvider({ domain, datasetUid });
+    const datasetMetadataProvider = new dataProviders.MetadataProvider({ domain, datasetUid }, true);
 
     dispatch(requestCuratedRegions());
 

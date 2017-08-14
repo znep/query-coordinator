@@ -1,57 +1,14 @@
-import React, { PropTypes, PureComponent } from 'react';
+import React, { PropTypes } from 'react';
 import { components as SocrataVisualizations } from 'common/visualizations';
-import { connect } from 'react-redux';
-import { columnsForOutputSchema } from '../selectors';
 import styles from 'styles/DatasetPreview.scss';
 
-export class Table extends PureComponent {
-  render() {
-    const { vif } = this.props;
+const DatasetPreview = vif =>
+  <div className={styles.tableContents}>
+    <SocrataVisualizations.Visualization vif={vif} />
+  </div>;
 
-    return (
-      <div className={styles.tableContents}>
-        <SocrataVisualizations.Visualization vif={vif} />
-      </div>
-    );
-  }
-}
-
-Table.propTypes = {
+DatasetPreview.propTypes = {
   vif: PropTypes.object.isRequired
 };
 
-function mapStateToProps({ entities }, { view, outputSchema }) {
-  const [defaultSort] = columnsForOutputSchema(entities, outputSchema.id);
-  return {
-    vif: {
-      format: {
-        type: 'visualization_interchange_format',
-        version: 2
-      },
-      configuration: {
-        viewSourceDataLink: false,
-        order: [
-          { ascending: true, columnName: defaultSort.field_name }
-        ]
-      },
-      series: [
-        {
-          dataSource: {
-            datasetUid: view.id,
-            dimension: {},
-            domain: window.location.host,
-            type: 'socrata.soql',
-            filters: []
-          },
-          type: 'table',
-          unit: {
-            one: 'Row',
-            other: 'Rows'
-          }
-        }
-      ]
-    }
-  };
-}
-
-export default connect(mapStateToProps)(Table);
+export default DatasetPreview;

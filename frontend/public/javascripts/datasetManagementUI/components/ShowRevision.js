@@ -6,7 +6,7 @@ import { InfoPane } from 'common/components';
 import MetadataTable from '../../common/components/MetadataTable';
 import SchemaPreview from './SchemaPreview';
 import HomePaneSidebar from './HomePaneSidebar';
-import DatasetPreview from './DatasetPreview';
+import DatasetPreview from 'components/DatasetPreviewContainer';
 import NotifyButton from './NotifyButton';
 import RowDetails from '../components/RowDetails';
 import * as Links from '../links';
@@ -199,12 +199,7 @@ export function ShowRevision({ view, params, entities, createUpload, pushToEditM
       dataTable = [
         <Link
           key="manage-data-button"
-          to={Links.showOutputSchema(
-            params,
-            inputSchema.source_id,
-            inputSchema.id,
-            outputSchema.id
-          )}
+          to={Links.showOutputSchema(params, inputSchema.source_id, inputSchema.id, outputSchema.id)}
           className={styles.manageDataLink}>
           <button className={styles.manageDataBtn} tabIndex="-1">
             {I18n.home_pane.data_manage_button}

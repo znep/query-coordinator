@@ -702,99 +702,77 @@ $(function() {
     });
   }
 
-  $.live(
-    '#create-story-button',
+
+  $(document).on(
     'click',
-    generateCreateNewStoryHandler(
-      $('#create-resource-dropdown')
-    )
-  );
-  $.live(
-    '#create-story-footer-button',
-    'click',
-    generateCreateNewStoryHandler(
-      $('#create-resource-footer-dropdown')
-    )
-  );
+    '#create-story-button, #create-story-footer-button',
+    function() {
+      // You can't perform this operation without an app token.
+      var appToken = blist && blist.configuration && blist.configuration.appToken;
+      if (!appToken) {
+        return false;
+      }
 
-  function generateCreateNewStoryHandler($dropdownElement) {
+      // A few helper functions are defined below. Some of them need a reference
+      // to this UI element for feedback.
+      var $dropdownElement = $(this).closest('.jq-dropdown');
 
-    return function() {
+      // Ensure that a valid 4x4 was generated.
+      function validate4x4(testString) {
+        var valid = false;
+        var pattern = window.blist.util.patterns.UID;
 
+        if (pattern && testString) {
+          valid = testString.match(pattern) !== null;
+        }
+
+        return valid;
+      }
+
+      // This is the second phase of the creation action, and this endpoint is
+      // responsible for removing the `"initialized": false` flag (or setting it
+      // to true) when it succeeds at creating the new story objects in
+      // Storyteller's datastore. This isn't perfect but it should (hopefully)
+      // be reliable enough that users will not totally fail to create stories
+      // when they intend to do so.
+      function onPublishSuccess(publishData) {
+        if (publishData.hasOwnProperty('id') && validate4x4(publishData.id)) {
+          window.location.href = '/stories/s/' + publishData.id + '/create';
+        } else {
+          onError();
+        }
+      }
+
+      // Generic UI feedback for any problem during this process.
       function onError() {
-
         $dropdownElement.removeClass('working');
-
         alert('Oh no! There’s been a problem. Please try again.');
       }
 
+      // After the initial creation step, we need to publish the newly-created
+      // catalog asset, since the publish action provisions a new 4x4.
       function onSuccess(data, textStatus, xhr) {
+        if (validate4x4(data.id)) {
+          var publishUrl = '/api/views/' + data.id + '/publication.json?accessType=WEBSITE';
+          var publishSettings = {
+            contentType: false,
+            error: onError,
+            headers: {
+              'X-App-Token': appToken
+            },
+            type: 'POST',
+            success: onPublishSuccess
+          };
 
-        function validate4x4(testString) {
+          $.ajax(publishUrl, publishSettings);
 
-          var valid = false;
-          var pattern = window.blist.util.patterns.UID;
-
-          if (pattern) {
-            valid = testString.match(pattern) !== null;
-          }
-
-          return valid;
-        }
-
-        function onPublishSuccess(publishData) {
-
-          if (publishData.hasOwnProperty('id') && validate4x4(publishData.id)) {
-
-            // This is the second phase of the creation action,
-            // and this endpoint is responsible for removing the
-            // '"initialized": false' flag (or setting it to true)
-            // when it succeeds at creating the new story objects
-            // in Storyteller's datastore.
-            //
-            // This isn't perfect but it should (hopefully) be
-            // reliable enough that users will not totally fail to
-            // create stories when they intend to do so.
-            window.location.href = '/stories/s/' + publishData.id + '/create';
-
-          } else {
-            onError();
-          }
-        }
-
-        if (window.hasOwnProperty('blist') &&
-          window.blist.hasOwnProperty('configuration') &&
-          window.blist.configuration.hasOwnProperty('appToken')) {
-
-          if (data.hasOwnProperty('id') && validate4x4(data.id)) {
-
-            // Next we need to publish the newly-created catalog
-            // asset, since the publish action provisions a new
-            // 4x4.
-            var publishUrl = '/api/views/' + data.id + '/publication.json?accessType=WEBSITE';
-            var publishSettings = {
-              contentType: false,
-              error: onError,
-              headers: {
-                'X-App-Token': blist.configuration.appToken
-              },
-              type: 'POST',
-              success: onPublishSuccess
-            };
-
-            $.ajax(publishUrl, publishSettings);
-
-          } else {
-            onError(xhr, 'Invalid storyUid', 'Invalid storyUid');
-          }
+        } else {
+          onError();
         }
       }
 
-      var newStoryName = (
-        'Untitled Story - ' +
-        (new Date().format('m-d-Y'))
-      );
-
+      // The first API call, which allocates an asset, is made here.
+      var newStoryName = 'Untitled Story - ' + new Date().format('m-d-Y');
       var newStoryData = {
         displayFormat: {},
         displayType: 'story',
@@ -832,7 +810,7 @@ $(function() {
         error: onError,
         headers: {
           'Content-type': 'application/json',
-          'X-App-Token': blist.configuration.appToken
+          'X-App-Token': appToken
         },
         type: 'POST',
         success: onSuccess
@@ -840,6 +818,6 @@ $(function() {
 
       $dropdownElement.addClass('working');
       $.ajax(url, settings);
-    };
-  }
+    }
+  );
 });

@@ -2,6 +2,7 @@ require 'tmpdir'
 require 'digest/md5'
 require 'listen'
 require 'singleton'
+require 'fileutils'
 
 # BEWARE /node_modules/normalize.css has to appear above /node_modules
 # otherwise SaSS will try to read normalize.css (which is a directory)
@@ -50,6 +51,13 @@ end
 SCSS_WATCH_EXCLUDE = %r{common/karma_config}
 
 STYLE_CACHE_PATH = File.join(Dir.tmpdir, 'blist_style_cache')
+unless File.directory?(STYLE_CACHE_PATH)
+  begin
+    FileUtils.mkdir_p(STYLE_CACHE_PATH)
+  rescue Errno::EACCES => ex
+    Rails.logger.error("unable to mkdir '#{STYLE_CACHE_PATH}', check permissions: #{ex}")
+  end
+end
 
 class CSSImporter < Sass::Importers::Filesystem
   def extensions

@@ -5,7 +5,7 @@ import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import { ManageData, HomePaneSidebar } from 'components/HomePaneSidebar';
+import HomePaneSidebar from 'components/HomePaneSidebar';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
 
@@ -78,18 +78,6 @@ describe('components/HomePaneSidebar', () => {
         window.initialState.customMetadataFieldsets
       )
     );
-  });
-
-  it("shows a disabled 'Describe Columns' button if columnsExist is falsey", () => {
-    const component = shallow(<ManageData {...defaultProps} />);
-
-    assert.isOk(component.find('button').first().prop('disabled'));
-  });
-
-  it('shows 0 checkmarks when nothing is done', () => {
-    const component = shallow(<ManageData {...defaultProps} />);
-
-    assert.equal(component.find('.finished').length, 0);
   });
 
   it('shows the activity feed by default', () => {

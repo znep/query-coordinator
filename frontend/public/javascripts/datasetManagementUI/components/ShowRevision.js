@@ -5,7 +5,7 @@ import { browserHistory, Link } from 'react-router';
 import { InfoPane } from 'common/components';
 import MetadataTable from '../../common/components/MetadataTable';
 import SchemaPreview from './SchemaPreview';
-import HomePaneSidebar from './HomePaneSidebar';
+import HomePaneSidebar from 'components/HomePaneSidebarContainer';
 import DatasetPreview from 'components/DatasetPreviewContainer';
 import NotifyButton from './NotifyButton';
 import RowDetails from '../components/RowDetails';

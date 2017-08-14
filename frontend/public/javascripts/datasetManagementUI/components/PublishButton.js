@@ -1,11 +1,6 @@
-import _ from 'lodash';
+/* eslint react/jsx-indent: 0 */
 import React, { PropTypes, Component } from 'react';
-import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
 import styleguide from 'common/components';
-import { showModal } from 'actions/modal';
-import * as ApplyRevision from '../actions/applyRevision';
-import * as Selectors from '../selectors';
 import styles from 'styles/PublishButton.scss';
 
 const FLYOUT_ID = 'publication-readiness-flyout';
@@ -45,15 +40,15 @@ function PublishReadinessFlyout({ metadataSatisfied, dataSatisfied }) {
           ? SubI18n.make_accessible
           : <div>
               {SubI18n.cant_publish_until}
-            <ul>
-              <li>
-                <LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} />
-              </li>
-              <li>
-                <LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} />
-              </li>
-            </ul>
-          </div>}
+              <ul>
+                <li>
+                  <LabelledCheckmark checked={metadataSatisfied} text={SubI18n.metadata_satisfied} />
+                </li>
+                <li>
+                  <LabelledCheckmark checked={dataSatisfied} text={SubI18n.data_satisfied} />
+                </li>
+              </ul>
+            </div>}
       </section>
     </div>
   );
@@ -64,7 +59,7 @@ PublishReadinessFlyout.propTypes = {
   dataSatisfied: PropTypes.bool.isRequired
 };
 
-export class PublishButton extends Component {
+class PublishButton extends Component {
   componentDidMount() {
     this.attachFlyouts();
   }
@@ -115,47 +110,4 @@ PublishButton.propTypes = {
   publishDataset: PropTypes.func.isRequired
 };
 
-function isDataSatisfied(state) {
-  if (window.serverConfig.featureFlags.usaid_features_enabled) {
-    return true;
-  }
-  let dataSatisfied;
-  const outputSchema = Selectors.currentOutputSchema(state.entities);
-  if (outputSchema) {
-    const inputSchema = state.entities.input_schemas[outputSchema.input_schema_id];
-    const columns = Selectors.columnsForOutputSchema(state.entities, outputSchema.id);
-    dataSatisfied = Selectors.allTransformsDone(columns, inputSchema);
-  } else {
-    dataSatisfied = false;
-  }
-  return dataSatisfied;
-}
-
-function mapStateToProps(state, { params }) {
-  const dataSatisfied = isDataSatisfied(state);
-  const { fourfour } = params;
-  const view = state.entities.views[fourfour];
-  return {
-    metadataSatisfied: view.datasetMetadataErrors.length === 0,
-    dataSatisfied,
-    publishedOrPublishing:
-      _.size(
-        _.filter(
-          state.entities.task_sets,
-          set =>
-            set.status === ApplyRevision.TASK_SET_SUCCESSFUL ||
-            set.status === ApplyRevision.TASK_SET_IN_PROGRESS
-        )
-      ) > 0
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    publishDataset: modalName => {
-      dispatch(showModal(modalName));
-    }
-  };
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PublishButton));
+export default PublishButton;

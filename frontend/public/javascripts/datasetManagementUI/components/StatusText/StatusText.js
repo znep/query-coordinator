@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from 'styles/Table/TransformStatus.scss';
+import styles from './StatusText.scss';
 
 const StatusText = ({ message, status }) => {
   let icon;

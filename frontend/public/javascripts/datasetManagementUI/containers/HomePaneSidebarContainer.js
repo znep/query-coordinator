@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import HomePaneSidebar from 'components/HomePaneSidebar';
+import HomePaneSidebar from 'components/HomePaneSidebar/HomePaneSidebar';
 
 const mapStateToProps = ({ entities }) => ({
   entities,

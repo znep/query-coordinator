@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import * as Links from '../links';
+import * as Links from 'links';
 import moment from 'moment';
-import SocrataIcon from '../../common/components/SocrataIcon';
-import * as ApplyRevision from '../actions/applyRevision';
-import styles from 'styles/RecentActions.scss';
+import SocrataIcon from '../../../common/components/SocrataIcon';
+import * as ApplyRevision from 'actions/applyRevision';
+import styles from './RecentActions.scss';
 
 function RecentActionsTimestamp({ date }) {
   return (

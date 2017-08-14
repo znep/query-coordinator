@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Link, withRouter } from 'react-router';
-import * as Links from '../links';
-import styles from 'styles/NoMatch.scss';
+import * as Links from 'links';
+import styles from './NoMatch.scss';
 
 export function NoMatch({ params }) {
   return (

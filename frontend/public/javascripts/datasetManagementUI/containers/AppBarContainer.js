@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import * as ApplyRevision from '../actions/applyRevision';
-import AppBar from 'components/AppBar';
+import * as ApplyRevision from 'actions/applyRevision';
+import AppBar from 'components/AppBar/AppBar';
 
 function mapStateToProps({ entities }) {
   // only show the preview link when an upsert job has successfully completed

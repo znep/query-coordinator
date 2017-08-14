@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import UploadNotification from 'components/Notifications/UploadNotification';
+import UploadNotification from 'components/UploadNotification/UploadNotification';
 
 const mapStateToProps = ({ entities, ui }, { notification }) => ({
   source: entities.sources[notification.sourceId],

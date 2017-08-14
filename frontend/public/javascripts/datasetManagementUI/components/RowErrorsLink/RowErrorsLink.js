@@ -3,11 +3,11 @@ import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import { commaify } from '../../../common/formatNumber';
 import { Link, withRouter } from 'react-router';
-import * as Links from '../../links';
-import * as DisplayState from '../../lib/displayState';
-import { singularOrPlural } from '../../lib/util';
+import * as Links from 'links';
+import * as DisplayState from 'lib/displayState';
+import { singularOrPlural } from 'lib/util';
 import styleguide from 'common/components';
-import styles from 'styles/Table/RowErrorsLink.scss';
+import styles from './RowErrorsLink.scss';
 
 const FLYOUT_ID = 'malformed-rows-flyout';
 

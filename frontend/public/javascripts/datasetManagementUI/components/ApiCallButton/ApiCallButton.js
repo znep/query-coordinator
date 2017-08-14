@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED, STATUS_CALL_FAILED } from 'lib/apiCallStatus';
 import classNames from 'classnames';
-import styles from 'styles/ApiCallButton.scss';
+import styles from './ApiCallButton.scss';
 
 const ApiCallButton = ({ status, onClick, additionalClassName, children, forceDisable }) => {
   let className;

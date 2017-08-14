@@ -2,8 +2,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { hideModal } from 'actions/modal';
 import { applyRevision, updateRevision } from 'actions/applyRevision';
-import * as Selectors from '../../selectors';
-import PublishConfirmationUSAID from 'components/Modals/PublishConfirmationUSAID';
+import * as Selectors from 'selectors';
+import PublishConfirmationUSAID from 'components/PublishConfirmationUSAID/PublishConfirmationUSAID';
 
 export function mapStateToProps({ entities, ui }) {
   const latestOutputSchema = Selectors.currentOutputSchema(entities);

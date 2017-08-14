@@ -6,13 +6,15 @@ import { addOutputColumns } from 'actions/outputColumns';
 import { dismissMetadataPane, saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
 import { hideFlashMessage } from 'actions/flashMessage';
 import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'actions/apiCalls';
-import ApiCallButton from 'components/ApiCallButtonContainer';
-import MetadataContent from 'components/ManageMetadata/MetadataContentContainer';
+import ApiCallButton from 'containers/ApiCallButtonContainer';
+import MetadataContent from 'containers/MetadataContentContainer';
 import * as Selectors from 'selectors';
 import * as Links from 'links';
-import styles from 'styles/ManageMetadata/ManageMetadata.scss';
+import { connect } from 'react-redux';
+import { getCurrentColumns } from 'models/forms';
+import styles from './ManageMetadata.scss';
 
-class ManageMetadata extends Component {
+export class ManageMetadata extends Component {
   constructor() {
     super();
     this.state = {
@@ -165,4 +167,24 @@ ManageMetadata.propTypes = {
   outputSchemaId: PropTypes.number.isRequired
 };
 
-export default ManageMetadata;
+const mapStateToProps = ({ entities }, ownProps) => {
+  const outputSchemaId = parseInt(ownProps.params.outputSchemaId, 10);
+  return {
+    view: entities.views[ownProps.params.fourfour],
+    path: ownProps.route.path,
+    params: ownProps.params,
+    columnsExist: !_.isEmpty(entities.output_columns),
+    outputSchemaId,
+    entities: entities,
+    currentColumns: _.chain(getCurrentColumns(outputSchemaId, entities))
+      .map(restoreColumn)
+      .keyBy('id')
+      .value()
+  };
+};
+
+function restoreColumn(col) {
+  return _.omit(col, ['transform']);
+}
+
+export default connect(mapStateToProps)(ManageMetadata);

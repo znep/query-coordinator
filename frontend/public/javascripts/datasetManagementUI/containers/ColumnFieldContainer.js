@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import _ from 'lodash';
-import Field from 'components/FormComponents/Field';
+import Field from 'components/Field/Field';
 import { isFieldNameField, isDisplayNameField } from 'models/forms';
 import * as Actions from 'actions/outputColumns';
 import { editView } from 'actions/views';

@@ -3,12 +3,12 @@ import React, { PropTypes } from 'react';
 import { ModalContent, ModalFooter } from 'common/components';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { commaify } from '../../../common/formatNumber';
-import ProgressBar from 'components/ProgressBar';
-import NotifyButton from 'components/NotifyButtonContainer';
+import ProgressBar from 'components/ProgressBar/ProgressBar';
+import NotifyButton from 'containers/NotifyButtonContainer';
 import * as ApplyRevision from 'actions/applyRevision';
-import ApiCallButton from 'components/ApiCallButtonContainer';
+import ApiCallButton from 'containers/ApiCallButtonContainer';
 import { APPLY_REVISION } from 'actions/apiCalls';
-import styles from 'styles/Modals/Publishing.scss';
+import styles from './Publishing.scss';
 
 const SubI18n = I18n.home_pane.publish_modal;
 

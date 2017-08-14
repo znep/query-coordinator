@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { hideModal } from 'actions/modal';
 import { applyRevision } from 'actions/applyRevision';
-import PublishConfirmation from 'components/Modals/PublishConfirmation';
+import PublishConfirmation from 'components/PublishConfirmation/PublishConfirmation';
 
 export function mapDispatchToProps(dispatch) {
   return {

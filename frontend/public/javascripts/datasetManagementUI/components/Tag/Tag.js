@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from 'styles/FormComponents/Tag.scss';
+import styles from './Tag.scss';
 
 const Tag = ({ tagName, onTagClick }) =>
   <li className={styles.tag} onClick={onTagClick}>

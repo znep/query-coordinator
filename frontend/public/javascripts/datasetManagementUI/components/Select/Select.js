@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import styles from 'styles/FormComponents/Select.scss';
+import styles from './Select.scss';
 
 const Select = ({ inErrorState, handleFocus, handleBlur, handleChange, options, ...data }) => {
   const { name, value, label, isRequired } = data;

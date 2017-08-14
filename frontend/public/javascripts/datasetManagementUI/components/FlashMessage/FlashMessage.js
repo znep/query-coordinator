@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from 'styles/FlashMessage/FlashMessage.scss';
+import styles from './FlashMessage.scss';
 
 const FlashMessage = ({ kind, message, visible, onCloseClick }) => {
   let className;

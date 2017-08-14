@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import * as Selectors from 'selectors';
-import SocrataIcon from '../../common/components/SocrataIcon';
+import SocrataIcon from '../../../common/components/SocrataIcon';
 import { Link } from 'react-router';
 import * as Links from 'links';
-import styles from 'styles/HomePaneSidebar.scss';
+import styles from './ManageData.scss';
 
 function query(entities) {
   const currentOutputSchema = Selectors.currentOutputSchema(entities);

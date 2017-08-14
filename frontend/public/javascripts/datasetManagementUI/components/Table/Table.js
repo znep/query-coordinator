@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import ColumnHeader from 'components/Table/ColumnHeader';
-import TransformStatus from 'components/Table/TransformStatus';
-import TableBody from 'components/Table/TableBodyContainer';
-import RowErrorsLink from 'components/Table/RowErrorsLink';
+import ColumnHeader from 'components/ColumnHeader/ColumnHeader';
+import TransformStatus from 'components/TransformStatus/TransformStatus';
+import TableBody from 'containers/TableBodyContainer';
+import RowErrorsLink from 'components/RowErrorsLink/RowErrorsLink';
 import * as DisplayState from 'lib/displayState';
-import styles from 'styles/Table/Table.scss';
+import styles from './Table.scss';
 
 function Table({
   entities,
@@ -36,9 +36,8 @@ function Table({
               activeApiCallInvolvingThis={_.has(apiCallsByColumnId, column.id)}
               addColumn={() => addColumn(outputSchema, column, params)}
               dropColumn={() => dropColumn(outputSchema, column, params)}
-              validateThenSetRowIdentifier={
-                () => validateThenSetRowIdentifier(outputSchema, column, params)
-              } />
+              validateThenSetRowIdentifier={() =>
+                validateThenSetRowIdentifier(outputSchema, column, params)} />
           )}
         </tr>
         <tr className={styles.columnStatuses}>

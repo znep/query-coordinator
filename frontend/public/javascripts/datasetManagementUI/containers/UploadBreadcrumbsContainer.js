@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbs';
+import UploadBreadcrumbs from 'components/UploadBreadcrumbs/UploadBreadcrumbs';
 import * as Selectors from 'selectors';
 
 export const mapStateToProps = ({ entities, ui }, { atShowUpload }) => {

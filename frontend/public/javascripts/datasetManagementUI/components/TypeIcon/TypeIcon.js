@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { soqlProperties as typeProperties } from '../lib/soqlTypes';
-import SocrataIcon from '../../common/components/SocrataIcon';
-import styles from 'styles/TypeIcon.scss';
+import { soqlProperties as typeProperties } from 'lib/soqlTypes';
+import SocrataIcon from '../../../common/components/SocrataIcon';
 import classNames from 'classnames';
+import styles from './TypeIcon.scss';
 
 const TypeIcon = ({ type, isDisabled }) => {
   const klass = classNames(

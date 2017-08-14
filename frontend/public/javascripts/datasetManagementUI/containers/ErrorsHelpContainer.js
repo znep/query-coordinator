@@ -1,7 +1,7 @@
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { hideModal } from 'actions/modal';
-import ErrorsHelp from 'components/Modals/ErrorsHelp';
+import ErrorsHelp from 'components/ErrorsHelp/ErrorsHelp';
 
 const mapStateToProps = ({ entities }, { params }) => {
   const { outputSchemaId } = params;

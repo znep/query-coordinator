@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import MetadataEditor from 'components/ManageMetadata/MetadataEditor';
+import MetadataEditor from 'components/MetadataEditor/MetadataEditor';
 
 const mapStateToProps = ({ ui }, { onDatasetTab, outputSchemaId }) => ({
   flashVisible: ui.flashMessage.visible,

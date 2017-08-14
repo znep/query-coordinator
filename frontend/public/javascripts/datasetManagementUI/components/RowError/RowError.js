@@ -1,10 +1,8 @@
 import React, { PropTypes } from 'react';
-import styles from 'styles/Table/RowError.scss';
+import styles from './RowError.scss';
 
 function escapeValue(value) {
-  return value
-    ? `"${value.replace('"', '\\"')}"`
-    : '';
+  return value ? `"${value.replace('"', '\\"')}"` : '';
 }
 
 export default function RowError({ row }) {
@@ -29,10 +27,15 @@ export default function RowError({ row }) {
 
   return (
     <tr key={rowIdx} className={styles.malformedRow}>
-      <td className={styles.location}>{SubI18n.row.format(rowError.offset + 1)}</td>
-      <td className={styles.message} dangerouslySetInnerHTML={malformedRowMessage}></td>
-      <td className={styles.contents}>{SubI18n.row_content}: <span>{malformedRowContents}</span></td>
-    </tr>);
+      <td className={styles.location}>
+        {SubI18n.row.format(rowError.offset + 1)}
+      </td>
+      <td className={styles.message} dangerouslySetInnerHTML={malformedRowMessage} />
+      <td className={styles.contents}>
+        {SubI18n.row_content}: <span>{malformedRowContents}</span>
+      </td>
+    </tr>
+  );
 }
 
 RowError.propTypes = {

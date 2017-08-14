@@ -2,7 +2,7 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import _ from 'lodash';
-import Field from 'components/FormComponents/Field';
+import Field from 'components/Field/Field';
 import * as Actions from 'actions/views';
 
 // See comments in ColumnFieldContainer for a quick overview of the purpose of

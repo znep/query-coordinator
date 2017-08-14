@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import { PAGE_SIZE } from '../../actions/loadData';
+import { PAGE_SIZE } from 'actions/loadData';
 import { commaify } from '../../../common/formatNumber';
 import Pager from '../../../common/components/Pager';
-import styles from 'styles/Table/PagerBar.scss';
+import styles from './PagerBar.scss';
 
 function PagerBar({ currentPage, resultCount, urlForPage, changePage }) {
   if (resultCount) {

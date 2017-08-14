@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
-import DatasetForm from 'components/Forms/DatasetFormContainer';
-import ColumnForm from 'components/Forms/ColumnFormContainer';
-import FlashMessage from 'components/FlashMessage/FlashMessageContainer';
-import styles from 'styles/ManageMetadata/MetadataEditor.scss';
+import DatasetForm from 'containers/DatasetFormContainer';
+import ColumnForm from 'containers/ColumnFormContainer';
+import FlashMessage from 'containers/FlashMessageContainer';
+import styles from './MetadataEditor.scss';
 
 class MetadataEditor extends Component {
   constructor() {

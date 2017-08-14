@@ -1,13 +1,14 @@
+/* eslint react/jsx-indent: 0 */
 import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';
 import { Link, withRouter } from 'react-router';
-import TypeIcon from '../TypeIcon';
-import { soqlProperties } from '../../lib/soqlTypes';
-import * as Links from '../../links';
+import TypeIcon from 'components/TypeIcon/TypeIcon';
+import { soqlProperties } from 'lib/soqlTypes';
+import * as Links from 'links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { Dropdown } from 'common/components';
-import styles from 'styles/Table/ColumnHeader.scss';
+import styles from './ColumnHeader.scss';
 
 const Translations = I18n.show_output_schema.column_header;
 
@@ -129,17 +130,17 @@ export class ColumnHeader extends Component {
           id={`column-field-name-${outputColumn.id}`}
           title={outputColumn.display_name}>
             {outputColumn.display_name}
-        </span>
-        : <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
-          <span
-            className={styles.colName}
-            data-cheetah-hook="col-name"
-            id={`column-display-name-${outputColumn.id}`}
-            title={outputColumn.display_name}>
-            {outputColumn.display_name}
-            <SocrataIcon name="edit" className={styles.icon} />
           </span>
-        </Link>;
+        : <Link to={Links.columnMetadataForm(params, outputSchema.id, outputColumn.id)}>
+            <span
+              className={styles.colName}
+              data-cheetah-hook="col-name"
+              id={`column-display-name-${outputColumn.id}`}
+              title={outputColumn.display_name}>
+              {outputColumn.display_name}
+              <SocrataIcon name="edit" className={styles.icon} />
+            </span>
+          </Link>;
 
     const className = classNames(styles.columnHeader, {
       [styles.columnHeaderDisabled]: isDisabled

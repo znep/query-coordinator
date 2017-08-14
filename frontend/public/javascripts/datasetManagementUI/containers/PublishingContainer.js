@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Publishing from 'components/Modals/Publishing';
+import Publishing from 'components/Publishing/Publishing';
 import * as Selectors from 'selectors';
 import { hideModal } from 'actions/modal';
 import * as ApplyRevision from 'actions/applyRevision';

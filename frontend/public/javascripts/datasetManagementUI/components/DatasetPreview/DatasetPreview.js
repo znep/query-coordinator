@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { components as SocrataVisualizations } from 'common/visualizations';
-import styles from 'styles/DatasetPreview.scss';
+import styles from './DatasetPreview.scss';
 
 const DatasetPreview = vif =>
   <div className={styles.tableContents}>

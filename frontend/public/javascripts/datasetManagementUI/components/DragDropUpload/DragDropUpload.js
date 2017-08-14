@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 import { createUpload } from 'actions/manageUploads';
 import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
-import styles from 'styles/Uploads/DragDropUpload.scss';
+import styles from './DragDropUpload.scss';
 
 export class DragDropUpload extends Component {
   constructor() {

@@ -2,8 +2,8 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import * as Links from 'links';
-import MetadataEditor from 'components/ManageMetadata/MetadataEditorContainer';
-import styles from 'styles/ManageMetadata/MetadataContent.scss';
+import MetadataEditor from 'containers/MetadataEditorContainer';
+import styles from './MetadataContent.scss';
 
 // TODO : should probably abstract sidebar to its own component
 const MetadataContent = (

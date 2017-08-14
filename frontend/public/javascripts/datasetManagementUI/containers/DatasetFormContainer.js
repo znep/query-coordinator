@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { editView } from 'actions/views';
 import { makeFieldsets } from 'models/forms';
-import DatasetForm from 'components/Forms/DatasetForm';
+import DatasetForm from 'components/DatasetForm/DatasetForm';
 
 const mapStateToProps = ({ entities }, { params }) => {
   const { fourfour } = params;

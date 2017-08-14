@@ -3,18 +3,18 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory, Link } from 'react-router';
 import { InfoPane } from 'common/components';
-import MetadataTable from '../../common/components/MetadataTable';
-import SchemaPreview from 'components/SchemaPreviewContainer';
-import HomePaneSidebar from 'components/HomePaneSidebarContainer';
-import DatasetPreview from 'components/DatasetPreviewContainer';
-import NotifyButton from 'components/NotifyButtonContainer';
-import RowDetails from 'components/RowDetailsContainer';
-import * as Links from '../links';
+import MetadataTable from '../../../common/components/MetadataTable';
+import SchemaPreview from 'containers/SchemaPreviewContainer';
+import HomePaneSidebar from 'containers/HomePaneSidebarContainer';
+import DatasetPreview from 'containers/DatasetPreviewContainer';
+import NotifyButton from 'containers/NotifyButtonContainer';
+import RowDetails from 'containers/RowDetailsContainer';
+import * as Links from 'links';
 import * as Selectors from 'selectors';
-import * as Actions from '../actions/manageUploads';
-import * as ApplyRevision from '../actions/applyRevision';
+import * as Actions from 'actions/manageUploads';
+import * as ApplyRevision from 'actions/applyRevision';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
-import styles from 'styles/ShowRevision.scss';
+import styles from './ShowRevision.scss';
 
 const noDataYetView = (createUpload, params) => {
   return (

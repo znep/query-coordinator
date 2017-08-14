@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import styles from 'styles/FormComponents/TextInput.scss';
+import styles from './TextInput.scss';
 
 const TextInput = ({ inErrorState, handleFocus, handleBlur, handleChange, ...data }) => {
   const classNames = inErrorState ? styles.textInputError : styles.textInput;

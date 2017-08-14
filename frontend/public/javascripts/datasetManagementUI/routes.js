@@ -1,14 +1,14 @@
 import React from 'react';
-import { Route, Redirect, IndexRoute } from 'react-router';
-import App from './components/App';
-import ShowRevision from './components/ShowRevision';
-import ManageMetadata from 'components/ManageMetadata/ManageMetadataContainer';
-import ShowOutputSchema from './components/ShowOutputSchema';
-import { focusColumnEditor } from './actions/manageMetadata';
-import ShowUpload from './components/ShowUpload';
-import NoMatch from './components/NoMatch';
-import * as Links from 'links';
 import _ from 'lodash';
+import { Route, Redirect, IndexRoute } from 'react-router';
+import * as Links from 'links';
+import App from 'pages/App/App';
+import ShowRevision from 'pages/ShowRevision/ShowRevision';
+import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
+import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
+import { focusColumnEditor } from 'actions/manageMetadata';
+import ShowUpload from 'pages/ShowUpload/ShowUpload';
+import NoMatch from 'pages/NoMatch/NoMatch';
 
 const checkUploadStatus = store => (nextState, replace) => {
   // TODO: is this valid? You can have a source with no output schema

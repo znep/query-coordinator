@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import * as Selectors from 'selectors';
-import UploadSidebar from 'components/Uploads/UploadSidebar';
+import UploadSidebar from 'components/UploadSidebar/UploadSidebar';
 
 export const mapStateToProps = ({ entities }) => {
   let currentUpload;

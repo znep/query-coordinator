@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { PropTypes } from 'react';
-import ApiCallButton from 'components/ApiCallButton';
+import ApiCallButton from 'components/ApiCallButton/ApiCallButton';
 
 const SHOW_RESULT_STATE_FOR_MS = 1000;
 

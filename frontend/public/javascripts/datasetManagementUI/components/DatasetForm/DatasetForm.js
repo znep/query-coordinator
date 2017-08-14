@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import { validateDatasetForm } from 'models/forms';
-import Fieldset from 'components/FormComponents/Fieldset';
-import DatasetField from 'components/FormComponents/DatasetFieldContainer';
+import Fieldset from 'components/Fieldset/Fieldset';
+import DatasetField from 'containers/DatasetFieldContainer';
 
 class DatasetForm extends Component {
   componentWillMount() {

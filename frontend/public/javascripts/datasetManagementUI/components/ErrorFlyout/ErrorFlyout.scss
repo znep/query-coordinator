@@ -1,0 +1,30 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.transformStatusFlyout {
+  composes: flyout from global;
+  composes: flyout-hidden from global;
+  font-size: 13px;
+  line-height: 20px;
+  white-space: normal;
+  color: $dark-grey-2;
+  max-width: 190px;
+  text-align: left;
+
+  .clickToView {
+    font-size: 10px;
+    color: $grey;
+  }
+
+  .type-icon {
+    padding-left: 4px;
+    font-size: 15px;
+    vertical-align: text-top;
+  }
+}
+
+.flyoutContent {
+  composes: flyout-content from global;
+  padding: 0.9rem;
+}

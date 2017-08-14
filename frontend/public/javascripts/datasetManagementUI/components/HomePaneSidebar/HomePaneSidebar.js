@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import * as Links from '../links';
-import ManageData from 'components/ManageData';
-import RecentActions from 'components/RecentActionsContainer';
-import styles from 'styles/HomePaneSidebar.scss';
+import * as Links from 'links';
+import ManageData from 'components/ManageData/ManageData';
+import RecentActions from 'containers/RecentActionsContainer';
+import styles from './HomePaneSidebar.scss';
 
 function HomePaneSidebar({ params, entities, columnsExist }) {
   const showManageTab = params.sidebarSelection === 'manageTab';

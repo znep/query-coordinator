@@ -7,11 +7,11 @@ import * as Links from 'links';
 import * as DisplayState from 'lib/displayState';
 import { singularOrPlural } from 'lib/util';
 import styleguide from 'common/components';
-import ProgressBar from 'components/ProgressBar';
-import ErrorPill from 'components/ErrorPill';
-import ErrorFlyout, { getFlyoutId } from 'components/Table/ErrorFlyout';
-import StatusText from 'components/Table/StatusText';
-import styles from 'styles/Table/TransformStatus.scss';
+import ProgressBar from 'components/ProgressBar/ProgressBar';
+import ErrorPill from 'components/ErrorPill/ErrorPill';
+import ErrorFlyout, { getFlyoutId } from 'components/ErrorFlyout/ErrorFlyout';
+import StatusText from 'components/StatusText/StatusText';
+import styles from './TransformStatus.scss';
 
 const SubI18n = I18n.show_output_schema.column_header;
 

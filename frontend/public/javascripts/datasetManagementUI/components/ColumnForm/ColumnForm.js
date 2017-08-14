@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
-import Fieldset from 'components/FormComponents/Fieldset';
-import ColumnField from 'components/FormComponents/ColumnFieldContainer';
-import styles from 'styles/Forms/ColumnForm.scss';
+import Fieldset from 'components/Fieldset/Fieldset';
+import ColumnField from 'containers/ColumnFieldContainer';
+import styles from './ColumnForm.scss';
 
 class ColumnForm extends Component {
   componentWillMount() {

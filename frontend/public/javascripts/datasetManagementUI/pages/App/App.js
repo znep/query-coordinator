@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import AppBar from 'components/AppBarContainer';
-import NotificationList from 'components/Notifications/NotificationListContainer';
-import Modal from 'components/Modals/ModalContainer';
-import styles from 'styles/App.scss';
+import AppBar from 'containers/AppBarContainer';
+import NotificationList from 'containers/NotificationListContainer';
+import Modal from 'containers/ModalContainer';
+import styles from './App.scss';
 
 const App = ({ children }) =>
   <div className={`dataset-management-ui ${styles.datasetManagementUi}`}>

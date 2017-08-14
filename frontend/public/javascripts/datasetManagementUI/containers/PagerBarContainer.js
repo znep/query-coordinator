@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { browserHistory, withRouter } from 'react-router';
 import * as DisplayState from 'lib/displayState';
 import * as Selectors from 'selectors';
-import PagerBar from 'components/Table/PagerBar';
+import PagerBar from 'components/PagerBar/PagerBar';
 
 function numItemsToPaginate(entities, outputSchemaId, displayState) {
   switch (displayState.type) {

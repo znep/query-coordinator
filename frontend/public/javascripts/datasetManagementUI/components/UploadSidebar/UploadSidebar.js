@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Link } from 'react-router';
 import * as Links from 'links';
 import * as Selectors from 'selectors';
-import styles from 'styles/Uploads/UploadSidebar.scss';
+import styles from './UploadSidebar.scss';
 
 const UploadItem = ({ entities, source, params }) => {
   const outputSchema = Selectors.latestOutputSchemaForSource(entities, source.id);

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import TableBody from 'components/TableBody';
+import TableBody from 'components/TableBody/TableBody';
 
 function mapStateToProps({ ui }) {
   return {

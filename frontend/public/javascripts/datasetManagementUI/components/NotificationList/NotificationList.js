@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import UploadNotification from 'components/Notifications/UploadNotificationContainer';
-import styles from 'styles/Notifications/NotificationList.scss';
+import UploadNotification from 'containers/UploadNotificationContainer';
+import styles from './NotificationList.scss';
 
 // This component is responsible for choosing the kind of notification to display
 // (e.g. source, socket error, etc.) and sliding all the notifications into view.

@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
-import styles from 'styles/Table/TableCell.scss';
 import geojson2wkt from 'geojson2wkt';
+import styles from './TableCell.scss';
 
 class TableCell extends Component {
 

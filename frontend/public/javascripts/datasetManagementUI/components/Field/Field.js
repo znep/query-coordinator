@@ -1,12 +1,12 @@
 /* eslint react/jsx-indent: 0 */
 import React, { PropTypes, Component } from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import TextInput from 'components/FormComponents/TextInput';
-import TextArea from 'components/FormComponents/TextArea';
-import Select from 'components/FormComponents/Select';
-import TagsInput from 'components/FormComponents/TagsInput';
+import TextInput from 'components/TextInput/TextInput';
+import TextArea from 'components/TextArea/TextArea';
+import Select from 'components/Select/Select';
+import TagsInput from 'components/TagsInput/TagsInput';
 import * as Types from 'models/forms';
-import styles from 'styles/FormComponents/Field.scss';
+import styles from './Field.scss';
 
 class Field extends Component {
   constructor() {

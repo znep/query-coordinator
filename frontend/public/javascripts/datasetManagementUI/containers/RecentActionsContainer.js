@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import RecentActions from 'components/RecentActions';
+import RecentActions from 'components/RecentActions/RecentActions';
 
 const mapStateToProps = ({ entities }) => ({
   entities

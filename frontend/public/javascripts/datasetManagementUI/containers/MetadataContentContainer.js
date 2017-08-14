@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import MetadataContent from 'components/ManageMetadata/MetadataContent';
+import MetadataContent from 'components/MetadataContent/MetadataContent';
 import * as Selectors from 'selectors';
 
 const mapStateToProps = ({ entities }, props) => {

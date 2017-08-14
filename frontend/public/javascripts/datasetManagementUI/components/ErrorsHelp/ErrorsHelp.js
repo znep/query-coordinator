@@ -3,7 +3,7 @@ import _ from 'lodash';
 import React, { PropTypes, Component } from 'react';
 import { ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import classNames from 'classnames';
-import styles from 'styles/Modals/ErrorsHelp.scss';
+import styles from './ErrorsHelp.scss';
 
 const SubI18n = I18n.show_output_schema.ready_to_import;
 

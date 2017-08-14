@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import TypeIcon from 'components/TypeIcon';
+import TypeIcon from 'components/TypeIcon/TypeIcon';
 import { singularOrPlural } from 'lib/util';
 import { commaify } from '../../../common/formatNumber';
-import styles from 'styles/Table/TransformStatus.scss';
+import styles from './ErrorFlyout.scss';
 
 export function getFlyoutId(transform) {
   return `transform-status-flyout-${transform.id}`;

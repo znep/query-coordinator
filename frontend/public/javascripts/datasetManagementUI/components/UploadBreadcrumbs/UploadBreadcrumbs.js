@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import * as Links from 'links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from 'styles/Uploads/UploadBreadcrumbs.scss';
+import styles from './UploadBreadcrumbs.scss';
 
 const UploadBreadcrumbs = ({ atShowUpload, sourceId, outputSchemaId, inputSchemaId, params }) =>
   <ol className={styles.list}>

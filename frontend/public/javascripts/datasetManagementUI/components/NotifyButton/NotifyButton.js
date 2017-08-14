@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import SocrataIcon from '../../common/components/SocrataIcon';
+import SocrataIcon from '../../../common/components/SocrataIcon';
 import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED } from 'lib/apiCallStatus';
-import styles from 'styles/NotifyButton.scss';
+import styles from './NotifyButton.scss';
 
 function NotifyButton({ apiCall, taskSet, addEmailInterest, className }) {
   if (taskSet) {

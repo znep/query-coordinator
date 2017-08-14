@@ -6,11 +6,11 @@ import { Modal, ModalHeader, ModalContent } from 'common/components';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import * as Links from 'links';
 import * as Selectors from 'selectors';
-import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbsContainer';
-import DragDropUpload from 'components/Uploads/DragDropUpload';
-import UploadSidebar from 'components/Uploads/UploadSidebarContainer';
-import FlashMessage from 'components/FlashMessage/FlashMessageContainer';
-import styles from 'styles/ShowUpload.scss';
+import UploadBreadcrumbs from 'containers/UploadBreadcrumbsContainer';
+import DragDropUpload from 'components/DragDropUpload/DragDropUpload';
+import UploadSidebar from 'containers/UploadSidebarContainer';
+import FlashMessage from 'containers/FlashMessageContainer';
+import styles from './ShowUpload.scss';
 
 export const ShowUpload = ({ inProgress, goHome }) =>
   <div className={styles.showUpload}>

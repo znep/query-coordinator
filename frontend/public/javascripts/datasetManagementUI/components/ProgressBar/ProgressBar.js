@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import styles from 'styles/ProgressBar.scss';
+import styles from './ProgressBar.scss';
 
 export default function ProgressBar({ percent, ariaLabel, ariaLabeledBy, type, className }) {
   const ariaLabelProp = {};
@@ -41,18 +41,14 @@ export default function ProgressBar({ percent, ariaLabel, ariaLabeledBy, type, c
       role="progressbar"
       aria-valuenow={Math.round(percent)}
       aria-valuemin="0"
-      aria-valuemax="100"
-      {...ariaLabelProp}>
+      aria-valuemax="100">
       <div className={progressBar} style={{ width: `${percent}%` }} />
     </div>
   );
 }
 
 ProgressBar.propTypes = {
-  percent: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
+  percent: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   ariaLabel: PropTypes.string,
   ariaLabeledBy: PropTypes.string,
   type: PropTypes.oneOf(['success', 'error', 'inProgress', 'done']),

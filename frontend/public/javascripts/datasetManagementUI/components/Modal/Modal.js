@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import { Modal as StyleGuideModal } from 'common/components';
 import _ from 'lodash';
-import ErrorsHelp from 'components/Modals/ErrorsHelpContainer';
-import Publishing from 'components/Modals/PublishingContainer';
-import PublishConfirmation from 'components/Modals/PublishConfirmationContainer';
-import PublishConfirmationUSAID from 'components/Modals/PublishConfirmationUSAIDContainer';
-import RowIdentifierError from 'components/Modals/RowIdentifierErrorContainer';
-import styles from 'styles/Modals/Modal.scss';
+import ErrorsHelp from 'containers/ErrorsHelpContainer';
+import Publishing from 'containers/PublishingContainer';
+import PublishConfirmation from 'containers/PublishConfirmationContainer';
+import PublishConfirmationUSAID from 'containers/PublishConfirmationUSAIDContainer';
+import RowIdentifierError from 'containers/RowIdentifierErrorContainer';
+import styles from './Modal.scss';
 
 // TODO: take modals out of [] when styleguide Modal component proptypes are corrrected
 const getModalProps = (props, contentComponentName, payload) => {

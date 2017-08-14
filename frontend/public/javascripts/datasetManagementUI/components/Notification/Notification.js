@@ -1,9 +1,9 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import ProgressBar from 'components/ProgressBar';
+import ProgressBar from 'components/ProgressBar/ProgressBar';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from 'styles/Notifications/Notification.scss';
+import styles from './Notification.scss';
 
 class Notification extends Component {
   constructor() {

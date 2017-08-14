@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import PublishButton from 'components/PublishButton';
-import * as ApplyRevision from '../actions/applyRevision';
-import * as Selectors from '../selectors';
+import PublishButton from 'components/PublishButton/PublishButton';
+import * as ApplyRevision from 'actions/applyRevision';
+import * as Selectors from 'selectors';
 import { showModal } from 'actions/modal';
 
 function isDataSatisfied(state) {

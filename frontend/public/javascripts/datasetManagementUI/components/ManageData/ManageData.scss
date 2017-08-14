@@ -1,0 +1,55 @@
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/shade';
+@import 'node_modules/bourbon/app/assets/stylesheets/functions/tint';
+@import 'app/styles/styleguide-colors';
+
+.icon {
+  font-size: 200%;
+  color: $primary-dark;
+}
+
+.sidebarData {
+  h3 {
+    font-size: 17px;
+  }
+
+  .sidebarBlurb {
+    font-style: italic;
+    font-size: 14px;
+    color: $grey;
+    margin-top: 0;
+    margin-bottom: 1.5em;
+  }
+
+  div {
+    background: $white;
+    border: 1px solid $light-grey-3;
+    margin: 0 2rem 2rem;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+
+    .finished {
+      // TODO: figure out how to signal "doneness" most effectively to the user.
+      display: none;
+    }
+
+    button {
+      min-width: 150px;
+    }
+  }
+
+  p {
+    margin: 10px 13px 13px;
+    color: $dark-grey-1;
+  }
+}
+
+.sidebarBtn {
+  composes: btn from global;
+  composes: btn-sm from global;
+  composes: btn-default from global;
+}
+
+.sidebarBtnDisabled {
+  composes: sidebarBtn;
+  composes: btn-disabled-light from global;
+}

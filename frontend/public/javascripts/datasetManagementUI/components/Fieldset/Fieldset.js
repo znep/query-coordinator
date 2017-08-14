@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import styles from 'styles/FormComponents/FieldSet.scss';
+import styles from './FieldSet.scss';
 
 const Fieldset = ({ children, title, subtitle }) =>
   <fieldset className={styles.fieldset}>

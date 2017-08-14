@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 import { EditBar } from 'common/components';
 import SocrataIcon from 'common/components/SocrataIcon';
-import PublishButton from 'components/PublishButtonContainer';
-import styles from 'styles/AppBar.scss';
+import PublishButton from 'containers/PublishButtonContainer';
+import styles from './AppBar.scss';
 
 const PreviewLink = () =>
   <div className={styles.primerPreview}>

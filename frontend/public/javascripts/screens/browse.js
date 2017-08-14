@@ -702,78 +702,87 @@ $(function() {
     });
   }
 
+  // Wire up the dropdown buttons for creating stories and measures. Both types
+  // of asset share a common approach for creation: allocating a view, then
+  // publishing it, then redirecting to some appropriate page where the user can
+  // begin editing their asset. The method below encapsulates that workflow; the
+  // respective click handlers follow.
+
+  function createPublishedView(metadata, redirectTo) {
+    // You can't perform this operation without an app token.
+    var appToken = blist && blist.configuration && blist.configuration.appToken;
+    if (!appToken) {
+      return false;
+    }
+
+    // Ensure that a valid 4x4 was generated.
+    function validate4x4(testString) {
+      var pattern = window.blist.util.patterns.UID;
+      return pattern && testString && testString.match(pattern) !== null;
+    }
+
+    // Generic feedback for any problem during this process.
+    function onError() {
+      throw new Error('Oh no! There’s been a problem. Please try again.');
+    }
+
+    // Send the user to the initial edit experience for the new catalog asset.
+    function onPublishSuccess(publishData) {
+      if (!validate4x4(publishData.id)) {
+        return onError();
+      }
+
+      window.location.href = redirectTo(publishData.id);
+    }
+
+    // After the initial creation step, we need to publish the newly-created
+    // catalog asset, since the publish action provisions a new 4x4.
+    function onSuccess(data, textStatus, xhr) {
+      if (!validate4x4(data.id)) {
+        return onError();
+      }
+
+      var publishUrl = '/api/views/' + data.id + '/publication.json?accessType=WEBSITE';
+      var publishSettings = {
+        contentType: false,
+        error: onError,
+        headers: {
+          'X-App-Token': appToken
+        },
+        type: 'POST',
+        success: onPublishSuccess
+      };
+
+      $.ajax(publishUrl, publishSettings);
+    }
+
+    // The first API call, which allocates an asset, is made here.
+    var url = '/api/views.json';
+    var settings = {
+      contentType: false,
+      data: JSON.stringify(metadata),
+      dataType: 'json',
+      error: onError,
+      headers: {
+        'Content-type': 'application/json',
+        'X-App-Token': appToken
+      },
+      type: 'POST',
+      success: onSuccess
+    };
+
+    $.ajax(url, settings);
+  }
 
   $(document).on(
     'click',
     '#create-story-button, #create-story-footer-button',
-    function() {
-      // You can't perform this operation without an app token.
-      var appToken = blist && blist.configuration && blist.configuration.appToken;
-      if (!appToken) {
-        return false;
-      }
+    function(event) {
+      event.preventDefault();
 
-      // A few helper functions are defined below. Some of them need a reference
-      // to this UI element for feedback.
       var $dropdownElement = $(this).closest('.jq-dropdown');
 
-      // Ensure that a valid 4x4 was generated.
-      function validate4x4(testString) {
-        var valid = false;
-        var pattern = window.blist.util.patterns.UID;
-
-        if (pattern && testString) {
-          valid = testString.match(pattern) !== null;
-        }
-
-        return valid;
-      }
-
-      // This is the second phase of the creation action, and this endpoint is
-      // responsible for removing the `"initialized": false` flag (or setting it
-      // to true) when it succeeds at creating the new story objects in
-      // Storyteller's datastore. This isn't perfect but it should (hopefully)
-      // be reliable enough that users will not totally fail to create stories
-      // when they intend to do so.
-      function onPublishSuccess(publishData) {
-        if (publishData.hasOwnProperty('id') && validate4x4(publishData.id)) {
-          window.location.href = '/stories/s/' + publishData.id + '/create';
-        } else {
-          onError();
-        }
-      }
-
-      // Generic UI feedback for any problem during this process.
-      function onError() {
-        $dropdownElement.removeClass('working');
-        alert('Oh no! There’s been a problem. Please try again.');
-      }
-
-      // After the initial creation step, we need to publish the newly-created
-      // catalog asset, since the publish action provisions a new 4x4.
-      function onSuccess(data, textStatus, xhr) {
-        if (validate4x4(data.id)) {
-          var publishUrl = '/api/views/' + data.id + '/publication.json?accessType=WEBSITE';
-          var publishSettings = {
-            contentType: false,
-            error: onError,
-            headers: {
-              'X-App-Token': appToken
-            },
-            type: 'POST',
-            success: onPublishSuccess
-          };
-
-          $.ajax(publishUrl, publishSettings);
-
-        } else {
-          onError();
-        }
-      }
-
-      // The first API call, which allocates an asset, is made here.
-      var newStoryName = 'Untitled Story - ' + new Date().format('m-d-Y');
-      var newStoryData = {
+      var metadata = {
         displayFormat: {},
         displayType: 'story',
         metadata: {
@@ -798,26 +807,55 @@ $(function() {
           },
           tileConfig: {}
         },
-        name: newStoryName,
+        name: 'Untitled Story - ' + new Date().format('m-d-Y'),
         query: {}
       };
 
-      var url = '/api/views.json';
-      var settings = {
-        contentType: false,
-        data: JSON.stringify(newStoryData),
-        dataType: 'json',
-        error: onError,
-        headers: {
-          'Content-type': 'application/json',
-          'X-App-Token': appToken
+      try {
+        $dropdownElement.addClass('working');
+        createPublishedView(metadata, function(uid) {
+          return '/stories/s/' + uid + '/create';
+        });
+      } catch (err) {
+        $dropdownElement.removeClass('working');
+        alert(err.message);
+      }
+    }
+  );
+
+  $(document).on(
+    'click',
+    '#create-measure-button, #create-measure-footer-button',
+    function(event) {
+      event.preventDefault();
+
+      var $dropdownElement = $(this).closest('.jq-dropdown');
+
+      var metadata = {
+        displayFormat: {},
+        displayType: 'measure',
+        metadata: {
+          availableDisplayTypes: ['measure'],
+          jsonQuery: {},
+          renderTypeConfig: {
+            visible: {
+              measure: true
+            }
+          }
         },
-        type: 'POST',
-        success: onSuccess
+        name: 'Untitled Measure - ' + new Date().format('m-d-Y'),
+        query: {}
       };
 
-      $dropdownElement.addClass('working');
-      $.ajax(url, settings);
+      try {
+        $dropdownElement.addClass('working');
+        createPublishedView(metadata, function(uid) {
+          return '/d/' + uid;
+        });
+      } catch (err) {
+        $dropdownElement.removeClass('working');
+        alert(err.message);
+      }
     }
   );
 });

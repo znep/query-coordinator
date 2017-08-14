@@ -3,24 +3,27 @@
     return;
   }
 
-  $('#site-chrome-admin-header [aria-haspopup]').
+  var header = $('#site-chrome-admin-header');
+  var createMenu = $('#site-chrome-create-menu');
+
+  header.find('[aria-haspopup]').
     on('click', toggleAdminDropdown).
     on('blur', blurAdminDropdown).
     on('keypress', keypressAdminDropdown).
     on('keydown', keydownAdminDropdown).
     on('keyup', keyupAdminDropdown);
 
-  $('#site-chrome-admin-header [role="menu"] li a').
+  header.find('[role="menu"] li a').
     on('blur', blurAdminDropdown).
     on('keydown', keydownAdminDropdownItem).
     on('keyup', keyupAdminDropdownItem);
 
   if (getAppToken()) {
-    $('#site-chrome-create-menu .create-story').
-      on('click', createStoryButtonHandler);
+    createMenu.find('.create-story').on('click', clickCreateStory);
+    createMenu.find('.create-measure').on('click', clickCreateMeasure);
   } else {
-    $('#site-chrome-create-menu .create-story').
-      hide();
+    createMenu.find('.create-story').hide();
+    createMenu.find('.create-measure').hide();
   }
 })(window.$);
 
@@ -141,23 +144,10 @@ function blurAdminDropdown(event) {
 }
 
 /**
- * Creates a story and then redirects to its edit page
+ * Creates a story.
  */
-function createStoryButtonHandler() {
-  if (!getAppToken()) {
-    return console.error('AppToken is not accessible!');
-  }
-
-  var defaultTitle = $(this).data('default-title');
-  var now = new Date();
-  var datePieces = [
-    String(now.getMonth() + 1).padStart(2, 0),
-    String(now.getDate()).padStart(2, 0),
-    now.getFullYear()
-  ];
-  var newStoryName = defaultTitle + ' - ' + datePieces.join('-');
-
-  var newStoryData = {
+function clickCreateStory() {
+  var metadata = {
     displayFormat: {},
     displayType: 'story',
     metadata: {
@@ -172,42 +162,78 @@ function createStoryButtonHandler() {
       },
       tileConfig: {}
     },
-    name: newStoryName,
+    name: generateDatedTitle($(this).data('default-title')),
     query: {}
   };
+
+  createPublishedView(metadata, function(uid) {
+    return '/stories/s/' + uid + '/create';
+  });
+}
+
+/**
+ * Creates a measure.
+ */
+function clickCreateMeasure() {
+  var metadata = {
+    displayFormat: {},
+    displayType: 'measure',
+    metadata: {
+      availableDisplayTypes: ['measure'],
+      jsonQuery: {},
+      renderTypeConfig: {
+        visible: {
+          measure: true
+        }
+      }
+    },
+    name: generateDatedTitle($(this).data('default-title')),
+    query: {}
+  };
+
+  createPublishedView(metadata, function(uid) {
+    return '/d/' + uid;
+  });
+}
+
+/**
+ * Creates a published asset and redirects to the initial edit experience.
+ * This helper allows us to share a common workflow for stories and measures.
+ */
+function createPublishedView(metadata, redirectTo) {
+  if (!getAppToken()) {
+    return console.error('AppToken is not accessible!');
+  }
 
   $.ajax({
     url: '/api/views.json',
     type: 'POST',
-    data: JSON.stringify(newStoryData),
+    data: JSON.stringify(metadata),
     headers: {
       'Content-type': 'application/json',
       'X-App-Token': getAppToken()
     }
-  }).
-    then(function (response) {
-      if (response.hasOwnProperty('id') && validate4x4(response.id)) {
-        var publishUrl = '/api/views/' + response.id + '/publication.json?accessType=WEBSITE';
+  }).then(function(response) {
+    if (response.hasOwnProperty('id') && validate4x4(response.id)) {
+      var publishUrl = '/api/views/' + response.id + '/publication.json?accessType=WEBSITE';
 
-        return $.ajax({
-          url: publishUrl, 
-          type: 'POST',
-          headers: {
-            'X-App-Token': getAppToken()
-          }
-        });
-      } else {
-        throw response;
-      }
-    }).
-    then(function (response) {
-      if (response.hasOwnProperty('id') && validate4x4(response.id)) {
-        window.location.href = '/stories/s/' + response.id + '/create';
-      } else {
-        throw response;
-      }
-    }).
-    fail(console.error);
+      return $.ajax({
+        url: publishUrl,
+        type: 'POST',
+        headers: {
+          'X-App-Token': getAppToken()
+        }
+      });
+    } else {
+      throw response;
+    }
+  }).then(function(response) {
+    if (response.hasOwnProperty('id') && validate4x4(response.id)) {
+      window.location.href = redirectTo(response.id);
+    } else {
+      throw response;
+    }
+  }).fail(console.error);
 }
 
 /**
@@ -223,4 +249,14 @@ function getAppToken() {
   var blistAppToken = window.blist && window.blist.configuration && window.blist.configuration.appToken;
 
   return siteChromeAppToken || blistAppToken || null;
+}
+
+function generateDatedTitle(defaultTitle) {
+  var now = new Date();
+  var datePieces = [
+    String(now.getMonth() + 1).padStart(2, 0),
+    String(now.getDate()).padStart(2, 0),
+    now.getFullYear()
+  ];
+  return defaultTitle + ' - ' + datePieces.join('-');
 }

@@ -16,7 +16,7 @@ import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbsContainer';
 import ReadyToImport from './ReadyToImport';
 import PagerBar from './Table/PagerBarContainer';
 import ErrorPointer from 'components/Table/ErrorPointer';
-import ApiCallButton from 'components/ApiCallButton';
+import ApiCallButton from 'components/ApiCallButtonContainer';
 import styles from 'styles/ShowOutputSchema.scss';
 
 const COL_WIDTH_PX = 250; // matches style on td in Table.scss

@@ -6,7 +6,7 @@ import { commaify } from '../../../common/formatNumber';
 import ProgressBar from 'components/ProgressBar';
 import NotifyButton from 'components/NotifyButton';
 import * as ApplyRevision from 'actions/applyRevision';
-import ApiCallButton from 'components/ApiCallButton';
+import ApiCallButton from 'components/ApiCallButtonContainer';
 import { APPLY_REVISION } from 'actions/apiCalls';
 import styles from 'styles/Modals/Publishing.scss';
 

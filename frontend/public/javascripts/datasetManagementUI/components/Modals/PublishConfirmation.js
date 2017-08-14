@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { ModalContent, ModalFooter } from 'common/components';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import ApiCallButton from 'components/ApiCallButton';
+import ApiCallButton from 'components/ApiCallButtonContainer';
 import { APPLY_REVISION } from 'actions/apiCalls';
 import styles from 'styles/Modals/PublishConfirmation.scss';
 

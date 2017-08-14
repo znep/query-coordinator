@@ -3,7 +3,7 @@ import { expect, assert } from 'chai';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 import configureStore from 'redux-mock-store';
-import ApiCallButton from 'components/ApiCallButton';
+import ApiCallButton from 'components/ApiCallButtonContainer';
 import {
   STATUS_CALL_IN_PROGRESS,
   STATUS_CALL_SUCCEEDED,

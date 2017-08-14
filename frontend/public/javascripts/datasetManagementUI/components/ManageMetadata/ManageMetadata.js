@@ -6,7 +6,7 @@ import { addOutputColumns } from 'actions/outputColumns';
 import { dismissMetadataPane, saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
 import { hideFlashMessage } from 'actions/flashMessage';
 import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'actions/apiCalls';
-import ApiCallButton from 'components/ApiCallButton';
+import ApiCallButton from 'components/ApiCallButtonContainer';
 import MetadataContent from 'components/ManageMetadata/MetadataContentContainer';
 import * as Selectors from 'selectors';
 import * as Links from 'links';

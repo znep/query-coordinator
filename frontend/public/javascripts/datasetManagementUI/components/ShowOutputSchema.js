@@ -13,7 +13,7 @@ import { SAVE_CURRENT_OUTPUT_SCHEMA } from '../actions/apiCalls';
 import * as DisplayState from '../lib/displayState';
 import Table from 'components/Table/TableContainer';
 import UploadBreadcrumbs from 'components/Uploads/UploadBreadcrumbsContainer';
-import ReadyToImport from './ReadyToImport';
+import ReadyToImport from 'components/ReadyToImportContainer';
 import PagerBar from './Table/PagerBarContainer';
 import ErrorPointer from 'components/Table/ErrorPointer';
 import ApiCallButton from 'components/ApiCallButtonContainer';

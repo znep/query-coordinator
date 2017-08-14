@@ -1,9 +1,6 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { commaify } from '../../common/formatNumber';
 import * as dsmapiLinks from '../dsmapiLinks';
-import { showModal } from 'actions/modal';
 import SocrataIcon from '../../common/components/SocrataIcon';
 import styles from 'styles/ReadyToImport.scss';
 
@@ -18,7 +15,7 @@ ErrorButton.propTypes = {
   disabled: PropTypes.bool
 };
 
-export const ReadyToImport = props => {
+const ReadyToImport = props => {
   const { source, inputSchema, importableRows, errorRows, outputSchema, openModal } = props;
 
   if (!outputSchema) {
@@ -69,30 +66,4 @@ ReadyToImport.propTypes = {
   openModal: PropTypes.func
 };
 
-const mapStateToProps = ({ entities }, { params }) => {
-  const { outputSchemaId } = params;
-
-  if (outputSchemaId) {
-    const outputSchema = entities.output_schemas[outputSchemaId];
-    const inputSchema = entities.input_schemas[outputSchema.input_schema_id];
-    const source = entities.sources[inputSchema.source_id];
-    const errorRows = outputSchema.error_count || 0;
-    const importableRows = Math.max(0, inputSchema.total_rows - errorRows);
-
-    return {
-      source,
-      inputSchema,
-      importableRows,
-      errorRows,
-      outputSchema
-    };
-  } else {
-    return {};
-  }
-};
-
-const mapDispatchToProps = dispatch => ({
-  openModal: componentName => dispatch(showModal(componentName))
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ReadyToImport));
+export default ReadyToImport;

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import AppBar from './AppBar';
+import AppBar from 'components/AppBarContainer';
 import NotificationList from 'components/Notifications/NotificationListContainer';
 import Modal from 'components/Modals/ModalContainer';
 import styles from 'styles/App.scss';

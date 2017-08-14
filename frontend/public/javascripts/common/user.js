@@ -7,8 +7,7 @@ function isUserRoled() {
     return false;
   }
 
-  return isUserSuperadmin() ||
-    _.trim(currentUser.roleName).length > 0;
+  return isUserSuperadmin() || _.trim(currentUser.roleName).length > 0;
 }
 
 function isUserSuperadmin() {
@@ -28,8 +27,7 @@ function userHasRight(right) {
     return false;
   }
 
-  return isUserSuperadmin() ||
-    _.includes(currentUser.rights, right);
+  return isUserSuperadmin() || _.includes(currentUser.rights, right);
 }
 
 export {

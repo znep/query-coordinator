@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import React from 'react';
-import { RecentActions } from 'components/RecentActions';
+import RecentActions from 'components/RecentActions';
 import state from '../data/stateWithRevision';
 import rootReducer from 'reducers/rootReducer';
 import { applyMiddleware, createStore } from 'redux';

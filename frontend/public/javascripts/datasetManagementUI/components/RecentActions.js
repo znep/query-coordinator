@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
-import { Link, withRouter } from 'react-router';
+import { Link } from 'react-router';
 import * as Links from '../links';
 import moment from 'moment';
 import SocrataIcon from '../../common/components/SocrataIcon';
@@ -204,7 +203,7 @@ function activitiesOf(entities, params) {
   return _.reverse(_.sortBy(items, 'at')).map(toView);
 }
 
-export function RecentActions({ entities, params }) {
+function RecentActions({ entities, params }) {
   const items = activitiesOf(entities, params);
   return (
     <div>
@@ -218,8 +217,4 @@ RecentActions.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-const mapStateToProps = ({ entities }) => ({
-  entities
-});
-
-export default withRouter(connect(mapStateToProps)(RecentActions));
+export default RecentActions;

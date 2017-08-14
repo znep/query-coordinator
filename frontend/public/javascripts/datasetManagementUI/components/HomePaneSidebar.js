@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import * as Links from '../links';
 import ManageData from 'components/ManageData';
-import RecentActions from './RecentActions';
+import RecentActions from 'components/RecentActionsContainer';
 import styles from 'styles/HomePaneSidebar.scss';
 
 function HomePaneSidebar({ params, entities, columnsExist }) {

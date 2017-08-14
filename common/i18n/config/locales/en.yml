@@ -361,7 +361,7 @@ en:
           loading_metadata_error: This dataset is empty, private or has been deleted. Please check the dataset itself for availability.
           subheaders:
             data_selection: Data Selection
-            timeline_options: Timeline Options
+            timeline_options: Timeline Display Options
           title: Data
           uhoh: Uh oh!
         legends_and_flyouts:

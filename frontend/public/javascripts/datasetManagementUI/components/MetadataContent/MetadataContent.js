@@ -36,7 +36,7 @@ const MetadataContent = (
 MetadataContent.propTypes = {
   onSidebarTabClick: PropTypes.func,
   columnsExist: PropTypes.bool,
-  currentOutputSchemaId: PropTypes.object.isRequired,
+  currentOutputSchemaId: PropTypes.number.isRequired,
   outputSchemaId: PropTypes.number,
   onDatasetTab: PropTypes.bool.isRequired,
   params: PropTypes.object.isRequired

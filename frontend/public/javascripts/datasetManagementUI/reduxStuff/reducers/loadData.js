@@ -3,7 +3,7 @@ import {
   LOAD_ROW_ERRORS_SUCCESS,
   LOAD_COLUMN_ERRORS_SUCCESS,
   LOAD_NORMAL_PREVIEW_SUCCESS
-} from 'actions/loadData';
+} from 'reduxStuff/actions/loadData';
 import { mergeRecords } from 'lib/util';
 
 const loadData = (state, action) => {

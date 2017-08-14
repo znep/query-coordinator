@@ -1,4 +1,4 @@
-import { ADD_NOTIFICATION, REMOVE_NOTIFICATION } from 'actions/notifications';
+import { ADD_NOTIFICATION, REMOVE_NOTIFICATION } from 'reduxStuff/actions/notifications';
 
 export default function notificationReducer(state = [], action) {
   switch (action.type) {

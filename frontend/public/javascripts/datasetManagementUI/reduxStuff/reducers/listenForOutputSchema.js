@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable';
-import { LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS } from 'actions/manageUploads';
+import { LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS } from 'reduxStuff/actions/manageUploads';
 import { mergeRecords } from 'lib/util';
 
 const listenForOutputSchema = (state, action) => {

@@ -14,16 +14,16 @@ import {
   UPDATE_COLUMN_TYPE,
   VALIDATE_ROW_IDENTIFIER,
   SAVE_CURRENT_OUTPUT_SCHEMA
-} from 'actions/apiCalls';
-import { editRevision } from 'actions/revisions';
+} from 'reduxStuff/actions/apiCalls';
+import { editRevision } from 'reduxStuff/actions/revisions';
 import { soqlProperties } from 'lib/soqlTypes';
 import * as Selectors from 'selectors';
-import { showModal } from 'actions/modal';
+import { showModal } from 'reduxStuff/actions/modal';
 import {
   listenForOutputSchemaSuccess,
   subscribeToOutputSchema,
   subscribeToTransforms
-} from 'actions/manageUploads';
+} from 'reduxStuff/actions/manageUploads';
 import { getUniqueName, getUniqueFieldName } from 'lib/util';
 
 function createNewOutputSchema(oldOutputSchema, newOutputColumns, call, params) {
@@ -192,9 +192,7 @@ export function outputColumnsWithChangedType(entities, oldOutputSchema, oldColum
     const conversionFunc = soqlProperties[inputColumn.soql_type].conversions[newType];
     const fieldName = inputColumn.field_name;
 
-    return inputColumn.soql_type === newType
-      ? `\`${fieldName}\``
-      : `${conversionFunc}(${fieldName})`;
+    return inputColumn.soql_type === newType ? `\`${fieldName}\`` : `${conversionFunc}(${fieldName})`;
   };
   return oldOutputColumns.map(c => toNewOutputColumn(c, genTransform));
 }
@@ -232,7 +230,7 @@ export function validateThenSetRowIdentifier(outputSchema, outputColumn, params)
 }
 
 export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
-  return (dispatch) => {
+  return dispatch => {
     const call = {
       operation: SAVE_CURRENT_OUTPUT_SCHEMA,
       params: { outputSchemaId }
@@ -253,9 +251,11 @@ export function saveCurrentOutputSchemaId(revision, outputSchemaId) {
       .then(getJson)
       .then(() => {
         dispatch(apiCallSucceeded(callId));
-        dispatch(editRevision(revision.id, {
-          output_schema_id: outputSchemaId
-        }));
+        dispatch(
+          editRevision(revision.id, {
+            output_schema_id: outputSchemaId
+          })
+        );
       })
       .catch(error => {
         dispatch(apiCallFailed(callId, error));

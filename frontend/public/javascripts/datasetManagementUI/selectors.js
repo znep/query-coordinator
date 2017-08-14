@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
-import { LOAD_ROWS } from 'actions/apiCalls';
-import { CREATE_UPLOAD } from 'actions/manageUploads';
+import { LOAD_ROWS } from 'reduxStuff/actions/apiCalls';
+import { CREATE_UPLOAD } from 'reduxStuff/actions/manageUploads';
 
 export function rowsToBeImported(entities, outputSchemaId) {
   const outputSchema = entities.output_schemas[outputSchemaId];

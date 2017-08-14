@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { showModal } from 'actions/modal';
+import { showModal } from 'reduxStuff/actions/modal';
 import ReadyToImport from 'components/ReadyToImport/ReadyToImport';
 
 const mapStateToProps = ({ entities }, { params }) => {

@@ -5,11 +5,11 @@ import * as Links from 'links';
 import * as dsmapiLinks from 'dsmapiLinks';
 import { socrataFetch, checkStatus, getJson } from 'lib/http';
 import { parseDate } from 'lib/parseDate';
-import { editOutputSchema } from 'actions/outputSchemas';
-import { editTransform } from 'actions/transforms';
-import { editInputSchema } from 'actions/inputSchemas';
-import { addNotification, removeNotificationAfterTimeout } from 'actions/notifications';
-import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'actions/apiCalls';
+import { editOutputSchema } from 'reduxStuff/actions/outputSchemas';
+import { editTransform } from 'reduxStuff/actions/transforms';
+import { editInputSchema } from 'reduxStuff/actions/inputSchemas';
+import { addNotification, removeNotificationAfterTimeout } from 'reduxStuff/actions/notifications';
+import { apiCallStarted, apiCallSucceeded, apiCallFailed } from 'reduxStuff/actions/apiCalls';
 
 export const INSERT_INPUT_SCHEMA = 'INSERT_INPUT_SCHEMA';
 export const LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS = 'LISTEN_FOR_OUTPUT_SCHEMA_SUCCESS';
@@ -315,9 +315,11 @@ export function subscribeToTotalRows(is) {
     const channel = socket.channel(`input_schema:${is.id}`);
 
     channel.on('update', ({ total_rows }) =>
-      dispatch(editInputSchema(is.id, {
-        total_rows
-      }))
+      dispatch(
+        editInputSchema(is.id, {
+          total_rows
+        })
+      )
     );
 
     channel.join();
@@ -329,23 +331,31 @@ export function subscribeToTransforms(os) {
     os.output_columns.forEach(oc => {
       const channel = socket.channel(`transform_progress:${oc.transform.id}`);
 
-      channel.on('max_ptr', _.throttle(({ end_row_offset }) =>
-        dispatch(
-          editTransform(oc.transform.id, {
-            contiguous_rows_processed: end_row_offset
-          })
-        ),
-        PROGRESS_THROTTLE_TIME
-      ));
+      channel.on(
+        'max_ptr',
+        _.throttle(
+          ({ end_row_offset }) =>
+            dispatch(
+              editTransform(oc.transform.id, {
+                contiguous_rows_processed: end_row_offset
+              })
+            ),
+          PROGRESS_THROTTLE_TIME
+        )
+      );
 
-      channel.on('errors', _.throttle(({ count }) =>
-        dispatch(
-          editTransform(oc.transform.id, {
-            num_transform_errors: count
-          })
-        ),
-        PROGRESS_THROTTLE_TIME
-      ));
+      channel.on(
+        'errors',
+        _.throttle(
+          ({ count }) =>
+            dispatch(
+              editTransform(oc.transform.id, {
+                num_transform_errors: count
+              })
+            ),
+          PROGRESS_THROTTLE_TIME
+        )
+      );
 
       channel.join();
     });

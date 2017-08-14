@@ -2,8 +2,8 @@ import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { createUpload } from 'actions/manageUploads';
-import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
+import { createUpload } from 'reduxStuff/actions/manageUploads';
+import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import styles from './DragDropUpload.scss';
 

@@ -2,7 +2,7 @@ import { applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { Socket } from 'phoenix';
 import loggerMiddleware from 'redux-logger';
-import entitiesMiddleware from 'middleware/entities';
+import entitiesMiddleware from 'reduxStuff/middleware/entities';
 
 const socket = new Socket('/api/publishing/v1/socket', {
   params: {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import _ from 'lodash';
 import Field from 'components/Field/Field';
-import * as Actions from 'actions/views';
+import * as Actions from 'reduxStuff/actions/views';
 
 // See comments in ColumnFieldContainer for a quick overview of the purpose of
 // this component

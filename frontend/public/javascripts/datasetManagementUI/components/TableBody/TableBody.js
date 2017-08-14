@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import TableCell from 'components/TableCell/TableCell';
 import RowError from 'components/RowError/RowError';
 import * as DisplayState from 'lib/displayState';
-import { PAGE_SIZE } from 'actions/loadData';
+import { PAGE_SIZE } from 'reduxStuff/actions/loadData';
 import styles from './TableBody.scss';
 
 class TableBody extends Component {

@@ -2,8 +2,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Publishing from 'components/Publishing/Publishing';
 import * as Selectors from 'selectors';
-import { hideModal } from 'actions/modal';
-import * as ApplyRevision from 'actions/applyRevision';
+import { hideModal } from 'reduxStuff/actions/modal';
+import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 
 export function mapStateToProps({ entities }, { params }) {
   const revision = _.values(entities.revisions)[0];

@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import * as Links from 'links';
 import moment from 'moment';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import * as ApplyRevision from 'actions/applyRevision';
+import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import styles from './RecentActions.scss';
 
 function RecentActionsTimestamp({ date }) {

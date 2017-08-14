@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { hideModal } from 'actions/modal';
-import { applyRevision, updateRevision } from 'actions/applyRevision';
+import { hideModal } from 'reduxStuff/actions/modal';
+import { applyRevision, updateRevision } from 'reduxStuff/actions/applyRevision';
 import * as Selectors from 'selectors';
 import PublishConfirmationUSAID from 'components/PublishConfirmationUSAID/PublishConfirmationUSAID';
 

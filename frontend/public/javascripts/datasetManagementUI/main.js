@@ -1,17 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import Perf from 'react-addons-perf';
-import middleware from 'middleware';
-import rootReducer from 'reducers/rootReducer';
-import { bootstrapApp } from 'actions/bootstrap';
+import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
 import * as Selectors from './selectors';
 import Airbrake from 'common/airbrake';
 import rootRoute from './routes';
-import { addLocation } from 'actions/history';
+import { addLocation } from 'reduxStuff/actions/history';
 import styleguide from './styles/style.global.scss'; //eslint-disable-line
+import store from 'reduxStuff/store';
 
 if (window.serverConfig.environment === 'development') {
   window.Perf = Perf;
@@ -19,10 +17,6 @@ if (window.serverConfig.environment === 'development') {
   // 126728 is Publishing airbrake project id
   Airbrake.init(window.serverConfig.airbrakeProjectId, window.serverConfig.airbrakeKey);
 }
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-const store = createStore(rootReducer, composeEnhancers(middleware));
 
 store.dispatch(
   bootstrapApp(

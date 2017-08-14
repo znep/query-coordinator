@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { showModal } from 'actions/modal';
+import { showModal } from 'reduxStuff/actions/modal';
 import {
   listenForOutputSchemaSuccess,
   subscribeToOutputSchema,
@@ -7,10 +7,10 @@ import {
   insertInputSchema,
   subscribeToRowErrors,
   subscribeToTotalRows
-} from 'actions/manageUploads';
-import { addNotification } from 'actions/notifications';
+} from 'reduxStuff/actions/manageUploads';
+import { addNotification } from 'reduxStuff/actions/notifications';
 import { parseDate } from 'lib/parseDate';
-import * as ApplyRevision from 'actions/applyRevision';
+import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import { makeFieldsets, validateDatasetForm } from 'models/forms';
 
 export const BOOTSTRAP_APP_SUCCESS = 'BOOTSTRAP_APP_SUCCESS';

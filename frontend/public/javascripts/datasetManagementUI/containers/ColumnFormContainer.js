@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { editView } from 'actions/views';
+import { editView } from 'reduxStuff/actions/views';
 import { makeRows, validateColumnForm } from 'models/forms';
 import ColumnForm from 'components/ColumnForm/ColumnForm';
 

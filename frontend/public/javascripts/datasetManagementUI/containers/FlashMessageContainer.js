@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { hideFlashMessage } from 'actions/flashMessage';
+import { hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import FlashMessage from 'components/FlashMessage/FlashMessage';
 
 const mapStateToProps = ({ ui }) => ({

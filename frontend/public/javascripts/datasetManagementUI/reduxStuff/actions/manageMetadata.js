@@ -1,26 +1,26 @@
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
 import uuid from 'uuid';
-import * as Links from '../links';
-import { checkStatus, getJson, socrataFetch } from '../lib/http';
+import * as Links from 'links';
+import { checkStatus, getJson, socrataFetch } from 'lib/http';
 import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed,
   SAVE_COLUMN_METADATA,
   SAVE_DATASET_METADATA
-} from 'actions/apiCalls';
+} from 'reduxStuff/actions/apiCalls';
 import * as Selectors from 'selectors';
 import * as dsmapiLinks from 'dsmapiLinks';
-import { showFlashMessage, hideFlashMessage } from 'actions/flashMessage';
+import { showFlashMessage, hideFlashMessage } from 'reduxStuff/actions/flashMessage';
 import { getLocalizedErrorMessage } from 'lib/util';
 import {
   listenForOutputSchemaSuccess,
   subscribeToOutputSchema,
   subscribeToTransforms
-} from 'actions/manageUploads';
-import { editRevision } from 'actions/revisions';
-import { editView } from 'actions/views';
+} from 'reduxStuff/actions/manageUploads';
+import { editRevision } from 'reduxStuff/actions/revisions';
+import { editView } from 'reduxStuff/actions/views';
 
 export const dismissMetadataPane = (currentOutputSchemaPath, params) => (dispatch, getState) => {
   const { history } = getState().ui;
@@ -213,9 +213,11 @@ export const saveColumnMetadata = (outputSchemaId, params) => (dispatch, getStat
         })
       );
       const revision = Selectors.latestRevision(entities);
-      dispatch(editRevision(revision.id, {
-        output_schema_id: newOutputSchemaId
-      }));
+      dispatch(
+        editRevision(revision.id, {
+          output_schema_id: newOutputSchemaId
+        })
+      );
       dispatch(apiCallSucceeded(callId));
       // This is subtly wrong, could be a race with another user
       const redirect = Links.columnMetadataForm(params, newOutputSchemaId);

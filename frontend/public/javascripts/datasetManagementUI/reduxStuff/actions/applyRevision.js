@@ -9,10 +9,10 @@ import {
   APPLY_REVISION,
   UPDATE_REVISION,
   ADD_EMAIL_INTEREST
-} from 'actions/apiCalls';
-import { showModal } from 'actions/modal';
-import { addTaskSet } from 'actions/taskSets';
-import { editRevision } from 'actions/revisions';
+} from 'reduxStuff/actions/apiCalls';
+import { showModal } from 'reduxStuff/actions/modal';
+import { addTaskSet } from 'reduxStuff/actions/taskSets';
+import { editRevision } from 'reduxStuff/actions/revisions';
 import * as dsmapiLinks from 'dsmapiLinks';
 import * as Links from 'links';
 import * as Selectors from 'selectors';

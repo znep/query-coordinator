@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import * as ApplyRevision from 'actions/applyRevision';
+import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import AppBar from 'components/AppBar/AppBar';
 
 function mapStateToProps({ entities }) {

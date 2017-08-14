@@ -5,9 +5,9 @@ import SocrataIcon from '../../../common/components/SocrataIcon';
 import { commaify } from '../../../common/formatNumber';
 import ProgressBar from 'components/ProgressBar/ProgressBar';
 import NotifyButton from 'containers/NotifyButtonContainer';
-import * as ApplyRevision from 'actions/applyRevision';
+import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import ApiCallButton from 'containers/ApiCallButtonContainer';
-import { APPLY_REVISION } from 'actions/apiCalls';
+import { APPLY_REVISION } from 'reduxStuff/actions/apiCalls';
 import styles from './Publishing.scss';
 
 const SubI18n = I18n.home_pane.publish_modal;

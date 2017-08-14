@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { editView } from 'actions/views';
+import { editView } from 'reduxStuff/actions/views';
 import { makeFieldsets } from 'models/forms';
 import DatasetForm from 'components/DatasetForm/DatasetForm';
 

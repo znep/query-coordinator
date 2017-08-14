@@ -1,4 +1,4 @@
-import { SHOW_FLASH_MESSAGE, HIDE_FLASH_MESSAGE } from 'actions/flashMessage';
+import { SHOW_FLASH_MESSAGE, HIDE_FLASH_MESSAGE } from 'reduxStuff/actions/flashMessage';
 
 export const initialState = {
   message: '',

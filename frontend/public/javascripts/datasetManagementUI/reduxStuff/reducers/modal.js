@@ -1,4 +1,4 @@
-import { SHOW_MODAL, HIDE_MODAL } from 'actions/modal';
+import { SHOW_MODAL, HIDE_MODAL } from 'reduxStuff/actions/modal';
 
 export const initialState = {
   visible: false,

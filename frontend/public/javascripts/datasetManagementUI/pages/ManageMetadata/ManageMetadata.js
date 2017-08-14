@@ -1,11 +1,15 @@
 import React, { PropTypes, Component } from 'react';
 import _ from 'lodash';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
-import { editView } from 'actions/views';
-import { addOutputColumns } from 'actions/outputColumns';
-import { dismissMetadataPane, saveDatasetMetadata, saveColumnMetadata } from 'actions/manageMetadata';
-import { hideFlashMessage } from 'actions/flashMessage';
-import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'actions/apiCalls';
+import { editView } from 'reduxStuff/actions/views';
+import { addOutputColumns } from 'reduxStuff/actions/outputColumns';
+import {
+  dismissMetadataPane,
+  saveDatasetMetadata,
+  saveColumnMetadata
+} from 'reduxStuff/actions/manageMetadata';
+import { hideFlashMessage } from 'reduxStuff/actions/flashMessage';
+import { SAVE_DATASET_METADATA, SAVE_COLUMN_METADATA } from 'reduxStuff/actions/apiCalls';
 import ApiCallButton from 'containers/ApiCallButtonContainer';
 import MetadataContent from 'containers/MetadataContentContainer';
 import * as Selectors from 'selectors';

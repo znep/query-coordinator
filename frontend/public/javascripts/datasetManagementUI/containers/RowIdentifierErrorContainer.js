@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { hideModal } from 'actions/modal';
+import { hideModal } from 'reduxStuff/actions/modal';
 import RowIdentifierError from 'components/RowIdentifierError/RowIdentifierError';
 
 function mapDispatchToProps(dispatch) {

@@ -6,7 +6,7 @@ import App from 'pages/App/App';
 import ShowRevision from 'pages/ShowRevision/ShowRevision';
 import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
-import { focusColumnEditor } from 'actions/manageMetadata';
+import { focusColumnEditor } from 'reduxStuff/actions/manageMetadata';
 import ShowUpload from 'pages/ShowUpload/ShowUpload';
 import NoMatch from 'pages/NoMatch/NoMatch';
 

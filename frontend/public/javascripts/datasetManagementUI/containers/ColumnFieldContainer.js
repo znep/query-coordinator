@@ -3,8 +3,8 @@ import { withRouter } from 'react-router';
 import _ from 'lodash';
 import Field from 'components/Field/Field';
 import { isFieldNameField, isDisplayNameField } from 'models/forms';
-import * as Actions from 'actions/outputColumns';
-import { editView } from 'actions/views';
+import * as Actions from 'reduxStuff/actions/outputColumns';
+import { editView } from 'reduxStuff/actions/views';
 
 /*
 This component is just a more specialized version of Field. Field decides,

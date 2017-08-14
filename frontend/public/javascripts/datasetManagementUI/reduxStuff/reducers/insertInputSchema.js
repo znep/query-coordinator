@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable';
-import { INSERT_INPUT_SCHEMA } from 'actions/manageUploads';
+import { INSERT_INPUT_SCHEMA } from 'reduxStuff/actions/manageUploads';
 import { mergeRecords } from 'lib/util';
 
 const insertInputSchema = (state, action) => {

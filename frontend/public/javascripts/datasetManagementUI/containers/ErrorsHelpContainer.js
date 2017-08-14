@@ -1,6 +1,6 @@
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { hideModal } from 'actions/modal';
+import { hideModal } from 'reduxStuff/actions/modal';
 import ErrorsHelp from 'components/ErrorsHelp/ErrorsHelp';
 
 const mapStateToProps = ({ entities }, { params }) => {

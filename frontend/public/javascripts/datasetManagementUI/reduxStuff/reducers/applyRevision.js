@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable';
-import { POLL_FOR_TASK_SET_PROGRESS_SUCCESS } from 'actions/applyRevision';
+import { POLL_FOR_TASK_SET_PROGRESS_SUCCESS } from 'reduxStuff/actions/applyRevision';
 
 const applyRevision = (state, action) => {
   switch (action.type) {

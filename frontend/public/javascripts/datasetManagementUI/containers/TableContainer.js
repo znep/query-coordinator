@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { withRouter } from 'react-router';
-import * as ShowActions from 'actions/showOutputSchema';
+import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
 import { currentAndIgnoredOutputColumns } from 'selectors';
-import { COLUMN_OPERATIONS } from 'actions/apiCalls';
+import { COLUMN_OPERATIONS } from 'reduxStuff/actions/apiCalls';
 import { STATUS_CALL_IN_PROGRESS } from 'lib/apiCallStatus';
 import Table from 'components/Table/Table';
 

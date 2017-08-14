@@ -11,8 +11,8 @@ import NotifyButton from 'containers/NotifyButtonContainer';
 import RowDetails from 'containers/RowDetailsContainer';
 import * as Links from 'links';
 import * as Selectors from 'selectors';
-import * as Actions from 'actions/manageUploads';
-import * as ApplyRevision from 'actions/applyRevision';
+import * as Actions from 'reduxStuff/actions/manageUploads';
+import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
 import { enabledFileExtensions, formatExpanation } from 'lib/fileExtensions';
 import styles from './ShowRevision.scss';
 

@@ -4,7 +4,7 @@ import { ModalContent, ModalFooter } from 'common/components';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import { commaify } from '../../../common/formatNumber';
 import ProgressBar from 'components/ProgressBar';
-import NotifyButton from 'components/NotifyButton';
+import NotifyButton from 'components/NotifyButtonContainer';
 import * as ApplyRevision from 'actions/applyRevision';
 import ApiCallButton from 'components/ApiCallButtonContainer';
 import { APPLY_REVISION } from 'actions/apiCalls';

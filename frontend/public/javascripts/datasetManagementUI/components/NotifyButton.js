@@ -1,10 +1,6 @@
-import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 import classNames from 'classnames';
-
 import SocrataIcon from '../../common/components/SocrataIcon';
-import * as ApplyRevision from 'actions/applyRevision';
 import { STATUS_CALL_IN_PROGRESS, STATUS_CALL_SUCCEEDED } from 'lib/apiCallStatus';
 import styles from 'styles/NotifyButton.scss';
 
@@ -58,27 +54,4 @@ NotifyButton.propTypes = {
   className: PropTypes.string
 };
 
-function mapStateToProps({ entities, ui }) {
-  // _.find returns undefined if it doesn't find anything
-  const inProgressTaskSet = _.find(entities.task_sets, (taskSet) => (
-    taskSet.status !== ApplyRevision.TASK_SET_SUCCESSFUL
-      && taskSet.status !== ApplyRevision.TASK_SET_FAILURE
-  ));
-
-  const apiCall = inProgressTaskSet ? _.find(ui.apiCalls, { id: inProgressTaskSet.job_uuid }) : null;
-
-  return {
-    taskSet: inProgressTaskSet,
-    apiCall
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    addEmailInterest: jobUUID => {
-      dispatch(ApplyRevision.addEmailInterest(jobUUID));
-    }
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(NotifyButton);
+export default NotifyButton;

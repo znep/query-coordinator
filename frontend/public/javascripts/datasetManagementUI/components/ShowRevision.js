@@ -7,7 +7,7 @@ import MetadataTable from '../../common/components/MetadataTable';
 import SchemaPreview from './SchemaPreview';
 import HomePaneSidebar from 'components/HomePaneSidebarContainer';
 import DatasetPreview from 'components/DatasetPreviewContainer';
-import NotifyButton from './NotifyButton';
+import NotifyButton from 'components/NotifyButtonContainer';
 import RowDetails from '../components/RowDetails';
 import * as Links from '../links';
 import * as Selectors from 'selectors';

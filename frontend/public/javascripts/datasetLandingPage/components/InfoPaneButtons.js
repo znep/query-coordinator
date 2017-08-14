@@ -147,6 +147,11 @@ export default class InfoPaneButtons extends Component {
   }
 
   renderExploreDataDropdown() {
+    const { view } = this.props;
+    if (view.isBlobby || view.isHref) {
+      return null;
+    }
+
     return (
       <div
         className="dropdown explore-dropdown btn btn-simple btn-sm"

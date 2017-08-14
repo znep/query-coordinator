@@ -758,6 +758,8 @@ en:
         create_dataset_short: Create a new Dataset
         create_dataset_shorter: Dataset
         create_dataset_verb: Create
+        create_measure_short: Measure
+        create_measure_verb: Create
         create_resource: Create a New Socrata Resource
         create_resource_short: Create new...
         create_resource_verb: Create

@@ -155,6 +155,13 @@
                       </a>
                       <%- end -%>
 
+                      <%- if current_user_can_create_measure? -%>
+                      <a id="create-measure-button" class="button secondary-button next" href="#" title="<%= t('controls.browse.actions.create_measure_short') %>">
+                        <%= opts[:browse_in_container] ? t('controls.browse.actions.create_measure_short') : t('controls.browse.actions.create_measure_verb') %>
+                        <span class="icon"></span>
+                      </a>
+                      <%- end -%>
+
                       <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
                       <a id="create-tabular-beta"
                           class="button createTabular secondary-button next"
@@ -288,6 +295,13 @@
                         </a>
                         <%- end -%>
 
+                        <%- if current_user_can_create_measure? -%>
+                        <a id="create-measure-footer-button" class="button secondary-button next" href="#" title="<%= t('controls.browse.actions.create_measure_short') %>">
+                          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_measure_short') : t('controls.browse.actions.create_measure_verb') %>
+                          <span class="icon"></span>
+                        </a>
+                        <%- end -%>
+
                         <%- if FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
                         <a id="create-tabular-beta-footer"
                             class="button createTabular secondary-button next"
@@ -346,6 +360,13 @@
                         <%- if current_user_can_create_story? -%>
                         <a id="create-story-footer-button" class="button secondary-button next" href="#" title="<%= t('controls.browse.actions.create_story_short') %>">
                           <%= opts[:browse_in_container] ? t('controls.browse.actions.create_story_short') : t('controls.browse.actions.create_story_verb') %>
+                          <span class="icon"></span>
+                        </a>
+                        <%- end -%>
+
+                        <%- if current_user_can_create_measure? -%>
+                        <a id="create-measure-footer-button" class="button secondary-button next" href="#" title="<%= t('controls.browse.actions.create_measure_short') %>">
+                          <%= opts[:browse_in_container] ? t('controls.browse.actions.create_measure_short') : t('controls.browse.actions.create_measure_verb') %>
                           <span class="icon"></span>
                         </a>
                         <%- end -%>

@@ -1,8 +1,8 @@
 import { assert } from 'chai';
-import historyReducer from 'reducers/history';
-import { addLocation } from 'actions/history';
+import historyReducer from 'reduxStuff/reducers/history';
+import { addLocation } from 'reduxStuff/actions/history';
 
-describe('reducers/history', () => {
+describe('history reducer', () => {
   it('returns an empty array as its default state', () => {
     const state = historyReducer(undefined, {});
 

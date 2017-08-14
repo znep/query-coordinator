@@ -1,7 +1,7 @@
 import { assert } from 'chai';
-import { ADD_LOCATION, addLocation } from 'actions/history';
+import { ADD_LOCATION, addLocation } from 'reduxStuff/actions/history';
 
-describe('actions/history', () => {
+describe('history actions', () => {
   const location = {
     pathname: '/dataset/traffic/1234-abcd/0'
   };

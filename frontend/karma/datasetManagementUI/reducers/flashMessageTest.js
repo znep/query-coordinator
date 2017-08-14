@@ -1,8 +1,8 @@
 import { expect, assert } from 'chai';
-import flashMessage, { initialState } from 'reducers/flashMessage';
-import { hideFlashMessage, showFlashMessage, SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
+import flashMessage, { initialState } from 'reduxStuff/reducers/flashMessage';
+import { hideFlashMessage, showFlashMessage, SHOW_FLASH_MESSAGE } from 'reduxStuff/actions/flashMessage';
 
-describe('reducers/flashMessage', () => {
+describe('flashMessage reducer', () => {
   it('returns expected default state', () => {
     const state = flashMessage(undefined, {});
 

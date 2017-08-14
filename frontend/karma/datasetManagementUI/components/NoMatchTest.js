@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import React from 'react';
-import NoMatch from 'components/NoMatch';
+import NoMatch from 'pages/NoMatch/NoMatch';
 import { shallow } from 'enzyme';
 
 describe('components/NoMatch', () => {

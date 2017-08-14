@@ -2,13 +2,13 @@ import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore } from 'redux';
 import configureStore from 'redux-mock-store';
-import { createUpload } from 'actions/manageUploads';
+import { createUpload } from 'reduxStuff/actions/manageUploads';
 import mockAPI from '../testHelpers/mockAPI';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
-import { addLocation } from 'actions/history';
-import rootReducer from 'reducers/rootReducer';
-import { bootstrapApp } from 'actions/bootstrap';
+import { addLocation } from 'reduxStuff/actions/history';
+import rootReducer from 'reduxStuff/reducers/rootReducer';
+import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
 
 const socket = mockSocket(
   bootstrapChannels.map(bc => {
@@ -35,8 +35,8 @@ const params = {
   outputSchemaId: '144'
 };
 
-describe('actions/manageUploads', () => {
-  describe('actions/manageUploads/createUpload', () => {
+describe('manageUploads actions', () => {
+  describe('createUpload', () => {
     let unmock;
     let store;
 

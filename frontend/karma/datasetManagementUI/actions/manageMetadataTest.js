@@ -6,16 +6,16 @@ import { applyMiddleware, createStore } from 'redux';
 import {
   saveDatasetMetadata,
   saveColumnMetadata
-} from 'actions/manageMetadata';
-import { API_CALL_STARTED, SAVE_DATASET_METADATA } from 'actions/apiCalls';
-import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
-import { createUpload } from 'actions/manageUploads';
+} from 'reduxStuff/actions/manageMetadata';
+import { API_CALL_STARTED, SAVE_DATASET_METADATA } from 'reduxStuff/actions/apiCalls';
+import { SHOW_FLASH_MESSAGE } from 'reduxStuff/actions/flashMessage';
+import { createUpload } from 'reduxStuff/actions/manageUploads';
 import mockAPI from '../testHelpers/mockAPI';
 import {} from '../testHelpers/mockAPI/responses';
-import rootReducer from 'reducers/rootReducer';
-import { bootstrapApp } from 'actions/bootstrap';
-import { editView } from 'actions/views';
-import { addLocation } from 'actions/history';
+import rootReducer from 'reduxStuff/reducers/rootReducer';
+import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
+import { editView } from 'reduxStuff/actions/views';
+import { addLocation } from 'reduxStuff/actions/history';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
 
@@ -45,7 +45,7 @@ const params = {
   outputSchemaId: '144'
 };
 
-describe('actions/manageMetadata', () => {
+describe('manageMetadata actions', () => {
   let unmock;
   let store;
 
@@ -83,7 +83,7 @@ describe('actions/manageMetadata', () => {
     );
   });
 
-  describe('actions/manageMetadata/saveDatasetMetadata', () => {
+  describe('saveDatasetMetadata', () => {
     it('dispatches an api call started action with correct data', done => {
       const fakeStore = mockStore(store.getState());
 
@@ -168,7 +168,7 @@ describe('actions/manageMetadata', () => {
     });
   });
 
-  describe('actions/manageMetadata/saveColumnMetadata', () => {
+  describe('saveColumnMetadata', () => {
     beforeEach(done => {
       store
         .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))

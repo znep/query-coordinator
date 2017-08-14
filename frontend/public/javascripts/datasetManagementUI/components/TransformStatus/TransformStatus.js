@@ -38,7 +38,7 @@ export class TransformStatus extends Component {
     if (!transform.contiguous_rows_processed || !totalRows) {
       return 'inProgress';
     } else if (isIgnored) {
-      return isIgnored;
+      return 'isIgnored';
     } else if (transform.contiguous_rows_processed === totalRows) {
       return 'done';
     } else {

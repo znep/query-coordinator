@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Publishing from 'components/Publishing/Publishing';

@@ -1,8 +1,8 @@
 import { assert } from 'chai';
-import modal, { initialState } from 'reducers/modal';
-import { showModal, hideModal } from 'actions/modal';
+import modal, { initialState } from 'reduxStuff/reducers/modal';
+import { showModal, hideModal } from 'reduxStuff/actions/modal';
 
-describe('reducers/modal', () => {
+describe('modal reducer', () => {
   it('returns the correct default state', () => {
     const state = modal(undefined, {});
 

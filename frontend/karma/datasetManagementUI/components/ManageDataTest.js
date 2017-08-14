@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import ManageData from 'components/ManageData';
+import ManageData from 'components/ManageData/ManageData';
 
 describe('components/ManageData', () => {
   const defaultProps = {

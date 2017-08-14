@@ -6,14 +6,14 @@ import state from '../data/stateWithRevision';
 import mockAPI from '../testHelpers/mockAPI';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
-import { bootstrapApp } from 'actions/bootstrap';
+import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
 
 // create the mock socket and insert it into the fake store
 const socket = mockSocket(bootstrapChannels);
 
 const mockStore = configureStore([thunk.withExtraArgument(socket)]);
 
-describe('bootstrap', () => {
+describe('bootstrap actions', () => {
   let unmockHTTP;
   let fakeStore;
 

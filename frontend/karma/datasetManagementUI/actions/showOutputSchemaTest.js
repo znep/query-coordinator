@@ -8,12 +8,12 @@ import {
   outputColumnsWithChangedType,
   addColumn,
   dropColumn
-} from 'actions/showOutputSchema';
-import { bootstrapApp } from 'actions/bootstrap';
-import { createUpload } from 'actions/manageUploads';
+} from 'reduxStuff/actions/showOutputSchema';
+import { bootstrapApp } from 'reduxStuff/actions/bootstrap';
+import { createUpload } from 'reduxStuff/actions/manageUploads';
 import { currentOutputSchema, columnsForOutputSchema } from 'selectors';
 import mockAPI from '../testHelpers/mockAPI';
-import rootReducer from 'reducers/rootReducer';
+import rootReducer from 'reduxStuff/reducers/rootReducer';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
 
@@ -31,7 +31,7 @@ const params = {
   outputSchemaId: '144'
 };
 
-describe('actions/showOutputSchema', () => {
+describe('showOutputSchema actions', () => {
 
   describe('addColumn', () => {
     let unmock;

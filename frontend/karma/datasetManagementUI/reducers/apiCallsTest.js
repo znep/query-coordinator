@@ -1,12 +1,12 @@
 import { assert } from 'chai';
-import apiCallsReducer from 'reducers/apiCalls';
+import apiCallsReducer from 'reduxStuff/reducers/apiCalls';
 import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed
-} from 'actions/apiCalls';
+} from 'reduxStuff/actions/apiCalls';
 
-describe('reducers/database', () => {
+describe('apiCalls reducer', () => {
 
   const call = {
     operation: 'LOAD_ROWS',

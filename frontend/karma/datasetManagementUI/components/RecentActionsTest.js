@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import React from 'react';
-import RecentActions from 'components/RecentActions';
+import RecentActions from 'components/RecentActions/RecentActions';
 import state from '../data/stateWithRevision';
-import rootReducer from 'reducers/rootReducer';
+import rootReducer from 'reduxStuff/reducers/rootReducer';
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { shallow } from 'enzyme';

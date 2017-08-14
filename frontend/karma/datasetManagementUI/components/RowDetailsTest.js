@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import RowDetails from 'components/RowDetails';
+import RowDetails from 'components/RowDetailsContainer';
 import rootReducer from 'reducers/rootReducer';
 import { applyMiddleware, createStore } from 'redux';
 import { bootstrapApp } from 'actions/bootstrap';

@@ -108,6 +108,7 @@ module SocrataSiteChrome
       site_chrome_current_user.is_superadmin? ||
         current_user_can_see_create_datasets? ||
         current_user_can_see_create_stories? ||
+        current_user_can_see_create_measures? ||
         current_user_can_see_create_datasets_beta?
     end
 
@@ -116,6 +117,14 @@ module SocrataSiteChrome
 
       get_feature_flag('stories_enabled') &&
         (site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_stories?)
+    end
+
+    def current_user_can_see_create_measures?
+      return false unless site_chrome_current_user
+
+      get_feature_flag('open_performance_standalone_measures') &&
+        open_performance_enabled? &&
+        (site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_measures?)
     end
 
     def current_user_can_see_create_datasets?

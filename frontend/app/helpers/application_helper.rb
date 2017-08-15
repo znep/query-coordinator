@@ -1025,7 +1025,13 @@ module ApplicationHelper
   end
 
   def current_user_can_create_story?
-    FeatureFlags.derive.stories_enabled && current_user.has_right?(UserRights::CREATE_STORY)
+    FeatureFlags.derive(nil, request).stories_enabled &&
+      current_user.has_right?(UserRights::CREATE_STORY)
+  end
+
+  def current_user_can_create_measure?
+    # TODO: Pending the future of rights management, add an appropriate rights check.
+    op_standalone_measures_enabled?
   end
 
   # ONCALL-3032: Spam e-mail sent via the Socrata platform

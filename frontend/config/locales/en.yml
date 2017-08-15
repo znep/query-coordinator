@@ -758,6 +758,8 @@ en:
         create_dataset_short: Create a new Dataset
         create_dataset_shorter: Dataset
         create_dataset_verb: Create
+        create_measure_short: Measure
+        create_measure_verb: Create
         create_resource: Create a New Socrata Resource
         create_resource_short: Create new...
         create_resource_verb: Create
@@ -957,6 +959,7 @@ en:
           visualization_help: New
         view_types_singular_title: type
         view_types_title: View Types
+      generic_error: "Oh no! There's been a problem. Please try again."
       listing:
         comment_count: Number of comments
         error: We're sorry. Results could not be retrieved at this time. Please try again later.

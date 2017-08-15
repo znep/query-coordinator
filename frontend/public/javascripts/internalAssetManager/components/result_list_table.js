@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import ResultListRow from './result_list_row';
-import { changeSortOrder } from '../actions/sort_order';
 import _ from 'lodash';
 import classNames from 'classnames';
+
+import { changeSortOrder } from '../actions/sort_order';
+import connectLocalization from 'common/i18n/components/connectLocalization';
 import { handleEnter } from 'common/helpers/keyPressHelpers';
+import ResultListRow from './result_list_row';
 
 export class ResultListTable extends React.Component {
   constructor(props) {
@@ -47,7 +49,7 @@ export class ResultListTable extends React.Component {
   }
 
   render() {
-    const { columns, order, results } = this.props;
+    const { columns, I18n, order, results } = this.props;
 
     const columnHeaderProps = (columnName) => {
       const columnIsActive = columnName === _.get(order, 'value');
@@ -66,7 +68,9 @@ export class ResultListTable extends React.Component {
       };
     };
 
-    const columnTranslation = (key) => _.get(I18n, `result_list_table.columns.${_.snakeCase(key)}`);
+    const columnTranslation = (key) => I18n.t(
+      `internal_asset_manager.result_list_table.columns.${_.snakeCase(key)}`
+    );
 
     const tableHeader = (
       <thead>
@@ -102,6 +106,7 @@ export class ResultListTable extends React.Component {
 ResultListTable.propTypes = {
   changeSortOrder: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
+  I18n: PropTypes.object.isRequired,
   order: PropTypes.object,
   results: PropTypes.array.isRequired
 };
@@ -120,4 +125,4 @@ const mapDispatchToProps = dispatch => ({
   changeSortOrder: (columnName) => dispatch(changeSortOrder(columnName))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResultListTable);
+export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(ResultListTable));

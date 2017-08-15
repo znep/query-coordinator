@@ -1,12 +1,9 @@
-import url from 'url';
-
 import { fetchResults } from './cetera';
 import { clearPage } from './pager';
 import { clearSortOrder } from './sort_order';
 import { updateQueryString } from './query_string';
-import { getUnfilteredState } from '../reducers/filters';
-
-const currentQuery = () => _.get(url.parse(window.location.href, true), 'query.q', '');
+import { getCurrentQuery, getUnfilteredState } from '../reducers/filters';
+import * as autocompleteActions from 'common/autocomplete/actions';
 
 export const toggleRecentlyViewed = () => (dispatch, getState) => {
   const onSuccess = () => {
@@ -16,7 +13,7 @@ export const toggleRecentlyViewed = () => (dispatch, getState) => {
       dispatch(clearSortOrder());
     }
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState });
   };
 
   return fetchResults(
@@ -27,7 +24,7 @@ export const toggleRecentlyViewed = () => (dispatch, getState) => {
       onlyRecentlyViewed: !getState().filters.onlyRecentlyViewed,
       sortByRecentlyViewed: !getState().filters.onlyRecentlyViewed,
       pageNumber: 1,
-      q: currentQuery()
+      q: getCurrentQuery()
     },
     onSuccess
   );
@@ -37,7 +34,7 @@ export const changeAssetType = (value) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_ASSET_TYPE', value });
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState });
   };
 
   if (value !== getState().filters.assetTypes) {
@@ -48,7 +45,7 @@ export const changeAssetType = (value) => (dispatch, getState) => {
         action: 'CHANGE_ASSET_TYPE',
         assetTypes: value,
         pageNumber: 1,
-        q: currentQuery()
+        q: getCurrentQuery()
       },
       onSuccess
     );
@@ -59,7 +56,7 @@ export const changeAuthority = (value) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_AUTHORITY', value });
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState });
   };
 
   if (value !== getState().filters.authority) {
@@ -70,7 +67,7 @@ export const changeAuthority = (value) => (dispatch, getState) => {
         action: 'CHANGE_AUTHORITY',
         authority: value,
         pageNumber: 1,
-        q: currentQuery()
+        q: getCurrentQuery()
       },
       onSuccess
     );
@@ -83,7 +80,7 @@ export const changeCategory = (option) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_CATEGORY', value: category });
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState });
   };
 
   if (category !== getState().filters.category) {
@@ -94,7 +91,7 @@ export const changeCategory = (option) => (dispatch, getState) => {
         action: 'CHANGE_CATEGORY',
         category,
         pageNumber: 1,
-        q: currentQuery()
+        q: getCurrentQuery()
       },
       onSuccess
     );
@@ -107,7 +104,7 @@ export const changeOwner = (option) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_OWNER', value: owner });
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState });
   };
 
   if (owner.id !== getState().filters.ownedBy.id) {
@@ -118,7 +115,7 @@ export const changeOwner = (option) => (dispatch, getState) => {
         action: 'CHANGE_OWNER',
         ownedBy: owner,
         pageNumber: 1,
-        q: currentQuery()
+        q: getCurrentQuery()
       },
       onSuccess
     );
@@ -131,7 +128,7 @@ export const changeTag = (option) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_TAG', value: tag });
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState });
   };
 
   if (tag !== getState().filters.tag) {
@@ -142,7 +139,7 @@ export const changeTag = (option) => (dispatch, getState) => {
         action: 'CHANGE_TAG',
         tag,
         pageNumber: 1,
-        q: currentQuery()
+        q: getCurrentQuery()
       },
       onSuccess
     );
@@ -153,7 +150,7 @@ export const changeVisibility = (value) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_VISIBILITY', value });
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState });
   };
 
   if (value !== getState().filters.visibility) {
@@ -164,7 +161,7 @@ export const changeVisibility = (value) => (dispatch, getState) => {
         action: 'CHANGE_VISIBILITY',
         visibility: value,
         pageNumber: 1,
-        q: currentQuery()
+        q: getCurrentQuery()
       },
       onSuccess
     );
@@ -175,7 +172,7 @@ export const changeQ = (value) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CHANGE_Q', value });
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState });
   };
 
   return fetchResults(dispatch, getState, { action: 'CHANGE_Q', q: value, pageNumber: 1 }, onSuccess);
@@ -184,29 +181,30 @@ export const changeQ = (value) => (dispatch, getState) => {
 export const clearSearch = () => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CLEAR_SEARCH' });
+    dispatch(autocompleteActions.clearSearch()); // For autocomplete to update its text input
     clearPage(dispatch);
-    updateQueryString(dispatch, getState, true);
+    updateQueryString({ getState, shouldClearSearch: true });
   };
 
-  return fetchResults(dispatch, getState, { action: 'CLEAR_SEARCH', q: null, pageNumber: 1 }, onSuccess);
+  return fetchResults(dispatch, getState, { action: 'CLEAR_SEARCH', q: '', pageNumber: 1 }, onSuccess);
 };
 
-export const clearAllFilters = () => (dispatch, getState) => {
+export const clearAllFilters = (shouldClearSearch = false) => (dispatch, getState) => {
   const onSuccess = () => {
     dispatch({ type: 'CLEAR_ALL_FILTERS' });
+    if (shouldClearSearch) {
+      dispatch({ type: 'CLEAR_SEARCH' });
+      dispatch(autocompleteActions.clearSearch()); // For autocomplete to update its text input
+    }
     clearPage(dispatch);
-    updateQueryString(dispatch, getState);
+    updateQueryString({ getState, shouldClearSearch });
   };
 
-  const initialState = { ...getUnfilteredState(), pageNumber: 1 };
+  const initialState = { ...getUnfilteredState(), pageNumber: 1, q: getCurrentQuery() };
 
-  return fetchResults(
-    dispatch,
-    getState,
-    {
-      ...initialState,
-      action: 'CLEAR_ALL_FILTERS'
-    },
-    onSuccess
-  );
+  if (shouldClearSearch) {
+    initialState.q = '';
+  }
+
+  return fetchResults(dispatch, getState, initialState, onSuccess);
 };

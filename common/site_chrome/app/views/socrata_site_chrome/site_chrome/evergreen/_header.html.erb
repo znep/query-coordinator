@@ -15,7 +15,7 @@
             <%= divider %>
           <% end %>
 
-          <div class="collapsible-search" data-catalog-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>" data-catalog-autocomplete-collapsible="true">
+          <div class="collapsible-search" data-autocomplete="<%= get_feature_flag('browse_autocomplete') ? true : false %>" data-autocomplete-collapsible="true">
             <span class="socrata-icon-search collapsible-search-toggle"
               title="<%= t('shared.site_chrome.header.search') %>" onclick="toggleCollapsibleSearch(this)"
               onkeypress="toggleCollapsibleByKeypress(event)" role="button" tabindex="0">

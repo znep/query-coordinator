@@ -1,4 +1,4 @@
-import reducer from 'common/autocomplete/reducers/AutocompleteReducer'
+import reducer from 'common/autocomplete/reducers/StatefulAutocompleteReducer'
 import * as actions from 'common/autocomplete/actions'
 
 describe('autocomplete reducer', () => {
@@ -27,7 +27,7 @@ describe('autocomplete reducer', () => {
       };
       const expectedState = {
         query: '',
-        searchResults: []
+        searchResults: {}
       };
       const reducedState = reducer(initialState, actions.queryChanged(''));
       expect(reducedState).to.eql(expectedState);
@@ -38,7 +38,8 @@ describe('autocomplete reducer', () => {
     it('should handle results changed', () => {
       const expectedState = {
         query: 'Birds',
-        searchResults: someResults
+        searchResults: someResults,
+        resultsVisible: true
       };
       const reducedState = reducer({ query: 'Birds' }, actions.resultsChanged(someResults));
       expect(reducedState).to.eql(expectedState);
@@ -47,7 +48,8 @@ describe('autocomplete reducer', () => {
     it('ignores results if query is empty', () => {
       const expectedState = {
         query: '',
-        searchResults: []
+        searchResults: { results: [] },
+        resultsVisible: false
       };
       const reducedState = reducer({ query: '' }, actions.resultsChanged(someResults));
       expect(reducedState).to.eql(expectedState);

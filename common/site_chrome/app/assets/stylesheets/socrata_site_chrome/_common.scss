@@ -208,7 +208,7 @@ header#site-chrome-header, footer#site-chrome-footer {
     }
   }
 
-  .searchbox[data-catalog-autocomplete="true"] {
+  .searchbox[data-autocomplete="true"] {
     input {
       box-sizing: content-box !important;
     }

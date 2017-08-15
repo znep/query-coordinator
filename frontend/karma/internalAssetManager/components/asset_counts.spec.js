@@ -2,13 +2,8 @@ import { assert } from 'chai';
 import { AssetCounts} from 'components/asset_counts';
 import sinon from 'sinon';
 import I18nJS from 'i18n-js';
-import mockTranslations from 'mockTranslations';
 
 describe('components/AssetCounts', () => {
-  beforeEach(() => {
-    I18nJS.translations = { en: { internal_asset_manager: mockTranslations } };
-  });
-
   const assetCountsProps = (options = {}) => ({
     assetCounts: {
       charts: 9,

@@ -18,17 +18,15 @@ describe('actions/query_string', () => {
     });
 
     it('returns an empty query string when getState is empty', () => {
-      const dispatch = () => {};
       const getState = () => ({});
 
-      updateQueryString(dispatch, getState);
+      updateQueryString({ getState });
 
       const expectedUrl = `${baseUrl}?`;
       sinon.assert.calledWith(historyStub, { path: expectedUrl }, '', expectedUrl);
     });
 
     it('returns an empty query string when there are no filters, ordering, or paging present', () => {
-      const dispatch = () => {};
       const getState = () => ({
         catalog: {
           order: null,
@@ -45,14 +43,13 @@ describe('actions/query_string', () => {
         }
       });
 
-      updateQueryString(dispatch, getState);
+      updateQueryString({ getState });
 
       const expectedUrl = `${baseUrl}?`;
       sinon.assert.calledWith(historyStub, { path: expectedUrl }, '', expectedUrl);
     });
 
     it('returns a query string populated with values when there are filters present', () => {
-      const dispatch = () => {};
       const getState = () => ({
         catalog: {
           order: null,
@@ -72,14 +69,13 @@ describe('actions/query_string', () => {
         }
       });
 
-      updateQueryString(dispatch, getState);
+      updateQueryString({ getState });
 
       const expectedUrl = `${baseUrl}?assetTypes=charts&authority=official&category=Paint&q=paint&tag=painting&visibility=open&ownerId=abcd-1234&ownerName=bobross`;
       sinon.assert.calledWith(historyStub, { path: expectedUrl }, '', expectedUrl);
     });
 
     it('returns a query string populated with values when there is ordering and paging present', () => {
-      const dispatch = () => {};
       const getState = () => ({
         catalog: {
           order: {
@@ -99,7 +95,7 @@ describe('actions/query_string', () => {
         }
       });
 
-      updateQueryString(dispatch, getState);
+      updateQueryString({ getState });
 
       const expectedUrl = `${baseUrl}?page=23&orderColumn=testColumn&orderDirection=asc`;
       sinon.assert.calledWith(historyStub, { path: expectedUrl }, '', expectedUrl);

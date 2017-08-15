@@ -1,5 +1,12 @@
 import _ from 'lodash';
-import url from 'url';
+
+import { getQueryParameter } from '../actions/query_string.js';
+
+/*
+ * Since we're now storing some of the redux state in the URL, that means that we've distributed "truth" into
+ * two different locations. At initial page load, Rails sets the initialState from a combination of default
+ * state and URL parameters. Subsequent user interactions update both Redux state _and_ URL query parameters.
+ */
 
 export const getInitialState = () => ({
   assetTypes: _.get(window, 'initialState.initialFilters.assetTypes', null),
@@ -9,11 +16,15 @@ export const getInitialState = () => ({
   domainTags: _.get(window, 'initialState.domainTags') || [],
   onlyRecentlyViewed: false,
   ownedBy: _.get(window, 'initialState.initialFilters.ownedBy'),
-  q: _.get(url.parse(window.location.href, true), 'query.q', ''),
+  q: _.get(window, 'initialState.q'),
   tag: _.get(window, 'initialState.initialFilters.tag'),
   usersList: _.get(window, 'initialState.usersList') || [],
   visibility: _.get(window, 'initialState.initialFilters.visibility', null)
 });
+
+// This function should _only_ be used for keeping track of user changes to the query. See also changeQ() in
+// platform-ui/frontend/public/javascripts/internalAssetManager/actions/filters.js
+export const getCurrentQuery = () => getQueryParameter({ key: 'q', defaultValue: '' });
 
 export const getUnfilteredState = () => ({
   assetTypes: null,
@@ -26,7 +37,7 @@ export const getUnfilteredState = () => ({
     displayName: '',
     id: null
   },
-  q: null,
+  q: getCurrentQuery(),
   tag: null,
   usersList: _.get(window, 'initialState.usersList') || [],
   visibility: null
@@ -96,7 +107,7 @@ export default (state, action) => {
   if (action.type === 'CLEAR_SEARCH') {
     return {
       ...state,
-      q: null
+      q: ''
     };
   }
 

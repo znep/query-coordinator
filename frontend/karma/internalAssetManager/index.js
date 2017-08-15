@@ -1,6 +1,10 @@
 import 'babel-polyfill-safe';
 import 'script!jquery';
+
+import I18nJS from 'i18n-js';
 import { Provider } from 'react-redux';
+import Localization from 'common/i18n/components/Localization';
+import mockTranslations from 'mockTranslations';
 
 window._ = require('lodash');
 window.React = require('react');
@@ -23,6 +27,19 @@ window.renderComponentWithPropsAndStore = function(component, props, store) {
   const _props = props || {};
   return window.renderComponent(Provider, { store: _store }, React.createElement(component, _props));
 }
+
+I18nJS.translations = { en: { internal_asset_manager: mockTranslations } };
+
+// Reset the defaultProps since at load time they are (might be) undefined
+Localization.defaultProps.translations = window.translations;
+
+window.renderLocalizedComponentWithPropsAndStore = (component, props, store) => (
+  <Localization>
+    <Provider store={store || getDefaultStore()}>
+      {React.createElement(component, props)}
+    </Provider>
+  </Localization>
+);
 
 function requireAll(context) {
   context.keys().forEach(context);

@@ -2806,7 +2806,9 @@ en:
         label: Category
         placeholder: Any Category
       header:
-        title: Filters
+        title:
+          clear_filters_only: Filters
+          clear_filter_and_search: Clear All
       last_updated_date:
         label: Last Updated Date
         options:

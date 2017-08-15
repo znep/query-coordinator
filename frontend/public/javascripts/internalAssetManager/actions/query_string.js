@@ -1,6 +1,7 @@
 import _ from 'lodash';
+import url from 'url';
 
-export const updateQueryString = (dispatch, getState, clearSearch) => {
+export const updateQueryString = ({ getState, shouldClearSearch = false }) => {
   if (_.get(window, 'history.pushState')) {
     const location = window.location;
     const urlPath = `${location.protocol}//${location.host}${location.pathname}`;
@@ -10,7 +11,8 @@ export const updateQueryString = (dispatch, getState, clearSearch) => {
       // Only a whitelist of filter keys
       filter((filterTypeAndValue) => _.includes(
         ['assetTypes', 'authority', 'category', 'q', 'tag', 'visibility'],
-        filterTypeAndValue[0])).
+        filterTypeAndValue[0])
+      ).
       // Only filters with values present
       filter((filterTypeAndValue) => !_.isEmpty(filterTypeAndValue[1])).
       fromPairs().
@@ -37,7 +39,7 @@ export const updateQueryString = (dispatch, getState, clearSearch) => {
     }
 
     // search query
-    if (clearSearch) {
+    if (shouldClearSearch) {
       delete activeFilters.q;
     }
 
@@ -51,4 +53,8 @@ export const updateQueryString = (dispatch, getState, clearSearch) => {
     const newUrl = `${urlPath}?${queryString}`;
     window.history.pushState({ path: newUrl }, '', newUrl);
   }
+};
+
+export const getQueryParameter = ({ key, defaultValue }) => {
+  return _.get(url.parse(window.location.href, true), `query.${key}`, defaultValue);
 };

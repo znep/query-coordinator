@@ -9,7 +9,7 @@ const InlineDataProvider = require('./dataProviders/InlineDataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const MetadataProvider = require('./dataProviders/MetadataProvider');
 
-const ROW_HEIGHT_PX = 39;
+const ROW_HEIGHT_PX = 31;
 const MAX_COLUMN_COUNT = 64;
 
 // Passing in locale is a temporary workaround to localize the Table & Pager

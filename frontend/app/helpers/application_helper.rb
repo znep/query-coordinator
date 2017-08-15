@@ -631,7 +631,9 @@ module ApplicationHelper
       "action_#{controller.controller_name}_#{controller.action_name}",
       @suppress_chrome ? 'suppressChrome' : nil,
       "locale_#{I18n.locale}",
-      @body_class
+      @body_class,
+      # EN-17053/EN-17170 - Make the grid view look more contemporary
+      FeatureFlags.derive(nil, request)[:enable_nbe_only_grid_view_optimizations] ? 'styleguide' : ''
     ].compact.join(' ')
   end
 

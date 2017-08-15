@@ -1735,7 +1735,7 @@ en:
       title: What's in this Dataset?
     dataset_preview:
       all_rows: Showing all rows
-      grid_view_link: Explore Data
+      grid_view_link: View Data
       latitude: Latitude
       longitude: Longitude
       many_rows: Showing {unitOther} {firstRowOrdinal}-{lastRowOrdinal} out of {datasetRowCount}

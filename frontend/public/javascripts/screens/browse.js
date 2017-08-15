@@ -810,7 +810,9 @@ $(function() {
           },
           tileConfig: {}
         },
-        name: generateDatedTitle('Untitled Story'),
+        name: generateDatedTitle(
+          blist.translations.shared.site_chrome.header.create_menu.default_story_title
+        ),
         query: {}
       };
 
@@ -820,7 +822,7 @@ $(function() {
         .catch(function(error) {
           $dropdownElement.removeClass('working');
           console.error(error);
-          alert('Oh no! There’s been a problem. Please try again.');
+          alert(blist.translations.controls.browse.generic_error);
         });
     }
   );
@@ -845,7 +847,9 @@ $(function() {
             }
           }
         },
-        name: generateDatedTitle('Untitled Measure'),
+        name: generateDatedTitle(
+          blist.translations.shared.site_chrome.header.create_menu.default_measure_title
+        ),
         query: {}
       };
 
@@ -855,7 +859,7 @@ $(function() {
         .catch(function(error) {
           $dropdownElement.removeClass('working');
           console.error(error);
-          alert('Oh no! There’s been a problem. Please try again.');
+          alert(blist.translations.controls.browse.generic_error);
         });
     }
   );

@@ -959,6 +959,7 @@ en:
           visualization_help: New
         view_types_singular_title: type
         view_types_title: View Types
+      generic_error: "Oh no! There's been a problem. Please try again."
       listing:
         comment_count: Number of comments
         error: We're sorry. Results could not be retrieved at this time. Please try again later.

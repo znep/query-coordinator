@@ -35,6 +35,7 @@
     "OpenLayers": true,
     "Page": true,
     "Proj4js": true,
+    "Promise": true,
     "Recaptcha": true,
     "RowSet": true,
     "Showdown": true,

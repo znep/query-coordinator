@@ -708,7 +708,10 @@ $(function() {
   // begin editing their asset. The method below encapsulates that workflow; the
   // respective click handlers follow.
   //
-  // NOTE: See very important information at
+  // TODO: I don't think it's really appropriate for this to be part of the
+  // `browse.js` file, since it has nothing to do with the catalog.
+  //
+  // NOTE: See other very important information at
   //  common/site_chrome/app/assets/javascripts/socrata_site_chrome/admin_header.js
 
   function createPublishedView(metadata) {
@@ -737,7 +740,7 @@ $(function() {
           valid ? resolve(response.id) : reject(allocationError);
         },
         error: function() { reject(allocationError); }
-      })
+      });
     }).then(function(id) {
       // If allocation was successful, publish the asset.
       return new Promise(function(resolve, reject) {
@@ -759,6 +762,10 @@ $(function() {
         });
       });
     });
+  }
+
+  function getAppToken() {
+    return blist && blist.configuration && blist.configuration.appToken;
   }
 
   // Ensure that a valid 4x4 was generated.
@@ -785,6 +792,7 @@ $(function() {
 
       var $dropdownElement = $(this).closest('.jq-dropdown');
 
+      var defaultTitle = blist.translations.shared.site_chrome.header.create_menu.default_story_title;
       var metadata = {
         displayFormat: {},
         displayType: 'story',
@@ -810,20 +818,19 @@ $(function() {
           },
           tileConfig: {}
         },
-        name: generateDatedTitle(
-          blist.translations.shared.site_chrome.header.create_menu.default_story_title
-        ),
+        name: generateDatedTitle(defaultTitle),
         query: {}
       };
 
       $dropdownElement.addClass('working');
-      createPublishedView(metadata)
-        .then(function(uid) { window.location.href = '/stories/s/' + uid + '/create'; })
-        .catch(function(error) {
+      createPublishedView(metadata).then(
+        function(uid) { window.location.href = '/stories/s/' + uid + '/create'; },
+        function(error) {
           $dropdownElement.removeClass('working');
           console.error(error);
           alert(blist.translations.controls.browse.generic_error);
-        });
+        }
+      );
     }
   );
 
@@ -835,6 +842,7 @@ $(function() {
 
       var $dropdownElement = $(this).closest('.jq-dropdown');
 
+      var defaultTitle = blist.translations.shared.site_chrome.header.create_menu.default_measure_title;
       var metadata = {
         displayFormat: {},
         displayType: 'measure',
@@ -847,20 +855,19 @@ $(function() {
             }
           }
         },
-        name: generateDatedTitle(
-          blist.translations.shared.site_chrome.header.create_menu.default_measure_title
-        ),
+        name: generateDatedTitle(defaultTitle),
         query: {}
       };
 
       $dropdownElement.addClass('working');
-      createPublishedView(metadata)
-        .then(function(uid) { window.location.href = '/d/' + uid; })
-        .catch(function(error) {
+      createPublishedView(metadata).then(
+        function(uid) { window.location.href = '/d/' + uid; },
+        function(error) {
           $dropdownElement.removeClass('working');
           console.error(error);
           alert(blist.translations.controls.browse.generic_error);
-        });
+        }
+      );
     }
   );
 });

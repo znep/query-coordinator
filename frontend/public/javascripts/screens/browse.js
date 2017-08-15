@@ -707,71 +707,74 @@ $(function() {
   // publishing it, then redirecting to some appropriate page where the user can
   // begin editing their asset. The method below encapsulates that workflow; the
   // respective click handlers follow.
+  //
+  // NOTE: See very important information at
+  //  common/site_chrome/app/assets/javascripts/socrata_site_chrome/admin_header.js
 
-  function createPublishedView(metadata, redirectTo) {
+  function createPublishedView(metadata) {
     // You can't perform this operation without an app token.
-    var appToken = blist && blist.configuration && blist.configuration.appToken;
+    var appToken = getAppToken();
     if (!appToken) {
-      return false;
+      return Promise.reject(new Error('AppToken is not accessible!'));
     }
 
-    // Ensure that a valid 4x4 was generated.
-    function validate4x4(testString) {
-      var pattern = window.blist.util.patterns.UID;
-      return pattern && testString && testString.match(pattern) !== null;
-    }
+    // Allocate a new asset.
+    return new Promise(function(resolve, reject) {
+      var allocationError = new Error(
+        'View allocation failed; check network response for details.'
+      );
 
-    // Generic feedback for any problem during this process.
-    function onError() {
-      throw new Error('Oh no! There’s been a problem. Please try again.');
-    }
-
-    // Send the user to the initial edit experience for the new catalog asset.
-    function onPublishSuccess(publishData) {
-      if (!validate4x4(publishData.id)) {
-        return onError();
-      }
-
-      window.location.href = redirectTo(publishData.id);
-    }
-
-    // After the initial creation step, we need to publish the newly-created
-    // catalog asset, since the publish action provisions a new 4x4.
-    function onSuccess(data, textStatus, xhr) {
-      if (!validate4x4(data.id)) {
-        return onError();
-      }
-
-      var publishUrl = '/api/views/' + data.id + '/publication.json?accessType=WEBSITE';
-      var publishSettings = {
-        contentType: false,
-        error: onError,
+      $.ajax({
+        url: '/api/views.json',
+        type: 'POST',
+        data: JSON.stringify(metadata),
         headers: {
+          'Content-type': 'application/json',
           'X-App-Token': appToken
         },
-        type: 'POST',
-        success: onPublishSuccess
-      };
+        success: function(response) {
+          var valid = response.hasOwnProperty('id') && validate4x4(response.id);
+          valid ? resolve(response.id) : reject(allocationError);
+        },
+        error: function() { reject(allocationError); }
+      })
+    }).then(function(id) {
+      // If allocation was successful, publish the asset.
+      return new Promise(function(resolve, reject) {
+        var publicationError = new Error(
+          'View publication failed; check network response for details.'
+        );
 
-      $.ajax(publishUrl, publishSettings);
-    }
+        $.ajax({
+          url: '/api/views/' + id + '/publication.json?accessType=WEBSITE',
+          type: 'POST',
+          headers: {
+            'X-App-Token': appToken
+          },
+          success: function(response) {
+            var valid = response.hasOwnProperty('id') && validate4x4(response.id);
+            valid ? resolve(response.id) : reject(publicationError);
+          },
+          error: function() { reject(publicationError); }
+        });
+      });
+    });
+  }
 
-    // The first API call, which allocates an asset, is made here.
-    var url = '/api/views.json';
-    var settings = {
-      contentType: false,
-      data: JSON.stringify(metadata),
-      dataType: 'json',
-      error: onError,
-      headers: {
-        'Content-type': 'application/json',
-        'X-App-Token': appToken
-      },
-      type: 'POST',
-      success: onSuccess
-    };
+  // Ensure that a valid 4x4 was generated.
+  function validate4x4(testString) {
+    return /^[a-z0-9]{4}-[a-z0-9]{4}$/i.test(testString);
+  }
 
-    $.ajax(url, settings);
+  // Add a datestring to a generic title.
+  function generateDatedTitle(title) {
+    var now = new Date();
+    var datePieces = [
+      String(now.getMonth() + 1).padStart(2, 0),
+      String(now.getDate()).padStart(2, 0),
+      now.getFullYear()
+    ];
+    return title + ' - ' + datePieces.join('-');
   }
 
   $(document).on(
@@ -807,19 +810,18 @@ $(function() {
           },
           tileConfig: {}
         },
-        name: 'Untitled Story - ' + new Date().format('m-d-Y'),
+        name: generateDatedTitle('Untitled Story'),
         query: {}
       };
 
-      try {
-        $dropdownElement.addClass('working');
-        createPublishedView(metadata, function(uid) {
-          return '/stories/s/' + uid + '/create';
+      $dropdownElement.addClass('working');
+      createPublishedView(metadata)
+        .then(function(uid) { window.location.href = '/stories/s/' + uid + '/create'; })
+        .catch(function(error) {
+          $dropdownElement.removeClass('working');
+          console.error(error);
+          alert('Oh no! There’s been a problem. Please try again.');
         });
-      } catch (err) {
-        $dropdownElement.removeClass('working');
-        alert(err.message);
-      }
     }
   );
 
@@ -843,19 +845,18 @@ $(function() {
             }
           }
         },
-        name: 'Untitled Measure - ' + new Date().format('m-d-Y'),
+        name: generateDatedTitle('Untitled Measure'),
         query: {}
       };
 
-      try {
-        $dropdownElement.addClass('working');
-        createPublishedView(metadata, function(uid) {
-          return '/d/' + uid;
+      $dropdownElement.addClass('working');
+      createPublishedView(metadata)
+        .then(function(uid) { window.location.href = '/d/' + uid; })
+        .catch(function(error) {
+          $dropdownElement.removeClass('working');
+          console.error(error);
+          alert('Oh no! There’s been a problem. Please try again.');
         });
-      } catch (err) {
-        $dropdownElement.removeClass('working');
-        alert(err.message);
-      }
     }
   );
 });

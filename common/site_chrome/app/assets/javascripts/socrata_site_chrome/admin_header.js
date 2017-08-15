@@ -166,9 +166,9 @@ function clickCreateStory() {
     query: {}
   };
 
-  createPublishedView(metadata, function(uid) {
-    return '/stories/s/' + uid + '/create';
-  });
+  createPublishedView(metadata)
+    .then(function(id) { window.location.href = '/stories/s/' + id + '/create'; })
+    .catch(console.error);
 }
 
 /**
@@ -191,49 +191,71 @@ function clickCreateMeasure() {
     query: {}
   };
 
-  createPublishedView(metadata, function(uid) {
-    return '/d/' + uid;
-  });
+  createPublishedView(metadata)
+    .then(function(id) { window.location.href = '/d/' + id; })
+    .catch(console.error);
 }
 
 /**
- * Creates a published asset and redirects to the initial edit experience.
- * This helper allows us to share a common workflow for stories and measures.
+ * Allocates and publishes a new asset. This helper allows us to share a common
+ * workflow for stories and measures.
+ *
+ * NOTE: See frontend/public/javascripts/screens/browse.js for nearly-duplicated
+ * implementation; the duplication was an improvement over having two totally
+ * different implementations. Please try not to let the two implementations
+ * drift too far apart before we're able to consolidate.
+ *
+ * NOTE: Promise wrapping is necessary in order to overcome the limitations of
+ * jQuery 1.x AJAX capabilities. Promises are polyfilled in IE11.
  */
-function createPublishedView(metadata, redirectTo) {
-  if (!getAppToken()) {
-    return console.error('AppToken is not accessible!');
+function createPublishedView(metadata) {
+  // You can't perform this operation without an app token.
+  var appToken = getAppToken();
+  if (!appToken) {
+    return Promise.reject(new Error('AppToken is not accessible!'));
   }
 
-  $.ajax({
-    url: '/api/views.json',
-    type: 'POST',
-    data: JSON.stringify(metadata),
-    headers: {
-      'Content-type': 'application/json',
-      'X-App-Token': getAppToken()
-    }
-  }).then(function(response) {
-    if (response.hasOwnProperty('id') && validate4x4(response.id)) {
-      var publishUrl = '/api/views/' + response.id + '/publication.json?accessType=WEBSITE';
+  // Allocate a new asset.
+  return new Promise(function(resolve, reject) {
+    var allocationError = new Error(
+      'View allocation failed; check network response for details.'
+    );
 
-      return $.ajax({
-        url: publishUrl,
+    $.ajax({
+      url: '/api/views.json',
+      type: 'POST',
+      data: JSON.stringify(metadata),
+      headers: {
+        'Content-type': 'application/json',
+        'X-App-Token': appToken
+      },
+      success: function(response) {
+        var valid = response.hasOwnProperty('id') && validate4x4(response.id);
+        valid ? resolve(response.id) : reject(allocationError);
+      },
+      error: function() { reject(allocationError); }
+    })
+  }).then(function(id) {
+    // If allocation was successful, publish the asset.
+    return new Promise(function(resolve, reject) {
+      var publicationError = new Error(
+        'View publication failed; check network response for details.'
+      );
+
+      $.ajax({
+        url: '/api/views/' + id + '/publication.json?accessType=WEBSITE',
         type: 'POST',
         headers: {
-          'X-App-Token': getAppToken()
-        }
+          'X-App-Token': appToken
+        },
+        success: function(response) {
+          var valid = response.hasOwnProperty('id') && validate4x4(response.id);
+          valid ? resolve(response.id) : reject(publicationError);
+        },
+        error: function() { reject(publicationError); }
       });
-    } else {
-      throw response;
-    }
-  }).then(function(response) {
-    if (response.hasOwnProperty('id') && validate4x4(response.id)) {
-      window.location.href = redirectTo(response.id);
-    } else {
-      throw response;
-    }
-  }).fail(console.error);
+    });
+  });
 }
 
 /**

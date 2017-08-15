@@ -193,6 +193,7 @@ if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
             var currentTotalRowCount;
             var lastRenderedVif;
             var $datasetGrid;
+            var flyoutRenderer = new window.blist.Visualizations.views.FlyoutRenderer();
 
             // If the only thing changing is pagination, you can just call
             // 'loadRowsFromModel(startIndex, endIndex)' instead of resetting
@@ -371,6 +372,15 @@ if (blist.feature_flags.enable_nbe_only_grid_view_optimizations) {
                   currentEndIndex += PAGE_SIZE;
 
                   loadRowsFromModel(currentStartIndex, currentEndIndex);
+                });
+
+              $datasetGrid.on('SOCRATA_VISUALIZATION_FLYOUT', function(e) {
+
+                  if (e.originalEvent.detail) {
+                    flyoutRenderer.render(e.originalEvent.detail);
+                  } else {
+                    flyoutRenderer.clear();
+                  }
                 });
             }
 

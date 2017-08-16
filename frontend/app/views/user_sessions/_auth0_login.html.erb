@@ -1,3 +1,7 @@
+<% content_for :head do %>
+  <%= csrf_meta_tags %>
+<% end %>
+
 <%#
   Inline style on this for now since I don't want to pull in a whole stylesheet for three rules
   All the styles for the actual component get pulled in with the webpack bundle via CSS modules
@@ -5,7 +9,7 @@
 <div id="signin" style="margin-left: auto; margin-right: auto;"></div>
 
 <% @suppress_flashes = true %>
-<% translations_for('screens.sign_in', 'screens.sign_up', 'account.common') %>
+<% translations_for('screens.sign_in', 'screens.sign_up', 'account.common', 'core.validation') %>
 
 <% content_for :scripts do %>
   <%= include_webpack_bundle 'signin/main.js' %>

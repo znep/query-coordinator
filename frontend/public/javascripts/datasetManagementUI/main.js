@@ -6,7 +6,6 @@ import { Router, browserHistory } from 'react-router';
 import Perf from 'react-addons-perf';
 import middleware from 'middleware';
 import rootReducer from 'reducers/rootReducer';
-import { bootstrapApp } from 'actions/bootstrap';
 import * as Selectors from './selectors';
 import Airbrake from 'common/airbrake';
 import rootRoute from './routes';
@@ -23,14 +22,6 @@ if (window.serverConfig.environment === 'development') {
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(rootReducer, composeEnhancers(middleware));
-
-store.dispatch(
-  bootstrapApp(
-    window.initialState.view,
-    window.initialState.revision,
-    window.initialState.customMetadataFieldsets
-  )
-);
 
 browserHistory.listen(location => {
   store.dispatch(addLocation(location));

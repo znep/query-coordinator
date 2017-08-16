@@ -30,8 +30,6 @@
 
     var initialState = {
       view: <%== @view.to_json %>,
-      // TODO: EN-15763: change "update" to "revision" here and everywhere else in JS stemming from here
-      revision: <%== @revision.to_json %>,
       datasetCategories: <%== flatten_category_tree.to_json %>.map(arrayToObject),
       datasetLicenses: <%== licenses.to_json %>.map(arrayToObject),
       customMetadataFieldsets: <%== get_dataset_management_ui_custom_metadata.to_json %>

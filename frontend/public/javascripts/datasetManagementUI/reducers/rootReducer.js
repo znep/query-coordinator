@@ -9,6 +9,7 @@ import listenForOutputSchema from 'reducers/listenForOutputSchema';
 import loadData from 'reducers/loadData';
 import insertInputSchema from 'reducers/insertInputSchema';
 import applyRevision from 'reducers/applyRevision';
+import loadRevision from 'reducers/loadRevision';
 
 const combined = combineReducers({
   entities,
@@ -23,5 +24,6 @@ export default reduceReducers(
   listenForOutputSchema,
   loadData,
   insertInputSchema,
-  applyRevision
+  applyRevision,
+  loadRevision
 );

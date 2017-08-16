@@ -1,36 +1,30 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import _ from 'lodash';
 import Field from 'components/FormComponents/Field';
 import { isFieldNameField, isDisplayNameField } from 'models/forms';
-import * as Actions from 'actions/outputColumns';
-import { editView } from 'actions/views';
+import { editOutputColumn } from 'actions/outputColumns';
+import { markFormDirty } from 'actions/forms';
 
-const mapStateToProps = ({ entities, ui }, { field, params }) => {
-  const { fourfour } = params;
-
-  const errors = _.chain(entities)
-    .get(`views.${fourfour}.columnMetadataErrors`, [])
+const mapStateToProps = ({ ui }, { field }) => {
+  const errors = _.chain(ui.forms.columnForm.errors)
     .filter(error => error.fieldName === field.data.name)
     .map(error => error.message)
     .value();
 
-  const showErrors = !!entities.views[fourfour].showErrors;
+  const showErrors = !!ui.forms.columnForm.showErrors;
 
-  return { errors, fourfour, showErrors };
+  return { errors, showErrors };
 };
 
-const mergeProps = ({ fourfour, ...rest }, { dispatch }, ownProps) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   const id = _.toNumber(ownProps.field.data.name.split('-').reverse()[0]);
   const propName = getPropName(ownProps.field.data.name);
 
   return {
-    ...rest,
-    ...ownProps,
     setValue: value => {
-      dispatch(editView(fourfour, { columnFormDirty: true }));
-      dispatch(Actions.editOutputColumn(id, { [propName]: value }));
+      dispatch(markFormDirty('columnForm'));
+      dispatch(editOutputColumn(id, { [propName]: value }));
     }
   };
 };
@@ -45,4 +39,4 @@ function getPropName(fieldName) {
   }
 }
 
-export default withRouter(connect(mapStateToProps, null, mergeProps)(Field));
+export default connect(mapStateToProps, mapDispatchToProps)(Field);

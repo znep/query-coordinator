@@ -1,25 +1,24 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import _ from 'lodash';
 import Fieldset from 'components/FormComponents/Fieldset';
-import { editView } from 'actions/views';
 import { makeRows, validateColumnForm } from 'models/forms';
 import ColumnField from 'components/FormComponents/ColumnField';
+import { setFormErrors } from 'actions/forms';
 import styles from 'styles/Forms/ColumnForm.scss';
 
 export class ColumnForm extends Component {
   componentWillMount() {
-    const { setErrors } = this.props;
-    setErrors();
+    const { errors } = this.props;
+    setFormErrors('columnFormn', errors);
   }
 
   componentWillReceiveProps(nextProps) {
     const { errors: oldErrors } = this.props;
-    const { setErrors, errors: currentErrors } = nextProps;
+    const { errors: currentErrors, dispatch } = nextProps;
 
     if (!_.isEqual(oldErrors, currentErrors)) {
-      setErrors();
+      dispatch(setFormErrors('columnFormn', currentErrors));
     }
   }
 
@@ -45,23 +44,13 @@ export class ColumnForm extends Component {
 ColumnForm.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
   errors: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setErrors: PropTypes.func.isRequired,
   outputSchemaId: PropTypes.number.isRequired
 };
 
-const mapStateToProps = ({ entities, ui }, { outputSchemaId }) => {
-  return {
-    rows: makeRows(outputSchemaId, entities),
-    errors: validateColumnForm(outputSchemaId, entities),
-    outputSchemaId
-  };
-};
-
-const mergeProps = ({ outputSchemaId, errors, rows }, { dispatch }, { params }) => ({
-  errors,
-  rows,
-  outputSchemaId,
-  setErrors: () => dispatch(editView(params.fourfour, { columnMetadataErrors: errors }))
+const mapStateToProps = ({ entities, ui }, { outputSchemaId }) => ({
+  rows: makeRows(outputSchemaId, entities),
+  errors: validateColumnForm(outputSchemaId, entities),
+  outputSchemaId
 });
 
-export default withRouter(connect(mapStateToProps, null, mergeProps)(ColumnForm));
+export default connect(mapStateToProps)(ColumnForm);

@@ -2,29 +2,25 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import _ from 'lodash';
-import { editView } from 'actions/views';
 import { makeFieldsets, validateDatasetForm } from 'models/forms';
 import Fieldset from 'components/FormComponents/Fieldset';
 import DatasetField from 'components/FormComponents/DatasetField';
+import { setFormErrors } from 'actions/forms';
 
 export class DatasetForm extends Component {
   componentWillMount() {
-    const { setErrors, regularFieldsets, customFieldsets } = this.props;
+    const { regularFieldsets, customFieldsets } = this.props;
 
     validateDatasetForm(regularFieldsets, customFieldsets).matchWith({
-      Success: () => setErrors([]),
-      Failure: ({ value }) => setErrors(value)
+      Success: () => setFormErrors('datasetForm', []),
+      Failure: ({ value }) => setFormErrors('datasetForm', value)
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { regularFieldsets, customFieldsets } = nextProps;
+    const { regularFieldsets, customFieldsets, dispatch } = nextProps;
 
-    const {
-      regularFieldsets: oldRegularFieldsets,
-      customFieldsets: oldCustomFieldsets,
-      setErrors
-    } = this.props;
+    const { regularFieldsets: oldRegularFieldsets, customFieldsets: oldCustomFieldsets } = this.props;
 
     const oldFieldsets = [...oldRegularFieldsets, ...oldCustomFieldsets];
 
@@ -32,8 +28,8 @@ export class DatasetForm extends Component {
 
     if (!_.isEqual(oldFieldsets, fieldsets)) {
       validateDatasetForm(regularFieldsets, customFieldsets).matchWith({
-        Success: () => setErrors([]),
-        Failure: ({ value }) => setErrors(value)
+        Success: () => dispatch(setFormErrors('datasetForm', [])),
+        Failure: ({ value }) => dispatch(setFormErrors('datasetForm', value))
       });
     }
   }
@@ -70,8 +66,7 @@ DatasetForm.propTypes = {
       title: PropTypes.string,
       fields: PropTypes.array
     })
-  ),
-  setErrors: PropTypes.func.isRequired
+  )
 };
 
 const mapStateToProps = ({ entities }, { params }) => {
@@ -79,7 +74,14 @@ const mapStateToProps = ({ entities }, { params }) => {
 
   const view = entities.views[fourfour];
 
-  const { regular: regularFieldsets, custom: customFieldsets } = makeFieldsets(view);
+  const { customMetadataFieldsets } = view;
+
+  const revision = _.find(entities.revisions, r => r.revision_seq === _.toNumber(params.revisionSeq));
+
+  const { regular: regularFieldsets, custom: customFieldsets } = makeFieldsets(
+    revision,
+    customMetadataFieldsets
+  );
 
   return {
     regularFieldsets,
@@ -87,14 +89,4 @@ const mapStateToProps = ({ entities }, { params }) => {
   };
 };
 
-// We don't use this much, but it is a nice alternative to using the component
-// as a place to put together the output of mapStateToProps and mapDispatchToProps;
-// mergeProps provides a place to do this putting-together without cluttering the
-// component. For more info/background, see discussion here:
-// https://github.com/reactjs/react-redux/issues/237#issuecomment-168816713
-const mergeProps = ({ fourfour, ...rest }, { dispatch }, { params }) => ({
-  ...rest,
-  setErrors: errors => dispatch(editView(params.fourfour, { datasetMetadataErrors: errors }))
-});
-
-export default withRouter(connect(mapStateToProps, null, mergeProps)(DatasetForm));
+export default withRouter(connect(mapStateToProps)(DatasetForm));

@@ -16,6 +16,7 @@ import mockAPI from '../testHelpers/mockAPI';
 import rootReducer from 'reducers/rootReducer';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
+import state from '../data/initialState';
 
 const socket = mockSocket(bootstrapChannels);
 
@@ -36,38 +37,26 @@ describe('actions/showOutputSchema', () => {
   describe('addColumn', () => {
     let unmock;
     let recordedActions = [];
-    let os;
-    let column;
 
     before(done => {
       unmock = mockAPI();
 
+      const os = _.values(state.entities.output_schemas)[0];
+      const column = _.values(state.entities.output_columns)[0];
+
       const store = createStore(
         rootReducer,
+        state,
         applyMiddleware(thunk.withExtraArgument(socket))
       );
 
-      store.dispatch(
-        bootstrapApp(
-          window.initialState.view,
-          window.initialState.revision,
-          window.initialState.customMetadataFieldsets
-        )
-      );
-
       store
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
-        .then(() => {
-          const { entities } = store.getState();
-          os = currentOutputSchema(entities);
-          column = columnsForOutputSchema(entities, os.id)[0];
-          return store.dispatch(addColumn(os, column, params));
-        })
+        .dispatch(addColumn(os, column, params))
         .then(() => {
           return store.getState();
         })
-        .then(state => {
-          const fakeStore = mockStore(state);
+        .then(stateAfterAddColumn => {
+          const fakeStore = mockStore(stateAfterAddColumn);
           return fakeStore
             .dispatch(addColumn(os, column, params))
             .then(() => fakeStore.getActions());
@@ -109,33 +98,21 @@ describe('actions/showOutputSchema', () => {
   describe('dropColumn', () => {
     let unmock;
     let recordedActions = [];
-    let os;
-    let column;
+
+    const os = _.values(state.entities.output_schemas)[0];
+    const column = _.values(state.entities.output_columns)[0];
 
     before(done => {
       unmock = mockAPI();
 
       const store = createStore(
         rootReducer,
+        state,
         applyMiddleware(thunk.withExtraArgument(socket))
       );
 
-      store.dispatch(
-        bootstrapApp(
-          window.initialState.view,
-          window.initialState.revision,
-          window.initialState.customMetadataFieldsets
-        )
-      );
-
       store
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
-        .then(() => {
-          const { entities } = store.getState();
-          os = currentOutputSchema(entities);
-          column = columnsForOutputSchema(entities, os.id)[0];
-          return store.dispatch(dropColumn(os, column, params));
-        })
+        .dispatch(dropColumn(os, column, params))
         .then(() => {
           return store.getState();
         })
@@ -168,7 +145,7 @@ describe('actions/showOutputSchema', () => {
       assert.isAtLeast(expectedAction.length, 1);
     });
 
-    it('does not include the droped column when updating the store', () => {
+    it('does not include the dropped column when updating the store', () => {
       const expectedAction = recordedActions
         .filter(
           action =>
@@ -186,33 +163,21 @@ describe('actions/showOutputSchema', () => {
   describe('updateColumnType', () => {
     let unmock;
     let recordedActions = [];
-    let os;
-    let column;
 
     before(done => {
       unmock = mockAPI();
 
       const store = createStore(
         rootReducer,
+        state,
         applyMiddleware(thunk.withExtraArgument(socket))
       );
 
-      store.dispatch(
-        bootstrapApp(
-          window.initialState.view,
-          window.initialState.revision,
-          window.initialState.customMetadataFieldsets
-        )
-      );
+      const os = _.values(state.entities.output_schemas)[0];
+      const column = _.values(state.entities.output_columns)[0];
 
       store
-        .dispatch(createUpload({ name: 'petty_crimes.csv' }, params))
-        .then(() => {
-          const { entities } = store.getState();
-          os = currentOutputSchema(entities);
-          column = columnsForOutputSchema(entities, os.id)[0];
-          return store.dispatch(updateColumnType(os, column, 'text', params));
-        })
+        .dispatch(updateColumnType(os, column, 'text', params))
         .then(() => {
           return store.getState();
         })

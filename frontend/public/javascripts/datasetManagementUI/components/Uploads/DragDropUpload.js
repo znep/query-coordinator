@@ -47,7 +47,7 @@ export class DragDropUpload extends Component {
 
     if (file && this.isValidFile(file)) {
       dispatch(hideFlashMessage());
-      dispatch(createUpload(file));
+      dispatch(createUpload(file, this.props.params));
     } else {
       dispatch(showFlashMessage('error', I18n.show_uploads.flash_error_message));
     }

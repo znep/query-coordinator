@@ -93,7 +93,7 @@ export function createUpload(file, params) {
 
     dispatch(apiCallStarted(callId, call));
 
-    return socrataFetch(dsmapiLinks.sourceCreate, {
+    return socrataFetch(dsmapiLinks.sourceCreate(params), {
       method: 'POST',
       body: JSON.stringify({
         source_type: sourceType
@@ -143,7 +143,6 @@ export function uploadFile(sourceId, file) {
     };
 
     dispatch(apiCallStarted(callId, call));
-
     dispatch(addNotification('upload', callId, sourceId));
 
     return xhrPromise('POST', dsmapiLinks.sourceBytes(sourceId), file, sourceId, dispatch)

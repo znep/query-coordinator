@@ -105,7 +105,7 @@ export function HomePaneSidebar({ params, entities, columnsExist }) {
   return (
     <div className={styles.sidebar}>
       <div className={styles.nav}>
-        <Link to={Links.home(params)}>
+        <Link to={Links.revisionBase(params)}>
           <button className={!showManageTab ? styles.navBtnEnabled : styles.navBtn}>
             {I18n.home_pane.home_pane_sidebar.recent_actions}
           </button>

@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux';
 import dotProp from 'dot-prop-immutable';
 import { ADD_TASK_SET } from 'actions/taskSets';
-import { EDIT_VIEW, SET_VALUE } from 'actions/views';
+import { EDIT_VIEW } from 'actions/views';
 import { EDIT_OUTPUT_COLUMN, ADD_OUTPUT_COLUMNS } from 'actions/outputColumns';
 import { EDIT_OUTPUT_SCHEMA } from 'actions/outputSchemas';
 import { EDIT_TRANSFORM } from 'actions/transforms';
 import { EDIT_INPUT_SCHEMA } from 'actions/inputSchemas';
 import { UPDATE_PROGRESS } from 'actions/manageUploads';
-import { EDIT_REVISION } from 'actions/revisions';
+import { EDIT_REVISION, SET_REVISION_VALUE } from 'actions/revisions';
 
 const views = (state = {}, action) => {
   switch (action.type) {
@@ -18,9 +18,6 @@ const views = (state = {}, action) => {
       }));
     }
 
-    case SET_VALUE: {
-      return dotProp.set(state, action.path, action.value);
-    }
     default:
       return state;
   }
@@ -33,6 +30,10 @@ const revisions = (state = {}, action) => {
         ...record,
         ...action.payload
       }));
+    }
+
+    case SET_REVISION_VALUE: {
+      return dotProp.set(state, action.path, action.value);
     }
 
     default:

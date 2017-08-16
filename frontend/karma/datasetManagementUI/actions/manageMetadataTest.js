@@ -11,13 +11,13 @@ import { API_CALL_STARTED, SAVE_DATASET_METADATA } from 'actions/apiCalls';
 import { SHOW_FLASH_MESSAGE } from 'actions/flashMessage';
 import { createUpload } from 'actions/manageUploads';
 import mockAPI from '../testHelpers/mockAPI';
-import {} from '../testHelpers/mockAPI/responses';
 import rootReducer from 'reducers/rootReducer';
 import { bootstrapApp } from 'actions/bootstrap';
-import { editView } from 'actions/views';
+import { setFormErrors } from 'actions/forms';
 import { addLocation } from 'actions/history';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
+import state from '../data/initialState';
 
 // create the mock socket and insert it into the fake store
 const socket = mockSocket(
@@ -48,6 +48,8 @@ const params = {
 describe('actions/manageMetadata', () => {
   let unmock;
   let store;
+  let revision;
+  let params;
 
   before(() => {
     unmock = mockAPI();
@@ -60,20 +62,14 @@ describe('actions/manageMetadata', () => {
   beforeEach(() => {
     store = createStore(
       rootReducer,
+      state,
       applyMiddleware(thunk.withExtraArgument(socket))
-    );
-    store.dispatch(
-      bootstrapApp(
-        window.initialState.view,
-        window.initialState.revision,
-        window.initialState.customMetadataFieldsets
-      )
     );
 
     store.dispatch(
       addLocation({
         pathname:
-          '/dataset/lklkhkjhg/ky4m-3w3d/revisions/0/sources/114/schemas/97/output/143',
+          '/dataset/lklkhkjhg/kg5j-unyr/revisions/0/sources/114/schemas/97/output/143',
         search: '',
         hash: '',
         action: 'PUSH',
@@ -81,16 +77,21 @@ describe('actions/manageMetadata', () => {
         query: {}
       })
     );
+
+    revision = _.values(state.entities.revisions)[0];
+
+    params = {
+      fourfour: 'kg5j-unyr',
+      revisionSeq: '0'
+    };
   });
 
   describe('actions/manageMetadata/saveDatasetMetadata', () => {
     it('dispatches an api call started action with correct data', done => {
       const fakeStore = mockStore(store.getState());
 
-      const fourfour = window.initialState.view.id;
-
       fakeStore
-        .dispatch(saveDatasetMetadata(fourfour))
+        .dispatch(saveDatasetMetadata(revision, params))
         .then(() => {
           const action = fakeStore.getActions()[1];
 
@@ -108,10 +109,8 @@ describe('actions/manageMetadata', () => {
     it('dispatches edit view action with correct data if server responded with 200-level status', done => {
       const fakeStore = mockStore(store.getState());
 
-      const fourfour = window.initialState.view.id;
-
       fakeStore
-        .dispatch(saveDatasetMetadata(fourfour))
+        .dispatch(saveDatasetMetadata(revision, params))
         .then(() => {
           const action = fakeStore.getActions()[2];
 
@@ -127,17 +126,13 @@ describe('actions/manageMetadata', () => {
     });
 
     it('shows an error message if form schema is invalid', () => {
-      const fourfour = window.initialState.view.id;
-
       store.dispatch(
-        editView(fourfour, {
-          datasetMetadataErrors: [{ fieldName: 'name', message: 'Is Required' }]
-        })
+        setFormErrors('datasetForm', [{ fieldName: 'name', message: 'Is Required' }])
       );
 
       const fakeStore = mockStore(store.getState());
 
-      fakeStore.dispatch(saveDatasetMetadata(fourfour));
+      fakeStore.dispatch(saveDatasetMetadata(revision, params));
 
       const action = fakeStore.getActions()[2];
 
@@ -146,25 +141,19 @@ describe('actions/manageMetadata', () => {
     });
 
     it('shows field-level errors if form schema is invalid', () => {
-      const fourfour = window.initialState.view.id;
-
       store.dispatch(
-        editView(fourfour, {
-          datasetMetadataErrors: [{ fieldName: 'name', message: 'Is Required' }]
-        })
+        setFormErrors('datasetForm', [{ fieldName: 'name', message: 'Is Required' }])
       );
 
       const fakeStore = mockStore(store.getState());
 
-      fakeStore.dispatch(saveDatasetMetadata(fourfour));
+      fakeStore.dispatch(saveDatasetMetadata(revision, params));
 
       const action = fakeStore.getActions()[1];
 
-      assert.equal(action.type, 'EDIT_VIEW');
+      assert.equal(action.type, 'SHOW_FORM_ERRORS');
 
-      assert.deepEqual(action.payload, {
-        showErrors: true
-      });
+      assert.deepEqual(action.formName, 'datasetForm');
     });
   });
 

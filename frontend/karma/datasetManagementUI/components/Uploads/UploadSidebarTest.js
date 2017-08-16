@@ -13,6 +13,7 @@ describe('components/Uploads/UploadSidebar', () => {
   describe('render', () => {
 
     const defaultProps = {
+      revisionSeq: 0,
       currentUpload: {
         id: 178,
         created_by: {
@@ -48,7 +49,9 @@ describe('components/Uploads/UploadSidebar', () => {
           inputSchemaId: 158,
           outputSchemaId: 214
         }
-      ]
+      ],
+      entities: {},
+      params: {}
     };
 
     const component = shallow(<UploadSidebar {...defaultProps} />);

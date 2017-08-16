@@ -131,12 +131,10 @@ function isDataSatisfied(state) {
   return dataSatisfied;
 }
 
-function mapStateToProps(state, { params }) {
+function mapStateToProps(state) {
   const dataSatisfied = isDataSatisfied(state);
-  const { fourfour } = params;
-  const view = state.entities.views[fourfour];
   return {
-    metadataSatisfied: view.datasetMetadataErrors.length === 0,
+    metadataSatisfied: state.ui.forms.datasetForm.errors.length === 0,
     dataSatisfied,
     publishedOrPublishing:
       _.size(

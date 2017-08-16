@@ -15,7 +15,6 @@ import { addTaskSet } from 'actions/taskSets';
 import { editRevision } from 'actions/revisions';
 import * as dsmapiLinks from 'dsmapiLinks';
 import * as Links from 'links';
-import * as Selectors from 'selectors';
 import { parseDate } from 'lib/parseDate';
 
 // match DSMAPI: https://github.com/socrata/dsmapi/blob/e4eb96e24e0734b33d5ab6ffb26351a07b1c61d1/web/models/task_set.ex#L30-L35
@@ -67,10 +66,10 @@ function shapeRevision(apiResponse) {
   return revision;
 }
 
-export function updateRevision(permission) {
+export function updateRevision(permission, params) {
   return (dispatch, getState) => {
     const { entities } = getState();
-    const { id: revisionId } = Selectors.latestRevision(entities);
+    const { id: revisionId } = _.find(entities.revisions, { revision_seq: _.toNumber(params.revisionSeq) });
     const { permission: oldPermission } = entities.revisions[revisionId];
 
     if (permission === oldPermission) {
@@ -91,7 +90,7 @@ export function updateRevision(permission) {
       })
     );
 
-    return socrataFetch(dsmapiLinks.revisionBase, {
+    return socrataFetch(dsmapiLinks.revisionBase(params), {
       method: 'PUT',
       body: JSON.stringify({
         action: {
@@ -104,12 +103,11 @@ export function updateRevision(permission) {
       .then(resp => {
         dispatch(apiCallSucceeded(callId));
 
-        const revision = shapeRevision(resp.resource);
+        const updatedRevision = shapeRevision(resp.resource);
 
-        dispatch(editRevision(revision.id, revision));
+        dispatch(editRevision(updatedRevision.id, updatedRevision));
       })
       .catch(err => {
-        console.error(err);
         dispatch(apiCallFailed(callId, err));
       });
   };
@@ -126,7 +124,7 @@ export function applyRevision(params) {
       })
     );
 
-    return socrataFetch(dsmapiLinks.applyRevision, {
+    return socrataFetch(dsmapiLinks.applyRevision(params), {
       method: 'PUT'
     })
       .then(checkStatus)
@@ -139,9 +137,9 @@ export function applyRevision(params) {
         const taskSetId = resp.resource.id;
 
         // maybe return status and then do something based on that?
-        dispatch(pollForTaskSetProgress(taskSetId));
+        dispatch(pollForTaskSetProgress(taskSetId, params));
 
-        browserHistory.push(Links.home(params));
+        browserHistory.push(Links.revisionBase(params));
       })
       .catch(err => {
         dispatch(apiCallFailed(callId, err));
@@ -151,9 +149,9 @@ export function applyRevision(params) {
 
 const TASK_SET_PROGRESS_POLL_INTERVAL_MS = 1000;
 
-export function pollForTaskSetProgress(taskSetId) {
+export function pollForTaskSetProgress(taskSetId, params) {
   return dispatch => {
-    return socrataFetch(dsmapiLinks.revisionBase)
+    return socrataFetch(dsmapiLinks.revisionBase(params))
       .then(checkStatusForPoll)
       .then(getJson)
       .then(resp => {
@@ -170,14 +168,14 @@ export function pollForTaskSetProgress(taskSetId) {
             )
           ) {
             setTimeout(() => {
-              dispatch(pollForTaskSetProgress(taskSetId));
+              dispatch(pollForTaskSetProgress(taskSetId, params));
             }, TASK_SET_PROGRESS_POLL_INTERVAL_MS);
           }
         } else {
           console.warn('Backend service appears to be down presently.');
 
           setTimeout(() => {
-            dispatch(pollForTaskSetProgress(taskSetId));
+            dispatch(pollForTaskSetProgress(taskSetId, params));
           }, TASK_SET_PROGRESS_POLL_INTERVAL_MS);
         }
       })

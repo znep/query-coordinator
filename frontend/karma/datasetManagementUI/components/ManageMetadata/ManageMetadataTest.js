@@ -1,27 +1,22 @@
 import { expect, assert } from 'chai';
 import { ManageMetadata } from 'components/ManageMetadata';
 import React from 'react';
-import { createStore, applyMiddleware } from 'redux';
-import reducer from 'reducers/rootReducer';
-import initialState from '../../data/initialState';
-import thunk from 'redux-thunk';
 import { shallow } from 'enzyme';
 
 describe('components/ManageMetadata', () => {
   const datasetPath = 'metadata/dataset';
   const columnPath = 'metadata/columns';
-  const store = createStore(reducer, initialState, applyMiddleware(thunk));
 
   const defaultProps = {
-    view: {
-      id: 'hehe-hehe',
-      name: 'a name',
-      description: 'a description',
-      category: 'category',
-      tags: ['a tag'],
-      rowLabel: 'row label',
-      datasetFormDirty: false,
-      columnFormDirty: false
+    revision: {
+      metadata: {
+        id: 'hehe-hehe',
+        name: 'a name',
+        description: 'a description',
+        category: 'category',
+        tags: ['a tag'],
+        rowLabel: 'row label'
+      }
     },
     fourfour: 'hehe-hehe',
     history: [
@@ -41,6 +36,8 @@ describe('components/ManageMetadata', () => {
     entities: {},
     location: {},
     outputSchemaId: 86,
+    datasetFormDirty: false,
+    columnFormDirty: false,
     params: {}
   };
 
@@ -93,11 +90,8 @@ describe('components/ManageMetadata', () => {
     it('renders an enabled button if the form is dirty', () => {
       const newProps = {
         ...defaultDatasetProps,
-        view: {
-          ...defaultDatasetProps.view,
-          datasetFormDirty: true,
-          columnFormDirty: true
-        }
+        datasetFormDirty: true,
+        columnFormDirty: true
       };
 
       const component = shallow(<ManageMetadata {...newProps} />);

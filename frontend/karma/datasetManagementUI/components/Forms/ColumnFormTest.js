@@ -150,7 +150,7 @@ describe('components/Forms/ColumnForm', () => {
     );
   });
 
-  it("syncs it's local state to store", () => {
+  it("syncs its local state to store", () => {
     // prob better to test this in the ColumnField component since that is where
     // this syncing function is defined, but figured I'd leave this hear as an
     // example in case we need to test something like this later.
@@ -171,7 +171,8 @@ describe('components/Forms/ColumnForm', () => {
         }
       },
       childContextTypes: {
-        store: React.PropTypes.object
+        store: React.PropTypes.object,
+        router: React.PropTypes.object
       }
     });
 

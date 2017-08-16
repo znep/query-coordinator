@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 export const ShowOutputSchemaProps = {
-  goHome: _.noop,
+  goToRevisionBase: _.noop,
   dispatch: _.noop,
   location: {
     pathname:
@@ -433,6 +433,10 @@ export const ShowOutputSchemaProps = {
     ],
     completed_at: '2017-06-15T18:59:52.000Z'
   },
+  revision: {
+    id: 0,
+    revision_seq: 0
+  },
   columns: [
     {
       position: 0,
@@ -699,7 +703,8 @@ export const ShowOutputSchemaProps = {
     sourceId: '123',
     inputSchemaId: '106',
     outputSchemaId: '152'
-  }
+  },
+  saveCurrentOutputSchema: () => {}
 };
 
 export const ShowOutputSchemaErrorProps = {

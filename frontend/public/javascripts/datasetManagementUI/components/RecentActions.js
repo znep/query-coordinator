@@ -37,7 +37,7 @@ const updateActivity = (update, at) => {
       </div>
       <div>
         <p>
-          <span className={styles.createdBy}>{creator(update)}</span>&nbsp; opened a revision
+          <span className={styles.createdBy}>{creator(update)}</span> opened a revision
         </p>
         <RecentActionsTimestamp date={at} />
       </div>
@@ -54,7 +54,7 @@ const sourceActivity = (source, at) => {
       </div>
       <div>
         <p>
-          <span className={styles.createdBy}>{creator(source)}</span>&nbsp; uploaded a file
+          <span className={styles.createdBy}>{creator(source)}</span> uploaded a file
         </p>
         <RecentActionsTimestamp date={at} />
       </div>
@@ -71,7 +71,7 @@ const outputSchemaActivity = (item, at, params) => {
       </div>
       <div>
         <p>
-          <span className={styles.createdBy}>{creator(item.outputSchema)}</span>&nbsp; changed the&nbsp;
+          <span className={styles.createdBy}>{creator(item.outputSchema)}</span> changed the&nbsp;
           <Link
             to={Links.showOutputSchema(params, item.source.id, item.inputSchema.id, item.outputSchema.id)}>
             schema
@@ -92,7 +92,7 @@ const taskSetActivity = (taskSet, at) => {
       </div>
       <div>
         <p>
-          <span className={styles.createdBy}>{creator(taskSet)}</span>&nbsp; started data processing
+          <span className={styles.createdBy}>{creator(taskSet)}</span> started data processing
         </p>
         <RecentActionsTimestamp date={at} />
       </div>

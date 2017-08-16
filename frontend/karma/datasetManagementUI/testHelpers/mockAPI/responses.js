@@ -1347,6 +1347,107 @@ export const sourceShow = {
   }
 };
 
+export const sourceIndex = [{
+  resource: {
+    source_type: {type: "upload", filename: "poo.csv"},
+    schemas: [{
+      total_rows: 9,
+      output_schemas: [{
+        output_columns: [{
+          transform: {
+            transform_input_columns: [{input_column_id: 10186}],
+            transform_expr: "`_`",
+            parsed_expr: {value: "_", type: "column_ref"},
+            output_soql_type: "text",
+            id: 10497,
+            failed_at: null,
+            completed_at: "2017-08-15T22:00:59",
+            attempts: 0
+          },
+          position: 1,
+          is_primary_key: false,
+          id: 10738,
+          field_name: "_",
+          display_name: "poo",
+          description: ""
+        }, {
+          transform: {
+            transform_input_columns: [{input_column_id: 10187}],
+            transform_expr: "`__1`",
+            parsed_expr: {value: "__1", type: "column_ref"},
+            output_soql_type: "text",
+            id: 10498,
+            failed_at: null,
+            completed_at: "2017-08-15T22:00:59",
+            attempts: 0
+          },
+          position: 2,
+          is_primary_key: false,
+          id: 10739,
+          field_name: "__1",
+          display_name: "poo 1",
+          description: ""
+        }],
+        input_schema_id: 601,
+        id: 1030,
+        error_count: 0,
+        created_by: {
+          user_id: "5chf-vuxr",
+          email: "peter.vilter@socrata.com",
+          display_name: "Pete Vilter"
+        },
+        created_at: "2017-08-15T22:00:59.377596Z",
+        completed_at: "2017-08-15T22:00:59"
+      }],
+      name: null,
+      input_columns: [{
+        soql_type: "text",
+        semantic_type: null,
+        position: 2,
+        input_schema_id: 601,
+        id: 10187,
+        field_name: "__1"
+      }, {
+        soql_type: "text",
+        semantic_type: null,
+        position: 1,
+        input_schema_id: 601,
+        id: 10186,
+        field_name: "_"
+      }],
+      id: 601,
+      created_by: {
+        user_id: "5chf-vuxr",
+        email: "peter.vilter@socrata.com",
+        display_name: "Pete Vilter"
+      },
+      created_at: "2017-08-15T22:00:59.301774Z"
+    }],
+    parse_options: {
+      quote_char: "\"",
+      header_count: 1,
+      encoding: null,
+      column_separator: ",",
+      column_header: 1
+    },
+    id: 604,
+    finished_at: "2017-08-15T22:00:59",
+    failed_at: null,
+    created_by: {
+      user_id: "5chf-vuxr",
+      email: "peter.vilter@socrata.com",
+      display_name: "Pete Vilter"
+    },
+    created_at: "2017-08-15T22:00:59.087312Z",
+    content_type: "text/csv"
+  },
+  links: {
+    show: "/api/publishing/v1/source/604",
+    bytes: "/api/publishing/v1/source/604",
+    add_to_revision: "/api/publishing/v1/source/604"
+  }
+}];
+
 export const newOutputSchemaFromDrop = {
   resource: {
     output_columns: [
@@ -5489,7 +5590,7 @@ export const getRevision = {
       }
     ],
     revision_seq: 0,
-    metadata: null,
+    metadata: {},
     id: 201,
     fourfour: '2ttq-aktm',
     created_by: {

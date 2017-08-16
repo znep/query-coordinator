@@ -10,7 +10,7 @@ import ApiCallButton from 'components/ApiCallButton';
 import { APPLY_REVISION } from 'actions/apiCalls';
 import styles from 'styles/Modals/PublishConfirmation.scss';
 
-function PublishConfirmation({ doCancel, doUpdate, params }) {
+function PublishConfirmation({ doCancel, doUpdate }) {
   return (
     <div>
       <h2>
@@ -29,7 +29,7 @@ function PublishConfirmation({ doCancel, doUpdate, params }) {
         <ApiCallButton
           additionalClassName={styles.mainButton}
           operation={APPLY_REVISION}
-          onClick={() => doUpdate(params)}>
+          onClick={doUpdate}>
           {I18n.home_pane.publish_confirmation.button}
         </ApiCallButton>
       </ModalFooter>
@@ -43,10 +43,10 @@ PublishConfirmation.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch, ownProps) {
   return {
     doCancel: () => dispatch(hideModal()),
-    doUpdate: (params) => dispatch(applyRevision(params))
+    doUpdate: () => dispatch(applyRevision(ownProps.params))
   };
 }
 

@@ -125,8 +125,8 @@ export function currentAndIgnoredOutputColumns(entities, osid) {
 
   const actualColumns = columnsForOutputSchema(entities, latestOutputSchemaId);
 
-  const referencedInputColumns = _.flatMap(
-    actualColumns, oc => oc.transform.transform_input_columns.map(tic => tic.input_column_id)
+  const referencedInputColumns = _.flatMap(actualColumns, oc =>
+    oc.transform.transform_input_columns.map(tic => tic.input_column_id)
   );
 
   const unreferencedInputColumns = Object.values(entities.input_columns)
@@ -134,15 +134,17 @@ export function currentAndIgnoredOutputColumns(entities, osid) {
     .filter(ic => referencedInputColumns.indexOf(ic.id) === -1);
 
   const ocSortedByNewest = _.chain(entities.output_schemas)
-    .sortBy([(oc) => -oc.id])
+    .sortBy([oc => -oc.id])
     .flatMap(os => columnsForOutputSchema(entities, os.id))
     .value();
 
   const unreferencedOutputColumns = _.flatMap(unreferencedInputColumns, ic => {
-    const outCol = _.find(ocSortedByNewest, (oc) => {
-      if (oc.transform &&
+    const outCol = _.find(ocSortedByNewest, oc => {
+      if (
+        oc.transform &&
         oc.transform.transform_input_columns &&
-        oc.transform.transform_input_columns.length === 1) {
+        oc.transform.transform_input_columns.length === 1
+      ) {
         return oc.transform.transform_input_columns[0].input_column_id === ic.id;
       }
       return false;
@@ -168,39 +170,46 @@ export const latestOutputSchemaForSource = (entities, sourceId) => {
 };
 
 // DATASET METADATA
+// The purpose of these selectors is to reshape the revision.metadata structure
+// that exists in the store into the shape expected by core. Used in the
+// saveDatasetMetadata thunk in manageMetadata.js
 const filterUndefineds = val => val === undefined;
 const convertToNull = val => (val === '' ? null : val);
 
-const regularPublic = view =>
-  _.chain(view)
+const regularPublic = metadata =>
+  _.chain(metadata)
     .pick(['id', 'name', 'description', 'category', 'licenseId', 'attribution', 'attributionLink', 'tags'])
     .omitBy(filterUndefineds)
     .mapValues(convertToNull)
     .value();
 
-const regularPrivate = view =>
-  _.chain(view)
+const regularPrivate = metadata =>
+  _.chain(metadata)
     .get('privateMetadata')
     .omit('custom_fields')
     .omitBy(filterUndefineds)
     .mapValues(convertToNull)
     .value();
 
-const customPublic = view =>
-  _.chain(view).get('metadata.custom_fields', {}).omitBy(filterUndefineds).mapValues(convertToNull).value();
+const customPublic = metadata =>
+  _.chain(metadata)
+    .get('metadata.custom_fields', {})
+    .omitBy(filterUndefineds)
+    .mapValues(convertToNull)
+    .value();
 
-const customPrivate = view =>
-  _.chain(view)
+const customPrivate = metadata =>
+  _.chain(metadata)
     .get('privateMetadata.custom_fields', {})
     .omitBy(filterUndefineds)
     .mapValues(convertToNull)
     .value();
 
-export const datasetMetadata = view => {
-  const publicMetadata = regularPublic(view);
-  const privateMetadata = regularPrivate(view);
-  const customMetadata = customPublic(view);
-  const privateCustomMetadata = customPrivate(view);
+export const datasetMetadata = metadata => {
+  const publicMetadata = regularPublic(metadata);
+  const privateMetadata = regularPrivate(metadata);
+  const customMetadata = customPublic(metadata);
+  const privateCustomMetadata = customPrivate(metadata);
 
   return {
     ...publicMetadata,

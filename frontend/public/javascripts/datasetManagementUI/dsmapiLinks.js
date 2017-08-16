@@ -1,9 +1,15 @@
 const base = '/api/publishing/v1';
 
-export const revisionBase =
-  `${base}/revision/${window.initialState.view.id}/${window.initialState.revision.revision_seq}`;
+export const revisionsForView =
+  `${base}/revision/${window.initialState.view.id}`;
 
-export const sourceIndex = `${revisionBase}/source`;
+// TODO: change callers of this to pass revisionSeq
+export const revisionBase = (params) =>
+  `${revisionsForView}/${params.revisionSeq}`;
+
+export const createRevision = revisionsForView;
+
+export const sourceIndex = (params) => `${revisionBase(params)}/source`;
 export const sourceCreate = sourceIndex;
 
 export const sourceBytes = (sourceId) => `${base}/source/${sourceId}`;
@@ -14,7 +20,7 @@ export const newOutputSchema = (sourceId, inputSchemaId) => {
   return `${base}/source/${sourceId}/schema/${inputSchemaId}`;
 };
 
-export const applyRevision = `${revisionBase}/apply`;
+export const applyRevision = (params) => `${revisionBase(params)}/apply`;
 
 export const columnErrors = (sourceId, inputSchemaId, outputSchemaId, columnId, limit, offset) =>
   `${base}/source/${sourceId}/schema/${inputSchemaId}/errors/${outputSchemaId}` +

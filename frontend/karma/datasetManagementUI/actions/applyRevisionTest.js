@@ -24,10 +24,12 @@ describe('actions/applyRevision', () => {
     unmock();
   });
 
+  const params = { revisionSeq: 0 };
+
   describe('updateRevision', () => {
     it('launches an UPDATE_REVISION api call', done => {
       fakeStore
-        .dispatch(updateRevision('private'))
+        .dispatch(updateRevision('private', params))
         .then(() => {
           const actions = fakeStore.getActions();
           const expectedAction = actions.filter(
@@ -41,7 +43,7 @@ describe('actions/applyRevision', () => {
 
     it('updates the revision with the correct permission if api call succeeds', () => {
       fakeStore
-        .dispatch(updateRevision('private'))
+        .dispatch(updateRevision('private', params))
         .then(() => {
           const actions = fakeStore.getActions();
           const expectedAction = actions.filter(
@@ -54,7 +56,7 @@ describe('actions/applyRevision', () => {
     });
 
     it('does nothing if attempting to set permission to same as current permission', () => {
-      fakeStore.dispatch(updateRevision('public'));
+      fakeStore.dispatch(updateRevision('public', params));
       assert.equal(fakeStore.getActions().length, 0);
     });
   });

@@ -119,7 +119,77 @@ export default {
           email: 'brandon.webster@socrata.com',
           display_name: 'branweb'
         },
-        metadata: null,
+        metadata: {
+          id: 'nn5w-zj56',
+          name: 'okokokokokok',
+          owner: {
+            id: 'tugg-ikce',
+            displayName: 'branweb',
+            emailUnsubscribed: false,
+            profileLastModified: 1488413060,
+            screenName: 'branweb',
+            rights: [
+              'create_datasets',
+              'edit_others_datasets',
+              'edit_sdp',
+              'edit_site_theme',
+              'moderate_comments',
+              'manage_users',
+              'chown_datasets',
+              'edit_nominations',
+              'approve_nominations',
+              'feature_items',
+              'federations',
+              'manage_stories',
+              'manage_approval',
+              'change_configurations',
+              'view_domain',
+              'view_others_datasets',
+              'create_pages',
+              'edit_pages',
+              'view_goals',
+              'view_dashboards',
+              'edit_goals',
+              'edit_dashboards',
+              'create_dashboards',
+              'manage_provenance',
+              'view_all_dataset_status_logs',
+              'use_data_connectors',
+              'create_story',
+              'edit_story_title_desc',
+              'create_story_copy',
+              'delete_story',
+              'manage_story_collaborators',
+              'manage_story_visibility',
+              'manage_story_public_version',
+              'edit_story',
+              'view_unpublished_story',
+              'view_story'
+            ],
+            flags: ['admin']
+          },
+          lastUpdatedAt: new Date(1497553174000),
+          dataLastUpdatedAt: new Date(1497553174000),
+          metadataLastUpdatedAt: new Date(1497553174000),
+          createdAt: new Date(1497553174000),
+          viewCount: 0,
+          downloadCount: 0,
+          license: {},
+          schema: {
+            isValid: true,
+            fields: {
+              name: {
+                isValid: true,
+                required: true,
+                errors: []
+              }
+            }
+          },
+          tags: [],
+          privateMetadata: {},
+          attachments: [],
+          metadata: {}
+        },
         closed_at: '2017-06-15T19:00:03',
         action: {
           type: 'replace',

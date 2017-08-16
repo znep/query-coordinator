@@ -249,7 +249,7 @@ class DatasetsController < ApplicationController
     end
   end
 
-  def show_revision
+  def dsmui
     if dataset_management_page_enabled?
       @view = get_view(params[:id])
       return if @view.nil?
@@ -259,15 +259,8 @@ class DatasetsController < ApplicationController
         return redirect_to(canonical_url)
       end
 
-      # TODO: would be more efficient to make fewer api calls to DSMAPI
-      begin
-        @revision = DatasetManagementAPI.get_revision(@view.id, params[:revision_seq], cookies)
-      rescue DatasetManagementAPI::ResourceNotFound
-        return render_404
-      end
-      sources = DatasetManagementAPI.get_sources_index(@view.id, params[:revision_seq], cookies)
-      @revision[:sources] = sources
       @websocket_token = DatasetManagementAPI.get_websocket_token(@view.id, cookies)
+
       render 'datasets/dataset_management_ui', :layout => 'styleguide'
     else
       render_404
@@ -281,7 +274,7 @@ class DatasetsController < ApplicationController
       if open_revisions.length > 0
         # get the first one and redirect to that path
         revision_seq = open_revisions.first['revision_seq']
-        return redirect_to :action => 'show_revision', :revision_seq => revision_seq, :rest_of_path => params[:rest_of_path]
+        return redirect_to :action => 'dsmui', :rest_of_path => "/revisions/#{revision_seq}#{params[:rest_of_path]}"
       end
     end
     return render_404

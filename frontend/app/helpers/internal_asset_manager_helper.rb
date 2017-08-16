@@ -60,6 +60,7 @@ module InternalAssetManagerHelper
       :assetCounts => {
         :values => @asset_counts
       },
+      :assetInventoryViewModel => asset_inventory_view_model,
       :autocomplete => {
         query: params[:q].to_s
       },

@@ -5,6 +5,7 @@ import _ from 'lodash';
 import ResultListTable from './result_list_table';
 import Pager from 'common/components/Pager';
 import ResultCount from './result_count';
+import AssetInventoryLink from './asset_inventory_link';
 import * as pager from '../actions/pager';
 import * as filters from '../actions/filters';
 import Autocomplete from 'common/autocomplete/components/Autocomplete';
@@ -114,8 +115,13 @@ export class CatalogResults extends Component {
 
     return (
       <div className="catalog-footer">
-        <Pager {...pagerProps} />
-        <ResultCount {...resultCountProps} />
+        <div className="pagination-and-result-count">
+          <Pager {...pagerProps} />
+          <ResultCount {...resultCountProps} />
+        </div>
+        <div className="asset-inventory-link-wrapper">
+          <AssetInventoryLink />
+        </div>
       </div>
     );
   }

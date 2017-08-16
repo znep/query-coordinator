@@ -2,7 +2,6 @@ import _ from 'lodash';
 import * as actions from '../actions';
 
 export const defaultState = {
-  query: '',
   collapsed: true,
   focusedResult: undefined,
   query: _.get(window, 'initialState.autocomplete.query'),

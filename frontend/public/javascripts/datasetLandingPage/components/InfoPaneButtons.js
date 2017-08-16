@@ -154,7 +154,7 @@ export default class InfoPaneButtons extends Component {
 
     return (
       <div
-        className="dropdown explore-dropdown btn btn-simple btn-sm"
+        className="dropdown explore-dropdown btn btn-primary btn-sm"
         data-dropdown
         data-orientation="bottom">
         <span className="btn-label" aria-hidden>{I18n.action_buttons.explore_data}</span>

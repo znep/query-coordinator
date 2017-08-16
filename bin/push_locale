@@ -118,7 +118,7 @@ rescue Timeout::Error
   exit(1)
 end
 
-if relevant_job['warnings']
+unless is_blank.call(relevant_job['warnings'])
   puts
   puts "The following translations could not be imported:"
   relevant_job['warnings'].each do |translation_key, warning_text|

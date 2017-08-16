@@ -94,19 +94,37 @@ max_interval = 32
 interval = 2
 timeout_mins = 120
 
+relevant_job = nil
+
 begin
   Timeout::timeout(60 * timeout_mins) do
     begin
-        puts "Checking LocaleApp job #{job_id} status..."
-        sleep interval
-        job_status = HTTParty.get("https://api.localeapp.com/v1/projects/#{api_key}/imports.json")
-        job_complete = job_status.parsed_response['imports'].any? { |job| job['id'] == job_id && job['state'] == 'succeeded' }
-        interval = [ max_interval, interval * 2 ].min
+      print "Checking LocaleApp job #{job_id} status... "
+      sleep interval
+      relevant_job =
+        HTTParty.get("https://api.localeapp.com/v1/projects/#{api_key}/imports.json").
+          parsed_response['imports'].
+          find { |job| job['id'] == job_id }
+      job_complete = relevant_job['state'] == 'succeeded'
+      interval = [ max_interval, interval * 2 ].min
+      puts "#{relevant_job['state']}, next check in #{interval}s" unless job_complete
     end until job_complete
 
     puts "Job: #{job_id} complete!"
+    puts relevant_job['output']
   end
 rescue Timeout::Error
   puts "Job #{job_id} took more than #{timeout_mins} minutes to complete. Exiting job"
+  exit(1)
+end
+
+if relevant_job['warnings']
+  puts
+  puts "The following translations could not be imported:"
+  relevant_job['warnings'].each do |translation_key, warning_text|
+    puts "* #{translation_key} #{warning_text}"
+  end
+  puts
+  puts "See this doc for known warnings: https://github.com/socrata/platform-ui/blob/master/frontend/doc/update-translations.md#warnings-and-errors"
   exit(1)
 end

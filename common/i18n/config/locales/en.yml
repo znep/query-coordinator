@@ -1,9 +1,4 @@
 en:
-  for_testing_push_locale:
-    this_is_not_plural:
-      other: Other
-    this_will_be_an_existing_translation:
-      sub_key_of_existing: Sub Key
   shared:
     components:
       color_picker:

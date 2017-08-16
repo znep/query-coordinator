@@ -12,9 +12,17 @@ describe('components/InfoPaneButtons', () => {
   }
 
   describe('explore data button', () => {
-    it('should exists', () => {
-      const element = renderComponent(InfoPaneButtons, getProps());
-      assert.ok(element.querySelector('.btn.explore-dropdown'));
+    describe('exists', () => {
+      it('for datasets', () => {
+        const element = renderComponent(InfoPaneButtons, getProps());
+        assert.ok(element.querySelector('.btn.explore-dropdown'));
+      });
+      it('not for blob and href', () => {
+        const element = renderComponent(InfoPaneButtons, getProps({
+          view: _.extend({}, mockView, { isBlobby: true })
+        }));
+        assert.isNotOk(element.querySelector('.btn.explore-dropdown'));
+      });
     });
 
     describe('visualize link', () => {

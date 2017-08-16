@@ -17,10 +17,10 @@ import {
 // labels that have been observed 'in the wild'. They may need to be adjusted
 // slightly in the future, but the adjustments will likely be small in scale.
 const MARGINS = {
-  TOP: 26,
-  RIGHT: 16,
+  TOP: 32,
+  RIGHT: 32,
   BOTTOM: 0,
-  LEFT: 16
+  LEFT: 32
 };
 const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
 const DIMENSION_LABELS_DEFAULT_WIDTH = 115;
@@ -213,7 +213,7 @@ function SvgBarChart($element, vif, options) {
   }
 
   function renderData() {
-    const barHeight = (self.isMobile()) ?
+    const barHeight = self.isMobile() ?
       DEFAULT_MOBILE_BAR_HEIGHT :
       DEFAULT_DESKTOP_BAR_HEIGHT;
 
@@ -445,50 +445,54 @@ function SvgBarChart($element, vif, options) {
           attr('fill', 'transparent').
           attr(
             'data-default-fill',
-            (measureValue, measureIndex, dimensionIndex) => {
-              return self.getColor(dimensionIndex, measureIndex, measureLabels);
-            }
-          );
+            (d, measureIndex, dimensionIndex) => self.getColor(dimensionIndex, measureIndex, measureLabels));
       }
 
       const bars = dimensionGroupSvgs.selectAll('rect.bar');
 
       bars.
-        attr('x', (d, measureIndex, dimensionIndex) => {
-          const position = positions[dimensionIndex][measureIndex];
-          return d3XScale(position.start);
-        }).
-        attr('width', (d, measureIndex, dimensionIndex) => {
-          const position = positions[dimensionIndex][measureIndex];
-          const value = position.end - position.start;
-          return Math.max(d3XScale(value) - d3XScale(0), 1);
-        }).
-        attr('stroke', 'none').
         attr(
-          'fill',
-          (value, measureIndex, dimensionIndex) => {
-            return self.getColor(dimensionIndex, measureIndex, measureLabels);
+          'x', 
+          (d, measureIndex, dimensionIndex) => {
+            const position = positions[dimensionIndex][measureIndex];
+            return d3XScale(position.start);
           }
         ).
         attr(
-          'data-default-fill',
-          (value, measureIndex, dimensionIndex) => {
-            return self.getColor(dimensionIndex, measureIndex, measureLabels);
+          'width', 
+          (d, measureIndex, dimensionIndex) => {
+            const position = positions[dimensionIndex][measureIndex];
+            const value = position.end - position.start;
+            return Math.max(d3XScale(value) - d3XScale(0), 1);
           }
+        ).
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', 'none').
+        attr(
+          'fill',
+          (d, measureIndex, dimensionIndex) => self.getColor(dimensionIndex, measureIndex, measureLabels)
+        ).
+        attr(
+          'data-default-fill',
+          (d, measureIndex, dimensionIndex) => self.getColor(dimensionIndex, measureIndex, measureLabels)
         );
 
-      if (isStacked) {
+      if (isOneHundredPercentStacked) {
+        bars.
+          attr(
+            'data-percent', 
+            (d, measureIndex, dimensionIndex) => positions[dimensionIndex][measureIndex].percent
+          );
+      }
 
+      if (isStacked) {
         bars.
           attr('y', 0).
           attr('height', Math.max(d3DimensionYScale.rangeBand() - 1, 0));
-
       } else {
-
         bars.
           attr('y', (d, measureIndex) => d3GroupingYScale(measureIndex)).
           attr('height', Math.max(d3GroupingYScale.rangeBand() - 1, 0));
-
       }
 
       if (self.getShowValueLabels() && !isStacked) {
@@ -808,6 +812,7 @@ function SvgBarChart($element, vif, options) {
     renderLegend();
 
     const isStacked = _.get(self.getVif(), 'series[0].stacked', false);
+    const isOneHundredPercentStacked = _.get(self.getVif(), 'series[0].stacked.oneHundredPercent', false);
 
     groupedDataToRender = dataToRender.rows;
     numberOfGroups = groupedDataToRender.length;
@@ -900,7 +905,10 @@ function SvgBarChart($element, vif, options) {
         return;
       }
 
-      if (isStacked) {
+      if (isOneHundredPercentStacked) {
+        minXValue = 0; // measure axes are not changeable for 100% stacked charts
+        maxXValue = 1;
+      } else if (isStacked) {
         minXValue = measureAxisMinValue || Math.min(dataMinSummedXValue, 0);
         maxXValue = measureAxisMaxValue || Math.max(dataMaxSummedXValue, 0);
       } else {
@@ -968,9 +976,15 @@ function SvgBarChart($element, vif, options) {
     /**
      * 5. Render the chart.
      */
-    const positions = isStacked ?
-      self.getStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue) :
-      self.getPositionsForRange(groupedDataToRender, minXValue, maxXValue);
+    let positions;
+
+    if (isOneHundredPercentStacked) {
+      positions = self.getOneHundredPercentStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue);
+    } else if (isStacked) {
+      positions = self.getStackedPositionsForRange(groupedDataToRender, minXValue, maxXValue)
+    } else {
+      positions = self.getPositionsForRange(groupedDataToRender, minXValue, maxXValue)
+    }
 
     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
@@ -1242,6 +1256,7 @@ function SvgBarChart($element, vif, options) {
               )[0][0];
               const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
               const label = measureLabels[measureIndex];
+              
               // d3's .datum() method gives us the entire row, whereas everywhere
               // else measureIndex refers only to measure values. We therefore
               // add one to measure index to get the actual measure value from
@@ -1250,7 +1265,7 @@ function SvgBarChart($element, vif, options) {
               const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
               showBarHighlight(siblingBar);
-              showBarFlyout(siblingBar, color, label, value, measureIndex);
+              showBarFlyout(siblingBar, { measureIndex, color, label, value });
             }
           }
         ).
@@ -1285,15 +1300,17 @@ function SvgBarChart($element, vif, options) {
             );
             const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
             const label = measureLabels[measureIndex];
+            
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
             // add one to measure index to get the actual measure value from
             // the raw row data provided by d3 (the value at element 0 of the
             // array returned by .datum() is the dimension value).
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
-
+            const percent = parseFloat(this.getAttribute('data-percent'));
+            
             showBarHighlight(this);
-            showBarFlyout(this, color, label, value, measureIndex);
+            showBarFlyout(this, { measureIndex, color, label, value, percent });
           }
         }
       ).
@@ -1331,15 +1348,17 @@ function SvgBarChart($element, vif, options) {
             )[0][0];
             const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
             const label = measureLabels[measureIndex];
+
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
             // add one to measure index to get the actual measure value from
             // the raw row data provided by d3 (the value at element 0 of the
             // array returned by .datum() is the dimension value).
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
-
+            const percent = parseFloat(this.getAttribute('data-percent'));
+            
             showBarHighlight(siblingBar);
-            showBarFlyout(siblingBar, color, label, value, measureIndex);
+            showBarFlyout(siblingBar, { measureIndex, color, label, value, percent });
           }
         }
       ).
@@ -1518,7 +1537,6 @@ function SvgBarChart($element, vif, options) {
   }
 
   function getMinXValue(groupedData, dimensionIndex) {
-
     return d3.min(
       groupedData.map(
         (row) => d3.min(
@@ -1529,7 +1547,6 @@ function SvgBarChart($element, vif, options) {
   }
 
   function getMaxXValue(groupedData, dimensionIndex) {
-
     return d3.max(
       groupedData.map(
         (row) => d3.max(
@@ -1540,7 +1557,6 @@ function SvgBarChart($element, vif, options) {
   }
 
  function getMinSummedXValue(groupedData, dimensionIndex) {
-
     return d3.min(
       groupedData.map(
         (row) => d3.sum(
@@ -1551,7 +1567,6 @@ function SvgBarChart($element, vif, options) {
   }
 
   function getMaxSummedXValue(groupedData, dimensionIndex) {
-
     return d3.max(
       groupedData.map(
         (row) => d3.sum(
@@ -1562,21 +1577,26 @@ function SvgBarChart($element, vif, options) {
   }
 
   function generateXScale(minValue, maxValue, width) {
-
     return d3.scale.linear().
       domain([minValue, maxValue]).
       range([0, width]);
   }
 
   function generateXAxis(xScale, width) {
+    const isOneHundredPercentStacked = _.get(self.getVif(), 'series[0].stacked.oneHundredPercent', false);
+    let formatter;
+
+    if (isOneHundredPercentStacked) {
+      formatter = d3.format('p');
+    } else {
+      const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
+      formatter = (d) => ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
+    }
 
     const axis = d3.svg.axis().
       scale(xScale).
       orient('top').
-      tickFormat((d) => {
-        const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
-        return ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
-      });
+      tickFormat(formatter);
 
     if (width <= SMALL_VIEWPORT_WIDTH) {
       axis.ticks(Math.ceil(width / 100));
@@ -1586,19 +1606,11 @@ function SvgBarChart($element, vif, options) {
   }
 
   function getSeriesIndexByMeasureIndex(measureIndex) {
-    const isGrouping = !_.isNull(
-      _.get(
-        self.getVif(),
-        'series[0].dataSource.dimension.grouping.columnName',
-        null
-      )
-    );
-
-    return (isGrouping) ? 0 : measureIndex;
+    const columnName = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
+    return _.isEmpty(columnName) ? measureIndex : 0;
   }
 
   function isCurrentlyPanning() {
-
     // EN-10810 - Bar Chart flyouts do not appear in Safari
     //
     // Internet Explorer will apparently always return a non-zero value for
@@ -1640,7 +1652,6 @@ function SvgBarChart($element, vif, options) {
   }
 
   function hideHighlight() {
-
     // NOTE: The below function depends on this being set by d3, so it is not
     // possible to use the () => {} syntax here.
     d3.selectAll('rect.bar').each(function() {
@@ -1699,7 +1710,11 @@ function SvgBarChart($element, vif, options) {
         }
       }
 
-      $valueCell.text(valueString);
+      const percent = parseFloat(positions[dimensionIndex][measureIndex].percent);
+      const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
+      const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
+  
+      $valueCell.html(`${valueString} ${percentAsString}`);
 
       return $('<tr>', {'class': 'socrata-flyout-row'}).
         append([
@@ -1751,7 +1766,7 @@ function SvgBarChart($element, vif, options) {
     );
   }
 
-  function showBarFlyout(barElement, color, label, value, measureIndex) {
+  function showBarFlyout(barElement, { measureIndex, color, label, value, percent }) {
     const title = barElement.getAttribute('data-dimension-value') || noValueLabel;
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
 
@@ -1784,7 +1799,10 @@ function SvgBarChart($element, vif, options) {
       }
     }
 
-    $valueCell.text(valueString);
+    const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
+    const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
+
+    $valueCell.html(`${valueString} ${percentAsString}`);
 
     $valueRow.append([
       $labelCell,
@@ -1811,7 +1829,6 @@ function SvgBarChart($element, vif, options) {
   }
 
   function hideFlyout() {
-
     self.emitEvent(
       'SOCRATA_VISUALIZATION_BAR_CHART_FLYOUT',
       null

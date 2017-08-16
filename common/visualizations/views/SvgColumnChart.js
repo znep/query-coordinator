@@ -19,8 +19,8 @@ import {
 // slightly in the future, but the adjustments will likely be small in scale.
 // The LEFT margin has been removed because it will be dynamically calculated.
 const MARGINS = {
-  TOP: 16,
-  RIGHT: 0,
+  TOP: 32,
+  RIGHT: 32,
   BOTTOM: 0
 };
 const MINIMUM_LABEL_WIDTH = 35;
@@ -126,7 +126,7 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function renderData() {
-    const columnWidth = (self.isMobile()) ?
+    const columnWidth = self.isMobile() ?
       DEFAULT_MOBILE_COLUMN_WIDTH :
       DEFAULT_DESKTOP_COLUMN_WIDTH;
 
@@ -396,50 +396,54 @@ function SvgColumnChart($element, vif, options) {
           attr('fill', 'transparent').
           attr(
             'data-default-fill',
-            (measureValue, measureIndex, dimensionIndex) => {
-              return self.getColor(dimensionIndex, measureIndex, measureLabels);
-            }
-          );
+            (d, measureIndex, dimensionIndex) => self.getColor(dimensionIndex, measureIndex, measureLabels));
       }
 
       const columns = dimensionGroupSvgs.selectAll('.column');
 
       columns.
-        attr('y', (d, measureIndex, dimensionIndex) => {
-          const position = positions[dimensionIndex][measureIndex];
-          return d3YScale(position.end);
-        }).
-        attr('height', (d, measureIndex, dimensionIndex) => {
-          const position = positions[dimensionIndex][measureIndex];
-          const value = position.end - position.start;
-          return Math.max(d3YScale(0) - d3YScale(value), 1);
-        }).
-        attr('stroke', 'none').
         attr(
-          'fill',
-          (value, measureIndex, dimensionIndex) => {
-            return self.getColor(dimensionIndex, measureIndex, measureLabels);
+          'y', 
+          (d, measureIndex, dimensionIndex) => {
+            const position = positions[dimensionIndex][measureIndex];
+            return d3YScale(position.end);
           }
         ).
         attr(
-          'data-default-fill',
-          (value, measureIndex, dimensionIndex) => {
-            return self.getColor(dimensionIndex, measureIndex, measureLabels);
+          'height', 
+            (d, measureIndex, dimensionIndex) => {
+            const position = positions[dimensionIndex][measureIndex];
+            const value = position.end - position.start;
+            return Math.max(d3YScale(0) - d3YScale(value), 1);
           }
+        ).
+        attr('shape-rendering', 'crispEdges').
+        attr('stroke', 'none').
+        attr(
+          'fill',
+          (d, measureIndex, dimensionIndex) => self.getColor(dimensionIndex, measureIndex, measureLabels)
+        ).
+        attr(
+          'data-default-fill',
+          (d, measureIndex, dimensionIndex) => self.getColor(dimensionIndex, measureIndex, measureLabels)
         );
 
-      if (isStacked) {
+      if (isOneHundredPercentStacked) {
+        columns.
+          attr(
+            'data-percent', 
+            (d, measureIndex, dimensionIndex) => positions[dimensionIndex][measureIndex].percent
+          );
+      }
 
+      if (isStacked) {
         columns.
           attr('x', 0).
           attr('width', Math.max(d3DimensionXScale.rangeBand() - 1, 0));
-
       } else {
-
         columns.
           attr('x', (d, measureIndex) => d3GroupingXScale(measureIndex)).
           attr('width', Math.max(d3GroupingXScale.rangeBand() - 1, 0));
-
       }
 
       lastRenderedSeriesWidth = xAxisAndSeriesSvg.node().getBBox().width;
@@ -478,7 +482,6 @@ function SvgColumnChart($element, vif, options) {
         );
 
       if (self.isMobile()) {
-
         hideHighlight();
         hideFlyout();
       }
@@ -545,6 +548,7 @@ function SvgColumnChart($element, vif, options) {
     renderLegend();
 
     const isStacked = _.get(self.getVif(), 'series[0].stacked', false);
+    const isOneHundredPercentStacked = _.get(self.getVif(), 'series[0].stacked.oneHundredPercent', false);
 
     groupedDataToRender = dataToRender.rows;
     numberOfGroups = groupedDataToRender.length;
@@ -671,7 +675,12 @@ function SvgColumnChart($element, vif, options) {
         return;
       }
 
-      if (isStacked) {
+      if (isOneHundredPercentStacked) {
+
+        minYValue = 0; // measure axes are not changeable for 100% stacked charts
+        maxYValue = 1;
+
+      } else if (isStacked) {
 
         if (self.getYAxisScalingMode() === 'showZero' && !measureAxisMinValue) {
           minYValue = Math.min(dataMinSummedYValue, 0);
@@ -735,9 +744,15 @@ function SvgColumnChart($element, vif, options) {
     /**
      * 5. Render the chart.
      */
-    const positions = isStacked ?
-      self.getStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue) :
-      self.getPositionsForRange(groupedDataToRender, minYValue, maxYValue);
+    let positions;
+
+    if (isOneHundredPercentStacked) {
+      positions = self.getOneHundredPercentStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue);
+    } else if (isStacked) {
+      positions = self.getStackedPositionsForRange(groupedDataToRender, minYValue, maxYValue)
+    } else {
+      positions = self.getPositionsForRange(groupedDataToRender, minYValue, maxYValue)
+    }
 
     // Create the top-level <svg> element first.
     chartSvg = d3.select($chartElement[0]).append('svg').
@@ -977,7 +992,7 @@ function SvgColumnChart($element, vif, options) {
               const value = d3.select(this.parentNode).datum()[measureIndex + 1];
 
               showColumnHighlight(siblingColumn);
-              showColumnFlyout(siblingColumn, color, label, value, measureIndex);
+              showColumnFlyout(siblingColumn, { measureIndex, color, label, value });
             }
           }
         ).
@@ -1012,15 +1027,17 @@ function SvgColumnChart($element, vif, options) {
             );
             const color = self.getColor(dimensionIndex, measureIndex, measureLabels);
             const label = measureLabels[measureIndex];
+
             // d3's .datum() method gives us the entire row, whereas everywhere
             // else measureIndex refers only to measure values. We therefore
             // add one to measure index to get the actual measure value from
             // the raw row data provided by d3 (the value at element 0 of the
             // array returned by .datum() is the dimension value).
             const value = d3.select(this.parentNode).datum()[measureIndex + 1];
+            const percent = parseFloat(this.getAttribute('data-percent'));
 
             showColumnHighlight(this);
-            showColumnFlyout(this, color, label, value, measureIndex);
+            showColumnFlyout(this, { measureIndex, color, label, value, percent });
           }
         }
       ).
@@ -1058,7 +1075,7 @@ function SvgColumnChart($element, vif, options) {
               `g.dimension-group[data-dimension-value="${dimensionValue}"]`
             );
 
-            showGroupFlyout(dimensionGroup, dimensionValues);
+            showGroupFlyout(dimensionGroup, dimensionValues, positions);
           }
         }
       ).
@@ -1154,14 +1171,12 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function generateXGroupScale(domain, xScale) {
-
     return d3.scale.ordinal().
       domain(domain).
       rangeRoundBands([0, xScale.rangeBand()]);
   }
 
   function generateXAxis(xScale) {
-
     return d3.svg.axis().
       scale(xScale).
       orient('bottom').
@@ -1196,7 +1211,6 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function getMinYValue(groupedData, dimensionIndex) {
-
     return d3.min(
       groupedData.map(
         (row) => d3.min(
@@ -1207,7 +1221,6 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function getMaxYValue(groupedData, dimensionIndex) {
-
     return d3.max(
       groupedData.map(
         (row) => d3.max(
@@ -1218,7 +1231,6 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function getMinSummedYValue(groupedData, dimensionIndex) {
-
     return d3.min(
       groupedData.map(
         (row) => d3.sum(
@@ -1229,7 +1241,6 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function getMaxSummedYValue(groupedData, dimensionIndex) {
-
     return d3.max(
       groupedData.map(
         (row) => d3.sum(
@@ -1240,37 +1251,34 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function generateYScale(minValue, maxValue, height) {
-
     return d3.scale.linear().
       domain([minValue, maxValue]).
       range([height, 0]);
   }
 
   function generateYAxis(yScale) {
+    const isOneHundredPercentStacked = _.get(self.getVif(), 'series[0].stacked.oneHundredPercent', false);
+    let formatter;
+
+    if (isOneHundredPercentStacked) {
+      formatter = d3.format('p');
+    } else {
+      const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
+      formatter = (d) => ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
+    }
 
     return d3.svg.axis().
       scale(yScale).
       orient('left').
-      tickFormat((d) => {
-        const column = _.get(self.getVif(), `series[0].dataSource.measure.columnName`);
-        return ColumnFormattingHelpers.formatValue(d, column, dataToRender, true);
-      });
+      tickFormat(formatter);
   }
 
   function getSeriesIndexByMeasureIndex(measureIndex) {
-    const isGrouping = !_.isNull(
-      _.get(
-        self.getVif(),
-        'series[0].dataSource.dimension.grouping.columnName',
-        null
-      )
-    );
-
-    return (isGrouping) ? 0 : measureIndex;
+    const columnName = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
+    return _.isEmpty(columnName) ? measureIndex : 0;
   }
 
   function isCurrentlyPanning() {
-
     // EN-10810 - Bar Chart flyouts do not appear in Safari
     //
     // Internet Explorer will apparently always return a non-zero value for
@@ -1312,7 +1320,6 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function hideHighlight() {
-
     // NOTE: The below function depends on this being set by d3, so it is not
     // possible to use the () => {} syntax here.
     d3.selectAll('rect.column').each(function() {
@@ -1322,7 +1329,7 @@ function SvgColumnChart($element, vif, options) {
     });
   }
 
-  function showGroupFlyout(groupElement, dimensionValues) {
+  function showGroupFlyout(groupElement, dimensionValues, positions) {
     const title = groupElement.attr('data-dimension-value');
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
       append(
@@ -1366,7 +1373,11 @@ function SvgColumnChart($element, vif, options) {
         }
       }
 
-      $valueCell.text(valueString);
+      const percent = parseFloat(positions[dimensionIndex][measureIndex].percent);
+      const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
+      const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
+  
+      $valueCell.html(`${valueString} ${percentAsString}`);
 
       return $('<tr>', {'class': 'socrata-flyout-row'}).
         append([
@@ -1415,7 +1426,7 @@ function SvgColumnChart($element, vif, options) {
     );
   }
 
-  function showColumnFlyout(columnElement, color, label, value, measureIndex) {
+  function showColumnFlyout(columnElement, { measureIndex, color, label, value, percent }) {
     const title = columnElement.getAttribute('data-dimension-value') || noValueLabel;
     const seriesIndex = getSeriesIndexByMeasureIndex(measureIndex);
     const $title = $('<tr>', {'class': 'socrata-flyout-title'}).
@@ -1448,8 +1459,11 @@ function SvgColumnChart($element, vif, options) {
       }
     }
 
-    $valueCell.text(valueString);
+    const percentSymbol = I18n.t('shared.visualizations.charts.common.percent_symbol');
+    const percentAsString = isNaN(percent) ? '' : `(${Math.round(percent)}${percentSymbol})`;
 
+    $valueCell.html(`${valueString} ${percentAsString}`);
+    
     $valueRow.append([
       $labelCell,
       $valueCell
@@ -1475,7 +1489,6 @@ function SvgColumnChart($element, vif, options) {
   }
 
   function hideFlyout() {
-
     self.emitEvent(
       'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
       null

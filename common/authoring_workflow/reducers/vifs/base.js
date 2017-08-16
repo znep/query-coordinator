@@ -82,8 +82,17 @@ export default function(state, action) {
 
     case actions.SET_STACKED:
       forEachSeries(state, series => {
-        setBooleanValueOrDeleteProperty(series, 'stacked', action.stacked);
+        if (action.stacked) {
+          _.set(series, 'stacked.oneHundredPercent', action.oneHundredPercent);
+        } else {
+          _.unset(series, 'stacked')
+        }
       });
+
+      if (action.oneHundredPercent) {
+        _.unset(state, 'configuration.measureAxisMinValue');        
+        _.unset(state, 'configuration.measureAxisMaxValue');        
+      }
       break;
 
     case actions.SET_TITLE:

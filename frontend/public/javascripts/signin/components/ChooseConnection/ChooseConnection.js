@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
+import I18n from 'common/i18n';
 import OptionsPropType from '../../PropTypes/OptionsPropType';
 import styles from './choose-connection.scss';
 
@@ -13,7 +14,7 @@ class ChooseConnection extends React.Component {
 
   getConnectionText(auth0Connection) {
     return _.isEmpty(auth0Connection.buttonText) ?
-      this.props.translate('screens.sign_in.sign_in_with', { provider: auth0Connection.name }) :
+      I18n.t('screens.sign_in.sign_in_with', { provider: auth0Connection.name }) :
       auth0Connection.buttonText;
   }
 
@@ -33,7 +34,7 @@ class ChooseConnection extends React.Component {
 
   renderSocrataIdButton() {
     if (!this.props.options.hideSocrataId) {
-      const { setLoginFormVisibility, translate } = this.props;
+      const { setLoginFormVisibility } = this.props;
       return (
         <a
           className="signin-button-socrata-id"
@@ -48,7 +49,7 @@ class ChooseConnection extends React.Component {
           <span
             styleName="button-text"
             dangerouslySetInnerHTML={{
-              __html: translate('screens.sign_in.sign_in_with', { provider: 'Socrata ID' })
+              __html: I18n.t('screens.sign_in.sign_in_with', { provider: 'Socrata ID' })
             }} />
         </a>
       );
@@ -91,7 +92,6 @@ class ChooseConnection extends React.Component {
 
 ChooseConnection.propTypes = {
   options: OptionsPropType.isRequired,
-  translate: PropTypes.func.isRequired,
   onConnectionChosen: PropTypes.func.isRequired,
   setLoginFormVisibility: PropTypes.func.isRequired
 };

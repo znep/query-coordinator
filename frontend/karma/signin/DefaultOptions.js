@@ -1,5 +1,3 @@
-import translations from 'mockTranslations';
-
 /** This should be the most basic options for the component, to render it as simple as possible */
 export default {
   auth0ClientId: "not-a-client",
@@ -16,6 +14,5 @@ export default {
   chooseConnectionMessage:"There are several ways you can sign in.",
   formMessage: null,
   flashes: [],
-  companyName: 'Testcrata',
-  translations
+  companyName: 'Testcrata'
 };

@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
 import _ from 'lodash';
@@ -16,7 +16,6 @@ describe('<ChooseConnection />', () => {
   ];
 
   const defaultProps = {
-    translate: () => '',
     onConnectionChosen: () => { },
     setLoginFormVisibility: () => { },
     options: optionsWithConnections
@@ -27,14 +26,14 @@ describe('<ChooseConnection />', () => {
       const props = _.cloneDeep(defaultProps);
       props.options.hideSocrataId = false;
       const wrapper = shallow(<ChooseConnection {...props} />);
-      expect(wrapper.find('.signin-button-socrata-id')).to.have.length(1);
+      assert.lengthOf(wrapper.find('.signin-button-socrata-id'), 1);
     });
 
     it('hides socrata ID when hideSocrataId is true', () => {
       const props = _.cloneDeep(defaultProps);
       props.options.hideSocrataId = true;
       const wrapper = shallow(<ChooseConnection {...props} />);
-      expect(wrapper.find('.signin-button-socrata-id')).to.have.length(0);
+      assert.lengthOf(wrapper.find('.signin-button-socrata-id'), 0);
     });
   });
 
@@ -43,14 +42,14 @@ describe('<ChooseConnection />', () => {
       const wrapper = shallow(<ChooseConnection {...defaultProps} />);
 
       // length + 1 because "Socrata ID" button
-      expect(wrapper.find('a')).to.have.length(optionsWithConnections.connections.length + 1);
+      assert.lengthOf(wrapper.find('a'), optionsWithConnections.connections.length + 1);
     });
 
     it('renders images', () => {
       const wrapper = shallow(<ChooseConnection {...defaultProps} />);
 
       // 3 because two of our connections have images and the socrata ID button has one
-      expect(wrapper.find('img')).to.have.length(3);
+      assert.lengthOf(wrapper.find('img'), 3);
     });
   });
 });

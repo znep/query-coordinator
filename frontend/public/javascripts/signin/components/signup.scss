@@ -41,3 +41,13 @@
 .disclaimer {
   margin-top: 10px;
 }
+
+.go-to-signin {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.signin-link {
+  @extend .unstyled-link;
+  cursor: pointer;
+}

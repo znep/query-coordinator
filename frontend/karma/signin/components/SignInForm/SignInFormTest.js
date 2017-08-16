@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 import _ from 'lodash';
@@ -8,11 +8,9 @@ import defaultOptions from '../../DefaultOptions';
 import SignInForm from 'components/SignInForm/SignInForm';
 import PasswordInput from 'components/SignInForm/PasswordInput';
 import RememberMe from 'components/SignInForm/RememberMe';
-import PollingInput from 'components/SignInForm/PollingInput';
 
 describe('<SignInForm />', () => {
   const defaultProps = {
-    translate: () => '',
     doAuth0Authorize: () => { },
     doAuth0Login: () => { },
     onLoginStart: () => { },
@@ -25,14 +23,14 @@ describe('<SignInForm />', () => {
       const props = _.cloneDeep(defaultProps);
       props.options.rememberMe = true;
       const wrapper = shallow(<SignInForm {...props} />);
-      expect(wrapper.find(RememberMe)).to.have.length(1);
+      assert.lengthOf(wrapper.find(RememberMe), 1);
     });
 
     it('does not render remember me when remember me is false', () => {
       const props = _.cloneDeep(defaultProps);
       props.options.rememberMe = false;
       const wrapper = shallow(<SignInForm {...props} />);
-      expect(wrapper.find(RememberMe)).to.have.length(0);
+      assert.lengthOf(wrapper.find(RememberMe), 0);
     });
   });
 
@@ -40,17 +38,17 @@ describe('<SignInForm />', () => {
     it('renders spinner', () => {
       const wrapper = shallow(<SignInForm {...defaultProps} />);
       wrapper.setState({ loggingIn: true });
-      expect(wrapper.find('.signin-form-spinner')).to.have.length(1);
-      expect(wrapper.find('.signin-form-error')).to.have.length(0);
+      assert.lengthOf(wrapper.find('.signin-form-spinner'), 1);
+      assert.lengthOf(wrapper.find('.signin-form-error'), 0);
     });
 
     it('renders errors', () => {
       const wrapper = shallow(<SignInForm {...defaultProps} />);
       wrapper.setState({ error: "Couldn't log ya in!" });
-      expect(wrapper.find('.signin-form-error')).to.have.length(1);
+      assert.lengthOf(wrapper.find('.signin-form-error'), 1);
 
       // if we have an error, spinner shouldn't be visibile
-      expect(wrapper.find('.signin-form-spinner')).to.have.length(0);
+      assert.lengthOf(wrapper.find('.signin-form-spinner'), 0);
     });
   });
 
@@ -69,12 +67,12 @@ describe('<SignInForm />', () => {
 
     beforeEach(() => {
       wrapperWithAllowUsernamePasswordLogin = shallow(<SignInForm {...propsWithAllowUsernamePasswordLogin} />);
-      wrapperWithAllowUsernamePasswordLogin.instance().onEmailChange('fakey@socrata.com');
+      wrapperWithAllowUsernamePasswordLogin.instance().onEmailChange({ target: { value: 'fakey@socrata.com' } });
     });
 
     it('does not grab connection', () => {
-      expect(wrapperWithAllowUsernamePasswordLogin.state().email).to.equal('fakey@socrata.com');
-      expect(wrapperWithAllowUsernamePasswordLogin.state().connectionName).to.not.exist;
+      assert.equal(wrapperWithAllowUsernamePasswordLogin.state().email, 'fakey@socrata.com');
+      assert.isNull(wrapperWithAllowUsernamePasswordLogin.state().connectionName);
     });
   });
 
@@ -102,41 +100,56 @@ describe('<SignInForm />', () => {
 
     beforeEach(() => {
       wrapperWithSocrataEmail = shallow(<SignInForm {...propsWithAuth0Connections} />);
-      wrapperWithSocrataEmail.instance().onEmailChange('@socrata.com');
+      wrapperWithSocrataEmail.instance().onEmailChange({ target: { value: '@socrata.com' } });
     });
 
     it('grabs connection', () => {
-      expect(wrapperWithSocrataEmail.state().email).to.equal('@socrata.com');
-      expect(wrapperWithSocrataEmail.state().connectionName).to.equal('socrata-okta-sts');
+      assert.equal(wrapperWithSocrataEmail.state().email, '@socrata.com');
+      assert.equal(wrapperWithSocrataEmail.state().connectionName, 'socrata-okta-sts');
     });
 
     it('blanks out connection', () => {
-      wrapperWithSocrataEmail.instance().onEmailChange('@example.com');
-      expect(wrapperWithSocrataEmail.state().email).to.equal('@example.com');
+      wrapperWithSocrataEmail.instance().onEmailChange({ target: { value: '@example.com' } });
+      assert.equal(wrapperWithSocrataEmail.state().email, '@example.com');
       assert.isNotOk(wrapperWithSocrataEmail.state().connectionName);
     });
 
     it('blanks out email when invalid', () => {
-      wrapperWithSocrataEmail.instance().onEmailChange('garbage');
+      wrapperWithSocrataEmail.instance().onEmailChange({ target: { value: 'garbage' } });
       assert.propertyVal(wrapperWithSocrataEmail.state(), 'email', null);
       assert.propertyVal(wrapperWithSocrataEmail.state(), 'connectionName', null);
     });
 
     it('renders "SSO Enabled" when a connection is found', () => {
-      expect(wrapperWithSocrataEmail.state().connectionName).to.equal('socrata-okta-sts');
+      wrapperWithSocrataEmail = mount(<SignInForm {...propsWithAuth0Connections} />);
+      wrapperWithSocrataEmail.instance().onEmailChange({ target: { value: '@socrata.com' } });
+      assert.equal(wrapperWithSocrataEmail.state().connectionName, 'socrata-okta-sts');
+      wrapperWithSocrataEmail.update();
 
-      const passwordInput = wrapperWithSocrataEmail.find(PasswordInput).shallow();
-      expect(passwordInput.find('.signin-password-sso-enabled-text')).to.have.length(1);
-      expect(passwordInput.find(PollingInput)).to.have.length(0);
+      const passwordInput = wrapperWithSocrataEmail.find(PasswordInput);
+      const passwordContainer = passwordInput.find('.signin-password-input-container');
+      assert.lengthOf(passwordContainer, 1);
+      assert.equal(passwordContainer.get(0).style.visibility, 'hidden');
+
+      const ssoEnabledContainer = passwordInput.find('.signin-sso-enabled-container');
+      assert.lengthOf(ssoEnabledContainer, 1);
+      assert.equal(ssoEnabledContainer.get(0).style.visibility, 'visible');
     });
 
     it('renders password field when no connection is found', () => {
-      wrapperWithSocrataEmail.instance().onEmailChange('garbage');
+      wrapperWithSocrataEmail = mount(<SignInForm {...propsWithAuth0Connections} />);
+      wrapperWithSocrataEmail.instance().onEmailChange({ target: { value: 'garbage' } });
       assert.propertyVal(wrapperWithSocrataEmail.state(), 'connectionName', null);
+      wrapperWithSocrataEmail.update();
 
-      const passwordInput = wrapperWithSocrataEmail.find(PasswordInput).shallow();
-      expect(passwordInput.find('.signin-password-sso-enabled-text')).to.have.length(0);
-      expect(passwordInput.find(PollingInput)).to.have.length(1);
+      const passwordInput = wrapperWithSocrataEmail.find(PasswordInput);
+      const passwordContainer = passwordInput.find('.signin-password-input-container');
+      assert.lengthOf(passwordContainer, 1);
+      assert.equal(passwordContainer.get(0).style.visibility, 'visible');
+
+      const ssoEnabledContainer = passwordInput.find('.signin-sso-enabled-container');
+      assert.lengthOf(ssoEnabledContainer, 1);
+      assert.equal(ssoEnabledContainer.get(0).style.visibility, 'hidden');
     });
   });
 });

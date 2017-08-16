@@ -1,10 +1,12 @@
+import _ from 'lodash';
+import I18n from 'common/i18n';
 import * as actions from '../actions';
 import { isValidEmail } from '../Util';
 
 const passwordMinLength = 8;
 const passwordMaxLength = 40;
 
-export default (translate) => {
+export default () => {
   function inputChanged(state, action) {
     const { name, value } = action;
     const input = state.inputs[name];
@@ -35,7 +37,7 @@ export default (translate) => {
 
     if (!_.isEmpty(value) && !isValidEmail(value, strictValidation)) {
       email.valid = false;
-      email.message = translate('core.validation.email');
+      email.message = I18n.t('core.validation.email');
     }
 
     return { ...state, inputs: { ...inputs, email } };
@@ -66,10 +68,10 @@ export default (translate) => {
     if (!_.isEmpty(value)) {
       if (value.length < passwordMinLength) {
         password.valid = false;
-        password.message = translate('account.common.validation.password_short');
+        password.message = I18n.t('account.common.validation.password_short');
       } else if (value.length > passwordMaxLength) {
         password.valid = false;
-        password.message = translate('account.common.validation.password_long');
+        password.message = I18n.t('account.common.validation.password_long');
       }
     }
 
@@ -90,13 +92,13 @@ export default (translate) => {
     if (!_.isEmpty(value)) {
       if (value.length < passwordMinLength) {
         passwordConfirm.valid = false;
-        passwordConfirm.message = translate('account.common.validation.password_short');
+        passwordConfirm.message = I18n.t('account.common.validation.password_short');
       } else if (value.length > passwordMaxLength) {
         passwordConfirm.valid = false;
-        passwordConfirm.message = translate('account.common.validation.password_long');
+        passwordConfirm.message = I18n.t('account.common.validation.password_long');
       } else if (value !== passwordValue) {
         passwordConfirm.valid = false;
-        passwordConfirm.message = translate('account.common.validation.mismatch');
+        passwordConfirm.message = I18n.t('account.common.validation.mismatch');
       }
     }
 
@@ -109,7 +111,7 @@ export default (translate) => {
     _.forOwn(inputs, (input) => {
       if (input.required && _.isEmpty(input.value)) {
         input.valid = false;
-        input.message = translate('core.validation.required');
+        input.message = I18n.t('core.validation.required');
       }
     });
 

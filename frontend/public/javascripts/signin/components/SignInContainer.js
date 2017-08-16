@@ -3,6 +3,7 @@ import auth0 from 'auth0-js';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
 import { SocrataIcon } from 'common/components';
+import I18n from 'common/i18n';
 import { renderAlerts } from '../Util';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignIn from './SignIn';
@@ -64,7 +65,7 @@ class SignInContainer extends React.Component {
   }
 
   renderChooseConnectionOrSignInForm() {
-    const { options, translate } = this.props;
+    const { options } = this.props;
     const { auth0Client, auth0Connections, renderLoginForm } = this.state;
 
     // if "auth0_connections" is set in the site config, we show a list
@@ -73,7 +74,6 @@ class SignInContainer extends React.Component {
       return (
         <ChooseConnection
           options={options}
-          translate={translate}
           onConnectionChosen={this.onConnectionChosen}
           setLoginFormVisibility={this.setLoginFormVisibility} />);
     } else {
@@ -83,7 +83,6 @@ class SignInContainer extends React.Component {
         // either there aren't any specific connections set up,
         // or the "Sign in with a Socrata ID" button was clicked
         <SignIn
-          translate={translate}
           doAuth0Authorize={doAuth0Authorize}
           doAuth0Login={doAuth0Login}
           onLoginStart={this.onLoginStart}
@@ -109,7 +108,7 @@ class SignInContainer extends React.Component {
   }
 
   renderBackButton() {
-    const { options, translate } = this.props;
+    const { options } = this.props;
     const { renderLoginForm } = this.state;
 
     // only show the button to go back to "choose connection" if we're told to
@@ -122,7 +121,7 @@ class SignInContainer extends React.Component {
           <span styleName="back-to-options-icon">
             <SocrataIcon name="arrow-left" />
             <div
-              dangerouslySetInnerHTML={{ __html: translate('screens.sign_in.back_to_sign_in_selection') }} />
+              dangerouslySetInnerHTML={{ __html: I18n.t('screens.sign_in.back_to_sign_in_selection') }} />
           </span>
         </a>
       );
@@ -131,7 +130,7 @@ class SignInContainer extends React.Component {
 
   render() {
     const { alerts } = this.state;
-    const { options, translate } = this.props;
+    const { options } = this.props;
     const { flashes } = options;
     return (
       <div styleName="container">
@@ -142,7 +141,7 @@ class SignInContainer extends React.Component {
         <div styleName="header-container">
           <h2 styleName="header">
             {
-              translate(
+              I18n.t(
                 'screens.sign_in.headline',
                 { site: options.companyName }
               )
@@ -158,7 +157,6 @@ class SignInContainer extends React.Component {
 }
 
 SignInContainer.propTypes = {
-  translate: React.PropTypes.func.isRequired,
   options: OptionsPropType.isRequired
 };
 

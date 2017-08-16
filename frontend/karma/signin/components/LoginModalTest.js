@@ -8,8 +8,6 @@ import LoginModal from 'components/LoginModal';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 
 describe('<LoginModal />', () => {
-  const translate = () => '';
-
   const defaultModalConfig = {
     title: 'Test Title',
     acceptButtonText: 'Test Accept Text',
@@ -21,7 +19,6 @@ describe('<LoginModal />', () => {
     const defaultWrapper = mount(
       <LoginModal
         modalConfig={defaultModalConfig}
-        translate={translate}
         onConfirm={() => {}}
         onCancel={() => {}} />
     );
@@ -74,7 +71,6 @@ describe('<LoginModal />', () => {
       const wrapper = mount(
         <LoginModal
           modalConfig={hiddenButtonConfig}
-          translate={translate}
           onConfirm={() => {}}
           onCancel={() => {}} />
       );
@@ -89,7 +85,6 @@ describe('<LoginModal />', () => {
       const wrapper = mount(
         <LoginModal
           modalConfig={notHiddenButtonConfig}
-          translate={translate}
           onConfirm={() => {}}
           onCancel={() => {}} />
       );
@@ -110,7 +105,6 @@ describe('<LoginModal />', () => {
       wrapper = mount(
         <LoginModal
           modalConfig={defaultModalConfig}
-          translate={translate}
           onConfirm={onConfirm}
           onCancel={onCancel} />
       );

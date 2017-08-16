@@ -20,12 +20,3 @@ $break-large: 1000px;
   margin-left: auto;
   margin-right: auto;
 }
-
-.spinner {
-  @extend .spinner-default;
-  @extend .spinner-large;
-
-  position: absolute;
-  left: calc(50% - 32px);
-  top: calc(50% - 32px);
-}

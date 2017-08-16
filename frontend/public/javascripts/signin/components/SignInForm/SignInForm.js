@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
+import I18n from 'common/i18n';
 import { isValidEmail, findConnection } from '../../Util';
+import { processAuth0Error } from '../../Auth0Errors';
 import OptionsPropType from '../../PropTypes/OptionsPropType';
 import Auth0ConnectionsPropType from '../../PropTypes/Auth0ConnectionsPropType';
 import EmailInput from './EmailInput';
@@ -34,12 +36,10 @@ class SignInForm extends React.Component {
 
     _.bindAll(this, [
       'doSignIn',
-      'handleAuth0Error',
       'onEmailChange',
       'onLoginError',
       'onLoginStart',
       'onPasswordChange',
-      'renderErrorOrSpinner',
       'setLoginErrorMessage'
     ]);
   }
@@ -48,7 +48,9 @@ class SignInForm extends React.Component {
    * Sets this.state's email, also looks up a matching connection to
    * login with based on the email domain
    */
-  onEmailChange(email) {
+  onEmailChange(event) {
+    const email = event.target.value;
+
     if (isValidEmail(email)) {
       const { auth0Connections, options } = this.props;
       const {
@@ -73,8 +75,8 @@ class SignInForm extends React.Component {
     }
   }
 
-  onPasswordChange(password) {
-    this.setState({ password });
+  onPasswordChange(event) {
+    this.setState({ password: event.target.value });
   }
 
   onLoginStart() {
@@ -82,8 +84,10 @@ class SignInForm extends React.Component {
     this.setState({ loggingIn: true });
   }
 
-  onLoginError(level, message) {
+  onLoginError(error) {
     this.setState({ loggingIn: false, password: '' });
+
+    const { level, message } = processAuth0Error(error);
     this.props.onLoginError(level, message);
   }
 
@@ -145,57 +149,6 @@ class SignInForm extends React.Component {
     });
   }
 
-  handleAuth0Error(error) {
-    const { translate } = this.props;
-
-    if (_.isEmpty(error) || _.isEmpty(error.message)) {
-      console.error('Unknown auth0 error', error);
-
-      this.onLoginError(
-        'error',
-        translate('screens.sign_in.auth0_unknown')
-      );
-    } else {
-      const message = error.message;
-
-      if (message.includes('Wrong email or password')) {
-        this.onLoginError(
-          'warning',
-          translate('screens.sign_in.auth0_invalid')
-        );
-      } else if (message.includes('Too many logins with the same username or email')) {
-        // this one is for rate limiting logins
-        this.onLoginError(
-          'warning',
-          translate('screens.sign_in.auth0_too_many_requests')
-        );
-      } else if (
-          message.includes('Your account has been blocked after multiple consecutive login attempts')
-      ) {
-        this.onLoginError(
-          'warning',
-          translate('screens.sign_in.auth0_locked_out')
-        );
-      } else if (message.includes('connection parameter is mandatory')) {
-        // note that we should never get here; the auth0_helper should throw an exception
-        // if the connection parameter environment variable is missing
-        console.error('No connection parameter!', error);
-
-        this.onLoginError(
-          'error',
-          translate('screens.sign_in.auth0_unknown')
-        );
-      } else {
-        console.error('Unknown auth0 error', error);
-
-        this.onLoginError(
-          'error',
-          translate('screens.sign_in.auth0_unknown')
-        );
-      }
-    }
-  }
-
   formLogin() {
     const { doAuth0Login, options } = this.props;
     const { email, password } = this.state;
@@ -210,34 +163,50 @@ class SignInForm extends React.Component {
         connection: auth0DatabaseConnection,
         username: email,
         password: password
-      }, (error) => { this.handleAuth0Error(error); });
+      }, (error) => { this.onLoginError(error); });
     }
   }
 
-  renderErrorOrSpinner() {
+  shouldRenderSpinner() {
     const { error, loggingIn } = this.state;
+
+    return _.isEmpty(error) && loggingIn === true;
+  }
+
+  renderButtonContents() {
+    if (this.shouldRenderSpinner()) {
+      return (<span className="signin-form-spinner" styleName="spinner"></span>);
+    } else {
+      return I18n.t('screens.sign_in.form.sign_in_button');
+    }
+  }
+
+  renderError() {
+    const { error } = this.state;
 
     if (!_.isEmpty(error)) {
       return (
         <div className="signin-form-error" styleName="login-error">
-          <strong>{this.props.translate('screens.sign_in.error')}:</strong> {error.message}
+          <strong>{I18n.t('screens.sign_in.error')}:</strong> {error.message}
         </div>
       );
-    } else if (loggingIn === true) {
-      return <span className="signin-form-spinner" styleName="spinner"></span>;
     }
+
+    return null;
   }
 
-  renderRememberMe(options, translate) {
+  renderRememberMe(options) {
     if (options.rememberMe) {
-      return <RememberMe translate={translate} />;
+      return <RememberMe />;
     }
   }
 
   render() {
-    const { options, translate } = this.props;
+    const { options } = this.props;
     const { connectionName } = this.state;
     const { authenticityToken, disableSignInAutocomplete } = options;
+
+    const shouldRenderSpinner = this.shouldRenderSpinner();
 
     return (
       <form
@@ -247,7 +216,7 @@ class SignInForm extends React.Component {
         method="post"
         onSubmit={this.doSignIn}
         autoComplete={disableSignInAutocomplete ? 'off' : 'on'}>
-        {this.renderErrorOrSpinner()}
+        {this.renderError()}
 
         { /* These are for submitting straight to rails */ }
         <input name="utf8" type="hidden" value="✓" />
@@ -256,24 +225,23 @@ class SignInForm extends React.Component {
           type="hidden"
           value={authenticityToken} />
 
-        <EmailInput
-          onChange={this.onEmailChange}
-          translate={translate} />
+        <EmailInput onChange={this.onEmailChange} />
         <PasswordInput
           onChange={this.onPasswordChange}
-          translate={translate}
           connectionName={connectionName} />
 
-        {this.renderRememberMe(options, translate)}
+        {this.renderRememberMe(options, I18n.t)}
 
         <a
           href="/forgot_password"
           styleName="reset-password">
-            {translate('screens.sign_in.forgot_password')}
+            {I18n.t('screens.sign_in.forgot_password')}
         </a>
 
-        <button onClick={this.doSignIn} styleName="sign-in-button">
-          {translate('screens.sign_in.form.sign_in_button')}
+        <button
+          onClick={this.doSignIn}
+          styleName={shouldRenderSpinner ? 'sign-in-button-with-spinner' : 'sign-in-button'}>
+          {this.renderButtonContents()}
         </button>
       </form>
     );
@@ -282,7 +250,6 @@ class SignInForm extends React.Component {
 
 SignInForm.propTypes = {
   options: OptionsPropType.isRequired,
-  translate: PropTypes.func.isRequired,
   doAuth0Authorize: PropTypes.func.isRequired,
   doAuth0Login: PropTypes.func.isRequired,
   onLoginStart: PropTypes.func.isRequired,

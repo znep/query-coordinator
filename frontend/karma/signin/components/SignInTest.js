@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
 import _ from 'lodash';
@@ -10,7 +10,6 @@ import SocialSignIn from 'components/Social/SocialSignIn';
 
 describe('<SignIn />', () => {
   const defaultProps = {
-    translate: ( ) => '',
     doAuth0Authorize: () => { },
     doAuth0Login: () => { },
     onLoginStart: () => { },
@@ -25,14 +24,14 @@ describe('<SignIn />', () => {
       const props = _.cloneDeep(defaultProps);
       props.options.showSocial = true;
       const wrapper = shallow(<SignIn {...props} />);
-      expect(wrapper.find(SocialSignIn)).to.have.length(1);
+      assert.lengthOf(wrapper.find(SocialSignIn), 1);
     });
 
     it('does not render social login when showSocial is false', () => {
       const props = _.cloneDeep(defaultProps);
       props.options.showSocial = false;
       const wrapper = shallow(<SignIn {...props} />);
-      expect(wrapper.find(SocialSignIn)).to.have.length(0);
+      assert.lengthOf(wrapper.find(SocialSignIn), 0);
     });
   });
 });

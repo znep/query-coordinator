@@ -1,15 +1,16 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
+import I18n from 'common/i18n';
 import OptionsPropType from '../PropTypes/OptionsPropType';
 import SignInForm from './SignInForm/SignInForm';
 import SocialSignIn from './Social/SocialSignIn';
 import styles from './signin.scss';
 
 class SignIn extends React.Component {
-  renderSocialSignIn(doAuth0Authorize, translate) {
+  renderSocialSignIn(doAuth0Authorize) {
     // only render social sign-in if module is enabled
     if (this.props.options.showSocial) {
-      return <SocialSignIn doAuth0Authorize={doAuth0Authorize} translate={translate} />;
+      return <SocialSignIn doAuth0Authorize={doAuth0Authorize} />;
     }
   }
 
@@ -18,7 +19,6 @@ class SignIn extends React.Component {
       doAuth0Authorize,
       doAuth0Login,
       auth0Connections,
-      translate,
       options,
       onLoginError,
       onLoginStart
@@ -29,7 +29,6 @@ class SignIn extends React.Component {
         <div styleName="form-container">
           <SignInForm
             options={options}
-            translate={translate}
             doAuth0Authorize={doAuth0Authorize}
             doAuth0Login={doAuth0Login}
             onLoginStart={onLoginStart}
@@ -37,14 +36,14 @@ class SignIn extends React.Component {
             auth0Connections={auth0Connections} />
         </div>
 
-        {this.renderSocialSignIn(doAuth0Authorize, translate)}
+        {this.renderSocialSignIn(doAuth0Authorize)}
 
         <div styleName="signup-container">
-          {translate('screens.sign_in.dont_have_account')}{' '}
+          {I18n.t('screens.sign_in.dont_have_account')}{' '}
           <a
             onClick={toggleViewMode}
             styleName="signup-link">
-              {translate('screens.sign_in.sign_up')}
+              {I18n.t('screens.sign_in.sign_up')}
           </a>
         </div>
       </div>
@@ -54,7 +53,6 @@ class SignIn extends React.Component {
 
 SignIn.propTypes = {
   options: OptionsPropType.isRequired,
-  translate: PropTypes.func.isRequired,
   doAuth0Authorize: PropTypes.func.isRequired,
   doAuth0Login: PropTypes.func.isRequired,
   onLoginStart: PropTypes.func.isRequired,

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import cssModules from 'react-css-modules';
 import _ from 'lodash';
+import I18n from 'common/i18n';
 import Auth0ConnectionsPropType from '../../PropTypes/Auth0ConnectionsPropType';
 import ForcedConnectionsPropType from '../../PropTypes/ForcedConnectionsPropType';
 import { findForcedOrEmailDomainConnection } from '../../Util';
@@ -71,7 +72,7 @@ class SignInButton extends React.Component {
   render() {
     return (
       <button onClick={this.doSignIn} styleName="sign-in-button">
-        {this.props.translate('screens.sign_in.form.sign_in_button')}
+        {I18n.t('screens.sign_in.form.sign_in_button')}
       </button>
     );
   }
@@ -83,7 +84,6 @@ SignInButton.propTypes = {
   onLoginStart: PropTypes.func.isRequired,
   connectionName: PropTypes.string,
   doAuth0Authorize: PropTypes.func.isRequired,
-  translate: PropTypes.func.isRequired,
   email: PropTypes.string,
   password: PropTypes.string,
   auth0Connections: PropTypes.arrayOf(Auth0ConnectionsPropType),

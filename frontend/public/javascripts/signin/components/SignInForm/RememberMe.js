@@ -1,25 +1,24 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import cssModules from 'react-css-modules';
+import I18n from 'common/i18n';
 import styles from './sign-in-form.scss';
 
-function RememberMe({ translate }) {
-  return (
-    <div styleName="remember-me">
-      <input
-        name="user_session[remember_me]"
-        id="remember-me-checkbox"
-        type="checkbox"
-        styleName="real-checkbox" />
-      <label htmlFor="remember-me-checkbox">
-        <span styleName="psuedo-checkbox"><span styleName="psuedo-checkbox-check"></span></span>
-        {translate('account.common.form.remember_me')}
-      </label>
-    </div>
-  );
+class RememberMe extends React.Component {
+  render() {
+    return (
+      <div styleName="remember-me">
+        <input
+          name="user_session[remember_me]"
+          id="remember-me-checkbox"
+          type="checkbox"
+          styleName="real-checkbox" />
+        <label htmlFor="remember-me-checkbox">
+          <span styleName="psuedo-checkbox"><span styleName="psuedo-checkbox-check"></span></span>
+          {I18n.t('account.common.form.remember_me')}
+        </label>
+      </div>
+    );
+  }
 }
-
-RememberMe.propTypes = {
-  translate: PropTypes.func.isRequired
-};
 
 export default cssModules(RememberMe, styles);

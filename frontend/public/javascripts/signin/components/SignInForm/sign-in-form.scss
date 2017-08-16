@@ -31,6 +31,21 @@
   margin-top: 1.5em;
 }
 
+.sign-in-button-with-spinner {
+  @extend .sign-in-button;
+
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.spinner {
+  @extend .spinner-default;
+
+  width: 31px;
+  height: 31px;
+  border-width: 5px;
+}
+
 .icon-container {
   width: 20px;
   height: 20px;
@@ -83,6 +98,12 @@
   padding-bottom: 9px;
   padding-left: 32px;
   border-top: 1px solid $light-grey-3;
+}
+
+.sso-enabled-container {
+  position: absolute;
+  width: 100%;
+  top: 42px;
 }
 
 .remember-me {

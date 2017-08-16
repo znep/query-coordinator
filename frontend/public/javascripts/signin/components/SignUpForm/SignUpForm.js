@@ -1,7 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
+import _ from 'lodash';
 import { SocrataIcon } from 'common/components';
+import I18n from 'common/i18n';
 import ReCAPTCHA from 'react-google-recaptcha';
 import styles from './sign-up-form.scss';
 import {
@@ -13,20 +15,19 @@ import {
   recaptchaCallback } from '../../actions';
 import OptionsPropType from '../../PropTypes/OptionsPropType';
 import SignUpInput from './SignUpInput';
+import PasswordHintModal from './PasswordHintModal';
 
 class SignUpForm extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      renderingPasswordHintModal: false
+    };
+
     this.validateAndSubmitForm = this.validateAndSubmitForm.bind(this);
-  }
-
-  componentDidMount() {
-    const { translate } = this.props;
-
-    // add tooltip to password hint...
-    $('.passwordHint').socrataTip({
-      content: translate('account.common.form.password_requirements_html')
-    });
+    this.closePasswordHintModal = this.closePasswordHintModal.bind(this);
+    this.openPasswordHintModal = this.openPasswordHintModal.bind(this);
   }
 
   validateAndSubmitForm(event) {
@@ -37,6 +38,38 @@ class SignUpForm extends React.Component {
     // this function is called only if the form passes validation in the reducer;
     // note that directly doing submit() on the DOM node skips firing the onSubmit event
     onFormSubmit(() => this.formDomNode.submit());
+  }
+
+  openPasswordHintModal(event) {
+    event.preventDefault();
+
+    this.setState({ renderingPasswordHintModal: true });
+  }
+
+  closePasswordHintModal() {
+    this.setState({ renderingPasswordHintModal: false });
+  }
+
+  renderPasswordHintModal() {
+    if (this.state.renderingPasswordHintModal) {
+      return (<PasswordHintModal onDismiss={this.closePasswordHintModal} />);
+    }
+
+    return null;
+  }
+
+  renderRecaptchaError() {
+    const { recaptchaValid, formSubmitted } = this.props;
+
+    if (formSubmitted === true && recaptchaValid === false) {
+      return (
+        <div styleName="recaptcha-error-message">
+          {I18n.t('account.common.validation.recaptcha2')}
+        </div>
+      );
+    }
+
+    return null;
   }
 
   /**
@@ -55,23 +88,8 @@ class SignUpForm extends React.Component {
     return null;
   }
 
-  renderRecaptchaError() {
-    const { translate, recaptchaValid, formSubmitted } = this.props;
-
-    if (formSubmitted === true && recaptchaValid === false) {
-      return (
-        <div styleName="recaptcha-error-message">
-          {translate('account.common.validation.recaptcha2')}
-        </div>
-      );
-    }
-
-    return null;
-  }
-
   render() {
     const {
-      translate,
       options,
       onEmailBlur,
       onScreenNameBlur,
@@ -83,8 +101,8 @@ class SignUpForm extends React.Component {
 
     const {
       authenticityToken,
-      recaptchaSitekey,
-      toggleViewMode } = options;
+      recaptchaSitekey
+    } = options;
 
     const focusOnEmail = _.isEmpty(enteredEmail);
     const focusOnScreenName = !focusOnEmail && _.isEmpty(enteredScreenName);
@@ -105,6 +123,7 @@ class SignUpForm extends React.Component {
           name="authenticity_token"
           type="hidden"
           value={authenticityToken} />
+        {this.renderPasswordHintModal()}
         {this.renderUrlAuthToken()}
 
         {/* ..... don't ask, yes it's needed */}
@@ -112,7 +131,7 @@ class SignUpForm extends React.Component {
         <SignUpInput
           focusOnMount={focusOnEmail}
           name="email"
-          label={translate('account.common.form.email')}
+          label={I18n.t('account.common.form.email')}
           inputName="signup[email]"
           inputType="email"
           onBlur={onEmailBlur} />
@@ -120,7 +139,7 @@ class SignUpForm extends React.Component {
         <SignUpInput
           focusOnMount={focusOnScreenName}
           name="screenName"
-          label={translate('account.common.form.display_name')}
+          label={I18n.t('account.common.form.display_name')}
           inputName="signup[screenName]"
           inputType="text"
           onBlur={onScreenNameBlur} />
@@ -128,21 +147,19 @@ class SignUpForm extends React.Component {
         <SignUpInput
           focusOnMount={focusOnPassword}
           name="password"
-          label={translate('account.common.form.password')}
+          label={I18n.t('account.common.form.password')}
           inputName="signup[password]"
           inputType="password"
           onBlur={onPasswordBlur}>
-          <div className="passwordHint" styleName="password-hint">
-            {translate('account.common.form.password_restrictions')}
-            <div styleName="info-icon">
-              <SocrataIcon name="info" />
-            </div>
-          </div>
+          <button styleName="password-hint-button" onClick={this.openPasswordHintModal}>
+            {I18n.t('account.common.form.password_restrictions')}
+            <SocrataIcon name="info" />
+          </button>
         </SignUpInput>
 
         <SignUpInput
           name="passwordConfirm"
-          label={translate('account.common.form.confirm_password')}
+          label={I18n.t('account.common.form.confirm_password')}
           inputName="signup[passwordConfirm]"
           inputType="password"
           onBlur={onPasswordConfirmBlur} />
@@ -158,19 +175,10 @@ class SignUpForm extends React.Component {
 
         <div
           styleName="terms"
-          dangerouslySetInnerHTML={{ __html: translate('screens.sign_up.terms_html') }} />
+          dangerouslySetInnerHTML={{ __html: I18n.t('screens.sign_up.terms_html') }} />
         <button styleName="sign-up-button" type="submit">
-          {translate('screens.sign_up.form.create_account_button')}
+          {I18n.t('screens.sign_up.form.create_account_button')}
         </button>
-
-        <div styleName="go-to-signin">
-          {translate('screens.sign_up.already_have_account')}{' '}
-          <a
-            onClick={toggleViewMode}
-            styleName="signin-link">
-              {translate('screens.sign_in.form.sign_in_button')}
-          </a>
-        </div>
       </form>
     );
   }
@@ -185,7 +193,6 @@ SignUpForm.propTypes = {
   onRecaptchaCallback: PropTypes.func.isRequired,
   recaptchaValid: PropTypes.bool.isRequired,
   formSubmitted: PropTypes.bool.isRequired,
-  translate: PropTypes.func.isRequired,
   options: OptionsPropType.isRequired,
   enteredEmail: PropTypes.string,
   enteredScreenName: PropTypes.string,

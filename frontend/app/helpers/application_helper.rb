@@ -387,6 +387,8 @@ module ApplicationHelper
   # Returns flashes with the markup the Socrata Styleguide expects to style for
   # alerts. Used on dataset landing page and hopefully other places moving forward
   def display_styleguide_flashes
+    return if @suppress_flashes
+
     flash_obj = formatted_flashes
 
     return if flash_obj.blank?

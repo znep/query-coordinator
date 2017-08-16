@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import _ from 'lodash';
+import I18n from 'common/i18n';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 import ModalConfigPropType from '../PropTypes/ModalConfigPropType';
 
@@ -6,7 +8,6 @@ class LoginModal extends React.Component {
   render() {
     const {
       modalConfig,
-      translate,
       onCancel,
       onConfirm
     } = this.props;
@@ -14,10 +15,10 @@ class LoginModal extends React.Component {
     const acceptButtonText = _.get(
       modalConfig,
       'acceptButtonText',
-      translate('screens.sign_in.modal_default_accept')
+      I18n.t('screens.sign_in.modal_default_accept')
     );
 
-    const headerText = _.get(modalConfig, 'title', translate('screens.sign_in.modal_default_header'));
+    const headerText = _.get(modalConfig, 'title', I18n.t('screens.sign_in.modal_default_header'));
 
     // there is validation in rails AND proptypes for this field,
     // so it _should_ always be there
@@ -27,7 +28,7 @@ class LoginModal extends React.Component {
     const cancelButtonText = _.get(
       modalConfig,
       'cancelButtonText',
-      translate('screens.sign_in.modal_default_cancel')
+      I18n.t('screens.sign_in.modal_default_cancel')
     );
 
     const modalProps = {
@@ -78,7 +79,6 @@ class LoginModal extends React.Component {
 
 LoginModal.propTypes = {
   modalConfig: ModalConfigPropType.isRequired,
-  translate: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired
 };

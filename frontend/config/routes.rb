@@ -446,7 +446,7 @@ Rails.application.routes.draw do
     # Dataset SEO URLs (only add here if the action has a view with it;
     # otherwise just add to the :member key in the datasets resource above.)
     scope '/:category/:view_name/:id', :controller => 'datasets', :constraints => Constraints::ResourceConstraint.new do
-      get '/:row_id', :action => 'show', :as => :view_row, :constraints => { :row_id => /\d+/ }
+      get '/:row_id', :action => 'show', :as => :view_row, :constraints => { :row_id => /\d+/ }, :bypass_dslp => true
       get '/data', :action => 'show', :as => :data_grid, :bypass_dslp => true
       get '/widget_preview', :action => 'widget_preview', :as => :preview_view_widget
       get '/edit', :action => 'edit', :as => :edit_view
@@ -498,7 +498,7 @@ Rails.application.routes.draw do
       get 'd/:id/revisions/current(*rest_of_path)', :action => 'current_revision'
       get 'd/:id/revisions/:revision_seq(*rest_of_path)', :action => 'show_revision'
 
-      get 'd/:id/:row_id', :action => 'show', :constraints => {:row_id => /\d+/}
+      get 'd/:id/:row_id', :action => 'show', :constraints => {:row_id => /\d+/}, :bypass_dslp => true
     end
 
     # Semantic web cannoical URLs

@@ -114,7 +114,7 @@ describe('ActivityFeedTable', () => {
   });
 
   describe('restored datasets', () => {
-    it('should has (Restored)', () => {
+    xit('should have text "Restored"', () => {
       const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
       const rows = [].slice.call(output.querySelectorAll('tbody tr'));
 
@@ -124,7 +124,7 @@ describe('ActivityFeedTable', () => {
       );
     });
 
-    it('should not has (Restored) if 14 days past', () => {
+    it('should not have text "Restored" if 14 days past', () => {
       const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
       const rows = [].slice.call(output.querySelectorAll('tbody tr'));
 

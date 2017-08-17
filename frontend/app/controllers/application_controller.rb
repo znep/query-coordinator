@@ -373,7 +373,7 @@ class ApplicationController < ActionController::Base
     ExternalConfig.update_all!
   end
 
-  def use_discrete_assets?
+  def self.use_discrete_assets?
     Rails.env.development?
   end
 

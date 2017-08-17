@@ -193,6 +193,10 @@ module ApplicationHelper
     end
   end
 
+  def javascript_polyfills
+    content_tag(:script, nil, :src => '/javascripts/util/polyfills.js', :type => 'text/javascript')
+  end
+
   def javascript_error_helper_tag
     %Q{<script type="text/javascript">blistEnv = "#{Rails.env}";</script>}.html_safe +
       include_webpack_bundle('open-data/errors.js')

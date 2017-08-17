@@ -19,6 +19,8 @@ http://www.socrata.com
 -->
 
 <head>
+  <%= javascript_polyfills %>
+
   <%- if enable_site_chrome? || enable_govstat_chrome? -%>
     <%= site_chrome_analytics_tags %>
     <%= site_chrome_meta_viewport_tag %>

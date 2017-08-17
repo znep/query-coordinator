@@ -2,9 +2,8 @@ import { connect } from 'react-redux';
 import React, { PropTypes } from 'react';
 import I18n from 'common/i18n';
 import {
-  hasDimensionGroupingColumnName,
+  getDimensionGroupingColumnName,
   isMultiSeries,
-  isOneHundredPercentStacked,
   isStacked
 } from '../selectors/vifAuthoring';
 import {
@@ -21,120 +20,93 @@ export const GroupedStackedSelector = React.createClass({
   },
 
   render() {
-    const { vifAuthoring } = this.props;
+    const {
+      metadata,
+      vifAuthoring
+    } = this.props;
 
+    const dimensionGroupingColumnName = getDimensionGroupingColumnName(vifAuthoring);
+    const areOptionsDisabled = (dimensionGroupingColumnName === null) && !isMultiSeries(vifAuthoring);
     const stacked = isStacked(vifAuthoring);
-    const oneHundredPercentStacked = isOneHundredPercentStacked(vifAuthoring);
-    const disabled = !hasDimensionGroupingColumnName(vifAuthoring) && !isMultiSeries(vifAuthoring);
 
-    const groupedContainer = this.renderGroupedContainer({ checked: !stacked, disabled });
-    const stackedContainer = this.renderStackedContainer({ checked: stacked && !oneHundredPercentStacked, disabled });
-    const oneHundredPercentStackedContainer = this.renderOneHundredPercentStackedContainer({ checked: oneHundredPercentStacked, disabled });
-
-    return (
-      <div className="grouped-stacked-selector-container">
-        <div className="authoring-field">
-          <span>{I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.title`)}</span>
-          <div className="radiobutton">
-            {groupedContainer}
-            {stackedContainer}
-            {oneHundredPercentStackedContainer}
-          </div>
-        </div>
-      </div>
-    );
-  },
-
-  renderGroupedContainer({ checked, disabled }) {
-
-    const containerAttributes = {
+    const displayGroupedContainerAttributes = {
       id: 'grouping-display-grouped-container',
-      className: `${disabled ? 'disabled' : null}`
+      className: `${areOptionsDisabled ? 'disabled': ''}`
     }
-
-    const inputAttributes = {
+    const displayGroupedInputAttributes = {
       id: 'display-grouped',
       type: 'radio',
       name: 'display-grouped-radio',
       onChange: this.props.onSelectGrouped,
-      checked,
-      disabled
+      checked: !stacked,
+      disabled: areOptionsDisabled
     };
 
-    return (
-      <div {...containerAttributes}>
-        <input {...inputAttributes} />
+    const displayGroupedContainer = (
+      <div {...displayGroupedContainerAttributes}>
+        <input {...displayGroupedInputAttributes} />
         <label htmlFor="display-grouped">
           <span className="fake-radiobutton"/>
         </label>
         {I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.grouped`)}
       </div>
     );
-  },
 
-  renderStackedContainer({ checked, disabled }) {
-
-    const containerAttributes = {
+    const displayStackedContainerAttributes = {
       id: 'grouping-display-stacked-container',
-      className: `${disabled ? 'disabled': null}`
+      className: `${areOptionsDisabled ? 'disabled': ''}`
     }
-
-    const inputAttributes = {
+    const displayStackedInputAttributes = {
       id: 'display-stacked',
       type: 'radio',
       name: 'display-grouped-radio',
       onChange: this.props.onSelectStacked,
-      checked,
-      disabled
+      checked: stacked,
+      disabled: areOptionsDisabled
     };
 
-    return (
-      <div {...containerAttributes}>
-        <input {...inputAttributes} />
+    const displayStackedContainer = (
+      <div {...displayStackedContainerAttributes}>
+        <input {...displayStackedInputAttributes} />
         <label htmlFor="display-stacked">
           <span className="fake-radiobutton"/>
         </label>
         {I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.stacked`)}
       </div>
     );
-  },
-
-  renderOneHundredPercentStackedContainer({ checked, disabled }) {
-    const containerAttributes = {
-      id: 'grouping-display-100-percent-stacked-container',
-      className: `${disabled ? 'disabled': ''}`
-    }
-
-    const inputAttributes = {
-      id: 'display-100-percent-stacked',
-      type: 'radio',
-      name: 'display-grouped-radio',
-      onChange: this.props.onSelectOneHundredPercentStacked,
-      checked,
-      disabled
-    };
 
     return (
-      <div {...containerAttributes}>
-        <input {...inputAttributes} />
-        <label htmlFor="display-100-percent-stacked">
-          <span className="fake-radiobutton"/>
-        </label>
-        {I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.one_hundred_percent_stacked`)}
+      <div className="grouped-stacked-selector-container">
+        <div className="authoring-field">
+          <span>{I18n.t(`shared.visualizations.panes.data.fields.dimension_grouping_options.title`)}</span>
+          <div className="radiobutton">
+            {displayGroupedContainer}
+            {displayStackedContainer}
+          </div>
+        </div>
       </div>
     );
   }
 });
 
 const mapStateToProps = state => {
+
   const { vifAuthoring, metadata } = state;
-  return { vifAuthoring, metadata };
+  return {
+    vifAuthoring,
+    metadata
+  };
 };
 
 const mapDispatchToProps = dispatch => ({
-  onSelectGrouped: event => dispatch(setStacked({ stacked: false, oneHundredPercent: false })),
-  onSelectStacked: event => dispatch(setStacked({ stacked: true, oneHundredPercent: false })),
-  onSelectOneHundredPercentStacked: event => dispatch(setStacked({ stacked: true, oneHundredPercent: true }))
+
+  onSelectGrouped: (event) => {
+    dispatch(setStacked(false));
+  },
+
+  onSelectStacked: (event) => {
+    dispatch(setStacked(true));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupedStackedSelector);

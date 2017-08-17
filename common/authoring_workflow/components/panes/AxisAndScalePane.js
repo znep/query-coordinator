@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dropdown } from 'common/components';
 import I18n from 'common/i18n';
+
 import { CHART_SORTING } from '../../constants';
 import {
   setOrderBy,
@@ -16,7 +17,6 @@ import {
   isBarChart,
   isColumnChart,
   isHistogram,
-  isOneHundredPercentStacked,
   isTimelineChart,
   isPieChart
 } from '../../selectors/vifAuthoring';
@@ -107,9 +107,8 @@ export var AxisAndScalePane = React.createClass({
       limitMin = '';
     }
 
-    const isAuto = (this.state.measureAxisScaleControl == 'automatic') &&
-      !limitMin && 
-      !limitMax;
+    const isAuto = this.state.measureAxisScaleControl == 'automatic' &&
+      (!limitMin && !limitMax);
 
     const boundariesPart = (
       <div className="double-column-input-group">
@@ -128,23 +127,18 @@ export var AxisAndScalePane = React.createClass({
       </div>
     );
 
-    const isDisabled = isOneHundredPercentStacked(vifAuthoring);
-    const containerAttributes = {
-      className: `${isDisabled ? 'authoring-field radiobutton disabled' : 'authoring-field radiobutton'}`
-    };
-
     return (
       <AccordionPane title={I18n.t('shared.visualizations.panes.axis_and_scale.subheaders.scale')}>
         {I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.title')}
-        <div {...containerAttributes}>
+
+        <div className="authoring-field radiobutton">
           <div>
             <input type="radio"
                    name="measure-axis-scale"
                    id="measure-axis-scale-automatic"
                    value="automatic"
                    onChange={this.onMeasureAxisScaleControlChange}
-                   checked={isAuto}
-                   disabled={isDisabled} />
+                   checked={isAuto}/>
             <label htmlFor="measure-axis-scale-automatic">
               <span className="fake-radiobutton" />
               <div className="translation-within-label">{I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.automatic')}</div>
@@ -156,8 +150,7 @@ export var AxisAndScalePane = React.createClass({
                    id="measure-axis-scale-custom"
                    value="custom"
                    onChange={this.onMeasureAxisScaleControlChange}
-                   checked={!isAuto}
-                   disabled={isDisabled} />
+                   checked={!isAuto}/>
             <label htmlFor="measure-axis-scale-custom">
               <span className="fake-radiobutton" />
               <div className="translation-within-label">{I18n.t('shared.visualizations.panes.axis_and_scale.fields.scale.custom')}</div>

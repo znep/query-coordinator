@@ -197,11 +197,6 @@ export const getDimensionGroupingColumnName = createSelector(
   vif => _.get(vif, 'series[0].dataSource.dimension.grouping.columnName', null)
 );
 
-export const hasDimensionGroupingColumnName = createSelector(
-  getDimensionGroupingColumnName,
-  (groupingColumnName) => !_.isEmpty(groupingColumnName)
-);
-
 export const getColorPaletteGroupingColumnName = createSelector(
   getCurrentVif,
   getSelectedVisualizationType,
@@ -271,7 +266,7 @@ export const hasVisualizationDimension = createSelector(
 
 export const isMultiSeries = createSelector(
   getSeries,
-  (series) => series.length > 1
+  series => series.length > 1
 );
 
 export const isGroupingOrMultiSeries = createSelector(
@@ -284,17 +279,13 @@ export const isGroupingOrMultiSeries = createSelector(
 
 export const isStacked = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].stacked', false)
-);
+  vif => _.get(vif, 'series[0].stacked', false)
 
-export const isOneHundredPercentStacked = createSelector(
-  getCurrentVif,
-  (vif) => _.get(vif, 'series[0].stacked.oneHundredPercent', false)
 );
 
 export const isRegionMap = createSelector(
   getVisualizationType,
-  (type) => type === 'regionMap'
+  type => type === 'regionMap'
 );
 
 export const isValidRegionMapVif = createSelector(

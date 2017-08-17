@@ -29,21 +29,48 @@
       }
     }
 
-    th[data-column=name] {
-      width: 99%;
-    }
-
-    th[data-column=actions] {
-      min-width: 200px;
-    }
-
     th, td {
       padding: 10px 20px;
+
+      &[data-column=dateStarted] {
+        width: 15%;
+      }
+
+      &[data-column=name] {
+        width: 38%;
+
+        .asset-name {
+          vertical-align: middle;
+        }
+
+        .asset-deleted {
+          display: inline-block;
+          vertical-align: middle;
+        }
+      }
+
+      &[data-column=event] {
+        width: 10%;
+      }
+
+      &[data-column=initiatedBy] span{
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+        overflow: hidden;
+        max-width: 35ch;
+      }
+
+      &[data-column=status] {
+        width: 14%;
+      }
+
+      &[data-column=actions] {
+        width: 8%;
+      }
     }
 
     td {
-      white-space: nowrap;
-
       a {
         color: #5e5e5e;
 

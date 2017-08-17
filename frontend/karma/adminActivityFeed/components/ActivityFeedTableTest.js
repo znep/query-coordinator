@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import moment from 'moment-timezone';
 import { assert } from 'chai';
 
 import testStore from '../testStore';
@@ -6,6 +8,10 @@ import mockTranslations from '../mockTranslations';
 import ActivityFeedTable from 'components/ActivityFeedTable';
 
 describe('ActivityFeedTable', () => {
+  // Update mock data dates as they'll be compared against current date.
+  _.set(mockActivities, 'activities[3].data.latest_event.event_time', moment().format());
+  _.set(mockActivities, 'activities[4].data.latest_event.event_time', moment().subtract(15, 'days').format());
+
   const store = testStore({}, {
     activities: mockActivities.activities,
     pagination: {
@@ -114,7 +120,7 @@ describe('ActivityFeedTable', () => {
   });
 
   describe('restored datasets', () => {
-    xit('should have text "Restored"', () => {
+    it('should have text "Restored"', () => {
       const output = renderComponentWithLocalization(ActivityFeedTable, {}, store);
       const rows = [].slice.call(output.querySelectorAll('tbody tr'));
 

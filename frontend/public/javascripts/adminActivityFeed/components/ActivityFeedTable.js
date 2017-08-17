@@ -46,7 +46,7 @@ class ActivityFeedTable extends React.Component {
       {
         id: 'initiatedBy',
         title: t('columns.initiated_by'),
-        mapper: activity => activity.getIn(['initiated_by', 'displayName'], '')
+        mapper: activity => <span>{activity.getIn(['initiated_by', 'displayName'], '')}</span>
       },
       {
         id: 'status',

@@ -1,0 +1,171 @@
+@import '../variables';
+
+.scroll-container {
+  border: 1px solid $scroll-container-border-color;
+  border-left: 0;
+}
+
+.rights-column {
+  border: 1px solid $column-border-color;
+  border-right: 3px solid $rights-column-separator-color;
+}
+
+.cell {
+  border-top: 1px solid $cell-border-color;
+  height: $cell-height;
+  padding: .5em;
+}
+
+.role-cell {
+  @extend .cell;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: $cell-width;
+
+  :global(.socrata-icon) {
+    height: 1.5em;
+    width: 1.5em;
+  }
+}
+
+.header-cell {
+  align-items: flex-end;
+  display: flex;
+  height: $header-cell-height;
+  justify-content: space-between;
+  padding: .5em;
+}
+
+.role-header-cell {
+  @extend .header-cell;
+  width: $cell-width;
+
+  h6 {
+    word-wrap: break-word;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+.rights-header-cell {
+  @extend .header-cell;
+  align-items: center;
+  background-color: $column-header-background-color;
+  border-top: 0;
+  display: flex;
+  padding-left: 1em;
+}
+
+.expandable-container {
+  display: flex;
+  flex-direction: column;
+
+  > .expandable-item-container .role-cell {
+    background-color: $expandable-cell-background-color;
+  }
+}
+
+.right-cell {
+  @extend .cell;
+  align-items: center;
+  display: flex;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.right-cell-trigger {
+  @extend .right-cell;
+  align-items: center;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+
+  :global(.socrata-icon) {
+    margin-left: .5em;
+  }
+
+  h6 {
+    color: $expandable-trigger-text-color;
+  }
+}
+
+
+.right-cell-item {
+  @extend .right-cell;
+  background-color: $expandable-cell-background-color;
+  padding-left: 1.5em;
+}
+
+.footer-cell {
+  @extend .cell;
+  background-color: $footer-background-color;
+  height: 3em;
+}
+
+.right-footer-cell {
+  @extend .footer-cell;
+  text-align: right;
+}
+
+.role-footer-cell {
+  @extend .footer-cell;
+  text-align: center;
+
+  a {
+    font-size: smaller;
+    text-decoration: underline;
+  }
+}
+
+.custom-role-column {
+  h6 {
+    max-width: 6.75em;
+  }
+}
+
+.edit-custom-role-column {
+  h6 {
+    max-width: none;
+  }
+
+  .expandable-container {
+    > .expandable-item-container .role-cell {
+      background-color: $edit-custom-role-item-background-color;
+    }
+  }
+}
+
+.roles-grid {
+  .edit-custom-role-column {
+    background-color: $edit-custom-role-background-color;
+
+    .role-cell {
+      color: $checkbox-color;
+
+      :global(.socrata-icon) {
+        height: 15px;
+        width: 15px;
+      }
+    }
+  }
+
+  .role-cell {
+    color: $checkmark-color;
+  }
+
+  :global(.socrata-icon-indeterminate-state-icon) {
+    color: $indeterminate-state-icon-color;
+  }
+}
+
+.default-role-column {
+  &:first-child {
+    border-left: 0;
+  }
+
+  & + .custom-role-column,
+  & + .edit-custom-role-column {
+    border-left: 3px double $cell-border-color;
+  }
+}

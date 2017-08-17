@@ -53,12 +53,8 @@
         width: 10%;
       }
 
-      &[data-column=initiatedBy] span{
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        display: block;
-        overflow: hidden;
-        max-width: 35ch;
+      &[data-column=initiatedBy] {
+        width: 15%;
       }
 
       &[data-column=status] {

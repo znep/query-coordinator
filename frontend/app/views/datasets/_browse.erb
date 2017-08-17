@@ -132,7 +132,8 @@
             <h3><%= t('controls.browse.actions.create_resource') %></h3>
             <div class="buttonContainer">
 
-            <%- if current_user_can_create_story? || FeatureFlags.derive(@view, request).enable_dataset_management_ui -%>
+            <%- if current_user_can_create_story? || current_user_can_create_measure? ||
+                  FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
 
                 <a class="button downArrow" href="#" data-jq-dropdown="#create-resource-dropdown" data-horizontal-offset="-3" data-vertical-offset="-10">
                   <%= t('controls.browse.actions.create_resource_short') %>
@@ -272,7 +273,8 @@
               <%- if ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
                       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
 
-                <%- if current_user_can_create_story? || FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
+                <%- if current_user_can_create_story? || current_user_can_create_measure? ||
+                      FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
 
                   <a class="button dropdown-button downArrow" href="#" data-jq-dropdown="#create-resource-footer-dropdown" data-horizontal-offset="-3" data-vertical-offset="-10">
                     <%= t('controls.browse.actions.create_resource_short') %>
@@ -341,7 +343,8 @@
               <%- if ((CurrentDomain.user_can?(current_user, UserRights::CREATE_DATASETS) ||
                       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
 
-                <%- if current_user_can_create_story? || FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
+                <%- if current_user_can_create_story? || current_user_can_create_measure? ||
+                      FeatureFlags.derive(nil, request).enable_dataset_management_ui -%>
 
                   <a class="button dropdown-button downArrow" href="#" data-jq-dropdown="#create-resource-footer-dropdown" data-horizontal-offset="-3" data-vertical-offset="-10">
                     <%= t('controls.browse.actions.create_resource_short') %>

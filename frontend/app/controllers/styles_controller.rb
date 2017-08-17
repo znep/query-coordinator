@@ -97,6 +97,10 @@ end
 class DevelopmentCache
   include Singleton
 
+  def self.use_individual_stylesheets?
+    ApplicationController.use_discrete_assets?
+  end
+
   # Maps a dependency (absolute filesystem path of an @included file)
   # to a Set of top-level scss files (in style_packages.yml) having
   # that dependency (direct or indirect).
@@ -129,6 +133,11 @@ class DevelopmentCache
   def initialize
     @reverse_dependencies = {}
     @forward_dependencies = {}
+
+    start_listener! if self.class.use_individual_stylesheets?
+  end
+
+  def start_listener!
     listener = Listen.to(
       *SCSS_WATCH_PATHS,
       :only => /\.scss/,
@@ -146,6 +155,7 @@ class DevelopmentCache
   # stylesheet.
   def get(top_level_stylesheet_filename)
     raise 'Block required' unless block_given?
+    return yield unless self.class.use_individual_stylesheets?
 
     # This process has never rendered this stylesheet. In order to validate its staleness
     # in the (on-disk, petsistent) cache, we must know the stylesheet's dependency list.
@@ -349,12 +359,12 @@ class StylesController < ApplicationController
     headers['Content-Type'] = 'text/css'
 
     cache_key = generate_cache_key("widget.#{params[:customization_id]}.#{updated_at || 0}")
-    cached = Rails.cache.read(cache_key) unless use_discrete_assets?
+    cached = Rails.cache.read(cache_key) unless DevelopmentCache.use_individual_stylesheets?
 
     if cached.nil?
       # get sitewide includes
       includes_cache_key = generate_cache_key('_includes')
-      includes = Rails.cache.read(includes_cache_key) unless use_discrete_assets?
+      includes = Rails.cache.read(includes_cache_key) unless DevelopmentCache.use_individual_stylesheets?
       if includes.nil?
         includes = get_includes
         Rails.cache.write(includes_cache_key, includes)

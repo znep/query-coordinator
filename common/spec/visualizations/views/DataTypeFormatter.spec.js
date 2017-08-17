@@ -21,14 +21,14 @@ var NUMBER_NOCOMMAS_FORMAT_REGEX = /^-?\d+(\.\d+)?$/;
 // 12.345 | -12.345,678
 var NUMBER_CUSTOM_SEPARATOR_FORMAT_REGEX = /^-?(\d{4}|\d{1,3}(\.\d{3})*(,\d+)?)$/;
 
-// $100,012.345 | -$12.345
-var CURRENCY_FORMAT_REGEX = /^-?\$\d{1,3}(,\d{3})*(\.\d+)?$/;
-// $100,012.35 | -$12.35
-var CURRENCY_FIXED_FORMAT_REGEX = /^-?\$\d{1,3}(,\d{3})*(\.\d{2})?$/;
-// $100012.35 | -$12.35
-var CURRENCY_NOCOMMAS_FORMAT_REGEX = /^-?\$\d+(\.\d+)?$/;
-// £100.012,345 | -£12,345
-var CURRENCY_CUSTOM_SEPARATOR_AND_SYMBOL_FORMAT_REGEX = /^-?£\d{1,3}(\.\d{3})*(,\d+)?$/;
+// $100,012.345 | $-12.345
+var CURRENCY_FORMAT_REGEX = /^\$-?\d{1,3}(,\d{3})*(\.\d+)?$/;
+// $100,012.35 | $-12.35
+var CURRENCY_FIXED_FORMAT_REGEX = /^\$-?\d{1,3}(,\d{3})*(\.\d{2})?$/;
+// $100012.35 | $-12.35
+var CURRENCY_NOCOMMAS_FORMAT_REGEX = /^\$-?\d+(\.\d+)?$/;
+// £100.012,345 | £-12,345
+var CURRENCY_CUSTOM_SEPARATOR_AND_SYMBOL_FORMAT_REGEX = /^£-?\d{1,3}(\.\d{3})*(,\d+)?$/;
 
 // 100,012.345 | (12.345)
 var FINANCIAL_FORMAT_REGEX = /^\(?\d{1,3}(,\d{3})*(\.\d+)?\)?$/;
@@ -51,12 +51,12 @@ var COORDINATES_REGEX = /^\(-?\d+\.\d+°,\s-?\d+\.\d+°\)$/;
 // <span title="Latitude"> 53.936172° </span>
 var COORDINATES_HTML_REGEX = /\<span\stitle=\"(.*)\"\>-?\d+\.\d+°\<\/span\>/;
 
-// -$12,345.67
-var MONEY_REGEX = /^-?\$\d{1,3}(,\d{3})*\.\d{2}$/;
-// -£12.345,6
-var MONEY_WITH_USER_FORMAT_REGEX = /^-?€\d{1,3}(\.\d{3})*,\d{2}$/;
-// -$123.45 | -$12.3K
-var MONEY_HUMANE_FORMAT_REGEX = /^-?\$(\d{1,3}\.\d{2}|\d{1,3}(\.\d{1,2})?[KMBTPEZY])$/;
+// $-12,345.67
+var MONEY_REGEX = /^\$-?\d{1,3}(,\d{3})*\.\d{2}$/;
+// £-12.345,6
+var MONEY_WITH_USER_FORMAT_REGEX = /^€-?\d{1,3}(\.\d{3})*,\d{2}$/;
+// $-123.45 | $-12.3K
+var MONEY_HUMANE_FORMAT_REGEX = /^\$-?(\d{1,3}\.\d{2}|\d{1,3}(\.\d{1,2})?[KMBTPEZY])$/;
 
 // 2014 Jun 28 12:34:56 PM
 var TIMESTAMP_REGEX = /^\d{4}\s\w{3}\s[0-3][0-9]\s[01][0-9]:[0-5][0-9]:[0-5][0-9]\s[AP]M$/;

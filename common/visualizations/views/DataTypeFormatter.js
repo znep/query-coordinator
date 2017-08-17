@@ -524,7 +524,7 @@ function renderMoneyCell(cellContent, column) {
 
     const sign = isNegative ? '-' : '';
 
-    cellContent = `${sign}${currencySymbol}${cellContent}`;
+    cellContent = `${currencySymbol}${sign}${cellContent}`;
   }
 
   return cellContent;
@@ -710,7 +710,7 @@ function _renderCurrencyNumber(amount, format) {
 
   const sign = isNegative ? '-' : '';
 
-  return `${sign}${format.currency}${value}`;
+  return `${format.currency}${sign}${value}`;
 }
 
 function _renderFinancialNumber(amount, format) {

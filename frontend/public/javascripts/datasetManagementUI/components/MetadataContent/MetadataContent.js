@@ -7,7 +7,7 @@ import styles from './MetadataContent.scss';
 
 // TODO : should probably abstract sidebar to its own component
 const MetadataContent = (
-  { currentOutputSchemaId, onDatasetTab, outputSchemaId, params, onSidebarTabClick, columnsExist } // eslint-disable-line
+  { currentOutputSchemaId, onDatasetTab, params, onSidebarTabClick, columnsExist } // eslint-disable-line
 ) =>
   <div>
     <div className={styles.sidebar}>
@@ -20,7 +20,7 @@ const MetadataContent = (
       </Link>
       {columnsExist
         ? <Link
-          to={Links.columnMetadataForm(params, outputSchemaId || currentOutputSchemaId)}
+          to={Links.columnMetadataForm(params, currentOutputSchemaId)}
           className={styles.tab}
           onClick={() => onSidebarTabClick(params.fourfour)}
           activeClassName={styles.selected}>
@@ -30,14 +30,13 @@ const MetadataContent = (
             {I18n.metadata_manage.column_metadata_label}
           </span>}
     </div>
-    <MetadataEditor onDatasetTab={onDatasetTab} outputSchemaId={outputSchemaId} />
+    <MetadataEditor onDatasetTab={onDatasetTab} outputSchemaId={currentOutputSchemaId} />
   </div>;
 
 MetadataContent.propTypes = {
   onSidebarTabClick: PropTypes.func,
   columnsExist: PropTypes.bool,
   currentOutputSchemaId: PropTypes.number,
-  outputSchemaId: PropTypes.number,
   onDatasetTab: PropTypes.bool.isRequired,
   params: PropTypes.object.isRequired
 };

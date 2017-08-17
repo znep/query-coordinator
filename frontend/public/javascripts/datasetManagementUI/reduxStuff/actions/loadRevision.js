@@ -1,5 +1,5 @@
-import { socrataFetch, checkStatus, getJson } from '../lib/http';
-import * as dsmapiLinks from '../dsmapiLinks';
+import { socrataFetch, checkStatus, getJson } from 'lib/http';
+import * as dsmapiLinks from 'dsmapiLinks';
 import _ from 'lodash';
 import { parseDate } from 'lib/parseDate';
 import {
@@ -8,10 +8,10 @@ import {
   subscribeToTransforms,
   insertInputSchema,
   subscribeToRowErrors
-} from 'actions/manageUploads';
-import { showModal } from 'actions/modal';
-import * as ApplyRevision from 'actions/applyRevision';
-import { addNotification } from 'actions/notifications';
+} from 'reduxStuff/actions/manageUploads';
+import { showModal } from 'reduxStuff/actions/modal';
+import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
+import { addNotification } from 'reduxStuff/actions/notifications';
 import { makeFieldsets, validateDatasetForm } from 'models/forms';
 import { browserHistory } from 'react-router';
 import * as Links from 'links';
@@ -20,10 +20,7 @@ export function loadRevision(params) {
   return (dispatch, getState) => {
     const { views } = getState().entities;
 
-    return Promise.all([
-      getCurrentRevision(params),
-      getSources(params)
-    ]).then(([revision, sources]) => {
+    return Promise.all([getCurrentRevision(params), getSources(params)]).then(([revision, sources]) => {
       const initialTaskSets = makeTaskSets(revision);
 
       const view = views[revision.fourfour];
@@ -45,7 +42,6 @@ export function loadRevision(params) {
       );
 
       const metadataErrors = getMetadataErrors(revision, customMetadataFieldsets);
-
 
       dispatch(loadRevisionSuccess(revision, initialTaskSets, initialSources, metadataErrors));
 

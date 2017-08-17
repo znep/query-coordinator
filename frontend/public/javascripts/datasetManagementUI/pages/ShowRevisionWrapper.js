@@ -1,10 +1,6 @@
 import React, { PropTypes } from 'react';
-import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import {
-  loadRevision,
-  redirectToBaseIfTaskSetExists
-} from 'actions/loadRevision';
+import { loadRevision, redirectToBaseIfTaskSetExists } from 'reduxStuff/actions/loadRevision';
 
 class ShowRevisionWrapper extends React.Component {
   constructor() {
@@ -59,4 +55,4 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(ShowRevisionWrapper));
+export default connect(null, mapDispatchToProps)(ShowRevisionWrapper);

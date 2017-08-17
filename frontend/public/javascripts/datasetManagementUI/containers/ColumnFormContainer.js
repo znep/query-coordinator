@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { editView } from 'reduxStuff/actions/views';
+import { setFormErrors } from 'reduxStuff/actions/forms';
 import { makeRows, validateColumnForm } from 'models/forms';
 import ColumnForm from 'components/ColumnForm/ColumnForm';
 
@@ -12,11 +11,8 @@ const mapStateToProps = ({ entities, ui }, { outputSchemaId }) => {
   };
 };
 
-const mergeProps = ({ outputSchemaId, errors, rows }, { dispatch }, { params }) => ({
-  errors,
-  rows,
-  outputSchemaId,
-  setErrors: () => dispatch(editView(params.fourfour, { columnMetadataErrors: errors }))
+const mapDispatchToProps = dispatch => ({
+  setErrors: errors => dispatch(setFormErrors('columnFormn', errors))
 });
 
-export default withRouter(connect(mapStateToProps, null, mergeProps)(ColumnForm));
+export default connect(mapStateToProps, mapDispatchToProps)(ColumnForm);

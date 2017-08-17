@@ -5,7 +5,7 @@ import {
   SHOW_FORM_ERRORS,
   HIDE_FORM_ERRORS,
   SET_FORM_ERRORS
-} from 'actions/forms';
+} from 'reduxStuff/actions/forms';
 
 const initialState = {
   datasetForm: {

@@ -3,18 +3,18 @@ import React, { PropTypes } from 'react';
 import { Link, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import * as Links from 'links';
-import { loadRevisionsList, createRevision } from 'actions/showView';
+import { loadRevisionsList, createRevision } from 'reduxStuff/actions/showView';
 
 function RevisionsList({ revisions, params }) {
   return (
     <ul>
-      {revisions.map((revision) => (
+      {revisions.map(revision =>
         <li key={revision.id}>
           <Link to={Links.revisionBase({ ...params, revisionSeq: revision.revision_seq })}>
             #{revision.revision_seq} by {revision.created_by.display_name}
           </Link>
         </li>
-      ))}
+      )}
     </ul>
   );
 }
@@ -25,7 +25,6 @@ RevisionsList.propTypes = {
 };
 
 class ShowView extends React.Component {
-
   constructor() {
     super();
     this.state = {
@@ -51,13 +50,10 @@ class ShowView extends React.Component {
         <button className="btn btn-primary" onClick={this.props.createRevision}>
           Create Revision
         </button>
-        <pre>
-          {JSON.stringify(this.props.view, null, 2)}
-        </pre>
+        <pre>{JSON.stringify(this.props.view, null, 2)}</pre>
       </div>
     );
   }
-
 }
 
 ShowView.propTypes = {
@@ -81,7 +77,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       return dispatch(loadRevisionsList());
     },
     createRevision: () => {
-      return dispatch(createRevision()).then((revision) => {
+      return dispatch(createRevision()).then(revision => {
         browserHistory.push(Links.revisionBase({ ...ownProps.params, revisionSeq: revision.revision_seq }));
       });
     }

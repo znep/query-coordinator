@@ -3,11 +3,19 @@ import MetadataContent from 'components/MetadataContent/MetadataContent';
 import * as Selectors from 'selectors';
 
 const mapStateToProps = ({ entities }, props) => {
-  const currentOutputSchema = Selectors.currentOutputSchema(entities);
+  let outputSchemaId;
+
+  if (props.outputSchemaId) {
+    outputSchemaId = props.outputSchemaId;
+  } else {
+    const currentOutputSchema = Selectors.currentOutputSchema(entities);
+    const { id } = currentOutputSchema;
+    outputSchemaId = id;
+  }
 
   return {
     ...props,
-    currentOutputSchemaId: currentOutputSchema ? currentOutputSchema.id : null
+    currentOutputSchemaId: outputSchemaId
   };
 };
 

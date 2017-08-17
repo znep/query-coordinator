@@ -6,16 +6,16 @@ import DatasetField from 'containers/DatasetFieldContainer';
 
 class DatasetForm extends Component {
   componentWillMount() {
-    const { setFormErrors, regularFieldsets, customFieldsets } = this.props;
+    const { setErrors, regularFieldsets, customFieldsets } = this.props;
 
     validateDatasetForm(regularFieldsets, customFieldsets).matchWith({
-      Success: () => setFormErrors('datasetForm', []),
-      Failure: ({ value }) => setFormErrors('datasetForm', value)
+      Success: () => setErrors([]),
+      Failure: ({ value }) => setErrors(value)
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { regularFieldsets, customFieldsets } = nextProps;
+    const { regularFieldsets, customFieldsets, setErrors } = nextProps;
 
     const { regularFieldsets: oldRegularFieldsets, customFieldsets: oldCustomFieldsets } = this.props;
 
@@ -25,8 +25,8 @@ class DatasetForm extends Component {
 
     if (!_.isEqual(oldFieldsets, fieldsets)) {
       validateDatasetForm(regularFieldsets, customFieldsets).matchWith({
-        Success: () => setFormErrors('datasetForm', []),
-        Failure: ({ value }) => setFormErrors('datasetForm', value)
+        Success: () => setErrors([]),
+        Failure: ({ value }) => setErrors(value)
       });
     }
   }
@@ -63,7 +63,8 @@ DatasetForm.propTypes = {
       title: PropTypes.string,
       fields: PropTypes.array
     })
-  )
+  ),
+  setErrors: PropTypes.func.isRequired
 };
 
 export default DatasetForm;

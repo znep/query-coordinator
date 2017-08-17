@@ -7,7 +7,8 @@ import ShowRevision from 'pages/ShowRevision/ShowRevision';
 import ManageMetadata from 'pages/ManageMetadata/ManageMetadata';
 import ShowOutputSchema from 'pages/ShowOutputSchema/ShowOutputSchema';
 import { focusColumnEditor } from 'reduxStuff/actions/manageMetadata';
-import ShowRevisionWrapper from './components/ShowRevisionWrapper';
+import ShowRevisionWrapper from 'pages/ShowRevisionWrapper';
+import ShowView from 'pages/ShowView';
 import ShowUpload from 'pages/ShowUpload/ShowUpload';
 import NoMatch from 'pages/NoMatch/NoMatch';
 
@@ -26,12 +27,10 @@ const checkUploadStatus = store => (nextState, replace) => {
 
 export default function rootRoute(store) {
   return (
-    <Route
-      path="/(:locale/):category/:name/:fourfour/manage"
-      component={App}>
+    <Route path="/(:locale/):category/:name/:fourfour/manage" component={App}>
       <IndexRoute component={ShowView} />
 
-      <Route path={"revisions/:revisionSeq"} component={ShowRevisionWrapper}>
+      <Route path={'revisions/:revisionSeq'} component={ShowRevisionWrapper}>
         <IndexRoute component={ShowRevision} />
         <Redirect from="metadata" to="metadata/dataset" />
         <Route path="metadata/dataset" component={ManageMetadata} />

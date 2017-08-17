@@ -1,15 +1,23 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { editView } from 'reduxStuff/actions/views';
+import { setFormErrors } from 'reduxStuff/actions/forms';
 import { makeFieldsets } from 'models/forms';
 import DatasetForm from 'components/DatasetForm/DatasetForm';
 
 const mapStateToProps = ({ entities }, { params }) => {
-  const { fourfour } = params;
+  const { fourfour, revisionSeq } = params;
 
   const view = entities.views[fourfour];
 
-  const { regular: regularFieldsets, custom: customFieldsets } = makeFieldsets(view);
+  const { customMetadataFieldsets } = view;
+
+  const revision = _.find(entities.revisions, r => r.revision_seq === _.toNumber(revisionSeq));
+
+  const { regular: regularFieldsets, custom: customFieldsets } = makeFieldsets(
+    revision,
+    customMetadataFieldsets
+  );
 
   return {
     regularFieldsets,
@@ -17,14 +25,8 @@ const mapStateToProps = ({ entities }, { params }) => {
   };
 };
 
-// We don't use this much, but it is a nice alternative to using the component
-// as a place to put together the output of mapStateToProps and mapDispatchToProps;
-// mergeProps provides a place to do this putting-together without cluttering the
-// component. For more info/background, see discussion here:
-// https://github.com/reactjs/react-redux/issues/237#issuecomment-168816713
-const mergeProps = ({ fourfour, ...rest }, { dispatch }, { params }) => ({
-  ...rest,
-  setErrors: errors => dispatch(editView(params.fourfour, { datasetMetadataErrors: errors }))
+const mapDispatchToProps = dispatch => ({
+  setErrors: errors => dispatch(setFormErrors('datasetForm', errors))
 });
 
-export default withRouter(connect(mapStateToProps, null, mergeProps)(DatasetForm));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DatasetForm));

@@ -38,11 +38,4 @@ PublishConfirmation.propTypes = {
   params: PropTypes.object.isRequired
 };
 
-export function mapDispatchToProps(dispatch, ownProps) {
-  return {
-    doCancel: () => dispatch(hideModal()),
-    doUpdate: () => dispatch(applyRevision(ownProps.params))
-  };
-}
-
 export default PublishConfirmation;

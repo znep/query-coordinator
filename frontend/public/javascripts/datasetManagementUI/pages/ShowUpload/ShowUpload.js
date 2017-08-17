@@ -64,7 +64,7 @@ ShowUpload.propTypes = {
 };
 
 export const mapDispatchToProps = (dispatch, ownProps) => ({
-  goHome: () => browserHistory.push(Links.home(ownProps.params))
+  goHome: () => browserHistory.push(Links.revisionBase(ownProps.params))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShowUpload);

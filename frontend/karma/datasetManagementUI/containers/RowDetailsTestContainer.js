@@ -1,6 +1,6 @@
 import React from 'react';
 import { assert } from 'chai';
-import RowDetails from 'components/RowDetailsContainer';
+import RowDetails from 'containers/RowDetailsContainer';
 import rootReducer from 'reducers/rootReducer';
 import { applyMiddleware, createStore } from 'redux';
 import { bootstrapApp } from 'actions/bootstrap';

@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable';
-import { BOOTSTRAP_APP } from 'actions/bootstrap';
+import { BOOTSTRAP_APP } from 'reduxStuff/actions/bootstrap';
 
 const bootstrapApp = (state, action) => {
   switch (action.type) {

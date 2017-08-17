@@ -9,6 +9,7 @@ import listenForOutputSchema from 'reduxStuff/reducers/listenForOutputSchema';
 import loadData from 'reduxStuff/reducers/loadData';
 import insertInputSchema from 'reduxStuff/reducers/insertInputSchema';
 import applyRevision from 'reduxStuff/reducers/applyRevision';
+import loadRevision from 'reduxStuff/reducers/loadRevision';
 
 const combined = combineReducers({
   entities,
@@ -23,5 +24,6 @@ export default reduceReducers(
   listenForOutputSchema,
   loadData,
   insertInputSchema,
-  applyRevision
+  applyRevision,
+  loadRevision
 );

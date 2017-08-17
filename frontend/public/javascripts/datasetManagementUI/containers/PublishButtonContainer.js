@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import PublishButton from 'components/PublishButton/PublishButton';
 import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
@@ -22,13 +21,11 @@ function isDataSatisfied(state) {
   return dataSatisfied;
 }
 
-function mapStateToProps(state, { params }) {
+function mapStateToProps(state) {
   const dataSatisfied = isDataSatisfied(state);
-  const { fourfour } = params;
-  const view = state.entities.views[fourfour];
 
   return {
-    metadataSatisfied: view.datasetMetadataErrors.length === 0,
+    metadataSatisfied: state.ui.forms.datasetForm.errors.length === 0,
     dataSatisfied,
     publishedOrPublishing:
       _.size(
@@ -50,4 +47,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PublishButton));
+export default connect(mapStateToProps, mapDispatchToProps)(PublishButton);

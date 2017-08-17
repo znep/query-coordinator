@@ -12,17 +12,23 @@ const PreviewLink = () =>
     </a>
   </div>;
 
-export const AppBar = ({ name, showPreviewLink }) =>
+export const AppBar = ({ name, showPreviewLink, revision }) =>
   <EditBar name={name}>
+    {/* revision && // TODO: indicate what revision we're on; link back to revisionless page
+    <div>
+      &gt; Revision #{revision.revision_seq} <Link to={Links.home(params)}>(Back)</Link>
+    </div>
+  */}
     <div className={styles.buttonContainer}>
       {showPreviewLink && <PreviewLink />}
-      <PublishButton />
+      {revision && <PublishButton />}
     </div>
   </EditBar>;
 
 AppBar.propTypes = {
   name: PropTypes.string.isRequired,
-  showPreviewLink: PropTypes.bool.isRequired
+  showPreviewLink: PropTypes.bool.isRequired,
+  revision: PropTypes.object
 };
 
 export default AppBar;

@@ -7,9 +7,9 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import state from '../data/initialState';
 
-import { loadRevision } from 'actions/loadRevision';
+import { loadRevision } from 'reduxStuff/actions/loadRevision';
 
-describe('actions/loadRevision', () => {
+describe('loadRevision actions', () => {
 
   const justAView = {
     entities: {
@@ -80,4 +80,3 @@ describe('actions/loadRevision', () => {
   });
 
 });
-

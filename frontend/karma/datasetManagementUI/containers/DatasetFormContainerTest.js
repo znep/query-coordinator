@@ -73,7 +73,10 @@ describe('containers/DatasetFormContainer', () => {
       .first()
       .simulate('change', { target: { value: 'hey' } });
 
-    assert.equal(testStore.getState().entities.views['kg5j-unyr'].name, 'hey');
+    const revisions = testStore.getState().entities.revisions;
+   const revision = _.values(revisions)[0];
+
+    assert.equal(revision.metadata.name, 'hey');
   });
 
   it('renders custom fieldset and fields', () => {
@@ -94,7 +97,8 @@ describe('containers/DatasetFormContainer', () => {
         }
       },
       childContextTypes: {
-        store: React.PropTypes.object
+        store: React.PropTypes.object,
+        router: React.PropTypes.object
       }
     });
 

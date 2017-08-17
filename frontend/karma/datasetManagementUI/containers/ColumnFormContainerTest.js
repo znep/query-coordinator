@@ -41,7 +41,8 @@ describe('containers/ColumnFormContainer', () => {
         }
       },
       childContextTypes: {
-        store: React.PropTypes.object
+        store: React.PropTypes.object,
+        router: React.PropTypes.object
       }
     });
 
